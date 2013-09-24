@@ -1,0 +1,56 @@
+<div class="b-admin-general">
+	<div class="form-horizontal">
+		<div class="legend">
+			General
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Title
+			 </label>
+			<div class="controls">
+				<input type="text" data-bind="value: title" />
+				<div data-bind="saveTrigger: titleTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Language
+			 </label>
+			<div class="controls">
+				<select data-bind="options: languagesOptions, value: mainLanguage, optionsText: 'optText', optionsValue: 'optValue'"></select>
+				<div data-bind="saveTrigger: languageTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Theme
+			 </label>
+			<div class="controls">
+				<select data-bind="options: themesOptions, value: mainTheme, optionsText: 'optText', optionsValue: 'optValue'"></select>
+				<div data-bind="saveTrigger: themeTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { allowCustomTheme(!allowCustomTheme()); }">
+					<i data-bind="css: allowCustomTheme() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow customized theme
+				</label>
+				<label data-bind="click: function () { allowAdditionalAccounts(!allowAdditionalAccounts()); }">
+					<i data-bind="css: allowAdditionalAccounts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow additional accounts
+				</label>
+			</div>
+		</div>
+	</div>
+	<div data-bind="visible: !contactsSupported">
+		<br />
+		<div class="alert alert-block span8">
+				<h4>Notice!</h4>
+				<br />
+				<strong>Contacts</strong> functions are not supported.
+				<br />
+				You need to install or enable <strong>PDO (sqlite)</strong> exstenstion on your server.
+		</div>
+	</div>
+</div>

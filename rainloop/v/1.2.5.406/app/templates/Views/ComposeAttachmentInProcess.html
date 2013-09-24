@@ -1,0 +1,14 @@
+<div class="b-attacment-in-process" data-bind="css: {'error':  '' !== error(), 'uploading': uploading, 'waiting': waiting }, in18nInit: true">
+	<a class="close" data-bind="click: cancel">&times;</a>
+	<span class="uploading"><i class="icon-spinner-2 animated"></i></span>
+	<span class="namedStr">
+		<span class="name" data-bind="text: fileName"></span>
+		&nbsp;&nbsp;
+		(<span class="size" data-bind="text: friendlySize"></span>)
+		<span class="upload-progress" data-bind="text: progress"></span>
+	</span>
+	<div class="error">
+		<span data-bind="text: error"></span>
+	</div>
+</div>
+<br />

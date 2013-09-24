@@ -1,0 +1,62 @@
+<div class="popups">
+	<div class="modal hide b-activate-content" data-bind="modal: modalVisibility">
+		<div>
+			<div class="modal-header">
+				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+				<h3>
+					<span data-bind="visible: !activateProcess()">Activate Subscription Key?</span>
+					<span data-bind="visible: activateProcess">Activation...</span>
+				</h3>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label">
+							Domain
+						</label>
+						<div class="controls">
+							<h4 class="help-inline" data-bind="text: domain" style="margin-top: 5px;"></h4>
+						</div>
+					</div>
+					<div class="control-group" data-bind="css: {'error': '' !== activateText() && activateText.isError(), 'success': '' !== activateText() && !activateText.isError() }">
+						<label class="control-label">
+							Subscription Key
+						</label>
+						<div class="controls ">
+							<input type="text" class="span5" data-bind="visible: !activateProcess() && !activationSuccessed(), value: key, valueUpdate: 'afterkeydown', hasFocus: key.focus"></input>
+							<h4 class="help-inline" style="margin-top: 5px;" data-bind="text: key, visible: activateProcess() || activationSuccessed()"></h4>
+							<div class="help-block" data-bind="text: activateText"></div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="alert">
+					<p>
+						After activation, commercial subscription for <strong data-bind="text: domain"></strong> will be extended.
+					</p>
+					<p>
+						Once started, the process of activation cannot be aborted or cancelled.
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="btn" href="http://rainloop.net/purchase/" target="_black">
+					<i class="icon-cart"></i>
+					&nbsp;&nbsp;
+					Purchase
+				</a>
+				<a class="btn buttonActivate" data-bind="visible: !activationSuccessed(), command: activateCommand">
+					<i class="icon-key" data-bind="css: {'icon-key': !activateProcess(), 'icon-spinner-2 animated': activateProcess()}" ></i>
+					&nbsp;&nbsp;
+					Activate
+				</a>
+				<span style="color: green" data-bind="visible: activationSuccessed">
+					&nbsp;&nbsp;&nbsp;
+					<i class="icon-ok"></i>
+					&nbsp;&nbsp;
+					Activated
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

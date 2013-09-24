@@ -1,0 +1,15 @@
+<tr class="e-item" data-bind="css: {'disabled': disabled }">
+	<td>
+		<span class="plugin-name" data-bind="text: name"></span>
+	</td>
+	<td>
+		<span class="configure-plugin" data-bind="click: function (oPlugin) { $root.configurePlugin(oPlugin); }">
+			<i class="icon-settings5 e-action"></i>
+		</span>
+	</td>
+	<td>
+		<span class="disable-plugin" data-bind="click: function (oPlugin) { $root.disablePlugin(oPlugin); }">
+			<i data-bind="css: {'e-action icon-checkbox-checked': !disabled(), 'e-action icon-checkbox-unchecked': disabled}"></i>
+		</span>
+	</td>
+</tr>

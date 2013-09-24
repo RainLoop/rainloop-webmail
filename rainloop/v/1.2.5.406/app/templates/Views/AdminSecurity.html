@@ -1,0 +1,51 @@
+<div class="adminSecurity">
+	<div class="form-horizontal">
+		<div class="legend">
+			Security
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { csrfProtection(!csrfProtection()); }">
+					<i data-bind="css: csrfProtection() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<abbr title="Cross-site request forgery" class="initialism">CSRF</abbr> protection
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<a href="#" target="_blank" class="g-ui-link" data-bind="link: phpInfoLink()">Show PHP information</a>
+			</div>
+		</div>
+	</div>
+	<div class="form-horizontal">
+		<div class="legend">
+			Changer Admin Password
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Current password
+			</label>
+			<div class="controls">
+				<input type="password" data-bind="value: adminPassword, valueUpdate: 'afterkeydown'" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				New password
+			</label>
+			<div class="controls">
+				<input type="password" data-bind="value: adminPasswordNew, valueUpdate: 'afterkeydown'" />
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
+					<i class="icon-key" data-bind="css: {'icon-white': adminPasswordUpdateSuccess() || adminPasswordUpdateError() }"></i>
+					&nbsp;&nbsp;
+					Update Password
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

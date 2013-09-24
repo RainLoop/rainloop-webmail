@@ -1,0 +1,19 @@
+{
+    "name": "adoy/oauth2",
+    "description": "Light PHP wrapper for the OAuth 2.0 protocol (based on OAuth 2.0 Authorization Protocol draft-ietf-oauth-v2-15)",
+    "authors": [
+        {
+            "name": "Charron Pierrick",
+            "email": "pierrick@webstart.fr"
+        },
+        {
+            "name": "Berejeb Anis",
+            "email": "anis.berejeb@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "../"
+        ]
+    }
+}

@@ -1,0 +1,45 @@
+<div class="messageListItem e-single-line" data-bind="css: lineAsCcc()">
+	<div class="unseenParent">
+		&nbsp;
+	</div>
+	<div class="delimiter"></div>
+	<div class="wrapper">
+		<div class="dateParent actionHandle dragHandle">
+			<span class="date" data-bind="text: momentShortDate, title: fullFormatDateValue"></span>
+		</div>
+		<div class="checkedParent">
+			<i class="checkboxMessage" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
+		</div>
+		<div class="flagParent">
+			<span class="flagOn">
+				<i class="icon-favorite"></i>
+			</span>
+			<span class="flagOnHalf">
+				<i class="icon-favorite2"></i>
+			</span>
+			<span class="flagOff">
+				<i class="icon-favorite2"></i>
+			</span>
+		</div>
+		<div class="senderParent actionHandle dragHandle">
+			<span class="threadsCountParent fullThreadHandle" data-bind="visible: '' !== threadsLenResult(), css: { 'lastSelected': !lastInCollapsedThread() }">
+				<span lass="threadsCount" data-bind="visible: !lastInCollapsedThreadLoading(), text: threadsLenResult"></span>
+				<i class="icon-spinner-2 animated" data-bind="visible: lastInCollapsedThreadLoading"></i>
+			</span>
+			<span class="replyFlag"><i class="icon-reply"></i>&nbsp;</span>
+			<span class="forwardFlag"><i class="icon-forward"></i>&nbsp;</span>
+			<span class="sender" data-bind="text: senderEmailsString"></span>
+			&nbsp;
+		</div>
+		<div class="attachmentParent actionHandle dragHandle">
+			<span class="attachment">
+				<i class="icon-attachment"></i>
+			</span>
+		</div>
+		<div class="subjectParent actionHandle dragHandle">
+			<span class="subject" data-bind="text: subject"></span>
+			<span class="subject emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>

@@ -1,0 +1,89 @@
+<div class="b-login-content">
+	<div class="loginFormWrapper">
+		<center>
+			<div class="alert" data-bind="visible: '' !== submitError()">
+				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
+				<span data-bind="text: submitError"></span>
+			</div>
+			<form class="form-horizontal span4 wrapper loginForm thm-login" action="#/" onsubmit="return false;" data-bind="command: submitCommand">
+				{{INCLUDE/TopControlGroup/PLACE}}
+				<div class="control-group" data-bind="css: {'error': emailError}">
+					<div class="input-append">
+						<input class="i18n inputEmail span4" type="email" autocomplete="off"
+							data-bind="value: email, hasFocus: emailFocus" data-i18n-placeholder="LOGIN/LABEL_EMAIL" />
+						<span class="add-on">
+							<i class="icon-envelope"></i>
+						</span>
+					</div>
+				</div>
+				<div class="control-group" data-bind="css: {'error': loginError}, visible: allowCustomLogin()">
+					<div class="input-append">
+						<input class="i18n inputLogin span4" type="text" autocomplete="off"
+							data-bind="value: login, hasFocus: loginFocus"  data-i18n-placeholder="LOGIN/LABEL_LOGIN" />
+						<span class="add-on">
+							<i class="icon-user"></i>
+						</span>
+					</div>
+				</div>
+				<div class="control-group" data-bind="css: {'error': passwordError}">
+					<div class="input-append">
+						<input class="i18n inputPassword span4" type="password" autocomplete="off"
+							data-bind="value: password" data-i18n-placeholder="LOGIN/LABEL_PASSWORD" />
+						<span class="add-on">
+							<i class="icon-key"></i>
+						</span>
+					</div>
+				</div>
+				<center>
+					{{INCLUDE/BottomControlGroup/PLACE}}
+				</center>
+				<div class="control-group">
+					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">
+						<i class="icon-spinner-2 animated" data-bind="visible: submitRequest"></i>
+						<span class="i18n" data-i18n-text="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
+					</button>
+				</div>
+				<div class="control-group">
+					<label class="pull-left signMeLabel" data-bind="click: function () { signMe(!signMe()); }, visible: signMeVisibility">
+						<i data-bind="css: signMe() ? 'checkboxSignMe icon-checkbox-checked' : 'checkboxSignMe icon-checkbox-unchecked'"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="LOGIN/LABEL_SIGN_ME"></span>
+					</label>
+					<div class="pull-right" data-bind="visible: facebookLoginEnabled() || googleLoginEnabled() || twitterLoginEnabled()">
+						<div class="btn-group">
+							<a class="btn dropdown-toggle buttonLoginMore" data-toggle="dropdown">
+								<i class="icon-reorder"></i>
+							</a>
+							<ul class="dropdown-menu g-ui-menu">
+								{{INCLUDE/MenuDropdownTop/PLACE}}
+								<li class="e-item">
+									<a class="e-link" data-bind="command: facebookCommand, visible: facebookLoginEnabled">
+										<i class="icon-facebook-2"></i>
+										&nbsp;&nbsp;
+										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_FACEBOOK"></span>
+									</a>
+								</li>
+								<li class="e-item">
+									<a class="e-link" data-bind="command: googleCommand, visible: googleLoginEnabled">
+										<i class="icon-google"></i>
+										&nbsp;&nbsp;
+										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_GOOGLE"></span>
+									</a>
+								</li>
+								<li class="e-item">
+									<a class="e-link" data-bind="command: twitterCommand, visible: twitterLoginEnabled">
+										<i class="icon-twitter"></i>
+										&nbsp;&nbsp;
+										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_TWITTER"></span>
+									</a>
+								</li>
+								{{INCLUDE/MenuDropdownBottom/PLACE}}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</center>
+	<div class="loginAfter"></div>
+</div>

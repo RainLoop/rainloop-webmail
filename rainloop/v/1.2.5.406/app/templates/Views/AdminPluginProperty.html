@@ -1,0 +1,28 @@
+<div class="b-admin-plugin-property">
+	<label class="control-label">
+		<span data-bind="text: Label, visible: 5 !== Type"></span>
+	</label>
+	<div class="controls">
+		<!-- ko if: 0 === Type || 1 === Type -->
+			<input type="text" data-bind="value: value" />
+		<!-- /ko -->
+		<!-- ko if: 3 === Type -->
+			<input type="password" data-bind="value: value" />
+		<!-- /ko -->
+		<!-- ko if: 2 === Type -->
+			<textarea data-bind="value: value"></textarea>
+		<!-- /ko -->
+		<!-- ko if: 4 === Type -->
+			<select data-bind="options: Default, value: value"></select>
+		<!-- /ko -->
+		<!-- ko if: 5 === Type -->
+			<label data-bind="click: function () { value(!value()); }">
+				<i data-bind="css: value() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				&nbsp;&nbsp;
+				<span data-bind="text: Label"></span>
+			</label>
+		<!-- /ko -->
+		<span class="help-block" style="color: #ccc" data-bind="text: Desc, visible: '' !== Desc"></span>
+	</div>
+	<br />
+</div>

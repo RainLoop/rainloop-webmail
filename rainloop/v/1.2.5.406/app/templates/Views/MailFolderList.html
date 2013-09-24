@@ -1,0 +1,17 @@
+<div class="b-folders g-ui-user-select-none thm-folders">
+	<div class="b-toolbar btn-toolbar">
+		<a class="btn buttonCompose" data-placement="bottom" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_COMPOSE'">
+			<i class="icon-pencil"></i>
+		</a>
+		<a class="btn buttonContacts" data-placement="bottom" data-bind="visible: allowContacts, click: contactsClick, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
+			<i class="icon-phonebook"></i>
+		</a>
+	</div>
+	<div class="b-content" data-bind="nano: true">
+		<div class="content g-scrollbox">
+			<div data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
+			<hr class="b-list-delimiter" />
+			<div data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+		</div>
+	</div>
+</div>

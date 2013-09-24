@@ -1,0 +1,46 @@
+<div class="b-admin-packages">
+	
+	<div class="alert" data-bind="visible: !packagesReal() && !packagesLoading()">
+		Cannot access the repository at the moment.
+	</div>
+	
+	<div class="alert" data-bind="visible: !packagesMainUpdatable() && !packagesLoading()">
+		Unable to update RainLoop Webmail source!
+	</div>
+	
+	<div class="alert" data-bind="visible: '' !== packagesError()">
+		<button type="button" class="close" data-bind="click: function () { packagesError('') }">&times;</button>
+		<span data-bind="text: packagesError"></span>
+	</div>
+	
+	<div class="process-place" data-bind="style: {'visibility': visibility }">
+		<i class="icon-spinner-2 animated"></i>
+		&nbsp;&nbsp;
+		loading...
+	</div>
+	
+	<div data-bind="visible: 0 < packagesAvailableForUpdate().length">
+		<div class="legend">
+			Available for Update (<span data-bind="text: packagesAvailableForUpdate().length"></span>)
+		</div>
+		<div data-bind="template: { name: 'AdminPackagesTable', data: {f: packagesAvailableForUpdate} }"></div>
+		<br />
+	</div>
+	
+	<div data-bind="visible: 0 < packagesCurrent().length">
+		<div class="legend">
+			Installed Packages
+		</div>
+		<div data-bind="template: { name: 'AdminPackagesTable', data: {f: packagesCurrent} }"></div>
+		<br />
+	</div>
+	
+	<div data-bind="visible: 0 < packagesAvailableForInstallation().length">
+		<div class="legend">
+			Available for Installation
+		</div>
+		<div data-bind="template: { name: 'AdminPackagesTable', data: {f: packagesAvailableForInstallation} }"></div>
+		<br />
+	</div>
+	
+</div>
