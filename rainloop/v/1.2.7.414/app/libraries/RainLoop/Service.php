@@ -144,6 +144,7 @@ class Service
 					'{{BaseAppDataScriptLink}}' => APP_SHORT_INDEX_FILE_NAME.($bAdmin ? '?/AdminAppData/' : '?/AppData/'),
 					'{{BaseAppFaviconFile}}' => $aData['FaviconLink'],
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
+					'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
 					'{{BaseAppJqueryScriptLink}}' => $aData['JqueryJsLink'],
 					'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 					'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
@@ -223,6 +224,7 @@ class Service
 			'Hash' => $this->generateIndexCacheHash($bAppJsDebug, $bAdmin),
 			'FaviconLink' => $sStaticPrefix.'favicon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app.css',
+			'BootJsLink' => $sStaticPrefix.'js/boot.js',
 			'JqueryJsLink' => $sStaticPrefix.'js/jquery.js',
 			'LibJsLink' => $sStaticPrefix.'js/libs.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js'

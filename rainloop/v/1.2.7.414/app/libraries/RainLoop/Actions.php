@@ -310,7 +310,7 @@ class Actions
 		}
 
 		$sFileName = \preg_replace('/[\/]+/', '/', \preg_replace('/[.]+/', '.', $sFileName));
-		$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()]/', '', $sFileName);
+		$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()\[\]]/', '', $sFileName);
 
 		return $sFileName;
 	}

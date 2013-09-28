@@ -1275,25 +1275,8 @@ destroy:function(){
 			})
 		})
 	}(window.jQuery);
-function __rlah() {
-	var mData = (window.top || window).name && JSON && '{' === (window.top || window).name.toString().substr(0, 1) ?
-		JSON.parse((window.top || window).name) : null;
-	return mData ? (mData['__rlA'] || null) : null;
-}
 
-function __rlah_compile(sHash) {
-	return JSON.stringify({'__rlA': sHash});
-}
-
-function __rlah_set() {
-	var mData = __rlah();
-	if (!mData || !mData['__rlA']) {
-		mData = {};
-	}
-	mData['__rlA'] = window.rainloopAppData && window.rainloopAppData['AuthAccountHash'] ? window.rainloopAppData['AuthAccountHash'] : '';
-	(window.top || window).name = JSON.stringify(mData);
-}
-
-function __rlah_clear() {
-	(window.top || window).name = JSON.stringify({});
+if (window.Pace && window.Pace.bar && window.Pace.bar.update)
+{
+	window.Pace.bar.update(70);
 }

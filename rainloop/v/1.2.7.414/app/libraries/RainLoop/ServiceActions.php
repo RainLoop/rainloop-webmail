@@ -413,7 +413,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = 'LANG:'.$sLanguage.APP_VERSION;
+				$sCacheFileName = 'LANG:'.$this->oActions->Plugins()->Hash().$sLanguage.APP_VERSION;
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -453,7 +453,7 @@ class ServiceActions
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = 'PLUGIN:'.$this->oActions->Plugins()->Hash();
+			$sCacheFileName = 'PLUGIN:'.$this->oActions->Plugins()->Hash().APP_VERSION;
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
