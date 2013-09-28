@@ -9,9 +9,11 @@
 	</div>
 	<div class="b-content" data-bind="nano: true">
 		<div class="content g-scrollbox">
-			<div data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
-			<hr class="b-list-delimiter" />
-			<div data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+			<div class="content-wrapper">
+				<div data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
+				<hr class="b-list-delimiter" />
+				<div data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+			</div>
 		</div>
 	</div>
 </div>

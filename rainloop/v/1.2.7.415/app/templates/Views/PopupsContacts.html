@@ -1,0 +1,104 @@
+<div class="popups">
+	<div class="modal hide b-contacts-content" data-bind="modal: modalVisibility">
+		<div class="modal-header b-header-toolbar g-ui-user-select-none">
+			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+			<a class="btn button-create-contact" data-bind="command: newCommand">
+				<i class="icon-plus"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n-text="CONTACTS/BUTTON_ADD_CONTACT"></span>
+			</a>
+			<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
+				<i class="icon-envelope icon-white"></i>
+			</a>
+			<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
+				<i class="icon-trash icon-white"></i>
+				<span data-bind="text: 1 < contactsCheckedOrSelected().length ? ' (' + contactsCheckedOrSelected().length + ')' : ''"></span>
+			</a>
+		</div>
+		<div class="modal-body" style="position: relative">
+			<div class="b-list-toopbar">
+				<input class="i18n span3 e-search" type="text" placeholder="Search" data-18n-placeholder="CONTACS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
+			</div>
+			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+				<div class="content g-scrollbox">
+					<div class="content-wrapper">
+						<div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
+							<span class="g-ui-link i18n" data-i18n-text="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
+						</div>
+						<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()">
+							<span class="i18n" data-i18n-text="CONTACTS/EMPTY_LIST"></span>
+						</div>
+						<div class="listEmptyListLoading" data-bind="visible: 0 === contacts().length && '' === search() && contacts.loading()">
+							<span class="i18n" data-i18n-text="CONTACTS/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+						</div>
+						<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()">
+							<span class="i18n" data-i18n-text="CONTACTS/EMPTY_SEARCH"></span>
+						</div>
+						<div class="e-contact-foreach" data-bind="foreach: contacts, visible: 0 < contacts().length">
+							<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCcc()">
+								<div class="unseenParent">
+									&nbsp;
+								</div>
+								<div class="delimiter"></div>
+								<div class="wrapper">
+									<div class="checkedParent">
+										<i class="checkboxItem" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
+									</div>
+									<div class="nameParent actionHandle">
+										<span class="listName" data-bind="text: listName"></span>
+										&nbsp;
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="b-view-content" data-bind="nano: true">
+				<div class="content g-scrollbox">
+					<div class="content-wrapper">
+						<div class="b-contact-view-desc" data-bind="visible: emptySelection">
+							<span class="i18n" data-i18n-text="CONTACTS/CONTACT_VIEW_DESC"></span>
+						</div>
+						<div data-bind="visible: !emptySelection()">
+							<div class="form-horizontal top-part">
+								<div class="control-group">
+									<div class="control-label" data-bind="initDom: imageUploader">
+										<div class="image-wrapper" style="width: 100px; height: 100px;">
+											<img data-bind="initDom: imageDom"  style="width: 100px; height: 100px;" />
+										</div>
+									</div>
+									<div class="controls">
+										<div class="top-row">
+											<span class="contactEmptyValueClick" data-bind="visible: !viewName.focused() && '' === viewName(), click: function() { viewName.focused(true); }">display name</span>
+											<span class="contactValueClick" data-bind="visible: !viewName.focused() && '' !== viewName(), click: function() { viewName.focused(true); }, text: viewName"></span>
+											<input class="contactValueInput span5" type="text" placeholder="display name" data-bind="value: viewName, visible: viewName.focused, hasfocus: viewName.focused, onEnter: function () { viewName.focused(false); }">
+										</div>
+										<div class="top-row" data-bind="css: { hasError: viewEmail.hasError() }">
+											<span class="contactEmptyValueClick" data-bind="visible: !viewEmail.focused() && '' === viewEmail(), click: function() { viewEmail.focused(true); }">email</span>
+											<span class="contactValueClick" data-bind="visible: !viewEmail.focused() && !viewEmail.hasError() && '' !== viewEmail(), click: function() { viewEmail.focused(true); }, text: viewEmail"></span>
+											<input class="contactValueInput span5" type="text" placeholder="email" data-bind="value: viewEmail, visible: viewEmail.hasError() || viewEmail.focused(), hasfocus: viewEmail.focused, onEnter: function () { viewEmail.focused(false); }">
+										</div>
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="control-label">
+									</div>
+									<div class="controls">
+									</div>
+								</div>
+							</div>
+
+							<button class="btn button-save-contact" data-bind="command: saveCommand">
+								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner-2 animated': viewSaving()}"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
+								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

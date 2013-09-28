@@ -106,37 +106,39 @@
 				</div>
 			</div>
 			<div class="mainDelimiter toolbarDelimiter"></div>
-			<div class="b-content g-scrollbox" data-bind="nano: true, initDom: dragOverBodyArea">
-				<div class="content">
-					<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
-						<a class="btn btn-small pull-right searchCancelButton" data-bind="click: cancelSearch">
-							<i class="icon-remove"></i>
-						</a>
-						<span data-bind="text: messageListSearchDesc"></span>:
-					</div>
-					<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-						<i class="icon-arrow-down-2 e-icon"></i>
-						&nbsp;&nbsp;
-						<span class="i18n" data-i18n-text="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
-					</div>
-					<div class="listClear" data-bind="visible: '' === messageListSearchDesc() && '' === messageListError() && 0 < messageList().length && (isSpamFolder() || isTrashFolder())">
-						<span class="g-ui-link i18n" data-i18n-text="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
-					</div>
-					<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
-						<span class="error" data-bind="text: messageListError"></span>
-					</div>
-					<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()">
-						<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_LIST"></span>
-					</div>
-					<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
-						messageListCompleteLoadingThrottle() && '' === messageListError()">
-						<span class="i18n" data-i18n-text="MESSAGE_LIST/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
-					</div>
-					<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
-						<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
-					</div>
-					<div data-bind="draggable: dragAndDronHelper">
-						<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>
+			<div class="b-content" data-bind="nano: true, initDom: dragOverBodyArea">
+				<div class="content g-scrollbox">
+					<div class="content-wrapper">
+						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
+							<a class="btn btn-small pull-right searchCancelButton" data-bind="click: cancelSearch">
+								<i class="icon-remove"></i>
+							</a>
+							<span data-bind="text: messageListSearchDesc"></span>:
+						</div>
+						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
+							<i class="icon-arrow-down-2 e-icon"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n-text="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
+						</div>
+						<div class="listClear" data-bind="visible: '' === messageListSearchDesc() && '' === messageListError() && 0 < messageList().length && (isSpamFolder() || isTrashFolder())">
+							<span class="g-ui-link i18n" data-i18n-text="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
+						</div>
+						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
+							<span class="error" data-bind="text: messageListError"></span>
+						</div>
+						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()">
+							<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_LIST"></span>
+						</div>
+						<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
+							messageListCompleteLoadingThrottle() && '' === messageListError()">
+							<span class="i18n" data-i18n-text="MESSAGE_LIST/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+						</div>
+						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
+							<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
+						</div>
+						<div data-bind="draggable: dragAndDronHelper">
+							<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>
+						</div>
 					</div>
 				</div>
 			</div>
