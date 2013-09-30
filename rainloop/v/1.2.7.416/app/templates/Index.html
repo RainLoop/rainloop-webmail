@@ -20,39 +20,28 @@
 		<title></title>
 		<link rel="shortcut icon" href="{{BaseAppFaviconFile}}" />
 		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
-		<script>
-			window._headBoot = ['{{BaseAppJqueryScriptLink}}', '{{BaseAppLibsScriptLink}}'];
-		</script>
+		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
 		<script src="{{BaseAppBootScriptLink}}"></script>
 		<script>
 			document.write(unescape('%3Cscript src="{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/"%3E%3C/script%3E'))
 		</script>
 		<script>
-			if (window.rainloopAppData)
-			{
-				if (window.rainloopAppData['Theme'] && window.rainloopAppData['NewThemeLink']) {
-					var sHref = window.rainloopAppData['NewThemeLink'];
+			if (window.rainloopAppData && window.rainloopAppData['Theme'] && window.rainloopAppData['NewThemeLink']) {
+				var
+					oLink = document.getElementById('rlThemeLink');
+					sHref = window.rainloopAppData['NewThemeLink']
+				;
+				
+				if (oLink) {
 					if ('Custom' === window.rainloopAppData['Theme']) {
 						sHref = sHref.replace('/Css/0/User/-/Custom/-/', '/Css/' + (window.__rlah ? window.__rlah() || '0' : '0') + '/User/-/Custom/-/');
 					}
 
-					document.write('<link type="text/css" type="text/css" rel="stylesheet" href="' + sHref + '" id="rlThemeLink" />');
-					sHref = null;
-				}
-				if (window.rainloopAppData['LangLink']) {
-					window._headBoot.push(window.rainloopAppData['LangLink']);
-				}
-				window._headBoot.push('{{BaseAppMainScriptLink}}');
-				if (window.rainloopAppData['PluginsLink']) {
-					window._headBoot.push(window.rainloopAppData['PluginsLink']);
+					document.getElementById('rlThemeLink').href = sHref;
 				}
 
-				if (window._headBoot && window.head && window.head.js && 0 < window._headBoot.length)
-				{
-					for (var iIndex = 0, iLen = window._headBoot.length; iIndex < iLen; iIndex++) {
-						window.head.js(window._headBoot[iIndex]);
-					}
-				}
+				oLink = null;
+				sHref = null;
 			}
 		</script>
 	</head>
@@ -69,6 +58,19 @@
 		</div>
 		<div id="rl-hidden">
 			{{BaseTemplates}}
+			<script>
+				if (window.rainloopAppData && window.rainloopAppData['LangLink']) {
+					document.write('<script src="' + window.rainloopAppData['LangLink'] + '"><\/script>');
+				}
+			</script>
+			<script src="{{BaseAppJqueryScriptLink}}"></script>
+			<script src="{{BaseAppLibsScriptLink}}"></script>
+			<script src="{{BaseAppMainScriptLink}}"></script>
+			<script>
+				if (window.rainloopAppData && window.rainloopAppData['PluginsLink']) {
+					document.write('<script src="' + window.rainloopAppData['PluginsLink'] + '"><\/script>');
+				}
+			</script>
 		</div>
 	</body>
 </html>

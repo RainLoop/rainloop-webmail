@@ -191,7 +191,7 @@ class Utils
 	 */
 	public static function ClearHtmlOutput($sHtml)
 	{
-//		return $sHtml;
+		return $sHtml;
 		return \str_replace('> <', '><',
 			\preg_replace('/[\s]+&nbsp;/i', '&nbsp;',
 			\preg_replace('/&nbsp;[\s]+/i', '&nbsp;',

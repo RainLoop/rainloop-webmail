@@ -4577,7 +4577,7 @@ class Actions
 			if (!$bOnce)
 			{
 				$bOnce = true;
-				\KeenIO\Service\KeenIO::setProjectId('2ab5998ce84d445b889b84c881caacac');
+				\KeenIO\Service\KeenIO::setProjectId('5166df8e3843317cd3000006');
 			}
 
 			\KeenIO\Service\KeenIO::addEvent($sName, \array_merge($aData, array(
