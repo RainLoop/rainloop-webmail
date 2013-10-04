@@ -1,15 +1,9 @@
-<div class="messageListItem e-single-line" data-bind="css: lineAsCccThrottle">
+<div class="messageListItem" data-bind="css: lineAsCcc()">
 	<div class="unseenParent">
 		&nbsp;
 	</div>
 	<div class="delimiter"></div>
 	<div class="wrapper">
-		<div class="dateParent actionHandle dragHandle">
-			<span class="date" data-bind="text: momentShortDate, title: fullFormatDateValue"></span>
-		</div>
-		<div class="checkedParent">
-			<i class="checkboxMessage" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
-		</div>
 		<div class="flagParent">
 			<span class="flagOn">
 				<i class="icon-favorite"></i>
@@ -20,6 +14,12 @@
 			<span class="flagOff">
 				<i class="icon-favorite2"></i>
 			</span>
+		</div>
+		<div class="dateParent actionHandle dragHandle">
+			<span class="date" data-bind="text: momentShortDate, title: fullFormatDateValue"></span>
+		</div>
+		<div class="checkedParent">
+			<i class="checkboxMessage" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 		</div>
 		<div class="senderParent actionHandle dragHandle">
 			<span class="threadsCountParent fullThreadHandle" data-bind="visible: '' !== threadsLenResult(), css: { 'lastSelected': !lastInCollapsedThread() }">
@@ -40,6 +40,5 @@
 			<span class="subject" data-bind="text: subject"></span>
 			<span class="subject emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
 		</div>
-		<div class="clearfix"></div>
 	</div>
 </div>
