@@ -109,9 +109,9 @@ Values:
 
 			'logs' => array(
 
-				'enable' => array(true, 'Enable logging'),
+				'enable' => array(false, 'Enable logging'),
 				
-				'write_on_error_only' => array(true, 'Logs entire request only if error occured'),
+				'write_on_error_only' => array(false, 'Logs entire request only if error occured'),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
@@ -200,6 +200,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
+				'activity_statistic' => array(true),
 				'dev_email' => array(''),
 				'dev_login' => array(''),
 				'dev_password' => array('')

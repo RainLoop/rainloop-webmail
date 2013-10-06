@@ -945,7 +945,7 @@ class Actions
 
 			$aResult['AllowTwitterSocial'] = (bool) $oConfig->Get('social', 'twitter_enable', false);
 			$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
-			$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
+			$aResult['TwitterConsumerSecret'] = (string) $oConfig->Get('social', 'twitter_consumer_secret', '');
 
 			$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 			$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
@@ -1372,12 +1372,15 @@ class Actions
 				}
 			}
 
-			$iTime = $this->CacherFile()->GetTimer('Statistic/Activity') ;
-			if (0 === $iTime || $iTime + 60 * 60 * 24 < \time())
+			if ($this->Config()->Get('labs', 'activity_statistic', true))
 			{
-				if ($this->CacherFile()->SetTimer('Statistic/Activity'))
+				$iTime = $this->CacherFile()->GetTimer('Statistic/Activity') ;
+				if (0 === $iTime || $iTime + 60 * 60 * 24 < \time())
 				{
-					$this->KeenIO('Activity');
+					if ($this->CacherFile()->SetTimer('Statistic/Activity'))
+					{
+						$this->KeenIO('Stat');
+					}
 				}
 			}
 
@@ -3029,8 +3032,9 @@ class Actions
 		}
 
 		$aFoundedCids = array();
+		$mFoundDataURL = array();
 		$oMessage->AddText($bTextIsHtml ?
-			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids) : $sText, $bTextIsHtml);
+			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL) : $sText, $bTextIsHtml);
 
 		if (is_array($aAttachments))
 		{
@@ -3049,6 +3053,33 @@ class Actions
 						\MailSo\Mime\Attachment::NewInstance($rResource, $sFileName, $iFileSize, $bIsInline,
 							in_array(trim(trim($sCID), '<>'), $aFoundedCids), $sCID)
 					);
+				}
+			}
+		}
+
+		if ($mFoundDataURL && \is_array($mFoundDataURL) && 0 < \count($mFoundDataURL))
+		{
+			foreach ($mFoundDataURL as $sCidHash => $sDataUrlString)
+			{
+				$aMatch = array();
+				$sCID = '<'.$sCidHash.'>';
+				if (\preg_match('/^data:(image\/[a-zA-Z0-9]+);base64,(.+)$/i', $sDataUrlString, $aMatch) &&
+					!empty($aMatch[1]) && !empty($aMatch[2]))
+				{
+					$sRaw = \MailSo\Base\Utils::Base64Decode($aMatch[2]);
+					$iFileSize = \strlen($sRaw);
+					if (0 < $iFileSize)
+					{
+						$sFileName = \preg_replace('/[^a-z0-9]+/i', '.', $aMatch[1]);
+						$rResource = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sRaw);
+						
+						$sRaw = '';
+						unset($sRaw);
+
+						$oMessage->Attachments()->Add(
+							\MailSo\Mime\Attachment::NewInstance($rResource, $sFileName, $iFileSize, true, true, $sCID)
+						);
+					}
 				}
 			}
 		}
@@ -4524,7 +4555,14 @@ class Actions
 						$sLang = strtolower(substr($sFile, 0, -4));
 						if (0 < strlen($sLang) && 'always' !== $sLang)
 						{
-							$sList[] = $sLang;
+							if (\in_array($sLang, array('en')))
+							{
+								\array_unshift($sList, $sLang);
+							}
+							else
+							{
+								\array_push($sList, $sLang);
+							}
 						}
 					}
 				}
@@ -4567,17 +4605,25 @@ class Actions
 			$sV = $aMatch[1];
 		}
 
+		$mPdoDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : null;
+
 		$aResult['version'] = $sV;
 		$aResult['software'] = array(
-			'php' => \phpversion(),
 			'mailso' => \MailSo\Version::AppVersion(),
-			'server' => $this->Http()->GetServer('SERVER_SOFTWARE', '')
+			'capa' => array(
+				'pdo' => \is_array($mPdoDrivers),
+				'pdo-sqlite' => \is_array($mPdoDrivers) ? \in_array('sqlite', $mPdoDrivers) : false,
+				'pdo-mysql' => \is_array($mPdoDrivers) ? \in_array('mysql', $mPdoDrivers) : false
+			),
+			'php' => \phpversion()
 		);
 		
 		$aResult['settings'] = array(
 			'lang' => $this->Config()->Get('webmail', 'language', ''),
 			'theme' => $this->Config()->Get('webmail', 'theme', ''),
 			'multiply' => !!APP_MULTIPLY,
+			'cache' => $this->Config()->Get('cache', 'fast_cache_driver', ''),
+			'preview-pane' => !!$this->Config()->Get('webmail', 'use_preview_pane', true),
 			'social' => array(
 				'google' => !!$this->Config()->Get('social', 'google_enable', false),
 				'twitter' => !!$this->Config()->Get('social', 'twitter_enable', false),
@@ -4642,7 +4688,7 @@ class Actions
 				'Content-Type: application/json'
 			),
 			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => json_encode(\array_merge($aData, array(
+			CURLOPT_POSTFIELDS => \json_encode(\array_merge($aData, array(
 				'site' => APP_SITE,
 				'uid' => \md5(APP_SITE.APP_SALT),
 				'date' => array(

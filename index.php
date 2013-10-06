@@ -7,10 +7,10 @@
 	if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
 	{
 		include_once APP_INDEX_ROOT_PATH.'include.php';
-		$sCustomDataPath = function_exists('__get_custom_data_full_path') ? trim(__get_custom_data_full_path()) : '';
+		$sCustomDataPath = function_exists('__get_custom_data_full_path') ? trim(trim(__get_custom_data_full_path()), '\\/') : '';
 	}
 
-	define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath);
+	define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
 
 	$sVersion = @file_get_contents(APP_DATA_FOLDER_PATH.'VERSION');
 	if (false !== $sVersion)

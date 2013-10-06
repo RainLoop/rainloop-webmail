@@ -24,7 +24,7 @@
 		define('APP_MULTIPLY', APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
 		define('APP_CORE_INSTALL_ACCESS_SITE', function_exists('__get_core_install_access_site') ?
-			__get_core_install_access_site() : APP_SITE);
+			__get_core_install_access_site(APP_SITE) : APP_SITE);
 		
 		define('APP_DUMMY', '********');
 		define('APP_DEV_VERSION', '0.0.0.dev');

@@ -369,10 +369,11 @@ class HtmlUtils
 	/**
 	 * @param string $sHtml
 	 * @param array $aFoundCids = array()
+	 * @param array|null $mFoundDataURL = null
 	 *
 	 * @return string
 	 */
-	public static function BuildHtml($sHtml, &$aFoundCids = array())
+	public static function BuildHtml($sHtml, &$aFoundCids = array(), &$mFoundDataURL = null)
 	{
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 		unset($sHtml);
@@ -380,6 +381,8 @@ class HtmlUtils
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
+			$sTagNameLower = \strtolower($oElement->tagName);
+			
 			if ($oElement->hasAttribute('data-x-src-cid'))
 			{
 				$sCid = $oElement->getAttribute('data-x-src-cid');
@@ -455,6 +458,18 @@ class HtmlUtils
 					}
 
 					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').$sAddStyles);
+				}
+			}
+
+			if ('img' === $sTagNameLower && \is_array($mFoundDataURL))
+			{
+				$sSrc = $oElement->getAttribute('src');
+				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
+				{
+					$sHash = \md5($sSrc);
+					$mFoundDataURL[$sHash] = $sSrc;
+
+					$oElement->setAttribute('src', 'cid:'.$sHash);
 				}
 			}
 		}
