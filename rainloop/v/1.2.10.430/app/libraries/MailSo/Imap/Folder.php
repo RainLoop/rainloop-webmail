@@ -56,6 +56,10 @@ class Folder
 		$this->aExtended = array();
 
 		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? '' : $sDelimiter;
+		if (empty($sDelimiter))
+		{
+			$sDelimiter = '.'; // default delimiter
+		}
 
 		if (!\is_array($aFlags) ||
 			!\is_string($sDelimiter) || 1 < \strlen($sDelimiter) ||
@@ -87,14 +91,14 @@ class Folder
 
 	/**
 	 * @param string $sFullNameRaw
-	 * @param string $sDelimiter = '/'
+	 * @param string $sDelimiter = '.'
 	 * @param array $aFlags = array()
 	 * 
 	 * @return \MailSo\Imap\Folder
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance($sFullNameRaw, $sDelimiter = '/', $aFlags = array())
+	public static function NewInstance($sFullNameRaw, $sDelimiter = '.', $aFlags = array())
 	{
 		return new self($sFullNameRaw, $sDelimiter, $aFlags);
 	}

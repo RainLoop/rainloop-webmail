@@ -280,7 +280,7 @@ class Folder
 					$iXListType = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
 					break;
 				case \in_array('\spam', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::SPAN;
+					$iXListType = \MailSo\Imap\Enumerations\FolderType::SPAM;
 					break;
 				case \in_array('\bin', $aFlags):
 				case \in_array('\trash', $aFlags):

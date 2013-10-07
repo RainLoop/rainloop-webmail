@@ -2656,12 +2656,87 @@ class Actions
 				$oSub = $oFolder->SubFolders();
 				if ($oSub && 0 < $oSub->Count())
 				{
-					$aResult = array_merge($aResult, $this->recFoldersNames($oSub));
+					$aResult = \array_merge($aResult, $this->recFoldersNames($oSub));
 				}
 			}
 		}
 
 		return $aResult;
+	}
+
+	private function systemfoldersNames()
+	{
+		static $aCache = null;
+		if (null === $aCache)
+		{
+			$aCache = array(
+				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
+				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH
+			);
+		}
+
+		return $aCache;
+	}
+
+	/**
+	 * @param \MailSo\Mail\FolderCollection $oFolders
+	 * @param array $aResult
+	 */
+	private function recFoldersTypes($oFolders, &$aResult)
+	{
+		if ($oFolders)
+		{
+			$aFolders =& $oFolders->GetAsArray();
+			foreach ($aFolders as $oFolder)
+			{
+				$iFolderXListType = $oFolder->GetFolderXListType();
+				if (!isset($aResult[$iFolderXListType]) && \in_array($iFolderXListType, array(
+					\MailSo\Imap\Enumerations\FolderType::SENT,
+					\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+					\MailSo\Imap\Enumerations\FolderType::SPAM,
+					\MailSo\Imap\Enumerations\FolderType::TRASH
+				)))
+				{
+					$aResult[$iFolderXListType] = $oFolder->FullNameRaw();
+				}
+
+				$oSub = $oFolder->SubFolders();
+				if ($oSub && 0 < $oSub->Count())
+				{
+					$this->recFoldersNames($oSub, $aResult);
+				}
+			}
+
+			$aMap = $this->systemfoldersNames();
+			foreach ($aFolders as $oFolder)
+			{
+				$sName = $oFolder->Name();
+				if (isset($aMap[$sName]))
+				{
+					$iFolderType = $aMap[$sName];
+					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+						\MailSo\Imap\Enumerations\FolderType::SENT,
+						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+						\MailSo\Imap\Enumerations\FolderType::SPAM,
+						\MailSo\Imap\Enumerations\FolderType::TRASH
+					)))
+					{
+						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+					}
+				}
+
+				$oSub = $oFolder->SubFolders();
+				if ($oSub && 0 < $oSub->Count())
+				{
+					$this->recFoldersNames($oSub, $aResult);
+				}
+			}
+		}
 	}
 
 	/**
@@ -2670,7 +2745,7 @@ class Actions
 	public function DoFolders()
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		if (0 < strlen($sRawKey))
+		if (0 < \strlen($sRawKey))
 		{
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -2682,7 +2757,11 @@ class Actions
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
-			$oFolderCollection->FoldersHash = md5(implode("\x0", $this->recFoldersNames($oFolderCollection)));
+			$oFolderCollection->FoldersHash = \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection)));
+
+			$aSystemFolders = array();
+			$this->recFoldersTypes($oFolderCollection, $aSystemFolders);
+			$oFolderCollection->SystemFolders = $aSystemFolders;
 
 			$this->cacheByKey($sRawKey);
 		}
@@ -3075,6 +3154,7 @@ class Actions
 						
 						$sRaw = '';
 						unset($sRaw);
+						unset($aMatch);
 
 						$oMessage->Attachments()->Add(
 							\MailSo\Mime\Attachment::NewInstance($rResource, $sFileName, $iFileSize, true, true, $sCID)
@@ -4359,7 +4439,7 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Account | bool
+	 * @return \RainLoop\Account|bool
 	 */
 	private function initMailClientConnection()
 	{
@@ -4992,7 +5072,6 @@ class Actions
 		if (is_object($mResponse))
 		{
 			$sClassName = get_class($mResponse);
-//			if ($mResponse instanceof \MailSo\Mail\Message)
 			if ('MailSo\Mail\Message' === $sClassName)
 			{
 				$oAccount = $this->getAccountFromToken(false);
@@ -5061,7 +5140,6 @@ class Actions
 					)));
 				}
 			}
-//			else if ($mResponse instanceof \MailSo\Mime\Email)
 			else if ('MailSo\Mime\Email' === $sClassName)
 			{
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
@@ -5079,7 +5157,6 @@ class Actions
 					'Emails' => $mResponse->Emails
 				));
 			}
-//			else if ($mResponse instanceof \RainLoop\Domain)
 			else if ('RainLoop\Domain' === $sClassName)
 			{
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
@@ -5093,7 +5170,6 @@ class Actions
 					'OutAuth' => $mResponse->OutAuth()
 				));
 			}
-//			else if ($mResponse instanceof \MailSo\Mail\Attachment)
 			else if ('MailSo\Mail\Attachment' === $sClassName)
 			{
 				$oAccount = $this->getAccountFromToken(false);
@@ -5123,7 +5199,6 @@ class Actions
 					'FileName' => $mResult['FileName']
 				));
 			}
-//			else if ($mResponse instanceof \MailSo\Mail\Folder)
 			else if ('MailSo\Mail\Folder' === $sClassName)
 			{
 				$bIgnoreFolderSubscribe = (bool) $this->Config()->Get('labs', 'ignore_folders_subscription', false);
@@ -5156,7 +5231,6 @@ class Actions
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				));
 			}
-//			else if ($mResponse instanceof \MailSo\Mail\MessageCollection)
 			else if ('MailSo\Mail\MessageCollection' === $sClassName)
 			{
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
@@ -5173,19 +5247,18 @@ class Actions
 					'Search' => $mResponse->Search
 				));
 			}
-//			else if ($mResponse instanceof \MailSo\Mail\AttachmentCollection)
 			else if ('MailSo\Mail\AttachmentCollection' === $sClassName)
 			{
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'InlineCount' => $mResponse->InlineCount()
 				));
 			}
-//			else if ($mResponse instanceof \MailSo\Mail\FolderCollection)
 			else if ('MailSo\Mail\FolderCollection' === $sClassName)
 			{
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Namespace' => $mResponse->GetNamespace(),
-					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : ''
+					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : '',
+					'SystemFolders' => isset($mResponse->SystemFolders) && \is_array($mResponse->SystemFolders) ? $mResponse->SystemFolders : array()
 				));
 			}
 			else if ($mResponse instanceof \MailSo\Base\Collection)

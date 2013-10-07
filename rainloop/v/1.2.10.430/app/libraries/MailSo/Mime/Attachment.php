@@ -39,9 +39,14 @@ class Attachment
 	private $bIsLinked;
 
 	/**
+	 * @var array
+	 */
+	private $aCustomContentTypeParams;
+
+	/**
 	 * @access private
 	 */
-	private function __construct($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID)
+	private function __construct($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID, $aCustomContentTypeParams = array())
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;
@@ -49,6 +54,7 @@ class Attachment
 		$this->bIsInline = $bIsInline;
 		$this->bIsLinked = $bIsLinked;
 		$this->sCID = $sCID;
+		$this->aCustomContentTypeParams = $aCustomContentTypeParams;
 	}
 
 	/**
@@ -58,12 +64,14 @@ class Attachment
 	 * @param bool $bIsInline = false
 	 * @param bool $bIsLinked = false
 	 * @param string $sCID = ''
+	 * @param array $aCustomContentTypeParams = array()
 	 *
 	 * @return \MailSo\Mime\Attachment
 	 */
-	public static function NewInstance($rResource, $sFileName = '', $iFileSize = 0, $bIsInline = false, $bIsLinked = false, $sCID = '')
+	public static function NewInstance($rResource, $sFileName = '', $iFileSize = 0, $bIsInline = false,
+		$bIsLinked = false, $sCID = '', $aCustomContentTypeParams = array())
 	{
-		return new self($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID);
+		return new self($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID, $aCustomContentTypeParams);
 	}
 
 	/**
@@ -80,6 +88,14 @@ class Attachment
 	public function ContentType()
 	{
 		return \MailSo\Base\Utils::MimeContentType($this->sFileName);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function CustomContentTypeParams()
+	{
+		return $this->aCustomContentTypeParams;
 	}
 
 	/**

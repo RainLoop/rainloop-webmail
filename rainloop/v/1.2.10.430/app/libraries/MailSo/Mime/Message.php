@@ -404,14 +404,15 @@ class Message
 
 	/**
 	 * @param string $sContentType
-	 * @param string | resource $mData
+	 * @param string|resource $mData
 	 * @param string $sContentTransferEncoding = ''
+	 * @param array $aCustomContentTypeParams = array()
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	public function AddAlternative($sContentType, $mData, $sContentTransferEncoding = '')
+	public function AddAlternative($sContentType, $mData, $sContentTransferEncoding = '', $aCustomContentTypeParams = array())
 	{
-		$this->aAlternativeParts[] = array($sContentType, $mData, $sContentTransferEncoding);
+		$this->aAlternativeParts[] = array($sContentType, $mData, $sContentTransferEncoding, $aCustomContentTypeParams);
 
 		return $this;
 	}
@@ -521,16 +522,24 @@ class Message
 		if (is_array($aAlternativeData) && isset($aAlternativeData[0]))
 		{
 			$oAlternativePart = Part::NewInstance();
+			$oParameters = ParameterCollection::NewInstance();
+			$oParameters->Add(
+				Parameter::NewInstance(
+					\MailSo\Mime\Enumerations\Parameter::CHARSET,
+					\MailSo\Base\Enumerations\Charset::UTF_8)
+			);
+
+			if (isset($aAlternativeData[3]) && \is_array($aAlternativeData[3]) && 0 < \count($aAlternativeData[3]))
+			{
+				foreach ($aAlternativeData[3] as $sName => $sValue)
+				{
+					$oParameters->Add(Parameter::NewInstance($sName, $sValue));
+				}
+			}
 
 			$oAlternativePart->Headers->Add(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					$aAlternativeData[0].'; '.
-					ParameterCollection::NewInstance()->Add(
-						Parameter::NewInstance(
-							\MailSo\Mime\Enumerations\Parameter::CHARSET,
-							\MailSo\Base\Enumerations\Charset::UTF_8)
-					)->ToString()
-				)
+					$aAlternativeData[0].'; '.$oParameters->ToString())
 			);
 
 			$oAlternativePart->Body = null;
@@ -635,7 +644,8 @@ class Message
 					$this->oAttachmentCollection->Clear();
 
 					$oResultPart = $this->createNewMessageAlternativePartBody(array(
-						$aAttachments[0]->ContentType(), $aAttachments[0]->Resource()
+						$aAttachments[0]->ContentType(), $aAttachments[0]->Resource(),
+							'', $aAttachments[0]->CustomContentTypeParams()
 					));
 				}
 			}

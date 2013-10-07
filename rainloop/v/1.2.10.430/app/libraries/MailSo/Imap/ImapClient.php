@@ -186,11 +186,25 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			$this->SendRequestWithCheck('LOGIN',
-				array(
-					$this->EscapeString($sLogin),
-					$this->EscapeString($sPassword)
-				));
+			if ($this->IsSupported('AUTH=LOGIN') || !$this->IsSupported('AUTH=PLAIN'))
+			{
+				$this->SendRequestWithCheck('LOGIN',
+					array(
+						$this->EscapeString($sLogin),
+						$this->EscapeString($sPassword)
+					));
+			}
+			else if ($this->IsSupported('AUTH=PLAIN'))
+			{
+				$this->SendRequestWithCheck('AUTHENTICATE',
+					array('PLAIN', \base64_encode("\0".$sLogin."\0".$sPassword)));
+			}
+			else
+			{
+				$this->writeLogException(
+					new \MailSo\Imap\Exceptions\LoginBadMethodException(),
+					\MailSo\Log\Enumerations\Type::NOTICE, true);
+			}
 
 			if (0 < \strlen($sProxyAuthUser))
 			{

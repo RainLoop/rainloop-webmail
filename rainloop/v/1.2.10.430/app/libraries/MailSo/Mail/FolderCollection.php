@@ -19,6 +19,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	public $FoldersHash;
 
 	/**
+	 * @var array
+	 */
+	public $SystemFolders;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
@@ -26,8 +31,8 @@ class FolderCollection extends \MailSo\Base\Collection
 		parent::__construct();
 
 		$this->sNamespace = '';
-
 		$this->FoldersHash = '';
+		$this->SystemFolders = array();
 	}
 
 	/**
