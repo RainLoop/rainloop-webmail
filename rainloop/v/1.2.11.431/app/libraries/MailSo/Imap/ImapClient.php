@@ -196,6 +196,11 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else if ($this->IsSupported('AUTH=PLAIN'))
 			{
+				if ($this->oLogger)
+				{
+					$this->oLogger->AddSecret(\base64_encode("\0".$sLogin."\0".$sPassword));
+				}
+
 				$this->SendRequestWithCheck('AUTHENTICATE',
 					array('PLAIN', \base64_encode("\0".$sLogin."\0".$sPassword)));
 			}
