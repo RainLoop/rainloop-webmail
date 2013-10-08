@@ -9,7 +9,7 @@ Modest system requirements, decent performance, simple installation and upgrade,
 
 For more information about the product, check [http://rainloop.net](http://rainloop.net).
 
-Information about installing the product, check the [documentation page](http://rainloop.de/docs/installation/).
+Information about installing the product, check the [documentation page](http://rainloop.net/docs/installation/).
 
 ## License
 
