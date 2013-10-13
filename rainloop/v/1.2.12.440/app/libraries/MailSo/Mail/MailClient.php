@@ -1605,12 +1605,12 @@ class MailClient
 
 		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
 		$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
-
-		$mStatusFolders = null;
-		if ($bUseListStatus)
-		{
-			$mStatusFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
-		}
+// TODO
+//		$mStatusFolders = null;
+//		if ($bUseListStatus)
+//		{
+//			$mStatusFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
+//		}
 
 		$aImapSubscribedFoldersHelper = array();
 		if (\is_array($aSubscribedFolders))

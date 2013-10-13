@@ -2677,14 +2677,17 @@ class Actions
 		return $aResult;
 	}
 
-	private function systemfoldersNames()
+	private function systemFoldersNames()
 	{
 		static $aCache = null;
 		if (null === $aCache)
 		{
 			$aCache = array(
 				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Sent Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
@@ -2700,53 +2703,59 @@ class Actions
 	 * @param \MailSo\Mail\FolderCollection $oFolders
 	 * @param array $aResult
 	 */
-	private function recFoldersTypes($oFolders, &$aResult)
+	private function recFoldersTypes($oFolders, &$aResult, $bXList = true)
 	{
 		if ($oFolders)
 		{
 			$aFolders =& $oFolders->GetAsArray();
-			foreach ($aFolders as $oFolder)
+			if (\is_array($aFolders) && 0 < \count($aFolders))
 			{
-				$iFolderXListType = $oFolder->GetFolderXListType();
-				if (!isset($aResult[$iFolderXListType]) && \in_array($iFolderXListType, array(
-					\MailSo\Imap\Enumerations\FolderType::SENT,
-					\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-					\MailSo\Imap\Enumerations\FolderType::SPAM,
-					\MailSo\Imap\Enumerations\FolderType::TRASH
-				)))
+				if ($bXList)
 				{
-					$aResult[$iFolderXListType] = $oFolder->FullNameRaw();
-				}
-
-				$oSub = $oFolder->SubFolders();
-				if ($oSub && 0 < $oSub->Count())
-				{
-					$this->recFoldersNames($oSub, $aResult);
-				}
-			}
-
-			$aMap = $this->systemfoldersNames();
-			foreach ($aFolders as $oFolder)
-			{
-				$sName = $oFolder->Name();
-				if (isset($aMap[$sName]))
-				{
-					$iFolderType = $aMap[$sName];
-					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
-						\MailSo\Imap\Enumerations\FolderType::SENT,
-						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-						\MailSo\Imap\Enumerations\FolderType::SPAM,
-						\MailSo\Imap\Enumerations\FolderType::TRASH
-					)))
+					foreach ($aFolders as $oFolder)
 					{
-						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+						$iFolderXListType = $oFolder->GetFolderXListType();
+						if (!isset($aResult[$iFolderXListType]) && \in_array($iFolderXListType, array(
+							\MailSo\Imap\Enumerations\FolderType::SENT,
+							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+							\MailSo\Imap\Enumerations\FolderType::SPAM,
+							\MailSo\Imap\Enumerations\FolderType::TRASH
+						)))
+						{
+							$aResult[$iFolderXListType] = $oFolder->FullNameRaw();
+						}
+
+						$oSub = $oFolder->SubFolders();
+						if ($oSub && 0 < $oSub->Count())
+						{
+							$this->recFoldersTypes($oSub, $aResult, true);
+						}
 					}
 				}
 
-				$oSub = $oFolder->SubFolders();
-				if ($oSub && 0 < $oSub->Count())
+				$aMap = $this->systemFoldersNames();
+				foreach ($aFolders as $oFolder)
 				{
-					$this->recFoldersNames($oSub, $aResult);
+					$sName = $oFolder->Name();
+					if (isset($aMap[$sName]))
+					{
+						$iFolderType = $aMap[$sName];
+						if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+							\MailSo\Imap\Enumerations\FolderType::SENT,
+							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+							\MailSo\Imap\Enumerations\FolderType::SPAM,
+							\MailSo\Imap\Enumerations\FolderType::TRASH
+						)))
+						{
+							$aResult[$iFolderType] = $oFolder->FullNameRaw();
+						}
+					}
+
+					$oSub = $oFolder->SubFolders();
+					if ($oSub && 0 < $oSub->Count())
+					{
+						$this->recFoldersTypes($oSub, $aResult, false);
+					}
 				}
 			}
 		}

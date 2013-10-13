@@ -95,7 +95,7 @@ class Service
 		$this->oActions->ParseQueryAuthString();
 
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') && APP_INSTALLED_START &&
-			$this->Config()->Get('labs', 'activity_statistic', true))
+			$this->oActions->Config()->Get('labs', 'activity_statistic', true))
 		{
 			$this->oActions->KeenIO('CoreInstallation', array(
 				'rainloop' => array(
