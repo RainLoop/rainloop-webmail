@@ -14,6 +14,15 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
+				<label data-bind="click: function () { usageStatistics(!usageStatistics()); }">
+					<i data-bind="css: usageStatistics() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					Automatically send usage statistics to RainLoop team (It does not include any personal information)
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
 				<a href="#" target="_blank" class="g-ui-link" data-bind="link: phpInfoLink()">Show PHP information</a>
 			</div>
 		</div>

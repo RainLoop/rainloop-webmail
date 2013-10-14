@@ -932,6 +932,7 @@ class Actions
 			$aResult['AdminLogin'] = $oConfig->Get('security', 'admin_login', '');
 			$aResult['AdminDomain'] = APP_SITE;
 			$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
+			$aResult['UsageStatistics'] = (bool) $oConfig->Get('labs', 'usage_statistics', true);
 			$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
@@ -1373,14 +1374,14 @@ class Actions
 				}
 			}
 
-			if ($this->Config()->Get('labs', 'activity_statistic', true))
+			if ($this->Config()->Get('labs', 'usage_statistics', true))
 			{
 				$iTime = $this->CacherFile()->GetTimer('Statistic/Activity') ;
 				if (0 === $iTime || $iTime + 60 * 60 * 24 < \time())
 				{
 					if ($this->CacherFile()->SetTimer('Statistic/Activity'))
 					{
-						$this->KeenIO('Stat', array(
+						$this->KeenIO('Statistic', array(
 							'rainloop' => $this->setupInformation()
 						));
 					}
@@ -1524,6 +1525,7 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
+		$this->setConfigFromParams($oConfig, 'UsageStatistics', 'labs', 'usage_statistics', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
@@ -2636,12 +2638,16 @@ class Actions
 			$sFileName = $this->GetActionParam('FileName', '');
 			$iLineNo = $this->GetActionParam('LineNo', '');
 
+			$sLocationHash = $this->GetActionParam('LocationHash', '');
+			$sHtmlCapa = $this->GetActionParam('HtmlCapa', '');
+
 			$oHttp = $this->Http();
 
 			$this->Logger()->Write($sMessage.' ('.$sFileName.' ~ '.$iLineNo.')', \MailSo\Log\Enumerations\Type::ERROR, 'JS');
 			$this->Logger()->WriteDump(array(
+				'Location Hash' => $sLocationHash,
+				'Capability' => $sHtmlCapa,
 				'HTTP_USER_AGENT' => $oHttp->GetServer('HTTP_USER_AGENT', ''),
-				'HTTP_ACCEPT' => $oHttp->GetServer('HTTP_ACCEPT', ''),
 				'HTTP_ACCEPT_ENCODING' => $oHttp->GetServer('HTTP_ACCEPT_ENCODING', ''),
 				'HTTP_ACCEPT_LANGUAGE' => $oHttp->GetServer('HTTP_ACCEPT_LANGUAGE', '')
 			));
@@ -4781,7 +4787,7 @@ class Actions
 		}
 
 		$aOptions = array(
-			CURLOPT_URL => 'https://api.keen.io/3.0/projects/5166df8e3843317cd3000006/events/'.$sName,
+			CURLOPT_URL => \base64_decode('aHR0cHM6Ly9hcGkua2Vlbi5pby8zLjAvcHJvamVjdHMvNTE2NmRmOGUzODQzMzE3Y2QzMDAwMDA2L2V2ZW50cy8=').$sName,
 			CURLOPT_HEADER => false,
 			CURLOPT_FAILONERROR => true,
 			CURLOPT_SSL_VERIFYPEER => false,
@@ -4791,7 +4797,6 @@ class Actions
 			),
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => \json_encode(\array_merge($aData, array(
-				'site' => APP_SITE,
 				'uid' => \md5(APP_SITE.APP_SALT),
 				'date' => array(
 					'month' => \gmdate('m.Y'),

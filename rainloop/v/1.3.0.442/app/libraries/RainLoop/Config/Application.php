@@ -63,7 +63,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'allow_custom_theme'	=> array(true, ''),
 
-				'language'				=> array('ru', 'Language used by default'),
+				'language'				=> array('en', 'Language used by default'),
 
 				'allow_additional_accounts'		=> array(true, ''),
 
@@ -200,7 +200,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
-				'activity_statistic' => array(true),
+				'usage_statistics' => array(true),
 				'dev_email' => array(''),
 				'dev_login' => array(''),
 				'dev_password' => array('')
