@@ -12,15 +12,6 @@
 		'SPL' => function_exists('spl_autoload_register')
 	);
 	
-	$bRequirements = true;
-	foreach ($aRequirements as $sKey => $bValue)
-	{
-		if (!$bValue)
-		{
-			$bRequirements = false;
-			break;
-		}
-	}
 
 	if (0 > version_compare(PHP_VERSION, '5.3.0'))
 	{
@@ -30,15 +21,18 @@
 		exit(301);
 	}
 
-	if (!$bRequirements)
+	if (in_array(false,$aRequirements))
 	{
 		echo '<p>';
-		echo 'Required PHP extension are not available in your PHP configuration! (Error Code: 302)';
+		echo 'The following PHP extensions are not available in your PHP configuration! (Error Code: 302)';
 		echo '</p><ul>';
 
 		foreach ($aRequirements as $sKey => $bValue)
 		{
-			echo '<li style="color: '.($bValue ? 'green' : 'red').'">'.$sKey.'</li>';
+			if (!$bValue)
+			{
+				echo '<li>'.$sKey.'</li>';
+			}
 		}
 		
 		echo '</ul>';
