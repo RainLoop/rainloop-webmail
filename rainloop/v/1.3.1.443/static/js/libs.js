@@ -1284,3 +1284,5 @@ destroy:function(){
 if (window.SimplePace) {
 	window.SimplePace.add(10);
 }
+
+window.__rl_script_count = 1 + (window.__rl_script_count || 0);

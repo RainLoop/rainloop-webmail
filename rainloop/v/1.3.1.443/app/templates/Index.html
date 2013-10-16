@@ -11,21 +11,22 @@
 		<!--[if lte IE 7]>
 			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
 		<![endif]-->
-		<script>
+		<script type="text/javascript">
 			if (!navigator || !navigator.cookieEnabled) {
 				document.location.replace('./?/NoCookie');
 			}
 		</script>
 		<meta name="robots" content="noindex, nofollow, noodp" />
+		<meta name="google" content="notranslate" />
 		<title></title>
 		<link rel="shortcut icon" href="{{BaseAppFaviconFile}}" />
 		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
-		<script src="{{BaseAppBootScriptLink}}"></script>
-		<script>
-			document.write(unescape('%3Cscript src="{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/"%3E%3C/script%3E'))
+		<script type="text/javascript" src="{{BaseAppBootScriptLink}}"></script>
+		<script type="text/javascript">
+			document.write(unescape('%3Cscript type="text/javascript" src="{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/"%3E%3C/script%3E'));
 		</script>
-		<script>
+		<script type="text/javascript">
 			if (window.rainloopAppData && window.rainloopAppData['Theme'] && window.rainloopAppData['NewThemeLink']) {
 				var
 					oLink = document.getElementById('rlThemeLink');
@@ -58,17 +59,17 @@
 		</div>
 		<div id="rl-hidden">
 			{{BaseTemplates}}
-			<script>
+			<script type="text/javascript">
 				if (window.rainloopAppData && window.rainloopAppData['LangLink']) {
-					document.write('<script src="' + window.rainloopAppData['LangLink'] + '"><\/script>');
+					document.write(unescape('%3Cscript type="text/javascript" src="' + window.rainloopAppData['LangLink'] + '"%3E%3C/script%3E'));
 				}
 			</script>
-			<script src="{{BaseAppJqueryScriptLink}}"></script>
-			<script src="{{BaseAppLibsScriptLink}}"></script>
-			<script src="{{BaseAppMainScriptLink}}"></script>
-			<script>
+			<script type="text/javascript" src="{{BaseAppJqueryScriptLink}}"></script>
+			<script type="text/javascript" src="{{BaseAppLibsScriptLink}}"></script>
+			<script type="text/javascript" src="{{BaseAppMainScriptLink}}"></script>
+			<script type="text/javascript">
 				if (window.rainloopAppData && window.rainloopAppData['PluginsLink']) {
-					document.write('<script src="' + window.rainloopAppData['PluginsLink'] + '"><\/script>');
+					document.write(unescape('%3Cscript type="text/javascript" src="' + window.rainloopAppData['PluginsLink'] + '"%3E%3C/script%3E'));
 				}
 			</script>
 		</div>

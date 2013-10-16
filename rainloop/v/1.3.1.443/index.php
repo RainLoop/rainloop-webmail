@@ -139,10 +139,10 @@ Options -Indexes
 				{
 					@mkdir(APP_PRIVATE_DATA.'domains', 0777);
 
-					@copy(APP_VERSION_ROOT_PATH.'app/domains/readme.txt', APP_PRIVATE_DATA.'domains/readme.txt');
 					@copy(APP_VERSION_ROOT_PATH.'app/domains/disabled', APP_PRIVATE_DATA.'domains/disabled');
 					@copy(APP_VERSION_ROOT_PATH.'app/domains/gmail.com.ini', APP_PRIVATE_DATA.'domains/gmail.com.ini');
 					@copy(APP_VERSION_ROOT_PATH.'app/domains/yahoo.com.ini', APP_PRIVATE_DATA.'domains/yahoo.com.ini');
+					@copy(APP_VERSION_ROOT_PATH.'app/domains/outlook.com.ini', APP_PRIVATE_DATA.'domains/outlook.com.ini');
 				}
 
 				@copy(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist', APP_PRIVATE_DATA.'domains/default.ini');

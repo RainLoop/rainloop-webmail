@@ -2637,16 +2637,18 @@ class Actions
 		{
 			$sFileName = $this->GetActionParam('FileName', '');
 			$iLineNo = $this->GetActionParam('LineNo', '');
+			$iScriptCount = $this->GetActionParam('ScriptCount', '');
 
-			$sLocationHash = $this->GetActionParam('LocationHash', '');
+			$sLocation = $this->GetActionParam('Location', '');
 			$sHtmlCapa = $this->GetActionParam('HtmlCapa', '');
 
 			$oHttp = $this->Http();
 
 			$this->Logger()->Write($sMessage.' ('.$sFileName.' ~ '.$iLineNo.')', \MailSo\Log\Enumerations\Type::ERROR, 'JS');
 			$this->Logger()->WriteDump(array(
-				'Location Hash' => $sLocationHash,
+				'Location' => $sLocation,
 				'Capability' => $sHtmlCapa,
+				'ScriptCount' => $iScriptCount,
 				'HTTP_USER_AGENT' => $oHttp->GetServer('HTTP_USER_AGENT', ''),
 				'HTTP_ACCEPT_ENCODING' => $oHttp->GetServer('HTTP_ACCEPT_ENCODING', ''),
 				'HTTP_ACCEPT_LANGUAGE' => $oHttp->GetServer('HTTP_ACCEPT_LANGUAGE', '')
@@ -3066,10 +3068,11 @@ class Actions
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param bool $bWithDraftInfo = true
+	 * @param string $sMessageID = ''
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	private function buildMessage($oAccount, $bWithDraftInfo = true)
+	private function buildMessage($oAccount, $bWithDraftInfo = true, $sMessageID = '')
 	{
 		$sTo = $this->GetActionParam('To', '');
 		$sCc = $this->GetActionParam('Cc', '');
@@ -3084,7 +3087,15 @@ class Actions
 		$sReferences = $this->GetActionParam('References', '');
 
 		$oMessage = \MailSo\Mime\Message::NewInstance();
-		$oMessage->RegenerateMessageId();
+		if (empty($sMessageID))
+		{
+			$oMessage->RegenerateMessageId();
+		}
+		else
+		{
+			$oMessage->SetMessageId($sMessageID);
+		}
+		
 		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
 
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
@@ -3206,6 +3217,7 @@ class Actions
 
 		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 		$sMessageUid = $this->GetActionParam('MessageUid', '');
+		$sMessageID = $this->GetActionParam('MessageID', '');
 
 		$sDraftFolder = $this->GetActionParam('DraftFolder', '');
 		if (0 === strlen($sDraftFolder))
@@ -3213,7 +3225,7 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 		}
 
-		$oMessage = $this->buildMessage($oAccount);
+		$oMessage = $this->buildMessage($oAccount, true, $sMessageID);
 
 		$this->Plugins()->RunHook('filter.save-message', array(&$oMessage));
 
@@ -3227,6 +3239,8 @@ class Actions
 
 			if (false !== $iMessageStreamSize)
 			{
+				$sMessageId = $oMessage->MessageId();
+				
 				rewind($rMessageStream);
 
 				$iNewUid = 0;
@@ -3235,13 +3249,9 @@ class Actions
 						\MailSo\Imap\Enumerations\MessageFlag::SEEN
 					), $iNewUid);
 
-				if (null === $iNewUid || 0 === $iNewUid)
+				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid))
 				{
-					$sMessageId = $oMessage->MessageId();
-					if (!empty($sMessageId))
-					{
-						$iNewUid = $this->MailClient()->FindMessageUidByMessageId($sDraftFolder, $sMessageId);
-					}
+					$iNewUid = $this->MailClient()->FindMessageUidByMessageId($sDraftFolder, $sMessageId);
 				}
 
 				$mResult = true;
@@ -3255,7 +3265,8 @@ class Actions
 				{
 					$mResult = array(
 						'NewFolder' => $sDraftFolder,
-						'NewUid' => $iNewUid
+						'NewUid' => $iNewUid,
+						'NewID' => $sMessageId
 					);
 				}
 			}
@@ -3273,10 +3284,11 @@ class Actions
 
 		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
+		$sMessageID = $this->GetActionParam('MessageID', '');
 		$sSentFolder = $this->GetActionParam('SentFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
 
-		$oMessage = $this->buildMessage($oAccount, false);
+		$oMessage = $this->buildMessage($oAccount, false, $sMessageID);
 
 		$this->Plugins()->RunHook('filter.send-message', array(&$oMessage));
 
@@ -4480,16 +4492,9 @@ class Actions
 			try
 			{
 				$this->MailClient()
-					->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure());
-
-				if ($oAccount->PasswordIsXOAuth2())
-				{
-					$this->MailClient()->LoginWithXOauth2($oAccount->Password());
-				}
-				else
-				{
-					$this->MailClient()->Login($oAccount->Login(), $oAccount->Password());
-				}
+					->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+					->Login($oAccount->Login(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
+				;
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 			{

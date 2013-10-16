@@ -162,6 +162,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param string $sLogin
 	 * @param string $sPassword
 	 * @param string $sProxyAuthUser = ''
+	 * @param bool $bUseAuthPlainIfSupported = false
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
@@ -169,7 +170,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Login($sLogin, $sPassword, $sProxyAuthUser = '')
+	public function Login($sLogin, $sPassword, $sProxyAuthUser = '', $bUseAuthPlainIfSupported = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
@@ -186,7 +187,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			if ($this->IsSupported('AUTH=PLAIN'))
+			if ($bUseAuthPlainIfSupported && $this->IsSupported('AUTH=PLAIN'))
 			{
 				if ($this->oLogger)
 				{
@@ -198,6 +199,12 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else
 			{
+				if ($this->oLogger)
+				{
+					$this->oLogger->AddSecret($this->EscapeString($sLogin));
+					$this->oLogger->AddSecret($this->EscapeString($sPassword));
+				}
+
 				$this->SendRequestWithCheck('LOGIN',
 					array(
 						$this->EscapeString($sLogin),
