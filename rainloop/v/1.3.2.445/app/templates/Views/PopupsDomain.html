@@ -1,0 +1,110 @@
+<div class="popups">
+	<div class="modal hide b-domain-content" data-bind="modal: modalVisibility, css: {'domain-edit': edit, 'domain-white-list-page': whiteListPage}">
+		<div class="modal-header">
+			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+			<h3 data-bind="text: headerText"></h3>
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
+				<div class="row" data-bind="visible: !edit()">
+					<div class="span8">
+						Name
+						<br />
+						<input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'" />
+						<span class="error-desc" data-bind="text: savingError"></span>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="span4" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
+						<div class="legend imap-header">
+							IMAP
+						</div>
+						Server
+						<br />
+						<input type="text" data-bind="value: imapServer, valueUpdate: 'afterkeydown', hasfocus: imapServerFocus" />
+						<br />
+						<br />
+						Port
+						<br />
+						<input type="text" data-bind="value: imapPort, valueUpdate: 'afterkeydown'" />
+						<br />
+						<br />
+						Secure
+						<br />
+						<select class="span2" data-bind="value: imapSecure">
+							<option value="0">None</option>
+							<option value="1">SSL</option>
+							<option value="2">TLS</option>
+						</select>
+					</div>
+					<div class="span4" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
+						<div class="legend smtp-header">
+							SMTP
+						</div>
+						Server
+						<br />
+						<input type="text" data-bind="value: smtpServer, valueUpdate: 'afterkeydown', hasfocus: smtpServerFocus" />
+						<br />
+						<br />
+						Port
+						<br />
+						<input type="text" data-bind="value: smtpPort, valueUpdate: 'afterkeydown'" />
+						<br />
+						<br />
+						Secure
+						<br />
+						<select class="span2" data-bind="value: smtpSecure">
+							<option value="0">None</option>
+							<option value="1">SSL</option>
+							<option value="2">TLS</option>
+						</select>
+						<br />
+						<br />
+						<label data-bind="click: function () { smtpAuth(!smtpAuth()); }">
+							<i data-bind="css: smtpAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+							&nbsp;&nbsp;
+							Use authentication
+						</label>
+					</div>
+					<div class="span8">
+						<div class="legend white-list-header">
+							White List
+						</div>
+						<div class="alert alert-block span6 alert-null-left-margin" style="width: 562px;">
+							List of users webmail is allowed to access.
+							Use a space as delimiter.
+						</div>
+						<textarea class="input-xxlarge" style="width: 600px" rows="8" data-bind="value: whiteList"></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn button-test-connection pull-left" data-bind="command: testConnectionCommand, css: {
+			   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
+			   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
+				<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testingDone()}"></i>
+				&nbsp;&nbsp;
+				Test Connection
+			</a>
+			<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand">
+				<i data-bind="css: {'icon-arrow-right-2': !whiteListPage(), 'icon-arrow-left': whiteListPage()}"></i>
+				&nbsp;&nbsp;
+				<span data-bind="visible: !whiteListPage()">White List</span>
+				<span data-bind="visible: whiteListPage()">Back</span>
+			</a>
+			<a class="btn buttonClose" data-bind="command: cancelCommand">
+				<i class="icon-remove"></i>
+				&nbsp;&nbsp;
+				Close
+			</a>
+			<a class="btn buttonClear" data-bind="command: createOrAddCommand">
+				<i data-bind="css: edit() ? 'icon-ok' : 'icon-plus', visible: !saving()"></i>
+				<i class="icon-spinner-2 animated" data-bind="visible: saving"></i>
+				&nbsp;&nbsp;
+				<span data-bind="text: edit() ? 'Update' : 'Add'"></span>
+			</a>
+		</div>
+	</div>
+</div>
