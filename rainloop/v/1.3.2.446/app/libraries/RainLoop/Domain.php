@@ -140,7 +140,7 @@ class Domain
 			$sForwardFlag = isset($aDomain['imap_custom_forward_flag']) ?
 				(string) $aDomain['imap_custom_forward_flag'] : '';
 
-			$sWhiteList = (string) $aDomain['white_list'];
+			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
 			$oDomain = self::NewInstance($sName,
 				$sIncHost, $iIncPort, $iIncSecure,
