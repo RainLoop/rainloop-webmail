@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html id="id-html">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<noscript>
+			<meta http-equiv="refresh" content="0; URL=./?/NoScript" />
+		</noscript>
+		<!--[if lte IE 7]>
+			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
+		<![endif]-->
+		<script type="text/javascript">
+			if (!navigator || !navigator.cookieEnabled) {
+				document.location.replace('./?/NoCookie');
+			}
+		</script>
+		<meta name="robots" content="noindex, nofollow, noodp" />
+		<meta name="google" content="notranslate" />
+		<title></title>
+		<link rel="shortcut icon" href="{{BaseAppFaviconFile}}" />
+		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
+		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
+		<script type="text/javascript" src="{{BaseAppBootScriptLink}}"></script>
+		<script type="text/javascript">
+			document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" sr' + 'c="{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/"%3E%3C/' + 'scr' + 'ipt%3E'));
+		</script>
+		<script type="text/javascript">
+
+			var fShowError = function () {
+				var oR = document.getElementById('rl-loading'),
+					oL = document.getElementById('rl-loading-error');
+
+				if (oR) {oR.style.display = 'none';}
+				if (oL) {oL.style.display = 'block';}
+				if (window.SimplePace) {window.SimplePace.set(100);}
+			};
+
+			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {
+				document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
+			}
+			
+			if (head && window.rainloopAppData && window.rainloopAppData['TemplatesLink']) {
+
+				head.js('{{BaseAppLibsScriptLink}}');
+
+				if (window.rainloopAppData['TemplatesLink']) {
+					head.js(window.rainloopAppData['TemplatesLink']);
+				}
+				
+				if (window.rainloopAppData['LangLink']) {
+					head.js(window.rainloopAppData['LangLink']);
+				}
+
+				head.js('{{BaseAppMainScriptLink}}', function () {
+					if (window.rainloopAppData['PluginsLink']) {
+						head.js(window.rainloopAppData['PluginsLink'], function () {
+							if (window.__RLBOOT) {
+								window.__RLBOOT(function (bV) {
+									if (!bV) {
+										fShowError();
+									}
+								});
+							}
+						});
+					} else {
+						if (window.__RLBOOT) {
+							window.__RLBOOT(function (bV) {
+								if (!bV) {
+									fShowError();
+								}
+							});
+						}
+					}
+				});
+			} else {
+				fShowError();
+			}
+		</script>
+	</head>
+	<body class="thm-body">
+		<div id="rl-loading" class="thm-loading">RainLoop</div>
+		<div id="rl-loading-error" class="thm-loading">
+			An Error occurred,<br />please refresh the page and try again.
+		</div>
+		<div id="rl-content">
+			<div id="rl-popups"></div>
+			<div id="rl-center">
+				<div id="rl-top"></div>
+				<div id="rl-left"></div>
+				<div id="rl-right"></div>
+				<div id="rl-bottom"></div>
+			</div>
+		</div>
+		<div id="rl-templates"></div>
+		<div id="rl-hidden"></div>
+	</body>
+</html>

@@ -850,6 +850,11 @@ class Actions
 	 */
 	public function AppData($bAdmin, $sAuthAccountHash = '')
 	{
+		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_a-zA-Z0-9]/', $sAuthAccountHash))
+		{
+			$sAuthAccountHash = '';
+		}
+		
 		$oConfig = $this->Config();
 
 		$aResult = array(
@@ -1034,14 +1039,19 @@ class Actions
 
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
-		$aResult['Theme'] = $this->ValidateTheme($sTheme);
+		$sTheme = $this->ValidateTheme($sTheme);
+		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
+		if (!$bAdmin && 0 < \strlen($sAuthAccountHash) && 'Custom' === $sTheme)
+		{
+			$sNewThemeLink = \str_replace('/Css/0/User/-/Custom/-/', '/Css/'.$sAuthAccountHash.'/User/-/Custom/-/', $sNewThemeLink);
+		}
+		
+		$aResult['Theme'] = $sTheme;
+		$aResult['NewThemeLink'] = $sNewThemeLink;
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
-		$aResult['PluginsLink'] = './?/Plugins/0/'.
-			($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
-		$aResult['NewThemeLink'] = './?/Css/0/'.
-			($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $aResult['Theme']).'/-/'.$sStaticCache.'/';
-		$aResult['LangLink'] = './?/Lang/0/'.
-			($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
+		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
+		$aResult['TemplatesLink'] = './?/Templates/0/'.$sStaticCache.'/';
+		$aResult['PluginsLink'] = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult);
@@ -4329,14 +4339,15 @@ class Actions
 		$bResult = false;
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
-			$iUtcTimeStamp = \time();
-			$iExpireTime = 3600 * 24 * 5;
+			$iLast = 1382478804;
+			$iExpires = 2002478804;
 
 			header('Cache-Control: private', true);
-			header('Pragma: private', true);
-			header('Etag: '.\md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', '')))), true);
-			header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
-			header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
+			header('ETag: '.\md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', '')))), true);
+			header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLast).' UTC', true);
+			header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
+			header('Connection: close');
+			
 			$bResult = true;
 		}
 
@@ -4354,7 +4365,8 @@ class Actions
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
 			$sIfModifiedSince = $this->Http()->GetHeader('If-Modified-Since', '');
-			if (!empty($sIfModifiedSince))
+			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
+			if (!empty($sIfModifiedSince) || !empty($sIfNoneMatch))
 			{
 				$this->Http()->StatusHeader(304);
 				$this->cacheByKey($sKey);
@@ -5285,6 +5297,7 @@ class Actions
 				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Namespace' => $mResponse->GetNamespace(),
 					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : '',
+					'IsThreadsSupported' => $mResponse->IsThreadsSupported,
 					'SystemFolders' => isset($mResponse->SystemFolders) && \is_array($mResponse->SystemFolders) ? $mResponse->SystemFolders : array()
 				));
 			}

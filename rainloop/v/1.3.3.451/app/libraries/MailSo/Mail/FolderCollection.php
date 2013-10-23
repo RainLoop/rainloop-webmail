@@ -19,6 +19,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	public $FoldersHash;
 
 	/**
+	 * @var bool
+	 */
+	public $IsThreadsSupported;
+
+	/**
 	 * @var array
 	 */
 	public $SystemFolders;
@@ -33,6 +38,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->sNamespace = '';
 		$this->FoldersHash = '';
 		$this->SystemFolders = array();
+		$this->IsThreadsSupported = false;
 	}
 
 	/**

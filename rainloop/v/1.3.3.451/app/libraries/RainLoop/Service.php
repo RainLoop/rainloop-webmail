@@ -152,8 +152,6 @@ class Service
 			if (0 === \strlen($sResult))
 			{
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), array(
-					'{{BaseTemplates}}' => \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views', $this->oActions).
-						$this->oActions->Plugins()->CompileTemplate($bAdmin),
 					'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
 					'{{BaseAppFaviconFile}}' => $aData['FaviconLink'],
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],

@@ -210,7 +210,7 @@ class ServiceActions
 				$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
 			}
 
-			if ($oException && (!($oException instanceof \RainLoop\Exceptions\ClientException) || false === \strpos($oException->getFile(), '/plugins/demo-rainloop-net/')))
+			if ($oException)
 			{
 				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 			}
@@ -422,15 +422,54 @@ class ServiceActions
 			if (0 === \strlen($sResult))
 			{
 				$sResult = $this->compileLanguage($sLanguage, false);
-				if ($bCacheEnabled)
+				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 				{
-					$this->oActions->cacheByKey($this->sQuery);
-					if (0 < \strlen($sCacheFileName))
-					{
-						$this->Cacher()->Set($sCacheFileName, $sResult);
-					}
+					$this->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
+
+			if ($bCacheEnabled)
+			{
+				$this->oActions->cacheByKey($this->sQuery);
+			}
+		}
+
+		return $sResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceTemplates()
+	{
+		$sResult = '';
+		@\header('Content-Type: application/javascript; charset=utf-8');
+
+		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
+		if ($bCacheEnabled)
+		{
+			$this->oActions->verifyCacheByKey($this->sQuery);
+		}
+
+		$sCacheFileName = '';
+		if ($bCacheEnabled)
+		{
+			$sCacheFileName = 'TEMPLATES:'.$this->oActions->Plugins()->Hash().APP_VERSION;
+			$sResult = $this->Cacher()->Get($sCacheFileName);
+		}
+
+		if (0 === \strlen($sResult))
+		{
+			$sResult = $this->compileTemplates(false);
+			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
+			{
+				$this->Cacher()->Set($sCacheFileName, $sResult);
+			}
+		}
+
+		if ($bCacheEnabled)
+		{
+			$this->oActions->cacheByKey($this->sQuery);
 		}
 
 		return $sResult;
@@ -462,14 +501,15 @@ class ServiceActions
 		if (0 === strlen($sResult))
 		{
 			$sResult = $this->Plugins()->CompileJs($bAdmin);
-			if ($bCacheEnabled)
+			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 			{
-				$this->oActions->cacheByKey($this->sQuery);
-				if (0 < \strlen($sCacheFileName))
-				{
-					$this->Cacher()->Set($sCacheFileName, $sResult);
-				}
+				$this->Cacher()->Set($sCacheFileName, $sResult);
 			}
+		}
+
+		if ($bCacheEnabled)
+		{
+			$this->oActions->cacheByKey($this->sQuery);
 		}
 
 		return $sResult;
@@ -587,7 +627,6 @@ class ServiceActions
 
 					if ($bCacheEnabled && !$bCustom)
 					{
-						$this->oActions->cacheByKey($this->sQuery);
 						if (0 < \strlen($sCacheFileName))
 						{
 							$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -598,6 +637,11 @@ class ServiceActions
 				{
 					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR, 'LESS');
 				}
+			}
+
+			if ($bCacheEnabled && !$bCustom)
+			{
+				$this->oActions->cacheByKey($this->sQuery);
 			}
 		}
 
@@ -829,6 +873,24 @@ class ServiceActions
 	}
 
 	/**
+	 * @param bool $bAdmin = false
+	 * @param bool $bWrapByScriptTag = true
+	 *
+	 * @return string
+	 */
+	private function compileTemplates($bAdmin = false, $bWrapByScriptTag = false)
+	{
+		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views', $this->oActions).
+			$this->oActions->Plugins()->CompileTemplate($bAdmin);
+		
+		return
+			($bWrapByScriptTag ? '<script type="text/javascript">' : '').
+			'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';'.
+			($bWrapByScriptTag ? '</script>' : '')
+		;
+	}
+
+	/**
 	 * @param string $sLanguage
 	 * @param bool $bWrapByScriptTag = true
 	 *
@@ -865,7 +927,7 @@ class ServiceActions
 		$sResult = empty($sLangJs) ? 'null' : '{'.\substr($sLangJs, 0, -1).'}';
 
 		return
-			($bWrapByScriptTag ? '<script>' : '').
+			($bWrapByScriptTag ? '<script type="text/javascript">' : '').
 			'window.rainloopI18N='.$sResult.';'.$sMoment.
 			($bWrapByScriptTag ? '</script>' : '')
 		;

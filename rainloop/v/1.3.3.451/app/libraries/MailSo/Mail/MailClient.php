@@ -770,7 +770,8 @@ class MailClient
 			'MessageUnseenCount' => $iUnseenCount,
 			'UidNext' => $sUidNext,
 			'Flags' => $aFlags,
-			'NewMessages' => 'INBOX' === $sFolderName ? $this->getFolderNextMessageInformation($sFolderName, $sPrevUidNext, $sUidNext) : array()
+			'NewMessages' => 'INBOX' === $sFolderName ?
+				$this->getFolderNextMessageInformation($sFolderName, $sPrevUidNext, $sUidNext) : array()
 		);
 
 		return $aResult;
@@ -1310,6 +1311,18 @@ class MailClient
 	}
 
 	/**
+	 * @return bool
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 */
+	public function IsThreadsSupported()
+	{
+		return $this->oImapClient->IsSupported('THREAD=REFS') ||
+			$this->oImapClient->IsSupported('THREAD=REFERENCES') ||
+			$this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT');
+	}
+
+	/**
 	 * @param string $sFolderName
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 10
@@ -1666,7 +1679,10 @@ class MailClient
 			{
 				$oFolderCollection->SetNamespace($oNamespace->GetPersonalNamespace());
 			}
+			
+			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		}
+
 
 		return $oFolderCollection;
 	}
