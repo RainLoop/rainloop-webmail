@@ -3,7 +3,7 @@ RainLoop Webmail (PHP)
 
 ## About
 
-Free, modern &amp; fast web-based email client
+Simple, modern &amp; fast web-based email client
 
 Modest system requirements, decent performance, simple installation and upgrade, no database required - all these make RainLoop Webmail a perfect choice for your email solution.
 
