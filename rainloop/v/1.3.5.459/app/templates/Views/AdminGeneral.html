@@ -38,6 +38,10 @@
 					<i data-bind="css: allowLanguagesOnLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow language selection on login screen
 				</label>
+				<label data-bind="click: function () { determineUserLanguage(!determineUserLanguage()); }">
+					<i data-bind="css: determineUserLanguage() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Try to determine the user's language
+				</label>
 			</div>
 		</div>
 		<div class="control-group">

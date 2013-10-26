@@ -30,6 +30,11 @@ abstract class AbstractPlugin
 	private $sPath;
 
 	/**
+	 * @var string
+	 */
+	private $sVersion;
+
+	/**
 	 * @var array
 	 */
 	private $aConfigMap;
@@ -43,6 +48,7 @@ abstract class AbstractPlugin
 	{
 		$this->sName = '';
 		$this->sPath = '';
+		$this->sVersion = '0.0';
 		$this->aConfigMap = null;
 
 		$this->oPluginManager = null;
@@ -96,6 +102,14 @@ abstract class AbstractPlugin
 	}
 
 	/**
+	 * @return string
+	 */
+	public function Version()
+	{
+		return $this->sVersion;
+	}
+
+	/**
 	 * @param bool | null $bLangs = null
 	 * @return bool
 	 */
@@ -122,7 +136,7 @@ abstract class AbstractPlugin
 	 */
 	public function Hash()
 	{
-		return '';
+		return \md5($this->sVersion);
 	}
 	
 	/**
@@ -154,13 +168,19 @@ abstract class AbstractPlugin
 	/**
 	 * @param string $sPath
 	 * @param string $sName
+	 * @param string $sVersion = ''
 	 *
 	 * @return self
 	 */
-	public function SetValues($sPath, $sName)
+	public function SetValues($sPath, $sName, $sVersion = '')
 	{
 		$this->sName = $sName;
 		$this->sPath = $sPath;
+
+		if (0 < \strlen($sVersion))
+		{
+			$this->sVersion = $sVersion;
+		}
 
 		return $this;
 	}

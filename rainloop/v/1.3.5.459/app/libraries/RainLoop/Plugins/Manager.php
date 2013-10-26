@@ -118,23 +118,25 @@ class Manager
 	public function CreatePluginByName($sName)
 	{
 		$oPlugin = null;
-		if (preg_match('/^[a-z0-9\-]+$/', $sName) &&
-			file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
+		if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
+			\file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
 		{
 			$sClassName = $this->convertPluginFolderNameToClassName($sName);
 			
-			if (!class_exists($sClassName))
+			if (!\class_exists($sClassName))
 			{
 				include APP_PLUGINS_PATH.$sName.'/index.php';
 			}
 
-			if (class_exists($sClassName))
+			if (\class_exists($sClassName))
 			{
 				$oPlugin = new $sClassName();
 				if ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin)
 				{
 					$oPlugin
-						->SetValues(APP_PLUGINS_PATH.$sName, $sName)
+						->SetValues(APP_PLUGINS_PATH.$sName, $sName,
+							\file_exists(APP_PLUGINS_PATH.$sName.'/VERSION') ?
+								\file_get_contents(APP_PLUGINS_PATH.$sName.'/VERSION') : '')
 						->SetPluginManager($this)
 						->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
 					;

@@ -877,6 +877,7 @@ class Actions
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
+			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
@@ -1064,15 +1065,33 @@ class Actions
 			$sNewThemeLink = \str_replace('/Css/0/User/-/Custom/-/', '/Css/'.$sAuthAccountHash.'/User/-/Custom/-/', $sNewThemeLink);
 		}
 
+		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
 			$oConfig->Get('webmail', 'allow_languages_on_login', true))
 		{
 			$sLanguage = $_COOKIE['rllang'];
 		}
-		
+		else if (!$bAdmin && !$aResult['Auth'])
+		{
+			$sUserLanguage = '';
+			if (!$bAdmin && !$aResult['Auth'] &&
+				$oConfig->Get('labs', 'determine_user_language', false))
+			{
+				$sUserLanguage = $this->detectUserLanguage();
+			}
+
+			$sLanguage = $this->ValidateLanguage($sLanguage);
+			if (0 < \strlen($sUserLanguage) && $sLanguage !== $sUserLanguage)
+			{
+				$sLanguage = $sUserLanguage;
+				$bUserLanguage = true;
+			}
+		}
+
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
+		$aResult['UserLanguage'] = $bUserLanguage;
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
 		$aResult['TemplatesLink'] = './?/Templates/0/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
@@ -1081,6 +1100,31 @@ class Actions
 		$this->Plugins()->InitAppData($bAdmin, $aResult);
 
 		return $aResult;
+	}
+
+	private function detectUserLanguage()
+	{
+		$sLang = '';
+		$sAcceptLang = $this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en');
+		if (false !== \strpos($sAcceptLang, ','))
+		{
+			$aParts = \explode(',', $sAcceptLang, 2);
+			$sLang = !empty($aParts[0]) ? \strtolower($aParts[0]) : '';
+		}
+
+		if (!empty($sLang))
+		{
+			$sLang = \preg_replace('/[^a-zA-Z0-9]+/', '-', $sLang);
+			if ($sLang !== $this->ValidateLanguage($sLang))
+			{
+				if (2 < strlen($sLang))
+				{
+					$sLang = \substr($sLang, 0, 2);
+				}
+			}
+		}
+
+		return $this->ValidateLanguage($sLang);
 	}
 
 	private function loginErrorDelay()
@@ -1576,6 +1620,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
+		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'labs', 'determine_user_language', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
@@ -5172,6 +5217,7 @@ class Actions
 		$mResult = $mResponse;
 		if (is_object($mResponse))
 		{
+			$bHook = true;
 			$sClassName = get_class($mResponse);
 			if ('MailSo\Mail\Message' === $sClassName)
 			{
@@ -5363,15 +5409,25 @@ class Actions
 					'IsThreadsSupported' => $mResponse->IsThreadsSupported,
 					'SystemFolders' => isset($mResponse->SystemFolders) && \is_array($mResponse->SystemFolders) ? $mResponse->SystemFolders : array()
 				));
+
+				
 			}
 			else if ($mResponse instanceof \MailSo\Base\Collection)
 			{
 				$aList =& $mResponse->GetAsArray();
 				$mResult = $this->responseObject($aList, $sParent, $aParameters);
+
+				$bHook = false;
 			}
 			else
 			{
 				$mResult = '['.get_class($mResponse).']';
+				$bHook = false;
+			}
+
+			if ($bHook)
+			{
+				$this->Plugins()->RunHook('filter.response-object', array($sClassName, $mResult), false);
 			}
 		}
 		else if (is_array($mResponse))

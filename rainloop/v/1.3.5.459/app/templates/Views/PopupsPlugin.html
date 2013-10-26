@@ -8,8 +8,7 @@
 		</div>
 		<div class="modal-body">
 			<form class="form-horizontal plugin-form" action="#/" onsubmit="return false;">
-				<div class="well" data-bind="text: readme, visible: hasReadme()"></div>
-				<div class="well" data-bind="visible: !hasReadme() && !hasConfiguration()">
+				<div class="well" data-bind="visible: !hasConfiguration()">
 					Nothing to configure
 				</div>
 				<div class="alert" data-bind="visible: '' !== saveError()">
@@ -22,6 +21,9 @@
 			</form>
 		</div>
 		<div class="modal-footer">
+			<span class="information pull-left" data-bind="visible: hasReadme, popover: readmePopoverConf">
+				<i class="icon-info"></i>
+			</span>
 			<a class="btn buttonClose" data-bind="command: cancelCommand">
 				<i class="icon-remove"></i>
 				&nbsp;&nbsp;
