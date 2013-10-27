@@ -866,6 +866,7 @@ class Actions
 
 		$aResult = array(
 			'Version' => APP_VERSION,
+			'IndexFile' => APP_INDEX_FILE,
 			'Auth' => false,
 			'AccountHash' => '',
 			'AuthAccountHash' => '',
@@ -1059,7 +1060,7 @@ class Actions
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
 		$sTheme = $this->ValidateTheme($sTheme);
-		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
+		$sNewThemeLink =  APP_INDEX_FILE.'?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
 		if (!$bAdmin && 0 < \strlen($sAuthAccountHash) && 'Custom' === $sTheme)
 		{
 			$sNewThemeLink = \str_replace('/Css/0/User/-/Custom/-/', '/Css/'.$sAuthAccountHash.'/User/-/Custom/-/', $sNewThemeLink);
@@ -1092,9 +1093,9 @@ class Actions
 		$aResult['NewThemeLink'] = $sNewThemeLink;
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
 		$aResult['UserLanguage'] = $bUserLanguage;
-		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
-		$aResult['TemplatesLink'] = './?/Templates/0/'.$sStaticCache.'/';
-		$aResult['PluginsLink'] = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+		$aResult['LangLink'] = APP_INDEX_FILE.'?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
+		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.$sStaticCache.'/';
+		$aResult['PluginsLink'] = APP_INDEX_FILE.'?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult);

@@ -152,7 +152,8 @@ class Service
 			if (0 === \strlen($sResult))
 			{
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), array(
-					'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
+					'{{BaseAppDataScriptLink}}' => ($bAdmin ? APP_INDEX_FILE.'?/AdminAppData/' : APP_INDEX_FILE.'?/AppData/'),
+					'{{BaseAppIndexFile}}' => APP_INDEX_FILE,
 					'{{BaseAppFaviconFile}}' => $aData['FaviconLink'],
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 					'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],

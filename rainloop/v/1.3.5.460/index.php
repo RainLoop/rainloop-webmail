@@ -3,6 +3,7 @@
 	if (defined('APP_VERSION'))
 	{
 		define('APP_START', microtime(true));
+		define('APP_INDEX_FILE', 'index.php');
 		define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
 		if (function_exists('date_default_timezone_set'))
