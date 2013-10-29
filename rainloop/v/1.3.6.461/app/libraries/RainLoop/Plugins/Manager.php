@@ -596,6 +596,22 @@ class Manager
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function bIsEnabled()
+	{
+		return $this->bIsEnabled;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function Count()
+	{
+		return $this->bIsEnabled ? \count($this->aPlugins) : 0;
+	}
+
+	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
 	 * @return \RainLoop\Plugins\Manager

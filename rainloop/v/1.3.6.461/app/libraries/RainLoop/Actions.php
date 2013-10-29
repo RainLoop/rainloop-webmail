@@ -1089,13 +1089,19 @@ class Actions
 			}
 		}
 
+		$sPluginsLink = '';
+		if (0 < $this->Plugins()->Count())
+		{
+			$sPluginsLink = APP_INDEX_FILE.'?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+		}
+
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
 		$aResult['UserLanguage'] = $bUserLanguage;
 		$aResult['LangLink'] = APP_INDEX_FILE.'?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
 		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.$sStaticCache.'/';
-		$aResult['PluginsLink'] = APP_INDEX_FILE.'?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult);
@@ -4918,6 +4924,7 @@ class Actions
 			),
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => \json_encode(\array_merge($aData, array(
+				'site' => APP_SITE,
 				'uid' => \md5(APP_SITE.APP_SALT),
 				'date' => array(
 					'month' => \gmdate('m.Y'),
