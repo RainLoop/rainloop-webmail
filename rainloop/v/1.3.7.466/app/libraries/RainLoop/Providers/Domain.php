@@ -93,7 +93,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Count($sSearch = '')
 	{
-		return $this->bAdmin ? $this->oDriver->Count($sSearch) : 0;
+		return $this->oDriver->Count($sSearch);
 	}
 
 	/**

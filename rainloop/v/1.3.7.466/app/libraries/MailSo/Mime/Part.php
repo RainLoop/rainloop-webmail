@@ -93,6 +93,21 @@ class Part
 
 		return $this;
 	}
+	
+	/**
+	 * @return \MailSo\Mime\Part
+	 */
+	public function Rewind()
+	{
+		if (\is_resource($this->Body))
+		{
+			\rewind($this->Body);
+		}
+
+		$this->SubParts->Rewind();
+
+		return $this;
+	}
 
 	/**
 	 * @return string
@@ -107,7 +122,7 @@ class Part
 	 */
 	public function ParentCharset()
 	{
-		return (0 < strlen($this->sCharset)) ? $this->sParentCharset : self::$DefaultCharset;
+		return (0 < \strlen($this->sCharset)) ? $this->sParentCharset : self::$DefaultCharset;
 	}
 
 	/**

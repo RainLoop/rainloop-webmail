@@ -1158,10 +1158,11 @@ class Utils
 	 * @param int $iBufferLen = 8192
 	 * @param bool $bResetTimeLimit = true
 	 * @param bool $bFixCrLf = false
+	 * @param bool $bRewindOnComplete = false
 	 *
 	 * @return int|bool
 	 */
-	public static function MultipleStreamWriter($rRead, $aWrite, $iBufferLen = 8192, $bResetTimeLimit = true, $bFixCrLf = false)
+	public static function MultipleStreamWriter($rRead, $aWrite, $iBufferLen = 8192, $bResetTimeLimit = true, $bFixCrLf = false, $bRewindOnComplete = false)
 	{
 		$iTimer = 0;
 		$mResult = false;
@@ -1202,6 +1203,17 @@ class Utils
 				if ($bResetTimeLimit)
 				{
 					\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+				}
+			}
+		}
+
+		if ($mResult && $bRewindOnComplete)
+		{
+			foreach ($aWrite as $rWriteStream)
+			{
+				if (\is_resource($rWriteStream))
+				{
+					@\rewind($rWriteStream);
 				}
 			}
 		}
@@ -1609,14 +1621,7 @@ class Utils
 
 			if (false === $mResult && \MailSo\Base\Utils::IsIconvSupported())
 			{
-				foreach (array('utf-8', 'iso-8859-1', 'windows-1251') as $sCharsetItem)
-				{
-					if (\md5(@\iconv($sCharsetItem, $sCharsetItem.'//IGNORE', $sStr)) === \md5($sStr))
-					{
-						$mResult = $sCharsetItem;
-						break;
-					}
-				}
+				$mResult = \md5(@\iconv('utf-8', 'utf-8//IGNORE', $sStr)) === \md5($sStr) ? 'utf-8' : '';
 			}
 		}
 		

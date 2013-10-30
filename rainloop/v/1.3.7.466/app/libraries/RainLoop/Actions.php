@@ -1489,6 +1489,15 @@ class Actions
 				}
 			}
 
+			$iTime = $this->CacherFile()->GetTimer('Statistic/Ping') ;
+			if (0 === $iTime || $iTime + 60 * 60 * 24 < \time())
+			{
+				if ($this->CacherFile()->SetTimer('Statistic/Ping'))
+				{
+					$this->KeenIO('Ping');
+				}
+			}
+
 			$iTime = $this->CacherFile()->GetTimer('Cache/LastUserCache');
 			if (0 === $iTime || $iTime + 60 * 60 * 24 < \time())
 			{
@@ -3420,12 +3429,10 @@ class Actions
 				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
 				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true);
+					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
 
 				if (false !== $iMessageStreamSize)
 				{
-					rewind($rMessageStream);
-
 					$oRcpt = $oMessage->GetRcpt();
 					if ($oRcpt && 0 < $oRcpt->Count())
 					{
@@ -3464,7 +3471,10 @@ class Actions
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 						}
 
-						rewind($rMessageStream);
+						if (\is_resource($rMessageStream))
+						{
+							@\fclose($rMessageStream);
+						}
 
 						if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
 						{
@@ -3501,10 +3511,20 @@ class Actions
 						{
 							try
 							{
+								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
+
+								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
+									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
+
 								$this->MailClient()->MessageAppendStream(
-									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
+									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
 										\MailSo\Imap\Enumerations\MessageFlag::SEEN
 									));
+
+								if (\is_resource($rAppendMessageStream))
+								{
+									@\fclose($rAppendMessageStream);
+								}
 							}
 							catch (\Exception $oException)
 							{
@@ -4853,17 +4873,33 @@ class Actions
 			'php' => \phpversion()
 		);
 		
+		$aResult['domains'] = $this->DomainProvider()->Count();
 		$aResult['settings'] = array(
 			'lang' => $this->Config()->Get('webmail', 'language', ''),
 			'theme' => $this->Config()->Get('webmail', 'theme', ''),
 			'multiply' => !!APP_MULTIPLY,
 			'cache' => $this->Config()->Get('cache', 'fast_cache_driver', ''),
 			'preview-pane' => !!$this->Config()->Get('webmail', 'use_preview_pane', true),
+			'security' => array(
+				'weak' => '12345' === $this->Config()->Get('security', 'admin_password', ''),
+				'csrf' => !!$this->Config()->Get('security', 'csrf_protection', true),
+			),
+			'logs' => array(
+				'enabled' => !!$this->Config()->Get('logs', 'enable', false),
+				'error-only' => !!$this->Config()->Get('logs', 'write_on_error_only', false),
+			),
 			'social' => array(
-				'google' => !!$this->Config()->Get('social', 'google_enable', false),
-				'twitter' => !!$this->Config()->Get('social', 'twitter_enable', false),
-				'dropbox' => !!$this->Config()->Get('social', 'dropbox_enable', false),
-				'facebook' => !!$this->Config()->Get('social', 'fb_enable', false)
+				'google' => !!$this->Config()->Get('social', 'google_enable', false) &&
+					0 < \strlen($this->Config()->Get('social', 'google_client_id', '')) &&
+					0 < \strlen($this->Config()->Get('social', 'google_client_secret', '')),
+				'twitter' => !!$this->Config()->Get('social', 'twitter_enable', false) &&
+					0 < \strlen($this->Config()->Get('social', 'twitter_consumer_key', '')) &&
+					0 < \strlen($this->Config()->Get('social', 'twitter_consumer_secret', '')),
+				'facebook' => !!$this->Config()->Get('social', 'fb_enable', false) &&
+					0 < \strlen($this->Config()->Get('social', 'fb_app_id', '')) &&
+					0 < \strlen($this->Config()->Get('social', 'fb_app_secret', '')),
+				'dropbox' => !!$this->Config()->Get('social', 'dropbox_enable', false) &&
+					0 < \strlen($this->Config()->Get('social', 'dropbox_api_key', ''))
 			)
 		);
 
@@ -4924,8 +4960,9 @@ class Actions
 			),
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => \json_encode(\array_merge($aData, array(
-				'site' => APP_SITE,
+				'version' => APP_VERSION,
 				'uid' => \md5(APP_SITE.APP_SALT),
+				'site' => APP_SITE,
 				'date' => array(
 					'month' => \gmdate('m.Y'),
 					'day' => \gmdate('d.m.Y')
@@ -5281,11 +5318,28 @@ class Actions
 					$bHasExternals = false;
 					$aFoundedCIDs = array();
 
+					$sPlain = '';
+					$sHtml = $mResponse->Html();
+					$bRtl = false;
+					
+					if (0 === \strlen($sHtml))
+					{
+						$sPlain = $mResponse->Plain();
+						$bRtl = \MailSo\Base\Utils::IsRTL($sPlain);
+					}
+					else
+					{
+						$bRtl = \MailSo\Base\Utils::IsRTL($sHtml);
+					}
+
 					$mResult['DraftInfo'] = $mResponse->DraftInfo();
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
 					$mResult['References'] = $mResponse->References();
-					$mResult['Html'] = \MailSo\Base\HtmlUtils::ClearHtml($mResponse->Html(), $bHasExternals, $aFoundedCIDs);
-					$mResult['Plain'] = \MailSo\Base\HtmlUtils::ConvertPlainToHtml($mResponse->Plain());
+					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundedCIDs);
+					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
+					$mResult['Rtl'] = $bRtl;
+
+					unset($sHtml, $sPlain);
 
 					$mResult['HasExternals'] = $bHasExternals;
 					$mResult['HasInternals'] = \is_array($aFoundedCIDs) && 0 < \count($aFoundedCIDs);

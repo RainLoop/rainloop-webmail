@@ -32,7 +32,7 @@ class PartCollection extends \MailSo\Base\Collection
 	public function ToStream($sBoundary)
 	{
 		$rResult = null;
-		if (0 < strlen($sBoundary))
+		if (0 < \strlen($sBoundary))
 		{
 			$aResult = array();
 
@@ -52,5 +52,19 @@ class PartCollection extends \MailSo\Base\Collection
 		}
 
 		return $rResult;
+	}
+	
+	/**
+	 * @return \MailSo\Mime\PartCollection
+	 */
+	public function Rewind()
+	{
+		$aParts =& $this->GetAsArray();
+		foreach ($aParts as /* @var $oPart \MailSo\Mime\Part */ &$oPart)
+		{
+			$oPart->Rewind();
+		}
+
+		return $this;
 	}
 }

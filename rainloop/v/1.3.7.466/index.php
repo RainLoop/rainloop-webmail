@@ -43,7 +43,7 @@
 		$sInstalled = @file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
 
 		// installation checking data folder
-		if (false === $sInstalled || APP_VERSION !== $sInstalled)
+		if (APP_VERSION !== $sInstalled)
 		{
 			include APP_VERSION_ROOT_PATH.'check.php';
 
@@ -105,8 +105,7 @@
 
 		unset($sSite, $sSalt, $sData);
 		
-		if (false === $sInstalled || APP_VERSION !== $sInstalled ||
-			(APP_MULTIPLY && !@is_dir(APP_PRIVATE_DATA)))
+		if (APP_VERSION !== $sInstalled || (APP_MULTIPLY && !@is_dir(APP_PRIVATE_DATA)))
 		{
 			define('APP_INSTALLED_START', true);
 			define('APP_INSTALLED_VERSION', $sInstalled);

@@ -33,10 +33,12 @@ class HtmlUtils
 		}
 
 		$oDom = new \DOMDocument('1.0', 'utf-8');
+		$oDom->encoding = 'UTF-8';
 
-//		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
-//			'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>'.$sText.'</body></html>');
-		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.$sText);
+		@$oDom->loadHTML(
+			'<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
+			'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>'.$sText.'</body></html>'
+		);
 
 		return $oDom;
 	}
@@ -258,7 +260,7 @@ class HtmlUtils
 
 		$sHtml = \MailSo\Base\HtmlUtils::ClearTags($sHtml);
 		$sHtml = \MailSo\Base\HtmlUtils::ClearOn($sHtml);
-//		$sHtml = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sHtml);
+		$sHtml = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sHtml);
 
 		// Dom Part
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
@@ -378,6 +380,8 @@ class HtmlUtils
 	 */
 	public static function BuildHtml($sHtml, &$aFoundCids = array(), &$mFoundDataURL = null)
 	{
+		$bRtl = \MailSo\Base\Utils::IsRTL($sHtml);
+
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 		unset($sHtml);
 
@@ -483,7 +487,7 @@ class HtmlUtils
 		$sResult = \MailSo\Base\HtmlUtils::ClearTags($sResult);
 		$sResult = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sResult);
 
-		return '<!DOCTYPE html><html'.(\MailSo\Base\Utils::IsRTL($sResult) ? ' dir="rtl"' : ' dir="ltr"').'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><head>'.
+		return '<!DOCTYPE html><html'.($bRtl ? ' dir="rtl"' : '').'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><head>'.
 			'<body>'.\trim($sResult).'</body></html>';
 	}
 

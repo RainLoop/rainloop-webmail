@@ -97,12 +97,8 @@ class Service
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') && APP_INSTALLED_START &&
 			$this->oActions->Config()->Get('labs', 'usage_statistics', true))
 		{
-			$this->oActions->KeenIO('Installation', array(
-				'rainloop' => array(
-					'previos-version' => APP_INSTALLED_VERSION,
-					'new-version' => APP_VERSION
-				)
-			));
+			$this->oActions->KeenIO(APP_INSTALLED_VERSION ? 'Upgrade' : 'Install',
+				APP_INSTALLED_VERSION ?  array('previos-version' => APP_INSTALLED_VERSION) : array());
 		}
 
 		$bCached = false;

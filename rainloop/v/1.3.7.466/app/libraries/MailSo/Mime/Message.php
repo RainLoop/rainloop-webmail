@@ -34,6 +34,11 @@ class Message
 	private $sCustomXMailer;
 
 	/**
+	 * @var bool
+	 */
+	private $bNeedRewind;
+
+	/**
 	 * @access private
 	 */
 	private function __construct()
@@ -44,6 +49,7 @@ class Message
 		$this->sMessageId = '';
 		$this->sCustomXMailer = '';
 		$this->bAddEmptyTextPart = true;
+		$this->bNeedRewind = false;
 	}
 
 	/**
@@ -639,7 +645,7 @@ class Message
 			else
 			{
 				$aAttachments = $this->oAttachmentCollection->CloneAsArray();
-				if (1 === count($aAttachments) && isset($aAttachments[0]))
+				if (\is_array($aAttachments) && 1 === count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
 
@@ -773,15 +779,21 @@ class Message
 
 	/**
 	 * @param bool $bWithoutBcc = false
+	 * @param bool $bRewind = false
 	 *
 	 * @return \MailSo\Mime\Part
 	 */
-	public function ToPart($bWithoutBcc = false)
+	public function ToPart($bWithoutBcc = false, $bRewind = false)
 	{
 		$oPart = $this->createNewMessageSimpleOrAlternativeBody();
 		$oPart = $this->createNewMessageRelatedBody($oPart);
 		$oPart = $this->createNewMessageMixedBody($oPart);
 		$oPart = $this->setDefaultHeaders($oPart, $bWithoutBcc);
+
+		if ($bRewind)
+		{
+			$oPart->Rewind();
+		}
 
 		return $oPart;
 	}
@@ -793,7 +805,10 @@ class Message
 	 */
 	public function ToStream($bWithoutBcc = false)
 	{
-		return $this->ToPart($bWithoutBcc)->ToStream();
+		$bNeedRewind = $this->bNeedRewind;
+		
+		$this->bNeedRewind = true;
+		return $this->ToPart($bWithoutBcc, $bNeedRewind)->ToStream();
 	}
 
 	/**

@@ -684,7 +684,7 @@ class MailClient
 					$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(
 						\MailSo\Imap\Enumerations\FetchType::FLAGS));
 
-					if (\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::RECENT), $aFlags) &&
+					if (\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::RECENT), $aFlags) ||
 						!\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::SEEN), $aFlags))
 					{
 						$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
@@ -705,14 +705,14 @@ class MailClient
 
 						if (0 < \strlen($sCharset))
 						{
-							$oHeaders->SetParentCharset(\MailSo\Base\Enumerations\Charset::ISO_8859_1);
+							$oHeaders->SetParentCharset($sCharset);
 						}
 
 						$aNewMessages[] = array(
 							'Folder' => $sFolderName,
 							'Uid' => $sUid,
-							'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT),
-							'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_)
+							'Subject' => $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, 0 === \strlen($sCharset)),
+							'From' => $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, 0 === \strlen($sCharset))
 						);
 					}
 				}
