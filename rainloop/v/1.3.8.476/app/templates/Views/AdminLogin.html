@@ -1,0 +1,39 @@
+<div class="b-login-content">
+	<div class="loginFormWrapper">
+		<center>
+			<div class="alert" data-bind="visible: '' !== submitError()">
+				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
+				<span data-bind="text: submitError"></span>
+			</div>
+			<form class="form-horizontal span4 wrapper loginForm thm-login" action="#/" onsubmit="return false;" data-bind="command: submitCommand">
+				<div class="control-group" data-bind="css: {'error': loginError}">
+					<div class="input-append">
+						<input class="inputLogin span4" placeholder="Login" type="text"
+							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: login, hasFocus: loginFocus" />
+						<span class="add-on">
+							<i class="icon-user"></i>
+						</span>
+					</div>
+				</div>
+				<div class="control-group" data-bind="css: {'error': passwordError}">
+					<div class="input-append">
+						<input class="inputPassword span4" placeholder="Password" type="password"
+							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: password" />
+						<span class="add-on">
+							<i class="icon-key"></i>
+						</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">
+						<i class="icon-spinner-2 animated" data-bind="visible: submitRequest"></i>
+						<span data-bind="visible: !submitRequest()">Log into the admin panel</span>
+					</button>
+				</div>
+			</form>
+		</center>
+	</div>
+	<div class="loginAfter"></div>
+<div>

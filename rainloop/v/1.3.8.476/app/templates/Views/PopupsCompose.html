@@ -1,0 +1,113 @@
+<div class="popups">
+	<div class="modal hide b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
+		<div class="modal-header b-header-toolbar g-ui-user-select-none">
+			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+				<i data-bind="css: {'icon-rocket': !sending(), 'icon-spinner-2 animated': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SEND"></span>
+			</a>
+			<a class="btn button-save" data-bind="command: saveCommand, css: {'btn-danger': savedError }">
+				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner-2 animated': saving(), 'icon-white': savedError()}"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SAVE"></span>
+			</a>
+			<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
+				<i class="icon-trash icon-white"></i>
+			</a>
+			<span class="saved-text" data-bind="text: savedOrSendingText, css: { 'errorDesc': savedError }"></span>
+		</div>
+		<div class="modal-body">
+			<div>
+				<div class="b-header g-ui-user-select-none">
+					<div class="g-ui-table">
+						<div class="e-row">
+							<div class="e-cell e-label">
+								<label class="control-label">
+									<span class="i18n" data-i18n-text="COMPOSE/TITLE_FROM"></span>
+								</label>
+							</div>
+							<div class="e-cell e-value">
+								<strong class="pull-left" data-bind="text: formattedFrom()"></strong>
+								<span class="pull-right" data-bind="visible: !showCcAndBcc()">
+									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/LINK_SHOW_INPUTS" data-bind="click: function () { showCcAndBcc(true); }"></span>
+								</span>
+							</div>
+						</div>
+						<div class="e-row">
+							<div class="e-cell e-label">
+								<label class="control-label">
+									<span class="i18n" data-i18n-text="COMPOSE/TITLE_TO"></span>
+								</label>
+							</div>
+							<div class="e-cell e-value">
+								<input type="text" data-bind="select2: to" />
+								<span class="help-block error-desc" data-bind="visible: emptyToError">
+									<span class="i18n" data-i18n-text="COMPOSE/EMPTY_TO_ERROR_DESC"></span>
+								</span>
+							</div>
+						</div>						
+						<div class="e-row" data-bind="visible: showCcAndBcc">
+							<div class="e-cell e-label">
+								<span class="i18n" data-i18n-text="COMPOSE/TITLE_CC"></span>
+							</div>
+							<div class="e-cell e-value">
+								<input type="text" data-bind="select2: cc" />
+							</div>
+						</div>
+						<div class="e-row" data-bind="visible: showCcAndBcc">
+							<div class="e-cell e-label">
+								<span class="i18n" data-i18n-text="COMPOSE/TITLE_BCC"></span>
+							</div>
+							<div class="e-cell e-value">
+								<input type="text" data-bind="select2: bcc" />
+							</div>
+						</div>
+						<div class="e-row">
+							<div class="e-cell e-label">
+								<span class="i18n" data-i18n-text="COMPOSE/TITLE_SUBJECT"></span>
+							</div>
+							<div class="e-cell e-value">
+								<input type="text" size="70" data-bind="value: subject" />
+							</div>
+						</div>
+						<div class="e-row">
+							<div class="e-cell e-label"></div>
+							<div class="e-cell e-value">
+								<div class="b-appachments pull-left" data-bind="visible: 0 < attachments().length">
+									<div data-bind="template: { name: 'ComposeAttachment', foreach: attachmentsInReady }"></div>
+									<div data-bind="template: { name: 'ComposeAttachmentInProcess', foreach: attachmentsInProcess }"></div>
+								</div>
+								<div data-bind="visible: addAttachmentEnabled">
+									<div class="b-attachment-place" data-bind="visible: dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
+										<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
+									</div>
+									<div class="pull-right">
+										<div class="btn-group">
+											<a class="btn" data-placement="top" data-bind="initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
+												<i class="icon-attachment"></i>
+											</a>
+											<a class="btn" data-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">
+												<i class="icon-dropbox"></i>
+											</a>
+											<a class="btn" data-placement="top" data-bind="visible: driveEnabled, command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
+												<i class="icon-google-drive"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div data-bind="initDom: composeEditorToolbar"></div>
+				</div>
+
+				<div class="textAreaParent" style="height: 200px; min-height: 200px" data-bind="initResizeTrigger: [resizer(), 200, 30]">
+					<textarea style="height: 100%; width: 100%" data-bind="initDom: composeEditorTextArea" spellcheck="true"></textarea>
+					<div style="height: 100%" data-bind="initDom: composeEditorHtmlArea" spellcheck="true"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

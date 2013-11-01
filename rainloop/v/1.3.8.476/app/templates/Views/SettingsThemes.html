@@ -1,0 +1,59 @@
+<div class="b-settings-themes">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_THEMES/LEGEND_THEMES"></span>
+			<div class="themeTrigger" data-bind="saveTrigger: themeTrigger"></div>
+		</div>
+	</div>
+	<div class="b-themes-list rl-animation-margin-sub1" data-bind="foreach: themesObjects">
+		<div class="e-item" data-bind="click: function () { $root.mainTheme(name); }, css: { 'selected': selected }">
+			<div class="e-name" data-bind="text: nameDisplay"></div>
+			<img class="e-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" data-bind="attr: { 'src': themePreviewSrc }" />
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="form-horizontal rl-animation-margin-sub2" data-bind="visible: showCustomThemeConfig">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_THEMES/LEGEND_THEMES_CUSTOM"></span>
+		</div>
+		<div class="control-group">
+			<label class="control-label" style="padding-top: 0;">
+				<span class="i18n" data-i18n-text="SETTINGS_THEMES/LABEL_CUSTOM_TYPE"></span>
+			 </label>
+			<div class="controls">
+				<label>
+					<input type="radio" name="customThemeType" value="Light" data-bind="checked: customThemeType" style="display: none" />
+					<i data-bind="css: 'Light' === customThemeType() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_THEMES/LABEL_CUSTOM_TYPE_LIGHT"></span>
+				</label>
+				<label>
+					<input type="radio" name="customThemeType" value="Dark" data-bind="checked: customThemeType" style="display: none" />
+					<i data-bind="css: 'Dark' === customThemeType() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_THEMES/LABEL_CUSTOM_TYPE_DARK"></span>
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" style="padding-top: 0;">
+				<span class="i18n" data-i18n-text="SETTINGS_THEMES/LABEL_CUSTOM_BACKGROUND_IMAGE"></span>
+			</label>
+			<div class="controls">
+				<div data-bind="visible: '' !== customThemeImg()">
+					<strong data-bind="text: customThemeImg"></strong>
+					&nbsp;&nbsp;
+					<i class="icon-remove" style="cursor: pointer" data-bind="click: removeCustomThemeImg"></i>
+					<br />
+					<br />
+				</div>
+				<a class="btn" data-bind="visible: '' === customThemeImg(), initDom: customThemeUploaderButton">
+					<i data-bind="css: {'icon-image': !customThemeUploaderProgress(), 'icon-spinner-2 animated': customThemeUploaderProgress()}"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_THEMES/BUTTON_UPLOAD_BACKGROUND_IMAGE"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

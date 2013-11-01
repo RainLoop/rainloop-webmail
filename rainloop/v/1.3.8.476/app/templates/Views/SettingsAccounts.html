@@ -1,0 +1,38 @@
+<div class="b-settings-accounts">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
+		</div>
+	</div>
+	<a class="btn" data-bind="click: addNewAccount">
+		<i class="icon-user-add"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
+	</a>
+	<div class="process-place" data-bind="style: {'visibility': visibility }">
+		<i class="icon-spinner-2 animated"></i>
+		&nbsp;&nbsp;
+		<span data-bind="text: processText"></span>
+	</div>
+	<table class="table table-hover list-table rl-animation-margin-sub1" data-bind="i18nUpdate: accounts">
+		<colgroup>
+			<col />
+			<col style="width: 1%" />
+		</colgroup>
+		<tbody data-bind="foreach: accounts">
+			<tr class="account-item">
+				<td>
+					<span class="account-name" data-bind="text: email"></span>
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oAccount) { $root.deleteAccount(oAccount); }">
+						<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
+					</a>
+				</td>
+				<td>
+					<span class="delete-account" data-bind="visible: !deleteAccess() && canBeDalete(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">
+						<i class="icon-trash"></i>
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

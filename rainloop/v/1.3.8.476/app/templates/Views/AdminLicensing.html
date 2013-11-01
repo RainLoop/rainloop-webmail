@@ -1,0 +1,72 @@
+<div class="b-admin-licensing" >
+	<div class="row">
+		<div class="alert alert-info span10">
+			RainLoop Webmail is licensed under <strong>Creative Commons
+			<br />
+			Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</strong> license.
+			<br />
+			<br />
+			You are <strong>free</strong> to use it for your <strong>personal</strong> or <strong>non-profit</strong> projects.
+			<br />
+			<br />
+			Commercial use of <strong>RainLoop Webmail</strong> requires getting a
+			<!-- <a href="http://rainloop.net/purchase/" target="_blank">permission</a> -->
+			permission (Coming soon).
+		</div>
+	</div>
+	<div class="form-horizontal rl-animation-margin-sub1">
+		<div class="control-group">
+			<label class="control-label">
+				Your Domain
+			</label>
+			<div class="controls">
+				<span class="help-inline" style="padding-top: 5px;">
+					 <strong data-bind="text: adminDomain"></strong>
+				 </span>
+			</div>
+		</div>
+		<div class="control-group" data-bind="visible: !subscriptionEnabled()">
+			<div class="controls">
+				<div class="alert alert-block span8" style="margin-left: 0">
+					This domain can't be licensed for commercial use.
+				</div>
+			</div>
+		</div>
+		<div class="control-group" data-bind="visible: subscriptionEnabled">
+			<div class="controls">
+				<div data-bind="visible: licensingProcess()">
+					<i class="icon-spinner-2 animated"></i>
+					&nbsp;&nbsp;
+					checking...
+				</div>
+				<div data-bind="visible: !licensingProcess()">
+					<div class="alert alert-block span8" style="margin-left: 0" data-bind="visible: !licensing()">
+						This domain isn't licensed for commercial use.
+					</div>
+					<div data-bind="visible: licensing()">
+						<div class="alert alert-success span8" style="margin-left: 0" data-bind="visible: licenseValid() && '' === licenseError()">
+							<p>
+								This domain is licensed for commercial use
+							</p>
+							<p data-bind="visible: 0 < licenseExpired()">
+								<b>Subscription expires:</b> 
+								&nbsp;
+								<span data-bind="text: licenseExpiredMomentValue()"></span>
+							</p>
+						</div>
+						<div class="alert alert-error span8" style="margin-left: 0" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
+					</div>			
+				</div>
+			</div>
+		</div>
+		<div class="control-group" data-bind="visible: subscriptionEnabled() && !licensingProcess()">
+			<div class="controls">
+				<button class="btn" data-bind="click: showActivationForm">
+					<i class="icon-love"></i>
+					&nbsp;&nbsp;
+					Activate Subscription Key
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

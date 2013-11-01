@@ -1,0 +1,31 @@
+<div class="b-admin-domains" >
+	<div class="legend">
+		Domains
+	</div>
+	<div>
+		<blockquote>
+			<p class="muted">
+				List of domains webmail is allowed to access.
+			</p>
+		</blockquote>
+		<a class="btn" data-bind="click: createDomain">
+			<i class="icon-plus"></i>
+			&nbsp;&nbsp;
+			Add Domain
+		</a>
+		<div class="process-place" data-bind="style: {'visibility': visibility }">
+			<i class="icon-spinner-2 animated"></i>
+			&nbsp;&nbsp;
+			loading...
+		</div>
+		<table class="table table-hover b-admin-domains-list-table rl-animation-margin-sub1" data-bind="i18nUpdate: domains">
+			<colgroup>
+				<col />
+				<col style="width: 140px" />
+				<col style="width: 1%" />
+				<col style="width: 1%" />
+			</colgroup>
+			<tbody data-bind="template: { name: 'AdminDomainListItem', foreach: domains }"></tbody>
+		</table>
+	</div>
+</div>

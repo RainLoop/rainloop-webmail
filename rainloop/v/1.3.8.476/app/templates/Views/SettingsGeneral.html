@@ -1,0 +1,123 @@
+<div class="b-settings-general">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LEGEND_GENERAL"></span>
+		</div>
+		<div class="control-group rl-animation-margin-sub1" data-bind="visible: allowLanguagesOnSettings">
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_LANGUAGE"></span>
+			</label>
+			<div class="controls">
+				<label class="flag-selector">
+					<span class="flag-wrapper">
+						<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
+					</span>
+					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
+					<div data-bind="saveTrigger: languageTrigger"></div>
+				</label>
+			</div>
+		</div>
+		<div class="control-group rl-animation-margin-sub1" data-bind="visible: isAnimationSupported">
+			 <label class="control-label" style="padding-top: 0;">
+				<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_ANIMATION"></span>
+			 </label>
+			<div class="controls">
+				<label>
+					<input type="radio" name="interfaceAnimation" value="Full" data-bind="checked: interfaceAnimation" style="display: none" />
+					<i data-bind="css: 'Full' === interfaceAnimation() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_ANIMATION_FULL"></span>
+				</label>
+				<label>
+					<input type="radio" name="interfaceAnimation" value="Normal" data-bind="checked: interfaceAnimation" style="display: none" />
+					<i data-bind="css: 'Normal' === interfaceAnimation() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_ANIMATION_NORMAL"></span>
+				</label>
+				<label>
+					<input type="radio" name="interfaceAnimation" value="None" data-bind="checked: interfaceAnimation" style="display: none" />
+					<i data-bind="css: 'None' === interfaceAnimation() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_ANIMATION_NONE"></span>
+				</label>
+			</div>
+		</div>
+		<div class="control-group rl-animation-margin-sub1">
+			 <label class="control-label" style="padding-top: 0;">
+				<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_EDITOR"></span>
+			 </label>
+			<div class="controls">
+				<label>
+					<input type="radio" name="richTextEditorType" value="Html" data-bind="checked: editorDefaultType" style="display: none" />
+					<i data-bind="css: 'Html' === editorDefaultType() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_EDITOR_HTML_AS_DEFAULT"></span>
+				</label>
+				<label>
+					<input type="radio" name="richTextEditorType" value="Plain" data-bind="checked: editorDefaultType" style="display: none" />
+					<i data-bind="css: 'Plain' === editorDefaultType() ? ' icon-radio-checked' : 'icon-radio-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_AS_DEFAULT"></span>
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_VIEW_OPTIONS"></span>
+		</div>
+		<div class="control-group rl-animation-margin-sub1">
+			<div class="controls">
+				<select class="span2" data-bind="options: mainMessagesPerPageArray, value: mainMessagesPerPage" style="width: 70px;"></select>
+				<span class="i18n help-inline" data-i18n-text="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></span>
+				<div data-bind="saveTrigger: mppTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group rl-animation-margin-sub1">
+			<div class="controls">
+				<label data-bind="click: function () { showImages(!showImages()); }">
+					<i data-bind="css: showImages() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_SHOW_IMAGES"></span>
+				</label>
+				<label data-bind="click: function () { useCheckboxesInList(!useCheckboxesInList()); }">
+					<i data-bind="css: useCheckboxesInList() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST"></span>
+				</label>
+				<label data-bind="click: function () { usePreviewPane(!usePreviewPane()); }">
+					<i data-bind="css: usePreviewPane() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_PREVIEW_PANE"></span>
+				</label>
+				<label data-bind="visible: threading, click: function () { useThreads(!useThreads()); }">
+					<i data-bind="css: useThreads() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_THREADS"></span>
+				</label>
+				<label data-bind="click: function () { replySameFolder(!replySameFolder()); }">
+					<i data-bind="css: replySameFolder() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER"></span>
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-horizontal" data-bind="visible: isDesktopNotificationsSupported()">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION"></span>
+		</div>
+		<div class="control-group rl-animation-margin-sub1">
+			<div class="controls">
+				<div data-bind="visible: isDesktopNotificationsSupported">
+					<label data-bind="css: { 'denied-by-browser': isDesktopNotificationsDenied }, click: function () { if (!isDesktopNotificationsDenied()) { useDesktopNotifications(!useDesktopNotifications()); }}">
+						<i data-bind="css: useDesktopNotifications() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+						&nbsp;&nbsp;
+						<span class="i18n notification-desc" data-i18n-text="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC"></span>
+						<span class="i18n notification-desc-denied" data-i18n-text="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
