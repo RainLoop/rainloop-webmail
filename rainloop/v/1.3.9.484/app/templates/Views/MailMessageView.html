@@ -1,0 +1,192 @@
+<div id="rl-resizer-right">
+	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected}">
+		<div class="toolbar g-ui-user-select-none">
+			<div class="messageButtons btn-toolbar">
+				<div class="btn-group" data-placement="bottom" data-bind="visible: !$root.usePreviewPane(), tooltip: 'MESSAGE/BUTTON_CLOSE'">
+					<a class="btn buttonClose" data-bind="command: $root.closeMessage">
+						<i class="icon-remove"></i>
+					</a>
+				</div>
+				<div class="btn-group" data-placement="bottom" data-bind="visible: $root.isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
+					<a class="btn btn-success buttonEdit" data-bind="command: $root.messageEditCommand">
+						<i class="icon-edit2 icon-white"></i>
+					</a>
+				</div>
+				<div class="btn-group" data-bind="visible: !$root.isDraftFolder()">
+					<a class="btn buttonReply" data-placement="bottom" data-bind="command: $root.replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+						<i class="icon-reply"></i>
+					</a>
+					<a class="btn buttonReplyAll" data-placement="bottom" data-bind="command: $root.replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+						<i class="icon-reply-all"></i>
+					</a>
+					<a class="btn buttonForward" data-placement="bottom" data-bind=" command: $root.forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+						<i class="icon-forward"></i>
+					</a>
+				</div>
+				<div class="btn-group">
+					<a class="btn dropdown-toggle buttonMore" data-placement="right" data-toggle="dropdown" data-bind="command: $root.messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
+						<i class="icon-reorder"></i>
+					</a>
+					<ul class="dropdown-menu g-ui-menu">
+						<li class="e-item" data-bind="visible: !$root.isDraftFolder()">
+							<a class="e-link" data-bind="command: $root.forwardAsAttachmentCommand">
+								<i class="icon-reply"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
+							</a>
+						</li>
+						<li class="divider" data-bind="visible: !$root.isDraftFolder()"></li>
+						<li class="e-item">
+							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
+								<i class="icon-opennewwindow"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+							</a>
+						</li>
+						<li class="e-item">
+							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
+								<i class="icon-print"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/MENU_PRINT"></span>
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li class="e-item">
+							<a target="_blank" class="e-link" data-bind="link: viewViewLink()">
+								<i class="icon-file-css"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/MENU_VIEW_ORIGINAL"></span>
+							</a>
+						</li>
+						<li class="e-item">
+							<a target="_blank" class="e-link" data-bind="link: viewDownloadLink()">
+								<i class="icon-download"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="b-content thm-message-view-background-color">
+			<div>
+				<div class="b-message-view-desc" data-bind="visible: !message() && '' === $root.messageError()">
+					<span class="i18n" data-i18n-text="MESSAGE/MESSAGE_VIEW_DESC"></span>
+				</div>
+				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== $root.messageError()">
+					<span class="text" data-bind="text: $root.messageError()"></span>
+				</div>
+				<div data-bind="visible: message">
+					<div class="messageItem" data-bind="css: viewLineAsCcc(), nano: true">
+						<div class="content g-scrollbox">
+							<div class="content-wrapper">
+								<div>
+									<span class="buttonUp" data-bind="click: scrollToTop">
+										<i class="icon-arrow-up--upload"></i>
+									</span>
+									<span class="buttonFull" data-bind="click: fullScreen">
+										<i class="icon-scaleup"></i>
+									</span>
+									<span class="buttonUnFull" data-bind="click: unFullScreen">
+										<i class="icon-scaledown"></i>
+									</span>
+									<div class="messageItemHeader">
+										<div>
+											<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
+											<div style="overflow: hidden;">
+												<div class="subjectParent" data-bind="event: { 'dblclick': toggleFullScreen }">
+													<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
+													<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
+												</div>
+												<div class="senderParent">
+													<div class="g-ui-user-select-none" style="float: left; cursor: pointer;" data-bind="click: function() { $root.showFullInfo(!$root.showFullInfo()); }">
+														<i class="icon-arrow-right" data-bind="css: $root.showFullInfo() ? 'icon-arrow-down' : 'icon-arrow-right'"></i>
+													</div>
+													<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
+														<span data-bind="visible: !$root.isDraftOrSentFolder()">
+															<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
+														</span>
+														<span data-bind="visible: $root.isDraftOrSentFolder()">
+															<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
+															<span class="to" data-bind="html: viewToShort, title: viewTo"></span>
+														</span>
+														(<span class="date" data-bind="text: viewDate"></span>)
+													</div>
+													<div class="clearfix"></div>
+												</div>
+											</div>
+											<div class="informationFull" data-bind="visible: $root.showFullInfo()">
+												<div data-bind="visible: '' !== viewFrom()">
+													<span class="i18n uiLabel labelFrom" data-i18n-text="MESSAGE/LABEL_FROM"></span>:
+													&nbsp;
+													<span class="from" data-bind="text: viewFrom, title: viewFrom"></span>
+												</div>
+												<div data-bind="visible: '' !== viewTo()">
+													<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
+													&nbsp;
+													<span class="to" data-bind="text: viewTo, title: viewTo"></span>
+												</div>
+												<div data-bind="visible: '' !== viewCc()">
+													<span class="i18n uiLabel labelCc" data-i18n-text="MESSAGE/LABEL_CC"></span>:
+													&nbsp;
+													<span class="cc" data-bind="text: viewCc, title: viewCc"></span>
+												</div>
+												<div data-bind="visible: '' !== viewBcc()">
+													<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_BCC"></span>:
+													&nbsp;
+													<span class="bcc" data-bind="text: viewBcc, title: viewBcc"></span>
+												</div>
+												<div>
+													<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_DATE"></span>:
+													&nbsp;
+													<span class="date" data-bind="text: viewDate"></span>
+													&nbsp;
+													(<span class="date" data-bind="text: viewMoment"></span>)
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="line-loading e-strip-animation" data-bind="visible: $root.messageLoadingThrottle()"></div>
+
+									<div class="loading g-ui-min-height-300" data-bind="visible: $root.messageLoadingThrottle()">
+										<span class="i18n text" data-i18n-text="MESSAGE/MESSAGE_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+									</div>
+								</div>
+
+								<div class="g-ui-min-height-300" data-bind="visible: !$root.messageLoadingThrottle()">
+									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { $root.showImages(message()); }">
+										<i class="icon-image"></i>
+										&nbsp;&nbsp;
+										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_SHOW_IMAGES"></span>
+									</div>
+									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
+										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
+											<li class="attachmentItem" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart }">
+												<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+													<i class="attachmentIcon" data-bind="css: iconClass()"></i>
+													&nbsp;&nbsp;
+													<span class="attachmentName" data-bind="text: fileName"></span>
+												</div>
+												<div>
+													<a class="attachmentPreview magnificPopupImage pull-left"
+													   data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName}" target="_blank">
+														<i class="icon-eye"></i>
+													</a>
+													<span class="attachmentSize pull-right" data-bind="text: friendlySize"></span>
+												</div>
+											</li>
+										</ul>
+										<hr />
+									</div>
+									<div class="bodyText g-ui-min-height-300" data-bind="initDom: messagesBodiesDom"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
