@@ -152,7 +152,6 @@ class Service
 					'{{BaseAppIndexFile}}' => APP_INDEX_FILE,
 					'{{BaseAppFaviconFile}}' => $aData['FaviconLink'],
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
-					'{{BaseAppBootScript}}' => $aData['BootJs'],
 					'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
 					'{{BaseAppJqueryScriptLink}}' => $aData['JqueryJsLink'],
 					'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
