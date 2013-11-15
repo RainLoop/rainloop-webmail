@@ -1,0 +1,7 @@
+/.idea
+/nbproject
+/npm-debug.log
+/node_modules
+/build/dist
+/build/tmp
+/data

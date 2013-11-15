@@ -1,0 +1,173 @@
+.editorToolbar {
+
+	position: relative;
+	height: 20px;
+	margin-top: 10px;
+	line-height: 19px;
+
+	&.editorHideToolbar .editorToolbarButtom {
+		display: none;
+	}
+
+	.editorSwitcher {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.editorToolbarButtom {
+
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		padding: 3px;
+
+		a {
+			display: inline-block;
+			border: 0px;
+			margin: 0px;
+			padding: 0px;
+			width: 16px;
+			height: 16px;
+
+			cursor: default;
+			background: url('@{editor-sprite}');
+
+			&.bold { background-position: 0 0; }
+			&.italic { background-position: -16px 0; }
+			&.underline { background-position: -32px 0; }
+			&.strikethrough { background-position: -48px 0; }
+			&.link { background-position: -64px 0; }
+			&.unlink { background-position: -80px 0; }
+			&.orderedlist { background-position: -96px 0; }
+			&.unorderedlist { background-position: -112px 0; }
+			&.image { background-position: -128px 0; }
+
+			&.h1 { background-position: 0 -16px;}
+			&.h2 { background-position: -16px -16px;}
+			&.h3 { background-position: -32px -16px;}
+			&.h4 { background-position: -48px -16px;}
+			&.h5 { background-position: -64px -16px;}
+			&.h6 { background-position: -80px -16px;}
+
+			&.subscript   { background-position: -96px -16px;}
+			&.superscript { background-position: -112px -16px;}
+			&.indent { background-position: -128px -16px;}
+			&.outdent { background-position: -144px -16px;}
+			&.horizontalrule { background-position: -160px -16px;}
+			&.p { background-position: -176px -16px;}
+
+			&.justifyleft { background-position: 0 -32px;}
+			&.justifycenter { background-position: -16px -32px;}
+			&.justifyright { background-position: -32px -32px;}
+			&.increasefontsize { background-position: -48px -32px;}
+			&.decreasefontsize { background-position: -64px -32px;}
+			&.forecolor { background-position: -80px -32px;}
+			&.backcolor { background-position: -80px -32px;}
+			&.removeformat { background-position: -144px 0;}
+		}
+	}
+}
+
+.textAreaParent {
+
+	padding: 0px;
+
+	.editorHtmlArea {
+
+		.box-sizing(border-box);
+
+		border: 0px !important;
+		overflow: auto;
+		overflow-y: scroll;
+		font-family: arial, sans-serif;
+		font-size: 13px;
+		line-height: 16px;
+		margin: 0px;
+		padding: 8px;
+
+		ul {
+
+			padding-left: 40px;
+
+			li {
+				list-style-type: disc !important;
+			}
+		}
+
+		ol {
+			padding-left: 40px;
+			li {
+				list-style-type: decimal !important;
+			}
+		}
+
+		blockquote {
+			border-left: solid 2px #444;
+			margin-left: 5px;
+			padding-left: 5px
+		}
+
+		img {
+			vertical-align: bottom;
+		}
+
+		&.editorDragOver {
+			background: #ffffef;
+		}
+	}
+
+	.editorTextArea {
+		.box-sizing(border-box);
+
+		display: block;
+		border: 0px !important;
+		width: 100%;
+		line-height: 16px;
+		margin: 0px;
+		padding: 8px;
+
+		overflow: auto;
+		overflow-y: scroll;
+	}
+}
+
+.editorColorPicker {
+
+	.editorCpColors {
+
+		float: left;
+		margin: 0;
+		clear: both;
+		width: 128px;
+		border: 1px solid #000;
+		backgroud: #000;
+
+		.editorCpColor {
+			border: 1px solid #fff;
+			float: left;
+			width: 14px;
+			height: 14px;
+		}
+	}
+}
+
+.editorSwitcher {
+	.g-ui-link;
+	.pull-right;
+
+	padding-bottom: 6px;
+}
+
+.editorFontStylePicker {
+
+	.editorFpFonts {
+
+		padding: 5px;
+		border: 1px solid #000;
+		background-color: #fff;
+
+		.editorFpFont {
+			padding: 5px;
+		}
+	}
+}

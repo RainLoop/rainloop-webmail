@@ -1,0 +1,47 @@
+{
+	"name": "RainLoop",
+	"title": "RainLoop Webmail",
+	"version": "0.0.0",
+	"description": "Simple, modern & fast web-based email client",
+	"homepage": "http://rainloop.net",
+	"main": "Gruntfile.js",
+	"author": {
+		"name": "RainLoop Team",
+		"email": "support@rainloop.net",
+		"web": "http://rainloop.net"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/RainLoop/rainloop-webmail.git"
+	},
+	"licenses": [
+		{
+			"type": "CC BY-NC-SA 3.0",
+			"ulr": "http://creativecommons.org/licenses/by-nc-sa/3.0/"
+		}
+	],
+	"bugs": {
+		"url": "https://github.com/RainLoop/rainloop-webmail/issues"
+	},
+	"keywords": [
+		"webmail",
+		"php",
+		"simple",
+		"modern",
+		"mail",
+		"web-based",
+		"email",
+		"client",
+		"plugins"
+	],
+	"readmeFilename": "README.md",
+	"devDependencies": {
+		"grunt": "~0.4.1",
+		"grunt-css": ">0.0.0",
+		"grunt-contrib-jshint": "~0.4.0",
+		"grunt-contrib-concat": ">0.0.0",
+		"grunt-contrib-less": "~0.5.0",
+		"grunt-contrib-uglify": "~0.2.4",
+		"grunt-contrib-watch": "~0.5.3"
+	}
+}

@@ -1,0 +1,228 @@
+
+body {
+	background-color: transparent;
+}
+
+label {
+	cursor: pointer;
+}
+
+.legend {
+	display: block;
+	width: 100%;
+	padding: 0;
+	margin-bottom: @baseLineHeight;
+	font-size: @baseFontSize * 1.5;
+	line-height: @baseLineHeight * 2;
+	color: @grayDark;
+	border: 0;
+	border-bottom: 1px solid #e5e5e5;
+
+	// Small
+	small {
+	  font-size: @baseLineHeight * .75;
+	  color: @grayLight;
+	};
+}
+
+.legend + .control-group {
+   margin-top: @baseLineHeight;
+  -webkit-margin-top-collapse: separate;
+}
+
+.input-append input, .input-append select, .input-append .uneditable-input {
+	.border-radius(3px);
+}
+
+select {
+	width: 223px;
+}
+
+.btn-small.btn-small-small {
+	padding: 3px 9px;
+	font-size: 11px;
+	line-height: 11px;
+}
+
+.btn.btn-ellipsis {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.btn.btn-narrow {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+.dropdown-menu {
+	.border-radius(@btnBorderRadius);
+}
+
+.btn {
+	.border-radius(@btnBorderRadius);
+	background-image: none;
+
+	&.disabled, &[disabled] {
+		.box-shadow(~"inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05)");
+	}
+
+	text-shadow: 0 1px 0 #fff;
+
+	&:active {
+//		.box-shadow(~"inset 0 2px 4px rgba(0,0,0,.3), 0 0 0 rgba(0,0,0,.1)");
+	}
+}
+
+.btn-group.open {
+  .dropdown-toggle {
+//     .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.3), 0 0 0 rgba(0,0,0,.1)");
+  }
+}
+
+html.rgba.textshadow {
+	.btn.btn-danger, .btn.btn-success, .btn.btn-primary {
+		text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+	}
+}
+
+.btn-toolbar {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.dropdown-menu {
+  .border-radius(0);
+  .box-shadow(0px 1px 2px rgba(0,0,0,0.2));
+}
+
+.tooltip {
+	font-size: 14px;
+	&.in {
+		.opacity(100);
+	}
+
+	.tooltip-class {
+	}
+
+	.tooltip-big {
+		font-size: 18px;
+		padding: 0 10px;
+	}
+}
+
+.tooltip-inner {
+	padding: 5px 10px;
+	.border-radius(2px);
+}
+
+// Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
+.btn-group > .btn:first-child {
+       -webkit-border-top-left-radius: @btnBorderRadius;
+         -moz-border-radius-topleft: @btnBorderRadius;
+             border-top-left-radius: @btnBorderRadius;
+  -webkit-border-bottom-left-radius: @btnBorderRadius;
+      -moz-border-radius-bottomleft: @btnBorderRadius;
+          border-bottom-left-radius: @btnBorderRadius;
+}
+// Need .dropdown-toggle since :last-child doesn't apply given a .dropdown-menu immediately after it
+.btn-group > .btn:last-child,
+.btn-group > .dropdown-toggle {
+     -webkit-border-top-right-radius: @btnBorderRadius;
+         -moz-border-radius-topright: @btnBorderRadius;
+             border-top-right-radius: @btnBorderRadius;
+  -webkit-border-bottom-right-radius: @btnBorderRadius;
+      -moz-border-radius-bottomright: @btnBorderRadius;
+          border-bottom-right-radius: @btnBorderRadius;
+}
+// Reset corners for large buttons
+.btn-group > .btn.large:first-child {
+     -webkit-border-top-left-radius: @btnBorderRadius;
+         -moz-border-radius-topleft: @btnBorderRadius;
+             border-top-left-radius: @btnBorderRadius;
+  -webkit-border-bottom-left-radius: @btnBorderRadius;
+      -moz-border-radius-bottomleft: @btnBorderRadius;
+          border-bottom-left-radius: @btnBorderRadius;
+}
+.btn-group > .btn.large:last-child,
+.btn-group > .large.dropdown-toggle {
+     -webkit-border-top-right-radius: @btnBorderRadius;
+         -moz-border-radius-topright: @btnBorderRadius;
+             border-top-right-radius: @btnBorderRadius;
+  -webkit-border-bottom-right-radius: @btnBorderRadius;
+      -moz-border-radius-bottomright: @btnBorderRadius;
+          border-bottom-right-radius: @btnBorderRadius;
+}
+
+textarea, input[type="text"], input[type="password"], input[type="email"], input[type="search"] {
+
+	border: @rlInputBorderSize solid @inputBorder;
+
+	&:focus {
+		background-color: #fff;
+		border: @rlInputBorderSize solid darken(@inputBorder, 20%);
+		.box-shadow(none);
+	}
+}
+input[type="text"], input[type="password"], input[type="email"], input[type="search"] {
+	height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
+	line-height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
+}
+
+select {
+	border: @rlInputBorderSize solid @inputBorder;
+}
+
+.alert.alert-null-left-margin {
+	margin-left: 0;
+}
+.alert.alert-error a {
+	color: #b94a48;
+}
+
+html.no-rgba .modal {
+	border-width: 0px !important;
+}
+
+.modal-backdrop, .modal-backdrop.fade.in {
+	.opacity(10);
+}
+
+.popups {
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+//	-webkit-overflow-scrolling: touch;
+
+	.modal {
+		position: static;
+		z-index: 1101;
+		margin: 5% auto;
+		background-color: transparent;
+		overflow: hidden;
+
+		.modal-body {
+			background-color: #fff;
+			max-height: none;
+		}
+
+		.box-shadow(0 5px 80px rgba(0,0,0,0.3));
+	}
+}
+
+.modal.loginContent .modal-body, .modal.loginAdminContent .modal-body {
+	background-color: transparent !important;
+}
+
+.picker.modal-dialog-bg, .picker.picker-dialog-bg {
+	z-index: 2000 !important;
+}
+
+.picker.modal-dialog, .picker.picker-dialog {
+	z-index: 2001 !important;
+}

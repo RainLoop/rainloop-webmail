@@ -1,0 +1,123 @@
+
+#rl-content {
+	height: 100%;
+	width: 100%;
+}
+
+#rl-center {
+	.g-ui-absolute-reset;
+	min-width: 900px;
+	min-height: 400px;
+}
+
+#rl-top {
+	.g-ui-absolute-reset;
+	bottom: auto;
+	z-index: 2;
+}
+
+#rl-bottom {
+	.g-ui-absolute-reset;
+	top: auto;
+	z-index: 1;
+}
+
+#rl-left {
+	.g-ui-absolute-reset;
+
+	right: auto;
+	width: 100%;
+}
+
+#rl-right {
+	.g-ui-absolute-reset;
+
+	z-index: 1;
+}
+
+#rl-resizer-right {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 35%;
+}
+
+#rl-resizer-left {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 65%;
+	min-width: 350px;
+}
+
+#rl-top-resizer-right {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: @rlLeftWidth;
+}
+
+#rl-top-resizer-left {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: auto;
+//	width: @rlLeftWidth;
+	min-width: 120px;
+}
+
+html.mobile {
+	#rl-top-resizer-left {
+		width: @rlLeftWidth - 60;
+	}
+	#rl-top-resizer-right {
+		left: @rlLeftWidth - 60;
+	}
+	#rl-resizer-left {
+		width: 350px;
+	}
+	#rl-resizer-right {
+		left: 350px;
+	}
+}
+
+html.rl-no-preview-pane {
+
+	#rl-resizer-left {
+		right: @rlBottomMargin !important;
+		width: inherit;
+	}
+
+	#rl-resizer-right {
+		left: 0 !important;
+	}
+
+	#rl-right .ui-resizable-handle {
+		display: none !important;
+	}
+}
+
+#rl-loading, #rl-loading-error {
+	position: absolute;
+	font: 30px Tahoma;
+	top: 50%;
+	width: 100%;
+	height: 65px;
+	margin: 0;
+	margin-top: -60px;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: center 50px;
+	background-image: url('@{rlLoaderBlack}');
+	text-align: center;
+	color: #000;
+}
+
+#rl-loading-error {
+	background-image: none;
+	display: none;
+}

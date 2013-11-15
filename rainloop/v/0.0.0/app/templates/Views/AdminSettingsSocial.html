@@ -1,0 +1,117 @@
+<div class="adminSecurity">
+	<div class="row">
+		<div class="alert alert-info span10">
+			Detailed information on social integration is found at
+			<a href="http://rainloop.net/docs/social/" target="_blank">http://rainloop.net/docs/social/</a>
+		</div>
+	</div>
+	<div class="form-horizontal">
+		<div class="legend">
+			Google
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { googleEnable(!googleEnable()); }">
+					<i data-bind="css: googleEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Enable Google Integration
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Client ID
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: googleClientID, saveTrigger: googleTrigger1" />
+				<div data-bind="saveTrigger: googleTrigger1"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Client Secret
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: googleClientSecret, saveTrigger: googleTrigger2" />
+				<div data-bind="saveTrigger: googleTrigger2"></div>
+			</div>
+		</div>
+		<div class="legend">
+			Facebook
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
+					<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Enable Facebook Integration
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				App ID
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: facebookAppID, saveTrigger: facebookTrigger1" />
+				<div data-bind="saveTrigger: facebookTrigger1"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				App Secret
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: facebookAppSecret, saveTrigger: facebookTrigger2" />
+				<div data-bind="saveTrigger: facebookTrigger2"></div>
+			</div>
+		</div>
+		<div class="legend">
+			Twitter
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { twitterEnable(!twitterEnable()); }">
+					<i data-bind="css: twitterEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Enable Twitter Integration
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Consumer Key
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: twitterConsumerKey, saveTrigger: twitterTrigger1" />
+				<div data-bind="saveTrigger: twitterTrigger1"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Consumer Secret
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: twitterConsumerSecret, saveTrigger: twitterTrigger2" />
+				<div data-bind="saveTrigger: twitterTrigger2"></div>
+			</div>
+		</div>
+		<div class="legend">
+			Dropbox
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { dropboxEnable(!dropboxEnable()); }">
+					<i data-bind="css: dropboxEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Enable Dropbox Integration
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Api Key
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: dropboxApiKey, saveTrigger: dropboxTrigger1" />
+				<div data-bind="saveTrigger: dropboxTrigger1"></div>
+			</div>
+		</div>
+	</div>
+</div>

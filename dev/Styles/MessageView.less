@@ -1,0 +1,381 @@
+
+html.rl-no-preview-pane {
+
+	.messageView {
+		display: none;
+
+		&.message-selected {
+			display: block;
+		}
+	}
+}
+
+.messageView {
+
+	z-index: 100;
+
+	.toolbar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 30px;
+		padding: 10px 0;
+		color: #fff;
+	}
+
+	.b-content {
+
+		position: absolute;
+		margin: 0;
+		top: 50px + @rlLowMargin;
+		bottom: @rlLowMargin + @rlBottomMargin;
+		right: @rlLowMargin;
+		left: 0;
+		overflow: hidden;
+		border: @rlLowBorderSize solid @rlMainDarkColor;
+		border-left: 0px;
+		.border-top-right-radius(@rlLowBorderRadius);
+		.border-bottom-right-radius(@rlLowBorderRadius);
+
+		background-color: #fff;
+
+		.b-message-view-desc {
+			text-align: center;
+			font-size: 24px;
+			line-height: 30px;
+			padding-top: 120px;
+			color: #999;
+		}
+
+		.b-message-view-desc.error {
+			color: #DA4F49;
+		}
+
+		.content {
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.messageItem {
+
+			position: absolute;
+			top: 0px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			overflow: auto;
+			-webkit-overflow-scrolling: touch;
+			.border-radius(@rlLowBorderRadius);
+
+			.emptySubjectText {
+				display: none;
+				font-style: italic;
+				color: #999;
+			}
+
+			&.emptySubject .emptySubjectText {
+				display: inline;
+			}
+
+			.buttonUp, .buttonUnFull, .buttonFull {
+				display: inline-block;
+				position: fixed;
+				right: 30px;
+				top: 90px;
+				height: 30px;
+				width: 30px;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 30px;
+				background-color: transparent;
+				background-color: #fff;
+				border: 1px solid #333;
+				color: #333;
+				z-index: 2;
+				cursor: pointer;
+				.border-radius(5px);
+				.opacity(30);
+
+				&:hover {
+					.opacity(80);
+					border-color: #000;
+					background-color: #888;
+					color: #fff;
+				}
+			}
+
+			.buttonUp {
+				right: 70px;
+				z-index: 0;
+			}
+
+			.buttonUnFull {
+				display: none;
+			}
+
+			.messageItemHeader {
+
+				position: relative;
+				padding: 10px;
+				background-color: #f8f8f8;
+				border-top: 0px;
+				border-bottom: 1px solid #ddd;
+				z-index: 1;
+
+				.date {
+				}
+
+				.fromPic {
+					display: inline-block;
+					width: 50px;
+					height: 50px;
+					float: left;
+					padding: 2px;
+					margin: 0 5px 0 0;
+					background: #fff;
+					border: 1px solid #ccc;
+					border-radius: 10px;
+					.box-sizing(border-box);
+				}
+
+				.subjectParent {
+					font-size: 16px;
+					font-weight: bold;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					white-space: nowrap;
+					margin-left: 3px;
+				}
+
+				.senderParent {
+					margin-top: 10px;
+				}
+
+				.messageButtons {
+					margin-top: 5px;
+				}
+
+				.informationShort {
+					margin-left: 15px;
+					a {
+						.g-ui-link;
+					}
+				}
+				.informationFull {
+					margin-top: 10px;
+					border: 1px solid #ddd;
+					background-color: #fff;
+					border-radius: 5px;
+					padding: 10px 15px;
+				}
+			}
+
+			.loading {
+				text-align: center;
+				font-size: 24px;
+				color: grey;
+				padding-top: 50px;
+			}
+
+			.line-loading {
+				height: 0px;
+			}
+
+			.showImages {
+				cursor: pointer;
+				background-color: #eee;
+				padding: 10px 15px;
+				border-bottom: 1px solid #ccc;
+			}
+
+			.attachmentsPlace {
+
+				padding: 10px;
+
+				.attachmentList {
+
+					margin: 0;
+
+					.attachmentItem {
+
+						display: inline-block;
+						margin: 5px;
+						padding: 5px;
+						max-width: 170px;
+						min-width: 60px;
+						overflow: hidden;
+						cursor: pointer;
+						list-style: none;
+						line-height: 24px;
+						border: 2px solid grey;
+						background-color: #fff;
+						box-shadow: 1px 1px 5px #ccc;
+						box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+
+						.border-radius(6px);
+
+						.attachmentIcon {
+							font-size: 23px;
+							width: 23px;
+							height: 23px;
+						}
+
+						.attachmentPreview {
+							color: #999;
+							margin: 0px 5px;
+						}
+						.attachmentPreview:hover {
+							color: #333;
+						}
+					}
+				}
+			}
+
+			.rlBlockquoteSwitcher {
+
+				background-color: #eee;
+				border: 1px solid #999;
+				display: inline-block;
+				width: 30px;
+				height: 14px;
+				line-height: 14px;
+				text-align: center;
+				cursor: pointer;
+				margin: 10px 0px;
+
+				.opacity(50);
+				&:hover {
+					.opacity(100);
+				}
+			}
+
+			.bodyText {
+
+				color: #000;
+				font-family: arial, sans-serif;
+
+				.b-text-part {
+
+					a {
+						color: blue;
+						text-decoration: underline;
+
+						&:visited {
+							color: #609;
+						}
+						&:active {
+							color: red;
+						}
+					}
+
+					table {
+						border-collapse: separate;
+					}
+
+					blockquote {
+						border-left: 2px solid #000;
+						margin: 0;
+						padding: 0px 10px;
+					}
+
+					.rl-bq-switcher.hidden-bq {
+						display: none;
+					}
+
+					&.rtl-text-part {
+						direction: rtl;
+					}
+
+					&.html {
+						.mailso-body {
+							margin: 15px;
+						}
+					}
+
+					&.plain {
+
+						padding: 15px;
+
+						pre {
+							margin: 0px;
+							padding: 0px;
+							font-family: arial, sans-serif;
+							background: #fff;
+							border: none;
+							white-space: normal;
+						}
+
+						blockquote {
+							border-left: 2px solid blue;
+							color: blue;
+						}
+
+						blockquote blockquote {
+							border-left: 2px solid green;
+							color: green;
+						}
+
+						blockquote blockquote blockquote {
+							border-left: 2px solid red;
+							color: red;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+html.rl-no-preview-pane .messageView {
+	.toolbar {
+		padding-left: @rlMainBorderSize;
+	}
+	.b-content {
+		top: 50px;
+		bottom: @rlBottomMargin;
+		right: @rlBottomMargin;
+		border: @rlMainBorderSize solid @rlMainDarkColor;
+		.box-shadow(@rlMainShadow);
+		.border-radius(@rlMainBorderRadius);
+
+		.buttonUp, .buttonUnFull, .buttonFull {
+			top: 70px;
+		}
+	}
+}
+
+html.cssanimations.rl-anim .line-loading {
+	height: 5px !important;
+}
+
+html.rl-message-fullscreen {
+
+	#rl-left, #rl-bottom {
+		display: none !important;
+	}
+
+	#rl-right {
+		.RL-MailMessageList, .RL-SettingsPane, .RL-SystemDropDown, .RL-MailMessageView .messageView .toolbar {
+			display: none !important;
+		}
+	}
+
+	.messageView .b-content {
+		position: fixed;
+		margin: 5px;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10000;
+
+		.buttonUp, .buttonUnFull {
+			display: inline-block;
+			top: 36px;
+		}
+
+		.buttonFull {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,40 @@
+
+.b-admin-plugins {
+	.process-place {
+		visibility: hidden;
+	}
+}
+
+.b-admin-plugins-list-table {
+
+	&.disabled {
+		.opacity(50);
+		background-color: #eee;
+	}
+
+	.e-item {
+		.e-action {
+			cursor: pointer;
+		}
+
+		.plugin-img {
+			font-size: 12px;
+			margin-right: 2px;
+		}
+
+		&.disabled {
+			.plugin-img, .plugin-name {
+				color: #bbb;
+			}
+			.disable-plugin {
+				.opacity(50);
+			}
+		}
+	}
+}
+
+.b-admin-plugin-property {
+	.help-block {
+		margin-bottom: 5px;
+	}
+}

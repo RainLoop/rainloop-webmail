@@ -1,0 +1,177 @@
+
+.b-compose {
+
+	&.modal {
+
+		width: 850px;
+		margin: 10px auto;
+
+		.modal-body {
+			overflow: auto;
+			padding: 0px;
+		}
+	}
+
+	.b-header-toolbar {
+
+		height: 40px;
+
+		background-color: @rlMainDarkColor;
+		color: #fff;
+
+		background-color: #333;
+		background-color: rgba(0,0,0,0.8) !important;
+
+		.close {
+			color: #fff;
+			.opacity(100);
+		}
+
+		.btn.disable {
+			&.button-delete {
+				visibility: hidden;
+			}
+		}
+
+		.button-save, .button-delete, .saved-text {
+			margin-left: 8px;
+		}
+
+		.disable.button-delete {
+			margin-left: 0px;
+		}
+	}
+
+	.b-header {
+
+		padding: 10px;
+		border-bottom: 1px solid #333;
+		background-color: #eee;
+		color: #333;
+
+		.e-identity {
+			font-weight: bold;
+
+			&.multiply {
+				cursor: pointer;
+				border-bottom: 1px dashed #555;
+			}
+		}
+
+		.e-row {
+			line-height: 30px;
+		}
+
+		.e-delimiter-row {
+			line-height: 2px;
+			height: 5px;
+		}
+
+		.e-label {
+			text-align: right;
+			width: 1%;
+			min-width: 70px;
+			padding: 6px 10px;
+		}
+
+		.e-value {
+
+			padding: 2px 0px;
+
+			textarea, input[type="text"] {
+				width: 98%;
+			}
+			textarea {
+				height: 40px;
+			}
+			.select2-container {
+				width: 100%;
+			}
+		}
+
+		.error-desc {
+			color: red;
+		}
+
+		.b-appachments {
+
+			.b-attacment {
+				display: inline-block;
+				line-height: 20px;
+			}
+
+			.b-attacment-in-process {
+
+				display: inline-block;
+				line-height: 20px;
+
+				.uploading {
+					display: none;
+					padding-right: 5px;
+				}
+
+				&.uploading .uploading {
+					display: inline;
+				}
+
+				.upload-progress {
+					font-weight: bold;
+				}
+
+				&.error .namedStr {
+					color: #888;
+				}
+				.error {
+					color: red;
+				}
+				.close {
+					float: left;
+					padding-right: 13px;
+				}
+			}
+		}
+	}
+
+	.b-attachment-button {
+		display: inline-block;
+	}
+
+	.b-attachment-place {
+
+		position: absolute;
+		height: 120px;
+		border: 2px #777 dashed;
+		line-height: 119px;
+		text-align: center;
+		background-color: #fff;
+		z-index: 300;
+		left: 20px;
+		right: 20px;
+		font-size: 24px;
+
+		&.drag-and-drop-over {
+			background: #777;
+			color: #fff;
+		}
+	}
+
+	.editorTextArea, .editorHtmlArea {
+
+		background: #fff;
+		color: #000;
+		font-family: Arial, Verdana, Geneva, sans-serif;
+		font-size: 14px;
+
+		table {
+			border-collapse: separate;
+		}
+
+		blockquote {
+			border: 0;
+			border-left: solid 2px #444;
+			margin-left: 5px;
+			margin: 5px 0;
+			padding-left: 5px;
+		}
+	}
+}

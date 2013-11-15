@@ -1,0 +1,32 @@
+.flag-wrapper {
+	width: 24px;
+	height: 16px;
+	display: inline-block;
+}
+
+.flag {
+	width: 16px;
+	height: 11px;
+	display: inline-block;
+	background: url(flags.png) no-repeat;
+}
+
+.flag.flag-en {background-position: -144px -154px}
+.flag.flag-en-us {background-position: -144px -154px}
+.flag.flag-en-gb {background-position: -240px -33px}
+.flag.flag-en-ca {background-position: -48px -22px}
+
+.flag.flag-nl, .flag.flag-nl-nl {background-position: -80px -110px}
+.flag.flag-ru, .flag.flag-ru-ru {background-position: -224px -121px}
+.flag.flag-de, .flag.flag-de-de {background-position: -80px -33px}
+.flag.flag-it, .flag.flag-it-it {background-position: -208px -66px}
+.flag.flag-is, .flag.flag-is-is {background-position: -192px -66px}
+.flag.flag-lv, .flag.flag-lv-lv {background-position: -112px -88px}
+
+.flag.flag-fr, .flag.flag-fr-fr, .flag.flag-fr-ca {background-position: -144px -44px}
+.flag.flag-es, .flag.flag-es-es, .flag.flag-es-la {background-position: -16px -44px}
+
+.flag.flag-ja, .flag.flag-jp, .flag.flag-ja-jp {background-position: -16px -77px}
+
+.flag.flag-pt, .flag.flag-pt-pt {background-position: -112px -121px}
+.flag.flag-pt-br {background-position: -192px -11px}

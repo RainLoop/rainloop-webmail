@@ -1,0 +1,43 @@
+.b-domain-content {
+
+	&.modal {
+		width: 645px;
+	}
+
+	.modal-header {
+		background-color: #fff;
+	}
+
+	.modal-body {
+		position: relative;
+		overflow: hidden;
+		width: 1300px;
+		height: 390px;
+	}
+
+	&.domain-edit .modal-body {
+		height: 350px;
+	}
+
+	&.domain-white-list-page .modal-body {
+		left: -640px;
+	}
+
+	.error-desc {
+		color: red;
+		margin-left: 10px;
+	}
+
+	.testing-done {
+		.imap-header, .smtp-header {
+			color: green;
+			font-weight: bold;
+		}
+	}
+
+	.testing-error {
+		.imap-header, .smtp-header {
+			color: red;
+		}
+	}
+}

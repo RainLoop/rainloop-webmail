@@ -1,0 +1,55 @@
+
+.b-settings-accounts {
+
+	.process-place {
+		text-align: center;
+		width: 600px;
+		padding: 14px 0;
+	}
+
+	.list-table {
+
+		width: 600px;
+
+		td {
+			padding: 4px 8px;
+			line-height: 30px;
+		}
+
+		.account-img {
+			font-size: 12px;
+			margin-right: 5px;
+		}
+
+		.account-name {
+			display: inline-block;
+			word-break: break-all;
+			.box-sizing(border-box);
+			line-height: 22px;
+			cursor: default;
+		}
+	}
+
+	.account-item {
+
+		.button-delete {
+			margin-right: 15px;
+			margin-top: 5px;
+			visibility: hidden;
+			.opacity(0);
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				.opacity(100);
+			}
+		}
+
+		.delete-account {
+			cursor: pointer;
+			.opacity(50);
+		}
+	}
+}

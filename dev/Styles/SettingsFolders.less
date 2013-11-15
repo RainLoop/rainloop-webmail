@@ -1,0 +1,104 @@
+
+.folderPaddingHelper(@i) {
+	(~".folder-padding.deep-@{i}") {
+		width: 15px * @i + 10px;
+	}
+}
+
+.b-settings-folders {
+
+	&.ignore-folder-subscribe {
+		.subscribe-folder, .unsubscribe-folder {
+			display: none;
+		}
+	}
+
+	.process-place {
+		text-align: center;
+		width: 600px;
+		padding: 14px 0;
+	}
+
+	.folders-list-error {
+		width: 550px;
+		margin: 10px 0px;
+	}
+
+	.list-table {
+
+		width: 600px;
+
+		.e-action {
+			cursor: pointer;
+		}
+
+		td {
+			padding: 4px 8px;
+			line-height: 30px;
+		}
+
+		.folder-padding {
+			display: inline-block;
+			width: 0;
+		}
+
+		.folder-name {
+			display: inline-block;
+			word-break: break-all;
+			.box-sizing(border-box);
+			margin-left: 7px;
+			line-height: 22px;
+			cursor: default;
+		}
+
+		.folder-system-name {
+			display: inline-block;
+			line-height: 22px;
+			color: #999;
+			cursor: default;
+		}
+
+		.folder-name.can-be-edited:hover {
+			border-bottom: 1px dashed #333;
+			cursor: pointer;
+		}
+		
+		.folder-name-input {
+			border-width: 1px;
+			margin-bottom: 0;
+		}
+	}
+
+	.folder-item {
+
+		.button-delete {
+			margin-right: 15px;
+			margin-top: 5px;
+			visibility: hidden;
+			.opacity(0);
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				.opacity(100);
+			}
+		}
+
+		.delete-folder, .subscribe-folder, .unsubscribe-folder {
+			cursor: pointer;
+			.opacity(60);
+		}
+
+		.unsubscribe-folder {
+			.opacity(25);
+		}
+	}
+
+	.folderPaddingHelper(1);
+	.folderPaddingHelper(2);
+	.folderPaddingHelper(3);
+	.folderPaddingHelper(4);
+	.folderPaddingHelper(5);
+}

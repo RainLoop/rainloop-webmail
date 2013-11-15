@@ -1,0 +1,60 @@
+
+.b-admin-domains {
+	.process-place {
+		width: 600px;
+		padding: 14px 0;
+		text-align: center;
+		visibility: hidden;
+	}
+}
+
+.b-admin-domains-list-table {
+
+	width: 600px;
+
+	.e-item {
+
+		.e-action {
+			cursor: pointer;
+		}
+
+		.domain-name {
+			display: inline-block;
+			word-break: break-all;
+			.box-sizing(border-box);
+		}
+
+		&.disabled .domain-name {
+			color: #bbb;
+		}
+
+		.button-delete {
+			margin-right: 15px;
+			visibility: hidden;
+			.opacity(0);
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				.opacity(100);
+			}
+		}
+
+		.delete-domain, .disable-domain {
+			cursor: pointer;
+			.opacity(50);
+		}
+
+		&.disabled .disable-domain {
+			.opacity(50);
+		}
+
+		.delete-domain, .disable-domain {
+			&:hover {
+				.opacity(100);
+			}
+		}
+	}
+}
