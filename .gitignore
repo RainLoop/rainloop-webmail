@@ -4,4 +4,5 @@
 /node_modules
 /build/dist
 /build/tmp
-/data
+/data/**
+!/data/VERSION
