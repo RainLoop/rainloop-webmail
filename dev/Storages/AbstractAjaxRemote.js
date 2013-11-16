@@ -247,3 +247,18 @@ AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFi
 		'TimeOnPage': iTime
 	});
 };
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sType
+ * @param {Array=} mData = null
+ * @param {boolean=} bIsError = false
+ */
+AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+{
+	this.defaultRequest(fCallback, 'JsInfo', {
+		'Type': sType,
+		'Data': mData,
+		'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
+	});
+};

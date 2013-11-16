@@ -3,120 +3,103 @@
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
 	grunt.initConfig({
-		pkg: grunt.file.readJSON("package.json"),
+		pkg: grunt.file.readJSON('package.json'),
+		cfg: {
+			devVersion: "0.0.0",
+			releasesPath: 'releases',
+			releaseFolder: 'rainloop',
+			releaseZipFile: 'rainloop.zip'
+		},
 		less: {
 			development: {
 				files: {
-					"rainloop/v/<%= pkg.version %>/static/css/less.css": "dev/Styles/@Main.less"
+					'rainloop/v/<%= cfg.devVersion %>/static/css/less.css': 'dev/Styles/@Main.less'
 				}
 			}
 		},
 		jshint: {
+			options: {
+				reporter: require('jshint-stylish'),
+				jshintrc: '.jshintrc'
+			},
 			files: [
 				'Gruntfile.js',
-				'rainloop/v/<%= pkg.version %>/static/js/app.js',
-				'rainloop/v/<%= pkg.version %>/static/js/admin.js'
-			],
-			options: {
-				boss: true,
-				browser: true,
-				curly: true,
-				eqeqeq: true,
-				eqnull: true,
-				expr: true,
-				evil: true,
-				newcap: true,
-				noarg: true,
-				undef: true,
-				smarttabs: true,
-				sub: true,
-				globals: {
-					define: true,
-					window: true,
-					jQuery: true,
-					ko: true,
-					console: true,
-					moment: true,
-					crossroads: true,
-					hasher: true,
-					Jua: true,
-					_: true,
-					Dropbox: true
-				}
-			}
+				'rainloop/v/<%= cfg.devVersion %>/static/js/app.js',
+				'rainloop/v/<%= cfg.devVersion %>/static/js/admin.js'
+			]
 		},
 		uglify: {
 			options: {
-				compress: true,
 				mangle: true,
-				preserveComments: "some"
+				compress: true,
+				preserveComments: 'some'
 			},
 			cookie: {
 				options: {
-					banner: "/*! jquery.cookie v1.4.0 (c) 2013 Klaus Hartl | MIT */\n",
-					preserveComments: "false"
+					banner: '/*! jquery.cookie v1.4.0 (c) 2013 Klaus Hartl | MIT */\n',
+					preserveComments: 'false'
 				},
-				src: "vendors/jquery-cookie/jquery.cookie.js",
-				dest: "vendors/jquery-cookie/jquery.cookie-1.4.0.min.js"
+				src: 'vendors/jquery-cookie/jquery.cookie.js',
+				dest: 'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js'
 			},
 			wakeup: {
 				options: {
-					banner: "/*! jQuery WakeUp plugin (c) 2013 Paul Okopny <paul.okopny@gmail.com> | MIT */\n",
-					preserveComments: "false"
+					banner: '/*! jQuery WakeUp plugin (c) 2013 Paul Okopny <paul.okopny@gmail.com> | MIT */\n',
+					preserveComments: 'false'
 				},
-				src: "vendors/jquery-wakeup/jquery.wakeup.js",
-				dest: "vendors/jquery-wakeup/jquery.wakeup.min.js"
+				src: 'vendors/jquery-wakeup/jquery.wakeup.js',
+				dest: 'vendors/jquery-wakeup/jquery.wakeup.min.js'
 			},
 			mousewheel: {
 				options: {
-					banner: "/*! jquery.mousewheel v3.1.4 (c) 2013 Brandon Aaron (http://brandon.aaron.sh) | MIT */\n",
-					preserveComments: "false"
+					banner: '/*! jquery.mousewheel v3.1.4 (c) 2013 Brandon Aaron (http://brandon.aaron.sh) | MIT */\n',
+					preserveComments: 'false'
 				},
-				src: "vendors/jquery-mousewheel/jquery.mousewheel.js",
-				dest: "vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js"
+				src: 'vendors/jquery-mousewheel/jquery.mousewheel.js',
+				dest: 'vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js'
 			},
 			nano: {
 				options: {
 					banner: "/*! nanoScrollerJS v0.7 (c) 2013 James Florentino; modified by RainLoop Team | MIT */\n",
 					preserveComments: "false"
 				},
-				src: "vendors/jquery-nanoscroller/jquery.nanoscroller.js",
-				dest: "vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js"
+				src: 'vendors/jquery-nanoscroller/jquery.nanoscroller.js',
+				dest: 'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js'
 			},
 			pace: {
-				src: "vendors/simple-pace/simple-pace.js",
-				dest: "vendors/simple-pace/simple-pace-1.0.min.js"
+				src: 'vendors/simple-pace/simple-pace.js',
+				dest: 'vendors/simple-pace/simple-pace-1.0.min.js'
 			},
 			rl: {
-				src: "vendors/rl/rl.js",
-				dest: "vendors/rl/rl-1.0.min.js"
+				src: 'vendors/rl/rl.js',
+				dest: 'vendors/rl/rl-1.0.min.js'
 			},
 			min_app: {
-				src: "rainloop/v/<%= pkg.version %>/static/js/app.js",
-				dest: "rainloop/v/<%= pkg.version %>/static/js/app.min.js"
+				src: 'rainloop/v/<%= cfg.devVersion %>/static/js/app.js',
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/app.min.js'
 			},
 			min_admin: {
-				src: "rainloop/v/<%= pkg.version %>/static/js/admin.js",
-				dest: "rainloop/v/<%= pkg.version %>/static/js/admin.min.js"
+				src: 'rainloop/v/<%= cfg.devVersion %>/static/js/admin.js',
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/admin.min.js'
 			}
 		},
 		concat: {
 			js_index: {
 				nonull: true,
 				src: [
-					"vendors/json2.min.js",
-					"vendors/simple-pace/simple-pace-1.0.min.js",
-					"vendors/rl/rl-1.0.min.js"
+					'vendors/json2.min.js',
+					'vendors/simple-pace/simple-pace-1.0.min.js',
+					'vendors/rl/rl-1.0.min.js'
 				],
-				dest: "rainloop/v/<%= pkg.version %>/static/js/boot.js"
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/boot.js'
 			},
 			js_libs: {
 				nonull: true,
 				options: {
-					separator: "\n\n"
+					separator: '\n\n'
 				},
 				src: [
 					"vendors/modernizr.js",
@@ -140,15 +123,15 @@ module.exports = function(grunt) {
 					"vendors/bootstrap/js/bootstrap.min.js",
 					"dev/Common/_LibsEnd.js"
 				],
-				dest: "rainloop/v/<%= pkg.version %>/static/js/libs.js"
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/libs.js'
 			},
 			js_admin: {
 				nonull: true,
 				options: {
 					stripBanners: true,
-					banner: "/*! RainLoop Admin Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n" +
-						"(function (window, $, ko, crossroads, hasher, _) {\n",
-					footer: "\n\n}(window, jQuery, ko, crossroads, hasher, _));"
+					banner: '/*! RainLoop Webmail Admin Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
+						'(function (window, $, ko, crossroads, hasher, _) {\n',
+					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, _));'
 				},
 				src: [
 					"dev/Common/_Begin.js",
@@ -213,15 +196,15 @@ module.exports = function(grunt) {
 					"dev/Common/_End.js",
 					"dev/Common/_CoreEnd.js"
 				],
-				dest: "rainloop/v/<%= pkg.version %>/static/js/admin.js"
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/admin.js'
 			},
 			js_app: {
 				nonull: true,
 				options: {
 					stripBanners: true,
-					banner: "/*! RainLoop Webmail Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n" +
-						"(function (window, $, ko, crossroads, hasher, moment, Jua, _) {\n",
-					footer: "\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _));"
+					banner: '/*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
+						'(function (window, $, ko, crossroads, hasher, moment, Jua, _) {\n',
+					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _));'
 				},
 				src: [
 					"dev/Common/_Begin.js",
@@ -309,7 +292,7 @@ module.exports = function(grunt) {
 					"dev/Common/_End.js",
 					"dev/Common/_CoreEnd.js"
 				],
-				dest: "rainloop/v/<%= pkg.version %>/static/js/app.js"
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/app.js'
 			},
 			css: {
 				nonull: true,
@@ -324,16 +307,48 @@ module.exports = function(grunt) {
 					"vendors/jquery-magnific-popup/magnific-popup-animations.css",
 					"vendors/simple-pace/styles.css",
 					"vendors/flags/flags-fixed.css",
-					"rainloop/v/<%= pkg.version %>/static/css/less.css"
+					"rainloop/v/<%= cfg.devVersion %>/static/css/less.css"
 				],
-				dest: "rainloop/v/<%= pkg.version %>/static/css/app.css"
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/css/app.css'
 			}
 		},
 
 		cssmin: {
 			css: {
-				src: "rainloop/v/<%= pkg.version %>/static/css/app.css",
-				dest: "rainloop/v/<%= pkg.version %>/static/css/app.min.css"
+				src: 'rainloop/v/<%= cfg.devVersion %>/static/css/app.css',
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/css/app.min.css'
+			}
+		},
+
+		compress: {
+			build: {
+				options: {
+					archive: '<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/<%= cfg.releaseZipFile %>',
+					mode: 'zip'
+				},
+				files: [{
+					expand: true,
+					cwd: '<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/src/',
+					src: ['**/*']
+				}]
+			}
+		},
+
+		md5: {
+			build: {
+				files: {
+					'<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/':
+						'<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/<%= cfg.releaseZipFile %>'
+				},
+				options: {
+					keepExtension: true,
+					keepBasename: true,
+					after: function () {
+						grunt.file['delete']([
+							grunt.config('cfg.releasesPath'), grunt.config('cfg.releaseFolder'), grunt.config('cfg.releaseZipFile')
+						].join("/"));
+					}
+				}
 			}
 		},
 
@@ -342,41 +357,75 @@ module.exports = function(grunt) {
 				options: {
 					nospawn: true
 				},
-				files: ["dev/**/*.js"],
-				tasks: ["concat:js_libs", "concat:js_admin", "concat:js_app"]
+				files: ['dev/**/*.js'],
+				tasks: ['concat:js_libs', 'concat:js_admin', 'concat:js_app']
 			},
 			styles: {
 				options: {
 					nospawn: true
 				},
-				files: ["dev/Styles/*.less"],
-				tasks: ["less", "concat:css"]
+				files: ['dev/Styles/*.less'],
+				tasks: ['less', 'concat:css']
 			}
 		}
 	});
 
 	// dependencies
 	for (var key in grunt.file.readJSON('package.json').devDependencies) {
-		if (key !== 'grunt' && key.indexOf('grunt') === 0) {
+		if (key.indexOf('grunt-') === 0) {
 			grunt.loadNpmTasks(key);
 		}
 	}
 
+	grunt.registerTask('rainloop', 'RainLoop Webmail build task', function () {
+
+		var
+			version = grunt.config('pkg.version'),
+			release = grunt.config('pkg.release'),
+			releasesPath = grunt.config('cfg.releasesPath'),
+			devVersion = grunt.config('cfg.devVersion'),
+			versionFull = version + '.' + release,
+			dist = releasesPath + '/' + versionFull + '/src/',
+			packageJsonContent = grunt.file.read('package.json')
+		;
+
+		grunt.file.mkdir(dist);
+		grunt.file.mkdir(dist + 'data');
+		grunt.file.mkdir(dist + 'rainloop/v/' + versionFull);
+
+		require('wrench').copyDirSyncRecursive('rainloop/v/' + devVersion,
+			dist + 'rainloop/v/' + versionFull, {'forceDelete': true});
+
+		grunt.file.copy('index.php', dist + 'index.php');
+
+		grunt.file.write(dist + 'data/VERSION', versionFull);
+		grunt.file.write(dist + 'rainloop/v/' + versionFull + '/VERSION', versionFull);
+
+		grunt.file.write('package.json',
+			packageJsonContent.replace(/"release":\s?"[\d]+",/, '"release": "' + (1 + parseInt(release, 10)) + '",'));
+
+		grunt.config.set('cfg.releaseFolder', versionFull);
+		grunt.config.set('cfg.releaseZipFile', 'rainloop-' + versionFull + '.zip');
+	});
+
 	// uglify
+	grunt.registerTask('rlmin', ['uglify:min_app', 'uglify:min_admin']);
+	
+	// uglify (optional)
 	grunt.registerTask('mousewheel', ['uglify:mousewheel']);
 	grunt.registerTask('wakeup', ['uglify:wakeup']);
 	grunt.registerTask('nano', ['uglify:nano']);
 	grunt.registerTask('pace', ['uglify:pace']);
 	grunt.registerTask('rl', ['uglify:rl']);
 	grunt.registerTask('cookie', ['uglify:cookie']);
-	grunt.registerTask('rainloop', ['uglify:min_app', 'uglify:min_admin']);
 	// ---
 
-	grunt.registerTask('default', ['less', 'concat', 'jshint', 'cssmin', 'rainloop']);
+	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
+	grunt.registerTask('build', ['default', 'rlmin', 'rainloop', 'compress:build', 'md5:build']);
 
 	// aliases
-	grunt.registerTask('ant', ['default']); // special for ant task
 	grunt.registerTask('u', ['uglify']);
 	grunt.registerTask('h', ['jshint']);
+	grunt.registerTask('b', ['build']);
 	grunt.registerTask('w', ['watch']);
 };

@@ -4,6 +4,6 @@
 /node_modules
 /build/dist
 /build/tmp
-/data/*.*
-/data/**
+/releases
+/data
 !/data/VERSION

@@ -536,7 +536,7 @@ PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
 
 			if (this.modalVisibility())
 			{
-				this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
+				this.savedTime(Math.round((new window.Date()).getTime() / 1000));
 
 				this.savedOrSendingText(
 					0 < this.savedTime() ? Utils.i18n('COMPOSE/SAVED_TIME', {

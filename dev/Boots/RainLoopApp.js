@@ -16,6 +16,10 @@ function RainLoopApp()
 	this.iSuggestionsLimit = 0 === this.iSuggestionsLimit ? 20 : this.iSuggestionsLimit;
 
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
+
+	$.wakeUp(function (iSleepTime) {
+		RL.remote().jsInfo(Utils.emptyFunction, {'WakeUpTime': Math.round(iSleepTime / 1000)}, true);
+	}, {}, 60 * 60 * 1000);
 }
 
 _.extend(RainLoopApp.prototype, AbstractApp.prototype);
@@ -598,15 +602,15 @@ RainLoopApp.prototype.bootstart = function ()
 			'tClose': Utils.i18n('MAGNIFIC_POPUP/CLOSE'),
 			'tLoading': Utils.i18n('MAGNIFIC_POPUP/LOADING'),
 			'gallery': {
-			  'tPrev': Utils.i18n('MAGNIFIC_POPUP/GALLERY_PREV'),
-			  'tNext': Utils.i18n('MAGNIFIC_POPUP/GALLERY_NEXT'),
-			  'tCounter': Utils.i18n('MAGNIFIC_POPUP/GALLERY_COUNTER')
+				'tPrev': Utils.i18n('MAGNIFIC_POPUP/GALLERY_PREV'),
+				'tNext': Utils.i18n('MAGNIFIC_POPUP/GALLERY_NEXT'),
+				'tCounter': Utils.i18n('MAGNIFIC_POPUP/GALLERY_COUNTER')
 			},
 			'image': {
-			  'tError': Utils.i18n('MAGNIFIC_POPUP/IMAGE_ERROR')
+				'tError': Utils.i18n('MAGNIFIC_POPUP/IMAGE_ERROR')
 			},
 			'ajax': {
-			  'tError': Utils.i18n('MAGNIFIC_POPUP/AJAX_ERROR')
+				'tError': Utils.i18n('MAGNIFIC_POPUP/AJAX_ERROR')
 			}
 		});
 

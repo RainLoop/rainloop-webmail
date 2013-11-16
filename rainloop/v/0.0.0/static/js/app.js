@@ -1,4 +1,4 @@
-/*! RainLoop Webmail Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+/*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 (function (window, $, ko, crossroads, hasher, moment, Jua, _) {
 
 'use strict';
@@ -71,6 +71,7 @@ var
 
 	NotificationClass = window.Notification && window.Notification.requestPermission ? window.Notification : null
 ;
+/*jshint onevar: false*/
 /**
  * @type {?RainLoopApp}
  */
@@ -1737,7 +1738,7 @@ Utils.fakeMd5 = function(iLen)
 
 	while (sResult.length < iLen)
 	{
-		sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
+		sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
 	}
 
 	return sResult;
@@ -1839,7 +1840,7 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 {
-	var oTempImg = new Image();
+	var oTempImg = new window.Image();
     oTempImg.onload = function() {
 
 		var
@@ -2280,7 +2281,7 @@ ko.bindingHandlers.draggable = {
 								moveUp();
 							}
 
-							if(oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
+							if (oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
 							{
 								moveDown = function() {
 									$this.scrollTop($this.scrollTop() - iScrollSpeed);
@@ -2291,7 +2292,7 @@ ko.bindingHandlers.draggable = {
 								moveDown();
 							}
 						}
-				   });
+					});
 				};
 
 				oConf['stop'] =	function() {
@@ -8017,7 +8018,7 @@ PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
 
 			if (this.modalVisibility())
 			{
-				this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
+				this.savedTime(Math.round((new window.Date()).getTime() / 1000));
 
 				this.savedOrSendingText(
 					0 < this.savedTime() ? Utils.i18n('COMPOSE/SAVED_TIME', {
@@ -13534,6 +13535,21 @@ AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFi
 };
 
 /**
+ * @param {?Function} fCallback
+ * @param {string} sType
+ * @param {Array=} mData = null
+ * @param {boolean=} bIsError = false
+ */
+AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+{
+	this.defaultRequest(fCallback, 'JsInfo', {
+		'Type': sType,
+		'Data': mData,
+		'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
+	});
+};
+
+/**
  * @constructor
  * @extends AbstractAjaxRemoteStorage
  */
@@ -15201,6 +15217,10 @@ function RainLoopApp()
 	this.iSuggestionsLimit = 0 === this.iSuggestionsLimit ? 20 : this.iSuggestionsLimit;
 
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
+
+	$.wakeUp(function (iSleepTime) {
+		RL.remote().jsInfo(Utils.emptyFunction, {'WakeUpTime': Math.round(iSleepTime / 1000)}, true);
+	}, {}, 60 * 60 * 1000);
 }
 
 _.extend(RainLoopApp.prototype, AbstractApp.prototype);
@@ -15783,15 +15803,15 @@ RainLoopApp.prototype.bootstart = function ()
 			'tClose': Utils.i18n('MAGNIFIC_POPUP/CLOSE'),
 			'tLoading': Utils.i18n('MAGNIFIC_POPUP/LOADING'),
 			'gallery': {
-			  'tPrev': Utils.i18n('MAGNIFIC_POPUP/GALLERY_PREV'),
-			  'tNext': Utils.i18n('MAGNIFIC_POPUP/GALLERY_NEXT'),
-			  'tCounter': Utils.i18n('MAGNIFIC_POPUP/GALLERY_COUNTER')
+				'tPrev': Utils.i18n('MAGNIFIC_POPUP/GALLERY_PREV'),
+				'tNext': Utils.i18n('MAGNIFIC_POPUP/GALLERY_NEXT'),
+				'tCounter': Utils.i18n('MAGNIFIC_POPUP/GALLERY_COUNTER')
 			},
 			'image': {
-			  'tError': Utils.i18n('MAGNIFIC_POPUP/IMAGE_ERROR')
+				'tError': Utils.i18n('MAGNIFIC_POPUP/IMAGE_ERROR')
 			},
 			'ajax': {
-			  'tError': Utils.i18n('MAGNIFIC_POPUP/AJAX_ERROR')
+				'tError': Utils.i18n('MAGNIFIC_POPUP/AJAX_ERROR')
 			}
 		});
 

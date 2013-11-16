@@ -2994,6 +2994,20 @@ class Actions
 	/**
 	 * @return array
 	 */
+	public function DoJsInfo()
+	{
+		$bIsError = '1' === (string) $this->GetActionParam('IsError', '0');
+		$mData = $this->GetActionParam('Data', null);
+
+		$this->Logger()->WriteDump(is_array($mData) ? $mData : array(),
+			$bIsError ? \MailSo\Log\Enumerations\Type::ERROR : \MailSo\Log\Enumerations\Type::INFO, 'JS-INFO');
+
+		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function DoJsError()
 	{
 		$sMessage = $this->GetActionParam('Message', '');

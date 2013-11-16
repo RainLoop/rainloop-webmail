@@ -8,6 +8,7 @@
  * http://stackoverflow.com/questions/4079115
  * 
  * Copyright (c) 2013, Paul Okopny <paul.okopny@gmail.com>
+ * https://bitbucket.org/paul.okopny/jquery.wakeup-plugin
  * 
  * Permission to use, copy, modify, and/or distribute this software for any 
  * purpose with or without fee is hereby granted, provided that the above 

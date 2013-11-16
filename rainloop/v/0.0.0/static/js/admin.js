@@ -1,4 +1,4 @@
-/*! RainLoop Admin Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+/*! RainLoop Webmail Admin Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 (function (window, $, ko, crossroads, hasher, _) {
 
 'use strict';
@@ -71,6 +71,7 @@ var
 
 	NotificationClass = window.Notification && window.Notification.requestPermission ? window.Notification : null
 ;
+/*jshint onevar: false*/
 /**
  * @type {?AdminApp}
  */
@@ -1737,7 +1738,7 @@ Utils.fakeMd5 = function(iLen)
 
 	while (sResult.length < iLen)
 	{
-		sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
+		sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
 	}
 
 	return sResult;
@@ -1839,7 +1840,7 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 {
-	var oTempImg = new Image();
+	var oTempImg = new window.Image();
     oTempImg.onload = function() {
 
 		var
@@ -2280,7 +2281,7 @@ ko.bindingHandlers.draggable = {
 								moveUp();
 							}
 
-							if(oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
+							if (oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
 							{
 								moveDown = function() {
 									$this.scrollTop($this.scrollTop() - iScrollSpeed);
@@ -2291,7 +2292,7 @@ ko.bindingHandlers.draggable = {
 								moveDown();
 							}
 						}
-				   });
+					});
 				};
 
 				oConf['stop'] =	function() {
@@ -5782,6 +5783,21 @@ AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFi
 		'Location': sLocation,
 		'HtmlCapa': sHtmlCapa,
 		'TimeOnPage': iTime
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sType
+ * @param {Array=} mData = null
+ * @param {boolean=} bIsError = false
+ */
+AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+{
+	this.defaultRequest(fCallback, 'JsInfo', {
+		'Type': sType,
+		'Data': mData,
+		'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
 	});
 };
 

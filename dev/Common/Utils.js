@@ -1209,7 +1209,7 @@ Utils.fakeMd5 = function(iLen)
 
 	while (sResult.length < iLen)
 	{
-		sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
+		sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
 	}
 
 	return sResult;
@@ -1311,7 +1311,7 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 {
-	var oTempImg = new Image();
+	var oTempImg = new window.Image();
     oTempImg.onload = function() {
 
 		var

@@ -247,7 +247,7 @@ ko.bindingHandlers.draggable = {
 								moveUp();
 							}
 
-							if(oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
+							if (oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
 							{
 								moveDown = function() {
 									$this.scrollTop($this.scrollTop() - iScrollSpeed);
@@ -258,7 +258,7 @@ ko.bindingHandlers.draggable = {
 								moveDown();
 							}
 						}
-				   });
+					});
 				};
 
 				oConf['stop'] =	function() {
