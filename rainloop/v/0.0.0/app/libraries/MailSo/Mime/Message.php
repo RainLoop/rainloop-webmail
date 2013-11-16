@@ -78,7 +78,12 @@ class Message
 	 */
 	public function MessageId()
 	{
-		return $this->sMessageId;
+		$sResult = '';
+		if (!empty($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID]))
+		{
+			$sResult = $this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID];
+		}
+		return $sResult;
 	}
 
 	/**
