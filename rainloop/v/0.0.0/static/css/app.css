@@ -7132,7 +7132,7 @@ html.rl-no-preview-pane .messageView.message-selected {
 .messageView .b-content .messageItem .bodyText .b-text-part.rtl-text-part {
   direction: rtl;
 }
-.messageView .b-content .messageItem .bodyText .b-text-part.html .mailso-body {
+.messageView .b-content .messageItem .bodyText .b-text-part.html div[data-x-div-type=body] {
   margin: 15px;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain {
