@@ -26,9 +26,6 @@
 		define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
 		define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
-		define('APP_CORE_INSTALL_ACCESS_SITE', function_exists('__get_core_install_access_site') ?
-			__get_core_install_access_site(APP_SITE) : APP_SITE);
-		
 		define('APP_DUMMY', '********');
 		define('APP_DEV_VERSION', '0.0.0');
 		define('APP_API_PATH', 'http://api.rainloop.net/');

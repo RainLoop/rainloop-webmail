@@ -2256,7 +2256,10 @@ class Actions
 
 	private function rainLoopCoreAccess()
 	{
-		return $this->Http()->CheckLocalhost(APP_SITE) || APP_SITE === APP_CORE_INSTALL_ACCESS_SITE;
+		$sCoreAccess = \strtolower(\preg_replace('/[\s,;]+/', ' ',
+			$this->Config()->Get('security', 'core_install_access_domains', '')));
+
+		return '' === $sCoreAccess || APP_SITE === $sCoreAccess;
 	}
 
 	private function getRepositoryDataByUrl($sRepo, &$bReal = false)

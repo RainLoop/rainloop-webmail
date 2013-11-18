@@ -87,7 +87,9 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'custom_server_signature' => array('RainLoop'),
 				'admin_login'		=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'	=> array('12345')
+				'admin_password'	=> array('12345'),
+				'allow_admin_panel' => array(true, 'Access settings'),
+				'core_install_access_domains' => array('')
 			),
 
 			'login' => array(

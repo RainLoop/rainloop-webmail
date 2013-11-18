@@ -94,11 +94,11 @@ class Service
 
 		$this->oActions->ParseQueryAuthString();
 
-		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') && APP_INSTALLED_START &&
+		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
+			APP_INSTALLED_START && !APP_INSTALLED_VERSION &&
 			$this->oActions->Config()->Get('labs', 'usage_statistics', true))
 		{
-			$this->oActions->KeenIO(APP_INSTALLED_VERSION ? 'Upgrade' : 'Install',
-				APP_INSTALLED_VERSION ?  array('previos-version' => APP_INSTALLED_VERSION) : array());
+			$this->oActions->KeenIO('Install');
 		}
 
 		$bCached = false;
@@ -115,6 +115,13 @@ class Service
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
 		$bAdmin = !empty($aPaths[0]) && \in_array(\strtolower($aPaths[0]), array('admin', 'cp'));
+		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
+		{
+			echo $this->oActions->ErrorTemplates('Access Denied.',
+				'Access to the RainLoop Webmail Admin Panel is not allowed!', true);
+			
+			return $this;
+		}
 
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin)
 		{
