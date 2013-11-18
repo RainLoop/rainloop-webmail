@@ -164,6 +164,7 @@ textarea, input[type="text"], input[type="password"], input[type="email"], input
 		.box-shadow(none);
 	}
 }
+
 input[type="text"], input[type="password"], input[type="email"], input[type="search"] {
 	height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
 	line-height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
@@ -173,9 +174,14 @@ select {
 	border: @rlInputBorderSize solid @inputBorder;
 }
 
+.alert a {
+	text-decoration: underline;
+}
+
 .alert.alert-null-left-margin {
 	margin-left: 0;
 }
+
 .alert.alert-error a {
 	color: #b94a48;
 }

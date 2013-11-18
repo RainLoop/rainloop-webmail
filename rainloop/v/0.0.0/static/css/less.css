@@ -3397,6 +3397,9 @@ input[type="search"] {
 select {
   border: 1px solid #cccccc;
 }
+.alert a {
+  text-decoration: underline;
+}
 .alert.alert-null-left-margin {
   margin-left: 0;
 }
