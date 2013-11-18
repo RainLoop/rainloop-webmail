@@ -7501,6 +7501,7 @@ function PopupsComposeViewModel()
 
 	var
 		self = this,
+		oRainLoopData = RL.data(),
 		fEmailArrayToStringLineHelper = function (aList) {
 
 			var
@@ -7594,12 +7595,21 @@ function PopupsComposeViewModel()
 	this.currentIdentityResultEmail = ko.observable('');
 
 	this.identitiesOptions = ko.computed(function () {
-		return _.map(RL.data().identities(), function (oItem) {
-			return {
+		
+		var aList = [{
+			'optValue': oRainLoopData.accountEmail(),
+			'optText': this.formattedFrom(false)
+		}];
+
+		_.each(oRainLoopData.identities(), function (oItem) {
+			aList.push({
 				'optValue': oItem.id,
 				'optText': oItem.formattedNameForCompose()
-			};
+			});
 		});
+
+		return aList;
+		
 	}, this);
 	
 	ko.computed(function () {
@@ -7612,7 +7622,7 @@ function PopupsComposeViewModel()
 			sID = this.currentIdentityID()
 		;
 
-		if (this.bAllowIdentities && sID)
+		if (this.bAllowIdentities && sID && sID !== RL.data().accountEmail())
 		{
 			oItem = _.find(aList, function (oItem) {
 				return oItem && sID === oItem['id'];
@@ -7624,9 +7634,11 @@ function PopupsComposeViewModel()
 			if ('' === sResult && aList[0])
 			{
 				this.currentIdentityID(aList[0]['id']);
+				return '';
 			}
 		}
-		else
+
+		if ('' === sResult)
 		{
 			sResult = this.formattedFrom(false);
 			sResultEmail = this.formattedFrom(true);
@@ -7909,10 +7921,8 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 			oIDs[oItem.email()] = oItem['id'];
 		});
 	}
-	else
-	{
-		oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
-	}
+	
+	oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
 
 	switch (sComposeType)
 	{
@@ -11560,57 +11570,6 @@ SettingsGeneral.prototype.selectLanguage = function ()
 /**
  * @constructor
  */
-function SettingsPersonal()
-{
-	var oData = RL.data();
-	
-	this.displayName = oData.displayName;
-	this.replyTo = oData.replyTo;
-	this.signature = oData.signature;
-
-	this.nameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-}
-
-Utils.addSettingsViewModel(SettingsPersonal, 'SettingsPersonal', 'SETTINGS_LABELS/LABEL_PERSONAL_NAME', 'personal');
-
-SettingsPersonal.prototype.onBuild = function ()
-{
-	var self = this;
-	_.delay(function () {
-
-		var 
-			oData = RL.data(),
-			f1 = Utils.settingsSaveHelperSimpleFunction(self.nameTrigger, self),
-			f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
-			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
-		;
-
-		oData.displayName.subscribe(function (sValue) {
-			RL.remote().saveSettings(f1, {
-				'DisplayName': sValue
-			});
-		});
-
-		oData.replyTo.subscribe(function (sValue) {
-			RL.remote().saveSettings(f2, {
-				'ReplyTo': sValue
-			});
-		});
-
-		oData.signature.subscribe(function (sValue) {
-			RL.remote().saveSettings(f3, {
-				'Signature': sValue
-			});
-		});
-		
-	}, 50);
-};
-
-/**
- * @constructor
- */
 function SettingsAccounts()
 {
 	var oData = RL.data();
@@ -11677,16 +11636,71 @@ SettingsAccounts.prototype.deleteAccount = function (oAccountToRemove)
 /**
  * @constructor
  */
+function SettingsIdentity()
+{
+	var oData = RL.data();
+	
+	this.displayName = oData.displayName;
+	this.signature = oData.signature;
+	this.replyTo = oData.replyTo;
+
+	this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+}
+
+Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
+
+SettingsIdentity.prototype.onBuild = function ()
+{
+	var self = this;
+	_.delay(function () {
+
+		var 
+			oData = RL.data(),
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
+			f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
+		;
+
+		oData.displayName.subscribe(function (sValue) {
+			RL.remote().saveSettings(f1, {
+				'DisplayName': sValue
+			});
+		});
+
+		oData.replyTo.subscribe(function (sValue) {
+			RL.remote().saveSettings(f2, {
+				'ReplyTo': sValue
+			});
+		});
+
+		oData.signature.subscribe(function (sValue) {
+			RL.remote().saveSettings(f3, {
+				'Signature': sValue
+			});
+		});
+		
+	}, 50);
+};
+
+/**
+ * @constructor
+ */
 function SettingsIdentities()
 {
 	var oData = RL.data();
 	
+	this.displayName = oData.displayName;
+	this.signature = oData.signature;
+	this.replyTo = oData.replyTo;
+
+	this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
 	this.identities = oData.identities;
 
-	this.legent = ko.computed(function () {
-		return Utils.i18n('SETTINGS_IDENTITIES/LEGEND_IDENTITIES_FOR', {'EMAIL': oData.accountEmail()});
-	}, this);
-	
 	this.processText = ko.computed(function () {
 		return oData.identitiesLoading() ? Utils.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
 	}, this);
@@ -11708,9 +11722,6 @@ function SettingsIdentities()
 			}
 		}
 	]});
-
-	this.signature = oData.signature;
-	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 }
 
 Utils.addSettingsViewModel(SettingsIdentities, 'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
@@ -11726,7 +11737,6 @@ SettingsIdentities.prototype.editIdentity = function (oIdentity)
 };
 
 /**
- *
  * @param {IdentityModel} oIdentityToRemove
  */
 SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
@@ -11770,11 +11780,25 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 
 		var
 			oData = RL.data(),
-			f1 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
+			f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
 		;
 
-		oData.signature.subscribe(function (sValue) {
+		oData.displayName.subscribe(function (sValue) {
 			RL.remote().saveSettings(f1, {
+				'DisplayName': sValue
+			});
+		});
+
+		oData.replyTo.subscribe(function (sValue) {
+			RL.remote().saveSettings(f2, {
+				'ReplyTo': sValue
+			});
+		});
+
+		oData.signature.subscribe(function (sValue) {
+			RL.remote().saveSettings(f3, {
 				'Signature': sValue
 			});
 		});
@@ -15780,7 +15804,7 @@ RainLoopApp.prototype.bootstart = function ()
 	
 	if (this.settingsGet('AllowIdentities'))
 	{
-		Utils.removeSettingsViewModel(SettingsPersonal);
+		Utils.removeSettingsViewModel(SettingsIdentity);
 	}
 	else
 	{

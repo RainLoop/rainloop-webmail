@@ -3,29 +3,29 @@
 /**
  * @constructor
  */
-function SettingsPersonal()
+function SettingsIdentity()
 {
 	var oData = RL.data();
 	
 	this.displayName = oData.displayName;
-	this.replyTo = oData.replyTo;
 	this.signature = oData.signature;
+	this.replyTo = oData.replyTo;
 
-	this.nameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 }
 
-Utils.addSettingsViewModel(SettingsPersonal, 'SettingsPersonal', 'SETTINGS_LABELS/LABEL_PERSONAL_NAME', 'personal');
+Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 
-SettingsPersonal.prototype.onBuild = function ()
+SettingsIdentity.prototype.onBuild = function ()
 {
 	var self = this;
 	_.delay(function () {
 
 		var 
 			oData = RL.data(),
-			f1 = Utils.settingsSaveHelperSimpleFunction(self.nameTrigger, self),
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
 			f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
 			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
 		;

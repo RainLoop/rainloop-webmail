@@ -1,20 +1,20 @@
-<div class="b-settings-personal">
+<div class="b-settings-identity">
 	<div class="form-horizontal">
 		<div class="legend">
-			<span class="i18n" data-i18n-text="SETTINGS_PERSONAL/LEGEND_PERSONAL"></span>
+			<span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LEGEND_IDENTITY"></span>
 		</div>
 		<div class="control-group">
 			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_PERSONAL/LABEL_DISPLAY_NAME"></span>
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_DISPLAY_NAME"></span>
 			 </label>
 			<div class="controls">
-				<input class="input-xlarge" type="text" data-bind="value: displayName, saveTrigger: nameTrigger" />
-				<div data-bind="saveTrigger: nameTrigger"></div>
+				<input class="input-xlarge" type="text" data-bind="value: displayName, saveTrigger: displayNameTrigger" />
+				<div data-bind="saveTrigger: displayNameTrigger"></div>
 			</div>
 		</div>
 		<div class="control-group" style="display: none">
 			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_PERSONAL/LABEL_REPLY_TO"></span>
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_REPLY_TO"></span>
 			 </label>
 			<div class="controls">
 				<input class="input-xlarge" type="text" data-bind="value: replyTo" />
@@ -22,7 +22,7 @@
 		</div>
 		<div class="control-group">
 			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_PERSONAL/LABEL_SIGNATURE"></span>
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_SIGNATURE"></span>
 			 </label>
 			<div class="controls">
 				<textarea class="input-xxlarge" data-bind="value: signature, saveTrigger: signatureTrigger" rows="7" spellcheck="true"></textarea>

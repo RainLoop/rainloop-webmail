@@ -19,6 +19,7 @@ function PopupsComposeViewModel()
 
 	var
 		self = this,
+		oRainLoopData = RL.data(),
 		fEmailArrayToStringLineHelper = function (aList) {
 
 			var
@@ -112,12 +113,21 @@ function PopupsComposeViewModel()
 	this.currentIdentityResultEmail = ko.observable('');
 
 	this.identitiesOptions = ko.computed(function () {
-		return _.map(RL.data().identities(), function (oItem) {
-			return {
+		
+		var aList = [{
+			'optValue': oRainLoopData.accountEmail(),
+			'optText': this.formattedFrom(false)
+		}];
+
+		_.each(oRainLoopData.identities(), function (oItem) {
+			aList.push({
 				'optValue': oItem.id,
 				'optText': oItem.formattedNameForCompose()
-			};
+			});
 		});
+
+		return aList;
+		
 	}, this);
 	
 	ko.computed(function () {
@@ -130,7 +140,7 @@ function PopupsComposeViewModel()
 			sID = this.currentIdentityID()
 		;
 
-		if (this.bAllowIdentities && sID)
+		if (this.bAllowIdentities && sID && sID !== RL.data().accountEmail())
 		{
 			oItem = _.find(aList, function (oItem) {
 				return oItem && sID === oItem['id'];
@@ -142,9 +152,11 @@ function PopupsComposeViewModel()
 			if ('' === sResult && aList[0])
 			{
 				this.currentIdentityID(aList[0]['id']);
+				return '';
 			}
 		}
-		else
+
+		if ('' === sResult)
 		{
 			sResult = this.formattedFrom(false);
 			sResultEmail = this.formattedFrom(true);
@@ -427,10 +439,8 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 			oIDs[oItem.email()] = oItem['id'];
 		});
 	}
-	else
-	{
-		oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
-	}
+	
+	oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
 
 	switch (sComposeType)
 	{

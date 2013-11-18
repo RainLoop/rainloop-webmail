@@ -579,7 +579,7 @@ RainLoopApp.prototype.bootstart = function ()
 	
 	if (this.settingsGet('AllowIdentities'))
 	{
-		Utils.removeSettingsViewModel(SettingsPersonal);
+		Utils.removeSettingsViewModel(SettingsIdentity);
 	}
 	else
 	{

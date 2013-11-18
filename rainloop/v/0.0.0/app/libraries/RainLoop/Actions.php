@@ -1330,7 +1330,8 @@ class Actions
 			{
 				foreach ($aSubIdentities as $aItem)
 				{
-					if (isset($aItem['Id'], $aItem['Email'], $aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']))
+					if (isset($aItem['Id'], $aItem['Email'], $aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']) &&
+						$aItem['Id'] !== $oAccount->Email())
 					{
 						$oItem = \RainLoop\Identity::NewInstance($aItem['Id'], $aItem['Email'],
 							$aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']);
@@ -1338,14 +1339,6 @@ class Actions
 						$aIdentities[] = $oItem;
 					}
 				}
-			}
-
-			if (0 === \count($aIdentities))
-			{
-				$aIdentities[] = \RainLoop\Identity::NewInstance($oAccount->Email(), $oAccount->Email(),
-					$oSettings->GetConf('DisplayName', ''),
-					$oSettings->GetConf('ReplyTo', '')
-				);
 			}
 		}
 
@@ -1514,20 +1507,6 @@ class Actions
 		$sReplyTo = \trim($this->GetActionParam('ReplyTo', ''));
 		$sBcc = \trim($this->GetActionParam('Bcc', ''));
 
-		if ($sId === $oAccount->Email())
-		{
-			$sEmail = $oAccount->Email();
-
-			$oSettings = $this->SettingsProvider()->Load($oAccount);
-			if ($oSettings)
-			{
-				$oSettings->SetConf('DisplayName', $sName);
-				$oSettings->SetConf('ReplyTo', $sReplyTo);
-				
-				$this->SettingsProvider()->Save($oAccount, $oSettings);
-			}
-		}
-
 		if (empty($sEmail))
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
@@ -1583,7 +1562,7 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$sId = \trim($this->GetActionParam('IdToDelete', ''));
-		if (empty($sId) || $sId === $oAccount->Email())
+		if (empty($sId))
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 		}

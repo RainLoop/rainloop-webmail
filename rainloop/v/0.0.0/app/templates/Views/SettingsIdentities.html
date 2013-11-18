@@ -1,7 +1,39 @@
 <div class="b-settings-identities">
 	<div class="form-horizontal">
 		<div class="legend">
-			<span class="i18n" data-bind="text: legent"></span>
+			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITY"></span>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>
+			 </label>
+			<div class="controls">
+				<input class="input-xlarge" type="text" data-bind="value: displayName, saveTrigger: displayNameTrigger" />
+				<div data-bind="saveTrigger: displayNameTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group" style="display: none">
+			 <label class="control-label">
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_REPLY_TO"></span>
+			 </label>
+			<div class="controls">
+				<input class="input-xlarge" type="text" data-bind="value: replyTo" />
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_SIGNATURE"></span>
+			 </label>
+			<div class="controls">
+				<textarea class="input-xxlarge" data-bind="value: signature, saveTrigger: signatureTrigger" rows="7" spellcheck="true"></textarea>
+				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITIES"></span>
 		</div>
 	</div>
 	<a class="btn" data-bind="click: addNewIdentity">
@@ -39,15 +71,4 @@
 			</tr>
 		</tbody>
 	</table>
-	<br />
-	<br />
-	<div class="form-horizontal">
-		<div class="legend">
-			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_SIGNATURE"></span>
-		</div>
-	</div>
-	<div>
-		<textarea class="input-xxlarge" data-bind="value: signature, saveTrigger: signatureTrigger" rows="7" spellcheck="true"></textarea>
-		<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
-	</div>
 </div>

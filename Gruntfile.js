@@ -263,8 +263,8 @@ module.exports = function (grunt) {
 					"dev/ViewModels/SettingsPaneViewModel.js",
 
 					"dev/Settings/General.js",
-					"dev/Settings/Personal.js",
 					"dev/Settings/Accounts.js",
+					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",
 					"dev/Settings/Social.js",
 					"dev/Settings/ChangePassword.js",
