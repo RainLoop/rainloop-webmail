@@ -15243,7 +15243,10 @@ function RainLoopApp()
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 
 	$.wakeUp(function (iSleepTime) {
-		RL.remote().jsInfo(Utils.emptyFunction, {'WakeUpTime': Math.round(iSleepTime / 1000)}, true);
+		RL.remote().jsInfo(Utils.emptyFunction, {
+			'Version': this.settingsGet('Version'),
+			'WakeUpTime': Math.round(iSleepTime / 1000)
+		}, true);
 	}, {}, 60 * 60 * 1000);
 }
 

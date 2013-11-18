@@ -10,6 +10,7 @@ module.exports = function (grunt) {
 		cfg: {
 			devVersion: "0.0.0",
 			releasesPath: 'releases',
+			releasesSrcPath: '',
 			releaseFolder: 'rainloop',
 			releaseZipFile: 'rainloop.zip'
 		},
@@ -400,14 +401,24 @@ module.exports = function (grunt) {
 
 		grunt.file.write(dist + 'data/VERSION', versionFull);
 		grunt.file.write(dist + 'rainloop/v/' + versionFull + '/VERSION', versionFull);
+		grunt.file.delete(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
 
 		grunt.file.write('package.json',
 			packageJsonContent.replace(/"release":\s?"[\d]+",/, '"release": "' + (1 + parseInt(release, 10)) + '",'));
 
 		grunt.config.set('cfg.releaseFolder', versionFull);
+		grunt.config.set('cfg.releasesSrcPath', dist);
 		grunt.config.set('cfg.releaseZipFile', 'rainloop-' + versionFull + '.zip');
 	});
 
+	grunt.registerTask('rainloop-clear', 'RainLoop Webmail clear task', function () {
+		var releasesSrcPath = grunt.config('cfg.releasesSrcPath');
+		if ('' !== releasesSrcPath)
+		{
+			require('wrench').rmdirSyncRecursive(releasesSrcPath);
+		}
+	});
+	
 	// uglify
 	grunt.registerTask('rlmin', ['uglify:min_app', 'uglify:min_admin']);
 	
@@ -421,7 +432,7 @@ module.exports = function (grunt) {
 	// ---
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
-	grunt.registerTask('build', ['default', 'rlmin', 'rainloop', 'compress:build', 'md5:build']);
+	grunt.registerTask('build', ['default', 'rlmin', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clear']);
 
 	// aliases
 	grunt.registerTask('u', ['uglify']);

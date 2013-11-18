@@ -112,9 +112,9 @@ class ServiceActions
 
 		try
 		{
-			if ($this->oHttp->IsPost() &&
-				$this->Config()->Get('security', 'csrf_protection', false)
-				&& $this->oHttp->GetPost('XToken', '') !== \RainLoop\Utils::GetCsrfToken())
+			if ($this->oHttp->IsPost() && !in_array($sAction, array('JsInfo', 'JsError')) &&
+				$this->Config()->Get('security', 'csrf_protection', false) &&
+				$this->oHttp->GetPost('XToken', '') !== \RainLoop\Utils::GetCsrfToken())
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidToken);
 			}
