@@ -30,12 +30,21 @@ function AdminGeneral()
 			};
 		});
 	});
+
+	this.mainLanguageFullName = ko.computed(function () {
+		return Utils.convertLangName(this.mainLanguage());
+	}, this);
 	
 	this.languagesOptions = ko.computed(function () {
 		return _.map(oData.languages(), function (sLanguage) {
+			var
+				sName = Utils.convertLangName(sLanguage),
+				sEn = Utils.convertLangName(sLanguage, true)
+			;
+
 			return {
 				'optValue': sLanguage,
-				'optText': Utils.convertLangName(sLanguage)
+				'optText': sName + (sEn !== sName ? ' (' + sEn + ')' : '')
 			};
 		});
 	});
@@ -119,4 +128,9 @@ AdminGeneral.prototype.onBuild = function ()
 		});
 
 	}, 50);
+};
+
+AdminGeneral.prototype.selectLanguage = function ()
+{
+	kn.showScreenPopup(PopupsLanguagesViewModel);
 };

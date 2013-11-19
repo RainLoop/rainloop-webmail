@@ -11,26 +11,40 @@ function PopupsLanguagesViewModel()
 	this.exp = ko.observable(false);
 
 	this.languages = ko.computed(function () {
-		var sCurrent = RL.data().mainLanguage();
 		return _.map(RL.data().languages(), function (sLanguage) {
 			return {
 				'key': sLanguage,
-				'selected': sLanguage === sCurrent,
+				'selected': ko.observable(false),
 				'fullName': Utils.convertLangName(sLanguage)
 			};
 		});
 	});
+
+	RL.data().mainLanguage.subscribe(function () {
+		this.resetMainLanguage();
+	}, this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
 
+PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
+{
+	return Utils.convertLangName(sLanguage, true);
+};
+
+PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
+{
+	var sCurrent = RL.data().mainLanguage();
+	_.each(this.languages(), function (oItem) {
+		oItem['selected'](oItem['key'] === sCurrent);
+	});
+};
+
 PopupsLanguagesViewModel.prototype.onShow = function ()
 {
-//	var self = this;
-//	_.defer(function () {
-//		self.exp(true);
-//	});
 	this.exp(true);
+
+	this.resetMainLanguage();
 };
 
 PopupsLanguagesViewModel.prototype.onHide = function ()

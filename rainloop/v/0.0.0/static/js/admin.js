@@ -1716,11 +1716,13 @@ Utils.microtime = function ()
 /**
  *
  * @param {string} sLanguage
+ * @param {boolean=} bEng = false
  * @return {string}
  */
-Utils.convertLangName = function (sLanguage)
+Utils.convertLangName = function (sLanguage, bEng)
 {
-	return Utils.i18n('LANGS_NAMES/LANG_' + sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
+	return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
+		sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
 };
 
 /**
@@ -4578,26 +4580,40 @@ function PopupsLanguagesViewModel()
 	this.exp = ko.observable(false);
 
 	this.languages = ko.computed(function () {
-		var sCurrent = RL.data().mainLanguage();
 		return _.map(RL.data().languages(), function (sLanguage) {
 			return {
 				'key': sLanguage,
-				'selected': sLanguage === sCurrent,
+				'selected': ko.observable(false),
 				'fullName': Utils.convertLangName(sLanguage)
 			};
 		});
 	});
+
+	RL.data().mainLanguage.subscribe(function () {
+		this.resetMainLanguage();
+	}, this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
 
+PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
+{
+	return Utils.convertLangName(sLanguage, true);
+};
+
+PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
+{
+	var sCurrent = RL.data().mainLanguage();
+	_.each(this.languages(), function (oItem) {
+		oItem['selected'](oItem['key'] === sCurrent);
+	});
+};
+
 PopupsLanguagesViewModel.prototype.onShow = function ()
 {
-//	var self = this;
-//	_.defer(function () {
-//		self.exp(true);
-//	});
 	this.exp(true);
+
+	this.resetMainLanguage();
 };
 
 PopupsLanguagesViewModel.prototype.onHide = function ()
@@ -4766,12 +4782,21 @@ function AdminGeneral()
 			};
 		});
 	});
+
+	this.mainLanguageFullName = ko.computed(function () {
+		return Utils.convertLangName(this.mainLanguage());
+	}, this);
 	
 	this.languagesOptions = ko.computed(function () {
 		return _.map(oData.languages(), function (sLanguage) {
+			var
+				sName = Utils.convertLangName(sLanguage),
+				sEn = Utils.convertLangName(sLanguage, true)
+			;
+
 			return {
 				'optValue': sLanguage,
-				'optText': Utils.convertLangName(sLanguage)
+				'optText': sName + (sEn !== sName ? ' (' + sEn + ')' : '')
 			};
 		});
 	});
@@ -4855,6 +4880,11 @@ AdminGeneral.prototype.onBuild = function ()
 		});
 
 	}, 50);
+};
+
+AdminGeneral.prototype.selectLanguage = function ()
+{
+	kn.showScreenPopup(PopupsLanguagesViewModel);
 };
 
 /**

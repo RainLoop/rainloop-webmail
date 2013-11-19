@@ -570,7 +570,7 @@ RainLoopApp.prototype.bootstart = function ()
 		bTwitter = this.settingsGet('AllowTwitterSocial')
 	;
 	
-	if (!this.settingsGet('RemoteChangePassword'))
+	if (!this.settingsGet('AllowChangePassword'))
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}

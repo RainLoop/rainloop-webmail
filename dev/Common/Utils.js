@@ -1187,11 +1187,13 @@ Utils.microtime = function ()
 /**
  *
  * @param {string} sLanguage
+ * @param {boolean=} bEng = false
  * @return {string}
  */
-Utils.convertLangName = function (sLanguage)
+Utils.convertLangName = function (sLanguage, bEng)
 {
-	return Utils.i18n('LANGS_NAMES/LANG_' + sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
+	return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
+		sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
 };
 
 /**

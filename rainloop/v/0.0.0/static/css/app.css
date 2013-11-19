@@ -2299,6 +2299,8 @@ img.mfp-img {
 .flag.flag-pt, .flag.flag-pt-pt {background-position: -112px -121px}
 .flag.flag-pt-br {background-position: -192px -11px}
 
+.flag.flag-cn, .flag.flag-zh-tw, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
+
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 .clearfix {
   *zoom: 1;
@@ -6384,10 +6386,10 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-languages-content.modal {
   z-index: 1103;
-  width: 520px;
+  width: 500px;
 }
 .popups .b-languages-content.exp {
-  width: 521px;
+  width: 501px;
 }
 .popups .b-languages-content .modal-header {
   background-color: #fff;
@@ -6396,7 +6398,7 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   display: inline-block;
   padding: 5px 15px;
   margin: 2px 5px;
-  width: 200px;
+  width: 180px;
   background-color: #fff;
   text-align: left;
 }
@@ -7677,6 +7679,12 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-admin-right .b-settings-content {
   padding: 20px;
+}
+.b-admin-general .flag-selector {
+  padding-top: 5px;
+}
+.b-admin-general .flag-name {
+  border-bottom: 1px dashed #555;
 }
 .b-admin-domains .process-place {
   width: 600px;

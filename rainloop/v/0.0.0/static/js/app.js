@@ -1716,11 +1716,13 @@ Utils.microtime = function ()
 /**
  *
  * @param {string} sLanguage
+ * @param {boolean=} bEng = false
  * @return {string}
  */
-Utils.convertLangName = function (sLanguage)
+Utils.convertLangName = function (sLanguage, bEng)
 {
-	return Utils.i18n('LANGS_NAMES/LANG_' + sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
+	return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
+		sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
 };
 
 /**
@@ -9613,26 +9615,40 @@ function PopupsLanguagesViewModel()
 	this.exp = ko.observable(false);
 
 	this.languages = ko.computed(function () {
-		var sCurrent = RL.data().mainLanguage();
 		return _.map(RL.data().languages(), function (sLanguage) {
 			return {
 				'key': sLanguage,
-				'selected': sLanguage === sCurrent,
+				'selected': ko.observable(false),
 				'fullName': Utils.convertLangName(sLanguage)
 			};
 		});
 	});
+
+	RL.data().mainLanguage.subscribe(function () {
+		this.resetMainLanguage();
+	}, this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
 
+PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
+{
+	return Utils.convertLangName(sLanguage, true);
+};
+
+PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
+{
+	var sCurrent = RL.data().mainLanguage();
+	_.each(this.languages(), function (oItem) {
+		oItem['selected'](oItem['key'] === sCurrent);
+	});
+};
+
 PopupsLanguagesViewModel.prototype.onShow = function ()
 {
-//	var self = this;
-//	_.defer(function () {
-//		self.exp(true);
-//	});
 	this.exp(true);
+
+	this.resetMainLanguage();
 };
 
 PopupsLanguagesViewModel.prototype.onHide = function ()
@@ -12449,14 +12465,14 @@ function WebMailDataStorage()
 	this.devPassword = '';
 
 	this.accountEmail = ko.observable('');
-	this.accountLogin = ko.observable('');
+	this.accountIncLogin = ko.observable('');
+	this.accountOutLogin = ko.observable('');
 	this.projectHash = ko.observable('');
 
 	this.threading = ko.observable(false);
 	this.lastFoldersHash = '';
 
 	this.remoteSuggestions = false;
-	this.remoteChangePassword = false;
 
 	// system folders
 	this.sentFolder = ko.observable('');
@@ -12804,7 +12820,8 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	AbstractData.prototype.populateDataOnStart.call(this);
 
 	this.accountEmail(RL.settingsGet('Email'));
-	this.accountLogin(RL.settingsGet('Login'));
+	this.accountIncLogin(RL.settingsGet('IncLogin'));
+	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
 	
 	this.displayName(RL.settingsGet('DisplayName'));
@@ -12814,7 +12831,6 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
 	this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
-	this.remoteChangePassword = !!RL.settingsGet('RemoteChangePassword');
 
 	this.devEmail = RL.settingsGet('DevEmail');
 	this.devLogin = RL.settingsGet('DevLogin');
@@ -15795,7 +15811,7 @@ RainLoopApp.prototype.bootstart = function ()
 		bTwitter = this.settingsGet('AllowTwitterSocial')
 	;
 	
-	if (!this.settingsGet('RemoteChangePassword'))
+	if (!this.settingsGet('AllowChangePassword'))
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}

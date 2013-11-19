@@ -291,7 +291,7 @@ class Actions
 			if ($oAccount)
 			{
 				$sFileName = \str_replace('{user:email}', \strtolower($oAccount->Email()), $sFileName);
-				$sFileName = \str_replace('{user:login}', $oAccount->Login(), $sFileName);
+				$sFileName = \str_replace('{user:login}', $oAccount->IncLogin(), $sFileName);
 				$sFileName = \str_replace('{user:domain}', \strtolower($oAccount->Domain()->Name()), $sFileName);
 			}
 
@@ -876,7 +876,7 @@ class Actions
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'SuggestionsLimit' => (int) $oConfig->Get('labs', 'suggestions_limit', 50),
-			'RemoteChangePassword' => false,
+			'AllowChangePassword' => false,
 			'ContactsIsSupported' => (bool) $this->ContactsProvider()->IsSupported(),
 			'ContactsIsAllowed' => (bool) $this->ContactsProvider()->IsActive(),
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
@@ -898,11 +898,12 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{
-				$aResult['Email'] = $oAccount->Email();
-				$aResult['Login'] = $oAccount->Login();
 				$aResult['Auth'] = true;
+				$aResult['Email'] = $oAccount->Email();
+				$aResult['IncLogin'] = $oAccount->IncLogin();
+				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
-				$aResult['RemoteChangePassword'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
+				$aResult['AllowChangePassword'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 			}
@@ -1198,15 +1199,9 @@ class Actions
 
 		try
 		{
-			$sLogin = $oAccount->Login();
-			if ($oAccount->Domain()->IncShortLogin())
-			{
-				$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin);
-			}
-
 			$this->MailClient()
 				->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
-				->Login($sLogin, $oAccount->Password())
+				->Login($oAccount->IncLogin(), $oAccount->Password())
 			;
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
@@ -1631,15 +1626,19 @@ class Actions
 	 */
 	public function DoAppDelayStart()
 	{
+		$this->Plugins()->RunHook('service.app-delay-start-begin');
+		
 		\RainLoop\Utils::UpdateConnectionToken();
 
 		$bMainCache = false;
 		$bFilesCache = false;
 		$bActivity = false;
 		$bPing = false;
+		$bReHash = false;
 
 		$iOneDay1 = 60 * 60 * 23;
 		$iOneDay2 = 60 * 60 * 25;
+		$iOneDay3 = $iOneDay2 * 2;
 		
 		$sTimers = $this->StorageProvider()->Get(null,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers', '');
@@ -1650,6 +1649,7 @@ class Actions
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
 		$iActivityTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
 		$iPingTime = !empty($aTimers[3]) && \is_numeric($aTimers[3]) ? (int) $aTimers[3] : 0;
+		$iReHashTime = !empty($aTimers[4]) && \is_numeric($aTimers[4]) ? (int) $aTimers[4] : 0;
 
 		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
 		{
@@ -1675,13 +1675,19 @@ class Actions
 			$iPingTime = \time();
 		}
 
-		if ($bMainCache || $bFilesCache || $bActivity || $bPing)
+		if (0 === $iReHashTime || $iReHashTime + $iOneDay3 < \time())
+		{
+			$bReHash = true;
+			$iReHashTime = \time();
+		}
+
+		if ($bMainCache || $bFilesCache || $bActivity || $bPing || $bReHash)
 		{
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
 				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iActivityTime, $iPingTime))))
 			{
-				$bMainCache = $bFilesCache = $bActivity = $bPing = false;
+				$bMainCache = $bFilesCache = $bActivity = $bPing = $bReHash = false;
 			}
 		}
 
@@ -1710,6 +1716,15 @@ class Actions
 		{
 			$this->KeenIO('Ping');
 		}
+
+		if ($bReHash)
+		{
+			$sHash =  \RainLoop\Utils::PathMD5(APP_VERSION_ROOT_PATH);
+			$this->Logger()->Write('App Hash: '.$sHash);
+			@\file_put_contents(APP_DATA_FOLDER_PATH.'HASH', $sHash);
+		}
+
+		$this->Plugins()->RunHook('service.app-delay-start-end');
 
 		return $this->TrueResponse(__FUNCTION__);
 	}
@@ -3704,9 +3719,8 @@ class Actions
 								'Secure' => $oAccount->Domain()->OutSecure(),
 								'UseAuth' => $oAccount->Domain()->OutAuth(),
 								'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
-								'Login' => $oAccount->Login(),
+								'Login' => $oAccount->OutLogin(),
 								'Password' => $oAccount->Password(),
-								'UseShortLogin' => $oAccount->Domain()->OutShortLogin(),
 								'HiddenRcpt' => array()
 							);
 
@@ -3727,13 +3741,7 @@ class Actions
 							{
 								if ($aSmtpCredentials['UseAuth'])
 								{
-									$sLogin = $aSmtpCredentials['Login'];
-									if ($aSmtpCredentials['UseShortLogin'])
-									{
-										$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin);
-									}
-
-									$oSmtpClient->Login($sLogin, $aSmtpCredentials['Password']);
+									$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
 								}
 							}
 
@@ -4953,7 +4961,7 @@ class Actions
 			{
 				$this->MailClient()
 					->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
-					->Login($oAccount->Login(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
+					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
 				;
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
@@ -5175,6 +5183,7 @@ class Actions
 	private function setupInformation()
 	{
 		$aResult = array(
+			'hash' => \file_exists(APP_DATA_FOLDER_PATH.'HASH') ? @\file_get_contents(APP_DATA_FOLDER_PATH.'HASH') : '',
 			'version-full' => APP_VERSION,
 		);
 

@@ -178,11 +178,18 @@ class Service
 				$bCached = true;
 			}
 
+			$sAppHash = '';
+			if (\file_exists(APP_DATA_FOLDER_PATH.'HASH'))
+			{
+				$sAppHash = @\file_get_contents(APP_DATA_FOLDER_PATH.'HASH');
+			}
+
 			$sResult .= '<!--';
 			$sResult .= ' [version:'.APP_VERSION;
 			$sResult .= '][time:'.substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][session:'.md5(\RainLoop\Utils::GetShortToken());
+			$sResult .= '][hash:'.$sAppHash;
 			$sResult .= '] -->';
 		}
 

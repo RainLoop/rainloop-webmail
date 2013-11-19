@@ -377,7 +377,7 @@ class Social
 							{
 								$aUserData = array(
 									'Email' => $oAccount->Email(),
-									'Login' => $oAccount->Login(),
+									'Login' => $oAccount->IncLogin(),
 									'Password' => $oAccount->Password()
 								);
 
@@ -489,7 +489,7 @@ class Social
 						{
 							$aUserData = array(
 								'Email' => $oAccount->Email(),
-								'Login' => $oAccount->Login(),
+								'Login' => $oAccount->IncLogin(),
 								'Password' => $oAccount->Password()
 							);
 
@@ -652,7 +652,7 @@ class Social
 
 									$aUserData = array(
 										'Email' => $oAccount->Email(),
-										'Login' => $oAccount->Login(),
+										'Login' => $oAccount->IncLogin(),
 										'Password' => $oAccount->Password()
 									);
 
