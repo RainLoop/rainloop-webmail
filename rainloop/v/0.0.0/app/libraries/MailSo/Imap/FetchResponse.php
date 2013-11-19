@@ -23,17 +23,17 @@ class FetchResponse
 	 *
 	 * @param \MailSo\Imap\Response $oImapResponse
 	 */
-	private function __construct(&$oImapResponse)
+	private function __construct($oImapResponse)
 	{
-		$this->oImapResponse =& $oImapResponse;
+		$this->oImapResponse = $oImapResponse;
 		$this->aEnvelopeCache = null;
 	}
 
 	/**
-	 * @param \MailSo\Imap\Response &$oImapResponse
+	 * @param \MailSo\Imap\Response $oImapResponse
 	 * @return \MailSo\Imap\FetchResponse
 	 */
-	public static function NewInstance(&$oImapResponse)
+	public static function NewInstance($oImapResponse)
 	{
 		return new self($oImapResponse);
 	}
@@ -133,22 +133,22 @@ class FetchResponse
 	 *
 	 * @return mixed
 	 */
-	public function &GetFetchValue($sFetchItemName)
+	public function GetFetchValue($sFetchItemName)
 	{
 		$mReturn = null;
 		$bNextIsValue = false;
 
 		if (Enumerations\FetchType::INDEX === $sFetchItemName)
 		{
-			$mReturn =& $this->oImapResponse->ResponseList[1];
+			$mReturn = $this->oImapResponse->ResponseList[1];
 		}
 		else
 		{
-			foreach ($this->oImapResponse->ResponseList[3] as &$mItem)
+			foreach ($this->oImapResponse->ResponseList[3] as $mItem)
 			{
 				if ($bNextIsValue)
 				{
-					$mReturn =& $mItem;
+					$mReturn = $mItem;
 					break;
 				}
 
@@ -176,7 +176,7 @@ class FetchResponse
 
 		if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
 		{
-			foreach ($this->oImapResponse->ResponseList[3] as &$mItem)
+			foreach ($this->oImapResponse->ResponseList[3] as $mItem)
 			{
 				if ($bNextIsValue)
 				{

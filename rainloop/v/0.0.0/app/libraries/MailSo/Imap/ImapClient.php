@@ -898,7 +898,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$aReturn = array();
 		$oImapResponse = null;
-		foreach ($aResult as &$oImapResponse)
+		foreach ($aResult as $oImapResponse)
 		{
 			if (FetchResponse::IsValidFetchImapResponse($oImapResponse))
 			{
@@ -1089,13 +1089,13 @@ class ImapClient extends \MailSo\Net\NetClient
 	private function validateThreadItem($aValue)
 	{
 		$mResult = false;
-		if (is_numeric($aValue))
+		if (\is_numeric($aValue))
 		{
 			$mResult = (int) $aValue;
 		}
-		else if (is_array($aValue))
+		else if (\is_array($aValue))
 		{
-			if (1 === count($aValue) && is_numeric($aValue[0]))
+			if (1 === count($aValue) && \is_numeric($aValue[0]))
 			{
 				$mResult = (int) $aValue[0];
 			}
