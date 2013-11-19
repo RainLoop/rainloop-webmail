@@ -4083,10 +4083,10 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-languages-content.modal {
   z-index: 1103;
-  width: 520px;
+  width: 500px;
 }
 .popups .b-languages-content.exp {
-  width: 521px;
+  width: 501px;
 }
 .popups .b-languages-content .modal-header {
   background-color: #fff;
@@ -4095,7 +4095,7 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   display: inline-block;
   padding: 5px 15px;
   margin: 2px 5px;
-  width: 200px;
+  width: 180px;
   background-color: #fff;
   text-align: left;
 }
@@ -5376,6 +5376,12 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-admin-right .b-settings-content {
   padding: 20px;
+}
+.b-admin-general .flag-selector {
+  padding-top: 5px;
+}
+.b-admin-general .flag-name {
+  border-bottom: 1px dashed #555;
 }
 .b-admin-domains .process-place {
   width: 600px;
