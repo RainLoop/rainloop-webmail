@@ -291,7 +291,7 @@ class Actions
 			if ($oAccount)
 			{
 				$sFileName = \str_replace('{user:email}', \strtolower($oAccount->Email()), $sFileName);
-				$sFileName = \str_replace('{user:login}', $oAccount->Login(), $sFileName);
+				$sFileName = \str_replace('{user:login}', $oAccount->IncLogin(), $sFileName);
 				$sFileName = \str_replace('{user:domain}', \strtolower($oAccount->Domain()->Name()), $sFileName);
 			}
 
@@ -876,7 +876,7 @@ class Actions
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'SuggestionsLimit' => (int) $oConfig->Get('labs', 'suggestions_limit', 50),
-			'RemoteChangePassword' => false,
+			'AllowChangePassword' => false,
 			'ContactsIsSupported' => (bool) $this->ContactsProvider()->IsSupported(),
 			'ContactsIsAllowed' => (bool) $this->ContactsProvider()->IsActive(),
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
@@ -898,11 +898,12 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{
-				$aResult['Email'] = $oAccount->Email();
-				$aResult['Login'] = $oAccount->Login();
 				$aResult['Auth'] = true;
+				$aResult['Email'] = $oAccount->Email();
+				$aResult['IncLogin'] = $oAccount->IncLogin();
+				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
-				$aResult['RemoteChangePassword'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
+				$aResult['AllowChangePassword'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 			}
@@ -1198,15 +1199,9 @@ class Actions
 
 		try
 		{
-			$sLogin = $oAccount->Login();
-			if ($oAccount->Domain()->IncShortLogin())
-			{
-				$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin);
-			}
-
 			$this->MailClient()
 				->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
-				->Login($sLogin, $oAccount->Password())
+				->Login($oAccount->IncLogin(), $oAccount->Password())
 			;
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
@@ -3724,9 +3719,8 @@ class Actions
 								'Secure' => $oAccount->Domain()->OutSecure(),
 								'UseAuth' => $oAccount->Domain()->OutAuth(),
 								'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
-								'Login' => $oAccount->Login(),
+								'Login' => $oAccount->OutLogin(),
 								'Password' => $oAccount->Password(),
-								'UseShortLogin' => $oAccount->Domain()->OutShortLogin(),
 								'HiddenRcpt' => array()
 							);
 
@@ -3747,13 +3741,7 @@ class Actions
 							{
 								if ($aSmtpCredentials['UseAuth'])
 								{
-									$sLogin = $aSmtpCredentials['Login'];
-									if ($aSmtpCredentials['UseShortLogin'])
-									{
-										$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin);
-									}
-
-									$oSmtpClient->Login($sLogin, $aSmtpCredentials['Password']);
+									$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
 								}
 							}
 
@@ -4973,7 +4961,7 @@ class Actions
 			{
 				$this->MailClient()
 					->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
-					->Login($oAccount->Login(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
+					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
 				;
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)

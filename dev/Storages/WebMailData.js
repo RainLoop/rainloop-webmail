@@ -34,14 +34,14 @@ function WebMailDataStorage()
 	this.devPassword = '';
 
 	this.accountEmail = ko.observable('');
-	this.accountLogin = ko.observable('');
+	this.accountIncLogin = ko.observable('');
+	this.accountOutLogin = ko.observable('');
 	this.projectHash = ko.observable('');
 
 	this.threading = ko.observable(false);
 	this.lastFoldersHash = '';
 
 	this.remoteSuggestions = false;
-	this.remoteChangePassword = false;
 
 	// system folders
 	this.sentFolder = ko.observable('');
@@ -389,7 +389,8 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	AbstractData.prototype.populateDataOnStart.call(this);
 
 	this.accountEmail(RL.settingsGet('Email'));
-	this.accountLogin(RL.settingsGet('Login'));
+	this.accountIncLogin(RL.settingsGet('IncLogin'));
+	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
 	
 	this.displayName(RL.settingsGet('DisplayName'));
@@ -399,7 +400,6 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
 	this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
-	this.remoteChangePassword = !!RL.settingsGet('RemoteChangePassword');
 
 	this.devEmail = RL.settingsGet('DevEmail');
 	this.devLogin = RL.settingsGet('DevLogin');

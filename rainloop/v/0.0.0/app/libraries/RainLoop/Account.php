@@ -96,9 +96,37 @@ class Account
 	/**
 	 * @return string
 	 */
+	public function IncLogin()
+	{
+		$sLogin = $this->sLogin;
+		if ($this->oDomain->IncShortLogin())
+		{
+			$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin);
+		}
+
+		return $sLogin;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function OutLogin()
+	{
+		$sLogin = $this->sLogin;
+		if ($this->oDomain->OutShortLogin())
+		{
+			$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin);
+		}
+
+		return $sLogin;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function Login()
 	{
-		return $this->sLogin;
+		return $this->IncLogin();
 	}
 
 	/**
