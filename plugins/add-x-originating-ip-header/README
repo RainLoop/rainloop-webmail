@@ -1,0 +1,1 @@
+Adds X-Originating-IP header to outgoing message, containing sender's IP address.
