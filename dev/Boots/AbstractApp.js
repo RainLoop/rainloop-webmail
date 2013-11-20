@@ -143,15 +143,12 @@ AbstractApp.prototype.settingsSet = function (sName, mValue)
 AbstractApp.prototype.setTitle = function (sTitle)
 {
 	sTitle = ((0 < sTitle.length) ? sTitle + ' - ' : '') +
-		this.settingsGet('Title') || '';
+		RL.settingsGet('Title') || '';
 
-	if (sTitle !== window.document.title)
-	{
+	window.document.title = sTitle;
+	_.delay(function () {
 		window.document.title = sTitle;
-		_.delay(function () {
-			window.document.title = sTitle;
-		}, 5);
-	}
+	}, 5);
 };
 
 /**
@@ -161,8 +158,8 @@ AbstractApp.prototype.setTitle = function (sTitle)
 AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 {
 	var
-		sCustomLogoutLink = Utils.pString(this.settingsGet('CustomLogoutLink')),
-		bInIframe = !!this.settingsGet('InIframe')
+		sCustomLogoutLink = Utils.pString(RL.settingsGet('CustomLogoutLink')),
+		bInIframe = !!RL.settingsGet('InIframe')
 	;
 
 	bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;

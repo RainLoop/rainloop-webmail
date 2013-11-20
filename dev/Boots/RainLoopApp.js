@@ -19,7 +19,7 @@ function RainLoopApp()
 
 	$.wakeUp(function (iSleepTime) {
 		RL.remote().jsInfo(Utils.emptyFunction, {
-			'Version': this.settingsGet('Version'),
+			'Version': RL.settingsGet('Version'),
 			'WakeUpTime': Math.round(iSleepTime / 1000)
 		}, true);
 	}, {}, 60 * 60 * 1000);
@@ -564,23 +564,23 @@ RainLoopApp.prototype.bootstart = function ()
 
 	var
 		sCustomLoginLink = '',
-		sJsHash = this.settingsGet('JsHash'),
-		bGoogle = this.settingsGet('AllowGoogleSocial'),
-		bFacebook = this.settingsGet('AllowFacebookSocial'),
-		bTwitter = this.settingsGet('AllowTwitterSocial')
+		sJsHash = RL.settingsGet('JsHash'),
+		bGoogle = RL.settingsGet('AllowGoogleSocial'),
+		bFacebook = RL.settingsGet('AllowFacebookSocial'),
+		bTwitter = RL.settingsGet('AllowTwitterSocial')
 	;
 	
-	if (!this.settingsGet('AllowChangePassword'))
+	if (!RL.settingsGet('AllowChangePassword'))
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}
 	
-	if (!this.settingsGet('AllowAdditionalAccounts'))
+	if (!RL.settingsGet('AllowAdditionalAccounts'))
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);
 	}
 	
-	if (this.settingsGet('AllowIdentities'))
+	if (RL.settingsGet('AllowIdentities'))
 	{
 		Utils.removeSettingsViewModel(SettingsIdentity);
 	}
@@ -594,7 +594,7 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsSocialScreen);
 	}
 	
-	if (!this.settingsGet('AllowThemes'))
+	if (!RL.settingsGet('AllowThemes'))
 	{
 		Utils.removeSettingsViewModel(SettingsThemes);
 	}
@@ -625,7 +625,7 @@ RainLoopApp.prototype.bootstart = function ()
 		window.SimplePace.sleep();
 	}
 
-	if (!!this.settingsGet('Auth'))
+	if (!!RL.settingsGet('Auth'))
 	{
 		this.setTitle(Utils.i18n('TITLES/LOADING'));
 
@@ -699,7 +699,7 @@ RainLoopApp.prototype.bootstart = function ()
 	}
 	else
 	{
-		sCustomLoginLink = Utils.pString(this.settingsGet('CustomLoginLink'));
+		sCustomLoginLink = Utils.pString(RL.settingsGet('CustomLoginLink'));
 		if (!sCustomLoginLink)
 		{
 			kn.hideLoading();

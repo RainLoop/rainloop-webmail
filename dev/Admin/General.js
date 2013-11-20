@@ -35,20 +35,6 @@ function AdminGeneral()
 		return Utils.convertLangName(this.mainLanguage());
 	}, this);
 	
-	this.languagesOptions = ko.computed(function () {
-		return _.map(oData.languages(), function (sLanguage) {
-			var
-				sName = Utils.convertLangName(sLanguage),
-				sEn = Utils.convertLangName(sLanguage, true)
-			;
-
-			return {
-				'optValue': sLanguage,
-				'optText': sName + (sEn !== sName ? ' (' + sEn + ')' : '')
-			};
-		});
-	});
-
 	this.contactsSupported = RL.settingsGet('ContactsIsSupported');
 	this.contactsIsAllowed = RL.settingsGet('ContactsIsAllowed');
 	this.weakPassword = !!RL.settingsGet('WeakPassword');

@@ -200,7 +200,7 @@ AdminApp.prototype.bootstart = function ()
 
 	kn.hideLoading();
 
-	if (!this.settingsGet('AllowAdminPanel'))
+	if (!RL.settingsGet('AllowAdminPanel'))
 	{
 		kn.routeOff();
 		kn.setHash(RL.link().root(), true);
@@ -212,10 +212,10 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
-		if (!!this.settingsGet('Auth'))
+		if (!!RL.settingsGet('Auth'))
 		{
 // TODO
-//			if (!this.settingsGet('AllowPackages') && AdminPackages)
+//			if (!RL.settingsGet('AllowPackages') && AdminPackages)
 //			{
 //				Utils.disableSettingsViewModel(AdminPackages);
 //			}

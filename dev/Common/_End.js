@@ -8,16 +8,16 @@ $window.unload(function () {
 });
 
 // export
-window.rl = window.rl || {};
-window.rl.addHook = Plugins.addHook;
-window.rl.settingsGet = Plugins.mainSettingsGet;
-window.rl.remoteRequest = Plugins.remoteRequest;
-window.rl.pluginSettingsGet = Plugins.settingsGet;
-window.rl.addSettingsViewModel = Utils.addSettingsViewModel;
-window.rl.createCommand = Utils.createCommand;
+window['rl'] = window['rl'] || {};
+window['rl']['addHook'] = Plugins.addHook;
+window['rl']['settingsGet'] = Plugins.mainSettingsGet;
+window['rl']['remoteRequest'] = Plugins.remoteRequest;
+window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
+window['rl']['addSettingsViewModel'] = Utils.addSettingsViewModel;
+window['rl']['createCommand'] = Utils.createCommand;
 
-window.rl.EmailModel = EmailModel;
-window.rl.Enums = Enums;
+window['rl']['EmailModel'] = EmailModel;
+window['rl']['Enums'] = Enums;
 
 window['__RLBOOT'] = function (fCall) {
 

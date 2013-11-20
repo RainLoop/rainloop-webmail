@@ -5183,7 +5183,7 @@ class Actions
 	private function setupInformation()
 	{
 		$aResult = array(
-			'hash' => \file_exists(APP_DATA_FOLDER_PATH.'HASH') ? @\file_get_contents(APP_DATA_FOLDER_PATH.'HASH') : '',
+			'hash' => \file_exists(APP_DATA_FOLDER_PATH.'HASH') ? \md5(@\file_get_contents(APP_DATA_FOLDER_PATH.'HASH')) : '',
 			'version-full' => APP_VERSION,
 		);
 

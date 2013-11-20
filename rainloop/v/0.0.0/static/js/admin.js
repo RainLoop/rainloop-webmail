@@ -4787,20 +4787,6 @@ function AdminGeneral()
 		return Utils.convertLangName(this.mainLanguage());
 	}, this);
 	
-	this.languagesOptions = ko.computed(function () {
-		return _.map(oData.languages(), function (sLanguage) {
-			var
-				sName = Utils.convertLangName(sLanguage),
-				sEn = Utils.convertLangName(sLanguage, true)
-			;
-
-			return {
-				'optValue': sLanguage,
-				'optText': sName + (sEn !== sName ? ' (' + sEn + ')' : '')
-			};
-		});
-	});
-
 	this.contactsSupported = RL.settingsGet('ContactsIsSupported');
 	this.contactsIsAllowed = RL.settingsGet('ContactsIsAllowed');
 	this.weakPassword = !!RL.settingsGet('WeakPassword');
@@ -6498,15 +6484,12 @@ AbstractApp.prototype.settingsSet = function (sName, mValue)
 AbstractApp.prototype.setTitle = function (sTitle)
 {
 	sTitle = ((0 < sTitle.length) ? sTitle + ' - ' : '') +
-		this.settingsGet('Title') || '';
+		RL.settingsGet('Title') || '';
 
-	if (sTitle !== window.document.title)
-	{
+	window.document.title = sTitle;
+	_.delay(function () {
 		window.document.title = sTitle;
-		_.delay(function () {
-			window.document.title = sTitle;
-		}, 5);
-	}
+	}, 5);
 };
 
 /**
@@ -6516,8 +6499,8 @@ AbstractApp.prototype.setTitle = function (sTitle)
 AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 {
 	var
-		sCustomLogoutLink = Utils.pString(this.settingsGet('CustomLogoutLink')),
-		bInIframe = !!this.settingsGet('InIframe')
+		sCustomLogoutLink = Utils.pString(RL.settingsGet('CustomLogoutLink')),
+		bInIframe = !!RL.settingsGet('InIframe')
 	;
 
 	bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
@@ -6781,7 +6764,7 @@ AdminApp.prototype.bootstart = function ()
 
 	kn.hideLoading();
 
-	if (!this.settingsGet('AllowAdminPanel'))
+	if (!RL.settingsGet('AllowAdminPanel'))
 	{
 		kn.routeOff();
 		kn.setHash(RL.link().root(), true);
@@ -6793,10 +6776,10 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
-		if (!!this.settingsGet('Auth'))
+		if (!!RL.settingsGet('Auth'))
 		{
 // TODO
-//			if (!this.settingsGet('AllowPackages') && AdminPackages)
+//			if (!RL.settingsGet('AllowPackages') && AdminPackages)
 //			{
 //				Utils.disableSettingsViewModel(AdminPackages);
 //			}
@@ -6836,16 +6819,16 @@ $window.unload(function () {
 });
 
 // export
-window.rl = window.rl || {};
-window.rl.addHook = Plugins.addHook;
-window.rl.settingsGet = Plugins.mainSettingsGet;
-window.rl.remoteRequest = Plugins.remoteRequest;
-window.rl.pluginSettingsGet = Plugins.settingsGet;
-window.rl.addSettingsViewModel = Utils.addSettingsViewModel;
-window.rl.createCommand = Utils.createCommand;
+window['rl'] = window['rl'] || {};
+window['rl']['addHook'] = Plugins.addHook;
+window['rl']['settingsGet'] = Plugins.mainSettingsGet;
+window['rl']['remoteRequest'] = Plugins.remoteRequest;
+window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
+window['rl']['addSettingsViewModel'] = Utils.addSettingsViewModel;
+window['rl']['createCommand'] = Utils.createCommand;
 
-window.rl.EmailModel = EmailModel;
-window.rl.Enums = Enums;
+window['rl']['EmailModel'] = EmailModel;
+window['rl']['Enums'] = Enums;
 
 window['__RLBOOT'] = function (fCall) {
 
