@@ -298,53 +298,62 @@ class HtmlUtils
 				// convert body attributes to styles
 				if ('body' === $sTagNameLower)
 				{
-					$aMargins = array(
-						$oElement->hasAttribute('topmargin')
-							? \trim($oElement->getAttribute('topmargin')) : '',
-						$oElement->hasAttribute('leftmargin')
-							? \trim($oElement->getAttribute('leftmargin')) : '',
-						$oElement->hasAttribute('bottommargin')
-							? \trim($oElement->getAttribute('bottommargin')) : '',
-						$oElement->hasAttribute('rightmargin')
-							? \trim($oElement->getAttribute('rightmargin')) : '',
+					$aAttrs = array(
+						'text' => '',
+						'topmargin' => '',
+						'leftmargin' => '',
+						'bottommargin' => '',
+						'rightmargin' => ''
 					);
-
-					$sText = $oElement->hasAttribute('text') ? \trim($oElement->getAttribute('text')) : '';
-
-					$aStyles = array();
-					if (!empty($sText))
+					
+					if (isset($oElement->attributes))
 					{
-						$aStyles[] = 'color: '.$sText;
-						$oElement->removeAttribute('text');
+						foreach ($oElement->attributes as $sAttributeName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
+						{
+							if ($oAttributeNode && isset($oAttributeNode->nodeValue))
+							{
+								$sAttributeNameLower = \strtolower($sAttributeName);
+								if (isset($aAttrs[$sAttributeNameLower]) && '' === $aAttrs[$sAttributeNameLower])
+								{
+									$aAttrs[$sAttributeNameLower] = array($sAttributeName, \trim($oAttributeNode->nodeValue));
+								}
+							}
+						}
 					}
 
-					foreach ($aMargins as $iIndex => $sItem)
+					$aStyles = array();
+					foreach ($aAttrs as $sIndex => $aItem)
 					{
-						if ('' !== $sItem)
+						if (\is_array($aItem))
 						{
-							switch ($iIndex) {
-								case 0:
-									$aStyles[] = 'margin-top: '.((int) $sItem).'px';
-									$oElement->removeAttribute('topmargin');
+							$oElement->removeAttribute($aItem[0]);
+							
+							switch ($sIndex)
+							{
+								case 'text':
+									$aStyles[] = 'color: '.$aItem[1];
 									break;
-								case 1:
-									$aStyles[] = 'margin-left: '.((int) $sItem).'px';
-									$oElement->removeAttribute('leftmargin');
+								case 'topmargin':
+									$aStyles[] = 'margin-top: '.((int) $aItem[1]).'px';
 									break;
-								case 2:
-									$aStyles[] = 'margin-bottom: '.((int) $sItem).'px';
-									$oElement->removeAttribute('bottommargin');
+								case 'leftmargin':
+									$aStyles[] = 'margin-left: '.((int) $aItem[1]).'px';
 									break;
-								case 3:
-									$aStyles[] = 'margin-right: '.((int) $sItem).'px';
-									$oElement->removeAttribute('rightmargin');
+								case 'bottommargin':
+									$aStyles[] = 'margin-bottom: '.((int) $aItem[1]).'px';
+									break;
+								case 'rightmargin':
+									$aStyles[] = 'margin-right: '.((int) $aItem[1]).'px';
 									break;
 							}
 						}
 					}
 
-					$sStyles = $oElement->hasAttribute('style') ? $oElement->getAttribute('style') : '';
-					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+					if (0 < \count($aStyles))
+					{
+						$sStyles = $oElement->hasAttribute('style') ? $oElement->getAttribute('style') : '';
+						$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+					}
 				}
 
 				if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
