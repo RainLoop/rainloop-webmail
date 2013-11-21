@@ -143,18 +143,12 @@ class Service
 
 			$aData = $this->startUpData($bAdmin);
 
-			$sAppHash = '';
-			if (\file_exists(APP_DATA_FOLDER_PATH.'HASH'))
-			{
-				$sAppHash = md5(@\file_get_contents(APP_DATA_FOLDER_PATH.'HASH'));
-			}
-
 			$bCacheEnabled = $this->oActions->Config()->Get('labs', 'cache_system_data', true);
 
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = 'TMPL:'.$aData['Hash'].'/'.$sAppHash;
+				$sCacheFileName = 'TMPL:'.$aData['Hash'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
@@ -189,7 +183,6 @@ class Service
 			$sResult .= '][time:'.substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][session:'.md5(\RainLoop\Utils::GetShortToken());
-			$sResult .= '][hash:'.$sAppHash;
 			$sResult .= '] -->';
 		}
 
