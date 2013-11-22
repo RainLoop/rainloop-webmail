@@ -601,7 +601,7 @@ class HtmlUtils
 		$sResult = \MailSo\Base\HtmlUtils::ClearTags($sResult);
 		$sResult = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sResult);
 
-		return '<!DOCTYPE html><html'.($bRtl ? ' dir="rtl"' : '').'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><head>'.
+		return '<!DOCTYPE html><html'.($bRtl ? ' dir="rtl"' : '').'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.
 			'<body>'.\trim($sResult).'</body></html>';
 	}
 
