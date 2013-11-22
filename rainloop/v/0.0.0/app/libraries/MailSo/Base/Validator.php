@@ -15,13 +15,8 @@ class Validator
 	 */
 	public static function EmailString($sEmail)
 	{
-		$bResult = false;
-		if (self::NotEmptyString($sEmail))
-		{
-			$bResult = (bool) \preg_match('/^[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*@[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*$/', $sEmail);
-		}
-
-		return $bResult;
+		return self::NotEmptyString($sEmail) && 
+			\filter_var($sEmail, FILTER_VALIDATE_EMAIL);
 	}
 
 	/**
@@ -32,18 +27,8 @@ class Validator
 	 */
 	public static function NotEmptyString($sString, $bTrim = false)
 	{
-		$bResult = false;
-		if (\is_string($sString))
-		{
-			if ($bTrim)
-			{
-				$sString = \trim($sString);
-			}
-
-			$bResult = 0 < \strlen($sString);
-		}
-
-		return $bResult;
+		return is_string($sString) &&
+			(0 < \strlen($bTrim?\trim($sString):$sString));
 	}
 
 	/**
@@ -65,22 +50,9 @@ class Validator
 	 */
 	public static function RangeInt($iNumber, $iMin = null, $iMax = null)
 	{
-		$bResult = false;
-		if (\is_int($iNumber))
-		{
-			$bResult = true;
-			if ($bResult && null !== $iMin)
-			{
-				$bResult = $iNumber >= $iMin;
-			}
-
-			if ($bResult && null !== $iMax)
-			{
-				$bResult = $iNumber <= $iMax;
-			}
-		}
-
-		return $bResult;
+		return \is_int($iNumber) &&
+			(null !== $iMin && $iNumber >= $iMin || null === $iMin) &&
+			(null !== $iMax && $iNumber <= $iMax || null === $iMax);
 	}
 
 	/**
