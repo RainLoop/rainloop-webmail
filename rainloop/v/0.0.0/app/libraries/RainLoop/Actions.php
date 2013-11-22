@@ -2318,6 +2318,7 @@ class Actions
 								'version' => $oItem->version,
 								'file' => $oItem->file,
 								'release' => $oItem->release,
+								'release_notes' => isset($oItem->{'release_notes'}) ? $oItem->{'release_notes'} : '',
 								'desc' => $oItem->description
 							);
 						}
@@ -2332,6 +2333,7 @@ class Actions
 							'version' => $oItem->version,
 							'file' => $oItem->file,
 							'release' => $oItem->release,
+							'release_notes' => isset($oItem->{'release_notes'}) ? $oItem->{'release_notes'} : '',
 							'desc' => $oItem->description
 						);
 					}
@@ -2379,6 +2381,7 @@ class Actions
 				'version' => '',
 				'file' => '',
 				'release' => '',
+				'release_notes' => '',
 				'desc' => ''
 			));
 		}
@@ -2413,6 +2416,7 @@ class Actions
 						'version' => '',
 						'file' => '',
 						'release' => '',
+						'release_notes' => '',
 						'desc' => ''
 					));
 				}
