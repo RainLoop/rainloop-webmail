@@ -28,7 +28,8 @@ class Contacts extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Contacts\ContactsInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Contacts\ContactsInterface &&
+			$this->oDriver->IsSupported();
 	}
 
 	/**

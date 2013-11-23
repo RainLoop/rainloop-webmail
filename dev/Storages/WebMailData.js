@@ -357,7 +357,7 @@ WebMailDataStorage.prototype.purgeMessageBodyCache = function()
 	var
 		iCount = 0,
 		oMessagesBodiesDom = null,
-		iEnd = Globals.iMessageBodyCacheCount - Consts.Values.iMessageBodyCacheLimit
+		iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
 	;
 	
 	if (0 < iEnd)

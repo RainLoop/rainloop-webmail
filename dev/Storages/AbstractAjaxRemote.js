@@ -43,12 +43,12 @@ AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequ
 					Globals.iTokenErrorCount++;
 				}
 
-				if (10 < Globals.iTokenErrorCount)
+				if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
 				{
 					RL.loginAndLogoutReload(true);
 				}
 
-				if (oData.Logout || 7 < Globals.iAjaxErrorCount)
+				if (oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
 				{
 					if (window.__rlah_clear)
 					{

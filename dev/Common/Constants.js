@@ -86,7 +86,19 @@ Consts.Values.SmtpDefaulSecurePort = 465;
  * @const
  * @type {number}
  */
-Consts.Values.iMessageBodyCacheLimit = 15;
+Consts.Values.MessageBodyCacheLimit = 15;
+
+/**
+ * @const
+ * @type {number}
+ */
+Consts.Values.AjaxErrorLimit = 7;
+
+/**
+ * @const
+ * @type {number}
+ */
+Consts.Values.TokenErrorLimit = 10;
 
 /**
  * @const
