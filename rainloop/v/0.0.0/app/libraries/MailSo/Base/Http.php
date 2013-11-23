@@ -530,23 +530,25 @@ class Http
 	 */
 	public function StatusHeader($iStatus, $sCustomStatusText = '')
 	{
-		switch ($iStatus)
+		$iStatus = (int) $iStatus;
+		if (99 < $iStatus)
 		{
-			default:
-				\header('Status: '.$iStatus, true, $iStatus);
-				break;
-			case 304:
-				\header($this->ServerProtocol().' 304 '.(0 === \strlen($sCustomStatusText) ? 'Not Modified' : $sCustomStatusText), true, $iStatus);
-				break;
-			case 200:
-				\header($this->ServerProtocol().' 200 '.(0 === \strlen($sCustomStatusText) ? 'OK' : $sCustomStatusText), true, $iStatus);
-				break;
-			case 401:
-				\header($this->ServerProtocol().' 401 '.(0 === \strlen($sCustomStatusText) ? 'Please sign in' : $sCustomStatusText), true, $iStatus);
-				break;
-			case 404:
-				\header($this->ServerProtocol().' 404 '.(0 === \strlen($sCustomStatusText) ? 'Not Found' : $sCustomStatusText), true, $iStatus);
-				break;
+			$aStatus = array(
+				301 => 'Moved Permanently',
+				304 => 'Not Modified',
+				200 => 'OK',
+				400 => 'Bad Request',
+				401 => 'Unauthorized',
+				403 => 'Forbidden',
+				404 => 'Not Found',
+				405 => 'Method Not Allowed'
+			);
+
+			$sCustomStatusText = \trim($sCustomStatusText);
+			$sHeaderHead = \ini_get('cgi.rfc2616_headers') && false !== \strpos(\strtolower(\php_sapi_name()), 'cgi') ? 'Status:' : $this->ServerProtocol();
+			$sHeaderText = (0 === \strlen($sCustomStatusText) && isset($aStatus[$iStatus]) ? $aStatus[$iStatus] : $sCustomStatusText);
+
+			\header(\trim($sHeaderHead.' '.$iStatus.' '.$sHeaderText), true, $iStatus);
 		}
 	}
 
