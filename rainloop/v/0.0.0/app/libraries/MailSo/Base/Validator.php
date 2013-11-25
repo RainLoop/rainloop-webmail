@@ -15,8 +15,13 @@ class Validator
 	 */
 	public static function EmailString($sEmail)
 	{
+		$eSplit = \explode("@", $sEmail);
 		return self::NotEmptyString($sEmail) && 
-			\filter_var($sEmail, FILTER_VALIDATE_EMAIL);
+			(!!\filter_var($sEmail, FILTER_VALIDATE_EMAIL) ||
+			 (\end($eSplit) === "localhost" && 
+			  !!\filter_var(($eSplit[0]."@example.com"), FILTER_VALIDATE_EMAIL)
+			 )
+			);
 	}
 
 	/**
@@ -27,7 +32,7 @@ class Validator
 	 */
 	public static function NotEmptyString($sString, $bTrim = false)
 	{
-		return is_string($sString) &&
+		return \is_string($sString) &&
 			(0 < \strlen($bTrim?\trim($sString):$sString));
 	}
 
