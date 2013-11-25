@@ -158,7 +158,9 @@ class Service
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), array(
 					'{{BaseAppDataScriptLink}}' => ($bAdmin ? APP_INDEX_FILE.'?/AdminAppData/' : APP_INDEX_FILE.'?/AppData/'),
 					'{{BaseAppIndexFile}}' => APP_INDEX_FILE,
-					'{{BaseAppFaviconFile}}' => $aData['FaviconLink'],
+					'{{BaseAppFaviconIcoFile}}' => $aData['FaviconIcoLink'],
+					'{{BaseAppFaviconPngFile}}' => $aData['FaviconPngLink'],
+					'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 					'{{BaseAppBootScriptSource}}' => $sJsBoot,
 					'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
@@ -242,7 +244,9 @@ class Service
 			'Theme' => $sTheme,
 			'Hash' => $this->generateIndexCacheHash($bAppJsDebug, $bAdmin),
 			'LoadingDescription' => $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop'),
-			'FaviconLink' => $sStaticPrefix.'favicon.png',
+			'FaviconIcoLink' => $sStaticPrefix.'favicon.ico',
+			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
+			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
 			'LibJsLink' => $sStaticPrefix.'js/libs.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js'
