@@ -91,7 +91,11 @@ abstract class NetClient
 	 */
 	public function __destruct()
 	{
-		$this->LogoutAndDisconnect();
+		try
+		{
+			$this->LogoutAndDisconnect();
+		}
+		catch (\Exception $oException) {}
 	}
 
 	/**
