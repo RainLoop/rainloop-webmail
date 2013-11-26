@@ -17,11 +17,20 @@ function RainLoopApp()
 
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 
-	$.wakeUp(function (iSleepTime) {
-		RL.remote().jsInfo(Utils.emptyFunction, {
-			'Version': RL.settingsGet('Version'),
-			'WakeUpTime': Math.round(iSleepTime / 1000)
-		}, true);
+	$.wakeUp(function () {
+		RL.remote().jsVersion(function (sResult, oData) {
+			if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
+			{
+				if (window.parent && !!RL.settingsGet('InIframe'))
+				{
+					window.parent.location.reload();
+				}
+				else
+				{
+					window.location.reload();
+				}
+			}
+		}, RL.settingsGet('Version'));
 	}, {}, 60 * 60 * 1000);
 }
 
@@ -521,10 +530,9 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 
 /**
  * @param {string} sQuery
- * @param {number} iPage
  * @param {Function} fCallback
  */
-RainLoopApp.prototype.getAutocomplete = function (sQuery, iPage, fCallback)
+RainLoopApp.prototype.getAutocomplete = function (sQuery, fCallback)
 {
 	var
 		aData = []
@@ -537,13 +545,13 @@ RainLoopApp.prototype.getAutocomplete = function (sQuery, iPage, fCallback)
 				return aItem && aItem[0] ? new EmailModel(aItem[0], aItem[1]) : null;
 			});
 
-			fCallback(_.compact(aData), !!oData.Result.More);
+			fCallback(_.compact(aData));
 		}
 		else if (Enums.StorageResultType.Abort !== sResult)
 		{
-			fCallback([], false);
+			fCallback([]);
 		}
-	}, sQuery, iPage);
+	}, sQuery);
 };
 
 RainLoopApp.prototype.emailsPicsHashes = function ()

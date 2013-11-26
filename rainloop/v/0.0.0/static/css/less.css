@@ -3449,61 +3449,56 @@ html.no-rgba .modal {
 .picker.picker-dialog {
   z-index: 2001 !important;
 }
-.select2-container-multi .select2-choices {
-  background-image: none;
-  border: 1px solid #cccccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.select2-container-multi .select2-choices .select2-search-choice {
-  line-height: 15px;
-  font-size: 16px;
-}
-.select2-container-multi.select2-container-active .select2-choices {
-  border: 1px solid #999999;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-.select2-drop {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-.select2-drop .select2-subname {
-  color: #777;
-}
-.select2-drop .select2-highlighted .select2-subname {
-  color: #eee;
-}
-.select2-results {
-  margin: 0;
-  padding: 0;
-  max-height: 400px;
-}
-.select2-results .select2-searching {
-  padding: 1px 4px;
-}
-.select2-icon {
+.inputosaurus-container {
+  width: 99%;
   line-height: 20px;
-  padding: 0 0 0 7px;
+  padding: 2px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear .2s, box-shadow linear .2s;
+  -moz-transition: border linear .2s, box-shadow linear .2s;
+  -o-transition: border linear .2s, box-shadow linear .2s;
+  transition: border linear .2s, box-shadow linear .2s;
 }
-.select2-icon-result {
-  line-height: 40px;
+.inputosaurus-container li {
+  max-width: 500px;
+  background-color: #eee;
+  border: 1px solid #aaa;
+  line-height: 18px;
+  padding: 2px 4px;
+  margin: 2px 2px 2px;
+  color: #555;
 }
-.select2-result-label {
-  margin: 0px !important;
-  padding: 5px !important;
-  font-size: 16px;
-  height: 40px;
-  line-height: 40px;
+.inputosaurus-container li a {
+  color: #999;
+  float: right;
+  font-size: 14px;
 }
-.select2-result-label .select2-user-pic {
-  display: inline-block;
-  height: 40px;
-  width: 40px;
-  margin-right: 10px;
+.inputosaurus-container li a:hover {
+  color: #666;
+}
+.inputosaurus-container li.inputosaurus-selected {
+  background-color: #ddd;
+}
+.inputosaurus-container .inputosaurus-fake-span {
+  position: absolute;
+  top: 0;
+  left: -5000px;
+}
+.inputosaurus-container .inputosaurus-input {
+  margin: 2px 10px 2px 0px;
+  height: 22px;
+}
+.inputosaurus-container .inputosaurus-input input {
+  border: 0px;
+  height: 21px;
+  padding-left: 0;
+}
+.ui-autocomplete {
+  z-index: 2000;
 }
 .g-ui-user-select-none {
   -webkit-user-select: none;
@@ -5206,10 +5201,6 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-compose .b-header .e-row {
   line-height: 30px;
 }
-.b-compose .b-header .e-delimiter-row {
-  line-height: 2px;
-  height: 5px;
-}
 .b-compose .b-header .e-label {
   text-align: right;
   width: 1%;
@@ -5225,9 +5216,6 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-compose .b-header .e-value textarea {
   height: 40px;
-}
-.b-compose .b-header .e-value .select2-container {
-  width: 100%;
 }
 .b-compose .b-header .error-desc {
   color: red;

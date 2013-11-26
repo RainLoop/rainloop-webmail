@@ -204,10 +204,9 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 
 /**
  * @param {string} sQuery
- * @param {number} iPage
  * @param {Function} fCallback
  */
-AbstractApp.prototype.getAutocomplete = function (sQuery, iPage, fCallback)
+AbstractApp.prototype.getAutocomplete = function (sQuery, fCallback)
 {
 	fCallback([], sQuery);
 };

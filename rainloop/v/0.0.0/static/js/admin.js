@@ -2524,167 +2524,55 @@ ko.bindingHandlers.saveTrigger = {
 	}
 };
 
-ko.bindingHandlers.select2 = {
+ko.bindingHandlers.emailsTags = {
     'init': function(oElement, fValueAccessor) {
-
 		var
-			iTimer = 0,
-			iTimeout = 100,
-			oMatch = null,
-			oReg = new window.RegExp(/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+/),
-			oReg2 = new window.RegExp(/(.+) [<]?([^\s<@]+@[a-zA-Z0-9\.\-_]+)[>]?/),
-			sEmptyTranslateFunction = function () {
-				return '';
-			},
-			/**
-			 * @param {{term:string, callback:Function, matcher:Function}} oCall
-			 */
-			fLazyAutocomplete = function (oCall) {
+			$oEl = $(oElement),
+			fValue = fValueAccessor()
+		;
 
-				RL.getAutocomplete(oCall['term'], oCall['page'], function (aData, bMore) {
-					oCall.callback({
-						'more': !!bMore,
-						'results': _.map(aData, function (oEmailItem) {
-							var sName = oEmailItem.toLine(false);
-							return {
-								'id': sName,
-								'text': sName,
-								'c': oEmailItem
-							};
-						})
-					});
+		$oEl.inputosaurus({
+			'parseOnBlur': true,
+			'inputDelimiters': [',', ';'],
+			'autoCompleteSource': function (oData, fResponse) {
+				RL.getAutocomplete(oData.term, function (aData) {
+					fResponse(_.map(aData, function (oEmailItem) {
+						return oEmailItem.toLine(false);
+					}));
 				});
-			}
-		;
-
-		$(oElement).addClass('ko-select2').select2({
-
-			/**
-			 * @param {{term:string, callback:Function, matcher:Function}} oCall
-			 */
-			'query': function (oCall) {
-				if (!oCall)
-				{
-					return;
-				}
-				
-//				if (RL.isLocalAutocomplete && false)
-//				{
-//					fLazyAutocomplete(oCall);
-//				}
-//				else
-//				{
-					if (0 === iTimer)
+			},
+			'parseHook': function (aInput) {
+				return _.map(aInput, function (sInputValue) {
+					
+					var sValue = Utils.trim(sInputValue), oEmail = null;
+					if ('' !== sValue)
 					{
-						fLazyAutocomplete(oCall);
-						iTimer = window.setTimeout(Utils.emptyFunction, iTimeout);
+						oEmail = new EmailModel();
+						oEmail.mailsoParse(sValue);
+						oEmail.clearDuplicateName();
+
+//						sValue = oEmail.toLine(false);
+//						return sValue;
+						return [oEmail.toLine(false), oEmail];
 					}
-					else
-					{
-						window.clearInterval(iTimer);
-						iTimer = window.setTimeout(function () {
-							fLazyAutocomplete(oCall);
-						}, iTimeout);
-					}
-//				}
+
+					return [sValue, null];
+
+				});
 			},
-			'formatSelection': function (oItem, oContainer) {
-				var sR = oItem && oItem.c ? oItem.c.select2Selection(oContainer) : oItem.text;
-				if (null !== sR)
-				{
-					return sR;
-				}
-			},
-			'formatResult': function (oItem, oContainer, oQuery, fEscapeMarkup) {
-				var sR = oItem && oItem.c ? oItem.c.select2Result(oContainer) : '';
-				return '' === sR ? fEscapeMarkup(oItem.text) : sR;
-			},
-			'createSearchChoice': function (sTerm, aList) {
-				return 0 === aList.length && oReg.test(sTerm) ?  {
-					'id': sTerm,
-					'text': sTerm
-				} : null;
-			},
-			'formatNoMatches': sEmptyTranslateFunction,
-			'formatSearching': function () {
-				return Utils.i18n('SUGGESTIONS/SEARCHING_DESC');
-			},
-			'formatInputTooShort': sEmptyTranslateFunction,
-			'formatSelectionTooBig': sEmptyTranslateFunction,
-			'multiple': true,
-			'tokenSeparators': [',', ';'],
-			'minimumInputLength': 2,
-			'selectOnBlur': false,
-			'closeOnSelect': true,
-			'openOnEnter': false
+			'change': _.bind(function (oEvent) {
+				$oEl.data('EmailsTagsValue', oEvent.target.value);
+				fValue(oEvent.target.value);
+			}, this)
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).select2('destroy');
-		});
-
-		$(oElement).on('change', function () {
-
-			var
-				aTags = $(this).select2('data'),
-				iIndex = 0,
-				iLen = aTags.length,
-				oItem = null,
-				aResult = []
-			;
-
-			for (; iIndex < iLen; iIndex++)
+		fValue.subscribe(function (sValue) {
+			if ($oEl.data('EmailsTagsValue') !== sValue)
 			{
-				oItem = aTags[iIndex];
-				if (oItem && oItem.id)
-				{
-					if (!oItem.c)
-					{
-						oItem.c = new EmailModel();
-						oMatch = oReg2.exec(Utils.trim(oItem.id));
-						if (oMatch && !Utils.isUnd(oMatch[2]))
-						{
-							oItem.c.name = oMatch[1];
-							oItem.c.email = oMatch[2];
-						}
-						else
-						{
-							oItem.c.email = oItem.id;
-						}
-					}
-
-					aResult.push(oItem.c);
-				}
+				$oEl.val(sValue);
+				$oEl.inputosaurus('refresh');
 			}
-
-			fValueAccessor()(aResult);
 		});
-    },
-
-	'update': function (oElement, fValueAccessor) {
-
-		var
-			aTags = ko.utils.unwrapObservable(fValueAccessor()),
-			iIndex = 0,
-			iLen = aTags.length,
-			oItem = null,
-			sName = '',
-			aResult = []
-		;
-
-		for (; iIndex < iLen; iIndex++)
-		{
-			oItem = aTags[iIndex];
-			sName = oItem.toLine(false);
-
-			aResult.push({
-				'id': sName,
-				'text': sName,
-				'c': oItem
-			});
-		}
-
-		$(oElement).select2('data', aResult);
 	}
 };
 
@@ -3696,10 +3584,6 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		this.delegateRun(ViewModelClassToHide.__vm, 'onHide');
 		this.popupVisibility(false);
-
-		_.defer(function () {
-			ViewModelClassToHide.__dom.find('.ko-select2').select2('close');
-		});
 	}
 };
 
@@ -3961,6 +3845,13 @@ EmailModel.prototype.email = '';
  */
 EmailModel.prototype.privateType = null;
 
+EmailModel.prototype.clear = function ()
+{
+	this.email = '';
+	this.name = '';
+	this.privateType = null;
+};
+
 /**
  * @returns {boolean}
  */
@@ -4021,6 +3912,8 @@ EmailModel.prototype.search = function (sQuery)
  */
 EmailModel.prototype.parse = function (sString)
 {
+	this.clear();
+
 	sString = Utils.trim(sString);
 
 	var
@@ -4064,18 +3957,22 @@ EmailModel.prototype.initByJson = function (oJsonEmail)
 /**
  * @param {boolean} bFriendlyView
  * @param {boolean=} bWrapWithLink = false
+ * @param {boolean=} bEncodeHtml = false
  * @return {string}
  */
-EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink)
+EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink, bEncodeHtml)
 {
 	var sResult = '';
 	if ('' !== this.email)
 	{
 		bWrapWithLink = Utils.isUnd(bWrapWithLink) ? false : !!bWrapWithLink;
+		bEncodeHtml = Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml;
+		
 		if (bFriendlyView && '' !== this.name)
 		{
 			sResult = bWrapWithLink ? '<a href="mailto:' + Utils.encodeHtml('"' + this.name + '" <' + this.email + '>') +
-				'" target="_blank" tabindex="-1">' + Utils.encodeHtml(this.name) + '</a>' : this.name;
+				'" target="_blank" tabindex="-1">' + Utils.encodeHtml(this.name) + '</a>' : 
+					(bEncodeHtml ? Utils.encodeHtml(this.name) : this.name);
 		}
 		else
 		{
@@ -4090,6 +3987,10 @@ EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink)
 				else
 				{
 					sResult = '"' + this.name + '" <' + sResult + '>';
+					if (bEncodeHtml)
+					{
+						sResult = Utils.encodeHtml(sResult);
+					}
 				}
 			}
 			else if (bWrapWithLink)
@@ -4157,6 +4058,172 @@ EmailModel.prototype.select2Selection = function (oContainer)
 	}
 
 	return sResult;
+};
+
+
+/**
+ * @param {string} $sEmailAddress
+ * @return {boolean}
+ */
+EmailModel.prototype.mailsoParse = function ($sEmailAddress)
+{
+	$sEmailAddress = Utils.trim($sEmailAddress);
+	if ('' === $sEmailAddress)
+	{
+		return false;
+	}
+
+	var
+		substr = function (str, start, len) {
+			str += '';
+			var	end = str.length;
+
+			if (start < 0) {
+				start += end;
+			}
+			
+			end = typeof len === 'undefined' ? end : (len < 0 ? len + end : len + start);
+			
+			return start >= str.length || start < 0 || start > end ? false : str.slice(start, end);
+		},
+				
+		substr_replace = function (str, replace, start, length) {
+			if (start < 0) {
+				start = start + str.length;
+			}
+			length = length !== undefined ? length : str.length;
+			if (length < 0) {
+				length = length + str.length - start;
+			}
+			return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
+		},
+		
+		$sName = '',
+		$sEmail = '',
+		$sComment = '',
+
+		$bInName = false,
+		$bInAddress = false,
+		$bInComment = false,
+
+		$aRegs = null,
+
+		$iStartIndex = 0,
+		$iEndIndex = 0,
+		$iCurrentIndex = 0
+	;
+
+	while ($iCurrentIndex < $sEmailAddress.length)
+	{
+		switch ($sEmailAddress.substr($iCurrentIndex, 1))
+		{
+			case '"':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					$bInName = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				else if ((!$bInAddress) && (!$bInComment))
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sName = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInName = false;
+				}
+				break;
+			case '<':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					if ($iCurrentIndex > 0 && $sName.length === 0)
+					{
+						$sName = substr($sEmailAddress, 0, $iCurrentIndex);
+					}
+
+					$bInAddress = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				break;
+			case '>':
+				if ($bInAddress)
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sEmail = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInAddress = false;
+				}
+				break;
+			case '(':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					$bInComment = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				break;
+			case ')':
+				if ($bInComment)
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sComment = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInComment = false;
+				}
+				break;
+			case '\\':
+				$iCurrentIndex++;
+				break;
+		}
+
+		$iCurrentIndex++;
+	}
+
+	if ($sEmail.length === 0)
+	{
+		$aRegs = $sEmailAddress.match(/[^@\s]+@\S+/i);
+		if ($aRegs && $aRegs[0])
+		{
+			$sEmail = $aRegs[0];
+		}
+		else
+		{
+			$sName = $sEmailAddress;
+		}
+	}
+
+	if ($sEmail.length > 0 && $sName.length === 0 && $sComment.length === 0)
+	{
+		$sName = $sEmailAddress.replace($sEmail, '');
+	}
+
+	$sEmail = Utils.trim($sEmail).replace(/^[<]+/, '').replace(/[>]+$/, '');
+	$sName = Utils.trim($sName).replace(/^["']+/, '').replace(/["']+$/, '');
+	$sComment = Utils.trim($sComment).replace(/^[(]+/, '').replace(/[)]+$/, '');
+
+	// Remove backslash
+	$sName = $sName.replace(/\\\\(.)/, '$1');
+	$sComment = $sComment.replace(/\\\\(.)/, '$1');
+
+	this.name = $sName;
+	this.email = $sEmail;
+
+	this.clearDuplicateName();
+	return true;
+};
+
+/**
+ * @return {string}
+ */
+EmailModel.prototype.inputoTagLine = function ()
+{
+	return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
 };
 
 /**
@@ -5032,7 +5099,6 @@ AdminDomains.prototype.onDomainListChangeRequest = function ()
 function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
-	this.usageStatistics = ko.observable(!!RL.settingsGet('UsageStatistics'));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -5090,12 +5156,6 @@ AdminSecurity.prototype.onBuild = function ()
 	this.csrfProtection.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'TokenProtection': bValue ? '1' : '0'
-		});
-	});
-
-	this.usageStatistics.subscribe(function (bValue) {
-		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'UsageStatistics': bValue ? '1' : '0'
 		});
 	});
 };
@@ -5830,6 +5890,17 @@ AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, 
 };
 
 /**
+ * @param {?Function} fCallback
+ * @param {string} sVersion
+ */
+AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
+{
+	this.defaultRequest(fCallback, 'Version', {
+		'Version': sVersion
+	});
+};
+
+/**
  * @constructor
  * @extends AbstractAjaxRemoteStorage
  */
@@ -6557,10 +6628,9 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 
 /**
  * @param {string} sQuery
- * @param {number} iPage
  * @param {Function} fCallback
  */
-AbstractApp.prototype.getAutocomplete = function (sQuery, iPage, fCallback)
+AbstractApp.prototype.getAutocomplete = function (sQuery, fCallback)
 {
 	fCallback([], sQuery);
 };

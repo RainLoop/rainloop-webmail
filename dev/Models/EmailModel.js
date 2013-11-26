@@ -41,6 +41,13 @@ EmailModel.prototype.email = '';
  */
 EmailModel.prototype.privateType = null;
 
+EmailModel.prototype.clear = function ()
+{
+	this.email = '';
+	this.name = '';
+	this.privateType = null;
+};
+
 /**
  * @returns {boolean}
  */
@@ -101,6 +108,8 @@ EmailModel.prototype.search = function (sQuery)
  */
 EmailModel.prototype.parse = function (sString)
 {
+	this.clear();
+
 	sString = Utils.trim(sString);
 
 	var
@@ -144,18 +153,22 @@ EmailModel.prototype.initByJson = function (oJsonEmail)
 /**
  * @param {boolean} bFriendlyView
  * @param {boolean=} bWrapWithLink = false
+ * @param {boolean=} bEncodeHtml = false
  * @return {string}
  */
-EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink)
+EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink, bEncodeHtml)
 {
 	var sResult = '';
 	if ('' !== this.email)
 	{
 		bWrapWithLink = Utils.isUnd(bWrapWithLink) ? false : !!bWrapWithLink;
+		bEncodeHtml = Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml;
+		
 		if (bFriendlyView && '' !== this.name)
 		{
 			sResult = bWrapWithLink ? '<a href="mailto:' + Utils.encodeHtml('"' + this.name + '" <' + this.email + '>') +
-				'" target="_blank" tabindex="-1">' + Utils.encodeHtml(this.name) + '</a>' : this.name;
+				'" target="_blank" tabindex="-1">' + Utils.encodeHtml(this.name) + '</a>' : 
+					(bEncodeHtml ? Utils.encodeHtml(this.name) : this.name);
 		}
 		else
 		{
@@ -170,6 +183,10 @@ EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink)
 				else
 				{
 					sResult = '"' + this.name + '" <' + sResult + '>';
+					if (bEncodeHtml)
+					{
+						sResult = Utils.encodeHtml(sResult);
+					}
 				}
 			}
 			else if (bWrapWithLink)
@@ -237,4 +254,170 @@ EmailModel.prototype.select2Selection = function (oContainer)
 	}
 
 	return sResult;
+};
+
+
+/**
+ * @param {string} $sEmailAddress
+ * @return {boolean}
+ */
+EmailModel.prototype.mailsoParse = function ($sEmailAddress)
+{
+	$sEmailAddress = Utils.trim($sEmailAddress);
+	if ('' === $sEmailAddress)
+	{
+		return false;
+	}
+
+	var
+		substr = function (str, start, len) {
+			str += '';
+			var	end = str.length;
+
+			if (start < 0) {
+				start += end;
+			}
+			
+			end = typeof len === 'undefined' ? end : (len < 0 ? len + end : len + start);
+			
+			return start >= str.length || start < 0 || start > end ? false : str.slice(start, end);
+		},
+				
+		substr_replace = function (str, replace, start, length) {
+			if (start < 0) {
+				start = start + str.length;
+			}
+			length = length !== undefined ? length : str.length;
+			if (length < 0) {
+				length = length + str.length - start;
+			}
+			return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
+		},
+		
+		$sName = '',
+		$sEmail = '',
+		$sComment = '',
+
+		$bInName = false,
+		$bInAddress = false,
+		$bInComment = false,
+
+		$aRegs = null,
+
+		$iStartIndex = 0,
+		$iEndIndex = 0,
+		$iCurrentIndex = 0
+	;
+
+	while ($iCurrentIndex < $sEmailAddress.length)
+	{
+		switch ($sEmailAddress.substr($iCurrentIndex, 1))
+		{
+			case '"':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					$bInName = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				else if ((!$bInAddress) && (!$bInComment))
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sName = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInName = false;
+				}
+				break;
+			case '<':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					if ($iCurrentIndex > 0 && $sName.length === 0)
+					{
+						$sName = substr($sEmailAddress, 0, $iCurrentIndex);
+					}
+
+					$bInAddress = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				break;
+			case '>':
+				if ($bInAddress)
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sEmail = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInAddress = false;
+				}
+				break;
+			case '(':
+				if ((!$bInName) && (!$bInAddress) && (!$bInComment))
+				{
+					$bInComment = true;
+					$iStartIndex = $iCurrentIndex;
+				}
+				break;
+			case ')':
+				if ($bInComment)
+				{
+					$iEndIndex = $iCurrentIndex;
+					$sComment = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
+					$sEmailAddress = substr_replace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
+					$iEndIndex = 0;
+					$iCurrentIndex = 0;
+					$iStartIndex = 0;
+					$bInComment = false;
+				}
+				break;
+			case '\\':
+				$iCurrentIndex++;
+				break;
+		}
+
+		$iCurrentIndex++;
+	}
+
+	if ($sEmail.length === 0)
+	{
+		$aRegs = $sEmailAddress.match(/[^@\s]+@\S+/i);
+		if ($aRegs && $aRegs[0])
+		{
+			$sEmail = $aRegs[0];
+		}
+		else
+		{
+			$sName = $sEmailAddress;
+		}
+	}
+
+	if ($sEmail.length > 0 && $sName.length === 0 && $sComment.length === 0)
+	{
+		$sName = $sEmailAddress.replace($sEmail, '');
+	}
+
+	$sEmail = Utils.trim($sEmail).replace(/^[<]+/, '').replace(/[>]+$/, '');
+	$sName = Utils.trim($sName).replace(/^["']+/, '').replace(/["']+$/, '');
+	$sComment = Utils.trim($sComment).replace(/^[(]+/, '').replace(/[)]+$/, '');
+
+	// Remove backslash
+	$sName = $sName.replace(/\\\\(.)/, '$1');
+	$sComment = $sComment.replace(/\\\\(.)/, '$1');
+
+	this.name = $sName;
+	this.email = $sEmail;
+
+	this.clearDuplicateName();
+	return true;
+};
+
+/**
+ * @return {string}
+ */
+EmailModel.prototype.inputoTagLine = function ()
+{
+	return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
 };

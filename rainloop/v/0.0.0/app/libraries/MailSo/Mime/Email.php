@@ -109,7 +109,7 @@ class Email
 				case '<':
 					if ((!$bInName) && (!$bInAddress) && (!$bInComment))
 					{
-						if ($iCurrentIndex > 0 && \strlen($sName) == 0)
+						if ($iCurrentIndex > 0 && \strlen($sName) === 0)
 						{
 							$sName = \substr($sEmailAddress, 0, $iCurrentIndex);
 						}
@@ -157,7 +157,7 @@ class Email
 			$iCurrentIndex++;
 		}
 
-		if (strlen($sEmail) == 0)
+		if (\strlen($sEmail) === 0)
 		{
 			$aRegs = array('');
 			if (\preg_match('/[^@\s]+@\S+/i', $sEmailAddress, $aRegs) && isset($aRegs[0]))
@@ -170,7 +170,7 @@ class Email
 			}
 		}
 
-		if ((\strlen($sEmail) > 0) && (\strlen($sName) == 0) && (strlen($sComment) == 0))
+		if ((\strlen($sEmail) > 0) && (\strlen($sName) == 0) && (\strlen($sComment) == 0))
 		{
 			$sName = \str_replace($sEmail, '', $sEmailAddress);
 		}

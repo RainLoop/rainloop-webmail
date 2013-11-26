@@ -20,22 +20,6 @@ function PopupsComposeViewModel()
 	var
 		self = this,
 		oRainLoopData = RL.data(),
-		fEmailArrayToStringLineHelper = function (aList) {
-
-			var
-				iIndex = 0,
-				iLen = aList.length,
-				aResult = []
-			;
-
-			for (; iIndex < iLen; iIndex++)
-			{
-				aResult.push(aList[iIndex].toLine(false));
-			}
-
-			return aResult.join(', ');
-		},
-
 		fCcAndBccCheckHelper = function (aValue) {
 			if (false === this.showCcAndBcc() && 0 < aValue.length)
 			{
@@ -46,9 +30,9 @@ function PopupsComposeViewModel()
 
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
-	this.to = ko.observableArray([]);
-	this.cc = ko.observableArray([]);
-	this.bcc = ko.observableArray([]);
+	this.to = ko.observable('');
+	this.cc = ko.observable('');
+	this.bcc = ko.observable('');
 
 	this.replyTo = ko.observable('');
 	this.subject = ko.observable('');
@@ -233,12 +217,12 @@ function PopupsComposeViewModel()
 
 	this.sendCommand = Utils.createCommand(this, function () {
 		var
-			aTo = this.to(),
+			sTo = this.to(),
 			sSentFolder = RL.data().sentFolder(),
 			aFlagsCache = []
 		;
 
-		if (0 === aTo.length)
+		if (0 === sTo.length)
 		{
 			this.emptyToError(true);
 		}
@@ -293,9 +277,9 @@ function PopupsComposeViewModel()
 					this.draftID(),
 					sSentFolder,
 					this.currentIdentityResultEmail(),
-					fEmailArrayToStringLineHelper(aTo),
-					fEmailArrayToStringLineHelper(this.cc()),
-					fEmailArrayToStringLineHelper(this.bcc()),
+					sTo,
+					this.cc(),
+					this.bcc(),
 					this.subject(),
 					this.oEditor.isHtml(),
 					this.oEditor.getTextForRequest(),
@@ -329,9 +313,9 @@ function PopupsComposeViewModel()
 				this.draftID(),
 				RL.data().draftFolder(),
 				this.currentIdentityResultEmail(),
-				fEmailArrayToStringLineHelper(this.to()),
-				fEmailArrayToStringLineHelper(this.cc()),
-				fEmailArrayToStringLineHelper(this.bcc()),
+				this.to(),
+				this.cc(),
+				this.bcc(),
 				this.subject(),
 				this.oEditor.isHtml(),
 				this.oEditor.getTextForRequest(),
@@ -451,7 +435,7 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		case Enums.ComposeType.ReplyAll:
 		case Enums.ComposeType.Forward:
 		case Enums.ComposeType.ForwardAsAttachment:
-			_.find(_.union(oMessage.to, oMessage.сс, oMessage.bсс), fFindHelper);
+			_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fFindHelper);
 			break;
 		case Enums.ComposeType.Draft:
 			_.find(_.union(oMessage.from, oMessage.replyTo), fFindHelper);
@@ -602,7 +586,22 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		aDraftInfo = null,
 		oMessage = null,
 		bFocusOnBody = false,
-		sComposeType = sType || Enums.ComposeType.Empty
+		sComposeType = sType || Enums.ComposeType.Empty,
+		fEmailArrayToStringLineHelper = function (aList) {
+
+			var
+				iIndex = 0,
+				iLen = aList.length,
+				aResult = []
+			;
+
+			for (; iIndex < iLen; iIndex++)
+			{
+				aResult.push(aList[iIndex].toLine(false));
+			}
+
+			return aResult.join(', ');
+		}
 	;
 
 	oMessageOrArray = oMessageOrArray || null;
@@ -622,7 +621,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 	if (Utils.isNonEmptyArray(aToEmails))
 	{
-		this.to(aToEmails);
+		this.to(fEmailArrayToStringLineHelper(aToEmails));
 	}
 
 	if ('' !== sComposeType && oMessage)
@@ -640,7 +639,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 			case Enums.ComposeType.Empty:
 				break;
 			case Enums.ComposeType.Reply:
-				this.to(oMessage.replyEmails(oExcludeEmail));
+				this.to(fEmailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
 				this.prepearMessageAttachments(oMessage, sComposeType);
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
@@ -651,8 +650,8 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 			case Enums.ComposeType.ReplyAll:
 				aResplyAllParts = oMessage.replyAllEmails(oExcludeEmail);
-				this.to(aResplyAllParts[0]);
-				this.cc(aResplyAllParts[1]);
+				this.to(fEmailArrayToStringLineHelper(aResplyAllParts[0]));
+				this.cc(fEmailArrayToStringLineHelper(aResplyAllParts[1]));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
 				this.prepearMessageAttachments(oMessage, sComposeType);
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
@@ -678,9 +677,9 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				break;
 
 			case Enums.ComposeType.Draft:
-				this.to(oMessage.to);
-				this.cc(oMessage.cc);
-				this.bcc(oMessage.bcc);
+				this.to(fEmailArrayToStringLineHelper(oMessage.to));
+				this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
+				this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
 
 				this.bFromDraft = true;
 
@@ -744,7 +743,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 			self.addMessageAsAttachment(oMessage);
 		});
 	}
-
+	
 	aDownloads = this.getAttachmentsDownloadsForUpload();
 	if (Utils.isNonEmptyArray(aDownloads))
 	{
@@ -1322,9 +1321,10 @@ PopupsComposeViewModel.prototype.isEmptyForm = function (bIncludeAttachmentInPro
 
 PopupsComposeViewModel.prototype.reset = function ()
 {
-	this.to([]);
-	this.cc([]);
-	this.bcc([]);
+	this.to('');
+	this.cc('');
+	this.bcc('');
+	this.replyTo('');
 	this.subject('');
 
 	this.aDraftInfo = null;

@@ -188,10 +188,11 @@ class Actions
 
 	/**
 	 * @param string $sName
+	 * @param \RainLoop\Account $oAccount = null
 	 *
 	 * @return mixed
 	 */
-	private function fabrica($sName)
+	private function fabrica($sName, $oAccount = null)
 	{
 		$oResult = null;
 		$this->Plugins()->RunHook('main.fabrica', array($sName, &$oResult), false);
@@ -952,7 +953,6 @@ class Actions
 			$aResult['AdminLogin'] = $oConfig->Get('security', 'admin_login', '');
 			$aResult['AdminDomain'] = APP_SITE;
 			$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
-			$aResult['UsageStatistics'] = (bool) $oConfig->Get('labs', 'usage_statistics', true);
 			$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
@@ -1632,7 +1632,6 @@ class Actions
 
 		$bMainCache = false;
 		$bFilesCache = false;
-		$bActivity = false;
 		$bPing = false;
 
 		$iOneDay1 = 60 * 60 * 23;
@@ -1645,8 +1644,7 @@ class Actions
 
 		$iMainCacheTime = !empty($aTimers[0]) && \is_numeric($aTimers[0]) ? (int) $aTimers[0] : 0;
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
-		$iActivityTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
-		$iPingTime = !empty($aTimers[3]) && \is_numeric($aTimers[3]) ? (int) $aTimers[3] : 0;
+		$iPingTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
 
 		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
 		{
@@ -1660,25 +1658,19 @@ class Actions
 			$iFilesCacheTime = \time();
 		}
 
-		if (0 === $iActivityTime || $iActivityTime + $iOneDay1 < \time())
-		{
-			$bActivity = true;
-			$iActivityTime = \time();
-		}
-
 		if (0 === $iPingTime || $iPingTime + $iOneDay1 < \time())
 		{
 			$bPing = true;
 			$iPingTime = \time();
 		}
 
-		if ($bMainCache || $bFilesCache || $bActivity || $bPing)
+		if ($bMainCache || $bFilesCache || $bPing)
 		{
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
-				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iActivityTime, $iPingTime))))
+				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iPingTime))))
 			{
-				$bMainCache = $bFilesCache = $bActivity = $bPing = false;
+				$bMainCache = $bFilesCache = $bPing = false;
 			}
 		}
 
@@ -1694,13 +1686,6 @@ class Actions
 			$this->Logger()->Write('Files GC: Begin');
 			$this->FilesProvider()->GC(48);
 			$this->Logger()->Write('Files GC: End');
-		}
-
-		if ($bActivity && $this->Config()->Get('labs', 'usage_statistics', true))
-		{
-			$this->KeenIO('Statistic', array(
-				'rainloop' => $this->setupInformation()
-			));
 		}
 
 		if ($bPing)
@@ -1842,7 +1827,6 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
-		$this->setConfigFromParams($oConfig, 'UsageStatistics', 'labs', 'usage_statistics', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
@@ -2246,11 +2230,25 @@ class Actions
 		$aRep = null;
 
 		$sRep = '';
+		$sRepoType = \strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable')));
+		$sRepoFile = 'repository.json';
 		$iRepTime = 0;
+
+		switch ($sRepoType) {
+			case 'dev':
+			case 'nightly':
+			case 'beta':
+				$sRepoFile = 'beta.repository.json';
+				break;
+			case 'stable':
+			default:
+				$sRepoFile = 'repository.json';
+				break;
+		}
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-		$sCacheKey = 'UPDATER/('.$sRepo.')/repository.json';
+		$sCacheKey = 'UPDATER/('.$sRepo.')/'.$sRepoFile;
 		$sRep = $this->Cacher()->Get($sCacheKey);
 		if ('' !== $sRep)
 		{
@@ -2261,8 +2259,8 @@ class Actions
 		{
 			$iCode = 0;
 			$sContentType = '';
-			
-			$sRepPath = $sRepo.'repository.json';
+
+			$sRepPath = $sRepo.$sRepoFile;
 			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'RainLoop', $sContentType, $iCode, $this->Logger()) : false;
 			if (false !== $sRep)
 			{
@@ -2988,6 +2986,15 @@ class Actions
 			$bIsError ? \MailSo\Log\Enumerations\Type::ERROR : \MailSo\Log\Enumerations\Type::INFO, 'JS-INFO');
 
 		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoVersion()
+	{
+		return $this->DefaultResponse(__FUNCTION__,
+			APP_VERSION === (string) $this->GetActionParam('Version', ''));
 	}
 
 	/**
@@ -4060,6 +4067,63 @@ class Actions
 	 * @return array
 	 */
 	public function DoSuggestions()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$sQuery = \trim($this->GetActionParam('Query', ''));
+
+		$aResult = array();
+		if (0 < \strlen($sQuery) && $this->ContactsProvider()->IsActive())
+		{
+			$mResult = $this->ContactsProvider()->GetContacts($oAccount, 0, RL_CONTACTS_PER_PAGE, $sQuery);
+			if (\is_array($mResult) && 0 < \count($mResult))
+			{
+				$mResult = \array_slice($mResult, 0, RL_CONTACTS_PER_PAGE);
+
+				foreach ($mResult as $oItem)
+				{
+					/* @var $oItem \RainLoop\Providers\Contacts\Classes\Contact */
+					$aEmails = $oItem->Emails;
+					if (0 < \count($aEmails))
+					{
+						foreach ($aEmails as $sEmail)
+						{
+							if (0 < \strlen($sEmail))
+							{
+								$aResult[] = array($sEmail, $oItem->Name);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'More' => false,
+			'List' => $aResult
+		));
+
+//		$oAccount = $this->getAccountFromToken();
+//
+//		$aResult = array();
+//		$sQuery = \trim($this->GetActionParam('Query', ''));
+//		if (0 < \strlen($sQuery) && $oAccount)
+//		{
+//			$aResult = $this->SuggestionsProvider()->Process($oAccount, $sQuery);
+//
+//			if (0 === count($aResult) && false !== \strpos(strtolower($oAccount->Email()), \strtolower($sQuery)))
+//			{
+//				$aResult[] = array($oAccount->Email(), $oAccount->Name());
+//			}
+//		}
+//
+//		return $this->DefaultResponse(__FUNCTION__, $aResult);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoSuggestionsDep()
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -5166,74 +5230,6 @@ class Actions
 	}
 
 	/**
-	 * @return array
-	 */
-	private function setupInformation()
-	{
-		$aResult = array(
-			'version-full' => APP_VERSION,
-		);
-
-		$sV = APP_VERSION;
-		$aMatch = array();
-		if (\preg_match('/([\d]+\.[\d]+\.[\d]+).*/', APP_VERSION, $aMatch) && !empty($aMatch[1]))
-		{
-			$sV = $aMatch[1];
-		}
-
-		$mPdoDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : null;
-
-		$aResult['version'] = $sV;
-		$aResult['software'] = array(
-			'mailso' => \MailSo\Version::AppVersion(),
-			'capa' => array(
-				'pdo' => \is_array($mPdoDrivers),
-				'pdo-sqlite' => \is_array($mPdoDrivers) ? \in_array('sqlite', $mPdoDrivers) : false,
-				'pdo-mysql' => \is_array($mPdoDrivers) ? \in_array('mysql', $mPdoDrivers) : false
-			),
-			'php' => PHP_VERSION
-		);
-		
-		$aResult['domains'] = $this->DomainProvider()->Count();
-		$aResult['multiply'] = !!APP_MULTIPLY;
-		$aResult['settings'] = array(
-			'lang' => $this->Config()->Get('webmail', 'language', ''),
-			'theme' => $this->Config()->Get('webmail', 'theme', ''),
-			'cache' => $this->Config()->Get('cache', 'fast_cache_driver', ''),
-			'social' => array(
-				'google' => !!$this->Config()->Get('social', 'google_enable', false) &&
-					0 < \strlen($this->Config()->Get('social', 'google_client_id', '')) &&
-					0 < \strlen($this->Config()->Get('social', 'google_client_secret', '')),
-				'twitter' => !!$this->Config()->Get('social', 'twitter_enable', false) &&
-					0 < \strlen($this->Config()->Get('social', 'twitter_consumer_key', '')) &&
-					0 < \strlen($this->Config()->Get('social', 'twitter_consumer_secret', '')),
-				'facebook' => !!$this->Config()->Get('social', 'fb_enable', false) &&
-					0 < \strlen($this->Config()->Get('social', 'fb_app_id', '')) &&
-					0 < \strlen($this->Config()->Get('social', 'fb_app_secret', '')),
-				'dropbox' => !!$this->Config()->Get('social', 'dropbox_enable', false) &&
-					0 < \strlen($this->Config()->Get('social', 'dropbox_api_key', ''))
-			)
-		);
-
-		$aResult['plugins'] = array();
-		$aResult['plugins']['@enabled'] = !!$this->Config()->Get('plugins', 'enable', false);
-
-		$aEnabledPlugins = \explode(',', \strtolower($this->Config()->Get('plugins', 'enabled_list', '')));
-		$aEnabledPlugins = \array_map('trim', $aEnabledPlugins);
-
-		$aList = $this->Plugins()->InstalledPlugins();
-		foreach ($aList as $aItem)
-		{
-			if (!empty($aItem[0]))
-			{
-				$aResult['plugins'][$aItem[0]] = \in_array(\strtolower($aItem[0]), $aEnabledPlugins) ? true : false;
-			}
-		}
-
-		return $aResult;
-	}
-
-	/**
 	 * @staticvar bool $bOnce
 	 * @param string $sName
 	 * @param array $aData = array()
@@ -5498,14 +5494,13 @@ class Actions
 	 */
 	private function hashFolderFullName($sFolderFullName)
 	{
+		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
+			\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
+
 //		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
 //			\ucfirst(\strtolower($sFolderFullName)) :
 //				\RainLoop\Utils::CustomBaseConvert(\sprintf('%u', \crc32(md5($sFolderFullName).$sFolderFullName)), '0123456789',
 //					'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-
-		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
-			\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
-
 //		return \preg_match('/^[a-zA-Z0-9]+$/', $sFolderFullName) ? $sFolderFullName : \md5($sFolderFullName);
 //		return \preg_match('/^[a-zA-Z0-9]+$/', $sFolderFullName) ? $sFolderFullName : \rtrim(\base_convert(\md5($sFolderFullName), 16, 32), '0');
 //		return 'INBOX' === $sFolderFullName ? $sFolderFullName : \base_convert(\sprintf('%u', \crc32(\md5($sFolderFullName))), 10, 32);

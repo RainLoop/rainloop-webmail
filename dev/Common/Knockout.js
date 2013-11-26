@@ -476,167 +476,55 @@ ko.bindingHandlers.saveTrigger = {
 	}
 };
 
-ko.bindingHandlers.select2 = {
+ko.bindingHandlers.emailsTags = {
     'init': function(oElement, fValueAccessor) {
-
 		var
-			iTimer = 0,
-			iTimeout = 100,
-			oMatch = null,
-			oReg = new window.RegExp(/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+/),
-			oReg2 = new window.RegExp(/(.+) [<]?([^\s<@]+@[a-zA-Z0-9\.\-_]+)[>]?/),
-			sEmptyTranslateFunction = function () {
-				return '';
-			},
-			/**
-			 * @param {{term:string, callback:Function, matcher:Function}} oCall
-			 */
-			fLazyAutocomplete = function (oCall) {
+			$oEl = $(oElement),
+			fValue = fValueAccessor()
+		;
 
-				RL.getAutocomplete(oCall['term'], oCall['page'], function (aData, bMore) {
-					oCall.callback({
-						'more': !!bMore,
-						'results': _.map(aData, function (oEmailItem) {
-							var sName = oEmailItem.toLine(false);
-							return {
-								'id': sName,
-								'text': sName,
-								'c': oEmailItem
-							};
-						})
-					});
+		$oEl.inputosaurus({
+			'parseOnBlur': true,
+			'inputDelimiters': [',', ';'],
+			'autoCompleteSource': function (oData, fResponse) {
+				RL.getAutocomplete(oData.term, function (aData) {
+					fResponse(_.map(aData, function (oEmailItem) {
+						return oEmailItem.toLine(false);
+					}));
 				});
-			}
-		;
-
-		$(oElement).addClass('ko-select2').select2({
-
-			/**
-			 * @param {{term:string, callback:Function, matcher:Function}} oCall
-			 */
-			'query': function (oCall) {
-				if (!oCall)
-				{
-					return;
-				}
-				
-//				if (RL.isLocalAutocomplete && false)
-//				{
-//					fLazyAutocomplete(oCall);
-//				}
-//				else
-//				{
-					if (0 === iTimer)
+			},
+			'parseHook': function (aInput) {
+				return _.map(aInput, function (sInputValue) {
+					
+					var sValue = Utils.trim(sInputValue), oEmail = null;
+					if ('' !== sValue)
 					{
-						fLazyAutocomplete(oCall);
-						iTimer = window.setTimeout(Utils.emptyFunction, iTimeout);
+						oEmail = new EmailModel();
+						oEmail.mailsoParse(sValue);
+						oEmail.clearDuplicateName();
+
+//						sValue = oEmail.toLine(false);
+//						return sValue;
+						return [oEmail.toLine(false), oEmail];
 					}
-					else
-					{
-						window.clearInterval(iTimer);
-						iTimer = window.setTimeout(function () {
-							fLazyAutocomplete(oCall);
-						}, iTimeout);
-					}
-//				}
+
+					return [sValue, null];
+
+				});
 			},
-			'formatSelection': function (oItem, oContainer) {
-				var sR = oItem && oItem.c ? oItem.c.select2Selection(oContainer) : oItem.text;
-				if (null !== sR)
-				{
-					return sR;
-				}
-			},
-			'formatResult': function (oItem, oContainer, oQuery, fEscapeMarkup) {
-				var sR = oItem && oItem.c ? oItem.c.select2Result(oContainer) : '';
-				return '' === sR ? fEscapeMarkup(oItem.text) : sR;
-			},
-			'createSearchChoice': function (sTerm, aList) {
-				return 0 === aList.length && oReg.test(sTerm) ?  {
-					'id': sTerm,
-					'text': sTerm
-				} : null;
-			},
-			'formatNoMatches': sEmptyTranslateFunction,
-			'formatSearching': function () {
-				return Utils.i18n('SUGGESTIONS/SEARCHING_DESC');
-			},
-			'formatInputTooShort': sEmptyTranslateFunction,
-			'formatSelectionTooBig': sEmptyTranslateFunction,
-			'multiple': true,
-			'tokenSeparators': [',', ';'],
-			'minimumInputLength': 2,
-			'selectOnBlur': false,
-			'closeOnSelect': true,
-			'openOnEnter': false
+			'change': _.bind(function (oEvent) {
+				$oEl.data('EmailsTagsValue', oEvent.target.value);
+				fValue(oEvent.target.value);
+			}, this)
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).select2('destroy');
-		});
-
-		$(oElement).on('change', function () {
-
-			var
-				aTags = $(this).select2('data'),
-				iIndex = 0,
-				iLen = aTags.length,
-				oItem = null,
-				aResult = []
-			;
-
-			for (; iIndex < iLen; iIndex++)
+		fValue.subscribe(function (sValue) {
+			if ($oEl.data('EmailsTagsValue') !== sValue)
 			{
-				oItem = aTags[iIndex];
-				if (oItem && oItem.id)
-				{
-					if (!oItem.c)
-					{
-						oItem.c = new EmailModel();
-						oMatch = oReg2.exec(Utils.trim(oItem.id));
-						if (oMatch && !Utils.isUnd(oMatch[2]))
-						{
-							oItem.c.name = oMatch[1];
-							oItem.c.email = oMatch[2];
-						}
-						else
-						{
-							oItem.c.email = oItem.id;
-						}
-					}
-
-					aResult.push(oItem.c);
-				}
+				$oEl.val(sValue);
+				$oEl.inputosaurus('refresh');
 			}
-
-			fValueAccessor()(aResult);
 		});
-    },
-
-	'update': function (oElement, fValueAccessor) {
-
-		var
-			aTags = ko.utils.unwrapObservable(fValueAccessor()),
-			iIndex = 0,
-			iLen = aTags.length,
-			oItem = null,
-			sName = '',
-			aResult = []
-		;
-
-		for (; iIndex < iLen; iIndex++)
-		{
-			oItem = aTags[iIndex];
-			sName = oItem.toLine(false);
-
-			aResult.push({
-				'id': sName,
-				'text': sName,
-				'c': oItem
-			});
-		}
-
-		$(oElement).select2('data', aResult);
 	}
 };
 

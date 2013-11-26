@@ -6,7 +6,6 @@
 function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
-	this.usageStatistics = ko.observable(!!RL.settingsGet('UsageStatistics'));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -64,12 +63,6 @@ AdminSecurity.prototype.onBuild = function ()
 	this.csrfProtection.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'TokenProtection': bValue ? '1' : '0'
-		});
-	});
-
-	this.usageStatistics.subscribe(function (bValue) {
-		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'UsageStatistics': bValue ? '1' : '0'
 		});
 	});
 };

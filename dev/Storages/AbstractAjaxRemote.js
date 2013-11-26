@@ -262,3 +262,14 @@ AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, 
 		'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
 	});
 };
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sVersion
+ */
+AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
+{
+	this.defaultRequest(fCallback, 'Version', {
+		'Version': sVersion
+	});
+};

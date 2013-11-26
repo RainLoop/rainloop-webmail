@@ -70,6 +70,14 @@ module.exports = function (grunt) {
 				src: 'vendors/jquery-nanoscroller/jquery.nanoscroller.js',
 				dest: 'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js'
 			},
+			inputosaurus: {
+				options: {
+					banner: "/*! Inputosaurus Text v0.1.6 (c) 2013 Dan Kielp <dan@sproutsocial.com>; modified by RainLoop Team | MIT */\n",
+					preserveComments: "false"
+				},
+				src: 'vendors/inputosaurus/inputosaurus.js',
+				dest: 'vendors/inputosaurus/inputosaurus.min.js'
+			},
 			pace: {
 				src: 'vendors/simple-pace/simple-pace.js',
 				dest: 'vendors/simple-pace/simple-pace-1.0.min.js'
@@ -113,13 +121,13 @@ module.exports = function (grunt) {
 					"vendors/jquery-lazyload/jquery.lazyload.min.js",
 					"vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js",
 					"vendors/jquery-wakeup/jquery.wakeup.min.js",
+					"vendors/inputosaurus/inputosaurus.min.js",
 					"vendors/moment/min/moment.min.js ",
 					"vendors/routes/signals.min.js",
 					"vendors/routes/hasher.min.js",
 					"vendors/routes/crossroads.min.js",
 					"vendors/knockout/knockout-3.0.0.js",
 					"vendors/jua/jua.min.js",
-					"vendors/select2-3.4.5/select2.min.js",
 					"vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
 					"vendors/bootstrap/js/bootstrap.min.js",
 					"dev/Common/_LibsEnd.js"
@@ -298,15 +306,14 @@ module.exports = function (grunt) {
 			css: {
 				nonull: true,
 				src: [
-					"vendors/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.css",
+					"vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css",
 					"vendors/normalize/normalize.css",
 					"vendors/icomoon/style.css",
-					"vendors/select2-3.4.5/select2.css",
-					"vendors/select2-3.4.5/select2-bootstrap.css",
 					"vendors/jquery-nanoscroller/nanoscroller.css",
 					"vendors/jquery-magnific-popup/magnific-popup.css",
 					"vendors/jquery-magnific-popup/magnific-popup-animations.css",
 					"vendors/simple-pace/styles.css",
+					"vendors/inputosaurus/inputosaurus.css",
 					"vendors/flags/flags-fixed.css",
 					"rainloop/v/<%= cfg.devVersion %>/static/css/less.css"
 				],
@@ -358,7 +365,7 @@ module.exports = function (grunt) {
 				options: {
 					nospawn: true
 				},
-				files: ['dev/**/*.js'],
+				files: ['dev/**/*.js', 'vendors/**/*.js'],
 				tasks: ['concat:js_libs', 'concat:js_admin', 'concat:js_app']
 			},
 			styles: {
@@ -428,6 +435,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('nano', ['uglify:nano']);
 	grunt.registerTask('pace', ['uglify:pace']);
 	grunt.registerTask('rl', ['uglify:rl']);
+	grunt.registerTask('inputosaurus', ['uglify:inputosaurus']);
 	grunt.registerTask('cookie', ['uglify:cookie']);
 	// ---
 

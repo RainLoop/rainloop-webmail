@@ -68,7 +68,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
 
 				'allow_additional_accounts'		=> array(true, ''),
-				'allow_identities'				=> array(false, ''),
+				'allow_identities'				=> array(true, ''),
 
 				'use_preview_pane'		=> array(true, 'Whether message preview pane should be used'),
 				 
@@ -205,6 +205,7 @@ Enables caching in the system'),
 				'use_imap_thread' => array(true),
 				'use_imap_move' => array(true),
 				'use_imap_auth_plain' => array(false),
+				'repo_type' => array('stable'),
 				'custom_repo' => array(''),
 				'additional_repo' => array(''),
 				'cdn_static_domain' => array(''),
@@ -217,7 +218,6 @@ Enables caching in the system'),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
-				'usage_statistics' => array(true),
 				'dev_email' => array(''),
 				'dev_login' => array(''),
 				'dev_password' => array('')

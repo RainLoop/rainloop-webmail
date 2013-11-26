@@ -95,8 +95,7 @@ class Service
 		$this->oActions->ParseQueryAuthString();
 
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
-			APP_INSTALLED_START && !APP_INSTALLED_VERSION &&
-			$this->oActions->Config()->Get('labs', 'usage_statistics', true))
+			APP_INSTALLED_START && !APP_INSTALLED_VERSION)
 		{
 			$this->oActions->KeenIO('Install');
 		}
