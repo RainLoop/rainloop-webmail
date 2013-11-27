@@ -10,18 +10,37 @@ class Validator
 {
 	/**
 	 * @param string $sEmail
+	 * @param array $aAllowedInternalDomains = array('localhost')
 	 *
 	 * @return bool
 	 */
-	public static function EmailString($sEmail)
+	public static function EmailString($sEmail, $aAllowedInternalDomains = array('localhost'))
 	{
 		$bResult = false;
-		if (self::NotEmptyString($sEmail))
+		if (\MailSo\Base\Validator::NotEmptyString($sEmail, true))
 		{
-			$bResult = (bool) \preg_match('/^[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*@[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*$/', $sEmail);
+			$bResult = false !== \filter_var($sEmail, FILTER_VALIDATE_EMAIL);
+			if (!$bResult)
+			{
+				$aSplit = \explode("@", $sEmail);
+				$bResult = 2 === \count($aSplit) &&
+					\in_array($aSplit[1], $aAllowedInternalDomains) &&
+					false !== \filter_var(($aSplit[0].'@example.com'), FILTER_VALIDATE_EMAIL);
+			}
 		}
 
 		return $bResult;
+	}
+
+	/**
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public static function SimpleEmailString($sEmail)
+	{
+		return \MailSo\Base\Validator::NotEmptyString($sEmail, true) &&
+			!!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*@[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*$/', $sEmail);
 	}
 
 	/**
@@ -32,18 +51,8 @@ class Validator
 	 */
 	public static function NotEmptyString($sString, $bTrim = false)
 	{
-		$bResult = false;
-		if (\is_string($sString))
-		{
-			if ($bTrim)
-			{
-				$sString = \trim($sString);
-			}
-
-			$bResult = 0 < \strlen($sString);
-		}
-
-		return $bResult;
+		return \is_string($sString) &&
+			(0 < \strlen($bTrim ? \trim($sString) : $sString));
 	}
 
 	/**
@@ -65,22 +74,9 @@ class Validator
 	 */
 	public static function RangeInt($iNumber, $iMin = null, $iMax = null)
 	{
-		$bResult = false;
-		if (\is_int($iNumber))
-		{
-			$bResult = true;
-			if ($bResult && null !== $iMin)
-			{
-				$bResult = $iNumber >= $iMin;
-			}
-
-			if ($bResult && null !== $iMax)
-			{
-				$bResult = $iNumber <= $iMax;
-			}
-		}
-
-		return $bResult;
+		return \is_int($iNumber) &&
+		   (null !== $iMin && $iNumber >= $iMin || null === $iMin) &&
+		   (null !== $iMax && $iNumber <= $iMax || null === $iMax);
 	}
 
 	/**
@@ -90,6 +86,6 @@ class Validator
 	 */
 	public static function PortInt($iPort)
 	{
-		return self::RangeInt($iPort, 0, 65535);
+		return \MailSo\Base\Validator::RangeInt($iPort, 0, 65535);
 	}
 }
