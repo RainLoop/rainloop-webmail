@@ -3063,11 +3063,18 @@ class Actions
 				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Sent Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				'Draft Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH
 			);
