@@ -2224,26 +2224,35 @@ class Actions
 		return '' === $sCoreAccess || APP_SITE === $sCoreAccess;
 	}
 
-	private function getRepositoryDataByUrl($sRepo, &$bReal = false)
+	/**
+	 * @param string $sRepo
+	 * @param bool $bReal = false
+	 * @param bool $bMain = true
+	 * @return array
+	 */
+	private function getRepositoryDataByUrl($sRepo, &$bReal = false, $bMain = true)
 	{
 		$bReal = false;
 		$aRep = null;
 
 		$sRep = '';
-		$sRepoType = \strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable')));
 		$sRepoFile = 'repository.json';
 		$iRepTime = 0;
 
-		switch ($sRepoType) {
-			case 'dev':
-			case 'nightly':
-			case 'beta':
-				$sRepoFile = 'beta.repository.json';
-				break;
-			case 'stable':
-			default:
-				$sRepoFile = 'repository.json';
-				break;
+		if ($bMain)
+		{
+			switch (\strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable'))))
+			{
+				case 'dev':
+				case 'nightly':
+				case 'beta':
+					$sRepoFile = 'beta.repository.json';
+					break;
+				case 'stable':
+				default:
+					$sRepoFile = 'repository.json';
+					break;
+			}
 		}
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
@@ -2352,8 +2361,9 @@ class Actions
 		$sAddRepo = $this->rainloopRepo(true);
 		if (0 < \strlen($sAddRepo))
 		{
-			$aAddData = $this->getRepositoryDataByUrl($sAddRepo);
-			if (\is_array($aAddData) && 0 < \count($aAddData))
+			$bFakeReal = false;
+			$aAddData = $this->getRepositoryDataByUrl($sAddRepo, $bFakeReal, false);
+			if ($bFakeReal && \is_array($aAddData) && 0 < \count($aAddData))
 			{
 				$aResult = \array_merge($aResult, $aAddData);
 			}
@@ -2553,7 +2563,7 @@ class Actions
 					$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}
 
-				@fclose($pDest);
+				@\fclose($pDest);
 			}
 			else
 			{
@@ -2572,8 +2582,8 @@ class Actions
 				
 				$sTmpFolder = APP_PRIVATE_DATA.\md5($sTmp);
 
-				mkdir($sTmpFolder);
-				if (is_dir($sTmpFolder))
+				\mkdir($sTmpFolder);
+				if (\is_dir($sTmpFolder))
 				{
 					$bResult = 0 !== $oArchive->extract(PCLZIP_OPT_PATH, $sTmpFolder);
 					if (!$bResult)
@@ -2581,27 +2591,35 @@ class Actions
 						$this->Logger()->Write('Cannot extract package files: '.$oArchive->errorInfo(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 					}
 
-					if ($bResult && file_exists($sTmpFolder.'/index.php') &&
-						is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
-						file_exists($sTmpFolder.'/data/VERSION') &&
-						is_dir($sTmpFolder.'/rainloop/'))
+					if ($bResult && \file_exists($sTmpFolder.'/index.php') &&
+						\is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
+						\file_exists($sTmpFolder.'/data/VERSION') &&
+						\is_dir($sTmpFolder.'/rainloop/'))
 					{
-						$sNewVersion = file_get_contents($sTmpFolder.'/data/VERSION');
-						if ($sNewVersion && !is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion))
+						$sNewVersion = \file_get_contents($sTmpFolder.'/data/VERSION');
+						if ($sNewVersion && !\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion))
 						{
 							\MailSo\Base\Utils::CopyDir($sTmpFolder.'/rainloop/', APP_INDEX_ROOT_PATH.'rainloop/');
 
-							copy($sTmpFolder.'/data/VERSION', APP_DATA_FOLDER_PATH.'VERSION');
-							if (md5_file($sTmpFolder.'/index.php') !== md5_file(APP_INDEX_ROOT_PATH.'index.php'))
+							if (!\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion) &&
+								\copy($sTmpFolder.'/data/VERSION', APP_DATA_FOLDER_PATH.'VERSION'))
 							{
-								copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
-							}
+								if (\md5_file($sTmpFolder.'/index.php') !== \md5_file(APP_INDEX_ROOT_PATH.'index.php'))
+								{
+									\copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
+								}
 
-							$bResult = true;
+								$bResult = true;
+							}
+							else
+							{
+								$this->Logger()->Write('Cannot copy new package files', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+								$this->Logger()->Write($sTmpFolder.'/rainloop/ -> '.APP_INDEX_ROOT_PATH.'rainloop/', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+							}
 						}
 						else
 						{
-							$this->Logger()->WriteDump($sNewVersion.' version already installed', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+							$this->Logger()->Write($sNewVersion.' version already installed', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 						}
 					}
 					else if ($bResult)
@@ -2619,7 +2637,7 @@ class Actions
 			else
 			{
 				$bResult = true;
-				if (is_dir(APP_PLUGINS_PATH.$sId))
+				if (\is_dir(APP_PLUGINS_PATH.$sId))
 				{
 					$bResult = \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sId);
 					if (!$bResult)
@@ -2638,12 +2656,11 @@ class Actions
 				}
 			}
 			
-			@unlink($sTmp);
+			@\unlink($sTmp);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult ? (
-				'plugin' !== $sType ? array('Reload' => true) : true
-			) : false);
+		return $this->DefaultResponse(__FUNCTION__, $bResult ?
+			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 	
 	/**
