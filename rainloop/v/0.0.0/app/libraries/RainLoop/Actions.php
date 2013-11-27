@@ -2224,26 +2224,35 @@ class Actions
 		return '' === $sCoreAccess || APP_SITE === $sCoreAccess;
 	}
 
-	private function getRepositoryDataByUrl($sRepo, &$bReal = false)
+	/**
+	 * @param string $sRepo
+	 * @param bool $bReal = false
+	 * @param bool $bMain = true
+	 * @return array
+	 */
+	private function getRepositoryDataByUrl($sRepo, &$bReal = false, $bMain = true)
 	{
 		$bReal = false;
 		$aRep = null;
 
 		$sRep = '';
-		$sRepoType = \strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable')));
 		$sRepoFile = 'repository.json';
 		$iRepTime = 0;
 
-		switch ($sRepoType) {
-			case 'dev':
-			case 'nightly':
-			case 'beta':
-				$sRepoFile = 'beta.repository.json';
-				break;
-			case 'stable':
-			default:
-				$sRepoFile = 'repository.json';
-				break;
+		if ($bMain)
+		{
+			switch (\strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable'))))
+			{
+				case 'dev':
+				case 'nightly':
+				case 'beta':
+					$sRepoFile = 'beta.repository.json';
+					break;
+				case 'stable':
+				default:
+					$sRepoFile = 'repository.json';
+					break;
+			}
 		}
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
@@ -2352,8 +2361,9 @@ class Actions
 		$sAddRepo = $this->rainloopRepo(true);
 		if (0 < \strlen($sAddRepo))
 		{
-			$aAddData = $this->getRepositoryDataByUrl($sAddRepo);
-			if (\is_array($aAddData) && 0 < \count($aAddData))
+			$bFakeReal = false;
+			$aAddData = $this->getRepositoryDataByUrl($sAddRepo, $bFakeReal, false);
+			if ($bFakeReal && \is_array($aAddData) && 0 < \count($aAddData))
 			{
 				$aResult = \array_merge($aResult, $aAddData);
 			}
