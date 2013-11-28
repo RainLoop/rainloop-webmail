@@ -17,17 +17,22 @@ class Contact
 	/**
 	 * @var string
 	 */
+	public $DisplayName;
+
+	/**
+	 * @var string
+	 */
+	public $DisplayEmail;
+
+	/**
+	 * @var string
+	 */
 	public $DisplayInList;
 
 	/**
-	 * @var bool
+	 * @var int
 	 */
-	public $IsAuto;
-
-	/**
-	 * @var bool
-	 */
-	public $IsShare;
+	public $Type;
 
 	/**
 	 * @var bool
@@ -47,7 +52,7 @@ class Contact
 	/**
 	 * @var array
 	 */
-	public $Tags;
+	public $TagsIds;
 
 	/**
 	 * @var array
@@ -63,12 +68,14 @@ class Contact
 	{
 		$this->IdContact = 0;
 		$this->IdUser = 0;
+		$this->DisplayName = '';
+		$this->DisplayEmail = '';
 		$this->DisplayInList = '';
-		$this->IsAuto = false;
+		$this->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\ContactType::DEFAULT_;
 		$this->IsShare = false;
 		$this->CanBeChanged = false;
 		$this->Changed = \time();
-		$this->Tags = array();
+		$this->TagsIds = array();
 		$this->Properties = array();
 	}
 	

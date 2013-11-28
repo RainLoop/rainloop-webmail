@@ -23,8 +23,7 @@ CREATE TABLE IF NOT EXISTS `rainloop_pab_contacts` (
 	`id_contact` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`id_user` int(11) UNSIGNED NOT NULL,
 	`display_in_list` varchar(255) NOT NULL DEFAULT '',
-	`is_auto` tinyint(1) NOT NULL DEFAULT '0',
-	`is_share` tinyint(1) NOT NULL DEFAULT '0',
+	`type` int(11) UNSIGNED NOT NULL DEFAULT '0',
 	`changed` int(11) UNSIGNED NOT NULL DEFAULT '0',
 
 	CONSTRAINT `id_user_fk_rainloop_pab_contacts` FOREIGN KEY (`id_user`)
@@ -34,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `rainloop_pab_contacts` (
 
 -- Table structure for table `rainloop_pab_prop`
 CREATE TABLE IF NOT EXISTS `rainloop_pab_prop` (
+	`id_prop` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`id_contact` int(11) UNSIGNED NOT NULL,
 	`id_user` int(11) UNSIGNED NOT NULL,
 	`type` int(11) UNSIGNED NOT NULL,
