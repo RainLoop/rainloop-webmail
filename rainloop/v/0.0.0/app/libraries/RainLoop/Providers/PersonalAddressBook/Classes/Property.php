@@ -82,7 +82,7 @@ class Property
 		));
 	}
 
-	public function InitBeforeWrite()
+	public function UpdateDependentValues()
 	{
 		// trimer
 		$this->Value = \trim($this->Value);

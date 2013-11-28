@@ -13,16 +13,6 @@ class Contact
 	 * @var int
 	 */
 	public $IdUser;
-	
-	/**
-	 * @var string
-	 */
-	public $DisplayName;
-
-	/**
-	 * @var string
-	 */
-	public $DisplayEmail;
 
 	/**
 	 * @var string
@@ -38,6 +28,11 @@ class Contact
 	 * @var bool
 	 */
 	public $IsShare;
+
+	/**
+	 * @var bool
+	 */
+	public $CanBeChanged;
 
 	/**
 	 * @var int
@@ -68,17 +63,16 @@ class Contact
 	{
 		$this->IdContact = 0;
 		$this->IdUser = 0;
-		$this->DisplayName = '';
-		$this->DisplayEmail = '';
 		$this->DisplayInList = '';
 		$this->IsAuto = false;
 		$this->IsShare = false;
+		$this->CanBeChanged = false;
 		$this->Changed = \time();
 		$this->Tags = array();
 		$this->Properties = array();
 	}
 	
-	public function InitBeforeWrite()
+	public function UpdateDependentValues()
 	{
 		$sDisplayName = '';
 		$sDisplayEmail = '';
@@ -87,24 +81,21 @@ class Contact
 		{
 			if ($oProperty)
 			{
-				$oProperty->InitBeforeWrite();
+				$oProperty->UpdateDependentValues();
 				
-				if ('' === $sDisplayName && \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME === $oProperty->Type)
+				if ('' === $sDisplayName && \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME === $oProperty->Type &&
+					0 < \strlen($oProperty->Value))
 				{
 					$sDisplayName = $oProperty->Value;
 				}
-
-				if ('' === $sDisplayEmail && $oProperty->IsEmail())
+				else if ('' === $sDisplayEmail && $oProperty->IsEmail() &&
+					0 < \strlen($oProperty->Value))
 				{
 					$sDisplayEmail = $oProperty->Value;
 				}
 			}
 		}
 		
-		$this->DisplayName = $sDisplayName;
-		$this->DisplayEmail = $sDisplayEmail;
-		$this->DisplayInList = 0 < \strlen($this->DisplayName) ? $this->DisplayName : (!empty($this->DisplayEmail) ? $this->DisplayEmail : '');
-
-		$this->Changed = \time();
+		$this->DisplayInList = 0 < \strlen($sDisplayName) ? $sDisplayName : (!empty($sDisplayEmail) ? $sDisplayEmail : '');
 	}
 }
