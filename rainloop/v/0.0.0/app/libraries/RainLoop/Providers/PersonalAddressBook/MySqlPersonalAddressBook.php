@@ -46,7 +46,6 @@ class MySqlPersonalAddressBook implements \RainLoop\Providers\PersonalAddressBoo
 			throw new \Exception('class_exists=PDO');
 		}
 
-		$sVersionFile = '';
 		$sDsn = '';
 		$sDbLogin = '';
 		$sDbPassword = '';
@@ -58,23 +57,11 @@ class MySqlPersonalAddressBook implements \RainLoop\Providers\PersonalAddressBoo
 			if ($oPdo)
 			{
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-				if (!@\file_exists($sVersionFile) ||
-					(string) @file_get_contents($sVersionFile) !== (string) \RainLoop\Providers\Contacts\Classes\Db::Version())
-				{
-					$this->syncTables($oPdo, $sVersionFile);
-				}
-
-				$oPdo->sqliteCreateFunction('SIMPLESEARCH', function ($sEmailValue, $sNameValue, $sMask) {
-					return \preg_match('/'.\preg_quote($sMask, '/').'/ui',
-						$sEmailValue.' '.$sNameValue) ? 1 : 0;
-				});
-
 			}
 		}
 		catch (\Exception $oException)
 		{
-			throw $oException;
+//			throw $oException;
 			$oPdo = false;
 		}
 
