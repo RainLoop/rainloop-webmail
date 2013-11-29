@@ -153,8 +153,8 @@ function PopupsComposeViewModel()
 
 	}, this);
 
-	this.to.subscribe(function (aValue) {
-		if (this.emptyToError() && 0 < aValue.length)
+	this.to.subscribe(function (sValue) {
+		if (this.emptyToError() && 0 < sValue.length)
 		{
 			this.emptyToError(false);
 		}
@@ -217,7 +217,7 @@ function PopupsComposeViewModel()
 
 	this.sendCommand = Utils.createCommand(this, function () {
 		var
-			sTo = this.to(),
+			sTo = Utils.trim(this.to()),
 			sSentFolder = RL.data().sentFolder(),
 			aFlagsCache = []
 		;
@@ -557,6 +557,7 @@ PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
 
 PopupsComposeViewModel.prototype.onHide = function ()
 {
+	this.reset();
 	kn.routeOn();
 };
 

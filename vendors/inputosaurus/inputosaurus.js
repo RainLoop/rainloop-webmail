@@ -236,21 +236,15 @@
 
 		// the input dynamically resizes based on the length of its value
 		_resizeInput : function(ev) {
-			var
-				mixWidth = 50,
-				maxWidth = 400,
-				widget = (ev && ev.data.widget) || this,
-//				maxWidth = widget.elements.ul.width(),
-				txtWidth = 0
-			;
-
+			var widget = (ev && ev.data.widget) || this;
 			widget.elements.fakeSpan.text(widget.elements.input.val());
-			txtWidth = 20 + widget.elements.fakeSpan.width();
-
-			txtWidth = txtWidth < maxWidth ? txtWidth : maxWidth;
-			txtWidth = txtWidth < mixWidth ? mixWidth : txtWidth;
-
-			widget.elements.input.width(txtWidth);
+			
+//			window.setTimeout(function  () {
+				var txtWidth = 25 + widget.elements.fakeSpan.width();
+				txtWidth = txtWidth > 50 ? txtWidth : 50;
+				txtWidth = txtWidth < 500 ? txtWidth : 500;
+				widget.elements.input.width(txtWidth);
+//			}, 1);
 		},
 		
 		// resets placeholder on representative input
@@ -317,7 +311,9 @@
 			$li.after(widget.elements.inputCont);
 
 			widget.elements.input.val(tagName);
-			widget.elements.input.select();
+			window.setTimeout(function () {
+				widget.elements.input.select();
+			}, 100);
 
 			widget._removeTag(ev);
 			widget._resizeInput(ev);
@@ -336,7 +332,7 @@
 
 				// 'e' - edit tag (removes tag and places value into visible input
 				case 69:
-//				case $.ui.keyCode.ENTER:
+				case $.ui.keyCode.ENTER:
 					widget._editTag(ev);
 					break;
 
@@ -440,6 +436,13 @@
 					self._renderTags();
 				}
 			});
+
+			if (valArr.length === 1 && valArr[0] === '' && self.elements.lastEdit !== '')
+			{
+				self.elements.lastEdit = '';
+				self._renderTags();
+			}
+
 			self._setValue(self._buildValue());
 		},
 
@@ -473,7 +476,7 @@
 		},
 
 		_renderTags : function() {
-			var	self = this	;
+			var self = this;
 
 			this.elements.ul.find('li:not(.inputosaurus-required)').remove();
 
@@ -500,7 +503,13 @@
 			widget._setValue(widget._buildValue());
 
 			$(ev.currentTarget).closest('li').remove();
-			widget.elements.input.focus();
+			window.setTimeout(function () {
+				widget.elements.input.focus();
+			}, 100);
+		},
+
+		focus : function () {
+			this.elements.input.focus();
 		},
 
 		_focus : function(ev) {

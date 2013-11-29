@@ -5621,17 +5621,23 @@ html.no-rgba .modal {
   background-color: #eee;
   border: 1px solid #aaa;
   line-height: 18px;
-  padding: 2px 4px;
+  padding: 2px 15px 2px 5px;
   margin: 2px 2px 2px;
   color: #555;
+  position: relative;
 }
 .inputosaurus-container li a {
   color: #999;
-  float: right;
-  font-size: 14px;
+  font-size: 12px;
+  position: absolute;
+  top: 1px;
+  right: 2px;
 }
 .inputosaurus-container li a:hover {
   color: #666;
+}
+.inputosaurus-container li.inputosaurus-required {
+  padding-rigth: 5px;
 }
 .inputosaurus-container li.inputosaurus-selected {
   background-color: #ddd;
@@ -5642,7 +5648,7 @@ html.no-rgba .modal {
   left: -5000px;
 }
 .inputosaurus-container .inputosaurus-input {
-  margin: 2px 10px 2px 0px;
+  margin: 1px 10px 1px 0px;
   height: 22px;
 }
 .inputosaurus-container .inputosaurus-input input {
