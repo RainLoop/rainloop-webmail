@@ -102,20 +102,20 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 				$oPdo = new \PDO($this->sDsn, $this->sUser, $this->sPassword);
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-				$oStmt = $oPdo->prepare('SELECT password, mailuser_id FROM mail_user WHERE login = ?');
+				$oStmt = $oPdo->prepare('SELECT password, mailuser_id FROM mail_user WHERE login = ? LIMIT 1');
 				if ($oStmt->execute(array($oAccount->IncLogin())))
 				{
-					$aFetchResult = $oStmt->fetch(\PDO::FETCH_ASSOC);
-					if (\is_array($aFetchResult) && isset($aFetchResult['password'], $aFetchResult['mailuser_id']))
+					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+					if (\is_array($aFetchResult) && isset($aFetchResult[0]['password'], $aFetchResult[0]['mailuser_id']))
 					{
-						$sDbPassword = \stripslashes($aFetchResult['password']);
+						$sDbPassword = \stripslashes($aFetchResult[0]['password']);
 						$sDbSalt = '$1$'.\substr($sDbPassword, 3, 8).'$';
 
 						if (\crypt(\stripslashes($sPrevPassword), $sDbSalt) === $sDbPassword)
 						{
 							$oStmt = $oPdo->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
 							$bResult = (bool) $oStmt->execute(
-								array($this->cryptPassword($sNewPassword), $aFetchResult['mailuser_id']));
+								array($this->cryptPassword($sNewPassword), $aFetchResult[0]['mailuser_id']));
 						}
 					}
 				}
