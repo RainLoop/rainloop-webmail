@@ -94,13 +94,48 @@ abstract class PdoAbstract
 	}
 
 	/**
+	 * @param string $sName = null
+	 *
+	 * @return string
+	 */
+	protected function lastInsertId($sName = null)
+	{
+		return $this->getPDO()->lastInsertId($sName);
+	}
+
+	/**
+	 * @return nool
+	 */
+	protected function beginTransaction()
+	{
+		return $this->getPDO()->beginTransaction();
+	}
+
+	/**
+	 * @return nool
+	 */
+	protected function commit()
+	{
+		return $this->getPDO()->commit();
+	}
+
+	/**
+	 * @return nool
+	 */
+	protected function rollBack()
+	{
+		return $this->getPDO()->rollBack();
+	}
+
+	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param string $sSql
 	 * @param array $aParams
+	 * @param bool $bMultParams = false
 	 *
 	 * @return \PDOStatement|null
 	 */
-	protected function prepareAndExecute($sSql, $aParams = array())
+	protected function prepareAndExecute($sSql, $aParams = array(), $bMultParams = false)
 	{
 		$mResult = null;
 
@@ -108,12 +143,16 @@ abstract class PdoAbstract
 		$oStmt = $this->getPDO()->prepare($sSql);
 		if ($oStmt)
 		{
-			foreach ($aParams as $sName => $aValue)
+			$aRootParams = $bMultParams ? $aParams : array($aParams);
+			foreach ($aRootParams as $aSubParams)
 			{
-				$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
-			}
+				foreach ($aSubParams as $sName => $aValue)
+				{
+					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
+				}
 
-			$mResult = $oStmt->execute() ? $oStmt : null;
+				$mResult = $oStmt->execute() && !$bMultParams ? $oStmt : null;
+			}
 		}
 
 		return $mResult;

@@ -3790,10 +3790,10 @@ class Actions
 
 							$this->Plugins()->RunHook('filter.smtp-credentials', array($oAccount, &$aSmtpCredentials));
 
-							$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = false;
+							$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;
 							$this->Plugins()->RunHook('filter.smtp-connect', array($oAccount, $aSmtpCredentials, 
 								&$oSmtpClient, $oMessage, &$oRcpt, 
-								&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData));
+								&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData, &$bHookLogoutAndDisconnect));
 
 							if (!$bHookConnect)
 							{
@@ -3839,7 +3839,10 @@ class Actions
 								$oSmtpClient->DataWithStream($rMessageStream);
 							}
 
-							$oSmtpClient->LogoutAndDisconnect();
+							if (!$bHookLogoutAndDisconnect)
+							{
+								$oSmtpClient->LogoutAndDisconnect();
+							}
 						}
 						catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 						{

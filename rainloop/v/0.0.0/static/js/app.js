@@ -8060,7 +8060,7 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 		else
 		{
 			this.sendError(true);
-			window.alert(Utils.getNotification(oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage));
+			window.alert(Utils.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage));
 		}
 	}
 };

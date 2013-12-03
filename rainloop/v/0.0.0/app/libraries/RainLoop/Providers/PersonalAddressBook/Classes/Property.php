@@ -9,21 +9,6 @@ class Property
 	/**
 	 * @var int
 	 */
-	public $IdProperty;
-
-	/**
-	 * @var int
-	 */
-	public $IdContact;
-
-	/**
-	 * @var int
-	 */
-	public $IdUser;
-	
-	/**
-	 * @var int
-	 */
 	public $Type;
 
 	/**
@@ -53,10 +38,6 @@ class Property
 
 	public function Clear()
 	{
-		$this->IdProperty = 0;
-		$this->IdContact = 0;
-		$this->IdUser = 0;
-
 		$this->Type = PropertyType::UNKNOWN;
 		$this->TypeCustom = '';
 

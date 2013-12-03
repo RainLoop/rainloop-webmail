@@ -10,11 +10,6 @@ class Contact
 	public $IdContact;
 
 	/**
-	 * @var int
-	 */
-	public $IdUser;
-
-	/**
 	 * @var string
 	 */
 	public $DisplayInList;
@@ -66,7 +61,7 @@ class Contact
 		$sDisplayName = '';
 		$sDisplayEmail = '';
 		
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\PersonalAddressBook\Classes\Property */ $oProperty)
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\PersonalAddressBook\Classes\Property */ &$oProperty)
 		{
 			if ($oProperty)
 			{
