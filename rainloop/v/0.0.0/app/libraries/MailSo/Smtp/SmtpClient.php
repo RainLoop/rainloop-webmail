@@ -112,6 +112,32 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @return string
+	 */
+	public static function EhloHelper()
+	{
+		$sEhloHost = empty($_SERVER['SERVER_NAME']) ? '' : \trim($_SERVER['SERVER_NAME']);
+		if (empty($sEhloHost))
+		{
+			$sEhloHost = empty($_SERVER['HTTP_HOST']) ? '' : \trim($_SERVER['HTTP_HOST']);
+		}
+		
+		if (empty($sEhloHost))
+		{
+			$sEhloHost = \function_exists('gethostname') ? \gethostname() : 'localhost';
+		}
+
+		$sEhloHost = \trim(\preg_replace('/:\d+$/', '', \trim($sEhloHost)));
+
+		if (\preg_match('/^\d+\.\d+\.\d+\.\d+$/', $sEhloHost))
+		{
+			$sEhloHost = '['.$sEhloHost.']';
+		}
+
+		return empty($sEhloHost) ? 'localhost' : $sEhloHost;
+	}
+
+	/**
 	 * @param string $sServerName
 	 * @param int $iPort = 25
 	 * @param string $sEhloHost = '127.0.0.1'

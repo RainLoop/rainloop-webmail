@@ -3732,7 +3732,7 @@ class Actions
 							$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
 
 							$aSmtpCredentials = array(
-								'Ehlo' => \function_exists('gethostname') ? \gethostname() : 'localhost',
+								'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
 								'Host' => $oAccount->Domain()->OutHost(),
 								'Port' => $oAccount->Domain()->OutPort(),
 								'Secure' => $oAccount->Domain()->OutSecure(),
