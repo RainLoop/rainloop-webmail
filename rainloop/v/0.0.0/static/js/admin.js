@@ -6569,10 +6569,8 @@ AbstractApp.prototype.setTitle = function (sTitle)
 	sTitle = ((0 < sTitle.length) ? sTitle + ' - ' : '') +
 		RL.settingsGet('Title') || '';
 
+	window.document.title = '_';
 	window.document.title = sTitle;
-	_.delay(function () {
-		window.document.title = sTitle;
-	}, 5);
 };
 
 /**

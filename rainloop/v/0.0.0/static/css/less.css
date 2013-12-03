@@ -4084,10 +4084,10 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-languages-content.modal {
   z-index: 1103;
-  width: 500px;
+  width: 700px;
 }
 .popups .b-languages-content.exp {
-  width: 501px;
+  width: 701px;
 }
 .popups .b-languages-content .modal-header {
   background-color: #fff;
