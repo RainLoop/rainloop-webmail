@@ -9,6 +9,11 @@ class Property
 	/**
 	 * @var int
 	 */
+	public $IdProperty;
+
+	/**
+	 * @var int
+	 */
 	public $IdContact;
 
 	/**
@@ -48,6 +53,7 @@ class Property
 
 	public function Clear()
 	{
+		$this->IdProperty = 0;
 		$this->IdContact = 0;
 		$this->IdUser = 0;
 

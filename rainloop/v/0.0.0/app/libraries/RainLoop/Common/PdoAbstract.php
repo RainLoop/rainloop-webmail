@@ -31,37 +31,11 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 *
 	 * @return array
 	 */
 	protected function getPdoAccessData()
 	{
-		$aResult = array('mysql', '', '', '');
-		return $aResult;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getPdoSystemTables()
-	{
-		$aResult = array();
-		if ('mysql' === $this->sDbType)
-		{
-			$aResult[] = 'CREATE TABLE IF NOT EXISTS `rainloop_system` (
-	`sys_name` varchar(50) NOT NULL,
-	`value_int` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
-	`value_str` varchar(255) NOT NULL DEFAULT \'\'
-	) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
-
-			$aResult[] = 'CREATE TABLE IF NOT EXISTS `rainloop_users` (
-	`id_user` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`rl_email` varchar(255) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL,
-	UNIQUE `email_unique` (`rl_email`),
-	PRIMARY KEY(`id_user`)
-	) /*!40000 ENGINE=INNODB */;';
-		}
-		
+		$aResult = array('mysql', 'mysql:host=127.0.0.1;port=3306;dbname=rainloop', 'root', '');
 		return $aResult;
 	}
 
@@ -70,7 +44,7 @@ abstract class PdoAbstract
 	 *
 	 * @throws \Exception
 	 */
-	protected function getPDO($oAccount = null)
+	protected function getPDO()
 	{
 		static $aPdoCache = null;
 		if ($aPdoCache)
@@ -86,7 +60,7 @@ abstract class PdoAbstract
 		// TODO
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
-		$this->sType = $sType;
+		$this->sDbType = $sType;
 
 		$oPdo = false;
 		try
@@ -95,9 +69,10 @@ abstract class PdoAbstract
 			if ($oPdo)
 			{
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-				if ('mysql' === $this->sType)
+				if ('mysql' === $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME))
 				{
-
+					$oPdo->exec('SET NAMES utf8 COLLATE utf8_general_ci');
+//					$oPdo->exec('SET NAMES utf8');
 				}
 			}
 		}
@@ -127,12 +102,9 @@ abstract class PdoAbstract
 	 */
 	protected function prepareAndExecute($sSql, $aParams = array())
 	{
-		if ($this->oLogger)
-		{
-			$this->oLogger->Write($sSql, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
-		}
-
 		$mResult = null;
+
+		$this->writeLog($sSql);
 		$oStmt = $this->getPDO()->prepare($sSql);
 		if ($oStmt)
 		{
@@ -145,6 +117,17 @@ abstract class PdoAbstract
 		}
 
 		return $mResult;
+	}
+	
+	/**
+	 * @param string $sSql
+	 */
+	protected function writeLog($sSql)
+	{
+		if ($this->oLogger)
+		{
+			$this->oLogger->Write($sSql, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
+		}
 	}
 	
 	/**
@@ -184,23 +167,14 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sSearch
-	 * 
-	 * @return string
-	 */
-	protected function convertSearchValue($sSearch)
-	{
-		return '%'.$sSearch.'%';
-	}
-
-	/**
 	 * @param string $sValue
 	 *
 	 * @return string
 	 */
 	protected function quoteValue($sValue)
 	{
-		return '\''.$sValue.'\'';
+		$oPdo = $this->getPDO();
+		return $oPdo ? $oPdo->quote((string) $sValue, \PDO::PARAM_STR) : '\'\'';
 	}
 
 	/**
@@ -214,16 +188,32 @@ abstract class PdoAbstract
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			$oStmt = $oPdo->prepare('SELECT * FROM rainloop_system WHERE sys_name = ?');
-			$oStmt->execute(array($sName));
-			$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-			if ($mRow && isset($mRow[0]['sys_name'], $mRow[0]['value_int'], $mRow[0]['value_str']))
+			$sQuery = 'SELECT * FROM rainloop_system WHERE sys_name = ?';
+			$this->writeLog($sQuery);
+			
+			$oStmt = $oPdo->prepare($sQuery);
+			if ($oStmt->execute(array($sName)))
 			{
-				return $bReturnIntValue ? (int) $mRow[0]['value_int'] : (string) $mRow[0]['value_str'];
+				$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+				if ($mRow && isset($mRow[0]['sys_name'], $mRow[0]['value_int'], $mRow[0]['value_str']))
+				{
+					return $bReturnIntValue ? (int) $mRow[0]['value_int'] : (string) $mRow[0]['value_str'];
+				}
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $sType
+	 * @param bool $bReturnIntValue = true
+	 *
+	 * @return int|string|bool
+	 */
+	protected function getVersion($sName)
+	{
+		return $this->getSystemValue($sName.'_version', true);
 	}
 
 	/**
@@ -239,15 +229,21 @@ abstract class PdoAbstract
 		if ($oPdo)
 		{
 			$oPdo->beginTransaction();
+
+			$sQuery = 'DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?;';
+			$this->writeLog($sQuery);
 			
-			$oStmt = $oPdo->prepare('DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?');
-			$bResult = !!$oStmt->execute(array($sName, $iVersion));
+			$oStmt = $oPdo->prepare($sQuery);
+			$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
 			if ($bResult)
 			{
-				$oStmt = $oPdo->prepare('INSERT INTO `rainloop_system (sys_name, value_int) VALUES (?, ?)');
+				$sQuery = 'INSERT INTO rainloop_system (sys_name, value_int) VALUES (?, ?);';
+				$this->writeLog($sQuery);
+
+				$oStmt = $oPdo->prepare($sQuery);
 				if ($oStmt)
 				{
-					$bResult = !!$oStmt->execute(array($sName, $iVersion));
+					$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
 				}
 			}
 
@@ -269,58 +265,121 @@ abstract class PdoAbstract
 	 */
 	protected function initSystemTables()
 	{
-		$aQ = $this->getPdoSystemTables();
-		$oPdo = $this->getPDO();
-		if ($oPdo && 0 < count($aQ))
-		{
-			$oPdo->beginTransaction();
+		$bResult = true;
 
-			try
+		$oPdo = $this->getPDO();
+		if ($oPdo)
+		{
+			$aQ = array();
+			if ('mysql' === $this->sDbType)
 			{
-				foreach ($aQ as $sQuery)
+				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_system` (
+		`sys_name` varchar(50) NOT NULL,
+		`value_int` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+		`value_str` varchar(255) NOT NULL DEFAULT \'\'
+		) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
+
+				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_users` (
+		`id_user` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+		`rl_email` varchar(255) NOT NULL,
+		UNIQUE `email_unique` (`rl_email`),
+		PRIMARY KEY(`id_user`)
+		) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ ;';
+			}
+
+			if (0 < \count($aQ))
+			{
+				try
 				{
-					$oPdo->exec($sQuery);
+					$oPdo->beginTransaction();
+
+					foreach ($aQ as $sQuery)
+					{
+						if ($bResult)
+						{
+							$this->writeLog($sQuery);
+							$bResult = false !== $oPdo->exec($sQuery);
+						}
+					}
+
+					if ($bResult)
+					{
+						$oPdo->rollBack();
+					}
+					else
+					{
+						$oPdo->commit();
+					}
+				}
+				catch (\Exception $oException)
+				{
+					$oPdo->rollBack();
+
+					$this->oLogger->WriteException($oException);
+					throw $oException;
 				}
 			}
-			catch (\Exception $oException)
-			{
-				$oPdo->rollBack();
-				throw $oException;
-			}
-
-			$oPdo->commit();
 		}
+
+		return $bResult;
 	}
 
 	/**
-	 * @param string $sFromName
-	 * @param int $iFromVersion
+	 * @param string $sName
 	 * @param array $aData = array()
 	 *
 	 * @return bool
 	 */
-	protected function smartDataBaseUpgrade($sFromName, $iFromVersion, $aData = array())
+	protected function dataBaseUpgrade($sName, $aData = array())
 	{
+		$this->initSystemTables();
+
+		$iFromVersion = $this->getVersion($sName);
+
 		$bResult = false;
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
 			$bResult = true;
-			if (0 === $iFromVersion)
-			{
-				$this->initSystemTables();
-			}
-			
 			foreach ($aData as $iVersion => $aQuery)
 			{
 				if ($iFromVersion < $iVersion)
 				{
-					foreach ($aQuery as $sQuery)
+					try
 					{
-						$oPdo->exec($sQuery);
+						$oPdo->beginTransaction();
+						
+						foreach ($aQuery as $sQuery)
+						{
+							$this->writeLog($sQuery);
+							if (false === $oPdo->exec($sQuery))
+							{
+								$bResult = false;
+								break;
+							}
+						}
+
+						if ($bResult)
+						{
+							$oPdo->commit();
+						}
+						else
+						{
+							$oPdo->rollBack();
+						}
+					}
+					catch (\Exception $oException)
+					{
+						$oPdo->rollBack();
+						throw $oException;
 					}
 
-					$this->setVersion($sFromName, $iVersion);
+					if (!$bResult)
+					{
+						break;
+					}
+					
+					$this->setVersion($sName, $iVersion);
 				}
 			}
 		}

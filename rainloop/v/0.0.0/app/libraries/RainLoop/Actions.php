@@ -82,6 +82,11 @@ class Actions
 	private $oContactsProvider;
 
 	/**
+	 * @var \RainLoop\Providers\PersonalAddressBook
+	 */
+	private $oPersonalAddressBook;
+
+	/**
 	 * @var \RainLoop\Providers\Suggestions
 	 */
 	private $oSuggestionsProvider;
@@ -121,6 +126,8 @@ class Actions
 		$this->oSettingsProvider = null;
 		$this->oDomainProvider = null;
 		$this->oLoginProvider = null;
+		$this->oContactsProvider = null;
+		$this->oPersonalAddressBook = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 
@@ -196,6 +203,7 @@ class Actions
 	{
 		$oResult = null;
 		$this->Plugins()->RunHook('main.fabrica', array($sName, &$oResult), false);
+		$this->Plugins()->RunHook('main.fabrica-account', array($sName, &$oResult, &$oAccount), false);
 
 		if (null === $oResult)
 		{
@@ -225,6 +233,11 @@ class Actions
 				case 'contacts':
 					// \RainLoop\Providers\Contacts\ContactsInterface
 					$oResult = new \RainLoop\Providers\Contacts\DefaultContacts($this->Logger());
+					break;
+				case 'personal-address-book':
+//					\RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
+					$oResult = new \RainLoop\Providers\PersonalAddressBook\MySqlPersonalAddressBook();
+					$oResult->SetLogger($this->Logger());
 					break;
 				case 'suggestions':
 					// \RainLoop\Providers\Suggestions\SuggestionsInterface
@@ -541,6 +554,38 @@ class Actions
 		}
 
 		return $this->oContactsProvider;
+	}
+
+	/**
+	 * @return \RainLoop\Providers\Contacts
+	 */
+	public function PersonalAddressBookProvider($oAccount = null)
+	{
+		if (null === $this->oPersonalAddressBook)
+		{
+			$this->oPersonalAddressBook = new \RainLoop\Providers\PersonalAddressBook(
+				$this->Config()->Get('labs', 'allow_contacts', true) ?
+					$this->fabrica('personal-address-book', $oAccount) : null);
+
+			$sVersion = (string) $this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'PersonalAddressBookVersion', '');
+
+			if ($sVersion !== APP_VERSION && $this->oPersonalAddressBook->IsActive())
+			{
+				if ($this->oPersonalAddressBook->SynchronizeStorage())
+				{
+					$this->StorageProvider()->Put(null, \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+						'PersonalAddressBookVersion', APP_VERSION);
+				}
+			}
+		}
+
+		if ($oAccount)
+		{
+			$this->oPersonalAddressBook->SetAccount($oAccount);
+		}
+
+		return $this->oPersonalAddressBook;
 	}
 
 	/**
@@ -3849,22 +3894,6 @@ class Actions
 									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
 										\MailSo\Imap\Enumerations\MessageFlag::SEEN
 									));
-
-// TODO
-//								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-//
-//								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-//									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
-//
-//								$this->MailClient()->MessageAppendStream(
-//									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
-//										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-//									));
-//
-//								if (\is_resource($rAppendMessageStream))
-//								{
-//									@\fclose($rAppendMessageStream);
-//								}
 							}
 							catch (\Exception $oException)
 							{
@@ -3912,26 +3941,24 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 		}
 
-//		if ($oMessage && $this->ContactsProvider()->IsActive())
-//		{
-//			$oToCollection = $oMessage->GetTo();
-//			$oTo = $oToCollection->GetByIndex(0);
-//			if ($oTo)
-//			{
-//				$oContact = new \RainLoop\Providers\Contacts\Classes\Contact();
-//				/* @var $oTo \MailSo\Mime\Email */
-//				$oContact->Name = $oTo->GetDisplayName();
-//
-//				$i = 30;
-//				while ($i > 0)
-//				{
-//					$i--;
-//					$oContact->Emails = array('u'.$i.'-'.$oTo->GetEmail());
-//					$this->ContactsProvider()->CreateContact($oAccount, $oContact);
-//				}
-//			}
-//
-//		}
+		if ($oMessage && $this->PersonalAddressBookProvider($oAccount)->IsActive())
+		{
+			$aArrayToFrec = array();
+			$oToCollection = $oMessage->GetTo();
+			if ($oToCollection)
+			{
+				$aTo =& $oToCollection->GetAsArray();
+				foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+				{
+					$aArrayToFrec[$oEmail->GetEmail()] = $oEmail->GetEmail();
+				}
+			}
+
+			if (0 < \count($aArrayToFrec))
+			{
+				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount, \array_values($aArrayToFrec));
+			}
+		}
 
 		return $this->TrueResponse(__FUNCTION__);
 	}
@@ -4097,51 +4124,16 @@ class Actions
 		$sQuery = \trim($this->GetActionParam('Query', ''));
 
 		$aResult = array();
-		if (0 < \strlen($sQuery) && $this->ContactsProvider()->IsActive())
+		$oPab = $this->PersonalAddressBookProvider($oAccount);
+		if (0 < \strlen($sQuery) && $oPab->IsActive())
 		{
-			$mResult = $this->ContactsProvider()->GetContacts($oAccount, 0, RL_CONTACTS_PER_PAGE, $sQuery);
-			if (\is_array($mResult) && 0 < \count($mResult))
-			{
-				$mResult = \array_slice($mResult, 0, RL_CONTACTS_PER_PAGE);
-
-				foreach ($mResult as $oItem)
-				{
-					/* @var $oItem \RainLoop\Providers\Contacts\Classes\Contact */
-					$aEmails = $oItem->Emails;
-					if (0 < \count($aEmails))
-					{
-						foreach ($aEmails as $sEmail)
-						{
-							if (0 < \strlen($sEmail))
-							{
-								$aResult[] = array($sEmail, $oItem->Name);
-							}
-						}
-					}
-				}
-			}
+			$aResult = $oPab->GetSuggestions($oAccount, $sQuery);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'More' => false,
 			'List' => $aResult
 		));
-
-//		$oAccount = $this->getAccountFromToken();
-//
-//		$aResult = array();
-//		$sQuery = \trim($this->GetActionParam('Query', ''));
-//		if (0 < \strlen($sQuery) && $oAccount)
-//		{
-//			$aResult = $this->SuggestionsProvider()->Process($oAccount, $sQuery);
-//
-//			if (0 === count($aResult) && false !== \strpos(strtolower($oAccount->Email()), \strtolower($sQuery)))
-//			{
-//				$aResult[] = array($oAccount->Email(), $oAccount->Name());
-//			}
-//		}
-//
-//		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
 	/**
