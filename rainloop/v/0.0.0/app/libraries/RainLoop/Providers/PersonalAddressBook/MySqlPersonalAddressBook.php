@@ -72,6 +72,33 @@ class MySqlPersonalAddressBook
 		$oContact->UpdateDependentValues();
 		$oContact->Changed = \time();
 
+		if (\RainLoop\Providers\PersonalAddressBook\Enumerations\ContactType::AUTO != $oContact->Type)
+		{
+			$aEmail = $oContact->GetEmails();
+			if (0 < \count($aEmail))
+			{
+				$aEmail = \array_map(function ($mItem) {
+					return \strtolower(\trim($mItem));
+				}, $aEmail);
+				
+				$aEmail = \array_filter($aEmail, function ($mItem) {
+					return !empty($mItem);
+				});
+
+				if (0 < \strlen($aEmail))
+				{
+					// clear autocreated contacts
+					$this->prepareAndExecute(
+						'DELETE FROM `rainloop_pab_contacts` WHERE `id_user` = :id_user AND `type` = :type AND `display_in_list` IN ('.\implode(',', $aEmail).')',
+						array(
+							':id_user' => array($iUserID, \PDO::PARAM_INT),
+							':type' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ContactType::AUTO, \PDO::PARAM_INT)
+						)
+					);
+				}
+			}
+		}
+
 		try
 		{
 			$this->beginTransaction();

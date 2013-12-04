@@ -82,4 +82,21 @@ class Contact
 		
 		$this->DisplayInList = 0 < \strlen($sDisplayName) ? $sDisplayName : (!empty($sDisplayEmail) ? $sDisplayEmail : '');
 	}
+
+	/**
+	 * @return array
+	 */
+	public function GetEmails()
+	{
+		$aResult = array();
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\PersonalAddressBook\Classes\Property */ &$oProperty)
+		{
+			if ($oProperty && $oProperty->IsEmail())
+			{
+				$aResult[] = $oProperty->Value;
+			}
+		}
+
+		return \array_unique($aResult);
+	}
 }
