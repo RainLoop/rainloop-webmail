@@ -1,0 +1,82 @@
+<project name="Build" basedir=".">
+
+	<property name="INDEX_ROOT" value=".." />
+	<property name="DIST_PATH" value="dist" />
+	<property name="DIST_PLUGINS_PATH" value="dist/plugins" />
+
+	<scriptdef name="generateguid" language="javascript">
+		<attribute name="property" />
+		<![CDATA[
+		importClass( java.util.UUID );
+
+		project.setProperty( attributes.get( "property" ), UUID.randomUUID() );
+		]]>
+	</scriptdef>
+
+	<target name="_pre_">
+		<generateguid property="GUID" />
+		<mkdir dir="${DIST_PATH}" />
+		<mkdir dir="${DIST_PLUGINS_PATH}" />
+	</target>
+
+	<target name="_build_plugin_" depends="_pre_">
+
+		<loadfile property="plugin-version" srcfile="${INDEX_ROOT}/plugins/${plugin-name}/VERSION" />
+
+		<mkdir dir="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}-${GUID}" />
+		<mkdir dir="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}-${GUID}/${plugin-name}" />
+
+		<copy todir="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}-${GUID}/${plugin-name}">
+			<fileset dir="${INDEX_ROOT}/plugins/${plugin-name}" />
+		</copy>
+
+		<zip destfile="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}.zip"
+			basedir="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}-${GUID}" update="true" />
+
+		<delete dir="${DIST_PLUGINS_PATH}/${plugin-name}-${plugin-version}-${GUID}" />
+
+	</target>
+
+	<target name="add-x-originating-ip-header">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="add-x-originating-ip-header"/>
+		</antcall>
+	</target>
+	<target name="google-analytics">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="google-analytics"/>
+		</antcall>
+	</target>
+	<target name="convert-headers-styles">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="convert-headers-styles"/>
+		</antcall>
+	</target>
+	<target name="recaptcha">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="recaptcha"/>
+		</antcall>
+	</target>
+	<target name="cpanel-change-password">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="cpanel-change-password"/>
+		</antcall>
+	</target>
+	<target name="ispmanager-change-password">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="ispmanager-change-password"/>
+		</antcall>
+	</target>
+	<target name="personal-address-book-mysql">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="personal-address-book-mysql"/>
+		</antcall>
+	</target>
+	<target name="black-list">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="black-list"/>
+		</antcall>
+	</target>
+
+	
+</project>

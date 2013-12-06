@@ -1,10 +1,9 @@
 /.idea
-/local
 /nbproject
 /npm-debug.log
 /node_modules
+/build/local
 /build/dist
 /build/tmp
-/releases
 /data
 !/data/VERSION

@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		cfg: {
 			devVersion: "0.0.0",
-			releasesPath: 'releases',
+			releasesPath: 'build/dist/releases',
 			releasesSrcPath: '',
 			releaseFolder: 'rainloop',
 			releaseZipFile: 'rainloop.zip'
