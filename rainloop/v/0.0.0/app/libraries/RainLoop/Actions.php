@@ -746,7 +746,7 @@ class Actions
 					$oHttp->GetMethod().': '.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
 					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 
-				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.']');
+				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').']');
 			}
 		}
 
