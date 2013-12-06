@@ -1697,7 +1697,7 @@ class MailClient
 						return 1;
 				}
 
-				return \strnatcmp($oFolderA->FullName(), $oFolderB->FullName());
+				return \strnatcasecmp($oFolderA->FullName(), $oFolderB->FullName());
 			});
 
 			$oNamespace = $this->oImapClient->GetNamespace();
