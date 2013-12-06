@@ -538,11 +538,15 @@ WebMailAjaxRemoteStorage.prototype.quota = function (fCallback)
 
 /**
  * @param {?Function} fCallback
+ * @param {number} iOffset
+ * @param {number} iLimit
  * @param {string} sSearch
  */
-WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, sSearch)
+WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLimit, sSearch)
 {
 	this.defaultRequest(fCallback, 'Contacts', {
+		'Offset': iOffset,
+		'Limit': iLimit,
 		'Search': sSearch
 	}, null, '', ['Contacts']);
 };
@@ -550,15 +554,12 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, sSearch)
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sName, sEmail, sImageData)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
 {
-	sUid = Utils.trim(sUid);
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
-		'Uid': sUid,
-		'Name': sName,
-		'Email': sEmail,
-		'ImageData': sImageData
+		'Uid': Utils.trim(sUid),
+		'Properties': aProperties
 	});
 };
 

@@ -24,6 +24,15 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @return string
+	 */
+	public function Version()
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface ?
+			$this->oDriver->Version() : 'null';
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function IsActive()
@@ -33,12 +42,66 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Providers\PersonalAddressBook\Classes\Contact $oContact
+	 *
 	 * @return bool
 	 */
-	public function IsSupported()
+	public function ContactSave($oAccount, &$oContact)
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
-			$this->oDriver->IsSupported();
+		return $this->IsActive() ? $this->oDriver->ContactSave($oAccount, $oContact) : false;
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param array $aContactIds
+	 *
+	 * @return bool
+	 */
+	public function DeleteContacts($oAccount, $aContactIds)
+	{
+		return $this->IsActive() ? $this->oDriver->DeleteContacts($oAccount, $aContactIds) : false;
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param int $iOffset = 0
+	 * @param type $iLimit = 20
+	 * @param string $sSearch = ''
+	 * @param bool $bAutoOnly = false
+	 *
+	 * @return array
+	 */
+	public function GetContacts($oAccount,
+		$iOffset = 0, $iLimit = 20, $sSearch = '', $bAutoOnly = false)
+	{
+		return $this->IsActive() ? $this->oDriver->GetContacts($oAccount,
+			$iOffset, $iLimit, $sSearch, $bAutoOnly) : array();
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param string $sSearch
+	 * @param int $iLimit = 20
+	 *
+	 * @return array
+	 *
+	 * @throws \InvalidArgumentException
+	 */
+	public function GetSuggestions($oAccount, $sSearch, $iLimit = 20)
+	{
+		return $this->IsActive() ? $this->oDriver->GetSuggestions($oAccount, $sSearch, $iLimit) : array();
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param array $aEmails
+	 *
+	 * @return bool
+	 */
+	public function IncFrec($oAccount, $aEmails)
+	{
+		return $this->IsActive() ? $this->oDriver->IncFrec($oAccount, $aEmails) : false;
 	}
 
 	/**
@@ -46,31 +109,7 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function SynchronizeStorage()
 	{
-		return $this->IsSupported() && \method_exists($this->oDriver, 'SynchronizeStorage') &&
+		return $this->IsActive() && \method_exists($this->oDriver, 'SynchronizeStorage') &&
 			$this->oDriver->SynchronizeStorage();
-	}
-
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param string $sSearch
-	 *
-	 * @return array
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function GetSuggestions($oAccount, $sSearch)
-	{
-		return $this->IsActive() ? $this->oDriver->GetSuggestions($oAccount, $sSearch) : array();
-	}
-
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param array $aEmail
-	 *
-	 * @return bool
-	 */
-	public function IncFrec($oAccount, $aEmail)
-	{
-		return $this->IsActive() ? $this->oDriver->IncFrec($oAccount, $aEmail) : false;
 	}
 }

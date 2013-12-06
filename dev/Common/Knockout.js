@@ -631,6 +631,12 @@ ko.extenders.falseTimeout = function (oTarget, iOption)
 	return oTarget;
 };
 
+ko.observable.fn.validateNone = function ()
+{
+	this.hasError = ko.observable(false);
+	return this;
+};
+
 ko.observable.fn.validateEmail = function ()
 {
 	this.hasError = ko.observable(false);

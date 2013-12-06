@@ -88,8 +88,8 @@ class Property
 			if ($this->IsPhone())
 			{
 				$sPhone = $this->Value;
-				$sPhone = \preg_replace('^[+]+', '', $sPhone);
-				$sPhone = \preg_replace('[^\d]', '', $sPhone);
+				$sPhone = \preg_replace('/^[+]+/', '', $sPhone);
+				$sPhone = \preg_replace('/[^\d]/', '', $sPhone);
 				$this->ValueClear = $sPhone;
 			}
 		}

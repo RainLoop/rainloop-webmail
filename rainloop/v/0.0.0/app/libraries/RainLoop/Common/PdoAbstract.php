@@ -5,6 +5,11 @@ namespace RainLoop\Common;
 abstract class PdoAbstract
 {
 	/**
+	 * @var \PDO
+	 */
+	protected $oPDO = null;
+
+	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger;
@@ -35,8 +40,7 @@ abstract class PdoAbstract
 	 */
 	protected function getPdoAccessData()
 	{
-		$aResult = array('mysql', 'mysql:host=127.0.0.1;port=3306;dbname=rainloop', 'root', '');
-		return $aResult;
+		return array('', '', '', '');
 	}
 
 	/**
@@ -46,10 +50,9 @@ abstract class PdoAbstract
 	 */
 	protected function getPDO()
 	{
-		static $aPdoCache = null;
-		if ($aPdoCache)
+		if ($this->oPDO)
 		{
-			return $aPdoCache;
+			return $this->oPDO;
 		}
 		
 		if (!\class_exists('PDO'))
@@ -57,7 +60,6 @@ abstract class PdoAbstract
 			throw new \Exception('Class PDO does not exist');
 		}
 
-		// TODO
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
 		$this->sDbType = $sType;
@@ -83,7 +85,7 @@ abstract class PdoAbstract
 		
 		if ($oPdo)
 		{
-			$aPdoCache = $oPdo;
+			$this->oPDO = $oPdo;
 		}
 		else
 		{

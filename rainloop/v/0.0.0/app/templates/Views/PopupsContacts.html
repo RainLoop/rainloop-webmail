@@ -45,7 +45,7 @@
 										<i class="checkboxItem" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 									</div>
 									<div class="nameParent actionHandle">
-										<span class="listName" data-bind="text: listName"></span>
+										<span class="listName" data-bind="text: display"></span>
 										&nbsp;
 									</div>
 								</div>
@@ -63,28 +63,45 @@
 						<div data-bind="visible: !emptySelection()">
 							<div class="form-horizontal top-part">
 								<div class="control-group">
-									<div class="control-label" data-bind="initDom: imageUploader">
-										<div class="image-wrapper" style="width: 100px; height: 100px;">
-											<img data-bind="initDom: imageDom"  style="width: 100px; height: 100px;" />
-										</div>
-									</div>
-									<div class="controls">
-										<div class="top-row">
-											<span class="contactEmptyValueClick" data-bind="visible: !viewName.focused() && '' === viewName(), click: function() { viewName.focused(true); }">display name</span>
-											<span class="contactValueClick" data-bind="visible: !viewName.focused() && '' !== viewName(), click: function() { viewName.focused(true); }, text: viewName"></span>
-											<input class="contactValueInput span5" type="text" placeholder="display name" data-bind="value: viewName, visible: viewName.focused, hasfocus: viewName.focused, onEnter: function () { viewName.focused(false); }">
-										</div>
-										<div class="top-row" data-bind="css: { hasError: viewEmail.hasError() }">
-											<span class="contactEmptyValueClick" data-bind="visible: !viewEmail.focused() && '' === viewEmail(), click: function() { viewEmail.focused(true); }">email</span>
-											<span class="contactValueClick" data-bind="visible: !viewEmail.focused() && !viewEmail.hasError() && '' !== viewEmail(), click: function() { viewEmail.focused(true); }, text: viewEmail"></span>
-											<input class="contactValueInput span5" type="text" placeholder="email" data-bind="value: viewEmail, visible: viewEmail.hasError() || viewEmail.focused(), hasfocus: viewEmail.focused, onEnter: function () { viewEmail.focused(false); }">
+									<label class="control-label">
+										<span class="i18n">Display name</span>
+									</label>
+									<div class="controls" data-bind="foreach: viewPropertiesNames">
+										<div class="property-line">
+											<input type="text" class="contactValueInput" data-bind="value: value, valueUpdate: 'keyup'" />
 										</div>
 									</div>
 								</div>
 								<div class="control-group">
-									<div class="control-label">
-									</div>
+									<label class="control-label">
+										<span class="i18n">Emails</span>
+									</label>
 									<div class="controls">
+										<div data-bind="foreach: viewPropertiesEmails">
+											<div class="property-line">
+												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+											</div>
+										</div>
+										<div class="g-ui-link add-link" data-bind="click: addNewEmail">Add an email address</div>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">
+										<span class="i18n">Phones</span>
+									</label>
+									<div class="controls">
+										<div data-bind="foreach: viewPropertiesPhones">
+											<div class="property-line">
+												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+											</div>
+										</div>
+										<div class="g-ui-link add-link" data-bind="click: addNewPhone">Add a phone</div>
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										<br />
+										<br />
 									</div>
 								</div>
 							</div>

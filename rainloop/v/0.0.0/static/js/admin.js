@@ -490,6 +490,45 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
+Enums.ContactPropertyType = {
+
+	'Unknown': 0,
+
+	'FullName': 10,
+
+	'FirstName': 15,
+	'SurName': 16,
+	'MiddleName': 17,
+	'Nick': 18,
+
+	'EmailPersonal': 30,
+	'EmailBussines': 31,
+	'EmailOther': 32,
+
+	'PhonePersonal': 50,
+	'PhoneBussines': 51,
+	'PhoneOther': 52,
+
+	'MobilePersonal': 60,
+	'MobileBussines': 61,
+	'MobileOther': 62,
+
+	'FaxPesonal': 70,
+	'FaxBussines': 71,
+	'FaxOther': 72,
+
+	'Facebook': 90,
+	'Skype': 91,
+	'GitHub': 92,
+
+	'Description': 110,
+
+	'Custom': 250
+};
+
+/**
+ * @enum {number}
+ */
 Enums.Notification = {
 	'InvalidToken': 101,
 	'AuthError': 102,
@@ -1427,7 +1466,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
 
-	oData.contactsIsSupported = ko.observable(false);
 	oData.contactsIsAllowed = ko.observable(false);
 };
 
@@ -2677,6 +2715,12 @@ ko.extenders.falseTimeout = function (oTarget, iOption)
 	});
 
 	return oTarget;
+};
+
+ko.observable.fn.validateNone = function ()
+{
+	this.hasError = ko.observable(false);
+	return this;
 };
 
 ko.observable.fn.validateEmail = function ()
@@ -4866,8 +4910,6 @@ function AdminGeneral()
 		return Utils.convertLangName(this.mainLanguage());
 	}, this);
 	
-	this.contactsSupported = RL.settingsGet('ContactsIsSupported');
-	this.contactsIsAllowed = RL.settingsGet('ContactsIsAllowed');
 	this.weakPassword = !!RL.settingsGet('WeakPassword');
 	
 	this.titleTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -5588,7 +5630,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));
 
-	this.contactsIsSupported(!!RL.settingsGet('ContactsIsSupported'));
 	this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
 };
 

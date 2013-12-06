@@ -539,9 +539,9 @@ RainLoopApp.prototype.getAutocomplete = function (sQuery, fCallback)
 	;
 
 	RL.remote().suggestions(function (sResult, oData) {
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isArray(oData.Result.List))
+		if (Enums.StorageResultType.Success === sResult && oData && Utils.isArray(oData.Result))
 		{
-			aData = _.map(oData.Result.List, function (aItem) {
+			aData = _.map(oData.Result, function (aItem) {
 				return aItem && aItem[0] ? new EmailModel(aItem[0], aItem[1]) : null;
 			});
 
@@ -551,6 +551,7 @@ RainLoopApp.prototype.getAutocomplete = function (sQuery, fCallback)
 		{
 			fCallback([]);
 		}
+		
 	}, sQuery);
 };
 
@@ -578,7 +579,7 @@ RainLoopApp.prototype.bootstart = function ()
 		bTwitter = RL.settingsGet('AllowTwitterSocial')
 	;
 	
-	if (!RL.settingsGet('AllowChangePassword'))
+	if (!RL.settingsGet('ChangePasswordIsAllowed'))
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}

@@ -5,24 +5,29 @@ namespace RainLoop\Providers\PersonalAddressBook\Classes;
 class Contact
 {
 	/**
-	 * @var int
+	 * @var string
 	 */
 	public $IdContact;
 
 	/**
 	 * @var string
 	 */
-	public $DisplayInList;
+	public $Display;
 
 	/**
-	 * @var int
+	 * @var string
 	 */
-	public $Type;
+	public $DisplayName;
+
+	/**
+	 * @var string
+	 */
+	public $DisplayEmail;
 
 	/**
 	 * @var bool
 	 */
-	public $CanBeChanged;
+	public $Auto;
 
 	/**
 	 * @var int
@@ -32,7 +37,7 @@ class Contact
 	/**
 	 * @var array
 	 */
-	public $TagsIds;
+	public $Tags;
 
 	/**
 	 * @var array
@@ -46,13 +51,14 @@ class Contact
 
 	public function Clear()
 	{
-		$this->IdContact = 0;
+		$this->IdContact = '';
 		$this->IdUser = 0;
-		$this->DisplayInList = '';
-		$this->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\ContactType::DEFAULT_;
-		$this->CanBeChanged = false;
+		$this->Display = '';
+		$this->DisplayName = '';
+		$this->DisplayEmail = '';
+		$this->Auto = false;
 		$this->Changed = \time();
-		$this->TagsIds = array();
+		$this->Tags = array();
 		$this->Properties = array();
 	}
 	
@@ -79,8 +85,11 @@ class Contact
 				}
 			}
 		}
-		
-		$this->DisplayInList = 0 < \strlen($sDisplayName) ? $sDisplayName : (!empty($sDisplayEmail) ? $sDisplayEmail : '');
+
+		$this->DisplayName = $sDisplayName;
+		$this->DisplayEmail = $sDisplayEmail;
+
+		$this->Display = 0 < \strlen($sDisplayName) ? $sDisplayName : (!empty($sDisplayEmail) ? $sDisplayEmail : '');
 	}
 
 	/**

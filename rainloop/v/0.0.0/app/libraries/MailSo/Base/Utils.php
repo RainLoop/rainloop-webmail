@@ -1090,6 +1090,11 @@ class Utils
 	 */
 	public static function Utf8Clear($sUtfString, $sReplaceOn = '')
 	{
+		if ('' === $sUtfString)
+		{
+			return $sUtfString;
+		}
+
 		$sUtfString = @\iconv('UTF-8', 'UTF-8//IGNORE', $sUtfString);
 
 		$sUtfString = \preg_replace(

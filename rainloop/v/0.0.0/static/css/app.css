@@ -7242,58 +7242,27 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   color: #999;
 }
 .b-contacts-content.modal .b-view-content .top-part {
-  margin-top: 20px;
+  padding-top: 20px;
 }
-.b-contacts-content.modal .b-view-content .top-part .control-label {
-  text-align: center;
-}
-.b-contacts-content.modal .b-view-content .image-wrapper {
-  margin-left: 30px;
-  border-radius: 10px;
-}
-.b-contacts-content.modal .b-view-content .image-wrapper img {
-  border-radius: 10px;
+.b-contacts-content.modal .b-view-content .property-line {
+  margin-bottom: 5px;
 }
 .b-contacts-content.modal .b-view-content .top-row {
   padding: 10px 0;
   height: 30px;
 }
-.b-contacts-content.modal .b-view-content .contactEmptyValueClick,
-.b-contacts-content.modal .b-view-content .contactValueClick,
-.b-contacts-content.modal .b-view-content .contactValueInput {
-  display: inline-block;
-  font-size: 24px;
-  line-height: 28px;
-  height: 28px;
+.b-contacts-content.modal .b-view-content .add-link {
+  padding-top: 5px;
+  font-size: 12px;
+  color: #aaa;
 }
-.b-contacts-content.modal .b-view-content .contactEmptyValueClick,
-.b-contacts-content.modal .b-view-content .contactValueClick {
-  color: #ddd;
-  cursor: pointer;
-  margin: 5px 0 0 7px;
-}
-.b-contacts-content.modal .b-view-content .contactValueInput {
-  padding-left: 6px;
-}
-.b-contacts-content.modal .b-view-content .contactEmptyValueClick {
-  border-bottom: 1px dashed #ddd;
-}
-.b-contacts-content.modal .b-view-content .contactValueClick {
-  color: #555;
-  border-bottom: 11px dashed transparent;
-}
-.b-contacts-content.modal .b-view-content .contactValueClick:hover {
-  color: #000;
-  border-bottom: 1px dashed #000;
-}
-.b-contacts-content.modal .b-view-content .hasError .contactValueClick,
 .b-contacts-content.modal .b-view-content .hasError .contactValueInput {
   color: #ee5f5b;
   border: 1px solid #ee5f5b;
 }
 .b-contacts-content.modal .b-view-content .button-save-contact {
   position: absolute;
-  bottom: 20px;
+  top: 20px;
   right: 20px;
 }
 .b-contacts-content .e-contact-item {

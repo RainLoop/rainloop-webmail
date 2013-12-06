@@ -8,9 +8,9 @@ class PropertyType
 
 	const FULLNAME = 10;
 	
-	const NAME = 15;
-	const SURNAME = 16;
-	const MIDDLENAME = 17;
+	const FIRST_NAME = 15;
+	const SUR_NAME = 16;
+	const MIDDLE_NAME = 17;
 	const NICK = 18;
 
 	const EMAIl_PERSONAL = 30;
@@ -25,8 +25,9 @@ class PropertyType
 	const MOBILE_BUSSINES = 61;
 	const MOBILE_OTHER = 62;
 
-	const FAX_BUSSINES = 70;
-	const FAX_OTHER = 71;
+	const FAX_PERSONAL = 70;
+	const FAX_BUSSINES = 71;
+	const FAX_OTHER = 72;
 
 	const FACEBOOK = 90;
 	const SKYPE = 91;

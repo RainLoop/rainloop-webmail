@@ -234,6 +234,45 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
+Enums.ContactPropertyType = {
+
+	'Unknown': 0,
+
+	'FullName': 10,
+
+	'FirstName': 15,
+	'SurName': 16,
+	'MiddleName': 17,
+	'Nick': 18,
+
+	'EmailPersonal': 30,
+	'EmailBussines': 31,
+	'EmailOther': 32,
+
+	'PhonePersonal': 50,
+	'PhoneBussines': 51,
+	'PhoneOther': 52,
+
+	'MobilePersonal': 60,
+	'MobileBussines': 61,
+	'MobileOther': 62,
+
+	'FaxPesonal': 70,
+	'FaxBussines': 71,
+	'FaxOther': 72,
+
+	'Facebook': 90,
+	'Skype': 91,
+	'GitHub': 92,
+
+	'Description': 110,
+
+	'Custom': 250
+};
+
+/**
+ * @enum {number}
+ */
 Enums.Notification = {
 	'InvalidToken': 101,
 	'AuthError': 102,

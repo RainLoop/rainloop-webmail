@@ -65,6 +65,5 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));
 
-	this.contactsIsSupported(!!RL.settingsGet('ContactsIsSupported'));
 	this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
 };

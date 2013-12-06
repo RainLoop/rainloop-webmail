@@ -6,15 +6,47 @@
 function ContactModel()
 {
 	this.idContact = 0;
-	this.imageHash = '';
-	this.listName = '';
-	this.name = '';
-	this.emails = [];
+	this.display = '';
+	this.properties = [];
 
 	this.checked = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.deleted = ko.observable(false);
 }
+
+/**
+ * @return {Array|null}
+ */
+ContactModel.prototype.getNameAndEmailHelper = function ()
+{
+	var 
+		sName = '',
+		sEmail = ''
+	;
+	
+	if (Utils.isNonEmptyArray(this.properties))
+	{
+		_.each(this.properties, function (aProperty) {
+			if (aProperty)
+			{
+				if ('' === sName && Enums.ContactPropertyType.FullName === aProperty[0])
+				{
+					sName = aProperty[1];
+				}
+				else if ('' === sEmail && -1 < Utils.inArray(aProperty[0], [
+					Enums.ContactPropertyType.EmailPersonal,
+					Enums.ContactPropertyType.EmailBussines,
+					Enums.ContactPropertyType.EmailOther
+				]))
+				{
+					sEmail = aProperty[1];
+				}
+			}
+		}, this);
+	}
+
+	return '' === sEmail ? null : [sEmail, sName];
+};
 
 ContactModel.prototype.parse = function (oItem)
 {
@@ -22,10 +54,17 @@ ContactModel.prototype.parse = function (oItem)
 	if (oItem && 'Object/Contact' === oItem['@Object'])
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
-		this.listName = Utils.pString(oItem['ListName']);
-		this.name = Utils.pString(oItem['Name']);
-		this.emails = Utils.isNonEmptyArray(oItem['Emails']) ? oItem['Emails'] : [];
-		this.imageHash = Utils.pString(oItem['ImageHash']);
+		this.display = Utils.pString(oItem['Display']);
+
+		if (Utils.isNonEmptyArray(oItem['Properties']))
+		{
+			_.each(oItem['Properties'], function (oProperty) {
+				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']))
+				{
+					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value'])]);
+				}
+			}, this);
+		}
 		
 		bResult = true;
 	}
@@ -38,8 +77,7 @@ ContactModel.prototype.parse = function (oItem)
  */
 ContactModel.prototype.srcAttr = function ()
 {
-	return '' === this.imageHash ? RL.link().emptyContactPic() :
-		RL.link().getUserPicUrlFromHash(this.imageHash);
+	return RL.link().emptyContactPic();
 };
 
 /**
