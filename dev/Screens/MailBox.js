@@ -78,7 +78,7 @@ MailBoxScreen.prototype.onStart = function ()
 
 	_.delay(function () {
 		var sFolder = RL.data().spamFolder();
-		if (sFolder !== oData.currentFolderFullNameRaw())
+		if (sFolder !== oData.currentFolderFullNameRaw() && '' !== sFolder)
 		{
 			RL.folderInformation(sFolder);
 		}
@@ -86,7 +86,7 @@ MailBoxScreen.prototype.onStart = function ()
 
 	_.delay(function () {
 		var sFolder = RL.data().draftFolder();
-		if (sFolder !== oData.currentFolderFullNameRaw())
+		if (sFolder !== oData.currentFolderFullNameRaw() && '' !== sFolder)
 		{
 			RL.folderInformation(sFolder);
 		}

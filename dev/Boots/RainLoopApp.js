@@ -238,96 +238,99 @@ RainLoopApp.prototype.quota = function ()
  */
 RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 {
-	this.remote().folderInformation(function (sResult, oData) {
-		if (Enums.StorageResultType.Success === sResult)
-		{
-			if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
+	if ('' !== Utils.trim(sFolder))
+	{
+		this.remote().folderInformation(function (sResult, oData) {
+			if (Enums.StorageResultType.Success === sResult)
 			{
-				var
-					sHash = RL.cache().getFolderHash(oData.Result.Folder),
-					oFolder = RL.cache().getFolderFromCacheList(oData.Result.Folder),
-					bCheck = false,
-					sUid = '',
-					aList = [],
-					bUnreadCountChange = false,
-					oFlags = null
-				;
-
-				if (oFolder)
+				if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
 				{
-					if (oData.Result.Hash)
-					{
-						RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
-					}
+					var
+						sHash = RL.cache().getFolderHash(oData.Result.Folder),
+						oFolder = RL.cache().getFolderFromCacheList(oData.Result.Folder),
+						bCheck = false,
+						sUid = '',
+						aList = [],
+						bUnreadCountChange = false,
+						oFlags = null
+					;
 
-					if (Utils.isNormal(oData.Result.MessageCount))
+					if (oFolder)
 					{
-						oFolder.messageCountAll(oData.Result.MessageCount);
-					}
-
-					if (Utils.isNormal(oData.Result.MessageUnseenCount))
-					{
-						if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
+						if (oData.Result.Hash)
 						{
-							bUnreadCountChange = true;
+							RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
 						}
-						
-						oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
-					}
 
-					if (bUnreadCountChange)
-					{
-						RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
-					}
-
-					if (oData.Result.Flags)
-					{
-						for (sUid in oData.Result.Flags)
+						if (Utils.isNormal(oData.Result.MessageCount))
 						{
-							if (oData.Result.Flags.hasOwnProperty(sUid))
+							oFolder.messageCountAll(oData.Result.MessageCount);
+						}
+
+						if (Utils.isNormal(oData.Result.MessageUnseenCount))
+						{
+							if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
 							{
-								bCheck = true;
-								oFlags = oData.Result.Flags[sUid];
-								RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
-									!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded']
-								]);
+								bUnreadCountChange = true;
+							}
+
+							oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
+						}
+
+						if (bUnreadCountChange)
+						{
+							RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+						}
+
+						if (oData.Result.Flags)
+						{
+							for (sUid in oData.Result.Flags)
+							{
+								if (oData.Result.Flags.hasOwnProperty(sUid))
+								{
+									bCheck = true;
+									oFlags = oData.Result.Flags[sUid];
+									RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
+										!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded']
+									]);
+								}
+							}
+
+							if (bCheck)
+							{
+								RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 							}
 						}
 
-						if (bCheck)
-						{
-							RL.reloadFlagsCurrentMessageListAndMessageFromCache();
-						}
-					}
+						RL.data().initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
 
-					RL.data().initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
-
-					if (oData.Result.Hash !== sHash || '' === sHash)
-					{
-						if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+						if (oData.Result.Hash !== sHash || '' === sHash)
 						{
-							RL.reloadMessageList();
-						}
-						else if ('INBOX' === oFolder.fullNameRaw)
-						{
-							RL.recacheInboxMessageList();
-						}
-					}
-					else if (bUnreadCountChange)
-					{
-						if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
-						{
-							aList = RL.data().messageList();
-							if (Utils.isNonEmptyArray(aList))
+							if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
 							{
-								RL.folderInformation(oFolder.fullNameRaw, aList);
+								RL.reloadMessageList();
+							}
+							else if ('INBOX' === oFolder.fullNameRaw)
+							{
+								RL.recacheInboxMessageList();
+							}
+						}
+						else if (bUnreadCountChange)
+						{
+							if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+							{
+								aList = RL.data().messageList();
+								if (Utils.isNonEmptyArray(aList))
+								{
+									RL.folderInformation(oFolder.fullNameRaw, aList);
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-	}, sFolder, aList);
+		}, sFolder, aList);
+	}
 };
 
 RainLoopApp.prototype.setMessageSeen = function (oMessage)
