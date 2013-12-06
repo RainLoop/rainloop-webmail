@@ -672,7 +672,6 @@ class MySqlPersonalAddressBookDriver
 'CREATE TABLE IF NOT EXISTS `rainloop_pab_tags` (
 	
 	`id_tag` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`id_contact` int(11) UNSIGNED NOT NULL,
 	`id_user` int(11) UNSIGNED NOT NULL,
 	`name` varchar(255) NOT NULL,
 

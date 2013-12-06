@@ -315,17 +315,17 @@ abstract class PdoAbstract
 			if ('mysql' === $this->sDbType)
 			{
 				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_system` (
-		`sys_name` varchar(50) NOT NULL,
-		`value_int` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
-		`value_str` varchar(255) NOT NULL DEFAULT \'\'
-		) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
+	`sys_name` varchar(50) NOT NULL,
+	`value_int` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+	`value_str` varchar(255) NOT NULL DEFAULT \'\'
+) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 
 				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_users` (
-		`id_user` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-		`rl_email` varchar(255) NOT NULL,
-		UNIQUE `email_unique` (`rl_email`),
-		PRIMARY KEY(`id_user`)
-		) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ ;';
+	`id_user` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`rl_email` varchar(255) NOT NULL,
+	UNIQUE `email_unique` (`rl_email`),
+	PRIMARY KEY(`id_user`)
+) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */;';
 			}
 
 			if (0 < \count($aQ))
