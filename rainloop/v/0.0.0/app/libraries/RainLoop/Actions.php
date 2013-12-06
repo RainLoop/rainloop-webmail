@@ -77,9 +77,9 @@ class Actions
 	private $oLoginProvider;
 
 	/**
-	 * @var \RainLoop\Providers\Contacts
+	 * @var \RainLoop\Providers\PersonalAddressBook
 	 */
-	private $oContactsProvider;
+	private $oPersonalAddressBookProvider;
 
 	/**
 	 * @var \RainLoop\Providers\Suggestions
@@ -121,6 +121,7 @@ class Actions
 		$this->oSettingsProvider = null;
 		$this->oDomainProvider = null;
 		$this->oLoginProvider = null;
+		$this->oPersonalAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 
@@ -222,9 +223,8 @@ class Actions
 					// \RainLoop\Providers\Domain\DomainAdminInterface
 					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains');
 					break;
-				case 'contacts':
-					// \RainLoop\Providers\Contacts\ContactsInterface
-					$oResult = new \RainLoop\Providers\Contacts\DefaultContacts($this->Logger());
+				case 'personal-address-book':
+					// \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
 					break;
 				case 'suggestions':
 					// \RainLoop\Providers\Suggestions\SuggestionsInterface
@@ -529,18 +529,36 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Providers\Contacts
+	 * @return \RainLoop\Providers\PersonalAddressBook
 	 */
-	public function ContactsProvider()
+	public function PersonalAddressBookProvider($oAccount = null)
 	{
-		if (null === $this->oContactsProvider)
+		if (null === $this->oPersonalAddressBookProvider)
 		{
-			$this->oContactsProvider = new \RainLoop\Providers\Contacts(
-				$this->Config()->Get('labs', 'allow_contacts', true) ?
-					$this->fabrica('contacts') : null);
+			$this->oPersonalAddressBookProvider = new \RainLoop\Providers\PersonalAddressBook(
+				$this->fabrica('personal-address-book', $oAccount));
+
+			$sPabVersion = $this->oPersonalAddressBookProvider->Version();
+			$sVersion = (string) $this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'PersonalAddressBookVersion', '');
+
+			if ($sVersion !== $sPabVersion &&
+				$this->oPersonalAddressBookProvider->IsActive())
+			{
+				if ($this->oPersonalAddressBookProvider->SynchronizeStorage())
+				{
+					$this->StorageProvider()->Put(null, \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+						'PersonalAddressBookVersion', $sPabVersion);
+				}
+			}
 		}
 
-		return $this->oContactsProvider;
+		if ($oAccount)
+		{
+			$this->oPersonalAddressBookProvider->SetAccount($oAccount);
+		}
+
+		return $this->oPersonalAddressBookProvider;
 	}
 
 	/**
@@ -877,9 +895,8 @@ class Actions
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'SuggestionsLimit' => (int) $oConfig->Get('labs', 'suggestions_limit', 50),
-			'AllowChangePassword' => false,
-			'ContactsIsSupported' => (bool) $this->ContactsProvider()->IsSupported(),
-			'ContactsIsAllowed' => (bool) $this->ContactsProvider()->IsActive(),
+			'ChangePasswordIsAllowed' => false,
+			'ContactsIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
@@ -904,7 +921,8 @@ class Actions
 				$aResult['IncLogin'] = $oAccount->IncLogin();
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
-				$aResult['AllowChangePassword'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
+				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
+				$aResult['ContactsIsAllowed'] = $this->PersonalAddressBookProvider($oAccount)->IsActive();
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 			}
@@ -3745,10 +3763,10 @@ class Actions
 
 							$this->Plugins()->RunHook('filter.smtp-credentials', array($oAccount, &$aSmtpCredentials));
 
-							$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = false;
+							$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;
 							$this->Plugins()->RunHook('filter.smtp-connect', array($oAccount, $aSmtpCredentials, 
 								&$oSmtpClient, $oMessage, &$oRcpt, 
-								&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData));
+								&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData, &$bHookLogoutAndDisconnect));
 
 							if (!$bHookConnect)
 							{
@@ -3794,7 +3812,10 @@ class Actions
 								$oSmtpClient->DataWithStream($rMessageStream);
 							}
 
-							$oSmtpClient->LogoutAndDisconnect();
+							if (!$bHookLogoutAndDisconnect)
+							{
+								$oSmtpClient->LogoutAndDisconnect();
+							}
 						}
 						catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 						{
@@ -3849,22 +3870,6 @@ class Actions
 									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
 										\MailSo\Imap\Enumerations\MessageFlag::SEEN
 									));
-
-// TODO
-//								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-//
-//								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-//									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
-//
-//								$this->MailClient()->MessageAppendStream(
-//									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
-//										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-//									));
-//
-//								if (\is_resource($rAppendMessageStream))
-//								{
-//									@\fclose($rAppendMessageStream);
-//								}
 							}
 							catch (\Exception $oException)
 							{
@@ -3912,26 +3917,24 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 		}
 
-//		if ($oMessage && $this->ContactsProvider()->IsActive())
-//		{
-//			$oToCollection = $oMessage->GetTo();
-//			$oTo = $oToCollection->GetByIndex(0);
-//			if ($oTo)
-//			{
-//				$oContact = new \RainLoop\Providers\Contacts\Classes\Contact();
-//				/* @var $oTo \MailSo\Mime\Email */
-//				$oContact->Name = $oTo->GetDisplayName();
-//
-//				$i = 30;
-//				while ($i > 0)
-//				{
-//					$i--;
-//					$oContact->Emails = array('u'.$i.'-'.$oTo->GetEmail());
-//					$this->ContactsProvider()->CreateContact($oAccount, $oContact);
-//				}
-//			}
-//
-//		}
+		if ($oMessage && $this->PersonalAddressBookProvider($oAccount)->IsActive())
+		{
+			$aArrayToFrec = array();
+			$oToCollection = $oMessage->GetTo();
+			if ($oToCollection)
+			{
+				$aTo =& $oToCollection->GetAsArray();
+				foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+				{
+					$aArrayToFrec[$oEmail->GetEmail()] = $oEmail->ToString();
+				}
+			}
+
+			if (0 < \count($aArrayToFrec))
+			{
+				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount, \array_values($aArrayToFrec));
+			}
+		}
 
 		return $this->TrueResponse(__FUNCTION__);
 	}
@@ -3961,30 +3964,27 @@ class Actions
 	public function DoContacts()
 	{
 		$oAccount = $this->getAccountFromToken();
+		
 		$sSearch = \trim($this->GetActionParam('Search', ''));
+		$iOffset = (int) $this->GetActionParam('Offset', 0);
+		$iLimit = (int) $this->GetActionParam('Limit', 20);
+		$iOffset = 0 > $iOffset ? 0 : $iOffset;
+		$iLimit = 0 > $iLimit ? 20 : $iLimit;
 
-		$bMore = false;
-		$mResult = false;
-		if ($this->ContactsProvider()->IsActive())
+		if ($this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
-			$mResult = $this->ContactsProvider()->GetContacts($oAccount, 0, RL_CONTACTS_MAX + 1, $sSearch);
-			if (is_array($mResult))
-			{
-				$bMore = RL_CONTACTS_MAX < \count($mResult);
-				if ($bMore)
-				{
-					$mResult = \array_slice($mResult, 0, RL_CONTACTS_MAX);
-				}
-			}
+			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount, 
+				$iOffset, $iLimit, $sSearch, false);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'Limit' => RL_CONTACTS_MAX,
-			'More' => $bMore,
+			'Offset' => $iOffset,
+			'Limit' => $iLimit,
+			'Search' => $sSearch,
 			'List' => $mResult
 		));
 	}
-
+	
 	/**
 	 * @return array
 	 */
@@ -3999,9 +3999,9 @@ class Actions
 		});
 
 		$bResult = false;
-		if ($this->ContactsProvider()->IsActive())
+		if (0 < \count($aFilteredUids) && $this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
-			$bResult = $this->ContactsProvider()->DeleteContacts($oAccount, $aFilteredUids);
+			$bResult = $this->PersonalAddressBookProvider($oAccount)->DeleteContacts($oAccount, $aFilteredUids);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -4012,77 +4012,45 @@ class Actions
 	 */
 	public function DoContactSave()
 	{
-		sleep(1);
 		$oAccount = $this->getAccountFromToken();
 
 		$bResult = false;
-		$sResultID = '';
 
+		$oPab = $this->PersonalAddressBookProvider($oAccount);
 		$sRequestUid = \trim($this->GetActionParam('RequestUid', ''));
-		if ($this->ContactsProvider()->IsActive() && 0 < \strlen($sRequestUid))
+		if ($oPab && $oPab->IsActive() && 0 < \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
-			$sName = \trim($this->GetActionParam('Name', ''));
-			$sEmail = \trim($this->GetActionParam('Email', ''));
 
-			$sImageData = \trim($this->GetActionParam('ImageData', ''));
-
-			$oContact = null;
+			$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 			if (0 < \strlen($sUid))
 			{
-				if (\is_numeric($sUid))
-				{
-					$oContact = $this->ContactsProvider()->GetContactById($oAccount, (int) $sUid);
-				}
-			}
-			else
-			{
-				$oContact = new \RainLoop\Providers\Contacts\Classes\Contact();
+				$oContact->IdContact = $sUid;
 			}
 
-			if ($oContact)
+			$aProperties = $this->GetActionParam('Properties', array());
+			if (\is_array($aProperties))
 			{
-				$oContact->Name = $sName;
-				$oContact->Emails = array($sEmail);
-
-				if (0 < \strlen($sImageData) && 'data:image/' === substr($sImageData, 0, 11))
+				foreach ($aProperties as $aItem)
 				{
-					$oContact->ImageHash = \md5($sImageData);
-				}
-
-				if (0 < $oContact->IdContact)
-				{
-					$bResult = $this->ContactsProvider()->UpdateContact($oAccount, $oContact);
-				}
-				else
-				{
-					$bResult = $this->ContactsProvider()->CreateContact($oAccount, $oContact);
-				}
-
-				if ($bResult && 0 < $oContact->IdContact)
-				{
-					$sResultID = $oContact->IdContact;
-					$aMatches = array();
-					if ($bResult && $oContact && 0 < $oContact->IdContact && 0 < \strlen($oContact->ImageHash) &&
-						0 < \strlen($sImageData) &&
-						\preg_match('/^data:(image\/(jpeg|jpg|png|bmp));base64,(.+)$/i', $sImageData, $aMatches) &&
-						!empty($aMatches[1]) && !empty($aMatches[3]))
+					if ($aItem && isset($aItem[0], $aItem[1]) &&
+						\is_numeric($aItem[0]))
 					{
-						$this->StorageProvider()->Put($oAccount, 
-							\RainLoop\Providers\Storage\Enumerations\StorageType::USER,
-							'contacts/'.$oContact->ImageHash, $aMatches[1].'|||'.$aMatches[3]);
+						$oProp = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+						$oProp->Type = (int) $aItem[0];
+						$oProp->Value = $aItem[1];
+
+						$oContact->Properties[] = $oProp;
 					}
 				}
-				else
-				{
-					$bResult = false;
-				}
 			}
+
+			$bResult = $oPab->ContactSave($oAccount, $oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'RequestUid' => $sRequestUid,
-			'ResultID' => $sResultID,
+			'ResultID' => $bResult ? $oContact->IdContact : '',
 			'Result' => $bResult
 		));
 	}
@@ -4097,114 +4065,13 @@ class Actions
 		$sQuery = \trim($this->GetActionParam('Query', ''));
 
 		$aResult = array();
-		if (0 < \strlen($sQuery) && $this->ContactsProvider()->IsActive())
+		$oPab = $this->PersonalAddressBookProvider($oAccount);
+		if (0 < \strlen($sQuery) && $oPab->IsActive())
 		{
-			$mResult = $this->ContactsProvider()->GetContacts($oAccount, 0, RL_CONTACTS_PER_PAGE, $sQuery);
-			if (\is_array($mResult) && 0 < \count($mResult))
-			{
-				$mResult = \array_slice($mResult, 0, RL_CONTACTS_PER_PAGE);
-
-				foreach ($mResult as $oItem)
-				{
-					/* @var $oItem \RainLoop\Providers\Contacts\Classes\Contact */
-					$aEmails = $oItem->Emails;
-					if (0 < \count($aEmails))
-					{
-						foreach ($aEmails as $sEmail)
-						{
-							if (0 < \strlen($sEmail))
-							{
-								$aResult[] = array($sEmail, $oItem->Name);
-							}
-						}
-					}
-				}
-			}
+			$aResult = $oPab->GetSuggestions($oAccount, $sQuery);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'More' => false,
-			'List' => $aResult
-		));
-
-//		$oAccount = $this->getAccountFromToken();
-//
-//		$aResult = array();
-//		$sQuery = \trim($this->GetActionParam('Query', ''));
-//		if (0 < \strlen($sQuery) && $oAccount)
-//		{
-//			$aResult = $this->SuggestionsProvider()->Process($oAccount, $sQuery);
-//
-//			if (0 === count($aResult) && false !== \strpos(strtolower($oAccount->Email()), \strtolower($sQuery)))
-//			{
-//				$aResult[] = array($oAccount->Email(), $oAccount->Name());
-//			}
-//		}
-//
-//		return $this->DefaultResponse(__FUNCTION__, $aResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoSuggestionsDep()
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$sQuery = \trim($this->GetActionParam('Query', ''));
-		$iPage = (int) $this->GetActionParam('Page', 0);
-
-		$bMore = false;
-		$aResult = array();
-		if (0 < \strlen($sQuery) && 0 < $iPage && $this->ContactsProvider()->IsActive())
-		{
-			$mResult = $this->ContactsProvider()->GetContacts($oAccount, ($iPage - 1) * RL_CONTACTS_PER_PAGE, RL_CONTACTS_PER_PAGE + 1, $sQuery);
-			if (\is_array($mResult) && 0 < \count($mResult))
-			{
-				$bMore = RL_CONTACTS_PER_PAGE < \count($mResult);
-				if ($bMore)
-				{
-					$mResult = \array_slice($mResult, 0, RL_CONTACTS_PER_PAGE);
-				}
-
-				foreach ($mResult as $oItem)
-				{
-					/* @var $oItem \RainLoop\Providers\Contacts\Classes\Contact */
-					$aEmails = $oItem->Emails;
-					if (0 < \count($aEmails))
-					{
-						foreach ($aEmails as $sEmail)
-						{
-							if (0 < \strlen($sEmail))
-							{
-								$aResult[] = array($sEmail, $oItem->Name);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'More' => $bMore,
-			'List' => $aResult
-		));
-		
-//		$oAccount = $this->getAccountFromToken();
-//
-//		$aResult = array();
-//		$sQuery = \trim($this->GetActionParam('Query', ''));
-//		if (0 < \strlen($sQuery) && $oAccount)
-//		{
-//			$aResult = $this->SuggestionsProvider()->Process($oAccount, $sQuery);
-//
-//			if (0 === count($aResult) && false !== \strpos(strtolower($oAccount->Email()), \strtolower($sQuery)))
-//			{
-//				$aResult[] = array($oAccount->Email(), $oAccount->Name());
-//			}
-//		}
-//
-//		return $this->DefaultResponse(__FUNCTION__, $aResult);
+		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
 	/**
@@ -4212,19 +4079,8 @@ class Actions
 	 */
 	public function DoEmailsPicsHashes()
 	{
-		$oAccount = $this->getAccountFromToken();
-		
-		$aResult = array();
-		if ($this->ContactsProvider()->IsActive())
-		{
-			$mResult = $this->ContactsProvider()->GetContactsImageHashes($oAccount);
-			if (\is_array($mResult) && 0 < \count($mResult))
-			{
-				$aResult = $mResult;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
+//		$oAccount = $this->getAccountFromToken();
+		return $this->DefaultResponse(__FUNCTION__, array());
 	}
 
 	/**
@@ -5686,7 +5542,7 @@ class Actions
 							if ($oAttachment)
 							{
 								$sContentLocation = $oAttachment->ContentLocation();
-								if ($sContentLocation && 0 < strlen($sContentLocation))
+								if ($sContentLocation && 0 < \strlen($sContentLocation))
 								{
 									$aContentLocationUrls[] = $oAttachment->ContentLocation();
 								}
@@ -5744,6 +5600,25 @@ class Actions
 					'ListName' => \MailSo\Base\Utils::Utf8Clear($mResponse->ListName),
 					'Name' => \MailSo\Base\Utils::Utf8Clear($mResponse->Name),
 					'Emails' => $mResponse->Emails
+				));
+			}
+			else if ('RainLoop\Providers\PersonalAddressBook\Classes\Contact' === $sClassName)
+			{
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Contact */
+					'IdContact' => $mResponse->IdContact,
+					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
+					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
+				));
+			}
+			else if ('RainLoop\Providers\PersonalAddressBook\Classes\Property' === $sClassName)
+			{
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Property */
+					'Type' => $mResponse->Type,
+					'TypeCustom' => $mResponse->TypeCustom,
+					'Value' => \MailSo\Base\Utils::Utf8Clear($mResponse->Value),
+					'ValueClear' => \MailSo\Base\Utils::Utf8Clear($mResponse->ValueClear)
 				));
 			}
 			else if ('MailSo\Mail\Attachment' === $sClassName)

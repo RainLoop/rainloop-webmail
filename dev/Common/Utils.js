@@ -886,7 +886,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
 
-	oData.contactsIsSupported = ko.observable(false);
 	oData.contactsIsAllowed = ko.observable(false);
 };
 

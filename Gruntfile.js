@@ -127,6 +127,7 @@ module.exports = function (grunt) {
 					"vendors/routes/hasher.min.js",
 					"vendors/routes/crossroads.min.js",
 					"vendors/knockout/knockout-3.0.0.js",
+					"vendors/knockout-projections/knockout-projections-1.0.0.min.js",
 					"vendors/jua/jua.min.js",
 					"vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
 					"vendors/bootstrap/js/bootstrap.min.js",
@@ -241,6 +242,7 @@ module.exports = function (grunt) {
 
 					"dev/Models/EmailModel.js",
 					"dev/Models/ContactModel.js",
+					"dev/Models/ContactPropertyModel.js",
 					"dev/Models/AttachmentModel.js",
 					"dev/Models/ComposeAttachmentModel.js",
 					"dev/Models/MessageModel.js",
@@ -430,13 +432,13 @@ module.exports = function (grunt) {
 	grunt.registerTask('rlmin', ['uglify:min_app', 'uglify:min_admin']);
 	
 	// uglify (optional)
-	grunt.registerTask('mousewheel', ['uglify:mousewheel']);
-	grunt.registerTask('wakeup', ['uglify:wakeup']);
+	grunt.registerTask('rl', ['uglify:rl']);
 	grunt.registerTask('nano', ['uglify:nano']);
 	grunt.registerTask('pace', ['uglify:pace']);
-	grunt.registerTask('rl', ['uglify:rl']);
-	grunt.registerTask('inputosaurus', ['uglify:inputosaurus']);
+	grunt.registerTask('wakeup', ['uglify:wakeup']);
 	grunt.registerTask('cookie', ['uglify:cookie']);
+	grunt.registerTask('mousewheel', ['uglify:mousewheel']);
+	grunt.registerTask('inputosaurus', ['uglify:inputosaurus']);
 	// ---
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);

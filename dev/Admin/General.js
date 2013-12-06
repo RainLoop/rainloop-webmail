@@ -35,8 +35,6 @@ function AdminGeneral()
 		return Utils.convertLangName(this.mainLanguage());
 	}, this);
 	
-	this.contactsSupported = RL.settingsGet('ContactsIsSupported');
-	this.contactsIsAllowed = RL.settingsGet('ContactsIsAllowed');
 	this.weakPassword = !!RL.settingsGet('WeakPassword');
 	
 	this.titleTrigger = ko.observable(Enums.SaveSettingsStep.Idle);

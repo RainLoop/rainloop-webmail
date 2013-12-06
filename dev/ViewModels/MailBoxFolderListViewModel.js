@@ -13,7 +13,7 @@ function MailBoxFolderListViewModel()
 	
 	this.iDropOverTimer = 0;
 
-	this.allowContacts = !!RL.settingsGet('ContactsIsSupported') && !!RL.settingsGet('ContactsIsAllowed');
+	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
 }
 
 Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel);
