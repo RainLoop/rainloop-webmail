@@ -341,13 +341,13 @@ class Http
 	/**
 	 * @param string $sUrl
 	 * @param array $aPost = array()
-	 * @param string $sCustomUserAgent = 'MaiSo Http User Agent (v1)'
+	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
 	 *
 	 * @return string|bool
 	 */
-	public function SendPostRequest($sUrl, $aPost = array(), $sCustomUserAgent = 'MaiSo Http User Agent (v1)', &$iCode = 0, $oLogger = null)
+	public function SendPostRequest($sUrl, $aPost = array(), $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$iCode = 0, $oLogger = null)
 	{
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -398,7 +398,7 @@ class Http
 	/**
 	 * @param string $sUrl
 	 * @param resource $rFile
-	 * @param string $sCustomUserAgent = 'MaiSo Http User Agent (v1)'
+	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
 	 * @param string $sContentType = ''
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
@@ -406,7 +406,7 @@ class Http
 	 *
 	 * @return bool
 	 */
-	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MaiSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null, $iTimeout = 10)
+	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null, $iTimeout = 10)
 	{
 		if (!is_resource($rFile))
 		{
@@ -465,14 +465,14 @@ class Http
 
 	/**
 	 * @param string $sUrl
-	 * @param string $sCustomUserAgent = 'MaiSo Http User Agent (v1)'
+	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
 	 * @param string $sContentType = ''
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
 	 *
 	 * @return string|bool
 	 */
-	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MaiSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null)
+	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null)
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger) && \is_resource($rMemFile))
