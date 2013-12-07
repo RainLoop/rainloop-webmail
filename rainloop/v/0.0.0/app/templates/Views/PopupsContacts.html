@@ -64,7 +64,7 @@
 							<div class="form-horizontal top-part">
 								<div class="control-group">
 									<label class="control-label">
-										<span class="i18n">Display name</span>
+										<span class="i18n" data-i18n-text="CONTACTS/LABEL_DISPLAY_NAME"></span>
 									</label>
 									<div class="controls" data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
@@ -74,7 +74,7 @@
 								</div>
 								<div class="control-group">
 									<label class="control-label">
-										<span class="i18n">Emails</span>
+										<span class="i18n" data-i18n-text="CONTACTS/LABEL_EMAIL"></span>
 									</label>
 									<div class="controls">
 										<div data-bind="foreach: viewPropertiesEmails">
@@ -82,12 +82,12 @@
 												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<div class="g-ui-link add-link" data-bind="click: addNewEmail">Add an email address</div>
+										<div class="g-ui-link add-link i18n" data-bind="click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></div>
 									</div>
 								</div>
 								<div class="control-group">
 									<label class="control-label">
-										<span class="i18n">Phones</span>
+										<span class="i18n" data-i18n-text="CONTACTS/LABEL_PHONE"></span>
 									</label>
 									<div class="controls">
 										<div data-bind="foreach: viewPropertiesPhones">
@@ -95,7 +95,7 @@
 												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<div class="g-ui-link add-link" data-bind="click: addNewPhone">Add a phone</div>
+										<div class="g-ui-link add-link i18n" data-bind="click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></div>
 									</div>
 								</div>
 								<div class="control-group">
