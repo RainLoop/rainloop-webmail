@@ -9,6 +9,11 @@ class Property
 	/**
 	 * @var int
 	 */
+	public $IdProperty;
+	
+	/**
+	 * @var int
+	 */
 	public $Type;
 
 	/**
@@ -38,6 +43,8 @@ class Property
 
 	public function Clear()
 	{
+		$this->IdProperty = 0;
+		
 		$this->Type = PropertyType::UNKNOWN;
 		$this->TypeCustom = '';
 

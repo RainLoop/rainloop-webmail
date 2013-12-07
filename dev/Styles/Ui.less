@@ -80,9 +80,36 @@
 	}
 }
 
+.g-ui-height-100proc {
+	height: 100%;
+}
+
 .g-ui-resizable-delimiter-highlight {
 	border: none;
 	border-right: 6px solid #aaa;
+}
+
+.e-pagenator {
+
+	.e-page {
+
+		display: inline-block;
+		color: #999;
+		text-decoration: none;
+		font-size: 24px;
+		padding: 3px;
+		cursor: pointer;
+
+		&:hover .e-page-number {
+			color: #555;
+		}
+
+		&.current .e-page-number {
+			font-size: 28px;
+			color: #333;
+			border-bottom: 2px solid #000;
+		}
+	}
 }
 
 html.rgba .g-ui-resizable-delimiter-highlight {

@@ -12,6 +12,12 @@ Consts.Defaults.MessagesPerPage = 20;
 
 /**
  * @const
+ * @type {number}
+ */
+Consts.Defaults.ContactsPerPage = 20;
+
+/**
+ * @const
  * @type {Array}
  */
 Consts.Defaults.MessagesPerPageArray = [10, 20, 30, 50, 100/*, 150, 200, 300*/];

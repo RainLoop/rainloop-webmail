@@ -56,118 +56,7 @@ function MailBoxMessageListViewModel()
 		return '' === sValue ? '' : Utils.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
 	});
 
-	this.messageListPagenator = ko.computed(function () {
-
-		var
-			iPrev = 0,
-			iNext = 0,
-			iLimit = 2,
-			aResult = [],
-			iCurrentPage = oData.messageListPage(),
-			iPageCount = oData.messageListPageCount(),
-
-			/**
-			 * @param {number} iIndex
-			 * @param {boolean=} bPush
-			 * @param {string=} sCustomName
-			 */
-			fAdd = function (iIndex, bPush, sCustomName) {
-
-				var oData = {
-					'current': iIndex === iCurrentPage,
-					'name': Utils.isUnd(sCustomName) ? iIndex.toString() : sCustomName.toString(),
-					'custom': Utils.isUnd(sCustomName) ? false : true,
-					'title': Utils.isUnd(sCustomName) ? '' : iIndex.toString(),
-					'value': iIndex.toString()
-				};
-
-				if (Utils.isUnd(bPush) ? true : !!bPush)
-				{
-					aResult.push(oData);
-				}
-				else
-				{
-					aResult.unshift(oData);
-				}
-			}
-		;
-
-		if (1 < iPageCount || (0 < iPageCount && iPageCount < iCurrentPage))
-//		if (0 < iPageCount && 0 < iCurrentPage)
-		{
-			if (iPageCount < iCurrentPage)
-			{
-				fAdd(iPageCount);
-				iPrev = iPageCount;
-				iNext = iPageCount;
-			}
-			else
-			{
-				if (3 >= iCurrentPage || iPageCount - 2 <= iCurrentPage)
-				{
-					iLimit += 2;
-				}
-
-				fAdd(iCurrentPage);
-				iPrev = iCurrentPage;
-				iNext = iCurrentPage;
-			}
-
-			while (0 < iLimit) {
-
-				iPrev -= 1;
-				iNext += 1;
-
-				if (0 < iPrev)
-				{
-					fAdd(iPrev, false);
-					iLimit--;
-				}
-
-				if (iPageCount >= iNext)
-				{
-					fAdd(iNext, true);
-					iLimit--;
-				}
-				else if (0 >= iPrev)
-				{
-					break;
-				}
-			}
-
-			if (3 === iPrev)
-			{
-				fAdd(2, false);
-			}
-			else if (3 < iPrev)
-			{
-				fAdd(Math.round((iPrev - 1) / 2), false, '...');
-			}
-
-			if (iPageCount - 2 === iNext)
-			{
-				fAdd(iPageCount - 1, true);
-			}
-			else if (iPageCount - 2 > iNext)
-			{
-				fAdd(Math.round((iPageCount + iNext) / 2), true, '...');
-			}
-
-			// first and last
-			if (1 < iPrev)
-			{
-				fAdd(1, false);
-			}
-
-			if (iPageCount > iNext)
-			{
-				fAdd(iPageCount, true);
-			}
-		}
-
-		return aResult;
-
-	}, this);
+	this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(oData.messageListPage, oData.messageListPageCount));
 
 	this.checkAll = ko.computed({
 		'read': function () {
@@ -804,7 +693,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
-		.on('click', '.pagenator .page', function () {
+		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
 			if (oPage)
 			{

@@ -10,6 +10,11 @@ abstract class PdoAbstract
 	protected $oPDO = null;
 
 	/**
+	 * @var bool
+	 */
+	protected $bExplain = false;
+
+	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger;
@@ -130,22 +135,26 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
 	 * @param string $sSql
 	 * @param array $aParams
-	 * @param bool $bMultParams = false
+	 * @param bool $bMultiplyParams = false
 	 *
 	 * @return \PDOStatement|null
 	 */
-	protected function prepareAndExecute($sSql, $aParams = array(), $bMultParams = false)
+	protected function prepareAndExecute($sSql, $aParams = array(), $bMultiplyParams = false)
 	{
+		if ($this->bExplain && !$bMultiplyParams)
+		{
+			$this->prepareAndExplain($sSql, $aParams);
+		}
+
 		$mResult = null;
 
 		$this->writeLog($sSql);
 		$oStmt = $this->getPDO()->prepare($sSql);
 		if ($oStmt)
 		{
-			$aRootParams = $bMultParams ? $aParams : array($aParams);
+			$aRootParams = $bMultiplyParams ? $aParams : array($aParams);
 			foreach ($aRootParams as $aSubParams)
 			{
 				foreach ($aSubParams as $sName => $aValue)
@@ -153,11 +162,44 @@ abstract class PdoAbstract
 					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
 				}
 
-				$mResult = $oStmt->execute() && !$bMultParams ? $oStmt : null;
+				$mResult = $oStmt->execute() && !$bMultiplyParams ? $oStmt : null;
 			}
 		}
 
 		return $mResult;
+	}
+
+	/**
+	 * @param string $sSql
+	 * @param array $aParams
+	 */
+	protected function prepareAndExplain($sSql, $aParams = array())
+	{
+		$mResult = null;
+		if (0 === strpos($sSql, 'SELECT '))
+		{
+			$sSql = 'EXPLAIN '.$sSql;
+			$this->writeLog($sSql);
+			$oStmt = $this->getPDO()->prepare($sSql);
+			if ($oStmt)
+			{
+				foreach ($aParams as $sName => $aValue)
+				{
+					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
+				}
+
+				$mResult = $oStmt->execute() ? $oStmt : null;
+			}
+		}
+
+		if ($mResult)
+		{
+			$aFetch = $mResult->fetchAll(\PDO::FETCH_ASSOC);
+			$this->oLogger->WriteDump($aFetch);
+
+			unset($aFetch);
+			$mResult->closeCursor();
+		}
 	}
 	
 	/**

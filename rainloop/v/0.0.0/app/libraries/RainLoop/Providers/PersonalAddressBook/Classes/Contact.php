@@ -30,6 +30,11 @@ class Contact
 	public $Auto;
 
 	/**
+	 * @var bool
+	 */
+	public $Shared;
+
+	/**
 	 * @var int
 	 */
 	public $Changed;
@@ -38,6 +43,11 @@ class Contact
 	 * @var array
 	 */
 	public $Tags;
+
+	/**
+	 * @var int
+	 */
+	public $IdPropertyFromSearch;
 
 	/**
 	 * @var array
@@ -57,8 +67,10 @@ class Contact
 		$this->DisplayName = '';
 		$this->DisplayEmail = '';
 		$this->Auto = false;
+		$this->Shared = false;
 		$this->Changed = \time();
 		$this->Tags = array();
+		$this->IdPropertyFromSearch = 0;
 		$this->Properties = array();
 	}
 	

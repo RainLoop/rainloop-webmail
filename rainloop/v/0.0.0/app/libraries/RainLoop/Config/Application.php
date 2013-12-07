@@ -81,6 +81,14 @@ class Application extends \RainLoop\Config\AbstractConfig
 0 for unlimited.')
 			),
 
+			'contacts' => array(
+				'enable'			=> array(false, 'Enable contacts'),
+				'type'				=> array('mysql', ''),
+				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
+				'pdo_user'			=> array('root', ''),
+				'pdo_password'		=> array('', ''),
+			),
+
 			'security' => array(
 				'csrf_protection'	=> array(true,
 					'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),

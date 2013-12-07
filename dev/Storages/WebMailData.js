@@ -187,7 +187,7 @@ function WebMailDataStorage()
 	
 	this.messageListPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.messageListCount() / this.messagesPerPage());
-		return 0 === iPage ? 1 : iPage;
+		return 0 >= iPage ? 1 : iPage;
 	}, this);
 
 	this.mainMessageListSearch = ko.computed({

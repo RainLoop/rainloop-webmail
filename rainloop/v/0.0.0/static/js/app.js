@@ -156,6 +156,12 @@ Consts.Defaults.MessagesPerPage = 20;
 
 /**
  * @const
+ * @type {number}
+ */
+Consts.Defaults.ContactsPerPage = 20;
+
+/**
+ * @const
  * @type {Array}
  */
 Consts.Defaults.MessagesPerPageArray = [10, 20, 30, 50, 100/*, 150, 200, 300*/];
@@ -1921,6 +1927,120 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 	};
 
     oTempImg.src = sUrl;
+};
+
+Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount) {
+
+	return function() {
+		var
+			iPrev = 0,
+			iNext = 0,
+			iLimit = 2,
+			aResult = [],
+			iCurrentPage = koCurrentPage(),
+			iPageCount = koPageCount(),
+
+			/**
+			 * @param {number} iIndex
+			 * @param {boolean=} bPush
+			 * @param {string=} sCustomName
+			 */
+			fAdd = function (iIndex, bPush, sCustomName) {
+
+				var oData = {
+					'current': iIndex === iCurrentPage,
+					'name': Utils.isUnd(sCustomName) ? iIndex.toString() : sCustomName.toString(),
+					'custom': Utils.isUnd(sCustomName) ? false : true,
+					'title': Utils.isUnd(sCustomName) ? '' : iIndex.toString(),
+					'value': iIndex.toString()
+				};
+
+				if (Utils.isUnd(bPush) ? true : !!bPush)
+				{
+					aResult.push(oData);
+				}
+				else
+				{
+					aResult.unshift(oData);
+				}
+			}
+		;
+
+		if (1 < iPageCount || (0 < iPageCount && iPageCount < iCurrentPage))
+//		if (0 < iPageCount && 0 < iCurrentPage)
+		{
+			if (iPageCount < iCurrentPage)
+			{
+				fAdd(iPageCount);
+				iPrev = iPageCount;
+				iNext = iPageCount;
+			}
+			else
+			{
+				if (3 >= iCurrentPage || iPageCount - 2 <= iCurrentPage)
+				{
+					iLimit += 2;
+				}
+
+				fAdd(iCurrentPage);
+				iPrev = iCurrentPage;
+				iNext = iCurrentPage;
+			}
+
+			while (0 < iLimit) {
+
+				iPrev -= 1;
+				iNext += 1;
+
+				if (0 < iPrev)
+				{
+					fAdd(iPrev, false);
+					iLimit--;
+				}
+
+				if (iPageCount >= iNext)
+				{
+					fAdd(iNext, true);
+					iLimit--;
+				}
+				else if (0 >= iPrev)
+				{
+					break;
+				}
+			}
+
+			if (3 === iPrev)
+			{
+				fAdd(2, false);
+			}
+			else if (3 < iPrev)
+			{
+				fAdd(Math.round((iPrev - 1) / 2), false, '...');
+			}
+
+			if (iPageCount - 2 === iNext)
+			{
+				fAdd(iPageCount - 1, true);
+			}
+			else if (iPageCount - 2 > iNext)
+			{
+				fAdd(Math.round((iPageCount + iNext) / 2), true, '...');
+			}
+
+			// first and last
+			if (1 < iPrev)
+			{
+				fAdd(1, false);
+			}
+
+			if (iPageCount > iNext)
+			{
+				fAdd(iPageCount, true);
+			}
+		}
+
+		return aResult;
+	};
 };
 
 // Base64 encode / decode
@@ -9060,9 +9180,18 @@ function PopupsContactsViewModel()
 	;
 
 	this.search = ko.observable('');
+	this.contactsCount = ko.observable(0);
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.currentContact = ko.observable(null);
+
+	this.contactsPage = ko.observable(1);
+	this.contactsPageCount = ko.computed(function () {
+		var iPage = Math.ceil(this.contactsCount() / Consts.Defaults.ContactsPerPage);
+		return 0 >= iPage ? 1 : iPage;
+	}, this);
+
+	this.contactsPagenator = ko.computed(Utils.computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
 
 	this.emptySelection = ko.observable(true);
 	this.viewClearSearch = ko.observable(false);
@@ -9260,28 +9389,24 @@ function PopupsContactsViewModel()
 		var bV = this.viewHasNonEmptyRequaredProperties();
 		return !this.viewSaving() && bV;
 	});
+
+	this.bDropPageAfterDelete = false;
 }
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
 
 PopupsContactsViewModel.prototype.addNewEmail = function ()
 {
-//	if (0 === this.viewPropertiesEmailsEmpty().length)
-//	{
-		var oItem = new ContactPropertyModel(Enums.ContactPropertyType.EmailPersonal, '');
-		oItem.focused(true);
-		this.viewProperties.push(oItem);
-//	}
+	var oItem = new ContactPropertyModel(Enums.ContactPropertyType.EmailPersonal, '');
+	oItem.focused(true);
+	this.viewProperties.push(oItem);
 };
 
 PopupsContactsViewModel.prototype.addNewPhone = function ()
 {
-//	if (0 === this.viewPropertiesPhonesEmpty().length)
-//	{
-		var oItem = new ContactPropertyModel(Enums.ContactPropertyType.PhonePersonal, '');
-		oItem.focused(true);
-		this.viewProperties.push(oItem);
-//	}
+	var oItem = new ContactPropertyModel(Enums.ContactPropertyType.PhonePersonal, '');
+	oItem.focused(true);
+	this.viewProperties.push(oItem);
 };
 
 PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = function ()
@@ -9290,6 +9415,7 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 		self = this,
 		oKoContacts = this.contacts,
 		oCurrentContact = this.currentContact(),
+		iCount = this.contacts().length,
 		aContacts = this.contactsCheckedOrSelected()
 	;
 	
@@ -9304,7 +9430,13 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 			}
 
 			oContact.deleted(true);
+			iCount--;
 		});
+
+		if (iCount <= 0)
+		{
+			this.bDropPageAfterDelete = true;
+		}
 
 		_.delay(function () {
 			
@@ -9337,13 +9469,13 @@ PopupsContactsViewModel.prototype.deleteResponse = function (sResult, oData)
 {
 	if (500 < (Enums.StorageResultType.Success === sResult && oData && oData.Time ? Utils.pInt(oData.Time) : 0))
 	{
-		this.reloadContactList();
+		this.reloadContactList(this.bDropPageAfterDelete);
 	}
 	else
 	{
 		_.delay((function (self) {
 			return function () {
-				self.reloadContactList();
+				self.reloadContactList(self.bDropPageAfterDelete);
 			};
 		}(this)), 500);
 	}
@@ -9396,12 +9528,31 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	this.viewProperties(aList);
 };
 
-PopupsContactsViewModel.prototype.reloadContactList = function ()
+/**
+ * @param {boolean=} bDropPagePosition = false
+ */
+PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePosition)
 {
-	var self = this;
+	var
+		self = this,
+		iOffset = (this.contactsPage() - 1) * Consts.Defaults.ContactsPerPage
+	;
+	
+	this.bDropPageAfterDelete = false;
+
+	if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
+	{
+		this.contactsPage(1);
+		iOffset = 0;
+	}
+
 	this.contacts.loading(true);
 	RL.remote().contacts(function (sResult, oData) {
-		var	aList = [];
+		var
+			iCount = 0,
+			aList = []
+		;
+		
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.List)
 		{
 			if (Utils.isNonEmptyArray(oData.Result.List))
@@ -9412,9 +9563,14 @@ PopupsContactsViewModel.prototype.reloadContactList = function ()
 				});
 
 				aList = _.compact(aList);
+
+				iCount = Utils.pInt(oData.Result.Count);
+				iCount = 0 < iCount ? iCount : 0;
 			}
 		}
 
+		self.contactsCount(iCount);
+		
 		self.contacts(aList);
 		self.viewClearSearch('' !== self.search());
 		self.contacts.loading(false);
@@ -9424,7 +9580,7 @@ PopupsContactsViewModel.prototype.reloadContactList = function ()
 			self.contacts.setSelectedByUid('' + self.viewID());
 		}
 
-	}, 0, 20, this.search());
+	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };
 
 PopupsContactsViewModel.prototype.onBuild = function (oDom)
@@ -9434,6 +9590,8 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 
 	this.selector.init(this.oContentVisible, this.oContentScrollable);
 
+	var self = this;
+
 	ko.computed(function () {
 		var
 			bModalVisibility = this.modalVisibility(),
@@ -9441,12 +9599,23 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		;
 		this.selector.useKeyboard(bModalVisibility && bUseKeyboardShortcuts);
 	}, this).extend({'notify': 'always'});
+
+	oDom
+		.on('click', '.e-pagenator .e-page', function () {
+			var oPage = ko.dataFor(this);
+			if (oPage)
+			{
+				self.contactsPage(Utils.pInt(oPage.value));
+				self.reloadContactList();
+			}
+		})
+	;
 };
 
 PopupsContactsViewModel.prototype.onShow = function ()
 {
 	kn.routeOff();
-	this.reloadContactList();
+	this.reloadContactList(true);
 };
 
 PopupsContactsViewModel.prototype.onHide = function ()
@@ -10404,118 +10573,7 @@ function MailBoxMessageListViewModel()
 		return '' === sValue ? '' : Utils.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
 	});
 
-	this.messageListPagenator = ko.computed(function () {
-
-		var
-			iPrev = 0,
-			iNext = 0,
-			iLimit = 2,
-			aResult = [],
-			iCurrentPage = oData.messageListPage(),
-			iPageCount = oData.messageListPageCount(),
-
-			/**
-			 * @param {number} iIndex
-			 * @param {boolean=} bPush
-			 * @param {string=} sCustomName
-			 */
-			fAdd = function (iIndex, bPush, sCustomName) {
-
-				var oData = {
-					'current': iIndex === iCurrentPage,
-					'name': Utils.isUnd(sCustomName) ? iIndex.toString() : sCustomName.toString(),
-					'custom': Utils.isUnd(sCustomName) ? false : true,
-					'title': Utils.isUnd(sCustomName) ? '' : iIndex.toString(),
-					'value': iIndex.toString()
-				};
-
-				if (Utils.isUnd(bPush) ? true : !!bPush)
-				{
-					aResult.push(oData);
-				}
-				else
-				{
-					aResult.unshift(oData);
-				}
-			}
-		;
-
-		if (1 < iPageCount || (0 < iPageCount && iPageCount < iCurrentPage))
-//		if (0 < iPageCount && 0 < iCurrentPage)
-		{
-			if (iPageCount < iCurrentPage)
-			{
-				fAdd(iPageCount);
-				iPrev = iPageCount;
-				iNext = iPageCount;
-			}
-			else
-			{
-				if (3 >= iCurrentPage || iPageCount - 2 <= iCurrentPage)
-				{
-					iLimit += 2;
-				}
-
-				fAdd(iCurrentPage);
-				iPrev = iCurrentPage;
-				iNext = iCurrentPage;
-			}
-
-			while (0 < iLimit) {
-
-				iPrev -= 1;
-				iNext += 1;
-
-				if (0 < iPrev)
-				{
-					fAdd(iPrev, false);
-					iLimit--;
-				}
-
-				if (iPageCount >= iNext)
-				{
-					fAdd(iNext, true);
-					iLimit--;
-				}
-				else if (0 >= iPrev)
-				{
-					break;
-				}
-			}
-
-			if (3 === iPrev)
-			{
-				fAdd(2, false);
-			}
-			else if (3 < iPrev)
-			{
-				fAdd(Math.round((iPrev - 1) / 2), false, '...');
-			}
-
-			if (iPageCount - 2 === iNext)
-			{
-				fAdd(iPageCount - 1, true);
-			}
-			else if (iPageCount - 2 > iNext)
-			{
-				fAdd(Math.round((iPageCount + iNext) / 2), true, '...');
-			}
-
-			// first and last
-			if (1 < iPrev)
-			{
-				fAdd(1, false);
-			}
-
-			if (iPageCount > iNext)
-			{
-				fAdd(iPageCount, true);
-			}
-		}
-
-		return aResult;
-
-	}, this);
+	this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(oData.messageListPage, oData.messageListPageCount));
 
 	this.checkAll = ko.computed({
 		'read': function () {
@@ -11152,7 +11210,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
-		.on('click', '.pagenator .page', function () {
+		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
 			if (oPage)
 			{
@@ -12834,7 +12892,7 @@ function WebMailDataStorage()
 	
 	this.messageListPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.messageListCount() / this.messagesPerPage());
-		return 0 === iPage ? 1 : iPage;
+		return 0 >= iPage ? 1 : iPage;
 	}, this);
 
 	this.mainMessageListSearch = ko.computed({

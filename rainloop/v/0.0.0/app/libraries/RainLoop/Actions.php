@@ -196,7 +196,10 @@ class Actions
 	private function fabrica($sName, $oAccount = null)
 	{
 		$oResult = null;
-		$this->Plugins()->RunHook('main.fabrica', array($sName, &$oResult), false);
+		$this->Plugins()
+			->RunHook('main.fabrica', array($sName, &$oResult), false)
+			->RunHook('main.fabrica[v2]', array($sName, &$oResult, &$oAccount), false)
+		;
 
 		if (null === $oResult)
 		{
@@ -225,6 +228,15 @@ class Actions
 					break;
 				case 'personal-address-book':
 					// \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
+					if ($this->Config()->Get('contacts', 'enable', false))
+					{
+						$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
+						$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
+						$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
+
+						$oResult = new \RainLoop\Providers\PersonalAddressBook\MySqlPersonalAddressBook($sDsn, $sUser, $sPassword);
+						$oResult->SetLogger($this->Logger());
+					}
 					break;
 				case 'suggestions':
 					// \RainLoop\Providers\Suggestions\SuggestionsInterface
@@ -3973,13 +3985,15 @@ class Actions
 
 		if ($this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
+			$iCount = 0;
 			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount, 
-				$iOffset, $iLimit, $sSearch, false);
+				$iOffset, $iLimit, $sSearch, false, $iCount);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Offset' => $iOffset,
 			'Limit' => $iLimit,
+			'Count' => $iCount,
 			'Search' => $sSearch,
 			'List' => $mResult
 		));
@@ -4012,6 +4026,8 @@ class Actions
 	 */
 	public function DoContactSave()
 	{
+		$iStart = \time();
+
 		$oAccount = $this->getAccountFromToken();
 
 		$bResult = false;
@@ -4046,6 +4062,11 @@ class Actions
 			}
 
 			$bResult = $oPab->ContactSave($oAccount, $oContact);
+		}
+
+		if (\time() === $iStart)
+		{
+			sleep(1);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -5608,6 +5629,7 @@ class Actions
 					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Contact */
 					'IdContact' => $mResponse->IdContact,
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
+					'IdPropertyFromSearch' => $mResponse->IdPropertyFromSearch,
 					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
 				));
 			}
@@ -5615,6 +5637,7 @@ class Actions
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Property */
+					'IdProperty' => $mResponse->IdProperty,
 					'Type' => $mResponse->Type,
 					'TypeCustom' => $mResponse->TypeCustom,
 					'Value' => \MailSo\Base\Utils::Utf8Clear($mResponse->Value),

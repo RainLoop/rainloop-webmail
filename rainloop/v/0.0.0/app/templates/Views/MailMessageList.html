@@ -151,11 +151,7 @@
 					<span data-bind="text: userUsageProc"></span>%
 				</span>
 				<div class="pull-right">
-					<div class="pagenator g-ui-user-select-none" data-bind="foreach: messageListPagenator">
-						<a class="page" data-bind="css: { 'current': current, 'custom': custom }, title: title">
-							<span class="pageNumber" data-bind="text: name"></span>
-						</a>
-					</div>
+					<!-- ko template: { name: 'Pagenator', data: messageListPagenator } --><!-- /ko -->
 				</div>
 			</div>
 		</div>

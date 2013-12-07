@@ -3581,9 +3581,28 @@ html.no-rgba .modal {
   vertical-align: top;
   text-align: left;
 }
+.g-ui-height-100proc {
+  height: 100%;
+}
 .g-ui-resizable-delimiter-highlight {
   border: none;
   border-right: 6px solid #aaa;
+}
+.e-pagenator .e-page {
+  display: inline-block;
+  color: #999;
+  text-decoration: none;
+  font-size: 24px;
+  padding: 3px;
+  cursor: pointer;
+}
+.e-pagenator .e-page:hover .e-page-number {
+  color: #555;
+}
+.e-pagenator .e-page.current .e-page-number {
+  font-size: 28px;
+  color: #333;
+  border-bottom: 2px solid #000;
 }
 html.rgba .g-ui-resizable-delimiter-highlight {
   border-right-color: rgba(0, 0, 0, 0.2);
@@ -4552,22 +4571,6 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList.hideMessageListCheckbox .sidebarParent {
   margin-right: 10px !important;
 }
-.messageList .pagenator .page {
-  display: inline-block;
-  color: #999;
-  text-decoration: none;
-  font-size: 24px;
-  padding: 3px;
-  cursor: pointer;
-}
-.messageList .pagenator .page:hover .pageNumber {
-  color: #555;
-}
-.messageList .pagenator .page.current .pageNumber {
-  font-size: 28px;
-  color: #333;
-  border-bottom: 2px solid #000;
-}
 .draggablePlace {
   z-index: 10002;
   color: #fff;
@@ -4811,6 +4814,12 @@ html.rl-no-preview-pane .messageView.message-selected {
   color: #000;
   font-family: arial, sans-serif;
 }
+.messageView .b-content .messageItem .bodyText .b-text-part div[data-x-div-type=html] {
+  height: 100%;
+}
+.messageView .b-content .messageItem .bodyText .b-text-part div[data-x-div-type=html] div[data-x-div-type=html] {
+  height: 100%;
+}
 .messageView .b-content .messageItem .bodyText .b-text-part a {
   color: blue;
   text-decoration: underline;
@@ -4953,20 +4962,35 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   padding: 0;
   height: 45px;
   text-align: center;
-  width: 250px;
+  width: 270px;
   -webkit-box-shadow: inset 0 -1px 0 #cccccc;
   -moz-box-shadow: inset 0 -1px 0 #cccccc;
   box-shadow: inset 0 -1px 0 #cccccc;
 }
 .b-contacts-content.modal .b-list-toopbar .e-search {
   margin-top: 7px;
+  width: 245px;
+}
+.b-contacts-content.modal .b-list-footer-toopbar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 105px;
+  width: 270px;
+  background-color: #eee;
+  -webkit-box-shadow: inset 0 1px 0 #cccccc;
+  -moz-box-shadow: inset 0 1px 0 #cccccc;
+  box-shadow: inset 0 1px 0 #cccccc;
+}
+.b-contacts-content.modal .b-list-footer-toopbar .footer-pager {
+  padding: 8px 10px 0 0;
 }
 .b-contacts-content.modal .b-list-content {
   position: absolute;
   top: 45px;
-  bottom: 60px;
+  bottom: 105px;
   left: 0;
-  width: 250px;
+  width: 270px;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -4980,6 +5004,9 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   font-size: 14px;
   line-height: 13px;
   background-color: #fff;
+  -webkit-box-shadow: inset 0 -1px 0 #cccccc;
+  -moz-box-shadow: inset 0 -1px 0 #cccccc;
+  box-shadow: inset 0 -1px 0 #cccccc;
 }
 .b-contacts-content.modal .b-list-content .listEmptyList,
 .b-contacts-content.modal .b-list-content .listEmptyListLoading,
@@ -5077,7 +5104,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   position: absolute;
   top: 0;
   bottom: 60px;
-  left: 250px;
+  left: 270px;
   right: 0;
   overflow: hidden;
   overflow-y: auto;

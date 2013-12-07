@@ -69,14 +69,15 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	 * @param type $iLimit = 20
 	 * @param string $sSearch = ''
 	 * @param bool $bAutoOnly = false
+	 * @param int $iResultCount = 0
 	 *
 	 * @return array
 	 */
 	public function GetContacts($oAccount,
-		$iOffset = 0, $iLimit = 20, $sSearch = '', $bAutoOnly = false)
+		$iOffset = 0, $iLimit = 20, $sSearch = '', $bAutoOnly = false, &$iResultCount = 0)
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($oAccount,
-			$iOffset, $iLimit, $sSearch, $bAutoOnly) : array();
+			$iOffset, $iLimit, $sSearch, $bAutoOnly, $iResultCount) : array();
 	}
 
 	/**
@@ -96,12 +97,13 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param array $aEmails
+	 *  @param bool $bCreateAuto = true
 	 *
 	 * @return bool
 	 */
-	public function IncFrec($oAccount, $aEmails)
+	public function IncFrec($oAccount, $aEmails, $bCreateAuto = true)
 	{
-		return $this->IsActive() ? $this->oDriver->IncFrec($oAccount, $aEmails) : false;
+		return $this->IsActive() ? $this->oDriver->IncFrec($oAccount, $aEmails, $bCreateAuto) : false;
 	}
 
 	/**
