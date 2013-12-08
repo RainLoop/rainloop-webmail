@@ -1,0 +1,51 @@
+<div class="b-admin-general">
+	<div class="row" data-bind="visible: !contactsSupported">
+		<div class="alert span8">
+			<h4>Notice!</h4>
+			<br />
+			Your system doesn't support contacts.
+			<br />
+			You need to install or enable <strong>PDO (MySQL)</strong> exstenstion on your web server.
+		</div>
+	</div>
+	<div class="form-horizontal" data-bind="visible: contactsSupported">
+		<div class="legend">
+			Contacts
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { enableContacts(!enableContacts()); }">
+					<i data-bind="css: enableContacts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Enable contacts
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				PDO dsn
+			 </label>
+			<div class="controls">
+				<input type="text" class="span6" data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
+				<div data-bind="saveTrigger: pdoDsnTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				PDO user
+			 </label>
+			<div class="controls">
+				<input type="text" data-bind="value: pdoUser, saveTrigger: pdoUserTrigger" />
+				<div data-bind="saveTrigger: pdoUserTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				PDO password
+			 </label>
+			<div class="controls">
+				<input type="password" data-bind="value: pdoPassword, saveTrigger: pdoPasswordTrigger" />
+				<div data-bind="saveTrigger: pdoPasswordTrigger"></div>
+			</div>
+		</div>
+	</div>
+</div>

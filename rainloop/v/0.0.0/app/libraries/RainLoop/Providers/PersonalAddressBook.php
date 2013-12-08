@@ -42,6 +42,15 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsSupported()
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
+			$this->oDriver->IsSupported();
+	}
+
+	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param \RainLoop\Providers\PersonalAddressBook\Classes\Contact $oContact
 	 *

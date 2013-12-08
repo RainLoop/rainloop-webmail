@@ -980,31 +980,37 @@ class Actions
 		else
 		{
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
-			$aResult['AdminLogin'] = $oConfig->Get('security', 'admin_login', '');
-			$aResult['AdminDomain'] = APP_SITE;
-			$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
-			$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
-
-			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
-			$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
-			$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
-
-			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
-			$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
-			$aResult['FacebookAppSecret'] = (string) $oConfig->Get('social', 'fb_app_secret', '');
-
-			$aResult['AllowTwitterSocial'] = (bool) $oConfig->Get('social', 'twitter_enable', false);
-			$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
-			$aResult['TwitterConsumerSecret'] = (string) $oConfig->Get('social', 'twitter_consumer_secret', '');
-
-			$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
-			$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
-
-			$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
-
-			$aResult['WeakPassword'] = false;
 			if ($aResult['Auth'])
 			{
+				$aResult['AdminLogin'] = $oConfig->Get('security', 'admin_login', '');
+				$aResult['AdminDomain'] = APP_SITE;
+				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
+				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
+
+				$aResult['ContactsIsSupported'] = (bool) $this->PersonalAddressBookProvider()->IsSupported();
+			
+				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
+				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
+				$aResult['ContactsPdoPassword'] = APP_DUMMY;
+
+				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
+				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
+				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
+
+				$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
+				$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
+				$aResult['FacebookAppSecret'] = (string) $oConfig->Get('social', 'fb_app_secret', '');
+
+				$aResult['AllowTwitterSocial'] = (bool) $oConfig->Get('social', 'twitter_enable', false);
+				$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
+				$aResult['TwitterConsumerSecret'] = (string) $oConfig->Get('social', 'twitter_consumer_secret', '');
+
+				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
+				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
+
+				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
+
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
 			}
 		}
@@ -1772,6 +1778,14 @@ class Actions
 					$oConfig->Set($sConfigSector, $sConfigName, (string) $sValue);
 					break;
 
+				case 'dummy':
+					$sValue = (string) $this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
+					if (APP_DUMMY !== $sValue)
+					{
+						$oConfig->Set($sConfigSector, $sConfigName, (string) $sValue);
+					}
+					break;
+
 				case 'int':
 					$iValue = (int) $sValue;
 					$oConfig->Set($sConfigSector, $sConfigName, $iValue);
@@ -1847,6 +1861,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
+
+		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
 		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowIdentities', 'webmail', 'allow_identities', 'bool');

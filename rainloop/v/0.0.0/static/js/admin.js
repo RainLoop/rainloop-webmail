@@ -5169,6 +5169,65 @@ AdminLogin.prototype.onBuild = function ()
 /**
  * @constructor
  */
+function AdminContacts()
+{
+//	var oData = RL.data();
+
+	this.contactsSupported = !!RL.settingsGet('ContactsIsSupported');
+	this.enableContacts = ko.observable(!!RL.settingsGet('ContactsEnable'));
+	
+	this.pdoDsn = ko.observable(RL.settingsGet('ContactsPdoDsn'));
+	this.pdoUser = ko.observable(RL.settingsGet('ContactsPdoUser'));
+	this.pdoPassword = ko.observable(RL.settingsGet('ContactsPdoPassword'));
+
+	this.pdoDsnTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.pdoUserTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.pdoPasswordTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+}
+
+Utils.addSettingsViewModel(AdminContacts, 'AdminSettingsContacts', 'Contacts', 'contacts');
+
+AdminContacts.prototype.onBuild = function ()
+{
+	var self = this;
+	_.delay(function () {
+
+		var
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.pdoDsnTrigger, self),
+			f2 = Utils.settingsSaveHelperSimpleFunction(self.pdoUserTrigger, self),
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.pdoPasswordTrigger, self)
+		;
+
+		self.enableContacts.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'ContactsEnable': bValue ? '1' : '0'
+			});
+		});
+		
+		self.pdoDsn.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f1, {
+				'ContactsPdoDsn': Utils.trim(sValue)
+			});
+		});
+		
+		self.pdoUser.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f2, {
+				'ContactsPdoUser': Utils.trim(sValue)
+			});
+		});
+
+		self.pdoPassword.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f3, {
+				'ContactsPdoPassword': Utils.trim(sValue)
+			});
+		});
+
+	}, 50);
+};
+
+/**
+ * @constructor
+ */
 function AdminDomains()
 {
 	var oData = RL.data();
