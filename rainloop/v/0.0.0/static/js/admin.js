@@ -551,6 +551,7 @@ Enums.Notification = {
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
 	'CantMoveMessage': 204,
+	'CantCopyMessage': 205,
 
 	'CantSaveMessage': 301,
 	'CantSendMessage': 302,
@@ -1111,6 +1112,7 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
 	NotificationI18N[Enums.Notification.CantDeleteMessage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_MESSAGE');
 	NotificationI18N[Enums.Notification.CantMoveMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
+	NotificationI18N[Enums.Notification.CantCopyMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
 
 	NotificationI18N[Enums.Notification.CantSaveMessage] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_MESSAGE');
 	NotificationI18N[Enums.Notification.CantSendMessage] = Utils.i18n('NOTIFICATIONS/CANT_SEND_MESSAGE');
@@ -2476,7 +2478,7 @@ ko.bindingHandlers.draggable = {
 			}
 
 			oConf['helper'] = function (oEvent) {
-				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
+				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null, !!oEvent.shiftKey);
 			};
 
 			$(oElement).draggable(oConf).on('mousedown', function () {

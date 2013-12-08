@@ -19,6 +19,7 @@ class Notifications
 	const CantGetMessage = 202;
 	const CantDeleteMessage = 203;
 	const CantMoveMessage = 204;
+	const CantCopyMessage = 205;
 
 	const CantSaveMessage = 301;
 	const CantSendMessage = 302;

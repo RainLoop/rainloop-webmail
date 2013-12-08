@@ -562,6 +562,32 @@ class MailClient
 	}
 
 	/**
+	 * @param string $sFromFolder
+	 * @param string $sToFolder
+	 * @param array $aIndexRange
+	 * @param bool $bIndexIsUid
+	 *
+	 * @return \MailSo\Mail\MailClient
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageCopy($sFromFolder, $sToFolder, $aIndexRange, $bIndexIsUid)
+	{
+		if (0 === \strlen($sFromFolder) || 0 === \strlen($sToFolder) ||
+			!\is_array($aIndexRange) || 0 === \count($aIndexRange))
+		{
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+		}
+
+		$this->oImapClient->FolderSelect($sFromFolder);
+		$this->oImapClient->MessageCopy($sToFolder, \implode(',', $aIndexRange), $bIndexIsUid);
+
+		return $this;
+	}
+
+	/**
 	 * @param resource $rMessageStream
 	 * @param int $iMessageStreamSize
 	 * @param string $sFolderToSave

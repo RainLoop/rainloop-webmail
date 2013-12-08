@@ -88,13 +88,14 @@ MailBoxFolderListViewModel.prototype.messagesDrop = function (oToFolder, oUi)
 	{
 		var
 			sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
+			bCopy = '1' === oUi.helper.data('rl-copy'),
 			aUids = oUi.helper.data('rl-uids')
 		;
 
 		if (MailBoxMessageListViewModel && MailBoxMessageListViewModel.__vm && Utils.isNormal(sFromFolderFullNameRaw) && Utils.isArray(aUids))
 		{
 			MailBoxMessageListViewModel.__vm.moveMessagesToFolder(
-				sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw);
+				sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
 		}
 	}
 };

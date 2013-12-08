@@ -289,6 +289,7 @@ Enums.Notification = {
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
 	'CantMoveMessage': 204,
+	'CantCopyMessage': 205,
 
 	'CantSaveMessage': 301,
 	'CantSendMessage': 302,

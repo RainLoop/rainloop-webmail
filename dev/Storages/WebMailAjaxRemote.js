@@ -510,6 +510,21 @@ WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, 
 /**
  * @param {?Function} fCallback
  * @param {string} sFolder
+ * @param {string} sToFolder
+ * @param {Array} aUids
+ */
+WebMailAjaxRemoteStorage.prototype.messagesCopy = function (fCallback, sFolder, sToFolder, aUids)
+{
+	this.defaultRequest(fCallback, 'MessageCopy', {
+		'FromFolder': sFolder,
+		'ToFolder': sToFolder,
+		'Uids': aUids.join(',')
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sFolder
  * @param {Array} aUids
  */
 WebMailAjaxRemoteStorage.prototype.messagesDelete = function (fCallback, sFolder, aUids)

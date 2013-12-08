@@ -202,12 +202,12 @@ MailBoxMessageListViewModel.prototype.cancelSearch = function ()
  * @param {string} sFromFolderFullNameRaw
  * @param {Array} aUidForRemove
  * @param {string=} sToFolderFullNameRaw
- * @param {boolean=} bVisialEffectOnly = false
+ * @param {boolean=} bCopy = false
  */
-MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bVisialEffectOnly)
+MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
 {
 	sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
-	bVisialEffectOnly = Utils.isUnd(bVisialEffectOnly) ? false : !!bVisialEffectOnly;
+	bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
 
 	var
 		iUnseenCount = 0 ,
@@ -221,17 +221,14 @@ MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFo
 		}) : []
 	;
 
-	if (!bVisialEffectOnly)
-	{
-		_.each(aMessages, function (oMessage) {
-			if (oMessage && oMessage.unseen())
-			{
-				iUnseenCount++;
-			}
-		});
-	}
+	_.each(aMessages, function (oMessage) {
+		if (oMessage && oMessage.unseen())
+		{
+			iUnseenCount++;
+		}
+	});
 
-	if (oFromFolder && !bVisialEffectOnly)
+	if (oFromFolder && !bCopy)
 	{
 		oFromFolder.messageCountAll(0 <= oFromFolder.messageCountAll() - aUidForRemove.length ?
 			oFromFolder.messageCountAll() - aUidForRemove.length : 0);
@@ -243,7 +240,7 @@ MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFo
 		}
 	}
 
-	if (oToFolder && !bVisialEffectOnly)
+	if (oToFolder)
 	{
 		oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
 		if (0 < iUnseenCount)
@@ -254,31 +251,37 @@ MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFo
 
 	if (0 < aMessages.length)
 	{
-		_.each(aMessages, function (oMessage) {
-			if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
-			{
-				oCurrentMessage = null;
-				oData.message(null);
-			}
-
-			oMessage.deleted(true);
-		});
-
-		_.delay(function () {
-			_.each(aMessages, function (oMessage) {
-				oData.messageList.remove(oMessage);
-			});
-		}, 400);
-
-		if (!bVisialEffectOnly)
+		if (bCopy)
 		{
+			_.each(aMessages, function (oMessage) {
+				oMessage.checked(false);
+			});
+		}
+		else
+		{
+			_.each(aMessages, function (oMessage) {
+				if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
+				{
+					oCurrentMessage = null;
+					oData.message(null);
+				}
+
+				oMessage.deleted(true);
+			});
+
+			_.delay(function () {
+				_.each(aMessages, function (oMessage) {
+					oData.messageList.remove(oMessage);
+				});
+			}, 400);
+
 			RL.data().messageListIsNotCompleted(true);
 			RL.cache().setFolderHash(sFromFolderFullNameRaw, '');
+		}
 
-			if (Utils.isNormal(sToFolderFullNameRaw))
-			{
-				RL.cache().setFolderHash(sToFolderFullNameRaw || '', '');
-			}
+		if (Utils.isNormal(sToFolderFullNameRaw))
+		{
+			RL.cache().setFolderHash(sToFolderFullNameRaw || '', '');
 		}
 	}
 };
@@ -303,9 +306,10 @@ MailBoxMessageListViewModel.prototype.moveOrDeleteResponse = function (sResult, 
 		}
 		else
 		{
-			if (oData && Enums.Notification.CantMoveMessage === oData.ErrorCode)
+			if (oData && -1 < Utils.inArray(oData.ErrorCode,
+				[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
 			{
-				window.alert(Utils.getNotification(Enums.Notification.CantMoveMessage));
+				window.alert(Utils.getNotification(oData.ErrorCode));
 			}
 
 			RL.cache().setFolderHash(RL.data().currentFolderFullNameRaw(), '');
@@ -321,8 +325,9 @@ MailBoxMessageListViewModel.prototype.moveOrDeleteResponse = function (sResult, 
  * @param {string} sFromFolderFullNameRaw
  * @param {Array} aUidForRemove
  * @param {string} sToFolderFullNameRaw
+ * @param {boolean=} bCopy = false
  */
-MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw)
+MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
 {
 	if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Utils.isArray(aUidForRemove) && 0 < aUidForRemove.length)
 	{
@@ -333,7 +338,9 @@ MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFold
 		
 		if (oFromFolder && oToFolder)
 		{
-			RL.remote().messagesMove(
+			bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
+
+			RL.remote()[bCopy ? 'messagesCopy' : 'messagesMove'](
 				_.bind(this.moveOrDeleteResponse, this),
 				oFromFolder.fullNameRaw,
 				oToFolder.fullNameRaw,
@@ -342,7 +349,7 @@ MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFold
 
 			oToFolder.actionBlink(true);
 
-			this.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw);
+			this.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy);
 			return true;
 		}
 	}
@@ -408,7 +415,7 @@ MailBoxMessageListViewModel.prototype.deleteSelectedMessageFromCurrentFolder = f
 	}
 };
 
-MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem)
+MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem, bCopy)
 {
 	if (oMessageListItem)
 	{
@@ -418,7 +425,8 @@ MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageList
 	var oEl = Utils.draggeblePlace();
 	oEl.data('rl-folder', RL.data().currentFolderFullNameRaw());
 	oEl.data('rl-uids', RL.data().messageListCheckedOrSelectedUidsWithSubMails());
-	oEl.find('.text').text(RL.data().messageListCheckedOrSelectedUidsWithSubMails().length);
+	oEl.data('rl-copy', bCopy ? '1' : '0');
+	oEl.find('.text').text((bCopy ? '+' : '') + '' + RL.data().messageListCheckedOrSelectedUidsWithSubMails().length);
 
 	return oEl;
 };

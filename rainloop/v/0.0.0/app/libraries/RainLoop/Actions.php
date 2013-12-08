@@ -4317,6 +4317,40 @@ class Actions
 	}
 
 	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoMessageCopy()
+	{
+		$this->initMailClientConnection();
+
+		$sFromFolder = $this->GetActionParam('FromFolder', '');
+		$sToFolder = $this->GetActionParam('ToFolder', '');
+		$aUids = explode(',', (string) $this->GetActionParam('Uids', ''));
+
+		$aFilteredUids = array_filter($aUids, function (&$mUid) {
+			$mUid = (int) trim($mUid);
+			return 0 < $mUid;
+		});
+
+		try
+		{
+			$this->MailClient()->MessageCopy($sFromFolder, $sToFolder,
+				$aFilteredUids, true);
+
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantCopyMessage, $oException);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__,
+			'' === $sHash ? false : array($sFromFolder, $sHash));
+	}
+
+	/**
 	 * @param string $sFileName
 	 * @param string $sContentType
 	 * @param string $sMimeIndex
