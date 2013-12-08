@@ -162,51 +162,53 @@ SettingsThemes.prototype.initCustomThemeUploader = function ()
 				'queueSize': 1,
 				'multipleSizeLimit': 1,
 				'disableFolderDragAndDrop': true,
-				'clickElement': this.customThemeUploaderButton(),
-				'onSelect': _.bind(function (sId, oData) {
-
-					var
-						sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-						sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
-						mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
-					;
-
-					if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
-					{
-						window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
-						return false;
-					}
-
-					if (1024 * 1024 < mSize)
-					{
-						window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
-						return false;
-					}
-
-					return true;
-
-				}, this),
-
-				'onStart': _.bind(function () {
-					this.customThemeUploaderProgress(true);
-				}, this),
-
-				'onComplete': _.bind(function (sId, bResult, oData) {
-					if (!bResult || !oData || !oData.Result)
-					{
-						window.alert(
-							oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
-						);
-					}
-					else
-					{
-						this.customThemeImg(oData.Result);
-					}
-
-					this.customThemeUploaderProgress(false);
-				}, this)
+				'clickElement': this.customThemeUploaderButton()
 			})
 		;
+
+		oJua
+			.on('onSelect', _.bind(function (sId, oData) {
+
+				var
+					sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
+					sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
+					mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
+				;
+
+				if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
+				{
+					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
+					return false;
+				}
+
+				if (1024 * 1024 < mSize)
+				{
+					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
+					return false;
+				}
+
+				return true;
+
+			}, this))
+			.on('onStart', _.bind(function () {
+				this.customThemeUploaderProgress(true);
+			}, this))
+			.on('onComplete', _.bind(function (sId, bResult, oData) {
+				if (!bResult || !oData || !oData.Result)
+				{
+					window.alert(
+						oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
+					);
+				}
+				else
+				{
+					this.customThemeImg(oData.Result);
+				}
+
+				this.customThemeUploaderProgress(false);
+			}, this))
+		;
+
 
 		return !!oJua;
 	}

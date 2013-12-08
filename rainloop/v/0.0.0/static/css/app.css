@@ -7066,6 +7066,10 @@ html.rl-message-fullscreen .messageView .b-content {
   right: 0;
   bottom: 0;
   z-index: 10000;
+  border: 1px solid #aaaaaa;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 html.rl-message-fullscreen .messageView .b-content .buttonUp,
 html.rl-message-fullscreen .messageView .b-content .buttonUnFull {

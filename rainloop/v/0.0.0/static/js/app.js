@@ -8707,23 +8707,29 @@ PopupsComposeViewModel.prototype.initUploader = function ()
 				'multipleSizeLimit': 50,
 				'disableFolderDragAndDrop': false,
 				'clickElement': this.composeUploaderButton(),
-				'dragAndDropElement': this.composeUploaderDropPlace(),
-//				'onLimitReached': function (iLimit) {
+				'dragAndDropElement': this.composeUploaderDropPlace()
+			})
+		;
+
+		if (oJua)
+		{
+			oJua
+//				.on('onLimitReached', function (iLimit) {
 //					alert(iLimit);
-//				},
-				'onDragEnter': _.bind(function () {
+//				})
+				.on('onDragEnter', _.bind(function () {
 					this.dragAndDropOver(true);
-				}, this),
-				'onDragLeave': _.bind(function () {
+				}, this))
+				.on('onDragLeave', _.bind(function () {
 					this.dragAndDropOver(false);
-				}, this),
-				'onBodyDragEnter': _.bind(function () {
+				}, this))
+				.on('onBodyDragEnter', _.bind(function () {
 					this.dragAndDropVisible(true);
-				}, this),
-				'onBodyDragLeave': _.bind(function () {
+				}, this))
+				.on('onBodyDragLeave', _.bind(function () {
 					this.dragAndDropVisible(false);
-				}, this),
-				'onProgress': _.bind(function (sId, iLoaded, iTotal) {
+				}, this))
+				.on('onProgress', _.bind(function (sId, iLoaded, iTotal) {
 					var oItem = null;
 					if (Utils.isUnd(oUploadCache[sId]))
 					{
@@ -8743,9 +8749,8 @@ PopupsComposeViewModel.prototype.initUploader = function ()
 						oItem.progress(' - ' + Math.floor(iLoaded / iTotal * 100) + '%');
 					}
 
-				}, this),
-
-				'onSelect': _.bind(function (sId, oData) {
+				}, this))
+				.on('onSelect', _.bind(function (sId, oData) {
 
 					this.dragAndDropOver(false);
 
@@ -8781,9 +8786,8 @@ PopupsComposeViewModel.prototype.initUploader = function ()
 
 					return true;
 
-				}, this),
-
-				'onStart': _.bind(function (sId) {
+				}, this))
+				.on('onStart', _.bind(function (sId) {
 
 					var
 						oItem = null
@@ -8808,9 +8812,8 @@ PopupsComposeViewModel.prototype.initUploader = function ()
 						oItem.uploading(true);
 					}
 
-				}, this),
-
-				'onComplete': _.bind(function (sId, bResult, oData) {
+				}, this))
+				.on('onComplete', _.bind(function (sId, bResult, oData) {
 
 					var
 						sError = '',
@@ -8857,12 +8860,9 @@ PopupsComposeViewModel.prototype.initUploader = function ()
 						}
 					}
 
-				}, this)
-			})
-		;
+				}, this))
+			;
 
-		if (oJua)
-		{
 			this
 				.addAttachmentEnabled(true)
 				.dragAndDropEnabled(oJua.isDragAndDropSupported())
@@ -11321,32 +11321,35 @@ MailBoxMessageListViewModel.prototype.initUploaderForAppend = function ()
 			}
 		},
 		'dragAndDropElement': this.dragOverArea(),
-		'dragAndDropBodyElement': this.dragOverBodyArea(),
-		'onDragEnter': _.bind(function () {
+		'dragAndDropBodyElement': this.dragOverBodyArea()
+	});
+
+	oJua
+		.on('onDragEnter', _.bind(function () {
 			this.dragOverEnter(true);
-		}, this),
-		'onDragLeave': _.bind(function () {
+		}, this))
+		.on('onDragLeave', _.bind(function () {
 			this.dragOverEnter(false);
-		}, this),
-		'onBodyDragEnter': _.bind(function () {
+		}, this))
+		.on('onBodyDragEnter', _.bind(function () {
 			this.dragOver(true);
-		}, this),
-		'onBodyDragLeave': _.bind(function () {
+		}, this))
+		.on('onBodyDragLeave', _.bind(function () {
 			this.dragOver(false);
-		}, this),
-		'onSelect': _.bind(function (sUid, oData) {
+		}, this))
+		.on('onSelect', _.bind(function (sUid, oData) {
 			if (sUid && oData && 'message/rfc822' === oData['Type'])
 			{
 				RL.data().messageListLoading(true);
 				return true;
 			}
-			
+
 			return false;
-		}),
-		'onComplete': _.bind(function () {
+		}, this))
+		.on('onComplete', _.bind(function () {
 			RL.reloadMessageList(true, true);
-		}, this)
-	});
+		}, this))
+	;
 
 	return !!oJua;
 };
@@ -12595,51 +12598,53 @@ SettingsThemes.prototype.initCustomThemeUploader = function ()
 				'queueSize': 1,
 				'multipleSizeLimit': 1,
 				'disableFolderDragAndDrop': true,
-				'clickElement': this.customThemeUploaderButton(),
-				'onSelect': _.bind(function (sId, oData) {
-
-					var
-						sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-						sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
-						mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
-					;
-
-					if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
-					{
-						window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
-						return false;
-					}
-
-					if (1024 * 1024 < mSize)
-					{
-						window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
-						return false;
-					}
-
-					return true;
-
-				}, this),
-
-				'onStart': _.bind(function () {
-					this.customThemeUploaderProgress(true);
-				}, this),
-
-				'onComplete': _.bind(function (sId, bResult, oData) {
-					if (!bResult || !oData || !oData.Result)
-					{
-						window.alert(
-							oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
-						);
-					}
-					else
-					{
-						this.customThemeImg(oData.Result);
-					}
-
-					this.customThemeUploaderProgress(false);
-				}, this)
+				'clickElement': this.customThemeUploaderButton()
 			})
 		;
+
+		oJua
+			.on('onSelect', _.bind(function (sId, oData) {
+
+				var
+					sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
+					sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
+					mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
+				;
+
+				if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
+				{
+					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
+					return false;
+				}
+
+				if (1024 * 1024 < mSize)
+				{
+					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
+					return false;
+				}
+
+				return true;
+
+			}, this))
+			.on('onStart', _.bind(function () {
+				this.customThemeUploaderProgress(true);
+			}, this))
+			.on('onComplete', _.bind(function (sId, bResult, oData) {
+				if (!bResult || !oData || !oData.Result)
+				{
+					window.alert(
+						oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
+					);
+				}
+				else
+				{
+					this.customThemeImg(oData.Result);
+				}
+
+				this.customThemeUploaderProgress(false);
+			}, this))
+		;
+
 
 		return !!oJua;
 	}

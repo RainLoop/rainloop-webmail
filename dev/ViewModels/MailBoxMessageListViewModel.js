@@ -801,32 +801,35 @@ MailBoxMessageListViewModel.prototype.initUploaderForAppend = function ()
 			}
 		},
 		'dragAndDropElement': this.dragOverArea(),
-		'dragAndDropBodyElement': this.dragOverBodyArea(),
-		'onDragEnter': _.bind(function () {
+		'dragAndDropBodyElement': this.dragOverBodyArea()
+	});
+
+	oJua
+		.on('onDragEnter', _.bind(function () {
 			this.dragOverEnter(true);
-		}, this),
-		'onDragLeave': _.bind(function () {
+		}, this))
+		.on('onDragLeave', _.bind(function () {
 			this.dragOverEnter(false);
-		}, this),
-		'onBodyDragEnter': _.bind(function () {
+		}, this))
+		.on('onBodyDragEnter', _.bind(function () {
 			this.dragOver(true);
-		}, this),
-		'onBodyDragLeave': _.bind(function () {
+		}, this))
+		.on('onBodyDragLeave', _.bind(function () {
 			this.dragOver(false);
-		}, this),
-		'onSelect': _.bind(function (sUid, oData) {
+		}, this))
+		.on('onSelect', _.bind(function (sUid, oData) {
 			if (sUid && oData && 'message/rfc822' === oData['Type'])
 			{
 				RL.data().messageListLoading(true);
 				return true;
 			}
-			
+
 			return false;
-		}),
-		'onComplete': _.bind(function () {
+		}, this))
+		.on('onComplete', _.bind(function () {
 			RL.reloadMessageList(true, true);
-		}, this)
-	});
+		}, this))
+	;
 
 	return !!oJua;
 };
