@@ -11,6 +11,8 @@ function AdminMenuViewModel(oScreen)
 	KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
 	this.menu = oScreen.menu;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminMenuViewModel', AdminMenuViewModel);

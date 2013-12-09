@@ -80,6 +80,8 @@ function PopupsFolderCreateViewModel()
 	});
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderCreateViewModel', PopupsFolderCreateViewModel);

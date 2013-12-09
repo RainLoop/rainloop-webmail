@@ -141,6 +141,8 @@ function MailBoxMessageViewViewModel()
 	this.messageActiveDom.subscribe(function () {
 		this.scrollMessageToTop();
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);

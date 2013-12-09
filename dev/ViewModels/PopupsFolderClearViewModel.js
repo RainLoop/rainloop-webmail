@@ -75,6 +75,8 @@ function PopupsFolderClearViewModel()
 		return !bIsClearing && null !== oFolder;
 
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderClearViewModel', PopupsFolderClearViewModel);

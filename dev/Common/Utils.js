@@ -1116,14 +1116,20 @@ Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
 /**
  * @param {string} sName
  * @param {Function} ViewModelClass
+ * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
  */
-Utils.extendAsViewModel = function (sName, ViewModelClass)
+Utils.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
 {
 	if (ViewModelClass)
 	{
+		if (!AbstractViewModel)
+		{
+			AbstractViewModel = KnoinAbstractViewModel;
+		}
+
 		ViewModelClass.__name = sName;
 		Plugins.regViewModelHook(sName, ViewModelClass);
-		_.extend(ViewModelClass.prototype, KnoinAbstractViewModel.prototype);
+		_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
 	}
 };
 

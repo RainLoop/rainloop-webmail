@@ -27,6 +27,8 @@ function PopupsAdvancedSearchViewModel()
 		
 		this.cancelCommand();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsAdvancedSearchViewModel', PopupsAdvancedSearchViewModel);

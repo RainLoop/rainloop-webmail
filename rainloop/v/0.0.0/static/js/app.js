@@ -1703,14 +1703,20 @@ Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
 /**
  * @param {string} sName
  * @param {Function} ViewModelClass
+ * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
  */
-Utils.extendAsViewModel = function (sName, ViewModelClass)
+Utils.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
 {
 	if (ViewModelClass)
 	{
+		if (!AbstractViewModel)
+		{
+			AbstractViewModel = KnoinAbstractViewModel;
+		}
+
 		ViewModelClass.__name = sName;
 		Plugins.regViewModelHook(sName, ViewModelClass);
-		_.extend(ViewModelClass.prototype, KnoinAbstractViewModel.prototype);
+		_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
 	}
 };
 
@@ -5033,6 +5039,17 @@ function Knoin()
 	});
 }
 
+/**
+ * @param {Object} thisObject
+ */
+Knoin.constructorEnd = function (thisObject)
+{
+	if (Utils.isFunc(thisObject['__constructor_end']))
+	{
+		thisObject['__constructor_end'].call(thisObject);
+	}
+};
+
 Knoin.prototype.sDefaultScreenName = '';
 Knoin.prototype.oScreens = {};
 Knoin.prototype.oBoot = null;
@@ -7555,6 +7572,8 @@ function PopupsFolderClearViewModel()
 		return !bIsClearing && null !== oFolder;
 
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderClearViewModel', PopupsFolderClearViewModel);
@@ -7654,6 +7673,8 @@ function PopupsFolderCreateViewModel()
 	});
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderCreateViewModel', PopupsFolderCreateViewModel);
@@ -7744,6 +7765,8 @@ function PopupsFolderSystemViewModel()
 	this.trashFolder.subscribe(fCallback);
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderSystemViewModel', PopupsFolderSystemViewModel);
@@ -8177,6 +8200,8 @@ function PopupsComposeViewModel()
 	});
 
 //	this.driveCallback = _.bind(this.driveCallback, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
@@ -9393,6 +9418,8 @@ function PopupsContactsViewModel()
 	});
 
 	this.bDropPageAfterDelete = false;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
@@ -9659,6 +9686,8 @@ function PopupsAdvancedSearchViewModel()
 		
 		this.cancelCommand();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsAdvancedSearchViewModel', PopupsAdvancedSearchViewModel);
@@ -9818,6 +9847,8 @@ function PopupsAddAccountViewModel()
 			this.login(this.email());
 		}
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);
@@ -9942,6 +9973,8 @@ function PopupsIdentityViewModel()
 	this.button = ko.computed(function () {
 		return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'BUTTON_UPDATE_IDENTITY': 'BUTTON_ADD_IDENTITY'));
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsIdentityViewModel', PopupsIdentityViewModel);
@@ -10015,6 +10048,8 @@ function PopupsLanguagesViewModel()
 	RL.data().mainLanguage.subscribe(function () {
 		this.resetMainLanguage();
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
@@ -10206,6 +10241,8 @@ function LoginViewModel()
 
 		return bF || bG || bT;
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('LoginViewModel', LoginViewModel);
@@ -10392,9 +10429,10 @@ AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
 function MailBoxSystemDropDownViewModel()
 {
 	AbstractSystemDropDownViewModel.call(this);
+	Knoin.constructorEnd(this);
 }
 
-_.extend(MailBoxSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
+Utils.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
 
 /**
  * @constructor
@@ -10403,9 +10441,10 @@ _.extend(MailBoxSystemDropDownViewModel.prototype, AbstractSystemDropDownViewMod
 function SettingsSystemDropDownViewModel()
 {
 	AbstractSystemDropDownViewModel.call(this);
+	Knoin.constructorEnd(this);
 }
 
-_.extend(SettingsSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
+Utils.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);
 
 /**
  * @constructor
@@ -10421,6 +10460,8 @@ function MailBoxFolderListViewModel()
 	this.iDropOverTimer = 0;
 
 	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel);
@@ -10697,6 +10738,8 @@ function MailBoxMessageListViewModel()
 			this.deleteCommand();
 		}
 	}, this));
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxMessageListViewModel', MailBoxMessageListViewModel);
@@ -11494,6 +11537,8 @@ function MailBoxMessageViewViewModel()
 	this.messageActiveDom.subscribe(function () {
 		this.scrollMessageToTop();
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
@@ -11683,6 +11728,8 @@ function SettingsMenuViewModel(oScreen)
 	KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
 	this.menu = oScreen.menu;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
@@ -11704,6 +11751,8 @@ SettingsMenuViewModel.prototype.backToMailBoxClick = function ()
 function SettingsPaneViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Right', 'SettingsPane');
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);

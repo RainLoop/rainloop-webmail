@@ -7,6 +7,7 @@
 function SettingsSystemDropDownViewModel()
 {
 	AbstractSystemDropDownViewModel.call(this);
+	Knoin.constructorEnd(this);
 }
 
-_.extend(SettingsSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
+Utils.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);

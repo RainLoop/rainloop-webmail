@@ -66,6 +66,8 @@ function AdminLoginViewModel()
 	}, function () {
 		return !this.submitRequest();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);

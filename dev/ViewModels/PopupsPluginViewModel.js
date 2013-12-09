@@ -58,6 +58,8 @@ function PopupsPluginViewModel()
 		RL.remote().pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, oList);
 		
 	}, this.hasConfiguration);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsPluginViewModel', PopupsPluginViewModel);

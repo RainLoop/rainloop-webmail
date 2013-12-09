@@ -10,6 +10,8 @@ function AdminPaneViewModel()
 
 	this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
 	this.version = ko.observable(RL.settingsGet('Version'));
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);

@@ -109,6 +109,8 @@ function PopupsDomainViewModel()
 	this.whiteListCommand = Utils.createCommand(this, function () {
 		this.whiteListPage(!this.whiteListPage());
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsDomainViewModel', PopupsDomainViewModel);

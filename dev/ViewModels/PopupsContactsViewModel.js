@@ -236,6 +236,8 @@ function PopupsContactsViewModel()
 	});
 
 	this.bDropPageAfterDelete = false;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);

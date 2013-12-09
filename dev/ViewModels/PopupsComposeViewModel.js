@@ -397,6 +397,8 @@ function PopupsComposeViewModel()
 	});
 
 //	this.driveCallback = _.bind(this.driveCallback, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);

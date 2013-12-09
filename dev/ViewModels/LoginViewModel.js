@@ -156,6 +156,8 @@ function LoginViewModel()
 
 		return bF || bG || bT;
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('LoginViewModel', LoginViewModel);

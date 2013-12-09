@@ -14,6 +14,8 @@ function MailBoxFolderListViewModel()
 	this.iDropOverTimer = 0;
 
 	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel);

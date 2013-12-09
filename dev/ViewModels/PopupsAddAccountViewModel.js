@@ -82,6 +82,8 @@ function PopupsAddAccountViewModel()
 			this.login(this.email());
 		}
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);

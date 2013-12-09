@@ -177,6 +177,8 @@ function MailBoxMessageListViewModel()
 			this.deleteCommand();
 		}
 	}, this));
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('MailBoxMessageListViewModel', MailBoxMessageListViewModel);

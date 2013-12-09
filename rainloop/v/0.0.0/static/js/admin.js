@@ -1703,14 +1703,20 @@ Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
 /**
  * @param {string} sName
  * @param {Function} ViewModelClass
+ * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
  */
-Utils.extendAsViewModel = function (sName, ViewModelClass)
+Utils.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
 {
 	if (ViewModelClass)
 	{
+		if (!AbstractViewModel)
+		{
+			AbstractViewModel = KnoinAbstractViewModel;
+		}
+
 		ViewModelClass.__name = sName;
 		Plugins.regViewModelHook(sName, ViewModelClass);
-		_.extend(ViewModelClass.prototype, KnoinAbstractViewModel.prototype);
+		_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
 	}
 };
 
@@ -3613,6 +3619,17 @@ function Knoin()
 	});
 }
 
+/**
+ * @param {Object} thisObject
+ */
+Knoin.constructorEnd = function (thisObject)
+{
+	if (Utils.isFunc(thisObject['__constructor_end']))
+	{
+		thisObject['__constructor_end'].call(thisObject);
+	}
+};
+
 Knoin.prototype.sDefaultScreenName = '';
 Knoin.prototype.oScreens = {};
 Knoin.prototype.oBoot = null;
@@ -4501,6 +4518,8 @@ function PopupsDomainViewModel()
 	this.whiteListCommand = Utils.createCommand(this, function () {
 		this.whiteListPage(!this.whiteListPage());
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsDomainViewModel', PopupsDomainViewModel);
@@ -4654,6 +4673,8 @@ function PopupsPluginViewModel()
 		RL.remote().pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, oList);
 		
 	}, this.hasConfiguration);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsPluginViewModel', PopupsPluginViewModel);
@@ -4788,6 +4809,8 @@ function PopupsActivateViewModel()
 	}, function () {
 		return !this.activateProcess() && '' !== this.domain() && '' !== this.key() && !this.activationSuccessed();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsActivateViewModel', PopupsActivateViewModel);
@@ -4837,6 +4860,8 @@ function PopupsLanguagesViewModel()
 	RL.data().mainLanguage.subscribe(function () {
 		this.resetMainLanguage();
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
@@ -4938,6 +4963,8 @@ function AdminLoginViewModel()
 	}, function () {
 		return !this.submitRequest();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);
@@ -4968,6 +4995,8 @@ function AdminMenuViewModel(oScreen)
 	KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
 	this.menu = oScreen.menu;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminMenuViewModel', AdminMenuViewModel);
@@ -4987,6 +5016,8 @@ function AdminPaneViewModel()
 
 	this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
 	this.version = ko.observable(RL.settingsGet('Version'));
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);

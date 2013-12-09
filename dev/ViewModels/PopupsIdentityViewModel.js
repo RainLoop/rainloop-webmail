@@ -94,6 +94,8 @@ function PopupsIdentityViewModel()
 	this.button = ko.computed(function () {
 		return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'BUTTON_UPDATE_IDENTITY': 'BUTTON_ADD_IDENTITY'));
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsIdentityViewModel', PopupsIdentityViewModel);

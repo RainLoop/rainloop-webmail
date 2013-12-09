@@ -7,6 +7,7 @@
 function MailBoxSystemDropDownViewModel()
 {
 	AbstractSystemDropDownViewModel.call(this);
+	Knoin.constructorEnd(this);
 }
 
-_.extend(MailBoxSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
+Utils.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);

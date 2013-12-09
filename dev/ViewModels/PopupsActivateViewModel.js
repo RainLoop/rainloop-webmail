@@ -82,6 +82,8 @@ function PopupsActivateViewModel()
 	}, function () {
 		return !this.activateProcess() && '' !== this.domain() && '' !== this.key() && !this.activationSuccessed();
 	});
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsActivateViewModel', PopupsActivateViewModel);

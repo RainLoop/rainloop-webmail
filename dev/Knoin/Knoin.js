@@ -20,6 +20,17 @@ function Knoin()
 	});
 }
 
+/**
+ * @param {Object} thisObject
+ */
+Knoin.constructorEnd = function (thisObject)
+{
+	if (Utils.isFunc(thisObject['__constructor_end']))
+	{
+		thisObject['__constructor_end'].call(thisObject);
+	}
+};
+
 Knoin.prototype.sDefaultScreenName = '';
 Knoin.prototype.oScreens = {};
 Knoin.prototype.oBoot = null;

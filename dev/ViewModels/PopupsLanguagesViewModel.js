@@ -23,6 +23,8 @@ function PopupsLanguagesViewModel()
 	RL.data().mainLanguage.subscribe(function () {
 		this.resetMainLanguage();
 	}, this);
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);

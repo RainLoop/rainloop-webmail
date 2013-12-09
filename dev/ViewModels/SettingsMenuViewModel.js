@@ -11,6 +11,8 @@ function SettingsMenuViewModel(oScreen)
 	KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
 	this.menu = oScreen.menu;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);

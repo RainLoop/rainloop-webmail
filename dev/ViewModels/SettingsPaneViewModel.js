@@ -7,6 +7,8 @@
 function SettingsPaneViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Right', 'SettingsPane');
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);

@@ -66,6 +66,8 @@ function PopupsFolderSystemViewModel()
 	this.trashFolder.subscribe(fCallback);
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsFolderSystemViewModel', PopupsFolderSystemViewModel);
