@@ -20,6 +20,11 @@ class Binary
 	private static $aStreams = array();
 
 	/**
+	 * @var array
+	 */
+	private static $aRememberStreams = array();
+
+	/**
 	 * @var resource
 	 */
 	private $rStream;
@@ -146,6 +151,35 @@ class Binary
 			$sEncodedString = substr($sEncodedString, 0, $iLastSpace + 1);
 		}
 		return \MailSo\Base\Utils::ConvertEncoding($sEncodedString, $sFromEncoding, $sToEncoding);
+	}
+
+	/**
+	 * @param resource $rStream
+	 *
+	 * @return bool
+	 */
+	public static function IsStreamRemembed($rStream)
+	{
+		foreach (self::$aRememberStreams as $rRem)
+		{
+			if ($rStream === $rRem)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param resource $rStream
+	 */
+	public static function RememberStream($rStream)
+	{
+		if (!self::IsStreamRemembed($rStream))
+		{
+			self::$aRememberStreams[] = $rStream;
+		}
 	}
 
 	/**

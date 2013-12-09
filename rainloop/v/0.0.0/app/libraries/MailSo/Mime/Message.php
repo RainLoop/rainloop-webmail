@@ -147,6 +147,22 @@ class Message
 	}
 
 	/**
+	 * @return \MailSo\Mime\EmailCollection|null
+	 */
+	public function GetBcc()
+	{
+		$oResult = null;
+
+		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC]) &&
+			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC] instanceof \MailSo\Mime\EmailCollection)
+		{
+			$oResult = $this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC];
+		}
+
+		return $oResult ? $oResult->Unique() : null;
+	}
+
+	/**
 	 * @return \MailSo\Mime\EmailCollection
 	 */
 	public function GetRcpt()
@@ -552,10 +568,15 @@ class Message
 
 			if (is_resource($oAttachmentPart->Body))
 			{
-				$oAttachmentPart->Body =
-					\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
-						\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-							\MailSo\Base\Enumerations\Encoding::BASE64, false));
+				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
+				{
+					$oAttachmentPart->Body =
+						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
+							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+								\MailSo\Base\Enumerations\Encoding::BASE64, false));
+
+					\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
+				}
 			}
 		}
 
@@ -618,10 +639,15 @@ class Message
 
 				if (is_resource($oAlternativePart->Body))
 				{
-					$oAlternativePart->Body =
-						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAlternativePart->Body,
-							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-								$aAlternativeData[2], false));
+					if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAlternativePart->Body))
+					{
+						$oAlternativePart->Body =
+							\MailSo\Base\StreamWrappers\Binary::CreateStream($oAlternativePart->Body,
+								\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+									$aAlternativeData[2], false));
+
+						\MailSo\Base\StreamWrappers\Binary::RememberStream($oAlternativePart->Body);
+					}
 				}
 			}
 

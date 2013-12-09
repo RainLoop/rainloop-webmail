@@ -140,7 +140,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sServerName
 	 * @param int $iPort = 25
-	 * @param string $sEhloHost = '127.0.0.1'
+	 * @param string $sEhloHost = '[127.0.0.1]'
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
@@ -149,7 +149,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	public function Connect($sServerName, $iPort = 25, $sEhloHost = '127.0.0.1',
+	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
 	{
 		$this->iRequestTime = microtime(true);

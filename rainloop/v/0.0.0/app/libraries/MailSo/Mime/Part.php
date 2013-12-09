@@ -582,8 +582,25 @@ class Part
 	/**
 	 * @return resorce
 	 */
+	public function Rewind()
+	{
+		if ($this->Body && \is_resource($this->Body))
+		{
+			$aMeta = \stream_get_meta_data($this->Body);
+			if (isset($aMeta['seekable']) && $aMeta['seekable'])
+			{
+				\rewind($this->Body);
+			}
+		}
+	}
+
+	/**
+	 * @return resorce
+	 */
 	public function ToStream()
 	{
+		$this->Rewind();
+
 		$aSubStreams = array(
 
 			$this->Headers->ToEncodedString().
