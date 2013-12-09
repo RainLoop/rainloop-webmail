@@ -38,6 +38,14 @@ class MailClient
 	}
 
 	/**
+	 * @return \MailSo\Imap\ImapClient
+	 */
+	public function ImapClient()
+	{
+		return $this->oImapClient;
+	}
+
+	/**
 	 * @param string $sServerName
 	 * @param int $iPort = 143
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
@@ -141,9 +149,9 @@ class MailClient
 	 */
 	private function getEnvelopeOrHeadersRequestString()
 	{
-//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
-
 		return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+
+//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
 
 		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
 			\MailSo\Mime\Enumerations\Header::RETURN_PATH,

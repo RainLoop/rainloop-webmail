@@ -4978,6 +4978,8 @@ class Actions
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 			}
+
+			$this->MailClient()->ImapClient()->__FORCE_SELECT_ON_EXAMINE__ = !!$this->Config()->Get('labs', 'use_imap_force_selection');
 		}
 
 		return $oAccount;
