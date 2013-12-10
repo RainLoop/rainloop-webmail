@@ -18,6 +18,9 @@ function MailBoxScreen()
 
 _.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
 
+/**
+ * @type {Object}
+ */
 MailBoxScreen.prototype.oLastRoute = {};
 
 MailBoxScreen.prototype.onShow = function ()
@@ -26,6 +29,11 @@ MailBoxScreen.prototype.onShow = function ()
 	RL.setTitle(('' === sEmail ? '' : sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 };
 
+/**
+ * @param {string} sFolderHash
+ * @param {number} iPage
+ * @param {string} sSearch
+ */
 MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 {
 	var
@@ -126,6 +134,9 @@ MailBoxScreen.prototype.onBuild = function ()
 	}
 };
 
+/**
+ * @return {Array}
+ */
 MailBoxScreen.prototype.routes = function ()
 {
 	var
@@ -157,7 +168,6 @@ MailBoxScreen.prototype.routes = function ()
 	;
 
 	return [
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]

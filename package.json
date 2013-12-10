@@ -41,7 +41,6 @@
 	},
 	"devDependencies": {
 		"wrench": "*",
-		"jshint-stylish": "*",
 		"grunt": "~0.4.1",
 		"grunt-css": "*",
 		"grunt-md5": "*",

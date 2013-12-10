@@ -1391,8 +1391,8 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
     oTempImg.src = sUrl;
 };
 
-Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount) {
-
+Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
+{
 	return function() {
 		var
 			iPrev = 0,

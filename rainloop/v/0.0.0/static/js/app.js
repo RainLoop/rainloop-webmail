@@ -1978,8 +1978,8 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
     oTempImg.src = sUrl;
 };
 
-Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount) {
-
+Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
+{
 	return function() {
 		var
 			iPrev = 0,
@@ -15248,6 +15248,9 @@ function MailBoxScreen()
 
 _.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
 
+/**
+ * @type {Object}
+ */
 MailBoxScreen.prototype.oLastRoute = {};
 
 MailBoxScreen.prototype.onShow = function ()
@@ -15256,6 +15259,11 @@ MailBoxScreen.prototype.onShow = function ()
 	RL.setTitle(('' === sEmail ? '' : sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 };
 
+/**
+ * @param {string} sFolderHash
+ * @param {number} iPage
+ * @param {string} sSearch
+ */
 MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 {
 	var
@@ -15356,6 +15364,9 @@ MailBoxScreen.prototype.onBuild = function ()
 	}
 };
 
+/**
+ * @return {Array}
+ */
 MailBoxScreen.prototype.routes = function ()
 {
 	var
@@ -15387,7 +15398,6 @@ MailBoxScreen.prototype.routes = function ()
 	;
 
 	return [
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]
@@ -16210,6 +16220,28 @@ RainLoopApp.prototype.emailsPicsHashes = function ()
 	});
 };
 
+/**
+ * @param {string} sMailToUrl
+ * @returns {boolean}
+ */
+RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
+{
+	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().toLowerCase().substr(0, 7))
+	{
+		var oEmailModel = null;
+		oEmailModel = new EmailModel();
+		oEmailModel.parse(window.decodeURI(sMailToUrl.toString().substr(7).replace(/\?.+$/, '')));
+
+		if (oEmailModel && oEmailModel.email)
+		{
+			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
+			return true;
+		}
+	}
+
+	return false;
+};
+
 RainLoopApp.prototype.bootstart = function ()
 {
 	AbstractApp.prototype.bootstart.call(this);
@@ -16293,22 +16325,7 @@ RainLoopApp.prototype.bootstart = function ()
 				
 				// setup maito protocol
 				$document.on('mousedown', '#rl-center a', function (oEvent) {
-					if (oEvent && 3 !== oEvent['which'])
-					{
-						var oEmailModel = null, sHref = $(this).attr('href');
-						if (sHref && 'mailto:' === sHref.toString().toLowerCase().substr(0, 7))
-						{
-							oEmailModel = new EmailModel();
-							oEmailModel.parse(window.decodeURI(sHref.toString().substr(7)));
-							if (oEmailModel && oEmailModel.email)
-							{
-								kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
-								return false;
-							}
-						}
-					}
-
-					return true;
+					return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
 				});
 
 				if (bGoogle || bFacebook || bTwitter)

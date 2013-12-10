@@ -568,6 +568,28 @@ RainLoopApp.prototype.emailsPicsHashes = function ()
 	});
 };
 
+/**
+ * @param {string} sMailToUrl
+ * @returns {boolean}
+ */
+RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
+{
+	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().toLowerCase().substr(0, 7))
+	{
+		var oEmailModel = null;
+		oEmailModel = new EmailModel();
+		oEmailModel.parse(window.decodeURI(sMailToUrl.toString().substr(7).replace(/\?.+$/, '')));
+
+		if (oEmailModel && oEmailModel.email)
+		{
+			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
+			return true;
+		}
+	}
+
+	return false;
+};
+
 RainLoopApp.prototype.bootstart = function ()
 {
 	AbstractApp.prototype.bootstart.call(this);
@@ -651,22 +673,7 @@ RainLoopApp.prototype.bootstart = function ()
 				
 				// setup maito protocol
 				$document.on('mousedown', '#rl-center a', function (oEvent) {
-					if (oEvent && 3 !== oEvent['which'])
-					{
-						var oEmailModel = null, sHref = $(this).attr('href');
-						if (sHref && 'mailto:' === sHref.toString().toLowerCase().substr(0, 7))
-						{
-							oEmailModel = new EmailModel();
-							oEmailModel.parse(window.decodeURI(sHref.toString().substr(7)));
-							if (oEmailModel && oEmailModel.email)
-							{
-								kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
-								return false;
-							}
-						}
-					}
-
-					return true;
+					return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
 				});
 
 				if (bGoogle || bFacebook || bTwitter)
