@@ -198,7 +198,7 @@ class Actions
 		$oResult = null;
 		$this->Plugins()
 			->RunHook('main.fabrica', array($sName, &$oResult), false)
-			->RunHook('main.fabrica[v2]', array($sName, &$oResult, &$oAccount), false)
+			->RunHook('main.fabrica[2]', array($sName, &$oResult, $oAccount), false)
 		;
 
 		if (null === $oResult)
@@ -244,6 +244,8 @@ class Actions
 					break;
 			}
 		}
+
+		$this->Plugins()->RunHook('filter.fabrica', array($sName, &$oResult, $oAccount), false);
 
 		return $oResult;
 	}
@@ -3612,10 +3614,17 @@ class Actions
 		}
 
 		$aFoundedCids = array();
-		$aFoundedContentLocationUrls = array();
 		$mFoundDataURL = array();
-		$oMessage->AddText($bTextIsHtml ?
-			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText, $bTextIsHtml);
+		$aFoundedContentLocationUrls = array();
+
+		$sTextToAdd = $bTextIsHtml ?
+			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText;
+
+		$this->Plugins()->RunHook(
+			$bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
+			array($oAccount, &$oMessage, &$sTextToAdd));
+
+		$oMessage->AddText($sTextToAdd, $bTextIsHtml);
 
 		if (is_array($aAttachments))
 		{
@@ -3670,6 +3679,7 @@ class Actions
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array(&$oMessage));
+		$this->Plugins()->RunHook('filter.build-message[2]', array(&$oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -3693,7 +3703,10 @@ class Actions
 
 		$oMessage = $this->buildMessage($oAccount, true, $sMessageID);
 
-		$this->Plugins()->RunHook('filter.save-message', array(&$oMessage));
+		$this->Plugins()
+			->RunHook('filter.save-message', array(&$oMessage))
+			->RunHook('filter.save-message[2]', array(&$oMessage, $oAccount))
+		;
 
 		$mResult = false;
 		if ($oMessage)
@@ -3756,7 +3769,10 @@ class Actions
 
 		$oMessage = $this->buildMessage($oAccount, false, $sMessageID);
 
-		$this->Plugins()->RunHook('filter.send-message', array(&$oMessage));
+		$this->Plugins()
+			->RunHook('filter.send-message', array(&$oMessage))
+			->RunHook('filter.send-message[2]', array(&$oMessage, $oAccount))
+		;
 
 		$mResult = false;
 		try
@@ -4252,7 +4268,7 @@ class Actions
 			$iUid = (int) $this->GetActionParam('Uid', 0);
 		}
 
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
 
 		try
 		{
@@ -4266,7 +4282,10 @@ class Actions
 
 		if ($oMessage instanceof \MailSo\Mail\Message)
 		{
-			$this->Plugins()->RunHook('filter.result-message', array(&$oMessage));
+			$this->Plugins()
+				->RunHook('filter.result-message', array(&$oMessage))
+				->RunHook('filter.result-message[2]', array(&$oMessage, $oAccount))
+			;
 
 			$this->cacheByKey($sRawKey);
 		}
@@ -5294,6 +5313,7 @@ class Actions
 	 */
 	public function DefaultResponse($sActionName, $mResult = false)
 	{
+		$this->Plugins()->RunHook('main.default-response-date', array($sActionName, &$mResult));
 		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
 		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
 		return $aResponseItem;
@@ -5306,7 +5326,9 @@ class Actions
 	 */
 	public function TrueResponse($sActionName)
 	{
-		$aResponseItem = $this->mainDefaultResponse($sActionName, true);
+		$mResult = true;
+		$this->Plugins()->RunHook('main.default-response-date', array($sActionName, &$mResult));
+		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
 		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
 		return $aResponseItem;
 	}
@@ -5320,7 +5342,13 @@ class Actions
 	 */
 	public function FalseResponse($sActionName, $iErrorCode = null, $sErrorMessage = null)
 	{
-		$aResponseItem = $this->mainDefaultResponse($sActionName, false);
+		$mResult = false;
+		$this->Plugins()
+			->RunHook('main.default-response-date', array($sActionName, &$mResult))
+			->RunHook('main.default-response-error-date', array($sActionName, &$iErrorCode, &$sErrorMessage))
+		;
+		
+		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
 
 		if (null !== $iErrorCode)
 		{
