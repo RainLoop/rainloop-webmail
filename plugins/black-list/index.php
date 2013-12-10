@@ -16,11 +16,11 @@ class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
-		if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail,
-			$this->Config()->Get('plugin', 'black_list', '')))
+		$sBlackList = \trim($this->Config()->Get('plugin', 'black_list', ''));
+		if (0 < \strlen($sBlackList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sBlackList))
 		{
 			$sExceptions = \trim($this->Config()->Get('plugin', 'exceptions', ''));
-			if (0 === strlen($sExceptions) || !\RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sExceptions))
+			if (0 === \strlen($sExceptions) || !\RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sExceptions))
 			{
 				throw new \RainLoop\Exceptions\ClientException(
 					$this->Config()->Get('plugin', 'auth_error', true) ?
@@ -46,7 +46,7 @@ class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('exceptions')->SetLabel('Exceptions')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Exceptions for black list, space as delimiter, wildcard supported.')
-				->SetDefaultValue('demo@domain1.com test-*@domain2.com admin@*')
+				->SetDefaultValue('demo@domain1.com *@domain2.com admin@*')
 		);
 	}
 }
