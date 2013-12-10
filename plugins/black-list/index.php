@@ -19,9 +19,13 @@ class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail,
 			$this->Config()->Get('plugin', 'black_list', '')))
 		{
-			throw new \RainLoop\Exceptions\ClientException(
-				$this->Config()->Get('plugin', 'auth_error', true) ?
-					\RainLoop\Notifications::AuthError : \RainLoop\Notifications::AccountNotAllowed);
+			$sExceptions = \trim($this->Config()->Get('plugin', 'exceptions', ''));
+			if (0 === strlen($sExceptions) || !\RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sExceptions))
+			{
+				throw new \RainLoop\Exceptions\ClientException(
+					$this->Config()->Get('plugin', 'auth_error', true) ?
+						\RainLoop\Notifications::AuthError : \RainLoop\Notifications::AccountNotAllowed);
+			}
 		}
 	}
 
@@ -37,8 +41,12 @@ class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('black_list')->SetLabel('Black List')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('Emails black list , space as delimiter, wildcard supported.')
-				->SetDefaultValue('*@domain1.com user@domain2.com')
+				->SetDescription('Emails black list, space as delimiter, wildcard supported.')
+				->SetDefaultValue('*@domain1.com user@domain2.com'),
+			\RainLoop\Plugins\Property::NewInstance('exceptions')->SetLabel('Exceptions')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
+				->SetDescription('Exceptions for black list, space as delimiter, wildcard supported.')
+				->SetDefaultValue('demo@domain1.com test-*@domain2.com admin@*')
 		);
 	}
 }
