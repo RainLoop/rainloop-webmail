@@ -369,13 +369,13 @@ abstract class PdoAbstract
 			{
 				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
 	sys_name varchar(50) NOT NULL,
-	value_int int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+	value_int int UNSIGNED NOT NULL DEFAULT 0,
 	value_str varchar(128) NOT NULL DEFAULT \'\',
 	INDEX `sys_name_index` (`sys_name`)
 ) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 
 				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
-	id_user int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
 	rl_email varchar(128) NOT NULL DEFAULT \'\',
 	PRIMARY KEY(`id_user`),
 	INDEX `rl_email_index` (`rl_email`)

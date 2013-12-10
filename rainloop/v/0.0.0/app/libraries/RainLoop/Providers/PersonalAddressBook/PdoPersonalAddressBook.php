@@ -790,13 +790,13 @@ class PdoPersonalAddressBook
 // -- rainloop_pab_contacts --
 'CREATE TABLE IF NOT EXISTS rainloop_pab_contacts (
 	
-	id_contact		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	id_user			int(11) UNSIGNED NOT NULL,
-	scope_type		int(4) UNSIGNED NOT NULL DEFAULT 0,
+	id_contact		bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_user			int UNSIGNED NOT NULL,
+	scope_type		tinyint UNSIGNED NOT NULL DEFAULT 0,
 	display_name	varchar(255) NOT NULL DEFAULT \'\',
 	display_email	varchar(255) NOT NULL DEFAULT \'\',
 	display			varchar(255) NOT NULL DEFAULT \'\',
-	changed			int(11) UNSIGNED NOT NULL DEFAULT 0,
+	changed			int UNSIGNED NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_contact),
 	INDEX id_user_scope_type_index (id_user, scope_type)
@@ -806,15 +806,15 @@ class PdoPersonalAddressBook
 // -- rainloop_pab_properties --
 'CREATE TABLE IF NOT EXISTS rainloop_pab_properties (
 	
-	id_prop			int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	id_contact		int(11) UNSIGNED NOT NULL,
-	id_user			int(11) UNSIGNED NOT NULL,
-	scope_type		int(4) UNSIGNED NOT NULL DEFAULT 0,
-	prop_type		int(11) UNSIGNED NOT NULL,
+	id_prop			bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_contact		bigint UNSIGNED NOT NULL,
+	id_user			int UNSIGNED NOT NULL,
+	scope_type		tinyint UNSIGNED NOT NULL DEFAULT 0,
+	prop_type		tinyint UNSIGNED NOT NULL,
 	prop_type_custom	varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT \'\',
 	prop_value			varchar(255) NOT NULL DEFAULT \'\',
 	prop_value_custom	varchar(255) NOT NULL DEFAULT \'\',
-	prop_frec			int(11) UNSIGNED NOT NULL DEFAULT 0,
+	prop_frec			int UNSIGNED NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_prop),
 	INDEX id_user_index (id_user),
@@ -825,8 +825,8 @@ class PdoPersonalAddressBook
 // -- rainloop_pab_tags --
 'CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
 	
-	id_tag		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	id_user		int(11) UNSIGNED NOT NULL,
+	id_tag		int UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_user		int UNSIGNED NOT NULL,
 	tag_name	varchar(255) NOT NULL,
 
 	PRIMARY KEY(id_tag),
@@ -838,8 +838,8 @@ class PdoPersonalAddressBook
 // -- rainloop_pab_tags_contacts --
 'CREATE TABLE IF NOT EXISTS rainloop_pab_tags_contacts (
 	
-	id_tag		int(11) UNSIGNED NOT NULL,
-	id_contact	int(11) UNSIGNED NOT NULL,
+	id_tag		int UNSIGNED NOT NULL,
+	id_contact	bigint UNSIGNED NOT NULL,
 
 	INDEX id_tag_index (id_tag),
 	INDEX id_contact_index (id_contact)
