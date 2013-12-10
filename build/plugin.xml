@@ -72,6 +72,11 @@
 			<param name="plugin-name" value="black-list"/>
 		</antcall>
 	</target>
+	<target name="white-list">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="white-list"/>
+		</antcall>
+	</target>
 
 	
 </project>

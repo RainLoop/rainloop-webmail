@@ -2658,7 +2658,7 @@ class Actions
 						{
 							\MailSo\Base\Utils::CopyDir($sTmpFolder.'/rainloop/', APP_INDEX_ROOT_PATH.'rainloop/');
 
-							if (!\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion) &&
+							if (\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion) &&
 								\copy($sTmpFolder.'/data/VERSION', APP_DATA_FOLDER_PATH.'VERSION'))
 							{
 								if (\md5_file($sTmpFolder.'/index.php') !== \md5_file(APP_INDEX_ROOT_PATH.'index.php'))
