@@ -6323,8 +6323,8 @@ html.rl-no-preview-pane .messageList.message-selected {
   bottom: 0;
   right: 0;
   left: 0;
-  height: 29px;
-  padding: 10px;
+  height: 30px;
+  padding: 7px;
   min-width: 300px;
   z-index: 101;
   background-color: #eee;
@@ -6338,6 +6338,7 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .b-footer .e-quota {
   display: inline-block;
   margin-top: 5px;
+  margin-left: 5px;
   font-size: 18px;
   cursor: help;
 }
@@ -6398,12 +6399,12 @@ html.rl-no-preview-pane .messageList.message-selected {
   top: 49px;
 }
 .messageList .footerDelimiter {
-  bottom: 49px;
+  bottom: 44px;
 }
 .messageList .b-content {
   position: absolute;
   top: 50px;
-  bottom: 50px;
+  bottom: 45px;
   left: 0;
   right: 0;
   padding: 0;

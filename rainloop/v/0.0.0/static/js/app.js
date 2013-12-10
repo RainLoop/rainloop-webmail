@@ -11495,6 +11495,11 @@ function MailBoxMessageViewViewModel()
 		this.editMessage();
 	}, this.messageVisibility);
 
+	this.deleteCommand = Utils.createCommand(this, function () {
+		// TODO
+		window.console.log(arguments);
+	}, this.messageVisibility);
+
 	// viewer
 	this.viewSubject = ko.observable('');
 	this.viewFromShort = ko.observable('');
