@@ -24,13 +24,13 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @return bool
+	 * @return string
 	 */
 	public function Test()
 	{
 		\sleep(1);
 		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface ?
-			$this->oDriver->Test() : false;
+			$this->oDriver->Test() : 'Personal address book driver is not allowed';
 	}
 
 	/**

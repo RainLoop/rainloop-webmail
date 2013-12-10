@@ -59,5 +59,12 @@
 				</a>
 			</div>
 		</div>
+		<div class="control-group" data-bind="visible: '' !== testContactsErrorMessage()">
+			<div class="controls">
+				<div class="row">
+					<div class="alert span8" data-bind="text: testContactsErrorMessage"></div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

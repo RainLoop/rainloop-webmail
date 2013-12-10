@@ -72,7 +72,7 @@ abstract class PdoAbstract
 		$oPdo = false;
 		try
 		{
-			$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword);
+			$oPdo = @new \PDO($sDsn, $sDbLogin, $sDbPassword);
 			if ($oPdo)
 			{
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

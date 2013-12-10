@@ -1942,7 +1942,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
-		return $this->DefaultResponse(__FUNCTION__, $this->PersonalAddressBookProvider(null, true)->Test());
+		$sTestMessage = $this->PersonalAddressBookProvider(null, true)->Test();
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Result' => '' === $sTestMessage,
+			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage, '?')
+		));
 	}
 
 	/**

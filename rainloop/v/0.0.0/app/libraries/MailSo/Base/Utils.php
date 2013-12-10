@@ -229,6 +229,16 @@ class Utils
 	}
 
 	/**
+	 * @param string $sValue
+	 *
+	 * @return bool
+	 */
+	public static function IsUtf8($sValue)
+	{
+		 return (bool) \preg_match('//u', $sValue);
+	}
+
+	/**
 	 * @param int $iSize
 	 * @param int $iRound
 	 *
@@ -831,55 +841,55 @@ class Utils
 	{
 		return \json_encode($mInput, defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0);
 
-		if (\is_null($mInput))
-		{
-			return 'null';
-		}
-		else if ($mInput === false)
-		{
-			return 'false';
-		}
-		else if ($mInput === true)
-		{
-			return 'true';
-		}
-		else if (\is_scalar($mInput))
-		{
-			if (\is_float($mInput))
-			{
-				$mInput = \str_replace(',', '.', \strval($mInput));
-			}
-
-			return '"'.\MailSo\Base\Utils::InlineRebuildStringToJsString($mInput).'"';
-		}
-
-		$bIsList = true;
-		for ($iIndex = 0, \reset($mInput), $iLen = \count($mInput); $iIndex < $iLen; $iIndex++, \next($mInput))
-		{
-			if (\key($mInput) !== $iIndex)
-			{
-				$bIsList = false;
-				break;
-			}
-		}
-
-		$aResult = array();
-		if ($bIsList)
-		{
-			foreach ($mInput as $mValue)
-			{
-				$aResult[] = \MailSo\Base\Utils::Php2js($mValue);
-			}
-			return '['.\join(',', $aResult).']';
-		}
-		else
-		{
-			foreach ($mInput as $sKey => $mValue)
-			{
-				$aResult[] = \MailSo\Base\Utils::Php2js($sKey).':'.\MailSo\Base\Utils::Php2js($mValue);
-			}
-			return '{'.\join(',', $aResult).'}';
-		}
+//		if (\is_null($mInput))
+//		{
+//			return 'null';
+//		}
+//		else if ($mInput === false)
+//		{
+//			return 'false';
+//		}
+//		else if ($mInput === true)
+//		{
+//			return 'true';
+//		}
+//		else if (\is_scalar($mInput))
+//		{
+//			if (\is_float($mInput))
+//			{
+//				$mInput = \str_replace(',', '.', \strval($mInput));
+//			}
+//
+//			return '"'.\MailSo\Base\Utils::InlineRebuildStringToJsString($mInput).'"';
+//		}
+//
+//		$bIsList = true;
+//		for ($iIndex = 0, \reset($mInput), $iLen = \count($mInput); $iIndex < $iLen; $iIndex++, \next($mInput))
+//		{
+//			if (\key($mInput) !== $iIndex)
+//			{
+//				$bIsList = false;
+//				break;
+//			}
+//		}
+//
+//		$aResult = array();
+//		if ($bIsList)
+//		{
+//			foreach ($mInput as $mValue)
+//			{
+//				$aResult[] = \MailSo\Base\Utils::Php2js($mValue);
+//			}
+//			return '['.\join(',', $aResult).']';
+//		}
+//		else
+//		{
+//			foreach ($mInput as $sKey => $mValue)
+//			{
+//				$aResult[] = \MailSo\Base\Utils::Php2js($sKey).':'.\MailSo\Base\Utils::Php2js($mValue);
+//			}
+//			return '{'.\join(',', $aResult).'}';
+//		}
 	}
 
 	/**

@@ -5261,11 +5261,13 @@ function AdminContacts()
 	this.testing = ko.observable(false);
 	this.testContactsSuccess = ko.observable(false);
 	this.testContactsError = ko.observable(false);
+	this.testContactsErrorMessage = ko.observable('');
 
 	this.testContactsCommand = Utils.createCommand(this, function () {
 
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
+		this.testContactsErrorMessage('');
 		this.testing(true);
 
 		RL.remote().testContacts(this.onTestContactsResponse, {
@@ -5285,13 +5287,18 @@ Utils.addSettingsViewModel(AdminContacts, 'AdminSettingsContacts', 'Contacts', '
 
 AdminContacts.prototype.onTestContactsResponse = function (sResult, oData)
 {
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	this.testContactsSuccess(false);
+	this.testContactsError(false);
+	this.testContactsErrorMessage('');
+
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.Result)
 	{
 		this.testContactsSuccess(true);
 	}
 	else
 	{
 		this.testContactsError(true);
+		this.testContactsErrorMessage(oData.Result.Message || '');
 	}
 
 	this.testing(false);
@@ -5301,6 +5308,7 @@ AdminContacts.prototype.onShow = function ()
 {
 	this.testContactsSuccess(false);
 	this.testContactsError(false);
+	this.testContactsErrorMessage('');
 };
 
 AdminContacts.prototype.onBuild = function ()

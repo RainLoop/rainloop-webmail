@@ -752,8 +752,31 @@ class PdoPersonalAddressBook
 	 */
 	public function Test()
 	{
-		$this->Sync();
-		return 0 < $this->getVersion('mysql-pab-version');
+		$sResult = '';
+		try
+		{
+			$this->Sync();
+
+			if (0 >= $this->getVersion('mysql-pab-version'))
+			{
+				$sResult = 'Unknown database error';
+			}
+		}
+		catch (\Exception $oException)
+		{
+			$sResult = $oException->getMessage();
+			if (!empty($sResult) && !\MailSo\Base\Utils::IsAscii($sResult) && !\MailSo\Base\Utils::IsUtf8($sResult))
+			{
+				$sResult = @\utf8_encode($sResult);
+			}
+
+			if (!\is_string($sResult) || empty($sResult))
+			{
+				$sResult = 'Unknown database error';
+			}
+		}
+
+		return $sResult;
 	}
 
 	/**
