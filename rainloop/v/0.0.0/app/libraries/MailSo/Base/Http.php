@@ -219,11 +219,18 @@ class Http
 	}
 
 	/**
+	 * @param string $sValueToCheck = ''
+	 *
 	 * @return bool
 	 */
-	public function IsLocalhost()
+	public function IsLocalhost($sValueToCheck = '')
 	{
-		return $this->CheckLocalhost($this->GetServer('REMOTE_ADDR', ''));
+		if (empty($sValueToCheck))
+		{
+			$sValueToCheck = $this->GetServer('REMOTE_ADDR', '');
+		}
+
+		return $this->CheckLocalhost($sValueToCheck);
 	}
 
 	/**
