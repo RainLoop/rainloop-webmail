@@ -973,7 +973,7 @@ class Actions
 				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
 
-				$aResult['ContactsIsSupported'] = (bool) $this->PersonalAddressBookProvider()->IsSupported();
+				$aResult['ContactsIsSupported'] = (bool) $this->PersonalAddressBookProvider(null, true)->IsSupported();
 			
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
@@ -1940,7 +1940,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
-		return $this->DefaultResponse(__FUNCTION__, $this->PersonalAddressBookProvider()->Test());
+		return $this->DefaultResponse(__FUNCTION__, $this->PersonalAddressBookProvider(null, true)->Test());
 	}
 
 	/**
