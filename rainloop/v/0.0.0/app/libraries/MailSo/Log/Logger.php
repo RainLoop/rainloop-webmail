@@ -222,7 +222,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	public function WriteMixed($mData, $iDescType = null, $sName = '', $bSearchSecretWords = true)
 	{
-		$iType = null === $iDescType ? \MailSo\Log\Enumerations\Type::INFO : $iType;
+		$iType = null === $iDescType ? \MailSo\Log\Enumerations\Type::INFO : $iDescType;
 		if (\is_array($mData) || \is_object($mData))
 		{
 			if ($mData instanceof \Exception)

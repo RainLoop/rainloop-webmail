@@ -3,6 +3,11 @@
 		<div class="toolbar">
 			<div class="btn-toolbar">
 				<div class="btn-group">
+					<a class="btn buttonReload" data-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
+						<i class="icon-spinner-2" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
+					</a>
+				</div>
+				<div class="btn-group">
 					<a class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-legacyfilemanager"></i>
 						&nbsp;&nbsp;
@@ -101,8 +106,11 @@
 							<span class="caret"></span>
 						</a>
 					</div>
+					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked'"></i>
+<!--
 					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked', visible: !messageListCompleteLoadingThrottle()"></i>
 					<i class="icon-spinner-2 animated" style="margin-top: 4px;" data-bind="visible: messageListCompleteLoadingThrottle"></i>
+-->
 				</div>
 			</div>
 			<div class="mainDelimiter toolbarDelimiter"></div>
@@ -144,9 +152,11 @@
 			</div>
 			<div class="mainDelimiter footerDelimiter"></div>
 			<div class="b-footer thm-message-list-bottom-toolbar">
+<!--
 				<a class="btn buttonReload" data-placement="right" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
 					<i class="icon-spinner-2" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
 				</a>
+-->
 				<span data-bind="visible: 0 < userUsageProc(), tooltip2: quotaTooltip" class="e-quota">
 					<span data-bind="text: userUsageProc"></span>%
 				</span>

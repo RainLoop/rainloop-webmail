@@ -209,13 +209,14 @@ abstract class PdoAbstract
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->Write($sSql, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
+			$this->oLogger->WriteMixed($sSql, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
 		}
 	}
-	
+
 	/**
 	 * @param string $sEmail
 	 * @param bool $bSkipInsert = false
+	 * @param bool $bSkipUpdateTables = false
 	 *
 	 * @return int
 	 */
@@ -226,7 +227,7 @@ abstract class PdoAbstract
 		{
 			throw new \InvalidArgumentException('Empty Email argument');
 		}
-		
+
 		$oStmt = $this->prepareAndExecute('SELECT id_user FROM rainloop_users WHERE rl_email = :rl_email',
 			array(':rl_email' => array($sEmail, \PDO::PARAM_STR)));
 
@@ -271,17 +272,28 @@ abstract class PdoAbstract
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			$sQuery = 'SELECT * FROM rainloop_system WHERE sys_name = ?';
+			if ($bReturnIntValue)
+			{
+				$sQuery = 'SELECT value_int FROM rainloop_system WHERE sys_name = ?';
+			}
+			else
+			{
+				$sQuery = 'SELECT value_str FROM rainloop_system WHERE sys_name = ?';
+			}
+
 			$this->writeLog($sQuery);
 			
 			$oStmt = $oPdo->prepare($sQuery);
 			if ($oStmt->execute(array($sName)))
 			{
 				$mRow = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-				if ($mRow && isset($mRow[0]['sys_name'], $mRow[0]['value_int'], $mRow[0]['value_str']))
+				$sKey = $bReturnIntValue ? 'value_int' : 'value_str';
+				if ($mRow && isset($mRow[0][$sKey]))
 				{
-					return $bReturnIntValue ? (int) $mRow[0]['value_int'] : (string) $mRow[0]['value_str'];
+					return $bReturnIntValue ? (int) $mRow[0][$sKey] : (string) $mRow[0][$sKey];
 				}
+
+				return $bReturnIntValue ? 0 : '';
 			}
 		}
 
@@ -290,7 +302,6 @@ abstract class PdoAbstract
 
 	/**
 	 * @param string $sType
-	 * @param bool $bReturnIntValue = true
 	 *
 	 * @return int|string|bool
 	 */
@@ -356,18 +367,37 @@ abstract class PdoAbstract
 			$aQ = array();
 			if ('mysql' === $this->sDbType)
 			{
-				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_system` (
-	`sys_name` varchar(50) NOT NULL,
-	`value_int` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
-	`value_str` varchar(255) NOT NULL DEFAULT \'\'
+				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
+	sys_name varchar(50) NOT NULL,
+	value_int int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+	value_str varchar(128) NOT NULL DEFAULT \'\',
+	INDEX `sys_name_index` (`sys_name`)
 ) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 
-				$aQ[] = 'CREATE TABLE IF NOT EXISTS `rainloop_users` (
-	`id_user` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`rl_email` varchar(255) NOT NULL,
-	UNIQUE `email_unique` (`rl_email`),
-	PRIMARY KEY(`id_user`)
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */;';
+				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
+	id_user int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	rl_email varchar(128) NOT NULL DEFAULT \'\',
+	PRIMARY KEY(`id_user`),
+	INDEX `rl_email_index` (`rl_email`)
+) /*!40000 ENGINE=INNODB */;';
+			}
+			else if ('postgres' === $this->sDbType)
+			{
+				$aQ[] = 'CREATE TABLE rainloop_system (
+	sys_name varchar(50) NOT NULL,
+	value_int integer NOT NULL DEFAULT 0,
+	value_str varchar(128) NOT NULL DEFAULT \'\'
+);';
+
+				$aQ[] = 'CREATE INDEX sys_name_index ON rainloop_system (sys_name);';
+				
+				$aQ[] = 'CREATE SEQUENCE rainloop_users_seq START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
+
+				$aQ[] = 'CREATE TABLE rainloop_users (
+	id_user integer DEFAULT nextval(\'rainloop_users_seq\'::text) PRIMARY KEY,
+	rl_email varchar(128) NOT NULL DEFAULT \'\'
+);';
+				$aQ[] = 'CREATE INDEX rl_email_index ON rainloop_users (rl_email);';
 			}
 
 			if (0 < \count($aQ))
@@ -398,7 +428,7 @@ abstract class PdoAbstract
 				{
 					$oPdo->rollBack();
 
-					$this->oLogger->WriteException($oException);
+					$this->writeLog($oException);
 					throw $oException;
 				}
 			}
@@ -415,23 +445,38 @@ abstract class PdoAbstract
 	 */
 	protected function dataBaseUpgrade($sName, $aData = array())
 	{
-		$this->initSystemTables();
-
-		$iFromVersion = $this->getVersion($sName);
-
-		$bResult = false;
-		$oPdo = $this->getPDO();
-		if ($oPdo)
+		$iFromVersion = null;
+		try
 		{
-			$bResult = true;
+			$iFromVersion = $this->getVersion($sName);
+		}
+		catch (\PDOException $oException)
+		{
+			$this->writeLog($oException);
+			
+			$this->initSystemTables();
+			
+			$iFromVersion = $this->getVersion($sName);
+		}
+
+		if (0 <= $iFromVersion)
+		{
+			$oPdo = false;
+			$bResult = false;
 			foreach ($aData as $iVersion => $aQuery)
 			{
-				if ($iFromVersion < $iVersion)
+				if (!$oPdo)
+				{
+					$oPdo = $this->getPDO();
+					$bResult = true;
+				}
+
+				if ($iFromVersion < $iVersion && $oPdo)
 				{
 					try
 					{
 						$oPdo->beginTransaction();
-						
+
 						foreach ($aQuery as $sQuery)
 						{
 							$this->writeLog($sQuery);
@@ -461,7 +506,7 @@ abstract class PdoAbstract
 					{
 						break;
 					}
-					
+
 					$this->setVersion($sName, $iVersion);
 				}
 			}

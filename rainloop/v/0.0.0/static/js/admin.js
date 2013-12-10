@@ -1013,9 +1013,10 @@ Utils.removeSelection = function ()
 /**
  * @param {string} sPrefix
  * @param {string} sSubject
+ * @param {boolean=} bFixLongSubject = true
  * @return {string}
  */
-Utils.replySubjectAdd = function (sPrefix, sSubject)
+Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
 {
 	var
 		oMatch = null,
@@ -1037,7 +1038,47 @@ Utils.replySubjectAdd = function (sPrefix, sSubject)
 		sResult = sPrefix + ': ' + sSubject;
 	}
 
-	return sResult;
+	sResult = sResult.replace(/[\s]+/g, ' ');
+	return (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
+};
+
+/**
+ * @param {string} sSubject
+ * @return {string}
+ */
+Utils.fixLongSubject = function (sSubject)
+{
+	var
+		iCounter = 0,
+		oMatch = null
+	;
+
+	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+	
+	do
+	{
+		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
+		window.console.log(sSubject);
+		window.console.log(oMatch);
+		if (!oMatch || Utils.isUnd(oMatch[0]))
+		{
+			oMatch = null;
+		}
+
+		if (oMatch)
+		{
+			iCounter = 0;
+			iCounter += Utils.isUnd(oMatch[2]) ? 1 : 0 + Utils.pInt(oMatch[2]);
+			iCounter += Utils.isUnd(oMatch[4]) ? 1 : 0 + Utils.pInt(oMatch[4]);
+
+			sSubject = sSubject.replace(/^Re(\[[\d]+\]|):[\s]{0,3}Re(\[[\d]+\]|):/gi, 'Re' + (0 < iCounter ? '[' + iCounter + ']' : '') + ':');
+		}
+
+	}
+	while (oMatch);
+
+	sSubject = sSubject.replace(/[\s]+/, ' ');
+	return sSubject;
 };
 
 /**
@@ -5216,9 +5257,51 @@ function AdminContacts()
 	this.pdoDsnTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.pdoUserTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.pdoPasswordTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.testing = ko.observable(false);
+	this.testContactsSuccess = ko.observable(false);
+	this.testContactsError = ko.observable(false);
+
+	this.testContactsCommand = Utils.createCommand(this, function () {
+
+		this.testContactsSuccess(false);
+		this.testContactsError(false);
+		this.testing(true);
+
+		RL.remote().testContacts(this.onTestContactsResponse, {
+			'ContactsPdoDsn': this.pdoDsn(),
+			'ContactsPdoUser': this.pdoUser(),
+			'ContactsPdoPassword': this.pdoPassword()
+		});
+
+	}, function () {
+		return '' !== this.pdoDsn() && '' !== this.pdoUser();
+	});
+
+	this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 }
 
 Utils.addSettingsViewModel(AdminContacts, 'AdminSettingsContacts', 'Contacts', 'contacts');
+
+AdminContacts.prototype.onTestContactsResponse = function (sResult, oData)
+{
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	{
+		this.testContactsSuccess(true);
+	}
+	else
+	{
+		this.testContactsError(true);
+	}
+
+	this.testing(false);
+};
+
+AdminContacts.prototype.onShow = function ()
+{
+	this.testContactsSuccess(false);
+	this.testContactsError(false);
+};
 
 AdminContacts.prototype.onBuild = function ()
 {
@@ -5371,8 +5454,6 @@ function AdminSecurity()
 		this.adminPasswordUpdateSuccess(false);
 	}, this);
 	
-	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
-
 	this.saveNewAdminPasswordCommand = Utils.createCommand(this, function () {
 
 		this.adminPasswordUpdateError(false);
@@ -5386,6 +5467,8 @@ function AdminSecurity()
 	}, function () {
 		return '' !== this.adminPassword() && '' !== this.adminPasswordNew();
 	});
+
+	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
 }
 
 Utils.addSettingsViewModel(AdminSecurity, 'AdminSettingsSecurity', 'Security', 'security');
@@ -6369,6 +6452,15 @@ AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback,
 		'OutSecure': sOutSecure,
 		'OutAuth': bOutAuth ? '1' : '0'
 	});
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {?} oData
+ */
+AdminAjaxRemoteStorage.prototype.testContacts = function (fCallback, oData)
+{
+	this.defaultRequest(fCallback, 'AdminContactsTest', oData);
 };
 
 /**

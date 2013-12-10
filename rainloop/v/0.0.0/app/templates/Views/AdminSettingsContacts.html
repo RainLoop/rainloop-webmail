@@ -20,9 +20,12 @@
 				</label>
 			</div>
 		</div>
+		<div class="legend">
+			PDO (MySQL)
+		</div>
 		<div class="control-group">
 			 <label class="control-label">
-				PDO dsn
+				Dsn
 			 </label>
 			<div class="controls">
 				<input type="text" class="span6" data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
@@ -31,7 +34,7 @@
 		</div>
 		<div class="control-group">
 			 <label class="control-label">
-				PDO user
+				User
 			 </label>
 			<div class="controls">
 				<input type="text" data-bind="value: pdoUser, saveTrigger: pdoUserTrigger" />
@@ -40,11 +43,20 @@
 		</div>
 		<div class="control-group">
 			 <label class="control-label">
-				PDO password
+				Password
 			 </label>
 			<div class="controls">
 				<input type="password" data-bind="value: pdoPassword, saveTrigger: pdoPasswordTrigger" />
 				<div data-bind="saveTrigger: pdoPasswordTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
+					<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testContactsSuccess() || testContactsError() }"></i>
+					&nbsp;&nbsp;
+					Test
+				</a>
 			</div>
 		</div>
 	</div>

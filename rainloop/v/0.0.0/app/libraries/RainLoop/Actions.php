@@ -228,15 +228,13 @@ class Actions
 					break;
 				case 'personal-address-book':
 					// \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
-					if ($this->Config()->Get('contacts', 'enable', false))
-					{
-						$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
-						$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
-						$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
+					
+					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
+					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
+					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
 
-						$oResult = new \RainLoop\Providers\PersonalAddressBook\MySqlPersonalAddressBook($sDsn, $sUser, $sPassword);
-						$oResult->SetLogger($this->Logger());
-					}
+					$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook($sDsn, $sUser, $sPassword);
+					$oResult->SetLogger($this->Logger());
 					break;
 				case 'suggestions':
 					// \RainLoop\Providers\Suggestions\SuggestionsInterface
@@ -541,31 +539,19 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount = null
+	 * @param bool $bForceEnable = false
+	 *
 	 * @return \RainLoop\Providers\PersonalAddressBook
 	 */
-	public function PersonalAddressBookProvider($oAccount = null)
+	public function PersonalAddressBookProvider($oAccount = null, $bForceEnable = false)
 	{
 		if (null === $this->oPersonalAddressBookProvider)
 		{
 			$this->oPersonalAddressBookProvider = new \RainLoop\Providers\PersonalAddressBook(
-				$this->fabrica('personal-address-book', $oAccount));
-
-			$sPabVersion = $this->oPersonalAddressBookProvider->Version();
-			$sVersion = (string) $this->StorageProvider()->Get(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'PersonalAddressBookVersion', '');
-
-			if ($sVersion !== $sPabVersion &&
-				$this->oPersonalAddressBookProvider->IsActive())
-			{
-				if ($this->oPersonalAddressBookProvider->SynchronizeStorage())
-				{
-					$this->StorageProvider()->Put(null, \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-						'PersonalAddressBookVersion', $sPabVersion);
-				}
-			}
+				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('personal-address-book', $oAccount) : null);
 		}
-
-		if ($oAccount)
+		else if ($oAccount && $this->oPersonalAddressBookProvider->IsSupported())
 		{
 			$this->oPersonalAddressBookProvider->SetAccount($oAccount);
 		}
@@ -1035,7 +1021,7 @@ class Actions
 		$aResult['DesktopNotifications'] = false;
 		$aResult['UseThreads'] = false;
 		$aResult['ReplySameFolder'] = false;
-		$aResult['UsePreviewPane'] = true;
+		$aResult['UsePreviewPane'] = (bool) $oConfig->Get('webmail', 'use_preview_pane', true);
 		$aResult['UseCheckboxesInList'] = true;
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
@@ -1939,6 +1925,22 @@ class Actions
 		$this->IsAdminLoggined();
 
 		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoAdminContactsTest()
+	{
+		$this->IsAdminLoggined();
+
+		$oConfig = $this->Config();
+
+		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+
+		return $this->DefaultResponse(__FUNCTION__, $this->PersonalAddressBookProvider()->Test());
 	}
 
 	/**
@@ -4026,7 +4028,7 @@ class Actions
 		{
 			$iCount = 0;
 			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount, 
-				$iOffset, $iLimit, $sSearch, false, $iCount);
+				$iOffset, $iLimit, $sSearch, \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, $iCount);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(

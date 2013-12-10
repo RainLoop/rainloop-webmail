@@ -3483,6 +3483,9 @@ html.no-rgba .modal {
 .inputosaurus-container li a:hover {
   color: #666;
 }
+.inputosaurus-container li span {
+  padding-right: 3px;
+}
 .inputosaurus-container li.inputosaurus-required {
   padding-rigth: 5px;
 }
@@ -4179,7 +4182,7 @@ html.rl-no-preview-pane .messageList.message-selected {
 }
 .messageList .b-footer .e-quota {
   display: inline-block;
-  margin-left: 10px;
+  margin-top: 5px;
   font-size: 18px;
   cursor: help;
 }

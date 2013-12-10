@@ -492,7 +492,7 @@ Utils.fixLongSubject = function (sSubject)
 
 	sSubject = sSubject.replace(/[\s]+/, ' ');
 	return sSubject;
-}
+};
 
 /**
  * @param {number} iNum

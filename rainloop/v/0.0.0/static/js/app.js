@@ -1013,9 +1013,10 @@ Utils.removeSelection = function ()
 /**
  * @param {string} sPrefix
  * @param {string} sSubject
+ * @param {boolean=} bFixLongSubject = true
  * @return {string}
  */
-Utils.replySubjectAdd = function (sPrefix, sSubject)
+Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
 {
 	var
 		oMatch = null,
@@ -1037,7 +1038,47 @@ Utils.replySubjectAdd = function (sPrefix, sSubject)
 		sResult = sPrefix + ': ' + sSubject;
 	}
 
-	return sResult;
+	sResult = sResult.replace(/[\s]+/g, ' ');
+	return (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
+};
+
+/**
+ * @param {string} sSubject
+ * @return {string}
+ */
+Utils.fixLongSubject = function (sSubject)
+{
+	var
+		iCounter = 0,
+		oMatch = null
+	;
+
+	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+	
+	do
+	{
+		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
+		window.console.log(sSubject);
+		window.console.log(oMatch);
+		if (!oMatch || Utils.isUnd(oMatch[0]))
+		{
+			oMatch = null;
+		}
+
+		if (oMatch)
+		{
+			iCounter = 0;
+			iCounter += Utils.isUnd(oMatch[2]) ? 1 : 0 + Utils.pInt(oMatch[2]);
+			iCounter += Utils.isUnd(oMatch[4]) ? 1 : 0 + Utils.pInt(oMatch[4]);
+
+			sSubject = sSubject.replace(/^Re(\[[\d]+\]|):[\s]{0,3}Re(\[[\d]+\]|):/gi, 'Re' + (0 < iCounter ? '[' + iCounter + ']' : '') + ':');
+		}
+
+	}
+	while (oMatch);
+
+	sSubject = sSubject.replace(/[\s]+/, ' ');
+	return sSubject;
 };
 
 /**

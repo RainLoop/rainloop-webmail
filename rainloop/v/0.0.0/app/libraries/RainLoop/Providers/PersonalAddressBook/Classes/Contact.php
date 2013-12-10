@@ -25,24 +25,14 @@ class Contact
 	public $DisplayEmail;
 
 	/**
-	 * @var bool
+	 * @var int
 	 */
-	public $Auto;
-
-	/**
-	 * @var bool
-	 */
-	public $Shared;
+	public $ScopeType;
 
 	/**
 	 * @var int
 	 */
 	public $Changed;
-
-	/**
-	 * @var array
-	 */
-	public $Tags;
 
 	/**
 	 * @var int
@@ -66,10 +56,8 @@ class Contact
 		$this->Display = '';
 		$this->DisplayName = '';
 		$this->DisplayEmail = '';
-		$this->Auto = false;
-		$this->Shared = false;
+		$this->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 		$this->Changed = \time();
-		$this->Tags = array();
 		$this->IdPropertyFromSearch = 0;
 		$this->Properties = array();
 	}
@@ -83,6 +71,7 @@ class Contact
 		{
 			if ($oProperty)
 			{
+				$oProperty->ScopeType = $this->ScopeType;
 				$oProperty->UpdateDependentValues();
 				
 				if ('' === $sDisplayName && \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME === $oProperty->Type &&

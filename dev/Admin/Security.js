@@ -24,8 +24,6 @@ function AdminSecurity()
 		this.adminPasswordUpdateSuccess(false);
 	}, this);
 	
-	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
-
 	this.saveNewAdminPasswordCommand = Utils.createCommand(this, function () {
 
 		this.adminPasswordUpdateError(false);
@@ -39,6 +37,8 @@ function AdminSecurity()
 	}, function () {
 		return '' !== this.adminPassword() && '' !== this.adminPasswordNew();
 	});
+
+	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
 }
 
 Utils.addSettingsViewModel(AdminSecurity, 'AdminSettingsSecurity', 'Security', 'security');

@@ -4,7 +4,7 @@ namespace RainLoop\Providers\PersonalAddressBook;
 
 use \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType;
 
-class MySqlPersonalAddressBook
+class PdoPersonalAddressBook
 	extends \RainLoop\Common\PdoAbstract
 	implements \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
 {
@@ -49,7 +49,9 @@ class MySqlPersonalAddressBook
 	 */
 	public function ContactSave($oAccount, &$oContact)
 	{
+		$this->Sync();
 		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		
 		$iIdContact = \strlen($oContact->IdContact) && \is_numeric($oContact->IdContact) ? (int) $oContact->IdContact : 0;
 
 		$bUpdate = 0 < $iIdContact;
@@ -57,7 +59,7 @@ class MySqlPersonalAddressBook
 		$oContact->UpdateDependentValues();
 		$oContact->Changed = \time();
 
-		if (!$oContact->Auto)
+		if (\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO !== $oContact->ScopeType)
 		{
 			$aEmail = $oContact->GetEmails();
 			if (0 < \count($aEmail))
@@ -80,8 +82,9 @@ class MySqlPersonalAddressBook
 
 					// clear autocreated contacts
 					$this->prepareAndExecute(
-						'DELETE FROM `rainloop_pab_contacts` WHERE `id_user` = :id_user AND `auto` = 1 AND `display_email` IN ('.\implode(',', $aEmail).')',
+						'DELETE FROM rainloop_pab_contacts WHERE id_user = :id_user AND scope_type = :scope_type AND display_email IN ('.\implode(',', $aEmail).')',
 						array(
+							':scope_type' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO, \PDO::PARAM_INT),
 							':id_user' => array($iUserID, \PDO::PARAM_INT)
 						)
 					);
@@ -98,8 +101,8 @@ class MySqlPersonalAddressBook
 			{
 				$aFreq = $this->getContactFreq($iUserID, $iIdContact);
 
-				$sSql = 'UPDATE `rainloop_pab_contacts` SET `display` = :display, `display_name` = :display_name, `display_email` = :display_email, '.
-					'`auto` = :auto, `shared` = :shared, `changed` = :changed  WHERE id_user = :id_user AND `id_contact` = :id_contact';
+				$sSql = 'UPDATE rainloop_pab_contacts SET display = :display, display_name = :display_name, display_email = :display_email, '.
+					'scope_type = :scope_type, changed = :changed  WHERE id_user = :id_user AND id_contact = :id_contact';
 
 				$this->prepareAndExecute($sSql,
 					array(
@@ -108,15 +111,14 @@ class MySqlPersonalAddressBook
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
-						':auto' => array($oContact->Auto, \PDO::PARAM_INT),
-						':shared' => array($oContact->Shared, \PDO::PARAM_INT),
+						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
 					)
 				);
 
 				// clear previos props
 				$this->prepareAndExecute(
-					'DELETE FROM `rainloop_pab_properties` WHERE `id_user` = :id_user AND `id_contact` = :id_contact',
+					'DELETE FROM rainloop_pab_properties WHERE id_user = :id_user AND id_contact = :id_contact',
 					array(
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT)
@@ -125,9 +127,9 @@ class MySqlPersonalAddressBook
 			}
 			else
 			{
-				$sSql = 'INSERT INTO `rainloop_pab_contacts` '.
-					'(`id_user`, `display`, `display_name`, `display_email`, `auto`, `shared`, `changed`) VALUES '.
-					'(:id_user,  :display,  :display_name,  :display_email,  :auto,  :shared,  :changed)';
+				$sSql = 'INSERT INTO rainloop_pab_contacts '.
+					'( id_user,  display,  display_name,  display_email,  scope_type,  changed) VALUES '.
+					'(:id_user, :display, :display_name, :display_email, :scope_type, :changed)';
 
 				$this->prepareAndExecute($sSql,
 					array(
@@ -135,8 +137,7 @@ class MySqlPersonalAddressBook
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
-						':auto' => array($oContact->Auto, \PDO::PARAM_INT),
-						':shared' => array($oContact->Shared, \PDO::PARAM_INT),
+						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT)
 					)
 				);
@@ -163,19 +164,18 @@ class MySqlPersonalAddressBook
 					$aParams[] = array(
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
-						':type' => array($oProp->Type, \PDO::PARAM_INT),
-						':type_custom' => array($oProp->TypeCustom, \PDO::PARAM_STR),
-						':value' => array($oProp->Value, \PDO::PARAM_STR),
-						':value_custom' => array($oProp->ValueClear, \PDO::PARAM_STR),
-						':auto' => array($oContact->Auto, \PDO::PARAM_INT),
-						':shared' => array($oContact->Shared, \PDO::PARAM_INT),
-						':frec' => array($iFreq, \PDO::PARAM_INT),
+						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
+						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
+						':prop_type_custom' => array($oProp->TypeCustom, \PDO::PARAM_STR),
+						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
+						':prop_value_custom' => array($oProp->ValueClear, \PDO::PARAM_STR),
+						':prop_frec' => array($iFreq, \PDO::PARAM_INT),
 					);
 				}
 
-				$sSql = 'INSERT INTO `rainloop_pab_properties` '.
-					'(`id_contact`, `id_user`, `type`, `type_custom`, `value`, `value_custom`, `auto`, `shared`, `frec`) VALUES '.
-					'(:id_contact,  :id_user,  :type,  :type_custom,  :value,  :value_custom,  :auto,  :shared,  :frec)';
+				$sSql = 'INSERT INTO rainloop_pab_properties '.
+					'( id_contact,  id_user,  prop_type,  prop_type_custom,  prop_value,  prop_value_custom,  scope_type,  prop_frec) VALUES '.
+					'(:id_contact, :id_user, :prop_type, :prop_type_custom, :prop_value, :prop_value_custom, :scope_type, :prop_frec)';
 
 				$this->prepareAndExecute($sSql, $aParams, true);
 			}
@@ -199,6 +199,7 @@ class MySqlPersonalAddressBook
 	 */
 	public function DeleteContacts($oAccount, $aContactIds)
 	{
+		$this->Sync();
 		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
@@ -214,9 +215,9 @@ class MySqlPersonalAddressBook
 		$sIDs = \implode(',', $aContactIds);
 		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
 
-		$this->prepareAndExecute('DELETE FROM `rainloop_pab_tags_contacts` WHERE `id_contact` IN ('.$sIDs.')');
-		$this->prepareAndExecute('DELETE FROM `rainloop_pab_properties` WHERE `id_user` = :id_user AND `id_contact` IN ('.$sIDs.')', $aParams);
-		$this->prepareAndExecute('DELETE FROM `rainloop_pab_contacts` WHERE `id_user` = :id_user AND `id_contact` IN ('.$sIDs.')', $aParams);
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags_contacts WHERE id_contact IN ('.$sIDs.')');
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_properties WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_contacts WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
 
 		return true;
 	}
@@ -229,6 +230,7 @@ class MySqlPersonalAddressBook
 	 */
 	public function DeleteTags($oAccount, $aTagsIds)
 	{
+		$this->Sync();
 		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$aTagsIds = \array_filter($aTagsIds, function (&$mItem) {
@@ -244,8 +246,8 @@ class MySqlPersonalAddressBook
 		$sIDs = \implode(',', $aTagsIds);
 		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
 
-		$this->prepareAndExecute('DELETE FROM `rainloop_pab_tags_contacts` WHERE `id_tag` IN ('.$sIDs.')');
-		$this->prepareAndExecute('DELETE FROM `rainloop_pab_tags` WHERE `id_user` = :id_user AND `id_tag` IN ('.$sIDs.')', $aParams);
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags_contacts WHERE id_tag IN ('.$sIDs.')');
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags WHERE id_user = :id_user AND id_tag IN ('.$sIDs.')', $aParams);
 
 		return true;
 	}
@@ -255,13 +257,16 @@ class MySqlPersonalAddressBook
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
-	 * @param bool $bAutoOnly = false
+	 * @param bool $iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_
 	 * @param int $iResultCount = 0
 	 * 
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', $bAutoOnly = false, &$iResultCount = 0)
+	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '',
+		$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, &$iResultCount = 0)
 	{
+		$this->Sync();
+
 		$iOffset = 0 <= $iOffset ? $iOffset : 0;
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
 		$sSearch = \trim($sSearch);
@@ -274,10 +279,10 @@ class MySqlPersonalAddressBook
 		
 		if (0 < \strlen($sSearch))
 		{
-			$sSql = 'SELECT `id_prop`, `id_contact` FROM `rainloop_pab_properties` WHERE `id_user` = :id_user AND `auto` = :auto AND `value` LIKE :search ESCAPE \'=\' GROUP BY `id_contact`';
+			$sSql = 'SELECT id_prop, id_contact FROM rainloop_pab_properties WHERE id_user = :id_user AND scope_type = :scope_type AND prop_value LIKE :search ESCAPE \'=\' GROUP BY id_contact';
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':auto' => array($bAutoOnly ? 1 : 0, \PDO::PARAM_INT),
+				':scope_type' => array($iScopeType, \PDO::PARAM_INT),
 				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 			);
 
@@ -303,10 +308,10 @@ class MySqlPersonalAddressBook
 		}
 		else
 		{
-			$sSql = 'SELECT COUNT(DISTINCT `id_contact`) as `contact_count` FROM `rainloop_pab_properties` WHERE `id_user` = :id_user AND `auto` = :auto';
+			$sSql = 'SELECT COUNT(DISTINCT id_contact) as contact_count FROM rainloop_pab_properties WHERE id_user = :id_user AND scope_type = :scope_type';
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':auto' => array($bAutoOnly ? 1 : 0, \PDO::PARAM_INT)
+				':scope_type' => array($iScopeType, \PDO::PARAM_INT)
 			);
 
 			$oStmt = $this->prepareAndExecute($sSql, $aParams);
@@ -324,18 +329,18 @@ class MySqlPersonalAddressBook
 
 		if (0 < $iCount)
 		{
-			$sSql = 'SELECT * FROM `rainloop_pab_contacts` WHERE id_user = :id_user AND `auto` = :auto';
+			$sSql = 'SELECT * FROM rainloop_pab_contacts WHERE id_user = :id_user AND scope_type = :scope_type';
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':auto' => array($bAutoOnly ? 1 : 0, \PDO::PARAM_INT)
+				':scope_type' => array($iScopeType, \PDO::PARAM_INT)
 			);
 
 			if (0 < \count($aSearchIds))
 			{
-				$sSql .= ' AND `id_contact` IN ('.implode(',', $aSearchIds).')';
+				$sSql .= ' AND id_contact IN ('.implode(',', $aSearchIds).')';
 			}
 
-			$sSql .= ' ORDER BY `display` ASC LIMIT :limit OFFSET :offset';
+			$sSql .= ' ORDER BY display ASC LIMIT :limit OFFSET :offset';
 			$aParams[':limit'] = array($iLimit, \PDO::PARAM_INT);
 			$aParams[':offset'] = array($iOffset, \PDO::PARAM_INT);
 
@@ -360,8 +365,10 @@ class MySqlPersonalAddressBook
 							$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 							$oContact->DisplayName = isset($aItem['display_name']) ? (string) $aItem['display_name'] : '';
 							$oContact->DisplayEmail = isset($aItem['display_email']) ? (string) $aItem['display_email'] : '';
-							$oContact->Auto = isset($aItem['auto']) ? (bool) $aItem['auto'] : false;
+							$oContact->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
+								\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 							$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
+
 							$oContact->IdPropertyFromSearch = isset($aPropertyFromSearchIds[$iIdContact]) &&
 								0 < $aPropertyFromSearchIds[$iIdContact] ? $aPropertyFromSearchIds[$iIdContact] : 0;
 
@@ -376,7 +383,7 @@ class MySqlPersonalAddressBook
 				{
 					$oStmt->closeCursor();
 
-					$sSql = 'SELECT * FROM `rainloop_pab_properties` WHERE id_user = :id_user AND `id_contact` IN ('.\implode(',', $aIdContacts).')';
+					$sSql = 'SELECT * FROM rainloop_pab_properties WHERE id_user = :id_user AND id_contact IN ('.\implode(',', $aIdContacts).')';
 					$oStmt = $this->prepareAndExecute($sSql, array(
 						':id_user' => array($iUserID, \PDO::PARAM_INT)
 					));
@@ -388,18 +395,20 @@ class MySqlPersonalAddressBook
 						{
 							foreach ($aFetch as $aItem)
 							{
-								if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['type'], $aItem['value']))
+								if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['prop_type'], $aItem['prop_value']))
 								{
 									$iId = (int) $aItem['id_contact'];
 									if (0 < $iId && isset($aContacts[$iId]))
 									{
 										$oProperty = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
 										$oProperty->IdProperty = (int) $aItem['id_prop'];
-										$oProperty->Type = (int) $aItem['type'];
-										$oProperty->TypeCustom = isset($aItem['type_custom']) ? (string) $aItem['type_custom'] : '';
-										$oProperty->Value = (string) $aItem['value'];
-										$oProperty->ValueClear = isset($aItem['value_clear']) ? (string) $aItem['value_clear'] : '';
-										$oProperty->Frec = isset($aItem['frec']) ? (int) $aItem['frec'] : 0;
+										$oProperty->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
+											\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
+										$oProperty->Type = (int) $aItem['prop_type'];
+										$oProperty->TypeCustom = isset($aItem['prop_type_custom']) ? (string) $aItem['prop_type_custom'] : '';
+										$oProperty->Value = (string) $aItem['prop_value'];
+										$oProperty->ValueClear = isset($aItem['prop_value_clear']) ? (string) $aItem['prop_value_clear'] : '';
+										$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
 
 										$aContacts[$iId]->Properties[] = $oProperty;
 									}
@@ -440,14 +449,15 @@ class MySqlPersonalAddressBook
 			throw new \InvalidArgumentException('Empty Search argument');
 		}
 
+		$this->Sync();
 		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$sTypes = implode(',', array(
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FULLNAME
 		));
 		
-		$sSql = 'SELECT `id_contact`, `id_prop`, `type`, `value` FROM `rainloop_pab_properties` '.
-			'WHERE id_user = :id_user AND `type` IN ('.$sTypes.') AND `value` LIKE :search ESCAPE \'=\'';
+		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_pab_properties '.
+			'WHERE id_user = :id_user AND prop_type IN ('.$sTypes.') AND prop_value LIKE :search ESCAPE \'=\'';
 		
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
@@ -455,7 +465,7 @@ class MySqlPersonalAddressBook
 			':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 		);
 
-		$sSql .= ' ORDER BY `frec` DESC';
+		$sSql .= ' ORDER BY prop_frec DESC';
 		$sSql .= ' LIMIT :limit';
 
 		$aResult = array();
@@ -475,7 +485,7 @@ class MySqlPersonalAddressBook
 					if (0 < $iIdContact)
 					{
 						$aIdContacts[$iIdContact] = $iIdContact;
-						$iType = isset($aItem['type']) ? (int) $aItem['type'] : PropertyType::UNKNOWN;
+						$iType = isset($aItem['prop_type']) ? (int) $aItem['prop_type'] : PropertyType::UNKNOWN;
 						
 						if (\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FULLNAME)))
 						{
@@ -489,8 +499,8 @@ class MySqlPersonalAddressBook
 								$aFirstResult[] = array(
 									'id_prop' => isset($aItem['id_prop']) ? (int) $aItem['id_prop'] : 0,
 									'id_contact' => $iIdContact,
-									'value' => isset($aItem['value']) ? (string) $aItem['value'] : '',
-									'type' => $iType
+									'prop_value' => isset($aItem['prop_value']) ? (string) $aItem['prop_value'] : '',
+									'prop_type' => $iType
 								);
 							}
 						}
@@ -509,8 +519,8 @@ class MySqlPersonalAddressBook
 					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FULLNAME
 				));
 
-				$sSql = 'SELECT `id_prop`, `id_contact`, `type`, `value` FROM `rainloop_pab_properties` '.
-					'WHERE id_user = :id_user AND `type` IN ('.$sTypes.') AND `id_contact` IN ('.\implode(',', $aIdContacts).')';
+				$sSql = 'SELECT id_prop, id_contact, prop_type, prop_value FROM rainloop_pab_properties '.
+					'WHERE id_user = :id_user AND prop_type IN ('.$sTypes.') AND id_contact IN ('.\implode(',', $aIdContacts).')';
 
 				$oStmt = $this->prepareAndExecute($sSql, array(
 					':id_user' => array($iUserID, \PDO::PARAM_INT)
@@ -525,14 +535,14 @@ class MySqlPersonalAddressBook
 
 						foreach ($aFetch as $aItem)
 						{
-							if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['type'], $aItem['value']))
+							if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['prop_type'], $aItem['prop_value']))
 							{
 								$iIdContact = (int) $aItem['id_contact'];
-								$iType = (int) $aItem['type'];
+								$iType = (int) $aItem['prop_type'];
 								
 								if (PropertyType::FULLNAME === $iType)
 								{
-									$aNames[$iIdContact] = $aItem['value'];
+									$aNames[$iIdContact] = $aItem['prop_value'];
 								}
 								else if (\in_array($iType,
 									array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER)))
@@ -542,17 +552,17 @@ class MySqlPersonalAddressBook
 										$aEmails[$iIdContact] = array();
 									}
 
-									$aEmails[$iIdContact][] = $aItem['value'];
+									$aEmails[$iIdContact][] = $aItem['prop_value'];
 								}
 							}
 						}
 
 						foreach ($aFirstResult as $aItem)
 						{
-							if ($aItem && !empty($aItem['value']))
+							if ($aItem && !empty($aItem['prop_value']))
 							{
 								$iIdContact = (int) $aItem['id_contact'];
-								$iType = (int) $aItem['type'];
+								$iType = (int) $aItem['prop_type'];
 								
 								if (PropertyType::FULLNAME === $iType)
 								{
@@ -562,7 +572,7 @@ class MySqlPersonalAddressBook
 										{
 											if (!empty($sEmail))
 											{
-												$aResult[] = array($sEmail, (string) $aItem['value']);
+												$aResult[] = array($sEmail, (string) $aItem['prop_value']);
 											}
 										}
 									}
@@ -570,7 +580,7 @@ class MySqlPersonalAddressBook
 								else if (\in_array($iType,
 									array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER)))
 								{
-									$aResult[] = array((string) $aItem['value'],
+									$aResult[] = array((string) $aItem['prop_value'],
 										isset($aNames[$iIdContact]) ? (string) $aNames[$iIdContact] : '');
 								}
 							}
@@ -601,8 +611,6 @@ class MySqlPersonalAddressBook
 	 */
 	public function IncFrec($oAccount, $aEmails, $bCreateAuto = true)
 	{
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
-
 		$self = $this;
 		$aEmailsObjects = \array_map(function ($mItem) {
 			$oResult = null;
@@ -619,6 +627,9 @@ class MySqlPersonalAddressBook
 			throw new \InvalidArgumentException('Empty Emails argument');
 		}
 
+		$this->Sync();
+		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+
 		$sTypes = \implode(',', array(
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
 		));
@@ -629,7 +640,7 @@ class MySqlPersonalAddressBook
 
 		if ($bCreateAuto)
 		{
-			$sSql = 'SELECT `value` FROM `rainloop_pab_properties` WHERE id_user = :id_user AND `type` IN ('.$sTypes.')';
+			$sSql = 'SELECT prop_value FROM rainloop_pab_properties WHERE id_user = :id_user AND prop_type IN ('.$sTypes.')';
 			$oStmt = $this->prepareAndExecute($sSql, array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT)
 			));
@@ -641,9 +652,9 @@ class MySqlPersonalAddressBook
 				{
 					foreach ($aFetch as $aItem)
 					{
-						if ($aItem && !empty($aItem['value']))
+						if ($aItem && !empty($aItem['prop_value']))
 						{
-							$aExists[] = \strtolower(\trim($aItem['value']));
+							$aExists[] = \strtolower(\trim($aItem['prop_value']));
 						}
 					}
 				}
@@ -685,11 +696,12 @@ class MySqlPersonalAddressBook
 			$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 			foreach ($aEmailsToCreate as $oEmail)
 			{
-				$oContact->Auto = true;
+				$oContact->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO;
 
 				if ('' !== \trim($oEmail->GetEmail()))
 				{
 					$oPropEmail = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+					$oPropEmail->ScopeType = $oContact->ScopeType;
 					$oPropEmail->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::EMAIl_PERSONAL;
 					$oPropEmail->Value = \strtolower(\trim($oEmail->GetEmail()));
 
@@ -699,6 +711,7 @@ class MySqlPersonalAddressBook
 				if ('' !== \trim($oEmail->GetDisplayName()))
 				{
 					$oPropName = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+					$oPropName->ScopeType = $oContact->ScopeType;
 					$oPropName->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME;
 					$oPropName->Value = \trim($oEmail->GetDisplayName());
 
@@ -714,7 +727,7 @@ class MySqlPersonalAddressBook
 			}
 		}
 		
-		$sSql = 'UPDATE `rainloop_pab_properties` SET `frec` = `frec` + 1 WHERE id_user = :id_user AND `type` IN ('.$sTypes;
+		$sSql = 'UPDATE rainloop_pab_properties SET prop_frec = prop_frec + 1 WHERE id_user = :id_user AND prop_type IN ('.$sTypes;
 
 		$aEmailsQuoted = \array_map(function ($mItem) use ($self) {
 			return $self->quoteValue($mItem);
@@ -722,11 +735,11 @@ class MySqlPersonalAddressBook
 		
 		if (1 === \count($aEmailsQuoted))
 		{
-			$sSql .= ') AND `value` = '.$aEmailsQuoted[0];
+			$sSql .= ') AND prop_value = '.$aEmailsQuoted[0];
 		}
 		else
 		{
-			$sSql .= ') AND `value` IN ('.\implode(',', $aEmailsQuoted).')';
+			$sSql .= ') AND prop_value IN ('.\implode(',', $aEmailsQuoted).')';
 		}
 
 		return !!$this->prepareAndExecute($sSql, array(
@@ -737,77 +750,78 @@ class MySqlPersonalAddressBook
 	/**
 	 * @return string
 	 */
-	public function Version()
+	public function Test()
 	{
-		return 'MySqlPersonalAddressBookDriver-v14';
+		$this->Sync();
+		return 0 < $this->getVersion('mysql-pab-version');
 	}
-	
+
 	/**
 	 * @return bool
 	 */
-	public function SynchronizeStorage()
+	public function Sync()
 	{
 		return $this->dataBaseUpgrade('mysql-pab-version', array(
 			1 => array(
 
 // -- rainloop_pab_contacts --
-'CREATE TABLE IF NOT EXISTS `rainloop_pab_contacts` (
+'CREATE TABLE IF NOT EXISTS rainloop_pab_contacts (
 	
-	`id_contact` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`id_user` int(11) UNSIGNED NOT NULL,
-	`display` varchar(255) NOT NULL DEFAULT \'\',
-	`display_name` varchar(255) NOT NULL DEFAULT \'\',
-	`display_email` varchar(255) NOT NULL DEFAULT \'\',
-	`auto` int(1) UNSIGNED NOT NULL DEFAULT \'0\',
-	`shared` int(1) UNSIGNED NOT NULL DEFAULT \'0\',
-	`changed` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+	id_contact		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_user			int(11) UNSIGNED NOT NULL,
+	scope_type		int(4) UNSIGNED NOT NULL DEFAULT 0,
+	display_name	varchar(255) NOT NULL DEFAULT \'\',
+	display_email	varchar(255) NOT NULL DEFAULT \'\',
+	display			varchar(255) NOT NULL DEFAULT \'\',
+	changed			int(11) UNSIGNED NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(`id_contact`),
-	INDEX `id_user_index` (`id_user`)
+	PRIMARY KEY(id_contact),
+	INDEX id_user_scope_type_index (id_user, scope_type)
 
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
 
 // -- rainloop_pab_properties --
-'CREATE TABLE IF NOT EXISTS `rainloop_pab_properties` (
+'CREATE TABLE IF NOT EXISTS rainloop_pab_properties (
 	
-	`id_prop` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`id_contact` int(11) UNSIGNED NOT NULL,
-	`id_user` int(11) UNSIGNED NOT NULL,
-	`type` int(11) UNSIGNED NOT NULL,
-	`type_custom` varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT \'\',
-	`value` varchar(255) NOT NULL DEFAULT \'\',
-	`value_custom` varchar(255) NOT NULL DEFAULT \'\',
-	`auto` int(1) UNSIGNED NOT NULL DEFAULT \'0\',
-	`shared` int(1) UNSIGNED NOT NULL DEFAULT \'0\',
-	`frec` int(11) UNSIGNED NOT NULL DEFAULT \'0\',
+	id_prop			int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_contact		int(11) UNSIGNED NOT NULL,
+	id_user			int(11) UNSIGNED NOT NULL,
+	scope_type		int(4) UNSIGNED NOT NULL DEFAULT 0,
+	prop_type		int(11) UNSIGNED NOT NULL,
+	prop_type_custom	varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT \'\',
+	prop_value			varchar(255) NOT NULL DEFAULT \'\',
+	prop_value_custom	varchar(255) NOT NULL DEFAULT \'\',
+	prop_frec			int(11) UNSIGNED NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(`id_prop`),
-	INDEX `id_user_index` (`id_user`),
-	INDEX `id_user_id_contact_index` (`id_user`, `id_contact`)
+	PRIMARY KEY(id_prop),
+	INDEX id_user_index (id_user),
+	INDEX id_user_id_contact_scope_type_index (id_user, id_contact, scope_type)
 
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
 
 // -- rainloop_pab_tags --
-'CREATE TABLE IF NOT EXISTS `rainloop_pab_tags` (
+'CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
 	
-	`id_tag` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`id_user` int(11) UNSIGNED NOT NULL,
-	`name` varchar(255) NOT NULL,
+	id_tag		int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	id_user		int(11) UNSIGNED NOT NULL,
+	tag_name	varchar(255) NOT NULL,
 
-	PRIMARY KEY(`id_tag`),
-	INDEX `id_user_index` (`id_user`)
+	PRIMARY KEY(id_tag),
+	INDEX id_user_index (id_user),
+	INDEX id_user_name_index (id_user, tag_name)
 		
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
 
 // -- rainloop_pab_tags_contacts --
-'CREATE TABLE IF NOT EXISTS `rainloop_pab_tags_contacts` (
+'CREATE TABLE IF NOT EXISTS rainloop_pab_tags_contacts (
 	
-	`id_tag` int(11) UNSIGNED NOT NULL,
-	`id_contact` int(11) UNSIGNED NOT NULL,
+	id_tag		int(11) UNSIGNED NOT NULL,
+	id_contact	int(11) UNSIGNED NOT NULL,
 
-	INDEX `id_contact_id_tag_index` (`id_contact`, `id_tag`)
+	INDEX id_tag_index (id_tag),
+	INDEX id_contact_index (id_contact)
 
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;'
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;'
 		)));
 	}
 
@@ -824,7 +838,7 @@ class MySqlPersonalAddressBook
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
 		));
 
-		$sSql = 'SELECT `value`, `frec` FROM `rainloop_pab_properties` WHERE id_user = :id_user AND `id_contact` = :id_contact AND `type` IN ('.$sTypes.')';
+		$sSql = 'SELECT prop_value, prop_frec FROM rainloop_pab_properties WHERE id_user = :id_user AND id_contact = :id_contact AND prop_type IN ('.$sTypes.')';
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
 			':id_contact' => array($iIdContact, \PDO::PARAM_INT)
@@ -838,9 +852,9 @@ class MySqlPersonalAddressBook
 			{
 				foreach ($aFetch as $aItem)
 				{
-					if ($aItem && !empty($aItem['value']) && !empty($aItem['frec']))
+					if ($aItem && !empty($aItem['prop_value']) && !empty($aItem['prop_frec']))
 					{
-						$aResult[$aItem['value']] = (int) $aItem['frec'];
+						$aResult[$aItem['prop_value']] = (int) $aItem['prop_frec'];
 					}
 				}
 			}

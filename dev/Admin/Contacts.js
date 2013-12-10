@@ -17,9 +17,51 @@ function AdminContacts()
 	this.pdoDsnTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.pdoUserTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.pdoPasswordTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.testing = ko.observable(false);
+	this.testContactsSuccess = ko.observable(false);
+	this.testContactsError = ko.observable(false);
+
+	this.testContactsCommand = Utils.createCommand(this, function () {
+
+		this.testContactsSuccess(false);
+		this.testContactsError(false);
+		this.testing(true);
+
+		RL.remote().testContacts(this.onTestContactsResponse, {
+			'ContactsPdoDsn': this.pdoDsn(),
+			'ContactsPdoUser': this.pdoUser(),
+			'ContactsPdoPassword': this.pdoPassword()
+		});
+
+	}, function () {
+		return '' !== this.pdoDsn() && '' !== this.pdoUser();
+	});
+
+	this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 }
 
 Utils.addSettingsViewModel(AdminContacts, 'AdminSettingsContacts', 'Contacts', 'contacts');
+
+AdminContacts.prototype.onTestContactsResponse = function (sResult, oData)
+{
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	{
+		this.testContactsSuccess(true);
+	}
+	else
+	{
+		this.testContactsError(true);
+	}
+
+	this.testing(false);
+};
+
+AdminContacts.prototype.onShow = function ()
+{
+	this.testContactsSuccess(false);
+	this.testContactsError(false);
+};
 
 AdminContacts.prototype.onBuild = function ()
 {

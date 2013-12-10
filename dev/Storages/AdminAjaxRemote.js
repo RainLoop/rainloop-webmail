@@ -222,6 +222,15 @@ AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback,
  * @param {?Function} fCallback
  * @param {?} oData
  */
+AdminAjaxRemoteStorage.prototype.testContacts = function (fCallback, oData)
+{
+	this.defaultRequest(fCallback, 'AdminContactsTest', oData);
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {?} oData
+ */
 AdminAjaxRemoteStorage.prototype.saveNewAdminPassword = function (fCallback, oData)
 {
 	this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);

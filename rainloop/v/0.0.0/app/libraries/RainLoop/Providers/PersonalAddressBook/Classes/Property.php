@@ -17,6 +17,11 @@ class Property
 	public $Type;
 
 	/**
+	 * @var int
+	 */
+	public $ScopeType;
+
+	/**
 	 * @var string
 	 */
 	public $TypeCustom;
@@ -46,6 +51,7 @@ class Property
 		$this->IdProperty = 0;
 		
 		$this->Type = PropertyType::UNKNOWN;
+		$this->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 		$this->TypeCustom = '';
 
 		$this->Value = '';
