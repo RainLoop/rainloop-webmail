@@ -255,7 +255,7 @@ abstract class PdoAbstract
 	 *
 	 * @return string
 	 */
-	protected function quoteValue($sValue)
+	public function quoteValue($sValue)
 	{
 		$oPdo = $this->getPDO();
 		return $oPdo ? $oPdo->quote((string) $sValue, \PDO::PARAM_STR) : '\'\'';
