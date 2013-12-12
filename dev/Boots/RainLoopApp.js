@@ -12,9 +12,6 @@ function RainLoopApp()
 	this.oRemote = null;
 	this.oCache = null;
 
-	this.iSuggestionsLimit = Utils.pInt(this.settingsGet('SuggestionsLimit'));
-	this.iSuggestionsLimit = 0 === this.iSuggestionsLimit ? 20 : this.iSuggestionsLimit;
-
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 
 	$.wakeUp(function () {

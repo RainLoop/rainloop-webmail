@@ -894,7 +894,6 @@ class Actions
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
-			'SuggestionsLimit' => (int) $oConfig->Get('labs', 'suggestions_limit', 50),
 			'ChangePasswordIsAllowed' => false,
 			'ContactsIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
@@ -4087,8 +4086,6 @@ class Actions
 	 */
 	public function DoContactSave()
 	{
-		$iStart = \time();
-
 		$oAccount = $this->getAccountFromToken();
 
 		$bResult = false;
@@ -4125,11 +4122,6 @@ class Actions
 			$bResult = $oPab->ContactSave($oAccount, $oContact);
 		}
 
-		if (\time() === $iStart)
-		{
-			sleep(1);
-		}
-
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'RequestUid' => $sRequestUid,
 			'ResultID' => $bResult ? $oContact->IdContact : '',
@@ -4145,12 +4137,49 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$sQuery = \trim($this->GetActionParam('Query', ''));
+		$iLimit = (int) $this->Config()->Get('contacts', 'suggestions_limit', 20);
 
 		$aResult = array();
-		$oPab = $this->PersonalAddressBookProvider($oAccount);
-		if (0 < \strlen($sQuery) && $oPab->IsActive())
+		
+		$this->Plugins()->RunHook('ajax.suggestions-input-parameters', array(&$sQuery, &$iLimit, $oAccount));
+		
+		$iLimit = (int) $iLimit;
+		if (5 > $iLimit)
 		{
-			$aResult = $oPab->GetSuggestions($oAccount, $sQuery);
+			$iLimit = 5;
+		}
+
+		$this->Plugins()->RunHook('ajax.suggestions-pre', array(&$aResult, $sQuery, $oAccount, $iLimit));
+
+		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
+		{
+			// Personal Address Book
+			$oPab = $this->PersonalAddressBookProvider($oAccount);
+			if ($oPab && $oPab->IsActive())
+			{
+				$aSuggestions = $oPab->GetSuggestions($oAccount, $sQuery, $iLimit);
+				if (0 === \count($aResult))
+				{
+					$aResult = $aSuggestions;
+				}
+				else
+				{
+					$aResult = \array_merge($aResult, $aSuggestions);
+				}
+			}
+		}
+
+		if ($iLimit < \count($aResult))
+		{
+			$aResult = \array_slice($aResult, 0, $iLimit);
+		}
+
+		// Plugins
+		$this->Plugins()->RunHook('ajax.suggestions-post', array(&$aResult, $sQuery, $oAccount, $iLimit));
+
+		if ($iLimit < \count($aResult))
+		{
+			$aResult = \array_slice($aResult, 0, $iLimit);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
@@ -4190,9 +4219,9 @@ class Actions
 
 		$sFolder = $this->GetActionParam('Folder', '');
 		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
-		$aUids = explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = array_filter($aUids, function (&$sUid) {
-			$sUid = (int) trim($sUid);
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
+			$sUid = (int) \trim($sUid);
 			return 0 < $sUid;
 		});
 

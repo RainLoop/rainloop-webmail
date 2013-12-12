@@ -83,6 +83,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
+				'suggestions_limit' => array(30),
 				'type'				=> array('mysql', ''),
 				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
 				'pdo_user'			=> array('root', ''),
@@ -205,7 +206,6 @@ Enables caching in the system'),
 				'use_app_debug_css' => array(false),
 				'login_fault_delay' => array(1),
 				'log_ajax_response_write_limit' => array(300),
-				'suggestions_limit' => array(50),
 				'determine_user_language' => array(true),
 				'use_imap_sort' => array(false),
 				'use_imap_force_selection' => array(false),
