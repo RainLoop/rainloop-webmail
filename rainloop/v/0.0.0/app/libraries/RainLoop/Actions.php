@@ -5594,7 +5594,7 @@ class Actions
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
 					'Uid' => (string) $mResponse->Uid(),
-					'Subject' => \MailSo\Base\Utils::Utf8Clear($mResponse->Subject()),
+					'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($mResponse->Subject())),
 					'MessageId' => $mResponse->MessageId(),
 					'Size' => $mResponse->Size(),
 					'DateTimeStampInUTC' => !!$this->Config()->Get('labs', 'date_from_headers', false)
@@ -5636,14 +5636,15 @@ class Actions
 							break;
 					}
 				}
-				
+
+				$sSubject = $mResult['Subject'];
 				$mResult['RequestHash'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
 					'Account' => $oAccount ? md5($oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],
 					'Uid' => $mResult['Uid'],
 					'MimeType' => 'message/rfc822',
-					'FileName' => $mResult['Subject'].'.eml'
+					'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : $sSubject).'.eml'
 				));
 
 				// Flags
