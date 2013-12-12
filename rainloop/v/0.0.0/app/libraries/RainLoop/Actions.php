@@ -3527,11 +3527,10 @@ class Actions
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param bool $bWithDraftInfo = true
-	 * @param string $sMessageID = ''
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	private function buildMessage($oAccount, $bWithDraftInfo = true, $sMessageID = '')
+	private function buildMessage($oAccount, $bWithDraftInfo = true)
 	{
 		$sFrom = $this->GetActionParam('From', '');
 		$sTo = $this->GetActionParam('To', '');
@@ -3547,14 +3546,7 @@ class Actions
 		$sReferences = $this->GetActionParam('References', '');
 
 		$oMessage = \MailSo\Mime\Message::NewInstance();
-		if (empty($sMessageID))
-		{
-			$oMessage->RegenerateMessageId();
-		}
-		else
-		{
-			$oMessage->SetMessageId($sMessageID);
-		}
+		$oMessage->RegenerateMessageId();
 		
 		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
 
@@ -3696,7 +3688,6 @@ class Actions
 
 		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 		$sMessageUid = $this->GetActionParam('MessageUid', '');
-		$sMessageID = $this->GetActionParam('MessageID', '');
 
 		$sDraftFolder = $this->GetActionParam('DraftFolder', '');
 		if (0 === strlen($sDraftFolder))
@@ -3704,7 +3695,7 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 		}
 
-		$oMessage = $this->buildMessage($oAccount, true, $sMessageID);
+		$oMessage = $this->buildMessage($oAccount, true);
 
 		$this->Plugins()
 			->RunHook('filter.save-message', array(&$oMessage))
@@ -3747,8 +3738,7 @@ class Actions
 				{
 					$mResult = array(
 						'NewFolder' => $sDraftFolder,
-						'NewUid' => $iNewUid,
-						'NewID' => $sMessageId
+						'NewUid' => $iNewUid
 					);
 				}
 			}
@@ -3766,11 +3756,10 @@ class Actions
 
 		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
-		$sMessageID = $this->GetActionParam('MessageID', '');
 		$sSentFolder = $this->GetActionParam('SentFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
 
-		$oMessage = $this->buildMessage($oAccount, false, $sMessageID);
+		$oMessage = $this->buildMessage($oAccount, false);
 
 		$this->Plugins()
 			->RunHook('filter.send-message', array(&$oMessage))

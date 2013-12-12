@@ -324,7 +324,6 @@ WebMailAjaxRemoteStorage.prototype.messageSetSeenToAll = function (fCallback, sF
  * @param {?Function} fCallback
  * @param {string} sMessageFolder
  * @param {string} sMessageUid
- * @param {string} sMessageID
  * @param {string} sDraftFolder
  * @param {string} sFrom
  * @param {string} sTo
@@ -338,13 +337,12 @@ WebMailAjaxRemoteStorage.prototype.messageSetSeenToAll = function (fCallback, sF
  * @param {string} sInReplyTo
  * @param {string} sReferences
  */
-WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sMessageID, sDraftFolder,
+WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
 	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
 {
 	this.defaultRequest(fCallback, 'SaveMessage', {
 		'MessageFolder': sMessageFolder,
 		'MessageUid': sMessageUid,
-		'MessageID': sMessageID,
 		'DraftFolder': sDraftFolder,
 		'From': sFrom,
 		'To': sTo,
@@ -364,7 +362,6 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
  * @param {?Function} fCallback
  * @param {string} sMessageFolder
  * @param {string} sMessageUid
- * @param {string} sMessageID
  * @param {string} sSentFolder
  * @param {string} sFrom
  * @param {string} sTo
@@ -378,13 +375,12 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
  * @param {string} sInReplyTo
  * @param {string} sReferences
  */
-WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sMessageID, sSentFolder,
+WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
 	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
 {
 	this.defaultRequest(fCallback, 'SendMessage', {
 		'MessageFolder': sMessageFolder,
 		'MessageUid': sMessageUid,
-		'MessageID': sMessageID,
 		'SentFolder': sSentFolder,
 		'From': sFrom,
 		'To': sTo,

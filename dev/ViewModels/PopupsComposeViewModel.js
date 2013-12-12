@@ -52,7 +52,6 @@ function PopupsComposeViewModel()
 
 	this.draftFolder = ko.observable('');
 	this.draftUid = ko.observable('');
-	this.draftID = ko.observable('');
 	this.sending = ko.observable(false);
 	this.saving = ko.observable(false);
 	this.attachments = ko.observableArray([]);
@@ -74,7 +73,7 @@ function PopupsComposeViewModel()
 	}, this);
 
 	this.isDraftFolderMessage = ko.computed(function () {
-		return '' !== this.draftFolder() && '' !== this.draftUid() && '' !== this.draftID();
+		return '' !== this.draftFolder() && '' !== this.draftUid();
 	}, this);
 
 	this.composeUploaderButton = ko.observable(null);
@@ -274,7 +273,6 @@ function PopupsComposeViewModel()
 					this.sendMessageResponse,
 					this.draftFolder(),
 					this.draftUid(),
-					this.draftID(),
 					sSentFolder,
 					this.currentIdentityResultEmail(),
 					sTo,
@@ -310,7 +308,6 @@ function PopupsComposeViewModel()
 				this.saveMessageResponse,
 				this.draftFolder(),
 				this.draftUid(),
-				this.draftID(),
 				RL.data().draftFolder(),
 				this.currentIdentityResultEmail(),
 				this.to(),
@@ -528,7 +525,6 @@ PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
 
 			this.draftFolder(oData.Result.NewFolder);
 			this.draftUid(oData.Result.NewUid);
-			this.draftID(oData.Result.NewID);
 
 			if (this.modalVisibility())
 			{
@@ -688,7 +684,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 				this.draftFolder(oMessage.folderFullNameRaw);
 				this.draftUid(oMessage.uid);
-				this.draftID(oMessage.messageId());
 
 				this.subject(sSubject);
 				this.prepearMessageAttachments(oMessage, sComposeType);
@@ -1350,7 +1345,6 @@ PopupsComposeViewModel.prototype.reset = function ()
 
 	this.draftFolder('');
 	this.draftUid('');
-	this.draftID('');
 
 	this.sending(false);
 	this.saving(false);
