@@ -23,10 +23,20 @@ _.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
  */
 MailBoxScreen.prototype.oLastRoute = {};
 
+MailBoxScreen.prototype.setNewTitle  = function ()
+{
+	var
+		sEmail = RL.data().accountEmail(),
+		ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount()
+	;
+	
+	RL.setTitle(('' === sEmail ? '' :
+		(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+};
+
 MailBoxScreen.prototype.onShow = function ()
 {
-	var sEmail = RL.data().accountEmail();
-	RL.setTitle(('' === sEmail ? '' : sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+	this.setNewTitle();
 };
 
 /**
@@ -121,6 +131,10 @@ MailBoxScreen.prototype.onStart = function ()
 	oData.usePreviewPane.subscribe(function (bValue) {
 		$html.toggleClass('rl-no-preview-pane', !bValue);
 	});
+	
+	oData.foldersInboxUnreadCount.subscribe(function () {
+		this.setNewTitle();
+	}, this);
 };
 
 MailBoxScreen.prototype.onBuild = function ()

@@ -7314,6 +7314,12 @@ FolderModel.prototype.initComputed = function ()
 			iUnread = this.messageCountUnread(),
 			iType = this.type()
 		;
+
+		if (Enums.FolderType.Inbox === iType)
+		{
+			RL.data().foldersInboxUnreadCount(iUnread);
+		}
+
 //		return 0 < iUnread ? '' + iUnread : '';
 //		return 0 < iUnread && 'INBOX' === this.fullNameRaw ? '' + iUnread : '';
 		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :
@@ -12897,6 +12903,8 @@ function WebMailDataStorage()
 	this.foldersDeleting = ko.observable(false);
 	this.foldersRenaming = ko.observable(false);
 
+	this.foldersInboxUnreadCount = ko.observable(0);
+
 	this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
 		function (oPrev) {
 			if (oPrev)
@@ -15248,10 +15256,20 @@ _.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
  */
 MailBoxScreen.prototype.oLastRoute = {};
 
+MailBoxScreen.prototype.setNewTitle  = function ()
+{
+	var
+		sEmail = RL.data().accountEmail(),
+		ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount()
+	;
+	
+	RL.setTitle(('' === sEmail ? '' :
+		(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+};
+
 MailBoxScreen.prototype.onShow = function ()
 {
-	var sEmail = RL.data().accountEmail();
-	RL.setTitle(('' === sEmail ? '' : sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+	this.setNewTitle();
 };
 
 /**
@@ -15346,6 +15364,10 @@ MailBoxScreen.prototype.onStart = function ()
 	oData.usePreviewPane.subscribe(function (bValue) {
 		$html.toggleClass('rl-no-preview-pane', !bValue);
 	});
+	
+	oData.foldersInboxUnreadCount.subscribe(function () {
+		this.setNewTitle();
+	}, this);
 };
 
 MailBoxScreen.prototype.onBuild = function ()

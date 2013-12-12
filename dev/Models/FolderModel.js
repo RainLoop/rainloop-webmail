@@ -137,6 +137,12 @@ FolderModel.prototype.initComputed = function ()
 			iUnread = this.messageCountUnread(),
 			iType = this.type()
 		;
+
+		if (Enums.FolderType.Inbox === iType)
+		{
+			RL.data().foldersInboxUnreadCount(iUnread);
+		}
+
 //		return 0 < iUnread ? '' + iUnread : '';
 //		return 0 < iUnread && 'INBOX' === this.fullNameRaw ? '' + iUnread : '';
 		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :

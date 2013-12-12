@@ -87,6 +87,8 @@ function WebMailDataStorage()
 	this.foldersDeleting = ko.observable(false);
 	this.foldersRenaming = ko.observable(false);
 
+	this.foldersInboxUnreadCount = ko.observable(0);
+
 	this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
 		function (oPrev) {
 			if (oPrev)
