@@ -1,9 +1,9 @@
 <div class="b-attacment">
-	<label>
-		<input type="checkbox" data-bind="checked: enabled" />
+	<label data-bind="click: function () { enabled(!enabled()); }">
+		<i class="checkboxAttachment" data-bind="css: enabled() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
+		<!--<input type="checkbox" data-bind="checked: enabled" />-->
 		&nbsp;&nbsp;
 		<span class="name" data-bind="text: fileName"></span>
 		(<span class="size" data-bind="text: friendlySize"></span>)
 	</label>
 </div>
-<br />

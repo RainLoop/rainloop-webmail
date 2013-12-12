@@ -7,6 +7,7 @@
 						<i class="icon-remove"></i>
 					</a>
 				</div>
+				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group" data-placement="bottom" data-bind="visible: $root.isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
 					<a class="btn btn-success buttonEdit" data-bind="command: $root.messageEditCommand">
 						<i class="icon-edit2 icon-white"></i>
@@ -23,15 +24,19 @@
 						<i class="icon-forward"></i>
 					</a>
 				</div>
-<!--
+<!--				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
 					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: $root.deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash icon-white"></i>
 					</a>
-				</div>
--->
+					<span style="font-size:10px;" data-bind="visible: !$root.isDraftFolder()">&nbsp;</span>
+					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !$root.isDraftFolder(), command: $root.spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+						<i class="icon-bug"></i>
+					</a>
+				</div>-->
+				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
-					<a class="btn dropdown-toggle buttonMore" data-placement="right" data-toggle="dropdown" data-bind="command: $root.messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
+					<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown" data-bind="command: $root.messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
 						<i class="icon-reorder"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu">
@@ -73,6 +78,15 @@
 							</a>
 						</li>
 					</ul>
+				</div>
+				<div class="btn-group">&nbsp;</div>
+				<div class="btn-group" data-bind="visible: !$root.usePreviewPane()">
+					<a class="btn buttonUp" data-bind="command: $root.goUpCommand">
+						<i class="icon-arrow-left"></i>
+					</a>
+					<a class="btn buttonDown" data-bind="command: $root.goDownCommand">
+						<i class="icon-arrow-right-2"></i>
+					</a>
 				</div>
 			</div>
 		</div>

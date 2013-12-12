@@ -4325,6 +4325,16 @@ Selector.prototype.selectItemCallbacks = function (oItem)
 	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem);
 };
 
+Selector.prototype.goDown = function ()
+{
+	this.newSelectPosition(Enums.EventKeyCode.Down, false);
+};
+
+Selector.prototype.goUp = function ()
+{
+	this.newSelectPosition(Enums.EventKeyCode.Up, false);
+};
+
 Selector.prototype.init = function (oContentVisible, oContentScrollable)
 {
 	this.oContentVisible = oContentVisible;
@@ -7906,17 +7916,26 @@ function PopupsComposeViewModel()
 	this.saving = ko.observable(false);
 	this.attachments = ko.observableArray([]);
 
-	this.attachmentsInProcess = ko.computed(function () {
-		return _.filter(this.attachments(), function (oItem) {
-			return oItem && '' === oItem.tempName();
-		});
-	}, this);
+//	this.attachmentsInProcess = ko.computed(function () {
+//		return _.filter(this.attachments(), function (oItem) {
+//			return oItem && '' === oItem.tempName();
+//		});
+//	}, this);
+//
+//	this.attachmentsInReady = ko.computed(function () {
+//		return _.filter(this.attachments(), function (oItem) {
+//			return oItem && '' !== oItem.tempName();
+//		});
+//	}, this);
 
-	this.attachmentsInReady = ko.computed(function () {
-		return _.filter(this.attachments(), function (oItem) {
-			return oItem && '' !== oItem.tempName();
-		});
-	}, this);
+
+	this.attachmentsInProcess = this.attachments.filter(function (oItem) {
+		return oItem && '' === oItem.tempName();
+	});
+
+	this.attachmentsInReady = this.attachments.filter(function (oItem) {
+		return oItem && '' !== oItem.tempName();
+	});
 
 	this.attachments.subscribe(function () {
 		this.triggerForResize();
@@ -10780,6 +10799,15 @@ function MailBoxMessageListViewModel()
 		}
 	}, this));
 
+	RL
+		.sub('mailbox.message-list.selector.go-down', function () {
+			this.selector.goDown();
+		}, this)
+		.sub('mailbox.message-list.selector.go-up', function () {
+			this.selector.goUp();
+		}, this)
+	;
+
 	Knoin.constructorEnd(this);
 }
 
@@ -11499,6 +11527,11 @@ function MailBoxMessageViewViewModel()
 		// TODO
 		window.console.log(arguments);
 	}, this.messageVisibility);
+	
+	this.spamCommand = Utils.createCommand(this, function () {
+		// TODO
+		window.console.log(arguments);
+	}, this.messageVisibility);
 
 	// viewer
 	this.viewSubject = ko.observable('');
@@ -11583,6 +11616,14 @@ function MailBoxMessageViewViewModel()
 	this.messageActiveDom.subscribe(function () {
 		this.scrollMessageToTop();
 	}, this);
+
+	this.goUpCommand = Utils.createCommand(this, function () {
+		RL.pub('mailbox.message-list.selector.go-up');
+	});
+	
+	this.goDownCommand = Utils.createCommand(this, function () {
+		RL.pub('mailbox.message-list.selector.go-down');
+	});
 
 	Knoin.constructorEnd(this);
 }
@@ -15459,8 +15500,9 @@ function AbstractApp()
 	
 	this.oSettings = null;
 	this.oPlugins = null;
-	this.oLink = null;
 	this.oLocal = null;
+	this.oLink = null;
+	this.oSubs = {};
 	
 	this.isLocalAutocomplete = true;
 
@@ -15490,7 +15532,10 @@ function AbstractApp()
 _.extend(AbstractApp.prototype, KnoinAbstractBoot.prototype);
 
 AbstractApp.prototype.oSettings = null;
+AbstractApp.prototype.oPlugins = null;
+AbstractApp.prototype.oLocal = null;
 AbstractApp.prototype.oLink = null;
+AbstractApp.prototype.oSubs = {};
 
 /**
  * @param {string} sLink
@@ -15656,6 +15701,45 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 AbstractApp.prototype.getAutocomplete = function (sQuery, fCallback)
 {
 	fCallback([], sQuery);
+};
+
+/**
+ * @param {string} sName
+ * @param {Function} fFunc
+ * @param {Object=} oContext
+ * @return {AbstractApp}
+ */
+AbstractApp.prototype.sub = function (sName, fFunc, oContext)
+{
+	if (Utils.isUnd(this.oSubs[sName]))
+	{
+		this.oSubs[sName] = [];
+	}
+
+	this.oSubs[sName].push([fFunc, oContext]);
+
+	return this;
+};
+
+/**
+ * @param {string} sName
+ * @param {Array=} aArgs
+ * @return {AbstractApp}
+ */
+AbstractApp.prototype.pub = function (sName, aArgs)
+{
+	if (!Utils.isUnd(this.oSubs[sName]))
+	{
+		window.console.log(sName);
+		_.each(this.oSubs[sName], function (aItem) {
+			if (aItem[0])
+			{
+				aItem[0].apply(aItem[1] || null, aArgs || []);
+			}
+		});
+	}
+
+	return this;
 };
 
 AbstractApp.prototype.bootstart = function ()

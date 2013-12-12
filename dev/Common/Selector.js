@@ -127,6 +127,16 @@ Selector.prototype.selectItemCallbacks = function (oItem)
 	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem);
 };
 
+Selector.prototype.goDown = function ()
+{
+	this.newSelectPosition(Enums.EventKeyCode.Down, false);
+};
+
+Selector.prototype.goUp = function ()
+{
+	this.newSelectPosition(Enums.EventKeyCode.Up, false);
+};
+
 Selector.prototype.init = function (oContentVisible, oContentScrollable)
 {
 	this.oContentVisible = oContentVisible;

@@ -56,17 +56,26 @@ function PopupsComposeViewModel()
 	this.saving = ko.observable(false);
 	this.attachments = ko.observableArray([]);
 
-	this.attachmentsInProcess = ko.computed(function () {
-		return _.filter(this.attachments(), function (oItem) {
-			return oItem && '' === oItem.tempName();
-		});
-	}, this);
+//	this.attachmentsInProcess = ko.computed(function () {
+//		return _.filter(this.attachments(), function (oItem) {
+//			return oItem && '' === oItem.tempName();
+//		});
+//	}, this);
+//
+//	this.attachmentsInReady = ko.computed(function () {
+//		return _.filter(this.attachments(), function (oItem) {
+//			return oItem && '' !== oItem.tempName();
+//		});
+//	}, this);
 
-	this.attachmentsInReady = ko.computed(function () {
-		return _.filter(this.attachments(), function (oItem) {
-			return oItem && '' !== oItem.tempName();
-		});
-	}, this);
+
+	this.attachmentsInProcess = this.attachments.filter(function (oItem) {
+		return oItem && '' === oItem.tempName();
+	});
+
+	this.attachmentsInReady = this.attachments.filter(function (oItem) {
+		return oItem && '' !== oItem.tempName();
+	});
 
 	this.attachments.subscribe(function () {
 		this.triggerForResize();

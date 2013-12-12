@@ -769,7 +769,7 @@ class Actions
 	public function IsAdminLoggined($bThrowExceptionOnFalse = true)
 	{
 		$bResult = false;
-		if ($this->Config()->Get('labs', 'allow_admin_panel', true))
+		if ($this->Config()->Get('security', 'allow_admin_panel', true))
 		{
 			$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
 			if ((!empty($aAdminHash[0]) && !empty($aAdminHash[1]) &&
@@ -884,7 +884,7 @@ class Actions
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', ''),
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
-			'AllowAdminPanel' => (bool) $oConfig->Get('labs', 'allow_admin_panel', true),
+			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
@@ -1896,7 +1896,7 @@ class Actions
 		$this->Logger()->AddSecret($sPassword);
 
 		if (0 === strlen($sLogin) || 0 === strlen($sPassword) ||
-			!$this->Config()->Get('labs', 'allow_admin_panel', true) ||
+			!$this->Config()->Get('security', 'allow_admin_panel', true) ||
 			$sLogin !== $this->Config()->Get('security', 'admin_login', '') ||
 			!$this->Config()->ValidatePassword($sPassword))
 		{

@@ -62,6 +62,11 @@ function MailBoxMessageViewViewModel()
 		// TODO
 		window.console.log(arguments);
 	}, this.messageVisibility);
+	
+	this.spamCommand = Utils.createCommand(this, function () {
+		// TODO
+		window.console.log(arguments);
+	}, this.messageVisibility);
 
 	// viewer
 	this.viewSubject = ko.observable('');
@@ -146,6 +151,14 @@ function MailBoxMessageViewViewModel()
 	this.messageActiveDom.subscribe(function () {
 		this.scrollMessageToTop();
 	}, this);
+
+	this.goUpCommand = Utils.createCommand(this, function () {
+		RL.pub('mailbox.message-list.selector.go-up');
+	});
+	
+	this.goDownCommand = Utils.createCommand(this, function () {
+		RL.pub('mailbox.message-list.selector.go-down');
+	});
 
 	Knoin.constructorEnd(this);
 }

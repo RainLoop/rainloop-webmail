@@ -5231,12 +5231,12 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   color: red;
 }
 .b-compose .b-header .b-appachments .b-attacment {
-  display: inline-block;
   line-height: 20px;
+  padding-bottom: 10px;
 }
 .b-compose .b-header .b-appachments .b-attacment-in-process {
-  display: inline-block;
   line-height: 20px;
+  padding-bottom: 10px;
 }
 .b-compose .b-header .b-appachments .b-attacment-in-process .uploading {
   display: none;

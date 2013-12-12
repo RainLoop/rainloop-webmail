@@ -10,8 +10,9 @@ function AbstractApp()
 	
 	this.oSettings = null;
 	this.oPlugins = null;
-	this.oLink = null;
 	this.oLocal = null;
+	this.oLink = null;
+	this.oSubs = {};
 	
 	this.isLocalAutocomplete = true;
 
@@ -41,7 +42,10 @@ function AbstractApp()
 _.extend(AbstractApp.prototype, KnoinAbstractBoot.prototype);
 
 AbstractApp.prototype.oSettings = null;
+AbstractApp.prototype.oPlugins = null;
+AbstractApp.prototype.oLocal = null;
 AbstractApp.prototype.oLink = null;
+AbstractApp.prototype.oSubs = {};
 
 /**
  * @param {string} sLink
@@ -207,6 +211,45 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 AbstractApp.prototype.getAutocomplete = function (sQuery, fCallback)
 {
 	fCallback([], sQuery);
+};
+
+/**
+ * @param {string} sName
+ * @param {Function} fFunc
+ * @param {Object=} oContext
+ * @return {AbstractApp}
+ */
+AbstractApp.prototype.sub = function (sName, fFunc, oContext)
+{
+	if (Utils.isUnd(this.oSubs[sName]))
+	{
+		this.oSubs[sName] = [];
+	}
+
+	this.oSubs[sName].push([fFunc, oContext]);
+
+	return this;
+};
+
+/**
+ * @param {string} sName
+ * @param {Array=} aArgs
+ * @return {AbstractApp}
+ */
+AbstractApp.prototype.pub = function (sName, aArgs)
+{
+	if (!Utils.isUnd(this.oSubs[sName]))
+	{
+		window.console.log(sName);
+		_.each(this.oSubs[sName], function (aItem) {
+			if (aItem[0])
+			{
+				aItem[0].apply(aItem[1] || null, aArgs || []);
+			}
+		});
+	}
+
+	return this;
 };
 
 AbstractApp.prototype.bootstart = function ()

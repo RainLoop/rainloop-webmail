@@ -178,6 +178,15 @@ function MailBoxMessageListViewModel()
 		}
 	}, this));
 
+	RL
+		.sub('mailbox.message-list.selector.go-down', function () {
+			this.selector.goDown();
+		}, this)
+		.sub('mailbox.message-list.selector.go-up', function () {
+			this.selector.goUp();
+		}, this)
+	;
+
 	Knoin.constructorEnd(this);
 }
 
