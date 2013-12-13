@@ -372,6 +372,7 @@ Enums.ClientSideKeyName = {
  */
 Enums.EventKeyCode = {
 	'Backspace': 8,
+	'Tab': 9,
 	'Enter': 13,
 	'Esc': 27,
 	'PageUp': 33,
@@ -4641,6 +4642,20 @@ PopupsDomainViewModel.prototype.onShow = function (oDomain)
 	}
 };
 
+PopupsDomainViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+			bResult = false;
+		}
+		return bResult;
+	});
+};
+
 PopupsDomainViewModel.prototype.clearForm = function ()
 {
 	this.edit(false);
@@ -4771,6 +4786,31 @@ PopupsPluginViewModel.prototype.onShow = function (oPlugin)
 			}));
 		}
 	}
+};
+
+PopupsPluginViewModel.prototype.tryToClosePopup = function ()
+{
+	var self = this;
+	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+		if (self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+		}
+	}]);
+};
+
+PopupsPluginViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			self.tryToClosePopup();
+			bResult = false;
+		}
+		return bResult;
+	});
 };
 
 /**
@@ -4937,11 +4977,140 @@ PopupsLanguagesViewModel.prototype.onHide = function ()
 	this.exp(false);
 };
 
+PopupsLanguagesViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+			bResult = false;
+		}
+		return bResult;
+	});
+};
+
 PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 {
 	RL.data().mainLanguage(sLang);
 	this.cancelCommand();
 };
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsAskViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAsk');
+
+	this.askDesc = ko.observable('');
+	this.yesButton = ko.observable('');
+	this.noButton = ko.observable('');
+
+	this.yesFocus = ko.observable(false);
+	this.noFocus = ko.observable(false);
+
+	this.fYesAction = null;
+	this.fNoAction = null;
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
+
+PopupsAskViewModel.prototype.clearPopup = function ()
+{
+	this.askDesc('');
+	this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
+	this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
+
+	this.yesFocus(false);
+	this.noFocus(false);
+
+	this.fYesAction = null;
+	this.fNoAction = null;
+};
+
+PopupsAskViewModel.prototype.yesClick = function ()
+{
+	if (Utils.isFunc(this.fYesAction))
+	{
+		this.fYesAction.call(null);
+	}
+
+	this.cancelCommand();
+};
+
+PopupsAskViewModel.prototype.noClick = function ()
+{
+	if (Utils.isFunc(this.fNoAction))
+	{
+		this.fNoAction.call(null);
+	}
+
+	this.cancelCommand();
+};
+
+/**
+ * @param {string} sAskDesc
+ * @param {Function=} fYesFunc
+ * @param {Function=} fNoFunc
+ * @param {string=} sYesButton
+ * @param {string=} sNoButton
+ */
+PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
+{
+	this.clearPopup();
+	
+	this.fYesAction = fYesFunc || null;
+	this.fNoAction = fNoFunc || null;
+
+	this.askDesc(sAskDesc || '');
+	if (sYesButton)
+	{
+		this.yesButton(sYesButton);
+	}
+
+	if (sYesButton)
+	{
+		this.yesButton(sNoButton);
+	}
+
+	this.yesFocus(true);
+};
+
+PopupsAskViewModel.prototype.onHide = function ()
+{
+};
+
+PopupsAskViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && self.modalVisibility())
+		{
+			if (Enums.EventKeyCode.Tab === oEvent.keyCode || Enums.EventKeyCode.Right === oEvent.keyCode || Enums.EventKeyCode.Left === oEvent.keyCode)
+			{
+				if (self.yesFocus())
+				{
+					self.noFocus(true);
+				}
+				else
+				{
+					self.yesFocus(true);
+				}
+
+				bResult = false;
+			}
+		}
+
+		return bResult;
+	});
+};
+
 
 /**
  * @constructor
@@ -5772,8 +5941,27 @@ AdminPlugins.prototype.configurePlugin = function (oPlugin)
 	RL.remote().plugin(this.onPluginLoadRequest, oPlugin.name);
 };
 
-AdminPlugins.prototype.onBuild = function ()
+AdminPlugins.prototype.onBuild = function (oDom)
 {
+	var self = this;
+	
+	oDom
+		.on('click', '.e-item .configure-plugin-action', function () {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
+			{
+				self.configurePlugin(oPlugin);
+			}
+		})
+		.on('click', '.e-item .disable-plugin', function () {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
+			{
+				self.disablePlugin(oPlugin);
+			}
+		})
+	;
+
 	this.enabledPlugins.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'EnabledPlugins': bValue ? '1' : '0'
@@ -7119,7 +7307,6 @@ AbstractApp.prototype.pub = function (sName, aArgs)
 {
 	if (!Utils.isUnd(this.oSubs[sName]))
 	{
-		window.console.log(sName);
 		_.each(this.oSubs[sName], function (aItem) {
 			if (aItem[0])
 			{

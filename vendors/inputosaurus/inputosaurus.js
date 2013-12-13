@@ -23,6 +23,8 @@
 
 		version: "0.1.6",
 
+		fakeSpan: $('<span class="inputosaurus-fake-span"></span>'),
+
 		eventprefix: "inputosaurus",
 
 		options: {
@@ -72,7 +74,6 @@
 
 			// Create the elements
 			els.ul = $('<ul class="inputosaurus-container"></ul>');
-			els.fakeSpan = $('<span class="inputosaurus-fake-span"></span>');
 			els.input = $('<input type="email" />');
 			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
@@ -94,7 +95,6 @@
 			els.inputCont.append(els.input);
 			els.ul.append(els.inputCont);
 			els.ul.append(els.origInputCont);
-			els.ul.append(els.fakeSpan);
 			
 			o.width && els.ul.css('width', o.width);
 
@@ -235,13 +235,17 @@
 			}
 		},
 
+		resizeInput : function () {
+			this._resizeInput();
+		},
+
 		// the input dynamically resizes based on the length of its value
 		_resizeInput : function(ev) {
 			var widget = (ev && ev.data.widget) || this;
-			widget.elements.fakeSpan.text(widget.elements.input.val());
-			
+			inputosaurustext.fakeSpan.text(widget.elements.input.val());
+
 //			window.setTimeout(function  () {
-				var txtWidth = 25 + widget.elements.fakeSpan.width();
+				var txtWidth = 25 + inputosaurustext.fakeSpan.width();
 				txtWidth = txtWidth > 50 ? txtWidth : 50;
 				txtWidth = txtWidth < 500 ? txtWidth : 500;
 				widget.elements.input.width(txtWidth);
@@ -576,6 +580,8 @@
 
 		}
 	};
+
+	$('body').append(inputosaurustext.fakeSpan);
 
 	$.widget("ui.inputosaurus", inputosaurustext);
 })(jQuery);

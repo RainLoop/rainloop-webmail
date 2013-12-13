@@ -186,6 +186,20 @@ PopupsDomainViewModel.prototype.onShow = function (oDomain)
 	}
 };
 
+PopupsDomainViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+			bResult = false;
+		}
+		return bResult;
+	});
+};
+
 PopupsDomainViewModel.prototype.clearForm = function ()
 {
 	this.edit(false);

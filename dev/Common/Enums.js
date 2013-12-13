@@ -110,6 +110,7 @@ Enums.ClientSideKeyName = {
  */
 Enums.EventKeyCode = {
 	'Backspace': 8,
+	'Tab': 9,
 	'Enter': 13,
 	'Esc': 27,
 	'PageUp': 33,

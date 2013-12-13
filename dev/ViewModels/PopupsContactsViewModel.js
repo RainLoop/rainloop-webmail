@@ -457,6 +457,17 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 			}
 		})
 	;
+
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'closeCommand');
+			bResult = false;
+		}
+		
+		return bResult;
+	});
 };
 
 PopupsContactsViewModel.prototype.onShow = function ()

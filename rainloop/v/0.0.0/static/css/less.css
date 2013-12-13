@@ -3492,11 +3492,6 @@ html.no-rgba .modal {
 .inputosaurus-container li.inputosaurus-selected {
   background-color: #ddd;
 }
-.inputosaurus-container .inputosaurus-fake-span {
-  position: absolute;
-  top: 0;
-  left: -5000px;
-}
 .inputosaurus-container .inputosaurus-input {
   margin: 1px 10px 1px 0px;
   height: 22px;
@@ -3508,6 +3503,11 @@ html.no-rgba .modal {
 }
 .ui-autocomplete {
   z-index: 2000;
+}
+.inputosaurus-fake-span {
+  position: absolute;
+  top: 0;
+  left: -5000px;
 }
 .g-ui-user-select-none {
   -webkit-user-select: none;
@@ -3976,6 +3976,18 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .b-login-content .flag-selector {
   margin-bottom: 0;
+}
+.popups .b-ask-content.modal {
+  z-index: 10000;
+}
+.popups .b-ask-content .modal-header {
+  background-color: #fff;
+}
+.popups .b-ask-content .modal-body {
+  text-align: center;
+}
+.popups .b-ask-content .desc-place {
+  font-size: 18px;
 }
 .b-folders .b-toolbar {
   position: absolute;
@@ -6254,4 +6266,11 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .editorFontStylePicker .editorFpFonts .editorFpFont {
   padding: 5px;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"] {
+  height: 20px;
+  line-height: 21px;
 }

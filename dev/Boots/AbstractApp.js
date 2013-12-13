@@ -240,7 +240,6 @@ AbstractApp.prototype.pub = function (sName, aArgs)
 {
 	if (!Utils.isUnd(this.oSubs[sName]))
 	{
-		window.console.log(sName);
 		_.each(this.oSubs[sName], function (aItem) {
 			if (aItem[0])
 			{

@@ -801,6 +801,17 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 	this.triggerForResize();
 };
 
+PopupsComposeViewModel.prototype.tryToClosePopup = function ()
+{
+	var self = this;
+	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+		if (self.modalVisibility())
+		{
+			kn.delegateRun(self, 'closeCommand');
+		}
+	}]);
+};
+
 PopupsComposeViewModel.prototype.onBuild = function ()
 {
 	this.initEditor();
@@ -824,6 +835,11 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 			else if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
 			{
 				self.sendCommand();
+				bResult = false;
+			}
+			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
+			{
+				self.tryToClosePopup();
 				bResult = false;
 			}
 		}

@@ -108,8 +108,18 @@ PopupsAddAccountViewModel.prototype.onShow = function ()
 	this.emailFocus(true);
 };
 
-
 PopupsAddAccountViewModel.prototype.onBuild = function ()
 {
 	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
+
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+			bResult = false;
+		}
+		return bResult;
+	});
 };

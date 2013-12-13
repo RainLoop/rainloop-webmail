@@ -120,7 +120,6 @@ PopupsIdentityViewModel.prototype.clearPopup = function ()
 };
 
 /**
- *
  * @param {?IdentityModel} oIdentity
  */
 PopupsIdentityViewModel.prototype.onShow = function (oIdentity)
@@ -144,4 +143,18 @@ PopupsIdentityViewModel.prototype.onShow = function (oIdentity)
 	{
 		this.email.focused(true);
 	}
+};
+
+PopupsIdentityViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+			bResult = false;
+		}
+		return bResult;
+	});
 };

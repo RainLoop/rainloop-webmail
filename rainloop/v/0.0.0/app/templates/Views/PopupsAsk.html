@@ -1,0 +1,26 @@
+<div class="popups">
+	<div class="modal hide b-ask-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+		<div>
+			<div class="modal-body">
+				<br />
+				<br />
+				<span class="desc-place" data-bind="html: askDesc"></span>
+				<br />
+				<br />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<button class="btn buttonYes" data-bind="click: yesClick, hasFocus: yesFocus">
+					<i class="icon-ok"></i>
+					&nbsp;&nbsp;
+					<span data-bind="text: yesButton"></span>
+				</button>
+				<button class="btn buttonNo" data-bind="click: noClick, hasFocus: noFocus">
+					<i class=" icon-remove"></i>
+					&nbsp;&nbsp;
+					<span data-bind="text: noButton"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

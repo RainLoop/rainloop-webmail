@@ -33,7 +33,7 @@
 		</div>
 		<div data-bind="visible: 'sqlite' !== contactsType()">
 			<div class="legend">
-				PDO (MySQL / PostgreSQL / ...)
+				PDO (MySQL / PostgreSQL)
 			</div>
 			<div class="control-group">
 				<label class="control-label">
@@ -42,10 +42,8 @@
 				<div class="controls">
 					<input type="text" class="span6" data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
 					<div data-bind="saveTrigger: pdoDsnTrigger"></div>
-					<blockquote style="margin-top: 10px">
+					<blockquote style="margin: 10px 0 0 0">
 						<p class="muted">
-							<strong>Examples:</strong>
-							<br />
 							mysql:host=127.0.0.1;port=3306;dbname=rainloop
 							<br />
 							pgsql:host=127.0.0.1;port=5432;dbname=rainloop

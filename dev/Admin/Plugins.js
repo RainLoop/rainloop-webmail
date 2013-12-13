@@ -35,8 +35,27 @@ AdminPlugins.prototype.configurePlugin = function (oPlugin)
 	RL.remote().plugin(this.onPluginLoadRequest, oPlugin.name);
 };
 
-AdminPlugins.prototype.onBuild = function ()
+AdminPlugins.prototype.onBuild = function (oDom)
 {
+	var self = this;
+	
+	oDom
+		.on('click', '.e-item .configure-plugin-action', function () {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
+			{
+				self.configurePlugin(oPlugin);
+			}
+		})
+		.on('click', '.e-item .disable-plugin', function () {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
+			{
+				self.disablePlugin(oPlugin);
+			}
+		})
+	;
+
 	this.enabledPlugins.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'EnabledPlugins': bValue ? '1' : '0'

@@ -111,3 +111,28 @@ PopupsPluginViewModel.prototype.onShow = function (oPlugin)
 		}
 	}
 };
+
+PopupsPluginViewModel.prototype.tryToClosePopup = function ()
+{
+	var self = this;
+	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+		if (self.modalVisibility())
+		{
+			kn.delegateRun(self, 'cancelCommand');
+		}
+	}]);
+};
+
+PopupsPluginViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			self.tryToClosePopup();
+			bResult = false;
+		}
+		return bResult;
+	});
+};
