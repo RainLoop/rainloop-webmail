@@ -31,6 +31,7 @@ function PopupsComposeViewModel()
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
 	this.to = ko.observable('');
+	this.to.focusTrigger = ko.observable(false);
 	this.cc = ko.observable('');
 	this.bcc = ko.observable('');
 
@@ -646,6 +647,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		{
 			case Enums.ComposeType.Empty:
 				break;
+				
 			case Enums.ComposeType.Reply:
 				this.to(fEmailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
@@ -749,6 +751,11 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		_.each(oMessageOrArray, function (oMessage) {
 			self.addMessageAsAttachment(oMessage);
 		});
+	}
+
+	if ('' === this.to())
+	{
+		this.to.focusTrigger(!this.to.focusTrigger());
 	}
 	
 	aDownloads = this.getAttachmentsDownloadsForUpload();

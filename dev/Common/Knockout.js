@@ -525,6 +525,13 @@ ko.bindingHandlers.emailsTags = {
 				$oEl.inputosaurus('refresh');
 			}
 		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function () {
+				$oEl.inputosaurus('focus');
+			});
+		}
 	}
 };
 

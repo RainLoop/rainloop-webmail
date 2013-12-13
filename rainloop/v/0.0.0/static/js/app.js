@@ -1058,8 +1058,6 @@ Utils.fixLongSubject = function (sSubject)
 	do
 	{
 		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
-		window.console.log(sSubject);
-		window.console.log(oMatch);
 		if (!oMatch || Utils.isUnd(oMatch[0]))
 		{
 			oMatch = null;
@@ -2780,6 +2778,13 @@ ko.bindingHandlers.emailsTags = {
 				$oEl.inputosaurus('refresh');
 			}
 		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function () {
+				$oEl.inputosaurus('focus');
+			});
+		}
 	}
 };
 
@@ -7891,6 +7896,7 @@ function PopupsComposeViewModel()
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
 	this.to = ko.observable('');
+	this.to.focusTrigger = ko.observable(false);
 	this.cc = ko.observable('');
 	this.bcc = ko.observable('');
 
@@ -8506,6 +8512,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		{
 			case Enums.ComposeType.Empty:
 				break;
+				
 			case Enums.ComposeType.Reply:
 				this.to(fEmailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
@@ -8609,6 +8616,11 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		_.each(oMessageOrArray, function (oMessage) {
 			self.addMessageAsAttachment(oMessage);
 		});
+	}
+
+	if ('' === this.to())
+	{
+		this.to.focusTrigger(!this.to.focusTrigger());
 	}
 	
 	aDownloads = this.getAttachmentsDownloadsForUpload();

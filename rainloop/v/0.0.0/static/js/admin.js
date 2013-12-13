@@ -1058,8 +1058,6 @@ Utils.fixLongSubject = function (sSubject)
 	do
 	{
 		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
-		window.console.log(sSubject);
-		window.console.log(oMatch);
 		if (!oMatch || Utils.isUnd(oMatch[0]))
 		{
 			oMatch = null;
@@ -2780,6 +2778,13 @@ ko.bindingHandlers.emailsTags = {
 				$oEl.inputosaurus('refresh');
 			}
 		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function () {
+				$oEl.inputosaurus('focus');
+			});
+		}
 	}
 };
 

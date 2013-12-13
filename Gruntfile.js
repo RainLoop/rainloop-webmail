@@ -115,6 +115,7 @@ module.exports = function (grunt) {
 					"vendors/jquery-1.10.2.min.js",
 					"vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js",
 					"vendors/jquery-cookie/jquery.cookie-1.4.0.min.js",
+					"vendors/jquery-finger/jquery.finger.min.js",
 					"vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js",
 					"vendors/jquery-scrollstop/jquery.scrollstop.min.js",
 					"vendors/jquery-lazyload/jquery.lazyload.min.js",

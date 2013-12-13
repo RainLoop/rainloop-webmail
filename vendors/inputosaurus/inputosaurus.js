@@ -13,6 +13,7 @@
  * @author Dan Kielp <dan@sproutsocial.com>
  * @created October 3,2012
  *
+ * @modified by RainLoop Team
  */
 
 
@@ -72,7 +73,7 @@
 			// Create the elements
 			els.ul = $('<ul class="inputosaurus-container"></ul>');
 			els.fakeSpan = $('<span class="inputosaurus-fake-span"></span>');
-			els.input = $('<input type="text" />');
+			els.input = $('<input type="email" />');
 			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
 			els.lastEdit = '';
@@ -562,6 +563,7 @@
 			this.elements.ul.on('click.inputosaurus', {widget : widget}, this._focus);
 			this.elements.ul.on('click.inputosaurus', 'a', {widget : widget}, this._removeTag);
 			this.elements.ul.on('dblclick.inputosaurus', 'li', {widget : widget}, this._editTag);
+			this.elements.ul.on('doubletap.inputosaurus', 'li', {widget : widget}, this._editTag);
 			this.elements.ul.on('focus.inputosaurus', 'a', {widget : widget}, this._tagFocus);
 			this.elements.ul.on('blur.inputosaurus', 'a', {widget : widget}, this._tagFocus);
 			this.elements.ul.on('keydown.inputosaurus', 'a', {widget : widget}, this._tagKeypress);
