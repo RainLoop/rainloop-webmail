@@ -5,10 +5,11 @@
 			<br />
 			Your system doesn't support contacts.
 			<br />
-			You need to install or enable <strong>PDO (MySQL)</strong> exstenstion on your web server.
+			You need to install or enable <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> exstenstion on your server.
 		</div>
 	</div>
 	<div class="form-horizontal" data-bind="visible: contactsSupported">
+	<div class="form-horizontal">
 		<div class="legend">
 			Contacts
 		</div>
@@ -20,43 +21,87 @@
 				</label>
 			</div>
 		</div>
-		<div class="legend">
-			PDO (MySQL)
-		</div>
 		<div class="control-group">
-			 <label class="control-label">
-				Dsn
-			 </label>
+			<label class="control-label">
+				Type
+			</label>
 			<div class="controls">
-				<input type="text" class="span6" data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
-				<div data-bind="saveTrigger: pdoDsnTrigger"></div>
+				<select data-bind="options: contactsTypesOptions, value: mainContactsType,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: defautOptionsAfterRender, saveTrigger: contactsTypeTrigger"></select>
+				<div data-bind="saveTrigger: contactsTypeTrigger"></div>
 			</div>
 		</div>
-		<div class="control-group">
-			 <label class="control-label">
-				User
-			 </label>
-			<div class="controls">
-				<input type="text" data-bind="value: pdoUser, saveTrigger: pdoUserTrigger" />
-				<div data-bind="saveTrigger: pdoUserTrigger"></div>
+		<div data-bind="visible: 'sqlite' !== contactsType()">
+			<div class="legend">
+				PDO (MySQL / PostgreSQL / ...)
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+				   Dsn
+				</label>
+				<div class="controls">
+					<input type="text" class="span6" data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
+					<div data-bind="saveTrigger: pdoDsnTrigger"></div>
+					<blockquote style="margin-top: 10px">
+						<p class="muted">
+							<strong>Examples:</strong>
+							<br />
+							mysql:host=127.0.0.1;port=3306;dbname=rainloop
+							<br />
+							pgsql:host=127.0.0.1;port=5432;dbname=rainloop
+						</p>
+					</blockquote>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+				   User
+				</label>
+				<div class="controls">
+					<input type="text" data-bind="value: pdoUser, saveTrigger: pdoUserTrigger" />
+					<div data-bind="saveTrigger: pdoUserTrigger"></div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+				   Password
+				</label>
+				<div class="controls">
+					<input type="password" data-bind="value: pdoPassword, saveTrigger: pdoPasswordTrigger" />
+					<div data-bind="saveTrigger: pdoPasswordTrigger"></div>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
+						<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testContactsSuccess() || testContactsError() }"></i>
+						&nbsp;&nbsp;
+						Test
+					</a>
+				</div>
 			</div>
 		</div>
-		<div class="control-group">
-			 <label class="control-label">
-				Password
-			 </label>
-			<div class="controls">
-				<input type="password" data-bind="value: pdoPassword, saveTrigger: pdoPasswordTrigger" />
-				<div data-bind="saveTrigger: pdoPasswordTrigger"></div>
+		<div data-bind="visible: 'sqlite' === contactsType()">
+			<div class="legend">
+				PDO (SQLite)
 			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
-					<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testContactsSuccess() || testContactsError() }"></i>
-					&nbsp;&nbsp;
-					Test
-				</a>
+			<div class="control-group">
+				<div class="controls">
+					<div class="alert alert-null-left-margin span8">
+						<h4>Notice!</h4>
+						<br />
+						Don't use this type of database with a large number of active users.
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
+						<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testContactsSuccess() || testContactsError() }"></i>
+						&nbsp;&nbsp;
+						Test
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: '' !== testContactsErrorMessage()">

@@ -233,7 +233,17 @@ class Actions
 					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
 					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
 
-					$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook($sDsn, $sUser, $sPassword);
+					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+					if ('sqlite' === $sDsnType)
+					{
+						$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook(
+							'sqlite:'.APP_PRIVATE_DATA.'PersonalAddressBook.sqlite', '', '', 'sqlite');
+					}
+					else
+					{
+						$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
+					}
+
 					$oResult->SetLogger($this->Logger());
 					break;
 				case 'suggestions':
@@ -974,10 +984,15 @@ class Actions
 				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
 
-				$aResult['ContactsIsSupported'] = (bool) $this->PersonalAddressBookProvider(null, true)->IsSupported();
-			
+				$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
+				$aResult['MySqlIsSupported'] = \is_array($aDrivers) ? \in_array('mysql', $aDrivers) : false;
+				$aResult['SQLiteIsSupported'] = \is_array($aDrivers) ? \in_array('sqlite', $aDrivers) : false;
+				$aResult['PostgreSqlIsSupported'] = \is_array($aDrivers) ? \in_array('pgsql', $aDrivers) : false;
+
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
+				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = APP_DUMMY;
 
@@ -1854,6 +1869,10 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
+		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
+			return $self->ValidateContactPdoType($sType);
+		});
+
 		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowIdentities', 'webmail', 'allow_identities', 'bool');
 
@@ -1940,6 +1959,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+
+		$self = $this;
+		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
+			return $self->ValidateContactPdoType($sType);
+		});
 
 		$sTestMessage = $this->PersonalAddressBookProvider(null, true)->Test();
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -5097,19 +5121,29 @@ class Actions
 	 */
 	public function ValidateTheme($sTheme)
 	{
-		return in_array($sTheme, $this->GetThemes()) ?
+		return \in_array($sTheme, $this->GetThemes()) ?
 			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
 	}
 
 	/**
-	 * @param $sLanguage $sLanguage
+	 * @param string $sLanguage
 	 *
-	 * @return $sLanguage
+	 * @return string
 	 */
 	public function ValidateLanguage($sLanguage)
 	{
-		return in_array($sLanguage, $this->GetLanguages()) ?
+		return \in_array($sLanguage, $this->GetLanguages()) ?
 			$sLanguage : $this->Config()->Get('i18n', 'default', 'en');
+	}
+
+	/**
+	 * @param string $sType
+	 *
+	 * @return string
+	 */
+	public function ValidateContactPdoType($sType)
+	{
+		return \in_array($sType, array('mysql', 'pgsql', 'sqlite')) ? $sType : 'sqlite';
 	}
 
 	/**

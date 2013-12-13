@@ -49,6 +49,14 @@ abstract class PdoAbstract
 	}
 
 	/**
+	 * @return bool
+	 */
+	protected function isTransactionSupported()
+	{
+		return \in_array($this->sDbType, array('mysql'));
+	}
+
+	/**
 	 * @return \PDO
 	 *
 	 * @throws \Exception
@@ -67,6 +75,11 @@ abstract class PdoAbstract
 
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
+		if (!\in_array($sType, array('mysql', 'sqlite', 'pgsql')))
+		{
+			throw new \Exception('Unknown PDO SQL connection type');
+		}
+
 		$this->sDbType = $sType;
 
 		$oPdo = false;
@@ -76,7 +89,7 @@ abstract class PdoAbstract
 			if ($oPdo)
 			{
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-				if ('mysql' === $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME))
+				if ('mysql' === $sType && 'mysql' === $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME))
 				{
 					$oPdo->exec('SET NAMES utf8 COLLATE utf8_general_ci');
 //					$oPdo->exec('SET NAMES utf8');
@@ -111,7 +124,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @return nool
+	 * @return bool
 	 */
 	protected function beginTransaction()
 	{
@@ -119,7 +132,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @return nool
+	 * @return bool
 	 */
 	protected function commit()
 	{
@@ -127,7 +140,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @return nool
+	 * @return bool
 	 */
 	protected function rollBack()
 	{
@@ -322,7 +335,10 @@ abstract class PdoAbstract
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			$oPdo->beginTransaction();
+			if ($this->isTransactionSupported())
+			{
+				$oPdo->beginTransaction();
+			}
 
 			$sQuery = 'DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?;';
 			$this->writeLog($sQuery);
@@ -341,13 +357,16 @@ abstract class PdoAbstract
 				}
 			}
 
-			if ($bResult)
+			if ($this->isTransactionSupported())
 			{
-				$oPdo->commit();
-			}
-			else
-			{
-				$oPdo->rollBack();
+				if ($bResult)
+				{
+					$oPdo->commit();
+				}
+				else
+				{
+					$oPdo->rollBack();
+				}
 			}
 		}
 
@@ -371,17 +390,17 @@ abstract class PdoAbstract
 	sys_name varchar(50) NOT NULL,
 	value_int int UNSIGNED NOT NULL DEFAULT 0,
 	value_str varchar(128) NOT NULL DEFAULT \'\',
-	INDEX `sys_name_index` (`sys_name`)
+	INDEX sys_name_rainloop_system_index (sys_name)
 ) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 
 				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
 	id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
 	rl_email varchar(128) NOT NULL DEFAULT \'\',
-	PRIMARY KEY(`id_user`),
-	INDEX `rl_email_index` (`rl_email`)
+	PRIMARY KEY(id_user),
+	INDEX rl_email_rainloop_users_index (rl_email)
 ) /*!40000 ENGINE=INNODB */;';
 			}
-			else if ('postgres' === $this->sDbType)
+			else if ('pgsql' === $this->sDbType)
 			{
 				$aQ[] = 'CREATE TABLE rainloop_system (
 	sys_name varchar(50) NOT NULL,
@@ -389,22 +408,41 @@ abstract class PdoAbstract
 	value_str varchar(128) NOT NULL DEFAULT \'\'
 );';
 
-				$aQ[] = 'CREATE INDEX sys_name_index ON rainloop_system (sys_name);';
+				$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
 				
-				$aQ[] = 'CREATE SEQUENCE rainloop_users_seq START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
+				$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
 
 				$aQ[] = 'CREATE TABLE rainloop_users (
-	id_user integer DEFAULT nextval(\'rainloop_users_seq\'::text) PRIMARY KEY,
+	id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
 	rl_email varchar(128) NOT NULL DEFAULT \'\'
 );';
-				$aQ[] = 'CREATE INDEX rl_email_index ON rainloop_users (rl_email);';
+				$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
+			}
+			else if ('sqlite' === $this->sDbType)
+			{
+				$aQ[] = 'CREATE TABLE rainloop_system (
+	sys_name text NOT NULL,
+	value_int integer NOT NULL default 0,
+	value_str text NOT NULL default \'\'
+);';
+
+				$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
+
+				$aQ[] = 'CREATE TABLE rainloop_users (
+	id_user integer NOT NULL PRIMARY KEY,
+	rl_email text NOT NULL default \'\'
+);';
+				$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
 			}
 
 			if (0 < \count($aQ))
 			{
 				try
 				{
-					$oPdo->beginTransaction();
+					if ($this->isTransactionSupported())
+					{
+						$oPdo->beginTransaction();
+					}
 
 					foreach ($aQ as $sQuery)
 					{
@@ -412,23 +450,37 @@ abstract class PdoAbstract
 						{
 							$this->writeLog($sQuery);
 							$bResult = false !== $oPdo->exec($sQuery);
+							if (!$bResult)
+							{
+								$this->writeLog('Result=false');
+							}
+							else
+							{
+								$this->writeLog('Result=true');
+							}
 						}
 					}
 
-					if ($bResult)
+					if ($this->isTransactionSupported())
 					{
-						$oPdo->rollBack();
-					}
-					else
-					{
-						$oPdo->commit();
+						if ($bResult)
+						{
+							$oPdo->rollBack();
+						}
+						else
+						{
+							$oPdo->commit();
+						}
 					}
 				}
 				catch (\Exception $oException)
 				{
-					$oPdo->rollBack();
-
 					$this->writeLog($oException);
+					if ($this->isTransactionSupported())
+					{
+						$oPdo->rollBack();
+					}
+					
 					throw $oException;
 				}
 			}
@@ -453,18 +505,32 @@ abstract class PdoAbstract
 		catch (\PDOException $oException)
 		{
 			$this->writeLog($oException);
-			
-			$this->initSystemTables();
-			
-			$iFromVersion = $this->getVersion($sName);
+
+			try
+			{
+				$this->initSystemTables();
+
+				$iFromVersion = $this->getVersion($sName);
+			}
+			catch (\PDOException $oSubException)
+			{
+				$this->writeLog($oSubException);
+				throw $oSubException;
+			}
 		}
 
-		if (0 <= $iFromVersion)
+		if (\is_int($iFromVersion) && 0 <= $iFromVersion)
 		{
 			$oPdo = false;
 			$bResult = false;
+			
 			foreach ($aData as $iVersion => $aQuery)
 			{
+				if (0 === \count($aQuery))
+				{
+					continue;
+				}
+
 				if (!$oPdo)
 				{
 					$oPdo = $this->getPDO();
@@ -475,30 +541,44 @@ abstract class PdoAbstract
 				{
 					try
 					{
-						$oPdo->beginTransaction();
+						if ($this->isTransactionSupported())
+						{
+							$oPdo->beginTransaction();
+						}
 
 						foreach ($aQuery as $sQuery)
 						{
 							$this->writeLog($sQuery);
-							if (false === $oPdo->exec($sQuery))
+							$bExec = $oPdo->exec($sQuery);
+							if (false === $bExec)
 							{
+								$this->writeLog('Result: false');
+								
 								$bResult = false;
 								break;
 							}
 						}
 
-						if ($bResult)
+						if ($this->isTransactionSupported())
 						{
-							$oPdo->commit();
-						}
-						else
-						{
-							$oPdo->rollBack();
+							if ($bResult)
+							{
+								$oPdo->commit();
+							}
+							else
+							{
+								$oPdo->rollBack();
+							}
 						}
 					}
 					catch (\Exception $oException)
 					{
-						$oPdo->rollBack();
+						$this->writeLog($oException);
+						if ($this->isTransactionSupported())
+						{
+							$oPdo->rollBack();
+						}
+						
 						throw $oException;
 					}
 

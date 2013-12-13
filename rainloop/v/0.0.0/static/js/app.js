@@ -2655,7 +2655,7 @@ ko.bindingHandlers.saveTrigger = {
 
 		var $oEl = $(oElement);
 
-		$oEl.data('save-trigger-type', $oEl.is('input[type=text],select,textarea') ? 'input' : 'custom');
+		$oEl.data('save-trigger-type', $oEl.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom');
 
 		if ('custom' === $oEl.data('save-trigger-type'))
 		{

@@ -84,7 +84,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
 				'suggestions_limit' => array(30),
-				'type'				=> array('mysql', ''),
+				'type'				=> array('sqlite', ''),
 				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
 				'pdo_user'			=> array('root', ''),
 				'pdo_password'		=> array('', ''),

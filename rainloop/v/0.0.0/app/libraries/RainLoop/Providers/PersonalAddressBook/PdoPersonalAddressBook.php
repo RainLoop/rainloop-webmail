@@ -12,6 +12,11 @@ class PdoPersonalAddressBook
 	 * @var string
 	 */
 	private $sDsn;
+
+	/**
+	 * @var string
+	 */
+	private $sDsnType;
 	
 	/**
 	 * @var string
@@ -23,11 +28,12 @@ class PdoPersonalAddressBook
 	 */
 	private $sPassword;
 
-	public function __construct($sDsn, $sUser, $sPassword)
+	public function __construct($sDsn, $sUser = '', $sPassword = '', $sDsnType = 'mysql')
 	{
 		$this->sDsn = $sDsn;
 		$this->sUser = $sUser;
 		$this->sPassword = $sPassword;
+		$this->sDsnType = $sDsnType;
 		
 		$this->bExplain = false;
 	}
@@ -38,7 +44,7 @@ class PdoPersonalAddressBook
 	public function IsSupported()
 	{
 		$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
-		return \is_array($aDrivers) ? \in_array('mysql', $aDrivers) : false;
+		return \is_array($aDrivers) ? \in_array($this->sDsnType, $aDrivers) : false;
 	}
 
 	/**
@@ -94,7 +100,10 @@ class PdoPersonalAddressBook
 
 		try
 		{
-			$this->beginTransaction();
+			if ($this->isTransactionSupported())
+			{
+				$this->beginTransaction();
+			}
 
 			$aFreq = array();
 			if ($bUpdate)
@@ -182,11 +191,18 @@ class PdoPersonalAddressBook
 		}
 		catch (\Exception $oException)
 		{
-			$this->rollBack();
+			if ($this->isTransactionSupported())
+			{
+				$this->rollBack();
+			}
+
 			throw $oException;
 		}
 
-		$this->commit();
+		if ($this->isTransactionSupported())
+		{
+			$this->commit();
+		}
 
 		return 0 < $iIdContact;
 	}
@@ -199,7 +215,6 @@ class PdoPersonalAddressBook
 	 */
 	public function DeleteContacts($oAccount, $aContactIds)
 	{
-		$this->Sync();
 		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
@@ -279,7 +294,9 @@ class PdoPersonalAddressBook
 		
 		if (0 < \strlen($sSearch))
 		{
-			$sSql = 'SELECT id_prop, id_contact FROM rainloop_pab_properties WHERE id_user = :id_user AND scope_type = :scope_type AND prop_value LIKE :search ESCAPE \'=\' GROUP BY id_contact';
+			$sSql = 'SELECT id_prop, id_contact FROM rainloop_pab_properties WHERE id_user = :id_user'.
+				' AND scope_type = :scope_type AND prop_value LIKE :search ESCAPE \'=\' GROUP BY id_contact, id_prop';
+			
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
 				':scope_type' => array($iScopeType, \PDO::PARAM_INT),
@@ -756,8 +773,7 @@ class PdoPersonalAddressBook
 		try
 		{
 			$this->Sync();
-
-			if (0 >= $this->getVersion('mysql-pab-version'))
+			if (0 >= $this->getVersion($this->sDsnType.'-pab-version'))
 			{
 				$sResult = 'Unknown database error';
 			}
@@ -779,73 +795,214 @@ class PdoPersonalAddressBook
 		return $sResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Sync()
+	private function getInitialTablesArray($sDbType)
 	{
-		return $this->dataBaseUpgrade('mysql-pab-version', array(
-			1 => array(
+		$sInitial = '';
+		$aResult = array();
+		
+		switch ($sDbType)
+		{
+			case 'mysql':
+				$sInitial = <<<MYSQLINITIAL
+CREATE TABLE IF NOT EXISTS rainloop_pab_contacts (
 
-// -- rainloop_pab_contacts --
-'CREATE TABLE IF NOT EXISTS rainloop_pab_contacts (
-	
 	id_contact		bigint UNSIGNED NOT NULL AUTO_INCREMENT,
 	id_user			int UNSIGNED NOT NULL,
 	scope_type		tinyint UNSIGNED NOT NULL DEFAULT 0,
-	display_name	varchar(255) NOT NULL DEFAULT \'\',
-	display_email	varchar(255) NOT NULL DEFAULT \'\',
-	display			varchar(255) NOT NULL DEFAULT \'\',
+	display_name	varchar(255) NOT NULL DEFAULT '',
+	display_email	varchar(255) NOT NULL DEFAULT '',
+	display			varchar(255) NOT NULL DEFAULT '',
 	changed			int UNSIGNED NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_contact),
-	INDEX id_user_scope_type_index (id_user, scope_type)
+	INDEX id_user_scope_type_rainloop_pab_contacts_index (id_user, scope_type)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
-// -- rainloop_pab_properties --
-'CREATE TABLE IF NOT EXISTS rainloop_pab_properties (
-	
+CREATE TABLE IF NOT EXISTS rainloop_pab_properties (
+
 	id_prop			bigint UNSIGNED NOT NULL AUTO_INCREMENT,
 	id_contact		bigint UNSIGNED NOT NULL,
 	id_user			int UNSIGNED NOT NULL,
 	scope_type		tinyint UNSIGNED NOT NULL DEFAULT 0,
 	prop_type		tinyint UNSIGNED NOT NULL,
-	prop_type_custom	varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT \'\',
-	prop_value			varchar(255) NOT NULL DEFAULT \'\',
-	prop_value_custom	varchar(255) NOT NULL DEFAULT \'\',
+	prop_type_custom	varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
+	prop_value			varchar(255) NOT NULL DEFAULT '',
+	prop_value_custom	varchar(255) NOT NULL DEFAULT '',
 	prop_frec			int UNSIGNED NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_prop),
-	INDEX id_user_index (id_user),
-	INDEX id_user_id_contact_scope_type_index (id_user, id_contact, scope_type)
+	INDEX id_user_rainloop_pab_properties_index (id_user),
+	INDEX id_user_id_contact_scope_type_rainloop_pab_properties_index (id_user, id_contact, scope_type)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
-// -- rainloop_pab_tags --
-'CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
-	
+CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
+
 	id_tag		int UNSIGNED NOT NULL AUTO_INCREMENT,
 	id_user		int UNSIGNED NOT NULL,
 	tag_name	varchar(255) NOT NULL,
 
 	PRIMARY KEY(id_tag),
-	INDEX id_user_index (id_user),
-	INDEX id_user_name_index (id_user, tag_name)
-		
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;',
+	INDEX id_user_rainloop_pab_tags_index (id_user),
+	INDEX id_user_name_rainloop_pab_tags_index (id_user, tag_name)
 
-// -- rainloop_pab_tags_contacts --
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+
 'CREATE TABLE IF NOT EXISTS rainloop_pab_tags_contacts (
-	
+
 	id_tag		int UNSIGNED NOT NULL,
 	id_contact	bigint UNSIGNED NOT NULL,
 
-	INDEX id_tag_index (id_tag),
-	INDEX id_contact_index (id_contact)
+	INDEX id_tag_rainloop_pab_tags_contacts_index (id_tag),
+	INDEX id_contact_rainloop_pab_tags_contacts_index (id_contact)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;'
-		)));
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+MYSQLINITIAL;
+				break;
+
+			case 'pgsql':
+				$sInitial = <<<POSTGRESINITIAL
+CREATE SEQUENCE id_contact START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
+
+CREATE TABLE rainloop_pab_contacts (
+	id_contact		integer DEFAULT nextval('id_contact'::text) PRIMARY KEY,
+	id_user			integer NOT NULL,
+	scope_type		integer NOT NULL DEFAULT 0,
+	display_name	varchar(128) NOT NULL DEFAULT '',
+	display_email	varchar(128) NOT NULL DEFAULT '',
+	display			varchar(128) NOT NULL DEFAULT '',
+	changed			integer NOT NULL default 0
+);
+
+CREATE INDEX id_user_scope_type_rainloop_pab_contacts_index ON rainloop_pab_contacts (id_user, scope_type);
+
+CREATE SEQUENCE id_prop START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
+
+CREATE TABLE rainloop_pab_properties (
+	id_prop			integer DEFAULT nextval('id_prop'::text) PRIMARY KEY,
+	id_contact		integer NOT NULL,
+	id_user			integer NOT NULL,
+	scope_type		integer NOT NULL DEFAULT 0,
+	prop_type		integer NOT NULL,
+	prop_type_custom	varchar(50) NOT NULL DEFAULT '',
+	prop_value			varchar(128) NOT NULL DEFAULT '',
+	prop_value_custom	varchar(128) NOT NULL DEFAULT '',
+	prop_frec			integer NOT NULL default 0
+);
+
+CREATE INDEX id_user_rainloop_pab_properties_index ON rainloop_pab_properties (id_user);
+CREATE INDEX id_user_id_contact_scope_type_rainloop_pab_properties_index ON rainloop_pab_properties (id_user, id_contact, scope_type);
+
+CREATE SEQUENCE id_tag START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
+
+CREATE TABLE rainloop_pab_tags (
+	id_tag		integer DEFAULT nextval('id_tag'::text) PRIMARY KEY,
+	id_user		integer NOT NULL,
+	tag_name	varchar(128) NOT NULL
+);
+
+CREATE INDEX id_user_rainloop_pab_tags_index ON rainloop_pab_tags (id_user);
+CREATE INDEX id_user_name_rainloop_pab_tags_index ON rainloop_pab_tags (id_user, tag_name);
+
+CREATE TABLE rainloop_pab_tags_contacts (
+	id_tag		integer NOT NULL,
+	id_contact	integer NOT NULL
+);
+
+CREATE INDEX id_tag_rainloop_pab_tags_index ON rainloop_pab_tags_contacts (id_tag);
+CREATE INDEX id_contact_rainloop_pab_tags_index ON rainloop_pab_tags_contacts (id_contact);
+POSTGRESINITIAL;
+				break;
+
+			case 'sqlite':
+				$sInitial = <<<SQLITEINITIAL
+CREATE TABLE rainloop_pab_contacts (
+	id_contact		integer NOT NULL PRIMARY KEY,
+	id_user			integer NOT NULL,
+	scope_type		integer NOT NULL default 0,
+	display_name	text NOT NULL default '',
+	display_email	text NOT NULL default '',
+	display			text NOT NULL default '',
+	changed			integer NOT NULL default 0
+);
+
+CREATE INDEX id_user_scope_type_rainloop_pab_contacts_index ON rainloop_pab_contacts (id_user, scope_type);
+
+CREATE TABLE rainloop_pab_properties (
+	id_prop			integer NOT NULL PRIMARY KEY,
+	id_contact		integer NOT NULL,
+	id_user			integer NOT NULL,
+	scope_type		integer NOT NULL default 0,
+	prop_type		integer NOT NULL,
+	prop_type_custom	text NOT NULL default '',
+	prop_value			text NOT NULL default '',
+	prop_value_custom	text NOT NULL default '',
+	prop_frec			integer NOT NULL default 0
+);
+
+CREATE INDEX id_user_rainloop_pab_properties_index ON rainloop_pab_properties (id_user);
+CREATE INDEX id_user_id_contact_scope_type_rainloop_pab_properties_index ON rainloop_pab_properties (id_user, id_contact, scope_type);
+
+CREATE TABLE rainloop_pab_tags (
+	id_tag		integer NOT NULL PRIMARY KEY,
+	id_user		integer NOT NULL,
+	tag_name	text NOT NULL
+);
+
+CREATE INDEX id_user_rainloop_pab_tags_index ON rainloop_pab_tags (id_user);
+CREATE INDEX id_user_name_rainloop_pab_tags_index ON rainloop_pab_tags (id_user, tag_name);
+
+CREATE TABLE rainloop_pab_tags_contacts (
+	id_tag		integer NOT NULL,
+	id_contact	integer NOT NULL
+);
+
+CREATE INDEX id_tag_rainloop_pab_tags_index ON rainloop_pab_tags_contacts (id_tag);
+CREATE INDEX id_contact_rainloop_pab_tags_index ON rainloop_pab_tags_contacts (id_contact);
+
+SQLITEINITIAL;
+				break;
+		}
+
+		if (0 < strlen($sInitial))
+		{
+			$aList = \explode(';', \trim($sInitial));
+			foreach ($aList as $sV)
+			{
+				$sV = \trim($sV);
+				if (0 < \strlen($sV))
+				{
+					$aResult[] = $sV;
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function Sync()
+	{
+		switch ($this->sDsnType)
+		{
+			case 'mysql':
+				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
+					1 => $this->getInitialTablesArray($this->sDsnType)
+				));
+			case 'pgsql':
+				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
+					1 => $this->getInitialTablesArray($this->sDsnType)
+				));
+			case 'sqlite':
+				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
+					1 => $this->getInitialTablesArray($this->sDsnType)
+				));
+		}
+
+		return false;
 	}
 
 	/**
@@ -902,6 +1059,6 @@ class PdoPersonalAddressBook
 	 */
 	protected function getPdoAccessData()
 	{
-		return array('mysql', $this->sDsn, $this->sUser, $this->sPassword);
+		return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword);
 	}
 }
