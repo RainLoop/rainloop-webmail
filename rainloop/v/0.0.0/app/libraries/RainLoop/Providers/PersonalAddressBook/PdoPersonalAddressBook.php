@@ -849,7 +849,7 @@ CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
 
 )/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
-'CREATE TABLE IF NOT EXISTS rainloop_pab_tags_contacts (
+CREATE TABLE IF NOT EXISTS rainloop_pab_tags_contacts (
 
 	id_tag		int UNSIGNED NOT NULL,
 	id_contact	bigint UNSIGNED NOT NULL,
@@ -857,7 +857,7 @@ CREATE TABLE IF NOT EXISTS rainloop_pab_tags (
 	INDEX id_tag_rainloop_pab_tags_contacts_index (id_tag),
 	INDEX id_contact_rainloop_pab_tags_contacts_index (id_contact)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+)/*!40000 ENGINE=INNODB */;
 MYSQLINITIAL;
 				break;
 
