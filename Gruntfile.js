@@ -313,7 +313,8 @@ module.exports = function (grunt) {
 				src: [
 					"vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css",
 					"vendors/normalize/normalize.css",
-					"vendors/icomoon/style.css",
+					"vendors/fontastic/styles.css",
+					"rainloop/v/0.0.0/static/css/styles.css",
 					"vendors/jquery-nanoscroller/nanoscroller.css",
 					"vendors/jquery-magnific-popup/magnific-popup.css",
 					"vendors/jquery-magnific-popup/magnific-popup-animations.css",

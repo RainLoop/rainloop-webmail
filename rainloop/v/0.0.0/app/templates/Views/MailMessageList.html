@@ -4,13 +4,13 @@
 			<div class="btn-toolbar">
 				<div class="btn-group">
 					<a class="btn buttonReload" data-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
-						<i class="icon-spinner-2" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
+						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
 					<a class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
-						<i class="icon-legacyfilemanager"></i>
+						<i class="icon-folder"></i>
 						&nbsp;&nbsp;
 						<span class="caret"></span>
 					</a>
@@ -34,40 +34,40 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
 					<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown" data-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
-						<i class="icon-reorder"></i>
+						<i class="icon-list"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu">
 						<li class="e-item" data-bind="click: listUnsetSeen, css: {'disable': !hasCheckedOrSelectedLines()}">
 							<a class="e-link">
-								<i class="icon2-none"></i>
+								<i class="icon-none"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
 							</a>
 						</li>
 						<li class="e-item" data-bind="click: listSetSeen, css: {'disable': !hasCheckedOrSelectedLines()}">
 							<a class="e-link">
-								<i class="icon2-none"></i>
+								<i class="icon-none"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_SEEN"></span>
 							</a>
 						</li>
 						<li class="e-item" data-bind="click: listSetFlags, css: {'disable': !hasCheckedOrSelectedLines()}">
 							<a class="e-link">
-								<i class="icon2-none"></i>
+								<i class="icon-none"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_FLAG"></span>
 							</a>
 						</li>
 						<li class="e-item" data-bind="click: listUnsetFlags, css: {'disable': !hasCheckedOrSelectedLines()}">
 							<a class="e-link">
-								<i class="icon2-none"></i>
+								<i class="icon-none"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
 							</a>
 						</li>
 						<li class="e-item" data-bind="click: listSetAllSeen, css: {'disable': !hasMessages()}">
 							<a class="e-link">
-								<i class="icon2-none"></i>
+								<i class="icon-none"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
 							</a>
@@ -111,7 +111,7 @@
 					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked'"></i>
 <!--
 					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked', visible: !messageListCompleteLoadingThrottle()"></i>
-					<i class="icon-spinner-2 animated" style="margin-top: 4px;" data-bind="visible: messageListCompleteLoadingThrottle"></i>
+					<i class="icon-spinner animated" style="margin-top: 4px;" data-bind="visible: messageListCompleteLoadingThrottle"></i>
 -->
 				</div>
 			</div>
@@ -126,7 +126,7 @@
 							<span data-bind="text: messageListSearchDesc"></span>:
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-							<i class="icon-arrow-down-2 e-icon"></i>
+							<i class="icon-down e-icon"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n-text="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 						</div>
@@ -156,7 +156,7 @@
 			<div class="b-footer thm-message-list-bottom-toolbar">
 <!--
 				<a class="btn buttonReload" data-placement="right" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
-					<i class="icon-spinner-2" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
+					<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
 				</a>
 -->
 				<span data-bind="visible: 0 < userUsageProc(), tooltip2: quotaTooltip" class="e-quota">

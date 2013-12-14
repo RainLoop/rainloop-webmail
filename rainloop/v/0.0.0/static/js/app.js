@@ -1859,7 +1859,7 @@ Utils.convertPlainTextToHtml = function (sPlain)
 
 Utils.draggeblePlace = function ()
 {
-	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-envelope icon-white"></i></div>').appendTo('#rl-hidden');
+	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>').appendTo('#rl-hidden');
 };
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
@@ -2591,66 +2591,6 @@ ko.bindingHandlers.nano = {
 	}
 };
 
-ko.bindingHandlers.saveTrigger1 = {
-	'init': function (oElement) {
-
-		var $oEl = $(oElement);
-
-		$oEl.data('save-trigger-type', $oEl.is('input[type=text]') ? 'input' : 'custom');
-
-		if ('custom' === $oEl.data('save-trigger-type'))
-		{
-			$oEl.append(
-				'&nbsp;&nbsp;<i class="icon-spinner-2 animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
-			).addClass('settings-saved-trigger');
-		}
-		else
-		{
-			$oEl.addClass('settings-saved-trigger-input');
-		}
-	},
-	'update': function (oElement, fValueAccessor) {
-		var
-			mValue = ko.utils.unwrapObservable(fValueAccessor()),
-			$oEl = $(oElement),
-			bCustom = 'custom' === $oEl.data('save-trigger-type'),
-			sSuffix = bCustom ? '' : '-input'
-		;
-
-		switch (mValue.toString())
-		{
-			case '1':
-				$oEl
-					.find('.sst-animated' + sSuffix + ',.sst-error' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-success' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			case '0':
-				$oEl
-					.find('.sst-animated' + sSuffix + ',.sst-success' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-error' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			case '-2':
-				$oEl
-					.find('.sst-error' + sSuffix + ',.sst-success' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-animated' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			default:
-				$oEl
-					.find('.sst-animated' + sSuffix).hide()
-					.end()
-					.find('.sst-error' + sSuffix + ',.sst-success' + sSuffix).removeClass('sst-visible' + sSuffix)
-				;
-				break;
-		}
-	}
-};
-
 ko.bindingHandlers.saveTrigger = {
 	'init': function (oElement) {
 
@@ -2661,7 +2601,7 @@ ko.bindingHandlers.saveTrigger = {
 		if ('custom' === $oEl.data('save-trigger-type'))
 		{
 			$oEl.append(
-				'&nbsp;&nbsp;<i class="icon-spinner-2 animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
+				'&nbsp;&nbsp;<i class="icon-spinner animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
 			).addClass('settings-saved-trigger');
 		}
 		else
@@ -6167,36 +6107,36 @@ AttachmentModel.prototype.iconClass = function ()
 	{
 		if ('image' === aParts[0])
 		{
-			sClass = 'icon-image';
+			sClass = 'icon-file-image';
 		}
 		else if ('text' === aParts[0])
 		{
-			sClass = 'icon-file-xml';
+			sClass = 'icon-file-text';
 		}
 		else if ('audio' === aParts[0])
 		{
-			sClass = 'icon-music';
+			sClass = 'icon-file-music';
 		}
 		else if ('video' === aParts[0])
 		{
-			sClass = 'icon-film';
+			sClass = 'icon-file-movie';
 		}
 		else if (-1 < Utils.inArray(aParts[1],
 			['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed']))
 		{
 			sClass = 'icon-file-zip';
 		}
-		else if (-1 < Utils.inArray(aParts[1],
-			['pdf', 'x-pdf']))
-		{
-			sClass = 'icon-file-pdf';
-		}
-		else if (-1 < Utils.inArray(aParts[1], [
-			'exe', 'x-exe', 'x-winexe', 'bat'
-		]))
-		{
-			sClass = 'icon-console';
-		}
+//		else if (-1 < Utils.inArray(aParts[1],
+//			['pdf', 'x-pdf']))
+//		{
+//			sClass = 'icon-file-pdf';
+//		}
+//		else if (-1 < Utils.inArray(aParts[1], [
+//			'exe', 'x-exe', 'x-winexe', 'bat'
+//		]))
+//		{
+//			sClass = 'icon-console';
+//		}
 		else if (-1 < Utils.inArray(aParts[1], [
 			'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
 			'vnd.openxmlformats-officedocument.wordprocessingml.template',
@@ -6204,7 +6144,7 @@ AttachmentModel.prototype.iconClass = function ()
 			'vnd.ms-word.template.macroEnabled.12'
 		]))
 		{
-			sClass = 'icon-file-word';
+			sClass = 'icon-file-text';
 		}
 		else if (-1 < Utils.inArray(aParts[1], [
 			'excel', 'ms-excel', 'vnd.ms-excel',
@@ -6229,7 +6169,7 @@ AttachmentModel.prototype.iconClass = function ()
 			'vnd.ms-powerpoint.slideshow.macroEnabled.12'
 		]))
 		{
-			sClass = 'icon-file-powerpoint';
+			sClass = 'icon-file-chart-graph';
 		}
 	}
 
@@ -6353,11 +6293,11 @@ function MessageModel()
 					sClass = 'icon-file-zip';
 					break;
 				case 'doc':
-					sClass = 'icon-file';
+					sClass = 'icon-file-text';
 					break;
-				case 'pdf':
-					sClass = 'icon-file-pdf';
-					break;
+//				case 'pdf':
+//					sClass = 'icon-file-pdf';
+//					break;
 			}
 		}
 		return sClass;
@@ -7465,7 +7405,7 @@ FolderModel.prototype.isUnpaddigFolder = false;
 FolderModel.prototype.collapsedCss = function ()
 {
 	return this.hasSubScribedSubfolders() ? 
-		(this.collapsed() ? 'icon-arrow-right-3 e-collapsed-sign' : 'icon-arrow-down-3 e-collapsed-sign') : 'icon-none e-collapsed-sign';
+		(this.collapsed() ? 'icon-right-mini e-collapsed-sign' : 'icon-down-mini e-collapsed-sign') : 'icon-none e-collapsed-sign';
 };
 
 /**

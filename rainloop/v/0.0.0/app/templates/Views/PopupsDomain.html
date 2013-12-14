@@ -96,12 +96,12 @@
 			<a class="btn button-test-connection pull-left" data-bind="command: testConnectionCommand, css: {
 			   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 			   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
-				<i data-bind="css: {'icon-info': !testing(), 'icon-spinner-2 animated': testing(), 'icon-white': testingDone()}"></i>
+				<i data-bind="css: {'icon-info': !testing(), 'icon-spinner animated': testing(), 'icon-white': testingDone()}"></i>
 				&nbsp;&nbsp;
 				Test Connection
 			</a>
 			<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand">
-				<i data-bind="css: {'icon-arrow-right-2': !whiteListPage(), 'icon-arrow-left': whiteListPage()}"></i>
+				<i data-bind="css: {'icon-right': !whiteListPage(), 'icon-left': whiteListPage()}"></i>
 				&nbsp;&nbsp;
 				<span data-bind="visible: !whiteListPage()">White List</span>
 				<span data-bind="visible: whiteListPage()">Back</span>
@@ -113,7 +113,7 @@
 			</a>
 			<a class="btn buttonClear" data-bind="command: createOrAddCommand">
 				<i data-bind="css: edit() ? 'icon-ok' : 'icon-plus', visible: !saving()"></i>
-				<i class="icon-spinner-2 animated" data-bind="visible: saving"></i>
+				<i class="icon-spinner animated" data-bind="visible: saving"></i>
 				&nbsp;&nbsp;
 				<span data-bind="text: edit() ? 'Update' : 'Add'"></span>
 			</a>

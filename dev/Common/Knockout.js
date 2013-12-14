@@ -337,66 +337,6 @@ ko.bindingHandlers.nano = {
 	}
 };
 
-ko.bindingHandlers.saveTrigger1 = {
-	'init': function (oElement) {
-
-		var $oEl = $(oElement);
-
-		$oEl.data('save-trigger-type', $oEl.is('input[type=text]') ? 'input' : 'custom');
-
-		if ('custom' === $oEl.data('save-trigger-type'))
-		{
-			$oEl.append(
-				'&nbsp;&nbsp;<i class="icon-spinner-2 animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
-			).addClass('settings-saved-trigger');
-		}
-		else
-		{
-			$oEl.addClass('settings-saved-trigger-input');
-		}
-	},
-	'update': function (oElement, fValueAccessor) {
-		var
-			mValue = ko.utils.unwrapObservable(fValueAccessor()),
-			$oEl = $(oElement),
-			bCustom = 'custom' === $oEl.data('save-trigger-type'),
-			sSuffix = bCustom ? '' : '-input'
-		;
-
-		switch (mValue.toString())
-		{
-			case '1':
-				$oEl
-					.find('.sst-animated' + sSuffix + ',.sst-error' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-success' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			case '0':
-				$oEl
-					.find('.sst-animated' + sSuffix + ',.sst-success' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-error' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			case '-2':
-				$oEl
-					.find('.sst-error' + sSuffix + ',.sst-success' + sSuffix).hide().removeClass('sst-visible' + sSuffix)
-					.end()
-					.find('.sst-animated' + sSuffix).show().addClass('sst-visible' + sSuffix)
-				;
-				break;
-			default:
-				$oEl
-					.find('.sst-animated' + sSuffix).hide()
-					.end()
-					.find('.sst-error' + sSuffix + ',.sst-success' + sSuffix).removeClass('sst-visible' + sSuffix)
-				;
-				break;
-		}
-	}
-};
-
 ko.bindingHandlers.saveTrigger = {
 	'init': function (oElement) {
 
@@ -407,7 +347,7 @@ ko.bindingHandlers.saveTrigger = {
 		if ('custom' === $oEl.data('save-trigger-type'))
 		{
 			$oEl.append(
-				'&nbsp;&nbsp;<i class="icon-spinner-2 animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
+				'&nbsp;&nbsp;<i class="icon-spinner animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
 			).addClass('settings-saved-trigger');
 		}
 		else

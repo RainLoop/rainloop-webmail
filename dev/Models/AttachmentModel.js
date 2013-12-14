@@ -158,36 +158,36 @@ AttachmentModel.prototype.iconClass = function ()
 	{
 		if ('image' === aParts[0])
 		{
-			sClass = 'icon-image';
+			sClass = 'icon-file-image';
 		}
 		else if ('text' === aParts[0])
 		{
-			sClass = 'icon-file-xml';
+			sClass = 'icon-file-text';
 		}
 		else if ('audio' === aParts[0])
 		{
-			sClass = 'icon-music';
+			sClass = 'icon-file-music';
 		}
 		else if ('video' === aParts[0])
 		{
-			sClass = 'icon-film';
+			sClass = 'icon-file-movie';
 		}
 		else if (-1 < Utils.inArray(aParts[1],
 			['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed']))
 		{
 			sClass = 'icon-file-zip';
 		}
-		else if (-1 < Utils.inArray(aParts[1],
-			['pdf', 'x-pdf']))
-		{
-			sClass = 'icon-file-pdf';
-		}
-		else if (-1 < Utils.inArray(aParts[1], [
-			'exe', 'x-exe', 'x-winexe', 'bat'
-		]))
-		{
-			sClass = 'icon-console';
-		}
+//		else if (-1 < Utils.inArray(aParts[1],
+//			['pdf', 'x-pdf']))
+//		{
+//			sClass = 'icon-file-pdf';
+//		}
+//		else if (-1 < Utils.inArray(aParts[1], [
+//			'exe', 'x-exe', 'x-winexe', 'bat'
+//		]))
+//		{
+//			sClass = 'icon-console';
+//		}
 		else if (-1 < Utils.inArray(aParts[1], [
 			'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
 			'vnd.openxmlformats-officedocument.wordprocessingml.template',
@@ -195,7 +195,7 @@ AttachmentModel.prototype.iconClass = function ()
 			'vnd.ms-word.template.macroEnabled.12'
 		]))
 		{
-			sClass = 'icon-file-word';
+			sClass = 'icon-file-text';
 		}
 		else if (-1 < Utils.inArray(aParts[1], [
 			'excel', 'ms-excel', 'vnd.ms-excel',
@@ -220,7 +220,7 @@ AttachmentModel.prototype.iconClass = function ()
 			'vnd.ms-powerpoint.slideshow.macroEnabled.12'
 		]))
 		{
-			sClass = 'icon-file-powerpoint';
+			sClass = 'icon-file-chart-graph';
 		}
 	}
 

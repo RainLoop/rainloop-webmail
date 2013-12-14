@@ -272,7 +272,7 @@ FolderModel.prototype.isUnpaddigFolder = false;
 FolderModel.prototype.collapsedCss = function ()
 {
 	return this.hasSubScribedSubfolders() ? 
-		(this.collapsed() ? 'icon-arrow-right-3 e-collapsed-sign' : 'icon-arrow-down-3 e-collapsed-sign') : 'icon-none e-collapsed-sign';
+		(this.collapsed() ? 'icon-right-mini e-collapsed-sign' : 'icon-down-mini e-collapsed-sign') : 'icon-none e-collapsed-sign';
 };
 
 /**

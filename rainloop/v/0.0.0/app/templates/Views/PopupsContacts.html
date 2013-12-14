@@ -8,7 +8,7 @@
 				<span class="i18n" data-i18n-text="CONTACTS/BUTTON_ADD_CONTACT"></span>
 			</a>
 			<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
-				<i class="icon-envelope icon-white"></i>
+				<i class="icon-mail icon-white"></i>
 			</a>
 			<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
 				<i class="icon-trash icon-white"></i>
@@ -26,7 +26,7 @@
 				</div>
 				<div class="btn-group pull-right">
 					<a class="btn dropdown-toggle button-filter" data-toggle="dropdown">
-						<i class="icon-lightning"></i>
+						<i class="icon-bolt"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu">
 						<li class="e-item">
@@ -136,7 +136,7 @@
 							</div>
 
 							<button class="btn button-save-contact" data-bind="command: saveCommand">
-								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner-2 animated': viewSaving()}"></i>
+								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>

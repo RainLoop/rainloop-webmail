@@ -1,6 +1,6 @@
 <tr class="e-item">
 	<td class="package-name-parent">
-		<i class="package-img" data-bind="css: 'core' === type ? 'icon-fire' : 'icon-lightning'"></i>
+		<i class="package-img" data-bind="css: 'core' === type ? 'icon-fire' : 'icon-bolt'"></i>
 		<span class="package-name" data-bind="text: name, css: {'core': 'core' === type}"></span>
 		<span class="package-installed pull-right" data-bind="text: installed"></span>
 		<div class="package-desc" data-bind="text: desc"></div>
@@ -20,6 +20,6 @@
 		<i class="icon-download e-action button-download" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }"></i>
 		&nbsp;
 		<i class="icon-trash e-action button-delete" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }"></i>
-		<i class="icon-spinner-2 animated" data-bind="visible: loading"></i>
+		<i class="icon-spinner animated" data-bind="visible: loading"></i>
 	</td>
 </tr>

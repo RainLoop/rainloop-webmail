@@ -12,7 +12,7 @@
 						<input class="i18n inputEmail span4" type="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: email, hasFocus: emailFocus" data-i18n-placeholder="LOGIN/LABEL_EMAIL" />
 						<span class="add-on">
-							<i class="icon-envelope"></i>
+							<i class="icon-mail"></i>
 						</span>
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 				{{INCLUDE/BottomControlGroup/PLACE}}
 				<div class="control-group">
 					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">
-						<i class="icon-spinner-2 animated" data-bind="visible: submitRequest"></i>
+						<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
 						<span class="i18n" data-i18n-text="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
 					</button>
 				</div>
@@ -50,7 +50,7 @@
 					<div class="pull-right">
 						<div class="btn-group" data-bind="visible: socialLoginEnabled() || allowLanguagesOnLogin()">
 							<a class="btn dropdown-toggle buttonLoginMore" data-toggle="dropdown">
-								<i data-bind="css: langRequest() ? 'icon-spinner-2 animated' : 'icon-reorder'"></i>
+								<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-list'"></i>
 							</a>
 							<ul class="dropdown-menu g-ui-menu">
 								{{INCLUDE/MenuDropdownTop/PLACE}}

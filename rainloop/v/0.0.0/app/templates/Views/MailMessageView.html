@@ -10,7 +10,7 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group" data-placement="bottom" data-bind="visible: $root.isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
 					<a class="btn btn-success buttonEdit" data-bind="command: $root.messageEditCommand">
-						<i class="icon-edit2 icon-white"></i>
+						<i class="icon-pensil icon-white"></i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: !$root.isDraftFolder()">
@@ -37,7 +37,7 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
 					<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown" data-bind="command: $root.messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
-						<i class="icon-reorder"></i>
+						<i class="icon-list"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu">
 						<li class="e-item" data-bind="visible: !$root.isDraftFolder()">
@@ -50,7 +50,7 @@
 						<li class="divider" data-bind="visible: !$root.isDraftFolder()"></li>
 						<li class="e-item">
 							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
-								<i class="icon-opennewwindow"></i>
+								<i class="icon-popup"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 							</a>
@@ -65,7 +65,7 @@
 						<li class="divider"></li>
 						<li class="e-item">
 							<a target="_blank" class="e-link" data-bind="link: viewViewLink()">
-								<i class="icon-file-css"></i>
+								<i class="icon-file-code"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/MENU_VIEW_ORIGINAL"></span>
 							</a>
@@ -82,10 +82,10 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !$root.usePreviewPane()">
 					<a class="btn buttonUp" data-bind="command: $root.goUpCommand">
-						<i class="icon-arrow-left"></i>
+						<i class="icon-left-middle"></i>
 					</a>
 					<a class="btn buttonDown" data-bind="command: $root.goDownCommand">
-						<i class="icon-arrow-right-2"></i>
+						<i class="icon-right-middle"></i>
 					</a>
 				</div>
 			</div>
@@ -104,13 +104,13 @@
 							<div class="content-wrapper">
 								<div>
 									<span class="buttonUp" data-bind="click: scrollToTop">
-										<i class="icon-arrow-up--upload"></i>
+										<i class="icon-up"></i>
 									</span>
 									<span class="buttonFull" data-bind="click: fullScreen">
-										<i class="icon-scaleup"></i>
+										<i class="icon-arrows-out"></i>
 									</span>
 									<span class="buttonUnFull" data-bind="click: unFullScreen">
-										<i class="icon-scaledown"></i>
+										<i class="icon-arrows-in"></i>
 									</span>
 									<div class="messageItemHeader">
 										<div>
@@ -122,7 +122,7 @@
 												</div>
 												<div class="senderParent">
 													<div class="g-ui-user-select-none" style="float: left; cursor: pointer;" data-bind="click: function() { $root.showFullInfo(!$root.showFullInfo()); }">
-														<i class="icon-arrow-right" data-bind="css: $root.showFullInfo() ? 'icon-arrow-down' : 'icon-arrow-right'"></i>
+														<i class="icon-right-dir" data-bind="css: $root.showFullInfo() ? 'icon-down-dir' : 'icon-right-dir'"></i>
 													</div>
 													<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
 														<span data-bind="visible: !$root.isDraftOrSentFolder()">

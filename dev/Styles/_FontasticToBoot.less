@@ -1,0 +1,108 @@
+
+[class^="icon-"],
+[class*=" icon-"] {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	line-height: 17px;
+	font-size: 16px;
+	vertical-align: text-top;
+}
+
+.icon-folder, .icon-folder-add, .icon-address-book, .icon-list {
+	line-height: 18px;
+	font-size: 18px;
+	margin-top: -2px;
+	margin-left: -2px;
+}
+
+/* White icons with optional class, or on hover/active states of certain elements */
+.icon-white,
+.nav > .active > a > [class^="icon-"],
+.nav > .active > a > [class*=" icon-"] {
+	color: #fff;
+}
+
+.g-ui-menu .e-item:hover [class^="icon-"],
+.g-ui-menu .e-item:hover [class*=" icon-"] {
+	color: #fff;
+}
+
+.icon-none {
+	background-image: none !important;
+}
+
+.icon-checkbox-checked, .icon-checkbox-unchecked, .icon-checkbox-partial, .icon-radio-checked, .icon-radio-unchecked {
+	cursor: pointer;
+	color: #555;
+	font-size: 1em;
+
+	&:hover, &:active {
+		color: #000;
+	}
+}
+
+.icon-white {
+	&.icon-checkbox-checked, &.icon-checkbox-unchecked, &.icon-checkbox-partial, &.icon-radio-checked, &.icon-radio-unchecked {
+		color: #eee;
+
+		&:hover, &:active {
+			color: #fff;
+		}
+	}
+}
+
+.denied-by-browser {
+	cursor: default;
+	.icon-checkbox-checked, icon-checkbox-unchecked {
+		cursor: default;
+	}
+}
+
+.right-mini, .down-mini {
+	width: 16px;
+	line-height: 20px;
+}
+
+@-webkit-keyframes rotation {
+	from {-webkit-transform: rotate(0deg);}
+	to   {-webkit-transform: rotate(359deg);}
+}
+
+@-moz-keyframes rotation {
+	from {-moz-transform: rotate(0deg);}
+	to   {-moz-transform: rotate(359deg);}
+}
+
+@keyframes rotation {
+	from {transform: rotate(0deg);}
+	to   {transform: rotate(359deg);}
+}
+
+.icon-spinner {
+    width: 16px;
+    height: 16px;
+
+	&:before {
+		font-size: 16px;
+		line-height: 100%;
+	}
+}
+
+html.no-cssanimations .icon-spinner {
+	background-image: url('@{sync-file-stop}');
+	background-repeat: no-repeat;
+	font-family: Arial;
+	&:before {
+		content: "";
+	}
+	&.animated {
+		background-image: url('@{sync-file}');
+	}
+}
+
+html.cssanimations .icon-spinner.animated {
+	-webkit-animation: rotation 1s infinite linear;
+	-moz-animation: rotation 1s infinite linear;
+	animation: rotation 1s infinite linear;
+}

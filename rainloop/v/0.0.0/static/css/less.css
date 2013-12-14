@@ -3067,21 +3067,23 @@ a.badge:hover {
 .affix {
   position: fixed;
 }
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  @font-face {
-    font-family: 'icomoon';
-    src: url('fonts/icomoon.svg#icomoon') format('svg');
-  }
-}
 [class^="icon-"],
 [class*=" icon-"] {
   display: inline-block;
   width: 16px;
   height: 16px;
-  line-height: 16px;
-  font-size: 15px;
-  *margin-right: .3em;
+  line-height: 17px;
+  font-size: 16px;
   vertical-align: text-top;
+}
+.icon-folder,
+.icon-folder-add,
+.icon-address-book,
+.icon-list {
+  line-height: 18px;
+  font-size: 18px;
+  margin-top: -2px;
+  margin-left: -2px;
 }
 /* White icons with optional class, or on hover/active states of certain elements */
 .icon-white,
@@ -3093,22 +3095,8 @@ a.badge:hover {
 .g-ui-menu .e-item:hover [class*=" icon-"] {
   color: #fff;
 }
-[class^="icon2-"],
-[class*=" icon2-"] {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
-  font-size: 15px;
-  *margin-right: .3em;
-  vertical-align: text-top;
-  background-repeat: no-repeat;
-}
-.icon2-none {
-  background-image: none;
-}
-.icon3-as-button {
-  cursor: pointer;
+.icon-none {
+  background-image: none !important;
 }
 .icon-checkbox-checked,
 .icon-checkbox-unchecked,
@@ -3150,10 +3138,6 @@ a.badge:hover {
 .icon-white.icon-radio-unchecked:active {
   color: #fff;
 }
-.icon-refresh.in-process {
-  background-position: 0px 0px;
-  background-image: url('images/sync.gif');
-}
 .denied-by-browser {
   cursor: default;
 }
@@ -3161,18 +3145,10 @@ a.badge:hover {
 .denied-by-browser icon-checkbox-unchecked {
   cursor: default;
 }
-.icon-arrow-right-3,
-.icon-arrow-down-3 {
+.right-mini,
+.down-mini {
   width: 16px;
   line-height: 20px;
-}
-.icon2-reload {
-  background-image: url('images/sync.png');
-  background-repeat: no-repeat;
-}
-.icon2-aminate-reload {
-  background-image: url('images/sync.gif');
-  background-repeat: no-repeat;
 }
 @-webkit-keyframes rotation {
   from {
@@ -3198,38 +3174,26 @@ a.badge:hover {
     transform: rotate(359deg);
   }
 }
-.icon-repeat,
-.icon-spinner,
-.icon-spinner-2 {
+.icon-spinner {
   width: 16px;
   height: 16px;
 }
-.icon-repeat:before,
-.icon-spinner:before,
-.icon-spinner-2:before {
+.icon-spinner:before {
   font-size: 16px;
   line-height: 100%;
 }
-html.no-cssanimations .icon-repeat,
-html.no-cssanimations .icon-spinner,
-html.no-cssanimations .icon-spinner-2 {
+html.no-cssanimations .icon-spinner {
   background-image: url('images/sync.png');
   background-repeat: no-repeat;
   font-family: Arial;
 }
-html.no-cssanimations .icon-repeat:before,
-html.no-cssanimations .icon-spinner:before,
-html.no-cssanimations .icon-spinner-2:before {
+html.no-cssanimations .icon-spinner:before {
   content: "";
 }
-html.no-cssanimations .icon-repeat.animated,
-html.no-cssanimations .icon-spinner.animated,
-html.no-cssanimations .icon-spinner-2.animated {
+html.no-cssanimations .icon-spinner.animated {
   background-image: url('images/sync.gif');
 }
-html.cssanimations .icon-repeat.animated,
-html.cssanimations .icon-spinner.animated,
-html.cssanimations .icon-spinner-2.animated {
+html.cssanimations .icon-spinner.animated {
   -webkit-animation: rotation 1s infinite linear;
   -moz-animation: rotation 1s infinite linear;
   animation: rotation 1s infinite linear;

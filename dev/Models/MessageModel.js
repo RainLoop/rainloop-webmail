@@ -56,11 +56,11 @@ function MessageModel()
 					sClass = 'icon-file-zip';
 					break;
 				case 'doc':
-					sClass = 'icon-file';
+					sClass = 'icon-file-text';
 					break;
-				case 'pdf':
-					sClass = 'icon-file-pdf';
-					break;
+//				case 'pdf':
+//					sClass = 'icon-file-pdf';
+//					break;
 			}
 		}
 		return sClass;

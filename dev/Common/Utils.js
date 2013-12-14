@@ -1271,7 +1271,7 @@ Utils.convertPlainTextToHtml = function (sPlain)
 
 Utils.draggeblePlace = function ()
 {
-	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-envelope icon-white"></i></div>').appendTo('#rl-hidden');
+	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>').appendTo('#rl-hidden');
 };
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)

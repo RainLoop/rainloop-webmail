@@ -3,12 +3,12 @@
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
 			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
-				<i data-bind="css: {'icon-rocket': !sending(), 'icon-spinner-2 animated': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
+				<i data-bind="css: {'icon-rocket': !sending(), 'icon-spinner animated': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SEND"></span>
 			</a>
 			<a class="btn button-save" data-bind="command: saveCommand, css: {'btn-danger': savedError }">
-				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner-2 animated': saving(), 'icon-white': savedError()}"></i>
+				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SAVE"></span>
 			</a>
