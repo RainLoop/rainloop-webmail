@@ -14,6 +14,30 @@ function RainLoopApp()
 
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 
+	window.setInterval(function () {
+		RL.pub('interval.30s');
+	}, 30000);
+
+	window.setInterval(function () {
+		RL.pub('interval.1m');
+	}, 60000);
+
+	window.setInterval(function () {
+		RL.pub('interval.2m');
+	}, 60000 * 2);
+
+	window.setInterval(function () {
+		RL.pub('interval.3m');
+	}, 60000 * 3);
+
+	window.setInterval(function () {
+		RL.pub('interval.5m');
+	}, 60000 * 5);
+
+	window.setInterval(function () {
+		RL.pub('interval.10m');
+	}, 60000 * 10);
+
 	$.wakeUp(function () {
 		RL.remote().jsVersion(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
@@ -690,6 +714,14 @@ RainLoopApp.prototype.bootstart = function ()
 					});
 				}, 1000);
 
+				RL.sub('interval.5m', function () {
+					RL.quota();
+				});
+
+				RL.sub('interval.2m', function () {
+					RL.folderInformation('INBOX');
+				});
+
 				Plugins.runHook('rl-start-user-screens');
 			}
 			else
@@ -763,6 +795,10 @@ RainLoopApp.prototype.bootstart = function ()
 			RL.socialUsers();
 		};
 	}
+
+	RL.sub('interval.1m', function () {
+		Globals.momentTrigger(!Globals.momentTrigger());
+	});
 
 	Plugins.runHook('rl-start-screens');
 };

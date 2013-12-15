@@ -27,14 +27,6 @@ window['__RLBOOT'] = function (fCall) {
 		if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
 		{
 			$('#rl-templates').html(window['rainloopTEMPLATES'][0]);
-			
-			window.setInterval(function () {
-				Globals.minuteTick(!Globals.minuteTick());
-			}, 1000 * 60);
-			
-			window.setInterval(function () {
-				Globals.fiveMinuteTick(!Globals.fiveMinuteTick());
-			}, 1000 * 60 * 5);
 
 			_.delay(function () {
 				window['rainloopAppData'] = {};

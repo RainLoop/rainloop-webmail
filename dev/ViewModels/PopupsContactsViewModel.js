@@ -9,13 +9,17 @@ function PopupsContactsViewModel()
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsContacts');
 
 	var
+		oT = Enums.ContactPropertyType,
 		self = this,
-		aNameTypes = [Enums.ContactPropertyType.FullName, Enums.ContactPropertyType.FirstName, Enums.ContactPropertyType.SurName, Enums.ContactPropertyType.MiddleName],
-		aEmailTypes = [Enums.ContactPropertyType.EmailPersonal, Enums.ContactPropertyType.EmailBussines, Enums.ContactPropertyType.EmailOther],
+		aNameTypes = [oT.FullName, oT.FirstName, oT.SurName, oT.MiddleName],
+		aEmailTypes = [oT.EmailPersonal, oT.EmailBussines, oT.EmailOther],
 		aPhonesTypes = [
-			Enums.ContactPropertyType.PhonePersonal, Enums.ContactPropertyType.PhoneBussines, Enums.ContactPropertyType.PhoneOther,
-			Enums.ContactPropertyType.MobilePersonal, Enums.ContactPropertyType.MobileBussines, Enums.ContactPropertyType.MobileOther,
-			Enums.ContactPropertyType.FaxPesonal, Enums.ContactPropertyType.FaxBussines, Enums.ContactPropertyType.FaxOther
+			oT.PhonePersonal, oT.PhoneBussines, oT.PhoneOther,
+			oT.MobilePersonal, oT.MobileBussines, oT.MobileOther,
+			oT.FaxPesonal, oT.FaxBussines, oT.FaxOther
+		],
+		aOtherTypes = [
+			oT.Facebook, oT.Skype, oT.GitHub
 		],
 		fFastClearEmptyListHelper = function (aList) {
 			if (aList && 0 < aList.length) {
@@ -67,6 +71,10 @@ function PopupsContactsViewModel()
 
 	this.viewPropertiesPhones = this.viewProperties.filter(function(oProperty) {
 		return -1 < Utils.inArray(oProperty.type(), aPhonesTypes);
+	});
+
+	this.viewPropertiesOther = this.viewProperties.filter(function(oProperty) {
+		return -1 < Utils.inArray(oProperty.type(), aOtherTypes);
 	});
 
 	this.viewPropertiesEmailsEmptyAndOnFocused = this.viewPropertiesEmails.filter(function(oProperty) {
@@ -126,10 +134,6 @@ function PopupsContactsViewModel()
 		});
 	}, this);
 
-	this.newCommand = Utils.createCommand(this, function () {
-		this.populateViewContact(null);
-	});
-
 	this.selector = new Selector(this.contacts, this.currentContact,
 		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem');
 
@@ -152,6 +156,7 @@ function PopupsContactsViewModel()
 	
 	this.deleteCommand = Utils.createCommand(this, function () {
 		this.deleteSelectedContacts();
+		this.emptySelection(true);
 	}, function () {
 		return 0 < this.contactsCheckedOrSelected().length;
 	});
@@ -242,18 +247,22 @@ function PopupsContactsViewModel()
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
 
-PopupsContactsViewModel.prototype.addNewEmail = function ()
+
+PopupsContactsViewModel.prototype.addNewProperty = function (sType)
 {
-	var oItem = new ContactPropertyModel(Enums.ContactPropertyType.EmailPersonal, '');
+	var oItem = new ContactPropertyModel(sType, '');
 	oItem.focused(true);
 	this.viewProperties.push(oItem);
 };
 
+PopupsContactsViewModel.prototype.addNewEmail = function ()
+{
+	this.addNewProperty(Enums.ContactPropertyType.EmailPersonal);
+};
+
 PopupsContactsViewModel.prototype.addNewPhone = function ()
 {
-	var oItem = new ContactPropertyModel(Enums.ContactPropertyType.PhonePersonal, '');
-	oItem.focused(true);
-	this.viewProperties.push(oItem);
+	this.addNewProperty(Enums.ContactPropertyType.PhonePersonal);
 };
 
 PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = function ()
@@ -367,7 +376,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 
 	if (!bHasName)
 	{
-		aList.push(new ContactPropertyModel(Enums.ContactPropertyType.FullName, ''));
+		aList.push(new ContactPropertyModel(Enums.ContactPropertyType.FullName, '', true));
 	}
 
 	this.viewID(sId);

@@ -84,10 +84,6 @@ MailBoxScreen.prototype.onStart = function ()
 	}
 
 	_.delay(function () {
-		RL.quota();
-	}, 1000 * 5);
-
-	_.delay(function () {
 		if ('INBOX' !== oData.currentFolderFullNameRaw())
 		{
 			RL.folderInformation('INBOX');
@@ -111,16 +107,12 @@ MailBoxScreen.prototype.onStart = function ()
 	}, 2000);
 
 	_.delay(function () {
-		RL.remote().appDelayStart(Utils.emptyFunction);
-	}, 1000 * 35);
-
-	window.setInterval(function () {
-		RL.folderInformation('INBOX');
-	}, 1000 * 60 * 2);
-	
-	window.setInterval(function () {
 		RL.quota();
-	}, 1000 * 60 * 5);
+	}, 5000);
+
+	_.delay(function () {
+		RL.remote().appDelayStart(Utils.emptyFunction);
+	}, 35000);
 
 	$html.toggleClass('rl-no-preview-pane', !oData.usePreviewPane());
 

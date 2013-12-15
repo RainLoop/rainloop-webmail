@@ -168,7 +168,7 @@ FolderModel.prototype.initComputed = function ()
 
 	this.localName = ko.computed(function () {
 
-		Globals.langChangeTick();
+		Globals.langChangeTrigger();
 
 		var
 			iType = this.type(),
@@ -203,7 +203,7 @@ FolderModel.prototype.initComputed = function ()
 
 	this.manageFolderSystemName = ko.computed(function () {
 
-		Globals.langChangeTick();
+		Globals.langChangeTrigger();
 		
 		var
 			sSuffix = '',

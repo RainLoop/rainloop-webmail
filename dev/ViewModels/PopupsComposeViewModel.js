@@ -335,7 +335,7 @@ function PopupsComposeViewModel()
 
 	}, this.canBeSendedOrSaved);
 
-	Globals.minuteTick.subscribe(function () {
+	RL.sub('interval.1m', function () {
 		if (this.modalVisibility() && !RL.data().draftFolderNotEnabled() && !this.isEmptyForm(false) &&
 			!this.saving() && !this.sending() && !this.savedError())
 		{

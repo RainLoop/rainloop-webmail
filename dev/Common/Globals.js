@@ -8,17 +8,12 @@ Globals.now = (new Date()).getTime();
 /**
  * @type {?}
  */
-Globals.minuteTick = ko.observable(true);
+Globals.momentTrigger = ko.observable(true);
 
 /**
  * @type {?}
  */
-Globals.fiveMinuteTick = ko.observable(true);
-
-/**
- * @type {?}
- */
-Globals.langChangeTick = ko.observable(true);
+Globals.langChangeTrigger = ko.observable(true);
 
 /**
  * @type {number}

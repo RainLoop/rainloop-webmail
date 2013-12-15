@@ -92,43 +92,53 @@
 						<div data-bind="visible: !emptySelection()">
 							<div class="form-horizontal top-part">
 								<div class="control-group">
-									<label class="control-label">
-										<span class="i18n" data-i18n-text="CONTACTS/LABEL_DISPLAY_NAME"></span>
+									<label class="control-label remove-padding-top fix-width">
+										<i class="icon-user iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_DISPLAY_NAME'"></i>
 									</label>
-									<div class="controls" data-bind="foreach: viewPropertiesNames">
+									<div class="controls fix-width" data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
-											<input type="text" class="contactValueInput" data-bind="value: value, valueUpdate: 'keyup'" />
+											<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 										</div>
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label">
-										<span class="i18n" data-i18n-text="CONTACTS/LABEL_EMAIL"></span>
+									<label class="control-label remove-padding-top fix-width">
+										<i class="icon-at iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
 									</label>
-									<div class="controls">
+									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesEmails">
 											<div class="property-line">
 												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<div class="g-ui-link add-link i18n" data-bind="click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></div>
+										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></a>
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label">
-										<span class="i18n" data-i18n-text="CONTACTS/LABEL_PHONE"></span>
+									<label class="control-label remove-padding-top fix-width">
+										<i class="icon-telephone iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
 									</label>
-									<div class="controls">
+									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesPhones">
 											<div class="property-line">
-												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+												<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<div class="g-ui-link add-link i18n" data-bind="click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></div>
+										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>
 									</div>
 								</div>
+<!--								<div class="control-group" data-bind="foreach: viewPropertiesOther">
+									<label class="control-label remove-padding-top fix-width">
+										
+									</label>
+									<div class="controls fix-width">
+										<div class="property-line">
+											<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+										</div>
+									</div>
+								</div>-->
 								<div class="control-group">
-									<div class="controls">
+									<div class="controls fix-width">
 										<br />
 										<br />
 									</div>

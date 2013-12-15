@@ -86,17 +86,12 @@ Globals.now = (new Date()).getTime();
 /**
  * @type {?}
  */
-Globals.minuteTick = ko.observable(true);
+Globals.momentTrigger = ko.observable(true);
 
 /**
  * @type {?}
  */
-Globals.fiveMinuteTick = ko.observable(true);
-
-/**
- * @type {?}
- */
-Globals.langChangeTick = ko.observable(true);
+Globals.langChangeTrigger = ko.observable(true);
 
 /**
  * @type {number}
@@ -936,7 +931,7 @@ Utils.i18nToDoc = function ()
 		I18n = window.rainloopI18N || {};
 		Utils.i18nToNode($document);
 
-		Globals.langChangeTick(!Globals.langChangeTick());
+		Globals.langChangeTrigger(!Globals.langChangeTrigger());
 	}
 
 	window.rainloopI18N = {};
@@ -956,7 +951,7 @@ Utils.initOnStartOrLangChange = function (fCallback, oScope, fLangCallback)
 
 	if (fLangCallback)
 	{
-		Globals.langChangeTick.subscribe(function () {
+		Globals.langChangeTrigger.subscribe(function () {
 			if (fCallback)
 			{
 				fCallback.call(oScope);
@@ -967,7 +962,7 @@ Utils.initOnStartOrLangChange = function (fCallback, oScope, fLangCallback)
 	}
 	else if (fCallback)
 	{
-		Globals.langChangeTick.subscribe(fCallback, oScope);
+		Globals.langChangeTrigger.subscribe(fCallback, oScope);
 	}
 };
 
@@ -1522,8 +1517,13 @@ Utils.initDataConstructorBySettings = function (oData)
  */
 Utils.createMomentDate = function (oObject)
 {
+	if (Utils.isUnd(oObject.moment))
+	{
+		oObject.moment = ko.observable(moment());
+	}
+
 	return ko.computed(function () {
-		Globals.minuteTick();
+		Globals.momentTrigger();
 		return this.moment().fromNow();
 	}, oObject);
 };
@@ -7543,14 +7543,6 @@ window['__RLBOOT'] = function (fCall) {
 		if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
 		{
 			$('#rl-templates').html(window['rainloopTEMPLATES'][0]);
-			
-			window.setInterval(function () {
-				Globals.minuteTick(!Globals.minuteTick());
-			}, 1000 * 60);
-			
-			window.setInterval(function () {
-				Globals.fiveMinuteTick(!Globals.fiveMinuteTick());
-			}, 1000 * 60 * 5);
 
 			_.delay(function () {
 				window['rainloopAppData'] = {};

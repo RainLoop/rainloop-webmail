@@ -3078,12 +3078,15 @@ a.badge:hover {
 }
 .icon-folder,
 .icon-folder-add,
-.icon-address-book,
 .icon-list {
   line-height: 18px;
   font-size: 18px;
   margin-top: -2px;
   margin-left: -2px;
+}
+.iconsize24 {
+  line-height: 24px;
+  font-size: 24px;
 }
 /* White icons with optional class, or on hover/active states of certain elements */
 .icon-white,
@@ -3412,6 +3415,9 @@ html.no-rgba .modal {
 .picker.modal-dialog,
 .picker.picker-dialog {
   z-index: 2001 !important;
+}
+.control-label.remove-padding-top {
+  padding-top: 0;
 }
 .inputosaurus-container {
   width: 99%;
@@ -4903,6 +4909,12 @@ html.rl-message-fullscreen .messageView .b-content .buttonUnFull {
 }
 html.rl-message-fullscreen .messageView .b-content .buttonFull {
   display: none;
+}
+.b-contacts-content .control-group .control-label.fix-width {
+  width: 110px;
+}
+.b-contacts-content .control-group .controls.fix-width {
+  margin-left: 135px;
 }
 .b-contacts-content.modal {
   position: absolute;
