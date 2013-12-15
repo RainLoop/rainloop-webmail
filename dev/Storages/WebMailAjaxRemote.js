@@ -271,6 +271,17 @@ WebMailAjaxRemoteStorage.prototype.folderInformation = function (fCallback, sFol
 
 /**
  * @param {?Function} fCallback
+ * @param {Array} aFolders
+ */
+WebMailAjaxRemoteStorage.prototype.folderInformationMultiply = function (fCallback, aFolders)
+{
+	this.defaultRequest(fCallback, 'FolderInformationMultiply', {
+		'Folders': aFolders
+	});
+};
+
+/**
+ * @param {?Function} fCallback
  */
 WebMailAjaxRemoteStorage.prototype.logout = function (fCallback)
 {

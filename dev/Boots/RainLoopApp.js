@@ -267,6 +267,7 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 				if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
 				{
 					var
+						iUtc = moment().unix(),
 						sHash = RL.cache().getFolderHash(oData.Result.Folder),
 						oFolder = RL.cache().getFolderFromCacheList(oData.Result.Folder),
 						bCheck = false,
@@ -278,6 +279,8 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 
 					if (oFolder)
 					{
+						oFolder.interval = iUtc;
+						
 						if (oData.Result.Hash)
 						{
 							RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
@@ -351,6 +354,94 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 				}
 			}
 		}, sFolder, aList);
+	}
+};
+
+/**
+ * @param {boolean=} bBoot = false
+ */
+RainLoopApp.prototype.folderInformationMultiply = function (bBoot)
+{
+	bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
+
+	var
+		iUtc = moment().unix(),
+		aFolders = RL.data().getNextFolderNames(bBoot)
+	;
+
+	if (Utils.isNonEmptyArray(aFolders))
+	{
+		this.remote().folderInformationMultiply(function (sResult, oData) {
+			if (Enums.StorageResultType.Success === sResult)
+			{
+				if (oData && oData.Result && oData.Result.List && Utils.isNonEmptyArray(oData.Result.List))
+				{
+					_.each(oData.Result.List, function (oItem) {
+						
+						var
+							aList = [],
+							sHash = RL.cache().getFolderHash(oItem.Folder),
+							oFolder = RL.cache().getFolderFromCacheList(oItem.Folder),
+							bUnreadCountChange = false
+						;
+
+						if (oFolder)
+						{
+							oFolder.interval = iUtc;
+
+							if (oItem.Hash)
+							{
+								RL.cache().setFolderHash(oItem.Folder, oItem.Hash);
+							}
+
+							if (Utils.isNormal(oItem.MessageCount))
+							{
+								oFolder.messageCountAll(oItem.MessageCount);
+							}
+
+							if (Utils.isNormal(oItem.MessageUnseenCount))
+							{
+								if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oItem.MessageUnseenCount))
+								{
+									bUnreadCountChange = true;
+								}
+
+								oFolder.messageCountUnread(oItem.MessageUnseenCount);
+							}
+
+							if (bUnreadCountChange)
+							{
+								RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+							}
+
+							if (oItem.Hash !== sHash || '' === sHash)
+							{
+								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								{
+									RL.reloadMessageList();
+								}
+							}
+							else if (bUnreadCountChange)
+							{
+								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								{
+									aList = RL.data().messageList();
+									if (Utils.isNonEmptyArray(aList))
+									{
+										RL.folderInformation(oFolder.fullNameRaw, aList);
+									}
+								}
+							}
+						}
+					});
+
+					if (bBoot)
+					{
+						RL.folderInformationMultiply(true);
+					}
+				}
+			}
+		}, aFolders);
 	}
 };
 
@@ -702,6 +793,30 @@ RainLoopApp.prototype.bootstart = function ()
 					RL.socialUsers(true);
 				}
 
+				RL.sub('interval.2m', function () {
+					RL.folderInformation('INBOX');
+				});
+				
+				RL.sub('interval.2m', function () {
+					var sF = RL.data().currentFolderFullNameRaw();
+					if ('INBOX' !== sF)
+					{
+						RL.folderInformation(sF);
+					}
+				});
+
+				RL.sub('interval.3m', function () {
+					RL.folderInformationMultiply();
+				});
+
+				RL.sub('interval.5m', function () {
+					RL.quota();
+				});
+
+				_.delay(function () {
+					RL.folderInformationMultiply(true);
+				}, 500);
+
 				_.delay(function () {
 
 					RL.emailsPicsHashes();
@@ -712,15 +827,9 @@ RainLoopApp.prototype.bootstart = function ()
 							RL.cache().setServicesData(oData.Result);
 						}
 					});
-				}, 1000);
 
-				RL.sub('interval.5m', function () {
-					RL.quota();
-				});
+				}, 2000);
 
-				RL.sub('interval.2m', function () {
-					RL.folderInformation('INBOX');
-				});
 
 				Plugins.runHook('rl-start-user-screens');
 			}

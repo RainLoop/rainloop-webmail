@@ -91,22 +91,6 @@ MailBoxScreen.prototype.onStart = function ()
 	}, 1000);
 
 	_.delay(function () {
-		var sFolder = RL.data().spamFolder();
-		if (sFolder !== oData.currentFolderFullNameRaw() && '' !== sFolder)
-		{
-			RL.folderInformation(sFolder);
-		}
-	}, 1500);
-
-	_.delay(function () {
-		var sFolder = RL.data().draftFolder();
-		if (sFolder !== oData.currentFolderFullNameRaw() && '' !== sFolder)
-		{
-			RL.folderInformation(sFolder);
-		}
-	}, 2000);
-
-	_.delay(function () {
 		RL.quota();
 	}, 5000);
 

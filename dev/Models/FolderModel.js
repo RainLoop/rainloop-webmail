@@ -20,6 +20,8 @@ function FolderModel()
 	this.isGmailFolder = false;
 	this.isUnpaddigFolder = false;
 
+	this.interval = 0;
+
 	this.type = ko.observable(Enums.FolderType.User);
 
 	this.selected = ko.observable(false);
@@ -143,10 +145,21 @@ FolderModel.prototype.initComputed = function ()
 			RL.data().foldersInboxUnreadCount(iUnread);
 		}
 
-//		return 0 < iUnread ? '' + iUnread : '';
-//		return 0 < iUnread && 'INBOX' === this.fullNameRaw ? '' + iUnread : '';
-		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :
-			(0 < iCount && Enums.FolderType.Draft === iType ? '' + iCount : '');
+		if (0 < iCount)
+		{
+			if (Enums.FolderType.Draft === iType)
+			{
+				return '' + iCount;
+			}
+			else if (0 < iUnread && Enums.FolderType.Trash !== iType && Enums.FolderType.SentItems !== iType)
+			{
+				return '' + iUnread;
+			}
+		}
+
+		return '';
+//		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :
+//			(0 < iCount && Enums.FolderType.Draft === iType ? '' + iCount : '');
 	}, this);
 
 	this.canBeDeleted = ko.computed(function () {
@@ -261,6 +274,7 @@ FolderModel.prototype.fullNameHash = '';
 FolderModel.prototype.delimiter = '';
 FolderModel.prototype.namespace = '';
 FolderModel.prototype.deep = 0;
+FolderModel.prototype.interval = 0;
 
 FolderModel.prototype.isNamespaceFolder = false;
 FolderModel.prototype.isGmailFolder = false;

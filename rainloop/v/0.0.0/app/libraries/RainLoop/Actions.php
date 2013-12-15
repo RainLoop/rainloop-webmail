@@ -3417,7 +3417,7 @@ class Actions
 		$aFlagsFilteredUids = array();
 		if (0 < strlen($sFlagsUids))
 		{
-			$aFlagsUids = explode(',', (string) $this->GetActionParam('FlagsUids', ''));
+			$aFlagsUids = explode(',', $sFlagsUids);
 			$aFlagsFilteredUids = array_filter($aFlagsUids, function (&$sUid) {
 				$sUid = (int) trim($sUid);
 				return 0 < (int) trim($sUid);
@@ -3431,15 +3431,18 @@ class Actions
 		try
 		{
 			$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, $sPrevUidNext, $aFlagsFilteredUids);
-			foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
+			if (\is_array($aInboxInformation) && isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
 			{
-				$aLowerFlags = array_map('strtolower', $aFlags);
-				$aInboxInformation['Flags'][$iUid] = array(
-					'IsSeen' => in_array('\\seen', $aLowerFlags),
-					'IsFlagged' => in_array('\\flagged', $aLowerFlags),
-					'IsAnswered' => in_array('\\answered', $aLowerFlags),
-					'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags)
-				);
+				foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
+				{
+					$aLowerFlags = array_map('strtolower', $aFlags);
+					$aInboxInformation['Flags'][$iUid] = array(
+						'IsSeen' => in_array('\\seen', $aLowerFlags),
+						'IsFlagged' => in_array('\\flagged', $aLowerFlags),
+						'IsAnswered' => in_array('\\answered', $aLowerFlags),
+						'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags)
+					);
+				}
 			}
 		}
 		catch (\Exception $oException)
@@ -3453,6 +3456,47 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoFolderInformationMultiply()
+	{
+		$aResult = array(
+			'List' => array(),
+			'Version' => APP_VERSION
+		);
+
+		$aFolders = $this->GetActionParam('Folders', null);
+		if (\is_array($aFolders))
+		{
+			$this->initMailClientConnection();
+
+			$aFolders = \array_unique($aFolders);
+			foreach ($aFolders as $sFolder)
+			{
+				if (0 < \strlen(\trim($sFolder)) && 'INBOX' !== \strtoupper($sFolder))
+				{
+					try
+					{
+						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
+						if (\is_array($aInboxInformation) && isset($aInboxInformation['Folder']))
+						{
+							$aResult['List'][] = $aInboxInformation;
+						}
+					}
+					catch (\Exception $oException)
+					{
+						$this->Logger()->WriteException($oException);
+					}
+				}
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
 	/**

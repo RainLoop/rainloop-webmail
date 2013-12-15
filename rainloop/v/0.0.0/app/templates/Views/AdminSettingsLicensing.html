@@ -60,11 +60,18 @@
 		</div>
 		<div class="control-group" data-bind="visible: subscriptionEnabled() && !licensingProcess()">
 			<div class="controls">
-				<button class="btn" data-bind="click: showActivationForm">
+				<a class="btn" data-bind="click: showActivationForm">
 					<i class="icon-heart-empty"></i>
 					&nbsp;&nbsp;
 					Activate Subscription Key
-				</button>
+				</a>
+				&nbsp;
+				&nbsp;
+				<a class="btn" href="http://rainloop.net/purchase/" target="_black">
+					<i class="icon-purchase"></i>
+					&nbsp;&nbsp;
+					Purchase
+				</a>
 			</div>
 		</div>
 	</div>

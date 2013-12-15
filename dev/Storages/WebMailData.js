@@ -650,6 +650,67 @@ WebMailDataStorage.prototype.hideMessageBodies = function ()
 	}
 };
 
+/**
+ * @param {boolean=} bBoot = false
+ * @returns {Array}
+ */
+WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
+{
+	bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
+	
+	var
+		aResult = [],
+		iLimit = 10,
+		iUtc = moment().unix(),
+		iTimeout = iUtc - 60 * 5,
+		aTimeouts = [],
+		fSearchFunction = function (aList) {
+			_.each(aList, function (oFolder) {
+				if (oFolder && 'INBOX' !== oFolder.fullNameRaw &&
+					oFolder.selectable && oFolder.existen &&
+					iTimeout > oFolder.interval &&
+					(!bBoot || oFolder.subScribed()))
+				{
+					aTimeouts.push([oFolder.interval, oFolder.fullNameRaw]);
+				}
+
+				if (oFolder && 0 < oFolder.subFolders().length)
+				{
+					fSearchFunction(oFolder.subFolders());
+				}
+			});
+		}
+	;
+
+	fSearchFunction(this.folderList());
+
+	aTimeouts.sort(function(a, b) {
+		if (a[0] < b[0])
+		{
+			return -1;
+		}
+		else if (a[0] > b[0])
+		{
+			return 1;
+		}
+		
+		return 0;
+	});
+	
+	_.find(aTimeouts, function (aItem) {
+		var oFolder = RL.cache().getFolderFromCacheList(aItem[1]);
+		if (oFolder)
+		{
+			oFolder.interval = iUtc;
+			aResult.push(aItem[1]);
+		}
+		
+		return iLimit <= aResult.length;
+	});
+
+	return _.uniq(aResult);
+};
+
 WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 {
 	var
@@ -777,6 +838,7 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			iCount = 0,
 			iOffset = 0,
 			aList = [],
+			iUtc = moment().unix(),
 			aStaticList = oRainLoopData.staticMessageList,
 			oJsonMessage = null,
 			oMessage = null,
@@ -798,6 +860,8 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 
 		if (oFolder && !bCached)
 		{
+			oFolder.interval = iUtc;
+			
 			RL.cache().setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
 
 			if (Utils.isNormal(oData.Result.MessageCount))

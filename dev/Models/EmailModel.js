@@ -200,64 +200,6 @@ EmailModel.prototype.toLine = function (bFriendlyView, bWrapWithLink, bEncodeHtm
 };
 
 /**
- * @return {string}
- */
-EmailModel.prototype.select2Result = function ()
-{
-	var 
-		sResult = '',
-		sImg = RL.cache().getUserPic(this.email)
-	;
-
-	if ('' !== sImg)
-	{
-		sResult += '<img class="select2-user-pic pull-left" src="' + Utils.encodeHtml(sImg) + '" />';
-	}
-	else
-	{
-		sResult += '<img class="select2-user-pic pull-left" src="' + RL.link().emptyContactPic() + '" />';
-	}
-	
-	if (Enums.EmailType.Facebook === this.type())
-	{
-		sResult += '' + (0 < this.name.length ? this.name : this.email);
-		sResult += '<i class="icon-facebook pull-right select2-icon-result" />';
-	}
-	else
-	{
-		sResult += '' + (0 < this.name.length ? this.email + ' <span class="select2-subname">(' + this.name + ')</span>' : this.email);
-	}
-	
-	return sResult + '';
-};
-
-/**
- * @param {Object} oContainer
- * @return {string|null}
- */
-EmailModel.prototype.select2Selection = function (oContainer)
-{
-	var sResult = '';
-	if (Enums.EmailType.Facebook === this.type())
-	{
-		sResult =  0 < this.name.length ? this.name : this.email;
-		if ('' !== sResult)
-		{
-			$('<pan>').text(sResult).appendTo(oContainer);
-			oContainer.append('<i class="icon-facebook select2-icon"></i>');
-			return null;
-		}
-	}
-	else
-	{
-		sResult =  0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
-	}
-
-	return sResult;
-};
-
-
-/**
  * @param {string} $sEmailAddress
  * @return {boolean}
  */
