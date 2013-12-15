@@ -54,19 +54,19 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 
 	if (oFolder)
 	{
-		oData
-			.currentFolder(oFolder)
-			.messageListPage(iPage)
-			.messageListSearch(sSearch)
-		;
+			oData
+				.currentFolder(oFolder)
+				.messageListPage(iPage)
+				.messageListSearch(sSearch)
+			;
 
-		if (!oData.usePreviewPane() && oData.message())
-		{
-			oData.message(null);
+			if (!oData.usePreviewPane() && oData.message())
+			{
+				oData.message(null);
+			}
+
+			RL.reloadMessageList();
 		}
-
-		RL.reloadMessageList();
-	}
 };
 
 MailBoxScreen.prototype.onStart = function ()
@@ -158,7 +158,8 @@ MailBoxScreen.prototype.routes = function ()
 	;
 
 	return [
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/?$/, {'normalize_': fNormS}],
+		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]
 	];

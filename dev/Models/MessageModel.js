@@ -211,6 +211,65 @@ MessageModel.replyHelper = function (aMessageEmails, oLocalUnic, aLocalEmails)
 	}
 };
 
+MessageModel.prototype.clear = function ()
+{
+	this.folderFullNameRaw = '';
+	this.uid = '';
+	this.requestHash = '';
+	this.subject('');
+	this.size(0);
+	this.dateTimeStampInUTC(0);
+	this.priority(Enums.MessagePriority.Normal);
+
+	this.fromEmailString('');
+	this.toEmailsString('');
+	this.senderEmailsString('');
+
+	this.prefetched = false;
+
+	this.emails = [];
+
+	this.from = [];
+	this.to = [];
+	this.cc = [];
+	this.bcc = [];
+	this.replyTo = [];
+
+	this.newForAnimation(false);
+
+	this.deleted(false);
+	this.unseen(false);
+	this.flagged(false);
+	this.answered(false);
+	this.forwarded(false);
+
+	this.selected(false);
+	this.checked(false);
+	this.hasAttachments(false);
+	this.attachmentsMainType('');
+
+	this.body = null;
+	this.isRtl(false);
+	this.isHtml(false);
+	this.hasImages(false);
+	this.attachments([]);
+
+	this.priority(Enums.MessagePriority.Normal);
+	this.aDraftInfo = [];
+	this.sMessageId = '';
+	this.sInReplyTo = '';
+	this.sReferences = '';
+
+	this.parentUid(0);
+	this.threads([]);
+	this.threadsLen(0);
+	this.hasUnseenSubMessage(false);
+	this.hasFlaggedSubMessage(false);
+
+	this.lastInCollapsedThread(false);
+	this.lastInCollapsedThreadLoading(false);
+};
+
 /**
  * @param {AjaxJsonMessage} oJsonMessage
  * @return {boolean}

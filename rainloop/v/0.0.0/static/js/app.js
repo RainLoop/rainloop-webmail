@@ -3038,8 +3038,8 @@ LinkBuilder.prototype.admin = function (sScreenName)
 
 /**
  * @param {string} sFolder
- * @param {number=} iPage
- * @param {string=} sSearch
+ * @param {number=} iPage = 1
+ * @param {string=} sSearch = ''
  * @return {string}
  */
 LinkBuilder.prototype.mailBox = function (sFolder, iPage, sSearch)
@@ -6389,6 +6389,65 @@ MessageModel.replyHelper = function (aMessageEmails, oLocalUnic, aLocalEmails)
 			}
 		}
 	}
+};
+
+MessageModel.prototype.clear = function ()
+{
+	this.folderFullNameRaw = '';
+	this.uid = '';
+	this.requestHash = '';
+	this.subject('');
+	this.size(0);
+	this.dateTimeStampInUTC(0);
+	this.priority(Enums.MessagePriority.Normal);
+
+	this.fromEmailString('');
+	this.toEmailsString('');
+	this.senderEmailsString('');
+
+	this.prefetched = false;
+
+	this.emails = [];
+
+	this.from = [];
+	this.to = [];
+	this.cc = [];
+	this.bcc = [];
+	this.replyTo = [];
+
+	this.newForAnimation(false);
+
+	this.deleted(false);
+	this.unseen(false);
+	this.flagged(false);
+	this.answered(false);
+	this.forwarded(false);
+
+	this.selected(false);
+	this.checked(false);
+	this.hasAttachments(false);
+	this.attachmentsMainType('');
+
+	this.body = null;
+	this.isRtl(false);
+	this.isHtml(false);
+	this.hasImages(false);
+	this.attachments([]);
+
+	this.priority(Enums.MessagePriority.Normal);
+	this.aDraftInfo = [];
+	this.sMessageId = '';
+	this.sInReplyTo = '';
+	this.sReferences = '';
+
+	this.parentUid(0);
+	this.threads([]);
+	this.threadsLen(0);
+	this.hasUnseenSubMessage(false);
+	this.hasFlaggedSubMessage(false);
+
+	this.lastInCollapsedThread(false);
+	this.lastInCollapsedThreadLoading(false);
 };
 
 /**
@@ -11225,7 +11284,7 @@ MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageList
 MailBoxMessageListViewModel.prototype.onMessageResponse = function (sResult, oData, bCached)
 {
 	var oRainLoopData = RL.data();
-	
+
 	oRainLoopData.messageLoading(false);
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
@@ -15557,19 +15616,19 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 
 	if (oFolder)
 	{
-		oData
-			.currentFolder(oFolder)
-			.messageListPage(iPage)
-			.messageListSearch(sSearch)
-		;
+			oData
+				.currentFolder(oFolder)
+				.messageListPage(iPage)
+				.messageListSearch(sSearch)
+			;
 
-		if (!oData.usePreviewPane() && oData.message())
-		{
-			oData.message(null);
+			if (!oData.usePreviewPane() && oData.message())
+			{
+				oData.message(null);
+			}
+
+			RL.reloadMessageList();
 		}
-
-		RL.reloadMessageList();
-	}
 };
 
 MailBoxScreen.prototype.onStart = function ()
@@ -15661,7 +15720,8 @@ MailBoxScreen.prototype.routes = function ()
 	;
 
 	return [
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/?$/, {'normalize_': fNormS}],
+		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]
 	];

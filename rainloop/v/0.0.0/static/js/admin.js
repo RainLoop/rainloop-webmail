@@ -3038,8 +3038,8 @@ LinkBuilder.prototype.admin = function (sScreenName)
 
 /**
  * @param {string} sFolder
- * @param {number=} iPage
- * @param {string=} sSearch
+ * @param {number=} iPage = 1
+ * @param {string=} sSearch = ''
  * @return {string}
  */
 LinkBuilder.prototype.mailBox = function (sFolder, iPage, sSearch)

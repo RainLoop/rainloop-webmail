@@ -450,7 +450,7 @@ MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageList
 MailBoxMessageListViewModel.prototype.onMessageResponse = function (sResult, oData, bCached)
 {
 	var oRainLoopData = RL.data();
-	
+
 	oRainLoopData.messageLoading(false);
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
