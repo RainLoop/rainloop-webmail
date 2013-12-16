@@ -10966,6 +10966,10 @@ function MailBoxMessageListViewModel()
 		return RL.data().spamFolder() === this.messageListEndFolder();
 	}, this);
 
+	this.isSpamDisabled = ko.computed(function () {
+		return Consts.Values.UnuseOptionValue === RL.data().spamFolder();
+	}, this);
+
 	this.isTrashFolder = ko.computed(function () {
 		return RL.data().trashFolder() === this.messageListEndFolder();
 	}, this);
@@ -11041,6 +11045,8 @@ function MailBoxMessageListViewModel()
 			this.selector.goUp();
 		}, this)
 	;
+
+	this.moveOrDeleteResponse = _.bind(this.moveOrDeleteResponse, this);
 
 	Knoin.constructorEnd(this);
 }
@@ -11207,7 +11213,7 @@ MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFold
 			bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
 
 			RL.remote()[bCopy ? 'messagesCopy' : 'messagesMove'](
-				_.bind(this.moveOrDeleteResponse, this),
+				this.moveOrDeleteResponse,
 				oFromFolder.fullNameRaw,
 				oToFolder.fullNameRaw,
 				aUidForRemove
@@ -11247,30 +11253,48 @@ MailBoxMessageListViewModel.prototype.deleteSelectedMessageFromCurrentFolder = f
 	if (this.canBeMoved())
 	{
 		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
-		var oTrashOrSpamFolder = RL.cache().getFolderFromCacheList(
-			Enums.FolderType.Spam === iType ? RL.data().spamFolder() : RL.data().trashFolder());
+		if (bUseFolder)
+		{
+			if ((Enums.FolderType.Spam === iType && Consts.Values.UnuseOptionValue === RL.data().spamFolder()) ||
+				(Enums.FolderType.Trash === iType && Consts.Values.UnuseOptionValue === RL.data().trashFolder()))
+			{
+				bUseFolder = false;
+			}
+		}
+
+		var 
+			self = this,
+			aUIds = null,
+			sCurrentFolderFullNameRaw = RL.data().currentFolderFullNameRaw(),
+			oTrashOrSpamFolder = RL.cache().getFolderFromCacheList(
+				Enums.FolderType.Spam === iType ? RL.data().spamFolder() : RL.data().trashFolder())
+		;
 
 		if (!oTrashOrSpamFolder && bUseFolder)
 		{
 			kn.showScreenPopup(PopupsFolderSystemViewModel, [
 				Enums.FolderType.Spam === iType ? Enums.SetSystemFoldersNotification.Spam : Enums.SetSystemFoldersNotification.Trash]);
 		}
-		else if (!bUseFolder || (oTrashOrSpamFolder && (Consts.Values.UnuseOptionValue === oTrashOrSpamFolder.fullNameRaw ||
-			RL.data().currentFolderFullNameRaw() === oTrashOrSpamFolder.fullNameRaw)))
+		else if (!bUseFolder || (oTrashOrSpamFolder && RL.data().currentFolderFullNameRaw() === oTrashOrSpamFolder.fullNameRaw))
 		{
-			RL.remote().messagesDelete(
-				_.bind(this.moveOrDeleteResponse, this),
-				RL.data().currentFolderFullNameRaw(),
-				RL.data().messageListCheckedOrSelectedUidsWithSubMails()
-			);
+			aUIds = RL.data().messageListCheckedOrSelectedUidsWithSubMails();
+			
+			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
-			this.removeCheckedOrSelectedMessagesFromList();
+				RL.remote().messagesDelete(
+					self.moveOrDeleteResponse,
+					sCurrentFolderFullNameRaw,
+					aUIds
+				);
+		
+				self.removeCheckedOrSelectedMessagesFromList();
+			}]);
 		}
 		else if (oTrashOrSpamFolder)
 		{
 			RL.remote().messagesMove(
-				_.bind(this.moveOrDeleteResponse, this),
-				RL.data().currentFolderFullNameRaw(),
+				this.moveOrDeleteResponse,
+				sCurrentFolderFullNameRaw,
 				oTrashOrSpamFolder.fullNameRaw,
 				RL.data().messageListCheckedOrSelectedUidsWithSubMails()
 			);
