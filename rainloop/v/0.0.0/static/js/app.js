@@ -9781,7 +9781,10 @@ function PopupsAdvancedSearchViewModel()
 	this.subject = ko.observable('');
 	this.text = ko.observable('');
 	this.selectedDateValue = ko.observable(-1);
+
 	this.hasAttachments = ko.observable(false);
+	this.starred = ko.observable(false);
+	this.unseen = ko.observable(false);
 
 	this.searchCommand = Utils.createCommand(this, function () {
 		
@@ -9816,7 +9819,8 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 		sFrom = Utils.trim(this.from()),
 		sTo = Utils.trim(this.to()),
 		sSubject = Utils.trim(this.subject()),
-		sText = Utils.trim(this.text())
+		sText = Utils.trim(this.text()),
+		aHas = []
 	;
 
 	if (sFrom && '' !== sFrom)
@@ -9836,7 +9840,22 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 	
 	if (this.hasAttachments())
 	{
-		aResult.push('has:attachments');
+		aHas.push('attachments');
+	}
+	
+	if (this.unseen())
+	{
+		aHas.push('unseen');
+	}
+
+	if (this.starred())
+	{
+		aHas.push('flag');
+	}
+
+	if (0 < aHas.length)
+	{
+		aResult.push('has:' + aHas.join(','));
 	}
 
 	if (-1 < this.selectedDateValue())
@@ -9861,6 +9880,8 @@ PopupsAdvancedSearchViewModel.prototype.clearPopup = function ()
 
 	this.selectedDateValue(-1);
 	this.hasAttachments(false);
+	this.starred(false);
+	this.unseen(false);
 
 	this.fromFocus(true);
 };
@@ -14442,7 +14463,7 @@ WebMailAjaxRemoteStorage.prototype.messageList = function (fCallback, sFolderFul
 	iLimit = Utils.isUnd(iOffset) ? 20 : Utils.pInt(iLimit);
 	sSearch = Utils.pString(sSearch);
 
-	if ('' !== sFolderHash)
+	if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('has:')))
 	{
 		this.defaultRequest(fCallback, 'MessageList', {},
 			'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,

@@ -7,6 +7,7 @@
 			</h3>
 		</div>
 		<div class="modal-body">
+			<br />
 			<form class="form-horizontal" action="#/" autocomplete="off" onsubmit="return false;" data-bind="command: searchCommand">
 				<div class="row">
 					<div class="span4">
@@ -34,8 +35,6 @@
 								<input class="uiInput inputFrom" type="text" data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
 							</div>
 						</div>
-					</div>
-					<div class="span4">
 						<div class="control-group">
 							<label class="control-label">
 								<span class="i18n" data-i18n-text="SEARCH/LABEL_ADV_TEXT"></span>
@@ -44,6 +43,8 @@
 								<input class="uiInput inputFrom" type="text" data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
 							</div>
 						</div>
+					</div>
+					<div class="span4">
 						<div class="control-group">
 							<label class="control-label">
 								<span class="i18n" data-i18n-text="SEARCH/LABEL_ADV_DATE"></span>
@@ -64,6 +65,16 @@
 							<label class="control-label">
 							</label>
 							<div class="controls">
+								<label data-bind="click: function () { unseen(!unseen()); }">
+									<i data-bind="css: unseen() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="SEARCH/LABEL_ADV_UNSEEN"></span>
+								</label>
+								<label data-bind="click: function () { starred(!starred()); }">
+									<i data-bind="css: starred() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="SEARCH/LABEL_ADV_FLAGGED"></span>
+								</label>
 								<label data-bind="click: function () { hasAttachments(!hasAttachments()); }">
 									<i data-bind="css: hasAttachments() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 									&nbsp;&nbsp;

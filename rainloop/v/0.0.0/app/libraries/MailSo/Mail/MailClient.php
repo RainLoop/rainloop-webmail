@@ -1051,14 +1051,14 @@ class MailClient
 							{
 								$oSearchBuilder->AddAnd('HEADER CONTENT-TYPE', '"MULTIPART/MIXED"');
 							}
-//							if (false !== strpos($sRawValue, 'flag'))
-//							{
-//								$oSearchBuilder->AddAnd('FLAGGED');
-//							}
-//							if (false !== strpos($sRawValue, 'unseen'))
-//							{
-//								$oSearchBuilder->AddAnd('UNSEEN');
-//							}
+							if (false !== strpos($sRawValue, 'flag') || false !== strpos($sRawValue, 'star'))
+							{
+								$oSearchBuilder->AddAnd('FLAGGED');
+							}
+							if (false !== strpos($sRawValue, 'unseen'))
+							{
+								$oSearchBuilder->AddAnd('UNSEEN');
+							}
 							break;
 						case 'DATE':
 							$iDateStampFrom = $iDateStampTo = 0;
