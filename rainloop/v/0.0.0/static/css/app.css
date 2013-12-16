@@ -6201,6 +6201,7 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   color: grey;
 }
 .b-folders .e-item .e-link .count {
+  position: relative;
   display: none;
   margin-top: 5px;
   line-height: 19px;

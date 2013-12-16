@@ -147,10 +147,11 @@ class HtmlUtils
 	 * @param array $aFoundCIDs
 	 * @param array $aContentLocationUrls
 	 * @param array $aFoundedContentLocationUrls
+	 * @param bool $bDoNotReplaceExternalUrl = false
 	 *
 	 * @return string
 	 */
-	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs, $aContentLocationUrls, &$aFoundedContentLocationUrls)
+	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs, $aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false)
 	{
 		$sStyle = \trim($sStyle);
 		$aOutStyles = array();
@@ -215,21 +216,24 @@ class HtmlUtils
 						if (\preg_match('/http[s]?:\/\//i', $sUrl))
 						{
 							$bHasExternals = true;
-							if (\in_array($sName, array('background-image', 'list-style-image', 'content')))
+							if (!$bDoNotReplaceExternalUrl)
 							{
-								$sStyleItem = '';
+								if (\in_array($sName, array('background-image', 'list-style-image', 'content')))
+								{
+									$sStyleItem = '';
+								}
+
+								$sTemp = '';
+								if ($oElement->hasAttribute('data-x-style-url'))
+								{
+									$sTemp = \trim($oElement->getAttribute('data-x-style-url'));
+								}
+
+								$sTemp = empty($sTemp) ? '' : (';' === \substr($sTemp, -1) ? $sTemp.' ' : $sTemp.'; ');
+
+								$oElement->setAttribute('data-x-style-url', \trim($sTemp.
+									('background' === $sName ? 'background-image' : $sName).': '.$sFullUrl, ' ;'));
 							}
-
-							$sTemp = '';
-							if ($oElement->hasAttribute('data-x-style-url'))
-							{
-								$sTemp = \trim($oElement->getAttribute('data-x-style-url'));
-							}
-
-							$sTemp = empty($sTemp) ? '' : (';' === \substr($sTemp, -1) ? $sTemp.' ' : $sTemp.'; ');
-
-							$oElement->setAttribute('data-x-style-url', \trim($sTemp.
-								('background' === $sName ? 'background-image' : $sName).': '.$sFullUrl, ' ;'));
 						}
 						else if ('data:image/' !== \strtolower(\substr(\trim($sUrl), 0, 11)))
 						{
@@ -257,17 +261,36 @@ class HtmlUtils
 		return \implode(';', $aOutStyles);
 	}
 
+
+	/**
+	 * @param string $sHtml
+	 * @param bool $bDoNotReplaceExternalUrl = false
+	 *
+	 * @return string
+	 */
+	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false)
+	{
+		$bHasExternals = false;
+		$aFoundCIDs = array();
+		$aContentLocationUrls = array();
+		$aFoundedContentLocationUrls = array();
+
+		return \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
+			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl);
+	}
+
 	/**
 	 * @param string $sHtml
 	 * @param bool $bHasExternals = false
 	 * @param array $aFoundCIDs = array()
 	 * @param array $aContentLocationUrls = array()
 	 * @param array $aFoundedContentLocationUrls = array()
+	 * @param bool $bDoNotReplaceExternalUrl = false
 	 *
 	 * @return string
 	 */
 	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
-		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array())
+		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(), $bDoNotReplaceExternalUrl = false)
 	{
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
@@ -402,7 +425,15 @@ class HtmlUtils
 					{
 						if (\preg_match('/http[s]?:\/\//i', $sSrc))
 						{
-							$oElement->setAttribute('data-x-src', $sSrc);
+							if ($bDoNotReplaceExternalUrl)
+							{
+								$oElement->setAttribute('src', $sSrc);
+							}
+							else
+							{
+								$oElement->setAttribute('data-x-src', $sSrc);
+							}
+							
 							$bHasExternals = true;
 						}
 						else if ('data:image/' === \strtolower(\substr(\trim($sSrc), 0, 11)))
@@ -446,7 +477,7 @@ class HtmlUtils
 				{
 					$oElement->setAttribute('style',
 						\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
-							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls));
+							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl));
 				}
 			}
 
