@@ -591,6 +591,11 @@ class HtmlUtils
 				}
 			}
 
+			if ($oElement->hasAttribute('data-original'))
+			{
+				$oElement->removeAttribute('data-original');
+			}
+
 			if ($oElement->hasAttribute('data-x-div-type'))
 			{
 				$oElement->removeAttribute('data-x-div-type');
