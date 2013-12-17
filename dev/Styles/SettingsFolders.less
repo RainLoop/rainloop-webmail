@@ -1,9 +1,9 @@
 
-.folderPaddingHelper(@i) {
+/*.folderPaddingHelper(@i) {
 	(~".folder-padding.deep-@{i}") {
 		width: 15px * @i + 10px;
 	}
-}
+}*/
 
 .b-settings-folders {
 
@@ -66,10 +66,15 @@
 		.folder-name-input {
 			border-width: 1px;
 			margin-bottom: 0;
+			margin-left: -4px;
 		}
 	}
 
 	.folder-item {
+
+		&.system .folder-name {
+			font-weight: bold;
+		}
 
 		.button-delete {
 			margin-right: 15px;
@@ -96,9 +101,25 @@
 		}
 	}
 
-	.folderPaddingHelper(1);
+	.folder-padding.deep-1 {
+		width: 15px * 1 + 10px;
+	}
+	.folder-padding.deep-2 {
+		width: 15px * 2 + 10px;
+	}
+	.folder-padding.deep-3 {
+		width: 15px * 3 + 10px;
+	}
+	.folder-padding.deep-4 {
+		width: 15px * 4 + 10px;
+	}
+	.folder-padding.deep-5 {
+		width: 15px * 5 + 10px;
+	}
+
+/*	.folderPaddingHelper(1);
 	.folderPaddingHelper(2);
 	.folderPaddingHelper(3);
 	.folderPaddingHelper(4);
-	.folderPaddingHelper(5);
+	.folderPaddingHelper(5);*/
 }

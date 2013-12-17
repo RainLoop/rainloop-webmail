@@ -15,21 +15,15 @@ _.extend(WebMailAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype
 
 /**
  * @param {?Function} fCallback
- * @param {boolean=} bUseCache = true
  */
-WebMailAjaxRemoteStorage.prototype.folders = function (fCallback, bUseCache)
+WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
 {
-	var sFoldersHash = RL.data().lastFoldersHash;
-
-	bUseCache = Utils.isUnd(bUseCache) ? false : !!bUseCache;
-	if (bUseCache && '' !== sFoldersHash)
-	{
-		this.defaultRequest(fCallback, 'Folders', {}, null, 'Folders/' + RL.data().projectHash() + '-' + sFoldersHash, ['Folders']);
-	}
-	else
-	{
-		this.defaultRequest(fCallback, 'Folders', {}, null, '', ['Folders']);
-	}
+	this.defaultRequest(fCallback, 'Folders', {
+		'SentFolder': RL.settingsGet('SentFolder'),
+		'DraftFolder': RL.settingsGet('DraftFolder'),
+		'SpamFolder': RL.settingsGet('SpamFolder'),
+		'TrashFolder': RL.settingsGet('TrashFolder')
+	}, null, '', ['Folders']);
 };
 
 /**

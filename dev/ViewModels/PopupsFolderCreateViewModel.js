@@ -63,7 +63,7 @@ function PopupsFolderCreateViewModel()
 			RL.data().foldersCreating(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				RL.folders(false);
+				RL.folders();
 			}
 			else
 			{

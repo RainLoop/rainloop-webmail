@@ -1143,7 +1143,7 @@ table {
     border-spacing: 0;
 }
 
-@charset "UTF-8";
+/*@charset "UTF-8";*/
 
 @font-face {
   font-family: "rainloop";
@@ -7903,6 +7903,19 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
+/*.folderPaddingHelper(@i) {
+	(~".folder-padding.deep-@{i}") {
+		width: 15px * @i + 10px;
+	}
+}*/
+.b-settings-folders {
+  /*	.folderPaddingHelper(1);
+	.folderPaddingHelper(2);
+	.folderPaddingHelper(3);
+	.folderPaddingHelper(4);
+	.folderPaddingHelper(5);*/
+
+}
 .b-settings-folders.ignore-folder-subscribe .subscribe-folder,
 .b-settings-folders.ignore-folder-subscribe .unsubscribe-folder {
   display: none;
@@ -7953,6 +7966,10 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-settings-folders .list-table .folder-name-input {
   border-width: 1px;
   margin-bottom: 0;
+  margin-left: -4px;
+}
+.b-settings-folders .folder-item.system .folder-name {
+  font-weight: bold;
 }
 .b-settings-folders .folder-item .button-delete {
   margin-right: 15px;
@@ -8425,11 +8442,4 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .editorFontStylePicker .editorFpFonts .editorFpFont {
   padding: 5px;
-}
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="search"] {
-  height: 20px;
-  line-height: 21px;
 }

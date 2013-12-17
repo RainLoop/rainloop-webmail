@@ -95,7 +95,7 @@ SettingsFolders.prototype.folderEditOnEnter = function (oFolder)
 					oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 			}
 
-			RL.folders(false);
+			RL.folders();
 
 		}, oFolder.fullNameRaw, sEditName);
 
@@ -166,7 +166,7 @@ SettingsFolders.prototype.deleteFolder = function (oFolderToRemove)
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 				}
 				
-				RL.folders(false);
+				RL.folders();
 
 			}, oFolderToRemove.fullNameRaw);
 			

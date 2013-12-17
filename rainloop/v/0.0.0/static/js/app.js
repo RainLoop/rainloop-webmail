@@ -7180,10 +7180,6 @@ function FolderModel()
 		}
 	}, this);
 	
-	this.canBeEdited = ko.computed(function () {
-		return Enums.FolderType.User === this.type();
-	}, this);
-
 	this.privateMessageCountAll = ko.observable(0);
 	this.privateMessageCountUnread = ko.observable(0);
 
@@ -7210,6 +7206,10 @@ FolderModel.prototype.initComputed = function ()
 		return !!_.find(this.subFolders(), function (oFolder) {
 			return oFolder.subScribed();
 		});
+	}, this);
+
+	this.canBeEdited = ko.computed(function () {
+		return Enums.FolderType.User === this.type() && this.existen && this.selectable;
 	}, this);
 
 	this.visible = ko.computed(function () {
@@ -7689,7 +7689,7 @@ function PopupsFolderCreateViewModel()
 			RL.data().foldersCreating(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				RL.folders(false);
+				RL.folders();
 			}
 			else
 			{
@@ -7791,7 +7791,8 @@ function PopupsFolderSystemViewModel()
 			'SentFolder': self.sentFolder(),
 			'DraftFolder': self.draftFolder(),
 			'SpamFolder': self.spamFolder(),
-			'TrashFolder': self.trashFolder()
+			'TrashFolder': self.trashFolder(),
+			'NullFolder': 'NullFolder'
 		});
 		
 	}, 1000);
@@ -12730,7 +12731,7 @@ SettingsFolders.prototype.folderEditOnEnter = function (oFolder)
 					oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 			}
 
-			RL.folders(false);
+			RL.folders();
 
 		}, oFolder.fullNameRaw, sEditName);
 
@@ -12801,7 +12802,7 @@ SettingsFolders.prototype.deleteFolder = function (oFolderToRemove)
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 				}
 				
-				RL.folders(false);
+				RL.folders();
 
 			}, oFolderToRemove.fullNameRaw);
 			
@@ -13601,10 +13602,9 @@ WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUid
 /**
  * @param {string} sNamespace
  * @param {Array} aFolders
- * @param {boolean} bCached
  * @return {Array}
  */
-WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders, bCached)
+WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders)
 {
 	var
 		iIndex = 0,
@@ -13615,8 +13615,6 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 		aSubFolders = [],
 		aList = []
 	;
-
-	bCached = !!bCached;
 
 	for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
 	{
@@ -13651,7 +13649,7 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 			{
 				oCacheFolder.collapsed(!Utils.isFolderExpanded(oCacheFolder.fullNameHash));
 
-				if (!bCached && oFolder.Extended)
+				if (oFolder.Extended)
 				{
 					if (oFolder.Extended.Hash)
 					{
@@ -13674,7 +13672,7 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 					aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
 				{
 					oCacheFolder.subFolders(
-						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection'], bCached));
+						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
 				}
 
 				aList.push(oCacheFolder);
@@ -13687,16 +13685,13 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 
 /**
  * @param {*} oData
- * @param {boolean=} bCached = false
  */
-WebMailDataStorage.prototype.setFolders = function (oData, bCached)
+WebMailDataStorage.prototype.setFolders = function (oData)
 {
 	var
 		aList = [],
 		bUpdate = false,
 		oRLData = RL.data(),
-		aFolders = oRLData.folderList(),
-		bFoldersFirst = 0 === aFolders.length,
 		fNormalizeFolder = function (sFolderFullNameRaw) {
 			return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
 				null !== RL.cache().getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';
@@ -13713,12 +13708,12 @@ WebMailDataStorage.prototype.setFolders = function (oData, bCached)
 
 		this.threading(!!RL.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
 
-		aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection'], !!bCached);
+		aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection']);
 		oRLData.folderList(aList);
 
 		if (oData.Result['SystemFolders'] &&
 			'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
-			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder'))
+			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('NullFolder'))
 		{
 			// TODO Magic Numbers
 			RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
@@ -13740,19 +13735,12 @@ WebMailDataStorage.prototype.setFolders = function (oData, bCached)
 				'SentFolder': oRLData.sentFolder(),
 				'DraftFolder': oRLData.draftFolder(),
 				'SpamFolder': oRLData.spamFolder(),
-				'TrashFolder': oRLData.trashFolder()
+				'TrashFolder': oRLData.trashFolder(),
+				'NullFolder': 'NullFolder'
 			});
 		}
 
-		if (!bCached)
-		{
-			RL.local().set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
-		}
-
-		if (bFoldersFirst && bCached)
-		{
-			RL.folders(false);
-		}
+		RL.local().set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 	}
 };
 
@@ -14365,21 +14353,15 @@ _.extend(WebMailAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype
 
 /**
  * @param {?Function} fCallback
- * @param {boolean=} bUseCache = true
  */
-WebMailAjaxRemoteStorage.prototype.folders = function (fCallback, bUseCache)
+WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
 {
-	var sFoldersHash = RL.data().lastFoldersHash;
-
-	bUseCache = Utils.isUnd(bUseCache) ? false : !!bUseCache;
-	if (bUseCache && '' !== sFoldersHash)
-	{
-		this.defaultRequest(fCallback, 'Folders', {}, null, 'Folders/' + RL.data().projectHash() + '-' + sFoldersHash, ['Folders']);
-	}
-	else
-	{
-		this.defaultRequest(fCallback, 'Folders', {}, null, '', ['Folders']);
-	}
+	this.defaultRequest(fCallback, 'Folders', {
+		'SentFolder': RL.settingsGet('SentFolder'),
+		'DraftFolder': RL.settingsGet('DraftFolder'),
+		'SpamFolder': RL.settingsGet('SpamFolder'),
+		'TrashFolder': RL.settingsGet('TrashFolder')
+	}, null, '', ['Folders']);
 };
 
 /**
@@ -16226,18 +16208,17 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 };
 
 /**
- * @param {boolean=} bUseCache = true
  * @param {Function=} fCallback
  */
-RainLoopApp.prototype.folders = function (bUseCache, fCallback)
+RainLoopApp.prototype.folders = function (fCallback)
 {
 	this.data().foldersLoading(true);
-	this.remote().folders(_.bind(function (sResult, oData, bCached) {
+	this.remote().folders(_.bind(function (sResult, oData) {
 
 		RL.data().foldersLoading(false);
 		if (Enums.StorageResultType.Success === sResult)
 		{
-			this.data().setFolders(oData, bCached);
+			this.data().setFolders(oData);
 			if (fCallback)
 			{
 				fCallback(true);
@@ -16250,7 +16231,7 @@ RainLoopApp.prototype.folders = function (bUseCache, fCallback)
 				fCallback(false);
 			}
 		}
-	}, this), bUseCache);
+	}, this));
 };
 
 RainLoopApp.prototype.accountsAndIdentities = function ()
@@ -16837,7 +16818,7 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		this.setTitle(Utils.i18n('TITLES/LOADING'));
 
-		this.folders(true, _.bind(function (bValue) {
+		this.folders(_.bind(function (bValue) {
 
 			kn.hideLoading();
 

@@ -45,7 +45,8 @@ function PopupsFolderSystemViewModel()
 			'SentFolder': self.sentFolder(),
 			'DraftFolder': self.draftFolder(),
 			'SpamFolder': self.spamFolder(),
-			'TrashFolder': self.trashFolder()
+			'TrashFolder': self.trashFolder(),
+			'NullFolder': 'NullFolder'
 		});
 		
 	}, 1000);

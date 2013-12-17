@@ -45,10 +45,6 @@ function FolderModel()
 		}
 	}, this);
 	
-	this.canBeEdited = ko.computed(function () {
-		return Enums.FolderType.User === this.type();
-	}, this);
-
 	this.privateMessageCountAll = ko.observable(0);
 	this.privateMessageCountUnread = ko.observable(0);
 
@@ -75,6 +71,10 @@ FolderModel.prototype.initComputed = function ()
 		return !!_.find(this.subFolders(), function (oFolder) {
 			return oFolder.subScribed();
 		});
+	}, this);
+
+	this.canBeEdited = ko.computed(function () {
+		return Enums.FolderType.User === this.type() && this.existen && this.selectable;
 	}, this);
 
 	this.visible = ko.computed(function () {

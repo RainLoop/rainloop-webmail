@@ -1063,6 +1063,7 @@ class Actions
 			$aResult['DraftFolder'] = $oSettings->GetConf('DraftFolder', '');
 			$aResult['SpamFolder'] = $oSettings->GetConf('SpamFolder', '');
 			$aResult['TrashFolder'] = $oSettings->GetConf('TrashFolder', '');
+			$aResult['NullFolder'] = $oSettings->GetConf('NullFolder', '');
 			$aResult['EditorDefaultType'] = $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
 			$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 			$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
@@ -1749,6 +1750,7 @@ class Actions
 		$oSettings->SetConf('DraftFolder', $this->GetActionParam('DraftFolder', ''));
 		$oSettings->SetConf('TrashFolder', $this->GetActionParam('TrashFolder', ''));
 		$oSettings->SetConf('SpamFolder', $this->GetActionParam('SpamFolder', ''));
+		$oSettings->SetConf('NullFolder', $this->GetActionParam('NullFolder', ''));
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider()->Save($oAccount, $oSettings));
@@ -3151,40 +3153,61 @@ class Actions
 		return $aResult;
 	}
 
-	private function systemFoldersNames()
+	/**
+	 * @staticvar array $aCache
+	 * @param \RainLoop\Account $oAccount
+	 * 
+	 * @return array
+	 */
+	private function systemFoldersNames($oAccount)
 	{
 		static $aCache = null;
 		if (null === $aCache)
 		{
 			$aCache = array(
+				
 				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send' => \MailSo\Imap\Enumerations\FolderType::SENT,
-				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
-				'Send Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Sent Mails' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Send Mails' => \MailSo\Imap\Enumerations\FolderType::SENT,
+
 				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::SPAM,
-				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
+				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
+				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH
+
 			);
+
+			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
 		}
 
 		return $aCache;
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
 	 * @param \MailSo\Mail\FolderCollection $oFolders
 	 * @param array $aResult
+	 * @param bool $bXList = true
 	 */
-	private function recFoldersTypes($oFolders, &$aResult, $bXList = true)
+	private function recFoldersTypes($oAccount, $oFolders, &$aResult, $bXList = true)
 	{
 		if ($oFolders)
 		{
@@ -3209,12 +3232,12 @@ class Actions
 						$oSub = $oFolder->SubFolders();
 						if ($oSub && 0 < $oSub->Count())
 						{
-							$this->recFoldersTypes($oSub, $aResult, true);
+							$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
 						}
 					}
 				}
 
-				$aMap = $this->systemFoldersNames();
+				$aMap = $this->systemFoldersNames($oAccount);
 				foreach ($aFolders as $oFolder)
 				{
 					$sName = $oFolder->Name();
@@ -3235,7 +3258,7 @@ class Actions
 					$oSub = $oFolder->SubFolders();
 					if ($oSub && 0 < $oSub->Count())
 					{
-						$this->recFoldersTypes($oSub, $aResult, false);
+						$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
 					}
 				}
 			}
@@ -3253,23 +3276,92 @@ class Actions
 			$this->verifyCacheByKey($sRawKey);
 		}
 
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
 
-		$oFolderCollection = $this->MailClient()->Folders('', '*', 
-			!!$this->Config()->Get('labs', 'use_imap_list_status', false),
-			!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
-		);
+		$oFolderCollection = null;
+		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, &$oFolderCollection));
+
+		if (null === $oFolderCollection)
+		{
+			$oFolderCollection = $this->MailClient()->Folders('', '*',
+				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+			);
+		}
+
+		$this->Plugins()->RunHook('filter.folders-post', array($oAccount, &$oFolderCollection));
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
-			$oFolderCollection->FoldersHash = \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection)));
-
 			$aSystemFolders = array();
-			$this->recFoldersTypes($oFolderCollection, $aSystemFolders);
+			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
 
-			$this->cacheByKey($sRawKey);
+			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
+			{
+				$bDoItAgain = false;
+				$sNamespace = $oFolderCollection->GetNamespace();
+				$sNamespace = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
+
+				$aList = array();
+				$aMap = $this->systemFoldersNames($oAccount);
+				if ('' === $this->GetActionParam('SentFolder', ''))
+				{
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::SENT;
+				}
+				if ('' === $this->GetActionParam('DraftFolder', ''))
+				{
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
+				}
+				if ('' === $this->GetActionParam('SpamFolder', ''))
+				{
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::SPAM;
+				}
+				if ('' === $this->GetActionParam('TrashFolder', ''))
+				{
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::TRASH;
+				}
+
+				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
+
+				foreach ($aList as $iType)
+				{
+					if (!isset($aSystemFolders[$iType]))
+					{
+						$mFolderNameToCreate = \array_search($iType, $aMap);
+						if (!empty($mFolderNameToCreate))
+						{
+							if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sNamespace))
+							{
+								$bDoItAgain = true;
+							}
+						}
+					}
+				}
+
+				if ($bDoItAgain)
+				{
+					$oFolderCollection = $this->MailClient()->Folders('', '*',
+						!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+					);
+
+					if ($oFolderCollection)
+					{
+						$aSystemFolders = array();
+						$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
+						$oFolderCollection->SystemFolders = $aSystemFolders;
+					}
+				}
+			}
+
+			if ($oFolderCollection)
+			{
+				$oFolderCollection->FoldersHash = \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection)));
+
+				$this->cacheByKey($sRawKey);
+			}
 		}
+
+		$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, &$oFolderCollection));
 
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
 	}
@@ -5266,7 +5358,7 @@ class Actions
 	public function GetLanguages()
 	{
 		static $aCache = null;
-		if (is_array($aCache))
+		if (\is_array($aCache))
 		{
 			return $aCache;
 		}
@@ -5274,17 +5366,17 @@ class Actions
 		$bEn = false;
 		$sList = array();
 		$sDir = APP_VERSION_ROOT_PATH.'langs/';
-		if (@is_dir($sDir))
+		if (@\is_dir($sDir))
 		{
 			$rDirH = opendir($sDir);
 			if ($rDirH)
 			{
-				while (($sFile = readdir($rDirH)) !== false)
+				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && is_file($sDir.'/'.$sFile) && '.ini' === substr($sFile, -4))
+					if ('.' !== $sFile{0} && \is_file($sDir.'/'.$sFile) && '.ini' === \substr($sFile, -4))
 					{
-						$sLang = strtolower(substr($sFile, 0, -4));
-						if (0 < strlen($sLang) && 'always' !== $sLang)
+						$sLang = \strtolower(\substr($sFile, 0, -4));
+						if (0 < \strlen($sLang) && 'always' !== $sLang)
 						{
 							if (\in_array($sLang, array('en')))
 							{
@@ -5298,11 +5390,11 @@ class Actions
 					}
 				}
 
-				@closedir($rDirH);
+				@\closedir($rDirH);
 			}
 		}
 
-		sort($sList);
+		\sort($sList);
 		if ($bEn)
 		{
 			\array_unshift($sList, 'en');

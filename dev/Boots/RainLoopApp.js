@@ -164,18 +164,17 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 };
 
 /**
- * @param {boolean=} bUseCache = true
  * @param {Function=} fCallback
  */
-RainLoopApp.prototype.folders = function (bUseCache, fCallback)
+RainLoopApp.prototype.folders = function (fCallback)
 {
 	this.data().foldersLoading(true);
-	this.remote().folders(_.bind(function (sResult, oData, bCached) {
+	this.remote().folders(_.bind(function (sResult, oData) {
 
 		RL.data().foldersLoading(false);
 		if (Enums.StorageResultType.Success === sResult)
 		{
-			this.data().setFolders(oData, bCached);
+			this.data().setFolders(oData);
 			if (fCallback)
 			{
 				fCallback(true);
@@ -188,7 +187,7 @@ RainLoopApp.prototype.folders = function (bUseCache, fCallback)
 				fCallback(false);
 			}
 		}
-	}, this), bUseCache);
+	}, this));
 };
 
 RainLoopApp.prototype.accountsAndIdentities = function ()
@@ -775,7 +774,7 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		this.setTitle(Utils.i18n('TITLES/LOADING'));
 
-		this.folders(true, _.bind(function (bValue) {
+		this.folders(_.bind(function (bValue) {
 
 			kn.hideLoading();
 

@@ -1653,12 +1653,11 @@ class MailClient
 	/**
 	 * @param string $sParent = ''
 	 * @param string $sListPattern = '*'
-	 * @param bool $bUseListStatus = false
 	 * @param bool $bUseListSubscribeStatus = false
 	 *
 	 * @return \MailSo\Mail\FolderCollection|false
 	 */
-	public function Folders($sParent = '', $sListPattern = '*', $bUseListStatus = false, $bUseListSubscribeStatus = true)
+	public function Folders($sParent = '', $sListPattern = '*', $bUseListSubscribeStatus = true)
 	{
 		$oFolderCollection = false;
 
@@ -1671,18 +1670,8 @@ class MailClient
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
 			}
-			catch (\Exception $oException)
-			{
-
-			}
+			catch (\Exception $oException) {}
 		}
-
-// TODO
-//		$mStatusFolders = null;
-//		if ($bUseListStatus)
-//		{
-//			$mStatusFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
-//		}
 
 		$aImapSubscribedFoldersHelper = null;
 		if (\is_array($aSubscribedFolders))

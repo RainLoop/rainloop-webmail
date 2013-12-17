@@ -486,10 +486,9 @@ WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUid
 /**
  * @param {string} sNamespace
  * @param {Array} aFolders
- * @param {boolean} bCached
  * @return {Array}
  */
-WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders, bCached)
+WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders)
 {
 	var
 		iIndex = 0,
@@ -500,8 +499,6 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 		aSubFolders = [],
 		aList = []
 	;
-
-	bCached = !!bCached;
 
 	for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
 	{
@@ -536,7 +533,7 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 			{
 				oCacheFolder.collapsed(!Utils.isFolderExpanded(oCacheFolder.fullNameHash));
 
-				if (!bCached && oFolder.Extended)
+				if (oFolder.Extended)
 				{
 					if (oFolder.Extended.Hash)
 					{
@@ -559,7 +556,7 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 					aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
 				{
 					oCacheFolder.subFolders(
-						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection'], bCached));
+						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
 				}
 
 				aList.push(oCacheFolder);
@@ -572,16 +569,13 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 
 /**
  * @param {*} oData
- * @param {boolean=} bCached = false
  */
-WebMailDataStorage.prototype.setFolders = function (oData, bCached)
+WebMailDataStorage.prototype.setFolders = function (oData)
 {
 	var
 		aList = [],
 		bUpdate = false,
 		oRLData = RL.data(),
-		aFolders = oRLData.folderList(),
-		bFoldersFirst = 0 === aFolders.length,
 		fNormalizeFolder = function (sFolderFullNameRaw) {
 			return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
 				null !== RL.cache().getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';
@@ -598,12 +592,12 @@ WebMailDataStorage.prototype.setFolders = function (oData, bCached)
 
 		this.threading(!!RL.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
 
-		aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection'], !!bCached);
+		aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection']);
 		oRLData.folderList(aList);
 
 		if (oData.Result['SystemFolders'] &&
 			'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
-			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder'))
+			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('NullFolder'))
 		{
 			// TODO Magic Numbers
 			RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
@@ -625,19 +619,12 @@ WebMailDataStorage.prototype.setFolders = function (oData, bCached)
 				'SentFolder': oRLData.sentFolder(),
 				'DraftFolder': oRLData.draftFolder(),
 				'SpamFolder': oRLData.spamFolder(),
-				'TrashFolder': oRLData.trashFolder()
+				'TrashFolder': oRLData.trashFolder(),
+				'NullFolder': 'NullFolder'
 			});
 		}
 
-		if (!bCached)
-		{
-			RL.local().set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
-		}
-
-		if (bFoldersFirst && bCached)
-		{
-			RL.folders(false);
-		}
+		RL.local().set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 	}
 };
 
