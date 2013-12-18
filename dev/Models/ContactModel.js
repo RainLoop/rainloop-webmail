@@ -8,10 +8,14 @@ function ContactModel()
 	this.idContact = 0;
 	this.display = '';
 	this.properties = [];
+	this.readOnly = false;
+	this.scopeType = Enums.ContactScopeType.Default;
+	this.scopeValue = '';
 
 	this.checked = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.deleted = ko.observable(false);
+	this.shared = ko.observable(false);
 }
 
 /**
@@ -55,6 +59,9 @@ ContactModel.prototype.parse = function (oItem)
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
 		this.display = Utils.pString(oItem['Display']);
+		this.readOnly = !!oItem['ReadOnly'];
+		this.scopeType = Utils.pInt(oItem['ScopeType']);
+		this.scopeValue = Utils.pString(oItem['ScopeValue']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
@@ -65,6 +72,10 @@ ContactModel.prototype.parse = function (oItem)
 				}
 			}, this);
 		}
+
+		this.shared(-1 < Utils.inArray(this.scopeType, [
+			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
+		]));
 		
 		bResult = true;
 	}
@@ -105,6 +116,10 @@ ContactModel.prototype.lineAsCcc = function ()
 	if (this.checked())
 	{
 		aResult.push('checked');
+	}
+	if (this.shared())
+	{
+		aResult.push('shared');
 	}
 
 	return aResult.join(' ');

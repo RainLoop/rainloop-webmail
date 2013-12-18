@@ -68,6 +68,9 @@
 									<div class="checkedParent">
 										<i class="checkboxItem" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 									</div>
+									<div class="shareParent actionHandle">
+										<i class="icon-share"></i>
+									</div>
 									<div class="nameParent actionHandle">
 										<span class="listName" data-bind="text: display"></span>
 										&nbsp;
@@ -83,7 +86,7 @@
 					<!-- ko template: { name: 'Pagenator', data: contactsPagenator } --><!-- /ko -->
 				</div>
 			</div>
-			<div class="b-view-content" data-bind="nano: true">
+			<div class="b-view-content" data-bind="nano: true, css: {'read-only': viewReadOnly}">
 				<div class="content g-scrollbox">
 					<div class="content-wrapper">
 						<div class="b-contact-view-desc" data-bind="visible: emptySelection">
@@ -91,40 +94,43 @@
 						</div>
 						<div data-bind="visible: !emptySelection()">
 							<div class="form-horizontal top-part">
-								<div class="control-group">
+								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesNames().length">
 									<label class="control-label remove-padding-top fix-width">
 										<i class="icon-user iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_DISPLAY_NAME'"></i>
 									</label>
 									<div class="controls fix-width" data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
+											<span class="contactValueStatic" data-bind="text: value" />
 											<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 										</div>
 									</div>
 								</div>
-								<div class="control-group">
+								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
 									<label class="control-label remove-padding-top fix-width">
 										<i class="icon-at iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
 									</label>
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesEmails">
 											<div class="property-line">
+												<span class="contactValueStatic" data-bind="text: value" />
 												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></a>
+										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></a>
 									</div>
 								</div>
-								<div class="control-group">
+								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesPhones().length">
 									<label class="control-label remove-padding-top fix-width">
 										<i class="icon-telephone iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
 									</label>
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesPhones">
 											<div class="property-line">
+												<span class="contactValueStatic" data-bind="text: value" />
 												<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>
+										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>
 									</div>
 								</div>
 <!--								<div class="control-group" data-bind="foreach: viewPropertiesOther">
@@ -133,6 +139,7 @@
 									</label>
 									<div class="controls fix-width">
 										<div class="property-line">
+											<span class="contactValueStatic" data-bind="text: value" />
 											<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 										</div>
 									</div>
@@ -145,6 +152,43 @@
 								</div>
 							</div>
 
+							<div class="e-read-only-sign" style="display: none">
+								<i class="icon-lock iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
+							</div>
+
+							<div class="e-share-sign" style="display: none">
+								<div class="btn-group pull-right">
+									<a class="btn dropdown-toggle" data-placement="left" data-toggle="dropdown" data-bind="tooltip: 'CONTACTS/LABEL_SHARE'">
+										<i class="icon-share"></i>
+										&nbsp;&nbsp;
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu g-ui-menu">
+										<li class="e-item">
+											<a class="e-link" data-bind="css: {'selected': this.shareToNone}">
+												<i class="icon-none"></i>
+												&nbsp;&nbsp;
+												<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SHARE_NONE"></span>
+											</a>
+										</li>
+										<li class="e-item">
+											<a class="e-link" data-bind="css: {'selected': this.shareToDomain}">
+												<i class="icon-none"></i>
+												&nbsp;&nbsp;
+												<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SHARE_DOMAIN"></span>
+											</a>
+										</li>
+										<li class="e-item">
+											<a class="e-link" data-bind="css: {'selected': this.shareToAll}">
+												<i class="icon-none"></i>
+												&nbsp;&nbsp;
+												<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SHARE_ALL"></span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							
 							<button class="btn button-save-contact" data-bind="command: saveCommand">
 								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
 								&nbsp;&nbsp;

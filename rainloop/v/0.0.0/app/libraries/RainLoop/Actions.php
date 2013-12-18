@@ -5927,6 +5927,9 @@ class Actions
 					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Contact */
 					'IdContact' => $mResponse->IdContact,
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
+					'ReadOnly' => $mResponse->ReadOnly,
+					'ScopeType' => $mResponse->ScopeType,
+					'ScopeValue' => $mResponse->ScopeValue,
 					'IdPropertyFromSearch' => $mResponse->IdPropertyFromSearch,
 					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
 				));

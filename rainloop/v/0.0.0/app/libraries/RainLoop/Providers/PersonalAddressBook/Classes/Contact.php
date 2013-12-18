@@ -30,6 +30,11 @@ class Contact
 	public $ScopeType;
 
 	/**
+	 * @var string
+	 */
+	public $ScopeValue;
+
+	/**
 	 * @var int
 	 */
 	public $Changed;
@@ -44,6 +49,11 @@ class Contact
 	 */
 	public $Properties;
 
+	/**
+	 * @var array
+	 */
+	public $ReadOnly;
+
 	public function __construct()
 	{
 		$this->Clear();
@@ -57,9 +67,11 @@ class Contact
 		$this->DisplayName = '';
 		$this->DisplayEmail = '';
 		$this->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
+		$this->ScopeValue = '';
 		$this->Changed = \time();
 		$this->IdPropertyFromSearch = 0;
 		$this->Properties = array();
+		$this->ReadOnly = false;
 	}
 	
 	public function UpdateDependentValues()
@@ -72,6 +84,7 @@ class Contact
 			if ($oProperty)
 			{
 				$oProperty->ScopeType = $this->ScopeType;
+				$oProperty->ScopeValue = $this->ScopeValue;
 				$oProperty->UpdateDependentValues();
 				
 				if ('' === $sDisplayName && \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME === $oProperty->Type &&

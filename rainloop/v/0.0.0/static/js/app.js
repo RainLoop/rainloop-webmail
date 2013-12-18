@@ -492,6 +492,20 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
+Enums.ContactScopeType = {
+
+	'Default': 0,
+	
+	'Auto': 1,
+
+	'ShareAll': 2,
+	'ShareDomain': 3,
+	'ShareEmail': 4
+};
+
+/**
+ * @enum {number}
+ */
 Enums.ContactPropertyType = {
 
 	'Unknown': 0,
@@ -5776,10 +5790,14 @@ function ContactModel()
 	this.idContact = 0;
 	this.display = '';
 	this.properties = [];
+	this.readOnly = false;
+	this.scopeType = Enums.ContactScopeType.Default;
+	this.scopeValue = '';
 
 	this.checked = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.deleted = ko.observable(false);
+	this.shared = ko.observable(false);
 }
 
 /**
@@ -5823,6 +5841,9 @@ ContactModel.prototype.parse = function (oItem)
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
 		this.display = Utils.pString(oItem['Display']);
+		this.readOnly = !!oItem['ReadOnly'];
+		this.scopeType = Utils.pInt(oItem['ScopeType']);
+		this.scopeValue = Utils.pString(oItem['ScopeValue']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
@@ -5833,6 +5854,10 @@ ContactModel.prototype.parse = function (oItem)
 				}
 			}, this);
 		}
+
+		this.shared(-1 < Utils.inArray(this.scopeType, [
+			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
+		]));
 		
 		bResult = true;
 	}
@@ -5873,6 +5898,10 @@ ContactModel.prototype.lineAsCcc = function ()
 	if (this.checked())
 	{
 		aResult.push('checked');
+	}
+	if (this.shared())
+	{
+		aResult.push('shared');
 	}
 
 	return aResult.join(' ');
@@ -9316,6 +9345,9 @@ function PopupsContactsViewModel()
 	this.viewClearSearch = ko.observable(false);
 
 	this.viewID = ko.observable('');
+	this.viewReadOnly = ko.observable(false);
+	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
+	this.viewScopeValue = ko.observable('');
 	this.viewProperties = ko.observableArray([]);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
@@ -9325,6 +9357,24 @@ function PopupsContactsViewModel()
 	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
 		return -1 < Utils.inArray(oProperty.type(), aEmailTypes);
 	});
+
+	this.shareToNone = ko.computed(function() {
+		return -1 === Utils.inArray(this.viewScopeType(), [
+			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
+		]);
+	}, this);
+
+	this.shareToAll = ko.computed(function() {
+		return Enums.ContactScopeType.ShareAll === this.viewScopeType();
+	}, this);
+
+	this.shareToDomain = ko.computed(function() {
+		return Enums.ContactScopeType.ShareDomain === this.viewScopeType();
+	}, this);
+
+	this.shareToEmail = ko.computed(function() {
+		return Enums.ContactScopeType.ShareEmail === this.viewScopeType();
+	}, this);
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
 		
@@ -9506,8 +9556,11 @@ function PopupsContactsViewModel()
 		}, sRequestUid, this.viewID(), aProperties);
 		
 	}, function () {
-		var bV = this.viewHasNonEmptyRequaredProperties();
-		return !this.viewSaving() && bV;
+		var 
+			bV = this.viewHasNonEmptyRequaredProperties(),
+			bReadOnly = this.viewReadOnly()
+		;
+		return !this.viewSaving() && bV && !bReadOnly;
 	});
 
 	this.bDropPageAfterDelete = false;
@@ -9624,6 +9677,9 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	;
 
 	this.emptySelection(false);
+	this.viewReadOnly(false);
+	this.viewScopeType(Enums.ContactScopeType.Default);
+	this.viewScopeValue('');
 	
 	if (oContact)
 	{
@@ -9642,6 +9698,10 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 				}
 			});
 		}
+
+		this.viewReadOnly(!!oContact.readOnly);
+		this.viewScopeType(oContact.scopeType);
+		this.viewScopeValue(oContact.scopeValue);
 	}
 
 	if (!bHasName)

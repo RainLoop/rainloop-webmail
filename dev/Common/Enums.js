@@ -235,6 +235,20 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
+Enums.ContactScopeType = {
+
+	'Default': 0,
+	
+	'Auto': 1,
+
+	'ShareAll': 2,
+	'ShareDomain': 3,
+	'ShareEmail': 4
+};
+
+/**
+ * @enum {number}
+ */
 Enums.ContactPropertyType = {
 
 	'Unknown': 0,

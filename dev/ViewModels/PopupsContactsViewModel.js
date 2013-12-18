@@ -46,6 +46,9 @@ function PopupsContactsViewModel()
 	this.viewClearSearch = ko.observable(false);
 
 	this.viewID = ko.observable('');
+	this.viewReadOnly = ko.observable(false);
+	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
+	this.viewScopeValue = ko.observable('');
 	this.viewProperties = ko.observableArray([]);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
@@ -55,6 +58,24 @@ function PopupsContactsViewModel()
 	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
 		return -1 < Utils.inArray(oProperty.type(), aEmailTypes);
 	});
+
+	this.shareToNone = ko.computed(function() {
+		return -1 === Utils.inArray(this.viewScopeType(), [
+			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
+		]);
+	}, this);
+
+	this.shareToAll = ko.computed(function() {
+		return Enums.ContactScopeType.ShareAll === this.viewScopeType();
+	}, this);
+
+	this.shareToDomain = ko.computed(function() {
+		return Enums.ContactScopeType.ShareDomain === this.viewScopeType();
+	}, this);
+
+	this.shareToEmail = ko.computed(function() {
+		return Enums.ContactScopeType.ShareEmail === this.viewScopeType();
+	}, this);
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
 		
@@ -236,8 +257,11 @@ function PopupsContactsViewModel()
 		}, sRequestUid, this.viewID(), aProperties);
 		
 	}, function () {
-		var bV = this.viewHasNonEmptyRequaredProperties();
-		return !this.viewSaving() && bV;
+		var 
+			bV = this.viewHasNonEmptyRequaredProperties(),
+			bReadOnly = this.viewReadOnly()
+		;
+		return !this.viewSaving() && bV && !bReadOnly;
 	});
 
 	this.bDropPageAfterDelete = false;
@@ -354,6 +378,9 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	;
 
 	this.emptySelection(false);
+	this.viewReadOnly(false);
+	this.viewScopeType(Enums.ContactScopeType.Default);
+	this.viewScopeValue('');
 	
 	if (oContact)
 	{
@@ -372,6 +399,10 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 				}
 			});
 		}
+
+		this.viewReadOnly(!!oContact.readOnly);
+		this.viewScopeType(oContact.scopeType);
+		this.viewScopeValue(oContact.scopeValue);
 	}
 
 	if (!bHasName)
