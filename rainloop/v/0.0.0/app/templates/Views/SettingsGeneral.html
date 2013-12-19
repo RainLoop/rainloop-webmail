@@ -63,7 +63,7 @@
 				</label>
 			</div>
 		</div>
-		<div class="control-group">
+		<div class="control-group" data-bind="visible: allowContacts">
 			<div class="controls">
 				<label data-bind="click: function () { contactsAutosave(!contactsAutosave()); }">
 					<i data-bind="css: contactsAutosave() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>

@@ -12256,6 +12256,7 @@ function SettingsGeneral()
 	this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.isAnimationSupported = Globals.bAnimationSupported;
+	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
 }
 
 Utils.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
