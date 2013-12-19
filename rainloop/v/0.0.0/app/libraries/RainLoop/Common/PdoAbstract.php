@@ -274,11 +274,8 @@ abstract class PdoAbstract
 		{
 			$oStmt->closeCursor();
 
-			$oStmt = $this->prepareAndExecute('INSERT INTO rainloop_users (rl_email, rl_hash) VALUES (:rl_email, :rl_hash)',
-				array(
-					':rl_email' => array($sEmail, \PDO::PARAM_STR),
-					':rl_hash' => array(\md5($sEmail.\microtime(true)), \PDO::PARAM_STR)
-				)
+			$oStmt = $this->prepareAndExecute('INSERT INTO rainloop_users (rl_email) VALUES (:rl_email)',
+				array(':rl_email' => array($sEmail, \PDO::PARAM_STR))
 			);
 
 			return $this->getUserId($sEmail, true);

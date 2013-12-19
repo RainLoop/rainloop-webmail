@@ -729,11 +729,17 @@ class ServiceActions
 
 			$oPersonalAddressBookProvider = $this->oActions->PersonalAddressBookProvider();
 
-//			$oAuthBackend = new \RainLoop\SabreDAV\AuthBasic($oPersonalAddressBookProvider);
-			$oAuthBackend = new \RainLoop\SabreDAV\AuthDigest($oPersonalAddressBookProvider);
+			$oAuthBackend = null;
+			if ($this->Config()->Get('labs', 'use_dav_digest_auth', false))
+			{
+				$oAuthBackend = new \RainLoop\SabreDAV\AuthDigest($oPersonalAddressBookProvider);
+			}
+			else
+			{
+				$oAuthBackend = new \RainLoop\SabreDAV\AuthBasic($oPersonalAddressBookProvider);
+			}
 
 			$oCarddavBackend = new \RainLoop\SabreDAV\CardDAV($oPersonalAddressBookProvider, $oAuthBackend);
-
 			$oPrincipalBackend = new \RainLoop\SabreDAV\Principal($oPersonalAddressBookProvider, $oAuthBackend);
 
 			$aNodes = array(
