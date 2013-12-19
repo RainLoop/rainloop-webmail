@@ -742,21 +742,27 @@ class ServiceActions
 			$oCarddavBackend = new \RainLoop\SabreDAV\CardDAV($oPersonalAddressBookProvider, $oAuthBackend);
 			$oPrincipalBackend = new \RainLoop\SabreDAV\Principal($oPersonalAddressBookProvider, $oAuthBackend);
 
-			$aNodes = array(
-				new \Sabre\DAVACL\PrincipalCollection($oPrincipalBackend),
-				new \Sabre\CardDAV\AddressBookRoot($oPrincipalBackend, $oCarddavBackend),
-			);
+			$oPrincipalCollection = new \Sabre\DAVACL\PrincipalCollection($oPrincipalBackend);
+			$oPrincipalCollection->disableListing = true;
 
-			$oServer = new \Sabre\DAV\Server($aNodes);
+			$oAddressBookRoot = new \Sabre\CardDAV\AddressBookRoot($oPrincipalBackend, $oCarddavBackend);
+
+			$oServer = new \Sabre\DAV\Server(array(
+				$oPrincipalCollection, $oAddressBookRoot
+			));
 
 			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
 			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
 
 			// Plugins
-			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'SabreDAV'));
+			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'RainLoop'));
 			$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
 			$oServer->addPlugin(new \Sabre\CardDAV\Plugin());
-			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
+
+//			$oAclPlugin = new \Sabre\DAVACL\Plugin();
+//			$oAclPlugin->hideNodesFromListings = true;
+//			$oAclPlugin->allowAccessToNodesWithoutACL = false;
+//			$oServer->addPlugin($oAclPlugin);
 
 			$oServer->exec();
 		}
