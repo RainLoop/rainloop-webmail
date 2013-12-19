@@ -83,6 +83,16 @@ class PdoPersonalAddressBook
 	}
 
 	/**
+	 * @param string $sEmail
+	 * @return mixed
+	 */
+	public function GetUserUidByEmail($sEmail)
+	{
+		$iId = $this->getUserId($sEmail);
+		return 0 < $iId ? (string) $iId : '';
+	}
+
+	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param \RainLoop\Providers\PersonalAddressBook\Classes\Contact $oContact
 	 *
@@ -275,7 +285,7 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Account|mixed $mAccountOrId
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
@@ -283,7 +293,7 @@ class PdoPersonalAddressBook
 	 * 
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+	public function GetContacts($mAccountOrId, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
 		$this->Sync();
 
@@ -291,7 +301,11 @@ class PdoPersonalAddressBook
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
 		$sSearch = \trim($sSearch);
 
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $mAccountOrId instanceof \RainLoop\Account ? $this->getUserId($mAccountOrId->ParentEmailHelper()) : (int) $mAccountOrId;
+		if (0 === $iUserID)
+		{
+			throw new \InvalidArgumentException('Invalid Accoutn ID');
+		}
 
 		$iCount = 0;
 		$aSearchIds = array();

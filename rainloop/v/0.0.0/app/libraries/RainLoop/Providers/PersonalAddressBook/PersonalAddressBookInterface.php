@@ -34,7 +34,7 @@ interface PersonalAddressBookInterface
 	public function DeleteTags($oAccount, $aTagsIds);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Account|mixed $mAccountOrId
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
@@ -42,7 +42,7 @@ interface PersonalAddressBookInterface
 	 *
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0);
+	public function GetContacts($mAccountOrId, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0);
 
 	/**
 	 * @param \RainLoop\Account $oAccount

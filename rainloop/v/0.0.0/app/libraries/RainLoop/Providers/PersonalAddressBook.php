@@ -61,6 +61,17 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @param string $sEmail
+	 * 
+	 * @return string
+	 */
+	public function GetUserUidByEmail($sEmail)
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
+			$this->oDriver->GetUserUidByEmail($sEmail);
+	}
+
+	/**
 	 * @param bool $bConsiderShare = true
 	 */
 	public function ConsiderShare($bConsiderShare = true)
@@ -96,7 +107,7 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Account|mixed $mAccountOrId
 	 * @param int $iOffset = 0
 	 * @param type $iLimit = 20
 	 * @param string $sSearch = ''
@@ -104,9 +115,9 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	 *
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+	public function GetContacts($mAccountOrId, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
-		return $this->IsActive() ? $this->oDriver->GetContacts($oAccount,
+		return $this->IsActive() ? $this->oDriver->GetContacts($mAccountOrId,
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 

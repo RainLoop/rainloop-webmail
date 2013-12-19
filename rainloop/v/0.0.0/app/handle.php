@@ -12,6 +12,10 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 		{
 			return include RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
 		}
+		else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
+		{
+			return include RAINLOOP_APP_LIBRARIES_PATH.'Sabre/'.\str_replace('\\', '/', \substr($sClassName, 6)).'.php';
+		}
 
 		return false;
 	});

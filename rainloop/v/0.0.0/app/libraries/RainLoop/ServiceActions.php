@@ -714,6 +714,53 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
+	public function ServiceCardDav()
+	{
+		return '';
+		
+		try
+		{
+			\set_error_handler(function ($errno, $errstr, $errfile, $errline ) {
+				throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+			});
+
+			$oPersonalAddressBookProvider = $this->oActions->PersonalAddressBookProvider();
+
+			$oAuthBackend = new \RainLoop\SabreDAV\AuthBasic($oPersonalAddressBookProvider);
+
+			$oCarddavBackend = new \RainLoop\SabreDAV\CardDAV($oPersonalAddressBookProvider);
+
+			$oPrincipalBackend = new \RainLoop\SabreDAV\Principal($oPersonalAddressBookProvider, $oAuthBackend);
+
+			$aNodes = array(
+				new \Sabre\DAVACL\PrincipalCollection($oPrincipalBackend),
+				new \Sabre\CardDAV\AddressBookRoot($oPrincipalBackend, $oCarddavBackend),
+			);
+
+			$oServer = new \Sabre\DAV\Server($aNodes);
+
+			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
+			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath.'/' : '').'index.php/carddav/');
+
+			// Plugins
+			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'SabreDAV'));
+			$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
+			$oServer->addPlugin(new \Sabre\CardDAV\Plugin());
+			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
+
+			$oServer->exec();
+		}
+		catch (\Exception $oException)
+		{
+			$this->Logger()->WriteException($oException);
+		}
+
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function ServicePing()
 	{
 		@\header('Content-Type: text/plain; charset=utf-8');

@@ -102,11 +102,19 @@ class Service
 
 		$bCached = false;
 		$sResult = '';
-		$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
-		$iPos = \strpos($sQuery, '&');
-		if (0 < $iPos)
+		$sPathInfo = \trim(\trim($this->oHttp->GetServer('PATH_INFO', '')), ' /');
+		if (empty($sPathInfo))
 		{
-			$sQuery = \substr($sQuery, 0, $iPos);
+			$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
+			$iPos = \strpos($sQuery, '&');
+			if (0 < $iPos)
+			{
+				$sQuery = \substr($sQuery, 0, $iPos);
+			}
+		}
+		else
+		{
+			$sQuery = $sPathInfo;
 		}
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
