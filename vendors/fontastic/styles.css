@@ -1,4 +1,4 @@
-/*@charset "UTF-8";*/
+@charset "UTF-8";
 
 @font-face {
   font-family: "rainloop";
@@ -248,12 +248,6 @@
 .icon-bug:before {
   content: "\e045";
 }
-.icon-heart:before {
-  content: "\e046";
-}
-.icon-heart-empty:before {
-  content: "\e047";
-}
 .icon-popup:before {
   content: "\e048";
 }
@@ -275,54 +269,63 @@
 .icon-google-drive:before {
   content: "\e04e";
 }
-.icon-spinner:before {
+.icon-github:before {
   content: "\e04f";
 }
-.icon-github:before {
+.icon-telephone:before {
   content: "\e050";
 }
-.icon-telephone:before {
+.icon-mobile:before {
   content: "\e051";
 }
-.icon-mobile:before {
+.icon-pencil:before {
   content: "\e052";
 }
-.icon-mail:before {
+.icon-trash:before {
   content: "\e053";
 }
-.icon-pencil:before {
+.icon-left-middle:before {
   content: "\e054";
 }
-.icon-trash:before {
+.icon-right-middle:before {
   content: "\e055";
 }
-.icon-left-middle:before {
+.icon-repeat:before {
   content: "\e056";
 }
-.icon-right-middle:before {
+.icon-key:before {
   content: "\e057";
 }
-.icon-repeat:before {
+.icon-lock:before {
   content: "\e058";
 }
-.icon-key:before {
+.icon-home:before {
   content: "\e059";
 }
-.icon-lock:before {
+.icon-address-book:before {
   content: "\e05a";
 }
-.icon-home:before {
+.icon-share:before {
   content: "\e05b";
 }
-.icon-address-book:before {
+.icon-suitcase:before {
   content: "\e05c";
 }
-.icon-share:before {
+.icon-new-sign:before {
   content: "\e05d";
 }
-.icon-suitcase:before {
+.icon-spinner:before {
   content: "\e05e";
 }
-.icon-mailbox:before {
+.icon-users:before {
   content: "\e05f";
+}
+.icon-earth:before {
+  content: "\e060";
+}
+.icon-happy-smiley:before {
+  content: "\e061";
+}
+.icon-mail:before {
+  content: "\e062";
 }

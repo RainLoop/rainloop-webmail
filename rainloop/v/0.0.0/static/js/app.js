@@ -495,12 +495,7 @@ Enums.InterfaceAnimation = {
 Enums.ContactScopeType = {
 
 	'Default': 0,
-	
-	'Auto': 1,
-
-	'ShareAll': 2,
-	'ShareDomain': 3,
-	'ShareEmail': 4
+	'ShareAll': 2
 };
 
 /**
@@ -1316,6 +1311,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
 	oData.showImages = ko.observable(false);
 	oData.interfaceAnimation = ko.observable(Enums.InterfaceAnimation.Full);
+	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 	
@@ -5792,7 +5788,6 @@ function ContactModel()
 	this.properties = [];
 	this.readOnly = false;
 	this.scopeType = Enums.ContactScopeType.Default;
-	this.scopeValue = '';
 
 	this.checked = ko.observable(false);
 	this.selected = ko.observable(false);
@@ -5843,7 +5838,6 @@ ContactModel.prototype.parse = function (oItem)
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
 		this.scopeType = Utils.pInt(oItem['ScopeType']);
-		this.scopeValue = Utils.pString(oItem['ScopeValue']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
@@ -5855,10 +5849,7 @@ ContactModel.prototype.parse = function (oItem)
 			}, this);
 		}
 
-		this.shared(-1 < Utils.inArray(this.scopeType, [
-			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
-		]));
-		
+		this.shared(Enums.ContactScopeType.ShareAll === this.scopeType);
 		bResult = true;
 	}
 
@@ -5911,14 +5902,22 @@ ContactModel.prototype.lineAsCcc = function ()
  * @param {number=} iType = Enums.ContactPropertyType.Unknown
  * @param {string=} sValue = ''
  * @param {boolean=} bFocused = false
+ * @param {string=} sPlaceholder = ''
  *
  * @constructor
  */
-function ContactPropertyModel(iType, sValue, bFocused)
+function ContactPropertyModel(iType, sValue, bFocused, sPlaceholder)
 {
 	this.type = ko.observable(Utils.isUnd(iType) ? Enums.ContactPropertyType.Unknown : iType);
 	this.focused = ko.observable(Utils.isUnd(bFocused) ? false : !!bFocused);
 	this.value = ko.observable(Utils.pString(sValue));
+
+	this.placeholder = ko.observable(sPlaceholder || '');
+
+	this.placeholderValue = ko.computed(function () {
+		var sPlaceholder = this.placeholder();
+		return sPlaceholder ? Utils.i18n(sPlaceholder) : '';
+	}, this);
 }
 
 /**
@@ -9308,8 +9307,8 @@ function PopupsContactsViewModel()
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsContacts');
 
 	var
-		oT = Enums.ContactPropertyType,
 		self = this,
+		oT = Enums.ContactPropertyType,
 		aNameTypes = [oT.FullName, oT.FirstName, oT.SurName, oT.MiddleName],
 		aEmailTypes = [oT.EmailPersonal, oT.EmailBussines, oT.EmailOther],
 		aPhonesTypes = [
@@ -9333,6 +9332,8 @@ function PopupsContactsViewModel()
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.currentContact = ko.observable(null);
 
+	this.contactsSharingIsAllowed = !!RL.settingsGet('ContactsSharingIsAllowed');
+
 	this.contactsPage = ko.observable(1);
 	this.contactsPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.contactsCount() / Consts.Defaults.ContactsPerPage);
@@ -9347,8 +9348,9 @@ function PopupsContactsViewModel()
 	this.viewID = ko.observable('');
 	this.viewReadOnly = ko.observable(false);
 	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
-	this.viewScopeValue = ko.observable('');
 	this.viewProperties = ko.observableArray([]);
+
+	this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
 		return -1 < Utils.inArray(oProperty.type(), aNameTypes);
@@ -9358,22 +9360,16 @@ function PopupsContactsViewModel()
 		return -1 < Utils.inArray(oProperty.type(), aEmailTypes);
 	});
 
+	this.shareIcon = ko.computed(function() {
+		return Enums.ContactScopeType.ShareAll === this.viewScopeType() ? 'icon-earth' : 'icon-share';
+	}, this);
+
 	this.shareToNone = ko.computed(function() {
-		return -1 === Utils.inArray(this.viewScopeType(), [
-			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
-		]);
+		return Enums.ContactScopeType.ShareAll !== this.viewScopeType();
 	}, this);
 
 	this.shareToAll = ko.computed(function() {
 		return Enums.ContactScopeType.ShareAll === this.viewScopeType();
-	}, this);
-
-	this.shareToDomain = ko.computed(function() {
-		return Enums.ContactScopeType.ShareDomain === this.viewScopeType();
-	}, this);
-
-	this.shareToEmail = ko.computed(function() {
-		return Enums.ContactScopeType.ShareEmail === this.viewScopeType();
 	}, this);
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
@@ -9395,6 +9391,10 @@ function PopupsContactsViewModel()
 
 	this.viewPropertiesOther = this.viewProperties.filter(function(oProperty) {
 		return -1 < Utils.inArray(oProperty.type(), aOtherTypes);
+	});
+
+	this.viewPropertiesEmailsNonEmpty = this.viewPropertiesNames.filter(function(oProperty) {
+		return '' !== Utils.trim(oProperty.value());
 	});
 
 	this.viewPropertiesEmailsEmptyAndOnFocused = this.viewPropertiesEmails.filter(function(oProperty) {
@@ -9522,6 +9522,7 @@ function PopupsContactsViewModel()
 	this.saveCommand = Utils.createCommand(this, function () {
 		
 		this.viewSaving(true);
+		this.viewSaveTrigger(Enums.SaveSettingsStep.Animate);
 
 		var 
 			sRequestUid = Utils.fakeMd5(),
@@ -9537,7 +9538,9 @@ function PopupsContactsViewModel()
 
 		RL.remote().contactSave(function (sResult, oData) {
 
+			var bRes = false;
 			self.viewSaving(false);
+			
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
 				oData.Result.RequestUid === sRequestUid && 0 < Utils.pInt(oData.Result.ResultID))
 			{
@@ -9547,13 +9550,25 @@ function PopupsContactsViewModel()
 				}
 
 				self.reloadContactList();
+				bRes = true;
 			}
 //			else
 //			{
 //				// TODO
 //			}
+
+			_.delay(function () {
+				self.viewSaveTrigger(bRes ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
+			}, 300);
+
+			if (bRes)
+			{
+				_.delay(function () {
+					self.viewSaveTrigger(Enums.SaveSettingsStep.Idle);
+				}, 1000);
+			}
 			
-		}, sRequestUid, this.viewID(), aProperties);
+		}, sRequestUid, this.viewID(), this.viewScopeType(), aProperties);
 		
 	}, function () {
 		var 
@@ -9565,11 +9580,36 @@ function PopupsContactsViewModel()
 
 	this.bDropPageAfterDelete = false;
 
+	this.watchHash = ko.observable(false);
+	this.viewHash = ko.computed(function () {
+		return '' + self.viewScopeType() + ' - ' + _.map(self.viewProperties(), function (oItem) {
+			return oItem.value();
+		}).join('');
+	});
+
+	this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
+
+	this.viewHash.subscribe(function () {
+		if (this.watchHash() && !this.viewReadOnly())
+		{
+			this.saveCommandDebounce();
+		}
+	}, this);
+
 	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
 
+PopupsContactsViewModel.prototype.setShareToNone = function ()
+{
+	this.viewScopeType(Enums.ContactScopeType.Default);
+};
+
+PopupsContactsViewModel.prototype.setShareToAll = function ()
+{
+	this.viewScopeType(Enums.ContactScopeType.ShareAll);
+};
 
 PopupsContactsViewModel.prototype.addNewProperty = function (sType)
 {
@@ -9676,10 +9716,11 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 		aList = []
 	;
 
+	this.watchHash(false);
+
 	this.emptySelection(false);
 	this.viewReadOnly(false);
 	this.viewScopeType(Enums.ContactScopeType.Default);
-	this.viewScopeValue('');
 	
 	if (oContact)
 	{
@@ -9690,7 +9731,9 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 			_.each(oContact.properties, function (aProperty) {
 				if (aProperty && aProperty[0])
 				{
-					aList.push(new ContactPropertyModel(aProperty[0], aProperty[1]));
+					aList.push(new ContactPropertyModel(aProperty[0], aProperty[1], false,
+						Enums.ContactPropertyType.FullName === aProperty[0] ? 'CONTACTS/PLACEHOLDER_ENTER_DISPLAY_NAME' : ''));
+
 					if (Enums.ContactPropertyType.FullName === aProperty[0])
 					{
 						bHasName = true;
@@ -9701,17 +9744,18 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 
 		this.viewReadOnly(!!oContact.readOnly);
 		this.viewScopeType(oContact.scopeType);
-		this.viewScopeValue(oContact.scopeValue);
 	}
-
+	
 	if (!bHasName)
 	{
-		aList.push(new ContactPropertyModel(Enums.ContactPropertyType.FullName, '', true));
+		aList.push(new ContactPropertyModel(Enums.ContactPropertyType.FullName, '', !oContact, 'CONTACTS/PLACEHOLDER_ENTER_DISPLAY_NAME'));
 	}
 
 	this.viewID(sId);
 	this.viewProperties([]);
 	this.viewProperties(aList);
+
+	this.watchHash(true);
 };
 
 /**
@@ -9745,7 +9789,7 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 			{
 				aList = _.map(oData.Result.List, function (oItem) {
 					var oContact = new ContactModel();
-					return oContact.parse(oItem) ? oContact : null;
+					return oContact.parse(oItem, self.contactsSharingIsAllowed) ? oContact : null;
 				});
 
 				aList = _.compact(aList);
@@ -12185,6 +12229,7 @@ function SettingsGeneral()
 	this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 	this.editorDefaultType = oData.editorDefaultType;
 	this.showImages = oData.showImages;
+	this.contactsAutosave = oData.contactsAutosave;
 	this.interfaceAnimation = oData.interfaceAnimation;
 	this.useDesktopNotifications = oData.useDesktopNotifications;	
 	this.threading = oData.threading;
@@ -12265,6 +12310,12 @@ SettingsGeneral.prototype.onBuild = function ()
 		oData.showImages.subscribe(function (bValue) {
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'ShowImages': bValue ? '1' : '0'
+			});
+		});
+
+		oData.contactsAutosave.subscribe(function (bValue) {
+			RL.remote().saveSettings(Utils.emptyFunction, {
+				'ContactsAutosave': bValue ? '1' : '0'
 			});
 		});
 
@@ -13148,6 +13199,7 @@ AbstractData.prototype.populateDataOnStart = function()
 
 	this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
 	this.showImages(!!RL.settingsGet('ShowImages'));
+	this.contactsAutosave(!!RL.settingsGet('ContactsAutosave'));
 	this.interfaceAnimation(RL.settingsGet('InterfaceAnimation'));
 
 	this.mainMessagesPerPage(RL.settingsGet('MPP'));
@@ -14968,11 +15020,12 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLim
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, nScopeType, aProperties)
 {
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
 		'Uid': Utils.trim(sUid),
+		'ScopeType': nScopeType,
 		'Properties': aProperties
 	});
 };

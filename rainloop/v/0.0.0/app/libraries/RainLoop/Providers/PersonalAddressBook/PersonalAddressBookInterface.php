@@ -38,13 +38,11 @@ interface PersonalAddressBookInterface
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
-	 * @param bool $iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_
 	 * @param int $iResultCount = 0
 	 *
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '',
-		$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, &$iResultCount = 0);
+	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0);
 
 	/**
 	 * @param \RainLoop\Account $oAccount

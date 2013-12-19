@@ -495,12 +495,7 @@ Enums.InterfaceAnimation = {
 Enums.ContactScopeType = {
 
 	'Default': 0,
-	
-	'Auto': 1,
-
-	'ShareAll': 2,
-	'ShareDomain': 3,
-	'ShareEmail': 4
+	'ShareAll': 2
 };
 
 /**
@@ -1316,6 +1311,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
 	oData.showImages = ko.observable(false);
 	oData.interfaceAnimation = ko.observable(Enums.InterfaceAnimation.Full);
+	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 	
@@ -5319,6 +5315,7 @@ function AdminContacts()
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 	this.enableContacts = ko.observable(!!RL.settingsGet('ContactsEnable'));
+	this.contactsSharing = ko.observable(!!RL.settingsGet('ContactsSharing'));
 
 	var
 		aTypes = ['sqlite', 'mysql', 'pgsql'],
@@ -5484,6 +5481,12 @@ AdminContacts.prototype.onBuild = function ()
 		self.enableContacts.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'ContactsEnable': bValue ? '1' : '0'
+			});
+		});
+
+		self.contactsSharing.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'ContactsSharing': bValue ? '1' : '0'
 			});
 		});
 		
@@ -6094,6 +6097,7 @@ AbstractData.prototype.populateDataOnStart = function()
 
 	this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
 	this.showImages(!!RL.settingsGet('ShowImages'));
+	this.contactsAutosave(!!RL.settingsGet('ContactsAutosave'));
 	this.interfaceAnimation(RL.settingsGet('InterfaceAnimation'));
 
 	this.mainMessagesPerPage(RL.settingsGet('MPP'));

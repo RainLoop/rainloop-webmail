@@ -40,6 +40,7 @@ AbstractData.prototype.populateDataOnStart = function()
 
 	this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
 	this.showImages(!!RL.settingsGet('ShowImages'));
+	this.contactsAutosave(!!RL.settingsGet('ContactsAutosave'));
 	this.interfaceAnimation(RL.settingsGet('InterfaceAnimation'));
 
 	this.mainMessagesPerPage(RL.settingsGet('MPP'));

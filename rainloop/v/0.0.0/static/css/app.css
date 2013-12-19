@@ -1143,7 +1143,7 @@ table {
     border-spacing: 0;
 }
 
-/*@charset "UTF-8";*/
+@charset "UTF-8";
 
 @font-face {
   font-family: "rainloop";
@@ -1393,12 +1393,6 @@ table {
 .icon-bug:before {
   content: "\e045";
 }
-.icon-heart:before {
-  content: "\e046";
-}
-.icon-heart-empty:before {
-  content: "\e047";
-}
 .icon-popup:before {
   content: "\e048";
 }
@@ -1420,56 +1414,65 @@ table {
 .icon-google-drive:before {
   content: "\e04e";
 }
-.icon-spinner:before {
+.icon-github:before {
   content: "\e04f";
 }
-.icon-github:before {
+.icon-telephone:before {
   content: "\e050";
 }
-.icon-telephone:before {
+.icon-mobile:before {
   content: "\e051";
 }
-.icon-mobile:before {
+.icon-pencil:before {
   content: "\e052";
 }
-.icon-mail:before {
+.icon-trash:before {
   content: "\e053";
 }
-.icon-pencil:before {
+.icon-left-middle:before {
   content: "\e054";
 }
-.icon-trash:before {
+.icon-right-middle:before {
   content: "\e055";
 }
-.icon-left-middle:before {
+.icon-repeat:before {
   content: "\e056";
 }
-.icon-right-middle:before {
+.icon-key:before {
   content: "\e057";
 }
-.icon-repeat:before {
+.icon-lock:before {
   content: "\e058";
 }
-.icon-key:before {
+.icon-home:before {
   content: "\e059";
 }
-.icon-lock:before {
+.icon-address-book:before {
   content: "\e05a";
 }
-.icon-home:before {
+.icon-share:before {
   content: "\e05b";
 }
-.icon-address-book:before {
+.icon-suitcase:before {
   content: "\e05c";
 }
-.icon-share:before {
+.icon-new-sign:before {
   content: "\e05d";
 }
-.icon-suitcase:before {
+.icon-spinner:before {
   content: "\e05e";
 }
-.icon-mailbox:before {
+.icon-users:before {
   content: "\e05f";
+}
+.icon-earth:before {
+  content: "\e060";
+}
+.icon-happy-smiley:before {
+  content: "\e061";
+}
+.icon-mail:before {
+  content: "\e062";
 }
 
 /** initial setup **/
@@ -5710,6 +5713,9 @@ html.no-rgba .modal {
   text-decoration: none;
   cursor: pointer;
 }
+.g-ui-menu .e-item.selected > .e-link {
+  background-color: #eee;
+}
 .g-ui-menu .e-item > .e-link:hover {
   background-color: #555;
   background-image: none;
@@ -7094,10 +7100,10 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   display: none;
 }
 .b-contacts-content .control-group .control-label.fix-width {
-  width: 110px;
+  width: 90px;
 }
 .b-contacts-content .control-group .controls.fix-width {
-  margin-left: 135px;
+  margin-left: 110px;
 }
 .b-contacts-content.modal {
   position: absolute;
@@ -7368,6 +7374,11 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   color: #ee5f5b;
   border-color: #ee5f5b;
 }
+.b-contacts-content.modal .b-view-content .e-save-trigger {
+  position: absolute;
+  top: 25px;
+  left: 10px;
+}
 .b-contacts-content.modal .b-view-content .e-read-only-sign {
   display: none;
   position: absolute;
@@ -7376,13 +7387,13 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-contacts-content.modal .b-view-content .e-share-sign {
   position: absolute;
-  top: 60px;
+  top: 20px;
   right: 20px;
   cursor: pointer;
 }
 .b-contacts-content.modal .b-view-content .button-save-contact {
   position: absolute;
-  top: 20px;
+  top: 100px;
   right: 20px;
 }
 .b-contacts-content.modal .b-view-content.read-only .e-read-only-sign {

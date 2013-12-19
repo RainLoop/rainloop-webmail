@@ -12,6 +12,7 @@ function SettingsGeneral()
 	this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 	this.editorDefaultType = oData.editorDefaultType;
 	this.showImages = oData.showImages;
+	this.contactsAutosave = oData.contactsAutosave;
 	this.interfaceAnimation = oData.interfaceAnimation;
 	this.useDesktopNotifications = oData.useDesktopNotifications;	
 	this.threading = oData.threading;
@@ -92,6 +93,12 @@ SettingsGeneral.prototype.onBuild = function ()
 		oData.showImages.subscribe(function (bValue) {
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'ShowImages': bValue ? '1' : '0'
+			});
+		});
+
+		oData.contactsAutosave.subscribe(function (bValue) {
+			RL.remote().saveSettings(Utils.emptyFunction, {
+				'ContactsAutosave': bValue ? '1' : '0'
 			});
 		});
 

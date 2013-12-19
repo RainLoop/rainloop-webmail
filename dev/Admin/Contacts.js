@@ -9,6 +9,7 @@ function AdminContacts()
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 	this.enableContacts = ko.observable(!!RL.settingsGet('ContactsEnable'));
+	this.contactsSharing = ko.observable(!!RL.settingsGet('ContactsSharing'));
 
 	var
 		aTypes = ['sqlite', 'mysql', 'pgsql'],
@@ -174,6 +175,12 @@ AdminContacts.prototype.onBuild = function ()
 		self.enableContacts.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'ContactsEnable': bValue ? '1' : '0'
+			});
+		});
+
+		self.contactsSharing.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'ContactsSharing': bValue ? '1' : '0'
 			});
 		});
 		

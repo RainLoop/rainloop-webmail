@@ -562,6 +562,9 @@ class Actions
 		{
 			$this->oPersonalAddressBookProvider = new \RainLoop\Providers\PersonalAddressBook(
 				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('personal-address-book', $oAccount) : null);
+
+			$this->oPersonalAddressBookProvider->ConsiderShare(
+				!!$this->Config()->Get('contacts', 'allow_sharing', false));
 		}
 		else if ($oAccount && $this->oPersonalAddressBookProvider->IsSupported())
 		{
@@ -932,6 +935,7 @@ class Actions
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 				$aResult['ContactsIsAllowed'] = $this->PersonalAddressBookProvider($oAccount)->IsActive();
+				$aResult['ContactsSharingIsAllowed'] = $this->PersonalAddressBookProvider($oAccount)->IsSharingAllowed();
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 			}
@@ -990,6 +994,7 @@ class Actions
 				$aResult['PostgreSqlIsSupported'] = \is_array($aDrivers) ? \in_array('pgsql', $aDrivers) : false;
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
+				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
 				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
@@ -1033,6 +1038,7 @@ class Actions
 		// user
 		$aResult['EditorDefaultType'] = (string) $oConfig->Get('webmail', 'editor_default_type', '');
 		$aResult['ShowImages'] = (bool) $oConfig->Get('webmail', 'show_images', false);
+		$aResult['ContactsAutosave'] = true;
 		$aResult['MPP'] = (int) $oConfig->Get('webmail', 'messages_per_page', 25);
 		$aResult['DesktopNotifications'] = false;
 		$aResult['UseThreads'] = false;
@@ -1066,6 +1072,7 @@ class Actions
 			$aResult['NullFolder'] = $oSettings->GetConf('NullFolder', '');
 			$aResult['EditorDefaultType'] = $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
 			$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+			$aResult['ContactsAutosave'] = (bool) $oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 			$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
 			$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 			$aResult['UseThreads'] = (bool) $oSettings->GetConf('UseThreads', $aResult['UseThreads']);
@@ -1867,6 +1874,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
 
 		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'ContactsSharing', 'contacts', 'allow_sharing', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
@@ -3000,6 +3008,7 @@ class Actions
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
+		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'InterfaceAnimation', 'string', function ($sValue) {
 			return (\in_array($sValue,
 				array(\RainLoop\Enumerations\InterfaceAnimation::NONE,
@@ -4153,7 +4162,10 @@ class Actions
 
 			if (0 < \count($aArrayToFrec))
 			{
-				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount, \array_values($aArrayToFrec));
+				$oSettings = $this->SettingsProvider()->Load($oAccount);
+				
+				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount, \array_values($aArrayToFrec),
+					!!$oSettings->GetConf('ContactsAutosave', false));
 			}
 		}
 
@@ -4196,7 +4208,7 @@ class Actions
 		{
 			$iCount = 0;
 			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount, 
-				$iOffset, $iLimit, $sSearch, \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, $iCount);
+				$iOffset, $iLimit, $sSearch, $iCount);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -4244,12 +4256,21 @@ class Actions
 		if ($oPab && $oPab->IsActive() && 0 < \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
+			$iScopeType = (int) $this->GetActionParam('ScopeType', null);
+			if (!in_array($iScopeType, array(
+				\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_,
+				\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL)))
+			{
+				$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
+			}
 
 			$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 			if (0 < \strlen($sUid))
 			{
 				$oContact->IdContact = $sUid;
 			}
+
+			$oContact->ScopeType = $iScopeType;
 
 			$aProperties = $this->GetActionParam('Properties', array());
 			if (\is_array($aProperties))
@@ -4262,6 +4283,7 @@ class Actions
 						$oProp = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
 						$oProp->Type = (int) $aItem[0];
 						$oProp->Value = $aItem[1];
+						$oProp->ScopeType = $iScopeType;
 
 						$oContact->Properties[] = $oProp;
 					}
@@ -5911,16 +5933,6 @@ class Actions
 					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail())
 				));
 			}
-			else if ('RainLoop\Providers\Contacts\Classes\Contact' === $sClassName)
-			{
-				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
-					'IdContact' => $mResponse->IdContact,
-					'ImageHash' => $mResponse->ImageHash,
-					'ListName' => \MailSo\Base\Utils::Utf8Clear($mResponse->ListName),
-					'Name' => \MailSo\Base\Utils::Utf8Clear($mResponse->Name),
-					'Emails' => $mResponse->Emails
-				));
-			}
 			else if ('RainLoop\Providers\PersonalAddressBook\Classes\Contact' === $sClassName)
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
@@ -5929,7 +5941,6 @@ class Actions
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
 					'ReadOnly' => $mResponse->ReadOnly,
 					'ScopeType' => $mResponse->ScopeType,
-					'ScopeValue' => $mResponse->ScopeValue,
 					'IdPropertyFromSearch' => $mResponse->IdPropertyFromSearch,
 					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
 				));
@@ -5942,7 +5953,7 @@ class Actions
 					'Type' => $mResponse->Type,
 					'TypeCustom' => $mResponse->TypeCustom,
 					'Value' => \MailSo\Base\Utils::Utf8Clear($mResponse->Value),
-					'ValueClear' => \MailSo\Base\Utils::Utf8Clear($mResponse->ValueClear)
+					'ValueCustom' => \MailSo\Base\Utils::Utf8Clear($mResponse->ValueCustom)
 				));
 			}
 			else if ('MailSo\Mail\Attachment' === $sClassName)

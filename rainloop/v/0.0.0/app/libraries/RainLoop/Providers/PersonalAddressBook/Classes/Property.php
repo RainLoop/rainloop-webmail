@@ -24,11 +24,6 @@ class Property
 	/**
 	 * @var string
 	 */
-	public $ScopeValue;
-
-	/**
-	 * @var string
-	 */
 	public $TypeCustom;
 
 	/**
@@ -39,7 +34,7 @@ class Property
 	/**
 	 * @var string
 	 */
-	public $ValueClear;
+	public $ValueCustom;
 
 	/**
 	 * @var int
@@ -57,11 +52,10 @@ class Property
 		
 		$this->Type = PropertyType::UNKNOWN;
 		$this->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
-		$this->ScopeValue = '';
 		$this->TypeCustom = '';
 
 		$this->Value = '';
-		$this->ValueClear = '';
+		$this->ValueCustom = '';
 
 		$this->Frec = 0;
 	}
@@ -92,7 +86,7 @@ class Property
 	{
 		// trimer
 		$this->Value = \trim($this->Value);
-		$this->ValueClear = \trim($this->ValueClear);
+		$this->ValueCustom = \trim($this->ValueCustom);
 		$this->TypeCustom = \trim($this->TypeCustom);
 		
 		if (0 < \strlen($this->Value))
@@ -109,7 +103,7 @@ class Property
 				$sPhone = $this->Value;
 				$sPhone = \preg_replace('/^[+]+/', '', $sPhone);
 				$sPhone = \preg_replace('/[^\d]/', '', $sPhone);
-				$this->ValueClear = $sPhone;
+				$this->ValueCustom = $sPhone;
 			}
 		}
 	}

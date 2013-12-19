@@ -28,14 +28,33 @@ class PdoPersonalAddressBook
 	 */
 	private $sPassword;
 
+	/**
+	 * @var bool
+	 */
+	private $bConsiderShare;
+
 	public function __construct($sDsn, $sUser = '', $sPassword = '', $sDsnType = 'mysql')
 	{
 		$this->sDsn = $sDsn;
 		$this->sUser = $sUser;
 		$this->sPassword = $sPassword;
 		$this->sDsnType = $sDsnType;
+
+		$this->bConsiderShare = true;
 		
 		$this->bExplain = false;
+	}
+
+	/**
+	 * @param bool $bConsiderShare
+	 *
+	 * @return \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook
+	 */
+	public function ConsiderShare($bConsiderShare = true)
+	{
+		$this->bConsiderShare = !!$bConsiderShare;
+
+		return $this;
 	}
 
 	/**
@@ -45,6 +64,22 @@ class PdoPersonalAddressBook
 	{
 		$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
 		return \is_array($aDrivers) ? \in_array($this->sDsnType, $aDrivers) : false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsConsiderShare()
+	{
+		return $this->bConsiderShare;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsSharingAllowed()
+	{
+		return $this->IsConsiderShare() && $this->IsSupported();
 	}
 
 	/**
@@ -62,42 +97,14 @@ class PdoPersonalAddressBook
 
 		$bUpdate = 0 < $iIdContact;
 
-		$oContact->UpdateDependentValues();
-		$oContact->Changed = \time();
-
-		if (\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO !== $oContact->ScopeType)
+		if (!$this->bConsiderShare)
 		{
-			$aEmail = $oContact->GetEmails();
-			if (0 < \count($aEmail))
-			{
-				$aEmail = \array_map(function ($sValue) {
-					return \strtolower(\trim($sValue));
-				}, $aEmail);
-				
-				$aEmail = \array_filter($aEmail, function ($sValue) {
-					return !empty($sValue);
-				});
-
-				if (0 < \count($aEmail))
-				{
-					$self = $this;
-					$aEmail = \array_map(function ($sValue) use ($self) {
-						return $self->quoteValue($sValue);
-					}, $aEmail);
-
-
-					// clear autocreated contacts
-					$this->prepareAndExecute(
-						'DELETE FROM rainloop_pab_contacts WHERE id_user = :id_user AND scope_type = :scope_type AND display_email IN ('.\implode(',', $aEmail).')',
-						array(
-							':scope_type' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO, \PDO::PARAM_INT),
-							':id_user' => array($iUserID, \PDO::PARAM_INT)
-						)
-					);
-				}
-			}
+			$oContact->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 		}
 
+		$oContact->UpdateDependentValues();
+		$oContact->Changed = \time();
+		
 		try
 		{
 			if ($this->isTransactionSupported())
@@ -111,7 +118,7 @@ class PdoPersonalAddressBook
 				$aFreq = $this->getContactFreq($iUserID, $iIdContact);
 
 				$sSql = 'UPDATE rainloop_pab_contacts SET display = :display, display_name = :display_name, display_email = :display_email, '.
-					'scope_type = :scope_type, scope_value = :scope_value, changed = :changed  WHERE id_user = :id_user AND id_contact = :id_contact';
+					'scope_type = :scope_type, changed = :changed  WHERE id_user = :id_user AND id_contact = :id_contact';
 
 				$this->prepareAndExecute($sSql,
 					array(
@@ -121,7 +128,6 @@ class PdoPersonalAddressBook
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
 						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
-						':scope_value' => array($oContact->ScopeValue, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
 					)
 				);
@@ -138,8 +144,8 @@ class PdoPersonalAddressBook
 			else
 			{
 				$sSql = 'INSERT INTO rainloop_pab_contacts '.
-					'( id_user,  display,  display_name,  display_email,  scope_type,  scope_value,  changed) VALUES '.
-					'(:id_user, :display, :display_name, :display_email, :scope_type, :scope_value, :changed)';
+					'( id_user,  display,  display_name,  display_email,  scope_type,  changed) VALUES '.
+					'(:id_user, :display, :display_name, :display_email, :scope_type, :changed)';
 
 				$this->prepareAndExecute($sSql,
 					array(
@@ -148,7 +154,6 @@ class PdoPersonalAddressBook
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
 						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
-						':scope_value' => array($oContact->ScopeValue, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT)
 					)
 				);
@@ -176,18 +181,17 @@ class PdoPersonalAddressBook
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
 						':scope_type' => array($oContact->ScopeType, \PDO::PARAM_INT),
-						':scope_value' => array($oContact->ScopeValue, \PDO::PARAM_STR),
 						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
 						':prop_type_custom' => array($oProp->TypeCustom, \PDO::PARAM_STR),
 						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
-						':prop_value_custom' => array($oProp->ValueClear, \PDO::PARAM_STR),
+						':prop_value_custom' => array($oProp->ValueCustom, \PDO::PARAM_STR),
 						':prop_frec' => array($iFreq, \PDO::PARAM_INT),
 					);
 				}
 
 				$sSql = 'INSERT INTO rainloop_pab_properties '.
-					'( id_contact,  id_user,  prop_type,  prop_type_custom,  prop_value,  prop_value_custom,  scope_type,  scope_value,  prop_frec) VALUES '.
-					'(:id_contact, :id_user, :prop_type, :prop_type_custom, :prop_value, :prop_value_custom, :scope_type, :scope_value, :prop_frec)';
+					'( id_contact,  id_user,  prop_type,  prop_type_custom,  prop_value,  prop_value_custom,  scope_type,  prop_frec) VALUES '.
+					'(:id_contact, :id_user, :prop_type, :prop_type_custom, :prop_value, :prop_value_custom, :scope_type, :prop_frec)';
 
 				$this->prepareAndExecute($sSql, $aParams, true);
 			}
@@ -275,13 +279,11 @@ class PdoPersonalAddressBook
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
-	 * @param bool $iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_
 	 * @param int $iResultCount = 0
 	 * 
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '',
-		$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, &$iResultCount = 0)
+	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
 		$this->Sync();
 
@@ -289,10 +291,7 @@ class PdoPersonalAddressBook
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
 		$sSearch = \trim($sSearch);
 
-		$sEmail = $oAccount->ParentEmailHelper();
-		$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
-
-		$iUserID = $this->getUserId($sEmail);
+		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$iCount = 0;
 		$aSearchIds = array();
@@ -302,22 +301,27 @@ class PdoPersonalAddressBook
 		{
 			$sSql = 'SELECT id_user, id_prop, id_contact FROM rainloop_pab_properties '.
 				'WHERE ('.
-				'(id_user = :id_user)'.
-				' OR (scope_type = :scope_type_share_all)'.
-				' OR (scope_type = :scope_type_share_domain AND scope_value = :scope_value_domain)'.
-				' OR (scope_type = :scope_type_share_email AND scope_value = :scope_value_email)'.
-				') AND prop_value LIKE :search ESCAPE \'=\' GROUP BY id_contact, id_prop';
+				'id_user = :id_user'.
+				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '').
+				') AND (prop_value LIKE :search ESCAPE \'=\' OR ('.
+					'prop_type IN ('.\implode(',', array(
+						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
+						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER,
+						PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER
+					)).') AND prop_value_custom LIKE :search_custom_phone'.
+				')) GROUP BY id_contact, id_prop';
 
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':scope_type_share_all' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT),
-				':scope_type_share_domain' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_DOMAIN, \PDO::PARAM_INT),
-				':scope_type_share_email' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_EMAIL, \PDO::PARAM_INT),
-				':scope_value_domain' => array($sDomain, \PDO::PARAM_STR),
-				':scope_value_email' => array($sEmail, \PDO::PARAM_STR),
-				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
+				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR),
+				':search_custom_phone' => array($this->specialConvertSearchValueCustomPhone($sSearch), \PDO::PARAM_STR)
 			);
-			
+
+			if ($this->bConsiderShare)
+			{
+				$aParams[':scope_type_share_all'] = array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT);
+			}
+
 			$oStmt = $this->prepareAndExecute($sSql, $aParams);
 			if ($oStmt)
 			{
@@ -341,22 +345,18 @@ class PdoPersonalAddressBook
 		else
 		{
 			$sSql = 'SELECT COUNT(DISTINCT id_contact) as contact_count FROM rainloop_pab_properties '.
-				'WHERE ('.
-				'(id_user = :id_user)'.
-				' OR (scope_type = :scope_type_share_all)'.
-				' OR (scope_type = :scope_type_share_domain AND scope_value = :scope_value_domain)'.
-				' OR (scope_type = :scope_type_share_email AND scope_value = :scope_value_email)'.
-				')'
+				'WHERE id_user = :id_user'.
+				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '')
 			;
 			
 			$aParams = array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':scope_type_share_all' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT),
-				':scope_type_share_domain' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_DOMAIN, \PDO::PARAM_INT),
-				':scope_type_share_email' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_EMAIL, \PDO::PARAM_INT),
-				':scope_value_domain' => array($sDomain, \PDO::PARAM_STR),
-				':scope_value_email' => array($sEmail, \PDO::PARAM_STR)
+				':id_user' => array($iUserID, \PDO::PARAM_INT)
 			);
+
+			if ($this->bConsiderShare)
+			{
+				$aParams[':scope_type_share_all'] = array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT);
+			}
 
 			$oStmt = $this->prepareAndExecute($sSql, $aParams);
 			if ($oStmt)
@@ -374,22 +374,18 @@ class PdoPersonalAddressBook
 		if (0 < $iCount)
 		{
 			$sSql = 'SELECT * FROM rainloop_pab_contacts '.
-				'WHERE ('.
-				'(id_user = :id_user)'.
-				' OR (scope_type = :scope_type_share_all)'.
-				' OR (scope_type = :scope_type_share_domain AND scope_value = :scope_value_domain)'.
-				' OR (scope_type = :scope_type_share_email AND scope_value = :scope_value_email)'.
-				')'
+				'WHERE id_user = :id_user'.
+				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '')
 			;
 			
 			$aParams = array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':scope_type_share_all' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT),
-				':scope_type_share_domain' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_DOMAIN, \PDO::PARAM_INT),
-				':scope_type_share_email' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_EMAIL, \PDO::PARAM_INT),
-				':scope_value_domain' => array($sDomain, \PDO::PARAM_STR),
-				':scope_value_email' => array($sEmail, \PDO::PARAM_STR)
+				':id_user' => array($iUserID, \PDO::PARAM_INT)
 			);
+
+			if ($this->bConsiderShare)
+			{
+				$aParams[':scope_type_share_all'] = array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT);
+			}
 
 			if (0 < \count($aSearchIds))
 			{
@@ -423,7 +419,6 @@ class PdoPersonalAddressBook
 							$oContact->DisplayEmail = isset($aItem['display_email']) ? (string) $aItem['display_email'] : '';
 							$oContact->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
 								\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
-							$oContact->ScopeValue = isset($aItem['scope_value']) ? (string) $aItem['scope_value'] : '';
 							$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
 							$oContact->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
 
@@ -460,11 +455,10 @@ class PdoPersonalAddressBook
 										$oProperty->IdProperty = (int) $aItem['id_prop'];
 										$oProperty->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
 											\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
-										$oProperty->ScopeValue = isset($aItem['scope_value']) ? (string) $aItem['scope_value'] : '';
 										$oProperty->Type = (int) $aItem['prop_type'];
 										$oProperty->TypeCustom = isset($aItem['prop_type_custom']) ? (string) $aItem['prop_type_custom'] : '';
 										$oProperty->Value = (string) $aItem['prop_value'];
-										$oProperty->ValueClear = isset($aItem['prop_value_clear']) ? (string) $aItem['prop_value_clear'] : '';
+										$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
 										$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
 
 										$aContacts[$iId]->Properties[] = $oProperty;
@@ -508,33 +502,28 @@ class PdoPersonalAddressBook
 
 		$this->Sync();
 		
-		$sEmail = $oAccount->ParentEmailHelper();
-		$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
-
-		$iUserID = $this->getUserId($sEmail);
+		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
 
 		$sTypes = implode(',', array(
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FULLNAME
 		));
-		
+
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_pab_properties '.
 			'WHERE ('.
-			'(id_user = :id_user)'.
-			' OR (scope_type = :scope_type_share_all)'.
-			' OR (scope_type = :scope_type_share_domain AND scope_value = :scope_value_domain)'.
-			' OR (scope_type = :scope_type_share_email AND scope_value = :scope_value_email)'.
+			'id_user = :id_user'.
+			($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '').
 			') AND prop_type IN ('.$sTypes.') AND prop_value LIKE :search ESCAPE \'=\'';
 		
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
 			':limit' => array($iLimit, \PDO::PARAM_INT),
-			':scope_type_share_all' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT),
-			':scope_type_share_domain' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_DOMAIN, \PDO::PARAM_INT),
-			':scope_type_share_email' => array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_EMAIL, \PDO::PARAM_INT),
-			':scope_value_domain' => array($sDomain, \PDO::PARAM_STR),
-			':scope_value_email' => array($sEmail, \PDO::PARAM_STR),
 			':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 		);
+
+		if ($this->bConsiderShare)
+		{
+			$aParams[':scope_type_share_all'] = array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT);
+		}
 
 		$sSql .= ' ORDER BY prop_frec DESC';
 		$sSql .= ' LIMIT :limit';
@@ -765,7 +754,7 @@ class PdoPersonalAddressBook
 			$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 			foreach ($aEmailsToCreate as $oEmail)
 			{
-				$oContact->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::AUTO;
+				$oContact->ScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 
 				if ('' !== \trim($oEmail->GetEmail()))
 				{
@@ -1042,27 +1031,15 @@ SQLITEINITIAL;
 		{
 			case 'mysql':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
-					2 => array(
-						'ALTER TABLE rainloop_pab_contacts ADD scope_value varchar(128) NOT NULL DEFAULT \'\' AFTER scope_type',
-						'ALTER TABLE rainloop_pab_properties ADD scope_value varchar(128) NOT NULL DEFAULT \'\' AFTER scope_type'
-					)
+					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
 			case 'pgsql':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
-					2 => array(
-						'ALTER TABLE rainloop_pab_contacts ADD scope_value varchar(128) NOT NULL DEFAULT \'\'',
-						'ALTER TABLE rainloop_pab_properties ADD scope_value varchar(128) NOT NULL DEFAULT \'\''
-					)
+					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
 			case 'sqlite':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
-					2 => array(
-						'ALTER TABLE rainloop_pab_contacts ADD scope_value text NOT NULL default \'\'',
-						'ALTER TABLE rainloop_pab_properties ADD scope_value text NOT NULL default \'\''
-					)
+					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
 		}
 
@@ -1109,6 +1086,7 @@ SQLITEINITIAL;
 
 	/**
 	 * @param string $sSearch
+	 * @param string $sEscapeSign = '='
 	 *
 	 * @return string
 	 */
@@ -1116,6 +1094,16 @@ SQLITEINITIAL;
 	{
 		return '%'.\str_replace(array($sEscapeSign, '_', '%'),
 			array($sEscapeSign.$sEscapeSign, $sEscapeSign.'_', $sEscapeSign.'%'), $sSearch).'%';
+	}
+
+	/**
+	 * @param string $sSearch
+	 *
+	 * @return string
+	 */
+	private function specialConvertSearchValueCustomPhone($sSearch)
+	{
+		return '%'.\preg_replace('/[^\d]/', '', $sSearch).'%';
 	}
 
 	/**

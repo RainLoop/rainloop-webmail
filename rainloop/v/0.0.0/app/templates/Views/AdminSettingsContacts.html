@@ -19,6 +19,10 @@
 					<i data-bind="css: enableContacts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Enable contacts
 				</label>
+				<label data-bind="click: function () { contactsSharing(!contactsSharing()); }">
+					<i data-bind="css: contactsSharing() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow contacts sharing
+				</label>
 			</div>
 		</div>
 		<div class="control-group">

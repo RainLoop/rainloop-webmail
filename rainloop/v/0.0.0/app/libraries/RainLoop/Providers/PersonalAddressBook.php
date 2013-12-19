@@ -45,10 +45,32 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @return bool
 	 */
+	public function IsSharingAllowed()
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
+			$this->oDriver->IsSharingAllowed();
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IsSupported()
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
 			$this->oDriver->IsSupported();
+	}
+
+	/**
+	 * @param bool $bConsiderShare = true
+	 */
+	public function ConsiderShare($bConsiderShare = true)
+	{
+		if ($this->oDriver)
+		{
+			$this->oDriver->ConsiderShare($bConsiderShare);
+		}
+
+		return $this;
 	}
 
 	/**
@@ -78,16 +100,14 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	 * @param int $iOffset = 0
 	 * @param type $iLimit = 20
 	 * @param string $sSearch = ''
-	 * @param int $iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_
 	 * @param int $iResultCount = 0
 	 *
 	 * @return array
 	 */
-	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '',
-		$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_, &$iResultCount = 0)
+	public function GetContacts($oAccount, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($oAccount,
-			$iOffset, $iLimit, $sSearch, $iScopeType, $iResultCount) : array();
+			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
 	/**

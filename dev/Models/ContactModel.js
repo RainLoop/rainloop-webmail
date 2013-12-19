@@ -10,7 +10,6 @@ function ContactModel()
 	this.properties = [];
 	this.readOnly = false;
 	this.scopeType = Enums.ContactScopeType.Default;
-	this.scopeValue = '';
 
 	this.checked = ko.observable(false);
 	this.selected = ko.observable(false);
@@ -61,7 +60,6 @@ ContactModel.prototype.parse = function (oItem)
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
 		this.scopeType = Utils.pInt(oItem['ScopeType']);
-		this.scopeValue = Utils.pString(oItem['ScopeValue']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
@@ -73,10 +71,7 @@ ContactModel.prototype.parse = function (oItem)
 			}, this);
 		}
 
-		this.shared(-1 < Utils.inArray(this.scopeType, [
-			Enums.ContactScopeType.ShareAll, Enums.ContactScopeType.ShareDomain, Enums.ContactScopeType.ShareEmail
-		]));
-		
+		this.shared(Enums.ContactScopeType.ShareAll === this.scopeType);
 		bResult = true;
 	}
 

@@ -719,6 +719,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
 	oData.showImages = ko.observable(false);
 	oData.interfaceAnimation = ko.observable(Enums.InterfaceAnimation.Full);
+	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 	
