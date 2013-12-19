@@ -5316,6 +5316,7 @@ function AdminContacts()
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 	this.enableContacts = ko.observable(!!RL.settingsGet('ContactsEnable'));
 	this.contactsSharing = ko.observable(!!RL.settingsGet('ContactsSharing'));
+	this.contactsSync = ko.observable(!!RL.settingsGet('ContactsSync'));
 
 	var
 		aTypes = ['sqlite', 'mysql', 'pgsql'],
@@ -5487,6 +5488,12 @@ AdminContacts.prototype.onBuild = function ()
 		self.contactsSharing.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'ContactsSharing': bValue ? '1' : '0'
+			});
+		});
+
+		self.contactsSync.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'ContactsSync': bValue ? '1' : '0'
 			});
 		});
 		

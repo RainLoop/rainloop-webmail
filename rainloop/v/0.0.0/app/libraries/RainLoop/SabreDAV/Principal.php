@@ -72,7 +72,6 @@ class Principal extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend
 		$sGetCurrentUser = $this->oAuthBackend->getCurrentUser();
 		if ('principals/'.$sGetCurrentUser === $sPath)
 		{
-//		var_dump($sPath);
 			return array(
 				'uri' => 'principals/'.$sGetCurrentUser,
 				'{DAV:}displayname' => $sGetCurrentUser,
@@ -133,7 +132,7 @@ class Principal extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend
      */
     function updatePrincipal($path, $mutations)
 	{
-		return array();
+		return true;
 	}
 
     /**

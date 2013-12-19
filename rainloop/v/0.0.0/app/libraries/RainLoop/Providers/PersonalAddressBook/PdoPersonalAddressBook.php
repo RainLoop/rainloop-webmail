@@ -93,15 +93,54 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
+	 * @param bool $bCreate = false
+	 *
+	 * @return string
+	 */
+	public function GetUserHashByEmail($sEmail, $bCreate = false)
+	{
+		$sHash = '';
+		$iUserID = $this->getUserId($sEmail);
+		if (0 < $iUserID)
+		{
+			$oStmt = $this->prepareAndExecute('SELECT pass_hash FROM rainloop_pab_users_hashes WHERE id_user = :id_user LIMIT 1',
+				array(':id_user' => array($iUserID, \PDO::PARAM_INT)));
+
+			if ($oStmt)
+			{
+				$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+				if ($aFetch && !empty($aFetch[0]['pass_hash']))
+				{
+					$sHash = \rtrim(\base_convert(\md5(\md5($sEmail.'-'.\trim($aFetch[0]['pass_hash']).'-rainloop')), 16, 32), '0');
+				}
+				else if ($bCreate)
+				{
+					$this->prepareAndExecute('INSERT INTO rainloop_pab_users_hashes (id_user, pass_hash) VALUES (:id_user, :pass_hash);',
+						array(
+							':id_user' => array($iUserID, \PDO::PARAM_INT),
+							':pass_hash' => array(\md5($sEmail.\microtime(true)), \PDO::PARAM_STR)
+						)
+					);
+
+					$this->GetUserHashByEmail($sEmail, false);
+				}
+			}
+		}
+
+		return $sHash;
+	}
+
+	/**
+	 * @param string $sEmail
 	 * @param \RainLoop\Providers\PersonalAddressBook\Classes\Contact $oContact
 	 *
 	 * @return bool
 	 */
-	public function ContactSave($oAccount, &$oContact)
+	public function ContactSave($sEmail, &$oContact)
 	{
 		$this->Sync();
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $this->getUserId($sEmail);
 		
 		$iIdContact = \strlen($oContact->IdContact) && \is_numeric($oContact->IdContact) ? (int) $oContact->IdContact : 0;
 
@@ -127,13 +166,14 @@ class PdoPersonalAddressBook
 			{
 				$aFreq = $this->getContactFreq($iUserID, $iIdContact);
 
-				$sSql = 'UPDATE rainloop_pab_contacts SET display = :display, display_name = :display_name, display_email = :display_email, '.
+				$sSql = 'UPDATE rainloop_pab_contacts SET id_contact_str = :id_contact_str, display = :display, display_name = :display_name, display_email = :display_email, '.
 					'scope_type = :scope_type, changed = :changed  WHERE id_user = :id_user AND id_contact = :id_contact';
 
 				$this->prepareAndExecute($sSql,
 					array(
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
+						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
@@ -154,12 +194,13 @@ class PdoPersonalAddressBook
 			else
 			{
 				$sSql = 'INSERT INTO rainloop_pab_contacts '.
-					'( id_user,  display,  display_name,  display_email,  scope_type,  changed) VALUES '.
-					'(:id_user, :display, :display_name, :display_email, :scope_type, :changed)';
+					'( id_user,  id_contact_str,  display,  display_name,  display_email,  scope_type,  changed) VALUES '.
+					'(:id_user, :id_contact_str, :display, :display_name, :display_email, :scope_type, :changed)';
 
 				$this->prepareAndExecute($sSql,
 					array(
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
+						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':display_name' => array($oContact->DisplayName, \PDO::PARAM_STR),
 						':display_email' => array($oContact->DisplayEmail, \PDO::PARAM_STR),
@@ -225,14 +266,14 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aContactIds
 	 *
 	 * @return bool
 	 */
-	public function DeleteContacts($oAccount, $aContactIds)
+	public function DeleteContacts($sEmail, $aContactIds)
 	{
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $this->getUserId($sEmail);
 
 		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
 			$mItem = (int) \trim($mItem);
@@ -255,15 +296,15 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aTagsIds
 	 *
 	 * @return bool
 	 */
-	public function DeleteTags($oAccount, $aTagsIds)
+	public function DeleteTags($sEmail, $aTagsIds)
 	{
 		$this->Sync();
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $this->getUserId($sEmail);
 
 		$aTagsIds = \array_filter($aTagsIds, function (&$mItem) {
 			$mItem = (int) \trim($mItem);
@@ -285,7 +326,7 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account|mixed $mAccountOrId
+	 * @param string $sEmail
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
@@ -293,7 +334,7 @@ class PdoPersonalAddressBook
 	 * 
 	 * @return array
 	 */
-	public function GetContacts($mAccountOrId, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+	public function GetContacts($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
 		$this->Sync();
 
@@ -301,11 +342,7 @@ class PdoPersonalAddressBook
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
 		$sSearch = \trim($sSearch);
 
-		$iUserID = $mAccountOrId instanceof \RainLoop\Account ? $this->getUserId($mAccountOrId->ParentEmailHelper()) : (int) $mAccountOrId;
-		if (0 === $iUserID)
-		{
-			throw new \InvalidArgumentException('Invalid Accoutn ID');
-		}
+		$iUserID = $this->getUserId($sEmail);
 
 		$iCount = 0;
 		$aSearchIds = array();
@@ -428,6 +465,7 @@ class PdoPersonalAddressBook
 							$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 
 							$oContact->IdContact = (string) $iIdContact;
+							$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
 							$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 							$oContact->DisplayName = isset($aItem['display_name']) ? (string) $aItem['display_name'] : '';
 							$oContact->DisplayEmail = isset($aItem['display_email']) ? (string) $aItem['display_email'] : '';
@@ -498,7 +536,124 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
+	 * @param string $sID
+	 * @param bool $bIsStrID = false
+	 *
+	 * @return \RainLoop\Providers\PersonalAddressBook\Classes\Contact|null
+	 */
+	public function GetContactByID($sEmail, $mID, $bIsStrID = false)
+	{
+		$this->Sync();
+
+		$mID = \trim($mID);
+
+		$iUserID = $this->getUserId($sEmail);
+
+		$sSql = 'SELECT * FROM rainloop_pab_contacts '.
+			'WHERE id_user = :id_user'.
+			($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '')
+		;
+
+		$aParams = array(
+			':id_user' => array($iUserID, \PDO::PARAM_INT)
+		);
+
+		if ($this->bConsiderShare)
+		{
+			$aParams[':scope_type_share_all'] = array(\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL, \PDO::PARAM_INT);
+		}
+
+		if ($bIsStrID)
+		{
+			$sSql .= ' AND id_contact_str = :id_contact_str';
+			$aParams[':id_contact_str'] = array($mID, \PDO::PARAM_STR);
+		}
+		else
+		{
+			$sSql .= ' AND id_contact = :id_contact';
+			$aParams[':id_contact'] = array($mID, \PDO::PARAM_INT);
+		}
+
+		$sSql .= ' LIMIT 1';
+
+		$oContact = null;
+		$iIdContact = 0;
+
+		$oStmt = $this->prepareAndExecute($sSql, $aParams);
+		if ($oStmt)
+		{
+			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+			if (\is_array($aFetch) && 0 < \count($aFetch))
+			{
+				foreach ($aFetch as $aItem)
+				{
+					$iIdContact = $aItem && isset($aItem['id_contact']) ? (int) $aItem['id_contact'] : 0;
+					if (0 < $iIdContact)
+					{
+						$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+
+						$oContact->IdContact = (string) $iIdContact;
+						$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
+						$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
+						$oContact->DisplayName = isset($aItem['display_name']) ? (string) $aItem['display_name'] : '';
+						$oContact->DisplayEmail = isset($aItem['display_email']) ? (string) $aItem['display_email'] : '';
+						$oContact->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
+							\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
+						$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
+						$oContact->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
+					}
+				}
+			}
+
+			unset($aFetch);
+
+			if (0 < $iIdContact && $oContact)
+			{
+				$oStmt->closeCursor();
+
+				$sSql = 'SELECT * FROM rainloop_pab_properties WHERE id_contact = '.$iIdContact;
+				$oStmt = $this->prepareAndExecute($sSql);
+
+				if ($oStmt)
+				{
+					$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+					if (\is_array($aFetch) && 0 < \count($aFetch))
+					{
+						foreach ($aFetch as $aItem)
+						{
+							if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['prop_type'], $aItem['prop_value']))
+							{
+								if ((string) $oContact->IdContact === (string) $aItem['id_contact'])
+								{
+									$oProperty = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+									$oProperty->IdProperty = (int) $aItem['id_prop'];
+									$oProperty->ScopeType = isset($aItem['scope_type']) ? (int) $aItem['scope_type'] :
+										\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
+									$oProperty->Type = (int) $aItem['prop_type'];
+									$oProperty->TypeCustom = isset($aItem['prop_type_custom']) ? (string) $aItem['prop_type_custom'] : '';
+									$oProperty->Value = (string) $aItem['prop_value'];
+									$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
+									$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
+
+									$oContact->Properties[] = $oProperty;
+								}
+							}
+						}
+					}
+
+					unset($aFetch);
+
+					$oContact->UpdateDependentValues();
+				}
+			}
+		}
+
+		return $oContact;
+	}
+
+	/**
+	 * @param string $sEmail
 	 * @param string $sSearch
 	 * @param int $iLimit = 20
 	 *
@@ -506,7 +661,7 @@ class PdoPersonalAddressBook
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	public function GetSuggestions($oAccount, $sSearch, $iLimit = 20)
+	public function GetSuggestions($sEmail, $sSearch, $iLimit = 20)
 	{
 		$sSearch = \trim($sSearch);
 		if (0 === \strlen($sSearch))
@@ -516,7 +671,7 @@ class PdoPersonalAddressBook
 
 		$this->Sync();
 		
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FULLNAME
@@ -675,13 +830,13 @@ class PdoPersonalAddressBook
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aEmails
 	 * @param bool $bCreateAuto = true
 	 *
 	 * @return bool
 	 */
-	public function IncFrec($oAccount, $aEmails, $bCreateAuto = true)
+	public function IncFrec($sEmail, $aEmails, $bCreateAuto = true)
 	{
 		$self = $this;
 		$aEmailsObjects = \array_map(function ($mItem) {
@@ -700,7 +855,7 @@ class PdoPersonalAddressBook
 		}
 
 		$this->Sync();
-		$iUserID = $this->getUserId($oAccount->ParentEmailHelper());
+		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = \implode(',', array(
 			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
@@ -792,7 +947,7 @@ class PdoPersonalAddressBook
 
 				if (0 < \count($oContact->Properties))
 				{
-					$this->ContactSave($oAccount, $oContact);
+					$this->ContactSave($sEmail, $oContact);
 				}
 				
 				$oContact->Clear();
@@ -975,11 +1130,11 @@ POSTGRESINITIAL;
 CREATE TABLE rainloop_pab_contacts (
 	id_contact		integer NOT NULL PRIMARY KEY,
 	id_user			integer NOT NULL,
-	scope_type		integer NOT NULL default 0,
-	display_name	text NOT NULL default '',
-	display_email	text NOT NULL default '',
-	display			text NOT NULL default '',
-	changed			integer NOT NULL default 0
+	scope_type		integer NOT NULL DEFAULT 0,
+	display_name	text NOT NULL DEFAULT '',
+	display_email	text NOT NULL DEFAULT '',
+	display			text NOT NULL DEFAULT '',
+	changed			integer NOT NULL DEFAULT 0
 );
 
 CREATE INDEX id_user_scope_type_rainloop_pab_contacts_index ON rainloop_pab_contacts (id_user, scope_type);
@@ -988,12 +1143,12 @@ CREATE TABLE rainloop_pab_properties (
 	id_prop			integer NOT NULL PRIMARY KEY,
 	id_contact		integer NOT NULL,
 	id_user			integer NOT NULL,
-	scope_type		integer NOT NULL default 0,
+	scope_type		integer NOT NULL DEFAULT 0,
 	prop_type		integer NOT NULL,
-	prop_type_custom	text NOT NULL default '',
-	prop_value			text NOT NULL default '',
-	prop_value_custom	text NOT NULL default '',
-	prop_frec			integer NOT NULL default 0
+	prop_type_custom	text NOT NULL DEFAULT '',
+	prop_value			text NOT NULL DEFAULT '',
+	prop_value_custom	text NOT NULL DEFAULT '',
+	prop_frec			integer NOT NULL DEFAULT 0
 );
 
 CREATE INDEX id_user_rainloop_pab_properties_index ON rainloop_pab_properties (id_user);
@@ -1045,15 +1200,36 @@ SQLITEINITIAL;
 		{
 			case 'mysql':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_pab_contacts ADD id_contact_str varchar(128) NOT NULL DEFAULT \'\' AFTER id_contact;',
+'CREATE TABLE IF NOT EXISTS rainloop_pab_users_hashes (
+	id_user		int UNSIGNED	NOT NULL,
+	pass_hash	varchar(128)	NOT NULL
+)/*!40000 ENGINE=INNODB */;'
+					)
 				));
 			case 'pgsql':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_pab_contacts ADD id_contact_str varchar(128) NOT NULL DEFAULT \'\';',
+'CREATE TABLE rainloop_pab_users_hashes (
+	id_user		integer			NOT NULL,
+	pass_hash	varchar(128)	NOT NULL
+);'
+					)
 				));
 			case 'sqlite':
 				return $this->dataBaseUpgrade($this->sDsnType.'-pab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_pab_contacts ADD id_contact_str text NOT NULL DEFAULT \'\';',
+'CREATE TABLE rainloop_pab_users_hashes (
+	id_user		integer		NOT NULL,
+	pass_hash	text		NOT NULL
+);'
+					)
 				));
 		}
 

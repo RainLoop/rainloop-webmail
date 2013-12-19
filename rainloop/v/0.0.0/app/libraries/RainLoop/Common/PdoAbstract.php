@@ -229,12 +229,18 @@ abstract class PdoAbstract
 	/**
 	 * @param string $sEmail
 	 * @param bool $bSkipInsert = false
-	 * @param bool $bSkipUpdateTables = false
+	 * @param bool $bCache = true
 	 *
 	 * @return int
 	 */
-	protected function getUserId($sEmail, $bSkipInsert = false)
+	protected function getUserId($sEmail, $bSkipInsert = false, $bCache = true)
 	{
+		static $aCache = array();
+		if ($bCache && isset($aCache[$sEmail]))
+		{
+			return $aCache[$sEmail];
+		}
+
 		$sEmail = \strtolower(\trim($sEmail));
 		if (empty($sEmail))
 		{
@@ -242,20 +248,38 @@ abstract class PdoAbstract
 		}
 
 		$oStmt = $this->prepareAndExecute('SELECT id_user FROM rainloop_users WHERE rl_email = :rl_email',
-			array(':rl_email' => array($sEmail, \PDO::PARAM_STR)));
+			array(
+				':rl_email' => array($sEmail, \PDO::PARAM_STR)
+			)
+		);
 
 		$mRow = $oStmt->fetch(\PDO::FETCH_ASSOC);
 		if ($mRow && isset($mRow['id_user']) && \is_numeric($mRow['id_user']))
 		{
-			return (int) $mRow['id_user'];
+			$iResult = (int) $mRow['id_user'];
+			if (0 >= $iResult)
+			{
+				throw new \Exception('id_user <= 0');
+			}
+
+			if ($bCache)
+			{
+				$aCache[$sEmail] = $iResult;
+			}
+
+			return $iResult;
 		}
 
 		if (!$bSkipInsert)
 		{
 			$oStmt->closeCursor();
 
-			$oStmt = $this->prepareAndExecute('INSERT INTO rainloop_users (rl_email) VALUES (:rl_email)',
-				array(':rl_email' => array($sEmail, \PDO::PARAM_STR)));
+			$oStmt = $this->prepareAndExecute('INSERT INTO rainloop_users (rl_email, rl_hash) VALUES (:rl_email, :rl_hash)',
+				array(
+					':rl_email' => array($sEmail, \PDO::PARAM_STR),
+					':rl_hash' => array(\md5($sEmail.\microtime(true)), \PDO::PARAM_STR)
+				)
+			);
 
 			return $this->getUserId($sEmail, true);
 		}
@@ -374,6 +398,8 @@ abstract class PdoAbstract
 	}
 
 	/**
+	 * @param bool $bWatchVersion = true
+	 *
 	 * @throws \Exception
 	 */
 	protected function initSystemTables()
@@ -384,55 +410,51 @@ abstract class PdoAbstract
 		if ($oPdo)
 		{
 			$aQ = array();
-			if ('mysql' === $this->sDbType)
+			switch ($this->sDbType)
 			{
-				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
-	sys_name varchar(50) NOT NULL,
-	value_int int UNSIGNED NOT NULL DEFAULT 0,
-	value_str varchar(128) NOT NULL DEFAULT \'\',
-	INDEX sys_name_rainloop_system_index (sys_name)
-) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
-
-				$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
-	id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
-	rl_email varchar(128) NOT NULL DEFAULT \'\',
-	PRIMARY KEY(id_user),
-	INDEX rl_email_rainloop_users_index (rl_email)
+				case 'mysql':
+					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
+sys_name varchar(50) NOT NULL,
+value_int int UNSIGNED NOT NULL DEFAULT 0,
+value_str varchar(128) NOT NULL DEFAULT \'\',
+INDEX sys_name_rainloop_system_index (sys_name)
+) /*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
+					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
+id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
+rl_email varchar(128) NOT NULL DEFAULT \'\',
+PRIMARY KEY(id_user),
+INDEX rl_email_rainloop_users_index (rl_email)
 ) /*!40000 ENGINE=INNODB */;';
-			}
-			else if ('pgsql' === $this->sDbType)
-			{
-				$aQ[] = 'CREATE TABLE rainloop_system (
-	sys_name varchar(50) NOT NULL,
-	value_int integer NOT NULL DEFAULT 0,
-	value_str varchar(128) NOT NULL DEFAULT \'\'
-);';
+					break;
 
-				$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
-				
-				$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
-
-				$aQ[] = 'CREATE TABLE rainloop_users (
-	id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
-	rl_email varchar(128) NOT NULL DEFAULT \'\'
+				case 'pgsql':
+					$aQ[] = 'CREATE TABLE rainloop_system (
+sys_name varchar(50) NOT NULL,
+value_int integer NOT NULL DEFAULT 0,
+value_str varchar(128) NOT NULL DEFAULT \'\'
 );';
-				$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
-			}
-			else if ('sqlite' === $this->sDbType)
-			{
-				$aQ[] = 'CREATE TABLE rainloop_system (
-	sys_name text NOT NULL,
-	value_int integer NOT NULL default 0,
-	value_str text NOT NULL default \'\'
+					$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
+					$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
+					$aQ[] = 'CREATE TABLE rainloop_users (
+id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
+rl_email varchar(128) NOT NULL DEFAULT \'\'
 );';
+					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
+					break;
 
-				$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
-
-				$aQ[] = 'CREATE TABLE rainloop_users (
-	id_user integer NOT NULL PRIMARY KEY,
-	rl_email text NOT NULL default \'\'
+				case 'sqlite':
+					$aQ[] = 'CREATE TABLE rainloop_system (
+sys_name text NOT NULL,
+value_int integer NOT NULL DEFAULT 0,
+value_str text NOT NULL DEFAULT \'\'
 );';
-				$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
+					$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
+					$aQ[] = 'CREATE TABLE rainloop_users (
+id_user integer NOT NULL PRIMARY KEY,
+rl_email text NOT NULL DEFAULT \'\'
+);';
+					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
+					break;
 			}
 
 			if (0 < \count($aQ))

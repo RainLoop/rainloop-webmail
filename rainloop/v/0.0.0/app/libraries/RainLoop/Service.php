@@ -103,6 +103,14 @@ class Service
 		$bCached = false;
 		$sResult = '';
 		$sPathInfo = \trim(\trim($this->oHttp->GetServer('PATH_INFO', '')), ' /');
+		if (!empty($sPathInfo))
+		{
+			if ('dav' !== \substr($sPathInfo, 0, 3))
+			{
+				$sPathInfo = '';
+			}
+		}
+
 		if (empty($sPathInfo))
 		{
 			$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');

@@ -2,19 +2,27 @@
 
 namespace RainLoop\SabreDAV;
 
-class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
-	
+class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
+{
 	/**
 	 * @var \RainLoop\Providers\PersonalAddressBook
 	 */
     private $oPersonalAddressBook;
 
+	/**
+	 * @var \RainLoop\SabreDAV\AuthBasic
+	 */
+    private $oAuthBackend;
+
     /**
      * @param \RainLoop\Providers\PersonalAddressBook $oPersonalAddressBook
+     * @param \RainLoop\SabreDAV\AuthBasic $oAuthBackend
      */
-    public function __construct($oPersonalAddressBook)
+    public function __construct($oPersonalAddressBook, &$oAuthBackend)
 	{
         $this->oPersonalAddressBook = $oPersonalAddressBook;
+		$this->oPersonalAddressBook->ConsiderShare(false);
+        $this->oAuthBackend = $oAuthBackend;
     }
 
 	/**
@@ -35,16 +43,27 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
 	}
 
 	/**
-	 * @param string $sPrincipalUri
+	 * @param string $sPrincipalUri = ''
+	 * @param string $mAddressBookID = ''
 	 *
 	 * @return string
 	 */
-	private function getCalendarID($sPrincipalUri)
+	private function getAuthEmail($sPrincipalUri = '', $mAddressBookID = '')
 	{
-		$mUserId = (string) $this->oPersonalAddressBook->GetUserUidByEmail(
-			$this->getEmailFromPrincipalUri($sPrincipalUri));
+		$sGetCurrentUser = \trim($this->oAuthBackend->getCurrentUser());
+		if (0 < \strlen($sPrincipalUri) && 0 < \strlen($sGetCurrentUser) &&
+			$sGetCurrentUser !== $this->getEmailFromPrincipalUri($sPrincipalUri))
+		{
+			$sGetCurrentUser = '';
+		}
 
-		return !empty($mUserId) ? $mUserId : '';
+		if (0 < \strlen((string) $mAddressBookID) && 0 < \strlen($sGetCurrentUser) &&
+			(string) $mAddressBookID !== (string)  $this->oPersonalAddressBook->GetUserUidByEmail($sGetCurrentUser))
+		{
+			$sGetCurrentUser = '';
+		}
+
+		return $sGetCurrentUser;
 	}
 	
     /**
@@ -55,20 +74,24 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      */
     public function getAddressBooksForUser($sPrincipalUri)
 	{
-		$mAddressBookID = $this->getCalendarID($sPrincipalUri);
-
 		$aAddressBooks = array();
-		if (!empty($mAddressBookID))
+
+		$sEmail = $this->getAuthEmail($sPrincipalUri);
+		if (0 < strlen($sEmail))
 		{
-			$aAddressBooks[] = array(
-				'id'  => $mAddressBookID,
-				'uri'  => 'default',
-				'principaluri' => $sPrincipalUri,
-				'{DAV:}displayname' => 'Personal Address Book',
-				'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}addressbook-description' => 'Personal Address Book',
-				'{http://calendarserver.org/ns/}getctag' => 1,
-				'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}supported-address-data' => new \Sabre\CardDAV\Property\SupportedAddressData()
-			);
+			$mAddressBookID = $this->oPersonalAddressBook->GetUserUidByEmail($sEmail);
+			if (!empty($mAddressBookID))
+			{
+				$aAddressBooks[] = array(
+					'id'  => $mAddressBookID,
+					'uri'  => 'default',
+					'principaluri' => $sPrincipalUri,
+					'{DAV:}displayname' => 'Personal Address Book',
+					'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}addressbook-description' => 'Personal Address Book',
+					'{http://calendarserver.org/ns/}getctag' => 1,
+					'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}supported-address-data' => new \Sabre\CardDAV\Property\SupportedAddressData()
+				);
+			}
 		}
 		
         return $aAddressBooks;
@@ -85,7 +108,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      * @see Sabre\DAV\IProperties::updateProperties
      * @return bool|array
      */
-    public function updateAddressBook($mAddressBookId, array $aMutations)
+    public function updateAddressBook($mAddressBookID, array $aMutations)
 	{
 		return false;
     }
@@ -106,36 +129,12 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
     /**
      * Deletes an entire addressbook and all its contents
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
 	 * 
      * @return void
      */
-    public function deleteAddressBook($mAddressBookId)
+    public function deleteAddressBook($mAddressBookID)
 	{
-    }
-
-    private function simpleGetCards($mAddressBookId, $sCardUri = '')
-	{
-		$aResult = array();
-		if (!empty($mAddressBookId))
-		{
-			$aList = $this->oPersonalAddressBook->GetContacts($mAddressBookId, 0, 20);
-			foreach ($aList as /* @var $oItem \RainLoop\Providers\PersonalAddressBook\Classes\Contact */ $oItem)
-			{
-				$oVCard = $oItem->ToVCardObject();
-				if ('' === $sCardUri || $sCardUri === $oVCard->UID)
-				{
-					$aResult[] =  array(
-						'id' => $oItem->IdContact,
-						'uri' => $oVCard->UID,
-						'lastmodified' => $oItem->Changed,
-						'carddata' => $oVCard->serialize()
-					);
-				}
-			}
-		}
-
-		return $aResult;
     }
 
     /**
@@ -154,13 +153,36 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      * calculating them. If they are specified, you can also ommit carddata.
      * This may speed up certain requests, especially with large cards.
      *
-     * @param mixed $mAddressbookId
+     * @param mixed $mAddressBookID
 	 * 
      * @return array
      */
-    public function getCards($mAddressBookId)
+    public function getCards($mAddressBookID)
 	{
-		return $this->simpleGetCards($mAddressBookId);
+		$aResult = array();
+		if (!empty($mAddressBookID))
+		{
+			$sEmail = $this->getAuthEmail('', $mAddressBookID);
+			if (!empty($sEmail))
+			{
+				$aList = $this->oPersonalAddressBook->GetContacts($sEmail, 0, 500);
+				foreach ($aList as /* @var $oItem \RainLoop\Providers\PersonalAddressBook\Classes\Contact */ $oItem)
+				{
+					if (!$oItem->ReadOnly)
+					{
+						$sCardData = $oItem->ToVCardObject()->serialize();
+						$aResult[] =  array(
+							'uri' => $oItem->VCardUID(),
+							'lastmodified' => $oItem->Changed,
+							'etag' => \md5($sCardData),
+							'size' => \strlen($sCardData)
+						);
+					}
+				}
+			}
+		}
+
+		return $aResult;
     }
 
     /**
@@ -169,14 +191,35 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      * The same set of properties must be returned as with getCards. The only
      * exception is that 'carddata' is absolutely required.
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
      * @param string $sCardUri
      * @return array
      */
-    public function getCard($mAddressBookId, $sCardUri)
+    public function getCard($mAddressBookID, $sCardUri)
 	{
-		$aList = $this->simpleGetCards($mAddressBookId, $sCardUri);
-		return 0 < count($aList) && isset($aList) ? $aList[0] : false;
+		$oContact = null;
+		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4))
+		{
+			$sEmail = $this->getAuthEmail('', $mAddressBookID);
+			if (!empty($sEmail))
+			{
+				$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
+			}
+		}
+
+		if ($oContact)
+		{
+			$sCardData = $oContact->ToVCardObject()->serialize();
+			return array(
+				'uri' => $oContact->VCardUID(),
+				'lastmodified' => $oContact->Changed,
+				'etag' => \md5($sCardData),
+				'size' => \strlen($sCardData),
+				'carddata' => $sCardData
+			);
+		}
+
+		return false;
     }
 
     /**
@@ -199,23 +242,24 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
      * @param string $sCardUri
      * @param string $sCardData
+	 * 
      * @return string|null
      */
-    public function createCard($mAddressBookId, $sCardUri, $sCardData)
+    public function createCard($mAddressBookID, $sCardUri, $sCardData)
 	{
+		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
+		{
+			$sEmail = $this->getAuthEmail('', $mAddressBookID);
+			if (!empty($sEmail))
+			{
+				// TODO
+			}
+		}
+
 		return null;
-//
-//        $stmt = $this->pdo->prepare('INSERT INTO ' . $this->cardsTableName . ' (carddata, uri, lastmodified, addressbookid) VALUES (?, ?, ?, ?)');
-//
-//        $result = $stmt->execute(array($cardData, $cardUri, time(), $addressBookId));
-//
-//        $stmt2 = $this->pdo->prepare('UPDATE ' . $this->addressBooksTableName . ' SET ctag = ctag + 1 WHERE id = ?');
-//        $stmt2->execute(array($addressBookId));
-//
-//        return '"' . md5($cardData) . '"';
     }
 
     /**
@@ -238,41 +282,52 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
      * @param string $sCardUri
      * @param string $sCardData
+	 * 
      * @return string|null
      */
-    public function updateCard($mAddressBookId, $sCardUri, $sCardData)
+    public function updateCard($mAddressBookID, $sCardUri, $sCardData)
 	{
-		return null;
+		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
+		{
+			$sEmail = $this->getAuthEmail('', $mAddressBookID);
+			if (!empty($sEmail))
+			{
+				// TODO
+			}
+		}
 
-//        $stmt = $this->pdo->prepare('UPDATE ' . $this->cardsTableName . ' SET carddata = ?, lastmodified = ? WHERE uri = ? AND addressbookid =?');
-//        $stmt->execute(array($cardData, time(), $cardUri, $addressBookId));
-//
-//        $stmt2 = $this->pdo->prepare('UPDATE ' . $this->addressBooksTableName . ' SET ctag = ctag + 1 WHERE id = ?');
-//        $stmt2->execute(array($addressBookId));
-//
-//        return '"' . md5($cardData) . '"';
+		return null;
     }
 
     /**
      * Deletes a card
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
      * @param string $sCardUri
 	 * 
      * @return bool
      */
-    public function deleteCard($mAddressBookId, $sCardUri)
+    public function deleteCard($mAddressBookID, $sCardUri)
 	{
-		return false;
-//        $stmt = $this->pdo->prepare('DELETE FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ?');
-//        $stmt->execute(array($addressBookId, $cardUri));
-//
-//        $stmt2 = $this->pdo->prepare('UPDATE ' . $this->addressBooksTableName . ' SET ctag = ctag + 1 WHERE id = ?');
-//        $stmt2->execute(array($addressBookId));
-//
-//        return $stmt->rowCount()===1;
+		$bResult = false;
+		$oContact = null;
+		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4))
+		{
+			$sEmail = $this->getAuthEmail('', $mAddressBookID);
+			if (!empty($sEmail))
+			{
+				$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
+			}
+		}
+
+		if ($oContact)
+		{
+			$bResult = $this->oPersonalAddressBook->DeleteContacts($sEmail, array($oContact->IdContact));
+		}
+
+		return $bResult;
     }
 }

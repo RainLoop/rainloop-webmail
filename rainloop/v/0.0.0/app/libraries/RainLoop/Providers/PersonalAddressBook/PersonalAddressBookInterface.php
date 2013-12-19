@@ -10,31 +10,31 @@ interface PersonalAddressBookInterface
 	public function IsSupported();
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param \RainLoop\Providers\PersonalAddressBook\Classes\Contact $oContact
 	 *
 	 * @return bool
 	 */
-	public function ContactSave($oAccount, &$oContact);
+	public function ContactSave($sEmail, &$oContact);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aContactIds
 	 *
 	 * @return bool
 	 */
-	public function DeleteContacts($oAccount, $aContactIds);
+	public function DeleteContacts($sEmail, $aContactIds);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aTagsIds
 	 *
 	 * @return bool
 	 */
-	public function DeleteTags($oAccount, $aTagsIds);
+	public function DeleteTags($sEmail, $aTagsIds);
 
 	/**
-	 * @param \RainLoop\Account|mixed $mAccountOrId
+	 * @param string $sEmail
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
 	 * @param string $sSearch = ''
@@ -42,10 +42,10 @@ interface PersonalAddressBookInterface
 	 *
 	 * @return array
 	 */
-	public function GetContacts($mAccountOrId, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0);
+	public function GetContacts($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param string $sSearch
 	 * @param int $iLimit = 20
 	 *
@@ -53,13 +53,13 @@ interface PersonalAddressBookInterface
 	 *
 	 * @throws \InvalidArgumentException
 	 */
-	public function GetSuggestions($oAccount, $sSearch, $iLimit = 20);
+	public function GetSuggestions($sEmail, $sSearch, $iLimit = 20);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sEmail
 	 * @param array $aEmails
 	 *
 	 * @return bool
 	 */
-	public function IncFrec($oAccount, $aEmails);
+	public function IncFrec($sEmail, $aEmails);
 }

@@ -6,6 +6,7 @@
 function ContactModel()
 {
 	this.idContact = 0;
+	this.idContactStr = '';
 	this.display = '';
 	this.properties = [];
 	this.readOnly = false;
@@ -57,6 +58,7 @@ ContactModel.prototype.parse = function (oItem)
 	if (oItem && 'Object/Contact' === oItem['@Object'])
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
+		this.idContactStr = Utils.pString(oItem['IdContactStr']);
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
 		this.scopeType = Utils.pInt(oItem['ScopeType']);

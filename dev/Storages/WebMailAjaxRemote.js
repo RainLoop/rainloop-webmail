@@ -570,11 +570,12 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLim
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, nScopeType, aProperties)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sUidStr, nScopeType, aProperties)
 {
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
 		'Uid': Utils.trim(sUid),
+		'UidStr': Utils.trim(sUidStr),
 		'ScopeType': nScopeType,
 		'Properties': aProperties
 	});

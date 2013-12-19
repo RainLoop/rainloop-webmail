@@ -67,8 +67,20 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function GetUserUidByEmail($sEmail)
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface &&
-			$this->oDriver->GetUserUidByEmail($sEmail);
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface ?
+			$this->oDriver->GetUserUidByEmail($sEmail) : '';
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param bool $bCreate = false
+	 *
+	 * @return string
+	 */
+	public function GetUserHashByEmail($sEmail, $bCreate = false)
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface ?
+			$this->oDriver->GetUserHashByEmail($sEmail, $bCreate) : '';
 	}
 
 	/**
@@ -119,6 +131,18 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($mAccountOrId,
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sID
+	 * @param bool $bIsStrID = false
+	 *
+	 * @return \RainLoop\Providers\PersonalAddressBook\Classes\Contact|null
+	 */
+	public function GetContactByID($sEmail, $mID, $bIsStrID = false)
+	{
+		return $this->IsActive() ? $this->oDriver->GetContactByID($sEmail, $mID, $bIsStrID) : null;
 	}
 
 	/**

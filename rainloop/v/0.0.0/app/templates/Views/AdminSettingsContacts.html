@@ -23,6 +23,10 @@
 					<i data-bind="css: contactsSharing() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow contacts sharing
 				</label>
+				<label data-bind="click: function () { contactsSync(!contactsSync()); }">
+					<i data-bind="css: contactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow contacts sync (CardDAV)
+				</label>
 			</div>
 		</div>
 		<div class="control-group">

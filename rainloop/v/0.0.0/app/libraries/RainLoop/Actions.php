@@ -995,6 +995,7 @@ class Actions
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
+				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_carddav_sync', false);
 				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
@@ -1875,6 +1876,7 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsSharing', 'contacts', 'allow_sharing', 'bool');
+		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_carddav_sync', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
@@ -4207,7 +4209,7 @@ class Actions
 		if ($this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
 			$iCount = 0;
-			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount, 
+			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount->ParentEmailHelper(),
 				$iOffset, $iLimit, $sSearch, $iCount);
 		}
 
@@ -4236,7 +4238,7 @@ class Actions
 		$bResult = false;
 		if (0 < \count($aFilteredUids) && $this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
-			$bResult = $this->PersonalAddressBookProvider($oAccount)->DeleteContacts($oAccount, $aFilteredUids);
+			$bResult = $this->PersonalAddressBookProvider($oAccount)->DeleteContacts($oAccount->ParentEmailHelper(), $aFilteredUids);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -4256,6 +4258,7 @@ class Actions
 		if ($oPab && $oPab->IsActive() && 0 < \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
+			$sUidStr = \trim($this->GetActionParam('UidStr', ''));
 			$iScopeType = (int) $this->GetActionParam('ScopeType', null);
 			if (!in_array($iScopeType, array(
 				\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_,
@@ -4268,6 +4271,10 @@ class Actions
 			if (0 < \strlen($sUid))
 			{
 				$oContact->IdContact = $sUid;
+			}
+			if (0 < \strlen($sUidStr))
+			{
+				$oContact->IdContactStr = $sUidStr;
 			}
 
 			$oContact->ScopeType = $iScopeType;
@@ -4290,12 +4297,13 @@ class Actions
 				}
 			}
 
-			$bResult = $oPab->ContactSave($oAccount, $oContact);
+			$bResult = $oPab->ContactSave($oAccount->ParentEmailHelper(), $oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'RequestUid' => $sRequestUid,
 			'ResultID' => $bResult ? $oContact->IdContact : '',
+			'ResultIDStr' => $bResult ? $oContact->IdContactStr : '',
 			'Result' => $bResult
 		));
 	}
@@ -4328,7 +4336,7 @@ class Actions
 			$oPab = $this->PersonalAddressBookProvider($oAccount);
 			if ($oPab && $oPab->IsActive())
 			{
-				$aSuggestions = $oPab->GetSuggestions($oAccount, $sQuery, $iLimit);
+				$aSuggestions = $oPab->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
 				if (0 === \count($aResult))
 				{
 					$aResult = $aSuggestions;
@@ -5938,6 +5946,7 @@ class Actions
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Contact */
 					'IdContact' => $mResponse->IdContact,
+					'IdContactStr' => $mResponse->IdContactStr,
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
 					'ReadOnly' => $mResponse->ReadOnly,
 					'ScopeType' => $mResponse->ScopeType,

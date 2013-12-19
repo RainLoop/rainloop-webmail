@@ -714,10 +714,13 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
-	public function ServiceCardDav()
+	public function ServiceDav()
 	{
-		return '';
-		
+		if (!$this->Config()->Get('contacts', 'allow_carddav_sync', false))
+		{
+			return '';
+		}
+
 		try
 		{
 			\set_error_handler(function ($errno, $errstr, $errfile, $errline ) {
@@ -726,9 +729,10 @@ class ServiceActions
 
 			$oPersonalAddressBookProvider = $this->oActions->PersonalAddressBookProvider();
 
-			$oAuthBackend = new \RainLoop\SabreDAV\AuthBasic($oPersonalAddressBookProvider);
+//			$oAuthBackend = new \RainLoop\SabreDAV\AuthBasic($oPersonalAddressBookProvider);
+			$oAuthBackend = new \RainLoop\SabreDAV\AuthDigest($oPersonalAddressBookProvider);
 
-			$oCarddavBackend = new \RainLoop\SabreDAV\CardDAV($oPersonalAddressBookProvider);
+			$oCarddavBackend = new \RainLoop\SabreDAV\CardDAV($oPersonalAddressBookProvider, $oAuthBackend);
 
 			$oPrincipalBackend = new \RainLoop\SabreDAV\Principal($oPersonalAddressBookProvider, $oAuthBackend);
 
@@ -740,7 +744,7 @@ class ServiceActions
 			$oServer = new \Sabre\DAV\Server($aNodes);
 
 			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
-			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath.'/' : '').'index.php/carddav/');
+			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
 
 			// Plugins
 			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'SabreDAV'));

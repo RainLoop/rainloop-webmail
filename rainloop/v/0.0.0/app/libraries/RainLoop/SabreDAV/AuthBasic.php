@@ -25,7 +25,6 @@ class AuthBasic extends \Sabre\DAV\Auth\Backend\AbstractBasic
      */
     protected function validateUserPass($sUserName, $sPassword)
 	{
-		$this->currentUser = $sUserName;
-		return true; // TODO
+		return $sPassword === $this->oPersonalAddressBook->GetUserHashByEmail($sUserName, true);
 	}
 }

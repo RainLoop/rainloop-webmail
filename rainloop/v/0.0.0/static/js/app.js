@@ -5784,6 +5784,7 @@ EmailModel.prototype.inputoTagLine = function ()
 function ContactModel()
 {
 	this.idContact = 0;
+	this.idContactStr = '';
 	this.display = '';
 	this.properties = [];
 	this.readOnly = false;
@@ -5835,6 +5836,7 @@ ContactModel.prototype.parse = function (oItem)
 	if (oItem && 'Object/Contact' === oItem['@Object'])
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
+		this.idContactStr = Utils.pString(oItem['IdContactStr']);
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
 		this.scopeType = Utils.pInt(oItem['ScopeType']);
@@ -9346,6 +9348,7 @@ function PopupsContactsViewModel()
 	this.viewClearSearch = ko.observable(false);
 
 	this.viewID = ko.observable('');
+	this.viewIDStr = ko.observable('');
 	this.viewReadOnly = ko.observable(false);
 	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
 	this.viewProperties = ko.observableArray([]);
@@ -9549,13 +9552,14 @@ function PopupsContactsViewModel()
 					self.viewID(Utils.pInt(oData.Result.ResultID));
 				}
 
+				if ('' === self.viewIDStr())
+				{
+					self.viewIDStr(Utils.pString(oData.Result.ResultIDStr));
+				}
+
 				self.reloadContactList();
 				bRes = true;
 			}
-//			else
-//			{
-//				// TODO
-//			}
 
 			_.delay(function () {
 				self.viewSaveTrigger(bRes ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
@@ -9568,7 +9572,7 @@ function PopupsContactsViewModel()
 				}, 1000);
 			}
 			
-		}, sRequestUid, this.viewID(), this.viewScopeType(), aProperties);
+		}, sRequestUid, this.viewID(), this.viewIDStr(), this.viewScopeType(), aProperties);
 		
 	}, function () {
 		var 
@@ -9712,6 +9716,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 {
 	var
 		sId = '',
+		sIdStr = '',
 		bHasName = false,
 		aList = []
 	;
@@ -9725,6 +9730,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	if (oContact)
 	{
 		sId = oContact.idContact;
+		sIdStr = oContact.idContactStr;
 
 		if (Utils.isNonEmptyArray(oContact.properties))
 		{
@@ -9752,6 +9758,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	}
 
 	this.viewID(sId);
+	this.viewIDStr(sIdStr);
 	this.viewProperties([]);
 	this.viewProperties(aList);
 
@@ -15021,11 +15028,12 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLim
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, nScopeType, aProperties)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sUidStr, nScopeType, aProperties)
 {
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
 		'Uid': Utils.trim(sUid),
+		'UidStr': Utils.trim(sUidStr),
 		'ScopeType': nScopeType,
 		'Properties': aProperties
 	});

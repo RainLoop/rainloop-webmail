@@ -48,6 +48,7 @@ function PopupsContactsViewModel()
 	this.viewClearSearch = ko.observable(false);
 
 	this.viewID = ko.observable('');
+	this.viewIDStr = ko.observable('');
 	this.viewReadOnly = ko.observable(false);
 	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
 	this.viewProperties = ko.observableArray([]);
@@ -251,13 +252,14 @@ function PopupsContactsViewModel()
 					self.viewID(Utils.pInt(oData.Result.ResultID));
 				}
 
+				if ('' === self.viewIDStr())
+				{
+					self.viewIDStr(Utils.pString(oData.Result.ResultIDStr));
+				}
+
 				self.reloadContactList();
 				bRes = true;
 			}
-//			else
-//			{
-//				// TODO
-//			}
 
 			_.delay(function () {
 				self.viewSaveTrigger(bRes ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
@@ -270,7 +272,7 @@ function PopupsContactsViewModel()
 				}, 1000);
 			}
 			
-		}, sRequestUid, this.viewID(), this.viewScopeType(), aProperties);
+		}, sRequestUid, this.viewID(), this.viewIDStr(), this.viewScopeType(), aProperties);
 		
 	}, function () {
 		var 
@@ -414,6 +416,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 {
 	var
 		sId = '',
+		sIdStr = '',
 		bHasName = false,
 		aList = []
 	;
@@ -427,6 +430,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	if (oContact)
 	{
 		sId = oContact.idContact;
+		sIdStr = oContact.idContactStr;
 
 		if (Utils.isNonEmptyArray(oContact.properties))
 		{
@@ -454,6 +458,7 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 	}
 
 	this.viewID(sId);
+	this.viewIDStr(sIdStr);
 	this.viewProperties([]);
 	this.viewProperties(aList);
 
