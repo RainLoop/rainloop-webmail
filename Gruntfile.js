@@ -451,5 +451,5 @@ module.exports = function (grunt) {
 	grunt.registerTask('u', ['uglify']);
 	grunt.registerTask('h', ['jshint']);
 	grunt.registerTask('b', ['build']);
-	grunt.registerTask('w', ['watch']);
+	grunt.registerTask('w', ['default', 'watch']);
 };
