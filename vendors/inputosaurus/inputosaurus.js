@@ -74,6 +74,21 @@
 
 			// Create the elements
 			els.ul = $('<ul class="inputosaurus-container"></ul>');
+			els.ul.droppable({
+				'drop': function(event, ui) {
+					
+					ui.draggable.addClass('inputosaurus-dropped');
+					els.input.val(ui.draggable.data('inputosaurus-value'));
+
+					if (ui.draggable.__widget)
+					{
+						ui.draggable.__widget._removeDraggedTag(ui.draggable);
+					}
+
+					widget.parseInput();
+				}
+			});
+
 			els.input = $('<input type="email" />');
 			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
@@ -109,10 +124,6 @@
 			}
 
 			this._instAutocomplete();
-
-//			els.ul.sortable({
-//				'connectWith': '.inputosaurus-container.ui-sortable'
-//			});
 		},
 
 		_instAutocomplete : function() {
@@ -475,8 +486,23 @@
 		// @className optional className for <li>
 		_createTag : function(name, key, obj) {
 			if (name !== undefined && obj) {
-				return $('<li data-inputosaurus="' + key + '" title="' + obj.toLine(false, false, true) +
-					'"><a href="javascript:void(0);" class="ficon">&#x2716;</a><span>' + obj.toLine(true, false, true) + '</span></li>');
+				var 
+					widget = this,
+					$li = $('<li data-inputosaurus="' + key + '" title="' + obj.toLine(false, false, true) +
+						'"><a href="javascript:void(0);" class="ficon">&#x2716;</a><span>' +
+						obj.toLine(true, false, true) + '</span></li>')
+				;
+				
+				$li.data('inputosaurus-value', obj.toLine(false, false, false));
+				$li.draggable({
+					'revert': 'invalid',
+					'revertDuration': 200,
+					'start': function(event, ui) {
+						ui.helper.__widget = widget;
+					}
+				});
+
+				return $li;
 			}
 		},
 
@@ -511,6 +537,29 @@
 			window.setTimeout(function () {
 				widget.elements.input.focus();
 			}, 100);
+		},
+
+		_removeDraggedTag : function ($li) {
+			var
+				key = $li.data('inputosaurus'),
+				widget = this,
+				indexFound = false
+			;
+
+			$.each(widget._chosenValues, function(k,v) {
+				if (key === v.key) {
+
+					indexFound = k;
+				}
+			});
+
+			if (false !== indexFound)
+			{
+				widget._chosenValues.splice(indexFound, 1);
+				widget._setValue(widget._buildValue());
+			}
+
+			$li.remove();
 		},
 
 		focus : function () {

@@ -5626,7 +5626,11 @@ html.no-rgba .modal {
   padding: 2px 15px 2px 5px;
   margin: 2px 2px 2px;
   color: #555;
+  z-index: 100;
   position: relative;
+}
+.inputosaurus-container li.ui-draggable.ui-draggable-dragging {
+  z-index: 101;
 }
 .inputosaurus-container li a {
   color: #999;
