@@ -26,6 +26,14 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
     }
 
 	/**
+	 * @param mixed $mData
+	 */
+	private function writeLog($mData)
+	{
+		$this->oPersonalAddressBook->Logger()->WriteMixed($mData);
+	}
+
+	/**
 	 * @param string $sPrincipalUri
 	 *
 	 * @return string
@@ -74,6 +82,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function getAddressBooksForUser($sPrincipalUri)
 	{
+		$this->writeLog('::getAddressBooksForUser('.$sPrincipalUri.')');
+
 		$aAddressBooks = array();
 
 		$sEmail = $this->getAuthEmail($sPrincipalUri);
@@ -88,7 +98,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 					'principaluri' => $sPrincipalUri,
 					'{DAV:}displayname' => 'Personal Address Book',
 					'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}addressbook-description' => 'Personal Address Book',
-					'{http://calendarserver.org/ns/}getctag' => 1,
+					'{http://calendarserver.org/ns/}getctag' => $this->oPersonalAddressBook->GetCtagByEmail($sEmail),
 					'{'.\Sabre\CardDAV\Plugin::NS_CARDDAV.'}supported-address-data' => new \Sabre\CardDAV\Property\SupportedAddressData()
 				);
 			}
@@ -110,6 +120,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function updateAddressBook($mAddressBookID, array $aMutations)
 	{
+		$this->writeLog('::updateAddressBook('.$mAddressBookID.', $aMutations)');
+
 		return false;
     }
 
@@ -124,6 +136,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function createAddressBook($sPrincipalUri, $sUrl, array $aProperties)
 	{
+		$this->writeLog('::createAddressBook('.$sPrincipalUri.', '.$sUrl.', $aProperties)');
     }
 
     /**
@@ -135,6 +148,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function deleteAddressBook($mAddressBookID)
 	{
+		$this->writeLog('::deleteAddressBook('.$mAddressBookID.')');
     }
 
     /**
@@ -159,6 +173,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function getCards($mAddressBookID)
 	{
+		$this->writeLog('::getCards('.$mAddressBookID.')');
+
 		$aResult = array();
 		if (!empty($mAddressBookID))
 		{
@@ -170,12 +186,11 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 				{
 					if (!$oItem->ReadOnly)
 					{
-						$sCardData = $oItem->ToVCardObject()->serialize();
 						$aResult[] =  array(
-							'uri' => $oItem->VCardUID(),
+							'uri' => $oItem->VCardUri(),
 							'lastmodified' => $oItem->Changed,
-							'etag' => \md5($sCardData),
-							'size' => \strlen($sCardData)
+							'etag' => $oItem->CardDavHash,
+							'size' => $oItem->CardDavSize
 						);
 					}
 				}
@@ -197,6 +212,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function getCard($mAddressBookID, $sCardUri)
 	{
+		$this->writeLog('::getCard('.$mAddressBookID.', '.$sCardUri.')');
+
 		$oContact = null;
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4))
 		{
@@ -209,13 +226,12 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 
 		if ($oContact)
 		{
-			$sCardData = $oContact->ToVCardObject()->serialize();
 			return array(
-				'uri' => $oContact->VCardUID(),
+				'uri' => $oContact->VCardUri(),
 				'lastmodified' => $oContact->Changed,
-				'etag' => \md5($sCardData),
-				'size' => \strlen($sCardData),
-				'carddata' => $sCardData
+				'etag' => $oContact->CardDavHash,
+				'size' => $oContact->CardDavSize,
+				'carddata' => $oContact->CardDavData
 			);
 		}
 
@@ -250,12 +266,18 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function createCard($mAddressBookID, $sCardUri, $sCardData)
 	{
+		$this->writeLog('::createCard('.$mAddressBookID.', '.$sCardUri.', $sCardData)');
+		$this->writeLog($sCardData);
+		
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
 		{
 			$sEmail = $this->getAuthEmail('', $mAddressBookID);
 			if (!empty($sEmail))
 			{
-				// TODO
+				$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+				$oContact->ParseVCard($sCardData);
+				
+				$this->oPersonalAddressBook->ContactSave($sEmail, $oContact);
 			}
 		}
 
@@ -290,12 +312,25 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function updateCard($mAddressBookID, $sCardUri, $sCardData)
 	{
+		$this->writeLog('::updateCard('.$mAddressBookID.', '.$sCardUri.', $sCardData)');
+		$this->writeLog($sCardData);
+
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
 		{
 			$sEmail = $this->getAuthEmail('', $mAddressBookID);
 			if (!empty($sEmail))
 			{
-				// TODO
+				$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
+				if (!$oContact)
+				{
+					$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+				}
+
+				$oContact->ParseVCard($sCardData);
+				if ($this->oPersonalAddressBook->ContactSave($sEmail, $oContact) && !empty($oContact->CardDavHash))
+				{
+					return '"'.$oContact->CardDavHash.'"';
+				}
 			}
 		}
 
@@ -312,6 +347,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function deleteCard($mAddressBookID, $sCardUri)
 	{
+		$this->writeLog('::deleteCard('.$mAddressBookID.', '.$sCardUri.')');
+
 		$bResult = false;
 		$oContact = null;
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4))

@@ -284,8 +284,8 @@
 			}
 
 			.add-link {
-				padding-top: 5px;
-				padding-left: 7px;
+				margin-left: 2px;
+				padding: 5px;
 				font-size: 12px;
 				color: #aaa;
 			}
@@ -334,15 +334,19 @@
 
 			.e-share-sign {
 				position: absolute;
-				top: 20px;
+				top: 60px;
 				right: 20px;
 				cursor: pointer;
 			}
 
 			.button-save-contact {
 				position: absolute;
-				top: 100px;
+				top: 20px;
 				right: 20px;
+
+				&.dirty {
+					color: #51a351;
+				}
 			}
 
 			&.read-only {

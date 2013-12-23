@@ -41,9 +41,13 @@ class Property
 	 */
 	public $Frec;
 
-	public function __construct()
+	public function __construct(
+		$iType = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::UNKNOWN, $sValue = '')
 	{
 		$this->Clear();
+
+		$this->Type = $iType;
+		$this->Value = $sValue;
 	}
 
 	public function Clear()
@@ -66,7 +70,7 @@ class Property
 	public function IsEmail()
 	{
 		return \in_array($this->Type, array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
+			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES
 		));
 	}
 	
@@ -76,9 +80,9 @@ class Property
 	public function IsPhone()
 	{
 		return \in_array($this->Type, array(
-			PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
-			PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER,
-			PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER
+			PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES,
+			PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES,
+			PropertyType::FAX_BUSSINES
 		));
 	}
 

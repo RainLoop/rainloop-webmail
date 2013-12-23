@@ -31,7 +31,7 @@ class VJournal extends VObject\Component {
         $dtstart = isset($this->DTSTART)?$this->DTSTART->getDateTime():null;
         if ($dtstart) {
             $effectiveEnd = clone $dtstart;
-            if ($this->DTSTART->getDateType() == VObject\Property\DateTime::DATE) {
+            if (!$this->DTSTART->hasTime()) {
                 $effectiveEnd->modify('+1 day');
             }
 

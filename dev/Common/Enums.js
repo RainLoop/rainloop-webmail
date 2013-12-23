@@ -251,31 +251,30 @@ Enums.ContactPropertyType = {
 	'FullName': 10,
 
 	'FirstName': 15,
-	'SurName': 16,
-	'MiddleName': 17,
+	'LastName': 16,
+	'MiddleName': 16,
 	'Nick': 18,
+
+	'NamePrefix': 20,
+	'NameSuffix': 21,
 
 	'EmailPersonal': 30,
 	'EmailBussines': 31,
-	'EmailOther': 32,
 
 	'PhonePersonal': 50,
 	'PhoneBussines': 51,
-	'PhoneOther': 52,
 
 	'MobilePersonal': 60,
 	'MobileBussines': 61,
-	'MobileOther': 62,
 
 	'FaxPesonal': 70,
 	'FaxBussines': 71,
-	'FaxOther': 72,
 
 	'Facebook': 90,
 	'Skype': 91,
 	'GitHub': 92,
 
-	'Description': 110,
+	'Note': 110,
 
 	'Custom': 250
 };

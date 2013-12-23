@@ -2,6 +2,9 @@
 
 namespace Sabre\VObject;
 
+use
+    Sabre\VObject\Component\VCalendar;
+
 /**
  * This class helps with generating FREEBUSY reports based on existing sets of
  * objects.
@@ -204,7 +207,7 @@ class FreeBusyGenerator {
                                 $duration = DateTimeParser::parseDuration((string)$component->DURATION);
                                 $endTime = clone $startTime;
                                 $endTime->add($duration);
-                            } elseif ($component->DTSTART->getDateType() === Property\DateTime::DATE) {
+                            } elseif (!$component->DTSTART->hasTime()) {
                                 $endTime = clone $startTime;
                                 $endTime->modify('+1 day');
                             } else {
@@ -277,27 +280,24 @@ class FreeBusyGenerator {
         if ($this->baseObject) {
             $calendar = $this->baseObject;
         } else {
-            $calendar = Component::create('VCALENDAR');
-            $calendar->version = '2.0';
-            $calendar->prodid = '-//Sabre//Sabre VObject ' . Version::VERSION . '//EN';
-            $calendar->calscale = 'GREGORIAN';
+            $calendar = new VCalendar();
         }
 
-        $vfreebusy = Component::create('VFREEBUSY');
+        $vfreebusy = $calendar->createComponent('VFREEBUSY');
         $calendar->add($vfreebusy);
 
         if ($this->start) {
-            $dtstart = Property::create('DTSTART');
-            $dtstart->setDateTime($this->start,Property\DateTime::UTC);
+            $dtstart = $calendar->createProperty('DTSTART');
+            $dtstart->setDateTime($this->start);
             $vfreebusy->add($dtstart);
         }
         if ($this->end) {
-            $dtend = Property::create('DTEND');
-            $dtend->setDateTime($this->end,Property\DateTime::UTC);
+            $dtend = $calendar->createProperty('DTEND');
+            $dtend->setDateTime($this->end);
             $vfreebusy->add($dtend);
         }
-        $dtstamp = Property::create('DTSTAMP');
-        $dtstamp->setDateTime(new \DateTime('now'), Property\DateTime::UTC);
+        $dtstamp = $calendar->createProperty('DTSTAMP');
+        $dtstamp->setDateTime(new \DateTime('now', new \DateTimeZone('UTC')));
         $vfreebusy->add($dtstamp);
 
         foreach($busyTimes as $busyTime) {
@@ -305,7 +305,7 @@ class FreeBusyGenerator {
             $busyTime[0]->setTimeZone(new \DateTimeZone('UTC'));
             $busyTime[1]->setTimeZone(new \DateTimeZone('UTC'));
 
-            $prop = Property::create(
+            $prop = $calendar->createProperty(
                 'FREEBUSY',
                 $busyTime[0]->format('Ymd\\THis\\Z') . '/' . $busyTime[1]->format('Ymd\\THis\\Z')
             );

@@ -2,7 +2,9 @@
 
 namespace Sabre\VObject\Splitter;
 
-use Sabre\VObject;
+use
+    Sabre\VObject,
+    Sabre\VObject\Component\VCalendar;
 
 /**
  * Splitter
@@ -40,14 +42,15 @@ class ICalendar implements SplitterInterface {
      * The splitter should receive an readable file stream as it's input.
      *
      * @param resource $input
+     * @param int $options Parser options, see the OPTIONS constants.
      */
-    public function __construct($input) {
+    public function __construct($input, $options = 0) {
 
-        $data = VObject\Reader::read(stream_get_contents($input));
+        $data = VObject\Reader::read($input, $options);
         $vtimezones = array();
         $components = array();
 
-        foreach($data->children as $component) {
+        foreach($data->children() as $component) {
             if (!$component instanceof VObject\Component) {
                 continue;
             }
@@ -68,7 +71,7 @@ class ICalendar implements SplitterInterface {
 
             // Take care of recurring events
             if (!array_key_exists($uid, $this->objects)) {
-                $this->objects[$uid] = VObject\Component::create('VCALENDAR');
+                $this->objects[$uid] = new VCalendar();
             }
 
             $this->objects[$uid]->add(clone $component);

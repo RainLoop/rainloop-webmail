@@ -100,29 +100,23 @@ class Service
 			$this->oActions->KeenIO('Install');
 		}
 
-		$bCached = false;
-		$sResult = '';
-		$sPathInfo = \trim(\trim($this->oHttp->GetServer('PATH_INFO', '')), ' /');
-		if (!empty($sPathInfo))
+		if ($this->oActions->Config()->Get('labs', 'sync_allow_dav', false))
 		{
-			if ('dav' !== \substr($sPathInfo, 0, 3))
+			$sDavDomain = \trim($this->oActions->Config()->Get('labs', 'sync_dav_host', ''));
+			if (!empty($sDavDomain) && $sDavDomain === $this->oHttp->GetHost())
 			{
-				$sPathInfo = '';
+				$this->oServiceActions->HostDav();
+				return $this;
 			}
 		}
 
-		if (empty($sPathInfo))
+		$bCached = false;
+		$sResult = '';
+		$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
+		$iPos = \strpos($sQuery, '&');
+		if (0 < $iPos)
 		{
-			$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
-			$iPos = \strpos($sQuery, '&');
-			if (0 < $iPos)
-			{
-				$sQuery = \substr($sQuery, 0, $iPos);
-			}
-		}
-		else
-		{
-			$sQuery = $sPathInfo;
+			$sQuery = \substr($sQuery, 0, $iPos);
 		}
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));

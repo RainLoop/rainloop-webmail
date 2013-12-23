@@ -3,9 +3,9 @@
 namespace Sabre\VObject;
 
 /**
- * Base class for all nodes
+ * A node is the root class for every element in an iCalendar of vCard object.
  *
- * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
+ * @copyright Copyright (C) 2007-2013 fruux GmbH. All rights reserved.
  * @author Evert Pot (http://evertpot.com/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
@@ -17,11 +17,11 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
     const REPAIR = 1;
 
     /**
-     * Turns the object back into a serialized blob.
+     * Reference to the parent object, if this is not the top object.
      *
-     * @return string
+     * @var Node
      */
-    abstract function serialize();
+    public $parent;
 
     /**
      * Iterator override
@@ -31,34 +31,26 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
     protected $iterator = null;
 
     /**
-     * A link to the parent node
+     * The root document
      *
-     * @var Node
+     * @var Component
      */
-    public $parent = null;
+    protected $root;
 
     /**
-     * Validates the node for correctness.
+     * Serializes the node into a mimedir format
      *
-     * The following options are supported:
-     *   - Node::REPAIR - If something is broken, and automatic repair may
-     *                    be attempted.
+     * @return string
+     */
+    abstract function serialize();
+
+    /**
+     * This method returns an array, with the representation as it should be
+     * encoded in json. This is used to create jCard or jCal documents.
      *
-     * An array is returned with warnings.
-     *
-     * Every item in the array has the following properties:
-     *    * level - (number between 1 and 3 with severity information)
-     *    * message - (human readable message)
-     *    * node - (reference to the offending node)
-     *
-     * @param int $options
      * @return array
      */
-    public function validate($options = 0) {
-
-        return array();
-
-    }
+    abstract function jsonSerialize();
 
     /* {{{ IteratorAggregator interface */
 
@@ -87,6 +79,29 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
     public function setIterator(ElementList $iterator) {
 
         $this->iterator = $iterator;
+
+    }
+
+    /**
+     * Validates the node for correctness.
+     *
+     * The following options are supported:
+     *   - Node::REPAIR - If something is broken, and automatic repair may
+     *                    be attempted.
+     *
+     * An array is returned with warnings.
+     *
+     * Every item in the array has the following properties:
+     *    * level - (number between 1 and 3 with severity information)
+     *    * message - (human readable message)
+     *    * node - (reference to the offending node)
+     *
+     * @param int $options
+     * @return array
+     */
+    public function validate($options = 0) {
+
+        return array();
 
     }
 
@@ -183,5 +198,4 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
     // @codeCoverageIgnoreEnd
 
     /* }}} */
-
 }

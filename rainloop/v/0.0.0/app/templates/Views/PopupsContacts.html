@@ -96,8 +96,7 @@
 							<div class="form-horizontal top-part">
 								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmailsNonEmpty().length">
 									<label class="control-label remove-padding-top fix-width">
-										
-										<i class="icon-user iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_DISPLAY_NAME'"></i>
+										<i class="icon-user iconsize24"></i>
 									</label>
 									<div class="controls fix-width" data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
@@ -153,9 +152,9 @@
 								</div>
 							</div>
 
-							<div class="e-save-trigger">
+<!--							<div class="e-save-trigger">
 								<div data-bind="saveTrigger: viewSaveTrigger"></div>
-							</div>
+							</div>-->
 							
 							<div class="e-read-only-sign">
 								<i class="icon-lock iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
@@ -187,12 +186,12 @@
 								</div>
 							</div>
 							
-<!--							<button class="btn button-save-contact" data-bind="command: saveCommand">
+							<button class="btn button-save-contact" data-bind="command: saveCommand, css: {'dirty': watchDirty}">
 								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
-							</button>-->
+							</button>
 						</div>
 					</div>
 				</div>

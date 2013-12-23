@@ -84,7 +84,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
 				'allow_sharing'		=> array(true),
-				'allow_carddav_sync'	=> array(false),
 				'suggestions_limit' => array(30),
 				'type'				=> array('sqlite', ''),
 				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
@@ -201,6 +200,10 @@ Enables caching in the system'),
 				'ignore_folders_subscription' => array(false,
 					'Experimental settings. Handle with care.
 '),
+				'sync_allow_dav' => array(false),
+				'sync_dav_host' => array(''),
+				'sync_dav_digest_auth' => array(false),
+
 				'allow_message_append' => array(false),
 				'date_from_headers' => array(false),
 				'cache_system_data' => array(true),

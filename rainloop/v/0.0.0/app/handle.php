@@ -14,6 +14,7 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 		}
 		else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
 		{
+			include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/SabreDAV/MbStringFix.php';
 			return include RAINLOOP_APP_LIBRARIES_PATH.'Sabre/'.\str_replace('\\', '/', \substr($sClassName, 6)).'.php';
 		}
 

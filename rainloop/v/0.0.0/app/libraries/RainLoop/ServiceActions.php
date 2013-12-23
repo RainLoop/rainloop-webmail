@@ -711,16 +711,8 @@ class ServiceActions
 		));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceDav()
+	public function HostDav()
 	{
-		if (!$this->Config()->Get('contacts', 'allow_carddav_sync', false))
-		{
-			return '';
-		}
-
 		try
 		{
 			\set_error_handler(function ($errno, $errstr, $errfile, $errline ) {
@@ -730,7 +722,7 @@ class ServiceActions
 			$oPersonalAddressBookProvider = $this->oActions->PersonalAddressBookProvider();
 
 			$oAuthBackend = null;
-			if ($this->Config()->Get('labs', 'use_dav_digest_auth', false))
+			if ($this->Config()->Get('labs', 'sync_dav_digest_auth', false))
 			{
 				$oAuthBackend = new \RainLoop\SabreDAV\AuthDigest($oPersonalAddressBookProvider);
 			}
@@ -751,18 +743,17 @@ class ServiceActions
 				$oPrincipalCollection, $oAddressBookRoot
 			));
 
-			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
-			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
+			$oServer->setBaseUri('/');
 
 			// Plugins
 			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'RainLoop'));
 			$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
 			$oServer->addPlugin(new \Sabre\CardDAV\Plugin());
+			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
 
-//			$oAclPlugin = new \Sabre\DAVACL\Plugin();
-//			$oAclPlugin->hideNodesFromListings = true;
-//			$oAclPlugin->allowAccessToNodesWithoutACL = false;
-//			$oServer->addPlugin($oAclPlugin);
+			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
+
+
 
 			$oServer->exec();
 		}
@@ -770,8 +761,6 @@ class ServiceActions
 		{
 			$this->Logger()->WriteException($oException);
 		}
-
-		return '';
 	}
 
 	/**

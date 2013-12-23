@@ -41,6 +41,8 @@ namespace Sabre\VObject;
  * you may get unexpected results. The effect is that in some applications the
  * specified recurrence may look incorrect, or is missing.
  *
+ * The recurrence iterator also does not yet support THISANDFUTURE.
+ *
  * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
@@ -69,7 +71,6 @@ class RecurrenceIterator implements \Iterator {
      * @var DateTime
      */
     public $currentDate;
-
 
     /**
      * List of dates that are excluded from the rules.
@@ -314,7 +315,7 @@ class RecurrenceIterator implements \Iterator {
     public function __construct(Component $vcal, $uid=null) {
 
         if (is_null($uid)) {
-            if ($vcal->name === 'VCALENDAR') {
+            if ($vcal instanceof Component\VCalendar) {
                 throw new \InvalidArgumentException('If you pass a VCALENDAR object, you must pass a uid argument as well');
             }
             $components = array($vcal);
@@ -336,7 +337,17 @@ class RecurrenceIterator implements \Iterator {
         ksort($this->overriddenEvents);
 
         if (!$this->baseEvent) {
-            throw new \InvalidArgumentException('Could not find a base event with uid: ' . $uid);
+            // No base event was found. CalDAV does allow cases where only
+            // overridden instances are stored.
+            //
+            // In this barticular case, we're just going to grab the first
+            // event and use that instead. This may not always give the
+            // desired result.
+            if (!count($this->overriddenEvents)) {
+                throw new \InvalidArgumentException('Could not find an event with uid: ' . $uid);
+            }
+            ksort($this->overriddenEvents, SORT_NUMERIC);
+            $this->baseEvent = array_shift($this->overriddenEvents);
         }
 
         $this->startDate = clone $this->baseEvent->DTSTART->getDateTime();
@@ -347,26 +358,22 @@ class RecurrenceIterator implements \Iterator {
         } else {
             $this->endDate = clone $this->startDate;
             if (isset($this->baseEvent->DURATION)) {
-                $this->endDate->add(DateTimeParser::parse($this->baseEvent->DURATION->value));
-            } elseif ($this->baseEvent->DTSTART->getDateType()===Property\DateTime::DATE) {
+                $this->endDate->add(DateTimeParser::parse((string)$this->baseEvent->DURATION));
+            } elseif (!$this->baseEvent->DTSTART->hasTime()) {
                 $this->endDate->modify('+1 day');
             }
         }
         $this->currentDate = clone $this->startDate;
 
-        $rrule = (string)$this->baseEvent->RRULE;
-
-        $parts = explode(';', $rrule);
+        $rrule = $this->baseEvent->RRULE;
 
         // If no rrule was specified, we create a default setting
         if (!$rrule) {
             $this->frequency = 'daily';
             $this->count = 1;
-        } else foreach($parts as $part) {
+        } else foreach($rrule->getParts() as $key=>$value) {
 
-            list($key, $value) = explode('=', $part, 2);
-
-            switch(strtoupper($key)) {
+            switch($key) {
 
                 case 'FREQ' :
                     if (!in_array(
@@ -407,39 +414,39 @@ class RecurrenceIterator implements \Iterator {
                     break;
 
                 case 'BYSECOND' :
-                    $this->bySecond = explode(',', $value);
+                    $this->bySecond = (array)$value;
                     break;
 
                 case 'BYMINUTE' :
-                    $this->byMinute = explode(',', $value);
+                    $this->byMinute = (array)$value;
                     break;
 
                 case 'BYHOUR' :
-                    $this->byHour = explode(',', $value);
+                    $this->byHour = (array)$value;
                     break;
 
                 case 'BYDAY' :
-                    $this->byDay = explode(',', strtoupper($value));
+                    $this->byDay = (array)$value;
                     break;
 
                 case 'BYMONTHDAY' :
-                    $this->byMonthDay = explode(',', $value);
+                    $this->byMonthDay = (array)$value;
                     break;
 
                 case 'BYYEARDAY' :
-                    $this->byYearDay = explode(',', $value);
+                    $this->byYearDay = (array)$value;
                     break;
 
                 case 'BYWEEKNO' :
-                    $this->byWeekNo = explode(',', $value);
+                    $this->byWeekNo = (array)$value;
                     break;
 
                 case 'BYMONTH' :
-                    $this->byMonth = explode(',', $value);
+                    $this->byMonth = (array)$value;
                     break;
 
                 case 'BYSETPOS' :
-                    $this->bySetPos = explode(',', $value);
+                    $this->bySetPos = (array)$value;
                     break;
 
                 case 'WKST' :
@@ -528,9 +535,9 @@ class RecurrenceIterator implements \Iterator {
         unset($event->RDATE);
         unset($event->EXRULE);
 
-        $event->DTSTART->setDateTime($this->getDTStart(), $event->DTSTART->getDateType());
+        $event->DTSTART->setDateTime($this->getDTStart());
         if (isset($event->DTEND)) {
-            $event->DTEND->setDateTime($this->getDtEnd(), $event->DTSTART->getDateType());
+            $event->DTEND->setDateTime($this->getDtEnd());
         }
         if ($this->counter > 0) {
             $event->{'RECURRENCE-ID'} = (string)$event->DTSTART;
@@ -740,7 +747,9 @@ class RecurrenceIterator implements \Iterator {
             $this->currentDate->modify('+' . $this->interval . ' hours');
             return;
         }
+        // @codeCoverageIgnoreStart
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * Does the processing for advancing the iterator for daily frequency.

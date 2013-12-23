@@ -452,7 +452,7 @@ class TimeZoneUtil {
                     // Microsoft may add a magic number, which we also have an
                     // answer for.
                     if (isset($vtimezone->{'X-MICROSOFT-CDO-TZID'})) {
-                        $cdoId = (int)$vtimezone->{'X-MICROSOFT-CDO-TZID'}->value;
+                        $cdoId = (int)$vtimezone->{'X-MICROSOFT-CDO-TZID'}->getValue();
 
                         // 2 can mean both Europe/Lisbon and Europe/Sarajevo.
                         if ($cdoId===2 && strpos((string)$vtimezone->TZID, 'Sarajevo')!==false) {

@@ -3,12 +3,10 @@
 namespace Sabre\VObject;
 
 /**
- * VCALENDAR/VCARD reader
+ * iCalendar/vCard/jCal/jCard reader object.
  *
- * This class reads the vobject file, and returns a full element tree.
- *
- * TODO: this class currently completely works 'statically'. This is pointless,
- * and defeats OOP principals. Needs refactoring in a future version.
+ * This object provides a few (static) convenience methods to quickly access
+ * the parsers.
  *
  * @copyright Copyright (C) 2007-2013 fruux GmbH (https://fruux.com/).
  * @author Evert Pot (http://evertpot.com/)
@@ -19,9 +17,6 @@ class Reader {
     /**
      * If this option is passed to the reader, it will be less strict about the
      * validity of the lines.
-     *
-     * Currently using this option just means, that it will accept underscores
-     * in property names.
      */
     const OPTION_FORGIVING = 1;
 
@@ -32,192 +27,47 @@ class Reader {
     const OPTION_IGNORE_INVALID_LINES = 2;
 
     /**
-     * Parses the file and returns the top component
+     * Parses a vCard or iCalendar object, and returns the top component.
      *
      * The options argument is a bitfield. Pass any of the OPTIONS constant to
      * alter the parsers' behaviour.
      *
-     * @param string $data
+     * You can either supply a string, or a readable stream for input.
+     *
+     * @param string|resource $data
      * @param int $options
-     * @return Node
+     * @return Document
      */
     static function read($data, $options = 0) {
 
-        // Normalizing newlines
-        $data = str_replace(array("\r","\n\n"), array("\n","\n"), $data);
+        $parser = new Parser\MimeDir();
+        $result = $parser->parse($data, $options);
 
-        $lines = explode("\n", $data);
-
-        // Unfolding lines
-        $lines2 = array();
-        foreach($lines as $line) {
-
-            // Skipping empty lines
-            if (!$line) continue;
-
-            if ($line[0]===" " || $line[0]==="\t") {
-                $lines2[count($lines2)-1].=substr($line,1);
-            } else {
-                $lines2[] = $line;
-            }
-
-        }
-
-        unset($lines);
-
-        reset($lines2);
-
-        return self::readLine($lines2, $options);
+        return $result;
 
     }
 
     /**
-     * Reads and parses a single line.
+     * Parses a jCard or jCal object, and returns the top component.
      *
-     * This method receives the full array of lines. The array pointer is used
-     * to traverse.
+     * The options argument is a bitfield. Pass any of the OPTIONS constant to
+     * alter the parsers' behaviour.
      *
-     * This method returns null if an invalid line was encountered, and the
-     * IGNORE_INVALID_LINES option was turned on.
+     * You can either a string, a readable stream, or an array for it's input.
+     * Specifying the array is useful if json_decode was already called on the
+     * input.
      *
-     * @param array $lines
-     * @param int $options See the OPTIONS constants.
+     * @param string|resource|array $data
+     * @param int $options
      * @return Node
      */
-    static private function readLine(&$lines, $options = 0) {
+    static function readJson($data, $options = 0) {
 
-        $line = current($lines);
-        $lineNr = key($lines);
-        next($lines);
+        $parser = new Parser\Json();
+        $result = $parser->parse($data, $options);
 
-        // Components
-        if (strtoupper(substr($line,0,6)) === "BEGIN:") {
-
-            $componentName = strtoupper(substr($line,6));
-            $obj = Component::create($componentName);
-
-            $nextLine = current($lines);
-
-            while(strtoupper(substr($nextLine,0,4))!=="END:") {
-
-                $parsedLine = self::readLine($lines, $options);
-                $nextLine = current($lines);
-
-                if (is_null($parsedLine)) {
-                    continue;
-                }
-                $obj->add($parsedLine);
-
-                if ($nextLine===false)
-                    throw new ParseException('Invalid VObject. Document ended prematurely.');
-
-            }
-
-            // Checking component name of the 'END:' line.
-            if (substr($nextLine,4)!==$obj->name) {
-                throw new ParseException('Invalid VObject, expected: "END:' . $obj->name . '" got: "' . $nextLine . '"');
-            }
-            next($lines);
-
-            return $obj;
-
-        }
-
-        // Properties
-        //$result = preg_match('/(?P<name>[A-Z0-9-]+)(?:;(?P<parameters>^(?<!:):))(.*)$/',$line,$matches);
-
-        if ($options & self::OPTION_FORGIVING) {
-            $token = '[A-Z0-9-\._]+';
-        } else {
-            $token = '[A-Z0-9-\.]+';
-        }
-        $parameters = "(?:;(?P<parameters>([^:^\"]|\"([^\"]*)\")*))?";
-        $regex = "/^(?P<name>$token)$parameters:(?P<value>.*)$/i";
-
-        $result = preg_match($regex,$line,$matches);
-
-        if (!$result) {
-            if ($options & self::OPTION_IGNORE_INVALID_LINES) {
-                return null;
-            } else {
-                throw new ParseException('Invalid VObject, line ' . ($lineNr+1) . ' did not follow the icalendar/vcard format');
-            }
-        }
-
-        $propertyName = strtoupper($matches['name']);
-        $propertyValue = preg_replace_callback('#(\\\\(\\\\|N|n))#',function($matches) {
-            if ($matches[2]==='n' || $matches[2]==='N') {
-                return "\n";
-            } else {
-                return $matches[2];
-            }
-        }, $matches['value']);
-
-        $obj = Property::create($propertyName, $propertyValue);
-
-        if ($matches['parameters']) {
-
-            foreach(self::readParameters($matches['parameters']) as $param) {
-                $obj->add($param);
-            }
-
-        }
-
-        return $obj;
-
+        return $result;
 
     }
-
-    /**
-     * Reads a parameter list from a property
-     *
-     * This method returns an array of Parameter
-     *
-     * @param string $parameters
-     * @return array
-     */
-    static private function readParameters($parameters) {
-
-        $token = '[A-Z0-9-]+';
-
-        $paramValue = '(?P<paramValue>[^\"^;]*|"[^"]*")';
-
-        $regex = "/(?<=^|;)(?P<paramName>$token)(=$paramValue(?=$|;))?/i";
-        preg_match_all($regex, $parameters, $matches,  PREG_SET_ORDER);
-
-        $params = array();
-        foreach($matches as $match) {
-
-            if (!isset($match['paramValue'])) {
-
-                $value = null;
-
-            } else {
-
-                $value = $match['paramValue'];
-
-                if (isset($value[0]) && $value[0]==='"') {
-                    // Stripping quotes, if needed
-                    $value = substr($value,1,strlen($value)-2);
-                }
-
-                $value = preg_replace_callback('#(\\\\(\\\\|N|n|;|,))#',function($matches) {
-                    if ($matches[2]==='n' || $matches[2]==='N') {
-                        return "\n";
-                    } else {
-                        return $matches[2];
-                    }
-                }, $value);
-
-            }
-
-            $params[] = new Parameter($match['paramName'], $value);
-
-        }
-
-        return $params;
-
-    }
-
 
 }

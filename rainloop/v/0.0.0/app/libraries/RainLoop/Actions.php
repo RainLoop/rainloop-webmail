@@ -563,6 +563,8 @@ class Actions
 			$this->oPersonalAddressBookProvider = new \RainLoop\Providers\PersonalAddressBook(
 				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('personal-address-book', $oAccount) : null);
 
+			$this->oPersonalAddressBookProvider->SetLogger($this->Logger());
+
 			$this->oPersonalAddressBookProvider->ConsiderShare(
 				!!$this->Config()->Get('contacts', 'allow_sharing', false));
 		}
@@ -995,7 +997,7 @@ class Actions
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
-				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_carddav_sync', false);
+				$aResult['ContactsSync'] = (bool) $oConfig->Get('labs', 'sync_allow_dav', false);
 				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
@@ -4267,17 +4269,28 @@ class Actions
 				$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
 			}
 
-			$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+			$oContact = null;
 			if (0 < \strlen($sUid))
 			{
-				$oContact->IdContact = $sUid;
+				$oContact = $oPab->GetContactByID($oAccount->ParentEmailHelper(), $sUid);
 			}
+
+			if (!$oContact)
+			{
+				$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+				if (0 < \strlen($sUid))
+				{
+					$oContact->IdContact = $sUid;
+				}
+			}
+			
 			if (0 < \strlen($sUidStr))
 			{
 				$oContact->IdContactStr = $sUidStr;
 			}
 
 			$oContact->ScopeType = $iScopeType;
+			$oContact->Properties = array();
 
 			$aProperties = $this->GetActionParam('Properties', array());
 			if (\is_array($aProperties))
@@ -5676,7 +5689,7 @@ class Actions
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc,
-			'{{BackLinkVisibility}}' => $bShowBackLink ? 'inline-block' : 'none',
+			'{{BackLinkVisibilityStyle}}' => $bShowBackLink ? 'display:inline-block' : 'display:none',
 			'{{BackLink}}' => $this->StaticI18N('STATIC/BACK_LINK'),
 			'{{BackHref}}' => './'
 		));
