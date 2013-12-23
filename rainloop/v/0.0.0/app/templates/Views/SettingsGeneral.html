@@ -63,7 +63,12 @@
 				</label>
 			</div>
 		</div>
-		<div class="control-group" data-bind="visible: allowContacts">
+	</div>
+	<div class="form-horizontal" data-bind="visible: allowContacts">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LEGEND_CONTACTS"></span>
+		</div>
+		<div class="control-group">
 			<div class="controls">
 				<label data-bind="click: function () { contactsAutosave(!contactsAutosave()); }">
 					<i data-bind="css: contactsAutosave() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>

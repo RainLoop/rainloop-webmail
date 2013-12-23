@@ -573,7 +573,7 @@ class Http
 	 */
 	public function GetUrl()
 	{
-		return '/'.$this->GetServer('REQUEST_URI', '');
+		return $this->GetServer('REQUEST_URI', '');
 	}
 
 	/**
@@ -582,13 +582,5 @@ class Http
 	public function GetFullUrl()
 	{
 		return $this->GetScheme().'://'.$this->GetHost(true, false).$this->GetPath();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function GetFullUrlWithQuery()
-	{
-		return $this->GetScheme().'://'.$this->GetHost(true, false).$this->GetUrl();
 	}
 }

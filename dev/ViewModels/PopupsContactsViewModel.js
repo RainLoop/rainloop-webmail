@@ -559,10 +559,18 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 
 	$window.on('keydown', function (oEvent) {
 		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		if (oEvent && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'closeCommand');
-			bResult = false;
+			if (Enums.EventKeyCode.Esc === oEvent.keyCode)
+			{
+				kn.delegateRun(self, 'closeCommand');
+				bResult = false;
+			}
+			else if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
+			{
+				self.saveCommand();
+				bResult = false;
+			}
 		}
 		
 		return bResult;

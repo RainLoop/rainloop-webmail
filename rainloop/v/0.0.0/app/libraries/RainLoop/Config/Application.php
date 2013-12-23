@@ -202,6 +202,7 @@ Enables caching in the system'),
 					'Experimental settings. Handle with care.
 '),
 				'sync_dav_digest_auth' => array(false),
+				'sync_use_dav_browser' => array(true),
 				'allow_message_append' => array(false),
 				'date_from_headers' => array(false),
 				'cache_system_data' => array(true),

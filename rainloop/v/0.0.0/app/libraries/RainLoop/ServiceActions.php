@@ -745,16 +745,30 @@ class ServiceActions
 				$oPrincipalCollection, $oAddressBookRoot
 			));
 
-			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
-			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
-//			$oServer->setBaseUri('/');
+			if (false === \strpos($this->oHttp->GetUrl(), '/index.php/dav/'))
+			{
+				$oServer->setBaseUri('/');
+			}
+			else
+			{
+				$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
+				$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
+			}
 
 			// Plugins
 			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'RainLoop'));
-			$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
 			$oServer->addPlugin(new \Sabre\CardDAV\Plugin());
 			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
+			$oServer->addPlugin(new \Sabre\CardDAV\VCFExportPlugin());
 			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
+			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
+
+			if ($this->Config()->Get('labs', 'sync_use_dav_browser', false))
+			{
+				$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
+			}
+
+			$this->Plugins()->RunHook('filter.sabre-dav-before-exec', array(&$oServer));
 			
 			$oServer->exec();
 		}

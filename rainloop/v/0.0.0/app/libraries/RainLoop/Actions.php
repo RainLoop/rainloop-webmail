@@ -1878,7 +1878,7 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsSharing', 'contacts', 'allow_sharing', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_carddav_sync', 'bool');
+		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_sync', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
