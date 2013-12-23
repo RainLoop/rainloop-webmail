@@ -508,7 +508,7 @@ ko.bindingHandlers.command = {
 			jqElement.toggleClass('command-can-not-be-execute', !bResult);
 		}
 
-		jqElement.toggleClass('command-disabled disable disabled', !bResult);
+		jqElement.toggleClass('command-disabled disable disabled', !bResult).toggleClass('no-disabled', !!bResult);
 
 		if (jqElement.is('input') || jqElement.is('button'))
 		{
