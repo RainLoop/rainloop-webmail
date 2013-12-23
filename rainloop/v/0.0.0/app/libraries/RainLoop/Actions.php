@@ -997,7 +997,7 @@ class Actions
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
-				$aResult['ContactsSync'] = (bool) $oConfig->Get('labs', 'sync_allow_dav', false);
+				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');

@@ -715,6 +715,8 @@ class ServiceActions
 	{
 		try
 		{
+			include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/SabreDAV/MbStringFix.php';
+			
 			\set_error_handler(function ($errno, $errstr, $errfile, $errline ) {
 				throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 			});
@@ -743,18 +745,17 @@ class ServiceActions
 				$oPrincipalCollection, $oAddressBookRoot
 			));
 
-			$oServer->setBaseUri('/');
+			$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
+			$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
+//			$oServer->setBaseUri('/');
 
 			// Plugins
 			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'RainLoop'));
 			$oServer->addPlugin(new \Sabre\DAV\Browser\Plugin());
 			$oServer->addPlugin(new \Sabre\CardDAV\Plugin());
 			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
-
 			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
-
-
-
+			
 			$oServer->exec();
 		}
 		catch (\Exception $oException)
@@ -763,6 +764,19 @@ class ServiceActions
 		}
 	}
 
+	/**
+	 * @return string
+	 */
+	public function ServiceDav()
+	{
+		if ($this->oActions->Config()->Get('contacts', 'allow_sync', false))
+		{
+			$this->HostDav();
+		}
+		
+		return '';
+	}
+	
 	/**
 	 * @return string
 	 */
