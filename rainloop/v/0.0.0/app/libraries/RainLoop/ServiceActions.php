@@ -761,7 +761,6 @@ class ServiceActions
 			$oServer->addPlugin(new \Sabre\DAVACL\Plugin());
 			$oServer->addPlugin(new \Sabre\CardDAV\VCFExportPlugin());
 			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
-			$oServer->addPlugin(new \RainLoop\SabreDAV\Logger($this->Logger()));
 
 			if ($this->Config()->Get('labs', 'sync_use_dav_browser', false))
 			{

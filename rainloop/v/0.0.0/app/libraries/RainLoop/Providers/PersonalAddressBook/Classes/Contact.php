@@ -206,9 +206,10 @@ class Contact
 	}
 
 	/**
-	 * @param string $sVCard
+	 * @param \Sabre\VObject\Document $oVCard
+	 * @param string $sCardData
 	 */
-	public function ParseVCard($sVCard)
+	public function ParseVCard($oVCard, $sVCard)
 	{
 		$bNew = empty($this->IdContact);
 
@@ -217,15 +218,7 @@ class Contact
 			$this->Properties = array();
 		}
 
-		$oVCard = null;
 		$aProperties = array();
-
-		try
-		{
-			$oVCard = \Sabre\VObject\Reader::read($sVCard);
-		}
-		catch (\Exception $oExc) {}
-
 		if ($oVCard && $oVCard->UID)
 		{
 			$this->IdContactStr = (string) $oVCard->UID;
@@ -273,6 +266,7 @@ class Contact
 
 			if (isset($oVCard->EMAIL))
 			{
+				$bPref = false;
 				foreach($oVCard->EMAIL as $oEmail)
 				{
 					$oTypes = $oEmail ? $oEmail['TYPE'] : null;
@@ -280,13 +274,15 @@ class Contact
 
 					if ($oTypes && 0 < \strlen($sEmail))
 					{
-						if ($oTypes->has('WORK'))
+						$oProp = new Property($oTypes->has('WORK') ? PropertyType::EMAIl_BUSSINES : PropertyType::EMAIl_PERSONAL, $sEmail);
+						if (!$bPref && $oTypes->has('pref'))
 						{
-							$aProperties[] = new Property(PropertyType::EMAIl_BUSSINES, $sEmail);
+							$bPref = true;
+							\array_unshift($aProperties, $oProp);
 						}
 						else
 						{
-							$aProperties[] = new Property(PropertyType::EMAIl_PERSONAL, $sEmail);
+							\array_push($aProperties, $oProp);
 						}
 					}
 				}
@@ -294,6 +290,7 @@ class Contact
 			
 			if (isset($oVCard->TEL))
 			{
+				$bPref = false;
 				foreach($oVCard->TEL as $oTel)
 				{
 					$oTypes = $oTel ? $oTel['TYPE'] : null;
@@ -301,46 +298,39 @@ class Contact
 
 					if ($oTypes && 0 < \strlen($sTel))
 					{
-						if ($oTypes->has('VOICE'))
+						$oProp = null;
+						$bWork = $oTypes->has('WORK');
+						
+						switch (true)
 						{
-							if ($oTypes->has('WORK'))
+							case $oTypes->has('VOICE'):
+								$oProp = new Property($bWork ? PropertyType::PHONE_BUSSINES : PropertyType::PHONE_PERSONAL, $sTel);
+								break;
+							case $oTypes->has('CELL'):
+								$oProp = new Property($bWork ? PropertyType::MOBILE_BUSSINES : PropertyType::MOBILE_PERSONAL, $sTel);
+								break;
+							case $oTypes->has('FAX'):
+								$oProp = new Property($bWork ? PropertyType::FAX_BUSSINES : PropertyType::FAX_PERSONAL, $sTel);
+								break;
+							case $oTypes->has('WORK'):
+								$oProp = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
+								break;
+							default:
+								$oProp = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
+								break;
+						}
+
+						if ($oProp)
+						{
+							if (!$bPref && $oTypes->has('pref'))
 							{
-								$aProperties[] = new Property(PropertyType::PHONE_BUSSINES, $sTel);
+								$bPref = true;
+								\array_unshift($aProperties, $oProp);
 							}
 							else
 							{
-								$aProperties[] = new Property(PropertyType::PHONE_PERSONAL, $sTel);
+								\array_push($aProperties, $oProp);
 							}
-						}
-						else if ($oTypes->has('CELL'))
-						{
-							if ($oTypes->has('WORK'))
-							{
-								$aProperties[] = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
-							}
-							else
-							{
-								$aProperties[] = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
-							}
-						}
-						else if ($oTypes->has('FAX'))
-						{
-							if ($oTypes->has('WORK'))
-							{
-								$aProperties[] = new Property(PropertyType::FAX_BUSSINES, $sTel);
-							}
-							else
-							{
-								$aProperties[] = new Property(PropertyType::FAX_PERSONAL, $sTel);
-							}
-						}
-						else if ($oTypes->has('WORK'))
-						{
-							$aProperties[] = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
-						}
-						else
-						{
-							$aProperties[] = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
 						}
 					}
 				}
@@ -381,6 +371,7 @@ class Contact
 
 		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL);
 
+		$bPrefEmail = $bPrefPhone = false;
 		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\PersonalAddressBook\Classes\Property */ &$oProperty)
 		{
@@ -393,30 +384,6 @@ class Contact
 						break;
 					case PropertyType::NICK_NAME:
 						$oVCard->NICKNAME = $oProperty->Value;
-						break;
-					case PropertyType::EMAIl_PERSONAL:
-						$oVCard->add('EMAIL', $oProperty->Value, array('TYPE' => array('INTERNET', 'HOME')));
-						break;
-					case PropertyType::EMAIl_BUSSINES:
-						$oVCard->add('EMAIL', $oProperty->Value, array('TYPE' => array('INTERNET', 'WORK')));
-						break;
-					case PropertyType::PHONE_PERSONAL:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('VOICE', 'HOME')));
-						break;
-					case PropertyType::PHONE_BUSSINES:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('VOICE', 'WORK')));
-						break;
-					case PropertyType::MOBILE_PERSONAL:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('CELL', 'HOME')));
-						break;
-					case PropertyType::MOBILE_BUSSINES:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('CELL', 'WORK')));
-						break;
-					case PropertyType::FAX_PERSONAL:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('FAX', 'HOME')));
-						break;
-					case PropertyType::FAX_BUSSINES:
-						$oVCard->add('TEL', $oProperty->Value, array('TYPE' => array('FAX', 'WORK')));
 						break;
 					case PropertyType::FIRST_NAME:
 						$sFirstName = $oProperty->Value;
@@ -433,13 +400,62 @@ class Contact
 					case PropertyType::NAME_PREFIX:
 						$sPrefix = $oProperty->Value;
 						break;
+					case PropertyType::EMAIl_PERSONAL:
+					case PropertyType::EMAIl_BUSSINES:
+						$aParams = array('TYPE' => array('INTERNET'));
+						$aParams['TYPE'][] = PropertyType::EMAIl_BUSSINES === $oProperty->Type ? 'WORK' : 'HOME';
+
+						if (!$bPrefEmail)
+						{
+							$bPrefEmail = true;
+							$aParams['TYPE'][] = 'pref';
+						}
+						$oVCard->add('EMAIL', $oProperty->Value, $aParams);
+						break;
+					case PropertyType::PHONE_PERSONAL:
+					case PropertyType::PHONE_BUSSINES:
+					case PropertyType::MOBILE_PERSONAL:
+					case PropertyType::MOBILE_BUSSINES:
+					case PropertyType::FAX_PERSONAL:
+					case PropertyType::FAX_BUSSINES:
+						$aParams = array('TYPE' => array());
+						$sType = '';
+						if (\in_array($oProperty->Type, array(PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES)))
+						{
+							$sType = 'VOICE';
+						}
+						else if (\in_array($oProperty->Type, array(PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES)))
+						{
+							$sType = 'CELL';
+						}
+						else if (\in_array($oProperty->Type, array(PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES)))
+						{
+							$sType = 'FAX';
+						}
+
+						if (!empty($sType))
+						{
+							$aParams['TYPE'][] = $sType;
+						}
+
+						$aParams['TYPE'][] = \in_array($oProperty->Type, array(
+							PropertyType::PHONE_BUSSINES, PropertyType::MOBILE_BUSSINES, PropertyType::FAX_BUSSINES))  ? 'WORK' : 'HOME';
+
+						if (!$bPrefPhone)
+						{
+							$bPrefPhone = true;
+							$aParams['TYPE'][] = 'pref';
+						}
+
+						$oVCard->add('TEL', $oProperty->Value, $aParams);
+						break;
 				}
 			}
 		}
 
 		$oVCard->UID = $this->IdContactStr;
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
-		$oVCard->REV = gmdate('Ymd').'T'.gmdate('His').'Z';
+		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
 
 		return $oVCard;
 	}

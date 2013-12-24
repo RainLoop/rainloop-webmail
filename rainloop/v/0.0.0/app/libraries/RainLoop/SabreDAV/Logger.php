@@ -24,7 +24,7 @@ class Logger extends \Sabre\DAV\ServerPlugin
 	public function initialize(\Sabre\DAV\Server $server)
 	{
 		$this->server = $server;
-		$this->server->subscribeEvent('beforeMethod', array($this, 'beforeMethod'),30);
+		$this->server->subscribeEvent('beforeMethod', array($this, 'beforeMethod'), 30);
 	}
 
     /**

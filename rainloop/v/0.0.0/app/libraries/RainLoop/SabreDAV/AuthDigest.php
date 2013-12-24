@@ -25,7 +25,16 @@ class AuthDigest extends \Sabre\DAV\Auth\Backend\AbstractDigest
      */
     public function getDigestHash($sRealm, $sUserName)
 	{
-		$sHash = $this->oPersonalAddressBook->GetUserHashByEmail($sUserName, true);
+		$sHash = '';
+		try
+		{
+			$sHash = $this->oPersonalAddressBook->GetUserHashByEmail($sUserName, true);
+		}
+		catch (Exception $oException) {}
+
+//		var_dump($sHash);
+//		exit();
+
 		if (!empty($sHash))
 		{
 			$this->currentUser = $sUserName;

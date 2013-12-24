@@ -214,6 +214,8 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 	{
 		$this->writeLog('::getCard('.$mAddressBookID.', '.$sCardUri.')');
 
+		$mResult = false;
+		
 		$oContact = null;
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4))
 		{
@@ -226,16 +228,18 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 
 		if ($oContact)
 		{
-			return array(
+			$mResult = array(
 				'uri' => $oContact->VCardUri(),
 				'lastmodified' => $oContact->Changed,
 				'etag' => $oContact->CardDavHash,
 				'size' => $oContact->CardDavSize,
 				'carddata' => $oContact->CardDavData
 			);
+
+//			$this->writeLog($mResult);
 		}
 
-		return false;
+		return $mResult;
     }
 
     /**
@@ -269,15 +273,28 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 		$this->writeLog('::createCard('.$mAddressBookID.', '.$sCardUri.', $sCardData)');
 		$this->writeLog($sCardData);
 		
+		$oVCard = null;
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
 		{
-			$sEmail = $this->getAuthEmail('', $mAddressBookID);
-			if (!empty($sEmail))
+			try
 			{
-				$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
-				$oContact->ParseVCard($sCardData);
-				
-				$this->oPersonalAddressBook->ContactSave($sEmail, $oContact);
+				$oVCard = \Sabre\VObject\Reader::read($sCardData);
+			}
+			catch (\Exception $oException)
+			{
+				$this->writeLog($oException);
+			}
+
+			if ($oVCard)
+			{
+				$sEmail = $this->getAuthEmail('', $mAddressBookID);
+				if (!empty($sEmail))
+				{
+					$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+					$oContact->ParseVCard($oVCard, $sCardData);
+
+					$this->oPersonalAddressBook->ContactSave($sEmail, $oContact);
+				}
 			}
 		}
 
@@ -317,19 +334,43 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 
 		if (!empty($mAddressBookID) && !empty($sCardUri) && '.vcf' === \substr($sCardUri, -4) && 0 < \strlen($sCardData))
 		{
-			$sEmail = $this->getAuthEmail('', $mAddressBookID);
-			if (!empty($sEmail))
+			try
 			{
-				$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
-				if (!$oContact)
-				{
-					$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
-				}
+				$oVCard = \Sabre\VObject\Reader::read($sCardData);
+			}
+			catch (\Exception $oException)
+			{
+				$this->writeLog($oException);
+			}
 
-				$oContact->ParseVCard($sCardData);
-				if ($this->oPersonalAddressBook->ContactSave($sEmail, $oContact) && !empty($oContact->CardDavHash))
+			if ($oVCard)
+			{
+				$sEmail = $this->getAuthEmail('', $mAddressBookID);
+				if (!empty($sEmail))
 				{
-					return '"'.$oContact->CardDavHash.'"';
+					$iRev = 0;
+					$aMatch = array();
+					if (!empty($oVCard->REV) && \preg_match('/(20[0-9][0-9])([0-1][0-9])([0-3][0-9])T([0-2][0-9])([0-5][0-9])([0-5][0-9])Z/i', $oVCard->REV, $aMatch))
+					{//												1Y			2m			3d			4H			5i			6s
+						$iRev = \gmmktime($aMatch[4], $aMatch[5], $aMatch[6], $aMatch[2], $aMatch[3], $aMatch[1]);
+					}
+
+					$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
+					if ($oContact && (0 === $iRev || $oContact->Changed < $iRev))
+					{
+						$oContact->ParseVCard($oVCard, $sCardData);
+						if ($this->oPersonalAddressBook->ContactSave($sEmail, $oContact) && !empty($oContact->CardDavHash))
+						{
+							return '"'.$oContact->CardDavHash.'"';
+						}
+					}
+					else
+					{
+						if ($oContact && $oContact->Changed < $iRev)
+						{
+							$this->writeLog('Obsolete revision: ['.(empty($oVCard->REV) ? '' : $oVCard->REV).', '.$oContact->Changed.', '.$iRev.']');
+						}
+					}
 				}
 			}
 		}
