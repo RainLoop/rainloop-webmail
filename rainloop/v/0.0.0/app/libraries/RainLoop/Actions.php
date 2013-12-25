@@ -931,8 +931,7 @@ class Actions
 			if ($oAccount instanceof \RainLoop\Account)
 			{
 				$oPab = $this->PersonalAddressBookProvider($oAccount);
-
-
+				
 				$aResult['Auth'] = true;
 				$aResult['Email'] = $oAccount->Email();
 				$aResult['IncLogin'] = $oAccount->IncLogin();
@@ -952,7 +951,15 @@ class Actions
 				{
 					$aResult['ContactsSyncServer'] = $this->Http()->GetHost(false, true, true);
 					$aResult['ContactsSyncUser'] = $oAccount->ParentEmailHelper();
-					$aResult['ContactsSyncPassword'] = $oPab->GetUserHashByEmail($aResult['ContactsSyncUser'], true);
+
+					try
+					{
+						$aResult['ContactsSyncPassword'] = $oPab->GetUserHashByEmail($aResult['ContactsSyncUser'], true);
+					}
+					catch (\Exception $oException)
+					{
+						$this->Logger()->WriteException($oException);
+					}
 
 					$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
 					$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
