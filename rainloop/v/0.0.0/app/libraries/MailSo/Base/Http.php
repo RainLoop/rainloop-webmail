@@ -290,11 +290,12 @@ class Http
 
 	/**
 	 * @param bool $bWithRemoteUserData = false
-	 * @param bool $bRemoveWWW = true
+	 * @param bool $bWithoutWWW = true
+	 * @param bool $bWithoutPort = false
 	 *
 	 * @return string
 	 */
-	public function GetHost($bWithRemoteUserData = false, $bRemoveWWW = true)
+	public function GetHost($bWithRemoteUserData = false, $bWithoutWWW = true, $bWithoutPort = false)
 	{
 		$sHost = $this->GetServer('HTTP_HOST', '');
 		if (0 === \strlen($sHost))
@@ -307,7 +308,7 @@ class Http
 				? $sName : $sName.':'.$iPort;
 		}
 
-		if ($bRemoveWWW)
+		if ($bWithoutWWW)
 		{
 			$sHost = 'www.' === \substr(\strtolower($sHost), 0, 4) ? \substr($sHost, 4) : $sHost;
 		}
@@ -316,6 +317,11 @@ class Http
 		{
 			$sUser = \trim($this->HasServer('REMOTE_USER') ? $this->GetServer('REMOTE_USER', '') : '');
 			$sHost = (0 < \strlen($sUser) ? $sUser.'@' : '').$sHost;
+		}
+
+		if ($bWithoutPort)
+		{
+			$sHost = \preg_replace('/:[\d]+$/', '', $sHost);
 		}
 
 		return $sHost;

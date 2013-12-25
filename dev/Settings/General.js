@@ -12,7 +12,6 @@ function SettingsGeneral()
 	this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 	this.editorDefaultType = oData.editorDefaultType;
 	this.showImages = oData.showImages;
-	this.contactsAutosave = oData.contactsAutosave;
 	this.interfaceAnimation = oData.interfaceAnimation;
 	this.useDesktopNotifications = oData.useDesktopNotifications;	
 	this.threading = oData.threading;
@@ -39,7 +38,6 @@ function SettingsGeneral()
 	this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.isAnimationSupported = Globals.bAnimationSupported;
-	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
 }
 
 Utils.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
@@ -94,12 +92,6 @@ SettingsGeneral.prototype.onBuild = function ()
 		oData.showImages.subscribe(function (bValue) {
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'ShowImages': bValue ? '1' : '0'
-			});
-		});
-
-		oData.contactsAutosave.subscribe(function (bValue) {
-			RL.remote().saveSettings(Utils.emptyFunction, {
-				'ContactsAutosave': bValue ? '1' : '0'
 			});
 		});
 

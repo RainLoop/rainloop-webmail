@@ -146,7 +146,7 @@ AbstractApp.prototype.settingsSet = function (sName, mValue)
 
 AbstractApp.prototype.setTitle = function (sTitle)
 {
-	sTitle = ((0 < sTitle.length) ? sTitle + ' - ' : '') +
+	sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 		RL.settingsGet('Title') || '';
 
 	window.document.title = '_';

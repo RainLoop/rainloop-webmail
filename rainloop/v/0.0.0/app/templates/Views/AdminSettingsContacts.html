@@ -9,7 +9,6 @@
 		</div>
 	</div>
 	<div class="form-horizontal" data-bind="visible: contactsSupported">
-	<div class="form-horizontal">
 		<div class="legend">
 			Contacts
 		</div>
@@ -23,12 +22,15 @@
 					<i data-bind="css: contactsSharing() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow contacts sharing
 				</label>
+				<br />
 				<label data-bind="click: function () { contactsSync(!contactsSync()); }">
 					<i data-bind="css: contactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow contacts sync (CardDAV)
 				</label>
+				<a href="http://rainloop.net/docs/carddav/" target="_blank">read about web server configuration</a>
 			</div>
 		</div>
+		<br />
 		<div class="control-group">
 			<label class="control-label">
 				Type

@@ -930,14 +930,35 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{
+				$oPab = $this->PersonalAddressBookProvider($oAccount);
+
+
 				$aResult['Auth'] = true;
 				$aResult['Email'] = $oAccount->Email();
 				$aResult['IncLogin'] = $oAccount->IncLogin();
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
-				$aResult['ContactsIsAllowed'] = $this->PersonalAddressBookProvider($oAccount)->IsActive();
-				$aResult['ContactsSharingIsAllowed'] = $this->PersonalAddressBookProvider($oAccount)->IsSharingAllowed();
+				$aResult['ContactsIsAllowed'] = $oPab->IsActive();
+				$aResult['ContactsSharingIsAllowed'] = $oPab->IsSharingAllowed();
+				
+				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['ContactsSyncServer'] = '';
+				$aResult['ContactsSyncUser'] = '';
+				$aResult['ContactsSyncPassword'] = '';
+				$aResult['ContactsSyncPabUrl'] = '';
+
+				if ($aResult['ContactsSyncIsAllowed'])
+				{
+					$aResult['ContactsSyncServer'] = $this->Http()->GetHost(false, true, true);
+					$aResult['ContactsSyncUser'] = $oAccount->ParentEmailHelper();
+					$aResult['ContactsSyncPassword'] = $oPab->GetUserHashByEmail($aResult['ContactsSyncUser'], true);
+
+					$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
+					$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
+					
+					$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav/addressbooks/'.$oAccount->ParentEmailHelper().'/default/';
+				}
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 			}

@@ -277,6 +277,7 @@ module.exports = function (grunt) {
 					"dev/ViewModels/SettingsPaneViewModel.js",
 
 					"dev/Settings/General.js",
+					"dev/Settings/Contacts.js",
 					"dev/Settings/Accounts.js",
 					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",

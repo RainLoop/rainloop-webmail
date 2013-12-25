@@ -719,7 +719,12 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}
-	
+
+	if (!RL.settingsGet('ContactsIsAllowed'))
+	{
+		Utils.removeSettingsViewModel(SettingsContacts);
+	}
+
 	if (!RL.settingsGet('AllowAdditionalAccounts'))
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);

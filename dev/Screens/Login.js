@@ -13,5 +13,5 @@ _.extend(LoginScreen.prototype, KnoinAbstractScreen.prototype);
 
 LoginScreen.prototype.onShow = function ()
 {
-	RL.setTitle(Utils.i18n('TITLES/LOGIN'));
+	RL.setTitle('');
 };

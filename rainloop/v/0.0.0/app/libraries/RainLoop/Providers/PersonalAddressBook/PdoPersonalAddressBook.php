@@ -88,6 +88,8 @@ class PdoPersonalAddressBook
 	 */
 	public function GetUserUidByEmail($sEmail)
 	{
+		$this->Sync();
+		
 		$iId = $this->getUserId($sEmail);
 		return 0 < $iId ? (string) $iId : '';
 	}
@@ -98,6 +100,8 @@ class PdoPersonalAddressBook
 	 */
 	public function GetCtagByEmail($sEmail)
 	{
+		$this->Sync();
+		
 		$sResult = '0';
 		$iUserID = $this->getUserId($sEmail);
 		if (0 < $iUserID)
@@ -126,11 +130,13 @@ class PdoPersonalAddressBook
 	 */
 	public function GetUserHashByEmail($sEmail, $bCreate = false)
 	{
+		$this->Sync();
+
 		$sHash = '';
 		$iUserID = $this->getUserId($sEmail);
 		if (0 < $iUserID)
 		{
-			$oStmt = $this->prepareAndExecute('SELECT pass_hash FROM rainloop_pab_users_hashes WHERE id_user = :id_user LIMIT 1',
+			$oStmt = $this->prepareAndExecute('SELECT pass_hash FROM rainloop_pab_users WHERE id_user = :id_user LIMIT 1',
 				array(':id_user' => array($iUserID, \PDO::PARAM_INT)));
 
 			if ($oStmt)
@@ -142,14 +148,15 @@ class PdoPersonalAddressBook
 				}
 				else if ($bCreate)
 				{
-					$this->prepareAndExecute('INSERT INTO rainloop_pab_users_hashes (id_user, pass_hash) VALUES (:id_user, :pass_hash);',
+					$this->prepareAndExecute('INSERT INTO rainloop_pab_users (id_user, email, pass_hash) VALUES (:id_user, :email, :pass_hash);',
 						array(
 							':id_user' => array($iUserID, \PDO::PARAM_INT),
+							':email' => array($sEmail, \PDO::PARAM_STR),
 							':pass_hash' => array(\md5($sEmail.\microtime(true)), \PDO::PARAM_STR)
 						)
 					);
 
-					$this->GetUserHashByEmail($sEmail, false);
+					$sHash = $this->GetUserHashByEmail($sEmail, false);
 				}
 			}
 		}
@@ -305,6 +312,7 @@ class PdoPersonalAddressBook
 	 */
 	public function DeleteContacts($sEmail, $aContactIds)
 	{
+		$this->Sync();
 		$iUserID = $this->getUserId($sEmail);
 
 		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
@@ -1239,8 +1247,9 @@ SQLITEINITIAL;
 'ALTER TABLE rainloop_pab_contacts ADD carddav_data MEDIUMTEXT;',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_hash varchar(128) NOT NULL DEFAULT \'\';',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_size int UNSIGNED NOT NULL DEFAULT 0;',
-'CREATE TABLE IF NOT EXISTS rainloop_pab_users_hashes (
+'CREATE TABLE IF NOT EXISTS rainloop_pab_users (
 	id_user		int UNSIGNED	NOT NULL,
+	email		varchar(128)	NOT NULL,
 	pass_hash	varchar(128)	NOT NULL
 )/*!40000 ENGINE=INNODB */;'
 					)
@@ -1253,8 +1262,9 @@ SQLITEINITIAL;
 'ALTER TABLE rainloop_pab_contacts ADD carddav_data TEXT;',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_hash varchar(128) NOT NULL DEFAULT \'\';',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_size integer NOT NULL DEFAULT 0;',
-'CREATE TABLE rainloop_pab_users_hashes (
+'CREATE TABLE rainloop_pab_users (
 	id_user		integer			NOT NULL,
+	email		varchar(128)	NOT NULL,
 	pass_hash	varchar(128)	NOT NULL
 );'
 					)
@@ -1267,8 +1277,9 @@ SQLITEINITIAL;
 'ALTER TABLE rainloop_pab_contacts ADD carddav_data text;',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_hash text NOT NULL DEFAULT \'\';',
 'ALTER TABLE rainloop_pab_contacts ADD carddav_size integer NOT NULL DEFAULT 0;',
-'CREATE TABLE rainloop_pab_users_hashes (
+'CREATE TABLE rainloop_pab_users (
 	id_user		integer		NOT NULL,
+	email		text		NOT NULL,
 	pass_hash	text		NOT NULL
 );'
 					)

@@ -12252,7 +12252,6 @@ function SettingsGeneral()
 	this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 	this.editorDefaultType = oData.editorDefaultType;
 	this.showImages = oData.showImages;
-	this.contactsAutosave = oData.contactsAutosave;
 	this.interfaceAnimation = oData.interfaceAnimation;
 	this.useDesktopNotifications = oData.useDesktopNotifications;	
 	this.threading = oData.threading;
@@ -12279,7 +12278,6 @@ function SettingsGeneral()
 	this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.isAnimationSupported = Globals.bAnimationSupported;
-	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
 }
 
 Utils.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
@@ -12334,12 +12332,6 @@ SettingsGeneral.prototype.onBuild = function ()
 		oData.showImages.subscribe(function (bValue) {
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'ShowImages': bValue ? '1' : '0'
-			});
-		});
-
-		oData.contactsAutosave.subscribe(function (bValue) {
-			RL.remote().saveSettings(Utils.emptyFunction, {
-				'ContactsAutosave': bValue ? '1' : '0'
 			});
 		});
 
@@ -12400,6 +12392,44 @@ SettingsGeneral.prototype.onShow = function ()
 SettingsGeneral.prototype.selectLanguage = function ()
 {
 	kn.showScreenPopup(PopupsLanguagesViewModel);
+};
+
+/**
+ * @constructor
+ */
+function SettingsContacts()
+{
+	var oData = RL.data();
+	
+	this.contactsAutosave = oData.contactsAutosave;
+	this.showPassword = ko.observable(false);
+
+	this.allowContactsSync = !!RL.settingsGet('ContactsSyncIsAllowed');
+	this.contactsSyncServer = RL.settingsGet('ContactsSyncServer');
+	this.contactsSyncUser = RL.settingsGet('ContactsSyncUser');
+	this.contactsSyncPass = RL.settingsGet('ContactsSyncPassword');
+	this.contactsSyncPabUrl = RL.settingsGet('ContactsSyncPabUrl');
+}
+
+Utils.addSettingsViewModel(SettingsContacts, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
+
+SettingsContacts.prototype.toggleShowPassword = function ()
+{
+	this.showPassword(!this.showPassword());
+};
+
+SettingsContacts.prototype.onBuild = function ()
+{
+	RL.data().contactsAutosave.subscribe(function (bValue) {
+		RL.remote().saveSettings(Utils.emptyFunction, {
+			'ContactsAutosave': bValue ? '1' : '0'
+		});
+	});
+};
+
+SettingsContacts.prototype.onShow = function ()
+{
+	this.showPassword(false);
 };
 
 /**
@@ -15725,7 +15755,7 @@ _.extend(LoginScreen.prototype, KnoinAbstractScreen.prototype);
 
 LoginScreen.prototype.onShow = function ()
 {
-	RL.setTitle(Utils.i18n('TITLES/LOGIN'));
+	RL.setTitle('');
 };
 /**
  * @constructor
@@ -16066,7 +16096,7 @@ AbstractApp.prototype.settingsSet = function (sName, mValue)
 
 AbstractApp.prototype.setTitle = function (sTitle)
 {
-	sTitle = ((0 < sTitle.length) ? sTitle + ' - ' : '') +
+	sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 		RL.settingsGet('Title') || '';
 
 	window.document.title = '_';
@@ -16901,7 +16931,12 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
 	}
-	
+
+	if (!RL.settingsGet('ContactsIsAllowed'))
+	{
+		Utils.removeSettingsViewModel(SettingsContacts);
+	}
+
 	if (!RL.settingsGet('AllowAdditionalAccounts'))
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);
