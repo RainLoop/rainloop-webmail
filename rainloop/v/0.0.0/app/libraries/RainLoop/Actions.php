@@ -949,7 +949,19 @@ class Actions
 
 				if ($aResult['ContactsSyncIsAllowed'])
 				{
-					$aResult['ContactsSyncServer'] = $this->Http()->GetHost(false, true, true);
+					$sDavDomain = (string) $oConfig->Get('labs', 'sync_dav_domain', '');
+					if (empty($sDavDomain))
+					{
+						$aResult['ContactsSyncServer'] = $this->Http()->GetHost(false, true, true);
+					}
+					else
+					{
+						$sDavDomain = \rtrim($sDavDomain, '/\\ ');
+						$sDavDomainWithoutScheme = \preg_replace('/https?:\/\//i', '', \trim($sDavDomain));
+
+						$aResult['ContactsSyncServer'] = $sDavDomainWithoutScheme;
+					}
+
 					$aResult['ContactsSyncUser'] = $oAccount->ParentEmailHelper();
 
 					try
@@ -961,10 +973,22 @@ class Actions
 						$this->Logger()->WriteException($oException);
 					}
 
-					$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
-					$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
-					
-					$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav/addressbooks/'.$oAccount->ParentEmailHelper().'/default/';
+					if (empty($sDavDomain))
+					{
+						$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
+						$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
+						
+						$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav';
+					}
+					else
+					{
+						$aResult['ContactsSyncPabUrl'] = \preg_match('/^https?:\/\//i', $sDavDomain) ? $sDavDomain : 'http://'.$sDavDomain;
+					}
+
+					if (!empty($aResult['ContactsSyncPabUrl']))
+					{
+						$aResult['ContactsSyncPabUrl'] .= '/addressbooks/'.$oAccount->ParentEmailHelper().'/default/';
+					}
 				}
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
@@ -4196,7 +4220,7 @@ class Actions
 			{
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				
-				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount, \array_values($aArrayToFrec),
+				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount->ParentEmailHelper(), \array_values($aArrayToFrec),
 					!!$oSettings->GetConf('ContactsAutosave', false));
 			}
 		}
