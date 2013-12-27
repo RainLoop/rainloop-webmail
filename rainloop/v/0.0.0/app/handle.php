@@ -5,6 +5,7 @@ namespace RainLoop;
 if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 {
 	\define('RAINLOOP_APP_LIBRARIES_PATH', \rtrim(\realpath(__DIR__), '\\/').'/libraries/');
+	\define('RAINLOOP_MB_SUPPORTED', \function_exists('mb_strtoupper'));
 
 	\spl_autoload_register(function ($sClassName) {
 		
@@ -14,6 +15,12 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 		}
 		else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
 		{
+			if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
+			{
+				\define('RL_MB_FIXED', true);
+				include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/SabreDAV/MbStringFix.php';
+			}
+			
 			return include RAINLOOP_APP_LIBRARIES_PATH.'Sabre/'.\str_replace('\\', '/', \substr($sClassName, 6)).'.php';
 		}
 

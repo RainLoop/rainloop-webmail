@@ -715,8 +715,6 @@ class ServiceActions
 	{
 		try
 		{
-			include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/SabreDAV/MbStringFix.php';
-			
 			\set_error_handler(function ($errno, $errstr, $errfile, $errline ) {
 				throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 			});
@@ -741,19 +739,21 @@ class ServiceActions
 
 			$oAddressBookRoot = new \Sabre\CardDAV\AddressBookRoot($oPrincipalBackend, $oCarddavBackend);
 
-			$oServer = new \Sabre\DAV\Server(array(
-				$oPrincipalCollection, $oAddressBookRoot
-			));
+			$aTree = array($oPrincipalCollection, $oAddressBookRoot);
+			$this->Plugins()->RunHook('filter.sabre-dav-tree', array(&$aTree));
 
-			if (false === \strpos($this->oHttp->GetUrl(), '/index.php/dav/'))
-			{
-				$oServer->setBaseUri('/');
-			}
-			else
+			$oServer = new \Sabre\DAV\Server($aTree);
+
+			$sBaseUri = '/';
+			if (false !== \strpos($this->oHttp->GetUrl(), '/index.php/dav/'))
 			{
 				$aPath = \trim($this->oHttp->GetPath(), '/\\ ');
-				$oServer->setBaseUri((0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/');
+				$sBaseUri = (0 < \strlen($aPath) ? '/'.$aPath : '').'/index.php/dav/';
 			}
+
+			$this->Plugins()->RunHook('filter.sabre-dav-base-url', array(&$sBaseUri));
+	
+			$oServer->setBaseUri($sBaseUri);
 
 			// Plugins
 			$oServer->addPlugin(new \Sabre\DAV\Auth\Plugin($oAuthBackend, 'RainLoop'));

@@ -8272,6 +8272,27 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
     background-position: 60px 0;
   }
 }
+html.rl-started-trigger .b-login-content .loginFormWrapper {
+  -webkit-transform: translateY(-30px);
+  -moz-transform: translateY(-30px);
+  transform: translateY(-30px);
+}
+html.rl-started-trigger #rl-content {
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+}
+.rl-anim.csstransitions #rl-content {
+  -webkit-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  -moz-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  -o-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
+}
+.rl-anim.csstransitions .b-login-content .loginFormWrapper {
+  -webkit-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  -moz-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  -o-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+}
 .rl-anim.rgba.cssanimations.backgroundsize .e-strip-animation {
   -webkit-background-size: 60px 60px;
   -moz-background-size: 60px 60px;

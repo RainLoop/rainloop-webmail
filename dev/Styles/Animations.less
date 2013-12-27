@@ -51,7 +51,25 @@
 	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
+html.rl-started-trigger .b-login-content .loginFormWrapper {
+	-webkit-transform: translateY(-30px);
+	-moz-transform: translateY(-30px);
+	transform: translateY(-30px);
+}
+
+html.rl-started-trigger #rl-content {
+	.opacity(70);
+}
+
 .rl-anim {
+
+	&.csstransitions #rl-content {
+		.transition(~"0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940)");
+	}
+	
+	&.csstransitions .b-login-content .loginFormWrapper {
+		.transition(~"0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");
+	}
 
 	&.rgba.cssanimations.backgroundsize .e-strip-animation {
 		-webkit-background-size: 60px 60px;

@@ -36,11 +36,6 @@ Knoin.prototype.oScreens = {};
 Knoin.prototype.oBoot = null;
 Knoin.prototype.oCurrentScreen = null;
 
-Knoin.prototype.showLoading = function ()
-{
-	$('#rl-loading').show();
-};
-
 Knoin.prototype.hideLoading = function ()
 {
 	$('#rl-loading').hide();
@@ -307,6 +302,10 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
  */
 Knoin.prototype.startScreens = function (aScreensClasses)
 {
+	$('#rl-content').css({
+		'visibility': 'hidden'
+	});
+
 	_.each(aScreensClasses, function (CScreen) {
 
 			var
@@ -345,6 +344,14 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 	hasher.initialized.add(oCross.parse, oCross);
 	hasher.changed.add(oCross.parse, oCross);
 	hasher.init();
+
+	$('#rl-content').css({
+		'visibility': 'visible'
+	});
+
+	_.delay(function () {
+		$html.removeClass('rl-started-trigger').addClass('rl-started');
+	}, 50);
 };
 
 /**

@@ -408,8 +408,11 @@ if (!function_exists('mb_strcut'))
 {
 	function mb_strcut($str, $start, $length = null, $encoding = '')
 	{
-		// TODO
-		return \MailSo\Base\Utils::Utf8Clear(substr($str, $start, $length));
+		$match = array();
+        // use the regex unicode support to separate the UTF-8 characters into an array
+        preg_match_all( '/./us', $str, $match );
+        $chars = is_null( $length )? array_slice( $match[0], $start ) : array_slice( $match[0], $start, $length );
+        return implode( '', $chars );
 	}
 }
 

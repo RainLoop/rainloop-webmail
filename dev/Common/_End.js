@@ -34,8 +34,7 @@ window['__RLBOOT'] = function (fCall) {
 				window['rainloopTEMPLATES'] = {};
 
 				kn.setBoot(RL).bootstart();
-
-				$html.addClass('rl-started');
+				$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 				
 			}, 50);
 		}

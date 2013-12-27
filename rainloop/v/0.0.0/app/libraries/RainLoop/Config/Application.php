@@ -201,7 +201,7 @@ Enables caching in the system'),
 				'ignore_folders_subscription' => array(false,
 					'Experimental settings. Handle with care.
 '),
-				'sync_dav_digest_auth' => array(false),
+				'sync_dav_digest_auth' => array(true),
 				'sync_dav_domain' => array(''),
 				'sync_use_dav_browser' => array(true),
 				'allow_message_append' => array(false),
