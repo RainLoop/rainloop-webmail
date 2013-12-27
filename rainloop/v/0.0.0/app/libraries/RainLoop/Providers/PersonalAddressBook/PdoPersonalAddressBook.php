@@ -948,10 +948,10 @@ class PdoPersonalAddressBook
 			{
 				if ($oItem)
 				{
-					$sEmail = \strtolower(\trim($oItem->GetEmail()));
-					if (0 < \strlen($sEmail))
+					$sEmailUpdate = \strtolower(\trim($oItem->GetEmail()));
+					if (0 < \strlen($sEmailUpdate))
 					{
-						$aEmailsToUpdate[] = $sEmail;
+						$aEmailsToUpdate[] = $sEmailUpdate;
 					}
 				}
 			}
@@ -978,12 +978,38 @@ class PdoPersonalAddressBook
 
 				if ('' !== \trim($oEmail->GetDisplayName()))
 				{
-					$oPropName = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
-					$oPropName->ScopeType = $oContact->ScopeType;
-					$oPropName->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FULLNAME;
-					$oPropName->Value = \trim($oEmail->GetDisplayName());
+					$sFirst = $sLast = '';
+					$sFullName = $oEmail->GetDisplayName();
+					if (false !== \strpos($sFullName, ' '))
+					{
+						$aNames = explode(' ', $sFullName, 2);
+						$sFirst = isset($aNames[0]) ? $aNames[0] : '';
+						$sLast = isset($aNames[1]) ? $aNames[1] : '';
+					}
+					else
+					{
+						$sFirst = $sFullName;
+					}
 
-					$oContact->Properties[] = $oPropName;
+					if (0 < \strlen($sFirst))
+					{
+						$oPropName = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+						$oPropName->ScopeType = $oContact->ScopeType;
+						$oPropName->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::FIRST_NAME;
+						$oPropName->Value = \trim($sFirst);
+
+						$oContact->Properties[] = $oPropName;
+					}
+					
+					if (0 < \strlen($sLast))
+					{
+						$oPropName = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+						$oPropName->ScopeType = $oContact->ScopeType;
+						$oPropName->Type = \RainLoop\Providers\PersonalAddressBook\Enumerations\PropertyType::LAST_NAME;
+						$oPropName->Value = \trim($sLast);
+
+						$oContact->Properties[] = $oPropName;
+					}
 				}
 
 				if (0 < \count($oContact->Properties))

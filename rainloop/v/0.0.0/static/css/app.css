@@ -6016,6 +6016,14 @@ html.mobile * {
   right: auto;
   min-width: 120px;
 }
+#rl-bg {
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
 html.mobile #rl-top-resizer-left {
   width: 170px;
 }

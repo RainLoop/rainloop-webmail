@@ -4220,8 +4220,8 @@ class Actions
 			{
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				
-				$this->PersonalAddressBookProvider($oAccount)->IncFrec($oAccount->ParentEmailHelper(), \array_values($aArrayToFrec),
-					!!$oSettings->GetConf('ContactsAutosave', false));
+				$this->PersonalAddressBookProvider($oAccount)->IncFrec(
+					$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
 			}
 		}
 
