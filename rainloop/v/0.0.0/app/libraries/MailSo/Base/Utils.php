@@ -42,19 +42,21 @@ class Utils
 
 	/**
 	 * @param string $sEncoding
+	 * @param bool $bAsciAsUtf8 = false
 	 *
 	 * @return string
 	 */
-	private static function normalizeCharset($sEncoding)
+	public static function NormalizeCharset($sEncoding, $bAsciAsUtf8 = false)
 	{
 		$sEncoding = \strtolower($sEncoding);
 		switch ($sEncoding)
 		{
-			case 'ansi':
-			case 'ansii':
-			case 'us-ansi':
-			case 'us-ansii':
-				$sEncoding = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+			case 'asci':
+			case 'ascii':
+			case 'us-asci':
+			case 'us-ascii':
+				$sEncoding = $bAsciAsUtf8 ? \MailSo\Base\Enumerations\Charset::UTF_8 :
+					\MailSo\Base\Enumerations\Charset::ISO_8859_1;
 				break;
 			case 'unicode-1-1-utf-7':
 				$sEncoding = \MailSo\Base\Enumerations\Charset::UTF_7;
@@ -117,7 +119,7 @@ class Utils
 	 */
 	public static function ValidateCharsetName($sCharset)
 	{
-		$sCharset = \strtolower(\MailSo\Base\Utils::normalizeCharset($sCharset));
+		$sCharset = \strtolower(\MailSo\Base\Utils::NormalizeCharset($sCharset));
 		return 0 < \strlen($sCharset) && (\in_array($sCharset, array(\MailSo\Base\Enumerations\Charset::UTF_7_IMAP)) ||
 			\in_array($sCharset, \MailSo\Base\Utils::$SuppostedCharsets));
 	}
@@ -133,8 +135,8 @@ class Utils
 	{
 		$sResult = $sInputString;
 
-		$sFromEncoding = \MailSo\Base\Utils::normalizeCharset($sInputFromEncoding);
-		$sToEncoding = \MailSo\Base\Utils::normalizeCharset($sInputToEncoding);
+		$sFromEncoding = \MailSo\Base\Utils::NormalizeCharset($sInputFromEncoding);
+		$sToEncoding = \MailSo\Base\Utils::NormalizeCharset($sInputToEncoding);
 
 		if ('' === \trim($sResult) || ($sFromEncoding === $sToEncoding && \MailSo\Base\Enumerations\Charset::UTF_8 !== $sFromEncoding))
 		{
