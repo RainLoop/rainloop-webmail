@@ -2725,6 +2725,7 @@ ko.bindingHandlers.emailsTags = {
 			if ($oEl.data('EmailsTagsValue') !== sValue)
 			{
 				$oEl.val(sValue);
+				$oEl.data('EmailsTagsValue', sValue);
 				$oEl.inputosaurus('refresh');
 			}
 		});

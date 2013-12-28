@@ -442,9 +442,6 @@ ko.bindingHandlers.emailsTags = {
 						oEmail = new EmailModel();
 						oEmail.mailsoParse(sValue);
 						oEmail.clearDuplicateName();
-
-//						sValue = oEmail.toLine(false);
-//						return sValue;
 						return [oEmail.toLine(false), oEmail];
 					}
 
@@ -462,6 +459,7 @@ ko.bindingHandlers.emailsTags = {
 			if ($oEl.data('EmailsTagsValue') !== sValue)
 			{
 				$oEl.val(sValue);
+				$oEl.data('EmailsTagsValue', sValue);
 				$oEl.inputosaurus('refresh');
 			}
 		});
