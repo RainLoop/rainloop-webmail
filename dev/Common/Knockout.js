@@ -110,15 +110,12 @@ ko.bindingHandlers.modal = {
 			'show': ko.utils.unwrapObservable(fValueAccessor())
 		}).on('hidden', function () {
 			fValueAccessor()(false);
+		}).on('shown', function () {
+			Utils.windowResize();
 		});
 	},
 	'update': function (oElement, fValueAccessor) {
-		var bValue = ko.utils.unwrapObservable(fValueAccessor());
-		$(oElement).modal(bValue ? 'show' : 'hide');
-
-		_.delay(function () {
-			$(oElement).toggleClass('popup-active', bValue);
-		}, 1);
+		$(oElement).modal(ko.utils.unwrapObservable(fValueAccessor()) ? 'show' : 'hide');
 	}
 };
 

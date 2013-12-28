@@ -159,10 +159,15 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 {
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
-		ViewModelClassToHide.__dom.hide();
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		this.delegateRun(ViewModelClassToHide.__vm, 'onHide');
 		this.popupVisibility(false);
+
+		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
+		
+		_.delay(function () {
+			ViewModelClassToHide.__dom.hide();
+		}, 300);
 	}
 };
 

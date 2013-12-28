@@ -1,5 +1,5 @@
 <div class="popups">
-	<div class="modal hide b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
+	<div class="modal hide fade b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
 			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">

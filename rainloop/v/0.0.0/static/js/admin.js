@@ -2373,15 +2373,12 @@ ko.bindingHandlers.modal = {
 			'show': ko.utils.unwrapObservable(fValueAccessor())
 		}).on('hidden', function () {
 			fValueAccessor()(false);
+		}).on('shown', function () {
+			Utils.windowResize();
 		});
 	},
 	'update': function (oElement, fValueAccessor) {
-		var bValue = ko.utils.unwrapObservable(fValueAccessor());
-		$(oElement).modal(bValue ? 'show' : 'hide');
-
-		_.delay(function () {
-			$(oElement).toggleClass('popup-active', bValue);
-		}, 1);
+		$(oElement).modal(ko.utils.unwrapObservable(fValueAccessor()) ? 'show' : 'hide');
 	}
 };
 
@@ -2705,9 +2702,6 @@ ko.bindingHandlers.emailsTags = {
 						oEmail = new EmailModel();
 						oEmail.mailsoParse(sValue);
 						oEmail.clearDuplicateName();
-
-//						sValue = oEmail.toLine(false);
-//						return sValue;
 						return [oEmail.toLine(false), oEmail];
 					}
 
@@ -3755,10 +3749,15 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 {
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
-		ViewModelClassToHide.__dom.hide();
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		this.delegateRun(ViewModelClassToHide.__vm, 'onHide');
 		this.popupVisibility(false);
+
+		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
+		
+		_.delay(function () {
+			ViewModelClassToHide.__dom.hide();
+		}, 300);
 	}
 };
 

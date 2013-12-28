@@ -64,11 +64,13 @@ html.rl-started-trigger.no-mobile #rl-content {
 .rl-anim {
 
 	&.csstransitions.no-mobile #rl-content {
-		.transition(~"0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940)");
+		/*.transition(~"0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
+		.transition(opacity 0.3s ease-out);
 	}
 	
 	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
-		.transition(~"0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");
+		/*.transition(~"0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
+		.transition(all 0.3s ease-out);
 	}
 
 	&.rgba.cssanimations.backgroundsize .e-strip-animation {
@@ -148,22 +150,18 @@ html.rl-started-trigger.no-mobile #rl-content {
 		}
 	}
 
-	&.csstransitions .modal-open .popups .modal {
-		-webkit-transform-origin: 50% 50%;
-		-moz-transform-origin: 50% 50%;
-		-o-transform-origin: 50% 50%;
-		transform-origin: 50% 50%;
+	&.csstransitions .modal.fade {
+		.transition(all 0.2s ease-out);
+		
+		-webkit-transform: translateY(-20px);
+		-moz-transform: translateY(-20px);
+		transform: translateY(-20px);
 
-		/*.transition(~"0.3s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
-		.transition(0.1s all linear);
-		.scale(0.95);
-	}
-
-	.modal-open .popups .popup-active.modal {
-		-webkit-transform: none;
-		-moz-transform: none;
-		-o-transform: none;
-		transform: none;
+		&.in {
+			-webkit-transform: none;
+			-moz-transform: none;
+			transform: none;
+		}
 	}
 
 	&.cssanimations .b-compose.loading .b-header-toolbar {

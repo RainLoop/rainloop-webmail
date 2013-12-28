@@ -5589,6 +5589,16 @@ html.no-rgba .modal {
   background-color: #fff;
   max-height: none;
 }
+.modal.fade {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+  top: 0;
+}
+.modal.fade.in {
+  top: 0;
+}
 .modal.loginContent .modal-body,
 .modal.loginAdminContent .modal-body {
   background-color: transparent !important;
@@ -8292,16 +8302,20 @@ html.rl-started-trigger.no-mobile #rl-content {
   filter: alpha(opacity=70);
 }
 .rl-anim.csstransitions.no-mobile #rl-content {
-  -webkit-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  -moz-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  -o-transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  transition: 0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  /*.transition(~"0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
+
+  -webkit-transition: opacity 0.3s ease-out;
+  -moz-transition: opacity 0.3s ease-out;
+  -o-transition: opacity 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
 }
 .rl-anim.csstransitions.no-mobile .b-login-content .loginFormWrapper {
-  -webkit-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  -moz-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  -o-transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
-  transition: 0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  /*.transition(~"0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
+
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
 }
 .rl-anim.rgba.cssanimations.backgroundsize .e-strip-animation {
   -webkit-background-size: 60px 60px;
@@ -8375,27 +8389,18 @@ html.rl-started-trigger.no-mobile #rl-content {
   -o-transition: left 500ms ease;
   transition: left 500ms ease;
 }
-.rl-anim.csstransitions .modal-open .popups .modal {
-  -webkit-transform-origin: 50% 50%;
-  -moz-transform-origin: 50% 50%;
-  -o-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-  /*.transition(~"0.3s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
-
-  -webkit-transition: 0.1s all linear;
-  -moz-transition: 0.1s all linear;
-  -o-transition: 0.1s all linear;
-  transition: 0.1s all linear;
-  -webkit-transform: scale(0.95);
-  -moz-transform: scale(0.95);
-  -ms-transform: scale(0.95);
-  -o-transform: scale(0.95);
-  transform: scale(0.95);
+.rl-anim.csstransitions .modal.fade {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+  -webkit-transform: translateY(-20px);
+  -moz-transform: translateY(-20px);
+  transform: translateY(-20px);
 }
-.rl-anim .modal-open .popups .popup-active.modal {
+.rl-anim.csstransitions .modal.fade.in {
   -webkit-transform: none;
   -moz-transform: none;
-  -o-transform: none;
   transform: none;
 }
 .rl-anim.cssanimations .b-compose.loading .b-header-toolbar {
