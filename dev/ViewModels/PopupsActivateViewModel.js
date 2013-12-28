@@ -97,7 +97,13 @@ PopupsActivateViewModel.prototype.onShow = function ()
 		this.activateText('');
 		this.activateText.isError(false);
 		this.activationSuccessed(false);
-		
+	}
+};
+
+PopupsActivateViewModel.prototype.onFocus = function ()
+{
+	if (!this.activateProcess())
+	{
 		this.key.focus(true);
 	}
 };

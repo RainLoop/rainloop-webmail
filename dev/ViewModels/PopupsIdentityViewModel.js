@@ -138,7 +138,10 @@ PopupsIdentityViewModel.prototype.onShow = function (oIdentity)
 		
 		this.owner(this.id === RL.data().accountEmail());
 	}
+};
 
+PopupsIdentityViewModel.prototype.onFocus = function ()
+{
 	if (!this.owner())
 	{
 		this.email.focused(true);
@@ -152,7 +155,7 @@ PopupsIdentityViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;

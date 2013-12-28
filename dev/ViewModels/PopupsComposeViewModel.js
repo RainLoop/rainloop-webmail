@@ -492,7 +492,7 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 		bResult = true;
 		if (this.modalVisibility())
 		{
-			kn.delegateRun(this, 'closeCommand');
+			Utils.delegateRun(this, 'closeCommand');
 		}
 	}
 	
@@ -594,7 +594,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		aDownloads = [],
 		aDraftInfo = null,
 		oMessage = null,
-		bFocusOnBody = false,
 		sComposeType = sType || Enums.ComposeType.Empty,
 		fEmailArrayToStringLineHelper = function (aList) {
 
@@ -655,7 +654,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
 				this.sInReplyTo = oMessage.sMessageId;
 				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.sReferences);
-				bFocusOnBody = true;
 				break;
 
 			case Enums.ComposeType.ReplyAll:
@@ -667,7 +665,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
 				this.sInReplyTo = oMessage.sMessageId;
 				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.references());
-				bFocusOnBody = true;
 				break;
 
 			case Enums.ComposeType.Forward:
@@ -753,11 +750,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		});
 	}
 
-	if ('' === this.to())
-	{
-		this.to.focusTrigger(!this.to.focusTrigger());
-	}
-	
 	aDownloads = this.getAttachmentsDownloadsForUpload();
 	if (Utils.isNonEmptyArray(aDownloads))
 	{
@@ -793,11 +785,20 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		}, aDownloads);
 	}
 
-	if (bFocusOnBody && this.oEditor)
+	this.triggerForResize();
+};
+
+PopupsComposeViewModel.prototype.onFocus = function ()
+{
+	if ('' === this.to())
+	{
+		this.to.focusTrigger(!this.to.focusTrigger());
+	}
+	else if (this.oEditor)
 	{
 		this.oEditor.focus();
 	}
-
+	
 	this.triggerForResize();
 };
 
@@ -807,7 +808,7 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
 		if (self.modalVisibility())
 		{
-			kn.delegateRun(self, 'closeCommand');
+			Utils.delegateRun(self, 'closeCommand');
 		}
 	}]);
 };

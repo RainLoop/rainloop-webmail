@@ -563,7 +563,7 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		{
 			if (Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
-				kn.delegateRun(self, 'closeCommand');
+				Utils.delegateRun(self, 'closeCommand');
 				bResult = false;
 			}
 			else if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)

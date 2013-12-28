@@ -105,6 +105,10 @@ PopupsAddAccountViewModel.prototype.clearPopup = function ()
 PopupsAddAccountViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
+};
+
+PopupsAddAccountViewModel.prototype.onFocus = function ()
+{
 	this.emailFocus(true);
 };
 
@@ -117,7 +121,7 @@ PopupsAddAccountViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;

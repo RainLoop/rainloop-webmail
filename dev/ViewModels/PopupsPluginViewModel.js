@@ -118,7 +118,7 @@ PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
 		if (self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 		}
 	}]);
 };

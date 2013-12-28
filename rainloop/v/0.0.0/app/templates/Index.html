@@ -15,7 +15,7 @@
 			function __fIncludeScr(sSrc) {
 				document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 			}
-
+			
 			if (!navigator || !navigator.cookieEnabled) {
 				document.location.replace('{{BaseAppIndexFile}}?/NoCookie');
 			}
@@ -48,6 +48,15 @@
 				<div class="e-bounce bounce3"></div>
 			</div>
 		</div>
+		<script type="text/javascript">
+			var oE = document.getElementById('rl-loading');
+			if (oE) {
+				oE.style.opacity = 0;
+				window.setTimeout(function () {
+					oE.style.opacity = 1;
+				}, 300);
+			}
+		</script>
 		<div id="rl-loading-error" class="thm-loading">
 			An Error occurred,<br />please refresh the page and try again.
 		</div>

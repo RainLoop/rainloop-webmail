@@ -635,6 +635,19 @@ Utils.getUploadErrorDescByCode = function (mCode)
 };
 
 /**
+ * @param {?} oObject
+ * @param {string} sMethodName
+ * @param {Array=} aParameters
+ */
+Utils.delegateRun = function (oObject, sMethodName, aParameters)
+{
+	if (oObject && oObject[sMethodName])
+	{
+		oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+	}
+};
+
+/**
  * @param {?} oEvent
  */
 Utils.killCtrlAandS = function (oEvent)

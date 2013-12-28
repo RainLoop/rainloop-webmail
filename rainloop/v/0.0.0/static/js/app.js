@@ -1226,6 +1226,19 @@ Utils.getUploadErrorDescByCode = function (mCode)
 };
 
 /**
+ * @param {?} oObject
+ * @param {string} sMethodName
+ * @param {Array=} aParameters
+ */
+Utils.delegateRun = function (oObject, sMethodName, aParameters)
+{
+	if (oObject && oObject[sMethodName])
+	{
+		oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+	}
+};
+
+/**
  * @param {?} oEvent
  */
 Utils.killCtrlAandS = function (oEvent)
@@ -5095,19 +5108,6 @@ Knoin.prototype.screen = function (sScreenName)
 };
 
 /**
- * @param {?} oViewModel
- * @param {string} sDelegateName
- * @param {Array=} aParameters
- */
-Knoin.prototype.delegateRun = function (oViewModel, sDelegateName, aParameters)
-{
-	if (oViewModel && oViewModel[sDelegateName])
-	{
-		oViewModel[sDelegateName].apply(oViewModel, Utils.isArray(aParameters) ? aParameters : []);
-	}
-};
-
-/**
  * @param {Function} ViewModelClass
  * @param {Object=} oScreen
  */
@@ -5147,7 +5147,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
-			this.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
+			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
 			
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
@@ -5180,7 +5180,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
-		this.delegateRun(ViewModelClassToHide.__vm, 'onHide');
+		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
 		this.popupVisibility(false);
 
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
@@ -5205,10 +5205,14 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 		{
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
-			this.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
+			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
 			this.popupVisibility(true);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
+
+			_.delay(function () {
+				Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus');
+			}, 500);
 		}
 	}
 };
@@ -5256,7 +5260,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 					}, this);
 				}
 
-				this.delegateRun(oScreen, 'onBuild');
+				Utils.delegateRun(oScreen, 'onBuild');
 			}
 
 			_.defer(function () {
@@ -5264,7 +5268,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				// hide screen
 				if (self.oCurrentScreen)
 				{
-					self.delegateRun(self.oCurrentScreen, 'onHide');
+					Utils.delegateRun(self.oCurrentScreen, 'onHide');
 
 					if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
 					{
@@ -5275,7 +5279,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 							{
 								ViewModelClass.__dom.hide();
 								ViewModelClass.__vm.viewModelVisibility(false);
-								self.delegateRun(ViewModelClass.__vm, 'onHide');
+								Utils.delegateRun(ViewModelClass.__vm, 'onHide');
 							}
 
 						});
@@ -5289,7 +5293,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				if (self.oCurrentScreen)
 				{
 
-						self.delegateRun(self.oCurrentScreen, 'onShow');
+						Utils.delegateRun(self.oCurrentScreen, 'onShow');
 
 						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
@@ -5302,7 +5306,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 								{
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
-									self.delegateRun(ViewModelClass.__vm, 'onShow');
+									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 
 									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
 								}
@@ -5358,7 +5362,7 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 			oScreen.__start();
 			
 			Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
-			this.delegateRun(oScreen, 'onStart');
+			Utils.delegateRun(oScreen, 'onStart');
 			Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);
 		}
 	}, this);
@@ -7655,7 +7659,7 @@ PopupsFolderClearViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -7675,7 +7679,7 @@ function PopupsFolderCreateViewModel()
 	}, this);
 
 	this.folderName = ko.observable('');
-	this.focusTrigger = ko.observable(false);
+	this.folderName.focused = ko.observable(false);
 
 	this.selectedParentValue = ko.observable(Consts.Values.UnuseOptionValue);
 
@@ -7759,13 +7763,17 @@ PopupsFolderCreateViewModel.prototype.clearPopup = function ()
 {
 	this.folderName('');
 	this.selectedParentValue('');
-	this.focusTrigger(false);
+	this.folderName.focused(false);
 };
 
 PopupsFolderCreateViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
-	this.focusTrigger(true);
+};
+
+PopupsFolderCreateViewModel.prototype.onFocus = function ()
+{
+	this.folderName.focused(true);
 };
 
 PopupsFolderCreateViewModel.prototype.onBuild = function ()
@@ -7775,7 +7783,7 @@ PopupsFolderCreateViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -7893,7 +7901,7 @@ PopupsFolderSystemViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -8393,7 +8401,7 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 		bResult = true;
 		if (this.modalVisibility())
 		{
-			kn.delegateRun(this, 'closeCommand');
+			Utils.delegateRun(this, 'closeCommand');
 		}
 	}
 	
@@ -8495,7 +8503,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		aDownloads = [],
 		aDraftInfo = null,
 		oMessage = null,
-		bFocusOnBody = false,
 		sComposeType = sType || Enums.ComposeType.Empty,
 		fEmailArrayToStringLineHelper = function (aList) {
 
@@ -8556,7 +8563,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
 				this.sInReplyTo = oMessage.sMessageId;
 				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.sReferences);
-				bFocusOnBody = true;
 				break;
 
 			case Enums.ComposeType.ReplyAll:
@@ -8568,7 +8574,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
 				this.sInReplyTo = oMessage.sMessageId;
 				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.references());
-				bFocusOnBody = true;
 				break;
 
 			case Enums.ComposeType.Forward:
@@ -8654,11 +8659,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		});
 	}
 
-	if ('' === this.to())
-	{
-		this.to.focusTrigger(!this.to.focusTrigger());
-	}
-	
 	aDownloads = this.getAttachmentsDownloadsForUpload();
 	if (Utils.isNonEmptyArray(aDownloads))
 	{
@@ -8694,11 +8694,20 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		}, aDownloads);
 	}
 
-	if (bFocusOnBody && this.oEditor)
+	this.triggerForResize();
+};
+
+PopupsComposeViewModel.prototype.onFocus = function ()
+{
+	if ('' === this.to())
+	{
+		this.to.focusTrigger(!this.to.focusTrigger());
+	}
+	else if (this.oEditor)
 	{
 		this.oEditor.focus();
 	}
-
+	
 	this.triggerForResize();
 };
 
@@ -8708,7 +8717,7 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
 		if (self.modalVisibility())
 		{
-			kn.delegateRun(self, 'closeCommand');
+			Utils.delegateRun(self, 'closeCommand');
 		}
 	}]);
 };
@@ -9869,7 +9878,7 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		{
 			if (Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
-				kn.delegateRun(self, 'closeCommand');
+				Utils.delegateRun(self, 'closeCommand');
 				bResult = false;
 			}
 			else if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
@@ -10024,7 +10033,10 @@ PopupsAdvancedSearchViewModel.prototype.clearPopup = function ()
 PopupsAdvancedSearchViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
-	
+};
+
+PopupsAdvancedSearchViewModel.prototype.onFocus = function ()
+{
 	this.fromFocus(true);
 };
 
@@ -10035,7 +10047,7 @@ PopupsAdvancedSearchViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -10147,6 +10159,10 @@ PopupsAddAccountViewModel.prototype.clearPopup = function ()
 PopupsAddAccountViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
+};
+
+PopupsAddAccountViewModel.prototype.onFocus = function ()
+{
 	this.emailFocus(true);
 };
 
@@ -10159,7 +10175,7 @@ PopupsAddAccountViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -10304,7 +10320,10 @@ PopupsIdentityViewModel.prototype.onShow = function (oIdentity)
 		
 		this.owner(this.id === RL.data().accountEmail());
 	}
+};
 
+PopupsIdentityViewModel.prototype.onFocus = function ()
+{
 	if (!this.owner())
 	{
 		this.email.focused(true);
@@ -10318,7 +10337,7 @@ PopupsIdentityViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -10386,7 +10405,7 @@ PopupsLanguagesViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
@@ -10479,7 +10498,10 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
+};
 
+PopupsAskViewModel.prototype.onFocus = function ()
+{
 	this.yesFocus(true);
 };
 
@@ -15650,7 +15672,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				RoutedSettingsViewModel.__vm = oSettingsScreen;
 				
 				ko.applyBindings(oSettingsScreen, oViewModelDom[0]);
-				kn.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
+				Utils.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
 			}
 			else
 			{
@@ -15664,7 +15686,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				// hide
 				if (self.oCurrentSubScreen)
 				{
-					kn.delegateRun(self.oCurrentSubScreen, 'onHide');
+					Utils.delegateRun(self.oCurrentSubScreen, 'onHide');
 					self.oCurrentSubScreen.viewModelDom.hide();
 				}
 				// --
@@ -15675,7 +15697,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				if (self.oCurrentSubScreen)
 				{
 					self.oCurrentSubScreen.viewModelDom.show();
-					kn.delegateRun(self.oCurrentSubScreen, 'onShow');
+					Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
 
 					_.each(self.menu(), function (oItem) {
 						oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
@@ -15699,7 +15721,7 @@ AbstractSettings.prototype.onHide = function ()
 {
 	if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 	{
-		kn.delegateRun(this.oCurrentSubScreen, 'onHide');
+		Utils.delegateRun(this.oCurrentSubScreen, 'onHide');
 		this.oCurrentSubScreen.viewModelDom.hide();
 	}
 };

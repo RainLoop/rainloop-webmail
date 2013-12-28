@@ -13,7 +13,7 @@ function PopupsFolderCreateViewModel()
 	}, this);
 
 	this.folderName = ko.observable('');
-	this.focusTrigger = ko.observable(false);
+	this.folderName.focused = ko.observable(false);
 
 	this.selectedParentValue = ko.observable(Consts.Values.UnuseOptionValue);
 
@@ -97,13 +97,17 @@ PopupsFolderCreateViewModel.prototype.clearPopup = function ()
 {
 	this.folderName('');
 	this.selectedParentValue('');
-	this.focusTrigger(false);
+	this.folderName.focused(false);
 };
 
 PopupsFolderCreateViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
-	this.focusTrigger(true);
+};
+
+PopupsFolderCreateViewModel.prototype.onFocus = function ()
+{
+	this.folderName.focused(true);
 };
 
 PopupsFolderCreateViewModel.prototype.onBuild = function ()
@@ -113,7 +117,7 @@ PopupsFolderCreateViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;

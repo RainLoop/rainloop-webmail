@@ -75,19 +75,6 @@ Knoin.prototype.screen = function (sScreenName)
 };
 
 /**
- * @param {?} oViewModel
- * @param {string} sDelegateName
- * @param {Array=} aParameters
- */
-Knoin.prototype.delegateRun = function (oViewModel, sDelegateName, aParameters)
-{
-	if (oViewModel && oViewModel[sDelegateName])
-	{
-		oViewModel[sDelegateName].apply(oViewModel, Utils.isArray(aParameters) ? aParameters : []);
-	}
-};
-
-/**
  * @param {Function} ViewModelClass
  * @param {Object=} oScreen
  */
@@ -127,7 +114,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
-			this.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
+			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
 			
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
@@ -160,7 +147,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
-		this.delegateRun(ViewModelClassToHide.__vm, 'onHide');
+		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
 		this.popupVisibility(false);
 
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
@@ -185,10 +172,14 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 		{
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
-			this.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
+			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
 			this.popupVisibility(true);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
+
+			_.delay(function () {
+				Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus');
+			}, 500);
 		}
 	}
 };
@@ -236,7 +227,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 					}, this);
 				}
 
-				this.delegateRun(oScreen, 'onBuild');
+				Utils.delegateRun(oScreen, 'onBuild');
 			}
 
 			_.defer(function () {
@@ -244,7 +235,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				// hide screen
 				if (self.oCurrentScreen)
 				{
-					self.delegateRun(self.oCurrentScreen, 'onHide');
+					Utils.delegateRun(self.oCurrentScreen, 'onHide');
 
 					if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
 					{
@@ -255,7 +246,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 							{
 								ViewModelClass.__dom.hide();
 								ViewModelClass.__vm.viewModelVisibility(false);
-								self.delegateRun(ViewModelClass.__vm, 'onHide');
+								Utils.delegateRun(ViewModelClass.__vm, 'onHide');
 							}
 
 						});
@@ -269,7 +260,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				if (self.oCurrentScreen)
 				{
 
-						self.delegateRun(self.oCurrentScreen, 'onShow');
+						Utils.delegateRun(self.oCurrentScreen, 'onShow');
 
 						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
@@ -282,7 +273,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 								{
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
-									self.delegateRun(ViewModelClass.__vm, 'onShow');
+									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 
 									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
 								}
@@ -338,7 +329,7 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 			oScreen.__start();
 			
 			Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
-			this.delegateRun(oScreen, 'onStart');
+			Utils.delegateRun(oScreen, 'onStart');
 			Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);
 		}
 	}, this);

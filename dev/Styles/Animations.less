@@ -61,15 +61,17 @@ html.rl-started-trigger.no-mobile #rl-content {
 	.opacity(70);
 }
 
+#rl-loading {
+	.transition(opacity 0.5s linear);
+}
+
 .rl-anim {
 
 	&.csstransitions.no-mobile #rl-content {
-		/*.transition(~"0.4s opacity cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
 		.transition(opacity 0.3s ease-out);
 	}
 	
 	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
-		/*.transition(~"0.4s all cubic-bezier(0.250, 0.460, 0.450, 0.940)");*/
 		.transition(all 0.3s ease-out);
 	}
 

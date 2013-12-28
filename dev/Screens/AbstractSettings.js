@@ -78,7 +78,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				RoutedSettingsViewModel.__vm = oSettingsScreen;
 				
 				ko.applyBindings(oSettingsScreen, oViewModelDom[0]);
-				kn.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
+				Utils.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
 			}
 			else
 			{
@@ -92,7 +92,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				// hide
 				if (self.oCurrentSubScreen)
 				{
-					kn.delegateRun(self.oCurrentSubScreen, 'onHide');
+					Utils.delegateRun(self.oCurrentSubScreen, 'onHide');
 					self.oCurrentSubScreen.viewModelDom.hide();
 				}
 				// --
@@ -103,7 +103,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				if (self.oCurrentSubScreen)
 				{
 					self.oCurrentSubScreen.viewModelDom.show();
-					kn.delegateRun(self.oCurrentSubScreen, 'onShow');
+					Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
 
 					_.each(self.menu(), function (oItem) {
 						oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
@@ -127,7 +127,7 @@ AbstractSettings.prototype.onHide = function ()
 {
 	if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 	{
-		kn.delegateRun(this.oCurrentSubScreen, 'onHide');
+		Utils.delegateRun(this.oCurrentSubScreen, 'onHide');
 		this.oCurrentSubScreen.viewModelDom.hide();
 	}
 };

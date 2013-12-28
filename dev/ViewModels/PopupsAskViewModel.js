@@ -80,7 +80,10 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
+};
 
+PopupsAskViewModel.prototype.onFocus = function ()
+{
 	this.yesFocus(true);
 };
 

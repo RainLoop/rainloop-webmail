@@ -123,7 +123,10 @@ PopupsAdvancedSearchViewModel.prototype.clearPopup = function ()
 PopupsAdvancedSearchViewModel.prototype.onShow = function ()
 {
 	this.clearPopup();
-	
+};
+
+PopupsAdvancedSearchViewModel.prototype.onFocus = function ()
+{
 	this.fromFocus(true);
 };
 
@@ -134,7 +137,7 @@ PopupsAdvancedSearchViewModel.prototype.onBuild = function ()
 		var bResult = true;
 		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
 		{
-			kn.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			bResult = false;
 		}
 		return bResult;
