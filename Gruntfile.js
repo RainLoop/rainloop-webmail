@@ -128,6 +128,7 @@ module.exports = function (grunt) {
 					"vendors/routes/crossroads.min.js",
 					"vendors/knockout/knockout-3.0.0.js",
 					"vendors/knockout-projections/knockout-projections-1.0.0.min.js",
+					"vendors/ssm/ssm.min.js",
 					"vendors/jua/jua.min.js",
 					"vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
 					"vendors/bootstrap/js/bootstrap.min.js",

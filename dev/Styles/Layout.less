@@ -1,4 +1,13 @@
 
+#rl-bg {
+	z-index: -1;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
 #rl-content {
 	height: 100%;
 	width: 100%;
@@ -6,7 +15,7 @@
 
 #rl-center {
 	.g-ui-absolute-reset;
-	min-width: 900px;
+	min-width: 700px;
 	min-height: 400px;
 }
 
@@ -18,6 +27,7 @@
 
 #rl-bottom {
 	.g-ui-absolute-reset;
+
 	top: auto;
 	z-index: 1;
 }
@@ -26,82 +36,149 @@
 	.g-ui-absolute-reset;
 
 	right: auto;
-	width: 100%;
+	width: @rlLeftWidth;
 }
 
 #rl-right {
 	.g-ui-absolute-reset;
 
 	z-index: 1;
-}
-
-#rl-resizer-right {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 35%;
-}
-
-#rl-resizer-left {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 65%;
-	min-width: 350px;
-}
-
-#rl-top-resizer-right {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
 	left: @rlLeftWidth;
 }
 
-#rl-top-resizer-left {
+#rl-sub-left {
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	left: 0;
-	right: auto;
-//	width: @rlLeftWidth;
-	min-width: 120px;
+	width: 350px;
 }
 
-#rl-bg {
-	z-index: -1;
+#rl-sub-right {
 	position: absolute;
-	left: 0;
+	top: 0;
+	bottom: 0;
 	right: 0;
-	top: 0;
-	bottom: 0;
+	left: 350px;
 }
 
-html.mobile {
-	#rl-top-resizer-left {
-		width: @rlLeftWidth - 60;
+html.ssm-state-desktop-large {
+
+	#rl-left {
+		width: @rlLeftWidth + 20;
 	}
-	#rl-top-resizer-right {
-		left: @rlLeftWidth - 60;
+
+	#rl-right {
+		left: @rlLeftWidth + 20;
 	}
-	#rl-resizer-left {
+
+	#rl-sub-left {
+		width: 500px;
+	}
+
+	#rl-sub-right {
+		left: 500px;
+	}
+
+	.b-compose.modal {
+		width: 1000px;
+	}
+
+	.b-contacts-content.modal {
+		width: 1000px;
+	}
+}
+
+html.ssm-state-desktop {
+	#rl-left {
+		width: @rlLeftWidth;
+	}
+
+	#rl-right {
+		left: @rlLeftWidth;
+	}
+
+	#rl-sub-left {
 		width: 350px;
 	}
-	#rl-resizer-right {
+
+	#rl-sub-right {
 		left: 350px;
+	}
+}
+
+html.ssm-state-tablet {
+	#rl-left {
+		width: 150px;
+	}
+
+	#rl-right {
+		left: 150px;
+	}
+
+	#rl-sub-left {
+		width: 320px;
+
+		.messageList .inputSearch {
+			width: 230px;
+		}
+	}
+
+	#rl-sub-right {
+		left: 320px;
+	}
+
+	.b-compose.modal {
+		width: 700px;
+	}
+
+	.b-contacts-content.modal {
+		width: 700px;
+	}
+}
+
+html.ssm-state-mobile {
+	#rl-left {
+		width: 120px;
+	}
+
+	#rl-right {
+		left: 120px;
+	}
+
+	#rl-sub-left {
+		width: 280px;
+
+		.messageList .inputSearch {
+			width: 200px;
+		}
+	}
+
+	#rl-sub-right {
+		left: 280px;
+	}
+
+	.b-compose.modal {
+		width: 600px;
+	}
+
+	.b-contacts-content.modal {
+		width: 600px;
 	}
 }
 
 html.rl-no-preview-pane {
 
-	#rl-resizer-left {
+	#rl-sub-left {
 		right: @rlBottomMargin !important;
 		width: inherit;
+
+		.messageList .inputSearch {
+			width: 300px !important;
+		}
 	}
 
-	#rl-resizer-right {
+	#rl-sub-right {
 		left: 0 !important;
 	}
 

@@ -848,13 +848,13 @@ RainLoopApp.prototype.bootstart = function ()
 				window.SimplePace.set(100);
 			}
 
-			if (!Globals.bMobileDevice)
-			{
-				_.defer(function () {
-					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
-						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
-				});
-			}
+//			if (!Globals.bMobileDevice)
+//			{
+//				_.defer(function () {
+//					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
+//						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
+//				});
+//			}
 			
 		}, this));
 	}

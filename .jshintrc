@@ -51,6 +51,7 @@
 
 	"globals": {
 		"ko"			: true,
+		"ssm"			: true,
 		"moment"		: true,
 		"crossroads"	: true,
 		"hasher"		: true,

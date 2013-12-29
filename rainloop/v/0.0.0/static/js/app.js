@@ -10572,7 +10572,7 @@ PopupsAskViewModel.prototype.onBuild = function ()
  */
 function LoginViewModel()
 {
-	KnoinAbstractViewModel.call(this, 'Right', 'Login');
+	KnoinAbstractViewModel.call(this, 'Center', 'Login');
 
 	var oData = RL.data();
 
@@ -15929,16 +15929,16 @@ MailBoxScreen.prototype.onStart = function ()
 	}, this);
 };
 
-MailBoxScreen.prototype.onBuild = function ()
-{
-	if (!Globals.bMobileDevice)
-	{
-		_.defer(function () {
-			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
-				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
-		});
-	}
-};
+//MailBoxScreen.prototype.onBuild = function ()
+//{
+//	if (!Globals.bMobileDevice)
+//	{
+//		_.defer(function () {
+//			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
+//				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
+//		});
+//	}
+//};
 
 /**
  * @return {Array}
@@ -16269,6 +16269,56 @@ AbstractApp.prototype.bootstart = function ()
 	_.delay(function () {
 		Utils.windowResize();
 	}, 1000);
+
+	ssm.addState({
+		id: 'mobile',
+		maxWidth: 767,
+		onEnter: function(){
+			$html.addClass('ssm-state-mobile');
+		},
+		onLeave: function(){
+			$html.removeClass('ssm-state-mobile');
+		}
+	});
+
+	ssm.addState({
+		id: 'tablet',
+		minWidth: 768,
+		maxWidth: 1023,
+		onEnter: function(){
+			$html.addClass('ssm-state-tablet');
+		},
+		onLeave: function(){
+			$html.removeClass('ssm-state-tablet');
+		}
+	});
+
+	ssm.addState({
+		id: 'desktop',
+		minWidth: 1000,
+		maxWidth: 1366,
+		onEnter: function(){
+			$html.addClass('ssm-state-desktop');
+		},
+		onLeave: function(){
+			$html.removeClass('ssm-state-desktop');
+		}
+	});
+	
+	ssm.addState({
+		id: 'desktop-large',
+		minWidth: 1367,
+		onEnter: function(){
+			$html.addClass('ssm-state-desktop-large');
+		},
+		onLeave: function(){
+			$html.removeClass('ssm-state-desktop-large');
+		}
+	});
+
+	_.delay(function () {
+		ssm.ready();
+	}, 500);
 };
 
 /**
@@ -17119,13 +17169,13 @@ RainLoopApp.prototype.bootstart = function ()
 				window.SimplePace.set(100);
 			}
 
-			if (!Globals.bMobileDevice)
-			{
-				_.defer(function () {
-					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
-						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
-				});
-			}
+//			if (!Globals.bMobileDevice)
+//			{
+//				_.defer(function () {
+//					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
+//						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
+//				});
+//			}
 			
 		}, this));
 	}

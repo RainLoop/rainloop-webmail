@@ -6,7 +6,7 @@
  */
 function LoginViewModel()
 {
-	KnoinAbstractViewModel.call(this, 'Right', 'Login');
+	KnoinAbstractViewModel.call(this, 'Center', 'Login');
 
 	var oData = RL.data();
 

@@ -222,13 +222,13 @@ AdminApp.prototype.bootstart = function ()
 
 			kn.startScreens([AdminSettingsScreen]);
 
-			if (!Globals.bMobileDevice)
-			{
-				_.defer(function () {
-					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
-						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
-				});
-			}
+//			if (!Globals.bMobileDevice)
+//			{
+//				_.defer(function () {
+//					Utils.initLayoutResizer('#rl-top-resizer-left', '#rl-top-resizer-right', '#rl-center',
+//						120, 300, 200, 600, Enums.ClientSideKeyName.FolderListSize);
+//				});
+//			}
 		}
 		else
 		{

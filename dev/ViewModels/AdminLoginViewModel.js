@@ -6,7 +6,7 @@
  */
 function AdminLoginViewModel()
 {
-	KnoinAbstractViewModel.call(this, 'Right', 'AdminLogin');
+	KnoinAbstractViewModel.call(this, 'Center', 'AdminLogin');
 
 	this.login = ko.observable('');
 	this.password = ko.observable('');

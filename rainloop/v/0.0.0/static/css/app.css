@@ -5928,6 +5928,14 @@ select:focus {
 html.mobile * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+#rl-bg {
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
 #rl-content {
   height: 100%;
   width: 100%;
@@ -5942,7 +5950,7 @@ html.mobile * {
   margin: 0;
   border: 0;
   z-index: 0;
-  min-width: 900px;
+  min-width: 700px;
   min-height: 400px;
 }
 #rl-top {
@@ -5982,7 +5990,7 @@ html.mobile * {
   border: 0;
   z-index: 0;
   right: auto;
-  width: 100%;
+  width: 200px;
 }
 #rl-right {
   position: absolute;
@@ -5995,62 +6003,102 @@ html.mobile * {
   border: 0;
   z-index: 0;
   z-index: 1;
+  left: 200px;
 }
-#rl-resizer-right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 35%;
-}
-#rl-resizer-left {
+#rl-sub-left {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  right: 65%;
-  min-width: 350px;
-}
-#rl-top-resizer-right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 230px;
-}
-#rl-top-resizer-left {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: auto;
-  min-width: 120px;
-}
-#rl-bg {
-  z-index: -1;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-html.mobile #rl-top-resizer-left {
-  width: 170px;
-}
-html.mobile #rl-top-resizer-right {
-  left: 170px;
-}
-html.mobile #rl-resizer-left {
   width: 350px;
 }
-html.mobile #rl-resizer-right {
+#rl-sub-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
   left: 350px;
 }
-html.rl-no-preview-pane #rl-resizer-left {
+html.ssm-state-desktop-large #rl-left {
+  width: 220px;
+}
+html.ssm-state-desktop-large #rl-right {
+  left: 220px;
+}
+html.ssm-state-desktop-large #rl-sub-left {
+  width: 500px;
+}
+html.ssm-state-desktop-large #rl-sub-right {
+  left: 500px;
+}
+html.ssm-state-desktop-large .b-compose.modal {
+  width: 1000px;
+}
+html.ssm-state-desktop-large .b-contacts-content.modal {
+  width: 1000px;
+}
+html.ssm-state-desktop #rl-left {
+  width: 200px;
+}
+html.ssm-state-desktop #rl-right {
+  left: 200px;
+}
+html.ssm-state-desktop #rl-sub-left {
+  width: 350px;
+}
+html.ssm-state-desktop #rl-sub-right {
+  left: 350px;
+}
+html.ssm-state-tablet #rl-left {
+  width: 150px;
+}
+html.ssm-state-tablet #rl-right {
+  left: 150px;
+}
+html.ssm-state-tablet #rl-sub-left {
+  width: 320px;
+}
+html.ssm-state-tablet #rl-sub-left .messageList .inputSearch {
+  width: 230px;
+}
+html.ssm-state-tablet #rl-sub-right {
+  left: 320px;
+}
+html.ssm-state-tablet .b-compose.modal {
+  width: 700px;
+}
+html.ssm-state-tablet .b-contacts-content.modal {
+  width: 700px;
+}
+html.ssm-state-mobile #rl-left {
+  width: 120px;
+}
+html.ssm-state-mobile #rl-right {
+  left: 120px;
+}
+html.ssm-state-mobile #rl-sub-left {
+  width: 280px;
+}
+html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
+  width: 200px;
+}
+html.ssm-state-mobile #rl-sub-right {
+  left: 280px;
+}
+html.ssm-state-mobile .b-compose.modal {
+  width: 600px;
+}
+html.ssm-state-mobile .b-contacts-content.modal {
+  width: 600px;
+}
+html.rl-no-preview-pane #rl-sub-left {
   right: 5px !important;
   width: inherit;
 }
-html.rl-no-preview-pane #rl-resizer-right {
+html.rl-no-preview-pane #rl-sub-left .messageList .inputSearch {
+  width: 300px !important;
+}
+html.rl-no-preview-pane #rl-sub-right {
   left: 0 !important;
 }
 html.rl-no-preview-pane #rl-right .ui-resizable-handle {
@@ -6130,12 +6178,13 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .rl-view-model.RL-Login,
 .rl-view-model.RL-LoginNew,
 .rl-view-model.RL-AdminLogin {
+  position: relative;
   height: 100%;
+  z-index: 5;
 }
 .b-login-content {
   height: 100%;
   text-align: center;
-  margin-left: -230px;
 }
 .b-login-content .loginFormWrapper {
   display: inline-block;
@@ -6405,7 +6454,6 @@ html.rl-no-preview-pane .messageList.message-selected {
   left: 0;
   height: 30px;
   padding: 10px 1px;
-  min-width: 280px;
   z-index: 102;
 }
 .messageList .b-footer {
@@ -6415,7 +6463,6 @@ html.rl-no-preview-pane .messageList.message-selected {
   left: 0;
   height: 30px;
   padding: 7px;
-  min-width: 300px;
   z-index: 101;
   background-color: #eee;
   -webkit-border-bottom-right-radius: 5px;
@@ -6464,7 +6511,6 @@ html.rl-no-preview-pane .messageList.message-selected {
   left: 0;
   height: 29px;
   padding: 10px 8px 10px 11px;
-  min-width: 280px;
   z-index: 101;
   background-color: #eee;
   -webkit-border-top-right-radius: 5px;
@@ -6501,7 +6547,6 @@ html.rl-no-preview-pane .messageList.message-selected {
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 101;
-  min-width: 300px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -7221,21 +7266,21 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   padding: 0;
   height: 45px;
   text-align: center;
-  width: 270px;
+  width: 250px;
   -webkit-box-shadow: inset 0 -1px 0 #cccccc;
   -moz-box-shadow: inset 0 -1px 0 #cccccc;
   box-shadow: inset 0 -1px 0 #cccccc;
 }
 .b-contacts-content.modal .b-list-toopbar .e-search {
   margin-top: 7px;
-  width: 245px;
+  width: 225px;
 }
 .b-contacts-content.modal .b-list-footer-toopbar {
   position: absolute;
   left: 0;
   bottom: 0;
   height: 105px;
-  width: 270px;
+  width: 250px;
   background-color: #eee;
   -webkit-box-shadow: inset 0 1px 0 #cccccc;
   -moz-box-shadow: inset 0 1px 0 #cccccc;
@@ -7249,7 +7294,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   top: 45px;
   bottom: 105px;
   left: 0;
-  width: 270px;
+  width: 250px;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -7372,7 +7417,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   position: absolute;
   top: 0;
   bottom: 60px;
-  left: 270px;
+  left: 250px;
   right: 0;
   overflow: hidden;
   overflow-y: auto;
@@ -8306,6 +8351,31 @@ html.rl-started-trigger.no-mobile #rl-content {
   -moz-transition: opacity 0.5s linear;
   -o-transition: opacity 0.5s linear;
   transition: opacity 0.5s linear;
+}
+.rl-anim.csstransitions.no-mobile #rl-left {
+  -webkit-transition: width 0.3s ease-out;
+  -moz-transition: width 0.3s ease-out;
+  -o-transition: width 0.3s ease-out;
+  transition: width 0.3s ease-out;
+}
+.rl-anim.csstransitions.no-mobile #rl-right {
+  -webkit-transition: left 0.3s ease-out;
+  -moz-transition: left 0.3s ease-out;
+  -o-transition: left 0.3s ease-out;
+  transition: left 0.3s ease-out;
+}
+.rl-anim.csstransitions.no-mobile #rl-sub-left,
+.rl-anim.csstransitions.no-mobile #rl-sub-left .messageList .inputSearch {
+  -webkit-transition: width 0.3s ease-out;
+  -moz-transition: width 0.3s ease-out;
+  -o-transition: width 0.3s ease-out;
+  transition: width 0.3s ease-out;
+}
+.rl-anim.csstransitions.no-mobile #rl-sub-right {
+  -webkit-transition: left 0.3s ease-out;
+  -moz-transition: left 0.3s ease-out;
+  -o-transition: left 0.3s ease-out;
+  transition: left 0.3s ease-out;
 }
 .rl-anim.csstransitions.no-mobile #rl-content {
   -webkit-transition: opacity 0.3s ease-out;

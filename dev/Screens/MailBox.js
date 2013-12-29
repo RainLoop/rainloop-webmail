@@ -113,16 +113,16 @@ MailBoxScreen.prototype.onStart = function ()
 	}, this);
 };
 
-MailBoxScreen.prototype.onBuild = function ()
-{
-	if (!Globals.bMobileDevice)
-	{
-		_.defer(function () {
-			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
-				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
-		});
-	}
-};
+//MailBoxScreen.prototype.onBuild = function ()
+//{
+//	if (!Globals.bMobileDevice)
+//	{
+//		_.defer(function () {
+//			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
+//				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
+//		});
+//	}
+//};
 
 /**
  * @return {Array}
