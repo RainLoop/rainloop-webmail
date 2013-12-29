@@ -67,6 +67,11 @@
 			<param name="plugin-name" value="ispmanager-change-password"/>
 		</antcall>
 	</target>
+	<target name="poppassd-change-password">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="poppassd-change-password"/>
+		</antcall>
+	</target>
 	<target name="black-list">
 		<antcall target="_build_plugin_">
 			<param name="plugin-name" value="black-list"/>
