@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule /.well-known/carddav /index.php/dav [R,L]
+</IfModule>
+
