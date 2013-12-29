@@ -2381,7 +2381,7 @@ ko.bindingHandlers.onEsc = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		$(oElement).modal({
+		$(oElement).toggleClass('fade', !Globals.bMobileDevice) .modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
 		}).on('hidden', function () {
