@@ -53,7 +53,7 @@ AttachmentModel.prototype.initByJson = function (oJsonAttachment)
 	var bResult = false;
 	if (oJsonAttachment && 'Object/Attachment' === oJsonAttachment['@Object'])
 	{
-		this.mimeType = oJsonAttachment.MimeType;
+		this.mimeType = (oJsonAttachment.MimeType || '').toLowerCase();
 		this.fileName = oJsonAttachment.FileName;
 		this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
 		this.isInline = !!oJsonAttachment.IsInline;
@@ -90,7 +90,16 @@ AttachmentModel.prototype.isImage = function ()
  */
 AttachmentModel.prototype.isText = function ()
 {
-	return 'text/' === this.mimeType.substr(0, 5);
+	return 'text/' === this.mimeType.substr(0, 5) &&
+		-1 === Utils.inArray(this.mimeType, ['text/html']);
+};
+
+/**
+ * @return {boolean}
+ */
+AttachmentModel.prototype.isPdf = function ()
+{
+	return Globals.bAllowPdfPreview && 'application/pdf' === this.mimeType;
 };
 
 /**

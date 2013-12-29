@@ -133,11 +133,32 @@ Globals.bIsAndroidDevice = -1 < Globals.sUserAgent.indexOf('android');
  */
 Globals.bMobileDevice = Globals.bIsiOSDevice || Globals.bIsAndroidDevice;
 
+/**
+ * @type {boolean}
+ */
 Globals.bDisableNanoScroll = Globals.bMobileDevice;
 
+/**
+ * @type {boolean}
+ */
+Globals.bAllowPdfPreview = !Globals.bMobileDevice;
+
+/**
+ * @type {boolean}
+ */
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
+/**
+ * @type {string}
+ */
 Globals.sAnimationType = '';
+
+if (Globals.bAllowPdfPreview && navigator && navigator.mimeTypes)
+{
+	Globals.bAllowPdfPreview = !!_.find(navigator.mimeTypes, function (oType) {
+		return oType && 'application/pdf' === oType.type;
+	});
+}
 
 Consts.Defaults = {};
 Consts.Values = {};
@@ -5985,7 +6006,7 @@ AttachmentModel.prototype.initByJson = function (oJsonAttachment)
 	var bResult = false;
 	if (oJsonAttachment && 'Object/Attachment' === oJsonAttachment['@Object'])
 	{
-		this.mimeType = oJsonAttachment.MimeType;
+		this.mimeType = (oJsonAttachment.MimeType || '').toLowerCase();
 		this.fileName = oJsonAttachment.FileName;
 		this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
 		this.isInline = !!oJsonAttachment.IsInline;
@@ -6022,7 +6043,16 @@ AttachmentModel.prototype.isImage = function ()
  */
 AttachmentModel.prototype.isText = function ()
 {
-	return 'text/' === this.mimeType.substr(0, 5);
+	return 'text/' === this.mimeType.substr(0, 5) &&
+		-1 === Utils.inArray(this.mimeType, ['text/html']);
+};
+
+/**
+ * @return {boolean}
+ */
+AttachmentModel.prototype.isPdf = function ()
+{
+	return Globals.bAllowPdfPreview && 'application/pdf' === this.mimeType;
 };
 
 /**

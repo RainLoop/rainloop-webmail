@@ -55,8 +55,29 @@ Globals.bIsAndroidDevice = -1 < Globals.sUserAgent.indexOf('android');
  */
 Globals.bMobileDevice = Globals.bIsiOSDevice || Globals.bIsAndroidDevice;
 
+/**
+ * @type {boolean}
+ */
 Globals.bDisableNanoScroll = Globals.bMobileDevice;
 
+/**
+ * @type {boolean}
+ */
+Globals.bAllowPdfPreview = !Globals.bMobileDevice;
+
+/**
+ * @type {boolean}
+ */
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
+/**
+ * @type {string}
+ */
 Globals.sAnimationType = '';
+
+if (Globals.bAllowPdfPreview && navigator && navigator.mimeTypes)
+{
+	Globals.bAllowPdfPreview = !!_.find(navigator.mimeTypes, function (oType) {
+		return oType && 'application/pdf' === oType.type;
+	});
+}

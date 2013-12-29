@@ -195,6 +195,14 @@
 													   data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName}" target="_blank">
 														<i class="icon-eye"></i>
 													</a>
+													<a class="attachmentPreview pull-left"
+													   data-bind="visible: isText(), attr: {href: linkPreviewAsPlain(), title: fileName}" target="_blank">
+														<i class="icon-eye"></i>
+													</a>
+													<a class="attachmentPreview pull-left"
+													   data-bind="visible: isPdf(), attr: {href: linkPreview(), title: fileName}" target="_blank">
+														<i class="icon-eye"></i>
+													</a>
 													<span class="attachmentSize pull-right" data-bind="text: friendlySize"></span>
 												</div>
 											</li>
