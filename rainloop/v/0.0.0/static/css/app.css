@@ -6010,14 +6010,14 @@ html.mobile * {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 350px;
+  width: 500px;
 }
 #rl-sub-right {
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
-  left: 350px;
+  left: 500px;
 }
 html.ssm-state-desktop-large #rl-left {
   width: 220px;
@@ -6056,19 +6056,19 @@ html.ssm-state-tablet #rl-right {
   left: 150px;
 }
 html.ssm-state-tablet #rl-sub-left {
-  width: 320px;
+  width: 300px;
 }
 html.ssm-state-tablet #rl-sub-left .messageList .inputSearch {
-  width: 230px;
+  width: 210px;
 }
 html.ssm-state-tablet #rl-sub-right {
-  left: 320px;
+  left: 300px;
 }
 html.ssm-state-tablet .b-compose.modal {
-  width: 700px;
+  width: 800px;
 }
 html.ssm-state-tablet .b-contacts-content.modal {
-  width: 700px;
+  width: 800px;
 }
 html.ssm-state-mobile #rl-left {
   width: 120px;
@@ -6080,16 +6080,16 @@ html.ssm-state-mobile #rl-sub-left {
   width: 280px;
 }
 html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
-  width: 200px;
+  width: 190px;
 }
 html.ssm-state-mobile #rl-sub-right {
   left: 280px;
 }
 html.ssm-state-mobile .b-compose.modal {
-  width: 600px;
+  width: 800px;
 }
 html.ssm-state-mobile .b-contacts-content.modal {
-  width: 600px;
+  width: 800px;
 }
 html.rl-no-preview-pane #rl-sub-left {
   right: 5px !important;

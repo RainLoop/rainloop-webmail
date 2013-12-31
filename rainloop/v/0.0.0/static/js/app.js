@@ -16271,54 +16271,52 @@ AbstractApp.prototype.bootstart = function ()
 	}, 1000);
 
 	ssm.addState({
-		id: 'mobile',
-		maxWidth: 767,
-		onEnter: function(){
+		'id': 'mobile',
+		'maxWidth': 767,
+		'onEnter': function() {
 			$html.addClass('ssm-state-mobile');
 		},
-		onLeave: function(){
+		'onLeave': function() {
 			$html.removeClass('ssm-state-mobile');
 		}
 	});
 
 	ssm.addState({
-		id: 'tablet',
-		minWidth: 768,
-		maxWidth: 1023,
-		onEnter: function(){
+		'id': 'tablet',
+		'minWidth': 768,
+		'maxWidth': 999,
+		'onEnter': function() {
 			$html.addClass('ssm-state-tablet');
 		},
-		onLeave: function(){
+		'onLeave': function() {
 			$html.removeClass('ssm-state-tablet');
 		}
 	});
 
 	ssm.addState({
-		id: 'desktop',
-		minWidth: 1000,
-		maxWidth: 1366,
-		onEnter: function(){
+		'id': 'desktop',
+		'minWidth': 1000,
+		'maxWidth': 1400,
+		'onEnter': function() {
 			$html.addClass('ssm-state-desktop');
 		},
-		onLeave: function(){
+		'onLeave': function() {
 			$html.removeClass('ssm-state-desktop');
 		}
 	});
 	
 	ssm.addState({
-		id: 'desktop-large',
-		minWidth: 1367,
-		onEnter: function(){
+		'id': 'desktop-large',
+		'minWidth': 1400,
+		'onEnter': function() {
 			$html.addClass('ssm-state-desktop-large');
 		},
-		onLeave: function(){
+		'onLeave': function() {
 			$html.removeClass('ssm-state-desktop-large');
 		}
 	});
 
-	_.delay(function () {
-		ssm.ready();
-	}, 500);
+	ssm.ready();
 };
 
 /**
