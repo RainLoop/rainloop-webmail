@@ -29,11 +29,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 	private $bData;
 
 	/**
-	 * @var bool
-	 */
-	private $bIsStartTSLSupported;
-
-	/**
 	 * @var array
 	 */
 	private $aAuthTypes;
@@ -59,13 +54,17 @@ class SmtpClient extends \MailSo\Net\NetClient
 	private $aResults;
 
 	/**
+	 * @var bool
+	 */
+	public $__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND = false;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
 	{
 		parent::__construct();
 
-		$this->bIsStartTSLSupported = false;
 		$this->aAuthTypes = array();
 
 		$this->iRequestTime = 0;
@@ -174,33 +173,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Login($sLogin, $sPassword)
 	{
-		if ($this->IsAuthSupported('PLAIN'))
-		{
-			try
-			{
-				$this->sendRequestWithCheck('AUTH', 334, 'PLAIN');
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-						$oException->GetResponses(), '', 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-
-			try
-			{
-				$this->sendRequestWithCheck(base64_encode("\0".$sLogin."\0".$sPassword), 235, '', true);
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), '', 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-		}
-		else if ($this->IsAuthSupported('LOGIN'))
+		if ($this->IsAuthSupported('LOGIN'))
 		{
 			try
 			{
@@ -225,6 +198,49 @@ class SmtpClient extends \MailSo\Net\NetClient
 					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
 						$oException->GetResponses(), '', 0, $oException),
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
+			}
+		}
+		else if ($this->IsAuthSupported('PLAIN'))
+		{
+			if ($this->__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND)
+			{
+				try
+				{
+					$this->sendRequestWithCheck('AUTH', 235, 'PLAIN '.\base64_encode("\0".$sLogin."\0".$sPassword), true);
+				}
+				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+				{
+					$this->writeLogException(
+						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
+							$oException->GetResponses(), '', 0, $oException),
+						\MailSo\Log\Enumerations\Type::NOTICE, true);
+				}
+			}
+			else
+			{
+				try
+				{
+					$this->sendRequestWithCheck('AUTH', 334, 'PLAIN');
+				}
+				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+				{
+					$this->writeLogException(
+						new \MailSo\Smtp\Exceptions\LoginBadMethodException(
+							$oException->GetResponses(), '', 0, $oException),
+						\MailSo\Log\Enumerations\Type::NOTICE, true);
+				}
+
+				try
+				{
+					$this->sendRequestWithCheck(\base64_encode("\0".$sLogin."\0".$sPassword), 235, '', true);
+				}
+				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+				{
+					$this->writeLogException(
+						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
+							$oException->GetResponses(), '', 0, $oException),
+						\MailSo\Log\Enumerations\Type::NOTICE, true);
+				}
 			}
 		}
 		else
@@ -502,7 +518,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->IsSupported('STARTTLS'), $this->iSecurityType, $this->HasSupportedAuth()))
 		{
 			$this->sendRequestWithCheck('STARTTLS', 220);
-			if (!@stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
+			if (!@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
 			{
 				$this->writeLogException(
 					new \MailSo\Smtp\Exceptions\RuntimeException('Cannot enable STARTTLS'),
