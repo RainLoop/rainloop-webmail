@@ -5989,8 +5989,8 @@ html.mobile * {
   margin: 0;
   border: 0;
   z-index: 0;
-  right: auto;
   width: 200px;
+  min-width: 120px;
 }
 #rl-right {
   position: absolute;
@@ -6056,13 +6056,13 @@ html.ssm-state-tablet #rl-right {
   left: 150px;
 }
 html.ssm-state-tablet #rl-sub-left {
-  width: 300px;
+  width: 310px;
 }
 html.ssm-state-tablet #rl-sub-left .messageList .inputSearch {
-  width: 210px;
+  width: 220px;
 }
 html.ssm-state-tablet #rl-sub-right {
-  left: 300px;
+  left: 310px;
 }
 html.ssm-state-tablet .b-compose.modal {
   width: 800px;
@@ -6077,19 +6077,23 @@ html.ssm-state-mobile #rl-right {
   left: 120px;
 }
 html.ssm-state-mobile #rl-sub-left {
-  width: 280px;
+  width: 310px;
 }
 html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
-  width: 190px;
+  width: 220px;
 }
 html.ssm-state-mobile #rl-sub-right {
-  left: 280px;
+  left: 310px;
 }
 html.ssm-state-mobile .b-compose.modal {
   width: 800px;
 }
 html.ssm-state-mobile .b-contacts-content.modal {
   width: 800px;
+}
+.ui-resizable-helper {
+  border-right: 5px solid #777;
+  border-right-color: rgba(255, 255, 255, 0.7);
 }
 html.rl-no-preview-pane #rl-sub-left {
   right: 5px !important;

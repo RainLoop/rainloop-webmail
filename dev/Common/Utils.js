@@ -1038,88 +1038,126 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	RL.local().set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 };
 
-Utils.initLayoutResizer = function (sLeft, sRight, sParent/*, koSwither*/,
-	iLimitL, iMaxL, iDefL, iLimitR, sClientSideKeyName)
+Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 {
-	iLimitL = iLimitL || 300;
-	iMaxL = iMaxL || 500;
-	iDefL = iDefL || (iMaxL - iLimitL / 2);
-	iLimitR = iLimitR || 300;
-
 	var
-		iTemp = 0,
 		oLeft = $(sLeft),
 		oRight = $(sRight),
-		oParent = $(sParent),
-		iLeftWidth = RL.local().get(sClientSideKeyName) || iDefL,
-		fFunction = function (oEvent, oObject, bForce) {
-
-			if (oObject || bForce)
+		mLeftWidth = RL.local().get(sClientSideKeyName) || null,
+		fResizeFunction = function (oEvent, oObject) {
+			if (oObject && oObject.size && oObject.size.width)
 			{
-				var
-					iWidth = oParent.width(),
-					iProc = oObject ? oObject.size.width / iWidth * 100 : null
-				;
+				RL.local().set(sClientSideKeyName, oObject.size.width);
 
-				if (null === iProc && bForce)
-				{
-					iProc = oLeft.width() / iWidth * 100;
-				}
-
-				if (null !== iProc)
-				{
-					oLeft.css({
-						'width': '',
-						'height': '',
-						'right': '' + (100 - iProc) + '%'
-					});
-
-					oRight.css({
-						'width': '',
-						'height': '',
-						'left': '' + iProc + '%'
-					});
-				}
-			}
-		},
-		fResiseFunction = function (oEvent, oObject)
-		{
-			if (/*koSwither && koSwither() && */oObject && oObject.element &&
-				oObject.element[0]['id'] && '#' + oObject.element[0]['id'] === '' + sLeft)
-			{
-				var iWidth = oParent.width();
-				iTemp = iWidth - iLimitR;
-				iTemp = iMaxL > iTemp ? iTemp : iMaxL;
-				oLeft.resizable('option', 'maxWidth', iTemp);
-				if (oObject.size && oObject.size.width)
-				{
-					RL.local().set(sClientSideKeyName, oObject.size.width);
-				}
-
-				fFunction(null, null, true);
+				oRight.css({
+					'left': '' + oObject.size.width + 'px'
+				});
 			}
 		}
 	;
 
-	if (iLeftWidth)
+	if (null !== mLeftWidth)
 	{
-		oLeft.width(iLeftWidth);
+		oLeft.css({
+			'width': '' + mLeftWidth + 'px'
+		});
+
+		oRight.css({
+			'left': '' + mLeftWidth + 'px'
+		});
 	}
 
-	iTemp = oParent.width() - iLimitR;
-	iTemp = iMaxL > iTemp ? iTemp : iMaxL;
-
 	oLeft.resizable({
-		'minWidth': iLimitL,
-		'maxWidth': iTemp,
+		'helper': 'ui-resizable-helper',
+		'minWidth': 120,
+		'maxWidth': 400,
 		'handles': 'e',
-		'resize': fFunction,
-		'stop': fFunction
+		'stop': fResizeFunction
 	});
-
-	fFunction(null, null, true);
-	$window.resize(_.throttle(fResiseFunction, 400));
 };
+
+//Utils.initLayoutResizer1 = function (sLeft, sRight, sParent/*, koSwither*/,
+//	iLimitL, iMaxL, iDefL, iLimitR, sClientSideKeyName)
+//{
+//	iLimitL = iLimitL || 300;
+//	iMaxL = iMaxL || 500;
+//	iDefL = iDefL || (iMaxL - iLimitL / 2);
+//	iLimitR = iLimitR || 300;
+//
+//	var
+//		iTemp = 0,
+//		oLeft = $(sLeft),
+//		oRight = $(sRight),
+//		oParent = $(sParent),
+//		iLeftWidth = RL.local().get(sClientSideKeyName) || iDefL,
+//		fFunction = function (oEvent, oObject, bForce) {
+//
+//			if (oObject || bForce)
+//			{
+//				var
+//					iWidth = oParent.width(),
+//					iProc = oObject ? oObject.size.width / iWidth * 100 : null
+//				;
+//
+//				if (null === iProc && bForce)
+//				{
+//					iProc = oLeft.width() / iWidth * 100;
+//				}
+//
+//				if (null !== iProc)
+//				{
+//					oLeft.css({
+//						'width': '',
+//						'height': '',
+//						'right': '' + (100 - iProc) + '%'
+//					});
+//
+//					oRight.css({
+//						'width': '',
+//						'height': '',
+//						'left': '' + iProc + '%'
+//					});
+//				}
+//			}
+//		},
+//		fResiseFunction = function (oEvent, oObject)
+//		{
+//			if (/*koSwither && koSwither() && */oObject && oObject.element &&
+//				oObject.element[0]['id'] && '#' + oObject.element[0]['id'] === '' + sLeft)
+//			{
+//				var iWidth = oParent.width();
+//				iTemp = iWidth - iLimitR;
+//				iTemp = iMaxL > iTemp ? iTemp : iMaxL;
+//				oLeft.resizable('option', 'maxWidth', iTemp);
+//				if (oObject.size && oObject.size.width)
+//				{
+//					RL.local().set(sClientSideKeyName, oObject.size.width);
+//				}
+//
+//				fFunction(null, null, true);
+//			}
+//		}
+//	;
+//
+//	if (iLeftWidth)
+//	{
+//		oLeft.width(iLeftWidth);
+//	}
+//
+//	iTemp = oParent.width() - iLimitR;
+//	iTemp = iMaxL > iTemp ? iTemp : iMaxL;
+//
+//	oLeft.resizable({
+//		'minWidth': iLimitL,
+//		'maxWidth': iTemp,
+//		'handles': 'e',
+//		'resize': fFunction,
+//		'stop': fFunction
+//	});
+//
+//	fFunction(null, null, true);
+//	$window.resize(_.throttle(fResiseFunction, 400));
+//};
 
 /**
  * @param {Object} oMessageTextBody
