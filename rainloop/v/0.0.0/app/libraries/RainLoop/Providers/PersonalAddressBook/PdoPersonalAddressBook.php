@@ -717,7 +717,7 @@ class PdoPersonalAddressBook
 		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FULLNAME
+			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 		));
 
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_pab_properties '.
@@ -741,41 +741,24 @@ class PdoPersonalAddressBook
 		$sSql .= ' LIMIT :limit';
 
 		$aResult = array();
-		$aFirstResult = array();
-		$aSkipIds = array();
 		
 		$oStmt = $this->prepareAndExecute($sSql, $aParams);
 		if ($oStmt)
 		{
 			$aIdContacts = array();
+			$aIdProps = array();
+
 			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
 			if (\is_array($aFetch) && 0 < \count($aFetch))
 			{
 				foreach ($aFetch as $aItem)
 				{
 					$iIdContact = $aItem && isset($aItem['id_contact']) ? (int) $aItem['id_contact'] : 0;
-					if (0 < $iIdContact)
+					$iIdProp = $aItem && isset($aItem['id_prop']) ? (int) $aItem['id_prop'] : 0;
+					if (0 < $iIdContact && 0 < $iIdProp)
 					{
 						$aIdContacts[$iIdContact] = $iIdContact;
-						$iType = isset($aItem['prop_type']) ? (int) $aItem['prop_type'] : PropertyType::UNKNOWN;
-						
-						if (\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FULLNAME)))
-						{
-							if (!\in_array($iIdContact, $aSkipIds))
-							{
-								if (PropertyType::FULLNAME === $iType)
-								{
-									$aSkipIds[] = $iIdContact;
-								}
-
-								$aFirstResult[] = array(
-									'id_prop' => isset($aItem['id_prop']) ? (int) $aItem['id_prop'] : 0,
-									'id_contact' => $iIdContact,
-									'prop_value' => isset($aItem['prop_value']) ? (string) $aItem['prop_value'] : '',
-									'prop_type' => $iType
-								);
-							}
-						}
+						$aIdProps[$iIdProp] = $iIdProp;
 					}
 				}
 			}
@@ -788,7 +771,7 @@ class PdoPersonalAddressBook
 				$oStmt->closeCursor();
 				
 				$sTypes = \implode(',', array(
-					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FULLNAME
+					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 				));
 
 				$sSql = 'SELECT id_prop, id_contact, prop_type, prop_value FROM rainloop_pab_properties '.
@@ -808,13 +791,19 @@ class PdoPersonalAddressBook
 							if ($aItem && isset($aItem['id_prop'], $aItem['id_contact'], $aItem['prop_type'], $aItem['prop_value']))
 							{
 								$iIdContact = (int) $aItem['id_contact'];
+								$iIdProp = (int) $aItem['id_prop'];
 								$iType = (int) $aItem['prop_type'];
-								
-								if (PropertyType::FULLNAME === $iType)
+
+								if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME)))
 								{
-									$aNames[$iIdContact] = $aItem['prop_value'];
+									if (!isset($aNames[$iIdContact]))
+									{
+										$aNames[$iIdContact] = array('', '');
+									}
+
+									$aNames[$iIdContact][PropertyType::LAST_NAME === $iType ? 0 : 1] = $aItem['prop_value'];
 								}
-								else if (\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
+								else if (isset($aIdProps[$iIdProp]) && \in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
 								{
 									if (!isset($aEmails[$iIdContact]))
 									{
@@ -826,31 +815,17 @@ class PdoPersonalAddressBook
 							}
 						}
 
-						foreach ($aFirstResult as $aItem)
+						$this->writeLog($aNames);
+						$this->writeLog($aEmails);
+
+						foreach ($aEmails as $iId => $aItems)
 						{
-							if ($aItem && !empty($aItem['prop_value']))
+							$aNameItem = isset($aNames[$iId]) && \is_array($aNames[$iId]) ? $aNames[$iId] : array('', '');
+							$sNameItem = \trim($aNameItem[0].' '.$aNameItem[1]);
+
+							foreach ($aItems as $sEmail)
 							{
-								$iIdContact = (int) $aItem['id_contact'];
-								$iType = (int) $aItem['prop_type'];
-								
-								if (PropertyType::FULLNAME === $iType)
-								{
-									if (isset($aEmails[$iIdContact]) && \is_array($aEmails[$iIdContact]))
-									{
-										foreach ($aEmails[$iIdContact] as $sEmail)
-										{
-											if (!empty($sEmail))
-											{
-												$aResult[] = array($sEmail, (string) $aItem['prop_value']);
-											}
-										}
-									}
-								}
-								else if (\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
-								{
-									$aResult[] = array((string) $aItem['prop_value'],
-										isset($aNames[$iIdContact]) ? (string) $aNames[$iIdContact] : '');
-								}
+								$aResult[] = array($sEmail, $sNameItem);
 							}
 						}
 					}
