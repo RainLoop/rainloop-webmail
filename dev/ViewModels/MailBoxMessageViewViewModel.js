@@ -79,11 +79,6 @@ function MailBoxMessageViewViewModel()
 	this.viewDate = ko.observable('');
 	this.viewMoment = ko.observable('');
 	this.viewLineAsCcc = ko.observable('');
-	this.viewHasImages = ko.observable(false);
-	this.viewHasVisibleAttachments = ko.observable(false);
-	this.viewAttachments = ko.observableArray([]);
-	this.viewIsHtml = ko.observable(false);
-	this.viewIsRtl = ko.observable(false);
 	this.viewViewLink = ko.observable('');
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
@@ -105,11 +100,6 @@ function MailBoxMessageViewViewModel()
 			this.viewDate(oMessage.fullFormatDateValue());
 			this.viewMoment(oMessage.momentDate());
 			this.viewLineAsCcc(oMessage.lineAsCcc());
-			this.viewHasImages(oMessage.hasImages());
-			this.viewHasVisibleAttachments(oMessage.hasVisibleAttachments());
-			this.viewAttachments(oMessage.attachments());
-			this.viewIsHtml(oMessage.isHtml());
-			this.viewIsRtl(oMessage.isRtl());
 			this.viewViewLink(oMessage.viewLink());
 			this.viewDownloadLink(oMessage.downloadLink());
 
@@ -336,5 +326,24 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 	if (oMessage && oMessage.showExternalImages)
 	{
 		oMessage.showExternalImages(true);
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
+{
+	if (oMessage && '' !== oMessage.readReceipt())
+	{
+		RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
+			oMessage.readReceipt(), 
+			Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
+			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': oMessage.readReceipt()}));
+
+		oMessage.isReadReceipt(true);
+
+		RL.cache().storeMessageFlagsToCache(oMessage);
+		RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 	}
 };

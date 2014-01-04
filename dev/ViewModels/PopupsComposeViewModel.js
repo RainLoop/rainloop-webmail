@@ -38,6 +38,8 @@ function PopupsComposeViewModel()
 	this.replyTo = ko.observable('');
 	this.subject = ko.observable('');
 
+	this.requestReadReceipt = ko.observable(false);
+
 	this.sendError = ko.observable(false);
 	this.sendSuccessButSaveError = ko.observable(false);
 	this.savedError = ko.observable(false);
@@ -294,7 +296,8 @@ function PopupsComposeViewModel()
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
-					this.sReferences
+					this.sReferences,
+					this.requestReadReceipt()
 				);
 			}
 		}
@@ -1357,6 +1360,8 @@ PopupsComposeViewModel.prototype.reset = function ()
 	this.bcc('');
 	this.replyTo('');
 	this.subject('');
+
+	this.requestReadReceipt(false);
 
 	this.aDraftInfo = null;
 	this.sInReplyTo = '';

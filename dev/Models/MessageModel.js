@@ -34,6 +34,7 @@ function MessageModel()
 	this.flagged = ko.observable(false);
 	this.answered = ko.observable(false);
 	this.forwarded = ko.observable(false);
+	this.isReadReceipt = ko.observable(false);
 
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
@@ -89,6 +90,8 @@ function MessageModel()
 	this.attachments = ko.observableArray([]);
 
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
+	this.readReceipt = ko.observable('');
+
 	this.aDraftInfo = [];
 	this.sMessageId = '';
 	this.sInReplyTo = '';
@@ -242,6 +245,7 @@ MessageModel.prototype.clear = function ()
 	this.flagged(false);
 	this.answered(false);
 	this.forwarded(false);
+	this.isReadReceipt(false);
 
 	this.selected(false);
 	this.checked(false);
@@ -255,6 +259,7 @@ MessageModel.prototype.clear = function ()
 	this.attachments([]);
 
 	this.priority(Enums.MessagePriority.Normal);
+	this.readReceipt('');
 	this.aDraftInfo = [];
 	this.sMessageId = '';
 	this.sInReplyTo = '';
@@ -268,6 +273,17 @@ MessageModel.prototype.clear = function ()
 
 	this.lastInCollapsedThread(false);
 	this.lastInCollapsedThreadLoading(false);
+};
+
+MessageModel.prototype.computeSenderEmail = function ()
+{
+	var
+		sSent = RL.data().sentFolder(),
+		sDraft = RL.data().draftFolder()
+	;
+
+	this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+		this.toEmailsString() : this.fromEmailString());
 };
 
 /**
@@ -314,17 +330,6 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 	return bResult;
 };
 
-MessageModel.prototype.computeSenderEmail = function ()
-{
-	var
-		sSent = RL.data().sentFolder(),
-		sDraft = RL.data().draftFolder()
-	;
-
-	this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-		this.toEmailsString() : this.fromEmailString());
-};
-
 /**
  * @param {AjaxJsonMessage} oJsonMessage
  * @return {boolean}
@@ -353,6 +358,8 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 
 		this.foundedCIDs = Utils.isArray(oJsonMessage.FoundedCIDs) ? oJsonMessage.FoundedCIDs : [];
 		this.attachments(this.initAttachmentsFromJson(oJsonMessage.Attachments));
+
+		this.readReceipt(oJsonMessage.ReadReceipt || '');
 
 		this.computeSenderEmail();
 
@@ -411,6 +418,7 @@ MessageModel.prototype.initFlagsByJson = function (oJsonMessage)
 		this.flagged(!!oJsonMessage.IsFlagged);
 		this.answered(!!oJsonMessage.IsAnswered);
 		this.forwarded(!!oJsonMessage.IsForwarded);
+		this.isReadReceipt(!!oJsonMessage.IsReadReceipt);
 
 		bResult = true;
 	}
@@ -791,6 +799,7 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.flagged(oMessage.flagged());
 	this.answered(oMessage.answered());
 	this.forwarded(oMessage.forwarded());
+	this.isReadReceipt(oMessage.isReadReceipt());
 
 	this.selected(oMessage.selected());
 	this.checked(oMessage.checked());

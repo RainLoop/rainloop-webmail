@@ -264,12 +264,13 @@ WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
 			mFlaggedSubUid = null
 		;
 
-		if (aFlags && 4 === aFlags.length)
+		if (aFlags && 5 === aFlags.length)
 		{
 			oMessage.unseen(aFlags[0]);
 			oMessage.flagged(aFlags[1]);
 			oMessage.answered(aFlags[2]);
 			oMessage.forwarded(aFlags[3]);
+			oMessage.isReadReceipt(aFlags[4]);
 		}
 
 		if (0 < oMessage.threads().length)
@@ -300,7 +301,7 @@ WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
 		this.setMessageFlagsToCache(
 			oMessage.folderFullNameRaw,
 			oMessage.uid,
-			[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded()]
+			[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(), oMessage.isReadReceipt()]
 		);
 	}
 };

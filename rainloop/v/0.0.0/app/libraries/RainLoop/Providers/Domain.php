@@ -135,7 +135,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-							\RainLoop\Domain::DEFAULT_FORWARDED_FLAG, $sWhiteList);
+							$sWhiteList);
 					}
 				}
 				else
@@ -143,7 +143,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 					$oDomain = \RainLoop\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-						\RainLoop\Domain::DEFAULT_FORWARDED_FLAG, $sWhiteList);
+						$sWhiteList);
 				}
 			}
 		}

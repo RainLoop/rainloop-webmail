@@ -363,6 +363,26 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
 	}, Consts.Defaults.SaveMessageAjaxTimeout);
 };
 
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sMessageFolder
+ * @param {string} sMessageUid
+ * @param {string} sReadReceipt
+ * @param {string} sSubject
+ * @param {string} sText
+ */
+WebMailAjaxRemoteStorage.prototype.sendReadReceiptMessage = function (fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText)
+{
+	this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
+		'MessageFolder': sMessageFolder,
+		'MessageUid': sMessageUid,
+		'ReadReceipt': sReadReceipt,
+		'Subject': sSubject,
+		'Text': sText
+	});
+};
+
 /**
  * @param {?Function} fCallback
  * @param {string} sMessageFolder
@@ -379,9 +399,10 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
  * @param {(Array|null)} aDraftInfo
  * @param {string} sInReplyTo
  * @param {string} sReferences
+ * @param {boolean} bRequestReadReceipt
  */
 WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
-	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
+	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bRequestReadReceipt)
 {
 	this.defaultRequest(fCallback, 'SendMessage', {
 		'MessageFolder': sMessageFolder,
@@ -397,6 +418,7 @@ WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFo
 		'DraftInfo': aDraftInfo,
 		'InReplyTo': sInReplyTo,
 		'References': sReferences,
+		'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
 		'Attachments': aAttachments
 	}, Consts.Defaults.SendMessageAjaxTimeout);
 };

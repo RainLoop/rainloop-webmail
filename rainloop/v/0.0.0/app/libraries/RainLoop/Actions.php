@@ -3581,10 +3581,10 @@ class Actions
 			});
 		}
 
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
-		$sForwardedFlag = $oAccount ? strtolower($oAccount->Domain()->ForwardFlag()) : '';
-
+		$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
+		$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
 		try
 		{
 			$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, $sPrevUidNext, $aFlagsFilteredUids);
@@ -3597,7 +3597,8 @@ class Actions
 						'IsSeen' => in_array('\\seen', $aLowerFlags),
 						'IsFlagged' => in_array('\\flagged', $aLowerFlags),
 						'IsAnswered' => in_array('\\answered', $aLowerFlags),
-						'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags)
+						'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags),
+						'IsReadReceipt' => 0 < strlen($sReadReceiptFlag) && in_array(strtolower($sReadReceiptFlag), $aLowerFlags)
 					);
 				}
 			}
@@ -3763,6 +3764,7 @@ class Actions
 		$sBcc = $this->GetActionParam('Bcc', '');
 		$sSubject = $this->GetActionParam('Subject', '');
 		$bTextIsHtml = '1' === $this->GetActionParam('TextIsHtml', '0');
+		$bReadReceiptRequest = '1' === $this->GetActionParam('ReadReceiptRequest', '0');
 		$sText = $this->GetActionParam('Text', '');
 		$aAttachments = $this->GetActionParam('Attachments', null);
 
@@ -3796,6 +3798,11 @@ class Actions
 					$oMessage->SetReplyTo($oReplyTo);
 				}
 			}
+		}
+
+		if ($bReadReceiptRequest)
+		{
+			$oMessage->SetReadReceipt($oAccount->Email());
 		}
 
 		$oMessage->SetSubject($sSubject);
@@ -3905,6 +3912,60 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 *
+	 * @return \MailSo\Mime\Message
+	 */
+	private function buildReadReceiptMessage($oAccount)
+	{
+		$sReadReceipt = $this->GetActionParam('ReadReceipt', '');
+		$sSubject = $this->GetActionParam('Subject', '');
+		$sText = $this->GetActionParam('Text', '');
+
+		if (empty($sReadReceipt) || empty($sSubject) || empty($sText))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
+		}
+
+		$oMessage = \MailSo\Mime\Message::NewInstance();
+		$oMessage->RegenerateMessageId();
+
+		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+
+		$oSettings = $this->SettingsProvider()->Load($oAccount);
+
+		$sDisplayName = \trim($oSettings->GetConf('DisplayName', ''));
+		$sReplyTo = \trim($oSettings->GetConf('ReplyTo', ''));
+
+		$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance($oAccount->Email(), $sDisplayName));
+
+		if (!empty($sReplyTo))
+		{
+			$oReplyTo = \MailSo\Mime\EmailCollection::NewInstance($sReplyTo);
+			if ($oReplyTo && $oReplyTo->Count())
+			{
+				$oMessage->SetReplyTo($oReplyTo);
+			}
+		}
+
+		$oMessage->SetSubject($sSubject);
+
+		$oToEmails = \MailSo\Mime\EmailCollection::NewInstance($sReadReceipt);
+		if ($oToEmails && $oToEmails->Count())
+		{
+			$oMessage->SetTo($oToEmails);
+		}
+
+		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, &$oMessage, &$sText));
+
+		$oMessage->AddText($sText, false);
+
+		$this->Plugins()->RunHook('filter.build-read-receipt-message', array(&$oMessage, $oAccount));
+
+		return $oMessage;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function DoSaveMessage()
@@ -3972,6 +4033,108 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
+	private function smptSendMessage($oAccount, $oMessage, $rMessageStream, $bAddHiddenRcpt = true)
+	{
+		$oRcpt = $oMessage->GetRcpt();
+		if ($oRcpt && 0 < $oRcpt->Count())
+		{
+			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, &$oRcpt));
+
+			try
+			{
+				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+
+				$oFrom = $oMessage->GetFrom();
+				$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
+
+				$aSmtpCredentials = array(
+					'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
+					'Host' => $oAccount->Domain()->OutHost(),
+					'Port' => $oAccount->Domain()->OutPort(),
+					'Secure' => $oAccount->Domain()->OutSecure(),
+					'UseAuth' => $oAccount->Domain()->OutAuth(),
+					'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
+					'Login' => $oAccount->OutLogin(),
+					'Password' => $oAccount->Password(),
+					'HiddenRcpt' => array()
+				);
+
+				$this->Plugins()->RunHook('filter.smtp-credentials', array($oAccount, &$aSmtpCredentials));
+
+				if (!$bAddHiddenRcpt)
+				{
+					$aSmtpCredentials[] = array();
+				}
+
+				$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;
+				$this->Plugins()->RunHook('filter.smtp-connect', array($oAccount, $aSmtpCredentials,
+					&$oSmtpClient, $oMessage, &$oRcpt,
+					&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData, &$bHookLogoutAndDisconnect));
+
+				if (!$bHookConnect)
+				{
+					$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
+						$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure']);
+				}
+
+				if (!$bHookAuth)
+				{
+					if ($aSmtpCredentials['UseAuth'])
+					{
+						$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
+					}
+				}
+
+				if (!$bHookFrom)
+				{
+					$oSmtpClient->MailFrom($aSmtpCredentials['From']);
+				}
+
+				if (!$bHookTo)
+				{
+					$aRcpt =& $oRcpt->GetAsArray();
+					foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+					{
+						$oSmtpClient->Rcpt($oEmail->GetEmail());
+					}
+
+					if (isset($aSmtpCredentials['HiddenRcpt']) && is_array($aSmtpCredentials['HiddenRcpt']))
+					{
+						foreach ($aSmtpCredentials['HiddenRcpt'] as $sEmail)
+						{
+							if (\preg_match('/^[^@\s]+@[^@\s]+$/', $sEmail))
+							{
+								$oSmtpClient->Rcpt($sEmail);
+							}
+						}
+					}
+				}
+
+				if (!$bHookData)
+				{
+					$oSmtpClient->DataWithStream($rMessageStream);
+				}
+
+				if (!$bHookLogoutAndDisconnect)
+				{
+					$oSmtpClient->LogoutAndDisconnect();
+				}
+			}
+			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
+			{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+			}
+			catch (\MailSo\Smtp\Exceptions\LoginException $oException)
+			{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
+			}
+		}
+		else
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidRecipients);
+		}
+	}
+
 	/**
 	 * @return array
 	 */
@@ -4003,189 +4166,97 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$oRcpt = $oMessage->GetRcpt();
-					if ($oRcpt && 0 < $oRcpt->Count())
+					$this->smptSendMessage($oAccount, $oMessage, $rMessageStream);
+					
+					if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
 					{
-						$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, &$oRcpt));
+						$sDraftInfoType = $aDraftInfo[0];
+						$sDraftInfoUid = $aDraftInfo[1];
+						$sDraftInfoFolder = $aDraftInfo[2];
 
 						try
 						{
-							$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
-
-							$oFrom = $oMessage->GetFrom();
-							$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
-
-							$aSmtpCredentials = array(
-								'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
-								'Host' => $oAccount->Domain()->OutHost(),
-								'Port' => $oAccount->Domain()->OutPort(),
-								'Secure' => $oAccount->Domain()->OutSecure(),
-								'UseAuth' => $oAccount->Domain()->OutAuth(),
-								'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
-								'Login' => $oAccount->OutLogin(),
-								'Password' => $oAccount->Password(),
-								'HiddenRcpt' => array()
-							);
-
-							$this->Plugins()->RunHook('filter.smtp-credentials', array($oAccount, &$aSmtpCredentials));
-
-							$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;
-							$this->Plugins()->RunHook('filter.smtp-connect', array($oAccount, $aSmtpCredentials, 
-								&$oSmtpClient, $oMessage, &$oRcpt, 
-								&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData, &$bHookLogoutAndDisconnect));
-
-							if (!$bHookConnect)
+							switch (strtolower($sDraftInfoType))
 							{
-								$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
-									$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure']);
-							}
-
-							if (!$bHookAuth)
-							{
-								if ($aSmtpCredentials['UseAuth'])
-								{
-									$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
-								}
-							}
-
-							if (!$bHookFrom)
-							{
-								$oSmtpClient->MailFrom($aSmtpCredentials['From']);
-							}
-
-							if (!$bHookTo)
-							{
-								$aRcpt =& $oRcpt->GetAsArray();
-								foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
-								{
-									$oSmtpClient->Rcpt($oEmail->GetEmail());
-								}
-
-								if (isset($aSmtpCredentials['HiddenRcpt']) && is_array($aSmtpCredentials['HiddenRcpt']))
-								{
-									foreach ($aSmtpCredentials['HiddenRcpt'] as $sEmail)
+								case 'reply':
+								case 'reply-all':
+									$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
+										\MailSo\Imap\Enumerations\MessageFlag::ANSWERED, true);
+									break;
+								case 'forward':
+									$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
+									if (0 < strlen($sForwardedFlag))
 									{
-										if (\preg_match('/^[^@\s]+@[^@\s]+$/', $sEmail))
-										{
-											$oSmtpClient->Rcpt($sEmail);
-										}
-									}
-								}
-							}
-
-							if (!$bHookData)
-							{
-								$oSmtpClient->DataWithStream($rMessageStream);
-							}
-
-							if (!$bHookLogoutAndDisconnect)
-							{
-								$oSmtpClient->LogoutAndDisconnect();
-							}
-						}
-						catch (\MailSo\Net\Exceptions\ConnectionException $oException)
-						{
-							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
-						}
-						catch (\MailSo\Smtp\Exceptions\LoginException $oException)
-						{
-							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
-						}
-
-						if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
-						{
-							$sDraftInfoType = $aDraftInfo[0];
-							$sDraftInfoUid = $aDraftInfo[1];
-							$sDraftInfoFolder = $aDraftInfo[2];
-
-							try
-							{
-								switch (strtolower($sDraftInfoType))
-								{
-									case 'reply':
-									case 'reply-all':
 										$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
-											\MailSo\Imap\Enumerations\MessageFlag::ANSWERED, true);
-										break;
-									case 'forward':
-										$sForwardFlag = $oAccount->Domain()->ForwardFlag();
-										if (0 < strlen($sForwardFlag))
-										{
-											$this->MailClient()->MessageSetFlag($sDraftInfoFolder, array($sDraftInfoUid), true,
-												$sForwardFlag, true);
-										}
-										break;
-								}
-							}
-							catch (\Exception $oException)
-							{
-								$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-							}
-						}
-
-						if (0 < strlen($sSentFolder))
-						{
-							try
-							{
-								if (!$oMessage->GetBcc())
-								{
-									if (\is_resource($rMessageStream))
-									{
-										\rewind($rMessageStream);
+											$sForwardedFlag, true);
 									}
-
-									$this->MailClient()->MessageAppendStream(
-										$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
-											\MailSo\Imap\Enumerations\MessageFlag::SEEN
-										));
-								}
-								else
-								{
-									$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-
-									$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-										$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
-
-									$this->MailClient()->MessageAppendStream(
-										$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
-											\MailSo\Imap\Enumerations\MessageFlag::SEEN
-										));
-
-									if (is_resource($rAppendMessageStream))
-									{
-										@fclose($rAppendMessageStream);
-									}
-								}
-							}
-							catch (\Exception $oException)
-							{
-								throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveMessage, $oException);
+									break;
 							}
 						}
-
-						if (\is_resource($rMessageStream))
+						catch (\Exception $oException)
 						{
-							@\fclose($rMessageStream);
+							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 						}
-
-						if (0 < strlen($sDraftFolder) && 0 < strlen($sDraftUid))
-						{
-							try
-							{
-								$this->MailClient()->MessageDelete($sDraftFolder, array($sDraftUid), true, true);
-							}
-							catch (\Exception $oException)
-							{
-								$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-							}
-						}
-
-						$mResult = true;
 					}
-					else
+
+					if (0 < strlen($sSentFolder))
 					{
-						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidRecipients);
+						try
+						{
+							if (!$oMessage->GetBcc())
+							{
+								if (\is_resource($rMessageStream))
+								{
+									\rewind($rMessageStream);
+								}
+
+								$this->MailClient()->MessageAppendStream(
+									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
+										\MailSo\Imap\Enumerations\MessageFlag::SEEN
+									));
+							}
+							else
+							{
+								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
+
+								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
+									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
+
+								$this->MailClient()->MessageAppendStream(
+									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
+										\MailSo\Imap\Enumerations\MessageFlag::SEEN
+									));
+
+								if (is_resource($rAppendMessageStream))
+								{
+									@fclose($rAppendMessageStream);
+								}
+							}
+						}
+						catch (\Exception $oException)
+						{
+							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveMessage, $oException);
+						}
 					}
+
+					if (\is_resource($rMessageStream))
+					{
+						@\fclose($rMessageStream);
+					}
+
+					if (0 < strlen($sDraftFolder) && 0 < strlen($sDraftUid))
+					{
+						try
+						{
+							$this->MailClient()->MessageDelete($sDraftFolder, array($sDraftUid), true, true);
+						}
+						catch (\Exception $oException)
+						{
+							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+						}
+					}
+
+					$mResult = true;
 				}
 			}
 		}
@@ -4223,6 +4294,75 @@ class Actions
 				$this->PersonalAddressBookProvider($oAccount)->IncFrec(
 					$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
 			}
+		}
+
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoSendReadReceiptMessage()
+	{
+		$oAccount = $this->initMailClientConnection();
+
+		$oMessage = $this->buildReadReceiptMessage($oAccount);
+
+		$this->Plugins()->RunHook('filter.send-read-receipt-message', array(&$oMessage, $oAccount));
+
+		$mResult = false;
+		try
+		{
+			if ($oMessage)
+			{
+				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
+
+				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
+					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
+
+				if (false !== $iMessageStreamSize)
+				{
+					$this->smptSendMessage($oAccount, $oMessage, $rMessageStream);
+
+					if (\is_resource($rMessageStream))
+					{
+						@\fclose($rMessageStream);
+					}
+
+					$mResult = true;
+
+					$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
+					if (!empty($sReadReceiptFlag))
+					{
+						$sFolderFullName = $this->GetActionParam('MessageFolder', '');
+						$sUid = $this->GetActionParam('MessageUid', '');
+
+						$this->Cacher()->Set($oAccount->Email().'/'.$sFolderFullName.'/'.$sUid, '1');
+
+						if (0 < \strlen($sFolderFullName) && 0 < \strlen($sUid))
+						{
+							try
+							{
+								$this->MailClient()->MessageSetFlag($sFolderFullName, array($sUid), true, $sReadReceiptFlag, true, true);
+							}
+							catch (\Exception $oException) {}
+						}
+					}
+				}
+			}
+		}
+		catch (\RainLoop\Exceptions\ClientException $oException)
+		{
+			throw $oException;
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage, $oException);
+		}
+
+		if (false === $mResult)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
@@ -5893,7 +6033,7 @@ class Actions
 					'ThreadsLen' => $mResponse->ThreadsLen(),
 					'ParentThread' => $mResponse->ParentThread(),
 					'Sensitivity' => $mResponse->Sensitivity(),
-					'ReadingConfirmation' => $mResponse->ReadingConfirmation()
+					'ReadReceipt' => ''
 				));
 
 				$oAttachments = $mResponse->Attachments();
@@ -5932,12 +6072,15 @@ class Actions
 
 				// Flags
 				$aFlags = $mResponse->FlagsLowerCase();
-				$mResult['IsSeen'] = in_array('\\seen', $aFlags);
-				$mResult['IsFlagged'] = in_array('\\flagged', $aFlags);
-				$mResult['IsAnswered'] = in_array('\\answered', $aFlags);
+				$mResult['IsSeen'] = \in_array('\\seen', $aFlags);
+				$mResult['IsFlagged'] = \in_array('\\flagged', $aFlags);
+				$mResult['IsAnswered'] = \in_array('\\answered', $aFlags);
 
-				$sForwardedFlag = $oAccount ? strtolower($oAccount->Domain()->ForwardFlag()) : '';
-				$mResult['IsForwarded'] = 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aFlags);
+				$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
+				$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
+				
+				$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
+				$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
 
 				if ('Message' === $sParent)
 				{
@@ -5997,6 +6140,28 @@ class Actions
 						'FoundedCIDs' => $mFoundedCIDs,
 						'FoundedContentLocationUrls' => $mFoundedContentLocationUrls
 					)));
+
+					$mResult['ReadReceipt'] = $mResponse->ReadReceipt();
+					if (0 < \strlen($mResult['ReadReceipt']) && !$mResult['IsReadReceipt'])
+					{
+						if (0 < \strlen($mResult['ReadReceipt']))
+						{
+							try
+							{
+								$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['ReadReceipt']);
+								if ($oReadReceipt && \strtolower($oAccount->Email()) === \strtolower($oReadReceipt->GetEmail()))
+								{
+									$mResult['ReadReceipt'] = '';
+								}
+							}
+							catch (\Exception $oException) {}
+						}
+
+						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher()->Get($oAccount->Email().'/'.$mResult['Folder'].'/'.$mResult['Uid'], '0'))
+						{
+							$mResult['ReadReceipt'] = '';
+						}
+					}
 				}
 			}
 			else if ('MailSo\Mime\Email' === $sClassName)

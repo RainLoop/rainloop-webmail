@@ -182,6 +182,11 @@
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 									</div>
+									<div class="readReceipt" data-bind="visible: message() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { $root.readReceipt(message()); }">
+										<i class="icon-mail"></i>
+										&nbsp;&nbsp;
+										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
+									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 											<li class="attachmentItem" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart }">

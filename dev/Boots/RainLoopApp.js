@@ -314,7 +314,7 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 									bCheck = true;
 									oFlags = oData.Result.Flags[sUid];
 									RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
-										!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded']
+										!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded'], !!oFlags['IsReadReceipt']
 									]);
 								}
 							}

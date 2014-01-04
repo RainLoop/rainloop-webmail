@@ -6322,6 +6322,7 @@ function MessageModel()
 	this.flagged = ko.observable(false);
 	this.answered = ko.observable(false);
 	this.forwarded = ko.observable(false);
+	this.isReadReceipt = ko.observable(false);
 
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
@@ -6377,6 +6378,8 @@ function MessageModel()
 	this.attachments = ko.observableArray([]);
 
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
+	this.readReceipt = ko.observable('');
+
 	this.aDraftInfo = [];
 	this.sMessageId = '';
 	this.sInReplyTo = '';
@@ -6530,6 +6533,7 @@ MessageModel.prototype.clear = function ()
 	this.flagged(false);
 	this.answered(false);
 	this.forwarded(false);
+	this.isReadReceipt(false);
 
 	this.selected(false);
 	this.checked(false);
@@ -6543,6 +6547,7 @@ MessageModel.prototype.clear = function ()
 	this.attachments([]);
 
 	this.priority(Enums.MessagePriority.Normal);
+	this.readReceipt('');
 	this.aDraftInfo = [];
 	this.sMessageId = '';
 	this.sInReplyTo = '';
@@ -6556,6 +6561,17 @@ MessageModel.prototype.clear = function ()
 
 	this.lastInCollapsedThread(false);
 	this.lastInCollapsedThreadLoading(false);
+};
+
+MessageModel.prototype.computeSenderEmail = function ()
+{
+	var
+		sSent = RL.data().sentFolder(),
+		sDraft = RL.data().draftFolder()
+	;
+
+	this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+		this.toEmailsString() : this.fromEmailString());
 };
 
 /**
@@ -6602,17 +6618,6 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 	return bResult;
 };
 
-MessageModel.prototype.computeSenderEmail = function ()
-{
-	var
-		sSent = RL.data().sentFolder(),
-		sDraft = RL.data().draftFolder()
-	;
-
-	this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-		this.toEmailsString() : this.fromEmailString());
-};
-
 /**
  * @param {AjaxJsonMessage} oJsonMessage
  * @return {boolean}
@@ -6641,6 +6646,8 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 
 		this.foundedCIDs = Utils.isArray(oJsonMessage.FoundedCIDs) ? oJsonMessage.FoundedCIDs : [];
 		this.attachments(this.initAttachmentsFromJson(oJsonMessage.Attachments));
+
+		this.readReceipt(oJsonMessage.ReadReceipt || '');
 
 		this.computeSenderEmail();
 
@@ -6699,6 +6706,7 @@ MessageModel.prototype.initFlagsByJson = function (oJsonMessage)
 		this.flagged(!!oJsonMessage.IsFlagged);
 		this.answered(!!oJsonMessage.IsAnswered);
 		this.forwarded(!!oJsonMessage.IsForwarded);
+		this.isReadReceipt(!!oJsonMessage.IsReadReceipt);
 
 		bResult = true;
 	}
@@ -7079,6 +7087,7 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.flagged(oMessage.flagged());
 	this.answered(oMessage.answered());
 	this.forwarded(oMessage.forwarded());
+	this.isReadReceipt(oMessage.isReadReceipt());
 
 	this.selected(oMessage.selected());
 	this.checked(oMessage.checked());
@@ -8015,6 +8024,8 @@ function PopupsComposeViewModel()
 	this.replyTo = ko.observable('');
 	this.subject = ko.observable('');
 
+	this.requestReadReceipt = ko.observable(false);
+
 	this.sendError = ko.observable(false);
 	this.sendSuccessButSaveError = ko.observable(false);
 	this.savedError = ko.observable(false);
@@ -8271,7 +8282,8 @@ function PopupsComposeViewModel()
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
-					this.sReferences
+					this.sReferences,
+					this.requestReadReceipt()
 				);
 			}
 		}
@@ -9334,6 +9346,8 @@ PopupsComposeViewModel.prototype.reset = function ()
 	this.bcc('');
 	this.replyTo('');
 	this.subject('');
+
+	this.requestReadReceipt(false);
 
 	this.aDraftInfo = null;
 	this.sInReplyTo = '';
@@ -12027,11 +12041,6 @@ function MailBoxMessageViewViewModel()
 	this.viewDate = ko.observable('');
 	this.viewMoment = ko.observable('');
 	this.viewLineAsCcc = ko.observable('');
-	this.viewHasImages = ko.observable(false);
-	this.viewHasVisibleAttachments = ko.observable(false);
-	this.viewAttachments = ko.observableArray([]);
-	this.viewIsHtml = ko.observable(false);
-	this.viewIsRtl = ko.observable(false);
 	this.viewViewLink = ko.observable('');
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
@@ -12053,11 +12062,6 @@ function MailBoxMessageViewViewModel()
 			this.viewDate(oMessage.fullFormatDateValue());
 			this.viewMoment(oMessage.momentDate());
 			this.viewLineAsCcc(oMessage.lineAsCcc());
-			this.viewHasImages(oMessage.hasImages());
-			this.viewHasVisibleAttachments(oMessage.hasVisibleAttachments());
-			this.viewAttachments(oMessage.attachments());
-			this.viewIsHtml(oMessage.isHtml());
-			this.viewIsRtl(oMessage.isRtl());
 			this.viewViewLink(oMessage.viewLink());
 			this.viewDownloadLink(oMessage.downloadLink());
 
@@ -12284,6 +12288,25 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 	if (oMessage && oMessage.showExternalImages)
 	{
 		oMessage.showExternalImages(true);
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
+{
+	if (oMessage && '' !== oMessage.readReceipt())
+	{
+		RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
+			oMessage.readReceipt(), 
+			Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
+			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': oMessage.readReceipt()}));
+
+		oMessage.isReadReceipt(true);
+
+		RL.cache().storeMessageFlagsToCache(oMessage);
+		RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 	}
 };
 
@@ -14964,6 +14987,26 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
 	}, Consts.Defaults.SaveMessageAjaxTimeout);
 };
 
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sMessageFolder
+ * @param {string} sMessageUid
+ * @param {string} sReadReceipt
+ * @param {string} sSubject
+ * @param {string} sText
+ */
+WebMailAjaxRemoteStorage.prototype.sendReadReceiptMessage = function (fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText)
+{
+	this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
+		'MessageFolder': sMessageFolder,
+		'MessageUid': sMessageUid,
+		'ReadReceipt': sReadReceipt,
+		'Subject': sSubject,
+		'Text': sText
+	});
+};
+
 /**
  * @param {?Function} fCallback
  * @param {string} sMessageFolder
@@ -14980,9 +15023,10 @@ WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFo
  * @param {(Array|null)} aDraftInfo
  * @param {string} sInReplyTo
  * @param {string} sReferences
+ * @param {boolean} bRequestReadReceipt
  */
 WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
-	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
+	sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bRequestReadReceipt)
 {
 	this.defaultRequest(fCallback, 'SendMessage', {
 		'MessageFolder': sMessageFolder,
@@ -14998,6 +15042,7 @@ WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFo
 		'DraftInfo': aDraftInfo,
 		'InReplyTo': sInReplyTo,
 		'References': sReferences,
+		'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
 		'Attachments': aAttachments
 	}, Consts.Defaults.SendMessageAjaxTimeout);
 };
@@ -15609,12 +15654,13 @@ WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
 			mFlaggedSubUid = null
 		;
 
-		if (aFlags && 4 === aFlags.length)
+		if (aFlags && 5 === aFlags.length)
 		{
 			oMessage.unseen(aFlags[0]);
 			oMessage.flagged(aFlags[1]);
 			oMessage.answered(aFlags[2]);
 			oMessage.forwarded(aFlags[3]);
+			oMessage.isReadReceipt(aFlags[4]);
 		}
 
 		if (0 < oMessage.threads().length)
@@ -15645,7 +15691,7 @@ WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
 		this.setMessageFlagsToCache(
 			oMessage.folderFullNameRaw,
 			oMessage.uid,
-			[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded()]
+			[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(), oMessage.isReadReceipt()]
 		);
 	}
 };
@@ -16671,7 +16717,7 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 									bCheck = true;
 									oFlags = oData.Result.Flags[sUid];
 									RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
-										!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded']
+										!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded'], !!oFlags['IsReadReceipt']
 									]);
 								}
 							}

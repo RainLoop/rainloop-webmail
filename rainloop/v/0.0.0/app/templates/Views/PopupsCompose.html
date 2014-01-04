@@ -107,7 +107,22 @@
 										<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
 									</div>
 									<div class="pull-right">
-										<div class="btn-group">
+										<div class="btn-group pull-right">
+											<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown">
+												<i class="icon-list"></i>
+											</a>
+											<ul class="dropdown-menu g-ui-menu">
+												<li class="e-item" data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
+													<a class="e-link">
+														<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestReadReceipt(), 'icon-checkbox-unchecked': !requestReadReceipt() }"></i>
+														&nbsp;&nbsp;
+														<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
+													</a>
+												</li>
+											</ul>
+										</div>
+										<div class="btn-group pull-right">&nbsp;</div>
+										<div class="btn-group pull-right">
 											<a class="btn" data-placement="top" data-bind="initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<i class="icon-attachment"></i>
 											</a>

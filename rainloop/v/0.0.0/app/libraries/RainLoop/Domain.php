@@ -61,11 +61,6 @@ class Domain
 	/**
 	 * @var string
 	 */
-	private $sForwardFlag;
-
-	/**
-	 * @var string
-	 */
 	private $sWhiteList;
 
 	/**
@@ -84,12 +79,10 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
-	 * @param string $sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG
 	 * @param string $sWhiteList = ''
 	 */
 	private function __construct($sName, $sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-		$sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG, $sWhiteList = '')
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $sWhiteList = '')
 	{
 		$this->sName = $sName;
 		$this->sIncHost = $sIncHost;
@@ -101,7 +94,6 @@ class Domain
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
-		$this->sForwardFlag = $sForwardFlag;
 		$this->sWhiteList = \trim($sWhiteList);
 		$this->bDisabled = false;
 	}
@@ -117,7 +109,6 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
-	 * @param string $sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG
 	 * @param string $sWhiteList = ''
 	 *
 	 * @return \RainLoop\Domain
@@ -125,13 +116,12 @@ class Domain
 	public static function NewInstance($sName,
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-		$sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG, $sWhiteList = '')
+		$sWhiteList = '')
 	{
-		return new self(
-			$sName,
+		return new self($sName,
 			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-			$sForwardFlag, $sWhiteList);
+			$sWhiteList);
 	}
 
 	/**
@@ -157,9 +147,6 @@ class Domain
 				!empty($aDomain['smpt_secure']) ? $aDomain['smpt_secure'] : '');
 
 			$bOutAuth = isset($aDomain['smpt_auth']) ? (bool) $aDomain['smpt_auth'] : true;
-			$sForwardFlag = isset($aDomain['imap_custom_forward_flag']) ?
-				(string) $aDomain['imap_custom_forward_flag'] : '';
-
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
 			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
@@ -168,7 +155,7 @@ class Domain
 			$oDomain = self::NewInstance($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-				empty($sForwardFlag) ? \RainLoop\Domain::DEFAULT_FORWARDED_FLAG : $sForwardFlag, $sWhiteList);
+				$sWhiteList);
 		}
 
 		return $oDomain;
@@ -262,7 +249,6 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
-	 * @param string $sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG
 	 * @param string $sWhiteList = ''
 	 *
 	 * @return \RainLoop\Domain
@@ -270,7 +256,7 @@ class Domain
 	public function UpdateInstance(
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
-		$sForwardFlag = \RainLoop\Domain::DEFAULT_FORWARDED_FLAG,  $sWhiteList = '')
+		$sWhiteList = '')
 	{
 		$this->sIncHost = $sIncHost;
 		$this->iIncPort = $iIncPort;
@@ -281,7 +267,6 @@ class Domain
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
-		$this->sForwardFlag = $sForwardFlag;
 		$this->sWhiteList = \trim($sWhiteList);
 
 		return $this;
@@ -365,14 +350,6 @@ class Domain
 	public function OutAuth()
 	{
 		return $this->bOutAuth;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function ForwardFlag()
-	{
-		return $this->sForwardFlag;
 	}
 
 	/**

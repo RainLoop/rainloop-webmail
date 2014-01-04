@@ -37,6 +37,7 @@ class Header
 
 	const SENSITIVITY = 'Sensitivity';
 
+	const RETURN_RECEIPT_TO = 'Return-Receipt-To';
 	const DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To';
 	const X_CONFIRM_READING_TO = 'X-Confirm-Reading-To';
 

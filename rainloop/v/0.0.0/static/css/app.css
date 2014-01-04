@@ -6880,10 +6880,10 @@ html.rl-no-preview-pane .messageList.message-selected {
   cursor: pointer;
   cursor: move;
 }
-html.rl-no-preview-pane .messageView {
+showImages html.rl-no-preview-pane .messageView {
   display: none;
 }
-html.rl-no-preview-pane .messageView.message-selected {
+showImages html.rl-no-preview-pane .messageView.message-selected {
   display: block;
 }
 .messageView {
@@ -7049,11 +7049,15 @@ html.rl-no-preview-pane .messageView.message-selected {
 .messageView .b-content .messageItem .line-loading {
   height: 0px;
 }
-.messageView .b-content .messageItem .showImages {
+.messageView .b-content .messageItem .showImages,
+.messageView .b-content .messageItem .readReceipt {
   cursor: pointer;
-  background-color: #eee;
   padding: 10px 15px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
+  background-color: #eee;
+}
+.messageView .b-content .messageItem .readReceipt {
+  background-color: #ffffd9;
 }
 .messageView .b-content .messageItem .attachmentsPlace {
   padding: 10px;

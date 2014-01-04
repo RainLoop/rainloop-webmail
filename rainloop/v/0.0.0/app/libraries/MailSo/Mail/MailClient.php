@@ -213,29 +213,35 @@ class MailClient
 	 * @param bool $bIndexIsUid
 	 * @param string $sMessageFlag
 	 * @param bool $bSetAction = true
+	 * @param bool $sSkipUnsupportedFlag = false
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 * @throws \MailSo\Mail\Exceptions\Exception
 	 */
-	public function MessageSetFlag($sFolderName, $aIndexRange, $bIndexIsUid, $sMessageFlag, $bSetAction = true)
+	public function MessageSetFlag($sFolderName, $aIndexRange, $bIndexIsUid, $sMessageFlag, $bSetAction = true, $sSkipUnsupportedFlag = false)
 	{
 		$this->oImapClient->FolderSelect($sFolderName);
 
 		$oFolderInfo = $this->oImapClient->FolderCurrentInformation();
 		if (!$oFolderInfo || !$oFolderInfo->IsFlagSupported($sMessageFlag))
 		{
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag is not supported.');
+			if (!$sSkipUnsupportedFlag)
+			{
+				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag is not supported.');
+			}
 		}
+		else
+		{
+			$sStoreAction = $bSetAction
+				? \MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
+				: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
+			;
 
-		$sStoreAction = $bSetAction
-			? \MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
-			: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
-		;
-
-		$sIndexRange = \implode(',', $aIndexRange);
-		$this->oImapClient->MessageStoreFlag($sIndexRange, $bIndexIsUid, array($sMessageFlag), $sStoreAction);
+			$sIndexRange = \implode(',', $aIndexRange);
+			$this->oImapClient->MessageStoreFlag($sIndexRange, $bIndexIsUid, array($sMessageFlag), $sStoreAction);
+		}
 	}
 
 	/**

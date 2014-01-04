@@ -248,12 +248,22 @@ class Message
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	public function SetReadConfirmation($sEmail)
+	public function SetReadReceipt($sEmail)
 	{
 		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO] = $sEmail;
 		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO] = $sEmail;
 
 		return $this;
+	}
+
+	/**
+	 * @param string $sEmail
+	 *
+	 * @return \MailSo\Mime\Message
+	 */
+	public function SetReadConfirmation($sEmail)
+	{
+		return $this->SetReadReceipt($sEmail);
 	}
 
 	/**

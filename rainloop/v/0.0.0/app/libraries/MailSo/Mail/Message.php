@@ -136,7 +136,12 @@ class Message
 	/**
 	 * @var string
 	 */
-	private $sReadingConfirmation;
+	private $sDeliveryReceipt;
+
+	/**
+	 * @var string
+	 */
+	private $sReadReceipt;
 
 	/**
 	 * @var array
@@ -196,7 +201,8 @@ class Message
 
 		$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::NOTHING;
 		$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
-		$this->sReadingConfirmation = '';
+		$this->sDeliveryReceipt = '';
+		$this->sReadReceipt = '';
 
 		$this->aThreads = array();
 		$this->iThreadsLen = 0;
@@ -418,9 +424,25 @@ class Message
 	/**
 	 * @return string
 	 */
+	public function DeliveryReceipt()
+	{
+		return $this->sDeliveryReceipt;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ReadReceipt()
+	{
+		return $this->sReadReceipt;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function ReadingConfirmation()
 	{
-		return $this->sReadingConfirmation;
+		return $this->ReadReceipt();
 	}
 
 	/**
@@ -615,15 +637,16 @@ class Message
 				}
 			}
 
-			// ReadingConfirmation
-			$this->sReadingConfirmation = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO);
-			if (0 === \strlen($this->sReadingConfirmation))
+			// Delivery Receipt
+			$this->sDeliveryReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO));
+
+			// Read Receipt
+			$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO));
+			if (empty($this->sReadReceipt))
 			{
-				$this->sReadingConfirmation = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO);
+				$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
 			}
-
-			$this->sReadingConfirmation = \trim($this->sReadingConfirmation);
-
+			
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
 			if (0 < \strlen($sDraftInfo))
 			{
