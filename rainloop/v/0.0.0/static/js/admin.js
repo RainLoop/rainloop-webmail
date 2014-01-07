@@ -608,6 +608,7 @@ Enums.Notification = {
 	'AccountAlreadyExists': 801,
 
 	'MailServerError': 901,
+	'ClientViewError': 902,
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };
@@ -1151,11 +1152,17 @@ Utils.log = function (sDesc)
 
 /**
  * @param {number} iCode
+ * @param {ыекштп=} mMessage = ''
  * @return {string}
  */
-Utils.getNotification = function (iCode)
+Utils.getNotification = function (iCode, mMessage)
 {
 	iCode = Utils.pInt(iCode);
+	if (Enums.Notification.ClientViewError === iCode && mMessage)
+	{
+		return mMessage;
+	}
+
 	return Utils.isUnd(NotificationI18N[iCode]) ? '' : NotificationI18N[iCode];
 };
 

@@ -4122,11 +4122,29 @@ class Actions
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+				if ($this->Config()->Get('labs', 'smtp_show_server_errors'))
+				{
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ClientViewError, $oException);
+				}
+				else
+				{
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+				}
 			}
 			catch (\MailSo\Smtp\Exceptions\LoginException $oException)
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
+			}
+			catch (\Exception $oException)
+			{
+				if ($this->Config()->Get('labs', 'smtp_show_server_errors'))
+				{
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ClientViewError, $oException);
+				}
+				else
+				{
+					throw $oException;
+				}
 			}
 		}
 		else
@@ -5802,6 +5820,10 @@ class Actions
 		{
 			$iErrorCode = $oException->getCode();
 			$sErrorMessage = null;
+			if ($iErrorCode === \RainLoop\Notifications::ClientViewError)
+			{
+				$sErrorMessage = $oException->getMessage();
+			}
 		}
 		else
 		{
@@ -5819,7 +5841,7 @@ class Actions
 			$this->Logger()->WriteException($oException);
 		}
 
-		return $this->FalseResponse($sActionName, $iErrorCode);
+		return $this->FalseResponse($sActionName, $iErrorCode, $sErrorMessage);
 	}
 
 	/**

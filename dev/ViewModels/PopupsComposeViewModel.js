@@ -59,19 +59,6 @@ function PopupsComposeViewModel()
 	this.saving = ko.observable(false);
 	this.attachments = ko.observableArray([]);
 
-//	this.attachmentsInProcess = ko.computed(function () {
-//		return _.filter(this.attachments(), function (oItem) {
-//			return oItem && '' === oItem.tempName();
-//		});
-//	}, this);
-//
-//	this.attachmentsInReady = ko.computed(function () {
-//		return _.filter(this.attachments(), function (oItem) {
-//			return oItem && '' !== oItem.tempName();
-//		});
-//	}, this);
-
-
 	this.attachmentsInProcess = this.attachments.filter(function (oItem) {
 		return oItem && '' === oItem.tempName();
 	});
@@ -486,7 +473,10 @@ PopupsComposeViewModel.prototype.formattedFrom = function (bHeaderResult)
 
 PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 {
-	var bResult = false;
+	var 
+		bResult = false,
+		sMessage = ''
+	;
 
 	this.sending(false);
 
@@ -508,8 +498,11 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 		}
 		else
 		{
+			sMessage = Utils.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage,
+				oData && oData.ErrorMessage ? oData.ErrorMessage : '');
+
 			this.sendError(true);
-			window.alert(Utils.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage));
+			window.alert(sMessage || Utils.getNotification(Enums.Notification.CantSendMessage));
 		}
 	}
 };

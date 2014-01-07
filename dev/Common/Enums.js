@@ -330,6 +330,7 @@ Enums.Notification = {
 	'AccountAlreadyExists': 801,
 
 	'MailServerError': 901,
+	'ClientViewError': 902,
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };

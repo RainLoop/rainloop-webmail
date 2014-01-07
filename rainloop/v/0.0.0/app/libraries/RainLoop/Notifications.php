@@ -51,10 +51,19 @@ class Notifications
 	const AccountAlreadyExists = 801;
 	
 	const MailServerError = 901;
+	const ClientViewError = 902;
 	const UnknownNotification = 998;
 	const UnknownError = 999;
 
-	static public function GetNotificationsMessage($iCode)
+	/**
+	 * @staticvar array $aMap
+	 * 
+	 * @param int $iCode
+	 * @param \Exception|null $oPrevious
+	 * 
+	 * @return string
+	 */
+	static public function GetNotificationsMessage($iCode, $oPrevious = null)
 	{
 		static $aMap = array(
 			self::InvalidToken => 'InvalidToken',
@@ -93,9 +102,15 @@ class Notifications
 			self::DemoSendMessageError => 'DemoSendMessageError',
 			self::AccountAlreadyExists => 'AccountAlreadyExists',
 			self::MailServerError => 'MailServerError',
+			self::ClientViewError => 'ClientViewError',
 			self::UnknownNotification => 'UnknownNotification',
 			self::UnknownError => 'UnknownError'
 		);
+
+		if (self::ClientViewError === $iCode && $oPrevious instanceof \Exception)
+		{
+			return $oPrevious->getMessage();
+		}
 
 		return isset($aMap[$iCode]) ? $aMap[$iCode].'['.$iCode.']' : 'UnknownNotification['.$iCode.']';
 	}
