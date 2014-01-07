@@ -390,23 +390,34 @@ class PdoPersonalAddressBook
 		
 		if (0 < \strlen($sSearch))
 		{
+			$sCustomSearch = $this->specialConvertSearchValueCustomPhone($sSearch);
+			if ('%%' === $sCustomSearch)
+			{
+				// TODO fix this
+				$sCustomSearch = '';
+			}
+			
 			$sSql = 'SELECT id_user, id_prop, id_contact FROM rainloop_pab_properties '.
 				'WHERE ('.
 				'id_user = :id_user'.
 				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '').
-				') AND (prop_value LIKE :search ESCAPE \'=\' OR ('.
-					'prop_type IN ('.\implode(',', array(
+				') AND (prop_value LIKE :search ESCAPE \'=\''.
+					(0 < \strlen($sCustomSearch) ? ' OR (prop_type IN ('.\implode(',', array(
 						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES,
 						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES,
 						PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES
-					)).') AND prop_value_custom LIKE :search_custom_phone'.
-				')) GROUP BY id_contact, id_prop';
+					)).') AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
+				') GROUP BY id_contact, id_prop';
 
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR),
-				':search_custom_phone' => array($this->specialConvertSearchValueCustomPhone($sSearch), \PDO::PARAM_STR)
+				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 			);
+
+			if (0 < \strlen($sCustomSearch))
+			{
+				$aParams[':search_custom_phone'] = array($sCustomSearch, \PDO::PARAM_STR);
+			}
 
 			if ($this->bConsiderShare)
 			{
@@ -430,6 +441,7 @@ class PdoPersonalAddressBook
 					}
 				}
 
+				$aSearchIds = \array_unique($aSearchIds);
 				$iCount = \count($aSearchIds);
 			}
 		}
@@ -465,8 +477,8 @@ class PdoPersonalAddressBook
 		if (0 < $iCount)
 		{
 			$sSql = 'SELECT * FROM rainloop_pab_contacts '.
-				'WHERE id_user = :id_user'.
-				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '')
+				'WHERE (id_user = :id_user'.
+				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all)' : ')')
 			;
 			
 			$aParams = array(

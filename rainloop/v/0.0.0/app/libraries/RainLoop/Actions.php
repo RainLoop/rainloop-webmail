@@ -4418,17 +4418,18 @@ class Actions
 		$iOffset = 0 > $iOffset ? 0 : $iOffset;
 		$iLimit = 0 > $iLimit ? 20 : $iLimit;
 
+		$iResultCount = 0;
 		if ($this->PersonalAddressBookProvider($oAccount)->IsActive())
 		{
-			$iCount = 0;
+			$iResultCount = 0;
 			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount->ParentEmailHelper(),
-				$iOffset, $iLimit, $sSearch, $iCount);
+				$iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Offset' => $iOffset,
 			'Limit' => $iLimit,
-			'Count' => $iCount,
+			'Count' => $iResultCount,
 			'Search' => $sSearch,
 			'List' => $mResult
 		));
