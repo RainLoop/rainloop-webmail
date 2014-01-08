@@ -600,7 +600,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			'OK' !== \substr($aResponse[\count($aResponse) - 1], 0, 2))
 		{
 			$this->writeLogException(
-				new \MailSo\Sieve\Exceptions\NegativeResponseException(),
+				new \MailSo\Sieve\Exceptions\NegativeResponseException($aResponse),
 				\MailSo\Log\Enumerations\Type::WARNING, true);
 		}
 	}

@@ -703,7 +703,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				if ('-' !== trim($aParts[1]) && !in_array((int) $aParts[0], $mExpectCode))
 				{
 					$this->writeLogException(
-						new Exceptions\NegativeResponseException(trim(
+						new Exceptions\NegativeResponseException($this->aResults, trim(
 							(0 < count($this->aResults) ? implode("\r\n", $this->aResults)."\r\n" : '').
 							$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 				}
@@ -711,7 +711,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			else
 			{
 				$this->writeLogException(
-					new Exceptions\ResponseException(trim(
+					new Exceptions\ResponseException($this->aResults, trim(
 						(0 < count($this->aResults) ? implode("\r\n", $this->aResults)."\r\n" : '').
 						$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 			}
