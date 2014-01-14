@@ -313,6 +313,14 @@ class ServiceActions
 	{
 		return $this->privateUpload('Upload');
 	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceUploadContacts()
+	{
+		return $this->privateUpload('UploadContacts');
+	}
 	
 	/**
 	 * @return string

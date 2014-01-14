@@ -149,9 +149,16 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable)
 		;
 		
 		$(this.oContentVisible)
+			.on('selectstart', function (oEvent) {
+				if (oEvent && oEvent.preventDefault)
+				{
+					oEvent.preventDefault();
+				}
+			})
 			.on('click', this.sItemSelector, function (oEvent) {
 				self.actionClick(ko.dataFor(this), oEvent);
-			}).on('click', this.sItemCheckedSelector, function (oEvent) {
+			})
+			.on('click', this.sItemCheckedSelector, function (oEvent) {
 				var oItem = ko.dataFor(this);
 				if (oItem)
 				{

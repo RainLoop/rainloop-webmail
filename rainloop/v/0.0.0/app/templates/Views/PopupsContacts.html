@@ -2,18 +2,44 @@
 	<div class="modal hide b-contacts-content" data-bind="modal: modalVisibility">
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
 			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
-			<a class="btn button-create-contact" data-bind="command: newCommand">
-				<i class="icon-plus"></i>
-				&nbsp;&nbsp;
-				<span class="i18n" data-i18n-text="CONTACTS/BUTTON_ADD_CONTACT"></span>
-			</a>
-			<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
-				<i class="icon-mail icon-white"></i>
-			</a>
-			<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
-				<i class="icon-trash icon-white"></i>
-				<span data-bind="text: 1 < contactsCheckedOrSelected().length ? ' (' + contactsCheckedOrSelected().length + ')' : ''"></span>
-			</a>
+			<div class="btn-toolbar">
+				
+				<div class="btn-group">
+					<a class="btn button-create-contact" data-bind="command: newCommand">
+						<i class="icon-plus"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="CONTACTS/BUTTON_ADD_CONTACT"></span>
+					</a>
+				</div>
+
+				<div class="btn-group">
+					<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
+						<i data-bind="css: {'icon-list': !contacts.importing(), 'icon-spinner animated': contacts.importing()}"></i>
+					</a>
+					<ul class="dropdown-menu g-ui-menu">
+						<li class="e-item">
+							<a class="e-link" data-bind="initDom: importUploaderButton">
+								<i class="icon-list-add"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_IMPORT"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="btn-group">
+					<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
+						<i class="icon-mail icon-white"></i>
+					</a>
+				</div>
+
+				<div class="btn-group">
+					<a class="btn btn-danger button-delete" data-bind="command: deleteCommand">
+						<i class="icon-trash icon-white"></i>
+						<span data-bind="text: 1 < contactsCheckedOrSelected().length ? ' (' + contactsCheckedOrSelected().length + ')' : ''"></span>
+					</a>
+				</div>
+			</div>
 		</div>
 		<div class="modal-body" style="position: relative">
 			<div class="b-list-toopbar">
@@ -58,7 +84,7 @@
 						<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()">
 							<span class="i18n" data-i18n-text="CONTACTS/EMPTY_SEARCH"></span>
 						</div>
-						<div class="e-contact-foreach" data-bind="foreach: contacts, visible: 0 < contacts().length">
+						<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: 0 < contacts().length">
 							<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCcc()">
 								<div class="sidebarParent">
 									&nbsp;
@@ -133,17 +159,6 @@
 										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>
 									</div>
 								</div>
-<!--								<div class="control-group" data-bind="foreach: viewPropertiesOther">
-									<label class="control-label remove-padding-top fix-width">
-										
-									</label>
-									<div class="controls fix-width">
-										<div class="property-line">
-											<span class="contactValueStatic" data-bind="text: value" />
-											<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
-										</div>
-									</div>
-								</div>-->
 								<div class="control-group">
 									<div class="controls fix-width">
 										<br />
@@ -151,10 +166,6 @@
 									</div>
 								</div>
 							</div>
-
-<!--							<div class="e-save-trigger">
-								<div data-bind="saveTrigger: viewSaveTrigger"></div>
-							</div>-->
 							
 							<div class="e-read-only-sign">
 								<i class="icon-lock iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>

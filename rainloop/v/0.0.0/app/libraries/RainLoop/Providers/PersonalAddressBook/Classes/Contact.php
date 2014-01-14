@@ -122,8 +122,8 @@ class Contact
 						$sFirstName = $oProperty->Value;
 					}
 					else if (\in_array($oProperty->Type, array(PropertyType::FULLNAME,
-						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES,
-						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES,
+						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
+						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER
 					)))
 					{
 						$sOther = $oProperty->Value;
@@ -287,6 +287,21 @@ class Contact
 					}
 				}
 			}
+
+			if (isset($oVCard->URL))
+			{
+				foreach($oVCard->URL as $oUrl)
+				{
+					$oTypes = $oEmail ? $oEmail['TYPE'] : null;
+					$sUrl = $oTypes ? \trim((string) $oUrl) : '';
+
+					if ($oTypes && 0 < \strlen($sUrl))
+					{
+						$oProp = new Property($oTypes->has('WORK') ? PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sEmail);
+						\array_push($aProperties, $oProp);
+					}
+				}
+			}
 			
 			if (isset($oVCard->TEL))
 			{
@@ -402,6 +417,7 @@ class Contact
 						break;
 					case PropertyType::EMAIl_PERSONAL:
 					case PropertyType::EMAIl_BUSSINES:
+					case PropertyType::EMAIl_OTHER:
 						$aParams = array('TYPE' => array('INTERNET'));
 						$aParams['TYPE'][] = PropertyType::EMAIl_BUSSINES === $oProperty->Type ? 'WORK' : 'HOME';
 
@@ -412,23 +428,33 @@ class Contact
 						}
 						$oVCard->add('EMAIL', $oProperty->Value, $aParams);
 						break;
+					case PropertyType::WEB_PAGE_PERSONAL:
+					case PropertyType::WEB_PAGE_BUSSINES:
+					case PropertyType::WEB_PAGE_OTHER:
+						$aParams = array('TYPE' => array());
+						$aParams['TYPE'][] = PropertyType::WEB_PAGE_BUSSINES === $oProperty->Type ? 'WORK' : 'HOME';
+						$oVCard->add('URL', $oProperty->Value, $aParams);
+						break;
 					case PropertyType::PHONE_PERSONAL:
 					case PropertyType::PHONE_BUSSINES:
+					case PropertyType::PHONE_OTHER:
 					case PropertyType::MOBILE_PERSONAL:
 					case PropertyType::MOBILE_BUSSINES:
+					case PropertyType::MOBILE_OTHER:
 					case PropertyType::FAX_PERSONAL:
 					case PropertyType::FAX_BUSSINES:
+					case PropertyType::FAX_OTHER:
 						$aParams = array('TYPE' => array());
 						$sType = '';
-						if (\in_array($oProperty->Type, array(PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES)))
+						if (\in_array($oProperty->Type, array(PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER)))
 						{
 							$sType = 'VOICE';
 						}
-						else if (\in_array($oProperty->Type, array(PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES)))
+						else if (\in_array($oProperty->Type, array(PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER)))
 						{
 							$sType = 'CELL';
 						}
-						else if (\in_array($oProperty->Type, array(PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES)))
+						else if (\in_array($oProperty->Type, array(PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER)))
 						{
 							$sType = 'FAX';
 						}

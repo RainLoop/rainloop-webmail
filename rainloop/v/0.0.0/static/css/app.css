@@ -5267,7 +5267,8 @@ a.badge:hover {
   line-height: 18px;
   font-size: 18px;
   margin-top: -2px;
-  margin-left: -2px;
+  margin-left: -1px;
+  width: 17px;
 }
 .iconsize24 {
   line-height: 24px;
@@ -5680,11 +5681,13 @@ html.no-rgba .modal {
 }
 .g-ui-user-select-none {
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
   -khtml-user-select: none;
   -moz-user-select: none;
+  -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  -webkit-touch-callout: none;
+  standard-user-select: none;
 }
 .g-ui-clearfix {
   *zoom: 1;
@@ -7483,7 +7486,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   box-shadow: none;
   border-color: #fff;
   font-size: 18px;
-  width: 250px;
+  width: 300px;
 }
 .b-contacts-content.modal .b-view-content .contactValueInput:hover {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);

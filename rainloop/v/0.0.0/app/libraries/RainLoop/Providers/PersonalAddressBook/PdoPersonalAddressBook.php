@@ -403,9 +403,9 @@ class PdoPersonalAddressBook
 				($this->bConsiderShare ? ' OR scope_type = :scope_type_share_all' : '').
 				') AND (prop_value LIKE :search ESCAPE \'=\''.
 					(0 < \strlen($sCustomSearch) ? ' OR (prop_type IN ('.\implode(',', array(
-						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES,
-						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES,
-						PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES
+						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
+						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER,
+						PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER
 					)).') AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
 				') GROUP BY id_contact, id_prop';
 
@@ -729,7 +729,7 @@ class PdoPersonalAddressBook
 		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 		));
 
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_pab_properties '.
@@ -759,6 +759,7 @@ class PdoPersonalAddressBook
 		{
 			$aIdContacts = array();
 			$aIdProps = array();
+			$aContactAllAccess = array();
 
 			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
 			if (\is_array($aFetch) && 0 < \count($aFetch))
@@ -767,10 +768,17 @@ class PdoPersonalAddressBook
 				{
 					$iIdContact = $aItem && isset($aItem['id_contact']) ? (int) $aItem['id_contact'] : 0;
 					$iIdProp = $aItem && isset($aItem['id_prop']) ? (int) $aItem['id_prop'] : 0;
+					$iType = $aItem && isset($aItem['prop_type']) ? (int) $aItem['prop_type'] : 0;
+					
 					if (0 < $iIdContact && 0 < $iIdProp)
 					{
 						$aIdContacts[$iIdContact] = $iIdContact;
 						$aIdProps[$iIdProp] = $iIdProp;
+
+						if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME)))
+						{
+							$aContactAllAccess[$iIdContact] = $iIdContact;
+						}
 					}
 				}
 			}
@@ -783,7 +791,7 @@ class PdoPersonalAddressBook
 				$oStmt->closeCursor();
 				
 				$sTypes = \implode(',', array(
-					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 				));
 
 				$sSql = 'SELECT id_prop, id_contact, prop_type, prop_value FROM rainloop_pab_properties '.
@@ -815,7 +823,8 @@ class PdoPersonalAddressBook
 
 									$aNames[$iIdContact][PropertyType::LAST_NAME === $iType ? 0 : 1] = $aItem['prop_value'];
 								}
-								else if (isset($aIdProps[$iIdProp]) && \in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
+								else if ((isset($aIdProps[$iIdProp]) || isset($aContactAllAccess[$iIdContact]))&&
+									\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
 								{
 									if (!isset($aEmails[$iIdContact]))
 									{
@@ -827,8 +836,8 @@ class PdoPersonalAddressBook
 							}
 						}
 
-						$this->writeLog($aNames);
-						$this->writeLog($aEmails);
+//						$this->writeLog($aNames);
+//						$this->writeLog($aEmails);
 
 						foreach ($aEmails as $iId => $aItems)
 						{
@@ -886,7 +895,7 @@ class PdoPersonalAddressBook
 		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = \implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES
+			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
 		));
 
 		$aExists = array();

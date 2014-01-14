@@ -3025,6 +3025,14 @@ LinkBuilder.prototype.upload = function ()
 /**
  * @return {string}
  */
+LinkBuilder.prototype.uploadContacts = function ()
+{
+	return this.sServer + '/UploadContacts/' + this.sSpecSuffix + '/';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.uploadBackground = function ()
 {
 	return this.sServer + '/UploadBackground/' + this.sSpecSuffix + '/';

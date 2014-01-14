@@ -32,7 +32,10 @@ function PopupsContactsViewModel()
 	this.contactsCount = ko.observable(0);
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
+	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	this.currentContact = ko.observable(null);
+
+	this.importUploaderButton = ko.observable(null);
 
 	this.contactsSharingIsAllowed = !!RL.settingsGet('ContactsSharingIsAllowed');
 
@@ -336,6 +339,46 @@ PopupsContactsViewModel.prototype.addNewPhone = function ()
 	this.addNewProperty(Enums.ContactPropertyType.MobilePersonal);
 };
 
+PopupsContactsViewModel.prototype.initUploader = function ()
+{
+	if (this.importUploaderButton())
+	{
+		var
+			oJua = new Jua({
+				'action': RL.link().uploadContacts(),
+				'name': 'uploader',
+				'queueSize': 1,
+				'multipleSizeLimit': 1,
+				'disableFolderDragAndDrop': true,
+				'disableDragAndDrop': true,
+				'disableMultiple': true,
+				'disableDocumentDropPrevent': true,
+				'clickElement': this.importUploaderButton()
+			})
+		;
+
+		if (oJua)
+		{
+			oJua
+				.on('onStart', _.bind(function () {
+					this.contacts.importing(true);
+				}, this))
+				.on('onComplete', _.bind(function (sId, bResult, oData) {
+					
+					this.contacts.importing(false);
+					this.reloadContactList();
+
+					if (!sId || !bResult || !oData || !oData.Result)
+					{
+						window.alert(Utils.i18n('CONTACTS/ERROR_IMPORT_FILE'));
+					}
+
+				}, this))
+			;
+		}
+	}
+};
+
 PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = function ()
 {
 	var
@@ -575,6 +618,8 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		
 		return bResult;
 	});
+
+	this.initUploader();
 };
 
 PopupsContactsViewModel.prototype.onShow = function ()

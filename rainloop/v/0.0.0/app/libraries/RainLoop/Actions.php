@@ -5123,6 +5123,235 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param resource $rFile
+	 * @param string $sFileStart
+	 *
+	 * @return int
+	 */
+	private function importContactsFromCsvFile($oAccount, $rFile, $sFileStart)
+	{
+		$this->Logger()->Write('Import Csv');
+
+		$iCount = 0;
+		$aHeaders = null;
+		$aData = array();
+		
+		if ($oAccount && \is_resource($rFile))
+		{
+			$oPab = $this->PersonalAddressBookProvider($oAccount);
+			if ($oPab)
+			{
+				$sDelimiter = ((int) \strpos($sFileStart, ',') > (int) \strpos($sFileStart, ';')) ? ',' : ';';
+
+				@\setlocale(LC_CTYPE, 'en_US.UTF-8');
+				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"')))
+				{
+					if (null === $aHeaders)
+					{
+						if (3 >= \count($mRow))
+						{
+							return 0;
+						}
+
+						$aHeaders = $mRow;
+					}
+					else
+					{
+						$aNewItem = array();
+						foreach ($aHeaders as $iIndex => $sHeaderValue)
+						{
+							$aNewItem[@\iconv('utf-8', 'utf-8//IGNORE', $sHeaderValue)] =
+								isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
+						}
+
+						$aData[] = $aNewItem;
+					}
+				}
+
+				if (\is_array($aData) && 0 < \count($aData))
+				{
+					$this->Logger()->Write('Start to import '.\count($aData).' contacts from csv file');
+					$oPab->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
+
+					$iCount = \count($aData);
+				}
+			}
+		}
+
+		return $iCount;
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param resource $rFile
+	 * @param string $sFileStart
+	 *
+	 *
+	 * @return int
+	 */
+	private function importContactsFromVcfFile($oAccount, $rFile, $sFileStart)
+	{
+		$this->Logger()->Write('Import Vcf');
+		
+		$iCount = 0;
+		if ($oAccount && \is_resource($rFile))
+		{
+			$oPab = $this->PersonalAddressBookProvider($oAccount);
+			if ($oPab)
+			{
+				$sFile = \stream_get_contents($rFile);
+				if (\is_resource($rFile))
+				{
+					@\fclose($rFile);
+				}
+
+				if (is_string($sFile) && 5 < \strlen($sFile))
+				{
+					$sFile = \trim($sFile);
+					if ("\xef\xbb\xbf" === \substr($sFile, 0, 3))
+					{
+						$sFile = \substr($sFile, 3);
+					}
+
+					$oVCard = null;
+					try
+					{
+						$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($sFile);
+					}
+					catch (\Exception $oExc)
+					{
+						$this->Logger()->WriteException($oExc);
+					};
+
+					if ($oVCardSplitter)
+					{
+						$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+
+						$oVCard = null;
+						$sEmail = $oAccount->ParentEmailHelper();
+
+						$this->Logger()->Write('Start to import contacts from vcf');
+						while ($oVCard = $oVCardSplitter->getNext())
+						{
+							if ($oVCard instanceof \Sabre\VObject\Component\VCard)
+							{
+								if (empty($oVCard->UID))
+								{
+									$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
+								}
+
+								$oContact->ParseVCard($oVCard, $oVCard->serialize());
+								if ($oPab->ContactSave($sEmail, $oContact))
+								{
+									$iCount++;
+								}
+
+								$oContact->Clear();
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $iCount;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function UploadContacts()
+	{
+		$oAccount = $this->getAccountFromToken();
+		$oConfig = $this->Config();
+
+		$sInputName = 'uploader';
+		$mResponse = false;
+
+		$iError = UploadError::UNKNOWN;
+		$iSizeLimit = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0)) * 1024 * 1024;
+		
+		if ($oAccount)
+		{
+			$oPab = $this->PersonalAddressBookProvider($oAccount);
+			if ($oPab)
+			{
+				$iError = UPLOAD_ERR_OK;
+				$_FILES = isset($_FILES) ? $_FILES : null;
+				if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
+				{
+					$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
+
+					if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
+					{
+						$iError = UploadError::CONFIG_SIZE;
+					}
+
+					$sSavedName = 'upload-post-'.md5($_FILES[$sInputName]['name'].$_FILES[$sInputName]['tmp_name']);
+
+					if (UPLOAD_ERR_OK === $iError)
+					{
+						if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES[$sInputName]['tmp_name']))
+						{
+							$iError = UploadError::ON_SAVING;
+						}
+
+						$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+						if ($mData)
+						{
+							$sFileStart = @\fread($mData, 20);
+							\rewind($mData);
+
+							if (false !== $sFileStart)
+							{
+								$sFileStart = \trim($sFileStart);
+								if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
+								{
+									$mResponse = $this->importContactsFromVcfFile($oAccount, $mData, $sFileStart);
+								}
+								else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
+								{
+									$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
+								}
+							}
+						}
+
+						if (\is_resource($mData))
+						{
+							@\fclose($mData);
+						}
+
+						unset($mData);
+						$this->FilesProvider()->Clear($oAccount, $sSavedName);
+					}
+				}
+				else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
+				{
+					$iError = UPLOAD_ERR_INI_SIZE;
+				}
+				else
+				{
+					$iError = UploadError::EMPTY_FILES_DATA;
+				}
+			}
+		}
+
+		if (UPLOAD_ERR_OK !== $iError)
+		{
+			$iClientError = UploadClientError::NORMAL;
+			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+			
+			if (!empty($sError))
+			{
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $mResponse);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function UploadBackground()
@@ -5200,7 +5429,7 @@ class Actions
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 			if (!empty($sError))
 			{
-				return $this->FalseResponse($sSavedName, $iClientError, $sError);
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
 			}
 		}
 

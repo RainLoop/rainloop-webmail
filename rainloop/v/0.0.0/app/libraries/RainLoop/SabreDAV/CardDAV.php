@@ -290,6 +290,12 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 				$sEmail = $this->getAuthEmail('', $mAddressBookID);
 				if (!empty($sEmail))
 				{
+					if (empty($oVCard->UID))
+					{
+						$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
+						$sCardData = $oVCard->serialize();
+					}
+
 					$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
 					$oContact->ParseVCard($oVCard, $sCardData);
 
@@ -358,6 +364,12 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 					$oContact = $this->oPersonalAddressBook->GetContactByID($sEmail, \substr($sCardUri, 0, -4), true);
 					if ($oContact && (0 === $iRev || $oContact->Changed < $iRev))
 					{
+						if (empty($oVCard->UID))
+						{
+							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
+							$sCardData = $oVCard->serialize();
+						}
+
 						$oContact->ParseVCard($oVCard, $sCardData);
 						if ($this->oPersonalAddressBook->ContactSave($sEmail, $oContact) && !empty($oContact->CardDavHash))
 						{
