@@ -5131,8 +5131,6 @@ class Actions
 	 */
 	private function importContactsFromCsvFile($oAccount, $rFile, $sFileStart)
 	{
-		$this->Logger()->Write('Import Csv');
-
 		$iCount = 0;
 		$aHeaders = null;
 		$aData = array();
@@ -5140,7 +5138,7 @@ class Actions
 		if ($oAccount && \is_resource($rFile))
 		{
 			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab)
+			if ($oPab && $oPab->IsActive())
 			{
 				$sDelimiter = ((int) \strpos($sFileStart, ',') > (int) \strpos($sFileStart, ';')) ? ',' : ';';
 
@@ -5171,10 +5169,8 @@ class Actions
 
 				if (\is_array($aData) && 0 < \count($aData))
 				{
-					$this->Logger()->Write('Start to import '.\count($aData).' contacts from csv file');
-					$oPab->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
-
-					$iCount = \count($aData);
+					$this->Logger()->Write('Import contacts from csv');
+					$iCount = $oPab->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
 				}
 			}
 		}
@@ -5192,13 +5188,11 @@ class Actions
 	 */
 	private function importContactsFromVcfFile($oAccount, $rFile, $sFileStart)
 	{
-		$this->Logger()->Write('Import Vcf');
-		
 		$iCount = 0;
 		if ($oAccount && \is_resource($rFile))
 		{
 			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab)
+			if ($oPab && $oPab->IsActive())
 			{
 				$sFile = \stream_get_contents($rFile);
 				if (\is_resource($rFile))
@@ -5208,49 +5202,8 @@ class Actions
 
 				if (is_string($sFile) && 5 < \strlen($sFile))
 				{
-					$sFile = \trim($sFile);
-					if ("\xef\xbb\xbf" === \substr($sFile, 0, 3))
-					{
-						$sFile = \substr($sFile, 3);
-					}
-
-					$oVCard = null;
-					try
-					{
-						$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($sFile);
-					}
-					catch (\Exception $oExc)
-					{
-						$this->Logger()->WriteException($oExc);
-					};
-
-					if ($oVCardSplitter)
-					{
-						$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
-
-						$oVCard = null;
-						$sEmail = $oAccount->ParentEmailHelper();
-
-						$this->Logger()->Write('Start to import contacts from vcf');
-						while ($oVCard = $oVCardSplitter->getNext())
-						{
-							if ($oVCard instanceof \Sabre\VObject\Component\VCard)
-							{
-								if (empty($oVCard->UID))
-								{
-									$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
-								}
-
-								$oContact->ParseVCard($oVCard, $oVCard->serialize());
-								if ($oPab->ContactSave($sEmail, $oContact))
-								{
-									$iCount++;
-								}
-
-								$oContact->Clear();
-							}
-						}
-					}
+					$this->Logger()->Write('Import contacts from vcf');
+					$iCount = $oPab->ImportVcfFile($oAccount->ParentEmailHelper(), $sFile);
 				}
 			}
 		}

@@ -174,6 +174,7 @@ class Contact
 		{
 			$oVCard = $this->ToVCardObject($this->CardDavData);
 			$this->CardDavData = $oVCard ? $oVCard->serialize() : $this->CardDavData;
+			unset($oVCard);
 		}
 
 		if (!empty($this->CardDavData))
@@ -221,21 +222,45 @@ class Contact
 		$aProperties = array();
 		if ($oVCard && $oVCard->UID)
 		{
+			$bOldVersion = empty($oVCard->VERSION) ? false : 
+				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
+
 			$this->IdContactStr = (string) $oVCard->UID;
 
 			if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
 			{
-				$aProperties[] = new Property(PropertyType::FULLNAME, \trim($oVCard->FN));
+				$sValue = \trim($oVCard->FN);
+				if ($bOldVersion && !isset($oVCard->FN->parameters['CHARSET']))
+				{
+					$sValue = \utf8_encode($sValue);
+				}
+
+				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+				$aProperties[] = new Property(PropertyType::FULLNAME, $sValue);
 			}
 
 			if (isset($oVCard->NICKNAME) && '' !== \trim($oVCard->NICKNAME))
 			{
-				$aProperties[] = new Property(PropertyType::NICK_NAME, \trim($oVCard->NICKNAME));
+				$sValue = \trim($oVCard->NICKNAME);
+				if ($bOldVersion && !isset($oVCard->NICKNAME->parameters['CHARSET']))
+				{
+					$sValue = \utf8_encode($sValue);
+				}
+
+				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+				$aProperties[] = new Property(PropertyType::NICK_NAME, $sValue);
 			}
 
 //			if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
 //			{
-//				$aProperties[] = new Property(PropertyType::NOTE, \trim($oVCard->NOTE));
+//				$sValue = \trim($oVCard->NOTE);
+//				if ($bOldVersion)
+//				{
+//					$sValue = \utf8_encode($sValue);
+//				}
+//				
+//				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+//				$aProperties[] = new Property(PropertyType::NOTE, $sValue);
 //			}
 
 			if (isset($oVCard->N))
@@ -244,6 +269,12 @@ class Contact
 				foreach ($aNames as $iIndex => $sValue)
 				{
 					$sValue = \trim($sValue);
+					if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET']))
+					{
+						$sValue = \utf8_encode($sValue);
+					}
+
+					$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
 					switch ($iIndex) {
 						case 0:
 							$aProperties[] = new Property(PropertyType::LAST_NAME, $sValue);
@@ -353,7 +384,7 @@ class Contact
 			
 			$this->Properties = $aProperties;
 
-			$this->CardDavData = $sVCard;
+			$this->CardDavData = \MailSo\Base\Utils::Utf8Clear($sVCard);
 		}
 
 		$this->UpdateDependentValues(false);

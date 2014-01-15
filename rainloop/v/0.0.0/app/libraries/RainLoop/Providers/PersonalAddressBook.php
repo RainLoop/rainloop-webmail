@@ -278,4 +278,64 @@ class PersonalAddressBook extends \RainLoop\Providers\AbstractProvider
 		
 		return $iCount;
 	}
+	
+	/**
+	 * @param string $sEmail
+	 * @param string $sVcfData
+	 *
+	 * @return int
+	 */
+	public function ImportVcfFile($sEmail, $sVcfData)
+	{
+		$iCount = 0;
+		if ($this->IsActive() && \is_string($sVcfData))
+		{
+			$sVcfData = \trim($sVcfData);
+			if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3))
+			{
+				$sVcfData = \substr($sVcfData, 3);
+			}
+
+			$oVCardSplitter = null;
+			try
+			{
+				$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($sVcfData);
+			}
+			catch (\Exception $oExc)
+			{
+				$this->Logger()->WriteException($oExc);
+			}
+
+			if ($oVCardSplitter)
+			{
+				$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+
+				$oVCard = null;
+
+				while ($oVCard = $oVCardSplitter->getNext())
+				{
+					if ($oVCard instanceof \Sabre\VObject\Component\VCard)
+					{
+						if (empty($oVCard->UID))
+						{
+							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
+						}
+
+						$oContact->ParseVCard($oVCard, $oVCard->serialize());
+						if (0 < \count($oContact->Properties))
+						{
+							if ($this->ContactSave($sEmail, $oContact))
+							{
+								$iCount++;
+							}
+						}
+
+						$oContact->Clear();
+					}
+				}
+			}
+		}
+
+		return $iCount;
+	}
 }
