@@ -264,25 +264,25 @@ WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
 			mFlaggedSubUid = null
 		;
 
-		if (aFlags && 5 === aFlags.length)
+		if (aFlags && 0 < aFlags.length)
 		{
-			oMessage.unseen(aFlags[0]);
-			oMessage.flagged(aFlags[1]);
-			oMessage.answered(aFlags[2]);
-			oMessage.forwarded(aFlags[3]);
-			oMessage.isReadReceipt(aFlags[4]);
+			oMessage.unseen(!!aFlags[0]);
+			oMessage.flagged(!!aFlags[1]);
+			oMessage.answered(!!aFlags[2]);
+			oMessage.forwarded(!!aFlags[3]);
+			oMessage.isReadReceipt(!!aFlags[4]);
 		}
 
 		if (0 < oMessage.threads().length)
 		{
 			mUnseenSubUid = _.find(oMessage.threads(), function (iSubUid) {
 				var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
-				return aFlags && 4 === aFlags.length && !!aFlags[0];
+				return aFlags && 0 < aFlags.length && !!aFlags[0];
 			});
 
 			mFlaggedSubUid = _.find(oMessage.threads(), function (iSubUid) {
 				var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
-				return aFlags && 4 === aFlags.length && !!aFlags[1];
+				return aFlags && 0 < aFlags.length && !!aFlags[1];
 			});
 
 			oMessage.hasUnseenSubMessage(mUnseenSubUid && 0 < Utils.pInt(mUnseenSubUid));
@@ -312,7 +312,7 @@ WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
  */
 WebMailCacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
 {
-	if (Utils.isArray(aFlags) && 4 === aFlags.length)
+	if (Utils.isArray(aFlags) && 0 < aFlags.length)
 	{
 		this.setMessageFlagsToCache(sFolder, sUid, aFlags);
 	}
