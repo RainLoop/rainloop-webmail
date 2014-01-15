@@ -292,13 +292,13 @@ class Contact
 			{
 				foreach($oVCard->URL as $oUrl)
 				{
-					$oTypes = $oEmail ? $oEmail['TYPE'] : null;
+					$oTypes = $oUrl ? $oUrl['TYPE'] : null;
 					$sUrl = $oTypes ? \trim((string) $oUrl) : '';
 
 					if ($oTypes && 0 < \strlen($sUrl))
 					{
-						$oProp = new Property($oTypes->has('WORK') ? PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sEmail);
-						\array_push($aProperties, $oProp);
+						\array_push($aProperties,
+							new Property($oTypes->has('WORK') ? PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sUrl));
 					}
 				}
 			}
