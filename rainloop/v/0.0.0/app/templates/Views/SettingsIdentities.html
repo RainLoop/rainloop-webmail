@@ -4,29 +4,38 @@
 			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITY"></span>
 		</div>
 		<div class="control-group">
-			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>
-			 </label>
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>
+			</label>
 			<div class="controls">
 				<input class="input-xlarge" type="text" data-bind="value: displayName, saveTrigger: displayNameTrigger" />
 				<div data-bind="saveTrigger: displayNameTrigger"></div>
 			</div>
 		</div>
 		<div class="control-group" style="display: none">
-			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_REPLY_TO"></span>
-			 </label>
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_REPLY_TO"></span>
+			</label>
 			<div class="controls">
 				<input class="input-xlarge" type="text" data-bind="value: replyTo" />
 			</div>
 		</div>
 		<div class="control-group">
-			 <label class="control-label">
-				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_SIGNATURE"></span>
-			 </label>
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_SIGNATURE"></span>
+			</label>
 			<div class="controls">
 				<textarea class="input-xxlarge" data-bind="value: signature, saveTrigger: signatureTrigger" rows="7" spellcheck="true"></textarea>
 				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { signatureToAll(!signatureToAll()); }">
+					<i data-bind="css: signatureToAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_ADD_SIGNATURE_TO_ALL"></span>
+				</label>
 			</div>
 		</div>
 	</div>

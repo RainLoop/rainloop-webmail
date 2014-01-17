@@ -66,6 +66,7 @@ function WebMailDataStorage()
 	// personal
 	this.displayName = ko.observable('');
 	this.signature = ko.observable('');
+	this.signatureToAll = ko.observable(false);
 	this.replyTo = ko.observable('');
 
 	// accounts
@@ -398,6 +399,7 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.displayName(RL.settingsGet('DisplayName'));
 	this.replyTo(RL.settingsGet('ReplyTo'));
 	this.signature(RL.settingsGet('Signature'));
+	this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
 
 	this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 

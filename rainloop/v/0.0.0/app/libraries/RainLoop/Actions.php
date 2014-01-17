@@ -1103,6 +1103,7 @@ class Actions
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
 		$aResult['Signature'] = '';
+		$aResult['SignatureToAll'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
 		$aResult['CustomThemeType'] = \RainLoop\Enumerations\CustomThemeType::LIGHT;
@@ -1141,6 +1142,7 @@ class Actions
 			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['DisplayName']);
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
 			$aResult['Signature'] = $oSettings->GetConf('Signature', $aResult['Signature']);
+			$aResult['SignatureToAll'] = !!$oSettings->GetConf('SignatureToAll', $aResult['SignatureToAll']);
 
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 		}
@@ -3082,6 +3084,7 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'DisplayName', 'string');
 		$this->setSettingsFromParams($oSettings, 'ReplyTo', 'string');
 		$this->setSettingsFromParams($oSettings, 'Signature', 'string');
+		$this->setSettingsFromParams($oSettings, 'SignatureToAll', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'CustomThemeImg', 'string');
 		

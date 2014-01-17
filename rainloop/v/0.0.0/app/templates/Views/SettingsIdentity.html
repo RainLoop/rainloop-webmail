@@ -29,5 +29,14 @@
 				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
 			</div>
 		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { signatureToAll(!signatureToAll()); }">
+					<i data-bind="css: signatureToAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_ADD_SIGNATURE_TO_ALL"></span>
+				</label>
+			</div>
+		</div>
 	</div>
 </div>

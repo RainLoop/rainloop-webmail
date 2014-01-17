@@ -565,6 +565,26 @@ PopupsComposeViewModel.prototype.onHide = function ()
 	kn.routeOn();
 };
 
+PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
+{
+	if ('' !== sSignature)
+	{
+		sFrom = Utils.pString(sFrom);
+		if ('' !== sFrom)
+		{
+			sSignature = sSignature.replace(/{{FROM}}/, sFrom);
+		}
+		else
+		{
+			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}/gm, '');
+		}
+
+		sSignature = Utils.trim(sSignature.replace(/{{FROM}}/, '').replace(/{{IF:FROM}}/, '').replace(/{{\/IF:FROM}}/, ''));
+	}
+
+	return sSignature;
+};
+
 /**
  * @param {string=} sType = Enums.ComposeType.Empty
  * @param {?MessageModel|Array=} oMessageOrArray = null
@@ -587,11 +607,13 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		aResplyAllParts = [],
 		oExcludeEmail = {},
 		mEmail = RL.data().accountEmail(),
+		sSignature = RL.data().signature(),
+		bSignatureToAll = RL.data().signatureToAll(),
 		aDownloads = [],
 		aDraftInfo = null,
 		oMessage = null,
 		sComposeType = sType || Enums.ComposeType.Empty,
-		fEmailArrayToStringLineHelper = function (aList) {
+		fEmailArrayToStringLineHelper = function (aList, bFriendly) {
 
 			var
 				iIndex = 0,
@@ -601,7 +623,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 			for (; iIndex < iLen; iIndex++)
 			{
-				aResult.push(aList[iIndex].toLine(false));
+				aResult.push(aList[iIndex].toLine(!!bFriendly));
 			}
 
 			return aResult.join(', ');
@@ -732,12 +754,19 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 					break;
 			}
 
+			if (bSignatureToAll && '' !== sSignature)
+			{
+				sText = Utils.convertPlainTextToHtml(this.convertSignature(sSignature,
+					fEmailArrayToStringLineHelper(oMessage.from, true))) + '<br />' + sText;
+			}
+
 			this.oEditor.setRawText(sText, oMessage.isHtml());
 		}
 	}
 	else if (this.oEditor && Enums.ComposeType.Empty === sComposeType)
 	{
-		this.oEditor.setRawText('<br />' + Utils.convertPlainTextToHtml(RL.data().signature()), Enums.EditorDefaultType.Html === RL.data().editorDefaultType());
+		this.oEditor.setRawText(Utils.convertPlainTextToHtml(this.convertSignature(sSignature)),
+			Enums.EditorDefaultType.Html === RL.data().editorDefaultType());
 	}
 	else if (Utils.isNonEmptyArray(oMessageOrArray))
 	{

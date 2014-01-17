@@ -9,6 +9,7 @@ function SettingsIdentity()
 	
 	this.displayName = oData.displayName;
 	this.signature = oData.signature;
+	this.signatureToAll = oData.signatureToAll;
 	this.replyTo = oData.replyTo;
 
 	this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -45,6 +46,12 @@ SettingsIdentity.prototype.onBuild = function ()
 		oData.signature.subscribe(function (sValue) {
 			RL.remote().saveSettings(f3, {
 				'Signature': sValue
+			});
+		});
+
+		oData.signatureToAll.subscribe(function (bValue) {
+			RL.remote().saveSettings(null, {
+				'SignatureToAll': bValue ? '1' : '0'
 			});
 		});
 		
