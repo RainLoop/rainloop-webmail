@@ -51,6 +51,7 @@ function MailBoxMessageViewViewModel()
 	this.replyAllCommand = createCommandHelper(Enums.ComposeType.ReplyAll);
 	this.forwardCommand = createCommandHelper(Enums.ComposeType.Forward);
 	this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
+	this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
 	
 	this.messageVisibilityCommand = Utils.createCommand(this, Utils.emptyFunction, this.messageVisibility);
 	

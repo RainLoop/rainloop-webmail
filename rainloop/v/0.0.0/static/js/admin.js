@@ -344,7 +344,8 @@ Enums.ComposeType = {
 	'ReplyAll': 'replyall',
 	'Forward': 'forward',
 	'ForwardAsAttachment': 'forward-as-attachment',
-	'Draft': 'draft'
+	'Draft': 'draft',
+	'EditAsNew': 'editasnew'
 };
 
 /**

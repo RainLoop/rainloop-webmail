@@ -344,7 +344,8 @@ Enums.ComposeType = {
 	'ReplyAll': 'replyall',
 	'Forward': 'forward',
 	'ForwardAsAttachment': 'forward-as-attachment',
-	'Draft': 'draft'
+	'Draft': 'draft',
+	'EditAsNew': 'editasnew'
 };
 
 /**
@@ -8726,6 +8727,19 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				this.sInReplyTo = oMessage.sInReplyTo;
 				this.sReferences = oMessage.sReferences;
 				break;
+
+			case Enums.ComposeType.EditAsNew:
+				this.to(fEmailArrayToStringLineHelper(oMessage.to));
+				this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
+				this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
+
+				this.subject(sSubject);
+				this.prepearMessageAttachments(oMessage, sComposeType);
+
+				this.aDraftInfo = Utils.isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+				this.sInReplyTo = oMessage.sInReplyTo;
+				this.sReferences = oMessage.sReferences;
+				break;
 		}
 
 		if (this.oEditor)
@@ -8762,7 +8776,8 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 					break;
 			}
 
-			if (bSignatureToAll && '' !== sSignature)
+			if (bSignatureToAll && '' !== sSignature &&
+				Enums.ComposeType.EditAsNew !== sComposeType)
 			{
 				sText = Utils.convertPlainTextToHtml(this.convertSignature(sSignature,
 					fEmailArrayToStringLineHelper(oMessage.from, true))) + '<br />' + sText;
@@ -9320,6 +9335,7 @@ PopupsComposeViewModel.prototype.prepearMessageAttachments = function (oMessage,
 
 				case Enums.ComposeType.Forward:
 				case Enums.ComposeType.Draft:
+				case Enums.ComposeType.EditAsNew:
 					bAdd = true;
 					break;
 				}
@@ -12102,6 +12118,7 @@ function MailBoxMessageViewViewModel()
 	this.replyAllCommand = createCommandHelper(Enums.ComposeType.ReplyAll);
 	this.forwardCommand = createCommandHelper(Enums.ComposeType.Forward);
 	this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
+	this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
 	
 	this.messageVisibilityCommand = Utils.createCommand(this, Utils.emptyFunction, this.messageVisibility);
 	
