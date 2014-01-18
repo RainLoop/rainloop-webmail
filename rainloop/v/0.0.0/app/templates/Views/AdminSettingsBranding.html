@@ -1,0 +1,56 @@
+<div class="b-admin-branding">
+	<div class="form-horizontal">
+		<div class="legend">
+			Branding
+		</div>
+		<div class="control-group">
+			 <label class="control-label">
+				Page Title
+			 </label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: title, saveTrigger: title.trigger" />
+				<div data-bind="saveTrigger: title.trigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Loading Description
+			</label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger" />
+				<div data-bind="saveTrigger: loadingDesc.trigger"></div>
+			</div>
+		</div>
+		<br />
+		<div class="legend">
+			Login Screen
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Logo
+			</label>
+			<div class="controls">
+				<input type="text" class="span5" placeholder="http://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger" />
+				<div data-bind="saveTrigger: loginLogo.trigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Description
+			</label>
+			<div class="controls">
+				<input type="text" class="span5" data-bind="value: loginDescription, saveTrigger: loginDescription.trigger" />
+				<div data-bind="saveTrigger: loginDescription.trigger"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Custom CSS
+			</label>
+			<div class="controls">
+				<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger" rows="7" spellcheck="true"></textarea>
+				<div style="vertical-align: top;" data-bind="saveTrigger: loginCss.trigger"></div>
+			</div>
+		</div>
+	</div>
+</div>

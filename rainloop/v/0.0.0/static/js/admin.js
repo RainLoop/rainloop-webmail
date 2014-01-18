@@ -5248,9 +5248,6 @@ function AdminGeneral()
 	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
 	this.allowIdentities = oData.allowIdentities;
 	
-	this.title = ko.observable(RL.settingsGet('Title'));
-	this.loadingDesc = ko.observable(RL.settingsGet('LoadingDescription'));
-
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
 			return {
@@ -5266,10 +5263,8 @@ function AdminGeneral()
 	
 	this.weakPassword = !!RL.settingsGet('WeakPassword');
 	
-	this.titleTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.loadingDescTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 }
 
 Utils.addSettingsViewModel(AdminGeneral, 'AdminSettingsGeneral', 'General', 'general', true);
@@ -5280,23 +5275,9 @@ AdminGeneral.prototype.onBuild = function ()
 	_.delay(function () {
 
 		var
-			f1 = Utils.settingsSaveHelperSimpleFunction(self.titleTrigger, self),
 			f2 = Utils.settingsSaveHelperSimpleFunction(self.languageTrigger, self),
-			f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self),
-			f4 = Utils.settingsSaveHelperSimpleFunction(self.loadingDescTrigger, self)
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self)
 		;
-
-		self.title.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f1, {
-				'Title': Utils.trim(sValue)
-			});
-		});
-
-		self.loadingDesc.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f4, {
-				'LoadingDescription': Utils.trim(sValue)
-			});
-		});
 
 		self.language.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f2, {
@@ -5394,6 +5375,75 @@ AdminLogin.prototype.onBuild = function ()
 		self.defaultDomain.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f1, {
 				'LoginDefaultDomain': Utils.trim(sValue)
+			});
+		});
+
+	}, 50);
+};
+
+/**
+ * @constructor
+ */
+function AdminBranding()
+{
+	this.title = ko.observable(RL.settingsGet('Title'));
+	this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.loadingDesc = ko.observable(RL.settingsGet('LoadingDescription'));
+	this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.loginLogo = ko.observable(RL.settingsGet('LoginLogo'));
+	this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.loginDescription = ko.observable(RL.settingsGet('LoginDescription'));
+	this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+	this.loginCss = ko.observable(RL.settingsGet('LoginCss'));
+	this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+}
+
+Utils.addSettingsViewModel(AdminBranding, 'AdminSettingsBranding', 'Branding', 'branding');
+
+AdminBranding.prototype.onBuild = function ()
+{
+	var self = this;
+	_.delay(function () {
+
+		var
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
+			f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
+			f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
+			f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self)
+		;
+
+		self.title.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f1, {
+				'Title': Utils.trim(sValue)
+			});
+		});
+
+		self.loadingDesc.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f2, {
+				'LoadingDescription': Utils.trim(sValue)
+			});
+		});
+
+		self.loginLogo.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f3, {
+				'LoginLogo': Utils.trim(sValue)
+			});
+		});
+
+		self.loginDescription.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f4, {
+				'LoginDescription': Utils.trim(sValue)
+			});
+		});
+
+		self.loginCss.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f5, {
+				'LoginCss': Utils.trim(sValue)
 			});
 		});
 

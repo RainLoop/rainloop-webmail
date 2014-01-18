@@ -10738,7 +10738,9 @@ function LoginViewModel()
 	this.password = ko.observable('');
 	this.signMe = ko.observable(false);
 
-	this.logoMain = ko.observable('RainLoop');
+	this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
+	this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
+	this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
 
 	this.emailError = ko.observable(false);
 	this.loginError = ko.observable(false);

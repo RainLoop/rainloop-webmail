@@ -81,6 +81,12 @@ class Application extends \RainLoop\Config\AbstractConfig
 0 for unlimited.')
 			),
 
+			'branding' => array(
+				'login_logo'		=> array(''),
+				'login_desc'		=> array(''),
+				'login_css'			=> array(''),
+			),
+
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
 				'allow_sharing'		=> array(true),

@@ -897,6 +897,9 @@ class Actions
 			'Email' => '',
 			'Title' => $oConfig->Get('webmail', 'title', ''),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', ''),
+			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
+			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
+			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
@@ -1948,6 +1951,10 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
+
+		$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
+		$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
+		$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');

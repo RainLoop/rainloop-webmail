@@ -6197,7 +6197,15 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
-  width: 380px;
+  /*width: 380px;*/
+
+}
+.b-login-content .loginFormWrapper .descWrapper {
+  margin-bottom: 10px;
+}
+.b-login-content .loginFormWrapper .descWrapper .desc {
+  font-size: 18px;
+  padding: 2px;
 }
 .b-login-content .loginFormWrapper .loginForm {
   background-color: #efefef;

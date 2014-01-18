@@ -1,6 +1,17 @@
+<style data-bind="text: logoCss"></style>
 <div class="b-login-content">
 	<div class="loginFormWrapper">
 		<center>
+			{{INCLUDE/BeforeLogo/PLACE}}
+			<!-- ko if: logoImg -->
+			<div class="logoWrapper">
+				<img class="logoImg" data-bind="attr: {'src': logoImg }" />
+			</div>
+			<!-- /ko -->
+			<div class="descWrapper thm-login-desc" data-bind="visible: '' !== loginDescription">
+				<span class="desc" data-bind="text: loginDescription"></span>
+			</div>
+			{{INCLUDE/AfterLogo/PLACE}}
 			<div class="alert" data-bind="visible: '' !== submitError()">
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>

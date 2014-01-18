@@ -181,6 +181,7 @@ module.exports = function (grunt) {
 
 					"dev/Admin/General.js",
 					"dev/Admin/Login.js",
+					"dev/Admin/Branding.js",
 					"dev/Admin/Contacts.js",
 					"dev/Admin/Domains.js",
 					"dev/Admin/Security.js",
