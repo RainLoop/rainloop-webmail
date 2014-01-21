@@ -551,6 +551,12 @@ class Utils
 	public static function MimeContentType($sFileName)
 	{
 		$sResult = 'application/octet-stream';
+		$sFileName = \trim(\strtolower($sFileName));
+
+		if ('winmail.dat' === $sFileName)
+		{
+			return 'application/ms-tnef';
+		}
 
 		$aMimeTypes = array(
 
@@ -715,7 +721,7 @@ class Utils
 
 		);
 
-		$sExt = \strtolower(\MailSo\Base\Utils::GetFileExtension($sFileName));
+		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
 		if (0 < \strlen($sExt) && isset($aMimeTypes[$sExt]))
 		{
 			$sResult = $aMimeTypes[$sExt];
