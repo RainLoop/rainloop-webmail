@@ -265,6 +265,16 @@ FolderModel.prototype.initComputed = function ()
 		'owner': this
 	});
 
+	this.hasUnreadMessages = ko.computed(function () {
+		return 0 < this.messageCountUnread();
+	}, this);
+
+	this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function () {
+		return !!_.find(this.subFolders(), function (oFolder) {
+			return oFolder.hasUnreadMessages() || oFolder.hasSubScribedUnreadMessagesSubfolders();
+		});
+	}, this);
+
 	return this;
 };
 

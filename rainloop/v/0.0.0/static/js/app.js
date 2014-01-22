@@ -7540,6 +7540,16 @@ FolderModel.prototype.initComputed = function ()
 		'owner': this
 	});
 
+	this.hasUnreadMessages = ko.computed(function () {
+		return 0 < this.messageCountUnread();
+	}, this);
+
+	this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function () {
+		return !!_.find(this.subFolders(), function (oFolder) {
+			return oFolder.hasUnreadMessages() || oFolder.hasSubScribedUnreadMessagesSubfolders();
+		});
+	}, this);
+
 	return this;
 };
 
@@ -8777,7 +8787,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 			}
 
 			if (bSignatureToAll && '' !== sSignature &&
-				Enums.ComposeType.EditAsNew !== sComposeType)
+				Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
 			{
 				sText = Utils.convertPlainTextToHtml(this.convertSignature(sSignature,
 					fEmailArrayToStringLineHelper(oMessage.from, true))) + '<br />' + sText;

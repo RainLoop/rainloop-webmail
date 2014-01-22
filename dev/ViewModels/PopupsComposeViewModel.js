@@ -768,7 +768,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 			}
 
 			if (bSignatureToAll && '' !== sSignature &&
-				Enums.ComposeType.EditAsNew !== sComposeType)
+				Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
 			{
 				sText = Utils.convertPlainTextToHtml(this.convertSignature(sSignature,
 					fEmailArrayToStringLineHelper(oMessage.from, true))) + '<br />' + sText;

@@ -89,17 +89,22 @@
 			}
 		</script>
 		<script type="text/javascript">
+			function __showError() {
+				var oR = document.getElementById('rl-loading'),
+					oL = document.getElementById('rl-loading-error');
+
+				if (oR) {oR.style.display = 'none';}
+				if (oL) {oL.style.display = 'block';}
+				if (window.SimplePace) {window.SimplePace.set(100);}
+			}
 			if (window.__RLBOOT) {
 				window.__RLBOOT(function (bV) {
 					if (!bV) {
-						var oR = document.getElementById('rl-loading'),
-							oL = document.getElementById('rl-loading-error');
-
-						if (oR) {oR.style.display = 'none';}
-						if (oL) {oL.style.display = 'block';}
-						if (window.SimplePace) {window.SimplePace.set(100);}
+						__showError();
 					}
 				});
+			} else {
+				__showError();
 			}
 		</script>
 	</body>

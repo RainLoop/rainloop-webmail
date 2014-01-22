@@ -6358,6 +6358,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .b-folders .e-item .e-link.print-count .count {
   display: inline;
 }
+.b-folders .e-item .e-link.unread-sub {
+  font-weight: bold;
+}
 .b-folders .e-item .e-link .e-collapsed-sign {
   cursor: pointer;
   width: 22px;
