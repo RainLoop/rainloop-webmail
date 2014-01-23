@@ -539,7 +539,7 @@ Utils.log = function (sDesc)
 
 /**
  * @param {number} iCode
- * @param {ыекштп=} mMessage = ''
+ * @param {*=} mMessage = ''
  * @return {string}
  */
 Utils.getNotification = function (iCode, mMessage)
