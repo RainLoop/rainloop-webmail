@@ -129,7 +129,17 @@ class Service
 		$aPaths = \explode('/', $sQuery);
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
-		$bAdmin = !empty($aPaths[0]) && \in_array(\strtolower($aPaths[0]), array('admin', 'cp'));
+		$bAdmin = false;
+		$sAdminPanelHost = $this->oActions->Config()->Get('security', 'admin_panel_host', '');
+		if (empty($sAdminPanelHost))
+		{
+			$bAdmin = !empty($aPaths[0]) && \in_array(\strtolower($aPaths[0]), array('admin', 'cp'));
+		}
+		else if (empty($aPaths[0]) && \strtolower($sAdminPanelHost) === \strtolower($this->oHttp->GetHost()))
+		{
+			$bAdmin = true;
+		}
+
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
 			echo $this->oActions->ErrorTemplates('Access Denied.',
