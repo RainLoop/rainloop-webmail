@@ -41,7 +41,7 @@ class Login extends \RainLoop\Providers\AbstractProvider
 
 		if ($this->oDriver->ProvideParameters($sEmail, $sLogin, $sPassword))
 		{
-			$oDomain = $this->oDomainProvider->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail));
+			$oDomain = $this->oDomainProvider->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if ($oDomain instanceof \RainLoop\Domain && !$oDomain->Disabled() && $oDomain->ValidateWhiteList($sEmail, $sLogin))
 			{
 				$oResult = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);

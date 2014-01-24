@@ -313,9 +313,10 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount)
 			{
-				$sFileName = \str_replace('{user:email}', \strtolower($oAccount->Email()), $sFileName);
-				$sFileName = \str_replace('{user:login}', $oAccount->IncLogin(), $sFileName);
-				$sFileName = \str_replace('{user:domain}', \strtolower($oAccount->Domain()->Name()), $sFileName);
+				$sEmail = \strtolower($oAccount->Email());
+				$sFileName = \str_replace('{user:email}', $sEmail, $sFileName);
+				$sFileName = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sFileName);
+				$sFileName = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sFileName);
 			}
 
 			$sFileName = \preg_replace('/\{user:([^}]*)\}/', 'unknown', $sFileName);
@@ -834,7 +835,7 @@ class Actions
 				}
 				else
 				{
-					$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($aAccountHash[1]));
+					$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($aAccountHash[1]), true);
 					if ($bThrowExceptionOnFalse)
 					{
 						if (!($oDomain instanceof \RainLoop\Domain) || $oDomain->Disabled())
@@ -1288,7 +1289,7 @@ class Actions
 		{
 			$this->loginErrorDelay();
 
-			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail));
+			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if (!($oDomain instanceof \RainLoop\Domain) || $oDomain->Disabled())
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
