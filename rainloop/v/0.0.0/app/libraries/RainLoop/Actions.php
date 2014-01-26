@@ -1280,8 +1280,23 @@ class Actions
 	 * @return \RainLoop\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess($sEmail, $sLogin, $sPassword, $sSignMeToken = '')
+	public function LoginProcess(&$sEmail, &$sLogin, &$sPassword, $sSignMeToken = '')
 	{
+		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
+		{
+			$sEmail = $sEmail.'@'.\trim(\trim($this->Config()->Get('login', 'default_domain', '')), ' @');
+		}
+
+		if (!$this->Config()->Get('login', 'allow_custom_login', false) || 0 === \strlen($sLogin))
+		{
+			$sLogin = $sEmail;
+		}
+
+		if (0 === \strlen($sLogin))
+		{
+			$sLogin = $sEmail;
+		}
+
 		$this->Plugins()->RunHook('filter.login-credentials', array(&$sEmail, &$sLogin, &$sPassword));
 
 		$oAccount = $this->LoginProvider()->Provide($sEmail, $sLogin, $sPassword, $sSignMeToken);
@@ -1343,25 +1358,11 @@ class Actions
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === $this->GetActionParam('SignMe', '0');
 
-		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
-		{
-			$sEmail = $sEmail.'@'.\trim($this->Config()->Get('login', 'default_domain', ''), ' @');
-		}
-		
-		if (!$this->Config()->Get('login', 'allow_custom_login', false) || 0 === \strlen($sLogin))
-		{
-			$sLogin = $sEmail;
-		}
-
-		$sSignMeToken = '';
-		if ($bSignMe)
-		{
-			$sSignMeToken = \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail);
-		}
-
 		$this->Logger()->AddSecret($sPassword);
 
-		$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword, $sSignMeToken);
+		$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
+			$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '');
+
 		$this->AuthProcess($oAccount);
 
 		if ($oAccount && 0 < \strlen($sLanguage))
@@ -1509,11 +1510,6 @@ class Actions
 		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-
-		if (!$this->Config()->Get('login', 'allow_custom_login', false) || 0 === strlen($sLogin))
-		{
-			$sLogin = $sEmail;
-		}
 
 		$this->Logger()->AddSecret($sPassword);
 

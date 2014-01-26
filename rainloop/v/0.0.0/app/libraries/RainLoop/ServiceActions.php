@@ -825,21 +825,18 @@ class ServiceActions
 	 */
 	public function ServiceExternalLogin()
 	{
+		$oException = null;
+		$oAccount = null;
+		
 		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false))
 		{
-			$oException = null;
+			$sEmail = trim($this->oHttp->GetRequest('Email', ''));
+			$sLogin = trim($this->oHttp->GetRequest('Login', ''));
+			$sPassword = $this->oHttp->GetRequest('Password', '');
+
 			try
 			{
-				$sEmail = trim($this->oHttp->GetRequest('Email', ''));
-				$sLogin = trim($this->oHttp->GetRequest('Login', ''));
-				$sPassword = $this->oHttp->GetRequest('Password', '');
-
 				$this->oActions->Logger()->AddSecret($sPassword);
-
-				if (0 === \strlen($sLogin))
-				{
-					$sLogin = $sEmail;
-				}
 
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
 				$this->oActions->AuthProcess($oAccount);
@@ -850,7 +847,38 @@ class ServiceActions
 			}
 		}
 
-		$this->oActions->Location('./');
+		switch (\strtolower($this->oHttp->GetRequest('Output', 'Redirect')))
+		{
+			case 'json':
+				
+				@\header('Content-Type: application/json; charset=utf-8');
+				
+				$aResult = array(
+					'Action' => 'ExternalLogin',
+					'Result' => $oAccount instanceof \RainLoop\Account ? true : false,
+					'ErrorCode' => 0
+				);
+
+				if (!$aResult['Result'])
+				{
+					if ($oException instanceof \RainLoop\Exceptions\ClientException)
+					{
+						$aResult['ErrorCode'] = $oException->getCode();
+					}
+					else
+					{
+						$aResult['ErrorCode'] = \RainLoop\Notifications::AuthError;
+					}
+				}
+
+				return \MailSo\Base\Utils::Php2js($aResult);
+				
+			case 'redirect':
+			default:
+				$this->oActions->Location('./');
+				break;
+		}
+
 		return '';
 	}
 
