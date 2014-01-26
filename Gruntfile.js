@@ -45,6 +45,14 @@ module.exports = function (grunt) {
 				src: 'vendors/jquery-cookie/jquery.cookie.js',
 				dest: 'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js'
 			},
+			ifvisible: {
+				options: {
+					banner: '/*!ifvisible.js v1.0.0 (c) 2013 Serkan Yersen | MIT */\n',
+					preserveComments: 'false'
+				},
+				src: 'vendors/ifvisible/src/ifvisible.js',
+				dest: 'vendors/ifvisible/ifvisible.min.js'
+			},
 			wakeup: {
 				options: {
 					banner: '/*! jQuery WakeUp plugin (c) 2013 Paul Okopny <paul.okopny@gmail.com> | MIT */\n',
@@ -130,6 +138,7 @@ module.exports = function (grunt) {
 					"vendors/knockout-projections/knockout-projections-1.0.0.min.js",
 					"vendors/ssm/ssm.min.js",
 					"vendors/jua/jua.min.js",
+					"vendors/ifvisible/ifvisible.min.js",
 					"vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
 					"vendors/bootstrap/js/bootstrap.min.js",
 					"dev/Common/_LibsEnd.js"
@@ -217,8 +226,8 @@ module.exports = function (grunt) {
 				options: {
 					stripBanners: true,
 					banner: '/*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
-						'(function (window, $, ko, crossroads, hasher, moment, Jua, _) {\n',
-					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _));'
+						'(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible) {\n',
+					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible));'
 				},
 				src: [
 					"dev/Common/_Begin.js",
@@ -445,6 +454,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('cookie', ['uglify:cookie']);
 	grunt.registerTask('mousewheel', ['uglify:mousewheel']);
 	grunt.registerTask('inputosaurus', ['uglify:inputosaurus']);
+	grunt.registerTask('ifvisible', ['uglify:ifvisible']);
 	// ---
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);

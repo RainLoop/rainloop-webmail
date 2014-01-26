@@ -17,8 +17,6 @@ function MessageModel()
 	this.toEmailsString = ko.observable('');
 	this.senderEmailsString = ko.observable('');
 
-	this.prefetched = false;
-
 	this.emails = [];
 
 	this.from = [];
@@ -228,8 +226,6 @@ MessageModel.prototype.clear = function ()
 	this.toEmailsString('');
 	this.senderEmailsString('');
 
-	this.prefetched = false;
-
 	this.emails = [];
 
 	this.from = [];
@@ -299,8 +295,6 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.uid = oJsonMessage.Uid;
 		this.requestHash = oJsonMessage.RequestHash;
 		
-		this.prefetched = false;
-
 		this.size(Utils.pInt(oJsonMessage.Size));
 
 		this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);

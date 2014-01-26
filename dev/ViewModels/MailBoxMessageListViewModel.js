@@ -9,6 +9,7 @@ function MailBoxMessageListViewModel()
 	KnoinAbstractViewModel.call(this, 'Right', 'MailMessageList');
 
 	this.sLastUid = null;
+	this.bPrefetch = false;
 	this.emptySubjectValue = '';
 
 	var oData = RL.data();
@@ -796,6 +797,51 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	}, this).extend({'notify': 'always'});
 
 	this.initUploaderForAppend();
+
+	if (!Globals.bMobileDevice && !!RL.settingsGet('AllowPrefetch') && ifvisible)
+	{
+		ifvisible.setIdleDuration(10);
+
+		ifvisible.idle(function () {
+			self.prefetchNextTick();
+		});
+	}
+};
+
+MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
+{
+	if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisibility())
+	{
+		var 
+			self = this,
+			oCache = RL.cache(),
+			oMessage = _.find(this.messageList(), function (oMessage) {
+				return oMessage &&
+					!oCache.hasRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
+			})
+		;
+		
+		if (oMessage)
+		{
+			this.bPrefetch = true;
+
+			RL.cache().addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
+			
+			RL.remote().message(function (sResult, oData) {
+				
+				var bNext = !!(Enums.StorageResultType.Success === sResult && oData && oData.Result);
+				
+				_.delay(function () {
+					self.bPrefetch = false;
+					if (bNext)
+					{
+						self.prefetchNextTick();
+					}
+				}, 1000);
+				
+			}, oMessage.folderFullNameRaw, oMessage.uid);
+		}
+	}
 };
 
 MailBoxMessageListViewModel.prototype.composeClick = function ()

@@ -41,7 +41,7 @@ function AdminLoginViewModel()
 
 		RL.remote().adminLogin(_.bind(function (sResult, oData) {
 
-			if (Enums.StorageResultType.Success === sResult && oData&& 'AdminLogin' === oData.Action)
+			if (Enums.StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
 			{
 				if (oData.Result)
 				{

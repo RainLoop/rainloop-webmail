@@ -53,6 +53,7 @@
 		"ko"			: true,
 		"ssm"			: true,
 		"moment"		: true,
+		"ifvisible"		: true,
 		"crossroads"	: true,
 		"hasher"		: true,
 		"Jua"			: true,

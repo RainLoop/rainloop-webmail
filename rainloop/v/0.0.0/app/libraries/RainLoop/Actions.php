@@ -909,6 +909,7 @@ class Actions
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
 			'AllowIdentities' => (bool) $oConfig->Get('webmail', 'allow_identities', true),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
+			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
