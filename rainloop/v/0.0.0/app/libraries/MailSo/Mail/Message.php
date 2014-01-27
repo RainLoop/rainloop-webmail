@@ -106,6 +106,11 @@ class Message
 	/**
 	 * @var string
 	 */
+	private $sPlainRaw;
+
+	/**
+	 * @var string
+	 */
 	private $sHtml;
 
 	/**
@@ -159,6 +164,11 @@ class Message
 	private $iThreadsLen;
 
 	/**
+	 * @var string
+	 */
+	private $sPgpSignature;
+
+	/**
 	 * @access private
 	 */
 	private function __construct()
@@ -191,6 +201,7 @@ class Message
 		$this->oBcc = null;
 
 		$this->sPlain = '';
+		$this->sPlainRaw = '';
 		$this->sHtml = '';
 
 		$this->oAttachments = null;
@@ -207,6 +218,8 @@ class Message
 		$this->aThreads = array();
 		$this->iThreadsLen = 0;
 		$this->iParentThread = 0;
+
+		$this->sPgpSignature = '';
 
 		return $this;
 	}
@@ -230,9 +243,25 @@ class Message
 	/**
 	 * @return string
 	 */
+	public function PlainRaw()
+	{
+		return $this->sPlainRaw;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function Html()
 	{
 		return $this->sHtml;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function PgpSignature()
+	{
+		return $this->sPgpSignature;
 	}
 
 	/**
@@ -527,8 +556,6 @@ class Message
 			$oBodyStructure = $oFetchResponse->GetFetchBodyStructure();
 		}
 
-		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : array();
-
 		$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
 		$sSize = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE);
 		$sInternalDate = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::INTERNALDATE);
@@ -704,6 +731,7 @@ class Message
 			$this->sInReplyTo = $oFetchResponse->GetFetchEnvelopeValue(8, '');
 		}
 
+		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
 		if (\is_array($aTextParts) && 0 < \count($aTextParts))
 		{
 			if (0 === \strlen($sCharset))
@@ -749,9 +777,43 @@ class Message
 			else
 			{
 				$this->sPlain = \implode("\n", $sPlainParts);
+				$this->sPlainRaw = $this->sPlain;
 			}
 
-			unset($sHtmlParts, $sPlainParts);
+			$aMatch = array();
+			if (\preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
+			{
+				$this->sPgpSignature = $aMatch[0];
+				$this->sPlain = \trim($this->sPlain);
+			}
+
+			$aMatch = array();
+			if (!empty($this->sPgpSignature) &&
+				\preg_match('/-----BEGIN PGP SIGNED MESSAGE-----(.+)-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) &&
+				!empty($aMatch[0]) && isset($aMatch[1]))
+			{
+				$this->sPlain = \str_replace($aMatch[0], $aMatch[1], $this->sPlain);
+				$this->sPlain = \trim(\preg_replace('/^Hash: [^\s]+/i', '', \trim($this->sPlain)));
+			}
+
+			unset($sHtmlParts, $sPlainParts, $aMatch);
+		}
+
+		if (empty($this->sPgpSignature) && 'multipart/signed' === \strtolower($this->sContentType) &&
+			'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				\MailSo\Mime\Enumerations\Parameter::PROTOCOL
+			)))
+		{
+			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
+			if (\is_array($aPgpSignatureParts) && 0 < \count($aPgpSignatureParts) && isset($aPgpSignatureParts[0]))
+			{
+				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
+				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE'))
+				{
+					$this->sPgpSignature = \trim($sPgpSignatureText);
+				}
+			}
 		}
 
 		if ($oBodyStructure)

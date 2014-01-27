@@ -13,4 +13,5 @@ class Parameter
 	const NAME = 'name';
 	const FILENAME = 'filename';
 	const BOUNDARY = 'boundary';
+	const PROTOCOL = 'protocol';
 }

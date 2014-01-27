@@ -112,6 +112,13 @@ module.exports = function (grunt) {
 				],
 				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/boot.js'
 			},
+			js_openpgp: {
+				nonull: true,
+				src: [
+					"vendors/openpgp.min.js",
+				],
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/openpgp.js'
+			},
 			js_libs: {
 				nonull: true,
 				options: {
@@ -383,7 +390,7 @@ module.exports = function (grunt) {
 					nospawn: true
 				},
 				files: ['dev/**/*.js', 'vendors/**/*.js'],
-				tasks: ['concat:js_libs', 'concat:js_admin', 'concat:js_app']
+				tasks: ['concat:js_libs', 'concat:js_openpgp', 'concat:js_admin', 'concat:js_app']
 			},
 			styles: {
 				options: {

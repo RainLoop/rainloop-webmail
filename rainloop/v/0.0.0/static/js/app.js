@@ -3225,6 +3225,15 @@ LinkBuilder.prototype.notificationMailIcon = function ()
 /**
  * @return {string}
  */
+LinkBuilder.prototype.openPgpJs = function ()
+{
+	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
+		this.sVersion + '/static/js/openpgp.js';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.socialGoogle = function ()
 {
 	return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
@@ -17362,6 +17371,18 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
+//				if (window.crypto && window.crypto.getRandomValues)
+//				{
+//					$.ajax({
+//						'url': RL.link().openPgpJs(),
+//						'dataType': 'script',
+//						'cache': true,
+//						'success': function () {
+//							window.console.log('openPgpJs');
+//						}
+//					});
+//				}
+
 				kn.startScreens([MailBoxScreen, SettingsScreen]);
 				
 				// setup maito protocol
@@ -17426,7 +17447,6 @@ RainLoopApp.prototype.bootstart = function ()
 			}
 
 			if (!Globals.bMobileDevice)
-//			if (false)
 			{
 				_.defer(function () {
 					Utils.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);

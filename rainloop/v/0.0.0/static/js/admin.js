@@ -3225,6 +3225,15 @@ LinkBuilder.prototype.notificationMailIcon = function ()
 /**
  * @return {string}
  */
+LinkBuilder.prototype.openPgpJs = function ()
+{
+	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
+		this.sVersion + '/static/js/openpgp.js';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.socialGoogle = function ()
 {
 	return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');

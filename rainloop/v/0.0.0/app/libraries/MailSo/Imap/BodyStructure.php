@@ -249,6 +249,14 @@ class BodyStructure
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsPgpSignature()
+	{
+		return 'application/pgp-signature' === \strtolower($this->ContentType());
+	}
+
+	/**
 	 * @return array|null
 	 */
 	public function SearchPlainParts()

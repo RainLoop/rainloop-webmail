@@ -6320,13 +6320,14 @@ class Actions
 						}
 					}
 
-					$sPlain = '';
+					$sPlain = $sPlainRaw = '';
 					$sHtml = $mResponse->Html();
 					$bRtl = false;
 					
 					if (0 === \strlen($sHtml))
 					{
 						$sPlain = $mResponse->Plain();
+						$sPlainRaw = $mResponse->PlainRaw();
 						$bRtl = \MailSo\Base\Utils::IsRTL($sPlain);
 					}
 					else
@@ -6341,9 +6342,12 @@ class Actions
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls);
 
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
+					$mResult['PlainRaw'] = $sPlainRaw;
 					$mResult['Rtl'] = $bRtl;
 
-					unset($sHtml, $sPlain);
+					$mResult['PgpSignature'] = $mResponse->PgpSignature();
+
+					unset($sHtml, $sPlain, $sPlainRaw);
 
 					$mResult['HasExternals'] = $bHasExternals;
 					$mResult['HasInternals'] = (\is_array($mFoundedCIDs) && 0 < \count($mFoundedCIDs)) ||

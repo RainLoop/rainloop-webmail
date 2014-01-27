@@ -785,6 +785,18 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
+//				if (window.crypto && window.crypto.getRandomValues)
+//				{
+//					$.ajax({
+//						'url': RL.link().openPgpJs(),
+//						'dataType': 'script',
+//						'cache': true,
+//						'success': function () {
+//							window.console.log('openPgpJs');
+//						}
+//					});
+//				}
+
 				kn.startScreens([MailBoxScreen, SettingsScreen]);
 				
 				// setup maito protocol
@@ -849,7 +861,6 @@ RainLoopApp.prototype.bootstart = function ()
 			}
 
 			if (!Globals.bMobileDevice)
-//			if (false)
 			{
 				_.defer(function () {
 					Utils.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
