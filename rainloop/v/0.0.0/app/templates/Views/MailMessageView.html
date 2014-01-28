@@ -194,15 +194,15 @@
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 									</div>
-									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned(), click: function() {}">
+									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned(), click: receivePrivateKey">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										PGP signed
+										PGP signed (click to verify)
 									</div>
-									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted(), click: function() {}">
+									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted(), click: receivePrivateKey">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										PGP encrypted
+										PGP encrypted (click to decrypt)
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">

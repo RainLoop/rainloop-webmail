@@ -10765,6 +10765,69 @@ PopupsAskViewModel.prototype.onBuild = function ()
  * @constructor
  * @extends KnoinAbstractViewModel
  */
+function PopupsPgpKey()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsPgpKey');
+
+	this.key = ko.observable('');
+	this.passphrase = ko.observable('');
+
+	this.bPrivate = null;
+	this.fCallback = null;
+
+	// commands
+	this.sendPgp = Utils.createCommand(this, function () {
+
+		var sKey = Utils.trim(this.key());
+		if (this.fCallback && sKey)
+		{
+			this.fCallback(this.passphrase(), sKey);
+		}
+
+		this.cancelCommand();
+	});
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsPgpKey', PopupsPgpKey);
+
+PopupsPgpKey.prototype.clearPopup = function ()
+{
+//	this.key('');
+//	this.passphrase('');
+
+	this.bPrivate = null;
+	this.fCallback = null;
+};
+
+PopupsPgpKey.prototype.onBuild = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		var bResult = true;
+		if (oEvent && self.modalVisibility() && Enums.EventKeyCode.Esc === oEvent.keyCode)
+		{
+			Utils.delegateRun(self, 'closeCommand');
+			bResult = false;
+		}
+
+		return bResult;
+	});
+};
+
+PopupsPgpKey.prototype.onShow = function (bPrivate, fCallback)
+{
+	this.clearPopup();
+
+	this.bPrivate = bPrivate;
+	this.fCallback = fCallback;
+};
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
 function LoginViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Center', 'Login');
@@ -12352,6 +12415,38 @@ MailBoxMessageViewViewModel.prototype.toggleFullScreen = function ()
 MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 {
 	kn.showScreenPopup(PopupsComposeViewModel, [sType, RL.data().message()]);
+};
+
+MailBoxMessageViewViewModel.prototype.receivePrivateKey = function ()
+{
+	var self = this;
+	kn.showScreenPopup(PopupsPgpKey, [true, function (sPrivatePassphrase, sPrivateKey) {
+		var oMessage = self.message(), mPgpMessage, mPgpKey, mDecPgpKey;
+		if (oMessage)
+		{
+			try
+			{
+				mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
+				mPgpKey = window.openpgp.key.readArmored(sPrivateKey);
+
+				if (mPgpMessage && mPgpKey && mPgpKey.keys && mPgpKey.keys[0])
+				{
+					mDecPgpKey = mPgpKey.keys[0];
+					if ('' !== sPrivatePassphrase)
+					{
+						mDecPgpKey.decrypt(sPrivatePassphrase);
+					}
+
+					oMessage.body.html(
+						'<pre class="b-plain-openpgp encrypted">' +
+						window.openpgp.decryptMessage(mDecPgpKey, mPgpMessage) +
+						'</pre>'
+					);
+				}
+			}
+			catch (oExt) {}
+		}
+	}]);
 };
 
 MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)

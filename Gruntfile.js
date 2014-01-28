@@ -280,6 +280,7 @@ module.exports = function (grunt) {
 					"dev/ViewModels/PopupsIdentityViewModel.js",
 					"dev/ViewModels/PopupsLanguagesViewModel.js",
 					"dev/ViewModels/PopupsAskViewModel.js",
+					"dev/ViewModels/PopupsPgpKey.js",
 
 					"dev/ViewModels/LoginViewModel.js",
 

@@ -6285,6 +6285,19 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .popups .b-ask-content .desc-place {
   font-size: 18px;
 }
+.popups .b-pgp-key {
+  width: 620px;
+}
+.popups .b-pgp-key .modal-header {
+  background-color: #fff;
+}
+.popups .b-pgp-key .inputPassphrase,
+.popups .b-pgp-key .inputKey {
+  width: 575px;
+}
+.popups .b-pgp-key .inputKey {
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+}
 .b-folders .b-toolbar {
   position: absolute;
   top: 0;
@@ -7074,10 +7087,6 @@ showImages html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .readReceipt {
   background-color: #ffffd9;
-}
-.messageView .b-content .messageItem .pgpSigned,
-.messageView .b-content .messageItem .pgpEncrypted {
-  cursor: default;
 }
 .messageView .b-content .messageItem .attachmentsPlace {
   padding: 10px;
