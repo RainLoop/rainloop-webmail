@@ -220,19 +220,28 @@ class Contact
 		}
 
 		$aProperties = array();
-		if ($oVCard && $oVCard->UID)
+		if ($oVCard)
 		{
 			$bOldVersion = empty($oVCard->VERSION) ? false : 
 				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
 
-			$this->IdContactStr = (string) $oVCard->UID;
+			$this->IdContactStr = $oVCard->UID ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
 
 			if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
 			{
 				$sValue = \trim($oVCard->FN);
 				if ($bOldVersion && !isset($oVCard->FN->parameters['CHARSET']))
 				{
-					$sValue = \utf8_encode($sValue);
+					if (0 < \strlen($sValue))
+					{
+						$sEncValue = @\utf8_encode($sValue);
+						if (0 === \strlen($sEncValue))
+						{
+							$sEncValue = $sValue;
+						}
+						
+						$sValue = $sEncValue;
+					}
 				}
 
 				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
@@ -244,7 +253,16 @@ class Contact
 				$sValue = \trim($oVCard->NICKNAME);
 				if ($bOldVersion && !isset($oVCard->NICKNAME->parameters['CHARSET']))
 				{
-					$sValue = \utf8_encode($sValue);
+					if (0 < \strlen($sValue))
+					{
+						$sEncValue = @\utf8_encode($sValue);
+						if (0 === \strlen($sEncValue))
+						{
+							$sEncValue = $sValue;
+						}
+
+						$sValue = $sEncValue;
+					}
 				}
 
 				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
@@ -256,7 +274,16 @@ class Contact
 //				$sValue = \trim($oVCard->NOTE);
 //				if ($bOldVersion)
 //				{
-//					$sValue = \utf8_encode($sValue);
+//					if (0 < \strlen($sValue))
+//					{
+//						$sEncValue = @\utf8_encode($sValue);
+//						if (0 === \strlen($sEncValue))
+//						{
+//							$sEncValue = $sValue;
+//						}
+//
+//						$sValue = $sEncValue;
+//					}
 //				}
 //				
 //				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
@@ -271,7 +298,16 @@ class Contact
 					$sValue = \trim($sValue);
 					if ($bOldVersion && !isset($oVCard->N->parameters['CHARSET']))
 					{
-						$sValue = \utf8_encode($sValue);
+						if (0 < \strlen($sValue))
+						{
+							$sEncValue = @\utf8_encode($sValue);
+							if (0 === \strlen($sEncValue))
+							{
+								$sEncValue = $sValue;
+							}
+
+							$sValue = $sEncValue;
+						}
 					}
 
 					$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
@@ -301,19 +337,27 @@ class Contact
 				foreach($oVCard->EMAIL as $oEmail)
 				{
 					$oTypes = $oEmail ? $oEmail['TYPE'] : null;
-					$sEmail = $oTypes ? \trim((string) $oEmail) : '';
+					$sEmail = $oEmail ? \trim($oEmail->getValue()) : '';
 
-					if ($oTypes && 0 < \strlen($sEmail))
+					if (0 < \strlen($sEmail))
 					{
-						$oProp = new Property($oTypes->has('WORK') ? PropertyType::EMAIl_BUSSINES : PropertyType::EMAIl_PERSONAL, $sEmail);
-						if (!$bPref && $oTypes->has('pref'))
+						if ($oTypes)
 						{
-							$bPref = true;
-							\array_unshift($aProperties, $oProp);
+							$oProp = new Property($oTypes->has('WORK') ? PropertyType::EMAIl_BUSSINES : PropertyType::EMAIl_PERSONAL, $sEmail);
+							if (!$bPref && $oTypes->has('pref'))
+							{
+								$bPref = true;
+								\array_unshift($aProperties, $oProp);
+							}
+							else
+							{
+								\array_push($aProperties, $oProp);
+							}
 						}
 						else
 						{
-							\array_push($aProperties, $oProp);
+							\array_unshift($aProperties,
+								new Property(PropertyType::EMAIl_PERSONAL, $sEmail));
 						}
 					}
 				}
@@ -324,12 +368,13 @@ class Contact
 				foreach($oVCard->URL as $oUrl)
 				{
 					$oTypes = $oUrl ? $oUrl['TYPE'] : null;
-					$sUrl = $oTypes ? \trim((string) $oUrl) : '';
+					$sUrl = $oUrl ? \trim((string) $oUrl) : '';
 
-					if ($oTypes && 0 < \strlen($sUrl))
+					if (0 < \strlen($sUrl))
 					{
 						\array_push($aProperties,
-							new Property($oTypes->has('WORK') ? PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sUrl));
+							new Property($oTypes && $oTypes->has('WORK') ?
+								PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sUrl));
 					}
 				}
 			}
@@ -342,41 +387,49 @@ class Contact
 					$oTypes = $oTel ? $oTel['TYPE'] : null;
 					$sTel = $oTypes ? \trim((string) $oTel) : '';
 
-					if ($oTypes && 0 < \strlen($sTel))
+					if (0 < \strlen($sTel))
 					{
-						$oProp = null;
-						$bWork = $oTypes->has('WORK');
-						
-						switch (true)
+						if ($oTypes)
 						{
-							case $oTypes->has('VOICE'):
-								$oProp = new Property($bWork ? PropertyType::PHONE_BUSSINES : PropertyType::PHONE_PERSONAL, $sTel);
-								break;
-							case $oTypes->has('CELL'):
-								$oProp = new Property($bWork ? PropertyType::MOBILE_BUSSINES : PropertyType::MOBILE_PERSONAL, $sTel);
-								break;
-							case $oTypes->has('FAX'):
-								$oProp = new Property($bWork ? PropertyType::FAX_BUSSINES : PropertyType::FAX_PERSONAL, $sTel);
-								break;
-							case $oTypes->has('WORK'):
-								$oProp = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
-								break;
-							default:
-								$oProp = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
-								break;
-						}
+							$oProp = null;
+							$bWork = $oTypes->has('WORK');
 
-						if ($oProp)
+							switch (true)
+							{
+								case $oTypes->has('VOICE'):
+									$oProp = new Property($bWork ? PropertyType::PHONE_BUSSINES : PropertyType::PHONE_PERSONAL, $sTel);
+									break;
+								case $oTypes->has('CELL'):
+									$oProp = new Property($bWork ? PropertyType::MOBILE_BUSSINES : PropertyType::MOBILE_PERSONAL, $sTel);
+									break;
+								case $oTypes->has('FAX'):
+									$oProp = new Property($bWork ? PropertyType::FAX_BUSSINES : PropertyType::FAX_PERSONAL, $sTel);
+									break;
+								case $oTypes->has('WORK'):
+									$oProp = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
+									break;
+								default:
+									$oProp = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
+									break;
+							}
+
+							if ($oProp)
+							{
+								if (!$bPref && $oTypes->has('pref'))
+								{
+									$bPref = true;
+									\array_unshift($aProperties, $oProp);
+								}
+								else
+								{
+									\array_push($aProperties, $oProp);
+								}
+							}
+						}
+						else
 						{
-							if (!$bPref && $oTypes->has('pref'))
-							{
-								$bPref = true;
-								\array_unshift($aProperties, $oProp);
-							}
-							else
-							{
-								\array_push($aProperties, $oProp);
-							}
+							\array_unshift($aProperties, 
+								new Property(PropertyType::MOBILE_PERSONAL, $sTel));
 						}
 					}
 				}
