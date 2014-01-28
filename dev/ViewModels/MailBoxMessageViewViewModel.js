@@ -84,7 +84,7 @@ function MailBoxMessageViewViewModel()
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
-
+	
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);

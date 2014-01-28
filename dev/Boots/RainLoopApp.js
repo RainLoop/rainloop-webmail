@@ -703,6 +703,7 @@ RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
 
 RainLoopApp.prototype.bootstart = function ()
 {
+	RL.pub('rl.bootstart');
 	AbstractApp.prototype.bootstart.call(this);
 
 	RL.data().populateDataOnStart();
@@ -785,17 +786,26 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
-//				if (window.crypto && window.crypto.getRandomValues)
-//				{
-//					$.ajax({
-//						'url': RL.link().openPgpJs(),
-//						'dataType': 'script',
-//						'cache': true,
-//						'success': function () {
-//							window.console.log('openPgpJs');
-//						}
-//					});
-//				}
+				if (window.crypto && window.crypto.getRandomValues && RL.settingsGet('OpenPGP'))
+				{
+					$.ajax({
+						'url': RL.link().openPgpJs(),
+						'dataType': 'script',
+						'cache': true,
+						'success': function () {
+							if (window.openpgp)
+							{
+//								window.console.log(window.openpgp);
+								Globals.bAllowOpenPGP = true;
+								RL.pub('openpgp.init');
+							}
+						}
+					});
+				}
+				else
+				{
+					Globals.bAllowOpenPGP = false;
+				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);
 				
@@ -846,13 +856,15 @@ RainLoopApp.prototype.bootstart = function ()
 
 				}, 2000);
 
-
 				Plugins.runHook('rl-start-user-screens');
+				RL.pub('rl.bootstart-user-screens');
 			}
 			else
 			{
 				kn.startScreens([LoginScreen]);
+
 				Plugins.runHook('rl-start-login-screens');
+				RL.pub('rl.bootstart-login-screens');
 			}
 
 			if (window.SimplePace)
@@ -878,6 +890,7 @@ RainLoopApp.prototype.bootstart = function ()
 			kn.startScreens([LoginScreen]);
 
 			Plugins.runHook('rl-start-login-screens');
+			RL.pub('rl.bootstart-login-screens');
 
 			if (window.SimplePace)
 			{
@@ -925,6 +938,7 @@ RainLoopApp.prototype.bootstart = function ()
 	});
 
 	Plugins.runHook('rl-start-screens');
+	RL.pub('rl.bootstart-end');
 };
 
 /**

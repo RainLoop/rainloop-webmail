@@ -106,11 +106,6 @@ class Message
 	/**
 	 * @var string
 	 */
-	private $sPlainRaw;
-
-	/**
-	 * @var string
-	 */
 	private $sHtml;
 
 	/**
@@ -169,6 +164,16 @@ class Message
 	private $sPgpSignature;
 
 	/**
+	 * @var bool
+	 */
+	private $bPgpSigned;
+
+	/**
+	 * @var bool
+	 */
+	private $bPgpEncrypted;
+
+	/**
 	 * @access private
 	 */
 	private function __construct()
@@ -201,7 +206,6 @@ class Message
 		$this->oBcc = null;
 
 		$this->sPlain = '';
-		$this->sPlainRaw = '';
 		$this->sHtml = '';
 
 		$this->oAttachments = null;
@@ -220,6 +224,8 @@ class Message
 		$this->iParentThread = 0;
 
 		$this->sPgpSignature = '';
+		$this->bPgpSigned = false;
+		$this->bPgpEncrypted = false;
 
 		return $this;
 	}
@@ -243,14 +249,6 @@ class Message
 	/**
 	 * @return string
 	 */
-	public function PlainRaw()
-	{
-		return $this->sPlainRaw;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function Html()
 	{
 		return $this->sHtml;
@@ -262,6 +260,22 @@ class Message
 	public function PgpSignature()
 	{
 		return $this->sPgpSignature;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function PgpSigned()
+	{
+		return $this->bPgpSigned;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function PgpEncrypted()
+	{
+		return $this->bPgpEncrypted;
 	}
 
 	/**
@@ -776,24 +790,20 @@ class Message
 			}
 			else
 			{
-				$this->sPlain = \implode("\n", $sPlainParts);
-				$this->sPlainRaw = $this->sPlain;
+				$this->sPlain = \trim(\implode("\n", $sPlainParts));
 			}
 
 			$aMatch = array();
 			if (\preg_match('/-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
 			{
-				$this->sPgpSignature = $aMatch[0];
-				$this->sPlain = \trim($this->sPlain);
+				$this->sPgpSignature = \trim($aMatch[0]);
+				$this->bPgpSigned = true;
 			}
 
 			$aMatch = array();
-			if (!empty($this->sPgpSignature) &&
-				\preg_match('/-----BEGIN PGP SIGNED MESSAGE-----(.+)-----BEGIN PGP SIGNATURE-----(.+)-----END PGP SIGNATURE-----/ism', $this->sPlain, $aMatch) &&
-				!empty($aMatch[0]) && isset($aMatch[1]))
+			if (\preg_match('/-----BEGIN PGP MESSAGE-----/ism', $this->sPlain, $aMatch) && !empty($aMatch[0]))
 			{
-				$this->sPlain = \str_replace($aMatch[0], $aMatch[1], $this->sPlain);
-				$this->sPlain = \trim(\preg_replace('/^Hash: [^\s]+/i', '', \trim($this->sPlain)));
+				$this->bPgpEncrypted = true;
 			}
 
 			unset($sHtmlParts, $sPlainParts, $aMatch);
@@ -812,6 +822,7 @@ class Message
 				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE'))
 				{
 					$this->sPgpSignature = \trim($sPgpSignatureText);
+					$this->bPgpSigned = true;
 				}
 			}
 		}

@@ -68,6 +68,11 @@ Globals.bAllowPdfPreview = !Globals.bMobileDevice;
 /**
  * @type {boolean}
  */
+Globals.bAllowOpenPGP = false;
+
+/**
+ * @type {boolean}
+ */
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
 /**

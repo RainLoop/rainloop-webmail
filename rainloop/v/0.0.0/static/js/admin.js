@@ -146,6 +146,11 @@ Globals.bAllowPdfPreview = !Globals.bMobileDevice;
 /**
  * @type {boolean}
  */
+Globals.bAllowOpenPGP = false;
+
+/**
+ * @type {boolean}
+ */
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
 /**
@@ -5774,6 +5779,7 @@ AdminDomains.prototype.onDomainListChangeRequest = function ()
 function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
+	this.openPGP = ko.observable(!!RL.settingsGet('OpenPGP'));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -5831,6 +5837,12 @@ AdminSecurity.prototype.onBuild = function ()
 	this.csrfProtection.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'TokenProtection': bValue ? '1' : '0'
+		});
+	});
+
+	this.openPGP.subscribe(function (bValue) {
+		RL.remote().saveAdminConfig(Utils.emptyFunction, {
+			'OpenPGP': bValue ? '1' : '0'
 		});
 	});
 };
@@ -7365,6 +7377,7 @@ AbstractApp.prototype.sub = function (sName, fFunc, oContext)
  */
 AbstractApp.prototype.pub = function (sName, aArgs)
 {
+	Plugins.runHook('rl-pub', [sName, aArgs]);
 	if (!Utils.isUnd(this.oSubs[sName]))
 	{
 		_.each(this.oSubs[sName], function (aItem) {

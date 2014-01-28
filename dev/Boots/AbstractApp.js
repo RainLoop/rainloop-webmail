@@ -238,6 +238,7 @@ AbstractApp.prototype.sub = function (sName, fFunc, oContext)
  */
 AbstractApp.prototype.pub = function (sName, aArgs)
 {
+	Plugins.runHook('rl-pub', [sName, aArgs]);
 	if (!Utils.isUnd(this.oSubs[sName]))
 	{
 		_.each(this.oSubs[sName], function (aItem) {

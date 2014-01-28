@@ -82,10 +82,15 @@ function MessageModel()
 	}, this);
 
 	this.body = null;
+	this.plainRaw = '';
 	this.isRtl = ko.observable(false);
 	this.isHtml = ko.observable(false);
 	this.hasImages = ko.observable(false);
 	this.attachments = ko.observableArray([]);
+
+	this.isPgpSigned = ko.observable(false);
+	this.isPgpEncrypted = ko.observable(false);
+	this.pgpSignature = ko.observable('');
 
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
 	this.readReceipt = ko.observable('');
@@ -253,6 +258,10 @@ MessageModel.prototype.clear = function ()
 	this.isHtml(false);
 	this.hasImages(false);
 	this.attachments([]);
+	
+	this.isPgpSigned(false);
+	this.isPgpEncrypted(false);
+	this.pgpSignature('');
 
 	this.priority(Enums.MessagePriority.Normal);
 	this.readReceipt('');
@@ -346,6 +355,13 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sMessageId = oJsonMessage.MessageId;
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
+
+		if (Globals.bAllowOpenPGP)
+		{
+			this.isPgpSigned(!!oJsonMessage.PgpSigned);
+			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
+			this.pgpSignature(oJsonMessage.PgpSignature);
+		}
 
 		this.hasAttachments(!!oJsonMessage.HasAttachments);
 		this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
@@ -807,6 +823,10 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 //	this.isHtml(false);
 //	this.hasImages(false);
 //	this.attachments([]);
+
+//	this.isPgpSigned(false);
+//	this.isPgpEncrypted(false);
+//	this.pgpSignature('');
 
 	this.priority(Enums.MessagePriority.Normal);
 	this.aDraftInfo = [];

@@ -902,6 +902,7 @@ class Actions
 			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
 			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
+			'OpenPGP' => $oConfig->Get('security', 'openpgp', false),
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
@@ -1955,6 +1956,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
+		$this->setConfigFromParams($oConfig, 'OpenPGP', 'security', 'openpgp', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
@@ -6320,14 +6322,13 @@ class Actions
 						}
 					}
 
-					$sPlain = $sPlainRaw = '';
+					$sPlain = '';
 					$sHtml = $mResponse->Html();
 					$bRtl = false;
 					
 					if (0 === \strlen($sHtml))
 					{
 						$sPlain = $mResponse->Plain();
-						$sPlainRaw = $mResponse->PlainRaw();
 						$bRtl = \MailSo\Base\Utils::IsRTL($sPlain);
 					}
 					else
@@ -6341,13 +6342,15 @@ class Actions
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls);
 
+					$mResult['PlainRaw'] = $sPlain;
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
-					$mResult['PlainRaw'] = $sPlainRaw;
 					$mResult['Rtl'] = $bRtl;
 
+					$mResult['PgpSigned'] = $mResponse->PgpSigned();
+					$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
 					$mResult['PgpSignature'] = $mResponse->PgpSignature();
 
-					unset($sHtml, $sPlain, $sPlainRaw);
+					unset($sHtml, $sPlain);
 
 					$mResult['HasExternals'] = $bHasExternals;
 					$mResult['HasInternals'] = (\is_array($mFoundedCIDs) && 0 < \count($mFoundedCIDs)) ||

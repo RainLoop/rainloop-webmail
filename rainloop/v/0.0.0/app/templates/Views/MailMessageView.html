@@ -194,6 +194,16 @@
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 									</div>
+									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned(), click: function() {}">
+										<i class="icon-lock"></i>
+										&nbsp;&nbsp;
+										PGP signed
+									</div>
+									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted(), click: function() {}">
+										<i class="icon-lock"></i>
+										&nbsp;&nbsp;
+										PGP encrypted
+									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 											<li class="attachmentItem" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart }">

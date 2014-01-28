@@ -181,7 +181,7 @@ html.rl-no-preview-pane {
 				height: 0px;
 			}
 
-			.showImages, .readReceipt {
+			.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
 				cursor: pointer;
 				padding: 10px 15px;
 				border-bottom: 1px solid #ddd;
@@ -190,6 +190,10 @@ html.rl-no-preview-pane {
 
 			.readReceipt {
 				background-color: #ffffd9;
+			}
+
+			.pgpSigned, .pgpEncrypted {
+				cursor: default;
 			}
 
 			.attachmentsPlace {
@@ -306,16 +310,15 @@ html.rl-no-preview-pane {
 					&.plain {
 
 						padding: 15px;
+						font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 
 						pre {
 							margin: 0px;
 							padding: 0px;
-							font-family: arial, sans-serif;
 							background: #fff;
 							border: none;
-							white-space: normal;
 						}
-
+						
 						blockquote {
 							border-left: 2px solid blue;
 							color: blue;

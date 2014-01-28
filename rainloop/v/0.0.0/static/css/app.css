@@ -7064,7 +7064,9 @@ showImages html.rl-no-preview-pane .messageView.message-selected {
   height: 0px;
 }
 .messageView .b-content .messageItem .showImages,
-.messageView .b-content .messageItem .readReceipt {
+.messageView .b-content .messageItem .readReceipt,
+.messageView .b-content .messageItem .pgpSigned,
+.messageView .b-content .messageItem .pgpEncrypted {
   cursor: pointer;
   padding: 10px 15px;
   border-bottom: 1px solid #ddd;
@@ -7072,6 +7074,10 @@ showImages html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .readReceipt {
   background-color: #ffffd9;
+}
+.messageView .b-content .messageItem .pgpSigned,
+.messageView .b-content .messageItem .pgpEncrypted {
+  cursor: default;
 }
 .messageView .b-content .messageItem .attachmentsPlace {
   padding: 10px;
@@ -7165,14 +7171,13 @@ showImages html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain {
   padding: 15px;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain pre {
   margin: 0px;
   padding: 0px;
-  font-family: arial, sans-serif;
   background: #fff;
   border: none;
-  white-space: normal;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain blockquote {
   border-left: 2px solid blue;
@@ -7685,25 +7690,6 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-compose .b-attachment-place.drag-and-drop-over {
   background: #777;
   color: #fff;
-}
-.b-compose .editorTextArea,
-.b-compose .editorHtmlArea {
-  background: #fff;
-  color: #000;
-  font-family: Arial, Verdana, Geneva, sans-serif;
-  font-size: 14px;
-}
-.b-compose .editorTextArea table,
-.b-compose .editorHtmlArea table {
-  border-collapse: separate;
-}
-.b-compose .editorTextArea blockquote,
-.b-compose .editorHtmlArea blockquote {
-  border: 0;
-  border-left: solid 2px #444;
-  margin-left: 5px;
-  margin: 5px 0;
-  padding-left: 5px;
 }
 .b-admin-left .b-toolbar {
   position: absolute;
@@ -8650,12 +8636,14 @@ html.rl-started-trigger.no-mobile #rl-content {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  background: #fff;
+  color: #000;
   border: 0px !important;
   overflow: auto;
   overflow-y: scroll;
-  font-family: arial, sans-serif;
-  font-size: 14px;
-  line-height: 16px;
+  font-family: Arial, Verdana, Geneva, sans-serif;
+  font-size: 13px;
+  line-height: 15px;
   margin: 0px;
   padding: 8px;
 }
@@ -8672,8 +8660,10 @@ html.rl-started-trigger.no-mobile #rl-content {
   list-style-type: decimal !important;
 }
 .textAreaParent .editorHtmlArea blockquote {
+  border: 0;
   border-left: solid 2px #444;
   margin-left: 5px;
+  margin: 5px 0;
   padding-left: 5px;
 }
 .textAreaParent .editorHtmlArea img {
@@ -8686,14 +8676,16 @@ html.rl-started-trigger.no-mobile #rl-content {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  background: #fff;
+  color: #000;
   display: block;
   border: 0px !important;
   width: 100%;
-  line-height: 16px;
   margin: 0px;
   padding: 8px;
-  font-family: arial, sans-serif;
-  font-size: 14px;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 15px;
   overflow: auto;
   overflow-y: scroll;
 }

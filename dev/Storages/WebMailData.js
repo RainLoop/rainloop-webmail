@@ -709,6 +709,10 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oBody = null,
 		oTextBody = null,
 		sId = '',
+		sPlain = '',
+		bPgpSigned = false,
+		bPgpEncrypted = false,
+		mPgpMessage = null,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
 		oMessage = this.message()
 	;
@@ -747,7 +751,57 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
 				{
 					bIsHtml = false;
-					oBody.html(oData.Result.Plain.toString()).addClass('b-text-part plain');
+					sPlain = oData.Result.Plain.toString();
+					
+					if (Globals.bAllowOpenPGP && (oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
+						Utils.isNormal(oData.Result.PlainRaw))
+					{
+						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oData.Result.PlainRaw);
+						if (!bPgpEncrypted)
+						{
+							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oData.Result.PlainRaw) &&
+								/-----BEGIN PGP SIGNATURE-----/.test(oData.Result.PlainRaw);
+						}
+						
+						if (bPgpSigned && oMessage.isPgpSigned() && oMessage.pgpSignature())
+						{
+							sPlain = '<pre class="b-plain-openpgp signed">' + oData.Result.PlainRaw + '</pre>';
+
+							try
+							{
+								mPgpMessage = window.openpgp.cleartext.readArmored(oData.Result.PlainRaw);
+							}
+							catch (oExc) {}
+
+							if (mPgpMessage && mPgpMessage.getText)
+							{
+								sPlain = mPgpMessage.getText();
+							}
+							else
+							{
+								bPgpSigned = false;
+							}
+						}
+						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
+						{
+							try
+							{
+								mPgpMessage = window.openpgp.message.readArmored(oData.Result.PlainRaw);
+							}
+							catch (oExc) {}
+
+							sPlain = '<pre class="b-plain-openpgp encrypted">' + oData.Result.PlainRaw + '</pre>';
+						}
+
+						if (bPgpSigned || bPgpEncrypted)
+						{
+							oBody.data('rl-plain-raw', oData.Result.PlainRaw);
+							oBody.data('rl-plain-pgp-encrypted', bPgpEncrypted);
+							oBody.data('rl-plain-pgp-signed', bPgpSigned);
+						}
+					}
+
+					oBody.html(sPlain).addClass('b-text-part plain');
 				}
 				else
 				{
@@ -760,15 +814,19 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					oBody.addClass('rtl-text-part');
 				}
 
-				oMessagesBodiesDom.append(oBody);
-				
-				oBody.data('rl-is-html', bIsHtml);
-				oBody.data('rl-has-images', bHasExternals);
-
-				oMessage.isRtl(!!oBody.data('rl-is-rtl'));
-				oMessage.isHtml(!!oBody.data('rl-is-html'));
-				oMessage.hasImages(!!oBody.data('rl-has-images'));
 				oMessage.body = oBody;
+				if (oMessage.body)
+				{
+					oMessagesBodiesDom.append(oMessage.body);
+
+					oMessage.body.data('rl-is-html', bIsHtml);
+					oMessage.body.data('rl-has-images', bHasExternals);
+					
+					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
+					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
+					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
+					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
+				}
 
 				if (bHasInternals)
 				{
@@ -784,12 +842,26 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 			}
 			else
 			{
-				oTextBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-				
-				oMessage.isRtl(!!oTextBody.data('rl-is-rtl'));
-				oMessage.isHtml(!!oTextBody.data('rl-is-html'));
-				oMessage.hasImages(!!oTextBody.data('rl-has-images'));
 				oMessage.body = oTextBody;
+				if (oMessage.body)
+				{
+					oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
+					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
+					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
+					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
+				}
+			}
+
+			if (Globals.bAllowOpenPGP && oMessage.body)
+			{
+				oMessage.isPgpSigned(!!oMessage.body.data('rl-plain-pgp-signed'));
+				oMessage.isPgpEncrypted(!!oMessage.body.data('rl-plain-pgp-encrypted'));
+			}
+			else
+			{
+				oMessage.isPgpSigned(false);
+				oMessage.isPgpEncrypted(false);
 			}
 
 			this.messageActiveDom(oMessage.body);
