@@ -6197,8 +6197,6 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
-  /*width: 380px;*/
-
 }
 .b-login-content .loginFormWrapper .descWrapper {
   margin-bottom: 10px;
@@ -6206,6 +6204,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .b-login-content .loginFormWrapper .descWrapper .desc {
   font-size: 18px;
   padding: 2px;
+}
+.b-login-content .loginFormWrapper .alertError {
+  max-width: 450px;
 }
 .b-login-content .loginFormWrapper .loginForm {
   background-color: #efefef;
@@ -7845,6 +7846,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   overflow: hidden;
   width: 1300px;
   height: 390px;
+  left: 0;
 }
 .b-domain-content.domain-edit .modal-body {
   height: 350px;
