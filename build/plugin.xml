@@ -87,6 +87,11 @@
 			<param name="plugin-name" value="white-list"/>
 		</antcall>
 	</target>
+	<target name="override-smtp-credentials">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="override-smtp-credentials"/>
+		</antcall>
+	</target>
 
 	
 </project>
