@@ -4073,7 +4073,7 @@ class Actions
 
 				if (!$bAddHiddenRcpt)
 				{
-					$aSmtpCredentials[] = array();
+					$aSmtpCredentials['HiddenRcpt'] = array();
 				}
 
 				$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;

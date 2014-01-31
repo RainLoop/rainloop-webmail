@@ -579,7 +579,7 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}/gm, '');
 		}
 
-		sSignature = Utils.trim(sSignature.replace(/{{FROM}}/, '').replace(/{{IF:FROM}}/, '').replace(/{{\/IF:FROM}}/, ''));
+		sSignature = "\r\n" + Utils.trim(sSignature.replace(/{{FROM}}/, '').replace(/{{IF:FROM}}/, '').replace(/{{\/IF:FROM}}/, ''));
 	}
 
 	return sSignature;

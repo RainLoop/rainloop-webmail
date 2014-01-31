@@ -6907,10 +6907,10 @@ html.rl-no-preview-pane .messageList.message-selected {
   cursor: pointer;
   cursor: move;
 }
-showImages html.rl-no-preview-pane .messageView {
+html.rl-no-preview-pane .messageView {
   display: none;
 }
-showImages html.rl-no-preview-pane .messageView.message-selected {
+html.rl-no-preview-pane .messageView.message-selected {
   display: block;
 }
 .messageView {

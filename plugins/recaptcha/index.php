@@ -30,7 +30,6 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('private_key')->SetLabel('Private Key')
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('error_limit')->SetLabel('Limit')
-				->SetDefaultValue(0)
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
 				->SetDefaultValue(array(0, 1, 2, 3, 4, 5))
 				->SetDescription('')
