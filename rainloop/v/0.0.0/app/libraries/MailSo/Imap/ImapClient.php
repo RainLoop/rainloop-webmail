@@ -1102,7 +1102,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 		else if (\is_array($aValue))
 		{
-			if (1 === count($aValue) && \is_numeric($aValue[0]))
+			if (1 === \count($aValue) && \is_numeric($aValue[0]))
 			{
 				$mResult = (int) $aValue[0];
 			}
@@ -1111,9 +1111,18 @@ class ImapClient extends \MailSo\Net\NetClient
 				$mResult = array();
 				foreach ($aValue as $aValueItem)
 				{
-					$mResult[] = $this->validateThreadItem($aValueItem);
+					$mTemp = $this->validateThreadItem($aValueItem);
+					if (false !== $mTemp)
+					{
+						$mResult[] = $mTemp;
+					}
 				}
 			}
+		}
+
+		if (\is_int($mResult) && 0 <= $mResult)
+		{
+			$mResult = false;
 		}
 
 		return $mResult;
