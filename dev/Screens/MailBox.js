@@ -43,17 +43,27 @@ MailBoxScreen.prototype.onShow = function ()
  * @param {string} sFolderHash
  * @param {number} iPage
  * @param {string} sSearch
+ * @param {boolean=} bPreview = false
  */
-MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
+MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
 {
-	var
-		oData = RL.data(),
-		sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),
-		oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)
-	;
-
-	if (oFolder)
+	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
+		if (!RL.data().usePreviewPane() && !RL.data().message())
+		{
+			RL.historyBack();
+		}
+	}
+	else
+	{
+		var
+			oData = RL.data(),
+			sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),
+			oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)
+		;
+
+		if (oFolder)
+		{
 			oData
 				.currentFolder(oFolder)
 				.messageListPage(iPage)
@@ -63,10 +73,12 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 			if (!oData.usePreviewPane() && oData.message())
 			{
 				oData.message(null);
+				oData.messageFullScreenMode(false);
 			}
 
 			RL.reloadMessageList();
 		}
+	}
 };
 
 MailBoxScreen.prototype.onStart = function ()
@@ -130,6 +142,9 @@ MailBoxScreen.prototype.onStart = function ()
 MailBoxScreen.prototype.routes = function ()
 {
 	var
+		fNormP = function () {
+			return ['Inbox', 1, '', true];
+		},
 		fNormS = function (oRequest, oVals) {
 			oVals[0] = Utils.pString(oVals[0]);
 			oVals[1] = Utils.pInt(oVals[1]);
@@ -142,7 +157,7 @@ MailBoxScreen.prototype.routes = function ()
 				oVals[1] = 1;
 			}
 
-			return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2])];
+			return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2]), false];
 		},
 		fNormD = function (oRequest, oVals) {
 			oVals[0] = Utils.pString(oVals[0]);
@@ -153,7 +168,7 @@ MailBoxScreen.prototype.routes = function ()
 				oVals[0] = 'Inbox';
 			}
 
-			return [decodeURI(oVals[0]), 1, decodeURI(oVals[1])];
+			return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];
 		}
 	;
 
@@ -161,6 +176,7 @@ MailBoxScreen.prototype.routes = function ()
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+		[/^message-preview$/,  {'normalize_': fNormP}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]
 	];
 };

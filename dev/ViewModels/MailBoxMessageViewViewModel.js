@@ -27,7 +27,7 @@ function MailBoxMessageViewViewModel()
 	this.messagesBodiesDom = oData.messagesBodiesDom;
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
-	this.usePreviewPane = oData.usePreviewPane;
+	this.layout = oData.layout;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageActiveDom = oData.messageActiveDom;
 	this.messageError = oData.messageError;
@@ -44,7 +44,14 @@ function MailBoxMessageViewViewModel()
 
 	// commands
 	this.closeMessage = Utils.createCommand(this, function () {
-		oData.message(null);
+		if (Enums.Layout.NoPreview === oData.layout())
+		{
+			RL.historyBack();
+		}
+		else
+		{
+			oData.message(null);
+		}
 	});
 
 	this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
@@ -247,13 +254,13 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 			iKeyCode = oEvent ? oEvent.keyCode : 0
 		;
 
-		if (0 < iKeyCode && (Enums.EventKeyCode.Backspace === iKeyCode || Enums.EventKeyCode.Esc === iKeyCode) &&
+		if (0 < iKeyCode && (Enums.EventKeyCode.Esc === iKeyCode) &&
 			self.viewModelVisibility() && oData.useKeyboardShortcuts() && !Utils.inFocus() && oData.message())
 		{
 			self.fullScreenMode(false);
-			if (!oData.usePreviewPane())
+			if (Enums.Layout.NoPreview === oData.layout())
 			{
-				oData.message(null);
+				RL.historyBack();
 			}
 
 			bResult = false;

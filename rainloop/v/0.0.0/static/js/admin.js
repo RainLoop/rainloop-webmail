@@ -519,8 +519,16 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
-Enums.ContactScopeType = {
+Enums.Layout = {
+	'NoPreview': 0,
+	'SidePreview': 1,
+	'BottomPreview': 2
+};
 
+/**
+ * @enum {number}
+ */
+Enums.ContactScopeType = {
 	'Default': 0,
 	'ShareAll': 2
 };
@@ -1370,6 +1378,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.usePreviewPane = ko.observable(true);
+	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.useCheckboxesInList = ko.observable(true);
 
 	oData.interfaceAnimation.subscribe(function (sValue) {
@@ -3094,6 +3103,14 @@ LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
 LinkBuilder.prototype.inbox = function ()
 {
 	return this.sBase + 'mailbox/Inbox';
+};
+
+/**
+ * @return {string}
+ */
+LinkBuilder.prototype.messagePreview = function ()
+{
+	return this.sBase + 'mailbox/message-preview';
 };
 
 /**
@@ -6278,6 +6295,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
 	this.usePreviewPane(!!RL.settingsGet('UsePreviewPane'));
+	this.layout(!!RL.settingsGet('UsePreviewPane') ? Enums.Layout.SidePreview : Enums.Layout.NoPreview); // TODO
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
 
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
@@ -7341,6 +7359,11 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 			}
 		}, 100);
 	}
+};
+
+AbstractApp.prototype.historyBack = function ()
+{
+	window.history.back();
 };
 
 /**

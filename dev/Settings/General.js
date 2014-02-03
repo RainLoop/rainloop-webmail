@@ -18,6 +18,7 @@ function SettingsGeneral()
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
 	this.usePreviewPane = oData.usePreviewPane;
+	this.layout = oData.layout;
 	this.useCheckboxesInList = oData.useCheckboxesInList;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 
@@ -132,6 +133,15 @@ SettingsGeneral.prototype.onBuild = function ()
 
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'UsePreviewPane': bValue ? '1' : '0'
+			});
+		});
+		
+		oData.layout.subscribe(function (nValue) {
+
+			oData.messageList([]);
+
+			RL.remote().saveSettings(Utils.emptyFunction, {
+				'Layout': nValue
 			});
 		});
 

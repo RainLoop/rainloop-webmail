@@ -236,8 +236,16 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
-Enums.ContactScopeType = {
+Enums.Layout = {
+	'NoPreview': 0,
+	'SidePreview': 1,
+	'BottomPreview': 2
+};
 
+/**
+ * @enum {number}
+ */
+Enums.ContactScopeType = {
 	'Default': 0,
 	'ShareAll': 2
 };

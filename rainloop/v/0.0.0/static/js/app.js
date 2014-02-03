@@ -519,8 +519,16 @@ Enums.InterfaceAnimation = {
 /**
  * @enum {number}
  */
-Enums.ContactScopeType = {
+Enums.Layout = {
+	'NoPreview': 0,
+	'SidePreview': 1,
+	'BottomPreview': 2
+};
 
+/**
+ * @enum {number}
+ */
+Enums.ContactScopeType = {
 	'Default': 0,
 	'ShareAll': 2
 };
@@ -1370,6 +1378,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.usePreviewPane = ko.observable(true);
+	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.useCheckboxesInList = ko.observable(true);
 
 	oData.interfaceAnimation.subscribe(function (sValue) {
@@ -3094,6 +3103,14 @@ LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
 LinkBuilder.prototype.inbox = function ()
 {
 	return this.sBase + 'mailbox/Inbox';
+};
+
+/**
+ * @return {string}
+ */
+LinkBuilder.prototype.messagePreview = function ()
+{
+	return this.sBase + 'mailbox/message-preview';
 };
 
 /**
@@ -11350,7 +11367,7 @@ function MailBoxMessageListViewModel()
 	this.dragOverBodyArea = ko.observable(null);
 
 	this.messageListItemTemplate = ko.computed(function () {
-		return oData.usePreviewPane() ?
+		return Enums.Layout.NoPreview !== oData.layout() ?
 			'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 	});
 
@@ -11465,6 +11482,11 @@ function MailBoxMessageListViewModel()
 	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
 		{
+			if (Enums.Layout.NoPreview === oData.layout())
+			{
+				kn.setHash(RL.link().messagePreview(), true);
+			}
+			
 			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
 			this.populateMessageBody(oData.message());
 		}
@@ -12025,7 +12047,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 
 		if (oEvent && self.viewModelVisibility() && oData.useKeyboardShortcuts() && !RL.popupVisibility() && !oData.messageFullScreenMode() && !Utils.inFocus())
 		{
-			if (oData.usePreviewPane() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
+			if (Enums.Layout.NoPreview !== oData.layout() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
 			{
 				if (oEvent.ctrlKey && Enums.EventKeyCode.A === iKeyCode)
 				{
@@ -12243,7 +12265,7 @@ function MailBoxMessageViewViewModel()
 	this.messagesBodiesDom = oData.messagesBodiesDom;
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
-	this.usePreviewPane = oData.usePreviewPane;
+	this.layout = oData.layout;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageActiveDom = oData.messageActiveDom;
 	this.messageError = oData.messageError;
@@ -12260,7 +12282,14 @@ function MailBoxMessageViewViewModel()
 
 	// commands
 	this.closeMessage = Utils.createCommand(this, function () {
-		oData.message(null);
+		if (Enums.Layout.NoPreview === oData.layout())
+		{
+			RL.historyBack();
+		}
+		else
+		{
+			oData.message(null);
+		}
 	});
 
 	this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
@@ -12463,13 +12492,13 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 			iKeyCode = oEvent ? oEvent.keyCode : 0
 		;
 
-		if (0 < iKeyCode && (Enums.EventKeyCode.Backspace === iKeyCode || Enums.EventKeyCode.Esc === iKeyCode) &&
+		if (0 < iKeyCode && (Enums.EventKeyCode.Esc === iKeyCode) &&
 			self.viewModelVisibility() && oData.useKeyboardShortcuts() && !Utils.inFocus() && oData.message())
 		{
 			self.fullScreenMode(false);
-			if (!oData.usePreviewPane())
+			if (Enums.Layout.NoPreview === oData.layout())
 			{
-				oData.message(null);
+				RL.historyBack();
 			}
 
 			bResult = false;
@@ -12665,6 +12694,7 @@ function SettingsGeneral()
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
 	this.usePreviewPane = oData.usePreviewPane;
+	this.layout = oData.layout;
 	this.useCheckboxesInList = oData.useCheckboxesInList;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 
@@ -12779,6 +12809,15 @@ SettingsGeneral.prototype.onBuild = function ()
 
 			RL.remote().saveSettings(Utils.emptyFunction, {
 				'UsePreviewPane': bValue ? '1' : '0'
+			});
+		});
+		
+		oData.layout.subscribe(function (nValue) {
+
+			oData.messageList([]);
+
+			RL.remote().saveSettings(Utils.emptyFunction, {
+				'Layout': nValue
 			});
 		});
 
@@ -13683,6 +13722,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
 	this.usePreviewPane(!!RL.settingsGet('UsePreviewPane'));
+	this.layout(!!RL.settingsGet('UsePreviewPane') ? Enums.Layout.SidePreview : Enums.Layout.NoPreview); // TODO
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
 
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
@@ -16318,17 +16358,27 @@ MailBoxScreen.prototype.onShow = function ()
  * @param {string} sFolderHash
  * @param {number} iPage
  * @param {string} sSearch
+ * @param {boolean=} bPreview = false
  */
-MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
+MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
 {
-	var
-		oData = RL.data(),
-		sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),
-		oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)
-	;
-
-	if (oFolder)
+	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
+		if (!RL.data().usePreviewPane() && !RL.data().message())
+		{
+			RL.historyBack();
+		}
+	}
+	else
+	{
+		var
+			oData = RL.data(),
+			sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),
+			oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)
+		;
+
+		if (oFolder)
+		{
 			oData
 				.currentFolder(oFolder)
 				.messageListPage(iPage)
@@ -16338,10 +16388,12 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 			if (!oData.usePreviewPane() && oData.message())
 			{
 				oData.message(null);
+				oData.messageFullScreenMode(false);
 			}
 
 			RL.reloadMessageList();
 		}
+	}
 };
 
 MailBoxScreen.prototype.onStart = function ()
@@ -16405,6 +16457,9 @@ MailBoxScreen.prototype.onStart = function ()
 MailBoxScreen.prototype.routes = function ()
 {
 	var
+		fNormP = function () {
+			return ['Inbox', 1, '', true];
+		},
 		fNormS = function (oRequest, oVals) {
 			oVals[0] = Utils.pString(oVals[0]);
 			oVals[1] = Utils.pInt(oVals[1]);
@@ -16417,7 +16472,7 @@ MailBoxScreen.prototype.routes = function ()
 				oVals[1] = 1;
 			}
 
-			return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2])];
+			return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2]), false];
 		},
 		fNormD = function (oRequest, oVals) {
 			oVals[0] = Utils.pString(oVals[0]);
@@ -16428,7 +16483,7 @@ MailBoxScreen.prototype.routes = function ()
 				oVals[0] = 'Inbox';
 			}
 
-			return [decodeURI(oVals[0]), 1, decodeURI(oVals[1])];
+			return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];
 		}
 	;
 
@@ -16436,6 +16491,7 @@ MailBoxScreen.prototype.routes = function ()
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+		[/^message-preview$/,  {'normalize_': fNormP}],
 		[/^([^\/]*)$/,  {'normalize_': fNormS}]
 	];
 };
@@ -16670,6 +16726,11 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 			}
 		}, 100);
 	}
+};
+
+AbstractApp.prototype.historyBack = function ()
+{
+	window.history.back();
 };
 
 /**

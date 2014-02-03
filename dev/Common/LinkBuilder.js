@@ -127,6 +127,14 @@ LinkBuilder.prototype.inbox = function ()
 };
 
 /**
+ * @return {string}
+ */
+LinkBuilder.prototype.messagePreview = function ()
+{
+	return this.sBase + 'mailbox/message-preview';
+};
+
+/**
  * @param {string=} sScreenName
  * @return {string}
  */

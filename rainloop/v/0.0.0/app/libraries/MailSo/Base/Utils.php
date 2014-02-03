@@ -1141,9 +1141,11 @@ class Utils
 	public static function IsRTL($sUtfString)
 	{
 		// \x{0591}-\x{05F4} - Hebrew
-		// \x{FB1D}-\x{FB40} - Hebrew ?
-		// \x{0621}-\x{064A} - Arabic
-		return 0 < (int) preg_match('/[\x{0591}-\x{05F4}\x{FB1D}-\x{FB40}\x{0621}-\x{064A}]/u', $sUtfString);
+		// \x{0600}-\x{068F} - Arabic
+		// \x{0750}-\x{077F} - Arabic
+		// \x{08A0}-\x{08FF} - Arabic
+		// \x{103A0}-\x{103DF} - Old Persian
+		return 0 < (int) preg_match('/[\x{0591}-\x{05F4}\x{0600}-\x{068F}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{103A0}-\x{103DF}]/u', $sUtfString);
 	}
 
 	/**

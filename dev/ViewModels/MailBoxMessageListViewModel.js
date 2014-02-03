@@ -48,7 +48,7 @@ function MailBoxMessageListViewModel()
 	this.dragOverBodyArea = ko.observable(null);
 
 	this.messageListItemTemplate = ko.computed(function () {
-		return oData.usePreviewPane() ?
+		return Enums.Layout.NoPreview !== oData.layout() ?
 			'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 	});
 
@@ -163,6 +163,11 @@ function MailBoxMessageListViewModel()
 	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
 		{
+			if (Enums.Layout.NoPreview === oData.layout())
+			{
+				kn.setHash(RL.link().messagePreview(), true);
+			}
+			
 			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
 			this.populateMessageBody(oData.message());
 		}
@@ -723,7 +728,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 
 		if (oEvent && self.viewModelVisibility() && oData.useKeyboardShortcuts() && !RL.popupVisibility() && !oData.messageFullScreenMode() && !Utils.inFocus())
 		{
-			if (oData.usePreviewPane() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
+			if (Enums.Layout.NoPreview !== oData.layout() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
 			{
 				if (oEvent.ctrlKey && Enums.EventKeyCode.A === iKeyCode)
 				{

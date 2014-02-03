@@ -49,6 +49,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
 	this.usePreviewPane(!!RL.settingsGet('UsePreviewPane'));
+	this.layout(!!RL.settingsGet('UsePreviewPane') ? Enums.Layout.SidePreview : Enums.Layout.NoPreview); // TODO
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
 
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));

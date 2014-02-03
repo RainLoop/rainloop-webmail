@@ -204,6 +204,11 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	}
 };
 
+AbstractApp.prototype.historyBack = function ()
+{
+	window.history.back();
+};
+
 /**
  * @param {string} sQuery
  * @param {Function} fCallback

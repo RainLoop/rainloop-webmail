@@ -751,6 +751,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.usePreviewPane = ko.observable(true);
+	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.useCheckboxesInList = ko.observable(true);
 
 	oData.interfaceAnimation.subscribe(function (sValue) {
