@@ -42,15 +42,19 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 
 			oEvent.preventDefault();
 
-			var oFolder = ko.dataFor(this);
+			var
+				oData = RL.data(),
+				oFolder = ko.dataFor(this)
+			;
+
 			if (oFolder)
 			{
-				if (!RL.data().usePreviewPane())
+				if (Enums.Layout.NoPreview === oData.layout())
 				{
-					RL.data().message(null);
+					oData.message(null);
 				}
 				
-				if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+				if (oFolder.fullNameRaw === oData.currentFolderFullNameRaw())
 				{
 					RL.cache().setFolderHash(oFolder.fullNameRaw, '');
 				}

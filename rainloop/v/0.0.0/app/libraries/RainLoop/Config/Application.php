@@ -70,8 +70,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_additional_accounts'		=> array(true, ''),
 				'allow_identities'				=> array(true, ''),
 
-				'use_preview_pane'		=> array(true, 'Whether message preview pane should be used'),
-				 
 				'messages_per_page'		=> array(20, ' Number of messages displayed on page by default'),
 
 				'editor_default_type'	=> array('Html', 'Editor mode used by default (Html or Plain)'),

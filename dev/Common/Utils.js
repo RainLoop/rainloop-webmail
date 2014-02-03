@@ -750,9 +750,12 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
-	oData.usePreviewPane = ko.observable(true);
-	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.useCheckboxesInList = ko.observable(true);
+	
+	oData.layout = ko.observable(Enums.Layout.SidePreview);
+	oData.usePreviewPane = ko.computed(function () {
+		return Enums.Layout.NoPreview !== oData.layout();
+	});
 
 	oData.interfaceAnimation.subscribe(function (sValue) {
 		if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)

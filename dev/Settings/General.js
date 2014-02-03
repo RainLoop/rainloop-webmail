@@ -17,8 +17,8 @@ function SettingsGeneral()
 	this.threading = oData.threading;
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
-	this.usePreviewPane = oData.usePreviewPane;
 	this.layout = oData.layout;
+	this.usePreviewPane = oData.usePreviewPane;
 	this.useCheckboxesInList = oData.useCheckboxesInList;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 
@@ -42,6 +42,11 @@ function SettingsGeneral()
 }
 
 Utils.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
+
+SettingsGeneral.prototype.toggleLayout = function ()
+{
+	this.layout(Enums.Layout.NoPreview === this.layout() ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
+};
 
 SettingsGeneral.prototype.onBuild = function ()
 {
@@ -127,15 +132,6 @@ SettingsGeneral.prototype.onBuild = function ()
 			});
 		});
 
-		oData.usePreviewPane.subscribe(function (bValue) {
-
-			oData.messageList([]);
-
-			RL.remote().saveSettings(Utils.emptyFunction, {
-				'UsePreviewPane': bValue ? '1' : '0'
-			});
-		});
-		
 		oData.layout.subscribe(function (nValue) {
 
 			oData.messageList([]);

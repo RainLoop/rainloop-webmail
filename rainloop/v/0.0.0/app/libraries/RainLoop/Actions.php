@@ -1104,7 +1104,7 @@ class Actions
 		$aResult['DesktopNotifications'] = false;
 		$aResult['UseThreads'] = false;
 		$aResult['ReplySameFolder'] = false;
-		$aResult['UsePreviewPane'] = (bool) $oConfig->Get('webmail', 'use_preview_pane', true);
+		$aResult['Layout'] = \RainLoop\Enumerations\Layout::SIDE_PREVIEW;
 		$aResult['UseCheckboxesInList'] = true;
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
@@ -1139,7 +1139,7 @@ class Actions
 			$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 			$aResult['UseThreads'] = (bool) $oSettings->GetConf('UseThreads', $aResult['UseThreads']);
 			$aResult['ReplySameFolder'] = (bool) $oSettings->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-			$aResult['UsePreviewPane'] = (bool) $oSettings->GetConf('UsePreviewPane', $aResult['UsePreviewPane']);
+			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
 			$aResult['InterfaceAnimation'] = (string) $oSettings->GetConf('InterfaceAnimation', $aResult['InterfaceAnimation']);
 			$aResult['CustomThemeType'] = (string) $oSettings->GetConf('CustomThemeType', $aResult['CustomThemeType']);
@@ -3070,6 +3070,12 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
 			return (int) (\in_array($iValue, array(10, 20, 30, 50, 100, 150, 200, 300)) ? $iValue : 20);
 		});
+		
+		$this->setSettingsFromParams($oSettings, 'Layout', 'int', function ($iValue) {
+			return (int) (\in_array((int) $iValue, array(\RainLoop\Enumerations\Layout::NO_PREVIW,
+				\RainLoop\Enumerations\Layout::SIDE_PREVIEW, \RainLoop\Enumerations\Layout::BOTTOM_PREVIEW)) ?
+					$iValue : \RainLoop\Enumerations\Layout::SIDE_PREVIEW);
+		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
@@ -3084,8 +3090,6 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ReplySameFolder', 'bool');
-
-		$this->setSettingsFromParams($oSettings, 'UsePreviewPane', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'DisplayName', 'string');

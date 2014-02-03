@@ -11,6 +11,7 @@ function AbstractData()
 AbstractData.prototype.populateDataOnStart = function()
 {
 	var
+		mLayout = Utils.pInt(RL.settingsGet('Layout')),
 		aLanguages = RL.settingsGet('Languages'),
 		aThemes = RL.settingsGet('Themes')
 	;
@@ -48,9 +49,13 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.desktopNotifications(!!RL.settingsGet('DesktopNotifications'));
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
-	this.usePreviewPane(!!RL.settingsGet('UsePreviewPane'));
-	this.layout(!!RL.settingsGet('UsePreviewPane') ? Enums.Layout.SidePreview : Enums.Layout.NoPreview); // TODO
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
+	
+	this.layout(Enums.Layout.SidePreview);
+	if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
+	{
+		this.layout(mLayout);
+	}
 
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
 	this.facebookAppID(RL.settingsGet('FacebookAppID'));

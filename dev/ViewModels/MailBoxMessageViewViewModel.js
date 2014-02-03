@@ -28,6 +28,7 @@ function MailBoxMessageViewViewModel()
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
 	this.layout = oData.layout;
+	this.usePreviewPane = oData.usePreviewPane;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageActiveDom = oData.messageActiveDom;
 	this.messageError = oData.messageError;

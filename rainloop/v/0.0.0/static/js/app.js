@@ -1377,9 +1377,12 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
-	oData.usePreviewPane = ko.observable(true);
-	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.useCheckboxesInList = ko.observable(true);
+	
+	oData.layout = ko.observable(Enums.Layout.SidePreview);
+	oData.usePreviewPane = ko.computed(function () {
+		return Enums.Layout.NoPreview !== oData.layout();
+	});
 
 	oData.interfaceAnimation.subscribe(function (sValue) {
 		if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
@@ -11246,15 +11249,19 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 
 			oEvent.preventDefault();
 
-			var oFolder = ko.dataFor(this);
+			var
+				oData = RL.data(),
+				oFolder = ko.dataFor(this)
+			;
+
 			if (oFolder)
 			{
-				if (!RL.data().usePreviewPane())
+				if (Enums.Layout.NoPreview === oData.layout())
 				{
-					RL.data().message(null);
+					oData.message(null);
 				}
 				
-				if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+				if (oFolder.fullNameRaw === oData.currentFolderFullNameRaw())
 				{
 					RL.cache().setFolderHash(oFolder.fullNameRaw, '');
 				}
@@ -12266,6 +12273,7 @@ function MailBoxMessageViewViewModel()
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
 	this.layout = oData.layout;
+	this.usePreviewPane = oData.usePreviewPane;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageActiveDom = oData.messageActiveDom;
 	this.messageError = oData.messageError;
@@ -12693,8 +12701,8 @@ function SettingsGeneral()
 	this.threading = oData.threading;
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
-	this.usePreviewPane = oData.usePreviewPane;
 	this.layout = oData.layout;
+	this.usePreviewPane = oData.usePreviewPane;
 	this.useCheckboxesInList = oData.useCheckboxesInList;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 
@@ -12718,6 +12726,11 @@ function SettingsGeneral()
 }
 
 Utils.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
+
+SettingsGeneral.prototype.toggleLayout = function ()
+{
+	this.layout(Enums.Layout.NoPreview === this.layout() ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
+};
 
 SettingsGeneral.prototype.onBuild = function ()
 {
@@ -12803,15 +12816,6 @@ SettingsGeneral.prototype.onBuild = function ()
 			});
 		});
 
-		oData.usePreviewPane.subscribe(function (bValue) {
-
-			oData.messageList([]);
-
-			RL.remote().saveSettings(Utils.emptyFunction, {
-				'UsePreviewPane': bValue ? '1' : '0'
-			});
-		});
-		
 		oData.layout.subscribe(function (nValue) {
 
 			oData.messageList([]);
@@ -13684,6 +13688,7 @@ function AbstractData()
 AbstractData.prototype.populateDataOnStart = function()
 {
 	var
+		mLayout = Utils.pInt(RL.settingsGet('Layout')),
 		aLanguages = RL.settingsGet('Languages'),
 		aThemes = RL.settingsGet('Themes')
 	;
@@ -13721,9 +13726,13 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.desktopNotifications(!!RL.settingsGet('DesktopNotifications'));
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
-	this.usePreviewPane(!!RL.settingsGet('UsePreviewPane'));
-	this.layout(!!RL.settingsGet('UsePreviewPane') ? Enums.Layout.SidePreview : Enums.Layout.NoPreview); // TODO
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
+	
+	this.layout(Enums.Layout.SidePreview);
+	if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
+	{
+		this.layout(mLayout);
+	}
 
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
 	this.facebookAppID(RL.settingsGet('FacebookAppID'));
@@ -16364,7 +16373,7 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 {
 	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
-		if (!RL.data().usePreviewPane() && !RL.data().message())
+		if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
 		{
 			RL.historyBack();
 		}
@@ -16385,7 +16394,7 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 				.messageListSearch(sSearch)
 			;
 
-			if (!oData.usePreviewPane() && oData.message())
+			if (Enums.Layout.NoPreview === oData.layout() && oData.message())
 			{
 				oData.message(null);
 				oData.messageFullScreenMode(false);
@@ -16425,14 +16434,14 @@ MailBoxScreen.prototype.onStart = function ()
 		RL.remote().appDelayStart(Utils.emptyFunction);
 	}, 35000);
 
-	$html.toggleClass('rl-no-preview-pane', !oData.usePreviewPane());
+	$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());
 
 	oData.folderList.subscribe(fResizeFunction);
 	oData.messageList.subscribe(fResizeFunction);
 	oData.message.subscribe(fResizeFunction);
 
-	oData.usePreviewPane.subscribe(function (bValue) {
-		$html.toggleClass('rl-no-preview-pane', !bValue);
+	oData.layout.subscribe(function (nValue) {
+		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 	});
 	
 	oData.foldersInboxUnreadCount.subscribe(function () {

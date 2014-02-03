@@ -49,7 +49,7 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 {
 	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
-		if (!RL.data().usePreviewPane() && !RL.data().message())
+		if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
 		{
 			RL.historyBack();
 		}
@@ -70,7 +70,7 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 				.messageListSearch(sSearch)
 			;
 
-			if (!oData.usePreviewPane() && oData.message())
+			if (Enums.Layout.NoPreview === oData.layout() && oData.message())
 			{
 				oData.message(null);
 				oData.messageFullScreenMode(false);
@@ -110,14 +110,14 @@ MailBoxScreen.prototype.onStart = function ()
 		RL.remote().appDelayStart(Utils.emptyFunction);
 	}, 35000);
 
-	$html.toggleClass('rl-no-preview-pane', !oData.usePreviewPane());
+	$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());
 
 	oData.folderList.subscribe(fResizeFunction);
 	oData.messageList.subscribe(fResizeFunction);
 	oData.message.subscribe(fResizeFunction);
 
-	oData.usePreviewPane.subscribe(function (bValue) {
-		$html.toggleClass('rl-no-preview-pane', !bValue);
+	oData.layout.subscribe(function (nValue) {
+		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 	});
 	
 	oData.foldersInboxUnreadCount.subscribe(function () {
