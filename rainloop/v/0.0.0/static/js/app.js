@@ -8632,10 +8632,17 @@ PopupsComposeViewModel.prototype.onHide = function ()
 	kn.routeOn();
 };
 
+/**
+ * @param {string} sSignature
+ * @param {string=} sFrom
+ * @return {string}
+ */
 PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 {
 	if ('' !== sSignature)
 	{
+		sSignature = sSignature.replace(/[\r]/, '');
+
 		sFrom = Utils.pString(sFrom);
 		if ('' !== sFrom)
 		{
@@ -8643,10 +8650,10 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 		}
 		else
 		{
-			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}/gm, '');
+			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}[\n]?/gm, '');
 		}
 
-		sSignature = "\r\n" + Utils.trim(sSignature.replace(/{{FROM}}/, '').replace(/{{IF:FROM}}/, '').replace(/{{\/IF:FROM}}/, ''));
+		sSignature = sSignature.replace(/{{FROM}}[\n]?/, '').replace(/{{IF:FROM}}[\n]?/, '').replace(/{{\/IF:FROM}}[\n]?/, '');
 	}
 
 	return sSignature;
