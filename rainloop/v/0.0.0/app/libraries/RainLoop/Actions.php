@@ -1260,12 +1260,12 @@ class Actions
 	 */
 	public function AuthProcess($oAccount)
 	{
-		$this->SetAuthToken($oAccount);
-
 		if ($oAccount instanceof \RainLoop\Account)
 		{
+			$this->SetAuthToken($oAccount);
+
 			$aAccounts = $this->GetAccounts($oAccount);
-			if (isset($aAccounts[$oAccount->Email()]))
+			if (\is_array($aAccounts) && isset($aAccounts[$oAccount->Email()]))
 			{
 				$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 				$this->SetAccounts($oAccount, $aAccounts);
@@ -1389,15 +1389,23 @@ class Actions
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
 
-		$sAccounts = $this->StorageProvider()->Get(null,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-			'Webmail/Accounts/'.$sParentEmail.'/Array', null);
-
-		$aAccounts = $sAccounts ? @\unserialize($sAccounts) : array();
-
-		if (\is_array($aAccounts) && 0 < \count($aAccounts))
+		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
 		{
-			return $aAccounts;
+			$sAccounts = $this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				'Webmail/Accounts/'.$sParentEmail.'/Array', null);
+
+			$aAccounts = $sAccounts ? @\unserialize($sAccounts) : array();
+
+			if (\is_array($aAccounts) && 0 < \count($aAccounts))
+			{
+				if (1 === \count($aAccounts))
+				{
+					$this->SetAccounts($oAccount, array());
+				}
+
+				return $aAccounts;
+			}
 		}
 
 		$aAccounts = array();
@@ -1459,7 +1467,8 @@ class Actions
 	public function SetAccounts($oAccount, $aAccounts = array())
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
-		if (!\is_array($aAccounts) || 0 === \count($aAccounts))
+		if (!\is_array($aAccounts) || 0 >= \count($aAccounts) ||
+			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail])))
 		{
 			$this->StorageProvider()->Clear(null, \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
 				'Webmail/Accounts/'.$sParentEmail.'/Array');
@@ -1566,7 +1575,7 @@ class Actions
 
 		$oAccount = $this->getAccountFromToken();
 
-		$sParentEmail = 0 < \strlen($oAccount->ParentEmail()) ? $oAccount->ParentEmail() : $oAccount->Email();
+		$sParentEmail = $oAccount->ParentEmailHelper();
 		$sEmailToDelete = \strtolower(\trim($this->GetActionParam('EmailToDelete', '')));
 
 		$aAccounts = $this->GetAccounts($oAccount);
@@ -1575,13 +1584,18 @@ class Actions
 		{
 			unset($aAccounts[$sEmailToDelete]);
 
-			if (1 === count($aAccounts) && isset($aAccounts[$sParentEmail]))
+			$oAccountToChange = null;
+			if ($oAccount->Email() === $sEmailToDelete && !empty($aAccounts[$sParentEmail]))
 			{
-				$aAccounts = array();
+				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail], false, false);
+				if ($oAccountToChange)
+				{
+					$this->AuthProcess($oAccountToChange);
+				}
 			}
-
+			
 			$this->SetAccounts($oAccount, $aAccounts);
-			return $this->TrueResponse(__FUNCTION__);
+			return $this->TrueResponse(__FUNCTION__, array('Reload' => !!$oAccountToChange));
 		}
 		
 		return $this->FalseResponse(__FUNCTION__);
@@ -5933,10 +5947,11 @@ class Actions
 	/**
 	 * @param string $sActionName
 	 * @param mixed $mResult = false
+	 * @param array $aAdditionalParams = array()
 	 *
 	 * @return array
 	 */
-	private function mainDefaultResponse($sActionName, $mResult = false)
+	private function mainDefaultResponse($sActionName, $mResult = false, $aAdditionalParams = array())
 	{
 		$sActionName = 'Do' === substr($sActionName, 0, 2) ? substr($sActionName, 2) : $sActionName;
 
@@ -5945,32 +5960,42 @@ class Actions
 			'Result' => $this->responseObject($mResult, $sActionName)
 		);
 
+		if (\is_array($aAdditionalParams))
+		{
+			foreach ($aAdditionalParams as $sKey => $mValue)
+			{
+				$aResult[$sKey] = $mValue;
+			}
+		}
+
 		return $aResult;
 	}
 	/**
 	 * @param string $sActionName
 	 * @param mixed $mResult = false
+	 * @param array $aAdditionalParams = array()
 	 *
 	 * @return array
 	 */
-	public function DefaultResponse($sActionName, $mResult = false)
+	public function DefaultResponse($sActionName, $mResult = false, $aAdditionalParams = array())
 	{
-		$this->Plugins()->RunHook('main.default-response-date', array($sActionName, &$mResult));
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
+		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
+		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
 		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
 		return $aResponseItem;
 	}
 
 	/**
 	 * @param string $sActionName
+	 * @param array $aAdditionalParams = array()
 	 *
 	 * @return array
 	 */
-	public function TrueResponse($sActionName)
+	public function TrueResponse($sActionName, $aAdditionalParams = array())
 	{
 		$mResult = true;
-		$this->Plugins()->RunHook('main.default-response-date', array($sActionName, &$mResult));
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
+		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
+		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
 		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
 		return $aResponseItem;
 	}
@@ -5986,17 +6011,18 @@ class Actions
 	{
 		$mResult = false;
 		$this->Plugins()
-			->RunHook('main.default-response-date', array($sActionName, &$mResult))
-			->RunHook('main.default-response-error-date', array($sActionName, &$iErrorCode, &$sErrorMessage))
+			->RunHook('main.default-response-data', array($sActionName, &$mResult))
+			->RunHook('main.default-response-error-data', array($sActionName, &$iErrorCode, &$sErrorMessage))
 		;
-		
-		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult);
 
+		$aAdditionalParams = array();
 		if (null !== $iErrorCode)
 		{
-			$aResponseItem['ErrorCode'] = (int) $iErrorCode;
-			$aResponseItem['ErrorMessage'] = null === $sErrorMessage ? '' : (string) $sErrorMessage;
+			$aAdditionalParams['ErrorCode'] = (int) $iErrorCode;
+			$aAdditionalParams['ErrorMessage'] = null === $sErrorMessage ? '' : (string) $sErrorMessage;
 		}
+		
+		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
 
 		$this->Plugins()->RunHook('main.default-response', array($sActionName, &$aResponseItem));
 		return $aResponseItem;

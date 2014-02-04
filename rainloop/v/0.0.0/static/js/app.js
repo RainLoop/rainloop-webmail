@@ -12929,7 +12929,6 @@ SettingsAccounts.prototype.addNewAccount = function ()
 };
 
 /**
- *
  * @param {AccountModel} oAccountToRemove
  */
 SettingsAccounts.prototype.deleteAccount = function (oAccountToRemove)
@@ -12948,8 +12947,24 @@ SettingsAccounts.prototype.deleteAccount = function (oAccountToRemove)
 		{
 			this.accounts.remove(fRemoveAccount);
 			
-			RL.remote().accountDelete(function () {
-				RL.accountsAndIdentities();
+			RL.remote().accountDelete(function (sResult, oData) {
+
+				if (Enums.StorageResultType.Success === sResult && oData &&
+					oData.Result && oData.Reload)
+				{
+					kn.routeOff();
+					kn.setHash(RL.link().root(), true);
+					kn.routeOff();
+
+					_.defer(function () {
+						window.location.reload();
+					});
+				}
+				else
+				{
+					RL.accountsAndIdentities();
+				}
+				
 			}, oAccountToRemove.email);
 		}
 	}
