@@ -357,10 +357,14 @@ class Http
 	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
+	 * @param int $iTimeout = 20
+	 * @param string $sProxy = ''
+	 * @param string $sProxyAuth = ''
 	 *
 	 * @return string|bool
 	 */
-	public function SendPostRequest($sUrl, $aPost = array(), $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$iCode = 0, $oLogger = null)
+	public function SendPostRequest($sUrl, $aPost = array(), $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$iCode = 0,
+		$oLogger = null, $iTimeout = 20, $sProxy = '', $sProxyAuth = '')
 	{
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -370,12 +374,21 @@ class Http
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => $aPost,
-			CURLOPT_TIMEOUT => 20
+			CURLOPT_TIMEOUT => (int) $iTimeout
 		);
 
 		if (0 < \strlen($sCustomUserAgent))
 		{
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
+		}
+
+		if (0 < \strlen($sProxy))
+		{
+			$aOptions[CURLOPT_PROXY] = $sProxy;
+			if (0 < \strlen($sProxyAuth))
+			{
+				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
+			}
 		}
 
 		$oCurl = \curl_init();
@@ -416,10 +429,13 @@ class Http
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
 	 * @param int $iTimeout = 10
+	 * @param string $sProxy = ''
+	 * @param string $sProxyAuth = ''
 	 *
 	 * @return bool
 	 */
-	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null, $iTimeout = 10)
+	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '')
 	{
 		if (!is_resource($rFile))
 		{
@@ -444,6 +460,15 @@ class Http
 		if (0 < \strlen($sCustomUserAgent))
 		{
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
+		}
+
+		if (0 < \strlen($sProxy))
+		{
+			$aOptions[CURLOPT_PROXY] = $sProxy;
+			if (0 < \strlen($sProxyAuth))
+			{
+				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
+			}
 		}
 
 		$oCurl = \curl_init();
@@ -482,13 +507,17 @@ class Http
 	 * @param string $sContentType = ''
 	 * @param int $iCode = 0
 	 * @param \MailSo\Log\Logger $oLogger = null
+	 * @param int $iTimeout = 10
+	 * @param string $sProxy = ''
+	 * @param string $sProxyAuth = ''
 	 *
 	 * @return string|bool
 	 */
-	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0, $oLogger = null)
+	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '')
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger) && \is_resource($rMemFile))
+		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth) && \is_resource($rMemFile))
 		{
 			\rewind($rMemFile);
 			return \stream_get_contents($rMemFile);

@@ -806,6 +806,19 @@ class Social
 				$oGoogle = new \OAuth2\Client(
 					\trim($oConfig->Get('social', 'google_client_id', '')),
 					\trim($oConfig->Get('social', 'google_client_secret', '')));
+
+
+				$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
+				if (0 < \strlen($sProxy))
+				{
+					$oGoogle->setCurlOption(CURLOPT_PROXY, $sProxy);
+
+					$sProxyAuth = $this->oActions->Config()->Get('labs', 'curl_proxy_auth', '');
+					if (0 < \strlen($sProxyAuth))
+					{
+						$oGoogle->setCurlOption(CURLOPT_PROXYUSERPWD, $sProxyAuth);
+					}
+				}
 			}
 			catch (\Exception $oException)
 			{
@@ -830,9 +843,14 @@ class Social
 			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhOAuth.php';
 			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhUtilities.php';
 
+			$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
+			$sProxyAuth = $this->oActions->Config()->Get('labs', 'curl_proxy_auth', '');
+
 			$oTwitter = new \tmhOAuth(array(
 				'consumer_key' => \trim($oConfig->Get('social', 'twitter_consumer_key', '')),
-				'consumer_secret' => \trim($oConfig->Get('social', 'twitter_consumer_secret', ''))
+				'consumer_secret' => \trim($oConfig->Get('social', 'twitter_consumer_secret', '')),
+				'curl_proxy' => 0 < \strlen($sProxy) ? $sProxy : false,
+				'curl_proxyuserpwd' => 0 < \strlen($sProxyAuth) ? $sProxyAuth : false
 			));
 		}
 
@@ -853,6 +871,21 @@ class Social
 			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')))
 		{
 			include_once APP_VERSION_ROOT_PATH.'app/libraries/facebook/facebook.php';
+
+			if (isset(\RainLoopFacebook::$CURL_OPTS) && \is_array(\RainLoopFacebook::$CURL_OPTS))
+			{
+				$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
+				if (0 < \strlen($sProxy))
+				{
+					\RainLoopFacebook::$CURL_OPTS[CURLOPT_PROXY] = $sProxy;
+
+					$sProxyAuth = $this->oActions->Config()->Get('labs', 'curl_proxy_auth', '');
+					if (0 < \strlen($sProxyAuth))
+					{
+						\RainLoopFacebook::$CURL_OPTS[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
+					}
+				}
+			}
 
 			$oFacebook = new \RainLoopFacebook(array(
 				'rlAccount' => $oAccount,

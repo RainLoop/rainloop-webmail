@@ -2096,7 +2096,8 @@ class Actions
 				$sContentType = '';
 				
 				$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
-					'RainLoop',	$sContentType, $iCode, $this->Logger());
+					'RainLoop',	$sContentType, $iCode, $this->Logger(), 10,
+					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
 
 				if (200 !== $iCode)
 				{
@@ -2165,7 +2166,8 @@ class Actions
 
 			\sleep(1);
 			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
-				'RainLoop',	$sContentType, $iCode, $this->Logger());
+				'RainLoop',	$sContentType, $iCode, $this->Logger(), 10,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
 
 			if (200 !== $iCode)
 			{
@@ -2439,7 +2441,9 @@ class Actions
 			$sContentType = '';
 
 			$sRepPath = $sRepo.$sRepoFile;
-			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'RainLoop', $sContentType, $iCode, $this->Logger()) : false;
+			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'RainLoop', $sContentType, $iCode, $this->Logger(), 10,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')) : false;
+			
 			if (false !== $sRep)
 			{
 				$aRep = @\json_decode($sRep);
@@ -2725,10 +2729,12 @@ class Actions
 				@\set_time_limit(60);
 
 				$oHttp = \MailSo\Base\Http::SingletonInstance();
-				$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60);
+				$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60,
+					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
+				
 				if (!$bResult)
 				{
-					$this->Logger()->Write('Cannot save urt to temp file: ', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+					$this->Logger()->Write('Cannot save url to temp file: ', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 					$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}
 
@@ -4959,7 +4965,8 @@ class Actions
 				$sContentType = '';
 
 				$rFile = $this->FilesProvider()->GetFile($oAccount, $sTempName, 'wb+');
-				if ($rFile && $oHttp->SaveUrlToFile($sUrl, $rFile, '', $sContentType, $iCode, $this->Logger()))
+				if ($rFile && $oHttp->SaveUrlToFile($sUrl, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
+						$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')))
 				{
 					$mResult[$sUrl] = $sTempName;
 				}
@@ -5931,6 +5938,18 @@ class Actions
 			))),
 			CURLOPT_TIMEOUT => 10
 		);
+
+		$sProxy = $this->Config()->Get('labs', 'curl_proxy', '');
+		if (0 < \strlen($sProxy))
+		{
+			$aOptions[CURLOPT_PROXY] = $sProxy;
+
+			$sProxyAuth = $this->Config()->Get('labs', 'curl_proxy_auth', '');
+			if (0 < \strlen($sProxyAuth))
+			{
+				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
+			}
+		}
 
 		$oCurl = \curl_init();
 		\curl_setopt_array($oCurl, $aOptions);
