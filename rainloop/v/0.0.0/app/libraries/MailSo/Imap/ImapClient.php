@@ -1099,12 +1099,20 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (\is_numeric($aValue))
 		{
 			$mResult = (int) $aValue;
+			if (0 >= $mResult)
+			{
+				$mResult = false;
+			}
 		}
 		else if (\is_array($aValue))
 		{
 			if (1 === \count($aValue) && \is_numeric($aValue[0]))
 			{
 				$mResult = (int) $aValue[0];
+				if (0 >= $mResult)
+				{
+					$mResult = false;
+				}
 			}
 			else
 			{
@@ -1118,11 +1126,6 @@ class ImapClient extends \MailSo\Net\NetClient
 					}
 				}
 			}
-		}
-
-		if (\is_int($mResult) && 0 <= $mResult)
-		{
-			$mResult = false;
 		}
 
 		return $mResult;
