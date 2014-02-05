@@ -425,20 +425,27 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 	
 	oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
 
-	switch (sComposeType)
+	if (oMessage)
 	{
-		case Enums.ComposeType.Empty:
-			sResult = RL.data().accountEmail();
-			break;
-		case Enums.ComposeType.Reply:
-		case Enums.ComposeType.ReplyAll:
-		case Enums.ComposeType.Forward:
-		case Enums.ComposeType.ForwardAsAttachment:
-			_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fFindHelper);
-			break;
-		case Enums.ComposeType.Draft:
-			_.find(_.union(oMessage.from, oMessage.replyTo), fFindHelper);
-			break;
+		switch (sComposeType)
+		{
+			case Enums.ComposeType.Empty:
+			case Enums.ComposeType.ForwardAsAttachment:
+				sResult = RL.data().accountEmail();
+				break;
+			case Enums.ComposeType.Reply:
+			case Enums.ComposeType.ReplyAll:
+			case Enums.ComposeType.Forward:
+				_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fFindHelper);
+				break;
+			case Enums.ComposeType.Draft:
+				_.find(_.union(oMessage.from, oMessage.replyTo), fFindHelper);
+				break;
+		}
+	}
+	else
+	{
+		sResult = RL.data().accountEmail();
 	}
 
 	return sResult;
