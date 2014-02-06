@@ -248,7 +248,7 @@ module.exports = function (grunt) {
 					"dev/Common/Knockout.js",
 					"dev/Common/LinkBuilder.js",
 					"dev/Common/Plugins.js",
-					"dev/Common/HtmlEditor.js",
+					"dev/Common/HtmlEditorWrapper.js",
 					"dev/Common/Selector.js",
 
 					"dev/Storages/LocalStorages/CookieDriver.js",
@@ -467,10 +467,12 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
 	grunt.registerTask('build', ['default', 'rlmin', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clear']);
+	grunt.registerTask('fast', ['less', 'concat']);
 
 	// aliases
 	grunt.registerTask('u', ['uglify']);
 	grunt.registerTask('h', ['jshint']);
 	grunt.registerTask('b', ['build']);
+	grunt.registerTask('f', ['fast']);
 	grunt.registerTask('w', ['default', 'watch']);
 };

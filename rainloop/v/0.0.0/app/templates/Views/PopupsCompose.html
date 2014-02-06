@@ -138,14 +138,10 @@
 							</div>
 						</div>
 					</div>
-
-					<div data-bind="initDom: composeEditorToolbar"></div>
 				</div>
-
-				<div class="textAreaParent" style="height: 200px; min-height: 200px" data-bind="initResizeTrigger: [resizer(), 200, 30]">
-					<textarea style="height: 100%; width: 100%" data-bind="initDom: composeEditorTextArea" spellcheck="true"></textarea>
-					<div style="height: 100%" data-bind="initDom: composeEditorHtmlArea" spellcheck="true"></div>
-				</div>
+				
+				<div class="textAreaParent" style="height: 200px; min-height: 200px"
+					data-bind="initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 30]"></div>
 			</div>
 		</div>
 	</div>

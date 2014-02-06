@@ -177,9 +177,7 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
 
-			_.delay(function () {
-				Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus');
-			}, 500);
+			Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus', [], 500);
 		}
 	}
 };
@@ -259,27 +257,27 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				// show screen
 				if (self.oCurrentScreen)
 				{
+					Utils.delegateRun(self.oCurrentScreen, 'onShow');
 
-						Utils.delegateRun(self.oCurrentScreen, 'onShow');
+					Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
-						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
+					if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
+					{
+						_.each(self.oCurrentScreen.viewModels(), function (ViewModelClass) {
 
-						if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
-						{
-							_.each(self.oCurrentScreen.viewModels(), function (ViewModelClass) {
+							if (ViewModelClass.__vm && ViewModelClass.__dom &&
+								'Popups' !== ViewModelClass.__vm.viewModelPosition())
+							{
+								ViewModelClass.__dom.show();
+								ViewModelClass.__vm.viewModelVisibility(true);
+								Utils.delegateRun(ViewModelClass.__vm, 'onShow');
+								Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-								if (ViewModelClass.__vm && ViewModelClass.__dom &&
-									'Popups' !== ViewModelClass.__vm.viewModelPosition())
-								{
-									ViewModelClass.__dom.show();
-									ViewModelClass.__vm.viewModelVisibility(true);
-									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
+								Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
+							}
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
-								}
-
-							}, self);
-						}
+						}, self);
+					}
 				}
 				// --
 

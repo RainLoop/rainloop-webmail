@@ -291,6 +291,10 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
+		.on('mousedown', 'a', function (oEvent) {
+			// setup maito protocol
+			return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
+		})
 		.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 			if (oEvent && oEvent.stopPropagation)
 			{

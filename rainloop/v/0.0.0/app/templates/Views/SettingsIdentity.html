@@ -25,7 +25,7 @@
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_SIGNATURE"></span>
 			 </label>
 			<div class="controls">
-				<textarea class="input-xxlarge" data-bind="value: signature, saveTrigger: signatureTrigger" rows="7" spellcheck="true"></textarea>
+				<div class="e-signature-place" data-bind="initDom: signatureDom"></div>
 				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
 			</div>
 		</div>

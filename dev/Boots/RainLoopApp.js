@@ -809,11 +809,6 @@ RainLoopApp.prototype.bootstart = function ()
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);
 				
-				// setup maito protocol
-				$document.on('mousedown', '#rl-center a', function (oEvent) {
-					return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
-				});
-
 				if (bGoogle || bFacebook || bTwitter)
 				{
 					RL.socialUsers(true);

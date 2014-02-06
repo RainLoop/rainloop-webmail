@@ -83,9 +83,7 @@ function PopupsComposeViewModel()
 	this.attacheMultipleAllowed = ko.observable(false);
 	this.addAttachmentEnabled = ko.observable(false);
 
-	this.composeEditorTextArea = ko.observable(null);
-	this.composeEditorHtmlArea = ko.observable(null);
-	this.composeEditorToolbar = ko.observable(null);
+	this.composeEditorArea = ko.observable(null);
 
 	this.identities = RL.data().identities;
 
@@ -278,8 +276,8 @@ function PopupsComposeViewModel()
 					this.cc(),
 					this.bcc(),
 					this.subject(),
-					this.oEditor.isHtml(),
-					this.oEditor.getTextForRequest(),
+					this.oEditor ? this.oEditor.isHtml() : false,
+					this.oEditor ? this.oEditor.getData() : '',
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
@@ -314,8 +312,8 @@ function PopupsComposeViewModel()
 				this.cc(),
 				this.bcc(),
 				this.subject(),
-				this.oEditor.isHtml(),
-				this.oEditor.getTextForRequest(),
+				this.oEditor ? this.oEditor.isHtml() : false,
+				this.oEditor ? this.oEditor.getData() : '',
 				this.prepearAttachmentsForSendOrSave(),
 				this.aDraftInfo,
 				this.sInReplyTo,
@@ -332,17 +330,6 @@ function PopupsComposeViewModel()
 			this.saveCommand();
 		}
 	}, this);
-
-	Utils.initOnStartOrLangChange(null, this, function () {
-		if (this.oEditor)
-		{
-			this.oEditor.initLanguage(
-				Utils.i18n('EDITOR/TEXT_SWITCHER_CONFIRM'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING')
-			);
-		}
-	});
 
 	this.showCcAndBcc.subscribe(function () {
 		this.triggerForResize();
@@ -581,6 +568,13 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 {
 	if ('' !== sSignature)
 	{
+		var bHtml = false;
+		if (':HTML:' === sSignature.substr(0, 6))
+		{
+			bHtml = true;
+			sSignature = sSignature.substr(6);
+		}
+
 		sSignature = sSignature.replace(/[\r]/, '');
 
 		sFrom = Utils.pString(sFrom);
@@ -594,9 +588,44 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 		}
 
 		sSignature = sSignature.replace(/{{FROM}}[\n]?/, '').replace(/{{IF:FROM}}[\n]?/, '').replace(/{{\/IF:FROM}}[\n]?/, '');
+
+		if (!bHtml)
+		{
+			sSignature = Utils.convertPlainTextToHtml(sSignature);
+		}
 	}
 
 	return sSignature;
+};
+
+PopupsComposeViewModel.prototype.editor = function (fOnInit)
+{
+	if (fOnInit)
+	{
+		var self = this;
+		if (!this.oEditor && this.composeEditorArea())
+		{
+			_.delay(function () {
+				self.oEditor = new HtmlEditorWrapper(self.composeEditorArea(), null, function () {
+					fOnInit(self.oEditor);
+				});
+
+				Utils.initOnStartOrLangChange(null, self, function () {
+					if (self.oEditor)
+					{
+						self.oEditor.setupLang(
+							Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
+							Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
+						);
+					}
+				});
+			}, 400);
+		}
+		else if (this.oEditor)
+		{
+			fOnInit(this.oEditor);
+		}
+	}
 };
 
 /**
@@ -747,54 +776,62 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				break;
 		}
 
-		if (this.oEditor)
+		switch (sComposeType)
 		{
-			switch (sComposeType)
-			{
-				case Enums.ComposeType.Reply:
-				case Enums.ComposeType.ReplyAll:
-					sFrom = oMessage.fromToLine(false, true);
-					sReplyTitle = Utils.i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
-						'DATETIME': sDate,
-						'EMAIL': sFrom
-					});
+			case Enums.ComposeType.Reply:
+			case Enums.ComposeType.ReplyAll:
+				sFrom = oMessage.fromToLine(false, true);
+				sReplyTitle = Utils.i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
+					'DATETIME': sDate,
+					'EMAIL': sFrom
+				});
 
-					sText = '<br /><br />' + sReplyTitle + ':' +
-						'<blockquote><br />' + sText + '</blockquote>';
+				sText = '<br /><br />' + sReplyTitle + ':' +
+					'<blockquote><br />' + sText + '</blockquote>';
 
-					break;
+				break;
 
-				case Enums.ComposeType.Forward:
-					sFrom = oMessage.fromToLine(false, true);
-					sTo = oMessage.toToLine(false, true);
-					sCc = oMessage.ccToLine(false, true);
-					sText = '<br /><br /><br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
-							(0 < sCc.length ? '<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
-							'<br /><br />' + sText;
-					break;
-				case Enums.ComposeType.ForwardAsAttachment:
-					sText = '';
-					break;
-			}
-
-			if (bSignatureToAll && '' !== sSignature &&
-				Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
-			{
-				sText = Utils.convertPlainTextToHtml(this.convertSignature(sSignature,
-					fEmailArrayToStringLineHelper(oMessage.from, true))) + '<br />' + sText;
-			}
-
-			this.oEditor.setRawText(sText, oMessage.isHtml());
+			case Enums.ComposeType.Forward:
+				sFrom = oMessage.fromToLine(false, true);
+				sTo = oMessage.toToLine(false, true);
+				sCc = oMessage.ccToLine(false, true);
+				sText = '<br /><br /><br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
+						'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
+						'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
+						(0 < sCc.length ? '<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
+						'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
+						'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
+						'<br /><br />' + sText;
+				break;
+			case Enums.ComposeType.ForwardAsAttachment:
+				sText = '';
+				break;
 		}
+
+		if (bSignatureToAll && '' !== sSignature &&
+			Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
+		{
+			sText = this.convertSignature(sSignature, fEmailArrayToStringLineHelper(oMessage.from, true)) + '<br />' + sText;
+		}
+
+		this.editor(function (oEditor) {
+			oEditor.setHtml(sText, false);
+			if (!oMessage.isHtml())
+			{
+				oEditor.modeToggle(false);
+			}
+		});
 	}
-	else if (this.oEditor && Enums.ComposeType.Empty === sComposeType)
+	else if (Enums.ComposeType.Empty === sComposeType)
 	{
-		this.oEditor.setRawText(Utils.convertPlainTextToHtml(this.convertSignature(sSignature)),
-			Enums.EditorDefaultType.Html === RL.data().editorDefaultType());
+		sText = this.convertSignature(sSignature);
+		this.editor(function (oEditor) {
+			oEditor.setHtml(sText, false);
+			if (Enums.EditorDefaultType.Html !== RL.data().editorDefaultType())
+			{
+				oEditor.modeToggle(false);
+			}
+		});
 	}
 	else if (Utils.isNonEmptyArray(oMessageOrArray))
 	{
@@ -868,7 +905,6 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 
 PopupsComposeViewModel.prototype.onBuild = function ()
 {
-	this.initEditor();
 	this.initUploader();
 
 	var 
@@ -972,28 +1008,6 @@ PopupsComposeViewModel.prototype.getAttachmentById = function (sId)
 	}
 
 	return null;
-};
-
-PopupsComposeViewModel.prototype.initEditor = function ()
-{
-	if (this.composeEditorTextArea() && this.composeEditorHtmlArea() && this.composeEditorToolbar())
-	{
-		var self = this;
-		this.oEditor = new HtmlEditor(this.composeEditorTextArea(), this.composeEditorHtmlArea(), this.composeEditorToolbar(), {
-			'onSwitch': function (bHtml) {
-				if (!bHtml)
-				{
-					self.removeLinkedAttachments();
-				}
-			}
-		});
-
-		this.oEditor.initLanguage(
-			Utils.i18n('EDITOR/TEXT_SWITCHER_CONFIRM'),
-			Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT'),
-			Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING')
-		);
-	}
 };
 
 PopupsComposeViewModel.prototype.initUploader = function ()
@@ -1400,7 +1414,7 @@ PopupsComposeViewModel.prototype.isEmptyForm = function (bIncludeAttachmentInPro
 		0 === this.bcc().length &&
 		0 === this.subject().length &&
 		bAttach &&
-		'' === this.oEditor.getTextForRequest()
+		(!this.oEditor || '' === this.oEditor.getData())
 	;
 };
 
@@ -1440,7 +1454,7 @@ PopupsComposeViewModel.prototype.reset = function ()
 
 	if (this.oEditor)
 	{
-		this.oEditor.clear();
+		this.oEditor.clear(false);
 	}
 };
 

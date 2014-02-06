@@ -190,6 +190,7 @@ class Service
 					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 					'{{BaseAppBootScriptSource}}' => $sJsBoot,
 					'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
+					'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 					'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
 					'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 					'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
@@ -275,6 +276,7 @@ class Service
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
 			'LibJsLink' => $sStaticPrefix.'js/libs.js',
+			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js'
 		);
 	}

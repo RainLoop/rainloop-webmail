@@ -1271,12 +1271,23 @@ Utils.getUploadErrorDescByCode = function (mCode)
  * @param {?} oObject
  * @param {string} sMethodName
  * @param {Array=} aParameters
+ * @param {number=} nDelay
  */
-Utils.delegateRun = function (oObject, sMethodName, aParameters)
+Utils.delegateRun = function (oObject, sMethodName, aParameters, nDelay)
 {
 	if (oObject && oObject[sMethodName])
 	{
-		oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+		nDelay = Utils.pInt(nDelay);
+		if (0 >= nDelay)
+		{
+			oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+		}
+		else
+		{
+			_.delay(function () {
+				oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+			}, nDelay);
+		}
 	}
 };
 
@@ -3259,6 +3270,24 @@ LinkBuilder.prototype.openPgpJs = function ()
 /**
  * @return {string}
  */
+LinkBuilder.prototype.ckeditorPath = function ()
+{
+	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
+		this.sVersion + '/static/ckeditor/';
+};
+
+/**
+ * @return {string}
+ */
+LinkBuilder.prototype.ckeditorJs = function ()
+{
+	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
+		this.sVersion + '/static/ckeditor/ckeditor.js';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.socialGoogle = function ()
 {
 	return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
@@ -3889,9 +3918,7 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
 
-			_.delay(function () {
-				Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus');
-			}, 500);
+			Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus', [], 500);
 		}
 	}
 };
@@ -3971,27 +3998,27 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 				// show screen
 				if (self.oCurrentScreen)
 				{
+					Utils.delegateRun(self.oCurrentScreen, 'onShow');
 
-						Utils.delegateRun(self.oCurrentScreen, 'onShow');
+					Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
-						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
+					if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
+					{
+						_.each(self.oCurrentScreen.viewModels(), function (ViewModelClass) {
 
-						if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
-						{
-							_.each(self.oCurrentScreen.viewModels(), function (ViewModelClass) {
+							if (ViewModelClass.__vm && ViewModelClass.__dom &&
+								'Popups' !== ViewModelClass.__vm.viewModelPosition())
+							{
+								ViewModelClass.__dom.show();
+								ViewModelClass.__vm.viewModelVisibility(true);
+								Utils.delegateRun(ViewModelClass.__vm, 'onShow');
+								Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-								if (ViewModelClass.__vm && ViewModelClass.__dom &&
-									'Popups' !== ViewModelClass.__vm.viewModelPosition())
-								{
-									ViewModelClass.__dom.show();
-									ViewModelClass.__vm.viewModelVisibility(true);
-									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
+								Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
+							}
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
-								}
-
-							}, self);
-						}
+						}, self);
+					}
 				}
 				// --
 
@@ -7057,6 +7084,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				{
 					self.oCurrentSubScreen.viewModelDom.show();
 					Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
+					Utils.delegateRun(self.oCurrentSubScreen, 'onFocus', [], 200);
 
 					_.each(self.menu(), function (oItem) {
 						oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);

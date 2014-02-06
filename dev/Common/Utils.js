@@ -644,12 +644,23 @@ Utils.getUploadErrorDescByCode = function (mCode)
  * @param {?} oObject
  * @param {string} sMethodName
  * @param {Array=} aParameters
+ * @param {number=} nDelay
  */
-Utils.delegateRun = function (oObject, sMethodName, aParameters)
+Utils.delegateRun = function (oObject, sMethodName, aParameters, nDelay)
 {
 	if (oObject && oObject[sMethodName])
 	{
-		oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+		nDelay = Utils.pInt(nDelay);
+		if (0 >= nDelay)
+		{
+			oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+		}
+		else
+		{
+			_.delay(function () {
+				oObject[sMethodName].apply(oObject, Utils.isArray(aParameters) ? aParameters : []);
+			}, nDelay);
+		}
 	}
 };
 
