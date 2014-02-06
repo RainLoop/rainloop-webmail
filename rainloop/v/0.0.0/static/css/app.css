@@ -6663,6 +6663,10 @@ html.rl-no-preview-pane .messageList.message-selected {
   border: 0px solid transparent;
   z-index: 100;
   background-color: #f9f9f9;
+  /*			&:nth-child(even) {
+				background-color: #f3f3f3;
+			}*/
+
 }
 .messageList .b-content .messageListItem .delimiter {
   position: relative;
@@ -7144,7 +7148,7 @@ html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .bodyText {
   color: #000;
-  font-family: arial, sans-serif;
+  font-family: Arial, Verdana, Geneva, sans-serif;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part div[data-x-div-type=html] {
   height: 100%;
@@ -7181,13 +7185,13 @@ html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain {
   padding: 15px;
-  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain pre {
   margin: 0px;
   padding: 0px;
   background: #fff;
   border: none;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain blockquote {
   border-left: 2px solid blue;
@@ -8694,7 +8698,9 @@ html.rl-started-trigger.no-mobile #rl-content {
   width: 100%;
   margin: 0px;
   padding: 8px;
-  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+  /*font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;*/
+
+  font-family: Arial, Verdana, Geneva, sans-serif;
   font-size: 13px;
   line-height: 15px;
   overflow: auto;
