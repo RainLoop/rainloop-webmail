@@ -126,13 +126,8 @@ class LinkFinder
 	 */
 	public function UseDefaultWrappers($bAddTargetBlank = false)
 	{
-		$this->fLinkWrapper = function ($sLink, $bShortLink = false) use ($bAddTargetBlank) {
-
-			if ($bShortLink && \in_array(\strtolower($sLink), array('asp.net', 'vb.net', 'mailbee.net')))
-			{
-				return $sLink;
-			}
-
+		$this->fLinkWrapper = function ($sLink) use ($bAddTargetBlank) {
+			
 			$sNameLink = $sLink;
 			if (!\preg_match('/^[a-z]{3,5}\:\/\//i', \ltrim($sLink)))
 			{
@@ -151,11 +146,10 @@ class LinkFinder
 
 	/**
 	 * @param bool $bUseHtmlSpecialChars = true
-	 * @param bool $bFindShortLinks = true
 	 *
 	 * @return string
 	 */
-	public function CompileText($bUseHtmlSpecialChars = true, $bFindShortLinks = true)
+	public function CompileText($bUseHtmlSpecialChars = true)
 	{
 		$sText = \substr($this->sText, 0, $this->iOptimizationLimit);
 		$sSubText = \substr($this->sText, $this->iOptimizationLimit);
@@ -169,11 +163,6 @@ class LinkFinder
 		if (null !== $this->fMailWrapper && \is_callable($this->fMailWrapper))
 		{
 			$sText = $this->findMails($sText, $this->fMailWrapper);
-		}
-
-		if ($bFindShortLinks && null !== $this->fLinkWrapper && \is_callable($this->fLinkWrapper))
-		{
-			$sText = $this->findShortLinks($sText, $this->fLinkWrapper);
 		}
 
 		$sResult = '';
@@ -242,46 +231,6 @@ class LinkFinder
 						(\count($aPrepearPlainStringUrls) - 1).
 						\MailSo\Base\LinkFinder::CLOSE_LINK.
 						$aMatch[6];
-				}
-
-				return $aMatch[0];
-			}
-
-			return '';
-
-		}, $sText);
-
-		if (0 < \count($aPrepearPlainStringUrls))
-		{
-			$this->aPrepearPlainStringUrls = $aPrepearPlainStringUrls;
-		}
-
-		return $sText;
-	}
-
-	/**
-	 * @param string $sText
-	 * @param mixed $fWrapper
-	 *
-	 * @return string
-	 */
-	private function findShortLinks($sText, $fWrapper)
-	{
-		$sPattern = '/([a-z0-9-\.]+\.(?:com|org|net|ru))([^a-z0-9-\.])/i';
-
-		$aPrepearPlainStringUrls = $this->aPrepearPlainStringUrls;
-		$sText = \preg_replace_callback($sPattern, function ($aMatch) use ($fWrapper, &$aPrepearPlainStringUrls) {
-
-			if (\is_array($aMatch) && 2 < \count($aMatch) && isset($aMatch[1]) && 0 < \strlen($aMatch[1]))
-			{
-				$sLinkWithWrap = \call_user_func_array($fWrapper, array($aMatch[1], true));
-				if (\is_string($sLinkWithWrap))
-				{
-					$aPrepearPlainStringUrls[] = \stripslashes($sLinkWithWrap);
-					return \MailSo\Base\LinkFinder::OPEN_LINK.
-						(\count($aPrepearPlainStringUrls) - 1).
-						\MailSo\Base\LinkFinder::CLOSE_LINK.
-						$aMatch[2];
 				}
 
 				return $aMatch[0];

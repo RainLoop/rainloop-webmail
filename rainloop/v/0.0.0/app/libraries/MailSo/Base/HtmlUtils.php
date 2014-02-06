@@ -8,6 +8,8 @@ namespace MailSo\Base;
  */
 class HtmlUtils
 {
+	static $KOS = '@@_KOS_@@';
+
 	/**
 	 * @access private
 	 */
@@ -261,14 +263,106 @@ class HtmlUtils
 		return \implode(';', $aOutStyles);
 	}
 
+	/**
+	 * @param \DOMDocument $oDom
+	 */
+	public static function FindLinksInDOM(&$oDom)
+	{
+		$aNodes = $oDom->getElementsByTagName('*');
+		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
+		{
+			$sTagNameLower = \strtolower($oElement->tagName);
+			$sParentTagNameLower = isset($oElement->parentNode) && isset($oElement->parentNode->tagName) ?
+				\strtolower($oElement->parentNode->tagName) : '';
+
+			if (!\in_array($sTagNameLower, array('html', 'meta', 'head', 'style', 'script', 'img', 'button', 'input', 'textarea', 'a')) &&
+				'a' !== $sParentTagNameLower && $oElement->childNodes && 0 < $oElement->childNodes->length)
+			{
+				$oSubItem = null;
+				$aTextNodes = array();
+				$iIndex = $oElement->childNodes->length - 1;
+				while ($iIndex > -1)
+				{
+					$oSubItem = $oElement->childNodes->item($iIndex);
+					if ($oSubItem && XML_TEXT_NODE === $oSubItem->nodeType)
+					{
+						$aTextNodes[] = $oSubItem;
+					}
+
+					$iIndex--;
+				}
+
+				unset($oSubItem);
+
+				foreach ($aTextNodes as $oTextNode)
+				{
+					if ($oTextNode && 0 < \strlen($oTextNode->wholeText)/* && \preg_match('/http[s]?:\/\//i', $oTextNode->wholeText)*/)
+					{
+						$sText = \MailSo\Base\LinkFinder::NewInstance()
+							->Text($oTextNode->wholeText)
+							->UseDefaultWrappers(true)
+							->CompileText()
+						;
+
+						$oSubDom = \MailSo\Base\HtmlUtils::GetDomFromText('<html><body>'.$sText.'</body></html>');
+						if ($oSubDom)
+						{
+							$oBodyNodes = $oSubDom->getElementsByTagName('body');
+							if ($oBodyNodes && 0 < $oBodyNodes->length)
+							{
+								$oBodyChildNodes = $oBodyNodes->item(0)->childNodes;
+								if ($oBodyChildNodes && $oBodyChildNodes->length)
+								{
+									for ($iIndex = 0, $iLen = $oBodyChildNodes->length; $iIndex < $iLen; $iIndex++)
+									{
+										$oSubItem = $oBodyChildNodes->item($iIndex);
+										if ($oSubItem)
+										{
+											if (XML_ELEMENT_NODE === $oSubItem->nodeType &&
+												'a' === \strtolower($oSubItem->tagName))
+											{
+												$oLink = $oDom->createElement('a',
+													\str_replace(':', \MailSo\Base\HtmlUtils::$KOS, \htmlspecialchars($oSubItem->nodeValue)));
+
+												$sHref = $oSubItem->getAttribute('href');
+												if ($sHref)
+												{
+													$oLink->setAttribute('href', $sHref);
+												}
+
+												$oElement->insertBefore($oLink, $oTextNode);
+											}
+											else
+											{
+												$oElement->insertBefore($oDom->importNode($oSubItem), $oTextNode);
+											}
+										}
+									}
+
+									$oElement->removeChild($oTextNode);
+								}
+							}
+
+							unset($oBodyNodes);
+						}
+
+						unset($oSubDom, $sText);
+					}
+				}
+			}
+		}
+
+		unset($aNodes);
+	}
 
 	/**
 	 * @param string $sHtml
 	 * @param bool $bDoNotReplaceExternalUrl = false
+	 * @param bool $bFindLinksInHtml = false
 	 *
 	 * @return string
 	 */
-	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false)
+	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false)
 	{
 		$bHasExternals = false;
 		$aFoundCIDs = array();
@@ -276,7 +370,7 @@ class HtmlUtils
 		$aFoundedContentLocationUrls = array();
 
 		return \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
-			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl);
+			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml);
 	}
 
 	/**
@@ -286,11 +380,13 @@ class HtmlUtils
 	 * @param array $aContentLocationUrls = array()
 	 * @param array $aFoundedContentLocationUrls = array()
 	 * @param bool $bDoNotReplaceExternalUrl = false
+	 * @param bool $bFindLinksInHtml = false
 	 *
 	 * @return string
 	 */
 	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
-		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(), $bDoNotReplaceExternalUrl = false)
+		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
+		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false)
 	{
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
@@ -313,11 +409,16 @@ class HtmlUtils
 
 		if ($oDom)
 		{
+			if ($bFindLinksInHtml)
+			{
+				\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
+			}
+
 			$aNodes = $oDom->getElementsByTagName('*');
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
 				$sTagNameLower = \strtolower($oElement->tagName);
-
+				
 				// convert body attributes to styles
 				if ('body' === $sTagNameLower)
 				{
@@ -493,6 +594,8 @@ class HtmlUtils
 		$sResult = '<div data-x-div-type="body" '.$sBodyAttrs.'>'.$sResult.'</div>';
 		$sResult = '<div data-x-div-type="html" '.$sHtmlAttrs.'>'.$sResult.'</div>';
 
+		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+
 		return \trim($sResult);
 	}
 
@@ -658,8 +761,7 @@ class HtmlUtils
 		$sText = \MailSo\Base\LinkFinder::NewInstance()
 			->Text($sText)
 			->UseDefaultWrappers($bLinksWithTargetBlank)
-//			->CompileText(true, false);
-			->CompileText(true, true);
+			->CompileText();
 
 		$sText = \str_replace("\r", '', $sText);
 

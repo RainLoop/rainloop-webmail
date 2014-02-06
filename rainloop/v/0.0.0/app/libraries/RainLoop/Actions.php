@@ -6264,7 +6264,7 @@ class Actions
 	protected function responseObject($mResponse, $sParent = '', $aParameters = array())
 	{
 		$mResult = $mResponse;
-		if (is_object($mResponse))
+		if (\is_object($mResponse))
 		{
 			$bHook = true;
 			$sClassName = \get_class($mResponse);
@@ -6327,7 +6327,7 @@ class Actions
 				$sSubject = $mResult['Subject'];
 				$mResult['RequestHash'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
-					'Account' => $oAccount ? md5($oAccount->Hash()) : '',
+					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],
 					'Uid' => $mResult['Uid'],
 					'MimeType' => 'message/rfc822',
@@ -6372,12 +6372,12 @@ class Actions
 					}
 
 					$sPlain = '';
-					$sHtml = $mResponse->Html();
+					$sHtml = \trim($mResponse->Html());
 					$bRtl = false;
 					
 					if (0 === \strlen($sHtml))
 					{
-						$sPlain = $mResponse->Plain();
+						$sPlain = \trim($mResponse->Plain());
 						$bRtl = \MailSo\Base\Utils::IsRTL($sPlain);
 					}
 					else
@@ -6389,7 +6389,8 @@ class Actions
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
 					$mResult['References'] = $mResponse->References();
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
-						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls);
+						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false,
+						!!$this->Config()->Get('labs', 'allow_smart_html_links', true));
 
 					$mResult['PlainRaw'] = $sPlain;
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
@@ -6418,7 +6419,7 @@ class Actions
 							try
 							{
 								$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['ReadReceipt']);
-								if ($oReadReceipt && \strtolower($oAccount->Email()) === \strtolower($oReadReceipt->GetEmail()))
+								if (!$oReadReceipt || ($oReadReceipt && \strtolower($oAccount->Email()) === \strtolower($oReadReceipt->GetEmail())))
 								{
 									$mResult['ReadReceipt'] = '';
 								}
@@ -6495,13 +6496,13 @@ class Actions
 					'CID' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),
 					'IsInline' => $mResponse->IsInline(),
-					'IsLinked' => ($mFoundedCIDs && \in_array(trim(trim($mResponse->Cid()), '<>'), $mFoundedCIDs)) ||
+					'IsLinked' => ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs)) ||
 						($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls))
 				));
 
 				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
-					'Account' => $oAccount ? md5($oAccount->Hash()) : '',
+					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],
 					'Uid' => $mResult['Uid'],
 					'MimeIndex' => $mResult['MimeIndex'],
@@ -6513,7 +6514,7 @@ class Actions
 			{
 				$aExtended = null;
 				$mStatus = $mResponse->Status();
-				if (is_array($mStatus) && isset($mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT']))
+				if (\is_array($mStatus) && isset($mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT']))
 				{
 					$aExtended = array(
 						'MessageCount' => (int) $mStatus['MESSAGES'],
@@ -6524,7 +6525,7 @@ class Actions
 					);
 				}
 
-				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => $mResponse->Name(),
 					'FullName' => $mResponse->FullName(),
 					'FullNameRaw' => $mResponse->FullNameRaw(),
@@ -6541,7 +6542,7 @@ class Actions
 			}
 			else if ('MailSo\Mail\MessageCollection' === $sClassName)
 			{
-				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'MessageCount' => $mResponse->MessageCount,
 					'MessageUnseenCount' => $mResponse->MessageUnseenCount,
 					'MessageResultCount' => $mResponse->MessageResultCount,
@@ -6557,13 +6558,13 @@ class Actions
 			}
 			else if ('MailSo\Mail\AttachmentCollection' === $sClassName)
 			{
-				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'InlineCount' => $mResponse->InlineCount()
 				));
 			}
 			else if ('MailSo\Mail\FolderCollection' === $sClassName)
 			{
-				$mResult = array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Namespace' => $mResponse->GetNamespace(),
 					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : '',
 					'IsThreadsSupported' => $mResponse->IsThreadsSupported,
@@ -6579,7 +6580,7 @@ class Actions
 			}
 			else
 			{
-				$mResult = '['.get_class($mResponse).']';
+				$mResult = '['.\get_class($mResponse).']';
 				$bHook = false;
 			}
 
@@ -6588,7 +6589,7 @@ class Actions
 				$this->Plugins()->RunHook('filter.response-object', array($sClassName, $mResult), false);
 			}
 		}
-		else if (is_array($mResponse))
+		else if (\is_array($mResponse))
 		{
 			foreach ($mResponse as $iKey => $oItem)
 			{

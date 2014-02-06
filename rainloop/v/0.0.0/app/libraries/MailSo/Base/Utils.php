@@ -740,7 +740,7 @@ class Utils
 	{
 		$sResult = '';
 		$sContentType = \strtolower($sContentType);
-		if (0 === strpos($sContentType, 'image/'))
+		if (0 === \strpos($sContentType, 'image/'))
 		{
 			$sResult = 'image';
 		}
@@ -847,7 +847,7 @@ class Utils
 	 */
 	public static function Php2js($mInput)
 	{
-		return \json_encode($mInput, defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0);
+		return \json_encode($mInput, \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0);
 
 //		if (\is_null($mInput))
 //		{
@@ -918,25 +918,25 @@ class Utils
 	 */
 	public static function RecRmDir($sDir)
 	{
-		if (@is_dir($sDir))
+		if (@\is_dir($sDir))
 		{
-			$aObjects = scandir($sDir);
+			$aObjects = \scandir($sDir);
 			foreach ($aObjects as $sObject)
 			{
 				if ('.' !== $sObject && '..' !== $sObject)
 				{
-					if ('dir' === filetype($sDir.'/'.$sObject))
+					if ('dir' === \filetype($sDir.'/'.$sObject))
 					{
 						self::RecRmDir($sDir.'/'.$sObject);
 					}
 					else
 					{
-						@unlink($sDir.'/'.$sObject);
+						@\unlink($sDir.'/'.$sObject);
 					}
 				}
 			}
 
-			return @rmdir($sDir);
+			return @\rmdir($sDir);
 		}
 
 		return false;
