@@ -4498,6 +4498,8 @@ function PopupsDomainViewModel()
 	this.smtpServerFocus = ko.observable(false);
 
 	this.name = ko.observable('');
+	this.name.focused = ko.observable(false);
+
 	this.imapServer = ko.observable('');
 	this.imapPort = ko.observable(Consts.Values.ImapDefaulPort);
 	this.imapSecure = ko.observable(Enums.ServerSecure.None);
@@ -4512,7 +4514,7 @@ function PopupsDomainViewModel()
 	this.imapServerFocus.subscribe(function (bValue) {
 		if (bValue && '' !== this.name() && '' === this.imapServer())
 		{
-			this.imapServer(this.name());
+			this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
 		}
 	}, this);
 
@@ -4662,6 +4664,14 @@ PopupsDomainViewModel.prototype.onShow = function (oDomain)
 	}
 };
 
+PopupsDomainViewModel.prototype.onFocus = function ()
+{
+	if ('' === this.name())
+	{
+		this.name.focused(true);
+	}
+};
+
 PopupsDomainViewModel.prototype.onBuild = function ()
 {
 	var self = this;
@@ -4684,6 +4694,8 @@ PopupsDomainViewModel.prototype.clearForm = function ()
 	this.savingError('');
 
 	this.name('');
+	this.name.focused(false);
+
 	this.imapServer('');
 	this.imapPort(Consts.Values.ImapDefaulPort);
 	this.imapSecure(Enums.ServerSecure.None);

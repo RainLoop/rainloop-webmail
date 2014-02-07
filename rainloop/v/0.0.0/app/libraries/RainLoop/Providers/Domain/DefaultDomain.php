@@ -85,57 +85,56 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	public function Load($sName, $bFindWithWildCard = false)
 	{
 		$mResult = null;
+		
 		$sName = \strtolower($sName);
 		$sRealFileName = $this->codeFileName($sName);
+		
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
 		{
 			$mResult = \RainLoop\Domain::NewInstanceFromDomainConfigArray(
 				$sName, @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini'));
-
-			if ($mResult instanceof \RainLoop\Domain)
-			{
-				if (\file_exists($this->sDomainPath.'/disabled'))
-				{
-					$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
-					if (false !== $sDisabled && 0 < \strlen($sDisabled))
-					{
-						$mResult->SetDisabled(false !== \strpos(strtolower(','.$sDisabled.','), \strtolower(','.$sName.',')));
-					}
-				}
-			}
 		}
 		else if ($bFindWithWildCard)
 		{
-			// TODO
-//			$sNames = '';
-//			$aNames = array();
-//
-//			$aList = \glob($this->sDomainPath.'/*.ini');
-//			foreach ($aList as $sFile)
-//			{
-//				$sName = \strtolower(\substr(\basename($sFile), 0, -4));
-//				if ('default' === $sName || false !== strpos($sName, '_wildcard_'))
-//				{
-//					$aNames[] = $this->codeFileName($sName, true);
-//				}
-//			}
-//
-//			if (0 < \count($aNames))
-//			{
-//				\rsort($sNames, SORT_STRING);
-//				$sNames = \implode(' ', $aNames);
-//			}
-//
-//			if (0 < \strlen($sNames))
-//			{
-//				$sFoundedValue = '';
-//				if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sName, $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
-//				{
-//					$mResult = $this->Load($sFoundedValue, false);
-//				}
-//			}
-			
-			$mResult = $this->Load('default', false);
+			$sNames = '';
+			$aNames = array();
+
+			$aList = \glob($this->sDomainPath.'/*.ini');
+			foreach ($aList as $sFile)
+			{
+				$sName = \strtolower(\substr(\basename($sFile), 0, -4));
+				if ('default' === $sName || false !== strpos($sName, '_wildcard_'))
+				{
+					$aNames[] = $this->codeFileName($sName, true);
+				}
+			}
+
+			if (0 < \count($aNames))
+			{
+				\rsort($aNames, SORT_STRING);
+				$sNames = \implode(' ', $aNames);
+			}
+
+			if (0 < \strlen($sNames))
+			{
+				$sFoundedValue = '';
+				if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sName, $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
+				{
+					$mResult = $this->Load($sFoundedValue, false);
+				}
+			}
+		}
+
+		if ($mResult instanceof \RainLoop\Domain)
+		{
+			if (\file_exists($this->sDomainPath.'/disabled'))
+			{
+				$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
+				if (false !== $sDisabled && 0 < \strlen($sDisabled))
+				{
+					$mResult->SetDisabled(false !== \strpos(strtolower(','.$sDisabled.','), \strtolower(','.$sName.',')));
+				}
+			}
 		}
 
 		return $mResult;

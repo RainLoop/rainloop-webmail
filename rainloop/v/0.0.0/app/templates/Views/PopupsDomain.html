@@ -8,9 +8,9 @@
 			<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
 				<div class="row" data-bind="visible: !edit()">
 					<div class="span8">
-						Name
+						Name <span style="color: #aaa">(wildcard supported)</span>
 						<br />
-						<input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'" />
+						<input type="text" data-bind="value: name, hasfocus: name.focused, valueUpdate: 'afterkeydown'" />
 						<span class="error-desc" data-bind="text: savingError"></span>
 					</div>
 				</div>
@@ -87,7 +87,7 @@
 							List of users webmail is allowed to access.
 							Use a space as delimiter.
 						</div>
-						<textarea class="input-xxlarge" style="width: 600px" rows="8" data-bind="value: whiteList"></textarea>
+						<textarea class="input-xxlarge" style="width: 600px" rows="8" data-bind="value: whiteList" tabindex="-1"></textarea>
 					</div>
 				</div>
 			</form>
