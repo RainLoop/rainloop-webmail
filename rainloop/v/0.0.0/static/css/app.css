@@ -6309,10 +6309,19 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   padding: 10px 10px 0 8px;
   color: #fff;
 }
+.b-folders .b-footer {
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+  left: 0;
+  height: 20px;
+  padding: 0 10px 0 0;
+  z-index: 101;
+}
 .b-folders .b-content {
   position: absolute;
   top: 58px;
-  bottom: 13px;
+  bottom: 43px;
   left: 0;
   right: 0;
   overflow: hidden;
@@ -6326,11 +6335,11 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   border-top: 0px solid #000;
   border-bottom: 1px solid #999;
 }
-.b-folders .e-item {
+.b-folders .b-content .e-item {
   overflow: hidden;
   white-space: nowrap;
 }
-.b-folders .e-item .e-link {
+.b-folders .b-content .e-item .e-link {
   display: block;
   position: relative;
   z-index: 1;
@@ -6347,36 +6356,36 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   outline: 0;
   text-decoration: none;
 }
-.b-folders .e-item .e-link.selectable {
+.b-folders .b-content .e-item .e-link.selectable {
   color: #000;
   cursor: pointer;
 }
-.b-folders .e-item .e-link.selectable:hover,
-.b-folders .e-item .e-link.selectable.selected,
-.b-folders .e-item .e-link.selectable.droppableHover {
+.b-folders .b-content .e-item .e-link.selectable:hover,
+.b-folders .b-content .e-item .e-link.selectable.selected,
+.b-folders .b-content .e-item .e-link.selectable.droppableHover {
   background-color: #555;
   color: #fff;
 }
-.b-folders .e-item .e-link.system {
+.b-folders .b-content .e-item .e-link.system {
   cursor: default;
   color: grey;
 }
-.b-folders .e-item .e-link .count {
+.b-folders .b-content .e-item .e-link .count {
   position: relative;
   display: none;
   margin-top: 5px;
   line-height: 19px;
 }
-.b-folders .e-item .e-link.print-count {
+.b-folders .b-content .e-item .e-link.print-count {
   font-weight: bold;
 }
-.b-folders .e-item .e-link.print-count .count {
+.b-folders .b-content .e-item .e-link.print-count .count {
   display: inline;
 }
-.b-folders .e-item .e-link.unread-sub {
+.b-folders .b-content .e-item .e-link.unread-sub {
   font-weight: bold;
 }
-.b-folders .e-item .e-link .e-collapsed-sign {
+.b-folders .b-content .e-item .e-link .e-collapsed-sign {
   cursor: pointer;
   width: 22px;
   height: 30px;
@@ -6384,10 +6393,10 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   text-align: center;
   vertical-align: inherit;
 }
-.b-folders .e-item .hidden.e-link {
+.b-folders .b-content .e-item .hidden.e-link {
   display: none;
 }
-.b-folders .e-item .b-sub-folders.collapsed {
+.b-folders .b-content .e-item .b-sub-folders.collapsed {
   max-height: 0;
   height: 0;
   display: none;

@@ -111,6 +111,16 @@ MailBoxFolderListViewModel.prototype.composeClick = function ()
 	kn.showScreenPopup(PopupsComposeViewModel);
 };
 
+MailBoxFolderListViewModel.prototype.createFolder = function ()
+{
+	kn.showScreenPopup(PopupsFolderCreateViewModel);
+};
+
+MailBoxFolderListViewModel.prototype.configureFolders = function ()
+{
+	kn.setHash(RL.link().settings('folders'));
+};
+
 MailBoxFolderListViewModel.prototype.contactsClick = function ()
 {
 	if (this.allowContacts)

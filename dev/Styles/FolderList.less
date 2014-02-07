@@ -14,10 +14,20 @@
 		color: #fff;
 	}
 
+	.b-footer {
+		position: absolute;
+		bottom: 20px;
+		right: 0;
+		left: 0;
+		height: 20px;
+		padding: 0 10px 0 0;
+		z-index: 101;
+	}
+
 	.b-content {
 		position: absolute;
 		top: 50px + @rlLowMargin;
-		bottom: @rlLowMargin + @rlBottomMargin;
+		bottom: 30px + @rlLowMargin + @rlBottomMargin;
 //		left: @rlLowMargin;
 		left: 0;
 		right: 0;
@@ -36,7 +46,7 @@
 		border-bottom: 1px solid #999;
 	}
 
-	.e-item {
+	.b-content .e-item {
 
 		overflow: hidden;
 		white-space: nowrap;

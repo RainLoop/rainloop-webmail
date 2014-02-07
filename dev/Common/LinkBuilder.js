@@ -277,24 +277,6 @@ LinkBuilder.prototype.openPgpJs = function ()
 /**
  * @return {string}
  */
-LinkBuilder.prototype.ckeditorPath = function ()
-{
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/ckeditor/';
-};
-
-/**
- * @return {string}
- */
-LinkBuilder.prototype.ckeditorJs = function ()
-{
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/ckeditor/ckeditor.js';
-};
-
-/**
- * @return {string}
- */
 LinkBuilder.prototype.socialGoogle = function ()
 {
 	return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
