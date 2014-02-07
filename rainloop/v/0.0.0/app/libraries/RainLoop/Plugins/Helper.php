@@ -14,11 +14,14 @@ class Helper
 	/**
 	 * @param string $sString
 	 * @param string $sWildcardValues
+	 * @param string $sFoundedValue = ''
 	 *
 	 * @return bool
 	 */
-	static public function ValidateWildcardValues($sString, $sWildcardValues)
+	static public function ValidateWildcardValues($sString, $sWildcardValues, &$sFoundedValue = '')
 	{
+		$sFoundedValue = '';
+		
 		$sString = \trim($sString);
 		if ('' === $sString)
 		{
@@ -26,8 +29,14 @@ class Helper
 		}
 
 		$sWildcardValues = \trim($sWildcardValues);
-		if ('' === $sWildcardValues || '*' === $sWildcardValues)
+		if ('' === $sWildcardValues)
 		{
+			return true;
+		}
+
+		if ('*' === $sWildcardValues)
+		{
+			$sFoundedValue = '*';
 			return true;
 		}
 
@@ -40,6 +49,7 @@ class Helper
 			{
 				if ($sString === $sItem)
 				{
+					$sFoundedValue = $sItem;
 					return true;
 				}
 			}
@@ -52,6 +62,7 @@ class Helper
 
 				if (\preg_match('/'.\implode('.*', $aItem).'/', $sString))
 				{
+					$sFoundedValue = $sItem;
 					return true;
 				}
 			}

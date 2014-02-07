@@ -37,12 +37,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 * @param string $sName
 	 * @param bool $bDefaultOnNull = false
 	 *
-	 * @return \RainLoop\Domain | null
+	 * @return \RainLoop\Domain|null
 	 */
 	public function Load($sName, $bDefaultOnNull = false)
 	{
-		$oDomain = $this->oDriver->Load($sName);
-		return $oDomain ? $oDomain : ($bDefaultOnNull ? $this->oDriver->Load('default') : null);
+		return $this->oDriver->Load($sName, $bDefaultOnNull);
 	}
 
 	/**

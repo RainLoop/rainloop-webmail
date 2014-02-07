@@ -37,16 +37,13 @@ interface DomainAdminInterface extends DomainInterface
 	/**
 	 * @param int $iOffset
 	 * @param int $iLimit = 20
-	 * @param string $sSearch = ''
 	 *
 	 * @return array
 	 */
-	public function GetList($iOffset, $iLimit = 20, $sSearch = '');
+	public function GetList($iOffset, $iLimit = 20);
 
 	/**
-	 * @param string $sSearch = ''
-	 *
 	 * @return int
 	 */
-	public function Count($sSearch = '');
+	public function Count();
 }
