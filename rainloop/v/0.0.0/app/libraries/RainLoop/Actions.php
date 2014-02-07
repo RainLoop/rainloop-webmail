@@ -3859,17 +3859,17 @@ class Actions
 			$oMessage->SetBcc($oBccEmails);
 		}
 
-		if ($bWithDraftInfo && is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2]))
+		if ($bWithDraftInfo && \is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2]))
 		{
 			$oMessage->SetDraftInfo($aDraftInfo[0], $aDraftInfo[1], $aDraftInfo[2]);
 		}
 
-		if (0 < strlen($sInReplyTo))
+		if (0 < \strlen($sInReplyTo))
 		{
 			$oMessage->SetInReplyTo($sInReplyTo);
 		}
 
-		if (0 < strlen($sReferences))
+		if (0 < \strlen($sReferences))
 		{
 			$oMessage->SetReferences($sReferences);
 		}
@@ -3881,13 +3881,19 @@ class Actions
 		$sTextToAdd = $bTextIsHtml ?
 			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText;
 
-		$this->Plugins()->RunHook(
-			$bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
+		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
 			array($oAccount, &$oMessage, &$sTextToAdd));
+		
+		if ($bTextIsHtml && 0 < \strlen($sTextToAdd))
+		{
+			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sTextToAdd);
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, &$oMessage, &$sTextConverted));
+			$oMessage->AddText($sTextConverted, false);
+		}
 
 		$oMessage->AddText($sTextToAdd, $bTextIsHtml);
 
-		if (is_array($aAttachments))
+		if (\is_array($aAttachments))
 		{
 			foreach ($aAttachments as $sTempName => $aData)
 			{
