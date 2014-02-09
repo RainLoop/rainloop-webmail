@@ -10754,6 +10754,7 @@ function MailBoxFolderListViewModel()
 	
 	this.folderList = RL.data().folderList;
 	this.folderListSystem = RL.data().folderListSystem;
+	this.foldersChanging = RL.data().foldersChanging;
 	
 	this.iDropOverTimer = 0;
 
@@ -13479,6 +13480,17 @@ function WebMailDataStorage()
 	this.foldersCreating = ko.observable(false);
 	this.foldersDeleting = ko.observable(false);
 	this.foldersRenaming = ko.observable(false);
+
+	this.foldersChanging = ko.computed(function () {
+		var
+			bLoading = this.foldersLoading(),
+			bCreating = this.foldersCreating(),
+			bDeleting = this.foldersDeleting(),
+			bRenaming = this.foldersRenaming()
+		;
+		return bLoading || bCreating || bDeleting || bRenaming;
+	}, this);
+
 
 	this.foldersInboxUnreadCount = ko.observable(0);
 

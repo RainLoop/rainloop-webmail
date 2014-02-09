@@ -72,11 +72,6 @@ class Actions
 	private $oSettingsProvider;
 
 	/**
-	 * @var \RainLoop\Providers\Login
-	 */
-	private $oLoginProvider;
-
-	/**
 	 * @var \RainLoop\Providers\PersonalAddressBook
 	 */
 	private $oPersonalAddressBookProvider;
@@ -120,7 +115,6 @@ class Actions
 		$this->oFilesProvider = null;
 		$this->oSettingsProvider = null;
 		$this->oDomainProvider = null;
-		$this->oLoginProvider = null;
 		$this->oPersonalAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
@@ -224,7 +218,8 @@ class Actions
 				case 'domain':
 					// \RainLoop\Providers\Domain\DomainSimpleInterface
 					// \RainLoop\Providers\Domain\DomainAdminInterface
-					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains');
+					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains',
+						$this->Cacher());
 					break;
 				case 'personal-address-book':
 					// \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
@@ -578,20 +573,6 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Providers\Login
-	 */
-	public function LoginProvider()
-	{
-		if (null === $this->oLoginProvider)
-		{
-			$this->oLoginProvider = new \RainLoop\Providers\Login(
-				$this->fabrica('login'), $this->DomainProvider());
-		}
-
-		return $this->oLoginProvider;
-	}
-
-	/**
 	 * @return \OAuth2\Client|null
 	 */
 	public function GoogleConnector()
@@ -805,6 +786,29 @@ class Actions
 
 		return $bResult;
 	}
+	
+	/**
+	 * @param string $sEmail
+	 * @param string $sLogin
+	 * @param string $sPassword
+	 * @param bool $sSignMeToken = ''
+	 *
+	 * @return \RainLoop\Account|null
+	 */
+	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '')
+	{
+		$oResult = null;
+		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
+		{
+			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
+			if ($oDomain instanceof \RainLoop\Domain && !$oDomain->Disabled() && $oDomain->ValidateWhiteList($sEmail, $sLogin))
+			{
+				$oResult = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
+			}
+		}
+
+		return $oResult;
+	}
 
 	/**
 	 * @param string $sToken
@@ -823,8 +827,8 @@ class Actions
 			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && 8 === \count($aAccountHash) && !empty($aAccountHash[7]) &&
 				(!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7]))
 			{
-				$oAccount = $this->LoginProvider()->Provide(
-					$aAccountHash[1], $aAccountHash[2], $aAccountHash[3], empty($aAccountHash[5]) ? '' : $aAccountHash[5]);
+				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
+					empty($aAccountHash[5]) ? '' : $aAccountHash[5]);
 
 				if ($oAccount instanceof \RainLoop\Account)
 				{
@@ -1301,7 +1305,7 @@ class Actions
 
 		$this->Plugins()->RunHook('filter.login-credentials', array(&$sEmail, &$sLogin, &$sPassword));
 
-		$oAccount = $this->LoginProvider()->Provide($sEmail, $sLogin, $sPassword, $sSignMeToken);
+		$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken);
 		if (!($oAccount instanceof \RainLoop\Account))
 		{
 			$this->loginErrorDelay();

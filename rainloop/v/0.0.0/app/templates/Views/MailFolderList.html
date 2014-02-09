@@ -19,7 +19,7 @@
 	<div class="b-footer btn-toolbar">
 		<div class="btn-group pull-right">
 			<a class="btn" data-bind="click: createFolder">
-				<i class="icon-folder-add"></i>
+				<i data-bind="css: {'icon-folder-add': !foldersChanging(), 'icon-spinner animated': foldersChanging()}"></i>
 			</a>
 			<a class="btn" data-bind="click: configureFolders">
 				<i class="icon-cog"></i>

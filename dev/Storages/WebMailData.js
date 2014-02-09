@@ -88,6 +88,17 @@ function WebMailDataStorage()
 	this.foldersDeleting = ko.observable(false);
 	this.foldersRenaming = ko.observable(false);
 
+	this.foldersChanging = ko.computed(function () {
+		var
+			bLoading = this.foldersLoading(),
+			bCreating = this.foldersCreating(),
+			bDeleting = this.foldersDeleting(),
+			bRenaming = this.foldersRenaming()
+		;
+		return bLoading || bCreating || bDeleting || bRenaming;
+	}, this);
+
+
 	this.foldersInboxUnreadCount = ko.observable(0);
 
 	this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,

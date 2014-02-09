@@ -45,7 +45,7 @@ function PopupsDomainViewModel()
 	this.smtpServerFocus.subscribe(function (bValue) {
 		if (bValue && '' !== this.imapServer() && '' === this.smtpServer())
 		{
-			this.smtpServer(this.imapServer());
+			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
 		}
 	}, this);
 

@@ -10,13 +10,20 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	protected $sDomainPath;
 
 	/**
+	 * @var \MailSo\Cache\CacheClient
+	 */
+	protected $oCacher;
+
+	/**
 	 * @param string $sDomainPath
+	 * @param \MailSo\Cache\CacheClient $oCacher = null
 	 *
 	 * @return void
 	 */
-	public function __construct($sDomainPath)
+	public function __construct($sDomainPath, $oCacher = null)
 	{
 		$this->sDomainPath = \rtrim(\trim($sDomainPath), '\\/');
+		$this->oCacher = $oCacher;
 	}
 
 	/**
@@ -77,6 +84,55 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	}
 
 	/**
+	 * @return string
+	 */
+	private function wildcardDomainsCacheKey()
+	{
+		return '/WildCard/DomainCache/'.\md5(APP_VERSION.APP_PRIVATE_DATA_NAME).'/';
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getWildcardDomainsLine()
+	{
+		if ($this->oCacher)
+		{
+			$sResult = $this->oCacher->Get($this->wildcardDomainsCacheKey());
+			if (0 < \strlen($sResult))
+			{
+				return $sResult;
+			}
+		}
+
+		$sResult = '';
+		$aNames = array();
+
+		$aList = \glob($this->sDomainPath.'/*.ini');
+		foreach ($aList as $sFile)
+		{
+			$sName = \strtolower(\substr(\basename($sFile), 0, -4));
+			if ('default' === $sName || false !== strpos($sName, '_wildcard_'))
+			{
+				$aNames[] = $this->codeFileName($sName, true);
+			}
+		}
+
+		if (0 < \count($aNames))
+		{
+			\rsort($aNames, SORT_STRING);
+			$sResult = \implode(' ', $aNames);
+		}
+
+		if ($this->oCacher)
+		{
+			$this->oCacher->Set($this->wildcardDomainsCacheKey(), $sResult);
+		}
+
+		return $sResult;
+	}
+
+	/**
 	 * @param string $sName
 	 * @param bool $bFindWithWildCard = false
 	 *
@@ -86,7 +142,9 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	{
 		$mResult = null;
 		
+		$sFoundedValue = '';
 		$sName = \strtolower($sName);
+		
 		$sRealFileName = $this->codeFileName($sName);
 		
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
@@ -96,28 +154,9 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		}
 		else if ($bFindWithWildCard)
 		{
-			$sNames = '';
-			$aNames = array();
-
-			$aList = \glob($this->sDomainPath.'/*.ini');
-			foreach ($aList as $sFile)
-			{
-				$sName = \strtolower(\substr(\basename($sFile), 0, -4));
-				if ('default' === $sName || false !== strpos($sName, '_wildcard_'))
-				{
-					$aNames[] = $this->codeFileName($sName, true);
-				}
-			}
-
-			if (0 < \count($aNames))
-			{
-				\rsort($aNames, SORT_STRING);
-				$sNames = \implode(' ', $aNames);
-			}
-
+			$sNames = $this->getWildcardDomainsLine();
 			if (0 < \strlen($sNames))
 			{
-				$sFoundedValue = '';
 				if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sName, $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
 				{
 					$mResult = $this->Load($sFoundedValue, false);
@@ -132,7 +171,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 				$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
 				if (false !== $sDisabled && 0 < \strlen($sDisabled))
 				{
-					$mResult->SetDisabled(false !== \strpos(strtolower(','.$sDisabled.','), \strtolower(','.$sName.',')));
+					$sDisabledName = 0 < \strlen($sFoundedValue) ? $sFoundedValue : $sName;
+					$mResult->SetDisabled(false !== \strpos(strtolower(','.$sDisabled.','), \strtolower(','.$sDisabledName.',')));
 				}
 			}
 		}
@@ -149,6 +189,11 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	{
 		$sName = \strtolower($oDomain->Name());
 		$sRealFileName = $this->codeFileName($sName);
+
+		if ($this->oCacher)
+		{
+			$this->oCacher->Delete($this->wildcardDomainsCacheKey());
+		}
 
 		$mResult = \file_put_contents($this->sDomainPath.'/'.$sRealFileName.'.ini', $oDomain->ToIniString());
 		return \is_int($mResult) && 0 < $mResult;
@@ -173,6 +218,11 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		if ($bResult)
 		{
 			$this->Disable($sName, false);
+		}
+
+		if ($this->oCacher)
+		{
+			$this->oCacher->Delete($this->wildcardDomainsCacheKey());
 		}
 
 		return $bResult;

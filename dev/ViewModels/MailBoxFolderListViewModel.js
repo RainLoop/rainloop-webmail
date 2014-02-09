@@ -10,6 +10,7 @@ function MailBoxFolderListViewModel()
 	
 	this.folderList = RL.data().folderList;
 	this.folderListSystem = RL.data().folderListSystem;
+	this.foldersChanging = RL.data().foldersChanging;
 	
 	this.iDropOverTimer = 0;
 
