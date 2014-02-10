@@ -557,6 +557,11 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
+
+	if (this.oEditor)
+	{
+		this.oEditor.hideEditorToolbar();
+	}
 };
 
 /**

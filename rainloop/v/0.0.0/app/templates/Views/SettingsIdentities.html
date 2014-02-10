@@ -1,9 +1,9 @@
-<div class="b-settings-identities g-ui-user-select-none">
+<div class="b-settings-identities">
 	<div class="form-horizontal">
-		<div class="legend">
+		<div class="legend g-ui-user-select-none">
 			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITY"></span>
 		</div>
-		<div class="control-group">
+		<div class="control-group g-ui-user-select-none">
 			<label class="control-label">
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>
 			</label>
@@ -12,7 +12,7 @@
 				<div data-bind="saveTrigger: displayNameTrigger"></div>
 			</div>
 		</div>
-		<div class="control-group" style="display: none">
+		<div class="control-group g-ui-user-select-none" style="display: none">
 			<label class="control-label">
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_REPLY_TO"></span>
 			</label>
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
+			<label class="control-label g-ui-user-select-none">
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_SIGNATURE"></span>
 			</label>
 			<div class="controls">
@@ -29,7 +29,7 @@
 				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
 			</div>
 		</div>
-		<div class="control-group">
+		<div class="control-group g-ui-user-select-none">
 			<div class="controls">
 				<label data-bind="click: function () { signatureToAll(!signatureToAll()); }">
 					<i data-bind="css: signatureToAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
@@ -40,22 +40,22 @@
 		</div>
 	</div>
 	<br />
-	<div class="form-horizontal">
+	<div class="form-horizontal g-ui-user-select-none">
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITIES"></span>
 		</div>
 	</div>
-	<a class="btn" data-bind="click: addNewIdentity">
+	<a class="btn g-ui-user-select-none" data-bind="click: addNewIdentity">
 		<i class="icon-user-add"></i>
 		&nbsp;&nbsp;
 		<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/BUTTON_ADD_IDENTITY"></span>
 	</a>
-	<div class="process-place" data-bind="style: {'visibility': visibility }">
+	<div class="process-place g-ui-user-select-none" data-bind="style: {'visibility': visibility }">
 		<i class="icon-spinner animated"></i>
 		&nbsp;&nbsp;
 		<span data-bind="text: processText"></span>
 	</div>
-	<table class="table table-hover list-table" data-bind="i18nUpdate: identities">
+	<table class="table table-hover list-table  g-ui-user-select-none" data-bind="i18nUpdate: identities">
 		<colgroup>
 			<col />
 			<col style="width: 140px" />

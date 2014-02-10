@@ -21,6 +21,14 @@ function SettingsIdentity()
 
 Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 
+SettingsIdentity.prototype.onHide = function ()
+{
+	if (this.editor)
+	{
+		this.editor.hideEditorToolbar();
+	}
+};
+
 SettingsIdentity.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())

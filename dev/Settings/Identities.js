@@ -81,6 +81,14 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 	}
 };
 
+SettingsIdentities.prototype.onHide = function ()
+{
+	if (this.editor)
+	{
+		this.editor.hideEditorToolbar();
+	}
+};
+
 SettingsIdentities.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())

@@ -1,9 +1,9 @@
 <div class="b-settings-identity">
 	<div class="form-horizontal">
-		<div class="legend">
+		<div class="legend g-ui-user-select-none">
 			<span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LEGEND_IDENTITY"></span>
 		</div>
-		<div class="control-group">
+		<div class="control-group g-ui-user-select-none">
 			 <label class="control-label">
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_DISPLAY_NAME"></span>
 			 </label>
@@ -12,7 +12,7 @@
 				<div data-bind="saveTrigger: displayNameTrigger"></div>
 			</div>
 		</div>
-		<div class="control-group" style="display: none">
+		<div class="control-group g-ui-user-select-none" style="display: none">
 			 <label class="control-label">
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_REPLY_TO"></span>
 			 </label>
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			 <label class="control-label">
+			 <label class="control-label g-ui-user-select-none">
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_SIGNATURE"></span>
 			 </label>
 			<div class="controls">
@@ -29,7 +29,7 @@
 				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
 			</div>
 		</div>
-		<div class="control-group">
+		<div class="control-group g-ui-user-select-none">
 			<div class="controls">
 				<label data-bind="click: function () { signatureToAll(!signatureToAll()); }">
 					<i data-bind="css: signatureToAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>

@@ -28,15 +28,14 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeButtons = 'Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent';
 
 	// Let's have it basic on dialogs as well.
-	config.removeDialogTabs = 'link:advanced;link:target';
+	config.removeDialogTabs = 'link:advanced;link:target;image:advanced';
 
 	config.stylesSet = false;
+	config.allowedContent = true;
 
 	config.autoParagraph = false;
 	config.enterMode = CKEDITOR.ENTER_BR;
 	config.shiftEnterMode = CKEDITOR.ENTER_P;
-
-//	config.uiColor = '#eeeeee';
 
 	config.font_defaultLabel = 'Arial';
 	config.fontSize_defaultLabel = '12px';

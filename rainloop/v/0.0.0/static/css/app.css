@@ -5690,6 +5690,16 @@ html.no-rgba .modal {
   user-select: none;
   standard-user-select: none;
 }
+.g-ui-user-select-allow {
+  -webkit-user-select: inherit;
+  -webkit-touch-callout: inherit;
+  -khtml-user-select: inherit;
+  -moz-user-select: inherit;
+  -ms-user-select: inherit;
+  -o-user-select: inherit;
+  user-select: inherit;
+  standard-user-select: inherit;
+}
 .g-ui-clearfix {
   *zoom: 1;
 }
@@ -8580,6 +8590,7 @@ html.html-editor-wrapper-fullscreen .html-editor-wrapper {
   margin: 0;
   border: 0;
   padding: 10px;
+  padding-right: 0;
   font-family: arial, sans-serif;
   font-size: 12px;
   line-height: 16px;

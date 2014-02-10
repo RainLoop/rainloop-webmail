@@ -3439,7 +3439,7 @@ HtmlEditorWrapper.prototype.blurTrigger = function ()
 		var self = this;
 		window.clearTimeout(self.iBlurTimer);
 		self.iBlurTimer = window.setTimeout(function () {
-			self.fOnBlur();
+				self.fOnBlur();
 		}, 200);
 	}
 };
@@ -3449,6 +3449,14 @@ HtmlEditorWrapper.prototype.focusTrigger = function ()
 	if (this.fOnBlur)
 	{
 		window.clearTimeout(this.iBlurTimer);
+	}
+};
+
+HtmlEditorWrapper.prototype.hideEditorToolbar = function ()
+{
+	if (this.editor)
+	{
+		$('.cke.cke_float').hide();
 	}
 };
 
@@ -3466,7 +3474,7 @@ HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
 			if (arguments && 1 < arguments.length)
 			{
 				var	sText = $.trim(arguments[1])
-					.replace(/__bq__start__([\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
+					.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
 				;
 
 				sText = '\n' + sQuoteChar + $.trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
@@ -3485,11 +3493,20 @@ HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
 				var sText = $.trim(arguments[1]);
 				if (0 < sText.length)
 				{
-					sText = sText.replace(/<div[^>]*>([\s\S]*)<\/div>/gmi, convertDivs);
+					sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
 					sText = '\n' + $.trim(sText) + '\n';
 				}
 				return sText;
 			}
+			return '';
+		},
+
+		fixAttibuteValue = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			}
+
 			return '';
 		},
 
@@ -3515,6 +3532,7 @@ HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
 
 	sText = sHtml
 		.replace(/[\s]+/gm, ' ')
+		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 		.replace(/<br\s?\/?>/gmi, '\n')
 		.replace(/<\/h\d>/gi, '\n')
 		.replace(/<\/p>/gi, '\n\n')
@@ -3523,10 +3541,10 @@ HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
 		.replace(/<\/tr>/gi, '\n')
 		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
 		.replace(/<img [^>]*>/gmi, '')
-		.replace(/<div[^>]*>([\s\S]*)<\/div>/gmi, convertDivs)
+		.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
 		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
 		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
-		.replace(/<a [^>]*>([\s\S]*?)<\/a>/gmi, convertLinks)
+		.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
 		.replace(/&nbsp;/gi, ' ')
 		.replace(/<[^>]*>/gm, '')
 		.replace(/&gt;/gi, '>')
@@ -3538,7 +3556,7 @@ HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
 	return sText
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
-		.replace(/__bq__start__([\s\S]*)__bq__end__/gm, convertBlockquote)
+		.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
 		.replace(/__bq__start__/gm, '')
 		.replace(/__bq__end__/gm, '')
 	;
@@ -3777,8 +3795,6 @@ HtmlEditorWrapper.prototype.modeToggle = function (bFocus)
 	{
 		this.focus();
 	}
-	
-	this.blurTrigger();
 };
 
 /**
@@ -8133,6 +8149,11 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
+
+	if (this.oEditor)
+	{
+		this.oEditor.hideEditorToolbar();
+	}
 };
 
 /**
@@ -12536,6 +12557,14 @@ function SettingsIdentity()
 
 Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 
+SettingsIdentity.prototype.onHide = function ()
+{
+	if (this.editor)
+	{
+		this.editor.hideEditorToolbar();
+	}
+};
+
 SettingsIdentity.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())
@@ -12688,6 +12717,14 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 				RL.accountsAndIdentities();
 			}, oIdentityToRemove.id);
 		}
+	}
+};
+
+SettingsIdentities.prototype.onHide = function ()
+{
+	if (this.editor)
+	{
+		this.editor.hideEditorToolbar();
 	}
 };
 
