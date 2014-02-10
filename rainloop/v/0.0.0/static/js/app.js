@@ -158,6 +158,61 @@ Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstrans
  */
 Globals.sAnimationType = '';
 
+/**
+ * @type {Object}
+ */
+Globals.oHtmlEditorDefaultConfig = {
+	'title': false,
+	'stylesSet': false,
+	'customConfig': '',
+	'toolbarGroups': [
+		{name: 'styles'},
+		{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+		{name: 'colors'},
+		{name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+		{name: 'links'},
+		{name: 'insert'}
+//		{name: 'document', groups: ['mode', 'document', 'doctools']}
+	],
+	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
+	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
+	
+	'allowedContent': false,
+	'autoParagraph': false,
+
+	'enterMode': window.CKEDITOR.ENTER_BR,
+	'shiftEnterMode': window.CKEDITOR.ENTER_P,
+//	'floatSpaceDockedOffsetY': 1,
+
+	'font_defaultLabel': 'Arial',
+	'fontSize_defaultLabel': '12px',
+	'fontSize_sizes': '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
+};
+
+/**
+ * @type {Object}
+ */
+Globals.oHtmlEditorLangsMap = {
+	'de': 'de',
+	'es': 'es',
+	'fr': 'fr',
+	'hu': 'hu',
+	'is': 'is',
+	'it': 'it',
+	'ko': 'ko',
+	'ko-kr': 'ko',
+	'lv': 'lv',
+	'nl': 'nl',
+	'no': 'no',
+	'pl': 'pl',
+	'pt': 'pt',
+	'pt-pt': 'pt',
+	'pt-br': 'pt-br',
+	'ru': 'ru',
+	'zh': 'zh',
+	'zh-cn': 'zh-cn'
+};
+
 if (Globals.bAllowPdfPreview && navigator && navigator.mimeTypes)
 {
 	Globals.bAllowPdfPreview = !!_.find(navigator.mimeTypes, function (oType) {
@@ -3673,7 +3728,12 @@ HtmlEditorWrapper.prototype.init = function ()
 {
 	if (this.$element && this.$element[0])
 	{
-		var self = this;
+		var
+			self = this,
+			oConfig = Globals.oHtmlEditorDefaultConfig,
+			sLanguage = RL.settingsGet('Language'),
+			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
+		;
 
 		self.$toolbar = $('<div></div>')
 			.addClass('html-editor-wrapper-toolbar')
@@ -3718,7 +3778,15 @@ HtmlEditorWrapper.prototype.init = function ()
 			.append(self.$html)
 		;
 
-		self.editor = window.CKEDITOR.inline(self.$html[0]);
+		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+		{
+			oConfig.toolbarGroups.__SourceInited = true;
+			oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+		}
+
+		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
+		self.editor = window.CKEDITOR.inline(self.$html[0], oConfig);
+
 		if (self.fOnReady)
 		{
 			self.editor.on('instanceReady', function () {
@@ -3795,6 +3863,8 @@ HtmlEditorWrapper.prototype.modeToggle = function (bFocus)
 	{
 		this.focus();
 	}
+
+	this.blurTrigger();
 };
 
 /**

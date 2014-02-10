@@ -8692,3 +8692,6 @@ html.html-editor-wrapper-fullscreen .html-editor-wrapper-plain.styled {
 .html-editor-wrapper-html img {
   vertical-align: bottom;
 }
+.cke_button__sourcedialog_label {
+  display: none !important;
+}

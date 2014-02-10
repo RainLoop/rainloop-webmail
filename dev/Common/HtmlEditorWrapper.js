@@ -293,7 +293,12 @@ HtmlEditorWrapper.prototype.init = function ()
 {
 	if (this.$element && this.$element[0])
 	{
-		var self = this;
+		var
+			self = this,
+			oConfig = Globals.oHtmlEditorDefaultConfig,
+			sLanguage = RL.settingsGet('Language'),
+			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
+		;
 
 		self.$toolbar = $('<div></div>')
 			.addClass('html-editor-wrapper-toolbar')
@@ -338,7 +343,15 @@ HtmlEditorWrapper.prototype.init = function ()
 			.append(self.$html)
 		;
 
-		self.editor = window.CKEDITOR.inline(self.$html[0]);
+		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+		{
+			oConfig.toolbarGroups.__SourceInited = true;
+			oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+		}
+
+		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
+		self.editor = window.CKEDITOR.inline(self.$html[0], oConfig);
+
 		if (self.fOnReady)
 		{
 			self.editor.on('instanceReady', function () {
@@ -415,4 +428,6 @@ HtmlEditorWrapper.prototype.modeToggle = function (bFocus)
 	{
 		this.focus();
 	}
+
+	this.blurTrigger();
 };
