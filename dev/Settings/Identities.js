@@ -7,6 +7,8 @@ function SettingsIdentities()
 {
 	var oData = RL.data();
 	
+	this.editor = null;
+	
 	this.displayName = oData.displayName;
 	this.signature = oData.signature;
 	this.signatureToAll = oData.signatureToAll;

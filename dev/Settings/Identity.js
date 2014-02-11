@@ -6,6 +6,8 @@
 function SettingsIdentity()
 {
 	var oData = RL.data();
+
+	this.editor = null;
 	
 	this.displayName = oData.displayName;
 	this.signature = oData.signature;

@@ -10,6 +10,7 @@ function HtmlEditorWrapper(oElement, fOnBlur, fOnReady)
 	var self = this;
 
 	self.editor = null;
+	
 	self.bHtml = true;
 	self.bPlainDirty = false;
 	self.iBlurTimer = 0;
@@ -193,26 +194,11 @@ HtmlEditorWrapper.prototype.plainToHtml = function (sPlain)
 		.replace(/\r/g, '').replace(/\n/g, '<br />');
 };
 
-HtmlEditorWrapper.prototype.fullScreenToggle = function ()
-{
-	$('html').toggleClass('html-editor-wrapper-fullscreen');
-	$('body').toggleClass('html-editor-wrapper-fullscreen');
-
-	this.focus();
-};
-
 HtmlEditorWrapper.prototype.initToolbar = function ()
 {
 	var self = this;
 
-//	self.$fullscreen = $('<a tabindex="-1" href="jav' + 'ascript:void(0);">fullscreen</a>')
-//		.addClass('html-editor-wrapper-fullscreen-button')
-//		.on('click', function () {
-//			self.fullScreenToggle();
-//		})
-//	;
-
-	self.$mode = $('<a tabindex="-1" href="jav' + 'ascript:void(0);">html</a>')
+	self.$mode = $('<a tabindex="-1" href="jav' + 'ascript:v' + 'oid(0);"></a>')
 		.addClass('html-editor-wrapper-mode-button')
 		.on('click', function () {
 			self.modeToggle(true);
@@ -221,7 +207,6 @@ HtmlEditorWrapper.prototype.initToolbar = function ()
 	
 	self.$toolbar
 		.append(self.$mode)
-//		.append(self.$fullscreen)
 	;
 };
 
@@ -318,15 +303,20 @@ HtmlEditorWrapper.prototype.init = function ()
 			.hide()
 		;
 
+//		self.$html = $('<div></div>')
+//			.addClass('html-editor-wrapper-html')
+//			.attr('contenteditable', 'true')
+//			.on('blur', function() {
+//				self.blurTrigger();
+//			})
+//			.on('focus', function() {
+//				self.focusTrigger();
+//			})
+//			.hide()
+//		;
 		self.$html = $('<div></div>')
 			.addClass('html-editor-wrapper-html')
 			.attr('contenteditable', 'true')
-			.on('blur', function() {
-				self.blurTrigger();
-			})
-			.on('focus', function() {
-				self.focusTrigger();
-			})
 			.hide()
 		;
 
@@ -350,7 +340,15 @@ HtmlEditorWrapper.prototype.init = function ()
 		}
 
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
+//		self.editor = window.CKEDITOR.appendTo(self.$html[0], oConfig);
 		self.editor = window.CKEDITOR.inline(self.$html[0], oConfig);
+		self.editor.on('blur', function() {
+			self.blurTrigger();
+		});
+
+		self.editor.on('focus', function() {
+			self.focusTrigger();
+		});
 
 		if (self.fOnReady)
 		{
@@ -364,10 +362,25 @@ HtmlEditorWrapper.prototype.init = function ()
 	}
 };
 
+HtmlEditorWrapper.prototype.toolbarReposition = function ()
+{
+	if (this.bHtml && this.editor && this.editor.focusManager.hasFocus)
+	{
+		var oEd = this.editor;
+		
+		oEd.focusManager.blur(true);
+		_.delay(function () {
+			oEd.focusManager.focus();
+		}, 1);
+	}
+};
+
 HtmlEditorWrapper.prototype.focus = function ()
 {
 	if (this.bHtml) {
-		this.$html.focus();
+		if (this.editor) {
+			this.editor.focusManager.focus();
+		}
 	} else {
 		this.$plain.focus();
 	}
@@ -376,7 +389,9 @@ HtmlEditorWrapper.prototype.focus = function ()
 HtmlEditorWrapper.prototype.blur = function ()
 {
 	if (this.bHtml) {
-		this.$html.blur();
+		if (this.editor) {
+			this.editor.focusManager.blur(true);
+		}
 	} else {
 		this.$plain.blur();
 	}
@@ -400,26 +415,28 @@ HtmlEditorWrapper.prototype.modeToggle = function (bFocus)
 		this.blur();
 	}
 
-	if (this.bHtml) {
-		this.$html.hide();
+	if (this.editor)
+	{
+		if (this.bHtml)
+		{
+			this.$html.hide();
+			this.$plain.show();
 
-		this.$plain
-			.val(this.htmlToPlain(this.$html.html()))
-			.show()
-		;
+			this.$plain.val(this.htmlToPlain(this.editor.getData()));
 
-		this.bHtml = false;
-		this.bPlainDirty = true;
-	} else {
-		this.$plain.hide();
+			this.bHtml = false;
+			this.bPlainDirty = true;
+		}
+		else
+		{
+			this.$plain.hide();
+			this.$html.show();
 
-		this.$html
-			.html(this.plainToHtml(this.$plain.val()))
-			.show()
-		;
+			this.editor.setData(this.plainToHtml(this.$plain.val()));
 
-		this.bHtml = true;
-		this.bPlainDirty = true;
+			this.bHtml = true;
+			this.bPlainDirty = true;
+		}
 	}
 
 	this.setModeButtonText();

@@ -156,6 +156,13 @@ function PopupsComposeViewModel()
 		}
 	}, this);
 
+	this.emptyToError.subscribe(function (bValue) {
+		if (this.oEditor && bValue)
+		{
+			this.oEditor.toolbarReposition();
+		}
+	}, this);
+
 	this.canBeSended = ko.computed(function () {
 		return !this.sending() &&
 			!this.saving() &&

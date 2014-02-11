@@ -8628,7 +8628,9 @@ html.html-editor-wrapper-fullscreen .html-editor-wrapper-plain.styled {
   border-radius: 0;
 }
 .html-editor-wrapper-html.styled:focus,
-.html-editor-wrapper-plain.styled:focus {
+.html-editor-wrapper-plain.styled:focus,
+.html-editor-wrapper-html.styled.focused,
+.html-editor-wrapper-plain.styled.focused {
   border: 1px solid #999999;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -8655,13 +8657,17 @@ html.html-editor-wrapper-fullscreen .html-editor-wrapper-plain.styled {
 .html-editor-wrapper-mode-button,
 .html-editor-wrapper-fullscreen-button {
   position: absolute;
-  top: 5px;
+  bottom: 5px;
   right: 25px;
   z-index: 100;
   color: #555;
   text-decoration: underline;
   font-family: Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
   font-size: 12px;
+  background-color: #fff;
+  /*background-color: rgba(255, 255, 255, 0.8);*/
+
+  padding: 1px 3px;
 }
 .html-editor-wrapper-mode-button:hover,
 .html-editor-wrapper-fullscreen-button:hover {

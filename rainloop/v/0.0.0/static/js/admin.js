@@ -176,12 +176,14 @@ Globals.oHtmlEditorDefaultConfig = {
 	],
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
-	
+
 	'allowedContent': false,
 	'autoParagraph': false,
 
-	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_P,
+//	'enterMode': window.CKEDITOR.ENTER_BR,
+//	'shiftEnterMode': window.CKEDITOR.ENTER_P,
+	'enterMode': window.CKEDITOR.ENTER_DIV,
+	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
 //	'floatSpaceDockedOffsetY': 1,
 
 	'font_defaultLabel': 'Arial',
