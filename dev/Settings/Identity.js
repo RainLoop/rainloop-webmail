@@ -23,14 +23,6 @@ function SettingsIdentity()
 
 Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 
-SettingsIdentity.prototype.onHide = function ()
-{
-	if (this.editor)
-	{
-		this.editor.hideEditorToolbar();
-	}
-};
-
 SettingsIdentity.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())
@@ -40,7 +32,7 @@ SettingsIdentity.prototype.onFocus = function ()
 			sSignature = RL.data().signature()
 		;
 
-		this.editor = new HtmlEditorWrapper(self.signatureDom(), function () {
+		this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
 			RL.data().signature(
 				(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 			);
@@ -53,15 +45,6 @@ SettingsIdentity.prototype.onFocus = function ()
 			{
 				self.editor.setPlain(sSignature, false);
 			}
-		});
-
-		this.editor.addInputFormatStyle();
-
-		Utils.initOnStartOrLangChange(function () {
-			self.editor.setupLang(
-				Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-			);
 		});
 	}
 };

@@ -248,7 +248,7 @@ module.exports = function (grunt) {
 					"dev/Common/Knockout.js",
 					"dev/Common/LinkBuilder.js",
 					"dev/Common/Plugins.js",
-					"dev/Common/HtmlEditorWrapper.js",
+					"dev/Common/NewHtmlEditorWrapper.js",
 					"dev/Common/Selector.js",
 
 					"dev/Storages/LocalStorages/CookieDriver.js",

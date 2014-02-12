@@ -165,7 +165,10 @@ Globals.oHtmlEditorDefaultConfig = {
 	'title': false,
 	'stylesSet': false,
 	'customConfig': '',
+	'contentsCss': '',
+//	'height': '100%',
 	'toolbarGroups': [
+		{name: 'spec'},
 		{name: 'styles'},
 		{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
 		{name: 'colors'},
@@ -174,17 +177,20 @@ Globals.oHtmlEditorDefaultConfig = {
 		{name: 'insert'}
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
+
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
+	'extraPlugins': 'plain',
+	
 	'allowedContent': false,
 	'autoParagraph': false,
 
 //	'enterMode': window.CKEDITOR.ENTER_BR,
 //	'shiftEnterMode': window.CKEDITOR.ENTER_P,
-	'enterMode': window.CKEDITOR.ENTER_DIV,
+//	'enterMode': window.CKEDITOR.ENTER_DIV,
+	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
-//	'floatSpaceDockedOffsetY': 1,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '12px',
@@ -2116,6 +2122,120 @@ Utils.settingsSaveHelperFunction = function (fCallback, koTrigger, oContext, iTi
 Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 {
 	return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
+};
+
+
+/**
+ * @param {string} sHtml
+ * @return {string}
+ */
+Utils.htmlToPlain = function (sHtml)
+{
+	var
+		sText = '',
+		sQuoteChar = '> ',
+
+		convertBlockquote = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var	sText = $.trim(arguments[1])
+					.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
+				;
+
+				sText = '\n' + sQuoteChar + $.trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
+
+				return sText.replace(/\n([> ]+)/gm, function () {
+					return (arguments && 1 < arguments.length) ? '\n' + $.trim(arguments[1].replace(/[\s]/, '')) + ' ' : '';
+				});
+			}
+
+			return '';
+		},
+
+		convertDivs = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var sText = $.trim(arguments[1]);
+				if (0 < sText.length)
+				{
+					sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
+					sText = '\n' + $.trim(sText) + '\n';
+				}
+				return sText;
+			}
+			return '';
+		},
+
+		fixAttibuteValue = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			}
+
+			return '';
+		},
+
+		convertLinks = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var
+					sName = $.trim(arguments[1])
+//					sHref = $.trim(arguments[0].replace(/<a [\s\S]*href[ ]?=[ ]?["']?([^"']+).+<\/a>/gmi, '$1'))
+				;
+
+				return sName;
+//				sName = (0 === trim(sName).length) ? '' : sName;
+//				sHref = ('mailto:' === sHref.substr(0, 7)) ? '' : sHref;
+//				sHref = ('http' === sHref.substr(0, 4)) ? sHref : '';
+//				sHref = (sName === sHref) ? '' : sHref;
+//				sHref = (0 < sHref.length) ? ' (' + sHref + ') ' : '';
+//				return (0 < sName.length) ? sName + sHref : sName;
+			}
+			return '';
+		}
+	;
+
+	sText = sHtml
+		.replace(/[\s]+/gm, ' ')
+		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
+		.replace(/<br\s?\/?>/gmi, '\n')
+		.replace(/<\/h\d>/gi, '\n')
+		.replace(/<\/p>/gi, '\n\n')
+		.replace(/<\/li>/gi, '\n')
+		.replace(/<\/td>/gi, '\n')
+		.replace(/<\/tr>/gi, '\n')
+		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
+		.replace(/<img [^>]*>/gmi, '')
+		.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
+		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
+		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
+		.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
+		.replace(/&nbsp;/gi, ' ')
+		.replace(/<[^>]*>/gm, '')
+		.replace(/&gt;/gi, '>')
+		.replace(/&lt;/gi, '<')
+		.replace(/&amp;/gi, '&')
+		.replace(/&\w{2,6};/gi, '')
+	;
+
+	return sText
+		.replace(/\n[ \t]+/gm, '\n')
+		.replace(/[\n]{3,}/gm, '\n\n')
+		.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
+		.replace(/__bq__start__/gm, '')
+		.replace(/__bq__end__/gm, '')
+	;
+};
+
+/**
+ * @param {string} sPlain
+ * @return {string}
+ */
+Utils.plainToHtml = function (sPlain)
+{
+	return sPlain.toString()
+		.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
+		.replace(/\r/g, '').replace(/\n/g, '<br />');
 };
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)

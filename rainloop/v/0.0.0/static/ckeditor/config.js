@@ -10,33 +10,25 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// The toolbar groups arrangement, optimized for a single toolbar row.
 	config.toolbarGroups = [
-		{ name: 'styles' },
-		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
 		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+		{ name: 'forms' },
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
 		{ name: 'links' },
 		{ name: 'insert' },
+		{ name: 'styles' },
 		{ name: 'colors' },
 		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		{ name: 'others' }
+		{ name: 'others' },
+		{ name: 'about' }
 	];
 
 	// The default plugins included in the basic setup define some buttons that
 	// we don't want too have in a basic editor. We remove them here.
-	config.removeButtons = 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent,ToolbarSwitch,Source';
+	config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript';
 
 	// Let's have it basic on dialogs as well.
-	config.removeDialogTabs = 'link:advanced;link:target;image:advanced';
-
-	config.stylesSet = false;
-	config.allowedContent = true;
-
-	config.autoParagraph = false;
-	config.enterMode = CKEDITOR.ENTER_BR;
-	config.shiftEnterMode = CKEDITOR.ENTER_P;
-
-	config.font_defaultLabel = 'Arial';
-	config.fontSize_defaultLabel = '12px';
+	config.removeDialogTabs = 'link:advanced';
 };

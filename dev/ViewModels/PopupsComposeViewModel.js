@@ -156,13 +156,12 @@ function PopupsComposeViewModel()
 		}
 	}, this);
 
-	this.emptyToError.subscribe(function (bValue) {
-		if (this.oEditor && bValue)
-		{
-			this.oEditor.toolbarReposition();
-		}
-	}, this);
+	this.editorResizeThrottle = _.throttle(_.bind(this.editorResize, this), 100);
 
+	this.resizer.subscribe(function () {
+		this.editorResizeThrottle();
+	}, this);
+	
 	this.canBeSended = ko.computed(function () {
 		return !this.sending() &&
 			!this.saving() &&
@@ -564,11 +563,6 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
-
-	if (this.oEditor)
-	{
-		this.oEditor.hideEditorToolbar();
-	}
 };
 
 /**
@@ -618,20 +612,10 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 		if (!this.oEditor && this.composeEditorArea())
 		{
 			_.delay(function () {
-				self.oEditor = new HtmlEditorWrapper(self.composeEditorArea(), null, function () {
+				self.oEditor = new NewHtmlEditorWrapper(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
 				});
-
-				Utils.initOnStartOrLangChange(null, self, function () {
-					if (self.oEditor)
-					{
-						self.oEditor.setupLang(
-							Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-							Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-						);
-					}
-				});
-			}, 400);
+			}, 300);
 		}
 		else if (this.oEditor)
 		{
@@ -904,6 +888,14 @@ PopupsComposeViewModel.prototype.onFocus = function ()
 	this.triggerForResize();
 };
 
+PopupsComposeViewModel.prototype.editorResize = function ()
+{
+	if (this.oEditor)
+	{
+		this.oEditor.resize();
+	}
+};
+
 PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 {
 	var self = this;
@@ -951,6 +943,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	$window.on('resize', function () {
 		self.triggerForResize();
+		self.editorResizeThrottle();
 	});
 
 	if (this.dropboxEnabled())

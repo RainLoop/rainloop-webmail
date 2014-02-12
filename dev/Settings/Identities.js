@@ -83,14 +83,6 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 	}
 };
 
-SettingsIdentities.prototype.onHide = function ()
-{
-	if (this.editor)
-	{
-		this.editor.hideEditorToolbar();
-	}
-};
-
 SettingsIdentities.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())
@@ -100,7 +92,7 @@ SettingsIdentities.prototype.onFocus = function ()
 			sSignature = RL.data().signature()
 		;
 
-		this.editor = new HtmlEditorWrapper(self.signatureDom(), function () {
+		this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
 			RL.data().signature(
 				(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 			);
@@ -113,15 +105,6 @@ SettingsIdentities.prototype.onFocus = function ()
 			{
 				self.editor.setPlain(sSignature, false);
 			}
-		});
-
-		this.editor.addInputFormatStyle();
-
-		Utils.initOnStartOrLangChange(function () {
-			self.editor.setupLang(
-				Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-			);
 		});
 	}
 };

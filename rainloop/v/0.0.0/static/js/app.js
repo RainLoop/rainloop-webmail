@@ -165,7 +165,10 @@ Globals.oHtmlEditorDefaultConfig = {
 	'title': false,
 	'stylesSet': false,
 	'customConfig': '',
+	'contentsCss': '',
+//	'height': '100%',
 	'toolbarGroups': [
+		{name: 'spec'},
 		{name: 'styles'},
 		{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
 		{name: 'colors'},
@@ -174,17 +177,20 @@ Globals.oHtmlEditorDefaultConfig = {
 		{name: 'insert'}
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
+
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
+	'extraPlugins': 'plain',
+	
 	'allowedContent': false,
 	'autoParagraph': false,
 
 //	'enterMode': window.CKEDITOR.ENTER_BR,
 //	'shiftEnterMode': window.CKEDITOR.ENTER_P,
-	'enterMode': window.CKEDITOR.ENTER_DIV,
+//	'enterMode': window.CKEDITOR.ENTER_DIV,
+	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
-//	'floatSpaceDockedOffsetY': 1,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '12px',
@@ -2118,6 +2124,120 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 	return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
 };
 
+
+/**
+ * @param {string} sHtml
+ * @return {string}
+ */
+Utils.htmlToPlain = function (sHtml)
+{
+	var
+		sText = '',
+		sQuoteChar = '> ',
+
+		convertBlockquote = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var	sText = $.trim(arguments[1])
+					.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
+				;
+
+				sText = '\n' + sQuoteChar + $.trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
+
+				return sText.replace(/\n([> ]+)/gm, function () {
+					return (arguments && 1 < arguments.length) ? '\n' + $.trim(arguments[1].replace(/[\s]/, '')) + ' ' : '';
+				});
+			}
+
+			return '';
+		},
+
+		convertDivs = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var sText = $.trim(arguments[1]);
+				if (0 < sText.length)
+				{
+					sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
+					sText = '\n' + $.trim(sText) + '\n';
+				}
+				return sText;
+			}
+			return '';
+		},
+
+		fixAttibuteValue = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			}
+
+			return '';
+		},
+
+		convertLinks = function () {
+			if (arguments && 1 < arguments.length)
+			{
+				var
+					sName = $.trim(arguments[1])
+//					sHref = $.trim(arguments[0].replace(/<a [\s\S]*href[ ]?=[ ]?["']?([^"']+).+<\/a>/gmi, '$1'))
+				;
+
+				return sName;
+//				sName = (0 === trim(sName).length) ? '' : sName;
+//				sHref = ('mailto:' === sHref.substr(0, 7)) ? '' : sHref;
+//				sHref = ('http' === sHref.substr(0, 4)) ? sHref : '';
+//				sHref = (sName === sHref) ? '' : sHref;
+//				sHref = (0 < sHref.length) ? ' (' + sHref + ') ' : '';
+//				return (0 < sName.length) ? sName + sHref : sName;
+			}
+			return '';
+		}
+	;
+
+	sText = sHtml
+		.replace(/[\s]+/gm, ' ')
+		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
+		.replace(/<br\s?\/?>/gmi, '\n')
+		.replace(/<\/h\d>/gi, '\n')
+		.replace(/<\/p>/gi, '\n\n')
+		.replace(/<\/li>/gi, '\n')
+		.replace(/<\/td>/gi, '\n')
+		.replace(/<\/tr>/gi, '\n')
+		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
+		.replace(/<img [^>]*>/gmi, '')
+		.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
+		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
+		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
+		.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
+		.replace(/&nbsp;/gi, ' ')
+		.replace(/<[^>]*>/gm, '')
+		.replace(/&gt;/gi, '>')
+		.replace(/&lt;/gi, '<')
+		.replace(/&amp;/gi, '&')
+		.replace(/&\w{2,6};/gi, '')
+	;
+
+	return sText
+		.replace(/\n[ \t]+/gm, '\n')
+		.replace(/[\n]{3,}/gm, '\n\n')
+		.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
+		.replace(/__bq__start__/gm, '')
+		.replace(/__bq__end__/gm, '')
+	;
+};
+
+/**
+ * @param {string} sPlain
+ * @return {string}
+ */
+Utils.plainToHtml = function (sPlain)
+{
+	return sPlain.toString()
+		.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
+		.replace(/\r/g, '').replace(/\n/g, '<br />');
+};
+
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 {
 	var oTempImg = new window.Image();
@@ -3442,67 +3562,32 @@ Plugins.settingsGet = function (sPluginSection, sName)
 
 
 
-function HtmlEditorWrapper(oElement, fOnBlur, fOnReady)
+function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady)
 {
 	var self = this;
-
 	self.editor = null;
-	
-	self.bHtml = true;
-	self.bPlainDirty = false;
 	self.iBlurTimer = 0;
-	
 	self.fOnBlur = fOnBlur || null;
 	self.fOnReady = fOnReady || null;
 	
 	self.$element = $(oElement);
 
-	self.LANG = {
-		'HTML': 'Rich formatting',
-		'PLAIN': 'Plain text',
-		'FULL': 'Fullscreen'
-	};
-	
 	self.init();
 }
 
-HtmlEditorWrapper.prototype.addInputFormatStyle = function ()
-{
-	if (this.$plain)
-	{
-		this.$plain.addClass('styled');
-	}
-
-	if (this.$html)
-	{
-		this.$html.addClass('styled');
-	}
-};
-
-HtmlEditorWrapper.prototype.setupLang = function (sHtml, sPlain, sFullscreen)
-{
-	this.LANG = {
-		'HTML': sHtml || this.LANG.HTML,
-		'PLAIN': sPlain || this.LANG.PLAIN,
-		'FULL': sFullscreen || this.LANG.FULL
-	};
-
-	this.setModeButtonText();
-};
-
-HtmlEditorWrapper.prototype.blurTrigger = function ()
+NewHtmlEditorWrapper.prototype.blurTrigger = function ()
 {
 	if (this.fOnBlur)
 	{
 		var self = this;
 		window.clearTimeout(self.iBlurTimer);
 		self.iBlurTimer = window.setTimeout(function () {
-				self.fOnBlur();
+			self.fOnBlur();
 		}, 200);
 	}
 };
 
-HtmlEditorWrapper.prototype.focusTrigger = function ()
+NewHtmlEditorWrapper.prototype.focusTrigger = function ()
 {
 	if (this.fOnBlur)
 	{
@@ -3510,208 +3595,99 @@ HtmlEditorWrapper.prototype.focusTrigger = function ()
 	}
 };
 
-HtmlEditorWrapper.prototype.hideEditorToolbar = function ()
-{
-	if (this.editor)
-	{
-		$('.cke.cke_float').hide();
-	}
-};
-
 /**
- * @param {string} sHtml
- * @return {string}
+ * @return {boolean}
  */
-HtmlEditorWrapper.prototype.htmlToPlain = function (sHtml)
+NewHtmlEditorWrapper.prototype.isHtml = function ()
 {
-	var
-		sText = '',
-		sQuoteChar = '> ',
-
-		convertBlockquote = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				var	sText = $.trim(arguments[1])
-					.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
-				;
-
-				sText = '\n' + sQuoteChar + $.trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
-
-				return sText.replace(/\n([> ]+)/gm, function () {
-					return (arguments && 1 < arguments.length) ? '\n' + $.trim(arguments[1].replace(/[\s]/, '')) + ' ' : '';
-				});
-			}
-
-			return '';
-		},
-
-		convertDivs = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				var sText = $.trim(arguments[1]);
-				if (0 < sText.length)
-				{
-					sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
-					sText = '\n' + $.trim(sText) + '\n';
-				}
-				return sText;
-			}
-			return '';
-		},
-
-		fixAttibuteValue = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
-			}
-
-			return '';
-		},
-
-		convertLinks = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				var
-					sName = $.trim(arguments[1])
-//					sHref = $.trim(arguments[0].replace(/<a [\s\S]*href[ ]?=[ ]?["']?([^"']+).+<\/a>/gmi, '$1'))
-				;
-
-				return sName;
-//				sName = (0 === trim(sName).length) ? '' : sName;
-//				sHref = ('mailto:' === sHref.substr(0, 7)) ? '' : sHref;
-//				sHref = ('http' === sHref.substr(0, 4)) ? sHref : '';
-//				sHref = (sName === sHref) ? '' : sHref;
-//				sHref = (0 < sHref.length) ? ' (' + sHref + ') ' : '';
-//				return (0 < sName.length) ? sName + sHref : sName;
-			}
-			return '';
-		}
-	;
-
-	sText = sHtml
-		.replace(/[\s]+/gm, ' ')
-		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
-		.replace(/<br\s?\/?>/gmi, '\n')
-		.replace(/<\/h\d>/gi, '\n')
-		.replace(/<\/p>/gi, '\n\n')
-		.replace(/<\/li>/gi, '\n')
-		.replace(/<\/td>/gi, '\n')
-		.replace(/<\/tr>/gi, '\n')
-		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
-		.replace(/<img [^>]*>/gmi, '')
-		.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
-		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
-		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
-		.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
-		.replace(/&nbsp;/gi, ' ')
-		.replace(/<[^>]*>/gm, '')
-		.replace(/&gt;/gi, '>')
-		.replace(/&lt;/gi, '<')
-		.replace(/&amp;/gi, '&')
-		.replace(/&\w{2,6};/gi, '')
-	;
-
-	return sText
-		.replace(/\n[ \t]+/gm, '\n')
-		.replace(/[\n]{3,}/gm, '\n\n')
-		.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
-		.replace(/__bq__start__/gm, '')
-		.replace(/__bq__end__/gm, '')
-	;
-};
-
-/**
- * @param {string} sPlain
- * @return {string}
- */
-HtmlEditorWrapper.prototype.plainToHtml = function (sPlain)
-{
-	return sPlain.toString()
-		.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
-		.replace(/\r/g, '').replace(/\n/g, '<br />');
-};
-
-HtmlEditorWrapper.prototype.initToolbar = function ()
-{
-	var self = this;
-
-	self.$mode = $('<a tabindex="-1" href="jav' + 'ascript:v' + 'oid(0);"></a>')
-		.addClass('html-editor-wrapper-mode-button')
-		.on('click', function () {
-			self.modeToggle(true);
-		})
-	;
-	
-	self.$toolbar
-		.append(self.$mode)
-	;
+	window.console.log(this.editor.mode);
+	return this.editor ? 'wysiwyg' === this.editor.mode : false;
 };
 
 /**
  * @return {boolean}
  */
-HtmlEditorWrapper.prototype.isHtml = function ()
+NewHtmlEditorWrapper.prototype.checkDirty = function ()
 {
-	return this.bHtml;
+	return this.editor ? this.editor.checkDirty() : false;
 };
 
-/**
- * @return {boolean}
- */
-HtmlEditorWrapper.prototype.checkDirty = function ()
-{
-	return this.bHtml && this.editor ? this.editor.checkDirty() : this.bPlainDirty;
-};
-
-HtmlEditorWrapper.prototype.resetDirty = function ()
+NewHtmlEditorWrapper.prototype.resetDirty = function ()
 {
 	if (this.editor)
 	{
 		this.editor.resetDirty();
 	}
-
-	this.bPlainDirty = false;
 };
 
 /**
  * @return {string}
  */
-HtmlEditorWrapper.prototype.getData = function ()
-{
-	if (this.bHtml && this.editor)
-	{
-		return this.editor.getData();
-	}
-	else
-	{
-		return this.$plain.val();
-	}
-};
-
-HtmlEditorWrapper.prototype.setHtml = function (sHtml, bFocus)
+NewHtmlEditorWrapper.prototype.getData = function ()
 {
 	if (this.editor)
 	{
-		if (!this.bHtml)
+		if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
 		{
-			this.modeToggle(bFocus);
+			return this.editor.__plain.getRawData();
 		}
 
-		this.editor.setData(sHtml);
+		return this.editor.getData();
 	}
+
+	return '';
 };
 
-HtmlEditorWrapper.prototype.setPlain = function (sPlain, bFocus)
+NewHtmlEditorWrapper.prototype.modeToggle = function (bPlain)
 {
-	if (this.bHtml)
+	if (this.editor)
 	{
-		this.modeToggle(bFocus);
+		if (bPlain)
+		{
+			if ('plain' === this.editor.mode)
+			{
+				this.editor.setMode('wysiwyg');
+			}
+		}
+		else
+		{
+			if ('wysiwyg' === this.editor.mode)
+			{
+				this.editor.setMode('plain');
+			}
+		}
 	}
-
-	this.$plain.val(sPlain);
 };
 
-HtmlEditorWrapper.prototype.init = function ()
+NewHtmlEditorWrapper.prototype.setHtml = function (sHtml, bFocus)
+{
+	if (this.editor)
+	{
+		this.modeToggle(true);
+		this.editor.setData(sHtml);
+
+		if (bFocus)
+		{
+			this.focus();
+		}
+	}
+};
+
+NewHtmlEditorWrapper.prototype.setPlain = function (sPlain, bFocus)
+{
+	if (this.editor)
+	{
+		this.modeToggle(false);
+		this.editor.setData(sPlain);
+
+		if (bFocus)
+		{
+			this.focus();
+		}
+	}
+};
+
+NewHtmlEditorWrapper.prototype.init = function ()
 {
 	if (this.$element && this.$element[0])
 	{
@@ -3721,55 +3697,7 @@ HtmlEditorWrapper.prototype.init = function ()
 			sLanguage = RL.settingsGet('Language'),
 			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
 		;
-
-		self.$toolbar = $('<div></div>')
-			.addClass('html-editor-wrapper-toolbar')
-		;
-
-		self.$plain = $('<textarea></textarea>')
-			.addClass('html-editor-wrapper-plain')
-			.on('change', function () {
-				self.bPlainDirty = true;
-			})
-			.on('blur', function() {
-				self.blurTrigger();
-			})
-			.on('focus', function() {
-				self.focusTrigger();
-			})
-			.hide()
-		;
-
-//		self.$html = $('<div></div>')
-//			.addClass('html-editor-wrapper-html')
-//			.attr('contenteditable', 'true')
-//			.on('blur', function() {
-//				self.blurTrigger();
-//			})
-//			.on('focus', function() {
-//				self.focusTrigger();
-//			})
-//			.hide()
-//		;
-		self.$html = $('<div></div>')
-			.addClass('html-editor-wrapper-html')
-			.attr('contenteditable', 'true')
-			.hide()
-		;
-
-		if (self.bHtml) {
-			self.$html.show();
-		} else {
-			self.$plain.show();
-		}
-
-		self.$element
-			.addClass('html-editor-wrapper')
-			.append(self.$toolbar)
-			.append(self.$plain)
-			.append(self.$html)
-		;
-
+		
 		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
 		{
 			oConfig.toolbarGroups.__SourceInited = true;
@@ -3777,9 +3705,13 @@ HtmlEditorWrapper.prototype.init = function ()
 		}
 
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
-//		self.editor = window.CKEDITOR.appendTo(self.$html[0], oConfig);
-		self.editor = window.CKEDITOR.inline(self.$html[0], oConfig);
+		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
+		
 		self.editor.on('blur', function() {
+			self.blurTrigger();
+		});
+
+		self.editor.on('mode', function() {
 			self.blurTrigger();
 		});
 
@@ -3791,100 +3723,41 @@ HtmlEditorWrapper.prototype.init = function ()
 		{
 			self.editor.on('instanceReady', function () {
 				self.fOnReady();
+				self.resize();
 			});
 		}
-		
-		self.initToolbar();
-		self.setModeButtonText();
 	}
 };
 
-HtmlEditorWrapper.prototype.toolbarReposition = function ()
+NewHtmlEditorWrapper.prototype.focus = function ()
 {
-	if (this.bHtml && this.editor && this.editor.focusManager.hasFocus)
+	if (this.editor)
 	{
-		var oEd = this.editor;
-		
-		oEd.focusManager.blur(true);
-		_.delay(function () {
-			oEd.focusManager.focus();
-		}, 1);
+		this.editor.focusManager.focus();
 	}
 };
 
-HtmlEditorWrapper.prototype.focus = function ()
+NewHtmlEditorWrapper.prototype.blur = function ()
 {
-	if (this.bHtml) {
-		if (this.editor) {
-			this.editor.focusManager.focus();
-		}
-	} else {
-		this.$plain.focus();
+	if (this.editor)
+	{
+		this.editor.focusManager.blur(true);
 	}
 };
 
-HtmlEditorWrapper.prototype.blur = function ()
+NewHtmlEditorWrapper.prototype.resize = function ()
 {
-	if (this.bHtml) {
-		if (this.editor) {
-			this.editor.focusManager.blur(true);
-		}
-	} else {
-		this.$plain.blur();
+	if (this.editor)
+	{
+		this.editor.resize(this.$element.width(), this.$element.innerHeight());
 	}
 };
 
-HtmlEditorWrapper.prototype.setModeButtonText = function ()
-{
-	this.$mode.text(this.bHtml ? this.LANG.PLAIN : this.LANG.HTML);
-};
-
-HtmlEditorWrapper.prototype.clear = function (bFocus)
+NewHtmlEditorWrapper.prototype.clear = function (bFocus)
 {
 	this.setHtml('', bFocus);
 };
 
-HtmlEditorWrapper.prototype.modeToggle = function (bFocus)
-{
-	bFocus = Utils.isUnd(bFocus) ? true : !!bFocus;
-	if (bFocus)
-	{
-		this.blur();
-	}
-
-	if (this.editor)
-	{
-		if (this.bHtml)
-		{
-			this.$html.hide();
-			this.$plain.show();
-
-			this.$plain.val(this.htmlToPlain(this.editor.getData()));
-
-			this.bHtml = false;
-			this.bPlainDirty = true;
-		}
-		else
-		{
-			this.$plain.hide();
-			this.$html.show();
-
-			this.editor.setData(this.plainToHtml(this.$plain.val()));
-
-			this.bHtml = true;
-			this.bPlainDirty = true;
-		}
-	}
-
-	this.setModeButtonText();
-
-	if (bFocus)
-	{
-		this.focus();
-	}
-
-	this.blurTrigger();
-};
 
 /**
  * @constructor
@@ -7837,13 +7710,12 @@ function PopupsComposeViewModel()
 		}
 	}, this);
 
-	this.emptyToError.subscribe(function (bValue) {
-		if (this.oEditor && bValue)
-		{
-			this.oEditor.toolbarReposition();
-		}
-	}, this);
+	this.editorResizeThrottle = _.throttle(_.bind(this.editorResize, this), 100);
 
+	this.resizer.subscribe(function () {
+		this.editorResizeThrottle();
+	}, this);
+	
 	this.canBeSended = ko.computed(function () {
 		return !this.sending() &&
 			!this.saving() &&
@@ -8245,11 +8117,6 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
-
-	if (this.oEditor)
-	{
-		this.oEditor.hideEditorToolbar();
-	}
 };
 
 /**
@@ -8299,20 +8166,10 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 		if (!this.oEditor && this.composeEditorArea())
 		{
 			_.delay(function () {
-				self.oEditor = new HtmlEditorWrapper(self.composeEditorArea(), null, function () {
+				self.oEditor = new NewHtmlEditorWrapper(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
 				});
-
-				Utils.initOnStartOrLangChange(null, self, function () {
-					if (self.oEditor)
-					{
-						self.oEditor.setupLang(
-							Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-							Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-						);
-					}
-				});
-			}, 400);
+			}, 300);
 		}
 		else if (this.oEditor)
 		{
@@ -8585,6 +8442,14 @@ PopupsComposeViewModel.prototype.onFocus = function ()
 	this.triggerForResize();
 };
 
+PopupsComposeViewModel.prototype.editorResize = function ()
+{
+	if (this.oEditor)
+	{
+		this.oEditor.resize();
+	}
+};
+
 PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 {
 	var self = this;
@@ -8632,6 +8497,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	$window.on('resize', function () {
 		self.triggerForResize();
+		self.editorResizeThrottle();
 	});
 
 	if (this.dropboxEnabled())
@@ -12655,14 +12521,6 @@ function SettingsIdentity()
 
 Utils.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 
-SettingsIdentity.prototype.onHide = function ()
-{
-	if (this.editor)
-	{
-		this.editor.hideEditorToolbar();
-	}
-};
-
 SettingsIdentity.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())
@@ -12672,7 +12530,7 @@ SettingsIdentity.prototype.onFocus = function ()
 			sSignature = RL.data().signature()
 		;
 
-		this.editor = new HtmlEditorWrapper(self.signatureDom(), function () {
+		this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
 			RL.data().signature(
 				(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 			);
@@ -12685,15 +12543,6 @@ SettingsIdentity.prototype.onFocus = function ()
 			{
 				self.editor.setPlain(sSignature, false);
 			}
-		});
-
-		this.editor.addInputFormatStyle();
-
-		Utils.initOnStartOrLangChange(function () {
-			self.editor.setupLang(
-				Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-			);
 		});
 	}
 };
@@ -12820,14 +12669,6 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 	}
 };
 
-SettingsIdentities.prototype.onHide = function ()
-{
-	if (this.editor)
-	{
-		this.editor.hideEditorToolbar();
-	}
-};
-
 SettingsIdentities.prototype.onFocus = function ()
 {
 	if (!this.editor && this.signatureDom())
@@ -12837,7 +12678,7 @@ SettingsIdentities.prototype.onFocus = function ()
 			sSignature = RL.data().signature()
 		;
 
-		this.editor = new HtmlEditorWrapper(self.signatureDom(), function () {
+		this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
 			RL.data().signature(
 				(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 			);
@@ -12850,15 +12691,6 @@ SettingsIdentities.prototype.onFocus = function ()
 			{
 				self.editor.setPlain(sSignature, false);
 			}
-		});
-
-		this.editor.addInputFormatStyle();
-
-		Utils.initOnStartOrLangChange(function () {
-			self.editor.setupLang(
-				Utils.i18n('EDITOR/TEXT_SWITCHER_RICH_FORMATTING'),
-				Utils.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT')
-			);
 		});
 	}
 };

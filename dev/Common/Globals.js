@@ -87,7 +87,10 @@ Globals.oHtmlEditorDefaultConfig = {
 	'title': false,
 	'stylesSet': false,
 	'customConfig': '',
+	'contentsCss': '',
+//	'height': '100%',
 	'toolbarGroups': [
+		{name: 'spec'},
 		{name: 'styles'},
 		{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
 		{name: 'colors'},
@@ -96,17 +99,20 @@ Globals.oHtmlEditorDefaultConfig = {
 		{name: 'insert'}
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
+
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
+	'extraPlugins': 'plain',
+	
 	'allowedContent': false,
 	'autoParagraph': false,
 
 //	'enterMode': window.CKEDITOR.ENTER_BR,
 //	'shiftEnterMode': window.CKEDITOR.ENTER_P,
-	'enterMode': window.CKEDITOR.ENTER_DIV,
+//	'enterMode': window.CKEDITOR.ENTER_DIV,
+	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
-//	'floatSpaceDockedOffsetY': 1,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '12px',
