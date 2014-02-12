@@ -1099,7 +1099,7 @@ class Actions
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AllowCustomLogin'] = (bool) $oConfig->Get('login', 'allow_custom_login', false);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
-		$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign-me', \RainLoop\Enumerations\SignMeType::DEFAILT_OFF);
+		$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DEFAILT_OFF);
 
 		// user
 		$aResult['EditorDefaultType'] = (string) $oConfig->Get('webmail', 'editor_default_type', '');
