@@ -88,34 +88,31 @@ Globals.oHtmlEditorDefaultConfig = {
 	'stylesSet': false,
 	'customConfig': '',
 	'contentsCss': '',
-//	'height': '100%',
 	'toolbarGroups': [
 		{name: 'spec'},
 		{name: 'styles'},
 		{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
 		{name: 'colors'},
-		{name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+		{name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align']},
 		{name: 'links'},
-		{name: 'insert'}
+		{name: 'insert'},
+		{name: 'others'}
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
 
-	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,Indent,Outdent',
+	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
 	'extraPlugins': 'plain',
 	
-	'allowedContent': false,
+	'allowedContent': true,
 	'autoParagraph': false,
 
-//	'enterMode': window.CKEDITOR.ENTER_BR,
-//	'shiftEnterMode': window.CKEDITOR.ENTER_P,
-//	'enterMode': window.CKEDITOR.ENTER_DIV,
 	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
 
 	'font_defaultLabel': 'Arial',
-	'fontSize_defaultLabel': '12px',
+	'fontSize_defaultLabel': '12',
 	'fontSize_sizes': '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
 };
 

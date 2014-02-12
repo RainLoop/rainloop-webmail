@@ -43,7 +43,6 @@ NewHtmlEditorWrapper.prototype.focusTrigger = function ()
  */
 NewHtmlEditorWrapper.prototype.isHtml = function ()
 {
-	window.console.log(this.editor.mode);
 	return this.editor ? 'wysiwyg' === this.editor.mode : false;
 };
 
@@ -121,7 +120,14 @@ NewHtmlEditorWrapper.prototype.setPlain = function (sPlain, bFocus)
 	if (this.editor)
 	{
 		this.modeToggle(false);
-		this.editor.setData(sPlain);
+		if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
+		{
+			return this.editor.__plain.setRawData(sPlain);
+		}
+		else
+		{
+			this.editor.setData(sPlain);
+		}
 
 		if (bFocus)
 		{

@@ -1,5 +1,4 @@
-
-( function() {
+(function() {
 
 	var
 		trim = $.trim,
@@ -17,8 +16,9 @@
 				convertBlockquote = function () {
 					if (arguments && 1 < arguments.length)
 					{
-						var	sText = trim(arguments[1])
-							.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
+						var
+							sText = trim(arguments[1])
+								.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
 						;
 
 						sText = '\n' + sQuoteChar + trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
@@ -42,6 +42,7 @@
 						}
 						return sText;
 					}
+					
 					return '';
 				},
 
@@ -107,38 +108,37 @@
 		lang: '',
 		icons: 'plain',
 		hidpi: false,
-		init: function(editor) {
-			// Source mode isn't available in inline mode yet.
+		init: function(editor)
+		{
 			if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE)
 				return;
 
 			var plain = CKEDITOR.plugins.plain;
-			editor.addMode( 'plain', function( callback ) {
-				var contentsSpace = editor.ui.space('contents'),
-					textarea = contentsSpace.getDocument().createElement('textarea');
+			editor.addMode('plain', function(callback) {
+
+				var
+					contentsSpace = editor.ui.space('contents'),
+					textarea = contentsSpace.getDocument().createElement('textarea')
+				;
 
 				textarea.setStyles(
-					CKEDITOR.tools.extend( {
-						// IE7 has overflow the <textarea> from wrapping table cell.
+					CKEDITOR.tools.extend({
 						width: CKEDITOR.env.ie7Compat ? '99%' : '100%',
 						height: '100%',
 						resize: 'none',
 						outline: 'none',
 						'text-align': 'left'
 					},
-					CKEDITOR.tools.cssVendorPrefix( 'tab-size', 4 ) ) );
+					CKEDITOR.tools.cssVendorPrefix('tab-size', 4)))
+				;
 
-				// Make sure that source code is always displayed LTR,
-				// regardless of editor language (#10105).
-				textarea.setAttribute( 'dir', 'ltr' );
-
-				textarea.addClass( 'cke_plain' );
+				textarea.setAttribute('dir', 'ltr');
+				textarea.addClass('cke_plain');
 
 				contentsSpace.append( textarea );
 
 				var editable = editor.editable(new plainEditable(editor, textarea));
 
-				// Fill the textarea with the current editor data.
 				editable.setData(editor.getData(1));
 				editor.__plain = editable;
 
@@ -154,7 +154,7 @@
 
 				editor.fire('ariaWidget', this);
 				callback();
-			} );
+			});
 
 			editor.addCommand('plain', plain.commands.plain);
 
@@ -171,63 +171,56 @@
 			});
 
 			function onResize() {
-				// Holder rectange size is stretched by textarea,
-				// so hide it just for a moment.
 				this.hide();
-				this.setStyle( 'height', this.getParent().$.clientHeight + 'px' );
-				this.setStyle( 'width', this.getParent().$.clientWidth + 'px' );
-				// When we have proper holder size, show textarea again.
+				this.setStyle('height', this.getParent().$.clientHeight + 'px');
+				this.setStyle('width', this.getParent().$.clientWidth + 'px');
 				this.show();
 			}
 		}
-	} );
+	});
 
 	var plainEditable = CKEDITOR.tools.createClass({
 		base: CKEDITOR.editable,
 		proto: {
-
 			setData: function(data) {
 				this.setValue(htmlToPlain(data));
 				this.editor.fire('dataReady');
 			},
-
+			setRawData: function(data) {
+				this.setValue(data);
+				this.editor.fire('dataReady');
+			},
 			getData: function() {
 				return plainToHtml(this.getValue());
 			},
-
 			getRawData: function() {
 				return this.getValue();
 			},
-
-			// Insertions are not supported in source editable.
 			insertHtml: function() {},
 			insertElement: function() {},
 			insertText: function() {},
-
-			// Read-only support for textarea.
 			setReadOnly: function( isReadOnly ) {
-				this[ ( isReadOnly ? 'set' : 'remove' ) + 'Attribute' ]( 'readOnly', 'readonly' );
+				this[(isReadOnly ? 'set' : 'remove') + 'Attribute' ]('readOnly', 'readonly');
 			},
-
 			detach: function() {
 				plainEditable.baseProto.detach.call( this );
 				this.clearCustomData();
 				this.remove();
 			}
 		}
-	} );
-} )();
+	});
+})();
 
 CKEDITOR.plugins.plain = {
 	commands: {
 		plain: {
-			modes: { wysiwyg: 1, plain: 1 },
+			modes: {
+				wysiwyg: 1, plain: 1
+			},
 			editorFocus: false,
 			readOnly: 1,
-			exec: function(editor)
-			{
-				if (editor.mode === 'wysiwyg')
-				{
+			exec: function(editor) {
+				if (editor.mode === 'wysiwyg') {
 					editor.fire('saveSnapshot');
 				}
 				

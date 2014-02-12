@@ -102,8 +102,8 @@
 									<div data-bind="template: { name: 'ComposeAttachment', foreach: attachmentsInReady }"></div>
 									<div data-bind="template: { name: 'ComposeAttachmentInProcess', foreach: attachmentsInProcess }"></div>
 								</div>
-								<div data-bind="visible: addAttachmentEnabled">
-									<div class="b-attachment-place" data-bind="visible: dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
+								<div>
+									<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
 										<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
 									</div>
 									<div class="pull-right">
@@ -123,7 +123,7 @@
 										</div>
 										<div class="btn-group pull-right">&nbsp;</div>
 										<div class="btn-group pull-right">
-											<a class="btn" data-placement="top" data-bind="initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
+											<a class="btn" data-placement="top" data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<i class="icon-attachment"></i>
 											</a>
 											<a class="btn" data-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">

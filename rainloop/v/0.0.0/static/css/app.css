@@ -8207,8 +8207,8 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-settings-identity .e-signature-place {
   display: inline-block;
-  width: 600px;
-  height: 200px;
+  width: 680px;
+  height: 250px;
 }
 .b-settings-identities .process-place {
   text-align: center;
@@ -8217,8 +8217,8 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-settings-identities .e-signature-place {
   display: inline-block;
-  width: 700px;
-  height: 200px;
+  width: 680px;
+  height: 250px;
 }
 .b-settings-identities .list-table {
   width: 600px;

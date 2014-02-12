@@ -5296,6 +5296,7 @@ class Actions
 							$iError = UploadError::ON_SAVING;
 						}
 
+						@\ini_set('auto_detect_line_endings', true);
 						$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 						if ($mData)
 						{
@@ -5323,6 +5324,8 @@ class Actions
 
 						unset($mData);
 						$this->FilesProvider()->Clear($oAccount, $sSavedName);
+
+						@\ini_set('auto_detect_line_endings', false);
 					}
 				}
 				else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
