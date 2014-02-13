@@ -182,7 +182,7 @@ NewHtmlEditorWrapper.prototype.focus = function ()
 {
 	if (this.editor)
 	{
-		this.editor.focusManager.focus();
+		this.editor.focus();
 	}
 };
 

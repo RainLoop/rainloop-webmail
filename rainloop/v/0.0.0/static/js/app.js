@@ -214,6 +214,7 @@ Globals.oHtmlEditorLangsMap = {
 	'pt-pt': 'pt',
 	'pt-br': 'pt-br',
 	'ru': 'ru',
+	'ro': 'ro',
 	'zh': 'zh',
 	'zh-cn': 'zh-cn'
 };
@@ -3736,7 +3737,7 @@ NewHtmlEditorWrapper.prototype.focus = function ()
 {
 	if (this.editor)
 	{
-		this.editor.focusManager.focus();
+		this.editor.focus();
 	}
 };
 
@@ -8340,7 +8341,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				});
 
 				sText = '<br /><br />' + sReplyTitle + ':' +
-					'<blockquote><br />' + sText + '</blockquote>';
+					'<blockquote><p>' + sText + '</p></blockquote>';
 
 				break;
 

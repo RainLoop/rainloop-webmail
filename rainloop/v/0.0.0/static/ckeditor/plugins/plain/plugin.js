@@ -1,3 +1,4 @@
+
 (function() {
 
 	var
@@ -18,7 +19,7 @@
 					{
 						var
 							sText = trim(arguments[1])
-								.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
+								.replace(/__bq__start__([\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
 						;
 
 						sText = '\n' + sQuoteChar + trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
@@ -37,9 +38,10 @@
 						var sText = trim(arguments[1]);
 						if (0 < sText.length)
 						{
-							sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
+							sText = sText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs);
 							sText = '\n' + trim(sText) + '\n';
 						}
+						
 						return sText;
 					}
 					
@@ -47,12 +49,8 @@
 				},
 
 				fixAttibuteValue = function () {
-					if (arguments && 1 < arguments.length)
-					{
-						return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
-					}
-
-					return '';
+					return (arguments && 1 < arguments.length) ?
+						'' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
 				},
 
 				convertLinks = function () {
@@ -71,10 +69,10 @@
 				.replace(/<\/tr>/gi, '\n')
 				.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
 				.replace(/<img [^>]*>/gmi, '')
-				.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
+				.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs)
 				.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
 				.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
-				.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
+				.replace(/<a [^>]*>([\s\S\r\n]*?)<\/a>/gmi, convertLinks)
 				.replace(/&nbsp;/gi, ' ')
 				.replace(/<[^>]*>/gm, '')
 				.replace(/&gt;/gi, '>')
@@ -86,7 +84,7 @@
 			return sText
 				.replace(/\n[ \t]+/gm, '\n')
 				.replace(/[\n]{3,}/gm, '\n\n')
-				.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
+				.replace(/__bq__start__([\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
 				.replace(/__bq__start__/gm, '')
 				.replace(/__bq__end__/gm, '')
 			;
@@ -107,7 +105,7 @@
 	CKEDITOR.plugins.add('plain', {
 		lang: '',
 		icons: 'plain',
-		hidpi: false,
+		hidpi: true,
 		init: function(editor)
 		{
 			if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE)
@@ -135,7 +133,7 @@
 				textarea.setAttribute('dir', 'ltr');
 				textarea.addClass('cke_plain');
 
-				contentsSpace.append( textarea );
+				contentsSpace.append(textarea);
 
 				var editable = editor.editable(new plainEditable(editor, textarea));
 

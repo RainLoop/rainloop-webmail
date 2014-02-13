@@ -136,6 +136,7 @@ Globals.oHtmlEditorLangsMap = {
 	'pt-pt': 'pt',
 	'pt-br': 'pt-br',
 	'ru': 'ru',
+	'ro': 'ro',
 	'zh': 'zh',
 	'zh-cn': 'zh-cn'
 };

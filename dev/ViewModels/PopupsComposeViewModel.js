@@ -783,7 +783,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 				});
 
 				sText = '<br /><br />' + sReplyTitle + ':' +
-					'<blockquote><br />' + sText + '</blockquote>';
+					'<blockquote><p>' + sText + '</p></blockquote>';
 
 				break;
 
