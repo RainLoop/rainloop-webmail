@@ -484,7 +484,7 @@ class HtmlUtils
 				{
 					$oElement->setAttribute('src', 'javascript:false');
 				}
-
+				
 				if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 				{
 					$oElement->setAttribute('target', '_blank');
@@ -506,6 +506,16 @@ class HtmlUtils
 				@$oElement->removeAttribute('designmode');
 				@$oElement->removeAttribute('data-bind');
 				@$oElement->removeAttribute('xmlns');
+
+				if ($oElement->hasAttribute('href'))
+				{
+					$sHref = \trim($oElement->getAttribute('href'));
+					if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref))
+					{
+						$oElement->setAttribute('data-x-broken-href', $sHref);
+						$oElement->setAttribute('href', 'javascript:false');
+					}
+				}
 
 				if ($oElement->hasAttribute('src'))
 				{
