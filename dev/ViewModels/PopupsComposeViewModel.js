@@ -943,7 +943,6 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	$window.on('resize', function () {
 		self.triggerForResize();
-		self.editorResizeThrottle();
 	});
 
 	if (this.dropboxEnabled())
@@ -1478,5 +1477,6 @@ PopupsComposeViewModel.prototype.getAttachmentsDownloadsForUpload = function ()
 PopupsComposeViewModel.prototype.triggerForResize = function ()
 {
 	this.resizer(!this.resizer());
+	this.editorResizeThrottle();
 };
 

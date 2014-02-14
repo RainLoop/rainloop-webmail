@@ -178,6 +178,7 @@ Globals.oHtmlEditorDefaultConfig = {
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
 
+	'removePlugins': 'blockquote',
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
@@ -8501,7 +8502,6 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	$window.on('resize', function () {
 		self.triggerForResize();
-		self.editorResizeThrottle();
 	});
 
 	if (this.dropboxEnabled())
@@ -9036,6 +9036,7 @@ PopupsComposeViewModel.prototype.getAttachmentsDownloadsForUpload = function ()
 PopupsComposeViewModel.prototype.triggerForResize = function ()
 {
 	this.resizer(!this.resizer());
+	this.editorResizeThrottle();
 };
 
 
