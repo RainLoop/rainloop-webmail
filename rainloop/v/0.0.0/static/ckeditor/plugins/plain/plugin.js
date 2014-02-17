@@ -166,6 +166,7 @@
 
 			editor.on('mode', function() {
 				editor.getCommand('plain').setState(editor.mode === 'plain' ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
+				editor.editable().addClass('cke_enable_context_menu');
 			});
 
 			function onResize() {
