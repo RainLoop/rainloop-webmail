@@ -203,7 +203,9 @@ class Header
 
 		if ($this->IsSubject())
 		{
-			if (!\MailSo\Base\Utils::IsAscii($sResult) && \function_exists('iconv_mime_encode'))
+			if (!\MailSo\Base\Utils::IsAscii($sResult) && 
+				\MailSo\Base\Utils::IsIconvSupported() &&
+				\function_exists('iconv_mime_encode'))
 			{
 				$aPreferences = array(
 //					'scheme' => \MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_SHORT,

@@ -10,7 +10,7 @@ if (!function_exists('mb_strtoupper'))
 		else $encoding = strtoupper($encoding);
 
 		if ('UTF-8' === $encoding || 'UTF8' === $encoding) $encoding = INF;
-		else $s = iconv($encoding, 'UTF-8//IGNORE', $s);
+		else $s = function_exists('iconv') ? iconv($encoding, 'UTF-8//IGNORE', $s) : $s;
 
 		static $upper;
 		isset($upper) || $upper = unserialize(base64_decode('YToxMDUxOntzOjE6ImEiO3M6MToiQSI7czoxOiJiIjtzOjE6IkIiO3M6MToiYyI7czoxOiJDIjtz
@@ -400,7 +400,7 @@ czo0OiLwkJCmIjtzOjQ6IvCQkY8iO3M6NDoi8JCQpyI7fQ=='));
 		}
 
 		if (INF === $encoding) return $s;
-		else return iconv('UTF-8', $encoding, $s);
+		else return function_exists('iconv') ? iconv('UTF-8', $encoding, $s) : $s;
 	}
 }
 

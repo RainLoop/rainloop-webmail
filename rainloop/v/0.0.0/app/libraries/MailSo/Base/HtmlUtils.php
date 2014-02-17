@@ -38,11 +38,10 @@ class HtmlUtils
 
 		$oDom = new \DOMDocument('1.0', 'utf-8');
 		$oDom->encoding = 'UTF-8';
+		$oDom->formatOutput = false;
 
-		@$oDom->loadHTML(
-			'<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
-			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'>'.$sText.'</body></html>'
-		);
+		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
+			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'>'.$sText.'</body></html>');
 
 		return $oDom;
 	}

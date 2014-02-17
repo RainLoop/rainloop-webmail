@@ -10,7 +10,7 @@ final class Version
 	/**
 	 * @var string
 	 */
-	const APP_VERSION = '1.3.0';
+	const APP_VERSION = '1.3.1';
 
 	/**
 	 * @var string
@@ -38,7 +38,13 @@ final class Version
 	 */
 	public static function Signature()
 	{
-		$oPhar = new \Phar('mailso.phar');
-		return $oPhar->getSignature();
+		$sSignature = '';
+		if (\defined('MAILSO_LIBRARY_USE_PHAR'))
+		{
+			$oPhar = new \Phar('mailso.phar');
+			$sSignature = $oPhar->getSignature();
+		}
+		
+		return $sSignature;
 	}
 }

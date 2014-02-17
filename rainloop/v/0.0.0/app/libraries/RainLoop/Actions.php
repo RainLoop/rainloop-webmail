@@ -5199,14 +5199,18 @@ class Actions
 						}
 
 						$aHeaders = $mRow;
+
+						foreach ($aHeaders as $iIndex => $sHeaderValue)
+						{
+							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
+						}
 					}
 					else
 					{
 						$aNewItem = array();
 						foreach ($aHeaders as $iIndex => $sHeaderValue)
 						{
-							$aNewItem[@\iconv('utf-8', 'utf-8//IGNORE', $sHeaderValue)] =
-								isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
+							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
 						}
 
 						$aData[] = $aNewItem;

@@ -93,15 +93,31 @@ class Utils
 	 */
 	public static function IsIconvSupported()
 	{
-		return \MailSo\Base\Utils::FunctionExistsAndEnabled('iconv');
+		return \MailSo\Capa::$ICONV &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('iconv');
 	}
 
 	/**
 	 * @return bool
 	 */
-	public static function IsLibIconvSupported()
+	public static function IsIconvIgnoreSupported()
 	{
-		return \MailSo\Base\Utils::FunctionExistsAndEnabled('libiconv');
+		static $bCache = null;
+		if (null !== $bCache)
+		{
+			return $bCache;
+		}
+
+		$bCache = false;
+		if (\MailSo\Base\Utils::IsIconvSupported())
+		{
+			if (false !== @\iconv('', '//IGNORE', ''))
+			{
+				$bCache = true;
+			}
+		}
+
+		return $bCache;
 	}
 
 	/**
@@ -109,7 +125,8 @@ class Utils
 	 */
 	public static function IsMbStringSupported()
 	{
-		return \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding');
+		return \MailSo\Capa::$MBSTRING &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding');
 	}
 
 	/**
@@ -122,6 +139,46 @@ class Utils
 		$sCharset = \strtolower(\MailSo\Base\Utils::NormalizeCharset($sCharset));
 		return 0 < \strlen($sCharset) && (\in_array($sCharset, array(\MailSo\Base\Enumerations\Charset::UTF_7_IMAP)) ||
 			\in_array($sCharset, \MailSo\Base\Utils::$SuppostedCharsets));
+	}
+
+	/**
+	 * @param string $sInputString
+	 * @param string $sInputFromEncoding
+	 * @param string $sInputToEncoding
+	 *
+	 * @return string|bool
+	 */
+	public static function IconvConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding)
+	{
+		$sIconvIgnorOption = '';
+		if (\MailSo\Base\Utils::IsIconvIgnoreSupported())
+		{
+			$sIconvIgnorOption = '//IGNORE';
+		}
+
+		return @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvIgnorOption, $sInputString);
+	}
+
+	/**
+	 * @param string $sInputString
+	 * @param string $sInputFromEncoding
+	 * @param string $sInputToEncoding
+	 *
+	 * @return string|bool
+	 */
+	public static function MbConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding)
+	{
+		static $sMbstringSubCh = null;
+		if (null === $sMbstringSubCh)
+		{
+			$sMbstringSubCh = \mb_substitute_character();
+		}
+		
+		\mb_substitute_character('none');
+		$sResult = @\mb_convert_encoding($sInputString, \strtoupper($sInputToEncoding), \strtoupper($sInputFromEncoding));
+		\mb_substitute_character($sMbstringSubCh);
+		
+		return $sResult;
 	}
 
 	/**
@@ -197,15 +254,11 @@ class Utils
 
 				if (\MailSo\Base\Utils::IsIconvSupported())
 				{
-					$sResult = @\iconv(\strtoupper($sFromEncoding), \strtoupper($sToEncoding).'//IGNORE', $sResult);
+					$sResult = \MailSo\Base\Utils::IconvConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
 				}
 				else if (\MailSo\Base\Utils::IsMbStringSupported())
 				{
-					$sResult = @\mb_convert_encoding($sResult, \strtoupper($sToEncoding), \strtoupper($sFromEncoding));
-				}
-				else if (\MailSo\Base\Utils::IsLibIconvSupported())
-				{
-					 $sResult = @\libiconv(\strtoupper($sFromEncoding), \strtoupper($sToEncoding), $sResult);
+					$sResult = \MailSo\Base\Utils::MbConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
 				}
 
 				$sResult = (false !== $sResult) ? $sResult : $sInputString;
@@ -428,54 +481,12 @@ class Utils
 	 * @param string $sEncodeType
 	 * @param string $sEncodeCharset
 	 * @param string $sValue
-	 * @param string $sHeaderName = ''
 	 *
 	 * @return string
 	 */
-	public static function EncodeHeaderValue($sEncodeType, $sEncodeCharset, $sValue, $sHeaderName = '')
+	public static function EncodeHeaderValue($sEncodeType, $sEncodeCharset, $sValue)
 	{
 		$sValue = \trim($sValue);
-
-//		return \mb_encode_mimeheader($sValue,
-//			\MailSo\Base\Enumerations\Charset::UTF_8, 'Q',
-//			\MailSo\Mime\Enumerations\Constants::CRLF);
-
-//		$splitWords = true;
-//		if ($splitWords) {
-//			$words = \array_map(function($word) use ($sEncodeCharset) {
-//				$header = \iconv_mime_encode('Header', $word, array(
-//					'scheme'         => 'Q',
-//					'line-length'    => 78,
-//					'output-charset' => $sEncodeCharset,
-//				));
-//				return \str_replace('Header: ', '', $header);
-//			}, \explode(' ', $sValue));
-//			return \implode("\r\n ", $words);
-//		}
-//
-//		$header = \iconv_mime_encode('Header', $sValue, array(
-//			'scheme'         => 'Q',
-//			'line-length'    => 998,
-//			'output-charset' => $sEncodeCharset,
-//		));
-//		return \str_replace('Header: ', '', $header);
-//
-//		$aPreferences = array(
-//			'input-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
-//			'output-charset' => $sEncodeCharset,
-//			'line-length' => \MailSo\Mime\Enumerations\Constants::LINE_LENGTH,
-//			'line-break-chars' => \MailSo\Mime\Enumerations\Constants::CRLF
-//		);
-//
-//		if (\in_array(\strtoupper($sEncodeType), array('B', 'Q')))
-//		{
-//			$aPreferences['scheme'] = \strtoupper($sEncodeType);
-//		}
-//
-//		$sHeaderName = 0 === \strlen($sHeaderName) ? 'X-Header' : $sHeaderName;
-//		$sValue = \iconv_mime_encode($sHeaderName, $sValue, $aPreferences);
-//		return \trim(substr($sValue, \strlen($sHeaderName) + 1));
-
 		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
 		{
 			switch (\strtoupper($sEncodeType))
@@ -807,7 +818,7 @@ class Utils
 		static $bValidateAction = null;
 		if (null === $bValidateAction)
 		{
-			$bValidateAction = !((bool) @\ini_get('safe_mode')) &&
+			$bValidateAction = !((bool) \ini_get('safe_mode')) &&
 				\MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
 		}
 
@@ -1113,8 +1124,21 @@ class Utils
 			return $sUtfString;
 		}
 
-		$sUtfString = @\iconv('UTF-8', 'UTF-8//IGNORE', $sUtfString);
+		$sNewUtfString = false;
+		if (\MailSo\Base\Utils::IsIconvSupported())
+		{
+			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+		}
+		else if (\MailSo\Base\Utils::IsMbStringSupported())
+		{
+			$sNewUtfString = \MailSo\Base\Utils::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+		}
 
+		if (false !== $sNewUtfString)
+		{
+			$sUtfString = $sNewUtfString;
+		}
+		
 		$sUtfString = \preg_replace(
 			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
 			'|[\x00-\x7F][\x80-\xBF]+'.
@@ -1704,7 +1728,8 @@ class Utils
 		$mResult = '';
 		if (!\MailSo\Base\Utils::IsAscii($sStr))
 		{
-			$mResult = \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_detect_encoding') ?
+			$mResult = \MailSo\Base\Utils::IsMbStringSupported() &&
+				\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_detect_encoding') ?
 				@\mb_detect_encoding($sStr, 'auto', true) : false;
 
 			if (false === $mResult && \MailSo\Base\Utils::IsIconvSupported())

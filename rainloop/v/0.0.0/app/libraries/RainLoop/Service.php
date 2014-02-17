@@ -37,6 +37,12 @@ class Service
 			\ini_set('display_errors', 1);
 		}
 
+		if ($this->oActions->Config()->Get('labs', 'disable_iconv_if_mbstring_supported') &&
+			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
+		{
+			\MailSo\Capa::$ICONV = false;
+		}
+
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))
 		{
@@ -91,7 +97,7 @@ class Service
 		{
 			return $this;
 		}
-
+		
 		$this->oActions->ParseQueryAuthString();
 
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&

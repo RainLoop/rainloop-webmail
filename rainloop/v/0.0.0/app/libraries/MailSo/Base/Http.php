@@ -373,7 +373,7 @@ class Http
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => $aPost,
+			CURLOPT_POSTFIELDS => \http_build_query($aPost, '', '&'),
 			CURLOPT_TIMEOUT => (int) $iTimeout
 		);
 
