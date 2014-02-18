@@ -171,6 +171,9 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		if (self.fOnReady)
 		{
 			self.editor.on('instanceReady', function () {
+
+				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65/* A */, 'selectAll');
+
 				self.fOnReady();
 				self.resize();
 			});

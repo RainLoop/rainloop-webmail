@@ -101,7 +101,7 @@ Globals.oHtmlEditorDefaultConfig = {
 	],
 
 	'removePlugins': 'blockquote,contextmenu',
-	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image',
+	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
 	'extraPlugins': 'plain',
