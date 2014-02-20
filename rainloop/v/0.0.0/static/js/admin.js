@@ -1133,7 +1133,6 @@ Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
 		!Utils.isUnd(oMatch[1]) && !Utils.isUnd(oMatch[2]) && !Utils.isUnd(oMatch[3]))
 	{
 		sResult = oMatch[1] + (Utils.pInt(oMatch[2]) + 1) + oMatch[3];
-		sResult = oMatch[1] + (Utils.pInt(oMatch[2]) + 1) + oMatch[3];
 	}
 	else
 	{
@@ -1141,7 +1140,9 @@ Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
 	}
 
 	sResult = sResult.replace(/[\s]+/g, ' ');
-	return (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
+	sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
+//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
+	return sResult;
 };
 
 /**

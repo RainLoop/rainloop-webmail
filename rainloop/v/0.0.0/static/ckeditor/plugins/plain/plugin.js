@@ -78,6 +78,8 @@
 				.replace(/&gt;/gi, '>')
 				.replace(/&lt;/gi, '<')
 				.replace(/&amp;/gi, '&')
+				.replace(/&#39;/gi, '\'')
+				.replace(/&#\d{2,5};/gi, '')
 				.replace(/&\w{2,6};/gi, '')
 			;
 
