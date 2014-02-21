@@ -5694,7 +5694,7 @@ html.no-rgba .modal {
   padding: 10px;
   padding-right: 0;
   font-family: arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   color: #333;
   resize: none;
@@ -5725,7 +5725,7 @@ html.no-rgba .modal {
 .cke_wysiwyg_div {
   padding: 10px !important;
   font-family: arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   color: #333;
 }
@@ -5749,7 +5749,7 @@ html.no-rgba .modal {
 }
 .cke_wysiwyg_div blockquote * {
   font-family: arial, sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   color: #333;
 }
@@ -7006,6 +7006,12 @@ html.rl-no-preview-pane .messageList.message-selected {
 }
 .messageList.hideMessageListCheckbox .sidebarParent {
   margin-right: 10px !important;
+}
+html.ssm-state-desktop-large .messageList .b-content .messageListItem {
+  font-size: 13px;
+}
+html.ssm-state-desktop-large .messageList .b-content .messageListItem .dateParent {
+  font-size: 13px;
 }
 .draggablePlace {
   z-index: 10002;
