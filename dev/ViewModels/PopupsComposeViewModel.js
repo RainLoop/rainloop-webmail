@@ -21,9 +21,9 @@ function PopupsComposeViewModel()
 		self = this,
 		oRainLoopData = RL.data(),
 		fCcAndBccCheckHelper = function (aValue) {
-			if (false === this.showCcAndBcc() && 0 < aValue.length)
+			if (false === self.showCcAndBcc() && 0 < aValue.length)
 			{
-				this.showCcAndBcc(true);
+				self.showCcAndBcc(true);
 			}
 		}
 	;

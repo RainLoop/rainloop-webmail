@@ -7584,9 +7584,9 @@ function PopupsComposeViewModel()
 		self = this,
 		oRainLoopData = RL.data(),
 		fCcAndBccCheckHelper = function (aValue) {
-			if (false === this.showCcAndBcc() && 0 < aValue.length)
+			if (false === self.showCcAndBcc() && 0 < aValue.length)
 			{
-				this.showCcAndBcc(true);
+				self.showCcAndBcc(true);
 			}
 		}
 	;
@@ -9549,8 +9549,8 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 		this.viewScopeType(oContact.scopeType);
 	}
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
 	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, sLastName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
 	
 	this.viewID(sId);
 	this.viewIDStr(sIdStr);

@@ -140,7 +140,7 @@ class Contact
 		$sDisplay = '';
 		if (0 < \strlen($sLastName) || 0 < \strlen($sFirstName))
 		{
-			$sDisplay = \trim($sLastName.' '.$sFirstName);
+			$sDisplay = \trim($sFirstName.' '.$sLastName);
 		}
 
 		if ('' === $sDisplay && 0 < \strlen($sEmail))
