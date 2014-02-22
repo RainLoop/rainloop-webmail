@@ -8484,7 +8484,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
 		{
-			if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
+			/*if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
 			{
 				self.saveCommand();
 				bResult = false;
@@ -8494,7 +8494,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 				self.sendCommand();
 				bResult = false;
 			}
-			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
+			else */if (Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
 				self.tryToClosePopup();
 				bResult = false;
