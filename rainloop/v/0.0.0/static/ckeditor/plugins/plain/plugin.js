@@ -2,6 +2,9 @@
 (function() {
 
 	var
+
+		$div = $('<div></div>'),
+
 		trim = $.trim,
 
 		/**
@@ -74,22 +77,21 @@
 				.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
 				.replace(/<a [^>]*>([\s\S\r\n]*?)<\/a>/gmi, convertLinks)
 				.replace(/&nbsp;/gi, ' ')
-				.replace(/<[^>]*>/gm, '')
 				.replace(/&gt;/gi, '>')
 				.replace(/&lt;/gi, '<')
 				.replace(/&amp;/gi, '&')
-				.replace(/&#39;/gi, '\'')
-				.replace(/&#\d{2,5};/gi, '')
-				.replace(/&\w{2,6};/gi, '')
+				.replace(/<[^>]*>/gm, '')
 			;
 
-			return sText
+			sText = sText
 				.replace(/\n[ \t]+/gm, '\n')
 				.replace(/[\n]{3,}/gm, '\n\n')
 				.replace(/__bq__start__([\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
 				.replace(/__bq__start__/gm, '')
 				.replace(/__bq__end__/gm, '')
 			;
+
+			return $div.html(sText).text();
 		},
 
 		/**
