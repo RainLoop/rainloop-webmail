@@ -2608,6 +2608,29 @@ ko.bindingHandlers.popover = {
 	}
 };
 
+ko.bindingHandlers.csstext = {
+	'init': function (oElement, fValueAccessor) {
+		if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+		{
+			oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+		}
+		else
+		{
+			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+		}
+	},
+	'update': function (oElement, fValueAccessor) {
+		if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+		{
+			oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+		}
+		else
+		{
+			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+		}
+	}
+};
+
 ko.bindingHandlers.resizecrop = {
 	'init': function (oElement) {
 		$(oElement).addClass('resizecrop').resizecrop({
@@ -13161,7 +13184,15 @@ function SettingsThemes()
 
 					if (oThemeStyle && oThemeStyle[0])
 					{
-						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]).text(aData[1]);
+						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
+						if (oThemeStyle && oThemeStyle[0] && oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						{
+							oThemeStyle[0].styleSheet.cssText = aData[1];
+						}
+						else
+						{
+							oThemeStyle.text(aData[1]);
+						}
 					}
 
 					self.themeTrigger(Enums.SaveSettingsStep.TrueResult);

@@ -82,7 +82,15 @@ function SettingsThemes()
 
 					if (oThemeStyle && oThemeStyle[0])
 					{
-						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]).text(aData[1]);
+						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
+						if (oThemeStyle && oThemeStyle[0] && oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						{
+							oThemeStyle[0].styleSheet.cssText = aData[1];
+						}
+						else
+						{
+							oThemeStyle.text(aData[1]);
+						}
 					}
 
 					self.themeTrigger(Enums.SaveSettingsStep.TrueResult);

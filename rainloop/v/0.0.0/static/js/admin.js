@@ -2608,6 +2608,29 @@ ko.bindingHandlers.popover = {
 	}
 };
 
+ko.bindingHandlers.csstext = {
+	'init': function (oElement, fValueAccessor) {
+		if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+		{
+			oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+		}
+		else
+		{
+			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+		}
+	},
+	'update': function (oElement, fValueAccessor) {
+		if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+		{
+			oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+		}
+		else
+		{
+			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+		}
+	}
+};
+
 ko.bindingHandlers.resizecrop = {
 	'init': function (oElement) {
 		$(oElement).addClass('resizecrop').resizecrop({
