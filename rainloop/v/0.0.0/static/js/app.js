@@ -178,7 +178,7 @@ Globals.oHtmlEditorDefaultConfig = {
 //		{name: 'document', groups: ['mode', 'document', 'doctools']}
 	],
 
-	'removePlugins': 'blockquote,contextmenu',
+	'removePlugins': 'contextmenu', //blockquote
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced',
 
@@ -8512,12 +8512,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 				self.saveCommand();
 				bResult = false;
 			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
+			else */if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
 			{
 				self.sendCommand();
 				bResult = false;
 			}
-			else */if (Enums.EventKeyCode.Esc === oEvent.keyCode)
+			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
 				self.tryToClosePopup();
 				bResult = false;

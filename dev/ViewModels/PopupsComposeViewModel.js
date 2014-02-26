@@ -926,12 +926,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 				self.saveCommand();
 				bResult = false;
 			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
+			else */if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
 			{
 				self.sendCommand();
 				bResult = false;
 			}
-			else */if (Enums.EventKeyCode.Esc === oEvent.keyCode)
+			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
 				self.tryToClosePopup();
 				bResult = false;
