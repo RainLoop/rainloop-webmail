@@ -5871,6 +5871,7 @@ function MessageModel()
 {
 	this.folderFullNameRaw = '';
 	this.uid = '';
+	this.hash = '';
 	this.requestHash = '';
 	this.subject = ko.observable('');
 	this.size = ko.observable(0);
@@ -6085,6 +6086,7 @@ MessageModel.prototype.clear = function ()
 {
 	this.folderFullNameRaw = '';
 	this.uid = '';
+	this.hash = '';
 	this.requestHash = '';
 	this.subject('');
 	this.size(0);
@@ -6166,6 +6168,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 	{
 		this.folderFullNameRaw = oJsonMessage.Folder;
 		this.uid = oJsonMessage.Uid;
+		this.hash = oJsonMessage.Hash;
 		this.requestHash = oJsonMessage.RequestHash;
 		
 		this.size(Utils.pInt(oJsonMessage.Size));
@@ -6652,6 +6655,7 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 {
 	this.folderFullNameRaw = oMessage.folderFullNameRaw;
 	this.uid = oMessage.uid;
+	this.hash = oMessage.hash;
 	this.requestHash = oMessage.requestHash;
 	this.subject(oMessage.subject());
 	this.size(oMessage.size());
@@ -11370,7 +11374,9 @@ MailBoxMessageListViewModel.prototype.onMessageResponse = function (sResult, oDa
 {
 	var oRainLoopData = RL.data();
 
+	oRainLoopData.hideMessageBodies();
 	oRainLoopData.messageLoading(false);
+	
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
 		oRainLoopData.setMessage(oData, bCached);
@@ -14146,7 +14152,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
 		if (oMessagesBodiesDom)
 		{
-			sId = 'rl-' + oMessage.requestHash.replace(/[^a-zA-Z0-9]/g, '');
+			sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
 			oTextBody = oMessagesBodiesDom.find('#' + sId);
 			if (!oTextBody || !oTextBody[0])
 			{

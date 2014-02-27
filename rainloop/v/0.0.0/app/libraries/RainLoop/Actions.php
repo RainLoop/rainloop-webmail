@@ -6343,6 +6343,7 @@ class Actions
 				}
 
 				$sSubject = $mResult['Subject'];
+				$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
 				$mResult['RequestHash'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
 					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
@@ -6413,6 +6414,8 @@ class Actions
 					$mResult['PlainRaw'] = $sPlain;
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
 					$mResult['Rtl'] = $bRtl;
+
+					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain'].$mResult['PlainRaw']);
 
 					$mResult['PgpSigned'] = $mResponse->PgpSigned();
 					$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();

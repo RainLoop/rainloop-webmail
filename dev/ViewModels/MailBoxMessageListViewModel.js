@@ -481,7 +481,9 @@ MailBoxMessageListViewModel.prototype.onMessageResponse = function (sResult, oDa
 {
 	var oRainLoopData = RL.data();
 
+	oRainLoopData.hideMessageBodies();
 	oRainLoopData.messageLoading(false);
+	
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
 		oRainLoopData.setMessage(oData, bCached);

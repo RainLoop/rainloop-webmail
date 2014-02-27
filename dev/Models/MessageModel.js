@@ -7,6 +7,7 @@ function MessageModel()
 {
 	this.folderFullNameRaw = '';
 	this.uid = '';
+	this.hash = '';
 	this.requestHash = '';
 	this.subject = ko.observable('');
 	this.size = ko.observable(0);
@@ -221,6 +222,7 @@ MessageModel.prototype.clear = function ()
 {
 	this.folderFullNameRaw = '';
 	this.uid = '';
+	this.hash = '';
 	this.requestHash = '';
 	this.subject('');
 	this.size(0);
@@ -302,6 +304,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 	{
 		this.folderFullNameRaw = oJsonMessage.Folder;
 		this.uid = oJsonMessage.Uid;
+		this.hash = oJsonMessage.Hash;
 		this.requestHash = oJsonMessage.RequestHash;
 		
 		this.size(Utils.pInt(oJsonMessage.Size));
@@ -788,6 +791,7 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 {
 	this.folderFullNameRaw = oMessage.folderFullNameRaw;
 	this.uid = oMessage.uid;
+	this.hash = oMessage.hash;
 	this.requestHash = oMessage.requestHash;
 	this.subject(oMessage.subject());
 	this.size(oMessage.size());

@@ -744,7 +744,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
 		if (oMessagesBodiesDom)
 		{
-			sId = 'rl-' + oMessage.requestHash.replace(/[^a-zA-Z0-9]/g, '');
+			sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
 			oTextBody = oMessagesBodiesDom.find('#' + sId);
 			if (!oTextBody || !oTextBody[0])
 			{

@@ -133,8 +133,8 @@ class Domain
 	{
 		$oDomain = null;
 
-		if (0 < strlen($sName) && is_array($aDomain) && !empty($aDomain['imap_host']) && !empty($aDomain['imap_port']) &&
-			!empty($aDomain['smpt_host']) && !empty($aDomain['smpt_port']))
+		if (0 < \strlen($sName) && \is_array($aDomain) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']) &&
+			0 < \strlen($aDomain['smpt_host']) && 0 < \strlen($aDomain['smpt_port']))
 		{
 			$sIncHost = (string) $aDomain['imap_host'];
 			$iIncPort = (int) $aDomain['imap_port'];
@@ -179,11 +179,29 @@ class Domain
 		$this->bDisabled = (bool) $bDisabled;
 	}
 
+	public function Normalize()
+	{
+		$this->sIncHost = \trim($this->sIncHost);
+		$this->sOutHost = \trim($this->sOutHost);
+		$this->sWhiteList = \trim($this->sWhiteList);
+		
+		if ($this->iIncPort <= 0)
+		{
+			$this->iIncPort = 143;
+		}
+
+		if ($this->iOutPort <= 0)
+		{
+			$this->iOutPort = 25;
+		}
+	}
+	
 	/**
 	 * @return string
 	 */
 	public function ToIniString()
 	{
+		$this->Normalize();
 		return implode("\n", array(
 			'imap_host = "'.$this->encodeIniString($this->sIncHost).'"',
 			'imap_port = '.$this->iIncPort,
