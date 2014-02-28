@@ -914,6 +914,7 @@ class Actions
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
 			'AllowIdentities' => (bool) $oConfig->Get('webmail', 'allow_identities', true),
+			'AllowCtrlSOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_s_on_compose', true),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
 			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
