@@ -209,38 +209,6 @@ MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 	kn.showScreenPopup(PopupsComposeViewModel, [sType, RL.data().message()]);
 };
 
-MailBoxMessageViewViewModel.prototype.receivePrivateKey = function ()
-{
-	var self = this;
-	kn.showScreenPopup(PopupsPgpKey, [true, function (sPrivatePassphrase, sPrivateKey) {
-		var oMessage = self.message(), mPgpMessage, mPgpKey, mDecPgpKey;
-		if (oMessage)
-		{
-			try
-			{
-				mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
-				mPgpKey = window.openpgp.key.readArmored(sPrivateKey);
-
-				if (mPgpMessage && mPgpKey && mPgpKey.keys && mPgpKey.keys[0])
-				{
-					mDecPgpKey = mPgpKey.keys[0];
-					if ('' !== sPrivatePassphrase)
-					{
-						mDecPgpKey.decrypt(sPrivatePassphrase);
-					}
-
-					oMessage.body.html(
-						'<pre class="b-plain-openpgp encrypted">' +
-						window.openpgp.decryptMessage(mDecPgpKey, mPgpMessage) +
-						'</pre>'
-					);
-				}
-			}
-			catch (oExt) {}
-		}
-	}]);
-};
-
 MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 {
 	var 

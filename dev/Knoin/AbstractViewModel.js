@@ -7,6 +7,7 @@
  */
 function KnoinAbstractViewModel(sPosition, sTemplate)
 {
+	this.bDisabeCloseOnEsc = false;
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
@@ -58,4 +59,18 @@ KnoinAbstractViewModel.prototype.viewModelPosition = function ()
 
 KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototype.closeCommand = function ()
 {
+};
+
+KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			Utils.delegateRun(self, 'cancelCommand');
+			return false;
+		}
+		
+		return true;
+	});
 };

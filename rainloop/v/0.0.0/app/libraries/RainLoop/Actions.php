@@ -989,8 +989,8 @@ class Actions
 					{
 						$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
 						$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
-						
-						$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav';
+
+						$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav/';
 					}
 					else
 					{

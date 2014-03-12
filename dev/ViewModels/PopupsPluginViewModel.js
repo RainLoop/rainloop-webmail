@@ -59,6 +59,8 @@ function PopupsPluginViewModel()
 		
 	}, this.hasConfiguration);
 
+	this.bDisabeCloseOnEsc = true;
+
 	Knoin.constructorEnd(this);
 }
 

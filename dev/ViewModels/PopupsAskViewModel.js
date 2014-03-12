@@ -18,6 +18,8 @@ function PopupsAskViewModel()
 	this.fYesAction = null;
 	this.fNoAction = null;
 
+	this.bDisabeCloseOnEsc = true;
+
 	Knoin.constructorEnd(this);
 }
 

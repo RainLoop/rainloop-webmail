@@ -190,6 +190,36 @@ RainLoopApp.prototype.folders = function (fCallback)
 	}, this));
 };
 
+RainLoopApp.prototype.reloadOpenPgpKeys = function ()
+{
+	if (Globals.bAllowOpenPGP)
+	{
+		var
+			aKeys = [],
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
+		;
+
+		_.each(oOpenpgpKeys, function (oItem, iIndex) {
+			if (oItem)
+			{
+				var
+					aIDs = _.map(oItem.getKeyIds(), function (oID) {
+						return oID ? oID.toHex() : '';
+					})
+				;
+
+				aKeys.push(
+					new OpenPgpKeyModel(iIndex, aIDs.join(', '), oItem.getUserIds().join(', '),
+						oItem.isPrivate(), oItem.armor())
+				);
+			}
+		});
+
+		RL.data().openpgpkeys(aKeys);
+	}
+};
+
 RainLoopApp.prototype.accountsAndIdentities = function ()
 {
 	var oRainLoopData = RL.data();
@@ -739,6 +769,11 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsIdentities);
 	}
+	
+	if (!RL.settingsGet('OpenPGP'))
+	{
+		Utils.removeSettingsViewModel(SettingsOpenPGP);
+	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
@@ -795,9 +830,12 @@ RainLoopApp.prototype.bootstart = function ()
 						'success': function () {
 							if (window.openpgp)
 							{
-//								window.console.log(window.openpgp);
+								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
+
 								Globals.bAllowOpenPGP = true;
 								RL.pub('openpgp.init');
+								
+								RL.reloadOpenPgpKeys();
 							}
 						}
 					});

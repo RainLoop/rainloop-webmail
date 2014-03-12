@@ -1,0 +1,55 @@
+
+.b-settings-open-pgp {
+
+	.process-place {
+		text-align: center;
+		width: 600px;
+		padding: 14px 0;
+	}
+
+	.list-table {
+
+		width: 750px;
+
+		td {
+			padding: 4px 8px;
+			line-height: 30px;
+		}
+
+		.open-pgp-key-img {
+			font-size: 12px;
+			margin-right: 5px;
+		}
+
+		.open-pgp-key-id, .open-pgp-key-user {
+			display: inline-block;
+			word-break: break-all;
+			.box-sizing(border-box);
+			line-height: 22px;
+			cursor: default;
+		}
+	}
+
+	.open-pgp-key-item {
+
+		.button-delete {
+			margin-right: 15px;
+			margin-top: 5px;
+			visibility: hidden;
+			.opacity(0);
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				.opacity(100);
+			}
+		}
+
+		.delete-open-pgp-key, .view-open-pgp-key {
+			cursor: pointer;
+			.opacity(50);
+		}
+	}
+}

@@ -1,0 +1,50 @@
+<div class="popups">
+	<div class="modal hide b-open-pgp-key-generate-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+		<div>
+			<div class="modal-header">
+				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+				<h3>
+					<span class="i18n" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/TITLE_GENERATE_OPEN_PGP_KEYS"></span>
+				</h3>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="control-group" data-bind="css: {'error': email.error}">
+						<label class="i18n control-label" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_EMAIL"></label>
+						<div class="controls">
+							<input class="inputEmail input-large" type="email" autocomplete="off"
+								data-bind="value: email, hasfocus: email.focus" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="i18n control-label" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_NAME"></label>
+						<div class="controls">
+							<input class="inputName input-large" type="text" autocomplete="off"
+								data-bind="value: name" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="i18n control-label" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_PASSWORD"></label>
+						<div class="controls">
+							<input class="inputPassword input-large" type="password" autocomplete="off"
+								data-bind="value: password" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="i18n control-label" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/LABEL_KEY_BIT_LENGTH"></label>
+						<div class="controls">
+							<select data-bind="value: keyBitLength, options: [1024, 2048]"></select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="btn buttonHenerateOpenPgpKey" data-bind="command: generateOpenPgpKeyCommand">
+					<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="POPUPS_GENERATE_OPEN_PGP_KEYS/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

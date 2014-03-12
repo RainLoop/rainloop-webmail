@@ -115,6 +115,10 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
+			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			{
+				oViewModel.registerPopupEscapeKey();
+			}
 			
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}

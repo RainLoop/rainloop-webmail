@@ -343,6 +343,9 @@ function WebMailDataStorage()
 
 	// other
 	this.useKeyboardShortcuts = ko.observable(true);
+	
+	this.openpgpkeys = ko.observableArray([]);
+	this.openpgpKeyring = null;
 
 	// google
 	this.googleActions = ko.observable(false);

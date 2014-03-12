@@ -54,20 +54,6 @@ PopupsLanguagesViewModel.prototype.onHide = function ()
 	this.exp(false);
 };
 
-PopupsLanguagesViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 {
 	RL.data().mainLanguage(sLang);

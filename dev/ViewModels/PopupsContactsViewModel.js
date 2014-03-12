@@ -600,25 +600,6 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && self.modalVisibility())
-		{
-			if (Enums.EventKeyCode.Esc === oEvent.keyCode)
-			{
-				Utils.delegateRun(self, 'closeCommand');
-				bResult = false;
-			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
-			{
-				self.saveCommand();
-				bResult = false;
-			}
-		}
-		
-		return bResult;
-	});
-
 	this.initUploader();
 };
 

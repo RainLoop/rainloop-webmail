@@ -6383,19 +6383,6 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .popups .b-ask-content .desc-place {
   font-size: 18px;
 }
-.popups .b-pgp-key {
-  width: 620px;
-}
-.popups .b-pgp-key .modal-header {
-  background-color: #fff;
-}
-.popups .b-pgp-key .inputPassphrase,
-.popups .b-pgp-key .inputKey {
-  width: 575px;
-}
-.popups .b-pgp-key .inputKey {
-  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-}
 .b-folders .b-toolbar {
   position: absolute;
   top: 0;
@@ -6562,6 +6549,27 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-account-add-content .modal-header {
   background-color: #fff;
+}
+.popups .b-open-pgp-key-view-content .modal-header,
+.popups .b-open-pgp-key-generate-content .modal-header,
+.popups .b-open-pgp-key-add-content .modal-header {
+  background-color: #fff;
+}
+.popups .b-open-pgp-key-view-content.modal,
+.popups .b-open-pgp-key-generate-content.modal,
+.popups .b-open-pgp-key-add-content.modal {
+  width: 570px;
+}
+.popups .b-open-pgp-key-view-content .inputKey,
+.popups .b-open-pgp-key-generate-content .inputKey,
+.popups .b-open-pgp-key-add-content .inputKey {
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+}
+.popups .b-open-pgp-key-view-content .key-viewer,
+.popups .b-open-pgp-key-generate-content .key-viewer,
+.popups .b-open-pgp-key-add-content .key-viewer {
+  max-height: 500px;
+  overflow: auto;
 }
 .popups .b-identity-content .modal-header {
   background-color: #fff;
@@ -8264,6 +8272,51 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   filter: alpha(opacity=100);
 }
 .b-settings-identities .identity-item .delete-identity {
+  cursor: pointer;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.b-settings-open-pgp .process-place {
+  text-align: center;
+  width: 600px;
+  padding: 14px 0;
+}
+.b-settings-open-pgp .list-table {
+  width: 750px;
+}
+.b-settings-open-pgp .list-table td {
+  padding: 4px 8px;
+  line-height: 30px;
+}
+.b-settings-open-pgp .list-table .open-pgp-key-img {
+  font-size: 12px;
+  margin-right: 5px;
+}
+.b-settings-open-pgp .list-table .open-pgp-key-id,
+.b-settings-open-pgp .list-table .open-pgp-key-user {
+  display: inline-block;
+  word-break: break-all;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  line-height: 22px;
+  cursor: default;
+}
+.b-settings-open-pgp .open-pgp-key-item .button-delete {
+  margin-right: 15px;
+  margin-top: 5px;
+  visibility: hidden;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.b-settings-open-pgp .open-pgp-key-item .delete-access.button-delete {
+  visibility: visible;
+  margin-right: 0;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.b-settings-open-pgp .open-pgp-key-item .delete-open-pgp-key,
+.b-settings-open-pgp .open-pgp-key-item .view-open-pgp-key {
   cursor: pointer;
   opacity: 0.5;
   filter: alpha(opacity=50);

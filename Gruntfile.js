@@ -253,6 +253,7 @@ module.exports = function (grunt) {
 
 					"dev/Storages/LocalStorages/CookieDriver.js",
 					"dev/Storages/LocalStorages/LocalStorageDriver.js",
+					"dev/Storages/LocalStorages/OpenPgpLocalStorageDriver.js",
 					"dev/Storages/LocalStorage.js",
 
 					"dev/Knoin/AbstractBoot.js",
@@ -269,6 +270,7 @@ module.exports = function (grunt) {
 					"dev/Models/FolderModel.js",
 					"dev/Models/AccountModel.js",
 					"dev/Models/IdentityModel.js",
+					"dev/Models/OpenPgpKeyModel.js",
 
 					"dev/ViewModels/PopupsFolderClearViewModel.js",
 					"dev/ViewModels/PopupsFolderCreateViewModel.js",
@@ -277,10 +279,12 @@ module.exports = function (grunt) {
 					"dev/ViewModels/PopupsContactsViewModel.js",
 					"dev/ViewModels/PopupsAdvancedSearchViewModel.js",
 					"dev/ViewModels/PopupsAddAccountViewModel.js",
+					"dev/ViewModels/PopupsAddOpenPgpKeyViewModel.js",
+					"dev/ViewModels/PopupsViewOpenPgpKeyViewModel.js",
+					"dev/ViewModels/PopupsGenerateNewOpenPgpKeyViewModel.js",
 					"dev/ViewModels/PopupsIdentityViewModel.js",
 					"dev/ViewModels/PopupsLanguagesViewModel.js",
 					"dev/ViewModels/PopupsAskViewModel.js",
-					"dev/ViewModels/PopupsPgpKey.js",
 
 					"dev/ViewModels/LoginViewModel.js",
 
@@ -301,6 +305,7 @@ module.exports = function (grunt) {
 					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",
 					"dev/Settings/Social.js",
+					"dev/Settings/OpenPGP.js",
 					"dev/Settings/ChangePassword.js",
 					"dev/Settings/Folders.js",
 					"dev/Settings/Themes.js",

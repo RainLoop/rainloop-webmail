@@ -12,7 +12,6 @@ LocalStorageDriver.supported = function ()
 	return !!window.localStorage;
 };
 
-
 /**
  * @param {string} sKey
  * @param {*} mData
@@ -21,14 +20,14 @@ LocalStorageDriver.supported = function ()
 LocalStorageDriver.prototype.set = function (sKey, mData)
 {
 	var
-		mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+		mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
 		bResult = false,
 		mResult = null
 	;
 
 	try
 	{
-		mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+		mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
 		if (!mResult)
 		{
 			mResult = {};

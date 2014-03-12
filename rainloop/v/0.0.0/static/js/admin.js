@@ -1020,12 +1020,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
+				
+				sKey = jqThis.data('i18n-title');
+				if (sKey)
+				{
+					jqThis.attr('title', Utils.i18n(sKey));
+				}
 			}
-//			sKey = jqThis.data('i18n-title');
-//			if (sKey)
-//			{
-//				jqThis.attr('title', Utils.i18n(sKey));
-//			}
 		});
 	});
 };
@@ -2385,6 +2386,26 @@ Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 	};
 };
 
+Utils.selectElement = function (element)
+{
+	/* jshint onevar: false */
+	if (window.getSelection)
+	{
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		var range = document.createRange();
+		range.selectNodeContents(element);
+		sel.addRange(range);
+	}
+	else if (document.selection)
+	{
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(element);
+		textRange.select();
+	}
+	/* jshint onevar: true */
+};
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -3671,7 +3692,6 @@ LocalStorageDriver.supported = function ()
 	return !!window.localStorage;
 };
 
-
 /**
  * @param {string} sKey
  * @param {*} mData
@@ -3680,14 +3700,14 @@ LocalStorageDriver.supported = function ()
 LocalStorageDriver.prototype.set = function (sKey, mData)
 {
 	var
-		mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+		mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
 		bResult = false,
 		mResult = null
 	;
 
 	try
 	{
-		mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+		mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
 		if (!mResult)
 		{
 			mResult = {};
@@ -3794,6 +3814,7 @@ KnoinAbstractBoot.prototype.bootstart = function ()
  */
 function KnoinAbstractViewModel(sPosition, sTemplate)
 {
+	this.bDisabeCloseOnEsc = false;
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
@@ -3845,6 +3866,20 @@ KnoinAbstractViewModel.prototype.viewModelPosition = function ()
 
 KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototype.closeCommand = function ()
 {
+};
+
+KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			Utils.delegateRun(self, 'cancelCommand');
+			return false;
+		}
+		
+		return true;
+	});
 };
 
 /**
@@ -4038,6 +4073,10 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
+			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			{
+				oViewModel.registerPopupEscapeKey();
+			}
 			
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
@@ -4872,20 +4911,6 @@ PopupsDomainViewModel.prototype.onFocus = function ()
 	}
 };
 
-PopupsDomainViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 PopupsDomainViewModel.prototype.clearForm = function ()
 {
 	this.edit(false);
@@ -4966,6 +4991,8 @@ function PopupsPluginViewModel()
 		RL.remote().pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, oList);
 		
 	}, this.hasConfiguration);
+
+	this.bDisabeCloseOnEsc = true;
 
 	Knoin.constructorEnd(this);
 }
@@ -5215,20 +5242,6 @@ PopupsLanguagesViewModel.prototype.onHide = function ()
 	this.exp(false);
 };
 
-PopupsLanguagesViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 {
 	RL.data().mainLanguage(sLang);
@@ -5252,6 +5265,8 @@ function PopupsAskViewModel()
 
 	this.fYesAction = null;
 	this.fNoAction = null;
+
+	this.bDisabeCloseOnEsc = true;
 
 	Knoin.constructorEnd(this);
 }

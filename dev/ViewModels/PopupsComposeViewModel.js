@@ -389,6 +389,8 @@ function PopupsComposeViewModel()
 
 //	this.driveCallback = _.bind(this.driveCallback, this);
 
+	this.bDisabeCloseOnEsc = true;
+
 	Knoin.constructorEnd(this);
 }
 

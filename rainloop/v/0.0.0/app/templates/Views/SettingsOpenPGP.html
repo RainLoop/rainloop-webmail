@@ -1,0 +1,73 @@
+<div class="b-settings-open-pgp g-ui-user-select-none">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_OPEN_PGP/LEGEND_OPEN_PGP"></span>
+		</div>
+	</div>
+	<a class="btn" data-bind="click: addOpenPgpKey">
+		<i class="icon-list-add"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></span>
+	</a>
+	&nbsp;&nbsp;
+	<a class="btn" data-bind="click: generateOpenPgpKey">
+		<i class="icon-key"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
+	</a>
+	<br />
+	<br />
+	<br />
+	<table class="table table-hover list-table" data-bind="i18nUpdate: openpgpkeys">
+		<colgroup>
+			<col />
+			<col style="width: 1%" />
+			<col style="width: 1%" />
+		</colgroup>
+		<tbody>
+			<!-- ko foreach: openpgpkeysPrivate -->
+			<tr class="open-pgp-key-item">
+				<td>
+					<i class="open-pgp-key-img icon-lock i18n" data-i18n-title="SETTINGS_OPEN_PGP/TITLE_PRIVATE"></i>
+					<span class="open-pgp-key-user" data-bind="text: user"></span>
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }">
+						<span class="i18n" data-i18n-text="SETTINGS_OPEN_PGP/DELETING_ASK"></span>
+					</a>
+				</td>
+				<td>
+					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (oOpenPGP) { $root.openPgpKeyForDeletion(oOpenPGP); }">
+						<i class="icon-trash"></i>
+					</span>
+				</td>
+				<td>
+					<span class="view-open-pgp-key" data-bind="click: function (oOpenPgpKey) { $root.viewOpenPgpKey(oOpenPgpKey); }">
+						<i class="icon-eye"></i>
+					</span>
+				</td>
+			</tr>
+			<!-- /ko -->
+			<!-- ko foreach: openpgpkeysPublic -->
+			<tr class="open-pgp-key-item">
+				<td>
+					<span class="open-pgp-key-img icon-key i18n" data-i18n-title="SETTINGS_OPEN_PGP/TITLE_PUBLIC"></span>
+					<span class="open-pgp-key-user" data-bind="text: user"></span>
+					(<span class="open-pgp-key-id" data-bind="text: id"></span>)
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }">
+						<span class="i18n" data-i18n-text="SETTINGS_OPEN_PGP/DELETING_ASK"></span>
+					</a>
+				</td>
+				<td>
+					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (oOpenPgpKey) { $root.openPgpKeyForDeletion(oOpenPgpKey); }">
+						<i class="icon-trash"></i>
+					</span>
+				</td>
+				<td>
+					<span class="view-open-pgp-key" data-bind="click: function (oOpenPgpKey) { $root.viewOpenPgpKey(oOpenPgpKey); }">
+						<i class="icon-eye"></i>
+					</span>
+				</td>
+			</tr>
+			<!-- /ko -->
+		</tbody>
+	</table>
+</div>

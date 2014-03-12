@@ -331,12 +331,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
+				
+				sKey = jqThis.data('i18n-title');
+				if (sKey)
+				{
+					jqThis.attr('title', Utils.i18n(sKey));
+				}
 			}
-//			sKey = jqThis.data('i18n-title');
-//			if (sKey)
-//			{
-//				jqThis.attr('title', Utils.i18n(sKey));
-//			}
 		});
 	});
 };
@@ -1694,4 +1695,24 @@ Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 
 		return aResult;
 	};
+};
+
+Utils.selectElement = function (element)
+{
+	/* jshint onevar: false */
+	if (window.getSelection)
+	{
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		var range = document.createRange();
+		range.selectNodeContents(element);
+		sel.addRange(range);
+	}
+	else if (document.selection)
+	{
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(element);
+		textRange.select();
+	}
+	/* jshint onevar: true */
 };

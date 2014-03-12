@@ -1020,12 +1020,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
+				
+				sKey = jqThis.data('i18n-title');
+				if (sKey)
+				{
+					jqThis.attr('title', Utils.i18n(sKey));
+				}
 			}
-//			sKey = jqThis.data('i18n-title');
-//			if (sKey)
-//			{
-//				jqThis.attr('title', Utils.i18n(sKey));
-//			}
 		});
 	});
 };
@@ -2383,6 +2384,26 @@ Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 
 		return aResult;
 	};
+};
+
+Utils.selectElement = function (element)
+{
+	/* jshint onevar: false */
+	if (window.getSelection)
+	{
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		var range = document.createRange();
+		range.selectNodeContents(element);
+		sel.addRange(range);
+	}
+	else if (document.selection)
+	{
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(element);
+		textRange.select();
+	}
+	/* jshint onevar: true */
 };
 
 // Base64 encode / decode
@@ -4418,7 +4439,6 @@ LocalStorageDriver.supported = function ()
 	return !!window.localStorage;
 };
 
-
 /**
  * @param {string} sKey
  * @param {*} mData
@@ -4427,14 +4447,14 @@ LocalStorageDriver.supported = function ()
 LocalStorageDriver.prototype.set = function (sKey, mData)
 {
 	var
-		mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+		mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
 		bResult = false,
 		mResult = null
 	;
 
 	try
 	{
-		mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+		mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
 		if (!mResult)
 		{
 			mResult = {};
@@ -4476,6 +4496,65 @@ LocalStorageDriver.prototype.get = function (sKey)
 	catch (oException) {}
 
 	return mResult;
+};
+
+/**
+ * @constructor
+ */
+function OpenPgpLocalStorageDriver()
+{
+}
+
+/*
+ * Declare the localstore itemname
+ */
+OpenPgpLocalStorageDriver.prototype.item = 'armoredRainLoopKeys';
+
+/**
+ * Load the keyring from HTML5 local storage and initializes this instance.
+ * @return {Array<module:key~Key>} array of keys retrieved from localstore
+ */
+OpenPgpLocalStorageDriver.prototype.load = function ()
+{
+	var
+		iIndex = 0,
+		iLen = 0,
+		aKeys = [],
+		aArmoredKeys = JSON.parse(window.localStorage.getItem(this.item))
+	;
+
+	if (aArmoredKeys && 0 < aArmoredKeys.length)
+	{
+		for (iLen = aArmoredKeys.length; iIndex < iLen; iIndex++)
+		{
+			aKeys.push(
+				window.openpgp.key.readArmored(aArmoredKeys[iIndex]).keys[0]
+			);
+		}
+	}
+	
+	return aKeys;
+};
+
+/**
+ * Saves the current state of the keyring to HTML5 local storage.
+ * The privateKeys array and publicKeys array gets Stringified using JSON
+ * @param {Array<module:key~Key>} aKeys array of keys to save in localstore
+ */
+OpenPgpLocalStorageDriver.prototype.store = function (aKeys)
+{
+	var
+		iIndex = 0,
+		iLen = aKeys.length,
+		aArmoredKeys = []
+	;
+	
+	for (; iIndex < iLen; iIndex++)
+	{
+		aArmoredKeys.push(aKeys[iIndex].armor());
+	}
+	
+	window.localStorage.setItem(this.item, JSON.stringify(aArmoredKeys));
 };
 
 /**
@@ -4541,6 +4620,7 @@ KnoinAbstractBoot.prototype.bootstart = function ()
  */
 function KnoinAbstractViewModel(sPosition, sTemplate)
 {
+	this.bDisabeCloseOnEsc = false;
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
@@ -4592,6 +4672,20 @@ KnoinAbstractViewModel.prototype.viewModelPosition = function ()
 
 KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototype.closeCommand = function ()
 {
+};
+
+KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+{
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+		{
+			Utils.delegateRun(self, 'cancelCommand');
+			return false;
+		}
+		
+		return true;
+	});
 };
 
 /**
@@ -4785,6 +4879,10 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
+			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			{
+				oViewModel.registerPopupEscapeKey();
+			}
 			
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
@@ -7238,6 +7336,31 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 };
 
 /**
+ * @param {string} iIndex
+ * @param {string} sID
+ * @param {string} sUserID
+ * @param {boolean} bIsPrivate
+ * @param {string} sArmor
+ * @constructor
+ */
+function OpenPgpKeyModel(iIndex, sID, sUserID, bIsPrivate, sArmor)
+{
+	this.index = iIndex;
+	this.id = sID;
+	this.user = sUserID;
+	this.armor = sArmor;
+	this.isPrivate = !!bIsPrivate;
+	
+	this.deleteAccess = ko.observable(false);
+}
+
+OpenPgpKeyModel.prototype.index = 0;
+OpenPgpKeyModel.prototype.id = '';
+OpenPgpKeyModel.prototype.user = '';
+OpenPgpKeyModel.prototype.armor = '';
+OpenPgpKeyModel.prototype.isPrivate = false;
+
+/**
  * @constructor
  * @extends KnoinAbstractViewModel
  */
@@ -7331,20 +7454,6 @@ PopupsFolderClearViewModel.prototype.onShow = function (oFolder)
 	{
 		this.selectedFolder(oFolder);
 	}
-};
-
-PopupsFolderClearViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
 };
 
 /**
@@ -7457,20 +7566,6 @@ PopupsFolderCreateViewModel.prototype.onFocus = function ()
 	this.folderName.focused(true);
 };
 
-PopupsFolderCreateViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -7573,20 +7668,6 @@ PopupsFolderSystemViewModel.prototype.onShow = function (iNotificationType)
 	}
 
 	this.notification(sNotification);
-};
-
-PopupsFolderSystemViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
 };
 
 
@@ -7978,6 +8059,8 @@ function PopupsComposeViewModel()
 	});
 
 //	this.driveCallback = _.bind(this.driveCallback, this);
+
+	this.bDisabeCloseOnEsc = true;
 
 	Knoin.constructorEnd(this);
 }
@@ -9672,25 +9755,6 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && self.modalVisibility())
-		{
-			if (Enums.EventKeyCode.Esc === oEvent.keyCode)
-			{
-				Utils.delegateRun(self, 'closeCommand');
-				bResult = false;
-			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
-			{
-				self.saveCommand();
-				bResult = false;
-			}
-		}
-		
-		return bResult;
-	});
-
 	this.initUploader();
 };
 
@@ -9842,20 +9906,6 @@ PopupsAdvancedSearchViewModel.prototype.onFocus = function ()
 	this.fromFocus(true);
 };
 
-PopupsAdvancedSearchViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -9971,17 +10021,195 @@ PopupsAddAccountViewModel.prototype.onFocus = function ()
 PopupsAddAccountViewModel.prototype.onBuild = function ()
 {
 	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
+};
 
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsAddOpenPgpKeyViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddOpenPgpKey');
+
+	this.key = ko.observable('');
+	this.key.error = ko.observable(false);
+	this.key.focus = ko.observable(false);
+
+	this.key.subscribe(function () {
+		this.key.error(false);
+	}, this);
+
+	this.addOpenPgpKeyCommand = Utils.createCommand(this, function () {
+
+		var
+			sKey = Utils.trim(this.key()),
+			oOpenpgpKeyring = RL.data().openpgpKeyring
+		;
+
+		this.key.error('' === sKey);
+		
+		if (!oOpenpgpKeyring || this.key.error())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
+			return false;
 		}
-		return bResult;
+
+		oOpenpgpKeyring.importKey(sKey);
+		oOpenpgpKeyring.store();
+
+		RL.reloadOpenPgpKeys();
+		Utils.delegateRun(this, 'cancelCommand');
+		
+		return true;
 	});
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsAddOpenPgpKeyViewModel', PopupsAddOpenPgpKeyViewModel);
+
+PopupsAddOpenPgpKeyViewModel.prototype.clearPopup = function ()
+{
+	this.key('');
+	this.key.error(false);
+};
+
+PopupsAddOpenPgpKeyViewModel.prototype.onShow = function ()
+{
+	this.clearPopup();
+};
+
+PopupsAddOpenPgpKeyViewModel.prototype.onFocus = function ()
+{
+	this.key.focus(true);
+};
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsViewOpenPgpKeyViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsViewOpenPgpKey');
+
+	this.key = ko.observable('');
+	this.keyDom = ko.observable(null);
+	
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsViewOpenPgpKeyViewModel', PopupsViewOpenPgpKeyViewModel);
+
+PopupsViewOpenPgpKeyViewModel.prototype.clearPopup = function ()
+{
+	this.key('');
+};
+
+PopupsViewOpenPgpKeyViewModel.prototype.selectKey = function ()
+{
+	var oEl = this.keyDom();
+	if (oEl)
+	{
+		Utils.selectElement(oEl);
+	}
+};
+
+PopupsViewOpenPgpKeyViewModel.prototype.onShow = function (oOpenPgpKey)
+{
+	this.clearPopup();
+
+	if (oOpenPgpKey)
+	{
+		this.key(oOpenPgpKey.armor);
+	}
+};
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsGenerateNewOpenPgpKeyViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsGenerateNewOpenPgpKey');
+
+	this.email = ko.observable('');
+	this.email.focus = ko.observable('');
+	this.email.error = ko.observable(false);
+	
+	this.name = ko.observable('');
+	this.password = ko.observable('');
+	this.keyBitLength = ko.observable(2048);
+
+	this.submitRequest = ko.observable(false);
+
+	this.email.subscribe(function () {
+		this.email.error(false);
+	}, this);
+
+	this.generateOpenPgpKeyCommand = Utils.createCommand(this, function () {
+
+		var
+			self = this,
+			sUserID = '',
+			mKeyPair = null,
+			oOpenpgpKeyring = RL.data().openpgpKeyring
+		;
+
+		this.email.error('' === Utils.trim(this.email()));
+		if (!oOpenpgpKeyring || this.email.error())
+		{
+			return false;
+		}
+
+		sUserID = this.email();
+		if ('' !== this.name())
+		{
+			sUserID = this.name() + ' <' + sUserID + '>';
+		}
+
+		this.submitRequest(true);
+
+		_.delay(function () {
+			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
+			if (mKeyPair && mKeyPair.privateKeyArmored)
+			{
+				oOpenpgpKeyring.importKey(mKeyPair.privateKeyArmored);
+				oOpenpgpKeyring.importKey(mKeyPair.publicKeyArmored);
+
+				oOpenpgpKeyring.store();
+
+				RL.reloadOpenPgpKeys();
+				Utils.delegateRun(self, 'cancelCommand');
+			}
+
+			self.submitRequest(false);
+		}, 100);
+
+		return true;
+	});
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsGenerateNewOpenPgpKeyViewModel', PopupsGenerateNewOpenPgpKeyViewModel);
+
+PopupsGenerateNewOpenPgpKeyViewModel.prototype.clearPopup = function ()
+{
+	this.name('');
+	this.password('');
+	
+	this.email('');
+	this.email.error(false);
+	this.keyBitLength(2048);
+};
+
+PopupsGenerateNewOpenPgpKeyViewModel.prototype.onShow = function ()
+{
+	this.clearPopup();
+};
+
+PopupsGenerateNewOpenPgpKeyViewModel.prototype.onFocus = function ()
+{
+	this.email.focus(true);
 };
 
 /**
@@ -10132,20 +10360,6 @@ PopupsIdentityViewModel.prototype.onFocus = function ()
 	}
 };
 
-PopupsIdentityViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -10200,20 +10414,6 @@ PopupsLanguagesViewModel.prototype.onHide = function ()
 	this.exp(false);
 };
 
-PopupsLanguagesViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-			bResult = false;
-		}
-		return bResult;
-	});
-};
-
 PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 {
 	RL.data().mainLanguage(sLang);
@@ -10237,6 +10437,8 @@ function PopupsAskViewModel()
 
 	this.fYesAction = null;
 	this.fNoAction = null;
+
+	this.bDisabeCloseOnEsc = true;
 
 	Knoin.constructorEnd(this);
 }
@@ -10337,69 +10539,6 @@ PopupsAskViewModel.prototype.onBuild = function ()
 	});
 };
 
-
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function PopupsPgpKey()
-{
-	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsPgpKey');
-
-	this.key = ko.observable('');
-	this.passphrase = ko.observable('');
-
-	this.bPrivate = null;
-	this.fCallback = null;
-
-	// commands
-	this.sendPgp = Utils.createCommand(this, function () {
-
-		var sKey = Utils.trim(this.key());
-		if (this.fCallback && sKey)
-		{
-			this.fCallback(this.passphrase(), sKey);
-		}
-
-		this.cancelCommand();
-	});
-
-	Knoin.constructorEnd(this);
-}
-
-Utils.extendAsViewModel('PopupsPgpKey', PopupsPgpKey);
-
-PopupsPgpKey.prototype.clearPopup = function ()
-{
-//	this.key('');
-//	this.passphrase('');
-
-	this.bPrivate = null;
-	this.fCallback = null;
-};
-
-PopupsPgpKey.prototype.onBuild = function ()
-{
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && self.modalVisibility() && Enums.EventKeyCode.Esc === oEvent.keyCode)
-		{
-			Utils.delegateRun(self, 'closeCommand');
-			bResult = false;
-		}
-
-		return bResult;
-	});
-};
-
-PopupsPgpKey.prototype.onShow = function (bPrivate, fCallback)
-{
-	this.clearPopup();
-
-	this.bPrivate = bPrivate;
-	this.fCallback = fCallback;
-};
 
 /**
  * @constructor
@@ -12024,38 +12163,6 @@ MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 	kn.showScreenPopup(PopupsComposeViewModel, [sType, RL.data().message()]);
 };
 
-MailBoxMessageViewViewModel.prototype.receivePrivateKey = function ()
-{
-	var self = this;
-	kn.showScreenPopup(PopupsPgpKey, [true, function (sPrivatePassphrase, sPrivateKey) {
-		var oMessage = self.message(), mPgpMessage, mPgpKey, mDecPgpKey;
-		if (oMessage)
-		{
-			try
-			{
-				mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
-				mPgpKey = window.openpgp.key.readArmored(sPrivateKey);
-
-				if (mPgpMessage && mPgpKey && mPgpKey.keys && mPgpKey.keys[0])
-				{
-					mDecPgpKey = mPgpKey.keys[0];
-					if ('' !== sPrivatePassphrase)
-					{
-						mDecPgpKey.decrypt(sPrivatePassphrase);
-					}
-
-					oMessage.body.html(
-						'<pre class="b-plain-openpgp encrypted">' +
-						window.openpgp.decryptMessage(mDecPgpKey, mPgpMessage) +
-						'</pre>'
-					);
-				}
-			}
-			catch (oExt) {}
-		}
-	}]);
-};
-
 MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 {
 	var 
@@ -12850,6 +12957,87 @@ function SettingsSocialScreen()
 
 Utils.addSettingsViewModel(SettingsSocialScreen, 'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
 
+/**
+ * @constructor
+ */
+function SettingsOpenPGP()
+{
+	this.openpgpkeys = RL.data().openpgpkeys;
+
+	this.openpgpkeysPublic = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && !oItem.isPrivate);
+		});
+	}, this);
+
+	this.openpgpkeysPrivate = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && oItem.isPrivate);
+		});
+	}, this);
+
+	this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
+		function (oPrev) {
+			if (oPrev)
+			{
+				oPrev.deleteAccess(false);
+			}
+		}, function (oNext) {
+			if (oNext)
+			{
+				oNext.deleteAccess(true);
+			}
+		}
+	]});
+}
+
+Utils.addSettingsViewModel(SettingsOpenPGP, 'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
+
+SettingsOpenPGP.prototype.addOpenPgpKey = function ()
+{
+	kn.showScreenPopup(PopupsAddOpenPgpKeyViewModel);
+};
+
+SettingsOpenPGP.prototype.generateOpenPgpKey = function ()
+{
+	kn.showScreenPopup(PopupsGenerateNewOpenPgpKeyViewModel);
+};
+
+SettingsOpenPGP.prototype.viewOpenPgpKey = function (oOpenPgpKey)
+{
+	if (oOpenPgpKey)
+	{
+		kn.showScreenPopup(PopupsViewOpenPgpKeyViewModel, [oOpenPgpKey]);
+	}
+};
+
+/**
+ * @param {OpenPgpKeyModel} oOpenPgpKeyToRemove
+ */
+SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
+{
+	if (oOpenPgpKeyToRemove && oOpenPgpKeyToRemove.deleteAccess())
+	{
+		this.openPgpKeyForDeletion(null);
+
+		var
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			fRemoveAccount = function (oOpenPgpKey) {
+				return oOpenPgpKeyToRemove === oOpenPgpKey;
+			}
+		;
+
+		if (oOpenPgpKeyToRemove && oOpenpgpKeyring)
+		{
+			this.openpgpkeys.remove(fRemoveAccount);
+
+			oOpenpgpKeyring.removeKey(oOpenPgpKeyToRemove.index);
+			oOpenpgpKeyring.store();
+
+			RL.reloadOpenPgpKeys();
+		}
+	}
+};
 /**
  * @constructor
  */
@@ -13752,6 +13940,9 @@ function WebMailDataStorage()
 
 	// other
 	this.useKeyboardShortcuts = ko.observable(true);
+	
+	this.openpgpkeys = ko.observableArray([]);
+	this.openpgpKeyring = null;
 
 	// google
 	this.googleActions = ko.observable(false);
@@ -16708,6 +16899,36 @@ RainLoopApp.prototype.folders = function (fCallback)
 	}, this));
 };
 
+RainLoopApp.prototype.reloadOpenPgpKeys = function ()
+{
+	if (Globals.bAllowOpenPGP)
+	{
+		var
+			aKeys = [],
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
+		;
+
+		_.each(oOpenpgpKeys, function (oItem, iIndex) {
+			if (oItem)
+			{
+				var
+					aIDs = _.map(oItem.getKeyIds(), function (oID) {
+						return oID ? oID.toHex() : '';
+					})
+				;
+
+				aKeys.push(
+					new OpenPgpKeyModel(iIndex, aIDs.join(', '), oItem.getUserIds().join(', '),
+						oItem.isPrivate(), oItem.armor())
+				);
+			}
+		});
+
+		RL.data().openpgpkeys(aKeys);
+	}
+};
+
 RainLoopApp.prototype.accountsAndIdentities = function ()
 {
 	var oRainLoopData = RL.data();
@@ -17257,6 +17478,11 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsIdentities);
 	}
+	
+	if (!RL.settingsGet('OpenPGP'))
+	{
+		Utils.removeSettingsViewModel(SettingsOpenPGP);
+	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
@@ -17313,9 +17539,12 @@ RainLoopApp.prototype.bootstart = function ()
 						'success': function () {
 							if (window.openpgp)
 							{
-//								window.console.log(window.openpgp);
+								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
+
 								Globals.bAllowOpenPGP = true;
 								RL.pub('openpgp.init');
+								
+								RL.reloadOpenPgpKeys();
 							}
 						}
 					});
