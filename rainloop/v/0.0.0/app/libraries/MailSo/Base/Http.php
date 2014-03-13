@@ -599,8 +599,6 @@ class Http
 	 */
 	public function GetPath()
 	{
-//		phpinfo();
-//		exit();
 		$sUrl = \trim(\substr($this->GetServer('REQUEST_URI', ''), 0, 
 			\strrpos($this->GetServer('REQUEST_URI', ''), \basename($this->GetServer('SCRIPT_NAME', '')))), '/');
 
