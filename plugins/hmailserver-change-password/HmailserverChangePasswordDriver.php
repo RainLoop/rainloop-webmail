@@ -98,7 +98,7 @@ class HmailserverChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 			$oHmailApp = new COM("hMailServer.Application");
 			$oHmailApp->Connect();
 
-			if ($this->oBaseApp->Authenticate($this->sLogin, $this->sPassword))
+			if ($oHmailApp->Authenticate($this->sLogin, $this->sPassword))
 			{
 				$sEmail = $oHmailAccount->Email();
 				$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
