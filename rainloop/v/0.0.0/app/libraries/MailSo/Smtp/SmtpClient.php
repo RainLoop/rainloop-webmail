@@ -183,20 +183,20 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 				$this->writeLogException(
 					new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-						$oException->GetResponses(), '', 0, $oException),
+						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 
 			try
 			{
-				$this->sendRequestWithCheck(base64_encode($sLogin), 334, '');
-				$this->sendRequestWithCheck(base64_encode($sPassword), 235, '', true);
+				$this->sendRequestWithCheck(\base64_encode($sLogin), 334, '');
+				$this->sendRequestWithCheck(\base64_encode($sPassword), 235, '', true);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
 				$this->writeLogException(
 					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), '', 0, $oException),
+						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 		}
@@ -212,7 +212,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				{
 					$this->writeLogException(
 						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-							$oException->GetResponses(), '', 0, $oException),
+							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 			}
@@ -226,7 +226,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				{
 					$this->writeLogException(
 						new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-							$oException->GetResponses(), '', 0, $oException),
+							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 
@@ -238,7 +238,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				{
 					$this->writeLogException(
 						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-							$oException->GetResponses(), '', 0, $oException),
+							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 			}
@@ -274,7 +274,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 				$this->writeLogException(
 					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), '', 0, $oException),
+						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 		}
@@ -300,7 +300,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	public function MailFrom($sFrom, $sSizeIfSupported = '')
 	{
 		$sCmd = 'FROM:<'.$sFrom.'>';
-		if (0 < strlen($sSizeIfSupported) && $this->IsSupported('SIZE'))
+		
+		$sSizeIfSupported = (string) $sSizeIfSupported;
+		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
 			$sCmd .= ' SIZE='.$sSizeIfSupported;
 		}
@@ -385,7 +387,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function DataWithStream($rDataStream)
 	{
-		if (!is_resource($rDataStream))
+		if (!\is_resource($rDataStream))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -402,22 +404,22 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->writeLog('Message data.', \MailSo\Log\Enumerations\Type::NOTE);
 
 		$iTimer = 0;
-		while (!feof($rDataStream))
+		while (!\feof($rDataStream))
 		{
-			$sBuffer = fgets($rDataStream);
+			$sBuffer = \fgets($rDataStream);
 			if (false !== $sBuffer)
 			{
-				if (0 === strpos($sBuffer, '.'))
+				if (0 === \strpos($sBuffer, '.'))
 				{
 					$sBuffer = '.'.$sBuffer;
 				}
 
-				$this->sendRaw(rtrim($sBuffer, "\r\n"), false);
+				$this->sendRaw(\rtrim($sBuffer, "\r\n"), false);
 
 				\MailSo\Base\Utils::ResetTimeLimit($iTimer);
 				continue;
 			}
-			else if (!feof($rDataStream))
+			else if (!\feof($rDataStream))
 			{
 				$this->writeLogException(
 					new Exceptions\RuntimeException('Cannot read input resource'),
@@ -558,12 +560,12 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->IsConnected(true);
 
-		$sCommand = trim($sCommand);
-		$sRealCommand = $sCommand.(0 === strlen($sAddToCommand) ? '' : ' '.$sAddToCommand);
+		$sCommand = \trim($sCommand);
+		$sRealCommand = $sCommand.(0 === \strlen($sAddToCommand) ? '' : ' '.$sAddToCommand);
 
 		$sFakeCommand = ($bSecureLog) ? '**********' : '';
 
-		$this->iRequestTime = microtime(true);
+		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
 
 		return $this;
@@ -682,13 +684,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private function validateResponse($mExpectCode)
 	{
-		if (!is_array($mExpectCode))
+		if (!\is_array($mExpectCode))
 		{
 			$mExpectCode = array((int) $mExpectCode);
 		}
 		else
 		{
-			$mExpectCode = array_map('intval', $mExpectCode);
+			$mExpectCode = \array_map('intval', $mExpectCode);
 		}
 
 		$aParts = array('', '', '');
@@ -696,23 +698,23 @@ class SmtpClient extends \MailSo\Net\NetClient
 		do
 		{
 			$this->getNextBuffer();
-			$aParts = preg_split('/([\s-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$aParts = \preg_split('/([\s-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
 
-			if (is_array($aParts) && 3 === count($aParts) && is_numeric($aParts[0]))
+			if (\is_array($aParts) && 3 === \count($aParts) && \is_numeric($aParts[0]))
 			{
-				if ('-' !== trim($aParts[1]) && !in_array((int) $aParts[0], $mExpectCode))
+				if ('-' !== trim($aParts[1]) && !\in_array((int) $aParts[0], $mExpectCode))
 				{
 					$this->writeLogException(
-						new Exceptions\NegativeResponseException($this->aResults, trim(
-							(0 < count($this->aResults) ? implode("\r\n", $this->aResults)."\r\n" : '').
+						new Exceptions\NegativeResponseException($this->aResults, \trim(
+							(0 < \count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
 							$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 				}
 			}
 			else
 			{
 				$this->writeLogException(
-					new Exceptions\ResponseException($this->aResults, trim(
-						(0 < count($this->aResults) ? implode("\r\n", $this->aResults)."\r\n" : '').
+					new Exceptions\ResponseException($this->aResults, \trim(
+						(0 < \count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
 						$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 			}
 

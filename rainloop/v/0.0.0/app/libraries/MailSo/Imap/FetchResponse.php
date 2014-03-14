@@ -142,7 +142,7 @@ class FetchResponse
 		{
 			$mReturn = $this->oImapResponse->ResponseList[1];
 		}
-		else
+		else if (isset($this->oImapResponse->ResponseList[3]) && \is_array($this->oImapResponse->ResponseList[3]))
 		{
 			foreach ($this->oImapResponse->ResponseList[3] as $mItem)
 			{

@@ -589,7 +589,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					'STATUS' === $oImapResponse->StatusOrIndex && 
 					isset($oImapResponse->ResponseList[2]) &&
 					isset($oImapResponse->ResponseList[3]) &&
-					is_array($oImapResponse->ResponseList[3]))
+					\is_array($oImapResponse->ResponseList[3]))
 				{
 					$sFolderNameRaw = $oImapResponse->ResponseList[2];
 					

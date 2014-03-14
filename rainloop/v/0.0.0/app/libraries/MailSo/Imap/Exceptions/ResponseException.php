@@ -39,7 +39,7 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 	}
 
 	/**
-	 * @return \MailSo\Imap\Response | null
+	 * @return \MailSo\Imap\Response|null
 	 */
 	public function GetLastResponse()
 	{
