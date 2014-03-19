@@ -131,15 +131,21 @@ function MailBoxMessageListViewModel()
 	}, this.canBeMoved);
 	
 	this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
-		this.deleteSelectedMessageFromCurrentFolder(Enums.FolderType.Trash, false);
+		RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), false);
 	}, this.canBeMoved);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-		this.deleteSelectedMessageFromCurrentFolder(Enums.FolderType.Trash, true);
+		RL.deleteMessagesFromFolder(Enums.FolderType.Trash, 
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
 	
 	this.spamCommand = Utils.createCommand(this, function () {
-		this.deleteSelectedMessageFromCurrentFolder(Enums.FolderType.Spam, true);
+		RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
 
 	this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
@@ -197,8 +203,6 @@ function MailBoxMessageListViewModel()
 		}, this)
 	;
 
-	this.moveOrDeleteResponse = _.bind(this.moveOrDeleteResponse, this);
-
 	Knoin.constructorEnd(this);
 }
 
@@ -222,165 +226,6 @@ MailBoxMessageListViewModel.prototype.cancelSearch = function ()
 };
 
 /**
- * @param {string} sFromFolderFullNameRaw
- * @param {Array} aUidForRemove
- * @param {string=} sToFolderFullNameRaw
- * @param {boolean=} bCopy = false
- */
-MailBoxMessageListViewModel.prototype.removeMessagesFromList = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
-{
-	sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
-	bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-
-	var
-		iUnseenCount = 0 ,
-		oData = RL.data(),
-		oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
-		oToFolder = '' === sToFolderFullNameRaw ? null : RL.cache().getFolderFromCacheList(sToFolderFullNameRaw || ''),
-		sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
-		oCurrentMessage = oData.message(),
-		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(oData.messageList(), function (oMessage) {
-			return oMessage && -1 < Utils.inArray(oMessage.uid, aUidForRemove);
-		}) : []
-	;
-
-	_.each(aMessages, function (oMessage) {
-		if (oMessage && oMessage.unseen())
-		{
-			iUnseenCount++;
-		}
-	});
-
-	if (oFromFolder && !bCopy)
-	{
-		oFromFolder.messageCountAll(0 <= oFromFolder.messageCountAll() - aUidForRemove.length ?
-			oFromFolder.messageCountAll() - aUidForRemove.length : 0);
-
-		if (0 < iUnseenCount)
-		{
-			oFromFolder.messageCountUnread(0 <= oFromFolder.messageCountUnread() - iUnseenCount ?
-				oFromFolder.messageCountUnread() - iUnseenCount : 0);
-		}
-	}
-
-	if (oToFolder)
-	{
-		oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
-		if (0 < iUnseenCount)
-		{
-			oToFolder.messageCountUnread(oToFolder.messageCountUnread() + iUnseenCount);
-		}
-	}
-
-	if (0 < aMessages.length)
-	{
-		if (bCopy)
-		{
-			_.each(aMessages, function (oMessage) {
-				oMessage.checked(false);
-			});
-		}
-		else
-		{
-			_.each(aMessages, function (oMessage) {
-				if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
-				{
-					oCurrentMessage = null;
-					oData.message(null);
-				}
-
-				oMessage.deleted(true);
-			});
-
-			_.delay(function () {
-				_.each(aMessages, function (oMessage) {
-					oData.messageList.remove(oMessage);
-				});
-			}, 400);
-
-			RL.data().messageListIsNotCompleted(true);
-			RL.cache().setFolderHash(sFromFolderFullNameRaw, '');
-		}
-
-		if (Utils.isNormal(sToFolderFullNameRaw))
-		{
-			RL.cache().setFolderHash(sToFolderFullNameRaw || '', '');
-		}
-	}
-};
-
-/**
- * @param {string=} sToFolderFullNameRaw
- */
-MailBoxMessageListViewModel.prototype.removeCheckedOrSelectedMessagesFromList = function (sToFolderFullNameRaw)
-{
-	this.removeMessagesFromList(RL.data().currentFolderFullNameRaw(), _.map(RL.data().messageListCheckedOrSelected(), function (oMessage) {
-		return oMessage.uid;
-	}), sToFolderFullNameRaw);
-};
-
-MailBoxMessageListViewModel.prototype.moveOrDeleteResponse = function (sResult, oData)
-{
-	if (Enums.StorageResultType.Success === sResult && RL.data().currentFolder())
-	{
-		if (oData && Utils.isArray(oData.Result) && 2 === oData.Result.length)
-		{
-			RL.cache().setFolderHash(oData.Result[0], oData.Result[1]);
-		}
-		else
-		{
-			if (oData && -1 < Utils.inArray(oData.ErrorCode,
-				[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
-			{
-				window.alert(Utils.getNotification(oData.ErrorCode));
-			}
-
-			RL.cache().setFolderHash(RL.data().currentFolderFullNameRaw(), '');
-		}
-
-		RL.reloadMessageList();
-		
-		RL.quotaDebounce();
-	}
-};
-
-/**
- * @param {string} sFromFolderFullNameRaw
- * @param {Array} aUidForRemove
- * @param {string} sToFolderFullNameRaw
- * @param {boolean=} bCopy = false
- */
-MailBoxMessageListViewModel.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
-{
-	if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Utils.isArray(aUidForRemove) && 0 < aUidForRemove.length)
-	{
-		var 
-			oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
-			oToFolder = RL.cache().getFolderFromCacheList(sToFolderFullNameRaw)
-		;
-		
-		if (oFromFolder && oToFolder)
-		{
-			bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-
-			RL.remote()[bCopy ? 'messagesCopy' : 'messagesMove'](
-				this.moveOrDeleteResponse,
-				oFromFolder.fullNameRaw,
-				oToFolder.fullNameRaw,
-				aUidForRemove
-			);
-
-			oToFolder.actionBlink(true);
-
-			this.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy);
-			return true;
-		}
-	}
-
-	return false;
-};
-
-/**
  * @param {string} sToFolderFullNameRaw
  * @return {boolean}
  */
@@ -388,72 +233,12 @@ MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (s
 {
 	if (this.canBeMoved())
 	{
-		return this.moveMessagesToFolder(RL.data().currentFolderFullNameRaw(), 
+		RL.moveMessagesToFolder(
+			RL.data().currentFolderFullNameRaw(),
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw);
 	}
 
 	return false;
-};
-
-/**
- * @param {number} iType
- * @param {boolean=} bUseFolder = true
- */
-MailBoxMessageListViewModel.prototype.deleteSelectedMessageFromCurrentFolder = function (iType, bUseFolder)
-{
-	if (this.canBeMoved())
-	{
-		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
-		if (bUseFolder)
-		{
-			if ((Enums.FolderType.Spam === iType && Consts.Values.UnuseOptionValue === RL.data().spamFolder()) ||
-				(Enums.FolderType.Trash === iType && Consts.Values.UnuseOptionValue === RL.data().trashFolder()))
-			{
-				bUseFolder = false;
-			}
-		}
-
-		var 
-			self = this,
-			aUIds = null,
-			sCurrentFolderFullNameRaw = RL.data().currentFolderFullNameRaw(),
-			oTrashOrSpamFolder = RL.cache().getFolderFromCacheList(
-				Enums.FolderType.Spam === iType ? RL.data().spamFolder() : RL.data().trashFolder())
-		;
-
-		if (!oTrashOrSpamFolder && bUseFolder)
-		{
-			kn.showScreenPopup(PopupsFolderSystemViewModel, [
-				Enums.FolderType.Spam === iType ? Enums.SetSystemFoldersNotification.Spam : Enums.SetSystemFoldersNotification.Trash]);
-		}
-		else if (!bUseFolder || (oTrashOrSpamFolder && RL.data().currentFolderFullNameRaw() === oTrashOrSpamFolder.fullNameRaw))
-		{
-			aUIds = RL.data().messageListCheckedOrSelectedUidsWithSubMails();
-			
-			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
-
-				RL.remote().messagesDelete(
-					self.moveOrDeleteResponse,
-					sCurrentFolderFullNameRaw,
-					aUIds
-				);
-		
-				self.removeCheckedOrSelectedMessagesFromList();
-			}]);
-		}
-		else if (oTrashOrSpamFolder)
-		{
-			RL.remote().messagesMove(
-				this.moveOrDeleteResponse,
-				sCurrentFolderFullNameRaw,
-				oTrashOrSpamFolder.fullNameRaw,
-				RL.data().messageListCheckedOrSelectedUidsWithSubMails()
-			);
-
-			oTrashOrSpamFolder.actionBlink(true);
-			this.removeCheckedOrSelectedMessagesFromList(oTrashOrSpamFolder.fullNameRaw);
-		}
-	}
 };
 
 MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem, bCopy)

@@ -99,10 +99,9 @@ MailBoxFolderListViewModel.prototype.messagesDrop = function (oToFolder, oUi)
 			aUids = oUi.helper.data('rl-uids')
 		;
 
-		if (MailBoxMessageListViewModel && MailBoxMessageListViewModel.__vm && Utils.isNormal(sFromFolderFullNameRaw) && Utils.isArray(aUids))
+		if (Utils.isNormal(sFromFolderFullNameRaw) && '' !== sFromFolderFullNameRaw && Utils.isArray(aUids))
 		{
-			MailBoxMessageListViewModel.__vm.moveMessagesToFolder(
-				sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
+			RL.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
 		}
 	}
 };

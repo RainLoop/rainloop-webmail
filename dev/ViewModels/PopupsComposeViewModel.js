@@ -14,7 +14,6 @@ function PopupsComposeViewModel()
 	this.bFromDraft = false;
 	this.sReferences = '';
 	
-	this.bReloadFolder = false;
 	this.bAllowIdentities = RL.settingsGet('AllowIdentities');
 	this.bAllowCtrlS = !!RL.settingsGet('AllowCtrlSOnCompose');
 
@@ -177,38 +176,7 @@ function PopupsComposeViewModel()
 
 	this.deleteCommand = Utils.createCommand(this, function () {
 		
-		var
-			oMessage = null,
-			sDraftFolder = this.draftFolder(),
-			sDraftUid = this.draftUid()
-		;
-		
-		if (this.bFromDraft)
-		{
-			oMessage = RL.data().message();
-			if (oMessage && sDraftFolder === oMessage.folderFullNameRaw && sDraftUid === oMessage.uid)
-			{
-				RL.data().message(null);
-			}
-		}
-		
-		if (RL.data().currentFolderFullNameRaw() === this.draftFolder())
-		{
-			_.each(RL.data().messageList(), function (oMessage) {
-				if (oMessage && sDraftFolder === oMessage.folderFullNameRaw && sDraftUid === oMessage.uid)
-				{
-					oMessage.deleted(true);
-				}
-			});
-		}
-		
-		RL.data().messageListIsNotCompleted(true);
-		RL.remote().messagesDelete(function () {
-			RL.cache().setFolderHash(sDraftFolder, '');
-			RL.reloadMessageList();
-		}, this.draftFolder(), [this.draftUid()]);
-
-		this.bReloadFolder = false;
+		RL.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 		kn.hideScreenPopup(PopupsComposeViewModel);
 		
 	}, function () {
@@ -247,7 +215,6 @@ function PopupsComposeViewModel()
 			{
 				this.sendError(false);
 				this.sending(true);
-				this.bReloadFolder = true;
 
 				if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
 				{
@@ -265,6 +232,7 @@ function PopupsComposeViewModel()
 
 						RL.cache().setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], aFlagsCache);
 						RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+						RL.cache().setFolderHash(this.aDraftInfo[2], '');
 					}
 				}
 
@@ -305,7 +273,6 @@ function PopupsComposeViewModel()
 		{
 			this.savedError(false);
 			this.saving(true);
-			this.bReloadFolder = true;
 
 			RL.cache().setFolderHash(RL.data().draftFolder(), '');
 
@@ -368,14 +335,6 @@ function PopupsComposeViewModel()
 		return this.dropboxEnabled();
 	});
 	
-	this.modalVisibility.subscribe(function (bValue) {
-		if (!bValue && this.bReloadFolder)
-		{
-			this.bReloadFolder = false;
-			RL.reloadMessageList();
-		}
-	}, this);
-
 	this.driveEnabled = ko.observable(false);
 
 	this.driveCommand = Utils.createCommand(this, function () {
@@ -395,6 +354,23 @@ function PopupsComposeViewModel()
 }
 
 Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
+
+PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
+{
+	var sDraftFolder = RL.data().draftFolder();
+	if ('' !== sDraftFolder)
+	{
+		RL.cache().setFolderHash(sDraftFolder, '');
+		if (RL.data().currentFolderFullNameRaw() === sDraftFolder)
+		{
+			RL.reloadMessageList(true);
+		}
+		else
+		{
+			RL.folderInformation(sDraftFolder);
+		}
+	}
+};
 
 PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeType, oMessage)
 {
@@ -508,6 +484,8 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 			window.alert(sMessage || Utils.getNotification(Enums.Notification.CantSendMessage));
 		}
 	}
+
+	this.reloadDraftFolder();
 };
 
 PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
@@ -560,6 +538,8 @@ PopupsComposeViewModel.prototype.saveMessageResponse = function (sResult, oData)
 		this.savedError(true);
 		this.savedOrSendingText(Utils.getNotification(Enums.Notification.CantSaveMessage));
 	}
+
+	this.reloadDraftFolder();
 };
 
 PopupsComposeViewModel.prototype.onHide = function ()
@@ -1439,7 +1419,6 @@ PopupsComposeViewModel.prototype.reset = function ()
 	this.sInReplyTo = '';
 	this.bFromDraft = false;
 	this.sReferences = '';
-	this.bReloadFolder = false;
 
 	this.sendError(false);
 	this.sendSuccessButSaveError(false);

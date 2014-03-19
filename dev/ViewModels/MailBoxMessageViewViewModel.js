@@ -68,13 +68,25 @@ function MailBoxMessageViewViewModel()
 	}, this.messageVisibility);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-		// TODO
-		window.console.log(arguments);
+
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+
 	}, this.messageVisibility);
 	
 	this.spamCommand = Utils.createCommand(this, function () {
-		// TODO
-		window.console.log(arguments);
+
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+		
 	}, this.messageVisibility);
 
 	// viewer

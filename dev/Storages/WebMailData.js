@@ -714,6 +714,107 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 	return _.uniq(aResult);
 };
 
+/**
+ * @param {Function} fCallback
+ * @param {string} sFromFolderFullNameRaw
+ * @param {Array} aUidForRemove
+ * @param {string=} sToFolderFullNameRaw = ''
+ * @param {bCopy=} bCopy = false
+ */
+WebMailDataStorage.prototype.removeMessagesFromList = function (
+	sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
+{
+	sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
+	bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
+	
+	aUidForRemove = _.map(aUidForRemove, function (mValue) {
+		return Utils.pInt(mValue);
+	});
+
+	var
+		iUnseenCount = 0,
+		oData = RL.data(),
+		oCache = RL.cache(),
+		oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
+		oToFolder = '' === sToFolderFullNameRaw ? null : oCache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
+		sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
+		oCurrentMessage = oData.message(),
+		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(oData.messageList(), function (oMessage) {
+			return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
+		}) : []
+	;
+
+	_.each(aMessages, function (oMessage) {
+		if (oMessage && oMessage.unseen())
+		{
+			iUnseenCount++;
+		}
+	});
+
+	if (oFromFolder && !bCopy)
+	{
+		oFromFolder.messageCountAll(0 <= oFromFolder.messageCountAll() - aUidForRemove.length ?
+			oFromFolder.messageCountAll() - aUidForRemove.length : 0);
+
+		if (0 < iUnseenCount)
+		{
+			oFromFolder.messageCountUnread(0 <= oFromFolder.messageCountUnread() - iUnseenCount ?
+				oFromFolder.messageCountUnread() - iUnseenCount : 0);
+		}
+	}
+
+	if (oToFolder)
+	{
+		oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
+		if (0 < iUnseenCount)
+		{
+			oToFolder.messageCountUnread(oToFolder.messageCountUnread() + iUnseenCount);
+		}
+
+		oToFolder.actionBlink(true);
+	}
+
+	if (0 < aMessages.length)
+	{
+		if (bCopy)
+		{
+			_.each(aMessages, function (oMessage) {
+				oMessage.checked(false);
+			});
+		}
+		else
+		{
+			oData.messageListIsNotCompleted(true);
+			
+			_.each(aMessages, function (oMessage) {
+				if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
+				{
+					oCurrentMessage = null;
+					oData.message(null);
+				}
+
+				oMessage.deleted(true);
+			});
+
+			_.delay(function () {
+				_.each(aMessages, function (oMessage) {
+					oData.messageList.remove(oMessage);
+				});
+			}, 400);
+		}
+	}
+
+	if ('' !== sFromFolderFullNameRaw)
+	{
+		oCache.setFolderHash(sFromFolderFullNameRaw, '');
+	}
+
+	if ('' !== sToFolderFullNameRaw)
+	{
+		oCache.setFolderHash(sToFolderFullNameRaw, '');
+	}
+};
+
 WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 {
 	var
