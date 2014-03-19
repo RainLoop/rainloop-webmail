@@ -344,6 +344,7 @@ function WebMailDataStorage()
 	// other
 	this.useKeyboardShortcuts = ko.observable(true);
 	
+	this.allowOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
@@ -868,7 +869,8 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					bIsHtml = false;
 					sPlain = oData.Result.Plain.toString();
 					
-					if (Globals.bAllowOpenPGP && (oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
+					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
+						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
 					{
 						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oData.Result.PlainRaw);
@@ -968,7 +970,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				}
 			}
 
-			if (Globals.bAllowOpenPGP && oMessage.body)
+			if (oMessage.body && RL.data().allowOpenPGP())
 			{
 				oMessage.isPgpSigned(!!oMessage.body.data('rl-plain-pgp-signed'));
 				oMessage.isPgpEncrypted(!!oMessage.body.data('rl-plain-pgp-encrypted'));

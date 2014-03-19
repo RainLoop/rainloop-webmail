@@ -1,0 +1,46 @@
+<div class="popups">
+	<div class="modal hide b-compose-open-pgp-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+		<div>
+			<div class="modal-header">
+				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+				<h3>
+					<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/TITLE_COMPOSE_OPEN_PGP"></span>
+				</h3>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal">
+					<div class="alert" data-bind="visible: '' !== notification()">
+						<span data-bind="text: notification"></span>
+					</div>
+					<br />
+					<div class="control-group">
+						<label data-bind="click: function () { sign(!sign()); }">
+							<i data-bind="css: sign() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN"></span>
+						</label>
+						<label data-bind="click: function () { encrypt(!encrypt()); }">
+							<i data-bind="css: encrypt() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT"></span>
+						</label>
+					</div>
+					<div class="control-group">
+						<label class="i18n control-label" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"></label>
+						<div class="controls">
+							<input class="inputPassword input-large" type="password" autocomplete="off"
+								data-bind="value: password, hasfocus: password.focus" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a class="btn buttonDo" data-bind="command: doCommand">
+					<i class="icon-key"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_DO"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

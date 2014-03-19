@@ -456,7 +456,11 @@ ko.bindingHandlers.emailsTags = {
 			'parseHook': function (aInput) {
 				return _.map(aInput, function (sInputValue) {
 					
-					var sValue = Utils.trim(sInputValue), oEmail = null;
+					var
+						sValue = Utils.trim(sInputValue),
+						oEmail = null
+					;
+					
 					if ('' !== sValue)
 					{
 						oEmail = new EmailModel();

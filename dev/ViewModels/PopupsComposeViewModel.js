@@ -28,6 +28,8 @@ function PopupsComposeViewModel()
 		}
 	;
 
+	this.allowOpenPGP = oRainLoopData.allowOpenPGP;
+
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
 	this.to = ko.observable('');
@@ -37,6 +39,7 @@ function PopupsComposeViewModel()
 
 	this.replyTo = ko.observable('');
 	this.subject = ko.observable('');
+	this.isHtml = ko.observable(false);
 
 	this.requestReadReceipt = ko.observable(false);
 
@@ -355,6 +358,23 @@ function PopupsComposeViewModel()
 
 Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
 
+PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
+{
+	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
+	{
+		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
+			function () {
+
+			},
+			this.oEditor.getData(),
+			this.currentIdentityResultEmail(),
+			this.to(),
+			this.cc(),
+			this.bcc()
+		]);
+	}
+};
+
 PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
 {
 	var sDraftFolder = RL.data().draftFolder();
@@ -597,6 +617,8 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 			_.delay(function () {
 				self.oEditor = new NewHtmlEditorWrapper(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
+				}, function (bHtml) {
+					self.isHtml(!!bHtml);
 				});
 			}, 300);
 		}

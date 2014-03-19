@@ -25,11 +25,10 @@
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group">
+				<div class="btn-group btn-group-custom-margin">
 					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: $root.deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash icon-white"></i>
 					</a>
-					<!--<span style="font-size:10px;" data-bind="visible: !$root.isDraftFolder()">&nbsp;</span>-->
 					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !$root.isDraftFolder(), command: $root.spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
 					</a>

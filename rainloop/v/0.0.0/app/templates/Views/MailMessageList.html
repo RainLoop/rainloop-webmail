@@ -21,12 +21,11 @@
 					</ul>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group">
+				<div class="btn-group btn-group-custom-margin">
 					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE'">
 						<i class="icon-trash icon-white"></i>
 						<span data-bind="text: 1 < messageListCheckedOrSelectedUidsWithSubMails().length ? ' (' + messageListCheckedOrSelectedUidsWithSubMails().length + ')' : ''"></span>
 					</a>
-					<!--<span style="font-size:10px;" data-bind="visible: !isSpamFolder() && !isSpamDisabled()">&nbsp;</span>-->
 					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
 					</a>

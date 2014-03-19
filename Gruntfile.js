@@ -282,6 +282,7 @@ module.exports = function (grunt) {
 					"dev/ViewModels/PopupsAddOpenPgpKeyViewModel.js",
 					"dev/ViewModels/PopupsViewOpenPgpKeyViewModel.js",
 					"dev/ViewModels/PopupsGenerateNewOpenPgpKeyViewModel.js",
+					"dev/ViewModels/PopupsComposeOpenPgpViewModel.js",
 					"dev/ViewModels/PopupsIdentityViewModel.js",
 					"dev/ViewModels/PopupsLanguagesViewModel.js",
 					"dev/ViewModels/PopupsAskViewModel.js",

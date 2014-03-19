@@ -324,7 +324,7 @@ RainLoopApp.prototype.folders = function (fCallback)
 
 RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 {
-	if (Globals.bAllowOpenPGP)
+	if (RL.data().allowOpenPGP())
 	{
 		var
 			aKeys = [],
@@ -963,8 +963,8 @@ RainLoopApp.prototype.bootstart = function ()
 							if (window.openpgp)
 							{
 								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
-
-								Globals.bAllowOpenPGP = true;
+								RL.data().allowOpenPGP(true);
+								
 								RL.pub('openpgp.init');
 								
 								RL.reloadOpenPgpKeys();
@@ -974,7 +974,7 @@ RainLoopApp.prototype.bootstart = function ()
 				}
 				else
 				{
-					Globals.bAllowOpenPGP = false;
+					RL.data().allowOpenPGP(false);
 				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);

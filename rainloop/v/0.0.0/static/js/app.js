@@ -146,11 +146,6 @@ Globals.bAllowPdfPreview = !Globals.bMobileDevice;
 /**
  * @type {boolean}
  */
-Globals.bAllowOpenPGP = false;
-
-/**
- * @type {boolean}
- */
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
 /**
@@ -3025,7 +3020,11 @@ ko.bindingHandlers.emailsTags = {
 			'parseHook': function (aInput) {
 				return _.map(aInput, function (sInputValue) {
 					
-					var sValue = Utils.trim(sInputValue), oEmail = null;
+					var
+						sValue = Utils.trim(sInputValue),
+						oEmail = null
+					;
+					
 					if ('' !== sValue)
 					{
 						oEmail = new EmailModel();
@@ -3606,13 +3605,14 @@ Plugins.settingsGet = function (sPluginSection, sName)
 
 
 
-function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady)
+function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 {
 	var self = this;
 	self.editor = null;
 	self.iBlurTimer = 0;
 	self.fOnBlur = fOnBlur || null;
 	self.fOnReady = fOnReady || null;
+	self.fOnModeChange = fOnModeChange || null;
 	
 	self.$element = $(oElement);
 
@@ -3763,6 +3763,11 @@ NewHtmlEditorWrapper.prototype.init = function ()
 
 		self.editor.on('mode', function() {
 			self.blurTrigger();
+
+			if (self.fOnModeChange)
+			{
+				self.fOnModeChange('plain' !== self.editor.mode);
+			}
 		});
 
 		self.editor.on('focus', function() {
@@ -6321,7 +6326,7 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
 
-		if (Globals.bAllowOpenPGP)
+		if (RL.data().allowOpenPGP())
 		{
 			this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
@@ -7699,6 +7704,8 @@ function PopupsComposeViewModel()
 		}
 	;
 
+	this.allowOpenPGP = oRainLoopData.allowOpenPGP;
+
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
 	this.to = ko.observable('');
@@ -7708,6 +7715,7 @@ function PopupsComposeViewModel()
 
 	this.replyTo = ko.observable('');
 	this.subject = ko.observable('');
+	this.isHtml = ko.observable(false);
 
 	this.requestReadReceipt = ko.observable(false);
 
@@ -8026,6 +8034,23 @@ function PopupsComposeViewModel()
 
 Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
 
+PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
+{
+	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
+	{
+		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
+			function () {
+
+			},
+			this.oEditor.getData(),
+			this.currentIdentityResultEmail(),
+			this.to(),
+			this.cc(),
+			this.bcc()
+		]);
+	}
+};
+
 PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
 {
 	var sDraftFolder = RL.data().draftFolder();
@@ -8268,6 +8293,8 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 			_.delay(function () {
 				self.oEditor = new NewHtmlEditorWrapper(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
+				}, function (bHtml) {
+					self.isHtml(!!bHtml);
 				});
 			}, 300);
 		}
@@ -10189,6 +10216,69 @@ PopupsGenerateNewOpenPgpKeyViewModel.prototype.onShow = function ()
 PopupsGenerateNewOpenPgpKeyViewModel.prototype.onFocus = function ()
 {
 	this.email.focus(true);
+};
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsComposeOpenPgpViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsComposeOpenPgp');
+
+	this.notification = ko.observable('');
+
+	this.sign = ko.observable(true);
+	this.encrypt = ko.observable(true);
+
+	this.password = ko.observable('');
+	this.password.focus = ko.observable(true);
+
+	// commands
+	this.doCommand = Utils.createCommand(this, function () {
+	
+		this.cancelCommand();
+
+	}, function () {
+		return '' === this.notification();
+	});
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsComposeOpenPgpViewModel', PopupsComposeOpenPgpViewModel);
+
+PopupsComposeOpenPgpViewModel.prototype.clearPopup = function ()
+{
+	this.notification('');
+
+	this.password('');
+	this.password.focus(false);
+};
+
+PopupsComposeOpenPgpViewModel.prototype.onHide = function ()
+{
+	this.clearPopup();
+};
+
+PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFromEmail, sTo, sCc, sBcc)
+{
+	this.clearPopup();
+
+	if ('' === sTo + sCc + sBcc)
+	{
+		this.notification('Please specify at least one recipient');
+	}
+
+	// TODO
+};
+
+PopupsComposeOpenPgpViewModel.prototype.onFocus = function ()
+{
+	if (this.sign())
+	{
+		this.password.focus(true);
+	}
 };
 
 /**
@@ -13716,6 +13806,7 @@ function WebMailDataStorage()
 	// other
 	this.useKeyboardShortcuts = ko.observable(true);
 	
+	this.allowOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
@@ -14240,7 +14331,8 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					bIsHtml = false;
 					sPlain = oData.Result.Plain.toString();
 					
-					if (Globals.bAllowOpenPGP && (oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
+					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
+						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
 					{
 						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oData.Result.PlainRaw);
@@ -14340,7 +14432,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				}
 			}
 
-			if (Globals.bAllowOpenPGP && oMessage.body)
+			if (oMessage.body && RL.data().allowOpenPGP())
 			{
 				oMessage.isPgpSigned(!!oMessage.body.data('rl-plain-pgp-signed'));
 				oMessage.isPgpEncrypted(!!oMessage.body.data('rl-plain-pgp-encrypted'));
@@ -16909,7 +17001,7 @@ RainLoopApp.prototype.folders = function (fCallback)
 
 RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 {
-	if (Globals.bAllowOpenPGP)
+	if (RL.data().allowOpenPGP())
 	{
 		var
 			aKeys = [],
@@ -17548,8 +17640,8 @@ RainLoopApp.prototype.bootstart = function ()
 							if (window.openpgp)
 							{
 								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
-
-								Globals.bAllowOpenPGP = true;
+								RL.data().allowOpenPGP(true);
+								
 								RL.pub('openpgp.init');
 								
 								RL.reloadOpenPgpKeys();
@@ -17559,7 +17651,7 @@ RainLoopApp.prototype.bootstart = function ()
 				}
 				else
 				{
-					Globals.bAllowOpenPGP = false;
+					RL.data().allowOpenPGP(false);
 				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);

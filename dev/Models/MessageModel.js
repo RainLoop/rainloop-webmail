@@ -359,7 +359,7 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
 
-		if (Globals.bAllowOpenPGP)
+		if (RL.data().allowOpenPGP())
 		{
 			this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);

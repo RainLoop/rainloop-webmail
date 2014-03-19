@@ -4,14 +4,16 @@
  * @param {Object} oElement
  * @param {Function=} fOnBlur
  * @param {Function=} fOnReady
+ * @param {Function=} fOnModeChange
  */
-function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady)
+function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 {
 	var self = this;
 	self.editor = null;
 	self.iBlurTimer = 0;
 	self.fOnBlur = fOnBlur || null;
 	self.fOnReady = fOnReady || null;
+	self.fOnModeChange = fOnModeChange || null;
 	
 	self.$element = $(oElement);
 
@@ -162,6 +164,11 @@ NewHtmlEditorWrapper.prototype.init = function ()
 
 		self.editor.on('mode', function() {
 			self.blurTrigger();
+
+			if (self.fOnModeChange)
+			{
+				self.fOnModeChange('plain' !== self.editor.mode);
+			}
 		});
 
 		self.editor.on('focus', function() {

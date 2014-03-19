@@ -5438,6 +5438,9 @@ select {
   padding-left: 12px;
   padding-right: 12px;
 }
+.btn-group.btn-group-custom-margin > .btn + .btn {
+  margin-left: 0px;
+}
 .dropdown-menu {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -6552,22 +6555,26 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-open-pgp-key-view-content .modal-header,
 .popups .b-open-pgp-key-generate-content .modal-header,
-.popups .b-open-pgp-key-add-content .modal-header {
+.popups .b-open-pgp-key-add-content .modal-header,
+.popups .b-compose-open-pgp-content .modal-header {
   background-color: #fff;
 }
 .popups .b-open-pgp-key-view-content.modal,
 .popups .b-open-pgp-key-generate-content.modal,
-.popups .b-open-pgp-key-add-content.modal {
+.popups .b-open-pgp-key-add-content.modal,
+.popups .b-compose-open-pgp-content.modal {
   width: 570px;
 }
 .popups .b-open-pgp-key-view-content .inputKey,
 .popups .b-open-pgp-key-generate-content .inputKey,
-.popups .b-open-pgp-key-add-content .inputKey {
+.popups .b-open-pgp-key-add-content .inputKey,
+.popups .b-compose-open-pgp-content .inputKey {
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 .popups .b-open-pgp-key-view-content .key-viewer,
 .popups .b-open-pgp-key-generate-content .key-viewer,
-.popups .b-open-pgp-key-add-content .key-viewer {
+.popups .b-open-pgp-key-add-content .key-viewer,
+.popups .b-compose-open-pgp-content .key-viewer {
   max-height: 500px;
   overflow: auto;
 }
