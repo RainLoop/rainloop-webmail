@@ -8097,12 +8097,12 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		switch (sComposeType)
 		{
 			case Enums.ComposeType.Empty:
-			case Enums.ComposeType.ForwardAsAttachment:
 				sResult = RL.data().accountEmail();
 				break;
 			case Enums.ComposeType.Reply:
 			case Enums.ComposeType.ReplyAll:
 			case Enums.ComposeType.Forward:
+			case Enums.ComposeType.ForwardAsAttachment:
 				_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fFindHelper);
 				break;
 			case Enums.ComposeType.Draft:
