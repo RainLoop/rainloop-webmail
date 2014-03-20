@@ -2401,6 +2401,51 @@ Utils.selectElement = function (element)
 	/* jshint onevar: true */
 };
 
+Utils.openPgpImportPublicKeys = function (sPublicKeysArmored)
+{
+	if (window.openpgp && RL)
+	{
+		var
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			oImported = window.openpgp.key.readArmored(sPublicKeysArmored)
+		;
+
+		if (oOpenpgpKeyring && oImported && !oImported.err && Utils.isArray(oImported.keys) &&
+			0 < oImported.keys.length)
+		{
+			_.each(oImported.keys, function (oPrivKey) {
+				if (oPrivKey)
+				{
+					window.console.log(oPrivKey);
+//					var oKey = oOpenpgpKeyring.getKeysForKeyId(oPrivKey.primaryKey.getFingerprint());
+//					if (oKey && oKey[0])
+//					{
+//						if (oKey[0].isPublic())
+//						{
+//							oPrivKey.update(oKey[0]);
+//							oOpenpgpKeyring.publicKeys.removeForId(oPrivKey.primaryKey.getFingerprint());
+//							oOpenpgpKeyring.privateKeys.push(oPrivKey);
+//						}
+//						else
+//						{
+//							oKey[0].update(oPrivKey);
+//						}
+//					}
+//					else
+//					{
+//						oOpenpgpKeyring.importKey(oPrivKey.armored);
+//					}
+				}
+			});
+
+			oOpenpgpKeyring.store();
+			return true;
+		}
+	}
+
+	return false;
+};
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -4778,15 +4823,6 @@ function Knoin()
 	this.oScreens = {};
 	this.oBoot = null;
 	this.oCurrentScreen = null;
-
-	this.popupVisibility = ko.observable(false);
-	
-	this.popupVisibility.subscribe(function (bValue) {
-		if (RL)
-		{
-			RL.popupVisibility(bValue);
-		}
-	});
 }
 
 /**
@@ -4921,7 +4957,8 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
-		this.popupVisibility(false);
+
+		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
 
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		
@@ -4946,7 +4983,8 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			this.popupVisibility(true);
+			
+			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
 
@@ -7342,16 +7380,18 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 
 /**
  * @param {string} iIndex
+ * @param {string} sGuID
  * @param {string} sID
  * @param {string} sUserID
  * @param {boolean} bIsPrivate
  * @param {string} sArmor
  * @constructor
  */
-function OpenPgpKeyModel(iIndex, sID, sUserID, bIsPrivate, sArmor)
+function OpenPgpKeyModel(iIndex, sGuID, sID, sUserID, bIsPrivate, sArmor)
 {
 	this.index = iIndex;
 	this.id = sID;
+	this.guid = sGuID;
 	this.user = sUserID;
 	this.armor = sArmor;
 	this.isPrivate = !!bIsPrivate;
@@ -7361,6 +7401,7 @@ function OpenPgpKeyModel(iIndex, sID, sUserID, bIsPrivate, sArmor)
 
 OpenPgpKeyModel.prototype.index = 0;
 OpenPgpKeyModel.prototype.id = '';
+OpenPgpKeyModel.prototype.guid = '';
 OpenPgpKeyModel.prototype.user = '';
 OpenPgpKeyModel.prototype.armor = '';
 OpenPgpKeyModel.prototype.isPrivate = false;
@@ -10180,7 +10221,6 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 			{
 				oOpenpgpKeyring.importKey(mKeyPair.privateKeyArmored);
 				oOpenpgpKeyring.importKey(mKeyPair.publicKeyArmored);
-
 				oOpenpgpKeyring.store();
 
 				RL.reloadOpenPgpKeys();
@@ -10265,10 +10305,60 @@ PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFr
 {
 	this.clearPopup();
 
+	var
+		oEmail = new EmailModel(),
+		sResultFromEmail = '',
+		aRec = []
+	;
+
 	if ('' === sTo + sCc + sBcc)
 	{
 		this.notification('Please specify at least one recipient');
+		return false;
 	}
+
+	oEmail.clear();
+	oEmail.mailsoParse(sFromEmail);
+	if ('' === oEmail.email)
+	{
+		this.notification('Please specify From email address');
+		return false;
+	}
+	else
+	{
+		sResultFromEmail = oEmail.email;
+	}
+
+	if ('' !== sTo)
+	{
+		aRec.push(sTo);
+	}
+	
+	if ('' !== sCc)
+	{
+		aRec.push(sCc);
+	}
+
+	if ('' !== sBcc)
+	{
+		aRec.push(sBcc);
+	}
+
+	aRec = aRec.join(', ').split(',');
+	aRec = _.compact(_.map(aRec, function (sValue) {
+		oEmail.clear();
+		oEmail.mailsoParse(Utils.trim(sValue));
+		return '' === oEmail.email ? false : oEmail.email;
+	}));
+
+	if (0 === aRec.length)
+	{
+		this.notification('Please specify at least one recipient');
+		return false;
+	}
+
+	window.console.log(sResultFromEmail);
+	window.console.log(aRec);
 
 	// TODO
 };
@@ -12886,6 +12976,7 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 		this.openPgpKeyForDeletion(null);
 
 		var
+			iFindIndex = -1,
 			oOpenpgpKeyring = RL.data().openpgpKeyring,
 			fRemoveAccount = function (oOpenPgpKey) {
 				return oOpenPgpKeyToRemove === oOpenPgpKey;
@@ -12896,7 +12987,20 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 		{
 			this.openpgpkeys.remove(fRemoveAccount);
 
-			oOpenpgpKeyring.removeKey(oOpenPgpKeyToRemove.index);
+			_.each(oOpenpgpKeyring.keys, function (oKey, iIndex) {
+				if (-1 === iFindIndex && oKey && oKey.primaryKey &&
+					oOpenPgpKeyToRemove.guid === oKey.primaryKey.getFingerprint() &&
+					oOpenPgpKeyToRemove.isPrivate === oKey.isPrivate())
+				{
+					iFindIndex = iIndex;
+				}
+			});
+
+			if (0 <= iFindIndex)
+			{
+				oOpenpgpKeyring.removeKey(iFindIndex);
+			}
+
 			oOpenpgpKeyring.store();
 
 			RL.reloadOpenPgpKeys();
@@ -16377,7 +16481,11 @@ function AbstractApp()
 	
 	this.isLocalAutocomplete = true;
 
-	this.popupVisibility = ko.observable(false);
+	this.popupVisibilityNames = ko.observableArray([]);
+
+	this.popupVisibility = ko.computed(function () {
+		return 0 < this.popupVisibilityNames().length;
+	}, this);
 
 	this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
@@ -17010,17 +17118,21 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 		;
 
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
-			if (oItem)
+			if (oItem && oItem.primaryKey)
 			{
-				var
-					aIDs = _.map(oItem.getKeyIds(), function (oID) {
-						return oID ? oID.toHex() : '';
-					})
+				var 
+					oPrimaryUser = oItem.getPrimaryUser(),
+					sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
+						: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 				;
 
-				aKeys.push(
-					new OpenPgpKeyModel(iIndex, aIDs.join(', '), oItem.getUserIds().join(', '),
-						oItem.isPrivate(), oItem.armor())
+				aKeys.push(new OpenPgpKeyModel(
+					iIndex, 
+					oItem.primaryKey.getFingerprint(),
+					oItem.primaryKey.getKeyId().toHex().toLowerCase(),
+					sUser,
+					oItem.isPrivate(),
+					oItem.armor())
 				);
 			}
 		});

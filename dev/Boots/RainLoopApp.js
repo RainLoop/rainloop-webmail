@@ -333,17 +333,21 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 		;
 
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
-			if (oItem)
+			if (oItem && oItem.primaryKey)
 			{
-				var
-					aIDs = _.map(oItem.getKeyIds(), function (oID) {
-						return oID ? oID.toHex() : '';
-					})
+				var 
+					oPrimaryUser = oItem.getPrimaryUser(),
+					sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
+						: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 				;
 
-				aKeys.push(
-					new OpenPgpKeyModel(iIndex, aIDs.join(', '), oItem.getUserIds().join(', '),
-						oItem.isPrivate(), oItem.armor())
+				aKeys.push(new OpenPgpKeyModel(
+					iIndex, 
+					oItem.primaryKey.getFingerprint(),
+					oItem.primaryKey.getKeyId().toHex().toLowerCase(),
+					sUser,
+					oItem.isPrivate(),
+					oItem.armor())
 				);
 			}
 		});

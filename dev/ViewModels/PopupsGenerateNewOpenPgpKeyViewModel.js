@@ -51,7 +51,6 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 			{
 				oOpenpgpKeyring.importKey(mKeyPair.privateKeyArmored);
 				oOpenpgpKeyring.importKey(mKeyPair.publicKeyArmored);
-
 				oOpenpgpKeyring.store();
 
 				RL.reloadOpenPgpKeys();

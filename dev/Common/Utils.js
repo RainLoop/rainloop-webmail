@@ -1716,3 +1716,48 @@ Utils.selectElement = function (element)
 	}
 	/* jshint onevar: true */
 };
+
+Utils.openPgpImportPublicKeys = function (sPublicKeysArmored)
+{
+	if (window.openpgp && RL)
+	{
+		var
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			oImported = window.openpgp.key.readArmored(sPublicKeysArmored)
+		;
+
+		if (oOpenpgpKeyring && oImported && !oImported.err && Utils.isArray(oImported.keys) &&
+			0 < oImported.keys.length)
+		{
+			_.each(oImported.keys, function (oPrivKey) {
+				if (oPrivKey)
+				{
+					window.console.log(oPrivKey);
+//					var oKey = oOpenpgpKeyring.getKeysForKeyId(oPrivKey.primaryKey.getFingerprint());
+//					if (oKey && oKey[0])
+//					{
+//						if (oKey[0].isPublic())
+//						{
+//							oPrivKey.update(oKey[0]);
+//							oOpenpgpKeyring.publicKeys.removeForId(oPrivKey.primaryKey.getFingerprint());
+//							oOpenpgpKeyring.privateKeys.push(oPrivKey);
+//						}
+//						else
+//						{
+//							oKey[0].update(oPrivKey);
+//						}
+//					}
+//					else
+//					{
+//						oOpenpgpKeyring.importKey(oPrivKey.armored);
+//					}
+				}
+			});
+
+			oOpenpgpKeyring.store();
+			return true;
+		}
+	}
+
+	return false;
+};

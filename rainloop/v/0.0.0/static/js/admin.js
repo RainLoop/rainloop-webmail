@@ -2401,6 +2401,51 @@ Utils.selectElement = function (element)
 	/* jshint onevar: true */
 };
 
+Utils.openPgpImportPublicKeys = function (sPublicKeysArmored)
+{
+	if (window.openpgp && RL)
+	{
+		var
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			oImported = window.openpgp.key.readArmored(sPublicKeysArmored)
+		;
+
+		if (oOpenpgpKeyring && oImported && !oImported.err && Utils.isArray(oImported.keys) &&
+			0 < oImported.keys.length)
+		{
+			_.each(oImported.keys, function (oPrivKey) {
+				if (oPrivKey)
+				{
+					window.console.log(oPrivKey);
+//					var oKey = oOpenpgpKeyring.getKeysForKeyId(oPrivKey.primaryKey.getFingerprint());
+//					if (oKey && oKey[0])
+//					{
+//						if (oKey[0].isPublic())
+//						{
+//							oPrivKey.update(oKey[0]);
+//							oOpenpgpKeyring.publicKeys.removeForId(oPrivKey.primaryKey.getFingerprint());
+//							oOpenpgpKeyring.privateKeys.push(oPrivKey);
+//						}
+//						else
+//						{
+//							oKey[0].update(oPrivKey);
+//						}
+//					}
+//					else
+//					{
+//						oOpenpgpKeyring.importKey(oPrivKey.armored);
+//					}
+				}
+			});
+
+			oOpenpgpKeyring.store();
+			return true;
+		}
+	}
+
+	return false;
+};
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -3966,15 +4011,6 @@ function Knoin()
 	this.oScreens = {};
 	this.oBoot = null;
 	this.oCurrentScreen = null;
-
-	this.popupVisibility = ko.observable(false);
-	
-	this.popupVisibility.subscribe(function (bValue) {
-		if (RL)
-		{
-			RL.popupVisibility(bValue);
-		}
-	});
 }
 
 /**
@@ -4109,7 +4145,8 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
-		this.popupVisibility(false);
+
+		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
 
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		
@@ -4134,7 +4171,8 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			this.popupVisibility(true);
+			
+			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
 
@@ -7417,7 +7455,11 @@ function AbstractApp()
 	
 	this.isLocalAutocomplete = true;
 
-	this.popupVisibility = ko.observable(false);
+	this.popupVisibilityNames = ko.observableArray([]);
+
+	this.popupVisibility = ko.computed(function () {
+		return 0 < this.popupVisibilityNames().length;
+	}, this);
 
 	this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 

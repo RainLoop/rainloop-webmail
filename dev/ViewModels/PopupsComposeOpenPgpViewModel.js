@@ -47,10 +47,60 @@ PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFr
 {
 	this.clearPopup();
 
+	var
+		oEmail = new EmailModel(),
+		sResultFromEmail = '',
+		aRec = []
+	;
+
 	if ('' === sTo + sCc + sBcc)
 	{
 		this.notification('Please specify at least one recipient');
+		return false;
 	}
+
+	oEmail.clear();
+	oEmail.mailsoParse(sFromEmail);
+	if ('' === oEmail.email)
+	{
+		this.notification('Please specify From email address');
+		return false;
+	}
+	else
+	{
+		sResultFromEmail = oEmail.email;
+	}
+
+	if ('' !== sTo)
+	{
+		aRec.push(sTo);
+	}
+	
+	if ('' !== sCc)
+	{
+		aRec.push(sCc);
+	}
+
+	if ('' !== sBcc)
+	{
+		aRec.push(sBcc);
+	}
+
+	aRec = aRec.join(', ').split(',');
+	aRec = _.compact(_.map(aRec, function (sValue) {
+		oEmail.clear();
+		oEmail.mailsoParse(Utils.trim(sValue));
+		return '' === oEmail.email ? false : oEmail.email;
+	}));
+
+	if (0 === aRec.length)
+	{
+		this.notification('Please specify at least one recipient');
+		return false;
+	}
+
+	window.console.log(sResultFromEmail);
+	window.console.log(aRec);
 
 	// TODO
 };

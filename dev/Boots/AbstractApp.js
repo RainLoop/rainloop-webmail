@@ -16,7 +16,11 @@ function AbstractApp()
 	
 	this.isLocalAutocomplete = true;
 
-	this.popupVisibility = ko.observable(false);
+	this.popupVisibilityNames = ko.observableArray([]);
+
+	this.popupVisibility = ko.computed(function () {
+		return 0 < this.popupVisibilityNames().length;
+	}, this);
 
 	this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
