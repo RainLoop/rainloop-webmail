@@ -182,6 +182,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65/* A */, 'selectAll');
 
 				self.fOnReady();
+				self.__resizable = true;
 				self.resize();
 			});
 		}
@@ -206,7 +207,7 @@ NewHtmlEditorWrapper.prototype.blur = function ()
 
 NewHtmlEditorWrapper.prototype.resize = function ()
 {
-	if (this.editor)
+	if (this.editor && this.__resizable)
 	{
 		this.editor.resize(this.$element.width(), this.$element.innerHeight());
 	}

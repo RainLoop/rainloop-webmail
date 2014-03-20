@@ -362,9 +362,12 @@ PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
 {
 	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 	{
+		var self = this;
 		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
-			function () {
-
+			function (sResult) {
+				self.editor(function (oEditor) {
+					oEditor.setPlain(sResult);
+				});
 			},
 			this.oEditor.getData(),
 			this.currentIdentityResultEmail(),

@@ -3826,6 +3826,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65/* A */, 'selectAll');
 
 				self.fOnReady();
+				self.__resizable = true;
 				self.resize();
 			});
 		}
@@ -3850,7 +3851,7 @@ NewHtmlEditorWrapper.prototype.blur = function ()
 
 NewHtmlEditorWrapper.prototype.resize = function ()
 {
-	if (this.editor)
+	if (this.editor && this.__resizable)
 	{
 		this.editor.resize(this.$element.width(), this.$element.innerHeight());
 	}
@@ -7383,16 +7384,18 @@ IdentityModel.prototype.formattedNameForEmail = function ()
  * @param {string} sGuID
  * @param {string} sID
  * @param {string} sUserID
+ * @param {string} sEmail
  * @param {boolean} bIsPrivate
  * @param {string} sArmor
  * @constructor
  */
-function OpenPgpKeyModel(iIndex, sGuID, sID, sUserID, bIsPrivate, sArmor)
+function OpenPgpKeyModel(iIndex, sGuID, sID, sUserID, sEmail, bIsPrivate, sArmor)
 {
 	this.index = iIndex;
 	this.id = sID;
 	this.guid = sGuID;
 	this.user = sUserID;
+	this.email = sEmail;
 	this.armor = sArmor;
 	this.isPrivate = !!bIsPrivate;
 	
@@ -7403,6 +7406,7 @@ OpenPgpKeyModel.prototype.index = 0;
 OpenPgpKeyModel.prototype.id = '';
 OpenPgpKeyModel.prototype.guid = '';
 OpenPgpKeyModel.prototype.user = '';
+OpenPgpKeyModel.prototype.email = '';
 OpenPgpKeyModel.prototype.armor = '';
 OpenPgpKeyModel.prototype.isPrivate = false;
 
@@ -8079,9 +8083,12 @@ PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
 {
 	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 	{
+		var self = this;
 		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
-			function () {
-
+			function (sResult) {
+				self.editor(function (oEditor) {
+					oEditor.setPlain(sResult);
+				});
 			},
 			this.oEditor.getData(),
 			this.currentIdentityResultEmail(),
@@ -10274,13 +10281,168 @@ function PopupsComposeOpenPgpViewModel()
 	this.password = ko.observable('');
 	this.password.focus = ko.observable(true);
 
+	this.from = ko.observable('');
+	this.to = ko.observableArray([]);
+	this.text = ko.observable('');
+
+	this.resultCallback = null;
+	
+	this.submitRequest = ko.observable(false);
+
 	// commands
 	this.doCommand = Utils.createCommand(this, function () {
-	
-		this.cancelCommand();
+
+		var
+			self = this,
+			bResult = true,
+			aOpenpgpkeysPublic = RL.data().openpgpkeysPublic(),
+			oKey = null,
+			oPrivateKey = null,
+			aPublicKeys = [],
+			fFindPublicKey = function (sEmail) {
+				
+				var
+					oResult = null,
+					oKey = _.find(aOpenpgpkeysPublic, function (oItem) {
+						return oItem && sEmail === oItem.email;
+					})
+				;
+
+				if (oKey)
+				{
+					try
+					{
+						oResult = window.openpgp.key.readArmored(oKey.armor);
+						if (oResult && !oResult.err && oResult.keys && oResult.keys[0])
+						{
+							oResult = oResult.keys[0];
+						}
+						else
+						{
+							oResult = null;
+						}
+					}
+					catch (e)
+					{
+						oResult = null;
+					}
+				}
+
+				return oResult;
+			}
+		;
+
+		this.submitRequest(true);
+
+		if (bResult && this.sign() && '' === this.from())
+		{
+			this.notification('Please specify From email address');
+			bResult = false;
+		}
+
+		if (bResult && this.sign())
+		{
+			oKey = _.find(RL.data().openpgpkeysPrivate(), function (oItem) {
+				return oItem && self.from() === oItem.email;
+			});
+
+			if (oKey)
+			{
+				try
+				{
+					oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
+					if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
+					{
+						oPrivateKey = oPrivateKey.keys[0];
+						oPrivateKey.decrypt(this.password());
+					}
+					else
+					{
+						oPrivateKey = null;
+					}
+				}
+				catch (e)
+				{
+					oPrivateKey = null;
+				}
+			}
+
+			if (!oPrivateKey)
+			{
+				this.notification('No private key found for "' + this.from() + '" email!');
+				bResult = false;
+			}
+		}
+
+		if (bResult && this.encrypt() && 0 === this.to().length)
+		{
+			this.notification('Please specify at least one recipient');
+			bResult = false;
+		}
+
+		if (bResult && this.encrypt())
+		{
+			aPublicKeys = _.compact(_.map(this.to(), function (sEmail) {
+				var oKey = fFindPublicKey(sEmail);
+				if (!oKey && bResult)
+				{
+					self.notification('No public key found for "' + sEmail + '" email!');
+					bResult = false;
+				}
+				
+				return oKey;
+				
+			}));
+
+			if (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length)
+			{
+				bResult = false;
+			}
+		}
+
+		_.delay(function () {
+
+			if (self.resultCallback && bResult)
+			{
+				try {
+
+					if (oPrivateKey && 0 === aPublicKeys.length)
+					{
+						self.resultCallback(
+							window.openpgp.signClearMessage([oPrivateKey], self.text())
+						);
+					}
+					else if (oPrivateKey && 0 < aPublicKeys.length)
+					{
+						self.resultCallback(
+							window.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
+						);
+					}
+					else if (!oPrivateKey && 0 < aPublicKeys.length)
+					{
+						self.resultCallback(
+							window.openpgp.encryptMessage(aPublicKeys, self.text())
+						);
+					}
+				}
+				catch (e)
+				{
+					self.notification('OpenPGP error: ' + e);
+					bResult = false;
+				}
+			}
+
+			if (bResult)
+			{
+				self.cancelCommand();
+			}
+
+			self.submitRequest(false);
+
+		}, 10);
 
 	}, function () {
-		return '' === this.notification();
+		return !this.submitRequest() &&	(this.sign() || this.encrypt());
 	});
 
 	Knoin.constructorEnd(this);
@@ -10294,6 +10456,14 @@ PopupsComposeOpenPgpViewModel.prototype.clearPopup = function ()
 
 	this.password('');
 	this.password.focus(false);
+
+	this.from('');
+	this.to([]);
+	this.text('');
+
+	this.submitRequest(false);
+
+	this.resultCallback = null;
 };
 
 PopupsComposeOpenPgpViewModel.prototype.onHide = function ()
@@ -10311,20 +10481,11 @@ PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFr
 		aRec = []
 	;
 
-	if ('' === sTo + sCc + sBcc)
-	{
-		this.notification('Please specify at least one recipient');
-		return false;
-	}
+	this.resultCallback = fCallback;
 
 	oEmail.clear();
 	oEmail.mailsoParse(sFromEmail);
-	if ('' === oEmail.email)
-	{
-		this.notification('Please specify From email address');
-		return false;
-	}
-	else
+	if ('' !== oEmail.email)
 	{
 		sResultFromEmail = oEmail.email;
 	}
@@ -10351,24 +10512,9 @@ PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFr
 		return '' === oEmail.email ? false : oEmail.email;
 	}));
 
-	if (0 === aRec.length)
-	{
-		this.notification('Please specify at least one recipient');
-		return false;
-	}
-
-	window.console.log(sResultFromEmail);
-	window.console.log(aRec);
-
-	// TODO
-};
-
-PopupsComposeOpenPgpViewModel.prototype.onFocus = function ()
-{
-	if (this.sign())
-	{
-		this.password.focus(true);
-	}
+	this.from(sResultFromEmail);
+	this.to(aRec);
+	this.text(sText);
 };
 
 /**
@@ -12918,18 +13064,8 @@ Utils.addSettingsViewModel(SettingsSocialScreen, 'SettingsSocial', 'SETTINGS_LAB
 function SettingsOpenPGP()
 {
 	this.openpgpkeys = RL.data().openpgpkeys;
-
-	this.openpgpkeysPublic = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-	}, this);
-
-	this.openpgpkeysPrivate = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPublic = RL.data().openpgpkeysPublic;
+	this.openpgpkeysPrivate = RL.data().openpgpkeysPrivate;
 
 	this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
 		function (oPrev) {
@@ -13664,7 +13800,6 @@ function WebMailDataStorage()
 		return bLoading || bCreating || bDeleting || bRenaming;
 	}, this);
 
-
 	this.foldersInboxUnreadCount = ko.observable(0);
 
 	this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
@@ -13913,6 +14048,18 @@ function WebMailDataStorage()
 	this.allowOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
+
+	this.openpgpkeysPublic = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && !oItem.isPrivate);
+		});
+	}, this);
+
+	this.openpgpkeysPrivate = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && oItem.isPrivate);
+		});
+	}, this);
 
 	// google
 	this.googleActions = ko.observable(false);
@@ -14282,7 +14429,6 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 };
 
 /**
- * @param {Function} fCallback
  * @param {string} sFromFolderFullNameRaw
  * @param {Array} aUidForRemove
  * @param {string=} sToFolderFullNameRaw = ''
@@ -17113,6 +17259,7 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 	{
 		var
 			aKeys = [],
+			oEmail = new EmailModel(),
 			oOpenpgpKeyring = RL.data().openpgpKeyring,
 			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
 		;
@@ -17120,20 +17267,28 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
 			if (oItem && oItem.primaryKey)
 			{
-				var 
+				var
+
 					oPrimaryUser = oItem.getPrimaryUser(),
 					sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
 						: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 				;
 
-				aKeys.push(new OpenPgpKeyModel(
-					iIndex, 
-					oItem.primaryKey.getFingerprint(),
-					oItem.primaryKey.getKeyId().toHex().toLowerCase(),
-					sUser,
-					oItem.isPrivate(),
-					oItem.armor())
-				);
+				oEmail.clear();
+				oEmail.mailsoParse(sUser);
+
+				if (oEmail.validate())
+				{
+					aKeys.push(new OpenPgpKeyModel(
+						iIndex,
+						oItem.primaryKey.getFingerprint(),
+						oItem.primaryKey.getKeyId().toHex().toLowerCase(),
+						sUser,
+						oEmail.email,
+						oItem.isPrivate(),
+						oItem.armor())
+					);
+				}
 			}
 		});
 

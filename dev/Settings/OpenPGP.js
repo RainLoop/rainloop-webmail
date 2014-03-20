@@ -6,18 +6,8 @@
 function SettingsOpenPGP()
 {
 	this.openpgpkeys = RL.data().openpgpkeys;
-
-	this.openpgpkeysPublic = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-	}, this);
-
-	this.openpgpkeysPrivate = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPublic = RL.data().openpgpkeysPublic;
+	this.openpgpkeysPrivate = RL.data().openpgpkeysPrivate;
 
 	this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
 		function (oPrev) {

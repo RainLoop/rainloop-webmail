@@ -98,7 +98,6 @@ function WebMailDataStorage()
 		return bLoading || bCreating || bDeleting || bRenaming;
 	}, this);
 
-
 	this.foldersInboxUnreadCount = ko.observable(0);
 
 	this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
@@ -347,6 +346,18 @@ function WebMailDataStorage()
 	this.allowOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
+
+	this.openpgpkeysPublic = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && !oItem.isPrivate);
+		});
+	}, this);
+
+	this.openpgpkeysPrivate = ko.computed(function () {
+		return _.filter(this.openpgpkeys(), function (oItem) {
+			return !!(oItem && oItem.isPrivate);
+		});
+	}, this);
 
 	// google
 	this.googleActions = ko.observable(false);
@@ -716,7 +727,6 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 };
 
 /**
- * @param {Function} fCallback
  * @param {string} sFromFolderFullNameRaw
  * @param {Array} aUidForRemove
  * @param {string=} sToFolderFullNameRaw = ''

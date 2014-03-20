@@ -328,6 +328,7 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 	{
 		var
 			aKeys = [],
+			oEmail = new EmailModel(),
 			oOpenpgpKeyring = RL.data().openpgpKeyring,
 			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
 		;
@@ -335,20 +336,28 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
 			if (oItem && oItem.primaryKey)
 			{
-				var 
+				var
+
 					oPrimaryUser = oItem.getPrimaryUser(),
 					sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
 						: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 				;
 
-				aKeys.push(new OpenPgpKeyModel(
-					iIndex, 
-					oItem.primaryKey.getFingerprint(),
-					oItem.primaryKey.getKeyId().toHex().toLowerCase(),
-					sUser,
-					oItem.isPrivate(),
-					oItem.armor())
-				);
+				oEmail.clear();
+				oEmail.mailsoParse(sUser);
+
+				if (oEmail.validate())
+				{
+					aKeys.push(new OpenPgpKeyModel(
+						iIndex,
+						oItem.primaryKey.getFingerprint(),
+						oItem.primaryKey.getKeyId().toHex().toLowerCase(),
+						sUser,
+						oEmail.email,
+						oItem.isPrivate(),
+						oItem.armor())
+					);
+				}
 			}
 		});
 
