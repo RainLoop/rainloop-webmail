@@ -5696,7 +5696,9 @@ html.no-rgba .modal {
   border: 0;
   padding: 10px;
   padding-right: 0;
-  font-family: arial, sans-serif;
+  /*font-family: arial, sans-serif;*/
+
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
   font-size: 13px;
   line-height: 16px;
   color: #333;
@@ -5743,6 +5745,13 @@ html.no-rgba .modal {
 }
 .cke_wysiwyg_div ol li {
   list-style-type: decimal !important;
+}
+.cke_wysiwyg_div pre {
+  margin: 0px;
+  padding: 0px;
+  background: #fff;
+  border: none;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .cke_wysiwyg_div blockquote {
   border: 0;
@@ -7309,6 +7318,13 @@ html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.html div[data-x-div-type=body] {
   margin: 15px;
+}
+.messageView .b-content .messageItem .bodyText .b-text-part.html pre {
+  margin: 0px;
+  padding: 0px;
+  background: #fff;
+  border: none;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain {
   padding: 15px;

@@ -10369,7 +10369,7 @@ function PopupsComposeOpenPgpViewModel()
 
 			if (!oPrivateKey)
 			{
-				this.notification('No private key found for "' + this.from() + '" email!');
+				this.notification('No private key found for "' + this.from() + '" email');
 				bResult = false;
 			}
 		}
@@ -10386,7 +10386,7 @@ function PopupsComposeOpenPgpViewModel()
 				var oKey = fFindPublicKey(sEmail);
 				if (!oKey && bResult)
 				{
-					self.notification('No public key found for "' + sEmail + '" email!');
+					self.notification('No public key found for "' + sEmail + '" email');
 					bResult = false;
 				}
 				
