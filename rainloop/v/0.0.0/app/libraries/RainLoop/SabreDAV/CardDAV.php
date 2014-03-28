@@ -113,14 +113,14 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      * See Sabre\DAV\IProperties for a description of the mutations array, as
      * well as the return value.
      *
-     * @param mixed $mAddressBookId
+     * @param mixed $mAddressBookID
      * @param array $aMutations
      * @see Sabre\DAV\IProperties::updateProperties
      * @return bool|array
      */
     public function updateAddressBook($mAddressBookID, array $aMutations)
 	{
-		$this->writeLog('::updateAddressBook('.$mAddressBookID.', $aMutations)');
+		$this->writeLog('::updateAddressBook('.$mAddressBookID.', array $aMutations['.\count($aMutations).'])');
 
 		return false;
     }
@@ -136,7 +136,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
      */
     public function createAddressBook($sPrincipalUri, $sUrl, array $aProperties)
 	{
-		$this->writeLog('::createAddressBook('.$sPrincipalUri.', '.$sUrl.', $aProperties)');
+		$this->writeLog('::createAddressBook('.$sPrincipalUri.', '.$sUrl.', array $aProperties['.\count($aProperties).'])');
     }
 
     /**
@@ -181,7 +181,7 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 			$sEmail = $this->getAuthEmail('', $mAddressBookID);
 			if (!empty($sEmail))
 			{
-				$aList = $this->oPersonalAddressBook->GetContacts($sEmail, 0, 500);
+				$aList = $this->oPersonalAddressBook->GetContacts($sEmail, 0, 5000);
 				foreach ($aList as /* @var $oItem \RainLoop\Providers\PersonalAddressBook\Classes\Contact */ $oItem)
 				{
 					if (!$oItem->ReadOnly)
@@ -235,8 +235,6 @@ class CardDAV implements \Sabre\CardDAV\Backend\BackendInterface
 				'size' => $oContact->CardDavSize,
 				'carddata' => $oContact->CardDavData
 			);
-
-//			$this->writeLog($mResult);
 		}
 
 		return $mResult;
