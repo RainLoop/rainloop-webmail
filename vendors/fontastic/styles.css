@@ -249,83 +249,92 @@
   content: "\e045";
 }
 .icon-popup:before {
-  content: "\e048";
-}
-.icon-checkbox-checked:before {
-  content: "\e049";
-}
-.icon-checkbox-unchecked:before {
-  content: "\e04a";
-}
-.icon-checkbox-partial:before {
-  content: "\e04b";
-}
-.icon-radio-checked:before {
-  content: "\e04c";
-}
-.icon-radio-unchecked:before {
-  content: "\e04d";
-}
-.icon-google-drive:before {
-  content: "\e04e";
+  content: "\e046";
 }
 .icon-github:before {
-  content: "\e04f";
+  content: "\e047";
 }
 .icon-telephone:before {
-  content: "\e050";
+  content: "\e048";
 }
 .icon-mobile:before {
-  content: "\e051";
+  content: "\e049";
 }
 .icon-pencil:before {
-  content: "\e052";
+  content: "\e04a";
 }
 .icon-trash:before {
-  content: "\e053";
+  content: "\e04b";
 }
 .icon-left-middle:before {
-  content: "\e054";
+  content: "\e04c";
 }
 .icon-right-middle:before {
-  content: "\e055";
+  content: "\e04d";
 }
 .icon-repeat:before {
-  content: "\e056";
+  content: "\e04e";
 }
 .icon-key:before {
-  content: "\e057";
+  content: "\e04f";
 }
 .icon-lock:before {
-  content: "\e058";
+  content: "\e050";
 }
 .icon-home:before {
-  content: "\e059";
+  content: "\e051";
 }
 .icon-address-book:before {
-  content: "\e05a";
+  content: "\e052";
 }
 .icon-share:before {
-  content: "\e05b";
+  content: "\e053";
 }
 .icon-suitcase:before {
-  content: "\e05c";
+  content: "\e054";
 }
 .icon-new-sign:before {
-  content: "\e05d";
-}
-.icon-spinner:before {
-  content: "\e05e";
+  content: "\e055";
 }
 .icon-users:before {
-  content: "\e05f";
+  content: "\e056";
 }
 .icon-earth:before {
-  content: "\e060";
+  content: "\e057";
 }
 .icon-happy-smiley:before {
-  content: "\e061";
+  content: "\e058";
 }
 .icon-mail:before {
+  content: "\e059";
+}
+.icon-checkbox-checked:before {
+  content: "\e05a";
+}
+.icon-checkbox-unchecked:before {
+  content: "\e05b";
+}
+.icon-checkbox-partial:before {
+  content: "\e05c";
+}
+.icon-radio-checked:before {
+  content: "\e05d";
+}
+.icon-radio-unchecked:before {
+  content: "\e05e";
+}
+.icon-google-drive:before {
+  content: "\e05f";
+}
+.icon-spinner:before {
+  content: "\e060";
+}
+.icon-archive:before {
+  content: "\e061";
+}
+.icon-buy-sign:before {
   content: "\e062";
+}
+.icon-filter:before {
+  content: "\e063";
 }

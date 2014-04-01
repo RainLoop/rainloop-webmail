@@ -87,6 +87,11 @@ class Actions
 	private $oChangePasswordProvider;
 
 	/**
+	 * @var \RainLoop\Providers\TwoFactorAuth
+	 */
+	private $oTwoFactorAuthProvider;
+
+	/**
 	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig;
@@ -118,6 +123,7 @@ class Actions
 		$this->oPersonalAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
+		$this->oTwoFactorAuthProvider = null;
 
 		$this->sSpecAuthToken = '';
 
@@ -246,6 +252,10 @@ class Actions
 					break;
 				case 'change-password':
 					// \RainLoop\Providers\ChangePassword\ChangePasswordInterface
+					break;
+				case 'two-factor-auth':
+					// \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface
+					$oResult = new \RainLoop\Providers\TwoFactorAuth\GoogleTwoFactorAuth();
 					break;
 			}
 		}
@@ -489,6 +499,21 @@ class Actions
 		}
 
 		return $this->oChangePasswordProvider;
+	}
+
+	/**
+	 * @return \RainLoop\Providers\TwoFactorAuth
+	 */
+	public function TwoFactorAuthProvider()
+	{
+		if (null === $this->oTwoFactorAuthProvider)
+		{
+			$this->oTwoFactorAuthProvider = new \RainLoop\Providers\TwoFactorAuth(
+				$this->fabrica('two-factor-auth')
+			);
+		}
+
+		return $this->oTwoFactorAuthProvider;
 	}
 
 	/**
@@ -1284,11 +1309,12 @@ class Actions
 	 * @param string $sLogin
 	 * @param string $sPassword
 	 * @param string $sSignMeToken = ''
+	 * @param string $sTwoFactorAuthCode = ''
 	 *
 	 * @return \RainLoop\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(&$sEmail, &$sLogin, &$sPassword, $sSignMeToken = '')
+	public function LoginProcess(&$sEmail, &$sLogin, &$sPassword, $sSignMeToken = '', $sTwoFactorAuthCode = '')
 	{
 		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
 		{
@@ -1324,6 +1350,33 @@ class Actions
 			else
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
+			}
+		}
+
+		if ($oAccount && $this->TwoFactorAuthProvider()->IsActive())
+		{
+			$oSettings = $this->SettingsProvider()->Load($oAccount);
+			if ($oSettings)
+			{
+				$sTwoFactorAuthSecret = $oSettings->GetConf('TwoFactorAuthEnabled', false) ?
+						$oSettings->GetConf('TwoFactorAuthSecret', '') : '';
+
+				if (!empty($sTwoFactorAuthSecret))
+				{
+					if (empty($sTwoFactorAuthCode))
+					{
+						$this->Logger()->Write('TwoFactorAuth: Required Code for '.$oAccount->Email().' account.');
+						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
+					}
+					else
+					{
+						$this->Logger()->Write('TwoFactorAuth: Verify Code for '.$oAccount->Email().' account.');
+						if (!$this->TwoFactorAuthProvider()->VerifyCode($sTwoFactorAuthSecret, $sTwoFactorAuthCode))
+						{
+							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
+						}
+					}
+				}
 			}
 		}
 
@@ -1365,11 +1418,33 @@ class Actions
 		$sPassword = $this->GetActionParam('Password', '');
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === $this->GetActionParam('SignMe', '0');
+		
+		$sTwoFactorAuthCode = $this->GetActionParam('TwoFactorAuthCode', '');
 
 		$this->Logger()->AddSecret($sPassword);
 
-		$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
-			$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '');
+		$oAccount = null;
+		
+		try
+		{
+			$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
+				$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '',
+				$sTwoFactorAuthCode);
+		}
+		catch (\RainLoop\Exceptions\ClientException $oException)
+		{
+			if ($oException &&
+				\RainLoop\Notifications::AccountTwoFactorAuthRequired === $oException->getCode())
+			{
+				return $this->DefaultResponse(__FUNCTION__, true, array(
+					'TwoFactorAuth' => true
+				));
+			}
+			else
+			{
+				throw $oException;
+			}
+		}
 
 		$this->AuthProcess($oAccount);
 
@@ -5234,7 +5309,6 @@ class Actions
 	 * @param resource $rFile
 	 * @param string $sFileStart
 	 *
-	 *
 	 * @return int
 	 */
 	private function importContactsFromVcfFile($oAccount, $rFile, $sFileStart)
@@ -6122,7 +6196,7 @@ class Actions
 
 	/**
 	 * @param string $sKey
-	 * @param mixed $mDefaul = null
+	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
