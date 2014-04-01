@@ -1162,6 +1162,7 @@ class Actions
 			$aResult['DraftFolder'] = $oSettings->GetConf('DraftFolder', '');
 			$aResult['SpamFolder'] = $oSettings->GetConf('SpamFolder', '');
 			$aResult['TrashFolder'] = $oSettings->GetConf('TrashFolder', '');
+			$aResult['ArchiveFolder'] = $oSettings->GetConf('ArchiveFolder', '');
 			$aResult['NullFolder'] = $oSettings->GetConf('NullFolder', '');
 			$aResult['EditorDefaultType'] = $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
 			$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
@@ -1909,8 +1910,9 @@ class Actions
 
 		$oSettings->SetConf('SentFolder', $this->GetActionParam('SentFolder', ''));
 		$oSettings->SetConf('DraftFolder', $this->GetActionParam('DraftFolder', ''));
-		$oSettings->SetConf('TrashFolder', $this->GetActionParam('TrashFolder', ''));
 		$oSettings->SetConf('SpamFolder', $this->GetActionParam('SpamFolder', ''));
+		$oSettings->SetConf('TrashFolder', $this->GetActionParam('TrashFolder', ''));
+		$oSettings->SetConf('ArchiveFolder', $this->GetActionParam('ArchiveFolder', ''));
 		$oSettings->SetConf('NullFolder', $this->GetActionParam('NullFolder', ''));
 
 		return $this->DefaultResponse(__FUNCTION__,
@@ -3347,6 +3349,7 @@ class Actions
 			$aCache = array(
 				
 				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
+
 				'Send' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
@@ -3358,6 +3361,7 @@ class Actions
 				'Send Mails' => \MailSo\Imap\Enumerations\FolderType::SENT,
 
 				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
@@ -3365,14 +3369,22 @@ class Actions
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::SPAM,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
-				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH
+				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
+				'Archive' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				
+				'All' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'All Mail' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'All Mails' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'AllMail' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'AllMails' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
 			);
 
 			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
@@ -3403,7 +3415,8 @@ class Actions
 							\MailSo\Imap\Enumerations\FolderType::SENT,
 							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
 							\MailSo\Imap\Enumerations\FolderType::SPAM,
-							\MailSo\Imap\Enumerations\FolderType::TRASH
+							\MailSo\Imap\Enumerations\FolderType::TRASH,
+							\MailSo\Imap\Enumerations\FolderType::ARCHIVE
 						)))
 						{
 							$aResult[$iFolderXListType] = $oFolder->FullNameRaw();
@@ -3428,7 +3441,8 @@ class Actions
 							\MailSo\Imap\Enumerations\FolderType::SENT,
 							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
 							\MailSo\Imap\Enumerations\FolderType::SPAM,
-							\MailSo\Imap\Enumerations\FolderType::TRASH
+							\MailSo\Imap\Enumerations\FolderType::TRASH,
+							\MailSo\Imap\Enumerations\FolderType::ARCHIVE
 						)))
 						{
 							$aResult[$iFolderType] = $oFolder->FullNameRaw();
@@ -3473,6 +3487,7 @@ class Actions
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
 			$aSystemFolders = array();
+			
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
 
@@ -3499,6 +3514,10 @@ class Actions
 				if ('' === $this->GetActionParam('TrashFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::TRASH;
+				}
+				if ('' === $this->GetActionParam('ArchiveFolder', ''))
+				{
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::ARCHIVE;
 				}
 
 				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
@@ -6284,8 +6303,9 @@ class Actions
 	 */
 	private function hashFolderFullName($sFolderFullName)
 	{
-		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
-			\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
+		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 
+			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail')) ?
+				\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
 
 //		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
 //			\ucfirst(\strtolower($sFolderFullName)) :

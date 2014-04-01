@@ -295,7 +295,7 @@ class Folder
 				case \in_array('\all', $aFlags):
 				case \in_array('\archive', $aFlags):
 				case \in_array('\allmail', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::ALLMAIL;
+					$iXListType = \MailSo\Imap\Enumerations\FolderType::ARCHIVE;
 					break;
 			}
 		}

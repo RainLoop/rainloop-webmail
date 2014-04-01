@@ -109,15 +109,26 @@ function MailBoxMessageListViewModel()
 	}, this);
 
 	this.isSpamFolder = ko.computed(function () {
-		return RL.data().spamFolder() === this.messageListEndFolder();
+		return oData.spamFolder() === this.messageListEndFolder() &&
+			'' !== oData.spamFolder();
 	}, this);
 
 	this.isSpamDisabled = ko.computed(function () {
-		return Consts.Values.UnuseOptionValue === RL.data().spamFolder();
+		return Consts.Values.UnuseOptionValue === oData.spamFolder();
 	}, this);
 
 	this.isTrashFolder = ko.computed(function () {
-		return RL.data().trashFolder() === this.messageListEndFolder();
+		return oData.trashFolder() === this.messageListEndFolder() &&
+			'' !== oData.trashFolder();
+	}, this);
+
+	this.isArchiveFolder = ko.computed(function () {
+		return oData.archiveFolder() === this.messageListEndFolder() &&
+			'' !== oData.archiveFolder();
+	}, this);
+
+	this.isArchiveDisabled = ko.computed(function () {
+		return Consts.Values.UnuseOptionValue === RL.data().archiveFolder();
 	}, this);
 
 	this.canBeMoved = this.hasCheckedOrSelectedLines;
@@ -138,6 +149,12 @@ function MailBoxMessageListViewModel()
 
 	this.deleteCommand = Utils.createCommand(this, function () {
 		RL.deleteMessagesFromFolder(Enums.FolderType.Trash, 
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}, this.canBeMoved);
+
+	this.archiveCommand = Utils.createCommand(this, function () {
+		RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
 			RL.data().currentFolderFullNameRaw(),
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
@@ -217,6 +234,15 @@ MailBoxMessageListViewModel.prototype.searchEnterAction = function ()
 {
 	this.mainMessageListSearch(this.sLastSearchValue);
 	this.inputMessageListSearchFocus(false);
+};
+
+/**
+ * @returns {string}
+ */
+MailBoxMessageListViewModel.prototype.printableMessageCountForDeletion = function ()
+{
+	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+	return 1 < iCnt ? ' (' + (100 > iCnt ? iCnt : '99+') + ')' : '';
 };
 
 MailBoxMessageListViewModel.prototype.cancelSearch = function ()

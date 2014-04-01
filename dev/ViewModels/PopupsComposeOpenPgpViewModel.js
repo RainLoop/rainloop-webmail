@@ -64,7 +64,8 @@ function PopupsComposeOpenPgpViewModel()
 
 		if (bResult && this.encrypt())
 		{
-			aPublicKeys = _.compact(_.union(this.to(), function (sEmail) {
+			aPublicKeys = [];
+			_.each(this.to(), function (sEmail) {
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
@@ -72,11 +73,10 @@ function PopupsComposeOpenPgpViewModel()
 					self.notification('No public key found for "' + sEmail + '" email');
 					bResult = false;
 				}
-				
-				return aKeys;
-				
-			}));
 
+				aPublicKeys = aPublicKeys.concat(aKeys);
+			});
+			
 			if (bResult && (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length))
 			{
 				bResult = false;

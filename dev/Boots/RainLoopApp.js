@@ -215,26 +215,43 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		self = this,
 		oData = RL.data(),
 		oCache = RL.cache(),
-		oTrashOrSpamFolder = oCache.getFolderFromCacheList(
-			Enums.FolderType.Spam === iDeleteType ? oData.spamFolder() : oData.trashFolder())
+		oMoveFolder = null,
+		nSetSystemFoldersNotification = null
 	;
+
+	switch (iDeleteType)
+	{
+		case Enums.FolderType.Spam:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
+			break;
+		case Enums.FolderType.Trash:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Trash;
+			break;
+		case Enums.FolderType.Archive:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.archiveFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Archive;
+			break;
+	}
 
 	bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 	if (bUseFolder)
 	{
 		if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === oData.spamFolder()) ||
-			(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()))
+			(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()) ||
+			(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === oData.archiveFolder()))
 		{
 			bUseFolder = false;
 		}
 	}
 
-	if (!oTrashOrSpamFolder && bUseFolder)
+	if (!oMoveFolder && bUseFolder)
 	{
-		kn.showScreenPopup(PopupsFolderSystemViewModel, [
-			Enums.FolderType.Spam === iDeleteType ? Enums.SetSystemFoldersNotification.Spam : Enums.SetSystemFoldersNotification.Trash]);
+		kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
 	}
-	else if (!bUseFolder || (sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder()))
+	else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType && 
+		(sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder())))
 	{
 		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
@@ -248,16 +265,16 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		
 		}]);
 	}
-	else if (oTrashOrSpamFolder)
+	else if (oMoveFolder)
 	{
 		RL.remote().messagesMove(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
-			oTrashOrSpamFolder.fullNameRaw,
+			oMoveFolder.fullNameRaw,
 			aUidForRemove
 		);
 
-		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oTrashOrSpamFolder.fullNameRaw);
+		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 	}
 };
 

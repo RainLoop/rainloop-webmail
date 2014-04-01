@@ -17,5 +17,5 @@ class FolderType
 	const TRASH = 5;
 	const IMPORTANT = 10;
 	const STARRED = 11;
-	const ALLMAIL = 12;
+	const ARCHIVE = 12;
 }

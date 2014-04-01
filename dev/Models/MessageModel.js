@@ -1046,7 +1046,7 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 			aRes = [],
 			mPgpMessage = null,
 			sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			aPublicKey = RL.data().findPublicKeysByEmail(sFrom),
+			aPublicKeys = RL.data().findPublicKeysByEmail(sFrom),
 			oValidKey = null,
 			oValidSysKey = null,
 			sPlain = ''
@@ -1060,9 +1060,10 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 			mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
 			if (mPgpMessage && mPgpMessage.getText)
 			{
-				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+				this.pgpSignedVerifyStatus(
+					aPublicKeys.length ? Enums.SignedVerifyStatus.Unverified : Enums.SignedVerifyStatus.UnknownPublicKeys);
 
-				aRes = mPgpMessage.verify(aPublicKey);
+				aRes = mPgpMessage.verify(aPublicKeys);
 				if (aRes && 0 < aRes.length)
 				{
 					oValidKey = _.find(aRes, function (oItem) {
@@ -1090,6 +1091,78 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 							this.replacePlaneTextBody(sPlain);
 						}
 					}
+				}
+			}
+		}
+		catch (oExc) {}
+
+		this.storePgpVerifyDataToDom();
+	}
+};
+
+MessageModel.prototype.decryptPgpEncryptedMessage = function (sPassword)
+{
+	if (this.isPgpEncrypted())
+	{
+		var
+			aRes = [],
+			mPgpMessage = null,
+			mPgpMessageDecrypted = null,
+			sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
+			aPublicKey = RL.data().findPublicKeysByEmail(sFrom),
+			oPrivateKey = RL.data().findSelfPrivateKey(sPassword),
+			oValidKey = null,
+			oValidSysKey = null,
+			sPlain = ''
+		;
+
+		this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
+		this.pgpSignedVerifyUser('');
+
+		if (!oPrivateKey)
+		{
+			this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.UnknownPrivateKey);
+		}
+
+		try
+		{
+			mPgpMessage = window.openpgp.message.readArmored(this.plainRaw);
+			if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
+			{
+				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+
+				mPgpMessageDecrypted = mPgpMessage.decrypt(oPrivateKey);
+				if (mPgpMessageDecrypted)
+				{
+					aRes = mPgpMessageDecrypted.verify(aPublicKey);
+					if (aRes && 0 < aRes.length)
+					{
+						oValidKey = _.find(aRes, function (oItem) {
+							return oItem && oItem.keyid && oItem.valid;
+						});
+
+						if (oValidKey)
+						{
+							oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex());
+							if (oValidSysKey)
+							{
+								this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
+								this.pgpSignedVerifyUser(oValidSysKey.user);
+							}
+						}
+					}
+
+					sPlain = mPgpMessageDecrypted.getText();
+
+					sPlain =
+						$proxyDiv.empty().append(
+							$('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
+						).html()
+					;
+
+					$proxyDiv.empty();
+
+					this.replacePlaneTextBody(sPlain);
 				}
 			}
 		}

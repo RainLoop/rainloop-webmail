@@ -207,6 +207,9 @@ FolderModel.prototype.initComputed = function ()
 				case Enums.FolderType.Trash:
 					sName = Utils.i18n('FOLDER_LIST/TRASH_NAME');
 					break;
+				case Enums.FolderType.Archive:
+					sName = Utils.i18n('FOLDER_LIST/ARCHIVE_NAME');
+					break;
 			}
 		}
 
@@ -242,6 +245,9 @@ FolderModel.prototype.initComputed = function ()
 					break;
 				case Enums.FolderType.Trash:
 					sSuffix = '(' + Utils.i18n('FOLDER_LIST/TRASH_NAME') + ')';
+					break;
+				case Enums.FolderType.Archive:
+					sSuffix = '(' + Utils.i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
 					break;
 			}
 		}

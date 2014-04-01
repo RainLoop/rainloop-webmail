@@ -33,6 +33,7 @@ function PopupsFolderSystemViewModel()
 	this.draftFolder = oData.draftFolder;
 	this.spamFolder = oData.spamFolder;
 	this.trashFolder = oData.trashFolder;
+	this.archiveFolder = oData.archiveFolder;
 	
 	fSaveSystemFolders = _.debounce(function () {
 
@@ -40,12 +41,14 @@ function PopupsFolderSystemViewModel()
 		RL.settingsSet('DraftFolder', self.draftFolder());
 		RL.settingsSet('SpamFolder', self.spamFolder());
 		RL.settingsSet('TrashFolder', self.trashFolder());
+		RL.settingsSet('ArchiveFolder', self.archiveFolder());
 
 		RL.remote().saveSystemFolders(Utils.emptyFunction, {
 			'SentFolder': self.sentFolder(),
 			'DraftFolder': self.draftFolder(),
 			'SpamFolder': self.spamFolder(),
 			'TrashFolder': self.trashFolder(),
+			'ArchiveFolder': self.archiveFolder(),
 			'NullFolder': 'NullFolder'
 		});
 		
@@ -57,6 +60,7 @@ function PopupsFolderSystemViewModel()
 		RL.settingsSet('DraftFolder', self.draftFolder());
 		RL.settingsSet('SpamFolder', self.spamFolder());
 		RL.settingsSet('TrashFolder', self.trashFolder());
+		RL.settingsSet('ArchiveFolder', self.archiveFolder());
 
 		fSaveSystemFolders();
 	};
@@ -65,6 +69,7 @@ function PopupsFolderSystemViewModel()
 	this.draftFolder.subscribe(fCallback);
 	this.spamFolder.subscribe(fCallback);
 	this.trashFolder.subscribe(fCallback);
+	this.archiveFolder.subscribe(fCallback);
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
@@ -98,6 +103,9 @@ PopupsFolderSystemViewModel.prototype.onShow = function (iNotificationType)
 			break;
 		case Enums.SetSystemFoldersNotification.Trash:
 			sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
+			break;
+		case Enums.SetSystemFoldersNotification.Archive:
+			sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
 			break;
 	}
 

@@ -14,23 +14,26 @@
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: !isDraftFolder()">
-					<a class="btn buttonReply" data-placement="bottom" data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+					<a class="btn btn-dark-disabled-border buttonReply" data-placement="bottom" data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
 						<i class="icon-reply"></i>
 					</a>
-					<a class="btn buttonReplyAll" data-placement="bottom" data-bind="command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+					<a class="btn btn-dark-disabled-border buttonReplyAll" data-placement="bottom" data-bind="command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
 						<i class="icon-reply-all"></i>
 					</a>
-					<a class="btn buttonForward" data-placement="bottom" data-bind=" command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+					<a class="btn btn-dark-disabled-border buttonForward" data-placement="bottom" data-bind=" command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
 						<i class="icon-forward"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group btn-group-custom-margin">
-					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
-						<i class="icon-trash icon-white"></i>
+				<div class="btn-group">
+					<a class="btn btn-dark-disabled-border button-archive" data-placement="bottom" data-bind="visible: !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
+						<i class="icon-archive"></i>
 					</a>
-					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !isDraftFolder(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-placement="bottom" data-bind="visible: !isDraftFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
+					</a>
+					<a class="btn btn-dark-disabled-border button-delete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
+						<i class="icon-trash"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
@@ -201,15 +204,14 @@
 									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned() && isPgpActionVisible(), click: function() { verifyPgpSignedClearMessage(message()); }">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										OpenPGP signed message (click to verify)
+										<span class="i18n" data-i18n-text="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
 									</div>
-									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted()">
+									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted() && isPgpActionVisible()">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										<span data-bind="click: function() { decryptPgpEncryptedMessage(message()); }">
-											OpenPGP encrypted message (click to decrypt)
-										</span>
-										<input type="password" />
+										<span class="i18n" data-i18n-text="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC" data-bind="click: function() { decryptPgpEncryptedMessage(message()); }"></span>
+										&nbsp;&nbsp;
+										<input type="password" class="i18n span3 inputPgpPassword" style="margin-bottom: 0" data-i18n-placeholder="MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword" />
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">

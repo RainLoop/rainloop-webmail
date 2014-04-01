@@ -36,8 +36,6 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
-	this.openPGPInformation = ko.observable('');
-	this.openPGPInformation.isError = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -80,6 +78,17 @@ function MailBoxMessageViewViewModel()
 
 	}, this.messageVisibility);
 	
+	this.archiveCommand = Utils.createCommand(this, function () {
+
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+
+	}, this.messageVisibility);
+	
 	this.spamCommand = Utils.createCommand(this, function () {
 
 		if (this.message())
@@ -107,6 +116,7 @@ function MailBoxMessageViewViewModel()
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
 	
+	this.viewPgpPassword = ko.observable('');
 	this.viewPgpSignedVerifyStatus = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
 	}, this);
@@ -114,10 +124,13 @@ function MailBoxMessageViewViewModel()
 	this.viewPgpSignedVerifyUser = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyUser() : '';
 	}, this);
+	
 
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
+
+		this.viewPgpPassword('');
 
 		if (oMessage)
 		{
@@ -207,6 +220,12 @@ MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
 	switch (this.viewPgpSignedVerifyStatus())
 	{
 		// TODO i18n
+		case Enums.SignedVerifyStatus.UnknownPublicKeys:
+			sResult = 'No public keys found';
+			break;
+		case Enums.SignedVerifyStatus.UnknownPrivateKey:
+			sResult = 'No private key found';
+			break;
 		case Enums.SignedVerifyStatus.Unverified:
 			sResult = 'Unverified signature';
 			break;
@@ -362,6 +381,38 @@ MailBoxMessageViewViewModel.prototype.isSentFolder = function ()
 /**
  * @return {boolean}
  */
+MailBoxMessageViewViewModel.prototype.isSpamFolder = function ()
+{
+	return RL.data().message() && RL.data().spamFolder() === RL.data().message().folderFullNameRaw;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isSpamDisabled = function ()
+{
+	return RL.data().message() && RL.data().spamFolder() === Consts.Values.UnuseOptionValue;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isArchiveFolder = function ()
+{
+	return RL.data().message() && RL.data().archiveFolder() === RL.data().message().folderFullNameRaw;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isArchiveDisabled = function ()
+{
+	return RL.data().message() && RL.data().archiveFolder() === Consts.Values.UnuseOptionValue;
+};
+
+/**
+ * @return {boolean}
+ */
 MailBoxMessageViewViewModel.prototype.isDraftOrSentFolder = function ()
 {
 	return this.isDraftFolder() || this.isSentFolder();
@@ -417,7 +468,7 @@ MailBoxMessageViewViewModel.prototype.decryptPgpEncryptedMessage = function (oMe
 {
 	if (oMessage)
 	{
-		oMessage.decryptPgpEncryptedMessage();
+		oMessage.decryptPgpEncryptedMessage(this.viewPgpPassword());
 	}
 };
 

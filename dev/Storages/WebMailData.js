@@ -48,16 +48,19 @@ function WebMailDataStorage()
 	this.draftFolder = ko.observable('');
 	this.spamFolder = ko.observable('');
 	this.trashFolder = ko.observable('');
+	this.archiveFolder = ko.observable('');
 
 	this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
 	this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
 	this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
 	this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
+	this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
 
 	this.sentFolder.subscribe(fSetSystemFolderType(Enums.FolderType.SentItems), this);
 	this.draftFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Draft), this);
 	this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
 	this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
+	this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
 
 	this.draftFolderNotEnabled = ko.computed(function () {
 		return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
@@ -138,7 +141,8 @@ function WebMailDataStorage()
 			sSentFolder = this.sentFolder(),
 			sDraftFolder = this.draftFolder(),
 			sSpamFolder = this.spamFolder(),
-			sTrashFolder = this.trashFolder()
+			sTrashFolder = this.trashFolder(),
+			sArchiveFolder = this.archiveFolder()
 		;
 
 		if (Utils.isArray(aFolders) && 0 < aFolders.length)
@@ -158,6 +162,10 @@ function WebMailDataStorage()
 			if ('' !== sTrashFolder && Consts.Values.UnuseOptionValue !== sTrashFolder)
 			{
 				aList.push(sTrashFolder);
+			}
+			if ('' !== sArchiveFolder && Consts.Values.UnuseOptionValue !== sArchiveFolder)
+			{
+				aList.push(sArchiveFolder);
 			}
 		}
 
@@ -625,13 +633,15 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 
 		if (oData.Result['SystemFolders'] &&
 			'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
-			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('NullFolder'))
+			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('ArchiveFolder') +
+			RL.settingsGet('NullFolder'))
 		{
 			// TODO Magic Numbers
 			RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
 			RL.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
 			RL.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
 			RL.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
+			RL.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
 
 			bUpdate = true;
 		}
@@ -640,6 +650,7 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 		oRLData.draftFolder(fNormalizeFolder(RL.settingsGet('DraftFolder')));
 		oRLData.spamFolder(fNormalizeFolder(RL.settingsGet('SpamFolder')));
 		oRLData.trashFolder(fNormalizeFolder(RL.settingsGet('TrashFolder')));
+		oRLData.archiveFolder(fNormalizeFolder(RL.settingsGet('ArchiveFolder')));
 
 		if (bUpdate)
 		{
@@ -648,6 +659,7 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 				'DraftFolder': oRLData.draftFolder(),
 				'SpamFolder': oRLData.spamFolder(),
 				'TrashFolder': oRLData.trashFolder(),
+				'ArchiveFolder': oRLData.archiveFolder(),
 				'NullFolder': 'NullFolder'
 			});
 		}
@@ -838,7 +850,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		sPlain = '',
 		bPgpSigned = false,
 		bPgpEncrypted = false,
-		mPgpMessage = null,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
 		oMessage = this.message()
 	;
@@ -903,12 +914,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-//							try
-//							{
-//								mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
-//							}
-//							catch (oExc) {}
-
 							sPlain = 
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
@@ -1157,7 +1162,12 @@ WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	}));
 };
 
-WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
+/**
+ * @param {string} sEmail
+ * @param {string=} sPassword
+ * @returns {?}
+ */
+WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 {
 	var
 		oPrivateKey = null,
@@ -1174,7 +1184,7 @@ WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
 			if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
 			{
 				oPrivateKey = oPrivateKey.keys[0];
-				oPrivateKey.decrypt(sPass);
+				oPrivateKey.decrypt(Utils.pString(sPassword));
 			}
 			else
 			{
@@ -1188,4 +1198,13 @@ WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
 	}
 
 	return oPrivateKey;
+};
+
+/**
+ * @param {string=} sPassword
+ * @returns {?}
+ */
+WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
+{
+	return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 };

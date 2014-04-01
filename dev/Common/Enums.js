@@ -36,6 +36,7 @@ Enums.FolderType = {
 	'Draft': 12,
 	'Trash': 13,
 	'Spam': 14,
+	'Archive': 15,
 	'User': 99
 };
 
@@ -92,7 +93,8 @@ Enums.SetSystemFoldersNotification = {
 	'Sent': 1,
 	'Draft': 2,
 	'Spam': 3,
-	'Trash': 4
+	'Trash': 4,
+	'Archive': 5
 };
 
 /**
@@ -254,6 +256,8 @@ Enums.ContactScopeType = {
  * @enum {number}
  */
 Enums.SignedVerifyStatus = {
+	'UnknownPublicKeys': -4,
+	'UnknownPrivateKey': -3,
 	'Unverified': -2,
 	'Error': -1,
 	'None': 0,

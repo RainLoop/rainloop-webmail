@@ -21,13 +21,16 @@
 					</ul>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group btn-group-custom-margin">
-					<a class="btn buttonDelete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE'">
-						<i class="icon-trash"></i>
-						<span data-bind="text: 1 < messageListCheckedOrSelectedUidsWithSubMails().length ? ' (' + messageListCheckedOrSelectedUidsWithSubMails().length + ')' : ''"></span>
+				<div class="btn-group">
+					<a class="btn btn-dark-disabled-border button-archive" data-placement="bottom" data-bind="visible: !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
+						<i class="icon-archive"></i>
 					</a>
-					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-placement="bottom" data-bind="visible: !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
+					</a>
+					<a class="btn btn-dark-disabled-border button-delete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE'">
+						<i class="icon-trash"></i>
+						<span data-bind="text: printableMessageCountForDeletion()"></span>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>

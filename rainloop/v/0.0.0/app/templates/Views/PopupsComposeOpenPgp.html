@@ -14,16 +14,18 @@
 					</div>
 					<br />
 					<div class="control-group">
-						<label data-bind="click: function () { sign(!sign()); }">
-							<i data-bind="css: sign() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							&nbsp;&nbsp;
-							<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN"></span>
-						</label>
-						<label data-bind="click: function () { encrypt(!encrypt()); }">
-							<i data-bind="css: encrypt() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							&nbsp;&nbsp;
-							<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT"></span>
-						</label>
+						<div class="controls">
+							<label data-bind="click: function () { sign(!sign()); }">
+								<i data-bind="css: sign() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN"></span>
+							</label>
+							<label data-bind="click: function () { encrypt(!encrypt()); }">
+								<i data-bind="css: encrypt() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT"></span>
+							</label>
+						</div>
 					</div>
 					<div class="control-group">
 						<label class="i18n control-label" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"></label>
@@ -38,7 +40,9 @@
 				<a class="btn buttonDo" data-bind="command: doCommand">
 					<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_DO"></span>
+					<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
+					<span class="i18n" data-bind="visible: !sign() && encrypt()" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
+					<span class="i18n" data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
 				</a>
 			</div>
 		</div>

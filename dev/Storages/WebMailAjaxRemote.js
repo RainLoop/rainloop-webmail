@@ -22,7 +22,8 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
 		'SentFolder': RL.settingsGet('SentFolder'),
 		'DraftFolder': RL.settingsGet('DraftFolder'),
 		'SpamFolder': RL.settingsGet('SpamFolder'),
-		'TrashFolder': RL.settingsGet('TrashFolder')
+		'TrashFolder': RL.settingsGet('TrashFolder'),
+		'ArchiveFolder': RL.settingsGet('ArchiveFolder')
 	}, null, '', ['Folders']);
 };
 

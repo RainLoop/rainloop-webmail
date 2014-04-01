@@ -380,6 +380,7 @@ Enums.FolderType = {
 	'Draft': 12,
 	'Trash': 13,
 	'Spam': 14,
+	'Archive': 15,
 	'User': 99
 };
 
@@ -436,7 +437,8 @@ Enums.SetSystemFoldersNotification = {
 	'Sent': 1,
 	'Draft': 2,
 	'Spam': 3,
-	'Trash': 4
+	'Trash': 4,
+	'Archive': 5
 };
 
 /**
@@ -598,6 +600,8 @@ Enums.ContactScopeType = {
  * @enum {number}
  */
 Enums.SignedVerifyStatus = {
+	'UnknownPublicKeys': -4,
+	'UnknownPrivateKey': -3,
 	'Unverified': -2,
 	'Error': -1,
 	'None': 0,
@@ -7066,7 +7070,7 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 			aRes = [],
 			mPgpMessage = null,
 			sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			aPublicKey = RL.data().findPublicKeysByEmail(sFrom),
+			aPublicKeys = RL.data().findPublicKeysByEmail(sFrom),
 			oValidKey = null,
 			oValidSysKey = null,
 			sPlain = ''
@@ -7080,9 +7084,10 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 			mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
 			if (mPgpMessage && mPgpMessage.getText)
 			{
-				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+				this.pgpSignedVerifyStatus(
+					aPublicKeys.length ? Enums.SignedVerifyStatus.Unverified : Enums.SignedVerifyStatus.UnknownPublicKeys);
 
-				aRes = mPgpMessage.verify(aPublicKey);
+				aRes = mPgpMessage.verify(aPublicKeys);
 				if (aRes && 0 < aRes.length)
 				{
 					oValidKey = _.find(aRes, function (oItem) {
@@ -7110,6 +7115,78 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 							this.replacePlaneTextBody(sPlain);
 						}
 					}
+				}
+			}
+		}
+		catch (oExc) {}
+
+		this.storePgpVerifyDataToDom();
+	}
+};
+
+MessageModel.prototype.decryptPgpEncryptedMessage = function (sPassword)
+{
+	if (this.isPgpEncrypted())
+	{
+		var
+			aRes = [],
+			mPgpMessage = null,
+			mPgpMessageDecrypted = null,
+			sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
+			aPublicKey = RL.data().findPublicKeysByEmail(sFrom),
+			oPrivateKey = RL.data().findSelfPrivateKey(sPassword),
+			oValidKey = null,
+			oValidSysKey = null,
+			sPlain = ''
+		;
+
+		this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
+		this.pgpSignedVerifyUser('');
+
+		if (!oPrivateKey)
+		{
+			this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.UnknownPrivateKey);
+		}
+
+		try
+		{
+			mPgpMessage = window.openpgp.message.readArmored(this.plainRaw);
+			if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
+			{
+				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+
+				mPgpMessageDecrypted = mPgpMessage.decrypt(oPrivateKey);
+				if (mPgpMessageDecrypted)
+				{
+					aRes = mPgpMessageDecrypted.verify(aPublicKey);
+					if (aRes && 0 < aRes.length)
+					{
+						oValidKey = _.find(aRes, function (oItem) {
+							return oItem && oItem.keyid && oItem.valid;
+						});
+
+						if (oValidKey)
+						{
+							oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex());
+							if (oValidSysKey)
+							{
+								this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
+								this.pgpSignedVerifyUser(oValidSysKey.user);
+							}
+						}
+					}
+
+					sPlain = mPgpMessageDecrypted.getText();
+
+					sPlain =
+						$proxyDiv.empty().append(
+							$('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
+						).html()
+					;
+
+					$proxyDiv.empty();
+
+					this.replacePlaneTextBody(sPlain);
 				}
 			}
 		}
@@ -7334,6 +7411,9 @@ FolderModel.prototype.initComputed = function ()
 				case Enums.FolderType.Trash:
 					sName = Utils.i18n('FOLDER_LIST/TRASH_NAME');
 					break;
+				case Enums.FolderType.Archive:
+					sName = Utils.i18n('FOLDER_LIST/ARCHIVE_NAME');
+					break;
 			}
 		}
 
@@ -7369,6 +7449,9 @@ FolderModel.prototype.initComputed = function ()
 					break;
 				case Enums.FolderType.Trash:
 					sSuffix = '(' + Utils.i18n('FOLDER_LIST/TRASH_NAME') + ')';
+					break;
+				case Enums.FolderType.Archive:
+					sSuffix = '(' + Utils.i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
 					break;
 			}
 		}
@@ -7788,6 +7871,7 @@ function PopupsFolderSystemViewModel()
 	this.draftFolder = oData.draftFolder;
 	this.spamFolder = oData.spamFolder;
 	this.trashFolder = oData.trashFolder;
+	this.archiveFolder = oData.archiveFolder;
 	
 	fSaveSystemFolders = _.debounce(function () {
 
@@ -7795,12 +7879,14 @@ function PopupsFolderSystemViewModel()
 		RL.settingsSet('DraftFolder', self.draftFolder());
 		RL.settingsSet('SpamFolder', self.spamFolder());
 		RL.settingsSet('TrashFolder', self.trashFolder());
+		RL.settingsSet('ArchiveFolder', self.archiveFolder());
 
 		RL.remote().saveSystemFolders(Utils.emptyFunction, {
 			'SentFolder': self.sentFolder(),
 			'DraftFolder': self.draftFolder(),
 			'SpamFolder': self.spamFolder(),
 			'TrashFolder': self.trashFolder(),
+			'ArchiveFolder': self.archiveFolder(),
 			'NullFolder': 'NullFolder'
 		});
 		
@@ -7812,6 +7898,7 @@ function PopupsFolderSystemViewModel()
 		RL.settingsSet('DraftFolder', self.draftFolder());
 		RL.settingsSet('SpamFolder', self.spamFolder());
 		RL.settingsSet('TrashFolder', self.trashFolder());
+		RL.settingsSet('ArchiveFolder', self.archiveFolder());
 
 		fSaveSystemFolders();
 	};
@@ -7820,6 +7907,7 @@ function PopupsFolderSystemViewModel()
 	this.draftFolder.subscribe(fCallback);
 	this.spamFolder.subscribe(fCallback);
 	this.trashFolder.subscribe(fCallback);
+	this.archiveFolder.subscribe(fCallback);
 
 	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
@@ -7853,6 +7941,9 @@ PopupsFolderSystemViewModel.prototype.onShow = function (iNotificationType)
 			break;
 		case Enums.SetSystemFoldersNotification.Trash:
 			sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
+			break;
+		case Enums.SetSystemFoldersNotification.Archive:
+			sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
 			break;
 	}
 
@@ -10468,7 +10559,8 @@ function PopupsComposeOpenPgpViewModel()
 
 		if (bResult && this.encrypt())
 		{
-			aPublicKeys = _.compact(_.union(this.to(), function (sEmail) {
+			aPublicKeys = [];
+			_.each(this.to(), function (sEmail) {
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
@@ -10476,11 +10568,10 @@ function PopupsComposeOpenPgpViewModel()
 					self.notification('No public key found for "' + sEmail + '" email');
 					bResult = false;
 				}
-				
-				return aKeys;
-				
-			}));
 
+				aPublicKeys = aPublicKeys.concat(aKeys);
+			});
+			
 			if (bResult && (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length))
 			{
 				bResult = false;
@@ -11534,15 +11625,26 @@ function MailBoxMessageListViewModel()
 	}, this);
 
 	this.isSpamFolder = ko.computed(function () {
-		return RL.data().spamFolder() === this.messageListEndFolder();
+		return oData.spamFolder() === this.messageListEndFolder() &&
+			'' !== oData.spamFolder();
 	}, this);
 
 	this.isSpamDisabled = ko.computed(function () {
-		return Consts.Values.UnuseOptionValue === RL.data().spamFolder();
+		return Consts.Values.UnuseOptionValue === oData.spamFolder();
 	}, this);
 
 	this.isTrashFolder = ko.computed(function () {
-		return RL.data().trashFolder() === this.messageListEndFolder();
+		return oData.trashFolder() === this.messageListEndFolder() &&
+			'' !== oData.trashFolder();
+	}, this);
+
+	this.isArchiveFolder = ko.computed(function () {
+		return oData.archiveFolder() === this.messageListEndFolder() &&
+			'' !== oData.archiveFolder();
+	}, this);
+
+	this.isArchiveDisabled = ko.computed(function () {
+		return Consts.Values.UnuseOptionValue === RL.data().archiveFolder();
 	}, this);
 
 	this.canBeMoved = this.hasCheckedOrSelectedLines;
@@ -11563,6 +11665,12 @@ function MailBoxMessageListViewModel()
 
 	this.deleteCommand = Utils.createCommand(this, function () {
 		RL.deleteMessagesFromFolder(Enums.FolderType.Trash, 
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}, this.canBeMoved);
+
+	this.archiveCommand = Utils.createCommand(this, function () {
+		RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
 			RL.data().currentFolderFullNameRaw(),
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
@@ -11642,6 +11750,15 @@ MailBoxMessageListViewModel.prototype.searchEnterAction = function ()
 {
 	this.mainMessageListSearch(this.sLastSearchValue);
 	this.inputMessageListSearchFocus(false);
+};
+
+/**
+ * @returns {string}
+ */
+MailBoxMessageListViewModel.prototype.printableMessageCountForDeletion = function ()
+{
+	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+	return 1 < iCnt ? ' (' + (100 > iCnt ? iCnt : '99+') + ')' : '';
 };
 
 MailBoxMessageListViewModel.prototype.cancelSearch = function ()
@@ -12167,8 +12284,6 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
-	this.openPGPInformation = ko.observable('');
-	this.openPGPInformation.isError = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -12211,6 +12326,17 @@ function MailBoxMessageViewViewModel()
 
 	}, this.messageVisibility);
 	
+	this.archiveCommand = Utils.createCommand(this, function () {
+
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+
+	}, this.messageVisibility);
+	
 	this.spamCommand = Utils.createCommand(this, function () {
 
 		if (this.message())
@@ -12238,6 +12364,7 @@ function MailBoxMessageViewViewModel()
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
 	
+	this.viewPgpPassword = ko.observable('');
 	this.viewPgpSignedVerifyStatus = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
 	}, this);
@@ -12245,10 +12372,13 @@ function MailBoxMessageViewViewModel()
 	this.viewPgpSignedVerifyUser = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyUser() : '';
 	}, this);
+	
 
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
+
+		this.viewPgpPassword('');
 
 		if (oMessage)
 		{
@@ -12338,6 +12468,12 @@ MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
 	switch (this.viewPgpSignedVerifyStatus())
 	{
 		// TODO i18n
+		case Enums.SignedVerifyStatus.UnknownPublicKeys:
+			sResult = 'No public keys found';
+			break;
+		case Enums.SignedVerifyStatus.UnknownPrivateKey:
+			sResult = 'No private key found';
+			break;
 		case Enums.SignedVerifyStatus.Unverified:
 			sResult = 'Unverified signature';
 			break;
@@ -12493,6 +12629,38 @@ MailBoxMessageViewViewModel.prototype.isSentFolder = function ()
 /**
  * @return {boolean}
  */
+MailBoxMessageViewViewModel.prototype.isSpamFolder = function ()
+{
+	return RL.data().message() && RL.data().spamFolder() === RL.data().message().folderFullNameRaw;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isSpamDisabled = function ()
+{
+	return RL.data().message() && RL.data().spamFolder() === Consts.Values.UnuseOptionValue;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isArchiveFolder = function ()
+{
+	return RL.data().message() && RL.data().archiveFolder() === RL.data().message().folderFullNameRaw;
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.isArchiveDisabled = function ()
+{
+	return RL.data().message() && RL.data().archiveFolder() === Consts.Values.UnuseOptionValue;
+};
+
+/**
+ * @return {boolean}
+ */
 MailBoxMessageViewViewModel.prototype.isDraftOrSentFolder = function ()
 {
 	return this.isDraftFolder() || this.isSentFolder();
@@ -12548,7 +12716,7 @@ MailBoxMessageViewViewModel.prototype.decryptPgpEncryptedMessage = function (oMe
 {
 	if (oMessage)
 	{
-		oMessage.decryptPgpEncryptedMessage();
+		oMessage.decryptPgpEncryptedMessage(this.viewPgpPassword());
 	}
 };
 
@@ -13905,16 +14073,19 @@ function WebMailDataStorage()
 	this.draftFolder = ko.observable('');
 	this.spamFolder = ko.observable('');
 	this.trashFolder = ko.observable('');
+	this.archiveFolder = ko.observable('');
 
 	this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
 	this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
 	this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
 	this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
+	this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
 
 	this.sentFolder.subscribe(fSetSystemFolderType(Enums.FolderType.SentItems), this);
 	this.draftFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Draft), this);
 	this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
 	this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
+	this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
 
 	this.draftFolderNotEnabled = ko.computed(function () {
 		return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
@@ -13995,7 +14166,8 @@ function WebMailDataStorage()
 			sSentFolder = this.sentFolder(),
 			sDraftFolder = this.draftFolder(),
 			sSpamFolder = this.spamFolder(),
-			sTrashFolder = this.trashFolder()
+			sTrashFolder = this.trashFolder(),
+			sArchiveFolder = this.archiveFolder()
 		;
 
 		if (Utils.isArray(aFolders) && 0 < aFolders.length)
@@ -14015,6 +14187,10 @@ function WebMailDataStorage()
 			if ('' !== sTrashFolder && Consts.Values.UnuseOptionValue !== sTrashFolder)
 			{
 				aList.push(sTrashFolder);
+			}
+			if ('' !== sArchiveFolder && Consts.Values.UnuseOptionValue !== sArchiveFolder)
+			{
+				aList.push(sArchiveFolder);
 			}
 		}
 
@@ -14482,13 +14658,15 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 
 		if (oData.Result['SystemFolders'] &&
 			'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
-			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('NullFolder'))
+			RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('ArchiveFolder') +
+			RL.settingsGet('NullFolder'))
 		{
 			// TODO Magic Numbers
 			RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
 			RL.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
 			RL.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
 			RL.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
+			RL.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
 
 			bUpdate = true;
 		}
@@ -14497,6 +14675,7 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 		oRLData.draftFolder(fNormalizeFolder(RL.settingsGet('DraftFolder')));
 		oRLData.spamFolder(fNormalizeFolder(RL.settingsGet('SpamFolder')));
 		oRLData.trashFolder(fNormalizeFolder(RL.settingsGet('TrashFolder')));
+		oRLData.archiveFolder(fNormalizeFolder(RL.settingsGet('ArchiveFolder')));
 
 		if (bUpdate)
 		{
@@ -14505,6 +14684,7 @@ WebMailDataStorage.prototype.setFolders = function (oData)
 				'DraftFolder': oRLData.draftFolder(),
 				'SpamFolder': oRLData.spamFolder(),
 				'TrashFolder': oRLData.trashFolder(),
+				'ArchiveFolder': oRLData.archiveFolder(),
 				'NullFolder': 'NullFolder'
 			});
 		}
@@ -14695,7 +14875,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		sPlain = '',
 		bPgpSigned = false,
 		bPgpEncrypted = false,
-		mPgpMessage = null,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
 		oMessage = this.message()
 	;
@@ -14760,12 +14939,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-//							try
-//							{
-//								mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
-//							}
-//							catch (oExc) {}
-
 							sPlain = 
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
@@ -15014,7 +15187,12 @@ WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	}));
 };
 
-WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
+/**
+ * @param {string} sEmail
+ * @param {string=} sPassword
+ * @returns {?}
+ */
+WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 {
 	var
 		oPrivateKey = null,
@@ -15031,7 +15209,7 @@ WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
 			if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
 			{
 				oPrivateKey = oPrivateKey.keys[0];
-				oPrivateKey.decrypt(sPass);
+				oPrivateKey.decrypt(Utils.pString(sPassword));
 			}
 			else
 			{
@@ -15045,6 +15223,15 @@ WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
 	}
 
 	return oPrivateKey;
+};
+
+/**
+ * @param {string=} sPassword
+ * @returns {?}
+ */
+WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
+{
+	return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 };
 
 /**
@@ -15343,7 +15530,8 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
 		'SentFolder': RL.settingsGet('SentFolder'),
 		'DraftFolder': RL.settingsGet('DraftFolder'),
 		'SpamFolder': RL.settingsGet('SpamFolder'),
-		'TrashFolder': RL.settingsGet('TrashFolder')
+		'TrashFolder': RL.settingsGet('TrashFolder'),
+		'ArchiveFolder': RL.settingsGet('ArchiveFolder')
 	}, null, '', ['Folders']);
 };
 
@@ -17342,26 +17530,43 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		self = this,
 		oData = RL.data(),
 		oCache = RL.cache(),
-		oTrashOrSpamFolder = oCache.getFolderFromCacheList(
-			Enums.FolderType.Spam === iDeleteType ? oData.spamFolder() : oData.trashFolder())
+		oMoveFolder = null,
+		nSetSystemFoldersNotification = null
 	;
+
+	switch (iDeleteType)
+	{
+		case Enums.FolderType.Spam:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
+			break;
+		case Enums.FolderType.Trash:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Trash;
+			break;
+		case Enums.FolderType.Archive:
+			oMoveFolder = oCache.getFolderFromCacheList(oData.archiveFolder());
+			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Archive;
+			break;
+	}
 
 	bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 	if (bUseFolder)
 	{
 		if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === oData.spamFolder()) ||
-			(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()))
+			(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()) ||
+			(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === oData.archiveFolder()))
 		{
 			bUseFolder = false;
 		}
 	}
 
-	if (!oTrashOrSpamFolder && bUseFolder)
+	if (!oMoveFolder && bUseFolder)
 	{
-		kn.showScreenPopup(PopupsFolderSystemViewModel, [
-			Enums.FolderType.Spam === iDeleteType ? Enums.SetSystemFoldersNotification.Spam : Enums.SetSystemFoldersNotification.Trash]);
+		kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
 	}
-	else if (!bUseFolder || (sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder()))
+	else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType && 
+		(sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder())))
 	{
 		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
@@ -17375,16 +17580,16 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		
 		}]);
 	}
-	else if (oTrashOrSpamFolder)
+	else if (oMoveFolder)
 	{
 		RL.remote().messagesMove(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
-			oTrashOrSpamFolder.fullNameRaw,
+			oMoveFolder.fullNameRaw,
 			aUidForRemove
 		);
 
-		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oTrashOrSpamFolder.fullNameRaw);
+		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 	}
 };
 
