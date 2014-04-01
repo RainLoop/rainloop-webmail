@@ -36,6 +36,8 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.openPGPInformation = ko.observable('');
+	this.openPGPInformation.isError = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -105,6 +107,14 @@ function MailBoxMessageViewViewModel()
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
 	
+	this.viewPgpSignedVerifyStatus = ko.computed(function () {
+		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
+	}, this);
+
+	this.viewPgpSignedVerifyUser = ko.computed(function () {
+		return this.message() ? this.message().pgpSignedVerifyUser() : '';
+	}, this);
+
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
@@ -175,6 +185,41 @@ function MailBoxMessageViewViewModel()
 }
 
 Utils.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
+
+MailBoxMessageViewViewModel.prototype.isPgpActionVisible = function ()
+{
+	return Enums.SignedVerifyStatus.Success !== this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.isPgpStatusVerifyVisible = function ()
+{
+	return Enums.SignedVerifyStatus.None !== this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.isPgpStatusVerifySuccess = function ()
+{
+	return Enums.SignedVerifyStatus.Success === this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
+{
+	var sResult = '';
+	switch (this.viewPgpSignedVerifyStatus())
+	{
+		// TODO i18n
+		case Enums.SignedVerifyStatus.Unverified:
+			sResult = 'Unverified signature';
+			break;
+		case Enums.SignedVerifyStatus.Error:
+			sResult = 'OpenPGP decryption error';
+			break;
+		case Enums.SignedVerifyStatus.Success:
+			sResult = 'Good signature from ' + this.viewPgpSignedVerifyUser();
+			break;
+	}
+
+	return sResult;
+};
 
 MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
 {
@@ -351,6 +396,28 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 	if (oMessage && oMessage.showExternalImages)
 	{
 		oMessage.showExternalImages(true);
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.verifyPgpSignedClearMessage = function (oMessage)
+{
+	if (oMessage)
+	{
+		oMessage.verifyPgpSignedClearMessage();
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.decryptPgpEncryptedMessage = function (oMessage)
+{
+	if (oMessage)
+	{
+		oMessage.decryptPgpEncryptedMessage();
 	}
 };
 

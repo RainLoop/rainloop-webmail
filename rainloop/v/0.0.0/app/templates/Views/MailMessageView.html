@@ -2,58 +2,58 @@
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected}">
 		<div class="toolbar g-ui-user-select-none">
 			<div class="messageButtons btn-toolbar">
-				<div class="btn-group" data-placement="bottom" data-bind="visible: !$root.usePreviewPane(), tooltip: 'MESSAGE/BUTTON_CLOSE'">
-					<a class="btn buttonClose" data-bind="command: $root.closeMessage">
+				<div class="btn-group" data-placement="bottom" data-bind="visible: !usePreviewPane(), tooltip: 'MESSAGE/BUTTON_CLOSE'">
+					<a class="btn buttonClose" data-bind="command: closeMessage">
 						<i class="icon-remove"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group" data-placement="bottom" data-bind="visible: $root.isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
-					<a class="btn btn-success buttonEdit" data-bind="command: $root.messageEditCommand">
+				<div class="btn-group" data-placement="bottom" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
+					<a class="btn btn-success buttonEdit" data-bind="command: messageEditCommand">
 						<i class="icon-pencil icon-white"></i>
 					</a>
 				</div>
-				<div class="btn-group" data-bind="visible: !$root.isDraftFolder()">
-					<a class="btn buttonReply" data-placement="bottom" data-bind="command: $root.replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+				<div class="btn-group" data-bind="visible: !isDraftFolder()">
+					<a class="btn buttonReply" data-placement="bottom" data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
 						<i class="icon-reply"></i>
 					</a>
-					<a class="btn buttonReplyAll" data-placement="bottom" data-bind="command: $root.replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+					<a class="btn buttonReplyAll" data-placement="bottom" data-bind="command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
 						<i class="icon-reply-all"></i>
 					</a>
-					<a class="btn buttonForward" data-placement="bottom" data-bind=" command: $root.forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+					<a class="btn buttonForward" data-placement="bottom" data-bind=" command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
 						<i class="icon-forward"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group btn-group-custom-margin">
-					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: $root.deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
+					<a class="btn btn-danger buttonDelete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash icon-white"></i>
 					</a>
-					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !$root.isDraftFolder(), command: $root.spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn buttonSpam" data-placement="bottom" data-bind="visible: !isDraftFolder(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
-					<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown" data-bind="command: $root.messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
+					<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown" data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
 						<i class="icon-list"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu">
-						<li class="e-item" data-bind="visible: !$root.isDraftFolder()">
-							<a class="e-link" data-bind="command: $root.forwardAsAttachmentCommand">
+						<li class="e-item" data-bind="visible: !isDraftFolder()">
+							<a class="e-link" data-bind="command: forwardAsAttachmentCommand">
 								<i class="icon-reply"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
 							</a>
 						</li>
-						<li class="e-item" data-bind="visible: !$root.isDraftFolder()">
-							<a class="e-link" data-bind="command: $root.editAsNewCommand">
+						<li class="e-item" data-bind="visible: !isDraftFolder()">
+							<a class="e-link" data-bind="command: editAsNewCommand">
 								<i class="icon-pencil"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
 							</a>
 						</li>
-						<li class="divider" data-bind="visible: !$root.isDraftFolder()"></li>
+						<li class="divider" data-bind="visible: !isDraftFolder()"></li>
 						<li class="e-item">
 							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
 								<i class="icon-popup"></i>
@@ -86,11 +86,11 @@
 					</ul>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group" data-bind="visible: !$root.usePreviewPane()">
-					<a class="btn buttonUp" data-bind="command: $root.goUpCommand">
+				<div class="btn-group" data-bind="visible: !usePreviewPane()">
+					<a class="btn buttonUp" data-bind="command: goUpCommand">
 						<i class="icon-left-middle"></i>
 					</a>
-					<a class="btn buttonDown" data-bind="command: $root.goDownCommand">
+					<a class="btn buttonDown" data-bind="command: goDownCommand">
 						<i class="icon-right-middle"></i>
 					</a>
 				</div>
@@ -98,11 +98,11 @@
 		</div>
 		<div class="b-content thm-message-view-background-color">
 			<div>
-				<div class="b-message-view-desc" data-bind="visible: !message() && '' === $root.messageError()">
+				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError()">
 					<span class="i18n" data-i18n-text="MESSAGE/MESSAGE_VIEW_DESC"></span>
 				</div>
-				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== $root.messageError()">
-					<span class="text" data-bind="text: $root.messageError()"></span>
+				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">
+					<span class="text" data-bind="text: messageError()"></span>
 				</div>
 				<div data-bind="visible: message">
 					<div class="messageItem" data-bind="css: viewLineAsCcc(), nano: true">
@@ -127,14 +127,14 @@
 													<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
 												</div>
 												<div class="senderParent">
-													<div class="g-ui-user-select-none" style="float: left; cursor: pointer;" data-bind="click: function() { $root.showFullInfo(!$root.showFullInfo()); }">
-														<i class="icon-right-dir" data-bind="css: $root.showFullInfo() ? 'icon-down-dir' : 'icon-right-dir'"></i>
+													<div class="g-ui-user-select-none" style="float: left; cursor: pointer;" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
+														<i class="icon-right-dir" data-bind="css: showFullInfo() ? 'icon-down-dir' : 'icon-right-dir'"></i>
 													</div>
 													<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
-														<span data-bind="visible: !$root.isDraftOrSentFolder()">
+														<span data-bind="visible: !isDraftOrSentFolder()">
 															<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
 														</span>
-														<span data-bind="visible: $root.isDraftOrSentFolder()">
+														<span data-bind="visible: isDraftOrSentFolder()">
 															<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
 															<span class="to" data-bind="html: viewToShort, title: viewTo"></span>
 														</span>
@@ -143,7 +143,7 @@
 													<div class="clearfix"></div>
 												</div>
 											</div>
-											<div class="informationFull" data-bind="visible: $root.showFullInfo()">
+											<div class="informationFull" data-bind="visible: showFullInfo()">
 												<div data-bind="visible: '' !== viewFrom()">
 													<span class="i18n uiLabel labelFrom" data-i18n-text="MESSAGE/LABEL_FROM"></span>:
 													&nbsp;
@@ -175,33 +175,41 @@
 										</div>
 									</div>
 
-									<div class="line-loading e-strip-animation" data-bind="visible: $root.messageLoadingThrottle()"></div>
+									<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>
 
-									<div class="loading g-ui-min-height-300" data-bind="visible: $root.messageLoadingThrottle()">
+									<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
 										<span class="i18n text" data-i18n-text="MESSAGE/MESSAGE_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 									</div>
 								</div>
 
-								<div class="g-ui-min-height-300" data-bind="visible: !$root.messageLoadingThrottle()">
-									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { $root.showImages(message()); }">
+								<div class="g-ui-min-height-300" data-bind="visible: !messageLoadingThrottle()">
+									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { showImages(message()); }">
 										<i class="icon-image"></i>
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 									</div>
-									<div class="readReceipt" data-bind="visible: message() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { $root.readReceipt(message()); }">
+									<div class="readReceipt" data-bind="visible: message() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
 										<i class="icon-mail"></i>
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 									</div>
-									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned()">
+									<div class="pgpInfo" data-bind="visible: isPgpStatusVerifyVisible(), css: {'success': isPgpStatusVerifySuccess()}">
+										<i class="icon-key"></i>
+										&nbsp;&nbsp;
+										<span data-bind="text: pgpStatusVerifyMessage()"></span>
+									</div>
+									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned() && isPgpActionVisible(), click: function() { verifyPgpSignedClearMessage(message()); }">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										PGP signed
+										OpenPGP signed message (click to verify)
 									</div>
 									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted()">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										PGP encrypted
+										<span data-bind="click: function() { decryptPgpEncryptedMessage(message()); }">
+											OpenPGP encrypted message (click to decrypt)
+										</span>
+										<input type="password" />
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">

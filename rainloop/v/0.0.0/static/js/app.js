@@ -75,7 +75,11 @@ var
 /**
  * @type {?RainLoopApp}
  */
-var RL = null;
+var
+	RL = null,
+			
+	$proxyDiv = $('<div></div>')
+;
 /*jshint onevar: true*/
 
 /**
@@ -588,6 +592,16 @@ Enums.Layout = {
 Enums.ContactScopeType = {
 	'Default': 0,
 	'ShareAll': 2
+};
+
+/**
+ * @enum {number}
+ */
+Enums.SignedVerifyStatus = {
+	'Unverified': -2,
+	'Error': -1,
+	'None': 0,
+	'Success': 1
 };
 
 /**
@@ -6097,7 +6111,8 @@ function MessageModel()
 
 	this.isPgpSigned = ko.observable(false);
 	this.isPgpEncrypted = ko.observable(false);
-	this.pgpSignature = ko.observable('');
+	this.pgpSignedVerifyStatus = ko.observable(Enums.SignedVerifyStatus.None);
+	this.pgpSignedVerifyUser = ko.observable('');
 
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
 	this.readReceipt = ko.observable('');
@@ -6269,7 +6284,8 @@ MessageModel.prototype.clear = function ()
 	
 	this.isPgpSigned(false);
 	this.isPgpEncrypted(false);
-	this.pgpSignature('');
+	this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+	this.pgpSignedVerifyUser('');
 
 	this.priority(Enums.MessagePriority.Normal);
 	this.readReceipt('');
@@ -6369,7 +6385,6 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		{
 			this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
-			this.pgpSignature(oJsonMessage.PgpSignature);
 		}
 
 		this.hasAttachments(!!oJsonMessage.HasAttachments);
@@ -6836,7 +6851,6 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 
 //	this.isPgpSigned(false);
 //	this.isPgpEncrypted(false);
-//	this.pgpSignature('');
 
 	this.priority(Enums.MessagePriority.Normal);
 	this.aDraftInfo = [];
@@ -6903,12 +6917,12 @@ MessageModel.prototype.showInternalImages = function (bLazy)
 {
 	if (this.body && !this.body.data('rl-init-internal-images'))
 	{
+		this.body.data('rl-init-internal-images', true);
+
 		bLazy = Utils.isUnd(bLazy) ? false : bLazy;
 
 		var self = this;
 		
-		this.body.data('rl-init-internal-images', true);
-
 		$('[data-x-src-cid]', this.body).each(function () {
 
 			var oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-cid'));
@@ -6985,6 +6999,131 @@ MessageModel.prototype.showInternalImages = function (bLazy)
 		}
 
 		Utils.windowResize(500);
+	}
+};
+
+MessageModel.prototype.storeDataToDom = function ()
+{
+	if (this.body)
+	{
+		this.body.data('rl-is-rtl', !!this.isRtl());
+		this.body.data('rl-is-html', !!this.isHtml());
+		this.body.data('rl-has-images', !!this.hasImages());
+
+		this.body.data('rl-plain-raw', this.plainRaw);
+
+		if (RL.data().allowOpenPGP())
+		{
+			this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
+			this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
+			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
+			this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
+		}
+	}
+};
+
+MessageModel.prototype.storePgpVerifyDataToDom = function ()
+{
+	if (this.body && RL.data().allowOpenPGP())
+	{
+		this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
+		this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
+	}
+};
+
+MessageModel.prototype.fetchDataToDom = function ()
+{
+	if (this.body)
+	{
+		this.isRtl(!!this.body.data('rl-is-rtl'));
+		this.isHtml(!!this.body.data('rl-is-html'));
+		this.hasImages(!!this.body.data('rl-has-images'));
+		
+		this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
+
+		if (RL.data().allowOpenPGP())
+		{
+			this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
+			this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
+			this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
+			this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
+		}
+		else
+		{
+			this.isPgpSigned(false);
+			this.isPgpEncrypted(false);
+			this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+			this.pgpSignedVerifyUser('');
+		}
+	}
+};
+
+MessageModel.prototype.verifyPgpSignedClearMessage = function ()
+{
+	if (this.isPgpSigned())
+	{
+		var
+			aRes = [],
+			mPgpMessage = null,
+			sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
+			aPublicKey = RL.data().findPublicKeysByEmail(sFrom),
+			oValidKey = null,
+			oValidSysKey = null,
+			sPlain = ''
+		;
+
+		this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
+		this.pgpSignedVerifyUser('');
+
+		try
+		{
+			mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
+			if (mPgpMessage && mPgpMessage.getText)
+			{
+				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+
+				aRes = mPgpMessage.verify(aPublicKey);
+				if (aRes && 0 < aRes.length)
+				{
+					oValidKey = _.find(aRes, function (oItem) {
+						return oItem && oItem.keyid && oItem.valid;
+					});
+
+					if (oValidKey)
+					{
+						oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex());
+						if (oValidSysKey)
+						{
+							sPlain = mPgpMessage.getText();
+							
+							this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
+							this.pgpSignedVerifyUser(oValidSysKey.user);
+
+							sPlain =
+								$proxyDiv.empty().append(
+									$('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
+								).html()
+							;
+
+							$proxyDiv.empty();
+
+							this.replacePlaneTextBody(sPlain);
+						}
+					}
+				}
+			}
+		}
+		catch (oExc) {}
+
+		this.storePgpVerifyDataToDom();
+	}
+};
+
+MessageModel.prototype.replacePlaneTextBody = function (sPlain)
+{
+	if (this.body)
+	{
+		this.body.html(sPlain).addClass('b-text-part plain');
 	}
 };
 
@@ -10295,80 +10434,26 @@ function PopupsComposeOpenPgpViewModel()
 		var
 			self = this,
 			bResult = true,
-			aOpenpgpkeysPublic = RL.data().openpgpkeysPublic(),
-			oKey = null,
+			oData = RL.data(),
 			oPrivateKey = null,
-			aPublicKeys = [],
-			fFindPublicKey = function (sEmail) {
-				
-				var
-					oResult = null,
-					oKey = _.find(aOpenpgpkeysPublic, function (oItem) {
-						return oItem && sEmail === oItem.email;
-					})
-				;
-
-				if (oKey)
-				{
-					try
-					{
-						oResult = window.openpgp.key.readArmored(oKey.armor);
-						if (oResult && !oResult.err && oResult.keys && oResult.keys[0])
-						{
-							oResult = oResult.keys[0];
-						}
-						else
-						{
-							oResult = null;
-						}
-					}
-					catch (e)
-					{
-						oResult = null;
-					}
-				}
-
-				return oResult;
-			}
+			aPublicKeys = []
 		;
 
 		this.submitRequest(true);
 
 		if (bResult && this.sign() && '' === this.from())
 		{
-			this.notification('Please specify From email address');
+			// TODO i18n
+			this.notification('Please specify FROM email address');
 			bResult = false;
 		}
 
 		if (bResult && this.sign())
 		{
-			oKey = _.find(RL.data().openpgpkeysPrivate(), function (oItem) {
-				return oItem && self.from() === oItem.email;
-			});
-
-			if (oKey)
-			{
-				try
-				{
-					oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
-					if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
-					{
-						oPrivateKey = oPrivateKey.keys[0];
-						oPrivateKey.decrypt(this.password());
-					}
-					else
-					{
-						oPrivateKey = null;
-					}
-				}
-				catch (e)
-				{
-					oPrivateKey = null;
-				}
-			}
-
+			oPrivateKey = oData.findPrivateKeyByEmail(this.from(), this.password());
 			if (!oPrivateKey)
 			{
+				// TODO i18n
 				this.notification('No private key found for "' + this.from() + '" email');
 				bResult = false;
 			}
@@ -10376,25 +10461,27 @@ function PopupsComposeOpenPgpViewModel()
 
 		if (bResult && this.encrypt() && 0 === this.to().length)
 		{
+			// TODO i18n
 			this.notification('Please specify at least one recipient');
 			bResult = false;
 		}
 
 		if (bResult && this.encrypt())
 		{
-			aPublicKeys = _.compact(_.map(this.to(), function (sEmail) {
-				var oKey = fFindPublicKey(sEmail);
-				if (!oKey && bResult)
+			aPublicKeys = _.compact(_.union(this.to(), function (sEmail) {
+				var aKeys = oData.findPublicKeysByEmail(sEmail);
+				if (0 === aKeys.length && bResult)
 				{
+					// TODO i18n
 					self.notification('No public key found for "' + sEmail + '" email');
 					bResult = false;
 				}
 				
-				return oKey;
+				return aKeys;
 				
 			}));
 
-			if (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length)
+			if (bResult && (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length))
 			{
 				bResult = false;
 			}
@@ -10427,6 +10514,7 @@ function PopupsComposeOpenPgpViewModel()
 				}
 				catch (e)
 				{
+					// TODO i18n
 					self.notification('OpenPGP error: ' + e);
 					bResult = false;
 				}
@@ -12079,6 +12167,8 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.openPGPInformation = ko.observable('');
+	this.openPGPInformation.isError = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -12148,6 +12238,14 @@ function MailBoxMessageViewViewModel()
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
 	
+	this.viewPgpSignedVerifyStatus = ko.computed(function () {
+		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
+	}, this);
+
+	this.viewPgpSignedVerifyUser = ko.computed(function () {
+		return this.message() ? this.message().pgpSignedVerifyUser() : '';
+	}, this);
+
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
@@ -12218,6 +12316,41 @@ function MailBoxMessageViewViewModel()
 }
 
 Utils.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
+
+MailBoxMessageViewViewModel.prototype.isPgpActionVisible = function ()
+{
+	return Enums.SignedVerifyStatus.Success !== this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.isPgpStatusVerifyVisible = function ()
+{
+	return Enums.SignedVerifyStatus.None !== this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.isPgpStatusVerifySuccess = function ()
+{
+	return Enums.SignedVerifyStatus.Success === this.viewPgpSignedVerifyStatus();
+};
+
+MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
+{
+	var sResult = '';
+	switch (this.viewPgpSignedVerifyStatus())
+	{
+		// TODO i18n
+		case Enums.SignedVerifyStatus.Unverified:
+			sResult = 'Unverified signature';
+			break;
+		case Enums.SignedVerifyStatus.Error:
+			sResult = 'OpenPGP decryption error';
+			break;
+		case Enums.SignedVerifyStatus.Success:
+			sResult = 'Good signature from ' + this.viewPgpSignedVerifyUser();
+			break;
+	}
+
+	return sResult;
+};
 
 MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
 {
@@ -12394,6 +12527,28 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 	if (oMessage && oMessage.showExternalImages)
 	{
 		oMessage.showExternalImages(true);
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.verifyPgpSignedClearMessage = function (oMessage)
+{
+	if (oMessage)
+	{
+		oMessage.verifyPgpSignedClearMessage();
+	}
+};
+
+/**
+ * @param {MessageModel} oMessage
+ */
+MailBoxMessageViewViewModel.prototype.decryptPgpEncryptedMessage = function (oMessage)
+{
+	if (oMessage)
+	{
+		oMessage.decryptPgpEncryptedMessage();
 	}
 };
 
@@ -13061,91 +13216,6 @@ Utils.addSettingsViewModel(SettingsSocialScreen, 'SettingsSocial', 'SETTINGS_LAB
 /**
  * @constructor
  */
-function SettingsOpenPGP()
-{
-	this.openpgpkeys = RL.data().openpgpkeys;
-	this.openpgpkeysPublic = RL.data().openpgpkeysPublic;
-	this.openpgpkeysPrivate = RL.data().openpgpkeysPrivate;
-
-	this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
-		function (oPrev) {
-			if (oPrev)
-			{
-				oPrev.deleteAccess(false);
-			}
-		}, function (oNext) {
-			if (oNext)
-			{
-				oNext.deleteAccess(true);
-			}
-		}
-	]});
-}
-
-Utils.addSettingsViewModel(SettingsOpenPGP, 'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
-
-SettingsOpenPGP.prototype.addOpenPgpKey = function ()
-{
-	kn.showScreenPopup(PopupsAddOpenPgpKeyViewModel);
-};
-
-SettingsOpenPGP.prototype.generateOpenPgpKey = function ()
-{
-	kn.showScreenPopup(PopupsGenerateNewOpenPgpKeyViewModel);
-};
-
-SettingsOpenPGP.prototype.viewOpenPgpKey = function (oOpenPgpKey)
-{
-	if (oOpenPgpKey)
-	{
-		kn.showScreenPopup(PopupsViewOpenPgpKeyViewModel, [oOpenPgpKey]);
-	}
-};
-
-/**
- * @param {OpenPgpKeyModel} oOpenPgpKeyToRemove
- */
-SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
-{
-	if (oOpenPgpKeyToRemove && oOpenPgpKeyToRemove.deleteAccess())
-	{
-		this.openPgpKeyForDeletion(null);
-
-		var
-			iFindIndex = -1,
-			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			fRemoveAccount = function (oOpenPgpKey) {
-				return oOpenPgpKeyToRemove === oOpenPgpKey;
-			}
-		;
-
-		if (oOpenPgpKeyToRemove && oOpenpgpKeyring)
-		{
-			this.openpgpkeys.remove(fRemoveAccount);
-
-			_.each(oOpenpgpKeyring.keys, function (oKey, iIndex) {
-				if (-1 === iFindIndex && oKey && oKey.primaryKey &&
-					oOpenPgpKeyToRemove.guid === oKey.primaryKey.getFingerprint() &&
-					oOpenPgpKeyToRemove.isPrivate === oKey.isPrivate())
-				{
-					iFindIndex = iIndex;
-				}
-			});
-
-			if (0 <= iFindIndex)
-			{
-				oOpenpgpKeyring.removeKey(iFindIndex);
-			}
-
-			oOpenpgpKeyring.store();
-
-			RL.reloadOpenPgpKeys();
-		}
-	}
-};
-/**
- * @constructor
- */
 function SettingsChangePasswordScreen()
 {
 	this.changeProcess = ko.observable(false);
@@ -13627,6 +13697,91 @@ SettingsThemes.prototype.initCustomThemeUploader = function ()
 };
 
 
+/**
+ * @constructor
+ */
+function SettingsOpenPGP()
+{
+	this.openpgpkeys = RL.data().openpgpkeys;
+	this.openpgpkeysPublic = RL.data().openpgpkeysPublic;
+	this.openpgpkeysPrivate = RL.data().openpgpkeysPrivate;
+
+	this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
+		function (oPrev) {
+			if (oPrev)
+			{
+				oPrev.deleteAccess(false);
+			}
+		}, function (oNext) {
+			if (oNext)
+			{
+				oNext.deleteAccess(true);
+			}
+		}
+	]});
+}
+
+Utils.addSettingsViewModel(SettingsOpenPGP, 'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
+
+SettingsOpenPGP.prototype.addOpenPgpKey = function ()
+{
+	kn.showScreenPopup(PopupsAddOpenPgpKeyViewModel);
+};
+
+SettingsOpenPGP.prototype.generateOpenPgpKey = function ()
+{
+	kn.showScreenPopup(PopupsGenerateNewOpenPgpKeyViewModel);
+};
+
+SettingsOpenPGP.prototype.viewOpenPgpKey = function (oOpenPgpKey)
+{
+	if (oOpenPgpKey)
+	{
+		kn.showScreenPopup(PopupsViewOpenPgpKeyViewModel, [oOpenPgpKey]);
+	}
+};
+
+/**
+ * @param {OpenPgpKeyModel} oOpenPgpKeyToRemove
+ */
+SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
+{
+	if (oOpenPgpKeyToRemove && oOpenPgpKeyToRemove.deleteAccess())
+	{
+		this.openPgpKeyForDeletion(null);
+
+		var
+			iFindIndex = -1,
+			oOpenpgpKeyring = RL.data().openpgpKeyring,
+			fRemoveAccount = function (oOpenPgpKey) {
+				return oOpenPgpKeyToRemove === oOpenPgpKey;
+			}
+		;
+
+		if (oOpenPgpKeyToRemove && oOpenpgpKeyring)
+		{
+			this.openpgpkeys.remove(fRemoveAccount);
+
+			_.each(oOpenpgpKeyring.keys, function (oKey, iIndex) {
+				if (-1 === iFindIndex && oKey && oKey.primaryKey &&
+					oOpenPgpKeyToRemove.guid === oKey.primaryKey.getFingerprint() &&
+					oOpenPgpKeyToRemove.isPrivate === oKey.isPrivate())
+				{
+					iFindIndex = iIndex;
+				}
+			});
+
+			if (0 <= iFindIndex)
+			{
+				oOpenpgpKeyring.removeKey(iFindIndex);
+			}
+
+			oOpenpgpKeyring.store();
+
+			RL.reloadOpenPgpKeys();
+		}
+	}
+};
 /**
  * @constructor
  */
@@ -14585,49 +14740,43 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
 					{
-						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oData.Result.PlainRaw);
+						oMessage.plainRaw = Utils.pString(oData.Result.PlainRaw);
+
+						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
 						if (!bPgpEncrypted)
 						{
-							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oData.Result.PlainRaw) &&
-								/-----BEGIN PGP SIGNATURE-----/.test(oData.Result.PlainRaw);
+							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
+								/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 						}
 						
-						if (bPgpSigned && oMessage.isPgpSigned() && oMessage.pgpSignature())
+						$proxyDiv.empty();
+						if (bPgpSigned && oMessage.isPgpSigned())
 						{
-							sPlain = '<pre class="b-plain-openpgp signed">' + oData.Result.PlainRaw + '</pre>';
-
-							try
-							{
-								mPgpMessage = window.openpgp.cleartext.readArmored(oData.Result.PlainRaw);
-							}
-							catch (oExc) {}
-
-							if (mPgpMessage && mPgpMessage.getText)
-							{
-								sPlain = mPgpMessage.getText();
-							}
-							else
-							{
-								bPgpSigned = false;
-							}
+							sPlain =
+								$proxyDiv.append(
+									$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+								).html()
+							;
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							try
-							{
-								mPgpMessage = window.openpgp.message.readArmored(oData.Result.PlainRaw);
-							}
-							catch (oExc) {}
+//							try
+//							{
+//								mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
+//							}
+//							catch (oExc) {}
 
-							sPlain = '<pre class="b-plain-openpgp encrypted">' + oData.Result.PlainRaw + '</pre>';
+							sPlain = 
+								$proxyDiv.append(
+									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+								).html()
+							;
 						}
 
-						if (bPgpSigned || bPgpEncrypted)
-						{
-							oBody.data('rl-plain-raw', oData.Result.PlainRaw);
-							oBody.data('rl-plain-pgp-encrypted', bPgpEncrypted);
-							oBody.data('rl-plain-pgp-signed', bPgpSigned);
-						}
+						$proxyDiv.empty();
+
+						oMessage.isPgpSigned(bPgpSigned);
+						oMessage.isPgpEncrypted(bPgpEncrypted);
 					}
 
 					oBody.html(sPlain).addClass('b-text-part plain');
@@ -14637,9 +14786,14 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					bIsHtml = false;
 				}
 
+				oMessage.isHtml(!!bIsHtml);
+				oMessage.hasImages(!!bHasExternals);
+				oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+				oMessage.pgpSignedVerifyUser('');
+
 				if (oData.Result.Rtl)
 				{
-					oBody.data('rl-is-rtl', true);
+					this.isRtl(true);
 					oBody.addClass('rtl-text-part');
 				}
 
@@ -14647,14 +14801,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (oMessage.body)
 				{
 					oMessagesBodiesDom.append(oMessage.body);
-
-					oMessage.body.data('rl-is-html', bIsHtml);
-					oMessage.body.data('rl-has-images', bHasExternals);
-					
-					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
-					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
-					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
-					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
 				}
 
 				if (bHasInternals)
@@ -14667,6 +14813,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					oMessage.showExternalImages(true);
 				}
 
+				oMessage.storeDataToDom();
 				this.purgeMessageBodyCacheThrottle();
 			}
 			else
@@ -14675,22 +14822,8 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (oMessage.body)
 				{
 					oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
-					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
-					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
-					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
+					oMessage.fetchDataToDom();
 				}
-			}
-
-			if (oMessage.body && RL.data().allowOpenPGP())
-			{
-				oMessage.isPgpSigned(!!oMessage.body.data('rl-plain-pgp-signed'));
-				oMessage.isPgpEncrypted(!!oMessage.body.data('rl-plain-pgp-encrypted'));
-			}
-			else
-			{
-				oMessage.isPgpSigned(false);
-				oMessage.isPgpEncrypted(false);
 			}
 
 			this.messageActiveDom(oMessage.body);
@@ -14849,6 +14982,69 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
 		));
 	}
+};
+
+WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)
+{
+	return _.find(this.openpgpkeysPublic(), function (oItem) {
+		return oItem && sHash === oItem.id;
+	});
+};
+
+WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
+{
+	return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
+
+		var oKey = null;
+		if (oItem && sEmail === oItem.email)
+		{
+			try
+			{
+				oKey = window.openpgp.key.readArmored(oItem.armor);
+				if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
+				{
+					return oKey.keys[0];
+				}
+			}
+			catch (e) {}
+		}
+
+		return null;
+
+	}));
+};
+
+WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
+{
+	var
+		oPrivateKey = null,
+		oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
+			return oItem && sEmail === oItem.email;
+		})
+	;
+
+	if (oKey)
+	{
+		try
+		{
+			oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
+			if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
+			{
+				oPrivateKey = oPrivateKey.keys[0];
+				oPrivateKey.decrypt(sPass);
+			}
+			else
+			{
+				oPrivateKey = null;
+			}
+		}
+		catch (e)
+		{
+			oPrivateKey = null;
+		}
+	}
+
+	return oPrivateKey;
 };
 
 /**

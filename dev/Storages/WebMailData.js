@@ -883,49 +883,43 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
 					{
-						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oData.Result.PlainRaw);
+						oMessage.plainRaw = Utils.pString(oData.Result.PlainRaw);
+
+						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
 						if (!bPgpEncrypted)
 						{
-							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oData.Result.PlainRaw) &&
-								/-----BEGIN PGP SIGNATURE-----/.test(oData.Result.PlainRaw);
+							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
+								/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 						}
 						
-						if (bPgpSigned && oMessage.isPgpSigned() && oMessage.pgpSignature())
+						$proxyDiv.empty();
+						if (bPgpSigned && oMessage.isPgpSigned())
 						{
-							sPlain = '<pre class="b-plain-openpgp signed">' + oData.Result.PlainRaw + '</pre>';
-
-							try
-							{
-								mPgpMessage = window.openpgp.cleartext.readArmored(oData.Result.PlainRaw);
-							}
-							catch (oExc) {}
-
-							if (mPgpMessage && mPgpMessage.getText)
-							{
-								sPlain = mPgpMessage.getText();
-							}
-							else
-							{
-								bPgpSigned = false;
-							}
+							sPlain =
+								$proxyDiv.append(
+									$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+								).html()
+							;
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							try
-							{
-								mPgpMessage = window.openpgp.message.readArmored(oData.Result.PlainRaw);
-							}
-							catch (oExc) {}
+//							try
+//							{
+//								mPgpMessage = window.openpgp.message.readArmored(oMessage.plainRaw);
+//							}
+//							catch (oExc) {}
 
-							sPlain = '<pre class="b-plain-openpgp encrypted">' + oData.Result.PlainRaw + '</pre>';
+							sPlain = 
+								$proxyDiv.append(
+									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+								).html()
+							;
 						}
 
-						if (bPgpSigned || bPgpEncrypted)
-						{
-							oBody.data('rl-plain-raw', oData.Result.PlainRaw);
-							oBody.data('rl-plain-pgp-encrypted', bPgpEncrypted);
-							oBody.data('rl-plain-pgp-signed', bPgpSigned);
-						}
+						$proxyDiv.empty();
+
+						oMessage.isPgpSigned(bPgpSigned);
+						oMessage.isPgpEncrypted(bPgpEncrypted);
 					}
 
 					oBody.html(sPlain).addClass('b-text-part plain');
@@ -935,9 +929,14 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					bIsHtml = false;
 				}
 
+				oMessage.isHtml(!!bIsHtml);
+				oMessage.hasImages(!!bHasExternals);
+				oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+				oMessage.pgpSignedVerifyUser('');
+
 				if (oData.Result.Rtl)
 				{
-					oBody.data('rl-is-rtl', true);
+					this.isRtl(true);
 					oBody.addClass('rtl-text-part');
 				}
 
@@ -945,14 +944,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (oMessage.body)
 				{
 					oMessagesBodiesDom.append(oMessage.body);
-
-					oMessage.body.data('rl-is-html', bIsHtml);
-					oMessage.body.data('rl-has-images', bHasExternals);
-					
-					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
-					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
-					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
-					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
 				}
 
 				if (bHasInternals)
@@ -965,6 +956,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					oMessage.showExternalImages(true);
 				}
 
+				oMessage.storeDataToDom();
 				this.purgeMessageBodyCacheThrottle();
 			}
 			else
@@ -973,22 +965,8 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (oMessage.body)
 				{
 					oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-					oMessage.isRtl(!!oMessage.body.data('rl-is-rtl'));
-					oMessage.isHtml(!!oMessage.body.data('rl-is-html'));
-					oMessage.hasImages(!!oMessage.body.data('rl-has-images'));
-					oMessage.plainRaw = Utils.pString(oMessage.body.data('rl-plain-raw'));
+					oMessage.fetchDataToDom();
 				}
-			}
-
-			if (oMessage.body && RL.data().allowOpenPGP())
-			{
-				oMessage.isPgpSigned(!!oMessage.body.data('rl-plain-pgp-signed'));
-				oMessage.isPgpEncrypted(!!oMessage.body.data('rl-plain-pgp-encrypted'));
-			}
-			else
-			{
-				oMessage.isPgpSigned(false);
-				oMessage.isPgpEncrypted(false);
 			}
 
 			this.messageActiveDom(oMessage.body);
@@ -1147,4 +1125,67 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
 		));
 	}
+};
+
+WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)
+{
+	return _.find(this.openpgpkeysPublic(), function (oItem) {
+		return oItem && sHash === oItem.id;
+	});
+};
+
+WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
+{
+	return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
+
+		var oKey = null;
+		if (oItem && sEmail === oItem.email)
+		{
+			try
+			{
+				oKey = window.openpgp.key.readArmored(oItem.armor);
+				if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
+				{
+					return oKey.keys[0];
+				}
+			}
+			catch (e) {}
+		}
+
+		return null;
+
+	}));
+};
+
+WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPass)
+{
+	var
+		oPrivateKey = null,
+		oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
+			return oItem && sEmail === oItem.email;
+		})
+	;
+
+	if (oKey)
+	{
+		try
+		{
+			oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
+			if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
+			{
+				oPrivateKey = oPrivateKey.keys[0];
+				oPrivateKey.decrypt(sPass);
+			}
+			else
+			{
+				oPrivateKey = null;
+			}
+		}
+		catch (e)
+		{
+			oPrivateKey = null;
+		}
+	}
+
+	return oPrivateKey;
 };

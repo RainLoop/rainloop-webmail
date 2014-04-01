@@ -593,6 +593,16 @@ Enums.ContactScopeType = {
 /**
  * @enum {number}
  */
+Enums.SignedVerifyStatus = {
+	'Unverified': -2,
+	'Error': -1,
+	'None': 0,
+	'Success': 1
+};
+
+/**
+ * @enum {number}
+ */
 Enums.ContactPropertyType = {
 
 	'Unknown': 0,

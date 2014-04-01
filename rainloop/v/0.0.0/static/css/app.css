@@ -7226,6 +7226,14 @@ html.rl-no-preview-pane .messageView.message-selected {
   border-bottom: 1px solid #ddd;
   background-color: #eee;
 }
+.messageView .b-content .messageItem .pgpInfo {
+  padding: 5px 15px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fcf8e3;
+}
+.messageView .b-content .messageItem .pgpInfo.success {
+  background-color: #e9f4ff;
+}
 .messageView .b-content .messageItem .readReceipt {
   background-color: #ffffd9;
 }

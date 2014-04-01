@@ -306,10 +306,10 @@ module.exports = function (grunt) {
 					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",
 					"dev/Settings/Social.js",
-					"dev/Settings/OpenPGP.js",
 					"dev/Settings/ChangePassword.js",
 					"dev/Settings/Folders.js",
 					"dev/Settings/Themes.js",
+					"dev/Settings/OpenPGP.js",
 
 					"dev/Storages/AbstractData.js",
 					"dev/Storages/WebMailData.js",
