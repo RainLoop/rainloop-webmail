@@ -105,6 +105,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_login'		=> array('admin', 'Login and password for web admin panel'),
 				'admin_password'	=> array('12345'),
 				'allow_admin_panel' => array(true, 'Access settings'),
+				'allow_two_factor_auth' => array(false),
 				'admin_panel_host'	=> array(''),
 				'core_install_access_domains' => array('')
 			),

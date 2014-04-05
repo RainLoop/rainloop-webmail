@@ -45,6 +45,15 @@
 						</span>
 					</div>
 				</div>
+				<div class="control-group" data-bind="visible: additionalCode.visibility(), css: {'error': additionalCode.error}">
+					<div class="input-append">
+						<input class="i18n inputPassword span4" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: additionalCode, hasFocus: additionalCode.focused" data-i18n-placeholder="LOGIN/LABEL_VERIFICATION_CODE" />
+						<span class="add-on">
+							<i class="icon-key"></i>
+						</span>
+					</div>
+				</div>
 				{{INCLUDE/BottomControlGroup/PLACE}}
 				<div class="control-group">
 					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">

@@ -151,15 +151,14 @@ FolderModel.prototype.initComputed = function ()
 			{
 				return '' + iCount;
 			}
-			else if (0 < iUnread && Enums.FolderType.Trash !== iType && Enums.FolderType.SentItems !== iType)
+			else if (0 < iUnread && Enums.FolderType.Trash !== iType && Enums.FolderType.Archive !== iType && Enums.FolderType.SentItems !== iType)
 			{
 				return '' + iUnread;
 			}
 		}
 
 		return '';
-//		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :
-//			(0 < iCount && Enums.FolderType.Draft === iType ? '' + iCount : '');
+
 	}, this);
 
 	this.canBeDeleted = ko.computed(function () {

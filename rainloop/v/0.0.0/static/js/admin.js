@@ -657,6 +657,9 @@ Enums.Notification = {
 	'DomainNotAllowed': 109,
 	'AccountNotAllowed': 110,
 
+	'AccountTwoFactorAuthRequired': 120,
+	'AccountTwoFactorAuthError': 121,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
@@ -1266,6 +1269,9 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.DomainNotAllowed] = Utils.i18n('NOTIFICATIONS/DOMAIN_NOT_ALLOWED');
 	NotificationI18N[Enums.Notification.AccountNotAllowed] = Utils.i18n('NOTIFICATIONS/ACCOUNT_NOT_ALLOWED');
 
+	NotificationI18N[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
+	NotificationI18N[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
+
 	NotificationI18N[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
 	NotificationI18N[Enums.Notification.CantDeleteMessage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_MESSAGE');
@@ -1370,14 +1376,14 @@ Utils.delegateRun = function (oObject, sMethodName, aParameters, nDelay)
 Utils.killCtrlAandS = function (oEvent)
 {
 	oEvent = oEvent || window.event;
-	if (oEvent)
+	if (oEvent && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
 	{
 		var
 			oSender = oEvent.target || oEvent.srcElement,
 			iKey = oEvent.keyCode || oEvent.which
 		;
 
-		if (oEvent.ctrlKey && iKey === Enums.EventKeyCode.S)
+		if (iKey === Enums.EventKeyCode.S)
 		{
 			oEvent.preventDefault();
 			return;
@@ -1388,7 +1394,7 @@ Utils.killCtrlAandS = function (oEvent)
 			return;
 		}
 
-		if (oEvent.ctrlKey && iKey === Enums.EventKeyCode.A)
+		if (iKey === Enums.EventKeyCode.A)
 		{
 			if (window.getSelection)
 			{
@@ -2413,51 +2419,6 @@ Utils.selectElement = function (element)
 		textRange.select();
 	}
 	/* jshint onevar: true */
-};
-
-Utils.openPgpImportPublicKeys = function (sPublicKeysArmored)
-{
-	if (window.openpgp && RL)
-	{
-		var
-			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			oImported = window.openpgp.key.readArmored(sPublicKeysArmored)
-		;
-
-		if (oOpenpgpKeyring && oImported && !oImported.err && Utils.isArray(oImported.keys) &&
-			0 < oImported.keys.length)
-		{
-			_.each(oImported.keys, function (oPrivKey) {
-				if (oPrivKey)
-				{
-					window.console.log(oPrivKey);
-//					var oKey = oOpenpgpKeyring.getKeysForKeyId(oPrivKey.primaryKey.getFingerprint());
-//					if (oKey && oKey[0])
-//					{
-//						if (oKey[0].isPublic())
-//						{
-//							oPrivKey.update(oKey[0]);
-//							oOpenpgpKeyring.publicKeys.removeForId(oPrivKey.primaryKey.getFingerprint());
-//							oOpenpgpKeyring.privateKeys.push(oPrivKey);
-//						}
-//						else
-//						{
-//							oKey[0].update(oPrivKey);
-//						}
-//					}
-//					else
-//					{
-//						oOpenpgpKeyring.importKey(oPrivKey.armored);
-//					}
-				}
-			});
-
-			oOpenpgpKeyring.store();
-			return true;
-		}
-	}
-
-	return false;
 };
 
 // Base64 encode / decode
@@ -6087,6 +6048,7 @@ function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
 	this.openPGP = ko.observable(!!RL.settingsGet('OpenPGP'));
+	this.allowTwoFactorAuth = ko.observable(!!RL.settingsGet('AllowTwoFactorAuth'));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -6150,6 +6112,12 @@ AdminSecurity.prototype.onBuild = function ()
 	this.openPGP.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'OpenPGP': bValue ? '1' : '0'
+		});
+	});
+
+	this.allowTwoFactorAuth.subscribe(function (bValue) {
+		RL.remote().saveAdminConfig(Utils.emptyFunction, {
+			'AllowTwoFactorAuth': bValue ? '1' : '0'
 		});
 	});
 };

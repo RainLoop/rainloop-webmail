@@ -509,7 +509,7 @@ class Actions
 		if (null === $this->oTwoFactorAuthProvider)
 		{
 			$this->oTwoFactorAuthProvider = new \RainLoop\Providers\TwoFactorAuth(
-				$this->fabrica('two-factor-auth')
+				$this->Config()->Get('security', 'allow_two_factor_auth', false) ? $this->fabrica('two-factor-auth') : null
 			);
 		}
 
@@ -932,6 +932,7 @@ class Actions
 			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'OpenPGP' => $oConfig->Get('security', 'openpgp', false),
+			'AllowTwoFactorAuth' => (bool) $oConfig->Get('security', 'allow_two_factor_auth', false),
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
@@ -1141,6 +1142,7 @@ class Actions
 		$aResult['ReplyTo'] = '';
 		$aResult['Signature'] = '';
 		$aResult['SignatureToAll'] = false;
+		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
 		$aResult['CustomThemeType'] = \RainLoop\Enumerations\CustomThemeType::LIGHT;
@@ -1181,6 +1183,7 @@ class Actions
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
 			$aResult['Signature'] = $oSettings->GetConf('Signature', $aResult['Signature']);
 			$aResult['SignatureToAll'] = !!$oSettings->GetConf('SignatureToAll', $aResult['SignatureToAll']);
+			$aResult['EnableTwoFactor'] = !!$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
 
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 		}
@@ -1356,26 +1359,35 @@ class Actions
 
 		if ($oAccount && $this->TwoFactorAuthProvider()->IsActive())
 		{
-			$oSettings = $this->SettingsProvider()->Load($oAccount);
-			if ($oSettings)
+			$aData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
+			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable'])
 			{
-				$sTwoFactorAuthSecret = $oSettings->GetConf('TwoFactorAuthEnabled', false) ?
-						$oSettings->GetConf('TwoFactorAuthSecret', '') : '';
-
-				if (!empty($sTwoFactorAuthSecret))
+				$sTwoFactorAuthCode = \trim($sTwoFactorAuthCode);
+				if (empty($sTwoFactorAuthCode))
 				{
-					if (empty($sTwoFactorAuthCode))
+					$this->Logger()->Write('TwoFactorAuth: Required Code for '.$oAccount->ParentEmailHelper().' account.');
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
+				}
+				else
+				{
+					$this->Logger()->Write('TwoFactorAuth: Verify Code for '.$oAccount->ParentEmailHelper().' account.');
+
+					$bGood = false;
+					if (6 < \strlen($sTwoFactorAuthCode) && !empty($aData['BackupCodes']))
 					{
-						$this->Logger()->Write('TwoFactorAuth: Required Code for '.$oAccount->Email().' account.');
-						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
-					}
-					else
-					{
-						$this->Logger()->Write('TwoFactorAuth: Verify Code for '.$oAccount->Email().' account.');
-						if (!$this->TwoFactorAuthProvider()->VerifyCode($sTwoFactorAuthSecret, $sTwoFactorAuthCode))
+						$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
+						$bGood = \in_array($sTwoFactorAuthCode, $aBackupCodes);
+
+						if ($bGood)
 						{
-							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
+							$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sTwoFactorAuthCode);
 						}
+					}
+
+					if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sTwoFactorAuthCode))
+					{
+						$this->loginErrorDelay();
+						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
 					}
 				}
 			}
@@ -1420,7 +1432,7 @@ class Actions
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === $this->GetActionParam('SignMe', '0');
 		
-		$sTwoFactorAuthCode = $this->GetActionParam('TwoFactorAuthCode', '');
+		$sAdditionalCode = $this->GetActionParam('AdditionalCode', '');
 
 		$this->Logger()->AddSecret($sPassword);
 
@@ -1430,7 +1442,7 @@ class Actions
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
 				$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '',
-				$sTwoFactorAuthCode);
+				$sAdditionalCode);
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
 		{
@@ -2054,6 +2066,7 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'OpenPGP', 'security', 'openpgp', 'bool');
+		$this->setConfigFromParams($oConfig, 'AllowTwoFactorAuth', 'security', 'allow_two_factor_auth', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
@@ -3199,6 +3212,7 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'ReplyTo', 'string');
 		$this->setSettingsFromParams($oSettings, 'Signature', 'string');
 		$this->setSettingsFromParams($oSettings, 'SignatureToAll', 'bool');
+		$this->setSettingsFromParams($oSettings, 'EnableTwoFactor', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'CustomThemeImg', 'string');
 		
@@ -4543,6 +4557,236 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aQuota);
+	}
+
+	private function getTwoFactorInfo($sEmail, $bRemoveSecret = false)
+	{
+		$mData = null;
+		
+		$aResult = array(
+			'User' => '',
+			'IsSet' => false,
+			'Enable' => false,
+			'Secret' => '',
+			'Url' => '',
+			'BackupCodes' => ''
+		);
+
+		if (!empty($sEmail))
+		{
+			$aResult['User'] = $sEmail;
+
+			$sData = $this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				'TwoFactorAuth/User/'.$sEmail.'/Data/'
+			);
+
+			if ($sData)
+			{
+				$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+			}
+		}
+
+		if (\is_array($mData) && !empty($aResult['User']) &&
+			!empty($mData['User']) && !empty($mData['Secret']) &&
+			!empty($mData['BackupCodes']) && $sEmail === $mData['User'])
+		{
+			$aResult['IsSet'] = true;
+			$aResult['Enable'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
+			$aResult['Secret'] = $mData['Secret'];
+			$aResult['BackupCodes'] = $mData['BackupCodes'];
+
+			$aResult['Url'] = $this->TwoFactorAuthProvider()->GetQRCodeGoogleUrl(
+				$aResult['User'], $aResult['Secret'], $this->Config()->Get('webmail', 'title', ''));
+		}
+
+		if ($bRemoveSecret)
+		{
+			if (isset($aResult['Secret']))
+			{
+				unset($aResult['Secret']);
+			}
+
+			if (isset($aResult['Url']))
+			{
+				unset($aResult['Url']);
+			}
+
+			if (isset($aResult['BackupCodes']))
+			{
+				unset($aResult['BackupCodes']);
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sCode
+	 * 
+	 * @return bool
+	 */
+	private function removeBackupCodeFromTwoFactorInfo($sEmail, $sCode)
+	{
+		if (empty($sEmail) || empty($sCode))
+		{
+			return false;
+		}
+
+		$sData = $this->StorageProvider()->Get(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			'TwoFactorAuth/User/'.$sEmail.'/Data/'
+		);
+
+		if ($sData)
+		{
+			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+
+			if (!empty($mData['BackupCodes']))
+			{
+				$sBackupCodes = \preg_replace('/[^\d]+/', ' ', ' '.$mData['BackupCodes'].' ');
+				$sBackupCodes = \str_replace(' '.$sCode.' ', '', $sBackupCodes);
+				
+				$mData['BackupCodes'] = \trim(\preg_replace('/[^\d]+/', ' ', $sBackupCodes));
+
+				return $this->StorageProvider()->Put(null,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+					'TwoFactorAuth/User/'.$sEmail.'/Data/',
+					\RainLoop\Utils::EncodeKeyValues($mData)
+				);
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoGetTwoFactorInfo()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->getAccountFromToken();
+		
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->getTwoFactorInfo($oAccount->ParentEmailHelper(), true));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoCreateTwoFactorSecret()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+		
+		$oAccount = $this->getAccountFromToken();
+		$sEmail = $oAccount->ParentEmailHelper();
+
+		$sSecret = $this->TwoFactorAuthProvider()->CreateSecret();
+
+		$aCodes = array();
+		for ($iIndex = 9; $iIndex > 0; $iIndex--)
+		{
+			$aCodes[] = \rand(100000000, 900000000);
+		}
+
+		$this->StorageProvider()->Put(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			'TwoFactorAuth/User/'.$sEmail.'/Data/',
+			\RainLoop\Utils::EncodeKeyValues(array(
+				'User' => $sEmail,
+				'Enable' => false,
+				'Secret' => $sSecret,
+				'BackupCodes' => \implode(' ', $aCodes)
+			))
+		);
+
+		\sleep(1);
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->getTwoFactorInfo($sEmail));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoEnableTwoFactor()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->getAccountFromToken();
+		$sEmail = $oAccount->ParentEmailHelper();
+
+		$bResult = false;
+		$mData = $this->getTwoFactorInfo($sEmail);
+		if (isset($mData['Secret'], $mData['BackupCodes']))
+		{
+			$bResult = $this->StorageProvider()->Put(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				'TwoFactorAuth/User/'.$sEmail.'/Data/',
+				\RainLoop\Utils::EncodeKeyValues(array(
+					'User' => $sEmail,
+					'Enable' => '1' === \trim($this->GetActionParam('Enable', '0')),
+					'Secret' => $mData['Secret'],
+					'BackupCodes' => $mData['BackupCodes']
+				))
+			);
+		}
+		
+		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoTestTwoFactorInfo()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->getAccountFromToken();
+
+		$sCode = \trim($this->GetActionParam('Code', ''));
+
+		$oData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
+		$sSecret = !empty($oData['Secret']) ? $oData['Secret'] : '';
+
+		\sleep(1);
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode));
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoClearTwoFactorInfo()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->getAccountFromToken();
+
+		$this->StorageProvider()->Clear(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			'TwoFactorAuth/User/'.$oAccount->ParentEmailHelper().'/Data/'
+		);
+
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->getTwoFactorInfo($oAccount->ParentEmailHelper(), true));
 	}
 
 	/**

@@ -285,6 +285,7 @@ module.exports = function (grunt) {
 					"dev/ViewModels/PopupsComposeOpenPgpViewModel.js",
 					"dev/ViewModels/PopupsIdentityViewModel.js",
 					"dev/ViewModels/PopupsLanguagesViewModel.js",
+					"dev/ViewModels/PopupsTwoFactorTestViewModel.js",
 					"dev/ViewModels/PopupsAskViewModel.js",
 
 					"dev/ViewModels/LoginViewModel.js",
@@ -305,6 +306,7 @@ module.exports = function (grunt) {
 					"dev/Settings/Accounts.js",
 					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",
+					"dev/Settings/Security.js",
 					"dev/Settings/Social.js",
 					"dev/Settings/ChangePassword.js",
 					"dev/Settings/Folders.js",

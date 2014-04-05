@@ -929,12 +929,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
 		{
-			if (self.bAllowCtrlS && oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
+			if (self.bAllowCtrlS && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
 			{
 				self.saveCommand();
 				bResult = false;
 			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
+			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
 			{
 				self.sendCommand();
 				bResult = false;

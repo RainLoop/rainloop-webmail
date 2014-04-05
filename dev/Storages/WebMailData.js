@@ -72,6 +72,9 @@ function WebMailDataStorage()
 	this.signatureToAll = ko.observable(false);
 	this.replyTo = ko.observable('');
 
+	// security
+	this.enableTwoFactor = ko.observable(false);
+
 	// accounts
 	this.accounts = ko.observableArray([]);
 	this.accountsLoading = ko.observable(false).extend({'throttle': 100});
@@ -434,6 +437,7 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.replyTo(RL.settingsGet('ReplyTo'));
 	this.signature(RL.settingsGet('Signature'));
 	this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
+	this.enableTwoFactor(!!RL.settingsGet('EnableTwoFactor'));
 
 	this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 

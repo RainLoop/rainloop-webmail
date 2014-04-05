@@ -661,6 +661,9 @@ Enums.Notification = {
 	'DomainNotAllowed': 109,
 	'AccountNotAllowed': 110,
 
+	'AccountTwoFactorAuthRequired': 120,
+	'AccountTwoFactorAuthError': 121,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
@@ -1270,6 +1273,9 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.DomainNotAllowed] = Utils.i18n('NOTIFICATIONS/DOMAIN_NOT_ALLOWED');
 	NotificationI18N[Enums.Notification.AccountNotAllowed] = Utils.i18n('NOTIFICATIONS/ACCOUNT_NOT_ALLOWED');
 
+	NotificationI18N[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
+	NotificationI18N[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
+
 	NotificationI18N[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
 	NotificationI18N[Enums.Notification.CantDeleteMessage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_MESSAGE');
@@ -1374,14 +1380,14 @@ Utils.delegateRun = function (oObject, sMethodName, aParameters, nDelay)
 Utils.killCtrlAandS = function (oEvent)
 {
 	oEvent = oEvent || window.event;
-	if (oEvent)
+	if (oEvent && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
 	{
 		var
 			oSender = oEvent.target || oEvent.srcElement,
 			iKey = oEvent.keyCode || oEvent.which
 		;
 
-		if (oEvent.ctrlKey && iKey === Enums.EventKeyCode.S)
+		if (iKey === Enums.EventKeyCode.S)
 		{
 			oEvent.preventDefault();
 			return;
@@ -1392,7 +1398,7 @@ Utils.killCtrlAandS = function (oEvent)
 			return;
 		}
 
-		if (oEvent.ctrlKey && iKey === Enums.EventKeyCode.A)
+		if (iKey === Enums.EventKeyCode.A)
 		{
 			if (window.getSelection)
 			{
@@ -2417,51 +2423,6 @@ Utils.selectElement = function (element)
 		textRange.select();
 	}
 	/* jshint onevar: true */
-};
-
-Utils.openPgpImportPublicKeys = function (sPublicKeysArmored)
-{
-	if (window.openpgp && RL)
-	{
-		var
-			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			oImported = window.openpgp.key.readArmored(sPublicKeysArmored)
-		;
-
-		if (oOpenpgpKeyring && oImported && !oImported.err && Utils.isArray(oImported.keys) &&
-			0 < oImported.keys.length)
-		{
-			_.each(oImported.keys, function (oPrivKey) {
-				if (oPrivKey)
-				{
-					window.console.log(oPrivKey);
-//					var oKey = oOpenpgpKeyring.getKeysForKeyId(oPrivKey.primaryKey.getFingerprint());
-//					if (oKey && oKey[0])
-//					{
-//						if (oKey[0].isPublic())
-//						{
-//							oPrivKey.update(oKey[0]);
-//							oOpenpgpKeyring.publicKeys.removeForId(oPrivKey.primaryKey.getFingerprint());
-//							oOpenpgpKeyring.privateKeys.push(oPrivKey);
-//						}
-//						else
-//						{
-//							oKey[0].update(oPrivKey);
-//						}
-//					}
-//					else
-//					{
-//						oOpenpgpKeyring.importKey(oPrivKey.armored);
-//					}
-				}
-			});
-
-			oOpenpgpKeyring.store();
-			return true;
-		}
-	}
-
-	return false;
 };
 
 // Base64 encode / decode
@@ -3841,7 +3802,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		{
 			self.editor.on('instanceReady', function () {
 
-				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65/* A */, 'selectAll');
+				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
 
 				self.fOnReady();
 				self.__resizable = true;
@@ -7355,15 +7316,14 @@ FolderModel.prototype.initComputed = function ()
 			{
 				return '' + iCount;
 			}
-			else if (0 < iUnread && Enums.FolderType.Trash !== iType && Enums.FolderType.SentItems !== iType)
+			else if (0 < iUnread && Enums.FolderType.Trash !== iType && Enums.FolderType.Archive !== iType && Enums.FolderType.SentItems !== iType)
 			{
 				return '' + iUnread;
 			}
 		}
 
 		return '';
-//		return 0 < iUnread && (Enums.FolderType.Inbox === iType || Enums.FolderType.Spam === iType) ? '' + iUnread :
-//			(0 < iCount && Enums.FolderType.Draft === iType ? '' + iCount : '');
+
 	}, this);
 
 	this.canBeDeleted = ko.computed(function () {
@@ -8880,12 +8840,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
 		{
-			if (self.bAllowCtrlS && oEvent.ctrlKey && Enums.EventKeyCode.S === oEvent.keyCode)
+			if (self.bAllowCtrlS && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
 			{
 				self.saveCommand();
 				bResult = false;
 			}
-			else if (oEvent.ctrlKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
+			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
 			{
 				self.sendCommand();
 				bResult = false;
@@ -10908,6 +10868,60 @@ PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
  * @constructor
  * @extends KnoinAbstractViewModel
  */
+function PopupsTwoFactorTestViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsTwoFactorTest');
+
+	var self = this;
+
+	this.code = ko.observable('');
+	this.code.focused = ko.observable(false);
+	this.code.status = ko.observable(null);
+
+	this.testing = ko.observable(false);
+	
+	// commands
+	this.testCode = Utils.createCommand(this, function () {
+
+		this.testing(true);
+		RL.remote().testTwoFactor(function (sResult, oData) {
+			
+			self.testing(false);
+			self.code.status(Enums.StorageResultType.Success === sResult && oData && oData.Result ? true : false);
+			
+		}, this.code());
+		
+	}, function () {
+		return '' !== this.code() && !this.testing();
+	});
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsTwoFactorTestViewModel', PopupsTwoFactorTestViewModel);
+
+PopupsTwoFactorTestViewModel.prototype.clearPopup = function ()
+{
+	this.code('');
+	this.code.focused(false);
+	this.code.status(null);
+	this.testing(false);
+};
+
+PopupsTwoFactorTestViewModel.prototype.onShow = function ()
+{
+	this.clearPopup();
+};
+
+PopupsTwoFactorTestViewModel.prototype.onFocus = function ()
+{
+	this.code.focused(true);
+};
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
 function PopupsAskViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAsk');
@@ -11039,6 +11053,11 @@ function LoginViewModel()
 	this.password = ko.observable('');
 	this.signMe = ko.observable(false);
 
+	this.additionalCode = ko.observable('');
+	this.additionalCode.error = ko.observable(false);
+	this.additionalCode.focused = ko.observable(false);
+	this.additionalCode.visibility = ko.observable(false);
+
 	this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
 	this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
 	this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
@@ -11053,6 +11072,8 @@ function LoginViewModel()
 
 	this.email.subscribe(function () {
 		this.emailError(false);
+		this.additionalCode('');
+		this.additionalCode.visibility(false);
 	}, this);
 
 	this.login.subscribe(function () {
@@ -11061,6 +11082,14 @@ function LoginViewModel()
 
 	this.password.subscribe(function () {
 		this.passwordError(false);
+	}, this);
+
+	this.additionalCode.subscribe(function () {
+		this.additionalCode.error(false);
+	}, this);
+
+	this.additionalCode.visibility.subscribe(function () {
+		this.additionalCode.error(false);
 	}, this);
 
 	this.submitRequest = ko.observable(false);
@@ -11092,7 +11121,12 @@ function LoginViewModel()
 		this.emailError('' === Utils.trim(this.email()));
 		this.passwordError('' === Utils.trim(this.password()));
 
-		if (this.emailError() || this.passwordError())
+		if (this.additionalCode.visibility())
+		{
+			this.additionalCode.error('' === Utils.trim(this.additionalCode()));
+		}
+
+		if (this.emailError() || this.passwordError() || this.additionalCode.error())
 		{
 			return false;
 		}
@@ -11105,12 +11139,28 @@ function LoginViewModel()
 			{
 				if (oData.Result)
 				{
-					RL.loginAndLogoutReload();
+					if (oData.TwoFactorAuth)
+					{
+						this.additionalCode('');
+						this.additionalCode.visibility(true);
+						this.additionalCode.focused(true);
+						
+						this.submitRequest(false);
+					}
+					else
+					{
+						RL.loginAndLogoutReload();
+					}
 				}
 				else if (oData.ErrorCode)
 				{
 					this.submitRequest(false);
 					this.submitError(Utils.getNotification(oData.ErrorCode));
+
+					if ('' === this.submitError())
+					{
+						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+					}
 				}
 				else
 				{
@@ -11124,7 +11174,8 @@ function LoginViewModel()
 			}
 
 		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
-			this.bSendLanguage ? this.mainLanguage() : '');
+			this.bSendLanguage ? this.mainLanguage() : '',
+			this.additionalCode.visibility() ? this.additionalCode() : '');
 
 		return true;
 
@@ -13317,6 +13368,125 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 /**
  * @constructor
  */
+function SettingsSecurity()
+{
+	this.processing = ko.observable(false);
+	this.clearing = ko.observable(false);
+
+	this.viewUser = ko.observable('');
+	this.viewEnable = ko.observable(false);
+	this.viewEnable.subs = true;
+	this.twoFactorStatus = ko.observable(false);
+
+	this.viewSecret = ko.observable('');
+	this.viewBackupCodes = ko.observable('');
+	this.viewUrl = ko.observable('');
+
+	this.bFirst = true;
+
+	this.viewTwoFactorStatus = ko.computed(function () {
+		Globals.langChangeTrigger();
+		return Utils.i18n(
+			this.twoFactorStatus() ?
+				'SETTINGS_SECURITY/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
+				'SETTINGS_SECURITY/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
+		);
+	}, this);
+	
+	this.onResult = _.bind(this.onResult, this);
+}
+
+Utils.addSettingsViewModel(SettingsSecurity, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+
+SettingsSecurity.prototype.createTwoFactor = function ()
+{
+	this.processing(true);
+	RL.remote().createTwoFactor(this.onResult);
+};
+
+SettingsSecurity.prototype.enableTwoFactor = function ()
+{
+	this.processing(true);
+	RL.remote().enableTwoFactor(this.onResult, this.viewEnable());
+};
+
+SettingsSecurity.prototype.testTwoFactor = function ()
+{
+	kn.showScreenPopup(PopupsTwoFactorTestViewModel);
+};
+
+SettingsSecurity.prototype.clearTwoFactor = function ()
+{
+	this.viewSecret('');
+	this.viewBackupCodes('');
+	this.viewUrl('');
+	
+	this.clearing(true);
+	RL.remote().clearTwoFactor(this.onResult);
+};
+
+SettingsSecurity.prototype.onShow = function ()
+{
+	this.viewSecret('');
+	this.viewBackupCodes('');
+	this.viewUrl('');
+};
+
+SettingsSecurity.prototype.onResult = function (sResult, oData)
+{
+	this.processing(false);
+	this.clearing(false);
+
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	{
+		this.viewUser(Utils.pString(oData.Result.User));
+		this.viewEnable(!!oData.Result.Enable);
+		this.twoFactorStatus(!!oData.Result.IsSet);
+
+		this.viewSecret(Utils.pString(oData.Result.Secret));
+		this.viewBackupCodes(Utils.pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
+		this.viewUrl(Utils.pString(oData.Result.Url));
+	}
+	else
+	{
+		this.viewUser('');
+		this.viewEnable(false);
+		this.twoFactorStatus(false);
+
+		this.viewSecret('');
+		this.viewBackupCodes('');
+		this.viewUrl('');
+	}
+
+	if (this.bFirst)
+	{
+		this.bFirst = false;
+		var self = this;
+		this.viewEnable.subscribe(function (bValue) {
+			if (this.viewEnable.subs)
+			{
+				RL.remote().enableTwoFactor(function (sResult, oData) {
+					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
+					{
+						self.viewEnable.subs = false;
+						self.viewEnable(false);
+						self.viewEnable.subs = true;
+					}
+				}, bValue);
+			}
+		}, this);
+	}
+};
+
+SettingsSecurity.prototype.onBuild = function ()
+{
+	this.processing(true);
+	RL.remote().getTwoFactor(this.onResult);
+};
+
+/**
+ * @constructor
+ */
 function SettingsSocialScreen()
 {
 	var oData = RL.data();
@@ -14097,6 +14267,9 @@ function WebMailDataStorage()
 	this.signatureToAll = ko.observable(false);
 	this.replyTo = ko.observable('');
 
+	// security
+	this.enableTwoFactor = ko.observable(false);
+
 	// accounts
 	this.accounts = ko.observableArray([]);
 	this.accountsLoading = ko.observable(false).extend({'throttle': 100});
@@ -14459,6 +14632,7 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.replyTo(RL.settingsGet('ReplyTo'));
 	this.signature(RL.settingsGet('Signature'));
 	this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
+	this.enableTwoFactor(!!RL.settingsGet('EnableTwoFactor'));
 
 	this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
@@ -15542,16 +15716,72 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
  * @param {string} sPassword
  * @param {boolean} bSignMe
  * @param {string=} sLanguage
+ * @param {string=} sAdditionalCode
  */
-WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage)
+WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode)
 {
 	this.defaultRequest(fCallback, 'Login', {
 		'Email': sEmail,
 		'Login': sLogin,
 		'Password': sPassword,
 		'Language': sLanguage || '',
+		'AdditionalCode': sAdditionalCode || '',
 		'SignMe': bSignMe ? '1' : '0'
 	});
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.getTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'GetTwoFactorInfo');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.createTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'CreateTwoFactorSecret');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.clearTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sCode
+ */
+WebMailAjaxRemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
+{
+	this.defaultRequest(fCallback, 'TestTwoFactorInfo', {
+		'Code': sCode
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {boolean} bEnable
+ */
+WebMailAjaxRemoteStorage.prototype.enableTwoFactor = function (fCallback, bEnable)
+{
+	this.defaultRequest(fCallback, 'EnableTwoFactor', {
+		'Enable': bEnable ? '1' : '0'
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
 };
 
 /**
@@ -18250,6 +18480,11 @@ RainLoopApp.prototype.bootstart = function ()
 	if (!RL.settingsGet('OpenPGP'))
 	{
 		Utils.removeSettingsViewModel(SettingsOpenPGP);
+	}
+
+	if (!RL.settingsGet('AllowTwoFactorAuth'))
+	{
+		Utils.removeSettingsViewModel(SettingsSecurity);
 	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)

@@ -79,6 +79,8 @@ class Notifications
 			self::SocialGoogleLoginAccessDisable => 'SocialGoogleLoginAccessDisable',
 			self::DomainNotAllowed => 'DomainNotAllowed',
 			self::AccountNotAllowed => 'AccountNotAllowed',
+			self::AccountTwoFactorAuthRequired => 'AccountTwoFactorAuthRequired',
+			self::AccountTwoFactorAuthError => 'AccountTwoFactorAuthError',
 			self::CantGetMessageList => 'CantGetMessageList',
 			self::CantGetMessage => 'CantGetMessage',
 			self::CantDeleteMessage => 'CantDeleteMessage',

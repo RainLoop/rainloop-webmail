@@ -317,6 +317,9 @@ Enums.Notification = {
 	'DomainNotAllowed': 109,
 	'AccountNotAllowed': 110,
 
+	'AccountTwoFactorAuthRequired': 120,
+	'AccountTwoFactorAuthError': 121,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,

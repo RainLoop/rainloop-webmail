@@ -17,7 +17,16 @@
 				<label data-bind="click: function () { openPGP(!openPGP()); }">
 					<i data-bind="css: openPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
-					Allow OpenPGP (unstable)
+					Allow OpenPGP (beta)
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { allowTwoFactorAuth(!allowTwoFactorAuth()); }">
+					<i data-bind="css: allowTwoFactorAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					Allow 2-Step Verification (Google Authenticator) (beta)
 				</label>
 			</div>
 		</div>

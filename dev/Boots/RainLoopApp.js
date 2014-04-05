@@ -937,6 +937,11 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsOpenPGP);
 	}
 
+	if (!RL.settingsGet('AllowTwoFactorAuth'))
+	{
+		Utils.removeSettingsViewModel(SettingsSecurity);
+	}
+
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
 		Utils.removeSettingsViewModel(SettingsSocialScreen);

@@ -7,6 +7,7 @@ function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
 	this.openPGP = ko.observable(!!RL.settingsGet('OpenPGP'));
+	this.allowTwoFactorAuth = ko.observable(!!RL.settingsGet('AllowTwoFactorAuth'));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -70,6 +71,12 @@ AdminSecurity.prototype.onBuild = function ()
 	this.openPGP.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'OpenPGP': bValue ? '1' : '0'
+		});
+	});
+
+	this.allowTwoFactorAuth.subscribe(function (bValue) {
+		RL.remote().saveAdminConfig(Utils.emptyFunction, {
+			'AllowTwoFactorAuth': bValue ? '1' : '0'
 		});
 	});
 };

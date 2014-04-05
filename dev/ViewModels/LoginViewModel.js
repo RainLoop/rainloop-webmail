@@ -15,6 +15,11 @@ function LoginViewModel()
 	this.password = ko.observable('');
 	this.signMe = ko.observable(false);
 
+	this.additionalCode = ko.observable('');
+	this.additionalCode.error = ko.observable(false);
+	this.additionalCode.focused = ko.observable(false);
+	this.additionalCode.visibility = ko.observable(false);
+
 	this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
 	this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
 	this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
@@ -29,6 +34,8 @@ function LoginViewModel()
 
 	this.email.subscribe(function () {
 		this.emailError(false);
+		this.additionalCode('');
+		this.additionalCode.visibility(false);
 	}, this);
 
 	this.login.subscribe(function () {
@@ -37,6 +44,14 @@ function LoginViewModel()
 
 	this.password.subscribe(function () {
 		this.passwordError(false);
+	}, this);
+
+	this.additionalCode.subscribe(function () {
+		this.additionalCode.error(false);
+	}, this);
+
+	this.additionalCode.visibility.subscribe(function () {
+		this.additionalCode.error(false);
 	}, this);
 
 	this.submitRequest = ko.observable(false);
@@ -68,7 +83,12 @@ function LoginViewModel()
 		this.emailError('' === Utils.trim(this.email()));
 		this.passwordError('' === Utils.trim(this.password()));
 
-		if (this.emailError() || this.passwordError())
+		if (this.additionalCode.visibility())
+		{
+			this.additionalCode.error('' === Utils.trim(this.additionalCode()));
+		}
+
+		if (this.emailError() || this.passwordError() || this.additionalCode.error())
 		{
 			return false;
 		}
@@ -81,12 +101,28 @@ function LoginViewModel()
 			{
 				if (oData.Result)
 				{
-					RL.loginAndLogoutReload();
+					if (oData.TwoFactorAuth)
+					{
+						this.additionalCode('');
+						this.additionalCode.visibility(true);
+						this.additionalCode.focused(true);
+						
+						this.submitRequest(false);
+					}
+					else
+					{
+						RL.loginAndLogoutReload();
+					}
 				}
 				else if (oData.ErrorCode)
 				{
 					this.submitRequest(false);
 					this.submitError(Utils.getNotification(oData.ErrorCode));
+
+					if ('' === this.submitError())
+					{
+						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+					}
 				}
 				else
 				{
@@ -100,7 +136,8 @@ function LoginViewModel()
 			}
 
 		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
-			this.bSendLanguage ? this.mainLanguage() : '');
+			this.bSendLanguage ? this.mainLanguage() : '',
+			this.additionalCode.visibility() ? this.additionalCode() : '');
 
 		return true;
 

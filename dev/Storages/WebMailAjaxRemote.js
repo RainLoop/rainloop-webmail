@@ -34,16 +34,72 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
  * @param {string} sPassword
  * @param {boolean} bSignMe
  * @param {string=} sLanguage
+ * @param {string=} sAdditionalCode
  */
-WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage)
+WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode)
 {
 	this.defaultRequest(fCallback, 'Login', {
 		'Email': sEmail,
 		'Login': sLogin,
 		'Password': sPassword,
 		'Language': sLanguage || '',
+		'AdditionalCode': sAdditionalCode || '',
 		'SignMe': bSignMe ? '1' : '0'
 	});
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.getTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'GetTwoFactorInfo');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.createTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'CreateTwoFactorSecret');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.clearTwoFactor = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {string} sCode
+ */
+WebMailAjaxRemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
+{
+	this.defaultRequest(fCallback, 'TestTwoFactorInfo', {
+		'Code': sCode
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {boolean} bEnable
+ */
+WebMailAjaxRemoteStorage.prototype.enableTwoFactor = function (fCallback, bEnable)
+{
+	this.defaultRequest(fCallback, 'EnableTwoFactor', {
+		'Enable': bEnable ? '1' : '0'
+	});
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
 };
 
 /**

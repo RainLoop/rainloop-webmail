@@ -6607,6 +6607,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   max-height: 500px;
   overflow: auto;
 }
+.popups .b-two-factor-test-content .modal-header {
+  background-color: #fff;
+}
 .popups .b-identity-content .modal-header {
   background-color: #fff;
 }
