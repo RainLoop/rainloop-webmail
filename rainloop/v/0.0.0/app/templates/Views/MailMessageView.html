@@ -26,10 +26,10 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
-					<a class="btn btn-dark-disabled-border button-archive" data-placement="bottom" data-bind="visible: !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
+					<a class="btn btn-dark-disabled-border button-archive" data-placement="bottom" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-placement="bottom" data-bind="visible: !isDraftFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-placement="bottom" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-bug"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-delete" data-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">

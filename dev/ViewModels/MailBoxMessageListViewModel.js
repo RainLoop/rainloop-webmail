@@ -122,6 +122,16 @@ function MailBoxMessageListViewModel()
 			'' !== oData.trashFolder();
 	}, this);
 
+	this.isDraftFolder = ko.computed(function () {
+		return oData.draftFolder() === this.messageListEndFolder() &&
+			'' !== oData.draftFolder();
+	}, this);
+
+	this.isSentFolder = ko.computed(function () {
+		return oData.sentFolder() === this.messageListEndFolder() &&
+			'' !== oData.sentFolder();
+	}, this);
+
 	this.isArchiveFolder = ko.computed(function () {
 		return oData.archiveFolder() === this.messageListEndFolder() &&
 			'' !== oData.archiveFolder();
