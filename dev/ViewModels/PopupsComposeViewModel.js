@@ -15,7 +15,6 @@ function PopupsComposeViewModel()
 	this.sReferences = '';
 	
 	this.bAllowIdentities = RL.settingsGet('AllowIdentities');
-	this.bAllowCtrlS = !!RL.settingsGet('AllowCtrlSOnCompose');
 
 	var
 		self = this,
@@ -929,7 +928,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
 		{
-			if (self.bAllowCtrlS && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
+			if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
 			{
 				self.saveCommand();
 				bResult = false;
