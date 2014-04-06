@@ -955,6 +955,8 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					oMessagesBodiesDom.append(oMessage.body);
 				}
 
+				oMessage.storeDataToDom();
+
 				if (bHasInternals)
 				{
 					oMessage.showInternalImages(true);
@@ -965,7 +967,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					oMessage.showExternalImages(true);
 				}
 
-				oMessage.storeDataToDom();
 				this.purgeMessageBodyCacheThrottle();
 			}
 			else
