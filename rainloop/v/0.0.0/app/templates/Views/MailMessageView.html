@@ -24,8 +24,8 @@
 						<i class="icon-forward"></i>
 					</a>
 				</div>
-				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group">
+				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
+				<div class="btn-group" data-bind="visible: !usePreviewPane()">
 					<a class="btn btn-dark-disabled-border button-archive" data-placement="bottom" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
@@ -57,18 +57,40 @@
 							</a>
 						</li>
 						<li class="divider" data-bind="visible: !isDraftFolder()"></li>
-						<li class="e-item">
-							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
-								<i class="icon-popup"></i>
+						<li class="e-item" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
+							<a target="_blank" class="e-link" data-bind="command: archiveCommand">
+								<i class="icon-archive"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_ARCHIVE"></span>
 							</a>
 						</li>
+						<li class="e-item" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
+							<a target="_blank" class="e-link" data-bind="command: spamCommand">
+								<i class="icon-bug"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_SPAM"></span>
+							</a>
+						</li>
+						<li class="e-item" data-bind="visible: usePreviewPane()">
+							<a target="_blank" class="e-link" data-bind="command: deleteCommand">
+								<i class="icon-trash"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_DELETE"></span>
+							</a>
+						</li>
+						<li class="divider" data-bind="visible: usePreviewPane()"></li>
 						<li class="e-item">
 							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
 								<i class="icon-print"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/MENU_PRINT"></span>
+							</a>
+						</li>
+						<li class="e-item">
+							<a target="_blank" class="e-link" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
+								<i class="icon-popup"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 							</a>
 						</li>
 						<li class="divider"></li>
