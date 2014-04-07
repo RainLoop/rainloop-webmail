@@ -42,7 +42,7 @@ class DirectadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('direct_admin_host')->SetLabel('DirectAdmin Host')
 				->SetDefaultValue('')
-				->SetDescription('Allowed patterns: {user:host-imap}, {user:host-smpt}, {user:domain}'),
+				->SetDescription('Allowed patterns: {user:host-imap}, {user:host-smtp}, {user:domain}'),
 			\RainLoop\Plugins\Property::NewInstance('direct_admin_port')->SetLabel('DirectAdmin Port')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDefaultValue(2222),

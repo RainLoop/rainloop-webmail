@@ -127,26 +127,26 @@ class Domain
 	/**
 	 * @param array $aDomain
 	 *
-	 * @return \RainLoop\Domain | null
+	 * @return \RainLoop\Domain|null
 	 */
 	public static function NewInstanceFromDomainConfigArray($sName, $aDomain)
 	{
 		$oDomain = null;
 
 		if (0 < \strlen($sName) && \is_array($aDomain) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']) &&
-			0 < \strlen($aDomain['smpt_host']) && 0 < \strlen($aDomain['smpt_port']))
+			0 < \strlen($aDomain['smtp_host']) && 0 < \strlen($aDomain['smtp_port']))
 		{
 			$sIncHost = (string) $aDomain['imap_host'];
 			$iIncPort = (int) $aDomain['imap_port'];
 			$iIncSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
-			$sOutHost = (string) $aDomain['smpt_host'];
-			$iOutPort = (int) $aDomain['smpt_port'];
+			$sOutHost = (string) $aDomain['smtp_host'];
+			$iOutPort = (int) $aDomain['smtp_port'];
 			$iOutSecure = self::StrConnectionSecurityTypeToCons(
-				!empty($aDomain['smpt_secure']) ? $aDomain['smpt_secure'] : '');
+				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
 
-			$bOutAuth = isset($aDomain['smpt_auth']) ? (bool) $aDomain['smpt_auth'] : true;
+			$bOutAuth = isset($aDomain['smtp_auth']) ? (bool) $aDomain['smtp_auth'] : true;
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
 			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
@@ -207,11 +207,11 @@ class Domain
 			'imap_port = '.$this->iIncPort,
 			'imap_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iIncSecure).'"',
 			'imap_short_login = '.($this->bIncShortLogin ? 'On' : 'Off'),
-			'smpt_host = "'.$this->encodeIniString($this->sOutHost).'"',
-			'smpt_port = '.$this->iOutPort,
-			'smpt_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iOutSecure).'"',
+			'smtp_host = "'.$this->encodeIniString($this->sOutHost).'"',
+			'smtp_port = '.$this->iOutPort,
+			'smtp_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iOutSecure).'"',
 			'smtp_short_login = '.($this->bOutShortLogin ? 'On' : 'Off'),
-			'smpt_auth = '.($this->bOutAuth ? 'On' : 'Off'),
+			'smtp_auth = '.($this->bOutAuth ? 'On' : 'Off'),
 			'white_list = "'.$this->encodeIniString($this->sWhiteList).'"'
 		));
 	}

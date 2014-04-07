@@ -149,8 +149,33 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
 		{
-			$mResult = \RainLoop\Domain::NewInstanceFromDomainConfigArray(
-				$sName, @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini'));
+			$aDomain =  @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			// fix misspellings (#119)
+			if (\is_array($aDomain))
+			{
+				if (isset($aDomain['smpt_host']))
+				{
+					$aDomain['smtp_host'] = $aDomain['smpt_host'];
+				}
+
+				if (isset($aDomain['smpt_port']))
+				{
+					$aDomain['smtp_port'] = $aDomain['smpt_port'];
+				}
+
+				if (isset($aDomain['smpt_secure']))
+				{
+					$aDomain['smtp_secure'] = $aDomain['smpt_secure'];
+				}
+
+				if (isset($aDomain['smpt_auth']))
+				{
+					$aDomain['smtp_auth'] = $aDomain['smpt_auth'];
+				}
+			}
+			//---
+
+			$mResult = \RainLoop\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
 		}
 		else if ($bFindWithWildCard)
 		{

@@ -4186,7 +4186,7 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
-	private function smptSendMessage($oAccount, $oMessage, $rMessageStream, $bAddHiddenRcpt = true)
+	private function smtpSendMessage($oAccount, $oMessage, $rMessageStream, $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if ($oRcpt && 0 < $oRcpt->Count())
@@ -4337,7 +4337,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smptSendMessage($oAccount, $oMessage, $rMessageStream);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream);
 					
 					if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
 					{
@@ -4493,7 +4493,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smptSendMessage($oAccount, $oMessage, $rMessageStream);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream);
 
 					if (\is_resource($rMessageStream))
 					{
