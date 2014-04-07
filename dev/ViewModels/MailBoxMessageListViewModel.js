@@ -588,20 +588,6 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
-	ko.computed(function () {
-
-		var
-			oData = RL.data(),
-			bViewModelVisibility = this.viewModelVisibility(),
-			bPopupVisibility = RL.popupVisibility(),
-			bUseKeyboardShortcuts = oData.useKeyboardShortcuts(),
-			bMessageFullScreenMode = oData.messageFullScreenMode()
-		;
-
-		this.selector.useKeyboard(bViewModelVisibility && bUseKeyboardShortcuts && !bMessageFullScreenMode && !bPopupVisibility);
-
-	}, this).extend({'notify': 'always'});
-
 	this.initUploaderForAppend();
 	this.initShortcuts();
 

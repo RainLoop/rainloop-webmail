@@ -351,7 +351,7 @@ function PopupsComposeViewModel()
 //	this.driveCallback = _.bind(this.driveCallback, this);
 
 	this.bDisabeCloseOnEsc = true;
-	this.sKeyScope = Enums.KeyState.MessageList;
+	this.sDefaultKeyScope = Enums.KeyState.Compose;
 	
 	Knoin.constructorEnd(this);
 }
@@ -569,8 +569,6 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
-
-	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -643,9 +641,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 {
 	kn.routeOff();
 	
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.Compose);
-
 	var
 		self = this,
 		sFrom = '',
@@ -922,7 +917,7 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 
 PopupsComposeViewModel.prototype.useShortcuts = function ()
 {
-	return this.modalVisibility() && RL.data().useKeyboardShortcuts();
+	return RL.data().useKeyboardShortcuts();
 };
 
 PopupsComposeViewModel.prototype.onBuild = function ()
@@ -931,11 +926,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	var 
 		self = this,
+		oData = RL.data(),
 		oScript = null
 	;
 
 	key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
-		if (self.useShortcuts())
+		if (oData.useKeyboardShortcuts())
 		{
 			self.saveCommand();
 			return false;
@@ -943,7 +939,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	});
 
 	key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
-		if (self.useShortcuts())
+		if (oData.useKeyboardShortcuts())
 		{
 			self.sendCommand();
 			return false;
@@ -951,8 +947,11 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	});
 	
 	key('esc', Enums.KeyState.Compose, function () {
-		self.tryToClosePopup();
-		return false;
+		if (oData.useKeyboardShortcuts())
+		{
+			self.tryToClosePopup();
+			return false;
+		}
 	});
 
 	$window.on('resize', function () {

@@ -31,6 +31,7 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.KeyState = {
+	'All': 'all',
 	'None': 'none',
 	'ContactList': 'contact-list',
 	'MessageList': 'message-list',

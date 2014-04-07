@@ -496,8 +496,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			self.deleteCommand();
 			if (handler && 'shift+delete' === handler.shortcut)
 			{
-//					self.deleteWithoutMoveCommand();
-				self.deleteCommand();
+				self.deleteWithoutMoveCommand();
 			}
 			else
 			{
@@ -511,7 +510,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	key('tab', Enums.KeyState.MessageView, function () {
 		if (oData.useKeyboardShortcuts())
 		{
-			if (self.message())
+			if (!self.fullScreenMode() && self.message())
 			{
 				self.message.focused(false);
 			}

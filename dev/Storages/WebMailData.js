@@ -42,22 +42,6 @@ function WebMailDataStorage()
 	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
 
-	this.keyScope = ko.observable(Enums.KeyState.None);
-	this.keyScope.subscribe(function (sValue) {
-
-		if (Enums.KeyState.Compose === sValue)
-		{
-			Utils.disableKeyFilter();
-		}
-		else
-		{
-			Utils.restoreKeyFilter();
-		}
-
-//		window.console.log(sValue);
-		key.setScope(sValue);
-	});
-
 	// system folders
 	this.sentFolder = ko.observable('');
 	this.draftFolder = ko.observable('');

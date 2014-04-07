@@ -371,6 +371,7 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.KeyState = {
+	'All': 'all',
 	'None': 'none',
 	'ContactList': 'contact-list',
 	'MessageList': 'message-list',
@@ -3877,6 +3878,9 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
+	this.sDefaultKeyScope = Enums.KeyState.None;
+	this.sCurrentKeyScope = this.sDefaultKeyScope;
+
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	if ('Popups' === this.sPosition)
@@ -3927,15 +3931,29 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 {
 };
 
+KnoinAbstractViewModel.prototype.storeAndSetKeyScope = function ()
+{
+	this.sCurrentKeyScope = RL.data().keyScope();
+	RL.data().keyScope(this.sDefaultKeyScope);
+};
+
+KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
+{
+	RL.data().keyScope(this.sCurrentKeyScope);
+};
+
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	key('esc', _.bind(function () {
-		if (this.modalVisibility && this.modalVisibility())
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(this, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			return false;
 		}
-	}, this));
+
+		return true;
+	});
 };
 
 /**
@@ -4157,6 +4175,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
+		ViewModelClassToHide.__vm.restoreKeyScope();
 
 		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
 
@@ -4182,8 +4201,10 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 		{
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
+
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			
+			ViewModelClassToShow.__vm.storeAndSetKeyScope();
+
 			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
@@ -5042,6 +5063,7 @@ function PopupsPluginViewModel()
 	}, this.hasConfiguration);
 
 	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.All;
 
 	Knoin.constructorEnd(this);
 }
@@ -5109,13 +5131,13 @@ PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 
 PopupsPluginViewModel.prototype.onBuild = function ()
 {
-	key('esc', _.bind(function () {
+	key('esc', Enums.KeyState.All, _.bind(function () {
 		if (this.modalVisibility())
 		{
 			this.tryToClosePopup();
 			return false;
 		}
-	}));
+	}, this));
 };
 
 /**
@@ -5313,6 +5335,8 @@ function PopupsAskViewModel()
 	this.fNoAction = null;
 
 	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
+
 	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
@@ -5377,9 +5401,6 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
-
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.PopupAsk);
 };
 
 PopupsAskViewModel.prototype.onFocus = function ()
@@ -5387,27 +5408,18 @@ PopupsAskViewModel.prototype.onFocus = function ()
 	this.yesFocus(true);
 };
 
-PopupsAskViewModel.prototype.onHide = function ()
-{
-	RL.data().keyScope(this.sKeyScope);
-};
-
 PopupsAskViewModel.prototype.onBuild = function ()
 {
 	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
-		if (this.modalVisibility())
+		if (this.yesFocus())
 		{
-			if (this.yesFocus())
-			{
-				this.noFocus(true);
-			}
-			else
-			{
-				this.yesFocus(true);
-			}
-
-			return false;
+			this.noFocus(true);
 		}
+		else
+		{
+			this.yesFocus(true);
+		}
+		return false;
 	}, this));
 };
 
@@ -6541,6 +6553,22 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
  */
 function AbstractData()
 {
+	this.keyScope = ko.observable(Enums.KeyState.All);
+	this.keyScope.subscribe(function (sValue) {
+
+		if (Enums.KeyState.Compose === sValue)
+		{
+			Utils.disableKeyFilter();
+		}
+		else
+		{
+			Utils.restoreKeyFilter();
+		}
+
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
+
 	Utils.initDataConstructorBySettings(this);
 }
 

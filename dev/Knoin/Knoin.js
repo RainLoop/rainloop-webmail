@@ -143,6 +143,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
+		ViewModelClassToHide.__vm.restoreKeyScope();
 
 		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
 
@@ -168,8 +169,10 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 		{
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
+
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			
+			ViewModelClassToShow.__vm.storeAndSetKeyScope();
+
 			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);

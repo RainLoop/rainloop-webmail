@@ -303,7 +303,7 @@ function PopupsContactsViewModel()
 		}
 	}, this);
 
-	this.sKeyScope = Enums.KeyState.MessageList;
+	this.sDefaultKeyScope = Enums.KeyState.ContactList;
 
 	Knoin.constructorEnd(this);
 }
@@ -587,14 +587,6 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		}
 	});
 
-	ko.computed(function () {
-		var
-			bModalVisibility = this.modalVisibility(),
-			bUseKeyboardShortcuts = RL.data().useKeyboardShortcuts()
-		;
-		this.selector.useKeyboard(bModalVisibility && bUseKeyboardShortcuts);
-	}, this).extend({'notify': 'always'});
-
 	oDom
 		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
@@ -613,9 +605,6 @@ PopupsContactsViewModel.prototype.onShow = function ()
 {
 	kn.routeOff();
 	this.reloadContactList(true);
-
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.ContactList);
 };
 
 PopupsContactsViewModel.prototype.onHide = function ()
@@ -628,6 +617,4 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	_.each(this.contacts(), function (oItem) {
 		oItem.checked(false);
 	});
-
-	RL.data().keyScope(this.sKeyScope);
 };

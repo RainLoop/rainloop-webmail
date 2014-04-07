@@ -60,6 +60,7 @@ function PopupsPluginViewModel()
 	}, this.hasConfiguration);
 
 	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.All;
 
 	Knoin.constructorEnd(this);
 }
@@ -127,11 +128,11 @@ PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 
 PopupsPluginViewModel.prototype.onBuild = function ()
 {
-	key('esc', _.bind(function () {
+	key('esc', Enums.KeyState.All, _.bind(function () {
 		if (this.modalVisibility())
 		{
 			this.tryToClosePopup();
 			return false;
 		}
-	}));
+	}, this));
 };

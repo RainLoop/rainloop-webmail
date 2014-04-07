@@ -11,6 +11,9 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
+	this.sDefaultKeyScope = Enums.KeyState.None;
+	this.sCurrentKeyScope = this.sDefaultKeyScope;
+
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	if ('Popups' === this.sPosition)
@@ -61,13 +64,27 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 {
 };
 
+KnoinAbstractViewModel.prototype.storeAndSetKeyScope = function ()
+{
+	this.sCurrentKeyScope = RL.data().keyScope();
+	RL.data().keyScope(this.sDefaultKeyScope);
+};
+
+KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
+{
+	RL.data().keyScope(this.sCurrentKeyScope);
+};
+
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	key('esc', _.bind(function () {
-		if (this.modalVisibility && this.modalVisibility())
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(this, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			return false;
 		}
-	}, this));
+
+		return true;
+	});
 };

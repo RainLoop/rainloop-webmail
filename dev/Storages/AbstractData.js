@@ -5,6 +5,22 @@
  */
 function AbstractData()
 {
+	this.keyScope = ko.observable(Enums.KeyState.All);
+	this.keyScope.subscribe(function (sValue) {
+
+		if (Enums.KeyState.Compose === sValue)
+		{
+			Utils.disableKeyFilter();
+		}
+		else
+		{
+			Utils.restoreKeyFilter();
+		}
+
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
+
 	Utils.initDataConstructorBySettings(this);
 }
 

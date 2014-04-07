@@ -375,6 +375,7 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.KeyState = {
+	'All': 'all',
 	'None': 'none',
 	'ContactList': 'contact-list',
 	'MessageList': 'message-list',
@@ -4712,6 +4713,9 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.sPosition = Utils.pString(sPosition);
 	this.sTemplate = Utils.pString(sTemplate);
 
+	this.sDefaultKeyScope = Enums.KeyState.None;
+	this.sCurrentKeyScope = this.sDefaultKeyScope;
+
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	if ('Popups' === this.sPosition)
@@ -4762,15 +4766,29 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 {
 };
 
+KnoinAbstractViewModel.prototype.storeAndSetKeyScope = function ()
+{
+	this.sCurrentKeyScope = RL.data().keyScope();
+	RL.data().keyScope(this.sDefaultKeyScope);
+};
+
+KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
+{
+	RL.data().keyScope(this.sCurrentKeyScope);
+};
+
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	key('esc', _.bind(function () {
-		if (this.modalVisibility && this.modalVisibility())
+	var self = this;
+	$window.on('keydown', function (oEvent) {
+		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(this, 'cancelCommand');
+			Utils.delegateRun(self, 'cancelCommand');
 			return false;
 		}
-	}, this));
+
+		return true;
+	});
 };
 
 /**
@@ -4992,6 +5010,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
 		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
+		ViewModelClassToHide.__vm.restoreKeyScope();
 
 		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
 
@@ -5017,8 +5036,10 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 		{
 			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
+
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			
+			ViewModelClassToShow.__vm.storeAndSetKeyScope();
+
 			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
 			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
@@ -8328,7 +8349,7 @@ function PopupsComposeViewModel()
 //	this.driveCallback = _.bind(this.driveCallback, this);
 
 	this.bDisabeCloseOnEsc = true;
-	this.sKeyScope = Enums.KeyState.MessageList;
+	this.sDefaultKeyScope = Enums.KeyState.Compose;
 	
 	Knoin.constructorEnd(this);
 }
@@ -8546,8 +8567,6 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
-
-	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -8620,9 +8639,6 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 {
 	kn.routeOff();
 	
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.Compose);
-
 	var
 		self = this,
 		sFrom = '',
@@ -8899,7 +8915,7 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 
 PopupsComposeViewModel.prototype.useShortcuts = function ()
 {
-	return this.modalVisibility() && RL.data().useKeyboardShortcuts();
+	return RL.data().useKeyboardShortcuts();
 };
 
 PopupsComposeViewModel.prototype.onBuild = function ()
@@ -8908,11 +8924,12 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 	var 
 		self = this,
+		oData = RL.data(),
 		oScript = null
 	;
 
 	key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
-		if (self.useShortcuts())
+		if (oData.useKeyboardShortcuts())
 		{
 			self.saveCommand();
 			return false;
@@ -8920,7 +8937,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	});
 
 	key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
-		if (self.useShortcuts())
+		if (oData.useKeyboardShortcuts())
 		{
 			self.sendCommand();
 			return false;
@@ -8928,8 +8945,11 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	});
 	
 	key('esc', Enums.KeyState.Compose, function () {
-		self.tryToClosePopup();
-		return false;
+		if (oData.useKeyboardShortcuts())
+		{
+			self.tryToClosePopup();
+			return false;
+		}
 	});
 
 	$window.on('resize', function () {
@@ -9774,7 +9794,7 @@ function PopupsContactsViewModel()
 		}
 	}, this);
 
-	this.sKeyScope = Enums.KeyState.MessageList;
+	this.sDefaultKeyScope = Enums.KeyState.ContactList;
 
 	Knoin.constructorEnd(this);
 }
@@ -10058,14 +10078,6 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 		}
 	});
 
-	ko.computed(function () {
-		var
-			bModalVisibility = this.modalVisibility(),
-			bUseKeyboardShortcuts = RL.data().useKeyboardShortcuts()
-		;
-		this.selector.useKeyboard(bModalVisibility && bUseKeyboardShortcuts);
-	}, this).extend({'notify': 'always'});
-
 	oDom
 		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
@@ -10084,9 +10096,6 @@ PopupsContactsViewModel.prototype.onShow = function ()
 {
 	kn.routeOff();
 	this.reloadContactList(true);
-
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.ContactList);
 };
 
 PopupsContactsViewModel.prototype.onHide = function ()
@@ -10099,8 +10108,6 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	_.each(this.contacts(), function (oItem) {
 		oItem.checked(false);
 	});
-
-	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -11020,6 +11027,8 @@ function PopupsAskViewModel()
 	this.fNoAction = null;
 
 	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
+
 	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
@@ -11084,9 +11093,6 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
-
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.PopupAsk);
 };
 
 PopupsAskViewModel.prototype.onFocus = function ()
@@ -11094,27 +11100,18 @@ PopupsAskViewModel.prototype.onFocus = function ()
 	this.yesFocus(true);
 };
 
-PopupsAskViewModel.prototype.onHide = function ()
-{
-	RL.data().keyScope(this.sKeyScope);
-};
-
 PopupsAskViewModel.prototype.onBuild = function ()
 {
 	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
-		if (this.modalVisibility())
+		if (this.yesFocus())
 		{
-			if (this.yesFocus())
-			{
-				this.noFocus(true);
-			}
-			else
-			{
-				this.yesFocus(true);
-			}
-
-			return false;
+			this.noFocus(true);
 		}
+		else
+		{
+			this.yesFocus(true);
+		}
+		return false;
 	}, this));
 };
 
@@ -11127,23 +11124,10 @@ function PopupsKeyboardShortcutsHelpViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsKeyboardShortcutsHelp');
 
-	this.sKeyScope = Enums.KeyState.None;
-
 	Knoin.constructorEnd(this);
 }
 
 Utils.extendAsViewModel('PopupsKeyboardShortcutsHelpViewModel', PopupsKeyboardShortcutsHelpViewModel);
-
-PopupsKeyboardShortcutsHelpViewModel.prototype.onShow = function ()
-{
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.None);
-};
-
-PopupsKeyboardShortcutsHelpViewModel.prototype.onHide = function ()
-{
-	RL.data().keyScope(this.sKeyScope);
-};
 
 /**
  * @constructor
@@ -12270,20 +12254,6 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
-	ko.computed(function () {
-
-		var
-			oData = RL.data(),
-			bViewModelVisibility = this.viewModelVisibility(),
-			bPopupVisibility = RL.popupVisibility(),
-			bUseKeyboardShortcuts = oData.useKeyboardShortcuts(),
-			bMessageFullScreenMode = oData.messageFullScreenMode()
-		;
-
-		this.selector.useKeyboard(bViewModelVisibility && bUseKeyboardShortcuts && !bMessageFullScreenMode && !bPopupVisibility);
-
-	}, this).extend({'notify': 'always'});
-
 	this.initUploaderForAppend();
 	this.initShortcuts();
 
@@ -13014,8 +12984,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			self.deleteCommand();
 			if (handler && 'shift+delete' === handler.shortcut)
 			{
-//					self.deleteWithoutMoveCommand();
-				self.deleteCommand();
+				self.deleteWithoutMoveCommand();
 			}
 			else
 			{
@@ -13029,7 +12998,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	key('tab', Enums.KeyState.MessageView, function () {
 		if (oData.useKeyboardShortcuts())
 		{
-			if (self.message())
+			if (!self.fullScreenMode() && self.message())
 			{
 				self.message.focused(false);
 			}
@@ -14503,6 +14472,22 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
  */
 function AbstractData()
 {
+	this.keyScope = ko.observable(Enums.KeyState.All);
+	this.keyScope.subscribe(function (sValue) {
+
+		if (Enums.KeyState.Compose === sValue)
+		{
+			Utils.disableKeyFilter();
+		}
+		else
+		{
+			Utils.restoreKeyFilter();
+		}
+
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
+
 	Utils.initDataConstructorBySettings(this);
 }
 
@@ -14614,22 +14599,6 @@ function WebMailDataStorage()
 
 	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
-
-	this.keyScope = ko.observable(Enums.KeyState.None);
-	this.keyScope.subscribe(function (sValue) {
-
-		if (Enums.KeyState.Compose === sValue)
-		{
-			Utils.disableKeyFilter();
-		}
-		else
-		{
-			Utils.restoreKeyFilter();
-		}
-
-//		window.console.log(sValue);
-		key.setScope(sValue);
-	});
 
 	// system folders
 	this.sentFolder = ko.observable('');
@@ -17464,13 +17433,12 @@ MailBoxScreen.prototype.setNewTitle  = function ()
 MailBoxScreen.prototype.onShow = function ()
 {
 	this.setNewTitle();
-
 	RL.data().keyScope(Enums.KeyState.MessageList);
 };
 
 MailBoxScreen.prototype.onHide = function ()
 {
-	RL.data().keyScope(Enums.KeyState.None);
+	RL.data().keyScope(Enums.KeyState.All);
 };
 
 /**

@@ -37,13 +37,12 @@ MailBoxScreen.prototype.setNewTitle  = function ()
 MailBoxScreen.prototype.onShow = function ()
 {
 	this.setNewTitle();
-
 	RL.data().keyScope(Enums.KeyState.MessageList);
 };
 
 MailBoxScreen.prototype.onHide = function ()
 {
-	RL.data().keyScope(Enums.KeyState.None);
+	RL.data().keyScope(Enums.KeyState.All);
 };
 
 /**

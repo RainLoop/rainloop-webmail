@@ -30,7 +30,14 @@
 			No plugins have yet been installed.
 			<br />
 			<br />
-			<strong><a href="#/packages">Click here install new!</a></strong>
+			<strong><a href="#/packages">Click here to install new!</a></strong>
+		</div>
+		<div class="span8"  data-bind="visible: 0 < plugins().length">
+			<blockquote>
+				<p class="muted">
+					Click on the name to configure the plugin.
+				</p>
+			</blockquote>
 		</div>
 	</div>
 	<div class="row">

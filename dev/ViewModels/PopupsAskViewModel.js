@@ -19,6 +19,8 @@ function PopupsAskViewModel()
 	this.fNoAction = null;
 
 	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
+
 	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
@@ -83,9 +85,6 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
-
-	this.sKeyScope = RL.data().keyScope();
-	RL.data().keyScope(Enums.KeyState.PopupAsk);
 };
 
 PopupsAskViewModel.prototype.onFocus = function ()
@@ -93,27 +92,18 @@ PopupsAskViewModel.prototype.onFocus = function ()
 	this.yesFocus(true);
 };
 
-PopupsAskViewModel.prototype.onHide = function ()
-{
-	RL.data().keyScope(this.sKeyScope);
-};
-
 PopupsAskViewModel.prototype.onBuild = function ()
 {
 	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
-		if (this.modalVisibility())
+		if (this.yesFocus())
 		{
-			if (this.yesFocus())
-			{
-				this.noFocus(true);
-			}
-			else
-			{
-				this.yesFocus(true);
-			}
-
-			return false;
+			this.noFocus(true);
 		}
+		else
+		{
+			this.yesFocus(true);
+		}
+		return false;
 	}, this));
 };
 
