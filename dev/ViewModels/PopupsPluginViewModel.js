@@ -127,14 +127,11 @@ PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 
 PopupsPluginViewModel.prototype.onBuild = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+	key('esc', _.bind(function () {
+		if (this.modalVisibility())
 		{
-			self.tryToClosePopup();
-			bResult = false;
+			this.tryToClosePopup();
+			return false;
 		}
-		return bResult;
-	});
+	}));
 };

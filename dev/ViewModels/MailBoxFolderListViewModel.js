@@ -24,11 +24,19 @@ Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel
 MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 {
 	oDom
+		.on('click', '.b-folders .b-content', function () {
+			if (RL.data().useKeyboardShortcuts() && RL.data().message.focused())
+			{
+				RL.data().message.focused(false);
+			}
+		})
 		.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
-			var 
+
+					var
 				oFolder = ko.dataFor(this),
 				bCollapsed = false
 			;
+
 			if (oFolder && oEvent)
 			{
 				bCollapsed = oFolder.collapsed();

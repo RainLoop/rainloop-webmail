@@ -368,6 +368,18 @@ Enums.StateType = {
 };
 
 /**
+ * @enum {string}
+ */
+Enums.KeyState = {
+	'None': 'none',
+	'ContactList': 'contact-list',
+	'MessageList': 'message-list',
+	'MessageView': 'message-view',
+	'Compose': 'compose',
+	'PopupAsk': 'popup-ask'
+};
+
+/**
  * @enum {number}
  */
 Enums.FolderType = {
@@ -2421,6 +2433,34 @@ Utils.selectElement = function (element)
 	/* jshint onevar: true */
 };
 
+Utils.disableKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function () {
+			return true;
+		};
+	}
+};
+
+Utils.restoreKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function (event) {
+			var
+				element = event.target || event.srcElement,
+				tagName = element ? element.tagName : ''
+			;
+
+			tagName = tagName.toUpperCase();
+			return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
+				(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
+			);
+		};
+	}
+};
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -3889,16 +3929,13 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+	key('esc', _.bind(function () {
+		if (this.modalVisibility && this.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(this, 'cancelCommand');
 			return false;
 		}
-		
-		return true;
-	});
+	}, this));
 };
 
 /**
@@ -5072,16 +5109,13 @@ PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 
 PopupsPluginViewModel.prototype.onBuild = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+	key('esc', _.bind(function () {
+		if (this.modalVisibility())
 		{
-			self.tryToClosePopup();
-			bResult = false;
+			this.tryToClosePopup();
+			return false;
 		}
-		return bResult;
-	});
+	}));
 };
 
 /**
@@ -5279,6 +5313,7 @@ function PopupsAskViewModel()
 	this.fNoAction = null;
 
 	this.bDisabeCloseOnEsc = true;
+	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
 }
@@ -5300,22 +5335,22 @@ PopupsAskViewModel.prototype.clearPopup = function ()
 
 PopupsAskViewModel.prototype.yesClick = function ()
 {
+	this.cancelCommand();
+
 	if (Utils.isFunc(this.fYesAction))
 	{
 		this.fYesAction.call(null);
 	}
-
-	this.cancelCommand();
 };
 
 PopupsAskViewModel.prototype.noClick = function ()
 {
+	this.cancelCommand();
+
 	if (Utils.isFunc(this.fNoAction))
 	{
 		this.fNoAction.call(null);
 	}
-
-	this.cancelCommand();
 };
 
 /**
@@ -5342,6 +5377,9 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
+
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.PopupAsk);
 };
 
 PopupsAskViewModel.prototype.onFocus = function ()
@@ -5351,32 +5389,26 @@ PopupsAskViewModel.prototype.onFocus = function ()
 
 PopupsAskViewModel.prototype.onHide = function ()
 {
+	RL.data().keyScope(this.sKeyScope);
 };
 
 PopupsAskViewModel.prototype.onBuild = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && self.modalVisibility())
+	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+		if (this.modalVisibility())
 		{
-			if (Enums.EventKeyCode.Tab === oEvent.keyCode || Enums.EventKeyCode.Right === oEvent.keyCode || Enums.EventKeyCode.Left === oEvent.keyCode)
+			if (this.yesFocus())
 			{
-				if (self.yesFocus())
-				{
-					self.noFocus(true);
-				}
-				else
-				{
-					self.yesFocus(true);
-				}
-
-				bResult = false;
+				this.noFocus(true);
 			}
-		}
+			else
+			{
+				this.yesFocus(true);
+			}
 
-		return bResult;
-	});
+			return false;
+		}
+	}, this));
 };
 
 

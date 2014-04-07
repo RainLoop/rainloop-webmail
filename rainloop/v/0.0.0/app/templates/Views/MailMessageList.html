@@ -1,5 +1,6 @@
 <div id="rl-sub-left">
-	<div class="messageList g-ui-user-select-none" data-bind="css: {'message-selected': isMessageSelected, 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
+	<div class="messageList g-ui-user-select-none"
+		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused, 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
 				<div class="btn-group">
@@ -111,10 +112,6 @@
 						</a>
 					</div>
 					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked'"></i>
-<!--
-					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked', visible: !messageListCompleteLoadingThrottle()"></i>
-					<i class="icon-spinner animated" style="margin-top: 4px;" data-bind="visible: messageListCompleteLoadingThrottle"></i>
--->
 				</div>
 			</div>
 			<div class="mainDelimiter toolbarDelimiter"></div>

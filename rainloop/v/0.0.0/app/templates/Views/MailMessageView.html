@@ -1,5 +1,5 @@
 <div id="rl-sub-right">
-	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected}">
+	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused}">
 		<div class="toolbar g-ui-user-select-none">
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-placement="bottom" data-bind="visible: !usePreviewPane(), tooltip: 'MESSAGE/BUTTON_CLOSE'">
@@ -131,7 +131,7 @@
 				</div>
 				<div data-bind="visible: message">
 					<div class="messageItem" data-bind="css: viewLineAsCcc(), nano: true">
-						<div class="content g-scrollbox">
+						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
 							<div class="content-wrapper">
 								<div>
 									<span class="buttonUp" data-bind="click: scrollToTop">

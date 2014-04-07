@@ -37,11 +37,26 @@ function WebMailDataStorage()
 	this.accountIncLogin = ko.observable('');
 	this.accountOutLogin = ko.observable('');
 	this.projectHash = ko.observable('');
-
 	this.threading = ko.observable(false);
-	this.lastFoldersHash = '';
 
+	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
+
+	this.keyScope = ko.observable(Enums.KeyState.None);
+	this.keyScope.subscribe(function (sValue) {
+
+		if (Enums.KeyState.Compose === sValue)
+		{
+			Utils.disableKeyFilter();
+		}
+		else
+		{
+			Utils.restoreKeyFilter();
+		}
+
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
 
 	// system folders
 	this.sentFolder = ko.observable('');
@@ -256,6 +271,23 @@ function WebMailDataStorage()
 	this.message = ko.observable(null);
 	this.messageLoading = ko.observable(false);
 	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
+
+	this.message.focused = ko.observable(false);
+	
+	this.message.subscribe(function (oMessage) {
+		if (!oMessage)
+		{
+			this.message.focused(false);
+		}
+		else if (Enums.Layout.NoPreview === this.layout())
+		{
+			this.message.focused(true);
+		}
+	}, this);
+
+	this.message.focused.subscribe(function (bValue) {
+		RL.data().keyScope(bValue ? Enums.KeyState.MessageView : Enums.KeyState.MessageList);
+	});
 
 	this.messageLoading.subscribe(function (bValue) {
 		this.messageLoadingThrottle(bValue);

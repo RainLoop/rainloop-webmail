@@ -137,10 +137,12 @@ Selector.prototype.goUp = function ()
 	this.newSelectPosition(Enums.EventKeyCode.Up, false);
 };
 
-Selector.prototype.init = function (oContentVisible, oContentScrollable)
+Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeyScope)
 {
 	this.oContentVisible = oContentVisible;
 	this.oContentScrollable = oContentScrollable;
+
+	sKeyScope = sKeyScope || 'all';
 	
 	if (this.oContentVisible && this.oContentScrollable)
 	{
@@ -183,27 +185,43 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable)
 			})
 		;
 
-		$(window.document).on('keydown', function (oEvent) {
-			var bResult = true;
-			if (oEvent && self.bUseKeyboard && !Utils.inFocus())
+		key('space, enter', sKeyScope, function () {
+			return false;
+		});
+
+		key('up, shift+up, down, shift+down, insert, home, end, pageup, pagedown', sKeyScope, function (event, handler) {
+			if (event && handler && handler.shortcut)
 			{
-				if (-1 < Utils.inArray(oEvent.keyCode, [Enums.EventKeyCode.Up, Enums.EventKeyCode.Down, Enums.EventKeyCode.Insert,
-					Enums.EventKeyCode.Home, Enums.EventKeyCode.End, Enums.EventKeyCode.PageUp, Enums.EventKeyCode.PageDown]))
+				var iKey = 0, aCodes = null;
+				switch (handler.shortcut)
 				{
-					self.newSelectPosition(oEvent.keyCode, oEvent.shiftKey);
-					bResult = false;
+					case 'up':
+					case 'shift+up':
+						iKey = Enums.EventKeyCode.Up;
+						break;
+					case 'down':
+					case 'shift+down':
+						iKey = Enums.EventKeyCode.Down;
+						break;
+					case 'insert':
+					case 'home':
+					case 'end':
+					case 'pageup':
+					case 'pagedown':
+						aCodes = key.getPressedKeyCodes();
+						if (aCodes && aCodes[0])
+						{
+							iKey = aCodes[0];
+						}
+						break;
 				}
-				else if (Enums.EventKeyCode.Delete === oEvent.keyCode && !oEvent.ctrlKey && !oEvent.shiftKey)
+
+				if (0 < iKey)
 				{
-					if (self.oCallbacks['onDelete'])
-					{
-						self.oCallbacks['onDelete']();
-					}
-					
-					bResult = false;
+					self.newSelectPosition(iKey, key.shift);
+					return false;
 				}
 			}
-			return bResult;
 		});
 	}
 };

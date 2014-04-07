@@ -1719,3 +1719,31 @@ Utils.selectElement = function (element)
 	}
 	/* jshint onevar: true */
 };
+
+Utils.disableKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function () {
+			return true;
+		};
+	}
+};
+
+Utils.restoreKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function (event) {
+			var
+				element = event.target || event.srcElement,
+				tagName = element ? element.tagName : ''
+			;
+
+			tagName = tagName.toUpperCase();
+			return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
+				(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
+			);
+		};
+	}
+};

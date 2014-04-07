@@ -30,10 +30,9 @@ html.rl-no-preview-pane {
 		top: 50px + @rlLowMargin;
 		bottom: @rlLowMargin + @rlBottomMargin;
 		right: @rlLowMargin;
-		left: 0;
+		left: -1px;
 		overflow: hidden;
 		border: @rlLowBorderSize solid @rlMainDarkColor;
-		border-left: 0px;
 		.border-top-right-radius(@rlLowBorderRadius);
 		.border-bottom-right-radius(@rlLowBorderRadius);
 
@@ -350,6 +349,17 @@ html.rl-no-preview-pane {
 				}
 			}
 		}
+	}
+
+	&.message-focused .messageItemHeader {
+		background-color: #fafafa !important;
+	}
+
+	&.message-focused .b-content {
+		z-index: 102;
+		.box-shadow(0px 2px 8px rgba(0, 0, 0, 0.3));
+		border-color: darken(@rlMainDarkColor, 5%);
+		.border-radius(@rlLowBorderRadius);
 	}
 }
 

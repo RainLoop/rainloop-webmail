@@ -21,6 +21,7 @@ function MailBoxMessageViewViewModel()
 
 	this.oMessageScrollerDom = null;
 
+	this.keyScope = oData.keyScope;
 	this.message = oData.message;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
@@ -36,6 +37,7 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.messageDomFocused = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -68,36 +70,39 @@ function MailBoxMessageViewViewModel()
 	}, this.messageVisibility);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
+	}, this.messageVisibility);
 
+	this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				RL.data().currentFolderFullNameRaw(),
+				RL.data().messageListCheckedOrSelectedUidsWithSubMails(), false);
+		}
 	}, this.messageVisibility);
 	
 	this.archiveCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
-
 	}, this.messageVisibility);
 	
 	this.spamCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
-		
 	}, this.messageVisibility);
 
 	// viewer
@@ -291,29 +296,14 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		self = this,
 		oData = RL.data()
 	;
-	
-	$document.on('keydown', function (oEvent) {
 
-		var
-			bResult = true,
-			iKeyCode = oEvent ? oEvent.keyCode : 0
-		;
-
-		if (0 < iKeyCode && (Enums.EventKeyCode.Esc === iKeyCode) &&
-			self.viewModelVisibility() && oData.useKeyboardShortcuts() && !Utils.inFocus() && oData.message())
+	this.fullScreenMode.subscribe(function (bValue) {
+		if (bValue)
 		{
-			self.fullScreenMode(false);
-			if (Enums.Layout.NoPreview === oData.layout())
-			{
-				RL.historyBack();
-			}
-
-			bResult = false;
+			self.message.focused(true);
 		}
-
-		return bResult;
-	});
-
+	}, this);
+	
 	$('.attachmentsPlace', oDom).magnificPopup({
 		'delegate': '.magnificPopupImage:visible',
 		'type': 'image',
@@ -335,6 +325,12 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
+		.on('click', '.messageView .messageItem', function () {
+			if (oData.useKeyboardShortcuts() && self.message())
+			{
+				self.message.focused(true);
+			}
+		})
 		.on('mousedown', 'a', function (oEvent) {
 			// setup maito protocol
 			return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
@@ -358,8 +354,171 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
+	this.message.focused.subscribe(function (bValue) {
+		this.messageDomFocused(!!bValue);
+	}, this);
+
+	this.keyScope.subscribe(function (sValue) {
+		if (Enums.KeyState.MessageView === sValue && this.message.focused())
+		{
+			this.messageDomFocused(true);
+		}
+	}, this);
+
 	this.oMessageScrollerDom = oDom.find('.messageItem .content');
 	this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
+
+	this.initShortcuts();
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
+{
+	if (this.viewModelVisibility() && RL.data().useKeyboardShortcuts() && this.message())
+	{
+		if (this.fullScreenMode())
+		{
+			this.fullScreenMode(false);
+		}
+		else
+		{
+			this.message.focused(false);
+		}
+
+		if (Enums.Layout.NoPreview === RL.data().layout())
+		{
+			RL.historyBack();
+		}
+
+		return false;
+	}
+};
+
+MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
+{
+	var
+		self = this,
+		oData = RL.data()
+	;
+
+	// exit fullscreen, back
+	key('esc', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
+
+	// fullscreen
+	key('enter', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.toggleFullScreen();
+			return false;
+		}
+	});
+
+	// reply
+	key('r', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.replyCommand();
+			return false;
+		}
+	});
+
+	// replaAll
+	key('a', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.replyAllCommand();
+			return false;
+		}
+	});
+
+	// forward
+	key('f', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.forwardCommand();
+			return false;
+		}
+	});
+
+	// message information
+	key('i', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.showFullInfo(!self.showFullInfo());
+			return false;
+		}
+	});
+
+	key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.goDownCommand();
+			return false;
+		}
+	});
+
+	key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.goUpCommand();
+			return false;
+		}
+	});
+
+	// print
+	key('ctrl+p, command+p', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message().printMessage();
+			}
+			
+			return false;
+		}
+	});
+
+	// archive
+//	key('delete', Enums.KeyState.MessageView, function () {
+//		if (oData.useKeyboardShortcuts())
+//		{
+//			self.archiveCommand();
+//			return false;
+//		}
+//	});
+
+	// delete
+	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
+		if (oData.useKeyboardShortcuts() && event)
+		{
+			self.deleteCommand();
+			if (handler && 'shift+delete' === handler.shortcut)
+			{
+//					self.deleteWithoutMoveCommand();
+				self.deleteCommand();
+			}
+			else
+			{
+				self.deleteCommand();
+			}
+			return false;
+		}
+	});
+
+	// change focused state
+	key('tab', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(false);
+			}
+
+			return false;
+		}
+	});
 };
 
 /**

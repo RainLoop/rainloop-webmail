@@ -6416,6 +6416,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .popups .b-ask-content .desc-place {
   font-size: 18px;
 }
+.popups .b-shortcuts-content .modal-header {
+  background-color: #fff;
+}
 .b-folders .b-toolbar {
   position: absolute;
   top: 0;
@@ -7048,6 +7051,10 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .b-content .messageListItem.flagged .flagOn {
   display: inline-block;
 }
+.messageList.message-focused .b-content {
+  opacity: 0.97;
+  filter: alpha(opacity=97);
+}
 .messageList.hideMessageListCheckbox .checkedParent,
 .messageList.hideMessageListCheckbox .checkboxCkeckAll {
   display: none !important;
@@ -7096,10 +7103,9 @@ html.rl-no-preview-pane .messageView.message-selected {
   top: 58px;
   bottom: 13px;
   right: 8px;
-  left: 0;
+  left: -1px;
   overflow: hidden;
   border: 1px solid #aaaaaa;
-  border-left: 0px;
   -webkit-border-top-right-radius: 3px;
   -moz-border-radius-topright: 3px;
   border-top-right-radius: 3px;
@@ -7379,6 +7385,19 @@ html.rl-no-preview-pane .messageView.message-selected {
 .messageView .b-content .messageItem .bodyText .b-text-part.plain blockquote blockquote blockquote {
   border-left: 2px solid red;
   color: red;
+}
+.messageView.message-focused .messageItemHeader {
+  background-color: #fafafa !important;
+}
+.messageView.message-focused .b-content {
+  z-index: 102;
+  -webkit-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #9d9d9d;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 html.rl-no-preview-pane .messageView .toolbar {
   padding-left: 1px;

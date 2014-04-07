@@ -171,10 +171,6 @@ function PopupsContactsViewModel()
 		return oContact ? oContact.generateUid() : '';
 	});
 
-	this.selector.on('onDelete', _.bind(function () {
-		this.deleteCommand();
-	}, this));
-
 	this.newCommand = Utils.createCommand(this, function () {
 		this.populateViewContact(null);
 		this.currentContact(null);
@@ -306,6 +302,8 @@ function PopupsContactsViewModel()
 			this.watchDirty(true);
 		}
 	}, this);
+
+	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
 }
@@ -577,9 +575,17 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 	this.oContentVisible = $('.b-list-content', oDom);
 	this.oContentScrollable = $('.content', this.oContentVisible);
 
-	this.selector.init(this.oContentVisible, this.oContentScrollable);
+	this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.ContactList);
 
 	var self = this;
+
+	key('delete', Enums.KeyState.ContactList, function () {
+		if (RL.data().useKeyboardShortcuts())
+		{
+			self.deleteCommand();
+			return false;
+		}
+	});
 
 	ko.computed(function () {
 		var
@@ -607,6 +613,9 @@ PopupsContactsViewModel.prototype.onShow = function ()
 {
 	kn.routeOff();
 	this.reloadContactList(true);
+
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.ContactList);
 };
 
 PopupsContactsViewModel.prototype.onHide = function ()
@@ -619,4 +628,6 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	_.each(this.contacts(), function (oItem) {
 		oItem.checked(false);
 	});
+
+	RL.data().keyScope(this.sKeyScope);
 };

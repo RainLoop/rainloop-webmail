@@ -56,6 +56,7 @@
 		"ifvisible"		: true,
 		"crossroads"	: true,
 		"hasher"		: true,
+		"key"			: true,
 		"Jua"			: true,
 		"_"				: true,
 		"Dropbox"		: true

@@ -351,7 +351,8 @@ function PopupsComposeViewModel()
 //	this.driveCallback = _.bind(this.driveCallback, this);
 
 	this.bDisabeCloseOnEsc = true;
-
+	this.sKeyScope = Enums.KeyState.MessageList;
+	
 	Knoin.constructorEnd(this);
 }
 
@@ -568,6 +569,8 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
+
+	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -639,6 +642,9 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails)
 {
 	kn.routeOff();
+	
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.Compose);
 
 	var
 		self = this,
@@ -914,6 +920,11 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	}]);
 };
 
+PopupsComposeViewModel.prototype.useShortcuts = function ()
+{
+	return this.modalVisibility() && RL.data().useKeyboardShortcuts();
+};
+
 PopupsComposeViewModel.prototype.onBuild = function ()
 {
 	this.initUploader();
@@ -923,29 +934,25 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 		oScript = null
 	;
 
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-
-		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
+	key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
+		if (self.useShortcuts())
 		{
-			if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
-			{
-				self.saveCommand();
-				bResult = false;
-			}
-			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
-			{
-				self.sendCommand();
-				bResult = false;
-			}
-			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
-			{
-				self.tryToClosePopup();
-				bResult = false;
-			}
+			self.saveCommand();
+			return false;
 		}
+	});
 
-		return bResult;
+	key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
+		if (self.useShortcuts())
+		{
+			self.sendCommand();
+			return false;
+		}
+	});
+	
+	key('esc', Enums.KeyState.Compose, function () {
+		self.tryToClosePopup();
+		return false;
 	});
 
 	$window.on('resize', function () {

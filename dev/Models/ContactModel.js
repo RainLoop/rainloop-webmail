@@ -12,8 +12,9 @@ function ContactModel()
 	this.readOnly = false;
 	this.scopeType = Enums.ContactScopeType.Default;
 
-	this.checked = ko.observable(false);
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
+	this.checked = ko.observable(false);
 	this.deleted = ko.observable(false);
 	this.shared = ko.observable(false);
 }
@@ -117,6 +118,10 @@ ContactModel.prototype.lineAsCcc = function ()
 	if (this.shared())
 	{
 		aResult.push('shared');
+	}
+	if (this.focused())
+	{
+		aResult.push('focused');
 	}
 
 	return aResult.join(' ');

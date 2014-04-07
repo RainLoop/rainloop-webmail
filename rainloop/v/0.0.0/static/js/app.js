@@ -1,5 +1,5 @@
 /*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible) {
+(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible, key) {
 
 'use strict';
 
@@ -369,6 +369,18 @@ Enums.State = {
 Enums.StateType = {
 	'Webmail': 0,
 	'Admin': 1
+};
+
+/**
+ * @enum {string}
+ */
+Enums.KeyState = {
+	'None': 'none',
+	'ContactList': 'contact-list',
+	'MessageList': 'message-list',
+	'MessageView': 'message-view',
+	'Compose': 'compose',
+	'PopupAsk': 'popup-ask'
 };
 
 /**
@@ -2425,6 +2437,34 @@ Utils.selectElement = function (element)
 	/* jshint onevar: true */
 };
 
+Utils.disableKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function () {
+			return true;
+		};
+	}
+};
+
+Utils.restoreKeyFilter = function ()
+{
+	if (window.key)
+	{
+		key.filter = function (event) {
+			var
+				element = event.target || event.srcElement,
+				tagName = element ? element.tagName : ''
+			;
+
+			tagName = tagName.toUpperCase();
+			return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
+				(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
+			);
+		};
+	}
+};
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -3979,10 +4019,12 @@ Selector.prototype.goUp = function ()
 	this.newSelectPosition(Enums.EventKeyCode.Up, false);
 };
 
-Selector.prototype.init = function (oContentVisible, oContentScrollable)
+Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeyScope)
 {
 	this.oContentVisible = oContentVisible;
 	this.oContentScrollable = oContentScrollable;
+
+	sKeyScope = sKeyScope || 'all';
 	
 	if (this.oContentVisible && this.oContentScrollable)
 	{
@@ -4025,27 +4067,43 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable)
 			})
 		;
 
-		$(window.document).on('keydown', function (oEvent) {
-			var bResult = true;
-			if (oEvent && self.bUseKeyboard && !Utils.inFocus())
+		key('space, enter', sKeyScope, function () {
+			return false;
+		});
+
+		key('up, shift+up, down, shift+down, insert, home, end, pageup, pagedown', sKeyScope, function (event, handler) {
+			if (event && handler && handler.shortcut)
 			{
-				if (-1 < Utils.inArray(oEvent.keyCode, [Enums.EventKeyCode.Up, Enums.EventKeyCode.Down, Enums.EventKeyCode.Insert,
-					Enums.EventKeyCode.Home, Enums.EventKeyCode.End, Enums.EventKeyCode.PageUp, Enums.EventKeyCode.PageDown]))
+				var iKey = 0, aCodes = null;
+				switch (handler.shortcut)
 				{
-					self.newSelectPosition(oEvent.keyCode, oEvent.shiftKey);
-					bResult = false;
+					case 'up':
+					case 'shift+up':
+						iKey = Enums.EventKeyCode.Up;
+						break;
+					case 'down':
+					case 'shift+down':
+						iKey = Enums.EventKeyCode.Down;
+						break;
+					case 'insert':
+					case 'home':
+					case 'end':
+					case 'pageup':
+					case 'pagedown':
+						aCodes = key.getPressedKeyCodes();
+						if (aCodes && aCodes[0])
+						{
+							iKey = aCodes[0];
+						}
+						break;
 				}
-				else if (Enums.EventKeyCode.Delete === oEvent.keyCode && !oEvent.ctrlKey && !oEvent.shiftKey)
+
+				if (0 < iKey)
 				{
-					if (self.oCallbacks['onDelete'])
-					{
-						self.oCallbacks['onDelete']();
-					}
-					
-					bResult = false;
+					self.newSelectPosition(iKey, key.shift);
+					return false;
 				}
 			}
-			return bResult;
 		});
 	}
 };
@@ -4706,16 +4764,13 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+	key('esc', _.bind(function () {
+		if (this.modalVisibility && this.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(this, 'cancelCommand');
 			return false;
 		}
-		
-		return true;
-	});
+	}, this));
 };
 
 /**
@@ -5556,8 +5611,9 @@ function ContactModel()
 	this.readOnly = false;
 	this.scopeType = Enums.ContactScopeType.Default;
 
-	this.checked = ko.observable(false);
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
+	this.checked = ko.observable(false);
 	this.deleted = ko.observable(false);
 	this.shared = ko.observable(false);
 }
@@ -5661,6 +5717,10 @@ ContactModel.prototype.lineAsCcc = function ()
 	if (this.shared())
 	{
 		aResult.push('shared');
+	}
+	if (this.focused())
+	{
+		aResult.push('focused');
 	}
 
 	return aResult.join(' ');
@@ -6020,6 +6080,7 @@ function MessageModel()
 	this.forwarded = ko.observable(false);
 	this.isReadReceipt = ko.observable(false);
 
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
 	this.hasAttachments = ko.observable(false);
@@ -6498,6 +6559,10 @@ MessageModel.prototype.lineAsCcc = function ()
 	if (this.forwarded())
 	{
 		aResult.push('forwarded');
+	}
+	if (this.focused())
+	{
+		aResult.push('focused');
 	}
 	if (this.hasAttachments())
 	{
@@ -7189,6 +7254,7 @@ function FolderModel()
 
 	this.type = ko.observable(Enums.FolderType.User);
 
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.edited = ko.observable(false);
 	this.collapsed = ko.observable(true);
@@ -8262,7 +8328,8 @@ function PopupsComposeViewModel()
 //	this.driveCallback = _.bind(this.driveCallback, this);
 
 	this.bDisabeCloseOnEsc = true;
-
+	this.sKeyScope = Enums.KeyState.MessageList;
+	
 	Knoin.constructorEnd(this);
 }
 
@@ -8479,6 +8546,8 @@ PopupsComposeViewModel.prototype.onHide = function ()
 {
 	this.reset();
 	kn.routeOn();
+
+	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -8550,6 +8619,9 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails)
 {
 	kn.routeOff();
+	
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.Compose);
 
 	var
 		self = this,
@@ -8825,6 +8897,11 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	}]);
 };
 
+PopupsComposeViewModel.prototype.useShortcuts = function ()
+{
+	return this.modalVisibility() && RL.data().useKeyboardShortcuts();
+};
+
 PopupsComposeViewModel.prototype.onBuild = function ()
 {
 	this.initUploader();
@@ -8834,29 +8911,25 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 		oScript = null
 	;
 
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-
-		if (oEvent && self.modalVisibility() && RL.data().useKeyboardShortcuts())
+	key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
+		if (self.useShortcuts())
 		{
-			if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.S === oEvent.keyCode)
-			{
-				self.saveCommand();
-				bResult = false;
-			}
-			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey && Enums.EventKeyCode.Enter === oEvent.keyCode)
-			{
-				self.sendCommand();
-				bResult = false;
-			}
-			else if (Enums.EventKeyCode.Esc === oEvent.keyCode)
-			{
-				self.tryToClosePopup();
-				bResult = false;
-			}
+			self.saveCommand();
+			return false;
 		}
+	});
 
-		return bResult;
+	key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
+		if (self.useShortcuts())
+		{
+			self.sendCommand();
+			return false;
+		}
+	});
+	
+	key('esc', Enums.KeyState.Compose, function () {
+		self.tryToClosePopup();
+		return false;
 	});
 
 	$window.on('resize', function () {
@@ -9569,10 +9642,6 @@ function PopupsContactsViewModel()
 		return oContact ? oContact.generateUid() : '';
 	});
 
-	this.selector.on('onDelete', _.bind(function () {
-		this.deleteCommand();
-	}, this));
-
 	this.newCommand = Utils.createCommand(this, function () {
 		this.populateViewContact(null);
 		this.currentContact(null);
@@ -9704,6 +9773,8 @@ function PopupsContactsViewModel()
 			this.watchDirty(true);
 		}
 	}, this);
+
+	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
 }
@@ -9975,9 +10046,17 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 	this.oContentVisible = $('.b-list-content', oDom);
 	this.oContentScrollable = $('.content', this.oContentVisible);
 
-	this.selector.init(this.oContentVisible, this.oContentScrollable);
+	this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.ContactList);
 
 	var self = this;
+
+	key('delete', Enums.KeyState.ContactList, function () {
+		if (RL.data().useKeyboardShortcuts())
+		{
+			self.deleteCommand();
+			return false;
+		}
+	});
 
 	ko.computed(function () {
 		var
@@ -10005,6 +10084,9 @@ PopupsContactsViewModel.prototype.onShow = function ()
 {
 	kn.routeOff();
 	this.reloadContactList(true);
+
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.ContactList);
 };
 
 PopupsContactsViewModel.prototype.onHide = function ()
@@ -10017,6 +10099,8 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	_.each(this.contacts(), function (oItem) {
 		oItem.checked(false);
 	});
+
+	RL.data().keyScope(this.sKeyScope);
 };
 
 /**
@@ -10936,6 +11020,7 @@ function PopupsAskViewModel()
 	this.fNoAction = null;
 
 	this.bDisabeCloseOnEsc = true;
+	this.sKeyScope = Enums.KeyState.MessageList;
 
 	Knoin.constructorEnd(this);
 }
@@ -10957,22 +11042,22 @@ PopupsAskViewModel.prototype.clearPopup = function ()
 
 PopupsAskViewModel.prototype.yesClick = function ()
 {
+	this.cancelCommand();
+
 	if (Utils.isFunc(this.fYesAction))
 	{
 		this.fYesAction.call(null);
 	}
-
-	this.cancelCommand();
 };
 
 PopupsAskViewModel.prototype.noClick = function ()
 {
+	this.cancelCommand();
+
 	if (Utils.isFunc(this.fNoAction))
 	{
 		this.fNoAction.call(null);
 	}
-
-	this.cancelCommand();
 };
 
 /**
@@ -10999,6 +11084,9 @@ PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYe
 	{
 		this.yesButton(sNoButton);
 	}
+
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.PopupAsk);
 };
 
 PopupsAskViewModel.prototype.onFocus = function ()
@@ -11008,34 +11096,54 @@ PopupsAskViewModel.prototype.onFocus = function ()
 
 PopupsAskViewModel.prototype.onHide = function ()
 {
+	RL.data().keyScope(this.sKeyScope);
 };
 
 PopupsAskViewModel.prototype.onBuild = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		var bResult = true;
-		if (oEvent && self.modalVisibility())
+	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+		if (this.modalVisibility())
 		{
-			if (Enums.EventKeyCode.Tab === oEvent.keyCode || Enums.EventKeyCode.Right === oEvent.keyCode || Enums.EventKeyCode.Left === oEvent.keyCode)
+			if (this.yesFocus())
 			{
-				if (self.yesFocus())
-				{
-					self.noFocus(true);
-				}
-				else
-				{
-					self.yesFocus(true);
-				}
-
-				bResult = false;
+				this.noFocus(true);
 			}
-		}
+			else
+			{
+				this.yesFocus(true);
+			}
 
-		return bResult;
-	});
+			return false;
+		}
+	}, this));
 };
 
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
+function PopupsKeyboardShortcutsHelpViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsKeyboardShortcutsHelp');
+
+	this.sKeyScope = Enums.KeyState.None;
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsKeyboardShortcutsHelpViewModel', PopupsKeyboardShortcutsHelpViewModel);
+
+PopupsKeyboardShortcutsHelpViewModel.prototype.onShow = function ()
+{
+	this.sKeyScope = RL.data().keyScope();
+	RL.data().keyScope(Enums.KeyState.None);
+};
+
+PopupsKeyboardShortcutsHelpViewModel.prototype.onHide = function ()
+{
+	RL.data().keyScope(this.sKeyScope);
+};
 
 /**
  * @constructor
@@ -11461,11 +11569,19 @@ Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel
 MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 {
 	oDom
+		.on('click', '.b-folders .b-content', function () {
+			if (RL.data().useKeyboardShortcuts() && RL.data().message.focused())
+			{
+				RL.data().message.focused(false);
+			}
+		})
 		.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
-			var 
+
+					var
 				oFolder = ko.dataFor(this),
 				bCollapsed = false
 			;
+
 			if (oFolder && oEvent)
 			{
 				bCollapsed = oFolder.collapsed();
@@ -11582,6 +11698,7 @@ function MailBoxMessageListViewModel()
 
 	this.popupVisibility = RL.popupVisibility;
 
+	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
 	this.isMessageSelected = oData.isMessageSelected;
@@ -11780,13 +11897,6 @@ function MailBoxMessageListViewModel()
 		return oMessage ? oMessage.generateUid() : '';
 	});
 	
-	this.selector.on('onDelete', _.bind(function () {
-		if (0 < RL.data().messageListCheckedOrSelected().length)
-		{
-			this.deleteCommand();
-		}
-	}, this));
-
 	RL
 		.sub('mailbox.message-list.selector.go-down', function () {
 			this.selector.goDown();
@@ -12106,31 +12216,15 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
-	this.selector.init(this.oContentVisible, this.oContentScrollable);
-
-	$document.on('keydown', function (oEvent) {
-
-		var
-			bResult = true,
-			iKeyCode = oEvent ? oEvent.keyCode : 0
-		;
-
-		if (oEvent && self.viewModelVisibility() && oData.useKeyboardShortcuts() && !RL.popupVisibility() && !oData.messageFullScreenMode() && !Utils.inFocus())
-		{
-			if (Enums.Layout.NoPreview !== oData.layout() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
-			{
-				if (oEvent.ctrlKey && Enums.EventKeyCode.A === iKeyCode)
-				{
-					self.checkAll(!(self.checkAll() && !self.isIncompleteChecked()));
-					bResult = false;
-				}
-			}
-		}
-
-		return bResult;
-	});
+	this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.MessageList);
 
 	oDom
+		.on('click', '.messageList .b-message-list-wrapper', function () {
+			if (oData.useKeyboardShortcuts() && self.message.focused())
+			{
+				self.message.focused(false);
+			}
+		})
 		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
 			if (oPage)
@@ -12191,6 +12285,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	}, this).extend({'notify': 'always'});
 
 	this.initUploaderForAppend();
+	this.initShortcuts();
 
 	if (!Globals.bMobileDevice && !!RL.settingsGet('AllowPrefetch') && ifvisible)
 	{
@@ -12200,6 +12295,121 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 			self.prefetchNextTick();
 		});
 	}
+};
+
+MailBoxMessageListViewModel.prototype.initShortcuts = function ()
+{
+	var
+		self = this,
+		oData = RL.data()
+	;
+
+	// disable print
+	key('ctrl+p, command+p', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			return false;
+		}
+	});
+
+	// delete
+	key('delete, shift+delete', Enums.KeyState.MessageList, function (event, handler) {
+		if (oData.useKeyboardShortcuts() && event)
+		{
+			if (0 < RL.data().messageListCheckedOrSelected().length)
+			{
+				if (handler && 'shift+delete' === handler.shortcut)
+				{
+					self.deleteWithoutMoveCommand();
+				}
+				else
+				{
+					self.deleteCommand();
+				}
+			}
+
+			return false;
+		}
+	});
+
+	// check all
+	key('ctrl+a, command+a', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.checkAll(!(self.checkAll() && !self.isIncompleteChecked()));
+			return false;
+		}
+	});
+
+	// new message (open compose popup)
+	key('c,n', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			kn.showScreenPopup(PopupsComposeViewModel);
+			return false;
+		}
+	});
+
+	// shortcuts help
+	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+			return false;
+		}
+	});
+
+	// search input focus
+	key('/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(false);
+			}
+			
+			self.inputMessageListSearchFocus(true);
+			return false;
+		}
+	});
+
+	// cancel search
+	key('esc', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts() && '' !== self.messageListSearchDesc())
+		{
+			self.cancelSearch();
+			return false;
+		}
+	});
+
+	// change focused state
+	key('tab, enter', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(true);
+			}
+
+			return false;
+		}
+	});
+
+	key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			// TODO
+			return false;
+		}
+	});
+
+	key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			// TODO
+			return false;
+		}
+	});
 };
 
 MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
@@ -12329,6 +12539,7 @@ function MailBoxMessageViewViewModel()
 
 	this.oMessageScrollerDom = null;
 
+	this.keyScope = oData.keyScope;
 	this.message = oData.message;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
@@ -12344,6 +12555,7 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.messageDomFocused = ko.observable(false);
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
@@ -12376,36 +12588,39 @@ function MailBoxMessageViewViewModel()
 	}, this.messageVisibility);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
+	}, this.messageVisibility);
 
+	this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				RL.data().currentFolderFullNameRaw(),
+				RL.data().messageListCheckedOrSelectedUidsWithSubMails(), false);
+		}
 	}, this.messageVisibility);
 	
 	this.archiveCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
-
 	}, this.messageVisibility);
 	
 	this.spamCommand = Utils.createCommand(this, function () {
-
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
-		
 	}, this.messageVisibility);
 
 	// viewer
@@ -12599,29 +12814,14 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		self = this,
 		oData = RL.data()
 	;
-	
-	$document.on('keydown', function (oEvent) {
 
-		var
-			bResult = true,
-			iKeyCode = oEvent ? oEvent.keyCode : 0
-		;
-
-		if (0 < iKeyCode && (Enums.EventKeyCode.Esc === iKeyCode) &&
-			self.viewModelVisibility() && oData.useKeyboardShortcuts() && !Utils.inFocus() && oData.message())
+	this.fullScreenMode.subscribe(function (bValue) {
+		if (bValue)
 		{
-			self.fullScreenMode(false);
-			if (Enums.Layout.NoPreview === oData.layout())
-			{
-				RL.historyBack();
-			}
-
-			bResult = false;
+			self.message.focused(true);
 		}
-
-		return bResult;
-	});
-
+	}, this);
+	
 	$('.attachmentsPlace', oDom).magnificPopup({
 		'delegate': '.magnificPopupImage:visible',
 		'type': 'image',
@@ -12643,6 +12843,12 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
+		.on('click', '.messageView .messageItem', function () {
+			if (oData.useKeyboardShortcuts() && self.message())
+			{
+				self.message.focused(true);
+			}
+		})
 		.on('mousedown', 'a', function (oEvent) {
 			// setup maito protocol
 			return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
@@ -12666,8 +12872,171 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		})
 	;
 
+	this.message.focused.subscribe(function (bValue) {
+		this.messageDomFocused(!!bValue);
+	}, this);
+
+	this.keyScope.subscribe(function (sValue) {
+		if (Enums.KeyState.MessageView === sValue && this.message.focused())
+		{
+			this.messageDomFocused(true);
+		}
+	}, this);
+
 	this.oMessageScrollerDom = oDom.find('.messageItem .content');
 	this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
+
+	this.initShortcuts();
+};
+
+/**
+ * @return {boolean}
+ */
+MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
+{
+	if (this.viewModelVisibility() && RL.data().useKeyboardShortcuts() && this.message())
+	{
+		if (this.fullScreenMode())
+		{
+			this.fullScreenMode(false);
+		}
+		else
+		{
+			this.message.focused(false);
+		}
+
+		if (Enums.Layout.NoPreview === RL.data().layout())
+		{
+			RL.historyBack();
+		}
+
+		return false;
+	}
+};
+
+MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
+{
+	var
+		self = this,
+		oData = RL.data()
+	;
+
+	// exit fullscreen, back
+	key('esc', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
+
+	// fullscreen
+	key('enter', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.toggleFullScreen();
+			return false;
+		}
+	});
+
+	// reply
+	key('r', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.replyCommand();
+			return false;
+		}
+	});
+
+	// replaAll
+	key('a', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.replyAllCommand();
+			return false;
+		}
+	});
+
+	// forward
+	key('f', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.forwardCommand();
+			return false;
+		}
+	});
+
+	// message information
+	key('i', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.showFullInfo(!self.showFullInfo());
+			return false;
+		}
+	});
+
+	key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.goDownCommand();
+			return false;
+		}
+	});
+
+	key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.goUpCommand();
+			return false;
+		}
+	});
+
+	// print
+	key('ctrl+p, command+p', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message().printMessage();
+			}
+			
+			return false;
+		}
+	});
+
+	// archive
+//	key('delete', Enums.KeyState.MessageView, function () {
+//		if (oData.useKeyboardShortcuts())
+//		{
+//			self.archiveCommand();
+//			return false;
+//		}
+//	});
+
+	// delete
+	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
+		if (oData.useKeyboardShortcuts() && event)
+		{
+			self.deleteCommand();
+			if (handler && 'shift+delete' === handler.shortcut)
+			{
+//					self.deleteWithoutMoveCommand();
+				self.deleteCommand();
+			}
+			else
+			{
+				self.deleteCommand();
+			}
+			return false;
+		}
+	});
+
+	// change focused state
+	key('tab', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(false);
+			}
+
+			return false;
+		}
+	});
 };
 
 /**
@@ -14241,11 +14610,26 @@ function WebMailDataStorage()
 	this.accountIncLogin = ko.observable('');
 	this.accountOutLogin = ko.observable('');
 	this.projectHash = ko.observable('');
-
 	this.threading = ko.observable(false);
-	this.lastFoldersHash = '';
 
+	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
+
+	this.keyScope = ko.observable(Enums.KeyState.None);
+	this.keyScope.subscribe(function (sValue) {
+
+		if (Enums.KeyState.Compose === sValue)
+		{
+			Utils.disableKeyFilter();
+		}
+		else
+		{
+			Utils.restoreKeyFilter();
+		}
+
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
 
 	// system folders
 	this.sentFolder = ko.observable('');
@@ -14460,6 +14844,23 @@ function WebMailDataStorage()
 	this.message = ko.observable(null);
 	this.messageLoading = ko.observable(false);
 	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
+
+	this.message.focused = ko.observable(false);
+	
+	this.message.subscribe(function (oMessage) {
+		if (!oMessage)
+		{
+			this.message.focused(false);
+		}
+		else if (Enums.Layout.NoPreview === this.layout())
+		{
+			this.message.focused(true);
+		}
+	}, this);
+
+	this.message.focused.subscribe(function (bValue) {
+		RL.data().keyScope(bValue ? Enums.KeyState.MessageView : Enums.KeyState.MessageList);
+	});
 
 	this.messageLoading.subscribe(function (bValue) {
 		this.messageLoadingThrottle(bValue);
@@ -17063,6 +17464,13 @@ MailBoxScreen.prototype.setNewTitle  = function ()
 MailBoxScreen.prototype.onShow = function ()
 {
 	this.setNewTitle();
+
+	RL.data().keyScope(Enums.KeyState.MessageList);
+};
+
+MailBoxScreen.prototype.onHide = function ()
+{
+	RL.data().keyScope(Enums.KeyState.None);
 };
 
 /**
@@ -18752,4 +19160,4 @@ if (window.SimplePace) {
 	window.SimplePace.add(10);
 }
 
-}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible));
+}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible, key));

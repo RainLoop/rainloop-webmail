@@ -24,6 +24,7 @@ function FolderModel()
 
 	this.type = ko.observable(Enums.FolderType.User);
 
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.edited = ko.observable(false);
 	this.collapsed = ko.observable(true);

@@ -145,6 +145,7 @@ module.exports = function (grunt) {
 					"vendors/knockout-projections/knockout-projections-1.0.0.min.js",
 					"vendors/ssm/ssm.min.js",
 					"vendors/jua/jua.min.js",
+					"vendors/keymaster/keymaster.js",
 					"vendors/ifvisible/ifvisible.min.js",
 					"vendors/jquery-magnific-popup/jquery.magnific-popup.min.js",
 					"vendors/bootstrap/js/bootstrap.min.js",
@@ -233,8 +234,8 @@ module.exports = function (grunt) {
 				options: {
 					stripBanners: true,
 					banner: '/*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
-						'(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible) {\n',
-					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible));'
+						'(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible, key) {\n',
+					footer: '\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible, key));'
 				},
 				src: [
 					"dev/Common/_Begin.js",
@@ -287,6 +288,7 @@ module.exports = function (grunt) {
 					"dev/ViewModels/PopupsLanguagesViewModel.js",
 					"dev/ViewModels/PopupsTwoFactorTestViewModel.js",
 					"dev/ViewModels/PopupsAskViewModel.js",
+					"dev/ViewModels/PopupsKeyboardShortcutsHelpViewModel.js",
 
 					"dev/ViewModels/LoginViewModel.js",
 

@@ -63,14 +63,11 @@ KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototyp
 
 KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
 {
-	var self = this;
-	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility())
+	key('esc', _.bind(function () {
+		if (this.modalVisibility && this.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
+			Utils.delegateRun(this, 'cancelCommand');
 			return false;
 		}
-		
-		return true;
-	});
+	}, this));
 };

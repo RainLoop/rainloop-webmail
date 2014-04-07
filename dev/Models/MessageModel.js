@@ -35,6 +35,7 @@ function MessageModel()
 	this.forwarded = ko.observable(false);
 	this.isReadReceipt = ko.observable(false);
 
+	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
 	this.hasAttachments = ko.observable(false);
@@ -513,6 +514,10 @@ MessageModel.prototype.lineAsCcc = function ()
 	if (this.forwarded())
 	{
 		aResult.push('forwarded');
+	}
+	if (this.focused())
+	{
+		aResult.push('focused');
 	}
 	if (this.hasAttachments())
 	{

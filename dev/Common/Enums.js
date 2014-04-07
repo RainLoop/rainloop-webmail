@@ -28,6 +28,18 @@ Enums.StateType = {
 };
 
 /**
+ * @enum {string}
+ */
+Enums.KeyState = {
+	'None': 'none',
+	'ContactList': 'contact-list',
+	'MessageList': 'message-list',
+	'MessageView': 'message-view',
+	'Compose': 'compose',
+	'PopupAsk': 'popup-ask'
+};
+
+/**
  * @enum {number}
  */
 Enums.FolderType = {

@@ -16,6 +16,7 @@ function MailBoxMessageListViewModel()
 
 	this.popupVisibility = RL.popupVisibility;
 
+	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
 	this.isMessageSelected = oData.isMessageSelected;
@@ -214,13 +215,6 @@ function MailBoxMessageListViewModel()
 		return oMessage ? oMessage.generateUid() : '';
 	});
 	
-	this.selector.on('onDelete', _.bind(function () {
-		if (0 < RL.data().messageListCheckedOrSelected().length)
-		{
-			this.deleteCommand();
-		}
-	}, this));
-
 	RL
 		.sub('mailbox.message-list.selector.go-down', function () {
 			this.selector.goDown();
@@ -540,31 +534,15 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
-	this.selector.init(this.oContentVisible, this.oContentScrollable);
-
-	$document.on('keydown', function (oEvent) {
-
-		var
-			bResult = true,
-			iKeyCode = oEvent ? oEvent.keyCode : 0
-		;
-
-		if (oEvent && self.viewModelVisibility() && oData.useKeyboardShortcuts() && !RL.popupVisibility() && !oData.messageFullScreenMode() && !Utils.inFocus())
-		{
-			if (Enums.Layout.NoPreview !== oData.layout() || (!oData.message() && (Enums.EventKeyCode.Delete === iKeyCode || Enums.EventKeyCode.A === iKeyCode)))
-			{
-				if (oEvent.ctrlKey && Enums.EventKeyCode.A === iKeyCode)
-				{
-					self.checkAll(!(self.checkAll() && !self.isIncompleteChecked()));
-					bResult = false;
-				}
-			}
-		}
-
-		return bResult;
-	});
+	this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.MessageList);
 
 	oDom
+		.on('click', '.messageList .b-message-list-wrapper', function () {
+			if (oData.useKeyboardShortcuts() && self.message.focused())
+			{
+				self.message.focused(false);
+			}
+		})
 		.on('click', '.e-pagenator .e-page', function () {
 			var oPage = ko.dataFor(this);
 			if (oPage)
@@ -625,6 +603,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	}, this).extend({'notify': 'always'});
 
 	this.initUploaderForAppend();
+	this.initShortcuts();
 
 	if (!Globals.bMobileDevice && !!RL.settingsGet('AllowPrefetch') && ifvisible)
 	{
@@ -634,6 +613,121 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 			self.prefetchNextTick();
 		});
 	}
+};
+
+MailBoxMessageListViewModel.prototype.initShortcuts = function ()
+{
+	var
+		self = this,
+		oData = RL.data()
+	;
+
+	// disable print
+	key('ctrl+p, command+p', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			return false;
+		}
+	});
+
+	// delete
+	key('delete, shift+delete', Enums.KeyState.MessageList, function (event, handler) {
+		if (oData.useKeyboardShortcuts() && event)
+		{
+			if (0 < RL.data().messageListCheckedOrSelected().length)
+			{
+				if (handler && 'shift+delete' === handler.shortcut)
+				{
+					self.deleteWithoutMoveCommand();
+				}
+				else
+				{
+					self.deleteCommand();
+				}
+			}
+
+			return false;
+		}
+	});
+
+	// check all
+	key('ctrl+a, command+a', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.checkAll(!(self.checkAll() && !self.isIncompleteChecked()));
+			return false;
+		}
+	});
+
+	// new message (open compose popup)
+	key('c,n', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			kn.showScreenPopup(PopupsComposeViewModel);
+			return false;
+		}
+	});
+
+	// shortcuts help
+	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+			return false;
+		}
+	});
+
+	// search input focus
+	key('/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(false);
+			}
+			
+			self.inputMessageListSearchFocus(true);
+			return false;
+		}
+	});
+
+	// cancel search
+	key('esc', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts() && '' !== self.messageListSearchDesc())
+		{
+			self.cancelSearch();
+			return false;
+		}
+	});
+
+	// change focused state
+	key('tab, enter', Enums.KeyState.MessageList, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			if (self.message())
+			{
+				self.message.focused(true);
+			}
+
+			return false;
+		}
+	});
+
+	key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			// TODO
+			return false;
+		}
+	});
+
+	key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			// TODO
+			return false;
+		}
+	});
 };
 
 MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
