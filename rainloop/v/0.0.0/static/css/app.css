@@ -6843,6 +6843,9 @@ html.rl-no-preview-pane .messageList.message-selected {
   float: left;
   height: 100%;
 }
+.messageList .b-content .messageListItem.focused .sidebarParent {
+  background-color: #aaa !important;
+}
 .messageList .b-content .messageListItem.e-single-line {
   height: 35px;
 }
@@ -6999,11 +7002,17 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .b-content .messageListItem.unseen .sidebarParent {
   background-color: orange;
 }
+.messageList .b-content .messageListItem.unseen.focused .sidebarParent {
+  background-color: #cc8400 !important;
+}
 .messageList .b-content .messageListItem.hasUnseenSubMessage {
   background-color: #FFFFD9;
 }
 .messageList .b-content .messageListItem.hasUnseenSubMessage .sidebarParent {
   background-color: #ffdb99;
+}
+.messageList .b-content .messageListItem.hasUnseenSubMessage.focused .sidebarParent {
+  background-color: #cc8400 !important;
 }
 .messageList .b-content .messageListItem.hasParentMessage {
   background-color: #ecf0f1;
@@ -7011,14 +7020,23 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .b-content .messageListItem.hasParentMessage .sidebarParent {
   background-color: #bdc3c7;
 }
+.messageList .b-content .messageListItem.hasParentMessage.focused .sidebarParent {
+  background-color: #a1aab0 !important;
+}
 .messageList .b-content .messageListItem.hasParentMessage.unseen {
   background-color: #dde4e6;
 }
 .messageList .b-content .messageListItem.hasParentMessage.unseen .sidebarParent {
   background-color: #6c777f;
 }
+.messageList .b-content .messageListItem.hasParentMessage.unseen.focused .sidebarParent {
+  background-color: #545e64 !important;
+}
 .messageList .b-content .messageListItem.checked .sidebarParent {
   background-color: #69a8f5 !important;
+}
+.messageList .b-content .messageListItem.checked.focused .sidebarParent {
+  background-color: #217ef0 !important;
 }
 .messageList .b-content .messageListItem.selected {
   background-color: #DFEFFF;
@@ -7026,6 +7044,9 @@ html.rl-no-preview-pane .messageList.message-selected {
 }
 .messageList .b-content .messageListItem.selected .sidebarParent {
   background-color: #398CF2 !important;
+}
+.messageList .b-content .messageListItem.selected.focused .sidebarParent {
+  background-color: #217ef0 !important;
 }
 .messageList .b-content .messageListItem.selected .delimiter {
   background-color: #398CF2;
@@ -7055,8 +7076,8 @@ html.rl-no-preview-pane .messageList.message-selected {
   background-color: #000;
 }
 .messageList.message-focused .b-content {
-  opacity: 0.98;
-  filter: alpha(opacity=98);
+  opacity: 0.97;
+  filter: alpha(opacity=97);
 }
 .messageList.hideMessageListCheckbox .checkedParent,
 .messageList.hideMessageListCheckbox .checkboxCkeckAll {
@@ -7595,6 +7616,9 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   float: left;
   height: 100%;
 }
+.b-contacts-content.modal .b-list-content .e-contact-item.focused .sidebarParent {
+  background-color: #aaa;
+}
 .b-contacts-content.modal .b-list-content .e-contact-item.deleted {
   max-height: 0px;
   border-color: transparent !important;
@@ -7641,12 +7665,18 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-contacts-content.modal .b-list-content .e-contact-item.checked .sidebarParent {
   background-color: #69A8F5;
 }
+.b-contacts-content.modal .b-list-content .e-contact-item.checked.focused .sidebarParent {
+  background-color: #519af3 !important;
+}
 .b-contacts-content.modal .b-list-content .e-contact-item.selected {
   background-color: #fff;
   z-index: 102;
 }
 .b-contacts-content.modal .b-list-content .e-contact-item.selected .sidebarParent {
   background-color: #398CF2;
+}
+.b-contacts-content.modal .b-list-content .e-contact-item.selected.focused .sidebarParent {
+  background-color: #217ef0 !important;
 }
 .b-contacts-content.modal .b-view-content {
   position: absolute;

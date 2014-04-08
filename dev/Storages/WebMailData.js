@@ -297,6 +297,7 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
+	this.currentFocusedMessage = ko.observable(null);
 
 	this.message.subscribe(function (oMessage) {
 		if (null === oMessage)
@@ -778,11 +779,15 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		iUnseenCount = 0,
 		oData = RL.data(),
 		oCache = RL.cache(),
+		bMoveSelected = false,
+		bGetNext = false,
+		oNextMessage = null,
+		aMessageList = oData.messageList(),
 		oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
 		oToFolder = '' === sToFolderFullNameRaw ? null : oCache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
 		sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
 		oCurrentMessage = oData.message(),
-		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(oData.messageList(), function (oMessage) {
+		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
 			return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
 		}) : []
 	;
@@ -791,6 +796,11 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		if (oMessage && oMessage.unseen())
 		{
 			iUnseenCount++;
+		}
+
+		if (oMessage.selected())
+		{
+			bMoveSelected = true;
 		}
 	});
 
@@ -827,10 +837,33 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		}
 		else
 		{
+			// select next message
+			if (bMoveSelected)
+			{
+				_.each(aMessageList, function (oMessage) {
+					if (!oNextMessage && oMessage)
+					{
+						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
+						{
+							oNextMessage = oMessage;
+						}
+						else if (!bGetNext && oMessage.selected())
+						{
+							bGetNext = true;
+						}
+					}
+				});
+
+				if (oNextMessage)
+				{
+					this.currentMessage(oNextMessage);
+				}
+			}
+
 			oData.messageListIsNotCompleted(true);
 			
 			_.each(aMessages, function (oMessage) {
-				if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
+				if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
 				{
 					oCurrentMessage = null;
 					oData.message(null);

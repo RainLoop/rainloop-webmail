@@ -229,6 +229,10 @@ html.rl-no-preview-pane {
 				height: 100%;
 			}
 
+			&.focused .sidebarParent {
+				background-color: #aaa !important;
+			}
+
 			&.e-single-line {
 				height: 35px;
 			}
@@ -409,12 +413,19 @@ html.rl-no-preview-pane {
 				.sidebarParent {
 					background-color: orange;
 				}
+
+				&.focused .sidebarParent {
+					background-color: darken(orange, 10%) !important;
+				}
 			}
 
 			&.hasUnseenSubMessage {
 				background-color: #FFFFD9;
 				.sidebarParent {
 					background-color: lighten(orange, 30%);
+				}
+				&.focused .sidebarParent {
+					background-color: darken(orange, 10%) !important;
 				}
 			}
 
@@ -425,10 +436,19 @@ html.rl-no-preview-pane {
 					background-color: #bdc3c7;
 				}
 				
+				&.focused .sidebarParent {
+					background-color: darken(#bdc3c7, 10%) !important;
+				}
+				
 				&.unseen {
 					background-color: darken(#ecf0f1, 5%);
+
 					.sidebarParent {
 						background-color: darken(#bdc3c7, 30%);
+					}
+
+					&.focused .sidebarParent {
+						background-color: darken(#bdc3c7, 40%) !important;
 					}
 				}
 			}
@@ -436,6 +456,10 @@ html.rl-no-preview-pane {
 			&.checked {
 				.sidebarParent {
 					background-color: lighten(#398CF2, 10%) !important;
+				}
+
+				&.focused .sidebarParent {
+					background-color: darken(#398CF2, 5%) !important;
 				}
 			}
 
@@ -445,6 +469,10 @@ html.rl-no-preview-pane {
 
 				.sidebarParent {
 					background-color: #398CF2 !important;
+				}
+
+				&.focused .sidebarParent {
+					background-color: darken(#398CF2, 5%) !important;
 				}
 
 				.delimiter {
@@ -483,7 +511,7 @@ html.rl-no-preview-pane {
 			background-color: #000;
 		}
 		.b-content {
-			.opacity(98);
+			.opacity(97);
 		}
 	}
 

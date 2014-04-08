@@ -19,6 +19,7 @@ function MailBoxMessageListViewModel()
 	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
+	this.currentFocusedMessage = oData.currentFocusedMessage;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageListSearch = oData.messageListSearch;
 	this.messageListError = oData.messageListError;
@@ -191,8 +192,9 @@ function MailBoxMessageListViewModel()
 	
 	this.quotaTooltip = _.bind(this.quotaTooltip, this);
 	
-	this.selector = new Selector(this.messageList, this.currentMessage,
-		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage');
+	this.selector = new Selector(this.messageList, this.currentFocusedMessage, this.currentMessage,
+		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
+			'.messageListItem.focused');
 
 	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
@@ -214,7 +216,14 @@ function MailBoxMessageListViewModel()
 	this.selector.on('onItemGetUid', function (oMessage) {
 		return oMessage ? oMessage.generateUid() : '';
 	});
-	
+
+//	this.selector.autoSelect(false);
+	oData.layout.subscribe(function (mValue) {
+		this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
+	}, this);
+
+	oData.layout.valueHasMutated();
+
 	RL
 		.sub('mailbox.message-list.selector.go-down', function () {
 			this.selector.goDown();
@@ -687,7 +696,7 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, enter', Enums.KeyState.MessageList, function () {
+	key('tab', Enums.KeyState.MessageList, function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			if (self.message())

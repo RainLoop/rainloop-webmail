@@ -481,6 +481,7 @@ Enums.EventKeyCode = {
 	'Down': 40,
 	'End': 35,
 	'Home': 36,
+	'Space': 32,
 	'Insert': 45,
 	'Delete': 46,
 	'A': 65,
@@ -3886,15 +3887,34 @@ NewHtmlEditorWrapper.prototype.clear = function (bFocus)
 /**
  * @constructor
  * @param {koProperty} oKoList
+ * @param {koProperty} oKoFocusedItem
  * @param {koProperty} oKoSelectedItem
  * @param {string} sItemSelector
  * @param {string} sItemSelectedSelector
  * @param {string} sItemCheckedSelector
+ * @param {string} sItemFocusedSelector
  */
-function Selector(oKoList, oKoSelectedItem, sItemSelector, sItemSelectedSelector, sItemCheckedSelector)
+function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
+	sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 {
 	this.list = oKoList;
+	
+	this.focusedItem = oKoFocusedItem;
 	this.selectedItem = oKoSelectedItem;
+
+	this.focusedItem.extend({'toggleSubscribe': [null,
+		function (oPrev) {
+			if (oPrev)
+			{
+				oPrev.focused(false);
+			}
+		}, function (oNext) {
+			if (oNext)
+			{
+				oNext.focused(true);
+			}
+		}
+	]});
 
 	this.selectedItem.extend({'toggleSubscribe': [null,
 		function (oPrev) {
@@ -3916,29 +3936,38 @@ function Selector(oKoList, oKoSelectedItem, sItemSelector, sItemSelectedSelector
 	this.sItemSelector = sItemSelector;
 	this.sItemSelectedSelector = sItemSelectedSelector;
 	this.sItemCheckedSelector = sItemCheckedSelector;
+	this.sItemFocusedSelector = sItemFocusedSelector;
 	
 	this.sLastUid = '';
 	this.oCallbacks = {};
 	this.iSelectTimer = 0;
+
 	this.bUseKeyboard = true;
+	this.bAutoSelect = true;
 
 	this.emptyFunction = function () {};
 
 	this.useItemSelectCallback = true;
-	this.throttleSelection = false;
 
 	this.selectedItem.subscribe(function (oItem) {
+
+		if (oItem)
+		{
+			this.sLastUid = this.getItemUid(oItem);
+			this.focusedItem(oItem);
+		}
+
 		if (this.useItemSelectCallback)
 		{
-			if (this.throttleSelection)
-			{
-				this.throttleSelection = false;
-				this.selectItemCallbacksThrottle(oItem);
-			}
-			else
-			{
-				this.selectItemCallbacks(oItem);
-			}
+			this.selectItemCallbacks(oItem);
+		}
+
+	}, this);
+
+	this.focusedItem.subscribe(function (oItem) {
+		if (oItem)
+		{
+			this.sLastUid = this.getItemUid(oItem);
 		}
 	}, this);
 
@@ -3969,25 +3998,43 @@ function Selector(oKoList, oKoSelectedItem, sItemSelector, sItemSelectedSelector
 	this.list.subscribe(function (aItems) {
 		
 		this.useItemSelectCallback = false;
+
+		var
+			self = this,
+			iLen = 0,
+			sFocusedUid = this.focusedItem() ? this.getItemUid(this.focusedItem()) : ''
+		;
 		
 		this.selectedItem(null);
+		this.focusedItem(null);
 
 		if (Utils.isArray(aItems))
 		{
-			var self = this, iLen = aCheckedCache.length;
+			iLen = aCheckedCache.length;
+
 			_.each(aItems, function (oItem) {
-				if (0 < iLen && -1 < Utils.inArray(self.getItemUid(oItem), aCheckedCache))
+				
+				var sUid = self.getItemUid(oItem);
+
+				if (0 < iLen && -1 < Utils.inArray(sUid, aCheckedCache))
 				{
 					oItem.checked(true);
 					iLen--;
 				}
 
+				if ('' !== sFocusedUid && sUid === sFocusedUid)
+				{
+					self.focusedItem(oItem);
+				}
+
 				if (null !== mSelected && mSelected === self.getItemUid(oItem))
 				{
-					oItem.selected(true);
+					if (!oItem.selected())
+					{
+						self.selectedItem(oItem);
+					}
+
 					mSelected = null;
-					
-					self.selectedItem(oItem);
 				}
 			});
 		}
@@ -3996,6 +4043,7 @@ function Selector(oKoList, oKoSelectedItem, sItemSelector, sItemSelectedSelector
 		
 		aCheckedCache = [];
 		mSelected = null;
+		
 	}, this);
 
 	this.list.setSelectedByUid = function (sUid) {
@@ -4068,14 +4116,23 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 		;
 
-		key('space, enter', sKeyScope, function () {
-			return false;
+		key('enter', sKeyScope, function () {
+			if (!self.bAutoSelect)
+			{
+				if (self.focusedItem())
+				{
+					self.actionClick(self.focusedItem());
+				}
+
+				return false;
+			}
 		});
 
-		key('up, shift+up, down, shift+down, insert, home, end, pageup, pagedown', sKeyScope, function (event, handler) {
+		key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', sKeyScope, function (event, handler) {
 			if (event && handler && handler.shortcut)
 			{
-				var iKey = 0, aCodes = null;
+				// TODO
+				var iKey = 0;
 				switch (handler.shortcut)
 				{
 					case 'up':
@@ -4087,15 +4144,22 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 						iKey = Enums.EventKeyCode.Down;
 						break;
 					case 'insert':
+						iKey = Enums.EventKeyCode.Insert;
+						break;
+					case 'space':
+						iKey = Enums.EventKeyCode.Space;
+						break;
 					case 'home':
+						iKey = Enums.EventKeyCode.Home;
+						break;
 					case 'end':
+						iKey = Enums.EventKeyCode.End;
+						break;
 					case 'pageup':
+						iKey = Enums.EventKeyCode.PageUp;
+						break;
 					case 'pagedown':
-						aCodes = key.getPressedKeyCodes();
-						if (aCodes && aCodes[0])
-						{
-							iKey = aCodes[0];
-						}
+						iKey = Enums.EventKeyCode.PageDown;
 						break;
 				}
 
@@ -4133,6 +4197,11 @@ Selector.prototype.useKeyboard = function (bValue)
 	this.bUseKeyboard = !!bValue;
 };
 
+Selector.prototype.autoSelect = function (bValue)
+{
+	this.bAutoSelect = !!bValue;
+};
+
 /**
  * @param {Object} oItem
  * @returns {string}
@@ -4167,14 +4236,14 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 		oResult = null,
 		aList = this.list(),
 		iListLen = aList ? aList.length : 0,
-		oSelected = this.selectedItem()
+		oFocused = this.focusedItem()
 	;
 
 	if (0 < iListLen)
 	{
-		if (!oSelected)
+		if (!oFocused)
 		{
-			if (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Insert === iEventKeyCode || Enums.EventKeyCode.Home === iEventKeyCode || Enums.EventKeyCode.PageUp === iEventKeyCode)
+			if (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Insert === iEventKeyCode || Enums.EventKeyCode.Space === iEventKeyCode || Enums.EventKeyCode.Home === iEventKeyCode || Enums.EventKeyCode.PageUp === iEventKeyCode)
 			{
 				oResult = aList[0];
 			}
@@ -4183,16 +4252,16 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 				oResult = aList[aList.length - 1];
 			}
 		}
-		else if (oSelected)
+		else if (oFocused)
 		{
-			if (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode ||  Enums.EventKeyCode.Insert === iEventKeyCode)
+			if (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode ||  Enums.EventKeyCode.Insert === iEventKeyCode || Enums.EventKeyCode.Space === iEventKeyCode)
 			{
 				_.each(aList, function (oItem) {
 					if (!bStop)
 					{
 						switch (iEventKeyCode) {
 						case Enums.EventKeyCode.Up:
-							if (oSelected === oItem)
+							if (oFocused === oItem)
 							{
 								bStop = true;
 							}
@@ -4203,12 +4272,13 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 							break;
 						case Enums.EventKeyCode.Down:
 						case Enums.EventKeyCode.Insert:
+						case Enums.EventKeyCode.Space:
 							if (bNext)
 							{
 								oResult = oItem;
 								bStop = true;
 							}
-							else if (oSelected === oItem)
+							else if (oFocused === oItem)
 							{
 								bNext = true;
 							}
@@ -4232,7 +4302,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 			{
 				for (; iIndex < iListLen; iIndex++)
 				{
-					if (oSelected === aList[iIndex])
+					if (oFocused === aList[iIndex])
 					{
 						iIndex += iPageStep;
 						iIndex = iListLen - 1 < iIndex ? iListLen - 1 : iIndex;
@@ -4245,7 +4315,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 			{
 				for (iIndex = iListLen; iIndex >= 0; iIndex--)
 				{
-					if (oSelected === aList[iIndex])
+					if (oFocused === aList[iIndex])
 					{
 						iIndex -= iPageStep;
 						iIndex = 0 > iIndex ? 0 : iIndex;
@@ -4259,53 +4329,43 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 
 	if (oResult)
 	{
-		if (oSelected)
+		if (oFocused)
 		{
 			if (bShiftKey)
 			{
 				if (Enums.EventKeyCode.Up === iEventKeyCode || Enums.EventKeyCode.Down === iEventKeyCode)
 				{
-					oSelected.checked(!oSelected.checked());
+					oFocused.checked(!oFocused.checked());
 				}
 			}
-			else if (Enums.EventKeyCode.Insert === iEventKeyCode)
+			else if (Enums.EventKeyCode.Insert === iEventKeyCode || Enums.EventKeyCode.Space === iEventKeyCode)
 			{
-				oSelected.checked(!oSelected.checked());
+				oFocused.checked(!oFocused.checked());
 			}
 		}
 
-		this.throttleSelection = true;
-		this.selectedItem(oResult);
-		this.throttleSelection = true;
+		this.focusedItem(oResult);
 
-		if (0 !== this.iSelectTimer)
+		if (this.bAutoSelect && Enums.EventKeyCode.Space !== iEventKeyCode)
 		{
 			window.clearTimeout(this.iSelectTimer);
 			this.iSelectTimer = window.setTimeout(function () {
 				self.iSelectTimer = 0;
 				self.actionClick(oResult);
-			}, 1000);
-		}
-		else
-		{
-			this.iSelectTimer = window.setTimeout(function () {
-				self.iSelectTimer = 0;
-			}, 200);
-
-			this.actionClick(oResult);
+			}, 300);
 		}
 
-		this.scrollToSelected();
+		this.scrollToFocused();
 	}
-	else if (oSelected)
+	else if (oFocused)
 	{
 		if (bShiftKey && (Enums.EventKeyCode.Up === iEventKeyCode || Enums.EventKeyCode.Down === iEventKeyCode))
 		{
-			oSelected.checked(!oSelected.checked());
+			oFocused.checked(!oFocused.checked());
 		}
-		else if (Enums.EventKeyCode.Insert === iEventKeyCode)
+		else if (Enums.EventKeyCode.Insert === iEventKeyCode || Enums.EventKeyCode.Space === iEventKeyCode)
 		{
-			oSelected.checked(!oSelected.checked());
+			oFocused.checked(!oFocused.checked());
 		}
 	}
 };
@@ -4313,7 +4373,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 /**
  * @return {boolean}
  */
-Selector.prototype.scrollToSelected = function ()
+Selector.prototype.scrollToFocused = function ()
 {
 	if (!this.oContentVisible || !this.oContentScrollable)
 	{
@@ -4322,13 +4382,13 @@ Selector.prototype.scrollToSelected = function ()
 
 	var
 		iOffset = 20,
-		oSelected = $(this.sItemSelectedSelector, this.oContentScrollable),
-		oPos = oSelected.position(),
+		oFocused = $(this.sItemFocusedSelector, this.oContentScrollable),
+		oPos = oFocused.position(),
 		iVisibleHeight = this.oContentVisible.height(),
-		iSelectedHeight = oSelected.outerHeight()
+		iFocusedHeight = oFocused.outerHeight()
 	;
 
-	if (oPos && (oPos.top < 0 || oPos.top + iSelectedHeight > iVisibleHeight))
+	if (oPos && (oPos.top < 0 || oPos.top + iFocusedHeight > iVisibleHeight))
 	{
 		if (oPos.top < 0)
 		{
@@ -4336,7 +4396,7 @@ Selector.prototype.scrollToSelected = function ()
 		}
 		else
 		{
-			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iVisibleHeight + iSelectedHeight + iOffset);
+			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iVisibleHeight + iFocusedHeight + iOffset);
 		}
 
 		return true;
@@ -4394,7 +4454,6 @@ Selector.prototype.eventClickFunction = function (oItem, oEvent)
 };
 
 /**
- *
  * @param {Object} oItem
  * @param {Object=} oEvent
  */
@@ -4418,6 +4477,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 				}
 
 				oItem.checked(!oItem.checked());
+				
 				this.eventClickFunction(oItem, oEvent);
 			}
 			else if (oEvent.ctrlKey)
@@ -4432,7 +4492,6 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 		if (bClick)
 		{
 			this.selectedItem(oItem);
-			this.sLastUid = sUid;
 		}
 	}
 };
@@ -9524,7 +9583,9 @@ function PopupsContactsViewModel()
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
+	
 	this.currentContact = ko.observable(null);
+	this.currentFocusedContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
 
@@ -9651,8 +9712,9 @@ function PopupsContactsViewModel()
 		});
 	}, this);
 
-	this.selector = new Selector(this.contacts, this.currentContact,
-		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem');
+	this.selector = new Selector(this.contacts, this.currentFocusedContact, this.currentContact,
+		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
+			'.e-contact-item.focused');
 
 	this.selector.on('onItemSelect', _.bind(function (oContact) {
 		this.populateViewContact(oContact ? oContact : null);
@@ -11685,6 +11747,7 @@ function MailBoxMessageListViewModel()
 	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
+	this.currentFocusedMessage = oData.currentFocusedMessage;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageListSearch = oData.messageListSearch;
 	this.messageListError = oData.messageListError;
@@ -11857,8 +11920,9 @@ function MailBoxMessageListViewModel()
 	
 	this.quotaTooltip = _.bind(this.quotaTooltip, this);
 	
-	this.selector = new Selector(this.messageList, this.currentMessage,
-		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage');
+	this.selector = new Selector(this.messageList, this.currentFocusedMessage, this.currentMessage,
+		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
+			'.messageListItem.focused');
 
 	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
@@ -11880,7 +11944,14 @@ function MailBoxMessageListViewModel()
 	this.selector.on('onItemGetUid', function (oMessage) {
 		return oMessage ? oMessage.generateUid() : '';
 	});
-	
+
+//	this.selector.autoSelect(false);
+	oData.layout.subscribe(function (mValue) {
+		this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
+	}, this);
+
+	oData.layout.valueHasMutated();
+
 	RL
 		.sub('mailbox.message-list.selector.go-down', function () {
 			this.selector.goDown();
@@ -12353,7 +12424,7 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, enter', Enums.KeyState.MessageList, function () {
+	key('tab', Enums.KeyState.MessageList, function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			if (self.message())
@@ -12873,11 +12944,10 @@ MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 		else
 		{
 			this.message.focused(false);
-		}
-
-		if (Enums.Layout.NoPreview === RL.data().layout())
-		{
-			RL.historyBack();
+			if (Enums.Layout.NoPreview === RL.data().layout())
+			{
+				RL.historyBack();
+			}
 		}
 
 		return false;
@@ -12981,7 +13051,6 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
 		if (oData.useKeyboardShortcuts() && event)
 		{
-			self.deleteCommand();
 			if (handler && 'shift+delete' === handler.shortcut)
 			{
 				self.deleteWithoutMoveCommand();
@@ -14855,6 +14924,7 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
+	this.currentFocusedMessage = ko.observable(null);
 
 	this.message.subscribe(function (oMessage) {
 		if (null === oMessage)
@@ -15336,11 +15406,15 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		iUnseenCount = 0,
 		oData = RL.data(),
 		oCache = RL.cache(),
+		bMoveSelected = false,
+		bGetNext = false,
+		oNextMessage = null,
+		aMessageList = oData.messageList(),
 		oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
 		oToFolder = '' === sToFolderFullNameRaw ? null : oCache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
 		sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
 		oCurrentMessage = oData.message(),
-		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(oData.messageList(), function (oMessage) {
+		aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
 			return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
 		}) : []
 	;
@@ -15349,6 +15423,11 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		if (oMessage && oMessage.unseen())
 		{
 			iUnseenCount++;
+		}
+
+		if (oMessage.selected())
+		{
+			bMoveSelected = true;
 		}
 	});
 
@@ -15385,10 +15464,33 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		}
 		else
 		{
+			// select next message
+			if (bMoveSelected)
+			{
+				_.each(aMessageList, function (oMessage) {
+					if (!oNextMessage && oMessage)
+					{
+						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
+						{
+							oNextMessage = oMessage;
+						}
+						else if (!bGetNext && oMessage.selected())
+						{
+							bGetNext = true;
+						}
+					}
+				});
+
+				if (oNextMessage)
+				{
+					this.currentMessage(oNextMessage);
+				}
+			}
+
 			oData.messageListIsNotCompleted(true);
 			
 			_.each(aMessages, function (oMessage) {
-				if (oCurrentMessage && oCurrentMessage.requestHash === oMessage.requestHash)
+				if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
 				{
 					oCurrentMessage = null;
 					oData.message(null);
@@ -16646,7 +16748,7 @@ WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, 
 		'FromFolder': sFolder,
 		'ToFolder': sToFolder,
 		'Uids': aUids.join(',')
-	}, null, '', ['MessageList', 'Message']);
+	}, null, '', ['MessageList']);
 };
 
 /**
@@ -16674,7 +16776,7 @@ WebMailAjaxRemoteStorage.prototype.messagesDelete = function (fCallback, sFolder
 	this.defaultRequest(fCallback, 'MessageDelete', {
 		'Folder': sFolder,
 		'Uids': aUids.join(',')
-	}, null, '', ['MessageList', 'Message']);
+	}, null, '', ['MessageList']);
 };
 
 /**
@@ -17942,9 +18044,12 @@ function RainLoopApp()
 	this.oData = null;
 	this.oRemote = null;
 	this.oCache = null;
-
+	this.oMoveCache = {};
+	
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 	this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
+
+	this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
 	window.setInterval(function () {
 		RL.pub('interval.30s');
@@ -18095,6 +18200,57 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 	RL.remote().messageList(Utils.emptyFunction, 'INBOX', 0, RL.data().messagesPerPage(), '', true);
 };
 
+RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
+{
+	RL.reloadMessageList(bEmptyList);
+};
+
+RainLoopApp.prototype.messagesMoveTrigger = function ()
+{
+	var self = this;
+	
+	_.each(this.oMoveCache, function (oItem) {
+		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid']);
+	});
+
+	this.oMoveCache = {};
+};
+
+RainLoopApp.prototype.messagesMoveHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove)
+{
+	var sH = '$$' + sFromFolderFullNameRaw + '$$' + sToFolderFullNameRaw + '$$';
+	if (!this.oMoveCache[sH])
+	{
+		this.oMoveCache[sH] = {
+			'From': sFromFolderFullNameRaw,
+			'To': sToFolderFullNameRaw,
+			'Uid': []
+		};
+	}
+
+	this.oMoveCache[sH]['Uid'] = _.union(this.oMoveCache[sH]['Uid'], aUidForMove);
+	this.messagesMoveTrigger();
+};
+
+RainLoopApp.prototype.messagesCopyHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy)
+{
+	RL.remote().messagesCopy(
+		this.moveOrDeleteResponseHelper,
+		sFromFolderFullNameRaw,
+		sToFolderFullNameRaw,
+		aUidForCopy
+	);
+};
+
+RainLoopApp.prototype.messagesDeleteHelper = function (sFromFolderFullNameRaw, aUidForRemove)
+{
+	RL.remote().messagesDelete(
+		this.moveOrDeleteResponseHelper,
+		sFromFolderFullNameRaw,
+		aUidForRemove
+	);
+};
+
 RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 {
 	if (Enums.StorageResultType.Success === sResult && RL.data().currentFolder())
@@ -18114,7 +18270,7 @@ RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 			}
 		}
 
-		RL.reloadMessageList(0 === RL.data().messageList().length);
+		RL.reloadMessageListHelper(0 === RL.data().messageList().length);
 		RL.quotaDebounce();
 	}
 };
@@ -18125,12 +18281,7 @@ RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
  */
 RainLoopApp.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
 {
-	RL.remote().messagesDelete(
-		this.moveOrDeleteResponseHelper,
-		sFromFolderFullNameRaw,
-		aUidForRemove
-	);
-
+	this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 	RL.data().removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 };
 
@@ -18186,25 +18337,14 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 	{
 		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
-			RL.remote().messagesDelete(
-				self.moveOrDeleteResponseHelper,
-				sFromFolderFullNameRaw,
-				aUidForRemove
-			);
-
+			self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 			oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 		
 		}]);
 	}
 	else if (oMoveFolder)
 	{
-		RL.remote().messagesMove(
-			this.moveOrDeleteResponseHelper,
-			sFromFolderFullNameRaw,
-			oMoveFolder.fullNameRaw,
-			aUidForRemove
-		);
-
+		this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
 		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 	}
 };
@@ -18226,14 +18366,14 @@ RainLoopApp.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, a
 
 		if (oFromFolder && oToFolder)
 		{
-			bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-
-			RL.remote()[bCopy ? 'messagesCopy' : 'messagesMove'](
-				this.moveOrDeleteResponseHelper,
-				oFromFolder.fullNameRaw,
-				oToFolder.fullNameRaw,
-				aUidForMove
-			);
+			if (Utils.isUnd(bCopy) ? false : !!bCopy)
+			{
+				this.messagesCopyHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+			}
+			else
+			{
+				this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+			}
 
 			RL.data().removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 			return true;

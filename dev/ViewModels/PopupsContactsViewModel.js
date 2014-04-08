@@ -33,7 +33,9 @@ function PopupsContactsViewModel()
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
+	
 	this.currentContact = ko.observable(null);
+	this.currentFocusedContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
 
@@ -160,8 +162,9 @@ function PopupsContactsViewModel()
 		});
 	}, this);
 
-	this.selector = new Selector(this.contacts, this.currentContact,
-		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem');
+	this.selector = new Selector(this.contacts, this.currentFocusedContact, this.currentContact,
+		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
+			'.e-contact-item.focused');
 
 	this.selector.on('onItemSelect', _.bind(function (oContact) {
 		this.populateViewContact(oContact ? oContact : null);

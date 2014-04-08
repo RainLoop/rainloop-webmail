@@ -161,6 +161,10 @@
 					height: 100%;
 				}
 
+				&.focused .sidebarParent {
+					background-color: #aaa;
+				}
+
 				&.deleted {
 					max-height: 0px;
 					border-color: transparent !important;
@@ -213,14 +217,23 @@
 					.sidebarParent {
 						background-color: #69A8F5;
 					}
+
+					&.focused .sidebarParent {
+						background-color: darken(#69A8F5, 5%) !important;
+					}
 				}
 
 				&.selected {
+					
 					background-color: #fff;
 					z-index: 102;
 
 					.sidebarParent {
 						background-color: #398CF2;
+					}
+
+					&.focused .sidebarParent {
+						background-color: darken(#398CF2, 5%) !important;
 					}
 				}
 			}

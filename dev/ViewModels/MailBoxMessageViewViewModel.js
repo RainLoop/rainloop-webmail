@@ -385,11 +385,10 @@ MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 		else
 		{
 			this.message.focused(false);
-		}
-
-		if (Enums.Layout.NoPreview === RL.data().layout())
-		{
-			RL.historyBack();
+			if (Enums.Layout.NoPreview === RL.data().layout())
+			{
+				RL.historyBack();
+			}
 		}
 
 		return false;
@@ -493,7 +492,6 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
 		if (oData.useKeyboardShortcuts() && event)
 		{
-			self.deleteCommand();
 			if (handler && 'shift+delete' === handler.shortcut)
 			{
 				self.deleteWithoutMoveCommand();

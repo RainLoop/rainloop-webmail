@@ -11,9 +11,12 @@ function RainLoopApp()
 	this.oData = null;
 	this.oRemote = null;
 	this.oCache = null;
-
+	this.oMoveCache = {};
+	
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 	this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
+
+	this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
 	window.setInterval(function () {
 		RL.pub('interval.30s');
@@ -164,6 +167,57 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 	RL.remote().messageList(Utils.emptyFunction, 'INBOX', 0, RL.data().messagesPerPage(), '', true);
 };
 
+RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
+{
+	RL.reloadMessageList(bEmptyList);
+};
+
+RainLoopApp.prototype.messagesMoveTrigger = function ()
+{
+	var self = this;
+	
+	_.each(this.oMoveCache, function (oItem) {
+		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid']);
+	});
+
+	this.oMoveCache = {};
+};
+
+RainLoopApp.prototype.messagesMoveHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove)
+{
+	var sH = '$$' + sFromFolderFullNameRaw + '$$' + sToFolderFullNameRaw + '$$';
+	if (!this.oMoveCache[sH])
+	{
+		this.oMoveCache[sH] = {
+			'From': sFromFolderFullNameRaw,
+			'To': sToFolderFullNameRaw,
+			'Uid': []
+		};
+	}
+
+	this.oMoveCache[sH]['Uid'] = _.union(this.oMoveCache[sH]['Uid'], aUidForMove);
+	this.messagesMoveTrigger();
+};
+
+RainLoopApp.prototype.messagesCopyHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy)
+{
+	RL.remote().messagesCopy(
+		this.moveOrDeleteResponseHelper,
+		sFromFolderFullNameRaw,
+		sToFolderFullNameRaw,
+		aUidForCopy
+	);
+};
+
+RainLoopApp.prototype.messagesDeleteHelper = function (sFromFolderFullNameRaw, aUidForRemove)
+{
+	RL.remote().messagesDelete(
+		this.moveOrDeleteResponseHelper,
+		sFromFolderFullNameRaw,
+		aUidForRemove
+	);
+};
+
 RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 {
 	if (Enums.StorageResultType.Success === sResult && RL.data().currentFolder())
@@ -183,7 +237,7 @@ RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 			}
 		}
 
-		RL.reloadMessageList(0 === RL.data().messageList().length);
+		RL.reloadMessageListHelper(0 === RL.data().messageList().length);
 		RL.quotaDebounce();
 	}
 };
@@ -194,12 +248,7 @@ RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
  */
 RainLoopApp.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
 {
-	RL.remote().messagesDelete(
-		this.moveOrDeleteResponseHelper,
-		sFromFolderFullNameRaw,
-		aUidForRemove
-	);
-
+	this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 	RL.data().removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 };
 
@@ -255,25 +304,14 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 	{
 		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
-			RL.remote().messagesDelete(
-				self.moveOrDeleteResponseHelper,
-				sFromFolderFullNameRaw,
-				aUidForRemove
-			);
-
+			self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 			oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 		
 		}]);
 	}
 	else if (oMoveFolder)
 	{
-		RL.remote().messagesMove(
-			this.moveOrDeleteResponseHelper,
-			sFromFolderFullNameRaw,
-			oMoveFolder.fullNameRaw,
-			aUidForRemove
-		);
-
+		this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
 		oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 	}
 };
@@ -295,14 +333,14 @@ RainLoopApp.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, a
 
 		if (oFromFolder && oToFolder)
 		{
-			bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-
-			RL.remote()[bCopy ? 'messagesCopy' : 'messagesMove'](
-				this.moveOrDeleteResponseHelper,
-				oFromFolder.fullNameRaw,
-				oToFolder.fullNameRaw,
-				aUidForMove
-			);
+			if (Utils.isUnd(bCopy) ? false : !!bCopy)
+			{
+				this.messagesCopyHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+			}
+			else
+			{
+				this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
+			}
 
 			RL.data().removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 			return true;

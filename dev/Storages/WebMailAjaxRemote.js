@@ -584,7 +584,7 @@ WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, 
 		'FromFolder': sFolder,
 		'ToFolder': sToFolder,
 		'Uids': aUids.join(',')
-	}, null, '', ['MessageList', 'Message']);
+	}, null, '', ['MessageList']);
 };
 
 /**
@@ -612,7 +612,7 @@ WebMailAjaxRemoteStorage.prototype.messagesDelete = function (fCallback, sFolder
 	this.defaultRequest(fCallback, 'MessageDelete', {
 		'Folder': sFolder,
 		'Uids': aUids.join(',')
-	}, null, '', ['MessageList', 'Message']);
+	}, null, '', ['MessageList']);
 };
 
 /**

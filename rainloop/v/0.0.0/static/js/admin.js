@@ -477,6 +477,7 @@ Enums.EventKeyCode = {
 	'Down': 40,
 	'End': 35,
 	'Home': 36,
+	'Space': 32,
 	'Insert': 45,
 	'Delete': 46,
 	'A': 65,
