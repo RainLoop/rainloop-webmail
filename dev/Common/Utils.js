@@ -1236,6 +1236,17 @@ Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
 };
 
 /**
+ * @param {Object} oMessageTextBody
+ */
+Utils.toggleMessageBlockquote = function (oMessageTextBody)
+{
+	if (oMessageTextBody)
+	{
+		oMessageTextBody.find('.rlBlockquoteSwitcher').click();
+	}
+};
+
+/**
  * @param {string} sName
  * @param {Function} ViewModelClass
  * @param {Function=} AbstractViewModel = KnoinAbstractViewModel

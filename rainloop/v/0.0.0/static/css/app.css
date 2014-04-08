@@ -1581,7 +1581,7 @@ table {
   height                : 5px;
 }
 
-.nano:hover > .pane, .nano:hover > .pane2, .pane.active, .pane2.active, .pane.flashed, .pane2.flashed {
+.nano:hover > .pane, .nano:hover > .pane2, .pane.activescroll, .pane2.activescroll, .pane.active, .pane2.active, .pane.flashed, .pane2.flashed {
   visibility : visible\9; /* Target only IE7 and IE8 with this hack */
   opacity    : 0.99;
   filter: alpha(opacity=99);

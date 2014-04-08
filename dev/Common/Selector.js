@@ -75,7 +75,15 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 
 		if (this.useItemSelectCallback)
 		{
-			this.selectItemCallbacks(oItem);
+			if (oItem)
+			{
+				this.selectItemCallbacks(oItem, !!oItem.__clicked);
+				oItem.__clicked = false;
+			}
+			else
+			{
+				this.selectItemCallbacks(null);
+			}
 		}
 
 	}, this);
@@ -169,19 +177,19 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 	this.selectItemCallbacksThrottle = _.debounce(this.selectItemCallbacks, 300);
 }
 
-Selector.prototype.selectItemCallbacks = function (oItem)
+Selector.prototype.selectItemCallbacks = function (oItem, bClick)
 {
-	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem);
+	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem, bClick);
 };
 
-Selector.prototype.goDown = function ()
+Selector.prototype.goDown = function (bForceSelect)
 {
-	this.newSelectPosition(Enums.EventKeyCode.Down, false);
+	this.newSelectPosition(Enums.EventKeyCode.Down, false, bForceSelect);
 };
 
-Selector.prototype.goUp = function ()
+Selector.prototype.goUp = function (bForceSelect)
 {
-	this.newSelectPosition(Enums.EventKeyCode.Up, false);
+	this.newSelectPosition(Enums.EventKeyCode.Up, false, bForceSelect);
 };
 
 Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeyScope)
@@ -205,7 +213,8 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 				}
 			})
 			.on('click', this.sItemSelector, function (oEvent) {
-				self.actionClick(ko.dataFor(this), oEvent);
+				self.actionClick(ko.dataFor(this), oEvent, true);
+				return false;
 			})
 			.on('click', this.sItemCheckedSelector, function (oEvent) {
 				var oItem = ko.dataFor(this);
@@ -242,6 +251,10 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 
 				return false;
 			}
+		});
+
+		key('ctrl+up, command+up, ctrl+down, command+down', sKeyScope, function () {
+			return false;
 		});
 
 		key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', sKeyScope, function (event, handler) {
@@ -340,8 +353,9 @@ Selector.prototype.getItemUid = function (oItem)
 /**
  * @param {number} iEventKeyCode
  * @param {boolean} bShiftKey
+ * @param {boolean=} bForceSelect = false
  */
-Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
+Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey, bForceSelect)
 {
 	var
 		self = this,
@@ -462,7 +476,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey)
 
 		this.focusedItem(oResult);
 
-		if (this.bAutoSelect && Enums.EventKeyCode.Space !== iEventKeyCode)
+		if ((this.bAutoSelect || !!bForceSelect) && Enums.EventKeyCode.Space !== iEventKeyCode)
 		{
 			window.clearTimeout(this.iSelectTimer);
 			this.iSelectTimer = window.setTimeout(function () {
@@ -572,8 +586,9 @@ Selector.prototype.eventClickFunction = function (oItem, oEvent)
 /**
  * @param {Object} oItem
  * @param {Object=} oEvent
+ * @param {boolean=} bRealClick
  */
-Selector.prototype.actionClick = function (oItem, oEvent)
+Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
 {
 	if (oItem)
 	{
@@ -607,6 +622,11 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 
 		if (bClick)
 		{
+			if (bRealClick)
+			{
+				oItem.__clicked = true;
+			}
+
 			this.selectedItem(oItem);
 		}
 	}

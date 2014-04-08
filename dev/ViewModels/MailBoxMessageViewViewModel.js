@@ -450,18 +450,27 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	// toggle message blockquotes
+	key('b', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts() && oData.message() && oData.message().body)
 		{
-			self.goDownCommand();
+			Utils.toggleMessageBlockquote(oData.message().body);
 			return false;
 		}
 	});
 
-	key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
+	key('ctrl+left, command+left, ctrl+up, command+up', Enums.KeyState.MessageView, function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			self.goUpCommand();
+			return false;
+		}
+	});
+
+	key('ctrl+right, command+right, ctrl+down, command+down', Enums.KeyState.MessageView, function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.goDownCommand();
 			return false;
 		}
 	});
@@ -505,7 +514,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab', Enums.KeyState.MessageView, function () {
+	key('tab, shift+tab', Enums.KeyState.MessageView, function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			if (!self.fullScreenMode() && self.message())

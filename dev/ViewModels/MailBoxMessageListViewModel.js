@@ -196,16 +196,21 @@ function MailBoxMessageListViewModel()
 		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 			'.messageListItem.focused');
 
-	this.selector.on('onItemSelect', _.bind(function (oMessage) {
+	this.selector.on('onItemSelect', _.bind(function (oMessage, bClick) {
 		if (oMessage)
 		{
+			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
+			this.populateMessageBody(oData.message());
+
 			if (Enums.Layout.NoPreview === oData.layout())
 			{
 				kn.setHash(RL.link().messagePreview(), true);
+				oData.message.focused(true);
 			}
-			
-			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
-			this.populateMessageBody(oData.message());
+			else if (bClick)
+			{
+				oData.message.focused(false);
+			}
 		}
 		else
 		{
@@ -226,10 +231,10 @@ function MailBoxMessageListViewModel()
 
 	RL
 		.sub('mailbox.message-list.selector.go-down', function () {
-			this.selector.goDown();
+			this.selector.goDown(true);
 		}, this)
 		.sub('mailbox.message-list.selector.go-up', function () {
-			this.selector.goUp();
+			this.selector.goUp(true);
 		}, this)
 	;
 
@@ -696,7 +701,7 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab', Enums.KeyState.MessageList, function () {
+	key('tab, shift+tab', Enums.KeyState.MessageList, function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			if (self.message())

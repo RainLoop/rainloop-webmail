@@ -158,6 +158,13 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 		
+		self.editor.on('key', function(oEvent) {
+			if (oEvent && oEvent.data && 9 === oEvent.data.keyCode)
+			{
+				return false;
+			}
+		});
+
 		self.editor.on('blur', function() {
 			self.blurTrigger();
 		});

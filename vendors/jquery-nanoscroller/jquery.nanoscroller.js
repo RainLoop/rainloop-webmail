@@ -336,6 +336,23 @@
     */
 
 
+    NanoScroll.prototype.scrollClassTimer = 0;
+
+    NanoScroll.prototype.scrollClassTrigger = function() {
+		
+		window.clearTimeout(this.scrollClassTimer);
+
+		var _this = this;
+
+		 _this.pane.addClass('activescroll');
+		 _this.pane2.addClass('activescroll');
+
+		this.scrollClassTimer = window.setTimeout(function () {
+			 _this.pane.removeClass('activescroll');
+			 _this.pane2.removeClass('activescroll');
+		}, 1000);
+    };
+
     NanoScroll.prototype.nativeScrolling = function() {
       this.$content.css({
         WebkitOverflowScrolling: 'touch'
@@ -366,7 +383,7 @@
         this.sliderTop = this.contentScrollTop * this.maxSliderTop / this.maxScrollTop;
         this.slider2Left = this.contentScroll2Left * this.maxSlider2Left / this.maxScroll2Left;
       }
-    };
+	  };
 
     /**
       Creates event related methods
@@ -471,6 +488,10 @@
             }
             _this.$el.trigger('scrolltop');
           }
+
+		  if (!_this.iOSNativeScrolling) {
+			_this.scrollClassTrigger();
+		  }
         },
 		  /**
 			* @param {{wheelDeltaY:number, delta:number}} e

@@ -262,6 +262,7 @@ function WebMailDataStorage()
 		if (!oMessage)
 		{
 			this.message.focused(false);
+			this.hideMessageBodies();
 		}
 		else if (Enums.Layout.NoPreview === this.layout())
 		{
@@ -303,7 +304,6 @@ function WebMailDataStorage()
 		if (null === oMessage)
 		{
 			this.currentMessage(null);
-			this.hideMessageBodies();
 		}
 	}, this);
 
