@@ -415,8 +415,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// reply
-	key('r', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.replyCommand();
 			return false;
@@ -424,8 +424,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// replaAll
-	key('a', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.replyAllCommand();
 			return false;
@@ -433,8 +433,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// forward
-	key('f', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.forwardCommand();
 			return false;
@@ -442,7 +442,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// message information
-	key('i', Enums.KeyState.MessageView, function () {
+	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			self.showFullInfo(!self.showFullInfo());
@@ -451,7 +451,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// toggle message blockquotes
-	key('b', Enums.KeyState.MessageView, function () {
+	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts() && oData.message() && oData.message().body)
 		{
 			Utils.toggleMessageBlockquote(oData.message().body);
@@ -487,15 +487,6 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			return false;
 		}
 	});
-
-	// archive
-//	key('delete', Enums.KeyState.MessageView, function () {
-//		if (oData.useKeyboardShortcuts())
-//		{
-//			self.archiveCommand();
-//			return false;
-//		}
-//	});
 
 	// delete
 	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {

@@ -12273,6 +12273,68 @@ MailBoxMessageListViewModel.prototype.listUnsetFlags = function ()
 	this.setAction(RL.data().currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetFlag, RL.data().messageListCheckedOrSelected());
 };
 
+MailBoxMessageListViewModel.prototype.flagMessages = function (oCurrentMessage)
+{
+	var
+		aChecked = this.messageListCheckedOrSelected(),
+		aCheckedUids = []
+	;
+
+	if (oCurrentMessage)
+	{
+		if (0 < aChecked.length)
+		{
+			aCheckedUids = _.map(aChecked, function (oMessage) {
+				return oMessage.uid;
+			});
+		}
+
+		if (0 < aCheckedUids.length && -1 < Utils.inArray(oCurrentMessage.uid, aCheckedUids))
+		{
+			this.setAction(oCurrentMessage.folderFullNameRaw, oCurrentMessage.flagged() ?
+				Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		}
+		else
+		{
+			this.setAction(oCurrentMessage.folderFullNameRaw, oCurrentMessage.flagged() ?
+				Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oCurrentMessage]);
+		}
+	}
+};
+
+MailBoxMessageListViewModel.prototype.flagMessagesFast = function ()
+{
+	var
+		aChecked = this.messageListCheckedOrSelected(),
+		aFlagged = []
+	;
+
+	if (0 < aChecked.length)
+	{
+		aFlagged = _.filter(aChecked, function (oMessage) {
+			return oMessage.flagged();
+		});
+
+		this.setAction(aChecked[0].folderFullNameRaw,
+			aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+	}
+};
+
+MailBoxMessageListViewModel.prototype.seenMessagesFast = function ()
+{
+	var
+		aChecked = this.messageListCheckedOrSelected(),
+		aUnseen = []
+	;
+
+	aUnseen = _.filter(aChecked, function (oMessage) {
+		return oMessage.unseen();
+	});
+
+	this.setAction(aChecked[0].folderFullNameRaw,
+		0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+};
+
 MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 {
 	var 
@@ -12338,33 +12400,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 			self.checkAll(!self.checkAll());
 		})
 		.on('click', '.messageList .messageListItem .flagParent', function () {
-
-			var
-				oMessage = ko.dataFor(this),
-				aChecked = oData.messageListCheckedOrSelected(),
-				aCheckedUids = []
-			;
-
-			if (oMessage)
-			{
-				if (0 < aChecked.length)
-				{
-					aCheckedUids = _.map(aChecked, function (oMessage) {
-						return oMessage.uid;
-					});
-				}
-
-				if (0 < aCheckedUids.length && -1 < Utils.inArray(oMessage.uid, aCheckedUids))
-				{
-					self.setAction(oMessage.folderFullNameRaw, oMessage.flagged() ?
-						Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
-				}
-				else
-				{
-					self.setAction(oMessage.folderFullNameRaw, oMessage.flagged() ?
-						Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
-				}
-			}
+			self.flagMessages(ko.dataFor(this));
 		})
 	;
 
@@ -12434,11 +12470,37 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
+	// star/flag messages
+	key('s', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.flagMessagesFast();
+			return false;
+		}
+	});
+
+	// mark as read/unread
+	key('m', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.seenMessagesFast();
+			return false;
+		}
+	});
+
 	// shortcuts help
 	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+			return false;
+		}
+	});
+
+	key('shift+f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.multyForwardCommand();
 			return false;
 		}
 	});
@@ -13017,8 +13079,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// reply
-	key('r', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.replyCommand();
 			return false;
@@ -13026,8 +13088,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// replaAll
-	key('a', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.replyAllCommand();
 			return false;
@@ -13035,8 +13097,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// forward
-	key('f', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+	key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts() && oData.message())
 		{
 			self.forwardCommand();
 			return false;
@@ -13044,7 +13106,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// message information
-	key('i', Enums.KeyState.MessageView, function () {
+	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			self.showFullInfo(!self.showFullInfo());
@@ -13053,7 +13115,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// toggle message blockquotes
-	key('b', Enums.KeyState.MessageView, function () {
+	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts() && oData.message() && oData.message().body)
 		{
 			Utils.toggleMessageBlockquote(oData.message().body);
@@ -13089,15 +13151,6 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			return false;
 		}
 	});
-
-	// archive
-//	key('delete', Enums.KeyState.MessageView, function () {
-//		if (oData.useKeyboardShortcuts())
-//		{
-//			self.archiveCommand();
-//			return false;
-//		}
-//	});
 
 	// delete
 	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
