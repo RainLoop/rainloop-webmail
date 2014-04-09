@@ -298,18 +298,10 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
-	this.currentFocusedMessage = ko.observable(null);
-
-	this.message.subscribe(function (oMessage) {
-		if (null === oMessage)
-		{
-			this.currentMessage(null);
-		}
-	}, this);
 
 	this.messageListChecked = ko.computed(function () {
-		return _.filter(this.messageList(), function (oMessage) {
-			return oMessage.checked();
+		return _.filter(this.messageList(), function (oItem) {
+			return oItem.checked();
 		});
 	}, this);
 
@@ -322,21 +314,6 @@ function WebMailDataStorage()
 
 		return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
 
-	}, this);
-
-	this.messageListCheckedUids = ko.computed(function () {
-		var aList = [];
-		_.each(this.messageListChecked(), function (oMessage) {
-			if (oMessage)
-			{
-				aList.push(oMessage.uid);
-				if (0 < oMessage.threadsLen() && 0 === oMessage.parentUid() && oMessage.lastInCollapsedThread())
-				{
-					aList = _.union(aList, oMessage.threads());
-				}
-			}
-		});
-		return aList;
 	}, this);
 
 	this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
@@ -375,17 +352,13 @@ function WebMailDataStorage()
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
-	this.openpgpkeysPublic = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
+		return !!(oItem && !oItem.isPrivate);
+	});
 
-	this.openpgpkeysPrivate = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
+		return !!(oItem && oItem.isPrivate);
+	});
 
 	// google
 	this.googleActions = ko.observable(false);
@@ -837,28 +810,28 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		}
 		else
 		{
-			// select next message
-			if (bMoveSelected)
-			{
-				_.each(aMessageList, function (oMessage) {
-					if (!oNextMessage && oMessage)
-					{
-						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
-						{
-							oNextMessage = oMessage;
-						}
-						else if (!bGetNext && oMessage.selected())
-						{
-							bGetNext = true;
-						}
-					}
-				});
-
-				if (oNextMessage)
-				{
-					this.currentMessage(oNextMessage);
-				}
-			}
+			// select next message // TODO
+//			if (bMoveSelected)
+//			{
+//				_.each(aMessageList, function (oMessage) {
+//					if (!oNextMessage && oMessage)
+//					{
+//						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
+//						{
+//							oNextMessage = oMessage;
+//						}
+//						else if (!bGetNext && oMessage.selected())
+//						{
+//							bGetNext = true;
+//						}
+//					}
+//				});
+//
+//				if (oNextMessage)
+//				{
+//					this.currentMessage(oNextMessage);
+//				}
+//			}
 
 			oData.messageListIsNotCompleted(true);
 			
@@ -1049,6 +1022,17 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 	}
 };
 
+/**
+ * @param {Array} aList
+ * @returns {string}
+ */
+WebMailDataStorage.prototype.calculateMessageListHash = function (aList)
+{
+	return _.map(aList, function (oMessage) {
+		return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
+	}).join('|');
+};
+
 WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 {
 	if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
@@ -1062,6 +1046,7 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			iLen = 0,
 			iCount = 0,
 			iOffset = 0,
+			aPrevList = [],
 			aList = [],
 			iUtc = moment().unix(),
 			aStaticList = oRainLoopData.staticMessageList,
@@ -1155,14 +1140,25 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 		oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 		oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
 
-		oRainLoopData.messageList(aList);
+		aPrevList = oRainLoopData.messageList();
+		if (aPrevList.length !== aList.length)
+		{
+			oRainLoopData.messageList(aList);
+		}
+		else if (this.calculateMessageListHash(aPrevList) !== this.calculateMessageListHash(aList))
+		{
+			oRainLoopData.messageList(aList);
+		}
+
+		aPrevList = [];
 		oRainLoopData.messageListIsNotCompleted(false);
 
 		oMessage = oRainLoopData.message();
-		if (oMessage && oRainLoopData.messageList.setSelectedByUid)
-		{
-			oRainLoopData.messageList.setSelectedByUid(oMessage.generateUid());
-		}
+		// TODO
+//		if (oMessage && oRainLoopData.messageList.setSelectedByUid)
+//		{
+//			oRainLoopData.messageList.setSelectedByUid(oMessage.generateUid());
+//		}
 
 		if (aStaticList.length < aList.length)
 		{

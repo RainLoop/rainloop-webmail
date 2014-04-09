@@ -23,6 +23,7 @@ function MailBoxMessageViewViewModel()
 
 	this.keyScope = oData.keyScope;
 	this.message = oData.message;
+	this.currentMessage = oData.currentMessage;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
 	this.messagesBodiesDom = oData.messagesBodiesDom;
@@ -41,6 +42,13 @@ function MailBoxMessageViewViewModel()
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
+	}, this);
+
+	this.message.subscribe(function (oMessage) {
+		if (!oMessage && this.currentMessage())
+		{
+			this.currentMessage(null);
+		}
 	}, this);
 	
 	this.canBeRepliedOrForwarded = this.messageVisibility;

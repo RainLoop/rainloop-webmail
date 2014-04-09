@@ -19,7 +19,6 @@ function MailBoxMessageListViewModel()
 	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
-	this.currentFocusedMessage = oData.currentFocusedMessage;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageListSearch = oData.messageListSearch;
 	this.messageListError = oData.messageListError;
@@ -63,7 +62,7 @@ function MailBoxMessageListViewModel()
 
 	this.checkAll = ko.computed({
 		'read': function () {
-			return 0 < RL.data().messageListCheckedOrSelected().length;
+			return 0 < RL.data().messageListChecked().length;
 		},
 
 		'write': function (bValue) {
@@ -71,11 +70,6 @@ function MailBoxMessageListViewModel()
 			_.each(RL.data().messageList(), function (oMessage) {
 				oMessage.checked(bValue);
 			});
-
-			if (!bValue)
-			{
-				RL.data().message(null);
-			}
 		}
 	});
 
@@ -93,17 +87,13 @@ function MailBoxMessageListViewModel()
 	this.isIncompleteChecked = ko.computed(function () {
 		var
 			iM = RL.data().messageList().length,
-			iC = RL.data().messageListCheckedOrSelected().length
+			iC = RL.data().messageListChecked().length
 		;
 		return 0 < iM && 0 < iC && iM > iC;
 	}, this);
 
 	this.hasMessages = ko.computed(function () {
 		return 0 < this.messageList().length;
-	}, this);
-
-	this.hasCheckedLines = ko.computed(function () {
-		return 0 < this.messageListChecked().length;
 	}, this);
 
 	this.hasCheckedOrSelectedLines = ko.computed(function () {
@@ -179,10 +169,6 @@ function MailBoxMessageListViewModel()
 
 	this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
-	this.setCommand = Utils.createCommand(this, Utils.emptyFunction, this.hasCheckedLines);
-
-	this.checkCommand = Utils.createCommand(this, Utils.emptyFunction, this.hasCheckedLines);
-
 	this.reloadCommand = Utils.createCommand(this, function () {
 		if (!RL.data().messageListCompleteLoadingThrottle())
 		{
@@ -192,11 +178,11 @@ function MailBoxMessageListViewModel()
 	
 	this.quotaTooltip = _.bind(this.quotaTooltip, this);
 	
-	this.selector = new Selector(this.messageList, this.currentFocusedMessage, this.currentMessage,
+	this.selector = new Selector(this.messageList, this.currentMessage,
 		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 			'.messageListItem.focused');
 
-	this.selector.on('onItemSelect', _.bind(function (oMessage, bClick) {
+	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
 		{
 			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
@@ -206,10 +192,6 @@ function MailBoxMessageListViewModel()
 			{
 				kn.setHash(RL.link().messagePreview(), true);
 				oData.message.focused(true);
-			}
-			else if (bClick)
-			{
-				oData.message.focused(false);
 			}
 		}
 		else

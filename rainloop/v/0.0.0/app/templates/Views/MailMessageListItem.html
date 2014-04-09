@@ -19,7 +19,7 @@
 			<span class="date" data-bind="text: momentShortDate, title: fullFormatDateValue"></span>
 		</div>
 		<div class="checkedParent">
-			<i class="checkboxMessage" data-bind="css: checked() || selected() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
+			<i class="checkboxMessage" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 		</div>
 		<div class="senderParent actionHandle dragHandle">
 			<span class="threadsCountParent fullThreadHandle" data-bind="visible: '' !== threadsLenResult(), css: { 'lastSelected': !lastInCollapsedThread() }">

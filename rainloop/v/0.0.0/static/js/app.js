@@ -3905,34 +3905,60 @@ NewHtmlEditorWrapper.prototype.clear = function (bFocus)
 /**
  * @constructor
  * @param {koProperty} oKoList
- * @param {koProperty} oKoFocusedItem
  * @param {koProperty} oKoSelectedItem
  * @param {string} sItemSelector
  * @param {string} sItemSelectedSelector
  * @param {string} sItemCheckedSelector
  * @param {string} sItemFocusedSelector
  */
-function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
+function Selector(oKoList, oKoSelectedItem,
 	sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 {
 	this.list = oKoList;
 	
-	this.focusedItem = oKoFocusedItem;
+	this.listChecked = ko.computed(function () {
+		return _.filter(this.list(), function (oItem) {
+			return oItem.checked();
+		});
+	}, this);
+
+	this.isListChecked = ko.computed(function () {
+		return 0 < this.listChecked().length;
+	}, this);
+	
+	this.lastSelectedItem = ko.observable(null);
+	this.focusedItem = ko.observable(null);
 	this.selectedItem = oKoSelectedItem;
 
-	this.focusedItem.extend({'toggleSubscribe': [null,
-		function (oPrev) {
-			if (oPrev)
+	this.listChecked.subscribe(function (aItems) {
+		if (0 < aItems.length)
+		{
+			this.selectedItem(null);
+		}
+		else if (this.bAutoSelect && this.lastSelectedItem())
+		{
+			this.selectedItem(this.lastSelectedItem());
+		}
+	}, this);
+	
+	this.selectedItem.subscribe(function (oItem) {
+
+		if (oItem)
+		{
+			if (this.bAutoSelect)
 			{
-				oPrev.focused(false);
+				this.lastSelectedItem(oItem);
 			}
-		}, function (oNext) {
-			if (oNext)
+			
+			if (this.isListChecked())
 			{
-				oNext.focused(true);
+				_.each(this.listChecked(), function (oSubItem) {
+					oSubItem.checked(false);
+				});
 			}
 		}
-	]});
+
+	}, this);
 
 	this.selectedItem.extend({'toggleSubscribe': [null,
 		function (oPrev) {
@@ -3944,6 +3970,20 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 			if (oNext)
 			{
 				oNext.selected(true);
+			}
+		}
+	]});
+
+	this.focusedItem.extend({'toggleSubscribe': [null,
+		function (oPrev) {
+			if (oPrev)
+			{
+				oPrev.focused(false);
+			}
+		}, function (oNext) {
+			if (oNext)
+			{
+				oNext.focused(true);
 			}
 		}
 	]});
@@ -3979,8 +4019,7 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 		{
 			if (oItem)
 			{
-				this.selectItemCallbacks(oItem, !!oItem.__clicked);
-				oItem.__clicked = false;
+				this.selectItemCallbacks(oItem);
 			}
 			else
 			{
@@ -3998,25 +4037,33 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 	}, this);
 
 	var
-		self = this,
 		aCheckedCache = [],
+		mFocused = null,
 		mSelected = null
 	;
 	
 	this.list.subscribe(function () {
+
 		var self = this, aItems = this.list();
 		if (Utils.isArray(aItems))
 		{
 			_.each(aItems, function (oItem) {
+
 				if (oItem.checked())
 				{
 					aCheckedCache.push(self.getItemUid(oItem));
 				}
 				
+				if (null === mFocused && oItem.focused())
+				{
+					mFocused = self.getItemUid(oItem);
+				}
+
 				if (null === mSelected && oItem.selected())
 				{
 					mSelected = self.getItemUid(oItem);
 				}
+
 			});
 		}
 	}, this, 'beforeChange');
@@ -4027,12 +4074,12 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 
 		var
 			self = this,
-			iLen = 0,
-			sFocusedUid = this.focusedItem() ? this.getItemUid(this.focusedItem()) : ''
+			bChecked = false,
+			iLen = 0
 		;
 		
-		this.selectedItem(null);
 		this.focusedItem(null);
+		this.selectedItem(null);
 
 		if (Utils.isArray(aItems))
 		{
@@ -4041,25 +4088,23 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 			_.each(aItems, function (oItem) {
 				
 				var sUid = self.getItemUid(oItem);
-
+				
 				if (0 < iLen && -1 < Utils.inArray(sUid, aCheckedCache))
 				{
+					bChecked = true;
 					oItem.checked(true);
 					iLen--;
 				}
 
-				if ('' !== sFocusedUid && sUid === sFocusedUid)
+				if (null !== mFocused && mFocused === sUid)
 				{
 					self.focusedItem(oItem);
+					mFocused = null;
 				}
 
-				if (null !== mSelected && mSelected === self.getItemUid(oItem))
+				if (!bChecked && null !== mSelected && mSelected === sUid)
 				{
-					if (!oItem.selected())
-					{
-						self.selectedItem(oItem);
-					}
-
+					self.selectedItem(oItem);
 					mSelected = null;
 				}
 			});
@@ -4068,20 +4113,17 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 		this.useItemSelectCallback = true;
 		
 		aCheckedCache = [];
+		mFocused = null;
 		mSelected = null;
 		
 	}, this);
 
-	this.list.setSelectedByUid = function (sUid) {
-		self.selectByUid(sUid, false);
-	};
-
 	this.selectItemCallbacksThrottle = _.debounce(this.selectItemCallbacks, 300);
 }
 
-Selector.prototype.selectItemCallbacks = function (oItem, bClick)
+Selector.prototype.selectItemCallbacks = function (oItem)
 {
-	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem, bClick);
+	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem);
 };
 
 Selector.prototype.goDown = function (bForceSelect)
@@ -4116,7 +4158,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 			.on('click', this.sItemSelector, function (oEvent) {
 				self.actionClick(ko.dataFor(this), oEvent, true);
-				return false;
 			})
 			.on('click', this.sItemCheckedSelector, function (oEvent) {
 				var oItem = ko.dataFor(this);
@@ -4129,15 +4170,7 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 					else
 					{
 						self.sLastUid = self.getItemUid(oItem);
-						if (oItem.selected())
-						{
-							oItem.checked(false);
-							self.selectedItem(null);
-						}
-						else
-						{
-							oItem.checked(!oItem.checked());
-						}
+						oItem.checked(!oItem.checked());
 					}
 				}
 			})
@@ -4202,25 +4235,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			}
 		});
 	}
-};
-
-Selector.prototype.selectByUid = function (mUid, bUseCallback)
-{
-	bUseCallback = Utils.isUnd(bUseCallback) ? true : !!bUseCallback;
-	this.useItemSelectCallback = bUseCallback;
-
-	var 
-		oItem = _.find(this.list(), function (oItem) {
-			return mUid === this.getItemUid(oItem);
-		}, this)
-	;
-
-	if (oItem)
-	{
-		this.selectedItem(oItem);
-	}
-
-	this.useItemSelectCallback = true;
 };
 
 Selector.prototype.useKeyboard = function (bValue)
@@ -4304,7 +4318,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey, bForc
 							break;
 						case Enums.EventKeyCode.Down:
 						case Enums.EventKeyCode.Insert:
-						case Enums.EventKeyCode.Space:
+//						case Enums.EventKeyCode.Space:
 							if (bNext)
 							{
 								oResult = oItem;
@@ -4378,7 +4392,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey, bForc
 
 		this.focusedItem(oResult);
 
-		if ((this.bAutoSelect || !!bForceSelect) && Enums.EventKeyCode.Space !== iEventKeyCode)
+		if ((this.bAutoSelect || !!bForceSelect) && !this.isListChecked() && Enums.EventKeyCode.Space !== iEventKeyCode)
 		{
 			window.clearTimeout(this.iSelectTimer);
 			this.iSelectTimer = window.setTimeout(function () {
@@ -4488,9 +4502,8 @@ Selector.prototype.eventClickFunction = function (oItem, oEvent)
 /**
  * @param {Object} oItem
  * @param {Object=} oEvent
- * @param {boolean=} bRealClick
  */
-Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
+Selector.prototype.actionClick = function (oItem, oEvent)
 {
 	if (oItem)
 	{
@@ -4510,7 +4523,6 @@ Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
 				}
 
 				oItem.checked(!oItem.checked());
-				
 				this.eventClickFunction(oItem, oEvent);
 			}
 			else if (oEvent.ctrlKey)
@@ -4524,11 +4536,6 @@ Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
 
 		if (bClick)
 		{
-			if (bRealClick)
-			{
-				oItem.__clicked = true;
-			}
-
 			this.selectedItem(oItem);
 		}
 	}
@@ -7349,6 +7356,15 @@ MessageModel.prototype.replacePlaneTextBody = function (sPlain)
 };
 
 /**
+ * @return {string}
+ */
+MessageModel.prototype.flagHash = function ()
+{
+	return [this.deleted(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
+		this.isReadReceipt()].join('');
+};
+
+/**
  * @constructor
  */
 function FolderModel()
@@ -9623,7 +9639,6 @@ function PopupsContactsViewModel()
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	
 	this.currentContact = ko.observable(null);
-	this.currentFocusedContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
 
@@ -9750,7 +9765,7 @@ function PopupsContactsViewModel()
 		});
 	}, this);
 
-	this.selector = new Selector(this.contacts, this.currentFocusedContact, this.currentContact,
+	this.selector = new Selector(this.contacts, this.currentContact,
 		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
 			'.e-contact-item.focused');
 
@@ -10153,10 +10168,10 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self.viewClearSearch('' !== self.search());
 		self.contacts.loading(false);
 
-		if ('' !== self.viewID() && !self.currentContact() && self.contacts.setSelectedByUid)
-		{
-			self.contacts.setSelectedByUid('' + self.viewID());
-		}
+//		if ('' !== self.viewID() && !self.currentContact() && self.contacts.setSelectedByUid)
+//		{
+//			self.contacts.setSelectedByUid('' + self.viewID());
+//		}
 
 	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };
@@ -11785,7 +11800,6 @@ function MailBoxMessageListViewModel()
 	this.message = oData.message;
 	this.messageList = oData.messageList;
 	this.currentMessage = oData.currentMessage;
-	this.currentFocusedMessage = oData.currentFocusedMessage;
 	this.isMessageSelected = oData.isMessageSelected;
 	this.messageListSearch = oData.messageListSearch;
 	this.messageListError = oData.messageListError;
@@ -11829,7 +11843,7 @@ function MailBoxMessageListViewModel()
 
 	this.checkAll = ko.computed({
 		'read': function () {
-			return 0 < RL.data().messageListCheckedOrSelected().length;
+			return 0 < RL.data().messageListChecked().length;
 		},
 
 		'write': function (bValue) {
@@ -11837,11 +11851,6 @@ function MailBoxMessageListViewModel()
 			_.each(RL.data().messageList(), function (oMessage) {
 				oMessage.checked(bValue);
 			});
-
-			if (!bValue)
-			{
-				RL.data().message(null);
-			}
 		}
 	});
 
@@ -11859,17 +11868,13 @@ function MailBoxMessageListViewModel()
 	this.isIncompleteChecked = ko.computed(function () {
 		var
 			iM = RL.data().messageList().length,
-			iC = RL.data().messageListCheckedOrSelected().length
+			iC = RL.data().messageListChecked().length
 		;
 		return 0 < iM && 0 < iC && iM > iC;
 	}, this);
 
 	this.hasMessages = ko.computed(function () {
 		return 0 < this.messageList().length;
-	}, this);
-
-	this.hasCheckedLines = ko.computed(function () {
-		return 0 < this.messageListChecked().length;
 	}, this);
 
 	this.hasCheckedOrSelectedLines = ko.computed(function () {
@@ -11945,10 +11950,6 @@ function MailBoxMessageListViewModel()
 
 	this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
-	this.setCommand = Utils.createCommand(this, Utils.emptyFunction, this.hasCheckedLines);
-
-	this.checkCommand = Utils.createCommand(this, Utils.emptyFunction, this.hasCheckedLines);
-
 	this.reloadCommand = Utils.createCommand(this, function () {
 		if (!RL.data().messageListCompleteLoadingThrottle())
 		{
@@ -11958,11 +11959,11 @@ function MailBoxMessageListViewModel()
 	
 	this.quotaTooltip = _.bind(this.quotaTooltip, this);
 	
-	this.selector = new Selector(this.messageList, this.currentFocusedMessage, this.currentMessage,
+	this.selector = new Selector(this.messageList, this.currentMessage,
 		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 			'.messageListItem.focused');
 
-	this.selector.on('onItemSelect', _.bind(function (oMessage, bClick) {
+	this.selector.on('onItemSelect', _.bind(function (oMessage) {
 		if (oMessage)
 		{
 			oData.message(oData.staticMessageList.populateByMessageListItem(oMessage));
@@ -11972,10 +11973,6 @@ function MailBoxMessageListViewModel()
 			{
 				kn.setHash(RL.link().messagePreview(), true);
 				oData.message.focused(true);
-			}
-			else if (bClick)
-			{
-				oData.message.focused(false);
 			}
 		}
 		else
@@ -12687,6 +12684,7 @@ function MailBoxMessageViewViewModel()
 
 	this.keyScope = oData.keyScope;
 	this.message = oData.message;
+	this.currentMessage = oData.currentMessage;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
 	this.messagesBodiesDom = oData.messagesBodiesDom;
@@ -12705,6 +12703,13 @@ function MailBoxMessageViewViewModel()
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
+	}, this);
+
+	this.message.subscribe(function (oMessage) {
+		if (!oMessage && this.currentMessage())
+		{
+			this.currentMessage(null);
+		}
 	}, this);
 	
 	this.canBeRepliedOrForwarded = this.messageVisibility;
@@ -15030,18 +15035,10 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
-	this.currentFocusedMessage = ko.observable(null);
-
-	this.message.subscribe(function (oMessage) {
-		if (null === oMessage)
-		{
-			this.currentMessage(null);
-		}
-	}, this);
 
 	this.messageListChecked = ko.computed(function () {
-		return _.filter(this.messageList(), function (oMessage) {
-			return oMessage.checked();
+		return _.filter(this.messageList(), function (oItem) {
+			return oItem.checked();
 		});
 	}, this);
 
@@ -15054,21 +15051,6 @@ function WebMailDataStorage()
 
 		return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
 
-	}, this);
-
-	this.messageListCheckedUids = ko.computed(function () {
-		var aList = [];
-		_.each(this.messageListChecked(), function (oMessage) {
-			if (oMessage)
-			{
-				aList.push(oMessage.uid);
-				if (0 < oMessage.threadsLen() && 0 === oMessage.parentUid() && oMessage.lastInCollapsedThread())
-				{
-					aList = _.union(aList, oMessage.threads());
-				}
-			}
-		});
-		return aList;
 	}, this);
 
 	this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
@@ -15107,17 +15089,13 @@ function WebMailDataStorage()
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
-	this.openpgpkeysPublic = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
+		return !!(oItem && !oItem.isPrivate);
+	});
 
-	this.openpgpkeysPrivate = ko.computed(function () {
-		return _.filter(this.openpgpkeys(), function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-	}, this);
+	this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
+		return !!(oItem && oItem.isPrivate);
+	});
 
 	// google
 	this.googleActions = ko.observable(false);
@@ -15569,28 +15547,28 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		}
 		else
 		{
-			// select next message
-			if (bMoveSelected)
-			{
-				_.each(aMessageList, function (oMessage) {
-					if (!oNextMessage && oMessage)
-					{
-						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
-						{
-							oNextMessage = oMessage;
-						}
-						else if (!bGetNext && oMessage.selected())
-						{
-							bGetNext = true;
-						}
-					}
-				});
-
-				if (oNextMessage)
-				{
-					this.currentMessage(oNextMessage);
-				}
-			}
+			// select next message // TODO
+//			if (bMoveSelected)
+//			{
+//				_.each(aMessageList, function (oMessage) {
+//					if (!oNextMessage && oMessage)
+//					{
+//						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
+//						{
+//							oNextMessage = oMessage;
+//						}
+//						else if (!bGetNext && oMessage.selected())
+//						{
+//							bGetNext = true;
+//						}
+//					}
+//				});
+//
+//				if (oNextMessage)
+//				{
+//					this.currentMessage(oNextMessage);
+//				}
+//			}
 
 			oData.messageListIsNotCompleted(true);
 			
@@ -15781,6 +15759,17 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 	}
 };
 
+/**
+ * @param {Array} aList
+ * @returns {string}
+ */
+WebMailDataStorage.prototype.calculateMessageListHash = function (aList)
+{
+	return _.map(aList, function (oMessage) {
+		return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
+	}).join('|');
+};
+
 WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 {
 	if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
@@ -15794,6 +15783,7 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			iLen = 0,
 			iCount = 0,
 			iOffset = 0,
+			aPrevList = [],
 			aList = [],
 			iUtc = moment().unix(),
 			aStaticList = oRainLoopData.staticMessageList,
@@ -15887,14 +15877,25 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 		oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 		oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
 
-		oRainLoopData.messageList(aList);
+		aPrevList = oRainLoopData.messageList();
+		if (aPrevList.length !== aList.length)
+		{
+			oRainLoopData.messageList(aList);
+		}
+		else if (this.calculateMessageListHash(aPrevList) !== this.calculateMessageListHash(aList))
+		{
+			oRainLoopData.messageList(aList);
+		}
+
+		aPrevList = [];
 		oRainLoopData.messageListIsNotCompleted(false);
 
 		oMessage = oRainLoopData.message();
-		if (oMessage && oRainLoopData.messageList.setSelectedByUid)
-		{
-			oRainLoopData.messageList.setSelectedByUid(oMessage.generateUid());
-		}
+		// TODO
+//		if (oMessage && oRainLoopData.messageList.setSelectedByUid)
+//		{
+//			oRainLoopData.messageList.setSelectedByUid(oMessage.generateUid());
+//		}
 
 		if (aStaticList.length < aList.length)
 		{

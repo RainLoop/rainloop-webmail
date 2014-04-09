@@ -3,34 +3,60 @@
 /**
  * @constructor
  * @param {koProperty} oKoList
- * @param {koProperty} oKoFocusedItem
  * @param {koProperty} oKoSelectedItem
  * @param {string} sItemSelector
  * @param {string} sItemSelectedSelector
  * @param {string} sItemCheckedSelector
  * @param {string} sItemFocusedSelector
  */
-function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
+function Selector(oKoList, oKoSelectedItem,
 	sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 {
 	this.list = oKoList;
 	
-	this.focusedItem = oKoFocusedItem;
+	this.listChecked = ko.computed(function () {
+		return _.filter(this.list(), function (oItem) {
+			return oItem.checked();
+		});
+	}, this);
+
+	this.isListChecked = ko.computed(function () {
+		return 0 < this.listChecked().length;
+	}, this);
+	
+	this.lastSelectedItem = ko.observable(null);
+	this.focusedItem = ko.observable(null);
 	this.selectedItem = oKoSelectedItem;
 
-	this.focusedItem.extend({'toggleSubscribe': [null,
-		function (oPrev) {
-			if (oPrev)
+	this.listChecked.subscribe(function (aItems) {
+		if (0 < aItems.length)
+		{
+			this.selectedItem(null);
+		}
+		else if (this.bAutoSelect && this.lastSelectedItem())
+		{
+			this.selectedItem(this.lastSelectedItem());
+		}
+	}, this);
+	
+	this.selectedItem.subscribe(function (oItem) {
+
+		if (oItem)
+		{
+			if (this.bAutoSelect)
 			{
-				oPrev.focused(false);
+				this.lastSelectedItem(oItem);
 			}
-		}, function (oNext) {
-			if (oNext)
+			
+			if (this.isListChecked())
 			{
-				oNext.focused(true);
+				_.each(this.listChecked(), function (oSubItem) {
+					oSubItem.checked(false);
+				});
 			}
 		}
-	]});
+
+	}, this);
 
 	this.selectedItem.extend({'toggleSubscribe': [null,
 		function (oPrev) {
@@ -42,6 +68,20 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 			if (oNext)
 			{
 				oNext.selected(true);
+			}
+		}
+	]});
+
+	this.focusedItem.extend({'toggleSubscribe': [null,
+		function (oPrev) {
+			if (oPrev)
+			{
+				oPrev.focused(false);
+			}
+		}, function (oNext) {
+			if (oNext)
+			{
+				oNext.focused(true);
 			}
 		}
 	]});
@@ -77,8 +117,7 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 		{
 			if (oItem)
 			{
-				this.selectItemCallbacks(oItem, !!oItem.__clicked);
-				oItem.__clicked = false;
+				this.selectItemCallbacks(oItem);
 			}
 			else
 			{
@@ -96,25 +135,33 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 	}, this);
 
 	var
-		self = this,
 		aCheckedCache = [],
+		mFocused = null,
 		mSelected = null
 	;
 	
 	this.list.subscribe(function () {
+
 		var self = this, aItems = this.list();
 		if (Utils.isArray(aItems))
 		{
 			_.each(aItems, function (oItem) {
+
 				if (oItem.checked())
 				{
 					aCheckedCache.push(self.getItemUid(oItem));
 				}
 				
+				if (null === mFocused && oItem.focused())
+				{
+					mFocused = self.getItemUid(oItem);
+				}
+
 				if (null === mSelected && oItem.selected())
 				{
 					mSelected = self.getItemUid(oItem);
 				}
+
 			});
 		}
 	}, this, 'beforeChange');
@@ -125,12 +172,12 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 
 		var
 			self = this,
-			iLen = 0,
-			sFocusedUid = this.focusedItem() ? this.getItemUid(this.focusedItem()) : ''
+			bChecked = false,
+			iLen = 0
 		;
 		
-		this.selectedItem(null);
 		this.focusedItem(null);
+		this.selectedItem(null);
 
 		if (Utils.isArray(aItems))
 		{
@@ -139,25 +186,23 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 			_.each(aItems, function (oItem) {
 				
 				var sUid = self.getItemUid(oItem);
-
+				
 				if (0 < iLen && -1 < Utils.inArray(sUid, aCheckedCache))
 				{
+					bChecked = true;
 					oItem.checked(true);
 					iLen--;
 				}
 
-				if ('' !== sFocusedUid && sUid === sFocusedUid)
+				if (null !== mFocused && mFocused === sUid)
 				{
 					self.focusedItem(oItem);
+					mFocused = null;
 				}
 
-				if (null !== mSelected && mSelected === self.getItemUid(oItem))
+				if (!bChecked && null !== mSelected && mSelected === sUid)
 				{
-					if (!oItem.selected())
-					{
-						self.selectedItem(oItem);
-					}
-
+					self.selectedItem(oItem);
 					mSelected = null;
 				}
 			});
@@ -166,20 +211,17 @@ function Selector(oKoList, oKoFocusedItem, oKoSelectedItem,
 		this.useItemSelectCallback = true;
 		
 		aCheckedCache = [];
+		mFocused = null;
 		mSelected = null;
 		
 	}, this);
 
-	this.list.setSelectedByUid = function (sUid) {
-		self.selectByUid(sUid, false);
-	};
-
 	this.selectItemCallbacksThrottle = _.debounce(this.selectItemCallbacks, 300);
 }
 
-Selector.prototype.selectItemCallbacks = function (oItem, bClick)
+Selector.prototype.selectItemCallbacks = function (oItem)
 {
-	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem, bClick);
+	(this.oCallbacks['onItemSelect'] || this.emptyFunction)(oItem);
 };
 
 Selector.prototype.goDown = function (bForceSelect)
@@ -214,7 +256,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 			.on('click', this.sItemSelector, function (oEvent) {
 				self.actionClick(ko.dataFor(this), oEvent, true);
-				return false;
 			})
 			.on('click', this.sItemCheckedSelector, function (oEvent) {
 				var oItem = ko.dataFor(this);
@@ -227,15 +268,7 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 					else
 					{
 						self.sLastUid = self.getItemUid(oItem);
-						if (oItem.selected())
-						{
-							oItem.checked(false);
-							self.selectedItem(null);
-						}
-						else
-						{
-							oItem.checked(!oItem.checked());
-						}
+						oItem.checked(!oItem.checked());
 					}
 				}
 			})
@@ -300,25 +333,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			}
 		});
 	}
-};
-
-Selector.prototype.selectByUid = function (mUid, bUseCallback)
-{
-	bUseCallback = Utils.isUnd(bUseCallback) ? true : !!bUseCallback;
-	this.useItemSelectCallback = bUseCallback;
-
-	var 
-		oItem = _.find(this.list(), function (oItem) {
-			return mUid === this.getItemUid(oItem);
-		}, this)
-	;
-
-	if (oItem)
-	{
-		this.selectedItem(oItem);
-	}
-
-	this.useItemSelectCallback = true;
 };
 
 Selector.prototype.useKeyboard = function (bValue)
@@ -402,7 +416,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey, bForc
 							break;
 						case Enums.EventKeyCode.Down:
 						case Enums.EventKeyCode.Insert:
-						case Enums.EventKeyCode.Space:
+//						case Enums.EventKeyCode.Space:
 							if (bNext)
 							{
 								oResult = oItem;
@@ -476,7 +490,7 @@ Selector.prototype.newSelectPosition = function (iEventKeyCode, bShiftKey, bForc
 
 		this.focusedItem(oResult);
 
-		if ((this.bAutoSelect || !!bForceSelect) && Enums.EventKeyCode.Space !== iEventKeyCode)
+		if ((this.bAutoSelect || !!bForceSelect) && !this.isListChecked() && Enums.EventKeyCode.Space !== iEventKeyCode)
 		{
 			window.clearTimeout(this.iSelectTimer);
 			this.iSelectTimer = window.setTimeout(function () {
@@ -586,9 +600,8 @@ Selector.prototype.eventClickFunction = function (oItem, oEvent)
 /**
  * @param {Object} oItem
  * @param {Object=} oEvent
- * @param {boolean=} bRealClick
  */
-Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
+Selector.prototype.actionClick = function (oItem, oEvent)
 {
 	if (oItem)
 	{
@@ -608,7 +621,6 @@ Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
 				}
 
 				oItem.checked(!oItem.checked());
-				
 				this.eventClickFunction(oItem, oEvent);
 			}
 			else if (oEvent.ctrlKey)
@@ -622,11 +634,6 @@ Selector.prototype.actionClick = function (oItem, oEvent, bRealClick)
 
 		if (bClick)
 		{
-			if (bRealClick)
-			{
-				oItem.__clicked = true;
-			}
-
 			this.selectedItem(oItem);
 		}
 	}

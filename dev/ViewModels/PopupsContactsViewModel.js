@@ -35,7 +35,6 @@ function PopupsContactsViewModel()
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	
 	this.currentContact = ko.observable(null);
-	this.currentFocusedContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
 
@@ -162,7 +161,7 @@ function PopupsContactsViewModel()
 		});
 	}, this);
 
-	this.selector = new Selector(this.contacts, this.currentFocusedContact, this.currentContact,
+	this.selector = new Selector(this.contacts, this.currentContact,
 		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
 			'.e-contact-item.focused');
 
@@ -565,10 +564,10 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self.viewClearSearch('' !== self.search());
 		self.contacts.loading(false);
 
-		if ('' !== self.viewID() && !self.currentContact() && self.contacts.setSelectedByUid)
-		{
-			self.contacts.setSelectedByUid('' + self.viewID());
-		}
+//		if ('' !== self.viewID() && !self.currentContact() && self.contacts.setSelectedByUid)
+//		{
+//			self.contacts.setSelectedByUid('' + self.viewID());
+//		}
 
 	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };

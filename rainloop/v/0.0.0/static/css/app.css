@@ -6844,7 +6844,7 @@ html.rl-no-preview-pane .messageList.message-selected {
   height: 100%;
 }
 .messageList .b-content .messageListItem.focused .sidebarParent {
-  background-color: #aaa !important;
+  background-color: #bbb !important;
 }
 .messageList .b-content .messageListItem.e-single-line {
   height: 35px;
@@ -7079,8 +7079,7 @@ html.rl-no-preview-pane .messageList.message-selected {
   opacity: 0.97;
   filter: alpha(opacity=97);
 }
-.messageList.hideMessageListCheckbox .checkedParent,
-.messageList.hideMessageListCheckbox .checkboxCkeckAll {
+.messageList.hideMessageListCheckbox .checkedParent {
   display: none !important;
 }
 .messageList.hideMessageListCheckbox .sidebarParent {
@@ -7617,7 +7616,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   height: 100%;
 }
 .b-contacts-content.modal .b-list-content .e-contact-item.focused .sidebarParent {
-  background-color: #aaa;
+  background-color: #bbb;
 }
 .b-contacts-content.modal .b-list-content .e-contact-item.deleted {
   max-height: 0px;

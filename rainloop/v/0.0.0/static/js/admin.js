@@ -6419,23 +6419,17 @@ function AdminPackages()
 	this.packagesReal = oData.packagesReal;
 	this.packagesMainUpdatable = oData.packagesMainUpdatable;
 
-	this.packagesCurrent = ko.computed(function () {
-		return _.filter(this.packages(), function (oItem) {
-			return oItem && '' !== oItem['installed'] && !oItem['compare'];
-		});
-	}, this);
-	
-	this.packagesAvailableForUpdate = ko.computed(function () {
-		return _.filter(this.packages(), function (oItem) {
-			return oItem && '' !== oItem['installed'] && !!oItem['compare'];
-		});
-	}, this);
-	
-	this.packagesAvailableForInstallation = ko.computed(function () {
-		return _.filter(this.packages(), function (oItem) {
-			return oItem && '' === oItem['installed'];
-		});
-	}, this);
+	this.packagesCurrent = this.packages.filter(function (oItem) {
+		return oItem && '' !== oItem['installed'] && !oItem['compare'];
+	});
+
+	this.packagesAvailableForUpdate = this.packages.filter(function (oItem) {
+		return oItem && '' !== oItem['installed'] && !!oItem['compare'];
+	});
+
+	this.packagesAvailableForInstallation = this.packages.filter(function (oItem) {
+		return oItem && '' === oItem['installed'];
+	});
 	
 	this.visibility = ko.computed(function () {
 		return oData.packagesLoading() ? 'visible' : 'hidden';

@@ -1184,3 +1184,12 @@ MessageModel.prototype.replacePlaneTextBody = function (sPlain)
 		this.body.html(sPlain).addClass('b-text-part plain');
 	}
 };
+
+/**
+ * @return {string}
+ */
+MessageModel.prototype.flagHash = function ()
+{
+	return [this.deleted(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
+		this.isReadReceipt()].join('');
+};
