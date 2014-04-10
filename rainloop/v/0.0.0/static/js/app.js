@@ -4554,7 +4554,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 		
 		if (oEvent)
 		{
-			if (oEvent.shiftKey)
+			if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
 			{
 				bClick = false;
 				if ('' === this.sLastUid)
@@ -4567,10 +4567,16 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 				
 				this.focusedItem(oItem);
 			}
-			else if (oEvent.ctrlKey)
+			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
 			{
 				bClick = false;
 				this.focusedItem(oItem);
+
+				if (this.selectedItem() && oItem !== this.selectedItem())
+				{
+					this.selectedItem().checked(true);
+				}
+
 				oItem.checked(!oItem.checked());
 			}
 		}
@@ -15034,7 +15040,8 @@ function WebMailDataStorage()
 			this.message.focused(false);
 			this.hideMessageBodies();
 
-			if (Enums.Layout.NoPreview === RL.data().layout())
+			if (Enums.Layout.NoPreview === RL.data().layout() &&
+				-1 < window.location.hash.indexOf('message-preview'))
 			{
 				RL.historyBack();
 			}
@@ -17652,12 +17659,10 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 {
 	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
-		_.delay(function () {
-			if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
-			{
-				RL.historyBack();
-			}
-		}, 5);
+		if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
+		{
+			RL.historyBack();
+		}
 	}
 	else
 	{

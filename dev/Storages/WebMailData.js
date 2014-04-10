@@ -264,7 +264,8 @@ function WebMailDataStorage()
 			this.message.focused(false);
 			this.hideMessageBodies();
 
-			if (Enums.Layout.NoPreview === RL.data().layout())
+			if (Enums.Layout.NoPreview === RL.data().layout() &&
+				-1 < window.location.hash.indexOf('message-preview'))
 			{
 				RL.historyBack();
 			}

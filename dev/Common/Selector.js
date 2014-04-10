@@ -652,7 +652,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 		
 		if (oEvent)
 		{
-			if (oEvent.shiftKey)
+			if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
 			{
 				bClick = false;
 				if ('' === this.sLastUid)
@@ -665,10 +665,16 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 				
 				this.focusedItem(oItem);
 			}
-			else if (oEvent.ctrlKey)
+			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
 			{
 				bClick = false;
 				this.focusedItem(oItem);
+
+				if (this.selectedItem() && oItem !== this.selectedItem())
+				{
+					this.selectedItem().checked(true);
+				}
+
 				oItem.checked(!oItem.checked());
 			}
 		}
