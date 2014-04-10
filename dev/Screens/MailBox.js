@@ -55,10 +55,12 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 {
 	if (Utils.isUnd(bPreview) ? false : !!bPreview)
 	{
-		if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
-		{
-			RL.historyBack();
-		}
+		_.delay(function () {
+			if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
+			{
+				RL.historyBack();
+			}
+		}, 5);
 	}
 	else
 	{

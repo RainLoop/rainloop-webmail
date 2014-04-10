@@ -6844,7 +6844,7 @@ html.rl-no-preview-pane .messageList.message-selected {
   height: 100%;
 }
 .messageList .b-content .messageListItem.focused .sidebarParent {
-  background-color: #bbb !important;
+  background-color: #ccc !important;
 }
 .messageList .b-content .messageListItem.e-single-line {
   height: 35px;
@@ -7045,9 +7045,6 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .b-content .messageListItem.selected .sidebarParent {
   background-color: #398CF2 !important;
 }
-.messageList .b-content .messageListItem.selected.focused .sidebarParent {
-  background-color: #217ef0 !important;
-}
 .messageList .b-content .messageListItem.selected .delimiter {
   background-color: #398CF2;
   opacity: 0.2;
@@ -7136,6 +7133,19 @@ html.rl-no-preview-pane .messageView.message-selected {
   -moz-border-radius-bottomright: 3px;
   border-bottom-right-radius: 3px;
   background-color: #fff;
+}
+.messageView .b-content .b-message-view-checked-helper {
+  text-align: center;
+  font-size: 70px;
+  line-height: 70px;
+  padding-top: 140px;
+  color: #999;
+}
+.messageView .b-content .b-message-view-checked-helper .icon-mail {
+  font-size: 100px;
+  font-size: 50px;
+  line-height: 90px;
+  padding-left: 10px;
 }
 .messageView .b-content .b-message-view-desc {
   text-align: center;

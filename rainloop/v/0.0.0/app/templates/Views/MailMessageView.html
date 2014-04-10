@@ -123,7 +123,11 @@
 		</div>
 		<div class="b-content thm-message-view-background-color">
 			<div>
-				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError()">
+				<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
+					<span data-bind="text: messageListChecked().length"></span>
+					<i class="icon-mail"></i>
+				</div>
+				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 					<span class="i18n" data-i18n-text="MESSAGE/MESSAGE_VIEW_DESC"></span>
 				</div>
 				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">

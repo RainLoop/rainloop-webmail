@@ -192,7 +192,7 @@ function WebMailDataStorage()
 	// message list
 	this.staticMessageList = [];
 
-	this.messageList = ko.observableArray([]);
+	this.messageList = ko.observableArray([]).extend({'rateLimit': 0});
 
 	this.messageListCount = ko.observable(0);
 	this.messageListSearch = ko.observable('');
@@ -263,6 +263,11 @@ function WebMailDataStorage()
 		{
 			this.message.focused(false);
 			this.hideMessageBodies();
+
+			if (Enums.Layout.NoPreview === RL.data().layout())
+			{
+				RL.historyBack();
+			}
 		}
 		else if (Enums.Layout.NoPreview === this.layout())
 		{
@@ -298,12 +303,16 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
-
+	
 	this.messageListChecked = ko.computed(function () {
 		return _.filter(this.messageList(), function (oItem) {
 			return oItem.checked();
 		});
-	}, this);
+	}, this).extend({'rateLimit': 0});
+	
+	this.hasCheckedMessages = ko.computed(function () {
+		return 0 < this.messageListChecked().length;
+	}, this).extend({'rateLimit': 0});
 
 	this.messageListCheckedOrSelected = ko.computed(function () {
 
@@ -752,9 +761,6 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		iUnseenCount = 0,
 		oData = RL.data(),
 		oCache = RL.cache(),
-		bMoveSelected = false,
-		bGetNext = false,
-		oNextMessage = null,
 		aMessageList = oData.messageList(),
 		oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
 		oToFolder = '' === sToFolderFullNameRaw ? null : oCache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
@@ -769,11 +775,6 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		if (oMessage && oMessage.unseen())
 		{
 			iUnseenCount++;
-		}
-
-		if (oMessage.selected())
-		{
-			bMoveSelected = true;
 		}
 	});
 
@@ -810,29 +811,6 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		}
 		else
 		{
-			// select next message // TODO
-//			if (bMoveSelected)
-//			{
-//				_.each(aMessageList, function (oMessage) {
-//					if (!oNextMessage && oMessage)
-//					{
-//						if (bGetNext && !oMessage.checked() && !oMessage.deleted() && !oMessage.selected())
-//						{
-//							oNextMessage = oMessage;
-//						}
-//						else if (!bGetNext && oMessage.selected())
-//						{
-//							bGetNext = true;
-//						}
-//					}
-//				});
-//
-//				if (oNextMessage)
-//				{
-//					this.currentMessage(oNextMessage);
-//				}
-//			}
-
 			oData.messageListIsNotCompleted(true);
 			
 			_.each(aMessages, function (oMessage) {
@@ -1046,7 +1024,6 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 			iLen = 0,
 			iCount = 0,
 			iOffset = 0,
-			aPrevList = [],
 			aList = [],
 			iUtc = moment().unix(),
 			aStaticList = oRainLoopData.staticMessageList,
@@ -1140,25 +1117,8 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 		oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 		oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
 
-		aPrevList = oRainLoopData.messageList();
-		if (aPrevList.length !== aList.length)
-		{
-			oRainLoopData.messageList(aList);
-		}
-		else if (this.calculateMessageListHash(aPrevList) !== this.calculateMessageListHash(aList))
-		{
-			oRainLoopData.messageList(aList);
-		}
-
-		aPrevList = [];
+		oRainLoopData.messageList(aList);
 		oRainLoopData.messageListIsNotCompleted(false);
-
-		oMessage = oRainLoopData.message();
-		// TODO
-//		if (oMessage && oRainLoopData.messageList.setSelectedByUid)
-//		{
-//			oRainLoopData.messageList.setSelectedByUid(oMessage.generateUid());
-//		}
 
 		if (aStaticList.length < aList.length)
 		{

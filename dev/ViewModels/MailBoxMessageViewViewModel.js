@@ -24,6 +24,8 @@ function MailBoxMessageViewViewModel()
 	this.keyScope = oData.keyScope;
 	this.message = oData.message;
 	this.currentMessage = oData.currentMessage;
+	this.messageListChecked = oData.messageListChecked;
+	this.hasCheckedMessages = oData.hasCheckedMessages;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
 	this.messagesBodiesDom = oData.messagesBodiesDom;
@@ -38,31 +40,24 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
-	this.messageDomFocused = ko.observable(false);
+	this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
 
 	this.messageVisibility = ko.computed(function () {
 		return !this.messageLoadingThrottle() && !!this.message();
 	}, this);
 
 	this.message.subscribe(function (oMessage) {
-		if (!oMessage && this.currentMessage())
+		if (!oMessage)
 		{
 			this.currentMessage(null);
 		}
 	}, this);
-	
+
 	this.canBeRepliedOrForwarded = this.messageVisibility;
 
 	// commands
 	this.closeMessage = Utils.createCommand(this, function () {
-		if (Enums.Layout.NoPreview === oData.layout())
-		{
-			RL.historyBack();
-		}
-		else
-		{
-			oData.message(null);
-		}
+		oData.message(null);
 	});
 
 	this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
@@ -138,7 +133,6 @@ function MailBoxMessageViewViewModel()
 		return this.message() ? this.message().pgpSignedVerifyUser() : '';
 	}, this);
 	
-
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
@@ -392,11 +386,7 @@ MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 		}
 		else
 		{
-			this.message.focused(false);
-			if (Enums.Layout.NoPreview === RL.data().layout())
-			{
-				RL.historyBack();
-			}
+			this.message(null);
 		}
 
 		return false;
