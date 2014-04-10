@@ -89,7 +89,8 @@
 				}
 			});
 
-			els.input = $('<input type="email" />');
+			els.input = $('<input type="text" />');
+//			els.input = $('<input type="email" />');
 			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
 			els.lastEdit = '';
@@ -136,6 +137,7 @@
 					},
 					source : this.options.autoCompleteSource,
 					minLength : 1,
+					autoFocus : true,
 					select : function(ev, ui){
 						ev.preventDefault();
 						widget.elements.input.val(ui.item.value);

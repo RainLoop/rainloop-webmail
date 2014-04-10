@@ -15,7 +15,7 @@
 						&nbsp;&nbsp;
 						<span class="caret"></span>
 					</a>
-					<ul class="dropdown-menu g-ui-menu" data-bind="foreach: folderMenuForMove">
+					<ul class="dropdown-menu g-ui-menu" role="menu" data-bind="foreach: folderMenuForMove">
 						<li class="e-item" data-bind="css: { 'disable': disable }, click: function () { if (!disable) $root.moveSelectedMessagesToFolder(id); }">
 							<a class="e-link" data-bind="text: name"></a>
 						</li>
@@ -39,7 +39,7 @@
 					<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown" data-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list"></i>
 					</a>
-					<ul class="dropdown-menu g-ui-menu">
+					<ul class="dropdown-menu g-ui-menu" role="menu">
 						<li class="e-item" data-bind="click: listUnsetSeen, css: {'disable': !hasCheckedOrSelectedLines()}">
 							<a class="e-link">
 								<i class="icon-none"></i>

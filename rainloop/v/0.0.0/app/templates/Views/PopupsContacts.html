@@ -16,7 +16,7 @@
 					<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
 						<i data-bind="css: {'icon-list': !contacts.importing(), 'icon-spinner animated': contacts.importing()}"></i>
 					</a>
-					<ul class="dropdown-menu g-ui-menu">
+					<ul class="dropdown-menu g-ui-menu" role="menu">
 						<li class="e-item">
 							<a class="e-link" data-bind="initDom: importUploaderButton">
 								<i class="icon-list-add"></i>
@@ -154,7 +154,7 @@
 										&nbsp;&nbsp;
 										<span class="caret"></span>
 									</a>
-									<ul class="dropdown-menu g-ui-menu">
+									<ul class="dropdown-menu g-ui-menu" role="menu">
 										<li class="e-item" data-bind="css: {'selected': shareToNone}">
 											<a class="e-link" data-bind="click: setShareToNone">
 												<i class="icon-none"></i>
