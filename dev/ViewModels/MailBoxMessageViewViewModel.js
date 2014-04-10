@@ -498,6 +498,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			{
 				self.deleteCommand();
 			}
+			
 			return false;
 		}
 	});

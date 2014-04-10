@@ -3930,7 +3930,7 @@ function Selector(oKoList, oKoSelectedItem,
 	this.selectedItem = oKoSelectedItem;
 	this.selectedItemUseCallback = true;
 	
-	this.itemSelectedTrottle = _.throttle(_.bind(this.itemSelected, this), 300);
+	this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
 
 	this.listChecked.subscribe(function (aItems) {
 		if (0 < aItems.length)
@@ -3963,7 +3963,7 @@ function Selector(oKoList, oKoSelectedItem,
 
 			if (this.selectedItemUseCallback)
 			{
-				this.itemSelectedTrottle(oItem);
+				this.itemSelectedThrottle(oItem);
 			}
 		}
 		else if (this.selectedItemUseCallback)
@@ -13201,6 +13201,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			{
 				self.deleteCommand();
 			}
+			
 			return false;
 		}
 	});

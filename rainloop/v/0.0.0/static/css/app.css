@@ -7076,7 +7076,8 @@ html.rl-no-preview-pane .messageList.message-selected {
   opacity: 0.97;
   filter: alpha(opacity=97);
 }
-.messageList.hideMessageListCheckbox .checkedParent {
+.messageList.hideMessageListCheckbox .checkedParent,
+.messageList.hideMessageListCheckbox .checkboxCkeckAll {
   display: none !important;
 }
 .messageList.hideMessageListCheckbox .sidebarParent {
