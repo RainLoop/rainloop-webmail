@@ -476,7 +476,7 @@ module.exports = function (grunt) {
 	// ---
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
-	grunt.registerTask('build', ['default', 'rlmin', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clear']);
+	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clear']);
 	grunt.registerTask('fast', ['less', 'concat']);
 
 	// aliases

@@ -31,19 +31,19 @@
 						<label class="i18n control-label" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"></label>
 						<div class="controls">
 							<input class="inputPassword input-large" type="password" autocomplete="off"
-								data-bind="value: password, hasfocus: password.focus" />
+								data-bind="value: password, hasfocus: password.focus, onEnter: doCommand" />
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a class="btn buttonDo" data-bind="command: doCommand">
+				<button class="btn buttonDo" data-bind="command: doCommand, hasfocus: buttonFocus">
 					<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
 					<span class="i18n" data-bind="visible: !sign() && encrypt()" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
 					<span class="i18n" data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
-				</a>
+				</button>
 			</div>
 		</div>
 	</div>

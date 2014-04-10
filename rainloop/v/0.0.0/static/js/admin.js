@@ -377,6 +377,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
 };
 

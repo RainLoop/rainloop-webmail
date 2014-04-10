@@ -381,6 +381,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
 };
 
@@ -10722,7 +10723,8 @@ function PopupsComposeOpenPgpViewModel()
 	this.encrypt = ko.observable(true);
 
 	this.password = ko.observable('');
-	this.password.focus = ko.observable(true);
+	this.password.focus = ko.observable(false);
+	this.buttonFocus = ko.observable(false);
 
 	this.from = ko.observable('');
 	this.to = ko.observableArray([]);
@@ -10837,6 +10839,8 @@ function PopupsComposeOpenPgpViewModel()
 		return !this.submitRequest() &&	(this.sign() || this.encrypt());
 	});
 
+	this.sDefaultKeyScope = Enums.KeyState.PopupComposeOpenPGP;
+
 	Knoin.constructorEnd(this);
 }
 
@@ -10848,6 +10852,7 @@ PopupsComposeOpenPgpViewModel.prototype.clearPopup = function ()
 
 	this.password('');
 	this.password.focus(false);
+	this.buttonFocus(false);
 
 	this.from('');
 	this.to([]);
@@ -10858,9 +10863,40 @@ PopupsComposeOpenPgpViewModel.prototype.clearPopup = function ()
 	this.resultCallback = null;
 };
 
+PopupsComposeOpenPgpViewModel.prototype.onBuild = function ()
+{
+	key('tab,shift+tab', Enums.KeyState.PopupComposeOpenPGP, _.bind(function () {
+
+		switch (true)
+		{
+			case this.password.focus():
+				this.buttonFocus(true);
+				break;
+			case this.buttonFocus():
+				this.password.focus(true);
+				break;
+		}
+
+		return false;
+		
+	}, this));
+};
+
 PopupsComposeOpenPgpViewModel.prototype.onHide = function ()
 {
 	this.clearPopup();
+};
+
+PopupsComposeOpenPgpViewModel.prototype.onFocus = function ()
+{
+	if (this.sign())
+	{
+		this.password.focus(true);
+	}
+	else
+	{
+		this.buttonFocus(true);
+	}
 };
 
 PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFromEmail, sTo, sCc, sBcc)
