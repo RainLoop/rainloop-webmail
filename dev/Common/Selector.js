@@ -320,6 +320,7 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 		;
 
+// TODO
 		key('enter', sKeyScope, function () {
 			if (self.focusedItem())
 			{

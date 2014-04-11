@@ -5861,8 +5861,9 @@ html.no-rgba .modal {
   cursor: pointer;
 }
 .g-ui-menu .e-item.selected > .e-link {
-  background-color: #eee;
+  background-color: #eee !important;
 }
+.g-ui-menu .e-item > .e-link:focus,
 .g-ui-menu .e-item > .e-link:hover {
   background-color: #555;
   background-image: none;

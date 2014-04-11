@@ -10,17 +10,19 @@
 				&nbsp;&nbsp;&nbsp;
 			</div>-->
 			<div class="btn-group pull-right">
-				<a class="btn btn-ellipsis btn-block dropdown-toggle system-dropdown" data-placement="left" data-toggle="dropdown"
-				   data-tooltip-class="tooltip-big" data-bind="tooltip2: emailTitle">
+				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn btn-ellipsis btn-block dropdown-toggle system-dropdown"
+					data-placement="left" data-toggle="dropdown"
+					data-tooltip-class="tooltip-big" data-bind="tooltip2: emailTitle, hasfocus: accountMenuFocus">
+
 					<i data-bind="css: {'icon-user': !loading(), 'icon-spinner animated': loading()}"></i>
 					&nbsp;&nbsp;
 					<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu g-ui-menu" role="menu">
+				<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 					<!-- ko if: accounts().length -->
 					<!-- ko foreach: accounts -->
-						<li class="e-item">
-							<a class="e-link" data-bind="click: $root.accountClick, attr: {'href': changeAccountLink() }">
+						<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" data-bind="click: $root.accountClick, attr: {'href': changeAccountLink() }">
 								<i class="icon-ok" data-bind="visible: $root.accountEmail() === email"></i>
 								<i class="icon-user" data-bind="visible: $root.accountEmail() !== email"></i>
 								&nbsp;&nbsp;
@@ -28,28 +30,28 @@
 							</a>
 						</li>
 					<!-- /ko -->
-					<li class="divider"></li>
+					<li class="divider" role="presentation"></li>
 					<!-- /ko -->
 					<!-- ko if: allowAddAccount -->
-					<li class="e-item">
-						<a class="e-link" data-bind="click: addAccountClick">
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">
 							<i class="icon-user-add"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n-text="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
 						</a>
 					</li>
 					<!-- /ko -->
-					<li class="e-item">
-						<a class="e-link" data-bind="click: settingsClick">
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsClick">
 							<i class="icon-cog"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n-text="TOP_TOOLBAR/BUTTON_SETTINGS"></span>
 						</a>
 					</li>
 
-					<li class="divider"></li>
-					<li class="e-item">
-						<a class="e-link" data-bind="click: logoutClick">
+					<li class="divider" role="presentation"></li>
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: logoutClick">
 							<i class="icon-power"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n-text="TOP_TOOLBAR/BUTTON_LOGOUT"></span>

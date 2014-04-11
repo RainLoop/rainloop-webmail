@@ -126,6 +126,15 @@ ko.bindingHandlers.onEsc = {
 	}
 };
 
+ko.bindingHandlers.clickOnTrue = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			$(oElement).click();
+		}
+	}
+};
+
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
 		$(oElement).toggleClass('fade', !Globals.bMobileDevice) .modal({

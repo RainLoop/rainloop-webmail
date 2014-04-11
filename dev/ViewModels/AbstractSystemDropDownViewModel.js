@@ -13,6 +13,8 @@ function AbstractSystemDropDownViewModel()
 	this.accounts = oData.accounts;
 	this.accountEmail = oData.accountEmail;
 	this.accountsLoading = oData.accountsLoading;
+	this.accountMenuFocus = oData.accountMenuFocus;
+	
 	this.allowAddAccount = RL.settingsGet('AllowAdditionalAccounts');
 
 	this.loading = ko.computed(function () {
@@ -20,6 +22,14 @@ function AbstractSystemDropDownViewModel()
 	}, this);
 
 	this.accountClick = _.bind(this.accountClick, this);
+
+	key('`', function () {
+		if (oData.useKeyboardShortcuts() && !RL.popupVisibility() &&
+			!oData.accountMenuFocus())
+		{
+			oData.accountMenuFocus(true);
+		}
+	});
 }
 
 _.extend(AbstractSystemDropDownViewModel.prototype, KnoinAbstractViewModel.prototype);

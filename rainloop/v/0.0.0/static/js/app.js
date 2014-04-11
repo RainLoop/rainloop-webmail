@@ -381,6 +381,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
 };
@@ -2768,6 +2769,15 @@ ko.bindingHandlers.onEsc = {
 	}
 };
 
+ko.bindingHandlers.clickOnTrue = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			$(oElement).click();
+		}
+	}
+};
+
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
 		$(oElement).toggleClass('fade', !Globals.bMobileDevice) .modal({
@@ -4223,6 +4233,7 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 		;
 
+// TODO
 		key('enter', sKeyScope, function () {
 			if (self.focusedItem())
 			{
@@ -11650,6 +11661,8 @@ function AbstractSystemDropDownViewModel()
 	this.accounts = oData.accounts;
 	this.accountEmail = oData.accountEmail;
 	this.accountsLoading = oData.accountsLoading;
+	this.accountMenuFocus = oData.accountMenuFocus;
+	
 	this.allowAddAccount = RL.settingsGet('AllowAdditionalAccounts');
 
 	this.loading = ko.computed(function () {
@@ -11657,6 +11670,14 @@ function AbstractSystemDropDownViewModel()
 	}, this);
 
 	this.accountClick = _.bind(this.accountClick, this);
+
+	key('`', function () {
+		if (oData.useKeyboardShortcuts() && !RL.popupVisibility() &&
+			!oData.accountMenuFocus())
+		{
+			oData.accountMenuFocus(true);
+		}
+	});
 }
 
 _.extend(AbstractSystemDropDownViewModel.prototype, KnoinAbstractViewModel.prototype);
@@ -14851,6 +14872,17 @@ function WebMailDataStorage()
 	this.projectHash = ko.observable('');
 	this.threading = ko.observable(false);
 
+	this.accountMenuFocus = ko.observable(false);
+	this.accountMenuFocus.sKeyState = Enums.KeyState.All;
+	
+	this.accountMenuFocus.subscribe(function (bValue) {
+		if (bValue)
+		{
+			this.accountMenuFocus.sKeyState = RL.data().keyScope();
+		}
+		RL.data().keyScope(bValue ? Enums.KeyState.Menu : this.accountMenuFocus.sKeyState);
+	}, this);
+
 	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
 
@@ -15091,7 +15123,7 @@ function WebMailDataStorage()
 	this.message.focused.subscribe(function (bValue) {
 		RL.data().keyScope(bValue ? Enums.KeyState.MessageView : Enums.KeyState.MessageList);
 	});
-
+	
 	this.messageLoading.subscribe(function (bValue) {
 		this.messageLoadingThrottle(bValue);
 	}, this);

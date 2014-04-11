@@ -377,6 +377,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
 };
@@ -2761,6 +2762,15 @@ ko.bindingHandlers.onEsc = {
 				fValueAccessor().call(oViewModel);
 			}
 		});
+	}
+};
+
+ko.bindingHandlers.clickOnTrue = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			$(oElement).click();
+		}
 	}
 };
 
