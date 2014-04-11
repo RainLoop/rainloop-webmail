@@ -823,6 +823,37 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
+	public function ServiceCpanelAutoLogin()
+	{
+		$oException = null;
+		$oAccount = null;
+
+		$sEmail = $this->oHttp->GetEnv('REMOTE_USER', '');
+		$sLogin = '';
+		$sPassword = $this->oHttp->GetEnv('REMOTE_PASSWORD', '');
+
+		if (0 < \strlen($sEmail) && 0 < \strlen(\trim($sPassword)))
+		{
+			try
+			{
+				$this->oActions->Logger()->AddSecret($sPassword);
+
+				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
+				$this->oActions->AuthProcess($oAccount);
+			}
+			catch (\Exception $oException)
+			{
+				$this->oActions->Logger()->WriteException($oException);
+			}
+		}
+
+		$this->oActions->Location('./');
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function ServiceExternalLogin()
 	{
 		$oException = null;
