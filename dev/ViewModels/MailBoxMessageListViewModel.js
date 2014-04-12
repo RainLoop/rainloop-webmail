@@ -42,6 +42,9 @@ function MailBoxMessageListViewModel()
 	this.userUsageSize = oData.userUsageSize;
 	this.userUsageProc = oData.userUsageProc;
 
+	this.moveDropdownTrigger = ko.observable(false);
+	this.moreDropdownTrigger = ko.observable(false);
+
 	// append drag and drop
 	this.dragOver = ko.observable(false).extend({'throttle': 1});
 	this.dragOverEnter = ko.observable(false).extend({'throttle': 1});
@@ -518,7 +521,7 @@ MailBoxMessageListViewModel.prototype.flagMessages = function (oCurrentMessage)
 	}
 };
 
-MailBoxMessageListViewModel.prototype.flagMessagesFast = function ()
+MailBoxMessageListViewModel.prototype.flagMessagesFast = function (bFlag)
 {
 	var
 		aChecked = this.messageListCheckedOrSelected(),
@@ -531,24 +534,43 @@ MailBoxMessageListViewModel.prototype.flagMessagesFast = function ()
 			return oMessage.flagged();
 		});
 
-		this.setAction(aChecked[0].folderFullNameRaw,
-			aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		if (Utils.isUnd(bFlag))
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		}
+		else
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				!bFlag ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		}
 	}
 };
 
-MailBoxMessageListViewModel.prototype.seenMessagesFast = function ()
+MailBoxMessageListViewModel.prototype.seenMessagesFast = function (bSeen)
 {
 	var
 		aChecked = this.messageListCheckedOrSelected(),
 		aUnseen = []
 	;
 
-	aUnseen = _.filter(aChecked, function (oMessage) {
-		return oMessage.unseen();
-	});
+	if (0 < aChecked.length)
+	{
+		aUnseen = _.filter(aChecked, function (oMessage) {
+			return oMessage.unseen();
+		});
 
-	this.setAction(aChecked[0].folderFullNameRaw,
-		0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		if (Utils.isUnd(bSeen))
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		}
+		else
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				bSeen ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		}
+	}
 };
 
 MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
@@ -648,6 +670,14 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
+	key('z', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.moreDropdownTrigger(true);
+			return false;
+		}
+	});
+
 	// delete
 	key('delete, shift+delete', Enums.KeyState.MessageList, function (event, handler) {
 		if (oData.useKeyboardShortcuts() && event)
@@ -677,8 +707,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// new message (open compose popup)
-	key('c,n', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// write/compose (open compose popup)
+	key('w,c', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			kn.showScreenPopup(PopupsComposeViewModel);
@@ -686,8 +716,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// star/flag messages
-	key('s', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// important - star/flag messages
+	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			self.flagMessagesFast();
@@ -695,11 +725,29 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// mark as read/unread
-	key('m', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// move
+	key('m', Enums.KeyState.MessageList, function () {
 		if (oData.useKeyboardShortcuts())
 		{
-			self.seenMessagesFast();
+			self.moveDropdownTrigger(true);
+			return false;
+		}
+	});
+
+	// read
+	key('q', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.seenMessagesFast(true);
+			return false;
+		}
+	});
+
+	// unread
+	key('u', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.seenMessagesFast(false);
 			return false;
 		}
 	});

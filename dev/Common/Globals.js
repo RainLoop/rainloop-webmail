@@ -13,6 +13,11 @@ Globals.momentTrigger = ko.observable(true);
 /**
  * @type {?}
  */
+Globals.dropdownVisibility = ko.observable(false);
+
+/**
+ * @type {?}
+ */
 Globals.langChangeTrigger = ko.observable(true);
 
 /**

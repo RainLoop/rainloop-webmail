@@ -9,10 +9,10 @@
 			<div class="btn-group pull-right">
 				&nbsp;&nbsp;&nbsp;
 			</div>-->
-			<div class="btn-group pull-right">
+			<div class="btn-group pull-right dropdown" data-bind="dropdownOpenStatus: true, openDropdownTrigger: accountMenuDropdownTrigger">
 				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn btn-ellipsis btn-block dropdown-toggle system-dropdown"
-					data-placement="left" data-toggle="dropdown"
-					data-tooltip-class="tooltip-big" data-bind="tooltip2: emailTitle, hasfocus: accountMenuFocus">
+					data-toggle="dropdown" data-tooltip-placement="left"
+					data-tooltip-class="tooltip-big" data-bind="tooltip2: emailTitle">
 
 					<i data-bind="css: {'icon-user': !loading(), 'icon-spinner animated': loading()}"></i>
 					&nbsp;&nbsp;

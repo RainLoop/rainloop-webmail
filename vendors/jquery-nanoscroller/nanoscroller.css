@@ -49,7 +49,7 @@
   -moz-border-radius    : 5px;
   -webkit-border-radius : 5px;
   border-radius         : 5px;
-  z-index: 10000;
+  z-index: 102;
   margin                : 2px;
 }
 

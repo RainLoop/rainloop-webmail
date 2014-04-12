@@ -95,6 +95,11 @@ Globals.momentTrigger = ko.observable(true);
 /**
  * @type {?}
  */
+Globals.dropdownVisibility = ko.observable(false);
+
+/**
+ * @type {?}
+ */
 Globals.langChangeTrigger = ko.observable(true);
 
 /**
@@ -381,6 +386,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'Settings': 'settings',
 	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
@@ -2091,10 +2097,10 @@ Utils.draggeblePlace = function ()
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
 {
-	if (oItem && !Utils.isUnd(oItem.disable))
+	if (oItem && !Utils.isUnd(oItem.disabled))
 	{
 		ko.applyBindingsToNode(oOption, {
-			'disable': oItem.disable
+			'disabled': oItem.disabled
 		}, oItem);
 	}
 };
@@ -2651,7 +2657,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $(oElement).data('tooltip-class') || '',
 				sPlacement = $(oElement).data('tooltip-placement') || 'top'
 			;
-			
+
 			$(oElement).tooltip({
 				'delay': {
 					'show': 500,
@@ -2689,7 +2695,54 @@ ko.bindingHandlers.tooltip2 = {
 	}
 };
 
-ko.bindingHandlers.dropdown = {
+ko.__detectDropdownVisibility = _.debounce(function ($el) {
+	Globals.dropdownVisibility(!!$el.hasClass('open'));
+}, 50);
+
+ko.bindingHandlers.dropdownOpenStatus = {
+	'init': function (oElement) {
+		var $el = $(oElement);
+
+		$el.find('.dropdown-toggle').click(function () {
+			ko.__detectDropdownVisibility($el);
+		});
+		
+//		$el.on('.dropdown-menu .menuitem', 'click', function () {
+//			$el.removeClass('open');
+//			ko.__detectDropdownVisibility($el);
+//		});
+
+//		$el.on('.dropdown-menu .menuitem', 'keydown', function (oEvent) {
+//			if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode)
+//			{
+//				$el.removeClass('open');
+//				ko.__detectDropdownVisibility($el);
+//			}
+//		});
+		
+		$html.on('click.dropdown.data-api', function () {
+			ko.__detectDropdownVisibility($el);
+		});
+	}
+};
+
+ko.bindingHandlers.openDropdownTrigger = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			var $el = $(oElement);
+			if (!$el.hasClass('open'))
+			{
+				$el.find('.dropdown-toggle').dropdown('toggle');
+				ko.__detectDropdownVisibility($el);
+			}
+			
+			fValueAccessor()(false);
+		}
+	}
+};
+
+ko.bindingHandlers.dropdownCloser = {
 	'init': function (oElement) {
 		$(oElement).closest('.dropdown').on('click', '.e-item', function () {
 			$(oElement).dropdown('toggle');
@@ -11661,8 +11714,9 @@ function AbstractSystemDropDownViewModel()
 	this.accounts = oData.accounts;
 	this.accountEmail = oData.accountEmail;
 	this.accountsLoading = oData.accountsLoading;
-	this.accountMenuFocus = oData.accountMenuFocus;
-	
+
+	this.accountMenuDropdownTrigger = ko.observable(false);
+
 	this.allowAddAccount = RL.settingsGet('AllowAdditionalAccounts');
 
 	this.loading = ko.computed(function () {
@@ -11670,14 +11724,6 @@ function AbstractSystemDropDownViewModel()
 	}, this);
 
 	this.accountClick = _.bind(this.accountClick, this);
-
-	key('`', function () {
-		if (oData.useKeyboardShortcuts() && !RL.popupVisibility() &&
-			!oData.accountMenuFocus())
-		{
-			oData.accountMenuFocus(true);
-		}
-	});
 }
 
 _.extend(AbstractSystemDropDownViewModel.prototype, KnoinAbstractViewModel.prototype);
@@ -11725,6 +11771,18 @@ AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
 		RL.loginAndLogoutReload(true, RL.settingsGet('ParentEmail') && 0 < RL.settingsGet('ParentEmail').length);
 	});
 };
+
+AbstractSystemDropDownViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
+		if (RL.data().useKeyboardShortcuts() && !RL.popupVisibility() && !Globals.dropdownVisibility() && self.viewModelVisibility())
+		{
+			self.accountMenuDropdownTrigger(true);
+		}
+	});
+};
+
 /**
  * @constructor
  * @extends AbstractSystemDropDownViewModel
@@ -11927,6 +11985,9 @@ function MailBoxMessageListViewModel()
 	this.userQuota = oData.userQuota;
 	this.userUsageSize = oData.userUsageSize;
 	this.userUsageProc = oData.userUsageProc;
+
+	this.moveDropdownTrigger = ko.observable(false);
+	this.moreDropdownTrigger = ko.observable(false);
 
 	// append drag and drop
 	this.dragOver = ko.observable(false).extend({'throttle': 1});
@@ -12404,7 +12465,7 @@ MailBoxMessageListViewModel.prototype.flagMessages = function (oCurrentMessage)
 	}
 };
 
-MailBoxMessageListViewModel.prototype.flagMessagesFast = function ()
+MailBoxMessageListViewModel.prototype.flagMessagesFast = function (bFlag)
 {
 	var
 		aChecked = this.messageListCheckedOrSelected(),
@@ -12417,24 +12478,43 @@ MailBoxMessageListViewModel.prototype.flagMessagesFast = function ()
 			return oMessage.flagged();
 		});
 
-		this.setAction(aChecked[0].folderFullNameRaw,
-			aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		if (Utils.isUnd(bFlag))
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		}
+		else
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				!bFlag ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
+		}
 	}
 };
 
-MailBoxMessageListViewModel.prototype.seenMessagesFast = function ()
+MailBoxMessageListViewModel.prototype.seenMessagesFast = function (bSeen)
 {
 	var
 		aChecked = this.messageListCheckedOrSelected(),
 		aUnseen = []
 	;
 
-	aUnseen = _.filter(aChecked, function (oMessage) {
-		return oMessage.unseen();
-	});
+	if (0 < aChecked.length)
+	{
+		aUnseen = _.filter(aChecked, function (oMessage) {
+			return oMessage.unseen();
+		});
 
-	this.setAction(aChecked[0].folderFullNameRaw,
-		0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		if (Utils.isUnd(bSeen))
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		}
+		else
+		{
+			this.setAction(aChecked[0].folderFullNameRaw,
+				bSeen ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
+		}
+	}
 };
 
 MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
@@ -12534,6 +12614,14 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
+	key('z', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.moreDropdownTrigger(true);
+			return false;
+		}
+	});
+
 	// delete
 	key('delete, shift+delete', Enums.KeyState.MessageList, function (event, handler) {
 		if (oData.useKeyboardShortcuts() && event)
@@ -12563,8 +12651,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// new message (open compose popup)
-	key('c,n', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// write/compose (open compose popup)
+	key('w,c', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			kn.showScreenPopup(PopupsComposeViewModel);
@@ -12572,8 +12660,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// star/flag messages
-	key('s', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// important - star/flag messages
+	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		if (oData.useKeyboardShortcuts())
 		{
 			self.flagMessagesFast();
@@ -12581,11 +12669,29 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
-	// mark as read/unread
-	key('m', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+	// move
+	key('m', Enums.KeyState.MessageList, function () {
 		if (oData.useKeyboardShortcuts())
 		{
-			self.seenMessagesFast();
+			self.moveDropdownTrigger(true);
+			return false;
+		}
+	});
+
+	// read
+	key('q', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.seenMessagesFast(true);
+			return false;
+		}
+	});
+
+	// unread
+	key('u', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.seenMessagesFast(false);
 			return false;
 		}
 	});
@@ -12806,6 +12912,7 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.moreDropdownTrigger = ko.observable(false);
 	this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
 
 	this.messageVisibility = ko.computed(function () {
@@ -13126,6 +13233,13 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		this.messageDomFocused(!!bValue);
 	}, this);
 
+	this.messageDomFocused.subscribe(function (bValue) {
+		if (!bValue && Enums.KeyState.MessageView === this.keyScope())
+		{
+			this.message.focused(false);
+		}
+	}, this);
+
 	this.keyScope.subscribe(function (sValue) {
 		if (Enums.KeyState.MessageView === sValue && this.message.focused())
 		{
@@ -13150,9 +13264,13 @@ MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 		{
 			this.fullScreenMode(false);
 		}
-		else
+		else if (Enums.Layout.NoPreview === RL.data().layout())
 		{
 			this.message(null);
+		}
+		else
+		{
+			this.message.focused(false);
 		}
 
 		return false;
@@ -13174,6 +13292,14 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		if (oData.useKeyboardShortcuts())
 		{
 			self.toggleFullScreen();
+			return false;
+		}
+	});
+
+	key('x', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.moreDropdownTrigger(true);
 			return false;
 		}
 	});
@@ -13206,13 +13332,13 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// message information
-	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.showFullInfo(!self.showFullInfo());
-			return false;
-		}
-	});
+//	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+//		if (oData.useKeyboardShortcuts())
+//		{
+//			self.showFullInfo(!self.showFullInfo());
+//			return false;
+//		}
+//	});
 
 	// toggle message blockquotes
 	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
@@ -13451,6 +13577,17 @@ function SettingsPaneViewModel()
 }
 
 Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+
+SettingsPaneViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	key('esc', Enums.KeyState.Settings, function () {
+		if (RL.data().useKeyboardShortcuts())
+		{
+			self.backToMailBoxClick();
+		}
+	});
+};
 
 SettingsPaneViewModel.prototype.onShow = function ()
 {
@@ -14747,21 +14884,54 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
  */
 function AbstractData()
 {
-	this.keyScope = ko.observable(Enums.KeyState.All);
-	this.keyScope.subscribe(function (sValue) {
+	this.keyScopeReal = ko.observable(Enums.KeyState.All);
+	this.keyScopeFake = ko.observable(Enums.KeyState.All);
+	
+	this.keyScope = ko.computed({
+		'owner': this,
+		'read': function () {
+			return this.keyScopeFake();
+		},
+		'write': function (sValue) {
 
-		if (Enums.KeyState.Compose === sValue)
-		{
-			Utils.disableKeyFilter();
-		}
-		else
-		{
-			Utils.restoreKeyFilter();
-		}
+			if (Enums.KeyState.Menu !== sValue)
+			{
+				if (Enums.KeyState.Compose === sValue)
+				{
+					Utils.disableKeyFilter();
+				}
+				else
+				{
+					Utils.restoreKeyFilter();
+				}
 
-//		window.console.log(sValue);
+				this.keyScopeFake(sValue);
+				if (Globals.dropdownVisibility())
+				{
+					sValue = Enums.KeyState.Menu;
+				}
+			}
+			
+//			window.console.log(sValue + '/' + this.keyScopeFake());
+			this.keyScopeReal(sValue);
+		}
+	});
+	
+	this.keyScopeReal.subscribe(function (sValue) {
+		window.console.log(sValue);
 		key.setScope(sValue);
 	});
+
+	Globals.dropdownVisibility.subscribe(function (bValue) {
+		if (bValue)
+		{
+			this.keyScope(Enums.KeyState.Menu);
+		}
+		else if (Enums.KeyState.Menu === key.getScope())
+		{
+			this.keyScope(this.keyScopeFake());
+		}
+	}, this);
 
 	Utils.initDataConstructorBySettings(this);
 }
@@ -14871,17 +15041,6 @@ function WebMailDataStorage()
 	this.accountOutLogin = ko.observable('');
 	this.projectHash = ko.observable('');
 	this.threading = ko.observable(false);
-
-	this.accountMenuFocus = ko.observable(false);
-	this.accountMenuFocus.sKeyState = Enums.KeyState.All;
-	
-	this.accountMenuFocus.subscribe(function (bValue) {
-		if (bValue)
-		{
-			this.accountMenuFocus.sKeyState = RL.data().keyScope();
-		}
-		RL.data().keyScope(bValue ? Enums.KeyState.Menu : this.accountMenuFocus.sKeyState);
-	}, this);
 
 	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
@@ -15121,7 +15280,14 @@ function WebMailDataStorage()
 	}, this);
 
 	this.message.focused.subscribe(function (bValue) {
-		RL.data().keyScope(bValue ? Enums.KeyState.MessageView : Enums.KeyState.MessageList);
+		if (bValue)
+		{
+			RL.data().keyScope(Enums.KeyState.MessageView);
+		}
+		else if (Enums.KeyState.MessageView === RL.data().keyScope())
+		{
+			RL.data().keyScope(Enums.KeyState.MessageList);
+		}
 	});
 	
 	this.messageLoading.subscribe(function (bValue) {
@@ -17712,11 +17878,6 @@ MailBoxScreen.prototype.onShow = function ()
 	RL.data().keyScope(Enums.KeyState.MessageList);
 };
 
-MailBoxScreen.prototype.onHide = function ()
-{
-	RL.data().keyScope(Enums.KeyState.All);
-};
-
 /**
  * @param {string} sFolderHash
  * @param {number} iPage
@@ -17803,17 +17964,6 @@ MailBoxScreen.prototype.onStart = function ()
 	}, this);
 };
 
-//MailBoxScreen.prototype.onBuild = function ()
-//{
-//	if (!Globals.bMobileDevice)
-//	{
-//		_.defer(function () {
-//			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
-//				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
-//		});
-//	}
-//};
-
 /**
  * @return {Array}
  */
@@ -17883,8 +18033,9 @@ _.extend(SettingsScreen.prototype, AbstractSettings.prototype);
 SettingsScreen.prototype.onShow = function ()
 {
 //	AbstractSettings.prototype.onShow.call(this);
-	
+
 	RL.setTitle(this.sSettingsTitle);
+	RL.data().keyScope(Enums.KeyState.Settings);
 };
 
 /**
@@ -19027,7 +19178,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 		aResult.push({
 			'id': aHeaderLines[iIndex][0],
 			'name': aHeaderLines[iIndex][1],
-			'disable': false
+			'disabled': false
 		});
 	}
 
@@ -19040,7 +19191,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 				'id': oItem.fullNameRaw,
 				'system': true,
 				'name': fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
-				'disable': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+				'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
 					(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 			});
 		}
@@ -19060,7 +19211,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 						'system': false,
 						'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) + 
 							(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
-						'disable': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+						'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
 							(Enums.FolderType.User !== oItem.type()) ||
 							(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 					});

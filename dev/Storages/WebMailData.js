@@ -39,17 +39,6 @@ function WebMailDataStorage()
 	this.projectHash = ko.observable('');
 	this.threading = ko.observable(false);
 
-	this.accountMenuFocus = ko.observable(false);
-	this.accountMenuFocus.sKeyState = Enums.KeyState.All;
-	
-	this.accountMenuFocus.subscribe(function (bValue) {
-		if (bValue)
-		{
-			this.accountMenuFocus.sKeyState = RL.data().keyScope();
-		}
-		RL.data().keyScope(bValue ? Enums.KeyState.Menu : this.accountMenuFocus.sKeyState);
-	}, this);
-
 	this.lastFoldersHash = '';
 	this.remoteSuggestions = false;
 
@@ -288,7 +277,14 @@ function WebMailDataStorage()
 	}, this);
 
 	this.message.focused.subscribe(function (bValue) {
-		RL.data().keyScope(bValue ? Enums.KeyState.MessageView : Enums.KeyState.MessageList);
+		if (bValue)
+		{
+			RL.data().keyScope(Enums.KeyState.MessageView);
+		}
+		else if (Enums.KeyState.MessageView === RL.data().keyScope())
+		{
+			RL.data().keyScope(Enums.KeyState.MessageList);
+		}
 	});
 	
 	this.messageLoading.subscribe(function (bValue) {

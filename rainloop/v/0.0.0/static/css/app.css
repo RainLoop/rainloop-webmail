@@ -1535,7 +1535,7 @@ table {
   -moz-border-radius    : 5px;
   -webkit-border-radius : 5px;
   border-radius         : 5px;
-  z-index: 10000;
+  z-index: 102;
   margin                : 2px;
 }
 
@@ -5869,13 +5869,13 @@ html.no-rgba .modal {
   background-image: none;
   color: #fff;
 }
-.g-ui-menu .e-item.disable > .e-link {
+.g-ui-menu .e-item.disabled > .e-link {
   cursor: not-allowed;
   background-color: #fff;
   background-image: none;
   color: grey;
 }
-.g-ui-menu .e-item.disable [class^="icon-"] {
+.g-ui-menu .e-item.disabled [class^="icon-"] {
   color: grey;
 }
 .g-ui-table {
@@ -6416,6 +6416,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .popups .b-ask-content .desc-place {
   font-size: 18px;
+}
+.popups .b-shortcuts-content.modal {
+  width: 1025px;
 }
 .popups .b-shortcuts-content .modal-header {
   background-color: #fff;
@@ -7850,7 +7853,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   opacity: 1;
   filter: alpha(opacity=100);
 }
-.b-compose .b-header-toolbar .btn.disable.button-delete {
+.b-compose .b-header-toolbar .btn.disabled.button-delete {
   visibility: hidden;
 }
 .b-compose .b-header-toolbar .button-save,
@@ -7858,7 +7861,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-compose .b-header-toolbar .saved-text {
   margin-left: 8px;
 }
-.b-compose .b-header-toolbar .disable.button-delete {
+.b-compose .b-header-toolbar .disabled.button-delete {
   margin-left: 0px;
 }
 .b-compose .b-header {
@@ -8064,17 +8067,17 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   filter: alpha(opacity=100);
 }
 .b-admin-domains-list-table .e-item .delete-domain,
-.b-admin-domains-list-table .e-item .disable-domain {
+.b-admin-domains-list-table .e-item .disabled-domain {
   cursor: pointer;
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
-.b-admin-domains-list-table .e-item.disabled .disable-domain {
+.b-admin-domains-list-table .e-item.disabled .disabled-domain {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
 .b-admin-domains-list-table .e-item .delete-domain:hover,
-.b-admin-domains-list-table .e-item .disable-domain:hover {
+.b-admin-domains-list-table .e-item .disabled-domain:hover {
   opacity: 1;
   filter: alpha(opacity=100);
 }
@@ -8159,7 +8162,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-admin-plugins-list-table .e-item.disabled .plugin-name {
   color: #bbb;
 }
-.b-admin-plugins-list-table .e-item.disabled .disable-plugin {
+.b-admin-plugins-list-table .e-item.disabled .disabled-plugin {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }

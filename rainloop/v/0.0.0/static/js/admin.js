@@ -91,6 +91,11 @@ Globals.momentTrigger = ko.observable(true);
 /**
  * @type {?}
  */
+Globals.dropdownVisibility = ko.observable(false);
+
+/**
+ * @type {?}
+ */
 Globals.langChangeTrigger = ko.observable(true);
 
 /**
@@ -377,6 +382,7 @@ Enums.KeyState = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
+	'Settings': 'settings',
 	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
 	'PopupAsk': 'popup-ask'
@@ -2087,10 +2093,10 @@ Utils.draggeblePlace = function ()
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
 {
-	if (oItem && !Utils.isUnd(oItem.disable))
+	if (oItem && !Utils.isUnd(oItem.disabled))
 	{
 		ko.applyBindingsToNode(oOption, {
-			'disable': oItem.disable
+			'disabled': oItem.disabled
 		}, oItem);
 	}
 };
@@ -2647,7 +2653,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $(oElement).data('tooltip-class') || '',
 				sPlacement = $(oElement).data('tooltip-placement') || 'top'
 			;
-			
+
 			$(oElement).tooltip({
 				'delay': {
 					'show': 500,
@@ -2685,7 +2691,54 @@ ko.bindingHandlers.tooltip2 = {
 	}
 };
 
-ko.bindingHandlers.dropdown = {
+ko.__detectDropdownVisibility = _.debounce(function ($el) {
+	Globals.dropdownVisibility(!!$el.hasClass('open'));
+}, 50);
+
+ko.bindingHandlers.dropdownOpenStatus = {
+	'init': function (oElement) {
+		var $el = $(oElement);
+
+		$el.find('.dropdown-toggle').click(function () {
+			ko.__detectDropdownVisibility($el);
+		});
+		
+//		$el.on('.dropdown-menu .menuitem', 'click', function () {
+//			$el.removeClass('open');
+//			ko.__detectDropdownVisibility($el);
+//		});
+
+//		$el.on('.dropdown-menu .menuitem', 'keydown', function (oEvent) {
+//			if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode)
+//			{
+//				$el.removeClass('open');
+//				ko.__detectDropdownVisibility($el);
+//			}
+//		});
+		
+		$html.on('click.dropdown.data-api', function () {
+			ko.__detectDropdownVisibility($el);
+		});
+	}
+};
+
+ko.bindingHandlers.openDropdownTrigger = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			var $el = $(oElement);
+			if (!$el.hasClass('open'))
+			{
+				$el.find('.dropdown-toggle').dropdown('toggle');
+				ko.__detectDropdownVisibility($el);
+			}
+			
+			fValueAccessor()(false);
+		}
+	}
+};
+
+ko.bindingHandlers.dropdownCloser = {
 	'init': function (oElement) {
 		$(oElement).closest('.dropdown').on('click', '.e-item', function () {
 			$(oElement).dropdown('toggle');
@@ -5853,7 +5906,7 @@ function AdminContacts()
 		return {
 			'id': sValue,
 			'name': getTypeName(sValue) + (bDisabled ? ' (not supported)' : ''),
-			'disable': bDisabled
+			'disabled': bDisabled
 		};
 	});
 
@@ -6366,7 +6419,7 @@ AdminPlugins.prototype.onBuild = function (oDom)
 				self.configurePlugin(oPlugin);
 			}
 		})
-		.on('click', '.e-item .disable-plugin', function () {
+		.on('click', '.e-item .disabled-plugin', function () {
 			var oPlugin = ko.dataFor(this);
 			if (oPlugin)
 			{
@@ -6570,21 +6623,54 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
  */
 function AbstractData()
 {
-	this.keyScope = ko.observable(Enums.KeyState.All);
-	this.keyScope.subscribe(function (sValue) {
+	this.keyScopeReal = ko.observable(Enums.KeyState.All);
+	this.keyScopeFake = ko.observable(Enums.KeyState.All);
+	
+	this.keyScope = ko.computed({
+		'owner': this,
+		'read': function () {
+			return this.keyScopeFake();
+		},
+		'write': function (sValue) {
 
-		if (Enums.KeyState.Compose === sValue)
-		{
-			Utils.disableKeyFilter();
-		}
-		else
-		{
-			Utils.restoreKeyFilter();
-		}
+			if (Enums.KeyState.Menu !== sValue)
+			{
+				if (Enums.KeyState.Compose === sValue)
+				{
+					Utils.disableKeyFilter();
+				}
+				else
+				{
+					Utils.restoreKeyFilter();
+				}
 
-//		window.console.log(sValue);
+				this.keyScopeFake(sValue);
+				if (Globals.dropdownVisibility())
+				{
+					sValue = Enums.KeyState.Menu;
+				}
+			}
+			
+//			window.console.log(sValue + '/' + this.keyScopeFake());
+			this.keyScopeReal(sValue);
+		}
+	});
+	
+	this.keyScopeReal.subscribe(function (sValue) {
+		window.console.log(sValue);
 		key.setScope(sValue);
 	});
+
+	Globals.dropdownVisibility.subscribe(function (bValue) {
+		if (bValue)
+		{
+			this.keyScope(Enums.KeyState.Menu);
+		}
+		else if (Enums.KeyState.Menu === key.getScope())
+		{
+			this.keyScope(this.keyScopeFake());
+		}
+	}, this);
 
 	Utils.initDataConstructorBySettings(this);
 }

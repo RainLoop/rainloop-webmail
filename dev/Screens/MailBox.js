@@ -40,11 +40,6 @@ MailBoxScreen.prototype.onShow = function ()
 	RL.data().keyScope(Enums.KeyState.MessageList);
 };
 
-MailBoxScreen.prototype.onHide = function ()
-{
-	RL.data().keyScope(Enums.KeyState.All);
-};
-
 /**
  * @param {string} sFolderHash
  * @param {number} iPage
@@ -130,17 +125,6 @@ MailBoxScreen.prototype.onStart = function ()
 		this.setNewTitle();
 	}, this);
 };
-
-//MailBoxScreen.prototype.onBuild = function ()
-//{
-//	if (!Globals.bMobileDevice)
-//	{
-//		_.defer(function () {
-//			Utils.initLayoutResizer('#rl-resizer-left', '#rl-resizer-right', '#rl-right',
-//				350, 800, 350, 350, Enums.ClientSideKeyName.MailBoxListSize);
-//		});
-//	}
-//};
 
 /**
  * @return {Array}

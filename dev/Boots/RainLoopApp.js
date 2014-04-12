@@ -820,7 +820,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 		aResult.push({
 			'id': aHeaderLines[iIndex][0],
 			'name': aHeaderLines[iIndex][1],
-			'disable': false
+			'disabled': false
 		});
 	}
 
@@ -833,7 +833,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 				'id': oItem.fullNameRaw,
 				'system': true,
 				'name': fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
-				'disable': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+				'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
 					(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 			});
 		}
@@ -853,7 +853,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 						'system': false,
 						'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) + 
 							(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
-						'disable': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+						'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
 							(Enums.FolderType.User !== oItem.type()) ||
 							(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 					});

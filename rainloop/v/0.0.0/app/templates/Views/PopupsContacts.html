@@ -109,7 +109,7 @@
 								</div>
 								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
 									<label class="control-label remove-padding-top fix-width">
-										<i class="icon-at iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
+										<i class="icon-at iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
 									</label>
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesEmails">
@@ -123,7 +123,7 @@
 								</div>
 								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesPhones().length">
 									<label class="control-label remove-padding-top fix-width">
-										<i class="icon-telephone iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
+										<i class="icon-telephone iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
 									</label>
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesPhones">
@@ -144,12 +144,12 @@
 							</div>
 							
 							<div class="e-read-only-sign">
-								<i class="icon-lock iconsize24" data-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
+								<i class="icon-lock iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
 							</div>
 
 							<div class="e-share-sign" data-bind="visible: contactsSharingIsAllowed">
 								<div class="btn-group pull-right">
-									<a class="btn dropdown-toggle" data-placement="left" data-toggle="dropdown" data-bind="tooltip: 'CONTACTS/LABEL_SHARE'">
+									<a class="btn dropdown-toggle" data-tooltip-placement="left" data-toggle="dropdown" data-bind="tooltip: 'CONTACTS/LABEL_SHARE'">
 										<i data-bind="css: shareIcon"></i>
 										&nbsp;&nbsp;
 										<span class="caret"></span>

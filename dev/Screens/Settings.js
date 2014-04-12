@@ -24,6 +24,7 @@ _.extend(SettingsScreen.prototype, AbstractSettings.prototype);
 SettingsScreen.prototype.onShow = function ()
 {
 //	AbstractSettings.prototype.onShow.call(this);
-	
+
 	RL.setTitle(this.sSettingsTitle);
+	RL.data().keyScope(Enums.KeyState.Settings);
 };

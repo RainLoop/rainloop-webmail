@@ -31,13 +31,13 @@
 								<div class="dropdown pull-left">
 									<span class="dropdown-toggle g-ui-dropdown e-identity" 
 										id="IdentityLabel" role="button" data-toggle="dropdown"
-										data-bind="text: currentIdentityString, dropdown: true, css: {'multiply': 1 < identitiesOptions().length }">
+										data-bind="text: currentIdentityString, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
 									</span>
 									<!-- ko if: 1 < identitiesOptions().length -->
 										<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="IdentityLabel">
 											<!-- ko foreach: identitiesOptions -->
 												<li class="e-item">
-													<a class="e-link"  data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
+													<a class="e-link" tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
 														<span data-bind="text: optText"></span>
 													</a>
 												</li>
@@ -108,7 +108,7 @@
 									</div>
 									<div class="pull-right">
 										<div class="btn-group pull-right">
-											<a class="btn dropdown-toggle buttonMore" data-placement="bottom" data-toggle="dropdown">
+											<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
 												<i class="icon-list"></i>
 											</a>
 											<ul class="dropdown-menu g-ui-menu" role="menu">
@@ -120,7 +120,7 @@
 													</a>
 												</li>
 												<li class="divider"></li>
-												<li class="e-item" data-bind="visible: allowOpenPGP, click: openOpenPgpPopup, css: {'disable': isHtml()}">
+												<li class="e-item" data-bind="visible: allowOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
 													<a class="e-link">
 														<i class="icon-key"></i>
 														&nbsp;&nbsp;
@@ -131,13 +131,13 @@
 										</div>
 										<div class="btn-group pull-right">&nbsp;</div>
 										<div class="btn-group pull-right">
-											<a class="btn" data-placement="top" data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
+											<a class="btn" data-tooltip-placement="top" data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<i class="icon-attachment"></i>
 											</a>
-											<a class="btn" data-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">
+											<a class="btn" data-tooltip-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">
 												<i class="icon-dropbox"></i>
 											</a>
-											<a class="btn" data-placement="top" data-bind="visible: driveEnabled, command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
+											<a class="btn" data-tooltip-placement="top" data-bind="visible: driveEnabled, command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
 												<i class="icon-google-drive"></i>
 											</a>
 										</div>

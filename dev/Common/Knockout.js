@@ -8,7 +8,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $(oElement).data('tooltip-class') || '',
 				sPlacement = $(oElement).data('tooltip-placement') || 'top'
 			;
-			
+
 			$(oElement).tooltip({
 				'delay': {
 					'show': 500,
@@ -46,7 +46,54 @@ ko.bindingHandlers.tooltip2 = {
 	}
 };
 
-ko.bindingHandlers.dropdown = {
+ko.__detectDropdownVisibility = _.debounce(function ($el) {
+	Globals.dropdownVisibility(!!$el.hasClass('open'));
+}, 50);
+
+ko.bindingHandlers.dropdownOpenStatus = {
+	'init': function (oElement) {
+		var $el = $(oElement);
+
+		$el.find('.dropdown-toggle').click(function () {
+			ko.__detectDropdownVisibility($el);
+		});
+		
+//		$el.on('.dropdown-menu .menuitem', 'click', function () {
+//			$el.removeClass('open');
+//			ko.__detectDropdownVisibility($el);
+//		});
+
+//		$el.on('.dropdown-menu .menuitem', 'keydown', function (oEvent) {
+//			if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode)
+//			{
+//				$el.removeClass('open');
+//				ko.__detectDropdownVisibility($el);
+//			}
+//		});
+		
+		$html.on('click.dropdown.data-api', function () {
+			ko.__detectDropdownVisibility($el);
+		});
+	}
+};
+
+ko.bindingHandlers.openDropdownTrigger = {
+	'update': function (oElement, fValueAccessor) {
+		if (ko.utils.unwrapObservable(fValueAccessor()))
+		{
+			var $el = $(oElement);
+			if (!$el.hasClass('open'))
+			{
+				$el.find('.dropdown-toggle').dropdown('toggle');
+				ko.__detectDropdownVisibility($el);
+			}
+			
+			fValueAccessor()(false);
+		}
+	}
+};
+
+ko.bindingHandlers.dropdownCloser = {
 	'init': function (oElement) {
 		$(oElement).closest('.dropdown').on('click', '.e-item', function () {
 			$(oElement).dropdown('toggle');

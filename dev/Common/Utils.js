@@ -1370,10 +1370,10 @@ Utils.draggeblePlace = function ()
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
 {
-	if (oItem && !Utils.isUnd(oItem.disable))
+	if (oItem && !Utils.isUnd(oItem.disabled))
 	{
 		ko.applyBindingsToNode(oOption, {
-			'disable': oItem.disable
+			'disabled': oItem.disabled
 		}, oItem);
 	}
 };

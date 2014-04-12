@@ -5,21 +5,54 @@
  */
 function AbstractData()
 {
-	this.keyScope = ko.observable(Enums.KeyState.All);
-	this.keyScope.subscribe(function (sValue) {
+	this.keyScopeReal = ko.observable(Enums.KeyState.All);
+	this.keyScopeFake = ko.observable(Enums.KeyState.All);
+	
+	this.keyScope = ko.computed({
+		'owner': this,
+		'read': function () {
+			return this.keyScopeFake();
+		},
+		'write': function (sValue) {
 
-		if (Enums.KeyState.Compose === sValue)
-		{
-			Utils.disableKeyFilter();
-		}
-		else
-		{
-			Utils.restoreKeyFilter();
-		}
+			if (Enums.KeyState.Menu !== sValue)
+			{
+				if (Enums.KeyState.Compose === sValue)
+				{
+					Utils.disableKeyFilter();
+				}
+				else
+				{
+					Utils.restoreKeyFilter();
+				}
 
-//		window.console.log(sValue);
+				this.keyScopeFake(sValue);
+				if (Globals.dropdownVisibility())
+				{
+					sValue = Enums.KeyState.Menu;
+				}
+			}
+			
+//			window.console.log(sValue + '/' + this.keyScopeFake());
+			this.keyScopeReal(sValue);
+		}
+	});
+	
+	this.keyScopeReal.subscribe(function (sValue) {
+		window.console.log(sValue);
 		key.setScope(sValue);
 	});
+
+	Globals.dropdownVisibility.subscribe(function (bValue) {
+		if (bValue)
+		{
+			this.keyScope(Enums.KeyState.Menu);
+		}
+		else if (Enums.KeyState.Menu === key.getScope())
+		{
+			this.keyScope(this.keyScopeFake());
+		}
+	}, this);
 
 	Utils.initDataConstructorBySettings(this);
 }

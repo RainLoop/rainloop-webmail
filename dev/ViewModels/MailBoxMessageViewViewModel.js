@@ -40,6 +40,7 @@ function MailBoxMessageViewViewModel()
 	this.fullScreenMode = oData.messageFullScreenMode;
 
 	this.showFullInfo = ko.observable(false);
+	this.moreDropdownTrigger = ko.observable(false);
 	this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
 
 	this.messageVisibility = ko.computed(function () {
@@ -360,6 +361,13 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 		this.messageDomFocused(!!bValue);
 	}, this);
 
+	this.messageDomFocused.subscribe(function (bValue) {
+		if (!bValue && Enums.KeyState.MessageView === this.keyScope())
+		{
+			this.message.focused(false);
+		}
+	}, this);
+
 	this.keyScope.subscribe(function (sValue) {
 		if (Enums.KeyState.MessageView === sValue && this.message.focused())
 		{
@@ -384,9 +392,13 @@ MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 		{
 			this.fullScreenMode(false);
 		}
-		else
+		else if (Enums.Layout.NoPreview === RL.data().layout())
 		{
 			this.message(null);
+		}
+		else
+		{
+			this.message.focused(false);
 		}
 
 		return false;
@@ -408,6 +420,14 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		if (oData.useKeyboardShortcuts())
 		{
 			self.toggleFullScreen();
+			return false;
+		}
+	});
+
+	key('x', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		if (oData.useKeyboardShortcuts())
+		{
+			self.moreDropdownTrigger(true);
 			return false;
 		}
 	});
@@ -440,13 +460,13 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// message information
-	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.showFullInfo(!self.showFullInfo());
-			return false;
-		}
-	});
+//	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+//		if (oData.useKeyboardShortcuts())
+//		{
+//			self.showFullInfo(!self.showFullInfo());
+//			return false;
+//		}
+//	});
 
 	// toggle message blockquotes
 	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {

@@ -54,7 +54,7 @@ function AdminContacts()
 		return {
 			'id': sValue,
 			'name': getTypeName(sValue) + (bDisabled ? ' (not supported)' : ''),
-			'disable': bDisabled
+			'disabled': bDisabled
 		};
 	});
 

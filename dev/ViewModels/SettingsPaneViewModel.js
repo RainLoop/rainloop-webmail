@@ -13,6 +13,17 @@ function SettingsPaneViewModel()
 
 Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
 
+SettingsPaneViewModel.prototype.onBuild = function ()
+{
+	var self = this;
+	key('esc', Enums.KeyState.Settings, function () {
+		if (RL.data().useKeyboardShortcuts())
+		{
+			self.backToMailBoxClick();
+		}
+	});
+};
+
 SettingsPaneViewModel.prototype.onShow = function ()
 {
 	RL.data().message(null);

@@ -47,7 +47,7 @@ AdminPlugins.prototype.onBuild = function (oDom)
 				self.configurePlugin(oPlugin);
 			}
 		})
-		.on('click', '.e-item .disable-plugin', function () {
+		.on('click', '.e-item .disabled-plugin', function () {
 			var oPlugin = ko.dataFor(this);
 			if (oPlugin)
 			{
