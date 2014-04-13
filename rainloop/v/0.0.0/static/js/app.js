@@ -13345,6 +13345,14 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		return false;
 	});
 
+	key('enter', Enums.KeyState.MessageList, function () {
+		if (Enums.Layout.NoPreview !== oData.layout() && self.message())
+		{
+			self.toggleFullScreen();
+			return false;
+		}
+	});
+
 	// TODO // more toggle
 //	key('', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 //		self.moreDropdownTrigger(true);
