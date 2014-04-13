@@ -1740,7 +1740,7 @@ Utils.createMomentShortDate = function (oObject)
 		}
 		else if (oMomentNow.clone().subtract('days', 1).format('L') === oMoment.format('L'))
 		{
-			sResult = Utils.i18n('MESSAGE_LIST/YESTERDAY_IN', {
+			sResult = Utils.i18n('MESSAGE_LIST/YESTERDAY_AT', {
 				'TIME': oMoment.format('LT')
 			});
 		}
