@@ -38,7 +38,7 @@ Consts.Defaults.SearchAjaxTimeout = 120000;
  * @const
  * @type {number}
  */
-Consts.Defaults.SendMessageAjaxTimeout = 200000;
+Consts.Defaults.SendMessageAjaxTimeout = 300000;
 
 /**
  * @const

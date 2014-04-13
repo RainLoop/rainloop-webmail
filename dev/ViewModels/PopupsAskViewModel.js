@@ -21,8 +21,6 @@ function PopupsAskViewModel()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
 
-	this.sKeyScope = Enums.KeyState.MessageList;
-
 	Knoin.constructorEnd(this);
 }
 
@@ -94,7 +92,7 @@ PopupsAskViewModel.prototype.onFocus = function ()
 
 PopupsAskViewModel.prototype.onBuild = function ()
 {
-	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+	key('tab, shift+tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
 		if (this.yesFocus())
 		{
 			this.noFocus(true);

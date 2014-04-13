@@ -5,6 +5,8 @@
  */
 function AbstractData()
 {
+	this.useKeyboardShortcuts = ko.observable(true);
+	
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
 	this.keyScopeFake = ko.observable(Enums.KeyState.All);
 	
@@ -33,13 +35,12 @@ function AbstractData()
 				}
 			}
 			
-//			window.console.log(sValue + '/' + this.keyScopeFake());
 			this.keyScopeReal(sValue);
 		}
 	});
 	
 	this.keyScopeReal.subscribe(function (sValue) {
-		window.console.log(sValue);
+//		window.console.log(sValue);
 		key.setScope(sValue);
 	});
 

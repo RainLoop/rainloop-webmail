@@ -7,11 +7,14 @@
 function MailBoxFolderListViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Left', 'MailFolderList');
+
+	var oData = RL.data();
 	
-	this.folderList = RL.data().folderList;
-	this.folderListSystem = RL.data().folderListSystem;
-	this.foldersChanging = RL.data().foldersChanging;
-	
+	this.messageList = oData.messageList;
+	this.folderList = oData.folderList;
+	this.folderListSystem = oData.folderListSystem;
+	this.foldersChanging = oData.foldersChanging;
+
 	this.iDropOverTimer = 0;
 
 	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
@@ -23,16 +26,12 @@ Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel
 
 MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 {
+	var self = this;
+
 	oDom
-		.on('click', '.b-folders .b-content', function () {
-			if (RL.data().useKeyboardShortcuts() && RL.data().message.focused())
-			{
-				RL.data().message.focused(false);
-			}
-		})
 		.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
 
-					var
+			var
 				oFolder = ko.dataFor(this),
 				bCollapsed = false
 			;
@@ -72,6 +71,61 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 			}
 		})
 	;
+
+	key('up, down', Enums.KeyState.FolderList, function (event, handler) {
+
+		var
+			iIndex = -1,
+			iKeyCode = handler && 'up' === handler.shortcut ? 38 : 40,
+			$items = $('.b-folders .e-item .e-link:not(.hidden):visible', oDom)
+		;
+
+		if (event && $items.length)
+		{
+			iIndex = $items.index($items.filter('.focused'));
+			if (-1 < iIndex)
+			{
+				$items.eq(iIndex).removeClass('focused');
+			}
+
+			if (iKeyCode === 38 && iIndex > 0)
+			{
+				iIndex--;
+			}
+			else if (iKeyCode === 40 && iIndex < $items.length - 1)
+			{
+				iIndex++;
+			}
+
+			$items.eq(iIndex).addClass('focused');
+		}
+		
+		return false;
+	});
+
+	key('enter', Enums.KeyState.FolderList, function () {
+		var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
+		if ($items.length && $items[0])
+		{
+			self.folderList.focused(false);
+			$items.click();
+		}
+
+		return false;
+	});
+
+	key('esc, tab, shift+tab', Enums.KeyState.FolderList, function () {
+		self.folderList.focused(false);
+		return false;
+	});
+
+	self.folderList.focused.subscribe(function (bValue) {
+		$('.b-folders .e-item .e-link.focused', oDom).removeClass('focused');
+		if (bValue)
+		{
+			$('.b-folders .e-item .e-link.selected', oDom).addClass('focused');
+		}
+	});
 };
 
 MailBoxFolderListViewModel.prototype.messagesDropOver = function (oFolder)

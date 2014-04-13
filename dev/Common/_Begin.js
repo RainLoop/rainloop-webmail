@@ -47,6 +47,11 @@ var
 	},
 
 	/**
+	 * @type {Array}
+	 */
+	BootstrapDropdowns = [],
+
+	/**
 	 * @type {*}
 	 */
 	kn = null,

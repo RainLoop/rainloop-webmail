@@ -49,6 +49,11 @@ var
 	},
 
 	/**
+	 * @type {Array}
+	 */
+	BootstrapDropdowns = [],
+
+	/**
 	 * @type {*}
 	 */
 	kn = null,
@@ -91,7 +96,7 @@ Globals.momentTrigger = ko.observable(true);
 /**
  * @type {?}
  */
-Globals.dropdownVisibility = ko.observable(false);
+Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});
 
 /**
  * @type {?}
@@ -265,7 +270,7 @@ Consts.Defaults.SearchAjaxTimeout = 120000;
  * @const
  * @type {number}
  */
-Consts.Defaults.SendMessageAjaxTimeout = 200000;
+Consts.Defaults.SendMessageAjaxTimeout = 300000;
 
 /**
  * @const
@@ -380,11 +385,13 @@ Enums.KeyState = {
 	'None': 'none',
 	'ContactList': 'contact-list',
 	'MessageList': 'message-list',
+	'FolderList': 'folder-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
 	'Settings': 'settings',
 	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
+	'PopupKeyboardShortcutsHelp': 'popup-keyboard-shortcuts-help',
 	'PopupAsk': 'popup-ask'
 };
 
@@ -2459,7 +2466,7 @@ Utils.disableKeyFilter = function ()
 	if (window.key)
 	{
 		key.filter = function () {
-			return true;
+			return RL.data().useKeyboardShortcuts();
 		};
 	}
 };
@@ -2469,19 +2476,30 @@ Utils.restoreKeyFilter = function ()
 	if (window.key)
 	{
 		key.filter = function (event) {
-			var
-				element = event.target || event.srcElement,
-				tagName = element ? element.tagName : ''
-			;
 
-			tagName = tagName.toUpperCase();
-			return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
-				(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
-			);
+			if (RL.data().useKeyboardShortcuts())
+			{
+				var
+					element = event.target || event.srcElement,
+					tagName = element ? element.tagName : ''
+				;
+
+				tagName = tagName.toUpperCase();
+				return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
+					(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
+				);
+			}
+
+			return false;
 		};
 	}
 };
 
+Utils.detectDropdownVisibility = _.debounce(function () {
+	Globals.dropdownVisibility(!!_.find(BootstrapDropdowns, function (oItem) {
+		return oItem.hasClass('open');
+	}));
+}, 50);
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -2650,21 +2668,32 @@ ko.bindingHandlers.tooltip = {
 		if (!Globals.bMobileDevice)
 		{
 			var
-				sClass = $(oElement).data('tooltip-class') || '',
-				sPlacement = $(oElement).data('tooltip-placement') || 'top'
+				$oEl = $(oElement),
+				sClass = $oEl.data('tooltip-class') || '',
+				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
 
-			$(oElement).tooltip({
+			$oEl.tooltip({
 				'delay': {
 					'show': 500,
 					'hide': 100
 				},
 				'html': true,
+				'container': 'body',
 				'placement': sPlacement,
 				'trigger': 'hover',
 				'title': function () {
-					return '<span class="tooltip-class ' + sClass + '">' +
+					return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' : '<span class="tooltip-class ' + sClass + '">' +
 						Utils.i18n(ko.utils.unwrapObservable(fValueAccessor())) + '</span>';
+				}
+			}).click(function () {
+				$oEl.tooltip('hide');
+			});
+
+			Globals.dropdownVisibility.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.tooltip('hide');
 				}
 			});
 		}
@@ -2674,51 +2703,39 @@ ko.bindingHandlers.tooltip = {
 ko.bindingHandlers.tooltip2 = {
 	'init': function (oElement, fValueAccessor) {
 		var
-			sClass = $(oElement).data('tooltip-class') || '',
-			sPlacement = $(oElement).data('tooltip-placement') || 'top'
+			$oEl = $(oElement),
+			sClass = $oEl.data('tooltip-class') || '',
+			sPlacement = $oEl.data('tooltip-placement') || 'top'
 		;
-		$(oElement).tooltip({
+
+		$oEl.tooltip({
 			'delay': {
 				'show': 500,
 				'hide': 100
 			},
 			'html': true,
+			'container': 'body',
 			'placement': sPlacement,
 			'title': function () {
-				return '<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
+				return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
+					'<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
+			}
+		}).click(function () {
+			$oEl.tooltip('hide');
+		});
+
+		Globals.dropdownVisibility.subscribe(function (bValue) {
+			if (bValue)
+			{
+				$oEl.tooltip('hide');
 			}
 		});
 	}
 };
 
-ko.__detectDropdownVisibility = _.debounce(function ($el) {
-	Globals.dropdownVisibility(!!$el.hasClass('open'));
-}, 50);
-
-ko.bindingHandlers.dropdownOpenStatus = {
+ko.bindingHandlers.registrateBootstrapDropdown = {
 	'init': function (oElement) {
-		var $el = $(oElement);
-
-		$el.find('.dropdown-toggle').click(function () {
-			ko.__detectDropdownVisibility($el);
-		});
-		
-//		$el.on('.dropdown-menu .menuitem', 'click', function () {
-//			$el.removeClass('open');
-//			ko.__detectDropdownVisibility($el);
-//		});
-
-//		$el.on('.dropdown-menu .menuitem', 'keydown', function (oEvent) {
-//			if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode)
-//			{
-//				$el.removeClass('open');
-//				ko.__detectDropdownVisibility($el);
-//			}
-//		});
-		
-		$html.on('click.dropdown.data-api', function () {
-			ko.__detectDropdownVisibility($el);
-		});
+		BootstrapDropdowns.push($(oElement));
 	}
 };
 
@@ -2730,7 +2747,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 			if (!$el.hasClass('open'))
 			{
 				$el.find('.dropdown-toggle').dropdown('toggle');
-				ko.__detectDropdownVisibility($el);
+				Utils.detectDropdownVisibility();
 			}
 			
 			fValueAccessor()(false);
@@ -2829,13 +2846,16 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		$(oElement).toggleClass('fade', !Globals.bMobileDevice) .modal({
+		
+		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
-		}).on('hidden', function () {
-			fValueAccessor()(false);
-		}).on('shown', function () {
+		})
+		.on('shown', function () {
 			Utils.windowResize();
+		})
+		.find('.close').click(function () {
+			fValueAccessor()(false);
 		});
 	},
 	'update': function (oElement, fValueAccessor) {
@@ -3959,11 +3979,8 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
-	if ('Popups' === this.sPosition)
-	{
-		this.modalVisibility = ko.observable(false);
-	}
-
+	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
+	
 	this.viewModelDom = null;
 }
 
@@ -4208,6 +4225,32 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 				oViewModel.cancelCommand = oViewModel.closeCommand = Utils.createCommand(oViewModel, function () {
 					kn.hideScreenPopup(ViewModelClass);
 				});
+
+				oViewModel.modalVisibility.subscribe(function (bValue) {
+
+					var self = this;
+					if (bValue)
+					{
+						this.viewModelDom.show();
+						this.storeAndSetKeyScope();
+
+						RL.popupVisibilityNames.push(this.viewModelName);
+
+						Utils.delegateRun(this, 'onFocus', [], 500);
+					}
+					else
+					{
+						Utils.delegateRun(this, 'onHide');
+						this.restoreKeyScope();
+
+						RL.popupVisibilityNames.remove(this.viewModelName);
+
+						_.delay(function () {
+							self.viewModelDom.hide();
+						}, 300);
+					}
+					
+				}, oViewModel);
 			}
 		
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
@@ -4250,16 +4293,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
-		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
-		ViewModelClassToHide.__vm.restoreKeyScope();
-
-		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
-
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
-		
-		_.delay(function () {
-			ViewModelClassToHide.__dom.hide();
-		}, 300);
 	}
 };
 
@@ -4275,17 +4309,9 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 
 		if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
 		{
-			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
-
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			ViewModelClassToShow.__vm.storeAndSetKeyScope();
-
-			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
-			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
-
-			Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus', [], 500);
 		}
 	}
 };
@@ -5413,8 +5439,6 @@ function PopupsAskViewModel()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
 
-	this.sKeyScope = Enums.KeyState.MessageList;
-
 	Knoin.constructorEnd(this);
 }
 
@@ -5486,7 +5510,7 @@ PopupsAskViewModel.prototype.onFocus = function ()
 
 PopupsAskViewModel.prototype.onBuild = function ()
 {
-	key('tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+	key('tab, shift+tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
 		if (this.yesFocus())
 		{
 			this.noFocus(true);
@@ -6623,6 +6647,8 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
  */
 function AbstractData()
 {
+	this.useKeyboardShortcuts = ko.observable(true);
+	
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
 	this.keyScopeFake = ko.observable(Enums.KeyState.All);
 	
@@ -6651,13 +6677,12 @@ function AbstractData()
 				}
 			}
 			
-//			window.console.log(sValue + '/' + this.keyScopeFake());
 			this.keyScopeReal(sValue);
 		}
 	});
 	
 	this.keyScopeReal.subscribe(function (sValue) {
-		window.console.log(sValue);
+//		window.console.log(sValue);
 		key.setScope(sValue);
 	});
 
@@ -8148,6 +8173,10 @@ $html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 $window.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
 $window.unload(function () {
 	Globals.bUnload = true;
+});
+
+$html.on('click.dropdown.data-api', function () {
+	Utils.detectDropdownVisibility();
 });
 
 // export

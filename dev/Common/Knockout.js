@@ -5,21 +5,32 @@ ko.bindingHandlers.tooltip = {
 		if (!Globals.bMobileDevice)
 		{
 			var
-				sClass = $(oElement).data('tooltip-class') || '',
-				sPlacement = $(oElement).data('tooltip-placement') || 'top'
+				$oEl = $(oElement),
+				sClass = $oEl.data('tooltip-class') || '',
+				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
 
-			$(oElement).tooltip({
+			$oEl.tooltip({
 				'delay': {
 					'show': 500,
 					'hide': 100
 				},
 				'html': true,
+				'container': 'body',
 				'placement': sPlacement,
 				'trigger': 'hover',
 				'title': function () {
-					return '<span class="tooltip-class ' + sClass + '">' +
+					return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' : '<span class="tooltip-class ' + sClass + '">' +
 						Utils.i18n(ko.utils.unwrapObservable(fValueAccessor())) + '</span>';
+				}
+			}).click(function () {
+				$oEl.tooltip('hide');
+			});
+
+			Globals.dropdownVisibility.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.tooltip('hide');
 				}
 			});
 		}
@@ -29,51 +40,39 @@ ko.bindingHandlers.tooltip = {
 ko.bindingHandlers.tooltip2 = {
 	'init': function (oElement, fValueAccessor) {
 		var
-			sClass = $(oElement).data('tooltip-class') || '',
-			sPlacement = $(oElement).data('tooltip-placement') || 'top'
+			$oEl = $(oElement),
+			sClass = $oEl.data('tooltip-class') || '',
+			sPlacement = $oEl.data('tooltip-placement') || 'top'
 		;
-		$(oElement).tooltip({
+
+		$oEl.tooltip({
 			'delay': {
 				'show': 500,
 				'hide': 100
 			},
 			'html': true,
+			'container': 'body',
 			'placement': sPlacement,
 			'title': function () {
-				return '<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
+				return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
+					'<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
+			}
+		}).click(function () {
+			$oEl.tooltip('hide');
+		});
+
+		Globals.dropdownVisibility.subscribe(function (bValue) {
+			if (bValue)
+			{
+				$oEl.tooltip('hide');
 			}
 		});
 	}
 };
 
-ko.__detectDropdownVisibility = _.debounce(function ($el) {
-	Globals.dropdownVisibility(!!$el.hasClass('open'));
-}, 50);
-
-ko.bindingHandlers.dropdownOpenStatus = {
+ko.bindingHandlers.registrateBootstrapDropdown = {
 	'init': function (oElement) {
-		var $el = $(oElement);
-
-		$el.find('.dropdown-toggle').click(function () {
-			ko.__detectDropdownVisibility($el);
-		});
-		
-//		$el.on('.dropdown-menu .menuitem', 'click', function () {
-//			$el.removeClass('open');
-//			ko.__detectDropdownVisibility($el);
-//		});
-
-//		$el.on('.dropdown-menu .menuitem', 'keydown', function (oEvent) {
-//			if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode)
-//			{
-//				$el.removeClass('open');
-//				ko.__detectDropdownVisibility($el);
-//			}
-//		});
-		
-		$html.on('click.dropdown.data-api', function () {
-			ko.__detectDropdownVisibility($el);
-		});
+		BootstrapDropdowns.push($(oElement));
 	}
 };
 
@@ -85,7 +84,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 			if (!$el.hasClass('open'))
 			{
 				$el.find('.dropdown-toggle').dropdown('toggle');
-				ko.__detectDropdownVisibility($el);
+				Utils.detectDropdownVisibility();
 			}
 			
 			fValueAccessor()(false);
@@ -184,13 +183,16 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		$(oElement).toggleClass('fade', !Globals.bMobileDevice) .modal({
+		
+		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
-		}).on('hidden', function () {
-			fValueAccessor()(false);
-		}).on('shown', function () {
+		})
+		.on('shown', function () {
 			Utils.windowResize();
+		})
+		.find('.close').click(function () {
+			fValueAccessor()(false);
 		});
 	},
 	'update': function (oElement, fValueAccessor) {

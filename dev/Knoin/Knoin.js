@@ -100,6 +100,32 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 				oViewModel.cancelCommand = oViewModel.closeCommand = Utils.createCommand(oViewModel, function () {
 					kn.hideScreenPopup(ViewModelClass);
 				});
+
+				oViewModel.modalVisibility.subscribe(function (bValue) {
+
+					var self = this;
+					if (bValue)
+					{
+						this.viewModelDom.show();
+						this.storeAndSetKeyScope();
+
+						RL.popupVisibilityNames.push(this.viewModelName);
+
+						Utils.delegateRun(this, 'onFocus', [], 500);
+					}
+					else
+					{
+						Utils.delegateRun(this, 'onHide');
+						this.restoreKeyScope();
+
+						RL.popupVisibilityNames.remove(this.viewModelName);
+
+						_.delay(function () {
+							self.viewModelDom.hide();
+						}, 300);
+					}
+					
+				}, oViewModel);
 			}
 		
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
@@ -142,16 +168,7 @@ Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
 	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 	{
 		ViewModelClassToHide.__vm.modalVisibility(false);
-		Utils.delegateRun(ViewModelClassToHide.__vm, 'onHide');
-		ViewModelClassToHide.__vm.restoreKeyScope();
-
-		RL.popupVisibilityNames.remove(ViewModelClassToHide.__name);
-
 		Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
-		
-		_.delay(function () {
-			ViewModelClassToHide.__dom.hide();
-		}, 300);
 	}
 };
 
@@ -167,17 +184,9 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 
 		if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
 		{
-			ViewModelClassToShow.__dom.show();
 			ViewModelClassToShow.__vm.modalVisibility(true);
-
 			Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-			ViewModelClassToShow.__vm.storeAndSetKeyScope();
-
-			RL.popupVisibilityNames.push(ViewModelClassToShow.__name);
-			
 			Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
-
-			Utils.delegateRun(ViewModelClassToShow.__vm, 'onFocus', [], 500);
 		}
 	}
 };

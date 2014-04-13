@@ -386,7 +386,7 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
  */
 MailBoxMessageViewViewModel.prototype.escShortcuts = function ()
 {
-	if (this.viewModelVisibility() && RL.data().useKeyboardShortcuts() && this.message())
+	if (this.viewModelVisibility() && this.message())
 	{
 		if (this.fullScreenMode())
 		{
@@ -417,24 +417,19 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// fullscreen
 	key('enter', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.toggleFullScreen();
-			return false;
-		}
+		self.toggleFullScreen();
+		return false;
 	});
 
-	key('x', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.moreDropdownTrigger(true);
-			return false;
-		}
-	});
+	// TODO // more toggle
+//	key('', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+//		self.moreDropdownTrigger(true);
+//		return false;
+//	});
 
 	// reply
 	key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts() && oData.message())
+		if (oData.message())
 		{
 			self.replyCommand();
 			return false;
@@ -443,7 +438,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// replaAll
 	key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts() && oData.message())
+		if (oData.message())
 		{
 			self.replyAllCommand();
 			return false;
@@ -452,7 +447,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// forward
 	key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts() && oData.message())
+		if (oData.message())
 		{
 			self.forwardCommand();
 			return false;
@@ -461,7 +456,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// message information
 //	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-//		if (oData.useKeyboardShortcuts())
+//		if (oData.message())
 //		{
 //			self.showFullInfo(!self.showFullInfo());
 //			return false;
@@ -470,7 +465,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// toggle message blockquotes
 	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		if (oData.useKeyboardShortcuts() && oData.message() && oData.message().body)
+		if (oData.message() && oData.message().body)
 		{
 			Utils.toggleMessageBlockquote(oData.message().body);
 			return false;
@@ -478,37 +473,28 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	key('ctrl+left, command+left, ctrl+up, command+up', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.goUpCommand();
-			return false;
-		}
+		self.goUpCommand();
+		return false;
 	});
 
 	key('ctrl+right, command+right, ctrl+down, command+down', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.goDownCommand();
-			return false;
-		}
+		self.goDownCommand();
+		return false;
 	});
 
 	// print
 	key('ctrl+p, command+p', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+		if (self.message())
 		{
-			if (self.message())
-			{
-				self.message().printMessage();
-			}
-			
-			return false;
+			self.message().printMessage();
 		}
+		
+		return false;
 	});
 
 	// delete
 	key('delete, shift+delete', Enums.KeyState.MessageView, function (event, handler) {
-		if (oData.useKeyboardShortcuts() && event)
+		if (event)
 		{
 			if (handler && 'shift+delete' === handler.shortcut)
 			{
@@ -525,15 +511,12 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 
 	// change focused state
 	key('tab, shift+tab', Enums.KeyState.MessageView, function () {
-		if (oData.useKeyboardShortcuts())
+		if (!self.fullScreenMode() && self.message())
 		{
-			if (!self.fullScreenMode() && self.message())
-			{
-				self.message.focused(false);
-			}
-
-			return false;
+			self.message.focused(false);
 		}
+
+		return false;
 	});
 };
 

@@ -582,11 +582,8 @@ PopupsContactsViewModel.prototype.onBuild = function (oDom)
 	var self = this;
 
 	key('delete', Enums.KeyState.ContactList, function () {
-		if (RL.data().useKeyboardShortcuts())
-		{
-			self.deleteCommand();
-			return false;
-		}
+		self.deleteCommand();
+		return false;
 	});
 
 	oDom

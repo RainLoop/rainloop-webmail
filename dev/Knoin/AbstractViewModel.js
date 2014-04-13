@@ -16,11 +16,8 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
-	if ('Popups' === this.sPosition)
-	{
-		this.modalVisibility = ko.observable(false);
-	}
-
+	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
+	
 	this.viewModelDom = null;
 }
 

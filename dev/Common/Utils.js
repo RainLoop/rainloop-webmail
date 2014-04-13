@@ -1736,7 +1736,7 @@ Utils.disableKeyFilter = function ()
 	if (window.key)
 	{
 		key.filter = function () {
-			return true;
+			return RL.data().useKeyboardShortcuts();
 		};
 	}
 };
@@ -1746,15 +1746,27 @@ Utils.restoreKeyFilter = function ()
 	if (window.key)
 	{
 		key.filter = function (event) {
-			var
-				element = event.target || event.srcElement,
-				tagName = element ? element.tagName : ''
-			;
 
-			tagName = tagName.toUpperCase();
-			return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
-				(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
-			);
+			if (RL.data().useKeyboardShortcuts())
+			{
+				var
+					element = event.target || event.srcElement,
+					tagName = element ? element.tagName : ''
+				;
+
+				tagName = tagName.toUpperCase();
+				return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
+					(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
+				);
+			}
+
+			return false;
 		};
 	}
 };
+
+Utils.detectDropdownVisibility = _.debounce(function () {
+	Globals.dropdownVisibility(!!_.find(BootstrapDropdowns, function (oItem) {
+		return oItem.hasClass('open');
+	}));
+}, 50);

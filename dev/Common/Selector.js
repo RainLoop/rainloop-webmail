@@ -108,10 +108,8 @@ function Selector(oKoList, oKoSelectedItem,
 	this.sItemFocusedSelector = sItemFocusedSelector;
 	
 	this.sLastUid = '';
-	this.oCallbacks = {};
-
-	this.bUseKeyboard = true;
 	this.bAutoSelect = true;
+	this.oCallbacks = {};
 
 	this.emptyFunction = function () {};
 
@@ -320,7 +318,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			})
 		;
 
-// TODO
 		key('enter', sKeyScope, function () {
 			if (self.focusedItem())
 			{
@@ -377,11 +374,6 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 			}
 		});
 	}
-};
-
-Selector.prototype.useKeyboard = function (bValue)
-{
-	this.bUseKeyboard = !!bValue;
 };
 
 Selector.prototype.autoSelect = function (bValue)

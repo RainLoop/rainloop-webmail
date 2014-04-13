@@ -28,16 +28,16 @@
 								</label>
 							</div>
 							<div class="e-cell e-value">
-								<div class="dropdown pull-left">
-									<span class="dropdown-toggle g-ui-dropdown e-identity" 
-										id="IdentityLabel" role="button" data-toggle="dropdown"
+								<div class="dropdown pull-left" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
+									<a class="dropdown-toggle g-ui-dropdown e-identity" href="#" tabindex="-1"
+										id="identity-label-id" role="button" data-toggle="dropdown"
 										data-bind="text: currentIdentityString, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
-									</span>
+									</a>
 									<!-- ko if: 1 < identitiesOptions().length -->
-										<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="IdentityLabel">
+										<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="identity-label-id">
 											<!-- ko foreach: identitiesOptions -->
-												<li class="e-item">
-													<a class="e-link" tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
+												<li class="e-item" role="presentation">
+													<a class="e-link menuitem" tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
 														<span data-bind="text: optText"></span>
 													</a>
 												</li>

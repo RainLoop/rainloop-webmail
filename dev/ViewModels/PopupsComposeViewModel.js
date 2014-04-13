@@ -31,6 +31,8 @@ function PopupsComposeViewModel()
 
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
+	this.identitiesDropdownTrigger = ko.observable(false);
+
 	this.to = ko.observable('');
 	this.to.focusTrigger = ko.observable(false);
 	this.cc = ko.observable('');
@@ -915,43 +917,33 @@ PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	}]);
 };
 
-PopupsComposeViewModel.prototype.useShortcuts = function ()
-{
-	return RL.data().useKeyboardShortcuts();
-};
-
 PopupsComposeViewModel.prototype.onBuild = function ()
 {
 	this.initUploader();
 
 	var 
 		self = this,
-		oData = RL.data(),
 		oScript = null
 	;
 
+	key('ctrl+q, command+q', Enums.KeyState.Compose, function () {
+		self.identitiesDropdownTrigger(true);
+		return false;
+	});
+
 	key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.saveCommand();
-			return false;
-		}
+		self.saveCommand();
+		return false;
 	});
 
 	key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.sendCommand();
-			return false;
-		}
+		self.sendCommand();
+		return false;
 	});
 	
 	key('esc', Enums.KeyState.Compose, function () {
-		if (oData.useKeyboardShortcuts())
-		{
-			self.tryToClosePopup();
-			return false;
-		}
+		self.tryToClosePopup();
+		return false;
 	});
 
 	$window.on('resize', function () {

@@ -75,7 +75,7 @@ AbstractSystemDropDownViewModel.prototype.onBuild = function ()
 {
 	var self = this;
 	key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
-		if (RL.data().useKeyboardShortcuts() && !RL.popupVisibility() && !Globals.dropdownVisibility() && self.viewModelVisibility())
+		if (self.viewModelVisibility())
 		{
 			self.accountMenuDropdownTrigger(true);
 		}

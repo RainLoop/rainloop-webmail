@@ -7,6 +7,10 @@ $window.unload(function () {
 	Globals.bUnload = true;
 });
 
+$html.on('click.dropdown.data-api', function () {
+	Utils.detectDropdownVisibility();
+});
+
 // export
 window['rl'] = window['rl'] || {};
 window['rl']['addHook'] = Plugins.addHook;

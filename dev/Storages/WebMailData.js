@@ -85,6 +85,7 @@ function WebMailDataStorage()
 	// folders
 	this.namespace = '';
 	this.folderList = ko.observableArray([]);
+	this.folderList.focused = ko.observable(false);
 
 	this.foldersListError = ko.observable('');
 
@@ -279,9 +280,21 @@ function WebMailDataStorage()
 	this.message.focused.subscribe(function (bValue) {
 		if (bValue)
 		{
+			RL.data().folderList.focused(false);
 			RL.data().keyScope(Enums.KeyState.MessageView);
 		}
 		else if (Enums.KeyState.MessageView === RL.data().keyScope())
+		{
+			RL.data().keyScope(Enums.KeyState.MessageList);
+		}
+	});
+	
+	this.folderList.focused.subscribe(function (bValue) {
+		if (bValue)
+		{
+			RL.data().keyScope(Enums.KeyState.FolderList);
+		}
+		else if (Enums.KeyState.FolderList === RL.data().keyScope())
 		{
 			RL.data().keyScope(Enums.KeyState.MessageList);
 		}
@@ -363,8 +376,6 @@ function WebMailDataStorage()
 	}, this);
 
 	// other
-	this.useKeyboardShortcuts = ko.observable(true);
-	
 	this.allowOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;

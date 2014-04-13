@@ -35,11 +35,13 @@ Enums.KeyState = {
 	'None': 'none',
 	'ContactList': 'contact-list',
 	'MessageList': 'message-list',
+	'FolderList': 'folder-list',
 	'MessageView': 'message-view',
 	'Compose': 'compose',
 	'Settings': 'settings',
 	'Menu': 'menu',
 	'PopupComposeOpenPGP': 'compose-open-pgp',
+	'PopupKeyboardShortcutsHelp': 'popup-keyboard-shortcuts-help',
 	'PopupAsk': 'popup-ask'
 };
 

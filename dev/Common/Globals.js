@@ -13,7 +13,7 @@ Globals.momentTrigger = ko.observable(true);
 /**
  * @type {?}
  */
-Globals.dropdownVisibility = ko.observable(false);
+Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});
 
 /**
  * @type {?}

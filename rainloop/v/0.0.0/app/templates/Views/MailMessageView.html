@@ -37,11 +37,11 @@
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group dropdown" data-bind="dropdownOpenStatus: true, openDropdownTrigger: moreDropdownTrigger"">
-					<a class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
+				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
+					<a id="more-view-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
 						<i class="icon-list"></i>
 					</a>
-					<ul class="dropdown-menu g-ui-menu" role="menu">
+					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
 						<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
 								<i class="icon-reply"></i>

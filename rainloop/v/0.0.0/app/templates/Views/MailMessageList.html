@@ -9,7 +9,7 @@
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group dropdown" data-bind="dropdownOpenStatus: true, openDropdownTrigger: moveDropdownTrigger">
+				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-folder"></i>
 						&nbsp;&nbsp;
@@ -35,11 +35,11 @@
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group dropdown" data-bind="dropdownOpenStatus: true, openDropdownTrigger: moreDropdownTrigger">
-					<a class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
+				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
+					<a id="more-list-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list"></i>
 					</a>
-					<ul class="dropdown-menu g-ui-menu" role="menu">
+					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 						<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
