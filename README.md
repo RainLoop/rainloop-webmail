@@ -11,6 +11,11 @@ For more information about the product, check [http://rainloop.net](http://rainl
 
 Information about installing the product, check the [documentation page](http://rainloop.net/docs/installation/).
 
+## Attention
+
+This is **NOT** a stable version of RainLoop Webmail.
+It's not recommended to use in production environment
+
 ## License
 
 **Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)**
