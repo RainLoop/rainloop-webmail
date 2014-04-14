@@ -473,7 +473,7 @@ RainLoopApp.prototype.quota = function ()
 {
 	this.remote().quota(function (sResult, oData) {
 		if (Enums.StorageResultType.Success === sResult &&	oData && oData.Result && 
-			Utils.isArray(oData.Result) && 2 === oData.Result.length &&
+			Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 			Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 		{
 			RL.data().userQuota(Utils.pInt(oData.Result[1]) * 1024);

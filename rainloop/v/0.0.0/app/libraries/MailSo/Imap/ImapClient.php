@@ -948,8 +948,20 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$aReturn = array(
 						(int) $oImapResponse->ResponseList[3][1],
-						(int) $oImapResponse->ResponseList[3][2]
+						(int) $oImapResponse->ResponseList[3][2],
+						0,
+						0
 					);
+
+					if (5 < count($oImapResponse->ResponseList[3])
+						&& 'MESSAGE' === strtoupper($oImapResponse->ResponseList[3][3])
+						&& is_numeric($oImapResponse->ResponseList[3][4])
+						&& is_numeric($oImapResponse->ResponseList[3][5])
+					)
+					{
+						$aReturn[2] = (int) $oImapResponse->ResponseList[3][4];
+						$aReturn[3] = (int) $oImapResponse->ResponseList[3][5];
+					}
 				}
 			}
 		}
