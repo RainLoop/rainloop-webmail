@@ -1077,6 +1077,10 @@ RainLoopApp.prototype.bootstart = function ()
 					RL.quota();
 				});
 
+				RL.sub('interval.10m', function () {
+					RL.folders();
+				});
+
 				_.delay(function () {
 					RL.folderInformationMultiply(true);
 				}, 500);

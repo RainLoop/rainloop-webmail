@@ -1,6 +1,6 @@
 <?php
 
-	define('APP_INDEX_ROOT_PATH', rtrim(dirname(__FILE__), '\\/').'/');
+	define('APP_INDEX_ROOT_PATH', str_replace('\\', '/', rtrim(dirname(__FILE__), '\\/').'/'));
 
 	$sCustomDataPath = '';
 	if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))

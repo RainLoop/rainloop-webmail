@@ -296,7 +296,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sType
+	 * @param string $sName
 	 * @param bool $bReturnIntValue = true
 	 *
 	 * @return int|string|bool
@@ -335,7 +335,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sType
+	 * @param string $sName
 	 *
 	 * @return int|string|bool
 	 */
@@ -345,7 +345,7 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sType
+	 * @param string $sName
 	 * @param int $iVersion
 	 * 
 	 * @return bool

@@ -38,7 +38,14 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 
 		if (!$oException)
 		{
-			\RainLoop\Service::NewInstance()->Handle();
+			if (defined('APP_CALLER_AS_API') && APP_CALLER_AS_API)
+			{
+				\RainLoop\Api::Handle();
+			}
+			else
+			{
+				\RainLoop\Service::NewInstance()->Handle();
+			}
 		}
 	}
 }

@@ -160,6 +160,14 @@ class Actions
 	}
 
 	/**
+	 * @return string
+	 */
+	public function BuildSsoCacherKey($sSsoHash)
+	{
+		return '/Sso/Data/'.$sSsoHash.'/Login/';
+	}
+
+	/**
 	 * @return \RainLoop\Application
 	 */
 	public function Config()
@@ -4508,7 +4516,7 @@ class Actions
 						$sFolderFullName = $this->GetActionParam('MessageFolder', '');
 						$sUid = $this->GetActionParam('MessageUid', '');
 
-						$this->Cacher()->Set($oAccount->Email().'/'.$sFolderFullName.'/'.$sUid, '1');
+						$this->Cacher()->Set('/ReadReceipt/'.$oAccount->Email().'/'.$sFolderFullName.'/'.$sUid, '1');
 
 						if (0 < \strlen($sFolderFullName) && 0 < \strlen($sUid))
 						{
@@ -6786,7 +6794,8 @@ class Actions
 							catch (\Exception $oException) {}
 						}
 
-						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher()->Get($oAccount->Email().'/'.$mResult['Folder'].'/'.$mResult['Uid'], '0'))
+						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher()->Get(
+							'/ReadReceipt/'.$oAccount->Email().'/'.$mResult['Folder'].'/'.$mResult['Uid'], '0'))
 						{
 							$mResult['ReadReceipt'] = '';
 						}
@@ -6933,8 +6942,12 @@ class Actions
 			else if ($mResponse instanceof \MailSo\Base\Collection)
 			{
 				$aList =& $mResponse->GetAsArray();
+				if (100 < \count($aList) && $mResponse instanceof \MailSo\Mime\EmailCollection)
+				{
+					$aList = \array_slice($aList, 0, 100);
+				}
+				
 				$mResult = $this->responseObject($aList, $sParent, $aParameters);
-
 				$bHook = false;
 			}
 			else

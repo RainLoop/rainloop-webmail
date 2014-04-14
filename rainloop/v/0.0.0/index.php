@@ -6,6 +6,9 @@
 		define('APP_INDEX_FILE', 'index.php');
 		define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
+		define('APP_CALLER_ROOT_PATH', empty($_SERVER['SCRIPT_FILENAME']) ? '' : str_replace('\\', '/', rtrim(dirname($_SERVER['SCRIPT_FILENAME']), '\\/').'/'));
+		define('APP_CALLER_AS_API', APP_CALLER_ROOT_PATH !== str_replace('\\', '/', APP_INDEX_ROOT_PATH));
+
 		if (function_exists('date_default_timezone_set'))
 		{
 			date_default_timezone_set('UTC');

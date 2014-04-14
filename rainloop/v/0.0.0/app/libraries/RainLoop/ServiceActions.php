@@ -823,7 +823,52 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
-	public function ServiceCpanelAutoLogin()
+	public function ServiceSso()
+	{
+		$oException = null;
+		$oAccount = null;
+
+		$sSsoHash = $this->oHttp->GetRequest('hash', '');
+		if (!empty($sSsoHash))
+		{
+			$mData = null;
+			$sSsoKey = $this->oActions->BuildSsoCacherKey($sSsoHash);
+			
+			$sSsoSubData = $this->Cacher()->Get($sSsoKey);
+			if (!empty($sSsoSubData))
+			{
+				$mData = \RainLoop\Utils::DecodeKeyValues($sSsoSubData);
+				$this->Cacher()->Delete($sSsoKey);
+
+				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password']))
+				{
+					$sEmail = \strtolower(\trim($mData['Email']));
+					$sPassword = $mData['Password'];
+					$sLogin = isset($mData['Login']) ? $mData['Login'] : '';
+
+					try
+					{
+						$this->oActions->Logger()->AddSecret($sPassword);
+
+						$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
+						$this->oActions->AuthProcess($oAccount);
+					}
+					catch (\Exception $oException)
+					{
+						$this->oActions->Logger()->WriteException($oException);
+					}
+				}
+			}
+		}
+
+		$this->oActions->Location('./');
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceRemoteAutoLogin()
 	{
 		$oException = null;
 		$oAccount = null;

@@ -12,6 +12,7 @@ function PopupsComposeViewModel()
 	this.aDraftInfo = null;
 	this.sInReplyTo = '';
 	this.bFromDraft = false;
+	this.bSkipNext = false;
 	this.sReferences = '';
 	
 	this.bAllowIdentities = RL.settingsGet('AllowIdentities');
@@ -278,6 +279,8 @@ function PopupsComposeViewModel()
 			this.savedError(false);
 			this.saving(true);
 
+			this.bSkipNext = true;
+
 			RL.cache().setFolderHash(RL.data().draftFolder(), '');
 
 			RL.remote().saveMessage(
@@ -303,8 +306,9 @@ function PopupsComposeViewModel()
 
 	RL.sub('interval.1m', function () {
 		if (this.modalVisibility() && !RL.data().draftFolderNotEnabled() && !this.isEmptyForm(false) &&
-			!this.saving() && !this.sending() && !this.savedError())
+			!this.bSkipNext && !this.saving() && !this.sending() && !this.savedError())
 		{
+			this.bSkipNext = false;
 			this.saveCommand();
 		}
 	}, this);
