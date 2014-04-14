@@ -20,6 +20,7 @@
 				<strong><span data-bind="text: viewUser"></span></strong>
 			</div>
 		</div>
+<!--
 		<div class="control-group">
 			<label class="control-label">
 				<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LABEL_TWO_FACTOR_STATUS"></span>
@@ -29,6 +30,7 @@
 				<strong data-bind="visible: processing()">...</strong>
 			</div>
 		</div>
+-->
 		<div class="control-group">
 			<div class="controls">
 				<a class="btn" data-bind="click: clearTwoFactor, visible: twoFactorStatus">
@@ -50,12 +52,21 @@
 				</a>
 			</div>
 		</div>
+		<div class="control-group" data-bind="visible: '' === viewSecret() && twoFactorStatus() && !clearing()">
+			<div class="controls" style="padding-top: 5px;">
+				<strong data-bind="visible: secreting">...</strong>
+				<span class="g-ui-link i18n" data-bind="click: showSecret, visible: !secreting()"
+					data-i18n-text="SETTINGS_SECURITY/BUTTON_SHOW_SECRET"></span>
+			</div>
+		</div>
 		<div class="control-group" data-bind="visible: '' !== viewSecret()">
 			<label class="control-label">
 				<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LABEL_TWO_FACTOR_SECRET"></span>
 			</label>
 			<div class="controls" style="padding-top: 5px;">
 				<strong data-bind="text: viewSecret"></strong>
+				&nbsp;&nbsp;
+				<span class="g-ui-link i18n" data-bind="click: hideSecret" data-i18n-text="SETTINGS_SECURITY/BUTTON_HIDE_SECRET"></span>
 				<br />
 				<br />
 				<blockquote>

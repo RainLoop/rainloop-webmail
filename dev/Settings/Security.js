@@ -7,6 +7,7 @@ function SettingsSecurity()
 {
 	this.processing = ko.observable(false);
 	this.clearing = ko.observable(false);
+	this.secreting = ko.observable(false);
 
 	this.viewUser = ko.observable('');
 	this.viewEnable = ko.observable(false);
@@ -29,9 +30,23 @@ function SettingsSecurity()
 	}, this);
 	
 	this.onResult = _.bind(this.onResult, this);
+	this.onSecretResult = _.bind(this.onSecretResult, this);
 }
 
 Utils.addSettingsViewModel(SettingsSecurity, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+
+SettingsSecurity.prototype.showSecret = function ()
+{
+	this.secreting(true);
+	RL.remote().showTwoFactorSecret(this.onSecretResult);
+};
+
+SettingsSecurity.prototype.hideSecret = function ()
+{
+	this.viewSecret('');
+	this.viewBackupCodes('');
+	this.viewUrl('');
+};
 
 SettingsSecurity.prototype.createTwoFactor = function ()
 {
@@ -110,6 +125,22 @@ SettingsSecurity.prototype.onResult = function (sResult, oData)
 				}, bValue);
 			}
 		}, this);
+	}
+};
+
+SettingsSecurity.prototype.onSecretResult = function (sResult, oData)
+{
+	this.secreting(false);
+
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	{
+		this.viewSecret(Utils.pString(oData.Result.Secret));
+		this.viewUrl(Utils.pString(oData.Result.Url));
+	}
+	else
+	{
+		this.viewSecret('');
+		this.viewUrl('');
 	}
 };
 

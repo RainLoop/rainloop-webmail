@@ -4724,6 +4724,28 @@ class Actions
 	/**
 	 * @return array
 	 */
+	public function DoShowTwoFactorSecret()
+	{
+		if (!$this->TwoFactorAuthProvider()->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->getAccountFromToken();
+		$sEmail = $oAccount->ParentEmailHelper();
+
+		$aResult = $this->getTwoFactorInfo($sEmail);
+		if (\is_array($aResult))
+		{
+			unset($aResult['BackupCodes']);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $aResult);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function DoEnableTwoFactor()
 	{
 		if (!$this->TwoFactorAuthProvider()->IsActive())

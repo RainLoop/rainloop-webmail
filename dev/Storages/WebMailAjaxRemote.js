@@ -74,6 +74,14 @@ WebMailAjaxRemoteStorage.prototype.clearTwoFactor = function (fCallback)
 
 /**
  * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.showTwoFactorSecret = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ShowTwoFactorSecret');
+};
+
+/**
+ * @param {?Function} fCallback
  * @param {string} sCode
  */
 WebMailAjaxRemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
