@@ -358,7 +358,11 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	;
 
 	this.message.focused.subscribe(function (bValue) {
-		this.messageDomFocused(!!bValue);
+		if (bValue && !Utils.inFocus()) {
+			this.messageDomFocused(true);
+		} else {
+			this.messageDomFocused(false);
+		}
 	}, this);
 
 	this.messageDomFocused.subscribe(function (bValue) {

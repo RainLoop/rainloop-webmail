@@ -237,7 +237,7 @@
 										&nbsp;&nbsp;
 										<span class="i18n" data-i18n-text="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC" data-bind="click: function() { decryptPgpEncryptedMessage(message()); }"></span>
 										&nbsp;&nbsp;
-										<input type="password" class="i18n span3 inputPgpPassword" style="margin-bottom: 0" data-i18n-placeholder="MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword" />
+										<input type="password" class="i18n span3 inputPgpPassword" style="margin-bottom: 0" data-i18n-placeholder="MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword, onEnter: function() { decryptPgpEncryptedMessage(message()); }" />
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
