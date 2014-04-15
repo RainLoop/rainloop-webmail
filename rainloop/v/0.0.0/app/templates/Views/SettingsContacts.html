@@ -38,11 +38,10 @@
 			   <span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_SYNC_PASSWORD"></span>
 			</label>
 			<div class="controls">
-				<div data-bind="visible: showPassword">
-					<strong style="color:red" data-bind="text: contactsSyncPass"></strong>
-				</div>
+				<strong style="color:red" data-bind="text: contactsSyncPass, visible: showPassword"></strong>
 				<span class="g-ui-link i18n" data-bind="visible: !showPassword(), click: toggleShowPassword"
 					data-i18n-text="SETTINGS_CONTACTS/LINK_SHOW"></span>
+				&nbsp;&nbsp;
 				<span class="g-ui-link i18n" data-bind="visible: showPassword, click: toggleShowPassword"
 					data-i18n-text="SETTINGS_CONTACTS/LINK_HIDE"></span>
 			</div>

@@ -24,8 +24,7 @@
 		
 		define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
-		$sPrivateDataFolderInternalName = function_exists('__get_private_data_folder_internal_name') ?
-			trim(__get_private_data_folder_internal_name(APP_SITE)) : '';
+		$sPrivateDataFolderInternalName = @file_exists(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
 		define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
 		define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
