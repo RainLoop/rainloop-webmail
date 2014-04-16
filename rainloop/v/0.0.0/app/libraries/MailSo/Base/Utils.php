@@ -286,6 +286,26 @@ class Utils
 	/**
 	 * @param string $sValue
 	 *
+	 * @return string
+	 */
+	public static function StrToLowerIfAscii($sValue)
+	{
+		return \MailSo\Base\Utils::IsAscii($sValue) ? \strtolower($sValue) : $sValue;
+	}
+
+	/**
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function StrToUpperIfAscii($sValue)
+	{
+		return \MailSo\Base\Utils::IsAscii($sValue) ? \strtoupper($sValue) : $sValue;
+	}
+
+	/**
+	 * @param string $sValue
+	 *
 	 * @return bool
 	 */
 	public static function IsUtf8($sValue)

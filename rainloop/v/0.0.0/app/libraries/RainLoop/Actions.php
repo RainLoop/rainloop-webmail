@@ -12,6 +12,7 @@ class Actions
 {
 	const AUTH_TOKEN_KEY = 'rlauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
+	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
 	const AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
 	const AUTH_LAST_ERROR = 'rllasterrorcode';
@@ -819,6 +820,22 @@ class Actions
 
 		return $bResult;
 	}
+
+	/**
+	 * @param string $sTo
+	 */
+	public function SetMailtoRequest($sTo)
+	{
+		if (!empty($sTo))
+		{
+			\RainLoop\Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
+				\RainLoop\Utils::EncodeKeyValues(array(
+					'Time' => microtime(true),
+					'MailTo' => 'MailTo',
+					'To' => $sTo
+				)), 0, '/', null, null, true);
+		}
+	}
 	
 	/**
 	 * @param string $sEmail
@@ -932,6 +949,7 @@ class Actions
 			'Auth' => false,
 			'AccountHash' => '',
 			'AuthAccountHash' => '',
+			'MailToEmail' => '',
 			'Email' => '',
 			'Title' => $oConfig->Get('webmail', 'title', ''),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', ''),
@@ -972,6 +990,18 @@ class Actions
 		$oSettings = null;
 		if (!$bAdmin)
 		{
+			$sToken = \RainLoop\Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
+			if (null !== $sToken)
+			{
+				\RainLoop\Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
+				$mMailToData = \RainLoop\Utils::DecodeKeyValues($sToken);
+				if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] &&
+					!empty($mMailToData['To']))
+				{
+					$aResult['MailToEmail'] = $mMailToData['To'];
+				}
+			}
+
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{

@@ -797,6 +797,26 @@ class ServiceActions
 		
 		return '';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceMailto()
+	{
+		$sTo = \trim($this->oHttp->GetQuery('to', ''));
+		if (!empty($sTo))
+		{
+			if (preg_match('/^mailto:/i', $sTo))
+			{
+				$sTo = \substr($sTo, 7);
+			}
+
+			$this->oActions->SetMailtoRequest(\MailSo\Base\Utils::StrToLowerIfAscii($sTo));
+		}
+
+		$this->oActions->Location('./');
+		return '';
+	}
 	
 	/**
 	 * @return string

@@ -154,7 +154,7 @@ class Service
 			return $this;
 		}
 
-		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin)
+		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== $aPaths[0])
 		{
 			$sMethodName = 'Service'.$aPaths[0];
 			if (\method_exists($this->oServiceActions, $sMethodName) &&
