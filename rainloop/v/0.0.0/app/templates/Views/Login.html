@@ -47,12 +47,19 @@
 				</div>
 				<div class="control-group" data-bind="visible: additionalCode.visibility(), css: {'error': additionalCode.error}">
 					<div class="input-append">
-						<input class="i18n inputPassword span4" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input class="i18n inputAdditionalCode span4" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: additionalCode, hasFocus: additionalCode.focused" data-i18n-placeholder="LOGIN/LABEL_VERIFICATION_CODE" />
 						<span class="add-on">
 							<i class="icon-key"></i>
 						</span>
 					</div>
+				</div>
+				<div class="control-group" data-bind="visible: additionalCode.visibility()">
+					<label class="pull-left additionalCodeSignMeLabel" data-bind="click: function () { additionalCodeSignMe(!additionalCodeSignMe()); }">
+						<i data-bind="css: additionalCodeSignMe() ? 'checkboxAdditionalCodeSignMe icon-checkbox-checked' : 'checkboxAdditionalCodeSignMe icon-checkbox-unchecked'"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="LOGIN/LABEL_DONT_ASK_VERIFICATION_CODE"></span>
+					</label>
 				</div>
 				{{INCLUDE/BottomControlGroup/PLACE}}
 				<div class="control-group">

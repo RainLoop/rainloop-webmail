@@ -7187,7 +7187,8 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .b-login-content .loginFormWrapper .inputLoginForm,
 .b-login-content .loginFormWrapper .inputEmail,
 .b-login-content .loginFormWrapper .inputLogin,
-.b-login-content .loginFormWrapper .inputPassword {
+.b-login-content .loginFormWrapper .inputPassword,
+.b-login-content .loginFormWrapper .inputAdditionalCode {
   font-size: 18px;
   height: 30px;
   line-height: 29px;

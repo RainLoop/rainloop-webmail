@@ -928,7 +928,7 @@ class Actions
 		$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
 		if (!empty($sSignMeToken))
 		{
-			$oAccount = $this->oActions->GetAccountFromCustomToken($this->StorageProvider()->Get(null,
+			$oAccount = $this->GetAccountFromCustomToken($this->StorageProvider()->Get(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
 				'SignMe/UserToken/'.$sSignMeToken
 			), false, false);
@@ -1375,12 +1375,14 @@ class Actions
 	 * @param string $sLogin
 	 * @param string $sPassword
 	 * @param string $sSignMeToken = ''
-	 * @param string $sTwoFactorAuthCode = ''
+	 * @param string $sAdditionalCode = ''
+	 * @param string $bAdditionalCodeSignMeSignMe = false
 	 *
 	 * @return \RainLoop\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(&$sEmail, &$sLogin, &$sPassword, $sSignMeToken = '', $sTwoFactorAuthCode = '')
+	public function LoginProcess(&$sEmail, &$sLogin, &$sPassword, $sSignMeToken = '',
+		$sAdditionalCode = '', $bAdditionalCodeSignMeSignMe = false)
 	{
 		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
 		{
@@ -1424,32 +1426,43 @@ class Actions
 			$aData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable'])
 			{
-				$sTwoFactorAuthCode = \trim($sTwoFactorAuthCode);
-				if (empty($sTwoFactorAuthCode))
+				$iAdditionalCodeTimeoutLimit = 60 * 60 * 24 * 14; // two weeks
+				$iAdditionalCodeTimeout = isset($aData['Timeout']) && \is_numeric($aData['Timeout']) ? (int) $aData['Timeout'] : 0;
+				
+				if (0 === $iAdditionalCodeTimeout || $iAdditionalCodeTimeout + $iAdditionalCodeTimeoutLimit < \time())
 				{
-					$this->Logger()->Write('TwoFactorAuth: Required Code for '.$oAccount->ParentEmailHelper().' account.');
-					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
-				}
-				else
-				{
-					$this->Logger()->Write('TwoFactorAuth: Verify Code for '.$oAccount->ParentEmailHelper().' account.');
-
-					$bGood = false;
-					if (6 < \strlen($sTwoFactorAuthCode) && !empty($aData['BackupCodes']))
+					$sAdditionalCode = \trim($sAdditionalCode);
+					if (empty($sAdditionalCode))
 					{
-						$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
-						$bGood = \in_array($sTwoFactorAuthCode, $aBackupCodes);
-
-						if ($bGood)
-						{
-							$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sTwoFactorAuthCode);
-						}
+						$this->Logger()->Write('TwoFactorAuth: Required Code for '.$oAccount->ParentEmailHelper().' account.');
+						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
 					}
-
-					if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sTwoFactorAuthCode))
+					else
 					{
-						$this->loginErrorDelay();
-						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
+						$this->Logger()->Write('TwoFactorAuth: Verify Code for '.$oAccount->ParentEmailHelper().' account.');
+
+						$bGood = false;
+						if (6 < \strlen($sAdditionalCode) && !empty($aData['BackupCodes']))
+						{
+							$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
+							$bGood = \in_array($sAdditionalCode, $aBackupCodes);
+
+							if ($bGood)
+							{
+								$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sAdditionalCode);
+							}
+						}
+
+						if ($bAdditionalCodeSignMeSignMe)
+						{
+							$this->setSkipTimeoutForTwoFactor($oAccount->ParentEmailHelper());
+						}
+
+						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
+						{
+							$this->loginErrorDelay();
+							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
+						}
 					}
 				}
 			}
@@ -1492,9 +1505,10 @@ class Actions
 		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$sLanguage = $this->GetActionParam('Language', '');
-		$bSignMe = '1' === $this->GetActionParam('SignMe', '0');
+		$bSignMe = '1' === (string) $this->GetActionParam('SignMe', '0');
 		
 		$sAdditionalCode = $this->GetActionParam('AdditionalCode', '');
+		$bAdditionalCodeSignMe = '1' === (string) $this->GetActionParam('AdditionalCodeSignMe', '0');
 
 		$this->Logger()->AddSecret($sPassword);
 
@@ -1504,7 +1518,7 @@ class Actions
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
 				$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '',
-				$sAdditionalCode);
+				$sAdditionalCode, $bAdditionalCodeSignMe);
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
 		{
@@ -4631,7 +4645,8 @@ class Actions
 			'Enable' => false,
 			'Secret' => '',
 			'Url' => '',
-			'BackupCodes' => ''
+			'BackupCodes' => '',
+			'Timeout' => 0
 		);
 
 		if (!empty($sEmail))
@@ -4657,6 +4672,7 @@ class Actions
 			$aResult['Enable'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
 			$aResult['Secret'] = $mData['Secret'];
 			$aResult['BackupCodes'] = $mData['BackupCodes'];
+			$aResult['Timeout'] = isset($mData['Timeout']) ? (int) $mData['Timeout'] : 0;
 
 			$aResult['Url'] = $this->TwoFactorAuthProvider()->GetQRCodeGoogleUrl(
 				$aResult['User'], $aResult['Secret'], $this->Config()->Get('webmail', 'title', ''));
@@ -4724,6 +4740,41 @@ class Actions
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	private function setSkipTimeoutForTwoFactor($sEmail)
+	{
+		if (empty($sEmail))
+		{
+			return false;
+		}
+
+		$sData = $this->StorageProvider()->Get(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			'TwoFactorAuth/User/'.$sEmail.'/Data/'
+		);
+
+		if ($sData)
+		{
+			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+			if (\is_array($mData))
+			{
+				$mData['Timeout'] = \time();
+
+				return $this->StorageProvider()->Put(null,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+					'TwoFactorAuth/User/'.$sEmail.'/Data/',
+					\RainLoop\Utils::EncodeKeyValues($mData)
+				);
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function DoGetTwoFactorInfo()
@@ -4767,6 +4818,7 @@ class Actions
 				'User' => $sEmail,
 				'Enable' => false,
 				'Secret' => $sSecret,
+				'Timeout' => 0,
 				'BackupCodes' => \implode(' ', $aCodes)
 			))
 		);
@@ -4822,6 +4874,7 @@ class Actions
 					'User' => $sEmail,
 					'Enable' => '1' === \trim($this->GetActionParam('Enable', '0')),
 					'Secret' => $mData['Secret'],
+					'Timeout' => isset($mData['Timeout']) ? $mData['Timeout'] : 0,
 					'BackupCodes' => $mData['BackupCodes']
 				))
 			);

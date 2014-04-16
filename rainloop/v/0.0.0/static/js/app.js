@@ -11452,6 +11452,7 @@ function LoginViewModel()
 	this.additionalCode.error = ko.observable(false);
 	this.additionalCode.focused = ko.observable(false);
 	this.additionalCode.visibility = ko.observable(false);
+	this.additionalCodeSignMe = ko.observable(false);
 
 	this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
 	this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
@@ -11570,7 +11571,9 @@ function LoginViewModel()
 
 		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
-			this.additionalCode.visibility() ? this.additionalCode() : '');
+			this.additionalCode.visibility() ? this.additionalCode() : '',
+			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+		);
 
 		return true;
 
@@ -16630,8 +16633,9 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
  * @param {boolean} bSignMe
  * @param {string=} sLanguage
  * @param {string=} sAdditionalCode
+ * @param {boolean=} bAdditionalCodeSignMe
  */
-WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode)
+WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe)
 {
 	this.defaultRequest(fCallback, 'Login', {
 		'Email': sEmail,
@@ -16639,6 +16643,7 @@ WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, 
 		'Password': sPassword,
 		'Language': sLanguage || '',
 		'AdditionalCode': sAdditionalCode || '',
+		'AdditionalCodeSignMe': bAdditionalCodeSignMe ? '1' : '0',
 		'SignMe': bSignMe ? '1' : '0'
 	});
 };
@@ -19558,12 +19563,14 @@ RainLoopApp.prototype.bootstart = function ()
 				Plugins.runHook('rl-start-user-screens');
 				RL.pub('rl.bootstart-user-screens');
 
-				if (!!RL.settingsGet('AccountSignMe'))
+				if (!!RL.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 				{
 					_.delay(function () {
-						window.navigator.registerProtocolHandler('mailto',
-							window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-							'' + (RL.settingsGet('Title') || 'RainLoop'));
+						try {
+							window.navigator.registerProtocolHandler('mailto',
+								window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+								'' + (RL.settingsGet('Title') || 'RainLoop'));
+						} catch(e) {}
 
 						if (RL.settingsGet('MailToEmail'))
 						{

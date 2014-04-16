@@ -19,6 +19,7 @@ function LoginViewModel()
 	this.additionalCode.error = ko.observable(false);
 	this.additionalCode.focused = ko.observable(false);
 	this.additionalCode.visibility = ko.observable(false);
+	this.additionalCodeSignMe = ko.observable(false);
 
 	this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
 	this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
@@ -137,7 +138,9 @@ function LoginViewModel()
 
 		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
-			this.additionalCode.visibility() ? this.additionalCode() : '');
+			this.additionalCode.visibility() ? this.additionalCode() : '',
+			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+		);
 
 		return true;
 

@@ -35,8 +35,9 @@ WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
  * @param {boolean} bSignMe
  * @param {string=} sLanguage
  * @param {string=} sAdditionalCode
+ * @param {boolean=} bAdditionalCodeSignMe
  */
-WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode)
+WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe)
 {
 	this.defaultRequest(fCallback, 'Login', {
 		'Email': sEmail,
@@ -44,6 +45,7 @@ WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, 
 		'Password': sPassword,
 		'Language': sLanguage || '',
 		'AdditionalCode': sAdditionalCode || '',
+		'AdditionalCodeSignMe': bAdditionalCodeSignMe ? '1' : '0',
 		'SignMe': bSignMe ? '1' : '0'
 	});
 };

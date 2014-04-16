@@ -1101,12 +1101,14 @@ RainLoopApp.prototype.bootstart = function ()
 				Plugins.runHook('rl-start-user-screens');
 				RL.pub('rl.bootstart-user-screens');
 
-				if (!!RL.settingsGet('AccountSignMe'))
+				if (!!RL.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 				{
 					_.delay(function () {
-						window.navigator.registerProtocolHandler('mailto',
-							window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-							'' + (RL.settingsGet('Title') || 'RainLoop'));
+						try {
+							window.navigator.registerProtocolHandler('mailto',
+								window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+								'' + (RL.settingsGet('Title') || 'RainLoop'));
+						} catch(e) {}
 
 						if (RL.settingsGet('MailToEmail'))
 						{
