@@ -200,7 +200,7 @@ class Account
 			$this->sEmail,
 			$this->sLogin,
 			$this->sPassword,
-			'0', // PasswordIsXOAuth2
+			\RainLoop\Utils::Fingerprint(),
 			$this->sSignMeToken,
 			$this->sParentEmail,
 			\RainLoop\Utils::GetShortToken()

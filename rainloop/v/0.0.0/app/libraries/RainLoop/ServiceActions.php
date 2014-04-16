@@ -804,14 +804,13 @@ class ServiceActions
 	public function ServiceMailto()
 	{
 		$sTo = \trim($this->oHttp->GetQuery('to', ''));
-		if (!empty($sTo))
+		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo))
 		{
-			if (preg_match('/^mailto:/i', $sTo))
+			$oAccount = $this->oActions->GetAccountFromSignMeToken();
+			if ($oAccount)
 			{
-				$sTo = \substr($sTo, 7);
+				$this->oActions->SetMailtoRequest(\MailSo\Base\Utils::StrToLowerIfAscii($sTo));
 			}
-
-			$this->oActions->SetMailtoRequest(\MailSo\Base\Utils::StrToLowerIfAscii($sTo));
 		}
 
 		$this->oActions->Location('./');
@@ -1047,19 +1046,11 @@ class ServiceActions
 
 			if (empty($sAuthAccountHash))
 			{
-				$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
-				if (!empty($sSignMeToken))
+				$oAccount = $this->oActions->GetAccountFromSignMeToken();
+				if ($oAccount)
 				{
-					$oAccount = $this->oActions->GetAccountFromCustomToken($this->StorageProvider()->Get(null,
-						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-						'SignMe/UserToken/'.$sSignMeToken
-					), false, false);
-
-					if ($oAccount)
-					{
-						$this->oActions->AuthProcess($oAccount);
-						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-					}
+					$this->oActions->AuthProcess($oAccount);
+					$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
 				}
 			}
 			

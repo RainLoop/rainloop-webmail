@@ -82,6 +82,14 @@ class Utils
 	/**
 	 * @return string
 	 */
+	static public function Fingerprint()
+	{
+		return \md5(empty($_SERVER['HTTP_USER_AGENT']) ? 'RainLoopFingerprint' : $_SERVER['HTTP_USER_AGENT']);
+	}
+
+	/**
+	 * @return string
+	 */
 	static public function GetShortToken()
 	{
 		$sKey = 'rlsession';

@@ -1016,15 +1016,6 @@ RainLoopApp.prototype.bootstart = function ()
 		window.SimplePace.sleep();
 	}
 
-//	if (RL.settingsGet('MailToEmail'))
-//	{
-//		if (window.postMessage)
-//		{
-//			window.console.log('railoop/mailto/auth/' + RL.settingsGet('MailToEmail'), '' + window.location);
-////			$.postMessage('railoop/mailto/auth/' + RL.settingsGet('MailToEmail'), '' + window.location);
-//		}
-//	}
-
 	if (!!RL.settingsGet('Auth'))
 	{
 		this.setTitle(Utils.i18n('TITLES/LOADING'));
@@ -1107,19 +1098,22 @@ RainLoopApp.prototype.bootstart = function ()
 
 				}, 2000);
 
-//				if (window.navigator && Utils.isFunc(window.navigator.registerProtocolHandler))
-//				{
-//					window.navigator.registerProtocolHandler('mailto',
-//						window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-//						'' + (RL.settingsGet('Title') || 'RainLoop'));
-//				}
-//
-//				$.receiveMessage(function () {
-//					window.console.log(arguments);
-//				}, '' + window.location);
-
 				Plugins.runHook('rl-start-user-screens');
 				RL.pub('rl.bootstart-user-screens');
+
+				if (!!RL.settingsGet('AccountSignMe'))
+				{
+					_.delay(function () {
+						window.navigator.registerProtocolHandler('mailto',
+							window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+							'' + (RL.settingsGet('Title') || 'RainLoop'));
+
+						if (RL.settingsGet('MailToEmail'))
+						{
+							RL.mailToHelper(RL.settingsGet('MailToEmail'));
+						}
+					}, 500);
+				}
 			}
 			else
 			{

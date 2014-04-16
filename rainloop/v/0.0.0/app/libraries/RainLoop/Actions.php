@@ -10,7 +10,6 @@ define('RL_CONTACTS_MAX', 300);
 
 class Actions
 {
-	const AUTH_TOKEN_KEY = 'rlauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
@@ -874,8 +873,10 @@ class Actions
 		if (!empty($sToken))
 		{
 			$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
-			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && 8 === \count($aAccountHash) && !empty($aAccountHash[7]) &&
-				(!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7]))
+			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && 8 === \count($aAccountHash) &&
+//				!empty($aAccountHash[4]) && \RainLoop\Utils::Fingerprint() === $aAccountHash[4] &&
+				!empty($aAccountHash[7]) && (!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7])
+			)
 			{
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5]);
@@ -918,6 +919,25 @@ class Actions
 	}
 	
 	/**
+	 * @return \RainLoop\Account|bool
+	 */
+	public function GetAccountFromSignMeToken()
+	{
+		$oAccount = false;
+
+		$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
+		if (!empty($sSignMeToken))
+		{
+			$oAccount = $this->oActions->GetAccountFromCustomToken($this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				'SignMe/UserToken/'.$sSignMeToken
+			), false, false);
+		}
+
+		return $oAccount;
+	}
+	
+	/**
 	 * @param bool $bThrowExceptionOnFalse = true
 	 *
 	 * @return \RainLoop\Account|bool
@@ -948,6 +968,7 @@ class Actions
 			'IndexFile' => APP_INDEX_FILE,
 			'Auth' => false,
 			'AccountHash' => '',
+			'AccountSignMe' => false,
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',
 			'Email' => '',
@@ -990,18 +1011,6 @@ class Actions
 		$oSettings = null;
 		if (!$bAdmin)
 		{
-			$sToken = \RainLoop\Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
-			if (null !== $sToken)
-			{
-				\RainLoop\Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
-				$mMailToData = \RainLoop\Utils::DecodeKeyValues($sToken);
-				if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] &&
-					!empty($mMailToData['To']))
-				{
-					$aResult['MailToEmail'] = $mMailToData['To'];
-				}
-			}
-
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{
@@ -1012,6 +1021,7 @@ class Actions
 				$aResult['IncLogin'] = $oAccount->IncLogin();
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
+				$aResult['AccountSignMe'] = $oAccount->SignMe();
 				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 				$aResult['ContactsIsAllowed'] = $oPab->IsActive();
 				$aResult['ContactsSharingIsAllowed'] = $oPab->IsSharingAllowed();
@@ -1063,6 +1073,21 @@ class Actions
 					if (!empty($aResult['ContactsSyncPabUrl']))
 					{
 						$aResult['ContactsSyncPabUrl'] .= '/addressbooks/'.$oAccount->ParentEmailHelper().'/default/';
+					}
+				}
+
+				if ($aResult['AccountSignMe'])
+				{
+					$sToken = \RainLoop\Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
+					if (null !== $sToken)
+					{
+						\RainLoop\Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
+						$mMailToData = \RainLoop\Utils::DecodeKeyValues($sToken);
+						if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] &&
+							!empty($mMailToData['To']))
+						{
+							$aResult['MailToEmail'] = $mMailToData['To'];
+						}
 					}
 				}
 
