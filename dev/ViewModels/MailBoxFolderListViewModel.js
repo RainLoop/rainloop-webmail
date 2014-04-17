@@ -114,7 +114,7 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
-	key('esc, tab, shift+tab', Enums.KeyState.FolderList, function () {
+	key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
 		self.folderList.focused(false);
 		return false;
 	});

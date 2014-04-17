@@ -759,8 +759,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, shift+tab', Enums.KeyState.MessageList, function (event, handler) {
-		if (event && handler && 'shift+tab' === handler.shortcut)
+	key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
+		if (event && handler && 'shift+tab' === handler.shortcut || 'left' === handler.shortcut)
 		{
 			self.folderList.focused(true);
 		}

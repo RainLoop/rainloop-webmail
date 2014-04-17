@@ -40,8 +40,7 @@ function PopupsComposeOpenPgpViewModel()
 
 		if (bResult && this.sign() && '' === this.from())
 		{
-			// TODO i18n
-			this.notification('Please specify FROM email address');
+			this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
 			bResult = false;
 		}
 
@@ -50,16 +49,17 @@ function PopupsComposeOpenPgpViewModel()
 			oPrivateKey = oData.findPrivateKeyByEmail(this.from(), this.password());
 			if (!oPrivateKey)
 			{
-				// TODO i18n
-				this.notification('No private key found for "' + this.from() + '" email');
+				this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+					'EMAIL': this.from()
+				}));
+				
 				bResult = false;
 			}
 		}
 
 		if (bResult && this.encrypt() && 0 === this.to().length)
 		{
-			// TODO i18n
-			this.notification('Please specify at least one recipient');
+			this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
 			bResult = false;
 		}
 
@@ -70,8 +70,10 @@ function PopupsComposeOpenPgpViewModel()
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
-					// TODO i18n
-					self.notification('No public key found for "' + sEmail + '" email');
+					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+						'EMAIL': sEmail
+					}));
+					
 					bResult = false;
 				}
 
@@ -111,8 +113,10 @@ function PopupsComposeOpenPgpViewModel()
 				}
 				catch (e)
 				{
-					// TODO i18n
-					self.notification('OpenPGP error: ' + e);
+					self.notification(Utils.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						'ERROR': '' + e
+					}));
+
 					bResult = false;
 				}
 			}

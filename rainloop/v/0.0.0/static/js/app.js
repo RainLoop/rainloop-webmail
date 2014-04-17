@@ -10824,8 +10824,7 @@ function PopupsComposeOpenPgpViewModel()
 
 		if (bResult && this.sign() && '' === this.from())
 		{
-			// TODO i18n
-			this.notification('Please specify FROM email address');
+			this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
 			bResult = false;
 		}
 
@@ -10834,16 +10833,17 @@ function PopupsComposeOpenPgpViewModel()
 			oPrivateKey = oData.findPrivateKeyByEmail(this.from(), this.password());
 			if (!oPrivateKey)
 			{
-				// TODO i18n
-				this.notification('No private key found for "' + this.from() + '" email');
+				this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+					'EMAIL': this.from()
+				}));
+				
 				bResult = false;
 			}
 		}
 
 		if (bResult && this.encrypt() && 0 === this.to().length)
 		{
-			// TODO i18n
-			this.notification('Please specify at least one recipient');
+			this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
 			bResult = false;
 		}
 
@@ -10854,8 +10854,10 @@ function PopupsComposeOpenPgpViewModel()
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
-					// TODO i18n
-					self.notification('No public key found for "' + sEmail + '" email');
+					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+						'EMAIL': sEmail
+					}));
+					
 					bResult = false;
 				}
 
@@ -10895,8 +10897,10 @@ function PopupsComposeOpenPgpViewModel()
 				}
 				catch (e)
 				{
-					// TODO i18n
-					self.notification('OpenPGP error: ' + e);
+					self.notification(Utils.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						'ERROR': '' + e
+					}));
+
 					bResult = false;
 				}
 			}
@@ -11965,7 +11969,7 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
-	key('esc, tab, shift+tab', Enums.KeyState.FolderList, function () {
+	key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
 		self.folderList.focused(false);
 		return false;
 	});
@@ -12801,8 +12805,8 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, shift+tab', Enums.KeyState.MessageList, function (event, handler) {
-		if (event && handler && 'shift+tab' === handler.shortcut)
+	key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
+		if (event && handler && 'shift+tab' === handler.shortcut || 'left' === handler.shortcut)
 		{
 			self.folderList.focused(true);
 		}
@@ -13158,21 +13162,22 @@ MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
 	var sResult = '';
 	switch (this.viewPgpSignedVerifyStatus())
 	{
-		// TODO i18n
 		case Enums.SignedVerifyStatus.UnknownPublicKeys:
-			sResult = 'No public keys found';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
 			break;
 		case Enums.SignedVerifyStatus.UnknownPrivateKey:
-			sResult = 'No private key found';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
 			break;
 		case Enums.SignedVerifyStatus.Unverified:
-			sResult = 'Unverified signature';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
 			break;
 		case Enums.SignedVerifyStatus.Error:
-			sResult = 'OpenPGP decryption error';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
 			break;
 		case Enums.SignedVerifyStatus.Success:
-			sResult = 'Good signature from ' + this.viewPgpSignedVerifyUser();
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+				'USER': this.viewPgpSignedVerifyUser()
+			});
 			break;
 	}
 
@@ -13453,8 +13458,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, shift+tab', Enums.KeyState.MessageView, function () {
-		if (!self.fullScreenMode() && self.message())
+	key('tab, shift+tab, left', Enums.KeyState.MessageView, function () {
+		if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== oData.layout())
 		{
 			self.message.focused(false);
 		}

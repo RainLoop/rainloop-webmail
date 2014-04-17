@@ -227,21 +227,22 @@ MailBoxMessageViewViewModel.prototype.pgpStatusVerifyMessage = function ()
 	var sResult = '';
 	switch (this.viewPgpSignedVerifyStatus())
 	{
-		// TODO i18n
 		case Enums.SignedVerifyStatus.UnknownPublicKeys:
-			sResult = 'No public keys found';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
 			break;
 		case Enums.SignedVerifyStatus.UnknownPrivateKey:
-			sResult = 'No private key found';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
 			break;
 		case Enums.SignedVerifyStatus.Unverified:
-			sResult = 'Unverified signature';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
 			break;
 		case Enums.SignedVerifyStatus.Error:
-			sResult = 'OpenPGP decryption error';
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
 			break;
 		case Enums.SignedVerifyStatus.Success:
-			sResult = 'Good signature from ' + this.viewPgpSignedVerifyUser();
+			sResult = Utils.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+				'USER': this.viewPgpSignedVerifyUser()
+			});
 			break;
 	}
 
@@ -522,8 +523,8 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	});
 
 	// change focused state
-	key('tab, shift+tab', Enums.KeyState.MessageView, function () {
-		if (!self.fullScreenMode() && self.message())
+	key('tab, shift+tab, left', Enums.KeyState.MessageView, function () {
+		if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== oData.layout())
 		{
 			self.message.focused(false);
 		}
