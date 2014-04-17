@@ -1455,7 +1455,7 @@ class Actions
 
 						if ($bAdditionalCodeSignMeSignMe)
 						{
-							$this->setSkipTimeoutForTwoFactor($oAccount->ParentEmailHelper());
+							$this->setSkipTimeoutForTwoFactor($oAccount->ParentEmailHelper(), \time());
 						}
 
 						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
@@ -1905,6 +1905,15 @@ class Actions
 			$this->StorageProvider()->Clear(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
 				'SignMe/UserToken/'.$oAccount->SignMeToken());
+		}
+
+		if ($oAccount && $this->TwoFactorAuthProvider()->IsActive())
+		{
+			$aData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
+			if (\is_array($aData) && isset($aData['IsSet'], $aData['Enable']))
+			{
+				$this->setSkipTimeoutForTwoFactor($oAccount->ParentEmailHelper(), 0);
+			}
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
@@ -4741,10 +4750,11 @@ class Actions
 
 	/**
 	 * @param string $sEmail
+	 * @param int $iTime = 0
 	 *
 	 * @return bool
 	 */
-	private function setSkipTimeoutForTwoFactor($sEmail)
+	private function setSkipTimeoutForTwoFactor($sEmail, $iTime = 0)
 	{
 		if (empty($sEmail))
 		{
@@ -4761,7 +4771,7 @@ class Actions
 			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
 			if (\is_array($mData))
 			{
-				$mData['Timeout'] = \time();
+				$mData['Timeout'] = 0 < $iTime ? $iTime : 0;
 
 				return $this->StorageProvider()->Put(null,
 					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
