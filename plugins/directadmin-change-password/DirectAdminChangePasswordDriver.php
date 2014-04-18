@@ -124,7 +124,8 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 
 			if (false !== $mResult && 200 === $iCode)
 			{
-				$aRes = @\parse_str($mResult);
+				$aRes = null;
+				@\parse_str($mResult, $aRes);
 				if (is_array($aRes) && (!isset($aRes['error']) || (int) $aRes['error'] !== 1))
 				{
 					$bResult = true;
