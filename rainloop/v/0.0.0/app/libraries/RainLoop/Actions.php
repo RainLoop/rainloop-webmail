@@ -529,7 +529,7 @@ class Actions
 		if (null === $this->oChangePasswordProvider)
 		{
 			$this->oChangePasswordProvider = new \RainLoop\Providers\ChangePassword(
-				$this, $this->fabrica('change-password')
+				$this, $this->fabrica('change-password'), !!$this->Config()->Get('labs', 'check_new_password_strength', false)
 			);
 		}
 
@@ -3371,25 +3371,27 @@ class Actions
 	 */
 	public function DoChangePassword()
 	{
-		$bResult = false;
 		$oAccount = $this->getAccountFromToken();
-		
 		if ($oAccount)
 		{
-			$bResult = $this->ChangePasswordProvider()->ChangePassword(
-				$oAccount,
-				$this->GetActionParam('PrevPassword', ''),
-				$this->GetActionParam('NewPassword', '')
-			);
-
-			if (!$bResult)
+			try
+			{
+				$this->ChangePasswordProvider()->ChangePassword(
+					$oAccount,
+					$this->GetActionParam('PrevPassword', ''),
+					$this->GetActionParam('NewPassword', '')
+				);
+			}
+			catch (\Exception $oException)
 			{
 				$this->loginErrorDelay();
 				$this->Logger()->Write('Error: Can\'t change password for '.$oAccount->Email().' account.', \MailSo\Log\Enumerations\Type::NOTICE);
+
+				throw $oException;
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	/**

@@ -208,6 +208,7 @@ Enables caching in the system'),
 				'ignore_folders_subscription' => array(false,
 					'Experimental settings. Handle with care.
 '),
+				'check_new_password_strength' => array(true),
 				'allow_prefetch' => array(true),
 				'allow_smart_html_links' => array(true),
 				'cache_system_data' => array(true),

@@ -689,6 +689,12 @@ Enums.Notification = {
 	'AccountTwoFactorAuthRequired': 120,
 	'AccountTwoFactorAuthError': 121,
 
+	'CouldNotSaveNewPassword': 130,
+	'CurrentPasswordIncorrect': 131,
+	'NewPasswordShort': 132,
+	'NewPasswordWeak': 133,
+	'NewPasswordForbidden': 134,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
@@ -1300,6 +1306,12 @@ Utils.initNotificationLanguage = function ()
 
 	NotificationI18N[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
 	NotificationI18N[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
+
+	NotificationI18N[Enums.Notification.CouldNotSaveNewPassword] = Utils.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD');
+	NotificationI18N[Enums.Notification.CurrentPasswordIncorrect] = Utils.i18n('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT');
+	NotificationI18N[Enums.Notification.NewPasswordShort] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_SHORT');
+	NotificationI18N[Enums.Notification.NewPasswordWeak] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_WEAK');
+	NotificationI18N[Enums.Notification.NewPasswordForbidden] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT');
 
 	NotificationI18N[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');

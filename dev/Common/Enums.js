@@ -339,6 +339,12 @@ Enums.Notification = {
 	'AccountTwoFactorAuthRequired': 120,
 	'AccountTwoFactorAuthError': 121,
 
+	'CouldNotSaveNewPassword': 130,
+	'CurrentPasswordIncorrect': 131,
+	'NewPasswordShort': 132,
+	'NewPasswordWeak': 133,
+	'NewPasswordForbidden': 134,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,

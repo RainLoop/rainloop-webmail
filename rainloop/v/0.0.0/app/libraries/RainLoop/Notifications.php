@@ -18,6 +18,12 @@ class Notifications
 	const AccountTwoFactorAuthRequired = 120;
 	const AccountTwoFactorAuthError = 121;
 
+	const CouldNotSaveNewPassword = 130;
+	const CurrentPasswordIncorrect = 131;
+	const NewPasswordShort = 132;
+	const NewPasswordWeak = 133;
+	const NewPasswordForbidden = 134;
+
 	const CantGetMessageList = 201;
 	const CantGetMessage = 202;
 	const CantDeleteMessage = 203;
@@ -81,6 +87,13 @@ class Notifications
 			self::AccountNotAllowed => 'AccountNotAllowed',
 			self::AccountTwoFactorAuthRequired => 'AccountTwoFactorAuthRequired',
 			self::AccountTwoFactorAuthError => 'AccountTwoFactorAuthError',
+
+			self::CouldNotSaveNewPassword => 'CouldNotSaveNewPassword',
+			self::CurrentPasswordIncorrect => 'CurrentPasswordIncorrect',
+			self::NewPasswordShort => 'NewPasswordShort',
+			self::NewPasswordWeak => 'NewPasswordWeak',
+			self::NewPasswordForbidden => 'NewPasswordForbidden',
+			
 			self::CantGetMessageList => 'CantGetMessageList',
 			self::CantGetMessage => 'CantGetMessage',
 			self::CantDeleteMessage => 'CantDeleteMessage',

@@ -693,6 +693,12 @@ Enums.Notification = {
 	'AccountTwoFactorAuthRequired': 120,
 	'AccountTwoFactorAuthError': 121,
 
+	'CouldNotSaveNewPassword': 130,
+	'CurrentPasswordIncorrect': 131,
+	'NewPasswordShort': 132,
+	'NewPasswordWeak': 133,
+	'NewPasswordForbidden': 134,
+
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
 	'CantDeleteMessage': 203,
@@ -1304,6 +1310,12 @@ Utils.initNotificationLanguage = function ()
 
 	NotificationI18N[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
 	NotificationI18N[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
+
+	NotificationI18N[Enums.Notification.CouldNotSaveNewPassword] = Utils.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD');
+	NotificationI18N[Enums.Notification.CurrentPasswordIncorrect] = Utils.i18n('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT');
+	NotificationI18N[Enums.Notification.NewPasswordShort] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_SHORT');
+	NotificationI18N[Enums.Notification.NewPasswordWeak] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_WEAK');
+	NotificationI18N[Enums.Notification.NewPasswordForbidden] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT');
 
 	NotificationI18N[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
@@ -14404,33 +14416,57 @@ function SettingsChangePasswordScreen()
 {
 	this.changeProcess = ko.observable(false);
 
+	this.errorDescription = ko.observable('');
+	this.passwordMismatch = ko.observable(false);
 	this.passwordUpdateError = ko.observable(false);
 	this.passwordUpdateSuccess = ko.observable(false);
 	
 	this.currentPassword = ko.observable('');
+	this.currentPassword.error = ko.observable(false);
 	this.newPassword = ko.observable('');
+	this.newPassword2 = ko.observable('');
 
 	this.currentPassword.subscribe(function () {
 		this.passwordUpdateError(false);
 		this.passwordUpdateSuccess(false);
+		this.currentPassword.error(false);
 	}, this);
 
 	this.newPassword.subscribe(function () {
 		this.passwordUpdateError(false);
 		this.passwordUpdateSuccess(false);
+		this.passwordMismatch(false);
+	}, this);
+
+	this.newPassword2.subscribe(function () {
+		this.passwordUpdateError(false);
+		this.passwordUpdateSuccess(false);
+		this.passwordMismatch(false);
 	}, this);
 
 	this.saveNewPasswordCommand = Utils.createCommand(this, function () {
 
-		this.changeProcess(true);
-		
-		this.passwordUpdateError(false);
-		this.passwordUpdateSuccess(false);
+		if (this.newPassword() !== this.newPassword2())
+		{
+			this.passwordMismatch(true);
+			this.errorDescription(Utils.i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
+		}
+		else
+		{
+			this.changeProcess(true);
 
-		RL.remote().changePassword(this.onChangePasswordResponse, this.currentPassword(), this.newPassword());
+			this.passwordUpdateError(false);
+			this.passwordUpdateSuccess(false);
+			this.currentPassword.error(false);
+			this.passwordMismatch(false);
+			this.errorDescription('');
+
+			RL.remote().changePassword(this.onChangePasswordResponse, this.currentPassword(), this.newPassword());
+		}
 
 	}, function () {
-		return !this.changeProcess() && '' !== this.currentPassword() && '' !== this.newPassword();
+		return !this.changeProcess() && '' !== this.currentPassword() && 
+			'' !== this.newPassword() && '' !== this.newPassword2();
 	});
 
 	this.onChangePasswordResponse = _.bind(this.onChangePasswordResponse, this);
@@ -14443,21 +14479,38 @@ SettingsChangePasswordScreen.prototype.onHide = function ()
 	this.changeProcess(false);
 	this.currentPassword('');
 	this.newPassword('');
+	this.newPassword2('');
+	this.errorDescription('');
+	this.passwordMismatch(false);
+	this.currentPassword.error(false);
 };
 
 SettingsChangePasswordScreen.prototype.onChangePasswordResponse = function (sResult, oData)
 {
 	this.changeProcess(false);
+	this.passwordMismatch(false);
+	this.errorDescription('');
+	this.currentPassword.error(false);
+
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
 		this.currentPassword('');
 		this.newPassword('');
-		
+		this.newPassword2('');
+
 		this.passwordUpdateSuccess(true);
+		this.currentPassword.error(false);
 	}
 	else
 	{
+		if (oData && Enums.Notification.CurrentPasswordIncorrect === oData.ErrorCode)
+		{
+			this.currentPassword.error(true);
+		}
+
 		this.passwordUpdateError(true);
+		this.errorDescription(oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) :
+			Utils.getNotification(Enums.Notification.CouldNotSaveNewPassword));
 	}
 };
 
