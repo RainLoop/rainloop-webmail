@@ -73,6 +73,11 @@ class Actions
 	private $oSettingsProvider;
 
 	/**
+	 * @var \RainLoop\Providers\AddressBook
+	 */
+	private $oAddressBookProvider;
+
+	/**
 	 * @var \RainLoop\Providers\PersonalAddressBook
 	 */
 	private $oPersonalAddressBookProvider;
@@ -121,6 +126,7 @@ class Actions
 		$this->oFilesProvider = null;
 		$this->oSettingsProvider = null;
 		$this->oDomainProvider = null;
+		$this->oAddressBookProvider = null;
 		$this->oPersonalAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
@@ -252,6 +258,26 @@ class Actions
 					else
 					{
 						$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
+					}
+
+					$oResult->SetLogger($this->Logger());
+					break;
+				case 'address-book':
+					// \RainLoop\Providers\AddressBook\AddressBookInterface
+
+					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
+					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
+					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
+
+					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+					if ('sqlite' === $sDsnType)
+					{
+						$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook(
+							'sqlite:'.APP_PRIVATE_DATA.'AddressBook.sqlite', '', '', 'sqlite');
+					}
+					else
+					{
+						$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					}
 
 					$oResult->SetLogger($this->Logger());
@@ -578,6 +604,25 @@ class Actions
 		}
 
 		return $this->oSuggestionsProvider;
+	}
+	
+	/**
+	 * @param \RainLoop\Account $oAccount = null
+	 * @param bool $bForceEnable = false
+	 *
+	 * @return \RainLoop\Providers\AddressBook
+	 */
+	public function AddressBookProvider($oAccount = null, $bForceEnable = false)
+	{
+		if (null === $this->oAddressBookProvider)
+		{
+			$this->oAddressBookProvider = new \RainLoop\Providers\AddressBook(
+				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('address-book', $oAccount) : null);
+
+			$this->oAddressBookProvider->SetLogger($this->Logger());
+		}
+
+		return $this->oAddressBookProvider;
 	}
 
 	/**
