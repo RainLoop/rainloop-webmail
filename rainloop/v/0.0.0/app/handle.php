@@ -38,7 +38,7 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 
 		if (!$oException)
 		{
-			if (defined('APP_CALLER_AS_API') && APP_CALLER_AS_API)
+			if (defined('RAINLOOP_INCLUDE_AS_API') && RAINLOOP_INCLUDE_AS_API)
 			{
 				\RainLoop\Api::Handle();
 			}
