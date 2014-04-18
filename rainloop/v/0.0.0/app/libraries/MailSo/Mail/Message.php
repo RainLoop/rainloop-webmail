@@ -809,23 +809,23 @@ class Message
 			unset($sHtmlParts, $sPlainParts, $aMatch);
 		}
 
-		if (empty($this->sPgpSignature) && 'multipart/signed' === \strtolower($this->sContentType) &&
-			'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				\MailSo\Mime\Enumerations\Parameter::PROTOCOL
-			)))
-		{
-			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
-			if (\is_array($aPgpSignatureParts) && 0 < \count($aPgpSignatureParts) && isset($aPgpSignatureParts[0]))
-			{
-				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
-				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE'))
-				{
-					$this->sPgpSignature = \trim($sPgpSignatureText);
-					$this->bPgpSigned = true;
-				}
-			}
-		}
+//		if (empty($this->sPgpSignature) && 'multipart/signed' === \strtolower($this->sContentType) &&
+//			'application/pgp-signature' === \strtolower($oHeaders->ParameterValue(
+//				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+//				\MailSo\Mime\Enumerations\Parameter::PROTOCOL
+//			)))
+//		{
+//			$aPgpSignatureParts = $oBodyStructure ? $oBodyStructure->SearchByContentType('application/pgp-signature') : null;
+//			if (\is_array($aPgpSignatureParts) && 0 < \count($aPgpSignatureParts) && isset($aPgpSignatureParts[0]))
+//			{
+//				$sPgpSignatureText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$aPgpSignatureParts[0]->PartID().']');
+//				if (\is_string($sPgpSignatureText) && 0 < \strlen($sPgpSignatureText) && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE'))
+//				{
+//					$this->sPgpSignature = \trim($sPgpSignatureText);
+//					$this->bPgpSigned = true;
+//				}
+//			}
+//		}
 
 		if ($oBodyStructure)
 		{

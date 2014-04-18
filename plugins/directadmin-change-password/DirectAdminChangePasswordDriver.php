@@ -137,6 +137,13 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 					}
 				}
 			}
+			else
+			{
+				if ($this->oLogger)
+				{
+					$this->oLogger->Write('DirectAdmin[Error]: Empty Response: Code:'.$iCode);
+				}
+			}
 		}
 
 		return $bResult;
