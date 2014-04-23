@@ -71,18 +71,15 @@
 }
 
 @-webkit-keyframes rotation {
-	from {-webkit-transform: rotate(0deg);}
-	to   {-webkit-transform: rotate(359deg);}
+	to   {-webkit-transform: rotate(1turn);}
 }
 
 @-moz-keyframes rotation {
-	from {-moz-transform: rotate(0deg);}
-	to   {-moz-transform: rotate(359deg);}
+	to   {-moz-transform: rotate(1turn);}
 }
 
 @keyframes rotation {
-	from {transform: rotate(0deg);}
-	to   {transform: rotate(359deg);}
+	to   {transform: rotate(1turn);}
 }
 
 .icon-spinner {
@@ -90,6 +87,14 @@
     height: 16px;
 
 	&:before {
+		
+		-webkit-transform-origin: 8px 8px;
+		-moz-transform-origin: 8px 8px;
+		transform-origin: 8px 8px;
+
+		margin-top: 1px;
+		
+		display: inline-block;
 		font-size: 16px;
 		line-height: 100%;
 	}
@@ -107,8 +112,8 @@ html.no-cssanimations .icon-spinner {
 	}
 }
 
-html.cssanimations .icon-spinner.animated {
-	-webkit-animation: rotation 1s infinite linear;
-	-moz-animation: rotation 1s infinite linear;
-	animation: rotation 1s infinite linear;
+html.cssanimations .icon-spinner.animated:before {
+	-webkit-animation: rotation 1s infinite steps(40);
+	-moz-animation: rotation 1s infinite steps(40);
+	animation: rotation 1s infinite steps(40);
 }

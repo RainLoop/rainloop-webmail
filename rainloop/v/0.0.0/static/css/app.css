@@ -6170,27 +6170,18 @@ a.badge:hover {
   line-height: 20px;
 }
 @-webkit-keyframes rotation {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
   to {
-    -webkit-transform: rotate(359deg);
+    -webkit-transform: rotate(1turn);
   }
 }
 @-moz-keyframes rotation {
-  from {
-    -moz-transform: rotate(0deg);
-  }
   to {
-    -moz-transform: rotate(359deg);
+    -moz-transform: rotate(1turn);
   }
 }
 @keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
   to {
-    transform: rotate(359deg);
+    transform: rotate(1turn);
   }
 }
 .icon-spinner {
@@ -6198,6 +6189,11 @@ a.badge:hover {
   height: 16px;
 }
 .icon-spinner:before {
+  -webkit-transform-origin: 8px 8px;
+  -moz-transform-origin: 8px 8px;
+  transform-origin: 8px 8px;
+  margin-top: 1px;
+  display: inline-block;
   font-size: 16px;
   line-height: 100%;
 }
@@ -6212,10 +6208,10 @@ html.no-cssanimations .icon-spinner:before {
 html.no-cssanimations .icon-spinner.animated {
   background-image: url('images/sync.gif');
 }
-html.cssanimations .icon-spinner.animated {
-  -webkit-animation: rotation 1s infinite linear;
-  -moz-animation: rotation 1s infinite linear;
-  animation: rotation 1s infinite linear;
+html.cssanimations .icon-spinner.animated:before {
+  -webkit-animation: rotation 1s infinite steps(40);
+  -moz-animation: rotation 1s infinite steps(40);
+  animation: rotation 1s infinite steps(40);
 }
 body {
   background-color: transparent;
@@ -6285,6 +6281,7 @@ select {
   padding-left: 13px;
   padding-right: 13px;
   text-shadow: 0 1px 0 #fff;
+  border-color: rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.25);
 }
 .btn.disabled,
 .btn[disabled] {
@@ -6294,7 +6291,9 @@ select {
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
+.btn.disabled,
 .btn.btn-dark-disabled-border.disabled,
+.btn[disabled],
 .btn.btn-dark-disabled-border[disabled] {
   border-color: #aaa;
 }
@@ -7087,35 +7086,30 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   background-image: none;
   display: none;
 }
-/**
-::-webkit-scrollbar {
-	height: 10px;
-	width: 10px;
-	overflow: visible;
+.nano:before,
+.nano:after {
+  display: none;
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 102;
+  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
 }
-
-::-webkit-scrollbar-button {
-	height: 0;
-	width: 0;
+.nano:before {
+  top: -2px;
 }
-
-::-webkit-scrollbar-thumb, ::-webkit-scrollbar-track {
-	background-color: transparent;
-	background-clip: padding-box;
-	border-width: 1px 1px 1px 6px;
-	min-height: 18px;
+.nano:after {
+  bottom: -2px;
 }
-
-::-webkit-scrollbar-thumb {
-	background-color: #bbb;
-	background-color: rgba(0, 0, 0, 0.2);
-	border: 2px solid transparent;
+.nano.nano-scrolllimit-top:before,
+.nano.nano-scrolllimit-bottom:after {
+  display: block;
 }
-
-::-webkit-scrollbar-corner {
-	background: transparent;
-}
-/**/.b-system-drop-down .b-toolbar {
+.b-system-drop-down .b-toolbar {
   position: absolute;
   top: 0;
   right: 0;
@@ -7263,7 +7257,7 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 }
 .b-folders .b-footer {
   position: absolute;
-  bottom: 20px;
+  bottom: 18px;
   right: 0;
   left: 0;
   height: 20px;
@@ -7878,7 +7872,7 @@ html.rl-no-preview-pane .messageList.message-selected {
 }
 .messageList .b-content .messageListItem.selected {
   background-color: #DFEFFF;
-  z-index: 102;
+  z-index: 101;
 }
 .messageList .b-content .messageListItem.selected .sidebarParent {
   background-color: #398CF2 !important;

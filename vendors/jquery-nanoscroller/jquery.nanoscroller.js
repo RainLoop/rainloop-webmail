@@ -344,12 +344,14 @@
 
 		var _this = this;
 
-		 _this.pane.addClass('activescroll');
-		 _this.pane2.addClass('activescroll');
+		_this.$el.addClass('nano-scrollevent');
+		_this.pane.addClass('activescroll');
+		_this.pane2.addClass('activescroll');
 
 		this.scrollClassTimer = window.setTimeout(function () {
-			 _this.pane.removeClass('activescroll');
-			 _this.pane2.removeClass('activescroll');
+			_this.$el.removeClass('nano-scrollevent');
+			_this.pane.removeClass('activescroll');
+			_this.pane2.removeClass('activescroll');
 		}, 1000);
     };
 
@@ -371,7 +373,7 @@
 
 
     NanoScroll.prototype.updateScrollValues = function() {
-      var content;
+      var content, limit = 8;
       content = this.content;
       this.maxScrollTop = content.scrollHeight - content.clientHeight;
       this.maxScroll2Left = content.scrollWidth - content.clientWidth;
@@ -382,6 +384,18 @@
         this.maxSlider2Left = this.pane2Width - this.slider2Width;
         this.sliderTop = this.contentScrollTop * this.maxSliderTop / this.maxScrollTop;
         this.slider2Left = this.contentScroll2Left * this.maxSlider2Left / this.maxScroll2Left;
+
+		if (limit < this.sliderTop) {
+			this.$el.addClass('nano-scrolllimit-top');
+		} else {
+			this.$el.removeClass('nano-scrolllimit-top');
+		}
+
+		if (this.contentScrollTop + limit >= this.maxScrollTop) {
+			this.$el.removeClass('nano-scrolllimit-bottom');
+		} else {
+			this.$el.addClass('nano-scrolllimit-bottom');
+		}
       }
 	  };
 
