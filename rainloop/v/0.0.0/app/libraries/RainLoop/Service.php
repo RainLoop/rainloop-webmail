@@ -174,10 +174,8 @@ class Service
 
 			$aData = $this->startUpData($bAdmin);
 
-			$bCacheEnabled = $this->oActions->Config()->Get('labs', 'cache_system_data', true);
-
 			$sCacheFileName = '';
-			if ($bCacheEnabled)
+			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true))
 			{
 				$sCacheFileName = 'TMPL:'.$aData['Hash'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);

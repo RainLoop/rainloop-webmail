@@ -709,7 +709,7 @@ class MailClient
 	 */
 	public static function GenerateHash($sFolder, $iCount, $iUnseenCount, $sUidNext)
 	{
-		$iUnseenCount = 0;
+		$iUnseenCount = 0; // unneccessery
 		return \md5($sFolder.'-'.$iCount.'-'.$iUnseenCount.'-'.$sUidNext);
 	}
 
@@ -861,14 +861,15 @@ class MailClient
 
 	/**
 	 * @param string $sSearch
+	 * @param bool $bDetectGmail = true
 	 *
 	 * @return string
 	 */
-	private function escapeSearchString($sSearch)
+	private function escapeSearchString($sSearch, $bDetectGmail = true)
 	{
-		return ('ssl://imap.gmail.com' === \strtolower($this->oImapClient->GetConnectedHost())) // gmail
-			? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch
-			: $this->oImapClient->EscapeString($sSearch);
+		return ($bDetectGmail && !\MailSo\Base\Utils::IsAscii($sSearch) &&
+			'ssl://imap.gmail.com' === \strtolower($this->oImapClient->GetConnectedHost()))
+				? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
 	}
 
 	/**
@@ -890,6 +891,42 @@ class MailClient
 	}
 
 	/**
+	 * @param string $sSize
+	 *
+	 * @return int
+	 */
+	private function parseFriendlySize($sSize)
+	{
+		$sSize = preg_replace('/[^0-9bBkKmM]/', '', $sSize);
+
+		$iResult = 0;
+		$aMatch = array();
+
+		if (\preg_match('/([\d]+)(B|KB|M|MB|G|GB)$/i', $sSize, $aMatch) && isset($aMatch[1], $aMatch[2]))
+		{
+			$iResult = (int) $aMatch[1];
+			switch (\strtoupper($aMatch[2]))
+			{
+				case 'K':
+				case 'KB':
+					$iResult *= 1024;
+				case 'M':
+				case 'MB':
+					$iResult *= 1024;
+				case 'G':
+				case 'GB':
+					$iResult *= 1024;
+			}
+		}
+		else
+		{
+			$iResult = (int) $sSize;
+		}
+
+		return $iResult;
+	}
+
+	/**
 	 * @param string $sSearch
 	 *
 	 * @return array
@@ -902,8 +939,10 @@ class MailClient
 
 		$aCache = array();
 
+		$sReg = 'e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
+
 		$sSearch = \trim(\preg_replace('/[\s]+/', ' ', $sSearch));
-		$sSearch = \trim(\preg_replace('/(e?mail|from|to|subject|has|date|text|body): /i', '\\1:', $sSearch));
+		$sSearch = \trim(\preg_replace('/('.$sReg.'): /i', '\\1:', $sSearch));
 
 		$mMatch = array();
 		\preg_match_all('/".*?(?<!\\\)"/', $sSearch, $mMatch);
@@ -939,7 +978,7 @@ class MailClient
 		}
 
 		$mMatch = array();
-		\preg_match_all('/(e?mail|from|to|subject|has|date|text|body):([^\s]*)/i', $sSearch, $mMatch);
+		\preg_match_all('/('.$sReg.'):([^\s]*)/i', $sSearch, $mMatch);
 		if (\is_array($mMatch) && isset($mMatch[1]) && \is_array($mMatch[1]) && 0 < \count($mMatch[1]))
 		{
 			if (\is_array($mMatch[0]))
@@ -967,11 +1006,30 @@ class MailClient
 						case 'FROM':
 						case 'TO':
 						case 'SUBJECT':
+						case 'IS':
 						case 'HAS':
+						case 'SIZE':
+						case 'SMALLER':
+						case 'LARGER':
+						case 'BIGGER':
+						case 'MAXSIZE':
+						case 'MINSIZE':
 						case 'DATE':
 							if ('MAIL' === $sName)
 							{
 								$sName = 'EMAIL';
+							}
+							if ('BODY' === $sName)
+							{
+								$sName = 'TEXT';
+							}
+							if ('SIZE' === $sName || 'BIGGER' === $sName || 'MINSIZE' === $sName)
+							{
+								$sName = 'LARGER';
+							}
+							if ('MAXSIZE' === $sName)
+							{
+								$sName = 'SMALLER';
 							}
 							$aResult[$sName] = $sValue;
 							break;
@@ -1003,11 +1061,15 @@ class MailClient
 		$oSearchBuilder = \MailSo\Imap\SearchBuilder::NewInstance();
 		if (0 < \strlen(\trim($sSearch)))
 		{
+			$sGmailRawSearch = '';
+			$sResultBodyTextSearch = '';
+
 			$aLines = $this->parseSearchString($sSearch);
+			$bIsGmail = $this->oImapClient->IsSupported('X-GM-EXT-1');
 
 			if (1 === \count($aLines) && isset($aLines['OTHER']))
 			{
-				if (true)
+				if (true) // headers only
 				{
 					$sValue = $this->escapeSearchString($aLines['OTHER']);
 
@@ -1018,7 +1080,15 @@ class MailClient
 				}
 				else
 				{
-					$oSearchBuilder->AddAnd('TEXT', $this->escapeSearchString($aLines['OTHER']));
+					$sMainText = \trim(\trim(\preg_replace('/[\s]+/', ' ', $aLines['OTHER'])), '"');
+					if ($bIsGmail)
+					{
+						$sGmailRawSearch .= ' '.$sMainText;
+					}
+					else
+					{
+						$sResultBodyTextSearch .= ' '.$sMainText;
+					}
 				}
 			}
 			else
@@ -1060,23 +1130,59 @@ class MailClient
 							$oSearchBuilder->AddAnd('SUBJECT', $sValue);
 							break;
 						case 'OTHER':
-						case 'BODY':
 						case 'TEXT':
 							$sMainText .= ' '.$sRawValue;
 							break;
 						case 'HAS':
-							if (false !== \strpos($sRawValue, 'attach'))
+							$aValue = \explode(',', \strtolower($sRawValue));
+							$aValue = \array_map('trim', $aValue);
+						
+							$aCompareArray = array('file', 'files', 'attach', 'attachs', 'attachment', 'attachments');
+							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
-								$oSearchBuilder->AddAnd('HEADER CONTENT-TYPE', '"MULTIPART/MIXED"');
+								if ($bIsGmail)
+								{
+									$sGmailRawSearch .= ' has:attachment';
+								}
+								else
+								{
+									// Simple, is not detailed search (Sometimes doesn't work)
+									$oSearchBuilder->AddAnd('HEADER CONTENT-TYPE', '"MULTIPART/MIXED"');
+								}
 							}
-							if (false !== strpos($sRawValue, 'flag') || false !== strpos($sRawValue, 'star'))
+
+						case 'IS':
+							$aValue = \explode(',', \strtolower($sRawValue));
+							$aValue = \array_map('trim', $aValue);
+							
+							$aCompareArray = array('flag', 'flagged', 'star', 'starred', 'pinned');
+							$aCompareArray2 = array('unflag', 'unflagged', 'unstar', 'unstarred', 'unpinned');
+							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
 								$oSearchBuilder->AddAnd('FLAGGED');
 							}
-							if (false !== strpos($sRawValue, 'unseen'))
+							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
+							{
+								$oSearchBuilder->AddAnd('UNFLAGGED');
+							}
+
+							$aCompareArray = array('unread', 'unseen');
+							$aCompareArray2 = array('read', 'seen');
+							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
 								$oSearchBuilder->AddAnd('UNSEEN');
 							}
+							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
+							{
+								$oSearchBuilder->AddAnd('SEEN');
+							}
+							break;
+							
+						case 'LARGER':
+							$oSearchBuilder->AddAnd('LARGER', $this->parseFriendlySize($sRawValue));
+							break;
+						case 'SMALLER':
+							$oSearchBuilder->AddAnd('SMALLER', $this->parseFriendlySize($sRawValue));
 							break;
 						case 'DATE':
 							$iDateStampFrom = $iDateStampTo = 0;
@@ -1119,11 +1225,30 @@ class MailClient
 					}
 				}
 
-				if ('' !== trim($sMainText))
+				if ('' !== \trim($sMainText))
 				{
-					$sMainText = trim(trim(preg_replace('/[\s]+/', ' ', $sMainText)), '"');
-					$oSearchBuilder->AddAnd('TEXT', $this->escapeSearchString($sMainText));
+					$sMainText = \trim(\trim(preg_replace('/[\s]+/', ' ', $sMainText)), '"');
+					if ($bIsGmail)
+					{
+						$sGmailRawSearch .= ' '.$sMainText;
+					}
+					else
+					{
+						$sResultBodyTextSearch .= ' '.$sMainText;
+					}
 				}
+			}
+			
+			$sGmailRawSearch = \trim($sGmailRawSearch);
+			if ($bIsGmail && 0 < \strlen($sGmailRawSearch))
+			{
+				$oSearchBuilder->AddAnd('X-GM-RAW', $this->escapeSearchString($sGmailRawSearch, false));
+			}
+
+			$sResultBodyTextSearch = \trim($sResultBodyTextSearch);
+			if (0 < \strlen($sResultBodyTextSearch))
+			{
+				$oSearchBuilder->AddAnd('TEXT', $this->escapeSearchString($sResultBodyTextSearch));
 			}
 		}
 
@@ -1427,6 +1552,7 @@ class MailClient
 		$iMessageCount = 0;
 		$iMessageRealCount = 0;
 		$iMessageUnseenCount = 0;
+		$iMessageCacheCount = 100;
 		$sUidNext = '0';
 		$sSerializedHash = '';
 		$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
@@ -1463,7 +1589,7 @@ class MailClient
 
 				$sSearchCriterias = $this->getSearchBuilder($sSearch)->Complete();
 
-				if ($oCacher && $oCacher->IsInited())
+				if ($iMessageCacheCount < $iMessageRealCount && $oCacher && $oCacher->IsInited())
 				{
 					$sSerializedHash =
 						($bUseSortIfSupported ? 'S': 'N').'/'.
@@ -1472,16 +1598,17 @@ class MailClient
 						$this->oImapClient->GetConnectedHost().':'.
 						$this->oImapClient->GetConnectedPort().'/'.
 						$oMessageCollection->FolderName.'/'.
-						$oMessageCollection->FolderHash.'/'.
 						$sSearchCriterias;
 
-					$sSerializedUids = $oCacher->Get($sSerializedHash);
-					if (!empty($sSerializedUids))
+					$sSerialized = $oCacher->Get($sSerializedHash);
+					if (!empty($sSerialized))
 					{
-						$aSerializedUids = @\unserialize($sSerializedUids);
-						if (\is_array($aSerializedUids))
+						$aSerialized = @\unserialize($sSerialized);
+						if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
+							\is_array($aSerialized['Uids']) &&
+							$oMessageCollection->FolderHash === $aSerialized['FolderHash'])
 						{
-							$aIndexOrUids = $aSerializedUids;
+							$aIndexOrUids = $aSerialized['Uids'];
 							$bCacher = true;
 						}
 					}
@@ -1541,7 +1668,10 @@ class MailClient
 
 			if ($bIndexAsUid && !$bCacher && \is_array($aIndexOrUids) && $oCacher && $oCacher->IsInited() && 0 < \strlen($sSerializedHash))
 			{
-				$oCacher->Set($sSerializedHash, \serialize($aIndexOrUids));
+				$oCacher->Set($sSerializedHash, \serialize(array(
+					'FolderHash' => $oMessageCollection->FolderHash,
+					'Uids' => $aIndexOrUids
+				)));
 			}
 
 			if (\is_array($aIndexOrUids))
