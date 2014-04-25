@@ -15,6 +15,11 @@ abstract class PdoAbstract
 	protected $bExplain = false;
 
 	/**
+	 * @var int
+	 */
+	protected $iResetTimer = 0;
+
+	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger;
@@ -114,13 +119,21 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sName = null
+	 * @param string $sTabelName = null
+	 * @param string $sColumnName = null
 	 *
 	 * @return string
 	 */
-	protected function lastInsertId($sName = null)
+	protected function lastInsertId($sTabelName = null, $sColumnName = null)
 	{
-		return $this->getPDO()->lastInsertId($sName);
+		$mName = null;
+		if ('pgsql' === $this->sDbType &&
+			null !== $sTabelName && $sColumnName !== null)
+		{
+			$mName = \strtolower($sTabelName.'_'.$sColumnName.'_seq');
+		}
+		
+		return null === $mName ? $this->getPDO()->lastInsertId() : $this->getPDO()->lastInsertId($mName);
 	}
 
 	/**

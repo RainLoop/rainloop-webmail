@@ -250,7 +250,7 @@ Consts.Defaults.MessagesPerPage = 20;
  * @const
  * @type {number}
  */
-Consts.Defaults.ContactsPerPage = 20;
+Consts.Defaults.ContactsPerPage = 50;
 
 /**
  * @const
@@ -281,6 +281,12 @@ Consts.Defaults.SendMessageAjaxTimeout = 300000;
  * @type {number}
  */
 Consts.Defaults.SaveMessageAjaxTimeout = 200000;
+
+/**
+ * @const
+ * @type {number}
+ */
+Consts.Defaults.ContactsSyncAjaxTimeout = 200000;
 
 /**
  * @const
@@ -620,14 +626,6 @@ Enums.Layout = {
 /**
  * @enum {number}
  */
-Enums.ContactScopeType = {
-	'Default': 0,
-	'ShareAll': 2
-};
-
-/**
- * @enum {number}
- */
 Enums.SignedVerifyStatus = {
 	'UnknownPublicKeys': -4,
 	'UnknownPrivateKey': -3,
@@ -654,17 +652,9 @@ Enums.ContactPropertyType = {
 	'NamePrefix': 20,
 	'NameSuffix': 21,
 
-	'EmailPersonal': 30,
-	'EmailBussines': 31,
-
-	'PhonePersonal': 50,
-	'PhoneBussines': 51,
-
-	'MobilePersonal': 60,
-	'MobileBussines': 61,
-
-	'FaxPesonal': 70,
-	'FaxBussines': 71,
+	'Email': 30,
+	'Phone': 31,
+	'Web': 32,
 
 	'Facebook': 90,
 	'Skype': 91,
@@ -698,6 +688,8 @@ Enums.Notification = {
 	'NewPasswordShort': 132,
 	'NewPasswordWeak': 133,
 	'NewPasswordForbidden': 134,
+	
+	'ContactsSyncError': 140,
 
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,
@@ -1316,6 +1308,8 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.NewPasswordShort] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_SHORT');
 	NotificationI18N[Enums.Notification.NewPasswordWeak] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_WEAK');
 	NotificationI18N[Enums.Notification.NewPasswordForbidden] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT');
+
+	NotificationI18N[Enums.Notification.ContactsSyncError] = Utils.i18n('NOTIFICATIONS/CONTACTS_SYNC_ERROR');
 
 	NotificationI18N[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
 	NotificationI18N[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
@@ -2102,6 +2096,15 @@ Utils.fakeMd5 = function(iLen)
 	return sResult;
 };
 
+/* jshint ignore:start */
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+Utils.md5 = function(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d){return(x^2147483648^F^H)}if(I|d){if(x&1073741824){return(x^3221225472^F^H)}else{return(x^1073741824^F^H)}}else{return(x^F^H)}}function r(d,F,k){return(d&F)|((~d)&k)}function q(d,F,k){return(d&k)|(F&(~k))}function p(d,F,k){return(d^F^k)}function n(d,F,k){return(F^(d|(~k)))}function u(G,F,aa,Z,k,H,I){G=K(G,K(K(r(F,aa,Z),k),I));return K(L(G,H),F)}function f(G,F,aa,Z,k,H,I){G=K(G,K(K(q(F,aa,Z),k),I));return K(L(G,H),F)}function D(G,F,aa,Z,k,H,I){G=K(G,K(K(p(F,aa,Z),k),I));return K(L(G,H),F)}function t(G,F,aa,Z,k,H,I){G=K(G,K(K(n(F,aa,Z),k),I));return K(L(G,H),F)}function e(G){var Z;var F=G.length;var x=F+8;var k=(x-(x%64))/64;var I=(k+1)*16;var aa=Array(I-1);var d=0;var H=0;while(H<F){Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=(aa[Z]|(G.charCodeAt(H)<<d));H++}Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=aa[Z]|(128<<d);aa[I-2]=F<<3;aa[I-1]=F>>>29;return aa}function B(x){var k="",F="",G,d;for(d=0;d<=3;d++){G=(x>>>(d*8))&255;F="0"+G.toString(16);k=k+F.substr(F.length-2,2)}return k}function J(k){k=k.replace(/rn/g,"n");var d="";for(var F=0;F<k.length;F++){var x=k.charCodeAt(F);if(x<128){d+=String.fromCharCode(x)}else{if((x>127)&&(x<2048)){d+=String.fromCharCode((x>>6)|192);d+=String.fromCharCode((x&63)|128)}else{d+=String.fromCharCode((x>>12)|224);d+=String.fromCharCode(((x>>6)&63)|128);d+=String.fromCharCode((x&63)|128)}}}return d}var C=Array();var P,h,E,v,g,Y,X,W,V;var S=7,Q=12,N=17,M=22;var A=5,z=9,y=14,w=20;var o=4,m=11,l=16,j=23;var U=6,T=10,R=15,O=21;s=J(s);C=e(s);Y=1732584193;X=4023233417;W=2562383102;V=271733878;for(P=0;P<C.length;P+=16){h=Y;E=X;v=W;g=V;Y=u(Y,X,W,V,C[P+0],S,3614090360);V=u(V,Y,X,W,C[P+1],Q,3905402710);W=u(W,V,Y,X,C[P+2],N,606105819);X=u(X,W,V,Y,C[P+3],M,3250441966);Y=u(Y,X,W,V,C[P+4],S,4118548399);V=u(V,Y,X,W,C[P+5],Q,1200080426);W=u(W,V,Y,X,C[P+6],N,2821735955);X=u(X,W,V,Y,C[P+7],M,4249261313);Y=u(Y,X,W,V,C[P+8],S,1770035416);V=u(V,Y,X,W,C[P+9],Q,2336552879);W=u(W,V,Y,X,C[P+10],N,4294925233);X=u(X,W,V,Y,C[P+11],M,2304563134);Y=u(Y,X,W,V,C[P+12],S,1804603682);V=u(V,Y,X,W,C[P+13],Q,4254626195);W=u(W,V,Y,X,C[P+14],N,2792965006);X=u(X,W,V,Y,C[P+15],M,1236535329);Y=f(Y,X,W,V,C[P+1],A,4129170786);V=f(V,Y,X,W,C[P+6],z,3225465664);W=f(W,V,Y,X,C[P+11],y,643717713);X=f(X,W,V,Y,C[P+0],w,3921069994);Y=f(Y,X,W,V,C[P+5],A,3593408605);V=f(V,Y,X,W,C[P+10],z,38016083);W=f(W,V,Y,X,C[P+15],y,3634488961);X=f(X,W,V,Y,C[P+4],w,3889429448);Y=f(Y,X,W,V,C[P+9],A,568446438);V=f(V,Y,X,W,C[P+14],z,3275163606);W=f(W,V,Y,X,C[P+3],y,4107603335);X=f(X,W,V,Y,C[P+8],w,1163531501);Y=f(Y,X,W,V,C[P+13],A,2850285829);V=f(V,Y,X,W,C[P+2],z,4243563512);W=f(W,V,Y,X,C[P+7],y,1735328473);X=f(X,W,V,Y,C[P+12],w,2368359562);Y=D(Y,X,W,V,C[P+5],o,4294588738);V=D(V,Y,X,W,C[P+8],m,2272392833);W=D(W,V,Y,X,C[P+11],l,1839030562);X=D(X,W,V,Y,C[P+14],j,4259657740);Y=D(Y,X,W,V,C[P+1],o,2763975236);V=D(V,Y,X,W,C[P+4],m,1272893353);W=D(W,V,Y,X,C[P+7],l,4139469664);X=D(X,W,V,Y,C[P+10],j,3200236656);Y=D(Y,X,W,V,C[P+13],o,681279174);V=D(V,Y,X,W,C[P+0],m,3936430074);W=D(W,V,Y,X,C[P+3],l,3572445317);X=D(X,W,V,Y,C[P+6],j,76029189);Y=D(Y,X,W,V,C[P+9],o,3654602809);V=D(V,Y,X,W,C[P+12],m,3873151461);W=D(W,V,Y,X,C[P+15],l,530742520);X=D(X,W,V,Y,C[P+2],j,3299628645);Y=t(Y,X,W,V,C[P+0],U,4096336452);V=t(V,Y,X,W,C[P+7],T,1126891415);W=t(W,V,Y,X,C[P+14],R,2878612391);X=t(X,W,V,Y,C[P+5],O,4237533241);Y=t(Y,X,W,V,C[P+12],U,1700485571);V=t(V,Y,X,W,C[P+3],T,2399980690);W=t(W,V,Y,X,C[P+10],R,4293915773);X=t(X,W,V,Y,C[P+1],O,2240044497);Y=t(Y,X,W,V,C[P+8],U,1873313359);V=t(V,Y,X,W,C[P+15],T,4264355552);W=t(W,V,Y,X,C[P+6],R,2734768916);X=t(X,W,V,Y,C[P+13],O,1309151649);Y=t(Y,X,W,V,C[P+4],U,4149444226);V=t(V,Y,X,W,C[P+11],T,3174756917);W=t(W,V,Y,X,C[P+2],R,718787259);X=t(X,W,V,Y,C[P+9],O,3951481745);Y=K(Y,h);X=K(X,E);W=K(W,v);V=K(V,g)}var i=B(Y)+B(X)+B(W)+B(V);return i.toLowerCase()};
+/* jshint ignore:end */
+
 Utils.convertPlainTextToHtml = function (sPlain)
 {
 	return sPlain.toString()
@@ -2116,11 +2119,12 @@ Utils.draggeblePlace = function ()
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
 {
-	if (oItem && !Utils.isUnd(oItem.disabled))
+	if (oItem && !Utils.isUnd(oItem.disabled) && oOption)
 	{
-		ko.applyBindingsToNode(oOption, {
-			'disabled': oItem.disabled
-		}, oItem);
+		$(oOption)
+			.toggleClass('disabled', oItem.disabled)
+			.prop('disabled', oItem.disabled)
+		;
 	}
 };
 
@@ -5873,17 +5877,14 @@ EmailModel.prototype.inputoTagLine = function ()
 function ContactModel()
 {
 	this.idContact = 0;
-	this.idContactStr = '';
 	this.display = '';
 	this.properties = [];
 	this.readOnly = false;
-	this.scopeType = Enums.ContactScopeType.Default;
 
 	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
 	this.deleted = ko.observable(false);
-	this.shared = ko.observable(false);
 }
 
 /**
@@ -5901,15 +5902,15 @@ ContactModel.prototype.getNameAndEmailHelper = function ()
 		_.each(this.properties, function (aProperty) {
 			if (aProperty)
 			{
-				if ('' === sName && Enums.ContactPropertyType.FullName === aProperty[0])
+				if (Enums.ContactPropertyType.FirstName === aProperty[0])
 				{
-					sName = aProperty[1];
+					sName = Utils.trim(aProperty[1] + ' ' + sName);
 				}
-				else if ('' === sEmail && -1 < Utils.inArray(aProperty[0], [
-					Enums.ContactPropertyType.EmailPersonal,
-					Enums.ContactPropertyType.EmailBussines,
-					Enums.ContactPropertyType.EmailOther
-				]))
+				else if (Enums.ContactPropertyType.LastName === aProperty[0])
+				{
+					sName = Utils.trim(sName + ' ' + aProperty[1]);
+				}
+				else if ('' === sEmail && Enums.ContactPropertyType.Email === aProperty[0])
 				{
 					sEmail = aProperty[1];
 				}
@@ -5926,22 +5927,19 @@ ContactModel.prototype.parse = function (oItem)
 	if (oItem && 'Object/Contact' === oItem['@Object'])
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
-		this.idContactStr = Utils.pString(oItem['IdContactStr']);
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
-		this.scopeType = Utils.pInt(oItem['ScopeType']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
 			_.each(oItem['Properties'], function (oProperty) {
-				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']))
+				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']) && Utils.isNormal(oProperty['TypeStr']))
 				{
-					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value'])]);
+					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
 				}
 			}, this);
 		}
 
-		this.shared(Enums.ContactScopeType.ShareAll === this.scopeType);
 		bResult = true;
 	}
 
@@ -5982,10 +5980,6 @@ ContactModel.prototype.lineAsCcc = function ()
 	{
 		aResult.push('checked');
 	}
-	if (this.shared())
-	{
-		aResult.push('shared');
-	}
 	if (this.focused())
 	{
 		aResult.push('focused');
@@ -5996,15 +5990,17 @@ ContactModel.prototype.lineAsCcc = function ()
 
 /**
  * @param {number=} iType = Enums.ContactPropertyType.Unknown
+ * @param {string=} sTypeStr = ''
  * @param {string=} sValue = ''
  * @param {boolean=} bFocused = false
  * @param {string=} sPlaceholder = ''
  *
  * @constructor
  */
-function ContactPropertyModel(iType, sValue, bFocused, sPlaceholder)
+function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 {
 	this.type = ko.observable(Utils.isUnd(iType) ? Enums.ContactPropertyType.Unknown : iType);
+	this.typeStr = ko.observable(Utils.isUnd(sTypeStr) ? '' : sTypeStr);
 	this.focused = ko.observable(Utils.isUnd(bFocused) ? false : !!bFocused);
 	this.value = ko.observable(Utils.pString(sValue));
 
@@ -9753,17 +9749,6 @@ function PopupsContactsViewModel()
 
 	var
 		self = this,
-		oT = Enums.ContactPropertyType,
-		aNameTypes = [oT.FirstName, oT.LastName],
-		aEmailTypes = [oT.EmailPersonal, oT.EmailBussines, oT.EmailOther],
-		aPhonesTypes = [
-			oT.PhonePersonal, oT.PhoneBussines, oT.PhoneOther,
-			oT.MobilePersonal, oT.MobileBussines, oT.MobileOther,
-			oT.FaxPesonal, oT.FaxBussines, oT.FaxOther
-		],
-		aOtherTypes = [
-			oT.Facebook, oT.Skype, oT.GitHub
-		],
 		fFastClearEmptyListHelper = function (aList) {
 			if (aList && 0 < aList.length) {
 				self.viewProperties.removeAll(aList);
@@ -9771,17 +9756,18 @@ function PopupsContactsViewModel()
 		}
 	;
 
+	this.enableContactsSync = RL.data().enableContactsSync;
+
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
+	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
 	
 	this.currentContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
-
-	this.contactsSharingIsAllowed = !!RL.settingsGet('ContactsSharingIsAllowed');
 
 	this.contactsPage = ko.observable(1);
 	this.contactsPageCount = ko.computed(function () {
@@ -9795,32 +9781,18 @@ function PopupsContactsViewModel()
 	this.viewClearSearch = ko.observable(false);
 
 	this.viewID = ko.observable('');
-	this.viewIDStr = ko.observable('');
 	this.viewReadOnly = ko.observable(false);
-	this.viewScopeType = ko.observable(Enums.ContactScopeType.Default);
 	this.viewProperties = ko.observableArray([]);
 
 	this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), aNameTypes);
+		return -1 < Utils.inArray(oProperty.type(), [Enums.ContactPropertyType.FirstName, Enums.ContactPropertyType.LastName]);
 	});
 	
 	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), aEmailTypes);
+		return Enums.ContactPropertyType.Email === oProperty.type();
 	});
-
-	this.shareIcon = ko.computed(function() {
-		return Enums.ContactScopeType.ShareAll === this.viewScopeType() ? 'icon-earth' : 'icon-share';
-	}, this);
-
-	this.shareToNone = ko.computed(function() {
-		return Enums.ContactScopeType.ShareAll !== this.viewScopeType();
-	}, this);
-
-	this.shareToAll = ko.computed(function() {
-		return Enums.ContactScopeType.ShareAll === this.viewScopeType();
-	}, this);
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
 		
@@ -9836,11 +9808,7 @@ function PopupsContactsViewModel()
 	}, this);
 
 	this.viewPropertiesPhones = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), aPhonesTypes);
-	});
-
-	this.viewPropertiesOther = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), aOtherTypes);
+		return Enums.ContactPropertyType.Phone === oProperty.type();
 	});
 
 	this.viewPropertiesEmailsNonEmpty = this.viewPropertiesNames.filter(function(oProperty) {
@@ -9910,6 +9878,10 @@ function PopupsContactsViewModel()
 
 	this.selector.on('onItemSelect', _.bind(function (oContact) {
 		this.populateViewContact(oContact ? oContact : null);
+		if (!oContact)
+		{
+			this.emptySelection(true);
+		}
 	}, this));
 
 	this.selector.on('onItemGetUid', function (oContact) {
@@ -9979,7 +9951,7 @@ function PopupsContactsViewModel()
 		_.each(this.viewProperties(), function (oItem) {
 			if (oItem.type() && '' !== Utils.trim(oItem.value()))
 			{
-				aProperties.push([oItem.type(), oItem.value()]);
+				aProperties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
 			}
 		});
 
@@ -9994,11 +9966,6 @@ function PopupsContactsViewModel()
 				if ('' === self.viewID())
 				{
 					self.viewID(Utils.pInt(oData.Result.ResultID));
-				}
-
-				if ('' === self.viewIDStr())
-				{
-					self.viewIDStr(Utils.pString(oData.Result.ResultIDStr));
 				}
 
 				self.reloadContactList();
@@ -10018,7 +9985,7 @@ function PopupsContactsViewModel()
 				}, 1000);
 			}
 			
-		}, sRequestUid, this.viewID(), this.viewIDStr(), this.viewScopeType(), aProperties);
+		}, sRequestUid, this.viewID(), aProperties);
 		
 	}, function () {
 		var 
@@ -10028,13 +9995,43 @@ function PopupsContactsViewModel()
 		return !this.viewSaving() && bV && !bReadOnly;
 	});
 
+	this.syncCommand = Utils.createCommand(this, function () {
+		
+		if (this.contacts.syncing())
+		{
+			return false;
+		}
+
+		var self = this;
+
+		this.contacts.syncing(true);
+
+		
+		RL.remote().contactsSync(function (sResult, oData) {
+
+			self.contacts.syncing(false);
+			
+			if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
+			{
+				window.alert(Utils.getNotification(
+					oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.ContactsSyncError));
+			}
+
+			self.reloadContactList(true);
+			
+		});
+		
+	}, function () {
+		return !this.contacts.syncing() && !this.contacts.importing();
+	});
+
 	this.bDropPageAfterDelete = false;
 
 	this.watchDirty = ko.observable(false);
 	this.watchHash = ko.observable(false);
 	
 	this.viewHash = ko.computed(function () {
-		return '' + self.viewScopeType() + ' - ' + _.map(self.viewProperties(), function (oItem) {
+		return '' + _.map(self.viewProperties(), function (oItem) {
 			return oItem.value();
 		}).join('');
 	});
@@ -10055,31 +10052,21 @@ function PopupsContactsViewModel()
 
 Utils.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
 
-PopupsContactsViewModel.prototype.setShareToNone = function ()
+PopupsContactsViewModel.prototype.addNewProperty = function (sType, sTypeStr)
 {
-	this.viewScopeType(Enums.ContactScopeType.Default);
-};
-
-PopupsContactsViewModel.prototype.setShareToAll = function ()
-{
-	this.viewScopeType(Enums.ContactScopeType.ShareAll);
-};
-
-PopupsContactsViewModel.prototype.addNewProperty = function (sType)
-{
-	var oItem = new ContactPropertyModel(sType, '');
+	var oItem = new ContactPropertyModel(sType, sTypeStr || '', '');
 	oItem.focused(true);
 	this.viewProperties.push(oItem);
 };
 
 PopupsContactsViewModel.prototype.addNewEmail = function ()
 {
-	this.addNewProperty(Enums.ContactPropertyType.EmailPersonal);
+	this.addNewProperty(Enums.ContactPropertyType.Email, 'Home');
 };
 
 PopupsContactsViewModel.prototype.addNewPhone = function ()
 {
-	this.addNewProperty(Enums.ContactPropertyType.MobilePersonal);
+	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
 };
 
 PopupsContactsViewModel.prototype.initUploader = function ()
@@ -10206,7 +10193,6 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 {
 	var
 		sId = '',
-		sIdStr = '',
 		sLastName = '',
 		sFirstName = '',
 		aList = []
@@ -10216,13 +10202,10 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 
 	this.emptySelection(false);
 	this.viewReadOnly(false);
-	this.viewScopeType(Enums.ContactScopeType.Default);
 	
 	if (oContact)
 	{
 		sId = oContact.idContact;
-		sIdStr = oContact.idContactStr;
-
 		if (Utils.isNonEmptyArray(oContact.properties))
 		{
 			_.each(oContact.properties, function (aProperty) {
@@ -10236,23 +10219,21 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 					{
 						sFirstName = aProperty[1];
 					}
-					else if (-1 === Utils.inArray(aProperty[0], [Enums.ContactPropertyType.FullName]))
+					else
 					{
-						aList.push(new ContactPropertyModel(aProperty[0], aProperty[1]));
+						aList.push(new ContactPropertyModel(aProperty[0], aProperty[2] || '', aProperty[1]));
 					}
 				}
 			});
 		}
 
 		this.viewReadOnly(!!oContact.readOnly);
-		this.viewScopeType(oContact.scopeType);
 	}
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, sLastName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
 	
 	this.viewID(sId);
-	this.viewIDStr(sIdStr);
 	this.viewProperties([]);
 	this.viewProperties(aList);
 
@@ -10291,7 +10272,7 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 			{
 				aList = _.map(oData.Result.List, function (oItem) {
 					var oContact = new ContactModel();
-					return oContact.parse(oItem, self.contactsSharingIsAllowed) ? oContact : null;
+					return oContact.parse(oItem) ? oContact : null;
 				});
 
 				aList = _.compact(aList);
@@ -10306,11 +10287,6 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self.contacts(aList);
 		self.viewClearSearch('' !== self.search());
 		self.contacts.loading(false);
-
-//		if ('' !== self.viewID() && !self.currentContact() && self.contacts.setSelectedByUid)
-//		{
-//			self.contacts.setSelectedByUid('' + self.viewID());
-//		}
 
 	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };
@@ -10377,7 +10353,7 @@ function PopupsAdvancedSearchViewModel()
 	this.text = ko.observable('');
 	this.selectedDateValue = ko.observable(-1);
 
-	this.hasAttachments = ko.observable(false);
+	this.hasAttachment = ko.observable(false);
 	this.starred = ko.observable(false);
 	this.unseen = ko.observable(false);
 
@@ -10415,6 +10391,7 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 		sTo = Utils.trim(this.to()),
 		sSubject = Utils.trim(this.subject()),
 		sText = Utils.trim(this.text()),
+		aIs = [],
 		aHas = []
 	;
 
@@ -10433,24 +10410,29 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 		aResult.push('subject:' + this.buildSearchStringValue(sSubject));
 	}
 	
-	if (this.hasAttachments())
+	if (this.hasAttachment())
 	{
-		aHas.push('attachments');
+		aHas.push('attachment');
 	}
 	
 	if (this.unseen())
 	{
-		aHas.push('unseen');
+		aIs.push('unseen');
 	}
 
 	if (this.starred())
 	{
-		aHas.push('flag');
+		aIs.push('flagged');
 	}
 
 	if (0 < aHas.length)
 	{
 		aResult.push('has:' + aHas.join(','));
+	}
+
+	if (0 < aIs.length)
+	{
+		aResult.push('is:' + aIs.join(','));
 	}
 
 	if (-1 < this.selectedDateValue())
@@ -10474,7 +10456,7 @@ PopupsAdvancedSearchViewModel.prototype.clearPopup = function ()
 	this.text('');
 
 	this.selectedDateValue(-1);
-	this.hasAttachments(false);
+	this.hasAttachment(false);
 	this.starred(false);
 	this.unseen(false);
 
@@ -10866,7 +10848,7 @@ function PopupsComposeOpenPgpViewModel()
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
-					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+					self.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
 						'EMAIL': sEmail
 					}));
 					
@@ -12956,9 +12938,9 @@ function MailBoxMessageViewViewModel()
 	KnoinAbstractViewModel.call(this, 'Right', 'MailMessageView');
 
 	var
-		sPic = '',
-		oData = RL.data(),
 		self = this,
+		sLastEmail = '',
+		oData = RL.data(),
 		createCommandHelper = function (sType) {
 			return Utils.createCommand(self, function () {
 				this.replyOrforward(sType);
@@ -13102,17 +13084,19 @@ function MailBoxMessageViewViewModel()
 			this.viewViewLink(oMessage.viewLink());
 			this.viewDownloadLink(oMessage.downloadLink());
 
-			sPic = RL.cache().getUserPic(oMessage.fromAsSingleEmail());
-			if (sPic !== this.viewUserPic())
-			{
-				this.viewUserPicVisible(false);
-				this.viewUserPic(Consts.DataImages.UserDotPic);
-				if ('' !== sPic)
+			sLastEmail = oMessage.fromAsSingleEmail();
+			RL.cache().getUserPic(sLastEmail, function (sPic, $sEmail) {
+				if (sPic !== self.viewUserPic() && sLastEmail === $sEmail)
 				{
-					this.viewUserPicVisible(true);
-					this.viewUserPic(sPic);
+					self.viewUserPicVisible(false);
+					self.viewUserPic(Consts.DataImages.UserDotPic);
+					if ('' !== sPic)
+					{
+						self.viewUserPicVisible(true);
+						self.viewUserPic(sPic);
+					}
 				}
-			}
+			});
 		}
 		
 	}, this);
@@ -13835,21 +13819,33 @@ function SettingsContacts()
 	var oData = RL.data();
 	
 	this.contactsAutosave = oData.contactsAutosave;
-	this.showPassword = ko.observable(false);
 
-	this.allowContactsSync = !!RL.settingsGet('ContactsSyncIsAllowed');
-	this.contactsSyncServer = RL.settingsGet('ContactsSyncServer');
-	this.contactsSyncUser = RL.settingsGet('ContactsSyncUser');
-	this.contactsSyncPass = RL.settingsGet('ContactsSyncPassword');
-	this.contactsSyncPabUrl = RL.settingsGet('ContactsSyncPabUrl');
+	this.allowContactsSync = oData.allowContactsSync;
+	this.enableContactsSync = oData.enableContactsSync;
+	this.contactsSyncUrl = oData.contactsSyncUrl;
+	this.contactsSyncUser = oData.contactsSyncUser;
+	this.contactsSyncPass = oData.contactsSyncPass;
+
+	this.saveTrigger = ko.computed(function () {
+		return [
+			this.enableContactsSync() ? '1' : '0',
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		].join('|');
+	}, this).extend({'throttle': 500});
+
+	this.saveTrigger.subscribe(function () {
+		RL.remote().saveContactsSyncData(null,
+			this.enableContactsSync(),
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		);
+	}, this);
 }
 
 Utils.addSettingsViewModel(SettingsContacts, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
-SettingsContacts.prototype.toggleShowPassword = function ()
-{
-	this.showPassword(!this.showPassword());
-};
 
 SettingsContacts.prototype.onBuild = function ()
 {
@@ -13860,10 +13856,10 @@ SettingsContacts.prototype.onBuild = function ()
 	});
 };
 
-SettingsContacts.prototype.onShow = function ()
-{
-	this.showPassword(false);
-};
+//SettingsContacts.prototype.onShow = function ()
+//{
+//
+//};
 
 /**
  * @constructor
@@ -15225,6 +15221,18 @@ function WebMailDataStorage()
 	// identities
 	this.identities = ko.observableArray([]);
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
+
+	this.allowContactsSync = ko.observable(false);
+	this.enableContactsSync = ko.observable(false);
+	this.contactsSyncUrl = ko.observable('');
+	this.contactsSyncUser = ko.observable('');
+	this.contactsSyncPass = ko.observable('');
+
+	this.allowContactsSync = ko.observable(!!RL.settingsGet('ContactsSyncIsAllowed'));
+	this.enableContactsSync = ko.observable(!!RL.settingsGet('EnableContactsSync'));
+	this.contactsSyncUrl = ko.observable(RL.settingsGet('ContactsSyncUrl'));
+	this.contactsSyncUser = ko.observable(RL.settingsGet('ContactsSyncUser'));
+	this.contactsSyncPass = ko.observable(RL.settingsGet('ContactsSyncPassword'));
 
 	// folders
 	this.namespace = '';
@@ -16770,6 +16778,31 @@ WebMailAjaxRemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
 
 /**
  * @param {?Function} fCallback
+ */
+WebMailAjaxRemoteStorage.prototype.contactsSync = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'ContactsSync', null, Consts.Defaults.ContactsSyncAjaxTimeout);
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {boolean} bEnable
+ * @param {string} sUrl
+ * @param {string} sUser
+ * @param {string} sPassword
+ */
+WebMailAjaxRemoteStorage.prototype.saveContactsSyncData = function (fCallback, bEnable, sUrl, sUser, sPassword)
+{
+	this.defaultRequest(fCallback, 'SaveContactsSyncData', {
+		'Enable': bEnable ? '1' : '0',
+		'Url': sUrl,
+		'User': sUser,
+		'Password': sPassword
+	});
+};
+
+/**
+ * @param {?Function} fCallback
  * @param {string} sEmail
  * @param {string} sLogin
  * @param {string} sPassword
@@ -17315,13 +17348,11 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLim
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sUidStr, iScopeType, aProperties)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
 {
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
 		'Uid': Utils.trim(sUid),
-		'UidStr': Utils.trim(sUidStr),
-		'ScopeType': iScopeType,
 		'Properties': aProperties
 	});
 };
@@ -17431,6 +17462,7 @@ function AbstractCacheStorage()
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
 }
+
 /**
  * @type {Object}
  */
@@ -17451,26 +17483,36 @@ AbstractCacheStorage.prototype.clear = function ()
  * @param {string} sEmail
  * @return {string}
  */
-AbstractCacheStorage.prototype.getUserPic = function (sEmail)
+AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 {
+	sEmail = Utils.trim(sEmail);
+	
 	var
 		sUrl = '',
 		sService = '',
 		sEmailLower = sEmail.toLowerCase(),
-		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmail]) ? '' : this.oEmailsPicsHashes[sEmail]
+		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmailLower]) ? '' : this.oEmailsPicsHashes[sEmailLower]
 	;
-	
-	if ('' === sPicHash)
+
+	if ('' !== sPicHash)
+	{
+		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
+	}
+	else
 	{
 		sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
 		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 	}
-	else
-	{
-		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
-	}
+
 	
-	return sUrl;
+//	if ('' === sUrl) // Gravatar // TODO
+//	{
+//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+//	}
+//	else
+//	{
+		fCallback(sUrl, sEmail);
+//	}
 };
 
 /**

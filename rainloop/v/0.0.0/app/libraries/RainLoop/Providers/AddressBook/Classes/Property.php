@@ -19,7 +19,7 @@ class Property
 	/**
 	 * @var string
 	 */
-	public $TypeCustom;
+	public $TypeStr;
 
 	/**
 	 * @var string
@@ -37,12 +37,13 @@ class Property
 	public $Frec;
 
 	public function __construct(
-		$iType = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::UNKNOWN, $sValue = '')
+		$iType = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::UNKNOWN, $sValue = '', $sTypeStr = '')
 	{
 		$this->Clear();
 
 		$this->Type = $iType;
 		$this->Value = $sValue;
+		$this->TypeStr = $sTypeStr;
 	}
 
 	public function Clear()
@@ -50,7 +51,7 @@ class Property
 		$this->IdProperty = 0;
 		
 		$this->Type = PropertyType::UNKNOWN;
-		$this->TypeCustom = '';
+		$this->TypeStr = '';
 
 		$this->Value = '';
 		$this->ValueCustom = '';
@@ -63,9 +64,7 @@ class Property
 	 */
 	public function IsEmail()
 	{
-		return \in_array($this->Type, array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
-		));
+		return PropertyType::EMAIl === $this->Type;
 	}
 	
 	/**
@@ -73,18 +72,29 @@ class Property
 	 */
 	public function IsPhone()
 	{
-		return \in_array($this->Type, array(
-			PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
-			PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER,
-			PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER
-		));
+		return PropertyType::PHONE === $this->Type;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function TypesAsArray()
+	{
+		$aResult = array();
+		if (!empty($this->TypeStr))
+		{
+			$sTypeStr = \preg_replace('/[\s]+/', '', $this->TypeStr);
+			$aResult = \explode(',', $sTypeStr);
+		}
+
+		return $aResult;
 	}
 
 	public function UpdateDependentValues()
 	{
 		$this->Value = \trim($this->Value);
 		$this->ValueCustom = \trim($this->ValueCustom);
-		$this->TypeCustom = \trim($this->TypeCustom);
+		$this->TypeStr = \trim($this->TypeStr);
 		
 		if (0 < \strlen($this->Value))
 		{

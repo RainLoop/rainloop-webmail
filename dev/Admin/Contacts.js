@@ -190,7 +190,7 @@ AdminContacts.prototype.onBuild = function ()
 				'ContactsSync': bValue ? '1' : '0'
 			});
 		});
-		
+
 		self.contactsType.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f5, {
 				'ContactsPdoType': sValue

@@ -18,7 +18,7 @@ if (!\defined('RAINLOOP_APP_ROOT_PATH'))
 			if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
 			{
 				\define('RL_MB_FIXED', true);
-				include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/SabreDAV/MbStringFix.php';
+				include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
 			}
 			
 			return include RAINLOOP_APP_LIBRARIES_PATH.'Sabre/'.\str_replace('\\', '/', \substr($sClassName, 6)).'.php';

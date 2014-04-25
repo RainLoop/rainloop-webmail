@@ -8,6 +8,7 @@ function AbstractCacheStorage()
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
 }
+
 /**
  * @type {Object}
  */
@@ -28,26 +29,36 @@ AbstractCacheStorage.prototype.clear = function ()
  * @param {string} sEmail
  * @return {string}
  */
-AbstractCacheStorage.prototype.getUserPic = function (sEmail)
+AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 {
+	sEmail = Utils.trim(sEmail);
+	
 	var
 		sUrl = '',
 		sService = '',
 		sEmailLower = sEmail.toLowerCase(),
-		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmail]) ? '' : this.oEmailsPicsHashes[sEmail]
+		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmailLower]) ? '' : this.oEmailsPicsHashes[sEmailLower]
 	;
-	
-	if ('' === sPicHash)
+
+	if ('' !== sPicHash)
+	{
+		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
+	}
+	else
 	{
 		sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
 		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 	}
-	else
-	{
-		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
-	}
+
 	
-	return sUrl;
+//	if ('' === sUrl) // Gravatar // TODO
+//	{
+//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+//	}
+//	else
+//	{
+		fCallback(sUrl, sEmail);
+//	}
 };
 
 /**

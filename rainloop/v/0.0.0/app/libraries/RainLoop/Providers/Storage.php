@@ -18,16 +18,33 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
-	 * @param string $iStorageType
+	 *
+	 * @return bool
+	 */
+	public function verifyAccount($oAccount, $iStorageType)
+	{
+		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType &&
+			!($oAccount instanceof \RainLoop\Account || \is_string($oAccount)))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param int $iStorageType
+	 * @param string $sKey
 	 * @param string $sValue
 	 *
 	 * @return bool
 	 */
 	public function Put($oAccount, $iStorageType, $sKey, $sValue)
 	{
-		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType && !($oAccount instanceof \RainLoop\Account))
+		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
 			return false;
 		}
@@ -36,7 +53,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param mixed $mDefault = false
@@ -45,7 +62,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Get($oAccount, $iStorageType, $sKey, $mDefault = false)
 	{
-		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType && !($oAccount instanceof \RainLoop\Account))
+		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
 			return $mDefault;
 		}
@@ -54,7 +71,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 *
@@ -62,7 +79,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Clear($oAccount, $iStorageType, $sKey)
 	{
-		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType && !($oAccount instanceof \RainLoop\Account))
+		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
 			return false;
 		}

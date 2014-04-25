@@ -47,7 +47,7 @@ class Contact
 	/**
 	 * @var string
 	 */
-	public $Hash;
+	public $Etag;
 
 	public function __construct()
 	{
@@ -64,7 +64,7 @@ class Contact
 		$this->Properties = array();
 		$this->ReadOnly = false;
 		$this->IdPropertyFromSearch = 0;
-		$this->Hash = '';
+		$this->Etag = '';
 	}
 	
 	public function UpdateDependentValues()
@@ -101,9 +101,8 @@ class Contact
 					{
 						$sFirstName = $oProperty->Value;
 					}
-					else if (\in_array($oProperty->Type, array(PropertyType::FULLNAME,
-						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
-						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER
+					else if (\in_array($oProperty->Type, array(
+						PropertyType::FULLNAME, PropertyType::PHONE
 					)))
 					{
 						$sOther = $oProperty->Value;
@@ -134,20 +133,16 @@ class Contact
 		}
 
 		$this->Display = \trim($sDisplay);
-
-		$bNewFull = false;
-		if (!$oFullNameProperty)
+		
+		if ($oFullNameProperty)
 		{
-			$oFullNameProperty = new \RainLoop\Providers\AddressBook\Classes\Property(PropertyType::FULLNAME, $this->Display);
-			$bNewFull = true;
+			$oFullNameProperty->Value = $this->Display;
+			$oFullNameProperty->UpdateDependentValues();
 		}
 
-		$oFullNameProperty->Value = $this->Display;
-		$oFullNameProperty->UpdateDependentValues();
-
-		if ($bNewFull)
+		if (!$oFullNameProperty)
 		{
-			$this->Properties[] = $oFullNameProperty;
+			$this->Properties[] = new \RainLoop\Providers\AddressBook\Classes\Property(PropertyType::FULLNAME, $this->Display);
 		}
 	}
 
@@ -177,85 +172,189 @@ class Contact
 	}
 
 	/**
-	 * @param \Sabre\VObject\Document $oVCard
+	 * @return string
 	 */
-	public function ParseVCard($oVCard)
+	public function CardDavNameUri()
 	{
-		$bNew = empty($this->IdContact);
+		return $this->IdContactStr.'.vcf';
+	}
 
-		if (!$bNew)
+	/**
+	 * @return string
+	 */
+	public function ToVCard($sPreVCard = '')
+	{
+		$this->UpdateDependentValues();
+
+		$oVCard = null;
+		if (0 < \strlen($sPreVCard))
 		{
-			$this->Properties = array();
+			try
+			{
+				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
+			}
+			catch (\Exception $oExc) {};
 		}
+
+		if (!$oVCard)
+		{
+			$oVCard = new \Sabre\VObject\Component\VCard();
+		}
+		
+		$oVCard->VERSION = '3.0';
+		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
+
+		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL);
+
+		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		{
+			if ($oProperty)
+			{
+				$sAddKey = '';
+				switch ($oProperty->Type)
+				{
+					case PropertyType::FULLNAME:
+						$oVCard->FN = $oProperty->Value;
+						break;
+					case PropertyType::NICK_NAME:
+						$oVCard->NICKNAME = $oProperty->Value;
+						break;
+					case PropertyType::FIRST_NAME:
+						$sFirstName = $oProperty->Value;
+						break;
+					case PropertyType::LAST_NAME:
+						$sLastName = $oProperty->Value;
+						break;
+					case PropertyType::MIDDLE_NAME:
+						$sMiddleName = $oProperty->Value;
+						break;
+					case PropertyType::NAME_SUFFIX:
+						$sSuffix = $oProperty->Value;
+						break;
+					case PropertyType::NAME_PREFIX:
+						$sPrefix = $oProperty->Value;
+						break;
+					case PropertyType::EMAIl:
+						if (empty($sAddKey))
+						{
+							$sAddKey = 'EMAIL';
+						}
+					case PropertyType::WEB_PAGE:
+						if (empty($sAddKey))
+						{
+							$sAddKey = 'URL';
+						}
+					case PropertyType::PHONE:
+						if (empty($sAddKey))
+						{
+							$sAddKey = 'TEL';
+						}
+
+						$aTypes = $oProperty->TypesAsArray();
+						$oVCard->add($sAddKey, $oProperty->Value, \is_array($aTypes) && 0 < \count($aTypes) ? array('TYPE' => $aTypes) : null);
+						break;
+				}
+			}
+		}
+
+		$oVCard->UID = $this->IdContactStr;
+		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
+		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
+
+		return (string) $oVCard->serialize();
+	}
+
+	/**
+	 * @param mixed $oProp
+	 * @param bool $bOldVersion
+	 * @return string
+	 */
+	private function getPropertyValueHelper($oProp, $bOldVersion)
+	{
+		$sValue = \trim($oProp);
+		if ($bOldVersion && !isset($oProp->parameters['CHARSET']))
+		{
+			if (0 < \strlen($sValue))
+			{
+				$sEncValue = @\utf8_encode($sValue);
+				if (0 === \strlen($sEncValue))
+				{
+					$sEncValue = $sValue;
+				}
+
+				$sValue = $sEncValue;
+			}
+		}
+
+		return \MailSo\Base\Utils::Utf8Clear($sValue);
+	}
+
+	/**
+	 * @param mixed $oProp
+	 * @param bool $bOldVersion
+	 * @return string
+	 */
+	private function addArrayPropertyHelper(&$aProperties, $oArrayProp, $iType)
+	{
+		foreach ($oArrayProp as $oProp)
+		{
+			$oTypes = $oProp ? $oProp['TYPE'] : null;
+			$aTypes = $oTypes ? $oTypes->getParts() : array();
+			$sValue = $oProp ? \trim($oProp->getValue()) : '';
+
+			if (0 < \strlen($sValue))
+			{
+				if (!$oTypes || $oTypes->has('PREF'))
+				{
+					\array_unshift($aProperties, new Property($iType, $sValue, \implode(',', $aTypes)));
+				}
+				else
+				{
+					\array_push($aProperties, new Property($iType, $sValue, \implode(',', $aTypes)));
+				}
+			}
+		}
+	}
+
+	public function PopulateByVCard($sVCard, $sEtag = '')
+	{
+		$this->Properties = array();
+		
+		if (!empty($sEtag))
+		{
+			$this->Etag = $sEtag;
+		}
+
+		try
+		{
+			$oVCard = \Sabre\VObject\Reader::read($sVCard);
+		}
+		catch (\Exception $oExc) {};
 
 		$aProperties = array();
 		if ($oVCard)
 		{
-			$bOldVersion = empty($oVCard->VERSION) ? false : 
+			$bOldVersion = empty($oVCard->VERSION) ? false :
 				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
 
-			$this->IdContactStr = !empty($oVCard->UID) ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
+			$this->IdContactStr = $oVCard->UID ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
 
 			if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
 			{
-				$sValue = \trim($oVCard->FN);
-				if ($bOldVersion && !isset($oVCard->FN->parameters['CHARSET']))
-				{
-					if (0 < \strlen($sValue))
-					{
-						$sEncValue = @\utf8_encode($sValue);
-						if (0 === \strlen($sEncValue))
-						{
-							$sEncValue = $sValue;
-						}
-						
-						$sValue = $sEncValue;
-					}
-				}
-
-				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+				$sValue = $this->getPropertyValueHelper($oVCard->FN, $bOldVersion);
 				$aProperties[] = new Property(PropertyType::FULLNAME, $sValue);
 			}
 
 			if (isset($oVCard->NICKNAME) && '' !== \trim($oVCard->NICKNAME))
 			{
-				$sValue = \trim($oVCard->NICKNAME);
-				if ($bOldVersion && !isset($oVCard->NICKNAME->parameters['CHARSET']))
-				{
-					if (0 < \strlen($sValue))
-					{
-						$sEncValue = @\utf8_encode($sValue);
-						if (0 === \strlen($sEncValue))
-						{
-							$sEncValue = $sValue;
-						}
-
-						$sValue = $sEncValue;
-					}
-				}
-
-				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+				$sValue = $sValue = $this->getPropertyValueHelper($oVCard->NICKNAME, $bOldVersion);
 				$aProperties[] = new Property(PropertyType::NICK_NAME, $sValue);
 			}
 
 //			if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
 //			{
-//				$sValue = \trim($oVCard->NOTE);
-//				if ($bOldVersion)
-//				{
-//					if (0 < \strlen($sValue))
-//					{
-//						$sEncValue = @\utf8_encode($sValue);
-//						if (0 === \strlen($sEncValue))
-//						{
-//							$sEncValue = $sValue;
-//						}
-//
-//						$sValue = $sEncValue;
-//					}
-//				}
-//				
-//				$sValue = \MailSo\Base\Utils::Utf8Clear($sValue);
+//				$sValue = $this->getPropertyValueHelper($oVCard->NOTE, $bOldVersion);
 //				$aProperties[] = new Property(PropertyType::NOTE, $sValue);
 //			}
 
@@ -302,244 +401,22 @@ class Contact
 
 			if (isset($oVCard->EMAIL))
 			{
-				$bPref = false;
-				foreach($oVCard->EMAIL as $oEmail)
-				{
-					$oTypes = $oEmail ? $oEmail['TYPE'] : null;
-					$sEmail = $oEmail ? \trim($oEmail->getValue()) : '';
-
-					if (0 < \strlen($sEmail))
-					{
-						if ($oTypes)
-						{
-							$oProp = new Property($oTypes->has('WORK') ? PropertyType::EMAIl_BUSSINES : PropertyType::EMAIl_PERSONAL, $sEmail);
-							if (!$bPref && $oTypes->has('pref'))
-							{
-								$bPref = true;
-								\array_unshift($aProperties, $oProp);
-							}
-							else
-							{
-								\array_push($aProperties, $oProp);
-							}
-						}
-						else
-						{
-							\array_unshift($aProperties,
-								new Property(PropertyType::EMAIl_PERSONAL, $sEmail));
-						}
-					}
-				}
+				$this->addArrayPropertyHelper(&$aProperties, $oVCard->EMAIL, PropertyType::EMAIl);
 			}
 
-//			if (isset($oVCard->URL))
-//			{
-//				foreach($oVCard->URL as $oUrl)
-//				{
-//					$oTypes = $oUrl ? $oUrl['TYPE'] : null;
-//					$sUrl = $oUrl ? \trim((string) $oUrl) : '';
-//
-//					if (0 < \strlen($sUrl))
-//					{
-//						\array_push($aProperties,
-//							new Property($oTypes && $oTypes->has('WORK') ?
-//								PropertyType::WEB_PAGE_BUSSINES : PropertyType::WEB_PAGE_PERSONAL, $sUrl));
-//					}
-//				}
-//			}
-			
+			if (isset($oVCard->URL))
+			{
+				$this->addArrayPropertyHelper(&$aProperties, $oVCard->URL, PropertyType::WEB_PAGE);
+			}
+
 			if (isset($oVCard->TEL))
 			{
-				$bPref = false;
-				foreach($oVCard->TEL as $oTel)
-				{
-					$oTypes = $oTel ? $oTel['TYPE'] : null;
-					$sTel = $oTypes ? \trim((string) $oTel) : '';
-
-					if (0 < \strlen($sTel))
-					{
-						if ($oTypes)
-						{
-							$oProp = null;
-							$bWork = $oTypes->has('WORK');
-
-							switch (true)
-							{
-								case $oTypes->has('VOICE'):
-									$oProp = new Property($bWork ? PropertyType::PHONE_BUSSINES : PropertyType::PHONE_PERSONAL, $sTel);
-									break;
-								case $oTypes->has('CELL'):
-									$oProp = new Property($bWork ? PropertyType::MOBILE_BUSSINES : PropertyType::MOBILE_PERSONAL, $sTel);
-									break;
-								case $oTypes->has('FAX'):
-									$oProp = new Property($bWork ? PropertyType::FAX_BUSSINES : PropertyType::FAX_PERSONAL, $sTel);
-									break;
-								case $oTypes->has('WORK'):
-									$oProp = new Property(PropertyType::MOBILE_BUSSINES, $sTel);
-									break;
-								default:
-									$oProp = new Property(PropertyType::MOBILE_PERSONAL, $sTel);
-									break;
-							}
-
-							if ($oProp)
-							{
-								if (!$bPref && $oTypes->has('pref'))
-								{
-									$bPref = true;
-									\array_unshift($aProperties, $oProp);
-								}
-								else
-								{
-									\array_push($aProperties, $oProp);
-								}
-							}
-						}
-						else
-						{
-							\array_unshift($aProperties, 
-								new Property(PropertyType::MOBILE_PERSONAL, $sTel));
-						}
-					}
-				}
+				$this->addArrayPropertyHelper(&$aProperties, $oVCard->TEL, PropertyType::PHONE);
 			}
-			
+
 			$this->Properties = $aProperties;
 		}
 
-		$this->UpdateDependentValues(false);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function ToVCardObject($sPreVCard = '')
-	{
-		$oVCard = null;
-		if (0 < \strlen($sPreVCard))
-		{
-			try
-			{
-				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
-			}
-			catch (\Exception $oExc) {};
-		}
-
-		if (!$oVCard)
-		{
-			$oVCard = new \Sabre\VObject\Component\VCard();
-		}
-
-		$oVCard->VERSION = '3.0';
-		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
-
-		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL);
-
-		$bPrefEmail = $bPrefPhone = false;
-		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
-		{
-			if ($oProperty)
-			{
-				switch ($oProperty->Type)
-				{
-					case PropertyType::FULLNAME:
-						$oVCard->FN = $oProperty->Value;
-						break;
-					case PropertyType::NICK_NAME:
-						$oVCard->NICKNAME = $oProperty->Value;
-						break;
-					case PropertyType::FIRST_NAME:
-						$sFirstName = $oProperty->Value;
-						break;
-					case PropertyType::LAST_NAME:
-						$sLastName = $oProperty->Value;
-						break;
-					case PropertyType::MIDDLE_NAME:
-						$sMiddleName = $oProperty->Value;
-						break;
-					case PropertyType::NAME_SUFFIX:
-						$sSuffix = $oProperty->Value;
-						break;
-					case PropertyType::NAME_PREFIX:
-						$sPrefix = $oProperty->Value;
-						break;
-					case PropertyType::EMAIl_PERSONAL:
-					case PropertyType::EMAIl_BUSSINES:
-					case PropertyType::EMAIl_OTHER:
-						$aParams = array('TYPE' => array('INTERNET'));
-						$aParams['TYPE'][] = PropertyType::EMAIl_BUSSINES === $oProperty->Type ? 'WORK' : 'HOME';
-
-						if (!$bPrefEmail)
-						{
-							$bPrefEmail = true;
-							$aParams['TYPE'][] = 'pref';
-						}
-						$oVCard->add('EMAIL', $oProperty->Value, $aParams);
-						break;
-					case PropertyType::WEB_PAGE_PERSONAL:
-					case PropertyType::WEB_PAGE_BUSSINES:
-					case PropertyType::WEB_PAGE_OTHER:
-						$aParams = array('TYPE' => array());
-						$aParams['TYPE'][] = PropertyType::WEB_PAGE_BUSSINES === $oProperty->Type ? 'WORK' : 'HOME';
-						$oVCard->add('URL', $oProperty->Value, $aParams);
-						break;
-					case PropertyType::PHONE_PERSONAL:
-					case PropertyType::PHONE_BUSSINES:
-					case PropertyType::PHONE_OTHER:
-					case PropertyType::MOBILE_PERSONAL:
-					case PropertyType::MOBILE_BUSSINES:
-					case PropertyType::MOBILE_OTHER:
-					case PropertyType::FAX_PERSONAL:
-					case PropertyType::FAX_BUSSINES:
-					case PropertyType::FAX_OTHER:
-						$aParams = array('TYPE' => array());
-						$sType = '';
-						if (\in_array($oProperty->Type, array(PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER)))
-						{
-							$sType = 'VOICE';
-						}
-						else if (\in_array($oProperty->Type, array(PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER)))
-						{
-							$sType = 'CELL';
-						}
-						else if (\in_array($oProperty->Type, array(PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER)))
-						{
-							$sType = 'FAX';
-						}
-
-						if (!empty($sType))
-						{
-							$aParams['TYPE'][] = $sType;
-						}
-
-						$aParams['TYPE'][] = \in_array($oProperty->Type, array(
-							PropertyType::PHONE_BUSSINES, PropertyType::MOBILE_BUSSINES, PropertyType::FAX_BUSSINES))  ? 'WORK' : 'HOME';
-
-						if (!$bPrefPhone)
-						{
-							$bPrefPhone = true;
-							$aParams['TYPE'][] = 'pref';
-						}
-
-						$oVCard->add('TEL', $oProperty->Value, $aParams);
-						break;
-				}
-			}
-		}
-
-		$oVCard->UID = $this->IdContactStr;
-		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
-		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
-
-		return $oVCard;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function VCardUri()
-	{
-		return $this->IdContactStr.'.vcf';
+		$this->UpdateDependentValues();
 	}
 }

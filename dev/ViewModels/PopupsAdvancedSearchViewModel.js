@@ -16,7 +16,7 @@ function PopupsAdvancedSearchViewModel()
 	this.text = ko.observable('');
 	this.selectedDateValue = ko.observable(-1);
 
-	this.hasAttachments = ko.observable(false);
+	this.hasAttachment = ko.observable(false);
 	this.starred = ko.observable(false);
 	this.unseen = ko.observable(false);
 
@@ -54,6 +54,7 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 		sTo = Utils.trim(this.to()),
 		sSubject = Utils.trim(this.subject()),
 		sText = Utils.trim(this.text()),
+		aIs = [],
 		aHas = []
 	;
 
@@ -72,24 +73,29 @@ PopupsAdvancedSearchViewModel.prototype.buildSearchString = function ()
 		aResult.push('subject:' + this.buildSearchStringValue(sSubject));
 	}
 	
-	if (this.hasAttachments())
+	if (this.hasAttachment())
 	{
-		aHas.push('attachments');
+		aHas.push('attachment');
 	}
 	
 	if (this.unseen())
 	{
-		aHas.push('unseen');
+		aIs.push('unseen');
 	}
 
 	if (this.starred())
 	{
-		aHas.push('flag');
+		aIs.push('flagged');
 	}
 
 	if (0 < aHas.length)
 	{
 		aResult.push('has:' + aHas.join(','));
+	}
+
+	if (0 < aIs.length)
+	{
+		aResult.push('is:' + aIs.join(','));
 	}
 
 	if (-1 < this.selectedDateValue())
@@ -113,7 +119,7 @@ PopupsAdvancedSearchViewModel.prototype.clearPopup = function ()
 	this.text('');
 
 	this.selectedDateValue(-1);
-	this.hasAttachments(false);
+	this.hasAttachment(false);
 	this.starred(false);
 	this.unseen(false);
 

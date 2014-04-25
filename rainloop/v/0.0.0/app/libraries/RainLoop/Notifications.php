@@ -24,6 +24,8 @@ class Notifications
 	const NewPasswordWeak = 133;
 	const NewPasswordForbidden = 134;
 
+	const ContactsSyncError = 140;
+
 	const CantGetMessageList = 201;
 	const CantGetMessage = 202;
 	const CantDeleteMessage = 203;
@@ -93,6 +95,8 @@ class Notifications
 			self::NewPasswordShort => 'NewPasswordShort',
 			self::NewPasswordWeak => 'NewPasswordWeak',
 			self::NewPasswordForbidden => 'NewPasswordForbidden',
+
+			self::ContactsSyncError => 'ContactsSyncError',
 			
 			self::CantGetMessageList => 'CantGetMessageList',
 			self::CantGetMessage => 'CantGetMessage',

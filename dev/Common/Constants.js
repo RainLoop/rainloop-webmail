@@ -14,7 +14,7 @@ Consts.Defaults.MessagesPerPage = 20;
  * @const
  * @type {number}
  */
-Consts.Defaults.ContactsPerPage = 20;
+Consts.Defaults.ContactsPerPage = 50;
 
 /**
  * @const
@@ -45,6 +45,12 @@ Consts.Defaults.SendMessageAjaxTimeout = 300000;
  * @type {number}
  */
 Consts.Defaults.SaveMessageAjaxTimeout = 200000;
+
+/**
+ * @const
+ * @type {number}
+ */
+Consts.Defaults.ContactsSyncAjaxTimeout = 200000;
 
 /**
  * @const

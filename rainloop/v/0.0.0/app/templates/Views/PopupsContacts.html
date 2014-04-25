@@ -14,7 +14,8 @@
 
 				<div class="btn-group">
 					<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
-						<i data-bind="css: {'icon-list': !contacts.importing(), 'icon-spinner animated': contacts.importing()}"></i>
+						<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
+							'icon-spinner animated': contacts.importing() || contacts.syncing()}"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu">
 						<li class="e-item">
@@ -22,6 +23,13 @@
 								<i class="icon-list-add"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_IMPORT"></span>
+							</a>
+						</li>
+						<li class="e-item" data-bind="visible: enableContactsSync">
+							<a class="e-link" data-bind="command: syncCommand">
+								<i class="icon-sync"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SYNC"></span>
 							</a>
 						</li>
 					</ul>
@@ -147,32 +155,6 @@
 								<i class="icon-lock iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
 							</div>
 
-							<div class="e-share-sign" data-bind="visible: contactsSharingIsAllowed">
-								<div class="btn-group pull-right">
-									<a class="btn dropdown-toggle" data-tooltip-placement="left" data-toggle="dropdown" data-bind="tooltip: 'CONTACTS/LABEL_SHARE'">
-										<i data-bind="css: shareIcon"></i>
-										&nbsp;&nbsp;
-										<span class="caret"></span>
-									</a>
-									<ul class="dropdown-menu g-ui-menu" role="menu">
-										<li class="e-item" data-bind="css: {'selected': shareToNone}">
-											<a class="e-link" data-bind="click: setShareToNone">
-												<i class="icon-none"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SHARE_NONE"></span>
-											</a>
-										</li>
-										<li class="e-item" data-bind="css: {'selected': shareToAll}">
-											<a class="e-link" data-bind="click: setShareToAll">
-												<i class="icon-earth"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SHARE_ALL"></span>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</div>
-							
 							<button class="btn button-save-contact" data-bind="command: saveCommand, css: {'dirty': watchDirty}">
 								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
 								&nbsp;&nbsp;

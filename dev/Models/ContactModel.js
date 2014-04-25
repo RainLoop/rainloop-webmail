@@ -6,17 +6,14 @@
 function ContactModel()
 {
 	this.idContact = 0;
-	this.idContactStr = '';
 	this.display = '';
 	this.properties = [];
 	this.readOnly = false;
-	this.scopeType = Enums.ContactScopeType.Default;
 
 	this.focused = ko.observable(false);
 	this.selected = ko.observable(false);
 	this.checked = ko.observable(false);
 	this.deleted = ko.observable(false);
-	this.shared = ko.observable(false);
 }
 
 /**
@@ -34,15 +31,15 @@ ContactModel.prototype.getNameAndEmailHelper = function ()
 		_.each(this.properties, function (aProperty) {
 			if (aProperty)
 			{
-				if ('' === sName && Enums.ContactPropertyType.FullName === aProperty[0])
+				if (Enums.ContactPropertyType.FirstName === aProperty[0])
 				{
-					sName = aProperty[1];
+					sName = Utils.trim(aProperty[1] + ' ' + sName);
 				}
-				else if ('' === sEmail && -1 < Utils.inArray(aProperty[0], [
-					Enums.ContactPropertyType.EmailPersonal,
-					Enums.ContactPropertyType.EmailBussines,
-					Enums.ContactPropertyType.EmailOther
-				]))
+				else if (Enums.ContactPropertyType.LastName === aProperty[0])
+				{
+					sName = Utils.trim(sName + ' ' + aProperty[1]);
+				}
+				else if ('' === sEmail && Enums.ContactPropertyType.Email === aProperty[0])
 				{
 					sEmail = aProperty[1];
 				}
@@ -59,22 +56,19 @@ ContactModel.prototype.parse = function (oItem)
 	if (oItem && 'Object/Contact' === oItem['@Object'])
 	{
 		this.idContact = Utils.pInt(oItem['IdContact']);
-		this.idContactStr = Utils.pString(oItem['IdContactStr']);
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
-		this.scopeType = Utils.pInt(oItem['ScopeType']);
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
 			_.each(oItem['Properties'], function (oProperty) {
-				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']))
+				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']) && Utils.isNormal(oProperty['TypeStr']))
 				{
-					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value'])]);
+					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
 				}
 			}, this);
 		}
 
-		this.shared(Enums.ContactScopeType.ShareAll === this.scopeType);
 		bResult = true;
 	}
 
@@ -114,10 +108,6 @@ ContactModel.prototype.lineAsCcc = function ()
 	if (this.checked())
 	{
 		aResult.push('checked');
-	}
-	if (this.shared())
-	{
-		aResult.push('shared');
 	}
 	if (this.focused())
 	{

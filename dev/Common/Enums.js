@@ -266,14 +266,6 @@ Enums.Layout = {
 /**
  * @enum {number}
  */
-Enums.ContactScopeType = {
-	'Default': 0,
-	'ShareAll': 2
-};
-
-/**
- * @enum {number}
- */
 Enums.SignedVerifyStatus = {
 	'UnknownPublicKeys': -4,
 	'UnknownPrivateKey': -3,
@@ -300,17 +292,9 @@ Enums.ContactPropertyType = {
 	'NamePrefix': 20,
 	'NameSuffix': 21,
 
-	'EmailPersonal': 30,
-	'EmailBussines': 31,
-
-	'PhonePersonal': 50,
-	'PhoneBussines': 51,
-
-	'MobilePersonal': 60,
-	'MobileBussines': 61,
-
-	'FaxPesonal': 70,
-	'FaxBussines': 71,
+	'Email': 30,
+	'Phone': 31,
+	'Web': 32,
 
 	'Facebook': 90,
 	'Skype': 91,
@@ -344,6 +328,8 @@ Enums.Notification = {
 	'NewPasswordShort': 132,
 	'NewPasswordWeak': 133,
 	'NewPasswordForbidden': 134,
+	
+	'ContactsSyncError': 140,
 
 	'CantGetMessageList': 201,
 	'CantGetMessage': 202,

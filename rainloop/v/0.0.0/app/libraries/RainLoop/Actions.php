@@ -78,11 +78,6 @@ class Actions
 	private $oAddressBookProvider;
 
 	/**
-	 * @var \RainLoop\Providers\PersonalAddressBook
-	 */
-	private $oPersonalAddressBookProvider;
-
-	/**
 	 * @var \RainLoop\Providers\Suggestions
 	 */
 	private $oSuggestionsProvider;
@@ -127,7 +122,6 @@ class Actions
 		$this->oSettingsProvider = null;
 		$this->oDomainProvider = null;
 		$this->oAddressBookProvider = null;
-		$this->oPersonalAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
@@ -241,26 +235,6 @@ class Actions
 					// \RainLoop\Providers\Domain\DomainAdminInterface
 					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains',
 						$this->Cacher());
-					break;
-				case 'personal-address-book':
-					// \RainLoop\Providers\PersonalAddressBook\PersonalAddressBookInterface
-					
-					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
-					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
-					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
-
-					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
-					if ('sqlite' === $sDsnType)
-					{
-						$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook(
-							'sqlite:'.APP_PRIVATE_DATA.'PersonalAddressBook.sqlite', '', '', 'sqlite');
-					}
-					else
-					{
-						$oResult = new \RainLoop\Providers\PersonalAddressBook\PdoPersonalAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
-					}
-
-					$oResult->SetLogger($this->Logger());
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
@@ -623,32 +597,6 @@ class Actions
 		}
 
 		return $this->oAddressBookProvider;
-	}
-
-	/**
-	 * @param \RainLoop\Account $oAccount = null
-	 * @param bool $bForceEnable = false
-	 *
-	 * @return \RainLoop\Providers\PersonalAddressBook
-	 */
-	public function PersonalAddressBookProvider($oAccount = null, $bForceEnable = false)
-	{
-		if (null === $this->oPersonalAddressBookProvider)
-		{
-			$this->oPersonalAddressBookProvider = new \RainLoop\Providers\PersonalAddressBook(
-				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('personal-address-book', $oAccount) : null);
-
-			$this->oPersonalAddressBookProvider->SetLogger($this->Logger());
-
-			$this->oPersonalAddressBookProvider->ConsiderShare(
-				!!$this->Config()->Get('contacts', 'allow_sharing', false));
-		}
-		else if ($oAccount && $this->oPersonalAddressBookProvider->IsSupported())
-		{
-			$this->oPersonalAddressBookProvider->SetAccount($oAccount);
-		}
-
-		return $this->oPersonalAddressBookProvider;
 	}
 
 	/**
@@ -1033,10 +981,10 @@ class Actions
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
 			'AllowIdentities' => (bool) $oConfig->Get('webmail', 'allow_identities', true),
-			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
 			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
+			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'ChangePasswordIsAllowed' => false,
@@ -1060,7 +1008,7 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Account)
 			{
-				$oPab = $this->PersonalAddressBookProvider($oAccount);
+				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 				
 				$aResult['Auth'] = true;
 				$aResult['Email'] = $oAccount->Email();
@@ -1069,59 +1017,27 @@ class Actions
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['AccountSignMe'] = $oAccount->SignMe();
 				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
-				$aResult['ContactsIsAllowed'] = $oPab->IsActive();
-				$aResult['ContactsSharingIsAllowed'] = $oPab->IsSharingAllowed();
-				
+				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
+				$aResult['ContactsSharingIsAllowed'] = $oAddressBookProvider->IsSharingAllowed();
 				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsSyncServer'] = '';
+
+				$aResult['EnableContactsSync'] = false;
+				$aResult['ContactsSyncUrl'] = '';
 				$aResult['ContactsSyncUser'] = '';
 				$aResult['ContactsSyncPassword'] = '';
-				$aResult['ContactsSyncPabUrl'] = '';
 
-				if ($aResult['ContactsSyncIsAllowed'])
+				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed'])
 				{
-					$sDavDomain = (string) $oConfig->Get('labs', 'sync_dav_domain', '');
-					if (empty($sDavDomain))
+					$mData = $this->getContactsSyncData($oAccount);
+					if (\is_array($mData))
 					{
-						$aResult['ContactsSyncServer'] = $this->Http()->GetHost(false, true, true);
-					}
-					else
-					{
-						$sDavDomain = \rtrim($sDavDomain, '/\\ ');
-						$sDavDomainWithoutScheme = \preg_replace('/https?:\/\//i', '', \trim($sDavDomain));
-
-						$aResult['ContactsSyncServer'] = $sDavDomainWithoutScheme;
-					}
-
-					$aResult['ContactsSyncUser'] = $oAccount->ParentEmailHelper();
-
-					try
-					{
-						$aResult['ContactsSyncPassword'] = $oPab->GetUserHashByEmail($aResult['ContactsSyncUser'], true);
-					}
-					catch (\Exception $oException)
-					{
-						$this->Logger()->WriteException($oException);
-					}
-
-					if (empty($sDavDomain))
-					{
-						$sUrl = \rtrim(\trim($this->Http()->GetScheme().'://'.$this->Http()->GetHost(true, false).$this->Http()->GetPath()), '/\\');
-						$sUrl = \preg_replace('/index\.php(.*)$/i', '', $sUrl);
-
-						$aResult['ContactsSyncPabUrl'] = $sUrl.'/index.php/dav/';
-					}
-					else
-					{
-						$aResult['ContactsSyncPabUrl'] = \preg_match('/^https?:\/\//i', $sDavDomain) ? $sDavDomain : 'http://'.$sDavDomain;
-					}
-
-					if (!empty($aResult['ContactsSyncPabUrl']))
-					{
-						$aResult['ContactsSyncPabUrl'] .= '/addressbooks/'.$oAccount->ParentEmailHelper().'/default/';
+						$aResult['EnableContactsSync'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
+						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
+						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
+						$aResult['ContactsSyncPassword'] = APP_DUMMY;
 					}
 				}
-
+				
 				if ($aResult['AccountSignMe'])
 				{
 					$sToken = \RainLoop\Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
@@ -2273,7 +2189,7 @@ class Actions
 			return $self->ValidateContactPdoType($sType);
 		});
 
-		$sTestMessage = $this->PersonalAddressBookProvider(null, true)->Test();
+		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Result' => '' === $sTestMessage,
 			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage, '?')
@@ -4571,7 +4487,7 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 		}
 
-		if ($oMessage && $this->PersonalAddressBookProvider($oAccount)->IsActive())
+		if ($oMessage && $this->AddressBookProvider($oAccount)->IsActive())
 		{
 			$aArrayToFrec = array();
 			$oToCollection = $oMessage->GetTo();
@@ -4588,7 +4504,7 @@ class Actions
 			{
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				
-				$this->PersonalAddressBookProvider($oAccount)->IncFrec(
+				$this->AddressBookProvider($oAccount)->IncFrec(
 					$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
 			}
 		}
@@ -4682,6 +4598,95 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aQuota);
+	}
+
+	private function getContactsSyncData($oAccount)
+	{
+		$mResult = null;
+		
+		$sData = $this->StorageProvider()->Get($oAccount->ParentEmailHelper(),
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'contacts_sync'
+		);
+
+		if (!empty($sData))
+		{
+			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+			if (\is_array($mData))
+			{
+				$mResult = array(
+					'Enable' => isset($mData['Enable']) ? !!$mData['Enable'] : false,
+					'Url' => isset($mData['Url']) ? \trim($mData['Url']) : '',
+					'User' => isset($mData['User']) ? \trim($mData['User']) : '',
+					'Password' => isset($mData['Password']) ? $mData['Password'] : ''
+				);
+			}
+		}
+
+		return $mResult;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoSaveContactsSyncData()
+	{
+		$oAccount = $this->getAccountFromToken();
+		
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if (!$oAddressBookProvider || !$oAddressBookProvider->IsActive())
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$bEnabled = '1' === (string) $this->GetActionParam('Enable', '0');
+		$sUrl = $this->GetActionParam('Url', '');
+		$sUser = $this->GetActionParam('User', '');
+		$sPassword = $this->GetActionParam('Password', '');
+
+		$mData = $this->getContactsSyncData($oAccount);
+
+		$bResult = $this->StorageProvider()->Put($oAccount->ParentEmailHelper(),
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'contacts_sync',
+			\RainLoop\Utils::EncodeKeyValues(array(
+				'Enable' => $bEnabled,
+				'User' => $sUser,
+				'Password' => APP_DUMMY === $sPassword && isset($mData['Password']) ?
+					$mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword),
+				'Url' => $sUrl
+			))
+		);
+
+		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function DoContactsSync()
+	{
+		$bResult = false;
+		$oAccount = $this->getAccountFromToken();
+
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
+		{
+			$mData = $this->getContactsSyncData($oAccount);
+			if (\is_array($mData) && isset($mData['Enable'], $mData['User'], $mData['Password'], $mData['Url']) && $mData['Enable'])
+			{
+				$bResult = $oAddressBookProvider->Sync(
+					$oAccount->ParentEmailHelper(),
+					$mData['Url'], $mData['User'], $mData['Password']);
+			}
+		}
+
+		if (!$bResult)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+		}
+
+		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	private function getTwoFactorInfo($sEmail, $bRemoveSecret = false)
@@ -4950,10 +4955,10 @@ class Actions
 		$iLimit = 0 > $iLimit ? 20 : $iLimit;
 
 		$iResultCount = 0;
-		if ($this->PersonalAddressBookProvider($oAccount)->IsActive())
+		if ($this->AddressBookProvider($oAccount)->IsActive())
 		{
 			$iResultCount = 0;
-			$mResult = $this->PersonalAddressBookProvider($oAccount)->GetContacts($oAccount->ParentEmailHelper(),
+			$mResult = $this->AddressBookProvider($oAccount)->GetContacts($oAccount->ParentEmailHelper(),
 				$iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
@@ -4980,9 +4985,9 @@ class Actions
 		});
 
 		$bResult = false;
-		if (0 < \count($aFilteredUids) && $this->PersonalAddressBookProvider($oAccount)->IsActive())
+		if (0 < \count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
 		{
-			$bResult = $this->PersonalAddressBookProvider($oAccount)->DeleteContacts($oAccount->ParentEmailHelper(), $aFilteredUids);
+			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($oAccount->ParentEmailHelper(), $aFilteredUids);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
@@ -4997,68 +5002,55 @@ class Actions
 
 		$bResult = false;
 
-		$oPab = $this->PersonalAddressBookProvider($oAccount);
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		$sRequestUid = \trim($this->GetActionParam('RequestUid', ''));
-		if ($oPab && $oPab->IsActive() && 0 < \strlen($sRequestUid))
+		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && 0 < \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
-			$sUidStr = \trim($this->GetActionParam('UidStr', ''));
-			$iScopeType = (int) $this->GetActionParam('ScopeType', null);
-			if (!in_array($iScopeType, array(
-				\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_,
-				\RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::SHARE_ALL)))
-			{
-				$iScopeType = \RainLoop\Providers\PersonalAddressBook\Enumerations\ScopeType::DEFAULT_;
-			}
-
 			$oContact = null;
 			if (0 < \strlen($sUid))
 			{
-				$oContact = $oPab->GetContactByID($oAccount->ParentEmailHelper(), $sUid);
+				$oContact = $oAddressBookProvider->GetContactByID($oAccount->ParentEmailHelper(), $sUid);
 			}
 
 			if (!$oContact)
 			{
-				$oContact = new \RainLoop\Providers\PersonalAddressBook\Classes\Contact();
+				$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 				if (0 < \strlen($sUid))
 				{
 					$oContact->IdContact = $sUid;
 				}
 			}
 			
-			if (0 < \strlen($sUidStr))
-			{
-				$oContact->IdContactStr = $sUidStr;
-			}
-
-			$oContact->ScopeType = $iScopeType;
 			$oContact->Properties = array();
-
 			$aProperties = $this->GetActionParam('Properties', array());
 			if (\is_array($aProperties))
 			{
 				foreach ($aProperties as $aItem)
 				{
-					if ($aItem && isset($aItem[0], $aItem[1]) &&
-						\is_numeric($aItem[0]))
+					if ($aItem && isset($aItem[0], $aItem[1]) && \is_numeric($aItem[0]))
 					{
-						$oProp = new \RainLoop\Providers\PersonalAddressBook\Classes\Property();
+						$oProp = new \RainLoop\Providers\AddressBook\Classes\Property();
 						$oProp->Type = (int) $aItem[0];
 						$oProp->Value = $aItem[1];
-						$oProp->ScopeType = $iScopeType;
+						$oProp->TypeStr = empty($aItem[2]) ? '': $aItem[2];
 
 						$oContact->Properties[] = $oProp;
 					}
 				}
 			}
 
-			$bResult = $oPab->ContactSave($oAccount->ParentEmailHelper(), $oContact);
+			if (!empty($oContact->Etag))
+			{
+				$oContact->Etag = \md5($oContact->ToVCard());
+			}
+
+			$bResult = $oAddressBookProvider->ContactSave($oAccount->ParentEmailHelper(), $oContact);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'RequestUid' => $sRequestUid,
 			'ResultID' => $bResult ? $oContact->IdContact : '',
-			'ResultIDStr' => $bResult ? $oContact->IdContactStr : '',
 			'Result' => $bResult
 		));
 	}
@@ -5087,11 +5079,11 @@ class Actions
 
 		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
 		{
-			// Personal Address Book
-			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab && $oPab->IsActive())
+			// Address Book
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 			{
-				$aSuggestions = $oPab->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
+				$aSuggestions = $oAddressBookProvider->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
 				if (0 === \count($aResult))
 				{
 					$aResult = $aSuggestions;
@@ -5669,8 +5661,8 @@ class Actions
 		
 		if ($oAccount && \is_resource($rFile))
 		{
-			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab && $oPab->IsActive())
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 			{
 				$sDelimiter = ((int) \strpos($sFileStart, ',') > (int) \strpos($sFileStart, ';')) ? ',' : ';';
 
@@ -5706,7 +5698,7 @@ class Actions
 				if (\is_array($aData) && 0 < \count($aData))
 				{
 					$this->Logger()->Write('Import contacts from csv');
-					$iCount = $oPab->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
+					$iCount = $oAddressBookProvider->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
 				}
 			}
 		}
@@ -5726,8 +5718,8 @@ class Actions
 		$iCount = 0;
 		if ($oAccount && \is_resource($rFile))
 		{
-			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab && $oPab->IsActive())
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 			{
 				$sFile = \stream_get_contents($rFile);
 				if (\is_resource($rFile))
@@ -5738,7 +5730,7 @@ class Actions
 				if (is_string($sFile) && 5 < \strlen($sFile))
 				{
 					$this->Logger()->Write('Import contacts from vcf');
-					$iCount = $oPab->ImportVcfFile($oAccount->ParentEmailHelper(), $sFile);
+					$iCount = $oAddressBookProvider->ImportVcfFile($oAccount->ParentEmailHelper(), $sFile);
 				}
 			}
 		}
@@ -5762,8 +5754,8 @@ class Actions
 		
 		if ($oAccount)
 		{
-			$oPab = $this->PersonalAddressBookProvider($oAccount);
-			if ($oPab)
+			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 			{
 				$iError = UPLOAD_ERR_OK;
 				$_FILES = isset($_FILES) ? $_FILES : null;
@@ -6949,28 +6941,25 @@ class Actions
 					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail())
 				));
 			}
-			else if ('RainLoop\Providers\PersonalAddressBook\Classes\Contact' === $sClassName)
+			else if ('RainLoop\Providers\AddressBook\Classes\Contact' === $sClassName)
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
-					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Contact */
+					/* @var $mResponse \RainLoop\Providers\AddressBook\Classes\Contact */
 					'IdContact' => $mResponse->IdContact,
-					'IdContactStr' => $mResponse->IdContactStr,
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
 					'ReadOnly' => $mResponse->ReadOnly,
-					'ScopeType' => $mResponse->ScopeType,
 					'IdPropertyFromSearch' => $mResponse->IdPropertyFromSearch,
 					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
 				));
 			}
-			else if ('RainLoop\Providers\PersonalAddressBook\Classes\Property' === $sClassName)
+			else if ('RainLoop\Providers\AddressBook\Classes\Property' === $sClassName)
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
-					/* @var $mResponse \RainLoop\Providers\PersonalAddressBook\Classes\Property */
+					/* @var $mResponse \RainLoop\Providers\AddressBook\Classes\Property */
 					'IdProperty' => $mResponse->IdProperty,
 					'Type' => $mResponse->Type,
-					'TypeCustom' => $mResponse->TypeCustom,
-					'Value' => \MailSo\Base\Utils::Utf8Clear($mResponse->Value),
-					'ValueCustom' => \MailSo\Base\Utils::Utf8Clear($mResponse->ValueCustom)
+					'TypeStr' => $mResponse->TypeStr,
+					'Value' => \MailSo\Base\Utils::Utf8Clear($mResponse->Value)
 				));
 			}
 			else if ('MailSo\Mail\Attachment' === $sClassName)

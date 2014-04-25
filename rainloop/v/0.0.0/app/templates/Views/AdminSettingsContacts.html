@@ -18,19 +18,21 @@
 					<i data-bind="css: enableContacts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Enable contacts
 				</label>
-				<label data-bind="click: function () { contactsSharing(!contactsSharing()); }">
+<!--				<label data-bind="click: function () { contactsSharing(!contactsSharing()); }">
 					<i data-bind="css: contactsSharing() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow contacts sharing
-				</label>
-				<br />
+					Allow contacts sharing (disabled)
+				</label>-->
 				<label data-bind="click: function () { contactsSync(!contactsSync()); }">
 					<i data-bind="css: contactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow contacts sync server (CardDAV)
+					Allow contacts sync (with external CardDAV server)
 				</label>
-				<a href="http://rainloop.net/docs/web-servers/" target="_blank">Web server configuration examples</a>
 			</div>
 		</div>
-		<br />
+	</div>
+	<div class="form-horizontal" data-bind="visible: contactsSupported">
+		<div class="legend">
+			Storage (PDO)
+		</div>
 		<div class="control-group">
 			<label class="control-label">
 				Type
@@ -41,10 +43,8 @@
 				<div data-bind="saveTrigger: contactsTypeTrigger"></div>
 			</div>
 		</div>
+		<br />
 		<div data-bind="visible: 'sqlite' !== contactsType()">
-			<div class="legend">
-				PDO (MySQL / PostgreSQL)
-			</div>
 			<div class="control-group">
 				<label class="control-label">
 				   Dsn
@@ -90,15 +90,12 @@
 			</div>
 		</div>
 		<div data-bind="visible: 'sqlite' === contactsType()">
-			<div class="legend">
-				PDO (SQLite)
-			</div>
 			<div class="control-group">
 				<div class="controls">
 					<div class="alert alert-null-left-margin span8">
 						<h4>Notice!</h4>
 						<br />
-						Don't use this type of database with a large number of active users.
+						Don't use this database type with a large number of active users.
 					</div>
 				</div>
 			</div>

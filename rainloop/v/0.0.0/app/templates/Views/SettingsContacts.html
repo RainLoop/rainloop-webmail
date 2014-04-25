@@ -13,53 +13,52 @@
 			</div>
 		</div>
 	</div>
+	<br />
 	<div class="form-horizontal" data-bind="visible: allowContactsSync">
 		<div class="legend">
-			<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LEGEND_MOBILE_SYNC"></span>
+			<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LEGEND_CONTACTS_SYNC"></span>
 		</div>
 		<div class="control-group">
-			<label class="control-label" style="padding-top: 0;">
-				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_SYNC_SERVER"></span>
+			<div class="controls">
+				<label data-bind="click: function () { enableContactsSync(!enableContactsSync()); }">
+					<i data-bind="css: enableContactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE"></span>
+				</label>
+			</div>
+		</div>
+<!--		<div class="control-group">
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_SERVER"></span>
 			</label>
 			<div class="controls">
-				<strong data-bind="text: contactsSyncServer"></strong>
+				<input type="text" data-bind="" />
 			</div>
-		</div>
+		</div>-->
 		<div class="control-group">
-			<label class="control-label" style="padding-top: 0;">
-			   <span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_SYNC_USERNAME"></span>
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_AB_URL"></span>
 			</label>
 			<div class="controls">
-				<strong data-bind="text: contactsSyncUser"></strong>
+				<input class="input-xxlarge" type="text" data-bind="value: contactsSyncUrl" />
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label" style="padding-top: 0;">
-			   <span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_SYNC_PASSWORD"></span>
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_USER"></span>
 			</label>
 			<div class="controls">
-				<strong style="color:red" data-bind="text: contactsSyncPass, visible: showPassword"></strong>
-				<span class="g-ui-link i18n" data-bind="visible: !showPassword(), click: toggleShowPassword"
-					data-i18n-text="SETTINGS_CONTACTS/LINK_SHOW"></span>
-				&nbsp;&nbsp;
-				<span class="g-ui-link i18n" data-bind="visible: showPassword, click: toggleShowPassword"
-					data-i18n-text="SETTINGS_CONTACTS/LINK_HIDE"></span>
+				<input type="text" data-bind="value: contactsSyncUser" />
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">
+				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_PASSWORD"></span>
+			</label>
 			<div class="controls">
-				<div class="alert alert-info span7" style="margin-left: 0">
-					<p>
-						<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/DESC_FULL_PAB_URL"></span>
-					</p>
-					<p>
-						<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_DESC_PAB"></span>:
-						<br />
-						<a href="javascript:void(0);" target="_blank" data-bind="text: contactsSyncPabUrl, attr: {'href': contactsSyncPabUrl}"></a>
-					</p>
-				</div>
-				<br />
+				<input type="password" data-bind="value: contactsSyncPass" />
 			</div>
 		</div>
+
 	</div>
 </div>

@@ -48,14 +48,334 @@ class PdoAddressBook
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsSharingAllowed()
+	{
+		return $this->IsSupported() && false; // TODO
+	}
+
+	private function flushDeletedContacts($iUserID)
+	{
+		return !!$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user AND deleted = 1', array(
+			':id_user' => array($iUserID, \PDO::PARAM_INT)
+		));
+	}
+
+	private function updateContactEtagAndTime($iUserID, $mID, $sEtag, $iChanged)
+	{
+		return !!$this->prepareAndExecute('UPDATE rainloop_ab_contacts SET changed = :changed, etag = :etag '.
+			'WHERE id_user = :id_user AND id_contact = :id_contact', array(
+				':id_user' => array($iUserID, \PDO::PARAM_INT),
+				':id_contact' => array($mID, \PDO::PARAM_INT),
+				':changed' => array($iChanged, \PDO::PARAM_INT),
+				':etag' => array($sEtag, \PDO::PARAM_STR)
+			)
+		);
+	}
+	
+	private function prepearDatabaseSyncData($iUserID)
+	{
+		$aResult = array();
+		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag FROM rainloop_ab_contacts WHERE id_user = :id_user', array(
+			':id_user' => array($iUserID, \PDO::PARAM_INT)
+		));
+
+		if ($oStmt)
+		{
+			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+			if (\is_array($aFetch) && 0 < \count($aFetch))
+			{
+				foreach ($aFetch as $aItem)
+				{
+					if ($aItem && isset($aItem['id_contact'], $aItem['id_contact_str'], $aItem['changed'], $aItem['deleted'], $aItem['etag']) &&
+						!empty($aItem['id_contact_str']))
+					{
+						$aResult[$aItem['id_contact_str']] = array(
+							'id_contact' => $aItem['id_contact'],
+							'etag' => $aItem['etag'],
+							'changed' => (int) $aItem['changed'],
+							'deleted' => '1' === (string) $aItem['deleted']
+						);
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	private function prepearRemoteSyncData($oClient, $sPath)
+	{
+		$mResult = false;
+		$aResponse = null;
+		try
+		{
+			$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+			$aResponse = $oClient->propFind($sPath, array(
+				'{DAV:}getlastmodified',
+				'{DAV:}getetag'
+			), 1);
+
+		}
+		catch (\Exception $oException)
+		{
+			$this->oLogger->WriteException($oException);
+		}
+		
+		if (\is_array($aResponse))
+		{
+			$mResult = array();
+			foreach ($aResponse as $sKey => $aItem)
+			{
+				$sKey = \rtrim(\trim($sKey), '\\/');
+				if (!empty($sKey) && is_array($aItem))
+				{
+					$aItem = \array_change_key_case($aItem, \CASE_LOWER);
+					if (isset($aItem['{dav:}getetag'], $aItem['{dav:}getlastmodified']))
+					{
+						$aMatch = array();
+						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]))
+						{
+							$sVcfFileName = $aMatch[1];
+							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
+
+							$mResult[$sKeyID] = array(
+								'vcf' => $sVcfFileName,
+								'etag' => \trim(\trim($aItem['{dav:}getetag']), '"\''),
+								'lastmodified' => $aItem['{dav:}getlastmodified'],
+								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified']),
+								'deleted' => false
+							);
+						}
+					}
+				}
+			}
+		}
+
+		return $mResult;
+	}
+
+	private function davClientRequest($oClient, $sCmd, $sUrl, $mData = null)
+	{
+		\MailSo\Base\Utils::ResetTimeLimit($this->iResetTimer);
+		
+		$this->oLogger->Write($sCmd.' '.$sUrl.('PUT' === $sCmd && null !== $mData ? ' ('.\strlen($mData).')' : ''),
+			\MailSo\Log\Enumerations\Type::INFO, 'DAV');
+
+		if ('PUT' === $sCmd)
+		{
+			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+		}
+
+		$oResponse = false;
+		try
+		{
+			$oResponse = 'PUT' === $sCmd && null !== $mData ?
+				$oClient->request($sCmd, $sUrl, $mData) : $oClient->request($sCmd, $sUrl);
+
+			if ('GET' === $sCmd || false)
+			{
+				$this->oLogger->WriteDump($oResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+			}
+		}
+		catch (\Exception $oException)
+		{
+			$this->oLogger->WriteException($oException);
+		}
+		
+		return $oResponse;
+	}
+
+	/**
 	 * @param string $sEmail
-	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
+	 * @param string $sUrl
+	 * @param string $sUser
+	 * @param string $sPassword
+	 * @param string $sProxy = ''
 	 *
 	 * @return bool
 	 */
-	public function ContactSave($sEmail, &$oContact)
+	public function Sync($sEmail, $sUrl, $sUser, $sPassword, $sProxy = '')
 	{
-		$this->Sync();
+		$this->SyncDatabase();
+		
+		$iUserID = $this->getUserId($sEmail);
+		if (0 >= $iUserID)
+		{
+			return false;
+		}
+		
+		$aUrl = \parse_url($sUrl);
+		if (!\is_array($aUrl))
+		{
+			$aUrl = array();
+		}
+
+		$aUrl['scheme'] = isset($aUrl['scheme']) ? $aUrl['scheme'] : 'http';
+		$aUrl['host'] = isset($aUrl['host']) ? $aUrl['host'] : 'localhost';
+		$aUrl['port'] = isset($aUrl['port']) ? $aUrl['port'] : 80;
+		$aUrl['path'] = isset($aUrl['path']) ? \rtrim($aUrl['path'], '\\/').'/' : '/';
+
+		$aSettings = array(
+			'baseUri' => $aUrl['scheme'].'://'.$aUrl['host'].('80' === (string) $aUrl['port'] ? '' : ':'.$aUrl['port']),
+			'userName' => $sUser,
+			'password' => $sPassword
+		);
+
+		if (!empty($sProxy))
+		{
+			$aSettings['proxy'] = $sProxy;
+		}
+
+		$sPath = $aUrl['path'];
+
+		$oClient = new \Sabre\DAV\Client($aSettings);
+		$oClient->setVerifyPeer(false);
+
+		$aRemoteSyncData = $this->prepearRemoteSyncData($oClient, $sPath);
+		if (false === $aRemoteSyncData)
+		{
+			return false;
+		}
+
+		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
+
+//		$this->oLogger->WriteDump($aDatabaseSyncData);
+//		$this->oLogger->WriteDump($aRemoteSyncData);
+
+		//+++del (from carddav)
+		foreach ($aDatabaseSyncData as $sKey => $aData)
+		{
+			if ($aData['deleted'] &&
+				isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf']))
+			{
+				$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
+			}
+		}
+		//---del
+
+		//+++del (from db)
+		$aIdsForDeletedion = array();
+		foreach ($aDatabaseSyncData as $sKey => $aData)
+		{
+			if (!$aData['deleted'] && !empty($aData['etag']) && !isset($aRemoteSyncData[$sKey]))
+			{
+				$aIdsForDeletedion[] = $aData['id_contact'];
+			}
+		}
+
+		if (0 < \count($aIdsForDeletedion))
+		{
+			$this->DeleteContacts($sEmail, $aIdsForDeletedion, false);
+		}
+		//---del
+
+		$this->flushDeletedContacts($iUserID);
+
+		//+++new or newer (from db)
+		foreach ($aDatabaseSyncData as $sKey => $aData)
+		{
+			if (!$aData['deleted'] && 
+				(empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) // new
+					||
+				(!empty($aData['etag']) && isset($aRemoteSyncData[$sKey]) && // newer
+					$aRemoteSyncData[$sKey]['etag'] !== $aData['etag'] &&
+					$aRemoteSyncData[$sKey]['changed'] < $aData['changed']
+				)
+			)
+			{
+				$mID = $aData['id_contact'];
+				$oContact = $this->GetContactByID($sEmail, $mID, false);
+				if ($oContact)
+				{
+					$sExsistensBody = '';
+					$mExsistenRemoteID = isset($aRemoteSyncData[$sKey]['vcf']) && !empty($aData['etag']) ? $aRemoteSyncData[$sKey]['vcf'] : '';
+					if (0 < \strlen($mExsistenRemoteID))
+					{
+						$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$mExsistenRemoteID);
+						if ($oResponse && isset($oResponse['headers'], $oResponse['body']))
+						{
+							$sExsistensBody = \trim($oResponse['body']);
+						}
+					}
+
+					$oResponse = $this->davClientRequest($oClient, 'PUT',
+						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody));
+					
+					if ($oResponse && isset($oResponse['headers'], $oResponse['headers']['etag']))
+					{
+						$sEtag = \trim(\trim($oResponse['headers']['etag']), '"\'');
+						$sDate = !empty($oResponse['headers']['date']) ? \trim($oResponse['headers']['date']) : '';
+						if (!empty($sEtag))
+						{
+							$iChanged = empty($sDate) ? \time() : \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDate);
+							$this->updateContactEtagAndTime($iUserID, $mID, $sEtag, $iChanged);
+						}
+					}
+				}
+				
+				unset($oContact);
+			}
+		}
+		//---new
+
+		//+++new or newer (from carddav)
+		foreach ($aRemoteSyncData as $sKey => $aData)
+		{
+			if (!isset($aDatabaseSyncData[$sKey]) // new
+					 ||
+				($aDatabaseSyncData[$sKey]['etag'] !== $aData['etag'] && // newer
+					$aDatabaseSyncData[$sKey]['changed'] < $aData['changed'])
+			)
+			{
+				$mExsistenContactID = isset($aDatabaseSyncData[$sKey]['id_contact']) ?
+					$aDatabaseSyncData[$sKey]['id_contact'] : '';
+
+				$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$aData['vcf']);
+				if ($oResponse && isset($oResponse['headers'], $oResponse['body']))
+				{
+					$sBody = \trim($oResponse['body']);
+					if (!empty($sBody))
+					{
+						$oContact = null;
+						if ($mExsistenContactID)
+						{
+							$oContact = $this->GetContactByID($sEmail, $mExsistenContactID);
+						}
+
+						if (!$oContact)
+						{
+							$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+						}
+						
+						$oContact->PopulateByVCard($sBody,
+							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '');
+
+						$this->ContactSave($sEmail, $oContact);
+						unset($oContact);
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
+	 * @param bool $bSyncDb = true
+	 *
+	 * @return bool
+	 */
+	public function ContactSave($sEmail, &$oContact, $bSyncDb = true)
+	{
+		if ($bSyncDb)
+		{
+			$this->SyncDatabase();
+		}
+		
 		$iUserID = $this->getUserId($sEmail);
 		
 		$iIdContact = 0 < \strlen($oContact->IdContact) && \is_numeric($oContact->IdContact) ? (int) $oContact->IdContact : 0;
@@ -77,7 +397,7 @@ class PdoAddressBook
 			{
 				$aFreq = $this->getContactFreq($iUserID, $iIdContact);
 
-				$sSql = 'UPDATE rainloop_ab_contacts SET id_contact_str = :id_contact_str, display = :display, changed = :changed, hash = :hash '.
+				$sSql = 'UPDATE rainloop_ab_contacts SET id_contact_str = :id_contact_str, display = :display, changed = :changed, etag = :etag '.
 					'WHERE id_user = :id_user AND id_contact = :id_contact';
 
 				$this->prepareAndExecute($sSql,
@@ -87,7 +407,7 @@ class PdoAddressBook
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
-						':hash' => array($oContact->Hash, \PDO::PARAM_STR)
+						':etag' => array($oContact->Etag, \PDO::PARAM_STR)
 					)
 				);
 
@@ -103,8 +423,8 @@ class PdoAddressBook
 			else
 			{
 				$sSql = 'INSERT INTO rainloop_ab_contacts '.
-					'( id_user,  id_contact_str,  display,  changed,  hash) VALUES '.
-					'(:id_user, :id_contact_str, :display, :changed, :hash)';
+					'( id_user,  id_contact_str,  display,  changed,  etag) VALUES '.
+					'(:id_user, :id_contact_str, :display, :changed, :etag)';
 
 				$this->prepareAndExecute($sSql,
 					array(
@@ -112,11 +432,11 @@ class PdoAddressBook
 						':id_contact_str' => array($oContact->IdContactStr, \PDO::PARAM_STR),
 						':display' => array($oContact->Display, \PDO::PARAM_STR),
 						':changed' => array($oContact->Changed, \PDO::PARAM_INT),
-						':hash' => array($oContact->Hash, \PDO::PARAM_STR)
+						':etag' => array($oContact->Etag, \PDO::PARAM_STR)
 					)
 				);
 
-				$sLast = $this->lastInsertId('id_contact');
+				$sLast = $this->lastInsertId('rainloop_ab_contacts', 'id_contact');
 				if (\is_numeric($sLast) && 0 < (int) $sLast)
 				{
 					$iIdContact = (int) $sLast;
@@ -139,7 +459,7 @@ class PdoAddressBook
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT),
 						':id_user' => array($iUserID, \PDO::PARAM_INT),
 						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
-						':prop_type_custom' => array($oProp->TypeCustom, \PDO::PARAM_STR),
+						':prop_type_str' => array($oProp->TypeStr, \PDO::PARAM_STR),
 						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
 						':prop_value_custom' => array($oProp->ValueCustom, \PDO::PARAM_STR),
 						':prop_frec' => array($iFreq, \PDO::PARAM_INT),
@@ -147,8 +467,8 @@ class PdoAddressBook
 				}
 
 				$sSql = 'INSERT INTO rainloop_ab_properties '.
-					'( id_contact,  id_user,  prop_type,  prop_type_custom,  prop_value,  prop_value_custom,  prop_frec) VALUES '.
-					'(:id_contact, :id_user, :prop_type, :prop_type_custom, :prop_value, :prop_value_custom, :prop_frec)';
+					'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec) VALUES '.
+					'(:id_contact, :id_user, :prop_type, :prop_type_str, :prop_value, :prop_value_custom, :prop_frec)';
 
 				$this->prepareAndExecute($sSql, $aParams, true);
 			}
@@ -174,12 +494,17 @@ class PdoAddressBook
 	/**
 	 * @param string $sEmail
 	 * @param array $aContactIds
+	 * @param bool $bSyncDb = true
 	 *
 	 * @return bool
 	 */
-	public function DeleteContacts($sEmail, $aContactIds)
+	public function DeleteContacts($sEmail, $aContactIds, $bSyncDb = true)
 	{
-		$this->Sync();
+		if ($bSyncDb)
+		{
+			$this->SyncDatabase();
+		}
+
 		$iUserID = $this->getUserId($sEmail);
 
 		$aContactIds = \array_filter($aContactIds, function (&$mItem) {
@@ -196,7 +521,44 @@ class PdoAddressBook
 		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
 
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
-		$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
+
+		$aParams = array(
+			':id_user' => array($iUserID, \PDO::PARAM_INT),
+			':changed' => array(\time(), \PDO::PARAM_INT)
+		);
+
+		$this->prepareAndExecute('UPDATE rainloop_ab_contacts SET deleted = 1, changed = :changed '.
+			'WHERE id_user = :id_user AND id_contact IN ('.$sIDs.')', $aParams);
+
+		return true;
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param array $aTagsIds
+	 *
+	 * @return bool
+	 */
+	public function DeleteTags($sEmail, $aTagsIds)
+	{
+		$this->SyncDatabase();
+		$iUserID = $this->getUserId($sEmail);
+
+		$aTagsIds = \array_filter($aTagsIds, function (&$mItem) {
+			$mItem = (int) \trim($mItem);
+			return 0 < $mItem;
+		});
+
+		if (0 === \count($aTagsIds))
+		{
+			return false;
+		}
+
+		$sIDs = \implode(',', $aTagsIds);
+		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
+
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags_contacts WHERE id_tag IN ('.$sIDs.')');
+		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags WHERE id_user = :id_user AND id_tag IN ('.$sIDs.')', $aParams);
 
 		return true;
 	}
@@ -212,7 +574,7 @@ class PdoAddressBook
 	 */
 	public function GetContacts($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
 	{
-		$this->Sync();
+		$this->SyncDatabase();
 
 		$iOffset = 0 <= $iOffset ? $iOffset : 0;
 		$iLimit = 0 < $iLimit ? (int) $iLimit : 20;
@@ -235,11 +597,7 @@ class PdoAddressBook
 			
 			$sSql = 'SELECT id_user, id_prop, id_contact FROM rainloop_ab_properties '.
 				'WHERE (id_user = :id_user) AND (prop_value LIKE :search ESCAPE \'=\''.
-					(0 < \strlen($sCustomSearch) ? ' OR (prop_type IN ('.\implode(',', array(
-						PropertyType::PHONE_PERSONAL, PropertyType::PHONE_BUSSINES, PropertyType::PHONE_OTHER,
-						PropertyType::MOBILE_PERSONAL, PropertyType::MOBILE_BUSSINES, PropertyType::MOBILE_OTHER,
-						PropertyType::FAX_PERSONAL, PropertyType::FAX_BUSSINES, PropertyType::FAX_OTHER
-					)).') AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
+					(0 < \strlen($sCustomSearch) ? ' OR prop_type = '.PropertyType::PHONE.' AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
 				') GROUP BY id_contact, id_prop';
 
 			$aParams = array(
@@ -297,7 +655,7 @@ class PdoAddressBook
 
 		if (0 < $iCount)
 		{
-			$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE id_user = :id_user';
+			$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE deleted = 0 AND id_user = :id_user';
 			
 			$aParams = array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT)
@@ -367,7 +725,7 @@ class PdoAddressBook
 										$oProperty = new \RainLoop\Providers\AddressBook\Classes\Property();
 										$oProperty->IdProperty = (int) $aItem['id_prop'];
 										$oProperty->Type = (int) $aItem['prop_type'];
-										$oProperty->TypeCustom = isset($aItem['prop_type_custom']) ? (string) $aItem['prop_type_custom'] : '';
+										$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
 										$oProperty->Value = (string) $aItem['prop_value'];
 										$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
 										$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
@@ -403,13 +761,11 @@ class PdoAddressBook
 	 */
 	public function GetContactByID($sEmail, $mID, $bIsStrID = false)
 	{
-		$this->Sync();
-
 		$mID = \trim($mID);
 
 		$iUserID = $this->getUserId($sEmail);
 
-		$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE id_user = :id_user';
+		$sSql = 'SELECT * FROM rainloop_ab_contacts WHERE deleted = 0 AND id_user = :id_user';
 
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT)
@@ -450,7 +806,7 @@ class PdoAddressBook
 						$oContact->Display = isset($aItem['display']) ? (string) $aItem['display'] : '';
 						$oContact->Changed = isset($aItem['changed']) ? (int) $aItem['changed'] : 0;
 						$oContact->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
-						$oContact->Hash = empty($aItem['hash']) ? '' : (string) $aItem['hash'];
+						$oContact->Etag = empty($aItem['etag']) ? '' : (string) $aItem['etag'];
 					}
 				}
 			}
@@ -478,7 +834,7 @@ class PdoAddressBook
 									$oProperty = new \RainLoop\Providers\AddressBook\Classes\Property();
 									$oProperty->IdProperty = (int) $aItem['id_prop'];
 									$oProperty->Type = (int) $aItem['prop_type'];
-									$oProperty->TypeCustom = isset($aItem['prop_type_custom']) ? (string) $aItem['prop_type_custom'] : '';
+									$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
 									$oProperty->Value = (string) $aItem['prop_value'];
 									$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
 									$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
@@ -516,12 +872,12 @@ class PdoAddressBook
 			throw new \InvalidArgumentException('Empty Search argument');
 		}
 
-		$this->Sync();
+		$this->SyncDatabase();
 		
 		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+			PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 		));
 
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_ab_properties '.
@@ -575,7 +931,7 @@ class PdoAddressBook
 				$oStmt->closeCursor();
 				
 				$sTypes = \implode(',', array(
-					PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+					PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
 				));
 
 				$sSql = 'SELECT id_prop, id_contact, prop_type, prop_value FROM rainloop_ab_properties '.
@@ -607,8 +963,8 @@ class PdoAddressBook
 
 									$aNames[$iIdContact][PropertyType::LAST_NAME === $iType ? 0 : 1] = $aItem['prop_value'];
 								}
-								else if ((isset($aIdProps[$iIdProp]) || isset($aContactAllAccess[$iIdContact]))&&
-									\in_array($iType, array(PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES)))
+								else if ((isset($aIdProps[$iIdProp]) || isset($aContactAllAccess[$iIdContact])) &&
+									PropertyType::EMAIl === $iType)
 								{
 									if (!isset($aEmails[$iIdContact]))
 									{
@@ -676,12 +1032,8 @@ class PdoAddressBook
 			throw new \InvalidArgumentException('Empty Emails argument');
 		}
 
-		$this->Sync();
+		$this->SyncDatabase();
 		$iUserID = $this->getUserId($sEmail);
-
-		$sTypes = \implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES, PropertyType::EMAIl_OTHER
-		));
 
 		$aExists = array();
 		$aEmailsToCreate = array();
@@ -689,9 +1041,10 @@ class PdoAddressBook
 
 		if ($bCreateAuto)
 		{
-			$sSql = 'SELECT prop_value FROM rainloop_ab_properties WHERE id_user = :id_user AND prop_type IN ('.$sTypes.')';
+			$sSql = 'SELECT prop_value FROM rainloop_ab_properties WHERE id_user = :id_user AND prop_type = :prop_type';
 			$oStmt = $this->prepareAndExecute($sSql, array(
-				':id_user' => array($iUserID, \PDO::PARAM_INT)
+				':id_user' => array($iUserID, \PDO::PARAM_INT),
+				':prop_type' => array(PropertyType::EMAIl, \PDO::PARAM_INT)
 			));
 
 			if ($oStmt)
@@ -748,7 +1101,7 @@ class PdoAddressBook
 				if ('' !== \trim($oEmail->GetEmail()))
 				{
 					$oPropEmail = new \RainLoop\Providers\AddressBook\Classes\Property();
-					$oPropEmail->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::EMAIl_PERSONAL;
+					$oPropEmail->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::EMAIl;
 					$oPropEmail->Value = \strtolower(\trim($oEmail->GetEmail()));
 
 					$oContact->Properties[] = $oPropEmail;
@@ -797,7 +1150,7 @@ class PdoAddressBook
 			}
 		}
 		
-		$sSql = 'UPDATE rainloop_ab_properties SET prop_frec = prop_frec + 1 WHERE id_user = :id_user AND prop_type IN ('.$sTypes;
+		$sSql = 'UPDATE rainloop_ab_properties SET prop_frec = prop_frec + 1 WHERE id_user = :id_user AND prop_type = :prop_type';
 
 		$aEmailsQuoted = \array_map(function ($mItem) use ($self) {
 			return $self->quoteValue($mItem);
@@ -805,15 +1158,16 @@ class PdoAddressBook
 		
 		if (1 === \count($aEmailsQuoted))
 		{
-			$sSql .= ') AND prop_value = '.$aEmailsQuoted[0];
+			$sSql .= ' AND prop_value = '.$aEmailsQuoted[0];
 		}
 		else
 		{
-			$sSql .= ') AND prop_value IN ('.\implode(',', $aEmailsQuoted).')';
+			$sSql .= ' AND prop_value IN ('.\implode(',', $aEmailsQuoted).')';
 		}
-
+		
 		return !!$this->prepareAndExecute($sSql, array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
+			':prop_type' => array(PropertyType::EMAIl, \PDO::PARAM_INT)
 		));
 	}
 
@@ -825,7 +1179,7 @@ class PdoAddressBook
 		$sResult = '';
 		try
 		{
-			$this->Sync();
+			$this->SyncDatabase();
 			if (0 >= $this->getVersion($this->sDsnType.'-ab-version'))
 			{
 				$sResult = 'Unknown database error';
@@ -857,14 +1211,13 @@ class PdoAddressBook
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_contacts (
 
-	id_contact		bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-	id_contact_str	varchar(128) NOT NULL DEFAULT \'\',
-	id_user			int UNSIGNED NOT NULL,
-	display_name	varchar(255) NOT NULL DEFAULT '',
-	display_email	varchar(255) NOT NULL DEFAULT '',
-	display			varchar(255) NOT NULL DEFAULT '',
-	changed			int UNSIGNED NOT NULL DEFAULT 0,
-	hash			varchar(128) NOT NULL DEFAULT \'\',
+	id_contact		bigint UNSIGNED		NOT NULL AUTO_INCREMENT,
+	id_contact_str	varchar(128)		NOT NULL DEFAULT '',
+	id_user			int UNSIGNED		NOT NULL,
+	display			varchar(255)		NOT NULL DEFAULT '',
+	changed			int UNSIGNED		NOT NULL DEFAULT 0,
+	deleted			tinyint UNSIGNED	NOT NULL DEFAULT 0,
+	etag			varchar(128) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
 
 	PRIMARY KEY(id_contact),
 	INDEX id_user_rainloop_ab_contacts_index (id_user)
@@ -873,20 +1226,42 @@ CREATE TABLE IF NOT EXISTS rainloop_ab_contacts (
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_properties (
 
-	id_prop			bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-	id_contact		bigint UNSIGNED NOT NULL,
-	id_user			int UNSIGNED NOT NULL,
-	prop_type		tinyint UNSIGNED NOT NULL,
-	prop_type_custom	varchar(50) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
-	prop_value			varchar(255) NOT NULL DEFAULT '',
-	prop_value_custom	varchar(255) NOT NULL DEFAULT '',
-	prop_frec			int UNSIGNED NOT NULL DEFAULT 0,
+	id_prop				bigint UNSIGNED		NOT NULL AUTO_INCREMENT,
+	id_contact			bigint UNSIGNED		NOT NULL,
+	id_user				int UNSIGNED		NOT NULL,
+	prop_type			tinyint UNSIGNED	NOT NULL,
+	prop_type_str		varchar(255) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
+	prop_value			varchar(255)		NOT NULL DEFAULT '',
+	prop_value_custom	varchar(255)		NOT NULL DEFAULT '',
+	prop_frec			int UNSIGNED		NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_prop),
 	INDEX id_user_rainloop_ab_properties_index (id_user),
 	INDEX id_user_id_contact_rainloop_ab_properties_index (id_user, id_contact)
 
 )/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+
+CREATE TABLE IF NOT EXISTS rainloop_ab_tags (
+
+	id_tag		int UNSIGNED	NOT NULL AUTO_INCREMENT,
+	id_user		int UNSIGNED	NOT NULL,
+	tag_name	varchar(255)	NOT NULL,
+
+	PRIMARY KEY(id_tag),
+	INDEX id_user_rainloop_ab_tags_index (id_user),
+	INDEX id_user_name_rainloop_ab_tags_index (id_user, tag_name)
+
+)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+
+CREATE TABLE IF NOT EXISTS rainloop_ab_tags_contacts (
+
+	id_tag		int UNSIGNED		NOT NULL,
+	id_contact	bigint UNSIGNED		NOT NULL,
+
+	INDEX id_tag_rainloop_ab_tags_contacts_index (id_tag),
+	INDEX id_contact_rainloop_ab_tags_contacts_index (id_contact)
+
+)/*!40000 ENGINE=INNODB */;
 MYSQLINITIAL;
 				break;
 
@@ -894,30 +1269,47 @@ MYSQLINITIAL;
 				$sInitial = <<<POSTGRESINITIAL
 
 CREATE TABLE rainloop_ab_contacts (
-	id_contact		bigserial PRIMARY KEY,
-	id_user			integer NOT NULL,
-	display_name	varchar(128) NOT NULL DEFAULT '',
-	display_email	varchar(128) NOT NULL DEFAULT '',
-	display			varchar(128) NOT NULL DEFAULT '',
-	changed			integer NOT NULL default 0.
-	hash			varchar(128) NOT NULL DEFAULT ''
+	id_contact		bigserial		PRIMARY KEY,
+	id_contact_str	varchar(128)	NOT NULL DEFAULT '',
+	id_user			integer			NOT NULL,
+	display			varchar(255)	NOT NULL DEFAULT '',
+	changed			integer			NOT NULL default 0,
+	deleted			integer			NOT NULL default 0,
+	etag			varchar(128)	NOT NULL DEFAULT ''
 );
 
 CREATE INDEX id_user_rainloop_ab_contacts_index ON rainloop_ab_contacts (id_user);
 
 CREATE TABLE rainloop_ab_properties (
-	id_prop			bigserial PRIMARY KEY,
-	id_contact		integer NOT NULL,
-	id_user			integer NOT NULL,
-	prop_type		integer NOT NULL,
-	prop_type_custom	varchar(50) NOT NULL DEFAULT '',
-	prop_value			varchar(128) NOT NULL DEFAULT '',
-	prop_value_custom	varchar(128) NOT NULL DEFAULT '',
-	prop_frec			integer NOT NULL default 0
+	id_prop				bigserial		PRIMARY KEY,
+	id_contact			integer			NOT NULL,
+	id_user				integer			NOT NULL,
+	prop_type			integer			NOT NULL,
+	prop_type_str		varchar(255)	NOT NULL DEFAULT '',
+	prop_value			text			NOT NULL DEFAULT '',
+	prop_value_custom	text			NOT NULL DEFAULT '',
+	prop_frec			integer			NOT NULL default 0
 );
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
+
+CREATE TABLE rainloop_ab_tags (
+	id_tag		serial			PRIMARY KEY,
+	id_user		integer			NOT NULL,
+	tag_name	varchar(255)	NOT NULL
+);
+
+CREATE INDEX id_user_rainloop_ab_tags_index ON rainloop_ab_tags (id_user);
+CREATE INDEX id_user_name_rainloop_ab_tags_index ON rainloop_ab_tags (id_user, tag_name);
+
+CREATE TABLE rainloop_ab_tags_contacts (
+	id_tag		integer		NOT NULL,
+	id_contact	integer		NOT NULL
+);
+
+CREATE INDEX id_tag_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_tag);
+CREATE INDEX id_contact_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_contact);
 
 POSTGRESINITIAL;
 				break;
@@ -926,30 +1318,47 @@ POSTGRESINITIAL;
 				$sInitial = <<<SQLITEINITIAL
 
 CREATE TABLE rainloop_ab_contacts (
-	id_contact		integer NOT NULL PRIMARY KEY,
-	id_user			integer NOT NULL,
-	display_name	text NOT NULL DEFAULT '',
-	display_email	text NOT NULL DEFAULT '',
-	display			text NOT NULL DEFAULT '',
-	changed			integer NOT NULL DEFAULT 0,
-	hash			text NOT NULL DEFAULT ''
+	id_contact		integer		NOT NULL PRIMARY KEY,
+	id_contact_str	text		NOT NULL DEFAULT '',
+	id_user			integer		NOT NULL,
+	display			text		NOT NULL DEFAULT '',
+	changed			integer		NOT NULL DEFAULT 0,
+	deleted			integer		NOT NULL DEFAULT 0,
+	etag			text		NOT NULL DEFAULT ''
 );
 
 CREATE INDEX id_user_rainloop_ab_contacts_index ON rainloop_ab_contacts (id_user);
 
 CREATE TABLE rainloop_ab_properties (
-	id_prop			integer NOT NULL PRIMARY KEY,
-	id_contact		integer NOT NULL,
-	id_user			integer NOT NULL,
-	prop_type		integer NOT NULL,
-	prop_type_custom	text NOT NULL DEFAULT '',
-	prop_value			text NOT NULL DEFAULT '',
-	prop_value_custom	text NOT NULL DEFAULT '',
-	prop_frec			integer NOT NULL DEFAULT 0
+	id_prop				integer		NOT NULL PRIMARY KEY,
+	id_contact			integer		NOT NULL,
+	id_user				integer		NOT NULL,
+	prop_type			integer		NOT NULL,
+	prop_type_str		text		NOT NULL DEFAULT '',
+	prop_value			text		NOT NULL DEFAULT '',
+	prop_value_custom	text		NOT NULL DEFAULT '',
+	prop_frec			integer		NOT NULL DEFAULT 0
 );
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
+
+CREATE TABLE rainloop_ab_tags (
+	id_tag		integer		NOT NULL PRIMARY KEY,
+	id_user		integer		NOT NULL,
+	tag_name	text		NOT NULL
+);
+
+CREATE INDEX id_user_rainloop_ab_tags_index ON rainloop_ab_tags (id_user);
+CREATE INDEX id_user_name_rainloop_ab_tags_index ON rainloop_ab_tags (id_user, tag_name);
+
+CREATE TABLE rainloop_ab_tags_contacts (
+	id_tag		integer		NOT NULL,
+	id_contact	integer		NOT NULL
+);
+
+CREATE INDEX id_tag_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_tag);
+CREATE INDEX id_contact_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_contact);
 
 SQLITEINITIAL;
 				break;
@@ -974,22 +1383,32 @@ SQLITEINITIAL;
 	/**
 	 * @return bool
 	 */
-	public function Sync()
+	public function SyncDatabase()
 	{
+		static $mCache = null;
+		if (null !== $mCache)
+		{
+			return $mCache;
+		}
+
+		$mCache = false;
 		switch ($this->sDsnType)
 		{
 			case 'mysql':
-				return $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
+				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
 					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
+				break;
 			case 'pgsql':
-				return $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
+				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
 					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
+				break;
 			case 'sqlite':
-				return $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
+				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
 					1 => $this->getInitialTablesArray($this->sDsnType)
 				));
+				break;
 		}
 
 		return false;
@@ -1004,14 +1423,11 @@ SQLITEINITIAL;
 	{
 		$aResult = array();
 
-		$sTypes = \implode(',', array(
-			PropertyType::EMAIl_PERSONAL, PropertyType::EMAIl_BUSSINES
-		));
-
-		$sSql = 'SELECT prop_value, prop_frec FROM rainloop_ab_properties WHERE id_user = :id_user AND id_contact = :id_contact AND prop_type IN ('.$sTypes.')';
+		$sSql = 'SELECT prop_value, prop_frec FROM rainloop_ab_properties WHERE id_user = :id_user AND id_contact = :id_contact AND prop_type = :type';
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
-			':id_contact' => array($iIdContact, \PDO::PARAM_INT)
+			':id_contact' => array($iIdContact, \PDO::PARAM_INT),
+			':type' => array(PropertyType::EMAIl, \PDO::PARAM_INT)
 		);
 
 		$oStmt = $this->prepareAndExecute($sSql, $aParams);

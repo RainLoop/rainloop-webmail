@@ -70,7 +70,7 @@ function PopupsComposeOpenPgpViewModel()
 				var aKeys = oData.findPublicKeysByEmail(sEmail);
 				if (0 === aKeys.length && bResult)
 				{
-					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+					self.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
 						'EMAIL': sEmail
 					}));
 					

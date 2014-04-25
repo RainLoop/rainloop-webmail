@@ -20,7 +20,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param string $sValue
@@ -34,7 +34,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param mixed $mDefault = false
@@ -54,7 +54,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 *
@@ -73,22 +73,27 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount
+	 * @param \RainLoop\Account|string|null $mAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param bool $bMkDir = false
 	 *
 	 * @return string
 	 */
-	private function generateFileName($oAccount, $iStorageType, $sKey, $bMkDir = false)
+	private function generateFileName($mAccount, $iStorageType, $sKey, $bMkDir = false)
 	{
-		if (!$oAccount)
+		if (null === $mAccount)
 		{
 			$iStorageType = \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY;
 		}
 
-		$sEmail = $oAccount ? \preg_replace('/[^a-z0-9\-\.@]+/', '_', 
-			('' === $oAccount->ParentEmail() ? '' : $oAccount->ParentEmail().'/').$oAccount->Email()) : '';
+		$sEmail = $mAccount instanceof \RainLoop\Account ? \preg_replace('/[^a-z0-9\-\.@]+/', '_',
+			('' === $mAccount->ParentEmail() ? '' : $mAccount->ParentEmail().'/').$mAccount->Email()) : '';
+
+		if (\is_string($mAccount) && empty($sEmail))
+		{
+			$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', $mAccount);
+		}
 
 		$sTypePath = $sKeyPath = '';
 		switch ($iStorageType)

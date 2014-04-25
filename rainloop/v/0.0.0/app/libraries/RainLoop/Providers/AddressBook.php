@@ -54,6 +54,28 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsSharingAllowed()
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\AddressBookInterface &&
+			$this->oDriver->IsSharingAllowed();
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sUrl
+	 * @param string $sUser
+	 * @param string $sPassword
+	 *
+	 * @return bool
+	 */
+	public function Sync($sEmail, $sUrl, $sUser, $sPassword)
+	{
+		return $this->IsActive() ? $this->oDriver->Sync($sEmail, $sUrl, $sUser, $sPassword) : false;
+	}
+	
+	/**
 	 * @param string $sEmail
 	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
 	 *
@@ -140,37 +162,64 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		{
 			$aMap = array(
 				'Title' => PropertyType::FULLNAME,
-				'First Name' => PropertyType::FIRST_NAME,
-				'Middle Name' => PropertyType::MIDDLE_NAME,
-				'Last Name' => PropertyType::LAST_NAME,
+				'Name' => PropertyType::FULLNAME,
+				'FullName' => PropertyType::FULLNAME,
+				'DisplayName' => PropertyType::FULLNAME,
+				'First' => PropertyType::FIRST_NAME,
+				'FirstName' => PropertyType::FIRST_NAME,
+				'Middle' => PropertyType::MIDDLE_NAME,
+				'MiddleName' => PropertyType::MIDDLE_NAME,
+				'Last' => PropertyType::LAST_NAME,
+				'LastName' => PropertyType::LAST_NAME,
 				'Suffix' => PropertyType::NAME_SUFFIX,
-				'Business Fax' => PropertyType::FAX_BUSSINES,
-				'Business Phone' => PropertyType::PHONE_BUSSINES,
-				'Business Phone 2' => PropertyType::PHONE_BUSSINES,
-				'Company Main Phone' => PropertyType::PHONE_BUSSINES,
-				'Home Fax' => PropertyType::FAX_PERSONAL,
-				'Home Phone' => PropertyType::PHONE_PERSONAL,
-				'Home Phone 2' => PropertyType::PHONE_PERSONAL,
-				'Mobile Phone' => PropertyType::MOBILE_PERSONAL,
-				'Other Fax' => PropertyType::FAX_OTHER,
-				'Other Phone' => PropertyType::PHONE_OTHER,
-//				'Primary Phone' => PropertyType::PHONE_PERSONAL,
-				'E-mail Address' => PropertyType::EMAIl_PERSONAL,
-				'E-mail 2 Address' => PropertyType::EMAIl_OTHER,
-				'E-mail 3 Address' => PropertyType::EMAIl_OTHER,
-				'E-mail Display Name' => PropertyType::FULLNAME,
-				'E-mail 2 Display Name' => PropertyType::FULLNAME,
-				'E-mail 3 Display Name' => PropertyType::FULLNAME,
+				'NickName' => PropertyType::NICK_NAME,
+				'BusinessFax' => array(PropertyType::PHONE, 'Work,Fax'),
+				'BusinessFax2' => array(PropertyType::PHONE, 'Work,Fax'),
+				'BusinessPhone' => array(PropertyType::PHONE, 'Work'),
+				'BusinessPhone2' => array(PropertyType::PHONE, 'Work'),
+				'BusinessPhone3' => array(PropertyType::PHONE, 'Work'),
+				'CompanyPhone' => array(PropertyType::PHONE, 'Work'),
+				'CompanyMainPhone' => array(PropertyType::PHONE, 'Work'),
+				'HomeFax' => array(PropertyType::PHONE, 'Home,Fax'),
+				'HomeFax2' => array(PropertyType::PHONE, 'Home,Fax'),
+				'HomePhone' => array(PropertyType::PHONE, 'Home'),
+				'HomePhone2' => array(PropertyType::PHONE, 'Home'),
+				'HomePhone3' => array(PropertyType::PHONE, 'Home'),
+				'Mobile' => array(PropertyType::PHONE, 'Mobile'),
+				'MobilePhone' => array(PropertyType::PHONE, 'Mobile'),
+				'BusinessMobile' => array(PropertyType::PHONE, 'Work,Mobile'),
+				'BusinessMobilePhone' => array(PropertyType::PHONE, 'Work,Mobile'),
+				'OtherFax' => array(PropertyType::PHONE, 'Other,Fax'),
+				'OtherPhone' => array(PropertyType::PHONE, 'Other'),
+				'PrimaryPhone' => array(PropertyType::PHONE, 'Pref,Home'),
+				'Email' => array(PropertyType::EMAIl, 'Home'),
+				'Email2' => array(PropertyType::EMAIl, 'Home'),
+				'Email3' => array(PropertyType::EMAIl, 'Home'),
+				'EmailAddress' => array(PropertyType::EMAIl, 'Home'),
+				'Email2Address' => array(PropertyType::EMAIl, 'Home'),
+				'Email3Address' => array(PropertyType::EMAIl, 'Home'),
+				'OtherEmail' => array(PropertyType::EMAIl, 'Other'),
+				'BusinessEmail' => array(PropertyType::EMAIl, 'Work'),
+				'BusinessEmail2' => array(PropertyType::EMAIl, 'Work'),
+				'BusinessEmail3' => array(PropertyType::EMAIl, 'Work'),
+				'PersonalEmail' => array(PropertyType::EMAIl, 'Home'),
+				'PersonalEmail2' => array(PropertyType::EMAIl, 'Home'),
+				'PersonalEmail3' => array(PropertyType::EMAIl, 'Home'),
 				'Notes' => PropertyType::NOTE,
-				'Web Page' => PropertyType::WEB_PAGE_PERSONAL,
-				'WebPage' => PropertyType::WEB_PAGE_PERSONAL,
+				'Web' => PropertyType::WEB_PAGE,
+				'BusinessWeb' => array(PropertyType::WEB_PAGE, 'Work'),
+				'WebPage' => PropertyType::WEB_PAGE,
+				'BusinessWebPage' => array(PropertyType::WEB_PAGE, 'Work'),
+				'WebSite' => PropertyType::WEB_PAGE,
+				'BusinessWebSite' => array(PropertyType::WEB_PAGE, 'Work'),
+				'PersonalWebSite' => PropertyType::WEB_PAGE
 			);
 
 			$aMap = \array_change_key_case($aMap, CASE_LOWER);
 		}
 		
-		$sCsvNameLower = \MailSo\Base\Utils::IsAscii($sCsvName) ? \strtolower($sCsvName) : '';
-		return isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
+		$sCsvNameLower = \MailSo\Base\Utils::IsAscii($sCsvName) ? \preg_replace('/[\s\-]+/', '', \strtolower($sCsvName)) : '';
+		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
 	}
 
 	/**
@@ -182,11 +231,15 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportCsvArray($sEmail, $aCsvData)
 	{
 		$iCount = 0;
+		$iResetTimer = 0;
+		
 		if ($this->IsActive() && \is_array($aCsvData) && 0 < \count($aCsvData))
 		{
 			$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 			foreach ($aCsvData as $aItem)
 			{
+				\MailSo\Base\Utils::ResetTimeLimit($iResetTimer);
+				
 				foreach ($aItem as $sItemName => $sItemValue)
 				{
 					$sItemName = \trim($sItemName);
@@ -194,12 +247,15 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 					if (!empty($sItemName) && !empty($sItemValue))
 					{
-						$iType = $this->csvNameToTypeConvertor($sItemName);
+						$mData = $this->csvNameToTypeConvertor($sItemName);
+						$iType = \is_array($mData) ? $mData[0] : $mData;
+
 						if (PropertyType::UNKNOWN !== $iType)
 						{
 							$oProp = new \RainLoop\Providers\AddressBook\Classes\Property();
 							$oProp->Type = $iType;
 							$oProp->Value = $sItemValue;
+							$oProp->TypeStr = \is_array($mData) && !empty($mData[1]) ? $mData[1] : '';
 
 							$oContact->Properties[] = $oProp;
 						}
@@ -232,6 +288,8 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportVcfFile($sEmail, $sVcfData)
 	{
 		$iCount = 0;
+		$iResetTimer = 0;
+
 		if ($this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
@@ -260,12 +318,15 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 				{
 					if ($oVCard instanceof \Sabre\VObject\Component\VCard)
 					{
+						\MailSo\Base\Utils::ResetTimeLimit($iResetTimer);
+						
 						if (empty($oVCard->UID))
 						{
 							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
 						}
 
-						$oContact->ParseVCard($oVCard, $oVCard->serialize());
+						$oContact->PopulateByVCard($oVCard->serialize());
+						
 						if (0 < \count($oContact->Properties))
 						{
 							if ($this->ContactSave($sEmail, $oContact))

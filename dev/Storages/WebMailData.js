@@ -82,6 +82,18 @@ function WebMailDataStorage()
 	this.identities = ko.observableArray([]);
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
+	this.allowContactsSync = ko.observable(false);
+	this.enableContactsSync = ko.observable(false);
+	this.contactsSyncUrl = ko.observable('');
+	this.contactsSyncUser = ko.observable('');
+	this.contactsSyncPass = ko.observable('');
+
+	this.allowContactsSync = ko.observable(!!RL.settingsGet('ContactsSyncIsAllowed'));
+	this.enableContactsSync = ko.observable(!!RL.settingsGet('EnableContactsSync'));
+	this.contactsSyncUrl = ko.observable(RL.settingsGet('ContactsSyncUrl'));
+	this.contactsSyncUser = ko.observable(RL.settingsGet('ContactsSyncUser'));
+	this.contactsSyncPass = ko.observable(RL.settingsGet('ContactsSyncPassword'));
+
 	// folders
 	this.namespace = '';
 	this.folderList = ko.observableArray([]);

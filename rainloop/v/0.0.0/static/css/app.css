@@ -1483,6 +1483,21 @@ table {
 .icon-filter:before {
   content: "\e063";
 }
+.icon-resize:before {
+  content: "\e064";
+}
+.icon-sync:before {
+  content: "\e065";
+}
+.icon-ellipsis-alt:before {
+  content: "\e066";
+}
+.icon-cloud-up:before {
+  content: "\e067";
+}
+.icon-cloud-down:before {
+  content: "\e068";
+}
 
 /** initial setup **/
 .nano {

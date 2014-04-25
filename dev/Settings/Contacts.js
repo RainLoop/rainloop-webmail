@@ -8,21 +8,33 @@ function SettingsContacts()
 	var oData = RL.data();
 	
 	this.contactsAutosave = oData.contactsAutosave;
-	this.showPassword = ko.observable(false);
 
-	this.allowContactsSync = !!RL.settingsGet('ContactsSyncIsAllowed');
-	this.contactsSyncServer = RL.settingsGet('ContactsSyncServer');
-	this.contactsSyncUser = RL.settingsGet('ContactsSyncUser');
-	this.contactsSyncPass = RL.settingsGet('ContactsSyncPassword');
-	this.contactsSyncPabUrl = RL.settingsGet('ContactsSyncPabUrl');
+	this.allowContactsSync = oData.allowContactsSync;
+	this.enableContactsSync = oData.enableContactsSync;
+	this.contactsSyncUrl = oData.contactsSyncUrl;
+	this.contactsSyncUser = oData.contactsSyncUser;
+	this.contactsSyncPass = oData.contactsSyncPass;
+
+	this.saveTrigger = ko.computed(function () {
+		return [
+			this.enableContactsSync() ? '1' : '0',
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		].join('|');
+	}, this).extend({'throttle': 500});
+
+	this.saveTrigger.subscribe(function () {
+		RL.remote().saveContactsSyncData(null,
+			this.enableContactsSync(),
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		);
+	}, this);
 }
 
 Utils.addSettingsViewModel(SettingsContacts, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
-SettingsContacts.prototype.toggleShowPassword = function ()
-{
-	this.showPassword(!this.showPassword());
-};
 
 SettingsContacts.prototype.onBuild = function ()
 {
@@ -33,7 +45,7 @@ SettingsContacts.prototype.onBuild = function ()
 	});
 };
 
-SettingsContacts.prototype.onShow = function ()
-{
-	this.showPassword(false);
-};
+//SettingsContacts.prototype.onShow = function ()
+//{
+//
+//};

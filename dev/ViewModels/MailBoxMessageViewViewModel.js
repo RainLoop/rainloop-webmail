@@ -9,9 +9,9 @@ function MailBoxMessageViewViewModel()
 	KnoinAbstractViewModel.call(this, 'Right', 'MailMessageView');
 
 	var
-		sPic = '',
-		oData = RL.data(),
 		self = this,
+		sLastEmail = '',
+		oData = RL.data(),
 		createCommandHelper = function (sType) {
 			return Utils.createCommand(self, function () {
 				this.replyOrforward(sType);
@@ -155,17 +155,19 @@ function MailBoxMessageViewViewModel()
 			this.viewViewLink(oMessage.viewLink());
 			this.viewDownloadLink(oMessage.downloadLink());
 
-			sPic = RL.cache().getUserPic(oMessage.fromAsSingleEmail());
-			if (sPic !== this.viewUserPic())
-			{
-				this.viewUserPicVisible(false);
-				this.viewUserPic(Consts.DataImages.UserDotPic);
-				if ('' !== sPic)
+			sLastEmail = oMessage.fromAsSingleEmail();
+			RL.cache().getUserPic(sLastEmail, function (sPic, $sEmail) {
+				if (sPic !== self.viewUserPic() && sLastEmail === $sEmail)
 				{
-					this.viewUserPicVisible(true);
-					this.viewUserPic(sPic);
+					self.viewUserPicVisible(false);
+					self.viewUserPic(Consts.DataImages.UserDotPic);
+					if ('' !== sPic)
+					{
+						self.viewUserPicVisible(true);
+						self.viewUserPic(sPic);
+					}
 				}
-			}
+			});
 		}
 		
 	}, this);
