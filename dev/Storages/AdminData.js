@@ -26,6 +26,14 @@ function AdminDataStorage()
 	this.licenseError = ko.observable('');
 	
 	this.licenseTrigger = ko.observable(false);
+
+	this.adminManLoading = ko.computed(function () {
+		return '000' !== [this.domainsLoading() ? '1' : '0', this.pluginsLoading() ? '1' : '0', this.packagesLoading() ? '1' : '0'].join('');
+	}, this);
+
+	this.adminManLoadingVisibility = ko.computed(function () {
+		return this.adminManLoading() ? 'visible' : 'hidden';
+	}, this).extend({'rateLimit': 300});
 }
 
 _.extend(AdminDataStorage.prototype, AbstractData.prototype);

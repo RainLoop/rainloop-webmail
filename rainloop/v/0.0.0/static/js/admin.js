@@ -4938,20 +4938,6 @@ function PopupsDomainViewModel()
 	this.smtpAuth = ko.observable(true);
 	this.whiteList = ko.observable('');
 
-	this.imapServerFocus.subscribe(function (bValue) {
-		if (bValue && '' !== this.name() && '' === this.imapServer())
-		{
-			this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
-		}
-	}, this);
-
-	this.smtpServerFocus.subscribe(function (bValue) {
-		if (bValue && '' !== this.imapServer() && '' === this.smtpServer())
-		{
-			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
-		}
-	}, this);
-
 	this.headerText = ko.computed(function () {
 		var sName = this.name();
 		return this.edit() ? 'Edit Domain "' + sName + '"' :
@@ -5001,6 +4987,7 @@ function PopupsDomainViewModel()
 		this.testing(true);
 		RL.remote().testConnectionForDomain(
 			_.bind(this.onTestConnectionResponse, this),
+			this.name(),
 			this.imapServer(),
 			this.imapPort(),
 			this.imapSecure(),
@@ -5014,6 +5001,67 @@ function PopupsDomainViewModel()
 	this.whiteListCommand = Utils.createCommand(this, function () {
 		this.whiteListPage(!this.whiteListPage());
 	});
+
+	// smart form improvements
+	this.imapServerFocus.subscribe(function (bValue) {
+		if (bValue && '' !== this.name() && '' === this.imapServer())
+		{
+			this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
+		}
+	}, this);
+
+	this.smtpServerFocus.subscribe(function (bValue) {
+		if (bValue && '' !== this.imapServer() && '' === this.smtpServer())
+		{
+			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
+		}
+	}, this);
+	
+	this.imapSecure.subscribe(function (sValue) {
+		var iPort = Utils.pInt(this.imapPort());
+		sValue = Utils.pString(sValue);
+		switch (sValue)
+		{
+			case '0':
+				if (993 === iPort)
+				{
+					this.imapPort(143);
+				}
+				break;
+			case '1':
+				if (143 === iPort)
+				{
+					this.imapPort(993);
+				}
+				break;
+		}
+	}, this);
+
+	this.smtpSecure.subscribe(function (sValue) {
+		var iPort = Utils.pInt(this.smtpPort());
+		sValue = Utils.pString(sValue);
+		switch (sValue)
+		{
+			case '0':
+				if (465 === iPort || 587 === iPort)
+				{
+					this.smtpPort(25);
+				}
+				break;
+			case '1':
+				if (25 === iPort || 587 === iPort)
+				{
+					this.smtpPort(465);
+				}
+				break;
+			case '2':
+				if (25 === iPort || 465 === iPort)
+				{
+					this.smtpPort(587);
+				}
+				break;
+		}
+	}, this);
 
 	Knoin.constructorEnd(this);
 }
@@ -5659,6 +5707,8 @@ function AdminPaneViewModel()
 
 	this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
 	this.version = ko.observable(RL.settingsGet('Version'));
+
+	this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
 
 	Knoin.constructorEnd(this);
 }
@@ -6809,6 +6859,14 @@ function AdminDataStorage()
 	this.licenseError = ko.observable('');
 	
 	this.licenseTrigger = ko.observable(false);
+
+	this.adminManLoading = ko.computed(function () {
+		return '000' !== [this.domainsLoading() ? '1' : '0', this.pluginsLoading() ? '1' : '0', this.packagesLoading() ? '1' : '0'].join('');
+	}, this);
+
+	this.adminManLoadingVisibility = ko.computed(function () {
+		return this.adminManLoading() ? 'visible' : 'hidden';
+	}, this).extend({'rateLimit': 300});
 }
 
 _.extend(AdminDataStorage.prototype, AbstractData.prototype);
@@ -7294,11 +7352,12 @@ AdminAjaxRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
 	});
 };
 
-AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback,
+AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
 	sIncHost, iIncPort, sIncSecure,
 	sOutHost, iOutPort, sOutSecure, bOutAuth)
 {
 	this.defaultRequest(fCallback, 'AdminDomainTest', {
+		'Name': sName,
 		'IncHost': sIncHost,
 		'IncPort': iIncPort,
 		'IncSecure': sIncSecure,

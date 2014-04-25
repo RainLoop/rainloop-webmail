@@ -35,13 +35,13 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param string $sName
-	 * @param bool $bDefaultOnNull = false
+	 * @param bool $bFindWithWildCard = false
 	 *
 	 * @return \RainLoop\Domain|null
 	 */
-	public function Load($sName, $bDefaultOnNull = false)
+	public function Load($sName, $bFindWithWildCard = false)
 	{
-		return $this->oDriver->Load($sName, $bDefaultOnNull);
+		return $this->oDriver->Load($sName, $bFindWithWildCard);
 	}
 
 	/**
@@ -121,6 +121,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
 			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
 			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
+
+			if (0 < \strlen($sName) && 0 < strlen($sNameForTest) && false === \strpos($sName, '*'))
+			{
+				$sNameForTest = '';
+			}
 
 			if (0 < strlen($sName) || 0 < strlen($sNameForTest))
 			{

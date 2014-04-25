@@ -231,10 +231,8 @@ class Actions
 					$oResult = new \RainLoop\Providers\Login\DefaultLogin();
 					break;
 				case 'domain':
-					// \RainLoop\Providers\Domain\DomainSimpleInterface
 					// \RainLoop\Providers\Domain\DomainAdminInterface
-					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains',
-						$this->Cacher());
+					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains', $this->Cacher());
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
@@ -849,7 +847,7 @@ class Actions
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
 		{
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain instanceof \RainLoop\Domain && !$oDomain->Disabled() && $oDomain->ValidateWhiteList($sEmail, $sLogin))
+			if ($oDomain instanceof \RainLoop\Domain && $oDomain->ValidateWhiteList($sEmail, $sLogin))
 			{
 				$oResult = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
 			}
@@ -892,7 +890,7 @@ class Actions
 					$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($aAccountHash[1]), true);
 					if ($bThrowExceptionOnFalse)
 					{
-						if (!($oDomain instanceof \RainLoop\Domain) || $oDomain->Disabled())
+						if (!($oDomain instanceof \RainLoop\Domain))
 						{
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
 						}
@@ -1374,7 +1372,7 @@ class Actions
 			$this->loginErrorDelay();
 
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if (!($oDomain instanceof \RainLoop\Domain) || $oDomain->Disabled())
+			if (!($oDomain instanceof \RainLoop\Domain))
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
 			}
@@ -1439,7 +1437,8 @@ class Actions
 		try
 		{
 			$this->MailClient()
-				->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
+					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
 				->Login($oAccount->IncLogin(), $oAccount->Password())
 			;
 		}
@@ -2458,9 +2457,9 @@ class Actions
 				$oImapClient = \MailSo\Imap\ImapClient::NewInstance()->SetLogger($this->Logger());
 				$oImapClient->SetTimeOuts(5);
 
-				$iTime = microtime(true);
-				$oImapClient->Connect($oDomain->IncHost(), $oDomain->IncPort(), $oDomain->IncSecure());
-				$iImapTime = microtime(true) - $iTime;
+				$iTime = \microtime(true);
+				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(), $oDomain->IncSecure());
+				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
 				$bImapResult = true;
 			}
@@ -2474,9 +2473,9 @@ class Actions
 				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
 				$oSmtpClient->SetTimeOuts(5);
 
-				$iTime = microtime(true);
-				$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1', $oDomain->OutSecure());
-				$iSmtpTime = microtime(true) - $iTime;
+				$iTime = \microtime(true);
+				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1', $oDomain->OutSecure());
+				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
 				$bSmtpResult = true;
 			}
@@ -4249,7 +4248,7 @@ class Actions
 
 				$aSmtpCredentials = array(
 					'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
-					'Host' => $oAccount->Domain()->OutHost(),
+					'Host' => $oAccount->Domain()->OutHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
 					'Port' => $oAccount->Domain()->OutPort(),
 					'Secure' => $oAccount->Domain()->OutSecure(),
 					'UseAuth' => $oAccount->Domain()->OutAuth(),
@@ -6160,7 +6159,8 @@ class Actions
 			try
 			{
 				$this->MailClient()
-					->Connect($oAccount->Domain()->IncHost(), $oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+					->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
+						$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
 					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
 				;
 			}

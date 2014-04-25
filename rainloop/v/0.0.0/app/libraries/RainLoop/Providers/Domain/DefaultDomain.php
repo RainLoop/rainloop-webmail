@@ -141,15 +141,22 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	public function Load($sName, $bFindWithWildCard = false)
 	{
 		$mResult = null;
-		
+
+		$sDisabled = '';
 		$sFoundedValue = '';
 		$sName = \strtolower($sName);
 		
 		$sRealFileName = $this->codeFileName($sName);
-		
-		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
+
+		if (\file_exists($this->sDomainPath.'/disabled'))
 		{
-			$aDomain =  @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
+		}
+		
+		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
+			(0 === \strlen($sDisabled) || false === \strpos(\strtolower(','.$sDisabled.','), \strtolower(','.$sName.','))))
+		{
+			$aDomain = @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
 			// fix misspellings (#119)
 			if (\is_array($aDomain))
 			{
@@ -184,20 +191,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			{
 				if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sName, $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
 				{
-					$mResult = $this->Load($sFoundedValue, false);
-				}
-			}
-		}
-
-		if ($mResult instanceof \RainLoop\Domain)
-		{
-			if (\file_exists($this->sDomainPath.'/disabled'))
-			{
-				$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
-				if (false !== $sDisabled && 0 < \strlen($sDisabled))
-				{
-					$sDisabledName = 0 < \strlen($sFoundedValue) ? $sFoundedValue : $sName;
-					$mResult->SetDisabled(false !== \strpos(strtolower(','.$sDisabled.','), \strtolower(','.$sDisabledName.',')));
+					if (0 === \strlen($sDisabled) || false === \strpos(\strtolower(','.$sDisabled.','), \strtolower(','.$sFoundedValue.',')))
+					{
+						$mResult = $this->Load($sFoundedValue, false);
+					}
 				}
 			}
 		}

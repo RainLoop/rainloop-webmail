@@ -3,21 +3,20 @@
 		Domains
 	</div>
 	<div>
-		<blockquote>
-			<p class="muted">
-				List of domains webmail is allowed to access.
-			</p>
-		</blockquote>
 		<a class="btn" data-bind="click: createDomain">
 			<i class="icon-plus"></i>
 			&nbsp;&nbsp;
 			Add Domain
 		</a>
-		<div class="process-place" data-bind="style: {'visibility': visibility }">
-			<i class="icon-spinner animated"></i>
-			&nbsp;&nbsp;
-			loading...
-		</div>
+		<br />
+		<br />
+		<blockquote>
+			<p class="muted">
+				List of domains webmail is allowed to access.
+				<br />
+				Click on the name to configure the domain.
+			</p>
+		</blockquote>
 		<table class="table table-hover b-admin-domains-list-table" data-bind="i18nUpdate: domains">
 			<colgroup>
 				<col />

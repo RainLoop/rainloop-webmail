@@ -166,8 +166,9 @@ class Account
 	 */
 	public function Hash()
 	{
-		return md5(APP_SALT.$this->Email().APP_SALT.$this->oDomain->IncHost().APP_SALT.$this->oDomain->IncPort().
-			APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
+
+		return md5(APP_SALT.$this->Email().APP_SALT.$this->oDomain->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($this->Email())).
+			APP_SALT.$this->oDomain->IncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
 	}
 
 	/**

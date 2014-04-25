@@ -4,23 +4,17 @@
 		Cannot access the repository at the moment.
 	</div>
 
-<!--
-	<div class="alert" data-bind="visible: !packagesMainUpdatable() && !packagesLoading()">
-		Unable to update RainLoop Webmail source!
-	</div>
--->
-	
 	<div class="alert" data-bind="visible: '' !== packagesError()">
 		<button type="button" class="close" data-bind="click: function () { packagesError('') }">&times;</button>
 		<span data-bind="text: packagesError"></span>
 	</div>
 	
-	<div class="process-place" data-bind="style: {'visibility': visibility }">
+<!--	<div class="process-place" data-bind="style: {'visibility': visibility }">
 		<i class="icon-spinner animated"></i>
 		&nbsp;&nbsp;
 		loading...
 	</div>
-	
+	-->
 	<div data-bind="visible: 0 < packagesAvailableForUpdate().length">
 		<div class="legend">
 			Available for Update (<span data-bind="text: packagesAvailableForUpdate().length"></span>)

@@ -203,11 +203,12 @@ AdminAjaxRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
 	});
 };
 
-AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback,
+AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
 	sIncHost, iIncPort, sIncSecure,
 	sOutHost, iOutPort, sOutSecure, bOutAuth)
 {
 	this.defaultRequest(fCallback, 'AdminDomainTest', {
+		'Name': sName,
 		'IncHost': sIncHost,
 		'IncPort': iIncPort,
 		'IncSecure': sIncSecure,

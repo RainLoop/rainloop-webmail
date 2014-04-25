@@ -15,10 +15,11 @@ interface DomainAdminInterface extends DomainInterface
 
 	/**
 	 * @param string $sName
+	 * @param bool $bFindWithWildCard = false
 	 *
 	 * @return \RainLoop\Domain | null
 	 */
-	public function Load($sName);
+	public function Load($sName, $bFindWithWildCard = false);
 
 	/**
 	 * @param \RainLoop\Domain $oDomain

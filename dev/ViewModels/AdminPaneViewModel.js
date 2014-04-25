@@ -11,6 +11,8 @@ function AdminPaneViewModel()
 	this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
 	this.version = ko.observable(RL.settingsGet('Version'));
 
+	this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
+
 	Knoin.constructorEnd(this);
 }
 

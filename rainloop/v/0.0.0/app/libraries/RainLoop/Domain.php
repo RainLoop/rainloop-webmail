@@ -64,11 +64,6 @@ class Domain
 	private $sWhiteList;
 
 	/**
-	 * @var bool
-	 */
-	private $bDisabled;
-
-	/**
 	 * @param string $sName
 	 * @param string $sIncHost
 	 * @param int $iIncPort
@@ -95,7 +90,6 @@ class Domain
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
 		$this->sWhiteList = \trim($sWhiteList);
-		$this->bDisabled = false;
 	}
 
 	/**
@@ -125,6 +119,7 @@ class Domain
 	}
 
 	/**
+	 * @param string $sName
 	 * @param array $aDomain
 	 *
 	 * @return \RainLoop\Domain|null
@@ -169,14 +164,6 @@ class Domain
 	private function encodeIniString($sStr)
 	{
 		return str_replace('"', '\\"', $sStr);
-	}
-
-	/**
-	 * @param bool0 $bDisabled
-	 */
-	public function SetDisabled($bDisabled)
-	{
-		$this->bDisabled = (bool) $bDisabled;
 	}
 
 	public function Normalize()
@@ -299,11 +286,13 @@ class Domain
 	}
 
 	/**
+	 * @param string $sRealDomainName = ''
+	 * 
 	 * @return string
 	 */
-	public function IncHost()
+	public function IncHost($sRealDomainName = '')
 	{
-		return $this->sIncHost;
+		return 0 < \strlen($sRealDomainName) ? \str_replace('{domain:name}', $sRealDomainName, $this->sIncHost) : $this->sIncHost;
 	}
 
 	/**
@@ -331,11 +320,12 @@ class Domain
 	}
 
 	/**
+	 * @param string $sRealDomainName = ''
 	 * @return string
 	 */
-	public function OutHost()
+	public function OutHost($sRealDomainName = '')
 	{
-		return $this->sOutHost;
+		return 0 < \strlen($sRealDomainName) ? \str_replace('{domain:name}', $sRealDomainName, $this->sOutHost) : $this->sOutHost;
 	}
 
 	/**
@@ -376,14 +366,6 @@ class Domain
 	public function WhiteList()
 	{
 		return $this->sWhiteList;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function Disabled()
-	{
-		return $this->bDisabled;
 	}
 
 	/**

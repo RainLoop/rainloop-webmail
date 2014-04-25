@@ -35,20 +35,6 @@ function PopupsDomainViewModel()
 	this.smtpAuth = ko.observable(true);
 	this.whiteList = ko.observable('');
 
-	this.imapServerFocus.subscribe(function (bValue) {
-		if (bValue && '' !== this.name() && '' === this.imapServer())
-		{
-			this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
-		}
-	}, this);
-
-	this.smtpServerFocus.subscribe(function (bValue) {
-		if (bValue && '' !== this.imapServer() && '' === this.smtpServer())
-		{
-			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
-		}
-	}, this);
-
 	this.headerText = ko.computed(function () {
 		var sName = this.name();
 		return this.edit() ? 'Edit Domain "' + sName + '"' :
@@ -98,6 +84,7 @@ function PopupsDomainViewModel()
 		this.testing(true);
 		RL.remote().testConnectionForDomain(
 			_.bind(this.onTestConnectionResponse, this),
+			this.name(),
 			this.imapServer(),
 			this.imapPort(),
 			this.imapSecure(),
@@ -111,6 +98,67 @@ function PopupsDomainViewModel()
 	this.whiteListCommand = Utils.createCommand(this, function () {
 		this.whiteListPage(!this.whiteListPage());
 	});
+
+	// smart form improvements
+	this.imapServerFocus.subscribe(function (bValue) {
+		if (bValue && '' !== this.name() && '' === this.imapServer())
+		{
+			this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
+		}
+	}, this);
+
+	this.smtpServerFocus.subscribe(function (bValue) {
+		if (bValue && '' !== this.imapServer() && '' === this.smtpServer())
+		{
+			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
+		}
+	}, this);
+	
+	this.imapSecure.subscribe(function (sValue) {
+		var iPort = Utils.pInt(this.imapPort());
+		sValue = Utils.pString(sValue);
+		switch (sValue)
+		{
+			case '0':
+				if (993 === iPort)
+				{
+					this.imapPort(143);
+				}
+				break;
+			case '1':
+				if (143 === iPort)
+				{
+					this.imapPort(993);
+				}
+				break;
+		}
+	}, this);
+
+	this.smtpSecure.subscribe(function (sValue) {
+		var iPort = Utils.pInt(this.smtpPort());
+		sValue = Utils.pString(sValue);
+		switch (sValue)
+		{
+			case '0':
+				if (465 === iPort || 587 === iPort)
+				{
+					this.smtpPort(25);
+				}
+				break;
+			case '1':
+				if (25 === iPort || 587 === iPort)
+				{
+					this.smtpPort(465);
+				}
+				break;
+			case '2':
+				if (25 === iPort || 465 === iPort)
+				{
+					this.smtpPort(587);
+				}
+				break;
+		}
+	}, this);
 
 	Knoin.constructorEnd(this);
 }
