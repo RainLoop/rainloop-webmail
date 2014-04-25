@@ -156,6 +156,7 @@ Patterns:
   {user:domain} - Replaced by user\'s domain name
                   If user is not logged in, value is set to "unknown"
   {user:uid}    - Replaced by user\'s UID regardless of account currently used
+  {user:ip}     - Replaced by user\'s IP address
 
 Examples:
   filename = "log-{date:Y-m-d}.txt"

@@ -321,7 +321,12 @@ class Actions
 					$sFileName
 				);
 			}
-			
+
+			if (false !== \strpos($sFileName, '{user:ip}'))
+			{
+				$sFileName = \str_replace('{user:ip}', $this->Http()->GetClientIp(), $sFileName);
+			}
+
 			$this->ParseQueryAuthString();
 
 			$oAccount = $this->getAccountFromToken(false);
@@ -748,7 +753,7 @@ class Actions
 			if (!!$this->Config()->Get('logs', 'enable', true))
 			{
 				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName();
-				$sLogFileDir = dirname($sLogFileFullPath);
+				$sLogFileDir = \dirname($sLogFileFullPath);
 
 				if (!@is_dir($sLogFileDir))
 				{
@@ -770,7 +775,7 @@ class Actions
 					$oHttp->GetMethod().': '.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
 					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 
-				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').']');
+				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').'][IP:'.$oHttp->GetClientIp().']');
 			}
 		}
 
