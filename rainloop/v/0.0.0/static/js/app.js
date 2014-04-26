@@ -3661,7 +3661,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
 LinkBuilder.prototype.openPgpJs = function ()
 {
 	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/js/openpgp.js';
+		this.sVersion + '/static/js/openpgp.min.js';
 };
 
 /**
@@ -4830,65 +4830,6 @@ LocalStorageDriver.prototype.get = function (sKey)
 	catch (oException) {}
 
 	return mResult;
-};
-
-/**
- * @constructor
- */
-function OpenPgpLocalStorageDriver()
-{
-}
-
-/*
- * Declare the localstore itemname
- */
-OpenPgpLocalStorageDriver.prototype.item = 'armoredRainLoopKeys';
-
-/**
- * Load the keyring from HTML5 local storage and initializes this instance.
- * @return {Array<module:key~Key>} array of keys retrieved from localstore
- */
-OpenPgpLocalStorageDriver.prototype.load = function ()
-{
-	var
-		iIndex = 0,
-		iLen = 0,
-		aKeys = [],
-		aArmoredKeys = JSON.parse(window.localStorage.getItem(this.item))
-	;
-
-	if (aArmoredKeys && 0 < aArmoredKeys.length)
-	{
-		for (iLen = aArmoredKeys.length; iIndex < iLen; iIndex++)
-		{
-			aKeys.push(
-				window.openpgp.key.readArmored(aArmoredKeys[iIndex]).keys[0]
-			);
-		}
-	}
-	
-	return aKeys;
-};
-
-/**
- * Saves the current state of the keyring to HTML5 local storage.
- * The privateKeys array and publicKeys array gets Stringified using JSON
- * @param {Array<module:key~Key>} aKeys array of keys to save in localstore
- */
-OpenPgpLocalStorageDriver.prototype.store = function (aKeys)
-{
-	var
-		iIndex = 0,
-		iLen = aKeys.length,
-		aArmoredKeys = []
-	;
-	
-	for (; iIndex < iLen; iIndex++)
-	{
-		aArmoredKeys.push(aKeys[iIndex].armor());
-	}
-	
-	window.localStorage.setItem(this.item, JSON.stringify(aArmoredKeys));
 };
 
 /**
@@ -10609,7 +10550,10 @@ function PopupsAddOpenPgpKeyViewModel()
 	this.addOpenPgpKeyCommand = Utils.createCommand(this, function () {
 
 		var
+			iCount = 30,
+			aMatch = null,
 			sKey = Utils.trim(this.key()),
+			oReg = /[\-]{3,6}BEGIN PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}[\s\S]+[\-]{3,6}END PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}/gi,
 			oOpenpgpKeyring = RL.data().openpgpKeyring
 		;
 
@@ -10620,7 +10564,30 @@ function PopupsAddOpenPgpKeyViewModel()
 			return false;
 		}
 
-		oOpenpgpKeyring.importKey(sKey);
+		do
+		{
+			aMatch = oReg.exec(sKey);
+			if (!aMatch || 0 > iCount)
+			{
+				break;
+			}
+
+			if (aMatch[0] && aMatch[1] && aMatch[2] && aMatch[1] === aMatch[2])
+			{
+				if ('PRIVATE' === aMatch[1])
+				{
+					oOpenpgpKeyring.privateKeys.importKey(aMatch[0]);
+				}
+				else if ('PUBLIC' === aMatch[1])
+				{
+					oOpenpgpKeyring.publicKeys.importKey(aMatch[0]);
+				}
+			}
+
+			iCount--;
+		}
+		while (true);
+
 		oOpenpgpKeyring.store();
 
 		RL.reloadOpenPgpKeys();
@@ -10739,10 +10706,10 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
 			if (mKeyPair && mKeyPair.privateKeyArmored)
 			{
-				oOpenpgpKeyring.importKey(mKeyPair.privateKeyArmored);
-				oOpenpgpKeyring.importKey(mKeyPair.publicKeyArmored);
+				oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
+				oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
 				oOpenpgpKeyring.store();
-
+	
 				RL.reloadOpenPgpKeys();
 				Utils.delegateRun(self, 'cancelCommand');
 			}
@@ -14983,33 +14950,16 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 	{
 		this.openPgpKeyForDeletion(null);
 
-		var
-			iFindIndex = -1,
-			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			fRemoveAccount = function (oOpenPgpKey) {
-				return oOpenPgpKeyToRemove === oOpenPgpKey;
-			}
-		;
-
-		if (oOpenPgpKeyToRemove && oOpenpgpKeyring)
+		if (oOpenPgpKeyToRemove && RL.data().openpgpKeyring)
 		{
-			this.openpgpkeys.remove(fRemoveAccount);
-
-			_.each(oOpenpgpKeyring.keys, function (oKey, iIndex) {
-				if (-1 === iFindIndex && oKey && oKey.primaryKey &&
-					oOpenPgpKeyToRemove.guid === oKey.primaryKey.getFingerprint() &&
-					oOpenPgpKeyToRemove.isPrivate === oKey.isPrivate())
-				{
-					iFindIndex = iIndex;
-				}
+			this.openpgpkeys.remove(function (oOpenPgpKey) {
+				return oOpenPgpKeyToRemove === oOpenPgpKey;
 			});
 
-			if (0 <= iFindIndex)
-			{
-				oOpenpgpKeyring.removeKey(iFindIndex);
-			}
+			RL.data().openpgpKeyring[oOpenPgpKeyToRemove.isPrivate ? 'privateKeys' : 'publicKeys']
+				.removeForId(oOpenPgpKeyToRemove.guid);
 
-			oOpenpgpKeyring.store();
+			RL.data().openpgpKeyring.store();
 
 			RL.reloadOpenPgpKeys();
 		}
@@ -18947,7 +18897,7 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 			aKeys = [],
 			oEmail = new EmailModel(),
 			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
+			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 		;
 
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
@@ -19597,7 +19547,7 @@ RainLoopApp.prototype.bootstart = function ()
 						'success': function () {
 							if (window.openpgp)
 							{
-								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
+								RL.data().openpgpKeyring = new window.openpgp.Keyring();
 								RL.data().allowOpenPGP(true);
 								
 								RL.pub('openpgp.init');

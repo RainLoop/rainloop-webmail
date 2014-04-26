@@ -271,7 +271,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
 LinkBuilder.prototype.openPgpJs = function ()
 {
 	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/js/openpgp.js';
+		this.sVersion + '/static/js/openpgp.min.js';
 };
 
 /**

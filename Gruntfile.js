@@ -115,9 +115,9 @@ module.exports = function (grunt) {
 			js_openpgp: {
 				nonull: true,
 				src: [
-					"vendors/openpgp.min.js",
+					"vendors/openpgp/openpgp-0.5.1.min.js",
 				],
-				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/openpgp.js'
+				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/openpgp.min.js'
 			},
 			js_libs: {
 				nonull: true,
@@ -254,7 +254,6 @@ module.exports = function (grunt) {
 
 					"dev/Storages/LocalStorages/CookieDriver.js",
 					"dev/Storages/LocalStorages/LocalStorageDriver.js",
-					"dev/Storages/LocalStorages/OpenPgpLocalStorageDriver.js",
 					"dev/Storages/LocalStorage.js",
 
 					"dev/Knoin/AbstractBoot.js",

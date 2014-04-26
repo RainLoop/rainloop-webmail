@@ -49,10 +49,10 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
 			if (mKeyPair && mKeyPair.privateKeyArmored)
 			{
-				oOpenpgpKeyring.importKey(mKeyPair.privateKeyArmored);
-				oOpenpgpKeyring.importKey(mKeyPair.publicKeyArmored);
+				oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
+				oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
 				oOpenpgpKeyring.store();
-
+	
 				RL.reloadOpenPgpKeys();
 				Utils.delegateRun(self, 'cancelCommand');
 			}

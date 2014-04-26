@@ -53,33 +53,16 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 	{
 		this.openPgpKeyForDeletion(null);
 
-		var
-			iFindIndex = -1,
-			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			fRemoveAccount = function (oOpenPgpKey) {
-				return oOpenPgpKeyToRemove === oOpenPgpKey;
-			}
-		;
-
-		if (oOpenPgpKeyToRemove && oOpenpgpKeyring)
+		if (oOpenPgpKeyToRemove && RL.data().openpgpKeyring)
 		{
-			this.openpgpkeys.remove(fRemoveAccount);
-
-			_.each(oOpenpgpKeyring.keys, function (oKey, iIndex) {
-				if (-1 === iFindIndex && oKey && oKey.primaryKey &&
-					oOpenPgpKeyToRemove.guid === oKey.primaryKey.getFingerprint() &&
-					oOpenPgpKeyToRemove.isPrivate === oKey.isPrivate())
-				{
-					iFindIndex = iIndex;
-				}
+			this.openpgpkeys.remove(function (oOpenPgpKey) {
+				return oOpenPgpKeyToRemove === oOpenPgpKey;
 			});
 
-			if (0 <= iFindIndex)
-			{
-				oOpenpgpKeyring.removeKey(iFindIndex);
-			}
+			RL.data().openpgpKeyring[oOpenPgpKeyToRemove.isPrivate ? 'privateKeys' : 'publicKeys']
+				.removeForId(oOpenPgpKeyToRemove.guid);
 
-			oOpenpgpKeyring.store();
+			RL.data().openpgpKeyring.store();
 
 			RL.reloadOpenPgpKeys();
 		}

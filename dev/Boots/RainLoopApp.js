@@ -385,7 +385,7 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 			aKeys = [],
 			oEmail = new EmailModel(),
 			oOpenpgpKeyring = RL.data().openpgpKeyring,
-			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.keys : []
+			oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 		;
 
 		_.each(oOpenpgpKeys, function (oItem, iIndex) {
@@ -1035,7 +1035,7 @@ RainLoopApp.prototype.bootstart = function ()
 						'success': function () {
 							if (window.openpgp)
 							{
-								RL.data().openpgpKeyring = new window.openpgp.Keyring(new OpenPgpLocalStorageDriver());
+								RL.data().openpgpKeyring = new window.openpgp.Keyring();
 								RL.data().allowOpenPGP(true);
 								
 								RL.pub('openpgp.init');

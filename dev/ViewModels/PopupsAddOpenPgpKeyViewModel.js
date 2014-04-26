@@ -19,7 +19,10 @@ function PopupsAddOpenPgpKeyViewModel()
 	this.addOpenPgpKeyCommand = Utils.createCommand(this, function () {
 
 		var
+			iCount = 30,
+			aMatch = null,
 			sKey = Utils.trim(this.key()),
+			oReg = /[\-]{3,6}BEGIN PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}[\s\S]+[\-]{3,6}END PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}/gi,
 			oOpenpgpKeyring = RL.data().openpgpKeyring
 		;
 
@@ -30,7 +33,30 @@ function PopupsAddOpenPgpKeyViewModel()
 			return false;
 		}
 
-		oOpenpgpKeyring.importKey(sKey);
+		do
+		{
+			aMatch = oReg.exec(sKey);
+			if (!aMatch || 0 > iCount)
+			{
+				break;
+			}
+
+			if (aMatch[0] && aMatch[1] && aMatch[2] && aMatch[1] === aMatch[2])
+			{
+				if ('PRIVATE' === aMatch[1])
+				{
+					oOpenpgpKeyring.privateKeys.importKey(aMatch[0]);
+				}
+				else if ('PUBLIC' === aMatch[1])
+				{
+					oOpenpgpKeyring.publicKeys.importKey(aMatch[0]);
+				}
+			}
+
+			iCount--;
+		}
+		while (true);
+
 		oOpenpgpKeyring.store();
 
 		RL.reloadOpenPgpKeys();

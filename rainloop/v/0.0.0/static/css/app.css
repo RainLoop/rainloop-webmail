@@ -9521,6 +9521,46 @@ html.rl-started-trigger.no-mobile #rl-content {
   -o-transition: opacity 0.5s linear;
   transition: opacity 0.5s linear;
 }
+.rl-anim {
+  /*	&.csstransitions .b-settings-folders {
+		.folder-item {
+			.button-delete {
+				.transition(all 0.2s linear);
+			}
+		}
+	}
+
+	&.csstransitions .b-settings-accounts {
+		.account-item {
+			.button-delete {
+				.transition(all 0.2s linear);
+			}
+		}
+	}
+
+	&.csstransitions .b-settings-identities {
+		.identity-item {
+			.button-delete {
+				.transition(all 0.2s linear);
+			}
+		}
+	}
+
+	&.csstransitions .b-admin-domains {
+		.e-item {
+			.button-delete {
+				.transition(all 0.2s linear);
+			}
+		}
+	}
+
+	&.csstransitions .b-compose {
+		.button-delete {
+			.transition(margin-left 0.2s linear);
+		}
+	}*/
+
+}
 .rl-anim.csstransitions.no-mobile #rl-left {
   -webkit-transition: width 0.3s ease-out;
   -moz-transition: width 0.3s ease-out;
@@ -9571,35 +9611,11 @@ html.rl-started-trigger.no-mobile #rl-content {
   -moz-animation: animate-stripes 2s linear infinite;
   animation: animate-stripes 2s linear infinite;
 }
-.rl-anim.csstransitions .b-settings-folders .folder-item .button-delete {
+.rl-anim.csstransitions .button-delete-transitions {
   -webkit-transition: all 0.2s linear;
   -moz-transition: all 0.2s linear;
   -o-transition: all 0.2s linear;
   transition: all 0.2s linear;
-}
-.rl-anim.csstransitions .b-settings-accounts .account-item .button-delete {
-  -webkit-transition: all 0.2s linear;
-  -moz-transition: all 0.2s linear;
-  -o-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-}
-.rl-anim.csstransitions .b-settings-identities .identity-item .button-delete {
-  -webkit-transition: all 0.2s linear;
-  -moz-transition: all 0.2s linear;
-  -o-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-}
-.rl-anim.csstransitions .b-admin-domains .e-item .button-delete {
-  -webkit-transition: all 0.2s linear;
-  -moz-transition: all 0.2s linear;
-  -o-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-}
-.rl-anim.csstransitions .b-compose .button-delete {
-  -webkit-transition: margin-left 0.2s linear;
-  -moz-transition: margin-left 0.2s linear;
-  -o-transition: margin-left 0.2s linear;
-  transition: margin-left 0.2s linear;
 }
 .rl-anim.cssanimations .b-folders .e-item .anim-action-class {
   -webkit-animation: highlight-folder-row 0.5s linear;
