@@ -208,7 +208,7 @@ function MailBoxMessageListViewModel()
 		return oMessage ? oMessage.generateUid() : '';
 	});
 
-	oData.messageListEndHash.subscribe(function (mValue) {
+	oData.messageListEndHash.subscribe(function () {
 		this.selector.scrollToTop();
 	}, this);
 

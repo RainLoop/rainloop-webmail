@@ -460,10 +460,70 @@ class Client {
     protected function curlRequest($url, $settings) {
 
         $curl = curl_init($url);
-        curl_setopt_array($curl, $settings);
+		if (ini_get('open_basedir') === '' && ini_get('safe_mode' === 'Off'))
+		{
+			curl_setopt_array($curl, $settings);
+			$data = curl_exec($curl);
+		}
+		else
+		{
+			$settings[CURLOPT_FOLLOWLOCATION] = false;
+			curl_setopt_array($curl, $settings);
+
+			$max_redirects = isset($settings[CURLOPT_MAXREDIRS]) ? $settings[CURLOPT_MAXREDIRS] : 5;
+			$mr = $max_redirects;
+			if ($mr > 0)
+			{
+				$newurl = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+				
+				$rcurl = curl_copy_handle($curl);
+				curl_setopt($rcurl, CURLOPT_HEADER, true);
+				curl_setopt($rcurl, CURLOPT_NOBODY, true);
+				curl_setopt($rcurl, CURLOPT_FORBID_REUSE, false);
+				curl_setopt($rcurl, CURLOPT_RETURNTRANSFER, true);
+				do
+				{
+					curl_setopt($rcurl, CURLOPT_URL, $newurl);
+					$header = curl_exec($rcurl);
+					if (curl_errno($rcurl))
+					{
+						$code = 0;
+					}
+					else
+					{
+						$code = curl_getinfo($rcurl, CURLINFO_HTTP_CODE);
+						if ($code == 301 || $code == 302)
+						{
+							$matches = array();
+							preg_match('/Location:(.*?)\n/', $header, $matches);
+							$newurl = trim(array_pop($matches));
+						}
+						else
+						{
+							$code = 0;
+						}
+					}
+				} while ($code && --$mr);
+				
+				curl_close($rcurl);
+				if ($mr > 0)
+				{
+					curl_setopt($curl, CURLOPT_URL, $newurl);
+				}
+			}
+
+			if ($mr == 0 && $max_redirects > 0)
+			{
+				$data = false;
+			}
+			else
+			{
+				$data = curl_exec($curl);
+			}
+		}
 
         return array(
-            curl_exec($curl),
+            $data,
             curl_getinfo($curl),
             curl_errno($curl),
             curl_error($curl)

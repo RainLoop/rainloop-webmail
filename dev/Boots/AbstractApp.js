@@ -263,6 +263,8 @@ AbstractApp.prototype.pub = function (sName, aArgs)
 
 AbstractApp.prototype.bootstart = function ()
 {
+	var self = this;
+
 	Utils.initOnStartOrLangChange(function () {
 		Utils.initNotificationLanguage();
 	}, null);
@@ -276,9 +278,11 @@ AbstractApp.prototype.bootstart = function ()
 		'maxWidth': 767,
 		'onEnter': function() {
 			$html.addClass('ssm-state-mobile');
+			self.pub('ssm.mobile-enter');
 		},
 		'onLeave': function() {
 			$html.removeClass('ssm-state-mobile');
+			self.pub('ssm.mobile-leave');
 		}
 	});
 
