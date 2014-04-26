@@ -401,17 +401,17 @@ class Contact
 
 			if (isset($oVCard->EMAIL))
 			{
-				$this->addArrayPropertyHelper(&$aProperties, $oVCard->EMAIL, PropertyType::EMAIl);
+				$this->addArrayPropertyHelper($aProperties, $oVCard->EMAIL, PropertyType::EMAIl);
 			}
 
 			if (isset($oVCard->URL))
 			{
-				$this->addArrayPropertyHelper(&$aProperties, $oVCard->URL, PropertyType::WEB_PAGE);
+				$this->addArrayPropertyHelper($aProperties, $oVCard->URL, PropertyType::WEB_PAGE);
 			}
 
 			if (isset($oVCard->TEL))
 			{
-				$this->addArrayPropertyHelper(&$aProperties, $oVCard->TEL, PropertyType::PHONE);
+				$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
 			}
 
 			$this->Properties = $aProperties;
