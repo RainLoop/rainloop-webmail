@@ -582,6 +582,29 @@ Selector.prototype.scrollToFocused = function ()
 	return false;
 };
 
+/**
+ * @param {boolean=} bFast = false
+ * @return {boolean}
+ */
+Selector.prototype.scrollToTop = function (bFast)
+{
+	if (!this.oContentVisible || !this.oContentScrollable)
+	{
+		return false;
+	}
+
+	if (bFast)
+	{
+		this.oContentScrollable.scrollTop(0);
+	}
+	else
+	{
+		this.oContentScrollable.stop().animate({'scrollTop': 0}, 200);
+	}
+
+	return true;
+};
+
 Selector.prototype.eventClickFunction = function (oItem, oEvent)
 {
 	var

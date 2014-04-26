@@ -218,8 +218,13 @@ function WebMailDataStorage()
 		this.messageListThreadUids([]);
 	}, this);
 
-	this.messageListEndSearch = ko.observable('');
 	this.messageListEndFolder = ko.observable('');
+	this.messageListEndSearch = ko.observable('');
+	this.messageListEndPage = ko.observable(1);
+	
+	this.messageListEndHash = ko.computed(function () {
+		return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
+	}, this);
 	
 	this.messageListPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.messageListCount() / this.messagesPerPage());
@@ -1133,9 +1138,10 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 
 		oRainLoopData.messageListCount(iCount);
 		oRainLoopData.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-		oRainLoopData.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-		oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 		oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
+		oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
+		oRainLoopData.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+		oRainLoopData.messageListEndPage(oRainLoopData.messageListPage());
 
 		oRainLoopData.messageList(aList);
 		oRainLoopData.messageListIsNotCompleted(false);
