@@ -26,13 +26,13 @@ Consts.Defaults.MessagesPerPageArray = [10, 20, 30, 50, 100/*, 150, 200, 300*/];
  * @const
  * @type {number}
  */
-Consts.Defaults.DefaultAjaxTimeout = 20000;
+Consts.Defaults.DefaultAjaxTimeout = 30000;
 
 /**
  * @const
  * @type {number}
  */
-Consts.Defaults.SearchAjaxTimeout = 120000;
+Consts.Defaults.SearchAjaxTimeout = 300000;
 
 /**
  * @const
