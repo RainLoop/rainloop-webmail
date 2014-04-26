@@ -3588,9 +3588,16 @@ class Actions
 						$mFolderNameToCreate = \array_search($iType, $aMap);
 						if (!empty($mFolderNameToCreate))
 						{
-							if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sNamespace))
+							try
 							{
-								$bDoItAgain = true;
+								if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sNamespace))
+								{
+									$bDoItAgain = true;
+								}
+							}
+							catch (\Exception $oException)
+							{
+								$this->Logger()->WriteException($oException);
 							}
 						}
 					}

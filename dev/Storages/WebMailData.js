@@ -585,17 +585,6 @@ WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFol
 				{
 					RL.cache().setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);
 					RL.cache().setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);
-
-					oCacheFolder.isGmailFolder = Consts.Values.GmailFolderName.toLowerCase() === sFolderFullNameRaw.toLowerCase();
-					if ('' !== sNamespace && sNamespace === oCacheFolder.fullNameRaw + oCacheFolder.delimiter)
-					{
-						oCacheFolder.isNamespaceFolder = true;
-					}
-
-					if (oCacheFolder.isNamespaceFolder || oCacheFolder.isGmailFolder)
-					{
-						oCacheFolder.isUnpaddigFolder = true;
-					}
 				}
 			}
 

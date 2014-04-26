@@ -43,7 +43,7 @@ function PopupsFolderCreateViewModel()
 		return RL.folderListOptionsBuilder([], aList, [], aTop, null, fDisableCallback, fVisibleCallback, fRenameCallback);
 
 	}, this);
-	
+
 	// commands
 	this.createFolder = Utils.createCommand(this, function () {
 

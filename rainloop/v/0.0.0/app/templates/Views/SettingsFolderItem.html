@@ -1,4 +1,4 @@
-<tr class="folder-item" data-bind="css: { 'selectable': selectable, 'gmailFolder' : isGmailFolder, 'system': isSystemFolder }">
+<tr class="folder-item" data-bind="css: { 'selectable': selectable, 'system': isSystemFolder }">
 	<td>
 		<span class="folder-padding" data-bind="css: 'deep-' + deep">&nbsp;</span>
 		<span class="folder-name" data-bind="text: name, visible: !edited(), css: { 'e-action': canBeEdited, 'can-be-edited': canBeEdited }, click: function (oFolder) { $root.folderForEdit(oFolder); }"></span>

@@ -655,7 +655,7 @@ MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
 		RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
 			oMessage.readReceipt(), 
 			Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': oMessage.readReceipt()}));
+			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': RL.data().accountEmail()}));
 
 		oMessage.isReadReceipt(true);
 

@@ -16,9 +16,14 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
-						<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function () { if (!disabled) $root.moveSelectedMessagesToFolder(id); }">
-							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
-						</li>
+						<!-- ko if: seporator -->
+							<li class="divider" role="presentation" data-bind="visible: seporator"></li>
+						<!-- /ko -->
+						<!-- ko if: !seporator -->
+							<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function () { if (!disabled) $root.moveSelectedMessagesToFolder(id); }">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
+							</li>
+						<!-- /ko -->
 					</ul>
 				</div>
 				<div class="btn-group">&nbsp;</div>

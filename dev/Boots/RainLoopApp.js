@@ -794,6 +794,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 		 * @type {?FolderModel}
 		 */
 		oItem = null,
+		bSep = false,
 		sDeepPrefix = '\u00A0\u00A0\u00A0',
 		aResult = []
 	;
@@ -820,41 +821,70 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 		aResult.push({
 			'id': aHeaderLines[iIndex][0],
 			'name': aHeaderLines[iIndex][1],
+			'system': false,
+			'seporator': false,
 			'disabled': false
 		});
 	}
 
+	bSep = true;
 	for (iIndex = 0, iLen = aSystem.length; iIndex < iLen; iIndex++)
 	{
 		oItem = aSystem[iIndex];
 		if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
 		{
+			if (bSep && 0 < aResult.length)
+			{
+				aResult.push({
+					'id': '---',
+					'name': '---',
+					'system': false,
+					'seporator': true,
+					'disabled': true
+				});
+			}
+
+			bSep = false;
 			aResult.push({
 				'id': oItem.fullNameRaw,
-				'system': true,
 				'name': fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
+				'system': true,
+				'seporator': false,
 				'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
 					(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 			});
 		}
 	}
 
+	bSep = true;
 	for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
 	{
 		oItem = aList[iIndex];
-		if (!oItem.isGmailFolder && (oItem.subScribed() || !oItem.existen))
+		if (oItem.subScribed() || !oItem.existen)
 		{
 			if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
 			{
-				if (Enums.FolderType.User === oItem.type() || !bSystem || (!oItem.isNamespaceFolder && 0 < oItem.subFolders().length))
+				if (Enums.FolderType.User === oItem.type() || !bSystem || 0 < oItem.subFolders().length)
 				{
+					if (bSep && 0 < aResult.length)
+					{
+						aResult.push({
+							'id': '---',
+							'name': '---',
+							'system': false,
+							'seporator': true,
+							'disabled': true
+						});
+					}
+
+					bSep = false;
 					aResult.push({
 						'id': oItem.fullNameRaw,
-						'system': false,
-						'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) + 
+						'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) +
 							(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
+						'system': false,
+						'seporator': false,
 						'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
-							(Enums.FolderType.User !== oItem.type()) ||
 							(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
 					});
 				}
@@ -864,8 +894,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 		if (oItem.subScribed() && 0 < oItem.subFolders().length)
 		{
 			aResult = aResult.concat(RL.folderListOptionsBuilder([], oItem.subFolders(), aDisabled, [],
-				oItem.isUnpaddigFolder ? iUnDeep + 1 : iUnDeep,
-				fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible));
+				iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible));
 		}
 	}
 

@@ -12,15 +12,10 @@ function FolderModel()
 	this.delimiter = '';
 	this.namespace = '';
 	this.deep = 0;
+	this.interval = 0;
 
 	this.selectable = false;
 	this.existen = true;
-
-	this.isNamespaceFolder = false;
-	this.isGmailFolder = false;
-	this.isUnpaddigFolder = false;
-
-	this.interval = 0;
 
 	this.type = ko.observable(Enums.FolderType.User);
 
@@ -70,7 +65,7 @@ FolderModel.prototype.initComputed = function ()
 {
 	this.hasSubScribedSubfolders = ko.computed(function () {
 		return !!_.find(this.subFolders(), function (oFolder) {
-			return oFolder.subScribed();
+			return oFolder.subScribed() && !oFolder.isSystemFolder();
 		});
 	}, this);
 
@@ -97,7 +92,8 @@ FolderModel.prototype.initComputed = function ()
 			bSubFolders = this.hasSubScribedSubfolders()
 		;
 
-		return this.isGmailFolder || (bSystem && this.isNamespaceFolder) || (bSystem && !bSubFolders);
+		return (bSystem && !bSubFolders) || (!this.selectable && !bSubFolders);
+	
 	}, this);
 
 	this.selectableForFolderList = ko.computed(function () {
@@ -291,10 +287,6 @@ FolderModel.prototype.delimiter = '';
 FolderModel.prototype.namespace = '';
 FolderModel.prototype.deep = 0;
 FolderModel.prototype.interval = 0;
-
-FolderModel.prototype.isNamespaceFolder = false;
-FolderModel.prototype.isGmailFolder = false;
-FolderModel.prototype.isUnpaddigFolder = false;
 
 /**
  * @return {string}

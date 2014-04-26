@@ -62,12 +62,6 @@ Consts.Values.UnuseOptionValue = '__UNUSE__';
  * @const
  * @type {string}
  */
-Consts.Values.GmailFolderName = '[Gmail]';
-
-/**
- * @const
- * @type {string}
- */
 Consts.Values.ClientSideCookieIndexName = 'rlcsc';
 
 /**
