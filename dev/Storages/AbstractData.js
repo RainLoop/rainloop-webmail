@@ -5,6 +5,7 @@
  */
 function AbstractData()
 {
+	this.leftPanelDisabled = ko.observable(false);
 	this.useKeyboardShortcuts = ko.observable(true);
 	
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
@@ -42,6 +43,10 @@ function AbstractData()
 	this.keyScopeReal.subscribe(function (sValue) {
 //		window.console.log(sValue);
 		key.setScope(sValue);
+	});
+
+	this.leftPanelDisabled.subscribe(function (bValue) {
+		RL.pub('left-panel.' + (bValue ? 'off' : 'on'));
 	});
 
 	Globals.dropdownVisibility.subscribe(function (bValue) {

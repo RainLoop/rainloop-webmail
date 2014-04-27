@@ -1093,18 +1093,18 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 			}
 		},
 
-//		fDisable = function (bDisable) {
-//			if (bDisable)
-//			{
-//				oLeft.resizable('disable');
-//				fSetWidth(5);
-//			}
-//			else
-//			{
-//				oLeft.resizable('enable');
-//				fSetWidth(RL.local().get(sClientSideKeyName) || 150);
-//			}
-//		},
+		fDisable = function (bDisable) {
+			if (bDisable)
+			{
+				oLeft.resizable('disable');
+				fSetWidth(5);
+			}
+			else
+			{
+				oLeft.resizable('enable');
+				fSetWidth(RL.local().get(sClientSideKeyName) || 170);
+			}
+		},
 
 		fResizeFunction = function (oEvent, oObject) {
 			if (oObject && oObject.size && oObject.size.width)
@@ -1125,19 +1125,19 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 
 	oLeft.resizable({
 		'helper': 'ui-resizable-helper',
-		'minWidth': 120,
+		'minWidth': 170,
 		'maxWidth': 400,
 		'handles': 'e',
 		'stop': fResizeFunction
 	});
 
-//	RL.sub('ssm.mobile-enter', function () {
-//		fDisable(true);
-//	});
-//
-//	RL.sub('ssm.mobile-leave', function () {
-//		fDisable(false);
-//	});
+	RL.sub('left-panel.off', function () {
+		fDisable(true);
+	});
+
+	RL.sub('left-panel.on', function () {
+		fDisable(false);
+	});
 };
 
 /**

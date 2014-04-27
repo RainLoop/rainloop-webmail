@@ -26,6 +26,7 @@ function MailBoxMessageListViewModel()
 	this.folderMenuForMove = oData.folderMenuForMove;
 	
 	this.useCheckboxesInList = oData.useCheckboxesInList;
+	this.leftPanelDisabled = oData.leftPanelDisabled;
 
 	this.mainMessageListSearch = oData.mainMessageListSearch;
 	this.messageListEndFolder = oData.messageListEndFolder;

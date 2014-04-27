@@ -1815,18 +1815,18 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 			}
 		},
 
-//		fDisable = function (bDisable) {
-//			if (bDisable)
-//			{
-//				oLeft.resizable('disable');
-//				fSetWidth(5);
-//			}
-//			else
-//			{
-//				oLeft.resizable('enable');
-//				fSetWidth(RL.local().get(sClientSideKeyName) || 150);
-//			}
-//		},
+		fDisable = function (bDisable) {
+			if (bDisable)
+			{
+				oLeft.resizable('disable');
+				fSetWidth(5);
+			}
+			else
+			{
+				oLeft.resizable('enable');
+				fSetWidth(RL.local().get(sClientSideKeyName) || 170);
+			}
+		},
 
 		fResizeFunction = function (oEvent, oObject) {
 			if (oObject && oObject.size && oObject.size.width)
@@ -1847,19 +1847,19 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 
 	oLeft.resizable({
 		'helper': 'ui-resizable-helper',
-		'minWidth': 120,
+		'minWidth': 170,
 		'maxWidth': 400,
 		'handles': 'e',
 		'stop': fResizeFunction
 	});
 
-//	RL.sub('ssm.mobile-enter', function () {
-//		fDisable(true);
-//	});
-//
-//	RL.sub('ssm.mobile-leave', function () {
-//		fDisable(false);
-//	});
+	RL.sub('left-panel.off', function () {
+		fDisable(true);
+	});
+
+	RL.sub('left-panel.on', function () {
+		fDisable(false);
+	});
 };
 
 /**
@@ -5650,6 +5650,7 @@ function AdminPaneViewModel()
 	this.version = ko.observable(RL.settingsGet('Version'));
 
 	this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
+	this.leftPanelDisabled = RL.data().leftPanelDisabled;
 
 	Knoin.constructorEnd(this);
 }
@@ -6654,6 +6655,7 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
  */
 function AbstractData()
 {
+	this.leftPanelDisabled = ko.observable(false);
 	this.useKeyboardShortcuts = ko.observable(true);
 	
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
@@ -6691,6 +6693,10 @@ function AbstractData()
 	this.keyScopeReal.subscribe(function (sValue) {
 //		window.console.log(sValue);
 		key.setScope(sValue);
+	});
+
+	this.leftPanelDisabled.subscribe(function (bValue) {
+		RL.pub('left-panel.' + (bValue ? 'off' : 'on'));
 	});
 
 	Globals.dropdownVisibility.subscribe(function (bValue) {
@@ -7955,6 +7961,18 @@ AbstractApp.prototype.bootstart = function ()
 		'onLeave': function() {
 			$html.removeClass('ssm-state-desktop-large');
 		}
+	});
+
+	RL.sub('ssm.mobile-enter', function () {
+		RL.data().leftPanelDisabled(true);
+	});
+
+	RL.sub('ssm.mobile-leave', function () {
+		RL.data().leftPanelDisabled(false);
+	});
+
+	RL.data().leftPanelDisabled.subscribe(function (bValue) {
+		$html.toggleClass('rl-left-panel-disabled', bValue);
 	});
 
 	ssm.ready();

@@ -8,6 +8,8 @@ function SettingsPaneViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Right', 'SettingsPane');
 
+	this.leftPanelDisabled = RL.data().leftPanelDisabled;
+
 	Knoin.constructorEnd(this);
 }
 

@@ -15,6 +15,8 @@ function MailBoxFolderListViewModel()
 	this.folderListSystem = oData.folderListSystem;
 	this.foldersChanging = oData.foldersChanging;
 
+	this.leftPanelDisabled = oData.leftPanelDisabled;
+
 	this.iDropOverTimer = 0;
 
 	this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');

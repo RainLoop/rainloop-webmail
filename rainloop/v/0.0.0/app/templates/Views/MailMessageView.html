@@ -1,6 +1,7 @@
 <div id="rl-sub-right">
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused}">
 		<div class="toolbar g-ui-user-select-none">
+			<nobr>
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-tooltip-placement="bottom" data-bind="visible: !usePreviewPane(), tooltip: 'MESSAGE/BUTTON_CLOSE'">
 					<a class="btn buttonClose" data-bind="command: closeMessage">
@@ -120,6 +121,7 @@
 					</a>
 				</div>
 			</div>
+			</nobr>
 		</div>
 		<div class="b-content thm-message-view-background-color">
 			<div>

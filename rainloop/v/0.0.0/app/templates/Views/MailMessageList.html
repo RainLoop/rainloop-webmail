@@ -3,6 +3,11 @@
 		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused, 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
+				<div class="btn-group" data-bind="visible: leftPanelDisabled">
+					<a class="btn" data-bind="click: function () { leftPanelDisabled(false); }">
+						<i class="icon-resize"></i>
+					</a>
+				</div>
 				<div class="btn-group">
 					<a class="btn buttonReload" data-tooltip-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
 						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>

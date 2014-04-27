@@ -15,7 +15,7 @@
 
 #rl-center {
 	.g-ui-absolute-reset;
-	min-width: 700px;
+	min-width: 600px;
 	min-height: 400px;
 }
 
@@ -108,18 +108,18 @@ html.ssm-state-desktop {
 	}
 }
 
-html.ssm-state-tablet {
+html.ssm-state-tablet, html.ssm-state-mobile {
 
 	#rl-left {
-		width: 150px;
+		width: 160px;
 	}
 
 	#rl-right {
-		left: 150px;
+		left: 160px;
 	}
 
 	#rl-sub-left {
-		width: 340px;
+		width: 350px;
 
 		.messageList .inputSearch {
 			width: 220px;
@@ -127,7 +127,7 @@ html.ssm-state-tablet {
 	}
 
 	#rl-sub-right {
-		left: 340px;
+		left: 350px;
 	}
 
 	.b-compose.modal {
@@ -139,33 +139,15 @@ html.ssm-state-tablet {
 	}
 }
 
-html.ssm-state-mobile {
+html.rl-left-panel-disabled {
+	
 	#rl-left {
-		width: 120px;
+		width: 5px !important;
+		display: none;
 	}
 
 	#rl-right {
-		left: 120px;
-	}
-
-	#rl-sub-left {
-		width: 340px;
-
-		.messageList .inputSearch {
-			width: 220px;
-		}
-	}
-
-	#rl-sub-right {
-		left: 340px;
-	}
-
-	.b-compose.modal {
-		width: 800px;
-	}
-
-	.b-contacts-content.modal {
-		width: 800px;
+		left: 5px !important;
 	}
 }
 

@@ -321,5 +321,17 @@ AbstractApp.prototype.bootstart = function ()
 		}
 	});
 
+	RL.sub('ssm.mobile-enter', function () {
+		RL.data().leftPanelDisabled(true);
+	});
+
+	RL.sub('ssm.mobile-leave', function () {
+		RL.data().leftPanelDisabled(false);
+	});
+
+	RL.data().leftPanelDisabled.subscribe(function (bValue) {
+		$html.toggleClass('rl-left-panel-disabled', bValue);
+	});
+
 	ssm.ready();
 };

@@ -6,6 +6,9 @@
 		<a class="btn buttonContacts" data-tooltip-placement="bottom" data-bind="visible: allowContacts, click: contactsClick, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
 			<i class="icon-address-book"></i>
 		</a>
+		<a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(true); }">
+			<i class="icon-resize"></i>
+		</a>
 	</div>
 	<div class="b-content" data-bind="nano: true">
 		<div class="content g-scrollbox">
