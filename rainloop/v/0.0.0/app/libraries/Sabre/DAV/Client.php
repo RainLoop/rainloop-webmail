@@ -460,7 +460,10 @@ class Client {
     protected function curlRequest($url, $settings) {
 
         $curl = curl_init($url);
-		if (ini_get('open_basedir') === '' && ini_get('safe_mode' === 'Off'))
+		$sSafeMode = strtolower(trim(@ini_get('safe_mode')));
+		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
+
+		if (!$bSafeMode && ini_get('open_basedir') === '')
 		{
 			curl_setopt_array($curl, $settings);
 			$data = curl_exec($curl);

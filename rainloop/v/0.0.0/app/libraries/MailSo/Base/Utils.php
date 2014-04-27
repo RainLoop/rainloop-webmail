@@ -829,17 +829,19 @@ class Utils
 	 *
 	 * @param int &$iTimer
 	 * @param int $iTimeToReset = 15
-	 * @param int $iTimeToAdd = 30
+	 * @param int $iTimeToAdd = 120
 	 *
 	 * @return bool
 	 */
-	public static function ResetTimeLimit(&$iTimer, $iTimeToReset = 15, $iTimeToAdd = 30)
+	public static function ResetTimeLimit(&$iTimer, $iTimeToReset = 15, $iTimeToAdd = 120)
 	{
 		static $bValidateAction = null;
 		if (null === $bValidateAction)
 		{
-			$bValidateAction = !((bool) \ini_get('safe_mode')) &&
-				\MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
+			$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
+			$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode || 'true' === $sSafeMode;
+
+			$bValidateAction = !$bSafeMode && \MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
 		}
 
 		if ($bValidateAction)

@@ -26,7 +26,7 @@ class MailClient
 		$this->oLogger = null;
 
 		$this->oImapClient = \MailSo\Imap\ImapClient::NewInstance();
-		$this->oImapClient->SetTimeOuts(10, 30); // TODO
+		$this->oImapClient->SetTimeOuts(10, 300); // TODO
 	}
 
 	/**
@@ -1927,7 +1927,7 @@ class MailClient
 		{
 			// TODO
 			throw new \MailSo\Mail\Exceptions\RuntimeException(
-				'New folder name contain delimiter');
+				'New folder name contains delimiter');
 		}
 
 		$sFullNameRawToCreate = $sFolderParentFullNameRaw.$sFullNameRawToCreate;
@@ -2019,8 +2019,7 @@ class MailClient
             if (0 < \strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
             {
                 // TODO
-                throw new \MailSo\Mail\Exceptions\RuntimeException(
-                    'New folder name contain delimiter');
+                throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
             }
 
             $sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
