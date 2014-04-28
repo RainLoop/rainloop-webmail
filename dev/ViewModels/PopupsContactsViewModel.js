@@ -17,14 +17,12 @@ function PopupsContactsViewModel()
 		}
 	;
 
+	this.allowContactsSync = RL.data().allowContactsSync;
 	this.enableContactsSync = RL.data().enableContactsSync;
 
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
-	this.contacts = ko.observableArray([]);
-	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
-	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
-	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
+	this.contacts = RL.data().contacts;
 	
 	this.currentContact = ko.observable(null);
 
@@ -257,21 +255,9 @@ function PopupsContactsViewModel()
 	});
 
 	this.syncCommand = Utils.createCommand(this, function () {
-		
-		if (this.contacts.syncing())
-		{
-			return false;
-		}
 
 		var self = this;
-
-		this.contacts.syncing(true);
-
-		
-		RL.remote().contactsSync(function (sResult, oData) {
-
-			self.contacts.syncing(false);
-			
+		RL.contactsSync(function (sResult, oData) {
 			if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 			{
 				window.alert(Utils.getNotification(
@@ -279,8 +265,9 @@ function PopupsContactsViewModel()
 			}
 
 			self.reloadContactList(true);
-			
-		});
+		}, true);
+		
+		this.contacts.skipNextSync = true;
 		
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();

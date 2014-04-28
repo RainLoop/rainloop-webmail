@@ -9653,14 +9653,12 @@ function PopupsContactsViewModel()
 		}
 	;
 
+	this.allowContactsSync = RL.data().allowContactsSync;
 	this.enableContactsSync = RL.data().enableContactsSync;
 
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
-	this.contacts = ko.observableArray([]);
-	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
-	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
-	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
+	this.contacts = RL.data().contacts;
 	
 	this.currentContact = ko.observable(null);
 
@@ -9893,21 +9891,9 @@ function PopupsContactsViewModel()
 	});
 
 	this.syncCommand = Utils.createCommand(this, function () {
-		
-		if (this.contacts.syncing())
-		{
-			return false;
-		}
 
 		var self = this;
-
-		this.contacts.syncing(true);
-
-		
-		RL.remote().contactsSync(function (sResult, oData) {
-
-			self.contacts.syncing(false);
-			
+		RL.contactsSync(function (sResult, oData) {
 			if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 			{
 				window.alert(Utils.getNotification(
@@ -9915,8 +9901,9 @@ function PopupsContactsViewModel()
 			}
 
 			self.reloadContactList(true);
-			
-		});
+		}, true);
+		
+		this.contacts.skipNextSync = true;
 		
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();
@@ -15142,6 +15129,13 @@ function WebMailDataStorage()
 	this.identities = ko.observableArray([]);
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
+	// contacts
+	this.contacts = ko.observableArray([]);
+	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
+	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
+	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
+	this.contacts.skipNextSync = false;
+	
 	this.allowContactsSync = ko.observable(false);
 	this.enableContactsSync = ko.observable(false);
 	this.contactsSyncUrl = ko.observable('');
@@ -18535,6 +18529,12 @@ function RainLoopApp()
 		RL.pub('interval.10m');
 	}, 60000 * 10);
 
+	window.setTimeout(function () {
+		window.setInterval(function () {
+			RL.pub('interval.10m-after5m');
+		}, 60000 * 10);
+	}, 60000 * 5);
+
 	$.wakeUp(function () {
 		RL.remote().jsVersion(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
@@ -18663,6 +18663,41 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
 {
 	RL.reloadMessageList(bEmptyList);
+};
+
+/**
+ * @param {Function} fResultFunc
+ * @param {boolean=} bForce = false
+ * @returns {boolean}
+ */
+RainLoopApp.prototype.contactsSync = function (fResultFunc, bForce)
+{
+	var oContacts = RL.data().contacts;
+	if (oContacts.importing() || oContacts.syncing() || !RL.data().enableContactsSync() || !RL.data().allowContactsSync())
+	{
+		oContacts.skipNextSync = false;
+		return false;
+	}
+	
+	if (oContacts.skipNextSync && !bForce)
+	{
+		oContacts.skipNextSync = false;
+		return false;
+	}
+
+	oContacts.syncing(true);
+	
+	RL.remote().contactsSync(function (sResult, oData) {
+		
+		oContacts.syncing(false);
+
+		if (fResultFunc)
+		{
+			fResultFunc(sResult, oData);
+		}
+	});
+
+	return true;
 };
 
 RainLoopApp.prototype.messagesMoveTrigger = function ()
@@ -19582,7 +19617,7 @@ RainLoopApp.prototype.bootstart = function ()
 				RL.sub('interval.2m', function () {
 					RL.folderInformation('INBOX');
 				});
-				
+
 				RL.sub('interval.2m', function () {
 					var sF = RL.data().currentFolderFullNameRaw();
 					if ('INBOX' !== sF)
@@ -19602,6 +19637,14 @@ RainLoopApp.prototype.bootstart = function ()
 				RL.sub('interval.10m', function () {
 					RL.folders();
 				});
+
+				RL.sub('interval.10m-after5m', function () {
+					RL.contactsSync();
+				});
+				
+				_.delay(function () {
+					RL.contactsSync();
+				}, 5000);
 
 				_.delay(function () {
 					RL.folderInformationMultiply(true);

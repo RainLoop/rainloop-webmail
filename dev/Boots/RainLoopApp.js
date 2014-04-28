@@ -42,6 +42,12 @@ function RainLoopApp()
 		RL.pub('interval.10m');
 	}, 60000 * 10);
 
+	window.setTimeout(function () {
+		window.setInterval(function () {
+			RL.pub('interval.10m-after5m');
+		}, 60000 * 10);
+	}, 60000 * 5);
+
 	$.wakeUp(function () {
 		RL.remote().jsVersion(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
@@ -170,6 +176,41 @@ RainLoopApp.prototype.recacheInboxMessageList = function ()
 RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
 {
 	RL.reloadMessageList(bEmptyList);
+};
+
+/**
+ * @param {Function} fResultFunc
+ * @param {boolean=} bForce = false
+ * @returns {boolean}
+ */
+RainLoopApp.prototype.contactsSync = function (fResultFunc, bForce)
+{
+	var oContacts = RL.data().contacts;
+	if (oContacts.importing() || oContacts.syncing() || !RL.data().enableContactsSync() || !RL.data().allowContactsSync())
+	{
+		oContacts.skipNextSync = false;
+		return false;
+	}
+	
+	if (oContacts.skipNextSync && !bForce)
+	{
+		oContacts.skipNextSync = false;
+		return false;
+	}
+
+	oContacts.syncing(true);
+	
+	RL.remote().contactsSync(function (sResult, oData) {
+		
+		oContacts.syncing(false);
+
+		if (fResultFunc)
+		{
+			fResultFunc(sResult, oData);
+		}
+	});
+
+	return true;
 };
 
 RainLoopApp.prototype.messagesMoveTrigger = function ()
@@ -1089,7 +1130,7 @@ RainLoopApp.prototype.bootstart = function ()
 				RL.sub('interval.2m', function () {
 					RL.folderInformation('INBOX');
 				});
-				
+
 				RL.sub('interval.2m', function () {
 					var sF = RL.data().currentFolderFullNameRaw();
 					if ('INBOX' !== sF)
@@ -1109,6 +1150,14 @@ RainLoopApp.prototype.bootstart = function ()
 				RL.sub('interval.10m', function () {
 					RL.folders();
 				});
+
+				RL.sub('interval.10m-after5m', function () {
+					RL.contactsSync();
+				});
+				
+				_.delay(function () {
+					RL.contactsSync();
+				}, 5000);
 
 				_.delay(function () {
 					RL.folderInformationMultiply(true);

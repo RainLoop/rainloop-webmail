@@ -20,14 +20,14 @@
 					<ul class="dropdown-menu g-ui-menu" role="menu">
 						<li class="e-item">
 							<a class="e-link" data-bind="initDom: importUploaderButton">
-								<i class="icon-list-add"></i>
+								<i data-bind="css: {'icon-list-add': !contacts.importing(), 'icon-spinner animated': contacts.importing}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_IMPORT"></span>
 							</a>
 						</li>
-						<li class="e-item" data-bind="visible: enableContactsSync">
+						<li class="e-item" data-bind="visible: enableContactsSync() && allowContactsSync()">
 							<a class="e-link" data-bind="command: syncCommand">
-								<i class="icon-sync"></i>
+								<i data-bind="css: {'icon-sync': !contacts.syncing(), 'icon-spinner animated': contacts.syncing}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_SYNC"></span>
 							</a>
