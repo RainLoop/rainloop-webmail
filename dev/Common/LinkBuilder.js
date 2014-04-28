@@ -230,6 +230,22 @@ LinkBuilder.prototype.getUserPicUrlFromHash = function (sHash)
 /**
  * @return {string}
  */
+LinkBuilder.prototype.exportContactsVcf = function ()
+{
+	return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsVcf/';
+};
+
+/**
+ * @return {string}
+ */
+LinkBuilder.prototype.exportContactsCsv = function ()
+{
+	return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsCsv/';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
 	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +

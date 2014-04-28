@@ -6119,6 +6119,42 @@ class Actions
 	/**
 	 * @return bool
 	 */
+	public function RawContactsVcf()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		\header('Content-Type: text/directory; charset=UTF-8');
+		\header('Content-Disposition: attachment; filename="contacts.vcf"', true);
+		\header('Accept-Ranges: none', true);
+		\header('Content-Transfer-Encoding: binary');
+
+		$this->oHttp->ServerNoCache();
+		
+		return $this->AddressBookProvider($oAccount)->IsActive() ?
+			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'vcf') : false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function RawContactsCsv()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		\header('Content-Type: ext/csv; charset=UTF-8');
+		\header('Content-Disposition: attachment; filename="contacts.csv"', true);
+		\header('Accept-Ranges: none', true);
+		\header('Content-Transfer-Encoding: binary');
+
+		$this->oHttp->ServerNoCache();
+
+		return $this->AddressBookProvider($oAccount)->IsActive() ?
+			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'csv') : false;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function RawUserPic()
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');

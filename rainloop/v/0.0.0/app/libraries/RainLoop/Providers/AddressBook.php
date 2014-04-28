@@ -74,6 +74,17 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->Sync($sEmail, $sUrl, $sUser, $sPassword) : false;
 	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sType = 'vcf'
+	 *
+	 * @return bool
+	 */
+	public function Export($sEmail, $sType = 'vcf')
+	{
+		return $this->IsActive() ? $this->oDriver->Export($sEmail, $sType) : false;
+	}
 	
 	/**
 	 * @param string $sEmail

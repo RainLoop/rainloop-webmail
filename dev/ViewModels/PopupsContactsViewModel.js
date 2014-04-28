@@ -19,6 +19,7 @@ function PopupsContactsViewModel()
 
 	this.allowContactsSync = RL.data().allowContactsSync;
 	this.enableContactsSync = RL.data().enableContactsSync;
+	this.allowExport = !Globals.bMobileDevice;
 
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
@@ -315,6 +316,16 @@ PopupsContactsViewModel.prototype.addNewEmail = function ()
 PopupsContactsViewModel.prototype.addNewPhone = function ()
 {
 	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
+};
+
+PopupsContactsViewModel.prototype.exportVcf = function ()
+{
+	RL.download(RL.link().exportContactsVcf());
+};
+
+PopupsContactsViewModel.prototype.exportCsv = function ()
+{
+	RL.download(RL.link().exportContactsCsv());
 };
 
 PopupsContactsViewModel.prototype.initUploader = function ()

@@ -3564,6 +3564,22 @@ LinkBuilder.prototype.getUserPicUrlFromHash = function (sHash)
 /**
  * @return {string}
  */
+LinkBuilder.prototype.exportContactsVcf = function ()
+{
+	return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsVcf/';
+};
+
+/**
+ * @return {string}
+ */
+LinkBuilder.prototype.exportContactsCsv = function ()
+{
+	return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsCsv/';
+};
+
+/**
+ * @return {string}
+ */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
 	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
@@ -9658,6 +9674,7 @@ function PopupsContactsViewModel()
 
 	this.allowContactsSync = RL.data().allowContactsSync;
 	this.enableContactsSync = RL.data().enableContactsSync;
+	this.allowExport = !Globals.bMobileDevice;
 
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
@@ -9954,6 +9971,16 @@ PopupsContactsViewModel.prototype.addNewEmail = function ()
 PopupsContactsViewModel.prototype.addNewPhone = function ()
 {
 	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
+};
+
+PopupsContactsViewModel.prototype.exportVcf = function ()
+{
+	RL.download(RL.link().exportContactsVcf());
+};
+
+PopupsContactsViewModel.prototype.exportCsv = function ()
+{
+	RL.download(RL.link().exportContactsCsv());
 };
 
 PopupsContactsViewModel.prototype.initUploader = function ()
@@ -15137,6 +15164,9 @@ function WebMailDataStorage()
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
+	this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
+	this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
+	
 	this.contacts.skipNextSync = false;
 	
 	this.allowContactsSync = ko.observable(false);

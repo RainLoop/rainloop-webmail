@@ -364,6 +364,57 @@ class PdoAddressBook
 
 	/**
 	 * @param string $sEmail
+	 * @param string $sType = 'vcf'
+	 *
+	 * @return bool
+	 */
+	public function Export($sEmail, $sType = 'vcf')
+	{
+		$this->SyncDatabase();
+
+		$iUserID = $this->getUserId($sEmail);
+		if (0 >= $iUserID)
+		{
+			return false;
+		}
+
+		$bVcf = 'vcf' === $sType;
+		$bCsvHeader = false;
+
+		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
+		if (\is_array($aDatabaseSyncData) && 0 < \count($aDatabaseSyncData))
+		{
+			foreach ($aDatabaseSyncData as $mData)
+			{
+				if ($mData && isset($mData['id_contact'], $mData['deleted']) && !$mData['deleted'])
+				{
+					$oContact = $this->GetContactByID($sEmail, $mData['id_contact']);
+					if ($oContact)
+					{
+						if ($bVcf)
+						{
+							echo $oContact->ToVCard();
+						}
+						else
+						{
+							if (!$bCsvHeader)
+							{
+								$bCsvHeader = true;
+								echo $oContact->ToCsvHeader();
+							}
+							
+							echo $oContact->ToCsvLine();
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $sEmail
 	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
 	 * @param bool $bSyncDb = true
 	 *

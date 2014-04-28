@@ -156,6 +156,7 @@ class Service
 		else
 		{
 			@header('Content-Type: text/html; charset=utf-8');
+			$this->oHttp->ServerNoCache();
 
 			$aData = $this->startUpData($bAdmin);
 

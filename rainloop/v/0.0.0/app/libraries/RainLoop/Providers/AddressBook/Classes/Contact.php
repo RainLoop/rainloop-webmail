@@ -266,6 +266,25 @@ class Contact
 	}
 
 	/**
+	 * @todo
+	 * @return string
+	 */
+	public function ToCsvHeader()
+	{
+		return '';
+	}
+
+	/**
+	 * @todo
+	 * @return string
+	 */
+	public function ToCsvLine()
+	{
+		$this->UpdateDependentValues();
+		return '';
+	}
+
+	/**
 	 * @param mixed $oProp
 	 * @param bool $bOldVersion
 	 * @return string
