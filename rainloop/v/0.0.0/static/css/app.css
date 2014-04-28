@@ -6306,9 +6306,7 @@ select {
   -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
-.btn.disabled,
 .btn.btn-dark-disabled-border.disabled,
-.btn[disabled],
 .btn.btn-dark-disabled-border[disabled] {
   border-color: #aaa;
 }
@@ -7025,31 +7023,45 @@ html.ssm-state-desktop #rl-sub-left {
 html.ssm-state-desktop #rl-sub-right {
   left: 400px;
 }
-html.ssm-state-tablet #rl-left,
-html.ssm-state-mobile #rl-left {
+html.ssm-state-tablet #rl-left {
   width: 160px;
 }
-html.ssm-state-tablet #rl-right,
-html.ssm-state-mobile #rl-right {
+html.ssm-state-tablet #rl-right {
   left: 160px;
 }
-html.ssm-state-tablet #rl-sub-left,
-html.ssm-state-mobile #rl-sub-left {
+html.ssm-state-tablet #rl-sub-left {
   width: 350px;
 }
-html.ssm-state-tablet #rl-sub-left .messageList .inputSearch,
-html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
+html.ssm-state-tablet #rl-sub-left .messageList .inputSearch {
   width: 220px;
 }
-html.ssm-state-tablet #rl-sub-right,
-html.ssm-state-mobile #rl-sub-right {
+html.ssm-state-tablet #rl-sub-right {
   left: 350px;
 }
-html.ssm-state-tablet .b-compose.modal,
+html.ssm-state-tablet .b-compose.modal {
+  width: 800px;
+}
+html.ssm-state-tablet .b-contacts-content.modal {
+  width: 800px;
+}
+html.ssm-state-mobile #rl-left {
+  width: 155px;
+}
+html.ssm-state-mobile #rl-right {
+  left: 155px;
+}
+html.ssm-state-mobile #rl-sub-left {
+  width: 310px;
+}
+html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
+  width: 200px;
+}
+html.ssm-state-mobile #rl-sub-right {
+  left: 310px;
+}
 html.ssm-state-mobile .b-compose.modal {
   width: 800px;
 }
-html.ssm-state-tablet .b-contacts-content.modal,
 html.ssm-state-mobile .b-contacts-content.modal {
   width: 800px;
 }
@@ -9100,7 +9112,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-settins-right .b-content {
   position: absolute;
-  top: 58px;
+  top: 50px;
   bottom: 8px;
   left: 0;
   right: 8px;

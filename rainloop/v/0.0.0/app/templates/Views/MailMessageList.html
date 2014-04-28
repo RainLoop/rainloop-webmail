@@ -3,19 +3,14 @@
 		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused, 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
-				<div class="btn-group" data-bind="visible: leftPanelDisabled">
-					<a class="btn" data-bind="click: function () { leftPanelDisabled(false); }">
-						<i class="icon-resize"></i>
-					</a>
-				</div>
 				<div class="btn-group">
-					<a class="btn buttonReload" data-tooltip-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
+					<a class="btn btn-dark-disabled-border buttonReload" data-tooltip-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
 						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
-					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
+					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-folder"></i>
 						&nbsp;&nbsp;
 						<span class="caret"></span>
@@ -46,7 +41,7 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
-					<a id="more-list-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
+					<a id="more-list-dropdown-id" class="btn btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
@@ -163,6 +158,9 @@
 			</div>
 			<div class="mainDelimiter footerDelimiter"></div>
 			<div class="b-footer thm-message-list-bottom-toolbar">
+				<a class="btn" data-bind="visible: leftPanelDisabled, click: function () { leftPanelDisabled(false); }">
+					<i class="icon-resize"></i>
+				</a>
 				<span data-bind="visible: 0 < userUsageProc(), tooltip2: quotaTooltip" class="e-quota">
 					<span data-bind="text: userUsageProc"></span>%
 				</span>

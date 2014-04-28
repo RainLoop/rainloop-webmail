@@ -1797,6 +1797,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 {
 	var
+		iMinWidth = 155,
 		oLeft = $(sLeft),
 		oRight = $(sRight),
 
@@ -1816,15 +1817,17 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 		},
 
 		fDisable = function (bDisable) {
+			var iWidth = 5;
 			if (bDisable)
 			{
 				oLeft.resizable('disable');
-				fSetWidth(5);
+				fSetWidth(iWidth);
 			}
 			else
 			{
 				oLeft.resizable('enable');
-				fSetWidth(RL.local().get(sClientSideKeyName) || 170);
+				iWidth = Utils.pInt(RL.local().get(sClientSideKeyName)) || iMinWidth;
+				fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 			}
 		},
 
@@ -1847,8 +1850,8 @@ Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 
 	oLeft.resizable({
 		'helper': 'ui-resizable-helper',
-		'minWidth': 170,
-		'maxWidth': 400,
+		'minWidth': iMinWidth,
+		'maxWidth': 350,
 		'handles': 'e',
 		'stop': fResizeFunction
 	});
