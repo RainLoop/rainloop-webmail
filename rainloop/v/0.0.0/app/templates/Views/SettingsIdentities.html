@@ -8,7 +8,9 @@
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>
 			</label>
 			<div class="controls">
-				<input class="input-xlarge" type="text" data-bind="value: displayName, saveTrigger: displayNameTrigger" />
+				<input type="text" class="input-xlarge"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: displayName, saveTrigger: displayNameTrigger" />
 				<div data-bind="saveTrigger: displayNameTrigger"></div>
 			</div>
 		</div>
@@ -17,7 +19,9 @@
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_REPLY_TO"></span>
 			</label>
 			<div class="controls">
-				<input class="input-xlarge" type="text" data-bind="value: replyTo" />
+				<input type="text" class="input-xlarge"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: replyTo" />
 			</div>
 		</div>
 		<div class="control-group">

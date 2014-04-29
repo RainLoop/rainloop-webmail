@@ -111,7 +111,9 @@
 			<div class="second-toolbar thm-message-list-top-toolbar">
 				<div class="form-inline">
 					<div class="input-append pull-right">
-						<input class="i18n span4 inputSearch" type="text" tabindex="-1" placeholder="" data-i18n-placeholder="SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+						<input type="search" class="i18n span4 inputSearch" tabindex="-1"
+							placeholder="Search" autocorrect="off" autocapitalize="off"
+							data-i18n-placeholder="SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
 						<a class="btn buttonMoreSearch" data-bind="click: advancedSearchClick">
 							<span class="caret"></span>
 						</a>

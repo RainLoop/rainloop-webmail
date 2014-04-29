@@ -6224,6 +6224,8 @@ function AdminSecurity()
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
 	this.adminPasswordNew = ko.observable('');
+	this.adminPasswordNew2 = ko.observable('');
+	this.adminPasswordNewError = ko.observable(false);
 
 	this.adminPasswordUpdateError = ko.observable(false);
 	this.adminPasswordUpdateSuccess = ko.observable(false);
@@ -6236,9 +6238,22 @@ function AdminSecurity()
 	this.adminPasswordNew.subscribe(function () {
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
+		this.adminPasswordNewError(false);
+	}, this);
+	
+	this.adminPasswordNew2.subscribe(function () {
+		this.adminPasswordUpdateError(false);
+		this.adminPasswordUpdateSuccess(false);
+		this.adminPasswordNewError(false);
 	}, this);
 	
 	this.saveNewAdminPasswordCommand = Utils.createCommand(this, function () {
+
+		if (this.adminPasswordNew() !== this.adminPasswordNew2())
+		{
+			this.adminPasswordNewError(true);
+			return false;
+		}
 
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
@@ -6249,7 +6264,7 @@ function AdminSecurity()
 		});
 
 	}, function () {
-		return '' !== this.adminPassword() && '' !== this.adminPasswordNew();
+		return '' !== this.adminPassword() && '' !== this.adminPasswordNew() && '' !== this.adminPasswordNew2();
 	});
 
 	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
@@ -6263,6 +6278,7 @@ AdminSecurity.prototype.onNewAdminPasswordResponse = function (sResult, oData)
 	{
 		this.adminPassword('');
 		this.adminPasswordNew('');
+		this.adminPasswordNew2('');
 
 		this.adminPasswordUpdateSuccess(true);
 	}
@@ -6297,6 +6313,7 @@ AdminSecurity.prototype.onHide = function ()
 {
 	this.adminPassword('');
 	this.adminPasswordNew('');
+	this.adminPasswordNew2('');
 };
 
 /**

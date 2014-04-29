@@ -51,6 +51,11 @@ AbstractSystemDropDownViewModel.prototype.settingsClick = function ()
 	kn.setHash(RL.link().settings());
 };
 
+AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
+{
+	kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+};
+
 AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
 {
 	if (this.allowAddAccount)
@@ -78,6 +83,15 @@ AbstractSystemDropDownViewModel.prototype.onBuild = function ()
 		if (self.viewModelVisibility())
 		{
 			self.accountMenuDropdownTrigger(true);
+		}
+	});
+
+	// shortcuts help
+	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
+		if (self.viewModelVisibility())
+		{
+			kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+			return false;
 		}
 	});
 };

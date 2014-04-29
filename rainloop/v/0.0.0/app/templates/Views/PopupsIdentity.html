@@ -17,7 +17,8 @@
 					<div class="control-group" data-bind="visible: !owner(), css: {'error': email.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_EMAIL"></label>
 						<div class="controls">
-							<input class="inputEmail input-large" type="email" autocomplete="off"
+							<input type="email" class="inputEmail input-large"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: email, onEnter: addOrEditIdentityCommand, hasfocus: email.focused" />
 						</div>
 					</div>
@@ -30,21 +31,24 @@
 					<div class="control-group">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_NAME"></label>
 						<div class="controls">
-							<input class="inputName input-large" type="text" autocomplete="off"
+							<input type="text" class="inputName input-large"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: name, onEnter: addOrEditIdentityCommand, hasfocus: name.focused" />
 						</div>
 					</div>
 					<div class="control-group" data-bind="css: {'error': replyTo.hasError}"  style="display: none">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_REPLY_TO"></label>
 						<div class="controls">
-							<input class="inputReplyTo input-large" type="text" autocomplete="off"
+							<input type="text" class="inputReplyTo input-large"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyTo.focused" />
 						</div>
 					</div>
 					<div class="control-group" data-bind="css: {'error': bcc.hasError}"  style="display: none">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_BCC"></label>
 						<div class="controls">
-							<input class="inputBcc input-large" type="text" autocomplete="off"
+							<input type="text" class="inputBcc input-large"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bcc.focused" />
 						</div>
 					</div>

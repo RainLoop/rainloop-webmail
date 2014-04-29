@@ -67,7 +67,8 @@
 		</div>
 		<div class="modal-body" style="position: relative">
 			<div class="b-list-toopbar">
-				<input class="i18n span3 e-search" type="text" placeholder="Search" data-i18n-placeholder="CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
+				<input type="search" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off"
+					data-i18n-placeholder="CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
 			</div>
 			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 				<div class="content g-scrollbox">
@@ -127,7 +128,9 @@
 									<div class="controls fix-width" data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
 											<span class="contactValueStatic" data-bind="text: value" />
-											<input type="text" class="contactValueInput" placeholder="" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
+											<input type="text" class="contactValueInput" placeholder=""
+												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+												data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
 										</div>
 									</div>
 								</div>
@@ -139,7 +142,9 @@
 										<div data-bind="foreach: viewPropertiesEmails">
 											<div class="property-line">
 												<span class="contactValueStatic" data-bind="text: value" />
-												<input type="email" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+												<input type="email" class="contactValueInput"
+													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
 										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></a>
@@ -153,7 +158,9 @@
 										<div data-bind="foreach: viewPropertiesPhones">
 											<div class="property-line">
 												<span class="contactValueStatic" data-bind="text: value" />
-												<input type="text" class="contactValueInput" data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
+												<input type="text" class="contactValueInput"
+													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
 										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>

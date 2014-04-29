@@ -45,15 +45,26 @@
 				Current password
 			</label>
 			<div class="controls">
-				<input type="password" data-bind="value: adminPassword, valueUpdate: 'afterkeydown'" />
+				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: adminPassword, valueUpdate: 'afterkeydown'" />
 			</div>
 		</div>
-		<div class="control-group">
+		<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 			<label class="control-label">
 				New password
 			</label>
 			<div class="controls">
-				<input type="password" data-bind="value: adminPasswordNew, valueUpdate: 'afterkeydown'" />
+				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: adminPasswordNew, valueUpdate: 'afterkeydown'" />
+			</div>
+		</div>
+		<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
+			<label class="control-label">
+				Repeat new password
+			</label>
+			<div class="controls">
+				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: adminPasswordNew2, valueUpdate: 'afterkeydown'" />
 			</div>
 		</div>
 		<div class="control-group">

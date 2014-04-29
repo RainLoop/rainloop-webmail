@@ -737,12 +737,6 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		return false;
 	});
 
-	// shortcuts help
-	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-		kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
-		return false;
-	});
-
 	key('shift+f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		self.multyForwardCommand();
 		return false;

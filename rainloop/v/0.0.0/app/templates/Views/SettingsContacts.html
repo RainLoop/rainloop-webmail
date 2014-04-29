@@ -32,7 +32,9 @@
 				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_AB_URL"></span>
 			</label>
 			<div class="controls">
-				<input class="input-xxlarge" type="text" data-bind="value: contactsSyncUrl" placeholder="https://" />
+				<input type="text" class="input-xxlarge"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: contactsSyncUrl" placeholder="https://" />
 			</div>
 		</div>
 		<div class="control-group">
@@ -40,7 +42,8 @@
 				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_USER"></span>
 			</label>
 			<div class="controls">
-				<input type="text" data-bind="value: contactsSyncUser" />
+				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: contactsSyncUser" />
 			</div>
 		</div>
 		<div class="control-group">
@@ -48,7 +51,8 @@
 				<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_PASSWORD"></span>
 			</label>
 			<div class="controls">
-				<input type="password" data-bind="value: contactsSyncPass" />
+				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					data-bind="value: contactsSyncPass" />
 			</div>
 		</div>
 

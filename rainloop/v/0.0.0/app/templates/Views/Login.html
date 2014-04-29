@@ -20,7 +20,7 @@
 				{{INCLUDE/TopControlGroup/PLACE}}
 				<div class="control-group" data-bind="css: {'error': emailError}">
 					<div class="input-append">
-						<input class="i18n inputEmail span4" type="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="email" class="i18n inputEmail span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: email, hasFocus: emailFocus" data-i18n-placeholder="LOGIN/LABEL_EMAIL" />
 						<span class="add-on">
 							<i class="icon-mail"></i>
@@ -29,7 +29,7 @@
 				</div>
 				<div class="control-group" data-bind="css: {'error': loginError}, visible: allowCustomLogin()">
 					<div class="input-append">
-						<input class="i18n inputLogin span4" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="email" class="i18n inputLogin span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: login, hasFocus: loginFocus"  data-i18n-placeholder="LOGIN/LABEL_LOGIN" />
 						<span class="add-on">
 							<i class="icon-user"></i>
@@ -38,7 +38,7 @@
 				</div>
 				<div class="control-group" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
-						<input class="i18n inputPassword span4" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="password" class="i18n inputPassword span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: password" data-i18n-placeholder="LOGIN/LABEL_PASSWORD" />
 						<span class="add-on">
 							<i class="icon-key"></i>
@@ -47,7 +47,7 @@
 				</div>
 				<div class="control-group" data-bind="visible: additionalCode.visibility(), css: {'error': additionalCode.error}">
 					<div class="input-append">
-						<input class="i18n inputAdditionalCode span4" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="text" class="i18n inputAdditionalCode span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: additionalCode, hasFocus: additionalCode.focused" data-i18n-placeholder="LOGIN/LABEL_VERIFICATION_CODE" />
 						<span class="add-on">
 							<i class="icon-key"></i>
@@ -75,37 +75,37 @@
 						<span class="i18n" data-i18n-text="LOGIN/LABEL_SIGN_ME"></span>
 					</label>
 					<div class="pull-right">
-						<div class="btn-group" data-bind="visible: socialLoginEnabled() || allowLanguagesOnLogin()">
-							<a class="btn dropdown-toggle buttonLoginMore" data-toggle="dropdown">
+						<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, visible: socialLoginEnabled() || allowLanguagesOnLogin()">
+							<a id="login-more-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonLoginMore" data-toggle="dropdown">
 								<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-list'"></i>
 							</a>
-							<ul class="dropdown-menu g-ui-menu">
+							<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="login-more-dropdown-id">
 								{{INCLUDE/MenuDropdownTop/PLACE}}
-								<li class="e-item" data-bind="visible: facebookLoginEnabled">
-									<a class="e-link" data-bind="command: facebookCommand">
+								<li class="e-item" role="presentation" data-bind="visible: facebookLoginEnabled">
+									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: facebookCommand">
 										<i class="icon-facebook-alt"></i>
 										&nbsp;&nbsp;
 										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_FACEBOOK"></span>
 									</a>
 								</li>
-								<li class="e-item" data-bind="visible: googleLoginEnabled">
-									<a class="e-link" data-bind="command: googleCommand">
+								<li class="e-item" role="presentation" data-bind="visible: googleLoginEnabled">
+									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: googleCommand">
 										<i class="icon-google"></i>
 										&nbsp;&nbsp;
 										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_GOOGLE"></span>
 									</a>
 								</li>
-								<li class="e-item" data-bind="visible: twitterLoginEnabled">
-									<a class="e-link" data-bind="command: twitterCommand">
+								<li class="e-item" role="presentation" data-bind="visible: twitterLoginEnabled">
+									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: twitterCommand">
 										<i class="icon-twitter"></i>
 										&nbsp;&nbsp;
 										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_TWITTER"></span>
 									</a>
 								</li>
 								{{INCLUDE/MenuDropdownMiddle/PLACE}}
-								<li class="divider" data-bind="visible: socialLoginEnabled() && allowLanguagesOnLogin()"></li>
-								<li class="e-item" data-bind="visible: allowLanguagesOnLogin">
-									<a class="e-link" data-bind="click: selectLanguage">
+								<li class="divider" role="presentation" data-bind="visible: socialLoginEnabled() && allowLanguagesOnLogin()"></li>
+								<li class="e-item" role="presentation" data-bind="visible: allowLanguagesOnLogin">
+									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: selectLanguage">
 										<label class="flag-selector">
 											<span class="flag-wrapper">
 												<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>

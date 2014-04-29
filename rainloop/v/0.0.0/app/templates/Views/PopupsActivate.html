@@ -23,7 +23,8 @@
 							Subscription Key
 						</label>
 						<div class="controls ">
-							<input type="text" class="span5" data-bind="visible: !activateProcess() && !activationSuccessed(), value: key, valueUpdate: 'afterkeydown', hasFocus: key.focus"></input>
+							<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="visible: !activateProcess() && !activationSuccessed(), value: key, valueUpdate: 'afterkeydown', hasFocus: key.focus"></input>
 							<h4 class="help-inline" style="margin-top: 5px;" data-bind="text: key, visible: activateProcess() || activationSuccessed()"></h4>
 							<div class="help-block" data-bind="text: activateText"></div>
 						</div>

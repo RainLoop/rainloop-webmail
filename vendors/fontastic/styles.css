@@ -359,3 +359,6 @@
 .icon-export:before {
   content: "\e06a";
 }
+.icon-help:before {
+  content: "\e06b";
+}

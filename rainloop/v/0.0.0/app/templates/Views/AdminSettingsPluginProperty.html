@@ -4,13 +4,13 @@
 	</label>
 	<div class="controls">
 		<!-- ko if: 0 === Type || 1 === Type -->
-			<input type="text" data-bind="value: value" />
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="value: value" />
 		<!-- /ko -->
 		<!-- ko if: 3 === Type -->
-			<input type="password" data-bind="value: value" />
+			<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="value: value" />
 		<!-- /ko -->
 		<!-- ko if: 2 === Type -->
-			<textarea data-bind="value: value"></textarea>
+			<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="value: value"></textarea>
 		<!-- /ko -->
 		<!-- ko if: 4 === Type -->
 			<select data-bind="options: Default, value: value"></select>

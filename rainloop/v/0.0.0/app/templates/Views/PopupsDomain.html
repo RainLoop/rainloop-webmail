@@ -10,7 +10,8 @@
 					<div class="span8">
 						Name <span style="color: #aaa">(wildcard supported)</span>
 						<br />
-						<input type="text" data-bind="value: name, hasfocus: name.focused, valueUpdate: 'afterkeydown'" />
+						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: name, hasfocus: name.focused, valueUpdate: 'afterkeydown'" />
 						<span class="error-desc" data-bind="text: savingError"></span>
 					</div>
 				</div>
@@ -22,12 +23,14 @@
 						</div>
 						Server
 						<br />
-						<input type="text" data-bind="value: imapServer, valueUpdate: 'afterkeydown', hasfocus: imapServerFocus" />
+						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: imapServer, valueUpdate: 'afterkeydown', hasfocus: imapServerFocus" />
 						<br />
 						<br />
 						Port
 						<br />
-						<input type="text" data-bind="value: imapPort, valueUpdate: 'afterkeydown'" />
+						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: imapPort, valueUpdate: 'afterkeydown'" />
 						<br />
 						<br />
 						Secure
@@ -51,12 +54,14 @@
 						</div>
 						Server
 						<br />
-						<input type="text" data-bind="value: smtpServer, valueUpdate: 'afterkeydown', hasfocus: smtpServerFocus" />
+						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: smtpServer, valueUpdate: 'afterkeydown', hasfocus: smtpServerFocus" />
 						<br />
 						<br />
 						Port
 						<br />
-						<input type="text" data-bind="value: smtpPort, valueUpdate: 'afterkeydown'" />
+						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="value: smtpPort, valueUpdate: 'afterkeydown'" />
 						<br />
 						<br />
 						Secure
