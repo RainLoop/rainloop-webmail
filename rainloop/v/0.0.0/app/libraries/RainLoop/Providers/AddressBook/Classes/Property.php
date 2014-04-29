@@ -90,6 +90,14 @@ class Property
 		return $aResult;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function TypesUpperAsArray()
+	{
+		return \array_map('strtoupper', $this->TypesAsArray());
+	}
+
 	public function UpdateDependentValues()
 	{
 		$this->Value = \trim($this->Value);

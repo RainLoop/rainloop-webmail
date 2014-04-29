@@ -353,3 +353,9 @@
 .icon-cloud-down:before {
   content: "\e068";
 }
+.icon-import:before {
+  content: "\e069";
+}
+.icon-export:before {
+  content: "\e06a";
+}

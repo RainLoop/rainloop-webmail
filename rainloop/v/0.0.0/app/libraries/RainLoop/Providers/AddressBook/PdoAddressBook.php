@@ -379,7 +379,7 @@ class PdoAddressBook
 		}
 
 		$bVcf = 'vcf' === $sType;
-		$bCsvHeader = false;
+		$bCsvHeader = true;
 
 		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
 		if (\is_array($aDatabaseSyncData) && 0 < \count($aDatabaseSyncData))
@@ -397,13 +397,8 @@ class PdoAddressBook
 						}
 						else
 						{
-							if (!$bCsvHeader)
-							{
-								$bCsvHeader = true;
-								echo $oContact->ToCsvHeader();
-							}
-							
-							echo $oContact->ToCsvLine();
+							echo $oContact->ToCsv($bCsvHeader);
+							$bCsvHeader = false;
 						}
 					}
 				}

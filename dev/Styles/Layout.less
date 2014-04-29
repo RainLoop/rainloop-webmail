@@ -106,40 +106,17 @@ html.ssm-state-desktop {
 	#rl-sub-right {
 		left: 400px;
 	}
-}
-
-html.ssm-state-tablet {
-
-	#rl-left {
-		width: 160px;
-	}
-
-	#rl-right {
-		left: 160px;
-	}
-
-	#rl-sub-left {
-		width: 350px;
-
-		.messageList .inputSearch {
-			width: 220px;
-		}
-	}
-
-	#rl-sub-right {
-		left: 350px;
-	}
 
 	.b-compose.modal {
-		width: 800px;
+		width: 1000px;
 	}
 
 	.b-contacts-content.modal {
-		width: 800px;
+		width: 1000px;
 	}
 }
 
-html.ssm-state-mobile {
+html.ssm-state-tablet, html.ssm-state-mobile {
 
 	#rl-left {
 		width: 155px;
@@ -162,11 +139,52 @@ html.ssm-state-mobile {
 	}
 
 	.b-compose.modal {
-		width: 800px;
+		width: 700px;
 	}
 
 	.b-contacts-content.modal {
-		width: 800px;
+		width: 600px;
+	}
+
+	.b-contacts-content.modal {
+		.b-list-toopbar, .b-list-content, .b-list-footer-toopbar {
+			width: 150px;
+		}
+		.b-list-toopbar .e-search {
+			width: 125px;
+		}
+		.b-view-content {
+			left: 150px;
+		}
+		.contactValueInput {
+			width: 200px;
+		}
+	}
+}
+
+html.ssm-state-tablet {
+
+	.b-compose.modal {
+		width: 700px;
+	}
+
+	.b-contacts-content.modal {
+		width: 700px;
+	}
+
+	.b-contacts-content.modal {
+		.b-list-toopbar, .b-list-content, .b-list-footer-toopbar {
+			width: 200px;
+		}
+		.b-list-toopbar .e-search {
+			width: 175px;
+		}
+		.b-view-content {
+			left: 200px;
+		}
+		.contactValueInput {
+			width: 250px;
+		}
 	}
 }
 

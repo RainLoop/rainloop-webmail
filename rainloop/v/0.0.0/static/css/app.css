@@ -1498,6 +1498,12 @@ table {
 .icon-cloud-down:before {
   content: "\e068";
 }
+.icon-import:before {
+  content: "\e069";
+}
+.icon-export:before {
+  content: "\e06a";
+}
 
 /** initial setup **/
 .nano {
@@ -7023,47 +7029,79 @@ html.ssm-state-desktop #rl-sub-left {
 html.ssm-state-desktop #rl-sub-right {
   left: 400px;
 }
-html.ssm-state-tablet #rl-left {
-  width: 160px;
+html.ssm-state-desktop .b-compose.modal {
+  width: 1000px;
 }
-html.ssm-state-tablet #rl-right {
-  left: 160px;
+html.ssm-state-desktop .b-contacts-content.modal {
+  width: 1000px;
 }
-html.ssm-state-tablet #rl-sub-left {
-  width: 350px;
-}
-html.ssm-state-tablet #rl-sub-left .messageList .inputSearch {
-  width: 220px;
-}
-html.ssm-state-tablet #rl-sub-right {
-  left: 350px;
-}
-html.ssm-state-tablet .b-compose.modal {
-  width: 800px;
-}
-html.ssm-state-tablet .b-contacts-content.modal {
-  width: 800px;
-}
+html.ssm-state-tablet #rl-left,
 html.ssm-state-mobile #rl-left {
   width: 155px;
 }
+html.ssm-state-tablet #rl-right,
 html.ssm-state-mobile #rl-right {
   left: 155px;
 }
+html.ssm-state-tablet #rl-sub-left,
 html.ssm-state-mobile #rl-sub-left {
   width: 310px;
 }
+html.ssm-state-tablet #rl-sub-left .messageList .inputSearch,
 html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
   width: 200px;
 }
+html.ssm-state-tablet #rl-sub-right,
 html.ssm-state-mobile #rl-sub-right {
   left: 310px;
 }
+html.ssm-state-tablet .b-compose.modal,
 html.ssm-state-mobile .b-compose.modal {
-  width: 800px;
+  width: 700px;
 }
+html.ssm-state-tablet .b-contacts-content.modal,
 html.ssm-state-mobile .b-contacts-content.modal {
-  width: 800px;
+  width: 600px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-list-toopbar,
+html.ssm-state-mobile .b-contacts-content.modal .b-list-toopbar,
+html.ssm-state-tablet .b-contacts-content.modal .b-list-content,
+html.ssm-state-mobile .b-contacts-content.modal .b-list-content,
+html.ssm-state-tablet .b-contacts-content.modal .b-list-footer-toopbar,
+html.ssm-state-mobile .b-contacts-content.modal .b-list-footer-toopbar {
+  width: 150px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-list-toopbar .e-search,
+html.ssm-state-mobile .b-contacts-content.modal .b-list-toopbar .e-search {
+  width: 125px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-view-content,
+html.ssm-state-mobile .b-contacts-content.modal .b-view-content {
+  left: 150px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .contactValueInput,
+html.ssm-state-mobile .b-contacts-content.modal .contactValueInput {
+  width: 200px;
+}
+html.ssm-state-tablet .b-compose.modal {
+  width: 700px;
+}
+html.ssm-state-tablet .b-contacts-content.modal {
+  width: 700px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-list-toopbar,
+html.ssm-state-tablet .b-contacts-content.modal .b-list-content,
+html.ssm-state-tablet .b-contacts-content.modal .b-list-footer-toopbar {
+  width: 200px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-list-toopbar .e-search {
+  width: 175px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .b-view-content {
+  left: 200px;
+}
+html.ssm-state-tablet .b-contacts-content.modal .contactValueInput {
+  width: 250px;
 }
 html.rl-left-panel-disabled #rl-left {
   width: 5px !important;
@@ -7115,9 +7153,9 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   width: 100%;
   height: 2px;
   z-index: 102;
-  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
 }
 .nano:before {
   top: -2px;
@@ -8337,10 +8375,10 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   display: none;
 }
 .b-contacts-content .control-group .control-label.fix-width {
-  width: 90px;
+  width: 50px;
 }
 .b-contacts-content .control-group .controls.fix-width {
-  margin-left: 110px;
+  margin-left: 70px;
 }
 .b-contacts-content.modal {
   position: absolute;

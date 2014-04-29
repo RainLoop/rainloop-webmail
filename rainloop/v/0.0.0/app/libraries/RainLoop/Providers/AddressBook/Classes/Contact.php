@@ -266,22 +266,162 @@ class Contact
 	}
 
 	/**
-	 * @todo
 	 * @return string
 	 */
-	public function ToCsvHeader()
+	public function ToCsv($bWithHeader = false)
 	{
-		return '';
-	}
+		$aData = array();
+		if ($bWithHeader)
+		{
+			$aData[] = array(
+				'Title', 'First Name', 'Middle Name', 'Last Name', 'Nick Name', 'Display Name',
+				'Company', 'Department', 'Job Title', 'Office Location',
+				'E-mail Address', 'Notes', 'Web Page', 'Birthday',
+				'Other Email', 'Other Phone', 'Other Mobile', 'Mobile Phone',
+				'Home Email',		'Home Phone',		'Home Fax',
+				'Home Street',		'Home City',		'Home State',		'Home Postal Code',			'Home Country',
+				'Business Email',	'Business Phone',	'Business Fax',
+				'Business Street',	'Business City',	'Business State',	'Business Postal Code',		'Business Country'
+			);
+		}
 
-	/**
-	 * @todo
-	 * @return string
-	 */
-	public function ToCsvLine()
-	{
+		$aValues = array(
+			'',		// 0	'Title',
+			'',		// 1	'First Name',
+			'',		// 2	'Middle Name',
+			'',		// 3	'Last Name',
+			'',		// 4	'Nick Name',
+			'',		// 5	'Display Name',
+			'',		// 6	'Company',
+			'',		// 7	'Department',
+			'',		// 8	'Job Title',
+			'',		// 9	'Office Location',
+			'',		// 10	'E-mail Address',
+			'',		// 11	'Notes',
+			'',		// 12	'Web Page',
+			'',		// 13	'Birthday',
+			'',		// 14	'Other Email',
+			'',		// 15	'Other Phone',
+			'',		// 16	'Other Mobile',
+			'',		// 17	'Mobile Phone',
+			'',		// 18	'Home Email',
+			'',		// 19	'Home Phone',
+			'',		// 20	'Home Fax',
+			'',		// 21	'Home Street',
+			'',		// 22	'Home City',
+			'',		// 23	'Home State',
+			'',		// 24	'Home Postal Code',
+			'',		// 25	'Home Country',
+			'',		// 26	'Business Email',
+			'',		// 27	'Business Phone',
+			'',		// 28	'Business Fax',
+			'',		// 29	'Business Street',
+			'',		// 30	'Business City',
+			'',		// 31	'Business State',
+			'',		// 32	'Business Postal Code',
+			''		// 33	'Business Country'
+		);
+
 		$this->UpdateDependentValues();
-		return '';
+
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		{
+			$iIndex = -1;
+			if ($oProperty)
+			{
+				$aUpperTypes = $oProperty->TypesUpperAsArray();
+				switch ($oProperty->Type)
+				{
+					case PropertyType::FULLNAME:
+						$iIndex = 5;
+						break;
+					case PropertyType::NICK_NAME:
+						$iIndex = 4;
+						break;
+					case PropertyType::FIRST_NAME:
+						$iIndex = 1;
+						break;
+					case PropertyType::LAST_NAME:
+						$iIndex = 3;
+						break;
+					case PropertyType::MIDDLE_NAME:
+						$iIndex = 2;
+						break;
+					case PropertyType::EMAIl:
+						switch (true)
+						{
+							case \in_array('OTHER', $aUpperTypes):
+								$iIndex = 14;
+								break;
+							case \in_array('WORK', $aUpperTypes):
+								$iIndex = 26;
+								break;
+							default:
+								$iIndex = 18;
+								break;
+						}
+						break;
+					case PropertyType::PHONE:
+						switch (true)
+						{
+							case \in_array('OTHER', $aUpperTypes):
+								$iIndex = 15;
+								break;
+							case \in_array('WORK', $aUpperTypes):
+								$iIndex = 27;
+								break;
+							case \in_array('MOBILE', $aUpperTypes):
+								$iIndex = 17;
+								break;
+							default:
+								$iIndex = 19;
+								break;
+						}
+						break;
+					case PropertyType::WEB_PAGE:
+						$iIndex = 12;
+						break;
+					case PropertyType::NOTE:
+						$iIndex = 11;
+						break;
+				}
+
+				if (-1 < $iIndex)
+				{
+					$aValues[$iIndex] = $oProperty->Value;
+				}
+			}
+		}
+
+		// subfix
+		if (empty($aValues[10]))  // 'E-mail Address'
+		{
+			if (!empty($aValues[18]))
+			{
+				$aValues[10] = $aValues[18];
+			}
+			else if (!empty($aValues[26]))
+			{
+				$aValues[10] = $aValues[26];
+			}
+			else if (!empty($aValues[14]))
+			{
+				$aValues[10] = $aValues[14];
+			}
+		}
+
+		$aData[] = \array_map(function ($sValue) {
+			$sValue = \trim($sValue);
+			return \preg_match('/[\r\n,"]/', $sValue) ? '"'.\str_replace('"', '""', $sValue).'"' : $sValue;
+		}, $aValues);
+
+		$sResult = '';
+		foreach ($aData as $aSubData)
+		{
+			$sResult .= \implode(',', $aSubData)."\r\n";
+		}
+
+		return $sResult;
 	}
 
 	/**

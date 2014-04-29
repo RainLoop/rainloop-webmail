@@ -20,21 +20,22 @@
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="contacts-more-dropdown-id">
 						<li class="e-item" role="presentation">
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
-								<i data-bind="css: {'icon-list-add': !contacts.importing(), 'icon-spinner animated': contacts.importing}"></i>
+								<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner animated': contacts.importing}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_IMPORT"></span>
 							</a>
 						</li>
-<!--						<li class="e-item" role="presentation" data-bind="visible: allowExport" >
+						<li class="divider" role="presentation" data-bind="visible: allowExport"></li>
+						<li class="e-item" role="presentation" data-bind="visible: allowExport">
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportCsv">
-								<i data-bind="css: {'icon-download': !contacts.exportingCsv(), 'icon-spinner animated': contacts.exportingCsv}"></i>
+								<i data-bind="css: {'icon-export': !contacts.exportingCsv(), 'icon-spinner animated': contacts.exportingCsv}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_EXPORT_CSV"></span>
 							</a>
-						</li>-->
+						</li>
 						<li class="e-item" role="presentation" data-bind="visible: allowExport" >
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportVcf">
-								<i data-bind="css: {'icon-download': !contacts.exportingVcf(), 'icon-spinner animated': contacts.exportingVcf}"></i>
+								<i data-bind="css: {'icon-export': !contacts.exportingVcf(), 'icon-spinner animated': contacts.exportingVcf}"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_EXPORT_VCARD"></span>
 							</a>
