@@ -82,18 +82,18 @@ class Application extends \RainLoop\Config\AbstractConfig
 			'branding' => array(
 				'login_logo'		=> array(''),
 				'login_desc'		=> array(''),
-				'login_css'			=> array(''),
+				'login_css'			=> array('')
 			),
 
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
 				'allow_sharing'		=> array(true),
 				'allow_sync'		=> array(false),
-				'suggestions_limit' => array(30),
 				'type'				=> array('sqlite', ''),
 				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
 				'pdo_user'			=> array('root', ''),
 				'pdo_password'		=> array('', ''),
+				'suggestions_limit' => array(30)
 			),
 
 			'security' => array(
@@ -105,8 +105,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_login'		=> array('admin', 'Login and password for web admin panel'),
 				'admin_password'	=> array('12345'),
 				'allow_admin_panel' => array(true, 'Access settings'),
-				'allow_two_factor_auth' => array(false),
-				'admin_panel_host'	=> array(''),
+				'allow_two_factor_auth'		=> array(false),
+				'admin_panel_host'			=> array(''),
 				'core_install_access_domains' => array('')
 			),
 
@@ -116,9 +116,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 					'Enable additional Login field on webmail login screen'),
 
 				'default_domain' => array('', ''),
-				
+
 				'allow_languages_on_login' => array(true,
 					'Allow language selection on webmail login screen'),
+
+				'determine_user_language' => array(true, ''),
 
 				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAILT_OFF,
 					'This option allows webmail to remember the logged in user
@@ -165,7 +167,7 @@ Examples:
 			),
 
 			'debug' => array(
-				'enable'	=> array(false, 'Special option required for development purposes'),
+				'enable'	=> array(false, 'Special option required for development purposes')
 			),
 
 			'version' => array(
@@ -187,7 +189,7 @@ Examples:
 				'twitter_consumer_secret' => array(''),
 
 				'dropbox_enable' => array(false, 'Dropbox'),
-				'dropbox_api_key' => array(''),
+				'dropbox_api_key' => array('')
 			),
 
 			'cache' => array(
@@ -202,7 +204,7 @@ Enables caching in the system'),
 				'fast_cache_index' => array('v1', 'Additional caching key. If changed, fast cache is purged'),
 
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),
-				'server_uids' => array(false, 'Caching message UIDs when searching and sorting (threading)')
+				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)')
 			),
 
 			'labs' => array(
@@ -216,14 +218,10 @@ Enables caching in the system'),
 				'date_from_headers' => array(false),
 				'autocreate_system_folders' => array(true),
 				'allow_message_append' => array(false),
-				'determine_user_language' => array(true),
 				'disable_iconv_if_mbstring_supported' => array(false),
 				'login_fault_delay' => array(1),
 				'log_ajax_response_write_limit' => array(300),
 				'allow_html_editor_source_button' => array(false),
-				'sync_dav_digest_auth' => array(true),
-				'sync_dav_domain' => array(''),
-				'sync_use_dav_browser' => array(true),
 				'use_app_debug_js' => array(false),
 				'use_app_debug_css' => array(false),
 				'use_imap_sort' => array(false),

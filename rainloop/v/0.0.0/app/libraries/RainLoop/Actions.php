@@ -987,7 +987,7 @@ class Actions
 			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
-			'DetermineUserLanguage' => (bool) $oConfig->Get('labs', 'determine_user_language', false),
+			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
 			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'ChangePasswordIsAllowed' => false,
@@ -1251,7 +1251,7 @@ class Actions
 		{
 			$sUserLanguage = '';
 			if (!$bAdmin && !$aResult['Auth'] &&
-				$oConfig->Get('labs', 'determine_user_language', false))
+				$oConfig->Get('login', 'determine_user_language', true))
 			{
 				$sUserLanguage = $this->detectUserLanguage();
 			}
@@ -2098,7 +2098,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowIdentities', 'webmail', 'allow_identities', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'labs', 'determine_user_language', 'bool');
+		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
