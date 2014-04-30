@@ -1725,6 +1725,7 @@ Utils.createMomentDate = function (oObject)
 Utils.createMomentShortDate = function (oObject)
 {
 	return ko.computed(function () {
+
 		var
 			sResult = '',
 			oMomentNow = moment(),
@@ -1748,7 +1749,6 @@ Utils.createMomentShortDate = function (oObject)
 				'TIME': oMoment.format('LT')
 			});
 		}
-
 		else if (oMomentNow.year() === oMoment.year())
 		{
 			sResult = oMoment.format('D MMM.');
@@ -2694,6 +2694,44 @@ ko.bindingHandlers.tooltip2 = {
 				$oEl.tooltip('hide');
 			}
 		});
+	}
+};
+
+ko.bindingHandlers.tooltip3 = {
+	'init': function (oElement) {
+
+		var $oEl = $(oElement);
+		
+		$oEl.tooltip({
+			'container': 'body',
+			'trigger': 'hover manual',
+			'title': function () {
+				return $oEl.data('tooltip3-data') || '';
+			}
+		});
+
+		Globals.dropdownVisibility.subscribe(function (bValue) {
+			if (bValue)
+			{
+				$oEl.tooltip('hide');
+			}
+		});
+
+		$document.click(function () {
+			$oEl.tooltip('hide');
+		});
+		
+	},
+	'update': function (oElement, fValueAccessor) {
+		var sValue = ko.utils.unwrapObservable(fValueAccessor());
+		if ('' === sValue)
+		{
+			$(oElement).data('tooltip3-data', '').tooltip('hide');
+		}
+		else
+		{
+			$(oElement).data('tooltip3-data', sValue).tooltip('show');
+		}
 	}
 };
 
@@ -4281,12 +4319,13 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 		;
 
 		key('enter', sKeyScope, function () {
-			if (self.focusedItem())
+			if (self.focusedItem() && !self.focusedItem().selected())
 			{
 				self.actionClick(self.focusedItem());
+				return false;
 			}
 
-			return false;
+			return true;
 		});
 
 		key('ctrl+up, command+up, ctrl+down, command+down', sKeyScope, function () {
@@ -8766,12 +8805,11 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 		{
 			sSignature = sSignature.replace(/{{FROM}}/, sFrom);
 		}
-		else
-		{
-			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}[\n]?/gm, '');
-		}
 
-		sSignature = sSignature.replace(/{{FROM}}[\n]?/, '').replace(/{{IF:FROM}}[\n]?/, '').replace(/{{\/IF:FROM}}[\n]?/, '');
+		sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/, '{{FROM}}');
+
+		sSignature = sSignature.replace(/{{FROM}}/, '');
+		sSignature = sSignature.replace(/{{DATE}}/, moment().format('llll'));
 
 		if (!bHtml)
 		{
@@ -9709,6 +9747,10 @@ function PopupsContactsViewModel()
 		return Enums.ContactPropertyType.Email === oProperty.type();
 	});
 
+	this.viewPropertiesWeb = this.viewProperties.filter(function(oProperty) {
+		return Enums.ContactPropertyType.Web === oProperty.type();
+	});
+
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
 		
 		var
@@ -9740,11 +9782,20 @@ function PopupsContactsViewModel()
 		return '' === Utils.trim(oProperty.value()) && !bF;
 	});
 
+	this.viewPropertiesWebEmptyAndOnFocused = this.viewPropertiesWeb.filter(function(oProperty) {
+		var bF = oProperty.focused();
+		return '' === Utils.trim(oProperty.value()) && !bF;
+	});
+
 	this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(function(aList) {
 		fFastClearEmptyListHelper(aList);
 	});
 
 	this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(function(aList) {
+		fFastClearEmptyListHelper(aList);
+	});
+
+	this.viewPropertiesWebEmptyAndOnFocused.subscribe(function(aList) {
 		fFastClearEmptyListHelper(aList);
 	});
 
@@ -9973,6 +10024,11 @@ PopupsContactsViewModel.prototype.addNewPhone = function ()
 	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
 };
 
+PopupsContactsViewModel.prototype.addNewWeb = function ()
+{
+	this.addNewProperty(Enums.ContactPropertyType.Web);
+};
+
 PopupsContactsViewModel.prototype.exportVcf = function ()
 {
 	RL.download(RL.link().exportContactsVcf());
@@ -10144,8 +10200,8 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 		this.viewReadOnly(!!oContact.readOnly);
 	}
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
 	
 	this.viewID(sId);
 	this.viewProperties([]);
@@ -10415,7 +10471,7 @@ function PopupsAddAccountViewModel()
 		this.passwordError(false);
 	}, this);
 
-	this.allowCustomLogin = ko.observable(false);
+	this.allowCustomLogin = RL.data().allowCustomLogin;
 
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
@@ -10455,7 +10511,7 @@ function PopupsAddAccountViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.login(), this.password());
+		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password());
 
 		return true;
 
@@ -10497,11 +10553,6 @@ PopupsAddAccountViewModel.prototype.onShow = function ()
 PopupsAddAccountViewModel.prototype.onFocus = function ()
 {
 	this.emailFocus(true);
-};
-
-PopupsAddAccountViewModel.prototype.onBuild = function ()
-{
-	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 };
 
 /**
@@ -11507,7 +11558,7 @@ function LoginViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
+		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
 			this.additionalCode.visibility() ? this.additionalCode() : '',
 			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false

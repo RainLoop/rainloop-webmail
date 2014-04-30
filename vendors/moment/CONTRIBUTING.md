@@ -16,9 +16,10 @@ If you are submitting a bug, please create a [jsfiddle](http://jsfiddle.net/) de
 Contributing
 ============
 
-To contribute, fork the library and install grunt.
+To contribute, fork the library and install grunt and dependencies.
 
-    npm install grunt -g
+    npm install -g grunt-cli
+    npm install
 
 You can add tests to the files in `/test/moment` or add a new test file if you are adding a new feature.
 
@@ -26,7 +27,7 @@ To run the tests, do `grunt` to run all tests.
 
 To check the filesize, you can use `grunt size`.
 
-To minify all the files, use `grunt release`.
+To minify all the files, use `grunt release`. **But please don't include minified files in pull requests.** We'll minify them when we release.
 
 If your code passes the unit tests (including the ones you wrote), submit a pull request.
 

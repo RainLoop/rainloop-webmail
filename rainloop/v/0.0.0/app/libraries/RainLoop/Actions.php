@@ -2444,7 +2444,9 @@ class Actions
 		$this->IsAdminLoggined();
 
 		$bImapResult = false;
+		$sImapErrorDesc = '';
 		$bSmtpResult = false;
+		$sSmtpErrorDesc = '';
 
 		$iImapTime = 0;
 		$iSmtpTime = 0;
@@ -2466,6 +2468,7 @@ class Actions
 			catch (\Exception $oException)
 			{
 				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sImapErrorDesc = $oException->getMessage();
 			}
 
 			try
@@ -2482,12 +2485,13 @@ class Actions
 			catch (\Exception $oException)
 			{
 				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sSmtpErrorDesc = $oException->getMessage();
 			}
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'Imap' => $bImapResult ? $iImapTime : false,
-			'Smtp' => $bSmtpResult ? $iSmtpTime : false
+			'Imap' => $bImapResult ? true : $sImapErrorDesc,
+			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc
 		));
 	}
 	
@@ -7002,6 +7006,12 @@ class Actions
 			}
 			else if ('RainLoop\Providers\AddressBook\Classes\Property' === $sClassName)
 			{
+				// Simple hack
+				if ($mResponse && $mResponse->IsWeb())
+				{
+					$mResponse->Value = \preg_replace('/(skype|ftp|http[s]?)\\\:\/\//i', '$1://', $mResponse->Value);
+				}
+
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					/* @var $mResponse \RainLoop\Providers\AddressBook\Classes\Property */
 					'IdProperty' => $mResponse->IdProperty,

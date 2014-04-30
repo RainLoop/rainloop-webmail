@@ -54,6 +54,10 @@ function PopupsContactsViewModel()
 		return Enums.ContactPropertyType.Email === oProperty.type();
 	});
 
+	this.viewPropertiesWeb = this.viewProperties.filter(function(oProperty) {
+		return Enums.ContactPropertyType.Web === oProperty.type();
+	});
+
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
 		
 		var
@@ -85,11 +89,20 @@ function PopupsContactsViewModel()
 		return '' === Utils.trim(oProperty.value()) && !bF;
 	});
 
+	this.viewPropertiesWebEmptyAndOnFocused = this.viewPropertiesWeb.filter(function(oProperty) {
+		var bF = oProperty.focused();
+		return '' === Utils.trim(oProperty.value()) && !bF;
+	});
+
 	this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(function(aList) {
 		fFastClearEmptyListHelper(aList);
 	});
 
 	this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(function(aList) {
+		fFastClearEmptyListHelper(aList);
+	});
+
+	this.viewPropertiesWebEmptyAndOnFocused.subscribe(function(aList) {
 		fFastClearEmptyListHelper(aList);
 	});
 
@@ -318,6 +331,11 @@ PopupsContactsViewModel.prototype.addNewPhone = function ()
 	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
 };
 
+PopupsContactsViewModel.prototype.addNewWeb = function ()
+{
+	this.addNewProperty(Enums.ContactPropertyType.Web);
+};
+
 PopupsContactsViewModel.prototype.exportVcf = function ()
 {
 	RL.download(RL.link().exportContactsVcf());
@@ -489,8 +507,8 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 		this.viewReadOnly(!!oContact.readOnly);
 	}
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, false, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false, 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME'));
+	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact, 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME'));
 	
 	this.viewID(sId);
 	this.viewProperties([]);

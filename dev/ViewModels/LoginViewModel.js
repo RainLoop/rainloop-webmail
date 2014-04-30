@@ -136,7 +136,7 @@ function LoginViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.login(), this.password(), !!this.signMe(),
+		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
 			this.additionalCode.visibility() ? this.additionalCode() : '',
 			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false

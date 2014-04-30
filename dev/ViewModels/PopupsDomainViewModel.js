@@ -17,6 +17,25 @@ function PopupsDomainViewModel()
 	this.testingDone = ko.observable(false);
 	this.testingImapError = ko.observable(false);
 	this.testingSmtpError = ko.observable(false);
+	this.testingImapErrorDesc = ko.observable('');
+	this.testingSmtpErrorDesc = ko.observable('');
+	
+	this.testingImapError.subscribe(function (bValue) {
+		if (!bValue)
+		{
+			this.testingImapErrorDesc('');
+		}
+	}, this);
+	
+	this.testingSmtpError.subscribe(function (bValue) {
+		if (!bValue)
+		{
+			this.testingSmtpErrorDesc('');
+		}
+	}, this);
+
+	this.testingImapErrorDesc = ko.observable('');
+	this.testingSmtpErrorDesc = ko.observable('');
 
 	this.imapServerFocus = ko.observable(false);
 	this.smtpServerFocus = ko.observable(false);
@@ -171,8 +190,18 @@ PopupsDomainViewModel.prototype.onTestConnectionResponse = function (sResult, oD
 	if (Enums.StorageResultType.Success === sResult && oData.Result)
 	{
 		this.testingDone(true);
-		this.testingImapError(false === oData.Result.Imap);
-		this.testingSmtpError(false === oData.Result.Smtp);
+		this.testingImapError(true !== oData.Result.Imap);
+		this.testingSmtpError(true !== oData.Result.Smtp);
+
+		if (this.testingImapError() && oData.Result.Imap)
+		{
+			this.testingImapErrorDesc(oData.Result.Imap);
+		}
+
+		if (this.testingSmtpError() && oData.Result.Smtp)
+		{
+			this.testingSmtpErrorDesc(oData.Result.Smtp);
+		}
 	}
 	else
 	{

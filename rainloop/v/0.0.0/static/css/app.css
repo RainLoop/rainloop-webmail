@@ -6428,6 +6428,9 @@ select {
 .nav-tabs > li > a {
   color: #555;
 }
+.popover {
+  z-index: 2000;
+}
 html.no-rgba .modal {
   border-width: 0px !important;
 }
@@ -7018,7 +7021,7 @@ html.ssm-state-desktop-large .b-compose.modal {
   width: 1000px;
 }
 html.ssm-state-desktop-large .b-contacts-content.modal {
-  width: 1000px;
+  width: 800px;
 }
 html.ssm-state-desktop #rl-left {
   width: 200px;
@@ -7036,7 +7039,7 @@ html.ssm-state-desktop .b-compose.modal {
   width: 1000px;
 }
 html.ssm-state-desktop .b-contacts-content.modal {
-  width: 1000px;
+  width: 800px;
 }
 html.ssm-state-tablet #rl-left,
 html.ssm-state-mobile #rl-left {
@@ -8406,6 +8409,14 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   color: #fff;
   background-color: #333;
   background-color: rgba(0, 0, 0, 0.8) !important;
+  /*
+			.button-new-message {
+				margin-left: 8px;
+			}
+			.button-delete {
+				margin-left: 8px;
+			}*/
+
 }
 .b-contacts-content.modal .b-header-toolbar .close {
   color: #fff;
@@ -8414,12 +8425,6 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-contacts-content.modal .b-header-toolbar .btn {
   margin-top: 4px;
-}
-.b-contacts-content.modal .b-header-toolbar .button-new-message {
-  margin-left: 8px;
-}
-.b-contacts-content.modal .b-header-toolbar .button-delete {
-  margin-left: 8px;
 }
 .b-contacts-content.modal .b-list-toopbar {
   padding: 0;

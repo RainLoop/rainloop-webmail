@@ -28,7 +28,7 @@ function PopupsAddAccountViewModel()
 		this.passwordError(false);
 	}, this);
 
-	this.allowCustomLogin = ko.observable(false);
+	this.allowCustomLogin = RL.data().allowCustomLogin;
 
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
@@ -68,7 +68,7 @@ function PopupsAddAccountViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.login(), this.password());
+		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password());
 
 		return true;
 
@@ -110,9 +110,4 @@ PopupsAddAccountViewModel.prototype.onShow = function ()
 PopupsAddAccountViewModel.prototype.onFocus = function ()
 {
 	this.emailFocus(true);
-};
-
-PopupsAddAccountViewModel.prototype.onBuild = function ()
-{
-	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 };

@@ -999,6 +999,7 @@ Utils.createMomentDate = function (oObject)
 Utils.createMomentShortDate = function (oObject)
 {
 	return ko.computed(function () {
+
 		var
 			sResult = '',
 			oMomentNow = moment(),
@@ -1022,7 +1023,6 @@ Utils.createMomentShortDate = function (oObject)
 				'TIME': oMoment.format('LT')
 			});
 		}
-
 		else if (oMomentNow.year() === oMoment.year())
 		{
 			sResult = oMoment.format('D MMM.');

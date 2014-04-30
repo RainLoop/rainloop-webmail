@@ -319,12 +319,13 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 		;
 
 		key('enter', sKeyScope, function () {
-			if (self.focusedItem())
+			if (self.focusedItem() && !self.focusedItem().selected())
 			{
 				self.actionClick(self.focusedItem());
+				return false;
 			}
 
-			return false;
+			return true;
 		});
 
 		key('ctrl+up, command+up, ctrl+down, command+down', sKeyScope, function () {

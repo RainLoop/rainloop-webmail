@@ -78,6 +78,14 @@ class Property
 	/**
 	 * @return bool
 	 */
+	public function IsWeb()
+	{
+		return PropertyType::WEB_PAGE === $this->Type;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function TypesAsArray()
 	{
 		$aResult = array();

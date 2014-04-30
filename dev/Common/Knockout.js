@@ -70,6 +70,44 @@ ko.bindingHandlers.tooltip2 = {
 	}
 };
 
+ko.bindingHandlers.tooltip3 = {
+	'init': function (oElement) {
+
+		var $oEl = $(oElement);
+		
+		$oEl.tooltip({
+			'container': 'body',
+			'trigger': 'hover manual',
+			'title': function () {
+				return $oEl.data('tooltip3-data') || '';
+			}
+		});
+
+		Globals.dropdownVisibility.subscribe(function (bValue) {
+			if (bValue)
+			{
+				$oEl.tooltip('hide');
+			}
+		});
+
+		$document.click(function () {
+			$oEl.tooltip('hide');
+		});
+		
+	},
+	'update': function (oElement, fValueAccessor) {
+		var sValue = ko.utils.unwrapObservable(fValueAccessor());
+		if ('' === sValue)
+		{
+			$(oElement).data('tooltip3-data', '').tooltip('hide');
+		}
+		else
+		{
+			$(oElement).data('tooltip3-data', sValue).tooltip('show');
+		}
+	}
+};
+
 ko.bindingHandlers.registrateBootstrapDropdown = {
 	'init': function (oElement) {
 		BootstrapDropdowns.push($(oElement));

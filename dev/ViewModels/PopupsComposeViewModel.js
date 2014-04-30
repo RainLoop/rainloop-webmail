@@ -600,12 +600,11 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 		{
 			sSignature = sSignature.replace(/{{FROM}}/, sFrom);
 		}
-		else
-		{
-			sSignature = sSignature.replace(/{{IF:FROM}}[\s\S]+{{\/IF:FROM}}[\n]?/gm, '');
-		}
 
-		sSignature = sSignature.replace(/{{FROM}}[\n]?/, '').replace(/{{IF:FROM}}[\n]?/, '').replace(/{{\/IF:FROM}}[\n]?/, '');
+		sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/, '{{FROM}}');
+
+		sSignature = sSignature.replace(/{{FROM}}/, '');
+		sSignature = sSignature.replace(/{{DATE}}/, moment().format('llll'));
 
 		if (!bHtml)
 		{
