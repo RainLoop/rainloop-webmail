@@ -980,7 +980,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 
 				if (oData.Result.Rtl)
 				{
-					this.isRtl(true);
+					oMessage.isRtl(true);
 					oBody.addClass('rtl-text-part');
 				}
 
