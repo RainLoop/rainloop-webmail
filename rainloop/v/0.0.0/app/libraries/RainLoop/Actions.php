@@ -2465,6 +2465,15 @@ class Actions
 				$oImapClient->Disconnect();
 				$bImapResult = true;
 			}
+			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+			{
+				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sImapErrorDesc = $oException->getSocketMessage();
+				if (empty($sImapErrorDesc))
+				{
+					$sImapErrorDesc = $oException->getMessage();
+				}
+			}
 			catch (\Exception $oException)
 			{
 				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
@@ -2481,6 +2490,15 @@ class Actions
 				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
 				$bSmtpResult = true;
+			}
+			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+			{
+				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sSmtpErrorDesc = $oException->getSocketMessage();
+				if (empty($sSmtpErrorDesc))
+				{
+					$sSmtpErrorDesc = $oException->getMessage();
+				}
 			}
 			catch (\Exception $oException)
 			{

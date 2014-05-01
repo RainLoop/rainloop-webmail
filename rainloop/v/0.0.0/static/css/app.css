@@ -6388,6 +6388,15 @@ html.rgba.textshadow .btn.btn-primary {
   -moz-border-radius-bottomright: 3px;
   border-bottom-right-radius: 3px;
 }
+.dropdown.colored-toggle.open .btn.dropdown-toggle {
+  color: #BD362F;
+}
+.dropdown.colored-toggle.open .btn.dropdown-toggle .caret {
+  border-top-color: #BD362F;
+}
+.dropdown.colored-toggle.open .btn.dropdown-toggle [class^="icon-"]:before {
+  color: #BD362F;
+}
 textarea,
 input[type="text"],
 input[type="password"],
@@ -7021,7 +7030,7 @@ html.ssm-state-desktop-large .b-compose.modal {
   width: 1000px;
 }
 html.ssm-state-desktop-large .b-contacts-content.modal {
-  width: 800px;
+  width: 900px;
 }
 html.ssm-state-desktop #rl-left {
   width: 200px;
@@ -7039,7 +7048,7 @@ html.ssm-state-desktop .b-compose.modal {
   width: 1000px;
 }
 html.ssm-state-desktop .b-contacts-content.modal {
-  width: 800px;
+  width: 900px;
 }
 html.ssm-state-tablet #rl-left,
 html.ssm-state-mobile #rl-left {
@@ -7093,7 +7102,7 @@ html.ssm-state-tablet .b-compose.modal {
   width: 700px;
 }
 html.ssm-state-tablet .b-contacts-content.modal {
-  width: 700px;
+  width: 800px;
 }
 html.ssm-state-tablet .b-contacts-content.modal .b-list-toopbar,
 html.ssm-state-tablet .b-contacts-content.modal .b-list-content,
@@ -8600,7 +8609,9 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-contacts-content.modal .b-view-content .content {
   -webkit-overflow-scrolling: touch;
 }
-.b-contacts-content.modal .b-view-content .contactValueStatic {
+.b-contacts-content.modal .b-view-content .contactValueStatic,
+.b-contacts-content.modal .b-view-content .contactValueLargeStatic,
+.b-contacts-content.modal .b-view-content .contactValueTextAreaStatic {
   height: 20px;
   line-height: 20px;
   font-size: 18px;
@@ -8609,10 +8620,14 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   color: #555;
   display: none;
 }
-.b-contacts-content.modal .b-view-content.read-only .contactValueStatic {
+.b-contacts-content.modal .b-view-content.read-only .contactValueStatic,
+.b-contacts-content.modal .b-view-content.read-only .contactValueLargeStatic,
+.b-contacts-content.modal .b-view-content.read-only .contactValueTextAreaStatic {
   display: inline-block;
 }
-.b-contacts-content.modal .b-view-content.read-only .contactValueInput {
+.b-contacts-content.modal .b-view-content.read-only .contactValueInput,
+.b-contacts-content.modal .b-view-content.read-only .contactValueInputLarge,
+.b-contacts-content.modal .b-view-content.read-only .contactValueTextArea {
   display: none;
 }
 .b-contacts-content.modal .b-view-content .b-contact-view-desc {
@@ -8638,11 +8653,15 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   font-size: 12px;
   color: #aaa;
 }
-.b-contacts-content.modal .b-view-content .contactValueStatic {
+.b-contacts-content.modal .b-view-content .contactValueStatic,
+.b-contacts-content.modal .b-view-content .contactValueLargeStatic,
+.b-contacts-content.modal .b-view-content .contactValueTextAreaStatic {
   font-size: 18px;
   display: none;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput {
+.b-contacts-content.modal .b-view-content .contactValueInput,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge,
+.b-contacts-content.modal .b-view-content .contactValueTextArea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -8650,29 +8669,47 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   font-size: 18px;
   width: 300px;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput:hover {
+.b-contacts-content.modal .b-view-content .contactValueInput:hover,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge:hover,
+.b-contacts-content.modal .b-view-content .contactValueTextArea:hover {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   border-color: #ccc;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput:focus {
+.b-contacts-content.modal .b-view-content .contactValueInput:focus,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge:focus,
+.b-contacts-content.modal .b-view-content .contactValueTextArea:focus {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   border-color: #999;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput::-webkit-input-placeholder {
+.b-contacts-content.modal .b-view-content .contactValueInput::-webkit-input-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge::-webkit-input-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueTextArea::-webkit-input-placeholder {
   color: #ddd;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput::-moz-placeholder {
+.b-contacts-content.modal .b-view-content .contactValueInput::-moz-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge::-moz-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueTextArea::-moz-placeholder {
   color: #ddd;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput:-moz-placeholder {
+.b-contacts-content.modal .b-view-content .contactValueInput:-moz-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge:-moz-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueTextArea:-moz-placeholder {
   color: #ddd;
 }
-.b-contacts-content.modal .b-view-content .contactValueInput:-ms-input-placeholder {
+.b-contacts-content.modal .b-view-content .contactValueInput:-ms-input-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueInputLarge:-ms-input-placeholder,
+.b-contacts-content.modal .b-view-content .contactValueTextArea:-ms-input-placeholder {
   color: #ddd;
+}
+.b-contacts-content.modal .b-view-content .contactValueTextArea {
+  width: 300px;
+}
+.b-contacts-content.modal .b-view-content .contactValueInputLarge {
+  width: 400px;
 }
 .b-contacts-content.modal .b-view-content .hasError .contactValueInput {
   color: #ee5f5b;
@@ -8703,6 +8740,11 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-contacts-content.modal .b-view-content .button-save-contact.no-disabled.dirty {
   color: #51a351;
   font-weight: bold;
+}
+.b-contacts-content.modal .b-view-content .button-add-prop {
+  position: absolute;
+  top: 60px;
+  right: 20px;
 }
 .b-contacts-content.modal .b-view-content.read-only .e-read-only-sign {
   display: inline-block;

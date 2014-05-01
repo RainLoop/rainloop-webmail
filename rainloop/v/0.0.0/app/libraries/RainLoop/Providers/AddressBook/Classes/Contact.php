@@ -220,6 +220,9 @@ class Contact
 					case PropertyType::NICK_NAME:
 						$oVCard->NICKNAME = $oProperty->Value;
 						break;
+					case PropertyType::NOTE:
+						$oVCard->NOTE = $oProperty->Value;
+						break;
 					case PropertyType::FIRST_NAME:
 						$sFirstName = $oProperty->Value;
 						break;
@@ -511,11 +514,11 @@ class Contact
 				$aProperties[] = new Property(PropertyType::NICK_NAME, $sValue);
 			}
 
-//			if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
-//			{
-//				$sValue = $this->getPropertyValueHelper($oVCard->NOTE, $bOldVersion);
-//				$aProperties[] = new Property(PropertyType::NOTE, $sValue);
-//			}
+			if (isset($oVCard->NOTE) && '' !== \trim($oVCard->NOTE))
+			{
+				$sValue = $this->getPropertyValueHelper($oVCard->NOTE, $bOldVersion);
+				$aProperties[] = new Property(PropertyType::NOTE, $sValue);
+			}
 
 			if (isset($oVCard->N))
 			{

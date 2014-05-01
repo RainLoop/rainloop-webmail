@@ -27,7 +27,7 @@
 					</a>
 				</div>
 
-				<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true">
+				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true">
 					<a id="contacts-more-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown">
 						<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
 							'icon-spinner animated': contacts.importing() || contacts.syncing()}"></i>
@@ -128,12 +128,30 @@
 									<label class="control-label remove-padding-top fix-width">
 										<i class="icon-user iconsize24"></i>
 									</label>
-									<div class="controls fix-width" data-bind="foreach: viewPropertiesNames">
-										<div class="property-line">
-											<span class="contactValueStatic" data-bind="text: value" />
-											<input type="text" class="contactValueInput" placeholder=""
-												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-												data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
+									<div class="controls fix-width">
+										<div data-bind="foreach: viewPropertiesNames">
+											<div class="property-line">
+												<span class="contactValueStatic" data-bind="text: value" />
+												<input type="text" class="contactValueInput" placeholder=""
+													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
+											</div>
+										</div>
+										<div data-bind="visible: 0 < viewPropertiesOther().length, foreach: viewPropertiesOther">
+											<div class="property-line">
+												<!-- ko if: !largeValue() -->
+												<span class="contactValueStatic" data-bind="text: value" />
+												<input type="text" class="contactValueInput" placeholder=""
+													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
+												<!-- /ko -->
+												<!-- ko if: largeValue -->
+												<span class="contactValueTextAreaStatic" data-bind="text: value" />
+												<textarea class="contactValueTextArea" placeholder=""
+													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}"></textarea>
+												<!-- /ko -->
+											</div>
 										</div>
 									</div>
 								</div>
@@ -145,7 +163,7 @@
 										<div data-bind="foreach: viewPropertiesEmails">
 											<div class="property-line">
 												<span class="contactValueStatic" data-bind="text: value" />
-												<input type="email" class="contactValueInput"
+												<input type="email" class="contactValueInput" placeholder=""
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
@@ -153,7 +171,7 @@
 										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewEmail" data-i18n-text="CONTACTS/LINK_ADD_EMAIL"></a>
 									</div>
 								</div>
-								<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesPhones().length">
+								<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
 									<label class="control-label remove-padding-top fix-width">
 										<i class="icon-telephone iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
 									</label>
@@ -161,12 +179,11 @@
 										<div data-bind="foreach: viewPropertiesPhones">
 											<div class="property-line">
 												<span class="contactValueStatic" data-bind="text: value" />
-												<input type="text" class="contactValueInput"
+												<input type="text" class="contactValueInput" placeholder=""
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
 										</div>
-										<a href="javascript:void(0);" class="g-ui-link add-link i18n" data-bind="visible: !viewReadOnly(), click: addNewPhone" data-i18n-text="CONTACTS/LINK_ADD_PHONE"></a>
 									</div>
 								</div>
 								<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
@@ -176,8 +193,8 @@
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesWeb">
 											<div class="property-line">
-												<span class="contactValueStatic" data-bind="text: value" />
-												<input type="text" class="contactValueInput"
+												<span class="contactValueLargeStatic" data-bind="text: value" />
+												<input type="text" class="contactValueInputLarge" placeholder="http://"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
 											</div>
@@ -192,9 +209,9 @@
 								</div>
 							</div>
 							
-							<div class="e-read-only-sign">
+<!--							<div class="e-read-only-sign">
 								<i class="icon-lock iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
-							</div>
+							</div>-->
 
 							<button class="btn button-save-contact" data-bind="command: saveCommand, css: {'dirty': watchDirty}">
 								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
@@ -202,6 +219,42 @@
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
 								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
 							</button>
+
+							<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="registrateBootstrapDropdown: true">
+								<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
+									<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_LABEL"></span>
+									&nbsp;&nbsp;
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewEmail">
+											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_EMAIL"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewPhone">
+											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_PHONE"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewWeb">
+											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_URL"></span>
+										</a>
+									</li>
+									<li class="divider" role="presentation"></li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewNickname">
+											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_NICKNAME"></span>
+										</a>
+									</li>
+<!--									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewAddress">
+											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_ADDRESS"></span>
+										</a>
+									</li>-->
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -22,4 +22,9 @@ function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 		var sPlaceholder = this.placeholder();
 		return sPlaceholder ? Utils.i18n(sPlaceholder) : '';
 	}, this);
+
+	this.largeValue = ko.computed(function () {
+		return Enums.ContactPropertyType.Note === this.type();
+	}, this);
+
 }

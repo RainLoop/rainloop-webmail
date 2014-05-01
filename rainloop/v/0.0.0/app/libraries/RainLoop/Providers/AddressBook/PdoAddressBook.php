@@ -923,7 +923,7 @@ class PdoAddressBook
 		$iUserID = $this->getUserId($sEmail);
 
 		$sTypes = implode(',', array(
-			PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+			PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME
 		));
 
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_ab_properties '.
@@ -961,9 +961,14 @@ class PdoAddressBook
 						$aIdContacts[$iIdContact] = $iIdContact;
 						$aIdProps[$iIdProp] = $iIdProp;
 
-						if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME)))
+						if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME, PropertyType::NICK_NAME)))
 						{
-							$aContactAllAccess[$iIdContact] = $iIdContact;
+							if (!isset($aContactAllAccess[$iIdContact]))
+							{
+								$aContactAllAccess[$iIdContact] = array();
+							}
+
+							$aContactAllAccess[$iIdContact][] = $iType;
 						}
 					}
 				}
@@ -977,7 +982,7 @@ class PdoAddressBook
 				$oStmt->closeCursor();
 				
 				$sTypes = \implode(',', array(
-					PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME
+					PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME
 				));
 
 				$sSql = 'SELECT id_prop, id_contact, prop_type, prop_value FROM rainloop_ab_properties '.
@@ -990,6 +995,7 @@ class PdoAddressBook
 					if (\is_array($aFetch) && 0 < \count($aFetch))
 					{
 						$aNames = array();
+						$aNicks = array();
 						$aEmails = array();
 
 						foreach ($aFetch as $aItem)
@@ -1000,7 +1006,11 @@ class PdoAddressBook
 								$iIdProp = (int) $aItem['id_prop'];
 								$iType = (int) $aItem['prop_type'];
 
-								if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME)))
+								if (PropertyType::NICK_NAME === $iType)
+								{
+									$aNicks[$iIdContact] = $aItem['prop_value'];
+								}
+								else if (\in_array($iType, array(PropertyType::LAST_NAME, PropertyType::FIRST_NAME)))
 								{
 									if (!isset($aNames[$iIdContact]))
 									{
@@ -1024,12 +1034,28 @@ class PdoAddressBook
 
 						foreach ($aEmails as $iId => $aItems)
 						{
-							$aNameItem = isset($aNames[$iId]) && \is_array($aNames[$iId]) ? $aNames[$iId] : array('', '');
-							$sNameItem = \trim($aNameItem[0].' '.$aNameItem[1]);
-
-							foreach ($aItems as $sEmail)
+							if (isset($aContactAllAccess[$iId]))
 							{
-								$aResult[] = array($sEmail, $sNameItem);
+								$bName = \in_array(PropertyType::FIRST_NAME, $aContactAllAccess[$iId]) || \in_array(PropertyType::LAST_NAME, $aContactAllAccess[$iId]);
+								$bNick = \in_array(PropertyType::NICK_NAME, $aContactAllAccess[$iId]);
+								
+								$aNameItem = isset($aNames[$iId]) && \is_array($aNames[$iId]) ? $aNames[$iId] : array('', '');
+								$sNameItem = \trim($aNameItem[0].' '.$aNameItem[1]);
+								
+								$sNickItem = isset($aNicks[$iId]) ? $aNicks[$iId] : '';
+
+								foreach ($aItems as $sEmail)
+								{
+									if ($bName)
+									{
+										$aResult[] = array($sEmail, $sNameItem);
+									}
+									
+									if ($bNick)
+									{
+										$aResult[] = array($sEmail, $sNickItem);
+									}
+								}
 							}
 						}
 					}

@@ -21,6 +21,8 @@ class PropertyType
 //	const MOBILE = 32;
 //	const FAX = 33;
 	const WEB_PAGE = 32;
+	
+	const BIRTHDAY = 40;
 
 	const FACEBOOK = 90;
 	const SKYPE = 91;

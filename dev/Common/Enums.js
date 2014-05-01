@@ -296,6 +296,8 @@ Enums.ContactPropertyType = {
 	'Phone': 31,
 	'Web': 32,
 
+	'Birthday': 40,
+
 	'Facebook': 90,
 	'Skype': 91,
 	'GitHub': 92,

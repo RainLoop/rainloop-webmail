@@ -255,7 +255,7 @@
 				-webkit-overflow-scrolling: touch;
 			}
 
-			.contactValueStatic {
+			.contactValueStatic, .contactValueLargeStatic, .contactValueTextAreaStatic {
 				height: 20px;
 				line-height: 20px;
 				font-size: 18px;
@@ -266,11 +266,11 @@
 			}
 			
 			&.read-only {
-				.contactValueStatic {
+				.contactValueStatic, .contactValueLargeStatic, .contactValueTextAreaStatic {
 					display: inline-block;
 				}
 
-				.contactValueInput {
+				.contactValueInput, .contactValueInputLarge, .contactValueTextArea {
 					display: none;
 				}
 			}
@@ -303,12 +303,12 @@
 				color: #aaa;
 			}
 
-			.contactValueStatic {
+			.contactValueStatic, .contactValueLargeStatic, .contactValueTextAreaStatic {
 				font-size: 18px;
 				display: none;
 			}
 
-			.contactValueInput {
+			.contactValueInput, .contactValueInputLarge, .contactValueTextArea {
 				.box-shadow(none);
 				border-color: #fff;
 				font-size: 18px;
@@ -336,6 +336,14 @@
 				&:-ms-input-placeholder  {
 					color: #ddd;
 				}
+			}
+			
+			.contactValueTextArea {
+				width: 300px;
+			}
+
+			.contactValueInputLarge {
+				width: 400px;
 			}
 
 			.hasError {
@@ -374,6 +382,12 @@
 					color: #51a351;
 					font-weight: bold;
 				}
+			}
+
+			.button-add-prop {
+				position: absolute;
+				top: 60px;
+				right: 20px;
 			}
 
 			&.read-only {
