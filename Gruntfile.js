@@ -127,7 +127,7 @@ module.exports = function (grunt) {
 				src: [
 					"vendors/modernizr.js",
 					"vendors/underscore/underscore-1.5.2.min.js",
-					"vendors/jquery-1.11.0.min.js",
+					"vendors/jquery/jquery-1.11.1.min.js",
 					"vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js",
 					"vendors/jquery-cookie/jquery.cookie-1.4.0.min.js",
 					"vendors/jquery-finger/jquery.finger.min.js",

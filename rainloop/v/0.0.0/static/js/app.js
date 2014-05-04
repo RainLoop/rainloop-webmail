@@ -11490,12 +11490,12 @@ Utils.extendAsViewModel('PopupsKeyboardShortcutsHelpViewModel', PopupsKeyboardSh
 
 PopupsKeyboardShortcutsHelpViewModel.prototype.onBuild = function (oDom)
 {
-	key('tab, shift+tab', Enums.KeyState.PopupKeyboardShortcutsHelp, _.bind(function (event, handler) {
+	key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.bind(function (event, handler) {
 		if (event && handler)
 		{
 			var
 				$tabs = oDom.find('.nav.nav-tabs > li'),
-				bNext = handler && 'tab' === handler.shortcut,
+				bNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut),
 				iIndex = $tabs.index($tabs.filter('.active'))
 			;
 
