@@ -6243,6 +6243,9 @@ body {
 label {
   cursor: pointer;
 }
+label.inline {
+  display: inline-block;
+}
 .legend {
   display: block;
   width: 100%;

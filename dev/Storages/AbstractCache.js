@@ -7,6 +7,7 @@ function AbstractCacheStorage()
 {
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
+	this.bAllowGravatar = !!RL.settingsGet('AllowGravatar');
 }
 
 /**
@@ -18,6 +19,11 @@ AbstractCacheStorage.prototype.oEmailsPicsHashes = {};
  * @type {Object}
  */
 AbstractCacheStorage.prototype.oServices = {};
+
+/**
+ * @type {boolean}
+ */
+AbstractCacheStorage.prototype.bAllowGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
@@ -51,14 +57,14 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	}
 
 	
-//	if ('' === sUrl) // Gravatar // TODO
-//	{
-//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
-//	}
-//	else
-//	{
+	if (this.bAllowGravatar && '' === sUrl)
+	{
+		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+	}
+	else
+	{
 		fCallback(sUrl, sEmail);
-//	}
+	}
 };
 
 /**

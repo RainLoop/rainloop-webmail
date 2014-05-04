@@ -985,6 +985,7 @@ class Actions
 			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
 			'AllowIdentities' => (bool) $oConfig->Get('webmail', 'allow_identities', true),
 			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
+			'AllowGravatar' => (bool) $oConfig->Get('labs', 'allow_gravatar', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
@@ -2097,6 +2098,8 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowIdentities', 'webmail', 'allow_identities', 'bool');
+		
+		$this->setConfigFromParams($oConfig, 'AllowGravatar', 'labs', 'allow_gravatar', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 

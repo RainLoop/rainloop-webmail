@@ -1661,6 +1661,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.allowCustomTheme = ko.observable(false);
 	oData.allowAdditionalAccounts = ko.observable(false);
 	oData.allowIdentities = ko.observable(false);
+	oData.allowGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
@@ -5769,6 +5770,7 @@ function AdminGeneral()
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
 	this.allowIdentities = oData.allowIdentities;
+	this.allowGravatar = oData.allowGravatar;
 	
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
@@ -5828,6 +5830,12 @@ AdminGeneral.prototype.onBuild = function ()
 		self.allowIdentities.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'AllowIdentities': bValue ? '1' : '0'
+			});
+		});
+
+		self.allowGravatar.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'AllowGravatar': bValue ? '1' : '0'
 			});
 		});
 
@@ -6842,6 +6850,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.allowCustomTheme(!!RL.settingsGet('AllowCustomTheme'));
 	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
 	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
+	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
 	
 	this.allowThemes(!!RL.settingsGet('AllowThemes'));
@@ -7453,6 +7462,7 @@ function AbstractCacheStorage()
 {
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
+	this.bAllowGravatar = !!RL.settingsGet('AllowGravatar');
 }
 
 /**
@@ -7464,6 +7474,11 @@ AbstractCacheStorage.prototype.oEmailsPicsHashes = {};
  * @type {Object}
  */
 AbstractCacheStorage.prototype.oServices = {};
+
+/**
+ * @type {boolean}
+ */
+AbstractCacheStorage.prototype.bAllowGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
@@ -7497,14 +7512,14 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	}
 
 	
-//	if ('' === sUrl) // Gravatar // TODO
-//	{
-//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
-//	}
-//	else
-//	{
+	if (this.bAllowGravatar && '' === sUrl)
+	{
+		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+	}
+	else
+	{
 		fCallback(sUrl, sEmail);
-//	}
+	}
 };
 
 /**

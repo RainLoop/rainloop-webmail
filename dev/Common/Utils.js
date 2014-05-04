@@ -937,6 +937,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.allowCustomTheme = ko.observable(false);
 	oData.allowAdditionalAccounts = ko.observable(false);
 	oData.allowIdentities = ko.observable(false);
+	oData.allowGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});

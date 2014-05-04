@@ -18,6 +18,7 @@ function AdminGeneral()
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
 	this.allowIdentities = oData.allowIdentities;
+	this.allowGravatar = oData.allowGravatar;
 	
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
@@ -77,6 +78,12 @@ AdminGeneral.prototype.onBuild = function ()
 		self.allowIdentities.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'AllowIdentities': bValue ? '1' : '0'
+			});
+		});
+
+		self.allowGravatar.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'AllowGravatar': bValue ? '1' : '0'
 			});
 		});
 

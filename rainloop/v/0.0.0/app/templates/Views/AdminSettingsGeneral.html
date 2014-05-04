@@ -64,5 +64,14 @@
 				</label>
 			</div>
 		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label class="inline" data-bind="click: function () { allowGravatar(!allowGravatar()); }">
+					<i data-bind="css: allowGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow Gravatar
+				</label>
+				(<a class="g-ui-link" href="http://en.gravatar.com/" target="_blank">http://en.gravatar.com/</a>)
+			</div>
+		</div>
 	</div>
 </div>

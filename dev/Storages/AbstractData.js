@@ -87,6 +87,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.allowCustomTheme(!!RL.settingsGet('AllowCustomTheme'));
 	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
 	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
+	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
 	
 	this.allowThemes(!!RL.settingsGet('AllowThemes'));
