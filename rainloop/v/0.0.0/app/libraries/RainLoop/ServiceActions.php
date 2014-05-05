@@ -519,9 +519,6 @@ class ServiceActions
 	public function ServiceCss()
 	{
 		$sResult = '';
-		$bCustom = false;
-		$oAccount = null;
-		$oSettings = null;
 		
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
 		$bJson = !empty($this->aPaths[7]) && 'Json' === $this->aPaths[7];
@@ -539,24 +536,22 @@ class ServiceActions
 		if (!empty($this->aPaths[4]))
 		{
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
-			if ('Custom' === $sTheme && !empty($this->aPaths[1]) && '0' !== $this->aPaths[1])
+			$sRealTheme = $sTheme;
+			
+			$bCustomTheme = '@custom' === \substr($sTheme, -7);
+			if ($bCustomTheme)
 			{
-				$bCustom = true;
-				$oAccount = $this->oActions->GetAccount(false);
-				if ($oAccount)
-				{
-					$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
-				}
+				$sRealTheme = \substr($sTheme, 0, -7);
 			}
 			
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-			if ($bCacheEnabled && !$bCustom)
+			if ($bCacheEnabled)
 			{
 				$this->oActions->verifyCacheByKey($this->sQuery);
 			}
 
 			$sCacheFileName = '';
-			if ($bCacheEnabled && !$bCustom)
+			if ($bCacheEnabled)
 			{
 				$sCacheFileName = 'THEMES/PLUGINS:'.$sTheme.':'.$this->Plugins()->Hash();
 				$sResult = $this->Cacher()->Get($sCacheFileName);
@@ -574,39 +569,22 @@ class ServiceActions
 
 					$aResult = array();
 
+					$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/styles.less';
+					$sThemeExtFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/ext.less';
+
 					$sThemeValuesFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/values.less';
-					if ($bCustom)
-					{
-						$sThemeFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/custom-values-light.less';
-						if ($oSettings)
-						{
-							if (\RainLoop\Enumerations\CustomThemeType::LIGHT === (string) $oSettings->GetConf('CustomThemeType', \RainLoop\Enumerations\CustomThemeType::LIGHT))
-							{
-								$sThemeFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/custom-values-light.less';
-							}
-							else
-							{
-								$sThemeFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/custom-values-dark.less';
-							}
-						}
-					}
-					else
-					{
-						$sThemeFile = APP_VERSION_ROOT_PATH.'themes/'.$sTheme.'/styles.less';
-					}
-					
 					$sThemeTemplateFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/template.less';
 
 					if (\file_exists($sThemeFile) && \file_exists($sThemeTemplateFile) && \file_exists($sThemeValuesFile))
 					{
-						$aResult[] = '@base: "'.APP_WEB_PATH.'themes/'.$sTheme.'/";';
+						$aResult[] = '@base: "'.($bCustomTheme ? '' : APP_WEB_PATH).'themes/'.$sRealTheme.'/";';
 						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);
 						$aResult[] = \file_get_contents($sThemeTemplateFile);
 
-						if (\file_exists(APP_VERSION_ROOT_PATH.'themes/'.$sTheme.'/ext.less'))
+						if (\file_exists($sThemeExtFile))
 						{
-							$aResult[] = \file_get_contents(APP_VERSION_ROOT_PATH.'themes/'.$sTheme.'/ext.less');
+							$aResult[] = \file_get_contents($sThemeExtFile);
 						}
 					}
 
@@ -614,16 +592,7 @@ class ServiceActions
 
 					$sResult = $oLess->compile(\implode("\n", $aResult));
 
-					if ($bCustom && $oAccount)
-					{
-						$mData = $this->oActions->StorageProvider()->Get($oAccount, \RainLoop\Providers\Storage\Enumerations\StorageType::USER, 'CustomThemeBackground', '');
-						if (!empty($mData) && 'data:' === \substr($mData, 0, 5))
-						{
-							$sResult = \str_replace('background-image:link', 'background-image:url("'.$mData.'")', $sResult);
-						}
-					}
-
-					if ($bCacheEnabled && !$bCustom)
+					if ($bCacheEnabled)
 					{
 						if (0 < \strlen($sCacheFileName))
 						{
@@ -637,7 +606,7 @@ class ServiceActions
 				}
 			}
 
-			if ($bCacheEnabled && !$bCustom)
+			if ($bCacheEnabled)
 			{
 				$this->oActions->cacheByKey($this->sQuery);
 			}

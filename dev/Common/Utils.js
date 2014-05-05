@@ -934,7 +934,6 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowCustomTheme = ko.observable(false);
 	oData.allowAdditionalAccounts = ko.observable(false);
 	oData.allowIdentities = ko.observable(false);
 	oData.allowGravatar = ko.observable(false);
@@ -1262,7 +1261,12 @@ Utils.disableSettingsViewModel = function (SettingsViewModelClass)
 
 Utils.convertThemeName = function (sTheme)
 {
-	return Utils.trim(sTheme.replace(/[^a-zA-Z]/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+	}
+
+	return Utils.trim(sTheme.replace(/[^a-zA-Z]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
 };
 
 /**

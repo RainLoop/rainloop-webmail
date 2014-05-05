@@ -6,13 +6,9 @@
 function LinkBuilder()
 {
 	this.sBase = '#/';
-	this.sCdnStaticDomain = RL.settingsGet('CdnStaticDomain');
 	this.sVersion = RL.settingsGet('Version');
 	this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
-
 	this.sServer = (RL.settingsGet('IndexFile') || './') + '?';
-	this.sCdnStaticDomain = '' === this.sCdnStaticDomain ? this.sCdnStaticDomain :
-		('/' === this.sCdnStaticDomain.substr(-1) ? this.sCdnStaticDomain : this.sCdnStaticDomain + '/');
 }
 
 /**
@@ -248,8 +244,7 @@ LinkBuilder.prototype.exportContactsCsv = function ()
  */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/empty-contact.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
 };
 
 /**
@@ -258,8 +253,7 @@ LinkBuilder.prototype.emptyContactPic = function ()
  */
 LinkBuilder.prototype.sound = function (sFileName)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/sounds/' + sFileName;
+	return 'rainloop/v/' + this.sVersion + '/static/sounds/' + sFileName;
 };
 
 /**
@@ -268,8 +262,14 @@ LinkBuilder.prototype.sound = function (sFileName)
  */
 LinkBuilder.prototype.themePreviewLink = function (sTheme)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/themes/' + encodeURI(sTheme) + '/images/preview.png';
+	var sPrefix = 'rainloop/v/' + this.sVersion + '/';
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+		sPrefix  = '';
+	}
+
+	return sPrefix + 'themes/' + encodeURI(sTheme) + '/images/preview.png';
 };
 
 /**
@@ -277,8 +277,7 @@ LinkBuilder.prototype.themePreviewLink = function (sTheme)
  */
 LinkBuilder.prototype.notificationMailIcon = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/icom-message-notification.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/icom-message-notification.png';
 };
 
 /**
@@ -286,8 +285,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
  */
 LinkBuilder.prototype.openPgpJs = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/js/openpgp.min.js';
+	return 'rainloop/v/' + this.sVersion + '/static/js/openpgp.min.js';
 };
 
 /**

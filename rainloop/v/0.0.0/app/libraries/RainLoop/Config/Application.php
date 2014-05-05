@@ -62,7 +62,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'theme'							=> array('Default', 'Theme used by default'),
 				'allow_themes'					=> array(true, 'Allow theme selection on settings screen'),
-				'allow_custom_theme'			=> array(true, ''),
 
 				'language'						=> array('en', 'Language used by default'),
 				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
@@ -238,7 +237,6 @@ Enables caching in the system'),
 				'repo_type' => array('stable'),
 				'custom_repo' => array(''),
 				'additional_repo' => array(''),
-				'cdn_static_domain' => array(''),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),

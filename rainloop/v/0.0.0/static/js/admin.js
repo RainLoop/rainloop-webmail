@@ -1658,7 +1658,6 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowCustomTheme = ko.observable(false);
 	oData.allowAdditionalAccounts = ko.observable(false);
 	oData.allowIdentities = ko.observable(false);
 	oData.allowGravatar = ko.observable(false);
@@ -1986,7 +1985,12 @@ Utils.disableSettingsViewModel = function (SettingsViewModelClass)
 
 Utils.convertThemeName = function (sTheme)
 {
-	return Utils.trim(sTheme.replace(/[^a-zA-Z]/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+	}
+
+	return Utils.trim(sTheme.replace(/[^a-zA-Z]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
 };
 
 /**
@@ -3377,13 +3381,9 @@ ko.observable.fn.validateFunc = function (fFunc)
 function LinkBuilder()
 {
 	this.sBase = '#/';
-	this.sCdnStaticDomain = RL.settingsGet('CdnStaticDomain');
 	this.sVersion = RL.settingsGet('Version');
 	this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
-
 	this.sServer = (RL.settingsGet('IndexFile') || './') + '?';
-	this.sCdnStaticDomain = '' === this.sCdnStaticDomain ? this.sCdnStaticDomain :
-		('/' === this.sCdnStaticDomain.substr(-1) ? this.sCdnStaticDomain : this.sCdnStaticDomain + '/');
 }
 
 /**
@@ -3619,8 +3619,7 @@ LinkBuilder.prototype.exportContactsCsv = function ()
  */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/empty-contact.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
 };
 
 /**
@@ -3629,8 +3628,7 @@ LinkBuilder.prototype.emptyContactPic = function ()
  */
 LinkBuilder.prototype.sound = function (sFileName)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/sounds/' + sFileName;
+	return 'rainloop/v/' + this.sVersion + '/static/sounds/' + sFileName;
 };
 
 /**
@@ -3639,8 +3637,14 @@ LinkBuilder.prototype.sound = function (sFileName)
  */
 LinkBuilder.prototype.themePreviewLink = function (sTheme)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/themes/' + encodeURI(sTheme) + '/images/preview.png';
+	var sPrefix = 'rainloop/v/' + this.sVersion + '/';
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+		sPrefix  = '';
+	}
+
+	return sPrefix + 'themes/' + encodeURI(sTheme) + '/images/preview.png';
 };
 
 /**
@@ -3648,8 +3652,7 @@ LinkBuilder.prototype.themePreviewLink = function (sTheme)
  */
 LinkBuilder.prototype.notificationMailIcon = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/icom-message-notification.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/icom-message-notification.png';
 };
 
 /**
@@ -3657,8 +3660,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
  */
 LinkBuilder.prototype.openPgpJs = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/js/openpgp.min.js';
+	return 'rainloop/v/' + this.sVersion + '/static/js/openpgp.min.js';
 };
 
 /**
@@ -5766,7 +5768,6 @@ function AdminGeneral()
 	this.theme = oData.theme;
 
 	this.allowThemes = oData.allowThemes;
-	this.allowCustomTheme = oData.allowCustomTheme;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
 	this.allowIdentities = oData.allowIdentities;
@@ -5812,12 +5813,6 @@ AdminGeneral.prototype.onBuild = function ()
 		self.theme.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f3, {
 				'Theme': Utils.trim(sValue)
-			});
-		});
-		
-		self.allowCustomTheme.subscribe(function (bValue) {
-			RL.remote().saveAdminConfig(null, {
-				'AllowCustomTheme': bValue ? '1' : '0'
 			});
 		});
 		
@@ -6847,7 +6842,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.mainLanguage(RL.settingsGet('Language'));
 	this.mainTheme(RL.settingsGet('Theme'));
 
-	this.allowCustomTheme(!!RL.settingsGet('AllowCustomTheme'));
 	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
 	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
 	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));

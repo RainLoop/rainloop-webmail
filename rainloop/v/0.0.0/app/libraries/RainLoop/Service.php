@@ -222,7 +222,6 @@ class Service
 	{
 		return \md5(APP_WEB_PATH.
 			$this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop').
-			$this->oActions->Config()->Get('labs', 'cdn_static_domain', '').
 			\md5($this->oActions->Config()->Get('cache', 'index', '')).
 			$this->oActions->Plugins()->Hash().
 			APP_VERSION.($bAppJsDebug ? 'd' : 'm').($bAdmin ? 'a' : 'w'));
@@ -248,14 +247,8 @@ class Service
 
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
-		$sCdnStaticDomain = $this->oActions->Config()->Get('labs', 'cdn_static_domain', '');
 
 		$sStaticPrefix = APP_WEB_STATIC_PATH;
-		if (0 < \strlen($sCdnStaticDomain))
-		{
-			$sStaticPrefix = \trim($sCdnStaticDomain, ' /\\').'/'.APP_VERSION.'/static/';
-		}
-
 		return array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,

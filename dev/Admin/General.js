@@ -14,7 +14,6 @@ function AdminGeneral()
 	this.theme = oData.theme;
 
 	this.allowThemes = oData.allowThemes;
-	this.allowCustomTheme = oData.allowCustomTheme;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
 	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
 	this.allowIdentities = oData.allowIdentities;
@@ -60,12 +59,6 @@ AdminGeneral.prototype.onBuild = function ()
 		self.theme.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f3, {
 				'Theme': Utils.trim(sValue)
-			});
-		});
-		
-		self.allowCustomTheme.subscribe(function (bValue) {
-			RL.remote().saveAdminConfig(null, {
-				'AllowCustomTheme': bValue ? '1' : '0'
 			});
 		});
 		

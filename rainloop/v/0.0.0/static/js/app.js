@@ -1662,7 +1662,6 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowCustomTheme = ko.observable(false);
 	oData.allowAdditionalAccounts = ko.observable(false);
 	oData.allowIdentities = ko.observable(false);
 	oData.allowGravatar = ko.observable(false);
@@ -1990,7 +1989,12 @@ Utils.disableSettingsViewModel = function (SettingsViewModelClass)
 
 Utils.convertThemeName = function (sTheme)
 {
-	return Utils.trim(sTheme.replace(/[^a-zA-Z]/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+	}
+
+	return Utils.trim(sTheme.replace(/[^a-zA-Z]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
 };
 
 /**
@@ -3381,13 +3385,9 @@ ko.observable.fn.validateFunc = function (fFunc)
 function LinkBuilder()
 {
 	this.sBase = '#/';
-	this.sCdnStaticDomain = RL.settingsGet('CdnStaticDomain');
 	this.sVersion = RL.settingsGet('Version');
 	this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
-
 	this.sServer = (RL.settingsGet('IndexFile') || './') + '?';
-	this.sCdnStaticDomain = '' === this.sCdnStaticDomain ? this.sCdnStaticDomain :
-		('/' === this.sCdnStaticDomain.substr(-1) ? this.sCdnStaticDomain : this.sCdnStaticDomain + '/');
 }
 
 /**
@@ -3623,8 +3623,7 @@ LinkBuilder.prototype.exportContactsCsv = function ()
  */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/empty-contact.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
 };
 
 /**
@@ -3633,8 +3632,7 @@ LinkBuilder.prototype.emptyContactPic = function ()
  */
 LinkBuilder.prototype.sound = function (sFileName)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/sounds/' + sFileName;
+	return 'rainloop/v/' + this.sVersion + '/static/sounds/' + sFileName;
 };
 
 /**
@@ -3643,8 +3641,14 @@ LinkBuilder.prototype.sound = function (sFileName)
  */
 LinkBuilder.prototype.themePreviewLink = function (sTheme)
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/themes/' + encodeURI(sTheme) + '/images/preview.png';
+	var sPrefix = 'rainloop/v/' + this.sVersion + '/';
+	if ('@custom' === sTheme.substr(-7))
+	{
+		sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+		sPrefix  = '';
+	}
+
+	return sPrefix + 'themes/' + encodeURI(sTheme) + '/images/preview.png';
 };
 
 /**
@@ -3652,8 +3656,7 @@ LinkBuilder.prototype.themePreviewLink = function (sTheme)
  */
 LinkBuilder.prototype.notificationMailIcon = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/css/images/icom-message-notification.png';
+	return 'rainloop/v/' + this.sVersion + '/static/css/images/icom-message-notification.png';
 };
 
 /**
@@ -3661,8 +3664,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
  */
 LinkBuilder.prototype.openPgpJs = function ()
 {
-	return ('' === this.sCdnStaticDomain ? 'rainloop/v/' : this.sCdnStaticDomain) +
-		this.sVersion + '/static/js/openpgp.min.js';
+	return 'rainloop/v/' + this.sVersion + '/static/js/openpgp.min.js';
 };
 
 /**
@@ -14820,21 +14822,7 @@ function SettingsThemes()
 	;
 	
 	this.mainTheme = oData.mainTheme;
-	this.customThemeType = ko.observable(RL.settingsGet('CustomThemeType'));
-	this.customThemeImg = ko.observable(RL.settingsGet('CustomThemeImg'));
-
 	this.themesObjects = ko.observableArray([]);
-
-	this.customThemeUploaderProgress = ko.observable(false);
-	this.customThemeUploaderButton = ko.observable(null);
-	
-	this.showCustomThemeConfig = ko.computed(function () {
-		return 'Custom' === this.mainTheme();
-	}, this);
-
-	this.showCustomThemeConfig.subscribe(function () {
-		Utils.windowResize();
-	});
 
 	this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
 
@@ -14861,7 +14849,7 @@ function SettingsThemes()
 		if (sUrl)
 		{
 			sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
-			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/' + ('Custom' === sValue && window.__rlah ? window.__rlah() || '0' : '0') + '/User/');
+			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
 			
 			if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
 			{
@@ -14924,18 +14912,9 @@ function SettingsThemes()
 
 Utils.addSettingsViewModel(SettingsThemes, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 
-SettingsThemes.prototype.removeCustomThemeImg = function ()
-{
-	this.customThemeImg('');
-};
-
 SettingsThemes.prototype.onBuild = function ()
 {
-	var
-		self = this,
-		sCurrentTheme = RL.data().theme()
-	;
-	
+	var sCurrentTheme = RL.data().theme();
 	this.themesObjects(_.map(RL.data().themes(), function (sTheme) {
 		return {
 			'name': sTheme,
@@ -14944,95 +14923,7 @@ SettingsThemes.prototype.onBuild = function ()
 			'themePreviewSrc': RL.link().themePreviewLink(sTheme)
 		};
 	}));
-
-	_.delay(function () {
-
-		self.customThemeType.subscribe(function (sValue) {
-			RL.remote().saveSettings(function () {
-				RL.data().theme.valueHasMutated();
-			}, {
-				'CustomThemeType': sValue
-			});
-		});
-
-		self.customThemeImg.subscribe(function (sValue) {
-			RL.remote().saveSettings(function () {
-				RL.data().theme.valueHasMutated();
-			}, {
-				'CustomThemeImg': sValue
-			});
-		});
-
-	}, 50);
-
-	this.initCustomThemeUploader();
 };
-
-SettingsThemes.prototype.initCustomThemeUploader = function ()
-{
-	if (this.customThemeUploaderButton())
-	{
-		var
-			oJua = new Jua({
-				'action': RL.link().uploadBackground(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableFolderDragAndDrop': true,
-				'clickElement': this.customThemeUploaderButton()
-			})
-		;
-
-		oJua
-			.on('onSelect', _.bind(function (sId, oData) {
-
-				var
-					sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-					sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
-					mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
-				;
-
-				if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
-				{
-					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
-					return false;
-				}
-
-				if (1024 * 1024 < mSize)
-				{
-					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
-					return false;
-				}
-
-				return true;
-
-			}, this))
-			.on('onStart', _.bind(function () {
-				this.customThemeUploaderProgress(true);
-			}, this))
-			.on('onComplete', _.bind(function (sId, bResult, oData) {
-				if (!bResult || !oData || !oData.Result)
-				{
-					window.alert(
-						oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
-					);
-				}
-				else
-				{
-					this.customThemeImg(oData.Result);
-				}
-
-				this.customThemeUploaderProgress(false);
-			}, this))
-		;
-
-
-		return !!oJua;
-	}
-
-	return false;
-};
-
 
 /**
  * @constructor
@@ -15186,7 +15077,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.mainLanguage(RL.settingsGet('Language'));
 	this.mainTheme(RL.settingsGet('Theme'));
 
-	this.allowCustomTheme(!!RL.settingsGet('AllowCustomTheme'));
 	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
 	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
 	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));

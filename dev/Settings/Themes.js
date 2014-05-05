@@ -11,21 +11,7 @@ function SettingsThemes()
 	;
 	
 	this.mainTheme = oData.mainTheme;
-	this.customThemeType = ko.observable(RL.settingsGet('CustomThemeType'));
-	this.customThemeImg = ko.observable(RL.settingsGet('CustomThemeImg'));
-
 	this.themesObjects = ko.observableArray([]);
-
-	this.customThemeUploaderProgress = ko.observable(false);
-	this.customThemeUploaderButton = ko.observable(null);
-	
-	this.showCustomThemeConfig = ko.computed(function () {
-		return 'Custom' === this.mainTheme();
-	}, this);
-
-	this.showCustomThemeConfig.subscribe(function () {
-		Utils.windowResize();
-	});
 
 	this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
 
@@ -52,7 +38,7 @@ function SettingsThemes()
 		if (sUrl)
 		{
 			sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
-			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/' + ('Custom' === sValue && window.__rlah ? window.__rlah() || '0' : '0') + '/User/');
+			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
 			
 			if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
 			{
@@ -115,18 +101,9 @@ function SettingsThemes()
 
 Utils.addSettingsViewModel(SettingsThemes, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 
-SettingsThemes.prototype.removeCustomThemeImg = function ()
-{
-	this.customThemeImg('');
-};
-
 SettingsThemes.prototype.onBuild = function ()
 {
-	var
-		self = this,
-		sCurrentTheme = RL.data().theme()
-	;
-	
+	var sCurrentTheme = RL.data().theme();
 	this.themesObjects(_.map(RL.data().themes(), function (sTheme) {
 		return {
 			'name': sTheme,
@@ -135,92 +112,4 @@ SettingsThemes.prototype.onBuild = function ()
 			'themePreviewSrc': RL.link().themePreviewLink(sTheme)
 		};
 	}));
-
-	_.delay(function () {
-
-		self.customThemeType.subscribe(function (sValue) {
-			RL.remote().saveSettings(function () {
-				RL.data().theme.valueHasMutated();
-			}, {
-				'CustomThemeType': sValue
-			});
-		});
-
-		self.customThemeImg.subscribe(function (sValue) {
-			RL.remote().saveSettings(function () {
-				RL.data().theme.valueHasMutated();
-			}, {
-				'CustomThemeImg': sValue
-			});
-		});
-
-	}, 50);
-
-	this.initCustomThemeUploader();
 };
-
-SettingsThemes.prototype.initCustomThemeUploader = function ()
-{
-	if (this.customThemeUploaderButton())
-	{
-		var
-			oJua = new Jua({
-				'action': RL.link().uploadBackground(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableFolderDragAndDrop': true,
-				'clickElement': this.customThemeUploaderButton()
-			})
-		;
-
-		oJua
-			.on('onSelect', _.bind(function (sId, oData) {
-
-				var
-					sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-					sFileNameExt = sFileName.substring(sFileName.length - 4, sFileName.length),
-					mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null
-				;
-
-				if (-1 === Utils.inArray(sFileNameExt, ['jpeg', '.jpg', '.png']))
-				{
-					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR'));
-					return false;
-				}
-
-				if (1024 * 1024 < mSize)
-				{
-					window.alert(Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG'));
-					return false;
-				}
-
-				return true;
-
-			}, this))
-			.on('onStart', _.bind(function () {
-				this.customThemeUploaderProgress(true);
-			}, this))
-			.on('onComplete', _.bind(function (sId, bResult, oData) {
-				if (!bResult || !oData || !oData.Result)
-				{
-					window.alert(
-						oData && oData.ErrorCode ? Utils.getUploadErrorDescByCode(oData.ErrorCode) : Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.Unknown)
-					);
-				}
-				else
-				{
-					this.customThemeImg(oData.Result);
-				}
-
-				this.customThemeUploaderProgress(false);
-			}, this))
-		;
-
-
-		return !!oJua;
-	}
-
-	return false;
-};
-

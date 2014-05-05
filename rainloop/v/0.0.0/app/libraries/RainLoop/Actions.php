@@ -990,14 +990,12 @@ class Actions
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
-			'AllowCustomTheme' => (bool) $oConfig->Get('webmail', 'allow_custom_theme', true),
 			'ChangePasswordIsAllowed' => false,
 			'ContactsIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
-			'CdnStaticDomain' => $oConfig->Get('labs', 'cdn_static_domain', ''),
 			'Plugins' => array()
 		);
 
@@ -1148,7 +1146,7 @@ class Actions
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
-		$aResult['Themes'] = $this->GetThemes($bAdmin);
+		$aResult['Themes'] = $this->GetThemes();
 		$aResult['Languages'] = $this->GetLanguages();
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
@@ -1173,8 +1171,6 @@ class Actions
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
-		$aResult['CustomThemeType'] = \RainLoop\Enumerations\CustomThemeType::LIGHT;
-		$aResult['CustomThemeImg'] = '';
 		
 		if (!$bAdmin && $oSettings instanceof \RainLoop\Settings)
 		{
@@ -1204,8 +1200,6 @@ class Actions
 			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
 			$aResult['InterfaceAnimation'] = (string) $oSettings->GetConf('InterfaceAnimation', $aResult['InterfaceAnimation']);
-			$aResult['CustomThemeType'] = (string) $oSettings->GetConf('CustomThemeType', $aResult['CustomThemeType']);
-			$aResult['CustomThemeImg'] = (string) $oSettings->GetConf('CustomThemeImg', $aResult['CustomThemeImg']);
 
 			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['DisplayName']);
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
@@ -1219,13 +1213,6 @@ class Actions
 		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NONE === $aResult['InterfaceAnimation']
 			? $aResult['InterfaceAnimation'] : \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
 
-		if (!in_array($aResult['CustomThemeType'], array(
-			\RainLoop\Enumerations\CustomThemeType::LIGHT, \RainLoop\Enumerations\CustomThemeType::DARK
-		)))
-		{
-			$aResult['CustomThemeType'] = \RainLoop\Enumerations\CustomThemeType::LIGHT;
-		}
-		
 		if (0 < \strlen($aResult['ParentEmail']))
 		{
 			$aResult['AllowGoogleSocial'] = false;
@@ -1237,10 +1224,6 @@ class Actions
 
 		$sTheme = $this->ValidateTheme($sTheme);
 		$sNewThemeLink =  APP_INDEX_FILE.'?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
-		if (!$bAdmin && 0 < \strlen($sAuthAccountHash) && 'Custom' === $sTheme)
-		{
-			$sNewThemeLink = \str_replace('/Css/0/User/-/Custom/-/', '/Css/'.$sAuthAccountHash.'/User/-/Custom/-/', $sNewThemeLink);
-		}
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
@@ -2079,7 +2062,6 @@ class Actions
 		});
 
 		$this->setConfigFromParams($oConfig, 'AllowThemes', 'webmail', 'allow_themes', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowCustomTheme', 'webmail', 'allow_custom_theme', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
@@ -3244,12 +3226,6 @@ class Actions
 		{
 			$oSettings->SetConf('Theme', $this->ValidateLanguage($oConfig->Get('webmail', 'theme', 'Default')));
 		}
-
-		$this->setSettingsFromParams($oSettings, 'CustomThemeType', 'string', function ($sCustomThemeType) {
-			return \in_array($sCustomThemeType, array(
-				\RainLoop\Enumerations\CustomThemeType::LIGHT, \RainLoop\Enumerations\CustomThemeType::DARK)) ?
-					$sCustomThemeType : \RainLoop\Enumerations\CustomThemeType::LIGHT;
-		});
 
 		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
 			return (int) (\in_array($iValue, array(10, 20, 30, 50, 100, 150, 200, 300)) ? $iValue : 20);
@@ -5872,91 +5848,6 @@ class Actions
 	}
 
 	/**
-	 * @return array
-	 */
-	public function UploadBackground()
-	{
-		$oAccount = $this->getAccountFromToken();
-		
-		$sInputName = 'uploader';
-		$mResponse = false;
-
-		$iError = UploadError::UNKNOWN;
-		$iSizeLimit = 1024 * 1024;
-		if ($oAccount)
-		{
-			$iError = UPLOAD_ERR_OK;
-			$_FILES = isset($_FILES) ? $_FILES : null;
-			if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
-			{
-				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
-
-				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
-				{
-					$iError = UploadError::CONFIG_SIZE;
-				}
-
-				if (UPLOAD_ERR_OK === $iError && !\in_array(\strtolower($_FILES[$sInputName]['type']), array('image/png', 'image/jpg', 'image/jpeg')))
-				{
-					$iError = UploadError::FILE_TYPE;
-				}
-
-				$sSavedName = 'upload-post-'.md5($_FILES[$sInputName]['name'].$_FILES[$sInputName]['tmp_name']);
-
-				if (UPLOAD_ERR_OK === $iError)
-				{
-					if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES[$sInputName]['tmp_name']))
-					{
-						$iError = UploadError::ON_SAVING;
-					}
-
-					$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-					if ($mData)
-					{
-						$this->StorageProvider()->Put($oAccount,
-							\RainLoop\Providers\Storage\Enumerations\StorageType::USER, 'CustomThemeBackground',
-							'data:'.$_FILES[$sInputName]['type'].';base64,'.base64_encode(
-								\stream_get_contents($mData)
-							)
-						);
-					}
-
-					if (\is_resource($mData))
-					{
-						\fclose($mData);
-					}
-					
-					unset($mData);
-					$this->FilesProvider()->Clear($oAccount, $sSavedName);
-
-					$mResponse = $_FILES[$sInputName]['name'];
-				}
-
-			}
-			else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
-			{
-				$iError = UPLOAD_ERR_INI_SIZE;
-			}
-			else
-			{
-				$iError = UploadError::EMPTY_FILES_DATA;
-			}
-		}
-
-		if (UPLOAD_ERR_OK !== $iError)
-		{
-			$iClientError = UploadClientError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-			if (!empty($sError))
-			{
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResponse);
-	}
-
-	/**
 	 * @return bool
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -6324,14 +6215,13 @@ class Actions
 
 	/**
 	 * @staticvar array $aCache
-	 * @param bool $bAdmin = false
 	 *
 	 * @return array
 	 */
-	public function GetThemes($bAdmin = false)
+	public function GetThemes()
 	{
 		static $aCache = null;
-		if (is_array($aCache))
+		if (\is_array($aCache))
 		{
 			return $aCache;
 		}
@@ -6340,16 +6230,16 @@ class Actions
 		$bDefault = false;
 		$sList = array();
 		$sDir = APP_VERSION_ROOT_PATH.'themes';
-		if (@is_dir($sDir))
+		if (@\is_dir($sDir))
 		{
-			$rDirH = opendir($sDir);
+			$rDirH = \opendir($sDir);
 			if ($rDirH)
 			{
-				while (($sFile = readdir($rDirH)) !== false)
+				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && is_dir($sDir.'/'.$sFile) && file_exists($sDir.'/'.$sFile.'/styles.less'))
+					if ('.' !== $sFile{0} && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
 					{
-						if ('Default' !== $sFile && 'Clear' !== $sFile && 'Custom' !== $sFile)
+						if ('Default' !== $sFile && 'Clear' !== $sFile)
 						{
 							$sList[] = $sFile;
 						}
@@ -6370,20 +6260,35 @@ class Actions
 			}
 		}
 
-		sort($sList);
-		if ($bDefault)
+		$sDir = APP_INDEX_ROOT_PATH.'themes'; // custom user themes
+		if (@\is_dir($sDir))
 		{
-			array_unshift($sList, 'Default');
-		}
-		
-		if ($bClear)
-		{
-			array_push($sList, 'Clear');
+			$rDirH = \opendir($sDir);
+			if ($rDirH)
+			{
+				while (($sFile = \readdir($rDirH)) !== false)
+				{
+					if ('.' !== $sFile{0} && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
+					{
+						$sList[] = $sFile.'@custom';
+					}
+				}
+				
+				@\closedir($rDirH);
+			}
 		}
 
-		if (!$bAdmin && $this->Config()->Get('webmail', 'allow_custom_theme', true))
+		$sList = \array_unique($sList);
+		\sort($sList);
+		
+		if ($bDefault)
 		{
-			array_push($sList, 'Custom');
+			\array_unshift($sList, 'Default');
+		}
+
+		if ($bClear)
+		{
+			\array_push($sList, 'Clear');
 		}
 
 		$aCache = $sList;
