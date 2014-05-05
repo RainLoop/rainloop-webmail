@@ -1180,7 +1180,7 @@ class Utils
 	}
 
 	/**
-	 * @param string $sString
+	 * @param string $sUtfString
 	 *
 	 * @return bool
 	 */
@@ -1259,7 +1259,7 @@ class Utils
 	 *
 	 * @return array
 	 */
-	public static function ExpandFetchSequence($sSequence)
+	public static function ParseFetchSequence($sSequence)
 	{
 		$aResult = array();
 		$sSequence = \trim($sSequence);
@@ -1286,6 +1286,56 @@ class Utils
 		}
 
 		return $aResult;
+	}
+	/**
+	 * @param array $aSequence
+	 *
+	 * @return string
+	 */
+	public static function PrepearFetchSequence($aSequence)
+	{
+		$aResult = array();
+		if (\is_array($aSequence) && 0 < \count($aSequence))
+		{
+			$iStart = null;
+			$iPrev = null;
+			
+			foreach ($aSequence as $sItem)
+			{
+				// simple protection
+				if (false !== \strpos($sItem, ':'))
+				{
+					$aResult[] = $sItem;
+					continue;
+				}
+
+				$iItem = (int) $sItem;
+				if (null === $iStart || null === $iPrev)
+				{
+					$iStart = $iItem;
+					$iPrev = $iItem;
+					continue;
+				}
+
+				if ($iPrev === $iItem - 1)
+				{
+					$iPrev = $iItem;
+				}
+				else
+				{
+					$aResult[] = $iStart === $iPrev ? $iStart : $iStart.':'.$iPrev;
+					$iStart = $iItem;
+					$iPrev = $iItem;
+				}
+			}
+
+			if (null !== $iStart && null !== $iPrev)
+			{
+				$aResult[] = $iStart === $iPrev ? $iStart : $iStart.':'.$iPrev;
+			}
+		}
+
+		return \implode(',', $aResult);
 	}
 
 	/**

@@ -1035,16 +1035,17 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		$aReturn = array_reverse($aReturn);
 		return $aReturn;
 	}
 
 	/**
+	 * @param bool $bSort = false
 	 * @param string $sSearchCriterias = 'ALL'
-	 * @param array $aSearchReturn = null
+	 * @param array $aSearchOrSortReturn = null
 	 * @param bool $bReturnUid = true
 	 * @param string $sLimit = ''
 	 * @param string $sCharset = ''
+	 * @param array $aSortTypes = null
 	 *
 	 * @return array
 	 *
@@ -1052,47 +1053,66 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleESearch($sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '')
+	private function simpleESearchOrESortHelper($bSort = false, $sSearchCriterias = 'ALL', $aSearchOrSortReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '', $aSortTypes = null)
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
-		if (!$this->IsSupported('ESEARCH'))
+		$sCmd = $bSort ? 'SORT': 'SEARCH';
+		if ($bSort && (!\is_array($aSortTypes) || 0 === \count($aSortTypes) || !$this->IsSupported('SORT')))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		if (!\is_array($aSearchReturn) || 0 === \count($aSearchReturn))
+		if (!$this->IsSupported($bSort ? 'ESORT' : 'ESEARCH'))
 		{
-			$aSearchReturn = array('ALL');
+			$this->writeLogException(
+				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
+		}
+
+		if (!\is_array($aSearchOrSortReturn) || 0 === \count($aSearchOrSortReturn))
+		{
+			$aSearchOrSortReturn = array('ALL');
 		}
 
 		$aRequest = array();
-		if (0 < \strlen($sCharset))
+		if ($bSort)
 		{
-			$aRequest[] = 'CHARSET';
-			$aRequest[] = \strtoupper($sCharset);
+			$aRequest[] = 'RETURN';
+			$aRequest[] = $aSearchOrSortReturn;
+			
+			$aRequest[] = $aSortTypes;
+			$aRequest[] = \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? 'US-ASCII' : 'UTF-8';
+		}
+		else
+		{
+			if (0 < \strlen($sCharset))
+			{
+				$aRequest[] = 'CHARSET';
+				$aRequest[] = \strtoupper($sCharset);
+			}
+
+			$aRequest[] = 'RETURN';
+			$aRequest[] = $aSearchOrSortReturn;
 		}
 
-		$aRequest[] = 'RETURN';
-		$aRequest[] = $aSearchReturn;
-
 		$aRequest[] = $sSearchCriterias;
-		
+
 		if (0 < \strlen($sLimit))
 		{
 			$aRequest[] = $sLimit;
 		}
 
-		$this->SendRequest($sCommandPrefix.('SEARCH'), $aRequest);
+		$this->SendRequest($sCommandPrefix.$sCmd, $aRequest);
 		$sRequestTag = $this->getCurrentTag();
 
 		$aResult = array();
 		$aResponse = $this->parseResponseWithValidation();
-		
+
 		if (\is_array($aResponse))
 		{
 			$oImapResponse = null;
@@ -1130,6 +1150,42 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		return $aResult;
+	}
+
+	/**
+	 * @param string $sSearchCriterias = 'ALL'
+	 * @param array $aSearchReturn = null
+	 * @param bool $bReturnUid = true
+	 * @param string $sLimit = ''
+	 * @param string $sCharset = ''
+	 *
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageSimpleESearch($sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '')
+	{
+		return $this->simpleESearchOrESortHelper(false, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, $sCharset);
+	}
+
+	/**
+	 * @param array $aSortTypes
+	 * @param string $sSearchCriterias = 'ALL'
+	 * @param array $aSearchReturn = null
+	 * @param bool $bReturnUid = true
+	 * @param string $sLimit = ''
+	 *
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageSimpleESort($aSortTypes, $sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '')
+	{
+		return $this->simpleESearchOrESortHelper(true, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, '', $aSortTypes);
 	}
 
 	/**

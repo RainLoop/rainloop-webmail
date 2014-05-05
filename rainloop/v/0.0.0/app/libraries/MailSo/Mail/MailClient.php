@@ -239,8 +239,8 @@ class MailClient
 				: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
 			;
 
-			$sIndexRange = \implode(',', $aIndexRange);
-			$this->oImapClient->MessageStoreFlag($sIndexRange, $bIndexIsUid, array($sMessageFlag), $sStoreAction);
+			$this->oImapClient->MessageStoreFlag(\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange),
+				$bIndexIsUid, array($sMessageFlag), $sStoreAction);
 		}
 	}
 
@@ -536,7 +536,7 @@ class MailClient
 
 		$this->oImapClient->FolderSelect($sFolder);
 
-		$sIndexRange = \implode(',', $aIndexRange);
+		$sIndexRange = \MailSo\Base\Utils::PrepearFetchSequence($aIndexRange);
 
 		$this->oImapClient->MessageStoreFlag($sIndexRange, $bIndexIsUid,
 			array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
@@ -576,11 +576,14 @@ class MailClient
 
 		if ($bUseMoveSupported && $this->oImapClient->IsSupported('MOVE'))
 		{
-			$this->oImapClient->MessageMove($sToFolder, \implode(',', $aIndexRange), $bIndexIsUid);
+			$this->oImapClient->MessageMove($sToFolder,
+				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
 		}
 		else
 		{
-			$this->oImapClient->MessageCopy($sToFolder, \implode(',', $aIndexRange), $bIndexIsUid);
+			$this->oImapClient->MessageCopy($sToFolder,
+				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
+			
 			$this->MessageDelete($sFromFolder, $aIndexRange, $bIndexIsUid, true);
 		}
 
@@ -608,7 +611,8 @@ class MailClient
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
-		$this->oImapClient->MessageCopy($sToFolder, \implode(',', $aIndexRange), $bIndexIsUid);
+		$this->oImapClient->MessageCopy($sToFolder,
+			\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
 
 		return $this;
 	}
@@ -806,7 +810,7 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
 				\MailSo\Imap\Enumerations\FetchType::UID,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS
-			), \implode(',', $aUids), true);
+			), \MailSo\Base\Utils::PrepearFetchSequence($aUids), true);
 
 			if (\is_array($aFetchResponse) && 0 < \count($aFetchResponse))
 			{
@@ -1469,7 +1473,7 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::FLAGS,
 				\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE,
 				$this->getEnvelopeOrHeadersRequestString()
-			), \implode(',', $aRequestIndexOrUids), $bIndexAsUid);
+			), \MailSo\Base\Utils::PrepearFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 
 			if (\is_array($aFetchResponse) && 0 < \count($aFetchResponse))
 			{
@@ -1520,7 +1524,7 @@ class MailClient
 	 * @param bool $bUseSortIfSupported = false
 	 * @param bool $bUseThreadSortIfSupported = false
 	 * @param array $aExpandedThreadsUids = array()
-	 * @param bool $bUseESearchOrESortRequest = true
+	 * @param bool $bUseESearchOrESortRequest = false
 	 *
 	 * @return \MailSo\Mail\MessageCollection
 	 *
@@ -1530,7 +1534,7 @@ class MailClient
 	 */
 	public function MessageList($sFolderName, $iOffset = 0, $iLimit = 10, $sSearch = '', $sPrevUidNext = '',
 		$oCacher = null, $bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $aExpandedThreadsUids = array(),
-		$bUseESearchOrESortRequest = true)
+		$bUseESearchOrESortRequest = false)
 	{
 		$sSearch = \trim($sSearch);
 		if (!\MailSo\Base\Validator::RangeInt($iOffset, 0) ||
@@ -1623,12 +1627,17 @@ class MailClient
 					{
 						if ($bESortSupported)
 						{
-							// TODO
-							$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
+							$aESorthData = $this->oImapClient->MessageSimpleESort(array('ARRIVAL'), $sSearchCriterias, array('ALL'), $bIndexAsUid, '');
+							if (isset($aESorthData['ALL']))
+							{
+								$aIndexOrUids = \MailSo\Base\Utils::ParseFetchSequence($aESorthData['ALL']);
+								$aIndexOrUids = \array_reverse($aIndexOrUids);
+							}
+							unset($aESorthData);
 						}
 						else
 						{
-							$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
+							$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
 						}
 					}
 					else
@@ -1642,8 +1651,10 @@ class MailClient
 									$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), $bIndexAsUid, '', 'UTF-8');
 									if (isset($aESearchData['ALL']))
 									{
-										$aIndexOrUids = \MailSo\Base\Utils::ExpandFetchSequence($aESearchData['ALL']);
+										$aIndexOrUids = \MailSo\Base\Utils::ParseFetchSequence($aESearchData['ALL']);
+										$aIndexOrUids = \array_reverse($aIndexOrUids);
 									}
+									unset($aESearchData);
 								}
 								else
 								{
@@ -1664,8 +1675,10 @@ class MailClient
 								$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), $bIndexAsUid);
 								if (isset($aESearchData['ALL']))
 								{
-									$aIndexOrUids = \MailSo\Base\Utils::ExpandFetchSequence($aESearchData['ALL']);
+									$aIndexOrUids = \MailSo\Base\Utils::ParseFetchSequence($aESearchData['ALL']);
+									$aIndexOrUids = \array_reverse($aIndexOrUids);
 								}
+								unset($aESearchData);
 							}
 							else
 							{
@@ -1686,7 +1699,7 @@ class MailClient
 						$oCacher);
 
 					$aIndexOrUids = $this->compileLineThreadUids($aThreads, $aLastCollapsedThreadUids, $aExpandedThreadsUids, 0);
-					$iMessageCount = count($aIndexOrUids);
+					$iMessageCount = \count($aIndexOrUids);
 				}
 				else
 				{

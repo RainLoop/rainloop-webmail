@@ -13362,7 +13362,7 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	});
 
 	oDom
-		.on('click', '.messageView .messageItem', function () {
+		.on('click', '.messageView .messageItem .messageItemHeader', function () {
 			if (oData.useKeyboardShortcuts() && self.message())
 			{
 				self.message.focused(true);

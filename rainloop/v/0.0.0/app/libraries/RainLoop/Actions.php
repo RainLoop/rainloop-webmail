@@ -3959,7 +3959,8 @@ class Actions
 				($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher() : null,
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
 				$bUseThreads,
-				$aExpandedThreadUid
+				$aExpandedThreadUid,
+				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
 			);
 		}
 		catch (\Exception $oException)
