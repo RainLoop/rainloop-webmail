@@ -640,10 +640,15 @@ class PdoAddressBook
 				// TODO fix this
 				$sCustomSearch = '';
 			}
+
+			$sSearchTypes = implode(',', array(
+				PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME,
+				PropertyType::PHONE, PropertyType::WEB_PAGE
+			));
 			
 			$sSql = 'SELECT id_user, id_prop, id_contact FROM rainloop_ab_properties '.
-				'WHERE (id_user = :id_user) AND (prop_value LIKE :search ESCAPE \'=\''.
-					(0 < \strlen($sCustomSearch) ? ' OR prop_type = '.PropertyType::PHONE.' AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
+				'WHERE (id_user = :id_user) AND prop_type IN ('.$sSearchTypes.') AND (prop_value LIKE :search ESCAPE \'=\''.
+					(0 < \strlen($sCustomSearch) ? ' OR (prop_type = '.PropertyType::PHONE.' AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
 				') GROUP BY id_contact, id_prop';
 
 			$aParams = array(
@@ -995,7 +1000,6 @@ class PdoAddressBook
 					if (\is_array($aFetch) && 0 < \count($aFetch))
 					{
 						$aNames = array();
-						$aNicks = array();
 						$aEmails = array();
 
 						foreach ($aFetch as $aItem)
@@ -1017,7 +1021,7 @@ class PdoAddressBook
 										$aNames[$iIdContact] = array('', '');
 									}
 
-									$aNames[$iIdContact][PropertyType::LAST_NAME === $iType ? 0 : 1] = $aItem['prop_value'];
+									$aNames[$iIdContact][PropertyType::FIRST_NAME === $iType ? 0 : 1] = $aItem['prop_value'];
 								}
 								else if ((isset($aIdProps[$iIdProp]) || isset($aContactAllAccess[$iIdContact])) &&
 									PropertyType::EMAIl === $iType)
@@ -1055,6 +1059,25 @@ class PdoAddressBook
 									{
 										$aResult[] = array($sEmail, $sNickItem);
 									}
+
+									if (!$bName && !$bNick)
+									{
+										$aResult[] = array($sEmail, '');
+									}
+								}
+							}
+							else
+							{
+								$aNameItem = isset($aNames[$iId]) && \is_array($aNames[$iId]) ? $aNames[$iId] : array('', '');
+								$sNameItem = \trim($aNameItem[0].' '.$aNameItem[1]);
+								if (0 === \strlen($sNameItem))
+								{
+									$sNameItem = isset($aNicks[$iId]) ? $aNicks[$iId] : '';
+								}
+
+								foreach ($aItems as $sEmail)
+								{
+									$aResult[] = array($sEmail, $sNameItem);
 								}
 							}
 						}

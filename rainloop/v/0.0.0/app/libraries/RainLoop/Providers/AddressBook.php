@@ -58,7 +58,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsSharingAllowed()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\PersonalAddressBook\AddressBookInterface &&
+		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
 			$this->oDriver->IsSharingAllowed();
 	}
 
