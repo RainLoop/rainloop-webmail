@@ -1255,6 +1255,40 @@ class Utils
 	}
 
 	/**
+	 * @param string $sSequence
+	 *
+	 * @return array
+	 */
+	public static function ExpandFetchSequence($sSequence)
+	{
+		$aResult = array();
+		$sSequence = \trim($sSequence);
+		if (0 < \strlen($sSequence))
+		{
+			$aSequence = \explode(',', $sSequence);
+			foreach ($aSequence as $sItem)
+			{
+				if (false === \strpos($sItem, ':'))
+				{
+					$aResult[] = (int) $sItem;
+				}
+				else
+				{
+					$aItems = \explode(':', $sItem);
+					$iMax = \max($aItems[0], $aItems[1]);
+
+					for ($iIndex = $aItems[0]; $iIndex <= $iMax; $iIndex++)
+					{
+						$aResult[] = (int) $iIndex;
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
 	 *
 	 * @param resource $fResource
 	 * @param int $iBufferLen = 8192

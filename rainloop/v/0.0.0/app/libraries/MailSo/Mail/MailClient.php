@@ -1520,6 +1520,7 @@ class MailClient
 	 * @param bool $bUseSortIfSupported = false
 	 * @param bool $bUseThreadSortIfSupported = false
 	 * @param array $aExpandedThreadsUids = array()
+	 * @param bool $bUseESearchOrESortRequest = true
 	 *
 	 * @return \MailSo\Mail\MessageCollection
 	 *
@@ -1528,7 +1529,8 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function MessageList($sFolderName, $iOffset = 0, $iLimit = 10, $sSearch = '', $sPrevUidNext = '',
-		$oCacher = null, $bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $aExpandedThreadsUids = array())
+		$oCacher = null, $bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $aExpandedThreadsUids = array(),
+		$bUseESearchOrESortRequest = true)
 	{
 		$sSearch = \trim($sSearch);
 		if (!\MailSo\Base\Validator::RangeInt($iOffset, 0) ||
@@ -1555,7 +1557,9 @@ class MailClient
 		$iMessageCacheCount = 100;
 		$sUidNext = '0';
 		$sSerializedHash = '';
+		$bESearchSupported = $bUseESearchOrESortRequest ? $this->oImapClient->IsSupported('ESEARCH') : false;
 		$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
+		$bESortSupported = $bUseSortIfSupported && $bUseESearchOrESortRequest ? $this->oImapClient->IsSupported('ESORT') : false;
 		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
 			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
 
@@ -1584,7 +1588,6 @@ class MailClient
 			if ($bSearch || ($bUseSortIfSupported && !$bUseThreadSortIfSupported))
 			{
 				$bIndexAsUid = true;
-
 				$aIndexOrUids = null;
 
 				$sSearchCriterias = $this->getSearchBuilder($sSearch)->Complete();
@@ -1618,7 +1621,15 @@ class MailClient
 				{
 					if ($bUseSortIfSupported && !$bUseThreadSortIfSupported)
 					{
-						$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
+						if ($bESortSupported)
+						{
+							// TODO
+							$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
+						}
+						else
+						{
+							$aIndexOrUids = $this->oImapClient->MessageSimpleSort(array('ARRIVAL'), $sSearchCriterias, $bIndexAsUid);
+						}
 					}
 					else
 					{
@@ -1626,7 +1637,18 @@ class MailClient
 						{
 							try
 							{
-								$aIndexOrUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, $bIndexAsUid, 'UTF-8');
+								if ($bESearchSupported)
+								{
+									$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), $bIndexAsUid, '', 'UTF-8');
+									if (isset($aESearchData['ALL']))
+									{
+										$aIndexOrUids = \MailSo\Base\Utils::ExpandFetchSequence($aESearchData['ALL']);
+									}
+								}
+								else
+								{
+									$aIndexOrUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, $bIndexAsUid, 'UTF-8');
+								}
 							}
 							catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException)
 							{
@@ -1637,7 +1659,18 @@ class MailClient
 
 						if (null === $aIndexOrUids)
 						{
-							$aIndexOrUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, $bIndexAsUid);
+							if ($bESearchSupported)
+							{
+								$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), $bIndexAsUid);
+								if (isset($aESearchData['ALL']))
+								{
+									$aIndexOrUids = \MailSo\Base\Utils::ExpandFetchSequence($aESearchData['ALL']);
+								}
+							}
+							else
+							{
+								$aIndexOrUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, $bIndexAsUid);
+							}
 						}
 					}
 				}

@@ -1040,8 +1040,101 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @param string $sSearchCriterias = 'ALL'
+	 * @param array $aSearchReturn = null
+	 * @param bool $bReturnUid = true
+	 * @param string $sLimit = ''
+	 * @param string $sCharset = ''
+	 *
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageSimpleESearch($sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '')
+	{
+		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
+		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
+			? 'ALL' : $sSearchCriterias;
+
+		if (!$this->IsSupported('ESEARCH'))
+		{
+			$this->writeLogException(
+				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
+		}
+
+		if (!\is_array($aSearchReturn) || 0 === \count($aSearchReturn))
+		{
+			$aSearchReturn = array('ALL');
+		}
+
+		$aRequest = array();
+		if (0 < \strlen($sCharset))
+		{
+			$aRequest[] = 'CHARSET';
+			$aRequest[] = \strtoupper($sCharset);
+		}
+
+		$aRequest[] = 'RETURN';
+		$aRequest[] = $aSearchReturn;
+
+		$aRequest[] = $sSearchCriterias;
+		
+		if (0 < \strlen($sLimit))
+		{
+			$aRequest[] = $sLimit;
+		}
+
+		$this->SendRequest($sCommandPrefix.('SEARCH'), $aRequest);
+		$sRequestTag = $this->getCurrentTag();
+
+		$aResult = array();
+		$aResponse = $this->parseResponseWithValidation();
+		
+		if (\is_array($aResponse))
+		{
+			$oImapResponse = null;
+			foreach ($aResponse as /* @var $oImapResponse \MailSo\Imap\Response */ $oImapResponse)
+			{
+				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
+					&& 'ESEARCH' === $oImapResponse->StatusOrIndex
+					&& \is_array($oImapResponse->ResponseList)
+					&& isset($oImapResponse->ResponseList[2], $oImapResponse->ResponseList[2][0], $oImapResponse->ResponseList[2][1])
+					&& 'TAG' === $oImapResponse->ResponseList[2][0] && $sRequestTag === $oImapResponse->ResponseList[2][1]
+					&& (!$bReturnUid || ($bReturnUid && !empty($oImapResponse->ResponseList[3]) && 'UID' === $oImapResponse->ResponseList[3]))
+				)
+				{
+					$iStart = 3;
+					foreach ($oImapResponse->ResponseList as $iIndex => $mItem)
+					{
+						if ($iIndex >= $iStart)
+						{
+							switch ($mItem)
+							{
+								case 'ALL':
+								case 'MAX':
+								case 'MIN':
+								case 'COUNT':
+									if (isset($oImapResponse->ResponseList[$iIndex + 1]))
+									{
+										$aResult[$mItem] = $oImapResponse->ResponseList[$iIndex + 1];
+									}
+									break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
 	 * @param string $sSearchCriterias
-	 * @param bool $bReturnUid
+	 * @param bool $bReturnUid = true
 	 * @param string $sCharset = ''
 	 *
 	 * @return array
