@@ -312,9 +312,7 @@ function PopupsContactsViewModel()
 			}
 
 			self.reloadContactList(true);
-		}, true);
-		
-		this.contacts.skipNextSync = true;
+		});
 		
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();

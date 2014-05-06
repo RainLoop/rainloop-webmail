@@ -10015,9 +10015,7 @@ function PopupsContactsViewModel()
 			}
 
 			self.reloadContactList(true);
-		}, true);
-		
-		this.contacts.skipNextSync = true;
+		});
 		
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();
@@ -15213,8 +15211,6 @@ function WebMailDataStorage()
 	this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
 	
-	this.contacts.skipNextSync = false;
-	
 	this.allowContactsSync = ko.observable(false);
 	this.enableContactsSync = ko.observable(false);
 	this.contactsSyncUrl = ko.observable('');
@@ -18752,24 +18748,16 @@ RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
 
 /**
  * @param {Function} fResultFunc
- * @param {boolean=} bForce = false
  * @returns {boolean}
  */
-RainLoopApp.prototype.contactsSync = function (fResultFunc, bForce)
+RainLoopApp.prototype.contactsSync = function (fResultFunc)
 {
 	var oContacts = RL.data().contacts;
 	if (oContacts.importing() || oContacts.syncing() || !RL.data().enableContactsSync() || !RL.data().allowContactsSync())
 	{
-		oContacts.skipNextSync = false;
 		return false;
 	}
 	
-	if (oContacts.skipNextSync && !bForce)
-	{
-		oContacts.skipNextSync = false;
-		return false;
-	}
-
 	oContacts.syncing(true);
 	
 	RL.remote().contactsSync(function (sResult, oData) {
@@ -19583,6 +19571,7 @@ RainLoopApp.prototype.bootstart = function ()
 	var
 		sCustomLoginLink = '',
 		sJsHash = RL.settingsGet('JsHash'),
+		iContactsSyncInterval = Utils.pInt(RL.settingsGet('ContactsSyncInterval')),
 		bGoogle = RL.settingsGet('AllowGoogleSocial'),
 		bFacebook = RL.settingsGet('AllowFacebookSocial'),
 		bTwitter = RL.settingsGet('AllowTwitterSocial')
@@ -19723,9 +19712,12 @@ RainLoopApp.prototype.bootstart = function ()
 					RL.folders();
 				});
 
-				RL.sub('interval.10m-after5m', function () {
+				iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
+				iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
+
+				window.setInterval(function () {
 					RL.contactsSync();
-				});
+				}, iContactsSyncInterval * 60000 + 5000);
 				
 				_.delay(function () {
 					RL.contactsSync();

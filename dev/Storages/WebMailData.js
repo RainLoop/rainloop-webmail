@@ -90,8 +90,6 @@ function WebMailDataStorage()
 	this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
 	
-	this.contacts.skipNextSync = false;
-	
 	this.allowContactsSync = ko.observable(false);
 	this.enableContactsSync = ko.observable(false);
 	this.contactsSyncUrl = ko.observable('');

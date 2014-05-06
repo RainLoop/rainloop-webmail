@@ -1022,6 +1022,7 @@ class Actions
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
 				$aResult['ContactsSharingIsAllowed'] = $oAddressBookProvider->IsSharingAllowed();
 				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['ContactsSyncInterval'] = (int) $oConfig->Get('contacts', 'sync_interval', 20);
 
 				$aResult['EnableContactsSync'] = false;
 				$aResult['ContactsSyncUrl'] = '';
