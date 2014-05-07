@@ -11,7 +11,8 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
-						<i class="icon-folder"></i>
+						<i class="icon-copy visible-on-ctrl"></i>
+						<i class="icon-folder hidden-on-ctrl"></i>
 						&nbsp;&nbsp;
 						<span class="caret"></span>
 					</a>
@@ -20,7 +21,7 @@
 							<li class="divider" role="presentation" data-bind="visible: seporator"></li>
 						<!-- /ko -->
 						<!-- ko if: !seporator -->
-							<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function () { if (!disabled) $root.moveSelectedMessagesToFolder(id); }">
+							<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
 								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
 							</li>
 						<!-- /ko -->
@@ -32,7 +33,10 @@
 						<i class="icon-archive"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom" data-bind="visible: !isSpamFolder() && !isSpamDisabled() && !isDraftFolder() && !isSentFolder(), command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM'">
-						<i class="icon-bug"></i>
+						<i class="icon-angry-smiley"></i>
+					</a>
+					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom" data-bind="visible: isSpamFolder() && !isSpamDisabled() && !isDraftFolder() && !isSentFolder(), command: notSpamCommand, tooltip: 'MESSAGE_LIST/BUTTON_NOT_SPAM'">
+						<i class="icon-happy-smiley"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-delete" data-tooltip-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE'">
 						<i class="icon-trash"></i>

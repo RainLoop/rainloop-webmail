@@ -69,6 +69,8 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
+	
+//	$body = $('body'),
 
 	$window = $(window),
 
@@ -409,6 +411,7 @@ Enums.FolderType = {
 	'Trash': 13,
 	'Spam': 14,
 	'Archive': 15,
+	'NotSpam': 80,
 	'User': 99
 };
 
@@ -2065,7 +2068,7 @@ Utils.convertPlainTextToHtml = function (sPlain)
 
 Utils.draggeblePlace = function ()
 {
-	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>').appendTo('#rl-hidden');
+	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 };
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
@@ -3020,7 +3023,7 @@ ko.bindingHandlers.draggable = {
 			}
 
 			oConf['helper'] = function (oEvent) {
-				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null, !!oEvent.shiftKey);
+				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 			};
 
 			$(oElement).draggable(oConf).on('mousedown', function () {
@@ -5187,6 +5190,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.storeAndSetKeyScope();
 
 						RL.popupVisibilityNames.push(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 3000 + RL.popupVisibilityNames().length + 10);
 
 						Utils.delegateRun(this, 'onFocus', [], 500);
 					}
@@ -5196,6 +5200,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.restoreKeyScope();
 
 						RL.popupVisibilityNames.remove(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 2000);
 
 						_.delay(function () {
 							self.viewModelDom.hide();
@@ -12066,6 +12071,22 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
+	key('space', Enums.KeyState.FolderList, function () {
+		var bCollapsed = true, oFolder = null, $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
+		if ($items.length && $items[0])
+		{
+			oFolder = ko.dataFor($items[0]);
+			if (oFolder)
+			{
+				bCollapsed = oFolder.collapsed();
+				Utils.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+				oFolder.collapsed(!bCollapsed);
+			}
+		}
+
+		return false;
+	});
+
 	key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
 		self.folderList.focused(false);
 		return false;
@@ -12109,7 +12130,7 @@ MailBoxFolderListViewModel.prototype.messagesDrop = function (oToFolder, oUi)
 	{
 		var
 			sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
-			bCopy = '1' === oUi.helper.data('rl-copy'),
+			bCopy = $html.hasClass('rl-ctrl-key-pressed'),
 			aUids = oUi.helper.data('rl-uids')
 		;
 
@@ -12315,6 +12336,12 @@ function MailBoxMessageListViewModel()
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
 
+	this.notSpamCommand = Utils.createCommand(this, function () {
+		RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}, this.canBeMoved);
+
 	this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
 	this.reloadCommand = Utils.createCommand(this, function () {
@@ -12406,30 +12433,40 @@ MailBoxMessageListViewModel.prototype.cancelSearch = function ()
  * @param {string} sToFolderFullNameRaw
  * @return {boolean}
  */
-MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (sToFolderFullNameRaw)
+MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (sToFolderFullNameRaw, bCopy)
 {
 	if (this.canBeMoved())
 	{
 		RL.moveMessagesToFolder(
 			RL.data().currentFolderFullNameRaw(),
-			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw);
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 	}
 
 	return false;
 };
 
-MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem, bCopy)
+MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem)
 {
 	if (oMessageListItem)
 	{
 		oMessageListItem.checked(true);
 	}
 
-	var oEl = Utils.draggeblePlace();
+	var
+		oEl = Utils.draggeblePlace(),
+		aUids = RL.data().messageListCheckedOrSelectedUidsWithSubMails()
+	;
+
 	oEl.data('rl-folder', RL.data().currentFolderFullNameRaw());
-	oEl.data('rl-uids', RL.data().messageListCheckedOrSelectedUidsWithSubMails());
-	oEl.data('rl-copy', bCopy ? '1' : '0');
-	oEl.find('.text').text((bCopy ? '+' : '') + '' + RL.data().messageListCheckedOrSelectedUidsWithSubMails().length);
+	oEl.data('rl-uids', aUids);
+	oEl.find('.text').text('' + aUids.length);
+
+	_.defer(function () {
+		var aUids = RL.data().messageListCheckedOrSelectedUidsWithSubMails();
+		
+		oEl.data('rl-uids', aUids);
+		oEl.find('.text').text('' + aUids.length);
+	});
 
 	return oEl;
 };
@@ -13057,6 +13094,7 @@ function MailBoxMessageViewViewModel()
 	this.currentMessage = oData.currentMessage;
 	this.messageListChecked = oData.messageListChecked;
 	this.hasCheckedMessages = oData.hasCheckedMessages;
+	this.messageListCheckedOrSelectedUidsWithSubMails = oData.messageListCheckedOrSelectedUidsWithSubMails;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
 	this.messagesBodiesDom = oData.messagesBodiesDom;
@@ -13118,7 +13156,7 @@ function MailBoxMessageViewViewModel()
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				RL.data().currentFolderFullNameRaw(),
-				RL.data().messageListCheckedOrSelectedUidsWithSubMails(), false);
+				[this.message().uid], false);
 		}
 	}, this.messageVisibility);
 	
@@ -13135,6 +13173,15 @@ function MailBoxMessageViewViewModel()
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+	}, this.messageVisibility);
+
+	this.notSpamCommand = Utils.createCommand(this, function () {
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
@@ -13653,6 +13700,16 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 		oMessage.showExternalImages(true);
 	}
 };
+
+/**
+ * @returns {string}
+ */
+MailBoxMessageViewViewModel.prototype.printableCheckedMessageCount = function ()
+{
+	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+	return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : '';
+};
+
 
 /**
  * @param {MessageModel} oMessage
@@ -17260,13 +17317,15 @@ WebMailAjaxRemoteStorage.prototype.folderSetSubscribe = function (fCallback, sFo
  * @param {string} sFolder
  * @param {string} sToFolder
  * @param {Array} aUids
+ * @param {string=} sLearning
  */
-WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids)
+WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
 {
 	this.defaultRequest(fCallback, 'MessageMove', {
 		'FromFolder': sFolder,
 		'ToFolder': sToFolder,
-		'Uids': aUids.join(',')
+		'Uids': aUids.join(','),
+		'Learning': sLearning || ''
 	}, null, '', ['MessageList']);
 };
 
@@ -18273,6 +18332,18 @@ function AbstractApp()
 			);
 		}
 	});
+
+	$document.on('keydown', function (oEvent) {
+		if (oEvent && oEvent.ctrlKey)
+		{
+			$html.addClass('rl-ctrl-key-pressed');
+		}
+	}).on('keyup', function (oEvent) {
+		if (oEvent && !oEvent.ctrlKey)
+		{
+			$html.removeClass('rl-ctrl-key-pressed');
+		}
+	});
 }
 
 _.extend(AbstractApp.prototype, KnoinAbstractBoot.prototype);
@@ -18775,10 +18846,20 @@ RainLoopApp.prototype.contactsSync = function (fResultFunc)
 
 RainLoopApp.prototype.messagesMoveTrigger = function ()
 {
-	var self = this;
+	var
+		self = this,
+		sSpamFolder = RL.data().spamFolder()
+	;
 	
 	_.each(this.oMoveCache, function (oItem) {
-		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid']);
+		
+		var
+			bSpam = sSpamFolder === oItem['To'],
+			bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
+		;
+		
+		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
 	});
 
 	this.oMoveCache = {};
@@ -18874,6 +18955,9 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		case Enums.FolderType.Spam:
 			oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
 			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
+			break;
+		case Enums.FolderType.NotSpam:
+			oMoveFolder = oCache.getFolderFromCacheList('INBOX');
 			break;
 		case Enums.FolderType.Trash:
 			oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());

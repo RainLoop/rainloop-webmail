@@ -116,6 +116,22 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 		return false;
 	});
 
+	key('space', Enums.KeyState.FolderList, function () {
+		var bCollapsed = true, oFolder = null, $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
+		if ($items.length && $items[0])
+		{
+			oFolder = ko.dataFor($items[0]);
+			if (oFolder)
+			{
+				bCollapsed = oFolder.collapsed();
+				Utils.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+				oFolder.collapsed(!bCollapsed);
+			}
+		}
+
+		return false;
+	});
+
 	key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
 		self.folderList.focused(false);
 		return false;
@@ -159,7 +175,7 @@ MailBoxFolderListViewModel.prototype.messagesDrop = function (oToFolder, oUi)
 	{
 		var
 			sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
-			bCopy = '1' === oUi.helper.data('rl-copy'),
+			bCopy = $html.hasClass('rl-ctrl-key-pressed'),
 			aUids = oUi.helper.data('rl-uids')
 		;
 

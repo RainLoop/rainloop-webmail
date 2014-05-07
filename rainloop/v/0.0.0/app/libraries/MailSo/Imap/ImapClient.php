@@ -1788,7 +1788,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$bIsClosingBracketSquare = false;
 		$iLiteralLen = 0;
 		$iBufferEndIndex = 0;
-		$iTimer = 0;
+		$iDebugCount = 0;
 
 		$rImapLiteralStream = null;
 
@@ -1810,6 +1810,12 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		while (!$bIsEndOfList)
 		{
+			$iDebugCount++;
+			if (100000 === $iDebugCount)
+			{
+				$this->Logger()->Write('PartialParseOver: '.$iDebugCount, \MailSo\Log\Enumerations\Type::ERROR);
+			}
+
 			if ($this->bNeedNext)
 			{
 				$iPos = 0;
@@ -1854,7 +1860,7 @@ class ImapClient extends \MailSo\Net\NetClient
 						$sLiteral .= $sAddRead;
 						$iRead -= \strlen($sAddRead);
 
-						\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+						\MailSo\Base\Utils::ResetTimeLimit();
 					}
 
 					if (false !== $sLiteral)
@@ -2203,6 +2209,11 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->iResponseBufParsedPos = 0;
 		}
 
+		if (100000 < $iDebugCount)
+		{
+			$this->Logger()->Write('PartialParseOverResult: '.$iDebugCount, \MailSo\Log\Enumerations\Type::ERROR);
+		}
+
 		return $bTreatAsAtom ? $sAtomBuilder : $aList;
 	}
 
@@ -2249,14 +2260,13 @@ class ImapClient extends \MailSo\Net\NetClient
 			\call_user_func($this->aFetchCallbacks[$sFetchKey],
 				$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
 
-			$iTimer = 0;
 			$iNotReadLiteralLen = 0;
 			while (!\feof($rImapLiteralStream))
 			{
 				$sBuf = \fread($rImapLiteralStream, 8192);
 				if (false !== $sBuf)
 				{
-					\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+					\MailSo\Base\Utils::ResetTimeLimit();
 					$iNotReadLiteralLen += \strlen($sBuf);
 					continue;
 				}

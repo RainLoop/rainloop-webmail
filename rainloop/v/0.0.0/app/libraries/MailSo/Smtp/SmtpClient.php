@@ -403,7 +403,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->writeLog('Message data.', \MailSo\Log\Enumerations\Type::NOTE);
 
-		$iTimer = 0;
 		while (!\feof($rDataStream))
 		{
 			$sBuffer = \fgets($rDataStream);
@@ -416,7 +415,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 				$this->sendRaw(\rtrim($sBuffer, "\r\n"), false);
 
-				\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+				\MailSo\Base\Utils::ResetTimeLimit();
 				continue;
 			}
 			else if (!\feof($rDataStream))

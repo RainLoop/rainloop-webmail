@@ -15,11 +15,6 @@ abstract class PdoAbstract
 	protected $bExplain = false;
 
 	/**
-	 * @var int
-	 */
-	protected $iResetTimer = 0;
-
-	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger;

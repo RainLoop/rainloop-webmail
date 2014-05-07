@@ -31,7 +31,10 @@
 						<i class="icon-archive"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
-						<i class="icon-bug"></i>
+						<i class="icon-angry-smiley"></i>
+					</a>
+					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
+						<i class="icon-happy-smiley"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-delete" data-tooltip-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash"></i>
@@ -67,9 +70,16 @@
 						</li>
 						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
-								<i class="icon-bug"></i>
+								<i class="icon-angry-smiley"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_SPAM"></span>
+							</a>
+						</li>
+						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
+							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
+								<i class="icon-happy-smiley"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_NOT_SPAM"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane()">
@@ -126,7 +136,7 @@
 		<div class="b-content thm-message-view-background-color">
 			<div>
 				<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
-					<span data-bind="text: messageListChecked().length"></span>
+					<span data-bind="text: printableCheckedMessageCount()"></span>
 					<i class="icon-mail"></i>
 				</div>
 				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">

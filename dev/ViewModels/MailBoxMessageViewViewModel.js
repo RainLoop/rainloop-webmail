@@ -26,6 +26,7 @@ function MailBoxMessageViewViewModel()
 	this.currentMessage = oData.currentMessage;
 	this.messageListChecked = oData.messageListChecked;
 	this.hasCheckedMessages = oData.hasCheckedMessages;
+	this.messageListCheckedOrSelectedUidsWithSubMails = oData.messageListCheckedOrSelectedUidsWithSubMails;
 	this.messageLoading = oData.messageLoading;
 	this.messageLoadingThrottle = oData.messageLoadingThrottle;
 	this.messagesBodiesDom = oData.messagesBodiesDom;
@@ -87,7 +88,7 @@ function MailBoxMessageViewViewModel()
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				RL.data().currentFolderFullNameRaw(),
-				RL.data().messageListCheckedOrSelectedUidsWithSubMails(), false);
+				[this.message().uid], false);
 		}
 	}, this.messageVisibility);
 	
@@ -104,6 +105,15 @@ function MailBoxMessageViewViewModel()
 		if (this.message())
 		{
 			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+				this.message().folderFullNameRaw,
+				[this.message().uid], true);
+		}
+	}, this.messageVisibility);
+
+	this.notSpamCommand = Utils.createCommand(this, function () {
+		if (this.message())
+		{
+			RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 				this.message().folderFullNameRaw,
 				[this.message().uid], true);
 		}
@@ -622,6 +632,16 @@ MailBoxMessageViewViewModel.prototype.showImages = function (oMessage)
 		oMessage.showExternalImages(true);
 	}
 };
+
+/**
+ * @returns {string}
+ */
+MailBoxMessageViewViewModel.prototype.printableCheckedMessageCount = function ()
+{
+	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+	return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : '';
+};
+
 
 /**
  * @param {MessageModel} oMessage

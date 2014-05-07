@@ -67,6 +67,8 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
+	
+//	$body = $('body'),
 
 	$window = $(window),
 

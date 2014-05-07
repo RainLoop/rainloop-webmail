@@ -320,7 +320,7 @@ class Utils
 			'facebook.com'			=> 'facebook.png',
 			'facebookmail.com'		=> 'facebook.png',
 
-			'cnet.online.com'			=> 'cnet.jpg',
+			'cnet.online.com'		=> 'cnet.jpg',
 			'github.com'			=> 'github.png',
 			'steampowered.com'		=> 'steam.png',
 			'myspace.com'			=> 'myspace.png',
@@ -328,7 +328,6 @@ class Utils
 			'youtube.com'			=> 'youtube.gif',
 			'amazon.com'			=> 'amazon.png',
 			'ted.com'				=> 'ted.png',
-			'icloud.com'			=> 'icloud.jpg',
 			'google.com'			=> 'google.png',
 			'plus.google.com'		=> 'google-plus.png',
 

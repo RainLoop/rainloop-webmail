@@ -386,7 +386,7 @@ ko.bindingHandlers.draggable = {
 			}
 
 			oConf['helper'] = function (oEvent) {
-				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null, !!oEvent.shiftKey);
+				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 			};
 
 			$(oElement).draggable(oConf).on('mousedown', function () {

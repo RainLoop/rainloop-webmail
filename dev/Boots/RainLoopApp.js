@@ -207,10 +207,20 @@ RainLoopApp.prototype.contactsSync = function (fResultFunc)
 
 RainLoopApp.prototype.messagesMoveTrigger = function ()
 {
-	var self = this;
+	var
+		self = this,
+		sSpamFolder = RL.data().spamFolder()
+	;
 	
 	_.each(this.oMoveCache, function (oItem) {
-		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid']);
+		
+		var
+			bSpam = sSpamFolder === oItem['To'],
+			bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
+		;
+		
+		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
 	});
 
 	this.oMoveCache = {};
@@ -306,6 +316,9 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 		case Enums.FolderType.Spam:
 			oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
 			nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
+			break;
+		case Enums.FolderType.NotSpam:
+			oMoveFolder = oCache.getFolderFromCacheList('INBOX');
 			break;
 		case Enums.FolderType.Trash:
 			oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());

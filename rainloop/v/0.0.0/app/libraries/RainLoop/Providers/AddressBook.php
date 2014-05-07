@@ -252,14 +252,12 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportCsvArray($sEmail, $aCsvData)
 	{
 		$iCount = 0;
-		$iResetTimer = 0;
-		
 		if ($this->IsActive() && \is_array($aCsvData) && 0 < \count($aCsvData))
 		{
 			$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 			foreach ($aCsvData as $aItem)
 			{
-				\MailSo\Base\Utils::ResetTimeLimit($iResetTimer);
+				\MailSo\Base\Utils::ResetTimeLimit();
 				
 				foreach ($aItem as $sItemName => $sItemValue)
 				{
@@ -309,8 +307,6 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportVcfFile($sEmail, $sVcfData)
 	{
 		$iCount = 0;
-		$iResetTimer = 0;
-
 		if ($this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
@@ -339,7 +335,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 				{
 					if ($oVCard instanceof \Sabre\VObject\Component\VCard)
 					{
-						\MailSo\Base\Utils::ResetTimeLimit($iResetTimer);
+						\MailSo\Base\Utils::ResetTimeLimit();
 						
 						if (empty($oVCard->UID))
 						{

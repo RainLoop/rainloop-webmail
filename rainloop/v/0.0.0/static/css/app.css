@@ -1390,122 +1390,125 @@ table {
 .icon-upload:before {
   content: "\e044";
 }
-.icon-bug:before {
+.icon-popup:before {
   content: "\e045";
 }
-.icon-popup:before {
+.icon-github:before {
   content: "\e046";
 }
-.icon-github:before {
+.icon-telephone:before {
   content: "\e047";
 }
-.icon-telephone:before {
+.icon-mobile:before {
   content: "\e048";
 }
-.icon-mobile:before {
+.icon-pencil:before {
   content: "\e049";
 }
-.icon-pencil:before {
+.icon-trash:before {
   content: "\e04a";
 }
-.icon-trash:before {
+.icon-left-middle:before {
   content: "\e04b";
 }
-.icon-left-middle:before {
+.icon-right-middle:before {
   content: "\e04c";
 }
-.icon-right-middle:before {
+.icon-repeat:before {
   content: "\e04d";
 }
-.icon-repeat:before {
+.icon-key:before {
   content: "\e04e";
 }
-.icon-key:before {
+.icon-lock:before {
   content: "\e04f";
 }
-.icon-lock:before {
+.icon-home:before {
   content: "\e050";
 }
-.icon-home:before {
+.icon-address-book:before {
   content: "\e051";
 }
-.icon-address-book:before {
+.icon-share:before {
   content: "\e052";
 }
-.icon-share:before {
+.icon-suitcase:before {
   content: "\e053";
 }
-.icon-suitcase:before {
+.icon-new-sign:before {
   content: "\e054";
 }
-.icon-new-sign:before {
+.icon-users:before {
   content: "\e055";
 }
-.icon-users:before {
+.icon-earth:before {
   content: "\e056";
 }
-.icon-earth:before {
+.icon-mail:before {
   content: "\e057";
 }
-.icon-happy-smiley:before {
+.icon-checkbox-checked:before {
   content: "\e058";
 }
-.icon-mail:before {
+.icon-checkbox-unchecked:before {
   content: "\e059";
 }
-.icon-checkbox-checked:before {
+.icon-checkbox-partial:before {
   content: "\e05a";
 }
-.icon-checkbox-unchecked:before {
+.icon-radio-checked:before {
   content: "\e05b";
 }
-.icon-checkbox-partial:before {
+.icon-radio-unchecked:before {
   content: "\e05c";
 }
-.icon-radio-checked:before {
+.icon-google-drive:before {
   content: "\e05d";
 }
-.icon-radio-unchecked:before {
+.icon-spinner:before {
   content: "\e05e";
 }
-.icon-google-drive:before {
+.icon-archive:before {
   content: "\e05f";
 }
-.icon-spinner:before {
+.icon-buy-sign:before {
   content: "\e060";
 }
-.icon-archive:before {
+.icon-filter:before {
   content: "\e061";
 }
-.icon-buy-sign:before {
+.icon-resize:before {
   content: "\e062";
 }
-.icon-filter:before {
+.icon-sync:before {
   content: "\e063";
 }
-.icon-resize:before {
+.icon-ellipsis-alt:before {
   content: "\e064";
 }
-.icon-sync:before {
+.icon-cloud-up:before {
   content: "\e065";
 }
-.icon-ellipsis-alt:before {
+.icon-cloud-down:before {
   content: "\e066";
 }
-.icon-cloud-up:before {
+.icon-import:before {
   content: "\e067";
 }
-.icon-cloud-down:before {
+.icon-export:before {
   content: "\e068";
 }
-.icon-import:before {
+.icon-copy:before {
   content: "\e069";
 }
-.icon-export:before {
+.icon-angry-smiley:before {
   content: "\e06a";
 }
-.icon-help:before {
+.icon-happy-smiley:before {
   content: "\e06b";
+}
+.icon-help:before {
+  content: "\e06c";
 }
 
 /** initial setup **/
@@ -7145,6 +7148,18 @@ html.rl-no-preview-pane #rl-sub-right {
 html.rl-no-preview-pane #rl-right .ui-resizable-handle {
   display: none !important;
 }
+.visible-on-ctrl {
+  display: none;
+}
+.hidden-on-ctrl {
+  display: inline-block;
+}
+html.rl-ctrl-key-pressed .visible-on-ctrl {
+  display: inline-block;
+}
+html.rl-ctrl-key-pressed .hidden-on-ctrl {
+  display: none;
+}
 #rl-loading,
 #rl-loading-error {
   position: absolute;
@@ -7304,9 +7319,6 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .b-login-content .flag-selector {
   margin-bottom: 0;
 }
-.popups .b-ask-content.modal {
-  z-index: 10000;
-}
 .popups .b-ask-content .modal-header {
   background-color: #fff;
 }
@@ -7461,14 +7473,10 @@ html.rl-no-preview-pane #rl-right .ui-resizable-handle {
 .popups .b-folder-create-content .modal-header {
   background-color: #fff;
 }
-.popups .b-folder-system-content.modal {
-  z-index: 1102;
-}
 .popups .b-folder-system-content .modal-header {
   background-color: #fff;
 }
 .popups .b-languages-content.modal {
-  z-index: 1103;
   width: 700px;
 }
 .popups .b-languages-content.exp {

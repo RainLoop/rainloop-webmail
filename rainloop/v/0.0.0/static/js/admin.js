@@ -69,6 +69,8 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
+	
+//	$body = $('body'),
 
 	$window = $(window),
 
@@ -405,6 +407,7 @@ Enums.FolderType = {
 	'Trash': 13,
 	'Spam': 14,
 	'Archive': 15,
+	'NotSpam': 80,
 	'User': 99
 };
 
@@ -2061,7 +2064,7 @@ Utils.convertPlainTextToHtml = function (sPlain)
 
 Utils.draggeblePlace = function ()
 {
-	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>').appendTo('#rl-hidden');
+	return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 };
 
 Utils.defautOptionsAfterRender = function (oOption, oItem)
@@ -3016,7 +3019,7 @@ ko.bindingHandlers.draggable = {
 			}
 
 			oConf['helper'] = function (oEvent) {
-				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null, !!oEvent.shiftKey);
+				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 			};
 
 			$(oElement).draggable(oConf).on('mousedown', function () {
@@ -4254,6 +4257,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.storeAndSetKeyScope();
 
 						RL.popupVisibilityNames.push(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 3000 + RL.popupVisibilityNames().length + 10);
 
 						Utils.delegateRun(this, 'onFocus', [], 500);
 					}
@@ -4263,6 +4267,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.restoreKeyScope();
 
 						RL.popupVisibilityNames.remove(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 2000);
 
 						_.delay(function () {
 							self.viewModelDom.hide();
@@ -7795,6 +7800,18 @@ function AbstractApp()
 				$html.attr('class'),
 				Utils.microtime() - Globals.now
 			);
+		}
+	});
+
+	$document.on('keydown', function (oEvent) {
+		if (oEvent && oEvent.ctrlKey)
+		{
+			$html.addClass('rl-ctrl-key-pressed');
+		}
+	}).on('keyup', function (oEvent) {
+		if (oEvent && !oEvent.ctrlKey)
+		{
+			$html.removeClass('rl-ctrl-key-pressed');
 		}
 	});
 }

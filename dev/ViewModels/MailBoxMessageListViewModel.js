@@ -172,6 +172,12 @@ function MailBoxMessageListViewModel()
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
 
+	this.notSpamCommand = Utils.createCommand(this, function () {
+		RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+			RL.data().currentFolderFullNameRaw(),
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}, this.canBeMoved);
+
 	this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
 	this.reloadCommand = Utils.createCommand(this, function () {
@@ -263,30 +269,40 @@ MailBoxMessageListViewModel.prototype.cancelSearch = function ()
  * @param {string} sToFolderFullNameRaw
  * @return {boolean}
  */
-MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (sToFolderFullNameRaw)
+MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (sToFolderFullNameRaw, bCopy)
 {
 	if (this.canBeMoved())
 	{
 		RL.moveMessagesToFolder(
 			RL.data().currentFolderFullNameRaw(),
-			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw);
+			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 	}
 
 	return false;
 };
 
-MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem, bCopy)
+MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageListItem)
 {
 	if (oMessageListItem)
 	{
 		oMessageListItem.checked(true);
 	}
 
-	var oEl = Utils.draggeblePlace();
+	var
+		oEl = Utils.draggeblePlace(),
+		aUids = RL.data().messageListCheckedOrSelectedUidsWithSubMails()
+	;
+
 	oEl.data('rl-folder', RL.data().currentFolderFullNameRaw());
-	oEl.data('rl-uids', RL.data().messageListCheckedOrSelectedUidsWithSubMails());
-	oEl.data('rl-copy', bCopy ? '1' : '0');
-	oEl.find('.text').text((bCopy ? '+' : '') + '' + RL.data().messageListCheckedOrSelectedUidsWithSubMails().length);
+	oEl.data('rl-uids', aUids);
+	oEl.find('.text').text('' + aUids.length);
+
+	_.defer(function () {
+		var aUids = RL.data().messageListCheckedOrSelectedUidsWithSubMails();
+		
+		oEl.data('rl-uids', aUids);
+		oEl.find('.text').text('' + aUids.length);
+	});
 
 	return oEl;
 };

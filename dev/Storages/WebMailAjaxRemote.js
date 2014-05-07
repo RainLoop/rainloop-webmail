@@ -612,13 +612,15 @@ WebMailAjaxRemoteStorage.prototype.folderSetSubscribe = function (fCallback, sFo
  * @param {string} sFolder
  * @param {string} sToFolder
  * @param {Array} aUids
+ * @param {string=} sLearning
  */
-WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids)
+WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
 {
 	this.defaultRequest(fCallback, 'MessageMove', {
 		'FromFolder': sFolder,
 		'ToFolder': sToFolder,
-		'Uids': aUids.join(',')
+		'Uids': aUids.join(','),
+		'Learning': sLearning || ''
 	}, null, '', ['MessageList']);
 };
 

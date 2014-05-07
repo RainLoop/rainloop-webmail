@@ -55,6 +55,7 @@ Enums.FolderType = {
 	'Trash': 13,
 	'Spam': 14,
 	'Archive': 15,
+	'NotSpam': 80,
 	'User': 99
 };
 

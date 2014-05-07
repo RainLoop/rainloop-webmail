@@ -41,6 +41,18 @@ function AbstractApp()
 			);
 		}
 	});
+
+	$document.on('keydown', function (oEvent) {
+		if (oEvent && oEvent.ctrlKey)
+		{
+			$html.addClass('rl-ctrl-key-pressed');
+		}
+	}).on('keyup', function (oEvent) {
+		if (oEvent && !oEvent.ctrlKey)
+		{
+			$html.removeClass('rl-ctrl-key-pressed');
+		}
+	});
 }
 
 _.extend(AbstractApp.prototype, KnoinAbstractBoot.prototype);

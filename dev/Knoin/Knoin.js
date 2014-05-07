@@ -110,6 +110,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.storeAndSetKeyScope();
 
 						RL.popupVisibilityNames.push(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 3000 + RL.popupVisibilityNames().length + 10);
 
 						Utils.delegateRun(this, 'onFocus', [], 500);
 					}
@@ -119,6 +120,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						this.restoreKeyScope();
 
 						RL.popupVisibilityNames.remove(this.viewModelName);
+						oViewModel.viewModelDom.css('z-index', 2000);
 
 						_.delay(function () {
 							self.viewModelDom.hide();

@@ -158,7 +158,7 @@ class PdoAddressBook
 
 	private function davClientRequest($oClient, $sCmd, $sUrl, $mData = null)
 	{
-		\MailSo\Base\Utils::ResetTimeLimit($this->iResetTimer);
+		\MailSo\Base\Utils::ResetTimeLimit();
 		
 		$this->oLogger->Write($sCmd.' '.$sUrl.('PUT' === $sCmd && null !== $mData ? ' ('.\strlen($mData).')' : ''),
 			\MailSo\Log\Enumerations\Type::INFO, 'DAV');

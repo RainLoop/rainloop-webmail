@@ -827,34 +827,34 @@ class Utils
 	/**
 	 * @staticvar bool $bValidateAction
 	 *
-	 * @param int &$iTimer
 	 * @param int $iTimeToReset = 15
 	 * @param int $iTimeToAdd = 120
 	 *
 	 * @return bool
 	 */
-	public static function ResetTimeLimit(&$iTimer, $iTimeToReset = 15, $iTimeToAdd = 120)
+	public static function ResetTimeLimit($iTimeToReset = 15, $iTimeToAdd = 120)
 	{
 		static $bValidateAction = null;
+		static $iResetTimer = null;
+
 		if (null === $bValidateAction)
 		{
+			$iResetTimer = 0;
+
 			$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
 			$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode || 'true' === $sSafeMode;
 
 			$bValidateAction = !$bSafeMode && \MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
 		}
 
-		if ($bValidateAction)
+		if ($bValidateAction && $iTimeToReset < \time() - $iResetTimer)
 		{
-			$iTime = \time();
-			if ($iTimeToReset < $iTime - $iTimer)
-			{
-				$iTimer = $iTime;
-				\set_time_limit($iTimeToAdd);
-			}
+			$iResetTimer = \time();
+			\set_time_limit($iTimeToAdd);
+			return true;
 		}
 
-		return $bValidateAction;
+		return false;
 	}
 
 	/**
@@ -1347,7 +1347,6 @@ class Utils
 	 */
 	public static function FpassthruWithTimeLimitReset($fResource, $iBufferLen = 8192)
 	{
-		$iTimer = 0;
 		$bResult = false;
 		if (\is_resource($fResource))
 		{
@@ -1357,7 +1356,7 @@ class Utils
 				if (false !== $sBuffer)
 				{
 					echo $sBuffer;
-					\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+					\MailSo\Base\Utils::ResetTimeLimit();
 					continue;
 				}
 
@@ -1382,7 +1381,6 @@ class Utils
 	 */
 	public static function MultipleStreamWriter($rRead, $aWrite, $iBufferLen = 8192, $bResetTimeLimit = true, $bFixCrLf = false, $bRewindOnComplete = false)
 	{
-		$iTimer = 0;
 		$mResult = false;
 		if ($rRead && \is_array($aWrite) && 0 < \count($aWrite))
 		{
@@ -1420,7 +1418,7 @@ class Utils
 
 				if ($bResetTimeLimit)
 				{
-					\MailSo\Base\Utils::ResetTimeLimit($iTimer);
+					\MailSo\Base\Utils::ResetTimeLimit();
 				}
 			}
 		}

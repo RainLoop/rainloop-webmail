@@ -225,6 +225,22 @@ html.rl-no-preview-pane {
 	}
 }
 
+.visible-on-ctrl {
+	display: none;
+}
+
+.hidden-on-ctrl {
+	display: inline-block;
+}
+
+html.rl-ctrl-key-pressed .visible-on-ctrl {
+	display: inline-block;
+}
+
+html.rl-ctrl-key-pressed .hidden-on-ctrl {
+	display: none;
+}
+
 #rl-loading, #rl-loading-error {
 	position: absolute;
 	font: 30px Tahoma;
