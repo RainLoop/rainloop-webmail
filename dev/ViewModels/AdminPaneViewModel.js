@@ -12,7 +12,6 @@ function AdminPaneViewModel()
 	this.version = ko.observable(RL.settingsGet('Version'));
 
 	this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
-	this.leftPanelDisabled = RL.data().leftPanelDisabled;
 
 	Knoin.constructorEnd(this);
 }

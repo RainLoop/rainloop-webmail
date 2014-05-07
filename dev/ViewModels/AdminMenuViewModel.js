@@ -10,6 +10,8 @@ function AdminMenuViewModel(oScreen)
 {
 	KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
+	this.leftPanelDisabled = RL.data().leftPanelDisabled;
+
 	this.menu = oScreen.menu;
 
 	Knoin.constructorEnd(this);

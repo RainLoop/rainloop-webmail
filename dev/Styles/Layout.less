@@ -36,7 +36,7 @@
 	.g-ui-absolute-reset;
 
 	width: @rlLeftWidth;
-	min-width: 120px;
+	min-width: 60px;
 }
 
 #rl-right {
@@ -147,10 +147,10 @@ html.ssm-state-tablet, html.ssm-state-mobile {
 	}
 
 	.b-contacts-content.modal {
-		.b-list-toopbar, .b-list-content, .b-list-footer-toopbar {
+		.b-list-toolbar, .b-list-content, .b-list-footer-toolbar {
 			width: 150px;
 		}
-		.b-list-toopbar .e-search {
+		.b-list-toolbar .e-search {
 			width: 125px;
 		}
 		.b-view-content {
@@ -173,10 +173,10 @@ html.ssm-state-tablet {
 	}
 
 	.b-contacts-content.modal {
-		.b-list-toopbar, .b-list-content, .b-list-footer-toopbar {
+		.b-list-toolbar, .b-list-content, .b-list-footer-toolbar {
 			width: 200px;
 		}
-		.b-list-toopbar .e-search {
+		.b-list-toolbar .e-search {
 			width: 175px;
 		}
 		.b-view-content {
@@ -188,15 +188,38 @@ html.ssm-state-tablet {
 	}
 }
 
+.show-on-panel-disabled {
+	display: none;
+}
+
 html.rl-left-panel-disabled {
 	
 	#rl-left {
-		width: 5px !important;
-		display: none;
+		width: 65px !important;
+
+		.show-on-panel-disabled {
+			display: block;
+		}
+
+		.opacity-on-panel-disabled {
+			.opacity(30);
+		}
+
+		.visibility-hidden-on-panel-disabled {
+			visibility: hidden;
+		}
+
+		.hide-on-panel-disabled {
+			display: none;
+		}
+
+		&.ui-state-disabled {
+			.opacity(100);
+		}
 	}
 
 	#rl-right {
-		left: 5px !important;
+		left: 65px !important;
 	}
 }
 

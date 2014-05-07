@@ -10,6 +10,8 @@ function SettingsMenuViewModel(oScreen)
 {
 	KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
+	this.leftPanelDisabled = RL.data().leftPanelDisabled;
+
 	this.menu = oScreen.menu;
 
 	Knoin.constructorEnd(this);

@@ -15,22 +15,23 @@
 		height: 30px;
 		padding: 10px 10px 0 @rlLowMargin;
 		color: #fff;
+		z-index: 101;
 	}
 
 	.b-footer {
 		position: absolute;
-		bottom: 18px;
+		bottom: 20px;
 		right: 0;
 		left: 0;
 		height: 20px;
-		padding: 0 10px 0 0;
+		padding: 0 10px 0 5px;
 		z-index: 101;
 	}
 
 	.b-content {
 		position: absolute;
 		top: 50px + @rlLowMargin;
-		bottom: 30px + @rlLowMargin + @rlBottomMargin;
+		bottom: 32px + @rlLowMargin + @rlBottomMargin;
 //		left: @rlLowMargin;
 		left: 0;
 		right: 0;
@@ -159,5 +160,12 @@
 	}
 	.b-sub-folders.unpaddig-folder .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
 		padding-left: @subPadding * 3 + @folderItemPadding;
+	}
+}
+
+html.rl-left-panel-disabled {
+	.btn.buttonContacts {
+		margin-top: 10px !important;
+		margin-left: 0 !important;
 	}
 }
