@@ -45,15 +45,15 @@ class Callback extends \MailSo\Log\Driver
 	}
 
 	/**
-	 * @param string|array $sDesc
+	 * @param string|array $mDesc
 	 *
 	 * @return bool
 	 */
-	protected function writeImplementation($sDesc)
+	protected function writeImplementation($mDesc)
 	{
 		if ($this->fWriteCallback)
 		{
-			\call_user_func_array($this->fWriteCallback, array($sDesc));
+			\call_user_func_array($this->fWriteCallback, array($mDesc));
 		}
 
 		return true;

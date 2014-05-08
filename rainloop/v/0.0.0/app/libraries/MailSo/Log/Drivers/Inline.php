@@ -51,12 +51,12 @@ class Inline extends \MailSo\Log\Driver
 	 */
 	protected function writeImplementation($mDesc)
 	{
-		if (is_array($mDesc))
+		if (\is_array($mDesc))
 		{
 			if ($this->bHtmlEncodeSpecialChars)
 			{
-				$mDesc = array_map(function ($sItem) {
-					$sItem = \htmlspecialchars($mDesc);
+				$mDesc = \array_map(function ($sItem) {
+					return \htmlspecialchars($sItem);
 				}, $mDesc);
 			}
 

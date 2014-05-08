@@ -758,8 +758,11 @@ class Actions
 					@mkdir($sLogFileDir, 0755, true);
 				}
 
-				$this->oLogger->Add(\MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath)
-					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', true)));
+				$this->oLogger->Add(
+					\MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath)
+						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', true))
+						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 30))
+				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
 				{
@@ -3866,6 +3869,7 @@ class Actions
 	 */
 	public function DoMessageList()
 	{
+//		sleep(5);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 		
 		$sFolder = '';

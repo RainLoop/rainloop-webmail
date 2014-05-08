@@ -142,6 +142,7 @@ Values:
 				'enable' => array(false, 'Enable logging'),
 				
 				'write_on_error_only' => array(false, 'Logs entire request only if error occured'),
+				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.

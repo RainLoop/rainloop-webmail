@@ -34,6 +34,11 @@ abstract class Driver
 	protected $bTypedPrefix;
 
 	/**
+	 * @var int
+	 */
+	private $iWriteOnTimeoutOnly;
+
+	/**
 	 * @var bool
 	 */
 	private $bWriteOnErrorOnly;
@@ -58,6 +63,7 @@ abstract class Driver
 		$this->bTimePrefix = true;
 		$this->bTypedPrefix = true;
 
+		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
 		$this->bFlushCache = false;
 		$this->aCache = array();
@@ -95,6 +101,22 @@ abstract class Driver
 	}
 
 	/**
+	 * @param int $iTimeout
+	 *
+	 * @return \MailSo\Log\Driver
+	 */
+	public function WriteOnTimeoutOnly($iTimeout)
+	{
+		$this->iWriteOnTimeoutOnly = (int) $iTimeout;
+		if (0 > $this->iWriteOnTimeoutOnly)
+		{
+			$this->iWriteOnTimeoutOnly = 0;
+		}
+		
+		return $this;
+	}
+
+	/**
 	 * @return \MailSo\Log\Driver
 	 */
 	public function DisableTypedPrefix()
@@ -104,7 +126,7 @@ abstract class Driver
 	}
 
 	/**
-	 * @param string|array $sDesc
+	 * @param string|array $mDesc
 	 * @return bool
 	 */
 	abstract protected function writeImplementation($mDesc);
@@ -120,16 +142,16 @@ abstract class Driver
 	/**
 	 * @param string $sTimePrefix
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 * @param array $sName = ''
 	 *
 	 * @return string
 	 */
 	protected function loggerLineImplementation($sTimePrefix, $sDesc,
-		$iDescType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
+		$iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
 	{
 		return ($this->bTimePrefix ? '['.$sTimePrefix.'] ' : '').
-			($this->bTypedPrefix ? $this->getTypedPrefix($iDescType, $sName) : '').
+			($this->bTypedPrefix ? $this->getTypedPrefix($iType, $sName) : '').
 			$sDesc;
 	}
 
@@ -152,46 +174,66 @@ abstract class Driver
 	}
 
 	/**
-	 * @param int $iDescType
+	 * @param int $iType
 	 * @param string $sName = ''
 	 *
 	 * @return string
 	 */
-	protected function getTypedPrefix($iDescType, $sName = '')
+	protected function getTypedPrefix($iType, $sName = '')
 	{
 		$sName = 0 < \strlen($sName) ? $sName : $this->sName;
-		return isset($this->aPrefixes[$iDescType]) ? $sName.$this->aPrefixes[$iDescType].': ' : '';
+		return isset($this->aPrefixes[$iType]) ? $sName.$this->aPrefixes[$iType].': ' : '';
 	}
 
 	/**
 	 * @final
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
-	 * @param array $sName = ''
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param string $sName = ''
 	 *
 	 * @return bool
 	 */
-	final public function Write($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
+	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
 	{
-		if ($this->bWriteOnErrorOnly && !$this->bFlushCache)
+		$bResult = true;
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{
-			$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iDescType, $sName);
-
-			if (\in_array($iDescType, array(
+			if ($this->bWriteOnErrorOnly && \in_array($iType, array(
 				\MailSo\Log\Enumerations\Type::NOTICE,
 				\MailSo\Log\Enumerations\Type::WARNING,
 				\MailSo\Log\Enumerations\Type::ERROR
 			)))
 			{
-				$this->bFlushCache = true;
-				return $this->writeImplementation($this->aCache);
-			}
+				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), '--- FlushCache: WriteOnErrorOnly', \MailSo\Log\Enumerations\Type::INFO, 'LOGS');
+				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 
-			return true;
+				$this->bFlushCache = true;
+				$bResult = $this->writeImplementation($this->aCache);
+				$this->aCache = array();
+			}
+			else if (0 < $this->iWriteOnTimeoutOnly && \time() - APP_START_TIME > $this->iWriteOnTimeoutOnly)
+			{
+				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), '--- FlushCache: WriteOnTimeoutOnly['.
+					(\time() - APP_START_TIME).'/'.$this->iWriteOnTimeoutOnly.']', \MailSo\Log\Enumerations\Type::NOTE, 'LOGS');
+
+				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
+				
+				$this->bFlushCache = true;
+				$bResult = $this->writeImplementation($this->aCache);
+				$this->aCache = array();
+			}
+			else
+			{
+				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
+			}
+		}
+		else
+		{
+			$bResult = $this->writeImplementation(
+				$this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName));
 		}
 
-		return $this->writeImplementation(
-			$this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iDescType, $sName));
+		return $bResult;
 	}
 
 	/**
@@ -209,7 +251,7 @@ abstract class Driver
 	 */
 	final public function WriteEmptyLine()
 	{
-		if ($this->bWriteOnErrorOnly && !$this->bFlushCache)
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{
 			$this->aCache[] = '';
 		}

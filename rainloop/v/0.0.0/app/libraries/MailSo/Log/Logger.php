@@ -83,7 +83,7 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param int $iDescType
+	 * @param int $iType
 	 *
 	 * @return \MailSo\Log\Logger
 	 */
@@ -95,7 +95,7 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param int $iDescType
+	 * @param int $iType
 	 *
 	 * @return \MailSo\Log\Logger
 	 */
@@ -141,15 +141,15 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 * @param string $sName = ''
 	 * @param bool $bSearchWords = false
 	 *
 	 * @return bool
 	 */
-	public function Write($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bSearchWords = false)
+	public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bSearchWords = false)
 	{
-		if (isset($this->aForbiddenTypes[$iDescType]) && true === $this->aForbiddenTypes[$iDescType])
+		if (isset($this->aForbiddenTypes[$iType]) && true === $this->aForbiddenTypes[$iType])
 		{
 			return true;
 		}
@@ -168,7 +168,7 @@ class Logger extends \MailSo\Base\Collection
 		$aLoggers =& $this->GetAsArray();
 		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
 		{
-			$iResult &= $oLogger->Write($sDesc, $iDescType, $sName);
+			$iResult &= $oLogger->Write($sDesc, $iType, $sName);
 		}
 
 		return (bool) $iResult;
@@ -176,26 +176,26 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param mixed $oValue
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 * @param string $sName = ''
 	 * @param bool $bSearchSecretWords = false
 	 *
 	 * @return bool
 	 */
-	public function WriteDump($oValue, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bSearchSecretWords = false)
+	public function WriteDump($oValue, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bSearchSecretWords = false)
 	{
-		return $this->Write(\print_r($oValue, true), $iDescType, $sName, $bSearchSecretWords);
+		return $this->Write(\print_r($oValue, true), $iType, $sName, $bSearchSecretWords);
 	}
 
 	/**
 	 * @param \Exception $oException
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::NOTICE
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::NOTICE
 	 * @param string $sName = ''
 	 * @param bool $bSearchSecretWords = true
 	 *
 	 * @return bool
 	 */
-	public function WriteException($oException, $iDescType = \MailSo\Log\Enumerations\Type::NOTICE, $sName = '', $bSearchSecretWords = true)
+	public function WriteException($oException, $iType = \MailSo\Log\Enumerations\Type::NOTICE, $sName = '', $bSearchSecretWords = true)
 	{
 		if ($oException instanceof \Exception)
 		{
@@ -206,28 +206,28 @@ class Logger extends \MailSo\Base\Collection
 
 			$oException->__LOGINNED__ = true;
 
-			return $this->Write((string) $oException, $iDescType, $sName, $bSearchSecretWords);
+			return $this->Write((string) $oException, $iType, $sName, $bSearchSecretWords);
 		}
 
 		return false;
 	}
 
 	/**
-	 * @param \Exception $oException
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::NOTICE
+	 * @param mixed $mData
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::NOTICE
 	 * @param string $sName = ''
 	 * @param bool $bSearchSecretWords = true
 	 *
 	 * @return bool
 	 */
-	public function WriteMixed($mData, $iDescType = null, $sName = '', $bSearchSecretWords = true)
+	public function WriteMixed($mData, $iType = null, $sName = '', $bSearchSecretWords = true)
 	{
-		$iType = null === $iDescType ? \MailSo\Log\Enumerations\Type::INFO : $iDescType;
+		$iType = null === $iType ? \MailSo\Log\Enumerations\Type::INFO : $iType;
 		if (\is_array($mData) || \is_object($mData))
 		{
 			if ($mData instanceof \Exception)
 			{
-				$iType = null === $iDescType ? \MailSo\Log\Enumerations\Type::NOTICE : $iType;
+				$iType = null === $iType ? \MailSo\Log\Enumerations\Type::NOTICE : $iType;
 				return $this->WriteException($mData, $iType, $sName, $bSearchSecretWords);
 			}
 			else
