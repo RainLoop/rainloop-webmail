@@ -116,6 +116,52 @@
 					<!-- ko template: { name: 'Pagenator', data: contactsPagenator } --><!-- /ko -->
 				</div>
 			</div>
+			<div class="b-view-content-toolbar btn-toolbar" data-bind="css: {'read-only': viewReadOnly}">
+				<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registrateBootstrapDropdown: true">
+					<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
+						<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_LABEL"></span>
+						&nbsp;&nbsp;
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu g-ui-menu" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+						<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewEmail">
+								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_EMAIL"></span>
+							</a>
+						</li>
+						<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewPhone">
+								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_PHONE"></span>
+							</a>
+						</li>
+						<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewWeb">
+								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_URL"></span>
+							</a>
+						</li>
+						<li class="divider" role="presentation"></li>
+						<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewNickname">
+								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_NICKNAME"></span>
+							</a>
+						</li>
+	<!--									<li class="e-item" role="presentation">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewAddress">
+								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_ADDRESS"></span>
+							</a>
+						</li>-->
+					</ul>
+				</div>
+				<div class="btn-group pull-right">&nbsp;</div>
+				<div class="btn-group pull-right">
+					<button class="btn button-save-contact" data-bind="visible: !emptySelection(), command: saveCommand, css: {'dirty': watchDirty}">
+						<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
+						<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
+					</button>
+				</div>
+			</div>
 			<div class="b-view-content" data-bind="nano: true, css: {'read-only': viewReadOnly}">
 				<div class="content g-scrollbox">
 					<div class="content-wrapper">
@@ -213,48 +259,7 @@
 								<i class="icon-lock iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
 							</div>-->
 
-							<button class="btn button-save-contact" data-bind="command: saveCommand, css: {'dirty': watchDirty}">
-								<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner animated': viewSaving()}"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
-								<span class="i18n" data-i18n-text="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
-							</button>
-
-							<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="registrateBootstrapDropdown: true">
-								<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
-									<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_LABEL"></span>
-									&nbsp;&nbsp;
-									<span class="caret"></span>
-								</a>
-								<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
-									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewEmail">
-											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_EMAIL"></span>
-										</a>
-									</li>
-									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewPhone">
-											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_PHONE"></span>
-										</a>
-									</li>
-									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewWeb">
-											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_URL"></span>
-										</a>
-									</li>
-									<li class="divider" role="presentation"></li>
-									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewNickname">
-											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_NICKNAME"></span>
-										</a>
-									</li>
-<!--									<li class="e-item" role="presentation">
-										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewAddress">
-											<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_ADDRESS"></span>
-										</a>
-									</li>-->
-								</ul>
-							</div>
+							
 						</div>
 					</div>
 				</div>

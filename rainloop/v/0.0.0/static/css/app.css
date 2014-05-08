@@ -7082,23 +7082,7 @@ html.ssm-state-mobile .b-compose.modal {
 }
 html.ssm-state-tablet .b-contacts-content.modal,
 html.ssm-state-mobile .b-contacts-content.modal {
-  width: 600px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-list-toolbar,
-html.ssm-state-mobile .b-contacts-content.modal .b-list-toolbar,
-html.ssm-state-tablet .b-contacts-content.modal .b-list-content,
-html.ssm-state-mobile .b-contacts-content.modal .b-list-content,
-html.ssm-state-tablet .b-contacts-content.modal .b-list-footer-toolbar,
-html.ssm-state-mobile .b-contacts-content.modal .b-list-footer-toolbar {
-  width: 150px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-list-toolbar .e-search,
-html.ssm-state-mobile .b-contacts-content.modal .b-list-toolbar .e-search {
-  width: 125px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-view-content,
-html.ssm-state-mobile .b-contacts-content.modal .b-view-content {
-  left: 150px;
+  width: 700px;
 }
 html.ssm-state-tablet .b-contacts-content.modal .contactValueInput,
 html.ssm-state-mobile .b-contacts-content.modal .contactValueInput {
@@ -7109,17 +7093,6 @@ html.ssm-state-tablet .b-compose.modal {
 }
 html.ssm-state-tablet .b-contacts-content.modal {
   width: 800px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-list-toolbar,
-html.ssm-state-tablet .b-contacts-content.modal .b-list-content,
-html.ssm-state-tablet .b-contacts-content.modal .b-list-footer-toolbar {
-  width: 200px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-list-toolbar .e-search {
-  width: 175px;
-}
-html.ssm-state-tablet .b-contacts-content.modal .b-view-content {
-  left: 200px;
 }
 html.ssm-state-tablet .b-contacts-content.modal .contactValueInput {
   width: 250px;
@@ -8473,22 +8446,22 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-contacts-content.modal .b-list-toolbar {
   padding: 0;
   height: 45px;
-  text-align: center;
-  width: 250px;
+  text-align: right;
+  width: 220px;
   -webkit-box-shadow: inset 0 -1px 0 #cccccc;
   -moz-box-shadow: inset 0 -1px 0 #cccccc;
   box-shadow: inset 0 -1px 0 #cccccc;
 }
 .b-contacts-content.modal .b-list-toolbar .e-search {
   margin-top: 7px;
-  width: 225px;
+  width: 200px;
 }
 .b-contacts-content.modal .b-list-footer-toolbar {
   position: absolute;
   left: 0;
   bottom: 0;
   height: 105px;
-  width: 250px;
+  width: 220px;
   background-color: #eee;
   -webkit-box-shadow: inset 0 1px 0 #cccccc;
   -moz-box-shadow: inset 0 1px 0 #cccccc;
@@ -8502,7 +8475,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   top: 45px;
   bottom: 105px;
   left: 0;
-  width: 250px;
+  width: 220px;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -8630,11 +8603,31 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-contacts-content.modal .b-list-content .e-contact-item.selected.focused .sidebarParent {
   background-color: #217ef0 !important;
 }
-.b-contacts-content.modal .b-view-content {
+.b-contacts-content.modal .b-view-content-toolbar {
+  background-color: #f5f5f5;
+  padding: 7px;
   position: absolute;
   top: 0;
+  right: 0;
+  left: 220px;
+  height: 31px;
+  text-align: center;
+  -webkit-box-shadow: inset 0 -1px 0 #cccccc;
+  -moz-box-shadow: inset 0 -1px 0 #cccccc;
+  box-shadow: inset 0 -1px 0 #cccccc;
+}
+.b-contacts-content.modal .b-view-content-toolbar .button-save-contact.no-disabled.dirty {
+  color: #51a351;
+  font-weight: bold;
+}
+.b-contacts-content.modal .b-view-content-toolbar.read-only .button-save-contact {
+  display: none;
+}
+.b-contacts-content.modal .b-view-content {
+  position: absolute;
+  top: 45px;
   bottom: 60px;
-  left: 250px;
+  left: 220px;
   right: 0;
   overflow: hidden;
   overflow-y: auto;
@@ -8763,31 +8756,14 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-contacts-content.modal .b-view-content .e-share-sign {
   position: absolute;
-  top: 60px;
-  right: 20px;
-  cursor: pointer;
-}
-.b-contacts-content.modal .b-view-content .button-save-contact {
-  position: absolute;
   top: 20px;
   right: 20px;
-}
-.b-contacts-content.modal .b-view-content .button-save-contact.no-disabled.dirty {
-  color: #51a351;
-  font-weight: bold;
-}
-.b-contacts-content.modal .b-view-content .button-add-prop {
-  position: absolute;
-  top: 60px;
-  right: 20px;
+  cursor: pointer;
 }
 .b-contacts-content.modal .b-view-content.read-only .e-read-only-sign {
   display: inline-block;
 }
 .b-contacts-content.modal .b-view-content.read-only .e-share-sign {
-  display: none;
-}
-.b-contacts-content.modal .b-view-content.read-only .button-save-contact {
   display: none;
 }
 .b-contacts-content .e-contact-item {
