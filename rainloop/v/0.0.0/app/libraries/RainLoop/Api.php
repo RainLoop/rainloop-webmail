@@ -21,7 +21,7 @@ class Api
 		{
 			$oActions = \RainLoop\Actions::NewInstance();
 		}
-		
+
 		return $oActions;
 	}
 
@@ -43,7 +43,7 @@ class Api
 		{
 			return true;
 		}
-		
+
 		if (!\class_exists('MailSo\Version'))
 		{
 			return false;
@@ -63,17 +63,19 @@ class Api
 	 * @param string $sEmail
 	 * @param string $sPassword
 	 * @param string $sLogin = ''
-	 * 
-	 * @return string 
+	 * @param bool $bUseTimeout = true
+	 *
+	 * @return string
 	 */
-	public static function GetUserSsoHash($sEmail, $sPassword, $sLogin = '')
+	public static function GetUserSsoHash($sEmail, $sPassword, $sLogin = '', $bUseTimeout = true)
 	{
 		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.$sLogin.\microtime(true));
 
 		return self::Actions()->Cacher()->Set(self::Actions()->BuildSsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,
 			'Password' => $sPassword,
-			'Login' => $sLogin
+			'Login' => $sLogin,
+			'Time' => $bUseTimeout ? \time() : 0
 		))) ? $sSsoHash : '';
 	}
 

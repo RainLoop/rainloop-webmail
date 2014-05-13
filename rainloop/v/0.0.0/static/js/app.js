@@ -16658,7 +16658,7 @@ AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequ
 				{
 					Globals.iAjaxErrorCount++;
 				}
-				
+
 				if (oData && Enums.Notification.InvalidToken === oData.ErrorCode)
 				{
 					Globals.iTokenErrorCount++;
@@ -16684,7 +16684,7 @@ AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequ
 				Globals.iAjaxErrorCount = 0;
 				Globals.iTokenErrorCount = 0;
 			}
-			
+
 			if (fCallback)
 			{
 				Plugins.runHook('ajax-default-response', [sRequestAction, Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oRequestParameters]);

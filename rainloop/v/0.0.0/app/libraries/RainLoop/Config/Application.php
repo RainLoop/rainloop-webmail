@@ -140,7 +140,7 @@ Values:
 			'logs' => array(
 
 				'enable' => array(false, 'Enable logging'),
-				
+
 				'write_on_error_only' => array(false, 'Logs entire request only if error occured'),
 				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
 
@@ -245,6 +245,8 @@ Enables caching in the system'),
 				'custom_login_link' => array(''),
 				'custom_logout_link' => array(''),
 				'allow_external_login' => array(false),
+				'allow_external_sso' => array(false),
+				'external_sso_key' => array(''),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),

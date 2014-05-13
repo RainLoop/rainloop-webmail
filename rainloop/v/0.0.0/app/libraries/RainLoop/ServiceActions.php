@@ -256,7 +256,7 @@ class ServiceActions
 
 	/**
 	 * @param string $sAction
-	 * 
+	 *
 	 * @return string
 	 */
 	private function privateUpload($sAction)
@@ -321,7 +321,7 @@ class ServiceActions
 	{
 		return $this->privateUpload('UploadContacts');
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -329,7 +329,7 @@ class ServiceActions
 	{
 		return $this->privateUpload('UploadBackground');
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -388,7 +388,7 @@ class ServiceActions
 		{
 			$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR, 'RAW');
 		}
-		
+
 		return $sResult;
 	}
 
@@ -399,7 +399,7 @@ class ServiceActions
 	{
 		$sResult = '';
 		@\header('Content-Type: application/javascript; charset=utf-8');
-		
+
 		if (!empty($this->aPaths[2]))
 		{
 			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[2]);
@@ -519,7 +519,7 @@ class ServiceActions
 	public function ServiceCss()
 	{
 		$sResult = '';
-		
+
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
 		$bJson = !empty($this->aPaths[7]) && 'Json' === $this->aPaths[7];
 
@@ -537,13 +537,13 @@ class ServiceActions
 		{
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
 			$sRealTheme = $sTheme;
-			
+
 			$bCustomTheme = '@custom' === \substr($sTheme, -7);
 			if ($bCustomTheme)
 			{
 				$sRealTheme = \substr($sTheme, 0, -7);
 			}
-			
+
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if ($bCacheEnabled)
 			{
@@ -646,7 +646,7 @@ class ServiceActions
 	{
 		return $this->localAppData(false);
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -670,7 +670,7 @@ class ServiceActions
 	{
 		return $this->localError($this->oActions->StaticI18N('STATIC/NO_COOKIE_TITLE'), $this->oActions->StaticI18N('STATIC/NO_COOKIE_DESC'));
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -706,7 +706,7 @@ class ServiceActions
 		$this->oActions->Location('./');
 		return '';
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -742,14 +742,15 @@ class ServiceActions
 		{
 			$mData = null;
 			$sSsoKey = $this->oActions->BuildSsoCacherKey($sSsoHash);
-			
+
 			$sSsoSubData = $this->Cacher()->Get($sSsoKey);
 			if (!empty($sSsoSubData))
 			{
 				$mData = \RainLoop\Utils::DecodeKeyValues($sSsoSubData);
 				$this->Cacher()->Delete($sSsoKey);
 
-				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password']))
+				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&
+					(0 === $mData['Time'] || \time() - 10 < $mData['Time']))
 				{
 					$sEmail = \trim($mData['Email']);
 					$sPassword = $mData['Password'];
@@ -812,11 +813,11 @@ class ServiceActions
 	{
 		$oException = null;
 		$oAccount = null;
-		
+
 		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false))
 		{
-			$sEmail = trim($this->oHttp->GetRequest('Email', ''));
-			$sLogin = trim($this->oHttp->GetRequest('Login', ''));
+			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
+			$sLogin = \trim($this->oHttp->GetRequest('Login', ''));
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
 			try
@@ -835,9 +836,9 @@ class ServiceActions
 		switch (\strtolower($this->oHttp->GetRequest('Output', 'Redirect')))
 		{
 			case 'json':
-				
+
 				@\header('Content-Type: application/json; charset=utf-8');
-				
+
 				$aResult = array(
 					'Action' => 'ExternalLogin',
 					'Result' => $oAccount instanceof \RainLoop\Account ? true : false,
@@ -857,7 +858,7 @@ class ServiceActions
 				}
 
 				return \MailSo\Base\Utils::Php2js($aResult);
-				
+
 			case 'redirect':
 			default:
 				$this->oActions->Location('./');
@@ -866,7 +867,41 @@ class ServiceActions
 
 		return '';
 	}
-	
+
+	/**
+	 * @return string
+	 */
+	public function ServiceExternalSso()
+	{
+		$sKey = $this->oActions->Config()->Get('labs', 'external_sso_key', '');
+		if ($this->oActions->Config()->Get('labs', 'allow_external_sso', false) &&
+			!empty($sKey) && $sKey === \trim($this->oHttp->GetRequest('SsoKey', '')))
+		{
+			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
+			$sLogin = \trim($this->oHttp->GetRequest('Login', ''));
+			$sPassword = $this->oHttp->GetRequest('Password', '');
+
+			\RainLoop\Api::Handle();
+			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword, $sLogin);
+
+			switch (\strtolower($this->oHttp->GetRequest('Output', 'Plain')))
+			{
+				case 'plain':
+					@\header('Content-Type: text/plain');
+					return $sResult;
+
+				case 'json':
+					@\header('Content-Type: application/json; charset=utf-8');
+					return \MailSo\Base\Utils::Php2js(array(
+						'Action' => 'ExternalSso',
+						'Result' => $sResult
+					));
+			}
+		}
+
+		return '';
+	}
+
 	/**
 	 * @return string
 	 */
@@ -941,7 +976,7 @@ class ServiceActions
 					$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
 				}
 			}
-			
+
 			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 		}
 
@@ -962,7 +997,7 @@ class ServiceActions
 	{
 		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
-		
+
 		return
 			($bWrapByScriptTag ? '<script type="text/javascript">' : '').
 			'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';'.
