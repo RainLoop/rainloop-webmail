@@ -325,13 +325,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.html(Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-placeholder');
 				if (sKey)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-title');
 				if (sKey)
 				{
@@ -469,7 +469,7 @@ Utils.fixLongSubject = function (sSubject)
 	;
 
 	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
-	
+
 	do
 	{
 		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
@@ -598,9 +598,9 @@ Utils.initNotificationLanguage = function ()
 
 	NotificationI18N[Enums.Notification.CantSaveSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_SETTINGS');
 	NotificationI18N[Enums.Notification.CantSavePluginSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS');
-	
+
 	NotificationI18N[Enums.Notification.DomainAlreadyExists] = Utils.i18n('NOTIFICATIONS/DOMAIN_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.CantInstallPackage] = Utils.i18n('NOTIFICATIONS/CANT_INSTALL_PACKAGE');
 	NotificationI18N[Enums.Notification.CantDeletePackage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_PACKAGE');
 	NotificationI18N[Enums.Notification.InvalidPluginPackage] = Utils.i18n('NOTIFICATIONS/INVALID_PLUGIN_PACKAGE');
@@ -613,7 +613,7 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.DemoSendMessageError] = Utils.i18n('NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR');
 
 	NotificationI18N[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
 	NotificationI18N[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
 	NotificationI18N[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
@@ -765,7 +765,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
-	
+
 	oData.allowThemes = ko.observable(true);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
@@ -775,7 +775,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.useCheckboxesInList = ko.observable(true);
-	
+
 	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.usePreviewPane = ko.computed(function () {
 		return Enums.Layout.NoPreview !== oData.layout();
@@ -1058,7 +1058,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
 		aExpandedList = [];
 	}
-	
+
 	if (bExpanded)
 	{
 		aExpandedList.push(sFullNameHash);
@@ -1075,7 +1075,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 {
 	var
-		iDisabledWidth = 65,
+		iDisabledWidth = 60,
 		iMinWidth = 155,
 		oLeft = $(sLeft),
 		oRight = $(sRight),
@@ -1153,7 +1153,7 @@ Utils.initBlockquoteSwitcher = function (oMessageTextBody)
 		var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
 			return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
 		});
-		
+
 		if ($oList && 0 < $oList.length)
 		{
 			$oList.each(function () {
@@ -1563,7 +1563,7 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 		oCtx.fillStyle = '#fff';
 		oCtx.fillRect(0, 0, iValue, iValue);
 		oCtx.drawImage(this, aDiff[0] / 2, aDiff[1] / 2, this.width - aDiff[0], this.height - aDiff[1], 0, 0, iValue, iValue);
-			
+
 		fCallback(oCanvas.toDataURL('image/jpeg'));
 	};
 

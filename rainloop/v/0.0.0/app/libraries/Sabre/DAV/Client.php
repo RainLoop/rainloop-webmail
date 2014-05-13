@@ -315,7 +315,7 @@ class Client {
             // Return headers as part of the response
             CURLOPT_HEADER => true,
             CURLOPT_POSTFIELDS => $body,
-			CURLOPT_USERAGENT => 'RainLoop DAV Client',
+			CURLOPT_USERAGENT => 'RainLoop DAV Client', // TODO rainloop
             // Automatically follow redirects
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
@@ -323,9 +323,13 @@ class Client {
 
         if($this->verifyPeer !== null) {
             $curlSettings[CURLOPT_SSL_VERIFYPEER] = $this->verifyPeer;
+	        // TODO rainloop
+	        if (!$this->verifyPeer) {
+		        $curlSettings[CURLOPT_SSL_VERIFYHOST] = 0;
+	        } // ---
         }
 
-        if($this->trustedCertificates) {
+	    if($this->trustedCertificates) {
             $curlSettings[CURLOPT_CAINFO] = $this->trustedCertificates;
         }
 
@@ -459,6 +463,7 @@ class Client {
     // @codeCoverageIgnoreStart
     protected function curlRequest($url, $settings) {
 
+	    // TODO rainloop
         $curl = curl_init($url);
 		$sSafeMode = strtolower(trim(@ini_get('safe_mode')));
 		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;

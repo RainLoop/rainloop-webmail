@@ -1,5 +1,5 @@
 /**
- * Inputosaurus Text 
+ * Inputosaurus Text
  *
  * Must be instantiated on an <input> element
  * Allows multiple input items. Each item is represented with a removable tag that appears to be inside the input area.
@@ -33,7 +33,7 @@
 			//
 			// 'change' - triggered whenever a tag is added or removed (should be similar to binding the the change event of the instantiated input
 			// 'keyup' - keyup event on the newly created input
-			
+
 			// while typing, the user can separate values using these delimiters
 			// the value tags are created on the fly when an inputDelimiter is detected
 			inputDelimiters : [',', ';'],
@@ -42,6 +42,10 @@
 			outputDelimiter : ',',
 
 			allowDuplicates : false,
+
+			allowDragAndDrop : true,
+
+			focusCallback : null,
 
 			parseOnBlur : false,
 
@@ -59,7 +63,7 @@
 			// manipulate and return the input value after parseInput() parsing
 			// the array of tag names is passed and expected to be returned as an array after manipulation
 			parseHook : null,
-			
+
 			// define a placeholder to display when the input is empty
 			placeholder: null
 		},
@@ -69,36 +73,46 @@
 				els = {},
 				o = widget.options,
 				placeholder =  o.placeholder || this.element.attr('placeholder') || null;
-				
+
 			this._chosenValues = [];
 
 			// Create the elements
 			els.ul = $('<ul class="inputosaurus-container"></ul>');
-			els.ul.droppable({
-				'drop': function(event, ui) {
-					
-					ui.draggable.addClass('inputosaurus-dropped');
-					els.input.val(ui.draggable.data('inputosaurus-value'));
 
-					if (ui.draggable.__widget)
-					{
-						ui.draggable.__widget._removeDraggedTag(ui.draggable);
+			if (this.options.allowDragAndDrop)
+			{
+				els.ul.droppable({
+					'drop': function(event, ui) {
+
+						ui.draggable.addClass('inputosaurus-dropped');
+						els.input.val(ui.draggable.data('inputosaurus-value'));
+
+						if (ui.draggable.__widget)
+						{
+							ui.draggable.__widget._removeDraggedTag(ui.draggable);
+						}
+
+						widget.parseInput();
 					}
+				});
+			}
 
-					widget.parseInput();
-				}
-			});
-
-			els.input = $('<input type="text" />');
-//			els.input = $('<input type="email" />');
+			els.input = $('<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />');
+//			els.input = $('<input type="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />');
 			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
 			els.lastEdit = '';
-			
+
+			els.input.on('focus', function () {
+				widget._focusTrigger(true);
+			}).on('blur', function () {
+				widget._focusTrigger(false);
+			});
+
 			// define starting placeholder
-			if (placeholder) { 
+			if (placeholder) {
 				o.placeholder = placeholder;
-				els.input.attr('placeholder', o.placeholder); 
+				els.input.attr('placeholder', o.placeholder);
 				if (o.width) {
 					els.input.css('min-width', o.width - 50);
 				}
@@ -107,11 +121,11 @@
 			o.wrapperElement && o.wrapperElement.append(els.ul);
 			this.element.replaceWith(o.wrapperElement || els.ul);
 			els.origInputCont.append(this.element).hide();
-			
+
 			els.inputCont.append(els.input);
 			els.ul.append(els.inputCont);
 			els.ul.append(els.origInputCont);
-			
+
 			o.width && els.ul.css('width', o.width);
 
 			this.elements = els;
@@ -125,6 +139,20 @@
 			}
 
 			this._instAutocomplete();
+		},
+
+		_focusTriggerTimer : 0,
+
+		_focusTrigger : function (bValue) {
+			var widget = this;
+			window.clearTimeout(this._focusTriggerTimer);
+			this._focusTriggerTimer = window.setTimeout(function () {
+				widget.elements.ul[!bValue ? 'removeClass' : 'addClass']('inputosaurus-focused');
+				if (widget.options.focusCallback)
+				{
+					widget.options.focusCallback(bValue);
+				}
+			}, 10);
 		},
 
 		_instAutocomplete : function() {
@@ -264,7 +292,7 @@
 				widget.elements.input.width(txtWidth);
 //			}, 1);
 		},
-		
+
 		// resets placeholder on representative input
 		_resetPlaceholder: function () {
 			var placeholder = this.options.placeholder,
@@ -289,7 +317,7 @@
 				ev.preventDefault();
 				lastTag.find('a').focus();
 			}
-			
+
 		},
 
 		_editTag : function(ev) {
@@ -304,7 +332,7 @@
 
 			ev.preventDefault();
 
-			var 
+			var
 				oPrev = null,
 				next = false
 			;
@@ -325,7 +353,7 @@
 			{
 				widget.elements.lastEdit = oPrev.value;
 			}
-			
+
 			$li.after(widget.elements.inputCont);
 
 			widget.elements.input.val(tagName);
@@ -488,21 +516,25 @@
 		// @className optional className for <li>
 		_createTag : function(name, key, obj) {
 			if (name !== undefined && obj) {
-				var 
+				var
 					widget = this,
 					$li = $('<li data-inputosaurus="' + key + '" title="' + obj.toLine(false, false, true) +
 						'"><a href="javascript:void(0);" class="ficon">&#x2716;</a><span>' +
 						obj.toLine(true, false, true) + '</span></li>')
 				;
-				
+
 				$li.data('inputosaurus-value', obj.toLine(false, false, false));
-				$li.draggable({
-					'revert': 'invalid',
-					'revertDuration': 200,
-					'start': function(event, ui) {
-						ui.helper.__widget = widget;
-					}
-				});
+
+				if (this.options.allowDragAndDrop)
+				{
+					$li.draggable({
+						'revert': 'invalid',
+						'revertDuration': 200,
+						'start': function(event, ui) {
+							ui.helper.__widget = widget;
+						}
+					});
+				}
 
 				return $li;
 			}
@@ -594,7 +626,7 @@
 			values.push(val);
 			delim && (values = val.split(delim));
 
-			if(values.length){
+			if (values.length) {
 				this._chosenValues = [];
 
 				$.isFunction(this.options.parseHook) && (values = this.options.parseHook(values));
@@ -607,12 +639,14 @@
 		},
 
 		_attachEvents : function() {
+
 			var widget = this;
 
 			this.elements.input.on('keyup.inputosaurus', {widget : widget}, this._inputKeypress);
 			this.elements.input.on('keydown.inputosaurus', {widget : widget}, this._inputKeypress);
 			this.elements.input.on('change.inputosaurus', {widget : widget}, this._inputKeypress);
 			this.elements.input.on('focus.inputosaurus', {widget : widget}, this._inputFocus);
+
 			this.options.parseOnBlur && this.elements.input.on('blur.inputosaurus', {widget : widget}, this.parseInput);
 
 			this.elements.ul.on('click.inputosaurus', {widget : widget}, this._focus);
@@ -626,14 +660,12 @@
 
 		_destroy: function() {
 			this.elements.input.unbind('.inputosaurus');
-
 			this.elements.ul.replaceWith(this.element);
-
 		}
 	};
 
 	$('body').append(inputosaurustext.fakeSpan);
-
 	$.widget("ui.inputosaurus", inputosaurustext);
+
 })(jQuery);
 

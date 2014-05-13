@@ -37,6 +37,11 @@ class Contact
 	/**
 	 * @var array
 	 */
+	public $Tags;
+
+	/**
+	 * @var bool
+	 */
 	public $ReadOnly;
 
 	/**
@@ -58,15 +63,15 @@ class Contact
 	{
 		$this->IdContact = '';
 		$this->IdContactStr = '';
-		$this->IdUser = 0;
 		$this->Display = '';
 		$this->Changed = \time();
 		$this->Properties = array();
+		$this->Tags = array();
 		$this->ReadOnly = false;
 		$this->IdPropertyFromSearch = 0;
 		$this->Etag = '';
 	}
-	
+
 	public function UpdateDependentValues()
 	{
 		$sLastName = '';
@@ -75,7 +80,7 @@ class Contact
 		$sOther = '';
 
 		$oFullNameProperty = null;
-		
+
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
 		{
 			if ($oProperty)
@@ -133,7 +138,7 @@ class Contact
 		}
 
 		$this->Display = \trim($sDisplay);
-		
+
 		if ($oFullNameProperty)
 		{
 			$oFullNameProperty->Value = $this->Display;
@@ -200,7 +205,7 @@ class Contact
 		{
 			$oVCard = new \Sabre\VObject\Component\VCard();
 		}
-		
+
 		$oVCard->VERSION = '3.0';
 		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
 
@@ -482,7 +487,7 @@ class Contact
 	public function PopulateByVCard($sVCard, $sEtag = '')
 	{
 		$this->Properties = array();
-		
+
 		if (!empty($sEtag))
 		{
 			$this->Etag = $sEtag;

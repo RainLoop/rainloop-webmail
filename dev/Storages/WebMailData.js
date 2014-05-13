@@ -83,13 +83,14 @@ function WebMailDataStorage()
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
 	// contacts
+	this.contactTags = ko.observableArray([]);
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
-	
+
 	this.allowContactsSync = ko.observable(false);
 	this.enableContactsSync = ko.observable(false);
 	this.contactsSyncUrl = ko.observable('');
@@ -229,11 +230,11 @@ function WebMailDataStorage()
 	this.messageListEndFolder = ko.observable('');
 	this.messageListEndSearch = ko.observable('');
 	this.messageListEndPage = ko.observable(1);
-	
+
 	this.messageListEndHash = ko.computed(function () {
 		return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
 	}, this);
-	
+
 	this.messageListPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.messageListCount() / this.messagesPerPage());
 		return 0 >= iPage ? 1 : iPage;
@@ -266,7 +267,7 @@ function WebMailDataStorage()
 	this.messageListCompleteLoading.subscribe(function (bValue) {
 		this.messageListCompleteLoadingThrottle(bValue);
 	}, this);
-	
+
 	this.messageList.subscribe(_.debounce(function (aList) {
 		_.each(aList, function (oItem) {
 			if (oItem.newForAnimation())
@@ -283,7 +284,7 @@ function WebMailDataStorage()
 	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
 
 	this.message.focused = ko.observable(false);
-	
+
 	this.message.subscribe(function (oMessage) {
 		if (!oMessage)
 		{
@@ -313,7 +314,7 @@ function WebMailDataStorage()
 			RL.data().keyScope(Enums.KeyState.MessageList);
 		}
 	});
-	
+
 	this.folderList.focused.subscribe(function (bValue) {
 		if (bValue)
 		{
@@ -324,11 +325,11 @@ function WebMailDataStorage()
 			RL.data().keyScope(Enums.KeyState.MessageList);
 		}
 	});
-	
+
 	this.messageLoading.subscribe(function (bValue) {
 		this.messageLoadingThrottle(bValue);
 	}, this);
-	
+
 	this.messageFullScreenMode = ko.observable(false);
 
 	this.messageError = ko.observable('');
@@ -349,13 +350,13 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
-	
+
 	this.messageListChecked = ko.computed(function () {
 		return _.filter(this.messageList(), function (oItem) {
 			return oItem.checked();
 		});
 	}, this).extend({'rateLimit': 0});
-	
+
 	this.hasCheckedMessages = ko.computed(function () {
 		return 0 < this.messageListChecked().length;
 	}, this).extend({'rateLimit': 0});
@@ -442,7 +443,7 @@ WebMailDataStorage.prototype.purgeMessageBodyCache = function()
 		oMessagesBodiesDom = null,
 		iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
 	;
-	
+
 	if (0 < iEnd)
 	{
 		oMessagesBodiesDom = this.messagesBodiesDom();
@@ -475,7 +476,7 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.accountIncLogin(RL.settingsGet('IncLogin'));
 	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
-	
+
 	this.displayName(RL.settingsGet('DisplayName'));
 	this.replyTo(RL.settingsGet('ReplyTo'));
 	this.signature(RL.settingsGet('Signature'));
@@ -517,7 +518,7 @@ WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUid
 							{
 								oNotification.show();
 							}
-							
+
 							window.setTimeout((function (oLocalNotifications) {
 								return function () {
 									if (oLocalNotifications.cancel)
@@ -720,7 +721,7 @@ WebMailDataStorage.prototype.hideMessageBodies = function ()
 WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 {
 	bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
-	
+
 	var
 		aResult = [],
 		iLimit = 10,
@@ -756,10 +757,10 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 		{
 			return 1;
 		}
-		
+
 		return 0;
 	});
-	
+
 	_.find(aTimeouts, function (aItem) {
 		var oFolder = RL.cache().getFolderFromCacheList(aItem[1]);
 		if (oFolder)
@@ -767,7 +768,7 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 			oFolder.interval = iUtc;
 			aResult.push(aItem[1]);
 		}
-		
+
 		return iLimit <= aResult.length;
 	});
 
@@ -785,7 +786,7 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 {
 	sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
 	bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-	
+
 	aUidForRemove = _.map(aUidForRemove, function (mValue) {
 		return Utils.pInt(mValue);
 	});
@@ -845,7 +846,7 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		else
 		{
 			oData.messageListIsNotCompleted(true);
-			
+
 			_.each(aMessages, function (oMessage) {
 				if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
 				{
@@ -916,7 +917,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 
 				oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
 				oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-				
+
 				if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 				{
 					bIsHtml = true;
@@ -926,7 +927,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				{
 					bIsHtml = false;
 					sPlain = oData.Result.Plain.toString();
-					
+
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
 						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
@@ -939,7 +940,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
 								/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 						}
-						
+
 						$proxyDiv.empty();
 						if (bPgpSigned && oMessage.isPgpSigned())
 						{
@@ -951,7 +952,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							sPlain = 
+							sPlain =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -1028,7 +1029,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		{
 			RL.setMessageSeen(oMessage);
 		}
-		
+
 		Utils.windowResize();
 	}
 };
@@ -1081,7 +1082,7 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 		if (oFolder && !bCached)
 		{
 			oFolder.interval = iUtc;
-			
+
 			RL.cache().setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
 
 			if (Utils.isNormal(oData.Result.MessageCount))

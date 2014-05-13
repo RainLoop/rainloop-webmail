@@ -1052,13 +1052,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.html(Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-placeholder');
 				if (sKey)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-title');
 				if (sKey)
 				{
@@ -1196,7 +1196,7 @@ Utils.fixLongSubject = function (sSubject)
 	;
 
 	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
-	
+
 	do
 	{
 		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
@@ -1325,9 +1325,9 @@ Utils.initNotificationLanguage = function ()
 
 	NotificationI18N[Enums.Notification.CantSaveSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_SETTINGS');
 	NotificationI18N[Enums.Notification.CantSavePluginSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS');
-	
+
 	NotificationI18N[Enums.Notification.DomainAlreadyExists] = Utils.i18n('NOTIFICATIONS/DOMAIN_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.CantInstallPackage] = Utils.i18n('NOTIFICATIONS/CANT_INSTALL_PACKAGE');
 	NotificationI18N[Enums.Notification.CantDeletePackage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_PACKAGE');
 	NotificationI18N[Enums.Notification.InvalidPluginPackage] = Utils.i18n('NOTIFICATIONS/INVALID_PLUGIN_PACKAGE');
@@ -1340,7 +1340,7 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.DemoSendMessageError] = Utils.i18n('NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR');
 
 	NotificationI18N[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
 	NotificationI18N[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
 	NotificationI18N[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
@@ -1492,7 +1492,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
-	
+
 	oData.allowThemes = ko.observable(true);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
@@ -1502,7 +1502,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.useCheckboxesInList = ko.observable(true);
-	
+
 	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.usePreviewPane = ko.computed(function () {
 		return Enums.Layout.NoPreview !== oData.layout();
@@ -1785,7 +1785,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
 		aExpandedList = [];
 	}
-	
+
 	if (bExpanded)
 	{
 		aExpandedList.push(sFullNameHash);
@@ -1802,7 +1802,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 {
 	var
-		iDisabledWidth = 65,
+		iDisabledWidth = 60,
 		iMinWidth = 155,
 		oLeft = $(sLeft),
 		oRight = $(sRight),
@@ -1880,7 +1880,7 @@ Utils.initBlockquoteSwitcher = function (oMessageTextBody)
 		var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
 			return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
 		});
-		
+
 		if ($oList && 0 < $oList.length)
 		{
 			$oList.each(function () {
@@ -2290,7 +2290,7 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 		oCtx.fillStyle = '#fff';
 		oCtx.fillRect(0, 0, iValue, iValue);
 		oCtx.drawImage(this, aDiff[0] / 2, aDiff[1] / 2, this.width - aDiff[0], this.height - aDiff[1], 0, 0, iValue, iValue);
-			
+
 		fCallback(oCanvas.toDataURL('image/jpeg'));
 	};
 
@@ -2707,7 +2707,7 @@ ko.bindingHandlers.tooltip3 = {
 	'init': function (oElement) {
 
 		var $oEl = $(oElement);
-		
+
 		$oEl.tooltip({
 			'container': 'body',
 			'trigger': 'hover manual',
@@ -2726,7 +2726,7 @@ ko.bindingHandlers.tooltip3 = {
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-		
+
 	},
 	'update': function (oElement, fValueAccessor) {
 		var sValue = ko.utils.unwrapObservable(fValueAccessor());
@@ -2757,7 +2757,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 				$el.find('.dropdown-toggle').dropdown('toggle');
 				Utils.detectDropdownVisibility();
 			}
-			
+
 			fValueAccessor()(false);
 		}
 	}
@@ -2854,7 +2854,7 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		
+
 		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
@@ -3169,11 +3169,19 @@ ko.bindingHandlers.emailsTags = {
     'init': function(oElement, fValueAccessor) {
 		var
 			$oEl = $(oElement),
-			fValue = fValueAccessor()
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
 		;
 
 		$oEl.inputosaurus({
 			'parseOnBlur': true,
+			'allowDragAndDrop': true,
+			'focusCallback': fFocusCallback,
 			'inputDelimiters': [',', ';'],
 			'autoCompleteSource': function (oData, fResponse) {
 				RL.getAutocomplete(oData.term, function (aData) {
@@ -3184,12 +3192,12 @@ ko.bindingHandlers.emailsTags = {
 			},
 			'parseHook': function (aInput) {
 				return _.map(aInput, function (sInputValue) {
-					
+
 					var
 						sValue = Utils.trim(sInputValue),
 						oEmail = null
 					;
-					
+
 					if ('' !== sValue)
 					{
 						oEmail = new EmailModel();
@@ -3219,8 +3227,83 @@ ko.bindingHandlers.emailsTags = {
 
 		if (fValue.focusTrigger)
 		{
-			fValue.focusTrigger.subscribe(function () {
-				$oEl.inputosaurus('focus');
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
+			});
+		}
+	}
+};
+
+ko.bindingHandlers.contactTags = {
+    'init': function(oElement, fValueAccessor) {
+		var
+			$oEl = $(oElement),
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
+		;
+
+		$oEl.inputosaurus({
+			'parseOnBlur': true,
+			'allowDragAndDrop': false,
+			'focusCallback': fFocusCallback,
+			'inputDelimiters': [';'],
+			'outputDelimiter': ';',
+			'autoCompleteSource': function (oData, fResponse) {
+				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
+					fResponse(_.map(aData, function (oTagItem) {
+						return oTagItem.toLine(false);
+					}));
+				});
+			},
+			'parseHook': function (aInput) {
+				return _.map(aInput, function (sInputValue) {
+
+					var
+						sValue = Utils.trim(sInputValue),
+						oTag = null
+					;
+
+					if ('' !== sValue)
+					{
+						oTag = new ContactTagModel();
+						oTag.name(sValue);
+						return [oTag.toLine(false), oTag];
+					}
+
+					return [sValue, null];
+
+				});
+			},
+			'change': _.bind(function (oEvent) {
+				$oEl.data('ContactsTagsValue', oEvent.target.value);
+				fValue(oEvent.target.value);
+			}, this)
+		});
+
+		fValue.subscribe(function (sValue) {
+			if ($oEl.data('ContactsTagsValue') !== sValue)
+			{
+				$oEl.val(sValue);
+				$oEl.data('ContactsTagsValue', sValue);
+				$oEl.inputosaurus('refresh');
+			}
+		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
 			});
 		}
 	}
@@ -3370,7 +3453,7 @@ ko.observable.fn.validateFunc = function (fFunc)
 		this.subscribe(function (sValue) {
 			this.hasFuncError(!fFunc(sValue));
 		}, this);
-		
+
 		this.valueHasMutated();
 	}
 
@@ -4002,7 +4085,7 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
-	
+
 	this.viewModelDom = null;
 }
 
@@ -4057,14 +4140,21 @@ KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
 	RL.data().keyScope(this.sCurrentKeyScope);
 };
 
-KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 {
 	var self = this;
 	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
+		if (oEvent && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
-			return false;
+			if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
+			{
+				Utils.delegateRun(self, 'cancelCommand');
+				return false;
+			}
+			else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -4230,7 +4320,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = oViewModel;
 		oViewModel.data = RL.data();
-		
+
 		oViewModel.viewModelName = ViewModelClass.__name;
 
 		if (oViewModelPlace && 1 === oViewModelPlace.length)
@@ -4273,19 +4363,19 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 							self.viewModelDom.hide();
 						}, 300);
 					}
-					
+
 				}, oViewModel);
 			}
-		
+
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
-			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			if (oViewModel && 'Popups' === sPosition)
 			{
-				oViewModel.registerPopupEscapeKey();
+				oViewModel.registerPopupKeyDown();
 			}
-			
+
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
 		else
@@ -4387,7 +4477,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 			}
 
 			_.defer(function () {
-				
+
 				// hide screen
 				if (self.oCurrentScreen)
 				{
@@ -4483,7 +4573,7 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 		{
 			oScreen.__started = true;
 			oScreen.__start();
-			
+
 			Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
 			Utils.delegateRun(oScreen, 'onStart');
 			Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);
@@ -4909,6 +4999,50 @@ EmailModel.prototype.mailsoParse = function ($sEmailAddress)
 EmailModel.prototype.inputoTagLine = function ()
 {
 	return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
+};
+
+/**
+ * @constructor
+ */
+function ContactTagModel()
+{
+	this.idContactTag = 0;
+	this.name = ko.observable('');
+	this.readOnly = false;
+}
+
+ContactTagModel.prototype.parse = function (oItem)
+{
+	var bResult = false;
+	if (oItem && 'Object/Tag' === oItem['@Object'])
+	{
+		this.idContact = Utils.pInt(oItem['IdContactTag']);
+		this.name(Utils.pString(oItem['Name']));
+		this.readOnly = !!oItem['ReadOnly'];
+
+		bResult = true;
+	}
+
+	return bResult;
+};
+
+/**
+ * @param {string} sSearch
+ * @return {boolean}
+ */
+ContactTagModel.prototype.filterHelper = function (sSearch)
+{
+	return this.name().toLowerCase().indexOf(sSearch.toLowerCase()) !== -1;
+};
+
+/**
+ * @param {boolean=} bEncodeHtml = false
+ * @return {string}
+ */
+ContactTagModel.prototype.toLine = function (bEncodeHtml)
+{
+	return (Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml) ?
+		Utils.encodeHtml(this.name()) : this.name();
 };
 
 /**

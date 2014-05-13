@@ -24,7 +24,8 @@ function PopupsContactsViewModel()
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
 	this.contacts = RL.data().contacts;
-	
+	this.contactTags = RL.data().contactTags;
+
 	this.currentContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
@@ -44,6 +45,21 @@ function PopupsContactsViewModel()
 	this.viewReadOnly = ko.observable(false);
 	this.viewProperties = ko.observableArray([]);
 
+	this.viewTags = ko.observable('');
+	this.viewTags.visibility = ko.observable(false);
+	this.viewTags.focusTrigger = ko.observable(false);
+
+	this.viewTags.focusTrigger.subscribe(function (bValue) {
+		if (!bValue && '' === this.viewTags())
+		{
+			this.viewTags.visibility(false);
+		}
+		else if (bValue)
+		{
+			this.viewTags.visibility(true);
+		}
+	}, this);
+
 	this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
@@ -57,7 +73,7 @@ function PopupsContactsViewModel()
 			Enums.ContactPropertyType.Note
 		]);
 	});
-	
+
 	this.viewPropertiesOther = ko.computed(function () {
 
 		var aList = _.filter(this.viewProperties(), function (oProperty) {
@@ -71,7 +87,7 @@ function PopupsContactsViewModel()
 		});
 
 	}, this);
-	
+
 	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
 		return Enums.ContactPropertyType.Email === oProperty.type();
 	});
@@ -81,7 +97,7 @@ function PopupsContactsViewModel()
 	});
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
-		
+
 		var
 			aNames = this.viewPropertiesNames(),
 			aEmail = this.viewPropertiesEmails(),
@@ -89,7 +105,7 @@ function PopupsContactsViewModel()
 				return '' !== Utils.trim(oProperty.value());
 			}
 		;
-		
+
 		return !!(_.find(aNames, fHelper) || _.find(aEmail, fHelper));
 	}, this);
 
@@ -198,7 +214,7 @@ function PopupsContactsViewModel()
 		this.populateViewContact(null);
 		this.currentContact(null);
 	});
-	
+
 	this.deleteCommand = Utils.createCommand(this, function () {
 		this.deleteSelectedContacts();
 		this.emptySelection(true);
@@ -213,7 +229,7 @@ function PopupsContactsViewModel()
 			aE = _.map(aC, function (oItem) {
 				if (oItem)
 				{
-					var 
+					var
 						aData = oItem.getNameAndEmailHelper(),
 						oEmail = aData ? new EmailModel(aData[0], aData[1]) : null
 					;
@@ -235,7 +251,7 @@ function PopupsContactsViewModel()
 			kn.hideScreenPopup(PopupsContactsViewModel);
 			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, aE]);
 		}
-		
+
 	}, function () {
 		return 0 < this.contactsCheckedOrSelected().length;
 	});
@@ -245,11 +261,11 @@ function PopupsContactsViewModel()
 	});
 
 	this.saveCommand = Utils.createCommand(this, function () {
-		
+
 		this.viewSaving(true);
 		this.viewSaveTrigger(Enums.SaveSettingsStep.Animate);
 
-		var 
+		var
 			sRequestUid = Utils.fakeMd5(),
 			aProperties = []
 		;
@@ -265,7 +281,7 @@ function PopupsContactsViewModel()
 
 			var bRes = false;
 			self.viewSaving(false);
-			
+
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
 				oData.Result.RequestUid === sRequestUid && 0 < Utils.pInt(oData.Result.ResultID))
 			{
@@ -290,11 +306,11 @@ function PopupsContactsViewModel()
 					self.viewSaveTrigger(Enums.SaveSettingsStep.Idle);
 				}, 1000);
 			}
-			
-		}, sRequestUid, this.viewID(), aProperties);
-		
+
+		}, sRequestUid, this.viewID(), this.viewTags(), aProperties);
+
 	}, function () {
-		var 
+		var
 			bV = this.viewHasNonEmptyRequaredProperties(),
 			bReadOnly = this.viewReadOnly()
 		;
@@ -313,7 +329,7 @@ function PopupsContactsViewModel()
 
 			self.reloadContactList(true);
 		});
-		
+
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();
 	});
@@ -322,9 +338,9 @@ function PopupsContactsViewModel()
 
 	this.watchDirty = ko.observable(false);
 	this.watchHash = ko.observable(false);
-	
+
 	this.viewHash = ko.computed(function () {
-		return '' + _.map(self.viewProperties(), function (oItem) {
+		return '' + self.viewTags() + '|' + _.map(self.viewProperties(), function (oItem) {
 			return oItem.value();
 		}).join('');
 	});
@@ -383,6 +399,12 @@ PopupsContactsViewModel.prototype.addNewOrFocusProperty = function (sType, sType
 	{
 		this.addNewProperty(sType, sTypeStr);
 	}
+};
+
+PopupsContactsViewModel.prototype.addNewTag = function ()
+{
+	this.viewTags.visibility(true);
+	this.viewTags.focusTrigger(true);
 };
 
 PopupsContactsViewModel.prototype.addNewEmail = function ()
@@ -454,7 +476,7 @@ PopupsContactsViewModel.prototype.initUploader = function ()
 					this.contacts.importing(true);
 				}, this))
 				.on('onComplete', _.bind(function (sId, bResult, oData) {
-					
+
 					this.contacts.importing(false);
 					this.reloadContactList();
 
@@ -478,7 +500,7 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 		iCount = this.contacts().length,
 		aContacts = this.contactsCheckedOrSelected()
 	;
-	
+
 	if (0 < aContacts.length)
 	{
 		_.each(aContacts, function (oContact) {
@@ -499,11 +521,11 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 		}
 
 		_.delay(function () {
-			
+
 			_.each(aContacts, function (oContact) {
 				oKoContacts.remove(oContact);
 			});
-			
+
 		}, 500);
 	}
 };
@@ -562,7 +584,8 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 
 	this.emptySelection(false);
 	this.viewReadOnly(false);
-	
+	this.viewTags('');
+
 	if (oContact)
 	{
 		sId = oContact.idContact;
@@ -587,15 +610,20 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 			});
 		}
 
+		this.viewTags(oContact.tags);
+
 		this.viewReadOnly(!!oContact.readOnly);
 	}
+
+	this.viewTags.focusTrigger.valueHasMutated();
+	this.viewTags.visibility('' !== this.viewTags());
 
 	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false,
 		this.getPropertyPlceholder(Enums.ContactPropertyType.LastName)));
 
 	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact,
 		this.getPropertyPlceholder(Enums.ContactPropertyType.FirstName)));
-	
+
 	this.viewID(sId);
 	this.viewProperties([]);
 	this.viewProperties(aList);
@@ -613,7 +641,7 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self = this,
 		iOffset = (this.contactsPage() - 1) * Consts.Defaults.ContactsPerPage
 	;
-	
+
 	this.bDropPageAfterDelete = false;
 
 	if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
@@ -626,9 +654,10 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 	RL.remote().contacts(function (sResult, oData) {
 		var
 			iCount = 0,
-			aList = []
+			aList = [],
+			aTagsList = []
 		;
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.List)
 		{
 			if (Utils.isNonEmptyArray(oData.Result.List))
@@ -643,13 +672,25 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 				iCount = Utils.pInt(oData.Result.Count);
 				iCount = 0 < iCount ? iCount : 0;
 			}
+
+			if (Utils.isNonEmptyArray(oData.Result.Tags))
+			{
+				aTagsList = _.map(oData.Result.Tags, function (oItem) {
+					var oContactTag = new ContactTagModel();
+					return oContactTag.parse(oItem) ? oContactTag : null;
+				});
+
+				aTagsList = _.compact(aTagsList);
+			}
 		}
 
 		self.contactsCount(iCount);
-		
+
 		self.contacts(aList);
-		self.viewClearSearch('' !== self.search());
+		self.contactTags(aTagsList);
 		self.contacts.loading(false);
+
+		self.viewClearSearch('' !== self.search());
 
 	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };

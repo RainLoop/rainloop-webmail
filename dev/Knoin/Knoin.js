@@ -83,7 +83,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = oViewModel;
 		oViewModel.data = RL.data();
-		
+
 		oViewModel.viewModelName = ViewModelClass.__name;
 
 		if (oViewModelPlace && 1 === oViewModelPlace.length)
@@ -126,19 +126,19 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 							self.viewModelDom.hide();
 						}, 300);
 					}
-					
+
 				}, oViewModel);
 			}
-		
+
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
-			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			if (oViewModel && 'Popups' === sPosition)
 			{
-				oViewModel.registerPopupEscapeKey();
+				oViewModel.registerPopupKeyDown();
 			}
-			
+
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
 		else
@@ -240,7 +240,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 			}
 
 			_.defer(function () {
-				
+
 				// hide screen
 				if (self.oCurrentScreen)
 				{
@@ -336,7 +336,7 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 		{
 			oScreen.__started = true;
 			oScreen.__start();
-			
+
 			Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
 			Utils.delegateRun(oScreen, 'onStart');
 			Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);

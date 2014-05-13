@@ -67,9 +67,9 @@ function MailBoxMessageViewViewModel()
 	this.forwardCommand = createCommandHelper(Enums.ComposeType.Forward);
 	this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
 	this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
-	
+
 	this.messageVisibilityCommand = Utils.createCommand(this, Utils.emptyFunction, this.messageVisibility);
-	
+
 	this.messageEditCommand = Utils.createCommand(this, function () {
 		this.editMessage();
 	}, this.messageVisibility);
@@ -91,7 +91,7 @@ function MailBoxMessageViewViewModel()
 				[this.message().uid], false);
 		}
 	}, this.messageVisibility);
-	
+
 	this.archiveCommand = Utils.createCommand(this, function () {
 		if (this.message())
 		{
@@ -100,7 +100,7 @@ function MailBoxMessageViewViewModel()
 				[this.message().uid], true);
 		}
 	}, this.messageVisibility);
-	
+
 	this.spamCommand = Utils.createCommand(this, function () {
 		if (this.message())
 		{
@@ -120,6 +120,7 @@ function MailBoxMessageViewViewModel()
 	}, this.messageVisibility);
 
 	// viewer
+	this.viewHash = '';
 	this.viewSubject = ko.observable('');
 	this.viewFromShort = ko.observable('');
 	this.viewToShort = ko.observable('');
@@ -134,7 +135,7 @@ function MailBoxMessageViewViewModel()
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
-	
+
 	this.viewPgpPassword = ko.observable('');
 	this.viewPgpSignedVerifyStatus = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
@@ -143,7 +144,7 @@ function MailBoxMessageViewViewModel()
 	this.viewPgpSignedVerifyUser = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyUser() : '';
 	}, this);
-	
+
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
@@ -152,6 +153,12 @@ function MailBoxMessageViewViewModel()
 
 		if (oMessage)
 		{
+			if (this.viewHash !== oMessage.hash)
+			{
+				this.scrollMessageToTop();
+			}
+
+			this.viewHash = oMessage.hash;
 			this.viewSubject(oMessage.subject());
 			this.viewFromShort(oMessage.fromToLine(true, true));
 			this.viewToShort(oMessage.toToLine(true, true));
@@ -179,7 +186,12 @@ function MailBoxMessageViewViewModel()
 				}
 			});
 		}
-		
+		else
+		{
+			this.viewHash = '';
+			this.scrollMessageToTop();
+		}
+
 	}, this);
 
 	this.fullScreenMode.subscribe(function (bValue) {
@@ -202,14 +214,10 @@ function MailBoxMessageViewViewModel()
 		}
 	});
 
-	this.messageActiveDom.subscribe(function () {
-		this.scrollMessageToTop();
-	}, this);
-
 	this.goUpCommand = Utils.createCommand(this, function () {
 		RL.pub('mailbox.message-list.selector.go-up');
 	});
-	
+
 	this.goDownCommand = Utils.createCommand(this, function () {
 		RL.pub('mailbox.message-list.selector.go-down');
 	});
@@ -274,7 +282,7 @@ MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
 //		$('.messageItem', this.viewModelDom).animate({'scrollTop': 0}, 300);
 		$('.messageItem', this.viewModelDom).scrollTop(0);
 	}
-	
+
 	Utils.windowResize();
 };
 
@@ -308,7 +316,7 @@ MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 
 MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 {
-	var 
+	var
 		self = this,
 		oData = RL.data()
 	;
@@ -319,7 +327,7 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 			self.message.focused(true);
 		}
 	}, this);
-	
+
 	$('.attachmentsPlace', oDom).magnificPopup({
 		'delegate': '.magnificPopupImage:visible',
 		'type': 'image',
@@ -513,7 +521,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		{
 			self.message().printMessage();
 		}
-		
+
 		return false;
 	});
 
@@ -529,7 +537,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			{
 				self.deleteCommand();
 			}
-			
+
 			return false;
 		}
 	});
@@ -673,7 +681,7 @@ MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
 	if (oMessage && '' !== oMessage.readReceipt())
 	{
 		RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
-			oMessage.readReceipt(), 
+			oMessage.readReceipt(),
 			Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
 			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': RL.data().accountEmail()}));
 

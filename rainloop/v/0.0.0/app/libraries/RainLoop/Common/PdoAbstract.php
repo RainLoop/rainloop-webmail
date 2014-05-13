@@ -23,7 +23,7 @@ abstract class PdoAbstract
 	 * @var string
 	 */
 	protected $sDbType;
-	
+
 	/**
 	 * @return bool
 	 */
@@ -67,7 +67,7 @@ abstract class PdoAbstract
 		{
 			return $this->oPDO;
 		}
-		
+
 		if (!\class_exists('PDO'))
 		{
 			throw new \Exception('Class PDO does not exist');
@@ -100,7 +100,7 @@ abstract class PdoAbstract
 		{
 			throw $oException;
 		}
-		
+
 		if ($oPdo)
 		{
 			$this->oPDO = $oPdo;
@@ -127,7 +127,7 @@ abstract class PdoAbstract
 		{
 			$mName = \strtolower($sTabelName.'_'.$sColumnName.'_seq');
 		}
-		
+
 		return null === $mName ? $this->getPDO()->lastInsertId() : $this->getPDO()->lastInsertId($mName);
 	}
 
@@ -222,15 +222,15 @@ abstract class PdoAbstract
 			$mResult->closeCursor();
 		}
 	}
-	
+
 	/**
-	 * @param string $sSql
+	 * @param mixed $mData
 	 */
-	protected function writeLog($sSql)
+	protected function writeLog($mData)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->WriteMixed($sSql, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
+			$this->oLogger->WriteMixed($mData, \MailSo\Log\Enumerations\Type::INFO, 'SQL');
 		}
 	}
 
@@ -324,7 +324,7 @@ abstract class PdoAbstract
 			}
 
 			$this->writeLog($sQuery);
-			
+
 			$oStmt = $oPdo->prepare($sQuery);
 			if ($oStmt->execute(array($sName)))
 			{
@@ -355,7 +355,7 @@ abstract class PdoAbstract
 	/**
 	 * @param string $sName
 	 * @param int $iVersion
-	 * 
+	 *
 	 * @return bool
 	 */
 	protected function setVersion($sName, $iVersion)
@@ -371,7 +371,7 @@ abstract class PdoAbstract
 
 			$sQuery = 'DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?;';
 			$this->writeLog($sQuery);
-			
+
 			$oStmt = $oPdo->prepare($sQuery);
 			$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
 			if ($bResult)
@@ -507,7 +507,7 @@ rl_email text NOT NULL DEFAULT \'\'
 					{
 						$oPdo->rollBack();
 					}
-					
+
 					throw $oException;
 				}
 			}
@@ -550,7 +550,7 @@ rl_email text NOT NULL DEFAULT \'\'
 		{
 			$oPdo = false;
 			$bResult = false;
-			
+
 			foreach ($aData as $iVersion => $aQuery)
 			{
 				if (0 === \count($aQuery))
@@ -580,7 +580,7 @@ rl_email text NOT NULL DEFAULT \'\'
 							if (false === $bExec)
 							{
 								$this->writeLog('Result: false');
-								
+
 								$bResult = false;
 								break;
 							}
@@ -605,7 +605,7 @@ rl_email text NOT NULL DEFAULT \'\'
 						{
 							$oPdo->rollBack();
 						}
-						
+
 						throw $oException;
 					}
 

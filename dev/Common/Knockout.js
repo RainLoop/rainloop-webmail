@@ -74,7 +74,7 @@ ko.bindingHandlers.tooltip3 = {
 	'init': function (oElement) {
 
 		var $oEl = $(oElement);
-		
+
 		$oEl.tooltip({
 			'container': 'body',
 			'trigger': 'hover manual',
@@ -93,7 +93,7 @@ ko.bindingHandlers.tooltip3 = {
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-		
+
 	},
 	'update': function (oElement, fValueAccessor) {
 		var sValue = ko.utils.unwrapObservable(fValueAccessor());
@@ -124,7 +124,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 				$el.find('.dropdown-toggle').dropdown('toggle');
 				Utils.detectDropdownVisibility();
 			}
-			
+
 			fValueAccessor()(false);
 		}
 	}
@@ -221,7 +221,7 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		
+
 		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
@@ -536,11 +536,19 @@ ko.bindingHandlers.emailsTags = {
     'init': function(oElement, fValueAccessor) {
 		var
 			$oEl = $(oElement),
-			fValue = fValueAccessor()
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
 		;
 
 		$oEl.inputosaurus({
 			'parseOnBlur': true,
+			'allowDragAndDrop': true,
+			'focusCallback': fFocusCallback,
 			'inputDelimiters': [',', ';'],
 			'autoCompleteSource': function (oData, fResponse) {
 				RL.getAutocomplete(oData.term, function (aData) {
@@ -551,12 +559,12 @@ ko.bindingHandlers.emailsTags = {
 			},
 			'parseHook': function (aInput) {
 				return _.map(aInput, function (sInputValue) {
-					
+
 					var
 						sValue = Utils.trim(sInputValue),
 						oEmail = null
 					;
-					
+
 					if ('' !== sValue)
 					{
 						oEmail = new EmailModel();
@@ -586,8 +594,83 @@ ko.bindingHandlers.emailsTags = {
 
 		if (fValue.focusTrigger)
 		{
-			fValue.focusTrigger.subscribe(function () {
-				$oEl.inputosaurus('focus');
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
+			});
+		}
+	}
+};
+
+ko.bindingHandlers.contactTags = {
+    'init': function(oElement, fValueAccessor) {
+		var
+			$oEl = $(oElement),
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
+		;
+
+		$oEl.inputosaurus({
+			'parseOnBlur': true,
+			'allowDragAndDrop': false,
+			'focusCallback': fFocusCallback,
+			'inputDelimiters': [';'],
+			'outputDelimiter': ';',
+			'autoCompleteSource': function (oData, fResponse) {
+				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
+					fResponse(_.map(aData, function (oTagItem) {
+						return oTagItem.toLine(false);
+					}));
+				});
+			},
+			'parseHook': function (aInput) {
+				return _.map(aInput, function (sInputValue) {
+
+					var
+						sValue = Utils.trim(sInputValue),
+						oTag = null
+					;
+
+					if ('' !== sValue)
+					{
+						oTag = new ContactTagModel();
+						oTag.name(sValue);
+						return [oTag.toLine(false), oTag];
+					}
+
+					return [sValue, null];
+
+				});
+			},
+			'change': _.bind(function (oEvent) {
+				$oEl.data('ContactsTagsValue', oEvent.target.value);
+				fValue(oEvent.target.value);
+			}, this)
+		});
+
+		fValue.subscribe(function (sValue) {
+			if ($oEl.data('ContactsTagsValue') !== sValue)
+			{
+				$oEl.val(sValue);
+				$oEl.data('ContactsTagsValue', sValue);
+				$oEl.inputosaurus('refresh');
+			}
+		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
 			});
 		}
 	}
@@ -737,7 +820,7 @@ ko.observable.fn.validateFunc = function (fFunc)
 		this.subscribe(function (sValue) {
 			this.hasFuncError(!fFunc(sValue));
 		}, this);
-		
+
 		this.valueHasMutated();
 	}
 

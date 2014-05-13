@@ -85,7 +85,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->Export($sEmail, $sType) : false;
 	}
-	
+
 	/**
 	 * @param string $sEmail
 	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
@@ -121,6 +121,16 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($sEmail,
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
+	}
+
+	/**
+	 * @param string $sEmail
+	 *
+	 * @return array
+	 */
+	public function GetContactTags($sEmail)
+	{
+		return $this->IsActive() ? $this->oDriver->GetContactTags($sEmail) : array();
 	}
 
 	/**
@@ -238,7 +248,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 			$aMap = \array_change_key_case($aMap, CASE_LOWER);
 		}
-		
+
 		$sCsvNameLower = \MailSo\Base\Utils::IsAscii($sCsvName) ? \preg_replace('/[\s\-]+/', '', \strtolower($sCsvName)) : '';
 		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
 	}
@@ -258,7 +268,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			foreach ($aCsvData as $aItem)
 			{
 				\MailSo\Base\Utils::ResetTimeLimit();
-				
+
 				foreach ($aItem as $sItemName => $sItemValue)
 				{
 					$sItemName = \trim($sItemName);
@@ -294,10 +304,10 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 			unset($oContact);
 		}
-		
+
 		return $iCount;
 	}
-	
+
 	/**
 	 * @param string $sEmail
 	 * @param string $sVcfData
@@ -336,14 +346,14 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 					if ($oVCard instanceof \Sabre\VObject\Component\VCard)
 					{
 						\MailSo\Base\Utils::ResetTimeLimit();
-						
+
 						if (empty($oVCard->UID))
 						{
 							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
 						}
 
 						$oContact->PopulateByVCard($oVCard->serialize());
-						
+
 						if (0 < \count($oContact->Properties))
 						{
 							if ($this->ContactSave($sEmail, $oContact))

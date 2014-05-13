@@ -184,6 +184,7 @@ module.exports = function (grunt) {
 					"dev/Knoin/Knoin.js",
 
 					"dev/Models/EmailModel.js",
+					"dev/Models/ContactTagModel.js",
 
 					"dev/ViewModels/PopupsDomainViewModel.js",
 					"dev/ViewModels/PopupsPluginViewModel.js",
@@ -264,6 +265,7 @@ module.exports = function (grunt) {
 					"dev/Models/EmailModel.js",
 					"dev/Models/ContactModel.js",
 					"dev/Models/ContactPropertyModel.js",
+					"dev/Models/ContactTagModel.js",
 					"dev/Models/AttachmentModel.js",
 					"dev/Models/ComposeAttachmentModel.js",
 					"dev/Models/MessageModel.js",
@@ -459,10 +461,10 @@ module.exports = function (grunt) {
 			require('wrench').rmdirSyncRecursive(releasesSrcPath);
 		}
 	});
-	
+
 	// uglify
 	grunt.registerTask('rlmin', ['uglify:min_app', 'uglify:min_admin']);
-	
+
 	// uglify (optional)
 	grunt.registerTask('rl', ['uglify:rl']);
 	grunt.registerTask('nano', ['uglify:nano']);

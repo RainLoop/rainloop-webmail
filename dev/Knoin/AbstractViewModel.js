@@ -17,7 +17,7 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
-	
+
 	this.viewModelDom = null;
 }
 
@@ -72,14 +72,21 @@ KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
 	RL.data().keyScope(this.sCurrentKeyScope);
 };
 
-KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 {
 	var self = this;
 	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
+		if (oEvent && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
-			return false;
+			if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
+			{
+				Utils.delegateRun(self, 'cancelCommand');
+				return false;
+			}
+			else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
+			{
+				return false;
+			}
 		}
 
 		return true;

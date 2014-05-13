@@ -1056,13 +1056,13 @@ Utils.i18nToNode = function (oElement)
 				{
 					jqThis.html(Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-placeholder');
 				if (sKey)
 				{
 					jqThis.attr('placeholder', Utils.i18n(sKey));
 				}
-				
+
 				sKey = jqThis.data('i18n-title');
 				if (sKey)
 				{
@@ -1200,7 +1200,7 @@ Utils.fixLongSubject = function (sSubject)
 	;
 
 	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
-	
+
 	do
 	{
 		oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
@@ -1329,9 +1329,9 @@ Utils.initNotificationLanguage = function ()
 
 	NotificationI18N[Enums.Notification.CantSaveSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_SETTINGS');
 	NotificationI18N[Enums.Notification.CantSavePluginSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS');
-	
+
 	NotificationI18N[Enums.Notification.DomainAlreadyExists] = Utils.i18n('NOTIFICATIONS/DOMAIN_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.CantInstallPackage] = Utils.i18n('NOTIFICATIONS/CANT_INSTALL_PACKAGE');
 	NotificationI18N[Enums.Notification.CantDeletePackage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_PACKAGE');
 	NotificationI18N[Enums.Notification.InvalidPluginPackage] = Utils.i18n('NOTIFICATIONS/INVALID_PLUGIN_PACKAGE');
@@ -1344,7 +1344,7 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.DemoSendMessageError] = Utils.i18n('NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR');
 
 	NotificationI18N[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
-	
+
 	NotificationI18N[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
 	NotificationI18N[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
 	NotificationI18N[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
@@ -1496,7 +1496,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.contactsAutosave = ko.observable(false);
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
-	
+
 	oData.allowThemes = ko.observable(true);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
@@ -1506,7 +1506,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
 	oData.useCheckboxesInList = ko.observable(true);
-	
+
 	oData.layout = ko.observable(Enums.Layout.SidePreview);
 	oData.usePreviewPane = ko.computed(function () {
 		return Enums.Layout.NoPreview !== oData.layout();
@@ -1789,7 +1789,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
 		aExpandedList = [];
 	}
-	
+
 	if (bExpanded)
 	{
 		aExpandedList.push(sFullNameHash);
@@ -1806,7 +1806,7 @@ Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
 {
 	var
-		iDisabledWidth = 65,
+		iDisabledWidth = 60,
 		iMinWidth = 155,
 		oLeft = $(sLeft),
 		oRight = $(sRight),
@@ -1884,7 +1884,7 @@ Utils.initBlockquoteSwitcher = function (oMessageTextBody)
 		var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
 			return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
 		});
-		
+
 		if ($oList && 0 < $oList.length)
 		{
 			$oList.each(function () {
@@ -2294,7 +2294,7 @@ Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 		oCtx.fillStyle = '#fff';
 		oCtx.fillRect(0, 0, iValue, iValue);
 		oCtx.drawImage(this, aDiff[0] / 2, aDiff[1] / 2, this.width - aDiff[0], this.height - aDiff[1], 0, 0, iValue, iValue);
-			
+
 		fCallback(oCanvas.toDataURL('image/jpeg'));
 	};
 
@@ -2711,7 +2711,7 @@ ko.bindingHandlers.tooltip3 = {
 	'init': function (oElement) {
 
 		var $oEl = $(oElement);
-		
+
 		$oEl.tooltip({
 			'container': 'body',
 			'trigger': 'hover manual',
@@ -2730,7 +2730,7 @@ ko.bindingHandlers.tooltip3 = {
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-		
+
 	},
 	'update': function (oElement, fValueAccessor) {
 		var sValue = ko.utils.unwrapObservable(fValueAccessor());
@@ -2761,7 +2761,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 				$el.find('.dropdown-toggle').dropdown('toggle');
 				Utils.detectDropdownVisibility();
 			}
-			
+
 			fValueAccessor()(false);
 		}
 	}
@@ -2858,7 +2858,7 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	'init': function (oElement, fValueAccessor) {
-		
+
 		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 			'keyboard': false,
 			'show': ko.utils.unwrapObservable(fValueAccessor())
@@ -3173,11 +3173,19 @@ ko.bindingHandlers.emailsTags = {
     'init': function(oElement, fValueAccessor) {
 		var
 			$oEl = $(oElement),
-			fValue = fValueAccessor()
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
 		;
 
 		$oEl.inputosaurus({
 			'parseOnBlur': true,
+			'allowDragAndDrop': true,
+			'focusCallback': fFocusCallback,
 			'inputDelimiters': [',', ';'],
 			'autoCompleteSource': function (oData, fResponse) {
 				RL.getAutocomplete(oData.term, function (aData) {
@@ -3188,12 +3196,12 @@ ko.bindingHandlers.emailsTags = {
 			},
 			'parseHook': function (aInput) {
 				return _.map(aInput, function (sInputValue) {
-					
+
 					var
 						sValue = Utils.trim(sInputValue),
 						oEmail = null
 					;
-					
+
 					if ('' !== sValue)
 					{
 						oEmail = new EmailModel();
@@ -3223,8 +3231,83 @@ ko.bindingHandlers.emailsTags = {
 
 		if (fValue.focusTrigger)
 		{
-			fValue.focusTrigger.subscribe(function () {
-				$oEl.inputosaurus('focus');
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
+			});
+		}
+	}
+};
+
+ko.bindingHandlers.contactTags = {
+    'init': function(oElement, fValueAccessor) {
+		var
+			$oEl = $(oElement),
+			fValue = fValueAccessor(),
+			fFocusCallback = function (bValue) {
+				if (fValue && fValue.focusTrigger)
+				{
+					fValue.focusTrigger(bValue);
+				}
+			}
+		;
+
+		$oEl.inputosaurus({
+			'parseOnBlur': true,
+			'allowDragAndDrop': false,
+			'focusCallback': fFocusCallback,
+			'inputDelimiters': [';'],
+			'outputDelimiter': ';',
+			'autoCompleteSource': function (oData, fResponse) {
+				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
+					fResponse(_.map(aData, function (oTagItem) {
+						return oTagItem.toLine(false);
+					}));
+				});
+			},
+			'parseHook': function (aInput) {
+				return _.map(aInput, function (sInputValue) {
+
+					var
+						sValue = Utils.trim(sInputValue),
+						oTag = null
+					;
+
+					if ('' !== sValue)
+					{
+						oTag = new ContactTagModel();
+						oTag.name(sValue);
+						return [oTag.toLine(false), oTag];
+					}
+
+					return [sValue, null];
+
+				});
+			},
+			'change': _.bind(function (oEvent) {
+				$oEl.data('ContactsTagsValue', oEvent.target.value);
+				fValue(oEvent.target.value);
+			}, this)
+		});
+
+		fValue.subscribe(function (sValue) {
+			if ($oEl.data('ContactsTagsValue') !== sValue)
+			{
+				$oEl.val(sValue);
+				$oEl.data('ContactsTagsValue', sValue);
+				$oEl.inputosaurus('refresh');
+			}
+		});
+
+		if (fValue.focusTrigger)
+		{
+			fValue.focusTrigger.subscribe(function (bValue) {
+				if (bValue)
+				{
+					$oEl.inputosaurus('focus');
+				}
 			});
 		}
 	}
@@ -3374,7 +3457,7 @@ ko.observable.fn.validateFunc = function (fFunc)
 		this.subscribe(function (sValue) {
 			this.hasFuncError(!fFunc(sValue));
 		}, this);
-		
+
 		this.valueHasMutated();
 	}
 
@@ -4935,7 +5018,7 @@ function KnoinAbstractViewModel(sPosition, sTemplate)
 	this.viewModelName = '';
 	this.viewModelVisibility = ko.observable(false);
 	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
-	
+
 	this.viewModelDom = null;
 }
 
@@ -4990,14 +5073,21 @@ KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
 	RL.data().keyScope(this.sCurrentKeyScope);
 };
 
-KnoinAbstractViewModel.prototype.registerPopupEscapeKey = function ()
+KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 {
 	var self = this;
 	$window.on('keydown', function (oEvent) {
-		if (oEvent && Enums.EventKeyCode.Esc === oEvent.keyCode && self.modalVisibility && self.modalVisibility())
+		if (oEvent && self.modalVisibility && self.modalVisibility())
 		{
-			Utils.delegateRun(self, 'cancelCommand');
-			return false;
+			if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
+			{
+				Utils.delegateRun(self, 'cancelCommand');
+				return false;
+			}
+			else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -5163,7 +5253,7 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = oViewModel;
 		oViewModel.data = RL.data();
-		
+
 		oViewModel.viewModelName = ViewModelClass.__name;
 
 		if (oViewModelPlace && 1 === oViewModelPlace.length)
@@ -5206,19 +5296,19 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 							self.viewModelDom.hide();
 						}, 300);
 					}
-					
+
 				}, oViewModel);
 			}
-		
+
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 			ko.applyBindings(oViewModel, oViewModelDom[0]);
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
-			if (oViewModel && 'Popups' === sPosition && !oViewModel.bDisabeCloseOnEsc)
+			if (oViewModel && 'Popups' === sPosition)
 			{
-				oViewModel.registerPopupEscapeKey();
+				oViewModel.registerPopupKeyDown();
 			}
-			
+
 			Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 		}
 		else
@@ -5320,7 +5410,7 @@ Knoin.prototype.screenOnRoute = function (sScreenName, sSubPart)
 			}
 
 			_.defer(function () {
-				
+
 				// hide screen
 				if (self.oCurrentScreen)
 				{
@@ -5416,7 +5506,7 @@ Knoin.prototype.startScreens = function (aScreensClasses)
 		{
 			oScreen.__started = true;
 			oScreen.__start();
-			
+
 			Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
 			Utils.delegateRun(oScreen, 'onStart');
 			Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);
@@ -5852,6 +5942,7 @@ function ContactModel()
 	this.idContact = 0;
 	this.display = '';
 	this.properties = [];
+	this.tags = '';
 	this.readOnly = false;
 
 	this.focused = ko.observable(false);
@@ -5865,11 +5956,11 @@ function ContactModel()
  */
 ContactModel.prototype.getNameAndEmailHelper = function ()
 {
-	var 
+	var
 		sName = '',
 		sEmail = ''
 	;
-	
+
 	if (Utils.isNonEmptyArray(this.properties))
 	{
 		_.each(this.properties, function (aProperty) {
@@ -5902,6 +5993,7 @@ ContactModel.prototype.parse = function (oItem)
 		this.idContact = Utils.pInt(oItem['IdContact']);
 		this.display = Utils.pString(oItem['Display']);
 		this.readOnly = !!oItem['ReadOnly'];
+		this.tags = '';
 
 		if (Utils.isNonEmptyArray(oItem['Properties']))
 		{
@@ -5911,6 +6003,11 @@ ContactModel.prototype.parse = function (oItem)
 					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
 				}
 			}, this);
+		}
+
+		if (Utils.isNonEmptyArray(oItem['Tags']))
+		{
+			this.tags = oItem['Tags'].join(';');
 		}
 
 		bResult = true;
@@ -5989,6 +6086,50 @@ function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 	}, this);
 
 }
+
+/**
+ * @constructor
+ */
+function ContactTagModel()
+{
+	this.idContactTag = 0;
+	this.name = ko.observable('');
+	this.readOnly = false;
+}
+
+ContactTagModel.prototype.parse = function (oItem)
+{
+	var bResult = false;
+	if (oItem && 'Object/Tag' === oItem['@Object'])
+	{
+		this.idContact = Utils.pInt(oItem['IdContactTag']);
+		this.name(Utils.pString(oItem['Name']));
+		this.readOnly = !!oItem['ReadOnly'];
+
+		bResult = true;
+	}
+
+	return bResult;
+};
+
+/**
+ * @param {string} sSearch
+ * @return {boolean}
+ */
+ContactTagModel.prototype.filterHelper = function (sSearch)
+{
+	return this.name().toLowerCase().indexOf(sSearch.toLowerCase()) !== -1;
+};
+
+/**
+ * @param {boolean=} bEncodeHtml = false
+ * @return {string}
+ */
+ContactTagModel.prototype.toLine = function (bEncodeHtml)
+{
+	return (Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml) ?
+		Utils.encodeHtml(this.name()) : this.name();
+};
 
 /**
  * @constructor
@@ -9732,7 +9873,8 @@ function PopupsContactsViewModel()
 	this.search = ko.observable('');
 	this.contactsCount = ko.observable(0);
 	this.contacts = RL.data().contacts;
-	
+	this.contactTags = RL.data().contactTags;
+
 	this.currentContact = ko.observable(null);
 
 	this.importUploaderButton = ko.observable(null);
@@ -9752,6 +9894,21 @@ function PopupsContactsViewModel()
 	this.viewReadOnly = ko.observable(false);
 	this.viewProperties = ko.observableArray([]);
 
+	this.viewTags = ko.observable('');
+	this.viewTags.visibility = ko.observable(false);
+	this.viewTags.focusTrigger = ko.observable(false);
+
+	this.viewTags.focusTrigger.subscribe(function (bValue) {
+		if (!bValue && '' === this.viewTags())
+		{
+			this.viewTags.visibility(false);
+		}
+		else if (bValue)
+		{
+			this.viewTags.visibility(true);
+		}
+	}, this);
+
 	this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
@@ -9765,7 +9922,7 @@ function PopupsContactsViewModel()
 			Enums.ContactPropertyType.Note
 		]);
 	});
-	
+
 	this.viewPropertiesOther = ko.computed(function () {
 
 		var aList = _.filter(this.viewProperties(), function (oProperty) {
@@ -9779,7 +9936,7 @@ function PopupsContactsViewModel()
 		});
 
 	}, this);
-	
+
 	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
 		return Enums.ContactPropertyType.Email === oProperty.type();
 	});
@@ -9789,7 +9946,7 @@ function PopupsContactsViewModel()
 	});
 
 	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
-		
+
 		var
 			aNames = this.viewPropertiesNames(),
 			aEmail = this.viewPropertiesEmails(),
@@ -9797,7 +9954,7 @@ function PopupsContactsViewModel()
 				return '' !== Utils.trim(oProperty.value());
 			}
 		;
-		
+
 		return !!(_.find(aNames, fHelper) || _.find(aEmail, fHelper));
 	}, this);
 
@@ -9906,7 +10063,7 @@ function PopupsContactsViewModel()
 		this.populateViewContact(null);
 		this.currentContact(null);
 	});
-	
+
 	this.deleteCommand = Utils.createCommand(this, function () {
 		this.deleteSelectedContacts();
 		this.emptySelection(true);
@@ -9921,7 +10078,7 @@ function PopupsContactsViewModel()
 			aE = _.map(aC, function (oItem) {
 				if (oItem)
 				{
-					var 
+					var
 						aData = oItem.getNameAndEmailHelper(),
 						oEmail = aData ? new EmailModel(aData[0], aData[1]) : null
 					;
@@ -9943,7 +10100,7 @@ function PopupsContactsViewModel()
 			kn.hideScreenPopup(PopupsContactsViewModel);
 			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, aE]);
 		}
-		
+
 	}, function () {
 		return 0 < this.contactsCheckedOrSelected().length;
 	});
@@ -9953,11 +10110,11 @@ function PopupsContactsViewModel()
 	});
 
 	this.saveCommand = Utils.createCommand(this, function () {
-		
+
 		this.viewSaving(true);
 		this.viewSaveTrigger(Enums.SaveSettingsStep.Animate);
 
-		var 
+		var
 			sRequestUid = Utils.fakeMd5(),
 			aProperties = []
 		;
@@ -9973,7 +10130,7 @@ function PopupsContactsViewModel()
 
 			var bRes = false;
 			self.viewSaving(false);
-			
+
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
 				oData.Result.RequestUid === sRequestUid && 0 < Utils.pInt(oData.Result.ResultID))
 			{
@@ -9998,11 +10155,11 @@ function PopupsContactsViewModel()
 					self.viewSaveTrigger(Enums.SaveSettingsStep.Idle);
 				}, 1000);
 			}
-			
-		}, sRequestUid, this.viewID(), aProperties);
-		
+
+		}, sRequestUid, this.viewID(), this.viewTags(), aProperties);
+
 	}, function () {
-		var 
+		var
 			bV = this.viewHasNonEmptyRequaredProperties(),
 			bReadOnly = this.viewReadOnly()
 		;
@@ -10021,7 +10178,7 @@ function PopupsContactsViewModel()
 
 			self.reloadContactList(true);
 		});
-		
+
 	}, function () {
 		return !this.contacts.syncing() && !this.contacts.importing();
 	});
@@ -10030,9 +10187,9 @@ function PopupsContactsViewModel()
 
 	this.watchDirty = ko.observable(false);
 	this.watchHash = ko.observable(false);
-	
+
 	this.viewHash = ko.computed(function () {
-		return '' + _.map(self.viewProperties(), function (oItem) {
+		return '' + self.viewTags() + '|' + _.map(self.viewProperties(), function (oItem) {
 			return oItem.value();
 		}).join('');
 	});
@@ -10091,6 +10248,12 @@ PopupsContactsViewModel.prototype.addNewOrFocusProperty = function (sType, sType
 	{
 		this.addNewProperty(sType, sTypeStr);
 	}
+};
+
+PopupsContactsViewModel.prototype.addNewTag = function ()
+{
+	this.viewTags.visibility(true);
+	this.viewTags.focusTrigger(true);
 };
 
 PopupsContactsViewModel.prototype.addNewEmail = function ()
@@ -10162,7 +10325,7 @@ PopupsContactsViewModel.prototype.initUploader = function ()
 					this.contacts.importing(true);
 				}, this))
 				.on('onComplete', _.bind(function (sId, bResult, oData) {
-					
+
 					this.contacts.importing(false);
 					this.reloadContactList();
 
@@ -10186,7 +10349,7 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 		iCount = this.contacts().length,
 		aContacts = this.contactsCheckedOrSelected()
 	;
-	
+
 	if (0 < aContacts.length)
 	{
 		_.each(aContacts, function (oContact) {
@@ -10207,11 +10370,11 @@ PopupsContactsViewModel.prototype.removeCheckedOrSelectedContactsFromList = func
 		}
 
 		_.delay(function () {
-			
+
 			_.each(aContacts, function (oContact) {
 				oKoContacts.remove(oContact);
 			});
-			
+
 		}, 500);
 	}
 };
@@ -10270,7 +10433,8 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 
 	this.emptySelection(false);
 	this.viewReadOnly(false);
-	
+	this.viewTags('');
+
 	if (oContact)
 	{
 		sId = oContact.idContact;
@@ -10295,15 +10459,20 @@ PopupsContactsViewModel.prototype.populateViewContact = function (oContact)
 			});
 		}
 
+		this.viewTags(oContact.tags);
+
 		this.viewReadOnly(!!oContact.readOnly);
 	}
+
+	this.viewTags.focusTrigger.valueHasMutated();
+	this.viewTags.visibility('' !== this.viewTags());
 
 	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false,
 		this.getPropertyPlceholder(Enums.ContactPropertyType.LastName)));
 
 	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact,
 		this.getPropertyPlceholder(Enums.ContactPropertyType.FirstName)));
-	
+
 	this.viewID(sId);
 	this.viewProperties([]);
 	this.viewProperties(aList);
@@ -10321,7 +10490,7 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self = this,
 		iOffset = (this.contactsPage() - 1) * Consts.Defaults.ContactsPerPage
 	;
-	
+
 	this.bDropPageAfterDelete = false;
 
 	if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
@@ -10334,9 +10503,10 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 	RL.remote().contacts(function (sResult, oData) {
 		var
 			iCount = 0,
-			aList = []
+			aList = [],
+			aTagsList = []
 		;
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.List)
 		{
 			if (Utils.isNonEmptyArray(oData.Result.List))
@@ -10351,13 +10521,25 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 				iCount = Utils.pInt(oData.Result.Count);
 				iCount = 0 < iCount ? iCount : 0;
 			}
+
+			if (Utils.isNonEmptyArray(oData.Result.Tags))
+			{
+				aTagsList = _.map(oData.Result.Tags, function (oItem) {
+					var oContactTag = new ContactTagModel();
+					return oContactTag.parse(oItem) ? oContactTag : null;
+				});
+
+				aTagsList = _.compact(aTagsList);
+			}
 		}
 
 		self.contactsCount(iCount);
-		
+
 		self.contacts(aList);
-		self.viewClearSearch('' !== self.search());
+		self.contactTags(aTagsList);
 		self.contacts.loading(false);
+
+		self.viewClearSearch('' !== self.search());
 
 	}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
 };
@@ -13134,9 +13316,9 @@ function MailBoxMessageViewViewModel()
 	this.forwardCommand = createCommandHelper(Enums.ComposeType.Forward);
 	this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
 	this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
-	
+
 	this.messageVisibilityCommand = Utils.createCommand(this, Utils.emptyFunction, this.messageVisibility);
-	
+
 	this.messageEditCommand = Utils.createCommand(this, function () {
 		this.editMessage();
 	}, this.messageVisibility);
@@ -13158,7 +13340,7 @@ function MailBoxMessageViewViewModel()
 				[this.message().uid], false);
 		}
 	}, this.messageVisibility);
-	
+
 	this.archiveCommand = Utils.createCommand(this, function () {
 		if (this.message())
 		{
@@ -13167,7 +13349,7 @@ function MailBoxMessageViewViewModel()
 				[this.message().uid], true);
 		}
 	}, this.messageVisibility);
-	
+
 	this.spamCommand = Utils.createCommand(this, function () {
 		if (this.message())
 		{
@@ -13187,6 +13369,7 @@ function MailBoxMessageViewViewModel()
 	}, this.messageVisibility);
 
 	// viewer
+	this.viewHash = '';
 	this.viewSubject = ko.observable('');
 	this.viewFromShort = ko.observable('');
 	this.viewToShort = ko.observable('');
@@ -13201,7 +13384,7 @@ function MailBoxMessageViewViewModel()
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 	this.viewUserPicVisible = ko.observable(false);
-	
+
 	this.viewPgpPassword = ko.observable('');
 	this.viewPgpSignedVerifyStatus = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
@@ -13210,7 +13393,7 @@ function MailBoxMessageViewViewModel()
 	this.viewPgpSignedVerifyUser = ko.computed(function () {
 		return this.message() ? this.message().pgpSignedVerifyUser() : '';
 	}, this);
-	
+
 	this.message.subscribe(function (oMessage) {
 
 		this.messageActiveDom(null);
@@ -13219,6 +13402,12 @@ function MailBoxMessageViewViewModel()
 
 		if (oMessage)
 		{
+			if (this.viewHash !== oMessage.hash)
+			{
+				this.scrollMessageToTop();
+			}
+
+			this.viewHash = oMessage.hash;
 			this.viewSubject(oMessage.subject());
 			this.viewFromShort(oMessage.fromToLine(true, true));
 			this.viewToShort(oMessage.toToLine(true, true));
@@ -13246,7 +13435,12 @@ function MailBoxMessageViewViewModel()
 				}
 			});
 		}
-		
+		else
+		{
+			this.viewHash = '';
+			this.scrollMessageToTop();
+		}
+
 	}, this);
 
 	this.fullScreenMode.subscribe(function (bValue) {
@@ -13269,14 +13463,10 @@ function MailBoxMessageViewViewModel()
 		}
 	});
 
-	this.messageActiveDom.subscribe(function () {
-		this.scrollMessageToTop();
-	}, this);
-
 	this.goUpCommand = Utils.createCommand(this, function () {
 		RL.pub('mailbox.message-list.selector.go-up');
 	});
-	
+
 	this.goDownCommand = Utils.createCommand(this, function () {
 		RL.pub('mailbox.message-list.selector.go-down');
 	});
@@ -13341,7 +13531,7 @@ MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
 //		$('.messageItem', this.viewModelDom).animate({'scrollTop': 0}, 300);
 		$('.messageItem', this.viewModelDom).scrollTop(0);
 	}
-	
+
 	Utils.windowResize();
 };
 
@@ -13375,7 +13565,7 @@ MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 
 MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 {
-	var 
+	var
 		self = this,
 		oData = RL.data()
 	;
@@ -13386,7 +13576,7 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 			self.message.focused(true);
 		}
 	}, this);
-	
+
 	$('.attachmentsPlace', oDom).magnificPopup({
 		'delegate': '.magnificPopupImage:visible',
 		'type': 'image',
@@ -13580,7 +13770,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 		{
 			self.message().printMessage();
 		}
-		
+
 		return false;
 	});
 
@@ -13596,7 +13786,7 @@ MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 			{
 				self.deleteCommand();
 			}
-			
+
 			return false;
 		}
 	});
@@ -13740,7 +13930,7 @@ MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
 	if (oMessage && '' !== oMessage.readReceipt())
 	{
 		RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
-			oMessage.readReceipt(), 
+			oMessage.readReceipt(),
 			Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
 			Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': RL.data().accountEmail()}));
 
@@ -15260,13 +15450,14 @@ function WebMailDataStorage()
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
 	// contacts
+	this.contactTags = ko.observableArray([]);
 	this.contacts = ko.observableArray([]);
 	this.contacts.loading = ko.observable(false).extend({'throttle': 200});
 	this.contacts.importing = ko.observable(false).extend({'throttle': 200});
 	this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
 	this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
-	
+
 	this.allowContactsSync = ko.observable(false);
 	this.enableContactsSync = ko.observable(false);
 	this.contactsSyncUrl = ko.observable('');
@@ -15406,11 +15597,11 @@ function WebMailDataStorage()
 	this.messageListEndFolder = ko.observable('');
 	this.messageListEndSearch = ko.observable('');
 	this.messageListEndPage = ko.observable(1);
-	
+
 	this.messageListEndHash = ko.computed(function () {
 		return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
 	}, this);
-	
+
 	this.messageListPageCount = ko.computed(function () {
 		var iPage = Math.ceil(this.messageListCount() / this.messagesPerPage());
 		return 0 >= iPage ? 1 : iPage;
@@ -15443,7 +15634,7 @@ function WebMailDataStorage()
 	this.messageListCompleteLoading.subscribe(function (bValue) {
 		this.messageListCompleteLoadingThrottle(bValue);
 	}, this);
-	
+
 	this.messageList.subscribe(_.debounce(function (aList) {
 		_.each(aList, function (oItem) {
 			if (oItem.newForAnimation())
@@ -15460,7 +15651,7 @@ function WebMailDataStorage()
 	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
 
 	this.message.focused = ko.observable(false);
-	
+
 	this.message.subscribe(function (oMessage) {
 		if (!oMessage)
 		{
@@ -15490,7 +15681,7 @@ function WebMailDataStorage()
 			RL.data().keyScope(Enums.KeyState.MessageList);
 		}
 	});
-	
+
 	this.folderList.focused.subscribe(function (bValue) {
 		if (bValue)
 		{
@@ -15501,11 +15692,11 @@ function WebMailDataStorage()
 			RL.data().keyScope(Enums.KeyState.MessageList);
 		}
 	});
-	
+
 	this.messageLoading.subscribe(function (bValue) {
 		this.messageLoadingThrottle(bValue);
 	}, this);
-	
+
 	this.messageFullScreenMode = ko.observable(false);
 
 	this.messageError = ko.observable('');
@@ -15526,13 +15717,13 @@ function WebMailDataStorage()
 	}, this);
 
 	this.currentMessage = ko.observable(null);
-	
+
 	this.messageListChecked = ko.computed(function () {
 		return _.filter(this.messageList(), function (oItem) {
 			return oItem.checked();
 		});
 	}, this).extend({'rateLimit': 0});
-	
+
 	this.hasCheckedMessages = ko.computed(function () {
 		return 0 < this.messageListChecked().length;
 	}, this).extend({'rateLimit': 0});
@@ -15619,7 +15810,7 @@ WebMailDataStorage.prototype.purgeMessageBodyCache = function()
 		oMessagesBodiesDom = null,
 		iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
 	;
-	
+
 	if (0 < iEnd)
 	{
 		oMessagesBodiesDom = this.messagesBodiesDom();
@@ -15652,7 +15843,7 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.accountIncLogin(RL.settingsGet('IncLogin'));
 	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
-	
+
 	this.displayName(RL.settingsGet('DisplayName'));
 	this.replyTo(RL.settingsGet('ReplyTo'));
 	this.signature(RL.settingsGet('Signature'));
@@ -15694,7 +15885,7 @@ WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUid
 							{
 								oNotification.show();
 							}
-							
+
 							window.setTimeout((function (oLocalNotifications) {
 								return function () {
 									if (oLocalNotifications.cancel)
@@ -15897,7 +16088,7 @@ WebMailDataStorage.prototype.hideMessageBodies = function ()
 WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 {
 	bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
-	
+
 	var
 		aResult = [],
 		iLimit = 10,
@@ -15933,10 +16124,10 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 		{
 			return 1;
 		}
-		
+
 		return 0;
 	});
-	
+
 	_.find(aTimeouts, function (aItem) {
 		var oFolder = RL.cache().getFolderFromCacheList(aItem[1]);
 		if (oFolder)
@@ -15944,7 +16135,7 @@ WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
 			oFolder.interval = iUtc;
 			aResult.push(aItem[1]);
 		}
-		
+
 		return iLimit <= aResult.length;
 	});
 
@@ -15962,7 +16153,7 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 {
 	sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
 	bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-	
+
 	aUidForRemove = _.map(aUidForRemove, function (mValue) {
 		return Utils.pInt(mValue);
 	});
@@ -16022,7 +16213,7 @@ WebMailDataStorage.prototype.removeMessagesFromList = function (
 		else
 		{
 			oData.messageListIsNotCompleted(true);
-			
+
 			_.each(aMessages, function (oMessage) {
 				if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
 				{
@@ -16093,7 +16284,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 
 				oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
 				oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-				
+
 				if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 				{
 					bIsHtml = true;
@@ -16103,7 +16294,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				{
 					bIsHtml = false;
 					sPlain = oData.Result.Plain.toString();
-					
+
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
 						RL.data().allowOpenPGP() &&
 						Utils.isNormal(oData.Result.PlainRaw))
@@ -16116,7 +16307,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 							bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
 								/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 						}
-						
+
 						$proxyDiv.empty();
 						if (bPgpSigned && oMessage.isPgpSigned())
 						{
@@ -16128,7 +16319,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							sPlain = 
+							sPlain =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -16205,7 +16396,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		{
 			RL.setMessageSeen(oMessage);
 		}
-		
+
 		Utils.windowResize();
 	}
 };
@@ -16258,7 +16449,7 @@ WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
 		if (oFolder && !bCached)
 		{
 			oFolder.interval = iUtc;
-			
+
 			RL.cache().setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
 
 			if (Utils.isNormal(oData.Result.MessageCount))
@@ -16711,7 +16902,7 @@ AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
 function WebMailAjaxRemoteStorage()
 {
 	AbstractAjaxRemoteStorage.call(this);
-	
+
 	this.oRequests = {};
 }
 
@@ -17390,11 +17581,12 @@ WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLim
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
+WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sTags, aProperties)
 {
 	this.defaultRequest(fCallback, 'ContactSave', {
 		'RequestUid': sRequestUid,
 		'Uid': Utils.trim(sUid),
+		'Tags': Utils.trim(sTags),
 		'Properties': aProperties
 	});
 };
@@ -18650,7 +18842,7 @@ function RainLoopApp()
 	this.oRemote = null;
 	this.oCache = null;
 	this.oMoveCache = {};
-	
+
 	this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 	this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
 
@@ -18827,11 +19019,11 @@ RainLoopApp.prototype.contactsSync = function (fResultFunc)
 	{
 		return false;
 	}
-	
+
 	oContacts.syncing(true);
-	
+
 	RL.remote().contactsSync(function (sResult, oData) {
-		
+
 		oContacts.syncing(false);
 
 		if (fResultFunc)
@@ -18849,14 +19041,14 @@ RainLoopApp.prototype.messagesMoveTrigger = function ()
 		self = this,
 		sSpamFolder = RL.data().spamFolder()
 	;
-	
+
 	_.each(this.oMoveCache, function (oItem) {
-		
+
 		var
 			bSpam = sSpamFolder === oItem['To'],
 			bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
 		;
-		
+
 		RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
 			bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
 	});
@@ -18910,7 +19102,7 @@ RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 		else
 		{
 			RL.cache().setFolderHash(RL.data().currentFolderFullNameRaw(), '');
-			
+
 			if (oData && -1 < Utils.inArray(oData.ErrorCode,
 				[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
 			{
@@ -18983,14 +19175,14 @@ RainLoopApp.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFol
 	{
 		kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
 	}
-	else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType && 
+	else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
 		(sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder())))
 	{
 		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 			self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 			oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
-		
+
 		}]);
 	}
 	else if (oMoveFolder)
@@ -19107,7 +19299,7 @@ RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 RainLoopApp.prototype.accountsAndIdentities = function ()
 {
 	var oRainLoopData = RL.data();
-	
+
 	oRainLoopData.accountsLoading(true);
 	oRainLoopData.identitiesLoading(true);
 
@@ -19115,14 +19307,14 @@ RainLoopApp.prototype.accountsAndIdentities = function ()
 
 		oRainLoopData.accountsLoading(false);
 		oRainLoopData.identitiesLoading(false);
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData.Result)
 		{
-			var 
+			var
 				sParentEmail = RL.settingsGet('ParentEmail'),
 				sAccountEmail = oRainLoopData.accountEmail()
 			;
-			
+
 			sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
 			if (Utils.isArray(oData.Result['Accounts']))
@@ -19131,21 +19323,21 @@ RainLoopApp.prototype.accountsAndIdentities = function ()
 					return new AccountModel(sValue, sValue !== sParentEmail);
 				}));
 			}
-			
+
 			if (Utils.isArray(oData.Result['Identities']))
 			{
 				oRainLoopData.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
-					
-					var 
+
+					var
 						sId = Utils.pString(oIdentityData['Id']),
 						sEmail = Utils.pString(oIdentityData['Email']),
 						oIdentity = new IdentityModel(sId, sEmail, sId !== sAccountEmail)
 					;
-					
+
 					oIdentity.name(Utils.pString(oIdentityData['Name']));
 					oIdentity.replyTo(Utils.pString(oIdentityData['ReplyTo']));
 					oIdentity.bcc(Utils.pString(oIdentityData['Bcc']));
-					
+
 					return oIdentity;
 				}));
 			}
@@ -19156,7 +19348,7 @@ RainLoopApp.prototype.accountsAndIdentities = function ()
 RainLoopApp.prototype.quota = function ()
 {
 	this.remote().quota(function (sResult, oData) {
-		if (Enums.StorageResultType.Success === sResult &&	oData && oData.Result && 
+		if (Enums.StorageResultType.Success === sResult &&	oData && oData.Result &&
 			Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 			Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 		{
@@ -19193,7 +19385,7 @@ RainLoopApp.prototype.folderInformation = function (sFolder, aList)
 					if (oFolder)
 					{
 						oFolder.interval = iUtc;
-						
+
 						if (oData.Result.Hash)
 						{
 							RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
@@ -19290,7 +19482,7 @@ RainLoopApp.prototype.folderInformationMultiply = function (bBoot)
 				if (oData && oData.Result && oData.Result.List && Utils.isNonEmptyArray(oData.Result.List))
 				{
 					_.each(oData.Result.List, function (oItem) {
-						
+
 						var
 							aList = [],
 							sHash = RL.cache().getFolderHash(oItem.Folder),
@@ -19574,7 +19766,7 @@ RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisa
 				}
 			}
 		}
-		
+
 		if (oItem.subScribed() && 0 < oItem.subFolders().length)
 		{
 			aResult = aResult.concat(RL.folderListOptionsBuilder([], oItem.subFolders(), aDisabled, [],
@@ -19608,8 +19800,19 @@ RainLoopApp.prototype.getAutocomplete = function (sQuery, fCallback)
 		{
 			fCallback([]);
 		}
-		
+
 	}, sQuery);
+};
+
+/**
+ * @param {string} sQuery
+ * @param {Function} fCallback
+ */
+RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
+{
+	fCallback(_.filter(RL.data().contactTags(), function (oContactTag) {
+		return oContactTag && oContactTag.filterHelper(sQuery);
+	}));
 };
 
 RainLoopApp.prototype.emailsPicsHashes = function ()
@@ -19659,7 +19862,7 @@ RainLoopApp.prototype.bootstart = function ()
 		bFacebook = RL.settingsGet('AllowFacebookSocial'),
 		bTwitter = RL.settingsGet('AllowTwitterSocial')
 	;
-	
+
 	if (!RL.settingsGet('ChangePasswordIsAllowed'))
 	{
 		Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
@@ -19674,7 +19877,7 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);
 	}
-	
+
 	if (RL.settingsGet('AllowIdentities'))
 	{
 		Utils.removeSettingsViewModel(SettingsIdentity);
@@ -19683,7 +19886,7 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsIdentities);
 	}
-	
+
 	if (!RL.settingsGet('OpenPGP'))
 	{
 		Utils.removeSettingsViewModel(SettingsOpenPGP);
@@ -19698,12 +19901,12 @@ RainLoopApp.prototype.bootstart = function ()
 	{
 		Utils.removeSettingsViewModel(SettingsSocialScreen);
 	}
-	
+
 	if (!RL.settingsGet('AllowThemes'))
 	{
 		Utils.removeSettingsViewModel(SettingsThemes);
 	}
-	
+
 	Utils.initOnStartOrLangChange(function () {
 
 		$.extend(true, $.magnificPopup.defaults, {
@@ -19751,9 +19954,9 @@ RainLoopApp.prototype.bootstart = function ()
 							{
 								RL.data().openpgpKeyring = new window.openpgp.Keyring();
 								RL.data().allowOpenPGP(true);
-								
+
 								RL.pub('openpgp.init');
-								
+
 								RL.reloadOpenPgpKeys();
 							}
 						}
@@ -19765,7 +19968,7 @@ RainLoopApp.prototype.bootstart = function ()
 				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);
-				
+
 				if (bGoogle || bFacebook || bTwitter)
 				{
 					RL.socialUsers(true);
@@ -19801,7 +20004,7 @@ RainLoopApp.prototype.bootstart = function ()
 				window.setInterval(function () {
 					RL.contactsSync();
 				}, iContactsSyncInterval * 60000 + 5000);
-				
+
 				_.delay(function () {
 					RL.contactsSync();
 				}, 5000);
@@ -19861,7 +20064,7 @@ RainLoopApp.prototype.bootstart = function ()
 					Utils.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
 				});
 			}
-			
+
 		}, this));
 	}
 	else
