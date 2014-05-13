@@ -46,12 +46,12 @@ class Account
 	 */
 	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Domain $oDomain, $sSignMeToken = '', $sParentEmail = '')
 	{
-		$this->sEmail = \strtolower($sEmail);
-		$this->sLogin = $sLogin;
+		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
 		$this->sPassword = $sPassword;
 		$this->oDomain = $oDomain;
 		$this->sSignMeToken = $sSignMeToken;
-		$this->sParentEmail = \strtolower($sParentEmail);
+		$this->sParentEmail = \MailSo\Base\Utils::IdnToAscii($sParentEmail, true);
 	}
 
 	/**
@@ -166,7 +166,6 @@ class Account
 	 */
 	public function Hash()
 	{
-
 		return md5(APP_SALT.$this->Email().APP_SALT.$this->oDomain->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($this->Email())).
 			APP_SALT.$this->oDomain->IncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
 	}
@@ -188,7 +187,7 @@ class Account
 	 */
 	public function SetParentEmail($sParentEmail)
 	{
-		$this->sParentEmail = \strtolower($sParentEmail);
+		$this->sParentEmail = \MailSo\Base\Utils::IdnToAscii($sParentEmail, true);
 	}
 
 	/**

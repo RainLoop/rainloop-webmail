@@ -751,7 +751,7 @@ class ServiceActions
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password']))
 				{
-					$sEmail = \strtolower(\trim($mData['Email']));
+					$sEmail = \trim($mData['Email']);
 					$sPassword = $mData['Password'];
 					$sLogin = isset($mData['Login']) ? $mData['Login'] : '';
 
@@ -866,7 +866,7 @@ class ServiceActions
 
 		return '';
 	}
-
+	
 	/**
 	 * @return string
 	 */
@@ -875,9 +875,11 @@ class ServiceActions
 		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
 		{
 			$oAccountToLogin = null;
-			$sEmail = empty($this->aPaths[2]) ? '' : \strtolower(\urldecode(\trim($this->aPaths[2])));
+			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
 			if (!empty($sEmail))
 			{
+				$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
+
 				$oAccount = $this->oActions->GetAccount();
 				if ($oAccount)
 				{

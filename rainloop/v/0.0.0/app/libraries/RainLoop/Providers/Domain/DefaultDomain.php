@@ -43,7 +43,15 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			return 'default';
 		}
 
-		$sName = \strtolower($sName);
+		if ($bBack)
+		{
+			$sName = \MailSo\Base\Utils::IdnToUtf8($sName, true);
+		}
+		else
+		{
+			$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
+		}
+
 		return $bBack ? \str_replace('_wildcard_', '*', $sName) : \str_replace('*', '_wildcard_', $sName);
 	}
 
@@ -55,6 +63,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	 */
 	public function Disable($sName, $bDisable)
 	{
+		$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
+
 		$sFile = '';
 		if (\file_exists($this->sDomainPath.'/disabled'))
 		{
@@ -111,8 +121,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aList = \glob($this->sDomainPath.'/*.ini');
 		foreach ($aList as $sFile)
 		{
-			$sName = \strtolower(\substr(\basename($sFile), 0, -4));
-			if ('default' === $sName || false !== strpos($sName, '_wildcard_'))
+			$sName = \substr(\basename($sFile), 0, -4);
+			if ('default' === $sName || false !== \strpos($sName, '_wildcard_'))
 			{
 				$aNames[] = $this->codeFileName($sName, true);
 			}
@@ -135,16 +145,16 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	/**
 	 * @param string $sName
 	 * @param bool $bFindWithWildCard = false
+	 * @param bool $bCheckDisabled = true
 	 *
-	 * @return \RainLoop\Domain | null
+	 * @return \RainLoop\Domain|null
 	 */
-	public function Load($sName, $bFindWithWildCard = false)
+	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
 		$mResult = null;
 
 		$sDisabled = '';
 		$sFoundedValue = '';
-		$sName = \strtolower($sName);
 		
 		$sRealFileName = $this->codeFileName($sName);
 
@@ -154,7 +164,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		}
 		
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
-			(0 === \strlen($sDisabled) || false === \strpos(\strtolower(','.$sDisabled.','), \strtolower(','.$sName.','))))
+			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
 		{
 			$aDomain = @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
 			// fix misspellings (#119)
@@ -189,9 +199,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			$sNames = $this->getWildcardDomainsLine();
 			if (0 < \strlen($sNames))
 			{
-				if (\RainLoop\Plugins\Helper::ValidateWildcardValues($sName, $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
+				if (\RainLoop\Plugins\Helper::ValidateWildcardValues(
+					\MailSo\Base\Utils::IdnToUtf8($sName, true), $sNames, $sFoundedValue) && 0 < \strlen($sFoundedValue))
 				{
-					if (0 === \strlen($sDisabled) || false === \strpos(\strtolower(','.$sDisabled.','), \strtolower(','.$sFoundedValue.',')))
+					if (!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.$sFoundedValue.','))
 					{
 						$mResult = $this->Load($sFoundedValue, false);
 					}
@@ -209,8 +220,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	 */
 	public function Save(\RainLoop\Domain $oDomain)
 	{
-		$sName = \strtolower($oDomain->Name());
-		$sRealFileName = $this->codeFileName($sName);
+		$sRealFileName = $this->codeFileName($oDomain->Name());
 
 		if ($this->oCacher)
 		{
@@ -229,7 +239,6 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	public function Delete($sName)
 	{
 		$bResult = true;
-		$sName = \strtolower($sName);
 		$sRealFileName = $this->codeFileName($sName);
 
 		if (0 < \strlen($sName) && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
@@ -264,8 +273,9 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 		foreach ($aList as $sFile)
 		{
-			$sName = \strtolower(\substr(\basename($sFile), 0, -4));
+			$sName = \substr(\basename($sFile), 0, -4);
 			$sName = $this->codeFileName($sName, true);
+
 			if (false === \strpos($sName, '*'))
 			{
 				$aResult[] = $sName;
@@ -292,15 +302,19 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
 			if (false !== $sDisabled && 0 < strlen($sDisabled))
 			{
-				$aDisabledNames = \explode(',', strtolower($sDisabled));
+				$aDisabledNames = \explode(',', $sDisabled);
 				$aDisabledNames = \array_unique($aDisabledNames);
+				foreach ($aDisabledNames as $iIndex => $sValue)
+				{
+					$aDisabledNames[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sValue, true);
+				}
 			}
 		}
 
 		$aReturn = array();
 		foreach ($aResult as $sName)
 		{
-			$aReturn[$sName] = !\in_array(\strtolower($sName), $aDisabledNames);
+			$aReturn[$sName] = !\in_array($sName, $aDisabledNames);
 		}
 
 		return $aReturn;

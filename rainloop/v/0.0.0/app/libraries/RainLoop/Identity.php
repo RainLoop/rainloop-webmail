@@ -41,7 +41,7 @@ class Identity
 	protected function __construct($sId, $sEmail, $sName, $sReplyTo, $sBcc)
 	{
 		$this->sId = $sId;
-		$this->sEmail = \strtolower($sEmail);
+		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sName = \trim($sName);
 		$this->sReplyTo = \trim($sReplyTo);
 		$this->sBcc = \trim($sBcc);
@@ -96,7 +96,7 @@ class Identity
 	 */
 	public function SetEmail($sEmail)
 	{
-		$this->sEmail = $sEmail;
+		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 
 		return $this;
 	}
@@ -162,13 +162,15 @@ class Identity
 	}
 
 	/**
+	 * @param bool $bAjax = false
+	 * 
 	 * @return array
 	 */
-	public function ToSimpleJSON()
+	public function ToSimpleJSON($bAjax = false)
 	{
 		return array(
 			'Id' => $this->Id(),
-			'Email' => $this->Email(),
+			'Email' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->Email()) : $this->Email(),
 			'Name' => $this->Name(),
 			'ReplyTo' => $this->ReplyTo(),
 			'Bcc' => $this->Bcc()

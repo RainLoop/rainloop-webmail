@@ -100,16 +100,17 @@ class EmailCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param bool $bConvertSpecialsName = false
+	 * @param bool $bIdn = false
 	 *
 	 * @return string
 	 */
-	public function ToString($bConvertSpecialsName = false)
+	public function ToString($bConvertSpecialsName = false, $bIdn = false)
 	{
 		$aReturn = $aEmails = array();
 		$aEmails =& $this->GetAsArray();
 		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 		{
-			$aReturn[] = $oEmail->ToString($bConvertSpecialsName);
+			$aReturn[] = $oEmail->ToString($bConvertSpecialsName, $bIdn);
 		}
 
 		return \implode(', ', $aReturn);

@@ -330,7 +330,7 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount)
 			{
-				$sEmail = \strtolower($oAccount->Email());
+				$sEmail = $oAccount->Email();
 				$sFileName = \str_replace('{user:email}', $sEmail, $sFileName);
 				$sFileName = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sFileName);
 				$sFileName = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sFileName);
@@ -972,6 +972,9 @@ class Actions
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',
 			'Email' => '',
+			'DevEmail' => '',
+			'DevLogin' => '',
+			'DevPassword' => '',
 			'Title' => $oConfig->Get('webmail', 'title', ''),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', ''),
 			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
@@ -1067,7 +1070,7 @@ class Actions
 				$aResult['DevLogin'] = $oConfig->Get('labs', 'dev_login', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 			}
-
+			
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
@@ -1266,6 +1269,12 @@ class Actions
 		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
+
+		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);
+		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
+		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
+		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
+		$aResult['DevLogin'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevLogin']);
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult);
 
@@ -1538,7 +1547,7 @@ class Actions
 		{
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 		}
-
+		
 		return $aAccounts;
 	}
 
@@ -1619,7 +1628,7 @@ class Actions
 			$aResult = array();
 			foreach ($aIdentities as $oItem)
 			{
-				$aResult[] = $oItem->ToSimpleJSON();
+				$aResult[] = $oItem->ToSimpleJSON(false);
 			}
 
 			$oSettings->SetConf('Identities', @\json_encode($aResult));
@@ -1651,7 +1660,7 @@ class Actions
 
 		$sParentEmail = 0 < \strlen($oAccount->ParentEmail()) ? $oAccount->ParentEmail() : $oAccount->Email();
 
-		$sEmail = \strtolower($sEmail);
+		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		if ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountAlreadyExists);
@@ -1701,7 +1710,8 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$sParentEmail = $oAccount->ParentEmailHelper();
-		$sEmailToDelete = \strtolower(\trim($this->GetActionParam('EmailToDelete', '')));
+		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
+		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
 
 		$aAccounts = $this->GetAccounts($oAccount);
 
@@ -1833,6 +1843,11 @@ class Actions
 		{
 			$mAccounts = $this->GetAccounts($oAccount);
 			$mAccounts = \array_keys($mAccounts);
+
+			foreach ($mAccounts as $iIndex => $sName)
+			{
+				$mAccounts[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sName);
+			}
 		}
 
 		$mIdentities = false;
@@ -2366,7 +2381,7 @@ class Actions
 		$this->IsAdminLoggined();
 
 		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->Load($this->GetActionParam('Name', '')));
+			$this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
 	}
 
 	/**
@@ -4213,7 +4228,7 @@ class Actions
 			{
 				$sMessageId = $oMessage->MessageId();
 
-				rewind($rMessageStream);
+				\rewind($rMessageStream);
 
 				$iNewUid = 0;
 				$this->MailClient()->MessageAppendStream(
@@ -4407,7 +4422,7 @@ class Actions
 
 						try
 						{
-							switch (strtolower($sDraftInfoType))
+							switch (\strtolower($sDraftInfoType))
 							{
 								case 'reply':
 								case 'reply-all':
@@ -4430,7 +4445,7 @@ class Actions
 						}
 					}
 
-					if (0 < strlen($sSentFolder))
+					if (0 < \strlen($sSentFolder))
 					{
 						try
 						{
@@ -4514,7 +4529,7 @@ class Actions
 				$aTo =& $oToCollection->GetAsArray();
 				foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 				{
-					$aArrayToFrec[$oEmail->GetEmail()] = $oEmail->ToString();
+					$aArrayToFrec[$oEmail->GetEmail(true)] = $oEmail->ToString(false, true);
 				}
 			}
 
@@ -6784,7 +6799,7 @@ class Actions
 
 			if ($bHasSimpleJsonFunc)
 			{
-				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), $mResponse->ToSimpleJSON());
+				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), $mResponse->ToSimpleJSON(true));
 			}
 			else if ('MailSo\Mail\Message' === $sClassName)
 			{
@@ -6934,7 +6949,7 @@ class Actions
 							try
 							{
 								$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['ReadReceipt']);
-								if (!$oReadReceipt || ($oReadReceipt && \strtolower($oAccount->Email()) === \strtolower($oReadReceipt->GetEmail())))
+								if (!$oReadReceipt || ($oReadReceipt && $oAccount->Email() === $oReadReceipt->GetEmail()))
 								{
 									$mResult['ReadReceipt'] = '';
 								}
@@ -6954,7 +6969,7 @@ class Actions
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetDisplayName()),
-					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail())
+					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail(true))
 				));
 			}
 			else if ('RainLoop\Providers\AddressBook\Classes\Contact' === $sClassName)

@@ -126,7 +126,8 @@ class Service
 		{
 			$bAdmin = !empty($aPaths[0]) && \in_array(\strtolower($aPaths[0]), array('admin', 'cp'));
 		}
-		else if (empty($aPaths[0]) && \strtolower($sAdminPanelHost) === \strtolower($this->oHttp->GetHost()))
+		else if (empty($aPaths[0]) &&
+			\MailSo\Base\Utils::StrToLowerIfAscii($sAdminPanelHost) === \MailSo\Base\Utils::StrToLowerIfAscii($this->oHttp->GetHost()))
 		{
 			$bAdmin = true;
 		}

@@ -117,7 +117,7 @@ class Property
 			// lower
 			if ($this->IsEmail())
 			{
-				$this->Value = \strtolower($this->Value);
+				$this->Value = \MailSo\Base\Utils::StrToLowerIfAscii($this->Value);
 			}
 
 			// phones clear value for searching

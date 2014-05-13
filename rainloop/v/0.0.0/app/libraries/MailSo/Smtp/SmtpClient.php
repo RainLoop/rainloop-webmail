@@ -173,6 +173,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Login($sLogin, $sPassword)
 	{
+		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
+		
 		if ($this->IsAuthSupported('LOGIN'))
 		{
 			try
@@ -299,6 +301,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function MailFrom($sFrom, $sSizeIfSupported = '')
 	{
+		$sFrom = \MailSo\Base\Utils::IdnToAscii($sFrom, true);
 		$sCmd = 'FROM:<'.$sFrom.'>';
 		
 		$sSizeIfSupported = (string) $sSizeIfSupported;
@@ -333,6 +336,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
+		$sTo = \MailSo\Base\Utils::IdnToAscii($sTo, true);
 		$this->sendRequestWithCheck('RCPT', array(250, 251), 'TO:<'.$sTo.'>');
 
 		$this->bRcpt = true;

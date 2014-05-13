@@ -36,21 +36,21 @@ class Social
 		$mResult = null;
 		if (!empty($oItem['gd$email'][0]['address']))
 		{
-			$mEmail = \strtolower($oItem['gd$email'][0]['address']);
-			if (\is_array($oItem['gd$email']) && 1 <\count($oItem['gd$email']))
+			$mEmail = \MailSo\Base\Utils::IdnToAscii($oItem['gd$email'][0]['address'], true);
+			if (\is_array($oItem['gd$email']) && 1 < \count($oItem['gd$email']))
 			{
 				$mEmail = array();
 				foreach ($oItem['gd$email'] as $oEmail)
 				{
 					if (!empty($oEmail['address']))
 					{
-						$mEmail[] = \strtolower($oEmail['address']);
+						$mEmail[] = \MailSo\Base\Utils::IdnToAscii($oEmail['address'], true);
 					}
 				}
 			}
 
 			$sImg = '';
-			if (!empty($oItem['link']) && is_array($oItem['link']))
+			if (!empty($oItem['link']) && \is_array($oItem['link']))
 			{
 				foreach ($oItem['link'] as $oLink)
 				{
@@ -79,29 +79,29 @@ class Social
 				if (isset($aPics[$sHash]))
 				{
 					$mData = $aPics[$sHash];
-					if (!is_array($mData))
+					if (!\is_array($mData))
 					{
 						$mData = array($mData);
 					}
 				}
 
-				if (is_array($mEmail))
+				if (\is_array($mEmail))
 				{
-					$mData = array_merge($mData, $mEmail);
-					$mData = array_unique($mData);
+					$mData = \array_merge($mData, $mEmail);
+					$mData = \array_unique($mData);
 				}
-				else if (0 < strlen($mEmail))
+				else if (0 < \strlen($mEmail))
 				{
 					$mData[] = $mEmail;
 				}
 
-				if (is_array($mData))
+				if (\is_array($mData))
 				{
-					if (1 === count($mData) && !empty($mData[0]))
+					if (1 === \count($mData) && !empty($mData[0]))
 					{
 						$aPics[$sHash] = $mData[0];
 					}
-					else if (1 < count($mData))
+					else if (1 < \count($mData))
 					{
 						$aPics[$sHash] = $mData;
 					}
@@ -132,7 +132,7 @@ class Social
 					'alt' => 'json'
 				));
 
-				if (!empty($aResponse['result']['feed']['entry']) && is_array($aResponse['result']['feed']['entry']))
+				if (!empty($aResponse['result']['feed']['entry']) && \is_array($aResponse['result']['feed']['entry']))
 				{
 					$mResult = array();
 					foreach ($aResponse['result']['feed']['entry'] as $oItem)
@@ -140,7 +140,7 @@ class Social
 						$aItem = $this->convertGoogleJsonContactToResponseContact($oItem, $aPics);
 						if ($aItem)
 						{
-							if (is_array($aItem['email']))
+							if (\is_array($aItem['email']))
 							{
 								$aNewItem = $aItem;
 								unset($aNewItem['email']);
@@ -185,7 +185,7 @@ class Social
 			if (!empty($sEncodedeData))
 			{
 				$aData = \RainLoop\Utils::DecodeKeyValues($sEncodedeData);
-				if (is_array($aData) && isset($aData['access_token'], $aData['id']))
+				if (\is_array($aData) && isset($aData['access_token'], $aData['id']))
 				{
 					$this->oActions->StorageProvider()->Clear(null,
 						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,

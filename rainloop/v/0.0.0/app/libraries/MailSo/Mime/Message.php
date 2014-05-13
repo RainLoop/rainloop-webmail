@@ -191,7 +191,7 @@ class Message
 	}
 
 	/**
-	 * @param string $sHeader
+	 * @param string $sHeaderName
 	 * @param string $sValue
 	 *
 	 * @return \MailSo\Mime\Message

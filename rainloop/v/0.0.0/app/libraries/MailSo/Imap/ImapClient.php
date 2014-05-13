@@ -188,6 +188,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$sLogin = \trim($sLogin);
+		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
 		$sPassword = $sPassword;
 
 		$this->sLogginedUser = $sLogin;

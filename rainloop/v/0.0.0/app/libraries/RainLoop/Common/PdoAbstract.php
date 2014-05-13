@@ -249,7 +249,7 @@ abstract class PdoAbstract
 			return $aCache[$sEmail];
 		}
 
-		$sEmail = \strtolower(\trim($sEmail));
+		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
 		if (empty($sEmail))
 		{
 			throw new \InvalidArgumentException('Empty Email argument');

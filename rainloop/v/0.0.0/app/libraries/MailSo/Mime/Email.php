@@ -39,7 +39,7 @@ class Email
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->sEmail = \trim($sEmail);
+		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
 		$this->sDisplayName = \trim($sDisplayName);
 		$this->sRemark = \trim($sRemark);
 	}
@@ -176,6 +176,7 @@ class Email
 		}
 
 		$sEmail = \trim(\trim($sEmail), '<>');
+
 		$sName = \trim(\trim($sName), '"');
 		$sName = \trim($sName, '\'');
 		$sComment = \trim(\trim($sComment), '()');
@@ -188,11 +189,13 @@ class Email
 	}
 
 	/**
+	 * @param bool $bIdn = false
+	 *
 	 * @return string
 	 */
-	public function GetEmail()
+	public function GetEmail($bIdn = false)
 	{
-		return $this->sEmail;
+		return $bIdn ? \MailSo\Base\Utils::IdnToUtf8($this->sEmail) : $this->sEmail;
 	}
 
 	/**
@@ -216,31 +219,36 @@ class Email
 	 */
 	public function GetAccountName()
 	{
-		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->sEmail);
+		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
 	}
 
 	/**
+	 * @param bool $bIdn = false
+	 *
 	 * @return string
 	 */
-	public function GetDomain()
+	public function GetDomain($bIdn = false)
 	{
-		return \MailSo\Base\Utils::GetDomainFromEmail($this->sEmail);
+		return \MailSo\Base\Utils::GetDomainFromEmail($this->GetEmail($bIdn));
 	}
 
 	/**
+	 * @param bool $bIdn = false
+	 * 
 	 * @return array
 	 */
-	public function ToArray()
+	public function ToArray($bIdn = false)
 	{
-		return array($this->sDisplayName, $this->sEmail, $this->sRemark);
+		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark);
 	}
 
 	/**
 	 * @param bool $bConvertSpecialsName = false
+	 * @param bool $bIdn = false
 	 *
 	 * @return string
 	 */
-	public function ToString($bConvertSpecialsName = false)
+	public function ToString($bConvertSpecialsName = false, $bIdn = false)
 	{
 		$sReturn = '';
 
@@ -263,8 +271,7 @@ class Email
 
 		if (0 < \strlen($this->sEmail))
 		{
-			$sReturn = $this->sEmail;
-
+			$sReturn = $this->GetEmail($bIdn);
 			if (0 < \strlen($sDisplayName.$sRemark))
 			{
 				$sReturn = $sDisplayName.' <'.$sReturn.'> '.$sRemark;

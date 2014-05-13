@@ -36,12 +36,13 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @param string $sName
 	 * @param bool $bFindWithWildCard = false
+	 * @param bool $bCheckDisabled = true
 	 *
 	 * @return \RainLoop\Domain|null
 	 */
-	public function Load($sName, $bFindWithWildCard = false)
+	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
-		return $this->oDriver->Load($sName, $bFindWithWildCard);
+		return $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
 	}
 
 	/**

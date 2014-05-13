@@ -228,7 +228,7 @@ class Header
 			$oEmailCollection = \MailSo\Mime\EmailCollection::NewInstance($this->sFullValue);
 			if ($oEmailCollection && 0 < $oEmailCollection->Count())
 			{
-				$sResult = $oEmailCollection->ToString(true);
+				$sResult = $oEmailCollection->ToString(true, false);
 			}
 		}
 

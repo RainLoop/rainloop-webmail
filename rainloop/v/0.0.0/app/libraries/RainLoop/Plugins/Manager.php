@@ -190,10 +190,10 @@ class Manager
 	 */
 	private function convertPluginFolderNameToClassName($sFolderName)
 	{
-		$aParts = array_map('ucfirst', array_map('strtolower',
-			explode(' ', preg_replace('/[^a-z0-9]+/', ' ', $sFolderName))));
+		$aParts = \array_map('ucfirst', \array_map('strtolower',
+			\explode(' ', \preg_replace('/[^a-z0-9]+/', ' ', $sFolderName))));
 
-		return implode($aParts).'Plugin';
+		return \implode($aParts).'Plugin';
 	}
 
 	/**
@@ -425,9 +425,9 @@ class Manager
 	 */
 	public function AddAdditionalPartAction($sActionName, $mCallbak)
 	{
-		if ($this->bIsEnabled && is_callable($mCallbak))
+		if ($this->bIsEnabled && \is_callable($mCallbak))
 		{
-			$sActionName = strtolower($sActionName);
+			$sActionName = \strtolower($sActionName);
 			if (!isset($this->aAdditionalParts[$sActionName]))
 			{
 				$this->aAdditionalParts[$sActionName] = array();
@@ -450,12 +450,12 @@ class Manager
 		$bResult = false;
 		if ($this->bIsEnabled)
 		{
-			$sActionName = strtolower($sActionName);
+			$sActionName = \strtolower($sActionName);
 			if (isset($this->aAdditionalParts[$sActionName]))
 			{
 				foreach ($this->aAdditionalParts[$sActionName] as $mCallbak)
 				{
-					$bCallResult = call_user_func_array($mCallbak, $aParts);
+					$bCallResult = \call_user_func_array($mCallbak, $aParts);
 					if ($bCallResult && !$bResult)
 					{
 						$bResult = true;

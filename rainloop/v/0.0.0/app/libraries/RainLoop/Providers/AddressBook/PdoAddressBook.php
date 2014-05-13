@@ -620,7 +620,7 @@ class PdoAddressBook
 				)
 			);
 
-			$sLast = $this->lastInsertId('rainloop_ab_contacts', 'id_contact');
+			$sLast = $this->lastInsertId('rainloop_ab_tags', 'id_tag');
 			if (\is_numeric($sLast) && 0 < (int) $sLast)
 			{
 				$mResult = (int) $sLast;
@@ -1382,7 +1382,7 @@ class PdoAddressBook
 					{
 						if ($aItem && !empty($aItem['prop_value']))
 						{
-							$aExists[] = \strtolower(\trim($aItem['prop_value']));
+							$aExists[] = \MailSo\Base\Utils::StrToLowerIfAscii(\trim($aItem['prop_value']));
 						}
 					}
 				}
@@ -1391,7 +1391,7 @@ class PdoAddressBook
 			$aEmailsToCreate = \array_filter($aEmailsObjects, function ($oItem) use ($aExists, &$aEmailsToUpdate) {
 				if ($oItem)
 				{
-					$sEmail = \strtolower(\trim($oItem->GetEmail()));
+					$sEmail = \trim($oItem->GetEmail(true));
 					if (0 < \strlen($sEmail))
 					{
 						$aEmailsToUpdate[] = $sEmail;
@@ -1408,7 +1408,7 @@ class PdoAddressBook
 			{
 				if ($oItem)
 				{
-					$sEmailUpdate = \strtolower(\trim($oItem->GetEmail()));
+					$sEmailUpdate = \trim($oItem->GetEmail(true));
 					if (0 < \strlen($sEmailUpdate))
 					{
 						$aEmailsToUpdate[] = $sEmailUpdate;
@@ -1428,7 +1428,7 @@ class PdoAddressBook
 				{
 					$oPropEmail = new \RainLoop\Providers\AddressBook\Classes\Property();
 					$oPropEmail->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::EMAIl;
-					$oPropEmail->Value = \strtolower(\trim($oEmail->GetEmail()));
+					$oPropEmail->Value = \trim($oEmail->GetEmail(true));
 
 					$oContact->Properties[] = $oPropEmail;
 				}
@@ -1439,7 +1439,7 @@ class PdoAddressBook
 					$sFullName = $oEmail->GetDisplayName();
 					if (false !== \strpos($sFullName, ' '))
 					{
-						$aNames = explode(' ', $sFullName, 2);
+						$aNames = \explode(' ', $sFullName, 2);
 						$sFirst = isset($aNames[0]) ? $aNames[0] : '';
 						$sLast = isset($aNames[1]) ? $aNames[1] : '';
 					}

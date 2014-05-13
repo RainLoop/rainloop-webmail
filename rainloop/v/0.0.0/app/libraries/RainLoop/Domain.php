@@ -263,11 +263,11 @@ class Domain
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 		$sWhiteList = '')
 	{
-		$this->sIncHost = $sIncHost;
+		$this->sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
 		$this->iIncPort = $iIncPort;
 		$this->iIncSecure = $iIncSecure;
 		$this->bIncShortLogin = $bIncShortLogin;
-		$this->sOutHost = $sOutHost;
+		$this->sOutHost = \MailSo\Base\Utils::IdnToAscii($sOutHost);
 		$this->iOutPort = $iOutPort;
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
@@ -379,10 +379,13 @@ class Domain
 		$sW = \trim($this->sWhiteList);
 		if (0 < strlen($sW))
 		{
-			$sW = \preg_replace('/([^\s]+)@[^\s]*/', '$1', $sW);
-			$sW = ' '.\strtolower(\trim(\preg_replace('/[\s;,\r\n\t]+/', ' ', $sW))).' ';
+			$sEmail = \MailSo\Base\Utils::IdnToUtf8($sEmail, true);
+			$sLogin = \MailSo\Base\Utils::IdnToUtf8($sLogin);
 
-			$sUserPart = \strtolower(\MailSo\Base\Utils::GetAccountNameFromEmail(0 < \strlen($sLogin) ? $sLogin : $sEmail));
+			$sW = \preg_replace('/([^\s]+)@[^\s]*/', '$1', $sW);
+			$sW = ' '.\trim(\preg_replace('/[\s;,\r\n\t]+/', ' ', $sW)).' ';
+
+			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail(0 < \strlen($sLogin) ? $sLogin : $sEmail);
 			return false !== \strpos($sW, ' '.$sUserPart.' ');
 		}
 
@@ -390,17 +393,19 @@ class Domain
 	}
 
 	/**
+	 * @param bool $bAjax = false
+	 *
 	 * @return array
 	 */
-	public function ToSimpleJSON()
+	public function ToSimpleJSON($bAjax = false)
 	{
 		return array(
-			'Name' => $this->Name(),
-			'IncHost' => $this->IncHost(),
+			'Name' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->Name()) : $this->Name(),
+			'IncHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->IncHost()) : $this->IncHost(),
 			'IncPort' => $this->IncPort(),
 			'IncSecure' => $this->IncSecure(),
 			'IncShortLogin' => $this->IncShortLogin(),
-			'OutHost' => $this->OutHost(),
+			'OutHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->OutHost()) : $this->OutHost(),
 			'OutPort' => $this->OutPort(),
 			'OutSecure' => $this->OutSecure(),
 			'OutShortLogin' => $this->OutShortLogin(),
