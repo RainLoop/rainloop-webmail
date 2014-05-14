@@ -49,7 +49,7 @@ class Api
 			return false;
 		}
 
-		if (self::Config()->Get('labs', 'disable_iconv_if_mbstring_supported') &&
+		if (self::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
 			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
 		{
 			\MailSo\Capa::$ICONV = false;

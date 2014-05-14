@@ -28,7 +28,7 @@ class Service
 		$this->oActions = Actions::NewInstance();
 
 		\set_error_handler(array(&$this, 'LogPhpErrorHandler'));
-		
+
 		$this->oServiceActions = new \RainLoop\ServiceActions($this->oHttp, $this->oActions);
 
 		if ($this->oActions->Config()->Get('debug', 'enable', false))
@@ -37,7 +37,7 @@ class Service
 			\ini_set('display_errors', 1);
 		}
 
-		if ($this->oActions->Config()->Get('labs', 'disable_iconv_if_mbstring_supported') &&
+		if ($this->oActions->Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
 			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
 		{
 			\MailSo\Capa::$ICONV = false;
@@ -47,6 +47,12 @@ class Service
 		if (0 < \strlen($sServer))
 		{
 			@\header('Server: '.$sServer, true);
+		}
+
+		if ($this->oActions->Config()->Get('labs', 'forse_https', false) && !$this->oHttp->IsSecure())
+		{
+			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
+			exit();
 		}
 	}
 
@@ -63,7 +69,7 @@ class Service
 	 * @param string $sErrStr
 	 * @param string $sErrFile
 	 * @param int $iErrLine
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function LogPhpErrorHandler($iErrNo, $sErrStr, $sErrFile, $iErrLine)
@@ -84,7 +90,7 @@ class Service
 			$this->oActions->Logger()->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
 			$this->oActions->Logger()->Write('Error: '.$sErrStr, $iType, 'PHP');
 		}
-		
+
 		return false;
 	}
 
@@ -97,7 +103,7 @@ class Service
 		{
 			return $this;
 		}
-		
+
 		$this->oActions->ParseQueryAuthString();
 
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
@@ -115,7 +121,7 @@ class Service
 		{
 			$sQuery = \substr($sQuery, 0, $iPos);
 		}
-		
+
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
@@ -136,7 +142,7 @@ class Service
 		{
 			echo $this->oActions->ErrorTemplates('Access Denied.',
 				'Access to the RainLoop Webmail Admin Panel is not allowed!', true);
-			
+
 			return $this;
 		}
 
