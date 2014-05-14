@@ -2474,6 +2474,7 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 		return oItem.hasClass('open');
 	}));
 }, 50);
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -2646,7 +2647,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
-
+			
 			$oEl.tooltip({
 				'delay': {
 					'show': 500,
@@ -10584,10 +10585,11 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	this.currentContact(null);
 	this.emptySelection(true);
 	this.search('');
-
-	_.each(this.contacts(), function (oItem) {
-		oItem.checked(false);
-	});
+	this.contactsCount(0);
+	this.contacts([]);
+//	_.each(this.contacts(), function (oItem) {
+//		oItem.checked(false);
+//	});
 };
 
 /**

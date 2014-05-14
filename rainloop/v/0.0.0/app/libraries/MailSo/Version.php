@@ -10,7 +10,7 @@ final class Version
 	/**
 	 * @var string
 	 */
-	const APP_VERSION = '1.3.2';
+	const APP_VERSION = '1.3.3';
 
 	/**
 	 * @var string

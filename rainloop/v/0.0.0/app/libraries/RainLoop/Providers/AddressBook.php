@@ -125,12 +125,13 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param string $sEmail
+	 * @param bool $bCache = true
 	 *
 	 * @return array
 	 */
-	public function GetContactTags($sEmail)
+	public function GetContactTags($sEmail, $bCache = true)
 	{
-		return $this->IsActive() ? $this->oDriver->GetContactTags($sEmail) : array();
+		return $this->IsActive() ? $this->oDriver->GetContactTags($sEmail, $bCache) : array();
 	}
 
 	/**

@@ -149,6 +149,8 @@ class Contact
 		{
 			$this->Properties[] = new \RainLoop\Providers\AddressBook\Classes\Property(PropertyType::FULLNAME, $this->Display);
 		}
+
+		$this->Tags = \array_map('trim', $this->Tags);
 	}
 
 	/**
@@ -209,7 +211,7 @@ class Contact
 		$oVCard->VERSION = '3.0';
 		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
 
-		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL);
+		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->{'X-RL-TAGS'});
 
 		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
@@ -269,6 +271,11 @@ class Contact
 		$oVCard->UID = $this->IdContactStr;
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
 		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
+
+		if (0 < \count($this->Tags))
+		{
+			$oVCard->{'X-RL-TAGS'} = \implode(';', $this->Tags);
+		}
 
 		return (string) $oVCard->serialize();
 	}
@@ -582,6 +589,12 @@ class Contact
 			}
 
 			$this->Properties = $aProperties;
+
+			if (isset($oVCard->{'X-RL-TAGS'}) && 0 < \strlen($oVCard->{'X-RL-TAGS'}))
+			{
+				$this->Tags = \explode(';', $oVCard->{'X-RL-TAGS'});
+				$this->Tags = \array_map('trim', $this->Tags);
+			}
 		}
 
 		$this->UpdateDependentValues();

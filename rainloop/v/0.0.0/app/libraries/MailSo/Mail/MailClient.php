@@ -1058,11 +1058,11 @@ class MailClient
 	 * @param string $sSearch
 	 * @param int $iTimeZoneOffset = 0
 	 *
-	 * @return \MailSo\Imap\SearchBuilder
+	 * @return string
 	 */
-	private function getSearchBuilder($sSearch, $iTimeZoneOffset = 0)
+	private function getImapSearchCriterias($sSearch, $iTimeZoneOffset = 0)
 	{
-		$oSearchBuilder = \MailSo\Imap\SearchBuilder::NewInstance();
+		$aCriteriasResult = array();
 		if (0 < \strlen(\trim($sSearch)))
 		{
 			$sGmailRawSearch = '';
@@ -1077,10 +1077,15 @@ class MailClient
 				{
 					$sValue = $this->escapeSearchString($aLines['OTHER']);
 
-					$oSearchBuilder->AddOr('FROM', $sValue);
-					$oSearchBuilder->AddOr('TO', $sValue);
-					$oSearchBuilder->AddOr('CC', $sValue);
-					$oSearchBuilder->AddOr('SUBJECT', $sValue);
+					$aCriteriasResult[] = 'OR OR OR';
+					$aCriteriasResult[] = 'FROM';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'TO';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'CC';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'SUBJECT';
+					$aCriteriasResult[] = $sValue;
 				}
 				else
 				{
@@ -1101,9 +1106,14 @@ class MailClient
 				{
 					$sValue = $this->escapeSearchString($aLines['EMAIL']);
 
-					$oSearchBuilder->AddOr('FROM', $sValue);
-					$oSearchBuilder->AddOr('TO', $sValue);
-					$oSearchBuilder->AddOr('CC', $sValue);
+					$aCriteriasResult[] = 'OR OR';
+					$aCriteriasResult[] = 'FROM';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'TO';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'CC';
+					$aCriteriasResult[] = $sValue;
+					
 					unset($aLines['EMAIL']);
 				}
 
@@ -1111,8 +1121,12 @@ class MailClient
 				{
 					$sValue = $this->escapeSearchString($aLines['TO']);
 
-					$oSearchBuilder->AddAnd('TO', $this->escapeSearchString($aLines['TO']));
-					$oSearchBuilder->AddOr('CC', $this->escapeSearchString($aLines['TO']));
+					$aCriteriasResult[] = 'OR';
+					$aCriteriasResult[] = 'TO';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'CC';
+					$aCriteriasResult[] = $sValue;
+					
 					unset($aLines['TO']);
 				}
 
@@ -1128,10 +1142,12 @@ class MailClient
 					switch ($sName)
 					{
 						case 'FROM':
-							$oSearchBuilder->AddAnd('FROM', $sValue);
+							$aCriteriasResult[] = 'FROM';
+							$aCriteriasResult[] = $sValue;
 							break;
 						case 'SUBJECT':
-							$oSearchBuilder->AddAnd('SUBJECT', $sValue);
+							$aCriteriasResult[] = 'SUBJECT';
+							$aCriteriasResult[] = $sValue;
 							break;
 						case 'OTHER':
 						case 'TEXT':
@@ -1151,7 +1167,11 @@ class MailClient
 								else
 								{
 									// Simple, is not detailed search (Sometimes doesn't work)
-									$oSearchBuilder->AddAnd('HEADER CONTENT-TYPE', '"MULTIPART/MIXED"');
+									$aCriteriasResult[] = 'OR OR OR';
+									$aCriteriasResult[] = 'HEADER Content-Type application/';
+									$aCriteriasResult[] = 'HEADER Content-Type multipart/m';
+									$aCriteriasResult[] = 'HEADER Content-Type multipart/signed';
+									$aCriteriasResult[] = 'HEADER Content-Type multipart/report';
 								}
 							}
 
@@ -1163,30 +1183,32 @@ class MailClient
 							$aCompareArray2 = array('unflag', 'unflagged', 'unstar', 'unstarred', 'unpinned');
 							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
-								$oSearchBuilder->AddAnd('FLAGGED');
+								$aCriteriasResult[] = 'FLAGGED';
 							}
 							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
 							{
-								$oSearchBuilder->AddAnd('UNFLAGGED');
+								$aCriteriasResult[] = 'UNFLAGGED';
 							}
 
 							$aCompareArray = array('unread', 'unseen');
 							$aCompareArray2 = array('read', 'seen');
 							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
-								$oSearchBuilder->AddAnd('UNSEEN');
+								$aCriteriasResult[] = 'UNSEEN';
 							}
 							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
 							{
-								$oSearchBuilder->AddAnd('SEEN');
+								$aCriteriasResult[] = 'SEEN';
 							}
 							break;
 							
 						case 'LARGER':
-							$oSearchBuilder->AddAnd('LARGER', $this->parseFriendlySize($sRawValue));
+							$aCriteriasResult[] = 'LARGER';
+							$aCriteriasResult[] =  $this->parseFriendlySize($sRawValue);
 							break;
 						case 'SMALLER':
-							$oSearchBuilder->AddAnd('SMALLER', $this->parseFriendlySize($sRawValue));
+							$aCriteriasResult[] = 'SMALLER';
+							$aCriteriasResult[] =  $this->parseFriendlySize($sRawValue);
 							break;
 						case 'DATE':
 							$iDateStampFrom = $iDateStampTo = 0;
@@ -1218,12 +1240,14 @@ class MailClient
 
 							if (0 < $iDateStampFrom)
 							{
-								$oSearchBuilder->AddAnd('SINCE', \gmdate('j-M-Y', $iDateStampFrom));
+								$aCriteriasResult[] = 'SINCE';
+								$aCriteriasResult[] = \gmdate('j-M-Y', $iDateStampFrom);
 							}
 
 							if (0 < $iDateStampTo)
 							{
-								$oSearchBuilder->AddAnd('BEFORE', \gmdate('j-M-Y', $iDateStampTo));
+								$aCriteriasResult[] = 'BEFORE';
+								$aCriteriasResult[] = \gmdate('j-M-Y', $iDateStampTo);
 							}
 							break;
 					}
@@ -1246,17 +1270,25 @@ class MailClient
 			$sGmailRawSearch = \trim($sGmailRawSearch);
 			if ($bIsGmail && 0 < \strlen($sGmailRawSearch))
 			{
-				$oSearchBuilder->AddAnd('X-GM-RAW', $this->escapeSearchString($sGmailRawSearch, false));
+				$aCriteriasResult[] = 'X-GM-RAW';
+				$aCriteriasResult[] = $this->escapeSearchString($sGmailRawSearch, false);
 			}
 
 			$sResultBodyTextSearch = \trim($sResultBodyTextSearch);
 			if (0 < \strlen($sResultBodyTextSearch))
 			{
-				$oSearchBuilder->AddAnd('TEXT', $this->escapeSearchString($sResultBodyTextSearch));
+				$aCriteriasResult[] = 'TEXT';
+				$aCriteriasResult[] = $this->escapeSearchString($sResultBodyTextSearch);
 			}
 		}
 
-		return $oSearchBuilder;
+		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
+		if ('' === $sCriteriasResult)
+		{
+			$sCriteriasResult = 'ALL';
+		}
+
+		return $sCriteriasResult;
 	}
 
 	/**
@@ -1594,7 +1626,7 @@ class MailClient
 				$bIndexAsUid = true;
 				$aIndexOrUids = null;
 
-				$sSearchCriterias = $this->getSearchBuilder($sSearch)->Complete();
+				$sSearchCriterias = $this->getImapSearchCriterias($sSearch);
 
 				if ($iMessageCacheCount < $iMessageRealCount && $oCacher && $oCacher->IsInited())
 				{
@@ -1835,11 +1867,8 @@ class MailClient
 
 		$this->oImapClient->FolderExamine($sFolderName);
 
-		$sSearchCriterias = \MailSo\Imap\SearchBuilder::NewInstance()
-			->AddAnd('HEADER MESSAGE-ID', $sMessageId)
-			->Complete();
-
-		$aUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, true);
+		$aUids = $this->oImapClient->MessageSimpleSearch(
+			'HEADER Message-ID '.$sMessageId, true);
 
 		return \is_array($aUids) && 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
 	}

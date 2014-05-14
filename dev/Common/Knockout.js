@@ -9,7 +9,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
-
+			
 			$oEl.tooltip({
 				'delay': {
 					'show': 500,
@@ -826,4 +826,3 @@ ko.observable.fn.validateFunc = function (fFunc)
 
 	return this;
 };
-

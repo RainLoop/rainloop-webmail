@@ -5011,25 +5011,6 @@ class Actions
 		));
 	}
 
-
-	/**
-	 * @return array
-	 */
-	public function DoContactTags()
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$mResult = false;
-		if ($this->AddressBookProvider($oAccount)->IsActive())
-		{
-			$mResult = $this->AddressBookProvider($oAccount)->GetContactTags($oAccount->ParentEmailHelper());
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'List' => $mResult
-		));
-	}
-
 	/**
 	 * @return array
 	 */

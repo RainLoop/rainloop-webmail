@@ -735,8 +735,9 @@ PopupsContactsViewModel.prototype.onHide = function ()
 	this.currentContact(null);
 	this.emptySelection(true);
 	this.search('');
-
-	_.each(this.contacts(), function (oItem) {
-		oItem.checked(false);
-	});
+	this.contactsCount(0);
+	this.contacts([]);
+//	_.each(this.contacts(), function (oItem) {
+//		oItem.checked(false);
+//	});
 };
