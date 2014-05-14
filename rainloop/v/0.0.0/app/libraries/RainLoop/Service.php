@@ -49,7 +49,7 @@ class Service
 			@\header('Server: '.$sServer, true);
 		}
 
-		if ($this->oActions->Config()->Get('labs', 'forse_https', false) && !$this->oHttp->IsSecure())
+		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
 			exit();
