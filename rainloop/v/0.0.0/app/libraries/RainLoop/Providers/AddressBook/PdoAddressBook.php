@@ -615,7 +615,7 @@ class PdoAddressBook
 		$iUserID = $this->getUserId($sEmail);
 
 		$this->aTagsCache = array();
-		
+
 		$mResult = false;
 		try
 		{
@@ -743,14 +743,14 @@ class PdoAddressBook
 		{
 			$aContacts = is_array($mContactOrContacts) ? $mContactOrContacts : array(&$mContactOrContacts);
 		}
-		
+
 		if (\is_array($aContacts) && 0 < \count($aContacts))
 		{
 			$aIdContacts = array();
 			$aIdTagsContacts = array();
 
 			$aTags = $this->GetContactTags($sEmail);
-			
+
 			if (\is_array($aTags) && 0 < \count($aTags))
 			{
 				foreach ($aContacts as $oItem)
@@ -1175,7 +1175,7 @@ class PdoAddressBook
 				}
 			}
 		}
-		
+
 		if ($oContact)
 		{
 			$this->populateContactsByTags($sEmail, $oContact);

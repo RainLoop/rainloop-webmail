@@ -1070,7 +1070,7 @@ class Actions
 				$aResult['DevLogin'] = $oConfig->Get('labs', 'dev_login', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 			}
-			
+
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
@@ -1547,7 +1547,7 @@ class Actions
 		{
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 		}
-		
+
 		return $aAccounts;
 	}
 
@@ -5048,7 +5048,7 @@ class Actions
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
 			$sTags = \trim($this->GetActionParam('Tags', ''));
-			$aTags = \explode(';', $sTags);
+			$aTags = \explode(',', $sTags);
 			$aTags = \array_map('trim', $aTags);
 			$aTags = \array_unique($aTags);
 

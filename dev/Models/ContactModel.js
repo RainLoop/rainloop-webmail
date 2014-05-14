@@ -73,7 +73,7 @@ ContactModel.prototype.parse = function (oItem)
 
 		if (Utils.isNonEmptyArray(oItem['Tags']))
 		{
-			this.tags = oItem['Tags'].join(';');
+			this.tags = oItem['Tags'].join(',');
 		}
 
 		bResult = true;

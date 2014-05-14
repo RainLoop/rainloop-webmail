@@ -2647,7 +2647,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
-			
+
 			$oEl.tooltip({
 				'delay': {
 					'show': 500,
@@ -3259,8 +3259,8 @@ ko.bindingHandlers.contactTags = {
 			'parseOnBlur': true,
 			'allowDragAndDrop': false,
 			'focusCallback': fFocusCallback,
-			'inputDelimiters': [';'],
-			'outputDelimiter': ';',
+			'inputDelimiters': [',', ';'],
+			'outputDelimiter': ',',
 			'autoCompleteSource': function (oData, fResponse) {
 				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
 					fResponse(_.map(aData, function (oTagItem) {
@@ -3464,7 +3464,6 @@ ko.observable.fn.validateFunc = function (fFunc)
 
 	return this;
 };
-
 
 /**
  * @constructor
@@ -6008,7 +6007,7 @@ ContactModel.prototype.parse = function (oItem)
 
 		if (Utils.isNonEmptyArray(oItem['Tags']))
 		{
-			this.tags = oItem['Tags'].join(';');
+			this.tags = oItem['Tags'].join(',');
 		}
 
 		bResult = true;

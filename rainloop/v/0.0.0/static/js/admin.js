@@ -2470,6 +2470,7 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 		return oItem.hasClass('open');
 	}));
 }, 50);
+
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -2642,7 +2643,7 @@ ko.bindingHandlers.tooltip = {
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
-			
+
 			$oEl.tooltip({
 				'delay': {
 					'show': 500,
@@ -3254,8 +3255,8 @@ ko.bindingHandlers.contactTags = {
 			'parseOnBlur': true,
 			'allowDragAndDrop': false,
 			'focusCallback': fFocusCallback,
-			'inputDelimiters': [';'],
-			'outputDelimiter': ';',
+			'inputDelimiters': [',', ';'],
+			'outputDelimiter': ',',
 			'autoCompleteSource': function (oData, fResponse) {
 				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
 					fResponse(_.map(aData, function (oTagItem) {
@@ -3459,7 +3460,6 @@ ko.observable.fn.validateFunc = function (fFunc)
 
 	return this;
 };
-
 
 /**
  * @constructor
