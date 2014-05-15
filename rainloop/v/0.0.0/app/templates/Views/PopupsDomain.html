@@ -7,7 +7,7 @@
 		<div class="modal-body">
 			<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
 				<div class="row" data-bind="visible: !edit()">
-					<div class="span8">
+					<div class="span10">
 						Name <span style="color: #aaa">(wildcard supported)</span>
 						<br />
 						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -17,32 +17,38 @@
 				</div>
 				<br />
 				<div class="row">
-					<div class="span4" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
+					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
 						<div class="legend imap-header">
-							<span data-placement="top" data-bind="tooltip3: testingImapErrorDesc">
+							<span data-placement="bottom" data-bind="tooltip3: testingImapErrorDesc">
 								IMAP
 							</span>
 						</div>
-						Server
+						<div class="row">
+							<div class="span3">
+								Server
+								<br />
+								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: imapServer, valueUpdate: 'afterkeydown', hasfocus: imapServerFocus" />
+							</div>
+							<div class="span1">
+								Port
+								<br />
+								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: imapPort, valueUpdate: 'afterkeydown'" />
+							</div>
+						</div>
 						<br />
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: imapServer, valueUpdate: 'afterkeydown', hasfocus: imapServerFocus" />
-						<br />
-						<br />
-						Port
-						<br />
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: imapPort, valueUpdate: 'afterkeydown'" />
-						<br />
-						<br />
-						Secure
-						<br />
-						<select class="span2" data-bind="value: imapSecure">
-							<option value="0">None</option>
-							<option value="1">SSL/TLS</option>
-							<option value="2">STARTTLS</option>
-						</select>
-						<br />
+						<div class="row">
+							<div class="span4">
+								Secure
+								<br />
+								<select class="span2" data-bind="value: imapSecure">
+									<option value="0">None</option>
+									<option value="1">SSL/TLS</option>
+									<option value="2">STARTTLS</option>
+								</select>
+							</div>
+						</div>
 						<br />
 						<label data-bind="click: function () { imapShortLogin(!imapShortLogin()); }">
 							<i data-bind="css: imapShortLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
@@ -50,32 +56,38 @@
 							Use short login form
 						</label>
 					</div>
-					<div class="span4" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
+					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
 						<div class="legend smtp-header">
-							<span data-placement="top" data-bind="tooltip3: testingSmtpErrorDesc">
+							<span data-placement="bottom" data-bind="tooltip3: testingSmtpErrorDesc">
 								SMTP
 							</span>
 						</div>
-						Server
+						<div class="row">
+							<div class="span3">
+								Server
+								<br />
+								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: smtpServer, valueUpdate: 'afterkeydown', hasfocus: smtpServerFocus" />
+							</div>
+							<div class="span1">
+								Port
+								<br />
+								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: smtpPort, valueUpdate: 'afterkeydown'" />
+							</div>
+						</div>
 						<br />
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: smtpServer, valueUpdate: 'afterkeydown', hasfocus: smtpServerFocus" />
-						<br />
-						<br />
-						Port
-						<br />
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: smtpPort, valueUpdate: 'afterkeydown'" />
-						<br />
-						<br />
-						Secure
-						<br />
-						<select class="span2" data-bind="value: smtpSecure">
-							<option value="0">None</option>
-							<option value="1">SSL/TLS</option>
-							<option value="2">STARTTLS</option>
-						</select>
-						<br />
+						<div class="row">
+							<div class="span4">
+								Secure
+								<br />
+								<select class="span2" data-bind="value: smtpSecure">
+									<option value="0">None</option>
+									<option value="1">SSL/TLS</option>
+									<option value="2">STARTTLS</option>
+								</select>
+							</div>
+						</div>
 						<br />
 						<label data-bind="click: function () { smtpShortLogin(!smtpShortLogin()); }">
 							<i data-bind="css: smtpShortLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
@@ -88,7 +100,7 @@
 							Use authentication
 						</label>
 					</div>
-					<div class="span8">
+					<div class="span10">
 						<div class="legend white-list-header">
 							White List
 						</div>

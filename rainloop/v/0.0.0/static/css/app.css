@@ -9065,7 +9065,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   filter: alpha(opacity=100);
 }
 .b-domain-content.modal {
-  width: 645px;
+  width: 810px;
 }
 .b-domain-content .modal-header {
   background-color: #fff;
@@ -9073,15 +9073,15 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-domain-content .modal-body {
   position: relative;
   overflow: hidden;
-  width: 1300px;
-  height: 390px;
+  width: 1600px;
+  height: 370px;
   left: 0;
 }
 .b-domain-content.domain-edit .modal-body {
-  height: 350px;
+  height: 320px;
 }
 .b-domain-content.domain-white-list-page .modal-body {
-  left: -640px;
+  left: -800px;
 }
 .b-domain-content .error-desc {
   color: red;

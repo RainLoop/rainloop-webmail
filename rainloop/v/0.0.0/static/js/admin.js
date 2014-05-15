@@ -382,6 +382,13 @@ Enums.StateType = {
 /**
  * @enum {string}
  */
+Enums.Capa = {
+	'Prem': 'PREM'
+};
+
+/**
+ * @enum {string}
+ */
 Enums.KeyState = {
 	'All': 'all',
 	'None': 'none',
@@ -8169,6 +8176,16 @@ AbstractApp.prototype.pub = function (sName, aArgs)
 	return this;
 };
 
+/**
+ * @param {string} sName
+ * @return {boolean}
+ */
+AbstractApp.prototype.capa = function (sName)
+{
+	var mCapa = this.settingsGet('Capa');
+	return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
+};
+
 AbstractApp.prototype.bootstart = function ()
 {
 	var self = this;
@@ -8456,6 +8473,11 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
+		if (!RL.capa(Enums.Capa.Prem))
+		{
+			Utils.removeSettingsViewModel(AdminBranding);
+		}
+
 		if (!!RL.settingsGet('Auth'))
 		{
 // TODO

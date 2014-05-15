@@ -200,8 +200,22 @@ abstract class NetClient
 		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
 			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
 
-		if (!is_resource($this->rConnect))
+		if (!\is_resource($this->rConnect))
 		{
+			if (!empty($sErrorStr) && !\MailSo\Base\Utils::IsUtf8($sErrorStr))
+			{
+				$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
+				if (!empty($sCharset))
+				{
+					$sErrorStr = \MailSo\Base\Utils::ConvertEncoding(
+						$sErrorStr, $sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+				}
+				else
+				{
+					$sErrorStr = @\utf8_encode($sErrorStr);
+				}
+			}
+
 			$this->writeLogException(
 				new Exceptions\SocketCanNotConnectToHostException(
 					$sErrorStr, $iErrorNo,

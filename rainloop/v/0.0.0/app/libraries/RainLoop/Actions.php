@@ -975,11 +975,11 @@ class Actions
 			'DevEmail' => '',
 			'DevLogin' => '',
 			'DevPassword' => '',
-			'Title' => $oConfig->Get('webmail', 'title', ''),
-			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', ''),
-			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
-			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
-			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
+			'Title' => 'RainLoop Webmail',
+			'LoadingDescription' => 'RainLoop',
+			'LoginLogo' => '',
+			'LoginDescription' => '',
+			'LoginCss' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'OpenPGP' => $oConfig->Get('security', 'openpgp', false),
 			'AllowTwoFactorAuth' => (bool) $oConfig->Get('security', 'allow_two_factor_auth', false),
@@ -1002,12 +1002,23 @@ class Actions
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
+			'Capa' => $this->Capa(),
 			'Plugins' => array()
 		);
 
 		if (0 < \strlen($sAuthAccountHash))
 		{
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
+		}
+
+		if ($this->GetCapa(\RainLoop\Enumerations\Capa::PREM))
+		{
+			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
+			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
+
+			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
+			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
+			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
 		}
 
 		$oSettings = null;
@@ -2104,12 +2115,15 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
+		if ($this->GetCapa(\RainLoop\Enumerations\Capa::PREM))
+		{
+			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
+			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
-		$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
-		$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
-		$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
+		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'OpenPGP', 'security', 'openpgp', 'bool');
@@ -5943,6 +5957,26 @@ class Actions
 
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
+	
+	/**
+	 * @return array
+	 */
+	public function Capa()
+	{
+		return array(
+			\RainLoop\Enumerations\Capa::PREM
+		);
+	}
+
+	/**
+	 * @param string $sName
+	 *
+	 * @return bool
+	 */
+	public function GetCapa($sName)
+	{
+		return \in_array($sName, $this->Capa());
+	}
 
 	/**
 	 * @param string $sKey
@@ -6882,16 +6916,10 @@ class Actions
 
 					$sPlain = '';
 					$sHtml = \trim($mResponse->Html());
-					$bRtl = false;
 
 					if (0 === \strlen($sHtml))
 					{
 						$sPlain = \trim($mResponse->Plain());
-						$bRtl = \MailSo\Base\Utils::IsRTL($sPlain);
-					}
-					else
-					{
-						$bRtl = \MailSo\Base\Utils::IsRTL($sHtml);
 					}
 
 					$mResult['DraftInfo'] = $mResponse->DraftInfo();
@@ -6903,7 +6931,7 @@ class Actions
 
 					$mResult['PlainRaw'] = $sPlain;
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
-					$mResult['Rtl'] = $bRtl;
+					$mResult['Rtl'] = \MailSo\Base\Utils::IsRTL($sPlain);
 
 					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain'].$mResult['PlainRaw']);
 

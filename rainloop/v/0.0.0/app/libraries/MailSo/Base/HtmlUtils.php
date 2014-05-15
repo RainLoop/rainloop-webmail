@@ -152,7 +152,8 @@ class HtmlUtils
 	 *
 	 * @return string
 	 */
-	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs, $aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false)
+	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs,
+		$aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false)
 	{
 		$sStyle = \trim($sStyle);
 		$aOutStyles = array();
@@ -618,8 +619,6 @@ class HtmlUtils
 	 */
 	public static function BuildHtml($sHtml, &$aFoundCids = array(), &$mFoundDataURL = null, &$aFoundedContentLocationUrls = array())
 	{
-		$bRtl = \MailSo\Base\Utils::IsRTL($sHtml);
-
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 		unset($sHtml);
 
@@ -749,7 +748,7 @@ class HtmlUtils
 		$sResult = \MailSo\Base\HtmlUtils::ClearTags($sResult);
 		$sResult = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sResult);
 
-		return '<!DOCTYPE html><html'.($bRtl ? ' dir="rtl"' : '').'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.
+		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.
 			'<body>'.\trim($sResult).'</body></html>';
 	}
 

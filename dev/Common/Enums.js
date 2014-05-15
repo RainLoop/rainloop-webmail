@@ -30,6 +30,13 @@ Enums.StateType = {
 /**
  * @enum {string}
  */
+Enums.Capa = {
+	'Prem': 'PREM'
+};
+
+/**
+ * @enum {string}
+ */
 Enums.KeyState = {
 	'All': 'all',
 	'None': 'none',

@@ -273,6 +273,16 @@ AbstractApp.prototype.pub = function (sName, aArgs)
 	return this;
 };
 
+/**
+ * @param {string} sName
+ * @return {boolean}
+ */
+AbstractApp.prototype.capa = function (sName)
+{
+	var mCapa = this.settingsGet('Capa');
+	return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
+};
+
 AbstractApp.prototype.bootstart = function ()
 {
 	var self = this;
