@@ -1127,11 +1127,17 @@ Utils.initOnStartOrLangChange = function (fCallback, oScope, fLangCallback)
  */
 Utils.inFocus = function ()
 {
-	var oActiveObj = document.activeElement;
-	return (oActiveObj && ('INPUT' === oActiveObj.tagName ||
-		'TEXTAREA' === oActiveObj.tagName ||
-		'IFRAME' === oActiveObj.tagName ||
-		('DIV' === oActiveObj.tagName && 'editorHtmlArea' === oActiveObj.className && oActiveObj.contentEditable)));
+	if (document.activeElement)
+	{
+		if (Utils.isUnd(document.activeElement.__inFocusCache))
+		{
+			document.activeElement.__inFocusCache = $(document.activeElement).is('input,textarea,iframe,.cke_editable');
+		}
+
+		return !!document.activeElement.__inFocusCache;
+	}
+
+	return false;
 };
 
 Utils.removeInFocus = function ()
@@ -1139,7 +1145,7 @@ Utils.removeInFocus = function ()
 	if (document && document.activeElement && document.activeElement.blur)
 	{
 		var oA = $(document.activeElement);
-		if (oA.is('input') || oA.is('textarea'))
+		if (oA.is('input,textarea'))
 		{
 			document.activeElement.blur();
 		}
