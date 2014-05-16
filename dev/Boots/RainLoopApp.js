@@ -425,7 +425,7 @@ RainLoopApp.prototype.folders = function (fCallback)
 
 RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 {
-	if (RL.data().allowOpenPGP())
+	if (RL.data().capaOpenPGP())
 	{
 		var
 			aKeys = [],
@@ -1043,12 +1043,12 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsContacts);
 	}
 
-	if (!RL.settingsGet('AllowAdditionalAccounts'))
+	if (!RL.capa(Enums.Capa.AdditionalAccounts))
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);
 	}
 
-	if (RL.settingsGet('AllowIdentities'))
+	if (RL.capa(Enums.Capa.AdditionalIdentities))
 	{
 		Utils.removeSettingsViewModel(SettingsIdentity);
 	}
@@ -1057,24 +1057,24 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsIdentities);
 	}
 
-	if (!RL.settingsGet('OpenPGP'))
+	if (!RL.capa(Enums.Capa.OpenPGP))
 	{
 		Utils.removeSettingsViewModel(SettingsOpenPGP);
 	}
 
-	if (!RL.settingsGet('AllowTwoFactorAuth'))
+	if (!RL.capa(Enums.Capa.TwoFactor))
 	{
 		Utils.removeSettingsViewModel(SettingsSecurity);
+	}
+
+	if (!RL.capa(Enums.Capa.Themes))
+	{
+		Utils.removeSettingsViewModel(SettingsThemes);
 	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
 		Utils.removeSettingsViewModel(SettingsSocialScreen);
-	}
-
-	if (!RL.settingsGet('AllowThemes'))
-	{
-		Utils.removeSettingsViewModel(SettingsThemes);
 	}
 
 	Utils.initOnStartOrLangChange(function () {
@@ -1113,7 +1113,7 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
-				if (window.crypto && window.crypto.getRandomValues && RL.settingsGet('OpenPGP'))
+				if (window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
 				{
 					$.ajax({
 						'url': RL.link().openPgpJs(),
@@ -1123,7 +1123,7 @@ RainLoopApp.prototype.bootstart = function ()
 							if (window.openpgp)
 							{
 								RL.data().openpgpKeyring = new window.openpgp.Keyring();
-								RL.data().allowOpenPGP(true);
+								RL.data().capaOpenPGP(true);
 
 								RL.pub('openpgp.init');
 
@@ -1134,7 +1134,7 @@ RainLoopApp.prototype.bootstart = function ()
 				}
 				else
 				{
-					RL.data().allowOpenPGP(false);
+					RL.data().capaOpenPGP(false);
 				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);

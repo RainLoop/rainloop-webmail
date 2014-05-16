@@ -665,7 +665,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	this.initUploaderForAppend();
 	this.initShortcuts();
 
-	if (!Globals.bMobileDevice && !!RL.settingsGet('AllowPrefetch') && ifvisible)
+	if (!Globals.bMobileDevice && RL.capa(Enums.Capa.Prefetch) && ifvisible)
 	{
 		ifvisible.setIdleDuration(10);
 

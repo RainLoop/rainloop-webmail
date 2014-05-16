@@ -1477,38 +1477,41 @@ table {
 .icon-filter:before {
   content: "\e061";
 }
-.icon-resize:before {
+.icon-sync:before {
   content: "\e062";
 }
-.icon-sync:before {
+.icon-ellipsis-alt:before {
   content: "\e063";
 }
-.icon-ellipsis-alt:before {
+.icon-cloud-up:before {
   content: "\e064";
 }
-.icon-cloud-up:before {
+.icon-cloud-down:before {
   content: "\e065";
 }
-.icon-cloud-down:before {
+.icon-import:before {
   content: "\e066";
 }
-.icon-import:before {
+.icon-export:before {
   content: "\e067";
 }
-.icon-export:before {
+.icon-copy:before {
   content: "\e068";
 }
-.icon-copy:before {
+.icon-angry-smiley:before {
   content: "\e069";
 }
-.icon-angry-smiley:before {
+.icon-happy-smiley:before {
   content: "\e06a";
 }
-.icon-happy-smiley:before {
+.icon-help:before {
   content: "\e06b";
 }
-.icon-help:before {
+.icon-resize-in:before {
   content: "\e06c";
+}
+.icon-resize-out:before {
+  content: "\e06d";
 }
 
 /** initial setup **/
@@ -9174,6 +9177,12 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-plugin-content textarea {
   width: 400px;
   height: 50px;
+}
+.b-admin-about .rl-logo {
+  display: inline-block;
+  width: 250px;
+  height: 250px;
+  background-image: url("images/rainloop-logo.png");
 }
 .popups .b-activate-content {
   width: 700px;

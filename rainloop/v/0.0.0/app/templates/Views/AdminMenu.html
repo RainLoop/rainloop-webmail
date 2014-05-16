@@ -2,7 +2,7 @@
 	<div class="b-toolbar">
         <div class="btn-group show-on-panel-disabled">
             <a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
-                <i class="icon-resize"></i>
+				<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
             </a>
         </div>
 	</div>

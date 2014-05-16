@@ -7,7 +7,7 @@ function AbstractCacheStorage()
 {
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
-	this.bAllowGravatar = !!RL.settingsGet('AllowGravatar');
+	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
 
 /**
@@ -23,7 +23,7 @@ AbstractCacheStorage.prototype.oServices = {};
 /**
  * @type {boolean}
  */
-AbstractCacheStorage.prototype.bAllowGravatar = false;
+AbstractCacheStorage.prototype.bCapaGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
@@ -57,7 +57,7 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	}
 
 	
-	if (this.bAllowGravatar && '' === sUrl)
+	if (this.bCapaGravatar && '' === sUrl)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
 	}

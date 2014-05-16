@@ -6,8 +6,8 @@
 function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
-	this.openPGP = ko.observable(!!RL.settingsGet('OpenPGP'));
-	this.allowTwoFactorAuth = ko.observable(!!RL.settingsGet('AllowTwoFactorAuth'));
+	this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
+	this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -84,15 +84,15 @@ AdminSecurity.prototype.onBuild = function ()
 		});
 	});
 
-	this.openPGP.subscribe(function (bValue) {
+	this.capaOpenPGP.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'OpenPGP': bValue ? '1' : '0'
+			'CapaOpenPGP': bValue ? '1' : '0'
 		});
 	});
 
-	this.allowTwoFactorAuth.subscribe(function (bValue) {
+	this.capaTwoFactorAuth.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'AllowTwoFactorAuth': bValue ? '1' : '0'
+			'CapaTwoFactorAuth': bValue ? '1' : '0'
 		});
 	});
 };

@@ -772,7 +772,7 @@ Utils.initDataConstructorBySettings = function (oData)
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
-	oData.allowThemes = ko.observable(true);
+	oData.capaThemes = ko.observable(false);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
@@ -940,9 +940,9 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowAdditionalAccounts = ko.observable(false);
-	oData.allowIdentities = ko.observable(false);
-	oData.allowGravatar = ko.observable(false);
+	oData.capaAdditionalAccounts = ko.observable(false);
+	oData.capaAdditionalIdentities = ko.observable(false);
+	oData.capaGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});

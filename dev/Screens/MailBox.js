@@ -91,7 +91,7 @@ MailBoxScreen.prototype.onStart = function ()
 		}
 	;
 
-	if (RL.settingsGet('AllowAdditionalAccounts') || RL.settingsGet('AllowIdentities'))
+	if (RL.capa(Enums.Capa.AdditionalAccounts) || RL.capa(Enums.Capa.AdditionalIdentities))
 	{
 		RL.accountsAndIdentities();
 	}

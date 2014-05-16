@@ -84,12 +84,12 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.mainLanguage(RL.settingsGet('Language'));
 	this.mainTheme(RL.settingsGet('Theme'));
 
-	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
-	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
-	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));
+	this.capaAdditionalAccounts(RL.capa(Enums.Capa.AdditionalAccounts));
+	this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
+	this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
-	
-	this.allowThemes(!!RL.settingsGet('AllowThemes'));
+
+	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));

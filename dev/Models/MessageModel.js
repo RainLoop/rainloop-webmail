@@ -362,7 +362,7 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
@@ -997,7 +997,7 @@ MessageModel.prototype.storeDataToDom = function ()
 
 		this.body.data('rl-plain-raw', this.plainRaw);
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
 			this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
@@ -1009,7 +1009,7 @@ MessageModel.prototype.storeDataToDom = function ()
 
 MessageModel.prototype.storePgpVerifyDataToDom = function ()
 {
-	if (this.body && RL.data().allowOpenPGP())
+	if (this.body && RL.data().capaOpenPGP())
 	{
 		this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
 		this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
@@ -1026,7 +1026,7 @@ MessageModel.prototype.fetchDataToDom = function ()
 		
 		this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
 			this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));

@@ -16,7 +16,7 @@ function AbstractSystemDropDownViewModel()
 
 	this.accountMenuDropdownTrigger = ko.observable(false);
 
-	this.allowAddAccount = RL.settingsGet('AllowAdditionalAccounts');
+	this.capaAdditionalAccounts = RL.capa(Enums.Capa.AdditionalAccounts);
 
 	this.loading = ko.computed(function () {
 		return this.accountsLoading();
@@ -58,7 +58,7 @@ AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
 
 AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
 {
-	if (this.allowAddAccount)
+	if (this.capaAdditionalAccounts)
 	{
 		kn.showScreenPopup(PopupsAddAccountViewModel);
 	}

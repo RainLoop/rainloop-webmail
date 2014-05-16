@@ -981,28 +981,21 @@ class Actions
 			'LoginDescription' => '',
 			'LoginCss' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
-			'OpenPGP' => $oConfig->Get('security', 'openpgp', false),
-			'AllowTwoFactorAuth' => (bool) $oConfig->Get('security', 'allow_two_factor_auth', false),
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
-			'AllowAdditionalAccounts' => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', true),
-			'AllowIdentities' => (bool) $oConfig->Get('webmail', 'allow_identities', true),
-			'AllowPrefetch' => (bool) $oConfig->Get('labs', 'allow_prefetch', true),
-			'AllowGravatar' => (bool) $oConfig->Get('labs', 'allow_gravatar', true),
 			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
-			'AllowThemes' => (bool) $oConfig->Get('webmail', 'allow_themes', true),
-			'ChangePasswordIsAllowed' => false,
 			'ContactsIsAllowed' => false,
+			'ChangePasswordIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
-			'Capa' => $this->Capa(),
+			'Capa' => array(),
 			'Plugins' => array()
 		);
 
@@ -1011,7 +1004,7 @@ class Actions
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		if ($this->GetCapa(\RainLoop\Enumerations\Capa::PREM))
+		if ($this->GetCapa(true, \RainLoop\Enumerations\Capa::PREM))
 		{
 			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
 			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
@@ -1113,6 +1106,8 @@ class Actions
 			{
 				$aResult['AllowDropboxSocial'] = false;
 			}
+
+			$aResult['Capa'] = $this->Capa(false, $oAccount);
 		}
 		else
 		{
@@ -1157,6 +1152,8 @@ class Actions
 
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
 			}
+
+			$aResult['Capa'] = $this->Capa(true);
 		}
 
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'].APP_VERSION.$this->Plugins()->Hash());
@@ -2035,6 +2032,36 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Config\Application $oConfig
+	 * @param string $sParamName
+	 * @param string $sCapa
+	 */
+	private function setCapaFromParams(&$oConfig, $sParamName, $sCapa)
+	{
+		switch ($sCapa)
+		{
+			case \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS:
+				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_accounts', 'bool');
+				break;
+			case \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES:
+				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_identities', 'bool');
+				break;
+			case \RainLoop\Enumerations\Capa::TWO_FACTOR:
+				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
+				break;
+			case \RainLoop\Enumerations\Capa::GRAVATAR:
+				$this->setConfigFromParams($oConfig, $sParamName, 'labs', 'allow_gravatar', 'bool');
+				break;
+			case \RainLoop\Enumerations\Capa::THEMES:
+				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_themes', 'bool');
+				break;
+			case \RainLoop\Enumerations\Capa::OPEN_PGP:
+				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'openpgp', 'bool');
+				break;
+		}
+	}
+
+	/**
 	 * @param \RainLoop\Settings $oSettings
 	 * @param string $sConfigName
 	 * @param string $sType = 'string'
@@ -2091,7 +2118,6 @@ class Actions
 			return $self->ValidateTheme($sTheme);
 		});
 
-		$this->setConfigFromParams($oConfig, 'AllowThemes', 'webmail', 'allow_themes', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
@@ -2108,14 +2134,16 @@ class Actions
 			return $self->ValidateContactPdoType($sType);
 		});
 
-		$this->setConfigFromParams($oConfig, 'AllowAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowIdentities', 'webmail', 'allow_identities', 'bool');
-
-		$this->setConfigFromParams($oConfig, 'AllowGravatar', 'labs', 'allow_gravatar', 'bool');
+		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS);
+		$this->setCapaFromParams($oConfig, 'CapaAdditionalIdentities', \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES);
+		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
+		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
+		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
+		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 
-		if ($this->GetCapa(\RainLoop\Enumerations\Capa::PREM))
+		if ($this->GetCapa(true, \RainLoop\Enumerations\Capa::PREM))
 		{
 			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
@@ -2126,8 +2154,6 @@ class Actions
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
-		$this->setConfigFromParams($oConfig, 'OpenPGP', 'security', 'openpgp', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowTwoFactorAuth', 'security', 'allow_two_factor_auth', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
@@ -5959,23 +5985,64 @@ class Actions
 	}
 	
 	/**
+	 * @param bool $bAdmin
+	 * @param \RainLoop\Account $oAccount
+	 * 
 	 * @return array
 	 */
-	public function Capa()
+	public function Capa($bAdmin, $oAccount = null)
 	{
-		return array(
-			\RainLoop\Enumerations\Capa::PREM
-		);
+		$oConfig = $this->Config();
+		
+		$aResult = array(\RainLoop\Enumerations\Capa::PREM);
+
+		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS;
+		}
+
+		if ($oConfig->Get('webmail', 'allow_identities', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES;
+		}
+
+		if ($oConfig->Get('security', 'allow_two_factor_auth', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR;
+		}
+
+		if ($oConfig->Get('labs', 'allow_gravatar', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::GRAVATAR;
+		}
+
+		if ($oConfig->Get('labs', 'allow_prefetch', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::PREFETCH;
+		}
+
+		if ($oConfig->Get('webmail', 'allow_themes', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::THEMES;
+		}
+
+		if ($oConfig->Get('security', 'openpgp', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::OPEN_PGP;
+		}
+
+		return $aResult;
 	}
 
 	/**
+	 * @param bool $bAdmin
 	 * @param string $sName
 	 *
 	 * @return bool
 	 */
-	public function GetCapa($sName)
+	public function GetCapa($bAdmin, $sName)
 	{
-		return \in_array($sName, $this->Capa());
+		return \in_array($sName, $this->Capa($bAdmin));
 	}
 
 	/**

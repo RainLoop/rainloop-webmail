@@ -31,7 +31,14 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.Capa = {
-	'Prem': 'PREM'
+	'Prem': 'PREM',
+	'TwoFactor': 'TWO_FACTOR',
+	'OpenPGP': 'OPEN_PGP',
+	'Prefetch': 'PREFETCH',
+	'Gravatar': 'GRAVATAR',
+	'Themes': 'THEMES',
+	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
+	'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 };
 
 /**

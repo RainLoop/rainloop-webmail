@@ -42,28 +42,28 @@
 					<i data-bind="css: allowLanguagesOnSettings() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow language selection on settings screen
 				</label>
-				<label data-bind="click: function () { allowThemes(!allowThemes()); }">
-					<i data-bind="css: allowThemes() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label data-bind="click: function () { capaThemes(!capaThemes()); }">
+					<i data-bind="css: capaThemes() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow theme selection on settings screen
 				</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { allowAdditionalAccounts(!allowAdditionalAccounts()); }">
-					<i data-bind="css: allowAdditionalAccounts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label data-bind="click: function () { capaAdditionalAccounts(!capaAdditionalAccounts()); }">
+					<i data-bind="css: capaAdditionalAccounts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow additional accounts
 				</label>
-				<label data-bind="click: function () { allowIdentities(!allowIdentities()); }">
-					<i data-bind="css: allowIdentities() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label data-bind="click: function () { capaAdditionalIdentities(!capaAdditionalIdentities()); }">
+					<i data-bind="css: capaAdditionalIdentities() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow additional identities
 				</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label class="inline" data-bind="click: function () { allowGravatar(!allowGravatar()); }">
-					<i data-bind="css: allowGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label class="inline" data-bind="click: function () { capaGravatar(!capaGravatar()); }">
+					<i data-bind="css: capaGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow Gravatar
 				</label>
 				(<a class="g-ui-link" href="http://en.gravatar.com/" target="_blank">http://en.gravatar.com/</a>)

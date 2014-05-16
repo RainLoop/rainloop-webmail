@@ -387,7 +387,14 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.Capa = {
-	'Prem': 'PREM'
+	'Prem': 'PREM',
+	'TwoFactor': 'TWO_FACTOR',
+	'OpenPGP': 'OPEN_PGP',
+	'Prefetch': 'PREFETCH',
+	'Gravatar': 'GRAVATAR',
+	'Themes': 'THEMES',
+	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
+	'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 };
 
 /**
@@ -1510,7 +1517,7 @@ Utils.initDataConstructorBySettings = function (oData)
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
-	oData.allowThemes = ko.observable(true);
+	oData.capaThemes = ko.observable(false);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
@@ -1678,9 +1685,9 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowAdditionalAccounts = ko.observable(false);
-	oData.allowIdentities = ko.observable(false);
-	oData.allowGravatar = ko.observable(false);
+	oData.capaAdditionalAccounts = ko.observable(false);
+	oData.capaAdditionalIdentities = ko.observable(false);
+	oData.capaGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
@@ -6803,7 +6810,7 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
@@ -7438,7 +7445,7 @@ MessageModel.prototype.storeDataToDom = function ()
 
 		this.body.data('rl-plain-raw', this.plainRaw);
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
 			this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
@@ -7450,7 +7457,7 @@ MessageModel.prototype.storeDataToDom = function ()
 
 MessageModel.prototype.storePgpVerifyDataToDom = function ()
 {
-	if (this.body && RL.data().allowOpenPGP())
+	if (this.body && RL.data().capaOpenPGP())
 	{
 		this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
 		this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
@@ -7467,7 +7474,7 @@ MessageModel.prototype.fetchDataToDom = function ()
 		
 		this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-		if (RL.data().allowOpenPGP())
+		if (RL.data().capaOpenPGP())
 		{
 			this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
 			this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
@@ -8388,8 +8395,8 @@ function PopupsComposeViewModel()
 	this.bFromDraft = false;
 	this.bSkipNext = false;
 	this.sReferences = '';
-	
-	this.bAllowIdentities = RL.settingsGet('AllowIdentities');
+
+	this.bCapaAdditionalIdentities = RL.capa(Enums.Capa.AdditionalIdentities);
 
 	var
 		self = this,
@@ -8402,7 +8409,7 @@ function PopupsComposeViewModel()
 		}
 	;
 
-	this.allowOpenPGP = oRainLoopData.allowOpenPGP;
+	this.capaOpenPGP = oRainLoopData.capaOpenPGP;
 
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
@@ -8499,7 +8506,7 @@ function PopupsComposeViewModel()
 			sID = this.currentIdentityID()
 		;
 
-		if (this.bAllowIdentities && sID && sID !== RL.data().accountEmail())
+		if (this.bCapaAdditionalIdentities && sID && sID !== RL.data().accountEmail())
 		{
 			oItem = _.find(aList, function (oItem) {
 				return oItem && sID === oItem['id'];
@@ -8740,7 +8747,7 @@ Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
 
 PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
 {
-	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
+	if (this.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 	{
 		var self = this;
 		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
@@ -8791,7 +8798,7 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		}
 	;
 
-	if (this.bAllowIdentities)
+	if (this.bCapaAdditionalIdentities)
 	{
 		_.each(this.identities(), function (oItem) {
 			oIDs[oItem.email()] = oItem['id'];
@@ -11025,6 +11032,13 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 
 		_.delay(function () {
 			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
+//			0.6.0
+//			mKeyPair = window.openpgp.generateKeyPair({
+//				'numBits': Utils.pInt(self.keyBitLength()),
+//				'userId': sUserID,
+//				'passphrase': Utils.trim(self.password())
+//			});
+			
 			if (mKeyPair && mKeyPair.privateKeyArmored)
 			{
 				oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
@@ -12047,7 +12061,7 @@ function AbstractSystemDropDownViewModel()
 
 	this.accountMenuDropdownTrigger = ko.observable(false);
 
-	this.allowAddAccount = RL.settingsGet('AllowAdditionalAccounts');
+	this.capaAdditionalAccounts = RL.capa(Enums.Capa.AdditionalAccounts);
 
 	this.loading = ko.computed(function () {
 		return this.accountsLoading();
@@ -12089,7 +12103,7 @@ AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
 
 AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
 {
-	if (this.allowAddAccount)
+	if (this.capaAdditionalAccounts)
 	{
 		kn.showScreenPopup(PopupsAddAccountViewModel);
 	}
@@ -13025,7 +13039,7 @@ MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	this.initUploaderForAppend();
 	this.initShortcuts();
 
-	if (!Globals.bMobileDevice && !!RL.settingsGet('AllowPrefetch') && ifvisible)
+	if (!Globals.bMobileDevice && RL.capa(Enums.Capa.Prefetch) && ifvisible)
 	{
 		ifvisible.setIdleDuration(10);
 
@@ -15335,12 +15349,12 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.mainLanguage(RL.settingsGet('Language'));
 	this.mainTheme(RL.settingsGet('Theme'));
 
-	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
-	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
-	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));
+	this.capaAdditionalAccounts(RL.capa(Enums.Capa.AdditionalAccounts));
+	this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
+	this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
-	
-	this.allowThemes(!!RL.settingsGet('AllowThemes'));
+
+	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
@@ -15783,7 +15797,7 @@ function WebMailDataStorage()
 	}, this);
 
 	// other
-	this.allowOpenPGP = ko.observable(false);
+	this.capaOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
@@ -16310,8 +16324,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					sPlain = oData.Result.Plain.toString();
 
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
-						RL.data().allowOpenPGP() &&
-						Utils.isNormal(oData.Result.PlainRaw))
+						RL.data().capaOpenPGP() && Utils.isNormal(oData.Result.PlainRaw))
 					{
 						oMessage.plainRaw = Utils.pString(oData.Result.PlainRaw);
 
@@ -17709,7 +17722,7 @@ function AbstractCacheStorage()
 {
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
-	this.bAllowGravatar = !!RL.settingsGet('AllowGravatar');
+	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
 
 /**
@@ -17725,7 +17738,7 @@ AbstractCacheStorage.prototype.oServices = {};
 /**
  * @type {boolean}
  */
-AbstractCacheStorage.prototype.bAllowGravatar = false;
+AbstractCacheStorage.prototype.bCapaGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
@@ -17759,7 +17772,7 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	}
 
 	
-	if (this.bAllowGravatar && '' === sUrl)
+	if (this.bCapaGravatar && '' === sUrl)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
 	}
@@ -18387,7 +18400,7 @@ MailBoxScreen.prototype.onStart = function ()
 		}
 	;
 
-	if (RL.settingsGet('AllowAdditionalAccounts') || RL.settingsGet('AllowIdentities'))
+	if (RL.capa(Enums.Capa.AdditionalAccounts) || RL.capa(Enums.Capa.AdditionalIdentities))
 	{
 		RL.accountsAndIdentities();
 	}
@@ -19279,7 +19292,7 @@ RainLoopApp.prototype.folders = function (fCallback)
 
 RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 {
-	if (RL.data().allowOpenPGP())
+	if (RL.data().capaOpenPGP())
 	{
 		var
 			aKeys = [],
@@ -19897,12 +19910,12 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsContacts);
 	}
 
-	if (!RL.settingsGet('AllowAdditionalAccounts'))
+	if (!RL.capa(Enums.Capa.AdditionalAccounts))
 	{
 		Utils.removeSettingsViewModel(SettingsAccounts);
 	}
 
-	if (RL.settingsGet('AllowIdentities'))
+	if (RL.capa(Enums.Capa.AdditionalIdentities))
 	{
 		Utils.removeSettingsViewModel(SettingsIdentity);
 	}
@@ -19911,24 +19924,24 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsIdentities);
 	}
 
-	if (!RL.settingsGet('OpenPGP'))
+	if (!RL.capa(Enums.Capa.OpenPGP))
 	{
 		Utils.removeSettingsViewModel(SettingsOpenPGP);
 	}
 
-	if (!RL.settingsGet('AllowTwoFactorAuth'))
+	if (!RL.capa(Enums.Capa.TwoFactor))
 	{
 		Utils.removeSettingsViewModel(SettingsSecurity);
+	}
+
+	if (!RL.capa(Enums.Capa.Themes))
+	{
+		Utils.removeSettingsViewModel(SettingsThemes);
 	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
 		Utils.removeSettingsViewModel(SettingsSocialScreen);
-	}
-
-	if (!RL.settingsGet('AllowThemes'))
-	{
-		Utils.removeSettingsViewModel(SettingsThemes);
 	}
 
 	Utils.initOnStartOrLangChange(function () {
@@ -19967,7 +19980,7 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
-				if (window.crypto && window.crypto.getRandomValues && RL.settingsGet('OpenPGP'))
+				if (window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
 				{
 					$.ajax({
 						'url': RL.link().openPgpJs(),
@@ -19977,7 +19990,7 @@ RainLoopApp.prototype.bootstart = function ()
 							if (window.openpgp)
 							{
 								RL.data().openpgpKeyring = new window.openpgp.Keyring();
-								RL.data().allowOpenPGP(true);
+								RL.data().capaOpenPGP(true);
 
 								RL.pub('openpgp.init');
 
@@ -19988,7 +20001,7 @@ RainLoopApp.prototype.bootstart = function ()
 				}
 				else
 				{
-					RL.data().allowOpenPGP(false);
+					RL.data().capaOpenPGP(false);
 				}
 
 				kn.startScreens([MailBoxScreen, SettingsScreen]);

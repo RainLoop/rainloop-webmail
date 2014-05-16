@@ -383,7 +383,14 @@ Enums.StateType = {
  * @enum {string}
  */
 Enums.Capa = {
-	'Prem': 'PREM'
+	'Prem': 'PREM',
+	'TwoFactor': 'TWO_FACTOR',
+	'OpenPGP': 'OPEN_PGP',
+	'Prefetch': 'PREFETCH',
+	'Gravatar': 'GRAVATAR',
+	'Themes': 'THEMES',
+	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
+	'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 };
 
 /**
@@ -1506,7 +1513,7 @@ Utils.initDataConstructorBySettings = function (oData)
 
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
-	oData.allowThemes = ko.observable(true);
+	oData.capaThemes = ko.observable(false);
 	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
@@ -1674,9 +1681,9 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
-	oData.allowAdditionalAccounts = ko.observable(false);
-	oData.allowIdentities = ko.observable(false);
-	oData.allowGravatar = ko.observable(false);
+	oData.capaAdditionalAccounts = ko.observable(false);
+	oData.capaAdditionalIdentities = ko.observable(false);
+	oData.capaGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
@@ -5920,11 +5927,11 @@ function AdminGeneral()
 	this.language = oData.language;
 	this.theme = oData.theme;
 
-	this.allowThemes = oData.allowThemes;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
-	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
-	this.allowIdentities = oData.allowIdentities;
-	this.allowGravatar = oData.allowGravatar;
+	this.capaThemes = oData.capaThemes;
+	this.capaGravatar = oData.capaGravatar;
+	this.capaAdditionalAccounts = oData.capaAdditionalAccounts;
+	this.capaAdditionalIdentities = oData.capaAdditionalIdentities;
 	
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
@@ -5969,27 +5976,27 @@ AdminGeneral.prototype.onBuild = function ()
 			});
 		});
 		
-		self.allowAdditionalAccounts.subscribe(function (bValue) {
+		self.capaAdditionalAccounts.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowAdditionalAccounts': bValue ? '1' : '0'
+				'CapaAdditionalAccounts': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowIdentities.subscribe(function (bValue) {
+		self.capaAdditionalIdentities.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowIdentities': bValue ? '1' : '0'
+				'CapaAdditionalIdentities': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowGravatar.subscribe(function (bValue) {
+		self.capaGravatar.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowGravatar': bValue ? '1' : '0'
+				'CapaGravatar': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowThemes.subscribe(function (bValue) {
+		self.capaThemes.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowThemes': bValue ? '1' : '0'
+				'CapaThemes': bValue ? '1' : '0'
 			});
 		});
 
@@ -6443,8 +6450,8 @@ AdminDomains.prototype.onDomainListChangeRequest = function ()
 function AdminSecurity()
 {
 	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
-	this.openPGP = ko.observable(!!RL.settingsGet('OpenPGP'));
-	this.allowTwoFactorAuth = ko.observable(!!RL.settingsGet('AllowTwoFactorAuth'));
+	this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
+	this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
 
 	this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
 	this.adminPassword = ko.observable('');
@@ -6521,15 +6528,15 @@ AdminSecurity.prototype.onBuild = function ()
 		});
 	});
 
-	this.openPGP.subscribe(function (bValue) {
+	this.capaOpenPGP.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'OpenPGP': bValue ? '1' : '0'
+			'CapaOpenPGP': bValue ? '1' : '0'
 		});
 	});
 
-	this.allowTwoFactorAuth.subscribe(function (bValue) {
+	this.capaTwoFactorAuth.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'AllowTwoFactorAuth': bValue ? '1' : '0'
+			'CapaTwoFactorAuth': bValue ? '1' : '0'
 		});
 	});
 };
@@ -6914,6 +6921,21 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
 /**
  * @constructor
  */
+function AdminAbout()
+{
+	this.version = ko.observable(RL.settingsGet('Version'));
+}
+
+Utils.addSettingsViewModel(AdminAbout, 'AdminSettingsAbout', 'About', 'about');
+
+//AdminAbout.prototype.onBuild = function ()
+//{
+//
+//};
+
+/**
+ * @constructor
+ */
 function AbstractData()
 {
 	this.leftPanelDisabled = ko.observable(false);
@@ -6995,12 +7017,12 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.mainLanguage(RL.settingsGet('Language'));
 	this.mainTheme(RL.settingsGet('Theme'));
 
-	this.allowAdditionalAccounts(!!RL.settingsGet('AllowAdditionalAccounts'));
-	this.allowIdentities(!!RL.settingsGet('AllowIdentities'));
-	this.allowGravatar(!!RL.settingsGet('AllowGravatar'));
+	this.capaAdditionalAccounts(RL.capa(Enums.Capa.AdditionalAccounts));
+	this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
+	this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
-	
-	this.allowThemes(!!RL.settingsGet('AllowThemes'));
+
+	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
@@ -7609,7 +7631,7 @@ function AbstractCacheStorage()
 {
 	this.oEmailsPicsHashes = {};
 	this.oServices = {};
-	this.bAllowGravatar = !!RL.settingsGet('AllowGravatar');
+	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
 
 /**
@@ -7625,7 +7647,7 @@ AbstractCacheStorage.prototype.oServices = {};
 /**
  * @type {boolean}
  */
-AbstractCacheStorage.prototype.bAllowGravatar = false;
+AbstractCacheStorage.prototype.bCapaGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
@@ -7659,7 +7681,7 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	}
 
 	
-	if (this.bAllowGravatar && '' === sUrl)
+	if (this.bCapaGravatar && '' === sUrl)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
 	}
@@ -8479,6 +8501,8 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
+		Utils.removeSettingsViewModel(AdminAbout);
+		
 		if (!RL.capa(Enums.Capa.Prem))
 		{
 			Utils.removeSettingsViewModel(AdminBranding);

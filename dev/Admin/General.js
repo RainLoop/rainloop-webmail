@@ -13,11 +13,11 @@ function AdminGeneral()
 	this.language = oData.language;
 	this.theme = oData.theme;
 
-	this.allowThemes = oData.allowThemes;
 	this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
-	this.allowAdditionalAccounts = oData.allowAdditionalAccounts;
-	this.allowIdentities = oData.allowIdentities;
-	this.allowGravatar = oData.allowGravatar;
+	this.capaThemes = oData.capaThemes;
+	this.capaGravatar = oData.capaGravatar;
+	this.capaAdditionalAccounts = oData.capaAdditionalAccounts;
+	this.capaAdditionalIdentities = oData.capaAdditionalIdentities;
 	
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
@@ -62,27 +62,27 @@ AdminGeneral.prototype.onBuild = function ()
 			});
 		});
 		
-		self.allowAdditionalAccounts.subscribe(function (bValue) {
+		self.capaAdditionalAccounts.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowAdditionalAccounts': bValue ? '1' : '0'
+				'CapaAdditionalAccounts': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowIdentities.subscribe(function (bValue) {
+		self.capaAdditionalIdentities.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowIdentities': bValue ? '1' : '0'
+				'CapaAdditionalIdentities': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowGravatar.subscribe(function (bValue) {
+		self.capaGravatar.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowGravatar': bValue ? '1' : '0'
+				'CapaGravatar': bValue ? '1' : '0'
 			});
 		});
 
-		self.allowThemes.subscribe(function (bValue) {
+		self.capaThemes.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
-				'AllowThemes': bValue ? '1' : '0'
+				'CapaThemes': bValue ? '1' : '0'
 			});
 		});
 

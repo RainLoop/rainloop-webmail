@@ -402,7 +402,7 @@ function WebMailDataStorage()
 	}, this);
 
 	// other
-	this.allowOpenPGP = ko.observable(false);
+	this.capaOpenPGP = ko.observable(false);
 	this.openpgpkeys = ko.observableArray([]);
 	this.openpgpKeyring = null;
 
@@ -929,8 +929,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 					sPlain = oData.Result.Plain.toString();
 
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
-						RL.data().allowOpenPGP() &&
-						Utils.isNormal(oData.Result.PlainRaw))
+						RL.data().capaOpenPGP() && Utils.isNormal(oData.Result.PlainRaw))
 					{
 						oMessage.plainRaw = Utils.pString(oData.Result.PlainRaw);
 

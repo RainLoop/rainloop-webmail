@@ -207,6 +207,7 @@ module.exports = function (grunt) {
 					"dev/Admin/Plugins.js",
 					"dev/Admin/Packages.js",
 					"dev/Admin/Licensing.js",
+					"dev/Admin/About.js",
 
 					"dev/Storages/AbstractData.js",
 					"dev/Storages/AdminData.js",

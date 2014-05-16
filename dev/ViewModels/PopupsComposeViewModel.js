@@ -14,8 +14,8 @@ function PopupsComposeViewModel()
 	this.bFromDraft = false;
 	this.bSkipNext = false;
 	this.sReferences = '';
-	
-	this.bAllowIdentities = RL.settingsGet('AllowIdentities');
+
+	this.bCapaAdditionalIdentities = RL.capa(Enums.Capa.AdditionalIdentities);
 
 	var
 		self = this,
@@ -28,7 +28,7 @@ function PopupsComposeViewModel()
 		}
 	;
 
-	this.allowOpenPGP = oRainLoopData.allowOpenPGP;
+	this.capaOpenPGP = oRainLoopData.capaOpenPGP;
 
 	this.resizer = ko.observable(false).extend({'throttle': 50});
 
@@ -125,7 +125,7 @@ function PopupsComposeViewModel()
 			sID = this.currentIdentityID()
 		;
 
-		if (this.bAllowIdentities && sID && sID !== RL.data().accountEmail())
+		if (this.bCapaAdditionalIdentities && sID && sID !== RL.data().accountEmail())
 		{
 			oItem = _.find(aList, function (oItem) {
 				return oItem && sID === oItem['id'];
@@ -366,7 +366,7 @@ Utils.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
 
 PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
 {
-	if (this.allowOpenPGP() && this.oEditor && !this.oEditor.isHtml())
+	if (this.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 	{
 		var self = this;
 		kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
@@ -417,7 +417,7 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		}
 	;
 
-	if (this.bAllowIdentities)
+	if (this.bCapaAdditionalIdentities)
 	{
 		_.each(this.identities(), function (oItem) {
 			oIDs[oItem.email()] = oItem['id'];

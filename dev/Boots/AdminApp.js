@@ -212,6 +212,8 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
+		Utils.removeSettingsViewModel(AdminAbout);
+		
 		if (!RL.capa(Enums.Capa.Prem))
 		{
 			Utils.removeSettingsViewModel(AdminBranding);
