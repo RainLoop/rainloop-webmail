@@ -9,7 +9,7 @@
 			'DateTime' => class_exists('DateTime') && class_exists('DateTimeZone'),
 			'libxml' => function_exists('libxml_use_internal_errors'),
 			'dom' => class_exists('DOMDocument'),
-			'Zlib' => function_exists('gzopen'),
+			'Zlib' => function_exists('gzopen') || function_exists('gzopen64'),
 			'PCRE' => function_exists('preg_replace'),
 			'SPL' => function_exists('spl_autoload_register')
 		);
