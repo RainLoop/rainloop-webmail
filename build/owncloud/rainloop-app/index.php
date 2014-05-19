@@ -32,7 +32,7 @@ else
 	$sPassword = OC_RainLoop_Helper::decodePassword($sPassword, md5($sEmail.$sLogin));
 	$sSsoHash = OC_RainLoop_Helper::getSsoHash($sUrl, $sSsoKey, $sEmail, $sPassword, $sLogin);
 
-	$sResultUrl = empty($sSsoHash) ? $sUrl : $sUrl.'?sso&hash='.$sSsoHash;
+	$sResultUrl = empty($sSsoHash) ? $sUrl.'?sso' : $sUrl.'?sso&hash='.$sSsoHash;
 
 	$oTemplate = new OCP\Template('rainloop', 'index', 'user');
 	$oTemplate->assign('rainloop-url', $sResultUrl);

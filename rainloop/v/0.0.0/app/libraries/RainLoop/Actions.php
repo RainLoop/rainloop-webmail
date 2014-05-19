@@ -5,15 +5,13 @@ namespace RainLoop;
 use RainLoop\Enumerations\UploadError;
 use RainLoop\Enumerations\UploadClientError;
 
-define('RL_CONTACTS_PER_PAGE', 30);
-define('RL_CONTACTS_MAX', 300);
-
 class Actions
 {
 	const AUTH_TFA_SIGN_ME_TOKEN_KEY = 'rltfasmauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
+	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
 	const AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
 	const AUTH_LAST_ERROR = 'rllasterrorcode';
 
@@ -360,6 +358,14 @@ class Actions
 	}
 
 	/**
+	 * @return void
+	 */
+	public function SetAuthLogoutToken()
+	{
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, \md5(APP_START_TIME), 0, '/', null, null, true);
+	}
+
+	/**
 	 * @param \RainLoop\Account $oAccount
 	 *
 	 * @return void
@@ -395,6 +401,20 @@ class Actions
 		if (0 < strlen($sResult))
 		{
 			\RainLoop\Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+		}
+
+		return $sResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetSpecAuthLogoutTokenWithDeletion()
+	{
+		$sResult = \RainLoop\Utils::GetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, '');
+		if (0 < strlen($sResult))
+		{
+			\RainLoop\Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
 		}
 
 		return $sResult;
@@ -5983,17 +6003,17 @@ class Actions
 
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
-	
+
 	/**
 	 * @param bool $bAdmin
 	 * @param \RainLoop\Account $oAccount
-	 * 
+	 *
 	 * @return array
 	 */
 	public function Capa($bAdmin, $oAccount = null)
 	{
 		$oConfig = $this->Config();
-		
+
 		$aResult = array(\RainLoop\Enumerations\Capa::PREM);
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))

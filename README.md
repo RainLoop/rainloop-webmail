@@ -1,4 +1,4 @@
-RainLoop Webmail (PHP)
+RainLoop Webmail
 ==================
 
 ## About

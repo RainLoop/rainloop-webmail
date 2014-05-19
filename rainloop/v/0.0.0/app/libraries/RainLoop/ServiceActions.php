@@ -736,6 +736,7 @@ class ServiceActions
 	{
 		$oException = null;
 		$oAccount = null;
+		$bLogout = true;
 
 		$sSsoHash = $this->oHttp->GetRequest('hash', '');
 		if (!empty($sSsoHash))
@@ -762,6 +763,7 @@ class ServiceActions
 
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
 						$this->oActions->AuthProcess($oAccount);
+						$bLogout = !($oAccount instanceof \RainLoop\Account);
 					}
 					catch (\Exception $oException)
 					{
@@ -769,6 +771,11 @@ class ServiceActions
 					}
 				}
 			}
+		}
+
+		if ($bLogout)
+		{
+			$this->oActions->SetAuthLogoutToken();
 		}
 
 		$this->oActions->Location('./');
@@ -782,6 +789,7 @@ class ServiceActions
 	{
 		$oException = null;
 		$oAccount = null;
+		$bLogout = true;
 
 		$sEmail = $this->oHttp->GetEnv('REMOTE_USER', '');
 		$sLogin = '';
@@ -795,11 +803,17 @@ class ServiceActions
 
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
 				$this->oActions->AuthProcess($oAccount);
+				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
 			catch (\Exception $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException);
 			}
+		}
+
+		if ($bLogout)
+		{
+			$this->oActions->SetAuthLogoutToken();
 		}
 
 		$this->oActions->Location('./');
@@ -813,6 +827,7 @@ class ServiceActions
 	{
 		$oException = null;
 		$oAccount = null;
+		$bLogout = true;
 
 		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false))
 		{
@@ -826,10 +841,16 @@ class ServiceActions
 
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
 				$this->oActions->AuthProcess($oAccount);
+				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
 			catch (\Exception $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException);
+			}
+
+			if ($bLogout)
+			{
+				$this->oActions->SetAuthLogoutToken();
 			}
 		}
 
@@ -883,6 +904,7 @@ class ServiceActions
 
 			\RainLoop\Api::Handle();
 			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword, $sLogin);
+			$bLogout = 0 === \strlen($sResult);
 
 			switch (\strtolower($this->oHttp->GetRequest('Output', 'Plain')))
 			{
@@ -959,7 +981,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 
 		$sAuthAccountHash = '';
-		if (!$bAdmin)
+		if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion()))
 		{
 			$sAuthAccountHash = $this->oActions->GetSpecAuthTokenWithDeletion();
 			if (empty($sAuthAccountHash))

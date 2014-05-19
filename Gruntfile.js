@@ -475,6 +475,7 @@ module.exports = function (grunt) {
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
 			versionFull = version + '.' + release,
+			versionOwn = '1.1',
 			dist = releasesPath + '/' + versionFull + '/owncloud/'
 		;
 
@@ -486,11 +487,11 @@ module.exports = function (grunt) {
 		content = grunt.file.read(dist + 'appinfo/info.xml');
 
 		grunt.file.write(dist + 'appinfo/info.xml',
-			content.replace('<version>0.0.0</version>', '<version>' + version + '</version>'));
+			content.replace('<version>0.0.0</version>', '<version>' + versionOwn + '</version>'));
 
 		grunt.config.set('cfg.releaseFolder', versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
-		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionFull + '.zip');
+		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionOwn + '.zip');
 	});
 
 	grunt.registerTask('rainloop-clear', 'RainLoop Webmail clear task', function () {
