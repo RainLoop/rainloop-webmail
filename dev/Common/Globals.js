@@ -18,6 +18,11 @@ Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});
 /**
  * @type {?}
  */
+Globals.tooltipTrigger = ko.observable(false).extend({'rateLimit': 0});
+
+/**
+ * @type {?}
+ */
 Globals.langChangeTrigger = ko.observable(true);
 
 /**

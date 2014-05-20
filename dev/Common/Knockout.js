@@ -27,11 +27,8 @@ ko.bindingHandlers.tooltip = {
 				$oEl.tooltip('hide');
 			});
 
-			Globals.dropdownVisibility.subscribe(function (bValue) {
-				if (bValue)
-				{
-					$oEl.tooltip('hide');
-				}
+			Globals.tooltipTrigger.subscribe(function () {
+				$oEl.tooltip('hide');
 			});
 		}
 	}
@@ -61,11 +58,8 @@ ko.bindingHandlers.tooltip2 = {
 			$oEl.tooltip('hide');
 		});
 
-		Globals.dropdownVisibility.subscribe(function (bValue) {
-			if (bValue)
-			{
-				$oEl.tooltip('hide');
-			}
+		Globals.tooltipTrigger.subscribe(function () {
+			$oEl.tooltip('hide');
 		});
 	}
 };
@@ -83,17 +77,13 @@ ko.bindingHandlers.tooltip3 = {
 			}
 		});
 
-		Globals.dropdownVisibility.subscribe(function (bValue) {
-			if (bValue)
-			{
-				$oEl.tooltip('hide');
-			}
-		});
-
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-
+		
+		Globals.tooltipTrigger.subscribe(function () {
+			$oEl.tooltip('hide');
+		});
 	},
 	'update': function (oElement, fValueAccessor) {
 		var sValue = ko.utils.unwrapObservable(fValueAccessor());

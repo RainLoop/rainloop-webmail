@@ -103,6 +103,11 @@ Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});
 /**
  * @type {?}
  */
+Globals.tooltipTrigger = ko.observable(false).extend({'rateLimit': 0});
+
+/**
+ * @type {?}
+ */
 Globals.langChangeTrigger = ko.observable(true);
 
 /**
@@ -2681,11 +2686,8 @@ ko.bindingHandlers.tooltip = {
 				$oEl.tooltip('hide');
 			});
 
-			Globals.dropdownVisibility.subscribe(function (bValue) {
-				if (bValue)
-				{
-					$oEl.tooltip('hide');
-				}
+			Globals.tooltipTrigger.subscribe(function () {
+				$oEl.tooltip('hide');
 			});
 		}
 	}
@@ -2715,11 +2717,8 @@ ko.bindingHandlers.tooltip2 = {
 			$oEl.tooltip('hide');
 		});
 
-		Globals.dropdownVisibility.subscribe(function (bValue) {
-			if (bValue)
-			{
-				$oEl.tooltip('hide');
-			}
+		Globals.tooltipTrigger.subscribe(function () {
+			$oEl.tooltip('hide');
 		});
 	}
 };
@@ -2737,17 +2736,13 @@ ko.bindingHandlers.tooltip3 = {
 			}
 		});
 
-		Globals.dropdownVisibility.subscribe(function (bValue) {
-			if (bValue)
-			{
-				$oEl.tooltip('hide');
-			}
-		});
-
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-
+		
+		Globals.tooltipTrigger.subscribe(function () {
+			$oEl.tooltip('hide');
+		});
 	},
 	'update': function (oElement, fValueAccessor) {
 		var sValue = ko.utils.unwrapObservable(fValueAccessor());
@@ -4378,6 +4373,8 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 						RL.popupVisibilityNames.remove(this.viewModelName);
 						oViewModel.viewModelDom.css('z-index', 2000);
+
+						Globals.tooltipTrigger(!Globals.tooltipTrigger());
 
 						_.delay(function () {
 							self.viewModelDom.hide();
@@ -6985,6 +6982,7 @@ function AbstractData()
 	Globals.dropdownVisibility.subscribe(function (bValue) {
 		if (bValue)
 		{
+			Globals.tooltipTrigger(!Globals.tooltipTrigger());
 			this.keyScope(Enums.KeyState.Menu);
 		}
 		else if (Enums.KeyState.Menu === key.getScope())

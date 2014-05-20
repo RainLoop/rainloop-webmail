@@ -52,6 +52,7 @@ function AbstractData()
 	Globals.dropdownVisibility.subscribe(function (bValue) {
 		if (bValue)
 		{
+			Globals.tooltipTrigger(!Globals.tooltipTrigger());
 			this.keyScope(Enums.KeyState.Menu);
 		}
 		else if (Enums.KeyState.Menu === key.getScope())

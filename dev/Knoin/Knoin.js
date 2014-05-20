@@ -122,6 +122,8 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 						RL.popupVisibilityNames.remove(this.viewModelName);
 						oViewModel.viewModelDom.css('z-index', 2000);
 
+						Globals.tooltipTrigger(!Globals.tooltipTrigger());
+
 						_.delay(function () {
 							self.viewModelDom.hide();
 						}, 300);
