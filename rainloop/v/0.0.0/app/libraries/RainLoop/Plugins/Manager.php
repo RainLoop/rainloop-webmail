@@ -109,10 +109,10 @@ class Manager
 			}
 		}
 	}
-	
+
 	/**
 	 * @param string $sName
-	 * 
+	 *
 	 * @return \RainLoop\Plugins\AbstractPlugin | null
 	 */
 	public function CreatePluginByName($sName)
@@ -122,7 +122,7 @@ class Manager
 			\file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
 		{
 			$sClassName = $this->convertPluginFolderNameToClassName($sName);
-			
+
 			if (!\class_exists($sClassName))
 			{
 				include APP_PLUGINS_PATH.$sName.'/index.php';
@@ -147,10 +147,10 @@ class Manager
 				}
 			}
 		}
-		
+
 		return $oPlugin;
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -179,7 +179,7 @@ class Manager
 			$this->Actions()->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
 				\MailSo\Log\Enumerations\Type::ERROR);
 		}
-		
+
 		return $aList;
 	}
 
@@ -267,7 +267,7 @@ class Manager
 				if (file_exists($sFile))
 				{
 					$sTemplateName = substr(basename($sFile), 0, -5);
-					$sResult .= '<script id="'.preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html">'.
+					$sResult .= '<script id="'.preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
 						$this->Actions()->ProcessTemplate($sTemplateName, file_get_contents($sFile)).'</script>';
 				}
 			}
@@ -275,11 +275,11 @@ class Manager
 
 		return $sResult;
 	}
-	
+
 	/**
 	 * @param bool $bAdmin
 	 * @param array $aAppData
-	 * 
+	 *
 	 * @return \RainLoop\Plugins\Manager
 	 */
 	public function InitAppData($bAdmin, &$aAppData)
@@ -300,7 +300,7 @@ class Manager
 							if ($oPluginProperty && $oPluginProperty->AllowedInJs())
 							{
 								$aConfig[$oPluginProperty->Name()] =
-									$oPlugin->Config()->Get('plugin', 
+									$oPlugin->Config()->Get('plugin',
 										$oPluginProperty->Name(),
 										$oPluginProperty->DefaultValue());
 							}
@@ -318,7 +318,7 @@ class Manager
 
 			$this->RunHook('filter.app-data', array($bAdmin, &$aAppData));
 		}
-		
+
 		return $this;
 	}
 
@@ -611,7 +611,7 @@ class Manager
 	{
 		return $this->bIsEnabled;
 	}
-	
+
 	/**
 	 * @return int
 	 */

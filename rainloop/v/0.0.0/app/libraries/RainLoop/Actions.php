@@ -1361,6 +1361,35 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 *
+	 * @throws \RainLoop\Exceptions\ClientException
+	 */
+	public function CheckMailConnection($oAccount)
+	{
+		try
+		{
+			$this->MailClient()
+				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
+					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+				->Login($oAccount->IncLogin(), $oAccount->Password())
+			;
+		}
+		catch (\RainLoop\Exceptions\ClientException $oException)
+		{
+			throw $oException;
+		}
+		catch (\MailSo\Net\Exceptions\ConnectionException $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
+		}
+	}
+
+	/**
 	 * @param string $sEmail
 	 * @param string $sLogin
 	 * @param string $sPassword
@@ -1461,26 +1490,12 @@ class Actions
 
 		try
 		{
-			$this->MailClient()
-				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
-				->Login($oAccount->IncLogin(), $oAccount->Password())
-			;
-		}
-		catch (\RainLoop\Exceptions\ClientException $oException)
-		{
-			$this->loginErrorDelay();
-			throw $oException;
-		}
-		catch (\MailSo\Net\Exceptions\ConnectionException $oException)
-		{
-			$this->loginErrorDelay();
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+			$this->CheckMailConnection($oAccount);
 		}
 		catch (\Exception $oException)
 		{
 			$this->loginErrorDelay();
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
+			throw $oException;
 		}
 
 		return $oAccount;
@@ -1891,6 +1906,21 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 */
+	public function ClearSignMeData($oAccount)
+	{
+		if ($oAccount)
+		{
+			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY);
+
+			$this->StorageProvider()->Clear(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				'SignMe/UserToken/'.$oAccount->SignMeToken());
+		}
+	}
+
+	/**
 	 * @return array
 	 */
 	public function DoLogout()
@@ -1898,11 +1928,7 @@ class Actions
 		$oAccount = $this->getAccountFromToken(false);
 		if ($oAccount && $oAccount->SignMe())
 		{
-			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY);
-
-			$this->StorageProvider()->Clear(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-				'SignMe/UserToken/'.$oAccount->SignMeToken());
+			$this->ClearSignMeData($oAccount);
 		}
 
 		return $this->TrueResponse(__FUNCTION__);

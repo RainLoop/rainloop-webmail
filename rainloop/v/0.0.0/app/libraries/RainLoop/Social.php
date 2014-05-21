@@ -311,7 +311,7 @@ class Social
 					$sCheckToken = !empty($aParts[0]) ? $aParts[0] : '';
 					$sCheckAuth = !empty($aParts[1]) ? $aParts[1] : '';
 				}
-				
+
 				$sRedirectUrl = $this->oHttp->GetFullUrl().'?SocialGoogle';
 				if (!$this->oHttp->HasQuery('code'))
 				{
@@ -415,7 +415,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_google'.$sCallBackType.'_service';
-			$sResult = '<script>opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -451,7 +451,7 @@ class Social
 		try
 		{
 			$oAccount = $this->oActions->GetAccount();
-			
+
 			$oFacebook = $this->FacebookConnector($oAccount ? $oAccount : null);
 			if ($oFacebook)
 			{
@@ -537,7 +537,7 @@ class Social
 								$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
 							}
 						}
-						
+
 						if ($aUserData && \is_array($aUserData) &&
 							!empty($aUserData['Email']) &&
 							!empty($aUserData['Login']) &&
@@ -547,7 +547,7 @@ class Social
 							if ($oAccount instanceof \RainLoop\Account)
 							{
 								$this->oActions->AuthProcess($oAccount);
-								
+
 								$iErrorCode = 0;
 							}
 						}
@@ -580,7 +580,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_facebook'.$sCallBackType.'_service';
-			$sResult = '<script>opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -729,7 +729,7 @@ class Social
 										if ($oAccount instanceof \RainLoop\Account)
 										{
 											$this->oActions->AuthProcess($oAccount);
-											
+
 											$iErrorCode = 0;
 										}
 									}
@@ -778,7 +778,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_twitter'.$sCallBackType.'_service';
-			$sResult = '<script>opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 

@@ -994,8 +994,18 @@ class ServiceActions
 				$oAccount = $this->oActions->GetAccountFromSignMeToken();
 				if ($oAccount)
 				{
-					$this->oActions->AuthProcess($oAccount);
-					$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
+					try
+					{
+						$this->oActions->CheckMailConnection($oAccount);
+
+						$this->oActions->AuthProcess($oAccount);
+
+						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
+					}
+					catch (\Exception $oException)
+					{
+						$this->oActions->ClearSignMeData($oAccount);
+					}
 				}
 			}
 
@@ -1021,7 +1031,7 @@ class ServiceActions
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 
 		return
-			($bWrapByScriptTag ? '<script type="text/javascript">' : '').
+			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
 			'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';'.
 			($bWrapByScriptTag ? '</script>' : '')
 		;
@@ -1064,7 +1074,7 @@ class ServiceActions
 		$sResult = empty($sLangJs) ? 'null' : '{'.\substr($sLangJs, 0, -1).'}';
 
 		return
-			($bWrapByScriptTag ? '<script type="text/javascript">' : '').
+			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
 			'window.rainloopI18N='.$sResult.';'.$sMoment.
 			($bWrapByScriptTag ? '</script>' : '')
 		;
@@ -1079,7 +1089,7 @@ class ServiceActions
 	private function compileAppData($aAppData, $bWrapByScriptTag = true)
 	{
 		return
-			($bWrapByScriptTag ? '<script>' : '').
+			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
 			'window.rainloopAppData='.\json_encode($aAppData).';'.
 			'if(window.__rlah_set){__rlah_set()};'.
 			($bWrapByScriptTag ? '</script>' : '')

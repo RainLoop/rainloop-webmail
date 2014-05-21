@@ -5,7 +5,7 @@ namespace RainLoop;
 class Utils
 {
 	static $Cookies = null;
-	
+
 	/**
 	 * @return void
 	 */
@@ -34,7 +34,7 @@ class Utils
 	{
 		return \MailSo\Base\Crypt::XxteaDecrypt($sEncriptedString, $sKey);
 	}
-	
+
 	/**
 	 * @param array $aValues
 	 * @param string $sCustomKey = ''
@@ -258,7 +258,7 @@ class Utils
 			foreach ($aList as $sName)
 			{
 				$sTemplateName = \substr($sName, 0, -5);
-				$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html">'.
+				$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
 					$oAction->ProcessTemplate($sTemplateName, \file_get_contents($sDirName.'/'.$sName)).'</script>';
 			}
 
@@ -366,12 +366,12 @@ class Utils
 	}
 
 	public static function CustomBaseConvert($sNumberInput, $sFromBaseInput = '0123456789', $sToBaseInput = '0123456789')
-	{ 
+	{
 		if ($sFromBaseInput === $sToBaseInput)
 		{
 			return $sNumberInput;
 		}
-		
+
 		$mFromBase = \str_split($sFromBaseInput, 1);
 		$mToBase = \str_split($sToBaseInput, 1);
 		$aNumber = \str_split($sNumberInput, 1);
@@ -387,10 +387,10 @@ class Utils
 			{
 				$mRetVal = \bcadd($mRetVal, \bcmul(\array_search($aNumber[$iIndex - 1], $mFromBase), \bcpow($iFromLen, $numberLen - $iIndex)));
 			}
-			
+
 			return $mRetVal;
 		}
-		
+
 		if ($sFromBaseInput != '0123456789')
 		{
 			$sBase10 = \RainLoop\Utils::CustomBaseConvert($sNumberInput, $sFromBaseInput, '0123456789');

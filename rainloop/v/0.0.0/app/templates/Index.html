@@ -13,9 +13,9 @@
 		<![endif]-->
 		<script type="text/javascript">
 			function __fIncludeScr(sSrc) {
-				document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
+				document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 			}
-			
+
 			if (!navigator || !navigator.cookieEnabled) {
 				document.location.replace('{{BaseAppIndexFile}}?/NoCookie');
 			}
@@ -28,11 +28,11 @@
 		<link rel="apple-touch-icon" href="{{BaseAppAppleTouchFile}}" type="image/png" />
 		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
-		<script type="text/javascript">{{BaseAppBootScriptSource}}</script>
-		<script type="text/javascript">
+		<script type="text/javascript" data-cfasync="false">{{BaseAppBootScriptSource}}</script>
+		<script type="text/javascript" data-cfasync="false">
 			__fIncludeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/{{BaseRandHash}}/');
 		</script>
-		<script type="text/javascript">
+		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {
 				document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
 			}
@@ -48,7 +48,7 @@
 				<div class="e-bounce bounce3"></div>
 			</div>
 		</div>
-		<script type="text/javascript">
+		<script type="text/javascript" data-cfasync="false">
 			var oE = document.getElementById('rl-loading');
 			if (oE) {
 				oE.style.opacity = 0;
@@ -71,25 +71,25 @@
 		</div>
 		<div id="rl-templates"></div>
 		<div id="rl-hidden"></div>
-		<script type="text/javascript" src="{{BaseAppLibsScriptLink}}"></script>
-		<script type="text/javascript" src="{{BaseAppEditorScriptLink}}"></script>
-		<script type="text/javascript">
+		<script type="text/javascript" src="{{BaseAppLibsScriptLink}}" data-cfasync="false"></script>
+		<script type="text/javascript" src="{{BaseAppEditorScriptLink}}" data-cfasync="false"></script>
+		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['TemplatesLink']) {
 				__fIncludeScr(window.rainloopAppData['TemplatesLink']);
 			}
 		</script>
-		<script type="text/javascript">
+		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['LangLink']) {
 				__fIncludeScr(window.rainloopAppData['LangLink']);
 			}
 		</script>
-		<script type="text/javascript" src="{{BaseAppMainScriptLink}}"></script>
-		<script type="text/javascript">
+		<script type="text/javascript" src="{{BaseAppMainScriptLink}}" data-cfasync="false"></script>
+		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['PluginsLink']) {
 				__fIncludeScr(window.rainloopAppData['PluginsLink']);
 			}
 		</script>
-		<script type="text/javascript">
+		<script type="text/javascript" data-cfasync="false">
 			function __showError() {
 				var oR = document.getElementById('rl-loading'),
 					oL = document.getElementById('rl-loading-error');
