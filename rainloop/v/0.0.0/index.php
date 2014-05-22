@@ -20,7 +20,7 @@
 
 		define('APP_SITE', $sSite);
 		define('APP_SITE_CLEAR', 0 < strlen(APP_SITE) ? trim(preg_replace('/[^a-zA-Z0-9_.\-]+/', '_', trim(strtolower(APP_SITE))), ' _') : '');
-		
+
 		define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
 		$sPrivateDataFolderInternalName = @file_exists(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
@@ -31,10 +31,11 @@
 		define('APP_DEV_VERSION', '0.0.0');
 		define('APP_API_PATH', 'http://api.rainloop.net/');
 		define('APP_REP_PATH', 'http://repository.rainloop.net/v1/');
+		define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.json');
 		define('APP_WEB_PATH', 'rainloop/v/'.APP_VERSION.'/');
 		define('APP_WEB_STATIC_PATH', APP_WEB_PATH.'static/');
 		define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
-		
+
 		$sSalt = @file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');
 		$sData = @file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php');
 		$sInstalled = @file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
@@ -119,7 +120,7 @@ Options -Indexes
 			{
 				@mkdir(APP_PRIVATE_DATA, 0755, true);
 			}
-			
+
 			foreach (array('logs', 'cache', 'configs', 'plugins', 'storage') as $sName)
 			{
 				if (!@is_dir(APP_PRIVATE_DATA.$sName))

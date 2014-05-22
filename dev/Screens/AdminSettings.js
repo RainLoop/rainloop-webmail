@@ -16,7 +16,5 @@ _.extend(AdminSettingsScreen.prototype, AbstractSettings.prototype);
 
 AdminSettingsScreen.prototype.onShow = function ()
 {
-//	AbstractSettings.prototype.onShow.call(this);
-	
 	RL.setTitle('');
 };

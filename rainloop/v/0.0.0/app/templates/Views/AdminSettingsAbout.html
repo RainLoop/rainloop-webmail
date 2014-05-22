@@ -3,20 +3,60 @@
 		<div class="legend">
 			About
 		</div>
-		<div class="control-group">
-			<div class="raw">
-				<div class="span4">
-					<div class="rl-logo"></div>
-				</div>
-				<div class="span4">
-					RainLoop Webmail
+		<div class="row" style="min-width: 800px;">
+			<div class="span4">
+				<div class="rl-logo"></div>
+				<div style="margin-left: 45px;">
+					2014 &copy; All Rights Reserved.
 					<br />
-					v<span data-bind="text: version"></span>
+					<a class="g-ui-link" href="http://rainloop.net/" target="_blank">http://rainloop.net/</a>
 				</div>
 			</div>
-		</div>
-		<div class="control-group">
-			
+			<div class="span6 rl-desc">
+				<h1 style="margin-bottom: 0;">RainLoop</h1>
+				<h4 style="margin-top: 0;"><span data-bind="text: version"></span></h4>
+				<h4 style="color: #aaa; font-weight: normal;">Simple, modern & fast web-based email client</h4>
+				<h5 style="color: #aaa; font-weight: normal; margin-top: 40px;">
+					<div data-bind="visible: 'error' === statusType()">
+						<i class="icon-warning" style="color: red"></i>
+						&nbsp;&nbsp;
+						<span data-bind="text: errorDesc">Error</span>
+					</div>
+					<div data-bind="visible: 'available' === statusType()">
+						<i class="icon-warning" style="color: blue"></i>
+						&nbsp;&nbsp;
+						New <b data-bind="text: coreRemoteVersion"></b> version is available.
+						<span data-bind="visible: '' !== coreRemoteRelease()">
+							(<span data-bind="text: coreRemoteRelease"></span>)
+						</span>
+						<br />
+						<span data-bind="visible: coreUpdatable() && coreAccess()">
+							<span class="g-ui-link" data-bind="click: updateCoreData">Update</span>
+							&nbsp;&nbsp;&nbsp;
+						</span>
+						<span data-bind="visible: coreAccess()">
+							<a class="g-ui-link" href="http://rainloop.net/downloads/" target="_blank">Download</a>
+							&nbsp;&nbsp;&nbsp;
+							<a class="g-ui-link" href="http://rainloop.net/changelog/" target="_blank">Changelog</a>
+						</span>
+					</div>
+					<div data-bind="visible: 'up-to-date' === statusType()">
+						<i class="icon-ok" style="color: green"></i>
+						&nbsp;&nbsp;
+						RainLoop is up to date.
+					</div>
+					<div data-bind="visible: 'updating' === statusType()">
+						<i class="icon-spinner animated"></i>
+						&nbsp;&nbsp;
+						Updating&hellip;
+					</div>
+					<div data-bind="visible: 'checking' === statusType()">
+						<i class="icon-spinner animated"></i>
+						&nbsp;&nbsp;
+						Checking for updates&hellip;
+					</div>
+				</h5>
+			</div>
 		</div>
 	</div>
 </div>

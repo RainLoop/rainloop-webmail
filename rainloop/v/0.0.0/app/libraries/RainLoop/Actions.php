@@ -1171,6 +1171,7 @@ class Actions
 				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
+				$aResult['CoreAccess'] = $this->rainLoopCoreAccess();
 			}
 
 			$aResult['Capa'] = $this->Capa(true);
@@ -2604,25 +2605,11 @@ class Actions
 	}
 
 	/**
-	 * @param bool $bAdditionalOnly = false
-	 *
 	 * @return string
 	 */
-	private function rainloopRepo($bAdditionalOnly = false)
+	private function rainloopRepo()
 	{
-		if ($bAdditionalOnly)
-		{
-			$sUrl = $this->Config()->Get('labs', 'additional_repo', '');
-		}
-		else
-		{
-			$sUrl = $this->Config()->Get('labs', 'custom_repo', '');
-			if (0 === \strlen($sUrl))
-			{
-				$sUrl = APP_REP_PATH;
-			}
-		}
-
+		$sUrl = APP_REP_PATH;
 		if ('' !== $sUrl)
 		{
 			$sUrl = rtrim($sUrl, '\\/').'/';
@@ -2635,15 +2622,17 @@ class Actions
 	{
 		return @file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
 			@is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-			@is_writable(APP_INDEX_ROOT_PATH.'rainloop/');
+			@is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
+			APP_VERSION !== APP_DEV_VERSION
+		;
 	}
 
 	private function rainLoopCoreAccess()
 	{
 		$sCoreAccess = \strtolower(\preg_replace('/[\s,;]+/', ' ',
-			$this->Config()->Get('security', 'core_install_access_domains', '')));
+			$this->Config()->Get('security', 'core_install_access_domain', '')));
 
-		return '' === $sCoreAccess || APP_SITE === $sCoreAccess;
+		return '' === $sCoreAccess || '*' === $sCoreAccess || APP_SITE === $sCoreAccess;
 	}
 
 	/**
@@ -2660,22 +2649,6 @@ class Actions
 		$sRep = '';
 		$sRepoFile = 'repository.json';
 		$iRepTime = 0;
-
-		if ($bMain)
-		{
-			switch (\strtolower(\trim($this->Config()->Get('labs', 'repo_type', 'stable'))))
-			{
-				case 'dev':
-				case 'nightly':
-				case 'beta':
-					$sRepoFile = 'beta.repository.json';
-					break;
-				case 'stable':
-				default:
-					$sRepoFile = 'repository.json';
-					break;
-			}
-		}
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
@@ -2717,8 +2690,6 @@ class Actions
 			$bReal = \is_array($aRep) && 0 < \count($aRep);
 		}
 
-		$bCoreAccess = $this->rainLoopCoreAccess();
-
 		$aResult = array();
 		if (\is_array($aRep))
 		{
@@ -2737,24 +2708,7 @@ class Actions
 						continue;
 					}
 
-					if ('core' === $oItem->type)
-					{
-						if ($bCoreAccess)
-						{
-							$aResult[] = array(
-								'type' => $oItem->type,
-								'id' => $oItem->id,
-								'name' => $oItem->name,
-								'installed' => APP_VERSION,
-								'version' => $oItem->version,
-								'file' => $oItem->file,
-								'release' => $oItem->release,
-								'release_notes' => isset($oItem->{'release_notes'}) ? $oItem->{'release_notes'} : '',
-								'desc' => $oItem->description
-							);
-						}
-					}
-					else if ('plugin' === $oItem->type)
+					if ('plugin' === $oItem->type)
 					{
 						$aResult[] = array(
 							'type' => $oItem->type,
@@ -2775,47 +2729,72 @@ class Actions
 		return $aResult;
 	}
 
+	private function getCoreData(&$bReal)
+	{
+		$bReal = false;
+		$sRepo = APP_REPO_CORE_FILE;
+
+		$oHttp = \MailSo\Base\Http::SingletonInstance();
+
+		$sCacheKey = 'CORE-UPDATER/'.$sRepo;
+		$sRep = $this->Cacher()->Get($sCacheKey);
+		if ('' !== $sRep)
+		{
+			$iRepTime = $this->Cacher()->GetTimer($sCacheKey);
+		}
+
+		if ('' === $sRep || 0 === $iRepTime || time() - 3600 > $iRepTime)
+		{
+			$iCode = 0;
+			$sContentType = '';
+
+			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepo, 'RainLoop', $sContentType, $iCode, $this->Logger(), 10,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')) : false;
+
+			if (false !== $sRep)
+			{
+				$aRep = @\json_decode($sRep, true, 10);
+				$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
+
+				if ($bReal)
+				{
+					$this->Cacher()->Set($sCacheKey, $sRep);
+					$this->Cacher()->SetTimer($sCacheKey);
+				}
+			}
+			else
+			{
+				$this->Logger()->Write('Cannot read remote repository file: '.$sRepo, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+			}
+		}
+		else if ('' !== $sRep)
+		{
+			$aRep = @\json_decode($sRep, true, 10);
+			$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
+		}
+
+		return $bReal ? $aRep : false;
+	}
+
 	private function getRepositoryData(&$bReal, &$bRainLoopUpdatable)
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
-		$bCoreAccess = $this->rainLoopCoreAccess();
 
 		$aResult = $this->getRepositoryDataByUrl($this->rainloopRepo(), $bReal);
 
-		$sAddRepo = $this->rainloopRepo(true);
-		if (0 < \strlen($sAddRepo))
+		$aSub = array();
+		if (\is_array($aResult))
 		{
-			$bFakeReal = false;
-			$aAddData = $this->getRepositoryDataByUrl($sAddRepo, $bFakeReal, false);
-			if ($bFakeReal && \is_array($aAddData) && 0 < \count($aAddData))
+			foreach ($aResult as $aItem)
 			{
-				$aResult = \array_merge($aResult, $aAddData);
+				if ('plugin' === $aItem['type'])
+				{
+					$aSub[] = $aItem;
+				}
 			}
-		}
 
-		$bAddCore = false;
-		foreach ($aResult as $aItem)
-		{
-			if ($aItem && 'core' === $aItem['type'])
-			{
-				$bAddCore = true;
-				break;
-			}
-		}
-
-		if ($bCoreAccess && !$bAddCore)
-		{
-			\array_unshift($aResult, array(
-				'type' => 'core',
-				'id' => 'rainloop',
-				'name' => 'RainLoop Webmail (core)',
-				'installed' => APP_VERSION,
-				'version' => '',
-				'file' => '',
-				'release' => '',
-				'release_notes' => '',
-				'desc' => ''
-			));
+			$aResult = $aSub;
+			unset($aSub);
 		}
 
 		$aInstalled = $this->Plugins()->InstalledPlugins();
@@ -2861,20 +2840,6 @@ class Actions
 			$aItem['canBeDeleted'] = '' !== $aItem['installed'] && 'plugin' === $aItem['type'];
 			$aItem['canBeUpdated'] = $aItem['compare'];
 			$aItem['canBeInstalled'] = true;
-
-			if ('plugin' !== $aItem['type'])
-			{
-				if (!$bRainLoopUpdatable)
-				{
-					$aItem['canBeInstalled'] = false;
-					$aItem['canBeUpdated'] = false;
-					$aItem['compare'] = false;
-				}
-				else if (APP_VERSION === APP_DEV_VERSION)
-				{
-					$aItem['canBeUpdated'] = false;
-				}
-			}
 		}
 
 		return $aResult;
@@ -2901,111 +2866,61 @@ class Actions
 	/**
 	 * @return array
 	 */
-	public function DoAdminPackageDelete()
+	public function DoAdminCoreData()
 	{
 		$this->IsAdminLoggined();
 
-		$sId = $this->GetActionParam('Id', '');
-
 		$bReal = false;
-		$bRainLoopUpdatable = false;
-		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
+		$aData = array();
 
-		$sResultId = '';
-		foreach ($aList as $oItem)
+		$bRainLoopUpdatable = $this->rainLoopUpdatable();
+		$bRainLoopAccess = $this->rainLoopCoreAccess();
+
+		if ($bRainLoopAccess)
 		{
-			if ($oItem && 'plugin' === $oItem['type'] && $sId === $oItem['id'])
-			{
-				$sResultId = $sId;
-				break;
-			}
+			$aData = $this->getCoreData($bReal);
 		}
 
-		$bResult = false;
-		if ('' !== $sResultId)
-		{
-			$bResult = \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sResultId);
-			if ($bResult)
-			{
-				$this->pluginEnable($sResultId, false);
-			}
-		}
+		$sVersion = empty($aData['version']) ? '' : $aData['version'];
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse(__FUNCTION__, array(
+			 'Real' => $bReal,
+			 'Access' => $bRainLoopAccess,
+			 'Updatable' => $bRainLoopUpdatable,
+			 'Version' => APP_VERSION,
+			 'RemoteVersion' => $sVersion,
+			 'RemoteRelease' => empty($aData['release']) ? '' : $aData['release'],
+			 'VersionCompare' => \version_compare(APP_VERSION, $sVersion)
+		));
 	}
 
 	/**
 	 * @return array
 	 */
-	public function DoAdminPackageInstall()
+	public function DoAdminUpdateCoreData()
 	{
 		$this->IsAdminLoggined();
 
-		$sType = $this->GetActionParam('Type', '');
-		$sId = $this->GetActionParam('Id', '');
-		$sFile = $this->GetActionParam('File', '');
-
-		$this->Logger()->Write('Start package install: '.$sFile.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
-
-		$sRealFile = '';
-
 		$bReal = false;
-		$bRainLoopUpdatable = false;
-		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
 
-		if (('plugin' !== $sType && $bRainLoopUpdatable) || 'plugin' === $sType)
+		$bRainLoopUpdatable = $this->rainLoopUpdatable();
+		$bRainLoopAccess = $this->rainLoopCoreAccess();
+
+		$aData = array();
+		if ($bRainLoopUpdatable && $bRainLoopAccess)
 		{
-			foreach ($aList as $oItem)
-			{
-				if ($oItem && $sFile === $oItem['file'] && $sId === $oItem['id'])
-				{
-					$sRealFile = $sFile;
-					break;
-				}
-			}
+			$aData = $this->getCoreData($bReal);
 		}
 
-		$sTmp = '';
 		$bResult = false;
-		if ('' !== $sRealFile)
+		if ($bReal && !empty($aData['file']))
 		{
-			$sUrl = $this->rainloopRepo().$sRealFile;
-			$sTmp = APP_PRIVATE_DATA.md5(microtime(true).$sRealFile).'.zip';
-			$pDest = @fopen($sTmp, 'w+b');
-			if ($pDest)
+			$sTmp = $this->downloadRemotePackageByUrl($aData['file']);
+			if (!empty($sTmp))
 			{
-				$iCode = 0;
-				$sContentType = '';
+				include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
 
-				@\set_time_limit(60);
-
-				$oHttp = \MailSo\Base\Http::SingletonInstance();
-				$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60,
-					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
-
-				if (!$bResult)
-				{
-					$this->Logger()->Write('Cannot save url to temp file: ', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-					$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-				}
-
-				@\fclose($pDest);
-			}
-			else
-			{
-				$this->Logger()->Write('Cannot create temp file: '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-			}
-		}
-
-		if ($bResult && '' !== $sTmp)
-		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
-			$oArchive = new \PclZip($sTmp);
-			if ('plugin' !== $sType)
-			{
-				$bResult = false;
-
+				$oArchive = new \PclZip($sTmp);
 				$sTmpFolder = APP_PRIVATE_DATA.\md5($sTmp);
 
 				\mkdir($sTmpFolder);
@@ -3059,8 +2974,132 @@ class Actions
 				{
 					$this->Logger()->Write('Cannot create tmp folder: '.$sTmpFolder, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}
+
+				@\unlink($sTmp);
 			}
-			else
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoAdminPackageDelete()
+	{
+		$this->IsAdminLoggined();
+
+		$sId = $this->GetActionParam('Id', '');
+
+		$bReal = false;
+		$bRainLoopUpdatable = false;
+		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
+
+		$sResultId = '';
+		foreach ($aList as $oItem)
+		{
+			if ($oItem && 'plugin' === $oItem['type'] && $sId === $oItem['id'])
+			{
+				$sResultId = $sId;
+				break;
+			}
+		}
+
+		$bResult = false;
+		if ('' !== $sResultId)
+		{
+			$bResult = \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sResultId);
+			if ($bResult)
+			{
+				$this->pluginEnable($sResultId, false);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+
+	/**
+	 * @param string $sUrl
+	 *
+	 * @return string
+	 */
+	private function downloadRemotePackageByUrl($sUrl)
+	{
+		$bResult = false;
+		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl).'.zip';
+		$pDest = @\fopen($sTmp, 'w+b');
+		if ($pDest)
+		{
+			$iCode = 0;
+			$sContentType = '';
+
+			@\set_time_limit(90);
+
+			$oHttp = \MailSo\Base\Http::SingletonInstance();
+			$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
+
+			if (!$bResult)
+			{
+				$this->Logger()->Write('Cannot save url to temp file: ', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+				$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+			}
+
+			@\fclose($pDest);
+		}
+		else
+		{
+			$this->Logger()->Write('Cannot create temp file: '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+		}
+
+		return $bResult ? $sTmp : '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoAdminPackageInstall()
+	{
+		$this->IsAdminLoggined();
+
+		$sType = $this->GetActionParam('Type', '');
+		$sId = $this->GetActionParam('Id', '');
+		$sFile = $this->GetActionParam('File', '');
+
+		$this->Logger()->Write('Start package install: '.$sFile.' ('.$sType.')', \MailSo\Log\Enumerations\Type::INFO, 'INSTALLER');
+
+		$sRealFile = '';
+
+		$bReal = false;
+		$bRainLoopUpdatable = false;
+		$aList = $this->getRepositoryData($bReal, $bRainLoopUpdatable);
+
+		if ('plugin' === $sType)
+		{
+			foreach ($aList as $oItem)
+			{
+				if ($oItem && $sFile === $oItem['file'] && $sId === $oItem['id'])
+				{
+					$sRealFile = $sFile;
+					break;
+				}
+			}
+		}
+
+		$sTmp = '';
+		$bResult = false;
+		if ('' !== $sRealFile)
+		{
+			$sUrl = $this->rainloopRepo().$sRealFile;
+			$sTmp = $this->downloadRemotePackageByUrl($sUrl);
+		}
+
+		if ('' !== $sTmp)
+		{
+			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
+
+			$oArchive = new \PclZip($sTmp);
+			if ('plugin' === $sType)
 			{
 				$bResult = true;
 				if (\is_dir(APP_PLUGINS_PATH.$sId))

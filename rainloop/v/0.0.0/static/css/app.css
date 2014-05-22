@@ -9011,6 +9011,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-admin-right .b-settings-content {
   padding: 20px;
+  padding-left: 30px;
 }
 .b-admin-general .flag-selector {
   padding-top: 5px;
@@ -9182,7 +9183,13 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
   display: inline-block;
   width: 250px;
   height: 250px;
+  margin-top: -10px;
+  margin-bottom: -10px;
   background-image: url("images/rainloop-logo.png");
+}
+.b-admin-about .rl-desc {
+  margin-top: 20px;
+  margin-left: -20px;
 }
 .popups .b-activate-content {
   width: 700px;
@@ -9270,6 +9277,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 }
 .b-settins-right .b-settings-content {
   padding: 20px;
+  padding-left: 30px;
 }
 .b-settings-general .notification-desc-denied {
   color: #999;

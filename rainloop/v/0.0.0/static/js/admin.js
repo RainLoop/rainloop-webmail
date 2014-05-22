@@ -6920,15 +6920,75 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
  */
 function AdminAbout()
 {
+	var oData = RL.data();
+
 	this.version = ko.observable(RL.settingsGet('Version'));
+	this.access = ko.observable(!!RL.settingsGet('CoreAccess'));
+	this.errorDesc = ko.observable('');
+
+	this.coreReal = oData.coreReal;
+	this.coreUpdatable = oData.coreUpdatable;
+	this.coreAccess = oData.coreAccess;
+	this.coreChecking = oData.coreChecking;
+	this.coreUpdating = oData.coreUpdating;
+	this.coreRemoteVersion = oData.coreRemoteVersion;
+	this.coreRemoteRelease = oData.coreRemoteRelease;
+	this.coreVersionCompare = oData.coreVersionCompare;
+
+	this.statusType = ko.computed(function () {
+
+		var
+			sType = '',
+			iVersionCompare = this.coreVersionCompare(),
+			bChecking = this.coreChecking(),
+			bUpdating = this.coreUpdating(),
+			bReal = this.coreReal()
+		;
+
+		if (bChecking)
+		{
+			sType = 'checking';
+		}
+		else if (bUpdating)
+		{
+			sType = 'updating';
+		}
+		else if (bReal && 0 === iVersionCompare)
+		{
+			sType = 'up-to-date';
+		}
+		else if (bReal && -1 === iVersionCompare)
+		{
+			sType = 'available';
+		}
+		else if (!bReal)
+		{
+			sType = 'error';
+			this.errorDesc('Cannot access the repository at the moment.');
+		}
+
+		return sType;
+		
+	}, this);
 }
 
 Utils.addSettingsViewModel(AdminAbout, 'AdminSettingsAbout', 'About', 'about');
 
-//AdminAbout.prototype.onBuild = function ()
-//{
-//
-//};
+AdminAbout.prototype.onBuild = function ()
+{
+	if (this.access())
+	{
+		RL.reloadCoreData();
+	}
+};
+
+AdminAbout.prototype.updateCoreData = function ()
+{
+	if (!this.coreUpdating())
+	{
+		RL.updateCoreData();
+	}
+};
 
 /**
  * @constructor
@@ -7068,24 +7128,33 @@ AbstractData.prototype.populateDataOnStart = function()
 function AdminDataStorage()
 {
 	AbstractData.call(this);
-	
+
 	this.domainsLoading = ko.observable(false).extend({'throttle': 100});
 	this.domains = ko.observableArray([]);
-	
+
 	this.pluginsLoading = ko.observable(false).extend({'throttle': 100});
 	this.plugins = ko.observableArray([]);
-	
+
 	this.packagesReal = ko.observable(true);
 	this.packagesMainUpdatable = ko.observable(true);
 	this.packagesLoading = ko.observable(false).extend({'throttle': 100});
 	this.packages = ko.observableArray([]);
-	
+
+	this.coreReal = ko.observable(true);
+	this.coreUpdatable = ko.observable(true);
+	this.coreAccess = ko.observable(true);
+	this.coreChecking = ko.observable(false).extend({'throttle': 100});
+	this.coreUpdating = ko.observable(false).extend({'throttle': 100});
+	this.coreRemoteVersion = ko.observable('');
+	this.coreRemoteRelease = ko.observable('');
+	this.coreVersionCompare = ko.observable(-2);
+
 	this.licensing = ko.observable(false);
 	this.licensingProcess = ko.observable(false);
 	this.licenseValid = ko.observable(false);
 	this.licenseExpired = ko.observable(0);
 	this.licenseError = ko.observable('');
-	
+
 	this.licenseTrigger = ko.observable(false);
 
 	this.adminManLoading = ko.computed(function () {
@@ -7384,7 +7453,7 @@ AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
 function AdminAjaxRemoteStorage()
 {
 	AbstractAjaxRemoteStorage.call(this);
-	
+
 	this.oRequests = {};
 }
 
@@ -7442,6 +7511,22 @@ AdminAjaxRemoteStorage.prototype.pluginList = function (fCallback)
 AdminAjaxRemoteStorage.prototype.packagesList = function (fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminPackagesList');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+AdminAjaxRemoteStorage.prototype.coreData = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'AdminCoreData');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+AdminAjaxRemoteStorage.prototype.updateCoreData = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
 };
 
 /**
@@ -7925,8 +8010,6 @@ _.extend(AdminSettingsScreen.prototype, AbstractSettings.prototype);
 
 AdminSettingsScreen.prototype.onShow = function ()
 {
-//	AbstractSettings.prototype.onShow.call(this);
-	
 	RL.setTitle('');
 };
 /**
@@ -8389,28 +8472,28 @@ AdminApp.prototype.reloadPackagesList = function ()
 {
 	RL.data().packagesLoading(true);
 	RL.data().packagesReal(true);
-	
+
 	RL.remote().packagesList(function (sResult, oData) {
-		
+
 		RL.data().packagesLoading(false);
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
 			RL.data().packagesReal(!!oData.Result.Real);
 			RL.data().packagesMainUpdatable(!!oData.Result.MainUpdatable);
-			
-			var 
+
+			var
 				aList = [],
 				aLoading = {}
 			;
-			
+
 			_.each(RL.data().packages(), function (oItem) {
 				if (oItem && oItem['loading']())
 				{
 					aLoading[oItem['file']] = oItem;
 				}
 			});
-			
+
 			if (Utils.isArray(oData.Result.List))
 			{
 				aList = _.compact(_.map(oData.Result.List, function (oItem) {
@@ -8428,6 +8511,61 @@ AdminApp.prototype.reloadPackagesList = function ()
 		else
 		{
 			RL.data().packagesReal(false);
+		}
+	});
+};
+
+AdminApp.prototype.updateCoreData = function ()
+{
+	var oRainData = RL.data();
+
+	oRainData.coreUpdating(true);
+	RL.remote().updateCoreData(function (sResult, oData) {
+
+		oRainData.coreUpdating(false);
+		oRainData.coreRemoteVersion('');
+		oRainData.coreRemoteRelease('');
+		oRainData.coreVersionCompare(-2);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			oRainData.coreReal(true);
+			window.location.reload();
+		}
+		else
+		{
+			oRainData.coreReal(false);
+		}
+	});
+
+};
+
+AdminApp.prototype.reloadCoreData = function ()
+{
+	var oRainData = RL.data();
+
+	oRainData.coreChecking(true);
+	oRainData.coreReal(true);
+
+	RL.remote().coreData(function (sResult, oData) {
+
+		oRainData.coreChecking(false);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			oRainData.coreReal(!!oData.Result.Real);
+			oRainData.coreUpdatable(!!oData.Result.Updatable);
+			oRainData.coreAccess(!!oData.Result.Access);
+			oRainData.coreRemoteVersion(oData.Result.RemoteVersion || '');
+			oRainData.coreRemoteRelease(oData.Result.RemoteRelease || '');
+			oRainData.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
+		}
+		else
+		{
+			oRainData.coreReal(false);
+			oRainData.coreRemoteVersion('');
+			oRainData.coreRemoteRelease('');
+			oRainData.coreVersionCompare(-2);
 		}
 	});
 };
@@ -8450,7 +8588,7 @@ AdminApp.prototype.reloadLicensing = function (bForce)
 			RL.data().licenseValid(true);
 			RL.data().licenseExpired(Utils.pInt(oData.Result['Expired']));
 			RL.data().licenseError('');
-			
+
 			RL.data().licensing(true);
 		}
 		else
@@ -8499,8 +8637,8 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
-		Utils.removeSettingsViewModel(AdminAbout);
-		
+//		Utils.removeSettingsViewModel(AdminAbout);
+
 		if (!RL.capa(Enums.Capa.Prem))
 		{
 			Utils.removeSettingsViewModel(AdminBranding);

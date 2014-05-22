@@ -107,7 +107,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_admin_panel' => array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'admin_panel_host'			=> array(''),
-				'core_install_access_domains' => array('')
+				'core_install_access_domain' => array('')
 			),
 
 			'login' => array(
@@ -236,9 +236,6 @@ Enables caching in the system'),
 				'imap_forwarded_flag' => array('$Forwarded'),
 				'imap_read_receipt_flag' => array('$ReadReceipt'),
 				'smtp_show_server_errors' => array(false),
-				'repo_type' => array('stable'),
-				'custom_repo' => array(''),
-				'additional_repo' => array(''),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),

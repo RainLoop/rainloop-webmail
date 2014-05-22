@@ -7,7 +7,7 @@
 function AdminAjaxRemoteStorage()
 {
 	AbstractAjaxRemoteStorage.call(this);
-	
+
 	this.oRequests = {};
 }
 
@@ -65,6 +65,22 @@ AdminAjaxRemoteStorage.prototype.pluginList = function (fCallback)
 AdminAjaxRemoteStorage.prototype.packagesList = function (fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminPackagesList');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+AdminAjaxRemoteStorage.prototype.coreData = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'AdminCoreData');
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+AdminAjaxRemoteStorage.prototype.updateCoreData = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
 };
 
 /**

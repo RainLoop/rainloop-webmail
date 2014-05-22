@@ -1,6 +1,6 @@
 <div class="b-admin-licensing" >
 	<div class="row">
-		<div class="alert alert-info span10">
+		<div class="alert alert-info span10" style="margin-top: 10px;">
 			RainLoop Webmail is licensed under <strong>Creative Commons
 			<br />
 			Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</strong> license.
@@ -48,13 +48,13 @@
 								This domain is licensed for commercial use
 							</p>
 							<p data-bind="visible: 0 < licenseExpired()">
-								<b>Subscription expires:</b> 
+								<b>Subscription expires:</b>
 								&nbsp;
 								<span data-bind="text: licenseExpiredMomentValue()"></span>
 							</p>
 						</div>
 						<div class="alert alert-error span8" style="margin-left: 0" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
-					</div>			
+					</div>
 				</div>
 			</div>
 		</div>

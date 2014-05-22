@@ -102,28 +102,28 @@ AdminApp.prototype.reloadPackagesList = function ()
 {
 	RL.data().packagesLoading(true);
 	RL.data().packagesReal(true);
-	
+
 	RL.remote().packagesList(function (sResult, oData) {
-		
+
 		RL.data().packagesLoading(false);
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
 			RL.data().packagesReal(!!oData.Result.Real);
 			RL.data().packagesMainUpdatable(!!oData.Result.MainUpdatable);
-			
-			var 
+
+			var
 				aList = [],
 				aLoading = {}
 			;
-			
+
 			_.each(RL.data().packages(), function (oItem) {
 				if (oItem && oItem['loading']())
 				{
 					aLoading[oItem['file']] = oItem;
 				}
 			});
-			
+
 			if (Utils.isArray(oData.Result.List))
 			{
 				aList = _.compact(_.map(oData.Result.List, function (oItem) {
@@ -141,6 +141,61 @@ AdminApp.prototype.reloadPackagesList = function ()
 		else
 		{
 			RL.data().packagesReal(false);
+		}
+	});
+};
+
+AdminApp.prototype.updateCoreData = function ()
+{
+	var oRainData = RL.data();
+
+	oRainData.coreUpdating(true);
+	RL.remote().updateCoreData(function (sResult, oData) {
+
+		oRainData.coreUpdating(false);
+		oRainData.coreRemoteVersion('');
+		oRainData.coreRemoteRelease('');
+		oRainData.coreVersionCompare(-2);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			oRainData.coreReal(true);
+			window.location.reload();
+		}
+		else
+		{
+			oRainData.coreReal(false);
+		}
+	});
+
+};
+
+AdminApp.prototype.reloadCoreData = function ()
+{
+	var oRainData = RL.data();
+
+	oRainData.coreChecking(true);
+	oRainData.coreReal(true);
+
+	RL.remote().coreData(function (sResult, oData) {
+
+		oRainData.coreChecking(false);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			oRainData.coreReal(!!oData.Result.Real);
+			oRainData.coreUpdatable(!!oData.Result.Updatable);
+			oRainData.coreAccess(!!oData.Result.Access);
+			oRainData.coreRemoteVersion(oData.Result.RemoteVersion || '');
+			oRainData.coreRemoteRelease(oData.Result.RemoteRelease || '');
+			oRainData.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
+		}
+		else
+		{
+			oRainData.coreReal(false);
+			oRainData.coreRemoteVersion('');
+			oRainData.coreRemoteRelease('');
+			oRainData.coreVersionCompare(-2);
 		}
 	});
 };
@@ -163,7 +218,7 @@ AdminApp.prototype.reloadLicensing = function (bForce)
 			RL.data().licenseValid(true);
 			RL.data().licenseExpired(Utils.pInt(oData.Result['Expired']));
 			RL.data().licenseError('');
-			
+
 			RL.data().licensing(true);
 		}
 		else
@@ -212,8 +267,8 @@ AdminApp.prototype.bootstart = function ()
 	}
 	else
 	{
-		Utils.removeSettingsViewModel(AdminAbout);
-		
+//		Utils.removeSettingsViewModel(AdminAbout);
+
 		if (!RL.capa(Enums.Capa.Prem))
 		{
 			Utils.removeSettingsViewModel(AdminBranding);
