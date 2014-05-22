@@ -4340,10 +4340,9 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 		if (oViewModelPlace && 1 === oViewModelPlace.length)
 		{
-			oViewModelDom = $('<div>').addClass('rl-view-model').addClass('RL-' + oViewModel.viewModelTemplate()).hide().attr('data-bind',
-				'template: {name: "' + oViewModel.viewModelTemplate() + '"}, i18nInit: true');
-
+			oViewModelDom = $('<div></div>').addClass('rl-view-model').addClass('RL-' + oViewModel.viewModelTemplate()).hide();
 			oViewModelDom.appendTo(oViewModelPlace);
+
 			oViewModel.viewModelDom = oViewModelDom;
 			ViewModelClass.__dom = oViewModelDom;
 
@@ -4386,7 +4385,11 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
-			ko.applyBindings(oViewModel, oViewModelDom[0]);
+			ko.applyBindingAccessorsToNode(oViewModelDom[0], {
+				'i18nInit': true,
+				'template': function () { return {'name': oViewModel.viewModelTemplate()};}
+			}, oViewModel);
+
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
 			if (oViewModel && 'Popups' === sPosition)
 			{
@@ -7864,9 +7867,7 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				RoutedSettingsViewModel = /** @type {?Function} */ RoutedSettingsViewModel;
 				oSettingsScreen = new RoutedSettingsViewModel();
 
-				oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide().attr('data-bind',
-					'template: {name: "' + RoutedSettingsViewModel.__rlSettingsData.Template + '"}, i18nInit: true');
-
+				oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
 				oViewModelDom.appendTo(oViewModelPlace);
 				
 				oSettingsScreen.data = RL.data();
@@ -7878,7 +7879,11 @@ AbstractSettings.prototype.onRoute = function (sSubName)
 				RoutedSettingsViewModel.__builded = true;
 				RoutedSettingsViewModel.__vm = oSettingsScreen;
 				
-				ko.applyBindings(oSettingsScreen, oViewModelDom[0]);
+				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
+					'i18nInit': true,
+					'template': function () { return {'name': RoutedSettingsViewModel.__rlSettingsData.Template}; }
+				}, oSettingsScreen);
+
 				Utils.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
 			}
 			else

@@ -88,10 +88,9 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 		if (oViewModelPlace && 1 === oViewModelPlace.length)
 		{
-			oViewModelDom = $('<div>').addClass('rl-view-model').addClass('RL-' + oViewModel.viewModelTemplate()).hide().attr('data-bind',
-				'template: {name: "' + oViewModel.viewModelTemplate() + '"}, i18nInit: true');
-
+			oViewModelDom = $('<div></div>').addClass('rl-view-model').addClass('RL-' + oViewModel.viewModelTemplate()).hide();
 			oViewModelDom.appendTo(oViewModelPlace);
+
 			oViewModel.viewModelDom = oViewModelDom;
 			ViewModelClass.__dom = oViewModelDom;
 
@@ -134,7 +133,11 @@ Knoin.prototype.buildViewModel = function (ViewModelClass, oScreen)
 
 			Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
-			ko.applyBindings(oViewModel, oViewModelDom[0]);
+			ko.applyBindingAccessorsToNode(oViewModelDom[0], {
+				'i18nInit': true,
+				'template': function () { return {'name': oViewModel.viewModelTemplate()};}
+			}, oViewModel);
+
 			Utils.delegateRun(oViewModel, 'onBuild', [oViewModelDom]);
 			if (oViewModel && 'Popups' === sPosition)
 			{
