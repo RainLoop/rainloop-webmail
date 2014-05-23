@@ -21,6 +21,7 @@ class Header
 	const REPLY_TO = 'Reply-To';
 	const SENDER = 'Sender';
 	const RETURN_PATH = 'Return-Path';
+	const DELIVERED_TO = 'Delivered-To';
 
 	const MESSAGE_ID = 'Message-ID';
 	const IN_REPLY_TO = 'In-Reply-To';
@@ -43,7 +44,7 @@ class Header
 
 	const MIME_VERSION = 'Mime-Version';
 	const X_MAILER = 'X-Mailer';
-	
+
 	const X_MSMAIL_PRIORITY = 'X-MSMail-Priority';
 	const IMPORTANCE = 'Importance';
 	const X_PRIORITY = 'X-Priority';

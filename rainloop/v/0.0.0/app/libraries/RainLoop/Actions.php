@@ -6081,7 +6081,7 @@ class Actions
 
 		$aResult = array(
 			\RainLoop\Enumerations\Capa::PREM,
-			\RainLoop\Enumerations\Capa::FILTERS
+//			\RainLoop\Enumerations\Capa::FILTERS
 		);
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
@@ -6989,6 +6989,7 @@ class Actions
 					'Cc' => $this->responseObject($mResponse->Cc(), $sParent, $aParameters),
 					'Bcc' => $this->responseObject($mResponse->Bcc(), $sParent, $aParameters),
 					'Sender' => $this->responseObject($mResponse->Sender(), $sParent, $aParameters),
+					'DeliveredTo' => $this->responseObject($mResponse->DeliveredTo(), $sParent, $aParameters),
 					'Priority' => $mResponse->Priority(),
 					'Threads' => $mResponse->Threads(),
 					'ThreadsLen' => $mResponse->ThreadsLen(),

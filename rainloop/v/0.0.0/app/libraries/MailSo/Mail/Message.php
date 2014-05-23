@@ -81,6 +81,11 @@ class Message
 	/**
 	 * @var \MailSo\Mime\EmailCollection
 	 */
+	private $oDeliveredTo;
+
+	/**
+	 * @var \MailSo\Mime\EmailCollection
+	 */
 	private $oTo;
 
 	/**
@@ -201,6 +206,7 @@ class Message
 		$this->oFrom = null;
 		$this->oSender = null;
 		$this->oReplyTo = null;
+		$this->oDeliveredTo = null;
 		$this->oTo = null;
 		$this->oCc = null;
 		$this->oBcc = null;
@@ -419,6 +425,14 @@ class Message
 	/**
 	 * @return \MailSo\Mime\EmailCollection
 	 */
+	public function DeliveredTo()
+	{
+		return $this->oDeliveredTo;
+	}
+
+	/**
+	 * @return \MailSo\Mime\EmailCollection
+	 */
 	public function To()
 	{
 		return $this->oTo;
@@ -503,7 +517,7 @@ class Message
 	{
 		return $this->aThreads;
 	}
-	
+
 	/**
 	 * @param array $aThreads
 	 */
@@ -535,7 +549,7 @@ class Message
 	{
 		return $this->iParentThread;
 	}
-	
+
 	/**
 	 * @param int $iParentThread
 	 */
@@ -621,6 +635,7 @@ class Message
 
 			$this->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
 			$this->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
+			$this->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
 
 			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
 			$this->sReferences = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES);
@@ -687,7 +702,7 @@ class Message
 			{
 				$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
 			}
-			
+
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
 			if (0 < \strlen($sDraftInfo))
 			{
@@ -766,7 +781,7 @@ class Message
 					{
 						$sTextCharset = $sCharset;
 					}
-					
+
 					$sTextCharset = \MailSo\Base\Utils::NormalizeCharset($sTextCharset, true);
 
 					$sText = \MailSo\Base\Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());

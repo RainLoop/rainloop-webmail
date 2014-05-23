@@ -6502,6 +6502,7 @@ function MessageModel()
 	this.cc = [];
 	this.bcc = [];
 	this.replyTo = [];
+	this.deliveredTo = [];
 
 	this.newForAnimation = ko.observable(false);
 
@@ -6543,7 +6544,7 @@ function MessageModel()
 		}
 		return sClass;
 	}, this);
-	
+
 	this.fullFormatDateValue = ko.computed(function () {
 		return MessageModel.calculateFullFromatDateValue(this.dateTimeStampInUTC());
 	}, this);
@@ -6579,7 +6580,7 @@ function MessageModel()
 	this.sMessageId = '';
 	this.sInReplyTo = '';
 	this.sReferences = '';
-	
+
 	this.parentUid = ko.observable(0);
 	this.threads = ko.observableArray([]);
 	this.threadsLen = ko.observable(0);
@@ -6588,7 +6589,7 @@ function MessageModel()
 
 	this.lastInCollapsedThread = ko.observable(false);
 	this.lastInCollapsedThreadLoading = ko.observable(false);
-	
+
 	this.threadsLenResult = ko.computed(function () {
 		var iCount = this.threadsLen();
 		return 0 === this.parentUid() && 0 < iCount ? iCount + 1 : '';
@@ -6719,6 +6720,7 @@ MessageModel.prototype.clear = function ()
 	this.cc = [];
 	this.bcc = [];
 	this.replyTo = [];
+	this.deliveredTo = [];
 
 	this.newForAnimation(false);
 
@@ -6739,7 +6741,7 @@ MessageModel.prototype.clear = function ()
 	this.isHtml(false);
 	this.hasImages(false);
 	this.attachments([]);
-	
+
 	this.isPgpSigned(false);
 	this.isPgpEncrypted(false);
 	this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
@@ -6786,7 +6788,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.uid = oJsonMessage.Uid;
 		this.hash = oJsonMessage.Hash;
 		this.requestHash = oJsonMessage.RequestHash;
-		
+
 		this.size(Utils.pInt(oJsonMessage.Size));
 
 		this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
@@ -6794,6 +6796,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.cc = MessageModel.initEmailsFromJson(oJsonMessage.Cc);
 		this.bcc = MessageModel.initEmailsFromJson(oJsonMessage.Bcc);
 		this.replyTo = MessageModel.initEmailsFromJson(oJsonMessage.ReplyTo);
+		this.deliveredTo = MessageModel.initEmailsFromJson(oJsonMessage.DeliveredTo);
 
 		this.subject(oJsonMessage.Subject);
 		this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
@@ -6809,7 +6812,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 
 		this.initFlagsByJson(oJsonMessage);
 		this.computeSenderEmail();
-		
+
 		bResult = true;
 	}
 
@@ -7291,6 +7294,7 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.cc = oMessage.cc;
 	this.bcc = oMessage.bcc;
 	this.replyTo = oMessage.replyTo;
+	this.deliveredTo = oMessage.deliveredTo;
 
 	this.unseen(oMessage.unseen());
 	this.flagged(oMessage.flagged());
@@ -7384,7 +7388,7 @@ MessageModel.prototype.showInternalImages = function (bLazy)
 		bLazy = Utils.isUnd(bLazy) ? false : bLazy;
 
 		var self = this;
-		
+
 		$('[data-x-src-cid]', this.body).each(function () {
 
 			var oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-cid'));
@@ -7402,7 +7406,7 @@ MessageModel.prototype.showInternalImages = function (bLazy)
 				}
 			}
 		});
-		
+
 		$('[data-x-src-location]', this.body).each(function () {
 
 			var oAttachment = self.findAttachmentByContentLocation($(this).attr('data-x-src-location'));
@@ -7410,7 +7414,7 @@ MessageModel.prototype.showInternalImages = function (bLazy)
 			{
 				oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-location'));
 			}
-			
+
 			if (oAttachment && oAttachment.download)
 			{
 				if (bLazy && $(this).is('img'))
@@ -7500,7 +7504,7 @@ MessageModel.prototype.fetchDataToDom = function ()
 		this.isRtl(!!this.body.data('rl-is-rtl'));
 		this.isHtml(!!this.body.data('rl-is-html'));
 		this.hasImages(!!this.body.data('rl-has-images'));
-		
+
 		this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
 		if (RL.data().capaOpenPGP())
@@ -7558,7 +7562,7 @@ MessageModel.prototype.verifyPgpSignedClearMessage = function ()
 						if (oValidSysKey)
 						{
 							sPlain = mPgpMessage.getText();
-							
+
 							this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
 							this.pgpSignedVerifyUser(oValidSysKey.user);
 
@@ -8545,12 +8549,12 @@ function PopupsComposeViewModel()
 	this.identities = RL.data().identities;
 
 	this.currentIdentityID = ko.observable('');
-	
+
 	this.currentIdentityString = ko.observable('');
 	this.currentIdentityResultEmail = ko.observable('');
 
 	this.identitiesOptions = ko.computed(function () {
-		
+
 		var aList = [{
 			'optValue': oRainLoopData.accountEmail(),
 			'optText': this.formattedFrom(false)
@@ -8564,11 +8568,11 @@ function PopupsComposeViewModel()
 		});
 
 		return aList;
-		
+
 	}, this);
-	
+
 	ko.computed(function () {
-		
+
 		var
 			sResult = '',
 			sResultEmail = '',
@@ -8601,7 +8605,7 @@ function PopupsComposeViewModel()
 
 		this.currentIdentityString(sResult);
 		this.currentIdentityResultEmail(sResultEmail);
-		
+
 		return sResult;
 
 	}, this);
@@ -8618,7 +8622,7 @@ function PopupsComposeViewModel()
 	this.resizer.subscribe(function () {
 		this.editorResizeThrottle();
 	}, this);
-	
+
 	this.canBeSended = ko.computed(function () {
 		return !this.sending() &&
 			!this.saving() &&
@@ -8632,10 +8636,10 @@ function PopupsComposeViewModel()
 	}, this);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-		
+
 		RL.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 		kn.hideScreenPopup(PopupsComposeViewModel);
-		
+
 	}, function () {
 		return this.isDraftFolderMessage();
 	});
@@ -8788,13 +8792,13 @@ function PopupsComposeViewModel()
 				'multiselect': false
 			});
 		}
-		
+
 		return true;
 
 	}, function () {
 		return this.dropboxEnabled();
 	});
-	
+
 	this.driveEnabled = ko.observable(false);
 
 	this.driveCommand = Utils.createCommand(this, function () {
@@ -8810,7 +8814,7 @@ function PopupsComposeViewModel()
 
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.Compose;
-	
+
 	Knoin.constructorEnd(this);
 }
 
@@ -8875,7 +8879,7 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 			oIDs[oItem.email()] = oItem['id'];
 		});
 	}
-	
+
 	oIDs[RL.data().accountEmail()] = RL.data().accountEmail();
 
 	if (oMessage)
@@ -8889,7 +8893,7 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 			case Enums.ComposeType.ReplyAll:
 			case Enums.ComposeType.Forward:
 			case Enums.ComposeType.ForwardAsAttachment:
-				_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fFindHelper);
+				_.find(_.union(oMessage.to, oMessage.cc, oMessage.bcc, oMessage.deliveredTo), fFindHelper);
 				break;
 			case Enums.ComposeType.Draft:
 				_.find(_.union(oMessage.from, oMessage.replyTo), fFindHelper);
@@ -8933,7 +8937,7 @@ PopupsComposeViewModel.prototype.formattedFrom = function (bHeaderResult)
 
 PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 {
-	var 
+	var
 		bResult = false,
 		sMessage = ''
 	;
@@ -8948,7 +8952,7 @@ PopupsComposeViewModel.prototype.sendMessageResponse = function (sResult, oData)
 			Utils.delegateRun(this, 'closeCommand');
 		}
 	}
-	
+
 	if (this.modalVisibility() && !bResult)
 	{
 		if (oData && Enums.Notification.CantSaveMessage === oData.ErrorCode)
@@ -9097,7 +9101,7 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
 PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails)
 {
 	kn.routeOff();
-	
+
 	var
 		self = this,
 		sFrom = '',
@@ -9168,7 +9172,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		{
 			case Enums.ComposeType.Empty:
 				break;
-				
+
 			case Enums.ComposeType.Reply:
 				this.to(fEmailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
@@ -9349,7 +9353,7 @@ PopupsComposeViewModel.prototype.onFocus = function ()
 	{
 		this.oEditor.focus();
 	}
-	
+
 	this.triggerForResize();
 };
 
@@ -9376,7 +9380,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 {
 	this.initUploader();
 
-	var 
+	var
 		self = this,
 		oScript = null
 	;
@@ -9395,7 +9399,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 		self.sendCommand();
 		return false;
 	});
-	
+
 	key('esc', Enums.KeyState.Compose, function () {
 		self.tryToClosePopup();
 		return false;
@@ -9411,7 +9415,7 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 		oScript.type = 'text/javascript';
 		oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
 		$(oScript).attr('id', 'dropboxjs').attr('data-app-key', RL.settingsGet('DropboxApiKey'));
-		
+
 		document.body.appendChild(oScript);
 	}
 
@@ -9754,7 +9758,7 @@ PopupsComposeViewModel.prototype.addDropboxAttachment = function (oDropboxFile)
 
 		var bResult = false;
 		oAttachment.uploading(false);
-		
+
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
 			if (oData.Result[oAttachment.id])
