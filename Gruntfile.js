@@ -273,6 +273,8 @@ module.exports = function (grunt) {
 					"dev/Models/FolderModel.js",
 					"dev/Models/AccountModel.js",
 					"dev/Models/IdentityModel.js",
+					"dev/Models/FilterConditionModel.js",
+					"dev/Models/FilterModel.js",
 					"dev/Models/OpenPgpKeyModel.js",
 
 					"dev/ViewModels/PopupsFolderClearViewModel.js",
@@ -310,6 +312,7 @@ module.exports = function (grunt) {
 					"dev/Settings/Accounts.js",
 					"dev/Settings/Identity.js",
 					"dev/Settings/Identities.js",
+					"dev/Settings/Filters.js",
 					"dev/Settings/Security.js",
 					"dev/Settings/Social.js",
 					"dev/Settings/ChangePassword.js",
@@ -475,7 +478,7 @@ module.exports = function (grunt) {
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
 			versionFull = version + '.' + release,
-			versionOwn = '1.1',
+			versionOwn = grunt.config('pkg.ownCloudPackageVersion'),
 			dist = releasesPath + '/' + versionFull + '/owncloud/'
 		;
 
@@ -489,12 +492,14 @@ module.exports = function (grunt) {
 		grunt.file.write(dist + 'appinfo/info.xml',
 			content.replace('<version>0.0.0</version>', '<version>' + versionOwn + '</version>'));
 
+		grunt.file.write(dist + 'VERSION', versionOwn);
+
 		grunt.config.set('cfg.releaseFolder', versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
 		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionOwn + '.zip');
 	});
 
-	grunt.registerTask('rainloop-clear', 'RainLoop Webmail clear task', function () {
+	grunt.registerTask('rainloop-clean', 'RainLoop Webmail clean task', function () {
 		var releaseSrcPath = grunt.config('cfg.releaseSrcPath');
 		if ('' !== releaseSrcPath)
 		{
@@ -517,9 +522,9 @@ module.exports = function (grunt) {
 	// ---
 
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
-	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clear']);
+	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clean']);
 	grunt.registerTask('fast', ['less', 'concat']);
-	grunt.registerTask('owncloud', ['rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clear']);
+	grunt.registerTask('owncloud', ['rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clean']);
 
 	// aliases
 	grunt.registerTask('u', ['uglify']);

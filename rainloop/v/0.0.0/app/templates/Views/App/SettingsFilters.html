@@ -1,0 +1,38 @@
+<div class="b-settings-filters g-ui-user-select-none">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_FILTERS/LEGEND_FILTERS"></span>
+		</div>
+	</div>
+	<div class="row">
+		<div data-bind="foreach: filters">
+			<div class="filter" style="background-color: #ddd">
+				FILTER
+				<div data-bind="foreach: conditions">
+					COND
+					<br />
+					<span class="delete-condition" data-bind="click: function (oCondition) { $parent.deleteCondition(oCondition); }">
+						<i class="icon-trash"></i>
+					</span>
+					<br />
+				</div>
+				<br />
+				<a class="btn" data-bind="click: addCondition">
+					<i class="icon-plus"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
+				</a>
+				<br />
+				<span class="delete-filter" data-bind="click: function (oFilter) { $parent.deleteFilter(oFilter); }">
+					<i class="icon-trash"></i>
+				</span>
+			</div>
+			<br />
+		</div>
+	</div>
+	<a class="btn" data-bind="click: addFilter">
+		<i class="icon-filter"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_FILTER"></span>
+	</a>
+</div>

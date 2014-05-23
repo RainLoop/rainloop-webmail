@@ -80,7 +80,7 @@ ko.bindingHandlers.tooltip3 = {
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-		
+
 		Globals.tooltipTrigger.subscribe(function () {
 			$oEl.tooltip('hide');
 		});

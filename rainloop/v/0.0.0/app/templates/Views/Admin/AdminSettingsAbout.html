@@ -16,28 +16,41 @@
 				<h1 style="margin-bottom: 0;">RainLoop</h1>
 				<h4 style="margin-top: 0;"><span data-bind="text: version"></span></h4>
 				<h4 style="color: #aaa; font-weight: normal;">Simple, modern & fast web-based email client</h4>
-				<h5 style="color: #aaa; font-weight: normal; margin-top: 40px;">
+				<h5 style="font-weight: normal; margin-top: 40px;">
 					<div data-bind="visible: 'error' === statusType()">
 						<i class="icon-warning" style="color: red"></i>
 						&nbsp;&nbsp;
-						<span data-bind="text: errorDesc">Error</span>
+						<span data-bind="text: errorDesc"></span>
 					</div>
 					<div data-bind="visible: 'available' === statusType()">
-						<i class="icon-warning" style="color: blue"></i>
+						<i class="icon-bolt" style="color: red"></i>
 						&nbsp;&nbsp;
 						New <b data-bind="text: coreRemoteVersion"></b> version is available.
 						<span data-bind="visible: '' !== coreRemoteRelease()">
 							(<span data-bind="text: coreRemoteRelease"></span>)
 						</span>
 						<br />
+						<br />
 						<span data-bind="visible: coreUpdatable() && coreAccess()">
-							<span class="g-ui-link" data-bind="click: updateCoreData">Update</span>
+							<a class="btn" data-bind="click: updateCoreData">
+								<i class="icon-sync"></i>
+								&nbsp;&nbsp;
+								Update
+							</a>
 							&nbsp;&nbsp;&nbsp;
 						</span>
 						<span data-bind="visible: coreAccess()">
-							<a class="g-ui-link" href="http://rainloop.net/downloads/" target="_blank">Download</a>
+							<a class="btn" href="http://rainloop.net/downloads/" target="_blank">
+								<i class="icon-download"></i>
+								&nbsp;&nbsp;
+								Download
+							</a>
 							&nbsp;&nbsp;&nbsp;
-							<a class="g-ui-link" href="http://rainloop.net/changelog/" target="_blank">Changelog</a>
+							<a class="btn" href="http://rainloop.net/changelog/" target="_blank">
+								<i class="icon-file-text"></i>
+								&nbsp;&nbsp;
+								Changelog
+							</a>
 						</span>
 					</div>
 					<div data-bind="visible: 'up-to-date' === statusType()">

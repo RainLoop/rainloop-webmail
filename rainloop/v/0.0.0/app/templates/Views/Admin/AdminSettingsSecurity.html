@@ -5,15 +5,6 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { csrfProtection(!csrfProtection()); }">
-					<i data-bind="css: csrfProtection() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<abbr title="Cross-site request forgery" class="initialism">CSRF</abbr> protection
-				</label>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
 				<label data-bind="click: function () { capaOpenPGP(!capaOpenPGP()); }">
 					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
@@ -36,6 +27,7 @@
 			</div>
 		</div>
 	</div>
+	<br />
 	<div class="form-horizontal">
 		<div class="legend">
 			Changer Admin Password

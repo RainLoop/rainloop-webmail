@@ -25,5 +25,5 @@ external_sso_key = "super-secret-key"
 ownCloud:
 	1) In the Apps > Enable 'RainLoop' plugin
 	2) In the Settings > Admin > Enter "RainLoop Webmail URL" and "SSO key"
-	3) In the Settings > Personal > Type your mail server email and password
+	3) In the Settings > Personal > Type your mail server email (login) and password
 

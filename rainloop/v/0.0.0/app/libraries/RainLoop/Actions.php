@@ -1295,7 +1295,7 @@ class Actions
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
 		$aResult['UserLanguage'] = $bUserLanguage;
 		$aResult['LangLink'] = APP_INDEX_FILE.'?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
-		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.$sStaticCache.'/';
+		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
@@ -6079,7 +6079,10 @@ class Actions
 	{
 		$oConfig = $this->Config();
 
-		$aResult = array(\RainLoop\Enumerations\Capa::PREM);
+		$aResult = array(
+			\RainLoop\Enumerations\Capa::PREM,
+			\RainLoop\Enumerations\Capa::FILTERS
+		);
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
 		{

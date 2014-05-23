@@ -398,6 +398,7 @@ Enums.Capa = {
 	'Prefetch': 'PREFETCH',
 	'Gravatar': 'GRAVATAR',
 	'Themes': 'THEMES',
+	'Filters': 'FILTERS',
 	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 	'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 };
@@ -642,6 +643,34 @@ Enums.Layout = {
 /**
  * @enum {number}
  */
+Enums.FilterConditionField = {
+	'From': 0,
+	'To': 1,
+	'Subject': 2
+};
+
+/**
+ * @enum {number}
+ */
+Enums.FilterConditionType = {
+	'contains': 0,
+	'NotContains': 1,
+	'EqualTo': 2,
+	'NotEqualTo': 3
+};
+
+/**
+ * @enum {number}
+ */
+Enums.FiltersAction = {
+	'None': 0,
+	'Move': 1,
+	'Delete': 2
+};
+
+/**
+ * @enum {number}
+ */
 Enums.SignedVerifyStatus = {
 	'UnknownPublicKeys': -4,
 	'UnknownPrivateKey': -3,
@@ -706,7 +735,7 @@ Enums.Notification = {
 	'NewPasswordShort': 132,
 	'NewPasswordWeak': 133,
 	'NewPasswordForbidden': 134,
-	
+
 	'ContactsSyncError': 140,
 
 	'CantGetMessageList': 201,
@@ -735,13 +764,13 @@ Enums.Notification = {
 	'CantDeletePackage': 702,
 	'InvalidPluginPackage': 703,
 	'UnsupportedPluginPackage': 704,
-	
+
 	'LicensingServerIsUnavailable': 710,
 	'LicensingExpired': 711,
 	'LicensingBanned': 712,
 
 	'DemoSendMessageError': 750,
-	
+
 	'AccountAlreadyExists': 801,
 
 	'MailServerError': 901,
@@ -2743,7 +2772,7 @@ ko.bindingHandlers.tooltip3 = {
 		$document.click(function () {
 			$oEl.tooltip('hide');
 		});
-		
+
 		Globals.tooltipTrigger.subscribe(function () {
 			$oEl.tooltip('hide');
 		});
@@ -8032,6 +8061,48 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 };
 
 /**
+ * @constructor
+ */
+function FilterConditionModel()
+{
+}
+
+/**
+ * @constructor
+ */
+function FilterModel()
+{
+	this.enabled = ko.observable(true);
+
+	this.conditions = ko.observableArray([]);
+
+	this.action = ko.observable(Enums.FiltersAction.None);
+}
+
+FilterModel.prototype.deleteCondition = function (oCondition)
+{
+	this.conditions.remove(oCondition);
+};
+
+FilterModel.prototype.addCondition = function ()
+{
+	this.conditions.push(new FilterConditionModel());
+};
+
+FilterModel.prototype.parse = function (oItem)
+{
+	var bResult = false;
+	if (oItem && 'Object/Filter' === oItem['@Object'])
+	{
+		this.name(Utils.pString(oItem['Name']));
+
+		bResult = true;
+	}
+
+	return bResult;
+};
+
+/**
  * @param {string} iIndex
  * @param {string} sGuID
  * @param {string} sID
@@ -12054,7 +12125,7 @@ function AbstractSystemDropDownViewModel()
 	KnoinAbstractViewModel.call(this, 'Right', 'SystemDropDown');
 
 	var oData = RL.data();
-	
+
 	this.accounts = oData.accounts;
 	this.accountEmail = oData.accountEmail;
 	this.accountsLoading = oData.accountsLoading;
@@ -12082,7 +12153,7 @@ AbstractSystemDropDownViewModel.prototype.accountClick = function (oAccount, oEv
 			self.accountsLoading(false);
 		}, 1000);
 	}
-	
+
 	return true;
 };
 
@@ -14566,6 +14637,36 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 
 	}, 50);
 };
+/**
+ * @constructor
+ */
+function SettingsFilters()
+{
+//	var oData = RL.data();
+
+	this.filters = ko.observableArray([]);
+	this.filters.loading = ko.observable(false);
+}
+
+Utils.addSettingsViewModel(SettingsFilters, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
+
+//SettingsFilters.prototype.onBuild = function ()
+//{
+//};
+
+SettingsFilters.prototype.deleteFilter = function (oFilter)
+{
+	this.filters.remove(oFilter);
+};
+
+SettingsFilters.prototype.addFilter = function ()
+{
+	var oFilter = new FilterModel();
+	oFilter.addCondition();
+	
+	this.filters.push(oFilter);
+};
+
 /**
  * @constructor
  */
@@ -19938,6 +20039,11 @@ RainLoopApp.prototype.bootstart = function ()
 	if (!RL.capa(Enums.Capa.Themes))
 	{
 		Utils.removeSettingsViewModel(SettingsThemes);
+	}
+
+	if (!RL.capa(Enums.Capa.Filters))
+	{
+		Utils.removeSettingsViewModel(SettingsFilters);
 	}
 
 	if (!bGoogle && !bFacebook && !bTwitter)

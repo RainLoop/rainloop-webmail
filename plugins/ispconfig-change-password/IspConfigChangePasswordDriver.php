@@ -1,6 +1,6 @@
 <?php
 
-class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
+class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
 	/**
 	 * @var string
@@ -16,7 +16,7 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	 * @var string
 	 */
 	private $sPassword = '';
-	
+
 	/**
 	 * @var string
 	 */
@@ -26,13 +26,13 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
-	
+
 	/**
 	 * @param string $sDsn
 	 * @param string $sUser
 	 * @param string $sPassword
 	 *
-	 * @return \IspManagerChangePasswordDriver
+	 * @return \IspConfigChangePasswordDriver
 	 */
 	public function SetConfig($sDsn, $sUser, $sPassword)
 	{
@@ -44,9 +44,9 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	}
 
 	/**
-	 * @param string $aDomains
+	 * @param string $sAllowedEmails
 	 *
-	 * @return \IspManagerChangePasswordDriver
+	 * @return \IspConfigChangePasswordDriver
 	 */
 	public function SetAllowedEmails($sAllowedEmails)
 	{
@@ -57,7 +57,7 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
-	 * @return \IspManagerChangePasswordDriver
+	 * @return \IspConfigChangePasswordDriver
 	 */
 	public function SetLogger($oLogger)
 	{
@@ -140,12 +140,12 @@ class IspManagerChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	{
 		$sSalt = '';
 		$sBase64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-		
+
 		for ($iIndex = 0; $iIndex < 8; $iIndex++)
 		{
 			$sSalt .= $sBase64[\rand(0, 63)];
 		}
-		
+
 		return \crypt($sPassword, '$1$'.$sSalt.'$');
 	}
 }

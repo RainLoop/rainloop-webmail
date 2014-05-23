@@ -1072,6 +1072,11 @@ RainLoopApp.prototype.bootstart = function ()
 		Utils.removeSettingsViewModel(SettingsThemes);
 	}
 
+	if (!RL.capa(Enums.Capa.Filters))
+	{
+		Utils.removeSettingsViewModel(SettingsFilters);
+	}
+
 	if (!bGoogle && !bFacebook && !bTwitter)
 	{
 		Utils.removeSettingsViewModel(SettingsSocialScreen);

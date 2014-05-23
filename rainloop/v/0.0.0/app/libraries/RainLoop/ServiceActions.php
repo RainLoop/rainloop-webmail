@@ -20,6 +20,11 @@ class ServiceActions
 	protected $aPaths;
 
 	/**
+	 * @var string
+	 */
+	protected $sQuery;
+
+	/**
 	 * @param \MailSo\Base\Http $oHttp
 	 * @param \RainLoop\Actions $oActions
 	 *
@@ -30,6 +35,7 @@ class ServiceActions
 		$this->oHttp = $oHttp;
 		$this->oActions = $oActions;
 		$this->aPaths = array();
+		$this->sQuery = '';
 	}
 
 	/**
@@ -449,16 +455,18 @@ class ServiceActions
 			$this->oActions->verifyCacheByKey($this->sQuery);
 		}
 
+		$bAdmin = false !== \strpos($this->sQuery, 'Admin');
+
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = 'TEMPLATES:'.$this->oActions->Plugins()->Hash().APP_VERSION;
+			$sCacheFileName = 'TEMPLATES:'.($bAdmin ? 'Admin/' : 'App/').$this->oActions->Plugins()->Hash().APP_VERSION;
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
 		if (0 === \strlen($sResult))
 		{
-			$sResult = $this->compileTemplates(false);
+			$sResult = $this->compileTemplates($bAdmin);
 			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 			{
 				$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -1021,20 +1029,16 @@ class ServiceActions
 
 	/**
 	 * @param bool $bAdmin = false
-	 * @param bool $bWrapByScriptTag = true
 	 *
 	 * @return string
 	 */
-	private function compileTemplates($bAdmin = false, $bWrapByScriptTag = false)
+	private function compileTemplates($bAdmin = false)
 	{
-		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views', $this->oActions).
+		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'App'), $this->oActions).
+			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 
-		return
-			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
-			'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';'.
-			($bWrapByScriptTag ? '</script>' : '')
-		;
+		return 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';';
 	}
 
 	/**

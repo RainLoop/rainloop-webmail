@@ -60,7 +60,7 @@ class HtmlUtils
 		{
 			$sHtmlAttrs = $aMatch[1];
 		}
-		
+
 		$aMatch = array();
 		if (preg_match('/<body([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
 		{
@@ -71,7 +71,7 @@ class HtmlUtils
 		$sHtml = \preg_replace('/<\/body>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<html([^>]*)>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<\/html>/im', '', $sHtml);
-		
+
 		return $sHtml;
 	}
 
@@ -83,8 +83,8 @@ class HtmlUtils
 	public static function ClearTags($sHtml)
 	{
 		$aRemoveTags = array(
-			'head', 'link', 'base', 'meta', 'title', 'style', 'script', 'bgsound',
-			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset'
+			'head', 'link', 'base', 'meta', 'title', 'style', 'script', 'bgsound', 'keygen', 'source',
+			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio'
 		);
 
 		$aToRemove = array(
@@ -116,6 +116,7 @@ class HtmlUtils
 			'/on(DblClick)/si',
 			'/on(Error)/si',
 			'/on(Focus)/si',
+			'/on(FormChange)/si',
 			'/on(KeyDown)/si',
 			'/on(KeyPress)/si',
 			'/on(KeyUp)/si',
@@ -418,7 +419,7 @@ class HtmlUtils
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
 				$sTagNameLower = \strtolower($oElement->tagName);
-				
+
 				// convert body attributes to styles
 				if ('body' === $sTagNameLower)
 				{
@@ -429,7 +430,7 @@ class HtmlUtils
 						'bottommargin' => '',
 						'rightmargin' => ''
 					);
-					
+
 					if (isset($oElement->attributes))
 					{
 						foreach ($oElement->attributes as $sAttributeName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
@@ -451,7 +452,7 @@ class HtmlUtils
 						if (\is_array($aItem))
 						{
 							$oElement->removeAttribute($aItem[0]);
-							
+
 							switch ($sIndex)
 							{
 								case 'text':
@@ -484,7 +485,7 @@ class HtmlUtils
 				{
 					$oElement->setAttribute('src', 'javascript:false');
 				}
-				
+
 				if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 				{
 					$oElement->setAttribute('target', '_blank');
@@ -500,12 +501,22 @@ class HtmlUtils
 //					$oElement->removeAttribute('style');
 //				}
 
-				@$oElement->removeAttribute('id');
-				@$oElement->removeAttribute('class');
-				@$oElement->removeAttribute('contenteditable');
-				@$oElement->removeAttribute('designmode');
-				@$oElement->removeAttribute('data-bind');
-				@$oElement->removeAttribute('xmlns');
+				foreach (array(
+					'id', 'class', 'contenteditable', 'designmode', 'formaction', 'data-bind', 'xmlns'
+				) as $sAttr)
+				{
+					@$oElement->removeAttribute($sAttr);
+				}
+
+				foreach (array(
+					'load', 'blur', 'error', 'focus', 'formchange', 'change',
+					'click', 'dblclick', 'keydown', 'keypress', 'keyup',
+					'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup',
+					'move', 'resize', 'resizeend', 'resizestart', 'scroll', 'select', 'submit', 'upload'
+				) as $sAttr)
+				{
+					@$oElement->removeAttribute('on'.$sAttr);
+				}
 
 				if ($oElement->hasAttribute('href'))
 				{
@@ -544,7 +555,7 @@ class HtmlUtils
 							{
 								$oElement->setAttribute('data-x-src', $sSrc);
 							}
-							
+
 							$bHasExternals = true;
 						}
 						else if ('data:image/' === \strtolower(\substr(\trim($sSrc), 0, 11)))
@@ -626,7 +637,7 @@ class HtmlUtils
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
 			$sTagNameLower = \strtolower($oElement->tagName);
-			
+
 			if ($oElement->hasAttribute('data-x-src-cid'))
 			{
 				$sCid = $oElement->getAttribute('data-x-src-cid');
@@ -640,7 +651,7 @@ class HtmlUtils
 					$oElement->setAttribute('src', 'cid:'.$sCid);
 				}
 			}
-			
+
 			if ($oElement->hasAttribute('data-x-src-location'))
 			{
 				$sSrc = $oElement->getAttribute('data-x-src-location');
@@ -838,10 +849,10 @@ class HtmlUtils
 
 		return $sText;
 	}
-	
+
 	/**
 	 * @param string $sText
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function ConvertHtmlToPlain($sText)
@@ -937,7 +948,7 @@ class HtmlUtils
 				'\'',
 				''
 			), $sText);
-		
+
 		$sText = str_ireplace('<div>',"\n<div>", $sText);
 		$sText = strip_tags($sText, '');
 		$sText = preg_replace("/\n\\s+\n/", "\n", $sText);

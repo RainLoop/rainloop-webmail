@@ -9,7 +9,7 @@ function AbstractSystemDropDownViewModel()
 	KnoinAbstractViewModel.call(this, 'Right', 'SystemDropDown');
 
 	var oData = RL.data();
-	
+
 	this.accounts = oData.accounts;
 	this.accountEmail = oData.accountEmail;
 	this.accountsLoading = oData.accountsLoading;
@@ -37,7 +37,7 @@ AbstractSystemDropDownViewModel.prototype.accountClick = function (oAccount, oEv
 			self.accountsLoading(false);
 		}, 1000);
 	}
-	
+
 	return true;
 };
 

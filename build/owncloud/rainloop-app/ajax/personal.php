@@ -23,6 +23,7 @@ if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email
 	$sPostLogin = isset($_POST['rainloop-login']) ? $_POST['rainloop-login'] : '';
 
 	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-email', $sPostEmail);
+	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-login', $sPostLogin);
 
 	$sPass = $_POST['rainloop-password'];
 	if ('******' !== $sPass && '' !== $sPass)

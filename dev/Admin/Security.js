@@ -5,7 +5,6 @@
  */
 function AdminSecurity()
 {
-	this.csrfProtection = ko.observable(!!RL.settingsGet('UseTokenProtection'));
 	this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
 	this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
 
@@ -28,13 +27,13 @@ function AdminSecurity()
 		this.adminPasswordUpdateSuccess(false);
 		this.adminPasswordNewError(false);
 	}, this);
-	
+
 	this.adminPasswordNew2.subscribe(function () {
 		this.adminPasswordUpdateError(false);
 		this.adminPasswordUpdateSuccess(false);
 		this.adminPasswordNewError(false);
 	}, this);
-	
+
 	this.saveNewAdminPasswordCommand = Utils.createCommand(this, function () {
 
 		if (this.adminPasswordNew() !== this.adminPasswordNew2())
@@ -78,12 +77,6 @@ AdminSecurity.prototype.onNewAdminPasswordResponse = function (sResult, oData)
 
 AdminSecurity.prototype.onBuild = function ()
 {
-	this.csrfProtection.subscribe(function (bValue) {
-		RL.remote().saveAdminConfig(Utils.emptyFunction, {
-			'TokenProtection': bValue ? '1' : '0'
-		});
-	});
-
 	this.capaOpenPGP.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'CapaOpenPGP': bValue ? '1' : '0'

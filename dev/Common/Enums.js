@@ -37,6 +37,7 @@ Enums.Capa = {
 	'Prefetch': 'PREFETCH',
 	'Gravatar': 'GRAVATAR',
 	'Themes': 'THEMES',
+	'Filters': 'FILTERS',
 	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 	'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 };
@@ -281,6 +282,34 @@ Enums.Layout = {
 /**
  * @enum {number}
  */
+Enums.FilterConditionField = {
+	'From': 0,
+	'To': 1,
+	'Subject': 2
+};
+
+/**
+ * @enum {number}
+ */
+Enums.FilterConditionType = {
+	'contains': 0,
+	'NotContains': 1,
+	'EqualTo': 2,
+	'NotEqualTo': 3
+};
+
+/**
+ * @enum {number}
+ */
+Enums.FiltersAction = {
+	'None': 0,
+	'Move': 1,
+	'Delete': 2
+};
+
+/**
+ * @enum {number}
+ */
 Enums.SignedVerifyStatus = {
 	'UnknownPublicKeys': -4,
 	'UnknownPrivateKey': -3,
@@ -345,7 +374,7 @@ Enums.Notification = {
 	'NewPasswordShort': 132,
 	'NewPasswordWeak': 133,
 	'NewPasswordForbidden': 134,
-	
+
 	'ContactsSyncError': 140,
 
 	'CantGetMessageList': 201,
@@ -374,13 +403,13 @@ Enums.Notification = {
 	'CantDeletePackage': 702,
 	'InvalidPluginPackage': 703,
 	'UnsupportedPluginPackage': 704,
-	
+
 	'LicensingServerIsUnavailable': 710,
 	'LicensingExpired': 711,
 	'LicensingBanned': 712,
 
 	'DemoSendMessageError': 750,
-	
+
 	'AccountAlreadyExists': 801,
 
 	'MailServerError': 901,

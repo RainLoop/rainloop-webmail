@@ -58,9 +58,9 @@
 			<param name="plugin-name" value="directadmin-change-password"/>
 		</antcall>
 	</target>
-	<target name="ispmanager-change-password">
+	<target name="ispconfig-change-password">
 		<antcall target="_build_plugin_">
-			<param name="plugin-name" value="ispmanager-change-password"/>
+			<param name="plugin-name" value="ispconfig-change-password"/>
 		</antcall>
 	</target>
 	<target name="poppassd-change-password">
@@ -94,5 +94,5 @@
 		</antcall>
 	</target>
 
-	
+
 </project>

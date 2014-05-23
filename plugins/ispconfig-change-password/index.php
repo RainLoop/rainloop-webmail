@@ -1,6 +1,6 @@
 <?php
 
-class IspmanagerChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
+class IspconfigChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	public function Init()
 	{
@@ -22,7 +22,7 @@ class IspmanagerChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			return 'The PHP exention PDO (mysql) must be installed to use this plugin';
 		}
-		
+
 		return '';
 	}
 
@@ -42,9 +42,9 @@ class IspmanagerChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 				if (!empty($sDsn) && 0 < \strlen($sUser) && 0 < \strlen($sPassword))
 				{
-					include_once __DIR__.'/IspManagerChangePasswordDriver.php';
+					include_once __DIR__.'/IspConfigChangePasswordDriver.php';
 
-					$oProvider = new IspManagerChangePasswordDriver();
+					$oProvider = new IspConfigChangePasswordDriver();
 					$oProvider->SetLogger($this->Manager()->Actions()->Logger());
 					$oProvider->SetConfig($sDsn, $sUser, $sPassword);
 					$oProvider->SetAllowedEmails(\strtolower(\trim($this->Config()->Get('plugin', 'allowed_emails', ''))));
@@ -60,7 +60,7 @@ class IspmanagerChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function configMapping()
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('pdo_dsn')->SetLabel('ISPmanager PDO dsn')
+			\RainLoop\Plugins\Property::NewInstance('pdo_dsn')->SetLabel('ISPConfig PDO dsn')
 				->SetDefaultValue('mysql:host=127.0.0.1;dbname=dbispconfig'),
 			\RainLoop\Plugins\Property::NewInstance('user')->SetLabel('DB User')
 				->SetDefaultValue('root'),

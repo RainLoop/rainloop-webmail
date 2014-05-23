@@ -1,0 +1,56 @@
+<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	background-color: #fff;
+	font-family: arial, sans-serif;
+}
+
+.tbl {width:100%;font-family:normal 11px Tahoma, Arial, Helvetica, "sans-serif"}
+.tt {padding:5px;border:solid #ddd;border-width:0px 0px 1px 0px}
+.tv {padding:5px;border:solid #ddd;border-width:0px 0px 1px 1px}
+.tb {padding:15px}
+a {color: blue; text-decoration: underline}
+a:visited {color: #609}
+a:active {color: red}
+blockquote {border-left: 2px solid black; margin: 0; padding: 0px 10px}
+pre {margin: 0px; padding: 0px; font-family: arial, sans-serif; background: #fff; border: none; white-space: normal}
+</style>
+
+<table cellpadding="0" cellspacing="0" class="tbl">
+	<tbody>
+		<tr>
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_FROM"></td>
+			<td class="tv" data-bind="text: popupFrom"></td>
+		</tr>
+		<tr>
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_TO"></td>
+			<td class="tv" data-bind="text: popupTo"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupCc">
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_CC"></td>
+			<td class="tv" data-bind="text: popupCc"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupBcc">
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_BCC"></td>
+			<td class="tv" data-bind="text: popupBcc"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupDate">
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_DATE"></td>
+			<td class="tv" data-bind="text: popupDate"></td>
+		</tr>
+		<tr>
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_SUBJECT"></td>
+			<td class="tv" data-bind="text: popupSubject"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupAttachments">
+			<td class="tt i18n" data-i18n-text="MESSAGE/PRINT_LABEL_ATTACHMENTS"></td>
+			<td class="tv" data-bind="text: popupAttachments"></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="tb">
+				<div data-bind="html: popupBody"></div>
+			</td>
+		</tr>
+	</tbody>
+</table>
