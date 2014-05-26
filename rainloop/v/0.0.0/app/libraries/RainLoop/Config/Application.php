@@ -73,7 +73,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'editor_default_type'	=> array('Html', 'Editor mode used by default (Html or Plain)'),
 
-				'attachment_size_limit'	=> array(5,
+				'attachment_size_limit'	=> array(25,
 					'File size limit (MB) for file upload on compose screen
 0 for unlimited.')
 			),
