@@ -49,14 +49,6 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @return bool
-	 */
-	protected function isTransactionSupported()
-	{
-		return \in_array($this->sDbType, array('mysql'));
-	}
-
-	/**
 	 * @return \PDO
 	 *
 	 * @throws \Exception
@@ -364,11 +356,6 @@ abstract class PdoAbstract
 		$oPdo = $this->getPDO();
 		if ($oPdo)
 		{
-			if ($this->isTransactionSupported())
-			{
-				$oPdo->beginTransaction();
-			}
-
 			$sQuery = 'DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?;';
 			$this->writeLog($sQuery);
 
@@ -383,18 +370,6 @@ abstract class PdoAbstract
 				if ($oStmt)
 				{
 					$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
-				}
-			}
-
-			if ($this->isTransactionSupported())
-			{
-				if ($bResult)
-				{
-					$oPdo->commit();
-				}
-				else
-				{
-					$oPdo->rollBack();
 				}
 			}
 		}
@@ -466,11 +441,6 @@ rl_email text NOT NULL DEFAULT \'\'
 			{
 				try
 				{
-					if ($this->isTransactionSupported())
-					{
-						$oPdo->beginTransaction();
-					}
-
 					foreach ($aQ as $sQuery)
 					{
 						if ($bResult)
@@ -487,27 +457,10 @@ rl_email text NOT NULL DEFAULT \'\'
 							}
 						}
 					}
-
-					if ($this->isTransactionSupported())
-					{
-						if ($bResult)
-						{
-							$oPdo->rollBack();
-						}
-						else
-						{
-							$oPdo->commit();
-						}
-					}
 				}
 				catch (\Exception $oException)
 				{
 					$this->writeLog($oException);
-					if ($this->isTransactionSupported())
-					{
-						$oPdo->rollBack();
-					}
-
 					throw $oException;
 				}
 			}
@@ -568,11 +521,6 @@ rl_email text NOT NULL DEFAULT \'\'
 				{
 					try
 					{
-						if ($this->isTransactionSupported())
-						{
-							$oPdo->beginTransaction();
-						}
-
 						foreach ($aQuery as $sQuery)
 						{
 							$this->writeLog($sQuery);
@@ -585,27 +533,10 @@ rl_email text NOT NULL DEFAULT \'\'
 								break;
 							}
 						}
-
-						if ($this->isTransactionSupported())
-						{
-							if ($bResult)
-							{
-								$oPdo->commit();
-							}
-							else
-							{
-								$oPdo->rollBack();
-							}
-						}
 					}
 					catch (\Exception $oException)
 					{
 						$this->writeLog($oException);
-						if ($this->isTransactionSupported())
-						{
-							$oPdo->rollBack();
-						}
-
 						throw $oException;
 					}
 

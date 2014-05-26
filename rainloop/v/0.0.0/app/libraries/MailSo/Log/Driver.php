@@ -204,7 +204,17 @@ abstract class Driver
 				\MailSo\Log\Enumerations\Type::ERROR
 			)))
 			{
-				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), '--- FlushCache: WriteOnErrorOnly', \MailSo\Log\Enumerations\Type::INFO, 'LOGS');
+				$sFlush = '--- FlushLogCache: WriteOnErrorOnly';
+				if (isset($this->aCache[0]) && empty($this->aCache[0]))
+				{
+					$this->aCache[0] = $sFlush;
+					array_unshift($this->aCache, '');
+				}
+				else
+				{
+					array_unshift($this->aCache, $sFlush);
+				}
+
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 
 				$this->bFlushCache = true;
@@ -213,8 +223,16 @@ abstract class Driver
 			}
 			else if (0 < $this->iWriteOnTimeoutOnly && \time() - APP_START_TIME > $this->iWriteOnTimeoutOnly)
 			{
-				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), '--- FlushCache: WriteOnTimeoutOnly['.
-					(\time() - APP_START_TIME).'/'.$this->iWriteOnTimeoutOnly.']', \MailSo\Log\Enumerations\Type::NOTE, 'LOGS');
+				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - APP_START_TIME).'sec]';
+				if (isset($this->aCache[0]) && empty($this->aCache[0]))
+				{
+					$this->aCache[0] = $sFlush;
+					array_unshift($this->aCache, '');
+				}
+				else
+				{
+					array_unshift($this->aCache, $sFlush);
+				}
 
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 				

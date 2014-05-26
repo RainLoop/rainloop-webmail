@@ -1681,6 +1681,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$oImapResponse = null;
 			$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
+			
 			while (true)
 			{
 				$oImapResponse = Response::NewInstance();
@@ -2258,8 +2259,16 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->writeLog('Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 				' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
 
-			\call_user_func($this->aFetchCallbacks[$sFetchKey],
-				$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+			try
+			{
+				\call_user_func($this->aFetchCallbacks[$sFetchKey],
+					$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+			}
+			catch (\Exception $oException)
+			{
+				$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
+				$this->writeLogException($oException);
+			}
 
 			$iNotReadLiteralLen = 0;
 			while (!\feof($rImapLiteralStream))

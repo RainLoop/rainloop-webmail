@@ -442,11 +442,6 @@ class PdoAddressBook
 
 		try
 		{
-			if ($this->isTransactionSupported())
-			{
-				$this->beginTransaction();
-			}
-
 			$aFreq = array();
 			if ($bUpdate)
 			{
@@ -582,17 +577,7 @@ class PdoAddressBook
 		}
 		catch (\Exception $oException)
 		{
-			if ($this->isTransactionSupported())
-			{
-				$this->rollBack();
-			}
-
 			throw $oException;
-		}
-
-		if ($this->isTransactionSupported())
-		{
-			$this->commit();
 		}
 
 		return 0 < $iIdContact;
@@ -619,11 +604,6 @@ class PdoAddressBook
 		$mResult = false;
 		try
 		{
-			if ($this->isTransactionSupported())
-			{
-				$this->beginTransaction();
-			}
-
 			$sSql = 'INSERT INTO rainloop_ab_tags '.
 				'(id_user, tag_name) VALUES (:id_user, :tag_name)';
 
@@ -642,17 +622,7 @@ class PdoAddressBook
 		}
 		catch (\Exception $oException)
 		{
-			if ($this->isTransactionSupported())
-			{
-				$this->rollBack();
-			}
-
 			throw $oException;
-		}
-
-		if ($this->isTransactionSupported())
-		{
-			$this->commit();
 		}
 
 		return $mResult;
