@@ -87,6 +87,15 @@ html.rl-no-preview-pane {
 		}
 	}
 
+	.line-loading {
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 102;
+		height: 0px;
+		top: 50px;
+	}
+
 	.mainDelimiter {
 		position: absolute;
 		left: 0;
@@ -528,6 +537,10 @@ html.ssm-state-desktop-large {
 			font-size: 13px;
 		}
 	}
+}
+
+html.cssanimations.rl-anim .messageList .line-loading {
+	height: 5px !important;
 }
 
 .draggablePlace {

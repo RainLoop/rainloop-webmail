@@ -7644,6 +7644,14 @@ html.rl-no-preview-pane .messageList.message-selected {
 .messageList .second-toolbar .checkboxCkeckAll {
   margin: 5px 0;
 }
+.messageList .line-loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 102;
+  height: 0px;
+  top: 50px;
+}
 .messageList .mainDelimiter {
   position: absolute;
   left: 0;
@@ -8021,6 +8029,9 @@ html.ssm-state-desktop-large .messageList .b-content .messageListItem {
 html.ssm-state-desktop-large .messageList .b-content .messageListItem .dateParent {
   font-size: 13px;
 }
+html.cssanimations.rl-anim .messageList .line-loading {
+  height: 5px !important;
+}
 .draggablePlace {
   z-index: 10002;
   color: #fff;
@@ -8382,7 +8393,7 @@ html.rl-no-preview-pane .messageView .b-content .buttonUnFull,
 html.rl-no-preview-pane .messageView .b-content .buttonFull {
   top: 70px;
 }
-html.cssanimations.rl-anim .line-loading {
+html.cssanimations.rl-anim .messageItem .line-loading {
   height: 5px !important;
 }
 html.rl-message-fullscreen #rl-left,

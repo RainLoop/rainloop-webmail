@@ -13165,6 +13165,12 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		}
 	});
 
+	// check mail
+	key('ctrl+r, command+r', [Enums.KeyState.FolderList, Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		self.reloadCommand();
+		return false;
+	});
+
 	// check all
 	key('ctrl+a, command+a', Enums.KeyState.MessageList, function () {
 		self.checkAll(!(self.checkAll() && !self.isIncompleteChecked()));

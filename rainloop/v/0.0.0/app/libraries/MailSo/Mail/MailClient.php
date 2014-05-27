@@ -692,13 +692,16 @@ class MailClient
 		$sUidNext = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT])
 			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] : '0';
 
-
-		if (0 === \strpos($sFolderName, '[Gmail]/'))
+		if ($this->IsGmail())
 		{
 			$oFolder = $this->oImapClient->FolderCurrentInformation();
-			if ($oFolder && null !== $oFolder->Exists)
+			if ($oFolder && null !== $oFolder->Exists && $oFolder->FolderName === $sFolderName)
 			{
-				$iCount = (int) $oFolder->Exists;
+				$iSubCount = (int) $oFolder->Exists;
+				if (0 < $iSubCount && $iSubCount < $iCount)
+				{
+					$iCount = $iSubCount;
+				}
 			}
 		}
 	}
@@ -802,9 +805,20 @@ class MailClient
 	public function FolderInformation($sFolderName, $sPrevUidNext = '', $aUids = array())
 	{
 		$aFlags = array();
-		if (\is_array($aUids) && 0 < \count($aUids))
+
+		$bSelect = false;
+		if ($this->IsGmail())
 		{
 			$this->oImapClient->FolderExamine($sFolderName);
+			$bSelect = true;
+		}
+
+		if (\is_array($aUids) && 0 < \count($aUids))
+		{
+			if (!$bSelect)
+			{
+				$this->oImapClient->FolderExamine($sFolderName);
+			}
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
@@ -869,11 +883,21 @@ class MailClient
 	 *
 	 * @return string
 	 */
+	public function IsGmail()
+	{
+		return 'ssl://imap.gmail.com' === \strtolower($this->oImapClient->GetConnectedHost());
+	}
+
+	/**
+	 * @param string $sSearch
+	 * @param bool $bDetectGmail = true
+	 *
+	 * @return string
+	 */
 	private function escapeSearchString($sSearch, $bDetectGmail = true)
 	{
-		return ($bDetectGmail && !\MailSo\Base\Utils::IsAscii($sSearch) &&
-			'ssl://imap.gmail.com' === \strtolower($this->oImapClient->GetConnectedHost()))
-				? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
+		return ($bDetectGmail && !\MailSo\Base\Utils::IsAscii($sSearch) && $this->IsGmail())
+			? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
 	}
 
 	/**
