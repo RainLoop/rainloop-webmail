@@ -248,6 +248,16 @@ LinkBuilder.prototype.emptyContactPic = function ()
 };
 
 /**
+ * @return {string}
+ */
+LinkBuilder.prototype.emptyFullContactPic = function ()
+{
+	return window.location.protocol + '//' + window.location.hostname +
+		('80' === '' + window.location.port || '' === '' + window.location.port ? '' : ':' + window.location.port) + window.location.pathname +
+		'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
+};
+
+/**
  * @param {string} sFileName
  * @return {string}
  */

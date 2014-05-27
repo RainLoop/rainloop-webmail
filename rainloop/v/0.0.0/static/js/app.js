@@ -3757,6 +3757,16 @@ LinkBuilder.prototype.emptyContactPic = function ()
 };
 
 /**
+ * @return {string}
+ */
+LinkBuilder.prototype.emptyFullContactPic = function ()
+{
+	return window.location.protocol + '//' + window.location.hostname +
+		('80' === '' + window.location.port || '' === '' + window.location.port ? '' : ':' + window.location.port) + window.location.pathname +
+		'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
+};
+
+/**
  * @param {string} sFileName
  * @return {string}
  */
@@ -17883,10 +17893,11 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 	}
 
-	
-	if (this.bCapaGravatar && '' === sUrl)
+	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=' +
+//			window.encodeURIComponent(RL.link().emptyFullContactPic()), sEmail);
 	}
 	else
 	{

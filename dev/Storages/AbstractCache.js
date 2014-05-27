@@ -56,10 +56,11 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 	}
 
-	
-	if (this.bCapaGravatar && '' === sUrl)
+	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
+//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=' +
+//			window.encodeURIComponent(RL.link().emptyFullContactPic()), sEmail);
 	}
 	else
 	{
