@@ -38,11 +38,11 @@ class FetchType
 	 */
 	private static function addHelper(&$aReturn, $mType)
 	{
-		if (is_string($mType))
+		if (\is_string($mType))
 		{
 			$aReturn[$mType] = '';
 		}
-		else if (is_array($mType) && 2 === count($mType) && is_string($mType[0]) &&
+		else if (\is_array($mType) && 2 === count($mType) && \is_string($mType[0]) &&
 			is_callable($mType[1]))
 		{
 			$aReturn[$mType[0]] = $mType[1];
@@ -58,13 +58,13 @@ class FetchType
 	public static function BuildBodyCustomHeaderRequest(array $aHeaders, $bPeek = true)
 	{
 		$sResult = '';
-		if (0 < count($aHeaders))
+		if (0 < \count($aHeaders))
 		{
-			$aHeaders = array_map('trim', $aHeaders);
-			$aHeaders = array_map('strtoupper', $aHeaders);
+			$aHeaders = \array_map('trim', $aHeaders);
+			$aHeaders = \array_map('strtoupper', $aHeaders);
 
 			$sResult = $bPeek ? self::BODY_PEEK : self::BODY;
-			$sResult .= '[HEADER.FIELDS ('.implode(' ', $aHeaders).')]';
+			$sResult .= '[HEADER.FIELDS ('.\implode(' ', $aHeaders).')]';
 		}
 
 		return $sResult;

@@ -1946,7 +1946,6 @@ class Actions
 
 		$bMainCache = false;
 		$bFilesCache = false;
-		$bPing = false;
 
 		$iOneDay1 = 60 * 60 * 23;
 		$iOneDay2 = 60 * 60 * 25;
@@ -1958,7 +1957,6 @@ class Actions
 
 		$iMainCacheTime = !empty($aTimers[0]) && \is_numeric($aTimers[0]) ? (int) $aTimers[0] : 0;
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
-		$iPingTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
 
 		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
 		{
@@ -1972,19 +1970,13 @@ class Actions
 			$iFilesCacheTime = \time();
 		}
 
-		if (0 === $iPingTime || $iPingTime + $iOneDay1 < \time())
-		{
-			$bPing = true;
-			$iPingTime = \time();
-		}
-
-		if ($bMainCache || $bFilesCache || $bPing)
+		if ($bMainCache || $bFilesCache)
 		{
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
-				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iPingTime))))
+				\implode(',', array($iMainCacheTime, $iFilesCacheTime))))
 			{
-				$bMainCache = $bFilesCache = $bPing = false;
+				$bMainCache = $bFilesCache = false;
 			}
 		}
 
@@ -2000,11 +1992,6 @@ class Actions
 			$this->Logger()->Write('Files GC: Begin');
 			$this->FilesProvider()->GC(48);
 			$this->Logger()->Write('Files GC: End');
-		}
-
-		if ($bPing)
-		{
-			$this->KeenIO('Ping');
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');

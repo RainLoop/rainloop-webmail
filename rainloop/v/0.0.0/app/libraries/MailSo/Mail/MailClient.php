@@ -152,28 +152,28 @@ class MailClient
 		return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
 
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
-
-		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
-			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
-			\MailSo\Mime\Enumerations\Header::RECEIVED,
-			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
-			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
-			\MailSo\Mime\Enumerations\Header::FROM_,
-			\MailSo\Mime\Enumerations\Header::TO_,
-			\MailSo\Mime\Enumerations\Header::CC,
-			\MailSo\Mime\Enumerations\Header::BCC,
-			\MailSo\Mime\Enumerations\Header::SENDER,
-			\MailSo\Mime\Enumerations\Header::REPLY_TO,
-			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
-			\MailSo\Mime\Enumerations\Header::DATE,
-			\MailSo\Mime\Enumerations\Header::SUBJECT,
-			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
-			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
-			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
-			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-			\MailSo\Mime\Enumerations\Header::REFERENCES,
-			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
-		), true);
+//
+//		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+//			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
+//			\MailSo\Mime\Enumerations\Header::RECEIVED,
+//			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
+//			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
+//			\MailSo\Mime\Enumerations\Header::FROM_,
+//			\MailSo\Mime\Enumerations\Header::TO_,
+//			\MailSo\Mime\Enumerations\Header::CC,
+//			\MailSo\Mime\Enumerations\Header::BCC,
+//			\MailSo\Mime\Enumerations\Header::SENDER,
+//			\MailSo\Mime\Enumerations\Header::REPLY_TO,
+//			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
+//			\MailSo\Mime\Enumerations\Header::DATE,
+//			\MailSo\Mime\Enumerations\Header::SUBJECT,
+//			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
+//			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
+//			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
+//			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+//			\MailSo\Mime\Enumerations\Header::REFERENCES,
+//			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
+//		), true);
 	}
 
 	/**

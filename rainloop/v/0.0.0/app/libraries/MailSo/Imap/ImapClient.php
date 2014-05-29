@@ -1697,7 +1697,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 					if ($bFindCapa)
 					{
-//						$this->oLogger->WriteDump($oImapResponse);
 						$this->initCapabilityImapResponse($oImapResponse);
 					}
 
@@ -2020,6 +2019,21 @@ class ImapClient extends \MailSo\Net\NetClient
 							if (false === $iClosingPos)
 							{
 								break;
+							}
+
+							// TODO
+							$iClosingPosNext = $iClosingPos + 1;
+							if (
+								isset($this->sResponseBuffer[$iClosingPosNext]) &&
+								' ' !== $this->sResponseBuffer[$iClosingPosNext] &&
+								"\r" !== $this->sResponseBuffer[$iClosingPosNext] &&
+								"\n" !== $this->sResponseBuffer[$iClosingPosNext] &&
+								']' !== $this->sResponseBuffer[$iClosingPosNext] &&
+								')' !== $this->sResponseBuffer[$iClosingPosNext]
+								)
+							{
+								$iClosingPos++;
+								continue;
 							}
 
 							$iSlashCount = 0;
