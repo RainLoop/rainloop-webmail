@@ -3933,10 +3933,12 @@ function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 	self.fOnBlur = fOnBlur || null;
 	self.fOnReady = fOnReady || null;
 	self.fOnModeChange = fOnModeChange || null;
-	
+
 	self.$element = $(oElement);
 
 	self.init();
+
+	self.resize = _.throttle(_.bind(self.resize, self), 100);
 }
 
 NewHtmlEditorWrapper.prototype.blurTrigger = function ()
@@ -4067,7 +4069,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 			sLanguage = RL.settingsGet('Language'),
 			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
 		;
-		
+
 		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
 		{
 			oConfig.toolbarGroups.__SourceInited = true;
@@ -4076,7 +4078,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
-		
+
 		self.editor.on('key', function(oEvent) {
 			if (oEvent && oEvent.data && 9 === oEvent.data.keyCode)
 			{
@@ -4135,7 +4137,11 @@ NewHtmlEditorWrapper.prototype.resize = function ()
 {
 	if (this.editor && this.__resizable)
 	{
-		this.editor.resize(this.$element.width(), this.$element.innerHeight());
+		try
+		{
+			this.editor.resize(this.$element.width(), this.$element.innerHeight());
+		}
+		catch (e) {}
 	}
 };
 
@@ -18639,13 +18645,13 @@ SettingsScreen.prototype.onShow = function ()
 function AbstractApp()
 {
 	KnoinAbstractBoot.call(this);
-	
+
 	this.oSettings = null;
 	this.oPlugins = null;
 	this.oLocal = null;
 	this.oLink = null;
 	this.oSubs = {};
-	
+
 	this.isLocalAutocomplete = true;
 
 	this.popupVisibilityNames = ko.observableArray([]);
@@ -18701,12 +18707,12 @@ AbstractApp.prototype.oSubs = {};
  */
 AbstractApp.prototype.download = function (sLink)
 {
-	var 
+	var
 		oLink = null,
 		oE = null,
 		sUserAgent = navigator.userAgent.toLowerCase()
 	;
-	
+
 	if (sUserAgent && (sUserAgent.indexOf('chrome') > -1 || sUserAgent.indexOf('chrome') > -1))
 	{
 		oLink = document.createElement('a');
@@ -18734,7 +18740,7 @@ AbstractApp.prototype.download = function (sLink)
 		this.iframe.attr('src', sLink);
 //		window.document.location.href = sLink;
 	}
-	
+
 	return true;
 };
 
@@ -18814,12 +18820,12 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 
 	bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 	bClose = Utils.isUnd(bClose) ? false : !!bClose;
-	
+
 	if (bLogout && bClose && window.close)
 	{
 		window.close();
 	}
-	
+
 	if (bLogout && '' !== sCustomLogoutLink && window.location.href !== sCustomLogoutLink)
 	{
 		_.delay(function () {
@@ -18963,7 +18969,7 @@ AbstractApp.prototype.bootstart = function ()
 			$html.removeClass('ssm-state-desktop');
 		}
 	});
-	
+
 	ssm.addState({
 		'id': 'desktop-large',
 		'minWidth': 1400,

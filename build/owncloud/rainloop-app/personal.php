@@ -14,26 +14,16 @@ OCP\App::checkAppEnabled('rainloop');
 
 OCP\Util::addScript('rainloop', 'personal');
 
-$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-$sSsoKey = trim(OCP\Config::getAppValue('rainloop', 'rainloop-sso-key', ''));
+$sUser = OCP\User::getUser();
 
-if ('' === $sUrl || '' === $sSsoKey)
-{
-	$oTemplate = new OCP\Template('rainloop', 'empty');
-}
-else
-{
-	$sUser = OCP\User::getUser();
+$oTemplate = new OCP\Template('rainloop', 'personal');
 
-	$oTemplate = new OCP\Template('rainloop', 'personal');
+$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
 
-	$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
+$oTemplate->assign('rainloop-email', $sEmail);
+$oTemplate->assign('rainloop-login', OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-login', ''));
 
-	$oTemplate->assign('rainloop-email', $sEmail);
-	$oTemplate->assign('rainloop-login', OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-login', ''));
-
-	$sPass = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
-	$oTemplate->assign('rainloop-password', 0 === strlen($sPass) && 0 === strlen($sEmail) ? '' : '******');
-}
+$sPass = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
+$oTemplate->assign('rainloop-password', 0 === strlen($sPass) && 0 === strlen($sEmail) ? '' : '******');
 
 return $oTemplate->fetchPage();

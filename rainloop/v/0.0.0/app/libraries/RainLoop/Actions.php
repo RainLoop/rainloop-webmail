@@ -986,6 +986,7 @@ class Actions
 		$aResult = array(
 			'Version' => APP_VERSION,
 			'IndexFile' => APP_INDEX_FILE,
+			'OwnCloud' => APP_OWNCLOUD,
 			'Auth' => false,
 			'AccountHash' => '',
 			'AccountSignMe' => false,
@@ -2921,23 +2922,29 @@ class Actions
 
 					if ($bResult && \file_exists($sTmpFolder.'/index.php') &&
 						\is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
-						\file_exists($sTmpFolder.'/data/VERSION') &&
+						\is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
 						\is_dir($sTmpFolder.'/rainloop/'))
 					{
-						$sNewVersion = \file_get_contents($sTmpFolder.'/data/VERSION');
-						if ($sNewVersion && !\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion))
+						$aMatch = array();
+						$sNewVersion = '';
+						$sIndexFile = \file_get_contents($sTmpFolder.'/index.php');
+						if (\preg_match('/\'APP_VERSION\', \'([^\']+)\'/', $sIndexFile, $aMatch) && !empty($aMatch[1]))
+						{
+							$sNewVersion = \trim($aMatch[1]);
+						}
+
+						if (empty($sNewVersion))
+						{
+							$this->Logger()->Write('Unknown version', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+						}
+						else if (!\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion))
 						{
 							\MailSo\Base\Utils::CopyDir($sTmpFolder.'/rainloop/', APP_INDEX_ROOT_PATH.'rainloop/');
 
 							if (\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion) &&
-								\copy($sTmpFolder.'/data/VERSION', APP_DATA_FOLDER_PATH.'VERSION'))
+								\is_file(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion.'/index.php'))
 							{
-								if (\md5_file($sTmpFolder.'/index.php') !== \md5_file(APP_INDEX_ROOT_PATH.'index.php'))
-								{
-									\copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
-								}
-
-								$bResult = true;
+								$bResult = \copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
 							}
 							else
 							{
@@ -2945,9 +2952,9 @@ class Actions
 								$this->Logger()->Write($sTmpFolder.'/rainloop/ -> '.APP_INDEX_ROOT_PATH.'rainloop/', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 							}
 						}
-						else
+						else if (!empty($sNewVersion))
 						{
-							$this->Logger()->Write($sNewVersion.' version already installed', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+							$this->Logger()->Write('"'.$sNewVersion.'" version already installed', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 						}
 					}
 					else if ($bResult)

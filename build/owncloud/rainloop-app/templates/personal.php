@@ -3,7 +3,7 @@
 	<input type="hidden" name="appname" value="rainloop">
 
 	<fieldset class="personalblock">
-		<h2><?php p($l->t('RainLoop Webmail')); ?></h2>
+		<h2><?php p($l->t('RainLoop Webmail (autologin)')); ?></h2>
 		<p>
 			<input type="text" id="rainloop-email" name="rainloop-email"
 				value="<?php echo $_['rainloop-email']; ?>" placeholder="<?php p($l->t('Email')); ?>" />

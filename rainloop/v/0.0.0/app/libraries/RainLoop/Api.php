@@ -60,6 +60,14 @@ class Api
 	}
 
 	/**
+	 * @return string
+	 */
+	public static function Version()
+	{
+		return APP_VERSION;
+	}
+
+	/**
 	 * @param string $sEmail
 	 * @param string $sPassword
 	 * @param string $sLogin = ''

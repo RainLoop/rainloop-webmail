@@ -7,13 +7,13 @@
 function AbstractApp()
 {
 	KnoinAbstractBoot.call(this);
-	
+
 	this.oSettings = null;
 	this.oPlugins = null;
 	this.oLocal = null;
 	this.oLink = null;
 	this.oSubs = {};
-	
+
 	this.isLocalAutocomplete = true;
 
 	this.popupVisibilityNames = ko.observableArray([]);
@@ -69,12 +69,12 @@ AbstractApp.prototype.oSubs = {};
  */
 AbstractApp.prototype.download = function (sLink)
 {
-	var 
+	var
 		oLink = null,
 		oE = null,
 		sUserAgent = navigator.userAgent.toLowerCase()
 	;
-	
+
 	if (sUserAgent && (sUserAgent.indexOf('chrome') > -1 || sUserAgent.indexOf('chrome') > -1))
 	{
 		oLink = document.createElement('a');
@@ -102,7 +102,7 @@ AbstractApp.prototype.download = function (sLink)
 		this.iframe.attr('src', sLink);
 //		window.document.location.href = sLink;
 	}
-	
+
 	return true;
 };
 
@@ -182,12 +182,12 @@ AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 
 	bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 	bClose = Utils.isUnd(bClose) ? false : !!bClose;
-	
+
 	if (bLogout && bClose && window.close)
 	{
 		window.close();
 	}
-	
+
 	if (bLogout && '' !== sCustomLogoutLink && window.location.href !== sCustomLogoutLink)
 	{
 		_.delay(function () {
@@ -331,7 +331,7 @@ AbstractApp.prototype.bootstart = function ()
 			$html.removeClass('ssm-state-desktop');
 		}
 	});
-	
+
 	ssm.addState({
 		'id': 'desktop-large',
 		'minWidth': 1400,

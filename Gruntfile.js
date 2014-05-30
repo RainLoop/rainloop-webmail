@@ -445,6 +445,7 @@ module.exports = function (grunt) {
 			devVersion = grunt.config('cfg.devVersion'),
 			versionFull = version + '.' + release,
 			dist = releasesPath + '/' + versionFull + '/src/',
+			indexContent = grunt.file.read('index.php'),
 			packageJsonContent = grunt.file.read('package.json')
 		;
 
@@ -455,10 +456,16 @@ module.exports = function (grunt) {
 		require('wrench').copyDirSyncRecursive('rainloop/v/' + devVersion,
 			dist + 'rainloop/v/' + versionFull, {'forceDelete': true});
 
-		grunt.file.copy('index.php', dist + 'index.php');
+		grunt.file.write(dist + 'data/EMPTY', versionFull);
 
-		grunt.file.write(dist + 'data/VERSION', versionFull);
-		grunt.file.write(dist + 'rainloop/v/' + versionFull + '/VERSION', versionFull);
+		grunt.file.write(dist + 'index.php',
+			indexContent.replace('\'APP_VERSION\', \'0.0.0\';', '\'APP_VERSION\'. \'' + versionFull + '\''));
+
+		grunt.file.copy(dist + 'index.php', dist + 'rainloop/v/' + versionFull + '/index.php.root');
+
+		grunt.file.write('package.json',
+			packageJsonContent.replace(/"release":\s?"[\d]+",/, '"release": "' + (1 + parseInt(release, 10)) + '",'));
+
 		grunt.file.delete(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
 
 		grunt.file.write('package.json',
@@ -477,8 +484,8 @@ module.exports = function (grunt) {
 			release = grunt.config('pkg.release'),
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
+			webmailPath = grunt.config('cfg.releaseSrcPath'),
 			versionFull = version + '.' + release,
-			versionOwn = grunt.config('pkg.ownCloudPackageVersion'),
 			dist = releasesPath + '/' + versionFull + '/owncloud/'
 		;
 
@@ -490,13 +497,21 @@ module.exports = function (grunt) {
 		content = grunt.file.read(dist + 'appinfo/info.xml');
 
 		grunt.file.write(dist + 'appinfo/info.xml',
-			content.replace('<version>0.0.0</version>', '<version>' + versionOwn + '</version>'));
+			content.replace('<version>0.0.0</version>', '<version>' + versionFull + '</version>'));
 
-		grunt.file.write(dist + 'VERSION', versionOwn);
+		grunt.file.write(dist + 'appinfo/version', versionFull);
+
+		require('wrench').copyDirSyncRecursive(webmailPath,
+			dist + 'app', {'forceDelete': true});
+
+		require('wrench').rmdirSyncRecursive(webmailPath);
+		require('wrench').rmdirSyncRecursive(dist + 'app/data');
+
+		grunt.file.write(dist + 'app/OWNCLOUD', versionFull);
 
 		grunt.config.set('cfg.releaseFolder', versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
-		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionOwn + '.zip');
+		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionFull + '.zip');
 	});
 
 	grunt.registerTask('rainloop-clean', 'RainLoop Webmail clean task', function () {
@@ -521,10 +536,10 @@ module.exports = function (grunt) {
 	grunt.registerTask('ifvisible', ['uglify:ifvisible']);
 	// ---
 
+	grunt.registerTask('fast', ['less', 'concat']);
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
 	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clean']);
-	grunt.registerTask('fast', ['less', 'concat']);
-	grunt.registerTask('owncloud', ['rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clean']);
+	grunt.registerTask('owncloud', ['default', 'rainloop', 'rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clean']);
 
 	// aliases
 	grunt.registerTask('u', ['uglify']);

@@ -14,10 +14,12 @@ function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 	self.fOnBlur = fOnBlur || null;
 	self.fOnReady = fOnReady || null;
 	self.fOnModeChange = fOnModeChange || null;
-	
+
 	self.$element = $(oElement);
 
 	self.init();
+
+	self.resize = _.throttle(_.bind(self.resize, self), 100);
 }
 
 NewHtmlEditorWrapper.prototype.blurTrigger = function ()
@@ -148,7 +150,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 			sLanguage = RL.settingsGet('Language'),
 			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
 		;
-		
+
 		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
 		{
 			oConfig.toolbarGroups.__SourceInited = true;
@@ -157,7 +159,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
-		
+
 		self.editor.on('key', function(oEvent) {
 			if (oEvent && oEvent.data && 9 === oEvent.data.keyCode)
 			{
@@ -216,7 +218,11 @@ NewHtmlEditorWrapper.prototype.resize = function ()
 {
 	if (this.editor && this.__resizable)
 	{
-		this.editor.resize(this.$element.width(), this.$element.innerHeight());
+		try
+		{
+			this.editor.resize(this.$element.width(), this.$element.innerHeight());
+		}
+		catch (e) {}
 	}
 };
 
