@@ -12265,7 +12265,10 @@ function MailBoxFolderListViewModel()
 	KnoinAbstractViewModel.call(this, 'Left', 'MailFolderList');
 
 	var oData = RL.data();
-	
+
+	this.oContentVisible = null;
+	this.oContentScrollable = null;
+
 	this.messageList = oData.messageList;
 	this.folderList = oData.folderList;
 	this.folderListSystem = oData.folderListSystem;
@@ -12284,6 +12287,9 @@ Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel
 
 MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 {
+	this.oContentVisible = $('.b-content', oDom);
+	this.oContentScrollable = $('.content', this.oContentVisible);
+
 	var self = this;
 
 	oDom
@@ -12319,7 +12325,7 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 				{
 					oData.message(null);
 				}
-				
+
 				if (oFolder.fullNameRaw === oData.currentFolderFullNameRaw())
 				{
 					RL.cache().setFolderHash(oFolder.fullNameRaw, '');
@@ -12356,8 +12362,9 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 			}
 
 			$items.eq(iIndex).addClass('focused');
+			self.scrollToFocused();
 		}
-		
+
 		return false;
 	});
 
@@ -12418,6 +12425,38 @@ MailBoxFolderListViewModel.prototype.messagesDropOver = function (oFolder)
 MailBoxFolderListViewModel.prototype.messagesDropOut = function ()
 {
 	window.clearTimeout(this.iDropOverTimer);
+};
+
+MailBoxFolderListViewModel.prototype.scrollToFocused = function ()
+{
+	if (!this.oContentVisible || !this.oContentScrollable)
+	{
+		return false;
+	}
+
+	var
+		iOffset = 20,
+		oFocused = $('.e-item .e-link.focused', this.oContentScrollable),
+		oPos = oFocused.position(),
+		iVisibleHeight = this.oContentVisible.height(),
+		iFocusedHeight = oFocused.outerHeight()
+	;
+
+	if (oPos && (oPos.top < 0 || oPos.top + iFocusedHeight > iVisibleHeight))
+	{
+		if (oPos.top < 0)
+		{
+			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iOffset);
+		}
+		else
+		{
+			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iVisibleHeight + iFocusedHeight + iOffset);
+		}
+
+		return true;
+	}
+
+	return false;
 };
 
 /**
@@ -12489,7 +12528,7 @@ function MailBoxMessageListViewModel()
 	this.messageListSearch = oData.messageListSearch;
 	this.messageListError = oData.messageListError;
 	this.folderMenuForMove = oData.folderMenuForMove;
-	
+
 	this.useCheckboxesInList = oData.useCheckboxesInList;
 
 	this.mainMessageListSearch = oData.mainMessageListSearch;
@@ -12611,7 +12650,7 @@ function MailBoxMessageListViewModel()
 	this.multyForwardCommand = Utils.createCommand(this, function () {
 		kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.ForwardAsAttachment, RL.data().messageListCheckedOrSelected()]);
 	}, this.canBeMoved);
-	
+
 	this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 		RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 			RL.data().currentFolderFullNameRaw(),
@@ -12619,7 +12658,7 @@ function MailBoxMessageListViewModel()
 	}, this.canBeMoved);
 
 	this.deleteCommand = Utils.createCommand(this, function () {
-		RL.deleteMessagesFromFolder(Enums.FolderType.Trash, 
+		RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
 			RL.data().currentFolderFullNameRaw(),
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
@@ -12629,7 +12668,7 @@ function MailBoxMessageListViewModel()
 			RL.data().currentFolderFullNameRaw(),
 			RL.data().messageListCheckedOrSelectedUidsWithSubMails(), true);
 	}, this.canBeMoved);
-	
+
 	this.spamCommand = Utils.createCommand(this, function () {
 		RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
 			RL.data().currentFolderFullNameRaw(),
@@ -12650,9 +12689,9 @@ function MailBoxMessageListViewModel()
 			RL.reloadMessageList(false, true);
 		}
 	});
-	
+
 	this.quotaTooltip = _.bind(this.quotaTooltip, this);
-	
+
 	this.selector = new Selector(this.messageList, this.currentMessage,
 		'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 			'.messageListItem.focused');
@@ -12763,7 +12802,7 @@ MailBoxMessageListViewModel.prototype.dragAndDronHelper = function (oMessageList
 
 	_.defer(function () {
 		var aUids = RL.data().messageListCheckedOrSelectedUidsWithSubMails();
-		
+
 		oEl.data('rl-uids', aUids);
 		oEl.find('.text').text('' + aUids.length);
 	});
@@ -12782,7 +12821,7 @@ MailBoxMessageListViewModel.prototype.onMessageResponse = function (sResult, oDa
 
 	oRainLoopData.hideMessageBodies();
 	oRainLoopData.messageLoading(false);
-	
+
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
 		oRainLoopData.setMessage(oData, bCached);
@@ -13060,7 +13099,7 @@ MailBoxMessageListViewModel.prototype.seenMessagesFast = function (bSeen)
 
 MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 {
-	var 
+	var
 		self = this,
 		oData = RL.data()
 	;
@@ -13149,20 +13188,14 @@ MailBoxMessageListViewModel.prototype.initShortcuts = function ()
 		return false;
 	});
 
-	// TODO // more toggle
-//	key('', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-//		self.moreDropdownTrigger(true);
-//		return false;
-//	});
-
 	// archive (zip)
 	key('z', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 		self.archiveCommand();
 		return false;
 	});
-	
+
 	// delete
-	key('delete, shift+delete', Enums.KeyState.MessageList, function (event, handler) {
+	key('delete, shift+delete, shift+3', Enums.KeyState.MessageList, function (event, handler) {
 		if (event)
 		{
 			if (0 < RL.data().messageListCheckedOrSelected().length)
@@ -13272,7 +13305,7 @@ MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
 {
 	if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisibility())
 	{
-		var 
+		var
 			self = this,
 			oCache = RL.cache(),
 			oMessage = _.find(this.messageList(), function (oMessage) {
@@ -13280,17 +13313,17 @@ MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
 					!oCache.hasRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
 			})
 		;
-		
+
 		if (oMessage)
 		{
 			this.bPrefetch = true;
 
 			RL.cache().addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
-			
+
 			RL.remote().message(function (sResult, oData) {
-				
+
 				var bNext = !!(Enums.StorageResultType.Success === sResult && oData && oData.Result);
-				
+
 				_.delay(function () {
 					self.bPrefetch = false;
 					if (bNext)
@@ -13298,7 +13331,7 @@ MailBoxMessageListViewModel.prototype.prefetchNextTick = function ()
 						self.prefetchNextTick();
 					}
 				}, 1000);
-				
+
 			}, oMessage.folderFullNameRaw, oMessage.uid);
 		}
 	}

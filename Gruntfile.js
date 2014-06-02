@@ -440,13 +440,11 @@ module.exports = function (grunt) {
 
 		var
 			version = grunt.config('pkg.version'),
-			release = grunt.config('pkg.release'),
+			release = parseInt(grunt.config('pkg.release'), 10),
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
 			versionFull = version + '.' + release,
-			dist = releasesPath + '/' + versionFull + '/src/',
-			indexContent = grunt.file.read('index.php'),
-			packageJsonContent = grunt.file.read('package.json')
+			dist = releasesPath + '/' + versionFull + '/src/'
 		;
 
 		grunt.file.mkdir(dist);
@@ -459,17 +457,11 @@ module.exports = function (grunt) {
 		grunt.file.write(dist + 'data/EMPTY', versionFull);
 
 		grunt.file.write(dist + 'index.php',
-			indexContent.replace('\'APP_VERSION\', \'0.0.0\';', '\'APP_VERSION\'. \'' + versionFull + '\''));
+			grunt.file.read('index.php').replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\''));
 
 		grunt.file.copy(dist + 'index.php', dist + 'rainloop/v/' + versionFull + '/index.php.root');
 
-		grunt.file.write('package.json',
-			packageJsonContent.replace(/"release":\s?"[\d]+",/, '"release": "' + (1 + parseInt(release, 10)) + '",'));
-
 		grunt.file.delete(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
-
-		grunt.file.write('package.json',
-			packageJsonContent.replace(/"release":\s?"[\d]+",/, '"release": "' + (1 + parseInt(release, 10)) + '",'));
 
 		grunt.config.set('cfg.releaseFolder', versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
@@ -481,7 +473,7 @@ module.exports = function (grunt) {
 		var
 			content = '',
 			version = grunt.config('pkg.version'),
-			release = grunt.config('pkg.release'),
+			release = parseInt(grunt.config('pkg.release'), 10),
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
 			webmailPath = grunt.config('cfg.releaseSrcPath'),
@@ -514,6 +506,13 @@ module.exports = function (grunt) {
 		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionFull + '.zip');
 	});
 
+	grunt.registerTask('release-inc', 'release inc', function () {
+
+		grunt.file.write('package.json',
+			grunt.file.read('package.json').replace(/"release":\s?"[\d]+",/, '"release": "' +
+				(1 + parseInt(grunt.config('pkg.release'), 10)) + '",'));
+	});
+
 	grunt.registerTask('rainloop-clean', 'RainLoop Webmail clean task', function () {
 		var releaseSrcPath = grunt.config('cfg.releaseSrcPath');
 		if ('' !== releaseSrcPath)
@@ -538,7 +537,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('fast', ['less', 'concat']);
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
-	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'rainloop-clean']);
+	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'release-inc', 'rainloop-clean']);
 	grunt.registerTask('owncloud', ['default', 'rainloop', 'rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clean']);
 
 	// aliases

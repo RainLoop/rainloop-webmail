@@ -7414,8 +7414,10 @@ html.rl-ctrl-key-pressed .hidden-on-ctrl {
   color: #fff;
 }
 .b-folders .b-content .e-item .e-link.selectable.focused {
-  background-color: #888;
   color: #fff;
+}
+.b-folders .b-content .e-item .e-link.focused {
+  background-color: #888;
 }
 .b-folders .b-content .e-item .e-link.system {
   cursor: default;

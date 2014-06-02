@@ -9,7 +9,10 @@ function MailBoxFolderListViewModel()
 	KnoinAbstractViewModel.call(this, 'Left', 'MailFolderList');
 
 	var oData = RL.data();
-	
+
+	this.oContentVisible = null;
+	this.oContentScrollable = null;
+
 	this.messageList = oData.messageList;
 	this.folderList = oData.folderList;
 	this.folderListSystem = oData.folderListSystem;
@@ -28,6 +31,9 @@ Utils.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel
 
 MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 {
+	this.oContentVisible = $('.b-content', oDom);
+	this.oContentScrollable = $('.content', this.oContentVisible);
+
 	var self = this;
 
 	oDom
@@ -63,7 +69,7 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 				{
 					oData.message(null);
 				}
-				
+
 				if (oFolder.fullNameRaw === oData.currentFolderFullNameRaw())
 				{
 					RL.cache().setFolderHash(oFolder.fullNameRaw, '');
@@ -100,8 +106,9 @@ MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 			}
 
 			$items.eq(iIndex).addClass('focused');
+			self.scrollToFocused();
 		}
-		
+
 		return false;
 	});
 
@@ -162,6 +169,38 @@ MailBoxFolderListViewModel.prototype.messagesDropOver = function (oFolder)
 MailBoxFolderListViewModel.prototype.messagesDropOut = function ()
 {
 	window.clearTimeout(this.iDropOverTimer);
+};
+
+MailBoxFolderListViewModel.prototype.scrollToFocused = function ()
+{
+	if (!this.oContentVisible || !this.oContentScrollable)
+	{
+		return false;
+	}
+
+	var
+		iOffset = 20,
+		oFocused = $('.e-item .e-link.focused', this.oContentScrollable),
+		oPos = oFocused.position(),
+		iVisibleHeight = this.oContentVisible.height(),
+		iFocusedHeight = oFocused.outerHeight()
+	;
+
+	if (oPos && (oPos.top < 0 || oPos.top + iFocusedHeight > iVisibleHeight))
+	{
+		if (oPos.top < 0)
+		{
+			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iOffset);
+		}
+		else
+		{
+			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iVisibleHeight + iFocusedHeight + iOffset);
+		}
+
+		return true;
+	}
+
+	return false;
 };
 
 /**
