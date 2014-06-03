@@ -379,17 +379,6 @@ module.exports = function (grunt) {
 					cwd: '<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/src/',
 					src: ['**/*']
 				}]
-			},
-			own: {
-				options: {
-					archive: '<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/<%= cfg.releaseZipFile %>',
-					mode: 'zip'
-				},
-				files: [{
-					expand: true,
-					cwd: '<%= cfg.releasesPath %>/<%= cfg.releaseFolder %>/owncloud/',
-					src: ['**/*']
-				}]
 			}
 		},
 
@@ -444,7 +433,7 @@ module.exports = function (grunt) {
 			releasesPath = grunt.config('cfg.releasesPath'),
 			devVersion = grunt.config('cfg.devVersion'),
 			versionFull = version + '.' + release,
-			dist = releasesPath + '/' + versionFull + '/src/'
+			dist = releasesPath + '/webmail/' + versionFull + '/src/'
 		;
 
 		grunt.file.mkdir(dist);
@@ -463,7 +452,7 @@ module.exports = function (grunt) {
 
 		grunt.file.delete(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
 
-		grunt.config.set('cfg.releaseFolder', versionFull);
+		grunt.config.set('cfg.releaseFolder', 'webmail/' + versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
 		grunt.config.set('cfg.releaseZipFile', 'rainloop-' + versionFull + '.zip');
 	});
@@ -472,36 +461,26 @@ module.exports = function (grunt) {
 
 		var
 			content = '',
-			version = grunt.config('pkg.version'),
-			release = parseInt(grunt.config('pkg.release'), 10),
+			version = grunt.config('pkg.ownCloudPackageVersion'),
 			releasesPath = grunt.config('cfg.releasesPath'),
-			devVersion = grunt.config('cfg.devVersion'),
-			webmailPath = grunt.config('cfg.releaseSrcPath'),
-			versionFull = version + '.' + release,
-			dist = releasesPath + '/' + versionFull + '/owncloud/'
+			versionFull = version,
+			dist = releasesPath + '/owncloud/' + versionFull + '/src/'
 		;
 
 		grunt.file.mkdir(dist);
+		grunt.file.mkdir(dist + 'rainloop');
 
 		require('wrench').copyDirSyncRecursive('build/owncloud/rainloop-app',
-			dist, {'forceDelete': true});
+			dist + 'rainloop', {'forceDelete': true});
 
-		content = grunt.file.read(dist + 'appinfo/info.xml');
+		content = grunt.file.read(dist + 'rainloop/appinfo/info.xml');
 
-		grunt.file.write(dist + 'appinfo/info.xml',
+		grunt.file.write(dist + 'rainloop/appinfo/info.xml',
 			content.replace('<version>0.0.0</version>', '<version>' + versionFull + '</version>'));
 
-		grunt.file.write(dist + 'appinfo/version', versionFull);
+		grunt.file.write(dist + 'rainloop/appinfo/version', versionFull);
 
-		require('wrench').copyDirSyncRecursive(webmailPath,
-			dist + 'app', {'forceDelete': true});
-
-		require('wrench').rmdirSyncRecursive(webmailPath);
-		require('wrench').rmdirSyncRecursive(dist + 'app/data');
-
-		grunt.file.write(dist + 'app/OWNCLOUD', versionFull);
-
-		grunt.config.set('cfg.releaseFolder', versionFull);
+		grunt.config.set('cfg.releaseFolder', 'owncloud/' + versionFull);
 		grunt.config.set('cfg.releaseSrcPath', dist);
 		grunt.config.set('cfg.releaseZipFile', 'rainloop-owncloud-app-' + versionFull + '.zip');
 	});
@@ -538,7 +517,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('fast', ['less', 'concat']);
 	grunt.registerTask('default', ['less', 'concat', 'cssmin', 'jshint', 'rlmin']);
 	grunt.registerTask('build', ['default', 'rainloop', 'compress:build', 'md5:build', 'release-inc', 'rainloop-clean']);
-	grunt.registerTask('owncloud', ['default', 'rainloop', 'rainloop-owncloud', 'compress:own', 'md5:build', 'rainloop-clean']);
+	grunt.registerTask('owncloud', ['rainloop-owncloud', 'compress:build', 'md5:build', 'rainloop-clean']);
 
 	// aliases
 	grunt.registerTask('u', ['uglify']);

@@ -1970,7 +1970,7 @@ class Utils
 		static $oIdn = null;
 		if (null === $oIdn)
 		{
-			include_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/NET/IDNA2.php';
+			include_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2.php';
 			$oIdn = new \Net_IDNA2();
 		}
 
@@ -1978,37 +1978,44 @@ class Utils
 	}
 
 	/**
-	 * @param string $sDomain
+	 * @param string $sStr
 	 * @param bool $bLowerIfAscii = false
 	 *
 	 * @return string
 	 */
-	public static function IdnToUtf8($sDomain, $bLowerIfAscii = false)
+	public static function IdnToUtf8($sStr, $bLowerIfAscii = false)
 	{
-		if ($sDomain && \preg_match('/(^|\.)xn--/i', $sDomain))
+		if (0 < \strlen($sStr) && \preg_match('/(^|\.)xn--/i', $sStr))
 		{
 			try
 			{
-				$sDomain = self::idn()->decode($sDomain);
+				$sStr = self::idn()->decode($sStr);
 			}
 			catch (\Exception $oException) {}
 		}
 
-		$sDomain = $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sDomain) : $sDomain;
-		return $sDomain;
+		return $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
 	}
 	
 	/**
-	 * @param string $sDomain
+	 * @param string $sStr
 	 * @param bool $bLowerIfAscii = false
 	 *
 	 * @return string
 	 */
-	public static function IdnToAscii($sDomain, $bLowerIfAscii = false)
+	public static function IdnToAscii($sStr, $bLowerIfAscii = false)
 	{
-		$sDomain = $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sDomain) : $sDomain;
+		$sStr = $bLowerIfAscii ?  \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
+
+		$sUser = '';
+		$sDomain = $sStr;
+		if (false !== \strpos($sStr, '@'))
+		{
+			$sUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sStr);
+			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sStr);
+		}
 		
-		if ($sDomain && \preg_match('/[^\x20-\x7E]/', $sDomain))
+		if (0 < \strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain))
 		{
 			try
 			{
@@ -2017,6 +2024,6 @@ class Utils
 			catch (\Exception $oException) {}
 		}
 		
-		return $sDomain;
+		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
 	}
 }

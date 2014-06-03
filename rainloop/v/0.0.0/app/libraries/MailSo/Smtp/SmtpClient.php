@@ -292,7 +292,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sFrom
-	 * @param string $sSize = ''
+	 * @param string $sSizeIfSupported = ''
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *

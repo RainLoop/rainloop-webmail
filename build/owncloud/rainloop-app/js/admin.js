@@ -9,5 +9,5 @@
  */
 
 $(function() {
-	RainLoopFormHelper('#mail-rainloop-personal-form', 'personal.php');
+	RainLoopFormHelper('#mail-rainloop-admin-form', 'admin.php');
 });

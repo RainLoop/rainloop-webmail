@@ -1,0 +1,19 @@
+************************************************************************
+*
+* ownCloud - RainLoop mail plugin
+*
+* @author RainLoop Team
+* @copyright 2014 RainLoop Team
+*
+* https://github.com/RainLoop/rainloop-webmail/
+*
+************************************************************************
+
+INSTALL:
+- Unpack the RainLoop Webmail application package in the apps directory of your OwnCloud instance
+
+CONFIGURATION:
+
+	1) In the Apps > Enable 'RainLoop' plugin
+	2) In the Settings > Personal > Type your mail server email(login) and password (for autologin)
+	3) Enjoy!

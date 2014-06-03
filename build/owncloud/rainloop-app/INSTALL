@@ -1,19 +1,36 @@
 ************************************************************************
 *
-* ownCloud - RainLoop mail plugin
+* ownCloud - RainLoop Webmail mail plugin
 *
 * @author RainLoop Team
 * @copyright 2014 RainLoop Team
 *
-* https://github.com/RainLoop/rainloop-webmail/
+* https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud
 *
 ************************************************************************
+
+REQUIREMENTS:
+- Installed and configured RainLoop Webmail
+- ownCloud version 6 or higher
+- Both apps (RainLoop & ownCloud) running on the same domain
+
 
 INSTALL:
 - Unpack the RainLoop Webmail application package in the apps directory of your OwnCloud instance
 
+
 CONFIGURATION:
 
+- RainLoop:
+	1) Open ../_default_/configs/application.ini
+	2) Find:
+
+[labs]
+allow_external_sso = On
+external_sso_key = "super-secret-key"
+
+- ownCloud:
 	1) In the Apps > Enable 'RainLoop' plugin
-	2) In the Settings > Personal > Type your mail server email(login) and password (for autologin)
-	3) Enjoy!
+	2) In the Settings > Admin > Enter "RainLoop Webmail URL" and "SSO key"
+	3) In the Settings > Personal > Type your mail server email (login) and password
+

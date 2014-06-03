@@ -986,7 +986,6 @@ class Actions
 		$aResult = array(
 			'Version' => APP_VERSION,
 			'IndexFile' => APP_INDEX_FILE,
-			'OwnCloud' => APP_OWNCLOUD,
 			'Auth' => false,
 			'AccountHash' => '',
 			'AccountSignMe' => false,

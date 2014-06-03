@@ -15,18 +15,11 @@
 			define('APP_INDEX_FILE', 'index.php');
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
-			define('APP_OWNCLOUD', @file_exists(APP_INDEX_ROOT_PATH.'OWNCLOUD'));
-
 			$sCustomDataPath = '';
 			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
 			{
 				include_once APP_INDEX_ROOT_PATH.'include.php';
 				$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : '';
-			}
-
-			if (APP_OWNCLOUD && 0 === strlen($sCustomDataPath))
-			{
-				$sCustomDataPath = APP_INDEX_ROOT_PATH.'../../../data/_rainloop-webmail-data_/';
 			}
 
 			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
