@@ -443,6 +443,7 @@ module.exports = function (grunt) {
 		require('wrench').copyDirSyncRecursive('rainloop/v/' + devVersion,
 			dist + 'rainloop/v/' + versionFull, {'forceDelete': true});
 
+		grunt.file.write(dist + 'data/VERSION', versionFull);
 		grunt.file.write(dist + 'data/EMPTY', versionFull);
 
 		grunt.file.write(dist + 'index.php',
