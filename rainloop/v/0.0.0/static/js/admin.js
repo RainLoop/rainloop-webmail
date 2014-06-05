@@ -6947,8 +6947,12 @@ AdminLicensing.prototype.showActivationForm = function ()
  */
 AdminLicensing.prototype.licenseExpiredMomentValue = function ()
 {
-	var oDate = moment.unix(this.licenseExpired());
-	return oDate.format('LL') + ' (' + oDate.from(moment()) + ')';
+	var
+		iTime = this.licenseExpired(),
+		oDate = moment.unix(iTime)
+	;
+
+	return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
 };
 /**
  * @constructor

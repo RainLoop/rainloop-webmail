@@ -796,7 +796,8 @@ class Actions
 					$oHttp->GetMethod().': '.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
 					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 
-				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').'][IP:'.$oHttp->GetClientIp().']');
+				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').'][IP:'.
+					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']');
 			}
 		}
 
