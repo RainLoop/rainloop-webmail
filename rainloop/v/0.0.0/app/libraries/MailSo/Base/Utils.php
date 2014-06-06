@@ -952,63 +952,66 @@ class Utils
 	}
 
 	/**
+	 * @param array $aInput
+	 */
+	public static function ClearArrayUtf8Values(&$aInput)
+	{
+		if (\is_array($aInput))
+		{
+			foreach ($aInput as $mKey => $mItem)
+			{
+				if (\is_string($mItem))
+				{
+					$aInput[$mKey] = \MailSo\Base\Utils::Utf8Clear($mItem);
+				}
+				else if (\is_array($mItem))
+				{
+					\MailSo\Base\Utils::ClearArrayUtf8Values($mItem);
+					$aInput[$mKey] = $mItem;
+				}
+			}
+		}
+	}
+
+	/**
 	 * @param mixed $mInput
+	 * @param \MailSo\Log\Logger|null $oLogger = null
 	 *
 	 * @return string
 	 */
-	public static function Php2js($mInput)
+	public static function Php2js($mInput, $oLogger = null)
 	{
-		return \json_encode($mInput, \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0);
+		static $iOpt = null;
+		if (null === $iOpt)
+		{
+			$iOpt = \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0;
+		}
 
-//		if (\is_null($mInput))
-//		{
-//			return 'null';
-//		}
-//		else if ($mInput === false)
-//		{
-//			return 'false';
-//		}
-//		else if ($mInput === true)
-//		{
-//			return 'true';
-//		}
-//		else if (\is_scalar($mInput))
-//		{
-//			if (\is_float($mInput))
-//			{
-//				$mInput = \str_replace(',', '.', \strval($mInput));
-//			}
-//
-//			return '"'.\MailSo\Base\Utils::InlineRebuildStringToJsString($mInput).'"';
-//		}
-//
-//		$bIsList = true;
-//		for ($iIndex = 0, \reset($mInput), $iLen = \count($mInput); $iIndex < $iLen; $iIndex++, \next($mInput))
-//		{
-//			if (\key($mInput) !== $iIndex)
-//			{
-//				$bIsList = false;
-//				break;
-//			}
-//		}
-//
-//		$aResult = array();
-//		if ($bIsList)
-//		{
-//			foreach ($mInput as $mValue)
-//			{
-//				$aResult[] = \MailSo\Base\Utils::Php2js($mValue);
-//			}
-//			return '['.\join(',', $aResult).']';
-//		}
-//		else
-//		{
-//			foreach ($mInput as $sKey => $mValue)
-//			{
-//				$aResult[] = \MailSo\Base\Utils::Php2js($sKey).':'.\MailSo\Base\Utils::Php2js($mValue);
-//			}
-//			return '{'.\join(',', $aResult).'}';
-//		}
+		$sResult = @\json_encode($mInput, $iOpt);
+		if (!\is_string($sResult) || '' === $sResult)
+		{
+			if ($oLogger instanceof \MailSo\Log\Logger)
+			{
+				$oLogger->Write('json_encode: '.\trim(
+						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
+						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error_msg') ? ' [Error Message: '.\json_last_error_msg().']' : '')
+					), \MailSo\Log\Enumerations\Type::WARNING, 'JSON'
+				);
+			}
+
+			if (\is_array($mInput))
+			{
+				if ($oLogger instanceof \MailSo\Log\Logger)
+				{
+					$oLogger->Write('Try to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
+				}
+
+				\MailSo\Base\Utils::ClearArrayUtf8Values($mInput);
+				$sResult = @\json_encode($mInput, $iOpt);
+			}
+		}
+
+		return $sResult;
 	}
 
 	/**

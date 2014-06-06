@@ -792,12 +792,13 @@ class Actions
 				$this->oLogger->WriteEmptyLine();
 
 				$oHttp = $this->Http();
-				$this->oLogger->Write(
-					$oHttp->GetMethod().': '.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
-					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
+				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
+					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').
+					'][GUID:'.\MailSo\Log\Logger::Guid().']');
 
-				$this->oLogger->Write('[PHP:'.PHP_VERSION.'][RL:'.APP_VERSION.'][DATE:'.\gmdate('d.m.y').'][IP:'.
-					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']');
+				$this->oLogger->Write(
+					' ['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
+					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 			}
 		}
 
@@ -7287,7 +7288,7 @@ class Actions
 			}
 			else
 			{
-				$mResult = '['.\get_class($mResponse).']';
+				$mResult = '["'.\get_class($mResponse).'"]';
 				$bHook = false;
 			}
 

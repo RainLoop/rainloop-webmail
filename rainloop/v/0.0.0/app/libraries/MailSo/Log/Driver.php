@@ -26,6 +26,11 @@ abstract class Driver
 	/**
 	 * @var bool
 	 */
+	protected $bGuidPrefix;
+
+	/**
+	 * @var bool
+	 */
 	protected $bTimePrefix;
 
 	/**
@@ -62,6 +67,7 @@ abstract class Driver
 		$this->sName = 'INFO';
 		$this->bTimePrefix = true;
 		$this->bTypedPrefix = true;
+		$this->bGuidPrefix = true;
 
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
@@ -78,6 +84,15 @@ abstract class Driver
 			\MailSo\Log\Enumerations\Type::WARNING => '[WARNING]',
 			\MailSo\Log\Enumerations\Type::ERROR => '[ERROR]',
 		);
+	}
+
+	/**
+	 * @return \MailSo\Log\Driver
+	 */
+	public function DisableGuidPrefix()
+	{
+		$this->bGuidPrefix = false;
+		return $this;
 	}
 
 	/**
@@ -150,9 +165,11 @@ abstract class Driver
 	protected function loggerLineImplementation($sTimePrefix, $sDesc,
 		$iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
 	{
-		return ($this->bTimePrefix ? '['.$sTimePrefix.'] ' : '').
-			($this->bTypedPrefix ? $this->getTypedPrefix($iType, $sName) : '').
-			$sDesc;
+		return \ltrim(
+			($this->bTimePrefix ? '['.$sTimePrefix.']' : '').
+			($this->bGuidPrefix ? '['.\MailSo\Log\Logger::Guid().']' : '').
+			($this->bTypedPrefix ? ' '.$this->getTypedPrefix($iType, $sName) : '')
+		).$sDesc;
 	}
 
 	/**
@@ -215,6 +232,7 @@ abstract class Driver
 					array_unshift($this->aCache, $sFlush);
 				}
 
+				$this->aCache[] = '--- FlushLogCache: Trigger';
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 
 				$this->bFlushCache = true;
@@ -234,6 +252,7 @@ abstract class Driver
 					array_unshift($this->aCache, $sFlush);
 				}
 
+				$this->aCache[] = '--- FlushLogCache: Trigger';
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 				
 				$this->bFlushCache = true;

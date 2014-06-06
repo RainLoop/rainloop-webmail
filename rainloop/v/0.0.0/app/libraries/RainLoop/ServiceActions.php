@@ -147,7 +147,8 @@ class ServiceActions
 							break;
 					}
 
-					$this->Logger()->Write(\MailSo\Base\Utils::Php2js($aPost), \MailSo\Log\Enumerations\Type::INFO, 'POST', true);
+					$this->Logger()->Write(\MailSo\Base\Utils::Php2js($aPost, $this->Logger()),
+						\MailSo\Log\Enumerations\Type::INFO, 'POST', true);
 				}
 				else if (3 < \count($this->aPaths) && $this->oHttp->IsGet())
 				{
@@ -195,7 +196,7 @@ class ServiceActions
 		$this->Plugins()->RunHook('filter.ajax-response', array($sAction, &$aResponseItem));
 
 		@\header('Content-Type: application/json; charset=utf-8');
-		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem);
+		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
 		$sObResult = @\ob_get_clean();
 
@@ -299,7 +300,7 @@ class ServiceActions
 		}
 
 		$this->Plugins()->RunHook('filter.upload-response', array(&$aResponseItem));
-		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem);
+		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
 		$sObResult = @\ob_get_clean();
 		if (0 < \strlen($sObResult))
@@ -620,7 +621,7 @@ class ServiceActions
 			}
 		}
 
-		return $bJson ? \MailSo\Base\Utils::Php2js(array($sTheme, $sResult)) : $sResult;
+		return $bJson ? \MailSo\Base\Utils::Php2js(array($sTheme, $sResult), $this->Logger()) : $sResult;
 	}
 
 	/**
@@ -886,7 +887,7 @@ class ServiceActions
 					}
 				}
 
-				return \MailSo\Base\Utils::Php2js($aResult);
+				return \MailSo\Base\Utils::Php2js($aResult, $this->Logger());
 
 			case 'redirect':
 			default:
@@ -925,7 +926,7 @@ class ServiceActions
 					return \MailSo\Base\Utils::Php2js(array(
 						'Action' => 'ExternalSso',
 						'Result' => $sResult
-					));
+					), $this->Logger());
 			}
 		}
 
@@ -1038,7 +1039,7 @@ class ServiceActions
 			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 
-		return 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml)).';';
+		return 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';';
 	}
 
 	/**

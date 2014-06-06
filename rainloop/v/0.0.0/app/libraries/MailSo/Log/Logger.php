@@ -62,6 +62,22 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @staticvar string $sCache;
+	 *
+	 * @return string
+	 */
+	public static function Guid()
+	{
+		static $sCache = null;
+		if (null === $sCache)
+		{
+			$sCache = \substr(\md5(\microtime(true).\rand(10000, 99999)), -8);
+		}
+
+		return $sCache;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function IsEnabled()
