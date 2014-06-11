@@ -797,7 +797,7 @@ class Actions
 					'][GUID:'.\MailSo\Log\Logger::Guid().']');
 
 				$this->oLogger->Write(
-					' ['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
+					'['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
 					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 			}
 		}

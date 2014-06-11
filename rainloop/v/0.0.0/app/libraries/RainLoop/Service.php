@@ -146,8 +146,10 @@ class Service
 			return $this;
 		}
 
+		$bIndex = true;
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== $aPaths[0])
 		{
+			$bIndex = false;
 			$sMethodName = 'Service'.$aPaths[0];
 			if (\method_exists($this->oServiceActions, $sMethodName) &&
 				\is_callable(array($this->oServiceActions, $sMethodName)))
@@ -157,10 +159,11 @@ class Service
 			}
 			else if (!$this->oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths))
 			{
-				$this->oActions->Logger()->Write('Unknown request', \MailSo\Log\Enumerations\Type::WARNING, 'RESPONSE');
+				$bIndex = true;
 			}
 		}
-		else
+		
+		if ($bIndex)
 		{
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
@@ -206,9 +209,9 @@ class Service
 
 			$sResult .= '<!--';
 			$sResult .= ' [version:'.APP_VERSION;
-			$sResult .= '][time:'.substr(\microtime(true) - APP_START, 0, 6);
+			$sResult .= '][time:'.\substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
-			$sResult .= '][session:'.md5(\RainLoop\Utils::GetShortToken());
+			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
 			$sResult .= '] -->';
 		}
 
