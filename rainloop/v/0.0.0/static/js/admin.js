@@ -23,7 +23,7 @@ var
 	 * @type {Object.<Function>}
 	 */
 	Utils = {},
-	
+
 	/**
 	 * @type {Object.<Function>}
 	 */
@@ -69,7 +69,7 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
-	
+
 //	$body = $('body'),
 
 	$window = $(window),
@@ -78,12 +78,17 @@ var
 
 	NotificationClass = window.Notification && window.Notification.requestPermission ? window.Notification : null
 ;
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /*jshint onevar: false*/
 /**
  * @type {?AdminApp}
  */
 var RL = null;
 /*jshint onevar: true*/
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @type {?}
@@ -239,6 +244,8 @@ if (Globals.bAllowPdfPreview && navigator && navigator.mimeTypes)
 	});
 }
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 Consts.Defaults = {};
 Consts.Values = {};
 Consts.DataImages = {};
@@ -356,6 +363,8 @@ Consts.DataImages.UserDotPic = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA
  * @type {string}
  */
 Consts.DataImages.TranspPic = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2NkAAIAAAoAAggA9GkAAAAASUVORK5CYII=';
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @enum {string}
@@ -774,6 +783,8 @@ Enums.Notification = {
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 Utils.trim = $.trim;
 Utils.inArray = $.inArray;
@@ -2525,6 +2536,7 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 	}));
 }, 50);
 
+/*jslint bitwise: true*/
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -2688,6 +2700,8 @@ Base64 = {
 };
 
 /*jslint bitwise: false*/
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 ko.bindingHandlers.tooltip = {
 	'init': function (oElement, fValueAccessor) {
 		if (!Globals.bMobileDevice)
@@ -3505,6 +3519,8 @@ ko.observable.fn.validateFunc = function (fFunc)
 	return this;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -3827,6 +3843,8 @@ LinkBuilder.prototype.socialFacebook = function ()
 	return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @type {Object}
  */
@@ -3921,6 +3939,8 @@ Plugins.settingsGet = function (sPluginSection, sName)
 
 
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -3995,6 +4015,8 @@ CookieDriver.prototype.get = function (sKey)
 	return mResult;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -4066,6 +4088,8 @@ LocalStorageDriver.prototype.get = function (sKey)
 	return mResult;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -4109,6 +4133,8 @@ LocalStorage.prototype.get = function (iKey)
 	return this.oDriver ? this.oDriver.get('p' + iKey) : null;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -4121,6 +4147,8 @@ KnoinAbstractBoot.prototype.bootstart = function ()
 {
 
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @param {string=} sPosition = ''
@@ -4215,6 +4243,8 @@ KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 	});
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string} sScreenName
  * @param {?=} aViewModels = []
@@ -4290,6 +4320,8 @@ KnoinAbstractScreen.prototype.__start = function ()
 		this.oCross = oRoute;
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -4696,6 +4728,8 @@ Knoin.prototype.bootstart = function ()
 
 kn = new Knoin();
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string=} sEmail
  * @param {string=} sName
@@ -5060,6 +5094,8 @@ EmailModel.prototype.inputoTagLine = function ()
 	return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -5103,6 +5139,8 @@ ContactTagModel.prototype.toLine = function (bEncodeHtml)
 	return (Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml) ?
 		Utils.encodeHtml(this.name()) : this.name();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -5399,6 +5437,8 @@ PopupsDomainViewModel.prototype.clearForm = function ()
 	this.whiteList('');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -5536,6 +5576,8 @@ PopupsPluginViewModel.prototype.onBuild = function ()
 	}, this));
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -5652,6 +5694,8 @@ PopupsActivateViewModel.prototype.validateSubscriptionKey = function ()
 	var sValue = this.key();
 	return '' === sValue || !!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -5711,6 +5755,8 @@ PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 	RL.data().mainLanguage(sLang);
 	this.cancelCommand();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -5818,6 +5864,8 @@ PopupsAskViewModel.prototype.onBuild = function ()
 };
 
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -5905,6 +5953,8 @@ AdminLoginViewModel.prototype.onHide = function ()
 	this.loginFocus(false);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {?} oScreen
  *
@@ -5928,6 +5978,8 @@ AdminMenuViewModel.prototype.link = function (sRoute)
 {
 	return '#/' + sRoute;
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -5953,6 +6005,8 @@ AdminPaneViewModel.prototype.logoutClick = function ()
 		RL.loginAndLogoutReload();
 	});
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6053,6 +6107,8 @@ AdminGeneral.prototype.selectLanguage = function ()
 	kn.showScreenPopup(PopupsLanguagesViewModel);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6104,6 +6160,8 @@ AdminLogin.prototype.onBuild = function ()
 
 	}, 50);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6173,6 +6231,8 @@ AdminBranding.prototype.onBuild = function ()
 
 	}, 50);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6394,6 +6454,8 @@ AdminContacts.prototype.onBuild = function ()
 	}, 50);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6482,6 +6544,8 @@ AdminDomains.prototype.onDomainListChangeRequest = function ()
 {
 	RL.reloadDomainList();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6587,6 +6651,8 @@ AdminSecurity.prototype.phpInfoLink = function ()
 {
 	return RL.link().phpInfo();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6704,6 +6770,8 @@ AdminSocial.prototype.onBuild = function ()
 	}, 50);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6800,6 +6868,8 @@ AdminPlugins.prototype.onPluginDisableRequest = function (sResult, oData)
 
 	RL.reloadPluginList();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6899,6 +6969,8 @@ AdminPackages.prototype.installPackage = function (oPackage)
 	}
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6954,6 +7026,8 @@ AdminLicensing.prototype.licenseExpiredMomentValue = function ()
 
 	return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -7007,7 +7081,7 @@ function AdminAbout()
 		}
 
 		return sType;
-		
+
 	}, this);
 }
 
@@ -7028,6 +7102,8 @@ AdminAbout.prototype.updateCoreData = function ()
 		RL.updateCoreData();
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -7160,6 +7236,8 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractData
@@ -7211,6 +7289,8 @@ AdminDataStorage.prototype.populateDataOnStart = function()
 {
 	AbstractData.prototype.populateDataOnStart.call(this);
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -7485,6 +7565,8 @@ AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
 	});
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractAjaxRemoteStorage
@@ -7746,6 +7828,8 @@ AdminAjaxRemoteStorage.prototype.adminPing = function (fCallback)
 	this.defaultRequest(fCallback, 'AdminPing');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -7830,6 +7914,8 @@ AbstractCacheStorage.prototype.setEmailsPicsHashesData = function (oData)
 	this.oEmailsPicsHashes = oData;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractCacheStorage
@@ -7840,6 +7926,8 @@ function AdminCacheStorage()
 }
 
 _.extend(AdminCacheStorage.prototype, AbstractCacheStorage.prototype);
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @param {Array} aViewModels
@@ -8021,6 +8109,8 @@ AbstractSettings.prototype.routes = function ()
 	];
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractScreen
@@ -8036,6 +8126,8 @@ AdminLoginScreen.prototype.onShow = function ()
 {
 	RL.setTitle('');
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractSettings
@@ -8054,6 +8146,8 @@ AdminSettingsScreen.prototype.onShow = function ()
 {
 	RL.setTitle('');
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractBoot
@@ -8412,6 +8506,8 @@ AbstractApp.prototype.bootstart = function ()
 	ssm.ready();
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractApp
@@ -8712,6 +8808,8 @@ AdminApp.prototype.bootstart = function ()
  * @type {AdminApp}
  */
 RL = new AdminApp();
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 $html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 

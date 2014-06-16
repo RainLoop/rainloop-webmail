@@ -21,7 +21,7 @@ var
 	 * @type {Object.<Function>}
 	 */
 	Utils = {},
-	
+
 	/**
 	 * @type {Object.<Function>}
 	 */
@@ -67,7 +67,7 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
-	
+
 //	$body = $('body'),
 
 	$window = $(window),

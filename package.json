@@ -2,10 +2,10 @@
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
 	"version": "1.6.7",
-	"release": "127",
+	"release": "131",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
-	"main": "Gruntfile.js",
+	"main": "gulpfile.js",
 	"author": {
 		"name": "RainLoop Team",
 		"email": "support@rainloop.net",
@@ -36,20 +36,28 @@
 		"plugins"
 	],
 	"readmeFilename": "README.md",
-	"ownCloudPackageVersion": "1.3",
+	"ownCloudPackageVersion": "1.4",
 	"engines": {
-		"node": ">= 0.8.0"
+		"node": ">= 0.10.0"
 	},
 	"devDependencies": {
-		"wrench": "*",
-		"grunt": "~0.4.1",
-		"grunt-css": "*",
-		"grunt-md5": "*",
-		"grunt-contrib-jshint": "*",
-		"grunt-contrib-compress": "*",
-		"grunt-contrib-concat": "*",
-		"grunt-contrib-uglify": "*",
-		"grunt-contrib-watch": "*",
-		"grunt-contrib-less": "~0.5.0"
+
+		"crypto": "*",
+		"node-fs": "*",
+		"jshint-summary": "*",
+
+		"gulp": "*",
+		"gulp-util": "*",
+		"gulp-uglify": "*",
+		"gulp-clean": "*",
+		"gulp-jshint": "*",
+		"gulp-less": "*",
+		"gulp-zip": "*",
+		"gulp-rename": "*",
+		"gulp-header": "*",
+		"gulp-footer": "*",
+		"gulp-minify-css": "*",
+		"gulp-concat-util": "*"
+
 	}
 }

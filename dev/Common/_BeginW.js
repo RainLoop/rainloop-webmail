@@ -6,7 +6,7 @@
  */
 var
 	RL = null,
-			
+
 	$proxyDiv = $('<div></div>')
 ;
 /*jshint onevar: true*/

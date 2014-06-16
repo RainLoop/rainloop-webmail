@@ -230,20 +230,31 @@ html.rl-no-preview-pane {
 	}
 }
 
-.visible-on-ctrl {
+.visible-on-ctrl, .visible-on-ctrl-btn {
 	display: none;
 }
 
-.hidden-on-ctrl {
+.hidden-on-ctrl-btn {
 	display: inline-block;
 }
 
-html.rl-ctrl-key-pressed .visible-on-ctrl {
-	display: inline-block;
-}
+html.rl-ctrl-key-pressed {
 
-html.rl-ctrl-key-pressed .hidden-on-ctrl {
-	display: none;
+	.visible-on-ctrl {
+		display: inline-block;
+	}
+
+	.btn-group.open .visible-on-ctrl-btn {
+		display: inline-block;
+	}
+
+	.hidden-on-ctrl {
+		display: none;
+	}
+
+	.btn-group.open .hidden-on-ctrl-btn {
+		display: none;
+	}
 }
 
 #rl-loading, #rl-loading-error {

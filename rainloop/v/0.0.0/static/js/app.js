@@ -23,7 +23,7 @@ var
 	 * @type {Object.<Function>}
 	 */
 	Utils = {},
-	
+
 	/**
 	 * @type {Object.<Function>}
 	 */
@@ -69,7 +69,7 @@ var
 	I18n = window['rainloopI18N'] || {},
 
 	$html = $('html'),
-	
+
 //	$body = $('body'),
 
 	$window = $(window),
@@ -78,16 +78,20 @@ var
 
 	NotificationClass = window.Notification && window.Notification.requestPermission ? window.Notification : null
 ;
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /*jshint onevar: false*/
 /**
  * @type {?RainLoopApp}
  */
 var
 	RL = null,
-			
+
 	$proxyDiv = $('<div></div>')
 ;
 /*jshint onevar: true*/
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @type {?}
@@ -243,6 +247,8 @@ if (Globals.bAllowPdfPreview && navigator && navigator.mimeTypes)
 	});
 }
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 Consts.Defaults = {};
 Consts.Values = {};
 Consts.DataImages = {};
@@ -360,6 +366,8 @@ Consts.DataImages.UserDotPic = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA
  * @type {string}
  */
 Consts.DataImages.TranspPic = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2NkAAIAAAoAAggA9GkAAAAASUVORK5CYII=';
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @enum {string}
@@ -778,6 +786,8 @@ Enums.Notification = {
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 Utils.trim = $.trim;
 Utils.inArray = $.inArray;
@@ -2529,6 +2539,7 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 	}));
 }, 50);
 
+/*jslint bitwise: true*/
 // Base64 encode / decode
 // http://www.webtoolkit.info/
  
@@ -2692,6 +2703,8 @@ Base64 = {
 };
 
 /*jslint bitwise: false*/
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 ko.bindingHandlers.tooltip = {
 	'init': function (oElement, fValueAccessor) {
 		if (!Globals.bMobileDevice)
@@ -3509,6 +3522,8 @@ ko.observable.fn.validateFunc = function (fFunc)
 	return this;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -3831,6 +3846,8 @@ LinkBuilder.prototype.socialFacebook = function ()
 	return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @type {Object}
  */
@@ -3925,6 +3942,14 @@ Plugins.settingsGet = function (sPluginSection, sName)
 
 
 
+
+/**
+ * @constructor
+ * @param {Object} oElement
+ * @param {Function=} fOnBlur
+ * @param {Function=} fOnReady
+ * @param {Function=} fOnModeChange
+ */
 function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 {
 	var self = this;
@@ -4150,6 +4175,8 @@ NewHtmlEditorWrapper.prototype.clear = function (bFocus)
 	this.setHtml('', bFocus);
 };
 
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -4860,6 +4887,8 @@ Selector.prototype.on = function (sEventName, fCallback)
 	this.oCallbacks[sEventName] = fCallback;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -4934,6 +4963,8 @@ CookieDriver.prototype.get = function (sKey)
 	return mResult;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -5005,6 +5036,8 @@ LocalStorageDriver.prototype.get = function (sKey)
 	return mResult;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -5048,6 +5081,8 @@ LocalStorage.prototype.get = function (iKey)
 	return this.oDriver ? this.oDriver.get('p' + iKey) : null;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -5060,6 +5095,8 @@ KnoinAbstractBoot.prototype.bootstart = function ()
 {
 
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @param {string=} sPosition = ''
@@ -5154,6 +5191,8 @@ KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 	});
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string} sScreenName
  * @param {?=} aViewModels = []
@@ -5229,6 +5268,8 @@ KnoinAbstractScreen.prototype.__start = function ()
 		this.oCross = oRoute;
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -5635,6 +5676,8 @@ Knoin.prototype.bootstart = function ()
 
 kn = new Knoin();
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string=} sEmail
  * @param {string=} sName
@@ -5999,6 +6042,8 @@ EmailModel.prototype.inputoTagLine = function ()
 	return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -6123,6 +6168,8 @@ ContactModel.prototype.lineAsCcc = function ()
 	return aResult.join(' ');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {number=} iType = Enums.ContactPropertyType.Unknown
  * @param {string=} sTypeStr = ''
@@ -6151,6 +6198,8 @@ function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 	}, this);
 
 }
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6195,6 +6244,8 @@ ContactTagModel.prototype.toLine = function (bEncodeHtml)
 	return (Utils.isUnd(bEncodeHtml) ? false : !!bEncodeHtml) ?
 		Utils.encodeHtml(this.name()) : this.name();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -6432,6 +6483,8 @@ AttachmentModel.prototype.iconClass = function ()
 	return sClass;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @param {string} sId
@@ -6493,6 +6546,8 @@ ComposeAttachmentModel.prototype.initByUploadJson = function (oJsonAttachment)
 
 	return bResult;
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -7691,6 +7746,8 @@ MessageModel.prototype.flagHash = function ()
 		this.isReadReceipt()].join('');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -8023,6 +8080,8 @@ FolderModel.prototype.printableFullName = function ()
 	return this.fullName.split(this.delimiter).join(' / ');
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string} sEmail
  * @param {boolean=} bCanBeDelete = true
@@ -8044,6 +8103,8 @@ AccountModel.prototype.changeAccountLink = function ()
 {
 	return RL.link().change(this.email);
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string} sId
  * @param {string} sEmail
@@ -8080,12 +8141,16 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 	return '' === sName ? this.email() : '"' + Utils.quoteName(sName) + '" <' + this.email() + '>';
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
 function FilterConditionModel()
 {
 }
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -8122,6 +8187,8 @@ FilterModel.prototype.parse = function (oItem)
 	return bResult;
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {string} iIndex
  * @param {string} sGuID
@@ -8152,6 +8219,8 @@ OpenPgpKeyModel.prototype.user = '';
 OpenPgpKeyModel.prototype.email = '';
 OpenPgpKeyModel.prototype.armor = '';
 OpenPgpKeyModel.prototype.isPrivate = false;
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -8248,6 +8317,8 @@ PopupsFolderClearViewModel.prototype.onShow = function (oFolder)
 		this.selectedFolder(oFolder);
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -8358,6 +8429,8 @@ PopupsFolderCreateViewModel.prototype.onFocus = function ()
 {
 	this.folderName.focused(true);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -8471,6 +8544,8 @@ PopupsFolderSystemViewModel.prototype.onShow = function (iNotificationType)
 	this.notification(sNotification);
 };
 
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -9843,7 +9918,6 @@ PopupsComposeViewModel.prototype.prepearMessageAttachments = function (oMessage,
 					break;
 				}
 
-				bAdd = true;
 				if (bAdd)
 				{
 					oAttachment = new ComposeAttachmentModel(
@@ -9959,6 +10033,8 @@ PopupsComposeViewModel.prototype.triggerForResize = function ()
 	this.editorResizeThrottle();
 };
 
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -10702,6 +10778,8 @@ PopupsContactsViewModel.prototype.onHide = function ()
 //	});
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -10838,6 +10916,8 @@ PopupsAdvancedSearchViewModel.prototype.onFocus = function ()
 	this.fromFocus(true);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -10950,6 +11030,8 @@ PopupsAddAccountViewModel.prototype.onFocus = function ()
 	this.emailFocus(true);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11036,6 +11118,8 @@ PopupsAddOpenPgpKeyViewModel.prototype.onFocus = function ()
 	this.key.focus(true);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11075,6 +11159,8 @@ PopupsViewOpenPgpKeyViewModel.prototype.onShow = function (oOpenPgpKey)
 		this.key(oOpenPgpKey.armor);
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -11170,6 +11256,8 @@ PopupsGenerateNewOpenPgpKeyViewModel.prototype.onFocus = function ()
 {
 	this.email.focus(true);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -11411,6 +11499,8 @@ PopupsComposeOpenPgpViewModel.prototype.onShow = function (fCallback, sText, sFr
 	this.text(sText);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11559,6 +11649,8 @@ PopupsIdentityViewModel.prototype.onFocus = function ()
 	}
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11619,6 +11711,8 @@ PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 	this.cancelCommand();
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11672,6 +11766,8 @@ PopupsTwoFactorTestViewModel.prototype.onFocus = function ()
 {
 	this.code.focused(true);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -11779,6 +11875,8 @@ PopupsAskViewModel.prototype.onBuild = function ()
 };
 
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -11823,6 +11921,8 @@ PopupsKeyboardShortcutsHelpViewModel.prototype.onBuild = function (oDom)
 		}
 	}, this));
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -12136,6 +12236,8 @@ LoginViewModel.prototype.selectLanguage = function ()
 };
 
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -12232,6 +12334,8 @@ AbstractSystemDropDownViewModel.prototype.onBuild = function ()
 	});
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractSystemDropDownViewModel
@@ -12244,6 +12348,8 @@ function MailBoxSystemDropDownViewModel()
 
 Utils.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractSystemDropDownViewModel
@@ -12255,6 +12361,8 @@ function SettingsSystemDropDownViewModel()
 }
 
 Utils.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -12503,6 +12611,8 @@ MailBoxFolderListViewModel.prototype.contactsClick = function ()
 		kn.showScreenPopup(PopupsContactsViewModel);
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -13407,6 +13517,8 @@ MailBoxMessageListViewModel.prototype.initUploaderForAppend = function ()
 
 	return !!oJua;
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractViewModel
@@ -14099,6 +14211,8 @@ MailBoxMessageViewViewModel.prototype.readReceipt = function (oMessage)
 	}
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {?} oScreen
  * 
@@ -14127,6 +14241,8 @@ SettingsMenuViewModel.prototype.backToMailBoxClick = function ()
 {
 	kn.setHash(RL.link().inbox());
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14158,6 +14274,8 @@ SettingsPaneViewModel.prototype.backToMailBoxClick = function ()
 {
 	kn.setHash(RL.link().inbox());
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14319,6 +14437,8 @@ SettingsGeneral.prototype.selectLanguage = function ()
 	kn.showScreenPopup(PopupsLanguagesViewModel);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -14368,6 +14488,8 @@ SettingsContacts.prototype.onBuild = function ()
 //{
 //
 //};
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14449,6 +14571,8 @@ SettingsAccounts.prototype.deleteAccount = function (oAccountToRemove)
 		}
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14537,6 +14661,8 @@ SettingsIdentity.prototype.onBuild = function ()
 		
 	}, 50);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14696,6 +14822,8 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 
 	}, 50);
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -14725,6 +14853,8 @@ SettingsFilters.prototype.addFilter = function ()
 	
 	this.filters.push(oFilter);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -14876,6 +15006,8 @@ SettingsSecurity.prototype.onBuild = function ()
 	RL.remote().getTwoFactor(this.onResult);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -14942,6 +15074,8 @@ function SettingsSocialScreen()
 }
 
 Utils.addSettingsViewModel(SettingsSocialScreen, 'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -15047,6 +15181,8 @@ SettingsChangePasswordScreen.prototype.onChangePasswordResponse = function (sRes
 			Utils.getNotification(Enums.Notification.CouldNotSaveNewPassword));
 	}
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -15243,6 +15379,8 @@ SettingsFolders.prototype.unSubscribeFolder = function (oFolder)
 	oFolder.subScribed(false);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -15357,6 +15495,8 @@ SettingsThemes.prototype.onBuild = function ()
 	}));
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -15425,6 +15565,8 @@ SettingsOpenPGP.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 		}
 	}
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -15555,6 +15697,8 @@ AbstractData.prototype.populateDataOnStart = function()
 
 	this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -16809,6 +16953,8 @@ WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
 	return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -17082,6 +17228,8 @@ AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
 		'Version': sVersion
 	});
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -17876,6 +18024,8 @@ WebMailAjaxRemoteStorage.prototype.socialUsers = function (fCallback)
 };
 
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  */
@@ -17959,6 +18109,8 @@ AbstractCacheStorage.prototype.setEmailsPicsHashesData = function (oData)
 {
 	this.oEmailsPicsHashes = oData;
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -18278,6 +18430,8 @@ WebMailCacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function 
 	}
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @param {Array} aViewModels
  * @constructor
@@ -18458,6 +18612,8 @@ AbstractSettings.prototype.routes = function ()
 	];
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractScreen
@@ -18473,6 +18629,8 @@ LoginScreen.prototype.onShow = function ()
 {
 	RL.setTitle('');
 };
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends KnoinAbstractScreen
@@ -18644,6 +18802,8 @@ MailBoxScreen.prototype.routes = function ()
 	];
 };
 
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
 /**
  * @constructor
  * @extends AbstractSettings
@@ -18670,6 +18830,8 @@ SettingsScreen.prototype.onShow = function ()
 	RL.setTitle(this.sSettingsTitle);
 	RL.data().keyScope(Enums.KeyState.Settings);
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -19028,6 +19190,8 @@ AbstractApp.prototype.bootstart = function ()
 
 	ssm.ready();
 };
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /**
  * @constructor
@@ -20335,6 +20499,8 @@ RainLoopApp.prototype.bootstart = function ()
  * @type {RainLoopApp}
  */
 RL = new RainLoopApp();
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 $html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 

@@ -1371,7 +1371,6 @@ PopupsComposeViewModel.prototype.prepearMessageAttachments = function (oMessage,
 					break;
 				}
 
-				bAdd = true;
 				if (bAdd)
 				{
 					oAttachment = new ComposeAttachmentModel(

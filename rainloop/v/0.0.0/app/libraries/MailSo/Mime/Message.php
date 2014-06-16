@@ -69,7 +69,7 @@ class Message
 	public function DoesNotAddDefaultXMailer()
 	{
 		$this->bAddDefaultXMailer = false;
-		
+
 		return $this;
 	}
 
@@ -371,7 +371,7 @@ class Message
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param \MailSo\Mime\EmailCollection $oEmails
 	 *
@@ -504,7 +504,12 @@ class Message
 	{
 		if (0 === strlen($sHostName))
 		{
-			$sHostName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'mailso';
+			$sHostName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		}
+
+		if (empty($sHostName))
+		{
+			$sHostName = 'localhost';
 		}
 
 		return '<'.md5(rand(100000, 999999).time().$sHostName).'@'.$sHostName.'>';
@@ -557,7 +562,7 @@ class Message
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
-		
+
 		if (0 < strlen($sContentLocation))
 		{
 			$oAttachmentPart->Headers->Add(

@@ -1,7 +1,7 @@
 /*! nanoScrollerJS - v0.7
 * http://jamesflorentino.github.com/nanoScrollerJS/
 * Copyright (c) 2013 James Florentino; Licensed under MIT
-* 
+*
 * modified by RainLoop Team
 */
 
@@ -339,7 +339,7 @@
     NanoScroll.prototype.scrollClassTimer = 0;
 
     NanoScroll.prototype.scrollClassTrigger = function() {
-		
+
 		window.clearTimeout(this.scrollClassTimer);
 
 		var _this = this;
@@ -476,7 +476,7 @@
           if (_this.isBeingDragged || _this.isBeingDragged2) {
             return;
           }
-			 
+
           _this.updateScrollValues();
           if (!_this.iOSNativeScrolling) {
             _this.sliderY = _this.sliderTop;
@@ -734,20 +734,20 @@
       if (!this.isActive && !this.isActive2) {
         return;
       }
-		
+
 		if (this.isActive) {
 			this.sliderY = Math.max(0, this.sliderY);
 			this.sliderY = Math.min(this.maxSliderTop, this.sliderY);
 			this.$content.scrollTop((this.paneHeight - this.contentHeight + BROWSER_SCROLLBAR_WIDTH) * this.sliderY / this.maxSliderTop * -1);
-		} 
-		
+		}
+
 		if (this.isActive2) {
 			this.slider2X = Math.max(0, this.slider2X);
 			this.slider2X = Math.min(this.maxSlider2Left, this.slider2X);
 			this.$content.scrollLeft((this.pane2Width - this.contentWidth + BROWSER_SCROLLBAR_WIDTH) * this.slider2X / this.maxSlider2Left * -1);
 		}
       if (!this.iOSNativeScrolling) {
-			
+
 			if (this.isActive) {
 				this.slider.css({
 				  top: this.sliderY

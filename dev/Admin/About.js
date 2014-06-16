@@ -53,7 +53,7 @@ function AdminAbout()
 		}
 
 		return sType;
-		
+
 	}, this);
 }
 

@@ -1,4 +1,8 @@
 
+/**
+ * @deprecated
+ */
+
 /*jshint node: true */
 
 'use strict';
@@ -106,9 +110,9 @@ module.exports = function (grunt) {
 			js_index: {
 				nonull: true,
 				src: [
-					'vendors/json2.min.js',
-					'vendors/simple-pace/simple-pace-1.0.min.js',
-					'vendors/rl/rl-1.0.min.js'
+					"vendors/json2.min.js",
+					"vendors/simple-pace/simple-pace-1.0.min.js",
+					"vendors/rl/rl-1.0.min.js"
 				],
 				dest: 'rainloop/v/<%= cfg.devVersion %>/static/js/boot.js'
 			},
