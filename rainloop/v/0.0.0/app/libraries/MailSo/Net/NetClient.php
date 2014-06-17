@@ -202,23 +202,9 @@ abstract class NetClient
 
 		if (!\is_resource($this->rConnect))
 		{
-			if (!empty($sErrorStr) && !\MailSo\Base\Utils::IsUtf8($sErrorStr))
-			{
-				$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
-				if (!empty($sCharset))
-				{
-					$sErrorStr = \MailSo\Base\Utils::ConvertEncoding(
-						$sErrorStr, $sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
-				}
-				else
-				{
-					$sErrorStr = @\utf8_encode($sErrorStr);
-				}
-			}
-
 			$this->writeLogException(
 				new Exceptions\SocketCanNotConnectToHostException(
-					$sErrorStr, $iErrorNo,
+					\MailSo\Base\Utils::ConvertSystemString($sErrorStr), (int) $iErrorNo,
 					'Can\'t connect to host "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"'
 				), \MailSo\Log\Enumerations\Type::NOTICE, true);
 		}
@@ -232,7 +218,7 @@ abstract class NetClient
 			{
 				@\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
 			}
-			
+
 			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_set_blocking'))
 			{
 				@\stream_set_blocking($this->rConnect, 1);

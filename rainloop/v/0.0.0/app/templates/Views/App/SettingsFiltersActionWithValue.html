@@ -1,0 +1,5 @@
+<select data-bind="options: typeOptions, value: type, optionsText: 'name', optionsValue: 'id'"></select>
+<input type="text" data-bind="value: value" />
+<span class="delete-action pull-right" data-bind="visible: canBeDeleted, click: removeSelf">
+	<i class="icon-trash"></i>
+</span>

@@ -9,6 +9,10 @@ function SettingsFilters()
 
 	this.filters = ko.observableArray([]);
 	this.filters.loading = ko.observable(false);
+
+	this.filters.subscribe(function () {
+		Utils.windowResize();
+	});
 }
 
 Utils.addSettingsViewModel(SettingsFilters, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
@@ -26,6 +30,7 @@ SettingsFilters.prototype.addFilter = function ()
 {
 	var oFilter = new FilterModel();
 	oFilter.addCondition();
-	
+	oFilter.addAction();
+
 	this.filters.push(oFilter);
 };

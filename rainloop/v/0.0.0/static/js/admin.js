@@ -200,12 +200,13 @@ Globals.oHtmlEditorDefaultConfig = {
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 	'extraPlugins': 'plain',
-	
+
 	'allowedContent': true,
 	'autoParagraph': false,
+	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
+	'shiftEnterMode': window.CKEDITOR.ENTER_DIV,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
@@ -646,31 +647,41 @@ Enums.Layout = {
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FilterConditionField = {
-	'From': 0,
-	'To': 1,
-	'Subject': 2
+	'From': 'From',
+	'To': 'To',
+	'Recipient': 'Recipient',
+	'Subject': 'Subject'
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FilterConditionType = {
-	'contains': 0,
-	'NotContains': 1,
-	'EqualTo': 2,
-	'NotEqualTo': 3
+	'Contains': 'Contains',
+	'NotContains': 'NotContains',
+	'EqualTo': 'EqualTo',
+	'NotEqualTo': 'NotEqualTo'
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FiltersAction = {
-	'None': 0,
-	'Move': 1,
-	'Delete': 2
+	'Move': 'Move',
+	'Delete': 'Delete',
+	'Forward': 'Forward'
+};
+
+/**
+ * @enum {string}
+ */
+Enums.FilterRulesType = {
+	'And': 'And',
+	'Or': 'Or',
+	'All': 'All'
 };
 
 /**

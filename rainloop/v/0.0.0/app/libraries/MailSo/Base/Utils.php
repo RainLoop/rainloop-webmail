@@ -39,7 +39,7 @@ class Utils
 	public static $aLocaleMapping = array(
 		'.65001' => 'utf-8',
 		'.20127' => 'iso-8859-1',
-		
+
 		'.1250' => 'windows-1250',
 		'.cp1250' => 'windows-1250',
 		'.cp-1250' => 'windows-1250',
@@ -104,7 +104,7 @@ class Utils
 		$sResult = '';
 		$sLocale = @\setlocale(LC_ALL, '');
 		$sLocaleLower = \strtolower(\trim($sLocale));
-		
+
 		foreach (\MailSo\Base\Utils::$aLocaleMapping as $sKey => $sValue)
 		{
 			if (false !== \strpos($sLocaleLower, $sKey) ||
@@ -117,7 +117,29 @@ class Utils
 
 		return $sResult;
 	}
-	
+
+	/**
+	 * @return string
+	 */
+	public static function ConvertSystemString($sSrt)
+	{
+		if (!empty($sSrt) && !\MailSo\Base\Utils::IsUtf8($sSrt))
+		{
+			$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
+			if (!empty($sCharset))
+			{
+				$sSrt = \MailSo\Base\Utils::ConvertEncoding(
+					$sSrt, $sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+			}
+			else
+			{
+				$sSrt = @\utf8_encode($sSrt);
+			}
+		}
+
+		return $sSrt;
+	}
+
 	/**
 	 * @param string $sEncoding
 	 * @param bool $bAsciAsUtf8 = false
@@ -251,11 +273,11 @@ class Utils
 		{
 			$sMbstringSubCh = \mb_substitute_character();
 		}
-		
+
 		\mb_substitute_character('none');
 		$sResult = @\mb_convert_encoding($sInputString, \strtoupper($sInputToEncoding), \strtoupper($sInputFromEncoding));
 		\mb_substitute_character($sMbstringSubCh);
-		
+
 		return $sResult;
 	}
 
@@ -502,7 +524,7 @@ class Utils
 			if (0 < \strlen($aTempArr[0]))
 			{
 				$sCharset = 0 === \strlen($sForcedIncomingCharset) ? $aTempArr[0] : $sForcedIncomingCharset;
-				
+
 				if ('' === $sMainCharset)
 				{
 					$sMainCharset = $sCharset;
@@ -1180,11 +1202,11 @@ class Utils
 						}
 					}
 				}
-				
+
 				@\closedir($rDirH);
 			}
 		}
-		
+
 		return $bResult;
 	}
 
@@ -1241,7 +1263,7 @@ class Utils
 		{
 			$sUtfString = $sNewUtfString;
 		}
-		
+
 		$sUtfString = \preg_replace(
 			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
 			'|[\x00-\x7F][\x80-\xBF]+'.
@@ -1380,7 +1402,7 @@ class Utils
 		{
 			$iStart = null;
 			$iPrev = null;
-			
+
 			foreach ($aSequence as $sItem)
 			{
 				// simple protection
@@ -1922,14 +1944,14 @@ class Utils
 				$mResult = \md5(@\iconv('utf-8', 'utf-8//IGNORE', $sStr)) === \md5($sStr) ? 'utf-8' : '';
 			}
 		}
-		
+
 		return \is_string($mResult) && 0 < \strlen($mResult) ? $mResult : '';
 	}
 
 	/**
      * @param string $sData
      * @param string $sKey
-	 * 
+	 *
      * @return string
      */
     public static function Hmac($sData, $sKey)
@@ -1944,11 +1966,11 @@ class Utils
 		{
             $sKey = \pack('H*', \md5($sKey));
         }
-		
+
         $sKey = \str_pad($sKey, $iLen, \chr(0x00));
         $sIpad = \str_pad('', $iLen, \chr(0x36));
         $sOpad = \str_pad('', $iLen, \chr(0x5c));
-		
+
         return \md5(($sKey ^ $sOpad).\pack('H*', \md5(($sKey ^ $sIpad).$sData)));
     }
 
@@ -1999,7 +2021,7 @@ class Utils
 
 		return $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
 	}
-	
+
 	/**
 	 * @param string $sStr
 	 * @param bool $bLowerIfAscii = false
@@ -2017,7 +2039,7 @@ class Utils
 			$sUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sStr);
 			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sStr);
 		}
-		
+
 		if (0 < \strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain))
 		{
 			try
@@ -2026,7 +2048,7 @@ class Utils
 			}
 			catch (\Exception $oException) {}
 		}
-		
+
 		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
 	}
 }

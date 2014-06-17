@@ -5,31 +5,64 @@
 		</div>
 	</div>
 	<div class="row">
-		<div data-bind="foreach: filters">
-			<div class="filter" style="background-color: #ddd">
-				FILTER
-				<div data-bind="foreach: conditions">
-					COND
-					<br />
-					<span class="delete-condition" data-bind="click: function (oCondition) { $parent.deleteCondition(oCondition); }">
-						<i class="icon-trash"></i>
-					</span>
-					<br />
-				</div>
+		<div data-bind="foreach: filters, i18nUpdate: filters">
+			<div class="filter span12 pull-left" style="background-color: #eee; padding: 15px; border-radius: 4px">
+
+				<input type="text" data-bind="value: name" placeholder="Description:" />
+
 				<br />
-				<a class="btn" data-bind="click: addCondition">
-					<i class="icon-plus"></i>
+
+				<label class="radio inline">
+					<input type="radio" name="conditionsType" value="And" data-bind="checked: conditionsType" />
+					Matching all of the following rules
+				</label>
+				<label class="radio inline">
+					<input type="radio" name="conditionsType" value="Or" data-bind="checked: conditionsType" />
+					Matching any of the  following rules
+				</label>
+				<label class="radio inline">
+					<input type="radio" name="conditionsType" value="All" data-bind="checked: conditionsType" />
+					All messages
+				</label>
+
+				<hr />
+
+				<div>
+					<a class="btn" data-bind="click: addCondition">
+						<i class="icon-plus"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
+					</a>
+					<br />
+					<br />
+					<div data-bind="foreach: conditions">
+						<div data-bind="template: {'name': template, 'data': $data}"></div>
+					</div>
+				</div>
+				<hr />
+				<div>
+					<a class="btn" data-bind="click: addAction">
+						<i class="icon-plus"></i>
+						&nbsp;&nbsp;
+						<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_ACTION"></span>
+					</a>
+					<br />
+					<br />
+					<div data-bind="foreach: actions">
+						<div data-bind="template: {'name': template, 'data': $data}"></div>
+					</div>
+				</div>
+				<hr />
+				<a class="btn" data-bind="click: function (oFilter) { $parent.deleteFilter(oFilter); }">
+					<i class="icon-trash"></i>
 					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
+					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_DELETE_FILTER"></span>
 				</a>
 				<br />
-				<span class="delete-filter" data-bind="click: function (oFilter) { $parent.deleteFilter(oFilter); }">
-					<i class="icon-trash"></i>
-				</span>
 			</div>
-			<br />
 		</div>
 	</div>
+	<br />
 	<a class="btn" data-bind="click: addFilter">
 		<i class="icon-filter"></i>
 		&nbsp;&nbsp;

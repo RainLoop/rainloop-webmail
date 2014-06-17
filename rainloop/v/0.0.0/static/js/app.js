@@ -203,12 +203,13 @@ Globals.oHtmlEditorDefaultConfig = {
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 	'extraPlugins': 'plain',
-	
+
 	'allowedContent': true,
 	'autoParagraph': false,
+	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
+	'shiftEnterMode': window.CKEDITOR.ENTER_DIV,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
@@ -649,31 +650,41 @@ Enums.Layout = {
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FilterConditionField = {
-	'From': 0,
-	'To': 1,
-	'Subject': 2
+	'From': 'From',
+	'To': 'To',
+	'Recipient': 'Recipient',
+	'Subject': 'Subject'
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FilterConditionType = {
-	'contains': 0,
-	'NotContains': 1,
-	'EqualTo': 2,
-	'NotEqualTo': 3
+	'Contains': 'Contains',
+	'NotContains': 'NotContains',
+	'EqualTo': 'EqualTo',
+	'NotEqualTo': 'NotEqualTo'
 };
 
 /**
- * @enum {number}
+ * @enum {string}
  */
 Enums.FiltersAction = {
-	'None': 0,
-	'Move': 1,
-	'Delete': 2
+	'Move': 'Move',
+	'Delete': 'Delete',
+	'Forward': 'Forward'
+};
+
+/**
+ * @enum {string}
+ */
+Enums.FilterRulesType = {
+	'And': 'And',
+	'Or': 'Or',
+	'All': 'All'
 };
 
 /**
@@ -8146,9 +8157,101 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 /**
  * @constructor
  */
-function FilterConditionModel()
+function FilterActionModel(oKoList, oKoCanBeDeleted)
 {
+	this.parentList = oKoList;
+	this.canBeDeleted = oKoCanBeDeleted;
+
+	this.value = ko.observable('');
+
+	this.type = ko.observable(Enums.FiltersAction.Move);
+	this.typeOptions = [ // TODO i18n
+		{'id': Enums.FiltersAction.Move, 'name': 'Move to'},
+		{'id': Enums.FiltersAction.Forward, 'name': 'Forward to'},
+		{'id': Enums.FiltersAction.Delete, 'name': 'Discard'},
+		{'id': Enums.FiltersAction.MarkAsRead, 'name': 'Mark as read'}
+	];
+
+	this.template = ko.computed(function () {
+
+		var sTemplate = '';
+		switch (this.type())
+		{
+			default:
+			case Enums.FiltersAction.Move:
+				sTemplate = 'SettingsFiltersActionValueAsFolders';
+				break;
+			case Enums.FiltersAction.Forward:
+				sTemplate = 'SettingsFiltersActionWithValue';
+				break;
+			case Enums.FiltersAction.MarkAsRead:
+			case Enums.FiltersAction.Delete:
+				sTemplate = 'SettingsFiltersActionNoValue';
+				break;
+		}
+
+		return sTemplate;
+
+	}, this);
 }
+
+FilterActionModel.prototype.removeSelf = function ()
+{
+	if (this.canBeDeleted())
+	{
+		this.parentList.remove(this);
+	}
+};
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+/**
+ * @constructor
+ */
+function FilterConditionModel(oKoList, oKoCanBeDeleted)
+{
+	this.parentList = oKoList;
+	this.canBeDeleted = oKoCanBeDeleted;
+
+	this.field = ko.observable(Enums.FilterConditionField.Subject);
+	this.fieldOptions = [ // TODO i18n
+		{'id': Enums.FilterConditionField.Subject, 'name': 'Subject'},
+		{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC)'},
+		{'id': Enums.FilterConditionField.From, 'name': 'From'},
+		{'id': Enums.FilterConditionField.To, 'name': 'To'}
+	];
+
+	this.type = ko.observable(Enums.FilterConditionType.Contains);
+	this.typeOptions = [ // TODO i18n
+		{'id': Enums.FilterConditionType.Contains, 'name': 'Contains'},
+		{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains'},
+		{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To'},
+		{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To'}
+	];
+
+	this.value = ko.observable('');
+
+	this.template = ko.computed(function () {
+
+		var sTemplate = '';
+		switch (this.type())
+		{
+			default:
+				sTemplate = 'SettingsFiltersConditionDefault';
+				break;
+		}
+
+		return sTemplate;
+
+	}, this);
+}
+
+FilterConditionModel.prototype.removeSelf = function ()
+{
+	if (this.canBeDeleted())
+	{
+		this.parentList.remove(this);
+	}
+};
 
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
@@ -8159,19 +8262,38 @@ function FilterModel()
 {
 	this.enabled = ko.observable(true);
 
+	this.name = ko.observable('');
+
+	this.conditionsType = ko.observable(Enums.FilterRulesType.And);
+
 	this.conditions = ko.observableArray([]);
+	this.actions = ko.observableArray([]);
 
-	this.action = ko.observable(Enums.FiltersAction.None);
+	this.conditions.subscribe(function () {
+		Utils.windowResize();
+	});
+
+	this.actions.subscribe(function () {
+		Utils.windowResize();
+	});
+
+	this.conditionsCanBeDeleted = ko.computed(function () {
+		return 1 < this.conditions().length;
+	}, this);
+
+	this.actionsCanBeDeleted = ko.computed(function () {
+		return 1 < this.actions().length;
+	}, this);
 }
-
-FilterModel.prototype.deleteCondition = function (oCondition)
-{
-	this.conditions.remove(oCondition);
-};
 
 FilterModel.prototype.addCondition = function ()
 {
-	this.conditions.push(new FilterConditionModel());
+	this.conditions.push(new FilterConditionModel(this.conditions, this.conditionsCanBeDeleted));
+};
+
+FilterModel.prototype.addAction = function ()
+{
+	this.actions.push(new FilterActionModel(this.actions, this.actionsCanBeDeleted));
 };
 
 FilterModel.prototype.parse = function (oItem)
@@ -14833,6 +14955,10 @@ function SettingsFilters()
 
 	this.filters = ko.observableArray([]);
 	this.filters.loading = ko.observable(false);
+
+	this.filters.subscribe(function () {
+		Utils.windowResize();
+	});
 }
 
 Utils.addSettingsViewModel(SettingsFilters, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
@@ -14850,7 +14976,8 @@ SettingsFilters.prototype.addFilter = function ()
 {
 	var oFilter = new FilterModel();
 	oFilter.addCondition();
-	
+	oFilter.addAction();
+
 	this.filters.push(oFilter);
 };
 

@@ -185,6 +185,7 @@ cfg.paths.js = {
 			'dev/Models/FolderModel.js',
 			'dev/Models/AccountModel.js',
 			'dev/Models/IdentityModel.js',
+			'dev/Models/FilterActionModel.js',
 			'dev/Models/FilterConditionModel.js',
 			'dev/Models/FilterModel.js',
 			'dev/Models/OpenPgpKeyModel.js',

@@ -110,12 +110,13 @@ Globals.oHtmlEditorDefaultConfig = {
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 	'extraPlugins': 'plain',
-	
+
 	'allowedContent': true,
 	'autoParagraph': false,
+	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
+	'shiftEnterMode': window.CKEDITOR.ENTER_DIV,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
