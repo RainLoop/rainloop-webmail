@@ -36,7 +36,7 @@
 					<br />
 					<br />
 					<div data-bind="foreach: conditions">
-						<div data-bind="template: {'name': template, 'data': $data}"></div>
+						<div data-bind="template: {'name': template(), 'data': $data}"></div>
 					</div>
 				</div>
 				<hr />
@@ -49,7 +49,7 @@
 					<br />
 					<br />
 					<div data-bind="foreach: actions">
-						<div data-bind="template: {'name': template, 'data': $data}"></div>
+						<div data-bind="template: {'name': template(), 'data': $data}"></div>
 					</div>
 				</div>
 				<hr />

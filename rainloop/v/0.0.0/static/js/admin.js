@@ -7452,7 +7452,7 @@ AbstractAjaxRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oPa
 
 	oDefAjax = $.ajax({
 		'type': bPost ? 'POST' : 'GET',
-		'url': RL.link().ajax(sGetAdd) ,
+		'url': RL.link().ajax(sGetAdd),
 		'async': true,
 		'dataType': 'json',
 		'data': bPost ? oParameters : {},

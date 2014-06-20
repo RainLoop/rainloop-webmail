@@ -12792,7 +12792,7 @@ function MailBoxMessageListViewModel()
 		return Enums.Layout.NoPreview !== oData.layout() ?
 			'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 	});
-
+	
 	this.messageListSearchDesc = ko.computed(function () {
 		var sValue = oData.messageListEndSearch();
 		return '' === sValue ? '' : Utils.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
@@ -17232,7 +17232,7 @@ AbstractAjaxRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oPa
 
 	oDefAjax = $.ajax({
 		'type': bPost ? 'POST' : 'GET',
-		'url': RL.link().ajax(sGetAdd) ,
+		'url': RL.link().ajax(sGetAdd),
 		'async': true,
 		'dataType': 'json',
 		'data': bPost ? oParameters : {},
