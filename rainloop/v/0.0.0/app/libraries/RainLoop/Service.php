@@ -104,13 +104,9 @@ class Service
 			return $this;
 		}
 
+		$this->oActions->BootStart();
+		
 		$this->oActions->ParseQueryAuthString();
-
-		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
-			APP_INSTALLED_START && !APP_INSTALLED_VERSION)
-		{
-			$this->oActions->KeenIO('Install');
-		}
 
 		$bCached = false;
 		$sResult = '';
@@ -219,6 +215,7 @@ class Service
 		echo $sResult;
 		unset($sResult);
 
+		$this->oActions->BootEnd();
 		return $this;
 	}
 

@@ -2272,6 +2272,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 				' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
 
+			$this->bRunningCallback = true;
+
 			try
 			{
 				\call_user_func($this->aFetchCallbacks[$sFetchKey],
@@ -2330,6 +2332,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 
 			\MailSo\Base\Loader::IncStatistic('NetRead', $iLiteralLen);
+
+			$this->bRunningCallback = false;
 		}
 
 		return $bResult;

@@ -19,6 +19,11 @@ abstract class NetClient
 	protected $bUnreadBuffer;
 
 	/**
+	 * @var bool
+	 */
+	protected $bRunningCallback;
+
+	/**
 	 * @var string
 	 */
 	protected $sResponseBuffer;
@@ -64,13 +69,21 @@ abstract class NetClient
 	protected $oLogger;
 
 	/**
+	 * @var bool
+	 */
+	public $__AUTOLOGOUT__;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
 	{
 		$this->rConnect = null;
 		$this->bUnreadBuffer = false;
+		$this->bRunningCallback = false;
 		$this->oLogger = null;
+		
+		$this->__AUTOLOGOUT__ = true;
 
 		$this->sResponseBuffer = '';
 
@@ -93,7 +106,14 @@ abstract class NetClient
 	{
 		try
 		{
-			$this->LogoutAndDisconnect();
+			if ($this->__AUTOLOGOUT__)
+			{
+				$this->LogoutAndDisconnect();
+			}
+			else
+			{
+				$this->Disconnect();
+			}
 		}
 		catch (\Exception $oException) {}
 	}
@@ -257,7 +277,7 @@ abstract class NetClient
 	 */
 	public function LogoutAndDisconnect()
 	{
-		if (\method_exists($this, 'Logout') && !$this->bUnreadBuffer)
+		if (\method_exists($this, 'Logout') && !$this->bUnreadBuffer && !$this->bRunningCallback)
 		{
 			$this->Logout();
 		}

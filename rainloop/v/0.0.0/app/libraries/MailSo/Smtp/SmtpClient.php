@@ -407,6 +407,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->writeLog('Message data.', \MailSo\Log\Enumerations\Type::NOTE);
 
+		$this->bRunningCallback = true;
+
 		while (!\feof($rDataStream))
 		{
 			$sBuffer = \fgets($rDataStream);
@@ -433,6 +435,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		$this->sendRequestWithCheck('.', 250);
+
+		$this->bRunningCallback = false;
 
 		$this->bData = true;
 

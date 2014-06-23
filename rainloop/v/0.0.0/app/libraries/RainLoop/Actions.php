@@ -271,6 +271,29 @@ class Actions
 	}
 
 	/**
+	 * @return void
+	 */
+	public function BootStart()
+	{
+		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
+			APP_INSTALLED_START && !APP_INSTALLED_VERSION)
+		{
+			$this->KeenIO('Install');
+		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function BootEnd()
+	{
+		if ($this->MailClient()->IsLoggined())
+		{
+			$this->MailClient()->LogoutAndDisconnect();
+		}
+	}
+
+	/**
 	 * @return string
 	 */
 	public function ParseQueryAuthString()
