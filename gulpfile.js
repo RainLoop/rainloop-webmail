@@ -476,6 +476,7 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 		dist = cfg.releasesPath + '/webmail/' + versionFull + '/src/'
 	;
 
+	fs.writeFileSync(dist + 'data/VERSION', versionFull);
 	fs.writeFileSync(dist + 'data/EMPTY', versionFull);
 
 	fs.writeFileSync(dist + 'index.php',

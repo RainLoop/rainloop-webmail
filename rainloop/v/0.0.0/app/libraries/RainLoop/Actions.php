@@ -1197,6 +1197,11 @@ class Actions
 
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
 				$aResult['CoreAccess'] = $this->rainLoopCoreAccess();
+
+				$aResult['PhpUploadSizes'] = array(
+					'upload_max_filesize' => \ini_get('upload_max_filesize'),
+					'post_max_size' => \ini_get('post_max_size')
+				);
 			}
 
 			$aResult['Capa'] = $this->Capa(true);
@@ -2180,6 +2185,8 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
+		$this->setConfigFromParams($oConfig, 'AttachmentLimit', 'webmail', 'attachment_size_limit', 'int');
+
 		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
 
 		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');

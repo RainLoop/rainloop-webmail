@@ -50,6 +50,40 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
+				<label class="inline" data-bind="click: function () { capaGravatar(!capaGravatar()); }">
+					<i data-bind="css: capaGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Allow Gravatar
+				</label>
+				(<a class="g-ui-link" href="http://en.gravatar.com/" target="_blank">http://en.gravatar.com/</a>)
+			</div>
+		</div>
+		<div class="legend">
+			Main
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				Attachment
+				size limit
+			</label>
+			<div class="controls">
+				<input class="span1" type="text" maxlength="3" data-bind="value: mainAttachmentLimit, saveTrigger: attachmentLimitTrigger" /> MB
+				<div data-bind="saveTrigger: attachmentLimitTrigger"></div>
+				<br />
+				<br />
+				<span class="well well-small" data-bind="visible: '' !== uploadDataDesc">
+					<b>PHP:</b>
+					&nbsp;
+					<span data-bind="text: uploadDataDesc"></span>
+				</span>
+				&nbsp;&nbsp;&nbsp;
+				<a href="#" target="_blank" class="btn btn-small" data-bind="link: phpInfoLink()">
+					<i class="icon-info"></i>
+				</a>
+			</div>
+		</div>
+		<br />
+		<div class="control-group">
+			<div class="controls">
 				<label data-bind="click: function () { capaAdditionalAccounts(!capaAdditionalAccounts()); }">
 					<i data-bind="css: capaAdditionalAccounts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow additional accounts
@@ -58,15 +92,6 @@
 					<i data-bind="css: capaAdditionalIdentities() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow additional identities
 				</label>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<label class="inline" data-bind="click: function () { capaGravatar(!capaGravatar()); }">
-					<i data-bind="css: capaGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow Gravatar
-				</label>
-				(<a class="g-ui-link" href="http://en.gravatar.com/" target="_blank">http://en.gravatar.com/</a>)
 			</div>
 		</div>
 	</div>

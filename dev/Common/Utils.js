@@ -46,11 +46,13 @@ Utils.isPosNumeric = function (mValue, bIncludeZero)
 
 /**
  * @param {*} iValue
+ * @param {number=} iDefault = 0
  * @return {number}
  */
-Utils.pInt = function (iValue)
+Utils.pInt = function (iValue, iDefault)
 {
-	return Utils.isNormal(iValue) && '' !== iValue ? window.parseInt(iValue, 10) : 0;
+	var iResult = Utils.isNormal(iValue) && '' !== iValue ? window.parseInt(iValue, 10) : (iDefault || 0);
+	return window.isNaN(iResult) ? (iDefault || 0) : iResult;
 };
 
 /**

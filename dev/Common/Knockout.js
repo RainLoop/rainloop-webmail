@@ -722,6 +722,30 @@ ko.extenders.trimmer = function (oTarget)
 	return oResult;
 };
 
+ko.extenders.posInterer = function (oTarget, iDefault)
+{
+	var oResult = ko.computed({
+		'read': oTarget,
+		'write': function (sNewValue) {
+			var iNew = Utils.pInt(sNewValue.toString(), iDefault);
+			if (0 >= iNew)
+			{
+				iNew = iDefault;
+			}
+
+			if (iNew === oTarget() && '' + iNew !== '' + sNewValue)
+			{
+				oTarget(iNew + 1);
+			}
+
+			oTarget(iNew);
+		}
+	});
+
+	oResult(oTarget());
+	return oResult;
+};
+
 ko.extenders.reversible = function (oTarget)
 {
 	var mValue = oTarget();

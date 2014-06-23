@@ -846,11 +846,13 @@ Utils.isPosNumeric = function (mValue, bIncludeZero)
 
 /**
  * @param {*} iValue
+ * @param {number=} iDefault = 0
  * @return {number}
  */
-Utils.pInt = function (iValue)
+Utils.pInt = function (iValue, iDefault)
 {
-	return Utils.isNormal(iValue) && '' !== iValue ? window.parseInt(iValue, 10) : 0;
+	var iResult = Utils.isNormal(iValue) && '' !== iValue ? window.parseInt(iValue, 10) : (iDefault || 0);
+	return window.isNaN(iResult) ? (iDefault || 0) : iResult;
 };
 
 /**
@@ -3432,6 +3434,30 @@ ko.extenders.trimmer = function (oTarget)
 			oTarget(Utils.trim(sNewValue.toString()));
 		},
 		'owner': this
+	});
+
+	oResult(oTarget());
+	return oResult;
+};
+
+ko.extenders.posInterer = function (oTarget, iDefault)
+{
+	var oResult = ko.computed({
+		'read': oTarget,
+		'write': function (sNewValue) {
+			var iNew = Utils.pInt(sNewValue.toString(), iDefault);
+			if (0 >= iNew)
+			{
+				iNew = iDefault;
+			}
+
+			if (iNew === oTarget() && '' + iNew !== '' + sNewValue)
+			{
+				oTarget(iNew + 1);
+			}
+
+			oTarget(iNew);
+		}
 	});
 
 	oResult(oTarget());

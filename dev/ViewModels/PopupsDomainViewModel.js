@@ -7,7 +7,7 @@
 function PopupsDomainViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsDomain');
-	
+
 	this.edit = ko.observable(false);
 	this.saving = ko.observable(false);
 	this.savingError = ko.observable('');
@@ -19,14 +19,14 @@ function PopupsDomainViewModel()
 	this.testingSmtpError = ko.observable(false);
 	this.testingImapErrorDesc = ko.observable('');
 	this.testingSmtpErrorDesc = ko.observable('');
-	
+
 	this.testingImapError.subscribe(function (bValue) {
 		if (!bValue)
 		{
 			this.testingImapErrorDesc('');
 		}
 	}, this);
-	
+
 	this.testingSmtpError.subscribe(function (bValue) {
 		if (!bValue)
 		{
@@ -44,11 +44,11 @@ function PopupsDomainViewModel()
 	this.name.focused = ko.observable(false);
 
 	this.imapServer = ko.observable('');
-	this.imapPort = ko.observable(Consts.Values.ImapDefaulPort);
+	this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
 	this.imapSecure = ko.observable(Enums.ServerSecure.None);
 	this.imapShortLogin = ko.observable(false);
 	this.smtpServer = ko.observable('');
-	this.smtpPort = ko.observable(Consts.Values.SmtpDefaulPort);
+	this.smtpPort = ko.observable('' + Consts.Values.SmtpDefaulPort);
 	this.smtpSecure = ko.observable(Enums.ServerSecure.None);
 	this.smtpShortLogin = ko.observable(false);
 	this.smtpAuth = ko.observable(true);
@@ -83,11 +83,11 @@ function PopupsDomainViewModel()
 			!this.edit(),
 			this.name(),
 			this.imapServer(),
-			this.imapPort(),
+			Utils.pInt(this.imapPort()),
 			this.imapSecure(),
 			this.imapShortLogin(),
 			this.smtpServer(),
-			this.smtpPort(),
+			Utils.pInt(this.smtpPort()),
 			this.smtpSecure(),
 			this.smtpShortLogin(),
 			this.smtpAuth(),
@@ -105,10 +105,10 @@ function PopupsDomainViewModel()
 			_.bind(this.onTestConnectionResponse, this),
 			this.name(),
 			this.imapServer(),
-			this.imapPort(),
+			Utils.pInt(this.imapPort()),
 			this.imapSecure(),
 			this.smtpServer(),
-			this.smtpPort(),
+			Utils.pInt(this.smtpPort()),
 			this.smtpSecure(),
 			this.smtpAuth()
 		);
@@ -132,7 +132,7 @@ function PopupsDomainViewModel()
 			this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
 		}
 	}, this);
-	
+
 	this.imapSecure.subscribe(function (sValue) {
 		var iPort = Utils.pInt(this.imapPort());
 		sValue = Utils.pString(sValue);
@@ -141,13 +141,13 @@ function PopupsDomainViewModel()
 			case '0':
 				if (993 === iPort)
 				{
-					this.imapPort(143);
+					this.imapPort('143');
 				}
 				break;
 			case '1':
 				if (143 === iPort)
 				{
-					this.imapPort(993);
+					this.imapPort('993');
 				}
 				break;
 		}
@@ -161,19 +161,19 @@ function PopupsDomainViewModel()
 			case '0':
 				if (465 === iPort || 587 === iPort)
 				{
-					this.smtpPort(25);
+					this.smtpPort('25');
 				}
 				break;
 			case '1':
 				if (25 === iPort || 587 === iPort)
 				{
-					this.smtpPort(465);
+					this.smtpPort('465');
 				}
 				break;
 			case '2':
 				if (25 === iPort || 465 === iPort)
 				{
-					this.smtpPort(587);
+					this.smtpPort('587');
 				}
 				break;
 		}
@@ -253,11 +253,11 @@ PopupsDomainViewModel.prototype.onShow = function (oDomain)
 
 		this.name(Utils.trim(oDomain.Name));
 		this.imapServer(Utils.trim(oDomain.IncHost));
-		this.imapPort(Utils.pInt(oDomain.IncPort));
+		this.imapPort('' + Utils.pInt(oDomain.IncPort));
 		this.imapSecure(Utils.trim(oDomain.IncSecure));
 		this.imapShortLogin(!!oDomain.IncShortLogin);
 		this.smtpServer(Utils.trim(oDomain.OutHost));
-		this.smtpPort(Utils.pInt(oDomain.OutPort));
+		this.smtpPort('' + Utils.pInt(oDomain.OutPort));
 		this.smtpSecure(Utils.trim(oDomain.OutSecure));
 		this.smtpShortLogin(!!oDomain.OutShortLogin);
 		this.smtpAuth(!!oDomain.OutAuth);
@@ -277,18 +277,18 @@ PopupsDomainViewModel.prototype.clearForm = function ()
 {
 	this.edit(false);
 	this.whiteListPage(false);
-	
+
 	this.savingError('');
 
 	this.name('');
 	this.name.focused(false);
 
 	this.imapServer('');
-	this.imapPort(Consts.Values.ImapDefaulPort);
+	this.imapPort('' + Consts.Values.ImapDefaulPort);
 	this.imapSecure(Enums.ServerSecure.None);
 	this.imapShortLogin(false);
 	this.smtpServer('');
-	this.smtpPort(Consts.Values.SmtpDefaulPort);
+	this.smtpPort('' + Consts.Values.SmtpDefaulPort);
 	this.smtpSecure(Enums.ServerSecure.None);
 	this.smtpShortLogin(false);
 	this.smtpAuth(true);

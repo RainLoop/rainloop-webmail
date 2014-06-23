@@ -6,7 +6,7 @@
 function AdminGeneral()
 {
 	var oData = RL.data();
-	
+
 	this.mainLanguage = oData.mainLanguage;
 	this.mainTheme = oData.mainTheme;
 
@@ -18,7 +18,16 @@ function AdminGeneral()
 	this.capaGravatar = oData.capaGravatar;
 	this.capaAdditionalAccounts = oData.capaAdditionalAccounts;
 	this.capaAdditionalIdentities = oData.capaAdditionalIdentities;
-	
+
+	this.mainAttachmentLimit = ko.observable(Utils.pInt(RL.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
+	this.uploadData = RL.settingsGet('PhpUploadSizes');
+	this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ?
+		[
+			this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
+			this.uploadData['post_max_size'] ? 'post_max_size = ' + this.uploadData['post_max_size'] : ''
+		].join('')
+			: '';
+
 	this.themesOptions = ko.computed(function () {
 		return _.map(oData.themes(), function (sTheme) {
 			return {
@@ -31,9 +40,10 @@ function AdminGeneral()
 	this.mainLanguageFullName = ko.computed(function () {
 		return Utils.convertLangName(this.mainLanguage());
 	}, this);
-	
+
 	this.weakPassword = !!RL.settingsGet('WeakPassword');
-	
+
+	this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 }
@@ -46,9 +56,16 @@ AdminGeneral.prototype.onBuild = function ()
 	_.delay(function () {
 
 		var
+			f1 = Utils.settingsSaveHelperSimpleFunction(self.attachmentLimitTrigger, self),
 			f2 = Utils.settingsSaveHelperSimpleFunction(self.languageTrigger, self),
 			f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self)
 		;
+
+		self.mainAttachmentLimit.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f1, {
+				'AttachmentLimit': Utils.pInt(sValue)
+			});
+		});
 
 		self.language.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f2, {
@@ -61,7 +78,7 @@ AdminGeneral.prototype.onBuild = function ()
 				'Theme': Utils.trim(sValue)
 			});
 		});
-		
+
 		self.capaAdditionalAccounts.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'CapaAdditionalAccounts': bValue ? '1' : '0'
@@ -99,3 +116,12 @@ AdminGeneral.prototype.selectLanguage = function ()
 {
 	kn.showScreenPopup(PopupsLanguagesViewModel);
 };
+
+/**
+ * @return {string}
+ */
+AdminGeneral.prototype.phpInfoLink = function ()
+{
+	return RL.link().phpInfo();
+};
+
