@@ -454,7 +454,7 @@ gulp.task('package-inc-release', function() {
 });
 
 // BUILD (RainLoop)
-gulp.task('rainloop:copy', function() {
+gulp.task('rainloop:copy', ['default'], function() {
 
 	var
 		versionFull = pkg.version + '.' + parseInt(pkg.release, 10),
