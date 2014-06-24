@@ -4139,6 +4139,11 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		}
 
 		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
+		if (window.CKEDITOR.env)
+		{
+			window.CKEDITOR.env.isCompatible = true;
+		}
+		
 		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
 		self.editor.on('key', function(oEvent) {
