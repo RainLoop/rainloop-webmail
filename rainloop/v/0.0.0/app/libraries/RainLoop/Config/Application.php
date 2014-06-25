@@ -245,6 +245,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
+				'use_local_proxy_for_external_images' => array(false),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			)

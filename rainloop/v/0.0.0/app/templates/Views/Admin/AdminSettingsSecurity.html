@@ -8,7 +8,8 @@
 				<label data-bind="click: function () { capaOpenPGP(!capaOpenPGP()); }">
 					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
-					Allow OpenPGP <span style="color:red">(beta)</span>
+					Allow OpenPGP
+					<span style="color:red">(beta)</span>
 				</label>
 			</div>
 		</div>
@@ -18,6 +19,16 @@
 					<i data-bind="css: capaTwoFactorAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
 					Allow 2-Step Verification (Google Authenticator)
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { useLocalProxyForExternalImages(!useLocalProxyForExternalImages()); }">
+					<i data-bind="css: useLocalProxyForExternalImages() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					Use local proxy for external images
+					<span style="color:red">(beta)</span>
 				</label>
 			</div>
 		</div>

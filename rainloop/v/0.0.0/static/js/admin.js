@@ -1574,6 +1574,8 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaThemes = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
+	
+	oData.useLocalProxyForExternalImages = ko.observable(false);
 
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);
@@ -6607,6 +6609,8 @@ AdminDomains.prototype.onDomainListChangeRequest = function ()
  */
 function AdminSecurity()
 {
+	this.useLocalProxyForExternalImages = RL.data().useLocalProxyForExternalImages;
+
 	this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
 	this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
 
@@ -6688,6 +6692,12 @@ AdminSecurity.prototype.onBuild = function ()
 	this.capaTwoFactorAuth.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'CapaTwoFactorAuth': bValue ? '1' : '0'
+		});
+	});
+
+	this.useLocalProxyForExternalImages.subscribe(function (bValue) {
+		RL.remote().saveAdminConfig(null, {
+			'UseLocalProxyForExternalImages': bValue ? '1' : '0'
 		});
 	});
 };
@@ -7167,10 +7177,10 @@ function AbstractData()
 {
 	this.leftPanelDisabled = ko.observable(false);
 	this.useKeyboardShortcuts = ko.observable(true);
-	
+
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
 	this.keyScopeFake = ko.observable(Enums.KeyState.All);
-	
+
 	this.keyScope = ko.computed({
 		'owner': this,
 		'read': function () {
@@ -7195,11 +7205,11 @@ function AbstractData()
 					sValue = Enums.KeyState.Menu;
 				}
 			}
-			
+
 			this.keyScopeReal(sValue);
 		}
 	});
-	
+
 	this.keyScopeReal.subscribe(function (sValue) {
 //		window.console.log(sValue);
 		key.setScope(sValue);
@@ -7253,6 +7263,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
+	this.useLocalProxyForExternalImages(!!RL.settingsGet('UseLocalProxyForExternalImages'));
 
 	this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
 	this.showImages(!!RL.settingsGet('ShowImages'));
@@ -7265,7 +7276,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
-	
+
 	this.layout(Enums.Layout.SidePreview);
 	if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
 	{

@@ -1577,6 +1577,8 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaThemes = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
+	
+	oData.useLocalProxyForExternalImages = ko.observable(false);
 
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);
@@ -6603,6 +6605,8 @@ function MessageModel()
 	this.dateTimeStampInUTC = ko.observable(0);
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
 
+	this.proxy = false;
+
 	this.fromEmailString = ko.observable('');
 	this.toEmailsString = ko.observable('');
 	this.senderEmailsString = ko.observable('');
@@ -6821,6 +6825,8 @@ MessageModel.prototype.clear = function ()
 	this.dateTimeStampInUTC(0);
 	this.priority(Enums.MessagePriority.Normal);
 
+	this.proxy = false;
+
 	this.fromEmailString('');
 	this.toEmailsString('');
 	this.senderEmailsString('');
@@ -6901,6 +6907,8 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.hash = oJsonMessage.Hash;
 		this.requestHash = oJsonMessage.RequestHash;
 
+		this.proxy = !!oJsonMessage.ExternalProxy;
+
 		this.size(Utils.pInt(oJsonMessage.Size));
 
 		this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
@@ -6953,6 +6961,8 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sMessageId = oJsonMessage.MessageId;
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
+
+		this.proxy = !!oJsonMessage.ExternalProxy;
 
 		if (RL.data().capaOpenPGP())
 		{
@@ -7396,6 +7406,8 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
 	this.priority(oMessage.priority());
 
+	this.proxy = oMessage.proxy;
+
 	this.fromEmailString(oMessage.fromEmailString());
 	this.toEmailsString(oMessage.toEmailsString());
 
@@ -7449,30 +7461,33 @@ MessageModel.prototype.showExternalImages = function (bLazy)
 {
 	if (this.body && this.body.data('rl-has-images'))
 	{
+		var sAttr = '';
 		bLazy = Utils.isUnd(bLazy) ? false : bLazy;
 
 		this.hasImages(false);
 		this.body.data('rl-has-images', false);
 
-		$('[data-x-src]', this.body).each(function () {
+		sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+		$('[' + sAttr + ']', this.body).each(function () {
 			if (bLazy && $(this).is('img'))
 			{
 				$(this)
 					.addClass('lazy')
-					.attr('data-original', $(this).attr('data-x-src'))
-					.removeAttr('data-x-src')
+					.attr('data-original', $(this).attr(sAttr))
+					.removeAttr(sAttr)
 				;
 			}
 			else
 			{
-				$(this).attr('src', $(this).attr('data-x-src')).removeAttr('data-x-src');
+				$(this).attr('src', $(this).attr(sAttr)).removeAttr(sAttr);
 			}
 		});
 
-		$('[data-x-style-url]', this.body).each(function () {
+		sAttr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
+		$('[' + sAttr + ']', this.body).each(function () {
 			var sStyle = Utils.trim($(this).attr('style'));
 			sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
-			$(this).attr('style', sStyle + $(this).attr('data-x-style-url')).removeAttr('data-x-style-url');
+			$(this).attr('style', sStyle + $(this).attr(sAttr)).removeAttr(sAttr);
 		});
 
 		if (bLazy)
@@ -15697,10 +15712,10 @@ function AbstractData()
 {
 	this.leftPanelDisabled = ko.observable(false);
 	this.useKeyboardShortcuts = ko.observable(true);
-	
+
 	this.keyScopeReal = ko.observable(Enums.KeyState.All);
 	this.keyScopeFake = ko.observable(Enums.KeyState.All);
-	
+
 	this.keyScope = ko.computed({
 		'owner': this,
 		'read': function () {
@@ -15725,11 +15740,11 @@ function AbstractData()
 					sValue = Enums.KeyState.Menu;
 				}
 			}
-			
+
 			this.keyScopeReal(sValue);
 		}
 	});
-	
+
 	this.keyScopeReal.subscribe(function (sValue) {
 //		window.console.log(sValue);
 		key.setScope(sValue);
@@ -15783,6 +15798,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
+	this.useLocalProxyForExternalImages(!!RL.settingsGet('UseLocalProxyForExternalImages'));
 
 	this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
 	this.showImages(!!RL.settingsGet('ShowImages'));
@@ -15795,7 +15811,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
-	
+
 	this.layout(Enums.Layout.SidePreview);
 	if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
 	{

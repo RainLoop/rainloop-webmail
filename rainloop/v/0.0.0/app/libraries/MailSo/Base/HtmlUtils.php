@@ -150,15 +150,21 @@ class HtmlUtils
 	 * @param array $aContentLocationUrls
 	 * @param array $aFoundedContentLocationUrls
 	 * @param bool $bDoNotReplaceExternalUrl = false
+	 * @param callback|null $fAdditionalExternalFilter = null
 	 *
 	 * @return string
 	 */
 	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs,
-		$aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false)
+		$aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
 	{
 		$sStyle = \trim($sStyle);
 		$aOutStyles = array();
 		$aStyles = \explode(';', $sStyle);
+
+		if ($fAdditionalExternalFilter && !\is_callable($fAdditionalExternalFilter))
+		{
+			$fAdditionalExternalFilter = null;
+		}
 
 		$aMatch = array();
 		foreach ($aStyles as $sStyleItem)
@@ -236,6 +242,16 @@ class HtmlUtils
 
 								$oElement->setAttribute('data-x-style-url', \trim($sTemp.
 									('background' === $sName ? 'background-image' : $sName).': '.$sFullUrl, ' ;'));
+
+								if ($fAdditionalExternalFilter)
+								{
+									$sAdditionalResult = \call_user_func($fAdditionalExternalFilter, $sUrl);
+									if (0 < \strlen($sAdditionalResult))
+									{
+										$oElement->setAttribute('data-x-additional-style-url',
+											('background' === $sName ? 'background-image' : $sName).': url('.$sAdditionalResult.')');
+									}
+								}
 							}
 						}
 						else if ('data:image/' !== \strtolower(\substr(\trim($sUrl), 0, 11)))
@@ -382,18 +398,24 @@ class HtmlUtils
 	 * @param array $aFoundedContentLocationUrls = array()
 	 * @param bool $bDoNotReplaceExternalUrl = false
 	 * @param bool $bFindLinksInHtml = false
+	 * @param callback|null $fAdditionalExternalFilter = null
 	 *
 	 * @return string
 	 */
 	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
 		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
-		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false)
+		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $fAdditionalExternalFilter = null)
 	{
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
 		if (0 === \strlen($sHtml))
 		{
 			return '';
+		}
+
+		if ($fAdditionalExternalFilter && !\is_callable($fAdditionalExternalFilter))
+		{
+			$fAdditionalExternalFilter = null;
 		}
 
 		$bHasExternals = false;
@@ -554,6 +576,14 @@ class HtmlUtils
 							else
 							{
 								$oElement->setAttribute('data-x-src', $sSrc);
+								if ($fAdditionalExternalFilter)
+								{
+									$sResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
+									if (0 < \strlen($sResult))
+									{
+										$oElement->setAttribute('data-x-additional-src', $sResult);
+									}
+								}
 							}
 
 							$bHasExternals = true;
@@ -599,7 +629,7 @@ class HtmlUtils
 				{
 					$oElement->setAttribute('style',
 						\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
-							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl));
+							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 				}
 			}
 
@@ -682,6 +712,16 @@ class HtmlUtils
 			{
 				$oElement->setAttribute('href', $oElement->getAttribute('data-x-href'));
 				$oElement->removeAttribute('data-x-href');
+			}
+
+			if ($oElement->hasAttribute('data-x-additional-src'))
+			{
+				$oElement->removeAttribute('data-x-additional-src');
+			}
+			
+			if ($oElement->hasAttribute('data-x-additional-style-url'))
+			{
+				$oElement->removeAttribute('data-x-additional-style-url');
 			}
 
 			if ($oElement->hasAttribute('data-x-style-cid-name') && $oElement->hasAttribute('data-x-style-cid'))

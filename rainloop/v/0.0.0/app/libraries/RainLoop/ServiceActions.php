@@ -340,6 +340,66 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
+	public function ServiceProxyExternal()
+	{
+		$bResult = false;
+		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
+		if (!empty($sData) && $this->oActions->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
+		{
+			$this->oActions->verifyCacheByKey($sData);
+
+			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === \RainLoop\Utils::GetConnectionToken())
+			{
+				$sUrl = $aData['Url'];
+
+				$aOptions = array(
+					CURLOPT_URL => $sUrl,
+					CURLOPT_HEADER => false,
+					CURLOPT_USERAGENT => 'RainLoop External Proxy',
+					CURLOPT_FAILONERROR => true,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => false,
+					CURLOPT_TIMEOUT => (int) 10
+				);
+
+				$oCurl = \curl_init();
+				\curl_setopt_array($oCurl, $aOptions);
+
+				$mResult = \curl_exec($oCurl);
+
+				$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
+				$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
+				$sContentType = \trim(\strtolower($sContentType));
+
+				if (false !== $mResult && 200 === $iCode &&
+					\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/bmp', 'image/gif')))
+				{
+					$bResult = true;
+
+					$this->oActions->cacheByKey($sData);
+
+					\header('Content-Type: '.$sContentType);
+					echo $mResult;
+				}
+
+				if (\is_resource($oCurl))
+				{
+					\curl_close($oCurl);
+				}
+			}
+		}
+
+		if (!$bResult)
+		{
+			$this->oHttp->StatusHeader(404);
+		}
+	}
+
+	/**
+	 * @return string
+	 */
 	public function ServiceRaw()
 	{
 		$sResult = '';

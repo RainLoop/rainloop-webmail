@@ -777,6 +777,8 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaThemes = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
+	
+	oData.useLocalProxyForExternalImages = ko.observable(false);
 
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);

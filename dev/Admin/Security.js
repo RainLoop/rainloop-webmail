@@ -5,6 +5,8 @@
  */
 function AdminSecurity()
 {
+	this.useLocalProxyForExternalImages = RL.data().useLocalProxyForExternalImages;
+
 	this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
 	this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
 
@@ -86,6 +88,12 @@ AdminSecurity.prototype.onBuild = function ()
 	this.capaTwoFactorAuth.subscribe(function (bValue) {
 		RL.remote().saveAdminConfig(Utils.emptyFunction, {
 			'CapaTwoFactorAuth': bValue ? '1' : '0'
+		});
+	});
+
+	this.useLocalProxyForExternalImages.subscribe(function (bValue) {
+		RL.remote().saveAdminConfig(null, {
+			'UseLocalProxyForExternalImages': bValue ? '1' : '0'
 		});
 	});
 };

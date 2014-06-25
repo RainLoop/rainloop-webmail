@@ -14,6 +14,8 @@ function MessageModel()
 	this.dateTimeStampInUTC = ko.observable(0);
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
 
+	this.proxy = false;
+
 	this.fromEmailString = ko.observable('');
 	this.toEmailsString = ko.observable('');
 	this.senderEmailsString = ko.observable('');
@@ -232,6 +234,8 @@ MessageModel.prototype.clear = function ()
 	this.dateTimeStampInUTC(0);
 	this.priority(Enums.MessagePriority.Normal);
 
+	this.proxy = false;
+
 	this.fromEmailString('');
 	this.toEmailsString('');
 	this.senderEmailsString('');
@@ -312,6 +316,8 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.hash = oJsonMessage.Hash;
 		this.requestHash = oJsonMessage.RequestHash;
 
+		this.proxy = !!oJsonMessage.ExternalProxy;
+
 		this.size(Utils.pInt(oJsonMessage.Size));
 
 		this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
@@ -364,6 +370,8 @@ MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 		this.sMessageId = oJsonMessage.MessageId;
 		this.sInReplyTo = oJsonMessage.InReplyTo;
 		this.sReferences = oJsonMessage.References;
+
+		this.proxy = !!oJsonMessage.ExternalProxy;
 
 		if (RL.data().capaOpenPGP())
 		{
@@ -807,6 +815,8 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
 	this.priority(oMessage.priority());
 
+	this.proxy = oMessage.proxy;
+
 	this.fromEmailString(oMessage.fromEmailString());
 	this.toEmailsString(oMessage.toEmailsString());
 
@@ -860,30 +870,33 @@ MessageModel.prototype.showExternalImages = function (bLazy)
 {
 	if (this.body && this.body.data('rl-has-images'))
 	{
+		var sAttr = '';
 		bLazy = Utils.isUnd(bLazy) ? false : bLazy;
 
 		this.hasImages(false);
 		this.body.data('rl-has-images', false);
 
-		$('[data-x-src]', this.body).each(function () {
+		sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+		$('[' + sAttr + ']', this.body).each(function () {
 			if (bLazy && $(this).is('img'))
 			{
 				$(this)
 					.addClass('lazy')
-					.attr('data-original', $(this).attr('data-x-src'))
-					.removeAttr('data-x-src')
+					.attr('data-original', $(this).attr(sAttr))
+					.removeAttr(sAttr)
 				;
 			}
 			else
 			{
-				$(this).attr('src', $(this).attr('data-x-src')).removeAttr('data-x-src');
+				$(this).attr('src', $(this).attr(sAttr)).removeAttr(sAttr);
 			}
 		});
 
-		$('[data-x-style-url]', this.body).each(function () {
+		sAttr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
+		$('[' + sAttr + ']', this.body).each(function () {
 			var sStyle = Utils.trim($(this).attr('style'));
 			sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
-			$(this).attr('style', sStyle + $(this).attr('data-x-style-url')).removeAttr('data-x-style-url');
+			$(this).attr('style', sStyle + $(this).attr(sAttr)).removeAttr(sAttr);
 		});
 
 		if (bLazy)

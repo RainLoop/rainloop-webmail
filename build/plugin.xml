@@ -93,6 +93,10 @@
 			<param name="plugin-name" value="override-smtp-credentials"/>
 		</antcall>
 	</target>
-
+	<target name="custom-login-mapping">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="custom-login-mapping"/>
+		</antcall>
+	</target>
 
 </project>

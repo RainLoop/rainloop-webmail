@@ -1215,6 +1215,7 @@ class Actions
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
 		$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DEFAILT_OFF);
+		$aResult['UseLocalProxyForExternalImages'] = (bool) $oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
 
 		// user
 		$aResult['EditorDefaultType'] = (string) $oConfig->Get('webmail', 'editor_default_type', '');
@@ -2171,6 +2172,8 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'Theme', 'webmail', 'theme', 'string', function ($sTheme) use ($self) {
 			return $self->ValidateTheme($sTheme);
 		});
+
+		$this->setConfigFromParams($oConfig, 'UseLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
@@ -7009,6 +7012,7 @@ class Actions
 					'ThreadsLen' => $mResponse->ThreadsLen(),
 					'ParentThread' => $mResponse->ParentThread(),
 					'Sensitivity' => $mResponse->Sensitivity(),
+					'ExternalProxy' => false,
 					'ReadReceipt' => ''
 				));
 
@@ -7095,9 +7099,24 @@ class Actions
 					$mResult['DraftInfo'] = $mResponse->DraftInfo();
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
 					$mResult['References'] = $mResponse->References();
+
+					$fAdditionalExternalFilter = null;
+					if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
+					{
+						$sIndexPrefix = 0 < strlen(APP_INDEX_FILE) ? APP_INDEX_FILE : './';
+						$fAdditionalExternalFilter = function ($sUrl) use ($sIndexPrefix) {
+							return $sIndexPrefix.'?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValues(array(
+								'Token' => \RainLoop\Utils::GetConnectionToken(),
+								'Url' => $sUrl
+							)).'/';
+						};
+					}
+
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false,
-						!!$this->Config()->Get('labs', 'allow_smart_html_links', true));
+						!!$this->Config()->Get('labs', 'allow_smart_html_links', true), $fAdditionalExternalFilter);
+
+					$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
 
 					$mResult['PlainRaw'] = $sPlain;
 					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
