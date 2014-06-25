@@ -30,7 +30,6 @@ function WebMailDataStorage()
 	;
 
 	this.devEmail = '';
-	this.devLogin = '';
 	this.devPassword = '';
 
 	this.accountEmail = ko.observable('');
@@ -488,7 +487,6 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
 
 	this.devEmail = RL.settingsGet('DevEmail');
-	this.devLogin = RL.settingsGet('DevLogin');
 	this.devPassword = RL.settingsGet('DevPassword');
 };
 

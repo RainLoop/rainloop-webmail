@@ -40,18 +40,16 @@ class Account
 	 * @param string $sPassword
 	 * @param \RainLoop\Domain $oDomain
 	 * @param string $sSignMeToken = ''
-	 * @param string $sParentEmail = '';
 	 *
 	 * @return void
 	 */
-	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Domain $oDomain, $sSignMeToken = '', $sParentEmail = '')
+	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Domain $oDomain, $sSignMeToken = '')
 	{
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
 		$this->sPassword = $sPassword;
 		$this->oDomain = $oDomain;
 		$this->sSignMeToken = $sSignMeToken;
-		$this->sParentEmail = \MailSo\Base\Utils::IdnToAscii($sParentEmail, true);
 	}
 
 	/**
@@ -60,13 +58,12 @@ class Account
 	 * @param string $sPassword
 	 * @param \RainLoop\Domain $oDomain
 	 * @param string $sSignMeToken = ''
-	 * @param string $sParentEmail = ''
 	 *
 	 * @return \RainLoop\Account
 	 */
-	public static function NewInstance($sEmail, $sLogin, $sPassword, \RainLoop\Domain $oDomain, $sSignMeToken = '', $sParentEmail = '')
+	public static function NewInstance($sEmail, $sLogin, $sPassword, \RainLoop\Domain $oDomain, $sSignMeToken = '')
 	{
-		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sParentEmail);
+		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
 	}
 
 	/**

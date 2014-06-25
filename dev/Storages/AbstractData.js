@@ -91,7 +91,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
 
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
-	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
 

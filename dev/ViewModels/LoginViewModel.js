@@ -11,7 +11,6 @@ function LoginViewModel()
 	var oData = RL.data();
 
 	this.email = ko.observable('');
-	this.login = ko.observable('');
 	this.password = ko.observable('');
 	this.signMe = ko.observable(false);
 
@@ -26,21 +25,15 @@ function LoginViewModel()
 	this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
 
 	this.emailError = ko.observable(false);
-	this.loginError = ko.observable(false);
 	this.passwordError = ko.observable(false);
 
 	this.emailFocus = ko.observable(false);
-	this.loginFocus = ko.observable(false);
 	this.submitFocus = ko.observable(false);
 
 	this.email.subscribe(function () {
 		this.emailError(false);
 		this.additionalCode('');
 		this.additionalCode.visibility(false);
-	}, this);
-
-	this.login.subscribe(function () {
-		this.loginError(false);
 	}, this);
 
 	this.password.subscribe(function () {
@@ -58,7 +51,6 @@ function LoginViewModel()
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
 
-	this.allowCustomLogin = oData.allowCustomLogin;
 	this.allowLanguagesOnLogin = oData.allowLanguagesOnLogin;
 
 	this.langRequest = ko.observable(false);
@@ -136,7 +128,7 @@ function LoginViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password(), !!this.signMe(),
+		}, this), this.email(), '', this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
 			this.additionalCode.visibility() ? this.additionalCode() : '',
 			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
@@ -180,13 +172,6 @@ function LoginViewModel()
 	}, function () {
 		return !this.submitRequest() && this.twitterLoginEnabled();
 	});
-
-	this.loginFocus.subscribe(function (bValue) {
-		if (bValue && '' === this.login() && '' !== this.email())
-		{
-			this.login(this.email());
-		}
-	}, this);
 
 	this.socialLoginEnabled = ko.computed(function () {
 		
@@ -270,7 +255,6 @@ LoginViewModel.prototype.onBuild = function ()
 	}
 
 	this.email(RL.data().devEmail);
-	this.login(RL.data().devLogin);
 	this.password(RL.data().devPassword);
 
 	if (this.googleLoginEnabled())

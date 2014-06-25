@@ -775,7 +775,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
 	oData.capaThemes = ko.observable(false);
-	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
 

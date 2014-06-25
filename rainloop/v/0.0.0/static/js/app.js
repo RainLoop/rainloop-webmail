@@ -1575,7 +1575,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
 	oData.capaThemes = ko.observable(false);
-	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
 
@@ -11080,32 +11079,23 @@ function PopupsAddAccountViewModel()
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddAccount');
 
 	this.email = ko.observable('');
-	this.login = ko.observable('');
 	this.password = ko.observable('');
 
 	this.emailError = ko.observable(false);
-	this.loginError = ko.observable(false);
 	this.passwordError = ko.observable(false);
 
 	this.email.subscribe(function () {
 		this.emailError(false);
 	}, this);
 
-	this.login.subscribe(function () {
-		this.loginError(false);
-	}, this);
-
 	this.password.subscribe(function () {
 		this.passwordError(false);
 	}, this);
-
-	this.allowCustomLogin = RL.data().allowCustomLogin;
 
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
 
 	this.emailFocus = ko.observable(false);
-	this.loginFocus = ko.observable(false);
 
 	this.addAccountCommand = Utils.createCommand(this, function () {
 
@@ -11139,20 +11129,13 @@ function PopupsAddAccountViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password());
+		}, this), this.email(), '', this.password());
 
 		return true;
 
 	}, function () {
 		return !this.submitRequest();
 	});
-
-	this.loginFocus.subscribe(function (bValue) {
-		if (bValue && '' === this.login() && '' !== this.email())
-		{
-			this.login(this.email());
-		}
-	}, this);
 
 	Knoin.constructorEnd(this);
 }
@@ -11162,11 +11145,9 @@ Utils.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);
 PopupsAddAccountViewModel.prototype.clearPopup = function ()
 {
 	this.email('');
-	this.login('');
 	this.password('');
 
 	this.emailError(false);
-	this.loginError(false);
 	this.passwordError(false);
 
 	this.submitRequest(false);
@@ -12088,7 +12069,6 @@ function LoginViewModel()
 	var oData = RL.data();
 
 	this.email = ko.observable('');
-	this.login = ko.observable('');
 	this.password = ko.observable('');
 	this.signMe = ko.observable(false);
 
@@ -12103,21 +12083,15 @@ function LoginViewModel()
 	this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
 
 	this.emailError = ko.observable(false);
-	this.loginError = ko.observable(false);
 	this.passwordError = ko.observable(false);
 
 	this.emailFocus = ko.observable(false);
-	this.loginFocus = ko.observable(false);
 	this.submitFocus = ko.observable(false);
 
 	this.email.subscribe(function () {
 		this.emailError(false);
 		this.additionalCode('');
 		this.additionalCode.visibility(false);
-	}, this);
-
-	this.login.subscribe(function () {
-		this.loginError(false);
 	}, this);
 
 	this.password.subscribe(function () {
@@ -12135,7 +12109,6 @@ function LoginViewModel()
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
 
-	this.allowCustomLogin = oData.allowCustomLogin;
 	this.allowLanguagesOnLogin = oData.allowLanguagesOnLogin;
 
 	this.langRequest = ko.observable(false);
@@ -12213,7 +12186,7 @@ function LoginViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password(), !!this.signMe(),
+		}, this), this.email(), '', this.password(), !!this.signMe(),
 			this.bSendLanguage ? this.mainLanguage() : '',
 			this.additionalCode.visibility() ? this.additionalCode() : '',
 			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
@@ -12257,13 +12230,6 @@ function LoginViewModel()
 	}, function () {
 		return !this.submitRequest() && this.twitterLoginEnabled();
 	});
-
-	this.loginFocus.subscribe(function (bValue) {
-		if (bValue && '' === this.login() && '' !== this.email())
-		{
-			this.login(this.email());
-		}
-	}, this);
 
 	this.socialLoginEnabled = ko.computed(function () {
 		
@@ -12347,7 +12313,6 @@ LoginViewModel.prototype.onBuild = function ()
 	}
 
 	this.email(RL.data().devEmail);
-	this.login(RL.data().devLogin);
 	this.password(RL.data().devPassword);
 
 	if (this.googleLoginEnabled())
@@ -15816,7 +15781,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
 
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
-	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
 
@@ -15888,7 +15852,6 @@ function WebMailDataStorage()
 	;
 
 	this.devEmail = '';
-	this.devLogin = '';
 	this.devPassword = '';
 
 	this.accountEmail = ko.observable('');
@@ -16346,7 +16309,6 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
 
 	this.devEmail = RL.settingsGet('DevEmail');
-	this.devLogin = RL.settingsGet('DevLogin');
 	this.devPassword = RL.settingsGet('DevPassword');
 };
 

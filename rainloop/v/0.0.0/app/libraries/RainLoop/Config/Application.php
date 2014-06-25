@@ -112,9 +112,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'login' => array(
 
-				'allow_custom_login' => array(false,
-					'Enable additional Login field on webmail login screen'),
-
 				'default_domain' => array('', ''),
 
 				'allow_languages_on_login' => array(true,
@@ -249,7 +246,6 @@ Enables caching in the system'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
 				'dev_email' => array(''),
-				'dev_login' => array(''),
 				'dev_password' => array('')
 			)
 		);

@@ -1018,7 +1018,6 @@ class Actions
 			'MailToEmail' => '',
 			'Email' => '',
 			'DevEmail' => '',
-			'DevLogin' => '',
 			'DevPassword' => '',
 			'Title' => 'RainLoop Webmail',
 			'LoadingDescription' => 'RainLoop',
@@ -1031,7 +1030,6 @@ class Actions
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
-			'AllowCustomLogin' => (bool) $oConfig->Get('login', 'allow_custom_login', false),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'ContactsIsAllowed' => false,
@@ -1116,7 +1114,6 @@ class Actions
 			else
 			{
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
-				$aResult['DevLogin'] = $oConfig->Get('labs', 'dev_login', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 			}
 
@@ -1216,7 +1213,6 @@ class Actions
 		$aResult['Languages'] = $this->GetLanguages();
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
-		$aResult['AllowCustomLogin'] = (bool) $oConfig->Get('login', 'allow_custom_login', false);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
 		$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DEFAILT_OFF);
 
@@ -1333,7 +1329,6 @@ class Actions
 		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
-		$aResult['DevLogin'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevLogin']);
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult);
 
@@ -1439,11 +1434,6 @@ class Actions
 			$sEmail = $sEmail.'@'.\trim(\trim($this->Config()->Get('login', 'default_domain', '')), ' @');
 		}
 
-		if (!$this->Config()->Get('login', 'allow_custom_login', false) || 0 === \strlen($sLogin))
-		{
-			$sLogin = $sEmail;
-		}
-
 		if (0 === \strlen($sLogin))
 		{
 			$sLogin = $sEmail;
@@ -1540,7 +1530,6 @@ class Actions
 	public function DoLogin()
 	{
 		$sEmail = \trim($this->GetActionParam('Email', ''));
-		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === (string) $this->GetActionParam('SignMe', '0');
@@ -1554,6 +1543,7 @@ class Actions
 
 		try
 		{
+			$sLogin = '';
 			$oAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword,
 				$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '',
 				$sAdditionalCode, $bAdditionalCodeSignMe);
@@ -2184,7 +2174,6 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowCustomLogin', 'login', 'allow_custom_login', 'bool');
 		$this->setConfigFromParams($oConfig, 'AttachmentLimit', 'webmail', 'attachment_size_limit', 'int');
 
 		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');

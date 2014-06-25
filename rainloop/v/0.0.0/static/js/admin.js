@@ -1572,7 +1572,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
 	oData.capaThemes = ko.observable(false);
-	oData.allowCustomLogin = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
 
@@ -6179,7 +6178,6 @@ function AdminLogin()
 {
 	var oData = RL.data();
 	
-	this.allowCustomLogin = oData.allowCustomLogin;
 	this.determineUserLanguage = oData.determineUserLanguage;
 	
 	this.defaultDomain = ko.observable(RL.settingsGet('LoginDefaultDomain'));
@@ -6203,12 +6201,6 @@ AdminLogin.prototype.onBuild = function ()
 			});
 		});
 		
-		self.allowCustomLogin.subscribe(function (bValue) {
-			RL.remote().saveAdminConfig(null, {
-				'AllowCustomLogin': bValue ? '1' : '0'
-			});
-		});
-
 		self.allowLanguagesOnLogin.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'AllowLanguagesOnLogin': bValue ? '1' : '0'
@@ -7259,7 +7251,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
 
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
-	this.allowCustomLogin(!!RL.settingsGet('AllowCustomLogin'));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
 	this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
 

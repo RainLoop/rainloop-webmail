@@ -9,32 +9,23 @@ function PopupsAddAccountViewModel()
 	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddAccount');
 
 	this.email = ko.observable('');
-	this.login = ko.observable('');
 	this.password = ko.observable('');
 
 	this.emailError = ko.observable(false);
-	this.loginError = ko.observable(false);
 	this.passwordError = ko.observable(false);
 
 	this.email.subscribe(function () {
 		this.emailError(false);
 	}, this);
 
-	this.login.subscribe(function () {
-		this.loginError(false);
-	}, this);
-
 	this.password.subscribe(function () {
 		this.passwordError(false);
 	}, this);
-
-	this.allowCustomLogin = RL.data().allowCustomLogin;
 
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
 
 	this.emailFocus = ko.observable(false);
-	this.loginFocus = ko.observable(false);
 
 	this.addAccountCommand = Utils.createCommand(this, function () {
 
@@ -68,20 +59,13 @@ function PopupsAddAccountViewModel()
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
 
-		}, this), this.email(), this.allowCustomLogin() ? this.login() : '', this.password());
+		}, this), this.email(), '', this.password());
 
 		return true;
 
 	}, function () {
 		return !this.submitRequest();
 	});
-
-	this.loginFocus.subscribe(function (bValue) {
-		if (bValue && '' === this.login() && '' !== this.email())
-		{
-			this.login(this.email());
-		}
-	}, this);
 
 	Knoin.constructorEnd(this);
 }
@@ -91,11 +75,9 @@ Utils.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);
 PopupsAddAccountViewModel.prototype.clearPopup = function ()
 {
 	this.email('');
-	this.login('');
 	this.password('');
 
 	this.emailError(false);
-	this.loginError(false);
 	this.passwordError(false);
 
 	this.submitRequest(false);
