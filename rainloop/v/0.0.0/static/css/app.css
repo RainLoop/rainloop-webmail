@@ -6784,7 +6784,7 @@ html.no-rgba .modal {
   display: inline-block;
   color: #999;
   text-decoration: none;
-  font-size: 24px;
+  font-size: 22px;
   padding: 3px;
   cursor: pointer;
 }
@@ -6792,7 +6792,7 @@ html.no-rgba .modal {
   color: #555;
 }
 .e-pagenator .e-page.current .e-page-number {
-  font-size: 28px;
+  font-size: 25px;
   color: #333;
   border-bottom: 2px solid #000;
 }

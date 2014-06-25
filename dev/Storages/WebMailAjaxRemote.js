@@ -223,7 +223,7 @@ WebMailAjaxRemoteStorage.prototype.messageList = function (fCallback, sFolderFul
 	iLimit = Utils.isUnd(iOffset) ? 20 : Utils.pInt(iLimit);
 	sSearch = Utils.pString(sSearch);
 
-	if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('has:')))
+	if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
 	{
 		this.defaultRequest(fCallback, 'MessageList', {},
 			'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,

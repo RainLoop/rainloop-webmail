@@ -583,7 +583,7 @@ class MailClient
 		{
 			$this->oImapClient->MessageCopy($sToFolder,
 				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
-			
+
 			$this->MessageDelete($sFromFolder, $aIndexRange, $bIndexIsUid, true);
 		}
 
@@ -1085,8 +1085,9 @@ class MailClient
 	 *
 	 * @return string
 	 */
-	private function getImapSearchCriterias($sSearch, $iTimeZoneOffset = 0, $bAddNotDeleted = false)
+	private function getImapSearchCriterias($sSearch, $iTimeZoneOffset = 0, $bAddNotDeleted = false, &$bUseCache = true)
 	{
+		$bUseCache = true;
 		$aCriteriasResult = array();
 		if (0 < \strlen(\trim($sSearch)))
 		{
@@ -1138,7 +1139,7 @@ class MailClient
 					$aCriteriasResult[] = $sValue;
 					$aCriteriasResult[] = 'CC';
 					$aCriteriasResult[] = $sValue;
-					
+
 					unset($aLines['EMAIL']);
 				}
 
@@ -1151,7 +1152,7 @@ class MailClient
 					$aCriteriasResult[] = $sValue;
 					$aCriteriasResult[] = 'CC';
 					$aCriteriasResult[] = $sValue;
-					
+
 					unset($aLines['TO']);
 				}
 
@@ -1181,7 +1182,7 @@ class MailClient
 						case 'HAS':
 							$aValue = \explode(',', \strtolower($sRawValue));
 							$aValue = \array_map('trim', $aValue);
-						
+
 							$aCompareArray = array('file', 'files', 'attach', 'attachs', 'attachment', 'attachments');
 							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
@@ -1203,16 +1204,18 @@ class MailClient
 						case 'IS':
 							$aValue = \explode(',', \strtolower($sRawValue));
 							$aValue = \array_map('trim', $aValue);
-							
+
 							$aCompareArray = array('flag', 'flagged', 'star', 'starred', 'pinned');
 							$aCompareArray2 = array('unflag', 'unflagged', 'unstar', 'unstarred', 'unpinned');
 							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
 								$aCriteriasResult[] = 'FLAGGED';
+								$bUseCache = false;
 							}
 							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
 							{
 								$aCriteriasResult[] = 'UNFLAGGED';
+								$bUseCache = false;
 							}
 
 							$aCompareArray = array('unread', 'unseen');
@@ -1220,13 +1223,15 @@ class MailClient
 							if (\count($aCompareArray) > \count(\array_diff($aCompareArray, $aValue)))
 							{
 								$aCriteriasResult[] = 'UNSEEN';
+								$bUseCache = false;
 							}
 							else if (\count($aCompareArray2) > \count(\array_diff($aCompareArray2, $aValue)))
 							{
 								$aCriteriasResult[] = 'SEEN';
+								$bUseCache = false;
 							}
 							break;
-							
+
 						case 'LARGER':
 							$aCriteriasResult[] = 'LARGER';
 							$aCriteriasResult[] =  $this->parseFriendlySize($sRawValue);
@@ -1291,7 +1296,7 @@ class MailClient
 					}
 				}
 			}
-			
+
 			$sGmailRawSearch = \trim($sGmailRawSearch);
 			if ($bIsGmail && 0 < \strlen($sGmailRawSearch))
 			{
@@ -1654,10 +1659,10 @@ class MailClient
 			{
 				$bIndexAsUid = true;
 				$aIndexOrUids = null;
+				$bUseCache = true;
 
-				$sSearchCriterias = $this->getImapSearchCriterias($sSearch, 0, true);
-
-				if ($iMessageCacheCount < $iMessageRealCount && $oCacher && $oCacher->IsInited())
+				$sSearchCriterias = $this->getImapSearchCriterias($sSearch, 0, true, $bUseCache);
+				if ($iMessageCacheCount < $iMessageRealCount && $bUseCache && $oCacher && $oCacher->IsInited())
 				{
 					$sSerializedHash =
 						($bUseSortIfSupported ? 'S': 'N').'/'.
@@ -1682,7 +1687,7 @@ class MailClient
 							{
 								$this->oLogger->Write('Get Serialized UIDS from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
 							}
-							
+
 							$aIndexOrUids = $aSerialized['Uids'];
 							$bCacher = true;
 						}
@@ -1701,7 +1706,7 @@ class MailClient
 								$aIndexOrUids = \MailSo\Base\Utils::ParseFetchSequence($aESorthData['ALL']);
 								$aIndexOrUids = \array_reverse($aIndexOrUids);
 							}
-							
+
 							unset($aESorthData);
 						}
 						else
@@ -1747,7 +1752,7 @@ class MailClient
 									$aIndexOrUids = \MailSo\Base\Utils::ParseFetchSequence($aESearchData['ALL']);
 									$aIndexOrUids = \array_reverse($aIndexOrUids);
 								}
-								
+
 								unset($aESearchData);
 							}
 							else
@@ -2191,7 +2196,7 @@ class MailClient
 		$oFolderCollection = false;
 
 		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
-		
+
 		$aSubscribedFolders = null;
 		if ($bUseListSubscribeStatus)
 		{
@@ -2257,7 +2262,7 @@ class MailClient
 			{
 				$oFolderCollection->SetNamespace($oNamespace->GetPersonalNamespace());
 			}
-			
+
 			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		}
 
@@ -2336,7 +2341,7 @@ class MailClient
 	{
 		return $this->folderModify($sPrevFolderFullNameRaw, $sNextFolderFullNameInUtf, false, $bSubscribeOnRename);
 	}
-    
+
 	/**
 	 * @param string $sPrevFolderFullNameRaw
 	 * @param string $sNewTopFolderNameInUtf
@@ -2350,7 +2355,7 @@ class MailClient
 	{
 		return $this->folderModify($sPrevFolderFullNameRaw, $sNewTopFolderNameInUtf, true, $bSubscribeOnRename);
 	}
-    
+
 	/**
 	 * @param string $sPrevFolderFullNameRaw
 	 * @param string $sNextFolderNameInUtf
@@ -2425,7 +2430,7 @@ class MailClient
 		}
 
 		return $this;
-	}    
+	}
 
 	/**
 	 * @param string $sFolderFullNameRaw

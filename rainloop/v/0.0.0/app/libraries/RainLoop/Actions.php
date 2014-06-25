@@ -1717,12 +1717,11 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$sEmail = \trim($this->GetActionParam('Email', ''));
-		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 
 		$this->Logger()->AddSecret($sPassword);
 
-		$sParentEmail = 0 < \strlen($oAccount->ParentEmail()) ? $oAccount->ParentEmail() : $oAccount->Email();
+		$sParentEmail = $oAccount->ParentEmailHelper();
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		if ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail)
@@ -1730,6 +1729,7 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountAlreadyExists);
 		}
 
+		$sLogin = '';
 		$oNewAccount = $this->LoginProcess($sEmail, $sLogin, $sPassword);
 		$oNewAccount->SetParentEmail($sParentEmail);
 
