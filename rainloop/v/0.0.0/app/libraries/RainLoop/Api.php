@@ -70,19 +70,17 @@ class Api
 	/**
 	 * @param string $sEmail
 	 * @param string $sPassword
-	 * @param string $sLogin = ''
 	 * @param bool $bUseTimeout = true
 	 *
 	 * @return string
 	 */
-	public static function GetUserSsoHash($sEmail, $sPassword, $sLogin = '', $bUseTimeout = true)
+	public static function GetUserSsoHash($sEmail, $sPassword, $bUseTimeout = true)
 	{
-		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.$sLogin.\microtime(true));
+		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.\microtime(true));
 
-		return self::Actions()->Cacher()->Set(self::Actions()->BuildSsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
+		return self::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,
 			'Password' => $sPassword,
-			'Login' => $sLogin,
 			'Time' => $bUseTimeout ? \time() : 0
 		))) ? $sSsoHash : '';
 	}
@@ -94,6 +92,23 @@ class Api
 	 */
 	public static function ClearUserSsoHash($sSsoHash)
 	{
-		return self::Actions()->Delete(self::Actions()->BuildSsoCacherKey($sSsoHash));
+		return self::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+	}
+
+	/**
+	 * @todo
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public static function ClearUserDateStorage($sEmail)
+	{
+		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
+		
+		// TwoFactor Auth User Data
+		self::Actions()->StorageProvider()->Clear(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			\RainLoop\KeyPathHelper::TwoFactorAuthUserData($sEmail)
+		);
 	}
 }

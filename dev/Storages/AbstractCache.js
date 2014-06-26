@@ -5,15 +5,9 @@
  */
 function AbstractCacheStorage()
 {
-	this.oEmailsPicsHashes = {};
 	this.oServices = {};
 	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
-
-/**
- * @type {Object}
- */
-AbstractCacheStorage.prototype.oEmailsPicsHashes = {};
 
 /**
  * @type {Object}
@@ -28,7 +22,6 @@ AbstractCacheStorage.prototype.bCapaGravatar = false;
 AbstractCacheStorage.prototype.clear = function ()
 {
 	this.oServices = {};
-	this.oEmailsPicsHashes = {};
 };
 
 /**
@@ -42,19 +35,11 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	var
 		sUrl = '',
 		sService = '',
-		sEmailLower = sEmail.toLowerCase(),
-		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmailLower]) ? '' : this.oEmailsPicsHashes[sEmailLower]
+		sEmailLower = sEmail.toLowerCase()
 	;
 
-	if ('' !== sPicHash)
-	{
-		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
-	}
-	else
-	{
-		sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
-		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
-	}
+	sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
+	sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 
 	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
 	{
@@ -74,12 +59,4 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 AbstractCacheStorage.prototype.setServicesData = function (oData)
 {
 	this.oServices = oData;
-};
-
-/**
- * @param {Object} oData
- */
-AbstractCacheStorage.prototype.setEmailsPicsHashesData = function (oData)
-{
-	this.oEmailsPicsHashes = oData;
 };

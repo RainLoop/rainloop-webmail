@@ -229,6 +229,8 @@ class PdoAddressBook
 			'password' => $sPassword
 		);
 
+		$this->oLogger->AddSecret($sPassword);
+
 		if (!empty($sProxy))
 		{
 			$aSettings['proxy'] = $sProxy;
@@ -239,7 +241,6 @@ class PdoAddressBook
 		$oClient = new \Sabre\DAV\Client($aSettings);
 		$oClient->setVerifyPeer(false);
 
-		$this->oLogger->AddSecret($sPassword);
 		$this->oLogger->Write('User: '.$aSettings['userName'].', Url: '.$sUrl, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 
 		$aRemoteSyncData = $this->prepearRemoteSyncData($oClient, $sPath);

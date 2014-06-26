@@ -215,15 +215,6 @@ LinkBuilder.prototype.langLink = function (sLang)
 };
 
 /**
- * @param {string} sHash
- * @return {string}
- */
-LinkBuilder.prototype.getUserPicUrlFromHash = function (sHash)
-{
-	return this.sServer + '/Raw/' + this.sSpecSuffix + '/UserPic/' + sHash + '/' + this.sVersion + '/';
-};
-
-/**
  * @return {string}
  */
 LinkBuilder.prototype.exportContactsVcf = function ()

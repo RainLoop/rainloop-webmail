@@ -355,11 +355,9 @@ class Social
 								$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
 
 								if ($aUserData && \is_array($aUserData) &&
-									!empty($aUserData['Email']) &&
-									!empty($aUserData['Login']) &&
-									isset($aUserData['Password']))
+									!empty($aUserData['Email']) && isset($aUserData['Password']))
 								{
-									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Login'], $aUserData['Password']);
+									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 									if ($oAccount instanceof \RainLoop\Account)
 									{
 										$this->oActions->AuthProcess($oAccount);
@@ -377,7 +375,6 @@ class Social
 							{
 								$aUserData = array(
 									'Email' => $oAccount->Email(),
-									'Login' => $oAccount->IncLogin(),
 									'Password' => $oAccount->Password()
 								);
 
@@ -489,7 +486,6 @@ class Social
 						{
 							$aUserData = array(
 								'Email' => $oAccount->Email(),
-								'Login' => $oAccount->IncLogin(),
 								'Password' => $oAccount->Password()
 							);
 
@@ -539,11 +535,9 @@ class Social
 						}
 
 						if ($aUserData && \is_array($aUserData) &&
-							!empty($aUserData['Email']) &&
-							!empty($aUserData['Login']) &&
-							isset($aUserData['Password']))
+							!empty($aUserData['Email']) && isset($aUserData['Password']))
 						{
-							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Login'], $aUserData['Password']);
+							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 							if ($oAccount instanceof \RainLoop\Account)
 							{
 								$this->oActions->AuthProcess($oAccount);
@@ -652,7 +646,6 @@ class Social
 
 									$aUserData = array(
 										'Email' => $oAccount->Email(),
-										'Login' => $oAccount->IncLogin(),
 										'Password' => $oAccount->Password()
 									);
 
@@ -722,10 +715,9 @@ class Social
 
 									if ($aUserData && \is_array($aUserData) &&
 										!empty($aUserData['Email']) &&
-										!empty($aUserData['Login']) &&
 										isset($aUserData['Password']))
 									{
-										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Login'], $aUserData['Password']);
+										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 										if ($oAccount instanceof \RainLoop\Account)
 										{
 											$this->oActions->AuthProcess($oAccount);

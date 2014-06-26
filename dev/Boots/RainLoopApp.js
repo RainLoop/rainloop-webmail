@@ -985,16 +985,6 @@ RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
 	}));
 };
 
-RainLoopApp.prototype.emailsPicsHashes = function ()
-{
-	RL.remote().emailsPicsHashes(function (sResult, oData) {
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			RL.cache().setEmailsPicsHashesData(oData.Result);
-		}
-	});
-};
-
 /**
  * @param {string} sMailToUrl
  * @returns {boolean}
@@ -1189,8 +1179,6 @@ RainLoopApp.prototype.bootstart = function ()
 				}, 500);
 
 				_.delay(function () {
-
-					RL.emailsPicsHashes();
 
 					RL.remote().servicesPics(function (sResult, oData) {
 						if (Enums.StorageResultType.Success === sResult && oData && oData.Result)

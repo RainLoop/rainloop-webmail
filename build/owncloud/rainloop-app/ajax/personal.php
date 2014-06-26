@@ -20,27 +20,25 @@ if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email
 	$sUser = OCP\User::getUser();
 
 	$sPostEmail = $_POST['rainloop-email'];
-	$sPostLogin = isset($_POST['rainloop-login']) ? $_POST['rainloop-login'] : '';
 
 	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-email', $sPostEmail);
-	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-login', $sPostLogin);
 
 	$sPass = $_POST['rainloop-password'];
 	if ('******' !== $sPass && '' !== $sPass)
 	{
 		include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
+		
 		OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
-			OC_RainLoop_Helper::encodePassword($sPass, md5($sPostEmail.$sPostLogin)));
+			OC_RainLoop_Helper::encodePassword($sPass, md5($sPostEmail)));
 	}
 
 	$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
-	$sLogin = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-login', '');
 }
 else
 {
-	OC_JSON::error(array('Message' => 'Invalid argument(s)', 'Email' => $sEmail, 'Login' => $sLogin));
+	OC_JSON::error(array('Message' => 'Invalid argument(s)', 'Email' => $sEmail));
 	return false;
 }
 
-OCP\JSON::success(array('Message' => 'Saved successfully', 'Email' => $sEmail, 'Login' => $sLogin));
+OCP\JSON::success(array('Message' => 'Saved successfully', 'Email' => $sEmail));
 return true;

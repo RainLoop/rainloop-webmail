@@ -731,14 +731,6 @@ WebMailAjaxRemoteStorage.prototype.servicesPics = function (fCallback)
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.emailsPicsHashes = function (fCallback)
-{
-	this.defaultRequest(fCallback, 'EmailsPicsHashes');
-};
-
-/**
- * @param {?Function} fCallback
- */
 WebMailAjaxRemoteStorage.prototype.facebookUser = function (fCallback)
 {
 	this.defaultRequest(fCallback, 'SocialFacebookUserInformation');

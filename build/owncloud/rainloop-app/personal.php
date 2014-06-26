@@ -30,7 +30,6 @@ else
 	$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
 
 	$oTemplate->assign('rainloop-email', $sEmail);
-	$oTemplate->assign('rainloop-login', OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-login', ''));
 
 	$sPass = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
 	$oTemplate->assign('rainloop-password', 0 === strlen($sPass) && 0 === strlen($sEmail) ? '' : '******');

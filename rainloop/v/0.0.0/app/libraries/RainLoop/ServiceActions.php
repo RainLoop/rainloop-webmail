@@ -351,27 +351,9 @@ class ServiceActions
 			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
 			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === \RainLoop\Utils::GetConnectionToken())
 			{
-				$sUrl = $aData['Url'];
-
-				$aOptions = array(
-					CURLOPT_URL => $sUrl,
-					CURLOPT_HEADER => false,
-					CURLOPT_USERAGENT => 'RainLoop External Proxy',
-					CURLOPT_FAILONERROR => true,
-					CURLOPT_SSL_VERIFYPEER => false,
-					CURLOPT_RETURNTRANSFER => true,
-					CURLOPT_POST => false,
-					CURLOPT_TIMEOUT => (int) 10
-				);
-
-				$oCurl = \curl_init();
-				\curl_setopt_array($oCurl, $aOptions);
-
-				$mResult = \curl_exec($oCurl);
-
-				$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
-				$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
-				$sContentType = \trim(\strtolower($sContentType));
+				$iCode = 404;
+				$sContentType = '';
+				$mResult = $this->oHttp->GetUrlAsString($aData['Url'], 'RainLoop External Proxy', $sContentType, $iCode);
 
 				if (false !== $mResult && 200 === $iCode &&
 					\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/bmp', 'image/gif')))
@@ -382,11 +364,6 @@ class ServiceActions
 
 					\header('Content-Type: '.$sContentType);
 					echo $mResult;
-				}
-
-				if (\is_resource($oCurl))
-				{
-					\curl_close($oCurl);
 				}
 			}
 		}
@@ -480,7 +457,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = 'LANG:'.$this->oActions->Plugins()->Hash().$sLanguage.APP_VERSION;
+				$sCacheFileName = \RainLoop\KeyPathHelper::LangCache($sLanguage, $this->oActions->Plugins()->Hash());
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -521,7 +498,7 @@ class ServiceActions
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = 'TEMPLATES:'.($bAdmin ? 'Admin/' : 'App/').$this->oActions->Plugins()->Hash().APP_VERSION;
+			$sCacheFileName = \RainLoop\KeyPathHelper::TemplatesCache($bAdmin, $this->oActions->Plugins()->Hash());
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -561,7 +538,7 @@ class ServiceActions
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = 'PLUGIN:'.$this->oActions->Plugins()->Hash().APP_VERSION;
+			$sCacheFileName = \RainLoop\KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash());
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -622,7 +599,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = 'THEMES/PLUGINS:'.$sTheme.':'.$this->Plugins()->Hash();
+				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -811,27 +788,24 @@ class ServiceActions
 		if (!empty($sSsoHash))
 		{
 			$mData = null;
-			$sSsoKey = $this->oActions->BuildSsoCacherKey($sSsoHash);
 
-			$sSsoSubData = $this->Cacher()->Get($sSsoKey);
+			$sSsoSubData = $this->Cacher()->Get(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
 				$mData = \RainLoop\Utils::DecodeKeyValues($sSsoSubData);
-				$this->Cacher()->Delete($sSsoKey);
+				$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&
 					(0 === $mData['Time'] || \time() - 10 < $mData['Time']))
 				{
 					$sEmail = \trim($mData['Email']);
 					$sPassword = $mData['Password'];
-					$sLogin = isset($mData['Login']) ? $mData['Login'] : '';
 
 					try
 					{
-						$this->oActions->Logger()->AddSecret($sPassword);
-
-						$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
+						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 						$this->oActions->AuthProcess($oAccount);
+						
 						$bLogout = !($oAccount instanceof \RainLoop\Account);
 					}
 					catch (\Exception $oException)
@@ -861,16 +835,13 @@ class ServiceActions
 		$bLogout = true;
 
 		$sEmail = $this->oHttp->GetEnv('REMOTE_USER', '');
-		$sLogin = '';
 		$sPassword = $this->oHttp->GetEnv('REMOTE_PASSWORD', '');
 
 		if (0 < \strlen($sEmail) && 0 < \strlen(\trim($sPassword)))
 		{
 			try
 			{
-				$this->oActions->Logger()->AddSecret($sPassword);
-
-				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
+				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthProcess($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
@@ -901,14 +872,11 @@ class ServiceActions
 		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false))
 		{
 			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-			$sLogin = \trim($this->oHttp->GetRequest('Login', ''));
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
 			try
 			{
-				$this->oActions->Logger()->AddSecret($sPassword);
-
-				$oAccount = $this->oActions->LoginProcess($sEmail, $sLogin, $sPassword);
+				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthProcess($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
@@ -963,34 +931,42 @@ class ServiceActions
 	 */
 	public function ServiceExternalSso()
 	{
+		$sResult = '';
+		$bLogout = true;
 		$sKey = $this->oActions->Config()->Get('labs', 'external_sso_key', '');
 		if ($this->oActions->Config()->Get('labs', 'allow_external_sso', false) &&
 			!empty($sKey) && $sKey === \trim($this->oHttp->GetRequest('SsoKey', '')))
 		{
 			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-			$sLogin = \trim($this->oHttp->GetRequest('Login', ''));
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
 			\RainLoop\Api::Handle();
-			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword, $sLogin);
+			
+			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
 			$bLogout = 0 === \strlen($sResult);
 
 			switch (\strtolower($this->oHttp->GetRequest('Output', 'Plain')))
 			{
 				case 'plain':
 					@\header('Content-Type: text/plain');
-					return $sResult;
+					break;
 
 				case 'json':
 					@\header('Content-Type: application/json; charset=utf-8');
-					return \MailSo\Base\Utils::Php2js(array(
+					$sResult = \MailSo\Base\Utils::Php2js(array(
 						'Action' => 'ExternalSso',
 						'Result' => $sResult
 					), $this->Logger());
+					break;
 			}
 		}
 
-		return '';
+		if ($bLogout)
+		{
+			$this->oActions->SetAuthLogoutToken();
+		}
+
+		return $sResult;
 	}
 
 	/**

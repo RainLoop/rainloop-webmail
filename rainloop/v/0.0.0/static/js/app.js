@@ -3777,15 +3777,6 @@ LinkBuilder.prototype.langLink = function (sLang)
 };
 
 /**
- * @param {string} sHash
- * @return {string}
- */
-LinkBuilder.prototype.getUserPicUrlFromHash = function (sHash)
-{
-	return this.sServer + '/Raw/' + this.sSpecSuffix + '/UserPic/' + sHash + '/' + this.sVersion + '/';
-};
-
-/**
  * @return {string}
  */
 LinkBuilder.prototype.exportContactsVcf = function ()
@@ -18098,14 +18089,6 @@ WebMailAjaxRemoteStorage.prototype.servicesPics = function (fCallback)
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.emailsPicsHashes = function (fCallback)
-{
-	this.defaultRequest(fCallback, 'EmailsPicsHashes');
-};
-
-/**
- * @param {?Function} fCallback
- */
 WebMailAjaxRemoteStorage.prototype.facebookUser = function (fCallback)
 {
 	this.defaultRequest(fCallback, 'SocialFacebookUserInformation');
@@ -18167,15 +18150,9 @@ WebMailAjaxRemoteStorage.prototype.socialUsers = function (fCallback)
  */
 function AbstractCacheStorage()
 {
-	this.oEmailsPicsHashes = {};
 	this.oServices = {};
 	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
-
-/**
- * @type {Object}
- */
-AbstractCacheStorage.prototype.oEmailsPicsHashes = {};
 
 /**
  * @type {Object}
@@ -18190,7 +18167,6 @@ AbstractCacheStorage.prototype.bCapaGravatar = false;
 AbstractCacheStorage.prototype.clear = function ()
 {
 	this.oServices = {};
-	this.oEmailsPicsHashes = {};
 };
 
 /**
@@ -18204,19 +18180,11 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	var
 		sUrl = '',
 		sService = '',
-		sEmailLower = sEmail.toLowerCase(),
-		sPicHash = Utils.isUnd(this.oEmailsPicsHashes[sEmailLower]) ? '' : this.oEmailsPicsHashes[sEmailLower]
+		sEmailLower = sEmail.toLowerCase()
 	;
 
-	if ('' !== sPicHash)
-	{
-		sUrl = RL.link().getUserPicUrlFromHash(sPicHash);
-	}
-	else
-	{
-		sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
-		sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
-	}
+	sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
+	sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
 
 	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
 	{
@@ -18236,14 +18204,6 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 AbstractCacheStorage.prototype.setServicesData = function (oData)
 {
 	this.oServices = oData;
-};
-
-/**
- * @param {Object} oData
- */
-AbstractCacheStorage.prototype.setEmailsPicsHashesData = function (oData)
-{
-	this.oEmailsPicsHashes = oData;
 };
 
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
@@ -20314,16 +20274,6 @@ RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
 	}));
 };
 
-RainLoopApp.prototype.emailsPicsHashes = function ()
-{
-	RL.remote().emailsPicsHashes(function (sResult, oData) {
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			RL.cache().setEmailsPicsHashesData(oData.Result);
-		}
-	});
-};
-
 /**
  * @param {string} sMailToUrl
  * @returns {boolean}
@@ -20518,8 +20468,6 @@ RainLoopApp.prototype.bootstart = function ()
 				}, 500);
 
 				_.delay(function () {
-
-					RL.emailsPicsHashes();
 
 					RL.remote().servicesPics(function (sResult, oData) {
 						if (Enums.StorageResultType.Success === sResult && oData && oData.Result)

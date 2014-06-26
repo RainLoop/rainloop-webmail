@@ -2,7 +2,7 @@
 
 class OC_RainLoop_Helper
 {
-	public static function getSsoHash($sUrl, $sSsoKey, $sEmail, $sPassword, $sLogin = '')
+	public static function getSsoHash($sUrl, $sSsoKey, $sEmail, $sPassword)
 	{
 		if (!function_exists('curl_init'))
 		{
@@ -21,8 +21,7 @@ class OC_RainLoop_Helper
 			CURLOPT_POSTFIELDS => http_build_query(array(
 				'SsoKey' => $sSsoKey,
 				'Email' => $sEmail,
-				'Password' => $sPassword,
-				'Login' => $sLogin
+				'Password' => $sPassword
 			), '', '&'),
 			CURLOPT_TIMEOUT => 5
 		));

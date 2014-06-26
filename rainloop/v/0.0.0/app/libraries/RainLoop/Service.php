@@ -85,11 +85,8 @@ class Service
 				 break;
 		}
 
-		if (!\in_array($sErrStr, array('iconv(): Detected an illegal character in input string')))
-		{
-			$this->oActions->Logger()->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
-			$this->oActions->Logger()->Write('Error: '.$sErrStr, $iType, 'PHP');
-		}
+		$this->oActions->Logger()->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
+		$this->oActions->Logger()->Write('Error: '.$sErrStr, $iType, 'PHP');
 
 		return false;
 	}

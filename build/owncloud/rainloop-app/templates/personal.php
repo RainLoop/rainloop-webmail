@@ -8,9 +8,6 @@
 			<input type="text" id="rainloop-email" name="rainloop-email"
 				value="<?php echo $_['rainloop-email']; ?>" placeholder="<?php p($l->t('Email')); ?>" />
 
-			<input type="text" id="rainloop-email" name="rainloop-login"
-				value="<?php echo $_['rainloop-login']; ?>" placeholder="<?php p($l->t('Login (optional)')); ?>" />
-
 			<input type="password" id="rainloop-password" name="rainloop-password"
 				value="<?php echo $_['rainloop-password']; ?>" placeholder="<?php p($l->t('Password')); ?>" />
 

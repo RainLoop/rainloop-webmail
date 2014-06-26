@@ -209,7 +209,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				if ($this->oLogger)
 				{
-					$this->oLogger->AddSecret($this->EscapeString($sLogin));
 					$this->oLogger->AddSecret($this->EscapeString($sPassword));
 				}
 
