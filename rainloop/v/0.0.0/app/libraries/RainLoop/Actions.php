@@ -270,7 +270,11 @@ class Actions
 		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
 			APP_INSTALLED_START && !APP_INSTALLED_VERSION)
 		{
-			$this->KeenIO('Install');
+			try
+			{
+				$this->KeenIO('Install');
+			}
+			catch (\Exception $oException) {}
 		}
 	}
 
@@ -279,10 +283,14 @@ class Actions
 	 */
 	public function BootEnd()
 	{
-		if ($this->MailClient()->IsLoggined())
+		try
 		{
-			$this->MailClient()->LogoutAndDisconnect();
+			if ($this->MailClient()->IsLoggined())
+			{
+				$this->MailClient()->LogoutAndDisconnect();
+			}
 		}
+		catch (\Exception $oException) {}
 	}
 
 	/**
@@ -6160,7 +6168,7 @@ class Actions
 		{
 			$sIfModifiedSince = $this->Http()->GetHeader('If-Modified-Since', '');
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
-			
+
 			if (!empty($sIfModifiedSince) || !empty($sIfNoneMatch))
 			{
 				$this->Http()->StatusHeader(304);
