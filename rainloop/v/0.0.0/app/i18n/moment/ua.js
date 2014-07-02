@@ -1,7 +1,6 @@
 // moment.js language configuration
-// language : russian (ru/ua)
-// author : Viktorminator : https://github.com/Viktorminator
-// Author : Menelion Elensúle : https://github.com/Oire
+// language : ukrainian (ua)
+// author : Olexandr Loskutov : https://github.com/alex-connor
 
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
@@ -19,14 +18,14 @@
 
     function relativeTimeWithPlural(number, withoutSuffix, key) {
         var format = {
-            'mm': withoutSuffix ? 'минута_минуты_минут' : 'минуту_минуты_минут',
-            'hh': 'час_часа_часов',
-            'dd': 'день_дня_дней',
-            'MM': 'месяц_месяца_месяцев',
-            'yy': 'год_года_лет'
+            'mm': withoutSuffix ? 'хвилине_хвилини_хвилин' : 'хвилину_хвилини_хвилин',
+            'hh': 'годину_години_годин',
+            'dd': 'день_дня_днів',
+            'MM': 'місяць_місяці_місяців',
+            'yy': 'рік_року_років'
         };
         if (key === 'm') {
-            return withoutSuffix ? 'минута' : 'минуту';
+            return withoutSuffix ? 'хвилина' : 'хвилин';
         }
         else {
             return number + ' ' + plural(format[key], +number);
@@ -35,8 +34,8 @@
 
     function monthsCaseReplace(m, format) {
         var months = {
-            'nominative': 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'.split('_'),
-            'accusative': 'января_февраля_марта_апреля_мая_июня_июля_августа_сентября_октября_ноября_декабря'.split('_')
+            'nominative': 'січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листовад_грудень'.split('_'),
+            'accusative': 'січня_лютого_березня_квітня_травня_червня_липня_серпня_вересня_жовтня_листопада_грудня'.split('_')
         },
 
         nounCase = (/D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/).test(format) ?
@@ -48,8 +47,8 @@
 
     function monthsShortCaseReplace(m, format) {
         var monthsShort = {
-            'nominative': 'янв_фев_мар_апр_май_июнь_июль_авг_сен_окт_ноя_дек'.split('_'),
-            'accusative': 'янв_фев_мар_апр_мая_июня_июля_авг_сен_окт_ноя_дек'.split('_')
+            'nominative': 'січ_лют_бер_кві_тра_чер_лип_сер_вер_жов_лис_гру'.split('_'),
+            'accusative': 'січ_лют_бер_кві_тра_чер_лип_сер_вер_жов_лис_гру'.split('_')
         },
 
         nounCase = (/D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/).test(format) ?
@@ -61,11 +60,11 @@
 
     function weekdaysCaseReplace(m, format) {
         var weekdays = {
-            'nominative': 'воскресенье_понедельник_вторник_среда_четверг_пятница_суббота'.split('_'),
-            'accusative': 'воскресенье_понедельник_вторник_среду_четверг_пятницу_субботу'.split('_')
+            'nominative': 'неділя_понеділок_вівторок_середа_четвер_п\'ятниця_субота'.split('_'),
+            'accusative': 'неділю_понеділок_вівторок_середу_четвер_п\'ятницю_суботу'.split('_')
         },
 
-        nounCase = (/\[ ?[Вв] ?(?:прошлую|следующую)? ?\] ?dddd/).test(format) ?
+        nounCase = (/\[ ?[Вв] ?(?:попередню|наступну)? ?\] ?dddd/).test(format) ?
             'accusative' :
             'nominative';
 
@@ -76,9 +75,9 @@
         months : monthsCaseReplace,
         monthsShort : monthsShortCaseReplace,
         weekdays : weekdaysCaseReplace,
-        weekdaysShort : "вс_пн_вт_ср_чт_пт_сб".split("_"),
-        weekdaysMin : "вс_пн_вт_ср_чт_пт_сб".split("_"),
-        monthsParse : [/^янв/i, /^фев/i, /^мар/i, /^апр/i, /^ма[й|я]/i, /^июн/i, /^июл/i, /^авг/i, /^сен/i, /^окт/i, /^ноя/i, /^дек/i],
+        weekdaysShort : "нд_пн_вт_ср_чт_пт_сб".split("_"),
+        weekdaysMin : "нд_пн_вт_ср_чт_пт_сб".split("_"),
+        monthsParse : [/^січ/i, /^лют/i, /^бер/i, /^кві/i, /^тра/i, /^чер/i, /^лип/i, /^сер/i, /^вер/i, /^жов/i, /^лис/i, /^гру/i],
         longDateFormat : {
             LT : "HH:mm",
             L : "DD.MM.YYYY",
@@ -87,24 +86,24 @@
             LLLL : "dddd, D MMMM YYYY г., LT"
         },
         calendar : {
-            sameDay: '[Сегодня в] LT',
+            sameDay: '[Сьогодні в] LT',
             nextDay: '[Завтра в] LT',
-            lastDay: '[Вчера в] LT',
+            lastDay: '[Вчора в] LT',
             nextWeek: function () {
                 return this.day() === 2 ? '[Во] dddd [в] LT' : '[В] dddd [в] LT';
             },
             lastWeek: function () {
                 switch (this.day()) {
                 case 0:
-                    return '[В прошлое] dddd [в] LT';
+                    return '[В минуле] dddd [в] LT';
                 case 1:
                 case 2:
                 case 4:
-                    return '[В прошлый] dddd [в] LT';
+                    return '[В минулий] dddd [в] LT';
                 case 3:
                 case 5:
                 case 6:
-                    return '[В прошлую] dddd [в] LT';
+                    return '[В минулу] dddd [в] LT';
                 }
             },
             sameElse: 'L'
@@ -112,16 +111,16 @@
         relativeTime : {
             future : "через %s",
             past : "%s назад",
-            s : "несколько секунд",
+            s : "кілька секунд",
             m : relativeTimeWithPlural,
             mm : relativeTimeWithPlural,
-            h : "час",
+            h : "година",
             hh : relativeTimeWithPlural,
             d : "день",
             dd : relativeTimeWithPlural,
-            M : "месяц",
+            M : "місяць",
             MM : relativeTimeWithPlural,
-            y : "год",
+            y : "рік",
             yy : relativeTimeWithPlural
         },
 
@@ -129,13 +128,13 @@
 
         meridiem : function (hour, minute, isLower) {
             if (hour < 4) {
-                return "ночи";
+                return "ночі";
             } else if (hour < 12) {
-                return "утра";
+                return "ранку";
             } else if (hour < 17) {
                 return "дня";
             } else {
-                return "вечера";
+                return "вечора";
             }
         },
 
