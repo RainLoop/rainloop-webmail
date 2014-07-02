@@ -116,7 +116,7 @@ Globals.oHtmlEditorDefaultConfig = {
 	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_DIV,
+	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
 
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
