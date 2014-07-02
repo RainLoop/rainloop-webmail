@@ -1043,8 +1043,19 @@ class Utils
 	 */
 	public static function ClearFileName($sFileName)
 	{
-		return \preg_replace('/[\s]+/', ' ',
-			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName));
+		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/', ' ',
+			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName)));
+	}
+
+	/**
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function ClearXss($sValue)
+	{
+		return \MailSo\Base\Utils::ClearNullBite(
+			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue));
 	}
 
 	/**

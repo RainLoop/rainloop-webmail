@@ -6992,8 +6992,10 @@ class Actions
 					'Folder' => $mResult['Folder'],
 					'Uid' => $mResult['Uid'],
 					'MimeType' => 'message/rfc822',
-					'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : $sSubject).'.eml'
+					'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : \MailSo\Base\Utils::ClearXss($sSubject)).'.eml'
 				));
+
+				
 
 				// Flags
 				$aFlags = $mResponse->FlagsLowerCase();
@@ -7177,7 +7179,8 @@ class Actions
 					'Uid' => (string) $mResponse->Uid(),
 					'MimeIndex' => (string) $mResponse->MimeIndex(),
 					'MimeType' => $mResponse->MimeType(),
-					'FileName' => $mResponse->FileName(true),
+					'FileName' => \MailSo\Base\Utils::ClearFileName(
+						\MailSo\Base\Utils::ClearXss($mResponse->FileName(true))),
 					'EstimatedSize' => $mResponse->EstimatedSize(),
 					'CID' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),

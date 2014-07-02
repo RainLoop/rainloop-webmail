@@ -440,6 +440,17 @@ class HtmlUtils
 			$aNodes = $oDom->getElementsByTagName('*');
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
+				if (\in_array(\strtolower($oElement->tagName), array('svg', 'head', 'link',
+					'base', 'meta', 'title', 'style', 'script', 'bgsound', 'keygen', 'source',
+					'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')) && isset($oElement->parentNode))
+				{
+					@$oElement->parentNode->removeChild($oElement);
+				}
+			}
+
+			$aNodes = $oDom->getElementsByTagName('*');
+			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
+			{
 				$sTagNameLower = \strtolower($oElement->tagName);
 
 				// convert body attributes to styles
@@ -524,7 +535,8 @@ class HtmlUtils
 //				}
 
 				foreach (array(
-					'id', 'class', 'contenteditable', 'designmode', 'formaction', 'data-bind', 'xmlns'
+					'id', 'class', 'contenteditable', 'designmode', 'formaction', 'data-bind', 'xmlns',
+					'srcset'
 				) as $sAttr)
 				{
 					@$oElement->removeAttribute($sAttr);
@@ -552,6 +564,8 @@ class HtmlUtils
 
 				if ($oElement->hasAttribute('src'))
 				{
+//					file_put_contents('f:/fff', $oElement->getAttribute('src')."\r\n", FILE_APPEND);
+
 					$sSrc = \trim($oElement->getAttribute('src'));
 					$oElement->removeAttribute('src');
 
