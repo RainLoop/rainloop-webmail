@@ -11,6 +11,14 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		{
 			return include RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
 		}
+		else if (0 === \strpos($sClassName, 'Facebook') && false !== \strpos($sClassName, '\\'))
+		{
+			return include RAINLOOP_APP_LIBRARIES_PATH.'Facebook/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
+		}
+		else if (0 === \strpos($sClassName, 'GuzzleHttp') && false !== \strpos($sClassName, '\\'))
+		{
+			return include RAINLOOP_APP_LIBRARIES_PATH.'GuzzleHttp/'.\str_replace('\\', '/', \substr($sClassName, 11)).'.php';
+		}
 		else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
 		{
 			if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))

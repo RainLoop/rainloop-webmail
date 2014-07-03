@@ -39,33 +39,36 @@
 		</div>
 		<div class="legend">
 			Facebook
+			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(requires PHP 5.4 or greater)</span>
 		</div>
-		<div class="control-group">
-			<div class="controls">
-				<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
-					<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Facebook Integration
-				</label>
+		<div data-bind="if: facebookSupported">
+			<div class="control-group">
+				<div class="controls">
+					<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
+						<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+						Enable Facebook Integration
+					</label>
+				</div>
 			</div>
-		</div>
-		<div class="control-group">
-			 <label class="control-label">
-				App ID
-			 </label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: facebookAppID, saveTrigger: facebookTrigger1" />
-				<div data-bind="saveTrigger: facebookTrigger1"></div>
+			<div class="control-group">
+				 <label class="control-label">
+					App ID
+				 </label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: facebookAppID, saveTrigger: facebookTrigger1" />
+					<div data-bind="saveTrigger: facebookTrigger1"></div>
+				</div>
 			</div>
-		</div>
-		<div class="control-group">
-			 <label class="control-label">
-				App Secret
-			 </label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: facebookAppSecret, saveTrigger: facebookTrigger2" />
-				<div data-bind="saveTrigger: facebookTrigger2"></div>
+			<div class="control-group">
+				 <label class="control-label">
+					App Secret
+				 </label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: facebookAppSecret, saveTrigger: facebookTrigger2" />
+					<div data-bind="saveTrigger: facebookTrigger2"></div>
+				</div>
 			</div>
 		</div>
 		<div class="legend">

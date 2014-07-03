@@ -1574,7 +1574,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaThemes = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
-	
+
 	oData.useLocalProxyForExternalImages = ko.observable(false);
 
 	oData.desktopNotifications = ko.observable(false);
@@ -1765,6 +1765,7 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
+	oData.facebookSupported = ko.observable(false);
 	oData.facebookEnable = ko.observable(false);
 	oData.facebookAppID = ko.observable('');
 	oData.facebookAppSecret = ko.observable('');
@@ -6716,19 +6717,20 @@ AdminSecurity.prototype.phpInfoLink = function ()
 function AdminSocial()
 {
 	var oData = RL.data();
-	
+
 	this.googleEnable = oData.googleEnable;
 	this.googleClientID = oData.googleClientID;
 	this.googleClientSecret = oData.googleClientSecret;
 	this.googleTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.googleTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
 
+	this.facebookSupported = oData.facebookSupported;
 	this.facebookEnable = oData.facebookEnable;
 	this.facebookAppID = oData.facebookAppID;
 	this.facebookAppSecret = oData.facebookAppSecret;
 	this.facebookTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.facebookTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
-	
+
 	this.twitterEnable = oData.twitterEnable;
 	this.twitterConsumerKey = oData.twitterConsumerKey;
 	this.twitterConsumerSecret = oData.twitterConsumerSecret;
@@ -6758,21 +6760,30 @@ AdminSocial.prototype.onBuild = function ()
 		;
 
 		self.facebookEnable.subscribe(function (bValue) {
-			RL.remote().saveAdminConfig(Utils.emptyFunction, {
-				'FacebookEnable': bValue ? '1' : '0'
-			});
+			if (self.facebookSupported())
+			{
+				RL.remote().saveAdminConfig(Utils.emptyFunction, {
+					'FacebookEnable': bValue ? '1' : '0'
+				});
+			}
 		});
 
 		self.facebookAppID.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f1, {
-				'FacebookAppID': Utils.trim(sValue)
-			});
+			if (self.facebookSupported())
+			{
+				RL.remote().saveAdminConfig(f1, {
+					'FacebookAppID': Utils.trim(sValue)
+				});
+			}
 		});
 
 		self.facebookAppSecret.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f2, {
-				'FacebookAppSecret': Utils.trim(sValue)
-			});
+			if (self.facebookSupported())
+			{
+				RL.remote().saveAdminConfig(f2, {
+					'FacebookAppSecret': Utils.trim(sValue)
+				});
+			}
 		});
 
 		self.twitterEnable.subscribe(function (bValue) {
@@ -6792,7 +6803,7 @@ AdminSocial.prototype.onBuild = function ()
 				'TwitterConsumerSecret': Utils.trim(sValue)
 			});
 		});
-		
+
 		self.googleEnable.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(Utils.emptyFunction, {
 				'GoogleEnable': bValue ? '1' : '0'
@@ -6810,7 +6821,7 @@ AdminSocial.prototype.onBuild = function ()
 				'GoogleClientSecret': Utils.trim(sValue)
 			});
 		});
-		
+
 		self.dropboxEnable.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(Utils.emptyFunction, {
 				'DropboxEnable': bValue ? '1' : '0'
@@ -7273,7 +7284,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	{
 		this.layout(mLayout);
 	}
-
+	this.facebookSupported(!!RL.settingsGet('SupportedFacebookSocial'));
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
 	this.facebookAppID(RL.settingsGet('FacebookAppID'));
 	this.facebookAppSecret(RL.settingsGet('FacebookAppSecret'));

@@ -1577,7 +1577,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaThemes = ko.observable(false);
 	oData.allowLanguagesOnSettings = ko.observable(true);
 	oData.allowLanguagesOnLogin = ko.observable(true);
-	
+
 	oData.useLocalProxyForExternalImages = ko.observable(false);
 
 	oData.desktopNotifications = ko.observable(false);
@@ -1768,6 +1768,7 @@ Utils.initDataConstructorBySettings = function (oData)
 		}
 	});
 
+	oData.facebookSupported = ko.observable(false);
 	oData.facebookEnable = ko.observable(false);
 	oData.facebookAppID = ko.observable('');
 	oData.facebookAppSecret = ko.observable('');
@@ -15808,7 +15809,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	{
 		this.layout(mLayout);
 	}
-
+	this.facebookSupported(!!RL.settingsGet('SupportedFacebookSocial'));
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
 	this.facebookAppID(RL.settingsGet('FacebookAppID'));
 	this.facebookAppSecret(RL.settingsGet('FacebookAppSecret'));

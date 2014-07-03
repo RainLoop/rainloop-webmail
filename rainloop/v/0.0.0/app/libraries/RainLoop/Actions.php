@@ -1188,6 +1188,7 @@ class Actions
 				$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
 				$aResult['TwitterConsumerSecret'] = (string) $oConfig->Get('social', 'twitter_consumer_secret', '');
 
+
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
 
@@ -1203,6 +1204,14 @@ class Actions
 			}
 
 			$aResult['Capa'] = $this->Capa(true);
+		}
+
+		$aResult['SupportedFacebookSocial'] = (bool) \version_compare(PHP_VERSION, '5.4.0', '>=');
+		if (!$aResult['SupportedFacebookSocial'])
+		{
+			$aResult['AllowFacebookSocial'] = false;
+			$aResult['FacebookAppID'] = '';
+			$aResult['FacebookAppSecret'] = '';
 		}
 
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'].APP_VERSION.$this->Plugins()->Hash());
@@ -6995,7 +7004,7 @@ class Actions
 					'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : \MailSo\Base\Utils::ClearXss($sSubject)).'.eml'
 				));
 
-				
+
 
 				// Flags
 				$aFlags = $mResponse->FlagsLowerCase();

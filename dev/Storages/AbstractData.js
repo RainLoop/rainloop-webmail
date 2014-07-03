@@ -112,7 +112,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	{
 		this.layout(mLayout);
 	}
-
+	this.facebookSupported(!!RL.settingsGet('SupportedFacebookSocial'));
 	this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
 	this.facebookAppID(RL.settingsGet('FacebookAppID'));
 	this.facebookAppSecret(RL.settingsGet('FacebookAppSecret'));

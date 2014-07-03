@@ -210,35 +210,23 @@ class Social
 		$oFacebook = $this->FacebookConnector($oAccount ? $oAccount : null);
 		if ($oAccount && $oFacebook)
 		{
-			$oUser = $oFacebook->getUser();
-			if ($oUser)
+			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
+
+			$sEncodedeData = $oSettings->GetConf('FacebookAccessToken', '');
+
+			if (!empty($sEncodedeData))
 			{
-				$mData = false;
-				try
-				{
-					$aData = $oFacebook->api(array(
-						'method' => 'fql.query',
-						'query' => 'SELECT uid FROM user WHERE uid = me()'
-					));
-
-					$mData = isset($aData[0], $aData[0]['uid']) ? $aData[0]['uid'] : false;
-				}
-				catch (\Exception $oException)
-				{
-					$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-				}
-
-				if (false !== $mData && 0 < \strlen($mData))
+				$aData = \RainLoop\Utils::DecodeKeyValues($sEncodedeData);
+				if (is_array($aData) && isset($aData['id']))
 				{
 					$this->oActions->StorageProvider()->Clear(null,
 						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-						$this->FacebookUserLoginStorageKey($oFacebook, $mData));
+						$this->FacebookUserLoginStorageKey($oFacebook, $aData['id'])
+					);
 				}
 			}
 
-			$oFacebook->UserLogout();
-
-			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
+			$oSettings->SetConf('FacebookAccessToken', '');
 			$oSettings->SetConf('FacebookSocialName', '');
 
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
@@ -429,60 +417,41 @@ class Social
 		$sSocialName = '';
 
 		$mData = false;
+		$sUserData = '';
 		$aUserData = false;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
 
-		$sRedirectUrl = $this->oHttp->GetFullUrl().'?SocialFacebook';
-		if (0 < strlen($this->oActions->GetSpecAuthToken()))
-		{
-			$sRedirectUrl .= '&rlah='.$this->oActions->GetSpecAuthToken();
-		}
-		else if ($this->oHttp->HasQuery('rlah'))
+		if (0 === \strlen($this->oActions->GetSpecAuthToken()) && $this->oHttp->HasQuery('rlah'))
 		{
 			$this->oActions->SetSpecAuthToken($this->oHttp->GetQuery('rlah', ''));
-			$sRedirectUrl .= '&rlah='.$this->oActions->GetSpecAuthToken();
 		}
 
-		try
+		$oAccount = $this->oActions->GetAccount();
+
+		$oFacebook = $this->FacebookConnector($oAccount);
+		if ($oFacebook)
 		{
-			$oAccount = $this->oActions->GetAccount();
-
-			$oFacebook = $this->FacebookConnector($oAccount ? $oAccount : null);
-			if ($oFacebook)
+			try
 			{
-				if ($oAccount)
+				$oSession = $oFacebook->getSessionFromRedirect();
+				if (!$oSession && !$this->oHttp->HasQuery('state'))
 				{
-					$oUser = $oFacebook->getUser();
-					if (!$oUser && !$this->oHttp->HasQuery('state'))
+					$sLoginUrl = $oFacebook->getLoginUrl().'&display=popup';
+				}
+				else if ($oSession)
+				{
+					$oRequest = new \Facebook\FacebookRequest($oSession, 'GET', '/me');
+					$oResponse = $oRequest->execute();
+					$oGraphObject = $oResponse->getGraphObject();
+
+					$mData = $oGraphObject->getProperty('id');
+					$sSocialName = $oGraphObject->getProperty('name');
+
+					if ($oAccount)
 					{
-						$sLoginUrl = $oFacebook->getLoginUrl(array(
-							'display' => 'popup',
-							'redirect_uri' => $sRedirectUrl
-						));
-					}
-					else
-					{
-						try
-						{
-							$aData = $oFacebook->api(array(
-								'method' => 'fql.query',
-								'query' => 'SELECT uid, name, username FROM user WHERE uid = me()'
-							));
-
-							$mData = isset($aData[0], $aData[0]['uid']) ? $aData[0]['uid'] : false;
-
-							$sSocialName = !empty($aData[0]['name']) ? $aData[0]['name'] : '';
-							$sSocialName .= !empty($aData[0]['username']) ? ' ('.$aData[0]['username'].')' : '';
-							$sSocialName = \trim($sSocialName);
-						}
-						catch (\FacebookApiException $oException)
-						{
-							$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-						}
-
-						if (false !== $mData && 0 < \strlen($mData))
+						if ($mData && 0 < \strlen($mData))
 						{
 							$aUserData = array(
 								'Email' => $oAccount->Email(),
@@ -491,6 +460,9 @@ class Social
 
 							$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
 							$oSettings->SetConf('FacebookSocialName', $sSocialName);
+							$oSettings->SetConf('FacebookAccessToken', \RainLoop\Utils::EncodeKeyValues(array('id' => $mData)));
+
+
 							$this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 
 							$this->oActions->StorageProvider()->Put(null,
@@ -501,28 +473,11 @@ class Social
 							$iErrorCode = 0;
 						}
 					}
-				}
-				else
-				{
-					$bLogin = true;
-
-					$oUser = $oFacebook->getUser();
-					if ($oUser)
+					else
 					{
-						try
-						{
-							$aData = $oFacebook->api(array(
-								'method' => 'fql.query',
-								'query' => 'SELECT uid FROM user WHERE uid = me()'
-							));
+						$bLogin = true;
 
-							$mData = isset($aData[0], $aData[0]['uid']) ? $aData[0]['uid'] : false;
-						}
-						catch (\FacebookApiException $oException)
-						{
-						}
-
-						if (false !== $mData && 0 < \strlen($mData))
+						if ($mData && 0 < \strlen($mData))
 						{
 							$sUserData = $this->oActions->StorageProvider()->Get(null,
 								\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
@@ -550,19 +505,12 @@ class Social
 							$iErrorCode = \RainLoop\Notifications::SocialFacebookLoginAccessDisable;
 						}
 					}
-					else
-					{
-						$sLoginUrl = $oFacebook->getLoginUrl(array(
-							'display' => 'popup',
-							'redirect_uri' => $sRedirectUrl
-						));
-					}
 				}
 			}
-		}
-		catch (\Exception $oException)
-		{
-			$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+			catch (\Exception $oException)
+			{
+				$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+			}
 		}
 
 		if ($sLoginUrl)
@@ -571,7 +519,9 @@ class Social
 		}
 		else
 		{
+			$this->oHttp->ServerNoCache();
 			@\header('Content-Type: text/html; charset=utf-8');
+
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_facebook'.$sCallBackType.'_service';
 			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
@@ -852,42 +802,48 @@ class Social
 	/**
 	 * @param \RainLoop\Account|null $oAccount = null
 	 *
-	 * @return \Facebook|null
+	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */
 	public function FacebookConnector($oAccount = null)
 	{
 		$oFacebook = false;
 		$oConfig = $this->oActions->Config();
-		if ($oConfig->Get('social', 'fb_enable', false) &&
-			'' !== \trim($oConfig->Get('social', 'fb_app_id', '')) &&
+		$sAppID = \trim($oConfig->Get('social', 'fb_app_id', ''));
+
+		if (\version_compare(PHP_VERSION, '5.4.0', '>=') &&
+			$oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
 			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')))
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/facebook/facebook.php';
+			\Facebook\FacebookSession::setDefaultApplication($sAppID,
+				\trim($oConfig->Get('social', 'fb_app_secret', '')));
 
-			if (isset(\RainLoopFacebook::$CURL_OPTS) && \is_array(\RainLoopFacebook::$CURL_OPTS))
+			$sRedirectUrl = $this->oHttp->GetFullUrl().'?SocialFacebook';
+			if (0 < \strlen($this->oActions->GetSpecAuthToken()))
 			{
-				$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
-				if (0 < \strlen($sProxy))
-				{
-					\RainLoopFacebook::$CURL_OPTS[CURLOPT_PROXY] = $sProxy;
-
-					$sProxyAuth = $this->oActions->Config()->Get('labs', 'curl_proxy_auth', '');
-					if (0 < \strlen($sProxyAuth))
-					{
-						\RainLoopFacebook::$CURL_OPTS[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
-					}
-				}
+				$sRedirectUrl .= '&rlah='.$this->oActions->GetSpecAuthToken();
+			}
+			else if ($this->oHttp->HasQuery('rlah'))
+			{
+				$this->oActions->SetSpecAuthToken($this->oHttp->GetQuery('rlah', ''));
+				$sRedirectUrl .= '&rlah='.$this->oActions->GetSpecAuthToken();
 			}
 
-			$oFacebook = new \RainLoopFacebook(array(
-				'rlAccount' => $oAccount,
-				'rlUserHash' => \RainLoop\Utils::GetConnectionToken(),
-				'rlStorageProvaider' => $this->oActions->StorageProvider(),
-				'appId'  => \trim($oConfig->Get('social', 'fb_app_id', '')),
-				'secret' => \trim($oConfig->Get('social', 'fb_app_secret', '')),
-				'fileUpload' => false,
-				'cookie' => true
-			));
+			try
+			{
+				$oAccount = $this->oActions->GetAccount();
+
+				$oFacebook = new \RainLoop\Common\RainLoopFacebookRedirectLoginHelper($sRedirectUrl);
+				$oFacebook->initRainLoopData(array(
+					'rlAppId' => $sAppID,
+					'rlAccount' => $oAccount,
+					'rlUserHash' => \RainLoop\Utils::GetConnectionToken(),
+					'rlStorageProvaider' => $this->oActions->StorageProvider()
+				));
+			}
+			catch (\Exception $oException)
+			{
+				$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+			}
 		}
 
 		return false === $oFacebook ? null : $oFacebook;
@@ -906,7 +862,7 @@ class Social
 	 */
 	public function FacebookUserLoginStorageKey($oFacebook, $sFacebookUserId)
 	{
-		return \implode('_', array('facebook', \md5($oFacebook->getAppId()), $sFacebookUserId, APP_SALT));
+		return \implode('_', array('facebookNew', \md5($oFacebook->GetRLAppId()), $sFacebookUserId, APP_SALT));
 	}
 
 	/**
