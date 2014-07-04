@@ -17,6 +17,7 @@ function SettingsGeneral()
 	this.threading = oData.threading;
 	this.useThreads = oData.useThreads;
 	this.replySameFolder = oData.replySameFolder;
+	this.replyCounter = oData.replyCounter;
 	this.layout = oData.layout;
 	this.usePreviewPane = oData.usePreviewPane;
 	this.useCheckboxesInList = oData.useCheckboxesInList;
@@ -121,6 +122,12 @@ SettingsGeneral.prototype.onBuild = function ()
 					'ReplySameFolder': bValue ? '1' : '0'
 				});
 			}, 3000);
+		});
+
+		oData.replyCounter.subscribe(function (bValue) {
+			RL.remote().saveSettings(Utils.emptyFunction, {
+				'ReplyCounter': bValue ? '1' : '0'
+			});
 		});
 
 		oData.useThreads.subscribe(function (bValue) {
