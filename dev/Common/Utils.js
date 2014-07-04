@@ -461,7 +461,7 @@ Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
 
 	sResult = sResult.replace(/[\s]+/g, ' ');
 	sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
-//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
+	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
 	return sResult;
 };
 
