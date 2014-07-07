@@ -2,6 +2,11 @@
 
 	if (defined('APP_VERSION'))
 	{
+		@ini_set('register_globals', 0);
+		@ini_set('zend.ze1_compatibility_mode', 0);
+		@ini_set('magic_quotes_gpc', 0);
+		@ini_set('magic_quotes_runtime', 0);
+
 		if (isset($_ENV['RAINLOOP_INCLUDE_AS_VERSION']) && $_ENV['RAINLOOP_INCLUDE_AS_VERSION'])
 		{
 			$_ENV['RAINLOOP_INCLUDE_AS_VERSION'] = false;
