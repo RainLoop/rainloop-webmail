@@ -359,6 +359,8 @@ function PopupsComposeViewModel()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.Compose;
 
+	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
+
 	Knoin.constructorEnd(this);
 }
 
@@ -912,12 +914,15 @@ PopupsComposeViewModel.prototype.editorResize = function ()
 PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 {
 	var self = this;
-	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
-		if (self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'closeCommand');
-		}
-	}]);
+	if (!kn.isPopupVisible(PopupsAskViewModel))
+	{
+		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+			if (self.modalVisibility())
+			{
+				Utils.delegateRun(self, 'closeCommand');
+			}
+		}]);
+	}
 };
 
 PopupsComposeViewModel.prototype.onBuild = function ()
@@ -945,7 +950,10 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	});
 
 	key('esc', Enums.KeyState.Compose, function () {
-		self.tryToClosePopup();
+		if (self.modalVisibility())
+		{
+			self.tryToClosePopup();
+		}
 		return false;
 	});
 

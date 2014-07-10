@@ -199,6 +199,15 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 };
 
 /**
+ * @param {Function} ViewModelClassToShow
+ * @return {boolean}
+ */
+Knoin.prototype.isPopupVisible = function (ViewModelClassToShow)
+{
+	return ViewModelClassToShow && ViewModelClassToShow.__vm ? ViewModelClassToShow.__vm.modalVisibility() : false;
+};
+
+/**
  * @param {string} sScreenName
  * @param {string} sSubPart
  */

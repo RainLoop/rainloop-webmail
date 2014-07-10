@@ -103,5 +103,10 @@ PopupsAskViewModel.prototype.onBuild = function ()
 		}
 		return false;
 	}, this));
+
+	key('esc', Enums.KeyState.PopupAsk, _.bind(function () {
+		this.noClick();
+		return false;
+	}, this));
 };
 

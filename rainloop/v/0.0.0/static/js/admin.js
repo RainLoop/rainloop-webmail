@@ -4552,6 +4552,15 @@ Knoin.prototype.showScreenPopup = function (ViewModelClassToShow, aParameters)
 };
 
 /**
+ * @param {Function} ViewModelClassToShow
+ * @return {boolean}
+ */
+Knoin.prototype.isPopupVisible = function (ViewModelClassToShow)
+{
+	return ViewModelClassToShow && ViewModelClassToShow.__vm ? ViewModelClassToShow.__vm.modalVisibility() : false;
+};
+
+/**
  * @param {string} sScreenName
  * @param {string} sSubPart
  */
@@ -5531,6 +5540,8 @@ function PopupsPluginViewModel()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.All;
 
+	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
+
 	Knoin.constructorEnd(this);
 }
 
@@ -5587,12 +5598,15 @@ PopupsPluginViewModel.prototype.onShow = function (oPlugin)
 PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 {
 	var self = this;
-	kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
-		if (self.modalVisibility())
-		{
-			Utils.delegateRun(self, 'cancelCommand');
-		}
-	}]);
+	if (!kn.isPopupVisible(PopupsAskViewModel))
+	{
+		kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+			if (self.modalVisibility())
+			{
+				Utils.delegateRun(self, 'cancelCommand');
+			}
+		}]);
+	}
 };
 
 PopupsPluginViewModel.prototype.onBuild = function ()
@@ -5601,8 +5615,8 @@ PopupsPluginViewModel.prototype.onBuild = function ()
 		if (this.modalVisibility())
 		{
 			this.tryToClosePopup();
-			return false;
 		}
+		return false;
 	}, this));
 };
 
@@ -5889,6 +5903,11 @@ PopupsAskViewModel.prototype.onBuild = function ()
 		{
 			this.yesFocus(true);
 		}
+		return false;
+	}, this));
+
+	key('esc', Enums.KeyState.PopupAsk, _.bind(function () {
+		this.noClick();
 		return false;
 	}, this));
 };
