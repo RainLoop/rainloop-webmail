@@ -564,8 +564,6 @@ class HtmlUtils
 
 				if ($oElement->hasAttribute('src'))
 				{
-//					file_put_contents('f:/fff', $oElement->getAttribute('src')."\r\n", FILE_APPEND);
-
 					$sSrc = \trim($oElement->getAttribute('src'));
 					$oElement->removeAttribute('src');
 
@@ -732,7 +730,7 @@ class HtmlUtils
 			{
 				$oElement->removeAttribute('data-x-additional-src');
 			}
-			
+
 			if ($oElement->hasAttribute('data-x-additional-style-url'))
 			{
 				$oElement->removeAttribute('data-x-additional-style-url');

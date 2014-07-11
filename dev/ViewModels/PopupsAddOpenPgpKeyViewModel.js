@@ -22,12 +22,15 @@ function PopupsAddOpenPgpKeyViewModel()
 			iCount = 30,
 			aMatch = null,
 			sKey = Utils.trim(this.key()),
-			oReg = /[\-]{3,6}BEGIN PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}[\s\S]+[\-]{3,6}END PGP (PRIVATE|PUBLIC) KEY BLOCK[\-]{3,6}/gi,
+			oReg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
 			oOpenpgpKeyring = RL.data().openpgpKeyring
 		;
 
+		sKey = sKey.replace(/[\r\n]([a-zA-Z0-9]{2,}:[^\r\n]+)[\r\n]+([a-zA-Z0-9\/\\+=]{10,})/g, '\n$1!-!N!-!$2')
+			.replace(/[\n\r]+/g, '\n').replace(/!-!N!-!/g, '\n\n');
+
 		this.key.error('' === sKey);
-		
+
 		if (!oOpenpgpKeyring || this.key.error())
 		{
 			return false;
@@ -61,7 +64,7 @@ function PopupsAddOpenPgpKeyViewModel()
 
 		RL.reloadOpenPgpKeys();
 		Utils.delegateRun(this, 'cancelCommand');
-		
+
 		return true;
 	});
 
