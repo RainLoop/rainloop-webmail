@@ -1,6 +1,6 @@
 <?php
 
-namespace RainLoop\Plugins;
+namespace RainLoop\PluginsNext;
 
 class Manager
 {
@@ -99,21 +99,26 @@ class Manager
 						$oPlugin = $this->CreatePluginByName($sName);
 						if ($oPlugin)
 						{
-							$oPlugin->PreInit();
+							$oPlugin->InitStep('step1');
 							$oPlugin->Init();
+							$oPlugin->InitStep('step2');
 
 							$this->aPlugins[] = $oPlugin;
+							
+							$oPlugin->InitStep('spep3');
 						}
 					}
 				}
 			}
+
+			$this->RunHook('api.bootstrap.plugins');
 		}
 	}
 
 	/**
 	 * @param string $sName
 	 *
-	 * @return \RainLoop\Plugins\AbstractPlugin | null
+	 * @return \RainLoop\Plugins\AbstractPlugin|null
 	 */
 	public function CreatePluginByName($sName)
 	{
@@ -131,7 +136,7 @@ class Manager
 			if (\class_exists($sClassName))
 			{
 				$oPlugin = new $sClassName();
-				if ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin)
+				if ($oPlugin instanceof \RainLoop\PluginsNext\AbstractPlugin)
 				{
 					$oPlugin
 						->SetValues(APP_PLUGINS_PATH.$sName, $sName,
@@ -167,9 +172,8 @@ class Manager
 				if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
 					\file_exists($sPathName.'/index.php'))
 				{
-					$sVersion = @\file_get_contents($sPathName.'/VERSION');
 					$aList[] = array(
-						$sName, $sVersion
+						$sName, @\file_get_contents($sPathName.'/VERSION')
 					);
 				}
 			}
@@ -205,7 +209,7 @@ class Manager
 	}
 
 	/**
-	 * @return \RainLoop\Actions
+	 * @return string
 	 */
 	public function Hash()
 	{
@@ -231,14 +235,14 @@ class Manager
 			$aJs = $bAdminScope ? $this->aAdminJs : $this->aJs;
 			foreach ($aJs as $sFile)
 			{
-				if (file_exists($sFile))
+				if (\file_exists($sFile))
 				{
-					$aResult[] = file_get_contents($sFile);
+					$aResult[] = \file_get_contents($sFile);
 				}
 			}
 		}
 
-		return implode("\n", $aResult);
+		return \implode("\n", $aResult);
 	}
 
 	/**
@@ -261,14 +265,13 @@ class Manager
 		$sResult = '';
 		if ($this->bIsEnabled)
 		{
-			$aTemplates = $bAdminScope ? $this->aAdminTemplates : $this->aTemplates;
-			foreach ($aTemplates as $sFile)
+			foreach ($bAdminScope ? $this->aAdminTemplates : $this->aTemplates as $sFile)
 			{
-				if (file_exists($sFile))
+				if (\file_exists($sFile))
 				{
-					$sTemplateName = substr(basename($sFile), 0, -5);
-					$sResult .= '<script id="'.preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
-						$this->Actions()->ProcessTemplate($sTemplateName, file_get_contents($sFile)).'</script>';
+					$sTemplateName = \substr(\basename($sFile), 0, -5);
+					$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
+						$this->Actions()->ProcessTemplate($sTemplateName, \file_get_contents($sFile)).'</script>';
 				}
 			}
 		}
@@ -279,12 +282,13 @@ class Manager
 	/**
 	 * @param bool $bAdmin
 	 * @param array $aAppData
+	 * @param \RainLoop\Account|null $oAccount = null
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function InitAppData($bAdmin, &$aAppData, $oAccount = null)
 	{
-		if ($this->bIsEnabled && isset($aAppData['Plugins']) && is_array($aAppData['Plugins']))
+		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins']))
 		{
 			$bAuth = isset($aAppData['Auth']) && !!$aAppData['Auth'];
 			foreach ($this->aPlugins as $oPlugin)
@@ -295,7 +299,7 @@ class Manager
 					$aMap = $oPlugin->ConfigMap();
 					if (\is_array($aMap))
 					{
-						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */$oPluginProperty)
+						foreach ($aMap as /* @var $oPluginProperty \RainLoop\PluginsNext\Property */$oPluginProperty)
 						{
 							if ($oPluginProperty && $oPluginProperty->AllowedInJs())
 							{
@@ -316,7 +320,10 @@ class Manager
 				}
 			}
 
-			$this->RunHook('filter.app-data', array($bAdmin, &$aAppData));
+			$this->RunHook('filter.app-data', array(
+				'IsAdmin' => $bAdmin,
+				'AppData' => &$aAppData
+			), $oAccount);
 		}
 
 		return $this;
@@ -326,11 +333,11 @@ class Manager
 	 * @param string $sHookName
 	 * @param mixed $mCallbak
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function AddHook($sHookName, $mCallbak)
 	{
-		if ($this->bIsEnabled && is_callable($mCallbak))
+		if ($this->bIsEnabled && \is_callable($mCallbak))
 		{
 			if (!isset($this->aHooks[$sHookName]))
 			{
@@ -347,7 +354,7 @@ class Manager
 	 * @param string $sFile
 	 * @param bool $bAdminScope = false
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function AddJs($sFile, $bAdminScope = false)
 	{
@@ -370,7 +377,7 @@ class Manager
 	 * @param string $sFile
 	 * @param bool $bAdminScope = false
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function AddTemplate($sFile, $bAdminScope = false)
 	{
@@ -392,11 +399,12 @@ class Manager
 	/**
 	 * @param string $sHookName
 	 * @param array $aArg = array()
+	 * @param \RainLoop\Account|null $oAccount = null
 	 * @param bool $bLogHook = true
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
-	public function RunHook($sHookName, $aArg = array(), $bLogHook = true)
+	public function RunHook($sHookName, $aArg = array(), $oAccount = null, $bLogHook = true)
 	{
 		if ($this->bIsEnabled)
 		{
@@ -407,9 +415,17 @@ class Manager
 					$this->WriteLog('Hook: '.$sHookName, \MailSo\Log\Enumerations\Type::NOTE);
 				}
 
+				$bArgArray = 0 < \count($aArg);
 				foreach ($this->aHooks[$sHookName] as $mCallbak)
 				{
-					call_user_func_array($mCallbak, $aArg);
+					if ($bArgArray)
+					{
+						\call_user_func_array($mCallbak, array($aArg));
+					}
+					else
+					{
+						\call_user_func($mCallbak);
+					}
 				}
 			}
 		}
@@ -421,7 +437,7 @@ class Manager
 	 * @param string $sActionName
 	 * @param mixed $mCallbak
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function AddAdditionalPartAction($sActionName, $mCallbak)
 	{
@@ -443,7 +459,7 @@ class Manager
 	 * @param string $sActionName
 	 * @param array $aParts = array()
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function RunAdditionalPart($sActionName, $aParts = array())
 	{
@@ -473,7 +489,7 @@ class Manager
 	 * @param string $sHtml
 	 * @param bool $bPrepend = false
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function AddProcessTemplateAction($sName, $sPlace, $sHtml, $bPrepend = false)
 	{
@@ -491,11 +507,11 @@ class Manager
 
 			if ($bPrepend)
 			{
-				array_unshift($this->aProcessTemplate[$sName][$sPlace], $sHtml);
+				\array_unshift($this->aProcessTemplate[$sName][$sPlace], $sHtml);
 			}
 			else
 			{
-				array_push($this->aProcessTemplate[$sName][$sPlace], $sHtml);
+				\array_push($this->aProcessTemplate[$sName][$sPlace], $sHtml);
 			}
 		}
 
@@ -510,7 +526,7 @@ class Manager
 	 */
 	public function AddAdditionalAjaxAction($sActionName, $mCallbak)
 	{
-		if ($this->bIsEnabled && is_callable($mCallbak) && 0 < strlen($sActionName))
+		if ($this->bIsEnabled && \is_callable($mCallbak) && 0 < \strlen($sActionName))
 		{
 			$sActionName = 'Do'.$sActionName;
 
@@ -544,7 +560,7 @@ class Manager
 		{
 			if (isset($this->aAdditionalAjax[$sActionName]))
 			{
-				return call_user_func($this->aAdditionalAjax[$sActionName]);
+				return \call_user_func($this->aAdditionalAjax[$sActionName]);
 			}
 		}
 
@@ -555,7 +571,7 @@ class Manager
 	 * @param string $sLang
 	 * @param array $sActionName
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 */
 	public function ReadLang($sLang, &$aLang)
 	{
@@ -591,11 +607,11 @@ class Manager
 		{
 			foreach ($this->aProcessTemplate[$sName] as $sPlace => $aAddHtml)
 			{
-				if (is_array($aAddHtml) && 0 < count($aAddHtml))
+				if (\is_array($aAddHtml) && 0 < \count($aAddHtml))
 				{
 					foreach ($aAddHtml as $sAddHtml)
 					{
-						$sHtml = str_replace('{{INCLUDE/'.$sPlace.'/PLACE}}', $sAddHtml.'{{INCLUDE/'.$sPlace.'/PLACE}}', $sHtml);
+						$sHtml = \str_replace('{{INCLUDE/'.$sPlace.'/PLACE}}', $sAddHtml.'{{INCLUDE/'.$sPlace.'/PLACE}}', $sHtml);
 					}
 				}
 			}
@@ -623,7 +639,7 @@ class Manager
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
-	 * @return \RainLoop\Plugins\Manager
+	 * @return \RainLoop\PluginsNext\Manager
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
@@ -641,29 +657,29 @@ class Manager
 
 	/**
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 *
 	 * @return void
 	 */
-	public function WriteLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteLog($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->Write($sDesc, $iDescType, 'PLUGIN');
+			$this->oLogger->Write($sDesc, $iType, 'PLUGIN');
 		}
 	}
 
 	/**
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 *
 	 * @return void
 	 */
-	public function WriteException($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteException($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->WriteException($sDesc, $iDescType, 'PLUGIN');
+			$this->oLogger->WriteException($sDesc, $iType, 'PLUGIN');
 		}
 	}
 }

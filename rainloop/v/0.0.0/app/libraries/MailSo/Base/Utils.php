@@ -2041,7 +2041,7 @@ class Utils
 	 */
 	public static function IdnToAscii($sStr, $bLowerIfAscii = false)
 	{
-		$sStr = $bLowerIfAscii ?  \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
+		$sStr = $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
 
 		$sUser = '';
 		$sDomain = $sStr;

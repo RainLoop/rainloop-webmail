@@ -424,6 +424,7 @@ Enums.Notification = {
 
 	'MailServerError': 901,
 	'ClientViewError': 902,
+	'InvalidInputArgument': 903,
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };

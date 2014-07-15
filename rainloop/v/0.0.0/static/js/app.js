@@ -794,6 +794,7 @@ Enums.Notification = {
 
 	'MailServerError': 901,
 	'ClientViewError': 902,
+	'InvalidInputArgument': 903,
 	'UnknownNotification': 999,
 	'UnknownError': 999
 };
@@ -1423,6 +1424,7 @@ Utils.initNotificationLanguage = function ()
 	NotificationI18N[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
 
 	NotificationI18N[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
+	NotificationI18N[Enums.Notification.InvalidInputArgument] = Utils.i18n('NOTIFICATIONS/INVALID_INPUT_ARGUMENT');
 	NotificationI18N[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
 	NotificationI18N[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
 };

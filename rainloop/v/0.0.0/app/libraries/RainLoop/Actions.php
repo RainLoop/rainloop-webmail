@@ -1007,6 +1007,7 @@ class Actions
 			$sAuthAccountHash = '';
 		}
 
+		$oAccount = null;
 		$oConfig = $this->Config();
 
 		$aResult = array(
@@ -1114,6 +1115,8 @@ class Actions
 			}
 			else
 			{
+				$oAccount = null;
+				
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 			}
@@ -1341,7 +1344,7 @@ class Actions
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
 
-		$this->Plugins()->InitAppData($bAdmin, $aResult);
+		$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 
 		return $aResult;
 	}
@@ -1431,17 +1434,25 @@ class Actions
 	 * @param string $sPassword
 	 * @param string $sSignMeToken = ''
 	 * @param string $sAdditionalCode = ''
-	 * @param string $bAdditionalCodeSignMeSignMe = false
+	 * @param string $bAdditionalCodeSignMe = false
 	 *
 	 * @return \RainLoop\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
-		$sAdditionalCode = '', $bAdditionalCodeSignMeSignMe = false)
+		$sAdditionalCode = '', $bAdditionalCodeSignMe = false)
 	{
+		$this->Plugins()->RunHook('filter.login-credentials-first', array(&$sEmail, &$sPassword));
+		
+		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
 		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
 		{
 			$sEmail = $sEmail.'@'.\trim(\trim($this->Config()->Get('login', 'default_domain', '')), ' @');
+		}
+
+		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
 		$this->Logger()->AddSecret($sPassword);
@@ -1471,6 +1482,7 @@ class Actions
 			}
 		}
 
+		// Two factor auth
 		if ($oAccount && $this->TwoFactorAuthProvider()->IsActive())
 		{
 			$aData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
@@ -1503,7 +1515,7 @@ class Actions
 							}
 						}
 
-						if ($bAdditionalCodeSignMeSignMe)
+						if ($bAdditionalCodeSignMe)
 						{
 							\RainLoop\Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
 								\time() + 60 * 60 * 24 * 14, '/', null, null, true);
@@ -3230,7 +3242,7 @@ class Actions
 		if (!$bDisable)
 		{
 			$oPlugin = $this->Plugins()->CreatePluginByName($sName);
-			if ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin)
+			if ($oPlugin && ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin))
 			{
 				$sValue = $oPlugin->Supported();
 				if (0 < \strlen($sValue))
@@ -3274,7 +3286,7 @@ class Actions
 				{
 					foreach ($aMap as $oItem)
 					{
-						if ($oItem && $oItem instanceof \RainLoop\Plugins\Property)
+						if ($oItem && ($oItem instanceof \RainLoop\Plugins\Property))
 						{
 							$aItem = $oItem->ToArray();
 							$aItem[0] = $oConfig->Get('plugin', $oItem->Name(), '');

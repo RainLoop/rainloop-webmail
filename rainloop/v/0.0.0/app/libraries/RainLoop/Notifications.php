@@ -63,6 +63,7 @@ class Notifications
 	
 	const MailServerError = 901;
 	const ClientViewError = 902;
+	const InvalidInputArgument = 903;
 	const UnknownNotification = 998;
 	const UnknownError = 999;
 
@@ -125,6 +126,7 @@ class Notifications
 			self::AccountAlreadyExists => 'AccountAlreadyExists',
 			self::MailServerError => 'MailServerError',
 			self::ClientViewError => 'ClientViewError',
+			self::InvalidInputArgument => 'InvalidInputArgument',
 			self::UnknownNotification => 'UnknownNotification',
 			self::UnknownError => 'UnknownError'
 		);
