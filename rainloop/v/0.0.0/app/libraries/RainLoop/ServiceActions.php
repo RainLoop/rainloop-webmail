@@ -805,7 +805,7 @@ class ServiceActions
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 						$this->oActions->AuthProcess($oAccount);
-						
+
 						$bLogout = !($oAccount instanceof \RainLoop\Account);
 					}
 					catch (\Exception $oException)
@@ -941,7 +941,7 @@ class ServiceActions
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
 			\RainLoop\Api::Handle();
-			
+
 			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
 			$bLogout = 0 === \strlen($sResult);
 

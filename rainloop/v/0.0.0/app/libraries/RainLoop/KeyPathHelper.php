@@ -6,14 +6,14 @@ class KeyPathHelper
 {
 	/**
 	 * @param string $sEmail
-	 * 
+	 *
 	 * @return string
 	 */
 	static public function TwoFactorAuthUserData($sEmail)
 	{
 		return 'TwoFactorAuth/User/'.$sEmail.'/Data/';
 	}
-	
+
 	/**
 	 * @param string $sSsoHash
 	 *
@@ -97,7 +97,7 @@ class KeyPathHelper
 	{
 		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.APP_VERSION.'/';
 	}
-	
+
 	/**
 	 * @param bool $bAdmin
 	 * @param string $sPluginsHash
@@ -125,7 +125,7 @@ class KeyPathHelper
 	 *
 	 * @return string
 	 */
-	static public function CssCache($sPluginsHash)
+	static public function CssCache($sTheme, $sPluginsHash)
 	{
 		return '/CssCache/'.$sPluginsHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}

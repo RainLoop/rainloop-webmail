@@ -22,6 +22,8 @@ if ('' === $sUrl || '' === $sSsoKey)
 }
 else
 {
+	OC_Config::setValue('xframe_restriction', false);
+
 	$sUser = OCP\User::getUser();
 
 	$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');

@@ -1012,9 +1012,9 @@ class Actions
 
 		$aResult = array(
 			'Version' => APP_VERSION,
-			'IndexFile' => APP_INDEX_FILE,
 			'Auth' => false,
 			'AccountHash' => '',
+			'StaticPrefix' => 'rainloop/v/' + APP_VERSION + '/static/',
 			'AccountSignMe' => false,
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',
@@ -1299,7 +1299,7 @@ class Actions
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
 		$sTheme = $this->ValidateTheme($sTheme);
-		$sNewThemeLink =  APP_INDEX_FILE.'?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
+		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
@@ -1327,15 +1327,15 @@ class Actions
 		$sPluginsLink = '';
 		if (0 < $this->Plugins()->Count())
 		{
-			$sPluginsLink = APP_INDEX_FILE.'?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+			$sPluginsLink = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		}
 
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
 		$aResult['UserLanguage'] = $bUserLanguage;
-		$aResult['LangLink'] = APP_INDEX_FILE.'?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
-		$aResult['TemplatesLink'] = APP_INDEX_FILE.'?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
+		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
+		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
@@ -7070,9 +7070,8 @@ class Actions
 					$fAdditionalExternalFilter = null;
 					if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 					{
-						$sIndexPrefix = 0 < strlen(APP_INDEX_FILE) ? APP_INDEX_FILE : './';
-						$fAdditionalExternalFilter = function ($sUrl) use ($sIndexPrefix) {
-							return $sIndexPrefix.'?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValues(array(
+						$fAdditionalExternalFilter = function ($sUrl) {
+							return './?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValues(array(
 								'Token' => \RainLoop\Utils::GetConnectionToken(),
 								'Url' => $sUrl
 							)).'/';

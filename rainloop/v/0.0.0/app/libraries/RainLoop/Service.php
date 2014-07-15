@@ -102,7 +102,7 @@ class Service
 		}
 
 		$this->oActions->BootStart();
-		
+
 		$this->oActions->ParseQueryAuthString();
 
 		$bCached = false;
@@ -155,7 +155,7 @@ class Service
 				$bIndex = true;
 			}
 		}
-		
+
 		if ($bIndex)
 		{
 			@header('Content-Type: text/html; charset=utf-8');
@@ -175,8 +175,7 @@ class Service
 				$sJsBoot = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/boot.js');
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), array(
 					'{{BaseRandHash}}' => \md5(\rand(1000, 9000).\microtime(true)),
-					'{{BaseAppDataScriptLink}}' => ($bAdmin ? APP_INDEX_FILE.'?/AdminAppData/' : APP_INDEX_FILE.'?/AppData/'),
-					'{{BaseAppIndexFile}}' => APP_INDEX_FILE,
+					'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
 					'{{BaseAppFaviconIcoFile}}' => $aData['FaviconIcoLink'],
 					'{{BaseAppFaviconPngFile}}' => $aData['FaviconPngLink'],
 					'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],

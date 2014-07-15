@@ -14,5 +14,5 @@ if (file_exists(APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php'))
 else
 {
 	echo '[105] Missing version directory';
-	exit(102);
+	exit(105);
 }

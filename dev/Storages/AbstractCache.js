@@ -31,7 +31,7 @@ AbstractCacheStorage.prototype.clear = function ()
 AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 {
 	sEmail = Utils.trim(sEmail);
-	
+
 	var
 		sUrl = '',
 		sService = '',
@@ -44,8 +44,6 @@ AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
 	{
 		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
-//		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=' +
-//			window.encodeURIComponent(RL.link().emptyFullContactPic()), sEmail);
 	}
 	else
 	{

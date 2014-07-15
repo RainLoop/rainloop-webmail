@@ -17,7 +17,6 @@
 			define('APP_START', microtime(true));
 			define('APP_START_TIME', time());
 			define('APP_REQUEST_RND', md5(APP_START.rand(10000, 99999).APP_START));
-			define('APP_INDEX_FILE', 'index.php');
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
 			$sCustomDataPath = '';
@@ -132,11 +131,11 @@
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess',
-	'Deny from all
+'Deny from all
 
-	<IfModule mod_autoindex.c>
-	Options -Indexes
-	</ifModule>');
+<IfModule mod_autoindex.c>
+Options -Indexes
+</ifModule>');
 
 				if (!@is_dir(APP_PRIVATE_DATA))
 				{

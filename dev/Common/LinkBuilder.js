@@ -6,9 +6,10 @@
 function LinkBuilder()
 {
 	this.sBase = '#/';
+	this.sServer = './?';
 	this.sVersion = RL.settingsGet('Version');
 	this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
-	this.sServer = (RL.settingsGet('IndexFile') || './') + '?';
+	this.sStaticPrefix = RL.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
 }
 
 /**
@@ -235,17 +236,7 @@ LinkBuilder.prototype.exportContactsCsv = function ()
  */
 LinkBuilder.prototype.emptyContactPic = function ()
 {
-	return 'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
-};
-
-/**
- * @return {string}
- */
-LinkBuilder.prototype.emptyFullContactPic = function ()
-{
-	return window.location.protocol + '//' + window.location.hostname +
-		('80' === '' + window.location.port || '' === '' + window.location.port ? '' : ':' + window.location.port) + window.location.pathname +
-		'rainloop/v/' + this.sVersion + '/static/css/images/empty-contact.png';
+	return this.sStaticPrefix + 'css/images/empty-contact.png';
 };
 
 /**
@@ -254,7 +245,7 @@ LinkBuilder.prototype.emptyFullContactPic = function ()
  */
 LinkBuilder.prototype.sound = function (sFileName)
 {
-	return 'rainloop/v/' + this.sVersion + '/static/sounds/' + sFileName;
+	return  this.sStaticPrefix + 'sounds/' + sFileName;
 };
 
 /**
@@ -278,7 +269,7 @@ LinkBuilder.prototype.themePreviewLink = function (sTheme)
  */
 LinkBuilder.prototype.notificationMailIcon = function ()
 {
-	return 'rainloop/v/' + this.sVersion + '/static/css/images/icom-message-notification.png';
+	return  this.sStaticPrefix + 'css/images/icom-message-notification.png';
 };
 
 /**
@@ -286,7 +277,7 @@ LinkBuilder.prototype.notificationMailIcon = function ()
  */
 LinkBuilder.prototype.openPgpJs = function ()
 {
-	return 'rainloop/v/' + this.sVersion + '/static/js/openpgp.min.js';
+	return  this.sStaticPrefix + 'js/openpgp.min.js';
 };
 
 /**
