@@ -4219,7 +4219,7 @@ function Selector(oKoList, oKoSelectedItem,
 	sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 {
 	this.list = oKoList;
-	
+
 	this.listChecked = ko.computed(function () {
 		return _.filter(this.list(), function (oItem) {
 			return oItem.checked();
@@ -4229,11 +4229,11 @@ function Selector(oKoList, oKoSelectedItem,
 	this.isListChecked = ko.computed(function () {
 		return 0 < this.listChecked().length;
 	}, this);
-	
+
 	this.focusedItem = ko.observable(null);
 	this.selectedItem = oKoSelectedItem;
 	this.selectedItemUseCallback = true;
-	
+
 	this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
 
 	this.listChecked.subscribe(function (aItems) {
@@ -4253,7 +4253,7 @@ function Selector(oKoList, oKoSelectedItem,
 			this.selectedItem(this.focusedItem());
 		}
 	}, this);
-	
+
 	this.selectedItem.subscribe(function (oItem) {
 
 		if (oItem)
@@ -4307,12 +4307,12 @@ function Selector(oKoList, oKoSelectedItem,
 
 	this.oContentVisible = null;
 	this.oContentScrollable = null;
-	
+
 	this.sItemSelector = sItemSelector;
 	this.sItemSelectedSelector = sItemSelectedSelector;
 	this.sItemCheckedSelector = sItemCheckedSelector;
 	this.sItemFocusedSelector = sItemFocusedSelector;
-	
+
 	this.sLastUid = '';
 	this.bAutoSelect = true;
 	this.oCallbacks = {};
@@ -4332,7 +4332,7 @@ function Selector(oKoList, oKoSelectedItem,
 		mFocused = null,
 		mSelected = null
 	;
-	
+
 	this.list.subscribe(function (aItems) {
 
 		var self = this;
@@ -4342,7 +4342,7 @@ function Selector(oKoList, oKoSelectedItem,
 				if (oItem)
 				{
 					var sUid = self.getItemUid(oItem);
-					
+
 					aCache.push(sUid);
 					if (oItem.checked())
 					{
@@ -4360,9 +4360,9 @@ function Selector(oKoList, oKoSelectedItem,
 			});
 		}
 	}, this, 'beforeChange');
-	
+
 	this.list.subscribe(function (aItems) {
-		
+
 		var
 			self = this,
 			oTemp = null,
@@ -4373,7 +4373,7 @@ function Selector(oKoList, oKoSelectedItem,
 			bSelected = false,
 			iLen = 0
 		;
-		
+
 		this.selectedItemUseCallback = false;
 
 		this.focusedItem(null);
@@ -4452,7 +4452,7 @@ function Selector(oKoList, oKoSelectedItem,
 		aCheckedCache = [];
 		mFocused = null;
 		mSelected = null;
-		
+
 	}, this);
 }
 
@@ -4490,13 +4490,13 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 	this.oContentScrollable = oContentScrollable;
 
 	sKeyScope = sKeyScope || 'all';
-	
+
 	if (this.oContentVisible && this.oContentScrollable)
 	{
-		var 
+		var
 			self = this
 		;
-		
+
 		$(this.oContentVisible)
 			.on('selectstart', function (oEvent) {
 				if (oEvent && oEvent.preventDefault)
@@ -4872,7 +4872,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 			bClick = true,
 			sUid = this.getItemUid(oItem)
 		;
-		
+
 		if (oEvent)
 		{
 			if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
@@ -4885,7 +4885,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 
 				oItem.checked(!oItem.checked());
 				this.eventClickFunction(oItem, oEvent);
-				
+
 				this.focusedItem(oItem);
 			}
 			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
@@ -4906,6 +4906,8 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 		{
 			this.focusedItem(oItem);
 			this.selectedItem(oItem);
+
+			this.scrollToFocused();
 		}
 	}
 };
@@ -8799,7 +8801,7 @@ function PopupsComposeViewModel()
 	this.composeEditorArea = ko.observable(null);
 
 	this.identities = RL.data().identities;
-
+	this.defaultIdentityID = RL.data().defaultIdentityID;
 	this.currentIdentityID = ko.observable('');
 
 	this.currentIdentityString = ko.observable('');
@@ -9141,7 +9143,6 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		switch (sComposeType)
 		{
 			case Enums.ComposeType.Empty:
-				sResult = RL.data().accountEmail();
 				break;
 			case Enums.ComposeType.Reply:
 			case Enums.ComposeType.ReplyAll:
@@ -9154,7 +9155,13 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 				break;
 		}
 	}
-	else
+
+	if ('' === sResult)
+	{
+		sResult = this.defaultIdentityID();
+	}
+
+	if ('' === sResult)
 	{
 		sResult = RL.data().accountEmail();
 	}
@@ -9402,9 +9409,9 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 	if (null !== mEmail)
 	{
 		oExcludeEmail[mEmail] = true;
-		this.currentIdentityID(this.findIdentityIdByMessage(sComposeType, oMessage));
 	}
 
+	this.currentIdentityID(this.findIdentityIdByMessage(sComposeType, oMessage));
 	this.reset();
 
 	if (Utils.isNonEmptyArray(aToEmails))
@@ -14813,9 +14820,11 @@ SettingsIdentity.prototype.onBuild = function ()
 function SettingsIdentities()
 {
 	var oData = RL.data();
-	
+
 	this.editor = null;
-	
+	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	this.accountEmail = oData.accountEmail;
 	this.displayName = oData.displayName;
 	this.signature = oData.signature;
 	this.signatureToAll = oData.signatureToAll;
@@ -14823,11 +14832,47 @@ function SettingsIdentities()
 
 	this.signatureDom = ko.observable(null);
 
+	this.defaultIdentityIDTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.identities = oData.identities;
+	this.defaultIdentityID = oData.defaultIdentityID;
+
+	this.identitiesOptions = ko.computed(function () {
+
+		var
+			aList = this.identities(),
+			aResult = []
+		;
+
+		if (0 < aList.length)
+		{
+			aResult.push({
+				'id': this.accountEmail.peek(),
+				'name': this.formattedAccountIdentity(),
+				'seporator': false
+			});
+
+			aResult.push({
+				'id': '---',
+				'name': '---',
+				'seporator': true,
+				'disabled': true
+			});
+
+			_.each(aList, function (oItem) {
+				aResult.push({
+					'id': oItem.id,
+					'name': oItem.formattedNameForEmail(),
+					'seporator': false
+				});
+			});
+		}
+
+		return aResult;
+	}, this);
 
 	this.processText = ko.computed(function () {
 		return oData.identitiesLoading() ? Utils.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
@@ -14854,6 +14899,20 @@ function SettingsIdentities()
 
 Utils.addSettingsViewModel(SettingsIdentities, 'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
 
+/**
+ *
+ * @return {string}
+ */
+SettingsIdentities.prototype.formattedAccountIdentity = function ()
+{
+	var
+		sDisplayName = this.displayName.peek(),
+		sEmail = this.accountEmail.peek()
+	;
+
+	return '' === sDisplayName ? sEmail : '"' + Utils.quoteName(sDisplayName) + '" <' + sEmail + '>';
+};
+
 SettingsIdentities.prototype.addNewIdentity = function ()
 {
 	kn.showScreenPopup(PopupsIdentityViewModel);
@@ -14872,7 +14931,7 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 	if (oIdentityToRemove && oIdentityToRemove.deleteAccess())
 	{
 		this.identityForDeletion(null);
-		
+
 		var
 			fRemoveFolder = function (oIdentity) {
 				return oIdentityToRemove === oIdentity;
@@ -14882,7 +14941,7 @@ SettingsIdentities.prototype.deleteIdentity = function (oIdentityToRemove)
 		if (oIdentityToRemove)
 		{
 			this.identities.remove(fRemoveFolder);
-			
+
 			RL.remote().identityDelete(function () {
 				RL.accountsAndIdentities();
 			}, oIdentityToRemove.id);
@@ -14928,7 +14987,7 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 				self.editIdentity(oIdentityItem);
 			}
 		})
-	;	
+	;
 
 	_.delay(function () {
 
@@ -14936,8 +14995,15 @@ SettingsIdentities.prototype.onBuild = function (oDom)
 			oData = RL.data(),
 			f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
 			f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
-			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
+			f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self),
+			f4 = Utils.settingsSaveHelperSimpleFunction(self.defaultIdentityIDTrigger, self)
 		;
+
+		oData.defaultIdentityID.subscribe(function (sValue) {
+			RL.remote().saveSettings(f4, {
+				'DefaultIdentityID': sValue
+			});
+		});
 
 		oData.displayName.subscribe(function (sValue) {
 			RL.remote().saveSettings(f1, {
@@ -15926,6 +15992,7 @@ function WebMailDataStorage()
 	this.accountsLoading = ko.observable(false).extend({'throttle': 100});
 
 	// identities
+	this.defaultIdentityID = ko.observable('');
 	this.identities = ko.observableArray([]);
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
@@ -16323,6 +16390,8 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.accountIncLogin(RL.settingsGet('IncLogin'));
 	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
+
+	this.defaultIdentityID(RL.settingsGet('DefaultIdentityID'));
 
 	this.displayName(RL.settingsGet('DisplayName'));
 	this.replyTo(RL.settingsGet('ReplyTo'));

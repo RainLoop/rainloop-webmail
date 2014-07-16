@@ -91,7 +91,7 @@ function PopupsComposeViewModel()
 	this.composeEditorArea = ko.observable(null);
 
 	this.identities = RL.data().identities;
-
+	this.defaultIdentityID = RL.data().defaultIdentityID;
 	this.currentIdentityID = ko.observable('');
 
 	this.currentIdentityString = ko.observable('');
@@ -433,7 +433,6 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 		switch (sComposeType)
 		{
 			case Enums.ComposeType.Empty:
-				sResult = RL.data().accountEmail();
 				break;
 			case Enums.ComposeType.Reply:
 			case Enums.ComposeType.ReplyAll:
@@ -446,7 +445,13 @@ PopupsComposeViewModel.prototype.findIdentityIdByMessage = function (sComposeTyp
 				break;
 		}
 	}
-	else
+
+	if ('' === sResult)
+	{
+		sResult = this.defaultIdentityID();
+	}
+
+	if ('' === sResult)
 	{
 		sResult = RL.data().accountEmail();
 	}
@@ -694,9 +699,9 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 	if (null !== mEmail)
 	{
 		oExcludeEmail[mEmail] = true;
-		this.currentIdentityID(this.findIdentityIdByMessage(sComposeType, oMessage));
 	}
 
+	this.currentIdentityID(this.findIdentityIdByMessage(sComposeType, oMessage));
 	this.reset();
 
 	if (Utils.isNonEmptyArray(aToEmails))

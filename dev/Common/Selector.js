@@ -13,7 +13,7 @@ function Selector(oKoList, oKoSelectedItem,
 	sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 {
 	this.list = oKoList;
-	
+
 	this.listChecked = ko.computed(function () {
 		return _.filter(this.list(), function (oItem) {
 			return oItem.checked();
@@ -23,11 +23,11 @@ function Selector(oKoList, oKoSelectedItem,
 	this.isListChecked = ko.computed(function () {
 		return 0 < this.listChecked().length;
 	}, this);
-	
+
 	this.focusedItem = ko.observable(null);
 	this.selectedItem = oKoSelectedItem;
 	this.selectedItemUseCallback = true;
-	
+
 	this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
 
 	this.listChecked.subscribe(function (aItems) {
@@ -47,7 +47,7 @@ function Selector(oKoList, oKoSelectedItem,
 			this.selectedItem(this.focusedItem());
 		}
 	}, this);
-	
+
 	this.selectedItem.subscribe(function (oItem) {
 
 		if (oItem)
@@ -101,12 +101,12 @@ function Selector(oKoList, oKoSelectedItem,
 
 	this.oContentVisible = null;
 	this.oContentScrollable = null;
-	
+
 	this.sItemSelector = sItemSelector;
 	this.sItemSelectedSelector = sItemSelectedSelector;
 	this.sItemCheckedSelector = sItemCheckedSelector;
 	this.sItemFocusedSelector = sItemFocusedSelector;
-	
+
 	this.sLastUid = '';
 	this.bAutoSelect = true;
 	this.oCallbacks = {};
@@ -126,7 +126,7 @@ function Selector(oKoList, oKoSelectedItem,
 		mFocused = null,
 		mSelected = null
 	;
-	
+
 	this.list.subscribe(function (aItems) {
 
 		var self = this;
@@ -136,7 +136,7 @@ function Selector(oKoList, oKoSelectedItem,
 				if (oItem)
 				{
 					var sUid = self.getItemUid(oItem);
-					
+
 					aCache.push(sUid);
 					if (oItem.checked())
 					{
@@ -154,9 +154,9 @@ function Selector(oKoList, oKoSelectedItem,
 			});
 		}
 	}, this, 'beforeChange');
-	
+
 	this.list.subscribe(function (aItems) {
-		
+
 		var
 			self = this,
 			oTemp = null,
@@ -167,7 +167,7 @@ function Selector(oKoList, oKoSelectedItem,
 			bSelected = false,
 			iLen = 0
 		;
-		
+
 		this.selectedItemUseCallback = false;
 
 		this.focusedItem(null);
@@ -246,7 +246,7 @@ function Selector(oKoList, oKoSelectedItem,
 		aCheckedCache = [];
 		mFocused = null;
 		mSelected = null;
-		
+
 	}, this);
 }
 
@@ -284,13 +284,13 @@ Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeySco
 	this.oContentScrollable = oContentScrollable;
 
 	sKeyScope = sKeyScope || 'all';
-	
+
 	if (this.oContentVisible && this.oContentScrollable)
 	{
-		var 
+		var
 			self = this
 		;
-		
+
 		$(this.oContentVisible)
 			.on('selectstart', function (oEvent) {
 				if (oEvent && oEvent.preventDefault)
@@ -666,7 +666,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 			bClick = true,
 			sUid = this.getItemUid(oItem)
 		;
-		
+
 		if (oEvent)
 		{
 			if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
@@ -679,7 +679,7 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 
 				oItem.checked(!oItem.checked());
 				this.eventClickFunction(oItem, oEvent);
-				
+
 				this.focusedItem(oItem);
 			}
 			else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
@@ -700,6 +700,8 @@ Selector.prototype.actionClick = function (oItem, oEvent)
 		{
 			this.focusedItem(oItem);
 			this.selectedItem(oItem);
+
+			this.scrollToFocused();
 		}
 	}
 };

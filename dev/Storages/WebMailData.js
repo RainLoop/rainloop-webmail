@@ -78,6 +78,7 @@ function WebMailDataStorage()
 	this.accountsLoading = ko.observable(false).extend({'throttle': 100});
 
 	// identities
+	this.defaultIdentityID = ko.observable('');
 	this.identities = ko.observableArray([]);
 	this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
 
@@ -475,6 +476,8 @@ WebMailDataStorage.prototype.populateDataOnStart = function()
 	this.accountIncLogin(RL.settingsGet('IncLogin'));
 	this.accountOutLogin(RL.settingsGet('OutLogin'));
 	this.projectHash(RL.settingsGet('ProjectHash'));
+
+	this.defaultIdentityID(RL.settingsGet('DefaultIdentityID'));
 
 	this.displayName(RL.settingsGet('DisplayName'));
 	this.replyTo(RL.settingsGet('ReplyTo'));

@@ -3,6 +3,16 @@
 		<div class="legend g-ui-user-select-none">
 			<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LEGEND_IDENTITY"></span>
 		</div>
+		<div class="control-group g-ui-user-select-none" data-bind="if: 0 < identities().length">
+			<label class="control-label" data-bind="i18nUpdate: identities">
+				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DEFAULT"></span>
+			</label>
+			<div class="controls">
+				<select data-bind="options: identitiesOptions, value: defaultIdentityID,
+					optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defautOptionsAfterRender, saveTrigger: defaultIdentityIDTrigger"></select>
+				<div data-bind="saveTrigger: defaultIdentityIDTrigger"></div>
+			</div>
+		</div>
 		<div class="control-group g-ui-user-select-none">
 			<label class="control-label">
 				<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_DISPLAY_NAME"></span>

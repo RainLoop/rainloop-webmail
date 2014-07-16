@@ -1116,7 +1116,7 @@ class Actions
 			else
 			{
 				$oAccount = null;
-				
+
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 			}
@@ -1240,6 +1240,7 @@ class Actions
 		$aResult['ReplySameFolder'] = false;
 		$aResult['Layout'] = \RainLoop\Enumerations\Layout::SIDE_PREVIEW;
 		$aResult['UseCheckboxesInList'] = true;
+		$aResult['DefaultIdentityID'] = '';
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
 		$aResult['Signature'] = '';
@@ -1277,6 +1278,7 @@ class Actions
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
 			$aResult['InterfaceAnimation'] = (string) $oSettings->GetConf('InterfaceAnimation', $aResult['InterfaceAnimation']);
 
+			$aResult['DefaultIdentityID'] = $oSettings->GetConf('DefaultIdentityID', $oAccount ? $oAccount->Email() : $aResult['DefaultIdentityID']);
 			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['DisplayName']);
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
 			$aResult['Signature'] = $oSettings->GetConf('Signature', $aResult['Signature']);
@@ -1339,6 +1341,7 @@ class Actions
 		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
+		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);
 		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
@@ -1443,7 +1446,7 @@ class Actions
 		$sAdditionalCode = '', $bAdditionalCodeSignMe = false)
 	{
 		$this->Plugins()->RunHook('filter.login-credentials-first', array(&$sEmail, &$sPassword));
-		
+
 		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
 		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
 		{
@@ -3430,6 +3433,7 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
 
+		$this->setSettingsFromParams($oSettings, 'DefaultIdentityID', 'string');
 		$this->setSettingsFromParams($oSettings, 'DisplayName', 'string');
 		$this->setSettingsFromParams($oSettings, 'ReplyTo', 'string');
 		$this->setSettingsFromParams($oSettings, 'Signature', 'string');
