@@ -190,7 +190,8 @@ class HtmlUtils
 			{
 				// skip
 			}
-			else */if (\in_array($sName, array('behavior', 'cursor')) ||
+			else */if (\in_array($sName, array('behavior', 'pointer-events')) ||
+				('cursor' === $sName && !\in_array(\strtolower($sValue), array('none', 'cursor'))) ||
 				('display' === $sName && 'none' === \strtolower($sValue)) ||
 				\preg_match('/expression/i', $sValue) ||
 				('text-indent' === $sName && '-' === \substr(trim($sValue), 0, 1))
@@ -730,7 +731,7 @@ class HtmlUtils
 			{
 				$oElement->removeAttribute('data-x-additional-src');
 			}
-
+			
 			if ($oElement->hasAttribute('data-x-additional-style-url'))
 			{
 				$oElement->removeAttribute('data-x-additional-style-url');

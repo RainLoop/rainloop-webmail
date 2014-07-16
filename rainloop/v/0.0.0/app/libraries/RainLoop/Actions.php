@@ -1014,7 +1014,7 @@ class Actions
 			'Version' => APP_VERSION,
 			'Auth' => false,
 			'AccountHash' => '',
-			'StaticPrefix' => 'rainloop/v/' + APP_VERSION + '/static/',
+			'StaticPrefix' => 'rainloop/v/'.APP_VERSION.'/static/',
 			'AccountSignMe' => false,
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',
