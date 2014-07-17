@@ -7893,16 +7893,23 @@ html.rl-no-preview-pane .messageList.message-selected {
   font-style: italic;
   color: #999;
 }
-.messageList .b-content .messageListItem.emptySubject .subjectParent .subject {
+.messageList .b-content .messageListItem.emptySubject .subjectParent .subject,
+.messageList .b-content .messageListItem.emptySubject .subjectParent .subject-prefix,
+.messageList .b-content .messageListItem.emptySubject .subjectParent .subject-suffix {
   display: none;
 }
 .messageList .b-content .messageListItem.emptySubject .subjectParent .emptySubjectText {
   display: inline;
 }
 .messageList .b-content .messageListItem .sender,
-.messageList .b-content .messageListItem .subject {
+.messageList .b-content .messageListItem .subject,
+.messageList .b-content .messageListItem .subject-suffix {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.messageList .b-content .messageListItem .subject-prefix {
+  color: #888;
+  /*font-style: italic;*/
 }
 .messageList .b-content .messageListItem .attachment {
   display: none;
@@ -7945,7 +7952,8 @@ html.rl-no-preview-pane .messageList.message-selected {
   background-color: #FFFFD9;
 }
 .messageList .b-content .messageListItem.unseen .sender,
-.messageList .b-content .messageListItem.unseen .subject {
+.messageList .b-content .messageListItem.unseen .subject,
+.messageList .b-content .messageListItem.unseen .subject-suffix {
   font-weight: bold;
 }
 .messageList .b-content .messageListItem.unseen .sidebarParent {

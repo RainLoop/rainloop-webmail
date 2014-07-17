@@ -6623,6 +6623,8 @@ function MessageModel()
 	this.hash = '';
 	this.requestHash = '';
 	this.subject = ko.observable('');
+	this.subjectPrefix = ko.observable('');
+	this.subjectSuffix = ko.observable('');
 	this.size = ko.observable(0);
 	this.dateTimeStampInUTC = ko.observable(0);
 	this.priority = ko.observable(Enums.MessagePriority.Normal);
@@ -6843,6 +6845,8 @@ MessageModel.prototype.clear = function ()
 	this.hash = '';
 	this.requestHash = '';
 	this.subject('');
+	this.subjectPrefix('');
+	this.subjectSuffix('');
 	this.size(0);
 	this.dateTimeStampInUTC(0);
 	this.priority(Enums.MessagePriority.Normal);
@@ -6941,6 +6945,17 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.deliveredTo = MessageModel.initEmailsFromJson(oJsonMessage.DeliveredTo);
 
 		this.subject(oJsonMessage.Subject);
+		if (Utils.isArray(oJsonMessage.SubjectParts))
+		{
+			this.subjectPrefix(oJsonMessage.SubjectParts[0]);
+			this.subjectSuffix(oJsonMessage.SubjectParts[1]);
+		}
+		else
+		{
+			this.subjectPrefix('');
+			this.subjectSuffix(this.subject());
+		}
+		
 		this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
 		this.hasAttachments(!!oJsonMessage.HasAttachments);
 		this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
@@ -7424,6 +7439,9 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.hash = oMessage.hash;
 	this.requestHash = oMessage.requestHash;
 	this.subject(oMessage.subject());
+	this.subjectPrefix(this.subjectPrefix());
+	this.subjectSuffix(this.subjectSuffix());
+
 	this.size(oMessage.size());
 	this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
 	this.priority(oMessage.priority());

@@ -6938,6 +6938,54 @@ class Actions
 	}
 
 	/**
+	 * @param string $sSubject
+	 *
+	 * @return array
+	 */
+	private function explodeSubject($sSubject)
+	{
+		$aResult = array('', '');
+		if (0 < \strlen($sSubject))
+		{
+			$sDrop = false;
+			$aPrefix = array();
+			$aSuffix = array();
+
+			$aParts = \explode(':', $sSubject);
+			foreach ($aParts as $sPart)
+			{
+				if (!$sDrop && 
+					(\preg_match('/^(RE|FWD)$/i', \trim($sPart)) || \preg_match('/^(RE|FWD)[\[\(][\d]+[\]\)]$/i', \trim($sPart))))
+				{
+					$aPrefix[] = $sPart;
+				}
+				else
+				{
+					$aSuffix[] = $sPart;
+					$sDrop = true;
+				}
+			}
+
+			if (0 < \count($aPrefix))
+			{
+				$aResult[0] = \rtrim(\trim(\implode(':', $aPrefix)), ':').': ';
+			}
+
+			if (0 < \count($aSuffix))
+			{
+				$aResult[1] = \trim(\implode(':', $aSuffix));
+			}
+
+			if (0 === \strlen($aResult[1]))
+			{
+				$aResult = array('', $sSubject);
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
 	 * @param mixed $mResponse
 	 * @param string $sParent
 	 * @param array $aParameters = array()
@@ -6985,6 +7033,8 @@ class Actions
 					'ReadReceipt' => ''
 				));
 
+				$mResult['SubjectParts'] = $this->explodeSubject($mResult['Subject']);
+
 				$oAttachments = $mResponse->Attachments();
 				$iAttachmentsCount = $oAttachments ? $oAttachments->Count() : 0;
 
@@ -7019,8 +7069,6 @@ class Actions
 					'MimeType' => 'message/rfc822',
 					'FileName' => (0 === \strlen($sSubject) ? 'message-'.$mResult['Uid'] : \MailSo\Base\Utils::ClearXss($sSubject)).'.eml'
 				));
-
-
 
 				// Flags
 				$aFlags = $mResponse->FlagsLowerCase();

@@ -362,7 +362,7 @@ html.rl-no-preview-pane {
 			}
 
 			&.emptySubject .subjectParent {
-				.subject {
+				.subject, .subject-prefix, .subject-suffix {
 					display: none;
 				}
 				.emptySubjectText {
@@ -370,9 +370,14 @@ html.rl-no-preview-pane {
 				}
 			}
 
-			.sender, .subject {
+			.sender, .subject, .subject-suffix {
 				overflow: hidden;
 				text-overflow: ellipsis;
+			}
+			
+			.subject-prefix {
+				color: #888;
+				/*font-style: italic;*/
 			}
 
 			.attachment {
@@ -416,7 +421,7 @@ html.rl-no-preview-pane {
 
 			&.unseen {
 				background-color: #FFFFD9;
-				.sender, .subject {
+				.sender, .subject, .subject-suffix {
 					font-weight: bold;
 				}
 				.sidebarParent {
