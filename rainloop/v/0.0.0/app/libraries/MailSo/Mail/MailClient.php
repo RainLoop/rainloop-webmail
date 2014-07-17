@@ -1099,8 +1099,8 @@ class MailClient
 
 			if (1 === \count($aLines) && isset($aLines['OTHER']))
 			{
-				if (true) // headers only
-				{
+//				if (true) // headers only
+//				{
 					$sValue = $this->escapeSearchString($aLines['OTHER']);
 
 					$aCriteriasResult[] = 'OR OR OR';
@@ -1112,19 +1112,19 @@ class MailClient
 					$aCriteriasResult[] = $sValue;
 					$aCriteriasResult[] = 'SUBJECT';
 					$aCriteriasResult[] = $sValue;
-				}
-				else
-				{
-					$sMainText = \trim(\trim(\preg_replace('/[\s]+/', ' ', $aLines['OTHER'])), '"');
-					if ($bIsGmail)
-					{
-						$sGmailRawSearch .= ' '.$sMainText;
-					}
-					else
-					{
-						$sResultBodyTextSearch .= ' '.$sMainText;
-					}
-				}
+//				}
+//				else
+//				{
+//					$sMainText = \trim(\trim(\preg_replace('/[\s]+/', ' ', $aLines['OTHER'])), '"');
+//					if ($bIsGmail)
+//					{
+//						$sGmailRawSearch .= ' '.$sMainText;
+//					}
+//					else
+//					{
+//						$sResultBodyTextSearch .= ' '.$sMainText;
+//					}
+//				}
 			}
 			else
 			{
@@ -1307,7 +1307,7 @@ class MailClient
 			$sResultBodyTextSearch = \trim($sResultBodyTextSearch);
 			if (0 < \strlen($sResultBodyTextSearch))
 			{
-				$aCriteriasResult[] = 'TEXT';
+				$aCriteriasResult[] = 'BODY';
 				$aCriteriasResult[] = $this->escapeSearchString($sResultBodyTextSearch);
 			}
 		}
