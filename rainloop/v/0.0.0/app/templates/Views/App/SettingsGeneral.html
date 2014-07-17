@@ -75,6 +75,11 @@
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER"></span>
 				</label>
+				<label data-bind="click: function () { replyCounter(!replyCounter()); }">
+					<i data-bind="css: replyCounter() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_REPLY_COUNTER"></span>
+				</label>
 			</div>
 		</div>
 	</div>

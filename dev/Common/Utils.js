@@ -487,7 +487,10 @@ Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
 
 	sResult = sResult.replace(/[\s]+/g, ' ');
 	sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
-//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
+	if (!RL.data().replyCounter())
+	{
+		sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
+	}
 	return sResult;
 };
 
@@ -810,6 +813,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.desktopNotifications = ko.observable(false);
 	oData.useThreads = ko.observable(true);
 	oData.replySameFolder = ko.observable(true);
+	oData.replyCounter = ko.observable(true);
 	oData.useCheckboxesInList = ko.observable(true);
 
 	oData.layout = ko.observable(Enums.Layout.SidePreview);

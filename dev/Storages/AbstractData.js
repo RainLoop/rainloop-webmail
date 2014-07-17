@@ -105,6 +105,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.desktopNotifications(!!RL.settingsGet('DesktopNotifications'));
 	this.useThreads(!!RL.settingsGet('UseThreads'));
 	this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
+	this.replyCounter(!!RL.settingsGet('ReplyCounter'));
 	this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
 
 	this.layout(Enums.Layout.SidePreview);
