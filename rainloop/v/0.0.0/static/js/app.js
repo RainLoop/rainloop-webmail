@@ -8763,6 +8763,7 @@ function PopupsComposeViewModel()
 	this.savedOrSendingText = ko.observable('');
 
 	this.emptyToError = ko.observable(false);
+	this.attachmentsInProcessError = ko.observable(false);
 	this.showCcAndBcc = ko.observable(false);
 
 	this.cc.subscribe(fCcAndBccCheckHelper, this);
@@ -8870,19 +8871,18 @@ function PopupsComposeViewModel()
 			this.emptyToError(false);
 		}
 	}, this);
+	
+	this.attachmentsInProcess.subscribe(function (aValue) {
+		if (this.attachmentsInProcessError() && Utils.isArray(aValue) && 0 === aValue.length)
+		{
+			this.attachmentsInProcessError(false);
+		}
+	}, this);
 
 	this.editorResizeThrottle = _.throttle(_.bind(this.editorResize, this), 100);
 
 	this.resizer.subscribe(function () {
 		this.editorResizeThrottle();
-	}, this);
-
-	this.canBeSended = ko.computed(function () {
-		return !this.sending() &&
-			!this.saving() &&
-			0 === this.attachmentsInProcess().length &&
-			0 < this.to().length
-		;
 	}, this);
 
 	this.canBeSendedOrSaved = ko.computed(function () {
@@ -8908,7 +8908,11 @@ function PopupsComposeViewModel()
 			aFlagsCache = []
 		;
 
-		if (0 === sTo.length)
+		if (0 < this.attachmentsInProcess().length)
+		{
+			this.attachmentsInProcessError(true);
+		}
+		else if (0 === sTo.length)
 		{
 			this.emptyToError(true);
 		}
@@ -10173,6 +10177,7 @@ PopupsComposeViewModel.prototype.reset = function ()
 	this.savedTime(0);
 	this.savedOrSendingText('');
 	this.emptyToError(false);
+	this.attachmentsInProcessError(false);
 	this.showCcAndBcc(false);
 
 	this.attachments([]);
