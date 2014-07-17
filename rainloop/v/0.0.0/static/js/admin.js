@@ -1233,10 +1233,36 @@ Utils.removeSelection = function ()
 /**
  * @param {string} sPrefix
  * @param {string} sSubject
+ * @return {string}
+ */
+Utils.replySubjectAdd = function (sPrefix, sSubject)
+{
+	var
+		oMatch = null,
+		sResult = Utils.trim(sSubject)
+	;
+
+	if (null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]) ||
+		null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?[\\[\\(][\\d]+[\\]\\)][\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]))
+	{
+		sResult = sPrefix + ': ' + Utils.trim(oMatch[1]);
+	}
+	else
+	{
+		sResult = sPrefix + ': ' + sSubject;
+	}
+
+	return sResult.replace(/[\s]+/g, ' ');
+};
+
+/**
+ * @deprecated
+ * @param {string} sPrefix
+ * @param {string} sSubject
  * @param {boolean=} bFixLongSubject = true
  * @return {string}
  */
-Utils.replySubjectAdd = function (sPrefix, sSubject, bFixLongSubject)
+Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
 {
 	var
 		oMatch = null,
