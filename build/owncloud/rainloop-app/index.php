@@ -30,6 +30,12 @@ else
 	$sLogin = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-login', '');
 	$sPassword = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
 
+	$sUrl = \rtrim($sUrl, '/\\');
+	if ('.php' !== \strtolower(\substr($sUrl), -4))
+	{
+		$sUrl .= '/';
+	}
+
 	include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
 	$sPassword = OC_RainLoop_Helper::decodePassword($sPassword, md5($sEmail.$sLogin));
 	$sSsoHash = OC_RainLoop_Helper::getSsoHash($sUrl, $sSsoKey, $sEmail, $sPassword, $sLogin);
