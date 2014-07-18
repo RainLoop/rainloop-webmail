@@ -337,7 +337,8 @@ class MailClient
 	 * @param string $sFolderName
 	 * @param int $iIndex
 	 * @param bool $bIndexIsUid = true
-	 * @param mixed $oCacher = null
+	 * @param \MailSo\Cache\CacheClient $oCacher = null
+	 * @param int $iBodyTextLimit = null
 	 *
 	 * @return \MailSo\Mail\Message|false
 	 *
@@ -345,7 +346,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Message($sFolderName, $iIndex, $bIndexIsUid = true, $oCacher = null)
+	public function Message($sFolderName, $iIndex, $bIndexIsUid = true, $oCacher = null, $iBodyTextLimit = null)
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -356,7 +357,9 @@ class MailClient
 
 		$oBodyStructure = null;
 		$oMessage = false;
+		
 		$aBodyPeekMimeIndexes = array();
+		$aSignatureMimeIndexes = array();
 
 		$aFetchResponse = $this->oImapClient->Fetch(array(\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
 		if (0 < \count($aFetchResponse) && isset($aFetchResponse[0]))
@@ -369,7 +372,7 @@ class MailClient
 				{
 					foreach ($aTextParts as $oPart)
 					{
-						$aBodyPeekMimeIndexes[] = $oPart->PartID();
+						$aBodyPeekMimeIndexes[] = array($oPart->PartID(), $oPart->Size());
 					}
 				}
 
@@ -378,7 +381,7 @@ class MailClient
 				{
 					foreach ($aSignatureParts as $oPart)
 					{
-						$aBodyPeekMimeIndexes[] = $oPart->PartID();
+						$aSignatureMimeIndexes[] = $oPart->PartID();
 					}
 				}
 			}
@@ -395,7 +398,21 @@ class MailClient
 
 		if (0 < \count($aBodyPeekMimeIndexes))
 		{
-			foreach ($aBodyPeekMimeIndexes as $sTextMimeIndex)
+			foreach ($aBodyPeekMimeIndexes as $aTextMimeData)
+			{
+				$sLine = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$aTextMimeData[0].']';
+				if (\is_numeric($iBodyTextLimit) && 0 < $iBodyTextLimit && $iBodyTextLimit < $aTextMimeData[1])
+				{
+					$sLine .= '<0.'.((int) $iBodyTextLimit).'>';
+				}
+				
+				$aFetchItems[] = $sLine;
+			}
+		}
+
+		if (0 < \count($aSignatureMimeIndexes))
+		{
+			foreach ($aSignatureMimeIndexes as $sTextMimeIndex)
 			{
 				$aFetchItems[] = \MailSo\Imap\Enumerations\FetchType::BODY_PEEK.'['.$sTextMimeIndex.']';
 			}
@@ -1467,7 +1484,7 @@ class MailClient
 	/**
 	 * @param string $sFolderName
 	 * @param string $sFolderHash
-	 * @param mixed $oCacher
+	 * @param \MailSo\Cache\CacheClient $oCacher
 	 *
 	 * @return array
 	 *

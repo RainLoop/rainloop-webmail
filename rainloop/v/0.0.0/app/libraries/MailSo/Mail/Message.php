@@ -164,6 +164,11 @@ class Message
 	private $iThreadsLen;
 
 	/**
+	 * @var bool
+	 */
+	private $bTextPartIsTrimmed;
+
+	/**
 	 * @var string
 	 */
 	private $sPgpSignature;
@@ -228,6 +233,8 @@ class Message
 		$this->aThreads = array();
 		$this->iThreadsLen = 0;
 		$this->iParentThread = 0;
+
+		$this->bTextPartIsTrimmed = false;
 
 		$this->sPgpSignature = '';
 		$this->bPgpSigned = false;
@@ -559,6 +566,14 @@ class Message
 	}
 
 	/**
+	 * @return boole
+	 */
+	public function TextPartIsTrimmed()
+	{
+		return $this->bTextPartIsTrimmed;
+	}
+
+	/**
 	 * @param string $sFolder
 	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
 	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
@@ -774,6 +789,15 @@ class Message
 			foreach ($aTextParts as $oPart)
 			{
 				$sText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$oPart->PartID().']');
+				if (null === $sText)
+				{
+					$sText = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::BODY.'['.$oPart->PartID().']<0>');
+					if (\is_string($sText) && 0 < \strlen($sText))
+					{
+						$this->bTextPartIsTrimmed = true;
+					}
+				}
+
 				if (\is_string($sText) && 0 < \strlen($sText))
 				{
 					$sTextCharset = $oPart->Charset();

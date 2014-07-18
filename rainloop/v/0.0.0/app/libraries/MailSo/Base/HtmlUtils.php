@@ -407,6 +407,7 @@ class HtmlUtils
 		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
 		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $fAdditionalExternalFilter = null)
 	{
+		$sResult = '';
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
 		if (0 === \strlen($sHtml))
@@ -591,10 +592,10 @@ class HtmlUtils
 								$oElement->setAttribute('data-x-src', $sSrc);
 								if ($fAdditionalExternalFilter)
 								{
-									$sResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
-									if (0 < \strlen($sResult))
+									$sCallResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
+									if (0 < \strlen($sCallResult))
 									{
-										$oElement->setAttribute('data-x-additional-src', $sResult);
+										$oElement->setAttribute('data-x-additional-src', $sCallResult);
 									}
 								}
 							}

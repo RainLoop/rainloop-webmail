@@ -5425,7 +5425,9 @@ class Actions
 		try
 		{
 			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true,
-				!!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher() : null);
+				!!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher() : null,
+				(int) $this->Config()->Get('labs', 'imap_body_text_limit', 0)
+			);
 		}
 		catch (\Exception $oException)
 		{
@@ -7081,6 +7083,8 @@ class Actions
 
 				$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 				$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
+				
+				$mResult['TextPartIsTrimmed'] = false;
 
 				if ('Message' === $sParent)
 				{
@@ -7141,6 +7145,8 @@ class Actions
 					$mResult['Rtl'] = \MailSo\Base\Utils::IsRTL($sPlain);
 
 					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain'].$mResult['PlainRaw']);
+
+					$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();
 
 					$mResult['PgpSigned'] = $mResponse->PgpSigned();
 					$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
