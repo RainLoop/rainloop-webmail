@@ -886,7 +886,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oBody = null,
 		oTextBody = null,
 		sId = '',
-		sPlain = '',
+		sPlainAsHtml = '',
 		bPgpSigned = false,
 		bPgpEncrypted = false,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
@@ -922,17 +922,20 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 				{
 					bIsHtml = true;
-					oBody.html(oData.Result.Html.toString()).addClass('b-text-part html');
+					oBody
+						.html(oData.Result.Html.toString())
+						.linkify().find('.linkified').removeClass('linkified').end()
+						.addClass('b-text-part html')
+					;
 				}
 				else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
 				{
 					bIsHtml = false;
-					sPlain = oData.Result.Plain.toString();
+					sPlainAsHtml = Utils.plainToHtml(oData.Result.Plain.toString());
 
-					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) &&
-						RL.data().capaOpenPGP() && Utils.isNormal(oData.Result.PlainRaw))
+					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && RL.data().capaOpenPGP())
 					{
-						oMessage.plainRaw = Utils.pString(oData.Result.PlainRaw);
+						oMessage.plainRaw = Utils.pString(oData.Result.Plain);
 
 						bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
 						if (!bPgpEncrypted)
@@ -944,7 +947,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						$proxyDiv.empty();
 						if (bPgpSigned && oMessage.isPgpSigned())
 						{
-							sPlain =
+							sPlainAsHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -952,7 +955,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							sPlain =
+							sPlainAsHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -965,7 +968,11 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						oMessage.isPgpEncrypted(bPgpEncrypted);
 					}
 
-					oBody.html(sPlain).addClass('b-text-part plain');
+					oBody
+						.html(sPlainAsHtml)
+						.linkify().find('.linkified').removeClass('linkified').end()
+						.addClass('b-text-part plain')
+					;
 				}
 				else
 				{
@@ -976,12 +983,6 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				oMessage.hasImages(!!bHasExternals);
 				oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
 				oMessage.pgpSignedVerifyUser('');
-
-				if (oData.Result.Rtl)
-				{
-					oMessage.isRtl(true);
-					oBody.addClass('rtl-text-part');
-				}
 
 				oMessage.body = oBody;
 				if (oMessage.body)

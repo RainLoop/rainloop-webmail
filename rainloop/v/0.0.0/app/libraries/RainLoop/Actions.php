@@ -6956,7 +6956,7 @@ class Actions
 			$aParts = \explode(':', $sSubject);
 			foreach ($aParts as $sPart)
 			{
-				if (!$sDrop && 
+				if (!$sDrop &&
 					(\preg_match('/^(RE|FWD)$/i', \trim($sPart)) || \preg_match('/^(RE|FWD)[\[\(][\d]+[\]\)]$/i', \trim($sPart))))
 				{
 					$aPrefix[] = $sPart;
@@ -7083,7 +7083,7 @@ class Actions
 
 				$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 				$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
-				
+
 				$mResult['TextPartIsTrimmed'] = false;
 
 				if ('Message' === $sParent)
@@ -7128,6 +7128,7 @@ class Actions
 					{
 						$fAdditionalExternalFilter = function ($sUrl) {
 							return './?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValues(array(
+								'Rnd' => \md5(\microtime(true)),
 								'Token' => \RainLoop\Utils::GetConnectionToken(),
 								'Url' => $sUrl
 							)).'/';
@@ -7135,16 +7136,15 @@ class Actions
 					}
 
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
-						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false,
-						!!$this->Config()->Get('labs', 'allow_smart_html_links', true), $fAdditionalExternalFilter);
+						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
+						$fAdditionalExternalFilter);
 
 					$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
 
-					$mResult['PlainRaw'] = $sPlain;
-					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
-					$mResult['Rtl'] = \MailSo\Base\Utils::IsRTL($sPlain);
+					$mResult['Plain'] = $sPlain;
+//					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
 
-					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain'].$mResult['PlainRaw']);
+					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
 					$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();
 

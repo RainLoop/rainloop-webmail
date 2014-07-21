@@ -203,7 +203,6 @@ Globals.oHtmlEditorDefaultConfig = {
 
 	'allowedContent': true,
 	'autoParagraph': false,
-	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
@@ -2258,6 +2257,7 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 	return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
 };
 
+Utils.$div = $('<div></div>');
 
 /**
  * @param {string} sHtml
@@ -2266,24 +2266,54 @@ Utils.settingsSaveHelperSimpleFunction = function (koTrigger, oContext)
 Utils.htmlToPlain = function (sHtml)
 {
 	var
+		iPos = 0,
+		iP1 = 0,
+		iP2 = 0,
+		iP3 = 0,
+		iLimit = 0,
+
 		sText = '',
-		sQuoteChar = '> ',
 
-		convertBlockquote = function () {
-			if (arguments && 1 < arguments.length)
+		splitPlainText = function (sText)
+		{
+			var
+				iLen = 100,
+				sPrefix = '',
+				sSubText = '',
+				sResult = sText,
+				iSpacePos = 0,
+				iNewLinePos = 0
+			;
+
+			while (sResult.length > iLen)
 			{
-				var	sText = $.trim(arguments[1])
-					.replace(/__bq__start__(.|[\s\S\n\r]*)__bq__end__/gm, convertBlockquote)
-				;
+				sSubText = sResult.substring(0, iLen);
+				iSpacePos = sSubText.lastIndexOf(' ');
+				iNewLinePos = sSubText.lastIndexOf('\n');
 
-				sText = '\n' + sQuoteChar + $.trim(sText).replace(/\n/gm, '\n' + sQuoteChar) + '\n>\n';
+				if (-1 !== iNewLinePos)
+				{
+					iSpacePos = iNewLinePos;
+				}
 
-				return sText.replace(/\n([> ]+)/gm, function () {
-					return (arguments && 1 < arguments.length) ? '\n' + $.trim(arguments[1].replace(/[\s]/, '')) + ' ' : '';
-				});
+				if (-1 === iSpacePos)
+				{
+					iSpacePos = iLen;
+				}
+
+				sPrefix += sSubText.substring(0, iSpacePos) + '\n';
+				sResult = sResult.substring(iSpacePos + 1);
 			}
 
-			return '';
+			return sPrefix + sResult;
+		},
+
+		convertBlockquote = function (sText) {
+			sText = splitPlainText($.trim(sText));
+			sText = '> ' + sText.replace(/\n/gm, '\n> ');
+			return sText.replace(/(^|\n)([> ]+)/gm, function () {
+				return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/, '')) + ' ' : '';
+			});
 		},
 
 		convertDivs = function () {
@@ -2292,40 +2322,23 @@ Utils.htmlToPlain = function (sHtml)
 				var sText = $.trim(arguments[1]);
 				if (0 < sText.length)
 				{
-					sText = sText.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs);
+					sText = sText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs);
 					sText = '\n' + $.trim(sText) + '\n';
 				}
+
 				return sText;
 			}
+
 			return '';
 		},
 
 		fixAttibuteValue = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				return '' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;');
-			}
-
-			return '';
+			return (arguments && 1 < arguments.length) ?
+				'' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
 		},
 
 		convertLinks = function () {
-			if (arguments && 1 < arguments.length)
-			{
-				var
-					sName = $.trim(arguments[1])
-//					sHref = $.trim(arguments[0].replace(/<a [\s\S]*href[ ]?=[ ]?["']?([^"']+).+<\/a>/gmi, '$1'))
-				;
-
-				return sName;
-//				sName = (0 === trim(sName).length) ? '' : sName;
-//				sHref = ('mailto:' === sHref.substr(0, 7)) ? '' : sHref;
-//				sHref = ('http' === sHref.substr(0, 4)) ? sHref : '';
-//				sHref = (sName === sHref) ? '' : sHref;
-//				sHref = (0 < sHref.length) ? ' (' + sHref + ') ' : '';
-//				return (0 < sName.length) ? sName + sHref : sName;
-			}
-			return '';
+			return (arguments && 1 < arguments.length) ? $.trim(arguments[1]) : '';
 		}
 	;
 
@@ -2340,25 +2353,67 @@ Utils.htmlToPlain = function (sHtml)
 		.replace(/<\/tr>/gi, '\n')
 		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
 		.replace(/<img [^>]*>/gmi, '')
-		.replace(/<div[^>]*>(.|[\s\S\r\n]*)<\/div>/gmi, convertDivs)
+		.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs)
 		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
 		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
-		.replace(/<a [^>]*>(.|[\s\S\r\n]*)<\/a>/gmi, convertLinks)
+		.replace(/<a [^>]*>([\s\S\r\n]*?)<\/a>/gmi, convertLinks)
+		.replace(/<\/div>/gi, '\n')
 		.replace(/&nbsp;/gi, ' ')
-		.replace(/<[^>]*>/gm, '')
-		.replace(/&gt;/gi, '>')
-		.replace(/&lt;/gi, '<')
+		.replace(/&quot;/gi, '"')
 		.replace(/&amp;/gi, '&')
-		.replace(/&\w{2,6};/gi, '')
+		.replace(/<[^>]*>/gm, '')
 	;
 
-	return sText
+	sText = Utils.$div.html(sText).text();
+
+	sText = sText
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
-		.replace(/__bq__start__(.|[\s\S\r\n]*)__bq__end__/gm, convertBlockquote)
+		.replace(/&gt;/gi, '>')
+		.replace(/&lt;/gi, '<')
+	;
+
+	iPos = 0;
+	iLimit = 100;
+
+	while (0 < iLimit)
+	{
+		iLimit--;
+		iP1 = sText.indexOf('__bq__start__', iPos);
+		if (-1 < iP1)
+		{
+			iP2 = sText.indexOf('__bq__start__', iP1 + 5);
+			iP3 = sText.indexOf('__bq__end__', iP1 + 5);
+
+			if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3)
+			{
+				sText = sText.substring(0, iP1) +
+					convertBlockquote(sText.substring(iP1 + 13, iP3)) +
+					sText.substring(iP3 + 11);
+
+				iPos = 0;
+			}
+			else if (-1 < iP2 && iP2 < iP3)
+			{
+				iPos = iP2 - 1;
+			}
+			else
+			{
+				iPos = 0;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	sText = sText
 		.replace(/__bq__start__/gm, '')
 		.replace(/__bq__end__/gm, '')
 	;
+
+	return sText;
 };
 
 /**
@@ -2367,9 +2422,77 @@ Utils.htmlToPlain = function (sHtml)
  */
 Utils.plainToHtml = function (sPlain)
 {
-	return sPlain.toString()
-		.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
-		.replace(/\r/g, '').replace(/\n/g, '<br />');
+	sPlain = sPlain.toString().replace(/\r/g, '');
+
+	var
+		bIn = false,
+		bDo = true,
+		bStart = true,
+		aNextText = [],
+		sLine = '',
+		iIndex = 0,
+		aText = sPlain.split("\n")
+	;
+
+	do
+	{
+		bDo = false;
+		aNextText = [];
+		for (iIndex = 0; iIndex < aText.length; iIndex++)
+		{
+			sLine = aText[iIndex];
+			bStart = '>' === sLine.substr(0, 1);
+			if (bStart && !bIn)
+			{
+				bDo = true;
+				bIn = true;
+				aNextText.push('~~~blockquote~~~');
+				aNextText.push(sLine.substr(1));
+			}
+			else if (!bStart && bIn)
+			{
+				bIn = false;
+				aNextText.push('~~~/blockquote~~~');
+				aNextText.push(sLine);
+			}
+			else if (bStart && bIn)
+			{
+				aNextText.push(sLine.substr(1));
+			}
+			else
+			{
+				aNextText.push(sLine);
+			}
+		}
+
+		if (bIn)
+		{
+			bIn = false;
+			aNextText.push('~~~/blockquote~~~');
+		}
+
+		aText = aNextText;
+	}
+	while (bDo);
+
+	sPlain = aText.join("\n");
+
+	sPlain = sPlain
+		.replace(/&/g, '&amp;')
+		.replace(/>/g, '&gt;').replace(/</g, '&lt;')
+		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
+		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
+		.replace(/[\-_~]{10,}/g, '<hr />')
+		.replace(/\n/g, '<br />');
+
+	if ($.fn && $.fn.linkify)
+	{
+		sPlain = Utils.$div.html(sPlain)
+			.linkify().find('.linkified').removeClass('linkified').end()
+			.html();
+	}
+
+	return sPlain;
 };
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)

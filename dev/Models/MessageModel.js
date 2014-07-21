@@ -90,7 +90,6 @@ function MessageModel()
 
 	this.body = null;
 	this.plainRaw = '';
-	this.isRtl = ko.observable(false);
 	this.isHtml = ko.observable(false);
 	this.hasImages = ko.observable(false);
 	this.attachments = ko.observableArray([]);
@@ -268,7 +267,6 @@ MessageModel.prototype.clear = function ()
 	this.attachmentsMainType('');
 
 	this.body = null;
-	this.isRtl(false);
 	this.isHtml(false);
 	this.hasImages(false);
 	this.attachments([]);
@@ -342,7 +340,7 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 			this.subjectPrefix('');
 			this.subjectSuffix(this.subject());
 		}
-		
+
 		this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
 		this.hasAttachments(!!oJsonMessage.HasAttachments);
 		this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
@@ -861,7 +859,6 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.moment(oMessage.moment());
 
 	this.body = null;
-//	this.isRtl(oMessage.isRtl());
 //	this.isHtml(false);
 //	this.hasImages(false);
 //	this.attachments([]);
@@ -1026,7 +1023,6 @@ MessageModel.prototype.storeDataToDom = function ()
 {
 	if (this.body)
 	{
-		this.body.data('rl-is-rtl', !!this.isRtl());
 		this.body.data('rl-is-html', !!this.isHtml());
 		this.body.data('rl-has-images', !!this.hasImages());
 
@@ -1055,7 +1051,6 @@ MessageModel.prototype.fetchDataToDom = function ()
 {
 	if (this.body)
 	{
-		this.isRtl(!!this.body.data('rl-is-rtl'));
 		this.isHtml(!!this.body.data('rl-is-html'));
 		this.hasImages(!!this.body.data('rl-has-images'));
 

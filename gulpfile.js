@@ -132,6 +132,7 @@ cfg.paths.js = {
 			'vendors/jquery-lazyload/jquery.lazyload.min.js',
 			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
+			'vendors/jquery-linkify/jquery.linkify.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
 			'vendors/routes/signals.min.js',

@@ -113,7 +113,6 @@ Globals.oHtmlEditorDefaultConfig = {
 
 	'allowedContent': true,
 	'autoParagraph': false,
-	'fillEmptyBlocks': false,
 
 	'enterMode': window.CKEDITOR.ENTER_BR,
 	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
