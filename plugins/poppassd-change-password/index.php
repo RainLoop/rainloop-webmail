@@ -23,7 +23,7 @@ class PoppassdChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 				$oProvider
 					->SetHost($this->Config()->Get('plugin', 'host', ''))
-					->SetPort($this->Config()->Get('plugin', 'port', ''))
+					->SetPort((int) $this->Config()->Get('plugin', 'port', 106))
 					->SetAllowedEmails(\strtolower(\trim($this->Config()->Get('plugin', 'allowed_emails', ''))))
 					->SetLogger($this->Manager()->Actions()->Logger())
 				;

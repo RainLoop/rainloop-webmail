@@ -16,7 +16,7 @@ class ChangePasswordPoppassdDriver implements \RainLoop\Providers\ChangePassword
 	 * @var string
 	 */
 	private $sAllowedEmails = '';
-	
+
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
@@ -34,18 +34,18 @@ class ChangePasswordPoppassdDriver implements \RainLoop\Providers\ChangePassword
 	}
 
 	/**
-	 * @param string $iHost
+	 * @param int $iPort
 	 *
 	 * @return \ChangePasswordPoppassdDriver
 	 */
-	public function SetPort($iHost)
+	public function SetPort($iPort)
 	{
-		$this->iHost = $iHost;
+		$this->iPort = (int) $iPort;
 		return $this;
 	}
 
 	/**
-	 * @param string $aDomains
+	 * @param string $sAllowedEmails
 	 *
 	 * @return \ChangePasswordPoppassdDriver
 	 */
@@ -69,7 +69,7 @@ class ChangePasswordPoppassdDriver implements \RainLoop\Providers\ChangePassword
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 *
