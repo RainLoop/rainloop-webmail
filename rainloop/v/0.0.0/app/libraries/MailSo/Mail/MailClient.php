@@ -173,6 +173,8 @@ class MailClient
 //			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 //			\MailSo\Mime\Enumerations\Header::REFERENCES,
 //			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
+//			\MailSo\Mime\Enumerations\Header::RECEIVED_SPF,
+//			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
 //		), true);
 	}
 
@@ -357,7 +359,7 @@ class MailClient
 
 		$oBodyStructure = null;
 		$oMessage = false;
-		
+
 		$aBodyPeekMimeIndexes = array();
 		$aSignatureMimeIndexes = array();
 
@@ -405,7 +407,7 @@ class MailClient
 				{
 					$sLine .= '<0.'.((int) $iBodyTextLimit).'>';
 				}
-				
+
 				$aFetchItems[] = $sLine;
 			}
 		}

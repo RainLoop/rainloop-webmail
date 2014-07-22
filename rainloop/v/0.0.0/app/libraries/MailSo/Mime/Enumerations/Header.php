@@ -38,6 +38,15 @@ class Header
 
 	const SENSITIVITY = 'Sensitivity';
 
+	const RECEIVED_SPF = 'Received-SPF';
+	const AUTHENTICATION_RESULTS = 'Authentication-Results';
+	const X_DKIM_AUTHENTICATION_RESULTS = 'X-DKIM-Authentication-Results';
+
+	const DKIM_SIGNATURE = 'DKIM-Signature';
+	const DOMAINKEY_SIGNATURE = 'DomainKey-Signature';
+
+	const X_SPAM_STATUS = 'X-Spam-Status';
+
 	const RETURN_RECEIPT_TO = 'Return-Receipt-To';
 	const DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To';
 	const X_CONFIRM_READING_TO = 'X-Confirm-Reading-To';

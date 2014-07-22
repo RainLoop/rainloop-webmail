@@ -502,9 +502,14 @@ class Message
 	 */
 	private function generateNewMessageId($sHostName = '')
 	{
-		if (0 === strlen($sHostName))
+		if (0 === \strlen($sHostName))
 		{
 			$sHostName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		}
+
+		if (empty($sHostName) && \MailSo\Base\Utils::FunctionExistsAndEnabled('php_uname'))
+		{
+			$sHostName = \php_uname('n');
 		}
 
 		if (empty($sHostName))
@@ -512,7 +517,8 @@ class Message
 			$sHostName = 'localhost';
 		}
 
-		return '<'.md5(rand(100000, 999999).time().$sHostName).'@'.$sHostName.'>';
+		return '<'.\md5(\rand(100000, 999999).\time().$sHostName.
+			(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
 	}
 
 	/**
