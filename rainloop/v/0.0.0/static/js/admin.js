@@ -1236,22 +1236,106 @@ Utils.removeSelection = function ()
  */
 Utils.replySubjectAdd = function (sPrefix, sSubject)
 {
+	sPrefix = Utils.trim(sPrefix.toUpperCase());
+	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+
 	var
-		oMatch = null,
-		sResult = Utils.trim(sSubject)
+		iIndex = 0,
+		sResult = '',
+		bDrop = false,
+		sTrimmedPart = '',
+		aSubject = [],
+		aParts = [],
+		bRe = 'RE' === sPrefix,
+		bFwd = 'FWD' === sPrefix,
+		bPrefixIsRe = !bFwd
 	;
 
-	if (null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]) ||
-		null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?[\\[\\(][\\d]+[\\]\\)][\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]))
+	if ('' !== sSubject)
 	{
-		sResult = sPrefix + ': ' + Utils.trim(oMatch[1]);
+		bDrop = false;
+
+		aParts = sSubject.split(':');
+		for (iIndex = 0; iIndex < aParts.length; iIndex++)
+		{
+			sTrimmedPart = Utils.trim(aParts[iIndex]);
+			if (!bDrop && 
+					(/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart))
+				)
+			{
+				if (!bRe)
+				{
+					bRe = !!(/^RE/i.test(sTrimmedPart));
+				}
+				
+				if (!bFwd)
+				{
+					bFwd = !!(/^FWD/i.test(sTrimmedPart));
+				}
+			}
+			else
+			{
+				aSubject.push(aParts[iIndex]);
+				bDrop = true;
+			}
+		}
+
+		if (0 < aSubject.length)
+		{
+			sResult = Utils.trim(aSubject.join(':'));
+		}
+	}
+
+	if (bPrefixIsRe)
+	{
+		bRe = false;
 	}
 	else
 	{
-		sResult = sPrefix + ': ' + sSubject;
+		bFwd = false;
 	}
 
-	return sResult.replace(/[\s]+/g, ' ');
+	return Utils.trim(
+		(bPrefixIsRe ? 'Re: ' : 'Fwd: ') +
+		(bRe ? 'Re: ' : '') +
+		(bFwd ? 'Fwd: ' : '') +
+		sResult
+	);
+};
+
+
+/**
+ * @param {string} sSubject
+ * @return {string}
+ */
+Utils.fixLongSubject = function (sSubject)
+{
+	var
+		iLimit = 30,
+		mReg = /^Re([\[\(]([\d]+)[\]\)]|):[\s]{0,3}Re([\[\(]([\d]+)[\]\)]|):/ig,
+		oMatch = null
+	;
+
+	sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+
+	do
+	{
+		iLimit--;
+
+		oMatch = mReg.exec(sSubject);
+		if (!oMatch || Utils.isUnd(oMatch[0]))
+		{
+			oMatch = null;
+		}
+
+		if (oMatch)
+		{
+			sSubject = sSubject.replace(mReg, 'Re:');
+		}
+	}
+	while (oMatch || 0 < iLimit);
+
+	return sSubject.replace(/[\s]+/, ' ');
 };
 
 /**
@@ -1289,10 +1373,11 @@ Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
 };
 
 /**
+ * @deprecated
  * @param {string} sSubject
  * @return {string}
  */
-Utils.fixLongSubject = function (sSubject)
+Utils._fixLongSubject_ = function (sSubject)
 {
 	var
 		iCounter = 0,

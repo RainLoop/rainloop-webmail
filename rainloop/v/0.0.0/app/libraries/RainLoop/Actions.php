@@ -6954,14 +6954,14 @@ class Actions
 		$aResult = array('', '');
 		if (0 < \strlen($sSubject))
 		{
-			$sDrop = false;
+			$bDrop = false;
 			$aPrefix = array();
 			$aSuffix = array();
 
 			$aParts = \explode(':', $sSubject);
 			foreach ($aParts as $sPart)
 			{
-				if (!$sDrop &&
+				if (!$bDrop &&
 					(\preg_match('/^(RE|FWD)$/i', \trim($sPart)) || \preg_match('/^(RE|FWD)[\[\(][\d]+[\]\)]$/i', \trim($sPart))))
 				{
 					$aPrefix[] = $sPart;
@@ -6969,7 +6969,7 @@ class Actions
 				else
 				{
 					$aSuffix[] = $sPart;
-					$sDrop = true;
+					$bDrop = true;
 				}
 			}
 
