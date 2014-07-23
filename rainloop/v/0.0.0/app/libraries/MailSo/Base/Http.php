@@ -420,6 +420,89 @@ class Http
 
 		return $mResult;
 	}
+
+	/**
+	 * @param string $sUrl
+	 * @param array $aOptions
+	 * @param \MailSo\Log\Logger $oLogger = null
+	 *
+	 * @return string
+	 */
+	static public function DetectAndHackFollowLocationUrl($sUrl, &$aOptions, $oLogger = null)
+	{
+		$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
+		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
+
+		$sNewUrl = null;
+		$sUrl = isset($aOptions[CURLOPT_URL]) ? $aOptions[CURLOPT_URL] : $sUrl;
+
+		if (isset($aOptions[CURLOPT_FOLLOWLOCATION]) && $aOptions[CURLOPT_FOLLOWLOCATION] && 0 < \strlen($sUrl) &&
+			($bSafeMode || \ini_get('open_basedir') !== ''))
+		{
+			$aOptions[CURLOPT_FOLLOWLOCATION] = false;
+
+			$iMaxRedirects = isset($aOptions[CURLOPT_MAXREDIRS]) ? $aOptions[CURLOPT_MAXREDIRS] : 5;
+			$iRedirectLimit = $iMaxRedirects;
+
+			if ($iRedirectLimit > 0)
+			{
+				$sNewUrl = $sUrl;
+
+				$oCurl = \curl_init($sUrl);
+				
+				\curl_setopt_array($oCurl, array(
+					CURLOPT_URL => $sUrl,
+					CURLOPT_HEADER => true,
+					CURLOPT_NOBODY => true,
+					CURLOPT_FAILONERROR => false,
+					CURLOPT_SSL_VERIFYPEER => false,
+					CURLOPT_FOLLOWLOCATION => false,
+					CURLOPT_FORBID_REUSE => false,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_TIMEOUT => 5
+				));
+
+				do
+				{
+					\curl_setopt($oCurl, CURLOPT_URL, $sNewUrl);
+
+					$sHeader = \curl_exec($oCurl);
+					if (\curl_errno($oCurl))
+					{
+						$iCode = 0;
+					}
+					else
+					{
+						$iCode = \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
+						if ($iCode === 301 || $iCode === 302)
+						{
+							$aMatches = array();
+							\preg_match('/Location:(.*?)\n/', $sHeader, $aMatches);
+							$sNewUrl = \trim(\array_pop($aMatches));
+
+							if ($oLogger)
+							{
+								$oLogger->Write('cUrl: Location URL: '.$sNewUrl);
+							}
+						}
+						else
+						{
+							$iCode = 0;
+						}
+					}
+
+				} while ($iCode && --$iRedirectLimit);
+
+				\curl_close($oCurl);
+				if ($iRedirectLimit > 0 && 0 < \strlen($sNewUrl))
+				{
+					$aOptions[CURLOPT_URL] = $sNewUrl;
+				}
+			}
+		}
+
+		return null === $sNewUrl ? $sUrl : $sNewUrl;
+	}
 	
 	/**
 	 * @param string $sUrl
@@ -453,6 +536,8 @@ class Http
 			CURLOPT_FAILONERROR => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_MAXREDIRS => 7,
 			CURLOPT_FILE => $rFile,
 			CURLOPT_TIMEOUT => (int) $iTimeout
 		);
@@ -471,13 +556,15 @@ class Http
 			}
 		}
 
-		$oCurl = \curl_init();
-		\curl_setopt_array($oCurl, $aOptions);
-
 		if ($oLogger)
 		{
-			$oLogger->Write('cURL: Send request: '.$sUrl);
+			$oLogger->Write('cUrl: URL: '.$sUrl);
 		}
+
+		\MailSo\Base\Http::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
+
+		$oCurl = \curl_init();
+		\curl_setopt_array($oCurl, $aOptions);
 
 		$bResult = \curl_exec($oCurl);
 		
@@ -486,10 +573,10 @@ class Http
 		
 		if ($oLogger)
 		{
-			$oLogger->Write('cURL: Request result: '.($bResult ? 'true' : 'false').' (Status: '.$iCode.', ContentType: '.$sContentType.')');
+			$oLogger->Write('cUrl: Request result: '.($bResult ? 'true' : 'false').' (Status: '.$iCode.', ContentType: '.$sContentType.')');
 			if (!$bResult || 200 !== $iCode)
 			{
-				$oLogger->Write('cURL: Error: '.\curl_error($oCurl), \MailSo\Log\Enumerations\Type::WARNING);
+				$oLogger->Write('cUrl: Error: '.\curl_error($oCurl), \MailSo\Log\Enumerations\Type::WARNING);
 			}
 		}
 
