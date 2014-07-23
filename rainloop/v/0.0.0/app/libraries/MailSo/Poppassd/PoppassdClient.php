@@ -155,7 +155,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 			{
 				case 'pass':
 				case 'newpass':
-					$sResult = '*******';
+					$sResult = '********';
 					break;
 			}
 		}

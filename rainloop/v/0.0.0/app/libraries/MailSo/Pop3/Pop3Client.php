@@ -256,7 +256,7 @@ class Pop3Client extends \MailSo\Net\NetClient
 			switch ($sCommand)
 			{
 				case 'PASS':
-					$sResult = '*******';
+					$sResult = '********';
 					break;
 			}
 		}

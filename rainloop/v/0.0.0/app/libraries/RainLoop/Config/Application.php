@@ -140,6 +140,9 @@ Values:
 
 				'write_on_error_only' => array(false, 'Logs entire request only if error occured'),
 				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
+				
+				'hide_passwords' => array(true, 'Required for development purposes only.
+Disabling this option is not recommended.'),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
@@ -151,9 +154,9 @@ Patterns:
                   Detailed info: http://www.php.net/manual/en/function.date.php
   {user:email}  - Replaced by user\'s email address
                   If user is not logged in, value is set to "unknown"
-  {user:login}  - Replaced by user\'s login
+  {user:login}  - Replaced by user\'s login (the user part of an email)
                   If user is not logged in, value is set to "unknown"
-  {user:domain} - Replaced by user\'s domain name
+  {user:domain} - Replaced by user\'s domain name (the domain part of an email)
                   If user is not logged in, value is set to "unknown"
   {user:uid}    - Replaced by user\'s UID regardless of account currently used
   {user:ip}     - Replaced by user\'s IP address

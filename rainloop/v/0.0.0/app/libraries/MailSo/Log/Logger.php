@@ -24,6 +24,11 @@ class Logger extends \MailSo\Base\Collection
 	private $aSecretWords;
 
 	/**
+	 * @var bool
+	 */
+	private $bShowSecter;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
@@ -33,6 +38,7 @@ class Logger extends \MailSo\Base\Collection
 		$this->bUsed = false;
 		$this->aForbiddenTypes = array();
 		$this->aSecretWords = array();
+		$this->bShowSecter = false;
 
 		\register_shutdown_function(array(&$this, '__loggerShutDown'));
 	}
@@ -87,6 +93,7 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param string $sWord
+	 *
 	 * @return bool
 	 */
 	public function AddSecret($sWord)
@@ -94,8 +101,28 @@ class Logger extends \MailSo\Base\Collection
 		if (0 < \strlen(\trim($sWord)))
 		{
 			$this->aSecretWords[] = $sWord;
-			$this->aSecretWords = array_unique($this->aSecretWords);
+			$this->aSecretWords = \array_unique($this->aSecretWords);
 		}
+	}
+
+	/**
+	 * @param bool $bShow
+	 * 
+	 * @return \MailSo\Log\Logger
+	 */
+	public function SetShowSecter($bShow)
+	{
+		$this->bShowSecter = !!$bShow;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsShowSecter()
+	{
+		return $this->bShowSecter;
 	}
 
 	/**
@@ -176,7 +203,7 @@ class Logger extends \MailSo\Base\Collection
 		$aLoggers = array();
 		$iResult = 1;
 
-		if ($bSearchWords && 0 < \count($this->aSecretWords))
+		if ($bSearchWords && !$this->bShowSecter && 0 < \count($this->aSecretWords))
 		{
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}

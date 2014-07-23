@@ -1594,7 +1594,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$aResult = $aParams;
 				if (\is_array($aResult) && 2 === count($aResult))
 				{
-					$aResult[1] = '"*******"';
+					$aResult[1] = '"********"';
 				}
 				break;
 		}

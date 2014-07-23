@@ -570,7 +570,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$sCommand = \trim($sCommand);
 		$sRealCommand = $sCommand.(0 === \strlen($sAddToCommand) ? '' : ' '.$sAddToCommand);
 
-		$sFakeCommand = ($bSecureLog) ? '**********' : '';
+		$sFakeCommand = ($bSecureLog) ? '********' : '';
 
 		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);

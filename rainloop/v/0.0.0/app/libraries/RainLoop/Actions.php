@@ -336,7 +336,7 @@ class Actions
 			if (false !== \strpos($sFileName, '{user:uid}'))
 			{
 				$sFileName = \str_replace('{user:uid}',
-					\base_convert(\sprintf('%u', \crc32(md5(\RainLoop\Utils::GetConnectionToken()))), 10, 32),
+					\base_convert(\sprintf('%u', \crc32(\md5(\RainLoop\Utils::GetConnectionToken()))), 10, 32),
 					$sFileName
 				);
 			}
@@ -345,19 +345,22 @@ class Actions
 			{
 				$sFileName = \str_replace('{user:ip}', $this->Http()->GetClientIp(), $sFileName);
 			}
-
-			$this->ParseQueryAuthString();
-
-			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount)
+			
+			if (\preg_match('/\{user:(email|login|domain)\}/i', $sFileName))
 			{
-				$sEmail = $oAccount->Email();
-				$sFileName = \str_replace('{user:email}', $sEmail, $sFileName);
-				$sFileName = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sFileName);
-				$sFileName = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sFileName);
+				$this->ParseQueryAuthString();
+
+				$oAccount = $this->getAccountFromToken(false);
+				if ($oAccount)
+				{
+					$sEmail = $oAccount->Email();
+					$sFileName = \str_replace('{user:email}', $sEmail, $sFileName);
+					$sFileName = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sFileName);
+					$sFileName = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sFileName);
+				}
 			}
 
-			$sFileName = \preg_replace('/\{user:([^}]*)\}/', 'unknown', $sFileName);
+			$sFileName = \preg_replace('/\{user:([^}]*)\}/i', 'unknown', $sFileName);
 		}
 
 		if (false !== \strpos($sFileName, '{labs:'))
@@ -369,7 +372,7 @@ class Actions
 			$sFileName = \preg_replace('/\{labs:([^}]*)\}/', 'labs', $sFileName);
 		}
 
-		if (0 === strlen($sFileName))
+		if (0 === \strlen($sFileName))
 		{
 			$sFileName = 'rainloop-log.txt';
 		}
@@ -794,6 +797,8 @@ class Actions
 
 			if (!!$this->Config()->Get('logs', 'enable', true))
 			{
+				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
+
 				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName();
 				$sLogFileDir = \dirname($sLogFileFullPath);
 
