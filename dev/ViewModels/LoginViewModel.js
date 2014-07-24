@@ -70,7 +70,7 @@ function LoginViewModel()
 	this.signMeVisibility = ko.computed(function () {
 		return Enums.LoginSignMeType.Unused !== this.signMeType();
 	}, this);
-	
+
 	this.submitCommand = Utils.createCommand(this, function () {
 
 		this.emailError('' === Utils.trim(this.email()));
@@ -90,7 +90,7 @@ function LoginViewModel()
 
 		var
 			sPassword = this.password(),
-			
+
 			fLoginRequest = _.bind(function (sPassword) {
 
 				RL.remote().login(_.bind(function (sResult, oData) {
@@ -138,43 +138,33 @@ function LoginViewModel()
 					this.additionalCode.visibility() ? this.additionalCode() : '',
 					this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
 				);
-			
+
 			}, this)
 		;
 
-		if (!!RL.settingsGet('UseRsaEncryption'))
+		if (!!RL.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
 		{
-			if (window.cryptico)
-			{
-				RL.remote().getPublicKey(function (sResult, oData) {
+			RL.remote().getPublicKey(_.bind(function (sResult, oData) {
 
-					var
-						bRequest = false,
-						oEncryptionResult = null
-					;
-
-					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+				var bRequest = false;
+				if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
+					Utils.isArray(oData.Result) && oData.Result[0] && oData.Result[1] && oData.Result[2])
+				{
+					var sEncryptedPassword = Utils.rsaEncode(sPassword, oData.Result[0], oData.Result[1], oData.Result[2]);
+					if (sEncryptedPassword)
 					{
-						oEncryptionResult = window.cryptico.encrypt(sPassword, oData.Result);
-						if (oEncryptionResult && oEncryptionResult.cipher)
-						{
-							bRequest = false;
-							fLoginRequest('cipher:' + oEncryptionResult.cipher);
-						}
+						fLoginRequest(sEncryptedPassword);
+						bRequest = true;
 					}
+				}
 
-					if (bRequest)
-					{
-						this.submitRequest(false);
-						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
-					}
-				});
-			}
-			else
-			{
-				this.submitRequest(false);
-				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
-			}
+				if (!bRequest)
+				{
+					this.submitRequest(false);
+					this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+				}
+
+			}, this));
 		}
 		else
 		{
@@ -188,7 +178,7 @@ function LoginViewModel()
 	});
 
 	this.facebookLoginEnabled = ko.observable(false);
-	
+
 	this.facebookCommand = Utils.createCommand(this, function () {
 
 		window.open(RL.link().socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
@@ -208,7 +198,7 @@ function LoginViewModel()
 	}, function () {
 		return !this.submitRequest() && this.googleLoginEnabled();
 	});
-	
+
 	this.twitterLoginEnabled = ko.observable(false);
 
 	this.twitterCommand = Utils.createCommand(this, function () {
@@ -221,8 +211,8 @@ function LoginViewModel()
 	});
 
 	this.socialLoginEnabled = ko.computed(function () {
-		
-		var 
+
+		var
 			bF = this.facebookLoginEnabled(),
 			bG = this.googleLoginEnabled(),
 			bT = this.twitterLoginEnabled()
@@ -282,7 +272,7 @@ LoginViewModel.prototype.onBuild = function ()
 			}
 		}
 	;
-	
+
 	this.facebookLoginEnabled(!!RL.settingsGet('AllowFacebookSocial'));
 	this.twitterLoginEnabled(!!RL.settingsGet('AllowTwitterSocial'));
 	this.googleLoginEnabled(!!RL.settingsGet('AllowGoogleSocial'));
@@ -308,7 +298,7 @@ LoginViewModel.prototype.onBuild = function ()
 	{
 		window['rl_' + sJsHash + '_google_login_service'] = fSocial;
 	}
-	
+
 	if (this.facebookLoginEnabled())
 	{
 		window['rl_' + sJsHash + '_facebook_login_service'] = fSocial;

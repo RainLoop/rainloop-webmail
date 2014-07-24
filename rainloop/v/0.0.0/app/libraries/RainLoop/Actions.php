@@ -345,7 +345,7 @@ class Actions
 			{
 				$sFileName = \str_replace('{user:ip}', $this->Http()->GetClientIp(), $sFileName);
 			}
-			
+
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sFileName))
 			{
 				$this->ParseQueryAuthString();
@@ -1338,12 +1338,6 @@ class Actions
 		{
 			$sPluginsLink = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		}
-		
-		$sCrypticoLink = '';
-		if ($aResult['UseRsaEncryption'])
-		{
-			$sCrypticoLink = APP_WEB_STATIC_PATH.'js/cryptico.min.js';
-		}
 
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
@@ -1352,7 +1346,6 @@ class Actions
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
 		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
-		$aResult['CrypticoLink'] = $sCrypticoLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
 		// IDN
@@ -1466,7 +1459,7 @@ class Actions
 		if (false === \strpos($sEmail, '@'))
 		{
 			$this->Logger()->Write('The email address "'.$sEmail.'" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
-		
+
 			if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'determine_user_domain', false))))
 			{
 				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
@@ -1614,18 +1607,99 @@ class Actions
 	}
 
 	/**
+	 * @param string $sEncryptedData
+	 *
+	 * @return string
+	 */
+	private function clientRsaDecryptHelper($sEncryptedData)
+	{
+		$aMatch = array();
+		if (\preg_match('/^rsa:([a-z0-9]{32}):/', $sEncryptedData, $aMatch) && !empty($aMatch[1]) &&
+			$this->Config()->Get('security', 'use_rsa_encryption', false))
+		{
+			$oLogger = $this->Logger();
+			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
+
+			$sPrivateKey = $this->Cacher()->Get('/Key/RSA/'.$aMatch[1].'/');
+			if (!empty($sPrivateKey))
+			{
+				$this->Cacher()->Delete('/Key/RSA/'.$aMatch[1].'/');
+
+				$sData = \trim(\substr($sEncryptedData, 37));
+
+				if (!\class_exists('Crypt_RSA'))
+				{
+					\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
+					include_once 'Crypt/RSA.php';
+					\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+				}
+
+				\RainLoop\Service::$__HIDE_ERROR_NOTICES = true;
+
+				$oRsa = new \Crypt_RSA();
+				$oRsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
+				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
+				$oRsa->loadKey($sPrivateKey, CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
+
+				$oMsg = new \Math_BigInteger($sData, 16);
+
+				$sData = $oRsa->decrypt($oMsg->toBytes());
+				if (\preg_match('/^[a-z0-9]{32}:(.+):[a-z0-9]{32}$/', $sData, $aMatch) && isset($aMatch[1]))
+				{
+					$sEncryptedData = $aMatch[1];
+				}
+				else
+				{
+					$oLogger->Write('Invalid decrypted data', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
+				}
+
+				\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+			}
+			else
+			{
+				$oLogger->Write('Private key is not found', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
+			}
+		}
+
+		return $sEncryptedData;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function DoGetPublicKey()
 	{
-		\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
+		if ($this->Config()->Get('security', 'use_rsa_encryption', false))
+		{
+			\RainLoop\Service::$__HIDE_ERROR_NOTICES = true;
 
-		include_once 'Crypt/RSA.php';
+			if (!\class_exists('Crypt_RSA'))
+			{
+				\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
+				include_once 'Crypt/RSA.php';
+				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+			}
 
-		$oRsa = new \Crypt_RSA();
-		$aKeys = $oRsa->createKey(1024);
+			$oRsa = new \Crypt_RSA();
+			$oRsa->setPublicKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_RAW);
+			$aKeys = $oRsa->createKey(1024);
 
-		return $this->DefaultResponse(__FUNCTION__, empty($aKeys['publickey']) ? false : $aKeys['publickey']);
+			if (!empty($aKeys['privatekey']) && !empty($aKeys['publickey']['e']) && !empty($aKeys['publickey']['n']))
+			{
+				$e = new \Math_BigInteger($aKeys['publickey']['e'], 10);
+				$n = new \Math_BigInteger($aKeys['publickey']['n'], 10);
+
+				$sHash = \md5($e->toHex().$n->toHex());
+
+				\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+				return $this->DefaultResponse(__FUNCTION__,
+					$this->Cacher()->Set('/Key/RSA/'.$sHash.'/', $aKeys['privatekey']) ? array($sHash, $e->toHex(), $n->toHex()) : false);
+			}
+		}
+
+		\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+		return $this->FalseResponse(__FUNCTION__);
 	}
 
 	/**
@@ -1644,6 +1718,8 @@ class Actions
 		$bAdditionalCodeSignMe = '1' === (string) $this->GetActionParam('AdditionalCodeSignMe', '0');
 
 		$oAccount = null;
+
+		$sPassword = $this->clientRsaDecryptHelper($sPassword);
 
 		try
 		{
@@ -6001,7 +6077,7 @@ class Actions
 				$sFile = \stream_get_contents($rFile);
 				if (\is_resource($rFile))
 				{
-					@\fclose($rFile);
+					\fclose($rFile);
 				}
 
 				if (is_string($sFile) && 5 < \strlen($sFile))

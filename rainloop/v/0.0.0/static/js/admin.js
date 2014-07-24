@@ -871,6 +871,31 @@ Utils.isNonEmptyArray = function (aValue)
 };
 
 /**
+ * @param {string} aValue
+ * @param {string} sKey
+ * @param {string} sLongKey
+ * @return {string|boolean}
+ */
+Utils.rsaEncode = function (sValue, sHash, sKey, sLongKey)
+{
+	if (window.crypto && window.crypto.getRandomValues && window.RSAKey && sHash && sKey && sLongKey)
+	{
+		var oRsa = new window.RSAKey();
+		oRsa.setPublic(sLongKey, sKey);
+
+		sValue = oRsa.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5());
+		if (false !== sValue)
+		{
+			return 'rsa:' + sHash + ':' + sValue;
+		}
+	}
+
+	return false;
+};
+
+Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && window.RSAKey);
+
+/**
  * @param {string} sPath
  * @param {*=} oObject
  * @param {Object=} oObjectToExportTo
@@ -1259,7 +1284,7 @@ Utils.replySubjectAdd = function (sPrefix, sSubject)
 		for (iIndex = 0; iIndex < aParts.length; iIndex++)
 		{
 			sTrimmedPart = Utils.trim(aParts[iIndex]);
-			if (!bDrop && 
+			if (!bDrop &&
 					(/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart))
 				)
 			{
@@ -1267,7 +1292,7 @@ Utils.replySubjectAdd = function (sPrefix, sSubject)
 				{
 					bRe = !!(/^RE/i.test(sTrimmedPart));
 				}
-				
+
 				if (!bFwd)
 				{
 					bFwd = !!(/^FWD/i.test(sTrimmedPart));

@@ -5,6 +5,11 @@ namespace RainLoop;
 class Service
 {
 	/**
+	 * @var bool
+	 */
+	static $__HIDE_ERROR_NOTICES = false;
+
+	/**
 	 * @var \MailSo\Base\Http
 	 */
 	private $oHttp;
@@ -88,7 +93,7 @@ class Service
 		$this->oActions->Logger()->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
 		$this->oActions->Logger()->Write('Error: '.$sErrStr, $iType, 'PHP');
 
-		return false;
+		return !!(\MailSo\Log\Enumerations\Type::NOTICE === $iType && \RainLoop\Service::$__HIDE_ERROR_NOTICES);
 	}
 
 	/**

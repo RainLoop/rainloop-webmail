@@ -118,10 +118,17 @@ cfg.paths.js = {
 			'vendors/openpgp/openpgp-0.5.1.min.js'
 		]
 	},
-	cryptico: {
-		name: 'cryptico.min.js',
+	encrypt: {
+		name: '_encrypt.min.js',
+		header: '(function (window) {',
+		footer: '}(window));',
+		dest: 'vendors/jsbn/',
 		src: [
-			'vendors/cryptico/cryptico.min.js'
+			'vendors/jsbn/jsbn.js',
+			'vendors/jsbn/prng4.js',
+			'vendors/jsbn/rng.js',
+			'vendors/jsbn/rsa.js',
+			'vendors/jsbn/_fix.js'
 		]
 	},
 	libs: {
@@ -148,6 +155,7 @@ cfg.paths.js = {
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
+			'vendors/jsbn/_encrypt.min.js',
 			'vendors/keymaster/keymaster.js',
 			'vendors/ifvisible/ifvisible.min.js',
 			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
@@ -367,10 +375,14 @@ gulp.task('js:boot', function() {
 		.pipe(gulp.dest(cfg.paths.staticJS));
 });
 
-gulp.task('js:cryptico', function() {
-	return gulp.src(cfg.paths.js.cryptico.src)
-		.pipe(rename(cfg.paths.js.cryptico.name))
-		.pipe(gulp.dest(cfg.paths.staticJS));
+gulp.task('js:encrypt', function() {
+	return gulp.src(cfg.paths.js.encrypt.src)
+		.pipe(concat(cfg.paths.js.encrypt.name))
+		.pipe(header(cfg.paths.js.encrypt.header || ''))
+		.pipe(footer(cfg.paths.js.encrypt.footer || ''))
+		.pipe(uglify(cfg.uglify))
+		.pipe(gulp.dest(cfg.paths.js.encrypt.dest || cfg.paths.staticJS))
+		.on('error', gutil.log);
 });
 
 gulp.task('js:openpgp', function() {
