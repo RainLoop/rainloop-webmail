@@ -1035,6 +1035,7 @@ class Actions
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
+			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
@@ -1337,6 +1338,12 @@ class Actions
 		{
 			$sPluginsLink = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		}
+		
+		$sCrypticoLink = '';
+		if ($aResult['UseRsaEncryption'])
+		{
+			$sCrypticoLink = APP_WEB_STATIC_PATH.'js/cryptico.min.js';
+		}
 
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
@@ -1345,6 +1352,7 @@ class Actions
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
 		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
+		$aResult['CrypticoLink'] = $sCrypticoLink;
 		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
 
 		// IDN
@@ -1603,6 +1611,21 @@ class Actions
 		}
 
 		return $oAccount;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoGetPublicKey()
+	{
+		\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
+
+		include_once 'Crypt/RSA.php';
+
+		$oRsa = new \Crypt_RSA();
+		$aKeys = $oRsa->createKey(1024);
+
+		return $this->DefaultResponse(__FUNCTION__, empty($aKeys['publickey']) ? false : $aKeys['publickey']);
 	}
 
 	/**

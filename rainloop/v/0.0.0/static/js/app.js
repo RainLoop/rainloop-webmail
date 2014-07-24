@@ -12431,51 +12431,98 @@ function LoginViewModel()
 
 		this.submitRequest(true);
 
-		RL.remote().login(_.bind(function (sResult, oData) {
+		var
+			sPassword = this.password(),
+			
+			fLoginRequest = _.bind(function (sPassword) {
 
-			if (Enums.StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
-			{
-				if (oData.Result)
-				{
-					if (oData.TwoFactorAuth)
+				RL.remote().login(_.bind(function (sResult, oData) {
+
+					if (Enums.StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
 					{
-						this.additionalCode('');
-						this.additionalCode.visibility(true);
-						this.additionalCode.focused(true);
-						
-						this.submitRequest(false);
+						if (oData.Result)
+						{
+							if (oData.TwoFactorAuth)
+							{
+								this.additionalCode('');
+								this.additionalCode.visibility(true);
+								this.additionalCode.focused(true);
+
+								this.submitRequest(false);
+							}
+							else
+							{
+								RL.loginAndLogoutReload();
+							}
+						}
+						else if (oData.ErrorCode)
+						{
+							this.submitRequest(false);
+							this.submitError(Utils.getNotification(oData.ErrorCode));
+
+							if ('' === this.submitError())
+							{
+								this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+							}
+						}
+						else
+						{
+							this.submitRequest(false);
+						}
 					}
 					else
 					{
-						RL.loginAndLogoutReload();
-					}
-				}
-				else if (oData.ErrorCode)
-				{
-					this.submitRequest(false);
-					this.submitError(Utils.getNotification(oData.ErrorCode));
-
-					if ('' === this.submitError())
-					{
+						this.submitRequest(false);
 						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 					}
-				}
-				else
-				{
-					this.submitRequest(false);
-				}
+
+				}, this), this.email(), '', sPassword, !!this.signMe(),
+					this.bSendLanguage ? this.mainLanguage() : '',
+					this.additionalCode.visibility() ? this.additionalCode() : '',
+					this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+				);
+			
+			}, this)
+		;
+
+		if (!!RL.settingsGet('UseRsaEncryption'))
+		{
+			if (window.cryptico)
+			{
+				RL.remote().getPublicKey(function (sResult, oData) {
+
+					var
+						bRequest = false,
+						oEncryptionResult = null
+					;
+
+					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+					{
+						oEncryptionResult = window.cryptico.encrypt(sPassword, oData.Result);
+						if (oEncryptionResult && oEncryptionResult.cipher)
+						{
+							bRequest = false;
+							fLoginRequest('cipher:' + oEncryptionResult.cipher);
+						}
+					}
+
+					if (bRequest)
+					{
+						this.submitRequest(false);
+						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+					}
+				});
 			}
 			else
 			{
 				this.submitRequest(false);
 				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 			}
-
-		}, this), this.email(), '', this.password(), !!this.signMe(),
-			this.bSendLanguage ? this.mainLanguage() : '',
-			this.additionalCode.visibility() ? this.additionalCode() : '',
-			this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
-		);
+		}
+		else
+		{
+			fLoginRequest(sPassword);
+		}
 
 		return true;
 
@@ -17686,6 +17733,14 @@ AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, 
 		'Data': mData,
 		'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
 	});
+};
+
+/**
+ * @param {?Function} fCallback
+ */
+AbstractAjaxRemoteStorage.prototype.getPublicKey = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'GetPublicKey');
 };
 
 /**

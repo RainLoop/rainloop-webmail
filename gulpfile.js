@@ -118,6 +118,12 @@ cfg.paths.js = {
 			'vendors/openpgp/openpgp-0.5.1.min.js'
 		]
 	},
+	cryptico: {
+		name: 'cryptico.min.js',
+		src: [
+			'vendors/cryptico/cryptico.min.js'
+		]
+	},
 	libs: {
 		name: 'libs.js',
 		src: [
@@ -358,6 +364,12 @@ gulp.task('css:main:min', ['css:main'], function() {
 gulp.task('js:boot', function() {
 	return gulp.src(cfg.paths.js.boot.src)
 		.pipe(concat(cfg.paths.js.boot.name))
+		.pipe(gulp.dest(cfg.paths.staticJS));
+});
+
+gulp.task('js:cryptico', function() {
+	return gulp.src(cfg.paths.js.cryptico.src)
+		.pipe(rename(cfg.paths.js.cryptico.name))
 		.pipe(gulp.dest(cfg.paths.staticJS));
 });
 

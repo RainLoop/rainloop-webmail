@@ -7878,6 +7878,14 @@ AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, 
 
 /**
  * @param {?Function} fCallback
+ */
+AbstractAjaxRemoteStorage.prototype.getPublicKey = function (fCallback)
+{
+	this.defaultRequest(fCallback, 'GetPublicKey');
+};
+
+/**
+ * @param {?Function} fCallback
  * @param {string} sVersion
  */
 AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
