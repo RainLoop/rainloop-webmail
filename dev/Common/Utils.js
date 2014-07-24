@@ -1059,6 +1059,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaAdditionalIdentities = ko.observable(false);
 	oData.capaGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
+	oData.determineUserDomain = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
 

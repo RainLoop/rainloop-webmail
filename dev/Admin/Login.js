@@ -8,6 +8,7 @@ function AdminLogin()
 	var oData = RL.data();
 	
 	this.determineUserLanguage = oData.determineUserLanguage;
+	this.determineUserDomain = oData.determineUserDomain;
 	
 	this.defaultDomain = ko.observable(RL.settingsGet('LoginDefaultDomain'));
 
@@ -27,6 +28,12 @@ AdminLogin.prototype.onBuild = function ()
 		self.determineUserLanguage.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'DetermineUserLanguage': bValue ? '1' : '0'
+			});
+		});
+
+		self.determineUserDomain.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'DetermineUserDomain': bValue ? '1' : '0'
 			});
 		});
 		

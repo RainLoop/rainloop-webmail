@@ -15,6 +15,11 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
+				<label data-bind="click: function () { determineUserDomain(!determineUserDomain()); }">
+					<i data-bind="css: determineUserDomain() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					Try to determine user domain
+				</label>
+				<br />
 				<label data-bind="click: function () { allowLanguagesOnLogin(!allowLanguagesOnLogin()); }">
 					<i data-bind="css: allowLanguagesOnLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Allow language selection on login screen

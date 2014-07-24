@@ -1039,6 +1039,7 @@ class Actions
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
+			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
@@ -1450,13 +1451,65 @@ class Actions
 	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
 		$sAdditionalCode = '', $bAdditionalCodeSignMe = false)
 	{
-		$this->Plugins()->RunHook('filter.login-credentials-first', array(&$sEmail, &$sPassword));
+		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
 		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
-		if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'default_domain', ''))))
+
+		if (false === \strpos($sEmail, '@'))
 		{
-			$sEmail = $sEmail.'@'.\trim(\trim($this->Config()->Get('login', 'default_domain', '')), ' @');
+			$this->Logger()->Write('The email address "'.$sEmail.'" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+		
+			if (false === \strpos($sEmail, '@') && 0 < \strlen(\trim($this->Config()->Get('login', 'determine_user_domain', false))))
+			{
+				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
+				$this->Logger()->Write('Determined user domain: '.$sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+
+				$bAdded = false;
+
+				$iLimit = 14;
+				$aDomainParts = \explode('.', $sUserHost);
+
+				$oDomainProvider = $this->DomainProvider();
+				while (0 < \count($aDomainParts) && 0 < $iLimit)
+				{
+					$sLine = \trim(\implode('.', $aDomainParts), '. ');
+
+					$oDomain = $oDomainProvider->Load($sLine);
+					if ($oDomain && $oDomain instanceof \RainLoop\Domain)
+					{
+						$bAdded = true;
+						$this->Logger()->Write('Check "'.$sLine.'": OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
+							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+
+						$sEmail = $sEmail.'@'.$sLine;
+						break;
+					}
+					else
+					{
+						$this->Logger()->Write('Check "'.$sLine.'": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+					}
+
+					\array_shift($aDomainParts);
+					$iLimit--;
+				}
+
+				if (!$bAdded)
+				{
+					$this->Logger()->Write('Domain was not found!', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+				}
+			}
+
+			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
+			if (false === \strpos($sEmail, '@') && 0 < \strlen($sDefDomain))
+			{
+				$this->Logger()->Write('Default domain "'.$sDefDomain.'" was used. ('.$sEmail.' > '.$sEmail.'@'.$sDefDomain.')',
+					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+
+				$sEmail = $sEmail.'@'.$sDefDomain;
+			}
 		}
+
+		$this->Plugins()->RunHook('filter.login-credentials.step-2', array(&$sEmail, &$sPassword));
 
 		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword))
 		{
@@ -2225,6 +2278,7 @@ class Actions
 		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
+		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
 		if ($this->GetCapa(true, \RainLoop\Enumerations\Capa::PREM))
 		{

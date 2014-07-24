@@ -1856,6 +1856,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.capaAdditionalIdentities = ko.observable(false);
 	oData.capaGravatar = ko.observable(false);
 	oData.determineUserLanguage = ko.observable(false);
+	oData.determineUserDomain = ko.observable(false);
 
 	oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
 
@@ -6419,6 +6420,7 @@ function AdminLogin()
 	var oData = RL.data();
 	
 	this.determineUserLanguage = oData.determineUserLanguage;
+	this.determineUserDomain = oData.determineUserDomain;
 	
 	this.defaultDomain = ko.observable(RL.settingsGet('LoginDefaultDomain'));
 
@@ -6438,6 +6440,12 @@ AdminLogin.prototype.onBuild = function ()
 		self.determineUserLanguage.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(null, {
 				'DetermineUserLanguage': bValue ? '1' : '0'
+			});
+		});
+
+		self.determineUserDomain.subscribe(function (bValue) {
+			RL.remote().saveAdminConfig(null, {
+				'DetermineUserDomain': bValue ? '1' : '0'
 			});
 		});
 		
@@ -7507,6 +7515,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
 	this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
+	this.determineUserDomain(!!RL.settingsGet('DetermineUserDomain'));
 
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));

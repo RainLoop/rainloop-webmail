@@ -89,6 +89,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
 	this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
 	this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
+	this.determineUserDomain(!!RL.settingsGet('DetermineUserDomain'));
 
 	this.capaThemes(RL.capa(Enums.Capa.Themes));
 	this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));

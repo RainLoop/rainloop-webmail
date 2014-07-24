@@ -118,6 +118,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 					'Allow language selection on webmail login screen'),
 
 				'determine_user_language' => array(true, ''),
+				'determine_user_domain' => array(false, ''),
 
 				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAILT_OFF,
 					'This option allows webmail to remember the logged in user
