@@ -11,9 +11,9 @@
 			<input type="text" style="width:300px;" id="rainloop-url" name="rainloop-url" value="<?php echo $_['rainloop-url']; ?>" placeholder="https://" />
 			<br />
 			<br />
-			<?php p($l->t('SSO key')); ?>:
+			<?php p($l->t('Absolute file path to RainLoop Webmail installation')); ?>:
 			<br />
-			<input type="text" style="width:300px;" id="rainloop-url" name="rainloop-sso-key" value="<?php echo $_['rainloop-sso-key']; ?>" />
+			<input type="text" style="width:300px;" id="rainloop-path" name="rainloop-path" value="<?php echo $_['rainloop-path']; ?>" />
 			<br />
 			<br />
 			<input type="button" id="rainloop-save-button" name="rainloop-save-button" value="<?php p($l->t('Save')); ?>" />

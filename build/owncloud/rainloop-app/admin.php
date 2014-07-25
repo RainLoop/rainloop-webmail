@@ -15,5 +15,5 @@ OCP\Util::addScript('rainloop', 'admin');
 
 $oTemplate = new OCP\Template('rainloop', 'admin');
 $oTemplate->assign('rainloop-url', OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-$oTemplate->assign('rainloop-sso-key', OCP\Config::getAppValue('rainloop', 'rainloop-sso-key', ''));
+$oTemplate->assign('rainloop-path', OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
 return $oTemplate->fetchPage();

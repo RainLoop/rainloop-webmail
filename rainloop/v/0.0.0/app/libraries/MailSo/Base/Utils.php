@@ -703,6 +703,7 @@ class Utils
 			'sql'	=> 'text/plain',
 			'cfg'	=> 'text/plain',
 			'conf'	=> 'text/plain',
+			'asc'	=> 'text/plain',
 			'rtx'	=> 'text/richtext',
 			'vcard'	=> 'text/vcard',
 			'vcf'	=> 'text/vcard',

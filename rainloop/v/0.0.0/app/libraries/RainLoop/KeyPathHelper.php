@@ -25,6 +25,16 @@ class KeyPathHelper
 	}
 
 	/**
+	 * @param string $sHash
+	 *
+	 * @return string
+	 */
+	static public function RsaCacherKey($sHash)
+	{
+		return '/Rsa/Data/'.$sHash.'/';
+	}
+
+	/**
 	 * @param string $sSignMeToken
 	 *
 	 * @return string

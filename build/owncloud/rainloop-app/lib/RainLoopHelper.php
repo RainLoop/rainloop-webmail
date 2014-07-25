@@ -2,37 +2,47 @@
 
 class OC_RainLoop_Helper
 {
-	public static function getSsoHash($sUrl, $sSsoKey, $sEmail, $sPassword)
+	/**
+	 * @param string $sPath
+	 * @param string $sEmail
+	 * @param string $sPassword
+	 * 
+	 * @return string
+	 */
+	public static function getSsoHash($sPath, $sEmail, $sPassword)
 	{
-		if (!function_exists('curl_init'))
+		$SsoHash = '';
+		
+		$sPath = rtrim(trim($sPath), '\\/').'/index.php';
+		if (file_exists($sPath))
 		{
-			return '';
+			$_ENV['RAINLOOP_INCLUDE_AS_API'] = false;
+			include $sPath;
+			
+			if (class_exists($sPath))
+			{
+				
+				$SsoHash = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
+			}
+		}
+		
+		return $SsoHash;
+	}
+	
+	/**
+	 * @param string $sUrl
+	 *
+	 * @return string
+	 */
+	public static function normalizeUrl($sUrl)
+	{
+		$sUrl = \rtrim($sUrl, '/\\');
+		if ('.php' !== \strtolower(\substr($sUrl), -4))
+		{
+			$sUrl .= '/';
 		}
 
-		$oCurl = curl_init();
-		curl_setopt_array($oCurl, array(
-			CURLOPT_URL => $sUrl.'?ExternalSso',
-			CURLOPT_HEADER => false,
-			CURLOPT_FAILONERROR => true,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POST => true,
-			CURLOPT_USERAGENT => 'RainLoop SSO User Agent (ownCloud)',
-			CURLOPT_POSTFIELDS => http_build_query(array(
-				'SsoKey' => $sSsoKey,
-				'Email' => $sEmail,
-				'Password' => $sPassword
-			), '', '&'),
-			CURLOPT_TIMEOUT => 5
-		));
-
-		$mResult = curl_exec($oCurl);
-		if (is_resource($oCurl))
-		{
-			curl_close($oCurl);
-		}
-
-		return is_string($mResult) ? $mResult : '';
+		return $sUrl;
 	}
 
 	public static function encodePassword($sPassword, $sSalt)

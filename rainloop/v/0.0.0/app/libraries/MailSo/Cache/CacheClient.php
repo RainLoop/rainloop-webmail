@@ -58,16 +58,22 @@ class CacheClient
 
 	/**
 	 * @param string $sKey
+	 * @param string $bClearAfterGet = false
 	 *
 	 * @return string
 	 */
-	public function Get($sKey)
+	public function Get($sKey, $bClearAfterGet = false)
 	{
 		$sValue = '';
 
 		if ($this->oDriver)
 		{
 			$sValue = $this->oDriver->Get($sKey.$this->sCacheIndex);
+		}
+
+		if ($bClearAfterGet)
+		{
+			$this->Delete($sKey);
 		}
 
 		return $sValue;

@@ -1620,18 +1620,16 @@ class Actions
 			$oLogger = $this->Logger();
 			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
 
-			$sPrivateKey = $this->Cacher()->Get('/Key/RSA/'.$aMatch[1].'/');
+			$sPrivateKey = $this->Cacher()->Get(\RainLoop\KeyPathHelper::RsaCacherKey($aMatch[1]), true);
 			if (!empty($sPrivateKey))
 			{
-				$this->Cacher()->Delete('/Key/RSA/'.$aMatch[1].'/');
-
 				$sData = \trim(\substr($sEncryptedData, 37));
 
 				if (!\class_exists('Crypt_RSA'))
 				{
 					\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-					include_once 'Crypt/RSA.php';
 					\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+					include_once 'Crypt/RSA.php';
 				}
 
 				\RainLoop\Service::$__HIDE_ERROR_NOTICES = true;
@@ -1677,8 +1675,8 @@ class Actions
 			if (!\class_exists('Crypt_RSA'))
 			{
 				\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-				include_once 'Crypt/RSA.php';
 				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+				include_once 'Crypt/RSA.php';
 			}
 
 			$oRsa = new \Crypt_RSA();
@@ -1694,7 +1692,8 @@ class Actions
 
 				\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
 				return $this->DefaultResponse(__FUNCTION__,
-					$this->Cacher()->Set('/Key/RSA/'.$sHash.'/', $aKeys['privatekey']) ? array($sHash, $e->toHex(), $n->toHex()) : false);
+					$this->Cacher()->Set(\RainLoop\KeyPathHelper::RsaCacherKey($sHash), $aKeys['privatekey']) ?
+						array($sHash, $e->toHex(), $n->toHex()) : false);
 			}
 		}
 
