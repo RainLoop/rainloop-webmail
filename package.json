@@ -36,7 +36,7 @@
 		"plugins"
 	],
 	"readmeFilename": "README.md",
-	"ownCloudPackageVersion": "1.6",
+	"ownCloudPackageVersion": "2.0",
 	"engines": {
 		"node": ">= 0.10.0"
 	},

@@ -6,29 +6,28 @@ class OC_RainLoop_Helper
 	 * @param string $sPath
 	 * @param string $sEmail
 	 * @param string $sPassword
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function getSsoHash($sPath, $sEmail, $sPassword)
 	{
 		$SsoHash = '';
-		
+
 		$sPath = rtrim(trim($sPath), '\\/').'/index.php';
 		if (file_exists($sPath))
 		{
-			$_ENV['RAINLOOP_INCLUDE_AS_API'] = false;
+			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
 			include $sPath;
-			
-			if (class_exists($sPath))
+
+			if (class_exists('\\RainLoop\\Api'))
 			{
-				
 				$SsoHash = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
 			}
 		}
-		
+
 		return $SsoHash;
 	}
-	
+
 	/**
 	 * @param string $sUrl
 	 *
@@ -36,8 +35,8 @@ class OC_RainLoop_Helper
 	 */
 	public static function normalizeUrl($sUrl)
 	{
-		$sUrl = \rtrim($sUrl, '/\\');
-		if ('.php' !== \strtolower(\substr($sUrl), -4))
+		$sUrl = \rtrim(\trim($sUrl), '/\\');
+		if ('.php' !== \strtolower(\substr($sUrl, -4)))
 		{
 			$sUrl .= '/';
 		}

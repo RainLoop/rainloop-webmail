@@ -22,5 +22,5 @@ INSTALL:
 CONFIGURATION:
 - ownCloud:
 	1) In the Apps > Enable 'RainLoop' plugin
-	2) In the Settings > Admin > Enter "RainLoop Webmail URL" and "Absolute file path to RainLoop Webmail installation"
+	2) In the Settings > Admin > Enter "RainLoop Webmail URL" and "Absolute (full) path to RainLoop Webmail installation"
 	3) In the Settings > Personal > Type your mail server email (login) and password
