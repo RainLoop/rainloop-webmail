@@ -1915,6 +1915,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.googleEnable = ko.observable(false);
 	oData.googleClientID = ko.observable('');
 	oData.googleClientSecret = ko.observable('');
+	oData.googleApiKey = ko.observable('');
 
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
@@ -7000,8 +7001,10 @@ function AdminSocial()
 	this.googleEnable = oData.googleEnable;
 	this.googleClientID = oData.googleClientID;
 	this.googleClientSecret = oData.googleClientSecret;
+	this.googleApiKey = oData.googleApiKey;
 	this.googleTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.googleTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
+	this.googleTrigger3 = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.facebookSupported = oData.facebookSupported;
 	this.facebookEnable = oData.facebookEnable;
@@ -7035,7 +7038,8 @@ AdminSocial.prototype.onBuild = function ()
 			f4 = Utils.settingsSaveHelperSimpleFunction(self.twitterTrigger2, self),
 			f5 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger1, self),
 			f6 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger2, self),
-			f7 = Utils.settingsSaveHelperSimpleFunction(self.dropboxTrigger1, self)
+			f7 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger3, self),
+			f8 = Utils.settingsSaveHelperSimpleFunction(self.dropboxTrigger1, self)
 		;
 
 		self.facebookEnable.subscribe(function (bValue) {
@@ -7101,6 +7105,12 @@ AdminSocial.prototype.onBuild = function ()
 			});
 		});
 
+		self.googleApiKey.subscribe(function (sValue) {
+			RL.remote().saveAdminConfig(f7, {
+				'GoogleApiKey': Utils.trim(sValue)
+			});
+		});
+
 		self.dropboxEnable.subscribe(function (bValue) {
 			RL.remote().saveAdminConfig(Utils.emptyFunction, {
 				'DropboxEnable': bValue ? '1' : '0'
@@ -7108,7 +7118,7 @@ AdminSocial.prototype.onBuild = function ()
 		});
 
 		self.dropboxApiKey.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f7, {
+			RL.remote().saveAdminConfig(f8, {
 				'DropboxApiKey': Utils.trim(sValue)
 			});
 		});
@@ -7576,6 +7586,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
 	this.googleClientID(RL.settingsGet('GoogleClientID'));
 	this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
+	this.googleApiKey(RL.settingsGet('GoogleApiKey'));
 
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));

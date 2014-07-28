@@ -140,7 +140,7 @@
 											<a class="btn" data-tooltip-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">
 												<i class="icon-dropbox"></i>
 											</a>
-											<a class="btn" data-tooltip-placement="top" data-bind="visible: driveEnabled, command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
+											<a class="btn" data-tooltip-placement="top" data-bind="visible: driveEnabled() && driveVisible(), command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
 												<i class="icon-google-drive"></i>
 											</a>
 										</div>

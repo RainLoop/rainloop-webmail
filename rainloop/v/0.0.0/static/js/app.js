@@ -1918,6 +1918,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.googleEnable = ko.observable(false);
 	oData.googleClientID = ko.observable('');
 	oData.googleClientSecret = ko.observable('');
+	oData.googleApiKey = ko.observable('');
 
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
@@ -9304,7 +9305,7 @@ function PopupsComposeViewModel()
 		this.triggerForResize();
 	}, this);
 
-	this.dropboxEnabled = ko.observable(RL.settingsGet('DropboxApiKey') ? true : false);
+	this.dropboxEnabled = ko.observable(!!RL.settingsGet('DropboxApiKey'));
 
 	this.dropboxCommand = Utils.createCommand(this, function () {
 
@@ -9330,18 +9331,19 @@ function PopupsComposeViewModel()
 		return this.dropboxEnabled();
 	});
 
-	this.driveEnabled = ko.observable(false);
+	this.driveEnabled = ko.observable(!!RL.settingsGet('GoogleApiKey') && !!RL.settingsGet('GoogleClientID'));
+	this.driveVisible = ko.observable(false);
 
 	this.driveCommand = Utils.createCommand(this, function () {
 
-//		this.driveOpenPopup();
+		this.driveOpenPopup();
 		return true;
 
 	}, function () {
 		return this.driveEnabled();
 	});
 
-//	this.driveCallback = _.bind(this.driveCallback, this);
+	this.driveCallback = _.bind(this.driveCallback, this);
 
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.Compose;
@@ -9963,41 +9965,89 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 		document.body.appendChild(oScript);
 	}
 
-// TODO (Google Drive)
-//	if (false)
-//	{
-//		$.getScript('http://www.google.com/jsapi', function () {
-//			if (window.google)
-//			{
-//				window.google.load('picker', '1', {
-//					'callback': Utils.emptyFunction
-//				});
-//			}
-//		});
-//	}
+	if (this.driveEnabled())
+	{
+		$.getScript('https://apis.google.com/js/api.js', function () {
+			if (window.gapi)
+			{
+				self.driveVisible(true);
+			}
+		});
+	}
 };
 
-//PopupsComposeViewModel.prototype.driveCallback = function (oData)
-//{
-//	if (oData && window.google && oData['action'] === window.google.picker.Action.PICKED)
-//	{
-//	}
-//};
-//
-//PopupsComposeViewModel.prototype.driveOpenPopup = function ()
-//{
-//	if (window.google)
-//	{
-//		var
-//			oPicker = new window.google.picker.PickerBuilder()
-//				.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
-//				.addView(new window.google.picker.View(window.google.picker.ViewId.DOCS))
-//				.setCallback(this.driveCallback).build()
-//		;
-//
-//		oPicker.setVisible(true);
-//	}
-//};
+PopupsComposeViewModel.prototype.driveCallback = function (oData)
+{
+	if (oData && window.google && oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
+		oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
+		oData[window.google.picker.Response.DOCUMENTS][0]['url'])
+	{
+		this.addDriveAttachment(oData[window.google.picker.Response.DOCUMENTS][0]);
+	}
+};
+
+PopupsComposeViewModel.prototype.driveCreatePiker = function (oOauthToken)
+{
+	if (window.gapi && oOauthToken && oOauthToken.access_token)
+	{
+		var self = this;
+
+		window.gapi.load('picker', {'callback': function () {
+
+			if (window.google && window.google.picker)
+			{
+				var drivePicker = new window.google.picker.PickerBuilder()
+					.addView(
+						new window.google.picker.DocsView()
+							.setIncludeFolders(true)
+					)
+					.setAppId(RL.settingsGet('GoogleClientID'))
+					.setDeveloperKey(RL.settingsGet('GoogleApiKey'))
+					.setOAuthToken(oOauthToken.access_token)
+					.setCallback(_.bind(self.driveCallback, self))
+					.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
+					.build()
+				;
+
+				drivePicker.setVisible(true);
+			}
+		}});
+	}
+};
+
+PopupsComposeViewModel.prototype.driveOpenPopup = function ()
+{
+	if (window.gapi)
+	{
+		var self = this;
+		
+		window.gapi.load('auth', {'callback': function () {
+			
+			var oAuthToken = window.gapi.auth.getToken();
+			if (!oAuthToken)
+			{
+				window.gapi.auth.authorize({
+					'client_id': RL.settingsGet('GoogleClientID'),
+					'scope': 'https://www.googleapis.com/auth/drive.readonly',
+					'immediate': false
+				}, function (oAuthResult) {
+					if (oAuthResult && !oAuthResult.error)
+					{
+						var oAuthToken = window.gapi.auth.getToken();
+						if (oAuthToken)
+						{
+							self.driveCreatePiker(oAuthToken);
+						}
+					}
+				});
+			}
+			else
+			{
+				self.driveCreatePiker(oAuthToken);
+			}
+		}});
+	}
+};
 
 /**
  * @param {string} sId
@@ -10320,6 +10370,16 @@ PopupsComposeViewModel.prototype.addDropboxAttachment = function (oDropboxFile)
 	}, [oDropboxFile['link']]);
 
 	return true;
+};
+
+/**
+ * @param {Object} oDriveFile
+ * @return {boolean}
+ */
+PopupsComposeViewModel.prototype.addDriveAttachment = function (oDriveFile)
+{
+	window.console.log(oDriveFile);
+	return false;
 };
 
 /**
@@ -16221,6 +16281,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
 	this.googleClientID(RL.settingsGet('GoogleClientID'));
 	this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
+	this.googleApiKey(RL.settingsGet('GoogleApiKey'));
 
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));

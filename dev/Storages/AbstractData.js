@@ -125,6 +125,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
 	this.googleClientID(RL.settingsGet('GoogleClientID'));
 	this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
+	this.googleApiKey(RL.settingsGet('GoogleApiKey'));
 
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));

@@ -182,6 +182,7 @@ Examples:
 				'google_enable' => array(false, 'Google'),
 				'google_client_id' => array(''),
 				'google_client_secret' => array(''),
+				'google_api_key' => array(''),
 
 				'fb_enable' => array(false, 'Facebook'),
 				'fb_app_id' => array(''),

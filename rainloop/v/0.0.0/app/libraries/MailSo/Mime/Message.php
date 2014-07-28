@@ -361,7 +361,7 @@ class Message
 	}
 
 	/**
-	 * @param $iDateTime $iDateTime
+	 * @param int $iDateTime
 	 *
 	 * @return \MailSo\Mime\Message
 	 */

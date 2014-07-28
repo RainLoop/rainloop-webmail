@@ -627,6 +627,74 @@ class Utils
 	}
 
 	/**
+	 * @param string $sAttrName
+	 * @param string $sValue = 'utf-8'
+	 * @param string $sCharset = ''
+	 * @param string $sLang = ''
+	 * @param int $iLen = 78
+	 *
+	 * @return string|bool
+	 */
+	public static function AttributeRfc2231Encode($sAttrName, $sValue, $sCharset = 'utf-8', $sLang = '', $iLen = 1000)
+	{
+		$sValue = \strtoupper($sCharset).'\''.$sLang.'\''.
+			\preg_replace_callback('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', function ($match) {
+				return \rawurlencode($match[0]);
+			}, $sValue);
+
+		$iNlen = \strlen($sAttrName);
+		$iVlen = \strlen($sValue);
+		
+		if (\strlen($sAttrName) + $iVlen > $iLen - 3)
+		{
+			$sections = array();
+			$section = 0;
+
+			for ($i = 0, $j = 0; $i < $iVlen; $i += $j)
+			{
+				$j = $iLen - $iNlen - \strlen($section) - 4;
+				$sections[$section++] = \substr($sValue, $i, $j);
+			}
+
+			for ($i = 0, $n = $section; $i < $n; $i++)
+			{
+				$sections[$i] = ' '.$sAttrName.'*'.$i.'*='.$sections[$i];
+			}
+			
+			return \implode(";\r\n", $sections);
+		}
+		else
+		{
+			return $sAttrName.'*='.$sValue;
+		}
+	}
+	/**
+	 * @param string $sAttrName
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function EncodeHeaderUtf8AttributeValue($sAttrName, $sValue)
+	{
+		$sAttrName = \trim($sAttrName);
+		$sValue = \trim($sValue);
+		
+		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
+		{
+			if (!empty($_SERVER['HTTP_USER_AGENT']) && 0 < \strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
+			{
+				$sValue = $sAttrName.'="'.\preg_replace('/[+\s]+/', '%20', \urlencode($sValue)).'"';
+			}
+			else
+			{
+				$sValue = \MailSo\Base\Utils::AttributeRfc2231Encode($sAttrName, $sValue);
+			}
+		}
+
+		return \trim($sValue);
+	}
+
+	/**
 	 * @param string $sEmail
 	 *
 	 * @return string

@@ -1129,10 +1129,14 @@ class Actions
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
+			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
+			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
 			{
 				$aResult['AllowGoogleSocial'] = false;
+				$aResult['GoogleClientID'] = '';
+				$aResult['GoogleApiKey'] = '';
 			}
 
 			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
@@ -1189,6 +1193,7 @@ class Actions
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
 				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
+				$aResult['GoogleApiKey'] = (string) $oConfig->Get('social', 'google_api_key', '');
 
 				$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
 				$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
@@ -2394,6 +2399,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
+		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
 
 		$this->setConfigFromParams($oConfig, 'FacebookEnable', 'social', 'fb_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'FacebookAppID', 'social', 'fb_app_id', 'string');
@@ -6389,7 +6395,7 @@ class Actions
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
 			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload) {
-				if (is_resource($rResource))
+				if (\is_resource($rResource))
 				{
 					$sContentTypeOut = $sContentTypeIn;
 					if (empty($sContentTypeOut))
@@ -6409,10 +6415,12 @@ class Actions
 
 					$sFileNameOut = $self->MainClearFileName($sFileNameOut, $sContentTypeOut, $sMimeIndex);
 
-					header('Content-Type: '.$sContentTypeOut);
-					header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; filename="'.$sFileNameOut.'"; charset=utf-8', true);
-					header('Accept-Ranges: none', true);
-					header('Content-Transfer-Encoding: binary');
+					\header('Content-Type: '.$sContentTypeOut);
+					\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
+						\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+					
+					\header('Accept-Ranges: none', true);
+					\header('Content-Transfer-Encoding: binary');
 
 					$self->cacheByKey($sRawKey);
 
