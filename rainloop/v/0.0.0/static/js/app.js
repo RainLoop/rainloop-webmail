@@ -12753,6 +12753,16 @@ LoginViewModel.prototype.onBuild = function ()
 			});
 		});
 	}, 50);
+
+	_.delay(function () {
+		$('.checkAutocomplete').trigger('change');
+	}, 100);
+
+};
+
+LoginViewModel.prototype.submitForm = function ()
+{
+	this.submitCommand();
 };
 
 LoginViewModel.prototype.selectLanguage = function ()

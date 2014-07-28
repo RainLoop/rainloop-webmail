@@ -16,11 +16,12 @@
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>
 			</div>
-			<form class="form-horizontal span4 wrapper loginForm thm-login" action="#/" onsubmit="return false;" data-bind="command: submitCommand">
+			<form class="form-horizontal span4 wrapper loginForm thm-login" action="#/" data-bind="submit: submitForm">
 				{{INCLUDE/TopControlGroup/PLACE}}
 				<div class="control-group" data-bind="css: {'error': emailError}">
 					<div class="input-append">
-						<input type="email" class="i18n inputEmail span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="email" class="i18n inputEmail span4 checkAutocomplete" name="RainLoopEmail" id="RainLoopEmail"
+							autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: email, hasFocus: emailFocus" data-i18n-placeholder="LOGIN/LABEL_EMAIL" />
 						<span class="add-on">
 							<i class="icon-mail"></i>
@@ -29,7 +30,8 @@
 				</div>
 				<div class="control-group" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
-						<input type="password" class="i18n inputPassword span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="password" class="i18n inputPassword span4 checkAutocomplete" name="RainLoopPassword" id="RainLoopPassword"
+							autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="value: password" data-i18n-placeholder="LOGIN/LABEL_PASSWORD" />
 						<span class="add-on">
 							<i class="icon-key"></i>

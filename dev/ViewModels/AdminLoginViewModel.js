@@ -23,12 +23,12 @@ function AdminLoginViewModel()
 	this.password.subscribe(function () {
 		this.passwordError(false);
 	}, this);
-	
+
 	this.submitRequest = ko.observable(false);
 	this.submitError = ko.observable('');
 
 	this.submitCommand = Utils.createCommand(this, function () {
-		
+
 		this.loginError('' === Utils.trim(this.login()));
 		this.passwordError('' === Utils.trim(this.password()));
 
@@ -62,7 +62,7 @@ function AdminLoginViewModel()
 		}, this), this.login(), this.password());
 
 		return true;
-		
+
 	}, function () {
 		return !this.submitRequest();
 	});
@@ -85,4 +85,16 @@ AdminLoginViewModel.prototype.onShow = function ()
 AdminLoginViewModel.prototype.onHide = function ()
 {
 	this.loginFocus(false);
+};
+
+AdminLoginViewModel.prototype.onBuild = function ()
+{
+	_.delay(function () {
+		$('.checkAutocomplete').trigger('change');
+	}, 100);
+};
+
+AdminLoginViewModel.prototype.submitForm = function ()
+{
+	this.submitCommand();
 };
