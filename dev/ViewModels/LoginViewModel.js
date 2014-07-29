@@ -73,6 +73,8 @@ function LoginViewModel()
 
 	this.submitCommand = Utils.createCommand(this, function () {
 
+		Utils.triggerAutocompleteInputChange();
+
 		this.emailError('' === Utils.trim(this.email()));
 		this.passwordError('' === Utils.trim(this.password()));
 
@@ -326,9 +328,7 @@ LoginViewModel.prototype.onBuild = function ()
 		});
 	}, 50);
 
-	_.delay(function () {
-		$('.checkAutocomplete').trigger('change');
-	}, 100);
+	Utils.triggerAutocompleteInputChange(true);
 
 };
 

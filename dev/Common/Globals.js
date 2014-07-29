@@ -81,6 +81,11 @@ Globals.bAllowPdfPreview = !Globals.bMobileDevice;
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
 /**
+ * @type {boolean}
+ */
+Globals.bXMLHttpRequestSupported = !!window.XMLHttpRequest;
+
+/**
  * @type {string}
  */
 Globals.sAnimationType = '';

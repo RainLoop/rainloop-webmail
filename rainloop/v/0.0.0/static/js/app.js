@@ -174,6 +174,11 @@ Globals.bAllowPdfPreview = !Globals.bMobileDevice;
 Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
 
 /**
+ * @type {boolean}
+ */
+Globals.bXMLHttpRequestSupported = !!window.XMLHttpRequest;
+
+/**
  * @type {string}
  */
 Globals.sAnimationType = '';
@@ -1918,7 +1923,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.googleEnable = ko.observable(false);
 	oData.googleClientID = ko.observable('');
 	oData.googleClientSecret = ko.observable('');
-	oData.googleApiKey = ko.observable('');
 
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
@@ -2816,6 +2820,24 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 		return oItem.hasClass('open');
 	}));
 }, 50);
+
+Utils.triggerAutocompleteInputChange = function (bDelay) {
+	
+	var fFunc = function () {
+		$('.checkAutocomplete').trigger('change');
+	};
+
+	if (bDelay)
+	{
+		_.delay(fFunc, 100);
+	}
+	else
+	{
+		fFunc();
+	}
+};
+
+
 
 /*jslint bitwise: true*/
 // Base64 encode / decode
@@ -9331,7 +9353,7 @@ function PopupsComposeViewModel()
 		return this.dropboxEnabled();
 	});
 
-	this.driveEnabled = ko.observable(!!RL.settingsGet('GoogleApiKey') && !!RL.settingsGet('GoogleClientID'));
+	this.driveEnabled = ko.observable(false && Globals.bXMLHttpRequestSupported && !!RL.settingsGet('GoogleClientID'));
 	this.driveVisible = ko.observable(false);
 
 	this.driveCommand = Utils.createCommand(this, function () {
@@ -9976,13 +9998,40 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 	}
 };
 
-PopupsComposeViewModel.prototype.driveCallback = function (oData)
+PopupsComposeViewModel.prototype.driveCallback = function (sAccessToken, oData)
 {
 	if (oData && window.google && oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
 		oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
-		oData[window.google.picker.Response.DOCUMENTS][0]['url'])
+		oData[window.google.picker.Response.DOCUMENTS][0]['id'])
 	{
-		this.addDriveAttachment(oData[window.google.picker.Response.DOCUMENTS][0]);
+		var 
+			self = this,
+			oRequest = new window.XMLHttpRequest()
+		;
+
+		oRequest.open('GET', 'https://www.googleapis.com/drive/v2/files/' + oData[window.google.picker.Response.DOCUMENTS][0]['id']);
+		oRequest.setRequestHeader('Authorization', 'Bearer ' + sAccessToken);
+		oRequest.addEventListener('load', function() {
+			if (oRequest && oRequest.responseText)
+			{
+				var oItem = JSON.parse(oRequest.responseText);
+				if (oItem && oItem['downloadUrl'])
+				{
+					window.console.log(oItem['downloadUrl']);
+					var oSubRequest = new window.XMLHttpRequest();
+					oSubRequest.open('GET', oItem['downloadUrl']);
+					oSubRequest.setRequestHeader('Authorization', 'Bearer ' + sAccessToken);
+					oSubRequest.addEventListener('load', function() {
+						window.console.log(oSubRequest);
+					});
+
+					oSubRequest.send();
+//					self.addDriveAttachment(oItem, sAccessToken);
+				}
+			}
+		});
+		
+		oRequest.send();
 	}
 };
 
@@ -10002,9 +10051,8 @@ PopupsComposeViewModel.prototype.driveCreatePiker = function (oOauthToken)
 							.setIncludeFolders(true)
 					)
 					.setAppId(RL.settingsGet('GoogleClientID'))
-					.setDeveloperKey(RL.settingsGet('GoogleApiKey'))
 					.setOAuthToken(oOauthToken.access_token)
-					.setCallback(_.bind(self.driveCallback, self))
+					.setCallback(_.bind(self.driveCallback, self, oOauthToken.access_token))
 					.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
 					.build()
 				;
@@ -10028,7 +10076,9 @@ PopupsComposeViewModel.prototype.driveOpenPopup = function ()
 			{
 				window.gapi.auth.authorize({
 					'client_id': RL.settingsGet('GoogleClientID'),
-					'scope': 'https://www.googleapis.com/auth/drive.readonly',
+					'scope': [
+						'https://www.googleapis.com/auth/drive.readonly'
+					].join(' '),
 					'immediate': false
 				}, function (oAuthResult) {
 					if (oAuthResult && !oAuthResult.error)
@@ -10374,12 +10424,64 @@ PopupsComposeViewModel.prototype.addDropboxAttachment = function (oDropboxFile)
 
 /**
  * @param {Object} oDriveFile
+ * @param {string} sAccessToken
  * @return {boolean}
  */
-PopupsComposeViewModel.prototype.addDriveAttachment = function (oDriveFile)
+PopupsComposeViewModel.prototype.addDriveAttachment = function (oDriveFile, sAccessToken)
 {
-	window.console.log(oDriveFile);
-	return false;
+	var
+		self = this,
+		fCancelFunc = function (sId) {
+			return function () {
+				self.attachments.remove(function (oItem) {
+					return oItem && oItem.id === sId;
+				});
+			};
+		},
+		iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
+		oAttachment = null,
+		mSize = Utils.pInt(oDriveFile['fileSize'])
+	;
+
+	oAttachment = new ComposeAttachmentModel(
+		oDriveFile['downloadUrl'], oDriveFile['originalFilename'], mSize
+	);
+
+	oAttachment.fromMessage = false;
+	oAttachment.cancel = fCancelFunc(oDriveFile['downloadUrl']);
+	oAttachment.waiting(false).uploading(true);
+
+	this.attachments.push(oAttachment);
+
+	if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
+	{
+		oAttachment.uploading(false);
+		oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+		return false;
+	}
+
+	RL.remote().composeUploadDrive(function (sResult, oData) {
+
+		var bResult = false;
+		oAttachment.uploading(false);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			if (oData.Result[oAttachment.id])
+			{
+				bResult = true;
+				oAttachment.tempName(oData.Result[oAttachment.id]);
+			}
+		}
+
+		if (!bResult)
+		{
+			oAttachment.error(Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
+		}
+
+	}, oDriveFile['downloadUrl'], sAccessToken);
+
+	return true;
 };
 
 /**
@@ -12501,6 +12603,8 @@ function LoginViewModel()
 
 	this.submitCommand = Utils.createCommand(this, function () {
 
+		Utils.triggerAutocompleteInputChange();
+
 		this.emailError('' === Utils.trim(this.email()));
 		this.passwordError('' === Utils.trim(this.password()));
 
@@ -12754,9 +12858,7 @@ LoginViewModel.prototype.onBuild = function ()
 		});
 	}, 50);
 
-	_.delay(function () {
-		$('.checkAutocomplete').trigger('change');
-	}, 100);
+	Utils.triggerAutocompleteInputChange(true);
 
 };
 
@@ -16291,7 +16393,6 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
 	this.googleClientID(RL.settingsGet('GoogleClientID'));
 	this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
-	this.googleApiKey(RL.settingsGet('GoogleApiKey'));
 
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));
@@ -18141,6 +18242,18 @@ WebMailAjaxRemoteStorage.prototype.composeUploadExternals = function (fCallback,
 {
 	this.defaultRequest(fCallback, 'ComposeUploadExternals', {
 		'Externals': aExternals
+	}, 999000);
+};
+
+/**
+ * @param {?Function} fCallback
+ * @param {Array} aExternals
+ */
+WebMailAjaxRemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
+{
+	this.defaultRequest(fCallback, 'ComposeUploadDrive', {
+		'AccessToken': sAccessToken,
+		'Url': sUrl
 	}, 999000);
 };
 

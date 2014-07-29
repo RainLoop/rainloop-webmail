@@ -449,8 +449,8 @@ class Http
 				$sNewUrl = $sUrl;
 
 				$oCurl = \curl_init($sUrl);
-				
-				\curl_setopt_array($oCurl, array(
+
+				$aAddOptions = array(
 					CURLOPT_URL => $sUrl,
 					CURLOPT_HEADER => true,
 					CURLOPT_NOBODY => true,
@@ -460,7 +460,14 @@ class Http
 					CURLOPT_FORBID_REUSE => false,
 					CURLOPT_RETURNTRANSFER => true,
 					CURLOPT_TIMEOUT => 5
-				));
+				);
+
+				if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
+				{
+					$aAddOptions[CURLOPT_HTTPHEADER] = $aOptions[CURLOPT_HTTPHEADER];
+				}
+				
+				\curl_setopt_array($oCurl, $aAddOptions);
 
 				do
 				{
@@ -514,11 +521,12 @@ class Http
 	 * @param int $iTimeout = 10
 	 * @param string $sProxy = ''
 	 * @param string $sProxyAuth = ''
+	 * @param string $sAuthorization = ''
 	 *
 	 * @return bool
 	 */
 	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '')
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $sAuthorization = '')
 	{
 		if (!is_resource($rFile))
 		{
@@ -529,6 +537,8 @@ class Http
 			
 			return false;
 		}
+
+		$aHeaders = array();
 
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -547,6 +557,11 @@ class Http
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
 		}
 
+		if (0 < \strlen($sAuthorization))
+		{
+			$aHeaders[] = 'Authorization '.$sAuthorization;
+		}
+
 		if (0 < \strlen($sProxy))
 		{
 			$aOptions[CURLOPT_PROXY] = $sProxy;
@@ -554,6 +569,11 @@ class Http
 			{
 				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
 			}
+		}
+
+		if (0 < \count($aHeaders))
+		{
+			$aOptions[CURLOPT_HTTPHEADER] = $aHeaders;
 		}
 
 		if ($oLogger)

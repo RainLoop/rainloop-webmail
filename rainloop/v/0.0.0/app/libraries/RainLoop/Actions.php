@@ -1130,13 +1130,11 @@ class Actions
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
-			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
 			{
 				$aResult['AllowGoogleSocial'] = false;
 				$aResult['GoogleClientID'] = '';
-				$aResult['GoogleApiKey'] = '';
 			}
 
 			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
@@ -1193,7 +1191,6 @@ class Actions
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
 				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
-				$aResult['GoogleApiKey'] = (string) $oConfig->Get('social', 'google_api_key', '');
 
 				$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
 				$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
@@ -2399,7 +2396,6 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
-		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
 
 		$this->setConfigFromParams($oConfig, 'FacebookEnable', 'social', 'fb_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'FacebookAppID', 'social', 'fb_app_id', 'string');
@@ -5822,6 +5818,45 @@ class Actions
 				{
 					@\fclose($rFile);
 				}
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $mResult);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function DoComposeUploadDrive()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$mResult = false;
+		$sUrl = $this->GetActionParam('Url', '');
+		$sAccessToken = $this->GetActionParam('AccessToken', '');
+
+		if (0 < \strlen($sUrl) && 0 < \strlen($sAccessToken))
+		{
+			$oHttp = \MailSo\Base\Http::SingletonInstance();
+
+			$mResult[$sUrl] = '';
+
+			$sTempName = \md5($sUrl);
+
+			$iCode = 0;
+			$sContentType = '';
+
+			$rFile = $this->FilesProvider()->GetFile($oAccount, $sTempName, 'wb+');
+			if ($rFile && $oHttp->SaveUrlToFile($sUrl, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
+					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+					'Authorization: Bearer '.$sAccessToken))
+			{
+				$mResult[$sUrl] = $sTempName;
+			}
+
+			if (\is_resource($rFile))
+			{
+				@\fclose($rFile);
 			}
 		}
 

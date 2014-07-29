@@ -10,10 +10,8 @@ function AdminSocial()
 	this.googleEnable = oData.googleEnable;
 	this.googleClientID = oData.googleClientID;
 	this.googleClientSecret = oData.googleClientSecret;
-	this.googleApiKey = oData.googleApiKey;
 	this.googleTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.googleTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.googleTrigger3 = ko.observable(Enums.SaveSettingsStep.Idle);
 
 	this.facebookSupported = oData.facebookSupported;
 	this.facebookEnable = oData.facebookEnable;
@@ -47,7 +45,6 @@ AdminSocial.prototype.onBuild = function ()
 			f4 = Utils.settingsSaveHelperSimpleFunction(self.twitterTrigger2, self),
 			f5 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger1, self),
 			f6 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger2, self),
-			f7 = Utils.settingsSaveHelperSimpleFunction(self.googleTrigger3, self),
 			f8 = Utils.settingsSaveHelperSimpleFunction(self.dropboxTrigger1, self)
 		;
 
@@ -111,12 +108,6 @@ AdminSocial.prototype.onBuild = function ()
 		self.googleClientSecret.subscribe(function (sValue) {
 			RL.remote().saveAdminConfig(f6, {
 				'GoogleClientSecret': Utils.trim(sValue)
-			});
-		});
-
-		self.googleApiKey.subscribe(function (sValue) {
-			RL.remote().saveAdminConfig(f7, {
-				'GoogleApiKey': Utils.trim(sValue)
 			});
 		});
 

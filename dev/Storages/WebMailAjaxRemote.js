@@ -304,6 +304,18 @@ WebMailAjaxRemoteStorage.prototype.composeUploadExternals = function (fCallback,
 
 /**
  * @param {?Function} fCallback
+ * @param {Array} aExternals
+ */
+WebMailAjaxRemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
+{
+	this.defaultRequest(fCallback, 'ComposeUploadDrive', {
+		'AccessToken': sAccessToken,
+		'Url': sUrl
+	}, 999000);
+};
+
+/**
+ * @param {?Function} fCallback
  * @param {string} sFolder
  * @param {Array=} aList = []
  */

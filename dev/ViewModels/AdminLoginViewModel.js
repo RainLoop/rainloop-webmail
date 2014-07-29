@@ -29,6 +29,8 @@ function AdminLoginViewModel()
 
 	this.submitCommand = Utils.createCommand(this, function () {
 
+		Utils.triggerAutocompleteInputChange();
+
 		this.loginError('' === Utils.trim(this.login()));
 		this.passwordError('' === Utils.trim(this.password()));
 
@@ -89,9 +91,7 @@ AdminLoginViewModel.prototype.onHide = function ()
 
 AdminLoginViewModel.prototype.onBuild = function ()
 {
-	_.delay(function () {
-		$('.checkAutocomplete').trigger('change');
-	}, 100);
+	Utils.triggerAutocompleteInputChange(true);
 };
 
 AdminLoginViewModel.prototype.submitForm = function ()

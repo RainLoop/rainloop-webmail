@@ -1118,7 +1118,6 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.googleEnable = ko.observable(false);
 	oData.googleClientID = ko.observable('');
 	oData.googleClientSecret = ko.observable('');
-	oData.googleApiKey = ko.observable('');
 
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
@@ -2016,3 +2015,21 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 		return oItem.hasClass('open');
 	}));
 }, 50);
+
+Utils.triggerAutocompleteInputChange = function (bDelay) {
+	
+	var fFunc = function () {
+		$('.checkAutocomplete').trigger('change');
+	};
+
+	if (bDelay)
+	{
+		_.delay(fFunc, 100);
+	}
+	else
+	{
+		fFunc();
+	}
+};
+
+
