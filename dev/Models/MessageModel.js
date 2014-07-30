@@ -46,7 +46,7 @@ function MessageModel()
 	this.hasAttachments = ko.observable(false);
 	this.attachmentsMainType = ko.observable('');
 
-	this.moment = ko.observable(moment());
+	this.moment = ko.observable(moment(moment.unix(0)));
 
 	this.attachmentIconClass = ko.computed(function () {
 		var sClass = '';
@@ -70,10 +70,6 @@ function MessageModel()
 			}
 		}
 		return sClass;
-	}, this);
-
-	this.fullFormatDateValue = ko.computed(function () {
-		return MessageModel.calculateFullFromatDateValue(this.dateTimeStampInUTC());
 	}, this);
 
 	this.fullFormatDateValue = ko.computed(function () {
@@ -140,7 +136,7 @@ MessageModel.newInstanceFromJson = function (oJsonMessage)
  */
 MessageModel.calculateFullFromatDateValue = function (iTimeStampInUTC)
 {
-	return moment.unix(iTimeStampInUTC).format('LLL');
+	return 0 < iTimeStampInUTC ? moment.unix(iTimeStampInUTC).format('LLL') : '';
 };
 
 /**

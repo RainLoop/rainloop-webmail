@@ -1138,7 +1138,8 @@ Utils.createMomentDate = function (oObject)
 
 	return ko.computed(function () {
 		Globals.momentTrigger();
-		return this.moment().fromNow();
+		var oMoment = this.moment();
+		return 1970 === oMoment.year() ? '' : oMoment.fromNow();
 	}, oObject);
 };
 
@@ -1156,7 +1157,11 @@ Utils.createMomentShortDate = function (oObject)
 			sMomentDate = this.momentDate()
 		;
 
-		if (4 >= oMomentNow.diff(oMoment, 'hours'))
+		if (1970 === oMoment.year())
+		{
+			sResult = '';
+		}
+		else if (4 >= oMomentNow.diff(oMoment, 'hours'))
 		{
 			sResult = sMomentDate;
 		}
@@ -2018,7 +2023,7 @@ Utils.detectDropdownVisibility = _.debounce(function () {
 }, 50);
 
 Utils.triggerAutocompleteInputChange = function (bDelay) {
-	
+
 	var fFunc = function () {
 		$('.checkAutocomplete').trigger('change');
 	};

@@ -1800,7 +1800,7 @@ class Actions
 						$oItem->SetReplyTo(isset($aItem['ReplyTo']) ? $aItem['ReplyTo'] : '');
 						$oItem->SetBcc(isset($aItem['Bcc']) ? $aItem['Bcc'] : '');
 						$oItem->SetSignature(isset($aItem['Signature']) ? $aItem['Signature'] : '');
-						
+
 						if ('' !== $oItem->Id())
 						{
 							\array_push($aIdentities, $oItem);
@@ -5829,7 +5829,7 @@ class Actions
 
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -5838,7 +5838,7 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$mResult = false;
-		
+
 		$sUrl = $this->GetActionParam('Url', '');
 		$sAccessToken = $this->GetActionParam('AccessToken', '');
 		$sGoogleApiKey = (string) $this->Config()->Get('social', 'google_api_key', '');

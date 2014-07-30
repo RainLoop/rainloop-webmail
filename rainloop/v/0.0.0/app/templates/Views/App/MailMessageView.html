@@ -179,7 +179,9 @@
 															<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
 															<span class="to" data-bind="html: viewToShort, title: viewTo"></span>
 														</span>
-														(<span class="date" data-bind="text: viewDate"></span>)
+														<span data-bind="visible: '' !== viewDate()">
+															(<span class="date" data-bind="text: viewDate"></span>)
+														</span>
 													</div>
 													<div class="clearfix"></div>
 												</div>
@@ -205,7 +207,7 @@
 													&nbsp;
 													<span class="bcc" data-bind="text: viewBcc, title: viewBcc"></span>
 												</div>
-												<div>
+												<div data-bind="visible: '' !== viewDate()">
 													<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_DATE"></span>:
 													&nbsp;
 													<span class="date" data-bind="text: viewDate"></span>

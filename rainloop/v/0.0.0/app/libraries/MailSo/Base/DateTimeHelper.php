@@ -55,7 +55,13 @@ class DateTimeHelper
 	 */
 	public static function ParseInternalDateString($sDateTime)
 	{
-		$oDateTime = \DateTime::createFromFormat('d-M-Y H:i:s O', \trim($sDateTime), \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+		$sDateTime = \trim($sDateTime);
+		if (\preg_match('/^[a-z]{2,4}, /i', $sDateTime)) // RFC2822
+		{
+			return \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDateTime);
+		}
+
+		$oDateTime = \DateTime::createFromFormat('d-M-Y H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
