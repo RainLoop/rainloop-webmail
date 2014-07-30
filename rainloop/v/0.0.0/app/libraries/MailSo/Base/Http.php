@@ -521,12 +521,12 @@ class Http
 	 * @param int $iTimeout = 10
 	 * @param string $sProxy = ''
 	 * @param string $sProxyAuth = ''
-	 * @param string $sAuthorization = ''
+	 * @param array $aHttpHeaders = array()
 	 *
 	 * @return bool
 	 */
 	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $sAuthorization = '')
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array())
 	{
 		if (!is_resource($rFile))
 		{
@@ -537,8 +537,6 @@ class Http
 			
 			return false;
 		}
-
-		$aHeaders = array();
 
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -557,11 +555,6 @@ class Http
 			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
 		}
 
-		if (0 < \strlen($sAuthorization))
-		{
-			$aHeaders[] = 'Authorization '.$sAuthorization;
-		}
-
 		if (0 < \strlen($sProxy))
 		{
 			$aOptions[CURLOPT_PROXY] = $sProxy;
@@ -571,9 +564,9 @@ class Http
 			}
 		}
 
-		if (0 < \count($aHeaders))
+		if (0 < \count($aHttpHeaders))
 		{
-			$aOptions[CURLOPT_HTTPHEADER] = $aHeaders;
+			$aOptions[CURLOPT_HTTPHEADER] = $aHttpHeaders;
 		}
 
 		if ($oLogger)
@@ -617,14 +610,15 @@ class Http
 	 * @param int $iTimeout = 10
 	 * @param string $sProxy = ''
 	 * @param string $sProxyAuth = ''
+	 * @param array $aHttpHeaders = array()
 	 *
 	 * @return string|bool
 	 */
 	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '')
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array())
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth) && \is_resource($rMemFile))
+		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth, $aHttpHeaders) && \is_resource($rMemFile))
 		{
 			\rewind($rMemFile);
 			return \stream_get_contents($rMemFile);

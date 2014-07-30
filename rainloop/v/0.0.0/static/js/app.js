@@ -1923,6 +1923,7 @@ Utils.initDataConstructorBySettings = function (oData)
 	oData.googleEnable = ko.observable(false);
 	oData.googleClientID = ko.observable('');
 	oData.googleClientSecret = ko.observable('');
+	oData.googleApiKey = ko.observable('');
 
 	oData.dropboxEnable = ko.observable(false);
 	oData.dropboxApiKey = ko.observable('');
@@ -9353,7 +9354,9 @@ function PopupsComposeViewModel()
 		return this.dropboxEnabled();
 	});
 
-	this.driveEnabled = ko.observable(false && Globals.bXMLHttpRequestSupported && !!RL.settingsGet('GoogleClientID'));
+	this.driveEnabled = ko.observable(Globals.bXMLHttpRequestSupported &&
+		!!RL.settingsGet('GoogleClientID') && !!RL.settingsGet('GoogleApiKey'));
+	
 	this.driveVisible = ko.observable(false);
 
 	this.driveCommand = Utils.createCommand(this, function () {
@@ -10000,7 +10003,8 @@ PopupsComposeViewModel.prototype.onBuild = function ()
 
 PopupsComposeViewModel.prototype.driveCallback = function (sAccessToken, oData)
 {
-	if (oData && window.google && oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
+	if (oData && window.XMLHttpRequest && window.google &&
+		oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
 		oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
 		oData[window.google.picker.Response.DOCUMENTS][0]['id'])
 	{
@@ -10014,19 +10018,49 @@ PopupsComposeViewModel.prototype.driveCallback = function (sAccessToken, oData)
 		oRequest.addEventListener('load', function() {
 			if (oRequest && oRequest.responseText)
 			{
-				var oItem = JSON.parse(oRequest.responseText);
+				var oItem = JSON.parse(oRequest.responseText), fExport = function (oItem, sMimeType, sExt) {
+					if (oItem && oItem['exportLinks'])
+					{
+						if (oItem['exportLinks'][sMimeType])
+						{
+							oItem['downloadUrl'] = oItem['exportLinks'][sMimeType];
+							oItem['title'] = oItem['title'] + '.' + sExt;
+							oItem['mimeType'] = sMimeType;
+						}
+						else if (oItem['exportLinks']['application/pdf'])
+						{
+							oItem['downloadUrl'] = oItem['exportLinks']['application/pdf'];
+							oItem['title'] = oItem['title'] + '.pdf';
+							oItem['mimeType'] = 'application/pdf';
+						}
+					}
+				};
+
+				if (oItem && !oItem['downloadUrl'] && oItem['mimeType'] && oItem['exportLinks'])
+				{
+					switch (oItem['mimeType'].toString().toLowerCase())
+					{
+						case 'application/vnd.google-apps.document':
+							fExport(oItem, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
+							break;
+						case 'application/vnd.google-apps.spreadsheet':
+							fExport(oItem, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
+							break;
+						case 'application/vnd.google-apps.drawing':
+							fExport(oItem, 'image/png', 'png');
+							break;
+						case 'application/vnd.google-apps.presentation':
+							fExport(oItem, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
+							break;
+						default:
+							fExport(oItem, 'application/pdf', 'pdf');
+							break;
+					}
+				}
+				
 				if (oItem && oItem['downloadUrl'])
 				{
-					window.console.log(oItem['downloadUrl']);
-					var oSubRequest = new window.XMLHttpRequest();
-					oSubRequest.open('GET', oItem['downloadUrl']);
-					oSubRequest.setRequestHeader('Authorization', 'Bearer ' + sAccessToken);
-					oSubRequest.addEventListener('load', function() {
-						window.console.log(oSubRequest);
-					});
-
-					oSubRequest.send();
-//					self.addDriveAttachment(oItem, sAccessToken);
+					self.addDriveAttachment(oItem, sAccessToken);
 				}
 			}
 		});
@@ -10440,11 +10474,11 @@ PopupsComposeViewModel.prototype.addDriveAttachment = function (oDriveFile, sAcc
 		},
 		iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
 		oAttachment = null,
-		mSize = Utils.pInt(oDriveFile['fileSize'])
+		mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
 	;
 
 	oAttachment = new ComposeAttachmentModel(
-		oDriveFile['downloadUrl'], oDriveFile['originalFilename'], mSize
+		oDriveFile['downloadUrl'], oDriveFile['title'], mSize
 	);
 
 	oAttachment.fromMessage = false;
@@ -10470,7 +10504,8 @@ PopupsComposeViewModel.prototype.addDriveAttachment = function (oDriveFile, sAcc
 			if (oData.Result[oAttachment.id])
 			{
 				bResult = true;
-				oAttachment.tempName(oData.Result[oAttachment.id]);
+				oAttachment.tempName(oData.Result[oAttachment.id][0]);
+				oAttachment.size(Utils.pInt(oData.Result[oAttachment.id][1]));
 			}
 		}
 
@@ -16393,6 +16428,7 @@ AbstractData.prototype.populateDataOnStart = function()
 	this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
 	this.googleClientID(RL.settingsGet('GoogleClientID'));
 	this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
+	this.googleApiKey(RL.settingsGet('GoogleApiKey'));
 
 	this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
 	this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));

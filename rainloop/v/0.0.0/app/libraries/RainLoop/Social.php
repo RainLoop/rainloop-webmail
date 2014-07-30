@@ -749,7 +749,6 @@ class Social
 					\trim($oConfig->Get('social', 'google_client_id', '')),
 					\trim($oConfig->Get('social', 'google_client_secret', '')));
 
-
 				$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
 				if (0 < \strlen($sProxy))
 				{

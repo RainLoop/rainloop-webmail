@@ -650,89 +650,6 @@ class Actions
 	}
 
 	/**
-	 * @return \OAuth2\Client|null
-	 */
-	public function GoogleConnector()
-	{
-		$oGoogle = false;
-		$oConfig = $this->Config();
-		if ($oConfig->Get('social', 'google_enable', false) &&
-			'' !== \trim($oConfig->Get('social', 'google_client_id', '')) &&
-			'' !== \trim($oConfig->Get('social', 'google_client_secret', '')))
-		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/Client.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/IGrantType.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/AuthorizationCode.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/RefreshToken.php';
-
-			try
-			{
-				$oGoogle = new \OAuth2\Client(
-					\trim($oConfig->Get('social', 'google_client_id', '')),
-					\trim($oConfig->Get('social', 'google_client_secret', '')));
-			}
-			catch (\Exception $oException)
-			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-			}
-		}
-
-		return false === $oGoogle ? null : $oGoogle;
-	}
-
-	/**
-	 * @return \tmhOAuth|null
-	 */
-	public function TwitterConnector()
-	{
-		$oTwitter = false;
-		$oConfig = $this->Config();
-		if ($oConfig->Get('social', 'twitter_enable', false) &&
-			'' !== \trim($oConfig->Get('social', 'twitter_consumer_key', '')) &&
-			'' !== \trim($oConfig->Get('social', 'twitter_consumer_secret', '')))
-		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhOAuth.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhUtilities.php';
-
-			$oTwitter = new \tmhOAuth(array(
-				'consumer_key' => \trim($oConfig->Get('social', 'twitter_consumer_key', '')),
-				'consumer_secret' => \trim($oConfig->Get('social', 'twitter_consumer_secret', ''))
-			));
-		}
-
-		return false === $oTwitter ? null : $oTwitter;
-	}
-
-	/**
-	 * @param \RainLoop\Account|null $oAccount = null
-	 *
-	 * @return \Facebook|null
-	 */
-	public function FacebookConnector($oAccount = null)
-	{
-		$oFacebook = false;
-		$oConfig = $this->Config();
-		if ($oConfig->Get('social', 'fb_enable', false) &&
-			'' !== \trim($oConfig->Get('social', 'fb_app_id', '')) &&
-			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')))
-		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/facebook/facebook.php';
-
-			$oFacebook = new \RainLoopFacebook(array(
-				'rlAccount' => $oAccount,
-				'rlUserHash' => \RainLoop\Utils::GetConnectionToken(),
-				'rlStorageProvaider' => $this->StorageProvider(),
-				'appId'  => \trim($oConfig->Get('social', 'fb_app_id', '')),
-				'secret' => \trim($oConfig->Get('social', 'fb_app_secret', '')),
-				'fileUpload' => false,
-				'cookie' => true
-			));
-		}
-
-		return false === $oFacebook ? null : $oFacebook;
-	}
-
-	/**
 	 * @return \MailSo\Cache\CacheClient
 	 */
 	public function Cacher()
@@ -1130,11 +1047,13 @@ class Actions
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
+			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
 			{
 				$aResult['AllowGoogleSocial'] = false;
 				$aResult['GoogleClientID'] = '';
+				$aResult['GoogleApiKey'] = '';
 			}
 
 			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
@@ -1191,6 +1110,7 @@ class Actions
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
 				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
+				$aResult['GoogleApiKey'] = (string) $oConfig->Get('social', 'google_api_key', '');
 
 				$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
 				$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
@@ -2396,6 +2316,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
+		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
 
 		$this->setConfigFromParams($oConfig, 'FacebookEnable', 'social', 'fb_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'FacebookAppID', 'social', 'fb_app_id', 'string');
@@ -5832,14 +5753,16 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$mResult = false;
+		
 		$sUrl = $this->GetActionParam('Url', '');
 		$sAccessToken = $this->GetActionParam('AccessToken', '');
+		$sGoogleApiKey = (string) $this->Config()->Get('social', 'google_api_key', '');
 
-		if (0 < \strlen($sUrl) && 0 < \strlen($sAccessToken))
+		if (0 < \strlen($sUrl) && 0 < \strlen($sAccessToken) && 0 < \strlen($sGoogleApiKey))
 		{
 			$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-			$mResult[$sUrl] = '';
+			$mResult[$sUrl] = false;
 
 			$sTempName = \md5($sUrl);
 
@@ -5847,16 +5770,21 @@ class Actions
 			$sContentType = '';
 
 			$rFile = $this->FilesProvider()->GetFile($oAccount, $sTempName, 'wb+');
-			if ($rFile && $oHttp->SaveUrlToFile($sUrl, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
+			if ($rFile && $oHttp->SaveUrlToFile($sUrl.'&key='.$sGoogleApiKey, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
 					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-					'Authorization: Bearer '.$sAccessToken))
+					array('Authorization: Bearer '.$sAccessToken)))
 			{
-				$mResult[$sUrl] = $sTempName;
+				$mResult[$sUrl] = array($sTempName, 0);
 			}
 
 			if (\is_resource($rFile))
 			{
 				@\fclose($rFile);
+			}
+
+			if (isset($mResult[$sUrl][1]))
+			{
+				$mResult[$sUrl][1] = $rFile = $this->FilesProvider()->FileSize($oAccount, $sTempName);
 			}
 		}
 
