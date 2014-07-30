@@ -15,6 +15,16 @@ class KeyPathHelper
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return string
+	 */
+	static public function WebmailAccounts($sEmail)
+	{
+		return 'Webmail/Accounts/'.$sEmail.'/Array';
+	}
+
+	/**
 	 * @param string $sSsoHash
 	 *
 	 * @return string
@@ -45,23 +55,13 @@ class KeyPathHelper
 	}
 
 	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	static public function WebmailAccounts($sEmail)
-	{
-		return 'Webmail/Accounts/'.$sEmail.'/Array';
-	}
-
-	/**
 	 * @param string $sDomain
 	 *
 	 * @return string
 	 */
 	static public function LicensingDomainKeyValue($sDomain)
 	{
-		return 'Licensing/DomainKey/Value/'.$sDomain;
+		return '/Licensing/DomainKey/Value/'.$sDomain;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class KeyPathHelper
 	 */
 	static public function RepositoryCacheFile($sRepo, $sRepoFile)
 	{
-		return 'RepositoryCache/Repo/'.$sRepo.'/File/'.$sRepoFile;
+		return '/RepositoryCache/Repo/'.$sRepo.'/File/'.$sRepoFile;
 	}
 
 	/**
@@ -82,7 +82,7 @@ class KeyPathHelper
 	 */
 	static public function RepositoryCacheCore($sRepo)
 	{
-		return 'RepositoryCache/CoreRepo/'.$sRepo;
+		return '/RepositoryCache/CoreRepo/'.$sRepo;
 	}
 
 	/**

@@ -736,6 +736,10 @@ class Utils
 				$sValue = \MailSo\Base\Utils::AttributeRfc2231Encode($sAttrName, $sValue);
 			}
 		}
+		else
+		{
+			$sValue = $sAttrName.'="'.\str_replace('"', '\\"', $sValue).'"';
+		}
 
 		return \trim($sValue);
 	}

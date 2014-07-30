@@ -1759,6 +1759,64 @@ class Actions
 
 	/**
 	 * @param \RainLoop\Account $oAccount
+	 *
+	 * @return array
+	 */
+	public function GetIdentitiesNew($oAccount)
+	{
+		$aIdentities = array();
+		if ($oAccount)
+		{
+			$oAccountIdentity = \RainLoop\Identity::NewInstance('', $oAccount->Email());
+
+			$aSubIdentities = array();
+			$oSettings = $this->SettingsProvider()->Load($oAccount);
+			if ($oSettings)
+			{
+				$sData = $oSettings->GetConf('Identities', '');
+				if ('' !== $sData && '[' === \substr($sData, 0, 1))
+				{
+					$aSubIdentities = @\json_decode($sData, true);
+					$aSubIdentities = \is_array($aSubIdentities) ? $aSubIdentities : array();
+				}
+			}
+
+			if (0 < \count($aSubIdentities))
+			{
+				foreach ($aSubIdentities as $aItem)
+				{
+					if (isset($aItem['Id'], $aItem['Email']))
+					{
+						if (0 < \strlen($aItem['Id']))
+						{
+							$oItem = \RainLoop\Identity::NewInstance($aItem['Id'], $aItem['Email']);
+						}
+						else
+						{
+							$oItem = $oAccountIdentity;
+						}
+
+						$oItem->SetName(isset($aItem['Name']) ? $aItem['Name'] : '');
+						$oItem->SetReplyTo(isset($aItem['ReplyTo']) ? $aItem['ReplyTo'] : '');
+						$oItem->SetBcc(isset($aItem['Bcc']) ? $aItem['Bcc'] : '');
+						$oItem->SetSignature(isset($aItem['Signature']) ? $aItem['Signature'] : '');
+						
+						if ('' !== $oItem->Id())
+						{
+							\array_push($aIdentities, $oItem);
+						}
+					}
+				}
+			}
+
+			\array_unshift($aIdentities, $oAccountIdentity);
+		}
+
+		return $aIdentities;
+	}
+
+	/**
+	 * @param \RainLoop\Account $oAccount
 	 * @param array $aAccounts = array()
 	 *
 	 * @return array
@@ -2021,6 +2079,33 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
 			'Identities' => $mIdentities
+		));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoAccountsAndIdentitiesNew()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$mAccounts = false;
+		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
+		{
+			$mAccounts = $this->GetAccounts($oAccount);
+			$mAccounts = \array_keys($mAccounts);
+
+			foreach ($mAccounts as $iIndex => $sName)
+			{
+				$mAccounts[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sName);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Accounts' => $mAccounts,
+			'Identities' => $this->GetIdentitiesNew($oAccount)
 		));
 	}
 
@@ -6381,7 +6466,7 @@ class Actions
 					\header('Content-Type: '.$sContentTypeOut);
 					\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
 						\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
-					
+
 					\header('Accept-Ranges: none', true);
 					\header('Content-Transfer-Encoding: binary');
 
