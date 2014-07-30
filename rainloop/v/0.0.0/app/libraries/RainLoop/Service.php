@@ -45,7 +45,7 @@ class Service
 		if ($this->oActions->Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
 			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
 		{
-			\MailSo\Capa::$ICONV = false;
+			\MailSo\Config::$ICONV = false;
 		}
 
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));

@@ -6,8 +6,8 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class Crypt {
-
+class Crypt
+{
 	/**
 	 *
 	 * @param string $sString

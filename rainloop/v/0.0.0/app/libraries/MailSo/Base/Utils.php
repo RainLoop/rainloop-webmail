@@ -191,9 +191,18 @@ class Utils
 	/**
 	 * @return bool
 	 */
+	public static function IsMbStringSupported()
+	{
+		return \MailSo\Config::$MBSTRING &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding');
+	}
+
+	/**
+	 * @return bool
+	 */
 	public static function IsIconvSupported()
 	{
-		return \MailSo\Capa::$ICONV &&
+		return \MailSo\Config::$ICONV &&
 			\MailSo\Base\Utils::FunctionExistsAndEnabled('iconv');
 	}
 
@@ -223,10 +232,24 @@ class Utils
 	/**
 	 * @return bool
 	 */
-	public static function IsMbStringSupported()
+	public static function IsIconvTranslitSupported()
 	{
-		return \MailSo\Capa::$MBSTRING &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding');
+		static $bCache = null;
+		if (null !== $bCache)
+		{
+			return $bCache;
+		}
+
+		$bCache = false;
+		if (\MailSo\Base\Utils::IsIconvSupported())
+		{
+			if (false !== @\iconv('', '//TRANSLIT', ''))
+			{
+				$bCache = true;
+			}
+		}
+
+		return $bCache;
 	}
 
 	/**
@@ -250,13 +273,36 @@ class Utils
 	 */
 	public static function IconvConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding)
 	{
-		$sIconvIgnorOption = '';
+		$sIconvOptions = '';
 		if (\MailSo\Base\Utils::IsIconvIgnoreSupported())
 		{
-			$sIconvIgnorOption = '//IGNORE';
+			$sIconvOptions .= '//IGNORE';
 		}
+//		if (\MailSo\Base\Utils::IsIconvTranslitSupported())
+//		{
+//			$sIconvOptions .= '//TRANSLIT';
+//		}
+		
+		$mResult = @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvOptions, $sInputString);
+		if (false === $mResult)
+		{
+			if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			{
+				$sHex = 500 < \strlen($sInputString) ? '' : \bin2hex($sInputString);
+				\MailSo\Config::$SystemLogger->WriteDump(array(
+					'inc' => \strtoupper($sInputFromEncoding),
+					'out' => \strtoupper($sInputToEncoding).$sIconvOptions,
+					'val' => $sInputString,
+					'hex' => $sHex
+				), \MailSo\Log\Enumerations\Type::NOTICE);
+			}
 
-		return @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvIgnorOption, $sInputString);
+			if (\MailSo\Config::$FixIconvByMbstring && \MailSo\Base\Utils::IsMbStringSupported())
+			{
+				$mResult = \MailSo\Base\Utils::MbConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding);
+			}
+		}
+		return $mResult;
 	}
 
 	/**
@@ -1081,6 +1127,11 @@ class Utils
 		$sResult = @\json_encode($mInput, $iOpt);
 		if (!\is_string($sResult) || '' === $sResult)
 		{
+			if (!$oLogger && \MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			{
+				$oLogger = \MailSo\Config::$SystemLogger;
+			}
+
 			if ($oLogger instanceof \MailSo\Log\Logger)
 			{
 				$oLogger->Write('json_encode: '.\trim(
@@ -1094,7 +1145,8 @@ class Utils
 			{
 				if ($oLogger instanceof \MailSo\Log\Logger)
 				{
-					$oLogger->Write('Try to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
+					$oLogger->WriteDump($mInput, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
+					$oLogger->Write('Trying to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
 				}
 
 				\MailSo\Base\Utils::ClearArrayUtf8Values($mInput);
@@ -1329,6 +1381,23 @@ class Utils
 			return $sUtfString;
 		}
 
+		$sUtfString = \preg_replace(
+			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
+			'|[\x00-\x7F][\x80-\xBF]+'.
+			'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.
+			'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
+			'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
+			$sReplaceOn,
+			$sUtfString
+		);
+
+		$sUtfString = \preg_replace(
+			'/\xE0[\x80-\x9F][\x80-\xBF]'.
+			'|\xEF\xBF\xBF'.
+			'|\xED[\xA0-\xBF][\x80-\xBF]/S', $sReplaceOn, $sUtfString);
+
+		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
+
 		$sNewUtfString = false;
 		if (\MailSo\Base\Utils::IsIconvSupported())
 		{
@@ -1343,21 +1412,6 @@ class Utils
 		{
 			$sUtfString = $sNewUtfString;
 		}
-
-		$sUtfString = \preg_replace(
-			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
-			'|[\x00-\x7F][\x80-\xBF]+'.
-			'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.
-			'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
-			'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
-			$sReplaceOn, $sUtfString);
-
-		$sUtfString = \preg_replace(
-			'/\xE0[\x80-\x9F][\x80-\xBF]'.
-			'|\xEF\xBF\xBF'.
-			'|\xED[\xA0-\xBF][\x80-\xBF]/S', $sReplaceOn, $sUtfString);
-
-		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
 
 		return $sUtfString;
 	}
