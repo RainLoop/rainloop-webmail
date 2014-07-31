@@ -229,7 +229,7 @@ class Folder
 	/**
 	 * @return bool
 	 */
-	public function IsExisten()
+	public function IsExists()
 	{
 		return $this->bExisten;
 	}
@@ -239,7 +239,7 @@ class Folder
 	 */
 	public function IsSelectable()
 	{
-		return $this->IsExisten() && $this->oImapFolder->IsSelectable();
+		return $this->IsExists() && $this->oImapFolder->IsSelectable();
 	}
 
 	/**

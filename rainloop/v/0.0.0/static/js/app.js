@@ -8411,7 +8411,7 @@ FolderModel.prototype.initByJson = function (oJsonFolder)
 		this.fullNameHash = oJsonFolder.FullNameHash;
 		this.deep = oJsonFolder.FullNameRaw.split(this.delimiter).length - 1;
 		this.selectable = !!oJsonFolder.IsSelectable;
-		this.existen = !!oJsonFolder.IsExisten;
+		this.existen = !!oJsonFolder.IsExists;
 
 		this.subScribed(!!oJsonFolder.IsSubscribed);
 		this.type('INBOX' === this.fullNameRaw ? Enums.FolderType.Inbox : Enums.FolderType.User);
@@ -10009,7 +10009,7 @@ PopupsComposeViewModel.prototype.driveCallback = function (sAccessToken, oData)
 		oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
 		oData[window.google.picker.Response.DOCUMENTS][0]['id'])
 	{
-		var 
+		var
 			self = this,
 			oRequest = new window.XMLHttpRequest()
 		;
@@ -10058,14 +10058,14 @@ PopupsComposeViewModel.prototype.driveCallback = function (sAccessToken, oData)
 							break;
 					}
 				}
-				
+
 				if (oItem && oItem['downloadUrl'])
 				{
 					self.addDriveAttachment(oItem, sAccessToken);
 				}
 			}
 		});
-		
+
 		oRequest.send();
 	}
 };
@@ -10404,6 +10404,7 @@ PopupsComposeViewModel.prototype.addDropboxAttachment = function (oDropboxFile)
 {
 	var
 		self = this,
+		oAttachment = null,
 		fCancelFunc = function (sId) {
 			return function () {
 				self.attachments.remove(function (oItem) {
@@ -10412,7 +10413,6 @@ PopupsComposeViewModel.prototype.addDropboxAttachment = function (oDropboxFile)
 			};
 		},
 		iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
-		oAttachment = null,
 		mSize = oDropboxFile['bytes']
 	;
 
@@ -18284,7 +18284,8 @@ WebMailAjaxRemoteStorage.prototype.composeUploadExternals = function (fCallback,
 
 /**
  * @param {?Function} fCallback
- * @param {Array} aExternals
+ * @param {string} sUrl
+ * @param {string} sAccessToken
  */
 WebMailAjaxRemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
 {

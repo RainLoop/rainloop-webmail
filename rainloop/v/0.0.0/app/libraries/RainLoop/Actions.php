@@ -7513,7 +7513,7 @@ class Actions
 					'Delimiter' => (string) $mResponse->Delimiter(),
 					'HasVisibleSubFolders' => $mResponse->HasVisibleSubFolders(),
 					'IsSubscribed' => $mResponse->IsSubscribed(),
-					'IsExisten' => $mResponse->IsExisten(),
+					'IsExists' => $mResponse->IsExists(),
 					'IsSelectable' => $mResponse->IsSelectable(),
 					'Flags' => $mResponse->FlagsLowerCase(),
 					'Extended' => $aExtended,

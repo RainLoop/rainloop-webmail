@@ -313,7 +313,7 @@ FolderModel.prototype.initByJson = function (oJsonFolder)
 		this.fullNameHash = oJsonFolder.FullNameHash;
 		this.deep = oJsonFolder.FullNameRaw.split(this.delimiter).length - 1;
 		this.selectable = !!oJsonFolder.IsSelectable;
-		this.existen = !!oJsonFolder.IsExisten;
+		this.existen = !!oJsonFolder.IsExists;
 
 		this.subScribed(!!oJsonFolder.IsSubscribed);
 		this.type('INBOX' === this.fullNameRaw ? Enums.FolderType.Inbox : Enums.FolderType.User);

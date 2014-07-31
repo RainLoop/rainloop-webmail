@@ -564,7 +564,7 @@ class Http
 			}
 		}
 
-		if (0 < \count($aHttpHeaders))
+		if (\is_array($aHttpHeaders) && 0 < \count($aHttpHeaders))
 		{
 			$aOptions[CURLOPT_HTTPHEADER] = $aHttpHeaders;
 		}
@@ -572,6 +572,10 @@ class Http
 		if ($oLogger)
 		{
 			$oLogger->Write('cUrl: URL: '.$sUrl);
+			if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
+			{
+				$oLogger->Write('cUrl: Headers: '.\print_r($aOptions[CURLOPT_HTTPHEADER], true));
+			}
 		}
 
 		\MailSo\Base\Http::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
