@@ -2471,13 +2471,12 @@ Utils.htmlToPlain = function (sHtml)
 		.replace(/[\s]+/gm, ' ')
 		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 		.replace(/<br\s?\/?>/gmi, '\n')
-		.replace(/<\/h\d>/gi, '\n')
+		.replace(/<\/h[\d]>/gi, '\n')
 		.replace(/<\/p>/gi, '\n\n')
 		.replace(/<\/li>/gi, '\n')
 		.replace(/<\/td>/gi, '\n')
 		.replace(/<\/tr>/gi, '\n')
 		.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
-		.replace(/<img [^>]*>/gmi, '')
 		.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs)
 		.replace(/<blockquote[^>]*>/gmi, '\n__bq__start__\n')
 		.replace(/<\/blockquote>/gmi, '\n__bq__end__\n')
@@ -2485,7 +2484,6 @@ Utils.htmlToPlain = function (sHtml)
 		.replace(/<\/div>/gi, '\n')
 		.replace(/&nbsp;/gi, ' ')
 		.replace(/&quot;/gi, '"')
-		.replace(/&amp;/gi, '&')
 		.replace(/<[^>]*>/gm, '')
 	;
 
@@ -2496,6 +2494,7 @@ Utils.htmlToPlain = function (sHtml)
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
 		.replace(/&lt;/gi, '<')
+		.replace(/&amp;/gi, '&')
 	;
 
 	iPos = 0;
@@ -2543,9 +2542,10 @@ Utils.htmlToPlain = function (sHtml)
 
 /**
  * @param {string} sPlain
+ * @param {boolean} bLinkify = false
  * @return {string}
  */
-Utils.plainToHtml = function (sPlain)
+Utils.plainToHtml = function (sPlain, bLinkify)
 {
 	sPlain = sPlain.toString().replace(/\r/g, '');
 
@@ -2610,14 +2610,29 @@ Utils.plainToHtml = function (sPlain)
 		.replace(/[\-_~]{10,}/g, '<hr />')
 		.replace(/\n/g, '<br />');
 
+	return bLinkify ? Utils.linkify(sPlain) : sPlain;
+};
+
+window.rainloop_Utils_htmlToPlain = Utils.htmlToPlain;
+window.rainloop_Utils_plainToHtml = Utils.plainToHtml;
+
+/**
+ * @param {string} sHtml
+ * @return {string}
+ */
+Utils.linkify = function (sHtml)
+{
 	if ($.fn && $.fn.linkify)
 	{
-		sPlain = Utils.$div.html(sPlain)
-			.linkify().find('.linkified').removeClass('linkified').end()
-			.html();
+		sHtml = Utils.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+			.linkify()
+			.find('.linkified').removeClass('linkified').end()
+			.html()
+			.replace(/amp_amp_12345_amp_amp/g, '&amp;')
+		;
 	}
 
-	return sPlain;
+	return sHtml;
 };
 
 Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
@@ -17332,7 +17347,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oBody = null,
 		oTextBody = null,
 		sId = '',
-		sPlainAsHtml = '',
+		sResultHtml = '',
 		bPgpSigned = false,
 		bPgpEncrypted = false,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
@@ -17368,16 +17383,12 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 				{
 					bIsHtml = true;
-					oBody
-						.html(oData.Result.Html.toString())
-						.linkify().find('.linkified').removeClass('linkified').end()
-						.addClass('b-text-part html')
-					;
+					sResultHtml = oData.Result.Html.toString();
 				}
 				else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
 				{
 					bIsHtml = false;
-					sPlainAsHtml = Utils.plainToHtml(oData.Result.Plain.toString());
+					sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
 
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && RL.data().capaOpenPGP())
 					{
@@ -17393,7 +17404,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						$proxyDiv.empty();
 						if (bPgpSigned && oMessage.isPgpSigned())
 						{
-							sPlainAsHtml =
+							sResultHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -17401,7 +17412,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							sPlainAsHtml =
+							sResultHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -17413,17 +17424,16 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						oMessage.isPgpSigned(bPgpSigned);
 						oMessage.isPgpEncrypted(bPgpEncrypted);
 					}
-
-					oBody
-						.html(sPlainAsHtml)
-						.linkify().find('.linkified').removeClass('linkified').end()
-						.addClass('b-text-part plain')
-					;
 				}
 				else
 				{
 					bIsHtml = false;
 				}
+
+				oBody
+					.html(Utils.linkify(sResultHtml))
+					.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
+				;
 
 				oMessage.isHtml(!!bIsHtml);
 				oMessage.hasImages(!!bHasExternals);

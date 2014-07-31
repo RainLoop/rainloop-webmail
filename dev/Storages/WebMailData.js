@@ -893,7 +893,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 		oBody = null,
 		oTextBody = null,
 		sId = '',
-		sPlainAsHtml = '',
+		sResultHtml = '',
 		bPgpSigned = false,
 		bPgpEncrypted = false,
 		oMessagesBodiesDom = this.messagesBodiesDom(),
@@ -929,16 +929,12 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 				if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 				{
 					bIsHtml = true;
-					oBody
-						.html(oData.Result.Html.toString())
-						.linkify().find('.linkified').removeClass('linkified').end()
-						.addClass('b-text-part html')
-					;
+					sResultHtml = oData.Result.Html.toString();
 				}
 				else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
 				{
 					bIsHtml = false;
-					sPlainAsHtml = Utils.plainToHtml(oData.Result.Plain.toString());
+					sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
 
 					if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && RL.data().capaOpenPGP())
 					{
@@ -954,7 +950,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						$proxyDiv.empty();
 						if (bPgpSigned && oMessage.isPgpSigned())
 						{
-							sPlainAsHtml =
+							sResultHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -962,7 +958,7 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						}
 						else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 						{
-							sPlainAsHtml =
+							sResultHtml =
 								$proxyDiv.append(
 									$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 								).html()
@@ -974,17 +970,16 @@ WebMailDataStorage.prototype.setMessage = function (oData, bCached)
 						oMessage.isPgpSigned(bPgpSigned);
 						oMessage.isPgpEncrypted(bPgpEncrypted);
 					}
-
-					oBody
-						.html(sPlainAsHtml)
-						.linkify().find('.linkified').removeClass('linkified').end()
-						.addClass('b-text-part plain')
-					;
 				}
 				else
 				{
 					bIsHtml = false;
 				}
+
+				oBody
+					.html(Utils.linkify(sResultHtml))
+					.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
+				;
 
 				oMessage.isHtml(!!bIsHtml);
 				oMessage.hasImages(!!bHasExternals);
