@@ -16745,14 +16745,21 @@ function WebMailDataStorage()
 	this.message.focused.subscribe(function (bValue) {
 		if (bValue)
 		{
-			RL.data().folderList.focused(false);
-			RL.data().keyScope(Enums.KeyState.MessageView);
+			this.folderList.focused(false);
+			this.keyScope(Enums.KeyState.MessageView);
 		}
 		else if (Enums.KeyState.MessageView === RL.data().keyScope())
 		{
-			RL.data().keyScope(Enums.KeyState.MessageList);
+			if (Enums.Layout.NoPreview === RL.data().layout() && this.message())
+			{
+				this.keyScope(Enums.KeyState.MessageView);
+			}
+			else
+			{
+				this.keyScope(Enums.KeyState.MessageList);
+			}
 		}
-	});
+	}, this);
 
 	this.folderList.focused.subscribe(function (bValue) {
 		if (bValue)
