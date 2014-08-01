@@ -82,19 +82,39 @@
 					@chmod(APP_DATA_FOLDER_PATH, 0755);
 				}
 
-				if (
-					!@is_dir(APP_DATA_FOLDER_PATH) || !is_readable(APP_DATA_FOLDER_PATH) || !is_writable(APP_DATA_FOLDER_PATH) ||
-					!@mkdir($sCheckFolder, 0755) ||
-					false === @file_put_contents($sCheckFilePath, time()) ||
-					!@unlink($sCheckFilePath) ||
-					!@rmdir($sCheckFolder)
-				)
+				$sTest = '';
+				switch (true)
 				{
-					echo '[202] Data folder permisions error';
+					case !@is_dir(APP_DATA_FOLDER_PATH):
+						$sTest = 'is_dir';
+						break;
+					case !@is_readable(APP_DATA_FOLDER_PATH):
+						$sTest = 'is_readable';
+						break;
+					case !@is_writable(APP_DATA_FOLDER_PATH):
+						$sTest = 'is_writable';
+						break;
+					case !@mkdir($sCheckFolder, 0755):
+						$sTest = 'mkdir';
+						break;
+					case false === @file_put_contents($sCheckFilePath, time()):
+						$sTest = 'file_put_contents';
+						break;
+					case !@unlink($sCheckFilePath):
+						$sTest = 'unlink';
+						break;
+					case !@rmdir($sCheckFolder):
+						$sTest = 'rmdir';
+						break;
+				}
+
+				if (!empty($sTest))
+				{
+					echo '[202] Data folder permisions error ['.$sTest.']';
 					exit(202);
 				}
 
-				unset($sCheckName, $sCheckFilePath, $sCheckFolder);
+				unset($sCheckName, $sCheckFilePath, $sCheckFolder, $sTest);
 			}
 
 			if (false === $sSalt || false === $sData)
