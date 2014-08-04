@@ -1103,10 +1103,8 @@ PopupsComposeViewModel.prototype.driveOpenPopup = function ()
 			{
 				window.gapi.auth.authorize({
 					'client_id': RL.settingsGet('GoogleClientID'),
-					'scope': [
-						'https://www.googleapis.com/auth/drive.readonly'
-					].join(' '),
-					'immediate': false
+					'scope': 'https://www.googleapis.com/auth/drive.readonly',
+					'immediate': true
 				}, function (oAuthResult) {
 					if (oAuthResult && !oAuthResult.error)
 					{
@@ -1115,6 +1113,23 @@ PopupsComposeViewModel.prototype.driveOpenPopup = function ()
 						{
 							self.driveCreatePiker(oAuthToken);
 						}
+					}
+					else
+					{
+						window.gapi.auth.authorize({
+							'client_id': RL.settingsGet('GoogleClientID'),
+							'scope': 'https://www.googleapis.com/auth/drive.readonly',
+							'immediate': false
+						}, function (oAuthResult) {
+							if (oAuthResult && !oAuthResult.error)
+							{
+								var oAuthToken = window.gapi.auth.getToken();
+								if (oAuthToken)
+								{
+									self.driveCreatePiker(oAuthToken);
+								}
+							}
+						});
 					}
 				});
 			}
