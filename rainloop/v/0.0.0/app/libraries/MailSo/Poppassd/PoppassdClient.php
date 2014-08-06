@@ -55,7 +55,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 
 		parent::Connect($sServerName, $iPort, $iSecurityType);
 		$this->validateResponse();
-		
+
 		return $this;
 	}
 
@@ -118,7 +118,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sNewPassword
-	 * 
+	 *
 	 * @return \MailSo\Poppassd\PoppassdClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -136,7 +136,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 				new \MailSo\Poppassd\Exceptions\RuntimeException('Required login'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-		
+
 		return $this;
 	}
 
@@ -195,7 +195,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 
 		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
-		
+
 		return $this;
 	}
 
@@ -222,7 +222,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 * @param bool $bAuthRequestValidate = false
 	 *
 	 * @return \MailSo\Poppassd\PoppassdClient
-	 * 
+	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Poppassd\Exceptions\ResponseException
 	 */
@@ -237,7 +237,13 @@ class PoppassdClient extends \MailSo\Net\NetClient
 		}
 		else
 		{
-			$bResult = (bool) \preg_match('/^2\d\d/', trim($this->sResponseBuffer));
+			$bResult = (bool) \preg_match('/^2\d\d/', \trim($this->sResponseBuffer));
+		}
+
+		if (!$bResult)
+		{
+			// POP3 validation hack
+			$bResult = '+OK ' === \substr(\trim($this->sResponseBuffer), 0, 4);
 		}
 
 		if (!$bResult)
@@ -263,7 +269,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
-	 * 
+	 *
 	 * @return \MailSo\Poppassd\PoppassdClient
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException

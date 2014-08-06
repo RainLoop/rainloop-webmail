@@ -29,7 +29,7 @@ MailBoxScreen.prototype.setNewTitle  = function ()
 		sEmail = RL.data().accountEmail(),
 		ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount()
 	;
-	
+
 	RL.setTitle(('' === sEmail ? '' :
 		(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 };
@@ -74,7 +74,6 @@ MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPrevie
 			if (Enums.Layout.NoPreview === oData.layout() && oData.message())
 			{
 				oData.message(null);
-				oData.messageFullScreenMode(false);
 			}
 
 			RL.reloadMessageList();
@@ -120,7 +119,7 @@ MailBoxScreen.prototype.onStart = function ()
 	oData.layout.subscribe(function (nValue) {
 		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 	});
-	
+
 	oData.foldersInboxUnreadCount.subscribe(function () {
 		this.setNewTitle();
 	}, this);

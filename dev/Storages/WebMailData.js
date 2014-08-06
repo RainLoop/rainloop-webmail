@@ -289,6 +289,7 @@ function WebMailDataStorage()
 		if (!oMessage)
 		{
 			this.message.focused(false);
+			this.messageFullScreenMode(false);
 			this.hideMessageBodies();
 
 			if (Enums.Layout.NoPreview === RL.data().layout() &&
