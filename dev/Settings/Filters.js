@@ -28,9 +28,5 @@ SettingsFilters.prototype.deleteFilter = function (oFilter)
 
 SettingsFilters.prototype.addFilter = function ()
 {
-	var oFilter = new FilterModel();
-	oFilter.addCondition();
-	oFilter.addAction();
-
-	this.filters.push(oFilter);
+	kn.showScreenPopup(PopupsFilterViewModel, [new FilterModel()]);
 };

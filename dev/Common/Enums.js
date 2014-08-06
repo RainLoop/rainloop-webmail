@@ -303,9 +303,10 @@ Enums.FilterConditionType = {
  * @enum {string}
  */
 Enums.FiltersAction = {
+	'None': 'None',
 	'Move': 'Move',
-	'Delete': 'Delete',
-	'Forward': 'Forward'
+	'Discard': 'Discard',
+	'Forward': 'Forward',
 };
 
 /**
@@ -313,8 +314,7 @@ Enums.FiltersAction = {
  */
 Enums.FilterRulesType = {
 	'And': 'And',
-	'Or': 'Or',
-	'All': 'All'
+	'Or': 'Or'
 };
 
 /**

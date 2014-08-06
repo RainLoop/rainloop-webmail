@@ -200,27 +200,27 @@ cfg.paths.js = {
 			'dev/Models/FolderModel.js',
 			'dev/Models/AccountModel.js',
 			'dev/Models/IdentityModel.js',
-			'dev/Models/FilterActionModel.js',
 			'dev/Models/FilterConditionModel.js',
 			'dev/Models/FilterModel.js',
 			'dev/Models/OpenPgpKeyModel.js',
 
-			'dev/ViewModels/PopupsFolderClearViewModel.js',
-			'dev/ViewModels/PopupsFolderCreateViewModel.js',
-			'dev/ViewModels/PopupsFolderSystemViewModel.js',
-			'dev/ViewModels/PopupsComposeViewModel.js',
-			'dev/ViewModels/PopupsContactsViewModel.js',
-			'dev/ViewModels/PopupsAdvancedSearchViewModel.js',
-			'dev/ViewModels/PopupsAddAccountViewModel.js',
-			'dev/ViewModels/PopupsAddOpenPgpKeyViewModel.js',
-			'dev/ViewModels/PopupsViewOpenPgpKeyViewModel.js',
-			'dev/ViewModels/PopupsGenerateNewOpenPgpKeyViewModel.js',
-			'dev/ViewModels/PopupsComposeOpenPgpViewModel.js',
-			'dev/ViewModels/PopupsIdentityViewModel.js',
-			'dev/ViewModels/PopupsLanguagesViewModel.js',
-			'dev/ViewModels/PopupsTwoFactorTestViewModel.js',
-			'dev/ViewModels/PopupsAskViewModel.js',
-			'dev/ViewModels/PopupsKeyboardShortcutsHelpViewModel.js',
+			'dev/ViewModels/Popups/PopupsFolderClearViewModel.js',
+			'dev/ViewModels/Popups/PopupsFolderCreateViewModel.js',
+			'dev/ViewModels/Popups/PopupsFolderSystemViewModel.js',
+			'dev/ViewModels/Popups/PopupsComposeViewModel.js',
+			'dev/ViewModels/Popups/PopupsContactsViewModel.js',
+			'dev/ViewModels/Popups/PopupsAdvancedSearchViewModel.js',
+			'dev/ViewModels/Popups/PopupsAddAccountViewModel.js',
+			'dev/ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js',
+			'dev/ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js',
+			'dev/ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js',
+			'dev/ViewModels/Popups/PopupsComposeOpenPgpViewModel.js',
+			'dev/ViewModels/Popups/PopupsIdentityViewModel.js',
+			'dev/ViewModels/Popups/PopupsLanguagesViewModel.js',
+			'dev/ViewModels/Popups/PopupsTwoFactorTestViewModel.js',
+			'dev/ViewModels/Popups/PopupsAskViewModel.js',
+			'dev/ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js',
+			'dev/ViewModels/Popups/PopupsFiterViewModel.js',
 
 			'dev/ViewModels/LoginViewModel.js',
 
@@ -298,11 +298,11 @@ cfg.paths.js = {
 			'dev/Models/EmailModel.js',
 			'dev/Models/ContactTagModel.js',
 
-			'dev/ViewModels/PopupsDomainViewModel.js',
-			'dev/ViewModels/PopupsPluginViewModel.js',
-			'dev/ViewModels/PopupsActivateViewModel.js',
-			'dev/ViewModels/PopupsLanguagesViewModel.js',
-			'dev/ViewModels/PopupsAskViewModel.js',
+			'dev/ViewModels/Popups/PopupsDomainViewModel.js',
+			'dev/ViewModels/Popups/PopupsPluginViewModel.js',
+			'dev/ViewModels/Popups/PopupsActivateViewModel.js',
+			'dev/ViewModels/Popups/PopupsLanguagesViewModel.js',
+			'dev/ViewModels/Popups/PopupsAskViewModel.js',
 
 			'dev/ViewModels/AdminLoginViewModel.js',
 
@@ -592,7 +592,7 @@ gulp.task('rainloop+', ['rainloop', 'package-inc-release']);
 gulp.task('owncloud', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
 
 //WATCH
-gulp.task('watch', function() {
+gulp.task('watch', ['fast'], function() {
 	gulp.watch(cfg.paths.js.app.src, {interval: 1000}, ['js:app']);
 	gulp.watch(cfg.paths.js.admin.src, {interval: 1000}, ['js:admin']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);

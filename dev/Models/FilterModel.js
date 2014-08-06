@@ -5,6 +5,7 @@
  */
 function FilterModel()
 {
+	this.new = ko.observable(true);
 	this.enabled = ko.observable(true);
 
 	this.name = ko.observable('');
@@ -12,33 +13,56 @@ function FilterModel()
 	this.conditionsType = ko.observable(Enums.FilterRulesType.And);
 
 	this.conditions = ko.observableArray([]);
-	this.actions = ko.observableArray([]);
 
 	this.conditions.subscribe(function () {
 		Utils.windowResize();
 	});
 
-	this.actions.subscribe(function () {
-		Utils.windowResize();
-	});
+	// Actions
+	this.actionMarkAsRead = ko.observable(false);
+	this.actionSkipOtherFilters = ko.observable(true);
+	this.actionValue = ko.observable('');
 
-	this.conditionsCanBeDeleted = ko.computed(function () {
-		return 1 < this.conditions().length;
+	this.actionType = ko.observable(Enums.FiltersAction.Move);
+	this.actionTypeOptions = [ // TODO i18n
+		{'id': Enums.FiltersAction.None, 'name': 'Action - None'},
+		{'id': Enums.FiltersAction.Move, 'name': 'Action - Move to'},
+//		{'id': Enums.FiltersAction.Forward, 'name': 'Action - Forward to'},
+		{'id': Enums.FiltersAction.Discard, 'name': 'Action - Discard'}
+	];
+
+	this.actionMarkAsReadVisiblity = ko.computed(function () {
+		return -1 < Utils.inArray(this.actionType(), [
+			Enums.FiltersAction.None, Enums.FiltersAction.Forward, Enums.FiltersAction.Move
+		]);
 	}, this);
 
-	this.actionsCanBeDeleted = ko.computed(function () {
-		return 1 < this.actions().length;
+	this.actionTemplate = ko.computed(function () {
+
+		var sTemplate = '';
+		switch (this.actionType())
+		{
+			default:
+			case Enums.FiltersAction.Move:
+				sTemplate = 'SettingsFiltersActionValueAsFolders';
+				break;
+			case Enums.FiltersAction.Forward:
+				sTemplate = 'SettingsFiltersActionWithValue';
+				break;
+			case Enums.FiltersAction.None:
+			case Enums.FiltersAction.Discard:
+				sTemplate = 'SettingsFiltersActionNoValue';
+				break;
+		}
+
+		return sTemplate;
+
 	}, this);
 }
 
 FilterModel.prototype.addCondition = function ()
 {
-	this.conditions.push(new FilterConditionModel(this.conditions, this.conditionsCanBeDeleted));
-};
-
-FilterModel.prototype.addAction = function ()
-{
-	this.actions.push(new FilterActionModel(this.actions, this.actionsCanBeDeleted));
+	this.conditions.push(new FilterConditionModel(this.conditions));
 };
 
 FilterModel.prototype.parse = function (oItem)

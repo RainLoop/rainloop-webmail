@@ -7502,6 +7502,12 @@ html.rl-left-panel-disabled .btn.buttonContacts {
 .popups .b-folder-system-content .modal-header {
   background-color: #fff;
 }
+.popups .b-filter-content {
+  width: 800px;
+}
+.popups .b-filter-content .modal-header {
+  background-color: #fff;
+}
 .popups .b-languages-content.modal {
   width: 700px;
 }

@@ -1,5 +1,4 @@
-<select data-bind="options: typeOptions, value: type, optionsText: 'name', optionsValue: 'id'"></select>
-Folders
-<span class="delete-action pull-right" data-bind="visible: canBeDeleted, click: removeSelf">
-	<i class="icon-trash"></i>
-</span>
+<select data-bind="options: actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
+&nbsp;
+<select data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
+	optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defautOptionsAfterRender"></select>

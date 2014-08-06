@@ -6,60 +6,8 @@
 	</div>
 	<div class="row">
 		<div data-bind="foreach: filters, i18nUpdate: filters">
-			<div class="filter span12 pull-left" style="background-color: #eee; padding: 15px; border-radius: 4px">
-
-				<input type="text" data-bind="value: name" placeholder="Description:" />
-
-				<br />
-
-				<label class="radio inline">
-					<input type="radio" name="conditionsType" value="And" data-bind="checked: conditionsType" />
-					Matching all of the following rules
-				</label>
-				<label class="radio inline">
-					<input type="radio" name="conditionsType" value="Or" data-bind="checked: conditionsType" />
-					Matching any of the  following rules
-				</label>
-				<label class="radio inline">
-					<input type="radio" name="conditionsType" value="All" data-bind="checked: conditionsType" />
-					All messages
-				</label>
-
-				<hr />
-
-				<div>
-					<a class="btn" data-bind="click: addCondition">
-						<i class="icon-plus"></i>
-						&nbsp;&nbsp;
-						<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
-					</a>
-					<br />
-					<br />
-					<div data-bind="foreach: conditions">
-						<div data-bind="template: {'name': template(), 'data': $data}"></div>
-					</div>
-				</div>
-				<hr />
-				<div>
-					<a class="btn" data-bind="click: addAction">
-						<i class="icon-plus"></i>
-						&nbsp;&nbsp;
-						<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_ACTION"></span>
-					</a>
-					<br />
-					<br />
-					<div data-bind="foreach: actions">
-						<div data-bind="template: {'name': template(), 'data': $data}"></div>
-					</div>
-				</div>
-				<hr />
-				<a class="btn" data-bind="click: function (oFilter) { $parent.deleteFilter(oFilter); }">
-					<i class="icon-trash"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_DELETE_FILTER"></span>
-				</a>
-				<br />
-			</div>
+			<span  data-bind="text: name" ></span>
+			<br />
 		</div>
 	</div>
 	<br />

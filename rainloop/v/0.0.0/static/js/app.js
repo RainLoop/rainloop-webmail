@@ -677,9 +677,10 @@ Enums.FilterConditionType = {
  * @enum {string}
  */
 Enums.FiltersAction = {
+	'None': 'None',
 	'Move': 'Move',
-	'Delete': 'Delete',
-	'Forward': 'Forward'
+	'Discard': 'Discard',
+	'Forward': 'Forward',
 };
 
 /**
@@ -687,8 +688,7 @@ Enums.FiltersAction = {
  */
 Enums.FilterRulesType = {
 	'And': 'And',
-	'Or': 'Or',
-	'All': 'All'
+	'Or': 'Or'
 };
 
 /**
@@ -8511,75 +8511,26 @@ IdentityModel.prototype.formattedNameForEmail = function ()
 /**
  * @constructor
  */
-function FilterActionModel(oKoList, oKoCanBeDeleted)
+function FilterConditionModel(oKoList)
 {
 	this.parentList = oKoList;
-	this.canBeDeleted = oKoCanBeDeleted;
 
-	this.value = ko.observable('');
+	this.field = ko.observable(Enums.FilterConditionField.From);
 
-	this.type = ko.observable(Enums.FiltersAction.Move);
-	this.typeOptions = [ // TODO i18n
-		{'id': Enums.FiltersAction.Move, 'name': 'Move to'},
-		{'id': Enums.FiltersAction.Forward, 'name': 'Forward to'},
-		{'id': Enums.FiltersAction.Delete, 'name': 'Discard'},
-		{'id': Enums.FiltersAction.MarkAsRead, 'name': 'Mark as read'}
-	];
-
-	this.template = ko.computed(function () {
-
-		var sTemplate = '';
-		switch (this.type())
-		{
-			default:
-			case Enums.FiltersAction.Move:
-				sTemplate = 'SettingsFiltersActionValueAsFolders';
-				break;
-			case Enums.FiltersAction.Forward:
-				sTemplate = 'SettingsFiltersActionWithValue';
-				break;
-			case Enums.FiltersAction.MarkAsRead:
-			case Enums.FiltersAction.Delete:
-				sTemplate = 'SettingsFiltersActionNoValue';
-				break;
-		}
-
-		return sTemplate;
-
-	}, this);
-}
-
-FilterActionModel.prototype.removeSelf = function ()
-{
-	if (this.canBeDeleted())
-	{
-		this.parentList.remove(this);
-	}
-};
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-/**
- * @constructor
- */
-function FilterConditionModel(oKoList, oKoCanBeDeleted)
-{
-	this.parentList = oKoList;
-	this.canBeDeleted = oKoCanBeDeleted;
-
-	this.field = ko.observable(Enums.FilterConditionField.Subject);
 	this.fieldOptions = [ // TODO i18n
-		{'id': Enums.FilterConditionField.Subject, 'name': 'Subject'},
-		{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC)'},
 		{'id': Enums.FilterConditionField.From, 'name': 'From'},
-		{'id': Enums.FilterConditionField.To, 'name': 'To'}
+		{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC)'},
+		{'id': Enums.FilterConditionField.To, 'name': 'To'},
+		{'id': Enums.FilterConditionField.Subject, 'name': 'Subject'}
 	];
 
-	this.type = ko.observable(Enums.FilterConditionType.Contains);
+	this.type = ko.observable(Enums.FilterConditionType.EqualTo);
+	
 	this.typeOptions = [ // TODO i18n
-		{'id': Enums.FilterConditionType.Contains, 'name': 'Contains'},
-		{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains'},
 		{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To'},
-		{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To'}
+		{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To'},
+		{'id': Enums.FilterConditionType.Contains, 'name': 'Contains'},
+		{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains'}
 	];
 
 	this.value = ko.observable('');
@@ -8601,10 +8552,7 @@ function FilterConditionModel(oKoList, oKoCanBeDeleted)
 
 FilterConditionModel.prototype.removeSelf = function ()
 {
-	if (this.canBeDeleted())
-	{
-		this.parentList.remove(this);
-	}
+	this.parentList.remove(this);
 };
 
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
@@ -8614,6 +8562,7 @@ FilterConditionModel.prototype.removeSelf = function ()
  */
 function FilterModel()
 {
+	this.new = ko.observable(true);
 	this.enabled = ko.observable(true);
 
 	this.name = ko.observable('');
@@ -8621,33 +8570,56 @@ function FilterModel()
 	this.conditionsType = ko.observable(Enums.FilterRulesType.And);
 
 	this.conditions = ko.observableArray([]);
-	this.actions = ko.observableArray([]);
 
 	this.conditions.subscribe(function () {
 		Utils.windowResize();
 	});
 
-	this.actions.subscribe(function () {
-		Utils.windowResize();
-	});
+	// Actions
+	this.actionMarkAsRead = ko.observable(false);
+	this.actionSkipOtherFilters = ko.observable(true);
+	this.actionValue = ko.observable('');
 
-	this.conditionsCanBeDeleted = ko.computed(function () {
-		return 1 < this.conditions().length;
+	this.actionType = ko.observable(Enums.FiltersAction.Move);
+	this.actionTypeOptions = [ // TODO i18n
+		{'id': Enums.FiltersAction.None, 'name': 'Action - None'},
+		{'id': Enums.FiltersAction.Move, 'name': 'Action - Move to'},
+//		{'id': Enums.FiltersAction.Forward, 'name': 'Action - Forward to'},
+		{'id': Enums.FiltersAction.Discard, 'name': 'Action - Discard'}
+	];
+
+	this.actionMarkAsReadVisiblity = ko.computed(function () {
+		return -1 < Utils.inArray(this.actionType(), [
+			Enums.FiltersAction.None, Enums.FiltersAction.Forward, Enums.FiltersAction.Move
+		]);
 	}, this);
 
-	this.actionsCanBeDeleted = ko.computed(function () {
-		return 1 < this.actions().length;
+	this.actionTemplate = ko.computed(function () {
+
+		var sTemplate = '';
+		switch (this.actionType())
+		{
+			default:
+			case Enums.FiltersAction.Move:
+				sTemplate = 'SettingsFiltersActionValueAsFolders';
+				break;
+			case Enums.FiltersAction.Forward:
+				sTemplate = 'SettingsFiltersActionWithValue';
+				break;
+			case Enums.FiltersAction.None:
+			case Enums.FiltersAction.Discard:
+				sTemplate = 'SettingsFiltersActionNoValue';
+				break;
+		}
+
+		return sTemplate;
+
 	}, this);
 }
 
 FilterModel.prototype.addCondition = function ()
 {
-	this.conditions.push(new FilterConditionModel(this.conditions, this.conditionsCanBeDeleted));
-};
-
-FilterModel.prototype.addAction = function ()
-{
-	this.actions.push(new FilterActionModel(this.actions, this.actionsCanBeDeleted));
+	this.conditions.push(new FilterConditionModel(this.conditions));
 };
 
 FilterModel.prototype.parse = function (oItem)
@@ -12600,6 +12572,44 @@ PopupsKeyboardShortcutsHelpViewModel.prototype.onBuild = function (oDom)
  * @constructor
  * @extends KnoinAbstractViewModel
  */
+function PopupsFilterViewModel()
+{
+	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFilter');
+
+	this.filter = ko.observable(null);
+
+	this.selectedFolderValue = ko.observable(Consts.Values.UnuseOptionValue);
+	this.folderSelectList = RL.data().folderMenuForMove;
+	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	Knoin.constructorEnd(this);
+}
+
+Utils.extendAsViewModel('PopupsFilterViewModel', PopupsFilterViewModel);
+
+PopupsFilterViewModel.prototype.clearPopup = function ()
+{
+
+};
+
+PopupsFilterViewModel.prototype.onShow = function (oFilter)
+{
+	this.clearPopup();
+
+	this.filter(oFilter);
+};
+
+PopupsFilterViewModel.prototype.onFocus = function ()
+{
+
+};
+
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+/**
+ * @constructor
+ * @extends KnoinAbstractViewModel
+ */
 function LoginViewModel()
 {
 	KnoinAbstractViewModel.call(this, 'Center', 'Login');
@@ -15614,11 +15624,7 @@ SettingsFilters.prototype.deleteFilter = function (oFilter)
 
 SettingsFilters.prototype.addFilter = function ()
 {
-	var oFilter = new FilterModel();
-	oFilter.addCondition();
-	oFilter.addAction();
-
-	this.filters.push(oFilter);
+	kn.showScreenPopup(PopupsFilterViewModel, [new FilterModel()]);
 };
 
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
