@@ -6910,8 +6910,12 @@ function MessageModel()
 	this.proxy = false;
 
 	this.fromEmailString = ko.observable('');
+	this.fromClearEmailString = ko.observable('');
 	this.toEmailsString = ko.observable('');
+	this.toClearEmailsString = ko.observable('');
+
 	this.senderEmailsString = ko.observable('');
+	this.senderClearEmailsString = ko.observable('');
 
 	this.emails = [];
 
@@ -7058,8 +7062,35 @@ MessageModel.emailsToLine = function (aEmail, bFriendlyView, bWrapWithLink)
 
 /**
  * @static
+ * @param {Array} aEmail
+ * @return {string}
+ */
+MessageModel.emailsToLineClear = function (aEmail)
+{
+	var
+		aResult = [],
+		iIndex = 0,
+		iLen = 0
+	;
+
+	if (Utils.isNonEmptyArray(aEmail))
+	{
+		for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
+		{
+			if (aEmail[iIndex] && aEmail[iIndex].email && '' !== aEmail[iIndex].name)
+			{
+				aResult.push(aEmail[iIndex].email);
+			}
+		}
+	}
+
+	return aResult.join(', ');
+};
+
+/**
+ * @static
  * @param {?Array} aJsonEmails
- * @return {Array}
+ * @return {Array.<EmailModel>}
  */
 MessageModel.initEmailsFromJson = function (aJsonEmails)
 {
@@ -7127,8 +7158,11 @@ MessageModel.prototype.clear = function ()
 	this.proxy = false;
 
 	this.fromEmailString('');
+	this.fromClearEmailString('');
 	this.toEmailsString('');
+	this.toClearEmailsString('');
 	this.senderEmailsString('');
+	this.senderClearEmailsString('');
 
 	this.emails = [];
 
@@ -7189,6 +7223,9 @@ MessageModel.prototype.computeSenderEmail = function ()
 
 	this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
 		this.toEmailsString() : this.fromEmailString());
+
+	this.senderClearEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+		this.toClearEmailsString() : this.fromClearEmailString());
 };
 
 /**
@@ -7233,7 +7270,9 @@ MessageModel.prototype.initByJson = function (oJsonMessage)
 		this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
 
 		this.fromEmailString(MessageModel.emailsToLine(this.from, true));
+		this.fromClearEmailString(MessageModel.emailsToLineClear(this.from));
 		this.toEmailsString(MessageModel.emailsToLine(this.to, true));
+		this.toClearEmailsString(MessageModel.emailsToLineClear(this.to));
 
 		this.parentUid(Utils.pInt(oJsonMessage.ParentThread));
 		this.threads(Utils.isArray(oJsonMessage.Threads) ? oJsonMessage.Threads : []);
@@ -7721,7 +7760,9 @@ MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	this.proxy = oMessage.proxy;
 
 	this.fromEmailString(oMessage.fromEmailString());
+	this.fromClearEmailString(oMessage.fromClearEmailString());
 	this.toEmailsString(oMessage.toEmailsString());
+	this.toClearEmailsString(oMessage.toClearEmailsString());
 
 	this.emails = oMessage.emails;
 
@@ -11847,13 +11888,12 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 		this.submitRequest(true);
 
 		_.delay(function () {
-			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
-//			0.6.0
-//			mKeyPair = window.openpgp.generateKeyPair({
-//				'numBits': Utils.pInt(self.keyBitLength()),
-//				'userId': sUserID,
-//				'passphrase': Utils.trim(self.password())
-//			});
+//			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
+			mKeyPair = window.openpgp.generateKeyPair({
+				'userId': sUserID,
+				'numBits': Utils.pInt(self.keyBitLength()),
+				'passphrase': Utils.trim(self.password())
+			});
 			
 			if (mKeyPair && mKeyPair.privateKeyArmored)
 			{

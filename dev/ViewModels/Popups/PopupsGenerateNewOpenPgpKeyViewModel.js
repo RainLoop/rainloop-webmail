@@ -46,13 +46,12 @@ function PopupsGenerateNewOpenPgpKeyViewModel()
 		this.submitRequest(true);
 
 		_.delay(function () {
-			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
-//			0.6.0
-//			mKeyPair = window.openpgp.generateKeyPair({
-//				'numBits': Utils.pInt(self.keyBitLength()),
-//				'userId': sUserID,
-//				'passphrase': Utils.trim(self.password())
-//			});
+//			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
+			mKeyPair = window.openpgp.generateKeyPair({
+				'userId': sUserID,
+				'numBits': Utils.pInt(self.keyBitLength()),
+				'passphrase': Utils.trim(self.password())
+			});
 			
 			if (mKeyPair && mKeyPair.privateKeyArmored)
 			{

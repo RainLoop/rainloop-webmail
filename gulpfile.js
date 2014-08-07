@@ -115,7 +115,7 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
-			'vendors/openpgp/openpgp-0.5.1.min.js'
+			'vendors/openpgp/openpgp-0.7.2.min.js'
 		]
 	},
 	encrypt: {
