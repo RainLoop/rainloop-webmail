@@ -3,7 +3,7 @@
 	<id>rainloop</id>
 	<name>RainLoop</name>
 	<description>RainLoop Webmail</description>
-	<version>0.0</version>
+	<version>2.0</version>
 	<licence>CC BY-NC-SA 3.0</licence>
 	<author>RainLoop Team</author>
 	<require>6.0</require>

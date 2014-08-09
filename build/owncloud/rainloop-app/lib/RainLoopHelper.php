@@ -29,6 +29,30 @@ class OC_RainLoop_Helper
 	}
 
 	/**
+	 * @param string $sSsoHash
+	 *
+	 * @return boolean
+	 */
+	public static function clearUserSsoHash($sSsoHash)
+	{
+		$result = false;
+
+		$sPath = rtrim(trim($sPath), '\\/').'/index.php';
+		if (file_exists($sPath))
+		{
+			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+			include $sPath;
+
+			if (class_exists('\\RainLoop\\Api'))
+			{
+				$result = \RainLoop\Api::ClearUserSsoHash($sSsoHash);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @param string $sUrl
 	 *
 	 * @return string
@@ -66,5 +90,58 @@ class OC_RainLoop_Helper
 		}
 
 		return @base64_decode(trim($sPassword));
+	}
+
+	public static function login($params)
+	{
+		$sUser = $params['uid'];
+		$sEmail = $sUser;
+		$sPassword = $params['password'];
+
+		$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
+		$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+
+		if ('' !== $sUrl && '' !== $sPath)
+		{
+			$sPassword = self::encodePassword($sPassword, md5($sEmail));
+			return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password', $sPassword);
+		}
+
+		return false;
+	}
+
+	public static function logout($params)
+	{
+		$sUser = OCP\User::getUser();
+		$sSsoHash = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-ssohash', '');
+
+		$a = OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password', null);
+		$b = OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-ssohash', null);
+
+		if('' !== $sSsoHash) {
+			self::clearUserSsoHash($sSsoHash);
+		}
+
+		return $a && $b;
+	}
+
+	public static function changePassword($params)
+	{
+		$sUser = $params['uid'];
+		$sEmail = $sUser;
+		$sPassword = $params['password'];
+
+		OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '. $sEmail, OCP\Util::DEBUG);
+
+		$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
+		$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+
+		if ('' !== $sUrl && '' !== $sPath)
+		{
+			$sPassword = self::encodePassword($sPassword, md5($sEmail));
+			return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password', $sPassword);
+		}
+
+		return false;
 	}
 }

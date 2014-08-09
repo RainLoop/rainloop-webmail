@@ -17,6 +17,9 @@
 				<input type="text" style="width:300px;" id="rainloop-path" name="rainloop-path" value="<?php echo $_['rainloop-path']; ?>" />
 				<br />
 				<br />
+				<input type="checkbox" id="rainloop-autologin" name="rainloop-autologin" <?php if(true == $_['rainloop-autologin']): ?>checked="checked"<?php endif; ?> /><?php p($l->t('Automatically login with ownCloud user credentials')); ?>
+				<br />
+				<br />
 				<input type="button" id="rainloop-save-button" name="rainloop-save-button" value="<?php p($l->t('Save')); ?>" />
 				&nbsp;&nbsp;<span class="rainloop-result-desc"></span>
 			</p>
