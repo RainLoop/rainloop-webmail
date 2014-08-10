@@ -16,8 +16,9 @@ OCP\Util::addScript('rainloop', 'personal');
 
 $sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
 $sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 
-if ('' === $sUrl || '' === $sPath)
+if ('on' === $bAutologin || '' === $sUrl || '' === $sPath)
 {
 	$oTemplate = new OCP\Template('rainloop', 'empty');
 }

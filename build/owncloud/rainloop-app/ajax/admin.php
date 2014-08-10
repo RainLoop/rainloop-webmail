@@ -15,14 +15,17 @@ OCP\JSON::callCheck();
 
 $sUrl = '';
 $sPath = '';
+$bAutologin = false;
 
 if (isset($_POST['appname'], $_POST['rainloop-url'], $_POST['rainloop-path']) && 'rainloop' === $_POST['appname'])
 {
 	OCP\Config::setAppValue('rainloop', 'rainloop-url', $_POST['rainloop-url']);
 	OCP\Config::setAppValue('rainloop', 'rainloop-path', $_POST['rainloop-path']);
+	OCP\Config::setAppValue('rainloop', 'rainloop-autologin', $_POST['rainloop-autologin']);
 
 	$sUrl = OCP\Config::getAppValue('rainloop', 'rainloop-url', '');
 	$sPath = OCP\Config::getAppValue('rainloop', 'rainloop-path', '');
+	$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 }
 else
 {
