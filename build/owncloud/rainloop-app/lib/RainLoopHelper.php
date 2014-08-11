@@ -33,7 +33,7 @@ class OC_RainLoop_Helper
 	 *
 	 * @return boolean
 	 */
-	public static function clearUserSsoHash($sSsoHash)
+	public static function clearUserSsoHash($sPath, $sSsoHash)
 	{
 		$result = false;
 
@@ -119,7 +119,8 @@ class OC_RainLoop_Helper
 		$b = OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-ssohash', null);
 
 		if('' !== $sSsoHash) {
-			self::clearUserSsoHash($sSsoHash);
+			$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+			self::clearUserSsoHash($sPath, $sSsoHash);
 		}
 
 		return $a && $b;
