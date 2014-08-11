@@ -14,20 +14,25 @@ OC::$CLASSPATH['OC_RainLoop_Helper'] = OC_App::getAppPath('rainloop') . '/lib/Ra
 OCP\App::registerAdmin('rainloop', 'admin');
 OCP\App::registerPersonal('rainloop', 'personal');
 
-$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
-if ('on' === $bAutologin)
+if (OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false))
 {
 	OCP\Util::connectHook('OC_User', 'post_login', 'OC_RainLoop_Helper', 'login');
 	OCP\Util::connectHook('OC_User', 'logout', 'OC_RainLoop_Helper', 'logout');
 	OCP\Util::connectHook('OC_User', 'post_setPassword', 'OC_RainLoop_Helper', 'changePassword');
 }
 
-OCP\Util::addScript('rainloop', 'rainloop');
+$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
+$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
 
-OCP\App::addNavigationEntry(array(
-	'id' => 'rainloop_index',
-	'order' => 10,
-	'href' => OCP\Util::linkTo('rainloop', 'index.php'),
-	'icon' => OCP\Util::imagePath('rainloop', 'mail.png'),
-	'name' => 'Email'
-));
+if (('' !== $sUrl && '' !== $sPath) || OC_User::isAdminUser(OC_User::getUser()))
+{
+	OCP\Util::addScript('rainloop', 'rainloop');
+
+	OCP\App::addNavigationEntry(array(
+		'id' => 'rainloop_index',
+		'order' => 10,
+		'href' => OCP\Util::linkTo('rainloop', 'index.php'),
+		'icon' => OCP\Util::imagePath('rainloop', 'mail.png'),
+		'name' => 'Email'
+	));
+}

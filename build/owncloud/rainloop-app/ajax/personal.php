@@ -15,6 +15,7 @@ OCP\JSON::callCheck();
 
 $sEmail = '';
 $sLogin = '';
+
 if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email']) && 'rainloop' === $_POST['appname'])
 {
 	$sUser = OCP\User::getUser();
@@ -27,7 +28,7 @@ if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email
 	if ('******' !== $sPass && '' !== $sPass)
 	{
 		include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
-		
+
 		OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
 			OC_RainLoop_Helper::encodePassword($sPass, md5($sPostEmail)));
 	}

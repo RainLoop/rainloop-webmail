@@ -17,7 +17,6 @@ $sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
 $sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
 $bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 
-
 if ('' === $sUrl || '' === $sPath)
 {
 	$oTemplate = new OCP\Template('rainloop', 'index-empty', 'user');
@@ -33,18 +32,16 @@ else
 	if ($bAutologin)
 	{
 		$sEmail = $sUser;
+		$sEncodedPassword = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-autologin-password', '');
 	}
 	else
 	{
 		$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
+		$sEncodedPassword = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
 	}
 
-	$sPassword = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-password', '');
-
-	$sPassword = OC_RainLoop_Helper::decodePassword($sPassword, md5($sEmail));
-	$sSsoHash = OC_RainLoop_Helper::getSsoHash($sPath, $sEmail, $sPassword);
-
-	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-ssohash', $sSsoHash);
+	$sDecodedPassword = OC_RainLoop_Helper::decodePassword($sEncodedPassword, md5($sEmail));
+	$sSsoHash = OC_RainLoop_Helper::getSsoHash($sPath, $sEmail, $sDecodedPassword);
 
 	$sUrl = OC_RainLoop_Helper::normalizeUrl($sUrl);
 	$sResultUrl = empty($sSsoHash) ? $sUrl.'?sso' : $sUrl.'?sso&hash='.$sSsoHash;

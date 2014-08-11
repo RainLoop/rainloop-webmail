@@ -21,7 +21,8 @@ if (isset($_POST['appname'], $_POST['rainloop-url'], $_POST['rainloop-path']) &&
 {
 	OCP\Config::setAppValue('rainloop', 'rainloop-url', $_POST['rainloop-url']);
 	OCP\Config::setAppValue('rainloop', 'rainloop-path', $_POST['rainloop-path']);
-	OCP\Config::setAppValue('rainloop', 'rainloop-autologin', $_POST['rainloop-autologin']);
+	OCP\Config::setAppValue('rainloop', 'rainloop-autologin', isset($_POST['rainloop-autologin']) ?
+		'1' === $_POST['rainloop-autologin'] : false);
 
 	$sUrl = OCP\Config::getAppValue('rainloop', 'rainloop-url', '');
 	$sPath = OCP\Config::getAppValue('rainloop', 'rainloop-path', '');

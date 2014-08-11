@@ -143,7 +143,7 @@ class PdoAddressBook
 						$aMatch = array();
 						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]))
 						{
-							$sVcfFileName = $aMatch[1];
+							$sVcfFileName = \urldecode(\urldecode($aMatch[1]));
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
 
 							$mResult[$sKeyID] = array(
