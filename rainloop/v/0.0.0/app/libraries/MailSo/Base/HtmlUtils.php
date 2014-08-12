@@ -562,6 +562,10 @@ class HtmlUtils
 						$oElement->setAttribute('data-x-broken-href', $sHref);
 						$oElement->setAttribute('href', 'javascript:false');
 					}
+					else if ('a' === $sTagNameLower)
+					{
+						$oElement->setAttribute('rel', 'external');
+					}
 				}
 
 				if ($oElement->hasAttribute('src'))

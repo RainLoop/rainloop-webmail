@@ -104,6 +104,8 @@ NewHtmlEditorWrapper.prototype.modeToggle = function (bPlain)
 				this.editor.setMode('plain');
 			}
 		}
+
+		this.resize();
 	}
 };
 
