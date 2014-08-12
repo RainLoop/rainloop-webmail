@@ -879,6 +879,30 @@ Utils.isNonEmptyArray = function (aValue)
 };
 
 /**
+ * @param {string} sQueryString
+ * @return {Object}
+ */
+Utils.simpleQueryParser = function (sQueryString)
+{
+	var
+		oParams = {},
+		aQueries = [],
+		aTemp = [],
+		iIndex = 0,
+		iLen = 0
+	;
+
+    aQueries = sQueryString.split('&');
+    for (iIndex = 0, iLen = aQueries.length; iIndex < iLen; iIndex++)
+	{
+        aTemp = aQueries[iIndex].split('=');
+        oParams[window.decodeURIComponent(aTemp[0])] = window.decodeURIComponent(aTemp[1]);
+    }
+
+    return oParams;
+};
+
+/**
  * @param {string} aValue
  * @param {string} sKey
  * @param {string} sLongKey
@@ -9694,8 +9718,10 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
  * @param {string=} sType = Enums.ComposeType.Empty
  * @param {?MessageModel|Array=} oMessageOrArray = null
  * @param {Array=} aToEmails = null
+ * @param {string=} sCustomSubject = null
+ * @param {string=} sCustomPlainText = null
  */
-PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails)
+PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
 {
 	kn.routeOff();
 
@@ -9889,7 +9915,14 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 	}
 	else if (Enums.ComposeType.Empty === sComposeType)
 	{
-		sText = this.convertSignature(sSignature);
+		this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
+
+		sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
+		if (bSignatureToAll && '' !== sSignature && '' !== sText)
+		{
+			sText = this.convertSignature(sSignature) + '<br />' + sText;
+		}
+
 		this.editor(function (oEditor) {
 			oEditor.setHtml(sText, false);
 			if (Enums.EditorDefaultType.Html !== RL.data().editorDefaultType())
@@ -14633,9 +14666,9 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 				self.message.focused(true);
 			}
 		})
-		.on('mousedown', 'a', function (oEvent) {
+		.on('click', 'a', function (oEvent) {
 			// setup maito protocol
-			return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
+			return !(!!oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
 		})
 		.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 			if (oEvent && oEvent.stopPropagation)
@@ -20997,17 +21030,30 @@ RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
  */
 RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
 {
-	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().toLowerCase().substr(0, 7))
+	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
 	{
-		var oEmailModel = null;
+		sMailToUrl = sMailToUrl.toString().substr(7);
+
+		var
+			oParams = {},
+			oEmailModel = null,
+			sEmail = sMailToUrl.replace(/\?.+$/, ''),
+			sQueryString = sMailToUrl.replace(/^[^\?]*\?/, '')
+		;
+
 		oEmailModel = new EmailModel();
-		oEmailModel.parse(window.decodeURI(sMailToUrl.toString().substr(7).replace(/\?.+$/, '')));
+		oEmailModel.parse(window.decodeURIComponent(sEmail));
 
 		if (oEmailModel && oEmailModel.email)
 		{
-			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
-			return true;
+			oParams = Utils.simpleQueryParser(sQueryString);
+			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+				Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
+				Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+			]);
 		}
+
+		return true;
 	}
 
 	return false;

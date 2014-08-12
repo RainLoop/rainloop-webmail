@@ -991,17 +991,30 @@ RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
  */
 RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
 {
-	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().toLowerCase().substr(0, 7))
+	if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
 	{
-		var oEmailModel = null;
+		sMailToUrl = sMailToUrl.toString().substr(7);
+
+		var
+			oParams = {},
+			oEmailModel = null,
+			sEmail = sMailToUrl.replace(/\?.+$/, ''),
+			sQueryString = sMailToUrl.replace(/^[^\?]*\?/, '')
+		;
+
 		oEmailModel = new EmailModel();
-		oEmailModel.parse(window.decodeURI(sMailToUrl.toString().substr(7).replace(/\?.+$/, '')));
+		oEmailModel.parse(window.decodeURIComponent(sEmail));
 
 		if (oEmailModel && oEmailModel.email)
 		{
-			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel]]);
-			return true;
+			oParams = Utils.simpleQueryParser(sQueryString);
+			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+				Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
+				Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+			]);
 		}
+
+		return true;
 	}
 
 	return false;

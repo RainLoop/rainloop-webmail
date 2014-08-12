@@ -655,8 +655,10 @@ PopupsComposeViewModel.prototype.editor = function (fOnInit)
  * @param {string=} sType = Enums.ComposeType.Empty
  * @param {?MessageModel|Array=} oMessageOrArray = null
  * @param {Array=} aToEmails = null
+ * @param {string=} sCustomSubject = null
+ * @param {string=} sCustomPlainText = null
  */
-PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails)
+PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
 {
 	kn.routeOff();
 
@@ -850,7 +852,14 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 	}
 	else if (Enums.ComposeType.Empty === sComposeType)
 	{
-		sText = this.convertSignature(sSignature);
+		this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
+
+		sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
+		if (bSignatureToAll && '' !== sSignature && '' !== sText)
+		{
+			sText = this.convertSignature(sSignature) + '<br />' + sText;
+		}
+
 		this.editor(function (oEditor) {
 			oEditor.setHtml(sText, false);
 			if (Enums.EditorDefaultType.Html !== RL.data().editorDefaultType())

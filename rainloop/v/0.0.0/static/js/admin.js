@@ -876,6 +876,30 @@ Utils.isNonEmptyArray = function (aValue)
 };
 
 /**
+ * @param {string} sQueryString
+ * @return {Object}
+ */
+Utils.simpleQueryParser = function (sQueryString)
+{
+	var
+		oParams = {},
+		aQueries = [],
+		aTemp = [],
+		iIndex = 0,
+		iLen = 0
+	;
+
+    aQueries = sQueryString.split('&');
+    for (iIndex = 0, iLen = aQueries.length; iIndex < iLen; iIndex++)
+	{
+        aTemp = aQueries[iIndex].split('=');
+        oParams[window.decodeURIComponent(aTemp[0])] = window.decodeURIComponent(aTemp[1]);
+    }
+
+    return oParams;
+};
+
+/**
  * @param {string} aValue
  * @param {string} sKey
  * @param {string} sLongKey

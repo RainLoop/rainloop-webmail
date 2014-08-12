@@ -355,9 +355,9 @@ MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 				self.message.focused(true);
 			}
 		})
-		.on('mousedown', 'a', function (oEvent) {
+		.on('click', 'a', function (oEvent) {
 			// setup maito protocol
-			return !(oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
+			return !(!!oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
 		})
 		.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 			if (oEvent && oEvent.stopPropagation)
