@@ -261,7 +261,7 @@ function PopupsComposeViewModel()
 					this.bcc(),
 					this.subject(),
 					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData() : '',
+					this.oEditor ? this.oEditor.getData(true) : '',
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
@@ -298,7 +298,7 @@ function PopupsComposeViewModel()
 				this.bcc(),
 				this.subject(),
 				this.oEditor ? this.oEditor.isHtml() : false,
-				this.oEditor ? this.oEditor.getData() : '',
+				this.oEditor ? this.oEditor.getData(true) : '',
 				this.prepearAttachmentsForSendOrSave(),
 				this.aDraftInfo,
 				this.sInReplyTo,
@@ -668,6 +668,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		sDate = '',
 		sSubject = '',
 		oText = null,
+		oSubText = null,
 		sText = '',
 		sReplyTitle = '',
 		aResplyAllParts = [],
@@ -724,7 +725,9 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 		oText = $(oMessage.body).clone();
 		Utils.removeBlockquoteSwitcher(oText);
-		sText = oText.html();
+
+		oSubText = oText.find('[data-html-editor-font-wrapper=true]');
+		sText = oSubText && oSubText[0] ? oSubText.html() : oText.html();
 
 		switch (sComposeType)
 		{

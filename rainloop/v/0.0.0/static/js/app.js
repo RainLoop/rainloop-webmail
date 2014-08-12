@@ -4340,7 +4340,7 @@ NewHtmlEditorWrapper.prototype.resetDirty = function ()
 /**
  * @return {string}
  */
-NewHtmlEditorWrapper.prototype.getData = function ()
+NewHtmlEditorWrapper.prototype.getData = function (bWrapIsHtml)
 {
 	if (this.editor)
 	{
@@ -4349,7 +4349,9 @@ NewHtmlEditorWrapper.prototype.getData = function ()
 			return this.editor.__plain.getRawData();
 		}
 
-		return this.editor.getData();
+		return bWrapIsHtml ?
+			'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' + 
+				this.editor.getData() + '</div>' : this.editor.getData();
 	}
 
 	return '';
@@ -4437,7 +4439,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
 		self.editor.on('key', function(oEvent) {
-			if (oEvent && oEvent.data && 9 === oEvent.data.keyCode)
+			if (oEvent && oEvent.data && 9 /* Tab */ === oEvent.data.keyCode)
 			{
 				return false;
 			}
@@ -4448,6 +4450,7 @@ NewHtmlEditorWrapper.prototype.init = function ()
 		});
 
 		self.editor.on('mode', function() {
+			
 			self.blurTrigger();
 
 			if (self.fOnModeChange)
@@ -9297,7 +9300,7 @@ function PopupsComposeViewModel()
 					this.bcc(),
 					this.subject(),
 					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData() : '',
+					this.oEditor ? this.oEditor.getData(true) : '',
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
@@ -9334,7 +9337,7 @@ function PopupsComposeViewModel()
 				this.bcc(),
 				this.subject(),
 				this.oEditor ? this.oEditor.isHtml() : false,
-				this.oEditor ? this.oEditor.getData() : '',
+				this.oEditor ? this.oEditor.getData(true) : '',
 				this.prepearAttachmentsForSendOrSave(),
 				this.aDraftInfo,
 				this.sInReplyTo,
@@ -9704,6 +9707,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		sDate = '',
 		sSubject = '',
 		oText = null,
+		oSubText = null,
 		sText = '',
 		sReplyTitle = '',
 		aResplyAllParts = [],
@@ -9760,7 +9764,9 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 
 		oText = $(oMessage.body).clone();
 		Utils.removeBlockquoteSwitcher(oText);
-		sText = oText.html();
+
+		oSubText = oText.find('[data-html-editor-font-wrapper=true]');
+		sText = oSubText && oSubText[0] ? oSubText.html() : oText.html();
 
 		switch (sComposeType)
 		{
