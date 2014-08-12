@@ -13420,6 +13420,8 @@ function MailBoxMessageListViewModel()
 	this.bPrefetch = false;
 	this.emptySubjectValue = '';
 
+	this.hideDangerousActions = !!RL.settingsGet('HideDangerousActions');
+
 	var oData = RL.data();
 
 	this.popupVisibility = RL.popupVisibility;
