@@ -43,6 +43,16 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public function ClearByEmail($sEmail)
+	{
+		return $this->oDriver->ClearByEmail($sEmail);
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function IsActive()

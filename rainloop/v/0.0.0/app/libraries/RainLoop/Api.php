@@ -30,7 +30,7 @@ class Api
 	 */
 	public static function Config()
 	{
-		return self::Actions()->Config();
+		return \RainLoop\Api::Actions()->Config();
 	}
 
 	/**
@@ -38,7 +38,7 @@ class Api
 	 */
 	public static function Logger()
 	{
-		return self::Actions()->Logger();
+		return \RainLoop\Api::Actions()->Logger();
 	}
 
 	/**
@@ -75,20 +75,20 @@ class Api
 			{
 				\MailSo\Config::$ICONV = false;
 			}
-			
-			\MailSo\Config::$MessageListCountLimitTrigger = 
+
+			\MailSo\Config::$MessageListCountLimitTrigger =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
-			
+
 			\MailSo\Config::$MessageListDateFilter =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
-			
-			\MailSo\Config::$MessageListUndeletedFilter = 
+
+			\MailSo\Config::$MessageListUndeletedFilter =
 				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', true);
-			
+
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 		}
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -108,7 +108,7 @@ class Api
 	{
 		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.\microtime(true));
 
-		return self::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
+		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,
 			'Password' => $sPassword,
 			'Time' => $bUseTimeout ? \time() : 0
@@ -122,23 +122,51 @@ class Api
 	 */
 	public static function ClearUserSsoHash($sSsoHash)
 	{
-		return self::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+		return \RainLoop\Api::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 	}
 
 	/**
-	 * @todo
 	 * @param string $sEmail
 	 *
 	 * @return bool
 	 */
-	public static function ClearUserDateStorage($sEmail)
+	public static function ClearUserData($sEmail)
 	{
-		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
-		
-		// TwoFactor Auth User Data
-		self::Actions()->StorageProvider()->Clear(null,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-			\RainLoop\KeyPathHelper::TwoFactorAuthUserData($sEmail)
-		);
+		if (0 < \strlen($sEmail))
+		{
+			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
+
+			$oStorageProvider = \RainLoop\Api::Actions()->StorageProvider();
+
+			if ($oStorageProvider)
+			{
+				// TwoFactor Auth User Data
+				$oStorageProvider->Clear(null,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+					\RainLoop\KeyPathHelper::TwoFactorAuthUserData($sEmail)
+				);
+
+				// Accounts list
+				$oStorageProvider->Clear(null,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+					\RainLoop\KeyPathHelper::WebmailAccounts($sEmail)
+				);
+
+				// Contact sync data
+				$oStorageProvider->Clear($sEmail,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'contacts_sync'
+				);
+
+			}
+
+			\RainLoop\Api::Actions()->SettingsProvider()->ClearByEmail($sEmail);
+
+			\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContactsAndTags($sEmail);
+
+			return true;
+		}
+
+		return false;
 	}
 }

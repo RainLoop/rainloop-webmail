@@ -56,4 +56,16 @@ class DefaultSettings implements \RainLoop\Providers\Settings\SettingsInterface
 			\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME,
 			\json_encode($aSettings));
 	}
+
+	/**
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public function ClearByEmail($sEmail)
+	{
+		return $this->oStorageProvider->Clear($sEmail,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME);
+	}
 }

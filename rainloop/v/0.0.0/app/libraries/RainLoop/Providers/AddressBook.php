@@ -110,6 +110,16 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public function DeleteAllContactsAndTags($sEmail)
+	{
+		return $this->IsActive() ? $this->oDriver->DeleteAllContactsAndTags($sEmail) : false;
+	}
+
+	/**
+	 * @param string $sEmail
 	 * @param int $iOffset = 0
 	 * @param type $iLimit = 20
 	 * @param string $sSearch = ''

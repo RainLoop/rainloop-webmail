@@ -673,6 +673,30 @@ class PdoAddressBook
 
 	/**
 	 * @param string $sEmail
+	 * @param bool $bSyncDb = true
+	 *
+	 * @return bool
+	 */
+	public function DeleteAllContactsAndTags($sEmail, $bSyncDb = true)
+	{
+		if ($bSyncDb)
+		{
+			$this->SyncDatabase();
+		}
+
+		$iUserID = $this->getUserId($sEmail);
+
+		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
+
+		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user', $aParams);
+		$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user', $aParams);
+		$this->prepareAndExecute('DELETE FROM rainloop_ab_tags WHERE id_user = :id_user', $aParams);
+
+		return true;
+	}
+
+	/**
+	 * @param string $sEmail
 	 * @param array $aTagsIds
 	 *
 	 * @return bool
