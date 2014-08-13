@@ -14,7 +14,7 @@ class Api
 	/**
 	 * @return \RainLoop\Actions
 	 */
-	private static function Actions()
+	public static function Actions()
 	{
 		static $oActions = null;
 		if (null === $oActions)
@@ -34,6 +34,14 @@ class Api
 	}
 
 	/**
+	 * @return \MailSo\Log\Logger
+	 */
+	public static function Logger()
+	{
+		return self::Actions()->Logger();
+	}
+
+	/**
 	 * @return bool
 	 */
 	public static function Handle()
@@ -49,16 +57,38 @@ class Api
 			return false;
 		}
 
-		if (self::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
-			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
-		{
-			\MailSo\Config::$ICONV = false;
-		}
+		\RainLoop\Api::SetupDefaultMailSoConfig();
 
 		$bOne = true;
 		return true;
 	}
 
+	/**
+	 * @return string
+	 */
+	public static function SetupDefaultMailSoConfig()
+	{
+		if (\class_exists('MailSo\Config'))
+		{
+			if (\RainLoop\Api::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
+				 \MailSo\Base\Utils::IsMbStringSupported() && \MailSo\Config::$MBSTRING)
+			{
+				\MailSo\Config::$ICONV = false;
+			}
+			
+			\MailSo\Config::$MessageListCountLimitTrigger = 
+				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
+			
+			\MailSo\Config::$MessageListDateFilter =
+				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
+			
+			\MailSo\Config::$MessageListUndeletedFilter = 
+				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', true);
+			
+			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
+		}
+	}
+	
 	/**
 	 * @return string
 	 */

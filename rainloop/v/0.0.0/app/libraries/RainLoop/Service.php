@@ -30,7 +30,7 @@ class Service
 	private function __construct()
 	{
 		$this->oHttp = \MailSo\Base\Http::SingletonInstance();
-		$this->oActions = Actions::NewInstance();
+		$this->oActions = \RainLoop\Api::Actions();
 
 		\set_error_handler(array(&$this, 'LogPhpErrorHandler'));
 
@@ -42,11 +42,7 @@ class Service
 			\ini_set('display_errors', 1);
 		}
 
-		if ($this->oActions->Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
-			\class_exists('MailSo\Capa') && \MailSo\Base\Utils::IsMbStringSupported())
-		{
-			\MailSo\Config::$ICONV = false;
-		}
+		\RainLoop\Api::SetupDefaultMailSoConfig();
 
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))

@@ -426,6 +426,11 @@ class Utils
 	 */
 	public static function IsAscii($sValue)
 	{
+		if ('' === \trim($sValue))
+		{
+			return true;
+		}
+		
 		return !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 

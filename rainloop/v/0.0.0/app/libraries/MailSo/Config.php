@@ -24,7 +24,22 @@ class Config
 	public static $FixIconvByMbstring = true;
 
 	/**
-	 * @var \MailSo\Log\Logger
+	 * @var int
+	 */
+	public static $MessageListCountLimitTrigger = 0;
+	
+	/**
+	 * @var bool
+	 */
+	public static $MessageListUndeletedFilter = false;
+
+	/**
+	 * @var int
+	 */
+	public static $MessageListDateFilter = 0;
+
+	/**
+	 * @var \MailSo\Log\Logger|null
 	 */
 	public static $SystemLogger = null;
 }

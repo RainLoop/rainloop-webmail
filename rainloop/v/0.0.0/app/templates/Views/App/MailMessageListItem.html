@@ -24,7 +24,7 @@
 		<div class="senderParent actionHandle dragHandle">
 			<span class="threadsCountParent fullThreadHandle" data-bind="visible: '' !== threadsLenResult(), css: { 'lastSelected': !lastInCollapsedThread() }">
 				<span lass="threadsCount" data-bind="visible: !lastInCollapsedThreadLoading(), text: threadsLenResult"></span>
-				<i class="icon-spinner animated" data-bind="visible: lastInCollapsedThreadLoading"></i>
+				<span lass="threadsCount" data-bind="visible: lastInCollapsedThreadLoading()">x</span>
 			</span>
 			<span class="replyFlag"><i class="icon-reply"></i>&nbsp;</span>
 			<span class="forwardFlag"><i class="icon-forward"></i>&nbsp;</span>

@@ -4275,8 +4275,7 @@ class Actions
 				$sFolder, $iOffset, $iLimit, $sSearch, $sUidNext,
 				($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher() : null,
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
-				$bUseThreads,
-				$aExpandedThreadUid,
+				$bUseThreads, $aExpandedThreadUid,
 				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
 			);
 		}
