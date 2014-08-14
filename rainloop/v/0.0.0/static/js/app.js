@@ -2491,7 +2491,7 @@ Utils.htmlToPlain = function (sHtml)
 	sText = sHtml
 		.replace(/[\s]+/gm, ' ')
 		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
-		.replace(/<br\s?\/?>/gmi, '\n')
+		.replace(/<br[^>]*>/gmi, '\n')
 		.replace(/<\/h[\d]>/gi, '\n')
 		.replace(/<\/p>/gi, '\n\n')
 		.replace(/<\/li>/gi, '\n')
@@ -9673,13 +9673,15 @@ PopupsComposeViewModel.prototype.onHide = function ()
 /**
  * @param {string} sSignature
  * @param {string=} sFrom
+ * @param {string=} sData
+ * @param {string=} sComposeType
  * @return {string}
  */
-PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
+PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom, sData, sComposeType)
 {
+	var bHtml = false, bData = false;
 	if ('' !== sSignature)
 	{
-		var bHtml = false;
 		if (':HTML:' === sSignature.substr(0, 6))
 		{
 			bHtml = true;
@@ -9699,9 +9701,31 @@ PopupsComposeViewModel.prototype.convertSignature = function (sSignature, sFrom)
 		sSignature = sSignature.replace(/{{FROM}}/, '');
 		sSignature = sSignature.replace(/{{DATE}}/, moment().format('llll'));
 
+		if (sData && Enums.ComposeType.Empty === sComposeType &&
+			-1 < sSignature.indexOf('{{DATA}}'))
+		{
+			bData = true;
+			sSignature = sSignature.replace('{{DATA}}', sData);
+		}
+
+		sSignature = sSignature.replace(/{{DATA}}/, '');
+		
 		if (!bHtml)
 		{
 			sSignature = Utils.convertPlainTextToHtml(sSignature);
+		}
+	}
+
+	if (sData && !bData)
+	{
+		switch (sComposeType)
+		{
+			case Enums.ComposeType.Empty:
+				sSignature = sData + '<br />' + sSignature;
+				break;
+			default:
+				sSignature = sSignature + '<br />' + sData;
+				break;
 		}
 	}
 
@@ -9918,7 +9942,7 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		if (bSignatureToAll && '' !== sSignature &&
 			Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
 		{
-			sText = this.convertSignature(sSignature, fEmailArrayToStringLineHelper(oMessage.from, true)) + '<br />' + sText;
+			sText = this.convertSignature(sSignature, fEmailArrayToStringLineHelper(oMessage.from, true), sText, sComposeType);
 		}
 
 		this.editor(function (oEditor) {
@@ -9934,9 +9958,10 @@ PopupsComposeViewModel.prototype.onShow = function (sType, oMessageOrArray, aToE
 		this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
 
 		sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
-		if (bSignatureToAll && '' !== sSignature && '' !== sText)
+		if (bSignatureToAll && '' !== sSignature)
 		{
-			sText = this.convertSignature(sSignature) + '<br />' + sText;
+			sText = this.convertSignature(sSignature, '',
+				Utils.convertPlainTextToHtml(sText), sComposeType);
 		}
 
 		this.editor(function (oEditor) {

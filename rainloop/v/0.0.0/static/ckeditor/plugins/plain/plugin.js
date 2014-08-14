@@ -14,7 +14,7 @@
 			
 			var sText = sHtml
 				.replace(/[\s]+/gm, ' ')
-				.replace(/<br\s?\/?>/gmi, '\n')
+				.replace(/<br[^>]*>/gmi, '\n')
 				.replace(/<\/h[\d]>/gi, '\n')
 				.replace(/<\/p>/gi, '\n\n')
 				.replace(/<\/li>/gi, '\n')

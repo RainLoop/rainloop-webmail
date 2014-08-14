@@ -1689,7 +1689,7 @@ Utils.htmlToPlain = function (sHtml)
 	sText = sHtml
 		.replace(/[\s]+/gm, ' ')
 		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
-		.replace(/<br\s?\/?>/gmi, '\n')
+		.replace(/<br[^>]*>/gmi, '\n')
 		.replace(/<\/h[\d]>/gi, '\n')
 		.replace(/<\/p>/gi, '\n\n')
 		.replace(/<\/li>/gi, '\n')
