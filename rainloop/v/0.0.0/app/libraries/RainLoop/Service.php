@@ -162,32 +162,18 @@ class Service
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
-			$aData = $this->startUpData($bAdmin);
+			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true))
 			{
-				$sCacheFileName = 'TMPL:'.$aData['Hash'];
+				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
-				$sJsBoot = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/boot.js');
-				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), array(
-					'{{BaseRandHash}}' => \md5(\rand(1000, 9000).\microtime(true)),
-					'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
-					'{{BaseAppFaviconIcoFile}}' => $aData['FaviconIcoLink'],
-					'{{BaseAppFaviconPngFile}}' => $aData['FaviconPngLink'],
-					'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
-					'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
-					'{{BaseAppBootScriptSource}}' => $sJsBoot,
-					'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
-					'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
-					'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-					'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-					'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
-				));
+				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
 				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
 				if (0 < \strlen($sCacheFileName))
@@ -204,6 +190,7 @@ class Service
 			$sResult .= ' [version:'.APP_VERSION;
 			$sResult .= '][time:'.\substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
+			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
 			$sResult .= '] -->';
 		}
@@ -217,26 +204,11 @@ class Service
 	}
 
 	/**
-	 * @param bool $bAppJsDebug
-	 * @param bool $bAdmin
-	 *
-	 * @return string
-	 */
-	private function generateIndexCacheHash($bAppJsDebug, $bAdmin)
-	{
-		return \md5(APP_WEB_PATH.
-			$this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop').
-			\md5($this->oActions->Config()->Get('cache', 'index', '')).
-			$this->oActions->Plugins()->Hash().
-			APP_VERSION.($bAppJsDebug ? 'd' : 'm').($bAdmin ? 'a' : 'w'));
-	}
-
-	/**
 	 * @param bool $bAdmin
 	 *
 	 * @return array
 	 */
-	private function startUpData($bAdmin)
+	private function indexTemplateParameters($bAdmin)
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
@@ -253,18 +225,46 @@ class Service
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
 		$sStaticPrefix = APP_WEB_STATIC_PATH;
-		return array(
+
+		$aData = array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,
-			'Hash' => $this->generateIndexCacheHash($bAppJsDebug, $bAdmin),
 			'LoadingDescription' => $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop'),
 			'FaviconIcoLink' => $sStaticPrefix.'favicon.ico',
 			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
+			'BootJsLink' => $sStaticPrefix.'js/boot.js',
 			'LibJsLink' => $sStaticPrefix.'js/libs.js',
 			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
+			'OpenPgpJsLink' => $sStaticPrefix.'js/openpgp.min.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js'
 		);
+
+		$aTemplateParameters =  array(
+			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
+			'{{BaseAppFaviconIcoFile}}' => $aData['FaviconIcoLink'],
+			'{{BaseAppFaviconPngFile}}' => $aData['FaviconPngLink'],
+			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
+			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
+			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
+			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
+			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
+			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
+			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
+			'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
+			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
+		);
+
+		$aTemplateParameters['{{BaseHash}}'] = \md5(
+			\implode('~', array(
+				\md5($this->oActions->Config()->Get('cache', 'index', '')),
+				$this->oActions->Plugins()->Hash(),
+				APP_WEB_PATH, APP_VERSION
+			)).
+			\implode('~', $aTemplateParameters)
+		);
+
+		return $aTemplateParameters;
 	}
 }

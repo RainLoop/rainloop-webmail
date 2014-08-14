@@ -1121,22 +1121,17 @@ RainLoopApp.prototype.bootstart = function ()
 
 			if (bValue)
 			{
-				if (window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
+				if (window.$LAB && window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
 				{
-					$.ajax({
-						'url': RL.link().openPgpJs(),
-						'dataType': 'script',
-						'cache': true,
-						'success': function () {
-							if (window.openpgp)
-							{
-								RL.data().openpgpKeyring = new window.openpgp.Keyring();
-								RL.data().capaOpenPGP(true);
+					window.$LAB.script(window.openpgp ? '' : RL.link().openPgpJs()).wait(function () {
+						if (window.openpgp)
+						{
+							RL.data().openpgpKeyring = new window.openpgp.Keyring();
+							RL.data().capaOpenPGP(true);
 
-								RL.pub('openpgp.init');
+							RL.pub('openpgp.init');
 
-								RL.reloadOpenPgpKeys();
-							}
+							RL.reloadOpenPgpKeys();
 						}
 					});
 				}

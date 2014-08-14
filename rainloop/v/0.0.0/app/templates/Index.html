@@ -24,9 +24,9 @@
 		<link rel="apple-touch-icon" href="{{BaseAppAppleTouchFile}}" type="image/png" />
 		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
-		<script type="text/javascript" data-cfasync="false">{{BaseAppBootScriptSource}}</script>
+		<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
 		<script type="text/javascript" data-cfasync="false">
-			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/{{BaseRandHash}}/');
+			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/' +  Math.random().toString().substr(2) + '/');
 		</script>
 		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {

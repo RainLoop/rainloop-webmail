@@ -137,8 +137,7 @@ class Api
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
 			$oStorageProvider = \RainLoop\Api::Actions()->StorageProvider();
-
-			if ($oStorageProvider)
+			if ($oStorageProvider && $oStorageProvider->IsActive())
 			{
 				// TwoFactor Auth User Data
 				$oStorageProvider->Clear(null,
@@ -157,12 +156,15 @@ class Api
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 					'contacts_sync'
 				);
-
 			}
 
 			\RainLoop\Api::Actions()->SettingsProvider()->ClearByEmail($sEmail);
 
-			\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContactsAndTags($sEmail);
+			if (\RainLoop\Api::Actions()->AddressBookProvider() &&
+				\RainLoop\Api::Actions()->AddressBookProvider()->IsActive())
+			{
+				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContactsAndTags($sEmail);
+			}
 
 			return true;
 		}
