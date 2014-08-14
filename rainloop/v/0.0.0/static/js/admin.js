@@ -209,9 +209,6 @@ Globals.oHtmlEditorDefaultConfig = {
 	'allowedContent': true,
 	'autoParagraph': false,
 
-	'enterMode': window.CKEDITOR.ENTER_BR,
-	'shiftEnterMode': window.CKEDITOR.ENTER_BR,
-
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
 	'fontSize_sizes': '10/10px;12/12px;13/13px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
@@ -9282,8 +9279,5 @@ window['__RLBOOT'] = function (fCall) {
 	});
 };
 
-if (window.SimplePace) {
-	window.SimplePace.add(10);
-}
 
 }(window, jQuery, ko, crossroads, hasher, _));

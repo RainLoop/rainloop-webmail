@@ -17,9 +17,9 @@ function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 
 	self.$element = $(oElement);
 
-	self.init();
-
 	self.resize = _.throttle(_.bind(self.resize, self), 100);
+	
+	self.init();
 }
 
 NewHtmlEditorWrapper.prototype.blurTrigger = function ()
@@ -150,60 +150,77 @@ NewHtmlEditorWrapper.prototype.init = function ()
 	{
 		var
 			self = this,
-			oConfig = Globals.oHtmlEditorDefaultConfig,
-			sLanguage = RL.settingsGet('Language'),
-			bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
+			fInit = function () {
+
+				var
+					oConfig = Globals.oHtmlEditorDefaultConfig,
+					sLanguage = RL.settingsGet('Language'),
+					bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
+				;
+
+				if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+				{
+					oConfig.toolbarGroups.__SourceInited = true;
+					oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+				}
+
+				oConfig.enterMode = window.CKEDITOR.ENTER_BR;
+				oConfig.shiftEnterMode = window.CKEDITOR.ENTER_BR;
+
+				oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
+				if (window.CKEDITOR.env)
+				{
+					window.CKEDITOR.env.isCompatible = true;
+				}
+
+				self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
+
+				self.editor.on('key', function(oEvent) {
+					if (oEvent && oEvent.data && 9 /* Tab */ === oEvent.data.keyCode)
+					{
+						return false;
+					}
+				});
+
+				self.editor.on('blur', function() {
+					self.blurTrigger();
+				});
+
+				self.editor.on('mode', function() {
+
+					self.blurTrigger();
+
+					if (self.fOnModeChange)
+					{
+						self.fOnModeChange('plain' !== self.editor.mode);
+					}
+				});
+
+				self.editor.on('focus', function() {
+					self.focusTrigger();
+				});
+
+				if (self.fOnReady)
+				{
+					self.editor.on('instanceReady', function () {
+
+						self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
+
+						self.fOnReady();
+						self.__resizable = true;
+						self.resize();
+					});
+				}
+			}
 		;
 
-		if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+		if (window.CKEDITOR)
 		{
-			oConfig.toolbarGroups.__SourceInited = true;
-			oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+			fInit();
 		}
-
-		oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
-		if (window.CKEDITOR.env)
+		else
 		{
-			window.CKEDITOR.env.isCompatible = true;
-		}
-		
-		self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
-
-		self.editor.on('key', function(oEvent) {
-			if (oEvent && oEvent.data && 9 /* Tab */ === oEvent.data.keyCode)
-			{
-				return false;
-			}
-		});
-
-		self.editor.on('blur', function() {
-			self.blurTrigger();
-		});
-
-		self.editor.on('mode', function() {
-			
-			self.blurTrigger();
-
-			if (self.fOnModeChange)
-			{
-				self.fOnModeChange('plain' !== self.editor.mode);
-			}
-		});
-
-		self.editor.on('focus', function() {
-			self.focusTrigger();
-		});
-
-		if (self.fOnReady)
-		{
-			self.editor.on('instanceReady', function () {
-
-				self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
-
-				self.fOnReady();
-				self.__resizable = true;
-				self.resize();
-			});
+			window.__initEditor = fInit;
 		}
 	}
 };

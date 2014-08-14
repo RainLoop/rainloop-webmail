@@ -12,10 +12,6 @@
 			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
 		<![endif]-->
 		<script type="text/javascript" data-cfasync="false">
-			function __fIncludeScr(sSrc) {
-				document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
-			}
-
 			if (!navigator || !navigator.cookieEnabled) {
 				document.location.replace('./?/NoCookie');
 			}
@@ -30,7 +26,7 @@
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
 		<script type="text/javascript" data-cfasync="false">{{BaseAppBootScriptSource}}</script>
 		<script type="text/javascript" data-cfasync="false">
-			__fIncludeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/{{BaseRandHash}}/');
+			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/{{BaseRandHash}}/');
 		</script>
 		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {
@@ -50,7 +46,7 @@
 		</div>
 		<script type="text/javascript" data-cfasync="false">
 			var oE = document.getElementById('rl-loading');
-			if (oE) {
+			if (oE && oE.style) {
 				oE.style.opacity = 0;
 				window.setTimeout(function () {
 					oE.style.opacity = 1;
@@ -58,7 +54,9 @@
 			}
 		</script>
 		<div id="rl-loading-error" class="thm-loading">
-			An Error occurred,<br />please refresh the page and try again.
+			An Error occurred,
+			<br />
+			please refresh the page and try again.
 		</div>
 		<div id="rl-content">
 			<div id="rl-popups"></div>
@@ -71,42 +69,44 @@
 		</div>
 		<div id="rl-templates"></div>
 		<div id="rl-hidden"></div>
-		<script type="text/javascript" src="{{BaseAppLibsScriptLink}}" data-cfasync="false"></script>
-		<script type="text/javascript" src="{{BaseAppEditorScriptLink}}" data-cfasync="false"></script>
 		<script type="text/javascript" data-cfasync="false">
-			if (window.rainloopAppData && window.rainloopAppData['TemplatesLink']) {
-				__fIncludeScr(window.rainloopAppData['TemplatesLink']);
-			}
-		</script>
-		<script type="text/javascript" data-cfasync="false">
-			if (window.rainloopAppData && window.rainloopAppData['LangLink']) {
-				__fIncludeScr(window.rainloopAppData['LangLink']);
-			}
-		</script>
-		<script type="text/javascript" src="{{BaseAppMainScriptLink}}" data-cfasync="false"></script>
-		<script type="text/javascript" data-cfasync="false">
-			if (window.rainloopAppData && window.rainloopAppData['PluginsLink']) {
-				__fIncludeScr(window.rainloopAppData['PluginsLink']);
-			}
-		</script>
-		<script type="text/javascript" data-cfasync="false">
-			function __showError() {
-				var oR = document.getElementById('rl-loading'),
-					oL = document.getElementById('rl-loading-error');
 
-				if (oR) {oR.style.display = 'none';}
-				if (oL) {oL.style.display = 'block';}
-				if (window.SimplePace) {window.SimplePace.set(100);}
+			if (window.$LAB && window.rainloopAppData && window.rainloopAppData['TemplatesLink'] && window.rainloopAppData['LangLink'])
+			{
+				__simplePace(10);
+
+				window.$LAB
+					.script('{{BaseAppLibsScriptLink}}')
+					.script(window.rainloopAppData['TemplatesLink'])
+					.script(window.rainloopAppData['LangLink'])
+					.wait(function () {
+						__simplePace(30);
+					})
+					.script('{{BaseAppMainScriptLink}}')
+					.wait(function () {
+						__simplePace(20);
+					})
+					.script(function () {
+						return window.rainloopAppData['PluginsLink'] || null;
+					})
+					.wait(function () {
+						__simplePace(5);
+						__runBoot(false);
+					})
+					.script('{{BaseAppEditorScriptLink}}')
+					.wait(function () {
+						if (window.CKEDITOR && window.__initEditor) {
+							window.__initEditor();
+							window.__initEditor = null;
+						}
+					})
+				;
 			}
-			if (window.__RLBOOT) {
-				window.__RLBOOT(function (bV) {
-					if (!bV) {
-						__showError();
-					}
-				});
-			} else {
-				__showError();
+			else
+			{
+				__runBoot(true);
 			}
+
 		</script>
 	</body>
 </html>

@@ -1,4 +1,4 @@
-/*! RainLoop Top Driver v1.0 (c) 2013 RainLoop Team; Licensed under MIT */
+/*! RainLoop Index Helper v1.1 (c) 2013 RainLoop Team; Licensed under MIT */
 (function (window, JSON) {
 
 	/**
@@ -51,14 +51,49 @@
 	window['__rlah'] = function () {
 		return window['_rlhh'] ? window['_rlhh']['getHash']() : null;
 	};
+	
 	window['__rlah_set'] = function () {
 		if (window['_rlhh']) {
 			window['_rlhh']['setHash']();
 		}
 	};
+
 	window['__rlah_clear'] = function () {
 		if (window['_rlhh']) {
 			window['_rlhh']['clearHash']();
 		}
 	};
+
+	// index function
+	window['__includeScr'] = function (sSrc) {
+		document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
+	};
+	
+	window['__showError'] = function () {
+		var oR = document.getElementById('rl-loading'),
+			oL = document.getElementById('rl-loading-error');
+
+		if (oR) {oR.style.display = 'none';}
+		if (oL) {oL.style.display = 'block';}
+		if (window.SimplePace) {window.SimplePace.set(100);}
+	};
+
+	window['__simplePace'] = function (nVal) {
+		if (window.SimplePace) {
+			window.SimplePace.add(nVal);
+		}
+	};
+
+	window['__runBoot'] = function (bWithError) {
+		if (window.__RLBOOT && !bWithError) {
+			window.__RLBOOT(function (bV) {
+				if (!bV) {
+					__showError();
+				}
+			});
+		} else {
+			__showError();
+		}
+	};
+	
 }(window, window.JSON));

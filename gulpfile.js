@@ -108,8 +108,9 @@ cfg.paths.js = {
 		name: 'boot.js',
 		src: [
 			'vendors/json2.min.js',
+			'vendors/labjs/LAB.min.js',
 			'vendors/simple-pace/simple-pace-1.0.min.js',
-			'vendors/rl/rl-1.0.min.js'
+			'vendors/rl/rl-1.1.min.js'
 		]
 	},
 	openpgp: {
@@ -159,8 +160,7 @@ cfg.paths.js = {
 			'vendors/keymaster/keymaster.js',
 			'vendors/ifvisible/ifvisible.min.js',
 			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
-			'vendors/bootstrap/js/bootstrap.min.js',
-			'dev/Common/_LibsEnd.js'
+			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},
 	app: {
@@ -266,8 +266,7 @@ cfg.paths.js = {
 			'dev/Boots/AbstractApp.js',
 			'dev/Boots/RainLoopApp.js',
 
-			'dev/Common/_End.js',
-			'dev/Common/_CoreEnd.js'
+			'dev/Common/_End.js'
 		]
 	},
 	admin: {
@@ -338,8 +337,7 @@ cfg.paths.js = {
 			'dev/Boots/AbstractApp.js',
 			'dev/Boots/AdminApp.js',
 
-			'dev/Common/_End.js',
-			'dev/Common/_CoreEnd.js'
+			'dev/Common/_End.js'
 		]
 	}
 };
@@ -467,10 +465,10 @@ regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js'
 	'/*! Inputosaurus Text v0.1.6 (c) 2013 Dan Kielp <dan@sproutsocial.com>; modified by RainLoop Team | MIT */\n');
 
 regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
-	'/*! RainLoop Simple Pace v1.0 (c) 2013 RainLoop Team; Licensed under MIT */\n');
+	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.0.min.js',
-	'/*! RainLoop Top Driver v1.0 (c) 2013 RainLoop Team; Licensed under MIT */\n');
+regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.1.min.js',
+	'/*! RainLoop Index Helper v1.1 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
 gulp.task('package-inc-release', function() {
 	fs.writeFileSync('package.json',
