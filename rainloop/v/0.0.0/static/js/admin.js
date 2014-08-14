@@ -2475,6 +2475,10 @@ Utils.htmlToPlain = function (sHtml)
 			return '';
 		},
 
+		convertPre = function () {
+			return (arguments && 1 < arguments.length) ? arguments[1].toString().replace(/[\n]/gm, '<br />') : '';
+		},
+
 		fixAttibuteValue = function () {
 			return (arguments && 1 < arguments.length) ?
 				'' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
@@ -2486,6 +2490,7 @@ Utils.htmlToPlain = function (sHtml)
 	;
 
 	sText = sHtml
+		.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 		.replace(/[\s]+/gm, ' ')
 		.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 		.replace(/<br[^>]*>/gmi, '\n')
