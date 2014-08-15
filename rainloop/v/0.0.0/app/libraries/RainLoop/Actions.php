@@ -5481,22 +5481,6 @@ class Actions
 	/**
 	 * @return array
 	 */
-	public function DoServicesPics()
-	{
-		$aData = \RainLoop\Utils::ServicesPics();
-		$aResult = array();
-
-		foreach ($aData as $sDomain => $sPic)
-		{
-			$aResult[$sDomain] = APP_WEB_STATIC_PATH.'services/'.$sPic;
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
-	}
-
-	/**
-	 * @return array
-	 */
 	private function messageSetFlag($sActionFunction, $sResponseFunction)
 	{
 		$this->initMailClientConnection();
@@ -6491,6 +6475,60 @@ class Actions
 	public function RawView()
 	{
 		return $this->rawSmart(false);
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function RawAvatar()
+	{
+		$sData = '';
+
+		$sRawKey = (string) $this->GetActionParam('RawKey', '');
+		$sRawKey = \urldecode($sRawKey);
+
+		$this->verifyCacheByKey($sRawKey);
+
+		if (0 < \strlen($sRawKey) && \preg_match('/^[^@]+@([^@]+)$/', $sRawKey))
+		{
+			$sEmail = \MailSo\Base\Utils::IdnToAscii($sRawKey, true);
+
+			$iCode = 0;
+			$sContentType = '';
+			
+			$sData = $this->Http()->GetUrlAsString('http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404',
+				null, $sContentType, $iCode, $this->Logger(), 5,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
+
+			$sContentType = \strtolower(\trim($sContentType));
+			if (200 !== $iCode || empty($sData) ||
+				!\in_array($sContentType, array('image/jpeg', 'image/jpg', 'image/png')))
+			{
+				$sData = '';
+
+				$aMatch = array();
+				if (\preg_match('/^[^@]+@([a-z0-9\-\.]+)$/', $sEmail, $aMatch) && !empty($aMatch[1]))
+				{
+					$sDomain = $aMatch[1];
+					if (\file_exists(APP_VERSION_ROOT_PATH.'app/resources/images/services/'.$sDomain.'.png'))
+					{
+						$sContentType = 'image/png';
+						$sData = \file_get_contents(APP_VERSION_ROOT_PATH.'app/resources/images/services/'.$sDomain.'.png');
+					}
+				}
+			}
+		}
+
+		if (empty($sData) || empty($sContentType))
+		{
+			$sContentType = 'image/png';
+			$sData = \file_get_contents(APP_VERSION_ROOT_PATH.'app/resources/images/empty-contact.png');
+		}
+		
+		$this->cacheByKey($sRawKey);
+		\header('Content-Type: '.$sContentType);
+		echo $sData;
+		return true;
 	}
 
 	/**

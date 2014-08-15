@@ -116,6 +116,16 @@ LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
 };
 
 /**
+ * @param {string} sEmail
+ * @return {string}
+ */
+LinkBuilder.prototype.avatarLink = function (sEmail)
+{
+	return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
+//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
+};
+
+/**
  * @return {string}
  */
 LinkBuilder.prototype.inbox = function ()

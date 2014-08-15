@@ -528,6 +528,11 @@ class Http
 	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
 		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array())
 	{
+		if (null === $sCustomUserAgent)
+		{
+			$sCustomUserAgent = 'MailSo Http User Agent (v1)';
+		}
+
 		if (!is_resource($rFile))
 		{
 			if ($oLogger)

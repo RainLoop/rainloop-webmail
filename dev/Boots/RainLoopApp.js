@@ -1186,17 +1186,6 @@ RainLoopApp.prototype.bootstart = function ()
 					RL.folderInformationMultiply(true);
 				}, 500);
 
-				_.delay(function () {
-
-					RL.remote().servicesPics(function (sResult, oData) {
-						if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-						{
-							RL.cache().setServicesData(oData.Result);
-						}
-					});
-
-				}, 2000);
-
 				Plugins.runHook('rl-start-user-screens');
 				RL.pub('rl.bootstart-user-screens');
 

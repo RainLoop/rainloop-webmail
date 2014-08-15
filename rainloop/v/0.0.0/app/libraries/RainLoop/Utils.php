@@ -305,66 +305,6 @@ class Utils
 		@\setcookie($sName, '', \time() - 3600 * 24 * 30, '/');
 	}
 
-	/**
-	 * @return array
-	 */
-	public static function ServicesPics()
-	{
-		return array(
-			'ebay.com'				=> 'ebay.jpg',
-			'reply.ebay.com'		=> 'ebay.jpg',
-			'reply1.ebay.com'		=> 'ebay.jpg',
-			'reply2.ebay.com'		=> 'ebay.jpg',
-			'reply3.ebay.com'		=> 'ebay.jpg',
-
-			'facebook.com'			=> 'facebook.png',
-			'facebookmail.com'		=> 'facebook.png',
-
-			'cnet.online.com'		=> 'cnet.jpg',
-			'github.com'			=> 'github.png',
-			'steampowered.com'		=> 'steam.png',
-			'myspace.com'			=> 'myspace.png',
-			'new.myspace.com'		=> 'myspace.png',
-			'youtube.com'			=> 'youtube.gif',
-			'amazon.com'			=> 'amazon.png',
-			'ted.com'				=> 'ted.png',
-			'google.com'			=> 'google.png',
-			'plus.google.com'		=> 'google-plus.png',
-
-			'email.microsoft.com'	=> 'microsoft.jpg',
-			'microsoftonline.com'	=> 'microsoft.jpg',
-			'microsoft.com'			=> 'microsoft.jpg',
-
-			'paypal.com'			=> 'paypal.jpg',
-			'intl.paypal.com'		=> 'paypal.jpg',
-			'e.paypal.com'			=> 'paypal.jpg',
-
-			'ea.com'					=> 'ea.png',
-			'em.ea.com'					=> 'ea.png',
-			'battlefieldheroes.com'		=> 'ea.png',
-
-			'battle.net'				=> 'battle.net.png',
-			'blizzard.com'				=> 'battle.net.png',
-			'email.blizzard.com'		=> 'battle.net.png',
-			'battlefieldheroes.com'		=> 'battle.net.png',
-
-			'twitter.com'				=> 'twitter.jpg',
-			'postmaster.twitter.com'	=> 'twitter.jpg',
-
-			'skype.com'			=> 'skype.png',
-			'email.skype.com'	=> 'skype.png',
-
-			'apple.com'			=> 'apple.jpg',
-			'id.apple.com'		=> 'apple.jpg',
-
-			'onlive.com'		=> 'onlive.png',
-			'news.onlive.com'	=> 'onlive.png',
-
-			'asana.com'			=> 'asana.png',
-			'connect.asana.com'	=> 'asana.png',
-		);
-	}
-
 	public static function CustomBaseConvert($sNumberInput, $sFromBaseInput = '0123456789', $sToBaseInput = '0123456789')
 	{
 		if ($sFromBaseInput === $sToBaseInput)

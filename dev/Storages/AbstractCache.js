@@ -5,7 +5,6 @@
  */
 function AbstractCacheStorage()
 {
-	this.oServices = {};
 	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
 
@@ -21,7 +20,7 @@ AbstractCacheStorage.prototype.bCapaGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
-	this.oServices = {};
+	this.bCapaGravatar = !!this.bCapaGravatar; // TODO
 };
 
 /**
@@ -31,30 +30,5 @@ AbstractCacheStorage.prototype.clear = function ()
 AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 {
 	sEmail = Utils.trim(sEmail);
-
-	var
-		sUrl = '',
-		sService = '',
-		sEmailLower = sEmail.toLowerCase()
-	;
-
-	sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
-	sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
-
-	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
-	{
-		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
-	}
-	else
-	{
-		fCallback(sUrl, sEmail);
-	}
-};
-
-/**
- * @param {Object} oData
- */
-AbstractCacheStorage.prototype.setServicesData = function (oData)
-{
-	this.oServices = oData;
+	fCallback(this.bCapaGravatar && '' !== sEmail ? RL.link().avatarLink(sEmail) : '', sEmail);
 };

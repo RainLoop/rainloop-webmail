@@ -4011,6 +4011,16 @@ LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
 };
 
 /**
+ * @param {string} sEmail
+ * @return {string}
+ */
+LinkBuilder.prototype.avatarLink = function (sEmail)
+{
+	return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
+//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
+};
+
+/**
  * @return {string}
  */
 LinkBuilder.prototype.inbox = function ()
@@ -18882,14 +18892,6 @@ WebMailAjaxRemoteStorage.prototype.suggestions = function (fCallback, sQuery, iP
 /**
  * @param {?Function} fCallback
  */
-WebMailAjaxRemoteStorage.prototype.servicesPics = function (fCallback)
-{
-	this.defaultRequest(fCallback, 'ServicesPics');
-};
-
-/**
- * @param {?Function} fCallback
- */
 WebMailAjaxRemoteStorage.prototype.facebookUser = function (fCallback)
 {
 	this.defaultRequest(fCallback, 'SocialFacebookUserInformation');
@@ -18951,7 +18953,6 @@ WebMailAjaxRemoteStorage.prototype.socialUsers = function (fCallback)
  */
 function AbstractCacheStorage()
 {
-	this.oServices = {};
 	this.bCapaGravatar = RL.capa(Enums.Capa.Gravatar);
 }
 
@@ -18967,7 +18968,7 @@ AbstractCacheStorage.prototype.bCapaGravatar = false;
 
 AbstractCacheStorage.prototype.clear = function ()
 {
-	this.oServices = {};
+	this.bCapaGravatar = !!this.bCapaGravatar; // TODO
 };
 
 /**
@@ -18977,32 +18978,7 @@ AbstractCacheStorage.prototype.clear = function ()
 AbstractCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 {
 	sEmail = Utils.trim(sEmail);
-
-	var
-		sUrl = '',
-		sService = '',
-		sEmailLower = sEmail.toLowerCase()
-	;
-
-	sService = sEmailLower.substr(sEmail.indexOf('@') + 1);
-	sUrl = '' !== sService && this.oServices[sService] ? this.oServices[sService] : '';
-
-	if (this.bCapaGravatar && '' === sUrl && '' !== sEmailLower)
-	{
-		fCallback('//secure.gravatar.com/avatar/' + Utils.md5(sEmailLower) + '.jpg?s=80&d=mm', sEmail);
-	}
-	else
-	{
-		fCallback(sUrl, sEmail);
-	}
-};
-
-/**
- * @param {Object} oData
- */
-AbstractCacheStorage.prototype.setServicesData = function (oData)
-{
-	this.oServices = oData;
+	fCallback(this.bCapaGravatar && '' !== sEmail ? RL.link().avatarLink(sEmail) : '', sEmail);
 };
 
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
@@ -21272,17 +21248,6 @@ RainLoopApp.prototype.bootstart = function ()
 				_.delay(function () {
 					RL.folderInformationMultiply(true);
 				}, 500);
-
-				_.delay(function () {
-
-					RL.remote().servicesPics(function (sResult, oData) {
-						if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-						{
-							RL.cache().setServicesData(oData.Result);
-						}
-					});
-
-				}, 2000);
 
 				Plugins.runHook('rl-start-user-screens');
 				RL.pub('rl.bootstart-user-screens');
