@@ -745,7 +745,7 @@ class ServiceActions
 			$oAccount = $this->oActions->GetAccountFromSignMeToken();
 			if ($oAccount)
 			{
-				$this->oActions->SetMailtoRequest(\MailSo\Base\Utils::StrToLowerIfAscii($sTo));
+				$this->oActions->SetMailtoRequest($sTo);
 			}
 		}
 

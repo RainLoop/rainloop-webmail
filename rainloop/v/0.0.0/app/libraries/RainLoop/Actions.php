@@ -797,7 +797,7 @@ class Actions
 		{
 			\RainLoop\Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
 				\RainLoop\Utils::EncodeKeyValues(array(
-					'Time' => microtime(true),
+					'Time' => \microtime(true),
 					'MailTo' => 'MailTo',
 					'To' => $sTo
 				)), 0, '/', null, null, true);
