@@ -197,6 +197,28 @@ class FetchResponse
 		return $sReturn;
 	}
 
+	private static function findFetchUidAndSize($aList)
+	{
+		$bUid = false;
+		$bSize = false;
+		if (is_array($aList))
+		{
+			foreach ($aList as $mItem)
+			{
+				if (\MailSo\Imap\Enumerations\FetchType::UID === $mItem)
+				{
+					$bUid = true;
+				}
+				else if (\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE === $mItem)
+				{
+					$bSize = true;
+				}
+			}
+		}
+
+		return $bUid && $bSize;
+	}
+
 	/**
 	 * @param \MailSo\Imap\Response $oImapResponse
 	 *
@@ -204,10 +226,28 @@ class FetchResponse
 	 */
 	public static function IsValidFetchImapResponse($oImapResponse)
 	{
-		return ($oImapResponse && true !== $oImapResponse->IsStatusResponse
+		return (
+			$oImapResponse
+			&& true !== $oImapResponse->IsStatusResponse
 			&& \MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& 3 < count($oImapResponse->ResponseList) && 'FETCH' === $oImapResponse->ResponseList[2]
-			&& is_array($oImapResponse->ResponseList[3]));
+			&& is_array($oImapResponse->ResponseList[3])
+		);
+	}
+	
+	/**
+	 * @param \MailSo\Imap\Response $oImapResponse
+	 *
+	 * @return bool
+	 */
+	public static function IsNotEmptyFetchImapResponse($oImapResponse)
+	{
+		return (
+			$oImapResponse
+			&& self::IsValidFetchImapResponse($oImapResponse)
+			&& isset($oImapResponse->ResponseList[3])
+			&& self::findFetchUidAndSize($oImapResponse->ResponseList[3])
+		);
 	}
 
 	/**

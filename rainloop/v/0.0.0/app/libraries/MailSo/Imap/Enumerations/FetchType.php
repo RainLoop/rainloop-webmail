@@ -79,6 +79,7 @@ class FetchType
 	{
 		$aReturn = array();
 		self::addHelper($aReturn, self::UID);
+		self::addHelper($aReturn, self::RFC822_SIZE);
 
 		foreach ($aFetchItems as $mFetchKey)
 		{
@@ -92,22 +93,20 @@ class FetchType
 					break;
 				case self::INDEX:
 				case self::UID:
+				case self::RFC822_SIZE:
 					break;
 				case self::ALL:
 					self::addHelper($aReturn, self::FLAGS);
 					self::addHelper($aReturn, self::INTERNALDATE);
-					self::addHelper($aReturn, self::RFC822_SIZE);
 					self::addHelper($aReturn, self::ENVELOPE);
 					break;
 				case self::FAST:
 					self::addHelper($aReturn, self::FLAGS);
 					self::addHelper($aReturn, self::INTERNALDATE);
-					self::addHelper($aReturn, self::RFC822_SIZE);
 					break;
 				case self::FULL:
 					self::addHelper($aReturn, self::FLAGS);
 					self::addHelper($aReturn, self::INTERNALDATE);
-					self::addHelper($aReturn, self::RFC822_SIZE);
 					self::addHelper($aReturn, self::ENVELOPE);
 					self::addHelper($aReturn, self::BODY);
 					break;

@@ -909,7 +909,17 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			if (FetchResponse::IsValidFetchImapResponse($oImapResponse))
 			{
-				$aReturn[] = FetchResponse::NewInstance($oImapResponse);
+				if (FetchResponse::IsNotEmptyFetchImapResponse($oImapResponse))
+				{
+					$aReturn[] = FetchResponse::NewInstance($oImapResponse);
+				}
+				else
+				{
+					if ($this->oLogger)
+					{
+						$this->oLogger->Write('Skipped Imap Response! ['.$oImapResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
+					}
+				}
 			}
 		}
 

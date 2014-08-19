@@ -64,4 +64,32 @@ class Response
 	{
 		return new self();
 	}
+
+	/**
+	 * @param string $aList
+	 * 
+	 * @return string
+	 */
+	private function recToLine($aList)
+	{
+		$aResult = array();
+		if (\is_array($aList))
+		{
+			foreach ($aList as $mItem)
+			{
+				$aResult[] = \is_array($mItem) ? '('.$this->recToLine($mItem).')' : (string) $mItem;
+			}
+		}
+
+		return \implode(' ', $aResult);
+	}
+	
+
+	/**
+	 * @return string
+	 */
+	public function ToLine()
+	{
+		return $this->recToLine($this->ResponseList);
+	}
 }
