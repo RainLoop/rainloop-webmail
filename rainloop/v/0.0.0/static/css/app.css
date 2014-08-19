@@ -6603,6 +6603,7 @@ html.no-rgba .modal {
   padding: 10px;
   padding-right: 0;
   /*font-family: arial, sans-serif;*/
+  white-space: pre-wrap;
   font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
   font-size: 13px;
   line-height: 16px;
@@ -8363,6 +8364,8 @@ html.rl-no-preview-pane .messageView.message-selected {
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain {
   padding: 15px;
+  white-space: pre-wrap;
+  font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 .messageView .b-content .messageItem .bodyText .b-text-part.plain pre {
   margin: 0px;
