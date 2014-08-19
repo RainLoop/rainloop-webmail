@@ -78,7 +78,6 @@ var
 
 	NotificationClass = window.Notification && window.Notification.requestPermission ? window.Notification : null
 ;
-
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 /*jshint onevar: false*/

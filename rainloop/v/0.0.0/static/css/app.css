@@ -9507,6 +9507,7 @@ html.rl-message-fullscreen .messageView .b-content .buttonFull {
 .b-settings-folders .list-table .folder-name {
   display: inline-block;
   word-break: break-all;
+  white-space: pre-wrap;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;

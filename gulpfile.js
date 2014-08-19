@@ -152,7 +152,7 @@ cfg.paths.js = {
 			'vendors/routes/signals.min.js',
 			'vendors/routes/hasher.min.js',
 			'vendors/routes/crossroads.min.js',
-			'vendors/knockout/knockout-3.1.0.js',
+			'vendors/knockout/knockout-3.2.0.js',
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
