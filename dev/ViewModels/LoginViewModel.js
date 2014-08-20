@@ -320,7 +320,7 @@ LoginViewModel.prototype.onBuild = function ()
 				'cache': true
 			}).done(function() {
 				self.bSendLanguage = true;
-				Utils.i18nToDoc();
+				Utils.i18nReload();
 				$.cookie('rllang', RL.data().language(), {'expires': 30});
 			}).always(function() {
 				self.langRequest(false);

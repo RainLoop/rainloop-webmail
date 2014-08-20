@@ -1,44 +1,54 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- */
-function LocalStorage()
-{
+(function (module) {
+
+	'use strict';
+
 	var
-		sStorages = [
-			LocalStorageDriver,
-			CookieDriver
-		],
-		NextStorageDriver = _.find(sStorages, function (NextStorageDriver) {
-			return NextStorageDriver.supported();
-		})
+		_ = require('./External/underscore.js'),
+		CookieDriver = require('./Storages/LocalStorages/CookieDriver.js'),
+		LocalStorageDriver = require('./Storages/LocalStorages/LocalStorageDriver.js')
 	;
 
-	if (NextStorageDriver)
+	/**
+	 * @constructor
+	 */
+	function LocalStorage()
 	{
-		NextStorageDriver = /** @type {?Function} */ NextStorageDriver;
-		this.oDriver = new NextStorageDriver();
+		var
+			NextStorageDriver = _.find([LocalStorageDriver, CookieDriver], function (NextStorageDriver) {
+				return NextStorageDriver.supported();
+			})
+		;
+
+		if (NextStorageDriver)
+		{
+			NextStorageDriver = /** @type {?Function} */ NextStorageDriver;
+			this.oDriver = new NextStorageDriver();
+		}
 	}
-}
 
-LocalStorage.prototype.oDriver = null;
+	LocalStorage.prototype.oDriver = null;
 
-/**
- * @param {number} iKey
- * @param {*} mData
- * @return {boolean}
- */
-LocalStorage.prototype.set = function (iKey, mData)
-{
-	return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
-};
+	/**
+	 * @param {number} iKey
+	 * @param {*} mData
+	 * @return {boolean}
+	 */
+	LocalStorage.prototype.set = function (iKey, mData)
+	{
+		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
+	};
 
-/**
- * @param {number} iKey
- * @return {*}
- */
-LocalStorage.prototype.get = function (iKey)
-{
-	return this.oDriver ? this.oDriver.get('p' + iKey) : null;
-};
+	/**
+	 * @param {number} iKey
+	 * @return {*}
+	 */
+	LocalStorage.prototype.get = function (iKey)
+	{
+		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
+	};
+
+	module.exports = LocalStorage;
+
+}(module));

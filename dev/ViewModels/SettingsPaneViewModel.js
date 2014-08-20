@@ -1,32 +1,48 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function SettingsPaneViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Right', 'SettingsPane');
+(function (module) {
 
-	Knoin.constructorEnd(this);
-}
+	'use strict';
 
-Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+	var
+		key = require('../External/key.js'),
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+	;
 
-SettingsPaneViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	key('esc', Enums.KeyState.Settings, function () {
-		self.backToMailBoxClick();
-	});
-};
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function SettingsPaneViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Right', 'SettingsPane');
 
-SettingsPaneViewModel.prototype.onShow = function ()
-{
-	RL.data().message(null);
-};
+		kn.constructorEnd(this);
+	}
 
-SettingsPaneViewModel.prototype.backToMailBoxClick = function ()
-{
-	kn.setHash(RL.link().inbox());
-};
+	Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+
+	SettingsPaneViewModel.prototype.onBuild = function ()
+	{
+		var self = this;
+		key('esc', Enums.KeyState.Settings, function () {
+			self.backToMailBoxClick();
+		});
+	};
+
+	SettingsPaneViewModel.prototype.onShow = function ()
+	{
+		RL.data().message(null); // TODO cjs
+	};
+
+	SettingsPaneViewModel.prototype.backToMailBoxClick = function ()
+	{
+		kn.setHash(RL.link().inbox()); // TODO cjs
+	};
+
+	module.exports = SettingsPaneViewModel;
+
+}(module));

@@ -1,171 +1,191 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractScreen
- */
-function MailBoxScreen()
-{
-	KnoinAbstractScreen.call(this, 'mailbox', [
-		MailBoxSystemDropDownViewModel,
-		MailBoxFolderListViewModel,
-		MailBoxMessageListViewModel,
-		MailBoxMessageViewViewModel
-	]);
+(function (module) {
 
-	this.oLastRoute = {};
-}
+	'use strict';
 
-_.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
-
-/**
- * @type {Object}
- */
-MailBoxScreen.prototype.oLastRoute = {};
-
-MailBoxScreen.prototype.setNewTitle  = function ()
-{
 	var
-		sEmail = RL.data().accountEmail(),
-		ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount()
+		_ = require('./External/underscore.js'),
+		$html = require('./External/$html.js'),
+		Enums = require('./Common/Enums.js'),
+		Utils = require('./Common/Utils.js'),
+		KnoinAbstractScreen = require('./Knoin/KnoinAbstractScreen.js'),
+		MailBoxSystemDropDownViewModel = require('./ViewModels/MailBoxSystemDropDownViewModel.js'),
+		MailBoxFolderListViewModel = require('./ViewModels/MailBoxFolderListViewModel.js'),
+		MailBoxMessageListViewModel = require('./ViewModels/MailBoxMessageListViewModel.js'),
+		MailBoxMessageViewViewModel = require('./ViewModels/MailBoxMessageViewViewModel.js')
 	;
 
-	RL.setTitle(('' === sEmail ? '' :
-		(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
-};
-
-MailBoxScreen.prototype.onShow = function ()
-{
-	this.setNewTitle();
-	RL.data().keyScope(Enums.KeyState.MessageList);
-};
-
-/**
- * @param {string} sFolderHash
- * @param {number} iPage
- * @param {string} sSearch
- * @param {boolean=} bPreview = false
- */
-MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
-{
-	if (Utils.isUnd(bPreview) ? false : !!bPreview)
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractScreen
+	 */
+	function MailBoxScreen()
 	{
-		if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())
-		{
-			RL.historyBack();
-		}
+		KnoinAbstractScreen.call(this, 'mailbox', [
+			MailBoxSystemDropDownViewModel,
+			MailBoxFolderListViewModel,
+			MailBoxMessageListViewModel,
+			MailBoxMessageViewViewModel
+		]);
+
+		this.oLastRoute = {};
 	}
-	else
+
+	_.extend(MailBoxScreen.prototype, KnoinAbstractScreen.prototype);
+
+	/**
+	 * @type {Object}
+	 */
+	MailBoxScreen.prototype.oLastRoute = {};
+
+	MailBoxScreen.prototype.setNewTitle  = function ()
 	{
 		var
-			oData = RL.data(),
-			sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),
-			oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)
+			sEmail = RL.data().accountEmail(), // TODO cjs
+			ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount() // TODO cjs
 		;
+ // TODO cjs
+		RL.setTitle(('' === sEmail ? '' :
+			(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+	};
 
-		if (oFolder)
+	MailBoxScreen.prototype.onShow = function ()
+	{
+		this.setNewTitle();
+		RL.data().keyScope(Enums.KeyState.MessageList);// TODO cjs
+	};
+
+	/**
+	 * @param {string} sFolderHash
+	 * @param {number} iPage
+	 * @param {string} sSearch
+	 * @param {boolean=} bPreview = false
+	 */
+	MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
+	{
+		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
-			oData
-				.currentFolder(oFolder)
-				.messageListPage(iPage)
-				.messageListSearch(sSearch)
+			if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())// TODO cjs
+			{
+				RL.historyBack();// TODO cjs
+			}
+		}
+		else
+		{
+			var
+				oData = RL.data(),// TODO cjs
+				sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),// TODO cjs
+				oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)// TODO cjs
 			;
 
-			if (Enums.Layout.NoPreview === oData.layout() && oData.message())
+			if (oFolder)
 			{
-				oData.message(null);
+				oData
+					.currentFolder(oFolder)
+					.messageListPage(iPage)
+					.messageListSearch(sSearch)
+				;
+
+				if (Enums.Layout.NoPreview === oData.layout() && oData.message())
+				{
+					oData.message(null);
+				}
+
+				RL.reloadMessageList();// TODO cjs
 			}
-
-			RL.reloadMessageList();
 		}
-	}
-};
+	};
 
-MailBoxScreen.prototype.onStart = function ()
-{
-	var
-		oData = RL.data(),
-		fResizeFunction = function () {
-			Utils.windowResize();
-		}
-	;
-
-	if (RL.capa(Enums.Capa.AdditionalAccounts) || RL.capa(Enums.Capa.AdditionalIdentities))
+	MailBoxScreen.prototype.onStart = function ()
 	{
-		RL.accountsAndIdentities();
-	}
+		var
+			oData = RL.data(),// TODO cjs
+			fResizeFunction = function () {
+				Utils.windowResize();
+			}
+		;
 
-	_.delay(function () {
-		if ('INBOX' !== oData.currentFolderFullNameRaw())
+		if (RL.capa(Enums.Capa.AdditionalAccounts) || RL.capa(Enums.Capa.AdditionalIdentities))// TODO cjs
 		{
-			RL.folderInformation('INBOX');
+			RL.accountsAndIdentities();// TODO cjs
 		}
-	}, 1000);
 
-	_.delay(function () {
-		RL.quota();
-	}, 5000);
-
-	_.delay(function () {
-		RL.remote().appDelayStart(Utils.emptyFunction);
-	}, 35000);
-
-	$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());
-
-	oData.folderList.subscribe(fResizeFunction);
-	oData.messageList.subscribe(fResizeFunction);
-	oData.message.subscribe(fResizeFunction);
-
-	oData.layout.subscribe(function (nValue) {
-		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
-	});
-
-	oData.foldersInboxUnreadCount.subscribe(function () {
-		this.setNewTitle();
-	}, this);
-};
-
-/**
- * @return {Array}
- */
-MailBoxScreen.prototype.routes = function ()
-{
-	var
-		fNormP = function () {
-			return ['Inbox', 1, '', true];
-		},
-		fNormS = function (oRequest, oVals) {
-			oVals[0] = Utils.pString(oVals[0]);
-			oVals[1] = Utils.pInt(oVals[1]);
-			oVals[1] = 0 >= oVals[1] ? 1 : oVals[1];
-			oVals[2] = Utils.pString(oVals[2]);
-
-			if ('' === oRequest)
+		_.delay(function () {
+			if ('INBOX' !== oData.currentFolderFullNameRaw())
 			{
-				oVals[0] = 'Inbox';
-				oVals[1] = 1;
+				RL.folderInformation('INBOX');// TODO cjs
 			}
+		}, 1000);
 
-			return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2]), false];
-		},
-		fNormD = function (oRequest, oVals) {
-			oVals[0] = Utils.pString(oVals[0]);
-			oVals[1] = Utils.pString(oVals[1]);
+		_.delay(function () {
+			RL.quota();// TODO cjs
+		}, 5000);
 
-			if ('' === oRequest)
-			{
-				oVals[0] = 'Inbox';
+		_.delay(function () {
+			RL.remote().appDelayStart(Utils.emptyFunction);// TODO cjs
+		}, 35000);
+
+		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());
+
+		oData.folderList.subscribe(fResizeFunction);
+		oData.messageList.subscribe(fResizeFunction);
+		oData.message.subscribe(fResizeFunction);
+
+		oData.layout.subscribe(function (nValue) {
+			$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+		});
+
+		oData.foldersInboxUnreadCount.subscribe(function () {
+			this.setNewTitle();
+		}, this);
+	};
+
+	/**
+	 * @return {Array}
+	 */
+	MailBoxScreen.prototype.routes = function ()
+	{
+		var
+			fNormP = function () {
+				return ['Inbox', 1, '', true];
+			},
+			fNormS = function (oRequest, oVals) {
+				oVals[0] = Utils.pString(oVals[0]);
+				oVals[1] = Utils.pInt(oVals[1]);
+				oVals[1] = 0 >= oVals[1] ? 1 : oVals[1];
+				oVals[2] = Utils.pString(oVals[2]);
+
+				if ('' === oRequest)
+				{
+					oVals[0] = 'Inbox';
+					oVals[1] = 1;
+				}
+
+				return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2]), false];
+			},
+			fNormD = function (oRequest, oVals) {
+				oVals[0] = Utils.pString(oVals[0]);
+				oVals[1] = Utils.pString(oVals[1]);
+
+				if ('' === oRequest)
+				{
+					oVals[0] = 'Inbox';
+				}
+
+				return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];
 			}
+		;
 
-			return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];
-		}
-	;
+		return [
+			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+			[/^message-preview$/,  {'normalize_': fNormP}],
+			[/^([^\/]*)$/,  {'normalize_': fNormS}]
+		];
+	};
 
-	return [
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
-		[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
-		[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
-		[/^message-preview$/,  {'normalize_': fNormP}],
-		[/^([^\/]*)$/,  {'normalize_': fNormS}]
-	];
-};
+	module.exports = MailBoxScreen;
+
+}(module));

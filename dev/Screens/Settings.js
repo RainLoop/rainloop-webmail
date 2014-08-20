@@ -1,28 +1,46 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends AbstractSettings
- */
-function SettingsScreen()
-{
-	AbstractSettings.call(this, [
-		SettingsSystemDropDownViewModel,
-		SettingsMenuViewModel,
-		SettingsPaneViewModel
-	]);
+(function (module) {
 
-	Utils.initOnStartOrLangChange(function () {
-		this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
-	}, this, function () {
-		RL.setTitle(this.sSettingsTitle);
-	});
-}
+	'use strict';
 
-_.extend(SettingsScreen.prototype, AbstractSettings.prototype);
+	var
+		_ = require('./External/underscore.js'),
+		Enums = require('./Common/Enums.js'),
+		Utils = require('./Common/Utils.js'),
+		AbstractSettings = require('./Screens/AbstractSettings.js'),
+		SettingsSystemDropDownViewModel = require('./ViewModels/SettingsSystemDropDownViewModel.js'),
+		SettingsMenuViewModel = require('./ViewModels/SettingsMenuViewModel.js'),
+		SettingsPaneViewModel = require('./ViewModels/SettingsPaneViewModel.js')
+	;
 
-SettingsScreen.prototype.onShow = function ()
-{
-	RL.setTitle(this.sSettingsTitle);
-	RL.data().keyScope(Enums.KeyState.Settings);
-};
+	/**
+	 * @constructor
+	 * @extends AbstractSettings
+	 */
+	function SettingsScreen()
+	{
+		AbstractSettings.call(this, [
+			SettingsSystemDropDownViewModel,
+			SettingsMenuViewModel,
+			SettingsPaneViewModel
+		]);
+
+		Utils.initOnStartOrLangChange(function () {
+			this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
+		}, this, function () {
+			RL.setTitle(this.sSettingsTitle); // TODO cjs
+		});
+	}
+
+	_.extend(SettingsScreen.prototype, AbstractSettings.prototype);
+
+	SettingsScreen.prototype.onShow = function ()
+	{
+		RL.setTitle(this.sSettingsTitle); // TODO cjs
+		RL.data().keyScope(Enums.KeyState.Settings); // TODO cjs
+	};
+
+	module.exports = SettingsScreen;
+
+}(module));

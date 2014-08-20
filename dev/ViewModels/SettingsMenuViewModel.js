@@ -1,30 +1,44 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @param {?} oScreen
- * 
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function SettingsMenuViewModel(oScreen)
-{
-	KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
+(function (module) {
 
-	this.leftPanelDisabled = RL.data().leftPanelDisabled;
+	'use strict';
 
-	this.menu = oScreen.menu;
+	var
+		Utils = require('../Common/Utils.js'),
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+	;
 
-	Knoin.constructorEnd(this);
-}
+	/**
+	 * @param {?} oScreen
+	 *
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function SettingsMenuViewModel(oScreen)
+	{
+		KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
-Utils.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
+		this.leftPanelDisabled = RL.data().leftPanelDisabled; // TODO cjs
 
-SettingsMenuViewModel.prototype.link = function (sRoute)
-{
-	return RL.link().settings(sRoute);
-};
+		this.menu = oScreen.menu;
 
-SettingsMenuViewModel.prototype.backToMailBoxClick = function ()
-{
-	kn.setHash(RL.link().inbox());
-};
+		kn.constructorEnd(this);
+	}
+
+	Utils.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
+
+	SettingsMenuViewModel.prototype.link = function (sRoute)
+	{
+		return RL.link().settings(sRoute);// TODO cjs
+	};
+
+	SettingsMenuViewModel.prototype.backToMailBoxClick = function ()
+	{
+		kn.setHash(RL.link().inbox()); // TODO cjs
+	};
+
+	module.exports = SettingsMenuViewModel;
+
+}(module));

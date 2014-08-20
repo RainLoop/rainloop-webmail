@@ -608,3 +608,18 @@ gulp.task('b', ['rainloop']);
 gulp.task('b+', ['rainloop+']);
 
 gulp.task('own', ['owncloud']);
+
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+
+gulp.task('bro', function() {
+    return browserify({
+			'basedir': './dev/',
+			'detectGlobals': false,
+			'debug': false
+		})
+		.add('./RainLoopBoot.js')
+		.bundle()
+        .pipe(source('bro.js'))
+        .pipe(gulp.dest(cfg.paths.staticJS));
+});

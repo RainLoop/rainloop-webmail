@@ -1,302 +1,320 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends AbstractApp
- */
-function AdminApp()
-{
-	AbstractApp.call(this);
+(function (module) {
 
-	this.oData = null;
-	this.oRemote = null;
-	this.oCache = null;
-}
+	'use strict';
 
-_.extend(AdminApp.prototype, AbstractApp.prototype);
+	var
+		ko = require('../External/ko.js'),
+		_ = require('../External/underscore.js'),
+		window = require('../External/window.js'),
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		kn = require('../Knoin/Knoin.js'),
+		AbstractApp = require('./AbstractApp.js')
+	;
 
-AdminApp.prototype.oData = null;
-AdminApp.prototype.oRemote = null;
-AdminApp.prototype.oCache = null;
-
-/**
- * @return {AdminDataStorage}
- */
-AdminApp.prototype.data = function ()
-{
-	if (null === this.oData)
+	/**
+	 * @constructor
+	 * @extends AbstractApp
+	 */
+	function AdminApp()
 	{
-		this.oData = new AdminDataStorage();
+		AbstractApp.call(this);
+
+		this.oData = null;
+		this.oRemote = null;
+		this.oCache = null;
 	}
 
-	return this.oData;
-};
+	_.extend(AdminApp.prototype, AbstractApp.prototype);
 
-/**
- * @return {AdminAjaxRemoteStorage}
- */
-AdminApp.prototype.remote = function ()
-{
-	if (null === this.oRemote)
+	AdminApp.prototype.oData = null;
+	AdminApp.prototype.oRemote = null;
+	AdminApp.prototype.oCache = null;
+
+	/**
+	 * @return {AdminDataStorage}
+	 */
+	AdminApp.prototype.data = function ()
 	{
-		this.oRemote = new AdminAjaxRemoteStorage();
-	}
-
-	return this.oRemote;
-};
-
-/**
- * @return {AdminCacheStorage}
- */
-AdminApp.prototype.cache = function ()
-{
-	if (null === this.oCache)
-	{
-		this.oCache = new AdminCacheStorage();
-	}
-
-	return this.oCache;
-};
-
-AdminApp.prototype.reloadDomainList = function ()
-{
-	RL.data().domainsLoading(true);
-	RL.remote().domainList(function (sResult, oData) {
-		RL.data().domainsLoading(false);
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		if (null === this.oData)
 		{
-			var aList = _.map(oData.Result, function (bEnabled, sName) {
-				return {
-					'name': sName,
-					'disabled': ko.observable(!bEnabled),
-					'deleteAccess': ko.observable(false)
-				};
-			}, this);
-
-			RL.data().domains(aList);
+			this.oData = new AdminDataStorage(); // TODO cjs
 		}
-	});
-};
 
-AdminApp.prototype.reloadPluginList = function ()
-{
-	RL.data().pluginsLoading(true);
-	RL.remote().pluginList(function (sResult, oData) {
-		RL.data().pluginsLoading(false);
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		return this.oData;
+	};
+
+	/**
+	 * @return {AdminAjaxRemoteStorage}
+	 */
+	AdminApp.prototype.remote = function ()
+	{
+		if (null === this.oRemote)
 		{
-			var aList = _.map(oData.Result, function (oItem) {
-				return {
-					'name': oItem['Name'],
-					'disabled': ko.observable(!oItem['Enabled']),
-					'configured': ko.observable(!!oItem['Configured'])
-				};
-			}, this);
-
-			RL.data().plugins(aList);
+			this.oRemote = new AdminAjaxRemoteStorage(); // TODO cjs
 		}
-	});
-};
 
-AdminApp.prototype.reloadPackagesList = function ()
-{
-	RL.data().packagesLoading(true);
-	RL.data().packagesReal(true);
+		return this.oRemote;
+	};
 
-	RL.remote().packagesList(function (sResult, oData) {
-
-		RL.data().packagesLoading(false);
-
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	/**
+	 * @return {AdminCacheStorage}
+	 */
+	AdminApp.prototype.cache = function ()
+	{
+		if (null === this.oCache)
 		{
-			RL.data().packagesReal(!!oData.Result.Real);
-			RL.data().packagesMainUpdatable(!!oData.Result.MainUpdatable);
+			this.oCache = new AdminCacheStorage(); // TODO cjs
+		}
 
-			var
-				aList = [],
-				aLoading = {}
-			;
+		return this.oCache;
+	};
 
-			_.each(RL.data().packages(), function (oItem) {
-				if (oItem && oItem['loading']())
-				{
-					aLoading[oItem['file']] = oItem;
-				}
-			});
-
-			if (Utils.isArray(oData.Result.List))
+	AdminApp.prototype.reloadDomainList = function ()
+	{
+		// TODO cjs
+		RL.data().domainsLoading(true);
+		RL.remote().domainList(function (sResult, oData) {
+			RL.data().domainsLoading(false);
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				aList = _.compact(_.map(oData.Result.List, function (oItem) {
-					if (oItem)
-					{
-						oItem['loading'] = ko.observable(!Utils.isUnd(aLoading[oItem['file']]));
-						return 'core' === oItem['type'] && !oItem['canBeInstalled'] ? null : oItem;
-					}
-					return null;
-				}));
+				var aList = _.map(oData.Result, function (bEnabled, sName) {
+					return {
+						'name': sName,
+						'disabled': ko.observable(!bEnabled),
+						'deleteAccess': ko.observable(false)
+					};
+				}, this);
+
+				RL.data().domains(aList);
 			}
+		});
+	};
 
-			RL.data().packages(aList);
-		}
-		else
-		{
-			RL.data().packagesReal(false);
-		}
-	});
-};
+	AdminApp.prototype.reloadPluginList = function ()
+	{
+		// TODO cjs
+		RL.data().pluginsLoading(true);
+		RL.remote().pluginList(function (sResult, oData) {
+			RL.data().pluginsLoading(false);
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			{
+				var aList = _.map(oData.Result, function (oItem) {
+					return {
+						'name': oItem['Name'],
+						'disabled': ko.observable(!oItem['Enabled']),
+						'configured': ko.observable(!!oItem['Configured'])
+					};
+				}, this);
 
-AdminApp.prototype.updateCoreData = function ()
-{
-	var oRainData = RL.data();
+				RL.data().plugins(aList);
+			}
+		});
+	};
 
-	oRainData.coreUpdating(true);
-	RL.remote().updateCoreData(function (sResult, oData) {
+	AdminApp.prototype.reloadPackagesList = function ()
+	{
+		// TODO cjs
+		RL.data().packagesLoading(true);
+		RL.data().packagesReal(true);
 
-		oRainData.coreUpdating(false);
-		oRainData.coreRemoteVersion('');
-		oRainData.coreRemoteRelease('');
-		oRainData.coreVersionCompare(-2);
+		RL.remote().packagesList(function (sResult, oData) {
 
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			oRainData.coreReal(true);
-			window.location.reload();
-		}
-		else
-		{
-			oRainData.coreReal(false);
-		}
-	});
+			RL.data().packagesLoading(false);
 
-};
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			{
+				RL.data().packagesReal(!!oData.Result.Real);
+				RL.data().packagesMainUpdatable(!!oData.Result.MainUpdatable);
 
-AdminApp.prototype.reloadCoreData = function ()
-{
-	var oRainData = RL.data();
+				var
+					aList = [],
+					aLoading = {}
+				;
 
-	oRainData.coreChecking(true);
-	oRainData.coreReal(true);
+				_.each(RL.data().packages(), function (oItem) {
+					if (oItem && oItem['loading']())
+					{
+						aLoading[oItem['file']] = oItem;
+					}
+				});
 
-	RL.remote().coreData(function (sResult, oData) {
+				if (Utils.isArray(oData.Result.List))
+				{
+					aList = _.compact(_.map(oData.Result.List, function (oItem) {
+						if (oItem)
+						{
+							oItem['loading'] = ko.observable(!Utils.isUnd(aLoading[oItem['file']]));
+							return 'core' === oItem['type'] && !oItem['canBeInstalled'] ? null : oItem;
+						}
+						return null;
+					}));
+				}
 
-		oRainData.coreChecking(false);
+				RL.data().packages(aList);
+			}
+			else
+			{
+				RL.data().packagesReal(false);
+			}
+		});
+	};
 
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			oRainData.coreReal(!!oData.Result.Real);
-			oRainData.coreUpdatable(!!oData.Result.Updatable);
-			oRainData.coreAccess(!!oData.Result.Access);
-			oRainData.coreRemoteVersion(oData.Result.RemoteVersion || '');
-			oRainData.coreRemoteRelease(oData.Result.RemoteRelease || '');
-			oRainData.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
-		}
-		else
-		{
-			oRainData.coreReal(false);
+	AdminApp.prototype.updateCoreData = function ()
+	{
+		// TODO cjs
+		var oRainData = RL.data();
+
+		oRainData.coreUpdating(true);
+		RL.remote().updateCoreData(function (sResult, oData) {
+
+			oRainData.coreUpdating(false);
 			oRainData.coreRemoteVersion('');
 			oRainData.coreRemoteRelease('');
 			oRainData.coreVersionCompare(-2);
-		}
-	});
-};
 
-/**
- *
- * @param {boolean=} bForce = false
- */
-AdminApp.prototype.reloadLicensing = function (bForce)
-{
-	bForce = Utils.isUnd(bForce) ? false : !!bForce;
-
-	RL.data().licensingProcess(true);
-	RL.data().licenseError('');
-
-	RL.remote().licensing(function (sResult, oData) {
-		RL.data().licensingProcess(false);
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isNormal(oData.Result['Expired']))
-		{
-			RL.data().licenseValid(true);
-			RL.data().licenseExpired(Utils.pInt(oData.Result['Expired']));
-			RL.data().licenseError('');
-
-			RL.data().licensing(true);
-		}
-		else
-		{
-			if (oData && oData.ErrorCode && -1 < Utils.inArray(Utils.pInt(oData.ErrorCode), [
-				Enums.Notification.LicensingServerIsUnavailable,
-				Enums.Notification.LicensingExpired
-			]))
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				RL.data().licenseError(Utils.getNotification(Utils.pInt(oData.ErrorCode)));
+				oRainData.coreReal(true);
+				window.location.reload();
+			}
+			else
+			{
+				oRainData.coreReal(false);
+			}
+		});
+
+	};
+
+	AdminApp.prototype.reloadCoreData = function ()
+	{
+		var oRainData = RL.data();
+
+		oRainData.coreChecking(true);
+		oRainData.coreReal(true);
+
+		RL.remote().coreData(function (sResult, oData) {
+
+			oRainData.coreChecking(false);
+
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			{
+				oRainData.coreReal(!!oData.Result.Real);
+				oRainData.coreUpdatable(!!oData.Result.Updatable);
+				oRainData.coreAccess(!!oData.Result.Access);
+				oRainData.coreRemoteVersion(oData.Result.RemoteVersion || '');
+				oRainData.coreRemoteRelease(oData.Result.RemoteRelease || '');
+				oRainData.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
+			}
+			else
+			{
+				oRainData.coreReal(false);
+				oRainData.coreRemoteVersion('');
+				oRainData.coreRemoteRelease('');
+				oRainData.coreVersionCompare(-2);
+			}
+		});
+	};
+
+	/**
+	 *
+	 * @param {boolean=} bForce = false
+	 */
+	AdminApp.prototype.reloadLicensing = function (bForce)
+	{
+		bForce = Utils.isUnd(bForce) ? false : !!bForce;
+
+		// TODO cjs
+		RL.data().licensingProcess(true);
+		RL.data().licenseError('');
+
+		RL.remote().licensing(function (sResult, oData) {
+			RL.data().licensingProcess(false);
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isNormal(oData.Result['Expired']))
+			{
+				RL.data().licenseValid(true);
+				RL.data().licenseExpired(Utils.pInt(oData.Result['Expired']));
+				RL.data().licenseError('');
+
 				RL.data().licensing(true);
 			}
 			else
 			{
-				if (Enums.StorageResultType.Abort === sResult)
+				if (oData && oData.ErrorCode && -1 < Utils.inArray(Utils.pInt(oData.ErrorCode), [
+					Enums.Notification.LicensingServerIsUnavailable,
+					Enums.Notification.LicensingExpired
+				]))
 				{
-					RL.data().licenseError(Utils.getNotification(Enums.Notification.LicensingServerIsUnavailable));
+					RL.data().licenseError(Utils.getNotification(Utils.pInt(oData.ErrorCode)));
 					RL.data().licensing(true);
 				}
 				else
 				{
-					RL.data().licensing(false);
+					if (Enums.StorageResultType.Abort === sResult)
+					{
+						RL.data().licenseError(Utils.getNotification(Enums.Notification.LicensingServerIsUnavailable));
+						RL.data().licensing(true);
+					}
+					else
+					{
+						RL.data().licensing(false);
+					}
 				}
 			}
-		}
-	}, bForce);
-};
+		}, bForce);
+	};
 
-AdminApp.prototype.bootstart = function ()
-{
-	AbstractApp.prototype.bootstart.call(this);
-
-	RL.data().populateDataOnStart();
-
-	kn.hideLoading();
-
-	if (!RL.settingsGet('AllowAdminPanel'))
+	AdminApp.prototype.bootstart = function ()
 	{
-		kn.routeOff();
-		kn.setHash(RL.link().root(), true);
-		kn.routeOff();
+		AbstractApp.prototype.bootstart.call(this);
 
-		_.defer(function () {
-			window.location.href = '/';
-		});
-	}
-	else
-	{
-//		Utils.removeSettingsViewModel(AdminAbout);
+		RL.data().populateDataOnStart();
 
-		if (!RL.capa(Enums.Capa.Prem))
+		kn.hideLoading();
+
+		if (!RL.settingsGet('AllowAdminPanel'))
 		{
-			Utils.removeSettingsViewModel(AdminBranding);
-		}
+			kn.routeOff();
+			kn.setHash(RL.link().root(), true);
+			kn.routeOff();
 
-		if (!!RL.settingsGet('Auth'))
-		{
-// TODO
-//			if (!RL.settingsGet('AllowPackages') && AdminPackages)
-//			{
-//				Utils.disableSettingsViewModel(AdminPackages);
-//			}
-
-			kn.startScreens([AdminSettingsScreen]);
+			_.defer(function () {
+				window.location.href = '/';
+			});
 		}
 		else
 		{
-			kn.startScreens([AdminLoginScreen]);
+	//		Utils.removeSettingsViewModel(AdminAbout);
+
+			if (!RL.capa(Enums.Capa.Prem))
+			{
+				Utils.removeSettingsViewModel(AdminBranding);
+			}
+
+			if (!!RL.settingsGet('Auth'))
+			{
+	// TODO
+	//			if (!RL.settingsGet('AllowPackages') && AdminPackages)
+	//			{
+	//				Utils.disableSettingsViewModel(AdminPackages);
+	//			}
+
+				kn.startScreens([AdminSettingsScreen]);
+			}
+			else
+			{
+				kn.startScreens([AdminLoginScreen]);
+			}
 		}
-	}
 
-	if (window.SimplePace)
-	{
-		window.SimplePace.set(100);
-	}
-};
+		if (window.SimplePace)
+		{
+			window.SimplePace.set(100);
+		}
+	};
 
-/**
- * @type {AdminApp}
- */
-RL = new AdminApp();
+	module.exports = new AdminApp();
+
+}(module));

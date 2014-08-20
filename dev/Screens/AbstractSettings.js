@@ -1,181 +1,199 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @param {Array} aViewModels
- * @constructor
- * @extends KnoinAbstractScreen
- */
-function AbstractSettings(aViewModels)
-{
-	KnoinAbstractScreen.call(this, 'settings', aViewModels);
-	
-	this.menu = ko.observableArray([]);
+(function (module) {
 
-	this.oCurrentSubScreen = null;
-	this.oViewModelPlace = null;
-}
+	'use strict';
 
-_.extend(AbstractSettings.prototype, KnoinAbstractScreen.prototype);
-
-AbstractSettings.prototype.onRoute = function (sSubName)
-{
 	var
-		self = this,
-		oSettingsScreen = null,
-		RoutedSettingsViewModel = null,
-		oViewModelPlace = null,
-		oViewModelDom = null
+		$ = require('./External/jquery.js'),
+		_ = require('./External/underscore.js'),
+		ko = require('./External/ko.js'),
+		Globals = require('./Common/Globals.js'),
+		Utils = require('./Common/Utils.js'),
+		kn = require('./Knoin/Knoin.js'),
+		KnoinAbstractScreen = require('./Knoin/KnoinAbstractScreen.js')
 	;
 
-	RoutedSettingsViewModel = _.find(ViewModels['settings'], function (SettingsViewModel) {
-		return SettingsViewModel && SettingsViewModel.__rlSettingsData &&
-			sSubName === SettingsViewModel.__rlSettingsData.Route;
-	});
-
-	if (RoutedSettingsViewModel)
+	/**
+	 * @param {Array} aViewModels
+	 * @constructor
+	 * @extends KnoinAbstractScreen
+	 */
+	function AbstractSettings(aViewModels)
 	{
-		if (_.find(ViewModels['settings-removed'], function (DisabledSettingsViewModel) {
-			return DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel;
-		}))
-		{
-			RoutedSettingsViewModel = null;
-		}
-		
-		if (RoutedSettingsViewModel && _.find(ViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
-			return DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel;
-		}))
-		{
-			RoutedSettingsViewModel = null;
-		}
+		KnoinAbstractScreen.call(this, 'settings', aViewModels);
+
+		this.menu = ko.observableArray([]);
+
+		this.oCurrentSubScreen = null;
+		this.oViewModelPlace = null;
 	}
 
-	if (RoutedSettingsViewModel)
+	_.extend(AbstractSettings.prototype, KnoinAbstractScreen.prototype);
+
+	AbstractSettings.prototype.onRoute = function (sSubName)
 	{
-		if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm)
+		var
+			self = this,
+			oSettingsScreen = null,
+			RoutedSettingsViewModel = null,
+			oViewModelPlace = null,
+			oViewModelDom = null
+		;
+
+		RoutedSettingsViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
+			return SettingsViewModel && SettingsViewModel.__rlSettingsData &&
+				sSubName === SettingsViewModel.__rlSettingsData.Route;
+		});
+
+		if (RoutedSettingsViewModel)
 		{
-			oSettingsScreen = RoutedSettingsViewModel.__vm;
-		}
-		else
-		{
-			oViewModelPlace = this.oViewModelPlace;
-			if (oViewModelPlace && 1 === oViewModelPlace.length)
+			if (_.find(Globals.aViewModels['settings-removed'], function (DisabledSettingsViewModel) {
+				return DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel;
+			}))
 			{
-				RoutedSettingsViewModel = /** @type {?Function} */ RoutedSettingsViewModel;
-				oSettingsScreen = new RoutedSettingsViewModel();
+				RoutedSettingsViewModel = null;
+			}
 
-				oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
-				oViewModelDom.appendTo(oViewModelPlace);
-				
-				oSettingsScreen.data = RL.data();
-				oSettingsScreen.viewModelDom = oViewModelDom;
-				
-				oSettingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
-				
-				RoutedSettingsViewModel.__dom = oViewModelDom;
-				RoutedSettingsViewModel.__builded = true;
-				RoutedSettingsViewModel.__vm = oSettingsScreen;
-				
-				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
-					'i18nInit': true,
-					'template': function () { return {'name': RoutedSettingsViewModel.__rlSettingsData.Template}; }
-				}, oSettingsScreen);
+			if (RoutedSettingsViewModel && _.find(Globals.aViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
+				return DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel;
+			}))
+			{
+				RoutedSettingsViewModel = null;
+			}
+		}
 
-				Utils.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
+		if (RoutedSettingsViewModel)
+		{
+			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm)
+			{
+				oSettingsScreen = RoutedSettingsViewModel.__vm;
 			}
 			else
 			{
-				Utils.log('Cannot find sub settings view model position: SettingsSubScreen');
+				oViewModelPlace = this.oViewModelPlace;
+				if (oViewModelPlace && 1 === oViewModelPlace.length)
+				{
+					RoutedSettingsViewModel = /** @type {?Function} */ RoutedSettingsViewModel;
+					oSettingsScreen = new RoutedSettingsViewModel();
+
+					oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
+					oViewModelDom.appendTo(oViewModelPlace);
+
+					oSettingsScreen.data = RL.data(); // TODO cjs
+					oSettingsScreen.viewModelDom = oViewModelDom;
+
+					oSettingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
+
+					RoutedSettingsViewModel.__dom = oViewModelDom;
+					RoutedSettingsViewModel.__builded = true;
+					RoutedSettingsViewModel.__vm = oSettingsScreen;
+
+					ko.applyBindingAccessorsToNode(oViewModelDom[0], {
+						'i18nInit': true,
+						'template': function () { return {'name': RoutedSettingsViewModel.__rlSettingsData.Template}; }
+					}, oSettingsScreen);
+
+					Utils.delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
+				}
+				else
+				{
+					Utils.log('Cannot find sub settings view model position: SettingsSubScreen');
+				}
+			}
+
+			if (oSettingsScreen)
+			{
+				_.defer(function () {
+					// hide
+					if (self.oCurrentSubScreen)
+					{
+						Utils.delegateRun(self.oCurrentSubScreen, 'onHide');
+						self.oCurrentSubScreen.viewModelDom.hide();
+					}
+					// --
+
+					self.oCurrentSubScreen = oSettingsScreen;
+
+					// show
+					if (self.oCurrentSubScreen)
+					{
+						self.oCurrentSubScreen.viewModelDom.show();
+						Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
+						Utils.delegateRun(self.oCurrentSubScreen, 'onFocus', [], 200);
+
+						_.each(self.menu(), function (oItem) {
+							oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
+						});
+
+						$('#rl-content .b-settings .b-content .content').scrollTop(0);
+					}
+					// --
+
+					Utils.windowResize();
+				});
 			}
 		}
-		
-		if (oSettingsScreen)
+		else
 		{
-			_.defer(function () {
-				// hide
-				if (self.oCurrentSubScreen)
-				{
-					Utils.delegateRun(self.oCurrentSubScreen, 'onHide');
-					self.oCurrentSubScreen.viewModelDom.hide();
-				}
-				// --
-
-				self.oCurrentSubScreen = oSettingsScreen;
-
-				// show
-				if (self.oCurrentSubScreen)
-				{
-					self.oCurrentSubScreen.viewModelDom.show();
-					Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
-					Utils.delegateRun(self.oCurrentSubScreen, 'onFocus', [], 200);
-
-					_.each(self.menu(), function (oItem) {
-						oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
-					});
-
-					$('#rl-content .b-settings .b-content .content').scrollTop(0);
-				}
-				// --
-
-				Utils.windowResize();
-			});
+			kn.setHash(RL.link().settings(), false, true); // TODO cjs
 		}
-	}
-	else
-	{
-		kn.setHash(RL.link().settings(), false, true);
-	}
-};
+	};
 
-AbstractSettings.prototype.onHide = function ()
-{
-	if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
+	AbstractSettings.prototype.onHide = function ()
 	{
-		Utils.delegateRun(this.oCurrentSubScreen, 'onHide');
-		this.oCurrentSubScreen.viewModelDom.hide();
-	}
-};
-
-AbstractSettings.prototype.onBuild = function ()
-{
-	_.each(ViewModels['settings'], function (SettingsViewModel) {
-		if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
-			!_.find(ViewModels['settings-removed'], function (RemoveSettingsViewModel) {
-				return RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel;
-			}))
+		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 		{
-			this.menu.push({
-				'route': SettingsViewModel.__rlSettingsData.Route,
-				'label': SettingsViewModel.__rlSettingsData.Label,
-				'selected': ko.observable(false),
-				'disabled': !!_.find(ViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
-					return DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel;
-				})
-			});
+			Utils.delegateRun(this.oCurrentSubScreen, 'onHide');
+			this.oCurrentSubScreen.viewModelDom.hide();
 		}
-	}, this);
+	};
 
-	this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
-};
-
-AbstractSettings.prototype.routes = function ()
-{
-	var
-		DefaultViewModel = _.find(ViewModels['settings'], function (SettingsViewModel) {
-			return SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData['IsDefault'];
-		}),
-		sDefaultRoute = DefaultViewModel ? DefaultViewModel.__rlSettingsData['Route'] : 'general',
-		oRules = {
-			'subname': /^(.*)$/,
-			'normalize_': function (oRequest, oVals) {
-				oVals.subname = Utils.isUnd(oVals.subname) ? sDefaultRoute : Utils.pString(oVals.subname);
-				return [oVals.subname];
+	AbstractSettings.prototype.onBuild = function ()
+	{
+		_.each(Globals.aViewModels['settings'], function (SettingsViewModel) {
+			if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
+				!_.find(Globals.aViewModels['settings-removed'], function (RemoveSettingsViewModel) {
+					return RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel;
+				}))
+			{
+				this.menu.push({
+					'route': SettingsViewModel.__rlSettingsData.Route,
+					'label': SettingsViewModel.__rlSettingsData.Label,
+					'selected': ko.observable(false),
+					'disabled': !!_.find(Globals.aViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
+						return DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel;
+					})
+				});
 			}
-		}
-	;
+		}, this);
 
-	return [
-		['{subname}/', oRules],
-		['{subname}', oRules],
-		['', oRules]
-	];
-};
+		this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
+	};
+
+	AbstractSettings.prototype.routes = function ()
+	{
+		var
+			DefaultViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
+				return SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData['IsDefault'];
+			}),
+			sDefaultRoute = DefaultViewModel ? DefaultViewModel.__rlSettingsData['Route'] : 'general',
+			oRules = {
+				'subname': /^(.*)$/,
+				'normalize_': function (oRequest, oVals) {
+					oVals.subname = Utils.isUnd(oVals.subname) ? sDefaultRoute : Utils.pString(oVals.subname);
+					return [oVals.subname];
+				}
+			}
+		;
+
+		return [
+			['{subname}/', oRules],
+			['{subname}', oRules],
+			['', oRules]
+		];
+	};
+
+	module.exports = AbstractSettings;
+
+}(module));

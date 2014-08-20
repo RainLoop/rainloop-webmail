@@ -46,6 +46,9 @@
 		"node-fs": "*",
 		"jshint-summary": "*",
 
+		"browserify": "*",
+		"vinyl-source-stream": "latest",
+
 		"gulp": "*",
 		"gulp-util": "*",
 		"gulp-uglify": "*",

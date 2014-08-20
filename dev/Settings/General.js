@@ -68,7 +68,7 @@ SettingsGeneral.prototype.onBuild = function ()
 				'dataType': 'script',
 				'cache': true
 			}).done(function() {
-				Utils.i18nToDoc();
+				Utils.i18nReload();
 				self.languageTrigger(Enums.SaveSettingsStep.TrueResult);
 			}).fail(function() {
 				self.languageTrigger(Enums.SaveSettingsStep.FalseResult);

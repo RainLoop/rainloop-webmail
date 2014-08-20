@@ -1,125 +1,140 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- */
-function ContactModel()
-{
-	this.idContact = 0;
-	this.display = '';
-	this.properties = [];
-	this.tags = '';
-	this.readOnly = false;
+(function (module) {
 
-	this.focused = ko.observable(false);
-	this.selected = ko.observable(false);
-	this.checked = ko.observable(false);
-	this.deleted = ko.observable(false);
-}
+	'use strict';
 
-/**
- * @return {Array|null}
- */
-ContactModel.prototype.getNameAndEmailHelper = function ()
-{
 	var
-		sName = '',
-		sEmail = ''
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js')
 	;
-
-	if (Utils.isNonEmptyArray(this.properties))
+	
+	/**
+	 * @constructor
+	 */
+	function ContactModel()
 	{
-		_.each(this.properties, function (aProperty) {
-			if (aProperty)
-			{
-				if (Enums.ContactPropertyType.FirstName === aProperty[0])
-				{
-					sName = Utils.trim(aProperty[1] + ' ' + sName);
-				}
-				else if (Enums.ContactPropertyType.LastName === aProperty[0])
-				{
-					sName = Utils.trim(sName + ' ' + aProperty[1]);
-				}
-				else if ('' === sEmail && Enums.ContactPropertyType.Email === aProperty[0])
-				{
-					sEmail = aProperty[1];
-				}
-			}
-		}, this);
+		this.idContact = 0;
+		this.display = '';
+		this.properties = [];
+		this.tags = '';
+		this.readOnly = false;
+
+		this.focused = ko.observable(false);
+		this.selected = ko.observable(false);
+		this.checked = ko.observable(false);
+		this.deleted = ko.observable(false);
 	}
 
-	return '' === sEmail ? null : [sEmail, sName];
-};
-
-ContactModel.prototype.parse = function (oItem)
-{
-	var bResult = false;
-	if (oItem && 'Object/Contact' === oItem['@Object'])
+	/**
+	 * @return {Array|null}
+	 */
+	ContactModel.prototype.getNameAndEmailHelper = function ()
 	{
-		this.idContact = Utils.pInt(oItem['IdContact']);
-		this.display = Utils.pString(oItem['Display']);
-		this.readOnly = !!oItem['ReadOnly'];
-		this.tags = '';
+		var
+			sName = '',
+			sEmail = ''
+		;
 
-		if (Utils.isNonEmptyArray(oItem['Properties']))
+		if (Utils.isNonEmptyArray(this.properties))
 		{
-			_.each(oItem['Properties'], function (oProperty) {
-				if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']) && Utils.isNormal(oProperty['TypeStr']))
+			_.each(this.properties, function (aProperty) {
+				if (aProperty)
 				{
-					this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
+					if (Enums.ContactPropertyType.FirstName === aProperty[0])
+					{
+						sName = Utils.trim(aProperty[1] + ' ' + sName);
+					}
+					else if (Enums.ContactPropertyType.LastName === aProperty[0])
+					{
+						sName = Utils.trim(sName + ' ' + aProperty[1]);
+					}
+					else if ('' === sEmail && Enums.ContactPropertyType.Email === aProperty[0])
+					{
+						sEmail = aProperty[1];
+					}
 				}
 			}, this);
 		}
 
-		if (Utils.isNonEmptyArray(oItem['Tags']))
+		return '' === sEmail ? null : [sEmail, sName];
+	};
+
+	ContactModel.prototype.parse = function (oItem)
+	{
+		var bResult = false;
+		if (oItem && 'Object/Contact' === oItem['@Object'])
 		{
-			this.tags = oItem['Tags'].join(',');
+			this.idContact = Utils.pInt(oItem['IdContact']);
+			this.display = Utils.pString(oItem['Display']);
+			this.readOnly = !!oItem['ReadOnly'];
+			this.tags = '';
+
+			if (Utils.isNonEmptyArray(oItem['Properties']))
+			{
+				_.each(oItem['Properties'], function (oProperty) {
+					if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']) && Utils.isNormal(oProperty['TypeStr']))
+					{
+						this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
+					}
+				}, this);
+			}
+
+			if (Utils.isNonEmptyArray(oItem['Tags']))
+			{
+				this.tags = oItem['Tags'].join(',');
+			}
+
+			bResult = true;
 		}
 
-		bResult = true;
-	}
+		return bResult;
+	};
 
-	return bResult;
-};
-
-/**
- * @return {string}
- */
-ContactModel.prototype.srcAttr = function ()
-{
-	return RL.link().emptyContactPic();
-};
-
-/**
- * @return {string}
- */
-ContactModel.prototype.generateUid = function ()
-{
-	return '' + this.idContact;
-};
-
-/**
- * @return string
- */
-ContactModel.prototype.lineAsCcc = function ()
-{
-	var aResult = [];
-	if (this.deleted())
+	/**
+	 * @return {string}
+	 */
+	ContactModel.prototype.srcAttr = function ()
 	{
-		aResult.push('deleted');
-	}
-	if (this.selected())
-	{
-		aResult.push('selected');
-	}
-	if (this.checked())
-	{
-		aResult.push('checked');
-	}
-	if (this.focused())
-	{
-		aResult.push('focused');
-	}
+		return RL.link().emptyContactPic(); // TODO cjs
+	};
 
-	return aResult.join(' ');
-};
+	/**
+	 * @return {string}
+	 */
+	ContactModel.prototype.generateUid = function ()
+	{
+		return '' + this.idContact;
+	};
+
+	/**
+	 * @return string
+	 */
+	ContactModel.prototype.lineAsCcc = function ()
+	{
+		var aResult = [];
+		if (this.deleted())
+		{
+			aResult.push('deleted');
+		}
+		if (this.selected())
+		{
+			aResult.push('selected');
+		}
+		if (this.checked())
+		{
+			aResult.push('checked');
+		}
+		if (this.focused())
+		{
+			aResult.push('focused');
+		}
+
+		return aResult.join(' ');
+	};
+
+	module.exports = ContactModel;
+
+}(module));
