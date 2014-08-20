@@ -978,7 +978,7 @@ RainLoopApp.prototype.getAutocomplete = function (sQuery, fCallback)
  * @param {string} sQuery
  * @param {Function} fCallback
  */
-RainLoopApp.prototype.getContactsTagsAutocomplete = function (sQuery, fCallback)
+RainLoopApp.prototype.getContactTagsAutocomplete = function (sQuery, fCallback)
 {
 	fCallback(_.filter(RL.data().contactTags(), function (oContactTag) {
 		return oContactTag && oContactTag.filterHelper(sQuery);

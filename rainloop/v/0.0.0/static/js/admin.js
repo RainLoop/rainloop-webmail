@@ -3620,24 +3620,26 @@ ko.bindingHandlers.emailsTags = {
 				fValue(oEvent.target.value);
 			}, this)
 		});
+	},
+	'update': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+		
+		var
+			$oEl = $(oElement),
+			fAllValueFunc = fAllBindingsAccessor(),
+			fEmailsTagsFilter = fAllValueFunc['emailsTagsFilter'] || null,
+			sValue = ko.utils.unwrapObservable(fValueAccessor())
+		;
 
-		fValue.subscribe(function (sValue) {
-			if ($oEl.data('EmailsTagsValue') !== sValue)
-			{
-				$oEl.val(sValue);
-				$oEl.data('EmailsTagsValue', sValue);
-				$oEl.inputosaurus('refresh');
-			}
-		});
-
-		if (fValue.focusTrigger)
+		if ($oEl.data('EmailsTagsValue') !== sValue)
 		{
-			fValue.focusTrigger.subscribe(function (bValue) {
-				if (bValue)
-				{
-					$oEl.inputosaurus('focus');
-				}
-			});
+			$oEl.val(sValue);
+			$oEl.data('EmailsTagsValue', sValue);
+			$oEl.inputosaurus('refresh');
+		}
+
+		if (fEmailsTagsFilter && ko.utils.unwrapObservable(fEmailsTagsFilter))
+		{
+			$oEl.inputosaurus('focus');
 		}
 	}
 };
@@ -3662,7 +3664,7 @@ ko.bindingHandlers.contactTags = {
 			'inputDelimiters': [',', ';'],
 			'outputDelimiter': ',',
 			'autoCompleteSource': function (oData, fResponse) {
-				RL.getContactsTagsAutocomplete(oData.term, function (aData) {
+				RL.getContactTagsAutocomplete(oData.term, function (aData) {
 					fResponse(_.map(aData, function (oTagItem) {
 						return oTagItem.toLine(false);
 					}));
@@ -3688,28 +3690,30 @@ ko.bindingHandlers.contactTags = {
 				});
 			},
 			'change': _.bind(function (oEvent) {
-				$oEl.data('ContactsTagsValue', oEvent.target.value);
+				$oEl.data('ContactTagsValue', oEvent.target.value);
 				fValue(oEvent.target.value);
 			}, this)
 		});
+	},
+	'update': function (oElement, fValueAccessor, fAllBindingsAccessor) {
 
-		fValue.subscribe(function (sValue) {
-			if ($oEl.data('ContactsTagsValue') !== sValue)
-			{
-				$oEl.val(sValue);
-				$oEl.data('ContactsTagsValue', sValue);
-				$oEl.inputosaurus('refresh');
-			}
-		});
+		var
+			$oEl = $(oElement),
+			fAllValueFunc = fAllBindingsAccessor(),
+			fContactTagsFilter = fAllValueFunc['contactTagsFilter'] || null,
+			sValue = ko.utils.unwrapObservable(fValueAccessor())
+		;
 
-		if (fValue.focusTrigger)
+		if ($oEl.data('ContactTagsValue') !== sValue)
 		{
-			fValue.focusTrigger.subscribe(function (bValue) {
-				if (bValue)
-				{
-					$oEl.inputosaurus('focus');
-				}
-			});
+			$oEl.val(sValue);
+			$oEl.data('ContactTagsValue', sValue);
+			$oEl.inputosaurus('refresh');
+		}
+
+		if (fContactTagsFilter && ko.utils.unwrapObservable(fContactTagsFilter))
+		{
+			$oEl.inputosaurus('focus');
 		}
 	}
 };

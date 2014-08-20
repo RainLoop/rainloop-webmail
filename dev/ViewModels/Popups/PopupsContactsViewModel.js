@@ -687,8 +687,8 @@ PopupsContactsViewModel.prototype.reloadContactList = function (bDropPagePositio
 		self.contactsCount(iCount);
 
 		self.contacts(aList);
-		self.contactTags(aTagsList);
 		self.contacts.loading(false);
+		self.contactTags(aTagsList);
 
 		self.viewClearSearch('' !== self.search());
 

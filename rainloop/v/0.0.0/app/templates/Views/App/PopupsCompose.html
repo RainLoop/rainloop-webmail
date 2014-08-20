@@ -57,7 +57,7 @@
 								</label>
 							</div>
 							<div class="e-cell e-value">
-								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to" />
+								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, emailsTagsFilter: to.focusTrigger" />
 								<span class="help-block error-desc" data-bind="visible: emptyToError">
 									<span class="i18n" data-i18n-text="COMPOSE/EMPTY_TO_ERROR_DESC"></span>
 								</span>
