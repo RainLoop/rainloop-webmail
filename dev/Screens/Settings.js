@@ -5,13 +5,13 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		Enums = require('./Common/Enums.js'),
-		Utils = require('./Common/Utils.js'),
-		AbstractSettings = require('./Screens/AbstractSettings.js'),
-		SettingsSystemDropDownViewModel = require('./ViewModels/SettingsSystemDropDownViewModel.js'),
-		SettingsMenuViewModel = require('./ViewModels/SettingsMenuViewModel.js'),
-		SettingsPaneViewModel = require('./ViewModels/SettingsPaneViewModel.js')
+		_ = require('../External/underscore.js'),
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		AbstractSettings = require('../AbstractSettings.js'),
+		SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
+		SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
+		SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
 	;
 
 	/**

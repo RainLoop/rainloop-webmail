@@ -5,13 +5,17 @@
 	'use strict';
 
 	var
-		window = require('./External/window.js'),
-		$ = require('./External/jquery.js'),
-		Consts = require('./Common/Consts.js'),
-		Enums = require('./Common/Enums.js'),
-		Globals = require('./Common/Globals.js'),
-		Utils = require('./Common/Utils.js'),
-		Plugins = require('./Common/Plugins.js')
+		window = require('../External/window.js'),
+		$ = require('../External/jquery.js'),
+
+		Consts = require('../Common/Consts.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		Plugins = require('../Common/Plugins.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		RL = require('../RL.js')
 	;
 
 	/**
@@ -59,7 +63,7 @@
 
 				   if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
 				   {
-					   RL.loginAndLogoutReload(true); // TODO cjs
+					   RL().loginAndLogoutReload(true);
 				   }
 
 				   if (oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
@@ -69,7 +73,7 @@
 						   window.__rlah_clear();
 					   }
 
-					   RL.loginAndLogoutReload(true); // TODO cjs
+					   RL().loginAndLogoutReload(true);
 				   }
 			   }
 			   else if (Enums.StorageResultType.Success === sType && oData && oData.Result)
@@ -164,7 +168,7 @@
 
 	   oDefAjax = $.ajax({
 		   'type': bPost ? 'POST' : 'GET',
-		   'url': RL.link().ajax(sGetAdd), // TODO cjs
+		   'url': LinkBuilder.ajax(sGetAdd),
 		   'async': true,
 		   'dataType': 'json',
 		   'data': bPost ? oParameters : {},

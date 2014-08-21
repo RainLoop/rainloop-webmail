@@ -6,8 +6,12 @@
 
 	var
 		key = require('../External/key.js'),
+
 		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -23,7 +27,7 @@
 		kn.constructorEnd(this);
 	}
 
-	Utils.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+	kn.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
 
 	SettingsPaneViewModel.prototype.onBuild = function ()
 	{
@@ -35,12 +39,12 @@
 
 	SettingsPaneViewModel.prototype.onShow = function ()
 	{
-		RL.data().message(null); // TODO cjs
+		Data.message(null);
 	};
 
 	SettingsPaneViewModel.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(RL.link().inbox()); // TODO cjs
+		kn.setHash(LinkBuilder.inbox());
 	};
 
 	module.exports = SettingsPaneViewModel;

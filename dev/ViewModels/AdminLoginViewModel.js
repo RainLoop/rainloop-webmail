@@ -1,100 +1,121 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function AdminLoginViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Center', 'AdminLogin');
+(function (module) {
 
-	this.login = ko.observable('');
-	this.password = ko.observable('');
+	'use strict';
 
-	this.loginError = ko.observable(false);
-	this.passwordError = ko.observable(false);
+	var
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
 
-	this.loginFocus = ko.observable(false);
+		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+	;
 
-	this.login.subscribe(function () {
-		this.loginError(false);
-	}, this);
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function AdminLoginViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Center', 'AdminLogin');
 
-	this.password.subscribe(function () {
-		this.passwordError(false);
-	}, this);
+		this.login = ko.observable('');
+		this.password = ko.observable('');
 
-	this.submitRequest = ko.observable(false);
-	this.submitError = ko.observable('');
+		this.loginError = ko.observable(false);
+		this.passwordError = ko.observable(false);
 
-	this.submitCommand = Utils.createCommand(this, function () {
+		this.loginFocus = ko.observable(false);
 
-		Utils.triggerAutocompleteInputChange();
+		this.login.subscribe(function () {
+			this.loginError(false);
+		}, this);
 
-		this.loginError('' === Utils.trim(this.login()));
-		this.passwordError('' === Utils.trim(this.password()));
+		this.password.subscribe(function () {
+			this.passwordError(false);
+		}, this);
 
-		if (this.loginError() || this.passwordError())
-		{
-			return false;
-		}
+		this.submitRequest = ko.observable(false);
+		this.submitError = ko.observable('');
 
-		this.submitRequest(true);
+		this.submitCommand = Utils.createCommand(this, function () {
 
-		RL.remote().adminLogin(_.bind(function (sResult, oData) {
+			Utils.triggerAutocompleteInputChange();
 
-			if (Enums.StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
+			this.loginError('' === Utils.trim(this.login()));
+			this.passwordError('' === Utils.trim(this.password()));
+
+			if (this.loginError() || this.passwordError())
 			{
-				if (oData.Result)
+				return false;
+			}
+
+			this.submitRequest(true);
+
+			Remote.adminLogin(_.bind(function (sResult, oData) {
+
+				if (Enums.StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
 				{
-					RL.loginAndLogoutReload();
+					if (oData.Result)
+					{
+						RL.loginAndLogoutReload();
+					}
+					else if (oData.ErrorCode)
+					{
+						this.submitRequest(false);
+						this.submitError(Utils.getNotification(oData.ErrorCode));
+					}
 				}
-				else if (oData.ErrorCode)
+				else
 				{
 					this.submitRequest(false);
-					this.submitError(Utils.getNotification(oData.ErrorCode));
+					this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 				}
-			}
-			else
-			{
-				this.submitRequest(false);
-				this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
-			}
 
-		}, this), this.login(), this.password());
+			}, this), this.login(), this.password());
 
-		return true;
+			return true;
 
-	}, function () {
-		return !this.submitRequest();
-	});
+		}, function () {
+			return !this.submitRequest();
+		});
 
-	Knoin.constructorEnd(this);
-}
+		kn.constructorEnd(this);
+	}
 
-Utils.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);
+	kn.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);
 
-AdminLoginViewModel.prototype.onShow = function ()
-{
-	kn.routeOff();
+	AdminLoginViewModel.prototype.onShow = function ()
+	{
+		kn.routeOff();
 
-	_.delay(_.bind(function () {
-		this.loginFocus(true);
-	}, this), 100);
+		_.delay(_.bind(function () {
+			this.loginFocus(true);
+		}, this), 100);
 
-};
+	};
 
-AdminLoginViewModel.prototype.onHide = function ()
-{
-	this.loginFocus(false);
-};
+	AdminLoginViewModel.prototype.onHide = function ()
+	{
+		this.loginFocus(false);
+	};
 
-AdminLoginViewModel.prototype.onBuild = function ()
-{
-	Utils.triggerAutocompleteInputChange(true);
-};
+	AdminLoginViewModel.prototype.onBuild = function ()
+	{
+		Utils.triggerAutocompleteInputChange(true);
+	};
 
-AdminLoginViewModel.prototype.submitForm = function ()
-{
-	this.submitCommand();
-};
+	AdminLoginViewModel.prototype.submitForm = function ()
+	{
+		this.submitCommand();
+	};
+
+	module.exports = new AdminLoginViewModel();
+
+}(module));

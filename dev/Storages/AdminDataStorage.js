@@ -5,9 +5,10 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		ko = require('./External/ko.js'),
-		AbstractData = require('./Storages/AbstractData.js')
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		
+		AbstractData = require('./AbstractData.js')
 	;
 
 	/**
@@ -62,6 +63,6 @@
 		AbstractData.prototype.populateDataOnStart.call(this);
 	};
 
-	module.exports = AdminDataStorage;
+	module.exports = new AdminDataStorage();
 
 }(module));

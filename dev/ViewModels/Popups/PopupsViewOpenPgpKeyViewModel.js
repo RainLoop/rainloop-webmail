@@ -1,41 +1,56 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function PopupsViewOpenPgpKeyViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsViewOpenPgpKey');
+(function (module) {
 
-	this.key = ko.observable('');
-	this.keyDom = ko.observable(null);
-	
-	Knoin.constructorEnd(this);
-}
+	'use strict';
 
-Utils.extendAsViewModel('PopupsViewOpenPgpKeyViewModel', PopupsViewOpenPgpKeyViewModel);
+	var
+		ko = require('../../External/ko.js'),
+		Utils = require('../../Common/Utils.js'),
+		kn = require('../../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+	;
 
-PopupsViewOpenPgpKeyViewModel.prototype.clearPopup = function ()
-{
-	this.key('');
-};
-
-PopupsViewOpenPgpKeyViewModel.prototype.selectKey = function ()
-{
-	var oEl = this.keyDom();
-	if (oEl)
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function PopupsViewOpenPgpKeyViewModel()
 	{
-		Utils.selectElement(oEl);
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsViewOpenPgpKey');
+
+		this.key = ko.observable('');
+		this.keyDom = ko.observable(null);
+
+		kn.constructorEnd(this);
 	}
-};
 
-PopupsViewOpenPgpKeyViewModel.prototype.onShow = function (oOpenPgpKey)
-{
-	this.clearPopup();
+	kn.extendAsViewModel('PopupsViewOpenPgpKeyViewModel', PopupsViewOpenPgpKeyViewModel);
 
-	if (oOpenPgpKey)
+	PopupsViewOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{
-		this.key(oOpenPgpKey.armor);
-	}
-};
+		this.key('');
+	};
+
+	PopupsViewOpenPgpKeyViewModel.prototype.selectKey = function ()
+	{
+		var oEl = this.keyDom();
+		if (oEl)
+		{
+			Utils.selectElement(oEl);
+		}
+	};
+
+	PopupsViewOpenPgpKeyViewModel.prototype.onShow = function (oOpenPgpKey)
+	{
+		this.clearPopup();
+
+		if (oOpenPgpKey)
+		{
+			this.key(oOpenPgpKey.armor);
+		}
+	};
+
+	module.exports = new PopupsViewOpenPgpKeyViewModel();
+
+}(module));

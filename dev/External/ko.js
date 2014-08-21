@@ -10,8 +10,11 @@
 		window = require('./window.js'),
 		$window = require('./$window.js'),
 		$doc = require('./$doc.js'),
+
 		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+
+		RL = require('../RL.js')
 	;
 
 	ko.bindingHandlers.tooltip = {
@@ -555,7 +558,7 @@
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
 				'autoCompleteSource': function (oData, fResponse) {
-					RL.getAutocomplete(oData.term, function (aData) {
+					RL().getAutocomplete(oData.term, function (aData) {
 						fResponse(_.map(aData, function (oEmailItem) {
 							return oEmailItem.toLine(false);
 						}));
@@ -630,7 +633,7 @@
 				'inputDelimiters': [',', ';'],
 				'outputDelimiter': ',',
 				'autoCompleteSource': function (oData, fResponse) {
-					RL.getContactTagsAutocomplete(oData.term, function (aData) { // TODO cjs
+					RL().getContactTagsAutocomplete(oData.term, function (aData) {
 						fResponse(_.map(aData, function (oTagItem) {
 							return oTagItem.toLine(false);
 						}));

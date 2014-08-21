@@ -1,112 +1,128 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function PopupsAskViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAsk');
+(function (module) {
 
-	this.askDesc = ko.observable('');
-	this.yesButton = ko.observable('');
-	this.noButton = ko.observable('');
+	'use strict';
 
-	this.yesFocus = ko.observable(false);
-	this.noFocus = ko.observable(false);
+	var
+		ko = require('../../External/ko.js'),
+		key = require('../../External/key.js'),
+		Enums = require('../../Common/Enums.js'),
+		Utils = require('../../Common/Utils.js'),
+		kn = require('../../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+	;
 
-	this.fYesAction = null;
-	this.fNoAction = null;
-
-	this.bDisabeCloseOnEsc = true;
-	this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
-
-	Knoin.constructorEnd(this);
-}
-
-Utils.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
-
-PopupsAskViewModel.prototype.clearPopup = function ()
-{
-	this.askDesc('');
-	this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
-	this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
-
-	this.yesFocus(false);
-	this.noFocus(false);
-
-	this.fYesAction = null;
-	this.fNoAction = null;
-};
-
-PopupsAskViewModel.prototype.yesClick = function ()
-{
-	this.cancelCommand();
-
-	if (Utils.isFunc(this.fYesAction))
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function PopupsAskViewModel()
 	{
-		this.fYesAction.call(null);
-	}
-};
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAsk');
 
-PopupsAskViewModel.prototype.noClick = function ()
-{
-	this.cancelCommand();
+		this.askDesc = ko.observable('');
+		this.yesButton = ko.observable('');
+		this.noButton = ko.observable('');
 
-	if (Utils.isFunc(this.fNoAction))
-	{
-		this.fNoAction.call(null);
-	}
-};
+		this.yesFocus = ko.observable(false);
+		this.noFocus = ko.observable(false);
 
-/**
- * @param {string} sAskDesc
- * @param {Function=} fYesFunc
- * @param {Function=} fNoFunc
- * @param {string=} sYesButton
- * @param {string=} sNoButton
- */
-PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
-{
-	this.clearPopup();
-	
-	this.fYesAction = fYesFunc || null;
-	this.fNoAction = fNoFunc || null;
+		this.fYesAction = null;
+		this.fNoAction = null;
 
-	this.askDesc(sAskDesc || '');
-	if (sYesButton)
-	{
-		this.yesButton(sYesButton);
+		this.bDisabeCloseOnEsc = true;
+		this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
+
+		kn.constructorEnd(this);
 	}
 
-	if (sYesButton)
+	kn.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
+
+	PopupsAskViewModel.prototype.clearPopup = function ()
 	{
-		this.yesButton(sNoButton);
-	}
-};
+		this.askDesc('');
+		this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
+		this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
 
-PopupsAskViewModel.prototype.onFocus = function ()
-{
-	this.yesFocus(true);
-};
+		this.yesFocus(false);
+		this.noFocus(false);
 
-PopupsAskViewModel.prototype.onBuild = function ()
-{
-	key('tab, shift+tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
-		if (this.yesFocus())
+		this.fYesAction = null;
+		this.fNoAction = null;
+	};
+
+	PopupsAskViewModel.prototype.yesClick = function ()
+	{
+		this.cancelCommand();
+
+		if (Utils.isFunc(this.fYesAction))
 		{
-			this.noFocus(true);
+			this.fYesAction.call(null);
 		}
-		else
+	};
+
+	PopupsAskViewModel.prototype.noClick = function ()
+	{
+		this.cancelCommand();
+
+		if (Utils.isFunc(this.fNoAction))
 		{
-			this.yesFocus(true);
+			this.fNoAction.call(null);
 		}
-		return false;
-	}, this));
+	};
 
-	key('esc', Enums.KeyState.PopupAsk, _.bind(function () {
-		this.noClick();
-		return false;
-	}, this));
-};
+	/**
+	 * @param {string} sAskDesc
+	 * @param {Function=} fYesFunc
+	 * @param {Function=} fNoFunc
+	 * @param {string=} sYesButton
+	 * @param {string=} sNoButton
+	 */
+	PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
+	{
+		this.clearPopup();
 
+		this.fYesAction = fYesFunc || null;
+		this.fNoAction = fNoFunc || null;
+
+		this.askDesc(sAskDesc || '');
+		if (sYesButton)
+		{
+			this.yesButton(sYesButton);
+		}
+
+		if (sYesButton)
+		{
+			this.yesButton(sNoButton);
+		}
+	};
+
+	PopupsAskViewModel.prototype.onFocus = function ()
+	{
+		this.yesFocus(true);
+	};
+
+	PopupsAskViewModel.prototype.onBuild = function ()
+	{
+		key('tab, shift+tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+			if (this.yesFocus())
+			{
+				this.noFocus(true);
+			}
+			else
+			{
+				this.yesFocus(true);
+			}
+			return false;
+		}, this));
+
+		key('esc', Enums.KeyState.PopupAsk, _.bind(function () {
+			this.noClick();
+			return false;
+		}, this));
+	};
+
+	module.exports = new PopupsAskViewModel();
+
+}(module));

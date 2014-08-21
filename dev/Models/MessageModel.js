@@ -15,6 +15,7 @@
 
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
 
 		EmailModel = require('./EmailModel.js'),
 		AttachmentModel = require('./AttachmentModel.js')
@@ -730,7 +731,7 @@
 	*/
 	MessageModel.prototype.viewLink = function ()
 	{
-	   return RL.link().messageViewLink(this.requestHash);// TODO cjs
+	   return LinkBuilder.messageViewLink(this.requestHash);// TODO cjs
 	};
 
 	/**
@@ -738,7 +739,7 @@
 	*/
 	MessageModel.prototype.downloadLink = function ()
 	{
-	   return RL.link().messageDownloadLink(this.requestHash);// TODO cjs
+	   return LinkBuilder.messageDownloadLink(this.requestHash);// TODO cjs
 	};
 
 	/**

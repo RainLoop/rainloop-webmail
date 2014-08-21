@@ -7,7 +7,8 @@
 	var
 		window = require('../External/window.js'),
 		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js')
 	;
 	
 	/**
@@ -117,7 +118,7 @@
 	 */
 	AttachmentModel.prototype.linkDownload = function ()
 	{
-		return RL.link().attachmentDownload(this.download); // TODO cjs
+		return LinkBuilder.attachmentDownload(this.download); // TODO cjs
 	};
 
 	/**
@@ -125,7 +126,7 @@
 	 */
 	AttachmentModel.prototype.linkPreview = function ()
 	{
-		return RL.link().attachmentPreview(this.download); // TODO cjs
+		return LinkBuilder.attachmentPreview(this.download); // TODO cjs
 	};
 
 	/**
@@ -133,7 +134,7 @@
 	 */
 	AttachmentModel.prototype.linkPreviewAsPlain = function ()
 	{
-		return RL.link().attachmentPreviewAsPlain(this.download);
+		return LinkBuilder.attachmentPreviewAsPlain(this.download);
 	};
 
 	/**

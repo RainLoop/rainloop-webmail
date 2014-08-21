@@ -5,7 +5,8 @@
 	'use strict';
 
 	var
-		ko = require('../External/ko.js')
+		ko = require('../External/ko.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js')
 	;
 
 	/**
@@ -27,7 +28,7 @@
 	 */
 	AccountModel.prototype.changeAccountLink = function ()
 	{
-		return RL.link().change(this.email); // TODO cjs
+		return LinkBuilder.change(this.email);
 	};
 
 	module.exports = AccountModel;

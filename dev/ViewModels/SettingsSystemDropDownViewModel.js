@@ -5,7 +5,6 @@
 	'use strict';
 
 	var
-		Utils = require('../Common/Utils.js'),
 		kn = require('./Knoin/Knoin.js'),
 		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
 	;
@@ -20,7 +19,7 @@
 		kn.constructorEnd(this);
 	}
 
-	Utils.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+	kn.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);
 
 	module.exports = SettingsSystemDropDownViewModel;
 

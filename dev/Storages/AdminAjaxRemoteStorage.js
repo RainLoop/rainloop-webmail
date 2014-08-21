@@ -5,8 +5,8 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		AbstractAjaxRemoteStorage = require('./Storages/AbstractAjaxRemoteStorage.js')
+		_ = require('../External/underscore.js'),
+		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
 	;
 	
 	/**
@@ -270,6 +270,6 @@
 		this.defaultRequest(fCallback, 'AdminPing');
 	};
 
-	module.exports = AdminAjaxRemoteStorage;
+	module.exports = new AdminAjaxRemoteStorage();
 
 }(module));

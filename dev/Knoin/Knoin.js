@@ -11,9 +11,11 @@
 		hasher = require('../External/hasher.js'),
 		crossroads = require('../External/crossroads.js'),
 		$html = require('../External/$html.js'),
-		Utils = require('../Common/Utils.js'),
 		Globals = require('../Common/Globals.js'),
-		Enums = require('../Common/Enums.js')
+		Enums = require('../Common/Enums.js'),
+		Plugins = require('../Common/Plugins.js'),
+		Utils = require('../Common/Utils.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
 
 	/**
@@ -53,6 +55,11 @@
 		return this.oBoot;
 	};
 
+	Knoin.prototype.remote = function ()
+	{
+		return this.oRemote;
+	};
+
 	/**
 	 * @param {Object} thisObject
 	 */
@@ -62,6 +69,61 @@
 		{
 			thisObject['__constructor_end'].call(thisObject);
 		}
+	};
+
+	/**
+	 * @param {string} sName
+	 * @param {Function} ViewModelClass
+	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
+	 */
+	Knoin.prototype.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
+	{
+		if (ViewModelClass)
+		{
+			if (!AbstractViewModel)
+			{
+				AbstractViewModel = KnoinAbstractViewModel;
+			}
+
+			ViewModelClass.__name = sName;
+			Plugins.regViewModelHook(sName, ViewModelClass);
+			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
+		}
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 * @param {string} sLabelName
+	 * @param {string} sTemplate
+	 * @param {string} sRoute
+	 * @param {boolean=} bDefault
+	 */
+	Knoin.prototype.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute, bDefault)
+	{
+		SettingsViewModelClass.__rlSettingsData = {
+			'Label':  sLabelName,
+			'Template':  sTemplate,
+			'Route':  sRoute,
+			'IsDefault':  !!bDefault
+		};
+
+		Globals.aViewModels['settings'].push(SettingsViewModelClass);
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 */
+	Knoin.prototype.removeSettingsViewModel = function (SettingsViewModelClass)
+	{
+		Globals.aViewModels['settings-removed'].push(SettingsViewModelClass);
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 */
+	Knoin.prototype.disableSettingsViewModel = function (SettingsViewModelClass)
+	{
+		Globals.aViewModels['settings-disabled'].push(SettingsViewModelClass);
 	};
 
 	Knoin.prototype.routeOff = function ()
@@ -420,9 +482,10 @@
 	/**
 	 * @return {Knoin}
 	 */
-	Knoin.prototype.bootstart = function (RL)
+	Knoin.prototype.bootstart = function (RL, Remote)
 	{
 		this.oBoot = RL;
+		this.oRemote = Remote;
 		
 		var
 			window = require('../External/window.js'),
@@ -449,7 +512,7 @@
 		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
 		window['rl']['remoteRequest'] = Plugins.remoteRequest;
 		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
-		window['rl']['addSettingsViewModel'] = Utils.addSettingsViewModel;
+		window['rl']['addSettingsViewModel'] = _.bind(this.addSettingsViewModel, this);
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = EmailModel;

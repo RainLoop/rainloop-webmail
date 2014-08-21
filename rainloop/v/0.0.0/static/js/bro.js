@@ -5,11 +5,12 @@
 
 var
 	kn = require('./Knoin/Knoin.js'),
-	RL = require('./Boots/RainLoopApp.js')
+	RL = require('./Boots/RainLoopApp.js'),
+	Remote = require('./Storages/WebMailAjaxRemoteStorage.js')
 ;
 
-kn.bootstart(RL);
-},{"./Boots/RainLoopApp.js":3,"./Knoin/Knoin.js":21}],2:[function(require,module,exports){
+kn.bootstart(RL, Remote);
+},{"./Boots/RainLoopApp.js":3,"./Knoin/Knoin.js":26,"./Storages/WebMailAjaxRemoteStorage.js":39}],2:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -17,6 +18,7 @@ kn.bootstart(RL);
 	'use strict';
 
 	var
+		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
 		window = require('../External/window.js'),
@@ -24,8 +26,15 @@ kn.bootstart(RL);
 		$window = require('../External/$window.js'),
 		$doc = require('../External/$doc.js'),
 		AppData = require('../External/AppData.js'),
+
 		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
+		Plugins = require('../Common/Plugins.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Remote = require('../Remote.js'),
+
+		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
 	;
 
@@ -59,8 +68,7 @@ kn.bootstart(RL);
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
 				]))
 			{
-				// TODO cjs
-				RL.remote().jsError(
+				Remote().jsError(
 					Utils.emptyFunction,
 					oEvent.originalEvent.message,
 					oEvent.originalEvent.filename,
@@ -137,32 +145,6 @@ kn.bootstart(RL);
 	};
 
 	/**
-	 * @return {LinkBuilder}
-	 */
-	AbstractApp.prototype.link = function ()
-	{
-		if (null === this.oLink)
-		{
-			this.oLink = new LinkBuilder();  // TODO cjs
-		}
-
-		return this.oLink;
-	};
-
-	/**
-	 * @return {LocalStorage}
-	 */
-	AbstractApp.prototype.local = function ()
-	{
-		if (null === this.oLocal)
-		{
-			this.oLocal = new LocalStorage();  // TODO cjs
-		}
-
-		return this.oLocal;
-	};
-
-	/**
 	 * @param {string} sName
 	 * @return {?}
 	 */
@@ -193,7 +175,7 @@ kn.bootstart(RL);
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			RL.settingsGet('Title') || '';  // TODO cjs
+			this.settingsGet('Title') || '';
 
 		window.document.title = '_';
 		window.document.title = sTitle;
@@ -206,11 +188,9 @@ kn.bootstart(RL);
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			sCustomLogoutLink = Utils.pString(RL.settingsGet('CustomLogoutLink')),
-			bInIframe = !!RL.settingsGet('InIframe')
+			sCustomLogoutLink = Utils.pString(this.settingsGet('CustomLogoutLink')),
+			bInIframe = !!this.settingsGet('InIframe')
 		;
-
-		// TODO cjs
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 		bClose = Utils.isUnd(bClose) ? false : !!bClose;
@@ -236,7 +216,7 @@ kn.bootstart(RL);
 		else
 		{
 			kn.routeOff();
-			kn.setHash(RL.link().root(), true);
+			kn.setHash(LinkBuilder.root(), true);
 			kn.routeOff();
 
 			_.delay(function () {
@@ -317,7 +297,10 @@ kn.bootstart(RL);
 
 	AbstractApp.prototype.bootstart = function ()
 	{
-		var ssm = require('../External/ssm.js');
+		var
+			self = this,
+			ssm = require('../External/ssm.js')
+		;
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();
@@ -332,11 +315,11 @@ kn.bootstart(RL);
 			'maxWidth': 767,
 			'onEnter': function() {
 				$html.addClass('ssm-state-mobile');
-				RL.pub('ssm.mobile-enter');
+				self.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
 				$html.removeClass('ssm-state-mobile');
-				RL.pub('ssm.mobile-leave');
+				self.pub('ssm.mobile-leave');
 			}
 		});
 
@@ -375,12 +358,12 @@ kn.bootstart(RL);
 			}
 		});
 
-		RL.sub('ssm.mobile-enter', function () { // TODO cjs
-			RL.data().leftPanelDisabled(true);
+		this.sub('ssm.mobile-enter', function () {
+			RL.data().leftPanelDisabled(true); // TODO cjs
 		});
 
-		RL.sub('ssm.mobile-leave', function () { // TODO cjs
-			RL.data().leftPanelDisabled(false);
+		this.sub('ssm.mobile-leave', function () {
+			RL.data().leftPanelDisabled(false); // TODO cjs
 		});
 
 		RL.data().leftPanelDisabled.subscribe(function (bValue) { // TODO cjs
@@ -393,7 +376,7 @@ kn.bootstart(RL);
 	module.exports = AbstractApp;
 
 }(module));
-},{"../Common/Globals.js":6,"../Common/Utils.js":8,"../External/$doc.js":9,"../External/$html.js":10,"../External/$window.js":11,"../External/AppData.js":12,"../External/ko.js":17,"../External/ssm.js":18,"../External/underscore.js":19,"../External/window.js":20,"../Knoin/KnoinAbstractBoot.js":22}],3:[function(require,module,exports){
+},{"../Common/Globals.js":6,"../Common/LinkBuilder.js":7,"../Common/Plugins.js":8,"../Common/Utils.js":9,"../External/$doc.js":11,"../External/$html.js":12,"../External/$window.js":13,"../External/AppData.js":14,"../External/jquery.js":19,"../External/ko.js":21,"../External/ssm.js":23,"../External/underscore.js":24,"../External/window.js":25,"../Knoin/Knoin.js":26,"../Knoin/KnoinAbstractBoot.js":27,"../Remote.js":33}],3:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -404,12 +387,24 @@ kn.bootstart(RL);
 		window = require('../External/window.js'),
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
+		moment = require('../External/moment.js'),
+		
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
 		Consts = require('../Common/Consts.js'),
 		Plugins = require('../Common/Plugins.js'),
 		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
 		kn = require('../Knoin/Knoin.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		
+		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
+		PopupsAskViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
+		
 		AbstractApp = require('./AbstractApp.js')
 	;
 
@@ -462,7 +457,7 @@ kn.bootstart(RL);
 		}, 60000 * 5);
 
 		$.wakeUp(function () {
-			RL.remote().jsVersion(function (sResult, oData) {
+			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
 					if (window.parent && !!RL.settingsGet('InIframe'))
@@ -510,27 +505,13 @@ kn.bootstart(RL);
 		return this.oRemote;
 	};
 
-	/**
-	 * @return {WebMailCacheStorage}
-	 */
-	RainLoopApp.prototype.cache = function ()
-	{
-		if (null === this.oCache)
-		{
-			this.oCache = new WebMailCacheStorage();
-		}
-
-		return this.oCache;
-	};
-
 	RainLoopApp.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
 	{
-		var oCache = RL.cache();
-		_.each(RL.data().messageList(), function (oMessage) {
-			oCache.initMessageFlagsFromCache(oMessage);
+		_.each(Data.messageList(), function (oMessage) {
+			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
-		oCache.initMessageFlagsFromCache(RL.data().message());
+		Cache.initMessageFlagsFromCache(Data.message());
 	};
 
 	/**
@@ -540,50 +521,49 @@ kn.bootstart(RL);
 	RainLoopApp.prototype.reloadMessageList = function (bDropPagePosition, bDropCurrenFolderCache)
 	{
 		var
-			oRLData = RL.data(),
-			iOffset = (oRLData.messageListPage() - 1) * oRLData.messagesPerPage()
+			iOffset = (Data.messageListPage() - 1) * Data.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
 		{
-			RL.cache().setFolderHash(oRLData.currentFolderFullNameRaw(), '');
+			Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
 		}
 
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
-			oRLData.messageListPage(1);
+			Data.messageListPage(1);
 			iOffset = 0;
 		}
 
-		oRLData.messageListLoading(true);
-		RL.remote().messageList(function (sResult, oData, bCached) {
+		Data.messageListLoading(true);
+		Remote.messageList(function (sResult, oData, bCached) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				oRLData.messageListError('');
-				oRLData.messageListLoading(false);
-				oRLData.setMessageList(oData, bCached);
+				Data.messageListError('');
+				Data.messageListLoading(false);
+				Data.setMessageList(oData, bCached);
 			}
 			else if (Enums.StorageResultType.Unload === sResult)
 			{
-				oRLData.messageListError('');
-				oRLData.messageListLoading(false);
+				Data.messageListError('');
+				Data.messageListLoading(false);
 			}
 			else if (Enums.StorageResultType.Abort !== sResult)
 			{
-				oRLData.messageList([]);
-				oRLData.messageListLoading(false);
-				oRLData.messageListError(oData && oData.ErrorCode ?
+				Data.messageList([]);
+				Data.messageListLoading(false);
+				Data.messageListError(oData && oData.ErrorCode ?
 					Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
 				);
 			}
 
-		}, oRLData.currentFolderFullNameRaw(), iOffset, oRLData.messagesPerPage(), oRLData.messageListSearch());
+		}, Data.currentFolderFullNameRaw(), iOffset, Data.messagesPerPage(), Data.messageListSearch());
 	};
 
 	RainLoopApp.prototype.recacheInboxMessageList = function ()
 	{
-		RL.remote().messageList(Utils.emptyFunction, 'INBOX', 0, RL.data().messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, 'INBOX', 0, Data.messagesPerPage(), '', true);
 	};
 
 	RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -597,15 +577,15 @@ kn.bootstart(RL);
 	 */
 	RainLoopApp.prototype.contactsSync = function (fResultFunc)
 	{
-		var oContacts = RL.data().contacts;
-		if (oContacts.importing() || oContacts.syncing() || !RL.data().enableContactsSync() || !RL.data().allowContactsSync())
+		var oContacts = Data.contacts;
+		if (oContacts.importing() || oContacts.syncing() || !Data.enableContactsSync() || !Data.allowContactsSync())
 		{
 			return false;
 		}
 
 		oContacts.syncing(true);
 
-		RL.remote().contactsSync(function (sResult, oData) {
+		Remote.contactsSync(function (sResult, oData) {
 
 			oContacts.syncing(false);
 
@@ -622,7 +602,7 @@ kn.bootstart(RL);
 	{
 		var
 			self = this,
-			sSpamFolder = RL.data().spamFolder()
+			sSpamFolder = Data.spamFolder()
 		;
 
 		_.each(this.oMoveCache, function (oItem) {
@@ -632,7 +612,7 @@ kn.bootstart(RL);
 				bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
 			;
 
-			RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
 		});
 
@@ -657,7 +637,7 @@ kn.bootstart(RL);
 
 	RainLoopApp.prototype.messagesCopyHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy)
 	{
-		RL.remote().messagesCopy(
+		Remote.messagesCopy(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			sToFolderFullNameRaw,
@@ -667,7 +647,7 @@ kn.bootstart(RL);
 
 	RainLoopApp.prototype.messagesDeleteHelper = function (sFromFolderFullNameRaw, aUidForRemove)
 	{
-		RL.remote().messagesDelete(
+		Remote.messagesDelete(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			aUidForRemove
@@ -676,15 +656,15 @@ kn.bootstart(RL);
 
 	RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 	{
-		if (Enums.StorageResultType.Success === sResult && RL.data().currentFolder())
+		if (Enums.StorageResultType.Success === sResult && Data.currentFolder())
 		{
 			if (oData && Utils.isArray(oData.Result) && 2 === oData.Result.length)
 			{
-				RL.cache().setFolderHash(oData.Result[0], oData.Result[1]);
+				Cache.setFolderHash(oData.Result[0], oData.Result[1]);
 			}
 			else
 			{
-				RL.cache().setFolderHash(RL.data().currentFolderFullNameRaw(), '');
+				Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
 
 				if (oData && -1 < Utils.inArray(oData.ErrorCode,
 					[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
@@ -693,7 +673,7 @@ kn.bootstart(RL);
 				}
 			}
 
-			RL.reloadMessageListHelper(0 === RL.data().messageList().length);
+			RL.reloadMessageListHelper(0 === Data.messageList().length);
 			RL.quotaDebounce();
 		}
 	};
@@ -705,7 +685,7 @@ kn.bootstart(RL);
 	RainLoopApp.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
 	{
 		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-		RL.data().removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+		Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 	};
 
 	/**
@@ -718,8 +698,6 @@ kn.bootstart(RL);
 	{
 		var
 			self = this,
-			oData = RL.data(),
-			oCache = RL.cache(),
 			oMoveFolder = null,
 			nSetSystemFoldersNotification = null
 		;
@@ -727,18 +705,18 @@ kn.bootstart(RL);
 		switch (iDeleteType)
 		{
 			case Enums.FolderType.Spam:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.spamFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
 				break;
 			case Enums.FolderType.NotSpam:
-				oMoveFolder = oCache.getFolderFromCacheList('INBOX');
+				oMoveFolder = Cache.getFolderFromCacheList('INBOX');
 				break;
 			case Enums.FolderType.Trash:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.trashFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Trash;
 				break;
 			case Enums.FolderType.Archive:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.archiveFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.archiveFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Archive;
 				break;
 		}
@@ -746,9 +724,9 @@ kn.bootstart(RL);
 		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 		if (bUseFolder)
 		{
-			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === oData.spamFolder()) ||
-				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()) ||
-				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === oData.archiveFolder()))
+			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === Data.spamFolder()) ||
+				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === Data.trashFolder()) ||
+				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === Data.archiveFolder()))
 			{
 				bUseFolder = false;
 			}
@@ -759,19 +737,19 @@ kn.bootstart(RL);
 			kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
 		}
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
-			(sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder())))
+			(sFromFolderFullNameRaw === Data.spamFolder() || sFromFolderFullNameRaw === Data.trashFolder())))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-				oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+				Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 
 			}]);
 		}
 		else if (oMoveFolder)
 		{
 			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
-			oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
+			Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 		}
 	};
 
@@ -786,8 +764,8 @@ kn.bootstart(RL);
 		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Utils.isArray(aUidForMove) && 0 < aUidForMove.length)
 		{
 			var
-				oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
-				oToFolder = RL.cache().getFolderFromCacheList(sToFolderFullNameRaw)
+				oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
+				oToFolder = Cache.getFolderFromCacheList(sToFolderFullNameRaw)
 			;
 
 			if (oFromFolder && oToFolder)
@@ -801,7 +779,7 @@ kn.bootstart(RL);
 					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				}
 
-				RL.data().removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
+				Data.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 				return true;
 			}
 		}
@@ -817,7 +795,7 @@ kn.bootstart(RL);
 		this.data().foldersLoading(true);
 		this.remote().folders(_.bind(function (sResult, oData) {
 
-			RL.data().foldersLoading(false);
+			Data.foldersLoading(false);
 			if (Enums.StorageResultType.Success === sResult)
 			{
 				this.data().setFolders(oData);
@@ -838,12 +816,12 @@ kn.bootstart(RL);
 
 	RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 	{
-		if (RL.data().capaOpenPGP())
+		if (Data.capaOpenPGP())
 		{
 			var
 				aKeys = [],
 				oEmail = new EmailModel(),
-				oOpenpgpKeyring = RL.data().openpgpKeyring,
+				oOpenpgpKeyring = Data.openpgpKeyring,
 				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 			;
 
@@ -875,41 +853,39 @@ kn.bootstart(RL);
 				}
 			});
 
-			RL.data().openpgpkeys(aKeys);
+			Data.openpgpkeys(aKeys);
 		}
 	};
 
 	RainLoopApp.prototype.accountsAndIdentities = function ()
 	{
-		var oRainLoopData = RL.data();
+		Data.accountsLoading(true);
+		Data.identitiesLoading(true);
 
-		oRainLoopData.accountsLoading(true);
-		oRainLoopData.identitiesLoading(true);
+		Remote.accountsAndIdentities(function (sResult, oData) {
 
-		RL.remote().accountsAndIdentities(function (sResult, oData) {
-
-			oRainLoopData.accountsLoading(false);
-			oRainLoopData.identitiesLoading(false);
+			Data.accountsLoading(false);
+			Data.identitiesLoading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
 				var
 					sParentEmail = RL.settingsGet('ParentEmail'),
-					sAccountEmail = oRainLoopData.accountEmail()
+					sAccountEmail = Data.accountEmail()
 				;
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
-					oRainLoopData.accounts(_.map(oData.Result['Accounts'], function (sValue) {
+					Data.accounts(_.map(oData.Result['Accounts'], function (sValue) {
 						return new AccountModel(sValue, sValue !== sParentEmail);
 					}));
 				}
 
 				if (Utils.isArray(oData.Result['Identities']))
 				{
-					oRainLoopData.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
+					Data.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
 
 						var
 							sId = Utils.pString(oIdentityData['Id']),
@@ -935,8 +911,8 @@ kn.bootstart(RL);
 				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 			{
-				RL.data().userQuota(Utils.pInt(oData.Result[1]) * 1024);
-				RL.data().userUsageSize(Utils.pInt(oData.Result[0]) * 1024);
+				Data.userQuota(Utils.pInt(oData.Result[1]) * 1024);
+				Data.userUsageSize(Utils.pInt(oData.Result[0]) * 1024);
 			}
 		});
 	};
@@ -956,8 +932,8 @@ kn.bootstart(RL);
 					{
 						var
 							iUtc = moment().unix(),
-							sHash = RL.cache().getFolderHash(oData.Result.Folder),
-							oFolder = RL.cache().getFolderFromCacheList(oData.Result.Folder),
+							sHash = Cache.getFolderHash(oData.Result.Folder),
+							oFolder = Cache.getFolderFromCacheList(oData.Result.Folder),
 							bCheck = false,
 							sUid = '',
 							aList = [],
@@ -971,7 +947,7 @@ kn.bootstart(RL);
 
 							if (oData.Result.Hash)
 							{
-								RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
+								Cache.setFolderHash(oData.Result.Folder, oData.Result.Hash);
 							}
 
 							if (Utils.isNormal(oData.Result.MessageCount))
@@ -991,7 +967,7 @@ kn.bootstart(RL);
 
 							if (bUnreadCountChange)
 							{
-								RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+								Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 							}
 
 							if (oData.Result.Flags)
@@ -1002,7 +978,7 @@ kn.bootstart(RL);
 									{
 										bCheck = true;
 										oFlags = oData.Result.Flags[sUid];
-										RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
+										Cache.storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
 											!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded'], !!oFlags['IsReadReceipt']
 										]);
 									}
@@ -1014,11 +990,11 @@ kn.bootstart(RL);
 								}
 							}
 
-							RL.data().initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+							Data.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
 
 							if (oData.Result.Hash !== sHash || '' === sHash)
 							{
-								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 								{
 									RL.reloadMessageList();
 								}
@@ -1029,9 +1005,9 @@ kn.bootstart(RL);
 							}
 							else if (bUnreadCountChange)
 							{
-								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 								{
-									aList = RL.data().messageList();
+									aList = Data.messageList();
 									if (Utils.isNonEmptyArray(aList))
 									{
 										RL.folderInformation(oFolder.fullNameRaw, aList);
@@ -1054,7 +1030,7 @@ kn.bootstart(RL);
 
 		var
 			iUtc = moment().unix(),
-			aFolders = RL.data().getNextFolderNames(bBoot)
+			aFolders = Data.getNextFolderNames(bBoot)
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -1068,8 +1044,8 @@ kn.bootstart(RL);
 
 							var
 								aList = [],
-								sHash = RL.cache().getFolderHash(oItem.Folder),
-								oFolder = RL.cache().getFolderFromCacheList(oItem.Folder),
+								sHash = Cache.getFolderHash(oItem.Folder),
+								oFolder = Cache.getFolderFromCacheList(oItem.Folder),
 								bUnreadCountChange = false
 							;
 
@@ -1079,7 +1055,7 @@ kn.bootstart(RL);
 
 								if (oItem.Hash)
 								{
-									RL.cache().setFolderHash(oItem.Folder, oItem.Hash);
+									Cache.setFolderHash(oItem.Folder, oItem.Hash);
 								}
 
 								if (Utils.isNormal(oItem.MessageCount))
@@ -1099,21 +1075,21 @@ kn.bootstart(RL);
 
 								if (bUnreadCountChange)
 								{
-									RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+									Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 								}
 
 								if (oItem.Hash !== sHash || '' === sHash)
 								{
-									if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 									{
 										RL.reloadMessageList();
 									}
 								}
 								else if (bUnreadCountChange)
 								{
-									if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 									{
-										aList = RL.data().messageList();
+										aList = Data.messageList();
 										if (Utils.isNonEmptyArray(aList))
 										{
 											RL.folderInformation(oFolder.fullNameRaw, aList);
@@ -1139,33 +1115,33 @@ kn.bootstart(RL);
 		{
 			oMessage.unseen(false);
 
-			var oFolder = RL.cache().getFolderFromCacheList(oMessage.folderFullNameRaw);
+			var oFolder = Cache.getFolderFromCacheList(oMessage.folderFullNameRaw);
 			if (oFolder)
 			{
 				oFolder.messageCountUnread(0 <= oFolder.messageCountUnread() - 1 ?
 					oFolder.messageCountUnread() - 1 : 0);
 			}
 
-			RL.cache().storeMessageFlagsToCache(oMessage);
+			Cache.storeMessageFlagsToCache(oMessage);
 			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 
-		RL.remote().messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
+		Remote.messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
 	};
 
 	RainLoopApp.prototype.googleConnect = function ()
 	{
-		window.open(RL.link().socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	RainLoopApp.prototype.twitterConnect = function ()
 	{
-		window.open(RL.link().socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	RainLoopApp.prototype.facebookConnect = function ()
 	{
-		window.open(RL.link().socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	/**
@@ -1173,60 +1149,58 @@ kn.bootstart(RL);
 	 */
 	RainLoopApp.prototype.socialUsers = function (bFireAllActions)
 	{
-		var oRainLoopData = RL.data();
-
 		if (bFireAllActions)
 		{
-			oRainLoopData.googleActions(true);
-			oRainLoopData.facebookActions(true);
-			oRainLoopData.twitterActions(true);
+			Data.googleActions(true);
+			Data.facebookActions(true);
+			Data.twitterActions(true);
 		}
 
-		RL.remote().socialUsers(function (sResult, oData) {
+		Remote.socialUsers(function (sResult, oData) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				oRainLoopData.googleUserName(oData.Result['Google'] || '');
-				oRainLoopData.facebookUserName(oData.Result['Facebook'] || '');
-				oRainLoopData.twitterUserName(oData.Result['Twitter'] || '');
+				Data.googleUserName(oData.Result['Google'] || '');
+				Data.facebookUserName(oData.Result['Facebook'] || '');
+				Data.twitterUserName(oData.Result['Twitter'] || '');
 			}
 			else
 			{
-				oRainLoopData.googleUserName('');
-				oRainLoopData.facebookUserName('');
-				oRainLoopData.twitterUserName('');
+				Data.googleUserName('');
+				Data.facebookUserName('');
+				Data.twitterUserName('');
 			}
 
-			oRainLoopData.googleLoggined('' !== oRainLoopData.googleUserName());
-			oRainLoopData.facebookLoggined('' !== oRainLoopData.facebookUserName());
-			oRainLoopData.twitterLoggined('' !== oRainLoopData.twitterUserName());
+			Data.googleLoggined('' !== Data.googleUserName());
+			Data.facebookLoggined('' !== Data.facebookUserName());
+			Data.twitterLoggined('' !== Data.twitterUserName());
 
-			oRainLoopData.googleActions(false);
-			oRainLoopData.facebookActions(false);
-			oRainLoopData.twitterActions(false);
+			Data.googleActions(false);
+			Data.facebookActions(false);
+			Data.twitterActions(false);
 		});
 	};
 
 	RainLoopApp.prototype.googleDisconnect = function ()
 	{
-		RL.data().googleActions(true);
-		RL.remote().googleDisconnect(function () {
+		Data.googleActions(true);
+		Remote.googleDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
 
 	RainLoopApp.prototype.facebookDisconnect = function ()
 	{
-		RL.data().facebookActions(true);
-		RL.remote().facebookDisconnect(function () {
+		Data.facebookActions(true);
+		Remote.facebookDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
 
 	RainLoopApp.prototype.twitterDisconnect = function ()
 	{
-		RL.data().twitterActions(true);
-		RL.remote().twitterDisconnect(function () {
+		Data.twitterActions(true);
+		Remote.twitterDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
@@ -1370,7 +1344,7 @@ kn.bootstart(RL);
 			aData = []
 		;
 
-		RL.remote().suggestions(function (sResult, oData) {
+		Remote.suggestions(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData && Utils.isArray(oData.Result))
 			{
 				aData = _.map(oData.Result, function (aItem) {
@@ -1393,7 +1367,7 @@ kn.bootstart(RL);
 	 */
 	RainLoopApp.prototype.getContactTagsAutocomplete = function (sQuery, fCallback)
 	{
-		fCallback(_.filter(RL.data().contactTags(), function (oContactTag) {
+		fCallback(_.filter(Data.contactTags(), function (oContactTag) {
 			return oContactTag && oContactTag.filterHelper(sQuery);
 		}));
 	};
@@ -1438,7 +1412,7 @@ kn.bootstart(RL);
 		RL.pub('rl.bootstart');
 		AbstractApp.prototype.bootstart.call(this);
 
-		RL.data().populateDataOnStart();
+		Data.populateDataOnStart();
 
 		var
 			sCustomLoginLink = '',
@@ -1451,51 +1425,51 @@ kn.bootstart(RL);
 
 		if (!RL.settingsGet('ChangePasswordIsAllowed'))
 		{
-			Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
+			kn.removeSettingsViewModel(SettingsChangePasswordScreen);
 		}
 
 		if (!RL.settingsGet('ContactsIsAllowed'))
 		{
-			Utils.removeSettingsViewModel(SettingsContacts);
+			kn.removeSettingsViewModel(SettingsContacts);
 		}
 
 		if (!RL.capa(Enums.Capa.AdditionalAccounts))
 		{
-			Utils.removeSettingsViewModel(SettingsAccounts);
+			kn.removeSettingsViewModel(SettingsAccounts);
 		}
 
 		if (RL.capa(Enums.Capa.AdditionalIdentities))
 		{
-			Utils.removeSettingsViewModel(SettingsIdentity);
+			kn.removeSettingsViewModel(SettingsIdentity);
 		}
 		else
 		{
-			Utils.removeSettingsViewModel(SettingsIdentities);
+			kn.removeSettingsViewModel(SettingsIdentities);
 		}
 
 		if (!RL.capa(Enums.Capa.OpenPGP))
 		{
-			Utils.removeSettingsViewModel(SettingsOpenPGP);
+			kn.removeSettingsViewModel(SettingsOpenPGP);
 		}
 
 		if (!RL.capa(Enums.Capa.TwoFactor))
 		{
-			Utils.removeSettingsViewModel(SettingsSecurity);
+			kn.removeSettingsViewModel(SettingsSecurity);
 		}
 
 		if (!RL.capa(Enums.Capa.Themes))
 		{
-			Utils.removeSettingsViewModel(SettingsThemes);
+			kn.removeSettingsViewModel(SettingsThemes);
 		}
 
 		if (!RL.capa(Enums.Capa.Filters))
 		{
-			Utils.removeSettingsViewModel(SettingsFilters);
+			kn.removeSettingsViewModel(SettingsFilters);
 		}
 
 		if (!bGoogle && !bFacebook && !bTwitter)
 		{
-			Utils.removeSettingsViewModel(SettingsSocialScreen);
+			kn.removeSettingsViewModel(SettingsSocialScreen);
 		}
 
 		Utils.initOnStartOrLangChange(function () {
@@ -1536,11 +1510,11 @@ kn.bootstart(RL);
 				{
 					if (window.$LAB && window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
 					{
-						window.$LAB.script(window.openpgp ? '' : RL.link().openPgpJs()).wait(function () {
+						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 							if (window.openpgp)
 							{
-								RL.data().openpgpKeyring = new window.openpgp.Keyring();
-								RL.data().capaOpenPGP(true);
+								Data.openpgpKeyring = new window.openpgp.Keyring();
+								Data.capaOpenPGP(true);
 
 								RL.pub('openpgp.init');
 
@@ -1550,7 +1524,7 @@ kn.bootstart(RL);
 					}
 					else
 					{
-						RL.data().capaOpenPGP(false);
+						Data.capaOpenPGP(false);
 					}
 
 					kn.startScreens([MailBoxScreen, SettingsScreen]);
@@ -1565,7 +1539,7 @@ kn.bootstart(RL);
 					});
 
 					RL.sub('interval.2m', function () {
-						var sF = RL.data().currentFolderFullNameRaw();
+						var sF = Data.currentFolderFullNameRaw();
 						if ('INBOX' !== sF)
 						{
 							RL.folderInformation(sF);
@@ -1659,7 +1633,7 @@ kn.bootstart(RL);
 			else
 			{
 				kn.routeOff();
-				kn.setHash(RL.link().root(), true);
+				kn.setHash(LinkBuilder.root(), true);
 				kn.routeOff();
 
 				_.defer(function () {
@@ -1671,7 +1645,7 @@ kn.bootstart(RL);
 		if (bGoogle)
 		{
 			window['rl_' + sJsHash + '_google_service'] = function () {
-				RL.data().googleActions(true);
+				Data.googleActions(true);
 				RL.socialUsers();
 			};
 		}
@@ -1679,7 +1653,7 @@ kn.bootstart(RL);
 		if (bFacebook)
 		{
 			window['rl_' + sJsHash + '_facebook_service'] = function () {
-				RL.data().facebookActions(true);
+				Data.facebookActions(true);
 				RL.socialUsers();
 			};
 		}
@@ -1687,7 +1661,7 @@ kn.bootstart(RL);
 		if (bTwitter)
 		{
 			window['rl_' + sJsHash + '_twitter_service'] = function () {
-				RL.data().twitterActions(true);
+				Data.twitterActions(true);
 				RL.socialUsers();
 			};
 		}
@@ -1703,7 +1677,7 @@ kn.bootstart(RL);
 	module.exports = new RainLoopApp();
 
 }(module));
-},{"../Common/Consts.js":4,"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/Plugins.js":7,"../Common/Utils.js":8,"../External/jquery.js":16,"../External/underscore.js":19,"../External/window.js":20,"../Knoin/Knoin.js":21,"./AbstractApp.js":2}],4:[function(require,module,exports){
+},{"../Common/Consts.js":4,"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/LinkBuilder.js":7,"../Common/Plugins.js":8,"../Common/Utils.js":9,"../External/jquery.js":19,"../External/moment.js":22,"../External/underscore.js":24,"../External/window.js":25,"../Knoin/Knoin.js":26,"../Storages/WebMailAjaxRemoteStorage.js":39,"../Storages/WebMailCacheStorage.js":40,"../Storages/WebMailDataStorage.js":41,"../ViewModels/Popups/PopupsAskViewModel.js":42,"./AbstractApp.js":2}],4:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -2455,11 +2429,340 @@ kn.bootstart(RL);
 		'settings-removed': [],
 		'settings-disabled': []
 	};
-
+	
 	module.exports = Globals;
 
 }(module));
-},{"../External/$html.js":10,"../External/ko.js":17,"../External/window.js":20}],7:[function(require,module,exports){
+},{"../External/$html.js":12,"../External/ko.js":21,"../External/window.js":25}],7:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../External/window.js'),
+		Utils = require('./Utils.js')
+	;
+	
+	/**
+	 * @constructor
+	 */
+	function LinkBuilder()
+	{
+		this.sBase = '#/';
+		this.sServer = './?';
+		this.sVersion = RL.settingsGet('Version');
+		this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
+		this.sStaticPrefix = RL.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
+	}
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.root = function ()
+	{
+		return this.sBase;
+	};
+
+	/**
+	 * @param {string} sDownload
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.attachmentDownload = function (sDownload)
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/Download/' + sDownload;
+	};
+
+	/**
+	 * @param {string} sDownload
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.attachmentPreview = function (sDownload)
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/View/' + sDownload;
+	};
+
+	/**
+	 * @param {string} sDownload
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.attachmentPreviewAsPlain = function (sDownload)
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ViewAsPlain/' + sDownload;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.upload = function ()
+	{
+		return this.sServer + '/Upload/' + this.sSpecSuffix + '/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.uploadContacts = function ()
+	{
+		return this.sServer + '/UploadContacts/' + this.sSpecSuffix + '/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.uploadBackground = function ()
+	{
+		return this.sServer + '/UploadBackground/' + this.sSpecSuffix + '/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.append = function ()
+	{
+		return this.sServer + '/Append/' + this.sSpecSuffix + '/';
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.change = function (sEmail)
+	{
+		return this.sServer + '/Change/' + this.sSpecSuffix + '/' + window.encodeURIComponent(sEmail) + '/';
+	};
+
+	/**
+	 * @param {string=} sAdd
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.ajax = function (sAdd)
+	{
+		return this.sServer + '/Ajax/' + this.sSpecSuffix + '/' + sAdd;
+	};
+
+	/**
+	 * @param {string} sRequestHash
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.messageViewLink = function (sRequestHash)
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ViewAsPlain/' + sRequestHash;
+	};
+
+	/**
+	 * @param {string} sRequestHash
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/Download/' + sRequestHash;
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.avatarLink = function (sEmail)
+	{
+		return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
+	//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.inbox = function ()
+	{
+		return this.sBase + 'mailbox/Inbox';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.messagePreview = function ()
+	{
+		return this.sBase + 'mailbox/message-preview';
+	};
+
+	/**
+	 * @param {string=} sScreenName
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.settings = function (sScreenName)
+	{
+		var sResult = this.sBase + 'settings';
+		if (!Utils.isUnd(sScreenName) && '' !== sScreenName)
+		{
+			sResult += '/' + sScreenName;
+		}
+
+		return sResult;
+	};
+
+	/**
+	 * @param {string} sScreenName
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.admin = function (sScreenName)
+	{
+		var sResult = this.sBase;
+		switch (sScreenName) {
+		case 'AdminDomains':
+			sResult += 'domains';
+			break;
+		case 'AdminSecurity':
+			sResult += 'security';
+			break;
+		case 'AdminLicensing':
+			sResult += 'licensing';
+			break;
+		}
+
+		return sResult;
+	};
+
+	/**
+	 * @param {string} sFolder
+	 * @param {number=} iPage = 1
+	 * @param {string=} sSearch = ''
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.mailBox = function (sFolder, iPage, sSearch)
+	{
+		iPage = Utils.isNormal(iPage) ? Utils.pInt(iPage) : 1;
+		sSearch = Utils.pString(sSearch);
+
+		var sResult = this.sBase + 'mailbox/';
+		if ('' !== sFolder)
+		{
+			sResult += encodeURI(sFolder);
+		}
+		if (1 < iPage)
+		{
+			sResult = sResult.replace(/[\/]+$/, '');
+			sResult += '/p' + iPage;
+		}
+		if ('' !== sSearch)
+		{
+			sResult = sResult.replace(/[\/]+$/, '');
+			sResult += '/' + encodeURI(sSearch);
+		}
+
+		return sResult;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.phpInfo = function ()
+	{
+		return this.sServer + 'Info';
+	};
+
+	/**
+	 * @param {string} sLang
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.langLink = function (sLang)
+	{
+		return this.sServer + '/Lang/0/' + encodeURI(sLang) + '/' + this.sVersion + '/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.exportContactsVcf = function ()
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsVcf/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.exportContactsCsv = function ()
+	{
+		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsCsv/';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.emptyContactPic = function ()
+	{
+		return this.sStaticPrefix + 'css/images/empty-contact.png';
+	};
+
+	/**
+	 * @param {string} sFileName
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.sound = function (sFileName)
+	{
+		return  this.sStaticPrefix + 'sounds/' + sFileName;
+	};
+
+	/**
+	 * @param {string} sTheme
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.themePreviewLink = function (sTheme)
+	{
+		var sPrefix = 'rainloop/v/' + this.sVersion + '/';
+		if ('@custom' === sTheme.substr(-7))
+		{
+			sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
+			sPrefix  = '';
+		}
+
+		return sPrefix + 'themes/' + encodeURI(sTheme) + '/images/preview.png';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.notificationMailIcon = function ()
+	{
+		return  this.sStaticPrefix + 'css/images/icom-message-notification.png';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.openPgpJs = function ()
+	{
+		return  this.sStaticPrefix + 'js/openpgp.min.js';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.socialGoogle = function ()
+	{
+		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.socialTwitter = function ()
+	{
+		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.socialFacebook = function ()
+	{
+		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+	};
+
+	module.exports = new LinkBuilder();
+
+}(module));
+},{"../External/window.js":25,"./Utils.js":9}],8:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -2468,7 +2771,9 @@ kn.bootstart(RL);
 
 	var
 		Plugins = {},
-		Utils = require('./Utils.js')
+		Utils = require('./Utils.js'),
+		Remote = require('../Remote.js'),
+		RL = require('../RL.js')
 	;
 
 	/**
@@ -2532,7 +2837,7 @@ kn.bootstart(RL);
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		return RL ? RL.settingsGet(sName) : null; // TODO cjs
+		return RL ? RL().settingsGet(sName) : null;
 	};
 
 	/**
@@ -2545,9 +2850,9 @@ kn.bootstart(RL);
 	 */
 	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (RL) // TODO cjs
+		if (Remote)
 		{
-			RL.remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions); // TODO cjs
+			Remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 
@@ -2566,7 +2871,7 @@ kn.bootstart(RL);
 	module.exports = Plugins;
 
 }(module));
-},{"./Utils.js":8}],8:[function(require,module,exports){
+},{"../RL.js":32,"../Remote.js":33,"./Utils.js":9}],9:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -2575,13 +2880,20 @@ kn.bootstart(RL);
 
 	var
 		Utils = {},
+		
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
+		key = require('../External/key.js'),
 		window = require('../External/window.js'),
 		$window = require('../External/$window.js'),
 		$doc = require('../External/$doc.js'),
 		NotificationClass = require('../External/NotificationClass.js'),
+
+		LocalStorage = require('../Storages/LocalStorage.js'),
+
+		kn = require('../Knoin/Knoin.js'),
+		
 		Enums = require('./Enums.js'),
 		Globals = require('./Globals.js')
 	;
@@ -3809,7 +4121,7 @@ kn.bootstart(RL);
 	 */
 	Utils.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = /** @type {Array|null} */ RL.local().get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
@@ -3819,7 +4131,7 @@ kn.bootstart(RL);
 	 */
 	Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = /** @type {Array|null} */ RL.local().get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		if (!_.isArray(aExpandedList))
 		{
 			aExpandedList = [];
@@ -3835,7 +4147,7 @@ kn.bootstart(RL);
 			aExpandedList = _.without(aExpandedList, sFullNameHash);
 		}
 
-		RL.local().set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
+		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 	};
 
 	Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
@@ -3846,7 +4158,7 @@ kn.bootstart(RL);
 			oLeft = $(sLeft),
 			oRight = $(sRight),
 
-			mLeftWidth = RL.local().get(sClientSideKeyName) || null,
+			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
 
 			fSetWidth = function (iWidth) {
 				if (iWidth)
@@ -3870,7 +4182,7 @@ kn.bootstart(RL);
 				else
 				{
 					oLeft.resizable('enable');
-					var iWidth = Utils.pInt(RL.local().get(sClientSideKeyName)) || iMinWidth;
+					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
@@ -3878,7 +4190,7 @@ kn.bootstart(RL);
 			fResizeFunction = function (oEvent, oObject) {
 				if (oObject && oObject.size && oObject.size.width)
 				{
-					RL.local().set(sClientSideKeyName, oObject.size.width);
+					LocalStorage.set(sClientSideKeyName, oObject.size.width);
 
 					oRight.css({
 						'left': '' + oObject.size.width + 'px'
@@ -3970,61 +4282,6 @@ kn.bootstart(RL);
 		}
 	};
 
-	/**
-	 * @param {string} sName
-	 * @param {Function} ViewModelClass
-	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
-	 */
-	Utils.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
-	{
-		if (ViewModelClass)
-		{
-			if (!AbstractViewModel)
-			{
-				AbstractViewModel = KnoinAbstractViewModel;
-			}
-
-			ViewModelClass.__name = sName;
-			Plugins.regViewModelHook(sName, ViewModelClass);
-			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
-		}
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 * @param {string} sLabelName
-	 * @param {string} sTemplate
-	 * @param {string} sRoute
-	 * @param {boolean=} bDefault
-	 */
-	Utils.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute, bDefault)
-	{
-		SettingsViewModelClass.__rlSettingsData = {
-			'Label':  sLabelName,
-			'Template':  sTemplate,
-			'Route':  sRoute,
-			'IsDefault':  !!bDefault
-		};
-
-		Globals.aViewModels['settings'].push(SettingsViewModelClass);
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 */
-	Utils.removeSettingsViewModel = function (SettingsViewModelClass)
-	{
-		Globals.aViewModels['settings-removed'].push(SettingsViewModelClass);
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 */
-	Utils.disableSettingsViewModel = function (SettingsViewModelClass)
-	{
-		Globals.aViewModels['settings-disabled'].push(SettingsViewModelClass);
-	};
-
 	Utils.convertThemeName = function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
@@ -4079,7 +4336,7 @@ kn.bootstart(RL);
 
 		while (sResult.length < iLen)
 		{
-			sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
+			sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
 		}
 
 		return sResult;
@@ -4143,7 +4400,7 @@ kn.bootstart(RL);
 
 				Utils.i18nToNode(oBody);
 
-				Knoin.prototype.applyExternal(oViewModel, $('#rl-content', oBody)[0]);
+				kn.applyExternal(oViewModel, $('#rl-content', oBody)[0]);
 
 				window[sFunc] = null;
 
@@ -4673,34 +4930,47 @@ kn.bootstart(RL);
 	module.exports = Utils;
 
 }(module));
-},{"../External/$doc.js":9,"../External/$window.js":11,"../External/NotificationClass.js":13,"../External/jquery.js":16,"../External/ko.js":17,"../External/underscore.js":19,"../External/window.js":20,"./Enums.js":5,"./Globals.js":6}],9:[function(require,module,exports){
+},{"../External/$doc.js":11,"../External/$window.js":13,"../External/NotificationClass.js":16,"../External/jquery.js":19,"../External/key.js":20,"../External/ko.js":21,"../External/underscore.js":24,"../External/window.js":25,"../Knoin/Knoin.js":26,"../Storages/LocalStorage.js":36,"./Enums.js":5,"./Globals.js":6}],10:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = require('./jquery.js')('<div></div>');
+
+},{"./jquery.js":19}],11:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = require('./jquery.js')(window.document);
 
-},{"./jquery.js":16}],10:[function(require,module,exports){
+},{"./jquery.js":19}],12:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = require('./jquery.js')('html');
 
-},{"./jquery.js":16}],11:[function(require,module,exports){
+},{"./jquery.js":19}],13:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = require('./jquery.js')(window);
 
-},{"./jquery.js":16}],12:[function(require,module,exports){
+},{"./jquery.js":19}],14:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = require('./window.js')['rainloopAppData'] || {};
-},{"./window.js":20}],13:[function(require,module,exports){
+},{"./window.js":25}],15:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = JSON;
+},{}],16:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
@@ -4710,25 +4980,31 @@ var
 ;
 
 module.exports = window.Notification && window.Notification.requestPermission ? window.Notification : null;
-},{"./window.js":20}],14:[function(require,module,exports){
+},{"./window.js":25}],17:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = crossroads;
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = hasher;
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = $;
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = key;
+},{}],21:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -4741,8 +5017,11 @@ module.exports = $;
 		window = require('./window.js'),
 		$window = require('./$window.js'),
 		$doc = require('./$doc.js'),
+
 		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+
+		RL = require('../RL.js')
 	;
 
 	ko.bindingHandlers.tooltip = {
@@ -5286,7 +5565,7 @@ module.exports = $;
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
 				'autoCompleteSource': function (oData, fResponse) {
-					RL.getAutocomplete(oData.term, function (aData) {
+					RL().getAutocomplete(oData.term, function (aData) {
 						fResponse(_.map(aData, function (oEmailItem) {
 							return oEmailItem.toLine(false);
 						}));
@@ -5361,7 +5640,7 @@ module.exports = $;
 				'inputDelimiters': [',', ';'],
 				'outputDelimiter': ',',
 				'autoCompleteSource': function (oData, fResponse) {
-					RL.getContactTagsAutocomplete(oData.term, function (aData) { // TODO cjs
+					RL().getContactTagsAutocomplete(oData.term, function (aData) {
 						fResponse(_.map(aData, function (oTagItem) {
 							return oTagItem.toLine(false);
 						}));
@@ -5593,26 +5872,32 @@ module.exports = $;
 	module.exports = ko;
 
 }(module));
-},{"../Common/Globals.js":6,"../Common/Utils.js":8,"./$doc.js":9,"./$window.js":11,"./jquery.js":16,"./underscore.js":19,"./window.js":20}],18:[function(require,module,exports){
+},{"../Common/Globals.js":6,"../Common/Utils.js":9,"../RL.js":32,"./$doc.js":11,"./$window.js":13,"./jquery.js":19,"./underscore.js":24,"./window.js":25}],22:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = moment;
+},{}],23:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = ssm;
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = window;
-},{}],20:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 'use strict';
 
 module.exports = window;
 
-},{}],21:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -5626,9 +5911,11 @@ module.exports = window;
 		hasher = require('../External/hasher.js'),
 		crossroads = require('../External/crossroads.js'),
 		$html = require('../External/$html.js'),
-		Utils = require('../Common/Utils.js'),
 		Globals = require('../Common/Globals.js'),
-		Enums = require('../Common/Enums.js')
+		Enums = require('../Common/Enums.js'),
+		Plugins = require('../Common/Plugins.js'),
+		Utils = require('../Common/Utils.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
 
 	/**
@@ -5638,6 +5925,7 @@ module.exports = window;
 	{
 		this.sDefaultScreenName = '';
 		this.oScreens = {};
+		this.oBoot = null;
 		this.oCurrentScreen = null;
 	}
 
@@ -5654,11 +5942,88 @@ module.exports = window;
 
 	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oScreens = {};
+	Knoin.prototype.oBoot = null;
 	Knoin.prototype.oCurrentScreen = null;
 
 	Knoin.prototype.hideLoading = function ()
 	{
 		$('#rl-loading').hide();
+	};
+
+	Knoin.prototype.rl = function ()
+	{
+		return this.oBoot;
+	};
+
+	Knoin.prototype.remote = function ()
+	{
+		return this.oRemote;
+	};
+
+	/**
+	 * @param {Object} thisObject
+	 */
+	Knoin.prototype.constructorEnd = function (thisObject)
+	{
+		if (Utils.isFunc(thisObject['__constructor_end']))
+		{
+			thisObject['__constructor_end'].call(thisObject);
+		}
+	};
+
+	/**
+	 * @param {string} sName
+	 * @param {Function} ViewModelClass
+	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
+	 */
+	Knoin.prototype.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
+	{
+		if (ViewModelClass)
+		{
+			if (!AbstractViewModel)
+			{
+				AbstractViewModel = KnoinAbstractViewModel;
+			}
+
+			ViewModelClass.__name = sName;
+			Plugins.regViewModelHook(sName, ViewModelClass);
+			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
+		}
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 * @param {string} sLabelName
+	 * @param {string} sTemplate
+	 * @param {string} sRoute
+	 * @param {boolean=} bDefault
+	 */
+	Knoin.prototype.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute, bDefault)
+	{
+		SettingsViewModelClass.__rlSettingsData = {
+			'Label':  sLabelName,
+			'Template':  sTemplate,
+			'Route':  sRoute,
+			'IsDefault':  !!bDefault
+		};
+
+		Globals.aViewModels['settings'].push(SettingsViewModelClass);
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 */
+	Knoin.prototype.removeSettingsViewModel = function (SettingsViewModelClass)
+	{
+		Globals.aViewModels['settings-removed'].push(SettingsViewModelClass);
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 */
+	Knoin.prototype.disableSettingsViewModel = function (SettingsViewModelClass)
+	{
+		Globals.aViewModels['settings-disabled'].push(SettingsViewModelClass);
 	};
 
 	Knoin.prototype.routeOff = function ()
@@ -6017,8 +6382,11 @@ module.exports = window;
 	/**
 	 * @return {Knoin}
 	 */
-	Knoin.prototype.bootstart = function (RL)
+	Knoin.prototype.bootstart = function (RL, Remote)
 	{
+		this.oBoot = RL;
+		this.oRemote = Remote;
+		
 		var
 			window = require('../External/window.js'),
 			$window = require('../External/$window.js'),
@@ -6044,7 +6412,7 @@ module.exports = window;
 		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
 		window['rl']['remoteRequest'] = Plugins.remoteRequest;
 		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
-		window['rl']['addSettingsViewModel'] = Utils.addSettingsViewModel;
+		window['rl']['addSettingsViewModel'] = _.bind(this.addSettingsViewModel, this);
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = EmailModel;
@@ -6079,7 +6447,7 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module));
-},{"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/Plugins.js":7,"../Common/Utils.js":8,"../External/$html.js":10,"../External/$window.js":11,"../External/crossroads.js":14,"../External/hasher.js":15,"../External/jquery.js":16,"../External/ko.js":17,"../External/underscore.js":19,"../External/window.js":20,"../Models/EmailModel.js":23}],22:[function(require,module,exports){
+},{"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/Plugins.js":8,"../Common/Utils.js":9,"../External/$html.js":12,"../External/$window.js":13,"../External/crossroads.js":17,"../External/hasher.js":18,"../External/jquery.js":19,"../External/ko.js":21,"../External/underscore.js":24,"../External/window.js":25,"../Knoin/KnoinAbstractViewModel.js":28,"../Models/EmailModel.js":30}],27:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -6102,7 +6470,370 @@ module.exports = window;
 	module.exports = KnoinAbstractBoot;
 
 }(module));
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		ko = require('../External/ko.js'),
+		$window = require('../External/$window.js'),
+		Utils = require('../Common/Utils.js'),
+		Enums = require('../Common/Enums.js')
+	;
+
+	/**
+	 * @param {string=} sPosition = ''
+	 * @param {string=} sTemplate = ''
+	 * @constructor
+	 */
+	function KnoinAbstractViewModel(sPosition, sTemplate)
+	{
+		this.bDisabeCloseOnEsc = false;
+		this.sPosition = Utils.pString(sPosition);
+		this.sTemplate = Utils.pString(sTemplate);
+
+		this.sDefaultKeyScope = Enums.KeyState.None;
+		this.sCurrentKeyScope = this.sDefaultKeyScope;
+
+		this.viewModelName = '';
+		this.viewModelVisibility = ko.observable(false);
+		this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
+
+		this.viewModelDom = null;
+	}
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.sPosition = '';
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.sTemplate = '';
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelName = '';
+
+	/**
+	 * @type {?}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelDom = null;
+
+	/**
+	 * @return {string}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelTemplate = function ()
+	{
+		return this.sTemplate;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelPosition = function ()
+	{
+		return this.sPosition;
+	};
+
+	KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototype.closeCommand = function ()
+	{
+	};
+
+	KnoinAbstractViewModel.prototype.storeAndSetKeyScope = function ()
+	{
+		this.sCurrentKeyScope = RL.data().keyScope(); // TODO cjs
+		RL.data().keyScope(this.sDefaultKeyScope); // TODO cjs
+	};
+
+	KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
+	{
+		RL.data().keyScope(this.sCurrentKeyScope); // TODO cjs
+	};
+
+	KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
+	{
+		var self = this;
+		$window.on('keydown', function (oEvent) {
+			if (oEvent && self.modalVisibility && self.modalVisibility())
+			{
+				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
+				{
+					Utils.delegateRun(self, 'cancelCommand');
+					return false;
+				}
+				else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
+				{
+					return false;
+				}
+			}
+
+			return true;
+		});
+	};
+
+	module.exports = KnoinAbstractViewModel;
+
+}(module));
+},{"../Common/Enums.js":5,"../Common/Utils.js":9,"../External/$window.js":13,"../External/ko.js":21}],29:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../External/window.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js')
+	;
+	
+	/**
+	 * @constructor
+	 */
+	function AttachmentModel()
+	{
+		this.mimeType = '';
+		this.fileName = '';
+		this.estimatedSize = 0;
+		this.friendlySize = '';
+		this.isInline = false;
+		this.isLinked = false;
+		this.cid = '';
+		this.cidWithOutTags = '';
+		this.contentLocation = '';
+		this.download = '';
+		this.folder = '';
+		this.uid = '';
+		this.mimeIndex = '';
+	}
+
+	/**
+	 * @static
+	 * @param {AjaxJsonAttachment} oJsonAttachment
+	 * @return {?AttachmentModel}
+	 */
+	AttachmentModel.newInstanceFromJson = function (oJsonAttachment)
+	{
+		var oAttachmentModel = new AttachmentModel();
+		return oAttachmentModel.initByJson(oJsonAttachment) ? oAttachmentModel : null;
+	};
+
+	AttachmentModel.prototype.mimeType = '';
+	AttachmentModel.prototype.fileName = '';
+	AttachmentModel.prototype.estimatedSize = 0;
+	AttachmentModel.prototype.friendlySize = '';
+	AttachmentModel.prototype.isInline = false;
+	AttachmentModel.prototype.isLinked = false;
+	AttachmentModel.prototype.cid = '';
+	AttachmentModel.prototype.cidWithOutTags = '';
+	AttachmentModel.prototype.contentLocation = '';
+	AttachmentModel.prototype.download = '';
+	AttachmentModel.prototype.folder = '';
+	AttachmentModel.prototype.uid = '';
+	AttachmentModel.prototype.mimeIndex = '';
+
+	/**
+	 * @param {AjaxJsonAttachment} oJsonAttachment
+	 */
+	AttachmentModel.prototype.initByJson = function (oJsonAttachment)
+	{
+		var bResult = false;
+		if (oJsonAttachment && 'Object/Attachment' === oJsonAttachment['@Object'])
+		{
+			this.mimeType = (oJsonAttachment.MimeType || '').toLowerCase();
+			this.fileName = oJsonAttachment.FileName;
+			this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
+			this.isInline = !!oJsonAttachment.IsInline;
+			this.isLinked = !!oJsonAttachment.IsLinked;
+			this.cid = oJsonAttachment.CID;
+			this.contentLocation = oJsonAttachment.ContentLocation;
+			this.download = oJsonAttachment.Download;
+
+			this.folder = oJsonAttachment.Folder;
+			this.uid = oJsonAttachment.Uid;
+			this.mimeIndex = oJsonAttachment.MimeIndex;
+
+			this.friendlySize = Utils.friendlySize(this.estimatedSize);
+			this.cidWithOutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
+
+			bResult = true;
+		}
+
+		return bResult;
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.isImage = function ()
+	{
+		return -1 < Utils.inArray(this.mimeType.toLowerCase(),
+			['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+		);
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.isText = function ()
+	{
+		return 'text/' === this.mimeType.substr(0, 5) &&
+			-1 === Utils.inArray(this.mimeType, ['text/html']);
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.isPdf = function ()
+	{
+		return Globals.bAllowPdfPreview && 'application/pdf' === this.mimeType;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.linkDownload = function ()
+	{
+		return LinkBuilder.attachmentDownload(this.download); // TODO cjs
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.linkPreview = function ()
+	{
+		return LinkBuilder.attachmentPreview(this.download); // TODO cjs
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.linkPreviewAsPlain = function ()
+	{
+		return LinkBuilder.attachmentPreviewAsPlain(this.download);
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.generateTransferDownloadUrl = function ()
+	{
+		var	sLink = this.linkDownload();
+		if ('http' !== sLink.substr(0, 4))
+		{
+			sLink = window.location.protocol + '//' + window.location.host + window.location.pathname + sLink;
+		}
+
+		return this.mimeType + ':' + this.fileName + ':' + sLink;
+	};
+
+	/**
+	 * @param {AttachmentModel} oAttachment
+	 * @param {*} oEvent
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.eventDragStart = function (oAttachment, oEvent)
+	{
+		var	oLocalEvent = oEvent.originalEvent || oEvent;
+		if (oAttachment && oLocalEvent && oLocalEvent.dataTransfer && oLocalEvent.dataTransfer.setData)
+		{
+			oLocalEvent.dataTransfer.setData('DownloadURL', this.generateTransferDownloadUrl());
+		}
+
+		return true;
+	};
+
+	AttachmentModel.prototype.iconClass = function ()
+	{
+		var
+			aParts = this.mimeType.toLocaleString().split('/'),
+			sClass = 'icon-file'
+		;
+
+		if (aParts && aParts[1])
+		{
+			if ('image' === aParts[0])
+			{
+				sClass = 'icon-file-image';
+			}
+			else if ('text' === aParts[0])
+			{
+				sClass = 'icon-file-text';
+			}
+			else if ('audio' === aParts[0])
+			{
+				sClass = 'icon-file-music';
+			}
+			else if ('video' === aParts[0])
+			{
+				sClass = 'icon-file-movie';
+			}
+			else if (-1 < Utils.inArray(aParts[1],
+				['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed']))
+			{
+				sClass = 'icon-file-zip';
+			}
+	//		else if (-1 < Utils.inArray(aParts[1],
+	//			['pdf', 'x-pdf']))
+	//		{
+	//			sClass = 'icon-file-pdf';
+	//		}
+	//		else if (-1 < Utils.inArray(aParts[1], [
+	//			'exe', 'x-exe', 'x-winexe', 'bat'
+	//		]))
+	//		{
+	//			sClass = 'icon-console';
+	//		}
+			else if (-1 < Utils.inArray(aParts[1], [
+				'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'vnd.openxmlformats-officedocument.wordprocessingml.template',
+				'vnd.ms-word.document.macroEnabled.12',
+				'vnd.ms-word.template.macroEnabled.12'
+			]))
+			{
+				sClass = 'icon-file-text';
+			}
+			else if (-1 < Utils.inArray(aParts[1], [
+				'excel', 'ms-excel', 'vnd.ms-excel',
+				'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				'vnd.openxmlformats-officedocument.spreadsheetml.template',
+				'vnd.ms-excel.sheet.macroEnabled.12',
+				'vnd.ms-excel.template.macroEnabled.12',
+				'vnd.ms-excel.addin.macroEnabled.12',
+				'vnd.ms-excel.sheet.binary.macroEnabled.12'
+			]))
+			{
+				sClass = 'icon-file-excel';
+			}
+			else if (-1 < Utils.inArray(aParts[1], [
+				'powerpoint', 'ms-powerpoint', 'vnd.ms-powerpoint',
+				'vnd.openxmlformats-officedocument.presentationml.presentation',
+				'vnd.openxmlformats-officedocument.presentationml.template',
+				'vnd.openxmlformats-officedocument.presentationml.slideshow',
+				'vnd.ms-powerpoint.addin.macroEnabled.12',
+				'vnd.ms-powerpoint.presentation.macroEnabled.12',
+				'vnd.ms-powerpoint.template.macroEnabled.12',
+				'vnd.ms-powerpoint.slideshow.macroEnabled.12'
+			]))
+			{
+				sClass = 'icon-file-chart-graph';
+			}
+		}
+
+		return sClass;
+	};
+
+	module.exports = AttachmentModel;
+
+}(module));
+},{"../Common/Globals.js":6,"../Common/LinkBuilder.js":7,"../Common/Utils.js":9,"../External/window.js":25}],30:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -6481,4 +7212,4573 @@ module.exports = window;
 	module.exports = EmailModel;
 
 }(module));
-},{"../Common/Enums.js":5,"../Common/Utils.js":8}]},{},[1]);
+},{"../Common/Enums.js":5,"../Common/Utils.js":9}],31:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../External/window.js'),
+		$ = require('../External/jquery.js'),
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		moment = require('../External/moment.js'),
+		$window = require('../External/$window.js'),
+		$div = require('../External/$div.js'),
+
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		EmailModel = require('./EmailModel.js'),
+		AttachmentModel = require('./AttachmentModel.js')
+	;
+
+	/**
+	* @constructor
+	*/
+	function MessageModel()
+	{
+		this.folderFullNameRaw = '';
+		this.uid = '';
+		this.hash = '';
+		this.requestHash = '';
+		this.subject = ko.observable('');
+		this.subjectPrefix = ko.observable('');
+		this.subjectSuffix = ko.observable('');
+		this.size = ko.observable(0);
+		this.dateTimeStampInUTC = ko.observable(0);
+		this.priority = ko.observable(Enums.MessagePriority.Normal);
+
+		this.proxy = false;
+
+		this.fromEmailString = ko.observable('');
+		this.fromClearEmailString = ko.observable('');
+		this.toEmailsString = ko.observable('');
+		this.toClearEmailsString = ko.observable('');
+
+		this.senderEmailsString = ko.observable('');
+		this.senderClearEmailsString = ko.observable('');
+
+		this.emails = [];
+
+		this.from = [];
+		this.to = [];
+		this.cc = [];
+		this.bcc = [];
+		this.replyTo = [];
+		this.deliveredTo = [];
+
+		this.newForAnimation = ko.observable(false);
+
+		this.deleted = ko.observable(false);
+		this.unseen = ko.observable(false);
+		this.flagged = ko.observable(false);
+		this.answered = ko.observable(false);
+		this.forwarded = ko.observable(false);
+		this.isReadReceipt = ko.observable(false);
+
+		this.focused = ko.observable(false);
+		this.selected = ko.observable(false);
+		this.checked = ko.observable(false);
+		this.hasAttachments = ko.observable(false);
+		this.attachmentsMainType = ko.observable('');
+
+		this.moment = ko.observable(moment(moment.unix(0)));
+
+		this.attachmentIconClass = ko.computed(function () {
+			var sClass = '';
+			if (this.hasAttachments())
+			{
+				sClass = 'icon-attachment';
+				switch (this.attachmentsMainType())
+				{
+					case 'image':
+						sClass = 'icon-image';
+						break;
+					case 'archive':
+						sClass = 'icon-file-zip';
+						break;
+					case 'doc':
+						sClass = 'icon-file-text';
+						break;
+	 //				case 'pdf':
+	 //					sClass = 'icon-file-pdf';
+	 //					break;
+				}
+			}
+			return sClass;
+		}, this);
+
+		this.fullFormatDateValue = ko.computed(function () {
+			return MessageModel.calculateFullFromatDateValue(this.dateTimeStampInUTC());
+		}, this);
+
+		this.momentDate = Utils.createMomentDate(this);
+		this.momentShortDate = Utils.createMomentShortDate(this);
+
+		this.dateTimeStampInUTC.subscribe(function (iValue) {
+			var iNow = moment().unix();
+			this.moment(moment.unix(iNow < iValue ? iNow : iValue));
+		}, this);
+
+		this.body = null;
+		this.plainRaw = '';
+		this.isHtml = ko.observable(false);
+		this.hasImages = ko.observable(false);
+		this.attachments = ko.observableArray([]);
+
+		this.isPgpSigned = ko.observable(false);
+		this.isPgpEncrypted = ko.observable(false);
+		this.pgpSignedVerifyStatus = ko.observable(Enums.SignedVerifyStatus.None);
+		this.pgpSignedVerifyUser = ko.observable('');
+
+		this.priority = ko.observable(Enums.MessagePriority.Normal);
+		this.readReceipt = ko.observable('');
+
+		this.aDraftInfo = [];
+		this.sMessageId = '';
+		this.sInReplyTo = '';
+		this.sReferences = '';
+
+		this.parentUid = ko.observable(0);
+		this.threads = ko.observableArray([]);
+		this.threadsLen = ko.observable(0);
+		this.hasUnseenSubMessage = ko.observable(false);
+		this.hasFlaggedSubMessage = ko.observable(false);
+
+		this.lastInCollapsedThread = ko.observable(false);
+		this.lastInCollapsedThreadLoading = ko.observable(false);
+
+		this.threadsLenResult = ko.computed(function () {
+			var iCount = this.threadsLen();
+			return 0 === this.parentUid() && 0 < iCount ? iCount + 1 : '';
+		}, this);
+	}
+
+	/**
+	* @static
+	* @param {AjaxJsonMessage} oJsonMessage
+	* @return {?MessageModel}
+	*/
+	MessageModel.newInstanceFromJson = function (oJsonMessage)
+	{
+		var oMessageModel = new MessageModel();
+		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
+	};
+
+	/**
+	* @static
+	* @param {number} iTimeStampInUTC
+	* @return {string}
+	*/
+	MessageModel.calculateFullFromatDateValue = function (iTimeStampInUTC)
+	{
+		return 0 < iTimeStampInUTC ? moment.unix(iTimeStampInUTC).format('LLL') : '';
+	};
+
+	/**
+	* @static
+	* @param {Array} aEmail
+	* @param {boolean=} bFriendlyView
+	* @param {boolean=} bWrapWithLink = false
+	* @return {string}
+	*/
+	MessageModel.emailsToLine = function (aEmail, bFriendlyView, bWrapWithLink)
+	{
+		var
+			aResult = [],
+			iIndex = 0,
+			iLen = 0
+		;
+
+		if (Utils.isNonEmptyArray(aEmail))
+		{
+			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
+			{
+				aResult.push(aEmail[iIndex].toLine(bFriendlyView, bWrapWithLink));
+			}
+		}
+
+		return aResult.join(', ');
+	};
+
+	/**
+	* @static
+	* @param {Array} aEmail
+	* @return {string}
+	*/
+	MessageModel.emailsToLineClear = function (aEmail)
+	{
+		var
+			aResult = [],
+			iIndex = 0,
+			iLen = 0
+		;
+
+		if (Utils.isNonEmptyArray(aEmail))
+		{
+			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
+			{
+				if (aEmail[iIndex] && aEmail[iIndex].email && '' !== aEmail[iIndex].name)
+				{
+					aResult.push(aEmail[iIndex].email);
+				}
+			}
+		}
+
+		return aResult.join(', ');
+	};
+
+	/**
+	* @static
+	* @param {?Array} aJsonEmails
+	* @return {Array.<EmailModel>}
+	*/
+	MessageModel.initEmailsFromJson = function (aJsonEmails)
+	{
+		var
+			iIndex = 0,
+			iLen = 0,
+			oEmailModel = null,
+			aResult = []
+		;
+
+		if (Utils.isNonEmptyArray(aJsonEmails))
+		{
+			for (iIndex = 0, iLen = aJsonEmails.length; iIndex < iLen; iIndex++)
+			{
+				oEmailModel = EmailModel.newInstanceFromJson(aJsonEmails[iIndex]);
+				if (oEmailModel)
+				{
+					aResult.push(oEmailModel);
+				}
+			}
+		}
+
+		return aResult;
+	};
+
+	/**
+	* @static
+	* @param {Array.<EmailModel>} aMessageEmails
+	* @param {Object} oLocalUnic
+	* @param {Array} aLocalEmails
+	*/
+	MessageModel.replyHelper = function (aMessageEmails, oLocalUnic, aLocalEmails)
+	{
+	   if (aMessageEmails && 0 < aMessageEmails.length)
+	   {
+		   var
+			   iIndex = 0,
+			   iLen = aMessageEmails.length
+		   ;
+
+		   for (; iIndex < iLen; iIndex++)
+		   {
+			   if (Utils.isUnd(oLocalUnic[aMessageEmails[iIndex].email]))
+			   {
+				   oLocalUnic[aMessageEmails[iIndex].email] = true;
+				   aLocalEmails.push(aMessageEmails[iIndex]);
+			   }
+		   }
+	   }
+	};
+
+	MessageModel.prototype.clear = function ()
+	{
+	   this.folderFullNameRaw = '';
+	   this.uid = '';
+	   this.hash = '';
+	   this.requestHash = '';
+	   this.subject('');
+	   this.subjectPrefix('');
+	   this.subjectSuffix('');
+	   this.size(0);
+	   this.dateTimeStampInUTC(0);
+	   this.priority(Enums.MessagePriority.Normal);
+
+	   this.proxy = false;
+
+	   this.fromEmailString('');
+	   this.fromClearEmailString('');
+	   this.toEmailsString('');
+	   this.toClearEmailsString('');
+	   this.senderEmailsString('');
+	   this.senderClearEmailsString('');
+
+	   this.emails = [];
+
+	   this.from = [];
+	   this.to = [];
+	   this.cc = [];
+	   this.bcc = [];
+	   this.replyTo = [];
+	   this.deliveredTo = [];
+
+	   this.newForAnimation(false);
+
+	   this.deleted(false);
+	   this.unseen(false);
+	   this.flagged(false);
+	   this.answered(false);
+	   this.forwarded(false);
+	   this.isReadReceipt(false);
+
+	   this.selected(false);
+	   this.checked(false);
+	   this.hasAttachments(false);
+	   this.attachmentsMainType('');
+
+	   this.body = null;
+	   this.isHtml(false);
+	   this.hasImages(false);
+	   this.attachments([]);
+
+	   this.isPgpSigned(false);
+	   this.isPgpEncrypted(false);
+	   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+	   this.pgpSignedVerifyUser('');
+
+	   this.priority(Enums.MessagePriority.Normal);
+	   this.readReceipt('');
+	   this.aDraftInfo = [];
+	   this.sMessageId = '';
+	   this.sInReplyTo = '';
+	   this.sReferences = '';
+
+	   this.parentUid(0);
+	   this.threads([]);
+	   this.threadsLen(0);
+	   this.hasUnseenSubMessage(false);
+	   this.hasFlaggedSubMessage(false);
+
+	   this.lastInCollapsedThread(false);
+	   this.lastInCollapsedThreadLoading(false);
+	};
+
+	MessageModel.prototype.computeSenderEmail = function ()
+	{
+	   var
+		   sSent = RL.data().sentFolder(),
+		   sDraft = RL.data().draftFolder()
+	   ;
+
+	   this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+		   this.toEmailsString() : this.fromEmailString());
+
+	   this.senderClearEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+		   this.toClearEmailsString() : this.fromClearEmailString());
+	};
+
+	/**
+	* @param {AjaxJsonMessage} oJsonMessage
+	* @return {boolean}
+	*/
+	MessageModel.prototype.initByJson = function (oJsonMessage)
+	{
+	   var bResult = false;
+	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
+	   {
+		   this.folderFullNameRaw = oJsonMessage.Folder;
+		   this.uid = oJsonMessage.Uid;
+		   this.hash = oJsonMessage.Hash;
+		   this.requestHash = oJsonMessage.RequestHash;
+
+		   this.proxy = !!oJsonMessage.ExternalProxy;
+
+		   this.size(Utils.pInt(oJsonMessage.Size));
+
+		   this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
+		   this.to = MessageModel.initEmailsFromJson(oJsonMessage.To);
+		   this.cc = MessageModel.initEmailsFromJson(oJsonMessage.Cc);
+		   this.bcc = MessageModel.initEmailsFromJson(oJsonMessage.Bcc);
+		   this.replyTo = MessageModel.initEmailsFromJson(oJsonMessage.ReplyTo);
+		   this.deliveredTo = MessageModel.initEmailsFromJson(oJsonMessage.DeliveredTo);
+
+		   this.subject(oJsonMessage.Subject);
+		   if (Utils.isArray(oJsonMessage.SubjectParts))
+		   {
+			   this.subjectPrefix(oJsonMessage.SubjectParts[0]);
+			   this.subjectSuffix(oJsonMessage.SubjectParts[1]);
+		   }
+		   else
+		   {
+			   this.subjectPrefix('');
+			   this.subjectSuffix(this.subject());
+		   }
+
+		   this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
+		   this.hasAttachments(!!oJsonMessage.HasAttachments);
+		   this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
+
+		   this.fromEmailString(MessageModel.emailsToLine(this.from, true));
+		   this.fromClearEmailString(MessageModel.emailsToLineClear(this.from));
+		   this.toEmailsString(MessageModel.emailsToLine(this.to, true));
+		   this.toClearEmailsString(MessageModel.emailsToLineClear(this.to));
+
+		   this.parentUid(Utils.pInt(oJsonMessage.ParentThread));
+		   this.threads(Utils.isArray(oJsonMessage.Threads) ? oJsonMessage.Threads : []);
+		   this.threadsLen(Utils.pInt(oJsonMessage.ThreadsLen));
+
+		   this.initFlagsByJson(oJsonMessage);
+		   this.computeSenderEmail();
+
+		   bResult = true;
+	   }
+
+	   return bResult;
+	};
+
+	/**
+	* @param {AjaxJsonMessage} oJsonMessage
+	* @return {boolean}
+	*/
+	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
+	{
+	   var
+		   bResult = false,
+		   iPriority = Enums.MessagePriority.Normal
+	   ;
+
+	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
+	   {
+		   iPriority = Utils.pInt(oJsonMessage.Priority);
+		   this.priority(-1 < Utils.inArray(iPriority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
+			   iPriority : Enums.MessagePriority.Normal);
+
+		   this.aDraftInfo = oJsonMessage.DraftInfo;
+
+		   this.sMessageId = oJsonMessage.MessageId;
+		   this.sInReplyTo = oJsonMessage.InReplyTo;
+		   this.sReferences = oJsonMessage.References;
+
+		   this.proxy = !!oJsonMessage.ExternalProxy;
+
+		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   {
+			   this.isPgpSigned(!!oJsonMessage.PgpSigned);
+			   this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
+		   }
+
+		   this.hasAttachments(!!oJsonMessage.HasAttachments);
+		   this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
+
+		   this.foundedCIDs = Utils.isArray(oJsonMessage.FoundedCIDs) ? oJsonMessage.FoundedCIDs : [];
+		   this.attachments(this.initAttachmentsFromJson(oJsonMessage.Attachments));
+
+		   this.readReceipt(oJsonMessage.ReadReceipt || '');
+
+		   this.computeSenderEmail();
+
+		   bResult = true;
+	   }
+
+	   return bResult;
+	};
+
+	/**
+	* @param {(AjaxJsonAttachment|null)} oJsonAttachments
+	* @return {Array}
+	*/
+	MessageModel.prototype.initAttachmentsFromJson = function (oJsonAttachments)
+	{
+	   var
+		   iIndex = 0,
+		   iLen = 0,
+		   oAttachmentModel = null,
+		   aResult = []
+	   ;
+
+	   if (oJsonAttachments && 'Collection/AttachmentCollection' === oJsonAttachments['@Object'] &&
+		   Utils.isNonEmptyArray(oJsonAttachments['@Collection']))
+	   {
+		   for (iIndex = 0, iLen = oJsonAttachments['@Collection'].length; iIndex < iLen; iIndex++)
+		   {
+			   oAttachmentModel = AttachmentModel.newInstanceFromJson(oJsonAttachments['@Collection'][iIndex]);
+			   if (oAttachmentModel)
+			   {
+				   if ('' !== oAttachmentModel.cidWithOutTags && 0 < this.foundedCIDs.length &&
+					   0 <= Utils.inArray(oAttachmentModel.cidWithOutTags, this.foundedCIDs))
+				   {
+					   oAttachmentModel.isLinked = true;
+				   }
+
+				   aResult.push(oAttachmentModel);
+			   }
+		   }
+	   }
+
+	   return aResult;
+	};
+
+	/**
+	* @param {AjaxJsonMessage} oJsonMessage
+	* @return {boolean}
+	*/
+	MessageModel.prototype.initFlagsByJson = function (oJsonMessage)
+	{
+	   var bResult = false;
+
+	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
+	   {
+		   this.unseen(!oJsonMessage.IsSeen);
+		   this.flagged(!!oJsonMessage.IsFlagged);
+		   this.answered(!!oJsonMessage.IsAnswered);
+		   this.forwarded(!!oJsonMessage.IsForwarded);
+		   this.isReadReceipt(!!oJsonMessage.IsReadReceipt);
+
+		   bResult = true;
+	   }
+
+	   return bResult;
+	};
+
+	/**
+	* @param {boolean} bFriendlyView
+	* @param {boolean=} bWrapWithLink = false
+	* @return {string}
+	*/
+	MessageModel.prototype.fromToLine = function (bFriendlyView, bWrapWithLink)
+	{
+	   return MessageModel.emailsToLine(this.from, bFriendlyView, bWrapWithLink);
+	};
+
+	/**
+	* @param {boolean} bFriendlyView
+	* @param {boolean=} bWrapWithLink = false
+	* @return {string}
+	*/
+	MessageModel.prototype.toToLine = function (bFriendlyView, bWrapWithLink)
+	{
+	   return MessageModel.emailsToLine(this.to, bFriendlyView, bWrapWithLink);
+	};
+
+	/**
+	* @param {boolean} bFriendlyView
+	* @param {boolean=} bWrapWithLink = false
+	* @return {string}
+	*/
+	MessageModel.prototype.ccToLine = function (bFriendlyView, bWrapWithLink)
+	{
+	   return MessageModel.emailsToLine(this.cc, bFriendlyView, bWrapWithLink);
+	};
+
+	/**
+	* @param {boolean} bFriendlyView
+	* @param {boolean=} bWrapWithLink = false
+	* @return {string}
+	*/
+	MessageModel.prototype.bccToLine = function (bFriendlyView, bWrapWithLink)
+	{
+	   return MessageModel.emailsToLine(this.bcc, bFriendlyView, bWrapWithLink);
+	};
+
+	/**
+	* @return string
+	*/
+	MessageModel.prototype.lineAsCcc = function ()
+	{
+	   var aResult = [];
+	   if (this.deleted())
+	   {
+		   aResult.push('deleted');
+	   }
+	   if (this.selected())
+	   {
+		   aResult.push('selected');
+	   }
+	   if (this.checked())
+	   {
+		   aResult.push('checked');
+	   }
+	   if (this.flagged())
+	   {
+		   aResult.push('flagged');
+	   }
+	   if (this.unseen())
+	   {
+		   aResult.push('unseen');
+	   }
+	   if (this.answered())
+	   {
+		   aResult.push('answered');
+	   }
+	   if (this.forwarded())
+	   {
+		   aResult.push('forwarded');
+	   }
+	   if (this.focused())
+	   {
+		   aResult.push('focused');
+	   }
+	   if (this.hasAttachments())
+	   {
+		   aResult.push('withAttachments');
+		   switch (this.attachmentsMainType())
+		   {
+			   case 'image':
+				   aResult.push('imageOnlyAttachments');
+				   break;
+			   case 'archive':
+				   aResult.push('archiveOnlyAttachments');
+				   break;
+		   }
+	   }
+	   if (this.newForAnimation())
+	   {
+		   aResult.push('new');
+	   }
+	   if ('' === this.subject())
+	   {
+		   aResult.push('emptySubject');
+	   }
+	   if (0 < this.parentUid())
+	   {
+		   aResult.push('hasParentMessage');
+	   }
+	   if (0 < this.threadsLen() && 0 === this.parentUid())
+	   {
+		   aResult.push('hasChildrenMessage');
+	   }
+	   if (this.hasUnseenSubMessage())
+	   {
+		   aResult.push('hasUnseenSubMessage');
+	   }
+	   if (this.hasFlaggedSubMessage())
+	   {
+		   aResult.push('hasFlaggedSubMessage');
+	   }
+
+	   return aResult.join(' ');
+	};
+
+	/**
+	* @return {boolean}
+	*/
+	MessageModel.prototype.hasVisibleAttachments = function ()
+	{
+	   return !!_.find(this.attachments(), function (oAttachment) {
+		   return !oAttachment.isLinked;
+	   });
+	};
+
+	/**
+	* @param {string} sCid
+	* @return {*}
+	*/
+	MessageModel.prototype.findAttachmentByCid = function (sCid)
+	{
+	   var
+		   oResult = null,
+		   aAttachments = this.attachments()
+	   ;
+
+	   if (Utils.isNonEmptyArray(aAttachments))
+	   {
+		   sCid = sCid.replace(/^<+/, '').replace(/>+$/, '');
+		   oResult = _.find(aAttachments, function (oAttachment) {
+			   return sCid === oAttachment.cidWithOutTags;
+		   });
+	   }
+
+	   return oResult || null;
+	};
+
+	/**
+	* @param {string} sContentLocation
+	* @return {*}
+	*/
+	MessageModel.prototype.findAttachmentByContentLocation = function (sContentLocation)
+	{
+	   var
+		   oResult = null,
+		   aAttachments = this.attachments()
+	   ;
+
+	   if (Utils.isNonEmptyArray(aAttachments))
+	   {
+		   oResult = _.find(aAttachments, function (oAttachment) {
+			   return sContentLocation === oAttachment.contentLocation;
+		   });
+	   }
+
+	   return oResult || null;
+	};
+
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.messageId = function ()
+	{
+	   return this.sMessageId;
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.inReplyTo = function ()
+	{
+	   return this.sInReplyTo;
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.references = function ()
+	{
+	   return this.sReferences;
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.fromAsSingleEmail = function ()
+	{
+	   return Utils.isArray(this.from) && this.from[0] ? this.from[0].email : '';
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.viewLink = function ()
+	{
+	   return LinkBuilder.messageViewLink(this.requestHash);// TODO cjs
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.downloadLink = function ()
+	{
+	   return LinkBuilder.messageDownloadLink(this.requestHash);// TODO cjs
+	};
+
+	/**
+	* @param {Object} oExcludeEmails
+	* @return {Array}
+	*/
+	MessageModel.prototype.replyEmails = function (oExcludeEmails)
+	{
+	   var
+		   aResult = [],
+		   oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
+	   ;
+
+	   MessageModel.replyHelper(this.replyTo, oUnic, aResult);
+	   if (0 === aResult.length)
+	   {
+		   MessageModel.replyHelper(this.from, oUnic, aResult);
+	   }
+
+	   return aResult;
+	};
+
+	/**
+	* @param {Object} oExcludeEmails
+	* @return {Array.<Array>}
+	*/
+	MessageModel.prototype.replyAllEmails = function (oExcludeEmails)
+	{
+	   var
+		   aToResult = [],
+		   aCcResult = [],
+		   oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
+	   ;
+
+	   MessageModel.replyHelper(this.replyTo, oUnic, aToResult);
+	   if (0 === aToResult.length)
+	   {
+		   MessageModel.replyHelper(this.from, oUnic, aToResult);
+	   }
+
+	   MessageModel.replyHelper(this.to, oUnic, aToResult);
+	   MessageModel.replyHelper(this.cc, oUnic, aCcResult);
+
+	   return [aToResult, aCcResult];
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.textBodyToString = function ()
+	{
+	   return this.body ? this.body.html() : '';
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.attachmentsToStringLine = function ()
+	{
+	   var aAttachLines = _.map(this.attachments(), function (oItem) {
+		   return oItem.fileName + ' (' + oItem.friendlySize + ')';
+	   });
+
+	   return aAttachLines && 0 < aAttachLines.length ? aAttachLines.join(', ') : '';
+	};
+
+	/**
+	* @return {Object}
+	*/
+	MessageModel.prototype.getDataForWindowPopup = function ()
+	{
+	   return {
+		   'popupFrom': this.fromToLine(false),
+		   'popupTo': this.toToLine(false),
+		   'popupCc': this.ccToLine(false),
+		   'popupBcc': this.bccToLine(false),
+		   'popupSubject': this.subject(),
+		   'popupDate': this.fullFormatDateValue(),
+		   'popupAttachments': this.attachmentsToStringLine(),
+		   'popupBody': this.textBodyToString()
+	   };
+	};
+
+	/**
+	* @param {boolean=} bPrint = false
+	*/
+	MessageModel.prototype.viewPopupMessage = function (bPrint)
+	{
+	   Utils.windowPopupKnockout(this.getDataForWindowPopup(), 'PopupsWindowSimpleMessage', this.subject(), function (oPopupWin) {
+		   if (oPopupWin && oPopupWin.document && oPopupWin.document.body)
+		   {
+			   $('img.lazy', oPopupWin.document.body).each(function (iIndex, oImg) {
+
+				   var
+					   $oImg = $(oImg),
+					   sOrig = $oImg.data('original'),
+					   sSrc = $oImg.attr('src')
+				   ;
+
+				   if (0 <= iIndex && sOrig && !sSrc)
+				   {
+					   $oImg.attr('src', sOrig);
+				   }
+			   });
+
+			   if (bPrint)
+			   {
+				   window.setTimeout(function () {
+					   oPopupWin.print();
+				   }, 100);
+			   }
+		   }
+	   });
+	};
+
+	MessageModel.prototype.printMessage = function ()
+	{
+	   this.viewPopupMessage(true);
+	};
+
+	/**
+	* @returns {string}
+	*/
+	MessageModel.prototype.generateUid = function ()
+	{
+	   return this.folderFullNameRaw + '/' + this.uid;
+	};
+
+	/**
+	* @param {MessageModel} oMessage
+	* @return {MessageModel}
+	*/
+	MessageModel.prototype.populateByMessageListItem = function (oMessage)
+	{
+	   this.folderFullNameRaw = oMessage.folderFullNameRaw;
+	   this.uid = oMessage.uid;
+	   this.hash = oMessage.hash;
+	   this.requestHash = oMessage.requestHash;
+	   this.subject(oMessage.subject());
+	   this.subjectPrefix(this.subjectPrefix());
+	   this.subjectSuffix(this.subjectSuffix());
+
+	   this.size(oMessage.size());
+	   this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
+	   this.priority(oMessage.priority());
+
+	   this.proxy = oMessage.proxy;
+
+	   this.fromEmailString(oMessage.fromEmailString());
+	   this.fromClearEmailString(oMessage.fromClearEmailString());
+	   this.toEmailsString(oMessage.toEmailsString());
+	   this.toClearEmailsString(oMessage.toClearEmailsString());
+
+	   this.emails = oMessage.emails;
+
+	   this.from = oMessage.from;
+	   this.to = oMessage.to;
+	   this.cc = oMessage.cc;
+	   this.bcc = oMessage.bcc;
+	   this.replyTo = oMessage.replyTo;
+	   this.deliveredTo = oMessage.deliveredTo;
+
+	   this.unseen(oMessage.unseen());
+	   this.flagged(oMessage.flagged());
+	   this.answered(oMessage.answered());
+	   this.forwarded(oMessage.forwarded());
+	   this.isReadReceipt(oMessage.isReadReceipt());
+
+	   this.selected(oMessage.selected());
+	   this.checked(oMessage.checked());
+	   this.hasAttachments(oMessage.hasAttachments());
+	   this.attachmentsMainType(oMessage.attachmentsMainType());
+
+	   this.moment(oMessage.moment());
+
+	   this.body = null;
+
+	   this.priority(Enums.MessagePriority.Normal);
+	   this.aDraftInfo = [];
+	   this.sMessageId = '';
+	   this.sInReplyTo = '';
+	   this.sReferences = '';
+
+	   this.parentUid(oMessage.parentUid());
+	   this.threads(oMessage.threads());
+	   this.threadsLen(oMessage.threadsLen());
+
+	   this.computeSenderEmail();
+
+	   return this;
+	};
+
+	MessageModel.prototype.showExternalImages = function (bLazy)
+	{
+	   if (this.body && this.body.data('rl-has-images'))
+	   {
+		   var sAttr = '';
+		   bLazy = Utils.isUnd(bLazy) ? false : bLazy;
+
+		   this.hasImages(false);
+		   this.body.data('rl-has-images', false);
+
+		   sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+		   $('[' + sAttr + ']', this.body).each(function () {
+			   if (bLazy && $(this).is('img'))
+			   {
+				   $(this)
+					   .addClass('lazy')
+					   .attr('data-original', $(this).attr(sAttr))
+					   .removeAttr(sAttr)
+				   ;
+			   }
+			   else
+			   {
+				   $(this).attr('src', $(this).attr(sAttr)).removeAttr(sAttr);
+			   }
+		   });
+
+		   sAttr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
+		   $('[' + sAttr + ']', this.body).each(function () {
+			   var sStyle = Utils.trim($(this).attr('style'));
+			   sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
+			   $(this).attr('style', sStyle + $(this).attr(sAttr)).removeAttr(sAttr);
+		   });
+
+		   if (bLazy)
+		   {
+			   $('img.lazy', this.body).addClass('lazy-inited').lazyload({
+				   'threshold' : 400,
+				   'effect' : 'fadeIn',
+				   'skip_invisible' : false,
+				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
+			   });
+
+			   $window.resize();
+		   }
+
+		   Utils.windowResize(500);
+	   }
+	};
+
+	MessageModel.prototype.showInternalImages = function (bLazy)
+	{
+	   if (this.body && !this.body.data('rl-init-internal-images'))
+	   {
+		   this.body.data('rl-init-internal-images', true);
+
+		   bLazy = Utils.isUnd(bLazy) ? false : bLazy;
+
+		   var self = this;
+
+		   $('[data-x-src-cid]', this.body).each(function () {
+
+			   var oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-cid'));
+			   if (oAttachment && oAttachment.download)
+			   {
+				   if (bLazy && $(this).is('img'))
+				   {
+					   $(this)
+						   .addClass('lazy')
+						   .attr('data-original', oAttachment.linkPreview());
+				   }
+				   else
+				   {
+					   $(this).attr('src', oAttachment.linkPreview());
+				   }
+			   }
+		   });
+
+		   $('[data-x-src-location]', this.body).each(function () {
+
+			   var oAttachment = self.findAttachmentByContentLocation($(this).attr('data-x-src-location'));
+			   if (!oAttachment)
+			   {
+				   oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-location'));
+			   }
+
+			   if (oAttachment && oAttachment.download)
+			   {
+				   if (bLazy && $(this).is('img'))
+				   {
+					   $(this)
+						   .addClass('lazy')
+						   .attr('data-original', oAttachment.linkPreview());
+				   }
+				   else
+				   {
+					   $(this).attr('src', oAttachment.linkPreview());
+				   }
+			   }
+		   });
+
+		   $('[data-x-style-cid]', this.body).each(function () {
+
+			   var
+				   sStyle = '',
+				   sName = '',
+				   oAttachment = self.findAttachmentByCid($(this).attr('data-x-style-cid'))
+			   ;
+
+			   if (oAttachment && oAttachment.linkPreview)
+			   {
+				   sName = $(this).attr('data-x-style-cid-name');
+				   if ('' !== sName)
+				   {
+					   sStyle = Utils.trim($(this).attr('style'));
+					   sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
+					   $(this).attr('style', sStyle + sName + ': url(\'' + oAttachment.linkPreview() + '\')');
+				   }
+			   }
+		   });
+
+		   if (bLazy)
+		   {
+			   (function ($oImg, oContainer) {
+				   _.delay(function () {
+					   $oImg.addClass('lazy-inited').lazyload({
+						   'threshold' : 400,
+						   'effect' : 'fadeIn',
+						   'skip_invisible' : false,
+						   'container': oContainer
+					   });
+				   }, 300);
+			   }($('img.lazy', self.body), $('.RL-MailMessageView .messageView .messageItem .content')[0]));
+		   }
+
+		   Utils.windowResize(500);
+	   }
+	};
+
+	MessageModel.prototype.storeDataToDom = function ()
+	{
+	   if (this.body)
+	   {
+		   this.body.data('rl-is-html', !!this.isHtml());
+		   this.body.data('rl-has-images', !!this.hasImages());
+
+		   this.body.data('rl-plain-raw', this.plainRaw);
+
+		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   {
+			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
+			   this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
+			   this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
+			   this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
+		   }
+	   }
+	};
+
+	MessageModel.prototype.storePgpVerifyDataToDom = function ()
+	{
+	   if (this.body && RL.data().capaOpenPGP()) // TODO cjs
+	   {
+		   this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
+		   this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
+	   }
+	};
+
+	MessageModel.prototype.fetchDataToDom = function ()
+	{
+	   if (this.body)
+	   {
+		   this.isHtml(!!this.body.data('rl-is-html'));
+		   this.hasImages(!!this.body.data('rl-has-images'));
+
+		   this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
+
+		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   {
+			   this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
+			   this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
+			   this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
+			   this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
+		   }
+		   else
+		   {
+			   this.isPgpSigned(false);
+			   this.isPgpEncrypted(false);
+			   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+			   this.pgpSignedVerifyUser('');
+		   }
+	   }
+	};
+
+	MessageModel.prototype.verifyPgpSignedClearMessage = function ()
+	{
+	   if (this.isPgpSigned())
+	   {
+		   var
+			   aRes = [],
+			   mPgpMessage = null,
+			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
+			   aPublicKeys = RL.data().findPublicKeysByEmail(sFrom), // TODO cjs
+			   oValidKey = null,
+			   oValidSysKey = null,
+			   sPlain = ''
+		   ;
+
+		   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
+		   this.pgpSignedVerifyUser('');
+
+		   try
+		   {
+			   mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
+			   if (mPgpMessage && mPgpMessage.getText)
+			   {
+				   this.pgpSignedVerifyStatus(
+					   aPublicKeys.length ? Enums.SignedVerifyStatus.Unverified : Enums.SignedVerifyStatus.UnknownPublicKeys);
+
+				   aRes = mPgpMessage.verify(aPublicKeys);
+				   if (aRes && 0 < aRes.length)
+				   {
+					   oValidKey = _.find(aRes, function (oItem) {
+						   return oItem && oItem.keyid && oItem.valid;
+					   });
+
+					   if (oValidKey)
+					   {
+						   oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex()); // TODO cjs
+						   if (oValidSysKey)
+						   {
+							   sPlain = mPgpMessage.getText();
+
+							   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
+							   this.pgpSignedVerifyUser(oValidSysKey.user);
+
+							   sPlain =
+								   $div.empty().append(
+									   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
+								   ).html()
+							   ;
+
+							   $div.empty();
+
+							   this.replacePlaneTextBody(sPlain);
+						   }
+					   }
+				   }
+			   }
+		   }
+		   catch (oExc) {}
+
+		   this.storePgpVerifyDataToDom();
+	   }
+	};
+
+	MessageModel.prototype.decryptPgpEncryptedMessage = function (sPassword)
+	{
+	   if (this.isPgpEncrypted())
+	   {
+		   var
+			   aRes = [],
+			   mPgpMessage = null,
+			   mPgpMessageDecrypted = null,
+			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
+			   aPublicKey = RL.data().findPublicKeysByEmail(sFrom), // TODO cjs
+			   oPrivateKey = RL.data().findSelfPrivateKey(sPassword), // TODO cjs
+			   oValidKey = null,
+			   oValidSysKey = null,
+			   sPlain = ''
+		   ;
+
+		   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
+		   this.pgpSignedVerifyUser('');
+
+		   if (!oPrivateKey)
+		   {
+			   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.UnknownPrivateKey);
+		   }
+
+		   try
+		   {
+			   mPgpMessage = window.openpgp.message.readArmored(this.plainRaw);
+			   if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
+			   {
+				   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
+
+				   mPgpMessageDecrypted = mPgpMessage.decrypt(oPrivateKey);
+				   if (mPgpMessageDecrypted)
+				   {
+					   aRes = mPgpMessageDecrypted.verify(aPublicKey);
+					   if (aRes && 0 < aRes.length)
+					   {
+						   oValidKey = _.find(aRes, function (oItem) {
+							   return oItem && oItem.keyid && oItem.valid;
+						   });
+
+						   if (oValidKey)
+						   {
+							   oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex()); // TODO cjs
+							   if (oValidSysKey)
+							   {
+								   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
+								   this.pgpSignedVerifyUser(oValidSysKey.user);
+							   }
+						   }
+					   }
+
+					   sPlain = mPgpMessageDecrypted.getText();
+
+					   sPlain =
+						   $div.empty().append(
+							   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
+						   ).html()
+					   ;
+
+					   $div.empty();
+
+					   this.replacePlaneTextBody(sPlain);
+				   }
+			   }
+		   }
+		   catch (oExc) {}
+
+		   this.storePgpVerifyDataToDom();
+	   }
+	};
+
+	MessageModel.prototype.replacePlaneTextBody = function (sPlain)
+	{
+	   if (this.body)
+	   {
+		   this.body.html(sPlain).addClass('b-text-part plain');
+	   }
+	};
+
+	/**
+	* @return {string}
+	*/
+	MessageModel.prototype.flagHash = function ()
+	{
+	   return [this.deleted(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
+		   this.isReadReceipt()].join('');
+	};
+
+	module.exports = MessageModel;
+
+}(module));
+},{"../Common/Enums.js":5,"../Common/LinkBuilder.js":7,"../Common/Utils.js":9,"../External/$div.js":10,"../External/$window.js":13,"../External/jquery.js":19,"../External/ko.js":21,"../External/moment.js":22,"../External/underscore.js":24,"../External/window.js":25,"./AttachmentModel.js":29,"./EmailModel.js":30}],32:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = function () {
+	return require('./Knoin/Knoin.js').rl();
+};
+},{"./Knoin/Knoin.js":26}],33:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+'use strict';
+
+module.exports = function () {
+	return require('./Knoin/Knoin.js').remote();
+};
+},{"./Knoin/Knoin.js":26}],34:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../External/window.js'),
+		$ = require('../External/jquery.js'),
+
+		Consts = require('../Common/Consts.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		Plugins = require('../Common/Plugins.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		RL = require('../RL.js')
+	;
+
+	/**
+	* @constructor
+	*/
+   function AbstractAjaxRemoteStorage()
+   {
+	   this.oRequests = {};
+   }
+
+   AbstractAjaxRemoteStorage.prototype.oRequests = {};
+
+   /**
+	* @param {?Function} fCallback
+	* @param {string} sRequestAction
+	* @param {string} sType
+	* @param {?AjaxJsonDefaultResponse} oData
+	* @param {boolean} bCached
+	* @param {*=} oRequestParameters
+	*/
+   AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequestAction, sType, oData, bCached, oRequestParameters)
+   {
+	   var
+		   fCall = function () {
+			   if (Enums.StorageResultType.Success !== sType && Globals.bUnload)
+			   {
+				   sType = Enums.StorageResultType.Unload;
+			   }
+
+			   if (Enums.StorageResultType.Success === sType && oData && !oData.Result)
+			   {
+				   if (oData && -1 < Utils.inArray(oData.ErrorCode, [
+					   Enums.Notification.AuthError, Enums.Notification.AccessError,
+					   Enums.Notification.ConnectionError, Enums.Notification.DomainNotAllowed, Enums.Notification.AccountNotAllowed,
+					   Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
+				   ]))
+				   {
+					   Globals.iAjaxErrorCount++;
+				   }
+
+				   if (oData && Enums.Notification.InvalidToken === oData.ErrorCode)
+				   {
+					   Globals.iTokenErrorCount++;
+				   }
+
+				   if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
+				   {
+					   RL().loginAndLogoutReload(true);
+				   }
+
+				   if (oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
+				   {
+					   if (window.__rlah_clear)
+					   {
+						   window.__rlah_clear();
+					   }
+
+					   RL().loginAndLogoutReload(true);
+				   }
+			   }
+			   else if (Enums.StorageResultType.Success === sType && oData && oData.Result)
+			   {
+				   Globals.iAjaxErrorCount = 0;
+				   Globals.iTokenErrorCount = 0;
+			   }
+
+			   if (fCallback)
+			   {
+				   Plugins.runHook('ajax-default-response', [sRequestAction, Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oRequestParameters]);
+
+				   fCallback(
+					   sType,
+					   Enums.StorageResultType.Success === sType ? oData : null,
+					   bCached,
+					   sRequestAction,
+					   oRequestParameters
+				   );
+			   }
+		   }
+	   ;
+
+	   switch (sType)
+	   {
+		   case 'success':
+			   sType = Enums.StorageResultType.Success;
+			   break;
+		   case 'abort':
+			   sType = Enums.StorageResultType.Abort;
+			   break;
+		   default:
+			   sType = Enums.StorageResultType.Error;
+			   break;
+	   }
+
+	   if (Enums.StorageResultType.Error === sType)
+	   {
+		   _.delay(fCall, 300);
+	   }
+	   else
+	   {
+		   fCall();
+	   }
+   };
+
+   /**
+	* @param {?Function} fResultCallback
+	* @param {Object} oParameters
+	* @param {?number=} iTimeOut = 20000
+	* @param {string=} sGetAdd = ''
+	* @param {Array=} aAbortActions = []
+	* @return {jQuery.jqXHR}
+	*/
+   AbstractAjaxRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oParameters, iTimeOut, sGetAdd, aAbortActions)
+   {
+	   var
+		   self = this,
+		   bPost = '' === sGetAdd,
+		   oHeaders = {},
+		   iStart = (new window.Date()).getTime(),
+		   oDefAjax = null,
+		   sAction = ''
+	   ;
+
+	   oParameters = oParameters || {};
+	   iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : 20000;
+	   sGetAdd = Utils.isUnd(sGetAdd) ? '' : Utils.pString(sGetAdd);
+	   aAbortActions = Utils.isArray(aAbortActions) ? aAbortActions : [];
+
+	   sAction = oParameters.Action || '';
+
+	   if (sAction && 0 < aAbortActions.length)
+	   {
+		   _.each(aAbortActions, function (sActionToAbort) {
+			   if (self.oRequests[sActionToAbort])
+			   {
+				   self.oRequests[sActionToAbort].__aborted = true;
+				   if (self.oRequests[sActionToAbort].abort)
+				   {
+					   self.oRequests[sActionToAbort].abort();
+				   }
+				   self.oRequests[sActionToAbort] = null;
+			   }
+		   });
+	   }
+
+	   if (bPost)
+	   {
+		   oParameters['XToken'] = RL.settingsGet('Token'); // TODO cjs
+	   }
+
+	   oDefAjax = $.ajax({
+		   'type': bPost ? 'POST' : 'GET',
+		   'url': LinkBuilder.ajax(sGetAdd),
+		   'async': true,
+		   'dataType': 'json',
+		   'data': bPost ? oParameters : {},
+		   'headers': oHeaders,
+		   'timeout': iTimeOut,
+		   'global': true
+	   });
+
+	   oDefAjax.always(function (oData, sType) {
+
+		   var bCached = false;
+		   if (oData && oData['Time'])
+		   {
+			   bCached = Utils.pInt(oData['Time']) > (new window.Date()).getTime() - iStart;
+		   }
+
+		   if (sAction && self.oRequests[sAction])
+		   {
+			   if (self.oRequests[sAction].__aborted)
+			   {
+				   sType = 'abort';
+			   }
+
+			   self.oRequests[sAction] = null;
+		   }
+
+		   self.defaultResponse(fResultCallback, sAction, sType, oData, bCached, oParameters);
+	   });
+
+	   if (sAction && 0 < aAbortActions.length && -1 < Utils.inArray(sAction, aAbortActions))
+	   {
+		   if (this.oRequests[sAction])
+		   {
+			   this.oRequests[sAction].__aborted = true;
+			   if (this.oRequests[sAction].abort)
+			   {
+				   this.oRequests[sAction].abort();
+			   }
+			   this.oRequests[sAction] = null;
+		   }
+
+		   this.oRequests[sAction] = oDefAjax;
+	   }
+
+	   return oDefAjax;
+   };
+
+   /**
+	* @param {?Function} fCallback
+	* @param {string} sAction
+	* @param {Object=} oParameters
+	* @param {?number=} iTimeout
+	* @param {string=} sGetAdd = ''
+	* @param {Array=} aAbortActions = []
+	*/
+   AbstractAjaxRemoteStorage.prototype.defaultRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+   {
+	   oParameters = oParameters || {};
+	   oParameters.Action = sAction;
+
+	   sGetAdd = Utils.pString(sGetAdd);
+
+	   Plugins.runHook('ajax-default-request', [sAction, oParameters, sGetAdd]);
+
+	   this.ajaxRequest(fCallback, oParameters,
+		   Utils.isUnd(iTimeout) ? Consts.Defaults.DefaultAjaxTimeout : Utils.pInt(iTimeout), sGetAdd, aAbortActions);
+   };
+
+   /**
+	* @param {?Function} fCallback
+	*/
+   AbstractAjaxRemoteStorage.prototype.noop = function (fCallback)
+   {
+	   this.defaultRequest(fCallback, 'Noop');
+   };
+
+   /**
+	* @param {?Function} fCallback
+	* @param {string} sMessage
+	* @param {string} sFileName
+	* @param {number} iLineNo
+	* @param {string} sLocation
+	* @param {string} sHtmlCapa
+	* @param {number} iTime
+	*/
+   AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime)
+   {
+	   this.defaultRequest(fCallback, 'JsError', {
+		   'Message': sMessage,
+		   'FileName': sFileName,
+		   'LineNo': iLineNo,
+		   'Location': sLocation,
+		   'HtmlCapa': sHtmlCapa,
+		   'TimeOnPage': iTime
+	   });
+   };
+
+   /**
+	* @param {?Function} fCallback
+	* @param {string} sType
+	* @param {Array=} mData = null
+	* @param {boolean=} bIsError = false
+	*/
+   AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+   {
+	   this.defaultRequest(fCallback, 'JsInfo', {
+		   'Type': sType,
+		   'Data': mData,
+		   'IsError': (Utils.isUnd(bIsError) ? false : !!bIsError) ? '1' : '0'
+	   });
+   };
+
+   /**
+	* @param {?Function} fCallback
+	*/
+   AbstractAjaxRemoteStorage.prototype.getPublicKey = function (fCallback)
+   {
+	   this.defaultRequest(fCallback, 'GetPublicKey');
+   };
+
+   /**
+	* @param {?Function} fCallback
+	* @param {string} sVersion
+	*/
+   AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
+   {
+	   this.defaultRequest(fCallback, 'Version', {
+		   'Version': sVersion
+	   });
+   };
+
+	module.exports = AbstractAjaxRemoteStorage;
+
+}(module));
+},{"../Common/Consts.js":4,"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/LinkBuilder.js":7,"../Common/Plugins.js":8,"../Common/Utils.js":9,"../External/jquery.js":19,"../External/window.js":25,"../RL.js":32}],35:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		ko = require('../External/ko.js'),
+		key = require('../External/key.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js')
+	;
+	
+	/**
+	 * @constructor
+	 */
+	function AbstractData()
+	{
+		this.leftPanelDisabled = ko.observable(false);
+		this.useKeyboardShortcuts = ko.observable(true);
+
+		this.keyScopeReal = ko.observable(Enums.KeyState.All);
+		this.keyScopeFake = ko.observable(Enums.KeyState.All);
+
+		this.keyScope = ko.computed({
+			'owner': this,
+			'read': function () {
+				return this.keyScopeFake();
+			},
+			'write': function (sValue) {
+
+				if (Enums.KeyState.Menu !== sValue)
+				{
+					if (Enums.KeyState.Compose === sValue)
+					{
+						Utils.disableKeyFilter();
+					}
+					else
+					{
+						Utils.restoreKeyFilter();
+					}
+
+					this.keyScopeFake(sValue);
+					if (Globals.dropdownVisibility())
+					{
+						sValue = Enums.KeyState.Menu;
+					}
+				}
+
+				this.keyScopeReal(sValue);
+			}
+		});
+
+		this.keyScopeReal.subscribe(function (sValue) {
+	//		window.console.log(sValue);
+			key.setScope(sValue);
+		});
+
+		this.leftPanelDisabled.subscribe(function (bValue) {
+			RL.pub('left-panel.' + (bValue ? 'off' : 'on')); // TODO cjs
+		});
+
+		Globals.dropdownVisibility.subscribe(function (bValue) {
+			if (bValue)
+			{
+				Globals.tooltipTrigger(!Globals.tooltipTrigger());
+				this.keyScope(Enums.KeyState.Menu);
+			}
+			else if (Enums.KeyState.Menu === key.getScope())
+			{
+				this.keyScope(this.keyScopeFake());
+			}
+		}, this);
+
+		Utils.initDataConstructorBySettings(this);
+	}
+
+	AbstractData.prototype.populateDataOnStart = function()
+	{
+		var
+			mLayout = Utils.pInt(RL.settingsGet('Layout')), // TODO cjs
+			aLanguages = RL.settingsGet('Languages'),
+			aThemes = RL.settingsGet('Themes')
+		;
+
+		if (Utils.isArray(aLanguages))
+		{
+			this.languages(aLanguages);
+		}
+
+		if (Utils.isArray(aThemes))
+		{
+			this.themes(aThemes);
+		}
+
+		this.mainLanguage(RL.settingsGet('Language'));
+		this.mainTheme(RL.settingsGet('Theme'));
+
+		this.capaAdditionalAccounts(RL.capa(Enums.Capa.AdditionalAccounts));
+		this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
+		this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
+		this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
+		this.determineUserDomain(!!RL.settingsGet('DetermineUserDomain'));
+
+		this.capaThemes(RL.capa(Enums.Capa.Themes));
+		this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
+		this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
+		this.useLocalProxyForExternalImages(!!RL.settingsGet('UseLocalProxyForExternalImages'));
+
+		this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
+		this.showImages(!!RL.settingsGet('ShowImages'));
+		this.contactsAutosave(!!RL.settingsGet('ContactsAutosave'));
+		this.interfaceAnimation(RL.settingsGet('InterfaceAnimation'));
+
+		this.mainMessagesPerPage(RL.settingsGet('MPP'));
+
+		this.desktopNotifications(!!RL.settingsGet('DesktopNotifications'));
+		this.useThreads(!!RL.settingsGet('UseThreads'));
+		this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
+		this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
+
+		this.layout(Enums.Layout.SidePreview);
+		if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
+		{
+			this.layout(mLayout);
+		}
+		this.facebookSupported(!!RL.settingsGet('SupportedFacebookSocial'));
+		this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
+		this.facebookAppID(RL.settingsGet('FacebookAppID'));
+		this.facebookAppSecret(RL.settingsGet('FacebookAppSecret'));
+
+		this.twitterEnable(!!RL.settingsGet('AllowTwitterSocial'));
+		this.twitterConsumerKey(RL.settingsGet('TwitterConsumerKey'));
+		this.twitterConsumerSecret(RL.settingsGet('TwitterConsumerSecret'));
+
+		this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
+		this.googleClientID(RL.settingsGet('GoogleClientID'));
+		this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
+		this.googleApiKey(RL.settingsGet('GoogleApiKey'));
+
+		this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
+		this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));
+
+		this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
+	};
+
+	module.exports = AbstractData;
+
+}(module));
+},{"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/Utils.js":9,"../External/key.js":20,"../External/ko.js":21}],36:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		_ = require('../External/underscore.js'),
+		CookieDriver = require('./LocalStorages/CookieDriver.js'),
+		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function LocalStorage()
+	{
+		var
+			NextStorageDriver = _.find([LocalStorageDriver, CookieDriver], function (NextStorageDriver) {
+				return NextStorageDriver.supported();
+			})
+		;
+
+		if (NextStorageDriver)
+		{
+			NextStorageDriver = /** @type {?Function} */ NextStorageDriver;
+			this.oDriver = new NextStorageDriver();
+		}
+	}
+
+	LocalStorage.prototype.oDriver = null;
+
+	/**
+	 * @param {number} iKey
+	 * @param {*} mData
+	 * @return {boolean}
+	 */
+	LocalStorage.prototype.set = function (iKey, mData)
+	{
+		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
+	};
+
+	/**
+	 * @param {number} iKey
+	 * @return {*}
+	 */
+	LocalStorage.prototype.get = function (iKey)
+	{
+		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
+	};
+
+	module.exports = new LocalStorage();
+
+}(module));
+},{"../External/underscore.js":24,"./LocalStorages/CookieDriver.js":37,"./LocalStorages/LocalStorageDriver.js":38}],37:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		$ = require('../../External/jquery.js'),
+		JSON = require('../../External/JSON.js'),
+		Consts = require('../../Common/Consts.js'),
+		Utils = require('../../Common/Utils.js')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function CookieDriver()
+	{
+
+	}
+
+	CookieDriver.supported = function ()
+	{
+		return true;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @param {*} mData
+	 * @returns {boolean}
+	 */
+	CookieDriver.prototype.set = function (sKey, mData)
+	{
+		var
+			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			bResult = false,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (!mResult)
+			{
+				mResult = {};
+			}
+
+			mResult[sKey] = mData;
+			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
+				'expires': 30
+			});
+
+			bResult = true;
+		}
+		catch (oException) {}
+
+		return bResult;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @returns {*}
+	 */
+	CookieDriver.prototype.get = function (sKey)
+	{
+		var
+			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (mResult && !Utils.isUnd(mResult[sKey]))
+			{
+				mResult = mResult[sKey];
+			}
+			else
+			{
+				mResult = null;
+			}
+		}
+		catch (oException) {}
+
+		return mResult;
+	};
+
+	module.exports = CookieDriver;
+
+}(module));
+},{"../../Common/Consts.js":4,"../../Common/Utils.js":9,"../../External/JSON.js":15,"../../External/jquery.js":19}],38:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../../External/window.js'),
+		JSON = require('../../External/JSON.js'),
+		Consts = require('../../Common/Consts.js'),
+		Utils = require('../../Common/Utils.js')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function LocalStorageDriver()
+	{
+	}
+
+	LocalStorageDriver.supported = function ()
+	{
+		return !!window.localStorage;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @param {*} mData
+	 * @returns {boolean}
+	 */
+	LocalStorageDriver.prototype.set = function (sKey, mData)
+	{
+		var
+			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			bResult = false,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
+			if (!mResult)
+			{
+				mResult = {};
+			}
+
+			mResult[sKey] = mData;
+			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
+
+			bResult = true;
+		}
+		catch (oException) {}
+
+		return bResult;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @returns {*}
+	 */
+	LocalStorageDriver.prototype.get = function (sKey)
+	{
+		var
+			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (mResult && !Utils.isUnd(mResult[sKey]))
+			{
+				mResult = mResult[sKey];
+			}
+			else
+			{
+				mResult = null;
+			}
+		}
+		catch (oException) {}
+
+		return mResult;
+	};
+	
+	module.exports = LocalStorageDriver;
+
+}(module));
+},{"../../Common/Consts.js":4,"../../Common/Utils.js":9,"../../External/JSON.js":15,"../../External/window.js":25}],39:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		_ = require('../External/underscore.js'),
+
+		Utils = require('../Common/Utils.js'),
+
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		
+		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
+	;
+
+	/**
+	 * @constructor
+	 * @extends AbstractAjaxRemoteStorage
+	 */
+	function WebMailAjaxRemoteStorage()
+	{
+		AbstractAjaxRemoteStorage.call(this);
+
+		this.oRequests = {};
+	}
+
+	_.extend(WebMailAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype);
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'Folders', {
+			'SentFolder': RL.settingsGet('SentFolder'),
+			'DraftFolder': RL.settingsGet('DraftFolder'),
+			'SpamFolder': RL.settingsGet('SpamFolder'),
+			'TrashFolder': RL.settingsGet('TrashFolder'),
+			'ArchiveFolder': RL.settingsGet('ArchiveFolder')
+		}, null, '', ['Folders']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sEmail
+	 * @param {string} sLogin
+	 * @param {string} sPassword
+	 * @param {boolean} bSignMe
+	 * @param {string=} sLanguage
+	 * @param {string=} sAdditionalCode
+	 * @param {boolean=} bAdditionalCodeSignMe
+	 */
+	WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe)
+	{
+		this.defaultRequest(fCallback, 'Login', {
+			'Email': sEmail,
+			'Login': sLogin,
+			'Password': sPassword,
+			'Language': sLanguage || '',
+			'AdditionalCode': sAdditionalCode || '',
+			'AdditionalCodeSignMe': bAdditionalCodeSignMe ? '1' : '0',
+			'SignMe': bSignMe ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.getTwoFactor = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'GetTwoFactorInfo');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.createTwoFactor = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'CreateTwoFactorSecret');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.clearTwoFactor = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.showTwoFactorSecret = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'ShowTwoFactorSecret');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sCode
+	 */
+	WebMailAjaxRemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
+	{
+		this.defaultRequest(fCallback, 'TestTwoFactorInfo', {
+			'Code': sCode
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {boolean} bEnable
+	 */
+	WebMailAjaxRemoteStorage.prototype.enableTwoFactor = function (fCallback, bEnable)
+	{
+		this.defaultRequest(fCallback, 'EnableTwoFactor', {
+			'Enable': bEnable ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.contactsSync = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'ContactsSync', null, Consts.Defaults.ContactsSyncAjaxTimeout);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {boolean} bEnable
+	 * @param {string} sUrl
+	 * @param {string} sUser
+	 * @param {string} sPassword
+	 */
+	WebMailAjaxRemoteStorage.prototype.saveContactsSyncData = function (fCallback, bEnable, sUrl, sUser, sPassword)
+	{
+		this.defaultRequest(fCallback, 'SaveContactsSyncData', {
+			'Enable': bEnable ? '1' : '0',
+			'Url': sUrl,
+			'User': sUser,
+			'Password': sPassword
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sEmail
+	 * @param {string} sLogin
+	 * @param {string} sPassword
+	 */
+	WebMailAjaxRemoteStorage.prototype.accountAdd = function (fCallback, sEmail, sLogin, sPassword)
+	{
+		this.defaultRequest(fCallback, 'AccountAdd', {
+			'Email': sEmail,
+			'Login': sLogin,
+			'Password': sPassword
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sEmailToDelete
+	 */
+	WebMailAjaxRemoteStorage.prototype.accountDelete = function (fCallback, sEmailToDelete)
+	{
+		this.defaultRequest(fCallback, 'AccountDelete', {
+			'EmailToDelete': sEmailToDelete
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sId
+	 * @param {string} sEmail
+	 * @param {string} sName
+	 * @param {string} sReplyTo
+	 * @param {string} sBcc
+	 */
+	WebMailAjaxRemoteStorage.prototype.identityUpdate = function (fCallback, sId, sEmail, sName, sReplyTo, sBcc)
+	{
+		this.defaultRequest(fCallback, 'IdentityUpdate', {
+			'Id': sId,
+			'Email': sEmail,
+			'Name': sName,
+			'ReplyTo': sReplyTo,
+			'Bcc': sBcc
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sIdToDelete
+	 */
+	WebMailAjaxRemoteStorage.prototype.identityDelete = function (fCallback, sIdToDelete)
+	{
+		this.defaultRequest(fCallback, 'IdentityDelete', {
+			'IdToDelete': sIdToDelete
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.accountsAndIdentities = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AccountsAndIdentities');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {number=} iOffset = 0
+	 * @param {number=} iLimit = 20
+	 * @param {string=} sSearch = ''
+	 * @param {boolean=} bSilent = false
+	 */
+	WebMailAjaxRemoteStorage.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent)
+	{
+		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
+
+		var
+			oData = RL.data(),
+			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw)
+		;
+
+		bSilent = Utils.isUnd(bSilent) ? false : !!bSilent;
+		iOffset = Utils.isUnd(iOffset) ? 0 : Utils.pInt(iOffset);
+		iLimit = Utils.isUnd(iOffset) ? 20 : Utils.pInt(iLimit);
+		sSearch = Utils.pString(sSearch);
+
+		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
+		{
+			this.defaultRequest(fCallback, 'MessageList', {},
+				'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
+				'MessageList/' + Base64.urlsafe_encode([
+					sFolderFullNameRaw,
+					iOffset,
+					iLimit,
+					sSearch,
+					oData.projectHash(),
+					sFolderHash,
+					'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+					oData.threading() && oData.useThreads() ? '1' : '0',
+					oData.threading() && sFolderFullNameRaw === oData.messageListThreadFolder() ? oData.messageListThreadUids().join(',') : ''
+				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
+		}
+		else
+		{
+			this.defaultRequest(fCallback, 'MessageList', {
+				'Folder': sFolderFullNameRaw,
+				'Offset': iOffset,
+				'Limit': iLimit,
+				'Search': sSearch,
+				'UidNext': 'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+				'UseThreads': RL.data().threading() && RL.data().useThreads() ? '1' : '0',
+				'ExpandedThreadUid': oData.threading() && sFolderFullNameRaw === oData.messageListThreadFolder() ? oData.messageListThreadUids().join(',') : ''
+			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
+		}
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Array} aDownloads
+	 */
+	WebMailAjaxRemoteStorage.prototype.messageUploadAttachments = function (fCallback, aDownloads)
+	{
+		this.defaultRequest(fCallback, 'MessageUploadAttachments', {
+			'Attachments': aDownloads
+		}, 999000);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {number} iUid
+	 * @return {boolean}
+	 */
+	WebMailAjaxRemoteStorage.prototype.message = function (fCallback, sFolderFullNameRaw, iUid)
+	{
+		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
+		iUid = Utils.pInt(iUid);
+
+		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
+		{
+			this.defaultRequest(fCallback, 'Message', {}, null,
+				'Message/' + Base64.urlsafe_encode([
+					sFolderFullNameRaw,
+					iUid,
+					RL.data().projectHash(),
+					RL.data().threading() && RL.data().useThreads() ? '1' : '0'
+				].join(String.fromCharCode(0))), ['Message']);
+
+			return true;
+		}
+
+		return false;
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Array} aExternals
+	 */
+	WebMailAjaxRemoteStorage.prototype.composeUploadExternals = function (fCallback, aExternals)
+	{
+		this.defaultRequest(fCallback, 'ComposeUploadExternals', {
+			'Externals': aExternals
+		}, 999000);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sUrl
+	 * @param {string} sAccessToken
+	 */
+	WebMailAjaxRemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
+	{
+		this.defaultRequest(fCallback, 'ComposeUploadDrive', {
+			'AccessToken': sAccessToken,
+			'Url': sUrl
+		}, 999000);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolder
+	 * @param {Array=} aList = []
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderInformation = function (fCallback, sFolder, aList)
+	{
+		var
+			bRequest = true,
+			aUids = []
+		;
+
+		if (Utils.isArray(aList) && 0 < aList.length)
+		{
+			bRequest = false;
+			_.each(aList, function (oMessageListItem) {
+				if (!Cache.getMessageFlagsFromCache(oMessageListItem.folderFullNameRaw, oMessageListItem.uid))
+				{
+					aUids.push(oMessageListItem.uid);
+				}
+
+				if (0 < oMessageListItem.threads().length)
+				{
+					_.each(oMessageListItem.threads(), function (sUid) {
+						if (!Cache.getMessageFlagsFromCache(oMessageListItem.folderFullNameRaw, sUid))
+						{
+							aUids.push(sUid);
+						}
+					});
+				}
+			});
+
+			if (0 < aUids.length)
+			{
+				bRequest = true;
+			}
+		}
+
+		if (bRequest)
+		{
+			this.defaultRequest(fCallback, 'FolderInformation', {
+				'Folder': sFolder,
+				'FlagsUids': Utils.isArray(aUids) ? aUids.join(',') : '',
+				'UidNext': 'INBOX' === sFolder ? Cache.getFolderUidNext(sFolder) : ''
+			});
+		}
+		else if (RL.data().useThreads())
+		{
+			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+		}
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Array} aFolders
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderInformationMultiply = function (fCallback, aFolders)
+	{
+		this.defaultRequest(fCallback, 'FolderInformationMultiply', {
+			'Folders': aFolders
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.logout = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'Logout');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {Array} aUids
+	 * @param {boolean} bSetFlagged
+	 */
+	WebMailAjaxRemoteStorage.prototype.messageSetFlagged = function (fCallback, sFolderFullNameRaw, aUids, bSetFlagged)
+	{
+		this.defaultRequest(fCallback, 'MessageSetFlagged', {
+			'Folder': sFolderFullNameRaw,
+			'Uids': aUids.join(','),
+			'SetAction': bSetFlagged ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {Array} aUids
+	 * @param {boolean} bSetSeen
+	 */
+	WebMailAjaxRemoteStorage.prototype.messageSetSeen = function (fCallback, sFolderFullNameRaw, aUids, bSetSeen)
+	{
+		this.defaultRequest(fCallback, 'MessageSetSeen', {
+			'Folder': sFolderFullNameRaw,
+			'Uids': aUids.join(','),
+			'SetAction': bSetSeen ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {boolean} bSetSeen
+	 */
+	WebMailAjaxRemoteStorage.prototype.messageSetSeenToAll = function (fCallback, sFolderFullNameRaw, bSetSeen)
+	{
+		this.defaultRequest(fCallback, 'MessageSetSeenToAll', {
+			'Folder': sFolderFullNameRaw,
+			'SetAction': bSetSeen ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sMessageFolder
+	 * @param {string} sMessageUid
+	 * @param {string} sDraftFolder
+	 * @param {string} sFrom
+	 * @param {string} sTo
+	 * @param {string} sCc
+	 * @param {string} sBcc
+	 * @param {string} sSubject
+	 * @param {boolean} bTextIsHtml
+	 * @param {string} sText
+	 * @param {Array} aAttachments
+	 * @param {(Array|null)} aDraftInfo
+	 * @param {string} sInReplyTo
+	 * @param {string} sReferences
+	 */
+	WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
+		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
+	{
+		this.defaultRequest(fCallback, 'SaveMessage', {
+			'MessageFolder': sMessageFolder,
+			'MessageUid': sMessageUid,
+			'DraftFolder': sDraftFolder,
+			'From': sFrom,
+			'To': sTo,
+			'Cc': sCc,
+			'Bcc': sBcc,
+			'Subject': sSubject,
+			'TextIsHtml': bTextIsHtml ? '1' : '0',
+			'Text': sText,
+			'DraftInfo': aDraftInfo,
+			'InReplyTo': sInReplyTo,
+			'References': sReferences,
+			'Attachments': aAttachments
+		}, Consts.Defaults.SaveMessageAjaxTimeout);
+	};
+
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sMessageFolder
+	 * @param {string} sMessageUid
+	 * @param {string} sReadReceipt
+	 * @param {string} sSubject
+	 * @param {string} sText
+	 */
+	WebMailAjaxRemoteStorage.prototype.sendReadReceiptMessage = function (fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText)
+	{
+		this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
+			'MessageFolder': sMessageFolder,
+			'MessageUid': sMessageUid,
+			'ReadReceipt': sReadReceipt,
+			'Subject': sSubject,
+			'Text': sText
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sMessageFolder
+	 * @param {string} sMessageUid
+	 * @param {string} sSentFolder
+	 * @param {string} sFrom
+	 * @param {string} sTo
+	 * @param {string} sCc
+	 * @param {string} sBcc
+	 * @param {string} sSubject
+	 * @param {boolean} bTextIsHtml
+	 * @param {string} sText
+	 * @param {Array} aAttachments
+	 * @param {(Array|null)} aDraftInfo
+	 * @param {string} sInReplyTo
+	 * @param {string} sReferences
+	 * @param {boolean} bRequestReadReceipt
+	 */
+	WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
+		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bRequestReadReceipt)
+	{
+		this.defaultRequest(fCallback, 'SendMessage', {
+			'MessageFolder': sMessageFolder,
+			'MessageUid': sMessageUid,
+			'SentFolder': sSentFolder,
+			'From': sFrom,
+			'To': sTo,
+			'Cc': sCc,
+			'Bcc': sBcc,
+			'Subject': sSubject,
+			'TextIsHtml': bTextIsHtml ? '1' : '0',
+			'Text': sText,
+			'DraftInfo': aDraftInfo,
+			'InReplyTo': sInReplyTo,
+			'References': sReferences,
+			'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
+			'Attachments': aAttachments
+		}, Consts.Defaults.SendMessageAjaxTimeout);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Object} oData
+	 */
+	WebMailAjaxRemoteStorage.prototype.saveSystemFolders = function (fCallback, oData)
+	{
+		this.defaultRequest(fCallback, 'SystemFoldersUpdate', oData);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Object} oData
+	 */
+	WebMailAjaxRemoteStorage.prototype.saveSettings = function (fCallback, oData)
+	{
+		this.defaultRequest(fCallback, 'SettingsUpdate', oData);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sPrevPassword
+	 * @param {string} sNewPassword
+	 */
+	WebMailAjaxRemoteStorage.prototype.changePassword = function (fCallback, sPrevPassword, sNewPassword)
+	{
+		this.defaultRequest(fCallback, 'ChangePassword', {
+			'PrevPassword': sPrevPassword,
+			'NewPassword': sNewPassword
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sNewFolderName
+	 * @param {string} sParentName
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderCreate = function (fCallback, sNewFolderName, sParentName)
+	{
+		this.defaultRequest(fCallback, 'FolderCreate', {
+			'Folder': sNewFolderName,
+			'Parent': sParentName
+		}, null, '', ['Folders']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderDelete = function (fCallback, sFolderFullNameRaw)
+	{
+		this.defaultRequest(fCallback, 'FolderDelete', {
+			'Folder': sFolderFullNameRaw
+		}, null, '', ['Folders']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sPrevFolderFullNameRaw
+	 * @param {string} sNewFolderName
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderRename = function (fCallback, sPrevFolderFullNameRaw, sNewFolderName)
+	{
+		this.defaultRequest(fCallback, 'FolderRename', {
+			'Folder': sPrevFolderFullNameRaw,
+			'NewFolderName': sNewFolderName
+		}, null, '', ['Folders']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderClear = function (fCallback, sFolderFullNameRaw)
+	{
+		this.defaultRequest(fCallback, 'FolderClear', {
+			'Folder': sFolderFullNameRaw
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {boolean} bSubscribe
+	 */
+	WebMailAjaxRemoteStorage.prototype.folderSetSubscribe = function (fCallback, sFolderFullNameRaw, bSubscribe)
+	{
+		this.defaultRequest(fCallback, 'FolderSubscribe', {
+			'Folder': sFolderFullNameRaw,
+			'Subscribe': bSubscribe ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolder
+	 * @param {string} sToFolder
+	 * @param {Array} aUids
+	 * @param {string=} sLearning
+	 */
+	WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
+	{
+		this.defaultRequest(fCallback, 'MessageMove', {
+			'FromFolder': sFolder,
+			'ToFolder': sToFolder,
+			'Uids': aUids.join(','),
+			'Learning': sLearning || ''
+		}, null, '', ['MessageList']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolder
+	 * @param {string} sToFolder
+	 * @param {Array} aUids
+	 */
+	WebMailAjaxRemoteStorage.prototype.messagesCopy = function (fCallback, sFolder, sToFolder, aUids)
+	{
+		this.defaultRequest(fCallback, 'MessageCopy', {
+			'FromFolder': sFolder,
+			'ToFolder': sToFolder,
+			'Uids': aUids.join(',')
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolder
+	 * @param {Array} aUids
+	 */
+	WebMailAjaxRemoteStorage.prototype.messagesDelete = function (fCallback, sFolder, aUids)
+	{
+		this.defaultRequest(fCallback, 'MessageDelete', {
+			'Folder': sFolder,
+			'Uids': aUids.join(',')
+		}, null, '', ['MessageList']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.appDelayStart = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AppDelayStart');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.quota = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'Quota');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {number} iOffset
+	 * @param {number} iLimit
+	 * @param {string} sSearch
+	 */
+	WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLimit, sSearch)
+	{
+		this.defaultRequest(fCallback, 'Contacts', {
+			'Offset': iOffset,
+			'Limit': iLimit,
+			'Search': sSearch
+		}, null, '', ['Contacts']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sTags, aProperties)
+	{
+		this.defaultRequest(fCallback, 'ContactSave', {
+			'RequestUid': sRequestUid,
+			'Uid': Utils.trim(sUid),
+			'Tags': Utils.trim(sTags),
+			'Properties': aProperties
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Array} aUids
+	 */
+	WebMailAjaxRemoteStorage.prototype.contactsDelete = function (fCallback, aUids)
+	{
+		this.defaultRequest(fCallback, 'ContactsDelete', {
+			'Uids': aUids.join(',')
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sQuery
+	 * @param {number} iPage
+	 */
+	WebMailAjaxRemoteStorage.prototype.suggestions = function (fCallback, sQuery, iPage)
+	{
+		this.defaultRequest(fCallback, 'Suggestions', {
+			'Query': sQuery,
+			'Page': iPage
+		}, null, '', ['Suggestions']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.facebookUser = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialFacebookUserInformation');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.facebookDisconnect = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialFacebookDisconnect');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.twitterUser = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialTwitterUserInformation');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.twitterDisconnect = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialTwitterDisconnect');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.googleUser = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialGoogleUserInformation');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.googleDisconnect = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialGoogleDisconnect');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	WebMailAjaxRemoteStorage.prototype.socialUsers = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'SocialUsers');
+	};
+
+	module.exports = new WebMailAjaxRemoteStorage();
+
+}(module));
+},{"../Common/Utils.js":9,"../External/underscore.js":24,"../Storages/WebMailCacheStorage.js":40,"./AbstractAjaxRemoteStorage.js":34}],40:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		_ = require('../External/underscore.js'),
+		
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		RL = require('../RL.js')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function WebMailCacheStorage()
+	{
+		this.oFoldersCache = {};
+		this.oFoldersNamesCache = {};
+		this.oFolderHashCache = {};
+		this.oFolderUidNextCache = {};
+		this.oMessageListHashCache = {};
+		this.oMessageFlagsCache = {};
+		this.oNewMessage = {};
+		this.oRequestedMessage = {};
+
+		this.bCapaGravatar = RL().capa(Enums.Capa.Gravatar);
+	}
+
+	/**
+	 * @type {boolean}
+	 */
+	WebMailCacheStorage.prototype.bCapaGravatar = false;
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oFoldersCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oFoldersNamesCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oFolderHashCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oFolderUidNextCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oMessageListHashCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oMessageFlagsCache = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oBodies = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oNewMessage = {};
+
+	/**
+	 * @type {Object}
+	 */
+	WebMailCacheStorage.prototype.oRequestedMessage = {};
+
+	WebMailCacheStorage.prototype.clear = function ()
+	{
+		this.oFoldersCache = {};
+		this.oFoldersNamesCache = {};
+		this.oFolderHashCache = {};
+		this.oFolderUidNextCache = {};
+		this.oMessageListHashCache = {};
+		this.oMessageFlagsCache = {};
+		this.oBodies = {};
+	};
+
+
+	/**
+	 * @param {string} sEmail
+	 * @param {Function} fCallback
+	 * @return {string}
+	 */
+	WebMailCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
+	{
+		sEmail = Utils.trim(sEmail);
+		fCallback(this.bCapaGravatar && '' !== sEmail ? LinkBuilder.avatarLink(sEmail) : '', sEmail);
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sUid
+	 * @return {string}
+	 */
+	WebMailCacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
+	{
+		return sFolderFullNameRaw + '#' + sUid;
+	};
+
+	/**
+	 * @param {string} sFolder
+	 * @param {string} sUid
+	 */
+	WebMailCacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
+	{
+		this.oRequestedMessage[this.getMessageKey(sFolder, sUid)] = true;
+	};
+
+	/**
+	 * @param {string} sFolder
+	 * @param {string} sUid
+	 * @return {boolean}
+	 */
+	WebMailCacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
+	{
+		return true === this.oRequestedMessage[this.getMessageKey(sFolder, sUid)];
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sUid
+	 */
+	WebMailCacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
+	{
+		this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = true;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sUid
+	 */
+	WebMailCacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
+	{
+		if (this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)])
+		{
+			this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = null;
+			return true;
+		}
+
+		return false;
+	};
+
+	WebMailCacheStorage.prototype.clearNewMessageCache = function ()
+	{
+		this.oNewMessage = {};
+	};
+
+	/**
+	 * @param {string} sFolderHash
+	 * @return {string}
+	 */
+	WebMailCacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
+	{
+		return '' !== sFolderHash && this.oFoldersNamesCache[sFolderHash] ? this.oFoldersNamesCache[sFolderHash] : '';
+	};
+
+	/**
+	 * @param {string} sFolderHash
+	 * @param {string} sFolderFullNameRaw
+	 */
+	WebMailCacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
+	{
+		this.oFoldersNamesCache[sFolderHash] = sFolderFullNameRaw;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @return {string}
+	 */
+	WebMailCacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
+	{
+		return '' !== sFolderFullNameRaw && this.oFolderHashCache[sFolderFullNameRaw] ? this.oFolderHashCache[sFolderFullNameRaw] : '';
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sFolderHash
+	 */
+	WebMailCacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
+	{
+		this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @return {string}
+	 */
+	WebMailCacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
+	{
+		return '' !== sFolderFullNameRaw && this.oFolderUidNextCache[sFolderFullNameRaw] ? this.oFolderUidNextCache[sFolderFullNameRaw] : '';
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string} sUidNext
+	 */
+	WebMailCacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
+	{
+		this.oFolderUidNextCache[sFolderFullNameRaw] = sUidNext;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @return {?FolderModel}
+	 */
+	WebMailCacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
+	{
+		return '' !== sFolderFullNameRaw && this.oFoldersCache[sFolderFullNameRaw] ? this.oFoldersCache[sFolderFullNameRaw] : null;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {?FolderModel} oFolder
+	 */
+	WebMailCacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
+	{
+		this.oFoldersCache[sFolderFullNameRaw] = oFolder;
+	};
+
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 */
+	WebMailCacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
+	{
+		this.setFolderToCacheList(sFolderFullNameRaw, null);
+	};
+
+	/**
+	 * @param {string} sFolderFullName
+	 * @param {string} sUid
+	 * @return {?Array}
+	 */
+	WebMailCacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
+	{
+		return this.oMessageFlagsCache[sFolderFullName] && this.oMessageFlagsCache[sFolderFullName][sUid] ?
+			this.oMessageFlagsCache[sFolderFullName][sUid] : null;
+	};
+
+	/**
+	 * @param {string} sFolderFullName
+	 * @param {string} sUid
+	 * @param {Array} aFlagsCache
+	 */
+	WebMailCacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
+	{
+		if (!this.oMessageFlagsCache[sFolderFullName])
+		{
+			this.oMessageFlagsCache[sFolderFullName] = {};
+		}
+
+		this.oMessageFlagsCache[sFolderFullName][sUid] = aFlagsCache;
+	};
+
+	/**
+	 * @param {string} sFolderFullName
+	 */
+	WebMailCacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
+	{
+		this.oMessageFlagsCache[sFolderFullName] = {};
+	};
+
+	/**
+	 * @param {(MessageModel|null)} oMessage
+	 */
+	WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
+	{
+		if (oMessage)
+		{
+			var
+				self = this,
+				aFlags = this.getMessageFlagsFromCache(oMessage.folderFullNameRaw, oMessage.uid),
+				mUnseenSubUid = null,
+				mFlaggedSubUid = null
+			;
+
+			if (aFlags && 0 < aFlags.length)
+			{
+				oMessage.unseen(!!aFlags[0]);
+				oMessage.flagged(!!aFlags[1]);
+				oMessage.answered(!!aFlags[2]);
+				oMessage.forwarded(!!aFlags[3]);
+				oMessage.isReadReceipt(!!aFlags[4]);
+			}
+
+			if (0 < oMessage.threads().length)
+			{
+				mUnseenSubUid = _.find(oMessage.threads(), function (iSubUid) {
+					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
+					return aFlags && 0 < aFlags.length && !!aFlags[0];
+				});
+
+				mFlaggedSubUid = _.find(oMessage.threads(), function (iSubUid) {
+					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
+					return aFlags && 0 < aFlags.length && !!aFlags[1];
+				});
+
+				oMessage.hasUnseenSubMessage(mUnseenSubUid && 0 < Utils.pInt(mUnseenSubUid));
+				oMessage.hasFlaggedSubMessage(mFlaggedSubUid && 0 < Utils.pInt(mFlaggedSubUid));
+			}
+		}
+	};
+
+	/**
+	 * @param {(MessageModel|null)} oMessage
+	 */
+	WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
+	{
+		if (oMessage)
+		{
+			this.setMessageFlagsToCache(
+				oMessage.folderFullNameRaw,
+				oMessage.uid,
+				[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(), oMessage.isReadReceipt()]
+			);
+		}
+	};
+	/**
+	 * @param {string} sFolder
+	 * @param {string} sUid
+	 * @param {Array} aFlags
+	 */
+	WebMailCacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
+	{
+		if (Utils.isArray(aFlags) && 0 < aFlags.length)
+		{
+			this.setMessageFlagsToCache(sFolder, sUid, aFlags);
+		}
+	};
+
+	module.exports = new WebMailCacheStorage();
+
+}(module));
+},{"../Common/Enums.js":5,"../Common/LinkBuilder.js":7,"../Common/Utils.js":9,"../External/underscore.js":24,"../RL.js":32}],41:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		window = require('../External/window.js'),
+		$ = require('../External/jquery.js'),
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		moment = require('../External/moment.js'),
+		$div = require('../External/$div.js'),
+		NotificationClass = require('../External/NotificationClass.js'),
+		
+		Consts = require('../Common/Consts.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		
+		kn = require('../Knoin/Knoin.js'),
+
+		MessageModel = require('../Models/MessageModel.js'),
+
+		LocalStorage = require('./LocalStorage.js'),
+		AbstractData = require('./AbstractData.js')
+	;
+
+	/**
+	 * @constructor
+	 * @extends AbstractData
+	 */
+	function WebMailDataStorage()
+	{
+		AbstractData.call(this);
+
+		var
+			fRemoveSystemFolderType = function (observable) {
+				return function () {
+					var oFolder = Cache.getFolderFromCacheList(observable()); // TODO cjs
+					if (oFolder)
+					{
+						oFolder.type(Enums.FolderType.User);
+					}
+				};
+			},
+			fSetSystemFolderType = function (iType) {
+				return function (sValue) {
+					var oFolder = Cache.getFolderFromCacheList(sValue); // TODO cjs
+					if (oFolder)
+					{
+						oFolder.type(iType);
+					}
+				};
+			}
+		;
+
+		this.devEmail = '';
+		this.devPassword = '';
+
+		this.accountEmail = ko.observable('');
+		this.accountIncLogin = ko.observable('');
+		this.accountOutLogin = ko.observable('');
+		this.projectHash = ko.observable('');
+		this.threading = ko.observable(false);
+
+		this.lastFoldersHash = '';
+		this.remoteSuggestions = false;
+
+		// system folders
+		this.sentFolder = ko.observable('');
+		this.draftFolder = ko.observable('');
+		this.spamFolder = ko.observable('');
+		this.trashFolder = ko.observable('');
+		this.archiveFolder = ko.observable('');
+
+		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
+		this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
+		this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
+		this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
+		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
+
+		this.sentFolder.subscribe(fSetSystemFolderType(Enums.FolderType.SentItems), this);
+		this.draftFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Draft), this);
+		this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
+		this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
+		this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
+
+		this.draftFolderNotEnabled = ko.computed(function () {
+			return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
+		}, this);
+
+		// personal
+		this.displayName = ko.observable('');
+		this.signature = ko.observable('');
+		this.signatureToAll = ko.observable(false);
+		this.replyTo = ko.observable('');
+
+		// security
+		this.enableTwoFactor = ko.observable(false);
+
+		// accounts
+		this.accounts = ko.observableArray([]);
+		this.accountsLoading = ko.observable(false).extend({'throttle': 100});
+
+		// identities
+		this.defaultIdentityID = ko.observable('');
+		this.identities = ko.observableArray([]);
+		this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
+
+		// contacts
+		this.contactTags = ko.observableArray([]);
+		this.contacts = ko.observableArray([]);
+		this.contacts.loading = ko.observable(false).extend({'throttle': 200});
+		this.contacts.importing = ko.observable(false).extend({'throttle': 200});
+		this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
+		this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
+		this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
+
+		this.allowContactsSync = ko.observable(false);
+		this.enableContactsSync = ko.observable(false);
+		this.contactsSyncUrl = ko.observable('');
+		this.contactsSyncUser = ko.observable('');
+		this.contactsSyncPass = ko.observable('');
+
+		this.allowContactsSync = ko.observable(!!RL.settingsGet('ContactsSyncIsAllowed')); // TODO cjs
+		this.enableContactsSync = ko.observable(!!RL.settingsGet('EnableContactsSync'));
+		this.contactsSyncUrl = ko.observable(RL.settingsGet('ContactsSyncUrl'));
+		this.contactsSyncUser = ko.observable(RL.settingsGet('ContactsSyncUser'));
+		this.contactsSyncPass = ko.observable(RL.settingsGet('ContactsSyncPassword'));
+
+		// folders
+		this.namespace = '';
+		this.folderList = ko.observableArray([]);
+		this.folderList.focused = ko.observable(false);
+
+		this.foldersListError = ko.observable('');
+
+		this.foldersLoading = ko.observable(false);
+		this.foldersCreating = ko.observable(false);
+		this.foldersDeleting = ko.observable(false);
+		this.foldersRenaming = ko.observable(false);
+
+		this.foldersChanging = ko.computed(function () {
+			var
+				bLoading = this.foldersLoading(),
+				bCreating = this.foldersCreating(),
+				bDeleting = this.foldersDeleting(),
+				bRenaming = this.foldersRenaming()
+			;
+			return bLoading || bCreating || bDeleting || bRenaming;
+		}, this);
+
+		this.foldersInboxUnreadCount = ko.observable(0);
+
+		this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
+			function (oPrev) {
+				if (oPrev)
+				{
+					oPrev.selected(false);
+				}
+			}, function (oNext) {
+				if (oNext)
+				{
+					oNext.selected(true);
+				}
+			}
+		]});
+
+		this.currentFolderFullNameRaw = ko.computed(function () {
+			return this.currentFolder() ? this.currentFolder().fullNameRaw : '';
+		}, this);
+
+		this.currentFolderFullName = ko.computed(function () {
+			return this.currentFolder() ? this.currentFolder().fullName : '';
+		}, this);
+
+		this.currentFolderFullNameHash = ko.computed(function () {
+			return this.currentFolder() ? this.currentFolder().fullNameHash : '';
+		}, this);
+
+		this.currentFolderName = ko.computed(function () {
+			return this.currentFolder() ? this.currentFolder().name() : '';
+		}, this);
+
+		this.folderListSystemNames = ko.computed(function () {
+
+			var
+				aList = ['INBOX'],
+				aFolders = this.folderList(),
+				sSentFolder = this.sentFolder(),
+				sDraftFolder = this.draftFolder(),
+				sSpamFolder = this.spamFolder(),
+				sTrashFolder = this.trashFolder(),
+				sArchiveFolder = this.archiveFolder()
+			;
+
+			if (Utils.isArray(aFolders) && 0 < aFolders.length)
+			{
+				if ('' !== sSentFolder && Consts.Values.UnuseOptionValue !== sSentFolder)
+				{
+					aList.push(sSentFolder);
+				}
+				if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
+				{
+					aList.push(sDraftFolder);
+				}
+				if ('' !== sSpamFolder && Consts.Values.UnuseOptionValue !== sSpamFolder)
+				{
+					aList.push(sSpamFolder);
+				}
+				if ('' !== sTrashFolder && Consts.Values.UnuseOptionValue !== sTrashFolder)
+				{
+					aList.push(sTrashFolder);
+				}
+				if ('' !== sArchiveFolder && Consts.Values.UnuseOptionValue !== sArchiveFolder)
+				{
+					aList.push(sArchiveFolder);
+				}
+			}
+
+			return aList;
+
+		}, this);
+
+		this.folderListSystem = ko.computed(function () {
+			return _.compact(_.map(this.folderListSystemNames(), function (sName) {
+				return Cache.getFolderFromCacheList(sName); // TODO cjs
+			}));
+		}, this);
+
+		this.folderMenuForMove = ko.computed(function () {
+			return RL.folderListOptionsBuilder(this.folderListSystem(), this.folderList(), [// TODO cjs
+				this.currentFolderFullNameRaw()
+			], null, null, null, null, function (oItem) {
+				return oItem ? oItem.localName() : '';
+			});
+		}, this);
+
+		// message list
+		this.staticMessageList = [];
+
+		this.messageList = ko.observableArray([]).extend({'rateLimit': 0});
+
+		this.messageListCount = ko.observable(0);
+		this.messageListSearch = ko.observable('');
+		this.messageListPage = ko.observable(1);
+
+		this.messageListThreadFolder = ko.observable('');
+		this.messageListThreadUids = ko.observableArray([]);
+
+		this.messageListThreadFolder.subscribe(function () {
+			this.messageListThreadUids([]);
+		}, this);
+
+		this.messageListEndFolder = ko.observable('');
+		this.messageListEndSearch = ko.observable('');
+		this.messageListEndPage = ko.observable(1);
+
+		this.messageListEndHash = ko.computed(function () {
+			return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
+		}, this);
+
+		this.messageListPageCount = ko.computed(function () {
+			var iPage = window.Math.ceil(this.messageListCount() / this.messagesPerPage());
+			return 0 >= iPage ? 1 : iPage;
+		}, this);
+
+		this.mainMessageListSearch = ko.computed({
+			'read': this.messageListSearch,
+			'write': function (sValue) {
+				kn.setHash(LinkBuilder.mailBox( // TODO cjs
+					this.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
+				));
+			},
+			'owner': this
+		});
+
+		this.messageListError = ko.observable('');
+
+		this.messageListLoading = ko.observable(false);
+		this.messageListIsNotCompleted = ko.observable(false);
+		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({'throttle': 200});
+
+		this.messageListCompleteLoading = ko.computed(function () {
+			var
+				bOne = this.messageListLoading(),
+				bTwo = this.messageListIsNotCompleted()
+			;
+			return bOne || bTwo;
+		}, this);
+
+		this.messageListCompleteLoading.subscribe(function (bValue) {
+			this.messageListCompleteLoadingThrottle(bValue);
+		}, this);
+
+		this.messageList.subscribe(_.debounce(function (aList) {
+			_.each(aList, function (oItem) {
+				if (oItem.newForAnimation())
+				{
+					oItem.newForAnimation(false);
+				}
+			});
+		}, 500));
+
+		// message preview
+		this.staticMessageList = new MessageModel();// TODO cjs
+		this.message = ko.observable(null);
+		this.messageLoading = ko.observable(false);
+		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
+
+		this.message.focused = ko.observable(false);
+
+		this.message.subscribe(function (oMessage) {
+			if (!oMessage)
+			{
+				this.message.focused(false);
+				this.messageFullScreenMode(false);
+				this.hideMessageBodies();
+
+				if (Enums.Layout.NoPreview === RL.data().layout() &&// TODO cjs
+					-1 < window.location.hash.indexOf('message-preview'))
+				{
+					RL.historyBack();// TODO cjs
+				}
+			}
+			else if (Enums.Layout.NoPreview === this.layout())
+			{
+				this.message.focused(true);
+			}
+		}, this);
+
+		this.message.focused.subscribe(function (bValue) {
+			if (bValue)
+			{
+				this.folderList.focused(false);
+				this.keyScope(Enums.KeyState.MessageView);
+			}
+			else if (Enums.KeyState.MessageView === RL.data().keyScope())// TODO cjs
+			{
+				if (Enums.Layout.NoPreview === RL.data().layout() && this.message())// TODO cjs
+				{
+					this.keyScope(Enums.KeyState.MessageView);
+				}
+				else
+				{
+					this.keyScope(Enums.KeyState.MessageList);
+				}
+			}
+		}, this);
+
+		this.folderList.focused.subscribe(function (bValue) {
+			if (bValue)
+			{
+				RL.data().keyScope(Enums.KeyState.FolderList);// TODO cjs
+			}
+			else if (Enums.KeyState.FolderList === RL.data().keyScope())// TODO cjs
+			{
+				RL.data().keyScope(Enums.KeyState.MessageList);// TODO cjs
+			}
+		});
+
+		this.messageLoading.subscribe(function (bValue) {
+			this.messageLoadingThrottle(bValue);
+		}, this);
+
+		this.messageFullScreenMode = ko.observable(false);
+
+		this.messageError = ko.observable('');
+
+		this.messagesBodiesDom = ko.observable(null);
+
+		this.messagesBodiesDom.subscribe(function (oDom) {
+			if (oDom && !(oDom instanceof $))
+			{
+				this.messagesBodiesDom($(oDom));
+			}
+		}, this);
+
+		this.messageActiveDom = ko.observable(null);
+
+		this.isMessageSelected = ko.computed(function () {
+			return null !== this.message();
+		}, this);
+
+		this.currentMessage = ko.observable(null);
+
+		this.messageListChecked = ko.computed(function () {
+			return _.filter(this.messageList(), function (oItem) {
+				return oItem.checked();
+			});
+		}, this).extend({'rateLimit': 0});
+
+		this.hasCheckedMessages = ko.computed(function () {
+			return 0 < this.messageListChecked().length;
+		}, this).extend({'rateLimit': 0});
+
+		this.messageListCheckedOrSelected = ko.computed(function () {
+
+			var
+				aChecked = this.messageListChecked(),
+				oSelectedMessage = this.currentMessage()
+			;
+
+			return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
+
+		}, this);
+
+		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
+			var aList = [];
+			_.each(this.messageListCheckedOrSelected(), function (oMessage) {
+				if (oMessage)
+				{
+					aList.push(oMessage.uid);
+					if (0 < oMessage.threadsLen() && 0 === oMessage.parentUid() && oMessage.lastInCollapsedThread())
+					{
+						aList = _.union(aList, oMessage.threads());
+					}
+				}
+			});
+			return aList;
+		}, this);
+
+		// quota
+		this.userQuota = ko.observable(0);
+		this.userUsageSize = ko.observable(0);
+		this.userUsageProc = ko.computed(function () {
+
+			var
+				iQuota = this.userQuota(),
+				iUsed = this.userUsageSize()
+			;
+
+			return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
+
+		}, this);
+
+		// other
+		this.capaOpenPGP = ko.observable(false);
+		this.openpgpkeys = ko.observableArray([]);
+		this.openpgpKeyring = null;
+
+		this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
+			return !!(oItem && !oItem.isPrivate);
+		});
+
+		this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
+			return !!(oItem && oItem.isPrivate);
+		});
+
+		// google
+		this.googleActions = ko.observable(false);
+		this.googleLoggined = ko.observable(false);
+		this.googleUserName = ko.observable('');
+
+		// facebook
+		this.facebookActions = ko.observable(false);
+		this.facebookLoggined = ko.observable(false);
+		this.facebookUserName = ko.observable('');
+
+		// twitter
+		this.twitterActions = ko.observable(false);
+		this.twitterLoggined = ko.observable(false);
+		this.twitterUserName = ko.observable('');
+
+		this.customThemeType = ko.observable(Enums.CustomThemeType.Light);
+
+		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
+	}
+
+	_.extend(WebMailDataStorage.prototype, AbstractData.prototype);
+
+	WebMailDataStorage.prototype.purgeMessageBodyCache = function()
+	{
+		var
+			iCount = 0,
+			oMessagesBodiesDom = null,
+			iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
+		;
+
+		if (0 < iEnd)
+		{
+			oMessagesBodiesDom = this.messagesBodiesDom();
+			if (oMessagesBodiesDom)
+			{
+				oMessagesBodiesDom.find('.rl-cache-class').each(function () {
+					var oItem = $(this);
+					if (iEnd > oItem.data('rl-cache-count'))
+					{
+						oItem.addClass('rl-cache-purge');
+						iCount++;
+					}
+				});
+
+				if (0 < iCount)
+				{
+					_.delay(function () {
+						oMessagesBodiesDom.find('.rl-cache-purge').remove();
+					}, 300);
+				}
+			}
+		}
+	};
+
+	WebMailDataStorage.prototype.populateDataOnStart = function()
+	{
+		AbstractData.prototype.populateDataOnStart.call(this);
+
+		this.accountEmail(RL.settingsGet('Email'));// TODO cjs
+		this.accountIncLogin(RL.settingsGet('IncLogin'));
+		this.accountOutLogin(RL.settingsGet('OutLogin'));
+		this.projectHash(RL.settingsGet('ProjectHash'));
+
+		this.defaultIdentityID(RL.settingsGet('DefaultIdentityID'));
+
+		this.displayName(RL.settingsGet('DisplayName'));
+		this.replyTo(RL.settingsGet('ReplyTo'));
+		this.signature(RL.settingsGet('Signature'));
+		this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
+		this.enableTwoFactor(!!RL.settingsGet('EnableTwoFactor'));
+
+		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
+
+		this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
+
+		this.devEmail = RL.settingsGet('DevEmail');
+		this.devPassword = RL.settingsGet('DevPassword');
+	};
+
+	WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
+	{
+		if ('INBOX' === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
+		{
+			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
+			{
+				var
+					iIndex = 0,
+					iLen = aNewMessages.length,
+					fNotificationHelper = function (sImageSrc, sTitle, sText)
+					{
+						var oNotification = null;
+						if (NotificationClass && RL.data().useDesktopNotifications())
+						{
+							oNotification = new NotificationClass(sTitle, {
+								'body': sText,
+								'icon': sImageSrc
+							});
+
+							if (oNotification)
+							{
+								if (oNotification.show)
+								{
+									oNotification.show();
+								}
+
+								window.setTimeout((function (oLocalNotifications) {
+									return function () {
+										if (oLocalNotifications.cancel)
+										{
+											oLocalNotifications.cancel();
+										}
+										else if (oLocalNotifications.close)
+										{
+											oLocalNotifications.close();
+										}
+									};
+								}(oNotification)), 7000);
+							}
+						}
+					}
+				;
+
+				_.each(aNewMessages, function (oItem) {
+					Cache.addNewMessageCache(sFolder, oItem.Uid);
+				});
+
+				if (3 < iLen)
+				{
+					fNotificationHelper(
+						LinkBuilder.notificationMailIcon(),
+						RL.data().accountEmail(),
+						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
+							'COUNT': iLen
+						})
+					);
+				}
+				else
+				{
+					for (; iIndex < iLen; iIndex++)
+					{
+						fNotificationHelper(
+							LinkBuilder.notificationMailIcon(),
+							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
+							aNewMessages[iIndex].Subject
+						);
+					}
+				}
+			}
+
+			Cache.setFolderUidNext(sFolder, sUidNext);
+		}
+	};
+
+	/**
+	 * @param {string} sNamespace
+	 * @param {Array} aFolders
+	 * @return {Array}
+	 */
+	WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders)
+	{
+		var
+			iIndex = 0,
+			iLen = 0,
+			oFolder = null,
+			oCacheFolder = null,
+			sFolderFullNameRaw = '',
+			aSubFolders = [],
+			aList = []
+		;
+
+		for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
+		{
+			oFolder = aFolders[iIndex];
+			if (oFolder)
+			{
+				sFolderFullNameRaw = oFolder.FullNameRaw;
+
+				oCacheFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);// TODO cjs
+				if (!oCacheFolder)
+				{
+					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);// TODO cjs
+					if (oCacheFolder)
+					{
+						Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);// TODO cjs
+						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);// TODO cjs
+					}
+				}
+
+				if (oCacheFolder)
+				{
+					oCacheFolder.collapsed(!Utils.isFolderExpanded(oCacheFolder.fullNameHash));
+
+					if (oFolder.Extended)
+					{
+						if (oFolder.Extended.Hash)
+						{
+							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);// TODO cjs
+						}
+
+						if (Utils.isNormal(oFolder.Extended.MessageCount))
+						{
+							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+						}
+
+						if (Utils.isNormal(oFolder.Extended.MessageUnseenCount))
+						{
+							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
+						}
+					}
+
+					aSubFolders = oFolder['SubFolders'];
+					if (aSubFolders && 'Collection/FolderCollection' === aSubFolders['@Object'] &&
+						aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
+					{
+						oCacheFolder.subFolders(
+							this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
+					}
+
+					aList.push(oCacheFolder);
+				}
+			}
+		}
+
+		return aList;
+	};
+
+	/**
+	 * @param {*} oData
+	 */
+	WebMailDataStorage.prototype.setFolders = function (oData)
+	{
+		var
+			aList = [],
+			bUpdate = false,
+			oRLData = RL.data(),// TODO cjs
+			fNormalizeFolder = function (sFolderFullNameRaw) {
+				return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
+					null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';// TODO cjs
+			}
+		;
+
+		if (oData && oData.Result && 'Collection/FolderCollection' === oData.Result['@Object'] &&
+			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
+		{
+			if (!Utils.isUnd(oData.Result.Namespace))
+			{
+				oRLData.namespace = oData.Result.Namespace;
+			}
+
+			this.threading(!!RL.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);// TODO cjs
+
+			aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection']);
+			oRLData.folderList(aList);
+
+			// TODO cjs
+			if (oData.Result['SystemFolders'] &&
+				'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
+				RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('ArchiveFolder') +
+				RL.settingsGet('NullFolder'))
+			{
+				// TODO Magic Numbers
+				RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
+				RL.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
+				RL.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
+				RL.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
+				RL.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
+
+				bUpdate = true;
+			}
+
+			// TODO cjs
+			oRLData.sentFolder(fNormalizeFolder(RL.settingsGet('SentFolder')));
+			oRLData.draftFolder(fNormalizeFolder(RL.settingsGet('DraftFolder')));
+			oRLData.spamFolder(fNormalizeFolder(RL.settingsGet('SpamFolder')));
+			oRLData.trashFolder(fNormalizeFolder(RL.settingsGet('TrashFolder')));
+			oRLData.archiveFolder(fNormalizeFolder(RL.settingsGet('ArchiveFolder')));
+
+			if (bUpdate)
+			{
+				Remote.saveSystemFolders(Utils.emptyFunction, {
+					'SentFolder': oRLData.sentFolder(),
+					'DraftFolder': oRLData.draftFolder(),
+					'SpamFolder': oRLData.spamFolder(),
+					'TrashFolder': oRLData.trashFolder(),
+					'ArchiveFolder': oRLData.archiveFolder(),
+					'NullFolder': 'NullFolder'
+				});
+			}
+
+			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
+		}
+	};
+
+	WebMailDataStorage.prototype.hideMessageBodies = function ()
+	{
+		var oMessagesBodiesDom = this.messagesBodiesDom();
+		if (oMessagesBodiesDom)
+		{
+			oMessagesBodiesDom.find('.b-text-part').hide();
+		}
+	};
+
+	/**
+	 * @param {boolean=} bBoot = false
+	 * @returns {Array}
+	 */
+	WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
+	{
+		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
+
+		var
+			aResult = [],
+			iLimit = 10,
+			iUtc = moment().unix(),
+			iTimeout = iUtc - 60 * 5,
+			aTimeouts = [],
+			fSearchFunction = function (aList) {
+				_.each(aList, function (oFolder) {
+					if (oFolder && 'INBOX' !== oFolder.fullNameRaw &&
+						oFolder.selectable && oFolder.existen &&
+						iTimeout > oFolder.interval &&
+						(!bBoot || oFolder.subScribed()))
+					{
+						aTimeouts.push([oFolder.interval, oFolder.fullNameRaw]);
+					}
+
+					if (oFolder && 0 < oFolder.subFolders().length)
+					{
+						fSearchFunction(oFolder.subFolders());
+					}
+				});
+			}
+		;
+
+		fSearchFunction(this.folderList());
+
+		aTimeouts.sort(function(a, b) {
+			if (a[0] < b[0])
+			{
+				return -1;
+			}
+			else if (a[0] > b[0])
+			{
+				return 1;
+			}
+
+			return 0;
+		});
+
+		_.find(aTimeouts, function (aItem) {
+			var oFolder = Cache.getFolderFromCacheList(aItem[1]);// TODO cjs
+			if (oFolder)
+			{
+				oFolder.interval = iUtc;
+				aResult.push(aItem[1]);
+			}
+
+			return iLimit <= aResult.length;
+		});
+
+		return _.uniq(aResult);
+	};
+
+	/**
+	 * @param {string} sFromFolderFullNameRaw
+	 * @param {Array} aUidForRemove
+	 * @param {string=} sToFolderFullNameRaw = ''
+	 * @param {bCopy=} bCopy = false
+	 */
+	WebMailDataStorage.prototype.removeMessagesFromList = function (
+		sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
+	{
+		sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
+		bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
+
+		aUidForRemove = _.map(aUidForRemove, function (mValue) {
+			return Utils.pInt(mValue);
+		});
+
+		var
+			iUnseenCount = 0,
+			oData = RL.data(),// TODO cjs
+			aMessageList = oData.messageList(),
+			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
+			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
+			sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
+			oCurrentMessage = oData.message(),
+			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
+				return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
+			}) : []
+		;
+
+		_.each(aMessages, function (oMessage) {
+			if (oMessage && oMessage.unseen())
+			{
+				iUnseenCount++;
+			}
+		});
+
+		if (oFromFolder && !bCopy)
+		{
+			oFromFolder.messageCountAll(0 <= oFromFolder.messageCountAll() - aUidForRemove.length ?
+				oFromFolder.messageCountAll() - aUidForRemove.length : 0);
+
+			if (0 < iUnseenCount)
+			{
+				oFromFolder.messageCountUnread(0 <= oFromFolder.messageCountUnread() - iUnseenCount ?
+					oFromFolder.messageCountUnread() - iUnseenCount : 0);
+			}
+		}
+
+		if (oToFolder)
+		{
+			oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
+			if (0 < iUnseenCount)
+			{
+				oToFolder.messageCountUnread(oToFolder.messageCountUnread() + iUnseenCount);
+			}
+
+			oToFolder.actionBlink(true);
+		}
+
+		if (0 < aMessages.length)
+		{
+			if (bCopy)
+			{
+				_.each(aMessages, function (oMessage) {
+					oMessage.checked(false);
+				});
+			}
+			else
+			{
+				oData.messageListIsNotCompleted(true);
+
+				_.each(aMessages, function (oMessage) {
+					if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
+					{
+						oCurrentMessage = null;
+						oData.message(null);
+					}
+
+					oMessage.deleted(true);
+				});
+
+				_.delay(function () {
+					_.each(aMessages, function (oMessage) {
+						oData.messageList.remove(oMessage);
+					});
+				}, 400);
+			}
+		}
+
+		if ('' !== sFromFolderFullNameRaw)
+		{
+			Cache.setFolderHash(sFromFolderFullNameRaw, '');
+		}
+
+		if ('' !== sToFolderFullNameRaw)
+		{
+			Cache.setFolderHash(sToFolderFullNameRaw, '');
+		}
+	};
+
+	WebMailDataStorage.prototype.setMessage = function (oData, bCached)
+	{
+		var
+			bIsHtml = false,
+			bHasExternals = false,
+			bHasInternals = false,
+			oBody = null,
+			oTextBody = null,
+			sId = '',
+			sResultHtml = '',
+			bPgpSigned = false,
+			bPgpEncrypted = false,
+			oMessagesBodiesDom = this.messagesBodiesDom(),
+			oMessage = this.message()
+		;
+
+		if (oData && oMessage && oData.Result && 'Object/Message' === oData.Result['@Object'] &&
+			oMessage.folderFullNameRaw === oData.Result.Folder && oMessage.uid === oData.Result.Uid)
+		{
+			this.messageError('');
+
+			oMessage.initUpdateByMessageJson(oData.Result);
+			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);// TODO cjs
+
+			if (!bCached)
+			{
+				oMessage.initFlagsByJson(oData.Result);
+			}
+
+			oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
+			if (oMessagesBodiesDom)
+			{
+				sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
+				oTextBody = oMessagesBodiesDom.find('#' + sId);
+				if (!oTextBody || !oTextBody[0])
+				{
+					bHasExternals = !!oData.Result.HasExternals;
+					bHasInternals = !!oData.Result.HasInternals;
+
+					oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
+					oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+
+					if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
+					{
+						bIsHtml = true;
+						sResultHtml = oData.Result.Html.toString();
+					}
+					else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
+					{
+						bIsHtml = false;
+						sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
+
+						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && RL.data().capaOpenPGP())
+						{
+							oMessage.plainRaw = Utils.pString(oData.Result.Plain);
+
+							bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
+							if (!bPgpEncrypted)
+							{
+								bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
+									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
+							}
+
+							$div.empty();
+							if (bPgpSigned && oMessage.isPgpSigned())
+							{
+								sResultHtml =
+									$div.append(
+										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+									).html()
+								;
+							}
+							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
+							{
+								sResultHtml =
+									$div.append(
+										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+									).html()
+								;
+							}
+
+							$div.empty();
+
+							oMessage.isPgpSigned(bPgpSigned);
+							oMessage.isPgpEncrypted(bPgpEncrypted);
+						}
+					}
+					else
+					{
+						bIsHtml = false;
+					}
+
+					oBody
+						.html(Utils.linkify(sResultHtml))
+						.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
+					;
+
+					oMessage.isHtml(!!bIsHtml);
+					oMessage.hasImages(!!bHasExternals);
+					oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+					oMessage.pgpSignedVerifyUser('');
+
+					oMessage.body = oBody;
+					if (oMessage.body)
+					{
+						oMessagesBodiesDom.append(oMessage.body);
+					}
+
+					oMessage.storeDataToDom();
+
+					if (bHasInternals)
+					{
+						oMessage.showInternalImages(true);
+					}
+
+					if (oMessage.hasImages() && this.showImages())
+					{
+						oMessage.showExternalImages(true);
+					}
+
+					this.purgeMessageBodyCacheThrottle();
+				}
+				else
+				{
+					oMessage.body = oTextBody;
+					if (oMessage.body)
+					{
+						oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+						oMessage.fetchDataToDom();
+					}
+				}
+
+				this.messageActiveDom(oMessage.body);
+
+				this.hideMessageBodies();
+				oMessage.body.show();
+
+				if (oBody)
+				{
+					Utils.initBlockquoteSwitcher(oBody);
+				}
+			}
+
+			Cache.initMessageFlagsFromCache(oMessage);
+			if (oMessage.unseen())
+			{
+				RL.setMessageSeen(oMessage);
+			}
+
+			Utils.windowResize();
+		}
+	};
+
+	/**
+	 * @param {Array} aList
+	 * @returns {string}
+	 */
+	WebMailDataStorage.prototype.calculateMessageListHash = function (aList)
+	{
+		return _.map(aList, function (oMessage) {
+			return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
+		}).join('|');
+	};
+
+	WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
+	{
+		if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
+			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
+		{
+			var
+				oRainLoopData = RL.data(),
+				mLastCollapsedThreadUids = null,
+				iIndex = 0,
+				iLen = 0,
+				iCount = 0,
+				iOffset = 0,
+				aList = [],
+				iUtc = moment().unix(),
+				aStaticList = oRainLoopData.staticMessageList,
+				oJsonMessage = null,
+				oMessage = null,
+				oFolder = null,
+				iNewCount = 0,
+				bUnreadCountChange = false
+			;
+
+			iCount = Utils.pInt(oData.Result.MessageResultCount);
+			iOffset = Utils.pInt(oData.Result.Offset);
+
+			if (Utils.isNonEmptyArray(oData.Result.LastCollapsedThreadUids))
+			{
+				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
+			}
+
+			oFolder = Cache.getFolderFromCacheList(
+				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
+
+			if (oFolder && !bCached)
+			{
+				oFolder.interval = iUtc;
+
+				Cache.setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
+
+				if (Utils.isNormal(oData.Result.MessageCount))
+				{
+					oFolder.messageCountAll(oData.Result.MessageCount);
+				}
+
+				if (Utils.isNormal(oData.Result.MessageUnseenCount))
+				{
+					if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
+					{
+						bUnreadCountChange = true;
+					}
+
+					oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
+				}
+
+				this.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+			}
+
+			if (bUnreadCountChange && oFolder)
+			{
+				Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+			}
+
+			for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
+			{
+				oJsonMessage = oData.Result['@Collection'][iIndex];
+				if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
+				{
+					oMessage = aStaticList[iIndex];
+					if (!oMessage || !oMessage.initByJson(oJsonMessage))
+					{
+						oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
+					}
+
+					if (oMessage)
+					{
+						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
+						{
+							iNewCount++;
+							oMessage.newForAnimation(true);
+						}
+
+						oMessage.deleted(false);
+
+						if (bCached)
+						{
+							Cache.initMessageFlagsFromCache(oMessage);
+						}
+						else
+						{
+							Cache.storeMessageFlagsToCache(oMessage);
+						}
+
+						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
+
+						aList.push(oMessage);
+					}
+				}
+			}
+
+			oRainLoopData.messageListCount(iCount);
+			oRainLoopData.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
+			oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
+			oRainLoopData.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			oRainLoopData.messageListEndPage(oRainLoopData.messageListPage());
+
+			oRainLoopData.messageList(aList);
+			oRainLoopData.messageListIsNotCompleted(false);
+
+			if (aStaticList.length < aList.length)
+			{
+				oRainLoopData.staticMessageList = aList;
+			}
+
+			Cache.clearNewMessageCache();
+
+			if (oFolder && (bCached || bUnreadCountChange || RL.data().useThreads()))
+			{
+				RL.folderInformation(oFolder.fullNameRaw, aList);
+			}
+		}
+		else
+		{
+			RL.data().messageListCount(0);
+			RL.data().messageList([]);
+			RL.data().messageListError(Utils.getNotification(
+				oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
+			));
+		}
+	};
+
+	WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)
+	{
+		return _.find(this.openpgpkeysPublic(), function (oItem) {
+			return oItem && sHash === oItem.id;
+		});
+	};
+
+	WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
+	{
+		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
+
+			var oKey = null;
+			if (oItem && sEmail === oItem.email)
+			{
+				try
+				{
+					oKey = window.openpgp.key.readArmored(oItem.armor);
+					if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
+					{
+						return oKey.keys[0];
+					}
+				}
+				catch (e) {}
+			}
+
+			return null;
+
+		}));
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @param {string=} sPassword
+	 * @returns {?}
+	 */
+	WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
+	{
+		var
+			oPrivateKey = null,
+			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
+				return oItem && sEmail === oItem.email;
+			})
+		;
+
+		if (oKey)
+		{
+			try
+			{
+				oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
+				if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
+				{
+					oPrivateKey = oPrivateKey.keys[0];
+					oPrivateKey.decrypt(Utils.pString(sPassword));
+				}
+				else
+				{
+					oPrivateKey = null;
+				}
+			}
+			catch (e)
+			{
+				oPrivateKey = null;
+			}
+		}
+
+		return oPrivateKey;
+	};
+
+	/**
+	 * @param {string=} sPassword
+	 * @returns {?}
+	 */
+	WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
+	{
+		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
+	};
+
+	module.exports = new WebMailDataStorage();
+
+}(module));
+
+},{"../Common/Consts.js":4,"../Common/Enums.js":5,"../Common/Globals.js":6,"../Common/LinkBuilder.js":7,"../Common/Utils.js":9,"../External/$div.js":10,"../External/NotificationClass.js":16,"../External/jquery.js":19,"../External/ko.js":21,"../External/moment.js":22,"../External/underscore.js":24,"../External/window.js":25,"../Knoin/Knoin.js":26,"../Models/MessageModel.js":31,"../Storages/WebMailAjaxRemoteStorage.js":39,"../Storages/WebMailCacheStorage.js":40,"./AbstractData.js":35,"./LocalStorage.js":36}],42:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module) {
+
+	'use strict';
+
+	var
+		ko = require('../../External/ko.js'),
+		key = require('../../External/key.js'),
+		Enums = require('../../Common/Enums.js'),
+		Utils = require('../../Common/Utils.js'),
+		kn = require('../../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+	;
+
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function PopupsAskViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAsk');
+
+		this.askDesc = ko.observable('');
+		this.yesButton = ko.observable('');
+		this.noButton = ko.observable('');
+
+		this.yesFocus = ko.observable(false);
+		this.noFocus = ko.observable(false);
+
+		this.fYesAction = null;
+		this.fNoAction = null;
+
+		this.bDisabeCloseOnEsc = true;
+		this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
+
+		kn.constructorEnd(this);
+	}
+
+	kn.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
+
+	PopupsAskViewModel.prototype.clearPopup = function ()
+	{
+		this.askDesc('');
+		this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
+		this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
+
+		this.yesFocus(false);
+		this.noFocus(false);
+
+		this.fYesAction = null;
+		this.fNoAction = null;
+	};
+
+	PopupsAskViewModel.prototype.yesClick = function ()
+	{
+		this.cancelCommand();
+
+		if (Utils.isFunc(this.fYesAction))
+		{
+			this.fYesAction.call(null);
+		}
+	};
+
+	PopupsAskViewModel.prototype.noClick = function ()
+	{
+		this.cancelCommand();
+
+		if (Utils.isFunc(this.fNoAction))
+		{
+			this.fNoAction.call(null);
+		}
+	};
+
+	/**
+	 * @param {string} sAskDesc
+	 * @param {Function=} fYesFunc
+	 * @param {Function=} fNoFunc
+	 * @param {string=} sYesButton
+	 * @param {string=} sNoButton
+	 */
+	PopupsAskViewModel.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
+	{
+		this.clearPopup();
+
+		this.fYesAction = fYesFunc || null;
+		this.fNoAction = fNoFunc || null;
+
+		this.askDesc(sAskDesc || '');
+		if (sYesButton)
+		{
+			this.yesButton(sYesButton);
+		}
+
+		if (sYesButton)
+		{
+			this.yesButton(sNoButton);
+		}
+	};
+
+	PopupsAskViewModel.prototype.onFocus = function ()
+	{
+		this.yesFocus(true);
+	};
+
+	PopupsAskViewModel.prototype.onBuild = function ()
+	{
+		key('tab, shift+tab, right, left', Enums.KeyState.PopupAsk, _.bind(function () {
+			if (this.yesFocus())
+			{
+				this.noFocus(true);
+			}
+			else
+			{
+				this.yesFocus(true);
+			}
+			return false;
+		}, this));
+
+		key('esc', Enums.KeyState.PopupAsk, _.bind(function () {
+			this.noClick();
+			return false;
+		}, this));
+	};
+
+	module.exports = new PopupsAskViewModel();
+
+}(module));
+},{"../../Common/Enums.js":5,"../../Common/Utils.js":9,"../../External/key.js":20,"../../External/ko.js":21,"../../Knoin/Knoin.js":26,"../../Knoin/KnoinAbstractViewModel.js":28}]},{},[1]);

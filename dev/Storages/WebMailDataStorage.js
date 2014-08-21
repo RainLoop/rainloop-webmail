@@ -5,19 +5,29 @@
 	'use strict';
 
 	var
-		window = require('./External/window.js'),
-		$ = require('./External/jquery.js'),
-		_ = require('./External/underscore.js'),
-		ko = require('./External/ko.js'),
-		moment = require('./External/moment.js'),
-		$div = require('./External/$div.js'),
-		NotificationClass = require('./External/NotificationClass.js'),
-		Consts = require('./Common/Consts.js'),
-		Enums = require('./Common/Enums.js'),
-		Globals = require('./Common/Globals.js'),
-		Utils = require('./Common/Utils.js'),
-		kn = require('./Knoin/Knoin.js'),
-		AbstractData = require('./Storages/AbstractData.js')
+		window = require('../External/window.js'),
+		$ = require('../External/jquery.js'),
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		moment = require('../External/moment.js'),
+		$div = require('../External/$div.js'),
+		NotificationClass = require('../External/NotificationClass.js'),
+		
+		Consts = require('../Common/Consts.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		
+		kn = require('../Knoin/Knoin.js'),
+
+		MessageModel = require('../Models/MessageModel.js'),
+
+		LocalStorage = require('./LocalStorage.js'),
+		AbstractData = require('./AbstractData.js')
 	;
 
 	/**
@@ -31,7 +41,7 @@
 		var
 			fRemoveSystemFolderType = function (observable) {
 				return function () {
-					var oFolder = RL.cache().getFolderFromCacheList(observable()); // TODO cjs
+					var oFolder = Cache.getFolderFromCacheList(observable()); // TODO cjs
 					if (oFolder)
 					{
 						oFolder.type(Enums.FolderType.User);
@@ -40,7 +50,7 @@
 			},
 			fSetSystemFolderType = function (iType) {
 				return function (sValue) {
-					var oFolder = RL.cache().getFolderFromCacheList(sValue); // TODO cjs
+					var oFolder = Cache.getFolderFromCacheList(sValue); // TODO cjs
 					if (oFolder)
 					{
 						oFolder.type(iType);
@@ -219,7 +229,7 @@
 
 		this.folderListSystem = ko.computed(function () {
 			return _.compact(_.map(this.folderListSystemNames(), function (sName) {
-				return RL.cache().getFolderFromCacheList(sName); // TODO cjs
+				return Cache.getFolderFromCacheList(sName); // TODO cjs
 			}));
 		}, this);
 
@@ -263,7 +273,7 @@
 		this.mainMessageListSearch = ko.computed({
 			'read': this.messageListSearch,
 			'write': function (sValue) {
-				kn.setHash(RL.link().mailBox( // TODO cjs
+				kn.setHash(LinkBuilder.mailBox( // TODO cjs
 					this.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
 				));
 			},
@@ -513,7 +523,7 @@
 		this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
 		this.enableTwoFactor(!!RL.settingsGet('EnableTwoFactor'));
 
-		this.lastFoldersHash = RL.local().get(Enums.ClientSideKeyName.FoldersLashHash) || '';
+		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
 		this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
 
@@ -528,7 +538,6 @@
 			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
 			{
 				var
-					oCache = RL.cache(),// TODO cjs
 					iIndex = 0,
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
@@ -566,13 +575,13 @@
 				;
 
 				_.each(aNewMessages, function (oItem) {
-					oCache.addNewMessageCache(sFolder, oItem.Uid);
+					Cache.addNewMessageCache(sFolder, oItem.Uid);
 				});
 
 				if (3 < iLen)
 				{
 					fNotificationHelper(
-						RL.link().notificationMailIcon(),// TODO cjs
+						LinkBuilder.notificationMailIcon(),
 						RL.data().accountEmail(),
 						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
@@ -584,15 +593,15 @@
 					for (; iIndex < iLen; iIndex++)
 					{
 						fNotificationHelper(
-							RL.link().notificationMailIcon(),// TODO cjs
-							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),// TODO cjs
+							LinkBuilder.notificationMailIcon(),
+							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
 							aNewMessages[iIndex].Subject
 						);
 					}
 				}
 			}
 
-			RL.cache().setFolderUidNext(sFolder, sUidNext);// TODO cjs
+			Cache.setFolderUidNext(sFolder, sUidNext);
 		}
 	};
 
@@ -620,14 +629,14 @@
 			{
 				sFolderFullNameRaw = oFolder.FullNameRaw;
 
-				oCacheFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw);// TODO cjs
+				oCacheFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);// TODO cjs
 				if (!oCacheFolder)
 				{
 					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);// TODO cjs
 					if (oCacheFolder)
 					{
-						RL.cache().setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);// TODO cjs
-						RL.cache().setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);// TODO cjs
+						Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);// TODO cjs
+						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);// TODO cjs
 					}
 				}
 
@@ -639,7 +648,7 @@
 					{
 						if (oFolder.Extended.Hash)
 						{
-							RL.cache().setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);// TODO cjs
+							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);// TODO cjs
 						}
 
 						if (Utils.isNormal(oFolder.Extended.MessageCount))
@@ -680,7 +689,7 @@
 			oRLData = RL.data(),// TODO cjs
 			fNormalizeFolder = function (sFolderFullNameRaw) {
 				return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
-					null !== RL.cache().getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';// TODO cjs
+					null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';// TODO cjs
 			}
 		;
 
@@ -722,8 +731,7 @@
 
 			if (bUpdate)
 			{
-				// TODO cjs
-				RL.remote().saveSystemFolders(Utils.emptyFunction, {
+				Remote.saveSystemFolders(Utils.emptyFunction, {
 					'SentFolder': oRLData.sentFolder(),
 					'DraftFolder': oRLData.draftFolder(),
 					'SpamFolder': oRLData.spamFolder(),
@@ -733,8 +741,7 @@
 				});
 			}
 
-			// TODO cjs
-			RL.local().set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
+			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 		}
 	};
 
@@ -795,7 +802,7 @@
 		});
 
 		_.find(aTimeouts, function (aItem) {
-			var oFolder = RL.cache().getFolderFromCacheList(aItem[1]);// TODO cjs
+			var oFolder = Cache.getFolderFromCacheList(aItem[1]);// TODO cjs
 			if (oFolder)
 			{
 				oFolder.interval = iUtc;
@@ -827,10 +834,9 @@
 		var
 			iUnseenCount = 0,
 			oData = RL.data(),// TODO cjs
-			oCache = RL.cache(),// TODO cjs
 			aMessageList = oData.messageList(),
-			oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
-			oToFolder = '' === sToFolderFullNameRaw ? null : oCache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
+			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
+			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
 			sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
 			oCurrentMessage = oData.message(),
 			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
@@ -900,12 +906,12 @@
 
 		if ('' !== sFromFolderFullNameRaw)
 		{
-			oCache.setFolderHash(sFromFolderFullNameRaw, '');
+			Cache.setFolderHash(sFromFolderFullNameRaw, '');
 		}
 
 		if ('' !== sToFolderFullNameRaw)
 		{
-			oCache.setFolderHash(sToFolderFullNameRaw, '');
+			Cache.setFolderHash(sToFolderFullNameRaw, '');
 		}
 	};
 
@@ -931,7 +937,7 @@
 			this.messageError('');
 
 			oMessage.initUpdateByMessageJson(oData.Result);
-			RL.cache().addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);// TODO cjs
+			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);// TODO cjs
 
 			if (!bCached)
 			{
@@ -1052,7 +1058,7 @@
 				}
 			}
 
-			RL.cache().initMessageFlagsFromCache(oMessage);
+			Cache.initMessageFlagsFromCache(oMessage);
 			if (oMessage.unseen())
 			{
 				RL.setMessageSeen(oMessage);
@@ -1080,7 +1086,6 @@
 		{
 			var
 				oRainLoopData = RL.data(),
-				oCache = RL.cache(),
 				mLastCollapsedThreadUids = null,
 				iIndex = 0,
 				iLen = 0,
@@ -1104,14 +1109,14 @@
 				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
 			}
 
-			oFolder = RL.cache().getFolderFromCacheList(
+			oFolder = Cache.getFolderFromCacheList(
 				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 
 			if (oFolder && !bCached)
 			{
 				oFolder.interval = iUtc;
 
-				RL.cache().setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
+				Cache.setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
 
 				if (Utils.isNormal(oData.Result.MessageCount))
 				{
@@ -1133,7 +1138,7 @@
 
 			if (bUnreadCountChange && oFolder)
 			{
-				RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+				Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 			}
 
 			for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
@@ -1149,7 +1154,7 @@
 
 					if (oMessage)
 					{
-						if (oCache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
+						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
 						{
 							iNewCount++;
 							oMessage.newForAnimation(true);
@@ -1159,11 +1164,11 @@
 
 						if (bCached)
 						{
-							RL.cache().initMessageFlagsFromCache(oMessage);
+							Cache.initMessageFlagsFromCache(oMessage);
 						}
 						else
 						{
-							RL.cache().storeMessageFlagsToCache(oMessage);
+							Cache.storeMessageFlagsToCache(oMessage);
 						}
 
 						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
@@ -1188,7 +1193,7 @@
 				oRainLoopData.staticMessageList = aList;
 			}
 
-			oCache.clearNewMessageCache();
+			Cache.clearNewMessageCache();
 
 			if (oFolder && (bCached || bUnreadCountChange || RL.data().useThreads()))
 			{
@@ -1282,6 +1287,6 @@
 		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 	};
 
-	module.exports = WebMailDataStorage;
+	module.exports = new WebMailDataStorage();
 
 }(module));

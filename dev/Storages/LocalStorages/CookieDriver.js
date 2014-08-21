@@ -5,10 +5,10 @@
 	'use strict';
 
 	var
-		$ = require('./External/jquery.js'),
-		JSON = require('./External/JSON.js'),
-		Consts = require('./Common/Consts.js'),
-		Utils = require('./Common/Utils.js')
+		$ = require('../../External/jquery.js'),
+		JSON = require('../../External/JSON.js'),
+		Consts = require('../../Common/Consts.js'),
+		Utils = require('../../Common/Utils.js')
 	;
 
 	/**

@@ -5,13 +5,16 @@
 	'use strict';
 
 	var
-		$ = require('./External/jquery.js'),
-		_ = require('./External/underscore.js'),
-		ko = require('./External/ko.js'),
-		Globals = require('./Common/Globals.js'),
-		Utils = require('./Common/Utils.js'),
-		kn = require('./Knoin/Knoin.js'),
-		KnoinAbstractScreen = require('./Knoin/KnoinAbstractScreen.js')
+		$ = require('../External/jquery.js'),
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
 	;
 
 	/**
@@ -136,7 +139,7 @@
 		}
 		else
 		{
-			kn.setHash(RL.link().settings(), false, true); // TODO cjs
+			kn.setHash(LinkBuilder.settings(), false, true); // TODO cjs
 		}
 	};
 

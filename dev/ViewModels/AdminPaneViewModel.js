@@ -1,26 +1,43 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function AdminPaneViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
+(function (module) {
 
-	this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
-	this.version = ko.observable(RL.settingsGet('Version'));
+	'use strict';
 
-	this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
+	var
+		ko = require('../External/ko.js'),
 
-	Knoin.constructorEnd(this);
-}
+		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+	;
 
-Utils.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function AdminPaneViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
 
-AdminPaneViewModel.prototype.logoutClick = function ()
-{
-	RL.remote().adminLogout(function () {
-		RL.loginAndLogoutReload();
-	});
-};
+		this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
+		this.version = ko.observable(RL.settingsGet('Version'));
+
+		this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
+
+		kn.constructorEnd(this);
+	}
+
+	kn.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);
+
+	AdminPaneViewModel.prototype.logoutClick = function ()
+	{
+		Remote.adminLogout(function () {
+			RL.loginAndLogoutReload();
+		});
+	};
+
+	module.exports = new AdminPaneViewModel();
+
+}(module));

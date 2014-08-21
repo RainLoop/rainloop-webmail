@@ -5,9 +5,9 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		CookieDriver = require('./Storages/LocalStorages/CookieDriver.js'),
-		LocalStorageDriver = require('./Storages/LocalStorages/LocalStorageDriver.js')
+		_ = require('../External/underscore.js'),
+		CookieDriver = require('./LocalStorages/CookieDriver.js'),
+		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
 	;
 
 	/**
@@ -49,6 +49,6 @@
 		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
 	};
 
-	module.exports = LocalStorage;
+	module.exports = new LocalStorage();
 
 }(module));

@@ -4,7 +4,8 @@
 
 var
 	kn = require('./Knoin/Knoin.js'),
-	RL = require('./Boots/AdminApp.js')
+	RL = require('./Boots/AdminApp.js'),
+	Remote = require('./Storages/AdminAjaxRemoteStorage.js')
 ;
 
-kn.bootstart(RL);
+kn.bootstart(RL, Remote);

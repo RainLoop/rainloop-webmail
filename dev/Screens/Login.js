@@ -5,9 +5,9 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		KnoinAbstractScreen = require('./Knoin/KnoinAbstractScreen.js'),
-		LoginViewModel = require('./ViewModels/LoginViewModel.js')
+		_ = require('../External/underscore.js'),
+		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
+		LoginViewModel = require('../ViewModels/LoginViewModel.js')
 	;
 
 	/**

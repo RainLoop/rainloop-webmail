@@ -8,12 +8,24 @@
 		window = require('../External/window.js'),
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
+		moment = require('../External/moment.js'),
+		
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
 		Consts = require('../Common/Consts.js'),
 		Plugins = require('../Common/Plugins.js'),
 		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
 		kn = require('../Knoin/Knoin.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		
+		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
+		PopupsAskViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
+		
 		AbstractApp = require('./AbstractApp.js')
 	;
 
@@ -66,7 +78,7 @@
 		}, 60000 * 5);
 
 		$.wakeUp(function () {
-			RL.remote().jsVersion(function (sResult, oData) {
+			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
 					if (window.parent && !!RL.settingsGet('InIframe'))
@@ -114,27 +126,13 @@
 		return this.oRemote;
 	};
 
-	/**
-	 * @return {WebMailCacheStorage}
-	 */
-	RainLoopApp.prototype.cache = function ()
-	{
-		if (null === this.oCache)
-		{
-			this.oCache = new WebMailCacheStorage();
-		}
-
-		return this.oCache;
-	};
-
 	RainLoopApp.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
 	{
-		var oCache = RL.cache();
-		_.each(RL.data().messageList(), function (oMessage) {
-			oCache.initMessageFlagsFromCache(oMessage);
+		_.each(Data.messageList(), function (oMessage) {
+			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
-		oCache.initMessageFlagsFromCache(RL.data().message());
+		Cache.initMessageFlagsFromCache(Data.message());
 	};
 
 	/**
@@ -144,50 +142,49 @@
 	RainLoopApp.prototype.reloadMessageList = function (bDropPagePosition, bDropCurrenFolderCache)
 	{
 		var
-			oRLData = RL.data(),
-			iOffset = (oRLData.messageListPage() - 1) * oRLData.messagesPerPage()
+			iOffset = (Data.messageListPage() - 1) * Data.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
 		{
-			RL.cache().setFolderHash(oRLData.currentFolderFullNameRaw(), '');
+			Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
 		}
 
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
-			oRLData.messageListPage(1);
+			Data.messageListPage(1);
 			iOffset = 0;
 		}
 
-		oRLData.messageListLoading(true);
-		RL.remote().messageList(function (sResult, oData, bCached) {
+		Data.messageListLoading(true);
+		Remote.messageList(function (sResult, oData, bCached) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				oRLData.messageListError('');
-				oRLData.messageListLoading(false);
-				oRLData.setMessageList(oData, bCached);
+				Data.messageListError('');
+				Data.messageListLoading(false);
+				Data.setMessageList(oData, bCached);
 			}
 			else if (Enums.StorageResultType.Unload === sResult)
 			{
-				oRLData.messageListError('');
-				oRLData.messageListLoading(false);
+				Data.messageListError('');
+				Data.messageListLoading(false);
 			}
 			else if (Enums.StorageResultType.Abort !== sResult)
 			{
-				oRLData.messageList([]);
-				oRLData.messageListLoading(false);
-				oRLData.messageListError(oData && oData.ErrorCode ?
+				Data.messageList([]);
+				Data.messageListLoading(false);
+				Data.messageListError(oData && oData.ErrorCode ?
 					Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
 				);
 			}
 
-		}, oRLData.currentFolderFullNameRaw(), iOffset, oRLData.messagesPerPage(), oRLData.messageListSearch());
+		}, Data.currentFolderFullNameRaw(), iOffset, Data.messagesPerPage(), Data.messageListSearch());
 	};
 
 	RainLoopApp.prototype.recacheInboxMessageList = function ()
 	{
-		RL.remote().messageList(Utils.emptyFunction, 'INBOX', 0, RL.data().messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, 'INBOX', 0, Data.messagesPerPage(), '', true);
 	};
 
 	RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -201,15 +198,15 @@
 	 */
 	RainLoopApp.prototype.contactsSync = function (fResultFunc)
 	{
-		var oContacts = RL.data().contacts;
-		if (oContacts.importing() || oContacts.syncing() || !RL.data().enableContactsSync() || !RL.data().allowContactsSync())
+		var oContacts = Data.contacts;
+		if (oContacts.importing() || oContacts.syncing() || !Data.enableContactsSync() || !Data.allowContactsSync())
 		{
 			return false;
 		}
 
 		oContacts.syncing(true);
 
-		RL.remote().contactsSync(function (sResult, oData) {
+		Remote.contactsSync(function (sResult, oData) {
 
 			oContacts.syncing(false);
 
@@ -226,7 +223,7 @@
 	{
 		var
 			self = this,
-			sSpamFolder = RL.data().spamFolder()
+			sSpamFolder = Data.spamFolder()
 		;
 
 		_.each(this.oMoveCache, function (oItem) {
@@ -236,7 +233,7 @@
 				bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
 			;
 
-			RL.remote().messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
 		});
 
@@ -261,7 +258,7 @@
 
 	RainLoopApp.prototype.messagesCopyHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy)
 	{
-		RL.remote().messagesCopy(
+		Remote.messagesCopy(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			sToFolderFullNameRaw,
@@ -271,7 +268,7 @@
 
 	RainLoopApp.prototype.messagesDeleteHelper = function (sFromFolderFullNameRaw, aUidForRemove)
 	{
-		RL.remote().messagesDelete(
+		Remote.messagesDelete(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			aUidForRemove
@@ -280,15 +277,15 @@
 
 	RainLoopApp.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 	{
-		if (Enums.StorageResultType.Success === sResult && RL.data().currentFolder())
+		if (Enums.StorageResultType.Success === sResult && Data.currentFolder())
 		{
 			if (oData && Utils.isArray(oData.Result) && 2 === oData.Result.length)
 			{
-				RL.cache().setFolderHash(oData.Result[0], oData.Result[1]);
+				Cache.setFolderHash(oData.Result[0], oData.Result[1]);
 			}
 			else
 			{
-				RL.cache().setFolderHash(RL.data().currentFolderFullNameRaw(), '');
+				Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
 
 				if (oData && -1 < Utils.inArray(oData.ErrorCode,
 					[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
@@ -297,7 +294,7 @@
 				}
 			}
 
-			RL.reloadMessageListHelper(0 === RL.data().messageList().length);
+			RL.reloadMessageListHelper(0 === Data.messageList().length);
 			RL.quotaDebounce();
 		}
 	};
@@ -309,7 +306,7 @@
 	RainLoopApp.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
 	{
 		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-		RL.data().removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+		Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 	};
 
 	/**
@@ -322,8 +319,6 @@
 	{
 		var
 			self = this,
-			oData = RL.data(),
-			oCache = RL.cache(),
 			oMoveFolder = null,
 			nSetSystemFoldersNotification = null
 		;
@@ -331,18 +326,18 @@
 		switch (iDeleteType)
 		{
 			case Enums.FolderType.Spam:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.spamFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.spamFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
 				break;
 			case Enums.FolderType.NotSpam:
-				oMoveFolder = oCache.getFolderFromCacheList('INBOX');
+				oMoveFolder = Cache.getFolderFromCacheList('INBOX');
 				break;
 			case Enums.FolderType.Trash:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.trashFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.trashFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Trash;
 				break;
 			case Enums.FolderType.Archive:
-				oMoveFolder = oCache.getFolderFromCacheList(oData.archiveFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(Data.archiveFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Archive;
 				break;
 		}
@@ -350,9 +345,9 @@
 		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 		if (bUseFolder)
 		{
-			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === oData.spamFolder()) ||
-				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === oData.trashFolder()) ||
-				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === oData.archiveFolder()))
+			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === Data.spamFolder()) ||
+				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === Data.trashFolder()) ||
+				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === Data.archiveFolder()))
 			{
 				bUseFolder = false;
 			}
@@ -363,19 +358,19 @@
 			kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
 		}
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
-			(sFromFolderFullNameRaw === oData.spamFolder() || sFromFolderFullNameRaw === oData.trashFolder())))
+			(sFromFolderFullNameRaw === Data.spamFolder() || sFromFolderFullNameRaw === Data.trashFolder())))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-				oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+				Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 
 			}]);
 		}
 		else if (oMoveFolder)
 		{
 			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
-			oData.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
+			Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 		}
 	};
 
@@ -390,8 +385,8 @@
 		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Utils.isArray(aUidForMove) && 0 < aUidForMove.length)
 		{
 			var
-				oFromFolder = RL.cache().getFolderFromCacheList(sFromFolderFullNameRaw),
-				oToFolder = RL.cache().getFolderFromCacheList(sToFolderFullNameRaw)
+				oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
+				oToFolder = Cache.getFolderFromCacheList(sToFolderFullNameRaw)
 			;
 
 			if (oFromFolder && oToFolder)
@@ -405,7 +400,7 @@
 					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				}
 
-				RL.data().removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
+				Data.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 				return true;
 			}
 		}
@@ -421,7 +416,7 @@
 		this.data().foldersLoading(true);
 		this.remote().folders(_.bind(function (sResult, oData) {
 
-			RL.data().foldersLoading(false);
+			Data.foldersLoading(false);
 			if (Enums.StorageResultType.Success === sResult)
 			{
 				this.data().setFolders(oData);
@@ -442,12 +437,12 @@
 
 	RainLoopApp.prototype.reloadOpenPgpKeys = function ()
 	{
-		if (RL.data().capaOpenPGP())
+		if (Data.capaOpenPGP())
 		{
 			var
 				aKeys = [],
 				oEmail = new EmailModel(),
-				oOpenpgpKeyring = RL.data().openpgpKeyring,
+				oOpenpgpKeyring = Data.openpgpKeyring,
 				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 			;
 
@@ -479,41 +474,39 @@
 				}
 			});
 
-			RL.data().openpgpkeys(aKeys);
+			Data.openpgpkeys(aKeys);
 		}
 	};
 
 	RainLoopApp.prototype.accountsAndIdentities = function ()
 	{
-		var oRainLoopData = RL.data();
+		Data.accountsLoading(true);
+		Data.identitiesLoading(true);
 
-		oRainLoopData.accountsLoading(true);
-		oRainLoopData.identitiesLoading(true);
+		Remote.accountsAndIdentities(function (sResult, oData) {
 
-		RL.remote().accountsAndIdentities(function (sResult, oData) {
-
-			oRainLoopData.accountsLoading(false);
-			oRainLoopData.identitiesLoading(false);
+			Data.accountsLoading(false);
+			Data.identitiesLoading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
 				var
 					sParentEmail = RL.settingsGet('ParentEmail'),
-					sAccountEmail = oRainLoopData.accountEmail()
+					sAccountEmail = Data.accountEmail()
 				;
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
-					oRainLoopData.accounts(_.map(oData.Result['Accounts'], function (sValue) {
+					Data.accounts(_.map(oData.Result['Accounts'], function (sValue) {
 						return new AccountModel(sValue, sValue !== sParentEmail);
 					}));
 				}
 
 				if (Utils.isArray(oData.Result['Identities']))
 				{
-					oRainLoopData.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
+					Data.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
 
 						var
 							sId = Utils.pString(oIdentityData['Id']),
@@ -539,8 +532,8 @@
 				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 			{
-				RL.data().userQuota(Utils.pInt(oData.Result[1]) * 1024);
-				RL.data().userUsageSize(Utils.pInt(oData.Result[0]) * 1024);
+				Data.userQuota(Utils.pInt(oData.Result[1]) * 1024);
+				Data.userUsageSize(Utils.pInt(oData.Result[0]) * 1024);
 			}
 		});
 	};
@@ -560,8 +553,8 @@
 					{
 						var
 							iUtc = moment().unix(),
-							sHash = RL.cache().getFolderHash(oData.Result.Folder),
-							oFolder = RL.cache().getFolderFromCacheList(oData.Result.Folder),
+							sHash = Cache.getFolderHash(oData.Result.Folder),
+							oFolder = Cache.getFolderFromCacheList(oData.Result.Folder),
 							bCheck = false,
 							sUid = '',
 							aList = [],
@@ -575,7 +568,7 @@
 
 							if (oData.Result.Hash)
 							{
-								RL.cache().setFolderHash(oData.Result.Folder, oData.Result.Hash);
+								Cache.setFolderHash(oData.Result.Folder, oData.Result.Hash);
 							}
 
 							if (Utils.isNormal(oData.Result.MessageCount))
@@ -595,7 +588,7 @@
 
 							if (bUnreadCountChange)
 							{
-								RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+								Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 							}
 
 							if (oData.Result.Flags)
@@ -606,7 +599,7 @@
 									{
 										bCheck = true;
 										oFlags = oData.Result.Flags[sUid];
-										RL.cache().storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
+										Cache.storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
 											!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded'], !!oFlags['IsReadReceipt']
 										]);
 									}
@@ -618,11 +611,11 @@
 								}
 							}
 
-							RL.data().initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+							Data.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
 
 							if (oData.Result.Hash !== sHash || '' === sHash)
 							{
-								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 								{
 									RL.reloadMessageList();
 								}
@@ -633,9 +626,9 @@
 							}
 							else if (bUnreadCountChange)
 							{
-								if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 								{
-									aList = RL.data().messageList();
+									aList = Data.messageList();
 									if (Utils.isNonEmptyArray(aList))
 									{
 										RL.folderInformation(oFolder.fullNameRaw, aList);
@@ -658,7 +651,7 @@
 
 		var
 			iUtc = moment().unix(),
-			aFolders = RL.data().getNextFolderNames(bBoot)
+			aFolders = Data.getNextFolderNames(bBoot)
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -672,8 +665,8 @@
 
 							var
 								aList = [],
-								sHash = RL.cache().getFolderHash(oItem.Folder),
-								oFolder = RL.cache().getFolderFromCacheList(oItem.Folder),
+								sHash = Cache.getFolderHash(oItem.Folder),
+								oFolder = Cache.getFolderFromCacheList(oItem.Folder),
 								bUnreadCountChange = false
 							;
 
@@ -683,7 +676,7 @@
 
 								if (oItem.Hash)
 								{
-									RL.cache().setFolderHash(oItem.Folder, oItem.Hash);
+									Cache.setFolderHash(oItem.Folder, oItem.Hash);
 								}
 
 								if (Utils.isNormal(oItem.MessageCount))
@@ -703,21 +696,21 @@
 
 								if (bUnreadCountChange)
 								{
-									RL.cache().clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+									Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 								}
 
 								if (oItem.Hash !== sHash || '' === sHash)
 								{
-									if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 									{
 										RL.reloadMessageList();
 									}
 								}
 								else if (bUnreadCountChange)
 								{
-									if (oFolder.fullNameRaw === RL.data().currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 									{
-										aList = RL.data().messageList();
+										aList = Data.messageList();
 										if (Utils.isNonEmptyArray(aList))
 										{
 											RL.folderInformation(oFolder.fullNameRaw, aList);
@@ -743,33 +736,33 @@
 		{
 			oMessage.unseen(false);
 
-			var oFolder = RL.cache().getFolderFromCacheList(oMessage.folderFullNameRaw);
+			var oFolder = Cache.getFolderFromCacheList(oMessage.folderFullNameRaw);
 			if (oFolder)
 			{
 				oFolder.messageCountUnread(0 <= oFolder.messageCountUnread() - 1 ?
 					oFolder.messageCountUnread() - 1 : 0);
 			}
 
-			RL.cache().storeMessageFlagsToCache(oMessage);
+			Cache.storeMessageFlagsToCache(oMessage);
 			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 
-		RL.remote().messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
+		Remote.messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
 	};
 
 	RainLoopApp.prototype.googleConnect = function ()
 	{
-		window.open(RL.link().socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	RainLoopApp.prototype.twitterConnect = function ()
 	{
-		window.open(RL.link().socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	RainLoopApp.prototype.facebookConnect = function ()
 	{
-		window.open(RL.link().socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(LinkBuilder.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	/**
@@ -777,60 +770,58 @@
 	 */
 	RainLoopApp.prototype.socialUsers = function (bFireAllActions)
 	{
-		var oRainLoopData = RL.data();
-
 		if (bFireAllActions)
 		{
-			oRainLoopData.googleActions(true);
-			oRainLoopData.facebookActions(true);
-			oRainLoopData.twitterActions(true);
+			Data.googleActions(true);
+			Data.facebookActions(true);
+			Data.twitterActions(true);
 		}
 
-		RL.remote().socialUsers(function (sResult, oData) {
+		Remote.socialUsers(function (sResult, oData) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				oRainLoopData.googleUserName(oData.Result['Google'] || '');
-				oRainLoopData.facebookUserName(oData.Result['Facebook'] || '');
-				oRainLoopData.twitterUserName(oData.Result['Twitter'] || '');
+				Data.googleUserName(oData.Result['Google'] || '');
+				Data.facebookUserName(oData.Result['Facebook'] || '');
+				Data.twitterUserName(oData.Result['Twitter'] || '');
 			}
 			else
 			{
-				oRainLoopData.googleUserName('');
-				oRainLoopData.facebookUserName('');
-				oRainLoopData.twitterUserName('');
+				Data.googleUserName('');
+				Data.facebookUserName('');
+				Data.twitterUserName('');
 			}
 
-			oRainLoopData.googleLoggined('' !== oRainLoopData.googleUserName());
-			oRainLoopData.facebookLoggined('' !== oRainLoopData.facebookUserName());
-			oRainLoopData.twitterLoggined('' !== oRainLoopData.twitterUserName());
+			Data.googleLoggined('' !== Data.googleUserName());
+			Data.facebookLoggined('' !== Data.facebookUserName());
+			Data.twitterLoggined('' !== Data.twitterUserName());
 
-			oRainLoopData.googleActions(false);
-			oRainLoopData.facebookActions(false);
-			oRainLoopData.twitterActions(false);
+			Data.googleActions(false);
+			Data.facebookActions(false);
+			Data.twitterActions(false);
 		});
 	};
 
 	RainLoopApp.prototype.googleDisconnect = function ()
 	{
-		RL.data().googleActions(true);
-		RL.remote().googleDisconnect(function () {
+		Data.googleActions(true);
+		Remote.googleDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
 
 	RainLoopApp.prototype.facebookDisconnect = function ()
 	{
-		RL.data().facebookActions(true);
-		RL.remote().facebookDisconnect(function () {
+		Data.facebookActions(true);
+		Remote.facebookDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
 
 	RainLoopApp.prototype.twitterDisconnect = function ()
 	{
-		RL.data().twitterActions(true);
-		RL.remote().twitterDisconnect(function () {
+		Data.twitterActions(true);
+		Remote.twitterDisconnect(function () {
 			RL.socialUsers();
 		});
 	};
@@ -974,7 +965,7 @@
 			aData = []
 		;
 
-		RL.remote().suggestions(function (sResult, oData) {
+		Remote.suggestions(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData && Utils.isArray(oData.Result))
 			{
 				aData = _.map(oData.Result, function (aItem) {
@@ -997,7 +988,7 @@
 	 */
 	RainLoopApp.prototype.getContactTagsAutocomplete = function (sQuery, fCallback)
 	{
-		fCallback(_.filter(RL.data().contactTags(), function (oContactTag) {
+		fCallback(_.filter(Data.contactTags(), function (oContactTag) {
 			return oContactTag && oContactTag.filterHelper(sQuery);
 		}));
 	};
@@ -1042,7 +1033,7 @@
 		RL.pub('rl.bootstart');
 		AbstractApp.prototype.bootstart.call(this);
 
-		RL.data().populateDataOnStart();
+		Data.populateDataOnStart();
 
 		var
 			sCustomLoginLink = '',
@@ -1055,51 +1046,51 @@
 
 		if (!RL.settingsGet('ChangePasswordIsAllowed'))
 		{
-			Utils.removeSettingsViewModel(SettingsChangePasswordScreen);
+			kn.removeSettingsViewModel(SettingsChangePasswordScreen);
 		}
 
 		if (!RL.settingsGet('ContactsIsAllowed'))
 		{
-			Utils.removeSettingsViewModel(SettingsContacts);
+			kn.removeSettingsViewModel(SettingsContacts);
 		}
 
 		if (!RL.capa(Enums.Capa.AdditionalAccounts))
 		{
-			Utils.removeSettingsViewModel(SettingsAccounts);
+			kn.removeSettingsViewModel(SettingsAccounts);
 		}
 
 		if (RL.capa(Enums.Capa.AdditionalIdentities))
 		{
-			Utils.removeSettingsViewModel(SettingsIdentity);
+			kn.removeSettingsViewModel(SettingsIdentity);
 		}
 		else
 		{
-			Utils.removeSettingsViewModel(SettingsIdentities);
+			kn.removeSettingsViewModel(SettingsIdentities);
 		}
 
 		if (!RL.capa(Enums.Capa.OpenPGP))
 		{
-			Utils.removeSettingsViewModel(SettingsOpenPGP);
+			kn.removeSettingsViewModel(SettingsOpenPGP);
 		}
 
 		if (!RL.capa(Enums.Capa.TwoFactor))
 		{
-			Utils.removeSettingsViewModel(SettingsSecurity);
+			kn.removeSettingsViewModel(SettingsSecurity);
 		}
 
 		if (!RL.capa(Enums.Capa.Themes))
 		{
-			Utils.removeSettingsViewModel(SettingsThemes);
+			kn.removeSettingsViewModel(SettingsThemes);
 		}
 
 		if (!RL.capa(Enums.Capa.Filters))
 		{
-			Utils.removeSettingsViewModel(SettingsFilters);
+			kn.removeSettingsViewModel(SettingsFilters);
 		}
 
 		if (!bGoogle && !bFacebook && !bTwitter)
 		{
-			Utils.removeSettingsViewModel(SettingsSocialScreen);
+			kn.removeSettingsViewModel(SettingsSocialScreen);
 		}
 
 		Utils.initOnStartOrLangChange(function () {
@@ -1140,11 +1131,11 @@
 				{
 					if (window.$LAB && window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
 					{
-						window.$LAB.script(window.openpgp ? '' : RL.link().openPgpJs()).wait(function () {
+						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 							if (window.openpgp)
 							{
-								RL.data().openpgpKeyring = new window.openpgp.Keyring();
-								RL.data().capaOpenPGP(true);
+								Data.openpgpKeyring = new window.openpgp.Keyring();
+								Data.capaOpenPGP(true);
 
 								RL.pub('openpgp.init');
 
@@ -1154,7 +1145,7 @@
 					}
 					else
 					{
-						RL.data().capaOpenPGP(false);
+						Data.capaOpenPGP(false);
 					}
 
 					kn.startScreens([MailBoxScreen, SettingsScreen]);
@@ -1169,7 +1160,7 @@
 					});
 
 					RL.sub('interval.2m', function () {
-						var sF = RL.data().currentFolderFullNameRaw();
+						var sF = Data.currentFolderFullNameRaw();
 						if ('INBOX' !== sF)
 						{
 							RL.folderInformation(sF);
@@ -1263,7 +1254,7 @@
 			else
 			{
 				kn.routeOff();
-				kn.setHash(RL.link().root(), true);
+				kn.setHash(LinkBuilder.root(), true);
 				kn.routeOff();
 
 				_.defer(function () {
@@ -1275,7 +1266,7 @@
 		if (bGoogle)
 		{
 			window['rl_' + sJsHash + '_google_service'] = function () {
-				RL.data().googleActions(true);
+				Data.googleActions(true);
 				RL.socialUsers();
 			};
 		}
@@ -1283,7 +1274,7 @@
 		if (bFacebook)
 		{
 			window['rl_' + sJsHash + '_facebook_service'] = function () {
-				RL.data().facebookActions(true);
+				Data.facebookActions(true);
 				RL.socialUsers();
 			};
 		}
@@ -1291,7 +1282,7 @@
 		if (bTwitter)
 		{
 			window['rl_' + sJsHash + '_twitter_service'] = function () {
-				RL.data().twitterActions(true);
+				Data.twitterActions(true);
 				RL.socialUsers();
 			};
 		}

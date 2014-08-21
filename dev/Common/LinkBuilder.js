@@ -323,6 +323,6 @@
 		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
 	};
 
-	module.exports = LinkBuilder;
+	module.exports = new LinkBuilder();
 
 }(module));

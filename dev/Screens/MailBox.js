@@ -5,15 +5,21 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		$html = require('./External/$html.js'),
-		Enums = require('./Common/Enums.js'),
-		Utils = require('./Common/Utils.js'),
-		KnoinAbstractScreen = require('./Knoin/KnoinAbstractScreen.js'),
-		MailBoxSystemDropDownViewModel = require('./ViewModels/MailBoxSystemDropDownViewModel.js'),
-		MailBoxFolderListViewModel = require('./ViewModels/MailBoxFolderListViewModel.js'),
-		MailBoxMessageListViewModel = require('./ViewModels/MailBoxMessageListViewModel.js'),
-		MailBoxMessageViewViewModel = require('./ViewModels/MailBoxMessageViewViewModel.js')
+		_ = require('../External/underscore.js'),
+		$html = require('../External/$html.js'),
+		
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+
+		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
+
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+
+		MailBoxSystemDropDownViewModel = require('../ViewModels/MailBoxSystemDropDownViewModel.js'),
+		MailBoxFolderListViewModel = require('../ViewModels/MailBoxFolderListViewModel.js'),
+		MailBoxMessageListViewModel = require('../ViewModels/MailBoxMessageListViewModel.js'),
+		MailBoxMessageViewViewModel = require('../ViewModels/MailBoxMessageViewViewModel.js')
 	;
 
 	/**
@@ -75,8 +81,8 @@
 		{
 			var
 				oData = RL.data(),// TODO cjs
-				sFolderFullNameRaw = RL.cache().getFolderFullNameRaw(sFolderHash),// TODO cjs
-				oFolder = RL.cache().getFolderFromCacheList(sFolderFullNameRaw)// TODO cjs
+				sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
+				oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
 			;
 
 			if (oFolder)
@@ -123,7 +129,7 @@
 		}, 5000);
 
 		_.delay(function () {
-			RL.remote().appDelayStart(Utils.emptyFunction);// TODO cjs
+			Remote.appDelayStart(Utils.emptyFunction);
 		}, 35000);
 
 		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());

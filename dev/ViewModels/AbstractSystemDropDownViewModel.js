@@ -1,97 +1,121 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function AbstractSystemDropDownViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Right', 'SystemDropDown');
+(function (module) {
 
-	var oData = RL.data();
+	'use strict';
 
-	this.accounts = oData.accounts;
-	this.accountEmail = oData.accountEmail;
-	this.accountsLoading = oData.accountsLoading;
+	var
+		_ = require('../External/underscore.js'),
+		ko = require('../External/ko.js'),
+		window = require('../External/window.js'),
+		key = require('../External/key.js'),
+		
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
 
-	this.accountMenuDropdownTrigger = ko.observable(false);
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-	this.capaAdditionalAccounts = RL.capa(Enums.Capa.AdditionalAccounts);
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+	;
 
-	this.loading = ko.computed(function () {
-		return this.accountsLoading();
-	}, this);
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function AbstractSystemDropDownViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Right', 'SystemDropDown');
 
-	this.accountClick = _.bind(this.accountClick, this);
-}
+		var oData = RL.data();
 
-_.extend(AbstractSystemDropDownViewModel.prototype, KnoinAbstractViewModel.prototype);
+		this.accounts = oData.accounts;
+		this.accountEmail = oData.accountEmail;
+		this.accountsLoading = oData.accountsLoading;
 
-AbstractSystemDropDownViewModel.prototype.accountClick = function (oAccount, oEvent)
-{
-	if (oAccount && oEvent && !Utils.isUnd(oEvent.which) && 1 === oEvent.which)
+		this.accountMenuDropdownTrigger = ko.observable(false);
+
+		this.capaAdditionalAccounts = RL.capa(Enums.Capa.AdditionalAccounts);
+
+		this.loading = ko.computed(function () {
+			return this.accountsLoading();
+		}, this);
+
+		this.accountClick = _.bind(this.accountClick, this);
+	}
+
+	_.extend(AbstractSystemDropDownViewModel.prototype, KnoinAbstractViewModel.prototype);
+
+	AbstractSystemDropDownViewModel.prototype.accountClick = function (oAccount, oEvent)
+	{
+		if (oAccount && oEvent && !Utils.isUnd(oEvent.which) && 1 === oEvent.which)
+		{
+			var self = this;
+			this.accountsLoading(true);
+			_.delay(function () {
+				self.accountsLoading(false);
+			}, 1000);
+		}
+
+		return true;
+	};
+
+	AbstractSystemDropDownViewModel.prototype.emailTitle = function ()
+	{
+		return RL.data().accountEmail();
+	};
+
+	AbstractSystemDropDownViewModel.prototype.settingsClick = function ()
+	{
+		kn.setHash(LinkBuilder.settings());
+	};
+
+	AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
+	{
+		kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+	};
+
+	AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
+	{
+		if (this.capaAdditionalAccounts)
+		{
+			kn.showScreenPopup(PopupsAddAccountViewModel);
+		}
+	};
+
+	AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
+	{
+		Remote.logout(function () {
+			if (window.__rlah_clear)
+			{
+				window.__rlah_clear();
+			}
+
+			RL.loginAndLogoutReload(true, RL.settingsGet('ParentEmail') && 0 < RL.settingsGet('ParentEmail').length);
+		});
+	};
+
+	AbstractSystemDropDownViewModel.prototype.onBuild = function ()
 	{
 		var self = this;
-		this.accountsLoading(true);
-		_.delay(function () {
-			self.accountsLoading(false);
-		}, 1000);
-	}
+		key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
+			if (self.viewModelVisibility())
+			{
+				self.accountMenuDropdownTrigger(true);
+			}
+		});
 
-	return true;
-};
+		// shortcuts help
+		key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
+			if (self.viewModelVisibility())
+			{
+				kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+				return false;
+			}
+		});
+	};
 
-AbstractSystemDropDownViewModel.prototype.emailTitle = function ()
-{
-	return RL.data().accountEmail();
-};
+	module.exports = new AbstractSystemDropDownViewModel();
 
-AbstractSystemDropDownViewModel.prototype.settingsClick = function ()
-{
-	kn.setHash(RL.link().settings());
-};
-
-AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
-{
-	kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
-};
-
-AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
-{
-	if (this.capaAdditionalAccounts)
-	{
-		kn.showScreenPopup(PopupsAddAccountViewModel);
-	}
-};
-
-AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
-{
-	RL.remote().logout(function () {
-		if (window.__rlah_clear)
-		{
-			window.__rlah_clear();
-		}
-
-		RL.loginAndLogoutReload(true, RL.settingsGet('ParentEmail') && 0 < RL.settingsGet('ParentEmail').length);
-	});
-};
-
-AbstractSystemDropDownViewModel.prototype.onBuild = function ()
-{
-	var self = this;
-	key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
-		if (self.viewModelVisibility())
-		{
-			self.accountMenuDropdownTrigger(true);
-		}
-	});
-
-	// shortcuts help
-	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
-		if (self.viewModelVisibility())
-		{
-			kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
-			return false;
-		}
-	});
-};
+}(module));

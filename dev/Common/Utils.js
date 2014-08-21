@@ -6,13 +6,20 @@
 
 	var
 		Utils = {},
+		
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
+		key = require('../External/key.js'),
 		window = require('../External/window.js'),
 		$window = require('../External/$window.js'),
 		$doc = require('../External/$doc.js'),
 		NotificationClass = require('../External/NotificationClass.js'),
+
+		LocalStorage = require('../Storages/LocalStorage.js'),
+
+		kn = require('../Knoin/Knoin.js'),
+		
 		Enums = require('./Enums.js'),
 		Globals = require('./Globals.js')
 	;
@@ -1240,7 +1247,7 @@
 	 */
 	Utils.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = /** @type {Array|null} */ RL.local().get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
@@ -1250,7 +1257,7 @@
 	 */
 	Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = /** @type {Array|null} */ RL.local().get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		if (!_.isArray(aExpandedList))
 		{
 			aExpandedList = [];
@@ -1266,7 +1273,7 @@
 			aExpandedList = _.without(aExpandedList, sFullNameHash);
 		}
 
-		RL.local().set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
+		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 	};
 
 	Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
@@ -1277,7 +1284,7 @@
 			oLeft = $(sLeft),
 			oRight = $(sRight),
 
-			mLeftWidth = RL.local().get(sClientSideKeyName) || null,
+			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
 
 			fSetWidth = function (iWidth) {
 				if (iWidth)
@@ -1301,7 +1308,7 @@
 				else
 				{
 					oLeft.resizable('enable');
-					var iWidth = Utils.pInt(RL.local().get(sClientSideKeyName)) || iMinWidth;
+					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
@@ -1309,7 +1316,7 @@
 			fResizeFunction = function (oEvent, oObject) {
 				if (oObject && oObject.size && oObject.size.width)
 				{
-					RL.local().set(sClientSideKeyName, oObject.size.width);
+					LocalStorage.set(sClientSideKeyName, oObject.size.width);
 
 					oRight.css({
 						'left': '' + oObject.size.width + 'px'
@@ -1401,61 +1408,6 @@
 		}
 	};
 
-	/**
-	 * @param {string} sName
-	 * @param {Function} ViewModelClass
-	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
-	 */
-	Utils.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
-	{
-		if (ViewModelClass)
-		{
-			if (!AbstractViewModel)
-			{
-				AbstractViewModel = KnoinAbstractViewModel;
-			}
-
-			ViewModelClass.__name = sName;
-			Plugins.regViewModelHook(sName, ViewModelClass);
-			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
-		}
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 * @param {string} sLabelName
-	 * @param {string} sTemplate
-	 * @param {string} sRoute
-	 * @param {boolean=} bDefault
-	 */
-	Utils.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute, bDefault)
-	{
-		SettingsViewModelClass.__rlSettingsData = {
-			'Label':  sLabelName,
-			'Template':  sTemplate,
-			'Route':  sRoute,
-			'IsDefault':  !!bDefault
-		};
-
-		Globals.aViewModels['settings'].push(SettingsViewModelClass);
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 */
-	Utils.removeSettingsViewModel = function (SettingsViewModelClass)
-	{
-		Globals.aViewModels['settings-removed'].push(SettingsViewModelClass);
-	};
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 */
-	Utils.disableSettingsViewModel = function (SettingsViewModelClass)
-	{
-		Globals.aViewModels['settings-disabled'].push(SettingsViewModelClass);
-	};
-
 	Utils.convertThemeName = function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
@@ -1510,7 +1462,7 @@
 
 		while (sResult.length < iLen)
 		{
-			sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
+			sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
 		}
 
 		return sResult;
@@ -1574,7 +1526,7 @@
 
 				Utils.i18nToNode(oBody);
 
-				Knoin.prototype.applyExternal(oViewModel, $('#rl-content', oBody)[0]);
+				kn.applyExternal(oViewModel, $('#rl-content', oBody)[0]);
 
 				window[sFunc] = null;
 

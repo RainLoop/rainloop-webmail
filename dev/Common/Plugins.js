@@ -6,7 +6,9 @@
 
 	var
 		Plugins = {},
-		Utils = require('./Utils.js')
+		Utils = require('./Utils.js'),
+		Remote = require('../Remote.js'),
+		RL = require('../RL.js')
 	;
 
 	/**
@@ -70,7 +72,7 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		return RL ? RL.settingsGet(sName) : null; // TODO cjs
+		return RL ? RL().settingsGet(sName) : null;
 	};
 
 	/**
@@ -83,9 +85,9 @@
 	 */
 	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (RL) // TODO cjs
+		if (Remote)
 		{
-			RL.remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions); // TODO cjs
+			Remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 

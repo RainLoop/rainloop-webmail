@@ -1,37 +1,57 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function PopupsFilterViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFilter');
+(function (module) {
 
-	this.filter = ko.observable(null);
+	'use strict';
 
-	this.selectedFolderValue = ko.observable(Consts.Values.UnuseOptionValue);
-	this.folderSelectList = RL.data().folderMenuForMove;
-	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+	var
+		ko = require('../../External/ko.js'),
+		
+		Consts = require('../../Common/Consts.js'),
+		Utils = require('../../Common/Utils.js'),
 
-	Knoin.constructorEnd(this);
-}
+		Data = require('../../Storages/WebMailDataStorage.js'),
 
-Utils.extendAsViewModel('PopupsFilterViewModel', PopupsFilterViewModel);
+		kn = require('../../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+	;
 
-PopupsFilterViewModel.prototype.clearPopup = function ()
-{
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function PopupsFilterViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFilter');
 
-};
+		this.filter = ko.observable(null);
 
-PopupsFilterViewModel.prototype.onShow = function (oFilter)
-{
-	this.clearPopup();
+		this.selectedFolderValue = ko.observable(Consts.Values.UnuseOptionValue);
+		this.folderSelectList = Data.folderMenuForMove;
+		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
-	this.filter(oFilter);
-};
+		kn.constructorEnd(this);
+	}
 
-PopupsFilterViewModel.prototype.onFocus = function ()
-{
+	kn.extendAsViewModel('PopupsFilterViewModel', PopupsFilterViewModel);
 
-};
+	PopupsFilterViewModel.prototype.clearPopup = function ()
+	{
+		// TODO
+	};
+
+	PopupsFilterViewModel.prototype.onShow = function (oFilter)
+	{
+		this.clearPopup();
+		
+		this.filter(oFilter);
+	};
+
+//	PopupsFilterViewModel.prototype.onFocus = function ()
+//	{
+//
+//	};
+
+	module.exports = new PopupsFilterViewModel();
+
+}(module));

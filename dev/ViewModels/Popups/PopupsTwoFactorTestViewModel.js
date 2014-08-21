@@ -1,55 +1,75 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-/**
- * @constructor
- * @extends KnoinAbstractViewModel
- */
-function PopupsTwoFactorTestViewModel()
-{
-	KnoinAbstractViewModel.call(this, 'Popups', 'PopupsTwoFactorTest');
+(function (module) {
 
-	var self = this;
+	'use strict';
 
-	this.code = ko.observable('');
-	this.code.focused = ko.observable(false);
-	this.code.status = ko.observable(null);
-
-	this.testing = ko.observable(false);
-	
-	// commands
-	this.testCode = Utils.createCommand(this, function () {
-
-		this.testing(true);
-		RL.remote().testTwoFactor(function (sResult, oData) {
-			
-			self.testing(false);
-			self.code.status(Enums.StorageResultType.Success === sResult && oData && oData.Result ? true : false);
-			
-		}, this.code());
+	var
+		ko = require('../../External/ko.js'),
 		
-	}, function () {
-		return '' !== this.code() && !this.testing();
-	});
+		Enums = require('../../Common/Enums.js'),
+		Utils = require('../../Common/Utils.js'),
 
-	Knoin.constructorEnd(this);
-}
+		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-Utils.extendAsViewModel('PopupsTwoFactorTestViewModel', PopupsTwoFactorTestViewModel);
+		kn = require('../../Knoin/Knoin.js'),
+		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+	;
+	
+	/**
+	 * @constructor
+	 * @extends KnoinAbstractViewModel
+	 */
+	function PopupsTwoFactorTestViewModel()
+	{
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsTwoFactorTest');
 
-PopupsTwoFactorTestViewModel.prototype.clearPopup = function ()
-{
-	this.code('');
-	this.code.focused(false);
-	this.code.status(null);
-	this.testing(false);
-};
+		var self = this;
 
-PopupsTwoFactorTestViewModel.prototype.onShow = function ()
-{
-	this.clearPopup();
-};
+		this.code = ko.observable('');
+		this.code.focused = ko.observable(false);
+		this.code.status = ko.observable(null);
 
-PopupsTwoFactorTestViewModel.prototype.onFocus = function ()
-{
-	this.code.focused(true);
-};
+		this.testing = ko.observable(false);
+
+		// commands
+		this.testCode = Utils.createCommand(this, function () {
+
+			this.testing(true);
+			Remote.testTwoFactor(function (sResult, oData) {
+
+				self.testing(false);
+				self.code.status(Enums.StorageResultType.Success === sResult && oData && oData.Result ? true : false);
+
+			}, this.code());
+
+		}, function () {
+			return '' !== this.code() && !this.testing();
+		});
+
+		kn.constructorEnd(this);
+	}
+
+	kn.extendAsViewModel('PopupsTwoFactorTestViewModel', PopupsTwoFactorTestViewModel);
+
+	PopupsTwoFactorTestViewModel.prototype.clearPopup = function ()
+	{
+		this.code('');
+		this.code.focused(false);
+		this.code.status(null);
+		this.testing(false);
+	};
+
+	PopupsTwoFactorTestViewModel.prototype.onShow = function ()
+	{
+		this.clearPopup();
+	};
+
+	PopupsTwoFactorTestViewModel.prototype.onFocus = function ()
+	{
+		this.code.focused(true);
+	};
+
+	module.exports = new PopupsTwoFactorTestViewModel();
+
+}(module));

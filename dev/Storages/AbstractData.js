@@ -5,11 +5,11 @@
 	'use strict';
 
 	var
-		ko = require('./External/ko.js'),
-		key = require('./External/key.js'),
-		Enums = require('./Common/Enums.js'),
-		Globals = require('./Common/Globals.js'),
-		Utils = require('./Common/Utils.js')
+		ko = require('../External/ko.js'),
+		key = require('../External/key.js'),
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js')
 	;
 	
 	/**

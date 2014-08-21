@@ -5,10 +5,10 @@
 	'use strict';
 
 	var
-		window = require('./External/window.js'),
-		JSON = require('./External/JSON.js'),
-		Consts = require('./Common/Consts.js'),
-		Utils = require('./Common/Utils.js')
+		window = require('../../External/window.js'),
+		JSON = require('../../External/JSON.js'),
+		Consts = require('../../Common/Consts.js'),
+		Utils = require('../../Common/Utils.js')
 	;
 
 	/**

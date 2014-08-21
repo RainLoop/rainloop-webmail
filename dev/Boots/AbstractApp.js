@@ -13,10 +13,16 @@
 		$window = require('../External/$window.js'),
 		$doc = require('../External/$doc.js'),
 		AppData = require('../External/AppData.js'),
+
 		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
-		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js'),
-		RL = require('./RL.js')
+		Plugins = require('../Common/Plugins.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Remote = require('../Remote.js'),
+
+		kn = require('../Knoin/Knoin.js'),
+		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
 	;
 
 	/**
@@ -49,8 +55,7 @@
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
 				]))
 			{
-				// TODO cjs
-				RL.remote().jsError(
+				Remote().jsError(
 					Utils.emptyFunction,
 					oEvent.originalEvent.message,
 					oEvent.originalEvent.filename,
@@ -127,32 +132,6 @@
 	};
 
 	/**
-	 * @return {LinkBuilder}
-	 */
-	AbstractApp.prototype.link = function ()
-	{
-		if (null === this.oLink)
-		{
-			this.oLink = new LinkBuilder();  // TODO cjs
-		}
-
-		return this.oLink;
-	};
-
-	/**
-	 * @return {LocalStorage}
-	 */
-	AbstractApp.prototype.local = function ()
-	{
-		if (null === this.oLocal)
-		{
-			this.oLocal = new LocalStorage();  // TODO cjs
-		}
-
-		return this.oLocal;
-	};
-
-	/**
 	 * @param {string} sName
 	 * @return {?}
 	 */
@@ -183,7 +162,7 @@
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			RL.settingsGet('Title') || '';  // TODO cjs
+			this.settingsGet('Title') || '';
 
 		window.document.title = '_';
 		window.document.title = sTitle;
@@ -196,11 +175,9 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			sCustomLogoutLink = Utils.pString(RL.settingsGet('CustomLogoutLink')),
-			bInIframe = !!RL.settingsGet('InIframe')
+			sCustomLogoutLink = Utils.pString(this.settingsGet('CustomLogoutLink')),
+			bInIframe = !!this.settingsGet('InIframe')
 		;
-
-		// TODO cjs
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 		bClose = Utils.isUnd(bClose) ? false : !!bClose;
@@ -226,7 +203,7 @@
 		else
 		{
 			kn.routeOff();
-			kn.setHash(RL.link().root(), true);
+			kn.setHash(LinkBuilder.root(), true);
 			kn.routeOff();
 
 			_.delay(function () {
@@ -307,7 +284,10 @@
 
 	AbstractApp.prototype.bootstart = function ()
 	{
-		var ssm = require('../External/ssm.js');
+		var
+			self = this,
+			ssm = require('../External/ssm.js')
+		;
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();
@@ -322,11 +302,11 @@
 			'maxWidth': 767,
 			'onEnter': function() {
 				$html.addClass('ssm-state-mobile');
-				RL.pub('ssm.mobile-enter');
+				self.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
 				$html.removeClass('ssm-state-mobile');
-				RL.pub('ssm.mobile-leave');
+				self.pub('ssm.mobile-leave');
 			}
 		});
 
@@ -365,12 +345,12 @@
 			}
 		});
 
-		RL.sub('ssm.mobile-enter', function () { // TODO cjs
-			RL.data().leftPanelDisabled(true);
+		this.sub('ssm.mobile-enter', function () {
+			RL.data().leftPanelDisabled(true); // TODO cjs
 		});
 
-		RL.sub('ssm.mobile-leave', function () { // TODO cjs
-			RL.data().leftPanelDisabled(false);
+		this.sub('ssm.mobile-leave', function () {
+			RL.data().leftPanelDisabled(false); // TODO cjs
 		});
 
 		RL.data().leftPanelDisabled.subscribe(function (bValue) { // TODO cjs

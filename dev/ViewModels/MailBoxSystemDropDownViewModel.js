@@ -20,7 +20,7 @@
 		kn.constructorEnd(this);
 	}
 
-	Utils.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+	kn.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
 
 	module.exports = MailBoxSystemDropDownViewModel;
 

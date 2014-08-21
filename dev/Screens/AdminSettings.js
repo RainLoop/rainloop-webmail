@@ -5,10 +5,10 @@
 	'use strict';
 
 	var
-		_ = require('./External/underscore.js'),
-		AbstractSettings = require('./Screens/AbstractSettings.js'),
-		AdminMenuViewModel = require('./ViewModels/AdminMenuViewModel.js'),
-		AdminPaneViewModel = require('./ViewModels/AdminPaneViewModel.js')
+		_ = require('../External/underscore.js'),
+		AbstractSettings = require('./AbstractSettings.js'),
+		AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
+		AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
 	;
 
 	/**

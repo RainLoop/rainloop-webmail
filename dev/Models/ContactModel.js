@@ -8,7 +8,8 @@
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
 		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js')
 	;
 	
 	/**
@@ -98,7 +99,7 @@
 	 */
 	ContactModel.prototype.srcAttr = function ()
 	{
-		return RL.link().emptyContactPic(); // TODO cjs
+		return LinkBuilder.emptyContactPic();
 	};
 
 	/**

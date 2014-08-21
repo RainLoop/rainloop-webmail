@@ -5,7 +5,7 @@
 	'use strict';
 
 	var
-		ko = require('./ko.js')
+		ko = require('../Externalko.js')
 	;
 
 	/**

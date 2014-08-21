@@ -8,9 +8,14 @@
 		ko = require('../External/ko.js'),
 		key = require('../External/key.js'),
 		$html = require('../External/$html.js'),
+		
 		Consts = require('../Common/Consts.js'),
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
+
+		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -188,7 +193,7 @@
 				this.viewDownloadLink(oMessage.downloadLink());
 
 				sLastEmail = oMessage.fromAsSingleEmail();
-				RL.cache().getUserPic(sLastEmail, function (sPic, $sEmail) {
+				Cache.getUserPic(sLastEmail, function (sPic, $sEmail) {
 					if (sPic !== self.viewUserPic() && sLastEmail === $sEmail)
 					{
 						self.viewUserPicVisible(false);
@@ -240,7 +245,7 @@
 		kn.constructorEnd(this);
 	}
 
-	Utils.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
+	kn.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
 
 	MailBoxMessageViewViewModel.prototype.isPgpActionVisible = function ()
 	{
@@ -695,14 +700,14 @@
 	{
 		if (oMessage && '' !== oMessage.readReceipt())
 		{
-			RL.remote().sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
+			Remote.sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
 				oMessage.readReceipt(),
 				Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
 				Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': RL.data().accountEmail()}));
 
 			oMessage.isReadReceipt(true);
 
-			RL.cache().storeMessageFlagsToCache(oMessage);
+			Cache.storeMessageFlagsToCache(oMessage);
 			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};

@@ -5,7 +5,10 @@
 	'use strict';
 
 	var
-		Utils = require('../Common/Utils.js'),
+		LinkBuilder = require('../Common/LinkBuilder.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -20,23 +23,23 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
-		this.leftPanelDisabled = RL.data().leftPanelDisabled; // TODO cjs
+		this.leftPanelDisabled = Data.leftPanelDisabled;
 
 		this.menu = oScreen.menu;
 
 		kn.constructorEnd(this);
 	}
 
-	Utils.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
+	kn.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
 
 	SettingsMenuViewModel.prototype.link = function (sRoute)
 	{
-		return RL.link().settings(sRoute);// TODO cjs
+		return LinkBuilder.settings(sRoute);
 	};
 
 	SettingsMenuViewModel.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(RL.link().inbox()); // TODO cjs
+		kn.setHash(LinkBuilder.inbox());
 	};
 
 	module.exports = SettingsMenuViewModel;
