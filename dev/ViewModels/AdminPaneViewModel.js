@@ -7,7 +7,11 @@
 	var
 		ko = require('../External/ko.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
+		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+
+		RL = require('../Boots/AdminApp.js'),
 		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
@@ -21,10 +25,10 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
 
-		this.adminDomain = ko.observable(RL.settingsGet('AdminDomain'));
-		this.version = ko.observable(RL.settingsGet('Version'));
+		this.adminDomain = ko.observable(AppSettings.settingsGet('AdminDomain'));
+		this.version = ko.observable(AppSettings.settingsGet('Version'));
 
-		this.adminManLoadingVisibility = RL.data().adminManLoadingVisibility;
+		this.adminManLoadingVisibility = Data.adminManLoadingVisibility;
 
 		kn.constructorEnd(this);
 	}
@@ -38,6 +42,6 @@
 		});
 	};
 
-	module.exports = new AdminPaneViewModel();
+	module.exports = AdminPaneViewModel;
 
 }(module));

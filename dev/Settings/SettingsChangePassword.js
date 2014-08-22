@@ -77,8 +77,6 @@
 		this.onChangePasswordResponse = _.bind(this.onChangePasswordResponse, this);
 	}
 
-	kn.addSettingsViewModel(SettingsChangePassword, 'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
-
 	SettingsChangePassword.prototype.onHide = function ()
 	{
 		this.changeProcess(false);

@@ -11,10 +11,11 @@
 		hasher = require('../External/hasher.js'),
 		crossroads = require('../External/crossroads.js'),
 		$html = require('../External/$html.js'),
+
 		Globals = require('../Common/Globals.js'),
-		Enums = require('../Common/Enums.js'),
 		Plugins = require('../Common/Plugins.js'),
 		Utils = require('../Common/Utils.js'),
+
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
 
@@ -25,39 +26,16 @@
 	{
 		this.sDefaultScreenName = '';
 		this.oScreens = {};
-		this.oBoot = null;
 		this.oCurrentScreen = null;
 	}
 
-	/**
-	 * @param {Object} thisObject
-	 */
-	Knoin.constructorEnd = function (thisObject)
-	{
-		if (Utils.isFunc(thisObject['__constructor_end']))
-		{
-			thisObject['__constructor_end'].call(thisObject);
-		}
-	};
-
 	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oScreens = {};
-	Knoin.prototype.oBoot = null;
 	Knoin.prototype.oCurrentScreen = null;
 
 	Knoin.prototype.hideLoading = function ()
 	{
 		$('#rl-loading').hide();
-	};
-
-	Knoin.prototype.rl = function ()
-	{
-		return this.oBoot;
-	};
-
-	Knoin.prototype.remote = function ()
-	{
-		return this.oRemote;
 	};
 
 	/**
@@ -154,6 +132,7 @@
 		if (ViewModelClass && !ViewModelClass.__builded)
 		{
 			var
+				kn = this,
 				oViewModel = new ViewModelClass(oScreen),
 				sPosition = oViewModel.viewModelPosition(),
 				oViewModelPlace = $('#rl-content #rl-' + sPosition.toLowerCase()),
@@ -162,7 +141,6 @@
 
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = oViewModel;
-			oViewModel.data = RL.data(); // TODO cjs
 
 			oViewModel.viewModelName = ViewModelClass.__name;
 
@@ -177,7 +155,7 @@
 				if ('Popups' === sPosition)
 				{
 					oViewModel.cancelCommand = oViewModel.closeCommand = Utils.createCommand(oViewModel, function () {
-						kn.hideScreenPopup(ViewModelClass); // TODO cjs
+						kn.hideScreenPopup(ViewModelClass);
 					});
 
 					oViewModel.modalVisibility.subscribe(function (bValue) {
@@ -188,8 +166,8 @@
 							this.viewModelDom.show();
 							this.storeAndSetKeyScope();
 
-							RL.popupVisibilityNames.push(this.viewModelName); // TODO cjs
-							oViewModel.viewModelDom.css('z-index', 3000 + RL.popupVisibilityNames().length + 10); // TODO cjs
+							Globals.popupVisibilityNames.push(this.viewModelName);
+							oViewModel.viewModelDom.css('z-index', 3000 + Globals.popupVisibilityNames().length + 10);
 
 							Utils.delegateRun(this, 'onFocus', [], 500);
 						}
@@ -198,7 +176,7 @@
 							Utils.delegateRun(this, 'onHide');
 							this.restoreKeyScope();
 
-							RL.popupVisibilityNames.remove(this.viewModelName); // TODO cjs
+							Globals.popupVisibilityNames.remove(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 2000);
 
 							Globals.tooltipTrigger(!Globals.tooltipTrigger());
@@ -211,7 +189,7 @@
 					}, oViewModel);
 				}
 
-				Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]); // TODO cjs
+				Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 
 				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
 					'i18nInit': true,
@@ -224,7 +202,7 @@
 					oViewModel.registerPopupKeyDown();
 				}
 
-				Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]); // TODO cjs
+				Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
 			}
 			else
 			{
@@ -236,18 +214,6 @@
 	};
 
 	/**
-	 * @param {Object} oViewModel
-	 * @param {Object} oViewModelDom
-	 */
-	Knoin.prototype.applyExternal = function (oViewModel, oViewModelDom)
-	{
-		if (oViewModel && oViewModelDom)
-		{
-			ko.applyBindings(oViewModel, oViewModelDom);
-		}
-	};
-
-	/**
 	 * @param {Function} ViewModelClassToHide
 	 */
 	Knoin.prototype.hideScreenPopup = function (ViewModelClassToHide)
@@ -255,7 +221,7 @@
 		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 		{
 			ViewModelClassToHide.__vm.modalVisibility(false);
-			Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]); // TODO cjs
+			Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		}
 	};
 
@@ -273,7 +239,7 @@
 			{
 				ViewModelClassToShow.__vm.modalVisibility(true);
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-				Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]); // TODO cjs
+				Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
 			}
 		}
 	};
@@ -364,7 +330,7 @@
 					{
 						Utils.delegateRun(self.oCurrentScreen, 'onShow');
 
-						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]); // TODO cjs
+						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
 						if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
 						{
@@ -378,7 +344,7 @@
 									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 									Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]); // TODO cjs
+									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
 								}
 
 							}, self);
@@ -431,9 +397,9 @@
 				oScreen.__started = true;
 				oScreen.__start();
 
-				Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]); // TODO cjs
+				Plugins.runHook('screen-pre-start', [oScreen.screenName(), oScreen]);
 				Utils.delegateRun(oScreen, 'onStart');
-				Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]); // TODO cjs
+				Plugins.runHook('screen-post-start', [oScreen.screenName(), oScreen]);
 			}
 		}, this);
 
@@ -477,71 +443,6 @@
 			hasher[bReplace ? 'replaceHash' : 'setHash'](sHash);
 			hasher.setHash(sHash);
 		}
-	};
-
-	/**
-	 * @return {Knoin}
-	 */
-	Knoin.prototype.bootstart = function (RL, Remote)
-	{
-		this.oBoot = RL;
-		this.oRemote = Remote;
-		
-		var
-			window = require('../External/window.js'),
-			$window = require('../External/$window.js'),
-			$html = require('../External/$html.js'),
-			Plugins = require('../Common/Plugins.js'),
-			EmailModel = require('../Models/EmailModel.js')
-		;
-	
-		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
-
-		$window.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		$window.unload(function () {
-			Globals.bUnload = true;
-		});
-
-		$html.on('click.dropdown.data-api', function () {
-			Utils.detectDropdownVisibility();
-		});
-
-		// export
-		window['rl'] = window['rl'] || {};
-		window['rl']['addHook'] = Plugins.addHook;
-		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
-		window['rl']['remoteRequest'] = Plugins.remoteRequest;
-		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
-		window['rl']['addSettingsViewModel'] = _.bind(this.addSettingsViewModel, this);
-		window['rl']['createCommand'] = Utils.createCommand;
-
-		window['rl']['EmailModel'] = EmailModel;
-		window['rl']['Enums'] = Enums;
-
-		window['__RLBOOT'] = function (fCall) {
-
-			// boot
-			$(function () {
-
-				if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
-				{
-					$('#rl-templates').html(window['rainloopTEMPLATES'][0]);
-
-					_.delay(function () {
-						
-						RL.bootstart();
-
-						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
-					}, 50);
-				}
-				else
-				{
-					fCall(false);
-				}
-
-				window['__RLBOOT'] = null;
-			});
-		};
 	};
 
 	module.exports = new Knoin();

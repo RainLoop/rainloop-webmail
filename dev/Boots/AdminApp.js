@@ -15,8 +15,12 @@
 
 		kn = require('../Knoin/Knoin.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		
+		AdminSettingsScreen = require('../Screens/AdminSettingsScreen.js'),
+		AdminLoginScreen = require('../Screens/AdminLoginScreen.js'),
 
 		AbstractApp = require('./AbstractApp.js')
 	;
@@ -27,49 +31,80 @@
 	 */
 	function AdminApp()
 	{
-		AbstractApp.call(this);
-
-		this.oData = null;
-		this.oRemote = null;
-		this.oCache = null;
+		AbstractApp.call(this, Remote);
 	}
 
 	_.extend(AdminApp.prototype, AbstractApp.prototype);
 
-	AdminApp.prototype.oData = null;
-	AdminApp.prototype.oRemote = null;
-	AdminApp.prototype.oCache = null;
-
-	/**
-	 * @return {AdminDataStorage}
-	 */
-	AdminApp.prototype.data = function ()
-	{
-		if (null === this.oData)
-		{
-			this.oData = new AdminDataStorage(); // TODO cjs
-		}
-
-		return this.oData;
-	};
-
-	/**
-	 * @return {AdminAjaxRemoteStorage}
-	 */
 	AdminApp.prototype.remote = function ()
 	{
-		if (null === this.oRemote)
+		return Remote;
+	};
+
+	AdminApp.prototype.data = function ()
+	{
+		return Data;
+	};
+
+	AdminApp.prototype.setupSettings = function ()
+	{
+		var
+			AdminSettingsGeneral = require('../Admin/AdminSettingsGeneral.js'),
+			AdminSettingsLogin = require('../Admin/AdminSettingsLogin.js'),
+			AdminSettingsBranding = require('../Admin/AdminSettingsBranding.js'),
+			AdminSettingsContacts = require('../Admin/AdminSettingsContacts.js'),
+			AdminSettingsDomains = require('../Admin/AdminSettingsDomains.js'),
+			AdminSettingsSecurity = require('../Admin/AdminSettingsSecurity.js'),
+			AdminSettingsSocial = require('../Admin/AdminSettingsSocial.js'),
+			AdminSettingsPlugins = require('../Admin/AdminSettingsPlugins.js'),
+			AdminSettingsPackages = require('../Admin/AdminSettingsPackages.js'),
+			AdminSettingsLicensing = require('../Admin/AdminSettingsLicensing.js'),
+			AdminSettingsAbout = require('../Admin/AdminSettingsAbout.js')
+		;
+
+		kn.addSettingsViewModel(AdminSettingsGeneral,
+			'AdminSettingsGeneral', 'General', 'general', true);
+
+		kn.addSettingsViewModel(AdminSettingsLogin,
+			'AdminSettingsLogin', 'Login', 'login');
+
+		if (AppSettings.capa(Enums.Capa.Prem))
 		{
-			this.oRemote = new AdminAjaxRemoteStorage(); // TODO cjs
+			kn.addSettingsViewModel(AdminSettingsBranding,
+				'AdminSettingsBranding', 'Branding', 'branding');
 		}
 
-		return this.oRemote;
+		kn.addSettingsViewModel(AdminSettingsContacts,
+			'AdminSettingsContacts', 'Contacts', 'contacts');
+
+		kn.addSettingsViewModel(AdminSettingsDomains,
+			'AdminSettingsDomains', 'Domains', 'domains');
+
+		kn.addSettingsViewModel(AdminSettingsSecurity,
+			'AdminSettingsSecurity', 'Security', 'security');
+
+		kn.addSettingsViewModel(AdminSettingsSocial,
+			'AdminSettingsSocial', 'Social', 'social');
+
+		kn.addSettingsViewModel(AdminSettingsPlugins,
+			'AdminSettingsPlugins', 'Plugins', 'plugins');
+
+		kn.addSettingsViewModel(AdminSettingsPackages,
+			'AdminSettingsPackages', 'Packages', 'packages');
+
+		kn.addSettingsViewModel(AdminSettingsLicensing,
+			'AdminSettingsLicensing', 'Licensing', 'licensing');
+
+		kn.addSettingsViewModel(AdminSettingsAbout,
+			'AdminSettingsAbout', 'About', 'about');
+			
+		return true;
 	};
 
 	AdminApp.prototype.reloadDomainList = function ()
 	{
-		// TODO cjs
 		Data.domainsLoading(true);
+		
 		Remote.domainList(function (sResult, oData) {
 			Data.domainsLoading(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
@@ -89,10 +124,11 @@
 
 	AdminApp.prototype.reloadPluginList = function ()
 	{
-		// TODO cjs
 		Data.pluginsLoading(true);
 		Remote.pluginList(function (sResult, oData) {
+
 			Data.pluginsLoading(false);
+			
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				var aList = _.map(oData.Result, function (oItem) {
@@ -110,7 +146,6 @@
 
 	AdminApp.prototype.reloadPackagesList = function ()
 	{
-		// TODO cjs
 		Data.packagesLoading(true);
 		Data.packagesReal(true);
 
@@ -215,7 +250,6 @@
 	{
 		bForce = Utils.isUnd(bForce) ? false : !!bForce;
 
-		// TODO cjs
 		Data.licensingProcess(true);
 		Data.licenseError('');
 
@@ -263,7 +297,7 @@
 
 		kn.hideLoading();
 
-		if (!RL.settingsGet('AllowAdminPanel'))
+		if (!AppSettings.settingsGet('AllowAdminPanel'))
 		{
 			kn.routeOff();
 			kn.setHash(LinkBuilder.root(), true);
@@ -275,21 +309,8 @@
 		}
 		else
 		{
-	//		kn.removeSettingsViewModel(AdminAbout);
-
-			if (!RL.capa(Enums.Capa.Prem))
+			if (!!AppSettings.settingsGet('Auth'))
 			{
-				kn.removeSettingsViewModel(AdminBranding);
-			}
-
-			if (!!RL.settingsGet('Auth'))
-			{
-	// TODO
-	//			if (!RL.settingsGet('AllowPackages') && AdminPackages)
-	//			{
-	//				kn.disableSettingsViewModel(AdminPackages);
-	//			}
-
 				kn.startScreens([AdminSettingsScreen]);
 			}
 			else

@@ -2,4 +2,4 @@
 
 'use strict';
 
-module.exports = window;
+module.exports = _;

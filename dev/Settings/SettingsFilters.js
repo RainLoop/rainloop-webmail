@@ -7,6 +7,7 @@
 	var
 		ko = require('../External/ko.js'),
 		Utils = require('../Common/Utils.js'),
+		kn = require('../Knoin/Knoin.js'),
 		PopupsFilterViewModel = require('../ViewModels/Popups/PopupsFilterViewModel.js')
 	;
 
@@ -22,8 +23,6 @@
 			Utils.windowResize();
 		});
 	}
-
-	kn.addSettingsViewModel(SettingsFilters, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 
 	SettingsFilters.prototype.deleteFilter = function (oFilter)
 	{

@@ -59,6 +59,7 @@
 		"gulp-rename": "*",
 		"gulp-header": "*",
 		"gulp-footer": "*",
+		"gulp-streamify": "*",
 		"gulp-minify-css": "*",
 		"gulp-concat-util": "*"
 

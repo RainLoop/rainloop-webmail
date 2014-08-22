@@ -346,16 +346,17 @@
 
 	MessageModel.prototype.computeSenderEmail = function ()
 	{
-	   var
-		   sSent = RL.data().sentFolder(),
-		   sDraft = RL.data().draftFolder()
-	   ;
+		var
+			Data = require('../Storages/WebMailDataStorage.js'),
+			sSent = Data.sentFolder(),
+			sDraft = Data.draftFolder()
+		;
 
-	   this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-		   this.toEmailsString() : this.fromEmailString());
+		this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+			this.toEmailsString() : this.fromEmailString());
 
-	   this.senderClearEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-		   this.toClearEmailsString() : this.fromClearEmailString());
+		this.senderClearEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
+			this.toClearEmailsString() : this.fromClearEmailString());
 	};
 
 	/**
@@ -424,6 +425,7 @@
 	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 	{
 	   var
+		   Data = require('../Storages/WebMailDataStorage.js'),
 		   bResult = false,
 		   iPriority = Enums.MessagePriority.Normal
 	   ;
@@ -442,7 +444,7 @@
 
 		   this.proxy = !!oJsonMessage.ExternalProxy;
 
-		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   if (Data.capaOpenPGP())
 		   {
 			   this.isPgpSigned(!!oJsonMessage.PgpSigned);
 			   this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
@@ -731,7 +733,7 @@
 	*/
 	MessageModel.prototype.viewLink = function ()
 	{
-	   return LinkBuilder.messageViewLink(this.requestHash);// TODO cjs
+	   return LinkBuilder.messageViewLink(this.requestHash);
 	};
 
 	/**
@@ -739,7 +741,7 @@
 	*/
 	MessageModel.prototype.downloadLink = function ()
 	{
-	   return LinkBuilder.messageDownloadLink(this.requestHash);// TODO cjs
+	   return LinkBuilder.messageDownloadLink(this.requestHash);
 	};
 
 	/**
@@ -1079,7 +1081,7 @@
 
 		   this.body.data('rl-plain-raw', this.plainRaw);
 
-		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   if (Data.capaOpenPGP())
 		   {
 			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
 			   this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
@@ -1091,7 +1093,7 @@
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-	   if (this.body && RL.data().capaOpenPGP()) // TODO cjs
+	   if (this.body && Data.capaOpenPGP())
 	   {
 		   this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
 		   this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
@@ -1107,7 +1109,7 @@
 
 		   this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-		   if (RL.data().capaOpenPGP()) // TODO cjs
+		   if (Data.capaOpenPGP())
 		   {
 			   this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
 			   this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
@@ -1132,7 +1134,7 @@
 			   aRes = [],
 			   mPgpMessage = null,
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			   aPublicKeys = RL.data().findPublicKeysByEmail(sFrom), // TODO cjs
+			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
 			   oValidKey = null,
 			   oValidSysKey = null,
 			   sPlain = ''
@@ -1158,7 +1160,7 @@
 
 					   if (oValidKey)
 					   {
-						   oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex()); // TODO cjs
+						   oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
 						   if (oValidSysKey)
 						   {
 							   sPlain = mPgpMessage.getText();
@@ -1195,8 +1197,8 @@
 			   mPgpMessage = null,
 			   mPgpMessageDecrypted = null,
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			   aPublicKey = RL.data().findPublicKeysByEmail(sFrom), // TODO cjs
-			   oPrivateKey = RL.data().findSelfPrivateKey(sPassword), // TODO cjs
+			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
+			   oPrivateKey = Data.findSelfPrivateKey(sPassword),
 			   oValidKey = null,
 			   oValidSysKey = null,
 			   sPlain = ''
@@ -1229,7 +1231,7 @@
 
 						   if (oValidKey)
 						   {
-							   oValidSysKey = RL.data().findPublicKeyByHex(oValidKey.keyid.toHex()); // TODO cjs
+							   oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
 							   if (oValidSysKey)
 							   {
 								   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);

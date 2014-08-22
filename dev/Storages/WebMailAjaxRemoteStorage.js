@@ -8,8 +8,13 @@
 		_ = require('../External/underscore.js'),
 
 		Utils = require('../Common/Utils.js'),
+		Consts = require('../Common/Consts.js'),
+		Globals = require('../Common/Globals.js'),
+		Base64 = require('../Common/Base64.js'),
 
-		Cache = require('../Storages/WebMailCacheStorage.js'),
+		AppSettings = require('./AppSettings.js'),
+		Cache = require('./WebMailCacheStorage.js'),
+		Data = require('./WebMailDataStorage.js'),
 		
 		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
 	;
@@ -33,11 +38,11 @@
 	WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'Folders', {
-			'SentFolder': RL.settingsGet('SentFolder'),
-			'DraftFolder': RL.settingsGet('DraftFolder'),
-			'SpamFolder': RL.settingsGet('SpamFolder'),
-			'TrashFolder': RL.settingsGet('TrashFolder'),
-			'ArchiveFolder': RL.settingsGet('ArchiveFolder')
+			'SentFolder': AppSettings.settingsGet('SentFolder'),
+			'DraftFolder': AppSettings.settingsGet('DraftFolder'),
+			'SpamFolder': AppSettings.settingsGet('SpamFolder'),
+			'TrashFolder': AppSettings.settingsGet('TrashFolder'),
+			'ArchiveFolder': AppSettings.settingsGet('ArchiveFolder')
 		}, null, '', ['Folders']);
 	};
 
@@ -228,7 +233,6 @@
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 
 		var
-			oData = RL.data(),
 			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw)
 		;
 
@@ -246,11 +250,11 @@
 					iOffset,
 					iLimit,
 					sSearch,
-					oData.projectHash(),
+					Data.projectHash(),
 					sFolderHash,
 					'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-					oData.threading() && oData.useThreads() ? '1' : '0',
-					oData.threading() && sFolderFullNameRaw === oData.messageListThreadFolder() ? oData.messageListThreadUids().join(',') : ''
+					Data.threading() && Data.useThreads() ? '1' : '0',
+					Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -261,8 +265,8 @@
 				'Limit': iLimit,
 				'Search': sSearch,
 				'UidNext': 'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': RL.data().threading() && RL.data().useThreads() ? '1' : '0',
-				'ExpandedThreadUid': oData.threading() && sFolderFullNameRaw === oData.messageListThreadFolder() ? oData.messageListThreadUids().join(',') : ''
+				'UseThreads': Data.threading() && Data.useThreads() ? '1' : '0',
+				'ExpandedThreadUid': Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
 	};
@@ -295,8 +299,8 @@
 				'Message/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iUid,
-					RL.data().projectHash(),
-					RL.data().threading() && RL.data().useThreads() ? '1' : '0'
+					Data.projectHash(),
+					Data.threading() && Data.useThreads() ? '1' : '0'
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
@@ -375,9 +379,12 @@
 				'UidNext': 'INBOX' === sFolder ? Cache.getFolderUidNext(sFolder) : ''
 			});
 		}
-		else if (RL.data().useThreads())
+		else if (Data.useThreads())
 		{
-			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+			if (Globals.__RL)
+			{
+				Globals.__RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+			}
 		}
 	};
 

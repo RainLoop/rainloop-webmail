@@ -5,11 +5,10 @@
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
 		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+		
+		AppSettings = require('./AppSettings.js')
 	;
 	
 	/**
@@ -17,71 +16,15 @@
 	 */
 	function AbstractData()
 	{
-		this.leftPanelDisabled = ko.observable(false);
-		this.useKeyboardShortcuts = ko.observable(true);
-
-		this.keyScopeReal = ko.observable(Enums.KeyState.All);
-		this.keyScopeFake = ko.observable(Enums.KeyState.All);
-
-		this.keyScope = ko.computed({
-			'owner': this,
-			'read': function () {
-				return this.keyScopeFake();
-			},
-			'write': function (sValue) {
-
-				if (Enums.KeyState.Menu !== sValue)
-				{
-					if (Enums.KeyState.Compose === sValue)
-					{
-						Utils.disableKeyFilter();
-					}
-					else
-					{
-						Utils.restoreKeyFilter();
-					}
-
-					this.keyScopeFake(sValue);
-					if (Globals.dropdownVisibility())
-					{
-						sValue = Enums.KeyState.Menu;
-					}
-				}
-
-				this.keyScopeReal(sValue);
-			}
-		});
-
-		this.keyScopeReal.subscribe(function (sValue) {
-	//		window.console.log(sValue);
-			key.setScope(sValue);
-		});
-
-		this.leftPanelDisabled.subscribe(function (bValue) {
-			RL.pub('left-panel.' + (bValue ? 'off' : 'on')); // TODO cjs
-		});
-
-		Globals.dropdownVisibility.subscribe(function (bValue) {
-			if (bValue)
-			{
-				Globals.tooltipTrigger(!Globals.tooltipTrigger());
-				this.keyScope(Enums.KeyState.Menu);
-			}
-			else if (Enums.KeyState.Menu === key.getScope())
-			{
-				this.keyScope(this.keyScopeFake());
-			}
-		}, this);
-
 		Utils.initDataConstructorBySettings(this);
 	}
 
 	AbstractData.prototype.populateDataOnStart = function()
 	{
 		var
-			mLayout = Utils.pInt(RL.settingsGet('Layout')), // TODO cjs
-			aLanguages = RL.settingsGet('Languages'),
-			aThemes = RL.settingsGet('Themes')
+			mLayout = Utils.pInt(AppSettings.settingsGet('Layout')),
+			aLanguages = AppSettings.settingsGet('Languages'),
+			aThemes = AppSettings.settingsGet('Themes')
 		;
 
 		if (Utils.isArray(aLanguages))
@@ -94,55 +37,55 @@
 			this.themes(aThemes);
 		}
 
-		this.mainLanguage(RL.settingsGet('Language'));
-		this.mainTheme(RL.settingsGet('Theme'));
+		this.mainLanguage(AppSettings.settingsGet('Language'));
+		this.mainTheme(AppSettings.settingsGet('Theme'));
 
-		this.capaAdditionalAccounts(RL.capa(Enums.Capa.AdditionalAccounts));
-		this.capaAdditionalIdentities(RL.capa(Enums.Capa.AdditionalIdentities));
-		this.capaGravatar(RL.capa(Enums.Capa.Gravatar));
-		this.determineUserLanguage(!!RL.settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain(!!RL.settingsGet('DetermineUserDomain'));
+		this.capaAdditionalAccounts(AppSettings.capa(Enums.Capa.AdditionalAccounts));
+		this.capaAdditionalIdentities(AppSettings.capa(Enums.Capa.AdditionalIdentities));
+		this.capaGravatar(AppSettings.capa(Enums.Capa.Gravatar));
+		this.determineUserLanguage(!!AppSettings.settingsGet('DetermineUserLanguage'));
+		this.determineUserDomain(!!AppSettings.settingsGet('DetermineUserDomain'));
 
-		this.capaThemes(RL.capa(Enums.Capa.Themes));
-		this.allowLanguagesOnLogin(!!RL.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!RL.settingsGet('AllowLanguagesOnSettings'));
-		this.useLocalProxyForExternalImages(!!RL.settingsGet('UseLocalProxyForExternalImages'));
+		this.capaThemes(AppSettings.capa(Enums.Capa.Themes));
+		this.allowLanguagesOnLogin(!!AppSettings.settingsGet('AllowLanguagesOnLogin'));
+		this.allowLanguagesOnSettings(!!AppSettings.settingsGet('AllowLanguagesOnSettings'));
+		this.useLocalProxyForExternalImages(!!AppSettings.settingsGet('UseLocalProxyForExternalImages'));
 
-		this.editorDefaultType(RL.settingsGet('EditorDefaultType'));
-		this.showImages(!!RL.settingsGet('ShowImages'));
-		this.contactsAutosave(!!RL.settingsGet('ContactsAutosave'));
-		this.interfaceAnimation(RL.settingsGet('InterfaceAnimation'));
+		this.editorDefaultType(AppSettings.settingsGet('EditorDefaultType'));
+		this.showImages(!!AppSettings.settingsGet('ShowImages'));
+		this.contactsAutosave(!!AppSettings.settingsGet('ContactsAutosave'));
+		this.interfaceAnimation(AppSettings.settingsGet('InterfaceAnimation'));
 
-		this.mainMessagesPerPage(RL.settingsGet('MPP'));
+		this.mainMessagesPerPage(AppSettings.settingsGet('MPP'));
 
-		this.desktopNotifications(!!RL.settingsGet('DesktopNotifications'));
-		this.useThreads(!!RL.settingsGet('UseThreads'));
-		this.replySameFolder(!!RL.settingsGet('ReplySameFolder'));
-		this.useCheckboxesInList(!!RL.settingsGet('UseCheckboxesInList'));
+		this.desktopNotifications(!!AppSettings.settingsGet('DesktopNotifications'));
+		this.useThreads(!!AppSettings.settingsGet('UseThreads'));
+		this.replySameFolder(!!AppSettings.settingsGet('ReplySameFolder'));
+		this.useCheckboxesInList(!!AppSettings.settingsGet('UseCheckboxesInList'));
 
 		this.layout(Enums.Layout.SidePreview);
 		if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
 		{
 			this.layout(mLayout);
 		}
-		this.facebookSupported(!!RL.settingsGet('SupportedFacebookSocial'));
-		this.facebookEnable(!!RL.settingsGet('AllowFacebookSocial'));
-		this.facebookAppID(RL.settingsGet('FacebookAppID'));
-		this.facebookAppSecret(RL.settingsGet('FacebookAppSecret'));
+		this.facebookSupported(!!AppSettings.settingsGet('SupportedFacebookSocial'));
+		this.facebookEnable(!!AppSettings.settingsGet('AllowFacebookSocial'));
+		this.facebookAppID(AppSettings.settingsGet('FacebookAppID'));
+		this.facebookAppSecret(AppSettings.settingsGet('FacebookAppSecret'));
 
-		this.twitterEnable(!!RL.settingsGet('AllowTwitterSocial'));
-		this.twitterConsumerKey(RL.settingsGet('TwitterConsumerKey'));
-		this.twitterConsumerSecret(RL.settingsGet('TwitterConsumerSecret'));
+		this.twitterEnable(!!AppSettings.settingsGet('AllowTwitterSocial'));
+		this.twitterConsumerKey(AppSettings.settingsGet('TwitterConsumerKey'));
+		this.twitterConsumerSecret(AppSettings.settingsGet('TwitterConsumerSecret'));
 
-		this.googleEnable(!!RL.settingsGet('AllowGoogleSocial'));
-		this.googleClientID(RL.settingsGet('GoogleClientID'));
-		this.googleClientSecret(RL.settingsGet('GoogleClientSecret'));
-		this.googleApiKey(RL.settingsGet('GoogleApiKey'));
+		this.googleEnable(!!AppSettings.settingsGet('AllowGoogleSocial'));
+		this.googleClientID(AppSettings.settingsGet('GoogleClientID'));
+		this.googleClientSecret(AppSettings.settingsGet('GoogleClientSecret'));
+		this.googleApiKey(AppSettings.settingsGet('GoogleApiKey'));
 
-		this.dropboxEnable(!!RL.settingsGet('AllowDropboxSocial'));
-		this.dropboxApiKey(RL.settingsGet('DropboxApiKey'));
+		this.dropboxEnable(!!AppSettings.settingsGet('AllowDropboxSocial'));
+		this.dropboxApiKey(AppSettings.settingsGet('DropboxApiKey'));
 
-		this.contactsIsAllowed(!!RL.settingsGet('ContactsIsAllowed'));
+		this.contactsIsAllowed(!!AppSettings.settingsGet('ContactsIsAllowed'));
 	};
 
 	module.exports = AbstractData;

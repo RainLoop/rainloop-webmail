@@ -5,10 +5,13 @@
 	'use strict';
 
 	var
-		Plugins = {},
-		Utils = require('./Utils.js'),
-		Remote = require('../Remote.js'),
-		RL = require('../RL.js')
+		Plugins = {
+			__boot: null,
+			__remote: null,
+			__data: null
+		},
+		_ = require('../External/underscore.js'),
+		Utils = require('./Utils.js')
 	;
 
 	/**
@@ -72,7 +75,12 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		return RL ? RL().settingsGet(sName) : null;
+		if (Plugins.__boot)
+		{
+			return Plugins.__boot.settingsGet(sName);
+		}
+
+		return null;
 	};
 
 	/**
@@ -85,9 +93,9 @@
 	 */
 	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (Remote)
+		if (Plugins.__remote)
 		{
-			Remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			Plugins.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 

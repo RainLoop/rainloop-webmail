@@ -123,6 +123,6 @@
 		}, this));
 	};
 
-	module.exports = new PopupsAskViewModel();
+	module.exports = PopupsAskViewModel;
 
 }(module));

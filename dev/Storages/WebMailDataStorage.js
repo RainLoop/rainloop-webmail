@@ -19,11 +19,11 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		AppSettings = require('./AppSettings.js'),
+		Cache = require('./WebMailCacheStorage.js'),
 		
 		kn = require('../Knoin/Knoin.js'),
-
+		
 		MessageModel = require('../Models/MessageModel.js'),
 
 		LocalStorage = require('./LocalStorage.js'),
@@ -41,7 +41,7 @@
 		var
 			fRemoveSystemFolderType = function (observable) {
 				return function () {
-					var oFolder = Cache.getFolderFromCacheList(observable()); // TODO cjs
+					var oFolder = Cache.getFolderFromCacheList(observable());
 					if (oFolder)
 					{
 						oFolder.type(Enums.FolderType.User);
@@ -50,7 +50,7 @@
 			},
 			fSetSystemFolderType = function (iType) {
 				return function (sValue) {
-					var oFolder = Cache.getFolderFromCacheList(sValue); // TODO cjs
+					var oFolder = Cache.getFolderFromCacheList(sValue);
 					if (oFolder)
 					{
 						oFolder.type(iType);
@@ -127,11 +127,11 @@
 		this.contactsSyncUser = ko.observable('');
 		this.contactsSyncPass = ko.observable('');
 
-		this.allowContactsSync = ko.observable(!!RL.settingsGet('ContactsSyncIsAllowed')); // TODO cjs
-		this.enableContactsSync = ko.observable(!!RL.settingsGet('EnableContactsSync'));
-		this.contactsSyncUrl = ko.observable(RL.settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser = ko.observable(RL.settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass = ko.observable(RL.settingsGet('ContactsSyncPassword'));
+		this.allowContactsSync = ko.observable(!!AppSettings.settingsGet('ContactsSyncIsAllowed'));
+		this.enableContactsSync = ko.observable(!!AppSettings.settingsGet('EnableContactsSync'));
+		this.contactsSyncUrl = ko.observable(AppSettings.settingsGet('ContactsSyncUrl'));
+		this.contactsSyncUser = ko.observable(AppSettings.settingsGet('ContactsSyncUser'));
+		this.contactsSyncPass = ko.observable(AppSettings.settingsGet('ContactsSyncPassword'));
 
 		// folders
 		this.namespace = '';
@@ -229,12 +229,12 @@
 
 		this.folderListSystem = ko.computed(function () {
 			return _.compact(_.map(this.folderListSystemNames(), function (sName) {
-				return Cache.getFolderFromCacheList(sName); // TODO cjs
+				return Cache.getFolderFromCacheList(sName);
 			}));
 		}, this);
 
 		this.folderMenuForMove = ko.computed(function () {
-			return RL.folderListOptionsBuilder(this.folderListSystem(), this.folderList(), [// TODO cjs
+			return Utils.folderListOptionsBuilder(this.folderListSystem(), this.folderList(), [
 				this.currentFolderFullNameRaw()
 			], null, null, null, null, function (oItem) {
 				return oItem ? oItem.localName() : '';
@@ -273,7 +273,7 @@
 		this.mainMessageListSearch = ko.computed({
 			'read': this.messageListSearch,
 			'write': function (sValue) {
-				kn.setHash(LinkBuilder.mailBox( // TODO cjs
+				kn.setHash(LinkBuilder.mailBox(
 					this.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
 				));
 			},
@@ -308,7 +308,7 @@
 		}, 500));
 
 		// message preview
-		this.staticMessageList = new MessageModel();// TODO cjs
+		this.staticMessageList = new MessageModel();
 		this.message = ko.observable(null);
 		this.messageLoading = ko.observable(false);
 		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
@@ -322,10 +322,10 @@
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
 
-				if (Enums.Layout.NoPreview === RL.data().layout() &&// TODO cjs
+				if (Enums.Layout.NoPreview === this.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
-					RL.historyBack();// TODO cjs
+					RL.historyBack(); // TODO cjs
 				}
 			}
 			else if (Enums.Layout.NoPreview === this.layout())
@@ -338,17 +338,17 @@
 			if (bValue)
 			{
 				this.folderList.focused(false);
-				this.keyScope(Enums.KeyState.MessageView);
+				Globals.keyScope(Enums.KeyState.MessageView);
 			}
-			else if (Enums.KeyState.MessageView === RL.data().keyScope())// TODO cjs
+			else if (Enums.KeyState.MessageView === Globals.keyScope())
 			{
-				if (Enums.Layout.NoPreview === RL.data().layout() && this.message())// TODO cjs
+				if (Enums.Layout.NoPreview === this.layout() && this.message())
 				{
-					this.keyScope(Enums.KeyState.MessageView);
+					Globals.keyScope(Enums.KeyState.MessageView);
 				}
 				else
 				{
-					this.keyScope(Enums.KeyState.MessageList);
+					Globals.keyScope(Enums.KeyState.MessageList);
 				}
 			}
 		}, this);
@@ -356,11 +356,11 @@
 		this.folderList.focused.subscribe(function (bValue) {
 			if (bValue)
 			{
-				RL.data().keyScope(Enums.KeyState.FolderList);// TODO cjs
+				Globals.keyScope(Enums.KeyState.FolderList);
 			}
-			else if (Enums.KeyState.FolderList === RL.data().keyScope())// TODO cjs
+			else if (Enums.KeyState.FolderList === Globals.keyScope())
 			{
-				RL.data().keyScope(Enums.KeyState.MessageList);// TODO cjs
+				Globals.keyScope(Enums.KeyState.MessageList);
 			}
 		});
 
@@ -510,25 +510,25 @@
 	{
 		AbstractData.prototype.populateDataOnStart.call(this);
 
-		this.accountEmail(RL.settingsGet('Email'));// TODO cjs
-		this.accountIncLogin(RL.settingsGet('IncLogin'));
-		this.accountOutLogin(RL.settingsGet('OutLogin'));
-		this.projectHash(RL.settingsGet('ProjectHash'));
+		this.accountEmail(AppSettings.settingsGet('Email'));
+		this.accountIncLogin(AppSettings.settingsGet('IncLogin'));
+		this.accountOutLogin(AppSettings.settingsGet('OutLogin'));
+		this.projectHash(AppSettings.settingsGet('ProjectHash'));
 
-		this.defaultIdentityID(RL.settingsGet('DefaultIdentityID'));
+		this.defaultIdentityID(AppSettings.settingsGet('DefaultIdentityID'));
 
-		this.displayName(RL.settingsGet('DisplayName'));
-		this.replyTo(RL.settingsGet('ReplyTo'));
-		this.signature(RL.settingsGet('Signature'));
-		this.signatureToAll(!!RL.settingsGet('SignatureToAll'));
-		this.enableTwoFactor(!!RL.settingsGet('EnableTwoFactor'));
+		this.displayName(AppSettings.settingsGet('DisplayName'));
+		this.replyTo(AppSettings.settingsGet('ReplyTo'));
+		this.signature(AppSettings.settingsGet('Signature'));
+		this.signatureToAll(!!AppSettings.settingsGet('SignatureToAll'));
+		this.enableTwoFactor(!!AppSettings.settingsGet('EnableTwoFactor'));
 
 		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
-		this.remoteSuggestions = !!RL.settingsGet('RemoteSuggestions');
+		this.remoteSuggestions = !!AppSettings.settingsGet('RemoteSuggestions');
 
-		this.devEmail = RL.settingsGet('DevEmail');
-		this.devPassword = RL.settingsGet('DevPassword');
+		this.devEmail = AppSettings.settingsGet('DevEmail');
+		this.devPassword = AppSettings.settingsGet('DevPassword');
 	};
 
 	WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
@@ -538,12 +538,13 @@
 			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
 			{
 				var
+					self = this,
 					iIndex = 0,
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
 					{
 						var oNotification = null;
-						if (NotificationClass && RL.data().useDesktopNotifications())
+						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
 								'body': sText,
@@ -582,7 +583,7 @@
 				{
 					fNotificationHelper(
 						LinkBuilder.notificationMailIcon(),
-						RL.data().accountEmail(),
+						this.accountEmail(),
 						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
 						})
@@ -602,146 +603,6 @@
 			}
 
 			Cache.setFolderUidNext(sFolder, sUidNext);
-		}
-	};
-
-	/**
-	 * @param {string} sNamespace
-	 * @param {Array} aFolders
-	 * @return {Array}
-	 */
-	WebMailDataStorage.prototype.folderResponseParseRec = function (sNamespace, aFolders)
-	{
-		var
-			iIndex = 0,
-			iLen = 0,
-			oFolder = null,
-			oCacheFolder = null,
-			sFolderFullNameRaw = '',
-			aSubFolders = [],
-			aList = []
-		;
-
-		for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
-		{
-			oFolder = aFolders[iIndex];
-			if (oFolder)
-			{
-				sFolderFullNameRaw = oFolder.FullNameRaw;
-
-				oCacheFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);// TODO cjs
-				if (!oCacheFolder)
-				{
-					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);// TODO cjs
-					if (oCacheFolder)
-					{
-						Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);// TODO cjs
-						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);// TODO cjs
-					}
-				}
-
-				if (oCacheFolder)
-				{
-					oCacheFolder.collapsed(!Utils.isFolderExpanded(oCacheFolder.fullNameHash));
-
-					if (oFolder.Extended)
-					{
-						if (oFolder.Extended.Hash)
-						{
-							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);// TODO cjs
-						}
-
-						if (Utils.isNormal(oFolder.Extended.MessageCount))
-						{
-							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
-						}
-
-						if (Utils.isNormal(oFolder.Extended.MessageUnseenCount))
-						{
-							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-						}
-					}
-
-					aSubFolders = oFolder['SubFolders'];
-					if (aSubFolders && 'Collection/FolderCollection' === aSubFolders['@Object'] &&
-						aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
-					{
-						oCacheFolder.subFolders(
-							this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
-					}
-
-					aList.push(oCacheFolder);
-				}
-			}
-		}
-
-		return aList;
-	};
-
-	/**
-	 * @param {*} oData
-	 */
-	WebMailDataStorage.prototype.setFolders = function (oData)
-	{
-		var
-			aList = [],
-			bUpdate = false,
-			oRLData = RL.data(),// TODO cjs
-			fNormalizeFolder = function (sFolderFullNameRaw) {
-				return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
-					null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';// TODO cjs
-			}
-		;
-
-		if (oData && oData.Result && 'Collection/FolderCollection' === oData.Result['@Object'] &&
-			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
-		{
-			if (!Utils.isUnd(oData.Result.Namespace))
-			{
-				oRLData.namespace = oData.Result.Namespace;
-			}
-
-			this.threading(!!RL.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);// TODO cjs
-
-			aList = this.folderResponseParseRec(oRLData.namespace, oData.Result['@Collection']);
-			oRLData.folderList(aList);
-
-			// TODO cjs
-			if (oData.Result['SystemFolders'] &&
-				'' === '' + RL.settingsGet('SentFolder') + RL.settingsGet('DraftFolder') +
-				RL.settingsGet('SpamFolder') + RL.settingsGet('TrashFolder') + RL.settingsGet('ArchiveFolder') +
-				RL.settingsGet('NullFolder'))
-			{
-				// TODO Magic Numbers
-				RL.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
-				RL.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
-				RL.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
-				RL.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
-				RL.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
-
-				bUpdate = true;
-			}
-
-			// TODO cjs
-			oRLData.sentFolder(fNormalizeFolder(RL.settingsGet('SentFolder')));
-			oRLData.draftFolder(fNormalizeFolder(RL.settingsGet('DraftFolder')));
-			oRLData.spamFolder(fNormalizeFolder(RL.settingsGet('SpamFolder')));
-			oRLData.trashFolder(fNormalizeFolder(RL.settingsGet('TrashFolder')));
-			oRLData.archiveFolder(fNormalizeFolder(RL.settingsGet('ArchiveFolder')));
-
-			if (bUpdate)
-			{
-				Remote.saveSystemFolders(Utils.emptyFunction, {
-					'SentFolder': oRLData.sentFolder(),
-					'DraftFolder': oRLData.draftFolder(),
-					'SpamFolder': oRLData.spamFolder(),
-					'TrashFolder': oRLData.trashFolder(),
-					'ArchiveFolder': oRLData.archiveFolder(),
-					'NullFolder': 'NullFolder'
-				});
-			}
-
-			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 		}
 	};
 
@@ -802,7 +663,7 @@
 		});
 
 		_.find(aTimeouts, function (aItem) {
-			var oFolder = Cache.getFolderFromCacheList(aItem[1]);// TODO cjs
+			var oFolder = Cache.getFolderFromCacheList(aItem[1]);
 			if (oFolder)
 			{
 				oFolder.interval = iUtc;
@@ -832,13 +693,13 @@
 		});
 
 		var
+			self = this,
 			iUnseenCount = 0,
-			oData = RL.data(),// TODO cjs
-			aMessageList = oData.messageList(),
+			aMessageList = this.messageList(),
 			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
 			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
-			sCurrentFolderFullNameRaw = oData.currentFolderFullNameRaw(),
-			oCurrentMessage = oData.message(),
+			sCurrentFolderFullNameRaw = this.currentFolderFullNameRaw(),
+			oCurrentMessage = this.message(),
 			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
 				return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
 			}) : []
@@ -884,13 +745,13 @@
 			}
 			else
 			{
-				oData.messageListIsNotCompleted(true);
+				this.messageListIsNotCompleted(true);
 
 				_.each(aMessages, function (oMessage) {
 					if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
 					{
 						oCurrentMessage = null;
-						oData.message(null);
+						self.message(null);
 					}
 
 					oMessage.deleted(true);
@@ -898,7 +759,7 @@
 
 				_.delay(function () {
 					_.each(aMessages, function (oMessage) {
-						oData.messageList.remove(oMessage);
+						self.messageList.remove(oMessage);
 					});
 				}, 400);
 			}
@@ -937,7 +798,7 @@
 			this.messageError('');
 
 			oMessage.initUpdateByMessageJson(oData.Result);
-			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);// TODO cjs
+			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
 
 			if (!bCached)
 			{
@@ -967,7 +828,7 @@
 						bIsHtml = false;
 						sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
 
-						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && RL.data().capaOpenPGP())
+						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && this.capaOpenPGP())
 						{
 							oMessage.plainRaw = Utils.pString(oData.Result.Plain);
 
@@ -1077,137 +938,6 @@
 		return _.map(aList, function (oMessage) {
 			return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
 		}).join('|');
-	};
-
-	WebMailDataStorage.prototype.setMessageList = function (oData, bCached)
-	{
-		if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
-			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
-		{
-			var
-				oRainLoopData = RL.data(),
-				mLastCollapsedThreadUids = null,
-				iIndex = 0,
-				iLen = 0,
-				iCount = 0,
-				iOffset = 0,
-				aList = [],
-				iUtc = moment().unix(),
-				aStaticList = oRainLoopData.staticMessageList,
-				oJsonMessage = null,
-				oMessage = null,
-				oFolder = null,
-				iNewCount = 0,
-				bUnreadCountChange = false
-			;
-
-			iCount = Utils.pInt(oData.Result.MessageResultCount);
-			iOffset = Utils.pInt(oData.Result.Offset);
-
-			if (Utils.isNonEmptyArray(oData.Result.LastCollapsedThreadUids))
-			{
-				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
-			}
-
-			oFolder = Cache.getFolderFromCacheList(
-				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-
-			if (oFolder && !bCached)
-			{
-				oFolder.interval = iUtc;
-
-				Cache.setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
-
-				if (Utils.isNormal(oData.Result.MessageCount))
-				{
-					oFolder.messageCountAll(oData.Result.MessageCount);
-				}
-
-				if (Utils.isNormal(oData.Result.MessageUnseenCount))
-				{
-					if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
-					{
-						bUnreadCountChange = true;
-					}
-
-					oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
-				}
-
-				this.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
-			}
-
-			if (bUnreadCountChange && oFolder)
-			{
-				Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
-			}
-
-			for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
-			{
-				oJsonMessage = oData.Result['@Collection'][iIndex];
-				if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
-				{
-					oMessage = aStaticList[iIndex];
-					if (!oMessage || !oMessage.initByJson(oJsonMessage))
-					{
-						oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
-					}
-
-					if (oMessage)
-					{
-						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
-						{
-							iNewCount++;
-							oMessage.newForAnimation(true);
-						}
-
-						oMessage.deleted(false);
-
-						if (bCached)
-						{
-							Cache.initMessageFlagsFromCache(oMessage);
-						}
-						else
-						{
-							Cache.storeMessageFlagsToCache(oMessage);
-						}
-
-						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
-
-						aList.push(oMessage);
-					}
-				}
-			}
-
-			oRainLoopData.messageListCount(iCount);
-			oRainLoopData.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			oRainLoopData.messageListPage(Math.ceil((iOffset / oRainLoopData.messagesPerPage()) + 1));
-			oRainLoopData.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-			oRainLoopData.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			oRainLoopData.messageListEndPage(oRainLoopData.messageListPage());
-
-			oRainLoopData.messageList(aList);
-			oRainLoopData.messageListIsNotCompleted(false);
-
-			if (aStaticList.length < aList.length)
-			{
-				oRainLoopData.staticMessageList = aList;
-			}
-
-			Cache.clearNewMessageCache();
-
-			if (oFolder && (bCached || bUnreadCountChange || RL.data().useThreads()))
-			{
-				RL.folderInformation(oFolder.fullNameRaw, aList);
-			}
-		}
-		else
-		{
-			RL.data().messageListCount(0);
-			RL.data().messageList([]);
-			RL.data().messageListError(Utils.getNotification(
-				oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
-			));
-		}
 	};
 
 	WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)

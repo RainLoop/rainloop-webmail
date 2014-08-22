@@ -5,6 +5,7 @@
 	'use strict';
 
 	var
+		$ = require('../External/jquery.js'),
 		ko = require('../External/ko.js'),
 		
 		Enums = require('../Common/Enums.js'),
@@ -13,6 +14,7 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
 		kn = require('../Knoin/Knoin.js'),
@@ -24,30 +26,28 @@
 	 */
 	function SettingsGeneral()
 	{
-		var oData = RL.data();
-
-		this.mainLanguage = oData.mainLanguage;
-		this.mainMessagesPerPage = oData.mainMessagesPerPage;
+		this.mainLanguage = Data.mainLanguage;
+		this.mainMessagesPerPage = Data.mainMessagesPerPage;
 		this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
-		this.editorDefaultType = oData.editorDefaultType;
-		this.showImages = oData.showImages;
-		this.interfaceAnimation = oData.interfaceAnimation;
-		this.useDesktopNotifications = oData.useDesktopNotifications;
-		this.threading = oData.threading;
-		this.useThreads = oData.useThreads;
-		this.replySameFolder = oData.replySameFolder;
-		this.layout = oData.layout;
-		this.usePreviewPane = oData.usePreviewPane;
-		this.useCheckboxesInList = oData.useCheckboxesInList;
-		this.allowLanguagesOnSettings = oData.allowLanguagesOnSettings;
+		this.editorDefaultType = Data.editorDefaultType;
+		this.showImages = Data.showImages;
+		this.interfaceAnimation = Data.interfaceAnimation;
+		this.useDesktopNotifications = Data.useDesktopNotifications;
+		this.threading = Data.threading;
+		this.useThreads = Data.useThreads;
+		this.replySameFolder = Data.replySameFolder;
+		this.layout = Data.layout;
+		this.usePreviewPane = Data.usePreviewPane;
+		this.useCheckboxesInList = Data.useCheckboxesInList;
+		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 
 		this.isDesktopNotificationsSupported = ko.computed(function () {
-			return Enums.DesktopNotifications.NotSupported !== oData.desktopNotificationsPermisions();
+			return Enums.DesktopNotifications.NotSupported !== Data.desktopNotificationsPermisions();
 		});
 
 		this.isDesktopNotificationsDenied = ko.computed(function () {
-			return Enums.DesktopNotifications.NotSupported === oData.desktopNotificationsPermisions() ||
-				Enums.DesktopNotifications.Denied === oData.desktopNotificationsPermisions();
+			return Enums.DesktopNotifications.NotSupported === Data.desktopNotificationsPermisions() ||
+				Enums.DesktopNotifications.Denied === Data.desktopNotificationsPermisions();
 		});
 
 		this.mainLanguageFullName = ko.computed(function () {
@@ -59,8 +59,6 @@
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
 	}
-
-	kn.addSettingsViewModel(SettingsGeneral, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
 	SettingsGeneral.prototype.toggleLayout = function ()
 	{
@@ -74,11 +72,10 @@
 		_.delay(function () {
 
 			var
-				oData = RL.data(),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self)
 			;
 
-			oData.language.subscribe(function (sValue) {
+			Data.language.subscribe(function (sValue) {
 
 				self.languageTrigger(Enums.SaveSettingsStep.Animate);
 
@@ -102,31 +99,31 @@
 				});
 			});
 
-			oData.editorDefaultType.subscribe(function (sValue) {
+			Data.editorDefaultType.subscribe(function (sValue) {
 				Remote.saveSettings(Utils.emptyFunction, {
 					'EditorDefaultType': sValue
 				});
 			});
 
-			oData.messagesPerPage.subscribe(function (iValue) {
+			Data.messagesPerPage.subscribe(function (iValue) {
 				Remote.saveSettings(f1, {
 					'MPP': iValue
 				});
 			});
 
-			oData.showImages.subscribe(function (bValue) {
+			Data.showImages.subscribe(function (bValue) {
 				Remote.saveSettings(Utils.emptyFunction, {
 					'ShowImages': bValue ? '1' : '0'
 				});
 			});
 
-			oData.interfaceAnimation.subscribe(function (sValue) {
+			Data.interfaceAnimation.subscribe(function (sValue) {
 				Remote.saveSettings(Utils.emptyFunction, {
 					'InterfaceAnimation': sValue
 				});
 			});
 
-			oData.useDesktopNotifications.subscribe(function (bValue) {
+			Data.useDesktopNotifications.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveDesktopNotifications', function () {
 					Remote.saveSettings(Utils.emptyFunction, {
 						'DesktopNotifications': bValue ? '1' : '0'
@@ -134,7 +131,7 @@
 				}, 3000);
 			});
 
-			oData.replySameFolder.subscribe(function (bValue) {
+			Data.replySameFolder.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveReplySameFolder', function () {
 					Remote.saveSettings(Utils.emptyFunction, {
 						'ReplySameFolder': bValue ? '1' : '0'
@@ -142,25 +139,25 @@
 				}, 3000);
 			});
 
-			oData.useThreads.subscribe(function (bValue) {
+			Data.useThreads.subscribe(function (bValue) {
 
-				oData.messageList([]);
+				Data.messageList([]);
 
 				Remote.saveSettings(Utils.emptyFunction, {
 					'UseThreads': bValue ? '1' : '0'
 				});
 			});
 
-			oData.layout.subscribe(function (nValue) {
+			Data.layout.subscribe(function (nValue) {
 
-				oData.messageList([]);
+				Data.messageList([]);
 
 				Remote.saveSettings(Utils.emptyFunction, {
 					'Layout': nValue
 				});
 			});
 
-			oData.useCheckboxesInList.subscribe(function (bValue) {
+			Data.useCheckboxesInList.subscribe(function (bValue) {
 				Remote.saveSettings(Utils.emptyFunction, {
 					'UseCheckboxesInList': bValue ? '1' : '0'
 				});
@@ -171,7 +168,7 @@
 
 	SettingsGeneral.prototype.onShow = function ()
 	{
-		RL.data().desktopNotifications.valueHasMutated();
+		Data.desktopNotifications.valueHasMutated();
 	};
 
 	SettingsGeneral.prototype.selectLanguage = function ()

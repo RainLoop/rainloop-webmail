@@ -6,7 +6,9 @@
 
 	var
 		ko = require('../External/ko.js'),
-		Data = require('../Storages/AdminDataStorage.js')
+		AppSettings = require('../Storages/AppSettings.js'),
+		Data = require('../Storages/AdminDataStorage.js'),
+		RL = require('../Boots/AdminApp.js')
 	;
 
 	/**
@@ -14,8 +16,8 @@
 	 */
 	function AdminSettingsAbout()
 	{
-		this.version = ko.observable(RL.settingsGet('Version'));
-		this.access = ko.observable(!!RL.settingsGet('CoreAccess'));
+		this.version = ko.observable(AppSettings.settingsGet('Version'));
+		this.access = ko.observable(!!AppSettings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 
 		this.coreReal = Data.coreReal;
@@ -63,8 +65,6 @@
 
 		}, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsAbout, 'AdminSettingsAbout', 'About', 'about');
 
 	AdminSettingsAbout.prototype.onBuild = function ()
 	{

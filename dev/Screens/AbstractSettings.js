@@ -83,7 +83,6 @@
 					oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
 					oViewModelDom.appendTo(oViewModelPlace);
 
-					oSettingsScreen.data = RL.data(); // TODO cjs
 					oSettingsScreen.viewModelDom = oViewModelDom;
 
 					oSettingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
@@ -139,7 +138,7 @@
 		}
 		else
 		{
-			kn.setHash(LinkBuilder.settings(), false, true); // TODO cjs
+			kn.setHash(LinkBuilder.settings(), false, true);
 		}
 	};
 

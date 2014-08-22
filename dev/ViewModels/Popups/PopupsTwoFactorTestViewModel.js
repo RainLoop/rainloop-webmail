@@ -70,6 +70,6 @@
 		this.code.focused(true);
 	};
 
-	module.exports = new PopupsTwoFactorTestViewModel();
+	module.exports = PopupsTwoFactorTestViewModel;
 
 }(module));

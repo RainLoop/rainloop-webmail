@@ -11,6 +11,8 @@
 		Utils = require('../../Common/Utils.js'),
 
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../../Boots/RainLoopApp.js'),
 		
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -110,6 +112,6 @@
 		this.emailFocus(true);
 	};
 
-	module.exports = new PopupsAddAccountViewModel();
+	module.exports = PopupsAddAccountViewModel;
 
 }(module));

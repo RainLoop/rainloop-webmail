@@ -13,6 +13,8 @@
 		Utils = require('../../Common/Utils.js'),
 
 		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		
+		RL = require('../../Boots/AdminApp.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -313,6 +315,6 @@
 		this.whiteList('');
 	};
 
-	module.exports = new PopupsDomainViewModel();
+	module.exports = PopupsDomainViewModel;
 
 }(module));

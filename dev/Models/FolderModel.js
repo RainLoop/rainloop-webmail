@@ -6,11 +6,13 @@
 
 	var
 		_ = require('../External/underscore.js'),
-		ko = require('./External/ko.js'),
+		ko = require('../External/ko.js'),
 		$window = require('../External/$window.js'),
+
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+		Events = require('../Common/Events.js')
 	;
 
 	/**
@@ -42,18 +44,7 @@
 		this.actionBlink = ko.observable(false).extend({'falseTimeout': 1000});
 
 		this.nameForEdit = ko.observable('');
-
-		this.name.subscribe(function (sValue) {
-			this.nameForEdit(sValue);
-		}, this);
-
-		this.edited.subscribe(function (bValue) {
-			if (bValue)
-			{
-				this.nameForEdit(this.name());
-			}
-		}, this);
-
+		
 		this.privateMessageCountAll = ko.observable(0);
 		this.privateMessageCountUnread = ko.observable(0);
 
@@ -149,11 +140,6 @@
 				iUnread = this.messageCountUnread(),
 				iType = this.type()
 			;
-
-			if (Enums.FolderType.Inbox === iType)
-			{
-				RL.data().foldersInboxUnreadCount(iUnread); // TODO cjs
-			}
 
 			if (0 < iCount)
 			{
@@ -288,6 +274,25 @@
 			return !!_.find(this.subFolders(), function (oFolder) {
 				return oFolder.hasUnreadMessages() || oFolder.hasSubScribedUnreadMessagesSubfolders();
 			});
+		}, this);
+
+		// subscribe
+		this.name.subscribe(function (sValue) {
+			this.nameForEdit(sValue);
+		}, this);
+
+		this.edited.subscribe(function (bValue) {
+			if (bValue)
+			{
+				this.nameForEdit(this.name());
+			}
+		}, this);
+
+		this.messageCountUnread.subscribe(function (iUnread) {
+			if (Enums.FolderType.Inbox === this.type())
+			{
+				Events.pub('mailbox.inbox-unread-count', [iUnread]);
+			}
 		}, this);
 
 		return this;

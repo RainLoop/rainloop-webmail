@@ -46,8 +46,6 @@
 		this.dropboxTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	kn.addSettingsViewModel(AdminSettingsSocial, 'AdminSettingsSocial', 'Social', 'social');
-
 	AdminSettingsSocial.prototype.onBuild = function ()
 	{
 		var self = this;

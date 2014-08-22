@@ -10,6 +10,7 @@
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
@@ -22,13 +23,11 @@
 		this.determineUserLanguage = Data.determineUserLanguage;
 		this.determineUserDomain = Data.determineUserDomain;
 
-		this.defaultDomain = ko.observable(RL.settingsGet('LoginDefaultDomain'));
+		this.defaultDomain = ko.observable(AppSettings.settingsGet('LoginDefaultDomain'));
 
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 		this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsLogin, 'AdminSettingsLogin', 'Login', 'login');
 
 	AdminSettingsLogin.prototype.onBuild = function ()
 	{

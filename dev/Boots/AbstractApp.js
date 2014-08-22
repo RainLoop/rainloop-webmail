@@ -7,45 +7,32 @@
 	var
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
 		window = require('../External/window.js'),
 		$html = require('../External/$html.js'),
 		$window = require('../External/$window.js'),
 		$doc = require('../External/$doc.js'),
-		AppData = require('../External/AppData.js'),
 
 		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
-		Plugins = require('../Common/Plugins.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Events = require('../Common/Events.js'),
 
-		Remote = require('../Remote.js'),
+		AppSettings = require('../Storages/AppSettings.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
 	;
 
 	/**
+	 * @param {*} Remote
 	 * @constructor
 	 * @extends KnoinAbstractBoot
 	 */
-	function AbstractApp()
+	function AbstractApp(Remote)
 	{
 		KnoinAbstractBoot.call(this);
 
-		this.oSettings = null;
-		this.oPlugins = null;
-		this.oLocal = null;
-		this.oLink = null;
-		this.oSubs = {};
-
 		this.isLocalAutocomplete = true;
-
-		this.popupVisibilityNames = ko.observableArray([]);
-
-		this.popupVisibility = ko.computed(function () {
-			return 0 < this.popupVisibilityNames().length;
-		}, this);
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
@@ -55,7 +42,7 @@
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
 				]))
 			{
-				Remote().jsError(
+				Remote.jsError(
 					Utils.emptyFunction,
 					oEvent.originalEvent.message,
 					oEvent.originalEvent.filename,
@@ -82,11 +69,20 @@
 
 	_.extend(AbstractApp.prototype, KnoinAbstractBoot.prototype);
 
-	AbstractApp.prototype.oSettings = null;
-	AbstractApp.prototype.oPlugins = null;
-	AbstractApp.prototype.oLocal = null;
-	AbstractApp.prototype.oLink = null;
-	AbstractApp.prototype.oSubs = {};
+	AbstractApp.prototype.remote = function ()
+	{
+		return null;
+	};
+
+	AbstractApp.prototype.data = function ()
+	{
+		return null;
+	};
+
+	AbstractApp.prototype.setupSettings = function ()
+	{
+		return true;
+	};
 
 	/**
 	 * @param {string} sLink
@@ -131,38 +127,10 @@
 		return true;
 	};
 
-	/**
-	 * @param {string} sName
-	 * @return {?}
-	 */
-	AbstractApp.prototype.settingsGet = function (sName)
-	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
-		return Utils.isUnd(this.oSettings[sName]) ? null : this.oSettings[sName];
-	};
-
-	/**
-	 * @param {string} sName
-	 * @param {?} mValue
-	 */
-	AbstractApp.prototype.settingsSet = function (sName, mValue)
-	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
-		this.oSettings[sName] = mValue;
-	};
-
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			this.settingsGet('Title') || '';
+			AppSettings.settingsGet('Title') || '';
 
 		window.document.title = '_';
 		window.document.title = sTitle;
@@ -175,8 +143,8 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			sCustomLogoutLink = Utils.pString(this.settingsGet('CustomLogoutLink')),
-			bInIframe = !!this.settingsGet('InIframe')
+			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
+			bInIframe = !!AppSettings.settingsGet('InIframe')
 		;
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
@@ -233,61 +201,11 @@
 		fCallback([], sQuery);
 	};
 
-	/**
-	 * @param {string} sName
-	 * @param {Function} fFunc
-	 * @param {Object=} oContext
-	 * @return {AbstractApp}
-	 */
-	AbstractApp.prototype.sub = function (sName, fFunc, oContext)
-	{
-		if (Utils.isUnd(this.oSubs[sName]))
-		{
-			this.oSubs[sName] = [];
-		}
-
-		this.oSubs[sName].push([fFunc, oContext]);
-
-		return this;
-	};
-
-	/**
-	 * @param {string} sName
-	 * @param {Array=} aArgs
-	 * @return {AbstractApp}
-	 */
-	AbstractApp.prototype.pub = function (sName, aArgs)
-	{
-		Plugins.runHook('rl-pub', [sName, aArgs]);
-		if (!Utils.isUnd(this.oSubs[sName]))
-		{
-			_.each(this.oSubs[sName], function (aItem) {
-				if (aItem[0])
-				{
-					aItem[0].apply(aItem[1] || null, aArgs || []);
-				}
-			});
-		}
-
-		return this;
-	};
-
-	/**
-	 * @param {string} sName
-	 * @return {boolean}
-	 */
-	AbstractApp.prototype.capa = function (sName)
-	{
-		var mCapa = this.settingsGet('Capa');
-		return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
-	};
-
 	AbstractApp.prototype.bootstart = function ()
 	{
-		var
-			self = this,
-			ssm = require('../External/ssm.js')
-		;
+		Events.pub('rl.bootstart');
+		
+		var ssm = require('../External/ssm.js');
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();
@@ -302,11 +220,11 @@
 			'maxWidth': 767,
 			'onEnter': function() {
 				$html.addClass('ssm-state-mobile');
-				self.pub('ssm.mobile-enter');
+				Events.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
 				$html.removeClass('ssm-state-mobile');
-				self.pub('ssm.mobile-leave');
+				Events.pub('ssm.mobile-leave');
 			}
 		});
 
@@ -345,15 +263,15 @@
 			}
 		});
 
-		this.sub('ssm.mobile-enter', function () {
-			RL.data().leftPanelDisabled(true); // TODO cjs
+		Events.sub('ssm.mobile-enter', function () {
+			Globals.leftPanelDisabled(true);
 		});
 
-		this.sub('ssm.mobile-leave', function () {
-			RL.data().leftPanelDisabled(false); // TODO cjs
+		Events.sub('ssm.mobile-leave', function () {
+			Globals.leftPanelDisabled(false);
 		});
 
-		RL.data().leftPanelDisabled.subscribe(function (bValue) { // TODO cjs
+		Globals.leftPanelDisabled.subscribe(function (bValue) {
 			$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 

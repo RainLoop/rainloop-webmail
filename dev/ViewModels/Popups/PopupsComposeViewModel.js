@@ -5,6 +5,7 @@
 	'use strict';
 
 	var
+		window = require('../../External/window.js'),
 		$ = require('../../External/jquery.js'),
 		_ = require('../../External/underscore.js'),
 		ko = require('../../External/ko.js'),
@@ -13,11 +14,19 @@
 		Enums = require('../../Common/Enums.js'),
 		Consts = require('../../Common/Consts.js'),
 		Utils = require('../../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Globals = require('../../Common/Globals.js'),
+		LinkBuilder = require('../../Common/LinkBuilder.js'),
+		Events = require('../../Common/Events.js'),
+		NewHtmlEditorWrapper = require('../../Common/NewHtmlEditorWrapper.js'),
 
+		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Cache = require('../../Storages/WebMailCacheStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../../Boots/RainLoopApp.js'),
+
+		PopupsComposeOpenPgpViewModel = require('./PopupsComposeOpenPgpViewModel.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -38,7 +47,7 @@
 		this.bSkipNext = false;
 		this.sReferences = '';
 
-		this.bCapaAdditionalIdentities = RL.capa(Enums.Capa.AdditionalIdentities);
+		this.bCapaAdditionalIdentities = AppSettings.capa(Enums.Capa.AdditionalIdentities);
 
 		var
 			self = this,
@@ -330,7 +339,7 @@
 
 		}, this.canBeSendedOrSaved);
 
-		RL.sub('interval.1m', function () {
+		Events.sub('interval.1m', function () {
 			if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
 				!this.bSkipNext && !this.saving() && !this.sending() && !this.savedError())
 			{
@@ -343,7 +352,7 @@
 			this.triggerForResize();
 		}, this);
 
-		this.dropboxEnabled = ko.observable(!!RL.settingsGet('DropboxApiKey'));
+		this.dropboxEnabled = ko.observable(!!AppSettings.settingsGet('DropboxApiKey'));
 
 		this.dropboxCommand = Utils.createCommand(this, function () {
 
@@ -370,7 +379,7 @@
 		});
 
 		this.driveEnabled = ko.observable(Globals.bXMLHttpRequestSupported &&
-			!!RL.settingsGet('GoogleClientID') && !!RL.settingsGet('GoogleApiKey'));
+			!!AppSettings.settingsGet('GoogleClientID') && !!AppSettings.settingsGet('GoogleApiKey'));
 
 		this.driveVisible = ko.observable(false);
 
@@ -390,10 +399,21 @@
 
 		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
 
+		this.emailsSource = _.bind(this.emailsSource, this);
+
 		kn.constructorEnd(this);
 	}
 
 	kn.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
+
+	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
+	{
+		RL.getAutocomplete(oData.term, function (aData) {
+			fResponse(_.map(aData, function (oEmailItem) {
+				return oEmailItem.toLine(false);
+			}));
+		});
+	};
 
 	PopupsComposeViewModel.prototype.openOpenPgpPopup = function ()
 	{
@@ -1037,7 +1057,7 @@
 			oScript = document.createElement('script');
 			oScript.type = 'text/javascript';
 			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
-			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', RL.settingsGet('DropboxApiKey'));
+			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', AppSettings.settingsGet('DropboxApiKey'));
 
 			document.body.appendChild(oScript);
 		}
@@ -1136,7 +1156,7 @@
 							new window.google.picker.DocsView()
 								.setIncludeFolders(true)
 						)
-						.setAppId(RL.settingsGet('GoogleClientID'))
+						.setAppId(AppSettings.settingsGet('GoogleClientID'))
 						.setOAuthToken(oOauthToken.access_token)
 						.setCallback(_.bind(self.driveCallback, self, oOauthToken.access_token))
 						.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
@@ -1161,7 +1181,7 @@
 				if (!oAuthToken)
 				{
 					window.gapi.auth.authorize({
-						'client_id': RL.settingsGet('GoogleClientID'),
+						'client_id': AppSettings.settingsGet('GoogleClientID'),
 						'scope': 'https://www.googleapis.com/auth/drive.readonly',
 						'immediate': true
 					}, function (oAuthResult) {
@@ -1176,7 +1196,7 @@
 						else
 						{
 							window.gapi.auth.authorize({
-								'client_id': RL.settingsGet('GoogleClientID'),
+								'client_id': AppSettings.settingsGet('GoogleClientID'),
 								'scope': 'https://www.googleapis.com/auth/drive.readonly',
 								'immediate': false
 							}, function (oAuthResult) {
@@ -1229,7 +1249,7 @@
 		{
 			var
 				oUploadCache = {},
-				iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
+				iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
 				oJua = new Jua({
 					'action': LinkBuilder.upload(),
 					'name': 'uploader',
@@ -1478,7 +1498,7 @@
 					});
 				};
 			},
-			iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
+			iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
 			mSize = oDropboxFile['bytes']
 		;
 
@@ -1539,7 +1559,7 @@
 					});
 				};
 			},
-			iAttachmentSizeLimit = Utils.pInt(RL.settingsGet('AttachmentLimit')),
+			iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
 			oAttachment = null,
 			mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
 		;
@@ -1751,6 +1771,6 @@
 		this.editorResizeThrottle();
 	};
 
-	module.exports = new PopupsComposeViewModel();
+	module.exports = PopupsComposeViewModel;
 
 }(module));

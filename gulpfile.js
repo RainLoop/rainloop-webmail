@@ -610,6 +610,7 @@ gulp.task('b+', ['rainloop+']);
 gulp.task('own', ['owncloud']);
 
 var browserify = require('browserify');
+var streamify = require('gulp-streamify');
 var source = require('vinyl-source-stream');
 
 gulp.task('bro', function() {
@@ -618,8 +619,14 @@ gulp.task('bro', function() {
 			'detectGlobals': false,
 			'debug': false
 		})
-		.add('./RainLoopBoot.js')
+		.add('./_RainLoopBoot.js')
 		.bundle()
-        .pipe(source('bro.js'))
+        .pipe(source('app.js'))
+//		.pipe(rename('app.min.js'))
+//		.pipe(streamify(uglify(cfg.uglify)))
         .pipe(gulp.dest(cfg.paths.staticJS));
+});
+
+gulp.task('ww', ['bro'], function() {
+	gulp.watch('dev/**/*.js', {interval: 1000}, ['bro']);
 });

@@ -6,9 +6,7 @@
 
 	var
 		_ = require('../External/underscore.js'),
-		AbstractSettings = require('./AbstractSettings.js'),
-		AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
-		AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
+		AbstractSettings = require('./AbstractSettings.js')
 	;
 
 	/**
@@ -17,6 +15,11 @@
 	 */
 	function AdminSettingsScreen()
 	{
+		var
+			AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
+			AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
+		;
+		
 		AbstractSettings.call(this, [
 			AdminMenuViewModel,
 			AdminPaneViewModel
@@ -27,7 +30,8 @@
 
 	AdminSettingsScreen.prototype.onShow = function ()
 	{
-		RL.setTitle(''); // TODO cjs
+		var RL = require('../Boots/AdminApp.js');
+		RL.setTitle('');
 	};
 
 	module.exports = AdminSettingsScreen;

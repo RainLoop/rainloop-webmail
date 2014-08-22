@@ -13,6 +13,7 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
 		kn = require('../Knoin/Knoin.js'),
@@ -24,12 +25,10 @@
 	 */
 	function SettingsAccounts()
 	{
-		var oData = RL.data();
-
-		this.accounts = oData.accounts;
+		this.accounts = Data.accounts;
 
 		this.processText = ko.computed(function () {
-			return oData.accountsLoading() ? Utils.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
+			return Data.accountsLoading() ? Utils.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {
@@ -51,8 +50,6 @@
 		]});
 	}
 
-	kn.addSettingsViewModel(SettingsAccounts, 'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
-
 	SettingsAccounts.prototype.addNewAccount = function ()
 	{
 		kn.showScreenPopup(PopupsAddAccountViewModel);
@@ -68,6 +65,7 @@
 			this.accountForDeletion(null);
 
 			var
+				RL = require('../Boots/RainLoopApp.js'),
 				fRemoveAccount = function (oAccount) {
 					return oAccountToRemove === oAccount;
 				}

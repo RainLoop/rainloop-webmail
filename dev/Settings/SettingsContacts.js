@@ -8,8 +8,10 @@
 		ko = require('../External/ko.js'),
 		
 		Utils = require('../Common/Utils.js'),
+		
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
+		Data = require('../Storages/WebMailDataStorage.js')
 	;
 
 	/**
@@ -17,15 +19,13 @@
 	 */
 	function SettingsContacts()
 	{
-		var oData = RL.data();
+		this.contactsAutosave = Data.contactsAutosave;
 
-		this.contactsAutosave = oData.contactsAutosave;
-
-		this.allowContactsSync = oData.allowContactsSync;
-		this.enableContactsSync = oData.enableContactsSync;
-		this.contactsSyncUrl = oData.contactsSyncUrl;
-		this.contactsSyncUser = oData.contactsSyncUser;
-		this.contactsSyncPass = oData.contactsSyncPass;
+		this.allowContactsSync = Data.allowContactsSync;
+		this.enableContactsSync = Data.enableContactsSync;
+		this.contactsSyncUrl = Data.contactsSyncUrl;
+		this.contactsSyncUser = Data.contactsSyncUser;
+		this.contactsSyncPass = Data.contactsSyncPass;
 
 		this.saveTrigger = ko.computed(function () {
 			return [
@@ -46,11 +46,9 @@
 		}, this);
 	}
 
-	kn.addSettingsViewModel(SettingsContacts, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
 	SettingsContacts.prototype.onBuild = function ()
 	{
-		RL.data().contactsAutosave.subscribe(function (bValue) {
+		Data.contactsAutosave.subscribe(function (bValue) {
 			Remote.saveSettings(Utils.emptyFunction, {
 				'ContactsAutosave': bValue ? '1' : '0'
 			});

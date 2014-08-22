@@ -14,10 +14,16 @@
 		Enums = require('../Common/Enums.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
+		RL = require('../Boots/RainLoopApp.js'),
+
 		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
+
+		PopupsLanguagesViewModel = require('../ViewModels/Popups/PopupsLanguagesViewModel.js')
 	;
 
 	/**
@@ -27,8 +33,6 @@
 	function LoginViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Center', 'Login');
-
-		var oData = RL.data();
 
 		this.email = ko.observable('');
 		this.password = ko.observable('');
@@ -40,9 +44,9 @@
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
 
-		this.logoImg = Utils.trim(RL.settingsGet('LoginLogo'));
-		this.loginDescription = Utils.trim(RL.settingsGet('LoginDescription'));
-		this.logoCss = Utils.trim(RL.settingsGet('LoginCss'));
+		this.logoImg = Utils.trim(AppSettings.settingsGet('LoginLogo'));
+		this.loginDescription = Utils.trim(AppSettings.settingsGet('LoginDescription'));
+		this.logoCss = Utils.trim(AppSettings.settingsGet('LoginCss'));
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
@@ -71,10 +75,10 @@
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
 
-		this.allowLanguagesOnLogin = oData.allowLanguagesOnLogin;
+		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 
 		this.langRequest = ko.observable(false);
-		this.mainLanguage = oData.mainLanguage;
+		this.mainLanguage = Data.mainLanguage;
 		this.bSendLanguage = false;
 
 		this.mainLanguageFullName = ko.computed(function () {
@@ -164,7 +168,7 @@
 				}, this)
 			;
 
-			if (!!RL.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
+			if (!!AppSettings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
 			{
 				Remote.getPublicKey(_.bind(function (sResult, oData) {
 
@@ -203,7 +207,8 @@
 
 		this.facebookCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+			window.open(LinkBuilder.socialFacebook(), 'Facebook',
+				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 			return true;
 
 		}, function () {
@@ -214,7 +219,8 @@
 
 		this.googleCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+			window.open(LinkBuilder.socialGoogle(), 'Google',
+				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 			return true;
 
 		}, function () {
@@ -225,7 +231,8 @@
 
 		this.twitterCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+			window.open(LinkBuilder.socialTwitter(), 'Twitter',
+				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 			return true;
 
 		}, function () {
@@ -262,9 +269,9 @@
 				this.emailFocus(true);
 			}
 
-			if (RL.settingsGet('UserLanguage'))
+			if (AppSettings.settingsGet('UserLanguage'))
 			{
-				$.cookie('rllang', RL.data().language(), {'expires': 30});
+				$.cookie('rllang', Data.language(), {'expires': 30});
 			}
 
 		}, this), 100);
@@ -280,7 +287,7 @@
 	{
 		var
 			self = this,
-			sJsHash = RL.settingsGet('JsHash'),
+			sJsHash = AppSettings.settingsGet('JsHash'),
 			fSocial = function (iErrorCode) {
 				iErrorCode = Utils.pInt(iErrorCode);
 				if (0 === iErrorCode)
@@ -295,11 +302,11 @@
 			}
 		;
 
-		this.facebookLoginEnabled(!!RL.settingsGet('AllowFacebookSocial'));
-		this.twitterLoginEnabled(!!RL.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(!!RL.settingsGet('AllowGoogleSocial'));
+		this.facebookLoginEnabled(!!AppSettings.settingsGet('AllowFacebookSocial'));
+		this.twitterLoginEnabled(!!AppSettings.settingsGet('AllowTwitterSocial'));
+		this.googleLoginEnabled(!!AppSettings.settingsGet('AllowGoogleSocial'));
 
-		switch ((RL.settingsGet('SignMe') || 'unused').toLowerCase())
+		switch ((AppSettings.settingsGet('SignMe') || 'unused').toLowerCase())
 		{
 			case Enums.LoginSignMeTypeAsString.DefaultOff:
 				this.signMeType(Enums.LoginSignMeType.DefaultOff);
@@ -313,8 +320,8 @@
 				break;
 		}
 
-		this.email(RL.data().devEmail);
-		this.password(RL.data().devPassword);
+		this.email(Data.devEmail);
+		this.password(Data.devPassword);
 
 		if (this.googleLoginEnabled())
 		{
@@ -332,7 +339,7 @@
 		}
 
 		_.delay(function () {
-			RL.data().language.subscribe(function (sValue) {
+			Data.language.subscribe(function (sValue) {
 				self.langRequest(true);
 				$.ajax({
 					'url': LinkBuilder.langLink(sValue),
@@ -341,7 +348,7 @@
 				}).done(function() {
 					self.bSendLanguage = true;
 					Utils.i18nReload();
-					$.cookie('rllang', RL.data().language(), {'expires': 30});
+					$.cookie('rllang', Data.language(), {'expires': 30});
 				}).always(function() {
 					self.langRequest(false);
 				});
@@ -361,6 +368,6 @@
 		kn.showScreenPopup(PopupsLanguagesViewModel);
 	};
 
-	module.exports = new LoginViewModel();
+	module.exports = LoginViewModel;
 
 }(module));

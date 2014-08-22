@@ -9,10 +9,16 @@
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
+		kn = require('../Knoin/Knoin.js'),
+
+		AppSettings = require('../Storages/AppSettings.js'),
 		LocalStorage = require('../Storages/LocalStorage.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-		
+
+		RL = require('../Boots/RainLoopApp.js'),
+
 		PopupsFolderCreateViewModel = require('../ViewModels/Popups/PopupsFolderCreateViewModel.js'),
 		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsFolderSystemViewModel.js')
 	;
@@ -22,19 +28,16 @@
 	 */
 	function SettingsFolders()
 	{
-		var oData = RL.data();
-
-		this.foldersListError = oData.foldersListError;
-		this.folderList = oData.folderList;
+		this.foldersListError = Data.foldersListError;
+		this.folderList = Data.folderList;
 
 		this.processText = ko.computed(function () {
 
 			var
-				oData = RL.data(),
-				bLoading = oData.foldersLoading(),
-				bCreating = oData.foldersCreating(),
-				bDeleting = oData.foldersDeleting(),
-				bRenaming = oData.foldersRenaming()
+				bLoading = Data.foldersLoading(),
+				bCreating = Data.foldersCreating(),
+				bDeleting = Data.foldersDeleting(),
+				bRenaming = Data.foldersRenaming()
 			;
 
 			if (bCreating)
@@ -90,10 +93,8 @@
 			}
 		]});
 
-		this.useImapSubscribe = !!RL.settingsGet('UseImapSubscribe');
+		this.useImapSubscribe = !!AppSettings.settingsGet('UseImapSubscribe');
 	}
-
-	kn.addSettingsViewModel(SettingsFolders, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
 	SettingsFolders.prototype.folderEditOnEnter = function (oFolder)
 	{
@@ -102,13 +103,13 @@
 		{
 			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-			RL.data().foldersRenaming(true);
+			Data.foldersRenaming(true);
 			Remote.folderRename(function (sResult, oData) {
 
-				RL.data().foldersRenaming(false);
+				Data.foldersRenaming(false);
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
-					RL.data().foldersListError(
+					Data.foldersListError(
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 				}
 
@@ -134,7 +135,7 @@
 
 	SettingsFolders.prototype.onShow = function ()
 	{
-		RL.data().foldersListError('');
+		Data.foldersListError('');
 	};
 
 	SettingsFolders.prototype.createFolder = function ()
@@ -171,15 +172,15 @@
 			{
 				LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-				RL.data().folderList.remove(fRemoveFolder);
+				Data.folderList.remove(fRemoveFolder);
 
-				RL.data().foldersDeleting(true);
+				Data.foldersDeleting(true);
 				Remote.folderDelete(function (sResult, oData) {
 
-					RL.data().foldersDeleting(false);
+					Data.foldersDeleting(false);
 					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 					{
-						RL.data().foldersListError(
+						Data.foldersListError(
 							oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 					}
 
@@ -192,7 +193,7 @@
 		}
 		else if (0 < oFolderToRemove.privateMessageCountAll())
 		{
-			RL.data().foldersListError(Utils.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
+			Data.foldersListError(Utils.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
 		}
 	};
 

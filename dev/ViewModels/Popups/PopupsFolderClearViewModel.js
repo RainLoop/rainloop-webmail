@@ -15,6 +15,8 @@
 		Cache = require('../../Storages/WebMailCacheStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
+		RL = require('../../Boots/RainLoopApp.js'),
+
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -115,6 +117,6 @@
 		}
 	};
 
-	module.exports = new PopupsFolderClearViewModel();
+	module.exports = PopupsFolderClearViewModel;
 
 }(module));

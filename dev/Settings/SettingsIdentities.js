@@ -9,8 +9,12 @@
 		
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
+		NewHtmlEditorWrapper = require('../Common/NewHtmlEditorWrapper.js'),
 
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		PopupsIdentityViewModel = require('../ViewModels/Popups/PopupsIdentityViewModel.js')
@@ -21,16 +25,14 @@
 	 */
 	function SettingsIdentities()
 	{
-		var oData = RL.data();
-
 		this.editor = null;
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
-		this.accountEmail = oData.accountEmail;
-		this.displayName = oData.displayName;
-		this.signature = oData.signature;
-		this.signatureToAll = oData.signatureToAll;
-		this.replyTo = oData.replyTo;
+		this.accountEmail = Data.accountEmail;
+		this.displayName = Data.displayName;
+		this.signature = Data.signature;
+		this.signatureToAll = Data.signatureToAll;
+		this.replyTo = Data.replyTo;
 
 		this.signatureDom = ko.observable(null);
 
@@ -39,8 +41,8 @@
 		this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.identities = oData.identities;
-		this.defaultIdentityID = oData.defaultIdentityID;
+		this.identities = Data.identities;
+		this.defaultIdentityID = Data.defaultIdentityID;
 
 		this.identitiesOptions = ko.computed(function () {
 
@@ -77,7 +79,7 @@
 		}, this);
 
 		this.processText = ko.computed(function () {
-			return oData.identitiesLoading() ? Utils.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
+			return Data.identitiesLoading() ? Utils.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {
@@ -98,8 +100,6 @@
 			}
 		]});
 	}
-
-	kn.addSettingsViewModel(SettingsIdentities, 'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
 
 	/**
 	 *
@@ -157,11 +157,11 @@
 		{
 			var
 				self = this,
-				sSignature = RL.data().signature()
+				sSignature = Data.signature()
 			;
 
 			this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
-				RL.data().signature(
+				Data.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);
 			}, function () {
@@ -194,38 +194,37 @@
 		_.delay(function () {
 
 			var
-				oData = RL.data(),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
 				f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
 				f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self),
 				f4 = Utils.settingsSaveHelperSimpleFunction(self.defaultIdentityIDTrigger, self)
 			;
 
-			oData.defaultIdentityID.subscribe(function (sValue) {
+			Data.defaultIdentityID.subscribe(function (sValue) {
 				Remote.saveSettings(f4, {
 					'DefaultIdentityID': sValue
 				});
 			});
 
-			oData.displayName.subscribe(function (sValue) {
+			Data.displayName.subscribe(function (sValue) {
 				Remote.saveSettings(f1, {
 					'DisplayName': sValue
 				});
 			});
 
-			oData.replyTo.subscribe(function (sValue) {
+			Data.replyTo.subscribe(function (sValue) {
 				Remote.saveSettings(f2, {
 					'ReplyTo': sValue
 				});
 			});
 
-			oData.signature.subscribe(function (sValue) {
+			Data.signature.subscribe(function (sValue) {
 				Remote.saveSettings(f3, {
 					'Signature': sValue
 				});
 			});
 
-			oData.signatureToAll.subscribe(function (bValue) {
+			Data.signatureToAll.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'SignatureToAll': bValue ? '1' : '0'
 				});

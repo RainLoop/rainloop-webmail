@@ -7,7 +7,7 @@
 	var
 		ko = require('../External/ko.js'),
 		
-		Enums = require('../Common/Utils.js'),
+		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
 		
@@ -49,8 +49,6 @@
 		this.onResult = _.bind(this.onResult, this);
 		this.onSecretResult = _.bind(this.onSecretResult, this);
 	}
-
-	kn.addSettingsViewModel(SettingsSecurity, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 
 	SettingsSecurity.prototype.showSecret = function ()
 	{

@@ -7,8 +7,10 @@
 	var
 		ko = require('../External/ko.js'),
 		$window = require('../External/$window.js'),
+		
 		Utils = require('../Common/Utils.js'),
-		Enums = require('../Common/Enums.js')
+		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js')
 	;
 
 	/**
@@ -68,19 +70,18 @@
 		return this.sPosition;
 	};
 
-	KnoinAbstractViewModel.prototype.cancelCommand = KnoinAbstractViewModel.prototype.closeCommand = function ()
-	{
-	};
+	KnoinAbstractViewModel.prototype.cancelCommand = function () {};
+	KnoinAbstractViewModel.prototype.closeCommand = function () {};
 
 	KnoinAbstractViewModel.prototype.storeAndSetKeyScope = function ()
 	{
-		this.sCurrentKeyScope = RL.data().keyScope(); // TODO cjs
-		RL.data().keyScope(this.sDefaultKeyScope); // TODO cjs
+		this.sCurrentKeyScope = Globals.keyScope();
+		Globals.keyScope(this.sDefaultKeyScope);
 	};
 
 	KnoinAbstractViewModel.prototype.restoreKeyScope = function ()
 	{
-		RL.data().keyScope(this.sCurrentKeyScope); // TODO cjs
+		Globals.keyScope(this.sCurrentKeyScope);
 	};
 
 	KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()

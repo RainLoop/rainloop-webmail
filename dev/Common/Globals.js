@@ -8,7 +8,10 @@
 		Globals = {},
 		window = require('../External/window.js'),
 		ko = require('../External/ko.js'),
-		$html = require('../External/$html.js')
+		key = require('../External/key.js'),
+		$html = require('../External/$html.js'),
+		
+		Enums = require('../Common/Enums.js')
 	;
 
 	/**
@@ -35,6 +38,11 @@
 	 * @type {?}
 	 */
 	Globals.langChangeTrigger = ko.observable(true);
+
+	/**
+	 * @type {boolean}
+	 */
+	Globals.useKeyboardShortcuts = ko.observable(true);
 
 	/**
 	 * @type {number}
@@ -100,6 +108,11 @@
 	 * @type {string}
 	 */
 	Globals.sAnimationType = '';
+	
+	/**
+	 * @type {*}
+	 */
+	Globals.__RL = null;
 
 	/**
 	 * @type {Object}
@@ -167,17 +180,96 @@
 		});
 	}
 
-	Globals.oI18N = {},
+	Globals.oI18N = window['rainloopI18N'] || {};
 	
-	Globals.oNotificationI18N = {},
+	Globals.oNotificationI18N = {};
 	
-	Globals.aBootstrapDropdowns = [],
+	Globals.aBootstrapDropdowns = [];
 	
 	Globals.aViewModels = {
 		'settings': [],
 		'settings-removed': [],
 		'settings-disabled': []
 	};
+
+	Globals.leftPanelDisabled = ko.observable(false);
+
+	// popups
+	Globals.popupVisibilityNames = ko.observableArray([]);
+
+	Globals.popupVisibility = ko.computed(function () {
+		return 0 < Globals.popupVisibilityNames().length;
+	}, this);
+
+	// keys
+	Globals.keyScopeReal = ko.observable(Enums.KeyState.All);
+	Globals.keyScopeFake = ko.observable(Enums.KeyState.All);
+
+	Globals.keyScope = ko.computed({
+		'owner': this,
+		'read': function () {
+			return Globals.keyScopeFake();
+		},
+		'write': function (sValue) {
+
+			if (Enums.KeyState.Menu !== sValue)
+			{
+				if (Enums.KeyState.Compose === sValue)
+				{
+					// disableKeyFilter
+					key.filter = function () {
+						return Globals.useKeyboardShortcuts();
+					};
+				}
+				else
+				{
+					// restoreKeyFilter
+					key.filter = function (event) {
+
+						if (Globals.useKeyboardShortcuts())
+						{
+							var
+								oElement = event.target || event.srcElement,
+								sTagName = oElement ? oElement.tagName : ''
+							;
+
+							sTagName = sTagName.toUpperCase();
+							return !(sTagName === 'INPUT' || sTagName === 'SELECT' || sTagName === 'TEXTAREA' ||
+								(oElement && sTagName === 'DIV' && 'editorHtmlArea' === oElement.className && oElement.contentEditable)
+							);
+						}
+
+						return false;
+					};
+				}
+
+				Globals.keyScopeFake(sValue);
+				if (Globals.dropdownVisibility())
+				{
+					sValue = Enums.KeyState.Menu;
+				}
+			}
+
+			Globals.keyScopeReal(sValue);
+		}
+	});
+
+	Globals.keyScopeReal.subscribe(function (sValue) {
+//		window.console.log(sValue);
+		key.setScope(sValue);
+	});
+
+	Globals.dropdownVisibility.subscribe(function (bValue) {
+		if (bValue)
+		{
+			Globals.tooltipTrigger(!Globals.tooltipTrigger());
+			Globals.keyScope(Enums.KeyState.Menu);
+		}
+		else if (Enums.KeyState.Menu === key.getScope())
+		{
+			Globals.keyScope(Globals.keyScopeFake());
+		}
+	});
 	
 	module.exports = Globals;
 

@@ -6,7 +6,8 @@
 
 	var
 		window = require('../External/window.js'),
-		Globals = require('./Globals.js')
+		Globals = require('./Globals.js'),
+		AppSettings = require('../Storages/AppSettings.js')
 	;
 	
 	/**
@@ -164,8 +165,8 @@
 
 					var
 						oConfig = Globals.oHtmlEditorDefaultConfig,
-						sLanguage = RL.settingsGet('Language'), // TODO cjs
-						bSource = !!RL.settingsGet('AllowHtmlEditorSourceButton')
+						sLanguage = AppSettings.settingsGet('Language'),
+						bSource = !!AppSettings.settingsGet('AllowHtmlEditorSourceButton')
 					;
 
 					if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)

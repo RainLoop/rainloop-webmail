@@ -160,6 +160,6 @@
 		}, this));
 	};
 
-	module.exports = new PopupsPluginViewModel();
+	module.exports = PopupsPluginViewModel;
 
 }(module));

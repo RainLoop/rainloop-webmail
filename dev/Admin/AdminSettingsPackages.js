@@ -11,6 +11,8 @@
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
+		RL = require('../Boots/AdminApp.js'),
+
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
@@ -43,8 +45,6 @@
 			return Data.packagesLoading() ? 'visible' : 'hidden';
 		}, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsPackages, 'AdminSettingsPackages', 'Packages', 'packages');
 
 	AdminSettingsPackages.prototype.onShow = function ()
 	{

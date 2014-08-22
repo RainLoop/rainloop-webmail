@@ -10,17 +10,14 @@
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
 		window = require('../External/window.js'),
 		$window = require('../External/$window.js'),
+		$html = require('../External/$html.js'),
 		$doc = require('../External/$doc.js'),
 		NotificationClass = require('../External/NotificationClass.js'),
 
-		LocalStorage = require('../Storages/LocalStorage.js'),
-
-		kn = require('../Knoin/Knoin.js'),
-		
 		Enums = require('./Enums.js'),
+		Consts = require('./Consts.js'),
 		Globals = require('./Globals.js')
 	;
 
@@ -154,24 +151,24 @@
 	Utils.exportPath = function (sPath, oObject, oObjectToExportTo)
 	{
 		var
-			part = null,
-			parts = sPath.split('.'),
-			cur = oObjectToExportTo || window
+			sPart = null,
+			aParts = sPath.split('.'),
+			oCur = oObjectToExportTo || window
 		;
 
-		for (; parts.length && (part = parts.shift());)
+		for (; aParts.length && (sPart = aParts.shift());)
 		{
-			if (!parts.length && !Utils.isUnd(oObject))
+			if (!aParts.length && !Utils.isUnd(oObject))
 			{
-				cur[part] = oObject;
+				oCur[sPart] = oObject;
 			}
-			else if (cur[part])
+			else if (oCur[sPart])
 			{
-				cur = cur[part];
+				oCur = oCur[sPart];
 			}
 			else
 			{
-				cur = cur[part] = {};
+				oCur = oCur[sPart] = {};
 			}
 		}
 	};
@@ -694,7 +691,7 @@
 	 */
 	Utils.roundNumber = function (iNum, iDec)
 	{
-		return Math.round(iNum * Math.pow(10, iDec)) / Math.pow(10, iDec);
+		return window.Math.round(iNum * window.Math.pow(10, iDec)) / window.Math.pow(10, iDec);
 	};
 
 	/**
@@ -1242,112 +1239,6 @@
 	};
 
 	/**
-	 * @param {string} sFullNameHash
-	 * @return {boolean}
-	 */
-	Utils.isFolderExpanded = function (sFullNameHash)
-	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
-	};
-
-	/**
-	 * @param {string} sFullNameHash
-	 * @param {boolean} bExpanded
-	 */
-	Utils.setExpandedFolder = function (sFullNameHash, bExpanded)
-	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		if (!_.isArray(aExpandedList))
-		{
-			aExpandedList = [];
-		}
-
-		if (bExpanded)
-		{
-			aExpandedList.push(sFullNameHash);
-			aExpandedList = _.uniq(aExpandedList);
-		}
-		else
-		{
-			aExpandedList = _.without(aExpandedList, sFullNameHash);
-		}
-
-		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
-	};
-
-	Utils.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
-	{
-		var
-			iDisabledWidth = 60,
-			iMinWidth = 155,
-			oLeft = $(sLeft),
-			oRight = $(sRight),
-
-			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
-
-			fSetWidth = function (iWidth) {
-				if (iWidth)
-				{
-					oLeft.css({
-						'width': '' + iWidth + 'px'
-					});
-
-					oRight.css({
-						'left': '' + iWidth + 'px'
-					});
-				}
-			},
-
-			fDisable = function (bDisable) {
-				if (bDisable)
-				{
-					oLeft.resizable('disable');
-					fSetWidth(iDisabledWidth);
-				}
-				else
-				{
-					oLeft.resizable('enable');
-					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
-					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
-				}
-			},
-
-			fResizeFunction = function (oEvent, oObject) {
-				if (oObject && oObject.size && oObject.size.width)
-				{
-					LocalStorage.set(sClientSideKeyName, oObject.size.width);
-
-					oRight.css({
-						'left': '' + oObject.size.width + 'px'
-					});
-				}
-			}
-		;
-
-		if (null !== mLeftWidth)
-		{
-			fSetWidth(mLeftWidth > iMinWidth ? mLeftWidth : iMinWidth);
-		}
-
-		oLeft.resizable({
-			'helper': 'ui-resizable-helper',
-			'minWidth': iMinWidth,
-			'maxWidth': 350,
-			'handles': 'e',
-			'stop': fResizeFunction
-		});
-
-		RL.sub('left-panel.off', function () {
-			fDisable(true);
-		});
-
-		RL.sub('left-panel.on', function () {
-			fDisable(false);
-		});
-	};
-
-	/**
 	 * @param {Object} oMessageTextBody
 	 */
 	Utils.initBlockquoteSwitcher = function (oMessageTextBody)
@@ -1526,7 +1417,10 @@
 
 				Utils.i18nToNode(oBody);
 
-				kn.applyExternal(oViewModel, $('#rl-content', oBody)[0]);
+				if (oViewModel && $('#rl-content', oBody)[0])
+				{
+					ko.applyBindings(oViewModel, $('#rl-content', oBody)[0]);
+				}
 
 				window[sFunc] = null;
 
@@ -1863,6 +1757,135 @@
 		oTempImg.src = sUrl;
 	};
 
+	/**
+	 * @param {Array} aSystem
+	 * @param {Array} aList
+	 * @param {Array=} aDisabled
+	 * @param {Array=} aHeaderLines
+	 * @param {?number=} iUnDeep
+	 * @param {Function=} fDisableCallback
+	 * @param {Function=} fVisibleCallback
+	 * @param {Function=} fRenameCallback
+	 * @param {boolean=} bSystem
+	 * @param {boolean=} bBuildUnvisible
+	 * @return {Array}
+	 */
+	Utils.folderListOptionsBuilder = function (aSystem, aList, aDisabled, aHeaderLines, iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible)
+	{
+		var
+			/**
+			 * @type {?FolderModel}
+			 */
+			oItem = null,
+			bSep = false,
+			iIndex = 0,
+			iLen = 0,
+			sDeepPrefix = '\u00A0\u00A0\u00A0',
+			aResult = []
+		;
+
+		bSystem = !Utils.isNormal(bSystem) ? 0 < aSystem.length : bSystem;
+		bBuildUnvisible = Utils.isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
+		iUnDeep = !Utils.isNormal(iUnDeep) ? 0 : iUnDeep;
+		fDisableCallback = Utils.isNormal(fDisableCallback) ? fDisableCallback : null;
+		fVisibleCallback = Utils.isNormal(fVisibleCallback) ? fVisibleCallback : null;
+		fRenameCallback = Utils.isNormal(fRenameCallback) ? fRenameCallback : null;
+
+		if (!Utils.isArray(aDisabled))
+		{
+			aDisabled = [];
+		}
+
+		if (!Utils.isArray(aHeaderLines))
+		{
+			aHeaderLines = [];
+		}
+
+		for (iIndex = 0, iLen = aHeaderLines.length; iIndex < iLen; iIndex++)
+		{
+			aResult.push({
+				'id': aHeaderLines[iIndex][0],
+				'name': aHeaderLines[iIndex][1],
+				'system': false,
+				'seporator': false,
+				'disabled': false
+			});
+		}
+
+		bSep = true;
+		for (iIndex = 0, iLen = aSystem.length; iIndex < iLen; iIndex++)
+		{
+			oItem = aSystem[iIndex];
+			if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
+			{
+				if (bSep && 0 < aResult.length)
+				{
+					aResult.push({
+						'id': '---',
+						'name': '---',
+						'system': false,
+						'seporator': true,
+						'disabled': true
+					});
+				}
+
+				bSep = false;
+				aResult.push({
+					'id': oItem.fullNameRaw,
+					'name': fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
+					'system': true,
+					'seporator': false,
+					'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+						(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
+				});
+			}
+		}
+
+		bSep = true;
+		for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
+		{
+			oItem = aList[iIndex];
+			if (oItem.subScribed() || !oItem.existen)
+			{
+				if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
+				{
+					if (Enums.FolderType.User === oItem.type() || !bSystem || 0 < oItem.subFolders().length)
+					{
+						if (bSep && 0 < aResult.length)
+						{
+							aResult.push({
+								'id': '---',
+								'name': '---',
+								'system': false,
+								'seporator': true,
+								'disabled': true
+							});
+						}
+
+						bSep = false;
+						aResult.push({
+							'id': oItem.fullNameRaw,
+							'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) +
+								(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
+							'system': false,
+							'seporator': false,
+							'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
+								(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
+						});
+					}
+				}
+			}
+
+			if (oItem.subScribed() && 0 < oItem.subFolders().length)
+			{
+				aResult = aResult.concat(Utils.folderListOptionsBuilder([], oItem.subFolders(), aDisabled, [],
+					iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible));
+			}
+		}
+
+		return aResult;
+	};
+
 	Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 	{
 		return function() {
@@ -1949,7 +1972,7 @@
 				}
 				else if (3 < iPrev)
 				{
-					fAdd(Math.round((iPrev - 1) / 2), false, '...');
+					fAdd(window.Math.round((iPrev - 1) / 2), false, '...');
 				}
 
 				if (iPageCount - 2 === iNext)
@@ -1958,7 +1981,7 @@
 				}
 				else if (iPageCount - 2 > iNext)
 				{
-					fAdd(Math.round((iPageCount + iNext) / 2), true, '...');
+					fAdd(window.Math.round((iPageCount + iNext) / 2), true, '...');
 				}
 
 				// first and last
@@ -1984,51 +2007,17 @@
 		{
 			var sel = window.getSelection();
 			sel.removeAllRanges();
-			var range = document.createRange();
+			var range = window.document.createRange();
 			range.selectNodeContents(element);
 			sel.addRange(range);
 		}
-		else if (document.selection)
+		else if (window.document.selection)
 		{
-			var textRange = document.body.createTextRange();
+			var textRange = window.document.body.createTextRange();
 			textRange.moveToElementText(element);
 			textRange.select();
 		}
 		/* jshint onevar: true */
-	};
-
-	Utils.disableKeyFilter = function ()
-	{
-		if (window.key)
-		{
-			key.filter = function () {
-				return RL.data().useKeyboardShortcuts();
-			};
-		}
-	};
-
-	Utils.restoreKeyFilter = function ()
-	{
-		if (window.key)
-		{
-			key.filter = function (event) {
-
-				if (RL.data().useKeyboardShortcuts())
-				{
-					var
-						element = event.target || event.srcElement,
-						tagName = element ? element.tagName : ''
-					;
-
-					tagName = tagName.toUpperCase();
-					return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' ||
-						(element && tagName === 'DIV' && 'editorHtmlArea' === element.className && element.contentEditable)
-					);
-				}
-
-				return false;
-			};
-		}
 	};
 
 	Utils.detectDropdownVisibility = _.debounce(function () {

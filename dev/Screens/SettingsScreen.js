@@ -6,12 +6,12 @@
 
 	var
 		_ = require('../External/underscore.js'),
+		
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
-		AbstractSettings = require('../AbstractSettings.js'),
-		SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
-		SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
-		SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
+		Globals = require('../Common/Globals.js'),
+
+		AbstractSettings = require('./AbstractSettings.js')
 	;
 
 	/**
@@ -20,6 +20,14 @@
 	 */
 	function SettingsScreen()
 	{
+		var
+			RL = require('../Boots/RainLoopApp.js'),
+				
+			SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
+			SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
+			SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
+		;
+
 		AbstractSettings.call(this, [
 			SettingsSystemDropDownViewModel,
 			SettingsMenuViewModel,
@@ -29,7 +37,7 @@
 		Utils.initOnStartOrLangChange(function () {
 			this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
 		}, this, function () {
-			RL.setTitle(this.sSettingsTitle); // TODO cjs
+			RL.setTitle(this.sSettingsTitle);
 		});
 	}
 
@@ -37,8 +45,10 @@
 
 	SettingsScreen.prototype.onShow = function ()
 	{
-		RL.setTitle(this.sSettingsTitle); // TODO cjs
-		RL.data().keyScope(Enums.KeyState.Settings); // TODO cjs
+		var RL = require('../Boots/RainLoopApp.js');
+		
+		RL.setTitle(this.sSettingsTitle);
+		Globals.keyScope(Enums.KeyState.Settings);
 	};
 
 	module.exports = SettingsScreen;

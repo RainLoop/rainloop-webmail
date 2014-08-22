@@ -14,7 +14,14 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js'),
+
+		PopupsKeyboardShortcutsHelpViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
+		PopupsAddAccountViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
@@ -28,15 +35,13 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Right', 'SystemDropDown');
 
-		var oData = RL.data();
-
-		this.accounts = oData.accounts;
-		this.accountEmail = oData.accountEmail;
-		this.accountsLoading = oData.accountsLoading;
+		this.accounts = Data.accounts;
+		this.accountEmail = Data.accountEmail;
+		this.accountsLoading = Data.accountsLoading;
 
 		this.accountMenuDropdownTrigger = ko.observable(false);
 
-		this.capaAdditionalAccounts = RL.capa(Enums.Capa.AdditionalAccounts);
+		this.capaAdditionalAccounts = AppSettings.capa(Enums.Capa.AdditionalAccounts);
 
 		this.loading = ko.computed(function () {
 			return this.accountsLoading();
@@ -63,7 +68,7 @@
 
 	AbstractSystemDropDownViewModel.prototype.emailTitle = function ()
 	{
-		return RL.data().accountEmail();
+		return Data.accountEmail();
 	};
 
 	AbstractSystemDropDownViewModel.prototype.settingsClick = function ()
@@ -92,7 +97,7 @@
 				window.__rlah_clear();
 			}
 
-			RL.loginAndLogoutReload(true, RL.settingsGet('ParentEmail') && 0 < RL.settingsGet('ParentEmail').length);
+			RL.loginAndLogoutReload(true, AppSettings.settingsGet('ParentEmail') && 0 < AppSettings.settingsGet('ParentEmail').length);
 		});
 	};
 
@@ -116,6 +121,6 @@
 		});
 	};
 
-	module.exports = new AbstractSystemDropDownViewModel();
+	module.exports = AbstractSystemDropDownViewModel;
 
 }(module));

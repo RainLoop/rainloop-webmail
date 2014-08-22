@@ -13,9 +13,18 @@
 		
 		Utils = require('../Common/Utils.js'),
 		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js'),
+
+		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
+		PopupsFolderCreateViewModel = require('./Popups/PopupsFolderCreateViewModel.js'),
+		PopupsContactsViewModel = require('./Popups/PopupsContactsViewModel.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
@@ -29,21 +38,19 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'MailFolderList');
 
-		var oData = RL.data();
-
 		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
-		this.messageList = oData.messageList;
-		this.folderList = oData.folderList;
-		this.folderListSystem = oData.folderListSystem;
-		this.foldersChanging = oData.foldersChanging;
+		this.messageList = Data.messageList;
+		this.folderList = Data.folderList;
+		this.folderListSystem = Data.folderListSystem;
+		this.foldersChanging = Data.foldersChanging;
 
-		this.leftPanelDisabled = oData.leftPanelDisabled;
+		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.iDropOverTimer = 0;
 
-		this.allowContacts = !!RL.settingsGet('ContactsIsAllowed');
+		this.allowContacts = !!AppSettings.settingsGet('ContactsIsAllowed');
 
 		kn.constructorEnd(this);
 	}
@@ -68,7 +75,7 @@
 				if (oFolder && oEvent)
 				{
 					bCollapsed = oFolder.collapsed();
-					Utils.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					RL.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 
 					oFolder.collapsed(!bCollapsed);
 					oEvent.preventDefault();
@@ -80,18 +87,17 @@
 				oEvent.preventDefault();
 
 				var
-					oData = RL.data(),
 					oFolder = ko.dataFor(this)
 				;
 
 				if (oFolder)
 				{
-					if (Enums.Layout.NoPreview === oData.layout())
+					if (Enums.Layout.NoPreview === Data.layout())
 					{
-						oData.message(null);
+						Data.message(null);
 					}
 
-					if (oFolder.fullNameRaw === oData.currentFolderFullNameRaw())
+					if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 					{
 						Cache.setFolderHash(oFolder.fullNameRaw, '');
 					}
@@ -152,7 +158,7 @@
 				if (oFolder)
 				{
 					bCollapsed = oFolder.collapsed();
-					Utils.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					RL.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 					oFolder.collapsed(!bCollapsed);
 				}
 			}
@@ -181,7 +187,7 @@
 		{
 			this.iDropOverTimer = window.setTimeout(function () {
 				oFolder.collapsed(false);
-				Utils.setExpandedFolder(oFolder.fullNameHash, true);
+				RL.setExpandedFolder(oFolder.fullNameHash, true);
 				Utils.windowResize();
 			}, 500);
 		}
@@ -269,6 +275,6 @@
 		}
 	};
 
-	module.exports = new MailBoxFolderListViewModel();
+	module.exports = MailBoxFolderListViewModel;
 
 }(module));

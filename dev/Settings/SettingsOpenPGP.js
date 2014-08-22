@@ -6,7 +6,12 @@
 
 	var
 		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js'),
+		
+		kn = require('../Knoin/Knoin.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js'),
 		
 		PopupsAddOpenPgpKeyViewModel = require('../ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js'),
 		PopupsGenerateNewOpenPgpKeyViewModel = require('../ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js'),
@@ -18,9 +23,9 @@
 	 */
 	function SettingsOpenPGP()
 	{
-		this.openpgpkeys = RL.data().openpgpkeys;
-		this.openpgpkeysPublic = RL.data().openpgpkeysPublic;
-		this.openpgpkeysPrivate = RL.data().openpgpkeysPrivate;
+		this.openpgpkeys = Data.openpgpkeys;
+		this.openpgpkeysPublic = Data.openpgpkeysPublic;
+		this.openpgpkeysPrivate = Data.openpgpkeysPrivate;
 
 		this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
 			function (oPrev) {
@@ -36,8 +41,6 @@
 			}
 		]});
 	}
-
-	kn.addSettingsViewModel(SettingsOpenPGP, 'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
 
 	SettingsOpenPGP.prototype.addOpenPgpKey = function ()
 	{
@@ -66,16 +69,16 @@
 		{
 			this.openPgpKeyForDeletion(null);
 
-			if (oOpenPgpKeyToRemove && RL.data().openpgpKeyring)
+			if (oOpenPgpKeyToRemove && Data.openpgpKeyring)
 			{
 				this.openpgpkeys.remove(function (oOpenPgpKey) {
 					return oOpenPgpKeyToRemove === oOpenPgpKey;
 				});
 
-				RL.data().openpgpKeyring[oOpenPgpKeyToRemove.isPrivate ? 'privateKeys' : 'publicKeys']
+				Data.openpgpKeyring[oOpenPgpKeyToRemove.isPrivate ? 'privateKeys' : 'publicKeys']
 					.removeForId(oOpenPgpKeyToRemove.guid);
 
-				RL.data().openpgpKeyring.store();
+				Data.openpgpKeyring.store();
 
 				RL.reloadOpenPgpKeys();
 			}

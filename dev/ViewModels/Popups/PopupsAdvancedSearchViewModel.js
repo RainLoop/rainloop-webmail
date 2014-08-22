@@ -152,6 +152,6 @@
 		this.fromFocus(true);
 	};
 
-	module.exports = new PopupsAdvancedSearchViewModel();
+	module.exports = PopupsAdvancedSearchViewModel;
 
 }(module));

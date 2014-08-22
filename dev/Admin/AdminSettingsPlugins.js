@@ -11,8 +11,11 @@
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+
+		RL = require('../Boots/AdminApp.js'),
 
 		PopupsPluginViewModel = require('../ViewModels/Popups/PopupsPluginViewModel.js')
 	;
@@ -22,7 +25,7 @@
 	 */
 	function AdminSettingsPlugins()
 	{
-		this.enabledPlugins = ko.observable(!!RL.settingsGet('EnabledPlugins'));
+		this.enabledPlugins = ko.observable(!!AppSettings.settingsGet('EnabledPlugins'));
 
 		this.pluginsError = ko.observable('');
 
@@ -36,8 +39,6 @@
 		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
 		this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsPlugins, 'AdminSettingsPlugins', 'Plugins', 'plugins');
 
 	AdminSettingsPlugins.prototype.disablePlugin = function (oPlugin)
 	{

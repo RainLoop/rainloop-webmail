@@ -15,10 +15,13 @@
 		Consts = require('../../Common/Consts.js'),
 		Globals = require('../../Common/Globals.js'),
 		Utils = require('../../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		LinkBuilder = require('../../Common/LinkBuilder.js'),
+		Selector = require('../../Common/Selector.js'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../../Boots/RainLoopApp.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -380,10 +383,21 @@
 
 		this.sDefaultKeyScope = Enums.KeyState.ContactList;
 
+		this.contactTagsSource = _.bind(this.contactTagsSource, this);
+
 		kn.constructorEnd(this);
 	}
 
 	kn.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
+
+	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
+	{
+		RL.getContactTagsAutocomplete(oData.term, function (aData) {
+			fResponse(_.map(aData, function (oTagItem) {
+				return oTagItem.toLine(false);
+			}));
+		});
+	};
 
 	PopupsContactsViewModel.prototype.getPropertyPlceholder = function (sType)
 	{
@@ -763,6 +777,6 @@
 		this.contacts([]);
 	};
 
-	module.exports = new PopupsContactsViewModel();
+	module.exports = PopupsContactsViewModel;
 
 }(module));

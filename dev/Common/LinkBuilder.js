@@ -6,7 +6,8 @@
 
 	var
 		window = require('../External/window.js'),
-		Utils = require('./Utils.js')
+		Utils = require('./Utils.js'),
+		AppSettings = require('../Storages/AppSettings.js')
 	;
 	
 	/**
@@ -16,9 +17,9 @@
 	{
 		this.sBase = '#/';
 		this.sServer = './?';
-		this.sVersion = RL.settingsGet('Version');
-		this.sSpecSuffix = RL.settingsGet('AuthAccountHash') || '0';
-		this.sStaticPrefix = RL.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
+		this.sVersion = AppSettings.settingsGet('Version');
+		this.sSpecSuffix = AppSettings.settingsGet('AuthAccountHash') || '0';
+		this.sStaticPrefix = AppSettings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
 	}
 
 	/**

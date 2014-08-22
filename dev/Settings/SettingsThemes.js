@@ -12,7 +12,8 @@
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
-		
+
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
 	;
 
@@ -21,12 +22,9 @@
 	 */
 	function SettingsThemes()
 	{
-		var
-			self = this,
-			oData = RL.data()
-		;
+		var self = this;
 
-		this.mainTheme = oData.mainTheme;
+		this.mainTheme = Data.mainTheme;
 		this.themesObjects = ko.observableArray([]);
 
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
@@ -34,7 +32,7 @@
 		this.oLastAjax = null;
 		this.iTimer = 0;
 
-		RL.data().theme.subscribe(function (sValue) {
+		Data.theme.subscribe(function (sValue) {
 
 			_.each(this.themesObjects(), function (oTheme) {
 				oTheme.selected(sValue === oTheme.name);
@@ -116,12 +114,10 @@
 		}, this);
 	}
 
-	kn.addSettingsViewModel(SettingsThemes, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
-
 	SettingsThemes.prototype.onBuild = function ()
 	{
-		var sCurrentTheme = RL.data().theme();
-		this.themesObjects(_.map(RL.data().themes(), function (sTheme) {
+		var sCurrentTheme = Data.theme();
+		this.themesObjects(_.map(Data.themes(), function (sTheme) {
 			return {
 				'name': sTheme,
 				'nameDisplay': Utils.convertThemeName(sTheme),

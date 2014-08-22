@@ -9,17 +9,16 @@
 		$html = require('../External/$html.js'),
 		
 		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
+		Events = require('../Common/Events.js'),
 
 		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-
-		MailBoxSystemDropDownViewModel = require('../ViewModels/MailBoxSystemDropDownViewModel.js'),
-		MailBoxFolderListViewModel = require('../ViewModels/MailBoxFolderListViewModel.js'),
-		MailBoxMessageListViewModel = require('../ViewModels/MailBoxMessageListViewModel.js'),
-		MailBoxMessageViewViewModel = require('../ViewModels/MailBoxMessageViewViewModel.js')
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
 	;
 
 	/**
@@ -28,6 +27,13 @@
 	 */
 	function MailBoxScreen()
 	{
+		var
+			MailBoxSystemDropDownViewModel = require('../ViewModels/MailBoxSystemDropDownViewModel.js'),
+			MailBoxFolderListViewModel = require('../ViewModels/MailBoxFolderListViewModel.js'),
+			MailBoxMessageListViewModel = require('../ViewModels/MailBoxMessageListViewModel.js'),
+			MailBoxMessageViewViewModel = require('../ViewModels/MailBoxMessageViewViewModel.js')
+		;
+
 		KnoinAbstractScreen.call(this, 'mailbox', [
 			MailBoxSystemDropDownViewModel,
 			MailBoxFolderListViewModel,
@@ -48,18 +54,19 @@
 	MailBoxScreen.prototype.setNewTitle  = function ()
 	{
 		var
-			sEmail = RL.data().accountEmail(), // TODO cjs
-			ifoldersInboxUnreadCount = RL.data().foldersInboxUnreadCount() // TODO cjs
+			RL = require('../Boots/RainLoopApp.js'),
+			sEmail = Data.accountEmail(),
+			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
- // TODO cjs
+ 
 		RL.setTitle(('' === sEmail ? '' :
-			(0 < ifoldersInboxUnreadCount ? '(' + ifoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 	};
 
 	MailBoxScreen.prototype.onShow = function ()
 	{
 		this.setNewTitle();
-		RL.data().keyScope(Enums.KeyState.MessageList);// TODO cjs
+		Globals.keyScope(Enums.KeyState.MessageList);
 	};
 
 	/**
@@ -70,35 +77,35 @@
 	 */
 	MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
 	{
+		var RL = require('../Boots/RainLoopApp.js');
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
-			if (Enums.Layout.NoPreview === RL.data().layout() && !RL.data().message())// TODO cjs
+			if (Enums.Layout.NoPreview === Data.layout() && !Data.message())
 			{
-				RL.historyBack();// TODO cjs
+				RL.historyBack();
 			}
 		}
 		else
 		{
 			var
-				oData = RL.data(),// TODO cjs
 				sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
 				oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
 			;
 
 			if (oFolder)
 			{
-				oData
+				Data
 					.currentFolder(oFolder)
 					.messageListPage(iPage)
 					.messageListSearch(sSearch)
 				;
 
-				if (Enums.Layout.NoPreview === oData.layout() && oData.message())
+				if (Enums.Layout.NoPreview === Data.layout() && Data.message())
 				{
-					oData.message(null);
+					Data.message(null);
 				}
 
-				RL.reloadMessageList();// TODO cjs
+				RL.reloadMessageList();
 			}
 		}
 	};
@@ -106,43 +113,47 @@
 	MailBoxScreen.prototype.onStart = function ()
 	{
 		var
-			oData = RL.data(),// TODO cjs
+			RL = require('../Boots/RainLoopApp.js'),
 			fResizeFunction = function () {
 				Utils.windowResize();
 			}
 		;
 
-		if (RL.capa(Enums.Capa.AdditionalAccounts) || RL.capa(Enums.Capa.AdditionalIdentities))// TODO cjs
+		if (AppSettings.capa(Enums.Capa.AdditionalAccounts) || AppSettings.capa(Enums.Capa.AdditionalIdentities))
 		{
-			RL.accountsAndIdentities();// TODO cjs
+			RL.accountsAndIdentities();
 		}
 
 		_.delay(function () {
-			if ('INBOX' !== oData.currentFolderFullNameRaw())
+			if ('INBOX' !== Data.currentFolderFullNameRaw())
 			{
-				RL.folderInformation('INBOX');// TODO cjs
+				RL.folderInformation('INBOX');
 			}
 		}, 1000);
 
 		_.delay(function () {
-			RL.quota();// TODO cjs
+			RL.quota();
 		}, 5000);
 
 		_.delay(function () {
 			Remote.appDelayStart(Utils.emptyFunction);
 		}, 35000);
 
-		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === oData.layout());
+		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
 
-		oData.folderList.subscribe(fResizeFunction);
-		oData.messageList.subscribe(fResizeFunction);
-		oData.message.subscribe(fResizeFunction);
+		Data.folderList.subscribe(fResizeFunction);
+		Data.messageList.subscribe(fResizeFunction);
+		Data.message.subscribe(fResizeFunction);
 
-		oData.layout.subscribe(function (nValue) {
+		Data.layout.subscribe(function (nValue) {
 			$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 		});
 
-		oData.foldersInboxUnreadCount.subscribe(function () {
+		Events.sub('mailbox.inbox-unread-count', function (nCount) {
+			Data.foldersInboxUnreadCount(nCount)
+		});
+
+		Data.foldersInboxUnreadCount.subscribe(function () {
 			this.setNewTitle();
 		}, this);
 	};

@@ -12,6 +12,7 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
@@ -23,10 +24,10 @@
 	{
 		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
 
-		this.capaOpenPGP = ko.observable(RL.capa(Enums.Capa.OpenPGP));
-		this.capaTwoFactorAuth = ko.observable(RL.capa(Enums.Capa.TwoFactor));
+		this.capaOpenPGP = ko.observable(AppSettings.capa(Enums.Capa.OpenPGP));
+		this.capaTwoFactorAuth = ko.observable(AppSettings.capa(Enums.Capa.TwoFactor));
 
-		this.adminLogin = ko.observable(RL.settingsGet('AdminLogin'));
+		this.adminLogin = ko.observable(AppSettings.settingsGet('AdminLogin'));
 		this.adminPassword = ko.observable('');
 		this.adminPasswordNew = ko.observable('');
 		this.adminPasswordNew2 = ko.observable('');
@@ -74,8 +75,6 @@
 
 		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsSecurity, 'AdminSettingsSecurity', 'Security', 'security');
 
 	AdminSettingsSecurity.prototype.onNewAdminPasswordResponse = function (sResult, oData)
 	{

@@ -8,7 +8,10 @@
 		ko = require('../External/ko.js'),
 		moment = require('../External/moment.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
+
+		RL = require('../Boots/AdminApp.js'),
 		
 		kn = require('../Knoin/Knoin.js'),
 		PopupsActivateViewModel = require('../ViewModels/Popups/PopupsActivateViewModel.js')
@@ -27,7 +30,7 @@
 		this.licenseTrigger = Data.licenseTrigger;
 
 		this.adminDomain = ko.observable('');
-		this.subscriptionEnabled = ko.observable(!!RL.settingsGet('SubscriptionEnabled'));
+		this.subscriptionEnabled = ko.observable(!!AppSettings.settingsGet('SubscriptionEnabled'));
 
 		this.licenseTrigger.subscribe(function () {
 			if (this.subscriptionEnabled())
@@ -36,8 +39,6 @@
 			}
 		}, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsLicensing, 'AdminSettingsLicensing', 'Licensing', 'licensing');
 
 	AdminSettingsLicensing.prototype.onBuild = function ()
 	{
@@ -49,7 +50,7 @@
 
 	AdminSettingsLicensing.prototype.onShow = function ()
 	{
-		this.adminDomain(RL.settingsGet('AdminDomain'));
+		this.adminDomain(AppSettings.settingsGet('AdminDomain'));
 	};
 
 	AdminSettingsLicensing.prototype.showActivationForm = function ()

@@ -16,16 +16,29 @@
 		Plugins = require('../Common/Plugins.js'),
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Events = require('../Common/Events.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 
+		LocalStorage = require('../Storages/LocalStorage.js'),
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+
+		FolderModel = require('../Models/FolderModel.js'),
+		MessageModel = require('../Models/MessageModel.js'),
+		AccountModel = require('../Models/AccountModel.js'),
+		IdentityModel  = require('../Models/IdentityModel.js'),
 		
 		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
 		PopupsAskViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
-		
+		PopupsComposeViewModel = require('../ViewModels/Popups/PopupsComposeViewModel.js'),
+
+		MailBoxScreen = require('../Screens/MailBoxScreen.js'),
+		SettingsScreen = require('../Screens/SettingsScreen.js'),
+		LoginScreen = require('../Screens/LoginScreen.js'),
+
 		AbstractApp = require('./AbstractApp.js')
 	;
 
@@ -35,11 +48,8 @@
 	 */
 	function RainLoopApp()
 	{
-		AbstractApp.call(this);
+		AbstractApp.call(this, Remote);
 
-		this.oData = null;
-		this.oRemote = null;
-		this.oCache = null;
 		this.oMoveCache = {};
 
 		this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
@@ -47,33 +57,35 @@
 
 		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
+		var self = this;
+
 		window.setInterval(function () {
-			RL.pub('interval.30s');
+			Events.pub('interval.30s');
 		}, 30000);
 
 		window.setInterval(function () {
-			RL.pub('interval.1m');
+			Events.pub('interval.1m');
 		}, 60000);
 
 		window.setInterval(function () {
-			RL.pub('interval.2m');
+			Events.pub('interval.2m');
 		}, 60000 * 2);
 
 		window.setInterval(function () {
-			RL.pub('interval.3m');
+			Events.pub('interval.3m');
 		}, 60000 * 3);
 
 		window.setInterval(function () {
-			RL.pub('interval.5m');
+			Events.pub('interval.5m');
 		}, 60000 * 5);
 
 		window.setInterval(function () {
-			RL.pub('interval.10m');
+			Events.pub('interval.10m');
 		}, 60000 * 10);
 
 		window.setTimeout(function () {
 			window.setInterval(function () {
-				RL.pub('interval.10m-after5m');
+				Events.pub('interval.10m-after5m');
 			}, 60000 * 10);
 		}, 60000 * 5);
 
@@ -81,7 +93,7 @@
 			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
-					if (window.parent && !!RL.settingsGet('InIframe'))
+					if (window.parent && !!self.settingsGet('InIframe'))
 					{
 						window.parent.location.reload();
 					}
@@ -90,40 +102,110 @@
 						window.location.reload();
 					}
 				}
-			}, RL.settingsGet('Version'));
+			}, self.settingsGet('Version'));
 		}, {}, 60 * 60 * 1000);
+
+
+		this.socialUsers = _.bind(this.socialUsers, this);
 	}
 
 	_.extend(RainLoopApp.prototype, AbstractApp.prototype);
 
-	RainLoopApp.prototype.oData = null;
-	RainLoopApp.prototype.oRemote = null;
-	RainLoopApp.prototype.oCache = null;
-
-	/**
-	 * @return {WebMailDataStorage}
-	 */
-	RainLoopApp.prototype.data = function ()
-	{
-		if (null === this.oData)
-		{
-			this.oData = new WebMailDataStorage();
-		}
-
-		return this.oData;
-	};
-
-	/**
-	 * @return {WebMailAjaxRemoteStorage}
-	 */
 	RainLoopApp.prototype.remote = function ()
 	{
-		if (null === this.oRemote)
+		return Remote;
+	};
+
+	RainLoopApp.prototype.data = function ()
+	{
+		return Data;
+	};
+
+	RainLoopApp.prototype.setupSettings = function ()
+	{
+		var
+			SettingsGeneral = require('../Settings/SettingsGeneral.js'),
+			SettingsContacts = require('../Settings/SettingsContacts.js'),
+			SettingsAccounts = require('../Settings/SettingsAccounts.js'),
+			SettingsIdentity = require('../Settings/SettingsIdentity.js'),
+			SettingsIdentities = require('../Settings/SettingsIdentities.js'),
+			SettingsFilters = require('../Settings/SettingsFilters.js'),
+			SettingsSecurity = require('../Settings/SettingsSecurity.js'),
+			SettingsSocial = require('../Settings/SettingsSocial.js'),
+			SettingsChangePassword = require('../Settings/SettingsChangePassword.js'),
+			SettingsFolders = require('../Settings/SettingsFolders.js'),
+			SettingsThemes = require('../Settings/SettingsThemes.js'),
+			SettingsOpenPGP = require('../Settings/SettingsOpenPGP.js')
+		;
+
+		kn.addSettingsViewModel(SettingsGeneral,
+			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
+
+		if (AppSettings.settingsGet('ContactsIsAllowed'))
 		{
-			this.oRemote = new WebMailAjaxRemoteStorage();
+			kn.addSettingsViewModel(SettingsContacts,
+				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		return this.oRemote;
+		if (AppSettings.capa(Enums.Capa.AdditionalAccounts))
+		{
+			kn.addSettingsViewModel(SettingsAccounts,
+				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
+		}
+
+		if (AppSettings.capa(Enums.Capa.AdditionalIdentities))
+		{
+			kn.addSettingsViewModel(SettingsIdentities,
+				'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
+		}
+		else
+		{
+			kn.addSettingsViewModel(SettingsIdentity,
+				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
+		}
+
+		if (AppSettings.capa(Enums.Capa.Filters))
+		{
+			kn.addSettingsViewModel(SettingsFilters,
+				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
+		}
+
+		if (AppSettings.capa(Enums.Capa.TwoFactor))
+		{
+			kn.addSettingsViewModel(SettingsSecurity,
+				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+		}
+
+		if (!AppSettings.settingsGet('AllowGoogleSocial') &&
+			!AppSettings.settingsGet('AllowFacebookSocial') &&
+			!AppSettings.settingsGet('AllowTwitterSocial'))
+		{
+			kn.addSettingsViewModel(SettingsSocial,
+				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
+		}
+
+		if (AppSettings.settingsGet('ChangePasswordIsAllowed'))
+		{
+			kn.addSettingsViewModel(SettingsChangePassword,
+				'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
+		}
+
+		kn.addSettingsViewModel(SettingsFolders,
+			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+
+		if (AppSettings.capa(Enums.Capa.Themes))
+		{
+			kn.addSettingsViewModel(SettingsThemes,
+				'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
+		}
+
+		if (AppSettings.capa(Enums.Capa.OpenPGP))
+		{
+			kn.addSettingsViewModel(SettingsOpenPGP,
+				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
+		}
+		
+		return true;
 	};
 
 	RainLoopApp.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
@@ -142,6 +224,7 @@
 	RainLoopApp.prototype.reloadMessageList = function (bDropPagePosition, bDropCurrenFolderCache)
 	{
 		var
+			self = this,
 			iOffset = (Data.messageListPage() - 1) * Data.messagesPerPage()
 		;
 
@@ -163,7 +246,7 @@
 			{
 				Data.messageListError('');
 				Data.messageListLoading(false);
-				Data.setMessageList(oData, bCached);
+				self.setMessageList(oData, bCached);
 			}
 			else if (Enums.StorageResultType.Unload === sResult)
 			{
@@ -189,7 +272,7 @@
 
 	RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
 	{
-		RL.reloadMessageList(bEmptyList);
+		self.reloadMessageList(bEmptyList);
 	};
 
 	/**
@@ -294,8 +377,8 @@
 				}
 			}
 
-			RL.reloadMessageListHelper(0 === Data.messageList().length);
-			RL.quotaDebounce();
+			this.reloadMessageListHelper(0 === Data.messageList().length);
+			this.quotaDebounce();
 		}
 	};
 
@@ -413,13 +496,13 @@
 	 */
 	RainLoopApp.prototype.folders = function (fCallback)
 	{
-		this.data().foldersLoading(true);
-		this.remote().folders(_.bind(function (sResult, oData) {
+		Data.foldersLoading(true);
+		Remote.folders(_.bind(function (sResult, oData) {
 
 			Data.foldersLoading(false);
 			if (Enums.StorageResultType.Success === sResult)
 			{
-				this.data().setFolders(oData);
+				this.setFolders(oData);
 				if (fCallback)
 				{
 					fCallback(true);
@@ -491,7 +574,7 @@
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
 				var
-					sParentEmail = RL.settingsGet('ParentEmail'),
+					sParentEmail = AppSettings.settingsGet('ParentEmail'),
 					sAccountEmail = Data.accountEmail()
 				;
 
@@ -527,7 +610,7 @@
 
 	RainLoopApp.prototype.quota = function ()
 	{
-		this.remote().quota(function (sResult, oData) {
+		Remote.quota(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult &&	oData && oData.Result &&
 				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
@@ -546,7 +629,8 @@
 	{
 		if ('' !== Utils.trim(sFolder))
 		{
-			this.remote().folderInformation(function (sResult, oData) {
+			var self = this;
+			Remote.folderInformation(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult)
 				{
 					if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
@@ -607,7 +691,7 @@
 
 								if (bCheck)
 								{
-									RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+									self.reloadFlagsCurrentMessageListAndMessageFromCache();
 								}
 							}
 
@@ -617,11 +701,11 @@
 							{
 								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 								{
-									RL.reloadMessageList();
+									self.reloadMessageList();
 								}
 								else if ('INBOX' === oFolder.fullNameRaw)
 								{
-									RL.recacheInboxMessageList();
+									self.recacheInboxMessageList();
 								}
 							}
 							else if (bUnreadCountChange)
@@ -631,7 +715,7 @@
 									aList = Data.messageList();
 									if (Utils.isNonEmptyArray(aList))
 									{
-										RL.folderInformation(oFolder.fullNameRaw, aList);
+										self.folderInformation(oFolder.fullNameRaw, aList);
 									}
 								}
 							}
@@ -650,13 +734,14 @@
 		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
 
 		var
+			self = this,
 			iUtc = moment().unix(),
 			aFolders = Data.getNextFolderNames(bBoot)
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
 		{
-			this.remote().folderInformationMultiply(function (sResult, oData) {
+			Remote.folderInformationMultiply(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult)
 				{
 					if (oData && oData.Result && oData.Result.List && Utils.isNonEmptyArray(oData.Result.List))
@@ -703,7 +788,7 @@
 								{
 									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
 									{
-										RL.reloadMessageList();
+										self.reloadMessageList();
 									}
 								}
 								else if (bUnreadCountChange)
@@ -713,7 +798,7 @@
 										aList = Data.messageList();
 										if (Utils.isNonEmptyArray(aList))
 										{
-											RL.folderInformation(oFolder.fullNameRaw, aList);
+											self.folderInformation(oFolder.fullNameRaw, aList);
 										}
 									}
 								}
@@ -722,7 +807,7 @@
 
 						if (bBoot)
 						{
-							RL.folderInformationMultiply(true);
+							self.folderInformationMultiply(true);
 						}
 					}
 				}
@@ -744,7 +829,7 @@
 			}
 
 			Cache.storeMessageFlagsToCache(oMessage);
-			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+			this.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 
 		Remote.messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
@@ -805,154 +890,19 @@
 	RainLoopApp.prototype.googleDisconnect = function ()
 	{
 		Data.googleActions(true);
-		Remote.googleDisconnect(function () {
-			RL.socialUsers();
-		});
+		Remote.googleDisconnect(this.socialUsers);
 	};
 
 	RainLoopApp.prototype.facebookDisconnect = function ()
 	{
 		Data.facebookActions(true);
-		Remote.facebookDisconnect(function () {
-			RL.socialUsers();
-		});
+		Remote.facebookDisconnect(this.socialUsers);
 	};
 
 	RainLoopApp.prototype.twitterDisconnect = function ()
 	{
 		Data.twitterActions(true);
-		Remote.twitterDisconnect(function () {
-			RL.socialUsers();
-		});
-	};
-
-	/**
-	 * @param {Array} aSystem
-	 * @param {Array} aList
-	 * @param {Array=} aDisabled
-	 * @param {Array=} aHeaderLines
-	 * @param {?number=} iUnDeep
-	 * @param {Function=} fDisableCallback
-	 * @param {Function=} fVisibleCallback
-	 * @param {Function=} fRenameCallback
-	 * @param {boolean=} bSystem
-	 * @param {boolean=} bBuildUnvisible
-	 * @return {Array}
-	 */
-	RainLoopApp.prototype.folderListOptionsBuilder = function (aSystem, aList, aDisabled, aHeaderLines, iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible)
-	{
-		var
-			iIndex = 0,
-			iLen = 0,
-			/**
-			 * @type {?FolderModel}
-			 */
-			oItem = null,
-			bSep = false,
-			sDeepPrefix = '\u00A0\u00A0\u00A0',
-			aResult = []
-		;
-
-		bSystem = !Utils.isNormal(bSystem) ? 0 < aSystem.length : bSystem;
-		bBuildUnvisible = Utils.isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
-		iUnDeep = !Utils.isNormal(iUnDeep) ? 0 : iUnDeep;
-		fDisableCallback = Utils.isNormal(fDisableCallback) ? fDisableCallback : null;
-		fVisibleCallback = Utils.isNormal(fVisibleCallback) ? fVisibleCallback : null;
-		fRenameCallback = Utils.isNormal(fRenameCallback) ? fRenameCallback : null;
-
-		if (!Utils.isArray(aDisabled))
-		{
-			aDisabled = [];
-		}
-
-		if (!Utils.isArray(aHeaderLines))
-		{
-			aHeaderLines = [];
-		}
-
-		for (iIndex = 0, iLen = aHeaderLines.length; iIndex < iLen; iIndex++)
-		{
-			aResult.push({
-				'id': aHeaderLines[iIndex][0],
-				'name': aHeaderLines[iIndex][1],
-				'system': false,
-				'seporator': false,
-				'disabled': false
-			});
-		}
-
-		bSep = true;
-		for (iIndex = 0, iLen = aSystem.length; iIndex < iLen; iIndex++)
-		{
-			oItem = aSystem[iIndex];
-			if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
-			{
-				if (bSep && 0 < aResult.length)
-				{
-					aResult.push({
-						'id': '---',
-						'name': '---',
-						'system': false,
-						'seporator': true,
-						'disabled': true
-					});
-				}
-
-				bSep = false;
-				aResult.push({
-					'id': oItem.fullNameRaw,
-					'name': fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
-					'system': true,
-					'seporator': false,
-					'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
-						(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
-				});
-			}
-		}
-
-		bSep = true;
-		for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
-		{
-			oItem = aList[iIndex];
-			if (oItem.subScribed() || !oItem.existen)
-			{
-				if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
-				{
-					if (Enums.FolderType.User === oItem.type() || !bSystem || 0 < oItem.subFolders().length)
-					{
-						if (bSep && 0 < aResult.length)
-						{
-							aResult.push({
-								'id': '---',
-								'name': '---',
-								'system': false,
-								'seporator': true,
-								'disabled': true
-							});
-						}
-
-						bSep = false;
-						aResult.push({
-							'id': oItem.fullNameRaw,
-							'name': (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) +
-								(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
-							'system': false,
-							'seporator': false,
-							'disabled': !oItem.selectable || -1 < Utils.inArray(oItem.fullNameRaw, aDisabled) ||
-								(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
-						});
-					}
-				}
-			}
-
-			if (oItem.subScribed() && 0 < oItem.subFolders().length)
-			{
-				aResult = aResult.concat(RL.folderListOptionsBuilder([], oItem.subFolders(), aDisabled, [],
-					iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible));
-			}
-		}
-
-		return aResult;
+		Remote.twitterDisconnect(this.socialUsers);
 	};
 
 	/**
@@ -993,6 +943,382 @@
 		}));
 	};
 
+	RainLoopApp.prototype.setMessageList = function (oData, bCached)
+	{
+		if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
+			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
+		{
+			var
+				mLastCollapsedThreadUids = null,
+				iIndex = 0,
+				iLen = 0,
+				iCount = 0,
+				iOffset = 0,
+				aList = [],
+				iUtc = moment().unix(),
+				aStaticList = Data.staticMessageList,
+				oJsonMessage = null,
+				oMessage = null,
+				oFolder = null,
+				iNewCount = 0,
+				bUnreadCountChange = false
+			;
+
+			iCount = Utils.pInt(oData.Result.MessageResultCount);
+			iOffset = Utils.pInt(oData.Result.Offset);
+
+			if (Utils.isNonEmptyArray(oData.Result.LastCollapsedThreadUids))
+			{
+				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
+			}
+
+			oFolder = Cache.getFolderFromCacheList(
+				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
+
+			if (oFolder && !bCached)
+			{
+				oFolder.interval = iUtc;
+
+				Cache.setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
+
+				if (Utils.isNormal(oData.Result.MessageCount))
+				{
+					oFolder.messageCountAll(oData.Result.MessageCount);
+				}
+
+				if (Utils.isNormal(oData.Result.MessageUnseenCount))
+				{
+					if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
+					{
+						bUnreadCountChange = true;
+					}
+
+					oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
+				}
+
+				Data.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+			}
+
+			if (bUnreadCountChange && oFolder)
+			{
+				Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+			}
+
+			for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
+			{
+				oJsonMessage = oData.Result['@Collection'][iIndex];
+				if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
+				{
+					oMessage = aStaticList[iIndex];
+					if (!oMessage || !oMessage.initByJson(oJsonMessage))
+					{
+						oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
+					}
+
+					if (oMessage)
+					{
+						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
+						{
+							iNewCount++;
+							oMessage.newForAnimation(true);
+						}
+
+						oMessage.deleted(false);
+
+						if (bCached)
+						{
+							Cache.initMessageFlagsFromCache(oMessage);
+						}
+						else
+						{
+							Cache.storeMessageFlagsToCache(oMessage);
+						}
+
+						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
+
+						aList.push(oMessage);
+					}
+				}
+			}
+
+			Data.messageListCount(iCount);
+			Data.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			Data.messageListPage(window.Math.ceil((iOffset / Data.messagesPerPage()) + 1));
+			Data.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
+			Data.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			Data.messageListEndPage(Data.messageListPage());
+
+			Data.messageList(aList);
+			Data.messageListIsNotCompleted(false);
+
+			if (aStaticList.length < aList.length)
+			{
+				Data.staticMessageList = aList;
+			}
+
+			Cache.clearNewMessageCache();
+
+			if (oFolder && (bCached || bUnreadCountChange || Data.useThreads()))
+			{
+				this.folderInformation(oFolder.fullNameRaw, aList);
+			}
+		}
+		else
+		{
+			Data.messageListCount(0);
+			Data.messageList([]);
+			Data.messageListError(Utils.getNotification(
+				oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
+			));
+		}
+	};
+
+	/**
+	 * @param {string} sNamespace
+	 * @param {Array} aFolders
+	 * @return {Array}
+	 */
+	RainLoopApp.prototype.folderResponseParseRec = function (sNamespace, aFolders)
+	{
+		var
+			iIndex = 0,
+			iLen = 0,
+			oFolder = null,
+			oCacheFolder = null,
+			sFolderFullNameRaw = '',
+			aSubFolders = [],
+			aList = []
+		;
+
+		for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
+		{
+			oFolder = aFolders[iIndex];
+			if (oFolder)
+			{
+				sFolderFullNameRaw = oFolder.FullNameRaw;
+
+				oCacheFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+				if (!oCacheFolder)
+				{
+					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
+					if (oCacheFolder)
+					{
+						Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);
+						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);
+					}
+				}
+
+				if (oCacheFolder)
+				{
+					if (Globals.__RL)
+					{
+						oCacheFolder.collapsed(!Globals.__RL.isFolderExpanded(oCacheFolder.fullNameHash));
+					}
+
+					if (oFolder.Extended)
+					{
+						if (oFolder.Extended.Hash)
+						{
+							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
+						}
+
+						if (Utils.isNormal(oFolder.Extended.MessageCount))
+						{
+							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+						}
+
+						if (Utils.isNormal(oFolder.Extended.MessageUnseenCount))
+						{
+							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
+						}
+					}
+
+					aSubFolders = oFolder['SubFolders'];
+					if (aSubFolders && 'Collection/FolderCollection' === aSubFolders['@Object'] &&
+						aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
+					{
+						oCacheFolder.subFolders(
+							this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
+					}
+
+					aList.push(oCacheFolder);
+				}
+			}
+		}
+
+		return aList;
+	};
+
+	/**
+	 * @param {*} oData
+	 */
+	RainLoopApp.prototype.setFolders = function (oData)
+	{
+		var
+			aList = [],
+			bUpdate = false,
+			fNormalizeFolder = function (sFolderFullNameRaw) {
+				return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
+					null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';
+			}
+		;
+
+		if (oData && oData.Result && 'Collection/FolderCollection' === oData.Result['@Object'] &&
+			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
+		{
+			if (!Utils.isUnd(oData.Result.Namespace))
+			{
+				Data.namespace = oData.Result.Namespace;
+			}
+
+			Data.threading(!!AppSettings.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
+
+			aList = this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']);
+			Data.folderList(aList);
+
+			if (oData.Result['SystemFolders'] &&
+				'' === '' + AppSettings.settingsGet('SentFolder') + AppSettings.settingsGet('DraftFolder') +
+				AppSettings.settingsGet('SpamFolder') + AppSettings.settingsGet('TrashFolder') + AppSettings.settingsGet('ArchiveFolder') +
+				AppSettings.settingsGet('NullFolder'))
+			{
+				// TODO Magic Numbers
+				AppSettings.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
+				AppSettings.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
+				AppSettings.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
+				AppSettings.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
+				AppSettings.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
+
+				bUpdate = true;
+			}
+
+			Data.sentFolder(fNormalizeFolder(AppSettings.settingsGet('SentFolder')));
+			Data.draftFolder(fNormalizeFolder(AppSettings.settingsGet('DraftFolder')));
+			Data.spamFolder(fNormalizeFolder(AppSettings.settingsGet('SpamFolder')));
+			Data.trashFolder(fNormalizeFolder(AppSettings.settingsGet('TrashFolder')));
+			Data.archiveFolder(fNormalizeFolder(AppSettings.settingsGet('ArchiveFolder')));
+
+			if (bUpdate)
+			{
+				Remote.saveSystemFolders(Utils.emptyFunction, {
+					'SentFolder': Data.sentFolder(),
+					'DraftFolder': Data.draftFolder(),
+					'SpamFolder': Data.spamFolder(),
+					'TrashFolder': Data.trashFolder(),
+					'ArchiveFolder': Data.archiveFolder(),
+					'NullFolder': 'NullFolder'
+				});
+			}
+
+			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
+		}
+	};
+
+	/**
+	 * @param {string} sFullNameHash
+	 * @return {boolean}
+	 */
+	RainLoopApp.prototype.isFolderExpanded = function (sFullNameHash)
+	{
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
+	};
+
+	/**
+	 * @param {string} sFullNameHash
+	 * @param {boolean} bExpanded
+	 */
+	RainLoopApp.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
+	{
+		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		if (!_.isArray(aExpandedList))
+		{
+			aExpandedList = [];
+		}
+
+		if (bExpanded)
+		{
+			aExpandedList.push(sFullNameHash);
+			aExpandedList = _.uniq(aExpandedList);
+		}
+		else
+		{
+			aExpandedList = _.without(aExpandedList, sFullNameHash);
+		}
+
+		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
+	};
+
+	RainLoopApp.prototype.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
+	{
+		var
+			iDisabledWidth = 60,
+			iMinWidth = 155,
+			oLeft = $(sLeft),
+			oRight = $(sRight),
+
+			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
+
+			fSetWidth = function (iWidth) {
+				if (iWidth)
+				{
+					oLeft.css({
+						'width': '' + iWidth + 'px'
+					});
+
+					oRight.css({
+						'left': '' + iWidth + 'px'
+					});
+				}
+			},
+
+			fDisable = function (bDisable) {
+				if (bDisable)
+				{
+					oLeft.resizable('disable');
+					fSetWidth(iDisabledWidth);
+				}
+				else
+				{
+					oLeft.resizable('enable');
+					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
+					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
+				}
+			},
+
+			fResizeFunction = function (oEvent, oObject) {
+				if (oObject && oObject.size && oObject.size.width)
+				{
+					LocalStorage.set(sClientSideKeyName, oObject.size.width);
+
+					oRight.css({
+						'left': '' + oObject.size.width + 'px'
+					});
+				}
+			}
+		;
+
+		if (null !== mLeftWidth)
+		{
+			fSetWidth(mLeftWidth > iMinWidth ? mLeftWidth : iMinWidth);
+		}
+
+		oLeft.resizable({
+			'helper': 'ui-resizable-helper',
+			'minWidth': iMinWidth,
+			'maxWidth': 350,
+			'handles': 'e',
+			'stop': fResizeFunction
+		});
+
+		Events.sub('left-panel.off', function () {
+			fDisable(true);
+		});
+
+		Events.sub('left-panel.on', function () {
+			fDisable(false);
+		});
+	};
+
 	/**
 	 * @param {string} sMailToUrl
 	 * @returns {boolean}
@@ -1030,68 +1356,19 @@
 
 	RainLoopApp.prototype.bootstart = function ()
 	{
-		RL.pub('rl.bootstart');
 		AbstractApp.prototype.bootstart.call(this);
 
 		Data.populateDataOnStart();
 
 		var
+			self = this,
 			sCustomLoginLink = '',
-			sJsHash = RL.settingsGet('JsHash'),
-			iContactsSyncInterval = Utils.pInt(RL.settingsGet('ContactsSyncInterval')),
-			bGoogle = RL.settingsGet('AllowGoogleSocial'),
-			bFacebook = RL.settingsGet('AllowFacebookSocial'),
-			bTwitter = RL.settingsGet('AllowTwitterSocial')
+			sJsHash = AppSettings.settingsGet('JsHash'),
+			iContactsSyncInterval = Utils.pInt(AppSettings.settingsGet('ContactsSyncInterval')),
+			bGoogle = AppSettings.settingsGet('AllowGoogleSocial'),
+			bFacebook = AppSettings.settingsGet('AllowFacebookSocial'),
+			bTwitter = AppSettings.settingsGet('AllowTwitterSocial')
 		;
-
-		if (!RL.settingsGet('ChangePasswordIsAllowed'))
-		{
-			kn.removeSettingsViewModel(SettingsChangePasswordScreen);
-		}
-
-		if (!RL.settingsGet('ContactsIsAllowed'))
-		{
-			kn.removeSettingsViewModel(SettingsContacts);
-		}
-
-		if (!RL.capa(Enums.Capa.AdditionalAccounts))
-		{
-			kn.removeSettingsViewModel(SettingsAccounts);
-		}
-
-		if (RL.capa(Enums.Capa.AdditionalIdentities))
-		{
-			kn.removeSettingsViewModel(SettingsIdentity);
-		}
-		else
-		{
-			kn.removeSettingsViewModel(SettingsIdentities);
-		}
-
-		if (!RL.capa(Enums.Capa.OpenPGP))
-		{
-			kn.removeSettingsViewModel(SettingsOpenPGP);
-		}
-
-		if (!RL.capa(Enums.Capa.TwoFactor))
-		{
-			kn.removeSettingsViewModel(SettingsSecurity);
-		}
-
-		if (!RL.capa(Enums.Capa.Themes))
-		{
-			kn.removeSettingsViewModel(SettingsThemes);
-		}
-
-		if (!RL.capa(Enums.Capa.Filters))
-		{
-			kn.removeSettingsViewModel(SettingsFilters);
-		}
-
-		if (!bGoogle && !bFacebook && !bTwitter)
-		{
-			kn.removeSettingsViewModel(SettingsSocialScreen);
-		}
 
 		Utils.initOnStartOrLangChange(function () {
 
@@ -1119,7 +1396,11 @@
 			window.SimplePace.sleep();
 		}
 
-		if (!!RL.settingsGet('Auth'))
+		Globals.leftPanelDisabled.subscribe(function (bValue) {
+			Events.pub('left-panel.' + (bValue ? 'off' : 'on'));
+		});
+
+		if (!!AppSettings.settingsGet('Auth'))
 		{
 			this.setTitle(Utils.i18n('TITLES/LOADING'));
 
@@ -1129,7 +1410,7 @@
 
 				if (bValue)
 				{
-					if (window.$LAB && window.crypto && window.crypto.getRandomValues && RL.capa(Enums.Capa.OpenPGP))
+					if (window.$LAB && window.crypto && window.crypto.getRandomValues && AppSettings.capa(Enums.Capa.OpenPGP))
 					{
 						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 							if (window.openpgp)
@@ -1137,9 +1418,9 @@
 								Data.openpgpKeyring = new window.openpgp.Keyring();
 								Data.capaOpenPGP(true);
 
-								RL.pub('openpgp.init');
+								Events.pub('openpgp.init');
 
-								RL.reloadOpenPgpKeys();
+								self.reloadOpenPgpKeys();
 							}
 						});
 					}
@@ -1152,63 +1433,63 @@
 
 					if (bGoogle || bFacebook || bTwitter)
 					{
-						RL.socialUsers(true);
+						self.socialUsers(true);
 					}
 
-					RL.sub('interval.2m', function () {
-						RL.folderInformation('INBOX');
+					Events.sub('interval.2m', function () {
+						self.folderInformation('INBOX');
 					});
 
-					RL.sub('interval.2m', function () {
+					Events.sub('interval.2m', function () {
 						var sF = Data.currentFolderFullNameRaw();
 						if ('INBOX' !== sF)
 						{
-							RL.folderInformation(sF);
+							self.folderInformation(sF);
 						}
 					});
 
-					RL.sub('interval.3m', function () {
-						RL.folderInformationMultiply();
+					Events.sub('interval.3m', function () {
+						self.folderInformationMultiply();
 					});
 
-					RL.sub('interval.5m', function () {
-						RL.quota();
+					Events.sub('interval.5m', function () {
+						self.quota();
 					});
 
-					RL.sub('interval.10m', function () {
-						RL.folders();
+					Events.sub('interval.10m', function () {
+						self.folders();
 					});
 
 					iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
 					iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
 
 					window.setInterval(function () {
-						RL.contactsSync();
+						self.contactsSync();
 					}, iContactsSyncInterval * 60000 + 5000);
 
 					_.delay(function () {
-						RL.contactsSync();
+						self.contactsSync();
 					}, 5000);
 
 					_.delay(function () {
-						RL.folderInformationMultiply(true);
+						self.folderInformationMultiply(true);
 					}, 500);
 
 					Plugins.runHook('rl-start-user-screens');
-					RL.pub('rl.bootstart-user-screens');
+					Events.pub('rl.bootstart-user-screens');
 
-					if (!!RL.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
+					if (!!AppSettings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 					{
 						_.delay(function () {
 							try {
 								window.navigator.registerProtocolHandler('mailto',
 									window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-									'' + (RL.settingsGet('Title') || 'RainLoop'));
+									'' + (AppSettings.settingsGet('Title') || 'RainLoop'));
 							} catch(e) {}
 
-							if (RL.settingsGet('MailToEmail'))
+							if (AppSettings.settingsGet('MailToEmail'))
 							{
-								RL.mailToHelper(RL.settingsGet('MailToEmail'));
+								self.mailToHelper(AppSettings.settingsGet('MailToEmail'));
 							}
 						}, 500);
 					}
@@ -1218,7 +1499,7 @@
 					kn.startScreens([LoginScreen]);
 
 					Plugins.runHook('rl-start-login-screens');
-					RL.pub('rl.bootstart-login-screens');
+					Events.pub('rl.bootstart-login-screens');
 				}
 
 				if (window.SimplePace)
@@ -1229,7 +1510,7 @@
 				if (!Globals.bMobileDevice)
 				{
 					_.defer(function () {
-						Utils.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
+						self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
 					});
 				}
 
@@ -1237,14 +1518,14 @@
 		}
 		else
 		{
-			sCustomLoginLink = Utils.pString(RL.settingsGet('CustomLoginLink'));
+			sCustomLoginLink = Utils.pString(AppSettings.settingsGet('CustomLoginLink'));
 			if (!sCustomLoginLink)
 			{
 				kn.hideLoading();
 				kn.startScreens([LoginScreen]);
 
 				Plugins.runHook('rl-start-login-screens');
-				RL.pub('rl.bootstart-login-screens');
+				Events.pub('rl.bootstart-login-screens');
 
 				if (window.SimplePace)
 				{
@@ -1267,7 +1548,7 @@
 		{
 			window['rl_' + sJsHash + '_google_service'] = function () {
 				Data.googleActions(true);
-				RL.socialUsers();
+				self.socialUsers();
 			};
 		}
 
@@ -1275,7 +1556,7 @@
 		{
 			window['rl_' + sJsHash + '_facebook_service'] = function () {
 				Data.facebookActions(true);
-				RL.socialUsers();
+				self.socialUsers();
 			};
 		}
 
@@ -1283,16 +1564,16 @@
 		{
 			window['rl_' + sJsHash + '_twitter_service'] = function () {
 				Data.twitterActions(true);
-				RL.socialUsers();
+				self.socialUsers();
 			};
 		}
 
-		RL.sub('interval.1m', function () {
+		Events.sub('interval.1m', function () {
 			Globals.momentTrigger(!Globals.momentTrigger());
 		});
 
 		Plugins.runHook('rl-start-screens');
-		RL.pub('rl.bootstart-end');
+		Events.pub('rl.bootstart-end');
 	};
 
 	module.exports = new RainLoopApp();

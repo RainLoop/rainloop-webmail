@@ -47,11 +47,6 @@
 		this.filter(oFilter);
 	};
 
-//	PopupsFilterViewModel.prototype.onFocus = function ()
-//	{
-//
-//	};
-
-	module.exports = new PopupsFilterViewModel();
+	module.exports = PopupsFilterViewModel;
 
 }(module));

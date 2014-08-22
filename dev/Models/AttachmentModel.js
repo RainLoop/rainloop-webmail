@@ -118,7 +118,7 @@
 	 */
 	AttachmentModel.prototype.linkDownload = function ()
 	{
-		return LinkBuilder.attachmentDownload(this.download); // TODO cjs
+		return LinkBuilder.attachmentDownload(this.download);
 	};
 
 	/**
@@ -126,7 +126,7 @@
 	 */
 	AttachmentModel.prototype.linkPreview = function ()
 	{
-		return LinkBuilder.attachmentPreview(this.download); // TODO cjs
+		return LinkBuilder.attachmentPreview(this.download);
 	};
 
 	/**

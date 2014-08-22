@@ -5,7 +5,8 @@
 	'use strict';
 
 	var
-		kn = require('../External/kn.js'),
+		kn = require('../Knoin/Knoin.js'),
+		Globals = require('../Common/Globals.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
 	
@@ -19,7 +20,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
-		this.leftPanelDisabled = RL.data().leftPanelDisabled;
+		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.menu = oScreen.menu;
 
@@ -33,6 +34,6 @@
 		return '#/' + sRoute;
 	};
 
-	module.exports = new AdminMenuViewModel();
+	module.exports = AdminMenuViewModel;
 
 }(module));

@@ -5,7 +5,7 @@
 	'use strict';
 
 	var
-		kn = require('./Knoin/Knoin.js'),
+		kn = require('../Knoin/Knoin.js'),
 		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
 	;
 

@@ -6,9 +6,8 @@
 
 	var
 		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Globals = require('../Common/Globals.js'),
 
-		Data = require('../Storages/WebMailDataStorage.js'),
-		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -23,7 +22,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'SettingsMenu');
 
-		this.leftPanelDisabled = Data.leftPanelDisabled;
+		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.menu = oScreen.menu;
 

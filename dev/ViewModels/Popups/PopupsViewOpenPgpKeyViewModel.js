@@ -51,6 +51,6 @@
 		}
 	};
 
-	module.exports = new PopupsViewOpenPgpKeyViewModel();
+	module.exports = PopupsViewOpenPgpKeyViewModel;
 
 }(module));

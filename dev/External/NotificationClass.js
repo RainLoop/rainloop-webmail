@@ -2,8 +2,5 @@
 
 'use strict';
 
-var
-	window = require('./window.js')
-;
-
+var window = require('./window.js');
 module.exports = window.Notification && window.Notification.requestPermission ? window.Notification : null;

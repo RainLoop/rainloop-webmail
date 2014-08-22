@@ -15,7 +15,7 @@
 		Plugins = require('../Common/Plugins.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
-		RL = require('../RL.js')
+		AppSettings = require('./AppSettings.js')
 	;
 
 	/**
@@ -63,7 +63,10 @@
 
 				   if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
 				   {
-					   RL().loginAndLogoutReload(true);
+					   if (Globals.__RL)
+					   {
+							Globals.__RL.loginAndLogoutReload(true);
+					   }
 				   }
 
 				   if (oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
@@ -73,7 +76,10 @@
 						   window.__rlah_clear();
 					   }
 
-					   RL().loginAndLogoutReload(true);
+					   if (Globals.__RL)
+					   {
+							Globals.__RL.loginAndLogoutReload(true);
+					   }
 				   }
 			   }
 			   else if (Enums.StorageResultType.Success === sType && oData && oData.Result)
@@ -163,7 +169,7 @@
 
 	   if (bPost)
 	   {
-		   oParameters['XToken'] = RL.settingsGet('Token'); // TODO cjs
+		   oParameters['XToken'] = AppSettings.settingsGet('Token');
 	   }
 
 	   oDefAjax = $.ajax({

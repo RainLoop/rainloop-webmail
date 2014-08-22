@@ -6,8 +6,7 @@
 
 	var
 		_ = require('../External/underscore.js'),
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
-		LoginViewModel = require('../ViewModels/LoginViewModel.js')
+		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
 	;
 
 	/**
@@ -16,6 +15,7 @@
 	 */
 	function LoginScreen()
 	{
+		var LoginViewModel = require('../ViewModels/LoginViewModel.js');
 		KnoinAbstractScreen.call(this, 'login', [LoginViewModel]);
 	}
 
@@ -23,7 +23,8 @@
 
 	LoginScreen.prototype.onShow = function ()
 	{
-		RL.setTitle(''); // TODO cjs
+		var RL = require('../Boots/RainLoopApp.js');
+		RL.setTitle('');
 	};
 
 	module.exports = LoginScreen;

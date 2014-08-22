@@ -9,6 +9,7 @@
 		Enums = require('../../Common/Enums.js'),
 		Utils = require('../../Common/Utils.js'),
 
+		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/AdminDataStorage.js'),
 		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
 		
@@ -106,7 +107,7 @@
 
 	PopupsActivateViewModel.prototype.onShow = function ()
 	{
-		this.domain(RL.settingsGet('AdminDomain'));
+		this.domain(AppSettings.settingsGet('AdminDomain'));
 		if (!this.activateProcess())
 		{
 			this.key('');
@@ -133,6 +134,6 @@
 		return '' === sValue || !!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 	};
 	
-	module.exports = new PopupsActivateViewModel();
+	module.exports = PopupsActivateViewModel;
 
 }(module));

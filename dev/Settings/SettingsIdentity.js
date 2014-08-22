@@ -9,7 +9,9 @@
 		
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
+		NewHtmlEditorWrapper = require('../Common/NewHtmlEditorWrapper.js'),
 
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
 	;
 
@@ -18,14 +20,12 @@
 	 */
 	function SettingsIdentity()
 	{
-		var oData = RL.data();
-
 		this.editor = null;
 
-		this.displayName = oData.displayName;
-		this.signature = oData.signature;
-		this.signatureToAll = oData.signatureToAll;
-		this.replyTo = oData.replyTo;
+		this.displayName = Data.displayName;
+		this.signature = Data.signature;
+		this.signatureToAll = Data.signatureToAll;
+		this.replyTo = Data.replyTo;
 
 		this.signatureDom = ko.observable(null);
 
@@ -34,19 +34,17 @@
 		this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	kn.addSettingsViewModel(SettingsIdentity, 'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
-
 	SettingsIdentity.prototype.onFocus = function ()
 	{
 		if (!this.editor && this.signatureDom())
 		{
 			var
 				self = this,
-				sSignature = RL.data().signature()
+				sSignature = Data.signature()
 			;
 
 			this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
-				RL.data().signature(
+				Data.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);
 			}, function () {
@@ -68,31 +66,30 @@
 		_.delay(function () {
 
 			var
-				oData = RL.data(),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
 				f2 = Utils.settingsSaveHelperSimpleFunction(self.replyTrigger, self),
 				f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
 			;
 
-			oData.displayName.subscribe(function (sValue) {
+			Data.displayName.subscribe(function (sValue) {
 				Remote.saveSettings(f1, {
 					'DisplayName': sValue
 				});
 			});
 
-			oData.replyTo.subscribe(function (sValue) {
+			Data.replyTo.subscribe(function (sValue) {
 				Remote.saveSettings(f2, {
 					'ReplyTo': sValue
 				});
 			});
 
-			oData.signature.subscribe(function (sValue) {
+			Data.signature.subscribe(function (sValue) {
 				Remote.saveSettings(f3, {
 					'Signature': sValue
 				});
 			});
 
-			oData.signatureToAll.subscribe(function (bValue) {
+			Data.signatureToAll.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'SignatureToAll': bValue ? '1' : '0'
 				});

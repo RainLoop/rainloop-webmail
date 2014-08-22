@@ -7,8 +7,11 @@
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
+		
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
+
+		AppSettings = require('../Storages/AppSettings.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
 
@@ -18,9 +21,9 @@
 	function AdminSettingsContacts()
 	{
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-		this.enableContacts = ko.observable(!!RL.settingsGet('ContactsEnable'));
-		this.contactsSharing = ko.observable(!!RL.settingsGet('ContactsSharing'));
-		this.contactsSync = ko.observable(!!RL.settingsGet('ContactsSync'));
+		this.enableContacts = ko.observable(!!AppSettings.settingsGet('ContactsEnable'));
+		this.contactsSharing = ko.observable(!!AppSettings.settingsGet('ContactsSharing'));
+		this.contactsSync = ko.observable(!!AppSettings.settingsGet('ContactsSync'));
 
 		var
 			aTypes = ['sqlite', 'mysql', 'pgsql'],
@@ -43,15 +46,15 @@
 			}
 		;
 
-		if (!!RL.settingsGet('SQLiteIsSupported'))
+		if (!!AppSettings.settingsGet('SQLiteIsSupported'))
 		{
 			aSupportedTypes.push('sqlite');
 		}
-		if (!!RL.settingsGet('MySqlIsSupported'))
+		if (!!AppSettings.settingsGet('MySqlIsSupported'))
 		{
 			aSupportedTypes.push('mysql');
 		}
-		if (!!RL.settingsGet('PostgreSqlIsSupported'))
+		if (!!AppSettings.settingsGet('PostgreSqlIsSupported'))
 		{
 			aSupportedTypes.push('pgsql');
 		}
@@ -99,9 +102,9 @@
 			this.testContactsErrorMessage('');
 		}, this);
 
-		this.pdoDsn = ko.observable(RL.settingsGet('ContactsPdoDsn'));
-		this.pdoUser = ko.observable(RL.settingsGet('ContactsPdoUser'));
-		this.pdoPassword = ko.observable(RL.settingsGet('ContactsPdoPassword'));
+		this.pdoDsn = ko.observable(AppSettings.settingsGet('ContactsPdoDsn'));
+		this.pdoUser = ko.observable(AppSettings.settingsGet('ContactsPdoUser'));
+		this.pdoPassword = ko.observable(AppSettings.settingsGet('ContactsPdoPassword'));
 
 		this.pdoDsnTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.pdoUserTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -131,12 +134,10 @@
 			return '' !== this.pdoDsn() && '' !== this.pdoUser();
 		});
 
-		this.contactsType(RL.settingsGet('ContactsPdoType'));
+		this.contactsType(AppSettings.settingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsContacts, 'AdminSettingsContacts', 'Contacts', 'contacts');
 
 	AdminSettingsContacts.prototype.onTestContactsResponse = function (sResult, oData)
 	{
@@ -225,7 +226,7 @@
 				});
 			});
 
-			self.contactsType(RL.settingsGet('ContactsPdoType'));
+			self.contactsType(AppSettings.settingsGet('ContactsPdoType'));
 
 		}, 50);
 	};

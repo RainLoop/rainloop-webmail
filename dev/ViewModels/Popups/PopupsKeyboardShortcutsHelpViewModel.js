@@ -58,6 +58,6 @@
 		}, this));
 	};
 
-	module.exports = new AdminPaneViewModel();
+	module.exports = PopupsKeyboardShortcutsHelpViewModel;
 
 }(module));

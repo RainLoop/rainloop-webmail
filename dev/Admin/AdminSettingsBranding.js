@@ -7,9 +7,11 @@
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
+		
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
-		kn = require('../Knoin/Knoin.js'),
+
+		AppSettings = require('..Storages/AppSettings.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
 
@@ -18,23 +20,21 @@
 	 */
 	function AdminSettingsBranding()
 	{
-		this.title = ko.observable(RL.settingsGet('Title'));
+		this.title = ko.observable(AppSettings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loadingDesc = ko.observable(RL.settingsGet('LoadingDescription'));
+		this.loadingDesc = ko.observable(AppSettings.settingsGet('LoadingDescription'));
 		this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginLogo = ko.observable(RL.settingsGet('LoginLogo'));
+		this.loginLogo = ko.observable(AppSettings.settingsGet('LoginLogo'));
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginDescription = ko.observable(RL.settingsGet('LoginDescription'));
+		this.loginDescription = ko.observable(AppSettings.settingsGet('LoginDescription'));
 		this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginCss = ko.observable(RL.settingsGet('LoginCss'));
+		this.loginCss = ko.observable(AppSettings.settingsGet('LoginCss'));
 		this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsBranding, 'AdminSettingsBranding', 'Branding', 'branding');
 
 	AdminSettingsBranding.prototype.onBuild = function ()
 	{

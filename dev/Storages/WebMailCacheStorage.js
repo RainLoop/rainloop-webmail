@@ -11,7 +11,7 @@
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
-		RL = require('../RL.js')
+		AppSettings = require('./AppSettings.js')
 	;
 
 	/**
@@ -28,7 +28,7 @@
 		this.oNewMessage = {};
 		this.oRequestedMessage = {};
 
-		this.bCapaGravatar = RL().capa(Enums.Capa.Gravatar);
+		this.bCapaGravatar = AppSettings.capa(Enums.Capa.Gravatar);
 	}
 
 	/**

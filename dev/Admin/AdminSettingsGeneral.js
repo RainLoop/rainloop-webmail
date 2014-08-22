@@ -14,6 +14,7 @@
 
 		kn = require('../Knoin/Knoin.js'),
 
+		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
 
@@ -37,8 +38,8 @@
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
 
-		this.mainAttachmentLimit = ko.observable(Utils.pInt(RL.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
-		this.uploadData = RL.settingsGet('PhpUploadSizes');
+		this.mainAttachmentLimit = ko.observable(Utils.pInt(AppSettings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
+		this.uploadData = AppSettings.settingsGet('PhpUploadSizes');
 		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ?
 			[
 				this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
@@ -59,14 +60,12 @@
 			return Utils.convertLangName(this.mainLanguage());
 		}, this);
 
-		this.weakPassword = !!RL.settingsGet('WeakPassword');
+		this.weakPassword = !!AppSettings.settingsGet('WeakPassword');
 
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
-
-	kn.addSettingsViewModel(AdminSettingsGeneral, 'AdminSettingsGeneral', 'General', 'general', true);
 
 	AdminSettingsGeneral.prototype.onBuild = function ()
 	{

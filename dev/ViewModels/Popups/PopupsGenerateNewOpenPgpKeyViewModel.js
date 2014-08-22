@@ -12,6 +12,8 @@
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
+		RL = require('../../Boots/RainLoopApp.js'),
+
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -110,6 +112,6 @@
 		this.email.focus(true);
 	};
 
-	module.exports = new PopupsGenerateNewOpenPgpKeyViewModel();
+	module.exports = PopupsGenerateNewOpenPgpKeyViewModel;
 
 }(module));

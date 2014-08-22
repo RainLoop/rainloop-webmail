@@ -11,8 +11,11 @@
 		Consts = require('../../Common/Consts.js'),
 		Utils = require('../../Common/Utils.js'),
 
+		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../../Boots/RainLoopApp.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -34,7 +37,7 @@
 		this.notification = ko.observable('');
 
 		this.folderSelectList = ko.computed(function () {
-			return RL.folderListOptionsBuilder([], Data.folderList(), Data.folderListSystemNames(), [
+			return Utils.folderListOptionsBuilder([], Data.folderList(), Data.folderListSystemNames(), [
 				['', this.sChooseOnText],
 				[Consts.Values.UnuseOptionValue, this.sUnuseText]
 			]);
@@ -54,11 +57,11 @@
 
 		fSaveSystemFolders = _.debounce(function () {
 
-			RL.settingsSet('SentFolder', self.sentFolder());
-			RL.settingsSet('DraftFolder', self.draftFolder());
-			RL.settingsSet('SpamFolder', self.spamFolder());
-			RL.settingsSet('TrashFolder', self.trashFolder());
-			RL.settingsSet('ArchiveFolder', self.archiveFolder());
+			AppSettings.settingsSet('SentFolder', self.sentFolder());
+			AppSettings.settingsSet('DraftFolder', self.draftFolder());
+			AppSettings.settingsSet('SpamFolder', self.spamFolder());
+			AppSettings.settingsSet('TrashFolder', self.trashFolder());
+			AppSettings.settingsSet('ArchiveFolder', self.archiveFolder());
 
 			Remote.saveSystemFolders(Utils.emptyFunction, {
 				'SentFolder': self.sentFolder(),
@@ -73,11 +76,11 @@
 
 		fCallback = function () {
 
-			RL.settingsSet('SentFolder', self.sentFolder());
-			RL.settingsSet('DraftFolder', self.draftFolder());
-			RL.settingsSet('SpamFolder', self.spamFolder());
-			RL.settingsSet('TrashFolder', self.trashFolder());
-			RL.settingsSet('ArchiveFolder', self.archiveFolder());
+			AppSettings.settingsSet('SentFolder', self.sentFolder());
+			AppSettings.settingsSet('DraftFolder', self.draftFolder());
+			AppSettings.settingsSet('SpamFolder', self.spamFolder());
+			AppSettings.settingsSet('TrashFolder', self.trashFolder());
+			AppSettings.settingsSet('ArchiveFolder', self.archiveFolder());
 
 			fSaveSystemFolders();
 		};
@@ -129,6 +132,6 @@
 		this.notification(sNotification);
 	};
 
-	module.exports = new PopupsFolderSystemViewModel();
+	module.exports = PopupsFolderSystemViewModel;
 
 }(module));

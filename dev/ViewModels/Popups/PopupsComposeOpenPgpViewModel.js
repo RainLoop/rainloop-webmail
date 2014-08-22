@@ -257,6 +257,6 @@
 		this.text(sText);
 	};
 
-	module.exports = new PopupsComposeOpenPgpViewModel();
+	module.exports = PopupsComposeOpenPgpViewModel;
 
 }(module));

@@ -76,6 +76,6 @@
 		this.cancelCommand();
 	};
 
-	module.exports = new PopupsLanguagesViewModel();
+	module.exports = PopupsLanguagesViewModel;
 
 }(module));

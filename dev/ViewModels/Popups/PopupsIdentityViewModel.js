@@ -14,6 +14,8 @@
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
+		RL = require('../../Boots/RainLoopApp.js'),
+
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;
 
@@ -165,6 +167,6 @@
 		}
 	};
 
-	module.exports = new PopupsIdentityViewModel();
+	module.exports = PopupsIdentityViewModel;
 
 }(module));

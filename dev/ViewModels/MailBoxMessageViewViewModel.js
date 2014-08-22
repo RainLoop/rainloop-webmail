@@ -5,16 +5,22 @@
 	'use strict';
 
 	var
+		$ = require('../External/jquery.js'),
 		ko = require('../External/ko.js'),
 		key = require('../External/key.js'),
 		$html = require('../External/$html.js'),
 		
 		Consts = require('../Common/Consts.js'),
 		Enums = require('../Common/Enums.js'),
+		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
+		Events = require('../Common/Events.js'),
 
 		Cache = require('../Storages/WebMailCacheStorage.js'),
+		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js'),
 		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
@@ -31,7 +37,6 @@
 		var
 			self = this,
 			sLastEmail = '',
-			oData = RL.data(),
 			createCommandHelper = function (sType) {
 				return Utils.createCommand(self, function () {
 					this.replyOrforward(sType);
@@ -41,24 +46,23 @@
 
 		this.oMessageScrollerDom = null;
 
-		this.keyScope = oData.keyScope;
-		this.message = oData.message;
-		this.currentMessage = oData.currentMessage;
-		this.messageListChecked = oData.messageListChecked;
-		this.hasCheckedMessages = oData.hasCheckedMessages;
-		this.messageListCheckedOrSelectedUidsWithSubMails = oData.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageLoading = oData.messageLoading;
-		this.messageLoadingThrottle = oData.messageLoadingThrottle;
-		this.messagesBodiesDom = oData.messagesBodiesDom;
-		this.useThreads = oData.useThreads;
-		this.replySameFolder = oData.replySameFolder;
-		this.layout = oData.layout;
-		this.usePreviewPane = oData.usePreviewPane;
-		this.isMessageSelected = oData.isMessageSelected;
-		this.messageActiveDom = oData.messageActiveDom;
-		this.messageError = oData.messageError;
+		this.message = Data.message;
+		this.currentMessage = Data.currentMessage;
+		this.messageListChecked = Data.messageListChecked;
+		this.hasCheckedMessages = Data.hasCheckedMessages;
+		this.messageListCheckedOrSelectedUidsWithSubMails = Data.messageListCheckedOrSelectedUidsWithSubMails;
+		this.messageLoading = Data.messageLoading;
+		this.messageLoadingThrottle = Data.messageLoadingThrottle;
+		this.messagesBodiesDom = Data.messagesBodiesDom;
+		this.useThreads = Data.useThreads;
+		this.replySameFolder = Data.replySameFolder;
+		this.layout = Data.layout;
+		this.usePreviewPane = Data.usePreviewPane;
+		this.isMessageSelected = Data.isMessageSelected;
+		this.messageActiveDom = Data.messageActiveDom;
+		this.messageError = Data.messageError;
 
-		this.fullScreenMode = oData.messageFullScreenMode;
+		this.fullScreenMode = Data.messageFullScreenMode;
 
 		this.showFullInfo = ko.observable(false);
 		this.moreDropdownTrigger = ko.observable(false);
@@ -79,7 +83,7 @@
 
 		// commands
 		this.closeMessage = Utils.createCommand(this, function () {
-			oData.message(null);
+			Data.message(null);
 		});
 
 		this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
@@ -107,7 +111,7 @@
 			if (this.message())
 			{
 				RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
-					RL.data().currentFolderFullNameRaw(),
+					Data.currentFolderFullNameRaw(),
 					[this.message().uid], false);
 			}
 		}, this.messageVisibility);
@@ -235,11 +239,11 @@
 		});
 
 		this.goUpCommand = Utils.createCommand(this, function () {
-			RL.pub('mailbox.message-list.selector.go-up');
+			Events.pub('mailbox.message-list.selector.go-up');
 		});
 
 		this.goDownCommand = Utils.createCommand(this, function () {
-			RL.pub('mailbox.message-list.selector.go-down');
+			Events.pub('mailbox.message-list.selector.go-down');
 		});
 
 		kn.constructorEnd(this);
@@ -331,14 +335,13 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 	{
-		kn.showScreenPopup(PopupsComposeViewModel, [sType, RL.data().message()]);
+		kn.showScreenPopup(PopupsComposeViewModel, [sType, Data.message()]);
 	};
 
 	MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	{
 		var
-			self = this,
-			oData = RL.data()
+			self = this
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {
@@ -358,10 +361,10 @@
 			},
 			'callbacks': {
 				'open': function() {
-					oData.useKeyboardShortcuts(false);
+					Globals.useKeyboardShortcuts(false);
 				},
 				'close': function() {
-					oData.useKeyboardShortcuts(true);
+					Globals.useKeyboardShortcuts(true);
 				}
 			},
 			'mainClass': 'mfp-fade',
@@ -370,7 +373,7 @@
 
 		oDom
 			.on('click', '.messageView .messageItem .messageItemHeader', function () {
-				if (oData.useKeyboardShortcuts() && self.message())
+				if (Globals.useKeyboardShortcuts() && self.message())
 				{
 					self.message.focused(true);
 				}
@@ -407,13 +410,13 @@
 		}, this);
 
 		this.messageDomFocused.subscribe(function (bValue) {
-			if (!bValue && Enums.KeyState.MessageView === this.keyScope())
+			if (!bValue && Enums.KeyState.MessageView === Globals.keyScope())
 			{
 				this.message.focused(false);
 			}
 		}, this);
 
-		this.keyScope.subscribe(function (sValue) {
+		Globals.keyScope.subscribe(function (sValue) {
 			if (Enums.KeyState.MessageView === sValue && this.message.focused())
 			{
 				this.messageDomFocused(true);
@@ -437,7 +440,7 @@
 			{
 				this.fullScreenMode(false);
 			}
-			else if (Enums.Layout.NoPreview === RL.data().layout())
+			else if (Enums.Layout.NoPreview === Data.layout())
 			{
 				this.message(null);
 			}
@@ -453,8 +456,7 @@
 	MailBoxMessageViewViewModel.prototype.initShortcuts = function ()
 	{
 		var
-			self = this,
-			oData = RL.data()
+			self = this
 		;
 
 		// exit fullscreen, back
@@ -467,7 +469,7 @@
 		});
 
 		key('enter', Enums.KeyState.MessageList, function () {
-			if (Enums.Layout.NoPreview !== oData.layout() && self.message())
+			if (Enums.Layout.NoPreview !== Data.layout() && self.message())
 			{
 				self.toggleFullScreen();
 				return false;
@@ -482,7 +484,7 @@
 
 		// reply
 		key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (oData.message())
+			if (Data.message())
 			{
 				self.replyCommand();
 				return false;
@@ -491,7 +493,7 @@
 
 		// replaAll
 		key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (oData.message())
+			if (Data.message())
 			{
 				self.replyAllCommand();
 				return false;
@@ -500,7 +502,7 @@
 
 		// forward
 		key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (oData.message())
+			if (Data.message())
 			{
 				self.forwardCommand();
 				return false;
@@ -518,9 +520,9 @@
 
 		// toggle message blockquotes
 		key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (oData.message() && oData.message().body)
+			if (Data.message() && Data.message().body)
 			{
-				Utils.toggleMessageBlockquote(oData.message().body);
+				Utils.toggleMessageBlockquote(Data.message().body);
 				return false;
 			}
 		});
@@ -564,7 +566,7 @@
 
 		// change focused state
 		key('tab, shift+tab, left', Enums.KeyState.MessageView, function () {
-			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== oData.layout())
+			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== Data.layout())
 			{
 				self.message.focused(false);
 			}
@@ -578,7 +580,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isDraftFolder = function ()
 	{
-		return RL.data().message() && RL.data().draftFolder() === RL.data().message().folderFullNameRaw;
+		return Data.message() && Data.draftFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -586,7 +588,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isSentFolder = function ()
 	{
-		return RL.data().message() && RL.data().sentFolder() === RL.data().message().folderFullNameRaw;
+		return Data.message() && Data.sentFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -594,7 +596,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isSpamFolder = function ()
 	{
-		return RL.data().message() && RL.data().spamFolder() === RL.data().message().folderFullNameRaw;
+		return Data.message() && Data.spamFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -602,7 +604,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isSpamDisabled = function ()
 	{
-		return RL.data().message() && RL.data().spamFolder() === Consts.Values.UnuseOptionValue;
+		return Data.message() && Data.spamFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -610,7 +612,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isArchiveFolder = function ()
 	{
-		return RL.data().message() && RL.data().archiveFolder() === RL.data().message().folderFullNameRaw;
+		return Data.message() && Data.archiveFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -618,7 +620,7 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.isArchiveDisabled = function ()
 	{
-		return RL.data().message() && RL.data().archiveFolder() === Consts.Values.UnuseOptionValue;
+		return Data.message() && Data.archiveFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -636,9 +638,9 @@
 
 	MailBoxMessageViewViewModel.prototype.editMessage = function ()
 	{
-		if (RL.data().message())
+		if (Data.message())
 		{
-			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Draft, RL.data().message()]);
+			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Draft, Data.message()]);
 		}
 	};
 
@@ -703,7 +705,7 @@
 			Remote.sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
 				oMessage.readReceipt(),
 				Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-				Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': RL.data().accountEmail()}));
+				Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': Data.accountEmail()}));
 
 			oMessage.isReadReceipt(true);
 

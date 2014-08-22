@@ -14,6 +14,8 @@
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
+		RL = require('../../Boots/RainLoopApp.js'),
+
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -57,7 +59,7 @@
 				};
 			}
 
-			return RL.folderListOptionsBuilder([], aList, [], aTop, null, fDisableCallback, fVisibleCallback, fRenameCallback);
+			return Utils.folderListOptionsBuilder([], aList, [], aTop, null, fDisableCallback, fVisibleCallback, fRenameCallback);
 
 		}, this);
 
@@ -123,6 +125,6 @@
 		this.folderName.focused(true);
 	};
 
-	module.exports = new PopupsFolderCreateViewModel();
+	module.exports = PopupsFolderCreateViewModel;
 
 }(module));

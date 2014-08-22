@@ -5,20 +5,21 @@
 	'use strict';
 
 	var
-		$ = require('./jquery.js'),
-		_ = require('./underscore.js'),
 		window = require('./window.js'),
+		_ = require('./underscore.js'),
+		$ = require('./jquery.js'),
 		$window = require('./$window.js'),
-		$doc = require('./$doc.js'),
-
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-
-		RL = require('../RL.js')
+		$doc = require('./$doc.js')
 	;
 
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
+
+			var
+				Globals = require('../Common/Globals.js'),
+				Utils = require('../Common/Utils.js')
+			;
+
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -56,7 +57,8 @@
 			var
 				$oEl = $(oElement),
 				sClass = $oEl.data('tooltip-class') || '',
-				sPlacement = $oEl.data('tooltip-placement') || 'top'
+				sPlacement = $oEl.data('tooltip-placement') || 'top',
+				Globals = require('../Common/Globals.js')
 			;
 
 			$oEl.tooltip({
@@ -84,7 +86,10 @@
 	ko.bindingHandlers.tooltip3 = {
 		'init': function (oElement) {
 
-			var $oEl = $(oElement);
+			var
+				$oEl = $(oElement),
+				Globals = require('../Common/Globals.js')
+			;
 
 			$oEl.tooltip({
 				'container': 'body',
@@ -117,6 +122,11 @@
 
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
+			
+			var
+				Globals = require('../Common/Globals.js')
+			;
+			
 			Globals.aBootstrapDropdowns.push($(oElement));
 		}
 	};
@@ -125,7 +135,11 @@
 		'update': function (oElement, fValueAccessor) {
 			if (ko.utils.unwrapObservable(fValueAccessor()))
 			{
-				var $el = $(oElement);
+				var
+					$el = $(oElement),
+					Utils = require('../Common/Utils.js')
+				;
+				
 				if (!$el.hasClass('open'))
 				{
 					$el.find('.dropdown-toggle').dropdown('toggle');
@@ -153,6 +167,11 @@
 
 	ko.bindingHandlers.csstext = {
 		'init': function (oElement, fValueAccessor) {
+			
+			var
+				Utils = require('../Common/Utils.js')
+			;
+
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -163,6 +182,11 @@
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
+
+			var
+				Utils = require('../Common/Utils.js')
+			;
+
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -229,6 +253,11 @@
 	ko.bindingHandlers.modal = {
 		'init': function (oElement, fValueAccessor) {
 
+			var
+				Globals = require('../Common/Globals.js'),
+				Utils = require('../Common/Utils.js')
+			;
+
 			$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 				'keyboard': false,
 				'show': ko.utils.unwrapObservable(fValueAccessor())
@@ -247,12 +276,18 @@
 
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
+			var
+				Utils = require('../Common/Utils.js')
+			;
 			Utils.i18nToNode(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
+			var
+				Utils = require('../Common/Utils.js')
+			;
 			ko.utils.unwrapObservable(fValueAccessor());
 			Utils.i18nToNode(oElement);
 		}
@@ -292,6 +327,7 @@
 		},
 		'update': function (oElement, fValueAccessor) {
 			var
+				Utils = require('../Common/Utils.js'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -325,6 +361,11 @@
 	ko.bindingHandlers.draggable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
 
+			var
+				Globals = require('../Common/Globals.js'),
+				Utils = require('../Common/Utils.js')
+			;
+			
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -406,6 +447,10 @@
 	ko.bindingHandlers.droppable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
 
+			var
+				Globals = require('../Common/Globals.js')
+			;
+
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -447,6 +492,11 @@
 
 	ko.bindingHandlers.nano = {
 		'init': function (oElement) {
+
+			var
+				Globals = require('../Common/Globals.js')
+			;
+			
 			if (!Globals.bDisableNanoScroll)
 			{
 				$(oElement)
@@ -540,10 +590,14 @@
 	};
 
 	ko.bindingHandlers.emailsTags = {
-		'init': function(oElement, fValueAccessor) {
+		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
+			
 			var
+				Utils = require('../Common/Utils.js'),
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
+				fAllBindings = fAllBindingsAccessor(),
+				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
 				fFocusCallback = function (bValue) {
 					if (fValue && fValue.focusTrigger)
 					{
@@ -557,13 +611,7 @@
 				'allowDragAndDrop': true,
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
-				'autoCompleteSource': function (oData, fResponse) {
-					RL().getAutocomplete(oData.term, function (aData) {
-						fResponse(_.map(aData, function (oEmailItem) {
-							return oEmailItem.toLine(false);
-						}));
-					});
-				},
+				'autoCompleteSource': fAutoCompleteSource,
 				'parseHook': function (aInput) {
 					return _.map(aInput, function (sInputValue) {
 
@@ -615,9 +663,13 @@
 
 	ko.bindingHandlers.contactTags = {
 		'init': function(oElement, fValueAccessor) {
+			
 			var
+				Utils = require('../Common/Utils.js'),
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
+				fAllBindings = fAllBindingsAccessor(),
+				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
 				fFocusCallback = function (bValue) {
 					if (fValue && fValue.focusTrigger)
 					{
@@ -632,13 +684,7 @@
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
 				'outputDelimiter': ',',
-				'autoCompleteSource': function (oData, fResponse) {
-					RL().getContactTagsAutocomplete(oData.term, function (aData) {
-						fResponse(_.map(aData, function (oTagItem) {
-							return oTagItem.toLine(false);
-						}));
-					});
-				},
+				'autoCompleteSource': fAutoCompleteSource,
 				'parseHook': function (aInput) {
 					return _.map(aInput, function (sInputValue) {
 
@@ -731,13 +777,16 @@
 
 	ko.extenders.trimmer = function (oTarget)
 	{
-		var oResult = ko.computed({
-			'read': oTarget,
-			'write': function (sNewValue) {
-				oTarget(Utils.trim(sNewValue.toString()));
-			},
-			'owner': this
-		});
+		var 
+			Utils = require('../Common/Utils.js'),
+			oResult = ko.computed({
+				'read': oTarget,
+				'write': function (sNewValue) {
+					oTarget(Utils.trim(sNewValue.toString()));
+				},
+				'owner': this
+			})
+		;
 
 		oResult(oTarget());
 		return oResult;
@@ -745,23 +794,26 @@
 
 	ko.extenders.posInterer = function (oTarget, iDefault)
 	{
-		var oResult = ko.computed({
-			'read': oTarget,
-			'write': function (sNewValue) {
-				var iNew = Utils.pInt(sNewValue.toString(), iDefault);
-				if (0 >= iNew)
-				{
-					iNew = iDefault;
-				}
+		var 
+			Utils = require('../Common/Utils.js'),
+			oResult = ko.computed({
+				'read': oTarget,
+				'write': function (sNewValue) {
+					var iNew = Utils.pInt(sNewValue.toString(), iDefault);
+					if (0 >= iNew)
+					{
+						iNew = iDefault;
+					}
 
-				if (iNew === oTarget() && '' + iNew !== '' + sNewValue)
-				{
-					oTarget(iNew + 1);
-				}
+					if (iNew === oTarget() && '' + iNew !== '' + sNewValue)
+					{
+						oTarget(iNew + 1);
+					}
 
-				oTarget(iNew);
-			}
-		});
+					oTarget(iNew);
+				}
+			})
+		;
 
 		oResult(oTarget());
 		return oResult;
@@ -799,6 +851,8 @@
 
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
+		var Utils = require('../Common/Utils.js');
+			
 		oTarget.iTimeout = 0;
 		oTarget.subscribe(function (bValue) {
 			if (bValue)
@@ -822,6 +876,7 @@
 
 	ko.observable.fn.validateEmail = function ()
 	{
+		var Utils = require('../Common/Utils.js');
 		this.hasError = ko.observable(false);
 
 		this.subscribe(function (sValue) {
@@ -835,6 +890,8 @@
 
 	ko.observable.fn.validateSimpleEmail = function ()
 	{
+		var Utils = require('../Common/Utils.js');
+
 		this.hasError = ko.observable(false);
 
 		this.subscribe(function (sValue) {
@@ -848,6 +905,7 @@
 
 	ko.observable.fn.validateFunc = function (fFunc)
 	{
+		var Utils = require('../Common/Utils.js');
 		this.hasFuncError = ko.observable(false);
 
 		if (Utils.isFunc(fFunc))

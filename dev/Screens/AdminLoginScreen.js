@@ -6,8 +6,7 @@
 
 	var
 		_ = require('../External/underscore.js'),
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
-		AdminLoginViewModel = require('../ViewModels/AdminLoginViewModel.js')
+		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
 	;
 	
 	/**
@@ -16,6 +15,7 @@
 	 */
 	function AdminLoginScreen()
 	{
+		var AdminLoginViewModel = require('../ViewModels/AdminLoginViewModel.js');
 		KnoinAbstractScreen.call(this, 'login', [AdminLoginViewModel]);
 	}
 
@@ -23,7 +23,8 @@
 
 	AdminLoginScreen.prototype.onShow = function ()
 	{
-		RL.setTitle(''); // TODO cjs
+		var RL = require('../Boots/AdminApp.js');
+		RL.setTitle('');
 	};
 
 	module.exports = AdminLoginScreen;

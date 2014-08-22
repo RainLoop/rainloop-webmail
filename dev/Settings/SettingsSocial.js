@@ -5,7 +5,11 @@
 	'use strict';
 
 	var 
-		Utils = require('../Common/Utils.js')
+		Utils = require('../Common/Utils.js'),
+
+		Data = require('../Storages/WebMailDataStorage.js'),
+
+		RL = require('../Boots/RainLoopApp.js')
 	;
 
 	/**
@@ -13,25 +17,23 @@
 	 */
 	function SettingsSocial()
 	{
-		var oData = RL.data();
+		this.googleEnable = Data.googleEnable;
 
-		this.googleEnable = oData.googleEnable;
+		this.googleActions = Data.googleActions;
+		this.googleLoggined = Data.googleLoggined;
+		this.googleUserName = Data.googleUserName;
 
-		this.googleActions = oData.googleActions;
-		this.googleLoggined = oData.googleLoggined;
-		this.googleUserName = oData.googleUserName;
+		this.facebookEnable = Data.facebookEnable;
 
-		this.facebookEnable = oData.facebookEnable;
+		this.facebookActions = Data.facebookActions;
+		this.facebookLoggined = Data.facebookLoggined;
+		this.facebookUserName = Data.facebookUserName;
 
-		this.facebookActions = oData.facebookActions;
-		this.facebookLoggined = oData.facebookLoggined;
-		this.facebookUserName = oData.facebookUserName;
+		this.twitterEnable = Data.twitterEnable;
 
-		this.twitterEnable = oData.twitterEnable;
-
-		this.twitterActions = oData.twitterActions;
-		this.twitterLoggined = oData.twitterLoggined;
-		this.twitterUserName = oData.twitterUserName;
+		this.twitterActions = Data.twitterActions;
+		this.twitterLoggined = Data.twitterLoggined;
+		this.twitterUserName = Data.twitterUserName;
 
 		this.connectGoogle = Utils.createCommand(this, function () {
 			if (!this.googleLoggined())
@@ -72,8 +74,6 @@
 			RL.twitterDisconnect();
 		});
 	}
-
-	kn.addSettingsViewModel(SettingsSocial, 'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
 
 	module.exports = SettingsSocial;
 

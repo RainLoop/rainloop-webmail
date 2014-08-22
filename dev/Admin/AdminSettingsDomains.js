@@ -11,6 +11,8 @@
 
 		Enums = require('../Common/Enums.js'),
 
+		RL = require('../Boots/AdminApp.js'),
+
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
 	;
@@ -44,8 +46,6 @@
 			}
 		]});
 	}
-
-	kn.addSettingsViewModel(AdminSettingsDomains, 'AdminSettingsDomains', 'Domains', 'domains');
 
 	AdminSettingsDomains.prototype.startDomainForDeletionTimeout = function ()
 	{
