@@ -40,6 +40,46 @@
 	"engines": {
 		"node": ">= 0.10.0"
 	},
+	"browser": {
+		"window": "./dev/External/window.js",
+		"JSON": "./dev/External/JSON.js",
+		"$": "./dev/External/jquery.js",
+		"jquery": "./dev/External/jquery.js",
+		"_": "./dev/External/underscore.js",
+		"underscore": "./dev/External/underscore.js",
+		"ko": "./dev/External/ko.js",
+		"key": "./dev/External/key.js",
+		"moment": "./dev/External/moment.js",
+		"crossroads": "./dev/External/crossroads.js",
+		"hasher": "./dev/External/hasher.js",
+		"ifvisible": "./dev/External/ifvisible.js",
+		"ssm": "./dev/External/ssm.js",
+		"Jua": "./dev/External/Jua.js",
+		"AppData": "./dev/External/AppData.js",
+		"NotificationClass": "./dev/External/NotificationClass.js",
+		"$window": "./dev/External/$window.js",
+		"$html": "./dev/External/$html.js",
+		"$doc": "./dev/External/$doc.js",
+		"$div": "./dev/External/$div.js",
+		
+		"Base64": "./dev/Common/Base64.js",
+		"Consts": "./dev/Common/Consts.js",
+		"Globals": "./dev/Common/Globals.js",
+		"Plugins": "./dev/Common/Plugins.js",
+		"Enums": "./dev/Common/Enums.js",
+		"Utils": "./dev/Common/Utils.js",
+		"Events": "./dev/Common/Events.js",
+		"Selector": "./dev/Common/Selector.js",
+		"LinkBuilder": "./dev/Common/LinkBuilder.js",
+		"NewHtmlEditorWrapper": "./dev/Common/NewHtmlEditorWrapper.js",
+
+		"Knoin": "./dev/Knoin/Knoin.js",
+		"KnoinAbstractBoot": "./dev/Knoin/KnoinAbstractBoot.js",
+		"KnoinAbstractScreen": "./dev/Knoin/KnoinAbstractScreen.js",
+		"KnoinAbstractViewModel": "./dev/Knoin/KnoinAbstractViewModel.js",
+		"kn": "./dev/Knoin/Knoin.js",
+		"Boot": "./dev/Boots/Boot.js"
+	},
 	"devDependencies": {
 
 		"crypto": "*",
@@ -47,12 +87,12 @@
 		"jshint-summary": "*",
 
 		"browserify": "*",
-		"vinyl-source-stream": "latest",
+		"vinyl-source-stream": "*",
 
 		"gulp": "*",
 		"gulp-util": "*",
 		"gulp-uglify": "*",
-		"gulp-clean": "*",
+		"gulp-rimraf": "*",
 		"gulp-jshint": "*",
 		"gulp-less": "*",
 		"gulp-zip": "*",

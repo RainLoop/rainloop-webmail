@@ -1,27 +1,28 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		moment = require('../External/moment.js'),
-		$div = require('../External/$div.js'),
-		NotificationClass = require('../External/NotificationClass.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$div = require('$div'),
+		NotificationClass = require('NotificationClass'),
 
-		Consts = require('../Common/Consts.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Consts = require('Consts'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js'),
 		Cache = require('./WebMailCacheStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		MessageModel = require('../Models/MessageModel.js'),
 
@@ -1024,4 +1025,4 @@
 
 	module.exports = new WebMailDataStorage();
 
-}(module));
+}(module, require));

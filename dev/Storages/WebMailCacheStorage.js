@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js')
 	;
@@ -345,4 +346,4 @@
 
 	module.exports = new WebMailCacheStorage();
 
-}(module));
+}(module, require));

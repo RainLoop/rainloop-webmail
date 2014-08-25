@@ -1,7 +1,8 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	/**
 	 * @constructor
@@ -9,7 +10,7 @@
 	function SettingsSocial()
 	{
 		var
-			Utils = require('../Common/Utils.js'),
+			Utils = require('Utils'),
 			RL = require('../Boots/RainLoopApp.js'),
 			Data = require('../Storages/WebMailDataStorage.js')
 		;
@@ -74,4 +75,4 @@
 
 	module.exports = SettingsSocial;
 
-}(module));
+}(module, require));

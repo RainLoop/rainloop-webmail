@@ -1,15 +1,16 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Utils = require('../../Common/Utils.js'),
+		Utils = require('Utils'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -54,4 +55,4 @@
 
 	module.exports = PopupsViewOpenPgpKeyViewModel;
 
-}(module));
+}(module, require));

@@ -1,33 +1,33 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-var boot = require('./Boots/Boot.js');
-boot(require('./Boots/RainLoopApp.js'));
-},{"./Boots/Boot.js":3,"./Boots/RainLoopApp.js":4}],2:[function(require,module,exports){
+(function (require) {
+	'use strict';
+	require('Boot')(require('./Boots/RainLoopApp.js'));
+}(require));
+},{"./Boots/RainLoopApp.js":4,"Boot":3}],2:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		window = require('../External/window.js'),
-		$html = require('../External/$html.js'),
-		$window = require('../External/$window.js'),
-		$doc = require('../External/$doc.js'),
+		$ = require('$'),
+		_ = require('_'),
+		window = require('window'),
+		$html = require('$html'),
+		$window = require('$window'),
+		$doc = require('$doc'),
 
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 
-		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
+		KnoinAbstractBoot = require('KnoinAbstractBoot')
 	;
 
 	/**
@@ -150,7 +150,7 @@ boot(require('./Boots/RainLoopApp.js'));
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			kn = require('../Knoin/Knoin.js'),
+			kn = require('kn'),
 			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
 			bInIframe = !!AppSettings.settingsGet('InIframe')
 		;
@@ -279,24 +279,24 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = AbstractApp;
 
-}(module));
-},{"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/$doc.js":16,"../External/$html.js":17,"../External/$window.js":18,"../External/jquery.js":26,"../External/ssm.js":30,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractBoot.js":34,"../Storages/AppSettings.js":68}],3:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$doc":16,"$html":17,"$window":18,"../External/ssm.js":30,"../Storages/AppSettings.js":68,"Events":8,"Globals":9,"KnoinAbstractBoot":34,"LinkBuilder":10,"Utils":14,"_":31,"kn":33,"window":32}],3:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		$ = require('../External/jquery.js'),
-		$window = require('../External/$window.js'),
-		$html = require('../External/$html.js'),
+		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
+		$window = require('$window'),
+		$html = require('$html'),
 
-		Globals = require('../Common/Globals.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js')
+		Globals = require('Globals'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils')
 	;
 
 	module.exports = function (App) {
@@ -329,7 +329,7 @@ boot(require('./Boots/RainLoopApp.js'));
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = require('../Models/EmailModel.js');
-		window['rl']['Enums'] = require('../Common/Enums.js');
+		window['rl']['Enums'] = require('Enums');
 
 		window['__RLBOOT'] = function (fCall) {
 
@@ -358,29 +358,29 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	};
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/Plugins.js":12,"../Common/Utils.js":14,"../External/$html.js":17,"../External/$window.js":18,"../External/jquery.js":26,"../External/underscore.js":31,"../External/window.js":32,"../Models/EmailModel.js":43}],4:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$html":17,"$window":18,"../Models/EmailModel.js":43,"Enums":7,"Globals":9,"Plugins":12,"Utils":14,"_":31,"window":32}],4:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		moment = require('../External/moment.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		moment = require('moment'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Consts = require('../Common/Consts.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Consts = require('Consts'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		LocalStorage = require('../Storages/LocalStorage.js'),
 		AppSettings = require('../Storages/AppSettings.js'),
@@ -573,11 +573,6 @@ boot(require('./Boots/RainLoopApp.js'));
 
 		return true;
 	};
-
-	RainLoopApp.prototype.p111 = function ()
-	{
-
-	}
 
 	RainLoopApp.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
 	{
@@ -1947,13 +1942,13 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = new RainLoopApp();
 
-}(module));
-},{"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Plugins.js":12,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/moment.js":29,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Models/AccountModel.js":37,"../Models/EmailModel.js":43,"../Models/FolderModel.js":46,"../Models/IdentityModel.js":47,"../Models/MessageModel.js":48,"../Models/OpenPgpKeyModel.js":49,"../Screens/LoginScreen.js":51,"../Screens/MailBoxScreen.js":52,"../Screens/SettingsScreen.js":53,"../Settings/SettingsAccounts.js":54,"../Settings/SettingsChangePassword.js":55,"../Settings/SettingsContacts.js":56,"../Settings/SettingsFilters.js":57,"../Settings/SettingsFolders.js":58,"../Settings/SettingsGeneral.js":59,"../Settings/SettingsIdentities.js":60,"../Settings/SettingsIdentity.js":61,"../Settings/SettingsOpenPGP.js":62,"../Settings/SettingsSecurity.js":63,"../Settings/SettingsSocial.js":64,"../Settings/SettingsThemes.js":65,"../Storages/AppSettings.js":68,"../Storages/LocalStorage.js":69,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAskViewModel.js":84,"../ViewModels/Popups/PopupsComposeViewModel.js":86,"./AbstractApp.js":2}],5:[function(require,module,exports){
+}(module, require));
+},{"$":26,"../Models/AccountModel.js":37,"../Models/EmailModel.js":43,"../Models/FolderModel.js":46,"../Models/IdentityModel.js":47,"../Models/MessageModel.js":48,"../Models/OpenPgpKeyModel.js":49,"../Screens/LoginScreen.js":51,"../Screens/MailBoxScreen.js":52,"../Screens/SettingsScreen.js":53,"../Settings/SettingsAccounts.js":54,"../Settings/SettingsChangePassword.js":55,"../Settings/SettingsContacts.js":56,"../Settings/SettingsFilters.js":57,"../Settings/SettingsFolders.js":58,"../Settings/SettingsGeneral.js":59,"../Settings/SettingsIdentities.js":60,"../Settings/SettingsIdentity.js":61,"../Settings/SettingsOpenPGP.js":62,"../Settings/SettingsSecurity.js":63,"../Settings/SettingsSocial.js":64,"../Settings/SettingsThemes.js":65,"../Storages/AppSettings.js":68,"../Storages/LocalStorage.js":69,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAskViewModel.js":84,"../ViewModels/Popups/PopupsComposeViewModel.js":86,"./AbstractApp.js":2,"Consts":6,"Enums":7,"Events":8,"Globals":9,"LinkBuilder":10,"Plugins":12,"Utils":14,"_":31,"kn":33,"moment":29,"window":32}],5:[function(require,module,exports){
 // Base64 encode / decode
 // http://www.webtoolkit.info/
 
 (function (module) {
-
+	
 	'use strict';
 
 	/*jslint bitwise: true*/
@@ -2119,7 +2114,7 @@ boot(require('./Boots/RainLoopApp.js'));
 	module.exports = Base64;
 	/*jslint bitwise: false*/
 
-}(module));
+}(module, require));
 },{}],6:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
@@ -2249,7 +2244,7 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = Consts;
 
-}(module));
+}(module, require));
 },{}],7:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
@@ -2690,21 +2685,21 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = Enums;
 
-}(module));
+}(module, require));
 },{}],8:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
-	var
-		_ = require('../External/underscore.js'),
-		
-		Utils = require('./Utils.js'),
-		Plugins = require('./Plugins.js')
-	;
 	
+	var
+		_ = require('_'),
+
+		Utils = require('Utils'),
+		Plugins = require('Plugins')
+	;
+
 	/**
 	 * @constructor
 	 */
@@ -2741,7 +2736,7 @@ boot(require('./Boots/RainLoopApp.js'));
 	Events.prototype.pub = function (sName, aArgs)
 	{
 		Plugins.runHook('rl-pub', [sName, aArgs]);
-		
+
 		if (!Utils.isUnd(this.oSubs[sName]))
 		{
 			_.each(this.oSubs[sName], function (aItem) {
@@ -2757,22 +2752,22 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = new Events();
 
-}(module));
-},{"../External/underscore.js":31,"./Plugins.js":12,"./Utils.js":14}],9:[function(require,module,exports){
+}(module, require));
+},{"Plugins":12,"Utils":14,"_":31}],9:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
 		Globals = {},
-		window = require('../External/window.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		$html = require('../External/$html.js'),
-		
-		Enums = require('../Common/Enums.js')
+		window = require('window'),
+		ko = require('ko'),
+		key = require('key'),
+		$html = require('$html'),
+
+		Enums = require('Enums')
 	;
 
 	/**
@@ -2869,7 +2864,7 @@ boot(require('./Boots/RainLoopApp.js'));
 	 * @type {string}
 	 */
 	Globals.sAnimationType = '';
-	
+
 	/**
 	 * @type {*}
 	 */
@@ -2942,11 +2937,11 @@ boot(require('./Boots/RainLoopApp.js'));
 	}
 
 	Globals.oI18N = window['rainloopI18N'] || {};
-	
+
 	Globals.oNotificationI18N = {};
-	
+
 	Globals.aBootstrapDropdowns = [];
-	
+
 	Globals.aViewModels = {
 		'settings': [],
 		'settings-removed': [],
@@ -3031,20 +3026,20 @@ boot(require('./Boots/RainLoopApp.js'));
 			Globals.keyScope(Globals.keyScopeFake());
 		}
 	});
-	
+
 	module.exports = Globals;
 
-}(module));
-},{"../Common/Enums.js":7,"../External/$html.js":17,"../External/key.js":27,"../External/ko.js":28,"../External/window.js":32}],10:[function(require,module,exports){
+}(module, require));
+},{"$html":17,"Enums":7,"key":27,"ko":28,"window":32}],10:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		Utils = require('./Utils.js')
+		window = require('window'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -3365,18 +3360,18 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = new LinkBuilder();
 
-}(module));
-},{"../External/window.js":32,"../Storages/AppSettings.js":68,"./Utils.js":14}],11:[function(require,module,exports){
+}(module, require));
+},{"../Storages/AppSettings.js":68,"Utils":14,"window":32}],11:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		Globals = require('./Globals.js'),
+		window = require('window'),
+		_ = require('_'),
+		Globals = require('Globals'),
 		AppSettings = require('../Storages/AppSettings.js')
 	;
 
@@ -3641,11 +3636,11 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = NewHtmlEditorWrapper;
 
-}(module));
-},{"../External/underscore.js":31,"../External/window.js":32,"../Storages/AppSettings.js":68,"./Globals.js":9}],12:[function(require,module,exports){
+}(module, require));
+},{"../Storages/AppSettings.js":68,"Globals":9,"_":31,"window":32}],12:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
@@ -3655,8 +3650,8 @@ boot(require('./Boots/RainLoopApp.js'));
 			__remote: null,
 			__data: null
 		},
-		_ = require('../External/underscore.js'),
-		Utils = require('./Utils.js')
+		_ = require('_'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -3758,22 +3753,22 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = Plugins;
 
-}(module));
-},{"../External/underscore.js":31,"./Utils.js":14}],13:[function(require,module,exports){
+}(module, require));
+},{"Utils":14,"_":31}],13:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Enums = require('./Enums.js'),
-		Utils = require('./Utils.js')
+		Enums = require('Enums'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -4489,30 +4484,30 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = Selector;
 
-}(module));
-},{"../External/jquery.js":26,"../External/key.js":27,"../External/ko.js":28,"../External/underscore.js":31,"./Enums.js":7,"./Utils.js":14}],14:[function(require,module,exports){
+}(module, require));
+},{"$":26,"Enums":7,"Utils":14,"_":31,"key":27,"ko":28}],14:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
 		Utils = {},
 
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		window = require('../External/window.js'),
-		$window = require('../External/$window.js'),
-		$html = require('../External/$html.js'),
-		$div = require('../External/$div.js'),
-		$doc = require('../External/$doc.js'),
-		NotificationClass = require('../External/NotificationClass.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		window = require('window'),
+		$window = require('$window'),
+		$html = require('$html'),
+		$div = require('$div'),
+		$doc = require('$doc'),
+		NotificationClass = require('NotificationClass'),
 
-		Enums = require('./Enums.js'),
-		Consts = require('./Consts.js'),
-		Globals = require('./Globals.js')
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals')
 	;
 
 	Utils.trim = $.trim;
@@ -6539,88 +6534,58 @@ boot(require('./Boots/RainLoopApp.js'));
 
 	module.exports = Utils;
 
-}(module));
-},{"../External/$div.js":15,"../External/$doc.js":16,"../External/$html.js":17,"../External/$window.js":18,"../External/NotificationClass.js":22,"../External/jquery.js":26,"../External/ko.js":28,"../External/underscore.js":31,"../External/window.js":32,"./Consts.js":6,"./Enums.js":7,"./Globals.js":9}],15:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$div":15,"$doc":16,"$html":17,"$window":18,"Consts":6,"Enums":7,"Globals":9,"NotificationClass":22,"_":31,"ko":28,"window":32}],15:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-module.exports = require('./jquery.js')('<div></div>');
-
-},{"./jquery.js":26}],16:[function(require,module,exports){
+module.exports = require('$')('<div></div>');
+},{"$":26}],16:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-module.exports = require('./jquery.js')(window.document);
-
-},{"./jquery.js":26}],17:[function(require,module,exports){
+module.exports = require('$')(window.document);
+},{"$":26}],17:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-module.exports = require('./jquery.js')('html');
-
-},{"./jquery.js":26}],18:[function(require,module,exports){
+module.exports = require('$')('html');
+},{"$":26}],18:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-module.exports = require('./jquery.js')(window);
-
-},{"./jquery.js":26}],19:[function(require,module,exports){
+module.exports = require('$')(window);
+},{"$":26}],19:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-module.exports = require('./window.js')['rainloopAppData'] || {};
-},{"./window.js":32}],20:[function(require,module,exports){
+module.exports = require('window')['rainloopAppData'] || {};
+},{"window":32}],20:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = JSON;
 },{}],21:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
 module.exports = Jua;
 },{}],22:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
-var window = require('./window.js');
-module.exports = window.Notification && window.Notification.requestPermission ? window.Notification : null;
-},{"./window.js":32}],23:[function(require,module,exports){
+var w = require('window');
+module.exports = w.Notification && w.Notification.requestPermission ? w.Notification : null;
+},{"window":32}],23:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = crossroads;
 },{}],24:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
 module.exports = hasher;
 },{}],25:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = ifvisible;
 },{}],26:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
 module.exports = $;
 },{}],27:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = key;
 },{}],28:[function(require,module,exports){
@@ -6629,21 +6594,21 @@ module.exports = key;
 (function (module, ko) {
 
 	'use strict';
-
+	
 	var
-		window = require('./window.js'),
-		_ = require('./underscore.js'),
-		$ = require('./jquery.js'),
-		$window = require('./$window.js'),
-		$doc = require('./$doc.js')
+		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
+		$window = require('$window'),
+		$doc = require('$doc')
 	;
 
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				Globals = require('../Common/Globals.js'),
-				Utils = require('../Common/Utils.js')
+				Globals = require('Globals'),
+				Utils = require('Utils')
 			;
 
 			if (!Globals.bMobileDevice)
@@ -6681,7 +6646,7 @@ module.exports = key;
 	ko.bindingHandlers.tooltip2 = {
 		'init': function (oElement, fValueAccessor) {
 			var
-				Globals = require('../Common/Globals.js'),
+				Globals = require('Globals'),
 				$oEl = $(oElement),
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
@@ -6714,7 +6679,7 @@ module.exports = key;
 
 			var
 				$oEl = $(oElement),
-				Globals = require('../Common/Globals.js')
+				Globals = require('Globals')
 			;
 
 			$oEl.tooltip({
@@ -6748,7 +6713,7 @@ module.exports = key;
 
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
-			var Globals = require('../Common/Globals.js');
+			var Globals = require('Globals');
 			Globals.aBootstrapDropdowns.push($(oElement));
 		}
 	};
@@ -6759,7 +6724,7 @@ module.exports = key;
 			{
 				var
 					$el = $(oElement),
-					Utils = require('../Common/Utils.js')
+					Utils = require('Utils')
 				;
 
 				if (!$el.hasClass('open'))
@@ -6789,7 +6754,7 @@ module.exports = key;
 
 	ko.bindingHandlers.csstext = {
 		'init': function (oElement, fValueAccessor) {
-			var Utils = require('../Common/Utils.js');
+			var Utils = require('Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -6800,7 +6765,7 @@ module.exports = key;
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('../Common/Utils.js');
+			var Utils = require('Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -6868,8 +6833,8 @@ module.exports = key;
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				Globals = require('../Common/Globals.js'),
-				Utils = require('../Common/Utils.js')
+				Globals = require('Globals'),
+				Utils = require('Utils')
 			;
 
 			$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
@@ -6891,14 +6856,14 @@ module.exports = key;
 
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
-			var Utils = require('../Common/Utils.js');
+			var Utils = require('Utils');
 			Utils.i18nToNode(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('../Common/Utils.js');
+			var Utils = require('Utils');
 			ko.utils.unwrapObservable(fValueAccessor());
 			Utils.i18nToNode(oElement);
 		}
@@ -6939,7 +6904,7 @@ module.exports = key;
 		'update': function (oElement, fValueAccessor) {
 
 			var
-				Utils = require('../Common/Utils.js'),
+				Utils = require('Utils'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -6973,8 +6938,8 @@ module.exports = key;
 	ko.bindingHandlers.draggable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
 			var
-				Globals = require('../Common/Globals.js'),
-				Utils = require('../Common/Utils.js')
+				Globals = require('Globals'),
+				Utils = require('Utils')
 			;
 			if (!Globals.bMobileDevice)
 			{
@@ -7056,7 +7021,7 @@ module.exports = key;
 
 	ko.bindingHandlers.droppable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
-			var Globals = require('../Common/Globals.js');
+			var Globals = require('Globals');
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -7098,7 +7063,7 @@ module.exports = key;
 
 	ko.bindingHandlers.nano = {
 		'init': function (oElement) {
-			var Globals = require('../Common/Globals.js');
+			var Globals = require('Globals');
 			if (!Globals.bDisableNanoScroll)
 			{
 				$(oElement)
@@ -7195,7 +7160,7 @@ module.exports = key;
 		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
-				Utils = require('../Common/Utils.js'),
+				Utils = require('Utils'),
 				EmailModel = require('../Models/EmailModel.js'),
 
 				$oEl = $(oElement),
@@ -7269,7 +7234,7 @@ module.exports = key;
 		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
-				Utils = require('../Common/Utils.js'),
+				Utils = require('Utils'),
 				ContactTagModel = require('../Models/ContactTagModel.js'),
 
 				$oEl = $(oElement),
@@ -7384,7 +7349,7 @@ module.exports = key;
 	ko.extenders.trimmer = function (oTarget)
 	{
 		var
-			Utils = require('../Common/Utils.js'),
+			Utils = require('Utils'),
 			oResult = ko.computed({
 				'read': oTarget,
 				'write': function (sNewValue) {
@@ -7401,7 +7366,7 @@ module.exports = key;
 	ko.extenders.posInterer = function (oTarget, iDefault)
 	{
 		var
-			Utils = require('../Common/Utils.js'),
+			Utils = require('Utils'),
 			oResult = ko.computed({
 				'read': oTarget,
 				'write': function (sNewValue) {
@@ -7457,7 +7422,7 @@ module.exports = key;
 
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
-		var Utils = require('../Common/Utils.js');
+		var Utils = require('Utils');
 
 		oTarget.iTimeout = 0;
 		oTarget.subscribe(function (bValue) {
@@ -7482,7 +7447,7 @@ module.exports = key;
 
 	ko.observable.fn.validateEmail = function ()
 	{
-		var Utils = require('../Common/Utils.js');
+		var Utils = require('Utils');
 
 		this.hasError = ko.observable(false);
 
@@ -7497,7 +7462,7 @@ module.exports = key;
 
 	ko.observable.fn.validateSimpleEmail = function ()
 	{
-		var Utils = require('../Common/Utils.js');
+		var Utils = require('Utils');
 
 		this.hasError = ko.observable(false);
 
@@ -7512,7 +7477,7 @@ module.exports = key;
 
 	ko.observable.fn.validateFunc = function (fFunc)
 	{
-		var Utils = require('../Common/Utils.js');
+		var Utils = require('Utils');
 
 		this.hasFuncError = ko.observable(false);
 
@@ -7532,51 +7497,42 @@ module.exports = key;
 
 }(module, ko));
 
-},{"../Common/Globals.js":9,"../Common/Utils.js":14,"../Models/ContactTagModel.js":42,"../Models/EmailModel.js":43,"./$doc.js":16,"./$window.js":18,"./jquery.js":26,"./underscore.js":31,"./window.js":32}],29:[function(require,module,exports){
+},{"$":26,"$doc":16,"$window":18,"../Models/ContactTagModel.js":42,"../Models/EmailModel.js":43,"Globals":9,"Utils":14,"_":31,"window":32}],29:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = moment;
 },{}],30:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
 module.exports = ssm;
 },{}],31:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-'use strict';
 
 module.exports = _;
 },{}],32:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
-
 module.exports = window;
-
 },{}],33:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		hasher = require('../External/hasher.js'),
-		crossroads = require('../External/crossroads.js'),
-		$html = require('../External/$html.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		hasher = require('hasher'),
+		crossroads = require('crossroads'),
+		$html = require('$html'),
 
-		Globals = require('../Common/Globals.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js'),
+		Globals = require('Globals'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils'),
 
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -8007,12 +7963,12 @@ module.exports = window;
 
 	module.exports = new Knoin();
 
-}(module));
-},{"../Common/Globals.js":9,"../Common/Plugins.js":12,"../Common/Utils.js":14,"../External/$html.js":17,"../External/crossroads.js":23,"../External/hasher.js":24,"../External/jquery.js":26,"../External/ko.js":28,"../External/underscore.js":31,"../Knoin/KnoinAbstractViewModel.js":36}],34:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$html":17,"Globals":9,"KnoinAbstractViewModel":36,"Plugins":12,"Utils":14,"_":31,"crossroads":23,"hasher":24,"ko":28}],34:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
-
+	
 	'use strict';
 
 	/**
@@ -8030,17 +7986,17 @@ module.exports = window;
 
 	module.exports = KnoinAbstractBoot;
 
-}(module));
+}(module, require));
 },{}],35:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		crossroads = require('../External/crossroads.js'),
-		Utils = require('../Common/Utils.js')
+		crossroads = require('crossroads'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -8121,21 +8077,21 @@ module.exports = window;
 
 	module.exports = KnoinAbstractScreen;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/crossroads.js":23}],36:[function(require,module,exports){
+}(module, require));
+},{"Utils":14,"crossroads":23}],36:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		$window = require('../External/$window.js'),
+		ko = require('ko'),
+		$window = require('$window'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js')
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -8233,16 +8189,16 @@ module.exports = window;
 
 	module.exports = KnoinAbstractViewModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/$window.js":18,"../External/ko.js":28}],37:[function(require,module,exports){
+}(module, require));
+},{"$window":18,"Enums":7,"Globals":9,"Utils":14,"ko":28}],37:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js')
+		ko = require('ko')
 	;
 
 	/**
@@ -8264,26 +8220,26 @@ module.exports = window;
 	 */
 	AccountModel.prototype.changeAccountLink = function ()
 	{
-		return require('../Common/LinkBuilder.js').change(this.email);
+		return require('LinkBuilder').change(this.email);
 	};
 
 	module.exports = AccountModel;
 
-}(module));
-},{"../Common/LinkBuilder.js":10,"../External/ko.js":28}],38:[function(require,module,exports){
+}(module, require));
+},{"LinkBuilder":10,"ko":28}],38:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
-	var
-		window = require('../External/window.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js')
-	;
 	
+	var
+		window = require('window'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder')
+	;
+
 	/**
 	 * @constructor
 	 */
@@ -8522,17 +8478,17 @@ module.exports = window;
 
 	module.exports = AttachmentModel;
 
-}(module));
-},{"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/window.js":32}],39:[function(require,module,exports){
+}(module, require));
+},{"Globals":9,"LinkBuilder":10,"Utils":14,"window":32}],39:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -8599,22 +8555,22 @@ module.exports = window;
 
 	module.exports = ComposeAttachmentModel;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/ko.js":28}],40:[function(require,module,exports){
+}(module, require));
+},{"Utils":14,"ko":28}],40:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js')
+		_ = require('_'),
+		ko = require('ko'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder')
 	;
-	
+
 	/**
 	 * @constructor
 	 */
@@ -8741,18 +8697,18 @@ module.exports = window;
 
 	module.exports = ContactModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/ko.js":28,"../External/underscore.js":31}],41:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"LinkBuilder":10,"Utils":14,"_":31,"ko":28}],41:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Enums = require('Enums'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -8785,17 +8741,17 @@ module.exports = window;
 
 	module.exports = ContactPropertyModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Utils.js":14,"../External/ko.js":28}],42:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"Utils":14,"ko":28}],42:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -8844,17 +8800,17 @@ module.exports = window;
 
 	module.exports = ContactTagModel;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/ko.js":28}],43:[function(require,module,exports){
+}(module, require));
+},{"Utils":14,"ko":28}],43:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js')
+		Enums = require('Enums'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -9223,17 +9179,17 @@ module.exports = window;
 
 	module.exports = EmailModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Utils.js":14}],44:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"Utils":14}],44:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../External/ko.js'),
-		Enums = require('../Common/Enums.js')
+		ko = require('ko'),
+		Enums = require('Enums')
 	;
 
 	/**
@@ -9286,18 +9242,18 @@ module.exports = window;
 
 	module.exports = FilterConditionModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../External/ko.js":28}],45:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"ko":28}],45:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		ko = require('ko'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 		FilterConditionModel = require('./FilterConditionModel.js')
 	;
 
@@ -9381,23 +9337,23 @@ module.exports = window;
 
 	module.exports = FilterModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Utils.js":14,"../External/ko.js":28,"./FilterConditionModel.js":44}],46:[function(require,module,exports){
+}(module, require));
+},{"./FilterConditionModel.js":44,"Enums":7,"Utils":14,"ko":28}],46:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		$window = require('../External/$window.js'),
+		_ = require('_'),
+		ko = require('ko'),
+		$window = require('$window'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Events = require('../Common/Events.js')
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Events = require('Events')
 	;
 
 	/**
@@ -9429,7 +9385,7 @@ module.exports = window;
 		this.actionBlink = ko.observable(false).extend({'falseTimeout': 1000});
 
 		this.nameForEdit = ko.observable('');
-		
+
 		this.privateMessageCountAll = ko.observable(0);
 		this.privateMessageCountUnread = ko.observable(0);
 
@@ -9737,17 +9693,17 @@ module.exports = window;
 
 	module.exports = FolderModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/$window.js":18,"../External/ko.js":28,"../External/underscore.js":31}],47:[function(require,module,exports){
+}(module, require));
+},{"$window":18,"Enums":7,"Events":8,"Globals":9,"Utils":14,"_":31,"ko":28}],47:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -9788,26 +9744,26 @@ module.exports = window;
 
 	module.exports = IdentityModel;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/ko.js":28}],48:[function(require,module,exports){
+}(module, require));
+},{"Utils":14,"ko":28}],48:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		moment = require('../External/moment.js'),
-		$window = require('../External/$window.js'),
-		$div = require('../External/$div.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$window = require('$window'),
+		$div = require('$div'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		EmailModel = require('./EmailModel.js'),
 		AttachmentModel = require('./AttachmentModel.js')
@@ -11076,16 +11032,16 @@ module.exports = window;
 
 	module.exports = MessageModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/$div.js":15,"../External/$window.js":18,"../External/jquery.js":26,"../External/ko.js":28,"../External/moment.js":29,"../External/underscore.js":31,"../External/window.js":32,"../Storages/WebMailDataStorage.js":74,"./AttachmentModel.js":38,"./EmailModel.js":43}],49:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$div":15,"$window":18,"../Storages/WebMailDataStorage.js":74,"./AttachmentModel.js":38,"./EmailModel.js":43,"Enums":7,"LinkBuilder":10,"Utils":14,"_":31,"ko":28,"moment":29,"window":32}],49:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../External/ko.js')
+		ko = require('ko')
 	;
 
 	/**
@@ -11121,25 +11077,25 @@ module.exports = window;
 
 	module.exports = OpenPgpKeyModel;
 
-}(module));
-},{"../External/ko.js":28}],50:[function(require,module,exports){
+}(module, require));
+},{"ko":28}],50:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+
+		kn = require('kn'),
+		KnoinAbstractScreen = require('KnoinAbstractScreen')
 	;
 
 	/**
@@ -11323,17 +11279,17 @@ module.exports = window;
 
 	module.exports = AbstractSettings;
 
-}(module));
-},{"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/ko.js":28,"../External/underscore.js":31,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractScreen.js":35}],51:[function(require,module,exports){
+}(module, require));
+},{"$":26,"Globals":9,"KnoinAbstractScreen":35,"LinkBuilder":10,"Utils":14,"_":31,"kn":33,"ko":28}],51:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
+		_ = require('_'),
+		KnoinAbstractScreen = require('KnoinAbstractScreen')
 	;
 
 	/**
@@ -11356,24 +11312,24 @@ module.exports = window;
 
 	module.exports = LoginScreen;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../External/underscore.js":31,"../Knoin/KnoinAbstractScreen.js":35,"../ViewModels/LoginViewModel.js":76}],52:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../ViewModels/LoginViewModel.js":76,"KnoinAbstractScreen":35,"_":31}],52:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		$html = require('../External/$html.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Events = require('../Common/Events.js'),
+		_ = require('_'),
+		$html = require('$html'),
 
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Events = require('Events'),
+
+		KnoinAbstractScreen = require('KnoinAbstractScreen'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
@@ -11418,7 +11374,7 @@ module.exports = window;
 			sEmail = Data.accountEmail(),
 			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
- 
+
 		RL.setTitle(('' === sEmail ? '' :
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 	};
@@ -11510,7 +11466,7 @@ module.exports = window;
 		});
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
-			Data.foldersInboxUnreadCount(nCount)
+			Data.foldersInboxUnreadCount(nCount);
 		});
 
 		Data.foldersInboxUnreadCount.subscribe(function () {
@@ -11565,20 +11521,20 @@ module.exports = window;
 
 	module.exports = MailBoxScreen;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/$html.js":17,"../External/underscore.js":31,"../Knoin/KnoinAbstractScreen.js":35,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/MailBoxFolderListViewModel.js":77,"../ViewModels/MailBoxMessageListViewModel.js":78,"../ViewModels/MailBoxMessageViewViewModel.js":79,"../ViewModels/MailBoxSystemDropDownViewModel.js":80}],53:[function(require,module,exports){
+}(module, require));
+},{"$html":17,"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/MailBoxFolderListViewModel.js":77,"../ViewModels/MailBoxMessageListViewModel.js":78,"../ViewModels/MailBoxMessageViewViewModel.js":79,"../ViewModels/MailBoxSystemDropDownViewModel.js":80,"Enums":7,"Events":8,"Globals":9,"KnoinAbstractScreen":35,"Utils":14,"_":31}],53:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		Globals = require('../Common/Globals.js'),
+		_ = require('_'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		Globals = require('Globals'),
 
 		AbstractSettings = require('./AbstractSettings.js')
 	;
@@ -11591,7 +11547,7 @@ module.exports = window;
 	{
 		var
 			RL = require('../Boots/RainLoopApp.js'),
-				
+
 			SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
 			SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
 			SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
@@ -11615,34 +11571,34 @@ module.exports = window;
 	SettingsScreen.prototype.onShow = function ()
 	{
 		var RL = require('../Boots/RainLoopApp.js');
-		
+
 		RL.setTitle(this.sSettingsTitle);
 		Globals.keyScope(Enums.KeyState.Settings);
 	};
 
 	module.exports = SettingsScreen;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/underscore.js":31,"../ViewModels/SettingsMenuViewModel.js":98,"../ViewModels/SettingsPaneViewModel.js":99,"../ViewModels/SettingsSystemDropDownViewModel.js":100,"./AbstractSettings.js":50}],54:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../ViewModels/SettingsMenuViewModel.js":98,"../ViewModels/SettingsPaneViewModel.js":99,"../ViewModels/SettingsSystemDropDownViewModel.js":100,"./AbstractSettings.js":50,"Enums":7,"Globals":9,"Utils":14,"_":31}],54:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		PopupsAddAccountViewModel = require('../ViewModels/Popups/PopupsAddAccountViewModel.js')
 	;
 
@@ -11726,20 +11682,20 @@ module.exports = window;
 
 	module.exports = SettingsAccounts;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/ko.js":28,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAddAccountViewModel.js":81}],55:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAddAccountViewModel.js":81,"Enums":7,"LinkBuilder":10,"Utils":14,"_":31,"kn":33,"ko":28,"window":32}],55:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		_ = require('_'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
 	;
@@ -11849,18 +11805,18 @@ module.exports = window;
 
 	module.exports = SettingsChangePassword;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Utils.js":14,"../External/ko.js":28,"../External/underscore.js":31,"../Storages/WebMailAjaxRemoteStorage.js":72}],56:[function(require,module,exports){
+}(module, require));
+},{"../Storages/WebMailAjaxRemoteStorage.js":72,"Enums":7,"Utils":14,"_":31,"ko":28}],56:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../External/ko.js'),
+		ko = require('ko'),
 
-		Utils = require('../Common/Utils.js'),
+		Utils = require('Utils'),
 
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js')
@@ -11909,17 +11865,17 @@ module.exports = window;
 
 	module.exports = SettingsContacts;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/ko.js":28,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74}],57:[function(require,module,exports){
+}(module, require));
+},{"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"Utils":14,"ko":28}],57:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -11943,7 +11899,7 @@ module.exports = window;
 	SettingsFilters.prototype.addFilter = function ()
 	{
 		var
-			kn = require('../Knoin/Knoin.js'),
+			kn = require('kn'),
 			FilterModel = require('../Models/FilterModel.js'),
 			PopupsFilterViewModel = require('../ViewModels/Popups/PopupsFilterViewModel.js')
 		;
@@ -11953,21 +11909,21 @@ module.exports = window;
 
 	module.exports = SettingsFilters;
 
-}(module));
-},{"../Common/Utils.js":14,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Models/FilterModel.js":45,"../ViewModels/Popups/PopupsFilterViewModel.js":88}],58:[function(require,module,exports){
+}(module, require));
+},{"../Models/FilterModel.js":45,"../ViewModels/Popups/PopupsFilterViewModel.js":88,"Utils":14,"kn":33,"ko":28}],58:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		LocalStorage = require('../Storages/LocalStorage.js'),
@@ -12176,28 +12132,28 @@ module.exports = window;
 
 	module.exports = SettingsFolders;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/Utils.js":14,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Storages/AppSettings.js":68,"../Storages/LocalStorage.js":69,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsFolderCreateViewModel.js":90,"../ViewModels/Popups/PopupsFolderSystemViewModel.js":91}],59:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/LocalStorage.js":69,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsFolderCreateViewModel.js":90,"../ViewModels/Popups/PopupsFolderSystemViewModel.js":91,"Enums":7,"Utils":14,"kn":33,"ko":28}],59:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		$ = require('../External/jquery.js'),
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Consts = require('../Common/Consts.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		$ = require('$'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		PopupsLanguagesViewModel = require('../ViewModels/Popups/PopupsLanguagesViewModel.js')
 	;
 
@@ -12355,28 +12311,28 @@ module.exports = window;
 	{
 		kn.showScreenPopup(PopupsLanguagesViewModel);
 	};
-	
+
 	module.exports = SettingsGeneral;
 
-}(module));
-},{"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsLanguagesViewModel.js":95}],60:[function(require,module,exports){
+}(module, require));
+},{"$":26,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsLanguagesViewModel.js":95,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":10,"Utils":14,"kn":33,"ko":28}],60:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		NewHtmlEditorWrapper = require('../Common/NewHtmlEditorWrapper.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		PopupsIdentityViewModel = require('../ViewModels/Popups/PopupsIdentityViewModel.js')
 	;
 
@@ -12596,20 +12552,20 @@ module.exports = window;
 
 	module.exports = SettingsIdentities;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/NewHtmlEditorWrapper.js":11,"../Common/Utils.js":14,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsIdentityViewModel.js":93}],61:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsIdentityViewModel.js":93,"Enums":7,"NewHtmlEditorWrapper":11,"Utils":14,"kn":33,"ko":28}],61:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		NewHtmlEditorWrapper = require('../Common/NewHtmlEditorWrapper.js'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
@@ -12700,18 +12656,18 @@ module.exports = window;
 
 	module.exports = SettingsIdentity;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/NewHtmlEditorWrapper.js":11,"../Common/Utils.js":14,"../External/ko.js":28,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74}],62:[function(require,module,exports){
+}(module, require));
+},{"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"Enums":7,"NewHtmlEditorWrapper":11,"Utils":14,"ko":28}],62:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
+		ko = require('ko'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 
@@ -12790,24 +12746,24 @@ module.exports = window;
 
 	module.exports = SettingsOpenPGP;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js":82,"../ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js":92,"../ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js":97}],63:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js":82,"../ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js":92,"../ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js":97,"kn":33,"ko":28}],63:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		PopupsTwoFactorTestViewModel = require('../ViewModels/Popups/PopupsTwoFactorTestViewModel.js')
 	;
 
@@ -12961,11 +12917,11 @@ module.exports = window;
 
 	module.exports = SettingsSecurity;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Storages/WebMailAjaxRemoteStorage.js":72,"../ViewModels/Popups/PopupsTwoFactorTestViewModel.js":96}],64:[function(require,module,exports){
+}(module, require));
+},{"../Storages/WebMailAjaxRemoteStorage.js":72,"../ViewModels/Popups/PopupsTwoFactorTestViewModel.js":96,"Enums":7,"Globals":9,"Utils":14,"kn":33,"ko":28}],64:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
@@ -12975,7 +12931,7 @@ module.exports = window;
 	function SettingsSocial()
 	{
 		var
-			Utils = require('../Common/Utils.js'),
+			Utils = require('Utils'),
 			RL = require('../Boots/RainLoopApp.js'),
 			Data = require('../Storages/WebMailDataStorage.js')
 		;
@@ -13040,22 +12996,22 @@ module.exports = window;
 
 	module.exports = SettingsSocial;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Utils.js":14,"../Storages/WebMailDataStorage.js":74}],65:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/WebMailDataStorage.js":74,"Utils":14}],65:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		window = require('window'),
+		$ = require('$'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
@@ -13115,7 +13071,7 @@ module.exports = window;
 					'url': sUrl,
 					'dataType': 'json'
 				}).done(function(aData) {
-					
+
 					if (aData && Utils.isArray(aData) && 2 === aData.length)
 					{
 						if (oThemeLink && oThemeLink[0] && (!oThemeStyle || !oThemeStyle[0]))
@@ -13173,24 +13129,24 @@ module.exports = window;
 
 	module.exports = SettingsThemes;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/ko.js":28,"../External/window.js":32,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74}],66:[function(require,module,exports){
+}(module, require));
+},{"$":26,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"Enums":7,"LinkBuilder":10,"Utils":14,"ko":28,"window":32}],66:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
+		window = require('window'),
+		$ = require('$'),
 
-		Consts = require('../Common/Consts.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Plugins = require('../Common/Plugins.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Consts = require('Consts'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Plugins = require('Plugins'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js')
 	;
@@ -13485,21 +13441,21 @@ module.exports = window;
 
 	module.exports = AbstractAjaxRemoteStorage;
 
-}(module));
-},{"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Plugins.js":12,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/window.js":32,"./AppSettings.js":68}],67:[function(require,module,exports){
+}(module, require));
+},{"$":26,"./AppSettings.js":68,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":10,"Plugins":12,"Utils":14,"window":32}],67:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+
 		AppSettings = require('./AppSettings.js')
 	;
-	
+
 	/**
 	 * @constructor
 	 */
@@ -13579,18 +13535,17 @@ module.exports = window;
 
 	module.exports = AbstractData;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/Utils.js":14,"./AppSettings.js":68}],68:[function(require,module,exports){
+}(module, require));
+},{"./AppSettings.js":68,"Enums":7,"Utils":14}],68:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		AppData = require('../External/AppData.js'),
-		
-		Utils = require('../Common/Utils.js')
+		AppData = require('AppData'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -13644,17 +13599,17 @@ module.exports = window;
 
 	module.exports = new AppSettings();
 
-}(module));
-},{"../Common/Utils.js":14,"../External/AppData.js":19}],69:[function(require,module,exports){
+}(module, require));
+},{"AppData":19,"Utils":14}],69:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		
+		_ = require('_'),
+
 		CookieDriver = require('./LocalStorages/CookieDriver.js'),
 		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
 	;
@@ -13669,6 +13624,8 @@ module.exports = window;
 				return NextStorageDriver.supported();
 			})
 		;
+
+		this.oDriver = null;
 
 		if (NextStorageDriver)
 		{
@@ -13700,20 +13657,20 @@ module.exports = window;
 
 	module.exports = new LocalStorage();
 
-}(module));
-},{"../External/underscore.js":31,"./LocalStorages/CookieDriver.js":70,"./LocalStorages/LocalStorageDriver.js":71}],70:[function(require,module,exports){
+}(module, require));
+},{"./LocalStorages/CookieDriver.js":70,"./LocalStorages/LocalStorageDriver.js":71,"_":31}],70:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('../../External/jquery.js'),
-		JSON = require('../../External/JSON.js'),
-		
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js')
+		$ = require('$'),
+		JSON = require('JSON'),
+
+		Consts = require('Consts'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -13792,20 +13749,20 @@ module.exports = window;
 
 	module.exports = CookieDriver;
 
-}(module));
-},{"../../Common/Consts.js":6,"../../Common/Utils.js":14,"../../External/JSON.js":20,"../../External/jquery.js":26}],71:[function(require,module,exports){
+}(module, require));
+},{"$":26,"Consts":6,"JSON":20,"Utils":14}],71:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		JSON = require('../../External/JSON.js'),
-		
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js')
+		window = require('window'),
+		JSON = require('JSON'),
+
+		Consts = require('Consts'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -13881,26 +13838,26 @@ module.exports = window;
 
 	module.exports = LocalStorageDriver;
 
-}(module));
-},{"../../Common/Consts.js":6,"../../Common/Utils.js":14,"../../External/JSON.js":20,"../../External/window.js":32}],72:[function(require,module,exports){
+}(module, require));
+},{"Consts":6,"JSON":20,"Utils":14,"window":32}],72:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 
-		Utils = require('../Common/Utils.js'),
-		Consts = require('../Common/Consts.js'),
-		Globals = require('../Common/Globals.js'),
-		Base64 = require('../Common/Base64.js'),
+		Utils = require('Utils'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Base64 = require('Base64'),
 
 		AppSettings = require('./AppSettings.js'),
 		Cache = require('./WebMailCacheStorage.js'),
 		Data = require('./WebMailDataStorage.js'),
-		
+
 		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
 	;
 
@@ -14696,20 +14653,20 @@ module.exports = window;
 
 	module.exports = new WebMailAjaxRemoteStorage();
 
-}(module));
-},{"../Common/Base64.js":5,"../Common/Consts.js":6,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/underscore.js":31,"./AbstractAjaxRemoteStorage.js":66,"./AppSettings.js":68,"./WebMailCacheStorage.js":73,"./WebMailDataStorage.js":74}],73:[function(require,module,exports){
+}(module, require));
+},{"./AbstractAjaxRemoteStorage.js":66,"./AppSettings.js":68,"./WebMailCacheStorage.js":73,"./WebMailDataStorage.js":74,"Base64":5,"Consts":6,"Globals":9,"Utils":14,"_":31}],73:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		_ = require('_'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js')
 	;
@@ -15046,33 +15003,33 @@ module.exports = window;
 
 	module.exports = new WebMailCacheStorage();
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/underscore.js":31,"./AppSettings.js":68}],74:[function(require,module,exports){
+}(module, require));
+},{"./AppSettings.js":68,"Enums":7,"LinkBuilder":10,"Utils":14,"_":31}],74:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		moment = require('../External/moment.js'),
-		$div = require('../External/$div.js'),
-		NotificationClass = require('../External/NotificationClass.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$div = require('$div'),
+		NotificationClass = require('NotificationClass'),
 
-		Consts = require('../Common/Consts.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Consts = require('Consts'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js'),
 		Cache = require('./WebMailCacheStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		MessageModel = require('../Models/MessageModel.js'),
 
@@ -16075,24 +16032,24 @@ module.exports = window;
 
 	module.exports = new WebMailDataStorage();
 
-}(module));
+}(module, require));
 
-},{"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/$div.js":15,"../External/NotificationClass.js":22,"../External/jquery.js":26,"../External/ko.js":28,"../External/moment.js":29,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Models/MessageModel.js":48,"./AbstractData.js":67,"./AppSettings.js":68,"./LocalStorage.js":69,"./WebMailCacheStorage.js":73}],75:[function(require,module,exports){
+},{"$":26,"$div":15,"../Models/MessageModel.js":48,"./AbstractData.js":67,"./AppSettings.js":68,"./LocalStorage.js":69,"./WebMailCacheStorage.js":73,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":10,"NotificationClass":22,"Utils":14,"_":31,"kn":33,"ko":28,"moment":29,"window":32}],75:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		window = require('../External/window.js'),
-		key = require('../External/key.js'),
+		_ = require('_'),
+		ko = require('ko'),
+		window = require('window'),
+		key = require('key'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
@@ -16101,8 +16058,8 @@ module.exports = window;
 		PopupsKeyboardShortcutsHelpViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
 		PopupsAddAccountViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -16202,30 +16159,30 @@ module.exports = window;
 
 	module.exports = AbstractSystemDropDownViewModel;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/key.js":27,"../External/ko.js":28,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js":94}],76:[function(require,module,exports){
+}(module, require));
+},{"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js":94,"Enums":7,"KnoinAbstractViewModel":36,"LinkBuilder":10,"Utils":14,"_":31,"key":27,"kn":33,"ko":28,"window":32}],76:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Utils = require('../Common/Utils.js'),
-		Enums = require('../Common/Enums.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Utils = require('Utils'),
+		Enums = require('Enums'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel'),
 
 		PopupsLanguagesViewModel = require('../ViewModels/Popups/PopupsLanguagesViewModel.js')
 	;
@@ -16499,7 +16456,7 @@ module.exports = window;
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-					
+
 					var RL = require('../Boots/RainLoopApp.js');
 					RL.loginAndLogoutReload();
 				}
@@ -16578,25 +16535,25 @@ module.exports = window;
 
 	module.exports = LoginViewModel;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/jquery.js":26,"../External/ko.js":28,"../External/underscore.js":31,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsLanguagesViewModel.js":95}],77:[function(require,module,exports){
+}(module, require));
+},{"$":26,"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailDataStorage.js":74,"../ViewModels/Popups/PopupsLanguagesViewModel.js":95,"Enums":7,"KnoinAbstractViewModel":36,"LinkBuilder":10,"Utils":14,"_":31,"kn":33,"ko":28,"window":32}],77:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		$html = require('../External/$html.js'),
+		window = require('window'),
+		$ = require('$'),
+		ko = require('ko'),
+		key = require('key'),
+		$html = require('$html'),
 
-		Utils = require('../Common/Utils.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Utils = require('Utils'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
@@ -16606,8 +16563,8 @@ module.exports = window;
 		PopupsFolderCreateViewModel = require('./Popups/PopupsFolderCreateViewModel.js'),
 		PopupsContactsViewModel = require('./Popups/PopupsContactsViewModel.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -16862,38 +16819,38 @@ module.exports = window;
 
 	module.exports = MailBoxFolderListViewModel;
 
-}(module));
+}(module, require));
 
-},{"../Boots/RainLoopApp.js":4,"../Common/Enums.js":7,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Utils.js":14,"../External/$html.js":17,"../External/jquery.js":26,"../External/key.js":27,"../External/ko.js":28,"../External/window.js":32,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/AppSettings.js":68,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsComposeViewModel.js":86,"./Popups/PopupsContactsViewModel.js":87,"./Popups/PopupsFolderCreateViewModel.js":90}],78:[function(require,module,exports){
+},{"$":26,"$html":17,"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsComposeViewModel.js":86,"./Popups/PopupsContactsViewModel.js":87,"./Popups/PopupsFolderCreateViewModel.js":90,"Enums":7,"Globals":9,"KnoinAbstractViewModel":36,"LinkBuilder":10,"Utils":14,"key":27,"kn":33,"ko":28,"window":32}],78:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		ifvisible = require('../External/ifvisible.js'),
-		Jua = require('../External/Jua.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
+		ifvisible = require('ifvisible'),
+		Jua = require('Jua'),
 
-		Enums = require('../Common/Enums.js'),
-		Consts = require('../Common/Consts.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
-		Selector = require('../Common/Selector.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
+		Selector = require('Selector'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel'),
 
 		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
 		PopupsAdvancedSearchViewModel = require('./Popups/PopupsAdvancedSearchViewModel.js'),
@@ -17174,6 +17131,7 @@ module.exports = window;
 	{
 		if (this.canBeMoved())
 		{
+			var RL = require('../Boots/RainLoopApp.js');
 			RL.moveMessagesToFolder(
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
@@ -17261,7 +17219,8 @@ module.exports = window;
 		var
 			aUids = [],
 			oFolder = null,
-			iAlreadyUnread = 0
+			iAlreadyUnread = 0,
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		if (Utils.isUnd(aMessages))
@@ -17341,7 +17300,8 @@ module.exports = window;
 	{
 		var
 			oFolder = null,
-			aMessages = Data.messageList()
+			aMessages = Data.messageList(),
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		if ('' !== sFolderFullNameRaw)
@@ -17494,7 +17454,8 @@ module.exports = window;
 	MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	{
 		var
-			self = this
+			self = this,
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		this.oContentVisible = $('.b-content', oDom);
@@ -17525,6 +17486,7 @@ module.exports = window;
 
 				oMessage.lastInCollapsedThreadLoading(true);
 				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
+
 				RL.reloadMessageList();
 			}
 
@@ -17755,20 +17717,23 @@ module.exports = window;
 			return false;
 		}
 
-		var oJua = new Jua({
-			'action': LinkBuilder.append(),
-			'name': 'AppendFile',
-			'queueSize': 1,
-			'multipleSizeLimit': 1,
-			'disableFolderDragAndDrop': true,
-			'hidden': {
-				'Folder': function () {
-					return Data.currentFolderFullNameRaw();
-				}
-			},
-			'dragAndDropElement': this.dragOverArea(),
-			'dragAndDropBodyElement': this.dragOverBodyArea()
-		});
+		var
+			RL = require('../Boots/RainLoopApp.js'),
+				oJua = new Jua({
+				'action': LinkBuilder.append(),
+				'name': 'AppendFile',
+				'queueSize': 1,
+				'multipleSizeLimit': 1,
+				'disableFolderDragAndDrop': true,
+				'hidden': {
+					'Folder': function () {
+						return Data.currentFolderFullNameRaw();
+					}
+				},
+				'dragAndDropElement': this.dragOverArea(),
+				'dragAndDropBodyElement': this.dragOverBodyArea()
+			})
+		;
 
 		oJua
 			.on('onDragEnter', _.bind(function () {
@@ -17802,26 +17767,26 @@ module.exports = window;
 
 	module.exports = MailBoxMessageListViewModel;
 
-}(module));
+}(module, require));
 
-},{"../Boots/RainLoopApp.js":4,"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Common/Selector.js":13,"../Common/Utils.js":14,"../External/Jua.js":21,"../External/ifvisible.js":25,"../External/jquery.js":26,"../External/key.js":27,"../External/ko.js":28,"../External/underscore.js":31,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsAdvancedSearchViewModel.js":83,"./Popups/PopupsComposeViewModel.js":86,"./Popups/PopupsFolderClearViewModel.js":89}],79:[function(require,module,exports){
+},{"$":26,"../Boots/RainLoopApp.js":4,"../Storages/AppSettings.js":68,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsAdvancedSearchViewModel.js":83,"./Popups/PopupsComposeViewModel.js":86,"./Popups/PopupsFolderClearViewModel.js":89,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Jua":21,"KnoinAbstractViewModel":36,"LinkBuilder":10,"Selector":13,"Utils":14,"_":31,"ifvisible":25,"key":27,"kn":33,"ko":28}],79:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		$html = require('../External/$html.js'),
+		$ = require('$'),
+		ko = require('ko'),
+		key = require('key'),
+		$html = require('$html'),
 
-		Consts = require('../Common/Consts.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Events = require('../Common/Events.js'),
+		Consts = require('Consts'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Events = require('Events'),
 
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
@@ -17829,8 +17794,8 @@ module.exports = window;
 
 		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -18527,16 +18492,16 @@ module.exports = window;
 
 	module.exports = MailBoxMessageViewViewModel;
 
-}(module));
-},{"../Boots/RainLoopApp.js":4,"../Common/Consts.js":6,"../Common/Enums.js":7,"../Common/Events.js":8,"../Common/Globals.js":9,"../Common/Utils.js":14,"../External/$html.js":17,"../External/jquery.js":26,"../External/key.js":27,"../External/ko.js":28,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsComposeViewModel.js":86}],80:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$html":17,"../Boots/RainLoopApp.js":4,"../Storages/WebMailAjaxRemoteStorage.js":72,"../Storages/WebMailCacheStorage.js":73,"../Storages/WebMailDataStorage.js":74,"./Popups/PopupsComposeViewModel.js":86,"Consts":6,"Enums":7,"Events":8,"Globals":9,"KnoinAbstractViewModel":36,"Utils":14,"key":27,"kn":33,"ko":28}],80:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
 	;
 
@@ -18554,26 +18519,26 @@ module.exports = window;
 
 	module.exports = MailBoxSystemDropDownViewModel;
 
-}(module));
+}(module, require));
 
-},{"../Knoin/Knoin.js":33,"./AbstractSystemDropDownViewModel.js":75}],81:[function(require,module,exports){
+},{"./AbstractSystemDropDownViewModel.js":75,"kn":33}],81:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -18674,23 +18639,23 @@ module.exports = window;
 
 	module.exports = PopupsAddAccountViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../External/underscore.js":31,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailAjaxRemoteStorage.js":72}],82:[function(require,module,exports){
+}(module, require));
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailAjaxRemoteStorage.js":72,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"_":31,"kn":33,"ko":28}],82:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Utils = require('../../Common/Utils.js'),
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -18786,24 +18751,24 @@ module.exports = window;
 
 	module.exports = PopupsAddOpenPgpKeyViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailDataStorage.js":74}],83:[function(require,module,exports){
+}(module, require));
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailDataStorage.js":74,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],83:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../../External/ko.js'),
-		moment = require('../../External/moment.js'),
-		
-		Utils = require('../../Common/Utils.js'),
+		ko = require('ko'),
+		moment = require('moment'),
+
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -18944,23 +18909,23 @@ module.exports = window;
 
 	module.exports = PopupsAdvancedSearchViewModel;
 
-}(module));
-},{"../../Common/Utils.js":14,"../../External/ko.js":28,"../../External/moment.js":29,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailDataStorage.js":74}],84:[function(require,module,exports){
+}(module, require));
+},{"../../Storages/WebMailDataStorage.js":74,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28,"moment":29}],84:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		ko = require('../../External/ko.js'),
-		key = require('../../External/key.js'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
-		
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -19075,29 +19040,29 @@ module.exports = window;
 
 	module.exports = PopupsAskViewModel;
 
-}(module));
-},{"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/key.js":27,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36}],85:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"key":27,"kn":33,"ko":28}],85:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
-
+	
 	var
-		window = require('../../External/window.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		key = require('../../External/key.js'),
+		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Utils = require('../../Common/Utils.js'),
-		Enums = require('../../Common/Enums.js'),
+		Utils = require('Utils'),
+		Enums = require('Enums'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
 		EmailModel = require('../../Models/EmailModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -19341,30 +19306,31 @@ module.exports = window;
 
 	module.exports = PopupsComposeOpenPgpViewModel;
 
-}(module));
-},{"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/key.js":27,"../../External/ko.js":28,"../../External/underscore.js":31,"../../External/window.js":32,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Models/EmailModel.js":43,"../../Storages/WebMailDataStorage.js":74}],86:[function(require,module,exports){
+}(module, require));
+},{"../../Models/EmailModel.js":43,"../../Storages/WebMailDataStorage.js":74,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"_":31,"key":27,"kn":33,"ko":28,"window":32}],86:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		$ = require('../../External/jquery.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		moment = require('../../External/moment.js'),
-		$window = require('../../External/$window.js'),
-		JSON = require('../../External/JSON.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$window = require('$window'),
+		JSON = require('JSON'),
+		Jua = require('Jua'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js'),
-		Globals = require('../../Common/Globals.js'),
-		LinkBuilder = require('../../Common/LinkBuilder.js'),
-		Events = require('../../Common/Events.js'),
-		NewHtmlEditorWrapper = require('../../Common/NewHtmlEditorWrapper.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Utils = require('Utils'),
+		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
+		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
 
 		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
@@ -19377,8 +19343,8 @@ module.exports = window;
 		PopupsFolderSystemViewModel = require('./PopupsFolderSystemViewModel.js'),
 		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -21129,27 +21095,27 @@ module.exports = window;
 
 	module.exports = PopupsComposeViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Consts.js":6,"../../Common/Enums.js":7,"../../Common/Events.js":8,"../../Common/Globals.js":9,"../../Common/LinkBuilder.js":10,"../../Common/NewHtmlEditorWrapper.js":11,"../../Common/Utils.js":14,"../../External/$window.js":18,"../../External/JSON.js":20,"../../External/jquery.js":26,"../../External/ko.js":28,"../../External/moment.js":29,"../../External/underscore.js":31,"../../External/window.js":32,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Models/ComposeAttachmentModel.js":39,"../../Storages/AppSettings.js":68,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailCacheStorage.js":73,"../../Storages/WebMailDataStorage.js":74,"./PopupsAskViewModel.js":84,"./PopupsComposeOpenPgpViewModel.js":85,"./PopupsFolderSystemViewModel.js":91}],87:[function(require,module,exports){
+}(module, require));
+},{"$":26,"$window":18,"../../Boots/RainLoopApp.js":4,"../../Models/ComposeAttachmentModel.js":39,"../../Storages/AppSettings.js":68,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailCacheStorage.js":73,"../../Storages/WebMailDataStorage.js":74,"./PopupsAskViewModel.js":84,"./PopupsComposeOpenPgpViewModel.js":85,"./PopupsFolderSystemViewModel.js":91,"Consts":6,"Enums":7,"Events":8,"Globals":9,"JSON":20,"Jua":21,"KnoinAbstractViewModel":36,"LinkBuilder":10,"NewHtmlEditorWrapper":11,"Utils":14,"_":31,"kn":33,"ko":28,"moment":29,"window":32}],87:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		$ = require('../../External/jquery.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		key = require('../../External/key.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Globals = require('../../Common/Globals.js'),
-		Utils = require('../../Common/Utils.js'),
-		LinkBuilder = require('../../Common/LinkBuilder.js'),
-		Selector = require('../../Common/Selector.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Selector = require('Selector'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
@@ -21161,8 +21127,8 @@ module.exports = window;
 
 		PopupsComposeViewModel = require('./PopupsComposeViewModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -21488,7 +21454,7 @@ module.exports = window;
 				self = this,
 				RL = require('../../Boots/RainLoopApp.js')
 			;
-			
+
 			RL.contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
@@ -21920,24 +21886,24 @@ module.exports = window;
 
 	module.exports = PopupsContactsViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Consts.js":6,"../../Common/Enums.js":7,"../../Common/Globals.js":9,"../../Common/LinkBuilder.js":10,"../../Common/Selector.js":13,"../../Common/Utils.js":14,"../../External/jquery.js":26,"../../External/key.js":27,"../../External/ko.js":28,"../../External/underscore.js":31,"../../External/window.js":32,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Models/ContactModel.js":40,"../../Models/ContactPropertyModel.js":41,"../../Models/ContactTagModel.js":42,"../../Models/EmailModel.js":43,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74,"./PopupsComposeViewModel.js":86}],88:[function(require,module,exports){
+}(module, require));
+},{"$":26,"../../Boots/RainLoopApp.js":4,"../../Models/ContactModel.js":40,"../../Models/ContactPropertyModel.js":41,"../../Models/ContactTagModel.js":42,"../../Models/EmailModel.js":43,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74,"./PopupsComposeViewModel.js":86,"Consts":6,"Enums":7,"Globals":9,"KnoinAbstractViewModel":36,"LinkBuilder":10,"Selector":13,"Utils":14,"_":31,"key":27,"kn":33,"ko":28,"window":32}],88:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
-		
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js'),
+		ko = require('ko'),
+
+		Consts = require('Consts'),
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -21967,32 +21933,32 @@ module.exports = window;
 	PopupsFilterViewModel.prototype.onShow = function (oFilter)
 	{
 		this.clearPopup();
-		
+
 		this.filter(oFilter);
 	};
 
 	module.exports = PopupsFilterViewModel;
 
-}(module));
-},{"../../Common/Consts.js":6,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailDataStorage.js":74}],89:[function(require,module,exports){
+}(module, require));
+},{"../../Storages/WebMailDataStorage.js":74,"Consts":6,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],89:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Cache = require('../../Storages/WebMailCacheStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22095,27 +22061,27 @@ module.exports = window;
 
 	module.exports = PopupsFolderClearViewModel;
 
-}(module));
+}(module, require));
 
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailCacheStorage.js":73,"../../Storages/WebMailDataStorage.js":74}],90:[function(require,module,exports){
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailCacheStorage.js":73,"../../Storages/WebMailDataStorage.js":74,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],90:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22229,27 +22195,27 @@ module.exports = window;
 
 	module.exports = PopupsFolderCreateViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Consts.js":6,"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74}],91:[function(require,module,exports){
+}(module, require));
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74,"Consts":6,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],91:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
-
+(function (module, require) {
+	
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Utils = require('Utils'),
 
 		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22365,25 +22331,25 @@ module.exports = window;
 
 	module.exports = PopupsFolderSystemViewModel;
 
-}(module));
-},{"../../Common/Consts.js":6,"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/AppSettings.js":68,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74}],92:[function(require,module,exports){
+}(module, require));
+},{"../../Storages/AppSettings.js":68,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74,"Consts":6,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],92:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
+		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Utils = require('../../Common/Utils.js'),
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22484,25 +22450,25 @@ module.exports = window;
 
 	module.exports = PopupsGenerateNewOpenPgpKeyViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../External/underscore.js":31,"../../External/window.js":32,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailDataStorage.js":74}],93:[function(require,module,exports){
+}(module, require));
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailDataStorage.js":74,"KnoinAbstractViewModel":36,"Utils":14,"_":31,"kn":33,"ko":28,"window":32}],93:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
-		kn = require('../../Knoin/Knoin.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		kn = require('kn'),
 
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22657,22 +22623,22 @@ module.exports = window;
 
 	module.exports = PopupsIdentityViewModel;
 
-}(module));
-},{"../../Boots/RainLoopApp.js":4,"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74}],94:[function(require,module,exports){
+}(module, require));
+},{"../../Boots/RainLoopApp.js":4,"../../Storages/WebMailAjaxRemoteStorage.js":72,"../../Storages/WebMailDataStorage.js":74,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],94:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../../External/underscore.js'),
-		key = require('../../External/key.js'),
+		_ = require('_'),
+		key = require('key'),
 
-		Enums = require('../../Common/Enums.js'),
+		Enums = require('Enums'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22722,24 +22688,24 @@ module.exports = window;
 
 	module.exports = PopupsKeyboardShortcutsHelpViewModel;
 
-}(module));
-},{"../../Common/Enums.js":7,"../../External/key.js":27,"../../External/underscore.js":31,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36}],95:[function(require,module,exports){
+}(module, require));
+},{"Enums":7,"KnoinAbstractViewModel":36,"_":31,"key":27,"kn":33}],95:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		
-		Utils = require('../../Common/Utils.js'),
+		_ = require('_'),
+		ko = require('ko'),
+
+		Utils = require('Utils'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22804,26 +22770,26 @@ module.exports = window;
 
 	module.exports = PopupsLanguagesViewModel;
 
-}(module));
-},{"../../Common/Utils.js":14,"../../External/ko.js":28,"../../External/underscore.js":31,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailDataStorage.js":74}],96:[function(require,module,exports){
+}(module, require));
+},{"../../Storages/WebMailDataStorage.js":74,"KnoinAbstractViewModel":36,"Utils":14,"_":31,"kn":33,"ko":28}],96:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
-		
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
+		ko = require('ko'),
+
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
-	
+
 	/**
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
@@ -22880,21 +22846,21 @@ module.exports = window;
 
 	module.exports = PopupsTwoFactorTestViewModel;
 
-}(module));
-},{"../../Common/Enums.js":7,"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36,"../../Storages/WebMailAjaxRemoteStorage.js":72}],97:[function(require,module,exports){
+}(module, require));
+},{"../../Storages/WebMailAjaxRemoteStorage.js":72,"Enums":7,"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],97:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
-		
-		Utils = require('../../Common/Utils.js'),
+		ko = require('ko'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		Utils = require('Utils'),
+
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22939,20 +22905,20 @@ module.exports = window;
 
 	module.exports = PopupsViewOpenPgpKeyViewModel;
 
-}(module));
-},{"../../Common/Utils.js":14,"../../External/ko.js":28,"../../Knoin/Knoin.js":33,"../../Knoin/KnoinAbstractViewModel.js":36}],98:[function(require,module,exports){
+}(module, require));
+},{"KnoinAbstractViewModel":36,"Utils":14,"kn":33,"ko":28}],98:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Globals = require('../Common/Globals.js'),
+		LinkBuilder = require('LinkBuilder'),
+		Globals = require('Globals'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -22986,24 +22952,24 @@ module.exports = window;
 
 	module.exports = SettingsMenuViewModel;
 
-}(module));
-},{"../Common/Globals.js":9,"../Common/LinkBuilder.js":10,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36}],99:[function(require,module,exports){
+}(module, require));
+},{"Globals":9,"KnoinAbstractViewModel":36,"LinkBuilder":10,"kn":33}],99:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		key = require('../External/key.js'),
+		key = require('key'),
 
-		Enums = require('../Common/Enums.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
-		
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -23039,16 +23005,16 @@ module.exports = window;
 
 	module.exports = SettingsPaneViewModel;
 
-}(module));
-},{"../Common/Enums.js":7,"../Common/LinkBuilder.js":10,"../External/key.js":27,"../Knoin/Knoin.js":33,"../Knoin/KnoinAbstractViewModel.js":36,"../Storages/WebMailDataStorage.js":74}],100:[function(require,module,exports){
+}(module, require));
+},{"../Storages/WebMailDataStorage.js":74,"Enums":7,"KnoinAbstractViewModel":36,"LinkBuilder":10,"key":27,"kn":33}],100:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module) {
+(function (module, require) {
 
 	'use strict';
 
 	var
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
 	;
 
@@ -23066,5 +23032,5 @@ module.exports = window;
 
 	module.exports = SettingsSystemDropDownViewModel;
 
-}(module));
-},{"../Knoin/Knoin.js":33,"./AbstractSystemDropDownViewModel.js":75}]},{},[1]);
+}(module, require));
+},{"./AbstractSystemDropDownViewModel.js":75,"kn":33}]},{},[1]);

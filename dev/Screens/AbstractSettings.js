@@ -1,19 +1,20 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js')
+		kn = require('kn'),
+		KnoinAbstractScreen = require('KnoinAbstractScreen')
 	;
 
 	/**
@@ -197,4 +198,4 @@
 
 	module.exports = AbstractSettings;
 
-}(module));
+}(module, require));

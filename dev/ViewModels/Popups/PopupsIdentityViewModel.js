@@ -1,19 +1,20 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		ko = require('../../External/ko.js'),
+		ko = require('ko'),
 
-		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
-		kn = require('../../Knoin/Knoin.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		kn = require('kn'),
 
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -168,4 +169,4 @@
 
 	module.exports = PopupsIdentityViewModel;
 
-}(module));
+}(module, require));

@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
+		_ = require('_'),
+		ko = require('ko'),
 
 		AbstractData = require('./AbstractData.js')
 	;
@@ -64,4 +65,4 @@
 
 	module.exports = new AdminDataStorage();
 
-}(module));
+}(module, require));

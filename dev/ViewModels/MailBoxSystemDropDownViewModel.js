@@ -1,10 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
 	;
 
@@ -22,4 +23,4 @@
 
 	module.exports = MailBoxSystemDropDownViewModel;
 
-}(module));
+}(module, require));

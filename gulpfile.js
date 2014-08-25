@@ -25,6 +25,10 @@ var
 		}
 	},
 
+	browserify = require('browserify'),
+	streamify = require('gulp-streamify'),
+	source = require('vinyl-source-stream'),
+
 	fs = require('node-fs'),
 	path = require('path'),
 	gulp = require('gulp'),
@@ -60,7 +64,7 @@ function zipDir(sSrcDir, sDestDir, sFileName)
 function cleanDir(sDir)
 {
 	return gulp.src(sDir, {read: false})
-		.pipe(require('gulp-clean')());
+		.pipe(require('gulp-rimraf')());
 }
 
 function renameFileWothMd5Hash(sFile)
@@ -70,6 +74,7 @@ function renameFileWothMd5Hash(sFile)
 	return true;
 }
 
+cfg.paths.globjs = 'dev/**/*.js';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticCSS = 'rainloop/v/' + cfg.devVersion + '/static/css/';
 
@@ -165,180 +170,11 @@ cfg.paths.js = {
 	},
 	app: {
 		name: 'app.js',
-		name_min: 'app.min.js',
-		src: [
-			'dev/Common/_Begin.js',
-			'dev/Common/_BeginW.js',
-
-			'dev/Common/Globals.js',
-			'dev/Common/Constants.js',
-			'dev/Common/Enums.js',
-			'dev/Common/Utils.js',
-			'dev/Common/Base64.js',
-			'dev/Common/Knockout.js',
-			'dev/Common/LinkBuilder.js',
-			'dev/Common/Plugins.js',
-			'dev/Common/NewHtmlEditorWrapper.js',
-			'dev/Common/Selector.js',
-
-			'dev/Storages/LocalStorages/CookieDriver.js',
-			'dev/Storages/LocalStorages/LocalStorageDriver.js',
-			'dev/Storages/LocalStorage.js',
-
-			'dev/Knoin/AbstractBoot.js',
-			'dev/Knoin/AbstractViewModel.js',
-			'dev/Knoin/AbstractScreen.js',
-			'dev/Knoin/Knoin.js',
-
-			'dev/Models/EmailModel.js',
-			'dev/Models/ContactModel.js',
-			'dev/Models/ContactPropertyModel.js',
-			'dev/Models/ContactTagModel.js',
-			'dev/Models/AttachmentModel.js',
-			'dev/Models/ComposeAttachmentModel.js',
-			'dev/Models/MessageModel.js',
-			'dev/Models/FolderModel.js',
-			'dev/Models/AccountModel.js',
-			'dev/Models/IdentityModel.js',
-			'dev/Models/FilterConditionModel.js',
-			'dev/Models/FilterModel.js',
-			'dev/Models/OpenPgpKeyModel.js',
-
-			'dev/ViewModels/Popups/PopupsFolderClearViewModel.js',
-			'dev/ViewModels/Popups/PopupsFolderCreateViewModel.js',
-			'dev/ViewModels/Popups/PopupsFolderSystemViewModel.js',
-			'dev/ViewModels/Popups/PopupsComposeViewModel.js',
-			'dev/ViewModels/Popups/PopupsContactsViewModel.js',
-			'dev/ViewModels/Popups/PopupsAdvancedSearchViewModel.js',
-			'dev/ViewModels/Popups/PopupsAddAccountViewModel.js',
-			'dev/ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js',
-			'dev/ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js',
-			'dev/ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js',
-			'dev/ViewModels/Popups/PopupsComposeOpenPgpViewModel.js',
-			'dev/ViewModels/Popups/PopupsIdentityViewModel.js',
-			'dev/ViewModels/Popups/PopupsLanguagesViewModel.js',
-			'dev/ViewModels/Popups/PopupsTwoFactorTestViewModel.js',
-			'dev/ViewModels/Popups/PopupsAskViewModel.js',
-			'dev/ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js',
-			'dev/ViewModels/Popups/PopupsFiterViewModel.js',
-
-			'dev/ViewModels/LoginViewModel.js',
-
-			'dev/ViewModels/AbstractSystemDropDownViewModel.js',
-			'dev/ViewModels/MailBoxSystemDropDownViewModel.js',
-			'dev/ViewModels/SettingsSystemDropDownViewModel.js',
-
-			'dev/ViewModels/MailBoxFolderListViewModel.js',
-			'dev/ViewModels/MailBoxMessageListViewModel.js',
-			'dev/ViewModels/MailBoxMessageViewViewModel.js',
-
-			'dev/ViewModels/SettingsMenuViewModel.js',
-			'dev/ViewModels/SettingsPaneViewModel.js',
-
-			'dev/Settings/General.js',
-			'dev/Settings/Contacts.js',
-			'dev/Settings/Accounts.js',
-			'dev/Settings/Identity.js',
-			'dev/Settings/Identities.js',
-			'dev/Settings/Filters.js',
-			'dev/Settings/Security.js',
-			'dev/Settings/Social.js',
-			'dev/Settings/ChangePassword.js',
-			'dev/Settings/Folders.js',
-			'dev/Settings/Themes.js',
-			'dev/Settings/OpenPGP.js',
-
-			'dev/Storages/AbstractData.js',
-			'dev/Storages/WebMailData.js',
-
-			'dev/Storages/AbstractAjaxRemote.js',
-			'dev/Storages/WebMailAjaxRemote.js',
-
-			'dev/Storages/AbstractCache.js',
-			'dev/Storages/WebMailCache.js',
-
-			'dev/Screens/AbstractSettings.js',
-
-			'dev/Screens/Login.js',
-			'dev/Screens/MailBox.js',
-			'dev/Screens/Settings.js',
-
-			'dev/Boots/AbstractApp.js',
-			'dev/Boots/RainLoopApp.js',
-
-			'dev/Common/_End.js'
-		]
+		name_min: 'app.min.js'
 	},
 	admin: {
 		name: 'admin.js',
-		name_min: 'admin.min.js',
-		src: [
-			'dev/Common/_Begin.js',
-			'dev/Common/_BeginA.js',
-
-			'dev/Common/Globals.js',
-			'dev/Common/Constants.js',
-			'dev/Common/Enums.js',
-			'dev/Common/Utils.js',
-			'dev/Common/Base64.js',
-			'dev/Common/Knockout.js',
-			'dev/Common/LinkBuilder.js',
-			'dev/Common/Plugins.js',
-
-			'dev/Storages/LocalStorages/CookieDriver.js',
-			'dev/Storages/LocalStorages/LocalStorageDriver.js',
-			'dev/Storages/LocalStorage.js',
-
-			'dev/Knoin/AbstractBoot.js',
-			'dev/Knoin/AbstractViewModel.js',
-			'dev/Knoin/AbstractScreen.js',
-			'dev/Knoin/Knoin.js',
-
-			'dev/Models/EmailModel.js',
-			'dev/Models/ContactTagModel.js',
-
-			'dev/ViewModels/Popups/PopupsDomainViewModel.js',
-			'dev/ViewModels/Popups/PopupsPluginViewModel.js',
-			'dev/ViewModels/Popups/PopupsActivateViewModel.js',
-			'dev/ViewModels/Popups/PopupsLanguagesViewModel.js',
-			'dev/ViewModels/Popups/PopupsAskViewModel.js',
-
-			'dev/ViewModels/AdminLoginViewModel.js',
-
-			'dev/ViewModels/AdminMenuViewModel.js',
-			'dev/ViewModels/AdminPaneViewModel.js',
-
-			'dev/Admin/General.js',
-			'dev/Admin/Login.js',
-			'dev/Admin/Branding.js',
-			'dev/Admin/Contacts.js',
-			'dev/Admin/Domains.js',
-			'dev/Admin/Security.js',
-			'dev/Admin/Social.js',
-			'dev/Admin/Plugins.js',
-			'dev/Admin/Packages.js',
-			'dev/Admin/Licensing.js',
-			'dev/Admin/About.js',
-
-			'dev/Storages/AbstractData.js',
-			'dev/Storages/AdminData.js',
-
-			'dev/Storages/AbstractAjaxRemote.js',
-			'dev/Storages/AdminAjaxRemote.js',
-
-			'dev/Storages/AbstractCache.js',
-			'dev/Storages/AdminCache.js',
-
-			'dev/Screens/AbstractSettings.js',
-
-			'dev/Screens/AdminLogin.js',
-			'dev/Screens/AdminSettings.js',
-
-			'dev/Boots/AbstractApp.js',
-			'dev/Boots/AdminApp.js',
-
-			'dev/Common/_End.js'
-		]
+		name_min: 'admin.min.js'
 	}
 };
 
@@ -396,40 +232,33 @@ gulp.task('js:libs', function() {
 });
 
 gulp.task('js:app', function() {
-	return gulp.src(cfg.paths.js.app.src)
-		.pipe(concat(cfg.paths.js.app.name))
-		.pipe(header('/*! RainLoop Webmail Main Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
-			'(function (window, $, ko, crossroads, hasher, moment, Jua, _, ifvisible, key) {\n'))
-		.pipe(footer('\n\n}(window, jQuery, ko, crossroads, hasher, moment, Jua, _, ifvisible, key));'))
-		.pipe(gulp.dest(cfg.paths.staticJS));
+    return browserify({
+			'basedir': './dev/',
+			'detectGlobals': false,
+			'debug': false
+		})
+		.add('./_RainLoopBoot.js')
+		.bundle()
+        .pipe(source(cfg.paths.js.app.name))
+		.pipe(gulp.dest(cfg.paths.staticJS))
+		.on('error', gutil.log);
 });
 
 gulp.task('js:admin', function() {
-	return gulp.src(cfg.paths.js.admin.src)
-		.pipe(concat(cfg.paths.js.admin.name))
-		.pipe(header('/*! RainLoop Webmail Admin Module (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n' +
-			'(function (window, $, ko, crossroads, hasher, _) {\n'))
-		.pipe(footer('\n\n}(window, jQuery, ko, crossroads, hasher, _));'))
-		.pipe(gulp.dest(cfg.paths.staticJS));
-});
-
-// - lint
-gulp.task('js:app:lint', ['js:app'], function() {
-	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
-		.pipe(jshint('.jshintrc'))
-		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'));
-});
-
-gulp.task('js:admin:lint', ['js:admin'], function() {
-	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
-		.pipe(jshint('.jshintrc'))
-		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'));
+    return browserify({
+			'basedir': './dev/',
+			'detectGlobals': false,
+			'debug': false
+		})
+		.add('./_AdminBoot.js')
+		.bundle()
+        .pipe(source(cfg.paths.js.admin.name))
+		.pipe(gulp.dest(cfg.paths.staticJS))
+		.on('error', gutil.log);
 });
 
 // - min
-gulp.task('js:app:min', ['js:app:lint'], function() {
+gulp.task('js:app:min', ['js:app'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
 		.pipe(rename(cfg.paths.js.app.name_min))
 		.pipe(uglify(cfg.uglify))
@@ -437,12 +266,20 @@ gulp.task('js:app:min', ['js:app:lint'], function() {
 		.on('error', gutil.log);
 });
 
-gulp.task('js:admin:min', ['js:admin:lint'], function() {
+gulp.task('js:admin:min', ['js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
 		.pipe(rename(cfg.paths.js.admin.name_min))
 		.pipe(uglify(cfg.uglify))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
+});
+
+// lint
+gulp.task('js:lint', function() {
+	return gulp.src(cfg.paths.globjs)
+		.pipe(jshint('.jshintrc'))
+		.pipe(jshint.reporter('jshint-summary', cfg.summary))
+		.pipe(jshint.reporter('fail'));
 });
 
 // OTHER
@@ -581,7 +418,7 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:boot', 'js:libs', 'js:app:min', 'js:admin:min', 'css:main:min']);
+gulp.task('default', ['js:boot', 'js:libs', 'js:lint', 'js:app:min', 'js:admin:min', 'css:main:min']);
 gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('rainloop', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
@@ -591,9 +428,8 @@ gulp.task('owncloud', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rai
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
-	gulp.watch(cfg.paths.js.app.src, {interval: 1000}, ['js:app']);
-	gulp.watch(cfg.paths.js.admin.src, {interval: 1000}, ['js:admin']);
-	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
+	gulp.watch(cfg.paths.globjs, {interval: 500}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.less.main.watch, {interval: 500}, ['css:main']);
 });
 
 // aliases
@@ -608,38 +444,3 @@ gulp.task('b', ['rainloop']);
 gulp.task('b+', ['rainloop+']);
 
 gulp.task('own', ['owncloud']);
-
-var browserify = require('browserify');
-var streamify = require('gulp-streamify');
-var source = require('vinyl-source-stream');
-
-gulp.task('bro', function() {
-    return browserify({
-			'basedir': './dev/',
-			'detectGlobals': false,
-			'debug': false
-		})
-		.add('./_RainLoopBoot.js')
-		.bundle()
-        .pipe(source('app.js'))
-
-		.pipe(streamify(jshint('.jshintrc')))
-		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'))
-
-//		.pipe(rename('app.min.js'))
-//		.pipe(streamify(uglify(cfg.uglify)))
-        .pipe(gulp.dest(cfg.paths.staticJS))
-		.on('error', gutil.log);
-});
-
-gulp.task('lint', function() {
-    return gulp.src('./dev/**/*.js')
-		.pipe(jshint('.jshintrc'))
-		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'));
-});
-
-gulp.task('ww', ['bro'], function() {
-	gulp.watch('dev/**/*.js', {interval: 1000}, ['bro']);
-});

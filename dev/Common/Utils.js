@@ -1,24 +1,25 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
 		Utils = {},
 
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		window = require('../External/window.js'),
-		$window = require('../External/$window.js'),
-		$html = require('../External/$html.js'),
-		$div = require('../External/$div.js'),
-		$doc = require('../External/$doc.js'),
-		NotificationClass = require('../External/NotificationClass.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		window = require('window'),
+		$window = require('$window'),
+		$html = require('$html'),
+		$div = require('$div'),
+		$doc = require('$doc'),
+		NotificationClass = require('NotificationClass'),
 
-		Enums = require('./Enums.js'),
-		Consts = require('./Consts.js'),
-		Globals = require('./Globals.js')
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals')
 	;
 
 	Utils.trim = $.trim;
@@ -2045,4 +2046,4 @@
 
 	module.exports = Utils;
 
-}(module));
+}(module, require));

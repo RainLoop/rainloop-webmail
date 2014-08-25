@@ -1,12 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
-		kn = require('../Knoin/Knoin.js'),
-		Globals = require('../Common/Globals.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		Globals = require('Globals'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -35,4 +36,4 @@
 
 	module.exports = AdminMenuViewModel;
 
-}(module));
+}(module, require));

@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
-		ko = require('../External/ko.js'),
-		Enums = require('../Common/Enums.js')
+		ko = require('ko'),
+		Enums = require('Enums')
 	;
 
 	/**
@@ -58,4 +59,4 @@
 
 	module.exports = FilterConditionModel;
 
-}(module));
+}(module, require));

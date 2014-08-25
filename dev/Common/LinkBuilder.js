@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		Utils = require('./Utils.js')
+		window = require('window'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -326,4 +327,4 @@
 
 	module.exports = new LinkBuilder();
 
-}(module));
+}(module, require));

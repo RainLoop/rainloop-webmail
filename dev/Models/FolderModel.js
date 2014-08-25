@@ -1,17 +1,18 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		$window = require('../External/$window.js'),
+		_ = require('_'),
+		ko = require('ko'),
+		$window = require('$window'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Events = require('../Common/Events.js')
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Events = require('Events')
 	;
 
 	/**
@@ -351,4 +352,4 @@
 
 	module.exports = FolderModel;
 
-}(module));
+}(module, require));

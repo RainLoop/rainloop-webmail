@@ -1,24 +1,25 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		window = require('../External/window.js'),
-		$html = require('../External/$html.js'),
-		$window = require('../External/$window.js'),
-		$doc = require('../External/$doc.js'),
+		$ = require('$'),
+		_ = require('_'),
+		window = require('window'),
+		$html = require('$html'),
+		$window = require('$window'),
+		$doc = require('$doc'),
 
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 
-		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
+		KnoinAbstractBoot = require('KnoinAbstractBoot')
 	;
 
 	/**
@@ -141,7 +142,7 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			kn = require('../Knoin/Knoin.js'),
+			kn = require('kn'),
 			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
 			bInIframe = !!AppSettings.settingsGet('InIframe')
 		;
@@ -270,4 +271,4 @@
 
 	module.exports = AbstractApp;
 
-}(module));
+}(module, require));

@@ -1,16 +1,17 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Enums = require('./Enums.js'),
-		Utils = require('./Utils.js')
+		Enums = require('Enums'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -726,4 +727,4 @@
 
 	module.exports = Selector;
 
-}(module));
+}(module, require));

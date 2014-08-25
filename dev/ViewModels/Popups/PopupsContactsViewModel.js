@@ -1,21 +1,22 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		$ = require('../../External/jquery.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		key = require('../../External/key.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Globals = require('../../Common/Globals.js'),
-		Utils = require('../../Common/Utils.js'),
-		LinkBuilder = require('../../Common/LinkBuilder.js'),
-		Selector = require('../../Common/Selector.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Selector = require('Selector'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
@@ -27,8 +28,8 @@
 
 		PopupsComposeViewModel = require('./PopupsComposeViewModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -786,4 +787,4 @@
 
 	module.exports = PopupsContactsViewModel;
 
-}(module));
+}(module, require));

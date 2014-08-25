@@ -1,12 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		Globals = require('./Globals.js'),
+		window = require('window'),
+		_ = require('_'),
+		Globals = require('Globals'),
 		AppSettings = require('../Storages/AppSettings.js')
 	;
 
@@ -271,4 +272,4 @@
 
 	module.exports = NewHtmlEditorWrapper;
 
-}(module));
+}(module, require));

@@ -1,10 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		ko = require('../External/ko.js')
+		ko = require('ko')
 	;
 
 	/**
@@ -26,9 +27,9 @@
 	 */
 	AccountModel.prototype.changeAccountLink = function ()
 	{
-		return require('../Common/LinkBuilder.js').change(this.email);
+		return require('LinkBuilder').change(this.email);
 	};
 
 	module.exports = AccountModel;
 
-}(module));
+}(module, require));

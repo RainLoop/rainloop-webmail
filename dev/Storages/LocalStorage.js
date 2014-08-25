@@ -1,10 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 
 		CookieDriver = require('./LocalStorages/CookieDriver.js'),
 		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
@@ -20,6 +21,8 @@
 				return NextStorageDriver.supported();
 			})
 		;
+
+		this.oDriver = null;
 
 		if (NextStorageDriver)
 		{
@@ -51,4 +54,4 @@
 
 	module.exports = new LocalStorage();
 
-}(module));
+}(module, require));

@@ -1,10 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 		AbstractSettings = require('./AbstractSettings.js')
 	;
 
@@ -35,4 +36,4 @@
 
 	module.exports = AdminSettingsScreen;
 
-}(module));
+}(module, require));

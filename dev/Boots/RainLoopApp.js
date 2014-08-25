@@ -1,23 +1,24 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		moment = require('../External/moment.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		moment = require('moment'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Consts = require('../Common/Consts.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Consts = require('Consts'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		LocalStorage = require('../Storages/LocalStorage.js'),
 		AppSettings = require('../Storages/AppSettings.js'),
@@ -1579,4 +1580,4 @@
 
 	module.exports = new RainLoopApp();
 
-}(module));
+}(module, require));

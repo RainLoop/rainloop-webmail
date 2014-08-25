@@ -1,7 +1,8 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
 (function (module) {
+	
+	'use strict';
 
 	/**
 	 * @constructor
@@ -18,4 +19,4 @@
 
 	module.exports = KnoinAbstractBoot;
 
-}(module));
+}(module, require));

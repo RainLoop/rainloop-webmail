@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		crossroads = require('../External/crossroads.js'),
-		Utils = require('../Common/Utils.js')
+		crossroads = require('crossroads'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -86,4 +87,4 @@
 
 	module.exports = KnoinAbstractScreen;
 
-}(module));
+}(module, require));

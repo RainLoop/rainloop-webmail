@@ -1,18 +1,19 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		$ = require('../External/jquery.js'),
-		$window = require('../External/$window.js'),
-		$html = require('../External/$html.js'),
+		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
+		$window = require('$window'),
+		$html = require('$html'),
 
-		Globals = require('../Common/Globals.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js')
+		Globals = require('Globals'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils')
 	;
 
 	module.exports = function (App) {
@@ -45,7 +46,7 @@
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = require('../Models/EmailModel.js');
-		window['rl']['Enums'] = require('../Common/Enums.js');
+		window['rl']['Enums'] = require('Enums');
 
 		window['__RLBOOT'] = function (fCall) {
 
@@ -74,4 +75,4 @@
 
 	};
 
-}(module));
+}(module, require));

@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
+		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Enums = require('../Common/Enums.js'),
+		Enums = require('Enums'),
 
 		PopupsDomainViewModel = require('../ViewModels/Popups/PopupsDomainViewModel.js'),
 
@@ -57,7 +58,7 @@
 
 	AdminSettingsDomains.prototype.createDomain = function ()
 	{
-		require('../Knoin/Knoin.js').showScreenPopup(PopupsDomainViewModel);
+		require('kn').showScreenPopup(PopupsDomainViewModel);
 	};
 
 	AdminSettingsDomains.prototype.deleteDomain = function (oDomain)
@@ -92,7 +93,7 @@
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('../Knoin/Knoin.js').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('kn').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
 		}
 	};
 
@@ -103,4 +104,4 @@
 
 	module.exports = AdminSettingsDomains;
 
-}(module));
+}(module, require));

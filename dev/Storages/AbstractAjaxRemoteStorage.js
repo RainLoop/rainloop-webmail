@@ -1,18 +1,19 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
+		window = require('window'),
+		$ = require('$'),
 
-		Consts = require('../Common/Consts.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Plugins = require('../Common/Plugins.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Consts = require('Consts'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Plugins = require('Plugins'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('./AppSettings.js')
 	;
@@ -307,4 +308,4 @@
 
 	module.exports = AbstractAjaxRemoteStorage;
 
-}(module));
+}(module, require));

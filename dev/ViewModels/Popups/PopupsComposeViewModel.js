@@ -1,24 +1,26 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		window = require('../../External/window.js'),
-		$ = require('../../External/jquery.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		moment = require('../../External/moment.js'),
-		$window = require('../../External/$window.js'),
-		JSON = require('../../External/JSON.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$window = require('$window'),
+		JSON = require('JSON'),
+		Jua = require('Jua'),
 
-		Enums = require('../../Common/Enums.js'),
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js'),
-		Globals = require('../../Common/Globals.js'),
-		LinkBuilder = require('../../Common/LinkBuilder.js'),
-		Events = require('../../Common/Events.js'),
-		NewHtmlEditorWrapper = require('../../Common/NewHtmlEditorWrapper.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Utils = require('Utils'),
+		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
+		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
 
 		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/WebMailDataStorage.js'),
@@ -31,8 +33,8 @@
 		PopupsFolderSystemViewModel = require('./PopupsFolderSystemViewModel.js'),
 		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -1783,4 +1785,4 @@
 
 	module.exports = PopupsComposeViewModel;
 
-}(module));
+}(module, require));

@@ -1,23 +1,24 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
-		window = require('../../External/window.js'),
-		_ = require('../../External/underscore.js'),
-		ko = require('../../External/ko.js'),
-		key = require('../../External/key.js'),
+		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
 
-		Utils = require('../../Common/Utils.js'),
-		Enums = require('../../Common/Enums.js'),
+		Utils = require('Utils'),
+		Enums = require('Enums'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 
 		EmailModel = require('../../Models/EmailModel.js'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -261,4 +262,4 @@
 
 	module.exports = PopupsComposeOpenPgpViewModel;
 
-}(module));
+}(module, require));

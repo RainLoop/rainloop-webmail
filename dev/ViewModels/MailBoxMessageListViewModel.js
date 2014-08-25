@@ -1,31 +1,32 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		ifvisible = require('../External/ifvisible.js'),
-		Jua = require('../External/Jua.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		key = require('key'),
+		ifvisible = require('ifvisible'),
+		Jua = require('Jua'),
 
-		Enums = require('../Common/Enums.js'),
-		Consts = require('../Common/Consts.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Events = require('../Common/Events.js'),
-		Selector = require('../Common/Selector.js'),
+		Enums = require('Enums'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
+		Events = require('Events'),
+		Selector = require('Selector'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel'),
 
 		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
 		PopupsAdvancedSearchViewModel = require('./Popups/PopupsAdvancedSearchViewModel.js'),
@@ -942,4 +943,4 @@
 
 	module.exports = MailBoxMessageListViewModel;
 
-}(module));
+}(module, require));

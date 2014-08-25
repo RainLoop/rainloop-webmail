@@ -1,15 +1,16 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 
-		Utils = require('../Common/Utils.js'),
-		Consts = require('../Common/Consts.js'),
-		Globals = require('../Common/Globals.js'),
-		Base64 = require('../Common/Base64.js'),
+		Utils = require('Utils'),
+		Consts = require('Consts'),
+		Globals = require('Globals'),
+		Base64 = require('Base64'),
 
 		AppSettings = require('./AppSettings.js'),
 		Cache = require('./WebMailCacheStorage.js'),
@@ -810,4 +811,4 @@
 
 	module.exports = new WebMailAjaxRemoteStorage();
 
-}(module));
+}(module, require));

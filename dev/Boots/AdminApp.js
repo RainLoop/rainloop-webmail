@@ -1,18 +1,19 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		_ = require('../External/underscore.js'),
-		window = require('../External/window.js'),
+		ko = require('ko'),
+		_ = require('_'),
+		window = require('window'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
@@ -326,4 +327,4 @@
 
 	module.exports = new AdminApp();
 
-}(module));
+}(module, require));

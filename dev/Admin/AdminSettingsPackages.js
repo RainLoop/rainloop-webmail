@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		ko = require('../External/ko.js'),
+		window = require('window'),
+		ko = require('ko'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
@@ -110,4 +111,4 @@
 
 	module.exports = AdminSettingsPackages;
 
-}(module));
+}(module, require));

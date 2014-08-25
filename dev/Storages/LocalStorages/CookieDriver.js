@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		$ = require('../../External/jquery.js'),
-		JSON = require('../../External/JSON.js'),
+		$ = require('$'),
+		JSON = require('JSON'),
 
-		Consts = require('../../Common/Consts.js'),
-		Utils = require('../../Common/Utils.js')
+		Consts = require('Consts'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -87,4 +88,4 @@
 
 	module.exports = CookieDriver;
 
-}(module));
+}(module, require));

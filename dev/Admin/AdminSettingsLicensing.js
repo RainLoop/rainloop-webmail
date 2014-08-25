@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
-		moment = require('../External/moment.js'),
+		ko = require('ko'),
+		moment = require('moment'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
@@ -51,7 +52,7 @@
 
 	AdminSettingsLicensing.prototype.showActivationForm = function ()
 	{
-		require('../Knoin/Knoin.js').showScreenPopup(PopupsActivateViewModel);
+		require('kn').showScreenPopup(PopupsActivateViewModel);
 	};
 
 	/**
@@ -69,4 +70,4 @@
 
 	module.exports = AdminSettingsLicensing;
 
-}(module));
+}(module, require));

@@ -1,10 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
+		_ = require('_'),
 
 		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
 	;
@@ -272,4 +273,4 @@
 
 	module.exports = new AdminAjaxRemoteStorage();
 
-}(module));
+}(module, require));

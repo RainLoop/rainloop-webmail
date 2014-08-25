@@ -1,16 +1,17 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../../External/underscore.js'),
-		key = require('../../External/key.js'),
+		_ = require('_'),
+		key = require('key'),
 
-		Enums = require('../../Common/Enums.js'),
+		Enums = require('Enums'),
 
-		kn = require('../../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -60,4 +61,4 @@
 
 	module.exports = PopupsKeyboardShortcutsHelpViewModel;
 
-}(module));
+}(module, require));

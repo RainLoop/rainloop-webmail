@@ -1,12 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		AppData = require('../External/AppData.js'),
-
-		Utils = require('../Common/Utils.js')
+		AppData = require('AppData'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -60,4 +60,4 @@
 
 	module.exports = new AppSettings();
 
-}(module));
+}(module, require));

@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		AppSettings = require('./AppSettings.js')
 	;
@@ -89,4 +90,4 @@
 
 	module.exports = AbstractData;
 
-}(module));
+}(module, require));

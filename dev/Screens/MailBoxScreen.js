@@ -1,18 +1,19 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		$html = require('../External/$html.js'),
+		_ = require('_'),
+		$html = require('$html'),
 
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		Utils = require('../Common/Utils.js'),
-		Events = require('../Common/Events.js'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		Utils = require('Utils'),
+		Events = require('Events'),
 
-		KnoinAbstractScreen = require('../Knoin/KnoinAbstractScreen.js'),
+		KnoinAbstractScreen = require('KnoinAbstractScreen'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
@@ -204,4 +205,4 @@
 
 	module.exports = MailBoxScreen;
 
-}(module));
+}(module, require));

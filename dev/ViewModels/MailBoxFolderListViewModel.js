@@ -1,19 +1,20 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		ko = require('../External/ko.js'),
-		key = require('../External/key.js'),
-		$html = require('../External/$html.js'),
+		window = require('window'),
+		$ = require('$'),
+		ko = require('ko'),
+		key = require('key'),
+		$html = require('$html'),
 
-		Utils = require('../Common/Utils.js'),
-		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Utils = require('Utils'),
+		Enums = require('Enums'),
+		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
@@ -23,8 +24,8 @@
 		PopupsFolderCreateViewModel = require('./Popups/PopupsFolderCreateViewModel.js'),
 		PopupsContactsViewModel = require('./Popups/PopupsContactsViewModel.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -279,4 +280,4 @@
 
 	module.exports = MailBoxFolderListViewModel;
 
-}(module));
+}(module, require));

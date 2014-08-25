@@ -1,21 +1,22 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		hasher = require('../External/hasher.js'),
-		crossroads = require('../External/crossroads.js'),
-		$html = require('../External/$html.js'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		hasher = require('hasher'),
+		crossroads = require('crossroads'),
+		$html = require('$html'),
 
-		Globals = require('../Common/Globals.js'),
-		Plugins = require('../Common/Plugins.js'),
-		Utils = require('../Common/Utils.js'),
+		Globals = require('Globals'),
+		Plugins = require('Plugins'),
+		Utils = require('Utils'),
 
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -446,4 +447,4 @@
 
 	module.exports = new Knoin();
 
-}(module));
+}(module, require));

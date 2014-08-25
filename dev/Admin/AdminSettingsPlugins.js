@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
+		_ = require('_'),
+		ko = require('ko'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
@@ -86,7 +87,7 @@
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('../Knoin/Knoin.js').showScreenPopup(PopupsPluginViewModel, [oData.Result]);
+			require('kn').showScreenPopup(PopupsPluginViewModel, [oData.Result]);
 		}
 	};
 
@@ -112,4 +113,4 @@
 
 	module.exports = AdminSettingsPlugins;
 
-}(module));
+}(module, require));

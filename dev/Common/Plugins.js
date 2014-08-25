@@ -1,7 +1,8 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
 		Plugins = {
@@ -9,8 +10,8 @@
 			__remote: null,
 			__data: null
 		},
-		_ = require('../External/underscore.js'),
-		Utils = require('./Utils.js')
+		_ = require('_'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -112,4 +113,4 @@
 
 	module.exports = Plugins;
 
-}(module));
+}(module, require));

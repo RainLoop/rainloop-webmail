@@ -1,12 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+	
+	'use strict';
 
 	var
-		ko = require('../External/ko.js'),
+		ko = require('ko'),
 
-		kn = require('../Knoin/Knoin.js'),
+		kn = require('kn'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 
@@ -85,4 +86,4 @@
 
 	module.exports = SettingsOpenPGP;
 
-}(module));
+}(module, require));

@@ -1,14 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		LinkBuilder = require('../Common/LinkBuilder.js'),
-		Globals = require('../Common/Globals.js'),
+		LinkBuilder = require('LinkBuilder'),
+		Globals = require('Globals'),
 
-		kn = require('../Knoin/Knoin.js'),
-		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
+		kn = require('kn'),
+		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
 	;
 
 	/**
@@ -42,4 +43,4 @@
 
 	module.exports = SettingsMenuViewModel;
 
-}(module));
+}(module, require));

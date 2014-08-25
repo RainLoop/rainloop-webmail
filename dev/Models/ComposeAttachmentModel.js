@@ -1,11 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
 
+	'use strict';
+	
 	var
-		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
@@ -72,4 +73,4 @@
 
 	module.exports = ComposeAttachmentModel;
 
-}(module));
+}(module, require));

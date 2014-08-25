@@ -1,20 +1,21 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-'use strict';
 
-(function (module) {
+(function (module, require) {
+
+	'use strict';
 
 	var
-		window = require('../External/window.js'),
-		$ = require('../External/jquery.js'),
-		_ = require('../External/underscore.js'),
-		ko = require('../External/ko.js'),
-		moment = require('../External/moment.js'),
-		$window = require('../External/$window.js'),
-		$div = require('../External/$div.js'),
+		window = require('window'),
+		$ = require('$'),
+		_ = require('_'),
+		ko = require('ko'),
+		moment = require('moment'),
+		$window = require('$window'),
+		$div = require('$div'),
 
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
-		LinkBuilder = require('../Common/LinkBuilder.js'),
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+		LinkBuilder = require('LinkBuilder'),
 
 		EmailModel = require('./EmailModel.js'),
 		AttachmentModel = require('./AttachmentModel.js')
@@ -1283,4 +1284,4 @@
 
 	module.exports = MessageModel;
 
-}(module));
+}(module, require));
