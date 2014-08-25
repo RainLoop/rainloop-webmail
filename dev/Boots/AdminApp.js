@@ -1,14 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		ko = require('../External/ko.js'),
 		_ = require('../External/underscore.js'),
 		window = require('../External/window.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
@@ -18,7 +17,7 @@
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
-		
+
 		AdminSettingsScreen = require('../Screens/AdminSettingsScreen.js'),
 		AdminLoginScreen = require('../Screens/AdminLoginScreen.js'),
 
@@ -97,14 +96,14 @@
 
 		kn.addSettingsViewModel(AdminSettingsAbout,
 			'AdminSettingsAbout', 'About', 'about');
-			
+
 		return true;
 	};
 
 	AdminApp.prototype.reloadDomainList = function ()
 	{
 		Data.domainsLoading(true);
-		
+
 		Remote.domainList(function (sResult, oData) {
 			Data.domainsLoading(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
@@ -128,7 +127,7 @@
 		Remote.pluginList(function (sResult, oData) {
 
 			Data.pluginsLoading(false);
-			
+
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				var aList = _.map(oData.Result, function (oItem) {

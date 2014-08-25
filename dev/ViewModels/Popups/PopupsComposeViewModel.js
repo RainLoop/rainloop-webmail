@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../../External/window.js'),
@@ -10,7 +9,9 @@
 		_ = require('../../External/underscore.js'),
 		ko = require('../../External/ko.js'),
 		moment = require('../../External/moment.js'),
-		
+		$window = require('../../External/$window.js'),
+		JSON = require('../../External/JSON.js'),
+
 		Enums = require('../../Common/Enums.js'),
 		Consts = require('../../Common/Consts.js'),
 		Utils = require('../../Common/Utils.js'),
@@ -24,9 +25,11 @@
 		Cache = require('../../Storages/WebMailCacheStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		RL = require('../../Boots/RainLoopApp.js'),
+		ComposeAttachmentModel = require('../../Models/ComposeAttachmentModel.js'),
 
 		PopupsComposeOpenPgpViewModel = require('./PopupsComposeOpenPgpViewModel.js'),
+		PopupsFolderSystemViewModel = require('./PopupsFolderSystemViewModel.js'),
+		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -39,6 +42,8 @@
 	function PopupsComposeViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsCompose');
+
+		var RL = require('../../Boots/RainLoopApp.js');
 
 		this.oEditor = null;
 		this.aDraftInfo = null;
@@ -408,6 +413,7 @@
 
 	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
 	{
+		var RL = require('../../Boots/RainLoopApp.js');
 		RL.getAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oEmailItem) {
 				return oEmailItem.toLine(false);
@@ -437,7 +443,11 @@
 
 	PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
 	{
-		var sDraftFolder = Data.draftFolder();
+		var
+			RL = require('../../Boots/RainLoopApp.js'),
+			sDraftFolder = Data.draftFolder()
+		;
+
 		if ('' !== sDraftFolder)
 		{
 			Cache.setFolderHash(sDraftFolder, '');
@@ -1054,12 +1064,12 @@
 
 		if (this.dropboxEnabled())
 		{
-			oScript = document.createElement('script');
+			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
 			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
 			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', AppSettings.settingsGet('DropboxApiKey'));
 
-			document.body.appendChild(oScript);
+			window.document.body.appendChild(oScript);
 		}
 
 		if (this.driveEnabled())
@@ -1296,7 +1306,7 @@
 
 						if (oItem)
 						{
-							oItem.progress(' - ' + Math.floor(iLoaded / iTotal * 100) + '%');
+							oItem.progress(' - ' + window.Math.floor(iLoaded / iTotal * 100) + '%');
 						}
 
 					}, this))

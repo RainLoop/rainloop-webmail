@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
@@ -19,7 +18,7 @@
 			AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
 			AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
 		;
-		
+
 		AbstractSettings.call(this, [
 			AdminMenuViewModel,
 			AdminPaneViewModel

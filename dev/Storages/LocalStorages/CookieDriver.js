@@ -1,12 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		$ = require('../../External/jquery.js'),
 		JSON = require('../../External/JSON.js'),
+
 		Consts = require('../../Common/Consts.js'),
 		Utils = require('../../Common/Utils.js')
 	;

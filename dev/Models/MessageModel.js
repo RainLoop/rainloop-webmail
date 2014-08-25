@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
@@ -1081,6 +1080,7 @@
 
 		   this.body.data('rl-plain-raw', this.plainRaw);
 
+		   var Data = require('../Storages/WebMailDataStorage.js');
 		   if (Data.capaOpenPGP())
 		   {
 			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
@@ -1093,37 +1093,39 @@
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-	   if (this.body && Data.capaOpenPGP())
-	   {
-		   this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
-		   this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
-	   }
+		var Data = require('../Storages/WebMailDataStorage.js');
+		if (this.body && Data.capaOpenPGP())
+		{
+			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
+			this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
+		}
 	};
 
 	MessageModel.prototype.fetchDataToDom = function ()
 	{
-	   if (this.body)
-	   {
-		   this.isHtml(!!this.body.data('rl-is-html'));
-		   this.hasImages(!!this.body.data('rl-has-images'));
+		if (this.body)
+		{
+			this.isHtml(!!this.body.data('rl-is-html'));
+			this.hasImages(!!this.body.data('rl-has-images'));
 
-		   this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
+			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-		   if (Data.capaOpenPGP())
-		   {
-			   this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
-			   this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
-			   this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
-			   this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
-		   }
-		   else
-		   {
-			   this.isPgpSigned(false);
-			   this.isPgpEncrypted(false);
-			   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-			   this.pgpSignedVerifyUser('');
-		   }
-	   }
+			var Data = require('../Storages/WebMailDataStorage.js');
+			if (Data.capaOpenPGP())
+			{
+				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
+				this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
+				this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
+				this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
+			}
+			else
+			{
+				this.isPgpSigned(false);
+				this.isPgpEncrypted(false);
+				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+				this.pgpSignedVerifyUser('');
+			}
+		}
 	};
 
 	MessageModel.prototype.verifyPgpSignedClearMessage = function ()
@@ -1133,6 +1135,7 @@
 		   var
 			   aRes = [],
 			   mPgpMessage = null,
+			   Data = require('../Storages/WebMailDataStorage.js'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
 			   oValidKey = null,
@@ -1196,6 +1199,7 @@
 			   aRes = [],
 			   mPgpMessage = null,
 			   mPgpMessageDecrypted = null,
+			   Data = require('../Storages/WebMailDataStorage.js'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
 			   oPrivateKey = Data.findSelfPrivateKey(sPassword),

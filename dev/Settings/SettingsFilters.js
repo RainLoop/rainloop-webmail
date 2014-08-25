@@ -1,14 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../External/ko.js'),
-		Utils = require('../Common/Utils.js'),
-		kn = require('../Knoin/Knoin.js'),
-		PopupsFilterViewModel = require('../ViewModels/Popups/PopupsFilterViewModel.js')
+		Utils = require('../Common/Utils.js')
 	;
 
 	/**
@@ -31,6 +28,12 @@
 
 	SettingsFilters.prototype.addFilter = function ()
 	{
+		var
+			kn = require('../Knoin/Knoin.js'),
+			FilterModel = require('../Models/FilterModel.js'),
+			PopupsFilterViewModel = require('../ViewModels/Popups/PopupsFilterViewModel.js')
+		;
+
 		kn.showScreenPopup(PopupsFilterViewModel, [new FilterModel()]);
 	};
 

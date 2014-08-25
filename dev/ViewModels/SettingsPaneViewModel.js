@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		key = require('../External/key.js'),
@@ -11,7 +10,7 @@
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
-		
+
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;

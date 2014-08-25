@@ -1,20 +1,17 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		NewHtmlEditorWrapper = require('../Common/NewHtmlEditorWrapper.js'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		PopupsIdentityViewModel = require('../ViewModels/Popups/PopupsIdentityViewModel.js')
@@ -135,6 +132,7 @@
 			this.identityForDeletion(null);
 
 			var
+				RL = require('../Boots/RainLoopApp.js'),
 				fRemoveFolder = function (oIdentity) {
 					return oIdentityToRemove === oIdentity;
 				}

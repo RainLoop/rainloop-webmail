@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
@@ -11,7 +10,7 @@
 
 		Enums = require('../Common/Enums.js'),
 
-		RL = require('../Boots/AdminApp.js'),
+		PopupsDomainViewModel = require('../ViewModels/Popups/PopupsDomainViewModel.js'),
 
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
@@ -58,7 +57,7 @@
 
 	AdminSettingsDomains.prototype.createDomain = function ()
 	{
-		kn.showScreenPopup(PopupsDomainViewModel);
+		require('../Knoin/Knoin.js').showScreenPopup(PopupsDomainViewModel);
 	};
 
 	AdminSettingsDomains.prototype.deleteDomain = function (oDomain)
@@ -86,20 +85,20 @@
 			})
 		;
 
-		RL.reloadDomainList();
+		require('../Boots/AdminApp.js').reloadDomainList();
 	};
 
 	AdminSettingsDomains.prototype.onDomainLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			kn.showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('../Knoin/Knoin.js').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
 		}
 	};
 
 	AdminSettingsDomains.prototype.onDomainListChangeRequest = function ()
 	{
-		RL.reloadDomainList();
+		require('../Boots/AdminApp.js').reloadDomainList();
 	};
 
 	module.exports = AdminSettingsDomains;

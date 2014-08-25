@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
@@ -10,7 +9,7 @@
 		ko = require('../External/ko.js'),
 		key = require('../External/key.js'),
 		$html = require('../External/$html.js'),
-		
+
 		Utils = require('../Common/Utils.js'),
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
@@ -19,8 +18,6 @@
 		AppSettings = require('../Storages/AppSettings.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js'),
 
 		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
 		PopupsFolderCreateViewModel = require('./Popups/PopupsFolderCreateViewModel.js'),
@@ -62,7 +59,10 @@
 		this.oContentVisible = $('.b-content', oDom);
 		this.oContentScrollable = $('.content', this.oContentVisible);
 
-		var self = this;
+		var
+			self = this,
+			RL = require('../Boots/RainLoopApp.js')
+		;
 
 		oDom
 			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
@@ -185,6 +185,7 @@
 		window.clearTimeout(this.iDropOverTimer);
 		if (oFolder && oFolder.collapsed())
 		{
+			var RL = require('../Boots/RainLoopApp.js');
 			this.iDropOverTimer = window.setTimeout(function () {
 				oFolder.collapsed(false);
 				RL.setExpandedFolder(oFolder.fullNameHash, true);
@@ -240,6 +241,7 @@
 		if (oToFolder && oUi && oUi.helper)
 		{
 			var
+				RL = require('../Boots/RainLoopApp.js'),
 				sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
 				bCopy = $html.hasClass('rl-ctrl-key-pressed'),
 				aUids = oUi.helper.data('rl-uids')

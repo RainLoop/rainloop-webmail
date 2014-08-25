@@ -1,18 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
 
-		Data = require('../Storages/AdminDataStorage.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		Enums = require('../Common/Enums.js'),
+		Utils = require('../Common/Utils.js')
 	;
 
 	/**
@@ -20,6 +16,8 @@
 	 */
 	function AdminSettingsSocial()
 	{
+		var Data = require('../Storages/AdminDataStorage.js');
+
 		this.googleEnable = Data.googleEnable;
 		this.googleClientID = Data.googleClientID;
 		this.googleApiKey = Data.googleApiKey;
@@ -48,7 +46,11 @@
 
 	AdminSettingsSocial.prototype.onBuild = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		;
+
 		_.delay(function () {
 
 			var

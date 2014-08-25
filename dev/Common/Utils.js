@@ -1,18 +1,18 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-	
-	'use strict';
 
 	var
 		Utils = {},
-		
+
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
 		window = require('../External/window.js'),
 		$window = require('../External/$window.js'),
 		$html = require('../External/$html.js'),
+		$div = require('../External/$div.js'),
 		$doc = require('../External/$doc.js'),
 		NotificationClass = require('../External/NotificationClass.js'),
 
@@ -419,15 +419,15 @@
 		if (window['rainloopI18N'])
 		{
 			Globals.oI18N = window['rainloopI18N'] || {};
-			
+
 			Utils.i18nToNode($doc);
-			
+
 			Globals.langChangeTrigger(!Globals.langChangeTrigger());
 		}
 
 		window['rainloopI18N'] = null;
 	};
-	
+
 	/**
 	 * @param {Function} fCallback
 	 * @param {Object} oScope
@@ -462,14 +462,14 @@
 	 */
 	Utils.inFocus = function ()
 	{
-		if (document.activeElement)
+		if (window.document.activeElement)
 		{
-			if (Utils.isUnd(document.activeElement.__inFocusCache))
+			if (Utils.isUnd(window.document.activeElement.__inFocusCache))
 			{
-				document.activeElement.__inFocusCache = $(document.activeElement).is('input,textarea,iframe,.cke_editable');
+				window.document.activeElement.__inFocusCache = $(window.document.activeElement).is('input,textarea,iframe,.cke_editable');
 			}
 
-			return !!document.activeElement.__inFocusCache;
+			return !!window.document.activeElement.__inFocusCache;
 		}
 
 		return false;
@@ -477,12 +477,12 @@
 
 	Utils.removeInFocus = function ()
 	{
-		if (document && document.activeElement && document.activeElement.blur)
+		if (window.document && window.document.activeElement && window.document.activeElement.blur)
 		{
-			var oA = $(document.activeElement);
+			var oA = $(window.document.activeElement);
 			if (oA.is('input,textarea'))
 			{
-				document.activeElement.blur();
+				window.document.activeElement.blur();
 			}
 		}
 	};
@@ -497,9 +497,9 @@
 				oSel.removeAllRanges();
 			}
 		}
-		else if (document && document.selection && document.selection.empty)
+		else if (window.document && window.document.selection && window.document.selection.empty)
 		{
-			document.selection.empty();
+			window.document.selection.empty();
 		}
 	};
 
@@ -919,11 +919,14 @@
 	{
 		var
 			fResult = fExecute ? function () {
-				if (fResult.canExecute && fResult.canExecute())
+
+				if (fResult && fResult.canExecute && fResult.canExecute())
 				{
 					fExecute.apply(oContext, Array.prototype.slice.call(arguments));
 				}
+
 				return false;
+
 			} : function () {}
 		;
 
@@ -1466,8 +1469,6 @@
 		return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
 	};
 
-	Utils.$div = $('<div></div>');
-
 	/**
 	 * @param {string} sHtml
 	 * @return {string}
@@ -1576,7 +1577,7 @@
 			.replace(/<[^>]*>/gm, '')
 		;
 
-		sText = Utils.$div.html(sText).text();
+		sText = $div.html(sText).text();
 
 		sText = sText
 			.replace(/\n[ \t]+/gm, '\n')
@@ -1713,7 +1714,7 @@
 	{
 		if ($.fn && $.fn.linkify)
 		{
-			sHtml = Utils.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+			sHtml = $div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
 				.linkify()
 				.find('.linkified').removeClass('linkified').end()
 				.html()
@@ -1731,7 +1732,7 @@
 
 			var
 				aDiff = [0, 0],
-				oCanvas = document.createElement('canvas'),
+				oCanvas = window.document.createElement('canvas'),
 				oCtx = oCanvas.getContext('2d')
 			;
 

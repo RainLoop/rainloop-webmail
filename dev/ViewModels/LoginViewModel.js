@@ -1,15 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Utils = require('../Common/Utils.js'),
 		Enums = require('../Common/Enums.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
@@ -17,8 +16,6 @@
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js'),
 
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
@@ -135,6 +132,7 @@
 								}
 								else
 								{
+									var RL = require('../Boots/RainLoopApp.js');
 									RL.loginAndLogoutReload();
 								}
 							}
@@ -233,6 +231,7 @@
 
 			window.open(LinkBuilder.socialTwitter(), 'Twitter',
 				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+
 			return true;
 
 		}, function () {
@@ -293,6 +292,8 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
+
+					var RL = require('../Boots/RainLoopApp.js');
 					RL.loginAndLogoutReload();
 				}
 				else

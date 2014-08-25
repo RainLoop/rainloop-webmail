@@ -1,11 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../External/ko.js'),
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
@@ -16,8 +16,6 @@
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js'),
 
 		PopupsFolderCreateViewModel = require('../ViewModels/Popups/PopupsFolderCreateViewModel.js'),
 		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsFolderSystemViewModel.js')
@@ -98,7 +96,11 @@
 
 	SettingsFolders.prototype.folderEditOnEnter = function (oFolder)
 	{
-		var sEditName = oFolder ? Utils.trim(oFolder.nameForEdit()) : '';
+		var
+			RL = require('../Boots/RainLoopApp.js'),
+			sEditName = oFolder ? Utils.trim(oFolder.nameForEdit()) : ''
+		;
+
 		if ('' !== sEditName && oFolder.name() !== sEditName)
 		{
 			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, '');
@@ -156,6 +158,7 @@
 			this.folderForDeletion(null);
 
 			var
+				RL = require('../Boots/RainLoopApp.js'),
 				fRemoveFolder = function (oFolder) {
 
 					if (oFolderToRemove === oFolder)

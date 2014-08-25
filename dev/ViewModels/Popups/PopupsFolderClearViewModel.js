@@ -1,21 +1,17 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../../External/ko.js'),
-		
+
 		Enums = require('../../Common/Enums.js'),
 		Utils = require('../../Common/Utils.js'),
-
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Cache = require('../../Storages/WebMailCacheStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
-
-		RL = require('../../Boots/RainLoopApp.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -28,6 +24,8 @@
 	function PopupsFolderClearViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFolderClear');
+
+		var RL = require('../../Boots/RainLoopApp.js');
 
 		this.selectedFolder = ko.observable(null);
 		this.clearingProcess = ko.observable(false);

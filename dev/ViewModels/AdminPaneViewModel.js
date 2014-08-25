@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		ko = require('../External/ko.js'),
@@ -11,8 +10,6 @@
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
 
-		RL = require('../Boots/AdminApp.js'),
-		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -38,6 +35,7 @@
 	AdminPaneViewModel.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
+			var RL = require('../Boots/AdminApp.js');
 			RL.loginAndLogoutReload();
 		});
 	};

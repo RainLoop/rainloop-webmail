@@ -1,13 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		$html = require('../External/$html.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
 		Utils = require('../Common/Utils.js'),
@@ -58,7 +57,7 @@
 			sEmail = Data.accountEmail(),
 			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
- 
+
 		RL.setTitle(('' === sEmail ? '' :
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 	};
@@ -150,7 +149,7 @@
 		});
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
-			Data.foldersInboxUnreadCount(nCount)
+			Data.foldersInboxUnreadCount(nCount);
 		});
 
 		Data.foldersInboxUnreadCount.subscribe(function () {

@@ -1,15 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		window = require('../External/window.js'),
+		_ = require('../External/underscore.js'),
 		Globals = require('./Globals.js'),
 		AppSettings = require('../Storages/AppSettings.js')
 	;
-	
+
 	/**
 	 * @constructor
 	 * @param {Object} oElement
@@ -19,18 +19,17 @@
 	 */
 	function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
 	{
-		var self = this;
-		self.editor = null;
-		self.iBlurTimer = 0;
-		self.fOnBlur = fOnBlur || null;
-		self.fOnReady = fOnReady || null;
-		self.fOnModeChange = fOnModeChange || null;
+		this.editor = null;
+		this.iBlurTimer = 0;
+		this.fOnBlur = fOnBlur || null;
+		this.fOnReady = fOnReady || null;
+		this.fOnModeChange = fOnModeChange || null;
 
-		self.$element = $(oElement);
+		this.$element = $(oElement);
 
-		self.resize = _.throttle(_.bind(self.resize, self), 100);
+		this.resize = _.throttle(_.bind(this.resize, this), 100);
 
-		self.init();
+		this.init();
 	}
 
 	NewHtmlEditorWrapper.prototype.blurTrigger = function ()
@@ -38,8 +37,8 @@
 		if (this.fOnBlur)
 		{
 			var self = this;
-			window.clearTimeout(self.iBlurTimer);
-			self.iBlurTimer = window.setTimeout(function () {
+			window.clearTimeout(this.iBlurTimer);
+			this.iBlurTimer = window.setTimeout(function () {
 				self.fOnBlur();
 			}, 200);
 		}

@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		$ = require('../External/jquery.js'),
@@ -11,11 +10,11 @@
 		key = require('../External/key.js'),
 		ifvisible = require('../External/ifvisible.js'),
 		Jua = require('../External/Jua.js'),
-		
-		Utils = require('../Common/Utils.js'),
+
 		Enums = require('../Common/Enums.js'),
 		Consts = require('../Common/Consts.js'),
 		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 		Events = require('../Common/Events.js'),
 		Selector = require('../Common/Selector.js'),
@@ -25,12 +24,12 @@
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		RL = require('../Boots/RainLoopApp.js'),
-
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js'),
 
-		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js')
+		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
+		PopupsAdvancedSearchViewModel = require('./Popups/PopupsAdvancedSearchViewModel.js'),
+		PopupsFolderClearViewModel = require('./Popups/PopupsFolderClearViewModel.js')
 	;
 
 	/**
@@ -39,6 +38,8 @@
 	 */
 	function MailBoxMessageListViewModel()
 	{
+		var RL = require('../Boots/RainLoopApp.js');
+
 		KnoinAbstractViewModel.call(this, 'Right', 'MailMessageList');
 
 		this.sLastUid = null;
@@ -305,6 +306,7 @@
 	{
 		if (this.canBeMoved())
 		{
+			var RL = require('../Boots/RainLoopApp.js');
 			RL.moveMessagesToFolder(
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
@@ -392,7 +394,8 @@
 		var
 			aUids = [],
 			oFolder = null,
-			iAlreadyUnread = 0
+			iAlreadyUnread = 0,
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		if (Utils.isUnd(aMessages))
@@ -472,7 +475,8 @@
 	{
 		var
 			oFolder = null,
-			aMessages = Data.messageList()
+			aMessages = Data.messageList(),
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		if ('' !== sFolderFullNameRaw)
@@ -625,7 +629,8 @@
 	MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	{
 		var
-			self = this
+			self = this,
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		this.oContentVisible = $('.b-content', oDom);
@@ -656,6 +661,7 @@
 
 				oMessage.lastInCollapsedThreadLoading(true);
 				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
+
 				RL.reloadMessageList();
 			}
 
@@ -886,20 +892,23 @@
 			return false;
 		}
 
-		var oJua = new Jua({
-			'action': LinkBuilder.append(),
-			'name': 'AppendFile',
-			'queueSize': 1,
-			'multipleSizeLimit': 1,
-			'disableFolderDragAndDrop': true,
-			'hidden': {
-				'Folder': function () {
-					return Data.currentFolderFullNameRaw();
-				}
-			},
-			'dragAndDropElement': this.dragOverArea(),
-			'dragAndDropBodyElement': this.dragOverBodyArea()
-		});
+		var
+			RL = require('../Boots/RainLoopApp.js'),
+				oJua = new Jua({
+				'action': LinkBuilder.append(),
+				'name': 'AppendFile',
+				'queueSize': 1,
+				'multipleSizeLimit': 1,
+				'disableFolderDragAndDrop': true,
+				'hidden': {
+					'Folder': function () {
+						return Data.currentFolderFullNameRaw();
+					}
+				},
+				'dragAndDropElement': this.dragOverArea(),
+				'dragAndDropBodyElement': this.dragOverBodyArea()
+			})
+		;
 
 		oJua
 			.on('onDragEnter', _.bind(function () {

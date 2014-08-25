@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		$ = require('../External/jquery.js'),
@@ -19,7 +18,6 @@
 
 		AppSettings = require('../Storages/AppSettings.js'),
 
-		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractBoot = require('../Knoin/KnoinAbstractBoot.js')
 	;
 
@@ -143,6 +141,7 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
+			kn = require('../Knoin/Knoin.js'),
 			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
 			bInIframe = !!AppSettings.settingsGet('InIframe')
 		;
@@ -192,19 +191,10 @@
 		window.history.back();
 	};
 
-	/**
-	 * @param {string} sQuery
-	 * @param {Function} fCallback
-	 */
-	AbstractApp.prototype.getAutocomplete = function (sQuery, fCallback)
-	{
-		fCallback([], sQuery);
-	};
-
 	AbstractApp.prototype.bootstart = function ()
 	{
 		Events.pub('rl.bootstart');
-		
+
 		var ssm = require('../External/ssm.js');
 
 		Utils.initOnStartOrLangChange(function () {

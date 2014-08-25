@@ -1,18 +1,16 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		window = require('../../External/window.js'),
+		_ = require('../../External/underscore.js'),
 		ko = require('../../External/ko.js'),
-		
+
 		Utils = require('../../Common/Utils.js'),
 
 		Data = require('../../Storages/WebMailDataStorage.js'),
-
-		RL = require('../../Boots/RainLoopApp.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -25,6 +23,8 @@
 	function PopupsGenerateNewOpenPgpKeyViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsGenerateNewOpenPgpKey');
+
+		var RL = require('../../Boots/RainLoopApp.js');
 
 		this.email = ko.observable('');
 		this.email.focus = ko.observable('');

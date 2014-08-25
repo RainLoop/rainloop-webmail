@@ -1,14 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../../External/underscore.js'),
 		key = require('../../External/key.js'),
+
 		Enums = require('../../Common/Enums.js'),
-		Utils = require('../../Common/Utils.js'),
+
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;

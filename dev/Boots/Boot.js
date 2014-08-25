@@ -1,29 +1,29 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		window = require('../External/window.js'),
+		_ = require('../External/underscore.js'),
 		$ = require('../External/jquery.js'),
 		$window = require('../External/$window.js'),
 		$html = require('../External/$html.js'),
-		
+
 		Globals = require('../Common/Globals.js'),
 		Plugins = require('../Common/Plugins.js'),
 		Utils = require('../Common/Utils.js')
 	;
 
-	module.exports = function (RL) {
+	module.exports = function (App) {
 
-		Globals.__RL = RL;
+		Globals.__RL = App;
 
-		RL.setupSettings();
+		App.setupSettings();
 
-		Plugins.__boot = RL;
-		Plugins.__remote = RL.remote();
-		Plugins.__data = RL.data();
+		Plugins.__boot = App;
+		Plugins.__remote = App.remote();
+		Plugins.__data = App.data();
 
 		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
@@ -58,7 +58,7 @@
 
 					_.delay(function () {
 
-						RL.bootstart();
+						App.bootstart();
 						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
 					}, 50);

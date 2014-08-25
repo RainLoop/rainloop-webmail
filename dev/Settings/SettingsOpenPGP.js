@@ -1,18 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../External/ko.js'),
-		
+
 		kn = require('../Knoin/Knoin.js'),
 
 		Data = require('../Storages/WebMailDataStorage.js'),
 
-		RL = require('../Boots/RainLoopApp.js'),
-		
 		PopupsAddOpenPgpKeyViewModel = require('../ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js'),
 		PopupsGenerateNewOpenPgpKeyViewModel = require('../ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js'),
 		PopupsViewOpenPgpKeyViewModel = require('../ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js')
@@ -80,6 +77,7 @@
 
 				Data.openpgpKeyring.store();
 
+				var RL = require('../Boots/RainLoopApp.js');
 				RL.reloadOpenPgpKeys();
 			}
 		}

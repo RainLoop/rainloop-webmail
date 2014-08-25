@@ -1,9 +1,8 @@
 // Base64 encode / decode
 // http://www.webtoolkit.info/
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	/*jslint bitwise: true*/
 	var Base64 = {

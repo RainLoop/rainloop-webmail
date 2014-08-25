@@ -1,22 +1,19 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
-
-	var 
-		Utils = require('../Common/Utils.js'),
-
-		Data = require('../Storages/WebMailDataStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js')
-	;
 
 	/**
 	 * @constructor
 	 */
 	function SettingsSocial()
 	{
+		var
+			Utils = require('../Common/Utils.js'),
+			RL = require('../Boots/RainLoopApp.js'),
+			Data = require('../Storages/WebMailDataStorage.js')
+		;
+
 		this.googleEnable = Data.googleEnable;
 
 		this.googleActions = Data.googleActions;

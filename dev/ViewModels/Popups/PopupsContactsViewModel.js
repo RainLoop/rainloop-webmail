@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../../External/window.js'),
@@ -10,7 +9,7 @@
 		_ = require('../../External/underscore.js'),
 		ko = require('../../External/ko.js'),
 		key = require('../../External/key.js'),
-		
+
 		Enums = require('../../Common/Enums.js'),
 		Consts = require('../../Common/Consts.js'),
 		Globals = require('../../Common/Globals.js'),
@@ -21,7 +20,12 @@
 		Data = require('../../Storages/WebMailDataStorage.js'),
 		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
 
-		RL = require('../../Boots/RainLoopApp.js'),
+		EmailModel = require('../../Models/EmailModel.js'),
+		ContactModel = require('../../Models/ContactModel.js'),
+		ContactTagModel = require('../../Models/ContactTagModel.js'),
+		ContactPropertyModel = require('../../Models/ContactPropertyModel.js'),
+
+		PopupsComposeViewModel = require('./PopupsComposeViewModel.js'),
 
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
@@ -346,7 +350,11 @@
 
 		this.syncCommand = Utils.createCommand(this, function () {
 
-			var self = this;
+			var
+				self = this,
+				RL = require('../../Boots/RainLoopApp.js')
+			;
+
 			RL.contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
@@ -392,6 +400,7 @@
 
 	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
 	{
+		var RL = require('../../Boots/RainLoopApp.js');
 		RL.getContactTagsAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oTagItem) {
 				return oTagItem.toLine(false);
@@ -475,17 +484,15 @@
 		this.addNewOrFocusProperty(Enums.ContactPropertyType.Birthday);
 	};
 
-	//PopupsContactsViewModel.prototype.addNewAddress = function ()
-	//{
-	//};
-
 	PopupsContactsViewModel.prototype.exportVcf = function ()
 	{
+		var RL = require('../../Boots/RainLoopApp.js');
 		RL.download(LinkBuilder.exportContactsVcf());
 	};
 
 	PopupsContactsViewModel.prototype.exportCsv = function ()
 	{
+		var RL = require('../../Boots/RainLoopApp.js');
 		RL.download(LinkBuilder.exportContactsCsv());
 	};
 

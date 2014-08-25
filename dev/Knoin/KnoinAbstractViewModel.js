@@ -1,16 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		ko = require('../External/ko.js'),
 		$window = require('../External/$window.js'),
-		
-		Utils = require('../Common/Utils.js'),
+
 		Enums = require('../Common/Enums.js'),
-		Globals = require('../Common/Globals.js')
+		Globals = require('../Common/Globals.js'),
+		Utils = require('../Common/Utils.js')
 	;
 
 	/**
@@ -87,6 +86,7 @@
 	KnoinAbstractViewModel.prototype.registerPopupKeyDown = function ()
 	{
 		var self = this;
+
 		$window.on('keydown', function (oEvent) {
 			if (oEvent && self.modalVisibility && self.modalVisibility())
 			{

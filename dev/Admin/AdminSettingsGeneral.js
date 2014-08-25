@@ -1,22 +1,18 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
 
-		kn = require('../Knoin/Knoin.js'),
-
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
 
 		PopupsLanguagesViewModel = require('../ViewModels/Popups/PopupsLanguagesViewModel.js')
 	;
@@ -69,7 +65,11 @@
 
 	AdminSettingsGeneral.prototype.onBuild = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		;
+
 		_.delay(function () {
 
 			var
@@ -131,7 +131,7 @@
 
 	AdminSettingsGeneral.prototype.selectLanguage = function ()
 	{
-		kn.showScreenPopup(PopupsLanguagesViewModel);
+		require('../Knoin/Knoin.js').showScreenPopup(PopupsLanguagesViewModel);
 	};
 
 	/**

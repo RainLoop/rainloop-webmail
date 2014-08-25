@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		ko = require('../External/ko.js'),
@@ -11,9 +10,6 @@
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 
-		RL = require('../Boots/AdminApp.js'),
-		
-		kn = require('../Knoin/Knoin.js'),
 		PopupsActivateViewModel = require('../ViewModels/Popups/PopupsActivateViewModel.js')
 	;
 
@@ -35,7 +31,7 @@
 		this.licenseTrigger.subscribe(function () {
 			if (this.subscriptionEnabled())
 			{
-				RL.reloadLicensing(true);
+				require('../Boots/AdminApp.js').reloadLicensing(true);
 			}
 		}, this);
 	}
@@ -44,7 +40,7 @@
 	{
 		if (this.subscriptionEnabled())
 		{
-			RL.reloadLicensing(false);
+			require('../Boots/AdminApp.js').reloadLicensing(false);
 		}
 	};
 
@@ -55,7 +51,7 @@
 
 	AdminSettingsLicensing.prototype.showActivationForm = function ()
 	{
-		kn.showScreenPopup(PopupsActivateViewModel);
+		require('../Knoin/Knoin.js').showScreenPopup(PopupsActivateViewModel);
 	};
 
 	/**
@@ -70,7 +66,7 @@
 
 		return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
 	};
-	
+
 	module.exports = AdminSettingsLicensing;
 
 }(module));

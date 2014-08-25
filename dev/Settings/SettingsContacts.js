@@ -1,16 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../External/ko.js'),
-		
-		Utils = require('../Common/Utils.js'),
-		
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
+		Utils = require('../Common/Utils.js'),
+
+		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 		Data = require('../Storages/WebMailDataStorage.js')
 	;
 

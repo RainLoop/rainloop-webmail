@@ -1,4 +1,4 @@
-
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 'use strict';
 
 var
@@ -622,9 +622,22 @@ gulp.task('bro', function() {
 		.add('./_RainLoopBoot.js')
 		.bundle()
         .pipe(source('app.js'))
+
+		.pipe(streamify(jshint('.jshintrc')))
+		.pipe(jshint.reporter('jshint-summary', cfg.summary))
+		.pipe(jshint.reporter('fail'))
+
 //		.pipe(rename('app.min.js'))
 //		.pipe(streamify(uglify(cfg.uglify)))
-        .pipe(gulp.dest(cfg.paths.staticJS));
+        .pipe(gulp.dest(cfg.paths.staticJS))
+		.on('error', gutil.log);
+});
+
+gulp.task('lint', function() {
+    return gulp.src('./dev/**/*.js')
+		.pipe(jshint('.jshintrc'))
+		.pipe(jshint.reporter('jshint-summary', cfg.summary))
+		.pipe(jshint.reporter('fail'));
 });
 
 gulp.task('ww', ['bro'], function() {

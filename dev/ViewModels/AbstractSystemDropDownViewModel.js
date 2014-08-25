@@ -1,15 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
 		window = require('../External/window.js'),
 		key = require('../External/key.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		LinkBuilder = require('../Common/LinkBuilder.js'),
@@ -17,8 +16,6 @@
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
-
-		RL = require('../Boots/RainLoopApp.js'),
 
 		PopupsKeyboardShortcutsHelpViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
 		PopupsAddAccountViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
@@ -91,6 +88,7 @@
 
 	AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
 	{
+		var RL = require('../Boots/RainLoopApp.js');
 		Remote.logout(function () {
 			if (window.__rlah_clear)
 			{

@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
@@ -12,7 +11,7 @@
 		moment = require('../External/moment.js'),
 		$div = require('../External/$div.js'),
 		NotificationClass = require('../External/NotificationClass.js'),
-		
+
 		Consts = require('../Common/Consts.js'),
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
@@ -21,9 +20,9 @@
 
 		AppSettings = require('./AppSettings.js'),
 		Cache = require('./WebMailCacheStorage.js'),
-		
+
 		kn = require('../Knoin/Knoin.js'),
-		
+
 		MessageModel = require('../Models/MessageModel.js'),
 
 		LocalStorage = require('./LocalStorage.js'),
@@ -325,7 +324,10 @@
 				if (Enums.Layout.NoPreview === this.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
-					RL.historyBack(); // TODO cjs
+					if (Globals.__RL)
+					{
+						Globals.__RL.historyBack();
+					}
 				}
 			}
 			else if (Enums.Layout.NoPreview === this.layout())
@@ -922,7 +924,10 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 			if (oMessage.unseen())
 			{
-				RL.setMessageSeen(oMessage);
+				if (Globals.__RL)
+				{
+					Globals.__RL.setMessageSeen(oMessage);
+				}
 			}
 
 			Utils.windowResize();

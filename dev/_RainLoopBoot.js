@@ -1,6 +1,10 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-'use strict';
+(function () {
 
-var boot = require('./Boots/Boot.js');
-boot(require('./Boots/RainLoopApp.js'));
+	'use strict';
+
+	var boot = require('./Boots/Boot.js');
+	boot(require('./Boots/RainLoopApp.js'));
+
+}());

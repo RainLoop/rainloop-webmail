@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
@@ -10,8 +9,6 @@
 
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
-
-		RL = require('../Boots/AdminApp.js'),
 
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
@@ -53,7 +50,7 @@
 
 	AdminSettingsPackages.prototype.onBuild = function ()
 	{
-		RL.reloadPackagesList();
+		require('../Boots/AdminApp.js').reloadPackagesList();
 	};
 
 	AdminSettingsPackages.prototype.requestHelper = function (oPackage, bInstall)
@@ -88,7 +85,7 @@
 			}
 			else
 			{
-				RL.reloadPackagesList();
+				require('../Boots/AdminApp.js').reloadPackagesList();
 			}
 		};
 	};

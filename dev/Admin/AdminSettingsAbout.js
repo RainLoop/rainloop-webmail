@@ -1,14 +1,10 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
-		ko = require('../External/ko.js'),
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/AdminDataStorage.js'),
-		RL = require('../Boots/AdminApp.js')
+		ko = require('../External/ko.js')
 	;
 
 	/**
@@ -16,6 +12,11 @@
 	 */
 	function AdminSettingsAbout()
 	{
+		var
+			AppSettings = require('../Storages/AppSettings.js'),
+			Data = require('../Storages/AdminDataStorage.js')
+		;
+
 		this.version = ko.observable(AppSettings.settingsGet('Version'));
 		this.access = ko.observable(!!AppSettings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
@@ -70,7 +71,7 @@
 	{
 		if (this.access())
 		{
-			RL.reloadCoreData();
+			require('../Boots/AdminApp.js').reloadCoreData();
 		}
 	};
 
@@ -78,7 +79,7 @@
 	{
 		if (!this.coreUpdating())
 		{
-			RL.updateCoreData();
+			require('../Boots/AdminApp.js').updateCoreData();
 		}
 	};
 

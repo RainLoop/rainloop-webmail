@@ -1,21 +1,18 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
 		AppSettings = require('../Storages/AppSettings.js'),
 		Data = require('../Storages/AdminDataStorage.js'),
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
-
-		RL = require('../Boots/AdminApp.js'),
 
 		PopupsPluginViewModel = require('../ViewModels/Popups/PopupsPluginViewModel.js')
 	;
@@ -82,14 +79,14 @@
 	AdminSettingsPlugins.prototype.onShow = function ()
 	{
 		this.pluginsError('');
-		RL.reloadPluginList();
+		require('../Boots/AdminApp.js').reloadPluginList();
 	};
 
 	AdminSettingsPlugins.prototype.onPluginLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			kn.showScreenPopup(PopupsPluginViewModel, [oData.Result]);
+			require('../Knoin/Knoin.js').showScreenPopup(PopupsPluginViewModel, [oData.Result]);
 		}
 	};
 
@@ -110,7 +107,7 @@
 			}
 		}
 
-		RL.reloadPluginList();
+		require('../Boots/AdminApp.js').reloadPluginList();
 	};
 
 	module.exports = AdminSettingsPlugins;

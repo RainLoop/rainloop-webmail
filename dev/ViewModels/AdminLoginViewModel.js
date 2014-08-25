@@ -1,20 +1,17 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
 		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
 
-		RL = require('../Boots/AdminApp.js'),
-		
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -66,6 +63,7 @@
 				{
 					if (oData.Result)
 					{
+						var RL = require('../Boots/AdminApp.js');
 						RL.loginAndLogoutReload();
 					}
 					else if (oData.ErrorCode)

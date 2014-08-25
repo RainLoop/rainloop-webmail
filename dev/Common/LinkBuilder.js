@@ -1,20 +1,20 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		window = require('../External/window.js'),
-		Utils = require('./Utils.js'),
-		AppSettings = require('../Storages/AppSettings.js')
+		Utils = require('./Utils.js')
 	;
-	
+
 	/**
 	 * @constructor
 	 */
 	function LinkBuilder()
 	{
+		var AppSettings = require('../Storages/AppSettings.js');
+
 		this.sBase = '#/';
 		this.sServer = './?';
 		this.sVersion = AppSettings.settingsGet('Version');

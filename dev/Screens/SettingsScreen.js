@@ -1,12 +1,11 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		_ = require('../External/underscore.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 		Globals = require('../Common/Globals.js'),
@@ -22,7 +21,7 @@
 	{
 		var
 			RL = require('../Boots/RainLoopApp.js'),
-				
+
 			SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
 			SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
 			SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
@@ -46,7 +45,7 @@
 	SettingsScreen.prototype.onShow = function ()
 	{
 		var RL = require('../Boots/RainLoopApp.js');
-		
+
 		RL.setTitle(this.sSettingsTitle);
 		Globals.keyScope(Enums.KeyState.Settings);
 	};

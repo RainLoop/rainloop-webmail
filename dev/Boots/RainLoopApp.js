@@ -1,15 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		window = require('../External/window.js'),
 		$ = require('../External/jquery.js'),
 		_ = require('../External/underscore.js'),
 		moment = require('../External/moment.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
 		Consts = require('../Common/Consts.js'),
@@ -26,11 +25,13 @@
 		Cache = require('../Storages/WebMailCacheStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
+		EmailModel = require('../Models/EmailModel.js'),
 		FolderModel = require('../Models/FolderModel.js'),
 		MessageModel = require('../Models/MessageModel.js'),
 		AccountModel = require('../Models/AccountModel.js'),
-		IdentityModel  = require('../Models/IdentityModel.js'),
-		
+		IdentityModel = require('../Models/IdentityModel.js'),
+		OpenPgpKeyModel = require('../Models/OpenPgpKeyModel.js'),
+
 		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
 		PopupsAskViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
 		PopupsComposeViewModel = require('../ViewModels/Popups/PopupsComposeViewModel.js'),
@@ -90,6 +91,7 @@
 		}, 60000 * 5);
 
 		$.wakeUp(function () {
+
 			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
@@ -103,6 +105,7 @@
 					}
 				}
 			}, self.settingsGet('Version'));
+
 		}, {}, 60 * 60 * 1000);
 
 
@@ -176,9 +179,9 @@
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if (!AppSettings.settingsGet('AllowGoogleSocial') &&
-			!AppSettings.settingsGet('AllowFacebookSocial') &&
-			!AppSettings.settingsGet('AllowTwitterSocial'))
+		if (AppSettings.settingsGet('AllowGoogleSocial') ||
+			AppSettings.settingsGet('AllowFacebookSocial') ||
+			AppSettings.settingsGet('AllowTwitterSocial'))
 		{
 			kn.addSettingsViewModel(SettingsSocial,
 				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
@@ -204,7 +207,7 @@
 			kn.addSettingsViewModel(SettingsOpenPGP,
 				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
 		}
-		
+
 		return true;
 	};
 
@@ -272,7 +275,7 @@
 
 	RainLoopApp.prototype.reloadMessageListHelper = function (bEmptyList)
 	{
-		self.reloadMessageList(bEmptyList);
+		this.reloadMessageList(bEmptyList);
 	};
 
 	/**
@@ -1081,6 +1084,7 @@
 	RainLoopApp.prototype.folderResponseParseRec = function (sNamespace, aFolders)
 	{
 		var
+			self = this,
 			iIndex = 0,
 			iLen = 0,
 			oFolder = null,
@@ -1110,10 +1114,7 @@
 
 				if (oCacheFolder)
 				{
-					if (Globals.__RL)
-					{
-						oCacheFolder.collapsed(!Globals.__RL.isFolderExpanded(oCacheFolder.fullNameHash));
-					}
+					oCacheFolder.collapsed(!self.isFolderExpanded(oCacheFolder.fullNameHash));
 
 					if (oFolder.Extended)
 					{

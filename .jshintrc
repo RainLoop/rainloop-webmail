@@ -50,6 +50,9 @@
 	"jquery"			: true,
 
 	"globals": {
+		"module"		: true,
+		"require"		: true,
+		"ko"			: true,
 		"ko"			: true,
 		"ssm"			: true,
 		"moment"		: true,

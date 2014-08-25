@@ -1,15 +1,14 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		$ = require('../External/jquery.js'),
 		ko = require('../External/ko.js'),
 		key = require('../External/key.js'),
 		$html = require('../External/$html.js'),
-		
+
 		Consts = require('../Common/Consts.js'),
 		Enums = require('../Common/Enums.js'),
 		Globals = require('../Common/Globals.js'),
@@ -20,8 +19,8 @@
 		Data = require('../Storages/WebMailDataStorage.js'),
 		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
 
-		RL = require('../Boots/RainLoopApp.js'),
-		
+		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
+
 		kn = require('../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -37,6 +36,7 @@
 		var
 			self = this,
 			sLastEmail = '',
+			RL = require('../Boots/RainLoopApp.js'),
 			createCommandHelper = function (sType) {
 				return Utils.createCommand(self, function () {
 					this.replyOrforward(sType);
@@ -341,7 +341,8 @@
 	MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	{
 		var
-			self = this
+			self = this,
+			RL = require('../Boots/RainLoopApp.js')
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {
@@ -710,6 +711,8 @@
 			oMessage.isReadReceipt(true);
 
 			Cache.storeMessageFlagsToCache(oMessage);
+
+			var RL = require('../Boots/RainLoopApp.js');
 			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};

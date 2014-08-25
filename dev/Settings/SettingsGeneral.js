@@ -1,13 +1,12 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		$ = require('../External/jquery.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Consts = require('../Common/Consts.js'),
 		Globals = require('../Common/Globals.js'),
@@ -175,7 +174,7 @@
 	{
 		kn.showScreenPopup(PopupsLanguagesViewModel);
 	};
-	
+
 	module.exports = SettingsGeneral;
 
 }(module));

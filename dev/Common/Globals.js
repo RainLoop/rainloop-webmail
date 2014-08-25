@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		Globals = {},
@@ -10,7 +9,7 @@
 		ko = require('../External/ko.js'),
 		key = require('../External/key.js'),
 		$html = require('../External/$html.js'),
-		
+
 		Enums = require('../Common/Enums.js')
 	;
 
@@ -108,7 +107,7 @@
 	 * @type {string}
 	 */
 	Globals.sAnimationType = '';
-	
+
 	/**
 	 * @type {*}
 	 */
@@ -181,11 +180,11 @@
 	}
 
 	Globals.oI18N = window['rainloopI18N'] || {};
-	
+
 	Globals.oNotificationI18N = {};
-	
+
 	Globals.aBootstrapDropdowns = [];
-	
+
 	Globals.aViewModels = {
 		'settings': [],
 		'settings-removed': [],
@@ -270,7 +269,7 @@
 			Globals.keyScope(Globals.keyScopeFake());
 		}
 	});
-	
+
 	module.exports = Globals;
 
 }(module));

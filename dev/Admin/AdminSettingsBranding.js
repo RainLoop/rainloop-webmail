@@ -1,18 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
-		Enums = require('../Common/Enums.js'),
-		Utils = require('../Common/Utils.js'),
 
-		AppSettings = require('..Storages/AppSettings.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		Utils = require('../Common/Utils.js')
 	;
 
 	/**
@@ -20,6 +15,11 @@
 	 */
 	function AdminSettingsBranding()
 	{
+		var
+			Enums = require('../Common/Enums.js'),
+			AppSettings = require('..Storages/AppSettings.js')
+		;
+
 		this.title = ko.observable(AppSettings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -38,7 +38,11 @@
 
 	AdminSettingsBranding.prototype.onBuild = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		;
+
 		_.delay(function () {
 
 			var

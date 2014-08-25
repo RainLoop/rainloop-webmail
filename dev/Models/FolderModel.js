@@ -1,8 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
@@ -44,7 +43,7 @@
 		this.actionBlink = ko.observable(false).extend({'falseTimeout': 1000});
 
 		this.nameForEdit = ko.observable('');
-		
+
 		this.privateMessageCountAll = ko.observable(0);
 		this.privateMessageCountUnread = ko.observable(0);
 

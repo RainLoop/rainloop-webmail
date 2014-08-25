@@ -1,18 +1,16 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
-
-	'use strict';
 
 	var
 		_ = require('../External/underscore.js'),
 		ko = require('../External/ko.js'),
-		
+
 		Enums = require('../Common/Enums.js'),
 		Utils = require('../Common/Utils.js'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		AppSettings = require('../Storages/AppSettings.js')
 	;
 
 	/**
@@ -20,6 +18,10 @@
 	 */
 	function AdminSettingsContacts()
 	{
+		var
+			Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		;
+
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 		this.enableContacts = ko.observable(!!AppSettings.settingsGet('ContactsEnable'));
 		this.contactsSharing = ko.observable(!!AppSettings.settingsGet('ContactsSharing'));
@@ -174,7 +176,11 @@
 
 	AdminSettingsContacts.prototype.onBuild = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			Remote = require('../Storages/AdminAjaxRemoteStorage.js')
+		;
+
 		_.delay(function () {
 
 			var

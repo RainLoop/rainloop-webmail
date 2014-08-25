@@ -1,18 +1,18 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+'use strict';
 
 (function (module) {
 
-	'use strict';
-
 	var
 		ko = require('../../External/ko.js'),
+
 		Enums = require('../../Common/Enums.js'),
 		Utils = require('../../Common/Utils.js'),
 
 		AppSettings = require('../../Storages/AppSettings.js'),
 		Data = require('../../Storages/AdminDataStorage.js'),
 		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
-		
+
 		kn = require('../../Knoin/Knoin.js'),
 		KnoinAbstractViewModel = require('../../Knoin/KnoinAbstractViewModel.js')
 	;
@@ -133,7 +133,7 @@
 		var sValue = this.key();
 		return '' === sValue || !!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 	};
-	
+
 	module.exports = PopupsActivateViewModel;
 
 }(module));
