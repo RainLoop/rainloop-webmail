@@ -1641,7 +1641,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -1688,54 +1688,40 @@
 
 	AdminApp.prototype.setupSettings = function ()
 	{
-		var
-			AdminSettingsGeneral = require('../Admin/AdminSettingsGeneral.js'),
-			AdminSettingsLogin = require('../Admin/AdminSettingsLogin.js'),
-			AdminSettingsBranding = require('../Admin/AdminSettingsBranding.js'),
-			AdminSettingsContacts = require('../Admin/AdminSettingsContacts.js'),
-			AdminSettingsDomains = require('../Admin/AdminSettingsDomains.js'),
-			AdminSettingsSecurity = require('../Admin/AdminSettingsSecurity.js'),
-			AdminSettingsSocial = require('../Admin/AdminSettingsSocial.js'),
-			AdminSettingsPlugins = require('../Admin/AdminSettingsPlugins.js'),
-			AdminSettingsPackages = require('../Admin/AdminSettingsPackages.js'),
-			AdminSettingsLicensing = require('../Admin/AdminSettingsLicensing.js'),
-			AdminSettingsAbout = require('../Admin/AdminSettingsAbout.js')
-		;
-
-		kn.addSettingsViewModel(AdminSettingsGeneral,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsGeneral.js'),
 			'AdminSettingsGeneral', 'General', 'general', true);
 
-		kn.addSettingsViewModel(AdminSettingsLogin,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsLogin.js'),
 			'AdminSettingsLogin', 'Login', 'login');
 
 		if (AppSettings.capa(Enums.Capa.Prem))
 		{
-			kn.addSettingsViewModel(AdminSettingsBranding,
+			kn.addSettingsViewModel(require('../Admin/AdminSettingsBranding.js'),
 				'AdminSettingsBranding', 'Branding', 'branding');
 		}
 
-		kn.addSettingsViewModel(AdminSettingsContacts,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsContacts.js'),
 			'AdminSettingsContacts', 'Contacts', 'contacts');
 
-		kn.addSettingsViewModel(AdminSettingsDomains,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsDomains.js'),
 			'AdminSettingsDomains', 'Domains', 'domains');
 
-		kn.addSettingsViewModel(AdminSettingsSecurity,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsSecurity.js'),
 			'AdminSettingsSecurity', 'Security', 'security');
 
-		kn.addSettingsViewModel(AdminSettingsSocial,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsSocial.js'),
 			'AdminSettingsSocial', 'Social', 'social');
 
-		kn.addSettingsViewModel(AdminSettingsPlugins,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsPlugins.js'),
 			'AdminSettingsPlugins', 'Plugins', 'plugins');
 
-		kn.addSettingsViewModel(AdminSettingsPackages,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsPackages.js'),
 			'AdminSettingsPackages', 'Packages', 'packages');
 
-		kn.addSettingsViewModel(AdminSettingsLicensing,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsLicensing.js'),
 			'AdminSettingsLicensing', 'Licensing', 'licensing');
 
-		kn.addSettingsViewModel(AdminSettingsAbout,
+		kn.addSettingsViewModel(require('../Admin/AdminSettingsAbout.js'),
 			'AdminSettingsAbout', 'About', 'about');
 
 		return true;
@@ -3307,7 +3293,8 @@
 			__data: null
 		},
 		_ = require('_'),
-		Utils = require('Utils')
+		Utils = require('Utils'),
+		AppSettings = require('../Storages/AppSettings.js')
 	;
 
 	/**
@@ -3371,12 +3358,7 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		if (Plugins.__boot)
-		{
-			return Plugins.__boot.settingsGet(sName);
-		}
-
-		return null;
+		return AppSettings.settingsGet(sName);
 	};
 
 	/**
@@ -3402,15 +3384,15 @@
 	 */
 	Plugins.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = Plugins.mainSettingsGet('Plugins');
-		oPlugin = oPlugin && Utils.isUnd(oPlugin[sPluginSection]) ? null : oPlugin[sPluginSection];
+		var oPlugin = AppSettings.settingsGet('Plugins');
+		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
 
 	module.exports = Plugins;
 
 }(module, require));
-},{"Utils":22,"_":37}],22:[function(require,module,exports){
+},{"../Storages/AppSettings.js":54,"Utils":22,"_":37}],22:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {

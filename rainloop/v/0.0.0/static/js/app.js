@@ -363,7 +363,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -421,8 +421,6 @@
 
 		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
-		var self = this;
-
 		window.setInterval(function () {
 			Events.pub('interval.30s');
 		}, 30000);
@@ -458,7 +456,7 @@
 			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
-					if (window.parent && !!self.settingsGet('InIframe'))
+					if (window.parent && !!AppSettings.settingsGet('InIframe'))
 					{
 						window.parent.location.reload();
 					}
@@ -467,7 +465,7 @@
 						window.location.reload();
 					}
 				}
-			}, self.settingsGet('Version'));
+			}, AppSettings.settingsGet('Version'));
 
 		}, {}, 60 * 60 * 1000);
 
@@ -489,56 +487,41 @@
 
 	RainLoopApp.prototype.setupSettings = function ()
 	{
-		var
-			SettingsGeneral = require('../Settings/SettingsGeneral.js'),
-			SettingsContacts = require('../Settings/SettingsContacts.js'),
-			SettingsAccounts = require('../Settings/SettingsAccounts.js'),
-			SettingsIdentity = require('../Settings/SettingsIdentity.js'),
-			SettingsIdentities = require('../Settings/SettingsIdentities.js'),
-			SettingsFilters = require('../Settings/SettingsFilters.js'),
-			SettingsSecurity = require('../Settings/SettingsSecurity.js'),
-			SettingsSocial = require('../Settings/SettingsSocial.js'),
-			SettingsChangePassword = require('../Settings/SettingsChangePassword.js'),
-			SettingsFolders = require('../Settings/SettingsFolders.js'),
-			SettingsThemes = require('../Settings/SettingsThemes.js'),
-			SettingsOpenPGP = require('../Settings/SettingsOpenPGP.js')
-		;
-
-		kn.addSettingsViewModel(SettingsGeneral,
+		kn.addSettingsViewModel(require('../Settings/SettingsGeneral.js'),
 			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
 		if (AppSettings.settingsGet('ContactsIsAllowed'))
 		{
-			kn.addSettingsViewModel(SettingsContacts,
+			kn.addSettingsViewModel(require('../Settings/SettingsContacts.js'),
 				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
 		if (AppSettings.capa(Enums.Capa.AdditionalAccounts))
 		{
-			kn.addSettingsViewModel(SettingsAccounts,
+			kn.addSettingsViewModel(require('../Settings/SettingsAccounts.js'),
 				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
 		}
 
 		if (AppSettings.capa(Enums.Capa.AdditionalIdentities))
 		{
-			kn.addSettingsViewModel(SettingsIdentities,
+			kn.addSettingsViewModel(require('../Settings/SettingsIdentities.js'),
 				'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
 		}
 		else
 		{
-			kn.addSettingsViewModel(SettingsIdentity,
+			kn.addSettingsViewModel(require('../Settings/SettingsIdentity.js'),
 				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 		}
 
 		if (AppSettings.capa(Enums.Capa.Filters))
 		{
-			kn.addSettingsViewModel(SettingsFilters,
+			kn.addSettingsViewModel(require('../Settings/SettingsFilters.js'),
 				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
 		if (AppSettings.capa(Enums.Capa.TwoFactor))
 		{
-			kn.addSettingsViewModel(SettingsSecurity,
+			kn.addSettingsViewModel(require('../Settings/SettingsSecurity.js'),
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
@@ -546,28 +529,28 @@
 			AppSettings.settingsGet('AllowFacebookSocial') ||
 			AppSettings.settingsGet('AllowTwitterSocial'))
 		{
-			kn.addSettingsViewModel(SettingsSocial,
+			kn.addSettingsViewModel(require('../Settings/SettingsSocial.js'),
 				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
 		}
 
 		if (AppSettings.settingsGet('ChangePasswordIsAllowed'))
 		{
-			kn.addSettingsViewModel(SettingsChangePassword,
+			kn.addSettingsViewModel(require('../Settings/SettingsChangePassword.js'),
 				'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
 		}
 
-		kn.addSettingsViewModel(SettingsFolders,
+		kn.addSettingsViewModel(require('../Settings/SettingsFolders.js'),
 			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
 		if (AppSettings.capa(Enums.Capa.Themes))
 		{
-			kn.addSettingsViewModel(SettingsThemes,
+			kn.addSettingsViewModel(require('../Settings/SettingsThemes.js'),
 				'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
 		if (AppSettings.capa(Enums.Capa.OpenPGP))
 		{
-			kn.addSettingsViewModel(SettingsOpenPGP,
+			kn.addSettingsViewModel(require('../Settings/SettingsOpenPGP.js'),
 				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
 		}
 
@@ -3651,7 +3634,8 @@
 			__data: null
 		},
 		_ = require('_'),
-		Utils = require('Utils')
+		Utils = require('Utils'),
+		AppSettings = require('../Storages/AppSettings.js')
 	;
 
 	/**
@@ -3715,12 +3699,7 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		if (Plugins.__boot)
-		{
-			return Plugins.__boot.settingsGet(sName);
-		}
-
-		return null;
+		return AppSettings.settingsGet(sName);
 	};
 
 	/**
@@ -3746,15 +3725,15 @@
 	 */
 	Plugins.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = Plugins.mainSettingsGet('Plugins');
-		oPlugin = oPlugin && Utils.isUnd(oPlugin[sPluginSection]) ? null : oPlugin[sPluginSection];
+		var oPlugin = AppSettings.settingsGet('Plugins');
+		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
 
 	module.exports = Plugins;
 
 }(module, require));
-},{"Utils":14,"_":31}],13:[function(require,module,exports){
+},{"../Storages/AppSettings.js":68,"Utils":14,"_":31}],13:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
