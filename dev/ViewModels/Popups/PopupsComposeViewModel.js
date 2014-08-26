@@ -45,7 +45,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsCompose');
 
-		var RL = require('../../Boots/RainLoopApp.js');
+		var App = require('../../Apps/RainLoopApp.js');
 
 		this.oEditor = null;
 		this.aDraftInfo = null;
@@ -219,7 +219,7 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 
-			RL.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+			App.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 			kn.hideScreenPopup(PopupsComposeViewModel);
 
 		}, function () {
@@ -278,7 +278,7 @@
 							}
 
 							Cache.setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], aFlagsCache);
-							RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+							App.reloadFlagsCurrentMessageListAndMessageFromCache();
 							Cache.setFolderHash(this.aDraftInfo[2], '');
 						}
 					}
@@ -415,8 +415,8 @@
 
 	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
 	{
-		var RL = require('../../Boots/RainLoopApp.js');
-		RL.getAutocomplete(oData.term, function (aData) {
+		var App = require('../../Apps/RainLoopApp.js');
+		App.getAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oEmailItem) {
 				return oEmailItem.toLine(false);
 			}));
@@ -446,7 +446,7 @@
 	PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
 	{
 		var
-			RL = require('../../Boots/RainLoopApp.js'),
+			App = require('../../Apps/RainLoopApp.js'),
 			sDraftFolder = Data.draftFolder()
 		;
 
@@ -455,11 +455,11 @@
 			Cache.setFolderHash(sDraftFolder, '');
 			if (Data.currentFolderFullNameRaw() === sDraftFolder)
 			{
-				RL.reloadMessageList(true);
+				App.reloadMessageList(true);
 			}
 			else
 			{
-				RL.folderInformation(sDraftFolder);
+				App.folderInformation(sDraftFolder);
 			}
 		}
 	};

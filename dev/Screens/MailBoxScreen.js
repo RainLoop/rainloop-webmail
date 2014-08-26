@@ -54,12 +54,12 @@
 	MailBoxScreen.prototype.setNewTitle  = function ()
 	{
 		var
-			RL = require('../Boots/RainLoopApp.js'),
+			App = require('../Apps/RainLoopApp.js'),
 			sEmail = Data.accountEmail(),
 			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
 
-		RL.setTitle(('' === sEmail ? '' :
+		App.setTitle(('' === sEmail ? '' :
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 	};
 
@@ -77,12 +77,12 @@
 	 */
 	MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
 	{
-		var RL = require('../Boots/RainLoopApp.js');
+		var App = require('../Apps/RainLoopApp.js');
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
 			if (Enums.Layout.NoPreview === Data.layout() && !Data.message())
 			{
-				RL.historyBack();
+				App.historyBack();
 			}
 		}
 		else
@@ -105,7 +105,7 @@
 					Data.message(null);
 				}
 
-				RL.reloadMessageList();
+				App.reloadMessageList();
 			}
 		}
 	};
@@ -113,7 +113,7 @@
 	MailBoxScreen.prototype.onStart = function ()
 	{
 		var
-			RL = require('../Boots/RainLoopApp.js'),
+			App = require('../Apps/RainLoopApp.js'),
 			fResizeFunction = function () {
 				Utils.windowResize();
 			}
@@ -121,18 +121,18 @@
 
 		if (AppSettings.capa(Enums.Capa.AdditionalAccounts) || AppSettings.capa(Enums.Capa.AdditionalIdentities))
 		{
-			RL.accountsAndIdentities();
+			App.accountsAndIdentities();
 		}
 
 		_.delay(function () {
 			if ('INBOX' !== Data.currentFolderFullNameRaw())
 			{
-				RL.folderInformation('INBOX');
+				App.folderInformation('INBOX');
 			}
 		}, 1000);
 
 		_.delay(function () {
-			RL.quota();
+			App.quota();
 		}, 5000);
 
 		_.delay(function () {

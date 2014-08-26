@@ -133,8 +133,8 @@
 								}
 								else
 								{
-									var RL = require('../Boots/RainLoopApp.js');
-									RL.loginAndLogoutReload();
+									var App = require('../Apps/RainLoopApp.js');
+									App.loginAndLogoutReload();
 								}
 							}
 							else if (oData.ErrorCode)
@@ -294,8 +294,8 @@
 				{
 					self.submitRequest(true);
 
-					var RL = require('../Boots/RainLoopApp.js');
-					RL.loginAndLogoutReload();
+					var App = require('../Apps/RainLoopApp.js');
+					App.loginAndLogoutReload();
 				}
 				else
 				{

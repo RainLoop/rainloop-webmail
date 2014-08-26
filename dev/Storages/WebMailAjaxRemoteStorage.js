@@ -381,9 +381,9 @@
 		}
 		else if (Data.useThreads())
 		{
-			if (Globals.__RL)
+			if (Globals.__APP)
 			{
-				Globals.__RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+				Globals.__APP.reloadFlagsCurrentMessageListAndMessageFromCache();
 			}
 		}
 	};

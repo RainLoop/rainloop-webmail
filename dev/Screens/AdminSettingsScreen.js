@@ -30,8 +30,8 @@
 
 	AdminSettingsScreen.prototype.onShow = function ()
 	{
-		var RL = require('../Boots/AdminApp.js');
-		RL.setTitle('');
+		var App = require('../Apps/AdminApp.js');
+		App.setTitle('');
 	};
 
 	module.exports = AdminSettingsScreen;

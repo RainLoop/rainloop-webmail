@@ -353,10 +353,10 @@
 
 			var
 				self = this,
-				RL = require('../../Boots/RainLoopApp.js')
+				App = require('../../Apps/RainLoopApp.js')
 			;
 
-			RL.contactsSync(function (sResult, oData) {
+			App.contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
 					window.alert(Utils.getNotification(
@@ -401,8 +401,8 @@
 
 	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
 	{
-		var RL = require('../../Boots/RainLoopApp.js');
-		RL.getContactTagsAutocomplete(oData.term, function (aData) {
+		var App = require('../../Apps/RainLoopApp.js');
+		App.getContactTagsAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oTagItem) {
 				return oTagItem.toLine(false);
 			}));
@@ -487,14 +487,14 @@
 
 	PopupsContactsViewModel.prototype.exportVcf = function ()
 	{
-		var RL = require('../../Boots/RainLoopApp.js');
-		RL.download(LinkBuilder.exportContactsVcf());
+		var App = require('../../Apps/RainLoopApp.js');
+		App.download(LinkBuilder.exportContactsVcf());
 	};
 
 	PopupsContactsViewModel.prototype.exportCsv = function ()
 	{
-		var RL = require('../../Boots/RainLoopApp.js');
-		RL.download(LinkBuilder.exportContactsCsv());
+		var App = require('../../Apps/RainLoopApp.js');
+		App.download(LinkBuilder.exportContactsCsv());
 	};
 
 	PopupsContactsViewModel.prototype.initUploader = function ()

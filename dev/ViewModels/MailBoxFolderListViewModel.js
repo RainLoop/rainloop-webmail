@@ -62,7 +62,7 @@
 
 		var
 			self = this,
-			RL = require('../Boots/RainLoopApp.js')
+			App = require('../Apps/RainLoopApp.js')
 		;
 
 		oDom
@@ -76,7 +76,7 @@
 				if (oFolder && oEvent)
 				{
 					bCollapsed = oFolder.collapsed();
-					RL.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					App.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 
 					oFolder.collapsed(!bCollapsed);
 					oEvent.preventDefault();
@@ -159,7 +159,7 @@
 				if (oFolder)
 				{
 					bCollapsed = oFolder.collapsed();
-					RL.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					App.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 					oFolder.collapsed(!bCollapsed);
 				}
 			}
@@ -186,10 +186,10 @@
 		window.clearTimeout(this.iDropOverTimer);
 		if (oFolder && oFolder.collapsed())
 		{
-			var RL = require('../Boots/RainLoopApp.js');
+			var App = require('../Apps/RainLoopApp.js');
 			this.iDropOverTimer = window.setTimeout(function () {
 				oFolder.collapsed(false);
-				RL.setExpandedFolder(oFolder.fullNameHash, true);
+				App.setExpandedFolder(oFolder.fullNameHash, true);
 				Utils.windowResize();
 			}, 500);
 		}
@@ -242,7 +242,7 @@
 		if (oToFolder && oUi && oUi.helper)
 		{
 			var
-				RL = require('../Boots/RainLoopApp.js'),
+				App = require('../Apps/RainLoopApp.js'),
 				sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
 				bCopy = $html.hasClass('rl-ctrl-key-pressed'),
 				aUids = oUi.helper.data('rl-uids')
@@ -250,7 +250,7 @@
 
 			if (Utils.isNormal(sFromFolderFullNameRaw) && '' !== sFromFolderFullNameRaw && Utils.isArray(aUids))
 			{
-				RL.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
+				App.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
 			}
 		}
 	};

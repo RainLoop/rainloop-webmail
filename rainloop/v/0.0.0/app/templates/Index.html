@@ -12,8 +12,8 @@
 			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
 		<![endif]-->
 		<script type="text/javascript" data-cfasync="false">
-			if (!navigator || !navigator.cookieEnabled) {
-				document.location.replace('./?/NoCookie');
+			if (!window.navigator || !window.navigator.cookieEnabled) {
+				window.document.location.replace('./?/NoCookie');
 			}
 		</script>
 		<meta name="Author" content="RainLoop Team" />
@@ -26,11 +26,11 @@
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
 		<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
 		<script type="text/javascript" data-cfasync="false">
-			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/' +  Math.random().toString().substr(2) + '/');
+			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/' +  window.Math.random().toString().substr(2) + '/');
 		</script>
 		<script type="text/javascript" data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {
-				document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
+				window.document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
 			}
 		</script>
 	</head>
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<script type="text/javascript" data-cfasync="false">
-			var oE = document.getElementById('rl-loading');
+			var oE = window.document.getElementById('rl-loading');
 			if (oE && oE.style) {
 				oE.style.opacity = 0;
 				window.setTimeout(function () {

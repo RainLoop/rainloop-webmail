@@ -23,8 +23,8 @@
 
 	LoginScreen.prototype.onShow = function ()
 	{
-		var RL = require('../Boots/RainLoopApp.js');
-		RL.setTitle('');
+		var App = require('../Apps/RainLoopApp.js');
+		App.setTitle('');
 	};
 
 	module.exports = LoginScreen;

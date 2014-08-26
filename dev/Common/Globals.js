@@ -112,7 +112,7 @@
 	/**
 	 * @type {*}
 	 */
-	Globals.__RL = null;
+	Globals.__APP = null;
 
 	/**
 	 * @type {Object}

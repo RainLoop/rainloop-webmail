@@ -25,7 +25,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsGenerateNewOpenPgpKey');
 
-		var RL = require('../../Boots/RainLoopApp.js');
+		var App = require('../../Apps/RainLoopApp.js');
 
 		this.email = ko.observable('');
 		this.email.focus = ko.observable('');
@@ -78,7 +78,7 @@
 					oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
 					oOpenpgpKeyring.store();
 
-					RL.reloadOpenPgpKeys();
+					App.reloadOpenPgpKeys();
 					Utils.delegateRun(self, 'cancelCommand');
 				}
 

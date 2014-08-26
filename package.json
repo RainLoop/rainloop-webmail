@@ -61,7 +61,7 @@
 		"$html": "./dev/External/$html.js",
 		"$doc": "./dev/External/$doc.js",
 		"$div": "./dev/External/$div.js",
-		
+
 		"Base64": "./dev/Common/Base64.js",
 		"Consts": "./dev/Common/Consts.js",
 		"Globals": "./dev/Common/Globals.js",
@@ -77,8 +77,7 @@
 		"KnoinAbstractBoot": "./dev/Knoin/KnoinAbstractBoot.js",
 		"KnoinAbstractScreen": "./dev/Knoin/KnoinAbstractScreen.js",
 		"KnoinAbstractViewModel": "./dev/Knoin/KnoinAbstractViewModel.js",
-		"kn": "./dev/Knoin/Knoin.js",
-		"Boot": "./dev/Boots/Boot.js"
+		"kn": "./dev/Knoin/Knoin.js"
 	},
 	"devDependencies": {
 

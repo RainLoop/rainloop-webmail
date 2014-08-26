@@ -141,7 +141,7 @@ cfg.paths.js = {
 		name: 'libs.js',
 		src: [
 			'vendors/modernizr.js',
-			'vendors/underscore/underscore-1.5.2.min.js',
+			'vendors/underscore/1.6.0/underscore-min.js',
 			'vendors/jquery/jquery-1.11.1.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
@@ -234,10 +234,10 @@ gulp.task('js:libs', function() {
 gulp.task('js:app', function() {
     return browserify({
 			'basedir': './dev/',
+			'entries': './RainLoop.js',
 			'detectGlobals': false,
 			'debug': false
 		})
-		.add('./_RainLoopBoot.js')
 		.bundle()
         .pipe(source(cfg.paths.js.app.name))
 		.pipe(gulp.dest(cfg.paths.staticJS))
@@ -247,10 +247,10 @@ gulp.task('js:app', function() {
 gulp.task('js:admin', function() {
     return browserify({
 			'basedir': './dev/',
+			'entries': './Admin.js',
 			'detectGlobals': false,
 			'debug': false
 		})
-		.add('./_AdminBoot.js')
 		.bundle()
         .pipe(source(cfg.paths.js.admin.name))
 		.pipe(gulp.dest(cfg.paths.staticJS))

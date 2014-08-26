@@ -195,15 +195,63 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			if ($bUseAuthPlainIfSupported && $this->IsSupported('AUTH=PLAIN'))
+			// TODO
+			if (false && $this->IsSupported('AUTH=CRAM-MD5'))
 			{
+				$this->SendRequest('AUTHENTICATE', array('CRAM-MD5'));
+
+				$aResponse = $this->parseResponseWithValidation();
+				if ($aResponse && \is_array($aResponse) && 0 < \count($aResponse) &&
+					\MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $aResponse[\count($aResponse) - 1]->ResponseType)
+				{
+					$oContinuationResponse = null;
+					foreach ($aResponse as $oResponse)
+					{
+						if ($oResponse && \MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType)
+						{
+							$oContinuationResponse = $oResponse;
+						}
+					}
+
+					if ($oContinuationResponse)
+					{
+						$sToken = \base64_encode("\0".$sLogin."\0".$sPassword);
+						if ($this->oLogger)
+						{
+							$this->oLogger->AddSecret($sToken);
+						}
+
+						$this->Logger()->WriteDump($aResponse);
+
+						$this->sendRaw($sToken, true, '*******');
+						$this->parseResponseWithValidation();
+					}
+					else
+					{
+						// TODO
+					}
+				}
+			}
+			else if ($bUseAuthPlainIfSupported && $this->IsSupported('AUTH=PLAIN'))
+			{
+				$sToken = \base64_encode("\0".$sLogin."\0".$sPassword);
 				if ($this->oLogger)
 				{
-					$this->oLogger->AddSecret(\base64_encode("\0".$sLogin."\0".$sPassword));
+					$this->oLogger->AddSecret($sToken);
 				}
 
-				$this->SendRequestWithCheck('AUTHENTICATE',
-					array('PLAIN', \base64_encode("\0".$sLogin."\0".$sPassword)));
+				if ($this->IsSupported('AUTH=SASL-IR') && false)
+				{
+					$this->SendRequestWithCheck('AUTHENTICATE', array('PLAIN', $sToken));
+				}
+				else
+				{
+					$this->SendRequest('AUTHENTICATE', array('PLAIN'));
+					$this->parseResponseWithValidation();
+
+					$this->sendRaw($sToken, true, '*******');
+					$this->parseResponseWithValidation();
+				}
 			}
 			else
 			{

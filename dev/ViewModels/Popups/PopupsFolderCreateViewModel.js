@@ -65,7 +65,7 @@
 		this.createFolder = Utils.createCommand(this, function () {
 
 			var
-				RL = require('../../Boots/RainLoopApp.js'),
+				App = require('../../Apps/RainLoopApp.js'),
 				sParentFolderName = this.selectedParentValue()
 			;
 
@@ -80,7 +80,7 @@
 				Data.foldersCreating(false);
 				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 				{
-					RL.folders();
+					App.folders();
 				}
 				else
 				{

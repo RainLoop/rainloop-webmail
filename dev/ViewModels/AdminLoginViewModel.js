@@ -64,8 +64,8 @@
 				{
 					if (oData.Result)
 					{
-						var RL = require('../Boots/AdminApp.js');
-						RL.loginAndLogoutReload();
+						var App = require('../Apps/AdminApp.js');
+						App.loginAndLogoutReload();
 					}
 					else if (oData.ErrorCode)
 					{

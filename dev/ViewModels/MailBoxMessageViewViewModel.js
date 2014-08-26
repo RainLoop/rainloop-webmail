@@ -37,7 +37,7 @@
 		var
 			self = this,
 			sLastEmail = '',
-			RL = require('../Boots/RainLoopApp.js'),
+			App = require('../Apps/RainLoopApp.js'),
 			createCommandHelper = function (sType) {
 				return Utils.createCommand(self, function () {
 					this.replyOrforward(sType);
@@ -102,7 +102,7 @@
 		this.deleteCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				App.deleteMessagesFromFolder(Enums.FolderType.Trash,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -111,7 +111,7 @@
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				App.deleteMessagesFromFolder(Enums.FolderType.Trash,
 					Data.currentFolderFullNameRaw(),
 					[this.message().uid], false);
 			}
@@ -120,7 +120,7 @@
 		this.archiveCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
+				App.deleteMessagesFromFolder(Enums.FolderType.Archive,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -129,7 +129,7 @@
 		this.spamCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+				App.deleteMessagesFromFolder(Enums.FolderType.Spam,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -138,7 +138,7 @@
 		this.notSpamCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+				App.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -343,7 +343,7 @@
 	{
 		var
 			self = this,
-			RL = require('../Boots/RainLoopApp.js')
+			App = require('../Apps/RainLoopApp.js')
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {
@@ -382,7 +382,7 @@
 			})
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && RL.mailToHelper($(this).attr('href')));
+				return !(!!oEvent && 3 !== oEvent['which'] && App.mailToHelper($(this).attr('href')));
 			})
 			.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
@@ -398,7 +398,7 @@
 
 				if (oAttachment && oAttachment.download)
 				{
-					RL.download(oAttachment.linkDownload());
+					App.download(oAttachment.linkDownload());
 				}
 			})
 		;
@@ -713,8 +713,8 @@
 
 			Cache.storeMessageFlagsToCache(oMessage);
 
-			var RL = require('../Boots/RainLoopApp.js');
-			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+			var App = require('../Apps/RainLoopApp.js');
+			App.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 

@@ -26,7 +26,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFolderClear');
 
-		var RL = require('../../Boots/RainLoopApp.js');
+		var App = require('../../Apps/RainLoopApp.js');
 
 		this.selectedFolder = ko.observable(null);
 		this.clearingProcess = ko.observable(false);
@@ -62,13 +62,17 @@
 
 				this.clearingProcess(true);
 
+				oFolderToClear.messageCountAll(0);
+				oFolderToClear.messageCountUnread(0);
+
 				Cache.setFolderHash(oFolderToClear.fullNameRaw, '');
+				
 				Remote.folderClear(function (sResult, oData) {
 
 					self.clearingProcess(false);
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 					{
-						RL.reloadMessageList(true);
+						App.reloadMessageList(true);
 						self.cancelCommand();
 					}
 					else

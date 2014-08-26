@@ -25,7 +25,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddAccount');
 
-		var RL = require('../../Boots/RainLoopApp.js');
+		var App = require('../../Apps/RainLoopApp.js');
 
 		this.email = ko.observable('');
 		this.password = ko.observable('');
@@ -65,7 +65,7 @@
 				{
 					if (oData.Result)
 					{
-						RL.accountsAndIdentities();
+						App.accountsAndIdentities();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)

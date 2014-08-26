@@ -325,9 +325,9 @@
 				if (Enums.Layout.NoPreview === this.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
-					if (Globals.__RL)
+					if (Globals.__APP)
 					{
-						Globals.__RL.historyBack();
+						Globals.__APP.historyBack();
 					}
 				}
 			}
@@ -925,9 +925,9 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 			if (oMessage.unseen())
 			{
-				if (Globals.__RL)
+				if (Globals.__APP)
 				{
-					Globals.__RL.setMessageSeen(oMessage);
+					Globals.__APP.setMessageSeen(oMessage);
 				}
 			}
 

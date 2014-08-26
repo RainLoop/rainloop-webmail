@@ -1364,7 +1364,6 @@
 	};
 
 	/* jshint ignore:start */
-
 	/**
 	 * @param {string} s
 	 * @return {string}

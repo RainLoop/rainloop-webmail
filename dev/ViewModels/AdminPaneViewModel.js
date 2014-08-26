@@ -36,8 +36,8 @@
 	AdminPaneViewModel.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
-			var RL = require('../Boots/AdminApp.js');
-			RL.loginAndLogoutReload();
+			var App = require('../Apps/AdminApp.js');
+			App.loginAndLogoutReload();
 		});
 	};
 

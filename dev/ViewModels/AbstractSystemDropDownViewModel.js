@@ -89,14 +89,14 @@
 
 	AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
 	{
-		var RL = require('../Boots/RainLoopApp.js');
+		var App = require('../Apps/RainLoopApp.js');
 		Remote.logout(function () {
 			if (window.__rlah_clear)
 			{
 				window.__rlah_clear();
 			}
 
-			RL.loginAndLogoutReload(true, AppSettings.settingsGet('ParentEmail') && 0 < AppSettings.settingsGet('ParentEmail').length);
+			App.loginAndLogoutReload(true, AppSettings.settingsGet('ParentEmail') && 0 < AppSettings.settingsGet('ParentEmail').length);
 		});
 	};
 

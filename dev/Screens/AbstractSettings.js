@@ -77,7 +77,6 @@
 				oViewModelPlace = this.oViewModelPlace;
 				if (oViewModelPlace && 1 === oViewModelPlace.length)
 				{
-					RoutedSettingsViewModel = /** @type {?Function} */ RoutedSettingsViewModel;
 					oSettingsScreen = new RoutedSettingsViewModel();
 
 					oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();

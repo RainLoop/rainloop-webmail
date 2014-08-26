@@ -39,7 +39,7 @@
 	 */
 	function MailBoxMessageListViewModel()
 	{
-		var RL = require('../Boots/RainLoopApp.js');
+		var App = require('../Apps/RainLoopApp.js');
 
 		KnoinAbstractViewModel.call(this, 'Right', 'MailMessageList');
 
@@ -183,31 +183,31 @@
 		}, this.canBeMoved);
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
-			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+			App.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), false);
 		}, this.canBeMoved);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
-			RL.deleteMessagesFromFolder(Enums.FolderType.Trash,
+			App.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.archiveCommand = Utils.createCommand(this, function () {
-			RL.deleteMessagesFromFolder(Enums.FolderType.Archive,
+			App.deleteMessagesFromFolder(Enums.FolderType.Archive,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.spamCommand = Utils.createCommand(this, function () {
-			RL.deleteMessagesFromFolder(Enums.FolderType.Spam,
+			App.deleteMessagesFromFolder(Enums.FolderType.Spam,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
-			RL.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+			App.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
@@ -217,7 +217,7 @@
 		this.reloadCommand = Utils.createCommand(this, function () {
 			if (!Data.messageListCompleteLoadingThrottle())
 			{
-				RL.reloadMessageList(false, true);
+				App.reloadMessageList(false, true);
 			}
 		});
 
@@ -307,8 +307,8 @@
 	{
 		if (this.canBeMoved())
 		{
-			var RL = require('../Boots/RainLoopApp.js');
-			RL.moveMessagesToFolder(
+			var App = require('../Apps/RainLoopApp.js');
+			App.moveMessagesToFolder(
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 		}
@@ -396,7 +396,7 @@
 			aUids = [],
 			oFolder = null,
 			iAlreadyUnread = 0,
-			RL = require('../Boots/RainLoopApp.js')
+			App = require('../Apps/RainLoopApp.js')
 		;
 
 		if (Utils.isUnd(aMessages))
@@ -464,7 +464,7 @@
 				break;
 			}
 
-			RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+			App.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 
@@ -477,7 +477,7 @@
 		var
 			oFolder = null,
 			aMessages = Data.messageList(),
-			RL = require('../Boots/RainLoopApp.js')
+			App = require('../Apps/RainLoopApp.js')
 		;
 
 		if ('' !== sFolderFullNameRaw)
@@ -516,7 +516,7 @@
 					break;
 				}
 
-				RL.reloadFlagsCurrentMessageListAndMessageFromCache();
+				App.reloadFlagsCurrentMessageListAndMessageFromCache();
 			}
 		}
 	};
@@ -631,7 +631,7 @@
 	{
 		var
 			self = this,
-			RL = require('../Boots/RainLoopApp.js')
+			App = require('../Apps/RainLoopApp.js')
 		;
 
 		this.oContentVisible = $('.b-content', oDom);
@@ -663,7 +663,7 @@
 				oMessage.lastInCollapsedThreadLoading(true);
 				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
 
-				RL.reloadMessageList();
+				App.reloadMessageList();
 			}
 
 			return false;
@@ -894,8 +894,7 @@
 		}
 
 		var
-			RL = require('../Boots/RainLoopApp.js'),
-				oJua = new Jua({
+			oJua = new Jua({
 				'action': LinkBuilder.append(),
 				'name': 'AppendFile',
 				'queueSize': 1,
@@ -934,7 +933,7 @@
 				return false;
 			}, this))
 			.on('onComplete', _.bind(function () {
-				RL.reloadMessageList(true, true);
+				require('../Apps/RainLoopApp.js').reloadMessageList(true, true);
 			}, this))
 		;
 

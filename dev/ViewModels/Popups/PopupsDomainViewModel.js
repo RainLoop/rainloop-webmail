@@ -235,8 +235,8 @@
 		{
 			if (oData.Result)
 			{
-				var RL = require('../../Boots/AdminApp.js');
-				RL.reloadDomainList();
+				var App = require('../../Apps/AdminApp.js');
+				App.reloadDomainList();
 
 				this.closeCommand();
 			}

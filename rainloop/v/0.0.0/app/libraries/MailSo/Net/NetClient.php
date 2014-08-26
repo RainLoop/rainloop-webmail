@@ -423,8 +423,17 @@ abstract class NetClient
 			$iReadedLen = \strlen($this->sResponseBuffer);
 			if (null === $mReadLen || $bForceLogin)
 			{
-				$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
-					\MailSo\Log\Enumerations\Type::INFO);
+				$iLimit = 5000; // 5kb
+				if ($iLimit < $iReadedLen)
+				{
+					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'b] < '.\substr($this->sResponseBuffer.'...', 0, $iLimit),
+						\MailSo\Log\Enumerations\Type::INFO);
+				}
+				else
+				{
+					$this->writeLogWithCrlf('< '.$this->sResponseBuffer, //.' ['.$iReadedLen.']',
+						\MailSo\Log\Enumerations\Type::INFO);
+				}
 			}
 			else
 			{

@@ -1,5 +1,5 @@
-/*! RainLoop Index Helper v1.1 (c) 2013 RainLoop Team; Licensed under MIT */
-(function (window, JSON) {
+/*! RainLoop Index Helper v1.2 (c) 2013 RainLoop Team; Licensed under MIT */
+(function (window, document, JSON) {
 
 	/**
 	 * @constructor
@@ -85,8 +85,8 @@
 	};
 
 	window['__runBoot'] = function (bWithError) {
-		if (window.__RLBOOT && !bWithError) {
-			window.__RLBOOT(function (bV) {
+		if (window.__APP_BOOT && !bWithError) {
+			window.__APP_BOOT(function (bV) {
 				if (!bV) {
 					__showError();
 				}
@@ -96,4 +96,4 @@
 		}
 	};
 	
-}(window, window.JSON));
+}(window, window.document, window.JSON));

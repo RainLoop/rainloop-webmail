@@ -21,7 +21,7 @@
 	function SettingsScreen()
 	{
 		var
-			RL = require('../Boots/RainLoopApp.js'),
+			App = require('../Apps/RainLoopApp.js'),
 
 			SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
 			SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
@@ -37,7 +37,7 @@
 		Utils.initOnStartOrLangChange(function () {
 			this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
 		}, this, function () {
-			RL.setTitle(this.sSettingsTitle);
+			App.setTitle(this.sSettingsTitle);
 		});
 	}
 
@@ -45,9 +45,9 @@
 
 	SettingsScreen.prototype.onShow = function ()
 	{
-		var RL = require('../Boots/RainLoopApp.js');
+		var App = require('../Apps/RainLoopApp.js');
 
-		RL.setTitle(this.sSettingsTitle);
+		App.setTitle(this.sSettingsTitle);
 		Globals.keyScope(Enums.KeyState.Settings);
 	};
 
