@@ -10,15 +10,15 @@
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$div = require('$div'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		EmailModel = require('./EmailModel.js'),
-		AttachmentModel = require('./AttachmentModel.js')
+		EmailModel = require('Model:Email'),
+		AttachmentModel = require('Model:Attachment')
 	;
 
 	/**
@@ -347,7 +347,7 @@
 	MessageModel.prototype.computeSenderEmail = function ()
 	{
 		var
-			Data = require('../Storages/WebMailDataStorage.js'),
+			Data = require('Storage:RainLoop:Data'),
 			sSent = Data.sentFolder(),
 			sDraft = Data.draftFolder()
 		;
@@ -425,7 +425,7 @@
 	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 	{
 	   var
-		   Data = require('../Storages/WebMailDataStorage.js'),
+		   Data = require('Storage:RainLoop:Data'),
 		   bResult = false,
 		   iPriority = Enums.MessagePriority.Normal
 	   ;
@@ -976,7 +976,7 @@
 				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
 			   });
 
-			   $window.resize();
+			   $win.resize();
 		   }
 
 		   Utils.windowResize(500);
@@ -1081,7 +1081,7 @@
 
 		   this.body.data('rl-plain-raw', this.plainRaw);
 
-		   var Data = require('../Storages/WebMailDataStorage.js');
+		   var Data = require('Storage:RainLoop:Data');
 		   if (Data.capaOpenPGP())
 		   {
 			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
@@ -1094,7 +1094,7 @@
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-		var Data = require('../Storages/WebMailDataStorage.js');
+		var Data = require('Storage:RainLoop:Data');
 		if (this.body && Data.capaOpenPGP())
 		{
 			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
@@ -1111,7 +1111,7 @@
 
 			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-			var Data = require('../Storages/WebMailDataStorage.js');
+			var Data = require('Storage:RainLoop:Data');
 			if (Data.capaOpenPGP())
 			{
 				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
@@ -1136,7 +1136,7 @@
 		   var
 			   aRes = [],
 			   mPgpMessage = null,
-			   Data = require('../Storages/WebMailDataStorage.js'),
+			   Data = require('Storage:RainLoop:Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
 			   oValidKey = null,
@@ -1200,7 +1200,7 @@
 			   aRes = [],
 			   mPgpMessage = null,
 			   mPgpMessageDecrypted = null,
-			   Data = require('../Storages/WebMailDataStorage.js'),
+			   Data = require('Storage:RainLoop:Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
 			   oPrivateKey = Data.findSelfPrivateKey(sPassword),

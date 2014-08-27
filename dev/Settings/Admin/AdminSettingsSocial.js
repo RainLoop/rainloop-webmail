@@ -17,7 +17,7 @@
 	 */
 	function AdminSettingsSocial()
 	{
-		var Data = require('../../Storages/AdminDataStorage.js');
+		var Data = require('Storage:Admin:Data');
 
 		this.googleEnable = Data.googleEnable;
 		this.googleClientID = Data.googleClientID;
@@ -49,7 +49,7 @@
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {

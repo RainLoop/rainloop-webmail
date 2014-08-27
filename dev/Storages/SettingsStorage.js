@@ -5,31 +5,26 @@
 	'use strict';
 
 	var
-		AppData = require('AppData'),
 		Utils = require('Utils')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function AppSettings()
+	function SettingsStorage()
 	{
-		this.oSettings = null;
+		this.oSettings = require('AppData');
+		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
 	}
 
-	AppSettings.prototype.oSettings = null;
+	SettingsStorage.prototype.oSettings = null;
 
 	/**
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	AppSettings.prototype.settingsGet = function (sName)
+	SettingsStorage.prototype.settingsGet = function (sName)
 	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
 		return Utils.isUnd(this.oSettings[sName]) ? null : this.oSettings[sName];
 	};
 
@@ -37,13 +32,8 @@
 	 * @param {string} sName
 	 * @param {?} mValue
 	 */
-	AppSettings.prototype.settingsSet = function (sName, mValue)
+	SettingsStorage.prototype.settingsSet = function (sName, mValue)
 	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
 		this.oSettings[sName] = mValue;
 	};
 
@@ -51,13 +41,13 @@
 	 * @param {string} sName
 	 * @return {boolean}
 	 */
-	AppSettings.prototype.capa = function (sName)
+	SettingsStorage.prototype.capa = function (sName)
 	{
 		var mCapa = this.settingsGet('Capa');
 		return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
 	};
 
 
-	module.exports = new AppSettings();
+	module.exports = new SettingsStorage();
 
 }(module, require));

@@ -10,13 +10,10 @@
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
-		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
+		HtmlEditor = require('HtmlEditor'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
-
-		kn = require('kn'),
-		PopupsIdentityViewModel = require('../../ViewModels/Popups/PopupsIdentityViewModel.js')
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**
@@ -116,12 +113,12 @@
 
 	SettingsIdentities.prototype.addNewIdentity = function ()
 	{
-		kn.showScreenPopup(PopupsIdentityViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Identity'));
 	};
 
 	SettingsIdentities.prototype.editIdentity = function (oIdentity)
 	{
-		kn.showScreenPopup(PopupsIdentityViewModel, [oIdentity]);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Identity'), [oIdentity]);
 	};
 
 	/**
@@ -134,7 +131,6 @@
 			this.identityForDeletion(null);
 
 			var
-				App = require('../../Apps/RainLoopApp.js'),
 				fRemoveFolder = function (oIdentity) {
 					return oIdentityToRemove === oIdentity;
 				}
@@ -145,7 +141,7 @@
 				this.identities.remove(fRemoveFolder);
 
 				Remote.identityDelete(function () {
-					App.accountsAndIdentities();
+					require('App:RainLoop').accountsAndIdentities();
 				}, oIdentityToRemove.id);
 			}
 		}
@@ -160,7 +156,7 @@
 				sSignature = Data.signature()
 			;
 
-			this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
+			this.editor = new HtmlEditor(self.signatureDom(), function () {
 				Data.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);

@@ -12,10 +12,8 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-
-		PopupsLanguagesViewModel = require('../../ViewModels/Popups/PopupsLanguagesViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -35,8 +33,8 @@
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
 
-		this.mainAttachmentLimit = ko.observable(Utils.pInt(AppSettings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
-		this.uploadData = AppSettings.settingsGet('PhpUploadSizes');
+		this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
+		this.uploadData = Settings.settingsGet('PhpUploadSizes');
 		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ?
 			[
 				this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
@@ -57,7 +55,7 @@
 			return Utils.convertLangName(this.mainLanguage());
 		}, this);
 
-		this.weakPassword = !!AppSettings.settingsGet('WeakPassword');
+		this.weakPassword = !!Settings.settingsGet('WeakPassword');
 
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -68,7 +66,7 @@
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -132,7 +130,7 @@
 
 	AdminSettingsGeneral.prototype.selectLanguage = function ()
 	{
-		require('kn').showScreenPopup(PopupsLanguagesViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Languages'));
 	};
 
 	/**

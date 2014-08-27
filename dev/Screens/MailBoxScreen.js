@@ -13,12 +13,12 @@
 		Utils = require('Utils'),
 		Events = require('Events'),
 
-		KnoinAbstractScreen = require('KnoinAbstractScreen'),
+		KnoinAbstractScreen = require('Knoin:AbstractScreen'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**
@@ -27,18 +27,11 @@
 	 */
 	function MailBoxScreen()
 	{
-		var
-			MailBoxSystemDropDownViewModel = require('../ViewModels/MailBoxSystemDropDownViewModel.js'),
-			MailBoxFolderListViewModel = require('../ViewModels/MailBoxFolderListViewModel.js'),
-			MailBoxMessageListViewModel = require('../ViewModels/MailBoxMessageListViewModel.js'),
-			MailBoxMessageViewViewModel = require('../ViewModels/MailBoxMessageViewViewModel.js')
-		;
-
 		KnoinAbstractScreen.call(this, 'mailbox', [
-			MailBoxSystemDropDownViewModel,
-			MailBoxFolderListViewModel,
-			MailBoxMessageListViewModel,
-			MailBoxMessageViewViewModel
+			require('View:RainLoop:MailBoxSystemDropDown'),
+			require('View:RainLoop:MailBoxFolderList'),
+			require('View:RainLoop:MailBoxMessageList'),
+			require('View:RainLoop:MailBoxMessageView')
 		]);
 
 		this.oLastRoute = {};
@@ -54,12 +47,11 @@
 	MailBoxScreen.prototype.setNewTitle  = function ()
 	{
 		var
-			App = require('../Apps/RainLoopApp.js'),
 			sEmail = Data.accountEmail(),
 			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
 
-		App.setTitle(('' === sEmail ? '' :
+		require('App:RainLoop').setTitle(('' === sEmail ? '' :
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
 	};
 
@@ -77,12 +69,11 @@
 	 */
 	MailBoxScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
 	{
-		var App = require('../Apps/RainLoopApp.js');
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
 			if (Enums.Layout.NoPreview === Data.layout() && !Data.message())
 			{
-				App.historyBack();
+				require('App:RainLoop').historyBack();
 			}
 		}
 		else
@@ -105,7 +96,7 @@
 					Data.message(null);
 				}
 
-				App.reloadMessageList();
+				require('App:RainLoop').reloadMessageList();
 			}
 		}
 	};
@@ -113,26 +104,25 @@
 	MailBoxScreen.prototype.onStart = function ()
 	{
 		var
-			App = require('../Apps/RainLoopApp.js'),
 			fResizeFunction = function () {
 				Utils.windowResize();
 			}
 		;
 
-		if (AppSettings.capa(Enums.Capa.AdditionalAccounts) || AppSettings.capa(Enums.Capa.AdditionalIdentities))
+		if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.AdditionalIdentities))
 		{
-			App.accountsAndIdentities();
+			require('App:RainLoop').accountsAndIdentities();
 		}
 
 		_.delay(function () {
 			if ('INBOX' !== Data.currentFolderFullNameRaw())
 			{
-				App.folderInformation('INBOX');
+				require('App:RainLoop').folderInformation('INBOX');
 			}
 		}, 1000);
 
 		_.delay(function () {
-			App.quota();
+			require('App:RainLoop').quota();
 		}, 5000);
 
 		_.delay(function () {

@@ -18,18 +18,16 @@
 		LinkBuilder = require('LinkBuilder'),
 		Selector = require('Selector'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		EmailModel = require('../../Models/EmailModel.js'),
-		ContactModel = require('../../Models/ContactModel.js'),
-		ContactTagModel = require('../../Models/ContactTagModel.js'),
-		ContactPropertyModel = require('../../Models/ContactPropertyModel.js'),
+		EmailModel = require('Model:Email'),
+		ContactModel = require('Model:Contact'),
+		ContactTagModel = require('Model:ContactTag'),
+		ContactPropertyModel = require('Model:ContactProperty'),
 
-		PopupsComposeViewModel = require('./PopupsComposeViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -280,8 +278,8 @@
 
 			if (Utils.isNonEmptyArray(aE))
 			{
-				kn.hideScreenPopup(PopupsContactsViewModel);
-				kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, aE]);
+				kn.hideScreenPopup(require('View:Popup:Contacts'));
+				kn.showScreenPopup(require('View:Popup:Compose'), [Enums.ComposeType.Empty, null, aE]);
 			}
 
 		}, function () {
@@ -351,12 +349,8 @@
 
 		this.syncCommand = Utils.createCommand(this, function () {
 
-			var
-				self = this,
-				App = require('../../Apps/RainLoopApp.js')
-			;
-
-			App.contactsSync(function (sResult, oData) {
+			var self = this;
+			require('App:RainLoop').contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
 					window.alert(Utils.getNotification(
@@ -401,8 +395,7 @@
 
 	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
 	{
-		var App = require('../../Apps/RainLoopApp.js');
-		App.getContactTagsAutocomplete(oData.term, function (aData) {
+		require('App:RainLoop').getContactTagsAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oTagItem) {
 				return oTagItem.toLine(false);
 			}));
@@ -487,14 +480,12 @@
 
 	PopupsContactsViewModel.prototype.exportVcf = function ()
 	{
-		var App = require('../../Apps/RainLoopApp.js');
-		App.download(LinkBuilder.exportContactsVcf());
+		require('App:RainLoop').download(LinkBuilder.exportContactsVcf());
 	};
 
 	PopupsContactsViewModel.prototype.exportCsv = function ()
 	{
-		var App = require('../../Apps/RainLoopApp.js');
-		App.download(LinkBuilder.exportContactsCsv());
+		require('App:RainLoop').download(LinkBuilder.exportContactsCsv());
 	};
 
 	PopupsContactsViewModel.prototype.initUploader = function ()

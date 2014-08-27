@@ -13,8 +13,8 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('kn'),
-		KnoinAbstractScreen = require('KnoinAbstractScreen')
+		kn = require('App:Knoin'),
+		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
 	/**

@@ -12,10 +12,10 @@
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -235,9 +235,7 @@
 		{
 			if (oData.Result)
 			{
-				var App = require('../../Apps/AdminApp.js');
-				App.reloadDomainList();
-
+				require('App:Admin').reloadDomainList();
 				this.closeCommand();
 			}
 			else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)

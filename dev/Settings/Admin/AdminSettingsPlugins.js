@@ -11,11 +11,9 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
-
-		PopupsPluginViewModel = require('../../ViewModels/Popups/PopupsPluginViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -23,7 +21,7 @@
 	 */
 	function AdminSettingsPlugins()
 	{
-		this.enabledPlugins = ko.observable(!!AppSettings.settingsGet('EnabledPlugins'));
+		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
 		this.pluginsError = ko.observable('');
 
@@ -80,14 +78,14 @@
 	AdminSettingsPlugins.prototype.onShow = function ()
 	{
 		this.pluginsError('');
-		require('../../Apps/AdminApp.js').reloadPluginList();
+		require('App:Admin').reloadPluginList();
 	};
 
 	AdminSettingsPlugins.prototype.onPluginLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('kn').showScreenPopup(PopupsPluginViewModel, [oData.Result]);
+			require('App:Knoin').showScreenPopup(require('View:Popup:Plugin'), [oData.Result]);
 		}
 	};
 
@@ -108,7 +106,7 @@
 			}
 		}
 
-		require('../../Apps/AdminApp.js').reloadPluginList();
+		require('App:Admin').reloadPluginList();
 	};
 
 	module.exports = AdminSettingsPlugins;

@@ -10,12 +10,12 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -108,7 +108,7 @@
 
 	PopupsActivateViewModel.prototype.onShow = function ()
 	{
-		this.domain(AppSettings.settingsGet('AdminDomain'));
+		this.domain(Settings.settingsGet('AdminDomain'));
 		if (!this.activateProcess())
 		{
 			this.key('');

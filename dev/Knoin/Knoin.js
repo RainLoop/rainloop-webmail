@@ -16,7 +16,7 @@
 		Plugins = require('Plugins'),
 		Utils = require('Utils'),
 
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -24,13 +24,13 @@
 	 */
 	function Knoin()
 	{
-		this.sDefaultScreenName = '';
 		this.oScreens = {};
+		this.sDefaultScreenName = '';
 		this.oCurrentScreen = null;
 	}
 
-	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oScreens = {};
+	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oCurrentScreen = null;
 
 	Knoin.prototype.hideLoading = function ()
@@ -209,7 +209,7 @@
 				Utils.log('Cannot find view model position: ' + sPosition);
 			}
 		}
-
+		
 		return ViewModelClass ? ViewModelClass.__vm : null;
 	};
 
@@ -352,7 +352,7 @@
 					}
 					// --
 
-					oCross = oScreen.__cross();
+					oCross = oScreen.__cross ? oScreen.__cross() : null;
 					if (oCross)
 					{
 						oCross.parse(sSubPart);

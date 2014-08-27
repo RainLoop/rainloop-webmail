@@ -8,7 +8,7 @@
 		window = require('window'),
 		_ = require('_'),
 		Globals = require('Globals'),
-		AppSettings = require('../Storages/AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
@@ -18,7 +18,7 @@
 	 * @param {Function=} fOnReady
 	 * @param {Function=} fOnModeChange
 	 */
-	function NewHtmlEditorWrapper(oElement, fOnBlur, fOnReady, fOnModeChange)
+	function HtmlEditor(oElement, fOnBlur, fOnReady, fOnModeChange)
 	{
 		this.editor = null;
 		this.iBlurTimer = 0;
@@ -33,7 +33,7 @@
 		this.init();
 	}
 
-	NewHtmlEditorWrapper.prototype.blurTrigger = function ()
+	HtmlEditor.prototype.blurTrigger = function ()
 	{
 		if (this.fOnBlur)
 		{
@@ -45,7 +45,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.focusTrigger = function ()
+	HtmlEditor.prototype.focusTrigger = function ()
 	{
 		if (this.fOnBlur)
 		{
@@ -56,7 +56,7 @@
 	/**
 	 * @return {boolean}
 	 */
-	NewHtmlEditorWrapper.prototype.isHtml = function ()
+	HtmlEditor.prototype.isHtml = function ()
 	{
 		return this.editor ? 'wysiwyg' === this.editor.mode : false;
 	};
@@ -64,12 +64,12 @@
 	/**
 	 * @return {boolean}
 	 */
-	NewHtmlEditorWrapper.prototype.checkDirty = function ()
+	HtmlEditor.prototype.checkDirty = function ()
 	{
 		return this.editor ? this.editor.checkDirty() : false;
 	};
 
-	NewHtmlEditorWrapper.prototype.resetDirty = function ()
+	HtmlEditor.prototype.resetDirty = function ()
 	{
 		if (this.editor)
 		{
@@ -80,7 +80,7 @@
 	/**
 	 * @return {string}
 	 */
-	NewHtmlEditorWrapper.prototype.getData = function (bWrapIsHtml)
+	HtmlEditor.prototype.getData = function (bWrapIsHtml)
 	{
 		if (this.editor)
 		{
@@ -97,7 +97,7 @@
 		return '';
 	};
 
-	NewHtmlEditorWrapper.prototype.modeToggle = function (bPlain)
+	HtmlEditor.prototype.modeToggle = function (bPlain)
 	{
 		if (this.editor)
 		{
@@ -120,7 +120,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.setHtml = function (sHtml, bFocus)
+	HtmlEditor.prototype.setHtml = function (sHtml, bFocus)
 	{
 		if (this.editor)
 		{
@@ -134,7 +134,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.setPlain = function (sPlain, bFocus)
+	HtmlEditor.prototype.setPlain = function (sPlain, bFocus)
 	{
 		if (this.editor)
 		{
@@ -155,7 +155,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.init = function ()
+	HtmlEditor.prototype.init = function ()
 	{
 		if (this.$element && this.$element[0])
 		{
@@ -165,8 +165,8 @@
 
 					var
 						oConfig = Globals.oHtmlEditorDefaultConfig,
-						sLanguage = AppSettings.settingsGet('Language'),
-						bSource = !!AppSettings.settingsGet('AllowHtmlEditorSourceButton')
+						sLanguage = Settings.settingsGet('Language'),
+						bSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton')
 					;
 
 					if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
@@ -236,7 +236,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.focus = function ()
+	HtmlEditor.prototype.focus = function ()
 	{
 		if (this.editor)
 		{
@@ -244,7 +244,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.blur = function ()
+	HtmlEditor.prototype.blur = function ()
 	{
 		if (this.editor)
 		{
@@ -252,7 +252,7 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.resize = function ()
+	HtmlEditor.prototype.resize = function ()
 	{
 		if (this.editor && this.__resizable)
 		{
@@ -264,12 +264,12 @@
 		}
 	};
 
-	NewHtmlEditorWrapper.prototype.clear = function (bFocus)
+	HtmlEditor.prototype.clear = function (bFocus)
 	{
 		this.setHtml('', bFocus);
 	};
 
 
-	module.exports = NewHtmlEditorWrapper;
+	module.exports = HtmlEditor;
 
 }(module, require));

@@ -7,6 +7,7 @@
 	var
 		window = require('window'),
 		$ = require('$'),
+		_ = require('_'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -15,18 +16,18 @@
 		Plugins = require('Plugins'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
 	* @constructor
 	*/
-   function AbstractAjaxRemoteStorage()
+   function AbstractRemoteStorage()
    {
 	   this.oRequests = {};
    }
 
-   AbstractAjaxRemoteStorage.prototype.oRequests = {};
+   AbstractRemoteStorage.prototype.oRequests = {};
 
    /**
 	* @param {?Function} fCallback
@@ -36,7 +37,7 @@
 	* @param {boolean} bCached
 	* @param {*=} oRequestParameters
 	*/
-   AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequestAction, sType, oData, bCached, oRequestParameters)
+   AbstractRemoteStorage.prototype.defaultResponse = function (fCallback, sRequestAction, sType, oData, bCached, oRequestParameters)
    {
 	   var
 		   fCall = function () {
@@ -134,7 +135,7 @@
 	* @param {Array=} aAbortActions = []
 	* @return {jQuery.jqXHR}
 	*/
-   AbstractAjaxRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oParameters, iTimeOut, sGetAdd, aAbortActions)
+   AbstractRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oParameters, iTimeOut, sGetAdd, aAbortActions)
    {
 	   var
 		   self = this,
@@ -169,7 +170,7 @@
 
 	   if (bPost)
 	   {
-		   oParameters['XToken'] = AppSettings.settingsGet('Token');
+		   oParameters['XToken'] = Settings.settingsGet('Token');
 	   }
 
 	   oDefAjax = $.ajax({
@@ -230,7 +231,7 @@
 	* @param {string=} sGetAdd = ''
 	* @param {Array=} aAbortActions = []
 	*/
-   AbstractAjaxRemoteStorage.prototype.defaultRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+   AbstractRemoteStorage.prototype.defaultRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
    {
 	   oParameters = oParameters || {};
 	   oParameters.Action = sAction;
@@ -246,7 +247,7 @@
    /**
 	* @param {?Function} fCallback
 	*/
-   AbstractAjaxRemoteStorage.prototype.noop = function (fCallback)
+   AbstractRemoteStorage.prototype.noop = function (fCallback)
    {
 	   this.defaultRequest(fCallback, 'Noop');
    };
@@ -260,7 +261,7 @@
 	* @param {string} sHtmlCapa
 	* @param {number} iTime
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime)
+   AbstractRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime)
    {
 	   this.defaultRequest(fCallback, 'JsError', {
 		   'Message': sMessage,
@@ -278,7 +279,7 @@
 	* @param {Array=} mData = null
 	* @param {boolean=} bIsError = false
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+   AbstractRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
    {
 	   this.defaultRequest(fCallback, 'JsInfo', {
 		   'Type': sType,
@@ -290,7 +291,7 @@
    /**
 	* @param {?Function} fCallback
 	*/
-   AbstractAjaxRemoteStorage.prototype.getPublicKey = function (fCallback)
+   AbstractRemoteStorage.prototype.getPublicKey = function (fCallback)
    {
 	   this.defaultRequest(fCallback, 'GetPublicKey');
    };
@@ -299,13 +300,13 @@
 	* @param {?Function} fCallback
 	* @param {string} sVersion
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
+   AbstractRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
    {
 	   this.defaultRequest(fCallback, 'Version', {
 		   'Version': sVersion
 	   });
    };
 
-	module.exports = AbstractAjaxRemoteStorage;
+	module.exports = AbstractRemoteStorage;
 
 }(module, require));

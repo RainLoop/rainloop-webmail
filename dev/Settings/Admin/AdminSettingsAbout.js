@@ -14,12 +14,12 @@
 	function AdminSettingsAbout()
 	{
 		var
-			AppSettings = require('../../Storages/AppSettings.js'),
-			Data = require('../../Storages/AdminDataStorage.js')
+			Settings = require('Storage:Settings'),
+			Data = require('Storage:Admin:Data')
 		;
 
-		this.version = ko.observable(AppSettings.settingsGet('Version'));
-		this.access = ko.observable(!!AppSettings.settingsGet('CoreAccess'));
+		this.version = ko.observable(Settings.settingsGet('Version'));
+		this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 
 		this.coreReal = Data.coreReal;
@@ -72,7 +72,7 @@
 	{
 		if (this.access())
 		{
-			require('../../Apps/AdminApp.js').reloadCoreData();
+			require('App:Admin').reloadCoreData();
 		}
 	};
 
@@ -80,7 +80,7 @@
 	{
 		if (!this.coreUpdating())
 		{
-			require('../../Apps/AdminApp.js').updateCoreData();
+			require('App:Admin').updateCoreData();
 		}
 	};
 

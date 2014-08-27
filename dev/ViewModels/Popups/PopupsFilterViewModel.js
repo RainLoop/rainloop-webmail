@@ -10,10 +10,10 @@
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**

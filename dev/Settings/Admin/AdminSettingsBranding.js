@@ -18,22 +18,22 @@
 	{
 		var
 			Enums = require('Enums'),
-			AppSettings = require('../../Storages/AppSettings.js')
+			Settings = require('Storage:Settings')
 		;
 
-		this.title = ko.observable(AppSettings.settingsGet('Title'));
+		this.title = ko.observable(Settings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loadingDesc = ko.observable(AppSettings.settingsGet('LoadingDescription'));
+		this.loadingDesc = ko.observable(Settings.settingsGet('LoadingDescription'));
 		this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginLogo = ko.observable(AppSettings.settingsGet('LoginLogo'));
+		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo'));
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginDescription = ko.observable(AppSettings.settingsGet('LoginDescription'));
+		this.loginDescription = ko.observable(Settings.settingsGet('LoginDescription'));
 		this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginCss = ko.observable(AppSettings.settingsGet('LoginCss'));
+		this.loginCss = ko.observable(Settings.settingsGet('LoginCss'));
 		this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
@@ -41,7 +41,7 @@
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {

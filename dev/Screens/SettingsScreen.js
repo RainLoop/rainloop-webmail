@@ -11,7 +11,7 @@
 		Utils = require('Utils'),
 		Globals = require('Globals'),
 
-		AbstractSettings = require('./AbstractSettings.js')
+		AbstractSettings = require('Screen:AbstractSettings')
 	;
 
 	/**
@@ -20,24 +20,16 @@
 	 */
 	function SettingsScreen()
 	{
-		var
-			App = require('../Apps/RainLoopApp.js'),
-
-			SettingsSystemDropDownViewModel = require('../ViewModels/SettingsSystemDropDownViewModel.js'),
-			SettingsMenuViewModel = require('../ViewModels/SettingsMenuViewModel.js'),
-			SettingsPaneViewModel = require('../ViewModels/SettingsPaneViewModel.js')
-		;
-
 		AbstractSettings.call(this, [
-			SettingsSystemDropDownViewModel,
-			SettingsMenuViewModel,
-			SettingsPaneViewModel
+			require('View:RainLoop:SettingsSystemDropDown'),
+			require('View:RainLoop:SettingsMenu'),
+			require('View:RainLoop:SettingsPane')
 		]);
 
 		Utils.initOnStartOrLangChange(function () {
 			this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
 		}, this, function () {
-			App.setTitle(this.sSettingsTitle);
+			this.setSettingsTitle();
 		});
 	}
 
@@ -45,10 +37,13 @@
 
 	SettingsScreen.prototype.onShow = function ()
 	{
-		var App = require('../Apps/RainLoopApp.js');
-
-		App.setTitle(this.sSettingsTitle);
+		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
+	};
+	
+	SettingsScreen.prototype.setSettingsTitle = function ()
+	{
+		require('App:RainLoop').setTitle(this.sSettingsTitle);
 	};
 
 	module.exports = SettingsScreen;

@@ -14,15 +14,11 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		PopupsKeyboardShortcutsHelpViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
-		PopupsAddAccountViewModel = require('../ViewModels/Popups/PopupsKeyboardShortcutsHelpViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -39,7 +35,7 @@
 
 		this.accountMenuDropdownTrigger = ko.observable(false);
 
-		this.capaAdditionalAccounts = AppSettings.capa(Enums.Capa.AdditionalAccounts);
+		this.capaAdditionalAccounts = Settings.capa(Enums.Capa.AdditionalAccounts);
 
 		this.loading = ko.computed(function () {
 			return this.accountsLoading();
@@ -71,32 +67,32 @@
 
 	AbstractSystemDropDownViewModel.prototype.settingsClick = function ()
 	{
-		kn.setHash(LinkBuilder.settings());
+		require('App:Knoin').setHash(LinkBuilder.settings());
 	};
 
 	AbstractSystemDropDownViewModel.prototype.settingsHelp = function ()
 	{
-		kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:KeyboardShortcutsHelp'));
 	};
 
 	AbstractSystemDropDownViewModel.prototype.addAccountClick = function ()
 	{
 		if (this.capaAdditionalAccounts)
 		{
-			kn.showScreenPopup(PopupsAddAccountViewModel);
+			require('App:Knoin').showScreenPopup(require('View:Popup:AddAccount'));
 		}
 	};
 
 	AbstractSystemDropDownViewModel.prototype.logoutClick = function ()
 	{
-		var App = require('../Apps/RainLoopApp.js');
 		Remote.logout(function () {
 			if (window.__rlah_clear)
 			{
 				window.__rlah_clear();
 			}
 
-			App.loginAndLogoutReload(true, AppSettings.settingsGet('ParentEmail') && 0 < AppSettings.settingsGet('ParentEmail').length);
+			require('App:RainLoop').loginAndLogoutReload(true,
+				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
 		});
 	};
 
@@ -114,7 +110,7 @@
 		key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
 			if (self.viewModelVisibility())
 			{
-				kn.showScreenPopup(PopupsKeyboardShortcutsHelpViewModel);
+				require('App:Knoin').showScreenPopup(require('View:Popup:KeyboardShortcutsHelp'));
 				return false;
 			}
 		});

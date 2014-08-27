@@ -13,12 +13,12 @@
 		Utils = require('Utils'),
 		Enums = require('Enums'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		EmailModel = require('../../Models/EmailModel.js'),
+		EmailModel = require('Model:Email'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**

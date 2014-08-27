@@ -11,12 +11,12 @@
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -55,11 +55,11 @@
 
 		fSaveSystemFolders = _.debounce(function () {
 
-			AppSettings.settingsSet('SentFolder', self.sentFolder());
-			AppSettings.settingsSet('DraftFolder', self.draftFolder());
-			AppSettings.settingsSet('SpamFolder', self.spamFolder());
-			AppSettings.settingsSet('TrashFolder', self.trashFolder());
-			AppSettings.settingsSet('ArchiveFolder', self.archiveFolder());
+			Settings.settingsSet('SentFolder', self.sentFolder());
+			Settings.settingsSet('DraftFolder', self.draftFolder());
+			Settings.settingsSet('SpamFolder', self.spamFolder());
+			Settings.settingsSet('TrashFolder', self.trashFolder());
+			Settings.settingsSet('ArchiveFolder', self.archiveFolder());
 
 			Remote.saveSystemFolders(Utils.emptyFunction, {
 				'SentFolder': self.sentFolder(),
@@ -74,11 +74,11 @@
 
 		fCallback = function () {
 
-			AppSettings.settingsSet('SentFolder', self.sentFolder());
-			AppSettings.settingsSet('DraftFolder', self.draftFolder());
-			AppSettings.settingsSet('SpamFolder', self.spamFolder());
-			AppSettings.settingsSet('TrashFolder', self.trashFolder());
-			AppSettings.settingsSet('ArchiveFolder', self.archiveFolder());
+			Settings.settingsSet('SentFolder', self.sentFolder());
+			Settings.settingsSet('DraftFolder', self.draftFolder());
+			Settings.settingsSet('SpamFolder', self.spamFolder());
+			Settings.settingsSet('TrashFolder', self.trashFolder());
+			Settings.settingsSet('ArchiveFolder', self.archiveFolder());
 
 			fSaveSystemFolders();
 		};

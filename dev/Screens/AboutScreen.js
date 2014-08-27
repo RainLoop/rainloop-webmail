@@ -13,20 +13,20 @@
 	 * @constructor
 	 * @extends KnoinAbstractScreen
 	 */
-	function LoginScreen()
+	function AboutScreen()
 	{
-		KnoinAbstractScreen.call(this, 'login', [
-			require('View:RainLoop:Login')
+		KnoinAbstractScreen.call(this, 'about', [
+			require('View:RainLoop:About')
 		]);
 	}
 
-	_.extend(LoginScreen.prototype, KnoinAbstractScreen.prototype);
+	_.extend(AboutScreen.prototype, KnoinAbstractScreen.prototype);
 
-	LoginScreen.prototype.onShow = function ()
+	AboutScreen.prototype.onShow = function ()
 	{
-		require('App:RainLoop').setTitle('');
+		require('App:RainLoop').setTitle('RainLoop');
 	};
 
-	module.exports = LoginScreen;
+	module.exports = AboutScreen;
 
 }(module, require));

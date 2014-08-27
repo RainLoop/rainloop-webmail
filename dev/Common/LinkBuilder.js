@@ -14,13 +14,13 @@
 	 */
 	function LinkBuilder()
 	{
-		var AppSettings = require('../Storages/AppSettings.js');
+		var Settings = require('Storage:Settings');
 
 		this.sBase = '#/';
 		this.sServer = './?';
-		this.sVersion = AppSettings.settingsGet('Version');
-		this.sSpecSuffix = AppSettings.settingsGet('AuthAccountHash') || '0';
-		this.sStaticPrefix = AppSettings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
+		this.sVersion = Settings.settingsGet('Version');
+		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
+		this.sStaticPrefix = Settings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
 	}
 
 	/**
@@ -165,6 +165,14 @@
 		}
 
 		return sResult;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.about = function ()
+	{
+		return this.sBase + 'about';
 	};
 
 	/**

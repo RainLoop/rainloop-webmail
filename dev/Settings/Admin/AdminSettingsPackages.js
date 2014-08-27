@@ -11,8 +11,8 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -51,7 +51,7 @@
 
 	AdminSettingsPackages.prototype.onBuild = function ()
 	{
-		require('../../Apps/AdminApp.js').reloadPackagesList();
+		require('App:Admin').reloadPackagesList();
 	};
 
 	AdminSettingsPackages.prototype.requestHelper = function (oPackage, bInstall)
@@ -86,7 +86,7 @@
 			}
 			else
 			{
-				require('../../Apps/AdminApp.js').reloadPackagesList();
+				require('App:Admin').reloadPackagesList();
 			}
 		};
 	};

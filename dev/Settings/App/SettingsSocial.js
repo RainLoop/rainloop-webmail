@@ -11,8 +11,7 @@
 	{
 		var
 			Utils = require('Utils'),
-			App = require('../../Apps/RainLoopApp.js'),
-			Data = require('../../Storages/WebMailDataStorage.js')
+			Data = require('Storage:RainLoop:Data')
 		;
 
 		this.googleEnable = Data.googleEnable;
@@ -36,40 +35,40 @@
 		this.connectGoogle = Utils.createCommand(this, function () {
 			if (!this.googleLoggined())
 			{
-				App.googleConnect();
+				require('App:RainLoop').googleConnect();
 			}
 		}, function () {
 			return !this.googleLoggined() && !this.googleActions();
 		});
 
 		this.disconnectGoogle = Utils.createCommand(this, function () {
-			App.googleDisconnect();
+			require('App:RainLoop').googleDisconnect();
 		});
 
 		this.connectFacebook = Utils.createCommand(this, function () {
 			if (!this.facebookLoggined())
 			{
-				App.facebookConnect();
+				require('App:RainLoop').facebookConnect();
 			}
 		}, function () {
 			return !this.facebookLoggined() && !this.facebookActions();
 		});
 
 		this.disconnectFacebook = Utils.createCommand(this, function () {
-			App.facebookDisconnect();
+			require('App:RainLoop').facebookDisconnect();
 		});
 
 		this.connectTwitter = Utils.createCommand(this, function () {
 			if (!this.twitterLoggined())
 			{
-				App.twitterConnect();
+				require('App:RainLoop').twitterConnect();
 			}
 		}, function () {
 			return !this.twitterLoggined() && !this.twitterActions();
 		});
 
 		this.disconnectTwitter = Utils.createCommand(this, function () {
-			App.twitterDisconnect();
+			require('App:RainLoop').twitterDisconnect();
 		});
 	}
 

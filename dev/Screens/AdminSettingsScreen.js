@@ -6,7 +6,7 @@
 
 	var
 		_ = require('_'),
-		AbstractSettings = require('./AbstractSettings.js')
+		AbstractSettings = require('Screen:AbstractSettings')
 	;
 
 	/**
@@ -15,14 +15,9 @@
 	 */
 	function AdminSettingsScreen()
 	{
-		var
-			AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
-			AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
-		;
-
 		AbstractSettings.call(this, [
-			AdminMenuViewModel,
-			AdminPaneViewModel
+			require('View:Admin:SettingsMenu'),
+			require('View:Admin:SettingsPane')
 		]);
 	}
 
@@ -30,8 +25,7 @@
 
 	AdminSettingsScreen.prototype.onShow = function ()
 	{
-		var App = require('../Apps/AdminApp.js');
-		App.setTitle('');
+		require('App:Admin').setTitle('');
 	};
 
 	module.exports = AdminSettingsScreen;

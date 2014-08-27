@@ -11,10 +11,10 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -24,8 +24,6 @@
 	function PopupsAddAccountViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddAccount');
-
-		var App = require('../../Apps/RainLoopApp.js');
 
 		this.email = ko.observable('');
 		this.password = ko.observable('');
@@ -65,7 +63,7 @@
 				{
 					if (oData.Result)
 					{
-						App.accountsAndIdentities();
+						require('App:RainLoop').accountsAndIdentities();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)

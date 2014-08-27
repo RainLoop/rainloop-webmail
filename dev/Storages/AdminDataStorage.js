@@ -8,7 +8,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		AbstractData = require('./AbstractData.js')
+		AbstractData = require('Storage:Abstract:Data')
 	;
 
 	/**

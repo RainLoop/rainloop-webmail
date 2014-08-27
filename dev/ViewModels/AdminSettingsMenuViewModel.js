@@ -5,9 +5,9 @@
 	'use strict';
 	
 	var
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 		Globals = require('Globals'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**

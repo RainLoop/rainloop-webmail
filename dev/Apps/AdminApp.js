@@ -13,16 +13,16 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/AdminDataStorage.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote'),
 
-		AdminSettingsScreen = require('../Screens/AdminSettingsScreen.js'),
-		AdminLoginScreen = require('../Screens/AdminLoginScreen.js'),
+		AdminSettingsScreen = require('Screen:Admin:Settings'),
+		AdminLoginScreen = require('Screen:Admin:Login'),
 
-		AbstractApp = require('./AbstractApp.js')
+		AbstractApp = require('App:Abstract')
 	;
 
 	/**
@@ -48,40 +48,40 @@
 
 	AdminApp.prototype.setupSettings = function ()
 	{
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsGeneral.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:General'),
 			'AdminSettingsGeneral', 'General', 'general', true);
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsLogin.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Login'),
 			'AdminSettingsLogin', 'Login', 'login');
 
-		if (AppSettings.capa(Enums.Capa.Prem))
+		if (Settings.capa(Enums.Capa.Prem))
 		{
-			kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsBranding.js'),
+			kn.addSettingsViewModel(require('Settings:Admin:Branding'),
 				'AdminSettingsBranding', 'Branding', 'branding');
 		}
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsContacts.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Contacts'),
 			'AdminSettingsContacts', 'Contacts', 'contacts');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsDomains.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Domains'),
 			'AdminSettingsDomains', 'Domains', 'domains');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsSecurity.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Security'),
 			'AdminSettingsSecurity', 'Security', 'security');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsSocial.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Social'),
 			'AdminSettingsSocial', 'Social', 'social');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsPlugins.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Plugins'),
 			'AdminSettingsPlugins', 'Plugins', 'plugins');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsPackages.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Packages'),
 			'AdminSettingsPackages', 'Packages', 'packages');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsLicensing.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Licensing'),
 			'AdminSettingsLicensing', 'Licensing', 'licensing');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsAbout.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:About'),
 			'AdminSettingsAbout', 'About', 'about');
 
 		return true;
@@ -283,7 +283,7 @@
 
 		kn.hideLoading();
 
-		if (!AppSettings.settingsGet('AllowAdminPanel'))
+		if (!Settings.settingsGet('AllowAdminPanel'))
 		{
 			kn.routeOff();
 			kn.setHash(LinkBuilder.root(), true);
@@ -295,7 +295,7 @@
 		}
 		else
 		{
-			if (!!AppSettings.settingsGet('Auth'))
+			if (!!Settings.settingsGet('Auth'))
 			{
 				kn.startScreens([AdminSettingsScreen]);
 			}

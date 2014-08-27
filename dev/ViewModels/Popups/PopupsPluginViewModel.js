@@ -12,12 +12,10 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -139,7 +137,11 @@
 
 	PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			PopupsAskViewModel = require('View:Popup:Ask')
+		;
+
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {

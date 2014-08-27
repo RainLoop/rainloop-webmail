@@ -8,7 +8,7 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('./AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
@@ -22,9 +22,9 @@
 	AbstractData.prototype.populateDataOnStart = function()
 	{
 		var
-			mLayout = Utils.pInt(AppSettings.settingsGet('Layout')),
-			aLanguages = AppSettings.settingsGet('Languages'),
-			aThemes = AppSettings.settingsGet('Themes')
+			mLayout = Utils.pInt(Settings.settingsGet('Layout')),
+			aLanguages = Settings.settingsGet('Languages'),
+			aThemes = Settings.settingsGet('Themes')
 		;
 
 		if (Utils.isArray(aLanguages))
@@ -37,55 +37,55 @@
 			this.themes(aThemes);
 		}
 
-		this.mainLanguage(AppSettings.settingsGet('Language'));
-		this.mainTheme(AppSettings.settingsGet('Theme'));
+		this.mainLanguage(Settings.settingsGet('Language'));
+		this.mainTheme(Settings.settingsGet('Theme'));
 
-		this.capaAdditionalAccounts(AppSettings.capa(Enums.Capa.AdditionalAccounts));
-		this.capaAdditionalIdentities(AppSettings.capa(Enums.Capa.AdditionalIdentities));
-		this.capaGravatar(AppSettings.capa(Enums.Capa.Gravatar));
-		this.determineUserLanguage(!!AppSettings.settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain(!!AppSettings.settingsGet('DetermineUserDomain'));
+		this.capaAdditionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
+		this.capaAdditionalIdentities(Settings.capa(Enums.Capa.AdditionalIdentities));
+		this.capaGravatar(Settings.capa(Enums.Capa.Gravatar));
+		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
+		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
 
-		this.capaThemes(AppSettings.capa(Enums.Capa.Themes));
-		this.allowLanguagesOnLogin(!!AppSettings.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!AppSettings.settingsGet('AllowLanguagesOnSettings'));
-		this.useLocalProxyForExternalImages(!!AppSettings.settingsGet('UseLocalProxyForExternalImages'));
+		this.capaThemes(Settings.capa(Enums.Capa.Themes));
+		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
+		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
+		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
 
-		this.editorDefaultType(AppSettings.settingsGet('EditorDefaultType'));
-		this.showImages(!!AppSettings.settingsGet('ShowImages'));
-		this.contactsAutosave(!!AppSettings.settingsGet('ContactsAutosave'));
-		this.interfaceAnimation(AppSettings.settingsGet('InterfaceAnimation'));
+		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
+		this.showImages(!!Settings.settingsGet('ShowImages'));
+		this.contactsAutosave(!!Settings.settingsGet('ContactsAutosave'));
+		this.interfaceAnimation(Settings.settingsGet('InterfaceAnimation'));
 
-		this.mainMessagesPerPage(AppSettings.settingsGet('MPP'));
+		this.mainMessagesPerPage(Settings.settingsGet('MPP'));
 
-		this.desktopNotifications(!!AppSettings.settingsGet('DesktopNotifications'));
-		this.useThreads(!!AppSettings.settingsGet('UseThreads'));
-		this.replySameFolder(!!AppSettings.settingsGet('ReplySameFolder'));
-		this.useCheckboxesInList(!!AppSettings.settingsGet('UseCheckboxesInList'));
+		this.desktopNotifications(!!Settings.settingsGet('DesktopNotifications'));
+		this.useThreads(!!Settings.settingsGet('UseThreads'));
+		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
+		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
 
 		this.layout(Enums.Layout.SidePreview);
 		if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
 		{
 			this.layout(mLayout);
 		}
-		this.facebookSupported(!!AppSettings.settingsGet('SupportedFacebookSocial'));
-		this.facebookEnable(!!AppSettings.settingsGet('AllowFacebookSocial'));
-		this.facebookAppID(AppSettings.settingsGet('FacebookAppID'));
-		this.facebookAppSecret(AppSettings.settingsGet('FacebookAppSecret'));
+		this.facebookSupported(!!Settings.settingsGet('SupportedFacebookSocial'));
+		this.facebookEnable(!!Settings.settingsGet('AllowFacebookSocial'));
+		this.facebookAppID(Settings.settingsGet('FacebookAppID'));
+		this.facebookAppSecret(Settings.settingsGet('FacebookAppSecret'));
 
-		this.twitterEnable(!!AppSettings.settingsGet('AllowTwitterSocial'));
-		this.twitterConsumerKey(AppSettings.settingsGet('TwitterConsumerKey'));
-		this.twitterConsumerSecret(AppSettings.settingsGet('TwitterConsumerSecret'));
+		this.twitterEnable(!!Settings.settingsGet('AllowTwitterSocial'));
+		this.twitterConsumerKey(Settings.settingsGet('TwitterConsumerKey'));
+		this.twitterConsumerSecret(Settings.settingsGet('TwitterConsumerSecret'));
 
-		this.googleEnable(!!AppSettings.settingsGet('AllowGoogleSocial'));
-		this.googleClientID(AppSettings.settingsGet('GoogleClientID'));
-		this.googleClientSecret(AppSettings.settingsGet('GoogleClientSecret'));
-		this.googleApiKey(AppSettings.settingsGet('GoogleApiKey'));
+		this.googleEnable(!!Settings.settingsGet('AllowGoogleSocial'));
+		this.googleClientID(Settings.settingsGet('GoogleClientID'));
+		this.googleClientSecret(Settings.settingsGet('GoogleClientSecret'));
+		this.googleApiKey(Settings.settingsGet('GoogleApiKey'));
 
-		this.dropboxEnable(!!AppSettings.settingsGet('AllowDropboxSocial'));
-		this.dropboxApiKey(AppSettings.settingsGet('DropboxApiKey'));
+		this.dropboxEnable(!!Settings.settingsGet('AllowDropboxSocial'));
+		this.dropboxApiKey(Settings.settingsGet('DropboxApiKey'));
 
-		this.contactsIsAllowed(!!AppSettings.settingsGet('ContactsIsAllowed'));
+		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
 	};
 
 	module.exports = AbstractData;

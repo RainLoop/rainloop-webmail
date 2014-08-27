@@ -6,7 +6,7 @@
 
 	var
 		ko = require('ko'),
-		$window = require('$window'),
+		$win = require('$win'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -88,7 +88,7 @@
 	{
 		var self = this;
 
-		$window.on('keydown', function (oEvent) {
+		$win.on('keydown', function (oEvent) {
 			if (oEvent && self.modalVisibility && self.modalVisibility())
 			{
 				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)

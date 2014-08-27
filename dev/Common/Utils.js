@@ -11,7 +11,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$html = require('$html'),
 		$div = require('$div'),
 		$doc = require('$doc'),
@@ -42,12 +42,12 @@
 	Utils.windowResize = _.debounce(function (iTimeout) {
 		if (Utils.isUnd(iTimeout))
 		{
-			$window.resize();
+			$win.resize();
 		}
 		else
 		{
 			window.setTimeout(function () {
-				$window.resize();
+				$win.resize();
 			}, iTimeout);
 		}
 	}, 50);

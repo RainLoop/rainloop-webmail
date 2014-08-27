@@ -10,12 +10,12 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Cache = require('../../Storages/WebMailCacheStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -25,8 +25,6 @@
 	function PopupsFolderClearViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsFolderClear');
-
-		var App = require('../../Apps/RainLoopApp.js');
 
 		this.selectedFolder = ko.observable(null);
 		this.clearingProcess = ko.observable(false);
@@ -72,7 +70,7 @@
 					self.clearingProcess(false);
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 					{
-						App.reloadMessageList(true);
+						require('App:RainLoop').reloadMessageList(true);
 						self.cancelCommand();
 					}
 					else

@@ -11,13 +11,13 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function WebMailCacheStorage()
+	function CacheStorage()
 	{
 		this.oFoldersCache = {};
 		this.oFoldersNamesCache = {};
@@ -28,60 +28,60 @@
 		this.oNewMessage = {};
 		this.oRequestedMessage = {};
 
-		this.bCapaGravatar = AppSettings.capa(Enums.Capa.Gravatar);
+		this.bCapaGravatar = Settings.capa(Enums.Capa.Gravatar);
 	}
 
 	/**
 	 * @type {boolean}
 	 */
-	WebMailCacheStorage.prototype.bCapaGravatar = false;
+	CacheStorage.prototype.bCapaGravatar = false;
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFoldersCache = {};
+	CacheStorage.prototype.oFoldersCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFoldersNamesCache = {};
+	CacheStorage.prototype.oFoldersNamesCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFolderHashCache = {};
+	CacheStorage.prototype.oFolderHashCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFolderUidNextCache = {};
+	CacheStorage.prototype.oFolderUidNextCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oMessageListHashCache = {};
+	CacheStorage.prototype.oMessageListHashCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oMessageFlagsCache = {};
+	CacheStorage.prototype.oMessageFlagsCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oBodies = {};
+	CacheStorage.prototype.oBodies = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oNewMessage = {};
+	CacheStorage.prototype.oNewMessage = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oRequestedMessage = {};
+	CacheStorage.prototype.oRequestedMessage = {};
 
-	WebMailCacheStorage.prototype.clear = function ()
+	CacheStorage.prototype.clear = function ()
 	{
 		this.oFoldersCache = {};
 		this.oFoldersNamesCache = {};
@@ -98,7 +98,7 @@
 	 * @param {Function} fCallback
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
+	CacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	{
 		sEmail = Utils.trim(sEmail);
 		fCallback(this.bCapaGravatar && '' !== sEmail ? LinkBuilder.avatarLink(sEmail) : '', sEmail);
@@ -109,7 +109,7 @@
 	 * @param {string} sUid
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
 	{
 		return sFolderFullNameRaw + '#' + sUid;
 	};
@@ -118,7 +118,7 @@
 	 * @param {string} sFolder
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
+	CacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
 	{
 		this.oRequestedMessage[this.getMessageKey(sFolder, sUid)] = true;
 	};
@@ -128,7 +128,7 @@
 	 * @param {string} sUid
 	 * @return {boolean}
 	 */
-	WebMailCacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
+	CacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
 	{
 		return true === this.oRequestedMessage[this.getMessageKey(sFolder, sUid)];
 	};
@@ -137,7 +137,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
 	{
 		this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = true;
 	};
@@ -146,7 +146,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
 	{
 		if (this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)])
 		{
@@ -157,7 +157,7 @@
 		return false;
 	};
 
-	WebMailCacheStorage.prototype.clearNewMessageCache = function ()
+	CacheStorage.prototype.clearNewMessageCache = function ()
 	{
 		this.oNewMessage = {};
 	};
@@ -166,7 +166,7 @@
 	 * @param {string} sFolderHash
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
+	CacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
 	{
 		return '' !== sFolderHash && this.oFoldersNamesCache[sFolderHash] ? this.oFoldersNamesCache[sFolderHash] : '';
 	};
@@ -175,7 +175,7 @@
 	 * @param {string} sFolderHash
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailCacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
+	CacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
 	{
 		this.oFoldersNamesCache[sFolderHash] = sFolderFullNameRaw;
 	};
@@ -184,7 +184,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFolderHashCache[sFolderFullNameRaw] ? this.oFolderHashCache[sFolderFullNameRaw] : '';
 	};
@@ -193,7 +193,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sFolderHash
 	 */
-	WebMailCacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
+	CacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
 	{
 		this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
 	};
@@ -202,7 +202,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFolderUidNextCache[sFolderFullNameRaw] ? this.oFolderUidNextCache[sFolderFullNameRaw] : '';
 	};
@@ -211,7 +211,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUidNext
 	 */
-	WebMailCacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
+	CacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
 	{
 		this.oFolderUidNextCache[sFolderFullNameRaw] = sUidNext;
 	};
@@ -220,7 +220,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @return {?FolderModel}
 	 */
-	WebMailCacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFoldersCache[sFolderFullNameRaw] ? this.oFoldersCache[sFolderFullNameRaw] : null;
 	};
@@ -229,7 +229,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {?FolderModel} oFolder
 	 */
-	WebMailCacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
+	CacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
 	{
 		this.oFoldersCache[sFolderFullNameRaw] = oFolder;
 	};
@@ -237,7 +237,7 @@
 	/**
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailCacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
+	CacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
 	{
 		this.setFolderToCacheList(sFolderFullNameRaw, null);
 	};
@@ -247,7 +247,7 @@
 	 * @param {string} sUid
 	 * @return {?Array}
 	 */
-	WebMailCacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
+	CacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
 	{
 		return this.oMessageFlagsCache[sFolderFullName] && this.oMessageFlagsCache[sFolderFullName][sUid] ?
 			this.oMessageFlagsCache[sFolderFullName][sUid] : null;
@@ -258,7 +258,7 @@
 	 * @param {string} sUid
 	 * @param {Array} aFlagsCache
 	 */
-	WebMailCacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
+	CacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
 	{
 		if (!this.oMessageFlagsCache[sFolderFullName])
 		{
@@ -271,7 +271,7 @@
 	/**
 	 * @param {string} sFolderFullName
 	 */
-	WebMailCacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
+	CacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
 	{
 		this.oMessageFlagsCache[sFolderFullName] = {};
 	};
@@ -279,7 +279,7 @@
 	/**
 	 * @param {(MessageModel|null)} oMessage
 	 */
-	WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
+	CacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
 	{
 		if (oMessage)
 		{
@@ -320,7 +320,7 @@
 	/**
 	 * @param {(MessageModel|null)} oMessage
 	 */
-	WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
+	CacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
 	{
 		if (oMessage)
 		{
@@ -336,7 +336,7 @@
 	 * @param {string} sUid
 	 * @param {Array} aFlags
 	 */
-	WebMailCacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
+	CacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
 	{
 		if (Utils.isArray(aFlags) && 0 < aFlags.length)
 		{
@@ -344,6 +344,6 @@
 		}
 	};
 
-	module.exports = new WebMailCacheStorage();
+	module.exports = new CacheStorage();
 
 }(module, require));

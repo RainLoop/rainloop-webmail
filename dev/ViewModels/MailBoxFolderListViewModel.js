@@ -16,16 +16,12 @@
 		Globals = require('Globals'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
+		Settings = require('Storage:Settings'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Data = require('Storage:RainLoop:Data'),
 
-		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
-		PopupsFolderCreateViewModel = require('./Popups/PopupsFolderCreateViewModel.js'),
-		PopupsContactsViewModel = require('./Popups/PopupsContactsViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -48,7 +44,7 @@
 
 		this.iDropOverTimer = 0;
 
-		this.allowContacts = !!AppSettings.settingsGet('ContactsIsAllowed');
+		this.allowContacts = !!Settings.settingsGet('ContactsIsAllowed');
 
 		kn.constructorEnd(this);
 	}
@@ -60,10 +56,7 @@
 		this.oContentVisible = $('.b-content', oDom);
 		this.oContentScrollable = $('.content', this.oContentVisible);
 
-		var
-			self = this,
-			App = require('../Apps/RainLoopApp.js')
-		;
+		var self = this;
 
 		oDom
 			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
@@ -76,7 +69,7 @@
 				if (oFolder && oEvent)
 				{
 					bCollapsed = oFolder.collapsed();
-					App.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					require('App:RainLoop').setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 
 					oFolder.collapsed(!bCollapsed);
 					oEvent.preventDefault();
@@ -159,7 +152,7 @@
 				if (oFolder)
 				{
 					bCollapsed = oFolder.collapsed();
-					App.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					require('App:RainLoop').setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 					oFolder.collapsed(!bCollapsed);
 				}
 			}
@@ -186,10 +179,9 @@
 		window.clearTimeout(this.iDropOverTimer);
 		if (oFolder && oFolder.collapsed())
 		{
-			var App = require('../Apps/RainLoopApp.js');
 			this.iDropOverTimer = window.setTimeout(function () {
 				oFolder.collapsed(false);
-				App.setExpandedFolder(oFolder.fullNameHash, true);
+				require('App:RainLoop').setExpandedFolder(oFolder.fullNameHash, true);
 				Utils.windowResize();
 			}, 500);
 		}
@@ -242,7 +234,6 @@
 		if (oToFolder && oUi && oUi.helper)
 		{
 			var
-				App = require('../Apps/RainLoopApp.js'),
 				sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
 				bCopy = $html.hasClass('rl-ctrl-key-pressed'),
 				aUids = oUi.helper.data('rl-uids')
@@ -250,19 +241,19 @@
 
 			if (Utils.isNormal(sFromFolderFullNameRaw) && '' !== sFromFolderFullNameRaw && Utils.isArray(aUids))
 			{
-				App.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
+				require('App:RainLoop').moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
 			}
 		}
 	};
 
 	MailBoxFolderListViewModel.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(PopupsComposeViewModel);
+		kn.showScreenPopup(require('View:Popup:Compose'));
 	};
 
 	MailBoxFolderListViewModel.prototype.createFolder = function ()
 	{
-		kn.showScreenPopup(PopupsFolderCreateViewModel);
+		kn.showScreenPopup(require('View:Popup:FolderCreate'));
 	};
 
 	MailBoxFolderListViewModel.prototype.configureFolders = function ()
@@ -274,7 +265,7 @@
 	{
 		if (this.allowContacts)
 		{
-			kn.showScreenPopup(PopupsContactsViewModel);
+			kn.showScreenPopup(require('View:Popup:Contacts'));
 		}
 	};
 

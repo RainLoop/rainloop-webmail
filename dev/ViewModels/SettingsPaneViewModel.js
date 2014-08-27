@@ -10,10 +10,10 @@
 		Enums = require('Enums'),
 		LinkBuilder = require('LinkBuilder'),
 
-		Data = require('../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**

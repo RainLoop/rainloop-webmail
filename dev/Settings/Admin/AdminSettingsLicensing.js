@@ -8,10 +8,8 @@
 		ko = require('ko'),
 		moment = require('moment'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-
-		PopupsActivateViewModel = require('../../ViewModels/Popups/PopupsActivateViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -27,12 +25,12 @@
 		this.licenseTrigger = Data.licenseTrigger;
 
 		this.adminDomain = ko.observable('');
-		this.subscriptionEnabled = ko.observable(!!AppSettings.settingsGet('SubscriptionEnabled'));
+		this.subscriptionEnabled = ko.observable(!!Settings.settingsGet('SubscriptionEnabled'));
 
 		this.licenseTrigger.subscribe(function () {
 			if (this.subscriptionEnabled())
 			{
-				require('../../Apps/AdminApp.js').reloadLicensing(true);
+				require('App:Admin').reloadLicensing(true);
 			}
 		}, this);
 	}
@@ -41,18 +39,18 @@
 	{
 		if (this.subscriptionEnabled())
 		{
-			require('../../Apps/AdminApp.js').reloadLicensing(false);
+			require('App:Admin').reloadLicensing(false);
 		}
 	};
 
 	AdminSettingsLicensing.prototype.onShow = function ()
 	{
-		this.adminDomain(AppSettings.settingsGet('AdminDomain'));
+		this.adminDomain(Settings.settingsGet('AdminDomain'));
 	};
 
 	AdminSettingsLicensing.prototype.showActivationForm = function ()
 	{
-		require('kn').showScreenPopup(PopupsActivateViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Activate'));
 	};
 
 	/**

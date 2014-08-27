@@ -11,21 +11,19 @@
 
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
 	 */
-	function PopupsGenerateNewOpenPgpKeyViewModel()
+	function PopupsNewOpenPgpKeyViewModel()
 	{
-		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsGenerateNewOpenPgpKey');
-
-		var App = require('../../Apps/RainLoopApp.js');
+		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsNewOpenPgpKey');
 
 		this.email = ko.observable('');
 		this.email.focus = ko.observable('');
@@ -78,7 +76,7 @@
 					oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
 					oOpenpgpKeyring.store();
 
-					App.reloadOpenPgpKeys();
+					require('App:RainLoop').reloadOpenPgpKeys();
 					Utils.delegateRun(self, 'cancelCommand');
 				}
 
@@ -91,9 +89,9 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsGenerateNewOpenPgpKeyViewModel', PopupsGenerateNewOpenPgpKeyViewModel);
+	kn.extendAsViewModel('PopupsNewOpenPgpKeyViewModel', PopupsNewOpenPgpKeyViewModel);
 
-	PopupsGenerateNewOpenPgpKeyViewModel.prototype.clearPopup = function ()
+	PopupsNewOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{
 		this.name('');
 		this.password('');
@@ -103,16 +101,16 @@
 		this.keyBitLength(2048);
 	};
 
-	PopupsGenerateNewOpenPgpKeyViewModel.prototype.onShow = function ()
+	PopupsNewOpenPgpKeyViewModel.prototype.onShow = function ()
 	{
 		this.clearPopup();
 	};
 
-	PopupsGenerateNewOpenPgpKeyViewModel.prototype.onFocus = function ()
+	PopupsNewOpenPgpKeyViewModel.prototype.onFocus = function ()
 	{
 		this.email.focus(true);
 	};
 
-	module.exports = PopupsGenerateNewOpenPgpKeyViewModel;
+	module.exports = PopupsNewOpenPgpKeyViewModel;
 
 }(module, require));

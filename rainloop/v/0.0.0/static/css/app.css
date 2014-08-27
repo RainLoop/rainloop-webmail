@@ -7245,13 +7245,6 @@ html.rl-ctrl-key-pressed .btn-group.open .hidden-on-ctrl-btn {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.rl-view-model.RL-Login,
-.rl-view-model.RL-LoginNew,
-.rl-view-model.RL-AdminLogin {
-  position: relative;
-  height: 100%;
-  z-index: 5;
-}
 .b-login-content {
   height: 100%;
   text-align: center;
@@ -9880,4 +9873,12 @@ html.rl-started-trigger.no-mobile #rl-content {
   -webkit-animation-delay: 0.6s;
   -moz-animation-delay: 0.6s;
   animation-delay: 0.6s;
+}
+.rl-view-model.RL-Login,
+.rl-view-model.RL-LoginNew,
+.rl-view-model.RL-AdminLogin,
+.rl-view-model.RL-About {
+  position: relative;
+  height: 100%;
+  z-index: 5;
 }

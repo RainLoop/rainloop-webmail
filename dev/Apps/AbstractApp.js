@@ -9,7 +9,7 @@
 		_ = require('_'),
 		window = require('window'),
 		$html = require('$html'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$doc = require('$doc'),
 
 		Globals = require('Globals'),
@@ -17,9 +17,9 @@
 		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
+		Settings = require('Storage:Settings'),
 
-		KnoinAbstractBoot = require('KnoinAbstractBoot')
+		KnoinAbstractBoot = require('Knoin:AbstractBoot')
 	;
 
 	/**
@@ -35,7 +35,7 @@
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
-		$window.on('error', function (oEvent) {
+		$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
 				-1 === Utils.inArray(oEvent.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
@@ -129,7 +129,7 @@
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			AppSettings.settingsGet('Title') || '';
+			Settings.settingsGet('Title') || '';
 
 		window.document.title = '_';
 		window.document.title = sTitle;
@@ -142,9 +142,9 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			kn = require('kn'),
-			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
-			bInIframe = !!AppSettings.settingsGet('InIframe')
+			kn = require('App:Knoin'),
+			sCustomLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink')),
+			bInIframe = !!Settings.settingsGet('InIframe')
 		;
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
@@ -196,7 +196,7 @@
 	{
 		Events.pub('rl.bootstart');
 
-		var ssm = require('../External/ssm.js');
+		var ssm = require('ssm');
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();

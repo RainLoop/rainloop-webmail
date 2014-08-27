@@ -20,17 +20,13 @@
 		Events = require('Events'),
 		Selector = require('Selector'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel'),
-
-		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
-		PopupsAdvancedSearchViewModel = require('./Popups/PopupsAdvancedSearchViewModel.js'),
-		PopupsFolderClearViewModel = require('./Popups/PopupsFolderClearViewModel.js')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -39,15 +35,13 @@
 	 */
 	function MailBoxMessageListViewModel()
 	{
-		var App = require('../Apps/RainLoopApp.js');
-
 		KnoinAbstractViewModel.call(this, 'Right', 'MailMessageList');
 
 		this.sLastUid = null;
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';
 
-		this.hideDangerousActions = !!AppSettings.settingsGet('HideDangerousActions');
+		this.hideDangerousActions = !!Settings.settingsGet('HideDangerousActions');
 
 		this.popupVisibility = Globals.popupVisibility;
 
@@ -175,39 +169,40 @@
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
 		this.clearCommand = Utils.createCommand(this, function () {
-			kn.showScreenPopup(PopupsFolderClearViewModel, [Data.currentFolder()]);
+			kn.showScreenPopup(require('View:Popup:FolderClear'), [Data.currentFolder()]);
 		});
 
 		this.multyForwardCommand = Utils.createCommand(this, function () {
-			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.ForwardAsAttachment, Data.messageListCheckedOrSelected()]);
+			kn.showScreenPopup(require('View:Popup:Compose'), [
+				Enums.ComposeType.ForwardAsAttachment, Data.messageListCheckedOrSelected()]);
 		}, this.canBeMoved);
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
-			App.deleteMessagesFromFolder(Enums.FolderType.Trash,
+			require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Trash,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), false);
 		}, this.canBeMoved);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
-			App.deleteMessagesFromFolder(Enums.FolderType.Trash,
+			require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Trash,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.archiveCommand = Utils.createCommand(this, function () {
-			App.deleteMessagesFromFolder(Enums.FolderType.Archive,
+			require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Archive,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.spamCommand = Utils.createCommand(this, function () {
-			App.deleteMessagesFromFolder(Enums.FolderType.Spam,
+			require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Spam,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
-			App.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+			require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
@@ -217,7 +212,7 @@
 		this.reloadCommand = Utils.createCommand(this, function () {
 			if (!Data.messageListCompleteLoadingThrottle())
 			{
-				App.reloadMessageList(false, true);
+				require('App:RainLoop').reloadMessageList(false, true);
 			}
 		});
 
@@ -301,14 +296,14 @@
 
 	/**
 	 * @param {string} sToFolderFullNameRaw
+	 * @param {boolean} bCopy
 	 * @return {boolean}
 	 */
 	MailBoxMessageListViewModel.prototype.moveSelectedMessagesToFolder = function (sToFolderFullNameRaw, bCopy)
 	{
 		if (this.canBeMoved())
 		{
-			var App = require('../Apps/RainLoopApp.js');
-			App.moveMessagesToFolder(
+			require('App:RainLoop').moveMessagesToFolder(
 				Data.currentFolderFullNameRaw(),
 				Data.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 		}
@@ -395,8 +390,7 @@
 		var
 			aUids = [],
 			oFolder = null,
-			iAlreadyUnread = 0,
-			App = require('../Apps/RainLoopApp.js')
+			iAlreadyUnread = 0
 		;
 
 		if (Utils.isUnd(aMessages))
@@ -464,7 +458,7 @@
 				break;
 			}
 
-			App.reloadFlagsCurrentMessageListAndMessageFromCache();
+			require('App:RainLoop').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 
@@ -476,8 +470,7 @@
 	{
 		var
 			oFolder = null,
-			aMessages = Data.messageList(),
-			App = require('../Apps/RainLoopApp.js')
+			aMessages = Data.messageList()
 		;
 
 		if ('' !== sFolderFullNameRaw)
@@ -516,7 +509,7 @@
 					break;
 				}
 
-				App.reloadFlagsCurrentMessageListAndMessageFromCache();
+				require('App:RainLoop').reloadFlagsCurrentMessageListAndMessageFromCache();
 			}
 		}
 	};
@@ -629,10 +622,7 @@
 
 	MailBoxMessageListViewModel.prototype.onBuild = function (oDom)
 	{
-		var
-			self = this,
-			App = require('../Apps/RainLoopApp.js')
-		;
+		var self = this;
 
 		this.oContentVisible = $('.b-content', oDom);
 		this.oContentScrollable = $('.content', this.oContentVisible);
@@ -663,7 +653,7 @@
 				oMessage.lastInCollapsedThreadLoading(true);
 				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
 
-				App.reloadMessageList();
+				require('App:RainLoop').reloadMessageList();
 			}
 
 			return false;
@@ -700,7 +690,7 @@
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!Globals.bMobileDevice && AppSettings.capa(Enums.Capa.Prefetch) && ifvisible)
+		if (!Globals.bMobileDevice && Settings.capa(Enums.Capa.Prefetch) && ifvisible)
 		{
 			ifvisible.setIdleDuration(10);
 
@@ -759,7 +749,7 @@
 
 		// write/compose (open compose popup)
 		key('w,c', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			kn.showScreenPopup(PopupsComposeViewModel);
+			kn.showScreenPopup(require('View:Popup:Compose'));
 			return false;
 		});
 
@@ -869,12 +859,12 @@
 
 	MailBoxMessageListViewModel.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(PopupsComposeViewModel);
+		kn.showScreenPopup(require('View:Popup:Compose'));
 	};
 
 	MailBoxMessageListViewModel.prototype.advancedSearchClick = function ()
 	{
-		kn.showScreenPopup(PopupsAdvancedSearchViewModel);
+		kn.showScreenPopup(require('View:Popup:AdvancedSearch'));
 	};
 
 	MailBoxMessageListViewModel.prototype.quotaTooltip = function ()
@@ -888,7 +878,7 @@
 
 	MailBoxMessageListViewModel.prototype.initUploaderForAppend = function ()
 	{
-		if (!AppSettings.settingsGet('AllowAppendMessage') || !this.dragOverArea())
+		if (!Settings.settingsGet('AllowAppendMessage') || !this.dragOverArea())
 		{
 			return false;
 		}
@@ -933,7 +923,7 @@
 				return false;
 			}, this))
 			.on('onComplete', _.bind(function () {
-				require('../Apps/RainLoopApp.js').reloadMessageList(true, true);
+				require('App:RainLoop').reloadMessageList(true, true);
 			}, this))
 		;
 

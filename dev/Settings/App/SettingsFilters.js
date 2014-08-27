@@ -30,12 +30,11 @@
 	SettingsFilters.prototype.addFilter = function ()
 	{
 		var
-			kn = require('kn'),
-			FilterModel = require('../../Models/FilterModel.js'),
-			PopupsFilterViewModel = require('../../ViewModels/Popups/PopupsFilterViewModel.js')
+			FilterModel = require('Model:Filter')
 		;
 
-		kn.showScreenPopup(PopupsFilterViewModel, [new FilterModel()]);
+		require('App:Knoin').showScreenPopup(
+			require('View:Popup:Filter'), [new FilterModel()]);
 	};
 
 	module.exports = SettingsFilters;

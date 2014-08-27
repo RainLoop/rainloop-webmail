@@ -11,10 +11,7 @@
 		Globals = require('Globals'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
-
-		kn = require('kn'),
-		PopupsTwoFactorTestViewModel = require('../../ViewModels/Popups/PopupsTwoFactorTestViewModel.js')
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**
@@ -77,7 +74,7 @@
 
 	SettingsSecurity.prototype.testTwoFactor = function ()
 	{
-		kn.showScreenPopup(PopupsTwoFactorTestViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:TwoFactorTest'));
 	};
 
 	SettingsSecurity.prototype.clearTwoFactor = function ()

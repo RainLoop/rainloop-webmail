@@ -4,20 +4,17 @@
 
 	'use strict';
 
-	var
-		_ = require('_'),
-
-		CookieDriver = require('./LocalStorages/CookieDriver.js'),
-		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
-	;
-
 	/**
 	 * @constructor
 	 */
 	function LocalStorage()
 	{
 		var
-			NextStorageDriver = _.find([LocalStorageDriver, CookieDriver], function (NextStorageDriver) {
+			_ = require('_'),
+			NextStorageDriver = _.find([
+				require('Storage:LocalStorage:Cookie'),
+				require('Storage:LocalStorage:LocalStorage')
+			], function (NextStorageDriver) {
 				return NextStorageDriver.supported();
 			})
 		;
@@ -26,7 +23,6 @@
 
 		if (NextStorageDriver)
 		{
-			NextStorageDriver = /** @type {?Function} */ NextStorageDriver;
 			this.oDriver = new NextStorageDriver();
 		}
 	}

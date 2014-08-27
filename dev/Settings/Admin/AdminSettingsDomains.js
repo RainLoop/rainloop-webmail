@@ -11,10 +11,10 @@
 
 		Enums = require('Enums'),
 
-		PopupsDomainViewModel = require('../../ViewModels/Popups/PopupsDomainViewModel.js'),
+		PopupsDomainViewModel = require('View:Popup:Domain'),
 
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -58,7 +58,7 @@
 
 	AdminSettingsDomains.prototype.createDomain = function ()
 	{
-		require('kn').showScreenPopup(PopupsDomainViewModel);
+		require('App:Knoin').showScreenPopup(PopupsDomainViewModel);
 	};
 
 	AdminSettingsDomains.prototype.deleteDomain = function (oDomain)
@@ -86,20 +86,20 @@
 			})
 		;
 
-		require('../../Apps/AdminApp.js').reloadDomainList();
+		require('App:Admin').reloadDomainList();
 	};
 
 	AdminSettingsDomains.prototype.onDomainLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('kn').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('App:Knoin').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
 		}
 	};
 
 	AdminSettingsDomains.prototype.onDomainListChangeRequest = function ()
 	{
-		require('../../Apps/AdminApp.js').reloadDomainList();
+		require('App:Admin').reloadDomainList();
 	};
 
 	module.exports = AdminSettingsDomains;

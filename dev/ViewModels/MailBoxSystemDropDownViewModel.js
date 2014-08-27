@@ -5,8 +5,8 @@
 	'use strict';
 
 	var
-		kn = require('kn'),
-		AbstractSystemDropDownViewModel = require('./AbstractSystemDropDownViewModel.js')
+		kn = require('App:Knoin'),
+		AbstractSystemDropDownViewModel = require('View:RainLoop:AbstractSystemDropDown')
 	;
 
 	/**

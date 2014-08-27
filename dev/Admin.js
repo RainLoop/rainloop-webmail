@@ -2,5 +2,5 @@
 
 (function (require) {
 	'use strict';
-	require('./Boot.js')(require('./Apps/AdminApp.js'));
+	require('App:Boot')(require('App:Admin'));
 }(require));

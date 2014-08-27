@@ -8,7 +8,7 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$doc = require('$doc')
 	;
 
@@ -323,7 +323,7 @@
 			if (0 < iOffset)
 			{
 				iOffset += Utils.pInt(aValues[2]);
-				iSize = $window.height() - iOffset;
+				iSize = $win.height() - iOffset;
 
 				if (iValue < iSize)
 				{
@@ -570,7 +570,7 @@
 
 			var
 				Utils = require('Utils'),
-				EmailModel = require('../Models/EmailModel.js'),
+				EmailModel = require('Model:Email'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
@@ -644,7 +644,7 @@
 
 			var
 				Utils = require('Utils'),
-				ContactTagModel = require('../Models/ContactTagModel.js'),
+				ContactTagModel = require('Model:ContactTag'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),

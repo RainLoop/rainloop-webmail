@@ -7,7 +7,6 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
-		$window = require('$window'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -168,11 +167,11 @@
 			return !this.isSystemFolder() && this.selectable && 'INBOX' !== this.fullNameRaw;
 		}, this);
 
-		this.visible.subscribe(function () {
-			Utils.timeOutAction('folder-list-folder-visibility-change', function () {
-				$window.trigger('folder-list-folder-visibility-change');
-			}, 100);
-		});
+//		this.visible.subscribe(function () {
+//			Utils.timeOutAction('folder-list-folder-visibility-change', function () {
+//				require('$win').trigger('folder-list-folder-visibility-change');
+//			}, 100);
+//		});
 
 		this.localName = ko.computed(function () {
 

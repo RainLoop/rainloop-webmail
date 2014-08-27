@@ -12,7 +12,7 @@
 		},
 		_ = require('_'),
 		Utils = require('Utils'),
-		AppSettings = require('../Storages/AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
@@ -76,7 +76,7 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		return AppSettings.settingsGet(sName);
+		return Settings.settingsGet(sName);
 	};
 
 	/**
@@ -102,7 +102,7 @@
 	 */
 	Plugins.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = AppSettings.settingsGet('Plugins');
+		var oPlugin = Settings.settingsGet('Plugins');
 		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};

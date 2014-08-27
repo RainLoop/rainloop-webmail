@@ -19,22 +19,22 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js'),
-		Cache = require('./WebMailCacheStorage.js'),
+		Settings = require('Storage:Settings'),
+		Cache = require('Storage:RainLoop:Cache'),
 
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 
-		MessageModel = require('../Models/MessageModel.js'),
+		MessageModel = require('Model:Message'),
 
-		LocalStorage = require('./LocalStorage.js'),
-		AbstractData = require('./AbstractData.js')
+		LocalStorage = require('Storage:LocalStorage'),
+		AbstractData = require('Storage:Abstract:Data')
 	;
 
 	/**
 	 * @constructor
 	 * @extends AbstractData
 	 */
-	function WebMailDataStorage()
+	function DataStorage()
 	{
 		AbstractData.call(this);
 
@@ -127,11 +127,11 @@
 		this.contactsSyncUser = ko.observable('');
 		this.contactsSyncPass = ko.observable('');
 
-		this.allowContactsSync = ko.observable(!!AppSettings.settingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync = ko.observable(!!AppSettings.settingsGet('EnableContactsSync'));
-		this.contactsSyncUrl = ko.observable(AppSettings.settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser = ko.observable(AppSettings.settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass = ko.observable(AppSettings.settingsGet('ContactsSyncPassword'));
+		this.allowContactsSync = ko.observable(!!Settings.settingsGet('ContactsSyncIsAllowed'));
+		this.enableContactsSync = ko.observable(!!Settings.settingsGet('EnableContactsSync'));
+		this.contactsSyncUrl = ko.observable(Settings.settingsGet('ContactsSyncUrl'));
+		this.contactsSyncUser = ko.observable(Settings.settingsGet('ContactsSyncUser'));
+		this.contactsSyncPass = ko.observable(Settings.settingsGet('ContactsSyncPassword'));
 
 		// folders
 		this.namespace = '';
@@ -475,9 +475,9 @@
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
 	}
 
-	_.extend(WebMailDataStorage.prototype, AbstractData.prototype);
+	_.extend(DataStorage.prototype, AbstractData.prototype);
 
-	WebMailDataStorage.prototype.purgeMessageBodyCache = function()
+	DataStorage.prototype.purgeMessageBodyCache = function()
 	{
 		var
 			iCount = 0,
@@ -509,32 +509,32 @@
 		}
 	};
 
-	WebMailDataStorage.prototype.populateDataOnStart = function()
+	DataStorage.prototype.populateDataOnStart = function()
 	{
 		AbstractData.prototype.populateDataOnStart.call(this);
 
-		this.accountEmail(AppSettings.settingsGet('Email'));
-		this.accountIncLogin(AppSettings.settingsGet('IncLogin'));
-		this.accountOutLogin(AppSettings.settingsGet('OutLogin'));
-		this.projectHash(AppSettings.settingsGet('ProjectHash'));
+		this.accountEmail(Settings.settingsGet('Email'));
+		this.accountIncLogin(Settings.settingsGet('IncLogin'));
+		this.accountOutLogin(Settings.settingsGet('OutLogin'));
+		this.projectHash(Settings.settingsGet('ProjectHash'));
 
-		this.defaultIdentityID(AppSettings.settingsGet('DefaultIdentityID'));
+		this.defaultIdentityID(Settings.settingsGet('DefaultIdentityID'));
 
-		this.displayName(AppSettings.settingsGet('DisplayName'));
-		this.replyTo(AppSettings.settingsGet('ReplyTo'));
-		this.signature(AppSettings.settingsGet('Signature'));
-		this.signatureToAll(!!AppSettings.settingsGet('SignatureToAll'));
-		this.enableTwoFactor(!!AppSettings.settingsGet('EnableTwoFactor'));
+		this.displayName(Settings.settingsGet('DisplayName'));
+		this.replyTo(Settings.settingsGet('ReplyTo'));
+		this.signature(Settings.settingsGet('Signature'));
+		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
+		this.enableTwoFactor(!!Settings.settingsGet('EnableTwoFactor'));
 
 		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
-		this.remoteSuggestions = !!AppSettings.settingsGet('RemoteSuggestions');
+		this.remoteSuggestions = !!Settings.settingsGet('RemoteSuggestions');
 
-		this.devEmail = AppSettings.settingsGet('DevEmail');
-		this.devPassword = AppSettings.settingsGet('DevPassword');
+		this.devEmail = Settings.settingsGet('DevEmail');
+		this.devPassword = Settings.settingsGet('DevPassword');
 	};
 
-	WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
+	DataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
 	{
 		if ('INBOX' === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
 		{
@@ -609,7 +609,7 @@
 		}
 	};
 
-	WebMailDataStorage.prototype.hideMessageBodies = function ()
+	DataStorage.prototype.hideMessageBodies = function ()
 	{
 		var oMessagesBodiesDom = this.messagesBodiesDom();
 		if (oMessagesBodiesDom)
@@ -622,7 +622,7 @@
 	 * @param {boolean=} bBoot = false
 	 * @returns {Array}
 	 */
-	WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
+	DataStorage.prototype.getNextFolderNames = function (bBoot)
 	{
 		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
 
@@ -685,7 +685,7 @@
 	 * @param {string=} sToFolderFullNameRaw = ''
 	 * @param {bCopy=} bCopy = false
 	 */
-	WebMailDataStorage.prototype.removeMessagesFromList = function (
+	DataStorage.prototype.removeMessagesFromList = function (
 		sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
 	{
 		sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
@@ -779,7 +779,7 @@
 		}
 	};
 
-	WebMailDataStorage.prototype.setMessage = function (oData, bCached)
+	DataStorage.prototype.setMessage = function (oData, bCached)
 	{
 		var
 			bIsHtml = false,
@@ -939,21 +939,21 @@
 	 * @param {Array} aList
 	 * @returns {string}
 	 */
-	WebMailDataStorage.prototype.calculateMessageListHash = function (aList)
+	DataStorage.prototype.calculateMessageListHash = function (aList)
 	{
 		return _.map(aList, function (oMessage) {
 			return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
 		}).join('|');
 	};
 
-	WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)
+	DataStorage.prototype.findPublicKeyByHex = function (sHash)
 	{
 		return _.find(this.openpgpkeysPublic(), function (oItem) {
 			return oItem && sHash === oItem.id;
 		});
 	};
 
-	WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
+	DataStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	{
 		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
 
@@ -981,7 +981,7 @@
 	 * @param {string=} sPassword
 	 * @returns {?}
 	 */
-	WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
+	DataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 	{
 		var
 			oPrivateKey = null,
@@ -1018,11 +1018,11 @@
 	 * @param {string=} sPassword
 	 * @returns {?}
 	 */
-	WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
+	DataStorage.prototype.findSelfPrivateKey = function (sPassword)
 	{
 		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 	};
 
-	module.exports = new WebMailDataStorage();
+	module.exports = new DataStorage();
 
 }(module, require));

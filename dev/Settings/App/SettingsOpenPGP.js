@@ -6,14 +6,8 @@
 
 	var
 		ko = require('ko'),
-
-		kn = require('kn'),
-
-		Data = require('../../Storages/WebMailDataStorage.js'),
-
-		PopupsAddOpenPgpKeyViewModel = require('../../ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js'),
-		PopupsGenerateNewOpenPgpKeyViewModel = require('../../ViewModels/Popups/PopupsGenerateNewOpenPgpKeyViewModel.js'),
-		PopupsViewOpenPgpKeyViewModel = require('../../ViewModels/Popups/PopupsViewOpenPgpKeyViewModel.js')
+		kn = require('App:Knoin'),
+		Data = require('Storage:RainLoop:Data')
 	;
 
 	/**
@@ -42,19 +36,19 @@
 
 	SettingsOpenPGP.prototype.addOpenPgpKey = function ()
 	{
-		kn.showScreenPopup(PopupsAddOpenPgpKeyViewModel);
+		kn.showScreenPopup(require('View:Popup:AddOpenPgpKey'));
 	};
 
 	SettingsOpenPGP.prototype.generateOpenPgpKey = function ()
 	{
-		kn.showScreenPopup(PopupsGenerateNewOpenPgpKeyViewModel);
+		kn.showScreenPopup(require('View:Popup:NewOpenPgpKey'));
 	};
 
 	SettingsOpenPGP.prototype.viewOpenPgpKey = function (oOpenPgpKey)
 	{
 		if (oOpenPgpKey)
 		{
-			kn.showScreenPopup(PopupsViewOpenPgpKeyViewModel, [oOpenPgpKey]);
+			kn.showScreenPopup(require('View:Popup:ViewOpenPgpKey'), [oOpenPgpKey]);
 		}
 	};
 
@@ -78,8 +72,7 @@
 
 				Data.openpgpKeyring.store();
 
-				var App = require('../../Apps/RainLoopApp.js');
-				App.reloadOpenPgpKeys();
+				require('App:RainLoop').reloadOpenPgpKeys();
 			}
 		}
 	};

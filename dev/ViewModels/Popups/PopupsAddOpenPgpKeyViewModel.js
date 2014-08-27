@@ -9,10 +9,10 @@
 
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -22,8 +22,6 @@
 	function PopupsAddOpenPgpKeyViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsAddOpenPgpKey');
-
-		var App = require('../../Apps/RainLoopApp.js');
 
 		this.key = ko.observable('');
 		this.key.error = ko.observable(false);
@@ -79,7 +77,7 @@
 
 			oOpenpgpKeyring.store();
 
-			App.reloadOpenPgpKeys();
+			require('App:RainLoop').reloadOpenPgpKeys();
 			Utils.delegateRun(this, 'cancelCommand');
 
 			return true;

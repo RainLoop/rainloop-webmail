@@ -10,10 +10,10 @@
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
-		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
+		HtmlEditor = require('HtmlEditor'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js')
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**
@@ -44,7 +44,7 @@
 				sSignature = Data.signature()
 			;
 
-			this.editor = new NewHtmlEditorWrapper(self.signatureDom(), function () {
+			this.editor = new HtmlEditor(self.signatureDom(), function () {
 				Data.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);

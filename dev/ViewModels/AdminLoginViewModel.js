@@ -11,10 +11,10 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -64,8 +64,7 @@
 				{
 					if (oData.Result)
 					{
-						var App = require('../Apps/AdminApp.js');
-						App.loginAndLogoutReload();
+						require('App:Admin').loginAndLogoutReload();
 					}
 					else if (oData.ErrorCode)
 					{

@@ -12,9 +12,9 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -24,10 +24,10 @@
 	{
 		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
 
-		this.capaOpenPGP = ko.observable(AppSettings.capa(Enums.Capa.OpenPGP));
-		this.capaTwoFactorAuth = ko.observable(AppSettings.capa(Enums.Capa.TwoFactor));
+		this.capaOpenPGP = ko.observable(Settings.capa(Enums.Capa.OpenPGP));
+		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
-		this.adminLogin = ko.observable(AppSettings.settingsGet('AdminLogin'));
+		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
 		this.adminPassword = ko.observable('');
 		this.adminPasswordNew = ko.observable('');
 		this.adminPasswordNew2 = ko.observable('');
@@ -95,7 +95,7 @@
 	AdminSettingsSecurity.prototype.onBuild = function ()
 	{
 		var
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		this.capaOpenPGP.subscribe(function (bValue) {

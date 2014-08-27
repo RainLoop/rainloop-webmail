@@ -16,14 +16,12 @@
 		Utils = require('Utils'),
 		Events = require('Events'),
 
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		PopupsComposeViewModel = require('./Popups/PopupsComposeViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -37,7 +35,6 @@
 		var
 			self = this,
 			sLastEmail = '',
-			App = require('../Apps/RainLoopApp.js'),
 			createCommandHelper = function (sType) {
 				return Utils.createCommand(self, function () {
 					this.replyOrforward(sType);
@@ -102,7 +99,7 @@
 		this.deleteCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				App.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Trash,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -111,7 +108,7 @@
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				App.deleteMessagesFromFolder(Enums.FolderType.Trash,
+				require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Trash,
 					Data.currentFolderFullNameRaw(),
 					[this.message().uid], false);
 			}
@@ -120,7 +117,7 @@
 		this.archiveCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				App.deleteMessagesFromFolder(Enums.FolderType.Archive,
+				require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Archive,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -129,7 +126,7 @@
 		this.spamCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				App.deleteMessagesFromFolder(Enums.FolderType.Spam,
+				require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.Spam,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -138,7 +135,7 @@
 		this.notSpamCommand = Utils.createCommand(this, function () {
 			if (this.message())
 			{
-				App.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+				require('App:RainLoop').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 					this.message().folderFullNameRaw,
 					[this.message().uid], true);
 			}
@@ -336,16 +333,12 @@
 	 */
 	MailBoxMessageViewViewModel.prototype.replyOrforward = function (sType)
 	{
-		kn.showScreenPopup(PopupsComposeViewModel, [sType, Data.message()]);
+		kn.showScreenPopup(require('View:Popup:Compose'), [sType, Data.message()]);
 	};
 
 	MailBoxMessageViewViewModel.prototype.onBuild = function (oDom)
 	{
-		var
-			self = this,
-			App = require('../Apps/RainLoopApp.js')
-		;
-
+		var self = this;
 		this.fullScreenMode.subscribe(function (bValue) {
 			if (bValue)
 			{
@@ -382,7 +375,7 @@
 			})
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && App.mailToHelper($(this).attr('href')));
+				return !(!!oEvent && 3 !== oEvent['which'] && require('App:RainLoop').mailToHelper($(this).attr('href')));
 			})
 			.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
@@ -398,7 +391,7 @@
 
 				if (oAttachment && oAttachment.download)
 				{
-					App.download(oAttachment.linkDownload());
+					require('App:RainLoop').download(oAttachment.linkDownload());
 				}
 			})
 		;
@@ -635,14 +628,14 @@
 
 	MailBoxMessageViewViewModel.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(PopupsComposeViewModel);
+		kn.showScreenPopup(require('View:Popup:Compose'));
 	};
 
 	MailBoxMessageViewViewModel.prototype.editMessage = function ()
 	{
 		if (Data.message())
 		{
-			kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Draft, Data.message()]);
+			kn.showScreenPopup(require('View:Popup:Compose'), [Enums.ComposeType.Draft, Data.message()]);
 		}
 	};
 
@@ -713,8 +706,7 @@
 
 			Cache.storeMessageFlagsToCache(oMessage);
 
-			var App = require('../Apps/RainLoopApp.js');
-			App.reloadFlagsCurrentMessageListAndMessageFromCache();
+			require('App:RainLoop').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 

@@ -12,37 +12,37 @@
 		Globals = require('Globals'),
 		Base64 = require('Base64'),
 
-		AppSettings = require('./AppSettings.js'),
-		Cache = require('./WebMailCacheStorage.js'),
-		Data = require('./WebMailDataStorage.js'),
+		Settings = require('Storage:Settings'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Data = require('Storage:RainLoop:Data'),
 
-		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
+		AbstractRemoteStorage = require('Storage:Abstract:Remote')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractAjaxRemoteStorage
+	 * @extends AbstractRemoteStorage
 	 */
-	function WebMailAjaxRemoteStorage()
+	function RemoteStorage()
 	{
-		AbstractAjaxRemoteStorage.call(this);
+		AbstractRemoteStorage.call(this);
 
 		this.oRequests = {};
 	}
 
-	_.extend(WebMailAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype);
+	_.extend(RemoteStorage.prototype, AbstractRemoteStorage.prototype);
 
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.folders = function (fCallback)
+	RemoteStorage.prototype.folders = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'Folders', {
-			'SentFolder': AppSettings.settingsGet('SentFolder'),
-			'DraftFolder': AppSettings.settingsGet('DraftFolder'),
-			'SpamFolder': AppSettings.settingsGet('SpamFolder'),
-			'TrashFolder': AppSettings.settingsGet('TrashFolder'),
-			'ArchiveFolder': AppSettings.settingsGet('ArchiveFolder')
+			'SentFolder': Settings.settingsGet('SentFolder'),
+			'DraftFolder': Settings.settingsGet('DraftFolder'),
+			'SpamFolder': Settings.settingsGet('SpamFolder'),
+			'TrashFolder': Settings.settingsGet('TrashFolder'),
+			'ArchiveFolder': Settings.settingsGet('ArchiveFolder')
 		}, null, '', ['Folders']);
 	};
 
@@ -56,7 +56,7 @@
 	 * @param {string=} sAdditionalCode
 	 * @param {boolean=} bAdditionalCodeSignMe
 	 */
-	WebMailAjaxRemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe)
+	RemoteStorage.prototype.login = function (fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe)
 	{
 		this.defaultRequest(fCallback, 'Login', {
 			'Email': sEmail,
@@ -72,7 +72,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.getTwoFactor = function (fCallback)
+	RemoteStorage.prototype.getTwoFactor = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'GetTwoFactorInfo');
 	};
@@ -80,7 +80,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.createTwoFactor = function (fCallback)
+	RemoteStorage.prototype.createTwoFactor = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'CreateTwoFactorSecret');
 	};
@@ -88,7 +88,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.clearTwoFactor = function (fCallback)
+	RemoteStorage.prototype.clearTwoFactor = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
 	};
@@ -96,7 +96,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.showTwoFactorSecret = function (fCallback)
+	RemoteStorage.prototype.showTwoFactorSecret = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'ShowTwoFactorSecret');
 	};
@@ -105,7 +105,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sCode
 	 */
-	WebMailAjaxRemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
+	RemoteStorage.prototype.testTwoFactor = function (fCallback, sCode)
 	{
 		this.defaultRequest(fCallback, 'TestTwoFactorInfo', {
 			'Code': sCode
@@ -116,7 +116,7 @@
 	 * @param {?Function} fCallback
 	 * @param {boolean} bEnable
 	 */
-	WebMailAjaxRemoteStorage.prototype.enableTwoFactor = function (fCallback, bEnable)
+	RemoteStorage.prototype.enableTwoFactor = function (fCallback, bEnable)
 	{
 		this.defaultRequest(fCallback, 'EnableTwoFactor', {
 			'Enable': bEnable ? '1' : '0'
@@ -126,7 +126,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
+	RemoteStorage.prototype.clearTwoFactorInfo = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'ClearTwoFactorInfo');
 	};
@@ -134,7 +134,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.contactsSync = function (fCallback)
+	RemoteStorage.prototype.contactsSync = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'ContactsSync', null, Consts.Defaults.ContactsSyncAjaxTimeout);
 	};
@@ -146,7 +146,7 @@
 	 * @param {string} sUser
 	 * @param {string} sPassword
 	 */
-	WebMailAjaxRemoteStorage.prototype.saveContactsSyncData = function (fCallback, bEnable, sUrl, sUser, sPassword)
+	RemoteStorage.prototype.saveContactsSyncData = function (fCallback, bEnable, sUrl, sUser, sPassword)
 	{
 		this.defaultRequest(fCallback, 'SaveContactsSyncData', {
 			'Enable': bEnable ? '1' : '0',
@@ -162,7 +162,7 @@
 	 * @param {string} sLogin
 	 * @param {string} sPassword
 	 */
-	WebMailAjaxRemoteStorage.prototype.accountAdd = function (fCallback, sEmail, sLogin, sPassword)
+	RemoteStorage.prototype.accountAdd = function (fCallback, sEmail, sLogin, sPassword)
 	{
 		this.defaultRequest(fCallback, 'AccountAdd', {
 			'Email': sEmail,
@@ -175,7 +175,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sEmailToDelete
 	 */
-	WebMailAjaxRemoteStorage.prototype.accountDelete = function (fCallback, sEmailToDelete)
+	RemoteStorage.prototype.accountDelete = function (fCallback, sEmailToDelete)
 	{
 		this.defaultRequest(fCallback, 'AccountDelete', {
 			'EmailToDelete': sEmailToDelete
@@ -190,7 +190,7 @@
 	 * @param {string} sReplyTo
 	 * @param {string} sBcc
 	 */
-	WebMailAjaxRemoteStorage.prototype.identityUpdate = function (fCallback, sId, sEmail, sName, sReplyTo, sBcc)
+	RemoteStorage.prototype.identityUpdate = function (fCallback, sId, sEmail, sName, sReplyTo, sBcc)
 	{
 		this.defaultRequest(fCallback, 'IdentityUpdate', {
 			'Id': sId,
@@ -205,7 +205,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sIdToDelete
 	 */
-	WebMailAjaxRemoteStorage.prototype.identityDelete = function (fCallback, sIdToDelete)
+	RemoteStorage.prototype.identityDelete = function (fCallback, sIdToDelete)
 	{
 		this.defaultRequest(fCallback, 'IdentityDelete', {
 			'IdToDelete': sIdToDelete
@@ -215,7 +215,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.accountsAndIdentities = function (fCallback)
+	RemoteStorage.prototype.accountsAndIdentities = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AccountsAndIdentities');
 	};
@@ -228,7 +228,7 @@
 	 * @param {string=} sSearch = ''
 	 * @param {boolean=} bSilent = false
 	 */
-	WebMailAjaxRemoteStorage.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent)
+	RemoteStorage.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent)
 	{
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 
@@ -275,7 +275,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Array} aDownloads
 	 */
-	WebMailAjaxRemoteStorage.prototype.messageUploadAttachments = function (fCallback, aDownloads)
+	RemoteStorage.prototype.messageUploadAttachments = function (fCallback, aDownloads)
 	{
 		this.defaultRequest(fCallback, 'MessageUploadAttachments', {
 			'Attachments': aDownloads
@@ -288,7 +288,7 @@
 	 * @param {number} iUid
 	 * @return {boolean}
 	 */
-	WebMailAjaxRemoteStorage.prototype.message = function (fCallback, sFolderFullNameRaw, iUid)
+	RemoteStorage.prototype.message = function (fCallback, sFolderFullNameRaw, iUid)
 	{
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 		iUid = Utils.pInt(iUid);
@@ -313,7 +313,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Array} aExternals
 	 */
-	WebMailAjaxRemoteStorage.prototype.composeUploadExternals = function (fCallback, aExternals)
+	RemoteStorage.prototype.composeUploadExternals = function (fCallback, aExternals)
 	{
 		this.defaultRequest(fCallback, 'ComposeUploadExternals', {
 			'Externals': aExternals
@@ -325,7 +325,7 @@
 	 * @param {string} sUrl
 	 * @param {string} sAccessToken
 	 */
-	WebMailAjaxRemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
+	RemoteStorage.prototype.composeUploadDrive = function (fCallback, sUrl, sAccessToken)
 	{
 		this.defaultRequest(fCallback, 'ComposeUploadDrive', {
 			'AccessToken': sAccessToken,
@@ -338,7 +338,7 @@
 	 * @param {string} sFolder
 	 * @param {Array=} aList = []
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderInformation = function (fCallback, sFolder, aList)
+	RemoteStorage.prototype.folderInformation = function (fCallback, sFolder, aList)
 	{
 		var
 			bRequest = true,
@@ -392,7 +392,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Array} aFolders
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderInformationMultiply = function (fCallback, aFolders)
+	RemoteStorage.prototype.folderInformationMultiply = function (fCallback, aFolders)
 	{
 		this.defaultRequest(fCallback, 'FolderInformationMultiply', {
 			'Folders': aFolders
@@ -402,7 +402,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.logout = function (fCallback)
+	RemoteStorage.prototype.logout = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'Logout');
 	};
@@ -413,7 +413,7 @@
 	 * @param {Array} aUids
 	 * @param {boolean} bSetFlagged
 	 */
-	WebMailAjaxRemoteStorage.prototype.messageSetFlagged = function (fCallback, sFolderFullNameRaw, aUids, bSetFlagged)
+	RemoteStorage.prototype.messageSetFlagged = function (fCallback, sFolderFullNameRaw, aUids, bSetFlagged)
 	{
 		this.defaultRequest(fCallback, 'MessageSetFlagged', {
 			'Folder': sFolderFullNameRaw,
@@ -428,7 +428,7 @@
 	 * @param {Array} aUids
 	 * @param {boolean} bSetSeen
 	 */
-	WebMailAjaxRemoteStorage.prototype.messageSetSeen = function (fCallback, sFolderFullNameRaw, aUids, bSetSeen)
+	RemoteStorage.prototype.messageSetSeen = function (fCallback, sFolderFullNameRaw, aUids, bSetSeen)
 	{
 		this.defaultRequest(fCallback, 'MessageSetSeen', {
 			'Folder': sFolderFullNameRaw,
@@ -442,7 +442,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {boolean} bSetSeen
 	 */
-	WebMailAjaxRemoteStorage.prototype.messageSetSeenToAll = function (fCallback, sFolderFullNameRaw, bSetSeen)
+	RemoteStorage.prototype.messageSetSeenToAll = function (fCallback, sFolderFullNameRaw, bSetSeen)
 	{
 		this.defaultRequest(fCallback, 'MessageSetSeenToAll', {
 			'Folder': sFolderFullNameRaw,
@@ -467,7 +467,7 @@
 	 * @param {string} sInReplyTo
 	 * @param {string} sReferences
 	 */
-	WebMailAjaxRemoteStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
+	RemoteStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
 		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
 	{
 		this.defaultRequest(fCallback, 'SaveMessage', {
@@ -497,7 +497,7 @@
 	 * @param {string} sSubject
 	 * @param {string} sText
 	 */
-	WebMailAjaxRemoteStorage.prototype.sendReadReceiptMessage = function (fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText)
+	RemoteStorage.prototype.sendReadReceiptMessage = function (fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText)
 	{
 		this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
 			'MessageFolder': sMessageFolder,
@@ -526,7 +526,7 @@
 	 * @param {string} sReferences
 	 * @param {boolean} bRequestReadReceipt
 	 */
-	WebMailAjaxRemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
+	RemoteStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
 		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bRequestReadReceipt)
 	{
 		this.defaultRequest(fCallback, 'SendMessage', {
@@ -552,7 +552,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Object} oData
 	 */
-	WebMailAjaxRemoteStorage.prototype.saveSystemFolders = function (fCallback, oData)
+	RemoteStorage.prototype.saveSystemFolders = function (fCallback, oData)
 	{
 		this.defaultRequest(fCallback, 'SystemFoldersUpdate', oData);
 	};
@@ -561,7 +561,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Object} oData
 	 */
-	WebMailAjaxRemoteStorage.prototype.saveSettings = function (fCallback, oData)
+	RemoteStorage.prototype.saveSettings = function (fCallback, oData)
 	{
 		this.defaultRequest(fCallback, 'SettingsUpdate', oData);
 	};
@@ -571,7 +571,7 @@
 	 * @param {string} sPrevPassword
 	 * @param {string} sNewPassword
 	 */
-	WebMailAjaxRemoteStorage.prototype.changePassword = function (fCallback, sPrevPassword, sNewPassword)
+	RemoteStorage.prototype.changePassword = function (fCallback, sPrevPassword, sNewPassword)
 	{
 		this.defaultRequest(fCallback, 'ChangePassword', {
 			'PrevPassword': sPrevPassword,
@@ -584,7 +584,7 @@
 	 * @param {string} sNewFolderName
 	 * @param {string} sParentName
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderCreate = function (fCallback, sNewFolderName, sParentName)
+	RemoteStorage.prototype.folderCreate = function (fCallback, sNewFolderName, sParentName)
 	{
 		this.defaultRequest(fCallback, 'FolderCreate', {
 			'Folder': sNewFolderName,
@@ -596,7 +596,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderDelete = function (fCallback, sFolderFullNameRaw)
+	RemoteStorage.prototype.folderDelete = function (fCallback, sFolderFullNameRaw)
 	{
 		this.defaultRequest(fCallback, 'FolderDelete', {
 			'Folder': sFolderFullNameRaw
@@ -608,7 +608,7 @@
 	 * @param {string} sPrevFolderFullNameRaw
 	 * @param {string} sNewFolderName
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderRename = function (fCallback, sPrevFolderFullNameRaw, sNewFolderName)
+	RemoteStorage.prototype.folderRename = function (fCallback, sPrevFolderFullNameRaw, sNewFolderName)
 	{
 		this.defaultRequest(fCallback, 'FolderRename', {
 			'Folder': sPrevFolderFullNameRaw,
@@ -620,7 +620,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderClear = function (fCallback, sFolderFullNameRaw)
+	RemoteStorage.prototype.folderClear = function (fCallback, sFolderFullNameRaw)
 	{
 		this.defaultRequest(fCallback, 'FolderClear', {
 			'Folder': sFolderFullNameRaw
@@ -632,7 +632,7 @@
 	 * @param {string} sFolderFullNameRaw
 	 * @param {boolean} bSubscribe
 	 */
-	WebMailAjaxRemoteStorage.prototype.folderSetSubscribe = function (fCallback, sFolderFullNameRaw, bSubscribe)
+	RemoteStorage.prototype.folderSetSubscribe = function (fCallback, sFolderFullNameRaw, bSubscribe)
 	{
 		this.defaultRequest(fCallback, 'FolderSubscribe', {
 			'Folder': sFolderFullNameRaw,
@@ -647,7 +647,7 @@
 	 * @param {Array} aUids
 	 * @param {string=} sLearning
 	 */
-	WebMailAjaxRemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
+	RemoteStorage.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
 	{
 		this.defaultRequest(fCallback, 'MessageMove', {
 			'FromFolder': sFolder,
@@ -663,7 +663,7 @@
 	 * @param {string} sToFolder
 	 * @param {Array} aUids
 	 */
-	WebMailAjaxRemoteStorage.prototype.messagesCopy = function (fCallback, sFolder, sToFolder, aUids)
+	RemoteStorage.prototype.messagesCopy = function (fCallback, sFolder, sToFolder, aUids)
 	{
 		this.defaultRequest(fCallback, 'MessageCopy', {
 			'FromFolder': sFolder,
@@ -677,7 +677,7 @@
 	 * @param {string} sFolder
 	 * @param {Array} aUids
 	 */
-	WebMailAjaxRemoteStorage.prototype.messagesDelete = function (fCallback, sFolder, aUids)
+	RemoteStorage.prototype.messagesDelete = function (fCallback, sFolder, aUids)
 	{
 		this.defaultRequest(fCallback, 'MessageDelete', {
 			'Folder': sFolder,
@@ -688,7 +688,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.appDelayStart = function (fCallback)
+	RemoteStorage.prototype.appDelayStart = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AppDelayStart');
 	};
@@ -696,7 +696,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.quota = function (fCallback)
+	RemoteStorage.prototype.quota = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'Quota');
 	};
@@ -707,7 +707,7 @@
 	 * @param {number} iLimit
 	 * @param {string} sSearch
 	 */
-	WebMailAjaxRemoteStorage.prototype.contacts = function (fCallback, iOffset, iLimit, sSearch)
+	RemoteStorage.prototype.contacts = function (fCallback, iOffset, iLimit, sSearch)
 	{
 		this.defaultRequest(fCallback, 'Contacts', {
 			'Offset': iOffset,
@@ -719,7 +719,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sTags, aProperties)
+	RemoteStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sTags, aProperties)
 	{
 		this.defaultRequest(fCallback, 'ContactSave', {
 			'RequestUid': sRequestUid,
@@ -733,7 +733,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Array} aUids
 	 */
-	WebMailAjaxRemoteStorage.prototype.contactsDelete = function (fCallback, aUids)
+	RemoteStorage.prototype.contactsDelete = function (fCallback, aUids)
 	{
 		this.defaultRequest(fCallback, 'ContactsDelete', {
 			'Uids': aUids.join(',')
@@ -745,7 +745,7 @@
 	 * @param {string} sQuery
 	 * @param {number} iPage
 	 */
-	WebMailAjaxRemoteStorage.prototype.suggestions = function (fCallback, sQuery, iPage)
+	RemoteStorage.prototype.suggestions = function (fCallback, sQuery, iPage)
 	{
 		this.defaultRequest(fCallback, 'Suggestions', {
 			'Query': sQuery,
@@ -756,7 +756,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.facebookUser = function (fCallback)
+	RemoteStorage.prototype.facebookUser = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialFacebookUserInformation');
 	};
@@ -764,7 +764,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.facebookDisconnect = function (fCallback)
+	RemoteStorage.prototype.facebookDisconnect = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialFacebookDisconnect');
 	};
@@ -772,7 +772,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.twitterUser = function (fCallback)
+	RemoteStorage.prototype.twitterUser = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialTwitterUserInformation');
 	};
@@ -780,7 +780,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.twitterDisconnect = function (fCallback)
+	RemoteStorage.prototype.twitterDisconnect = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialTwitterDisconnect');
 	};
@@ -788,7 +788,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.googleUser = function (fCallback)
+	RemoteStorage.prototype.googleUser = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialGoogleUserInformation');
 	};
@@ -796,7 +796,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.googleDisconnect = function (fCallback)
+	RemoteStorage.prototype.googleDisconnect = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialGoogleDisconnect');
 	};
@@ -804,11 +804,11 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	WebMailAjaxRemoteStorage.prototype.socialUsers = function (fCallback)
+	RemoteStorage.prototype.socialUsers = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'SocialUsers');
 	};
 
-	module.exports = new WebMailAjaxRemoteStorage();
+	module.exports = new RemoteStorage();
 
 }(module, require));

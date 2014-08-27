@@ -10,16 +10,11 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		kn = require('kn'),
-
-		AppSettings = require('../../Storages/AppSettings.js'),
-		LocalStorage = require('../../Storages/LocalStorage.js'),
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Cache = require('../../Storages/WebMailCacheStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
-
-		PopupsFolderCreateViewModel = require('../../ViewModels/Popups/PopupsFolderCreateViewModel.js'),
-		PopupsFolderSystemViewModel = require('../../ViewModels/Popups/PopupsFolderSystemViewModel.js')
+		Settings = require('Storage:Settings'),
+		LocalStorage = require('Storage:LocalStorage'),
+		Data = require('Storage:RainLoop:Data'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**
@@ -92,13 +87,12 @@
 			}
 		]});
 
-		this.useImapSubscribe = !!AppSettings.settingsGet('UseImapSubscribe');
+		this.useImapSubscribe = !!Settings.settingsGet('UseImapSubscribe');
 	}
 
 	SettingsFolders.prototype.folderEditOnEnter = function (oFolder)
 	{
 		var
-			App = require('../../Apps/RainLoopApp.js'),
 			sEditName = oFolder ? Utils.trim(oFolder.nameForEdit()) : ''
 		;
 
@@ -116,7 +110,7 @@
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 				}
 
-				App.folders();
+				require('App:RainLoop').folders();
 
 			}, oFolder.fullNameRaw, sEditName);
 
@@ -143,12 +137,12 @@
 
 	SettingsFolders.prototype.createFolder = function ()
 	{
-		kn.showScreenPopup(PopupsFolderCreateViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:FolderCreate'));
 	};
 
 	SettingsFolders.prototype.systemFolder = function ()
 	{
-		kn.showScreenPopup(PopupsFolderSystemViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:FolderSystem'));
 	};
 
 	SettingsFolders.prototype.deleteFolder = function (oFolderToRemove)
@@ -159,7 +153,6 @@
 			this.folderForDeletion(null);
 
 			var
-				App = require('../../Apps/RainLoopApp.js'),
 				fRemoveFolder = function (oFolder) {
 
 					if (oFolderToRemove === oFolder)
@@ -188,7 +181,7 @@
 							oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 					}
 
-					App.folders();
+					require('App:RainLoop').folders();
 
 				}, oFolderToRemove.fullNameRaw);
 

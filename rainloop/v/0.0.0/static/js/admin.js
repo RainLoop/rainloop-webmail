@@ -3,9 +3,9 @@
 
 (function (require) {
 	'use strict';
-	require('./Boot.js')(require('./Apps/AdminApp.js'));
+	require('App:Boot')(require('App:Admin'));
 }(require));
-},{"./Apps/AdminApp.js":3,"./Boot.js":4}],2:[function(require,module,exports){
+},{"App:Admin":3,"App:Boot":4}],2:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -17,7 +17,7 @@
 		_ = require('_'),
 		window = require('window'),
 		$html = require('$html'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$doc = require('$doc'),
 
 		Globals = require('Globals'),
@@ -25,9 +25,9 @@
 		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
+		Settings = require('Storage:Settings'),
 
-		KnoinAbstractBoot = require('KnoinAbstractBoot')
+		KnoinAbstractBoot = require('Knoin:AbstractBoot')
 	;
 
 	/**
@@ -43,7 +43,7 @@
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
-		$window.on('error', function (oEvent) {
+		$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
 				-1 === Utils.inArray(oEvent.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
@@ -137,7 +137,7 @@
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			AppSettings.settingsGet('Title') || '';
+			Settings.settingsGet('Title') || '';
 
 		window.document.title = '_';
 		window.document.title = sTitle;
@@ -150,9 +150,9 @@
 	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
 	{
 		var
-			kn = require('kn'),
-			sCustomLogoutLink = Utils.pString(AppSettings.settingsGet('CustomLogoutLink')),
-			bInIframe = !!AppSettings.settingsGet('InIframe')
+			kn = require('App:Knoin'),
+			sCustomLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink')),
+			bInIframe = !!Settings.settingsGet('InIframe')
 		;
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
@@ -204,7 +204,7 @@
 	{
 		Events.pub('rl.bootstart');
 
-		var ssm = require('../External/ssm.js');
+		var ssm = require('ssm');
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();
@@ -280,7 +280,7 @@
 	module.exports = AbstractApp;
 
 }(module, require));
-},{"$":21,"$doc":13,"$html":14,"$window":15,"../External/ssm.js":25,"../Storages/AppSettings.js":54,"Events":7,"Globals":8,"KnoinAbstractBoot":29,"LinkBuilder":9,"Utils":11,"_":26,"kn":28,"window":27}],3:[function(require,module,exports){
+},{"$":21,"$doc":13,"$html":14,"$win":15,"App:Knoin":28,"Events":7,"Globals":8,"Knoin:AbstractBoot":29,"LinkBuilder":9,"Storage:Settings":59,"Utils":11,"_":26,"ssm":25,"window":27}],3:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -296,16 +296,16 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/AdminDataStorage.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote'),
 
-		AdminSettingsScreen = require('../Screens/AdminSettingsScreen.js'),
-		AdminLoginScreen = require('../Screens/AdminLoginScreen.js'),
+		AdminSettingsScreen = require('Screen:Admin:Settings'),
+		AdminLoginScreen = require('Screen:Admin:Login'),
 
-		AbstractApp = require('./AbstractApp.js')
+		AbstractApp = require('App:Abstract')
 	;
 
 	/**
@@ -331,40 +331,40 @@
 
 	AdminApp.prototype.setupSettings = function ()
 	{
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsGeneral.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:General'),
 			'AdminSettingsGeneral', 'General', 'general', true);
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsLogin.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Login'),
 			'AdminSettingsLogin', 'Login', 'login');
 
-		if (AppSettings.capa(Enums.Capa.Prem))
+		if (Settings.capa(Enums.Capa.Prem))
 		{
-			kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsBranding.js'),
+			kn.addSettingsViewModel(require('Settings:Admin:Branding'),
 				'AdminSettingsBranding', 'Branding', 'branding');
 		}
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsContacts.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Contacts'),
 			'AdminSettingsContacts', 'Contacts', 'contacts');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsDomains.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Domains'),
 			'AdminSettingsDomains', 'Domains', 'domains');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsSecurity.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Security'),
 			'AdminSettingsSecurity', 'Security', 'security');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsSocial.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Social'),
 			'AdminSettingsSocial', 'Social', 'social');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsPlugins.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Plugins'),
 			'AdminSettingsPlugins', 'Plugins', 'plugins');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsPackages.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Packages'),
 			'AdminSettingsPackages', 'Packages', 'packages');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsLicensing.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:Licensing'),
 			'AdminSettingsLicensing', 'Licensing', 'licensing');
 
-		kn.addSettingsViewModel(require('../Settings/Admin/AdminSettingsAbout.js'),
+		kn.addSettingsViewModel(require('Settings:Admin:About'),
 			'AdminSettingsAbout', 'About', 'about');
 
 		return true;
@@ -566,7 +566,7 @@
 
 		kn.hideLoading();
 
-		if (!AppSettings.settingsGet('AllowAdminPanel'))
+		if (!Settings.settingsGet('AllowAdminPanel'))
 		{
 			kn.routeOff();
 			kn.setHash(LinkBuilder.root(), true);
@@ -578,7 +578,7 @@
 		}
 		else
 		{
-			if (!!AppSettings.settingsGet('Auth'))
+			if (!!Settings.settingsGet('Auth'))
 			{
 				kn.startScreens([AdminSettingsScreen]);
 			}
@@ -597,7 +597,7 @@
 	module.exports = new AdminApp();
 
 }(module, require));
-},{"../Screens/AdminLoginScreen.js":37,"../Screens/AdminSettingsScreen.js":38,"../Settings/Admin/AdminSettingsAbout.js":39,"../Settings/Admin/AdminSettingsBranding.js":40,"../Settings/Admin/AdminSettingsContacts.js":41,"../Settings/Admin/AdminSettingsDomains.js":42,"../Settings/Admin/AdminSettingsGeneral.js":43,"../Settings/Admin/AdminSettingsLicensing.js":44,"../Settings/Admin/AdminSettingsLogin.js":45,"../Settings/Admin/AdminSettingsPackages.js":46,"../Settings/Admin/AdminSettingsPlugins.js":47,"../Settings/Admin/AdminSettingsSecurity.js":48,"../Settings/Admin/AdminSettingsSocial.js":49,"../Storages/AdminAjaxRemoteStorage.js":52,"../Storages/AdminDataStorage.js":53,"../Storages/AppSettings.js":54,"./AbstractApp.js":2,"Enums":6,"LinkBuilder":9,"Utils":11,"_":26,"kn":28,"ko":23,"window":27}],4:[function(require,module,exports){
+},{"App:Abstract":2,"App:Knoin":28,"Enums":6,"LinkBuilder":9,"Screen:Admin:Login":37,"Screen:Admin:Settings":38,"Settings:Admin:About":39,"Settings:Admin:Branding":40,"Settings:Admin:Contacts":41,"Settings:Admin:Domains":42,"Settings:Admin:General":43,"Settings:Admin:Licensing":44,"Settings:Admin:Login":45,"Settings:Admin:Packages":46,"Settings:Admin:Plugins":47,"Settings:Admin:Security":48,"Settings:Admin:Social":49,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23,"window":27}],4:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -610,7 +610,7 @@
 			window = require('window'),
 			_ = require('_'),
 			$ = require('$'),
-			$window = require('$window'),
+			$win = require('$win'),
 			$html = require('$html'),
 
 			Globals = require('Globals'),
@@ -618,7 +618,7 @@
 			Utils = require('Utils'),
 			Enums = require('Enums'),
 
-			EmailModel = require('./Models/EmailModel.js')
+			EmailModel = require('Model:Email')
 		;
 
 		Globals.__APP = App;
@@ -631,8 +631,9 @@
 
 		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
-		$window.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		$window.unload(function () {
+		$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
+		
+		$win.unload(function () {
 			Globals.bUnload = true;
 		});
 
@@ -665,7 +666,7 @@
 						App.bootstart();
 						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
-					}, 50);
+					}, 10);
 				}
 				else
 				{
@@ -679,7 +680,7 @@
 	};
 
 }(module, require));
-},{"$":21,"$html":14,"$window":15,"./Models/EmailModel.js":34,"Enums":6,"Globals":8,"Plugins":10,"Utils":11,"_":26,"window":27}],5:[function(require,module,exports){
+},{"$":21,"$html":14,"$win":15,"Enums":6,"Globals":8,"Model:Email":34,"Plugins":10,"Utils":11,"_":26,"window":27}],5:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -1611,13 +1612,13 @@
 	 */
 	function LinkBuilder()
 	{
-		var AppSettings = require('../Storages/AppSettings.js');
+		var Settings = require('Storage:Settings');
 
 		this.sBase = '#/';
 		this.sServer = './?';
-		this.sVersion = AppSettings.settingsGet('Version');
-		this.sSpecSuffix = AppSettings.settingsGet('AuthAccountHash') || '0';
-		this.sStaticPrefix = AppSettings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
+		this.sVersion = Settings.settingsGet('Version');
+		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
+		this.sStaticPrefix = Settings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
 	}
 
 	/**
@@ -1762,6 +1763,14 @@
 		}
 
 		return sResult;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LinkBuilder.prototype.about = function ()
+	{
+		return this.sBase + 'about';
 	};
 
 	/**
@@ -1925,7 +1934,7 @@
 	module.exports = new LinkBuilder();
 
 }(module, require));
-},{"../Storages/AppSettings.js":54,"Utils":11,"window":27}],10:[function(require,module,exports){
+},{"Storage:Settings":59,"Utils":11,"window":27}],10:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -1940,7 +1949,7 @@
 		},
 		_ = require('_'),
 		Utils = require('Utils'),
-		AppSettings = require('../Storages/AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
@@ -2004,7 +2013,7 @@
 	 */
 	Plugins.mainSettingsGet = function (sName)
 	{
-		return AppSettings.settingsGet(sName);
+		return Settings.settingsGet(sName);
 	};
 
 	/**
@@ -2030,7 +2039,7 @@
 	 */
 	Plugins.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = AppSettings.settingsGet('Plugins');
+		var oPlugin = Settings.settingsGet('Plugins');
 		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
@@ -2038,7 +2047,7 @@
 	module.exports = Plugins;
 
 }(module, require));
-},{"../Storages/AppSettings.js":54,"Utils":11,"_":26}],11:[function(require,module,exports){
+},{"Storage:Settings":59,"Utils":11,"_":26}],11:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -2052,7 +2061,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$html = require('$html'),
 		$div = require('$div'),
 		$doc = require('$doc'),
@@ -2083,12 +2092,12 @@
 	Utils.windowResize = _.debounce(function (iTimeout) {
 		if (Utils.isUnd(iTimeout))
 		{
-			$window.resize();
+			$win.resize();
 		}
 		else
 		{
 			window.setTimeout(function () {
-				$window.resize();
+				$win.resize();
 			}, iTimeout);
 		}
 	}, 50);
@@ -4087,7 +4096,7 @@
 	module.exports = Utils;
 
 }(module, require));
-},{"$":21,"$div":12,"$doc":13,"$html":14,"$window":15,"Consts":5,"Enums":6,"Globals":8,"NotificationClass":18,"_":26,"ko":23,"window":27}],12:[function(require,module,exports){
+},{"$":21,"$div":12,"$doc":13,"$html":14,"$win":15,"Consts":5,"Enums":6,"Globals":8,"NotificationClass":18,"_":26,"ko":23,"window":27}],12:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = require('$')('<div></div>');
@@ -4143,7 +4152,7 @@ module.exports = key;
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$doc = require('$doc')
 	;
 
@@ -4458,7 +4467,7 @@ module.exports = key;
 			if (0 < iOffset)
 			{
 				iOffset += Utils.pInt(aValues[2]);
-				iSize = $window.height() - iOffset;
+				iSize = $win.height() - iOffset;
 
 				if (iValue < iSize)
 				{
@@ -4705,7 +4714,7 @@ module.exports = key;
 
 			var
 				Utils = require('Utils'),
-				EmailModel = require('../Models/EmailModel.js'),
+				EmailModel = require('Model:Email'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
@@ -4779,7 +4788,7 @@ module.exports = key;
 
 			var
 				Utils = require('Utils'),
-				ContactTagModel = require('../Models/ContactTagModel.js'),
+				ContactTagModel = require('Model:ContactTag'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
@@ -5041,7 +5050,7 @@ module.exports = key;
 
 }(module, ko));
 
-},{"$":21,"$doc":13,"$window":15,"../Models/ContactTagModel.js":33,"../Models/EmailModel.js":34,"Globals":8,"Utils":11,"_":26,"window":27}],24:[function(require,module,exports){
+},{"$":21,"$doc":13,"$win":15,"Globals":8,"Model:ContactTag":33,"Model:Email":34,"Utils":11,"_":26,"window":27}],24:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = moment;
@@ -5076,7 +5085,7 @@ module.exports = window;
 		Plugins = require('Plugins'),
 		Utils = require('Utils'),
 
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -5084,13 +5093,13 @@ module.exports = window;
 	 */
 	function Knoin()
 	{
-		this.sDefaultScreenName = '';
 		this.oScreens = {};
+		this.sDefaultScreenName = '';
 		this.oCurrentScreen = null;
 	}
 
-	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oScreens = {};
+	Knoin.prototype.sDefaultScreenName = '';
 	Knoin.prototype.oCurrentScreen = null;
 
 	Knoin.prototype.hideLoading = function ()
@@ -5269,7 +5278,7 @@ module.exports = window;
 				Utils.log('Cannot find view model position: ' + sPosition);
 			}
 		}
-
+		
 		return ViewModelClass ? ViewModelClass.__vm : null;
 	};
 
@@ -5412,7 +5421,7 @@ module.exports = window;
 					}
 					// --
 
-					oCross = oScreen.__cross();
+					oCross = oScreen.__cross ? oScreen.__cross() : null;
 					if (oCross)
 					{
 						oCross.parse(sSubPart);
@@ -5508,7 +5517,7 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module, require));
-},{"$":21,"$html":14,"Globals":8,"KnoinAbstractViewModel":31,"Plugins":10,"Utils":11,"_":26,"crossroads":19,"hasher":20,"ko":23}],29:[function(require,module,exports){
+},{"$":21,"$html":14,"Globals":8,"Knoin:AbstractViewModel":31,"Plugins":10,"Utils":11,"_":26,"crossroads":19,"hasher":20,"ko":23}],29:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -5631,7 +5640,7 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
-		$window = require('$window'),
+		$win = require('$win'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -5713,7 +5722,7 @@ module.exports = window;
 	{
 		var self = this;
 
-		$window.on('keydown', function (oEvent) {
+		$win.on('keydown', function (oEvent) {
 			if (oEvent && self.modalVisibility && self.modalVisibility())
 			{
 				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
@@ -5734,7 +5743,7 @@ module.exports = window;
 	module.exports = KnoinAbstractViewModel;
 
 }(module, require));
-},{"$window":15,"Enums":6,"Globals":8,"Utils":11,"ko":23}],32:[function(require,module,exports){
+},{"$win":15,"Enums":6,"Globals":8,"Utils":11,"ko":23}],32:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -6438,15 +6447,15 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$window = require('$window'),
+		$win = require('$win'),
 		$div = require('$div'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		EmailModel = require('./EmailModel.js'),
-		AttachmentModel = require('./AttachmentModel.js')
+		EmailModel = require('Model:Email'),
+		AttachmentModel = require('Model:Attachment')
 	;
 
 	/**
@@ -6775,7 +6784,7 @@ module.exports = window;
 	MessageModel.prototype.computeSenderEmail = function ()
 	{
 		var
-			Data = require('../Storages/WebMailDataStorage.js'),
+			Data = require('Storage:RainLoop:Data'),
 			sSent = Data.sentFolder(),
 			sDraft = Data.draftFolder()
 		;
@@ -6853,7 +6862,7 @@ module.exports = window;
 	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 	{
 	   var
-		   Data = require('../Storages/WebMailDataStorage.js'),
+		   Data = require('Storage:RainLoop:Data'),
 		   bResult = false,
 		   iPriority = Enums.MessagePriority.Normal
 	   ;
@@ -7404,7 +7413,7 @@ module.exports = window;
 				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
 			   });
 
-			   $window.resize();
+			   $win.resize();
 		   }
 
 		   Utils.windowResize(500);
@@ -7509,7 +7518,7 @@ module.exports = window;
 
 		   this.body.data('rl-plain-raw', this.plainRaw);
 
-		   var Data = require('../Storages/WebMailDataStorage.js');
+		   var Data = require('Storage:RainLoop:Data');
 		   if (Data.capaOpenPGP())
 		   {
 			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
@@ -7522,7 +7531,7 @@ module.exports = window;
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-		var Data = require('../Storages/WebMailDataStorage.js');
+		var Data = require('Storage:RainLoop:Data');
 		if (this.body && Data.capaOpenPGP())
 		{
 			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
@@ -7539,7 +7548,7 @@ module.exports = window;
 
 			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-			var Data = require('../Storages/WebMailDataStorage.js');
+			var Data = require('Storage:RainLoop:Data');
 			if (Data.capaOpenPGP())
 			{
 				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
@@ -7564,7 +7573,7 @@ module.exports = window;
 		   var
 			   aRes = [],
 			   mPgpMessage = null,
-			   Data = require('../Storages/WebMailDataStorage.js'),
+			   Data = require('Storage:RainLoop:Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
 			   oValidKey = null,
@@ -7628,7 +7637,7 @@ module.exports = window;
 			   aRes = [],
 			   mPgpMessage = null,
 			   mPgpMessageDecrypted = null,
-			   Data = require('../Storages/WebMailDataStorage.js'),
+			   Data = require('Storage:RainLoop:Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
 			   oPrivateKey = Data.findSelfPrivateKey(sPassword),
@@ -7713,7 +7722,7 @@ module.exports = window;
 	module.exports = MessageModel;
 
 }(module, require));
-},{"$":21,"$div":12,"$window":15,"../Storages/WebMailDataStorage.js":59,"./AttachmentModel.js":32,"./EmailModel.js":34,"Enums":6,"LinkBuilder":9,"Utils":11,"_":26,"ko":23,"moment":24,"window":27}],36:[function(require,module,exports){
+},{"$":21,"$div":12,"$win":15,"Enums":6,"LinkBuilder":9,"Model:Attachment":32,"Model:Email":34,"Storage:RainLoop:Data":55,"Utils":11,"_":26,"ko":23,"moment":24,"window":27}],36:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7729,8 +7738,8 @@ module.exports = window;
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		kn = require('kn'),
-		KnoinAbstractScreen = require('KnoinAbstractScreen')
+		kn = require('App:Knoin'),
+		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
 	/**
@@ -7914,7 +7923,7 @@ module.exports = window;
 	module.exports = AbstractSettings;
 
 }(module, require));
-},{"$":21,"Globals":8,"KnoinAbstractScreen":30,"LinkBuilder":9,"Utils":11,"_":26,"kn":28,"ko":23}],37:[function(require,module,exports){
+},{"$":21,"App:Knoin":28,"Globals":8,"Knoin:AbstractScreen":30,"LinkBuilder":9,"Utils":11,"_":26,"ko":23}],37:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7923,7 +7932,7 @@ module.exports = window;
 	
 	var
 		_ = require('_'),
-		KnoinAbstractScreen = require('KnoinAbstractScreen')
+		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
 	/**
@@ -7932,22 +7941,22 @@ module.exports = window;
 	 */
 	function AdminLoginScreen()
 	{
-		var AdminLoginViewModel = require('../ViewModels/AdminLoginViewModel.js');
-		KnoinAbstractScreen.call(this, 'login', [AdminLoginViewModel]);
+		KnoinAbstractScreen.call(this, 'login', [
+			require('View:Admin:Login')
+		]);
 	}
 
 	_.extend(AdminLoginScreen.prototype, KnoinAbstractScreen.prototype);
 
 	AdminLoginScreen.prototype.onShow = function ()
 	{
-		var App = require('../Apps/AdminApp.js');
-		App.setTitle('');
+		require('App:Admin').setTitle('');
 	};
 
 	module.exports = AdminLoginScreen;
 
 }(module, require));
-},{"../Apps/AdminApp.js":3,"../ViewModels/AdminLoginViewModel.js":60,"KnoinAbstractScreen":30,"_":26}],38:[function(require,module,exports){
+},{"App:Admin":3,"Knoin:AbstractScreen":30,"View:Admin:Login":60,"_":26}],38:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7956,7 +7965,7 @@ module.exports = window;
 
 	var
 		_ = require('_'),
-		AbstractSettings = require('./AbstractSettings.js')
+		AbstractSettings = require('Screen:AbstractSettings')
 	;
 
 	/**
@@ -7965,14 +7974,9 @@ module.exports = window;
 	 */
 	function AdminSettingsScreen()
 	{
-		var
-			AdminMenuViewModel = require('../ViewModels/AdminMenuViewModel.js'),
-			AdminPaneViewModel = require('../ViewModels/AdminPaneViewModel.js')
-		;
-
 		AbstractSettings.call(this, [
-			AdminMenuViewModel,
-			AdminPaneViewModel
+			require('View:Admin:SettingsMenu'),
+			require('View:Admin:SettingsPane')
 		]);
 	}
 
@@ -7980,14 +7984,13 @@ module.exports = window;
 
 	AdminSettingsScreen.prototype.onShow = function ()
 	{
-		var App = require('../Apps/AdminApp.js');
-		App.setTitle('');
+		require('App:Admin').setTitle('');
 	};
 
 	module.exports = AdminSettingsScreen;
 
 }(module, require));
-},{"../Apps/AdminApp.js":3,"../ViewModels/AdminMenuViewModel.js":61,"../ViewModels/AdminPaneViewModel.js":62,"./AbstractSettings.js":36,"_":26}],39:[function(require,module,exports){
+},{"App:Admin":3,"Screen:AbstractSettings":36,"View:Admin:SettingsMenu":61,"View:Admin:SettingsPane":62,"_":26}],39:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8004,12 +8007,12 @@ module.exports = window;
 	function AdminSettingsAbout()
 	{
 		var
-			AppSettings = require('../../Storages/AppSettings.js'),
-			Data = require('../../Storages/AdminDataStorage.js')
+			Settings = require('Storage:Settings'),
+			Data = require('Storage:Admin:Data')
 		;
 
-		this.version = ko.observable(AppSettings.settingsGet('Version'));
-		this.access = ko.observable(!!AppSettings.settingsGet('CoreAccess'));
+		this.version = ko.observable(Settings.settingsGet('Version'));
+		this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 
 		this.coreReal = Data.coreReal;
@@ -8062,7 +8065,7 @@ module.exports = window;
 	{
 		if (this.access())
 		{
-			require('../../Apps/AdminApp.js').reloadCoreData();
+			require('App:Admin').reloadCoreData();
 		}
 	};
 
@@ -8070,14 +8073,14 @@ module.exports = window;
 	{
 		if (!this.coreUpdating())
 		{
-			require('../../Apps/AdminApp.js').updateCoreData();
+			require('App:Admin').updateCoreData();
 		}
 	};
 
 	module.exports = AdminSettingsAbout;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"ko":23}],40:[function(require,module,exports){
+},{"App:Admin":3,"Storage:Admin:Data":52,"Storage:Settings":59,"ko":23}],40:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8098,22 +8101,22 @@ module.exports = window;
 	{
 		var
 			Enums = require('Enums'),
-			AppSettings = require('../../Storages/AppSettings.js')
+			Settings = require('Storage:Settings')
 		;
 
-		this.title = ko.observable(AppSettings.settingsGet('Title'));
+		this.title = ko.observable(Settings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loadingDesc = ko.observable(AppSettings.settingsGet('LoadingDescription'));
+		this.loadingDesc = ko.observable(Settings.settingsGet('LoadingDescription'));
 		this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginLogo = ko.observable(AppSettings.settingsGet('LoginLogo'));
+		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo'));
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginDescription = ko.observable(AppSettings.settingsGet('LoginDescription'));
+		this.loginDescription = ko.observable(Settings.settingsGet('LoginDescription'));
 		this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginCss = ko.observable(AppSettings.settingsGet('LoginCss'));
+		this.loginCss = ko.observable(Settings.settingsGet('LoginCss'));
 		this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
@@ -8121,7 +8124,7 @@ module.exports = window;
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -8170,7 +8173,7 @@ module.exports = window;
 	module.exports = AdminSettingsBranding;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AppSettings.js":54,"Enums":6,"Utils":11,"_":26,"ko":23}],41:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],41:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8184,7 +8187,7 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
@@ -8193,13 +8196,13 @@ module.exports = window;
 	function AdminSettingsContacts()
 	{
 		var
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-		this.enableContacts = ko.observable(!!AppSettings.settingsGet('ContactsEnable'));
-		this.contactsSharing = ko.observable(!!AppSettings.settingsGet('ContactsSharing'));
-		this.contactsSync = ko.observable(!!AppSettings.settingsGet('ContactsSync'));
+		this.enableContacts = ko.observable(!!Settings.settingsGet('ContactsEnable'));
+		this.contactsSharing = ko.observable(!!Settings.settingsGet('ContactsSharing'));
+		this.contactsSync = ko.observable(!!Settings.settingsGet('ContactsSync'));
 
 		var
 			aTypes = ['sqlite', 'mysql', 'pgsql'],
@@ -8222,15 +8225,15 @@ module.exports = window;
 			}
 		;
 
-		if (!!AppSettings.settingsGet('SQLiteIsSupported'))
+		if (!!Settings.settingsGet('SQLiteIsSupported'))
 		{
 			aSupportedTypes.push('sqlite');
 		}
-		if (!!AppSettings.settingsGet('MySqlIsSupported'))
+		if (!!Settings.settingsGet('MySqlIsSupported'))
 		{
 			aSupportedTypes.push('mysql');
 		}
-		if (!!AppSettings.settingsGet('PostgreSqlIsSupported'))
+		if (!!Settings.settingsGet('PostgreSqlIsSupported'))
 		{
 			aSupportedTypes.push('pgsql');
 		}
@@ -8278,9 +8281,9 @@ module.exports = window;
 			this.testContactsErrorMessage('');
 		}, this);
 
-		this.pdoDsn = ko.observable(AppSettings.settingsGet('ContactsPdoDsn'));
-		this.pdoUser = ko.observable(AppSettings.settingsGet('ContactsPdoUser'));
-		this.pdoPassword = ko.observable(AppSettings.settingsGet('ContactsPdoPassword'));
+		this.pdoDsn = ko.observable(Settings.settingsGet('ContactsPdoDsn'));
+		this.pdoUser = ko.observable(Settings.settingsGet('ContactsPdoUser'));
+		this.pdoPassword = ko.observable(Settings.settingsGet('ContactsPdoPassword'));
 
 		this.pdoDsnTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.pdoUserTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -8310,7 +8313,7 @@ module.exports = window;
 			return '' !== this.pdoDsn() && '' !== this.pdoUser();
 		});
 
-		this.contactsType(AppSettings.settingsGet('ContactsPdoType'));
+		this.contactsType(Settings.settingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 	}
@@ -8352,7 +8355,7 @@ module.exports = window;
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -8406,7 +8409,7 @@ module.exports = window;
 				});
 			});
 
-			self.contactsType(AppSettings.settingsGet('ContactsPdoType'));
+			self.contactsType(Settings.settingsGet('ContactsPdoType'));
 
 		}, 50);
 	};
@@ -8414,7 +8417,7 @@ module.exports = window;
 	module.exports = AdminSettingsContacts;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AppSettings.js":54,"Enums":6,"Utils":11,"_":26,"ko":23}],42:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],42:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8428,10 +8431,10 @@ module.exports = window;
 
 		Enums = require('Enums'),
 
-		PopupsDomainViewModel = require('../../ViewModels/Popups/PopupsDomainViewModel.js'),
+		PopupsDomainViewModel = require('View:Popup:Domain'),
 
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -8475,7 +8478,7 @@ module.exports = window;
 
 	AdminSettingsDomains.prototype.createDomain = function ()
 	{
-		require('kn').showScreenPopup(PopupsDomainViewModel);
+		require('App:Knoin').showScreenPopup(PopupsDomainViewModel);
 	};
 
 	AdminSettingsDomains.prototype.deleteDomain = function (oDomain)
@@ -8503,26 +8506,26 @@ module.exports = window;
 			})
 		;
 
-		require('../../Apps/AdminApp.js').reloadDomainList();
+		require('App:Admin').reloadDomainList();
 	};
 
 	AdminSettingsDomains.prototype.onDomainLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('kn').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('App:Knoin').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
 		}
 	};
 
 	AdminSettingsDomains.prototype.onDomainListChangeRequest = function ()
 	{
-		require('../../Apps/AdminApp.js').reloadDomainList();
+		require('App:Admin').reloadDomainList();
 	};
 
 	module.exports = AdminSettingsDomains;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../ViewModels/Popups/PopupsDomainViewModel.js":65,"Enums":6,"_":26,"kn":28,"ko":23,"window":27}],43:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"View:Popup:Domain":65,"_":26,"ko":23,"window":27}],43:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8537,10 +8540,8 @@ module.exports = window;
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-
-		PopupsLanguagesViewModel = require('../../ViewModels/Popups/PopupsLanguagesViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -8560,8 +8561,8 @@ module.exports = window;
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
 
-		this.mainAttachmentLimit = ko.observable(Utils.pInt(AppSettings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
-		this.uploadData = AppSettings.settingsGet('PhpUploadSizes');
+		this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
+		this.uploadData = Settings.settingsGet('PhpUploadSizes');
 		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ?
 			[
 				this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
@@ -8582,7 +8583,7 @@ module.exports = window;
 			return Utils.convertLangName(this.mainLanguage());
 		}, this);
 
-		this.weakPassword = !!AppSettings.settingsGet('WeakPassword');
+		this.weakPassword = !!Settings.settingsGet('WeakPassword');
 
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -8593,7 +8594,7 @@ module.exports = window;
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -8657,7 +8658,7 @@ module.exports = window;
 
 	AdminSettingsGeneral.prototype.selectLanguage = function ()
 	{
-		require('kn').showScreenPopup(PopupsLanguagesViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Languages'));
 	};
 
 	/**
@@ -8671,7 +8672,7 @@ module.exports = window;
 	module.exports = AdminSettingsGeneral;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"../../ViewModels/Popups/PopupsLanguagesViewModel.js":66,"Enums":6,"LinkBuilder":9,"Utils":11,"_":26,"kn":28,"ko":23}],44:[function(require,module,exports){
+},{"App:Knoin":28,"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"View:Popup:Languages":66,"_":26,"ko":23}],44:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8682,10 +8683,8 @@ module.exports = window;
 		ko = require('ko'),
 		moment = require('moment'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-
-		PopupsActivateViewModel = require('../../ViewModels/Popups/PopupsActivateViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -8701,12 +8700,12 @@ module.exports = window;
 		this.licenseTrigger = Data.licenseTrigger;
 
 		this.adminDomain = ko.observable('');
-		this.subscriptionEnabled = ko.observable(!!AppSettings.settingsGet('SubscriptionEnabled'));
+		this.subscriptionEnabled = ko.observable(!!Settings.settingsGet('SubscriptionEnabled'));
 
 		this.licenseTrigger.subscribe(function () {
 			if (this.subscriptionEnabled())
 			{
-				require('../../Apps/AdminApp.js').reloadLicensing(true);
+				require('App:Admin').reloadLicensing(true);
 			}
 		}, this);
 	}
@@ -8715,18 +8714,18 @@ module.exports = window;
 	{
 		if (this.subscriptionEnabled())
 		{
-			require('../../Apps/AdminApp.js').reloadLicensing(false);
+			require('App:Admin').reloadLicensing(false);
 		}
 	};
 
 	AdminSettingsLicensing.prototype.onShow = function ()
 	{
-		this.adminDomain(AppSettings.settingsGet('AdminDomain'));
+		this.adminDomain(Settings.settingsGet('AdminDomain'));
 	};
 
 	AdminSettingsLicensing.prototype.showActivationForm = function ()
 	{
-		require('kn').showScreenPopup(PopupsActivateViewModel);
+		require('App:Knoin').showScreenPopup(require('View:Popup:Activate'));
 	};
 
 	/**
@@ -8745,7 +8744,7 @@ module.exports = window;
 	module.exports = AdminSettingsLicensing;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"../../ViewModels/Popups/PopupsActivateViewModel.js":63,"kn":28,"ko":23,"moment":24}],45:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Storage:Admin:Data":52,"Storage:Settings":59,"View:Popup:Activate":63,"ko":23,"moment":24}],45:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8759,8 +8758,8 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -8771,7 +8770,7 @@ module.exports = window;
 		this.determineUserLanguage = Data.determineUserLanguage;
 		this.determineUserDomain = Data.determineUserDomain;
 
-		this.defaultDomain = ko.observable(AppSettings.settingsGet('LoginDefaultDomain'));
+		this.defaultDomain = ko.observable(Settings.settingsGet('LoginDefaultDomain'));
 
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 		this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -8781,7 +8780,7 @@ module.exports = window;
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -8818,7 +8817,7 @@ module.exports = window;
 	module.exports = AdminSettingsLogin;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"Enums":6,"Utils":11,"_":26,"ko":23}],46:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],46:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8832,8 +8831,8 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -8872,7 +8871,7 @@ module.exports = window;
 
 	AdminSettingsPackages.prototype.onBuild = function ()
 	{
-		require('../../Apps/AdminApp.js').reloadPackagesList();
+		require('App:Admin').reloadPackagesList();
 	};
 
 	AdminSettingsPackages.prototype.requestHelper = function (oPackage, bInstall)
@@ -8907,7 +8906,7 @@ module.exports = window;
 			}
 			else
 			{
-				require('../../Apps/AdminApp.js').reloadPackagesList();
+				require('App:Admin').reloadPackagesList();
 			}
 		};
 	};
@@ -8933,7 +8932,7 @@ module.exports = window;
 	module.exports = AdminSettingsPackages;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"Enums":6,"Utils":11,"ko":23,"window":27}],47:[function(require,module,exports){
+},{"App:Admin":3,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Utils":11,"ko":23,"window":27}],47:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8947,11 +8946,9 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
-
-		PopupsPluginViewModel = require('../../ViewModels/Popups/PopupsPluginViewModel.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -8959,7 +8956,7 @@ module.exports = window;
 	 */
 	function AdminSettingsPlugins()
 	{
-		this.enabledPlugins = ko.observable(!!AppSettings.settingsGet('EnabledPlugins'));
+		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
 		this.pluginsError = ko.observable('');
 
@@ -9016,14 +9013,14 @@ module.exports = window;
 	AdminSettingsPlugins.prototype.onShow = function ()
 	{
 		this.pluginsError('');
-		require('../../Apps/AdminApp.js').reloadPluginList();
+		require('App:Admin').reloadPluginList();
 	};
 
 	AdminSettingsPlugins.prototype.onPluginLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('kn').showScreenPopup(PopupsPluginViewModel, [oData.Result]);
+			require('App:Knoin').showScreenPopup(require('View:Popup:Plugin'), [oData.Result]);
 		}
 	};
 
@@ -9044,13 +9041,13 @@ module.exports = window;
 			}
 		}
 
-		require('../../Apps/AdminApp.js').reloadPluginList();
+		require('App:Admin').reloadPluginList();
 	};
 
 	module.exports = AdminSettingsPlugins;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"../../ViewModels/Popups/PopupsPluginViewModel.js":67,"Enums":6,"Utils":11,"_":26,"kn":28,"ko":23}],48:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"View:Popup:Plugin":67,"_":26,"ko":23}],48:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9065,9 +9062,9 @@ module.exports = window;
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote')
 	;
 
 	/**
@@ -9077,10 +9074,10 @@ module.exports = window;
 	{
 		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
 
-		this.capaOpenPGP = ko.observable(AppSettings.capa(Enums.Capa.OpenPGP));
-		this.capaTwoFactorAuth = ko.observable(AppSettings.capa(Enums.Capa.TwoFactor));
+		this.capaOpenPGP = ko.observable(Settings.capa(Enums.Capa.OpenPGP));
+		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
-		this.adminLogin = ko.observable(AppSettings.settingsGet('AdminLogin'));
+		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
 		this.adminPassword = ko.observable('');
 		this.adminPasswordNew = ko.observable('');
 		this.adminPasswordNew2 = ko.observable('');
@@ -9148,7 +9145,7 @@ module.exports = window;
 	AdminSettingsSecurity.prototype.onBuild = function ()
 	{
 		var
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		this.capaOpenPGP.subscribe(function (bValue) {
@@ -9189,7 +9186,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"Enums":6,"LinkBuilder":9,"Utils":11,"_":26,"ko":23}],49:[function(require,module,exports){
+},{"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],49:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9209,7 +9206,7 @@ module.exports = window;
 	 */
 	function AdminSettingsSocial()
 	{
-		var Data = require('../../Storages/AdminDataStorage.js');
+		var Data = require('Storage:Admin:Data');
 
 		this.googleEnable = Data.googleEnable;
 		this.googleClientID = Data.googleClientID;
@@ -9241,7 +9238,7 @@ module.exports = window;
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {
@@ -9344,7 +9341,101 @@ module.exports = window;
 	module.exports = AdminSettingsSocial;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"Enums":6,"Utils":11,"_":26,"ko":23}],50:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],50:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module, require) {
+
+	'use strict';
+
+	var
+		Enums = require('Enums'),
+		Utils = require('Utils'),
+
+		Settings = require('Storage:Settings')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function AbstractData()
+	{
+		Utils.initDataConstructorBySettings(this);
+	}
+
+	AbstractData.prototype.populateDataOnStart = function()
+	{
+		var
+			mLayout = Utils.pInt(Settings.settingsGet('Layout')),
+			aLanguages = Settings.settingsGet('Languages'),
+			aThemes = Settings.settingsGet('Themes')
+		;
+
+		if (Utils.isArray(aLanguages))
+		{
+			this.languages(aLanguages);
+		}
+
+		if (Utils.isArray(aThemes))
+		{
+			this.themes(aThemes);
+		}
+
+		this.mainLanguage(Settings.settingsGet('Language'));
+		this.mainTheme(Settings.settingsGet('Theme'));
+
+		this.capaAdditionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
+		this.capaAdditionalIdentities(Settings.capa(Enums.Capa.AdditionalIdentities));
+		this.capaGravatar(Settings.capa(Enums.Capa.Gravatar));
+		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
+		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
+
+		this.capaThemes(Settings.capa(Enums.Capa.Themes));
+		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
+		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
+		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
+
+		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
+		this.showImages(!!Settings.settingsGet('ShowImages'));
+		this.contactsAutosave(!!Settings.settingsGet('ContactsAutosave'));
+		this.interfaceAnimation(Settings.settingsGet('InterfaceAnimation'));
+
+		this.mainMessagesPerPage(Settings.settingsGet('MPP'));
+
+		this.desktopNotifications(!!Settings.settingsGet('DesktopNotifications'));
+		this.useThreads(!!Settings.settingsGet('UseThreads'));
+		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
+		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
+
+		this.layout(Enums.Layout.SidePreview);
+		if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
+		{
+			this.layout(mLayout);
+		}
+		this.facebookSupported(!!Settings.settingsGet('SupportedFacebookSocial'));
+		this.facebookEnable(!!Settings.settingsGet('AllowFacebookSocial'));
+		this.facebookAppID(Settings.settingsGet('FacebookAppID'));
+		this.facebookAppSecret(Settings.settingsGet('FacebookAppSecret'));
+
+		this.twitterEnable(!!Settings.settingsGet('AllowTwitterSocial'));
+		this.twitterConsumerKey(Settings.settingsGet('TwitterConsumerKey'));
+		this.twitterConsumerSecret(Settings.settingsGet('TwitterConsumerSecret'));
+
+		this.googleEnable(!!Settings.settingsGet('AllowGoogleSocial'));
+		this.googleClientID(Settings.settingsGet('GoogleClientID'));
+		this.googleClientSecret(Settings.settingsGet('GoogleClientSecret'));
+		this.googleApiKey(Settings.settingsGet('GoogleApiKey'));
+
+		this.dropboxEnable(!!Settings.settingsGet('AllowDropboxSocial'));
+		this.dropboxApiKey(Settings.settingsGet('DropboxApiKey'));
+
+		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
+	};
+
+	module.exports = AbstractData;
+
+}(module, require));
+},{"Enums":6,"Storage:Settings":59,"Utils":11}],51:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9354,6 +9445,7 @@ module.exports = window;
 	var
 		window = require('window'),
 		$ = require('$'),
+		_ = require('_'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -9362,18 +9454,18 @@ module.exports = window;
 		Plugins = require('Plugins'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
 	* @constructor
 	*/
-   function AbstractAjaxRemoteStorage()
+   function AbstractRemoteStorage()
    {
 	   this.oRequests = {};
    }
 
-   AbstractAjaxRemoteStorage.prototype.oRequests = {};
+   AbstractRemoteStorage.prototype.oRequests = {};
 
    /**
 	* @param {?Function} fCallback
@@ -9383,7 +9475,7 @@ module.exports = window;
 	* @param {boolean} bCached
 	* @param {*=} oRequestParameters
 	*/
-   AbstractAjaxRemoteStorage.prototype.defaultResponse = function (fCallback, sRequestAction, sType, oData, bCached, oRequestParameters)
+   AbstractRemoteStorage.prototype.defaultResponse = function (fCallback, sRequestAction, sType, oData, bCached, oRequestParameters)
    {
 	   var
 		   fCall = function () {
@@ -9481,7 +9573,7 @@ module.exports = window;
 	* @param {Array=} aAbortActions = []
 	* @return {jQuery.jqXHR}
 	*/
-   AbstractAjaxRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oParameters, iTimeOut, sGetAdd, aAbortActions)
+   AbstractRemoteStorage.prototype.ajaxRequest = function (fResultCallback, oParameters, iTimeOut, sGetAdd, aAbortActions)
    {
 	   var
 		   self = this,
@@ -9516,7 +9608,7 @@ module.exports = window;
 
 	   if (bPost)
 	   {
-		   oParameters['XToken'] = AppSettings.settingsGet('Token');
+		   oParameters['XToken'] = Settings.settingsGet('Token');
 	   }
 
 	   oDefAjax = $.ajax({
@@ -9577,7 +9669,7 @@ module.exports = window;
 	* @param {string=} sGetAdd = ''
 	* @param {Array=} aAbortActions = []
 	*/
-   AbstractAjaxRemoteStorage.prototype.defaultRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+   AbstractRemoteStorage.prototype.defaultRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
    {
 	   oParameters = oParameters || {};
 	   oParameters.Action = sAction;
@@ -9593,7 +9685,7 @@ module.exports = window;
    /**
 	* @param {?Function} fCallback
 	*/
-   AbstractAjaxRemoteStorage.prototype.noop = function (fCallback)
+   AbstractRemoteStorage.prototype.noop = function (fCallback)
    {
 	   this.defaultRequest(fCallback, 'Noop');
    };
@@ -9607,7 +9699,7 @@ module.exports = window;
 	* @param {string} sHtmlCapa
 	* @param {number} iTime
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime)
+   AbstractRemoteStorage.prototype.jsError = function (fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime)
    {
 	   this.defaultRequest(fCallback, 'JsError', {
 		   'Message': sMessage,
@@ -9625,7 +9717,7 @@ module.exports = window;
 	* @param {Array=} mData = null
 	* @param {boolean=} bIsError = false
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
+   AbstractRemoteStorage.prototype.jsInfo = function (fCallback, sType, mData, bIsError)
    {
 	   this.defaultRequest(fCallback, 'JsInfo', {
 		   'Type': sType,
@@ -9637,7 +9729,7 @@ module.exports = window;
    /**
 	* @param {?Function} fCallback
 	*/
-   AbstractAjaxRemoteStorage.prototype.getPublicKey = function (fCallback)
+   AbstractRemoteStorage.prototype.getPublicKey = function (fCallback)
    {
 	   this.defaultRequest(fCallback, 'GetPublicKey');
    };
@@ -9646,388 +9738,17 @@ module.exports = window;
 	* @param {?Function} fCallback
 	* @param {string} sVersion
 	*/
-   AbstractAjaxRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
+   AbstractRemoteStorage.prototype.jsVersion = function (fCallback, sVersion)
    {
 	   this.defaultRequest(fCallback, 'Version', {
 		   'Version': sVersion
 	   });
    };
 
-	module.exports = AbstractAjaxRemoteStorage;
+	module.exports = AbstractRemoteStorage;
 
 }(module, require));
-},{"$":21,"./AppSettings.js":54,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Utils":11,"window":27}],51:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-
-		AppSettings = require('./AppSettings.js')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function AbstractData()
-	{
-		Utils.initDataConstructorBySettings(this);
-	}
-
-	AbstractData.prototype.populateDataOnStart = function()
-	{
-		var
-			mLayout = Utils.pInt(AppSettings.settingsGet('Layout')),
-			aLanguages = AppSettings.settingsGet('Languages'),
-			aThemes = AppSettings.settingsGet('Themes')
-		;
-
-		if (Utils.isArray(aLanguages))
-		{
-			this.languages(aLanguages);
-		}
-
-		if (Utils.isArray(aThemes))
-		{
-			this.themes(aThemes);
-		}
-
-		this.mainLanguage(AppSettings.settingsGet('Language'));
-		this.mainTheme(AppSettings.settingsGet('Theme'));
-
-		this.capaAdditionalAccounts(AppSettings.capa(Enums.Capa.AdditionalAccounts));
-		this.capaAdditionalIdentities(AppSettings.capa(Enums.Capa.AdditionalIdentities));
-		this.capaGravatar(AppSettings.capa(Enums.Capa.Gravatar));
-		this.determineUserLanguage(!!AppSettings.settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain(!!AppSettings.settingsGet('DetermineUserDomain'));
-
-		this.capaThemes(AppSettings.capa(Enums.Capa.Themes));
-		this.allowLanguagesOnLogin(!!AppSettings.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!AppSettings.settingsGet('AllowLanguagesOnSettings'));
-		this.useLocalProxyForExternalImages(!!AppSettings.settingsGet('UseLocalProxyForExternalImages'));
-
-		this.editorDefaultType(AppSettings.settingsGet('EditorDefaultType'));
-		this.showImages(!!AppSettings.settingsGet('ShowImages'));
-		this.contactsAutosave(!!AppSettings.settingsGet('ContactsAutosave'));
-		this.interfaceAnimation(AppSettings.settingsGet('InterfaceAnimation'));
-
-		this.mainMessagesPerPage(AppSettings.settingsGet('MPP'));
-
-		this.desktopNotifications(!!AppSettings.settingsGet('DesktopNotifications'));
-		this.useThreads(!!AppSettings.settingsGet('UseThreads'));
-		this.replySameFolder(!!AppSettings.settingsGet('ReplySameFolder'));
-		this.useCheckboxesInList(!!AppSettings.settingsGet('UseCheckboxesInList'));
-
-		this.layout(Enums.Layout.SidePreview);
-		if (-1 < Utils.inArray(mLayout, [Enums.Layout.NoPreview, Enums.Layout.SidePreview, Enums.Layout.BottomPreview]))
-		{
-			this.layout(mLayout);
-		}
-		this.facebookSupported(!!AppSettings.settingsGet('SupportedFacebookSocial'));
-		this.facebookEnable(!!AppSettings.settingsGet('AllowFacebookSocial'));
-		this.facebookAppID(AppSettings.settingsGet('FacebookAppID'));
-		this.facebookAppSecret(AppSettings.settingsGet('FacebookAppSecret'));
-
-		this.twitterEnable(!!AppSettings.settingsGet('AllowTwitterSocial'));
-		this.twitterConsumerKey(AppSettings.settingsGet('TwitterConsumerKey'));
-		this.twitterConsumerSecret(AppSettings.settingsGet('TwitterConsumerSecret'));
-
-		this.googleEnable(!!AppSettings.settingsGet('AllowGoogleSocial'));
-		this.googleClientID(AppSettings.settingsGet('GoogleClientID'));
-		this.googleClientSecret(AppSettings.settingsGet('GoogleClientSecret'));
-		this.googleApiKey(AppSettings.settingsGet('GoogleApiKey'));
-
-		this.dropboxEnable(!!AppSettings.settingsGet('AllowDropboxSocial'));
-		this.dropboxApiKey(AppSettings.settingsGet('DropboxApiKey'));
-
-		this.contactsIsAllowed(!!AppSettings.settingsGet('ContactsIsAllowed'));
-	};
-
-	module.exports = AbstractData;
-
-}(module, require));
-},{"./AppSettings.js":54,"Enums":6,"Utils":11}],52:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-	
-	'use strict';
-
-	var
-		_ = require('_'),
-
-		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
-	;
-
-	/**
-	 * @constructor
-	 * @extends AbstractAjaxRemoteStorage
-	 */
-	function AdminAjaxRemoteStorage()
-	{
-		AbstractAjaxRemoteStorage.call(this);
-
-		this.oRequests = {};
-	}
-
-	_.extend(AdminAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype);
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sLogin
-	 * @param {string} sPassword
-	 */
-	AdminAjaxRemoteStorage.prototype.adminLogin = function (fCallback, sLogin, sPassword)
-	{
-		this.defaultRequest(fCallback, 'AdminLogin', {
-			'Login': sLogin,
-			'Password': sPassword
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.adminLogout = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminLogout');
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {?} oData
-	 */
-	AdminAjaxRemoteStorage.prototype.saveAdminConfig = function (fCallback, oData)
-	{
-		this.defaultRequest(fCallback, 'AdminSettingsUpdate', oData);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.domainList = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminDomainList');
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.pluginList = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminPluginList');
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.packagesList = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminPackagesList');
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.coreData = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminCoreData');
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.updateCoreData = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {Object} oPackage
-	 */
-	AdminAjaxRemoteStorage.prototype.packageInstall = function (fCallback, oPackage)
-	{
-		this.defaultRequest(fCallback, 'AdminPackageInstall', {
-			'Id': oPackage.id,
-			'Type': oPackage.type,
-			'File': oPackage.file
-		}, 60000);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {Object} oPackage
-	 */
-	AdminAjaxRemoteStorage.prototype.packageDelete = function (fCallback, oPackage)
-	{
-		this.defaultRequest(fCallback, 'AdminPackageDelete', {
-			'Id': oPackage.id
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sName
-	 */
-	AdminAjaxRemoteStorage.prototype.domain = function (fCallback, sName)
-	{
-		this.defaultRequest(fCallback, 'AdminDomainLoad', {
-			'Name': sName
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sName
-	 */
-	AdminAjaxRemoteStorage.prototype.plugin = function (fCallback, sName)
-	{
-		this.defaultRequest(fCallback, 'AdminPluginLoad', {
-			'Name': sName
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sName
-	 */
-	AdminAjaxRemoteStorage.prototype.domainDelete = function (fCallback, sName)
-	{
-		this.defaultRequest(fCallback, 'AdminDomainDelete', {
-			'Name': sName
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sName
-	 * @param {boolean} bDisabled
-	 */
-	AdminAjaxRemoteStorage.prototype.domainDisable = function (fCallback, sName, bDisabled)
-	{
-		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
-			'Name': sName,
-			'Disabled': !!bDisabled ? '1' : '0'
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {Object} oConfig
-	 */
-	AdminAjaxRemoteStorage.prototype.pluginSettingsUpdate = function (fCallback, oConfig)
-	{
-		return this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {boolean} bForce
-	 */
-	AdminAjaxRemoteStorage.prototype.licensing = function (fCallback, bForce)
-	{
-		return this.defaultRequest(fCallback, 'AdminLicensing', {
-			'Force' : bForce ? '1' : '0'
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sDomain
-	 * @param {string} sKey
-	 */
-	AdminAjaxRemoteStorage.prototype.licensingActivate = function (fCallback, sDomain, sKey)
-	{
-		return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
-			'Domain' : sDomain,
-			'Key' : sKey
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sName
-	 * @param {boolean} bDisabled
-	 */
-	AdminAjaxRemoteStorage.prototype.pluginDisable = function (fCallback, sName, bDisabled)
-	{
-		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
-			'Name': sName,
-			'Disabled': !!bDisabled ? '1' : '0'
-		});
-	};
-
-	AdminAjaxRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
-		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, sWhiteList)
-	{
-		this.defaultRequest(fCallback, 'AdminDomainSave', {
-			'Create': bCreate ? '1' : '0',
-			'Name': sName,
-			'IncHost': sIncHost,
-			'IncPort': iIncPort,
-			'IncSecure': sIncSecure,
-			'IncShortLogin': bIncShortLogin ? '1' : '0',
-			'OutHost': sOutHost,
-			'OutPort': iOutPort,
-			'OutSecure': sOutSecure,
-			'OutShortLogin': bOutShortLogin ? '1' : '0',
-			'OutAuth': bOutAuth ? '1' : '0',
-			'WhiteList': sWhiteList
-		});
-	};
-
-	AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
-		sIncHost, iIncPort, sIncSecure,
-		sOutHost, iOutPort, sOutSecure, bOutAuth)
-	{
-		this.defaultRequest(fCallback, 'AdminDomainTest', {
-			'Name': sName,
-			'IncHost': sIncHost,
-			'IncPort': iIncPort,
-			'IncSecure': sIncSecure,
-			'OutHost': sOutHost,
-			'OutPort': iOutPort,
-			'OutSecure': sOutSecure,
-			'OutAuth': bOutAuth ? '1' : '0'
-		});
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {?} oData
-	 */
-	AdminAjaxRemoteStorage.prototype.testContacts = function (fCallback, oData)
-	{
-		this.defaultRequest(fCallback, 'AdminContactsTest', oData);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {?} oData
-	 */
-	AdminAjaxRemoteStorage.prototype.saveNewAdminPassword = function (fCallback, oData)
-	{
-		this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	AdminAjaxRemoteStorage.prototype.adminPing = function (fCallback)
-	{
-		this.defaultRequest(fCallback, 'AdminPing');
-	};
-
-	module.exports = new AdminAjaxRemoteStorage();
-
-}(module, require));
-},{"./AbstractAjaxRemoteStorage.js":50,"_":26}],53:[function(require,module,exports){
+},{"$":21,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Storage:Settings":59,"Utils":11,"_":26,"window":27}],52:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10038,7 +9759,7 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 
-		AbstractData = require('./AbstractData.js')
+		AbstractData = require('Storage:Abstract:Data')
 	;
 
 	/**
@@ -10096,7 +9817,7 @@ module.exports = window;
 	module.exports = new AdminDataStorage();
 
 }(module, require));
-},{"./AbstractData.js":51,"_":26,"ko":23}],54:[function(require,module,exports){
+},{"Storage:Abstract:Data":50,"_":26,"ko":23}],53:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10104,302 +9825,276 @@ module.exports = window;
 	'use strict';
 
 	var
-		AppData = require('AppData'),
-		Utils = require('Utils')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function AppSettings()
-	{
-		this.oSettings = null;
-	}
-
-	AppSettings.prototype.oSettings = null;
-
-	/**
-	 * @param {string} sName
-	 * @return {?}
-	 */
-	AppSettings.prototype.settingsGet = function (sName)
-	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
-		return Utils.isUnd(this.oSettings[sName]) ? null : this.oSettings[sName];
-	};
-
-	/**
-	 * @param {string} sName
-	 * @param {?} mValue
-	 */
-	AppSettings.prototype.settingsSet = function (sName, mValue)
-	{
-		if (null === this.oSettings)
-		{
-			this.oSettings = Utils.isNormal(AppData) ? AppData : {};
-		}
-
-		this.oSettings[sName] = mValue;
-	};
-
-	/**
-	 * @param {string} sName
-	 * @return {boolean}
-	 */
-	AppSettings.prototype.capa = function (sName)
-	{
-		var mCapa = this.settingsGet('Capa');
-		return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
-	};
-
-
-	module.exports = new AppSettings();
-
-}(module, require));
-},{"AppData":16,"Utils":11}],55:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
 		_ = require('_'),
 
-		CookieDriver = require('./LocalStorages/CookieDriver.js'),
-		LocalStorageDriver = require('./LocalStorages/LocalStorageDriver.js')
+		AbstractRemoteStorage = require('Storage:Abstract:Remote')
 	;
 
 	/**
 	 * @constructor
+	 * @extends AbstractRemoteStorage
 	 */
-	function LocalStorage()
+	function AdminRemoteStorage()
 	{
-		var
-			NextStorageDriver = _.find([LocalStorageDriver, CookieDriver], function (NextStorageDriver) {
-				return NextStorageDriver.supported();
-			})
-		;
+		AbstractRemoteStorage.call(this);
 
-		this.oDriver = null;
-
-		if (NextStorageDriver)
-		{
-			NextStorageDriver = /** @type {?Function} */ NextStorageDriver;
-			this.oDriver = new NextStorageDriver();
-		}
+		this.oRequests = {};
 	}
 
-	LocalStorage.prototype.oDriver = null;
+	_.extend(AdminRemoteStorage.prototype, AbstractRemoteStorage.prototype);
 
 	/**
-	 * @param {number} iKey
-	 * @param {*} mData
-	 * @return {boolean}
+	 * @param {?Function} fCallback
+	 * @param {string} sLogin
+	 * @param {string} sPassword
 	 */
-	LocalStorage.prototype.set = function (iKey, mData)
+	AdminRemoteStorage.prototype.adminLogin = function (fCallback, sLogin, sPassword)
 	{
-		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
+		this.defaultRequest(fCallback, 'AdminLogin', {
+			'Login': sLogin,
+			'Password': sPassword
+		});
 	};
 
 	/**
-	 * @param {number} iKey
-	 * @return {*}
+	 * @param {?Function} fCallback
 	 */
-	LocalStorage.prototype.get = function (iKey)
+	AdminRemoteStorage.prototype.adminLogout = function (fCallback)
 	{
-		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
+		this.defaultRequest(fCallback, 'AdminLogout');
 	};
 
-	module.exports = new LocalStorage();
+	/**
+	 * @param {?Function} fCallback
+	 * @param {?} oData
+	 */
+	AdminRemoteStorage.prototype.saveAdminConfig = function (fCallback, oData)
+	{
+		this.defaultRequest(fCallback, 'AdminSettingsUpdate', oData);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.domainList = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainList');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.pluginList = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminPluginList');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.packagesList = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminPackagesList');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.coreData = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminCoreData');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.updateCoreData = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Object} oPackage
+	 */
+	AdminRemoteStorage.prototype.packageInstall = function (fCallback, oPackage)
+	{
+		this.defaultRequest(fCallback, 'AdminPackageInstall', {
+			'Id': oPackage.id,
+			'Type': oPackage.type,
+			'File': oPackage.file
+		}, 60000);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Object} oPackage
+	 */
+	AdminRemoteStorage.prototype.packageDelete = function (fCallback, oPackage)
+	{
+		this.defaultRequest(fCallback, 'AdminPackageDelete', {
+			'Id': oPackage.id
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sName
+	 */
+	AdminRemoteStorage.prototype.domain = function (fCallback, sName)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainLoad', {
+			'Name': sName
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sName
+	 */
+	AdminRemoteStorage.prototype.plugin = function (fCallback, sName)
+	{
+		this.defaultRequest(fCallback, 'AdminPluginLoad', {
+			'Name': sName
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sName
+	 */
+	AdminRemoteStorage.prototype.domainDelete = function (fCallback, sName)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainDelete', {
+			'Name': sName
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sName
+	 * @param {boolean} bDisabled
+	 */
+	AdminRemoteStorage.prototype.domainDisable = function (fCallback, sName, bDisabled)
+	{
+		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
+			'Name': sName,
+			'Disabled': !!bDisabled ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {Object} oConfig
+	 */
+	AdminRemoteStorage.prototype.pluginSettingsUpdate = function (fCallback, oConfig)
+	{
+		return this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {boolean} bForce
+	 */
+	AdminRemoteStorage.prototype.licensing = function (fCallback, bForce)
+	{
+		return this.defaultRequest(fCallback, 'AdminLicensing', {
+			'Force' : bForce ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sDomain
+	 * @param {string} sKey
+	 */
+	AdminRemoteStorage.prototype.licensingActivate = function (fCallback, sDomain, sKey)
+	{
+		return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
+			'Domain' : sDomain,
+			'Key' : sKey
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sName
+	 * @param {boolean} bDisabled
+	 */
+	AdminRemoteStorage.prototype.pluginDisable = function (fCallback, sName, bDisabled)
+	{
+		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
+			'Name': sName,
+			'Disabled': !!bDisabled ? '1' : '0'
+		});
+	};
+
+	AdminRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
+		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
+		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, sWhiteList)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainSave', {
+			'Create': bCreate ? '1' : '0',
+			'Name': sName,
+			'IncHost': sIncHost,
+			'IncPort': iIncPort,
+			'IncSecure': sIncSecure,
+			'IncShortLogin': bIncShortLogin ? '1' : '0',
+			'OutHost': sOutHost,
+			'OutPort': iOutPort,
+			'OutSecure': sOutSecure,
+			'OutShortLogin': bOutShortLogin ? '1' : '0',
+			'OutAuth': bOutAuth ? '1' : '0',
+			'WhiteList': sWhiteList
+		});
+	};
+
+	AdminRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
+		sIncHost, iIncPort, sIncSecure,
+		sOutHost, iOutPort, sOutSecure, bOutAuth)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainTest', {
+			'Name': sName,
+			'IncHost': sIncHost,
+			'IncPort': iIncPort,
+			'IncSecure': sIncSecure,
+			'OutHost': sOutHost,
+			'OutPort': iOutPort,
+			'OutSecure': sOutSecure,
+			'OutAuth': bOutAuth ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {?} oData
+	 */
+	AdminRemoteStorage.prototype.testContacts = function (fCallback, oData)
+	{
+		this.defaultRequest(fCallback, 'AdminContactsTest', oData);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {?} oData
+	 */
+	AdminRemoteStorage.prototype.saveNewAdminPassword = function (fCallback, oData)
+	{
+		this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	AdminRemoteStorage.prototype.adminPing = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AdminPing');
+	};
+
+	module.exports = new AdminRemoteStorage();
 
 }(module, require));
-},{"./LocalStorages/CookieDriver.js":56,"./LocalStorages/LocalStorageDriver.js":57,"_":26}],56:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		$ = require('$'),
-		JSON = require('JSON'),
-
-		Consts = require('Consts'),
-		Utils = require('Utils')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function CookieDriver()
-	{
-
-	}
-
-	CookieDriver.supported = function ()
-	{
-		return true;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @param {*} mData
-	 * @returns {boolean}
-	 */
-	CookieDriver.prototype.set = function (sKey, mData)
-	{
-		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
-			bResult = false,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
-
-			mResult[sKey] = mData;
-			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
-				'expires': 30
-			});
-
-			bResult = true;
-		}
-		catch (oException) {}
-
-		return bResult;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @returns {*}
-	 */
-	CookieDriver.prototype.get = function (sKey)
-	{
-		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (mResult && !Utils.isUnd(mResult[sKey]))
-			{
-				mResult = mResult[sKey];
-			}
-			else
-			{
-				mResult = null;
-			}
-		}
-		catch (oException) {}
-
-		return mResult;
-	};
-
-	module.exports = CookieDriver;
-
-}(module, require));
-},{"$":21,"Consts":5,"JSON":17,"Utils":11}],57:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		window = require('window'),
-		JSON = require('JSON'),
-
-		Consts = require('Consts'),
-		Utils = require('Utils')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function LocalStorageDriver()
-	{
-	}
-
-	LocalStorageDriver.supported = function ()
-	{
-		return !!window.localStorage;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @param {*} mData
-	 * @returns {boolean}
-	 */
-	LocalStorageDriver.prototype.set = function (sKey, mData)
-	{
-		var
-			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
-			bResult = false,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
-
-			mResult[sKey] = mData;
-			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
-
-			bResult = true;
-		}
-		catch (oException) {}
-
-		return bResult;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @returns {*}
-	 */
-	LocalStorageDriver.prototype.get = function (sKey)
-	{
-		var
-			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (mResult && !Utils.isUnd(mResult[sKey]))
-			{
-				mResult = mResult[sKey];
-			}
-			else
-			{
-				mResult = null;
-			}
-		}
-		catch (oException) {}
-
-		return mResult;
-	};
-
-	module.exports = LocalStorageDriver;
-
-}(module, require));
-},{"Consts":5,"JSON":17,"Utils":11,"window":27}],58:[function(require,module,exports){
+},{"Storage:Abstract:Remote":51,"_":26}],54:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10413,13 +10108,13 @@ module.exports = window;
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js')
+		Settings = require('Storage:Settings')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function WebMailCacheStorage()
+	function CacheStorage()
 	{
 		this.oFoldersCache = {};
 		this.oFoldersNamesCache = {};
@@ -10430,60 +10125,60 @@ module.exports = window;
 		this.oNewMessage = {};
 		this.oRequestedMessage = {};
 
-		this.bCapaGravatar = AppSettings.capa(Enums.Capa.Gravatar);
+		this.bCapaGravatar = Settings.capa(Enums.Capa.Gravatar);
 	}
 
 	/**
 	 * @type {boolean}
 	 */
-	WebMailCacheStorage.prototype.bCapaGravatar = false;
+	CacheStorage.prototype.bCapaGravatar = false;
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFoldersCache = {};
+	CacheStorage.prototype.oFoldersCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFoldersNamesCache = {};
+	CacheStorage.prototype.oFoldersNamesCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFolderHashCache = {};
+	CacheStorage.prototype.oFolderHashCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oFolderUidNextCache = {};
+	CacheStorage.prototype.oFolderUidNextCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oMessageListHashCache = {};
+	CacheStorage.prototype.oMessageListHashCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oMessageFlagsCache = {};
+	CacheStorage.prototype.oMessageFlagsCache = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oBodies = {};
+	CacheStorage.prototype.oBodies = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oNewMessage = {};
+	CacheStorage.prototype.oNewMessage = {};
 
 	/**
 	 * @type {Object}
 	 */
-	WebMailCacheStorage.prototype.oRequestedMessage = {};
+	CacheStorage.prototype.oRequestedMessage = {};
 
-	WebMailCacheStorage.prototype.clear = function ()
+	CacheStorage.prototype.clear = function ()
 	{
 		this.oFoldersCache = {};
 		this.oFoldersNamesCache = {};
@@ -10500,7 +10195,7 @@ module.exports = window;
 	 * @param {Function} fCallback
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getUserPic = function (sEmail, fCallback)
+	CacheStorage.prototype.getUserPic = function (sEmail, fCallback)
 	{
 		sEmail = Utils.trim(sEmail);
 		fCallback(this.bCapaGravatar && '' !== sEmail ? LinkBuilder.avatarLink(sEmail) : '', sEmail);
@@ -10511,7 +10206,7 @@ module.exports = window;
 	 * @param {string} sUid
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
 	{
 		return sFolderFullNameRaw + '#' + sUid;
 	};
@@ -10520,7 +10215,7 @@ module.exports = window;
 	 * @param {string} sFolder
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
+	CacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
 	{
 		this.oRequestedMessage[this.getMessageKey(sFolder, sUid)] = true;
 	};
@@ -10530,7 +10225,7 @@ module.exports = window;
 	 * @param {string} sUid
 	 * @return {boolean}
 	 */
-	WebMailCacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
+	CacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
 	{
 		return true === this.oRequestedMessage[this.getMessageKey(sFolder, sUid)];
 	};
@@ -10539,7 +10234,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
 	{
 		this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = true;
 	};
@@ -10548,7 +10243,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUid
 	 */
-	WebMailCacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
+	CacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
 	{
 		if (this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)])
 		{
@@ -10559,7 +10254,7 @@ module.exports = window;
 		return false;
 	};
 
-	WebMailCacheStorage.prototype.clearNewMessageCache = function ()
+	CacheStorage.prototype.clearNewMessageCache = function ()
 	{
 		this.oNewMessage = {};
 	};
@@ -10568,7 +10263,7 @@ module.exports = window;
 	 * @param {string} sFolderHash
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
+	CacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
 	{
 		return '' !== sFolderHash && this.oFoldersNamesCache[sFolderHash] ? this.oFoldersNamesCache[sFolderHash] : '';
 	};
@@ -10577,7 +10272,7 @@ module.exports = window;
 	 * @param {string} sFolderHash
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailCacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
+	CacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
 	{
 		this.oFoldersNamesCache[sFolderHash] = sFolderFullNameRaw;
 	};
@@ -10586,7 +10281,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFolderHashCache[sFolderFullNameRaw] ? this.oFolderHashCache[sFolderFullNameRaw] : '';
 	};
@@ -10595,7 +10290,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sFolderHash
 	 */
-	WebMailCacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
+	CacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
 	{
 		this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
 	};
@@ -10604,7 +10299,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @return {string}
 	 */
-	WebMailCacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFolderUidNextCache[sFolderFullNameRaw] ? this.oFolderUidNextCache[sFolderFullNameRaw] : '';
 	};
@@ -10613,7 +10308,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string} sUidNext
 	 */
-	WebMailCacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
+	CacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
 	{
 		this.oFolderUidNextCache[sFolderFullNameRaw] = sUidNext;
 	};
@@ -10622,7 +10317,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @return {?FolderModel}
 	 */
-	WebMailCacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
+	CacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
 	{
 		return '' !== sFolderFullNameRaw && this.oFoldersCache[sFolderFullNameRaw] ? this.oFoldersCache[sFolderFullNameRaw] : null;
 	};
@@ -10631,7 +10326,7 @@ module.exports = window;
 	 * @param {string} sFolderFullNameRaw
 	 * @param {?FolderModel} oFolder
 	 */
-	WebMailCacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
+	CacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
 	{
 		this.oFoldersCache[sFolderFullNameRaw] = oFolder;
 	};
@@ -10639,7 +10334,7 @@ module.exports = window;
 	/**
 	 * @param {string} sFolderFullNameRaw
 	 */
-	WebMailCacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
+	CacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
 	{
 		this.setFolderToCacheList(sFolderFullNameRaw, null);
 	};
@@ -10649,7 +10344,7 @@ module.exports = window;
 	 * @param {string} sUid
 	 * @return {?Array}
 	 */
-	WebMailCacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
+	CacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
 	{
 		return this.oMessageFlagsCache[sFolderFullName] && this.oMessageFlagsCache[sFolderFullName][sUid] ?
 			this.oMessageFlagsCache[sFolderFullName][sUid] : null;
@@ -10660,7 +10355,7 @@ module.exports = window;
 	 * @param {string} sUid
 	 * @param {Array} aFlagsCache
 	 */
-	WebMailCacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
+	CacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
 	{
 		if (!this.oMessageFlagsCache[sFolderFullName])
 		{
@@ -10673,7 +10368,7 @@ module.exports = window;
 	/**
 	 * @param {string} sFolderFullName
 	 */
-	WebMailCacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
+	CacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
 	{
 		this.oMessageFlagsCache[sFolderFullName] = {};
 	};
@@ -10681,7 +10376,7 @@ module.exports = window;
 	/**
 	 * @param {(MessageModel|null)} oMessage
 	 */
-	WebMailCacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
+	CacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
 	{
 		if (oMessage)
 		{
@@ -10722,7 +10417,7 @@ module.exports = window;
 	/**
 	 * @param {(MessageModel|null)} oMessage
 	 */
-	WebMailCacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
+	CacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
 	{
 		if (oMessage)
 		{
@@ -10738,7 +10433,7 @@ module.exports = window;
 	 * @param {string} sUid
 	 * @param {Array} aFlags
 	 */
-	WebMailCacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
+	CacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
 	{
 		if (Utils.isArray(aFlags) && 0 < aFlags.length)
 		{
@@ -10746,10 +10441,10 @@ module.exports = window;
 		}
 	};
 
-	module.exports = new WebMailCacheStorage();
+	module.exports = new CacheStorage();
 
 }(module, require));
-},{"./AppSettings.js":54,"Enums":6,"LinkBuilder":9,"Utils":11,"_":26}],59:[function(require,module,exports){
+},{"Enums":6,"LinkBuilder":9,"Storage:Settings":59,"Utils":11,"_":26}],55:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10771,22 +10466,22 @@ module.exports = window;
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('./AppSettings.js'),
-		Cache = require('./WebMailCacheStorage.js'),
+		Settings = require('Storage:Settings'),
+		Cache = require('Storage:RainLoop:Cache'),
 
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 
-		MessageModel = require('../Models/MessageModel.js'),
+		MessageModel = require('Model:Message'),
 
-		LocalStorage = require('./LocalStorage.js'),
-		AbstractData = require('./AbstractData.js')
+		LocalStorage = require('Storage:LocalStorage'),
+		AbstractData = require('Storage:Abstract:Data')
 	;
 
 	/**
 	 * @constructor
 	 * @extends AbstractData
 	 */
-	function WebMailDataStorage()
+	function DataStorage()
 	{
 		AbstractData.call(this);
 
@@ -10879,11 +10574,11 @@ module.exports = window;
 		this.contactsSyncUser = ko.observable('');
 		this.contactsSyncPass = ko.observable('');
 
-		this.allowContactsSync = ko.observable(!!AppSettings.settingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync = ko.observable(!!AppSettings.settingsGet('EnableContactsSync'));
-		this.contactsSyncUrl = ko.observable(AppSettings.settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser = ko.observable(AppSettings.settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass = ko.observable(AppSettings.settingsGet('ContactsSyncPassword'));
+		this.allowContactsSync = ko.observable(!!Settings.settingsGet('ContactsSyncIsAllowed'));
+		this.enableContactsSync = ko.observable(!!Settings.settingsGet('EnableContactsSync'));
+		this.contactsSyncUrl = ko.observable(Settings.settingsGet('ContactsSyncUrl'));
+		this.contactsSyncUser = ko.observable(Settings.settingsGet('ContactsSyncUser'));
+		this.contactsSyncPass = ko.observable(Settings.settingsGet('ContactsSyncPassword'));
 
 		// folders
 		this.namespace = '';
@@ -11227,9 +10922,9 @@ module.exports = window;
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
 	}
 
-	_.extend(WebMailDataStorage.prototype, AbstractData.prototype);
+	_.extend(DataStorage.prototype, AbstractData.prototype);
 
-	WebMailDataStorage.prototype.purgeMessageBodyCache = function()
+	DataStorage.prototype.purgeMessageBodyCache = function()
 	{
 		var
 			iCount = 0,
@@ -11261,32 +10956,32 @@ module.exports = window;
 		}
 	};
 
-	WebMailDataStorage.prototype.populateDataOnStart = function()
+	DataStorage.prototype.populateDataOnStart = function()
 	{
 		AbstractData.prototype.populateDataOnStart.call(this);
 
-		this.accountEmail(AppSettings.settingsGet('Email'));
-		this.accountIncLogin(AppSettings.settingsGet('IncLogin'));
-		this.accountOutLogin(AppSettings.settingsGet('OutLogin'));
-		this.projectHash(AppSettings.settingsGet('ProjectHash'));
+		this.accountEmail(Settings.settingsGet('Email'));
+		this.accountIncLogin(Settings.settingsGet('IncLogin'));
+		this.accountOutLogin(Settings.settingsGet('OutLogin'));
+		this.projectHash(Settings.settingsGet('ProjectHash'));
 
-		this.defaultIdentityID(AppSettings.settingsGet('DefaultIdentityID'));
+		this.defaultIdentityID(Settings.settingsGet('DefaultIdentityID'));
 
-		this.displayName(AppSettings.settingsGet('DisplayName'));
-		this.replyTo(AppSettings.settingsGet('ReplyTo'));
-		this.signature(AppSettings.settingsGet('Signature'));
-		this.signatureToAll(!!AppSettings.settingsGet('SignatureToAll'));
-		this.enableTwoFactor(!!AppSettings.settingsGet('EnableTwoFactor'));
+		this.displayName(Settings.settingsGet('DisplayName'));
+		this.replyTo(Settings.settingsGet('ReplyTo'));
+		this.signature(Settings.settingsGet('Signature'));
+		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
+		this.enableTwoFactor(!!Settings.settingsGet('EnableTwoFactor'));
 
 		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
 
-		this.remoteSuggestions = !!AppSettings.settingsGet('RemoteSuggestions');
+		this.remoteSuggestions = !!Settings.settingsGet('RemoteSuggestions');
 
-		this.devEmail = AppSettings.settingsGet('DevEmail');
-		this.devPassword = AppSettings.settingsGet('DevPassword');
+		this.devEmail = Settings.settingsGet('DevEmail');
+		this.devPassword = Settings.settingsGet('DevPassword');
 	};
 
-	WebMailDataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
+	DataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
 	{
 		if ('INBOX' === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
 		{
@@ -11361,7 +11056,7 @@ module.exports = window;
 		}
 	};
 
-	WebMailDataStorage.prototype.hideMessageBodies = function ()
+	DataStorage.prototype.hideMessageBodies = function ()
 	{
 		var oMessagesBodiesDom = this.messagesBodiesDom();
 		if (oMessagesBodiesDom)
@@ -11374,7 +11069,7 @@ module.exports = window;
 	 * @param {boolean=} bBoot = false
 	 * @returns {Array}
 	 */
-	WebMailDataStorage.prototype.getNextFolderNames = function (bBoot)
+	DataStorage.prototype.getNextFolderNames = function (bBoot)
 	{
 		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
 
@@ -11437,7 +11132,7 @@ module.exports = window;
 	 * @param {string=} sToFolderFullNameRaw = ''
 	 * @param {bCopy=} bCopy = false
 	 */
-	WebMailDataStorage.prototype.removeMessagesFromList = function (
+	DataStorage.prototype.removeMessagesFromList = function (
 		sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
 	{
 		sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
@@ -11531,7 +11226,7 @@ module.exports = window;
 		}
 	};
 
-	WebMailDataStorage.prototype.setMessage = function (oData, bCached)
+	DataStorage.prototype.setMessage = function (oData, bCached)
 	{
 		var
 			bIsHtml = false,
@@ -11691,21 +11386,21 @@ module.exports = window;
 	 * @param {Array} aList
 	 * @returns {string}
 	 */
-	WebMailDataStorage.prototype.calculateMessageListHash = function (aList)
+	DataStorage.prototype.calculateMessageListHash = function (aList)
 	{
 		return _.map(aList, function (oMessage) {
 			return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
 		}).join('|');
 	};
 
-	WebMailDataStorage.prototype.findPublicKeyByHex = function (sHash)
+	DataStorage.prototype.findPublicKeyByHex = function (sHash)
 	{
 		return _.find(this.openpgpkeysPublic(), function (oItem) {
 			return oItem && sHash === oItem.id;
 		});
 	};
 
-	WebMailDataStorage.prototype.findPublicKeysByEmail = function (sEmail)
+	DataStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	{
 		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
 
@@ -11733,7 +11428,7 @@ module.exports = window;
 	 * @param {string=} sPassword
 	 * @returns {?}
 	 */
-	WebMailDataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
+	DataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 	{
 		var
 			oPrivateKey = null,
@@ -11770,16 +11465,305 @@ module.exports = window;
 	 * @param {string=} sPassword
 	 * @returns {?}
 	 */
-	WebMailDataStorage.prototype.findSelfPrivateKey = function (sPassword)
+	DataStorage.prototype.findSelfPrivateKey = function (sPassword)
 	{
 		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
 	};
 
-	module.exports = new WebMailDataStorage();
+	module.exports = new DataStorage();
 
 }(module, require));
 
-},{"$":21,"$div":12,"../Models/MessageModel.js":35,"./AbstractData.js":51,"./AppSettings.js":54,"./LocalStorage.js":55,"./WebMailCacheStorage.js":58,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"NotificationClass":18,"Utils":11,"_":26,"kn":28,"ko":23,"moment":24,"window":27}],60:[function(require,module,exports){
+},{"$":21,"$div":12,"App:Knoin":28,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Message":35,"NotificationClass":18,"Storage:Abstract:Data":50,"Storage:LocalStorage":56,"Storage:RainLoop:Cache":54,"Storage:Settings":59,"Utils":11,"_":26,"ko":23,"moment":24,"window":27}],56:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module, require) {
+
+	'use strict';
+
+	/**
+	 * @constructor
+	 */
+	function LocalStorage()
+	{
+		var
+			_ = require('_'),
+			NextStorageDriver = _.find([
+				require('Storage:LocalStorage:Cookie'),
+				require('Storage:LocalStorage:LocalStorage')
+			], function (NextStorageDriver) {
+				return NextStorageDriver.supported();
+			})
+		;
+
+		this.oDriver = null;
+
+		if (NextStorageDriver)
+		{
+			this.oDriver = new NextStorageDriver();
+		}
+	}
+
+	LocalStorage.prototype.oDriver = null;
+
+	/**
+	 * @param {number} iKey
+	 * @param {*} mData
+	 * @return {boolean}
+	 */
+	LocalStorage.prototype.set = function (iKey, mData)
+	{
+		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
+	};
+
+	/**
+	 * @param {number} iKey
+	 * @return {*}
+	 */
+	LocalStorage.prototype.get = function (iKey)
+	{
+		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
+	};
+
+	module.exports = new LocalStorage();
+
+}(module, require));
+},{"Storage:LocalStorage:Cookie":57,"Storage:LocalStorage:LocalStorage":58,"_":26}],57:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module, require) {
+
+	'use strict';
+
+	var
+		$ = require('$'),
+		JSON = require('JSON'),
+
+		Consts = require('Consts'),
+		Utils = require('Utils')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function CookieDriver()
+	{
+
+	}
+
+	CookieDriver.supported = function ()
+	{
+		return true;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @param {*} mData
+	 * @returns {boolean}
+	 */
+	CookieDriver.prototype.set = function (sKey, mData)
+	{
+		var
+			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			bResult = false,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (!mResult)
+			{
+				mResult = {};
+			}
+
+			mResult[sKey] = mData;
+			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
+				'expires': 30
+			});
+
+			bResult = true;
+		}
+		catch (oException) {}
+
+		return bResult;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @returns {*}
+	 */
+	CookieDriver.prototype.get = function (sKey)
+	{
+		var
+			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (mResult && !Utils.isUnd(mResult[sKey]))
+			{
+				mResult = mResult[sKey];
+			}
+			else
+			{
+				mResult = null;
+			}
+		}
+		catch (oException) {}
+
+		return mResult;
+	};
+
+	module.exports = CookieDriver;
+
+}(module, require));
+},{"$":21,"Consts":5,"JSON":17,"Utils":11}],58:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module, require) {
+
+	'use strict';
+
+	var
+		window = require('window'),
+		JSON = require('JSON'),
+
+		Consts = require('Consts'),
+		Utils = require('Utils')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function LocalStorageDriver()
+	{
+	}
+
+	LocalStorageDriver.supported = function ()
+	{
+		return !!window.localStorage;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @param {*} mData
+	 * @returns {boolean}
+	 */
+	LocalStorageDriver.prototype.set = function (sKey, mData)
+	{
+		var
+			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			bResult = false,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
+			if (!mResult)
+			{
+				mResult = {};
+			}
+
+			mResult[sKey] = mData;
+			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
+
+			bResult = true;
+		}
+		catch (oException) {}
+
+		return bResult;
+	};
+
+	/**
+	 * @param {string} sKey
+	 * @returns {*}
+	 */
+	LocalStorageDriver.prototype.get = function (sKey)
+	{
+		var
+			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mResult = null
+		;
+
+		try
+		{
+			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			if (mResult && !Utils.isUnd(mResult[sKey]))
+			{
+				mResult = mResult[sKey];
+			}
+			else
+			{
+				mResult = null;
+			}
+		}
+		catch (oException) {}
+
+		return mResult;
+	};
+
+	module.exports = LocalStorageDriver;
+
+}(module, require));
+},{"Consts":5,"JSON":17,"Utils":11,"window":27}],59:[function(require,module,exports){
+/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+
+(function (module, require) {
+	
+	'use strict';
+
+	var
+		Utils = require('Utils')
+	;
+
+	/**
+	 * @constructor
+	 */
+	function SettingsStorage()
+	{
+		this.oSettings = require('AppData');
+		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
+	}
+
+	SettingsStorage.prototype.oSettings = null;
+
+	/**
+	 * @param {string} sName
+	 * @return {?}
+	 */
+	SettingsStorage.prototype.settingsGet = function (sName)
+	{
+		return Utils.isUnd(this.oSettings[sName]) ? null : this.oSettings[sName];
+	};
+
+	/**
+	 * @param {string} sName
+	 * @param {?} mValue
+	 */
+	SettingsStorage.prototype.settingsSet = function (sName, mValue)
+	{
+		this.oSettings[sName] = mValue;
+	};
+
+	/**
+	 * @param {string} sName
+	 * @return {boolean}
+	 */
+	SettingsStorage.prototype.capa = function (sName)
+	{
+		var mCapa = this.settingsGet('Capa');
+		return Utils.isArray(mCapa) && Utils.isNormal(sName) && -1 < Utils.inArray(sName, mCapa);
+	};
+
+
+	module.exports = new SettingsStorage();
+
+}(module, require));
+},{"AppData":16,"Utils":11}],60:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11793,10 +11777,10 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -11846,8 +11830,7 @@ module.exports = window;
 				{
 					if (oData.Result)
 					{
-						var App = require('../Apps/AdminApp.js');
-						App.loginAndLogoutReload();
+						require('App:Admin').loginAndLogoutReload();
 					}
 					else if (oData.ErrorCode)
 					{
@@ -11902,7 +11885,7 @@ module.exports = window;
 	module.exports = AdminLoginViewModel;
 
 }(module, require));
-},{"../Apps/AdminApp.js":3,"../Storages/AdminAjaxRemoteStorage.js":52,"Enums":6,"KnoinAbstractViewModel":31,"Utils":11,"_":26,"kn":28,"ko":23}],61:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],61:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11910,9 +11893,9 @@ module.exports = window;
 	'use strict';
 	
 	var
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 		Globals = require('Globals'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -11943,7 +11926,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"Globals":8,"KnoinAbstractViewModel":31,"kn":28}],62:[function(require,module,exports){
+},{"App:Knoin":28,"Globals":8,"Knoin:AbstractViewModel":31}],62:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11953,12 +11936,12 @@ module.exports = window;
 	var
 		ko = require('ko'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/AdminDataStorage.js'),
-		Remote = require('../Storages/AdminAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -11969,8 +11952,8 @@ module.exports = window;
 	{
 		KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
 
-		this.adminDomain = ko.observable(AppSettings.settingsGet('AdminDomain'));
-		this.version = ko.observable(AppSettings.settingsGet('Version'));
+		this.adminDomain = ko.observable(Settings.settingsGet('AdminDomain'));
+		this.version = ko.observable(Settings.settingsGet('Version'));
 
 		this.adminManLoadingVisibility = Data.adminManLoadingVisibility;
 
@@ -11982,15 +11965,14 @@ module.exports = window;
 	AdminPaneViewModel.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
-			var App = require('../Apps/AdminApp.js');
-			App.loginAndLogoutReload();
+			require('App:Admin').loginAndLogoutReload();
 		});
 	};
 
 	module.exports = AdminPaneViewModel;
 
 }(module, require));
-},{"../Apps/AdminApp.js":3,"../Storages/AdminAjaxRemoteStorage.js":52,"../Storages/AdminDataStorage.js":53,"../Storages/AppSettings.js":54,"KnoinAbstractViewModel":31,"kn":28,"ko":23}],63:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Knoin:AbstractViewModel":31,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"ko":23}],63:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12003,12 +11985,12 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js'),
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -12101,7 +12083,7 @@ module.exports = window;
 
 	PopupsActivateViewModel.prototype.onShow = function ()
 	{
-		this.domain(AppSettings.settingsGet('AdminDomain'));
+		this.domain(Settings.settingsGet('AdminDomain'));
 		if (!this.activateProcess())
 		{
 			this.key('');
@@ -12131,7 +12113,7 @@ module.exports = window;
 	module.exports = PopupsActivateViewModel;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"../../Storages/AdminDataStorage.js":53,"../../Storages/AppSettings.js":54,"Enums":6,"KnoinAbstractViewModel":31,"Utils":11,"kn":28,"ko":23}],64:[function(require,module,exports){
+},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"ko":23}],64:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12145,8 +12127,8 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -12262,7 +12244,7 @@ module.exports = window;
 	module.exports = PopupsAskViewModel;
 
 }(module, require));
-},{"Enums":6,"KnoinAbstractViewModel":31,"Utils":11,"key":22,"kn":28,"ko":23}],65:[function(require,module,exports){
+},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Utils":11,"key":22,"ko":23}],65:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12277,10 +12259,10 @@ module.exports = window;
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -12500,9 +12482,7 @@ module.exports = window;
 		{
 			if (oData.Result)
 			{
-				var App = require('../../Apps/AdminApp.js');
-				App.reloadDomainList();
-
+				require('App:Admin').reloadDomainList();
 				this.closeCommand();
 			}
 			else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)
@@ -12583,7 +12563,7 @@ module.exports = window;
 	module.exports = PopupsDomainViewModel;
 
 }(module, require));
-},{"../../Apps/AdminApp.js":3,"../../Storages/AdminAjaxRemoteStorage.js":52,"Consts":5,"Enums":6,"KnoinAbstractViewModel":31,"Utils":11,"_":26,"kn":28,"ko":23}],66:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":28,"Consts":5,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],66:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12596,10 +12576,10 @@ module.exports = window;
 
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -12665,7 +12645,7 @@ module.exports = window;
 	module.exports = PopupsLanguagesViewModel;
 
 }(module, require));
-},{"../../Storages/WebMailDataStorage.js":59,"KnoinAbstractViewModel":31,"Utils":11,"_":26,"kn":28,"ko":23}],67:[function(require,module,exports){
+},{"App:Knoin":28,"Knoin:AbstractViewModel":31,"Storage:RainLoop:Data":55,"Utils":11,"_":26,"ko":23}],67:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12680,12 +12660,10 @@ module.exports = window;
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/AdminAjaxRemoteStorage.js'),
+		Remote = require('Storage:Admin:Remote'),
 
-		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -12807,7 +12785,11 @@ module.exports = window;
 
 	PopupsPluginViewModel.prototype.tryToClosePopup = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			PopupsAskViewModel = require('View:Popup:Ask')
+		;
+
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
@@ -12833,4 +12815,4 @@ module.exports = window;
 	module.exports = PopupsPluginViewModel;
 
 }(module, require));
-},{"../../Storages/AdminAjaxRemoteStorage.js":52,"./PopupsAskViewModel.js":64,"Enums":6,"KnoinAbstractViewModel":31,"Utils":11,"_":26,"key":22,"kn":28,"ko":23}]},{},[1]);
+},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"View:Popup:Ask":64,"_":26,"key":22,"ko":23}]},{},[1]);

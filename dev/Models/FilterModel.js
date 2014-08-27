@@ -8,7 +8,7 @@
 		ko = require('ko'),
 		Enums = require('Enums'),
 		Utils = require('Utils'),
-		FilterConditionModel = require('./FilterConditionModel.js')
+		FilterConditionModel = require('Model:FilterCondition')
 	;
 
 	/**

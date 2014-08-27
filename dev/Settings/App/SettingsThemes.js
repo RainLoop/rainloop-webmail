@@ -14,8 +14,8 @@
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js')
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**

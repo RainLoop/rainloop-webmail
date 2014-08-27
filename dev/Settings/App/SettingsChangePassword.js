@@ -11,7 +11,7 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js')
+		Remote = require('Storage:RainLoop:Remote')
 	;
 
 	/**

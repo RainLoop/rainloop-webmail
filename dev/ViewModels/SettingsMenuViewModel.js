@@ -8,8 +8,8 @@
 		LinkBuilder = require('LinkBuilder'),
 		Globals = require('Globals'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**

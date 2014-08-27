@@ -14,14 +14,12 @@
 		Enums = require('Enums'),
 		LinkBuilder = require('LinkBuilder'),
 
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel'),
-
-		PopupsLanguagesViewModel = require('../ViewModels/Popups/PopupsLanguagesViewModel.js')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -42,9 +40,9 @@
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
 
-		this.logoImg = Utils.trim(AppSettings.settingsGet('LoginLogo'));
-		this.loginDescription = Utils.trim(AppSettings.settingsGet('LoginDescription'));
-		this.logoCss = Utils.trim(AppSettings.settingsGet('LoginCss'));
+		this.logoImg = Utils.trim(Settings.settingsGet('LoginLogo'));
+		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
+		this.logoCss = Utils.trim(Settings.settingsGet('LoginCss'));
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
@@ -133,8 +131,7 @@
 								}
 								else
 								{
-									var App = require('../Apps/RainLoopApp.js');
-									App.loginAndLogoutReload();
+									require('App:RainLoop').loginAndLogoutReload();
 								}
 							}
 							else if (oData.ErrorCode)
@@ -167,7 +164,7 @@
 				}, this)
 			;
 
-			if (!!AppSettings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
+			if (!!Settings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
 			{
 				Remote.getPublicKey(_.bind(function (sResult, oData) {
 
@@ -269,7 +266,7 @@
 				this.emailFocus(true);
 			}
 
-			if (AppSettings.settingsGet('UserLanguage'))
+			if (Settings.settingsGet('UserLanguage'))
 			{
 				$.cookie('rllang', Data.language(), {'expires': 30});
 			}
@@ -287,15 +284,13 @@
 	{
 		var
 			self = this,
-			sJsHash = AppSettings.settingsGet('JsHash'),
+			sJsHash = Settings.settingsGet('JsHash'),
 			fSocial = function (iErrorCode) {
 				iErrorCode = Utils.pInt(iErrorCode);
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-
-					var App = require('../Apps/RainLoopApp.js');
-					App.loginAndLogoutReload();
+					require('App:RainLoop').loginAndLogoutReload();
 				}
 				else
 				{
@@ -304,11 +299,11 @@
 			}
 		;
 
-		this.facebookLoginEnabled(!!AppSettings.settingsGet('AllowFacebookSocial'));
-		this.twitterLoginEnabled(!!AppSettings.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(!!AppSettings.settingsGet('AllowGoogleSocial'));
+		this.facebookLoginEnabled(!!Settings.settingsGet('AllowFacebookSocial'));
+		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
+		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial'));
 
-		switch ((AppSettings.settingsGet('SignMe') || 'unused').toLowerCase())
+		switch ((Settings.settingsGet('SignMe') || 'unused').toLowerCase())
 		{
 			case Enums.LoginSignMeTypeAsString.DefaultOff:
 				this.signMeType(Enums.LoginSignMeType.DefaultOff);
@@ -367,7 +362,7 @@
 
 	LoginViewModel.prototype.selectLanguage = function ()
 	{
-		kn.showScreenPopup(PopupsLanguagesViewModel);
+		kn.showScreenPopup(require('View:Popup:Languages'));
 	};
 
 	module.exports = LoginViewModel;

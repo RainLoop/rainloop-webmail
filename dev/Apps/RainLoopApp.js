@@ -18,30 +18,22 @@
 		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
 
-		kn = require('kn'),
+		kn = require('App:Knoin'),
 
-		LocalStorage = require('../Storages/LocalStorage.js'),
-		AppSettings = require('../Storages/AppSettings.js'),
-		Data = require('../Storages/WebMailDataStorage.js'),
-		Cache = require('../Storages/WebMailCacheStorage.js'),
-		Remote = require('../Storages/WebMailAjaxRemoteStorage.js'),
+		LocalStorage = require('Storage:LocalStorage'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		EmailModel = require('../Models/EmailModel.js'),
-		FolderModel = require('../Models/FolderModel.js'),
-		MessageModel = require('../Models/MessageModel.js'),
-		AccountModel = require('../Models/AccountModel.js'),
-		IdentityModel = require('../Models/IdentityModel.js'),
-		OpenPgpKeyModel = require('../Models/OpenPgpKeyModel.js'),
+		EmailModel = require('Model:Email'),
+		FolderModel = require('Model:Folder'),
+		MessageModel = require('Model:Message'),
+		AccountModel = require('Model:Account'),
+		IdentityModel = require('Model:Identity'),
+		OpenPgpKeyModel = require('Model:OpenPgpKey'),
 
-		PopupsFolderSystemViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
-		PopupsAskViewModel = require('../ViewModels/Popups/PopupsAskViewModel.js'),
-		PopupsComposeViewModel = require('../ViewModels/Popups/PopupsComposeViewModel.js'),
-
-		MailBoxScreen = require('../Screens/MailBoxScreen.js'),
-		SettingsScreen = require('../Screens/SettingsScreen.js'),
-		LoginScreen = require('../Screens/LoginScreen.js'),
-
-		AbstractApp = require('./AbstractApp.js')
+		AbstractApp = require('App:Abstract')
 	;
 
 	/**
@@ -94,7 +86,7 @@
 			Remote.jsVersion(function (sResult, oData) {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
-					if (window.parent && !!AppSettings.settingsGet('InIframe'))
+					if (window.parent && !!Settings.settingsGet('InIframe'))
 					{
 						window.parent.location.reload();
 					}
@@ -103,7 +95,7 @@
 						window.location.reload();
 					}
 				}
-			}, AppSettings.settingsGet('Version'));
+			}, Settings.settingsGet('Version'));
 
 		}, {}, 60 * 60 * 1000);
 
@@ -125,70 +117,70 @@
 
 	RainLoopApp.prototype.setupSettings = function ()
 	{
-		kn.addSettingsViewModel(require('../Settings/App/SettingsGeneral.js'),
+		kn.addSettingsViewModel(require('Settings:RainLoop:General'),
 			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
-		if (AppSettings.settingsGet('ContactsIsAllowed'))
+		if (Settings.settingsGet('ContactsIsAllowed'))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsContacts.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Contacts'),
 				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		if (AppSettings.capa(Enums.Capa.AdditionalAccounts))
+		if (Settings.capa(Enums.Capa.AdditionalAccounts))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsAccounts.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Accounts'),
 				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
 		}
 
-		if (AppSettings.capa(Enums.Capa.AdditionalIdentities))
+		if (Settings.capa(Enums.Capa.AdditionalIdentities))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsIdentities.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Identities'),
 				'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
 		}
 		else
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsIdentity.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Identity'),
 				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 		}
 
-		if (AppSettings.capa(Enums.Capa.Filters))
+		if (Settings.capa(Enums.Capa.Filters))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsFilters.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Filters'),
 				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
-		if (AppSettings.capa(Enums.Capa.TwoFactor))
+		if (Settings.capa(Enums.Capa.TwoFactor))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsSecurity.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Security'),
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if (AppSettings.settingsGet('AllowGoogleSocial') ||
-			AppSettings.settingsGet('AllowFacebookSocial') ||
-			AppSettings.settingsGet('AllowTwitterSocial'))
+		if (Settings.settingsGet('AllowGoogleSocial') ||
+			Settings.settingsGet('AllowFacebookSocial') ||
+			Settings.settingsGet('AllowTwitterSocial'))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsSocial.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Social'),
 				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
 		}
 
-		if (AppSettings.settingsGet('ChangePasswordIsAllowed'))
+		if (Settings.settingsGet('ChangePasswordIsAllowed'))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsChangePassword.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:ChangePassword'),
 				'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
 		}
 
-		kn.addSettingsViewModel(require('../Settings/App/SettingsFolders.js'),
+		kn.addSettingsViewModel(require('Settings:RainLoop:Folders'),
 			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
-		if (AppSettings.capa(Enums.Capa.Themes))
+		if (Settings.capa(Enums.Capa.Themes))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsThemes.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:Themes'),
 				'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
-		if (AppSettings.capa(Enums.Capa.OpenPGP))
+		if (Settings.capa(Enums.Capa.OpenPGP))
 		{
-			kn.addSettingsViewModel(require('../Settings/App/SettingsOpenPGP.js'),
+			kn.addSettingsViewModel(require('Settings:RainLoop:OpenPGP'),
 				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
 		}
 
@@ -425,12 +417,12 @@
 
 		if (!oMoveFolder && bUseFolder)
 		{
-			kn.showScreenPopup(PopupsFolderSystemViewModel, [nSetSystemFoldersNotification]);
+			kn.showScreenPopup(require('View:Popup:FolderSystem'), [nSetSystemFoldersNotification]);
 		}
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
 			(sFromFolderFullNameRaw === Data.spamFolder() || sFromFolderFullNameRaw === Data.trashFolder())))
 		{
-			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
+			kn.showScreenPopup(require('View:Popup:Ask'), [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 				Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
@@ -561,7 +553,7 @@
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
 				var
-					sParentEmail = AppSettings.settingsGet('ParentEmail'),
+					sParentEmail = Settings.settingsGet('ParentEmail'),
 					sAccountEmail = Data.accountEmail()
 				;
 
@@ -1156,31 +1148,31 @@
 				Data.namespace = oData.Result.Namespace;
 			}
 
-			Data.threading(!!AppSettings.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
+			Data.threading(!!Settings.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
 
 			aList = this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']);
 			Data.folderList(aList);
 
 			if (oData.Result['SystemFolders'] &&
-				'' === '' + AppSettings.settingsGet('SentFolder') + AppSettings.settingsGet('DraftFolder') +
-				AppSettings.settingsGet('SpamFolder') + AppSettings.settingsGet('TrashFolder') + AppSettings.settingsGet('ArchiveFolder') +
-				AppSettings.settingsGet('NullFolder'))
+				'' === '' + Settings.settingsGet('SentFolder') + Settings.settingsGet('DraftFolder') +
+				Settings.settingsGet('SpamFolder') + Settings.settingsGet('TrashFolder') + Settings.settingsGet('ArchiveFolder') +
+				Settings.settingsGet('NullFolder'))
 			{
 				// TODO Magic Numbers
-				AppSettings.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
-				AppSettings.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
-				AppSettings.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
-				AppSettings.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
-				AppSettings.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
+				Settings.settingsSet('SentFolder', oData.Result['SystemFolders'][2] || null);
+				Settings.settingsSet('DraftFolder', oData.Result['SystemFolders'][3] || null);
+				Settings.settingsSet('SpamFolder', oData.Result['SystemFolders'][4] || null);
+				Settings.settingsSet('TrashFolder', oData.Result['SystemFolders'][5] || null);
+				Settings.settingsSet('ArchiveFolder', oData.Result['SystemFolders'][12] || null);
 
 				bUpdate = true;
 			}
 
-			Data.sentFolder(fNormalizeFolder(AppSettings.settingsGet('SentFolder')));
-			Data.draftFolder(fNormalizeFolder(AppSettings.settingsGet('DraftFolder')));
-			Data.spamFolder(fNormalizeFolder(AppSettings.settingsGet('SpamFolder')));
-			Data.trashFolder(fNormalizeFolder(AppSettings.settingsGet('TrashFolder')));
-			Data.archiveFolder(fNormalizeFolder(AppSettings.settingsGet('ArchiveFolder')));
+			Data.sentFolder(fNormalizeFolder(Settings.settingsGet('SentFolder')));
+			Data.draftFolder(fNormalizeFolder(Settings.settingsGet('DraftFolder')));
+			Data.spamFolder(fNormalizeFolder(Settings.settingsGet('SpamFolder')));
+			Data.trashFolder(fNormalizeFolder(Settings.settingsGet('TrashFolder')));
+			Data.archiveFolder(fNormalizeFolder(Settings.settingsGet('ArchiveFolder')));
 
 			if (bUpdate)
 			{
@@ -1327,7 +1319,7 @@
 			if (oEmailModel && oEmailModel.email)
 			{
 				oParams = Utils.simpleQueryParser(sQueryString);
-				kn.showScreenPopup(PopupsComposeViewModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+				kn.showScreenPopup(require('View:Popup:Compose'), [Enums.ComposeType.Empty, null, [oEmailModel],
 					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
 					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
 				]);
@@ -1339,6 +1331,32 @@
 		return false;
 	};
 
+	RainLoopApp.prototype.bootstartLoginScreen = function ()
+	{
+		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
+		if (!sCustomLoginLink)
+		{
+			kn.hideLoading();
+
+			kn.startScreens([
+				require('Screen:RainLoop:Login')
+			]);
+
+			Plugins.runHook('rl-start-login-screens');
+			Events.pub('rl.bootstart-login-screens');
+		}
+		else
+		{
+			kn.routeOff();
+			kn.setHash(LinkBuilder.root(), true);
+			kn.routeOff();
+
+			_.defer(function () {
+				window.location.href = sCustomLoginLink;
+			});
+		}
+	};
+
 	RainLoopApp.prototype.bootstart = function ()
 	{
 		AbstractApp.prototype.bootstart.call(this);
@@ -1347,12 +1365,11 @@
 
 		var
 			self = this,
-			sCustomLoginLink = '',
-			sJsHash = AppSettings.settingsGet('JsHash'),
-			iContactsSyncInterval = Utils.pInt(AppSettings.settingsGet('ContactsSyncInterval')),
-			bGoogle = AppSettings.settingsGet('AllowGoogleSocial'),
-			bFacebook = AppSettings.settingsGet('AllowFacebookSocial'),
-			bTwitter = AppSettings.settingsGet('AllowTwitterSocial')
+			sJsHash = Settings.settingsGet('JsHash'),
+			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
+			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
+			bFacebook = Settings.settingsGet('AllowFacebookSocial'),
+			bTwitter = Settings.settingsGet('AllowTwitterSocial')
 		;
 
 		Utils.initOnStartOrLangChange(function () {
@@ -1385,7 +1402,7 @@
 			Events.pub('left-panel.' + (bValue ? 'off' : 'on'));
 		});
 
-		if (!!AppSettings.settingsGet('Auth'))
+		if (!!Settings.settingsGet('Auth'))
 		{
 			this.setTitle(Utils.i18n('TITLES/LOADING'));
 
@@ -1395,7 +1412,7 @@
 
 				if (bValue)
 				{
-					if (window.$LAB && window.crypto && window.crypto.getRandomValues && AppSettings.capa(Enums.Capa.OpenPGP))
+					if (window.$LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 					{
 						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 							if (window.openpgp)
@@ -1414,7 +1431,11 @@
 						Data.capaOpenPGP(false);
 					}
 
-					kn.startScreens([MailBoxScreen, SettingsScreen]);
+					kn.startScreens([
+						require('Screen:RainLoop:MailBox'),
+						require('Screen:RainLoop:Settings'),
+						require('Screen:RainLoop:About')
+					]);
 
 					if (bGoogle || bFacebook || bTwitter)
 					{
@@ -1463,69 +1484,48 @@
 					Plugins.runHook('rl-start-user-screens');
 					Events.pub('rl.bootstart-user-screens');
 
-					if (!!AppSettings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
+					if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 					{
 						_.delay(function () {
 							try {
 								window.navigator.registerProtocolHandler('mailto',
 									window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-									'' + (AppSettings.settingsGet('Title') || 'RainLoop'));
+									'' + (Settings.settingsGet('Title') || 'RainLoop'));
 							} catch(e) {}
 
-							if (AppSettings.settingsGet('MailToEmail'))
+							if (Settings.settingsGet('MailToEmail'))
 							{
-								self.mailToHelper(AppSettings.settingsGet('MailToEmail'));
+								self.mailToHelper(Settings.settingsGet('MailToEmail'));
 							}
 						}, 500);
+					}
+
+					if (!Globals.bMobileDevice)
+					{
+						_.defer(function () {
+							self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
+						});
 					}
 				}
 				else
 				{
-					kn.startScreens([LoginScreen]);
-
-					Plugins.runHook('rl-start-login-screens');
-					Events.pub('rl.bootstart-login-screens');
+					self.bootstartLoginScreen();
 				}
 
 				if (window.SimplePace)
 				{
 					window.SimplePace.set(100);
-				}
-
-				if (!Globals.bMobileDevice)
-				{
-					_.defer(function () {
-						self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
-					});
 				}
 
 			}, this));
 		}
 		else
 		{
-			sCustomLoginLink = Utils.pString(AppSettings.settingsGet('CustomLoginLink'));
-			if (!sCustomLoginLink)
+			this.bootstartLoginScreen();
+
+			if (window.SimplePace)
 			{
-				kn.hideLoading();
-				kn.startScreens([LoginScreen]);
-
-				Plugins.runHook('rl-start-login-screens');
-				Events.pub('rl.bootstart-login-screens');
-
-				if (window.SimplePace)
-				{
-					window.SimplePace.set(100);
-				}
-			}
-			else
-			{
-				kn.routeOff();
-				kn.setHash(LinkBuilder.root(), true);
-				kn.routeOff();
-
-				_.defer(function () {
-					window.location.href = sCustomLoginLink;
-				});
+				window.SimplePace.set(100);
 			}
 		}
 

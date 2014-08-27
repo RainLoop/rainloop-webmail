@@ -2,5 +2,5 @@
 
 (function (require) {
 	'use strict';
-	require('./Boot.js')(require('./Apps/RainLoopApp.js'));
+	require('App:Boot')(require('App:RainLoop'));
 }(require));

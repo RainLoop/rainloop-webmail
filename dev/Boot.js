@@ -10,7 +10,7 @@
 			window = require('window'),
 			_ = require('_'),
 			$ = require('$'),
-			$window = require('$window'),
+			$win = require('$win'),
 			$html = require('$html'),
 
 			Globals = require('Globals'),
@@ -18,7 +18,7 @@
 			Utils = require('Utils'),
 			Enums = require('Enums'),
 
-			EmailModel = require('./Models/EmailModel.js')
+			EmailModel = require('Model:Email')
 		;
 
 		Globals.__APP = App;
@@ -31,8 +31,9 @@
 
 		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
-		$window.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		$window.unload(function () {
+		$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
+		
+		$win.unload(function () {
 			Globals.bUnload = true;
 		});
 
@@ -65,7 +66,7 @@
 						App.bootstart();
 						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
-					}, 50);
+					}, 10);
 				}
 				else
 				{

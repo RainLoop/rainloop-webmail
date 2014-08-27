@@ -6,7 +6,7 @@
 	
 	var
 		_ = require('_'),
-		KnoinAbstractScreen = require('KnoinAbstractScreen')
+		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
 	/**
@@ -15,16 +15,16 @@
 	 */
 	function AdminLoginScreen()
 	{
-		var AdminLoginViewModel = require('../ViewModels/AdminLoginViewModel.js');
-		KnoinAbstractScreen.call(this, 'login', [AdminLoginViewModel]);
+		KnoinAbstractScreen.call(this, 'login', [
+			require('View:Admin:Login')
+		]);
 	}
 
 	_.extend(AdminLoginScreen.prototype, KnoinAbstractScreen.prototype);
 
 	AdminLoginScreen.prototype.onShow = function ()
 	{
-		var App = require('../Apps/AdminApp.js');
-		App.setTitle('');
+		require('App:Admin').setTitle('');
 	};
 
 	module.exports = AdminLoginScreen;

@@ -11,8 +11,8 @@
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/AdminDataStorage.js')
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:Admin:Data')
 	;
 
 	/**
@@ -23,7 +23,7 @@
 		this.determineUserLanguage = Data.determineUserLanguage;
 		this.determineUserDomain = Data.determineUserDomain;
 
-		this.defaultDomain = ko.observable(AppSettings.settingsGet('LoginDefaultDomain'));
+		this.defaultDomain = ko.observable(Settings.settingsGet('LoginDefaultDomain'));
 
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 		this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -33,7 +33,7 @@
 	{
 		var
 			self = this,
-			Remote = require('../../Storages/AdminAjaxRemoteStorage.js')
+			Remote = require('Storage:Admin:Remote')
 		;
 
 		_.delay(function () {

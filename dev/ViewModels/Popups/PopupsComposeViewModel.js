@@ -10,7 +10,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$window = require('$window'),
+		$win = require('$win'),
 		JSON = require('JSON'),
 		Jua = require('Jua'),
 
@@ -20,21 +20,17 @@
 		Globals = require('Globals'),
 		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
-		NewHtmlEditorWrapper = require('NewHtmlEditorWrapper'),
+		HtmlEditor = require('HtmlEditor'),
 
-		AppSettings = require('../../Storages/AppSettings.js'),
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Cache = require('../../Storages/WebMailCacheStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Settings = require('Storage:Settings'),
+		Data = require('Storage:RainLoop:Data'),
+		Cache = require('Storage:RainLoop:Cache'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		ComposeAttachmentModel = require('../../Models/ComposeAttachmentModel.js'),
+		ComposeAttachmentModel = require('Model:ComposeAttachment'),
 
-		PopupsComposeOpenPgpViewModel = require('./PopupsComposeOpenPgpViewModel.js'),
-		PopupsFolderSystemViewModel = require('./PopupsFolderSystemViewModel.js'),
-		PopupsAskViewModel = require('./PopupsAskViewModel.js'),
-
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -45,8 +41,6 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsCompose');
 
-		var App = require('../../Apps/RainLoopApp.js');
-
 		this.oEditor = null;
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
@@ -54,7 +48,7 @@
 		this.bSkipNext = false;
 		this.sReferences = '';
 
-		this.bCapaAdditionalIdentities = AppSettings.capa(Enums.Capa.AdditionalIdentities);
+		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
 
 		var
 			self = this,
@@ -219,7 +213,7 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 
-			App.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+			require('App:RainLoop').deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 			kn.hideScreenPopup(PopupsComposeViewModel);
 
 		}, function () {
@@ -256,7 +250,7 @@
 
 				if ('' === sSentFolder)
 				{
-					kn.showScreenPopup(PopupsFolderSystemViewModel, [Enums.SetSystemFoldersNotification.Sent]);
+					kn.showScreenPopup(require('View:Popup:FolderSystem'), [Enums.SetSystemFoldersNotification.Sent]);
 				}
 				else
 				{
@@ -278,7 +272,7 @@
 							}
 
 							Cache.setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], aFlagsCache);
-							App.reloadFlagsCurrentMessageListAndMessageFromCache();
+							require('App:RainLoop').reloadFlagsCurrentMessageListAndMessageFromCache();
 							Cache.setFolderHash(this.aDraftInfo[2], '');
 						}
 					}
@@ -314,7 +308,7 @@
 
 			if (Data.draftFolderNotEnabled())
 			{
-				kn.showScreenPopup(PopupsFolderSystemViewModel, [Enums.SetSystemFoldersNotification.Draft]);
+				kn.showScreenPopup(require('View:Popup:FolderSystem'), [Enums.SetSystemFoldersNotification.Draft]);
 			}
 			else
 			{
@@ -359,7 +353,7 @@
 			this.triggerForResize();
 		}, this);
 
-		this.dropboxEnabled = ko.observable(!!AppSettings.settingsGet('DropboxApiKey'));
+		this.dropboxEnabled = ko.observable(!!Settings.settingsGet('DropboxApiKey'));
 
 		this.dropboxCommand = Utils.createCommand(this, function () {
 
@@ -386,7 +380,7 @@
 		});
 
 		this.driveEnabled = ko.observable(Globals.bXMLHttpRequestSupported &&
-			!!AppSettings.settingsGet('GoogleClientID') && !!AppSettings.settingsGet('GoogleApiKey'));
+			!!Settings.settingsGet('GoogleClientID') && !!Settings.settingsGet('GoogleApiKey'));
 
 		this.driveVisible = ko.observable(false);
 
@@ -415,8 +409,7 @@
 
 	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
 	{
-		var App = require('../../Apps/RainLoopApp.js');
-		App.getAutocomplete(oData.term, function (aData) {
+		require('App:RainLoop').getAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oEmailItem) {
 				return oEmailItem.toLine(false);
 			}));
@@ -428,7 +421,7 @@
 		if (this.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 		{
 			var self = this;
-			kn.showScreenPopup(PopupsComposeOpenPgpViewModel, [
+			kn.showScreenPopup(require('View:Popup:ComposeOpenPgp'), [
 				function (sResult) {
 					self.editor(function (oEditor) {
 						oEditor.setPlain(sResult);
@@ -446,7 +439,6 @@
 	PopupsComposeViewModel.prototype.reloadDraftFolder = function ()
 	{
 		var
-			App = require('../../Apps/RainLoopApp.js'),
 			sDraftFolder = Data.draftFolder()
 		;
 
@@ -455,11 +447,11 @@
 			Cache.setFolderHash(sDraftFolder, '');
 			if (Data.currentFolderFullNameRaw() === sDraftFolder)
 			{
-				App.reloadMessageList(true);
+				require('App:RainLoop').reloadMessageList(true);
 			}
 			else
 			{
-				App.folderInformation(sDraftFolder);
+				require('App:RainLoop').folderInformation(sDraftFolder);
 			}
 		}
 	};
@@ -715,7 +707,7 @@
 			if (!this.oEditor && this.composeEditorArea())
 			{
 				_.delay(function () {
-					self.oEditor = new NewHtmlEditorWrapper(self.composeEditorArea(), null, function () {
+					self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
 						fOnInit(self.oEditor);
 					}, function (bHtml) {
 						self.isHtml(!!bHtml);
@@ -1016,7 +1008,11 @@
 
 	PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	{
-		var self = this;
+		var 
+			self = this,
+			PopupsAskViewModel = require('View:Popup:Ask')
+		;
+		
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
@@ -1060,7 +1056,7 @@
 			return false;
 		});
 
-		$window.on('resize', function () {
+		$win.on('resize', function () {
 			self.triggerForResize();
 		});
 
@@ -1069,7 +1065,7 @@
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
 			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
-			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', AppSettings.settingsGet('DropboxApiKey'));
+			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', Settings.settingsGet('DropboxApiKey'));
 
 			window.document.body.appendChild(oScript);
 		}
@@ -1168,7 +1164,7 @@
 							new window.google.picker.DocsView()
 								.setIncludeFolders(true)
 						)
-						.setAppId(AppSettings.settingsGet('GoogleClientID'))
+						.setAppId(Settings.settingsGet('GoogleClientID'))
 						.setOAuthToken(oOauthToken.access_token)
 						.setCallback(_.bind(self.driveCallback, self, oOauthToken.access_token))
 						.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
@@ -1193,7 +1189,7 @@
 				if (!oAuthToken)
 				{
 					window.gapi.auth.authorize({
-						'client_id': AppSettings.settingsGet('GoogleClientID'),
+						'client_id': Settings.settingsGet('GoogleClientID'),
 						'scope': 'https://www.googleapis.com/auth/drive.readonly',
 						'immediate': true
 					}, function (oAuthResult) {
@@ -1208,7 +1204,7 @@
 						else
 						{
 							window.gapi.auth.authorize({
-								'client_id': AppSettings.settingsGet('GoogleClientID'),
+								'client_id': Settings.settingsGet('GoogleClientID'),
 								'scope': 'https://www.googleapis.com/auth/drive.readonly',
 								'immediate': false
 							}, function (oAuthResult) {
@@ -1261,7 +1257,7 @@
 		{
 			var
 				oUploadCache = {},
-				iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
+				iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 				oJua = new Jua({
 					'action': LinkBuilder.upload(),
 					'name': 'uploader',
@@ -1510,7 +1506,7 @@
 					});
 				};
 			},
-			iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
+			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			mSize = oDropboxFile['bytes']
 		;
 
@@ -1571,7 +1567,7 @@
 					});
 				};
 			},
-			iAttachmentSizeLimit = Utils.pInt(AppSettings.settingsGet('AttachmentLimit')),
+			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			oAttachment = null,
 			mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
 		;

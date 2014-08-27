@@ -11,11 +11,11 @@
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 
-		Data = require('../../Storages/WebMailDataStorage.js'),
-		Remote = require('../../Storages/WebMailAjaxRemoteStorage.js'),
+		Data = require('Storage:RainLoop:Data'),
+		Remote = require('Storage:RainLoop:Remote'),
 
-		kn = require('kn'),
-		KnoinAbstractViewModel = require('KnoinAbstractViewModel')
+		kn = require('App:Knoin'),
+		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
 	/**
@@ -65,7 +65,6 @@
 		this.createFolder = Utils.createCommand(this, function () {
 
 			var
-				App = require('../../Apps/RainLoopApp.js'),
 				sParentFolderName = this.selectedParentValue()
 			;
 
@@ -80,7 +79,7 @@
 				Data.foldersCreating(false);
 				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 				{
-					App.folders();
+					require('App:RainLoop').folders();
 				}
 				else
 				{

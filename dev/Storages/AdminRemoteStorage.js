@@ -7,28 +7,28 @@
 	var
 		_ = require('_'),
 
-		AbstractAjaxRemoteStorage = require('./AbstractAjaxRemoteStorage.js')
+		AbstractRemoteStorage = require('Storage:Abstract:Remote')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractAjaxRemoteStorage
+	 * @extends AbstractRemoteStorage
 	 */
-	function AdminAjaxRemoteStorage()
+	function AdminRemoteStorage()
 	{
-		AbstractAjaxRemoteStorage.call(this);
+		AbstractRemoteStorage.call(this);
 
 		this.oRequests = {};
 	}
 
-	_.extend(AdminAjaxRemoteStorage.prototype, AbstractAjaxRemoteStorage.prototype);
+	_.extend(AdminRemoteStorage.prototype, AbstractRemoteStorage.prototype);
 
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sLogin
 	 * @param {string} sPassword
 	 */
-	AdminAjaxRemoteStorage.prototype.adminLogin = function (fCallback, sLogin, sPassword)
+	AdminRemoteStorage.prototype.adminLogin = function (fCallback, sLogin, sPassword)
 	{
 		this.defaultRequest(fCallback, 'AdminLogin', {
 			'Login': sLogin,
@@ -39,7 +39,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.adminLogout = function (fCallback)
+	AdminRemoteStorage.prototype.adminLogout = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminLogout');
 	};
@@ -48,7 +48,7 @@
 	 * @param {?Function} fCallback
 	 * @param {?} oData
 	 */
-	AdminAjaxRemoteStorage.prototype.saveAdminConfig = function (fCallback, oData)
+	AdminRemoteStorage.prototype.saveAdminConfig = function (fCallback, oData)
 	{
 		this.defaultRequest(fCallback, 'AdminSettingsUpdate', oData);
 	};
@@ -56,7 +56,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.domainList = function (fCallback)
+	AdminRemoteStorage.prototype.domainList = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainList');
 	};
@@ -64,7 +64,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.pluginList = function (fCallback)
+	AdminRemoteStorage.prototype.pluginList = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminPluginList');
 	};
@@ -72,7 +72,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.packagesList = function (fCallback)
+	AdminRemoteStorage.prototype.packagesList = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminPackagesList');
 	};
@@ -80,7 +80,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.coreData = function (fCallback)
+	AdminRemoteStorage.prototype.coreData = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminCoreData');
 	};
@@ -88,7 +88,7 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.updateCoreData = function (fCallback)
+	AdminRemoteStorage.prototype.updateCoreData = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
 	};
@@ -97,7 +97,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Object} oPackage
 	 */
-	AdminAjaxRemoteStorage.prototype.packageInstall = function (fCallback, oPackage)
+	AdminRemoteStorage.prototype.packageInstall = function (fCallback, oPackage)
 	{
 		this.defaultRequest(fCallback, 'AdminPackageInstall', {
 			'Id': oPackage.id,
@@ -110,7 +110,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Object} oPackage
 	 */
-	AdminAjaxRemoteStorage.prototype.packageDelete = function (fCallback, oPackage)
+	AdminRemoteStorage.prototype.packageDelete = function (fCallback, oPackage)
 	{
 		this.defaultRequest(fCallback, 'AdminPackageDelete', {
 			'Id': oPackage.id
@@ -121,7 +121,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sName
 	 */
-	AdminAjaxRemoteStorage.prototype.domain = function (fCallback, sName)
+	AdminRemoteStorage.prototype.domain = function (fCallback, sName)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainLoad', {
 			'Name': sName
@@ -132,7 +132,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sName
 	 */
-	AdminAjaxRemoteStorage.prototype.plugin = function (fCallback, sName)
+	AdminRemoteStorage.prototype.plugin = function (fCallback, sName)
 	{
 		this.defaultRequest(fCallback, 'AdminPluginLoad', {
 			'Name': sName
@@ -143,7 +143,7 @@
 	 * @param {?Function} fCallback
 	 * @param {string} sName
 	 */
-	AdminAjaxRemoteStorage.prototype.domainDelete = function (fCallback, sName)
+	AdminRemoteStorage.prototype.domainDelete = function (fCallback, sName)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainDelete', {
 			'Name': sName
@@ -155,7 +155,7 @@
 	 * @param {string} sName
 	 * @param {boolean} bDisabled
 	 */
-	AdminAjaxRemoteStorage.prototype.domainDisable = function (fCallback, sName, bDisabled)
+	AdminRemoteStorage.prototype.domainDisable = function (fCallback, sName, bDisabled)
 	{
 		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
 			'Name': sName,
@@ -167,7 +167,7 @@
 	 * @param {?Function} fCallback
 	 * @param {Object} oConfig
 	 */
-	AdminAjaxRemoteStorage.prototype.pluginSettingsUpdate = function (fCallback, oConfig)
+	AdminRemoteStorage.prototype.pluginSettingsUpdate = function (fCallback, oConfig)
 	{
 		return this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
 	};
@@ -176,7 +176,7 @@
 	 * @param {?Function} fCallback
 	 * @param {boolean} bForce
 	 */
-	AdminAjaxRemoteStorage.prototype.licensing = function (fCallback, bForce)
+	AdminRemoteStorage.prototype.licensing = function (fCallback, bForce)
 	{
 		return this.defaultRequest(fCallback, 'AdminLicensing', {
 			'Force' : bForce ? '1' : '0'
@@ -188,7 +188,7 @@
 	 * @param {string} sDomain
 	 * @param {string} sKey
 	 */
-	AdminAjaxRemoteStorage.prototype.licensingActivate = function (fCallback, sDomain, sKey)
+	AdminRemoteStorage.prototype.licensingActivate = function (fCallback, sDomain, sKey)
 	{
 		return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
 			'Domain' : sDomain,
@@ -201,7 +201,7 @@
 	 * @param {string} sName
 	 * @param {boolean} bDisabled
 	 */
-	AdminAjaxRemoteStorage.prototype.pluginDisable = function (fCallback, sName, bDisabled)
+	AdminRemoteStorage.prototype.pluginDisable = function (fCallback, sName, bDisabled)
 	{
 		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
 			'Name': sName,
@@ -209,7 +209,7 @@
 		});
 	};
 
-	AdminAjaxRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
+	AdminRemoteStorage.prototype.createOrUpdateDomain = function (fCallback,
 		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
 		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, sWhiteList)
 	{
@@ -229,7 +229,7 @@
 		});
 	};
 
-	AdminAjaxRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
+	AdminRemoteStorage.prototype.testConnectionForDomain = function (fCallback, sName,
 		sIncHost, iIncPort, sIncSecure,
 		sOutHost, iOutPort, sOutSecure, bOutAuth)
 	{
@@ -249,7 +249,7 @@
 	 * @param {?Function} fCallback
 	 * @param {?} oData
 	 */
-	AdminAjaxRemoteStorage.prototype.testContacts = function (fCallback, oData)
+	AdminRemoteStorage.prototype.testContacts = function (fCallback, oData)
 	{
 		this.defaultRequest(fCallback, 'AdminContactsTest', oData);
 	};
@@ -258,7 +258,7 @@
 	 * @param {?Function} fCallback
 	 * @param {?} oData
 	 */
-	AdminAjaxRemoteStorage.prototype.saveNewAdminPassword = function (fCallback, oData)
+	AdminRemoteStorage.prototype.saveNewAdminPassword = function (fCallback, oData)
 	{
 		this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
 	};
@@ -266,11 +266,11 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	AdminAjaxRemoteStorage.prototype.adminPing = function (fCallback)
+	AdminRemoteStorage.prototype.adminPing = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'AdminPing');
 	};
 
-	module.exports = new AdminAjaxRemoteStorage();
+	module.exports = new AdminRemoteStorage();
 
 }(module, require));
