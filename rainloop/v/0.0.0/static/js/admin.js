@@ -2562,7 +2562,7 @@
 	Utils.replySubjectAdd = function (sPrefix, sSubject)
 	{
 		sPrefix = Utils.trim(sPrefix.toUpperCase());
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		var
 			iIndex = 0,
@@ -2641,7 +2641,7 @@
 			oMatch = null
 		;
 
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		do
 		{
@@ -2660,7 +2660,7 @@
 		}
 		while (oMatch || 0 < iLimit);
 
-		return sSubject.replace(/[\s]+/, ' ');
+		return sSubject.replace(/[\s]+/g, ' ');
 	};
 
 	/**
@@ -2709,7 +2709,7 @@
 			oMatch = null
 		;
 
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/, ' '));
+		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		do
 		{
@@ -2731,7 +2731,7 @@
 		}
 		while (oMatch);
 
-		sSubject = sSubject.replace(/[\s]+/, ' ');
+		sSubject = sSubject.replace(/[\s]+/g, ' ');
 		return sSubject;
 	};
 
@@ -3389,7 +3389,7 @@
 	Utils.convertLangName = function (sLanguage, bEng)
 	{
 		return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
-			sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/, '_'), null, sLanguage);
+			sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'), null, sLanguage);
 	};
 
 	/**
@@ -3572,7 +3572,7 @@
 				sText = splitPlainText($.trim(sText));
 				sText = '> ' + sText.replace(/\n/gm, '\n> ');
 				return sText.replace(/(^|\n)([> ]+)/gm, function () {
-					return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/, '')) + ' ' : '';
+					return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/g, '')) + ' ' : '';
 				});
 			},
 
@@ -6413,8 +6413,8 @@ module.exports = window;
 		$sComment = Utils.trim($sComment).replace(/^[(]+/, '').replace(/[)]+$/, '');
 
 		// Remove backslash
-		$sName = $sName.replace(/\\\\(.)/, '$1');
-		$sComment = $sComment.replace(/\\\\(.)/, '$1');
+		$sName = $sName.replace(/\\\\(.)/g, '$1');
+		$sComment = $sComment.replace(/\\\\(.)/g, '$1');
 
 		this.name = $sName;
 		this.email = $sEmail;

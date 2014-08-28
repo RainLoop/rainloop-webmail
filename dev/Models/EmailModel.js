@@ -355,8 +355,8 @@
 		$sComment = Utils.trim($sComment).replace(/^[(]+/, '').replace(/[)]+$/, '');
 
 		// Remove backslash
-		$sName = $sName.replace(/\\\\(.)/, '$1');
-		$sComment = $sComment.replace(/\\\\(.)/, '$1');
+		$sName = $sName.replace(/\\\\(.)/g, '$1');
+		$sComment = $sComment.replace(/\\\\(.)/g, '$1');
 
 		this.name = $sName;
 		this.email = $sEmail;

@@ -655,18 +655,18 @@
 				sSignature = sSignature.substr(6);
 			}
 
-			sSignature = sSignature.replace(/[\r]/, '');
+			sSignature = sSignature.replace(/[\r]/g, '');
 
 			sFrom = Utils.pString(sFrom);
 			if ('' !== sFrom)
 			{
-				sSignature = sSignature.replace(/{{FROM}}/, sFrom);
+				sSignature = sSignature.replace(/{{FROM}}/g, sFrom);
 			}
 
-			sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/, '{{FROM}}');
+			sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
 
-			sSignature = sSignature.replace(/{{FROM}}/, '');
-			sSignature = sSignature.replace(/{{DATE}}/, moment().format('llll'));
+			sSignature = sSignature.replace(/{{FROM}}/g, '');
+			sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
 
 			if (sData && Enums.ComposeType.Empty === sComposeType &&
 				-1 < sSignature.indexOf('{{DATA}}'))
@@ -675,7 +675,7 @@
 				sSignature = sSignature.replace('{{DATA}}', sData);
 			}
 
-			sSignature = sSignature.replace(/{{DATA}}/, '');
+			sSignature = sSignature.replace(/{{DATA}}/g, '');
 
 			if (!bHtml)
 			{
