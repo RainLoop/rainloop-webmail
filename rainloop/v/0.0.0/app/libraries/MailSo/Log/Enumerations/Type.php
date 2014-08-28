@@ -17,4 +17,5 @@ class Type
 	const NOTE = 5;
 	const TIME = 6;
 	const MEMORY = 7;
+	const TIME_DELTA = 8;
 }

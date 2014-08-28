@@ -157,11 +157,18 @@ class Logger extends \MailSo\Base\Collection
 		if ($this->bUsed)
 		{
 			$aStatistic = \MailSo\Base\Loader::Statistic();
-//			$this->WriteDump($aStatistic, \MailSo\Log\Enumerations\Type::INFO);
-			if (\is_array($aStatistic) && isset($aStatistic['php']['memory_get_peak_usage']))
+			if (\is_array($aStatistic))
 			{
-				$this->Write('Memory peak usage: '.$aStatistic['php']['memory_get_peak_usage'],
-					\MailSo\Log\Enumerations\Type::MEMORY);
+				if (isset($aStatistic['php']['memory_get_peak_usage']))
+				{
+					$this->Write('Memory peak usage: '.$aStatistic['php']['memory_get_peak_usage'],
+						\MailSo\Log\Enumerations\Type::MEMORY);
+				}
+				
+				if (isset($aStatistic['time']))
+				{
+					$this->Write('Time delta: '.$aStatistic['time'], \MailSo\Log\Enumerations\Type::TIME_DELTA);
+				}
 			}
 		}
 	}

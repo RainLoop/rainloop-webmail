@@ -101,10 +101,12 @@ class Loader
 					Utils::FormatFileSize(\memory_get_peak_usage(true), 2);
 			}
 
-			self::SetStatistic('TimeDelta', \microtime(true) - self::GetStatistic('Inited'));
+			$iTimeDelta = \microtime(true) - self::GetStatistic('Inited');
+			self::SetStatistic('TimeDelta', $iTimeDelta);
 
 			$aResult['statistic'] = self::$aSetStatistic;
 			$aResult['counts'] = self::$aIncStatistic;
+			$aResult['time'] = $iTimeDelta;
 		}
 
 		return $aResult;

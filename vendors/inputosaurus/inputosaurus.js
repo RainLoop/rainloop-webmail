@@ -175,7 +175,7 @@
 						var menu = $(this).data('ui-autocomplete').menu,
 							$menuItems;
 
-						menu.element.width(widget.elements.ul.outerWidth());
+						menu.element.width(widget.elements.ul.outerWidth() - 6);
 
 						// auto-activate the result if it's the only one
 						if(widget.options.activateFinalResult){

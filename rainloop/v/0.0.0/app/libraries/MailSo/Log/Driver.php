@@ -79,6 +79,7 @@ abstract class Driver
 			\MailSo\Log\Enumerations\Type::SECURE => '[SECURE]',
 			\MailSo\Log\Enumerations\Type::NOTE => '[NOTE]',
 			\MailSo\Log\Enumerations\Type::TIME => '[TIME]',
+			\MailSo\Log\Enumerations\Type::TIME_DELTA => '[TIME]',
 			\MailSo\Log\Enumerations\Type::MEMORY => '[MEMORY]',
 			\MailSo\Log\Enumerations\Type::NOTICE => '[NOTICE]',
 			\MailSo\Log\Enumerations\Type::WARNING => '[WARNING]',
