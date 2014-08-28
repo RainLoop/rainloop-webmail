@@ -7182,7 +7182,7 @@ html.rl-ctrl-key-pressed .btn-group.open .hidden-on-ctrl-btn {
 #rl-loading,
 #rl-loading-error {
   position: absolute;
-  font: 30px Tahoma;
+  font-size: 30px;
   top: 50%;
   width: 100%;
   height: 65px;
