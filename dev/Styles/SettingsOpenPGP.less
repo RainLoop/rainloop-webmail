@@ -24,7 +24,7 @@
 		.open-pgp-key-id, .open-pgp-key-user {
 			display: inline-block;
 			word-break: break-all;
-			.box-sizing(border-box);
+			box-sizing: border-box;
 			line-height: 22px;
 			cursor: default;
 		}
@@ -36,20 +36,20 @@
 			margin-right: 15px;
 			margin-top: 5px;
 			visibility: hidden;
-			.opacity(0);
+			opacity: 0;
 		}
 
 		.delete-access {
 			&.button-delete {
 				visibility: visible;
 				margin-right: 0;
-				.opacity(100);
+				opacity: 1;
 			}
 		}
 
 		.delete-open-pgp-key, .view-open-pgp-key {
 			cursor: pointer;
-			.opacity(50);
+			opacity: 0.5;
 		}
 	}
 }

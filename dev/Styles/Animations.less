@@ -1,50 +1,16 @@
 
 .rl-strip-animation(@rgba, @stripOpacity) {
-	background-image: -webkit-linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-						transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-						transparent 75%, transparent);
-	background-image: -moz-linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-						transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-						transparent 75%, transparent);
-	background-image: -ms-linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-						transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-						transparent 75%, transparent);
-	background-image: -o-linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-						transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-						transparent 75%, transparent);
 	background-image: linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-						transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-						transparent 75%, transparent);
+		transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
+		transparent 75%, transparent);
 }
 
 @keyframes highlight-folder-row {
-	0% {transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
-}
-@-moz-keyframes highlight-folder-row {
-	0% { -moz-transform: scale(1); } 50% { -moz-transform: scale(1.1); } 100% { -moz-transform: scale(1); }
-}
-@-webkit-keyframes highlight-folder-row {
-	0% { -webkit-transform: scale(1); } 50% { -webkit-transform: scale(1.1); } 100% { -webkit-transform: scale(1); }
-}
-
-@-webkit-keyframes textLoadingAnimationKeyFrame {
-	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
-}
-
-@-moz-keyframes textLoadingAnimationKeyFrame {
-	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
+	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
 }
 
 @keyframes textLoadingAnimationKeyFrame {
 	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
-}
-
-@-webkit-keyframes animate-stripes {
-	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
-}
-
-@-moz-keyframes animate-stripes {
-	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
 @keyframes animate-stripes {
@@ -52,13 +18,11 @@
 }
 
 html.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
-	-webkit-transform: translateY(-30px);
-	-moz-transform: translateY(-30px);
 	transform: translateY(-30px);
 }
 
 html.rl-started-trigger.no-mobile #rl-content {
-	.opacity(70);
+	opacity: 0.7;
 }
 
 #rl-loading {
@@ -95,14 +59,8 @@ html.rl-started-trigger.no-mobile #rl-content {
 	}
 
 	&.rgba.cssanimations.backgroundsize .e-strip-animation {
-		-webkit-background-size: 60px 60px;
-		-moz-background-size: 60px 60px;
 		background-size: 60px 60px;
-
 		.rl-strip-animation(0, 0.1);
-
-		-webkit-animation: animate-stripes 2s linear infinite;
-		-moz-animation: animate-stripes 2s linear infinite;
 		animation: animate-stripes 2s linear infinite;
 	}
 
@@ -110,47 +68,7 @@ html.rl-started-trigger.no-mobile #rl-content {
 		.transition(all 0.2s linear);
 	}
 
-/*	&.csstransitions .b-settings-folders {
-		.folder-item {
-			.button-delete {
-				.transition(all 0.2s linear);
-			}
-		}
-	}
-
-	&.csstransitions .b-settings-accounts {
-		.account-item {
-			.button-delete {
-				.transition(all 0.2s linear);
-			}
-		}
-	}
-
-	&.csstransitions .b-settings-identities {
-		.identity-item {
-			.button-delete {
-				.transition(all 0.2s linear);
-			}
-		}
-	}
-
-	&.csstransitions .b-admin-domains {
-		.e-item {
-			.button-delete {
-				.transition(all 0.2s linear);
-			}
-		}
-	}
-
-	&.csstransitions .b-compose {
-		.button-delete {
-			.transition(margin-left 0.2s linear);
-		}
-	}*/
-
 	&.cssanimations .b-folders .e-item .anim-action-class {
-		-webkit-animation: highlight-folder-row 0.5s linear;
-		-moz-animation: highlight-folder-row 0.5s linear;
 		animation: highlight-folder-row 0.5s linear;
 	}
 
@@ -184,46 +102,30 @@ html.rl-started-trigger.no-mobile #rl-content {
 	}
 
 	&.csstransitions .modal.fade {
-		.transition(all 0.2s ease-out);
 		
-		-webkit-transform: translateY(-20px);
-		-moz-transform: translateY(-20px);
+		.transition(all 0.2s ease-out);
 		transform: translateY(-20px);
 
 		&.in {
-			-webkit-transform: none;
-			-moz-transform: none;
 			transform: none;
 		}
 	}
 
 	&.cssanimations .b-compose.loading .b-header-toolbar {
-		-webkit-background-size: 60px 60px;
-		-moz-background-size: 60px 60px;
 		background-size: 60px 60px;
-
 		.rl-strip-animation(255, 0.2);
-
-		-webkit-animation: animate-stripes 2s linear infinite;
-		-moz-animation: animate-stripes 2s linear infinite;
 		animation: animate-stripes 2s linear infinite;
 	}
 }
 
 .textLoadingAnimationD1, .textLoadingAnimationD2, .textLoadingAnimationD3 {
-	-webkit-animation: textLoadingAnimationKeyFrame 1s linear infinite 0s;
-	-moz-animation: textLoadingAnimationKeyFrame 1s linear infinite 0s;
 	animation: textLoadingAnimationKeyFrame 1s linear infinite 0s;
 }
 
 .textLoadingAnimationD2 {
-	-webkit-animation-delay: 0.3s;
-	-moz-animation-delay: 0.3s;
 	animation-delay: 0.3s;
 }
 
 .textLoadingAnimationD3 {
-	-webkit-animation-delay: 0.6s;
-	-moz-animation-delay: 0.6s;
 	animation-delay: 0.6s;
 }

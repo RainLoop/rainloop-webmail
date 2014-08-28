@@ -21,7 +21,7 @@
 		.domain-name {
 			display: inline-block;
 			word-break: break-all;
-			.box-sizing(border-box);
+			box-sizing: border-box;
 		}
 
 		&.disabled .domain-name {
@@ -31,29 +31,29 @@
 		.button-delete {
 			margin-right: 15px;
 			visibility: hidden;
-			.opacity(0);
+			opacity: 0;
 		}
 
 		.delete-access {
 			&.button-delete {
 				visibility: visible;
 				margin-right: 0;
-				.opacity(100);
+				opacity: 1;
 			}
 		}
 
 		.delete-domain, .disabled-domain {
 			cursor: pointer;
-			.opacity(50);
+			opacity: 0.5;
 		}
 
 		&.disabled .disabled-domain {
-			.opacity(50);
+			opacity: 0.5;
 		}
 
 		.delete-domain, .disabled-domain {
 			&:hover {
-				.opacity(100);
+				opacity: 1;
 			}
 		}
 	}

@@ -37,7 +37,9 @@ var
 	footer = require('gulp-footer'),
 	rename = require('gulp-rename'),
 	minifyCss = require('gulp-minify-css'),
+	csslint = require('gulp-csslint'),
 	less = require('gulp-less'),
+	autoprefixer = require('gulp-autoprefixer'),
 	jshint = require('gulp-jshint'),
 	uglify = require('gulp-uglify'),
 	gutil = require('gulp-util')
@@ -92,7 +94,6 @@ cfg.paths.less = {
 cfg.paths.css = {
 	main: {
 		name: 'app.css',
-		name_min: 'app.min.css',
 		src: [
 			'vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css',
 			'vendors/normalize/normalize.css',
@@ -169,12 +170,10 @@ cfg.paths.js = {
 		]
 	},
 	app: {
-		name: 'app.js',
-		name_min: 'app.min.js'
+		name: 'app.js'
 	},
 	admin: {
-		name: 'admin.js',
-		name_min: 'admin.min.js'
+		name: 'admin.js'
 	}
 };
 
@@ -191,13 +190,17 @@ gulp.task('less:main', function() {
 gulp.task('css:main', ['less:main'], function() {
 	return gulp.src(cfg.paths.css.main.src)
 		.pipe(concat(cfg.paths.css.main.name))
-		.pipe(gulp.dest(cfg.paths.staticCSS));
+		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
+//		.pipe(csslint())
+//		.pipe(csslint.reporter())
+		.pipe(gulp.dest(cfg.paths.staticCSS))
+	;
 });
 
 gulp.task('css:main:min', ['css:main'], function() {
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
 		.pipe(minifyCss())
-		.pipe(rename(cfg.paths.css.main.name_min))
+		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
 
@@ -260,16 +263,16 @@ gulp.task('js:admin', function() {
 // - min
 gulp.task('js:app:min', ['js:app'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
-		.pipe(rename(cfg.paths.js.app.name_min))
 		.pipe(uglify(cfg.uglify))
+		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });
 
 gulp.task('js:admin:min', ['js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
-		.pipe(rename(cfg.paths.js.admin.name_min))
 		.pipe(uglify(cfg.uglify))
+		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });

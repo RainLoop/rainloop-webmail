@@ -201,6 +201,8 @@
 		"gulp-footer": "*",
 		"gulp-streamify": "*",
 		"gulp-minify-css": "*",
+		"gulp-autoprefixer": "*",
+		"gulp-csslint": "*",
 		"gulp-concat-util": "*"
 
 	}

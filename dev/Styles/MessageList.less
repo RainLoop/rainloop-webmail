@@ -62,8 +62,8 @@ html.rl-no-preview-pane {
 
 		border: @rlMainBorderSize solid @rlMainDarkColor;
 
-		.box-shadow(@rlMainShadow);
-		.border-radius(@rlMainBorderRadius);
+		box-shadow: @rlMainShadow;
+		border-radius: @rlMainBorderRadius;
 		z-index: 101;
 	}
 
@@ -124,7 +124,7 @@ html.rl-no-preview-pane {
 		overflow-y: auto;
 		z-index: 101;
 
-		.box-sizing(border-box);
+		box-sizing: border-box;
 
 		background-color: #fff;
 
@@ -320,7 +320,7 @@ html.rl-no-preview-pane {
 				padding: 1px 5px;
 				margin-right: 5px;
 				border: 1px solid #ccc;
-				.border-radius(5px);
+				border-radius: 5px;
 			}
 
 			.threadsCountParent.lastSelected {
@@ -390,9 +390,9 @@ html.rl-no-preview-pane {
 			}
 
 			.flagOff {
-				.opacity(50);
+				opacity: 0.5;
 				&:hover {
-					.opacity(100);
+					opacity: 1;
 				}
 			}
 
@@ -492,7 +492,7 @@ html.rl-no-preview-pane {
 				
 				+ .messageListItem .delimiter {
 					background-color: #398CF2;
-					.opacity(30);
+					opacity: 0.3;
 				}
 			}
 			
@@ -521,7 +521,7 @@ html.rl-no-preview-pane {
 			background-color: #000;
 		}
 		.b-content {
-			.opacity(97);
+			opacity: 0.97;
 		}
 	}
 

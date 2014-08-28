@@ -22,7 +22,6 @@ label.inline {
 	border: 0;
 	border-bottom: 1px solid #e5e5e5;
 
-	// Small
 	small {
 	  font-size: @baseLineHeight * .75;
 	  color: @grayLight;
@@ -64,7 +63,7 @@ select {
 }
 
 .dropdown-menu {
-	.border-radius(@btnBorderRadius);
+	border-radius: @btnBorderRadius;
 }
 
 .btn-group + .btn-group {
@@ -72,18 +71,17 @@ select {
 }
 
 .btn {
-	.border-radius(@btnBorderRadius);
+	border-radiu: @btnBorderRadius;
 	background-image: none;
 	padding-left: 13px;
 	padding-right: 13px;
 
 	&.disabled, &[disabled] {
-		.opacity(75);
-		.box-shadow(~"inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05)");
+		opacity: 0.75;
+		box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 	}
 
 	text-shadow: 0 1px 0 #fff;
-
 	border-color: rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.25);
 
 //	&:active {
@@ -115,8 +113,8 @@ html.rgba.textshadow {
 }
 
 .dropdown-menu {
-  .border-radius(0);
-  .box-shadow(0px 1px 2px rgba(0,0,0,0.2));
+  border-radius: 0;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.2);
 }
 
 .tooltip {
@@ -126,7 +124,7 @@ html.rgba.textshadow {
 	text-overflow: ellipsis;
 
 	&.in {
-		.opacity(100);
+		opacity: 1;
 	}
 
 	.tooltip-class {
@@ -136,7 +134,7 @@ html.rgba.textshadow {
 		max-width: 400px;
 		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 		padding: 5px 10px;
-		.border-radius(2px);
+		border-radius: 2px;
 	}
 
 	.tooltip-big {
@@ -148,40 +146,24 @@ html.rgba.textshadow {
 
 // Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
 .btn-group > .btn:first-child {
-       -webkit-border-top-left-radius: @btnBorderRadius;
-         -moz-border-radius-topleft: @btnBorderRadius;
-             border-top-left-radius: @btnBorderRadius;
-  -webkit-border-bottom-left-radius: @btnBorderRadius;
-      -moz-border-radius-bottomleft: @btnBorderRadius;
-          border-bottom-left-radius: @btnBorderRadius;
+	border-top-left-radius: @btnBorderRadius;
+	border-bottom-left-radius: @btnBorderRadius;
 }
 // Need .dropdown-toggle since :last-child doesn't apply given a .dropdown-menu immediately after it
 .btn-group > .btn:last-child,
 .btn-group > .dropdown-toggle {
-     -webkit-border-top-right-radius: @btnBorderRadius;
-         -moz-border-radius-topright: @btnBorderRadius;
-             border-top-right-radius: @btnBorderRadius;
-  -webkit-border-bottom-right-radius: @btnBorderRadius;
-      -moz-border-radius-bottomright: @btnBorderRadius;
-          border-bottom-right-radius: @btnBorderRadius;
+	border-top-right-radius: @btnBorderRadius;
+	border-bottom-right-radius: @btnBorderRadius;
 }
 // Reset corners for large buttons
 .btn-group > .btn.large:first-child {
-     -webkit-border-top-left-radius: @btnBorderRadius;
-         -moz-border-radius-topleft: @btnBorderRadius;
-             border-top-left-radius: @btnBorderRadius;
-  -webkit-border-bottom-left-radius: @btnBorderRadius;
-      -moz-border-radius-bottomleft: @btnBorderRadius;
-          border-bottom-left-radius: @btnBorderRadius;
+	border-top-left-radius: @btnBorderRadius;
+	border-bottom-left-radius: @btnBorderRadius;
 }
 .btn-group > .btn.large:last-child,
 .btn-group > .large.dropdown-toggle {
-     -webkit-border-top-right-radius: @btnBorderRadius;
-         -moz-border-radius-topright: @btnBorderRadius;
-             border-top-right-radius: @btnBorderRadius;
-  -webkit-border-bottom-right-radius: @btnBorderRadius;
-      -moz-border-radius-bottomright: @btnBorderRadius;
-          border-bottom-right-radius: @btnBorderRadius;
+	border-top-right-radius: @btnBorderRadius;
+	border-bottom-right-radius: @btnBorderRadius;
 }
 
 .dropdown.colored-toggle.open .btn.dropdown-toggle {
@@ -203,7 +185,7 @@ textarea, input[type="text"], input[type="password"], input[type="email"], input
 	&:focus {
 		background-color: #fff;
 		border: @rlInputBorderSize solid darken(@inputBorder, 20%);
-		.box-shadow(none);
+		box-shadow: none;
 	}
 }
 
@@ -267,7 +249,7 @@ html.no-rgba .modal {
 			max-height: none;
 		}
 
-		.box-shadow(0 5px 80px rgba(0,0,0,0.3));
+		box-shadow: 0 5px 80px rgba(0,0,0,0.3);
 	}
 }
 
