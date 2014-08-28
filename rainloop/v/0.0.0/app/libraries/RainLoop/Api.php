@@ -76,6 +76,9 @@ class Api
 				\MailSo\Config::$ICONV = false;
 			}
 
+			\MailSo\Config::$MessageListFastSimpleSearch =
+				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
+			
 			\MailSo\Config::$MessageListCountLimitTrigger =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
 

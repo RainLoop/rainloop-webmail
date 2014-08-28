@@ -26,6 +26,11 @@ class Config
 	/**
 	 * @var int
 	 */
+	public static $MessageListFastSimpleSearch = true;
+
+	/**
+	 * @var int
+	 */
 	public static $MessageListCountLimitTrigger = 0;
 	
 	/**

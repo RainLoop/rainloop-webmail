@@ -1084,15 +1084,23 @@ class MailClient
 			{
 				$sValue = $this->escapeSearchString($aLines['OTHER']);
 
-				$aCriteriasResult[] = 'OR OR OR';
-				$aCriteriasResult[] = 'FROM';
-				$aCriteriasResult[] = $sValue;
-				$aCriteriasResult[] = 'TO';
-				$aCriteriasResult[] = $sValue;
-				$aCriteriasResult[] = 'CC';
-				$aCriteriasResult[] = $sValue;
-				$aCriteriasResult[] = 'SUBJECT';
-				$aCriteriasResult[] = $sValue;
+				if (\MailSo\Config::$MessageListFastSimpleSearch)
+				{
+					$aCriteriasResult[] = 'OR OR OR';
+					$aCriteriasResult[] = 'FROM';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'TO';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'CC';
+					$aCriteriasResult[] = $sValue;
+					$aCriteriasResult[] = 'SUBJECT';
+					$aCriteriasResult[] = $sValue;
+				}
+				else
+				{
+					$aCriteriasResult[] = 'TEXT';
+					$aCriteriasResult[] = $sValue;
+				}
 			}
 			else
 			{
