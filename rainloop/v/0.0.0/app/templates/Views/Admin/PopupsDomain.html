@@ -54,6 +54,8 @@
 							<i data-bind="css: imapShortLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 							&nbsp;&nbsp;
 							Use short login form
+							&nbsp;&nbsp;
+							<span style="color: #aaa">(user@domain.com &rarr; user)</span>
 						</label>
 					</div>
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
@@ -93,6 +95,8 @@
 							<i data-bind="css: smtpShortLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 							&nbsp;&nbsp;
 							Use short login form
+							&nbsp;&nbsp;
+							<span style="color: #aaa">(user@domain.com &rarr; user)</span>
 						</label>
 						<label data-bind="click: function () { smtpAuth(!smtpAuth()); }">
 							<i data-bind="css: smtpAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
