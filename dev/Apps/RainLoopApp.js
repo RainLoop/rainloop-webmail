@@ -1196,7 +1196,7 @@
 	 */
 	RainLoopApp.prototype.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
@@ -1206,7 +1206,7 @@
 	 */
 	RainLoopApp.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		if (!_.isArray(aExpandedList))
 		{
 			aExpandedList = [];

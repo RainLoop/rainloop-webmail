@@ -1479,7 +1479,7 @@
 	 */
 	RainLoopApp.prototype.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
@@ -1489,7 +1489,7 @@
 	 */
 	RainLoopApp.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = /** @type {Array|null} */ LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
+		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
 		if (!_.isArray(aExpandedList))
 		{
 			aExpandedList = [];
@@ -2547,7 +2547,7 @@
 		'None': 'None',
 		'Move': 'Move',
 		'Discard': 'Discard',
-		'Forward': 'Forward',
+		'Forward': 'Forward'
 	};
 
 	/**
@@ -8188,21 +8188,27 @@ module.exports = window;
 	'use strict';
 
 	var
-		ko = require('ko')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
+	 * @constructor
+	 *
 	 * @param {string} sEmail
 	 * @param {boolean=} bCanBeDelete = true
-	 * @constructor
 	 */
 	function AccountModel(sEmail, bCanBeDelete)
 	{
 		this.email = sEmail;
+		
 		this.deleteAccess = ko.observable(false);
-		this.canBeDalete = ko.observable(bCanBeDelete);
+		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
 	}
 
+	/**
+	 * @type {string}
+	 */
 	AccountModel.prototype.email = '';
 
 	/**
@@ -8216,7 +8222,7 @@ module.exports = window;
 	module.exports = AccountModel;
 
 }(module, require));
-},{"LinkBuilder":11,"ko":28}],38:[function(require,module,exports){
+},{"LinkBuilder":11,"Utils":14,"ko":28}],38:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9252,7 +9258,7 @@ module.exports = window;
 	 */
 	function FilterModel()
 	{
-		this.new = ko.observable(true);
+		this.isNew = ko.observable(true);
 		this.enabled = ko.observable(true);
 
 		this.name = ko.observable('');

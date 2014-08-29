@@ -312,7 +312,7 @@
 		'None': 'None',
 		'Move': 'Move',
 		'Discard': 'Discard',
-		'Forward': 'Forward',
+		'Forward': 'Forward'
 	};
 
 	/**

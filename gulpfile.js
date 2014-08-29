@@ -25,10 +25,6 @@ var
 		}
 	},
 
-	browserify = require('browserify'),
-	streamify = require('gulp-streamify'),
-	source = require('vinyl-source-stream'),
-
 	fs = require('node-fs'),
 	path = require('path'),
 	gulp = require('gulp'),
@@ -36,11 +32,6 @@ var
 	header = require('gulp-header'),
 	footer = require('gulp-footer'),
 	rename = require('gulp-rename'),
-	minifyCss = require('gulp-minify-css'),
-	csslint = require('gulp-csslint'),
-	less = require('gulp-less'),
-	autoprefixer = require('gulp-autoprefixer'),
-	jshint = require('gulp-jshint'),
 	uglify = require('gulp-uglify'),
 	gutil = require('gulp-util')
 ;
@@ -116,7 +107,7 @@ cfg.paths.js = {
 			'vendors/json2.min.js',
 			'vendors/labjs/LAB.min.js',
 			'vendors/simple-pace/simple-pace-1.0.min.js',
-			'vendors/rl/rl-1.1.min.js'
+			'vendors/rl/rl-1.2.min.js'
 		]
 	},
 	openpgp: {
@@ -179,6 +170,7 @@ cfg.paths.js = {
 
 // CSS
 gulp.task('less:main', function() {
+	var less = require('gulp-less');
 	return gulp.src(cfg.paths.less.main.src)
 		.pipe(less({
 			'paths': cfg.paths.less.main.options.paths
@@ -188,9 +180,17 @@ gulp.task('less:main', function() {
 });
 
 gulp.task('css:main', ['less:main'], function() {
+
+	var
+//		csslint = require('gulp-csslint'),
+		csscomb = require('gulp-csscomb'),
+		autoprefixer = require('gulp-autoprefixer')
+	;
+
 	return gulp.src(cfg.paths.css.main.src)
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
+		.pipe(csscomb())
 //		.pipe(csslint())
 //		.pipe(csslint.reporter())
 		.pipe(gulp.dest(cfg.paths.staticCSS))
@@ -198,14 +198,16 @@ gulp.task('css:main', ['less:main'], function() {
 });
 
 gulp.task('css:main:min', ['css:main'], function() {
+	var minifyCss = require('gulp-minify-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
-		.pipe(minifyCss())
+		.pipe(minifyCss({
+			'keepSpecialComments': 0
+		}))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
 
 // JS
-// - concat
 gulp.task('js:boot', function() {
 	return gulp.src(cfg.paths.js.boot.src)
 		.pipe(concat(cfg.paths.js.boot.name))
@@ -235,6 +237,12 @@ gulp.task('js:libs', function() {
 });
 
 gulp.task('js:app', function() {
+
+	var
+		browserify = require('browserify'),
+		source = require('vinyl-source-stream')
+	;
+
     return browserify({
 			'basedir': './dev/',
 			'entries': './RainLoop.js',
@@ -248,6 +256,12 @@ gulp.task('js:app', function() {
 });
 
 gulp.task('js:admin', function() {
+	
+	var
+		browserify = require('browserify'),
+		source = require('vinyl-source-stream')
+	;
+
     return browserify({
 			'basedir': './dev/',
 			'entries': './Admin.js',
@@ -279,10 +293,25 @@ gulp.task('js:admin:min', ['js:admin'], function() {
 
 // lint
 gulp.task('js:lint', function() {
+	
+	var
+		closureCompiler = require('gulp-closure-compiler'),
+		jshint = require('gulp-jshint')
+	;
+
 	return gulp.src(cfg.paths.globjs)
 		.pipe(jshint('.jshintrc'))
 		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'));
+		.pipe(jshint.reporter('fail'))
+		// google compiler
+		.pipe(closureCompiler({
+			compilerPath: './build/compiler.jar',
+			fileName: 'gc.js',
+			compilerFlags: {
+				output_wrapper: '(function(){%output%}());'
+			}
+		}));
+	;
 });
 
 // OTHER
@@ -307,8 +336,8 @@ regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js'
 regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
 	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.1.min.js',
-	'/*! RainLoop Index Helper v1.1 (c) 2014 RainLoop Team; Licensed under MIT */\n');
+regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.2.min.js',
+	'/*! RainLoop Index Helper v1.2 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
 gulp.task('package-inc-release', function() {
 	fs.writeFileSync('package.json',
@@ -421,7 +450,7 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:boot', 'js:libs', 'js:lint', 'js:app:min', 'js:admin:min', 'css:main:min']);
+gulp.task('default', [ 'js:libs', 'js:boot', 'js:encrypt', 'js:openpgp', 'js:lint', 'js:app:min', 'js:admin:min', 'css:main:min']);
 gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('rainloop', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);

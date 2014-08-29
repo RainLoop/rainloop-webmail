@@ -199,9 +199,10 @@
 		"gulp-rename": "*",
 		"gulp-header": "*",
 		"gulp-footer": "*",
-		"gulp-streamify": "*",
 		"gulp-minify-css": "*",
 		"gulp-autoprefixer": "*",
+		"gulp-csscomb": "*",
+		"gulp-closure-compiler": "*",
 		"gulp-csslint": "*",
 		"gulp-concat-util": "*"
 

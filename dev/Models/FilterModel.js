@@ -16,7 +16,7 @@
 	 */
 	function FilterModel()
 	{
-		this.new = ko.observable(true);
+		this.isNew = ko.observable(true);
 		this.enabled = ko.observable(true);
 
 		this.name = ko.observable('');

@@ -5,21 +5,27 @@
 	'use strict';
 
 	var
-		ko = require('ko')
+		ko = require('ko'),
+		Utils = require('Utils')
 	;
 
 	/**
+	 * @constructor
+	 *
 	 * @param {string} sEmail
 	 * @param {boolean=} bCanBeDelete = true
-	 * @constructor
 	 */
 	function AccountModel(sEmail, bCanBeDelete)
 	{
 		this.email = sEmail;
+		
 		this.deleteAccess = ko.observable(false);
-		this.canBeDalete = ko.observable(bCanBeDelete);
+		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
 	}
 
+	/**
+	 * @type {string}
+	 */
 	AccountModel.prototype.email = '';
 
 	/**
