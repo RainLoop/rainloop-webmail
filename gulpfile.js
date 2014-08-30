@@ -256,7 +256,7 @@ gulp.task('js:app', function() {
 });
 
 gulp.task('js:admin', function() {
-	
+
 	var
 		browserify = require('browserify'),
 		source = require('vinyl-source-stream')
@@ -293,7 +293,7 @@ gulp.task('js:admin:min', ['js:admin'], function() {
 
 // lint
 gulp.task('js:lint', function() {
-	
+
 	var
 		closureCompiler = require('gulp-closure-compiler'),
 		jshint = require('gulp-jshint')
@@ -395,7 +395,7 @@ gulp.task('rainloop:md5', ['rainloop:zip'], function() {
 		renameFileWothMd5Hash(cfg.destPath +  cfg.md5File) : false;
 });
 
-gulp.task('rainloop:clean', ['rainloop:copy', 'rainloop:setup'], function() {
+gulp.task('rainloop:clean', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
 });
 
@@ -445,7 +445,7 @@ gulp.task('rainloop:owncloud:md5', ['rainloop:owncloud:zip'], function() {
 		renameFileWothMd5Hash(cfg.destPath +  cfg.md5File) : false;
 });
 
-gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup'], function() {
+gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
 });
 
