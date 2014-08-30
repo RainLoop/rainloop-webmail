@@ -2391,13 +2391,17 @@ img.mfp-img {
 	background-position: -192px -11px;
 }
 
+.flag.flag-tr,
+.flag.flag-tr-tr {
+	background-position: -16px -154px;
+}
+
 .flag.flag-cn,
 .flag.flag-zh-tw,
 .flag.flag-zh-cn,
 .flag.flag-zh-hk {
 	background-position: -208px -22px;
 }
-
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 .clearfix {
 	*zoom: 1;

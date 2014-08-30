@@ -1479,6 +1479,8 @@
 		'hu': 'hu',
 		'is': 'is',
 		'it': 'it',
+		'ja': 'ja',
+		'ja-jp': 'ja',
 		'ko': 'ko',
 		'ko-kr': 'ko',
 		'lv': 'lv',
@@ -1488,8 +1490,11 @@
 		'pt': 'pt',
 		'pt-pt': 'pt',
 		'pt-br': 'pt-br',
-		'ru': 'ru',
 		'ro': 'ro',
+		'ru': 'ru',
+		'sk': 'sk',
+		'tr': 'tr',
+		'ua': 'ru',
 		'zh': 'zh',
 		'zh-cn': 'zh-cn'
 	};

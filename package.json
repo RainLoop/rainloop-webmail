@@ -1,8 +1,8 @@
 {
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
-	"version": "1.6.8",
-	"release": "156",
+	"version": "1.6.9",
+	"release": "161",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
 	"main": "gulpfile.js",
@@ -98,19 +98,19 @@
 		"Storage:LocalStorage": "./dev/Storages/LocalStorage.js",
 		"Storage:LocalStorage:Cookie": "./dev/Storages/LocalStorages/CookieDriver.js",
 		"Storage:LocalStorage:LocalStorage": "./dev/Storages/LocalStorages/LocalStorageDriver.js",
-		
+
 		"Storage:Settings": "./dev/Storages/SettingsStorage.js",
-		
+
 		"Storage:Abstract:Remote": "./dev/Storages/AbstractRemoteStorage.js",
 		"Storage:Abstract:Data": "./dev/Storages/AbstractData.js",
 
 		"Storage:RainLoop:Cache": "./dev/Storages/CacheStorage.js",
 		"Storage:RainLoop:Remote": "./dev/Storages/RemoteStorage.js",
 		"Storage:RainLoop:Data": "./dev/Storages/DataStorage.js",
-		
+
 		"Storage:Admin:Remote": "./dev/Storages/AdminRemoteStorage.js",
 		"Storage:Admin:Data": "./dev/Storages/AdminDataStorage.js",
-		
+
 		"Screen:AbstractSettings": "./dev/Screens/AbstractSettings.js",
 		"Screen:RainLoop:Login": "./dev/Screens/LoginScreen.js",
 		"Screen:RainLoop:About": "./dev/Screens/AboutScreen.js",
@@ -118,7 +118,7 @@
 		"Screen:RainLoop:Settings": "./dev/Screens/SettingsScreen.js",
 		"Screen:Admin:Login": "./dev/Screens/AdminLoginScreen.js",
 		"Screen:Admin:Settings": "./dev/Screens/AdminSettingsScreen.js",
-		
+
 		"Settings:RainLoop:General": "./dev/Settings/App/SettingsGeneral.js",
 		"Settings:RainLoop:ChangePassword": "./dev/Settings/App/SettingsChangePassword.js",
 		"Settings:RainLoop:Accounts": "./dev/Settings/App/SettingsAccounts.js",
@@ -143,11 +143,11 @@
 		"Settings:Admin:Packages": "./dev/Settings/Admin/AdminSettingsPackages.js",
 		"Settings:Admin:Licensing": "./dev/Settings/Admin/AdminSettingsLicensing.js",
 		"Settings:Admin:About": "./dev/Settings/Admin/AdminSettingsAbout.js",
-		
+
 		"View:Admin:Login": "./dev/ViewModels/AdminLoginViewModel.js",
 		"View:Admin:SettingsMenu": "./dev/ViewModels/AdminSettingsMenuViewModel.js",
 		"View:Admin:SettingsPane": "./dev/ViewModels/AdminSettingsPaneViewModel.js",
-		
+
 		"View:RainLoop:AbstractSystemDropDown": "./dev/ViewModels/AbstractSystemDropDownViewModel.js",
 		"View:RainLoop:MailBoxSystemDropDown": "./dev/ViewModels/MailBoxSystemDropDownViewModel.js",
 		"View:RainLoop:SettingsSystemDropDown": "./dev/ViewModels/SettingsSystemDropDownViewModel.js",
@@ -158,7 +158,7 @@
 		"View:RainLoop:MailBoxFolderList": "./dev/ViewModels/MailBoxFolderListViewModel.js",
 		"View:RainLoop:Login": "./dev/ViewModels/LoginViewModel.js",
 		"View:RainLoop:About": "./dev/ViewModels/AboutViewModel.js",
-		
+
 		"View:Popup:Activate": "./dev/ViewModels/Popups/PopupsActivateViewModel.js",
 		"View:Popup:AddAccount": "./dev/ViewModels/Popups/PopupsAddAccountViewModel.js",
 		"View:Popup:AddOpenPgpKey": "./dev/ViewModels/Popups/PopupsAddOpenPgpKeyViewModel.js",

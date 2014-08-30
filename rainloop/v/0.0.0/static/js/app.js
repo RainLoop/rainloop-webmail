@@ -2901,6 +2901,8 @@
 		'hu': 'hu',
 		'is': 'is',
 		'it': 'it',
+		'ja': 'ja',
+		'ja-jp': 'ja',
 		'ko': 'ko',
 		'ko-kr': 'ko',
 		'lv': 'lv',
@@ -2910,8 +2912,11 @@
 		'pt': 'pt',
 		'pt-pt': 'pt',
 		'pt-br': 'pt-br',
-		'ru': 'ru',
 		'ro': 'ro',
+		'ru': 'ru',
+		'sk': 'sk',
+		'tr': 'tr',
+		'ua': 'ru',
 		'zh': 'zh',
 		'zh-cn': 'zh-cn'
 	};
@@ -19278,7 +19283,7 @@ module.exports = window;
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -20017,7 +20022,6 @@ module.exports = window;
 			sDate = '',
 			sSubject = '',
 			oText = null,
-			oSubText = null,
 			sText = '',
 			sReplyTitle = '',
 			aResplyAllParts = [],
@@ -20075,8 +20079,8 @@ module.exports = window;
 			oText = $(oMessage.body).clone();
 			Utils.removeBlockquoteSwitcher(oText);
 
-			oSubText = oText.find('[data-html-editor-font-wrapper=true]');
-			sText = oSubText && oSubText[0] ? oSubText.html() : oText.html();
+			oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
+			sText = oText.html();
 
 			switch (sComposeType)
 			{
@@ -20285,11 +20289,11 @@ module.exports = window;
 
 	PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	{
-		var 
+		var
 			self = this,
 			PopupsAskViewModel = require('View:Popup:Ask')
 		;
-		
+
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {

@@ -1,7 +1,7 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -740,7 +740,6 @@
 			sDate = '',
 			sSubject = '',
 			oText = null,
-			oSubText = null,
 			sText = '',
 			sReplyTitle = '',
 			aResplyAllParts = [],
@@ -798,8 +797,8 @@
 			oText = $(oMessage.body).clone();
 			Utils.removeBlockquoteSwitcher(oText);
 
-			oSubText = oText.find('[data-html-editor-font-wrapper=true]');
-			sText = oSubText && oSubText[0] ? oSubText.html() : oText.html();
+			oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
+			sText = oText.html();
 
 			switch (sComposeType)
 			{
@@ -1008,11 +1007,11 @@
 
 	PopupsComposeViewModel.prototype.tryToClosePopup = function ()
 	{
-		var 
+		var
 			self = this,
 			PopupsAskViewModel = require('View:Popup:Ask')
 		;
-		
+
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
 			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
