@@ -6295,7 +6295,7 @@ html.rgba.textshadow .btn.btn-primary {
 }
 .tooltip .tooltip-inner {
 	padding: 5px 10px;
-	max-width: 400px;
+	max-width: 380px;
 	border-radius: 2px;
 	text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }

@@ -21,17 +21,17 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	 * @var string
 	 */
 	private $sPassword = '';
-	
+
 	/**
-	 * @var array
+	 * @var string
 	 */
-	private $aDomains = array();
+	private $sAllowedEmails = '';
 
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
-	
+
 	/**
 	 * @param string $sHost
 	 * @param int $iPost
@@ -39,7 +39,7 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	 * @param string $sUser
 	 * @param string $sPassword
 	 *
-	 * @return \CpanleChangePasswordDriver
+	 * @return \CpanelChangePasswordDriver
 	 */
 	public function SetConfig($sHost, $iPost, $sSsl, $sUser, $sPassword)
 	{
@@ -53,24 +53,20 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	}
 
 	/**
-	 * @param array $aDomains
+	 * @param string $sAllowedEmails
 	 *
-	 * @return \CpanleChangePasswordDriver
+	 * @return \CpanelChangePasswordDriver
 	 */
-	public function SetAllowedDomains($aDomains)
+	public function SetAllowedEmails($sAllowedEmails)
 	{
-		if (\is_array($aDomains) && 0 < \count($aDomains))
-		{
-			$this->aDomains = $aDomains;
-		}
-
+		$this->sAllowedEmails = $sAllowedEmails;
 		return $this;
 	}
 
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
-	 * @return \CpanleChangePasswordDriver
+	 * @return \CpanelChangePasswordDriver
 	 */
 	public function SetLogger($oLogger)
 	{
@@ -89,8 +85,8 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	 */
 	public function PasswordChangePossibility($oAccount)
 	{
-		return $oAccount && $oAccount->Domain() &&
-			\in_array(\strtolower($oAccount->Domain()->Name()), $this->aDomains);
+		return $oAccount && $oAccount->Email() &&
+			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
 	}
 
 	/**

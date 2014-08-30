@@ -3,25 +3,21 @@
 class ChangePasswordExampleDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
 	/**
-	 * @var array
+	 * @var string
 	 */
-	private $aDomains = array();
-	
-	/**
-	 * @param array $aDomains
-	 *
-	 * @return bool
-	 */
-	public function SetAllowedDomains($aDomains)
-	{
-		if (\is_array($aDomains) && 0 < \count($aDomains))
-		{
-			$this->aDomains = $aDomains;
-		}
+	private $sAllowedEmails = '';
 
+	/**
+	 * @param string $sAllowedEmails
+	 *
+	 * @return \ChangePasswordExampleDriver
+	 */
+	public function SetAllowedEmails($sAllowedEmails)
+	{
+		$this->sAllowedEmails = $sAllowedEmails;
 		return $this;
 	}
-	
+
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 *
@@ -29,8 +25,8 @@ class ChangePasswordExampleDriver implements \RainLoop\Providers\ChangePassword\
 	 */
 	public function PasswordChangePossibility($oAccount)
 	{
-		return $oAccount && $oAccount->Domain() &&
-			\in_array(\strtolower($oAccount->Domain()->Name()), $this->aDomains);
+		return $oAccount && $oAccount->Email() &&
+			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
 	}
 
 	/**

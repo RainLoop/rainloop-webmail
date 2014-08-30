@@ -82,7 +82,7 @@ abstract class NetClient
 		$this->bUnreadBuffer = false;
 		$this->bRunningCallback = false;
 		$this->oLogger = null;
-		
+
 		$this->__AUTOLOGOUT__ = true;
 
 		$this->sResponseBuffer = '';
@@ -238,11 +238,6 @@ abstract class NetClient
 			{
 				@\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
 			}
-
-			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_set_blocking'))
-			{
-				@\stream_set_blocking($this->rConnect, 1);
-			}
 		}
 	}
 
@@ -339,7 +334,7 @@ abstract class NetClient
 		{
 			$bFake = false;
 		}
-		
+
 		if ($bFake)
 		{
 			$sFakeRaw .= "\r\n";
@@ -413,6 +408,8 @@ abstract class NetClient
 			}
 			else
 			{
+//				$this->writeLog('Stream Meta: '.
+//					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
 				$this->writeLogException(
 					new Exceptions\SocketReadException(),
 						\MailSo\Log\Enumerations\Type::ERROR, true);
