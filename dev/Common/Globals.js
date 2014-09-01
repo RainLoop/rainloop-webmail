@@ -7,12 +7,17 @@
 	var
 		Globals = {},
 		window = require('window'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Enums = require('Enums')
 	;
+
+	Globals.$win = $(window);
+	Globals.$doc = $(window.document);
+	Globals.$html = $('html');
+	Globals.$div = $('<div></div>');
 
 	/**
 	 * @type {?}
@@ -97,7 +102,7 @@
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
+	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions');
 
 	/**
 	 * @type {boolean}

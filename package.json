@@ -44,7 +44,9 @@
 		"window": "./dev/External/window.js",
 		"JSON": "./dev/External/JSON.js",
 		"$": "./dev/External/jquery.js",
+		"jquery": "./dev/External/jquery.js",
 		"_": "./dev/External/underscore.js",
+		"underscore": "./dev/External/underscore.js",
 		"ko": "./dev/External/ko.js",
 		"key": "./dev/External/key.js",
 		"moment": "./dev/External/moment.js",
@@ -53,12 +55,6 @@
 		"ifvisible": "./dev/External/ifvisible.js",
 		"ssm": "./dev/External/ssm.js",
 		"Jua": "./dev/External/Jua.js",
-		"AppData": "./dev/External/AppData.js",
-		"NotificationClass": "./dev/External/NotificationClass.js",
-		"$win": "./dev/External/$win.js",
-		"$html": "./dev/External/$html.js",
-		"$doc": "./dev/External/$doc.js",
-		"$div": "./dev/External/$div.js",
 
 		"Base64": "./dev/Common/Base64.js",
 		"Consts": "./dev/Common/Consts.js",
@@ -205,6 +201,5 @@
 		"gulp-closure-compiler": "*",
 		"gulp-csslint": "*",
 		"gulp-concat-util": "*"
-
 	}
 }

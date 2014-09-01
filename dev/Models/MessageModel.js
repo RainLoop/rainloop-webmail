@@ -10,11 +10,10 @@
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$win = require('$win'),
-		$div = require('$div'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
+		Globals = require('Globals'),
 		LinkBuilder = require('LinkBuilder'),
 
 		EmailModel = require('Model:Email'),
@@ -976,7 +975,7 @@
 				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
 			   });
 
-			   $win.resize();
+			   Globals.$win.resize();
 		   }
 
 		   Utils.windowResize(500);
@@ -1173,12 +1172,12 @@
 							   this.pgpSignedVerifyUser(oValidSysKey.user);
 
 							   sPlain =
-								   $div.empty().append(
+								   Globals.$div.empty().append(
 									   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 								   ).html()
 							   ;
 
-							   $div.empty();
+							   Globals.$div.empty();
 
 							   this.replacePlaneTextBody(sPlain);
 						   }
@@ -1248,12 +1247,12 @@
 					   sPlain = mPgpMessageDecrypted.getText();
 
 					   sPlain =
-						   $div.empty().append(
+						   Globals.$div.empty().append(
 							   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 						   ).html()
 					   ;
 
-					   $div.empty();
+					   Globals.$div.empty();
 
 					   this.replacePlaneTextBody(sPlain);
 				   }

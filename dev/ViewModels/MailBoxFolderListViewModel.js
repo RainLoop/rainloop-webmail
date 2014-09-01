@@ -9,7 +9,6 @@
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Utils = require('Utils'),
 		Enums = require('Enums'),
@@ -235,7 +234,7 @@
 		{
 			var
 				sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
-				bCopy = $html.hasClass('rl-ctrl-key-pressed'),
+				bCopy = Globals.$html.hasClass('rl-ctrl-key-pressed'),
 				aUids = oUi.helper.data('rl-uids')
 			;
 

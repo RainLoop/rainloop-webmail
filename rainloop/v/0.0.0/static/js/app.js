@@ -16,9 +16,6 @@
 		$ = require('$'),
 		_ = require('_'),
 		window = require('window'),
-		$html = require('$html'),
-		$win = require('$win'),
-		$doc = require('$doc'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -43,7 +40,7 @@
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
-		$win.on('error', function (oEvent) {
+		Globals.$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
 				-1 === Utils.inArray(oEvent.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
@@ -55,21 +52,21 @@
 					oEvent.originalEvent.filename,
 					oEvent.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
-					$html.attr('class'),
+					Globals.$html.attr('class'),
 					Utils.microtime() - Globals.now
 				);
 			}
 		});
 
-		$doc.on('keydown', function (oEvent) {
+		Globals.$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
-				$html.addClass('rl-ctrl-key-pressed');
+				Globals.$html.addClass('rl-ctrl-key-pressed');
 			}
 		}).on('keyup', function (oEvent) {
 			if (oEvent && !oEvent.ctrlKey)
 			{
-				$html.removeClass('rl-ctrl-key-pressed');
+				Globals.$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 	}
@@ -218,11 +215,11 @@
 			'id': 'mobile',
 			'maxWidth': 767,
 			'onEnter': function() {
-				$html.addClass('ssm-state-mobile');
+				Globals.$html.addClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-mobile');
+				Globals.$html.removeClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-leave');
 			}
 		});
@@ -232,10 +229,10 @@
 			'minWidth': 768,
 			'maxWidth': 999,
 			'onEnter': function() {
-				$html.addClass('ssm-state-tablet');
+				Globals.$html.addClass('ssm-state-tablet');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-tablet');
+				Globals.$html.removeClass('ssm-state-tablet');
 			}
 		});
 
@@ -244,10 +241,10 @@
 			'minWidth': 1000,
 			'maxWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop');
+				Globals.$html.addClass('ssm-state-desktop');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop');
+				Globals.$html.removeClass('ssm-state-desktop');
 			}
 		});
 
@@ -255,10 +252,10 @@
 			'id': 'desktop-large',
 			'minWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop-large');
+				Globals.$html.addClass('ssm-state-desktop-large');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop-large');
+				Globals.$html.removeClass('ssm-state-desktop-large');
 			}
 		});
 
@@ -271,7 +268,7 @@
 		});
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
-			$html.toggleClass('rl-left-panel-disabled', bValue);
+			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 
 		ssm.ready();
@@ -280,7 +277,7 @@
 	module.exports = AbstractApp;
 
 }(module, require));
-},{"$":26,"$doc":16,"$html":17,"$win":18,"App:Knoin":33,"Events":8,"Globals":9,"Knoin:AbstractBoot":34,"LinkBuilder":11,"Storage:Settings":75,"Utils":14,"_":31,"ssm":30,"window":32}],3:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"Events":8,"Globals":9,"Knoin:AbstractBoot":28,"LinkBuilder":11,"Storage:Settings":69,"Utils":14,"_":25,"ssm":24,"window":26}],3:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -1847,7 +1844,7 @@
 	module.exports = new RainLoopApp();
 
 }(module, require));
-},{"$":26,"App:Abstract":2,"App:Knoin":33,"Consts":6,"Enums":7,"Events":8,"Globals":9,"LinkBuilder":11,"Model:Account":37,"Model:Email":43,"Model:Folder":46,"Model:Identity":47,"Model:Message":48,"Model:OpenPgpKey":49,"Plugins":12,"Screen:RainLoop:About":50,"Screen:RainLoop:Login":52,"Screen:RainLoop:MailBox":53,"Screen:RainLoop:Settings":54,"Settings:RainLoop:Accounts":55,"Settings:RainLoop:ChangePassword":56,"Settings:RainLoop:Contacts":57,"Settings:RainLoop:Filters":58,"Settings:RainLoop:Folders":59,"Settings:RainLoop:General":60,"Settings:RainLoop:Identities":61,"Settings:RainLoop:Identity":62,"Settings:RainLoop:OpenPGP":63,"Settings:RainLoop:Security":64,"Settings:RainLoop:Social":65,"Settings:RainLoop:Themes":66,"Storage:LocalStorage":71,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:Ask":86,"View:Popup:Compose":88,"View:Popup:FolderSystem":93,"_":31,"moment":29,"window":32}],4:[function(require,module,exports){
+},{"$":20,"App:Abstract":2,"App:Knoin":27,"Consts":6,"Enums":7,"Events":8,"Globals":9,"LinkBuilder":11,"Model:Account":31,"Model:Email":37,"Model:Folder":40,"Model:Identity":41,"Model:Message":42,"Model:OpenPgpKey":43,"Plugins":12,"Screen:RainLoop:About":44,"Screen:RainLoop:Login":46,"Screen:RainLoop:MailBox":47,"Screen:RainLoop:Settings":48,"Settings:RainLoop:Accounts":49,"Settings:RainLoop:ChangePassword":50,"Settings:RainLoop:Contacts":51,"Settings:RainLoop:Filters":52,"Settings:RainLoop:Folders":53,"Settings:RainLoop:General":54,"Settings:RainLoop:Identities":55,"Settings:RainLoop:Identity":56,"Settings:RainLoop:OpenPGP":57,"Settings:RainLoop:Security":58,"Settings:RainLoop:Social":59,"Settings:RainLoop:Themes":60,"Storage:LocalStorage":65,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Ask":80,"View:Popup:Compose":82,"View:Popup:FolderSystem":87,"_":25,"moment":23,"window":26}],4:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -1860,8 +1857,6 @@
 			window = require('window'),
 			_ = require('_'),
 			$ = require('$'),
-			$win = require('$win'),
-			$html = require('$html'),
 
 			Globals = require('Globals'),
 			Plugins = require('Plugins'),
@@ -1879,15 +1874,15 @@
 		Plugins.__remote = App.remote();
 		Plugins.__data = App.data();
 
-		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
+		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
-		$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
+		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
 		
-		$win.unload(function () {
+		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
 
-		$html.on('click.dropdown.data-api', function () {
+		Globals.$html.on('click.dropdown.data-api', function () {
 			Utils.detectDropdownVisibility();
 		});
 
@@ -1914,7 +1909,7 @@
 					_.delay(function () {
 
 						App.bootstart();
-						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+						Globals.$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
 					}, 10);
 				}
@@ -1930,7 +1925,7 @@
 	};
 
 }(module, require));
-},{"$":26,"$html":17,"$win":18,"Enums":7,"Globals":9,"Model:Email":43,"Plugins":12,"Utils":14,"_":31,"window":32}],5:[function(require,module,exports){
+},{"$":20,"Enums":7,"Globals":9,"Model:Email":37,"Plugins":12,"Utils":14,"_":25,"window":26}],5:[function(require,module,exports){
 // Base64 encode / decode
 // http://www.webtoolkit.info/
 
@@ -2740,7 +2735,7 @@
 	module.exports = new Events();
 
 }(module, require));
-},{"Plugins":12,"Utils":14,"_":31}],9:[function(require,module,exports){
+},{"Plugins":12,"Utils":14,"_":25}],9:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -2750,12 +2745,17 @@
 	var
 		Globals = {},
 		window = require('window'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Enums = require('Enums')
 	;
+
+	Globals.$win = $(window);
+	Globals.$doc = $(window.document);
+	Globals.$html = $('html');
+	Globals.$div = $('<div></div>');
 
 	/**
 	 * @type {?}
@@ -2840,7 +2840,7 @@
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
+	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions');
 
 	/**
 	 * @type {boolean}
@@ -3022,7 +3022,7 @@
 	module.exports = Globals;
 
 }(module, require));
-},{"$html":17,"Enums":7,"key":27,"ko":28,"window":32}],10:[function(require,module,exports){
+},{"$":20,"Enums":7,"key":21,"ko":22,"window":26}],10:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -3298,7 +3298,7 @@
 	module.exports = HtmlEditor;
 
 }(module, require));
-},{"Globals":9,"Storage:Settings":75,"_":31,"window":32}],11:[function(require,module,exports){
+},{"Globals":9,"Storage:Settings":69,"_":25,"window":26}],11:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -3637,7 +3637,7 @@
 	module.exports = new LinkBuilder();
 
 }(module, require));
-},{"Storage:Settings":75,"Utils":14,"window":32}],12:[function(require,module,exports){
+},{"Storage:Settings":69,"Utils":14,"window":26}],12:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -3750,7 +3750,7 @@
 	module.exports = Plugins;
 
 }(module, require));
-},{"Storage:Settings":75,"Utils":14,"_":31}],13:[function(require,module,exports){
+},{"Storage:Settings":69,"Utils":14,"_":25}],13:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -4481,7 +4481,7 @@
 	module.exports = Selector;
 
 }(module, require));
-},{"$":26,"Enums":7,"Utils":14,"_":31,"key":27,"ko":28}],14:[function(require,module,exports){
+},{"$":20,"Enums":7,"Utils":14,"_":25,"key":21,"ko":22}],14:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -4495,11 +4495,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		$win = require('$win'),
-		$html = require('$html'),
-		$div = require('$div'),
-		$doc = require('$doc'),
-		NotificationClass = require('NotificationClass'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -4526,12 +4521,12 @@
 	Utils.windowResize = _.debounce(function (iTimeout) {
 		if (Utils.isUnd(iTimeout))
 		{
-			$win.resize();
+			Globals.$win.resize();
 		}
 		else
 		{
 			window.setTimeout(function () {
-				$win.resize();
+				Globals.$win.resize();
 			}, iTimeout);
 		}
 	}, 50);
@@ -4577,6 +4572,14 @@
 	Utils.isNonEmptyArray = function (aValue)
 	{
 		return Utils.isArray(aValue) && 0 < aValue.length;
+	};
+
+	/**
+	 * @return {*|null}
+	 */
+	Utils.notificationClass = function ()
+	{
+		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
 	};
 
 	/**
@@ -4905,7 +4908,7 @@
 		{
 			Globals.oI18N = window['rainloopI18N'] || {};
 
-			Utils.i18nToNode($doc);
+			Utils.i18nToNode(Globals.$doc);
 
 			Globals.langChangeTrigger(!Globals.langChangeTrigger());
 		}
@@ -4999,12 +5002,8 @@
 		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		var
-			iIndex = 0,
-			sResult = '',
 			bDrop = false,
-			sTrimmedPart = '',
 			aSubject = [],
-			aParts = [],
 			bRe = 'RE' === sPrefix,
 			bFwd = 'FWD' === sPrefix,
 			bPrefixIsRe = !bFwd
@@ -5012,15 +5011,9 @@
 
 		if ('' !== sSubject)
 		{
-			bDrop = false;
-
-			aParts = sSubject.split(':');
-			for (iIndex = 0; iIndex < aParts.length; iIndex++)
-			{
-				sTrimmedPart = Utils.trim(aParts[iIndex]);
-				if (!bDrop &&
-						(/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart))
-					)
+			_.each(sSubject.split(':'), function (sPart) {
+				var sTrimmedPart = Utils.trim(sPart);
+				if (!bDrop && (/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart)))
 				{
 					if (!bRe)
 					{
@@ -5034,15 +5027,10 @@
 				}
 				else
 				{
-					aSubject.push(aParts[iIndex]);
+					aSubject.push(sPart);
 					bDrop = true;
 				}
-			}
-
-			if (0 < aSubject.length)
-			{
-				sResult = Utils.trim(aSubject.join(':'));
-			}
+			});
 		}
 
 		if (bPrefixIsRe)
@@ -5058,115 +5046,8 @@
 			(bPrefixIsRe ? 'Re: ' : 'Fwd: ') +
 			(bRe ? 'Re: ' : '') +
 			(bFwd ? 'Fwd: ' : '') +
-			sResult
+			Utils.trim(aSubject.join(':'))
 		);
-	};
-
-
-	/**
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils.fixLongSubject = function (sSubject)
-	{
-		var
-			iLimit = 30,
-			mReg = /^Re([\[\(]([\d]+)[\]\)]|):[\s]{0,3}Re([\[\(]([\d]+)[\]\)]|):/ig,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			iLimit--;
-
-			oMatch = mReg.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				sSubject = sSubject.replace(mReg, 'Re:');
-			}
-		}
-		while (oMatch || 0 < iLimit);
-
-		return sSubject.replace(/[\s]+/g, ' ');
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sPrefix
-	 * @param {string} sSubject
-	 * @param {boolean=} bFixLongSubject = true
-	 * @return {string}
-	 */
-	Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
-	{
-		var
-			oMatch = null,
-			sResult = Utils.trim(sSubject)
-		;
-
-		if (null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]))
-		{
-			sResult = sPrefix + '[2]: ' + oMatch[1];
-		}
-		else if (null !== (oMatch = (new window.RegExp('^(' + sPrefix + '[\\s]?[\\[\\(]?)([\\d]+)([\\]\\)]?[\\s]?\\:.*)$', 'gi')).exec(sSubject)) &&
-			!Utils.isUnd(oMatch[1]) && !Utils.isUnd(oMatch[2]) && !Utils.isUnd(oMatch[3]))
-		{
-			sResult = oMatch[1] + (Utils.pInt(oMatch[2]) + 1) + oMatch[3];
-		}
-		else
-		{
-			sResult = sPrefix + ': ' + sSubject;
-		}
-
-		sResult = sResult.replace(/[\s]+/g, ' ');
-		sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
-	//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
-		return sResult;
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils._fixLongSubject_ = function (sSubject)
-	{
-		var
-			iCounter = 0,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				iCounter = 0;
-				iCounter += Utils.isUnd(oMatch[2]) ? 1 : 0 + Utils.pInt(oMatch[2]);
-				iCounter += Utils.isUnd(oMatch[4]) ? 1 : 0 + Utils.pInt(oMatch[4]);
-
-				sSubject = sSubject.replace(/^Re(\[[\d]+\]|):[\s]{0,3}Re(\[[\d]+\]|):/gi, 'Re' + (0 < iCounter ? '[' + iCounter + ']' : '') + ':');
-			}
-
-		}
-		while (oMatch);
-
-		sSubject = sSubject.replace(/[\s]+/g, ' ');
-		return sSubject;
 	};
 
 	/**
@@ -5465,7 +5346,7 @@
 		oData.interfaceAnimation.subscribe(function (sValue) {
 			if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
 			{
-				$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
+				Globals.$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
 
 				Globals.sAnimationType = Enums.InterfaceAnimation.None;
 			}
@@ -5474,11 +5355,11 @@
 				switch (sValue)
 				{
 					case Enums.InterfaceAnimation.Full:
-						$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
+						Globals.$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
 						Globals.sAnimationType = sValue;
 						break;
 					case Enums.InterfaceAnimation.Normal:
-						$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
+						Globals.$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
 						Globals.sAnimationType = sValue;
 						break;
 				}
@@ -5488,8 +5369,14 @@
 		oData.interfaceAnimation.valueHasMutated();
 
 		oData.desktopNotificationsPermisions = ko.computed(function () {
+
 			oData.desktopNotifications();
-			var iResult = Enums.DesktopNotifications.NotSupported;
+
+			var
+				NotificationClass = Utils.notificationClass(),
+				iResult = Enums.DesktopNotifications.NotSupported
+			;
+			
 			if (NotificationClass && NotificationClass.permission)
 			{
 				switch (NotificationClass.permission.toLowerCase())
@@ -5521,12 +5408,16 @@
 			'write': function (bValue) {
 				if (bValue)
 				{
-					var iPermission = oData.desktopNotificationsPermisions();
-					if (Enums.DesktopNotifications.Allowed === iPermission)
+					var
+						NotificationClass = Utils.notificationClass(),
+						iPermission = oData.desktopNotificationsPermisions()
+					;
+					
+					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
 					{
 						oData.desktopNotifications(true);
 					}
-					else if (Enums.DesktopNotifications.NotAllowed === iPermission)
+					else if (NotificationClass && Enums.DesktopNotifications.NotAllowed === iPermission)
 					{
 						NotificationClass.requestPermission(function () {
 							oData.desktopNotifications.valueHasMutated();
@@ -6061,7 +5952,7 @@
 			.replace(/<[^>]*>/gm, '')
 		;
 
-		sText = $div.html(sText).text();
+		sText = Globals.$div.html(sText).text();
 
 		sText = sText
 			.replace(/\n[ \t]+/gm, '\n')
@@ -6198,7 +6089,7 @@
 	{
 		if ($.fn && $.fn.linkify)
 		{
-			sHtml = $div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
 				.linkify()
 				.find('.linkified').removeClass('linkified').end()
 				.html()
@@ -6530,60 +6421,35 @@
 	module.exports = Utils;
 
 }(module, require));
-},{"$":26,"$div":15,"$doc":16,"$html":17,"$win":18,"Consts":6,"Enums":7,"Globals":9,"NotificationClass":22,"_":31,"ko":28,"window":32}],15:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')('<div></div>');
-},{"$":26}],16:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')(window.document);
-},{"$":26}],17:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')('html');
-},{"$":26}],18:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')(window);
-},{"$":26}],19:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('window')['rainloopAppData'] || {};
-},{"window":32}],20:[function(require,module,exports){
+},{"$":20,"Consts":6,"Enums":7,"Globals":9,"_":25,"ko":22,"window":26}],15:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = JSON;
-},{}],21:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = Jua;
-},{}],22:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-var w = require('window');
-module.exports = w.Notification && w.Notification.requestPermission ? w.Notification : null;
-},{"window":32}],23:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = crossroads;
-},{}],24:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = hasher;
-},{}],25:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = ifvisible;
-},{}],26:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = $;
-},{}],27:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = key;
-},{}],28:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, ko) {
@@ -6593,9 +6459,7 @@ module.exports = key;
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$'),
-		$win = require('$win'),
-		$doc = require('$doc')
+		$ = require('$')
 	;
 
 	ko.bindingHandlers.tooltip = {
@@ -6685,7 +6549,7 @@ module.exports = key;
 				}
 			});
 
-			$doc.click(function () {
+			$(window.document).click(function () {
 				$oEl.tooltip('hide');
 			});
 
@@ -6900,6 +6764,7 @@ module.exports = key;
 
 			var
 				Utils = require('Utils'),
+				Globals = require('Globals'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -6909,7 +6774,7 @@ module.exports = key;
 			if (0 < iOffset)
 			{
 				iOffset += Utils.pInt(aValues[2]);
-				iSize = $win.height() - iOffset;
+				iSize = Globals.$win.height() - iOffset;
 
 				if (iValue < iSize)
 				{
@@ -7492,23 +7357,23 @@ module.exports = key;
 
 }(module, ko));
 
-},{"$":26,"$doc":16,"$win":18,"Globals":9,"Model:ContactTag":42,"Model:Email":43,"Utils":14,"_":31,"window":32}],29:[function(require,module,exports){
+},{"$":20,"Globals":9,"Model:ContactTag":36,"Model:Email":37,"Utils":14,"_":25,"window":26}],23:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = moment;
-},{}],30:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = ssm;
-},{}],31:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = _;
-},{}],32:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = window;
-},{}],33:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7521,7 +7386,6 @@ module.exports = window;
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
-		$html = require('$html'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
@@ -7926,7 +7790,7 @@ module.exports = window;
 		});
 
 		_.delay(function () {
-			$html.removeClass('rl-started-trigger').addClass('rl-started');
+			Globals.$html.removeClass('rl-started-trigger').addClass('rl-started');
 		}, 50);
 	};
 
@@ -7959,7 +7823,7 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module, require));
-},{"$":26,"$html":17,"Globals":9,"Knoin:AbstractViewModel":36,"Plugins":12,"Utils":14,"_":31,"crossroads":23,"hasher":24,"ko":28}],34:[function(require,module,exports){
+},{"$":20,"Globals":9,"Knoin:AbstractViewModel":30,"Plugins":12,"Utils":14,"_":25,"crossroads":17,"hasher":18,"ko":22}],28:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -7982,7 +7846,7 @@ module.exports = window;
 	module.exports = KnoinAbstractBoot;
 
 }(module, require));
-},{}],35:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8073,7 +7937,7 @@ module.exports = window;
 	module.exports = KnoinAbstractScreen;
 
 }(module, require));
-},{"Utils":14,"crossroads":23}],36:[function(require,module,exports){
+},{"Utils":14,"crossroads":17}],30:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8082,7 +7946,6 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
-		$win = require('$win'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -8164,7 +8027,7 @@ module.exports = window;
 	{
 		var self = this;
 
-		$win.on('keydown', function (oEvent) {
+		Globals.$win.on('keydown', function (oEvent) {
 			if (oEvent && self.modalVisibility && self.modalVisibility())
 			{
 				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
@@ -8185,7 +8048,7 @@ module.exports = window;
 	module.exports = KnoinAbstractViewModel;
 
 }(module, require));
-},{"$win":18,"Enums":7,"Globals":9,"Utils":14,"ko":28}],37:[function(require,module,exports){
+},{"Enums":7,"Globals":9,"Utils":14,"ko":22}],31:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8227,7 +8090,7 @@ module.exports = window;
 	module.exports = AccountModel;
 
 }(module, require));
-},{"LinkBuilder":11,"Utils":14,"ko":28}],38:[function(require,module,exports){
+},{"LinkBuilder":11,"Utils":14,"ko":22}],32:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8480,7 +8343,7 @@ module.exports = window;
 	module.exports = AttachmentModel;
 
 }(module, require));
-},{"Globals":9,"LinkBuilder":11,"Utils":14,"window":32}],39:[function(require,module,exports){
+},{"Globals":9,"LinkBuilder":11,"Utils":14,"window":26}],33:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8557,7 +8420,7 @@ module.exports = window;
 	module.exports = ComposeAttachmentModel;
 
 }(module, require));
-},{"Utils":14,"ko":28}],40:[function(require,module,exports){
+},{"Utils":14,"ko":22}],34:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8699,7 +8562,7 @@ module.exports = window;
 	module.exports = ContactModel;
 
 }(module, require));
-},{"Enums":7,"LinkBuilder":11,"Utils":14,"_":31,"ko":28}],41:[function(require,module,exports){
+},{"Enums":7,"LinkBuilder":11,"Utils":14,"_":25,"ko":22}],35:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8743,7 +8606,7 @@ module.exports = window;
 	module.exports = ContactPropertyModel;
 
 }(module, require));
-},{"Enums":7,"Utils":14,"ko":28}],42:[function(require,module,exports){
+},{"Enums":7,"Utils":14,"ko":22}],36:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8802,7 +8665,7 @@ module.exports = window;
 	module.exports = ContactTagModel;
 
 }(module, require));
-},{"Utils":14,"ko":28}],43:[function(require,module,exports){
+},{"Utils":14,"ko":22}],37:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9181,7 +9044,7 @@ module.exports = window;
 	module.exports = EmailModel;
 
 }(module, require));
-},{"Enums":7,"Utils":14}],44:[function(require,module,exports){
+},{"Enums":7,"Utils":14}],38:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9244,7 +9107,7 @@ module.exports = window;
 	module.exports = FilterConditionModel;
 
 }(module, require));
-},{"Enums":7,"ko":28}],45:[function(require,module,exports){
+},{"Enums":7,"ko":22}],39:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9339,7 +9202,7 @@ module.exports = window;
 	module.exports = FilterModel;
 
 }(module, require));
-},{"Enums":7,"Model:FilterCondition":44,"Utils":14,"ko":28}],46:[function(require,module,exports){
+},{"Enums":7,"Model:FilterCondition":38,"Utils":14,"ko":22}],40:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9511,7 +9374,7 @@ module.exports = window;
 
 //		this.visible.subscribe(function () {
 //			Utils.timeOutAction('folder-list-folder-visibility-change', function () {
-//				require('$win').trigger('folder-list-folder-visibility-change');
+//				Globals.$win.trigger('folder-list-folder-visibility-change');
 //			}, 100);
 //		});
 
@@ -9694,7 +9557,7 @@ module.exports = window;
 	module.exports = FolderModel;
 
 }(module, require));
-},{"Enums":7,"Events":8,"Globals":9,"Utils":14,"_":31,"ko":28}],47:[function(require,module,exports){
+},{"Enums":7,"Events":8,"Globals":9,"Utils":14,"_":25,"ko":22}],41:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9745,7 +9608,7 @@ module.exports = window;
 	module.exports = IdentityModel;
 
 }(module, require));
-},{"Utils":14,"ko":28}],48:[function(require,module,exports){
+},{"Utils":14,"ko":22}],42:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9758,11 +9621,10 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$win = require('$win'),
-		$div = require('$div'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
+		Globals = require('Globals'),
 		LinkBuilder = require('LinkBuilder'),
 
 		EmailModel = require('Model:Email'),
@@ -10724,7 +10586,7 @@ module.exports = window;
 				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
 			   });
 
-			   $win.resize();
+			   Globals.$win.resize();
 		   }
 
 		   Utils.windowResize(500);
@@ -10921,12 +10783,12 @@ module.exports = window;
 							   this.pgpSignedVerifyUser(oValidSysKey.user);
 
 							   sPlain =
-								   $div.empty().append(
+								   Globals.$div.empty().append(
 									   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 								   ).html()
 							   ;
 
-							   $div.empty();
+							   Globals.$div.empty();
 
 							   this.replacePlaneTextBody(sPlain);
 						   }
@@ -10996,12 +10858,12 @@ module.exports = window;
 					   sPlain = mPgpMessageDecrypted.getText();
 
 					   sPlain =
-						   $div.empty().append(
+						   Globals.$div.empty().append(
 							   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 						   ).html()
 					   ;
 
-					   $div.empty();
+					   Globals.$div.empty();
 
 					   this.replacePlaneTextBody(sPlain);
 				   }
@@ -11033,7 +10895,7 @@ module.exports = window;
 	module.exports = MessageModel;
 
 }(module, require));
-},{"$":26,"$div":15,"$win":18,"Enums":7,"LinkBuilder":11,"Model:Attachment":38,"Model:Email":43,"Storage:RainLoop:Data":70,"Utils":14,"_":31,"ko":28,"moment":29,"window":32}],49:[function(require,module,exports){
+},{"$":20,"Enums":7,"Globals":9,"LinkBuilder":11,"Model:Attachment":32,"Model:Email":37,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22,"moment":23,"window":26}],43:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11078,7 +10940,7 @@ module.exports = window;
 	module.exports = OpenPgpKeyModel;
 
 }(module, require));
-},{"ko":28}],50:[function(require,module,exports){
+},{"ko":22}],44:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11111,7 +10973,7 @@ module.exports = window;
 	module.exports = AboutScreen;
 
 }(module, require));
-},{"App:RainLoop":3,"Knoin:AbstractScreen":35,"View:RainLoop:About":76,"_":31}],51:[function(require,module,exports){
+},{"App:RainLoop":3,"Knoin:AbstractScreen":29,"View:RainLoop:About":70,"_":25}],45:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11312,7 +11174,7 @@ module.exports = window;
 	module.exports = AbstractSettings;
 
 }(module, require));
-},{"$":26,"App:Knoin":33,"Globals":9,"Knoin:AbstractScreen":35,"LinkBuilder":11,"Utils":14,"_":31,"ko":28}],52:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"Globals":9,"Knoin:AbstractScreen":29,"LinkBuilder":11,"Utils":14,"_":25,"ko":22}],46:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11345,7 +11207,7 @@ module.exports = window;
 	module.exports = LoginScreen;
 
 }(module, require));
-},{"App:RainLoop":3,"Knoin:AbstractScreen":35,"View:RainLoop:Login":78,"_":31}],53:[function(require,module,exports){
+},{"App:RainLoop":3,"Knoin:AbstractScreen":29,"View:RainLoop:Login":72,"_":25}],47:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11354,7 +11216,6 @@ module.exports = window;
 
 	var
 		_ = require('_'),
-		$html = require('$html'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -11477,14 +11338,14 @@ module.exports = window;
 			Remote.appDelayStart(Utils.emptyFunction);
 		}, 35000);
 
-		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
+		Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
 
 		Data.folderList.subscribe(fResizeFunction);
 		Data.messageList.subscribe(fResizeFunction);
 		Data.message.subscribe(fResizeFunction);
 
 		Data.layout.subscribe(function (nValue) {
-			$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 		});
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
@@ -11544,7 +11405,7 @@ module.exports = window;
 	module.exports = MailBoxScreen;
 
 }(module, require));
-},{"$html":17,"App:RainLoop":3,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractScreen":35,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:RainLoop:MailBoxFolderList":79,"View:RainLoop:MailBoxMessageList":80,"View:RainLoop:MailBoxMessageView":81,"View:RainLoop:MailBoxSystemDropDown":82,"_":31}],54:[function(require,module,exports){
+},{"App:RainLoop":3,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractScreen":29,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:RainLoop:MailBoxFolderList":73,"View:RainLoop:MailBoxMessageList":74,"View:RainLoop:MailBoxMessageView":75,"View:RainLoop:MailBoxSystemDropDown":76,"_":25}],48:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11596,7 +11457,7 @@ module.exports = window;
 	module.exports = SettingsScreen;
 
 }(module, require));
-},{"App:RainLoop":3,"Enums":7,"Globals":9,"Screen:AbstractSettings":51,"Utils":14,"View:RainLoop:SettingsMenu":100,"View:RainLoop:SettingsPane":101,"View:RainLoop:SettingsSystemDropDown":102,"_":31}],55:[function(require,module,exports){
+},{"App:RainLoop":3,"Enums":7,"Globals":9,"Screen:AbstractSettings":45,"Utils":14,"View:RainLoop:SettingsMenu":94,"View:RainLoop:SettingsPane":95,"View:RainLoop:SettingsSystemDropDown":96,"_":25}],49:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11697,7 +11558,7 @@ module.exports = window;
 	module.exports = SettingsAccounts;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"LinkBuilder":11,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:AddAccount":83,"_":31,"ko":28,"window":32}],56:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:AddAccount":77,"_":25,"ko":22,"window":26}],50:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11820,7 +11681,7 @@ module.exports = window;
 	module.exports = SettingsChangePassword;
 
 }(module, require));
-},{"Enums":7,"Storage:RainLoop:Remote":74,"Utils":14,"_":31,"ko":28}],57:[function(require,module,exports){
+},{"Enums":7,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],51:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11880,7 +11741,7 @@ module.exports = window;
 	module.exports = SettingsContacts;
 
 }(module, require));
-},{"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"ko":28}],58:[function(require,module,exports){
+},{"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],52:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11923,7 +11784,7 @@ module.exports = window;
 	module.exports = SettingsFilters;
 
 }(module, require));
-},{"App:Knoin":33,"Model:Filter":45,"Utils":14,"View:Popup:Filter":90,"ko":28}],59:[function(require,module,exports){
+},{"App:Knoin":27,"Model:Filter":39,"Utils":14,"View:Popup:Filter":84,"ko":22}],53:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12139,7 +12000,7 @@ module.exports = window;
 	module.exports = SettingsFolders;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Storage:LocalStorage":71,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:FolderCreate":92,"View:Popup:FolderSystem":93,"ko":28}],60:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Storage:LocalStorage":65,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:FolderCreate":86,"View:Popup:FolderSystem":87,"ko":22}],54:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12319,7 +12180,7 @@ module.exports = window;
 	module.exports = SettingsGeneral;
 
 }(module, require));
-},{"$":26,"App:Knoin":33,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:Languages":96,"_":31,"ko":28}],61:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Languages":90,"_":25,"ko":22}],55:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12554,7 +12415,7 @@ module.exports = window;
 	module.exports = SettingsIdentities;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:Identity":94,"_":31,"ko":28}],62:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Identity":88,"_":25,"ko":22}],56:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12659,7 +12520,7 @@ module.exports = window;
 	module.exports = SettingsIdentity;
 
 }(module, require));
-},{"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"_":31,"ko":28}],63:[function(require,module,exports){
+},{"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],57:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12742,7 +12603,7 @@ module.exports = window;
 	module.exports = SettingsOpenPGP;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Storage:RainLoop:Data":70,"View:Popup:AddOpenPgpKey":84,"View:Popup:NewOpenPgpKey":97,"View:Popup:ViewOpenPgpKey":99,"ko":28}],64:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Storage:RainLoop:Data":64,"View:Popup:AddOpenPgpKey":78,"View:Popup:NewOpenPgpKey":91,"View:Popup:ViewOpenPgpKey":93,"ko":22}],58:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12910,7 +12771,7 @@ module.exports = window;
 	module.exports = SettingsSecurity;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Globals":9,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:TwoFactorTest":98,"ko":28}],65:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Globals":9,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:TwoFactorTest":92,"ko":22}],59:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12988,7 +12849,7 @@ module.exports = window;
 	module.exports = SettingsSocial;
 
 }(module, require));
-},{"App:RainLoop":3,"Storage:RainLoop:Data":70,"Utils":14}],66:[function(require,module,exports){
+},{"App:RainLoop":3,"Storage:RainLoop:Data":64,"Utils":14}],60:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -13122,7 +12983,7 @@ module.exports = window;
 	module.exports = SettingsThemes;
 
 }(module, require));
-},{"$":26,"Enums":7,"LinkBuilder":11,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"_":31,"ko":28,"window":32}],67:[function(require,module,exports){
+},{"$":20,"Enums":7,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22,"window":26}],61:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -13216,7 +13077,7 @@ module.exports = window;
 	module.exports = AbstractData;
 
 }(module, require));
-},{"Enums":7,"Storage:Settings":75,"Utils":14}],68:[function(require,module,exports){
+},{"Enums":7,"Storage:Settings":69,"Utils":14}],62:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -13529,7 +13390,7 @@ module.exports = window;
 	module.exports = AbstractRemoteStorage;
 
 }(module, require));
-},{"$":26,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Plugins":12,"Storage:Settings":75,"Utils":14,"_":31,"window":32}],69:[function(require,module,exports){
+},{"$":20,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Plugins":12,"Storage:Settings":69,"Utils":14,"_":25,"window":26}],63:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -13879,7 +13740,7 @@ module.exports = window;
 	module.exports = new CacheStorage();
 
 }(module, require));
-},{"Enums":7,"LinkBuilder":11,"Storage:Settings":75,"Utils":14,"_":31}],70:[function(require,module,exports){
+},{"Enums":7,"LinkBuilder":11,"Storage:Settings":69,"Utils":14,"_":25}],64:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -13892,8 +13753,6 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$div = require('$div'),
-		NotificationClass = require('NotificationClass'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -14428,7 +14287,11 @@ module.exports = window;
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
 					{
-						var oNotification = null;
+						var
+							NotificationClass = Utils.notificationClass(),
+							oNotification = null
+						;
+						
 						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
@@ -14724,11 +14587,11 @@ module.exports = window;
 									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 							if (bPgpSigned && oMessage.isPgpSigned())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
@@ -14736,13 +14599,13 @@ module.exports = window;
 							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 
 							oMessage.isPgpSigned(bPgpSigned);
 							oMessage.isPgpEncrypted(bPgpEncrypted);
@@ -14909,7 +14772,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"$":26,"$div":15,"App:Knoin":33,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Model:Message":48,"NotificationClass":22,"Storage:Abstract:Data":67,"Storage:LocalStorage":71,"Storage:RainLoop:Cache":69,"Storage:Settings":75,"Utils":14,"_":31,"ko":28,"moment":29,"window":32}],71:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Model:Message":42,"Storage:Abstract:Data":61,"Storage:LocalStorage":65,"Storage:RainLoop:Cache":63,"Storage:Settings":69,"Utils":14,"_":25,"ko":22,"moment":23,"window":26}],65:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -14963,7 +14826,7 @@ module.exports = window;
 	module.exports = new LocalStorage();
 
 }(module, require));
-},{"Storage:LocalStorage:Cookie":72,"Storage:LocalStorage:LocalStorage":73,"_":31}],72:[function(require,module,exports){
+},{"Storage:LocalStorage:Cookie":66,"Storage:LocalStorage:LocalStorage":67,"_":25}],66:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -15055,7 +14918,7 @@ module.exports = window;
 	module.exports = CookieDriver;
 
 }(module, require));
-},{"$":26,"Consts":6,"JSON":20,"Utils":14}],73:[function(require,module,exports){
+},{"$":20,"Consts":6,"JSON":15,"Utils":14}],67:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -15144,7 +15007,7 @@ module.exports = window;
 	module.exports = LocalStorageDriver;
 
 }(module, require));
-},{"Consts":6,"JSON":20,"Utils":14,"window":32}],74:[function(require,module,exports){
+},{"Consts":6,"JSON":15,"Utils":14,"window":26}],68:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -15959,7 +15822,7 @@ module.exports = window;
 	module.exports = new RemoteStorage();
 
 }(module, require));
-},{"Base64":5,"Consts":6,"Globals":9,"Storage:Abstract:Remote":68,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:Settings":75,"Utils":14,"_":31}],75:[function(require,module,exports){
+},{"Base64":5,"Consts":6,"Globals":9,"Storage:Abstract:Remote":62,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:Settings":69,"Utils":14,"_":25}],69:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -15967,6 +15830,7 @@ module.exports = window;
 	'use strict';
 
 	var
+		window = require('window'),
 		Utils = require('Utils')
 	;
 
@@ -15975,7 +15839,7 @@ module.exports = window;
 	 */
 	function SettingsStorage()
 	{
-		this.oSettings = require('AppData');
+		this.oSettings = window['rainloopAppData'] || {};
 		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
 	}
 
@@ -16013,7 +15877,7 @@ module.exports = window;
 	module.exports = new SettingsStorage();
 
 }(module, require));
-},{"AppData":19,"Utils":14}],76:[function(require,module,exports){
+},{"Utils":14,"window":26}],70:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -16047,7 +15911,7 @@ module.exports = window;
 	module.exports = AboutViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Knoin:AbstractViewModel":36,"Storage:Settings":75,"ko":28}],77:[function(require,module,exports){
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:Settings":69,"ko":22}],71:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -16169,7 +16033,7 @@ module.exports = window;
 	module.exports = AbstractSystemDropDownViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:AddAccount":83,"View:Popup:KeyboardShortcutsHelp":95,"_":31,"key":27,"ko":28,"window":32}],78:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:AddAccount":77,"View:Popup:KeyboardShortcutsHelp":89,"_":25,"key":21,"ko":22,"window":26}],72:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -16540,7 +16404,7 @@ module.exports = window;
 	module.exports = LoginViewModel;
 
 }(module, require));
-},{"$":26,"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:Languages":96,"_":31,"ko":28,"window":32}],79:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Languages":90,"_":25,"ko":22,"window":26}],73:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -16552,7 +16416,6 @@ module.exports = window;
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Utils = require('Utils'),
 		Enums = require('Enums'),
@@ -16778,7 +16641,7 @@ module.exports = window;
 		{
 			var
 				sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
-				bCopy = $html.hasClass('rl-ctrl-key-pressed'),
+				bCopy = Globals.$html.hasClass('rl-ctrl-key-pressed'),
 				aUids = oUi.helper.data('rl-uids')
 			;
 
@@ -16816,7 +16679,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"$":26,"$html":17,"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:Settings":75,"Utils":14,"View:Popup:Compose":88,"View:Popup:Contacts":89,"View:Popup:FolderCreate":92,"key":27,"ko":28,"window":32}],80:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:Settings":69,"Utils":14,"View:Popup:Compose":82,"View:Popup:Contacts":83,"View:Popup:FolderCreate":86,"key":21,"ko":22,"window":26}],74:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -17753,7 +17616,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"$":26,"App:Knoin":33,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Jua":21,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Selector":13,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:AdvancedSearch":85,"View:Popup:Compose":88,"View:Popup:FolderClear":91,"_":31,"ifvisible":25,"key":27,"ko":28}],81:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Jua":16,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Selector":13,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:AdvancedSearch":79,"View:Popup:Compose":82,"View:Popup:FolderClear":85,"_":25,"ifvisible":19,"key":21,"ko":22}],75:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -17764,7 +17627,6 @@ module.exports = window;
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -17975,11 +17837,11 @@ module.exports = window;
 		this.fullScreenMode.subscribe(function (bValue) {
 			if (bValue)
 			{
-				$html.addClass('rl-message-fullscreen');
+				Globals.$html.addClass('rl-message-fullscreen');
 			}
 			else
 			{
-				$html.removeClass('rl-message-fullscreen');
+				Globals.$html.removeClass('rl-message-fullscreen');
 			}
 
 			Utils.windowResize();
@@ -18469,7 +18331,7 @@ module.exports = window;
 	module.exports = MailBoxMessageViewViewModel;
 
 }(module, require));
-},{"$":26,"$html":17,"App:Knoin":33,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:Compose":88,"key":27,"ko":28}],82:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Compose":82,"key":21,"ko":22}],76:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -18497,7 +18359,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"App:Knoin":33,"View:RainLoop:AbstractSystemDropDown":77}],83:[function(require,module,exports){
+},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71}],77:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -18614,7 +18476,7 @@ module.exports = window;
 	module.exports = PopupsAddAccountViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Remote":74,"Utils":14,"_":31,"ko":28}],84:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],78:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -18724,7 +18586,7 @@ module.exports = window;
 	module.exports = PopupsAddOpenPgpKeyViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Utils":14,"ko":28}],85:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22}],79:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -18882,7 +18744,7 @@ module.exports = window;
 	module.exports = PopupsAdvancedSearchViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Utils":14,"ko":28,"moment":29}],86:[function(require,module,exports){
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22,"moment":23}],80:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -19013,7 +18875,7 @@ module.exports = window;
 	module.exports = PopupsAskViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Knoin:AbstractViewModel":36,"Utils":14,"key":27,"ko":28}],87:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Utils":14,"key":21,"ko":22}],81:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -19279,7 +19141,7 @@ module.exports = window;
 	module.exports = PopupsComposeOpenPgpViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Knoin:AbstractViewModel":36,"Model:Email":43,"Storage:RainLoop:Data":70,"Utils":14,"_":31,"key":27,"ko":28,"window":32}],88:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Model:Email":37,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"key":21,"ko":22,"window":26}],82:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -19292,7 +19154,6 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$win = require('$win'),
 		JSON = require('JSON'),
 		Jua = require('Jua'),
 
@@ -20337,7 +20198,7 @@ module.exports = window;
 			return false;
 		});
 
-		$win.on('resize', function () {
+		Globals.$win.on('resize', function () {
 			self.triggerForResize();
 		});
 
@@ -21063,7 +20924,7 @@ module.exports = window;
 	module.exports = PopupsComposeViewModel;
 
 }(module, require));
-},{"$":26,"$win":18,"App:Knoin":33,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"HtmlEditor":10,"JSON":20,"Jua":21,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Model:ComposeAttachment":39,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"View:Popup:Ask":86,"View:Popup:ComposeOpenPgp":87,"View:Popup:FolderSystem":93,"_":31,"ko":28,"moment":29,"window":32}],89:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"HtmlEditor":10,"JSON":15,"Jua":16,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Model:ComposeAttachment":33,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Ask":80,"View:Popup:ComposeOpenPgp":81,"View:Popup:FolderSystem":87,"_":25,"ko":22,"moment":23,"window":26}],83:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -21845,7 +21706,7 @@ module.exports = window;
 	module.exports = PopupsContactsViewModel;
 
 }(module, require));
-},{"$":26,"App:Knoin":33,"App:RainLoop":3,"Consts":6,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Model:Contact":40,"Model:ContactProperty":41,"Model:ContactTag":42,"Model:Email":43,"Selector":13,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"View:Popup:Compose":88,"View:Popup:Contacts":89,"_":31,"key":27,"ko":28,"window":32}],90:[function(require,module,exports){
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Model:Contact":34,"Model:ContactProperty":35,"Model:ContactTag":36,"Model:Email":37,"Selector":13,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Compose":82,"View:Popup:Contacts":83,"_":25,"key":21,"ko":22,"window":26}],84:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -21898,7 +21759,7 @@ module.exports = window;
 	module.exports = PopupsFilterViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Consts":6,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Utils":14,"ko":28}],91:[function(require,module,exports){
+},{"App:Knoin":27,"Consts":6,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22}],85:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22023,7 +21884,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Cache":69,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"ko":28}],92:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],86:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22155,7 +22016,7 @@ module.exports = window;
 	module.exports = PopupsFolderCreateViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"ko":28}],93:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],87:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22291,7 +22152,7 @@ module.exports = window;
 	module.exports = PopupsFolderSystemViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Storage:Settings":75,"Utils":14,"ko":28}],94:[function(require,module,exports){
+},{"App:Knoin":27,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"ko":22}],88:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22462,7 +22323,7 @@ module.exports = window;
 	module.exports = PopupsIdentityViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Storage:RainLoop:Remote":74,"Utils":14,"ko":28}],95:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],89:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22527,7 +22388,7 @@ module.exports = window;
 	module.exports = PopupsKeyboardShortcutsHelpViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Knoin:AbstractViewModel":36,"_":31,"key":27}],96:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"_":25,"key":21}],90:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22609,7 +22470,7 @@ module.exports = window;
 	module.exports = PopupsLanguagesViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Utils":14,"_":31,"ko":28}],97:[function(require,module,exports){
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22}],91:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22726,7 +22587,7 @@ module.exports = window;
 	module.exports = PopupsNewOpenPgpKeyViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"App:RainLoop":3,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Data":70,"Utils":14,"_":31,"ko":28,"window":32}],98:[function(require,module,exports){
+},{"App:Knoin":27,"App:RainLoop":3,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22,"window":26}],92:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22802,7 +22663,7 @@ module.exports = window;
 	module.exports = PopupsTwoFactorTestViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Knoin:AbstractViewModel":36,"Storage:RainLoop:Remote":74,"Utils":14,"ko":28}],99:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],93:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22861,7 +22722,7 @@ module.exports = window;
 	module.exports = PopupsViewOpenPgpKeyViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Knoin:AbstractViewModel":36,"Utils":14,"ko":28}],100:[function(require,module,exports){
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Utils":14,"ko":22}],94:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22908,7 +22769,7 @@ module.exports = window;
 	module.exports = SettingsMenuViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Globals":9,"Knoin:AbstractViewModel":36,"LinkBuilder":11}],101:[function(require,module,exports){
+},{"App:Knoin":27,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11}],95:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22961,7 +22822,7 @@ module.exports = window;
 	module.exports = SettingsPaneViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"Enums":7,"Knoin:AbstractViewModel":36,"LinkBuilder":11,"Storage:RainLoop:Data":70,"key":27}],102:[function(require,module,exports){
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"key":21}],96:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -22988,4 +22849,4 @@ module.exports = window;
 	module.exports = SettingsSystemDropDownViewModel;
 
 }(module, require));
-},{"App:Knoin":33,"View:RainLoop:AbstractSystemDropDown":77}]},{},[1]);
+},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71}]},{},[1]);

@@ -10,7 +10,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$win = require('$win'),
 		JSON = require('JSON'),
 		Jua = require('Jua'),
 
@@ -1055,7 +1054,7 @@
 			return false;
 		});
 
-		$win.on('resize', function () {
+		Globals.$win.on('resize', function () {
 			self.triggerForResize();
 		});
 

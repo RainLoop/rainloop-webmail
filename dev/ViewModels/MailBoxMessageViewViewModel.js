@@ -8,7 +8,6 @@
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -219,11 +218,11 @@
 		this.fullScreenMode.subscribe(function (bValue) {
 			if (bValue)
 			{
-				$html.addClass('rl-message-fullscreen');
+				Globals.$html.addClass('rl-message-fullscreen');
 			}
 			else
 			{
-				$html.removeClass('rl-message-fullscreen');
+				Globals.$html.removeClass('rl-message-fullscreen');
 			}
 
 			Utils.windowResize();

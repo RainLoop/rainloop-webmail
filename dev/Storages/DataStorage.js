@@ -10,8 +10,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$div = require('$div'),
-		NotificationClass = require('NotificationClass'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -546,7 +544,11 @@
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
 					{
-						var oNotification = null;
+						var
+							NotificationClass = Utils.notificationClass(),
+							oNotification = null
+						;
+						
 						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
@@ -842,11 +844,11 @@
 									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 							if (bPgpSigned && oMessage.isPgpSigned())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
@@ -854,13 +856,13 @@
 							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 
 							oMessage.isPgpSigned(bPgpSigned);
 							oMessage.isPgpEncrypted(bPgpEncrypted);

@@ -16,9 +16,6 @@
 		$ = require('$'),
 		_ = require('_'),
 		window = require('window'),
-		$html = require('$html'),
-		$win = require('$win'),
-		$doc = require('$doc'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -43,7 +40,7 @@
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
-		$win.on('error', function (oEvent) {
+		Globals.$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
 				-1 === Utils.inArray(oEvent.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
@@ -55,21 +52,21 @@
 					oEvent.originalEvent.filename,
 					oEvent.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
-					$html.attr('class'),
+					Globals.$html.attr('class'),
 					Utils.microtime() - Globals.now
 				);
 			}
 		});
 
-		$doc.on('keydown', function (oEvent) {
+		Globals.$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
-				$html.addClass('rl-ctrl-key-pressed');
+				Globals.$html.addClass('rl-ctrl-key-pressed');
 			}
 		}).on('keyup', function (oEvent) {
 			if (oEvent && !oEvent.ctrlKey)
 			{
-				$html.removeClass('rl-ctrl-key-pressed');
+				Globals.$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 	}
@@ -218,11 +215,11 @@
 			'id': 'mobile',
 			'maxWidth': 767,
 			'onEnter': function() {
-				$html.addClass('ssm-state-mobile');
+				Globals.$html.addClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-mobile');
+				Globals.$html.removeClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-leave');
 			}
 		});
@@ -232,10 +229,10 @@
 			'minWidth': 768,
 			'maxWidth': 999,
 			'onEnter': function() {
-				$html.addClass('ssm-state-tablet');
+				Globals.$html.addClass('ssm-state-tablet');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-tablet');
+				Globals.$html.removeClass('ssm-state-tablet');
 			}
 		});
 
@@ -244,10 +241,10 @@
 			'minWidth': 1000,
 			'maxWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop');
+				Globals.$html.addClass('ssm-state-desktop');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop');
+				Globals.$html.removeClass('ssm-state-desktop');
 			}
 		});
 
@@ -255,10 +252,10 @@
 			'id': 'desktop-large',
 			'minWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop-large');
+				Globals.$html.addClass('ssm-state-desktop-large');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop-large');
+				Globals.$html.removeClass('ssm-state-desktop-large');
 			}
 		});
 
@@ -271,7 +268,7 @@
 		});
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
-			$html.toggleClass('rl-left-panel-disabled', bValue);
+			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 
 		ssm.ready();
@@ -280,7 +277,7 @@
 	module.exports = AbstractApp;
 
 }(module, require));
-},{"$":21,"$doc":13,"$html":14,"$win":15,"App:Knoin":28,"Events":7,"Globals":8,"Knoin:AbstractBoot":29,"LinkBuilder":9,"Storage:Settings":59,"Utils":11,"_":26,"ssm":25,"window":27}],3:[function(require,module,exports){
+},{"$":15,"App:Knoin":22,"Events":7,"Globals":8,"Knoin:AbstractBoot":23,"LinkBuilder":9,"Storage:Settings":53,"Utils":11,"_":20,"ssm":19,"window":21}],3:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -597,7 +594,7 @@
 	module.exports = new AdminApp();
 
 }(module, require));
-},{"App:Abstract":2,"App:Knoin":28,"Enums":6,"LinkBuilder":9,"Screen:Admin:Login":37,"Screen:Admin:Settings":38,"Settings:Admin:About":39,"Settings:Admin:Branding":40,"Settings:Admin:Contacts":41,"Settings:Admin:Domains":42,"Settings:Admin:General":43,"Settings:Admin:Licensing":44,"Settings:Admin:Login":45,"Settings:Admin:Packages":46,"Settings:Admin:Plugins":47,"Settings:Admin:Security":48,"Settings:Admin:Social":49,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23,"window":27}],4:[function(require,module,exports){
+},{"App:Abstract":2,"App:Knoin":22,"Enums":6,"LinkBuilder":9,"Screen:Admin:Login":31,"Screen:Admin:Settings":32,"Settings:Admin:About":33,"Settings:Admin:Branding":34,"Settings:Admin:Contacts":35,"Settings:Admin:Domains":36,"Settings:Admin:General":37,"Settings:Admin:Licensing":38,"Settings:Admin:Login":39,"Settings:Admin:Packages":40,"Settings:Admin:Plugins":41,"Settings:Admin:Security":42,"Settings:Admin:Social":43,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17,"window":21}],4:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -610,8 +607,6 @@
 			window = require('window'),
 			_ = require('_'),
 			$ = require('$'),
-			$win = require('$win'),
-			$html = require('$html'),
 
 			Globals = require('Globals'),
 			Plugins = require('Plugins'),
@@ -629,15 +624,15 @@
 		Plugins.__remote = App.remote();
 		Plugins.__data = App.data();
 
-		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
+		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
-		$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
+		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
 		
-		$win.unload(function () {
+		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
 
-		$html.on('click.dropdown.data-api', function () {
+		Globals.$html.on('click.dropdown.data-api', function () {
 			Utils.detectDropdownVisibility();
 		});
 
@@ -664,7 +659,7 @@
 					_.delay(function () {
 
 						App.bootstart();
-						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+						Globals.$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
 					}, 10);
 				}
@@ -680,7 +675,7 @@
 	};
 
 }(module, require));
-},{"$":21,"$html":14,"$win":15,"Enums":6,"Globals":8,"Model:Email":34,"Plugins":10,"Utils":11,"_":26,"window":27}],5:[function(require,module,exports){
+},{"$":15,"Enums":6,"Globals":8,"Model:Email":28,"Plugins":10,"Utils":11,"_":20,"window":21}],5:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -1318,7 +1313,7 @@
 	module.exports = new Events();
 
 }(module, require));
-},{"Plugins":10,"Utils":11,"_":26}],8:[function(require,module,exports){
+},{"Plugins":10,"Utils":11,"_":20}],8:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -1328,12 +1323,17 @@
 	var
 		Globals = {},
 		window = require('window'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		$html = require('$html'),
 
 		Enums = require('Enums')
 	;
+
+	Globals.$win = $(window);
+	Globals.$doc = $(window.document);
+	Globals.$html = $('html');
+	Globals.$div = $('<div></div>');
 
 	/**
 	 * @type {?}
@@ -1418,7 +1418,7 @@
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bAnimationSupported = !Globals.bMobileDevice && $html.hasClass('csstransitions');
+	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions');
 
 	/**
 	 * @type {boolean}
@@ -1600,7 +1600,7 @@
 	module.exports = Globals;
 
 }(module, require));
-},{"$html":14,"Enums":6,"key":22,"ko":23,"window":27}],9:[function(require,module,exports){
+},{"$":15,"Enums":6,"key":16,"ko":17,"window":21}],9:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -1939,7 +1939,7 @@
 	module.exports = new LinkBuilder();
 
 }(module, require));
-},{"Storage:Settings":59,"Utils":11,"window":27}],10:[function(require,module,exports){
+},{"Storage:Settings":53,"Utils":11,"window":21}],10:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -2052,7 +2052,7 @@
 	module.exports = Plugins;
 
 }(module, require));
-},{"Storage:Settings":59,"Utils":11,"_":26}],11:[function(require,module,exports){
+},{"Storage:Settings":53,"Utils":11,"_":20}],11:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -2066,11 +2066,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		$win = require('$win'),
-		$html = require('$html'),
-		$div = require('$div'),
-		$doc = require('$doc'),
-		NotificationClass = require('NotificationClass'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -2097,12 +2092,12 @@
 	Utils.windowResize = _.debounce(function (iTimeout) {
 		if (Utils.isUnd(iTimeout))
 		{
-			$win.resize();
+			Globals.$win.resize();
 		}
 		else
 		{
 			window.setTimeout(function () {
-				$win.resize();
+				Globals.$win.resize();
 			}, iTimeout);
 		}
 	}, 50);
@@ -2148,6 +2143,14 @@
 	Utils.isNonEmptyArray = function (aValue)
 	{
 		return Utils.isArray(aValue) && 0 < aValue.length;
+	};
+
+	/**
+	 * @return {*|null}
+	 */
+	Utils.notificationClass = function ()
+	{
+		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
 	};
 
 	/**
@@ -2476,7 +2479,7 @@
 		{
 			Globals.oI18N = window['rainloopI18N'] || {};
 
-			Utils.i18nToNode($doc);
+			Utils.i18nToNode(Globals.$doc);
 
 			Globals.langChangeTrigger(!Globals.langChangeTrigger());
 		}
@@ -2570,12 +2573,8 @@
 		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		var
-			iIndex = 0,
-			sResult = '',
 			bDrop = false,
-			sTrimmedPart = '',
 			aSubject = [],
-			aParts = [],
 			bRe = 'RE' === sPrefix,
 			bFwd = 'FWD' === sPrefix,
 			bPrefixIsRe = !bFwd
@@ -2583,15 +2582,9 @@
 
 		if ('' !== sSubject)
 		{
-			bDrop = false;
-
-			aParts = sSubject.split(':');
-			for (iIndex = 0; iIndex < aParts.length; iIndex++)
-			{
-				sTrimmedPart = Utils.trim(aParts[iIndex]);
-				if (!bDrop &&
-						(/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart))
-					)
+			_.each(sSubject.split(':'), function (sPart) {
+				var sTrimmedPart = Utils.trim(sPart);
+				if (!bDrop && (/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart)))
 				{
 					if (!bRe)
 					{
@@ -2605,15 +2598,10 @@
 				}
 				else
 				{
-					aSubject.push(aParts[iIndex]);
+					aSubject.push(sPart);
 					bDrop = true;
 				}
-			}
-
-			if (0 < aSubject.length)
-			{
-				sResult = Utils.trim(aSubject.join(':'));
-			}
+			});
 		}
 
 		if (bPrefixIsRe)
@@ -2629,115 +2617,8 @@
 			(bPrefixIsRe ? 'Re: ' : 'Fwd: ') +
 			(bRe ? 'Re: ' : '') +
 			(bFwd ? 'Fwd: ' : '') +
-			sResult
+			Utils.trim(aSubject.join(':'))
 		);
-	};
-
-
-	/**
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils.fixLongSubject = function (sSubject)
-	{
-		var
-			iLimit = 30,
-			mReg = /^Re([\[\(]([\d]+)[\]\)]|):[\s]{0,3}Re([\[\(]([\d]+)[\]\)]|):/ig,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			iLimit--;
-
-			oMatch = mReg.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				sSubject = sSubject.replace(mReg, 'Re:');
-			}
-		}
-		while (oMatch || 0 < iLimit);
-
-		return sSubject.replace(/[\s]+/g, ' ');
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sPrefix
-	 * @param {string} sSubject
-	 * @param {boolean=} bFixLongSubject = true
-	 * @return {string}
-	 */
-	Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
-	{
-		var
-			oMatch = null,
-			sResult = Utils.trim(sSubject)
-		;
-
-		if (null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]))
-		{
-			sResult = sPrefix + '[2]: ' + oMatch[1];
-		}
-		else if (null !== (oMatch = (new window.RegExp('^(' + sPrefix + '[\\s]?[\\[\\(]?)([\\d]+)([\\]\\)]?[\\s]?\\:.*)$', 'gi')).exec(sSubject)) &&
-			!Utils.isUnd(oMatch[1]) && !Utils.isUnd(oMatch[2]) && !Utils.isUnd(oMatch[3]))
-		{
-			sResult = oMatch[1] + (Utils.pInt(oMatch[2]) + 1) + oMatch[3];
-		}
-		else
-		{
-			sResult = sPrefix + ': ' + sSubject;
-		}
-
-		sResult = sResult.replace(/[\s]+/g, ' ');
-		sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
-	//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
-		return sResult;
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils._fixLongSubject_ = function (sSubject)
-	{
-		var
-			iCounter = 0,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				iCounter = 0;
-				iCounter += Utils.isUnd(oMatch[2]) ? 1 : 0 + Utils.pInt(oMatch[2]);
-				iCounter += Utils.isUnd(oMatch[4]) ? 1 : 0 + Utils.pInt(oMatch[4]);
-
-				sSubject = sSubject.replace(/^Re(\[[\d]+\]|):[\s]{0,3}Re(\[[\d]+\]|):/gi, 'Re' + (0 < iCounter ? '[' + iCounter + ']' : '') + ':');
-			}
-
-		}
-		while (oMatch);
-
-		sSubject = sSubject.replace(/[\s]+/g, ' ');
-		return sSubject;
 	};
 
 	/**
@@ -3036,7 +2917,7 @@
 		oData.interfaceAnimation.subscribe(function (sValue) {
 			if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
 			{
-				$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
+				Globals.$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
 
 				Globals.sAnimationType = Enums.InterfaceAnimation.None;
 			}
@@ -3045,11 +2926,11 @@
 				switch (sValue)
 				{
 					case Enums.InterfaceAnimation.Full:
-						$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
+						Globals.$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
 						Globals.sAnimationType = sValue;
 						break;
 					case Enums.InterfaceAnimation.Normal:
-						$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
+						Globals.$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
 						Globals.sAnimationType = sValue;
 						break;
 				}
@@ -3059,8 +2940,14 @@
 		oData.interfaceAnimation.valueHasMutated();
 
 		oData.desktopNotificationsPermisions = ko.computed(function () {
+
 			oData.desktopNotifications();
-			var iResult = Enums.DesktopNotifications.NotSupported;
+
+			var
+				NotificationClass = Utils.notificationClass(),
+				iResult = Enums.DesktopNotifications.NotSupported
+			;
+			
 			if (NotificationClass && NotificationClass.permission)
 			{
 				switch (NotificationClass.permission.toLowerCase())
@@ -3092,12 +2979,16 @@
 			'write': function (bValue) {
 				if (bValue)
 				{
-					var iPermission = oData.desktopNotificationsPermisions();
-					if (Enums.DesktopNotifications.Allowed === iPermission)
+					var
+						NotificationClass = Utils.notificationClass(),
+						iPermission = oData.desktopNotificationsPermisions()
+					;
+					
+					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
 					{
 						oData.desktopNotifications(true);
 					}
-					else if (Enums.DesktopNotifications.NotAllowed === iPermission)
+					else if (NotificationClass && Enums.DesktopNotifications.NotAllowed === iPermission)
 					{
 						NotificationClass.requestPermission(function () {
 							oData.desktopNotifications.valueHasMutated();
@@ -3632,7 +3523,7 @@
 			.replace(/<[^>]*>/gm, '')
 		;
 
-		sText = $div.html(sText).text();
+		sText = Globals.$div.html(sText).text();
 
 		sText = sText
 			.replace(/\n[ \t]+/gm, '\n')
@@ -3769,7 +3660,7 @@
 	{
 		if ($.fn && $.fn.linkify)
 		{
-			sHtml = $div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
 				.linkify()
 				.find('.linkified').removeClass('linkified').end()
 				.html()
@@ -4101,52 +3992,27 @@
 	module.exports = Utils;
 
 }(module, require));
-},{"$":21,"$div":12,"$doc":13,"$html":14,"$win":15,"Consts":5,"Enums":6,"Globals":8,"NotificationClass":18,"_":26,"ko":23,"window":27}],12:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')('<div></div>');
-},{"$":21}],13:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')(window.document);
-},{"$":21}],14:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')('html');
-},{"$":21}],15:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('$')(window);
-},{"$":21}],16:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = require('window')['rainloopAppData'] || {};
-},{"window":27}],17:[function(require,module,exports){
+},{"$":15,"Consts":5,"Enums":6,"Globals":8,"_":20,"ko":17,"window":21}],12:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = JSON;
-},{}],18:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-var w = require('window');
-module.exports = w.Notification && w.Notification.requestPermission ? w.Notification : null;
-},{"window":27}],19:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = crossroads;
-},{}],20:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = hasher;
-},{}],21:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = $;
-},{}],22:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = key;
-},{}],23:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, ko) {
@@ -4156,9 +4022,7 @@ module.exports = key;
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$'),
-		$win = require('$win'),
-		$doc = require('$doc')
+		$ = require('$')
 	;
 
 	ko.bindingHandlers.tooltip = {
@@ -4248,7 +4112,7 @@ module.exports = key;
 				}
 			});
 
-			$doc.click(function () {
+			$(window.document).click(function () {
 				$oEl.tooltip('hide');
 			});
 
@@ -4463,6 +4327,7 @@ module.exports = key;
 
 			var
 				Utils = require('Utils'),
+				Globals = require('Globals'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -4472,7 +4337,7 @@ module.exports = key;
 			if (0 < iOffset)
 			{
 				iOffset += Utils.pInt(aValues[2]);
-				iSize = $win.height() - iOffset;
+				iSize = Globals.$win.height() - iOffset;
 
 				if (iValue < iSize)
 				{
@@ -5055,23 +4920,23 @@ module.exports = key;
 
 }(module, ko));
 
-},{"$":21,"$doc":13,"$win":15,"Globals":8,"Model:ContactTag":33,"Model:Email":34,"Utils":11,"_":26,"window":27}],24:[function(require,module,exports){
+},{"$":15,"Globals":8,"Model:ContactTag":27,"Model:Email":28,"Utils":11,"_":20,"window":21}],18:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = moment;
-},{}],25:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = ssm;
-},{}],26:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = _;
-},{}],27:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 module.exports = window;
-},{}],28:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -5084,7 +4949,6 @@ module.exports = window;
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
-		$html = require('$html'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
@@ -5489,7 +5353,7 @@ module.exports = window;
 		});
 
 		_.delay(function () {
-			$html.removeClass('rl-started-trigger').addClass('rl-started');
+			Globals.$html.removeClass('rl-started-trigger').addClass('rl-started');
 		}, 50);
 	};
 
@@ -5522,7 +5386,7 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module, require));
-},{"$":21,"$html":14,"Globals":8,"Knoin:AbstractViewModel":31,"Plugins":10,"Utils":11,"_":26,"crossroads":19,"hasher":20,"ko":23}],29:[function(require,module,exports){
+},{"$":15,"Globals":8,"Knoin:AbstractViewModel":25,"Plugins":10,"Utils":11,"_":20,"crossroads":13,"hasher":14,"ko":17}],23:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
@@ -5545,7 +5409,7 @@ module.exports = window;
 	module.exports = KnoinAbstractBoot;
 
 }(module, require));
-},{}],30:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -5636,7 +5500,7 @@ module.exports = window;
 	module.exports = KnoinAbstractScreen;
 
 }(module, require));
-},{"Utils":11,"crossroads":19}],31:[function(require,module,exports){
+},{"Utils":11,"crossroads":13}],25:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -5645,7 +5509,6 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
-		$win = require('$win'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -5727,7 +5590,7 @@ module.exports = window;
 	{
 		var self = this;
 
-		$win.on('keydown', function (oEvent) {
+		Globals.$win.on('keydown', function (oEvent) {
 			if (oEvent && self.modalVisibility && self.modalVisibility())
 			{
 				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
@@ -5748,7 +5611,7 @@ module.exports = window;
 	module.exports = KnoinAbstractViewModel;
 
 }(module, require));
-},{"$win":15,"Enums":6,"Globals":8,"Utils":11,"ko":23}],32:[function(require,module,exports){
+},{"Enums":6,"Globals":8,"Utils":11,"ko":17}],26:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -6001,7 +5864,7 @@ module.exports = window;
 	module.exports = AttachmentModel;
 
 }(module, require));
-},{"Globals":8,"LinkBuilder":9,"Utils":11,"window":27}],33:[function(require,module,exports){
+},{"Globals":8,"LinkBuilder":9,"Utils":11,"window":21}],27:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -6060,7 +5923,7 @@ module.exports = window;
 	module.exports = ContactTagModel;
 
 }(module, require));
-},{"Utils":11,"ko":23}],34:[function(require,module,exports){
+},{"Utils":11,"ko":17}],28:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -6439,7 +6302,7 @@ module.exports = window;
 	module.exports = EmailModel;
 
 }(module, require));
-},{"Enums":6,"Utils":11}],35:[function(require,module,exports){
+},{"Enums":6,"Utils":11}],29:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -6452,11 +6315,10 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$win = require('$win'),
-		$div = require('$div'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
+		Globals = require('Globals'),
 		LinkBuilder = require('LinkBuilder'),
 
 		EmailModel = require('Model:Email'),
@@ -7418,7 +7280,7 @@ module.exports = window;
 				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
 			   });
 
-			   $win.resize();
+			   Globals.$win.resize();
 		   }
 
 		   Utils.windowResize(500);
@@ -7615,12 +7477,12 @@ module.exports = window;
 							   this.pgpSignedVerifyUser(oValidSysKey.user);
 
 							   sPlain =
-								   $div.empty().append(
+								   Globals.$div.empty().append(
 									   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 								   ).html()
 							   ;
 
-							   $div.empty();
+							   Globals.$div.empty();
 
 							   this.replacePlaneTextBody(sPlain);
 						   }
@@ -7690,12 +7552,12 @@ module.exports = window;
 					   sPlain = mPgpMessageDecrypted.getText();
 
 					   sPlain =
-						   $div.empty().append(
+						   Globals.$div.empty().append(
 							   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
 						   ).html()
 					   ;
 
-					   $div.empty();
+					   Globals.$div.empty();
 
 					   this.replacePlaneTextBody(sPlain);
 				   }
@@ -7727,7 +7589,7 @@ module.exports = window;
 	module.exports = MessageModel;
 
 }(module, require));
-},{"$":21,"$div":12,"$win":15,"Enums":6,"LinkBuilder":9,"Model:Attachment":32,"Model:Email":34,"Storage:RainLoop:Data":55,"Utils":11,"_":26,"ko":23,"moment":24,"window":27}],36:[function(require,module,exports){
+},{"$":15,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Attachment":26,"Model:Email":28,"Storage:RainLoop:Data":49,"Utils":11,"_":20,"ko":17,"moment":18,"window":21}],30:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7928,7 +7790,7 @@ module.exports = window;
 	module.exports = AbstractSettings;
 
 }(module, require));
-},{"$":21,"App:Knoin":28,"Globals":8,"Knoin:AbstractScreen":30,"LinkBuilder":9,"Utils":11,"_":26,"ko":23}],37:[function(require,module,exports){
+},{"$":15,"App:Knoin":22,"Globals":8,"Knoin:AbstractScreen":24,"LinkBuilder":9,"Utils":11,"_":20,"ko":17}],31:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7961,7 +7823,7 @@ module.exports = window;
 	module.exports = AdminLoginScreen;
 
 }(module, require));
-},{"App:Admin":3,"Knoin:AbstractScreen":30,"View:Admin:Login":60,"_":26}],38:[function(require,module,exports){
+},{"App:Admin":3,"Knoin:AbstractScreen":24,"View:Admin:Login":54,"_":20}],32:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -7995,7 +7857,7 @@ module.exports = window;
 	module.exports = AdminSettingsScreen;
 
 }(module, require));
-},{"App:Admin":3,"Screen:AbstractSettings":36,"View:Admin:SettingsMenu":61,"View:Admin:SettingsPane":62,"_":26}],39:[function(require,module,exports){
+},{"App:Admin":3,"Screen:AbstractSettings":30,"View:Admin:SettingsMenu":55,"View:Admin:SettingsPane":56,"_":20}],33:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8085,7 +7947,7 @@ module.exports = window;
 	module.exports = AdminSettingsAbout;
 
 }(module, require));
-},{"App:Admin":3,"Storage:Admin:Data":52,"Storage:Settings":59,"ko":23}],40:[function(require,module,exports){
+},{"App:Admin":3,"Storage:Admin:Data":46,"Storage:Settings":53,"ko":17}],34:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8178,7 +8040,7 @@ module.exports = window;
 	module.exports = AdminSettingsBranding;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],41:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],35:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8422,7 +8284,7 @@ module.exports = window;
 	module.exports = AdminSettingsContacts;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],42:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],36:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8530,7 +8392,7 @@ module.exports = window;
 	module.exports = AdminSettingsDomains;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"View:Popup:Domain":65,"_":26,"ko":23,"window":27}],43:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"View:Popup:Domain":59,"_":20,"ko":17,"window":21}],37:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8677,7 +8539,7 @@ module.exports = window;
 	module.exports = AdminSettingsGeneral;
 
 }(module, require));
-},{"App:Knoin":28,"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"View:Popup:Languages":66,"_":26,"ko":23}],44:[function(require,module,exports){
+},{"App:Knoin":22,"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"View:Popup:Languages":60,"_":20,"ko":17}],38:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8749,7 +8611,7 @@ module.exports = window;
 	module.exports = AdminSettingsLicensing;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Storage:Admin:Data":52,"Storage:Settings":59,"View:Popup:Activate":63,"ko":23,"moment":24}],45:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Storage:Admin:Data":46,"Storage:Settings":53,"View:Popup:Activate":57,"ko":17,"moment":18}],39:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8822,7 +8684,7 @@ module.exports = window;
 	module.exports = AdminSettingsLogin;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],46:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],40:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -8937,7 +8799,7 @@ module.exports = window;
 	module.exports = AdminSettingsPackages;
 
 }(module, require));
-},{"App:Admin":3,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Utils":11,"ko":23,"window":27}],47:[function(require,module,exports){
+},{"App:Admin":3,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Utils":11,"ko":17,"window":21}],41:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9052,7 +8914,7 @@ module.exports = window;
 	module.exports = AdminSettingsPlugins;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"View:Popup:Plugin":67,"_":26,"ko":23}],48:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"View:Popup:Plugin":61,"_":20,"ko":17}],42:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9191,7 +9053,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"_":26,"ko":23}],49:[function(require,module,exports){
+},{"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],43:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9346,7 +9208,7 @@ module.exports = window;
 	module.exports = AdminSettingsSocial;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],50:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],44:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9440,7 +9302,7 @@ module.exports = window;
 	module.exports = AbstractData;
 
 }(module, require));
-},{"Enums":6,"Storage:Settings":59,"Utils":11}],51:[function(require,module,exports){
+},{"Enums":6,"Storage:Settings":53,"Utils":11}],45:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9753,7 +9615,7 @@ module.exports = window;
 	module.exports = AbstractRemoteStorage;
 
 }(module, require));
-},{"$":21,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Storage:Settings":59,"Utils":11,"_":26,"window":27}],52:[function(require,module,exports){
+},{"$":15,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Storage:Settings":53,"Utils":11,"_":20,"window":21}],46:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9822,7 +9684,7 @@ module.exports = window;
 	module.exports = new AdminDataStorage();
 
 }(module, require));
-},{"Storage:Abstract:Data":50,"_":26,"ko":23}],53:[function(require,module,exports){
+},{"Storage:Abstract:Data":44,"_":20,"ko":17}],47:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10099,7 +9961,7 @@ module.exports = window;
 	module.exports = new AdminRemoteStorage();
 
 }(module, require));
-},{"Storage:Abstract:Remote":51,"_":26}],54:[function(require,module,exports){
+},{"Storage:Abstract:Remote":45,"_":20}],48:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10449,7 +10311,7 @@ module.exports = window;
 	module.exports = new CacheStorage();
 
 }(module, require));
-},{"Enums":6,"LinkBuilder":9,"Storage:Settings":59,"Utils":11,"_":26}],55:[function(require,module,exports){
+},{"Enums":6,"LinkBuilder":9,"Storage:Settings":53,"Utils":11,"_":20}],49:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10462,8 +10324,6 @@ module.exports = window;
 		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
-		$div = require('$div'),
-		NotificationClass = require('NotificationClass'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -10998,7 +10858,11 @@ module.exports = window;
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
 					{
-						var oNotification = null;
+						var
+							NotificationClass = Utils.notificationClass(),
+							oNotification = null
+						;
+						
 						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
@@ -11294,11 +11158,11 @@ module.exports = window;
 									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 							if (bPgpSigned && oMessage.isPgpSigned())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
@@ -11306,13 +11170,13 @@ module.exports = window;
 							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
 							{
 								sResultHtml =
-									$div.append(
+									Globals.$div.append(
 										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
 									).html()
 								;
 							}
 
-							$div.empty();
+							Globals.$div.empty();
 
 							oMessage.isPgpSigned(bPgpSigned);
 							oMessage.isPgpEncrypted(bPgpEncrypted);
@@ -11479,7 +11343,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"$":21,"$div":12,"App:Knoin":28,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Message":35,"NotificationClass":18,"Storage:Abstract:Data":50,"Storage:LocalStorage":56,"Storage:RainLoop:Cache":54,"Storage:Settings":59,"Utils":11,"_":26,"ko":23,"moment":24,"window":27}],56:[function(require,module,exports){
+},{"$":15,"App:Knoin":22,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Message":29,"Storage:Abstract:Data":44,"Storage:LocalStorage":50,"Storage:RainLoop:Cache":48,"Storage:Settings":53,"Utils":11,"_":20,"ko":17,"moment":18,"window":21}],50:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11533,7 +11397,7 @@ module.exports = window;
 	module.exports = new LocalStorage();
 
 }(module, require));
-},{"Storage:LocalStorage:Cookie":57,"Storage:LocalStorage:LocalStorage":58,"_":26}],57:[function(require,module,exports){
+},{"Storage:LocalStorage:Cookie":51,"Storage:LocalStorage:LocalStorage":52,"_":20}],51:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11625,7 +11489,7 @@ module.exports = window;
 	module.exports = CookieDriver;
 
 }(module, require));
-},{"$":21,"Consts":5,"JSON":17,"Utils":11}],58:[function(require,module,exports){
+},{"$":15,"Consts":5,"JSON":12,"Utils":11}],52:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11714,7 +11578,7 @@ module.exports = window;
 	module.exports = LocalStorageDriver;
 
 }(module, require));
-},{"Consts":5,"JSON":17,"Utils":11,"window":27}],59:[function(require,module,exports){
+},{"Consts":5,"JSON":12,"Utils":11,"window":21}],53:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11722,6 +11586,7 @@ module.exports = window;
 	'use strict';
 
 	var
+		window = require('window'),
 		Utils = require('Utils')
 	;
 
@@ -11730,7 +11595,7 @@ module.exports = window;
 	 */
 	function SettingsStorage()
 	{
-		this.oSettings = require('AppData');
+		this.oSettings = window['rainloopAppData'] || {};
 		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
 	}
 
@@ -11768,7 +11633,7 @@ module.exports = window;
 	module.exports = new SettingsStorage();
 
 }(module, require));
-},{"AppData":16,"Utils":11}],60:[function(require,module,exports){
+},{"Utils":11,"window":21}],54:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11890,7 +11755,7 @@ module.exports = window;
 	module.exports = AdminLoginViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],61:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],55:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11931,7 +11796,7 @@ module.exports = window;
 
 }(module, require));
 
-},{"App:Knoin":28,"Globals":8,"Knoin:AbstractViewModel":31}],62:[function(require,module,exports){
+},{"App:Knoin":22,"Globals":8,"Knoin:AbstractViewModel":25}],56:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -11977,7 +11842,7 @@ module.exports = window;
 	module.exports = AdminPaneViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Knoin:AbstractViewModel":31,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"ko":23}],63:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Knoin:AbstractViewModel":25,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"ko":17}],57:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12118,7 +11983,7 @@ module.exports = window;
 	module.exports = PopupsActivateViewModel;
 
 }(module, require));
-},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Data":52,"Storage:Admin:Remote":53,"Storage:Settings":59,"Utils":11,"ko":23}],64:[function(require,module,exports){
+},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"ko":17}],58:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12249,7 +12114,7 @@ module.exports = window;
 	module.exports = PopupsAskViewModel;
 
 }(module, require));
-},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Utils":11,"key":22,"ko":23}],65:[function(require,module,exports){
+},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Utils":11,"key":16,"ko":17}],59:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12568,7 +12433,7 @@ module.exports = window;
 	module.exports = PopupsDomainViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":28,"Consts":5,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"_":26,"ko":23}],66:[function(require,module,exports){
+},{"App:Admin":3,"App:Knoin":22,"Consts":5,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],60:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12650,7 +12515,7 @@ module.exports = window;
 	module.exports = PopupsLanguagesViewModel;
 
 }(module, require));
-},{"App:Knoin":28,"Knoin:AbstractViewModel":31,"Storage:RainLoop:Data":55,"Utils":11,"_":26,"ko":23}],67:[function(require,module,exports){
+},{"App:Knoin":22,"Knoin:AbstractViewModel":25,"Storage:RainLoop:Data":49,"Utils":11,"_":20,"ko":17}],61:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -12820,4 +12685,4 @@ module.exports = window;
 	module.exports = PopupsPluginViewModel;
 
 }(module, require));
-},{"App:Knoin":28,"Enums":6,"Knoin:AbstractViewModel":31,"Storage:Admin:Remote":53,"Utils":11,"View:Popup:Ask":64,"_":26,"key":22,"ko":23}]},{},[1]);
+},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"View:Popup:Ask":58,"_":20,"key":16,"ko":17}]},{},[1]);

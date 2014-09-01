@@ -169,7 +169,7 @@
 
 //		this.visible.subscribe(function () {
 //			Utils.timeOutAction('folder-list-folder-visibility-change', function () {
-//				require('$win').trigger('folder-list-folder-visibility-change');
+//				Globals.$win.trigger('folder-list-folder-visibility-change');
 //			}, 100);
 //		});
 

@@ -5,6 +5,7 @@
 	'use strict';
 
 	var
+		window = require('window'),
 		Utils = require('Utils')
 	;
 
@@ -13,7 +14,7 @@
 	 */
 	function SettingsStorage()
 	{
-		this.oSettings = require('AppData');
+		this.oSettings = window['rainloopAppData'] || {};
 		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
 	}
 

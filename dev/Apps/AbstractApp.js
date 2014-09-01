@@ -8,9 +8,6 @@
 		$ = require('$'),
 		_ = require('_'),
 		window = require('window'),
-		$html = require('$html'),
-		$win = require('$win'),
-		$doc = require('$doc'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -35,7 +32,7 @@
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
-		$win.on('error', function (oEvent) {
+		Globals.$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
 				-1 === Utils.inArray(oEvent.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
@@ -47,21 +44,21 @@
 					oEvent.originalEvent.filename,
 					oEvent.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
-					$html.attr('class'),
+					Globals.$html.attr('class'),
 					Utils.microtime() - Globals.now
 				);
 			}
 		});
 
-		$doc.on('keydown', function (oEvent) {
+		Globals.$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
-				$html.addClass('rl-ctrl-key-pressed');
+				Globals.$html.addClass('rl-ctrl-key-pressed');
 			}
 		}).on('keyup', function (oEvent) {
 			if (oEvent && !oEvent.ctrlKey)
 			{
-				$html.removeClass('rl-ctrl-key-pressed');
+				Globals.$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 	}
@@ -210,11 +207,11 @@
 			'id': 'mobile',
 			'maxWidth': 767,
 			'onEnter': function() {
-				$html.addClass('ssm-state-mobile');
+				Globals.$html.addClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-enter');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-mobile');
+				Globals.$html.removeClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-leave');
 			}
 		});
@@ -224,10 +221,10 @@
 			'minWidth': 768,
 			'maxWidth': 999,
 			'onEnter': function() {
-				$html.addClass('ssm-state-tablet');
+				Globals.$html.addClass('ssm-state-tablet');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-tablet');
+				Globals.$html.removeClass('ssm-state-tablet');
 			}
 		});
 
@@ -236,10 +233,10 @@
 			'minWidth': 1000,
 			'maxWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop');
+				Globals.$html.addClass('ssm-state-desktop');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop');
+				Globals.$html.removeClass('ssm-state-desktop');
 			}
 		});
 
@@ -247,10 +244,10 @@
 			'id': 'desktop-large',
 			'minWidth': 1400,
 			'onEnter': function() {
-				$html.addClass('ssm-state-desktop-large');
+				Globals.$html.addClass('ssm-state-desktop-large');
 			},
 			'onLeave': function() {
-				$html.removeClass('ssm-state-desktop-large');
+				Globals.$html.removeClass('ssm-state-desktop-large');
 			}
 		});
 
@@ -263,7 +260,7 @@
 		});
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
-			$html.toggleClass('rl-left-panel-disabled', bValue);
+			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 
 		ssm.ready();

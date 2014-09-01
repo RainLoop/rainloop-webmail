@@ -7,9 +7,7 @@
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$'),
-		$win = require('$win'),
-		$doc = require('$doc')
+		$ = require('$')
 	;
 
 	ko.bindingHandlers.tooltip = {
@@ -99,7 +97,7 @@
 				}
 			});
 
-			$doc.click(function () {
+			$(window.document).click(function () {
 				$oEl.tooltip('hide');
 			});
 
@@ -314,6 +312,7 @@
 
 			var
 				Utils = require('Utils'),
+				Globals = require('Globals'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -323,7 +322,7 @@
 			if (0 < iOffset)
 			{
 				iOffset += Utils.pInt(aValues[2]);
-				iSize = $win.height() - iOffset;
+				iSize = Globals.$win.height() - iOffset;
 
 				if (iValue < iSize)
 				{

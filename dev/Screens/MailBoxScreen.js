@@ -6,7 +6,6 @@
 
 	var
 		_ = require('_'),
-		$html = require('$html'),
 
 		Enums = require('Enums'),
 		Globals = require('Globals'),
@@ -129,14 +128,14 @@
 			Remote.appDelayStart(Utils.emptyFunction);
 		}, 35000);
 
-		$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
+		Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
 
 		Data.folderList.subscribe(fResizeFunction);
 		Data.messageList.subscribe(fResizeFunction);
 		Data.message.subscribe(fResizeFunction);
 
 		Data.layout.subscribe(function (nValue) {
-			$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 		});
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {

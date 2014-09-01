@@ -11,11 +11,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		$win = require('$win'),
-		$html = require('$html'),
-		$div = require('$div'),
-		$doc = require('$doc'),
-		NotificationClass = require('NotificationClass'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -42,12 +37,12 @@
 	Utils.windowResize = _.debounce(function (iTimeout) {
 		if (Utils.isUnd(iTimeout))
 		{
-			$win.resize();
+			Globals.$win.resize();
 		}
 		else
 		{
 			window.setTimeout(function () {
-				$win.resize();
+				Globals.$win.resize();
 			}, iTimeout);
 		}
 	}, 50);
@@ -93,6 +88,14 @@
 	Utils.isNonEmptyArray = function (aValue)
 	{
 		return Utils.isArray(aValue) && 0 < aValue.length;
+	};
+
+	/**
+	 * @return {*|null}
+	 */
+	Utils.notificationClass = function ()
+	{
+		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
 	};
 
 	/**
@@ -421,7 +424,7 @@
 		{
 			Globals.oI18N = window['rainloopI18N'] || {};
 
-			Utils.i18nToNode($doc);
+			Utils.i18nToNode(Globals.$doc);
 
 			Globals.langChangeTrigger(!Globals.langChangeTrigger());
 		}
@@ -515,12 +518,8 @@
 		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
 
 		var
-			iIndex = 0,
-			sResult = '',
 			bDrop = false,
-			sTrimmedPart = '',
 			aSubject = [],
-			aParts = [],
 			bRe = 'RE' === sPrefix,
 			bFwd = 'FWD' === sPrefix,
 			bPrefixIsRe = !bFwd
@@ -528,15 +527,9 @@
 
 		if ('' !== sSubject)
 		{
-			bDrop = false;
-
-			aParts = sSubject.split(':');
-			for (iIndex = 0; iIndex < aParts.length; iIndex++)
-			{
-				sTrimmedPart = Utils.trim(aParts[iIndex]);
-				if (!bDrop &&
-						(/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart))
-					)
+			_.each(sSubject.split(':'), function (sPart) {
+				var sTrimmedPart = Utils.trim(sPart);
+				if (!bDrop && (/^(RE|FWD)$/i.test(sTrimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(sTrimmedPart)))
 				{
 					if (!bRe)
 					{
@@ -550,15 +543,10 @@
 				}
 				else
 				{
-					aSubject.push(aParts[iIndex]);
+					aSubject.push(sPart);
 					bDrop = true;
 				}
-			}
-
-			if (0 < aSubject.length)
-			{
-				sResult = Utils.trim(aSubject.join(':'));
-			}
+			});
 		}
 
 		if (bPrefixIsRe)
@@ -574,115 +562,8 @@
 			(bPrefixIsRe ? 'Re: ' : 'Fwd: ') +
 			(bRe ? 'Re: ' : '') +
 			(bFwd ? 'Fwd: ' : '') +
-			sResult
+			Utils.trim(aSubject.join(':'))
 		);
-	};
-
-
-	/**
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils.fixLongSubject = function (sSubject)
-	{
-		var
-			iLimit = 30,
-			mReg = /^Re([\[\(]([\d]+)[\]\)]|):[\s]{0,3}Re([\[\(]([\d]+)[\]\)]|):/ig,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			iLimit--;
-
-			oMatch = mReg.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				sSubject = sSubject.replace(mReg, 'Re:');
-			}
-		}
-		while (oMatch || 0 < iLimit);
-
-		return sSubject.replace(/[\s]+/g, ' ');
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sPrefix
-	 * @param {string} sSubject
-	 * @param {boolean=} bFixLongSubject = true
-	 * @return {string}
-	 */
-	Utils._replySubjectAdd_ = function (sPrefix, sSubject, bFixLongSubject)
-	{
-		var
-			oMatch = null,
-			sResult = Utils.trim(sSubject)
-		;
-
-		if (null !== (oMatch = (new window.RegExp('^' + sPrefix + '[\\s]?\\:(.*)$', 'gi')).exec(sSubject)) && !Utils.isUnd(oMatch[1]))
-		{
-			sResult = sPrefix + '[2]: ' + oMatch[1];
-		}
-		else if (null !== (oMatch = (new window.RegExp('^(' + sPrefix + '[\\s]?[\\[\\(]?)([\\d]+)([\\]\\)]?[\\s]?\\:.*)$', 'gi')).exec(sSubject)) &&
-			!Utils.isUnd(oMatch[1]) && !Utils.isUnd(oMatch[2]) && !Utils.isUnd(oMatch[3]))
-		{
-			sResult = oMatch[1] + (Utils.pInt(oMatch[2]) + 1) + oMatch[3];
-		}
-		else
-		{
-			sResult = sPrefix + ': ' + sSubject;
-		}
-
-		sResult = sResult.replace(/[\s]+/g, ' ');
-		sResult = (Utils.isUnd(bFixLongSubject) ? true : bFixLongSubject) ? Utils.fixLongSubject(sResult) : sResult;
-	//	sResult = sResult.replace(/^(Re|Fwd)[\s]?\[[\d]+\]:/ig, '$1:');
-		return sResult;
-	};
-
-	/**
-	 * @deprecated
-	 * @param {string} sSubject
-	 * @return {string}
-	 */
-	Utils._fixLongSubject_ = function (sSubject)
-	{
-		var
-			iCounter = 0,
-			oMatch = null
-		;
-
-		sSubject = Utils.trim(sSubject.replace(/[\s]+/g, ' '));
-
-		do
-		{
-			oMatch = /^Re(\[([\d]+)\]|):[\s]{0,3}Re(\[([\d]+)\]|):/ig.exec(sSubject);
-			if (!oMatch || Utils.isUnd(oMatch[0]))
-			{
-				oMatch = null;
-			}
-
-			if (oMatch)
-			{
-				iCounter = 0;
-				iCounter += Utils.isUnd(oMatch[2]) ? 1 : 0 + Utils.pInt(oMatch[2]);
-				iCounter += Utils.isUnd(oMatch[4]) ? 1 : 0 + Utils.pInt(oMatch[4]);
-
-				sSubject = sSubject.replace(/^Re(\[[\d]+\]|):[\s]{0,3}Re(\[[\d]+\]|):/gi, 'Re' + (0 < iCounter ? '[' + iCounter + ']' : '') + ':');
-			}
-
-		}
-		while (oMatch);
-
-		sSubject = sSubject.replace(/[\s]+/g, ' ');
-		return sSubject;
 	};
 
 	/**
@@ -981,7 +862,7 @@
 		oData.interfaceAnimation.subscribe(function (sValue) {
 			if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
 			{
-				$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
+				Globals.$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
 
 				Globals.sAnimationType = Enums.InterfaceAnimation.None;
 			}
@@ -990,11 +871,11 @@
 				switch (sValue)
 				{
 					case Enums.InterfaceAnimation.Full:
-						$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
+						Globals.$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
 						Globals.sAnimationType = sValue;
 						break;
 					case Enums.InterfaceAnimation.Normal:
-						$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
+						Globals.$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
 						Globals.sAnimationType = sValue;
 						break;
 				}
@@ -1004,8 +885,14 @@
 		oData.interfaceAnimation.valueHasMutated();
 
 		oData.desktopNotificationsPermisions = ko.computed(function () {
+
 			oData.desktopNotifications();
-			var iResult = Enums.DesktopNotifications.NotSupported;
+
+			var
+				NotificationClass = Utils.notificationClass(),
+				iResult = Enums.DesktopNotifications.NotSupported
+			;
+			
 			if (NotificationClass && NotificationClass.permission)
 			{
 				switch (NotificationClass.permission.toLowerCase())
@@ -1037,12 +924,16 @@
 			'write': function (bValue) {
 				if (bValue)
 				{
-					var iPermission = oData.desktopNotificationsPermisions();
-					if (Enums.DesktopNotifications.Allowed === iPermission)
+					var
+						NotificationClass = Utils.notificationClass(),
+						iPermission = oData.desktopNotificationsPermisions()
+					;
+					
+					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
 					{
 						oData.desktopNotifications(true);
 					}
-					else if (Enums.DesktopNotifications.NotAllowed === iPermission)
+					else if (NotificationClass && Enums.DesktopNotifications.NotAllowed === iPermission)
 					{
 						NotificationClass.requestPermission(function () {
 							oData.desktopNotifications.valueHasMutated();
@@ -1577,7 +1468,7 @@
 			.replace(/<[^>]*>/gm, '')
 		;
 
-		sText = $div.html(sText).text();
+		sText = Globals.$div.html(sText).text();
 
 		sText = sText
 			.replace(/\n[ \t]+/gm, '\n')
@@ -1714,7 +1605,7 @@
 	{
 		if ($.fn && $.fn.linkify)
 		{
-			sHtml = $div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
 				.linkify()
 				.find('.linkified').removeClass('linkified').end()
 				.html()

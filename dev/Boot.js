@@ -10,8 +10,6 @@
 			window = require('window'),
 			_ = require('_'),
 			$ = require('$'),
-			$win = require('$win'),
-			$html = require('$html'),
 
 			Globals = require('Globals'),
 			Plugins = require('Plugins'),
@@ -29,15 +27,15 @@
 		Plugins.__remote = App.remote();
 		Plugins.__data = App.data();
 
-		$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
+		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
-		$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
+		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
 		
-		$win.unload(function () {
+		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
 
-		$html.on('click.dropdown.data-api', function () {
+		Globals.$html.on('click.dropdown.data-api', function () {
 			Utils.detectDropdownVisibility();
 		});
 
@@ -64,7 +62,7 @@
 					_.delay(function () {
 
 						App.bootstart();
-						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+						Globals.$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
 
 					}, 10);
 				}

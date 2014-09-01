@@ -10,7 +10,6 @@
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
-		$html = require('$html'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
@@ -415,7 +414,7 @@
 		});
 
 		_.delay(function () {
-			$html.removeClass('rl-started-trigger').addClass('rl-started');
+			Globals.$html.removeClass('rl-started-trigger').addClass('rl-started');
 		}, 50);
 	};
 
