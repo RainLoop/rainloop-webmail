@@ -1,12 +1,13 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		LinkBuilder = require('LinkBuilder'),
+		_ = require('_'),
+		
 		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -29,7 +30,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
+	kn.extendAsViewModel(['View:RainLoop:SettingsMenu', 'SettingsMenuViewModel'], SettingsMenuViewModel);
+	_.extend(SettingsMenuViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	SettingsMenuViewModel.prototype.link = function (sRoute)
 	{

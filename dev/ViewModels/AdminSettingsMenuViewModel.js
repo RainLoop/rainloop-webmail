@@ -1,12 +1,14 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
-		kn = require('App:Knoin'),
+		_ = require('_'),
+		
 		Globals = require('Globals'),
+
+		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
@@ -16,7 +18,7 @@
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
 	 */
-	function AdminMenuViewModel(oScreen)
+	function AdminSettingsMenuViewModel(oScreen)
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
@@ -27,13 +29,14 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminMenuViewModel', AdminMenuViewModel);
+	kn.extendAsViewModel(['View:Admin:SettingsMenu', 'AdminSettingsMenuViewModel'], AdminSettingsMenuViewModel);
+	_.extend(AdminSettingsMenuViewModel.prototype, KnoinAbstractViewModel.prototype);
 
-	AdminMenuViewModel.prototype.link = function (sRoute)
+	AdminSettingsMenuViewModel.prototype.link = function (sRoute)
 	{
 		return '#/' + sRoute;
 	};
 
-	module.exports = AdminMenuViewModel;
+	module.exports = AdminSettingsMenuViewModel;
 
 }(module, require));

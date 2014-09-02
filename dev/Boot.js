@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -30,7 +29,7 @@
 		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
 		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		
+
 		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
@@ -41,10 +40,10 @@
 
 		// export
 		window['rl'] = window['rl'] || {};
-		window['rl']['addHook'] = Plugins.addHook;
-		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
-		window['rl']['remoteRequest'] = Plugins.remoteRequest;
-		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
+		window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
+		window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
+		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
+		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = EmailModel;

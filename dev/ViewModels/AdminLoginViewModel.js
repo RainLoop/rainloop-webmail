@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -89,7 +88,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);
+	kn.extendAsViewModel(['View:Admin:Login', 'AdminLoginViewModel'], AdminLoginViewModel);
+	_.extend(AdminLoginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	AdminLoginViewModel.prototype.onShow = function ()
 	{

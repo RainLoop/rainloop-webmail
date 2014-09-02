@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,18 +5,18 @@
 
 	var
 		ko = require('ko'),
+
 		Enums = require('Enums'),
 		Utils = require('Utils')
 	;
 
 	/**
+	 * @constructor
 	 * @param {number=} iType = Enums.ContactPropertyType.Unknown
 	 * @param {string=} sTypeStr = ''
 	 * @param {string=} sValue = ''
 	 * @param {boolean=} bFocused = false
 	 * @param {string=} sPlaceholder = ''
-	 *
-	 * @constructor
 	 */
 	function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 	{

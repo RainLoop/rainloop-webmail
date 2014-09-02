@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,8 +5,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 		JSON = require('JSON'),
@@ -17,8 +16,8 @@
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
+		LinkBuilder = require('LinkBuilder'),
 		HtmlEditor = require('HtmlEditor'),
 
 		Settings = require('Storage:Settings'),
@@ -404,7 +403,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
+	kn.extendAsViewModel(['View:Popup:Compose', 'PopupsComposeViewModel'], PopupsComposeViewModel);
+	_.extend(PopupsComposeViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
 	{
@@ -794,7 +794,15 @@
 			aDraftInfo = oMessage.aDraftInfo;
 
 			oText = $(oMessage.body).clone();
-			Utils.removeBlockquoteSwitcher(oText);
+			if (oText)
+			{
+				oText.find('blockquote.rl-bq-switcher').each(function () {
+					$(this).removeClass('rl-bq-switcher hidden-bq');
+				});
+				oText.find('.rlBlockquoteSwitcher').each(function () {
+					$(this).remove();
+				});
+			}
 
 			oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
 			sText = oText.html();

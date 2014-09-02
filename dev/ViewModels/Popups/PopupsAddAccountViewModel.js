@@ -1,9 +1,8 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 		ko = require('ko'),
@@ -87,7 +86,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);
+	kn.extendAsViewModel(['View:Popup:AddAccount', 'PopupsAddAccountViewModel'], PopupsAddAccountViewModel);
+	_.extend(PopupsAddAccountViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAddAccountViewModel.prototype.clearPopup = function ()
 	{

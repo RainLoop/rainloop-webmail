@@ -2,7 +2,7 @@
 // http://www.webtoolkit.info/
 
 (function (module) {
-	
+
 	'use strict';
 
 	/*jslint bitwise: true*/

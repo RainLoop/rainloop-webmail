@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,8 +5,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -15,8 +14,8 @@
 		Consts = require('Consts'),
 		Globals = require('Globals'),
 		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
 		Selector = require('Selector'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote'),
@@ -391,7 +390,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
+	kn.extendAsViewModel(['View:Popup:Contacts', 'PopupsContactsViewModel'], PopupsContactsViewModel);
+	_.extend(PopupsContactsViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
 	{

@@ -10,12 +10,11 @@
 	function LocalStorage()
 	{
 		var
-			_ = require('_'),
-			NextStorageDriver = _.find([
+			NextStorageDriver = require('_').find([
 				require('Storage:LocalStorage:Cookie'),
 				require('Storage:LocalStorage:LocalStorage')
 			], function (NextStorageDriver) {
-				return NextStorageDriver.supported();
+				return NextStorageDriver && NextStorageDriver.supported();
 			})
 		;
 

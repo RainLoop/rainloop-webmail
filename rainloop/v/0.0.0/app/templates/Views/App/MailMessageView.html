@@ -150,7 +150,7 @@
 						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
 							<div class="content-wrapper">
 								<div>
-									<span class="buttonUp" data-bind="click: scrollToTop">
+									<span class="buttonUp" data-bind="click: scrollMessageToTop">
 										<i class="icon-up"></i>
 									</span>
 									<span class="buttonFull" data-bind="click: fullScreen">
@@ -187,10 +187,16 @@
 												</div>
 											</div>
 											<div class="informationFull" data-bind="visible: showFullInfo()">
-												<div data-bind="visible: '' !== viewFrom()">
-													<span class="i18n uiLabel labelFrom" data-i18n-text="MESSAGE/LABEL_FROM"></span>:
-													&nbsp;
-													<span class="from" data-bind="text: viewFrom, title: viewFrom"></span>
+												<div>
+													<div class="pull-left" data-bind="visible: '' !== viewFrom()">
+														<span class="i18n uiLabel labelFrom" data-i18n-text="MESSAGE/LABEL_FROM"></span>:
+														&nbsp;
+														<span class="from" data-bind="text: viewFrom, title: viewFrom"></span>
+													</div>
+													<div class="pull-right" data-bind="visible: '' !== viewSize()">
+														<span class="size" data-bind="text: viewSize"></span>
+													</div>
+													<div class="clearfix"></div>
 												</div>
 												<div data-bind="visible: '' !== viewTo()">
 													<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:

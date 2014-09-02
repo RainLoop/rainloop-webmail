@@ -1,7 +1,6 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -200,7 +199,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsDomainViewModel', PopupsDomainViewModel);
+	kn.extendAsViewModel(['View:Popup:Domain', 'PopupsDomainViewModel'], PopupsDomainViewModel);
+	_.extend(PopupsDomainViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsDomainViewModel.prototype.onTestConnectionResponse = function (sResult, oData)
 	{

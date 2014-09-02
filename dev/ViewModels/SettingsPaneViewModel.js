@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		key = require('key'),
 
 		Enums = require('Enums'),
@@ -27,7 +27,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+	kn.extendAsViewModel(['View:RainLoop:SettingsPane', 'SettingsPaneViewModel'], SettingsPaneViewModel);
+	_.extend(SettingsPaneViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	SettingsPaneViewModel.prototype.onBuild = function ()
 	{

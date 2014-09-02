@@ -122,7 +122,7 @@
 														<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 													</a>
 												</li>
-												<li class="divider"></li>
+												<li class="divider" data-bind="visible: capaOpenPGP"></li>
 												<li class="e-item" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
 													<a class="e-link">
 														<i class="icon-key"></i>
@@ -150,7 +150,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="textAreaParent" style="height: 200px; min-height: 200px"
 					data-bind="initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 30]"></div>
 			</div>

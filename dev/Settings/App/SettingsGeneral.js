@@ -1,13 +1,12 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		_ = require('_'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),

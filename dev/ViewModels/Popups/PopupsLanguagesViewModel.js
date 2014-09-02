@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -9,8 +8,7 @@
 		ko = require('ko'),
 
 		Utils = require('Utils'),
-
-		Data = require('Storage:RainLoop:Data'),
+		Globals = require('Globals'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -24,26 +22,29 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsLanguages');
 
+		this.Data = Globals.__APP.data(); // TODO
+
 		this.exp = ko.observable(false);
 
 		this.languages = ko.computed(function () {
-			return _.map(Data.languages(), function (sLanguage) {
+			return _.map(this.Data.languages(), function (sLanguage) {
 				return {
 					'key': sLanguage,
 					'selected': ko.observable(false),
 					'fullName': Utils.convertLangName(sLanguage)
 				};
 			});
-		});
+		}, this);
 
-		Data.mainLanguage.subscribe(function () {
+		this.Data.mainLanguage.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
 
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
+	kn.extendAsViewModel(['View:Popup:Languages', 'PopupsLanguagesViewModel'], PopupsLanguagesViewModel);
+	_.extend(PopupsLanguagesViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
 	{
@@ -52,7 +53,7 @@
 
 	PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
 	{
-		var sCurrent = Data.mainLanguage();
+		var sCurrent = this.Data.mainLanguage();
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
@@ -72,7 +73,7 @@
 
 	PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 	{
-		Data.mainLanguage(sLang);
+		this.Data.mainLanguage(sLang);
 		this.cancelCommand();
 	};
 

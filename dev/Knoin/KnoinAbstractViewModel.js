@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -8,14 +7,14 @@
 		ko = require('ko'),
 
 		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils')
+		Utils = require('Utils'),
+		Globals = require('Globals')
 	;
 
 	/**
+	 * @constructor
 	 * @param {string=} sPosition = ''
 	 * @param {string=} sTemplate = ''
-	 * @constructor
 	 */
 	function KnoinAbstractViewModel(sPosition, sTemplate)
 	{
@@ -26,12 +25,18 @@
 		this.sDefaultKeyScope = Enums.KeyState.None;
 		this.sCurrentKeyScope = this.sDefaultKeyScope;
 
-		this.viewModelName = '';
 		this.viewModelVisibility = ko.observable(false);
 		this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
 
+		this.viewModelName = '';
+		this.viewModelNames = [];
 		this.viewModelDom = null;
 	}
+
+	/**
+	 * @type {boolean}
+	 */
+	KnoinAbstractViewModel.prototype.bDisabeCloseOnEsc = false;
 
 	/**
 	 * @type {string}
@@ -46,7 +51,22 @@
 	/**
 	 * @type {string}
 	 */
+	KnoinAbstractViewModel.prototype.sDefaultKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.sCurrentKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
 	KnoinAbstractViewModel.prototype.viewModelName = '';
+
+	/**
+	 * @type {Array}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelNames = [];
 
 	/**
 	 * @type {?}

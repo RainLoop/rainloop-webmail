@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,8 +5,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -341,6 +340,14 @@
 
 	   this.lastInCollapsedThread(false);
 	   this.lastInCollapsedThreadLoading(false);
+	};
+
+	/**
+	 * @return {string}
+	 */
+	MessageModel.prototype.friendlySize = function ()
+	{
+		return Utils.friendlySize(this.size());
 	};
 
 	MessageModel.prototype.computeSenderEmail = function ()

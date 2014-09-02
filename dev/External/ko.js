@@ -1,9 +1,8 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, ko) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
 		_ = require('_'),

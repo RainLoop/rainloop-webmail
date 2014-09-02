@@ -6,8 +6,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),

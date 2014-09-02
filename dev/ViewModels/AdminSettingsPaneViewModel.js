@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Settings = require('Storage:Settings'),
@@ -19,7 +19,7 @@
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
 	 */
-	function AdminPaneViewModel()
+	function AdminSettingsPaneViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
 
@@ -31,15 +31,16 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);
+	kn.extendAsViewModel(['View:Admin:SettingsPane', 'AdminSettingsPaneViewModel'], AdminSettingsPaneViewModel);
+	_.extend(AdminSettingsPaneViewModel.prototype, KnoinAbstractViewModel.prototype);
 
-	AdminPaneViewModel.prototype.logoutClick = function ()
+	AdminSettingsPaneViewModel.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
 			require('App:Admin').loginAndLogoutReload();
 		});
 	};
 
-	module.exports = AdminPaneViewModel;
+	module.exports = AdminSettingsPaneViewModel;
 
 }(module, require));

@@ -1,10 +1,11 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		_ = require('_'),
+		
 		kn = require('App:Knoin'),
 		AbstractSystemDropDownViewModel = require('View:RainLoop:AbstractSystemDropDown')
 	;
@@ -19,7 +20,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxSystemDropDown', 'MailBoxSystemDropDownViewModel'], MailBoxSystemDropDownViewModel);
+	_.extend(MailBoxSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
 
 	module.exports = MailBoxSystemDropDownViewModel;
 

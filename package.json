@@ -2,7 +2,7 @@
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
 	"version": "1.6.9",
-	"release": "161",
+	"release": "163",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
 	"main": "gulpfile.js",
@@ -107,7 +107,7 @@
 		"Storage:Admin:Remote": "./dev/Storages/AdminRemoteStorage.js",
 		"Storage:Admin:Data": "./dev/Storages/AdminDataStorage.js",
 
-		"Screen:AbstractSettings": "./dev/Screens/AbstractSettings.js",
+		"Screen:AbstractSettings": "./dev/Screens/AbstractSettingsScreen.js",
 		"Screen:RainLoop:Login": "./dev/Screens/LoginScreen.js",
 		"Screen:RainLoop:About": "./dev/Screens/AboutScreen.js",
 		"Screen:RainLoop:MailBox": "./dev/Screens/MailBoxScreen.js",
@@ -183,7 +183,9 @@
 		"jshint-summary": "*",
 
 		"browserify": "*",
+		"exorcist": "*",
 		"vinyl-source-stream": "*",
+		"vinyl-buffer": "*",
 
 		"gulp": "*",
 		"gulp-util": "*",

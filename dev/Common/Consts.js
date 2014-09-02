@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
 
@@ -126,4 +125,4 @@
 
 	module.exports = Consts;
 
-}(module, require));
+}(module));

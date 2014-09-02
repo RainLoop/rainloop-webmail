@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -11,16 +10,16 @@
 		Utils = require('Utils'),
 		Globals = require('Globals'),
 
-		AbstractSettings = require('Screen:AbstractSettings')
+		AbstractSettingsScreen = require('Screen:AbstractSettings')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractSettings
+	 * @extends AbstractSettingsScreen
 	 */
 	function SettingsScreen()
 	{
-		AbstractSettings.call(this, [
+		AbstractSettingsScreen.call(this, [
 			require('View:RainLoop:SettingsSystemDropDown'),
 			require('View:RainLoop:SettingsMenu'),
 			require('View:RainLoop:SettingsPane')
@@ -33,14 +32,14 @@
 		});
 	}
 
-	_.extend(SettingsScreen.prototype, AbstractSettings.prototype);
+	_.extend(SettingsScreen.prototype, AbstractSettingsScreen.prototype);
 
 	SettingsScreen.prototype.onShow = function ()
 	{
 		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
 	};
-	
+
 	SettingsScreen.prototype.setSettingsTitle = function ()
 	{
 		require('App:RainLoop').setTitle(this.sSettingsTitle);

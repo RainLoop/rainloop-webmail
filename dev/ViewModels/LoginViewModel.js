@@ -1,17 +1,16 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 
-		Utils = require('Utils'),
 		Enums = require('Enums'),
+		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
@@ -250,7 +249,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('LoginViewModel', LoginViewModel);
+	kn.extendAsViewModel(['View:RainLoop:Login', 'LoginViewModel'], LoginViewModel);
+	_.extend(LoginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	LoginViewModel.prototype.onShow = function ()
 	{

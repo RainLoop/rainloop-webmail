@@ -1,12 +1,11 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 
 		Globals = require('Globals'),
@@ -18,11 +17,11 @@
 	;
 
 	/**
-	 * @param {Array} aViewModels
 	 * @constructor
+	 * @param {Array} aViewModels
 	 * @extends KnoinAbstractScreen
 	 */
-	function AbstractSettings(aViewModels)
+	function AbstractSettingsScreen(aViewModels)
 	{
 		KnoinAbstractScreen.call(this, 'settings', aViewModels);
 
@@ -32,9 +31,9 @@
 		this.oViewModelPlace = null;
 	}
 
-	_.extend(AbstractSettings.prototype, KnoinAbstractScreen.prototype);
+	_.extend(AbstractSettingsScreen.prototype, KnoinAbstractScreen.prototype);
 
-	AbstractSettings.prototype.onRoute = function (sSubName)
+	AbstractSettingsScreen.prototype.onRoute = function (sSubName)
 	{
 		var
 			self = this,
@@ -141,7 +140,7 @@
 		}
 	};
 
-	AbstractSettings.prototype.onHide = function ()
+	AbstractSettingsScreen.prototype.onHide = function ()
 	{
 		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 		{
@@ -150,7 +149,7 @@
 		}
 	};
 
-	AbstractSettings.prototype.onBuild = function ()
+	AbstractSettingsScreen.prototype.onBuild = function ()
 	{
 		_.each(Globals.aViewModels['settings'], function (SettingsViewModel) {
 			if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
@@ -172,7 +171,7 @@
 		this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
 	};
 
-	AbstractSettings.prototype.routes = function ()
+	AbstractSettingsScreen.prototype.routes = function ()
 	{
 		var
 			DefaultViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
@@ -195,6 +194,6 @@
 		];
 	};
 
-	module.exports = AbstractSettings;
+	module.exports = AbstractSettingsScreen;
 
 }(module, require));

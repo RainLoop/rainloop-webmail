@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,8 +5,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		moment = require('moment'),
 
 		Enums = require('Enums'),
@@ -1296,41 +1295,6 @@
 		});
 	};
 
-	/**
-	 * @param {string} sMailToUrl
-	 * @returns {boolean}
-	 */
-	RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
-	{
-		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
-		{
-			sMailToUrl = sMailToUrl.toString().substr(7);
-
-			var
-				oParams = {},
-				oEmailModel = null,
-				sEmail = sMailToUrl.replace(/\?.+$/, ''),
-				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, '')
-			;
-
-			oEmailModel = new EmailModel();
-			oEmailModel.parse(window.decodeURIComponent(sEmail));
-
-			if (oEmailModel && oEmailModel.email)
-			{
-				oParams = Utils.simpleQueryParser(sQueryString);
-				kn.showScreenPopup(require('View:Popup:Compose'), [Enums.ComposeType.Empty, null, [oEmailModel],
-					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
-					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
-				]);
-			}
-
-			return true;
-		}
-
-		return false;
-	};
-
 	RainLoopApp.prototype.bootstartLoginScreen = function ()
 	{
 		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
@@ -1495,7 +1459,7 @@
 
 							if (Settings.settingsGet('MailToEmail'))
 							{
-								self.mailToHelper(Settings.settingsGet('MailToEmail'));
+								Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View:Popup:Compose'));
 							}
 						}, 500);
 					}

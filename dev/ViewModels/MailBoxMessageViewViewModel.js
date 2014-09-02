@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -150,6 +150,7 @@
 		this.viewCc = ko.observable('');
 		this.viewBcc = ko.observable('');
 		this.viewDate = ko.observable('');
+		this.viewSize = ko.observable('');
 		this.viewMoment = ko.observable('');
 		this.viewLineAsCcc = ko.observable('');
 		this.viewViewLink = ko.observable('');
@@ -188,6 +189,7 @@
 				this.viewCc(oMessage.ccToLine(false));
 				this.viewBcc(oMessage.bccToLine(false));
 				this.viewDate(oMessage.fullFormatDateValue());
+				this.viewSize(oMessage.friendlySize());
 				this.viewMoment(oMessage.momentDate());
 				this.viewLineAsCcc(oMessage.lineAsCcc());
 				this.viewViewLink(oMessage.viewLink());
@@ -246,7 +248,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxMessageView', 'MailBoxMessageViewViewModel'], MailBoxMessageViewViewModel);
+	_.extend(MailBoxMessageViewViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	MailBoxMessageViewViewModel.prototype.isPgpActionVisible = function ()
 	{
@@ -288,23 +291,6 @@
 		}
 
 		return sResult;
-	};
-
-	MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
-	{
-		var oCont = $('.messageItem.nano .content', this.viewModelDom);
-		if (oCont && oCont[0])
-		{
-	//		oCont.animate({'scrollTop': 0}, 300);
-			oCont.scrollTop(0);
-		}
-		else
-		{
-	//		$('.messageItem', this.viewModelDom).animate({'scrollTop': 0}, 300);
-			$('.messageItem', this.viewModelDom).scrollTop(0);
-		}
-
-		Utils.windowResize();
 	};
 
 	MailBoxMessageViewViewModel.prototype.fullScreen = function ()
@@ -366,15 +352,9 @@
 		});
 
 		oDom
-			.on('click', '.messageView .messageItem .messageItemHeader', function () {
-				if (Globals.useKeyboardShortcuts() && self.message())
-				{
-					self.message.focused(true);
-				}
-			})
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && require('App:RainLoop').mailToHelper($(this).attr('href')));
+				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View:Popup:Compose')));
 			})
 			.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
@@ -400,6 +380,8 @@
 				this.messageDomFocused(true);
 			} else {
 				this.messageDomFocused(false);
+				this.scrollMessageToTop();
+				this.scrollMessageToLeft();
 			}
 		}, this);
 
@@ -516,7 +498,7 @@
 		key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			if (Data.message() && Data.message().body)
 			{
-				Utils.toggleMessageBlockquote(Data.message().body);
+				Data.message().body.find('.rlBlockquoteSwitcher').click();
 				return false;
 			}
 		});
@@ -559,10 +541,26 @@
 		});
 
 		// change focused state
-		key('tab, shift+tab, left', Enums.KeyState.MessageView, function () {
+		key('tab, shift+tab, left', Enums.KeyState.MessageView, function (event, handler) {
 			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== Data.layout())
 			{
-				self.message.focused(false);
+				if (event && handler && 'left' === handler.shortcut)
+				{
+					if (self.oMessageScrollerDom && 0 < self.oMessageScrollerDom.scrollLeft())
+					{
+						return true;
+					}
+
+					self.message.focused(false);
+				}
+				else
+				{
+					self.message.focused(false);
+				}
+			}
+			else if (self.message() && Enums.Layout.NoPreview === Data.layout() && event && handler && 'left' === handler.shortcut)
+			{
+				return true;
 			}
 
 			return false;
@@ -643,6 +641,16 @@
 		if (this.oMessageScrollerDom)
 		{
 			this.oMessageScrollerDom.scrollTop(0);
+			Utils.windowResize();
+		}
+	};
+
+	MailBoxMessageViewViewModel.prototype.scrollMessageToLeft = function ()
+	{
+		if (this.oMessageScrollerDom)
+		{
+			this.oMessageScrollerDom.scrollLeft(0);
+			Utils.windowResize();
 		}
 	};
 

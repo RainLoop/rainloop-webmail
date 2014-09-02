@@ -1,21 +1,18 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
-		Utils = require('Utils'),
-
-		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
+		Utils = require('Utils')
 	;
 
 	/**
@@ -49,22 +46,23 @@
 	};
 
 	/**
-	 * @param {string} sName
+	 * @param {string|Array} mName
 	 * @param {Function} ViewModelClass
-	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
 	 */
-	Knoin.prototype.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
+	Knoin.prototype.extendAsViewModel = function (mName, ViewModelClass)
 	{
 		if (ViewModelClass)
 		{
-			if (!AbstractViewModel)
+			if (Utils.isArray(mName))
 			{
-				AbstractViewModel = KnoinAbstractViewModel;
+				ViewModelClass.__names = mName;
+			}
+			else
+			{
+				ViewModelClass.__names = [mName];
 			}
 
-			ViewModelClass.__name = sName;
-			Plugins.regViewModelHook(sName, ViewModelClass);
-			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
+			ViewModelClass.__name = ViewModelClass.__names[0];
 		}
 	};
 
@@ -142,6 +140,7 @@
 			ViewModelClass.__vm = oViewModel;
 
 			oViewModel.viewModelName = ViewModelClass.__name;
+			oViewModel.viewModelNames = ViewModelClass.__names;
 
 			if (oViewModelPlace && 1 === oViewModelPlace.length)
 			{
@@ -175,6 +174,10 @@
 							Utils.delegateRun(this, 'onHide');
 							this.restoreKeyScope();
 
+							_.each(this.viewModelNames, function (sName) {
+								Plugins.runHook('view-model-on-hide', [sName, self]);
+							});
+
 							Globals.popupVisibilityNames.remove(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 2000);
 
@@ -188,7 +191,9 @@
 					}, oViewModel);
 				}
 
-				Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-pre-build', [sName, oViewModel, oViewModelDom]);
+				});
 
 				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
 					'i18nInit': true,
@@ -201,14 +206,16 @@
 					oViewModel.registerPopupKeyDown();
 				}
 
-				Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-post-build', [sName, oViewModel, oViewModelDom]);
+				});
 			}
 			else
 			{
 				Utils.log('Cannot find view model position: ' + sPosition);
 			}
 		}
-		
+
 		return ViewModelClass ? ViewModelClass.__vm : null;
 	};
 
@@ -220,7 +227,6 @@
 		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 		{
 			ViewModelClassToHide.__vm.modalVisibility(false);
-			Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		}
 	};
 
@@ -238,7 +244,10 @@
 			{
 				ViewModelClassToShow.__vm.modalVisibility(true);
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-				Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
+
+				_.each(ViewModelClassToShow.__names, function (sName) {
+					Plugins.runHook('view-model-on-show', [sName, ViewModelClassToShow.__vm, aParameters || []]);
+				});
 			}
 		}
 	};
@@ -340,10 +349,13 @@
 								{
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
+
 									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 									Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
+									_.each(ViewModelClass.__names, function (sName) {
+										Plugins.runHook('view-model-on-show', [sName, ViewModelClass.__vm]);
+									});
 								}
 
 							}, self);

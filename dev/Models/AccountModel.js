@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,6 +5,7 @@
 
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -18,7 +18,7 @@
 	function AccountModel(sEmail, bCanBeDelete)
 	{
 		this.email = sEmail;
-		
+
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
 	}

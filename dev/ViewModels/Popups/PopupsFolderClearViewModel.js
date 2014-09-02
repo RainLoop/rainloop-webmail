@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -64,7 +64,7 @@
 				oFolderToClear.messageCountUnread(0);
 
 				Cache.setFolderHash(oFolderToClear.fullNameRaw, '');
-				
+
 				Remote.folderClear(function (sResult, oData) {
 
 					self.clearingProcess(false);
@@ -101,7 +101,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFolderClearViewModel', PopupsFolderClearViewModel);
+	kn.extendAsViewModel(['View:Popup:FolderClear', 'PopupsFolderClearViewModel'], PopupsFolderClearViewModel);
+	_.extend(PopupsFolderClearViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFolderClearViewModel.prototype.clearPopup = function ()
 	{

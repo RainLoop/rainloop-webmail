@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -27,7 +26,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsKeyboardShortcutsHelpViewModel', PopupsKeyboardShortcutsHelpViewModel);
+	kn.extendAsViewModel(['View:Popup:KeyboardShortcutsHelp', 'PopupsKeyboardShortcutsHelpViewModel'], PopupsKeyboardShortcutsHelpViewModel);
+	_.extend(PopupsKeyboardShortcutsHelpViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsKeyboardShortcutsHelpViewModel.prototype.onBuild = function (oDom)
 	{

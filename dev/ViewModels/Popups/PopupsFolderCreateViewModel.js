@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -100,7 +100,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFolderCreateViewModel', PopupsFolderCreateViewModel);
+	kn.extendAsViewModel(['View:Popup:FolderCreate', 'PopupsFolderCreateViewModel'], PopupsFolderCreateViewModel);
+	_.extend(PopupsFolderCreateViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFolderCreateViewModel.prototype.sNoParentText = '';
 

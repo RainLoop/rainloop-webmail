@@ -1,16 +1,15 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		ifvisible = require('ifvisible'),
 		Jua = require('Jua'),
+		ifvisible = require('ifvisible'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -266,7 +265,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxMessageListViewModel', MailBoxMessageListViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxMessageList', 'MailBoxMessageListViewModel'], MailBoxMessageListViewModel);
+	_.extend(MailBoxMessageListViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	/**
 	 * @type {string}
@@ -799,7 +799,7 @@
 
 		// change focused state
 		key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
-			if (event && handler && 'shift+tab' === handler.shortcut || 'left' === handler.shortcut)
+			if (event && handler && ('shift+tab' === handler.shortcut || 'left' === handler.shortcut))
 			{
 				self.folderList.focused(true);
 			}

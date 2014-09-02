@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -50,7 +50,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAdvancedSearchViewModel', PopupsAdvancedSearchViewModel);
+	kn.extendAsViewModel(['View:Popup:AdvancedSearch', 'PopupsAdvancedSearchViewModel'], PopupsAdvancedSearchViewModel);
+	_.extend(PopupsAdvancedSearchViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAdvancedSearchViewModel.prototype.buildSearchStringValue = function (sValue)
 	{

@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -89,7 +88,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsNewOpenPgpKeyViewModel', PopupsNewOpenPgpKeyViewModel);
+	kn.extendAsViewModel(['View:Popup:NewOpenPgpKey', 'PopupsNewOpenPgpKeyViewModel'], PopupsNewOpenPgpKeyViewModel);
+	_.extend(PopupsNewOpenPgpKeyViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsNewOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{

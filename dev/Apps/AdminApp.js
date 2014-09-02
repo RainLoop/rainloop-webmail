@@ -1,19 +1,16 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('ko'),
-		_ = require('_'),
 		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
-
-		kn = require('App:Knoin'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:Admin:Data'),
@@ -22,6 +19,7 @@
 		AdminSettingsScreen = require('Screen:Admin:Settings'),
 		AdminLoginScreen = require('Screen:Admin:Login'),
 
+		kn = require('App:Knoin'),
 		AbstractApp = require('App:Abstract')
 	;
 

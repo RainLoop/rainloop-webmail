@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,6 +5,7 @@
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -48,7 +48,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxFolderList', 'MailBoxFolderListViewModel'], MailBoxFolderListViewModel);
+	_.extend(MailBoxFolderListViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 	{

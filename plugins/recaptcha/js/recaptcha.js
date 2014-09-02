@@ -1,10 +1,11 @@
 
 $(function () {
-	
-	var 
+
+	var
+		bStarted = false,
 		bShown = false
 	;
-	
+
 	function ShowRecaptcha()
 	{
 		if (window.Recaptcha)
@@ -24,7 +25,7 @@ $(function () {
 			bShown = true;
 		}
 	}
-	
+
 	function StartRecaptcha()
 	{
 		if (!window.Recaptcha)
@@ -36,36 +37,40 @@ $(function () {
 			ShowRecaptcha();
 		}
 	}
-	
-	window.rl.addHook('view-model-on-show', function (sName, oViewModel) {
-		if ('LoginViewModel' === sName && oViewModel && window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
-		{
-			StartRecaptcha();
-		}
-	});
-	
-	window.rl.addHook('ajax-default-request', function (sAction, oParameters) {
-		if ('Login' === sAction && oParameters && bShown && window.Recaptcha)
-		{
-			oParameters['RecaptchaChallenge'] = window.Recaptcha.get_challenge();
-			oParameters['RecaptchaResponse'] = window.Recaptcha.get_response();
-		}
-	});
 
-	window.rl.addHook('ajax-default-response', function (sAction, oData, sType) {
-		if ('Login' === sAction)
-		{
-			if (!oData || 'success' !== sType || !oData['Result'])
+	if (window.rl)
+	{
+		window.rl.addHook('view-model-on-show', function (sName, oViewModel) {
+			if (!bStarted && ('View:RainLoop:Login' === sName || 'LoginViewModel' === sName) && oViewModel && window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
 			{
-				if (bShown && window.Recaptcha)
+				bStarted = true;
+				StartRecaptcha();
+			}
+		});
+
+		window.rl.addHook('ajax-default-request', function (sAction, oParameters) {
+			if ('Login' === sAction && oParameters && bShown && window.Recaptcha)
+			{
+				oParameters['RecaptchaChallenge'] = window.Recaptcha.get_challenge();
+				oParameters['RecaptchaResponse'] = window.Recaptcha.get_response();
+			}
+		});
+
+		window.rl.addHook('ajax-default-response', function (sAction, oData, sType) {
+			if ('Login' === sAction)
+			{
+				if (!oData || 'success' !== sType || !oData['Result'])
 				{
-					window.Recaptcha.reload();
-				}
-				else if (oData && oData['Captcha'])
-				{
-					StartRecaptcha();
+					if (bShown && window.Recaptcha)
+					{
+						window.Recaptcha.reload();
+					}
+					else if (oData && oData['Captcha'])
+					{
+						StartRecaptcha();
+					}
 				}
 			}
-		}
-	});
+		});
+	}
 });

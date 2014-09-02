@@ -1,11 +1,11 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 

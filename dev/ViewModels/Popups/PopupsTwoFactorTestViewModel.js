@@ -1,10 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -50,7 +50,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsTwoFactorTestViewModel', PopupsTwoFactorTestViewModel);
+	kn.extendAsViewModel(['View:Popup:TwoFactorTest', 'PopupsTwoFactorTestViewModel'], PopupsTwoFactorTestViewModel);
+	_.extend(PopupsTwoFactorTestViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsTwoFactorTestViewModel.prototype.clearPopup = function ()
 	{

@@ -1,7 +1,6 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -133,7 +132,6 @@
 	LinkBuilder.prototype.avatarLink = function (sEmail)
 	{
 		return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
-	//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
 	};
 
 	/**

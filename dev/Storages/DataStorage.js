@@ -6,8 +6,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -548,7 +548,7 @@
 							NotificationClass = Utils.notificationClass(),
 							oNotification = null
 						;
-						
+
 						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
@@ -781,6 +781,40 @@
 		}
 	};
 
+	/**
+	 * @private
+	 * @param {Object} oMessageTextBody
+	 */
+	DataStorage.prototype.initBlockquoteSwitcher = function (oMessageTextBody)
+	{
+		if (oMessageTextBody)
+		{
+			var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
+				return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
+			});
+
+			if ($oList && 0 < $oList.length)
+			{
+				$oList.each(function () {
+					var $self = $(this), iH = $self.height();
+					if (0 === iH || 100 < iH)
+					{
+						$self.addClass('rl-bq-switcher hidden-bq');
+						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
+							.insertBefore($self)
+							.click(function () {
+								$self.toggleClass('hidden-bq');
+								Utils.windowResize();
+							})
+							.after('<br />')
+							.before('<br />')
+						;
+					}
+				});
+			}
+		}
+	};
+
 	DataStorage.prototype.setMessage = function (oData, bCached)
 	{
 		var
@@ -920,7 +954,7 @@
 
 				if (oBody)
 				{
-					Utils.initBlockquoteSwitcher(oBody);
+					this.initBlockquoteSwitcher(oBody);
 				}
 			}
 

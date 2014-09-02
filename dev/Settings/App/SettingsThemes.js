@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -6,9 +5,9 @@
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		_ = require('_'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),

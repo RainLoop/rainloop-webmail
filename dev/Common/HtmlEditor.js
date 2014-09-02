@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -7,6 +6,7 @@
 	var
 		window = require('window'),
 		_ = require('_'),
+
 		Globals = require('Globals'),
 		Settings = require('Storage:Settings')
 	;

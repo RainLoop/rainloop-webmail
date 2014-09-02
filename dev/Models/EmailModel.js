@@ -1,11 +1,9 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		Enums = require('Enums'),
 		Utils = require('Utils')
 	;
 
@@ -19,7 +17,6 @@
 	{
 		this.email = sEmail || '';
 		this.name = sName || '';
-		this.privateType = null;
 
 		this.clearDuplicateName();
 	}
@@ -45,16 +42,10 @@
 	 */
 	EmailModel.prototype.email = '';
 
-	/**
-	 * @type {(number|null)}
-	 */
-	EmailModel.prototype.privateType = null;
-
 	EmailModel.prototype.clear = function ()
 	{
 		this.email = '';
 		this.name = '';
-		this.privateType = null;
 	};
 
 	/**
@@ -80,27 +71,6 @@
 		{
 			this.name = '';
 		}
-	};
-
-	/**
-	 * @return {number}
-	 */
-	EmailModel.prototype.type = function ()
-	{
-		if (null === this.privateType)
-		{
-			if (this.email && '@facebook.com' === this.email.substr(-13))
-			{
-				this.privateType = Enums.EmailType.Facebook;
-			}
-
-			if (null === this.privateType)
-			{
-				this.privateType = Enums.EmailType.Default;
-			}
-		}
-
-		return this.privateType;
 	};
 
 	/**

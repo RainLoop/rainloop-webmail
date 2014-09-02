@@ -240,7 +240,9 @@ gulp.task('js:app', function() {
 
 	var
 		browserify = require('browserify'),
-		source = require('vinyl-source-stream')
+//		exorcist = require('exorcist'),
+		source = require('vinyl-source-stream'),
+		buffer = require('vinyl-buffer')
 	;
 
     return browserify({
@@ -250,7 +252,10 @@ gulp.task('js:app', function() {
 			'debug': false
 		})
 		.bundle()
+//		.pipe(exorcist(cfg.paths.staticJS + cfg.paths.js.app.name + '.map'))
         .pipe(source(cfg.paths.js.app.name))
+        .pipe(buffer())
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });
@@ -259,7 +264,9 @@ gulp.task('js:admin', function() {
 
 	var
 		browserify = require('browserify'),
-		source = require('vinyl-source-stream')
+//		exorcist = require('exorcist'),
+		source = require('vinyl-source-stream'),
+		buffer = require('vinyl-buffer')
 	;
 
     return browserify({
@@ -269,7 +276,10 @@ gulp.task('js:admin', function() {
 			'debug': false
 		})
 		.bundle()
+//		.pipe(exorcist(cfg.paths.staticJS + cfg.paths.js.admin.name + '.map'))
         .pipe(source(cfg.paths.js.admin.name))
+        .pipe(buffer())
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });
@@ -279,6 +289,7 @@ gulp.task('js:app:min', ['js:app'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
 		.pipe(uglify(cfg.uglify))
 		.pipe(rename({suffix: '.min'}))
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });
@@ -287,6 +298,7 @@ gulp.task('js:admin:min', ['js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
 		.pipe(uglify(cfg.uglify))
 		.pipe(rename({suffix: '.min'}))
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });

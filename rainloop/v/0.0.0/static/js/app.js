@@ -1,21 +1,19 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (require) {
 	'use strict';
 	require('App:Boot')(require('App:RainLoop'));
 }(require));
 },{"App:Boot":4,"App:RainLoop":3}],2:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
-		_ = require('_'),
 		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -28,8 +26,8 @@
 	;
 
 	/**
-	 * @param {*} Remote
 	 * @constructor
+	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 * @extends KnoinAbstractBoot
 	 */
 	function AbstractApp(Remote)
@@ -131,6 +129,9 @@
 		return true;
 	};
 
+	/**
+	 * @param {string} sTitle
+	 */
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
@@ -278,7 +279,6 @@
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"Events":8,"Globals":9,"Knoin:AbstractBoot":28,"LinkBuilder":11,"Storage:Settings":69,"Utils":14,"_":25,"ssm":24,"window":26}],3:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -286,8 +286,8 @@
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		moment = require('moment'),
 
 		Enums = require('Enums'),
@@ -1576,41 +1576,6 @@
 		});
 	};
 
-	/**
-	 * @param {string} sMailToUrl
-	 * @returns {boolean}
-	 */
-	RainLoopApp.prototype.mailToHelper = function (sMailToUrl)
-	{
-		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
-		{
-			sMailToUrl = sMailToUrl.toString().substr(7);
-
-			var
-				oParams = {},
-				oEmailModel = null,
-				sEmail = sMailToUrl.replace(/\?.+$/, ''),
-				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, '')
-			;
-
-			oEmailModel = new EmailModel();
-			oEmailModel.parse(window.decodeURIComponent(sEmail));
-
-			if (oEmailModel && oEmailModel.email)
-			{
-				oParams = Utils.simpleQueryParser(sQueryString);
-				kn.showScreenPopup(require('View:Popup:Compose'), [Enums.ComposeType.Empty, null, [oEmailModel],
-					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
-					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
-				]);
-			}
-
-			return true;
-		}
-
-		return false;
-	};
-
 	RainLoopApp.prototype.bootstartLoginScreen = function ()
 	{
 		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
@@ -1775,7 +1740,7 @@
 
 							if (Settings.settingsGet('MailToEmail'))
 							{
-								self.mailToHelper(Settings.settingsGet('MailToEmail'));
+								Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View:Popup:Compose'));
 							}
 						}, 500);
 					}
@@ -1845,7 +1810,6 @@
 
 }(module, require));
 },{"$":20,"App:Abstract":2,"App:Knoin":27,"Consts":6,"Enums":7,"Events":8,"Globals":9,"LinkBuilder":11,"Model:Account":31,"Model:Email":37,"Model:Folder":40,"Model:Identity":41,"Model:Message":42,"Model:OpenPgpKey":43,"Plugins":12,"Screen:RainLoop:About":44,"Screen:RainLoop:Login":46,"Screen:RainLoop:MailBox":47,"Screen:RainLoop:Settings":48,"Settings:RainLoop:Accounts":49,"Settings:RainLoop:ChangePassword":50,"Settings:RainLoop:Contacts":51,"Settings:RainLoop:Filters":52,"Settings:RainLoop:Folders":53,"Settings:RainLoop:General":54,"Settings:RainLoop:Identities":55,"Settings:RainLoop:Identity":56,"Settings:RainLoop:OpenPGP":57,"Settings:RainLoop:Security":58,"Settings:RainLoop:Social":59,"Settings:RainLoop:Themes":60,"Storage:LocalStorage":65,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Ask":80,"View:Popup:Compose":82,"View:Popup:FolderSystem":87,"_":25,"moment":23,"window":26}],4:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -1877,7 +1841,7 @@
 		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
 		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		
+
 		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
@@ -1888,10 +1852,10 @@
 
 		// export
 		window['rl'] = window['rl'] || {};
-		window['rl']['addHook'] = Plugins.addHook;
-		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
-		window['rl']['remoteRequest'] = Plugins.remoteRequest;
-		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
+		window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
+		window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
+		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
+		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = EmailModel;
@@ -1930,7 +1894,7 @@
 // http://www.webtoolkit.info/
 
 (function (module) {
-	
+
 	'use strict';
 
 	/*jslint bitwise: true*/
@@ -2098,7 +2062,6 @@
 
 }(module, require));
 },{}],6:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
 
@@ -2226,9 +2189,8 @@
 
 	module.exports = Consts;
 
-}(module, require));
+}(module));
 },{}],7:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
 
@@ -2481,15 +2443,6 @@
 	/**
 	 * @enum {number}
 	 */
-	Enums.EmailType = {
-		'Defailt': 0,
-		'Facebook': 1,
-		'Google': 2
-	};
-
-	/**
-	 * @enum {number}
-	 */
 	Enums.SaveSettingsStep = {
 		'Animate': -2,
 		'Idle': -1,
@@ -2669,12 +2622,11 @@
 
 }(module, require));
 },{}],8:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 
@@ -2736,7 +2688,6 @@
 
 }(module, require));
 },{"Plugins":12,"Utils":14,"_":25}],9:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -2744,7 +2695,9 @@
 
 	var
 		Globals = {},
+
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -3022,8 +2975,7 @@
 	module.exports = Globals;
 
 }(module, require));
-},{"$":20,"Enums":7,"key":21,"ko":22,"window":26}],10:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":20,"Enums":7,"_":25,"key":21,"ko":22,"window":26}],10:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -3032,6 +2984,7 @@
 	var
 		window = require('window'),
 		_ = require('_'),
+
 		Globals = require('Globals'),
 		Settings = require('Storage:Settings')
 	;
@@ -3299,10 +3252,9 @@
 
 }(module, require));
 },{"Globals":9,"Storage:Settings":69,"_":25,"window":26}],11:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -3434,7 +3386,6 @@
 	LinkBuilder.prototype.avatarLink = function (sEmail)
 	{
 		return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
-	//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
 	};
 
 	/**
@@ -3638,59 +3589,60 @@
 
 }(module, require));
 },{"Storage:Settings":69,"Utils":14,"window":26}],12:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		Plugins = {
-			__boot: null,
-			__remote: null,
-			__data: null
-		},
 		_ = require('_'),
-		Utils = require('Utils'),
-		Settings = require('Storage:Settings')
+
+		Utils = require('Utils')
 	;
 
 	/**
-	 * @type {Object}
+	 * @constructor
 	 */
-	Plugins.oViewModelsHooks = {};
-
-	/**
-	 * @type {Object}
-	 */
-	Plugins.oSimpleHooks = {};
-
-	/**
-	 * @param {string} sName
-	 * @param {Function} ViewModel
-	 */
-	Plugins.regViewModelHook = function (sName, ViewModel)
+	function Plugins()
 	{
-		if (ViewModel)
-		{
-			ViewModel.__hookName = sName;
-		}
-	};
+		this.__boot = null;
+		this.__data = null;
+		this.__remote = null;
+
+		this.oSettings = require('Storage:Settings');
+
+		this.oViewModelsHooks = {};
+		this.oSimpleHooks = {};
+	}
+
+	Plugins.prototype.__boot = null;
+	Plugins.prototype.__data = null;
+	Plugins.prototype.__remote = null;
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oViewModelsHooks = {};
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oSimpleHooks = {};
 
 	/**
 	 * @param {string} sName
 	 * @param {Function} fCallback
 	 */
-	Plugins.addHook = function (sName, fCallback)
+	Plugins.prototype.addHook = function (sName, fCallback)
 	{
 		if (Utils.isFunc(fCallback))
 		{
-			if (!Utils.isArray(Plugins.oSimpleHooks[sName]))
+			if (!Utils.isArray(this.oSimpleHooks[sName]))
 			{
-				Plugins.oSimpleHooks[sName] = [];
+				this.oSimpleHooks[sName] = [];
 			}
 
-			Plugins.oSimpleHooks[sName].push(fCallback);
+			this.oSimpleHooks[sName].push(fCallback);
 		}
 	};
 
@@ -3698,13 +3650,13 @@
 	 * @param {string} sName
 	 * @param {Array=} aArguments
 	 */
-	Plugins.runHook = function (sName, aArguments)
+	Plugins.prototype.runHook = function (sName, aArguments)
 	{
-		if (Utils.isArray(Plugins.oSimpleHooks[sName]))
+		if (Utils.isArray(this.oSimpleHooks[sName]))
 		{
 			aArguments = aArguments || [];
 
-			_.each(Plugins.oSimpleHooks[sName], function (fCallback) {
+			_.each(this.oSimpleHooks[sName], function (fCallback) {
 				fCallback.apply(null, aArguments);
 			});
 		}
@@ -3714,9 +3666,9 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.mainSettingsGet = function (sName)
+	Plugins.prototype.mainSettingsGet = function (sName)
 	{
-		return Settings.settingsGet(sName);
+		return this.oSettings.settingsGet(sName);
 	};
 
 	/**
@@ -3727,11 +3679,11 @@
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
 	 */
-	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (Plugins.__remote)
+		if (this.__remote)
 		{
-			Plugins.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			this.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 
@@ -3740,26 +3692,25 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.settingsGet = function (sPluginSection, sName)
+	Plugins.prototype.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = Settings.settingsGet('Plugins');
+		var oPlugin = this.oSettings.settingsGet('Plugins');
 		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
 
-	module.exports = Plugins;
+	module.exports = new Plugins();
 
 }(module, require));
 },{"Storage:Settings":69,"Utils":14,"_":25}],13:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -4482,19 +4433,18 @@
 
 }(module, require));
 },{"$":20,"Enums":7,"Utils":14,"_":25,"key":21,"ko":22}],14:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		Utils = {},
 
-		$ = require('$'),
-		_ = require('_'),
-		ko = require('ko'),
 		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -4607,7 +4557,46 @@
 	};
 
 	/**
-	 * @param {string} aValue
+	 * @param {string} sMailToUrl
+	 * @param {Function} PopupComposeVoreModel
+	 * @returns {boolean}
+	 */
+	Utils.mailToHelper = function (sMailToUrl, PopupComposeVoreModel)
+	{
+		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
+		{
+			sMailToUrl = sMailToUrl.toString().substr(7);
+
+			var
+				oParams = {},
+				oEmailModel = null,
+				sEmail = sMailToUrl.replace(/\?.+$/, ''),
+				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
+				EmailModel = require('Model:Email')
+			;
+
+			oEmailModel = new EmailModel();
+			oEmailModel.parse(window.decodeURIComponent(sEmail));
+
+			if (oEmailModel && oEmailModel.email)
+			{
+				oParams = Utils.simpleQueryParser(sQueryString);
+
+				require('App:Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
+					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+				]);
+			}
+
+			return true;
+		}
+
+		return false;
+	};
+
+	/**
+	 * @param {string} sValue
+	 * @param {string} sHash
 	 * @param {string} sKey
 	 * @param {string} sLongKey
 	 * @return {string|boolean}
@@ -5376,7 +5365,7 @@
 				NotificationClass = Utils.notificationClass(),
 				iResult = Enums.DesktopNotifications.NotSupported
 			;
-			
+
 			if (NotificationClass && NotificationClass.permission)
 			{
 				switch (NotificationClass.permission.toLowerCase())
@@ -5412,7 +5401,7 @@
 						NotificationClass = Utils.notificationClass(),
 						iPermission = oData.desktopNotificationsPermisions()
 					;
-					
+
 					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
 					{
 						oData.desktopNotifications(true);
@@ -5618,66 +5607,9 @@
 	};
 
 	/**
-	 * @param {Object} oMessageTextBody
+	 * @param {string} sTheme
+	 * @return {string}
 	 */
-	Utils.initBlockquoteSwitcher = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
-				return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
-			});
-
-			if ($oList && 0 < $oList.length)
-			{
-				$oList.each(function () {
-					var $self = $(this), iH = $self.height();
-					if (0 === iH || 100 < iH)
-					{
-						$self.addClass('rl-bq-switcher hidden-bq');
-						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-							.insertBefore($self)
-							.click(function () {
-								$self.toggleClass('hidden-bq');
-								Utils.windowResize();
-							})
-							.after('<br />')
-							.before('<br />')
-						;
-					}
-				});
-			}
-		}
-	};
-
-	/**
-	 * @param {Object} oMessageTextBody
-	 */
-	Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			$(oMessageTextBody).find('blockquote.rl-bq-switcher').each(function () {
-				$(this).removeClass('rl-bq-switcher hidden-bq');
-			});
-
-			$(oMessageTextBody).find('.rlBlockquoteSwitcher').each(function () {
-				$(this).remove();
-			});
-		}
-	};
-
-	/**
-	 * @param {Object} oMessageTextBody
-	 */
-	Utils.toggleMessageBlockquote = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			oMessageTextBody.find('.rlBlockquoteSwitcher').click();
-		}
-	};
-
 	Utils.convertThemeName = function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
@@ -5685,7 +5617,7 @@
 			sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
 		}
 
-		return Utils.trim(sTheme.replace(/[^a-zA-Z]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
+		return Utils.trim(sTheme.replace(/[^a-zA-Z0-9]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
 	};
 
 	/**
@@ -5738,14 +5670,10 @@
 		return sResult;
 	};
 
-	/* jshint ignore:start */
 	/**
-	 * @param {string} s
+	 * @param {string} sPlain
 	 * @return {string}
 	 */
-	Utils.md5 = function(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d){return(x^2147483648^F^H)}if(I|d){if(x&1073741824){return(x^3221225472^F^H)}else{return(x^1073741824^F^H)}}else{return(x^F^H)}}function r(d,F,k){return(d&F)|((~d)&k)}function q(d,F,k){return(d&k)|(F&(~k))}function p(d,F,k){return(d^F^k)}function n(d,F,k){return(F^(d|(~k)))}function u(G,F,aa,Z,k,H,I){G=K(G,K(K(r(F,aa,Z),k),I));return K(L(G,H),F)}function f(G,F,aa,Z,k,H,I){G=K(G,K(K(q(F,aa,Z),k),I));return K(L(G,H),F)}function D(G,F,aa,Z,k,H,I){G=K(G,K(K(p(F,aa,Z),k),I));return K(L(G,H),F)}function t(G,F,aa,Z,k,H,I){G=K(G,K(K(n(F,aa,Z),k),I));return K(L(G,H),F)}function e(G){var Z;var F=G.length;var x=F+8;var k=(x-(x%64))/64;var I=(k+1)*16;var aa=Array(I-1);var d=0;var H=0;while(H<F){Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=(aa[Z]|(G.charCodeAt(H)<<d));H++}Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=aa[Z]|(128<<d);aa[I-2]=F<<3;aa[I-1]=F>>>29;return aa}function B(x){var k="",F="",G,d;for(d=0;d<=3;d++){G=(x>>>(d*8))&255;F="0"+G.toString(16);k=k+F.substr(F.length-2,2)}return k}function J(k){k=k.replace(/rn/g,"n");var d="";for(var F=0;F<k.length;F++){var x=k.charCodeAt(F);if(x<128){d+=String.fromCharCode(x)}else{if((x>127)&&(x<2048)){d+=String.fromCharCode((x>>6)|192);d+=String.fromCharCode((x&63)|128)}else{d+=String.fromCharCode((x>>12)|224);d+=String.fromCharCode(((x>>6)&63)|128);d+=String.fromCharCode((x&63)|128)}}}return d}var C=Array();var P,h,E,v,g,Y,X,W,V;var S=7,Q=12,N=17,M=22;var A=5,z=9,y=14,w=20;var o=4,m=11,l=16,j=23;var U=6,T=10,R=15,O=21;s=J(s);C=e(s);Y=1732584193;X=4023233417;W=2562383102;V=271733878;for(P=0;P<C.length;P+=16){h=Y;E=X;v=W;g=V;Y=u(Y,X,W,V,C[P+0],S,3614090360);V=u(V,Y,X,W,C[P+1],Q,3905402710);W=u(W,V,Y,X,C[P+2],N,606105819);X=u(X,W,V,Y,C[P+3],M,3250441966);Y=u(Y,X,W,V,C[P+4],S,4118548399);V=u(V,Y,X,W,C[P+5],Q,1200080426);W=u(W,V,Y,X,C[P+6],N,2821735955);X=u(X,W,V,Y,C[P+7],M,4249261313);Y=u(Y,X,W,V,C[P+8],S,1770035416);V=u(V,Y,X,W,C[P+9],Q,2336552879);W=u(W,V,Y,X,C[P+10],N,4294925233);X=u(X,W,V,Y,C[P+11],M,2304563134);Y=u(Y,X,W,V,C[P+12],S,1804603682);V=u(V,Y,X,W,C[P+13],Q,4254626195);W=u(W,V,Y,X,C[P+14],N,2792965006);X=u(X,W,V,Y,C[P+15],M,1236535329);Y=f(Y,X,W,V,C[P+1],A,4129170786);V=f(V,Y,X,W,C[P+6],z,3225465664);W=f(W,V,Y,X,C[P+11],y,643717713);X=f(X,W,V,Y,C[P+0],w,3921069994);Y=f(Y,X,W,V,C[P+5],A,3593408605);V=f(V,Y,X,W,C[P+10],z,38016083);W=f(W,V,Y,X,C[P+15],y,3634488961);X=f(X,W,V,Y,C[P+4],w,3889429448);Y=f(Y,X,W,V,C[P+9],A,568446438);V=f(V,Y,X,W,C[P+14],z,3275163606);W=f(W,V,Y,X,C[P+3],y,4107603335);X=f(X,W,V,Y,C[P+8],w,1163531501);Y=f(Y,X,W,V,C[P+13],A,2850285829);V=f(V,Y,X,W,C[P+2],z,4243563512);W=f(W,V,Y,X,C[P+7],y,1735328473);X=f(X,W,V,Y,C[P+12],w,2368359562);Y=D(Y,X,W,V,C[P+5],o,4294588738);V=D(V,Y,X,W,C[P+8],m,2272392833);W=D(W,V,Y,X,C[P+11],l,1839030562);X=D(X,W,V,Y,C[P+14],j,4259657740);Y=D(Y,X,W,V,C[P+1],o,2763975236);V=D(V,Y,X,W,C[P+4],m,1272893353);W=D(W,V,Y,X,C[P+7],l,4139469664);X=D(X,W,V,Y,C[P+10],j,3200236656);Y=D(Y,X,W,V,C[P+13],o,681279174);V=D(V,Y,X,W,C[P+0],m,3936430074);W=D(W,V,Y,X,C[P+3],l,3572445317);X=D(X,W,V,Y,C[P+6],j,76029189);Y=D(Y,X,W,V,C[P+9],o,3654602809);V=D(V,Y,X,W,C[P+12],m,3873151461);W=D(W,V,Y,X,C[P+15],l,530742520);X=D(X,W,V,Y,C[P+2],j,3299628645);Y=t(Y,X,W,V,C[P+0],U,4096336452);V=t(V,Y,X,W,C[P+7],T,1126891415);W=t(W,V,Y,X,C[P+14],R,2878612391);X=t(X,W,V,Y,C[P+5],O,4237533241);Y=t(Y,X,W,V,C[P+12],U,1700485571);V=t(V,Y,X,W,C[P+3],T,2399980690);W=t(W,V,Y,X,C[P+10],R,4293915773);X=t(X,W,V,Y,C[P+1],O,2240044497);Y=t(Y,X,W,V,C[P+8],U,1873313359);V=t(V,Y,X,W,C[P+15],T,4264355552);W=t(W,V,Y,X,C[P+6],R,2734768916);X=t(X,W,V,Y,C[P+13],O,1309151649);Y=t(Y,X,W,V,C[P+4],U,4149444226);V=t(V,Y,X,W,C[P+11],T,3174756917);W=t(W,V,Y,X,C[P+2],R,718787259);X=t(X,W,V,Y,C[P+9],O,3951481745);Y=K(Y,h);X=K(X,E);W=K(W,v);V=K(V,g)}var i=B(Y)+B(X)+B(W)+B(V);return i.toLowerCase()};
-	/* jshint ignore:end */
-
 	Utils.convertPlainTextToHtml = function (sPlain)
 	{
 		return sPlain.toString()
@@ -5758,11 +5686,11 @@
 		return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 	};
 
-	Utils.defautOptionsAfterRender = function (oOption, oItem)
+	Utils.defautOptionsAfterRender = function (oDomOption, oItem)
 	{
-		if (oItem && !Utils.isUnd(oItem.disabled) && oOption)
+		if (oItem && !Utils.isUnd(oItem.disabled) && oDomOption)
 		{
-			$(oOption)
+			$(oDomOption)
 				.toggleClass('disabled', oItem.disabled)
 				.prop('disabled', oItem.disabled)
 			;
@@ -5823,10 +5751,18 @@
 		oWin.document.getElementsByTagName('head')[0].appendChild(oScript);
 	};
 
+	/**
+	 * @param {Function} fCallback
+	 * @param {?} koTrigger
+	 * @param {?} oContext = null
+	 * @param {number=} iTimer = 1000
+	 * @return {Function}
+	 */
 	Utils.settingsSaveHelperFunction = function (fCallback, koTrigger, oContext, iTimer)
 	{
 		oContext = oContext || null;
 		iTimer = Utils.isUnd(iTimer) ? 1000 : Utils.pInt(iTimer);
+
 		return function (sType, mData, bCached, sRequestAction, oRequestParameters) {
 			koTrigger.call(oContext, mData && mData['Result'] ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
 			if (fCallback)
@@ -6100,6 +6036,11 @@
 		return sHtml;
 	};
 
+	/**
+	 * @param {string} sUrl
+	 * @param {number} iValue
+	 * @param {Function} fCallback
+	 */
 	Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 	{
 		var oTempImg = new window.Image();
@@ -6265,6 +6206,7 @@
 	Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 	{
 		return function() {
+
 			var
 				iPrev = 0,
 				iNext = 0,
@@ -6275,8 +6217,8 @@
 
 				/**
 				 * @param {number} iIndex
-				 * @param {boolean=} bPush
-				 * @param {string=} sCustomName
+				 * @param {boolean=} bPush = true
+				 * @param {string=} sCustomName = ''
 				 */
 				fAdd = function (iIndex, bPush, sCustomName) {
 
@@ -6378,22 +6320,21 @@
 
 	Utils.selectElement = function (element)
 	{
-		/* jshint onevar: false */
+		var sel, range;
 		if (window.getSelection)
 		{
-			var sel = window.getSelection();
+			sel = window.getSelection();
 			sel.removeAllRanges();
-			var range = window.document.createRange();
+			range = window.document.createRange();
 			range.selectNodeContents(element);
 			sel.addRange(range);
 		}
 		else if (window.document.selection)
 		{
-			var textRange = window.document.body.createTextRange();
-			textRange.moveToElementText(element);
-			textRange.select();
+			range = window.document.body.createTextRange();
+			range.moveToElementText(element);
+			range.select();
 		}
-		/* jshint onevar: true */
 	};
 
 	Utils.detectDropdownVisibility = _.debounce(function () {
@@ -6402,13 +6343,16 @@
 		}));
 	}, 50);
 
+	/**
+	 * @param {boolean=} bDelay = false
+	 */
 	Utils.triggerAutocompleteInputChange = function (bDelay) {
 
 		var fFunc = function () {
 			$('.checkAutocomplete').trigger('change');
 		};
 
-		if (bDelay)
+		if (Utils.isUnd(bDelay) ? false : !!bDelay)
 		{
 			_.delay(fFunc, 100);
 		}
@@ -6421,41 +6365,26 @@
 	module.exports = Utils;
 
 }(module, require));
-},{"$":20,"Consts":6,"Enums":7,"Globals":9,"_":25,"ko":22,"window":26}],15:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{"$":20,"App:Knoin":27,"Consts":6,"Enums":7,"Globals":9,"Model:Email":37,"_":25,"ko":22,"window":26}],15:[function(require,module,exports){
 module.exports = JSON;
 },{}],16:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = Jua;
 },{}],17:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = crossroads;
 },{}],18:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = hasher;
 },{}],19:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = ifvisible;
 },{}],20:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = $;
 },{}],21:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = key;
 },{}],22:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, ko) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
 		_ = require('_'),
@@ -7358,40 +7287,29 @@ module.exports = key;
 }(module, ko));
 
 },{"$":20,"Globals":9,"Model:ContactTag":36,"Model:Email":37,"Utils":14,"_":25,"window":26}],23:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = moment;
 },{}],24:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = ssm;
 },{}],25:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = _;
 },{}],26:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
 module.exports = window;
 },{}],27:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
-		Utils = require('Utils'),
-
-		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
+		Utils = require('Utils')
 	;
 
 	/**
@@ -7425,22 +7343,23 @@ module.exports = window;
 	};
 
 	/**
-	 * @param {string} sName
+	 * @param {string|Array} mName
 	 * @param {Function} ViewModelClass
-	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
 	 */
-	Knoin.prototype.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
+	Knoin.prototype.extendAsViewModel = function (mName, ViewModelClass)
 	{
 		if (ViewModelClass)
 		{
-			if (!AbstractViewModel)
+			if (Utils.isArray(mName))
 			{
-				AbstractViewModel = KnoinAbstractViewModel;
+				ViewModelClass.__names = mName;
+			}
+			else
+			{
+				ViewModelClass.__names = [mName];
 			}
 
-			ViewModelClass.__name = sName;
-			Plugins.regViewModelHook(sName, ViewModelClass);
-			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
+			ViewModelClass.__name = ViewModelClass.__names[0];
 		}
 	};
 
@@ -7518,6 +7437,7 @@ module.exports = window;
 			ViewModelClass.__vm = oViewModel;
 
 			oViewModel.viewModelName = ViewModelClass.__name;
+			oViewModel.viewModelNames = ViewModelClass.__names;
 
 			if (oViewModelPlace && 1 === oViewModelPlace.length)
 			{
@@ -7551,6 +7471,10 @@ module.exports = window;
 							Utils.delegateRun(this, 'onHide');
 							this.restoreKeyScope();
 
+							_.each(this.viewModelNames, function (sName) {
+								Plugins.runHook('view-model-on-hide', [sName, self]);
+							});
+
 							Globals.popupVisibilityNames.remove(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 2000);
 
@@ -7564,7 +7488,9 @@ module.exports = window;
 					}, oViewModel);
 				}
 
-				Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-pre-build', [sName, oViewModel, oViewModelDom]);
+				});
 
 				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
 					'i18nInit': true,
@@ -7577,14 +7503,16 @@ module.exports = window;
 					oViewModel.registerPopupKeyDown();
 				}
 
-				Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-post-build', [sName, oViewModel, oViewModelDom]);
+				});
 			}
 			else
 			{
 				Utils.log('Cannot find view model position: ' + sPosition);
 			}
 		}
-		
+
 		return ViewModelClass ? ViewModelClass.__vm : null;
 	};
 
@@ -7596,7 +7524,6 @@ module.exports = window;
 		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 		{
 			ViewModelClassToHide.__vm.modalVisibility(false);
-			Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		}
 	};
 
@@ -7614,7 +7541,10 @@ module.exports = window;
 			{
 				ViewModelClassToShow.__vm.modalVisibility(true);
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-				Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
+
+				_.each(ViewModelClassToShow.__names, function (sName) {
+					Plugins.runHook('view-model-on-show', [sName, ViewModelClassToShow.__vm, aParameters || []]);
+				});
 			}
 		}
 	};
@@ -7716,10 +7646,13 @@ module.exports = window;
 								{
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
+
 									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 									Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
+									_.each(ViewModelClass.__names, function (sName) {
+										Plugins.runHook('view-model-on-show', [sName, ViewModelClass.__vm]);
+									});
 								}
 
 							}, self);
@@ -7823,11 +7756,10 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module, require));
-},{"$":20,"Globals":9,"Knoin:AbstractViewModel":30,"Plugins":12,"Utils":14,"_":25,"crossroads":17,"hasher":18,"ko":22}],28:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":20,"Globals":9,"Plugins":12,"Utils":14,"_":25,"crossroads":17,"hasher":18,"ko":22}],28:[function(require,module,exports){
 
 (function (module) {
-	
+
 	'use strict';
 
 	/**
@@ -7847,14 +7779,15 @@ module.exports = window;
 
 }(module, require));
 },{}],29:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		crossroads = require('crossroads'),
+
 		Utils = require('Utils')
 	;
 
@@ -7937,8 +7870,7 @@ module.exports = window;
 	module.exports = KnoinAbstractScreen;
 
 }(module, require));
-},{"Utils":14,"crossroads":17}],30:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":14,"_":25,"crossroads":17}],30:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -7948,14 +7880,14 @@ module.exports = window;
 		ko = require('ko'),
 
 		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils')
+		Utils = require('Utils'),
+		Globals = require('Globals')
 	;
 
 	/**
+	 * @constructor
 	 * @param {string=} sPosition = ''
 	 * @param {string=} sTemplate = ''
-	 * @constructor
 	 */
 	function KnoinAbstractViewModel(sPosition, sTemplate)
 	{
@@ -7966,12 +7898,18 @@ module.exports = window;
 		this.sDefaultKeyScope = Enums.KeyState.None;
 		this.sCurrentKeyScope = this.sDefaultKeyScope;
 
-		this.viewModelName = '';
 		this.viewModelVisibility = ko.observable(false);
 		this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
 
+		this.viewModelName = '';
+		this.viewModelNames = [];
 		this.viewModelDom = null;
 	}
+
+	/**
+	 * @type {boolean}
+	 */
+	KnoinAbstractViewModel.prototype.bDisabeCloseOnEsc = false;
 
 	/**
 	 * @type {string}
@@ -7986,7 +7924,22 @@ module.exports = window;
 	/**
 	 * @type {string}
 	 */
+	KnoinAbstractViewModel.prototype.sDefaultKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.sCurrentKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
 	KnoinAbstractViewModel.prototype.viewModelName = '';
+
+	/**
+	 * @type {Array}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelNames = [];
 
 	/**
 	 * @type {?}
@@ -8049,7 +8002,6 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"Globals":9,"Utils":14,"ko":22}],31:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -8057,6 +8009,7 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -8069,7 +8022,7 @@ module.exports = window;
 	function AccountModel(sEmail, bCanBeDelete)
 	{
 		this.email = sEmail;
-		
+
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
 	}
@@ -8091,14 +8044,14 @@ module.exports = window;
 
 }(module, require));
 },{"LinkBuilder":11,"Utils":14,"ko":22}],32:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
+
 		Globals = require('Globals'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder')
@@ -8344,14 +8297,14 @@ module.exports = window;
 
 }(module, require));
 },{"Globals":9,"LinkBuilder":11,"Utils":14,"window":26}],33:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -8421,7 +8374,6 @@ module.exports = window;
 
 }(module, require));
 },{"Utils":14,"ko":22}],34:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -8430,6 +8382,7 @@ module.exports = window;
 	var
 		_ = require('_'),
 		ko = require('ko'),
+
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder')
@@ -8563,7 +8516,6 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"LinkBuilder":11,"Utils":14,"_":25,"ko":22}],35:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -8571,18 +8523,18 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
+
 		Enums = require('Enums'),
 		Utils = require('Utils')
 	;
 
 	/**
+	 * @constructor
 	 * @param {number=} iType = Enums.ContactPropertyType.Unknown
 	 * @param {string=} sTypeStr = ''
 	 * @param {string=} sValue = ''
 	 * @param {boolean=} bFocused = false
 	 * @param {string=} sPlaceholder = ''
-	 *
-	 * @constructor
 	 */
 	function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
 	{
@@ -8607,14 +8559,14 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"Utils":14,"ko":22}],36:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -8666,14 +8618,12 @@ module.exports = window;
 
 }(module, require));
 },{"Utils":14,"ko":22}],37:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		Enums = require('Enums'),
 		Utils = require('Utils')
 	;
 
@@ -8687,7 +8637,6 @@ module.exports = window;
 	{
 		this.email = sEmail || '';
 		this.name = sName || '';
-		this.privateType = null;
 
 		this.clearDuplicateName();
 	}
@@ -8713,16 +8662,10 @@ module.exports = window;
 	 */
 	EmailModel.prototype.email = '';
 
-	/**
-	 * @type {(number|null)}
-	 */
-	EmailModel.prototype.privateType = null;
-
 	EmailModel.prototype.clear = function ()
 	{
 		this.email = '';
 		this.name = '';
-		this.privateType = null;
 	};
 
 	/**
@@ -8748,27 +8691,6 @@ module.exports = window;
 		{
 			this.name = '';
 		}
-	};
-
-	/**
-	 * @return {number}
-	 */
-	EmailModel.prototype.type = function ()
-	{
-		if (null === this.privateType)
-		{
-			if (this.email && '@facebook.com' === this.email.substr(-13))
-			{
-				this.privateType = Enums.EmailType.Facebook;
-			}
-
-			if (null === this.privateType)
-			{
-				this.privateType = Enums.EmailType.Default;
-			}
-		}
-
-		return this.privateType;
 	};
 
 	/**
@@ -9044,15 +8966,15 @@ module.exports = window;
 	module.exports = EmailModel;
 
 }(module, require));
-},{"Enums":7,"Utils":14}],38:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":14}],38:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko'),
+
 		Enums = require('Enums')
 	;
 
@@ -9108,7 +9030,6 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"ko":22}],39:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -9116,6 +9037,7 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
+
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		FilterConditionModel = require('Model:FilterCondition')
@@ -9203,7 +9125,6 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"Model:FilterCondition":38,"Utils":14,"ko":22}],40:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -9558,7 +9479,6 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"Events":8,"Globals":9,"Utils":14,"_":25,"ko":22}],41:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -9566,6 +9486,7 @@ module.exports = window;
 
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -9609,7 +9530,6 @@ module.exports = window;
 
 }(module, require));
 },{"Utils":14,"ko":22}],42:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -9617,8 +9537,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -9952,6 +9872,14 @@ module.exports = window;
 
 	   this.lastInCollapsedThread(false);
 	   this.lastInCollapsedThreadLoading(false);
+	};
+
+	/**
+	 * @return {string}
+	 */
+	MessageModel.prototype.friendlySize = function ()
+	{
+		return Utils.friendlySize(this.size());
 	};
 
 	MessageModel.prototype.computeSenderEmail = function ()
@@ -10896,12 +10824,11 @@ module.exports = window;
 
 }(module, require));
 },{"$":20,"Enums":7,"Globals":9,"LinkBuilder":11,"Model:Attachment":32,"Model:Email":37,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22,"moment":23,"window":26}],43:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko')
 	;
@@ -10941,14 +10868,14 @@ module.exports = window;
 
 }(module, require));
 },{"ko":22}],44:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		_ = require('_'),
+
 		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
@@ -10974,15 +10901,14 @@ module.exports = window;
 
 }(module, require));
 },{"App:RainLoop":3,"Knoin:AbstractScreen":29,"View:RainLoop:About":70,"_":25}],45:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 
 		Globals = require('Globals'),
@@ -10994,11 +10920,11 @@ module.exports = window;
 	;
 
 	/**
-	 * @param {Array} aViewModels
 	 * @constructor
+	 * @param {Array} aViewModels
 	 * @extends KnoinAbstractScreen
 	 */
-	function AbstractSettings(aViewModels)
+	function AbstractSettingsScreen(aViewModels)
 	{
 		KnoinAbstractScreen.call(this, 'settings', aViewModels);
 
@@ -11008,9 +10934,9 @@ module.exports = window;
 		this.oViewModelPlace = null;
 	}
 
-	_.extend(AbstractSettings.prototype, KnoinAbstractScreen.prototype);
+	_.extend(AbstractSettingsScreen.prototype, KnoinAbstractScreen.prototype);
 
-	AbstractSettings.prototype.onRoute = function (sSubName)
+	AbstractSettingsScreen.prototype.onRoute = function (sSubName)
 	{
 		var
 			self = this,
@@ -11117,7 +11043,7 @@ module.exports = window;
 		}
 	};
 
-	AbstractSettings.prototype.onHide = function ()
+	AbstractSettingsScreen.prototype.onHide = function ()
 	{
 		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 		{
@@ -11126,7 +11052,7 @@ module.exports = window;
 		}
 	};
 
-	AbstractSettings.prototype.onBuild = function ()
+	AbstractSettingsScreen.prototype.onBuild = function ()
 	{
 		_.each(Globals.aViewModels['settings'], function (SettingsViewModel) {
 			if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
@@ -11148,7 +11074,7 @@ module.exports = window;
 		this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
 	};
 
-	AbstractSettings.prototype.routes = function ()
+	AbstractSettingsScreen.prototype.routes = function ()
 	{
 		var
 			DefaultViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
@@ -11171,18 +11097,18 @@ module.exports = window;
 		];
 	};
 
-	module.exports = AbstractSettings;
+	module.exports = AbstractSettingsScreen;
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"Globals":9,"Knoin:AbstractScreen":29,"LinkBuilder":11,"Utils":14,"_":25,"ko":22}],46:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		_ = require('_'),
+
 		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
@@ -11208,7 +11134,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:RainLoop":3,"Knoin:AbstractScreen":29,"View:RainLoop:Login":72,"_":25}],47:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -11406,7 +11331,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:RainLoop":3,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractScreen":29,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:RainLoop:MailBoxFolderList":73,"View:RainLoop:MailBoxMessageList":74,"View:RainLoop:MailBoxMessageView":75,"View:RainLoop:MailBoxSystemDropDown":76,"_":25}],48:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -11419,16 +11343,16 @@ module.exports = window;
 		Utils = require('Utils'),
 		Globals = require('Globals'),
 
-		AbstractSettings = require('Screen:AbstractSettings')
+		AbstractSettingsScreen = require('Screen:AbstractSettings')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractSettings
+	 * @extends AbstractSettingsScreen
 	 */
 	function SettingsScreen()
 	{
-		AbstractSettings.call(this, [
+		AbstractSettingsScreen.call(this, [
 			require('View:RainLoop:SettingsSystemDropDown'),
 			require('View:RainLoop:SettingsMenu'),
 			require('View:RainLoop:SettingsPane')
@@ -11441,14 +11365,14 @@ module.exports = window;
 		});
 	}
 
-	_.extend(SettingsScreen.prototype, AbstractSettings.prototype);
+	_.extend(SettingsScreen.prototype, AbstractSettingsScreen.prototype);
 
 	SettingsScreen.prototype.onShow = function ()
 	{
 		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
 	};
-	
+
 	SettingsScreen.prototype.setSettingsTitle = function ()
 	{
 		require('App:RainLoop').setTitle(this.sSettingsTitle);
@@ -11458,10 +11382,9 @@ module.exports = window;
 
 }(module, require));
 },{"App:RainLoop":3,"Enums":7,"Globals":9,"Screen:AbstractSettings":45,"Utils":14,"View:RainLoop:SettingsMenu":94,"View:RainLoop:SettingsPane":95,"View:RainLoop:SettingsSystemDropDown":96,"_":25}],49:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -11559,7 +11482,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:AddAccount":77,"_":25,"ko":22,"window":26}],50:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -11682,12 +11604,11 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],51:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko'),
 
@@ -11742,14 +11663,14 @@ module.exports = window;
 
 }(module, require));
 },{"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],52:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -11785,7 +11706,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"Model:Filter":39,"Utils":14,"View:Popup:Filter":84,"ko":22}],53:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -12001,16 +11921,15 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Storage:LocalStorage":65,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:FolderCreate":86,"View:Popup:FolderSystem":87,"ko":22}],54:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		_ = require('_'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -12181,15 +12100,14 @@ module.exports = window;
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"Consts":6,"Enums":7,"Globals":9,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Languages":90,"_":25,"ko":22}],55:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('ko'),
 		_ = require('_'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
@@ -12416,15 +12334,14 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Identity":88,"_":25,"ko":22}],56:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('ko'),
 		_ = require('_'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
@@ -12521,15 +12438,16 @@ module.exports = window;
 
 }(module, require));
 },{"Enums":7,"HtmlEditor":10,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],57:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		ko = require('ko'),
+
 		kn = require('App:Knoin'),
+
 		Data = require('Storage:RainLoop:Data')
 	;
 
@@ -12604,7 +12522,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Storage:RainLoop:Data":64,"View:Popup:AddOpenPgpKey":78,"View:Popup:NewOpenPgpKey":91,"View:Popup:ViewOpenPgpKey":93,"ko":22}],58:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -12772,7 +12689,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"Enums":7,"Globals":9,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:TwoFactorTest":92,"ko":22}],59:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -12850,7 +12766,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:RainLoop":3,"Storage:RainLoop:Data":64,"Utils":14}],60:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -12858,9 +12773,9 @@ module.exports = window;
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		_ = require('_'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
@@ -13086,8 +13001,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -13749,8 +13664,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -14291,7 +14206,7 @@ module.exports = window;
 							NotificationClass = Utils.notificationClass(),
 							oNotification = null
 						;
-						
+
 						if (NotificationClass && self.useDesktopNotifications())
 						{
 							oNotification = new NotificationClass(sTitle, {
@@ -14524,6 +14439,40 @@ module.exports = window;
 		}
 	};
 
+	/**
+	 * @private
+	 * @param {Object} oMessageTextBody
+	 */
+	DataStorage.prototype.initBlockquoteSwitcher = function (oMessageTextBody)
+	{
+		if (oMessageTextBody)
+		{
+			var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
+				return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
+			});
+
+			if ($oList && 0 < $oList.length)
+			{
+				$oList.each(function () {
+					var $self = $(this), iH = $self.height();
+					if (0 === iH || 100 < iH)
+					{
+						$self.addClass('rl-bq-switcher hidden-bq');
+						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
+							.insertBefore($self)
+							.click(function () {
+								$self.toggleClass('hidden-bq');
+								Utils.windowResize();
+							})
+							.after('<br />')
+							.before('<br />')
+						;
+					}
+				});
+			}
+		}
+	};
+
 	DataStorage.prototype.setMessage = function (oData, bCached)
 	{
 		var
@@ -14663,7 +14612,7 @@ module.exports = window;
 
 				if (oBody)
 				{
-					Utils.initBlockquoteSwitcher(oBody);
+					this.initBlockquoteSwitcher(oBody);
 				}
 			}
 
@@ -14785,12 +14734,11 @@ module.exports = window;
 	function LocalStorage()
 	{
 		var
-			_ = require('_'),
-			NextStorageDriver = _.find([
+			NextStorageDriver = require('_').find([
 				require('Storage:LocalStorage:Cookie'),
 				require('Storage:LocalStorage:LocalStorage')
 			], function (NextStorageDriver) {
-				return NextStorageDriver.supported();
+				return NextStorageDriver && NextStorageDriver.supported();
 			})
 		;
 
@@ -15826,11 +15774,12 @@ module.exports = window;
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
 		window = require('window'),
+		
 		Utils = require('Utils')
 	;
 
@@ -15878,15 +15827,15 @@ module.exports = window;
 
 }(module, require));
 },{"Utils":14,"window":26}],70:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		ko = require('ko'),
-		
+
 		kn = require('App:Knoin'),
 		Settings = require('Storage:Settings'),
 
@@ -15906,22 +15855,22 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AboutViewModel', AboutViewModel);
+	kn.extendAsViewModel(['View:RainLoop:About', 'AboutViewModel'], AboutViewModel);
+	_.extend(AboutViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	module.exports = AboutViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:Settings":69,"ko":22}],71:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:Settings":69,"_":25,"ko":22}],71:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
-		window = require('window'),
 		key = require('key'),
 
 		Enums = require('Enums'),
@@ -16034,20 +15983,19 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:AddAccount":77,"View:Popup:KeyboardShortcutsHelp":89,"_":25,"key":21,"ko":22,"window":26}],72:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 
-		Utils = require('Utils'),
 		Enums = require('Enums'),
+		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
@@ -16286,7 +16234,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('LoginViewModel', LoginViewModel);
+	kn.extendAsViewModel(['View:RainLoop:Login', 'LoginViewModel'], LoginViewModel);
+	_.extend(LoginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	LoginViewModel.prototype.onShow = function ()
 	{
@@ -16405,7 +16354,6 @@ module.exports = window;
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Languages":90,"_":25,"ko":22,"window":26}],73:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -16413,6 +16361,7 @@ module.exports = window;
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -16455,7 +16404,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxFolderListViewModel', MailBoxFolderListViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxFolderList', 'MailBoxFolderListViewModel'], MailBoxFolderListViewModel);
+	_.extend(MailBoxFolderListViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	MailBoxFolderListViewModel.prototype.onBuild = function (oDom)
 	{
@@ -16679,20 +16629,19 @@ module.exports = window;
 
 }(module, require));
 
-},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:Settings":69,"Utils":14,"View:Popup:Compose":82,"View:Popup:Contacts":83,"View:Popup:FolderCreate":86,"key":21,"ko":22,"window":26}],74:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:Settings":69,"Utils":14,"View:Popup:Compose":82,"View:Popup:Contacts":83,"View:Popup:FolderCreate":86,"_":25,"key":21,"ko":22,"window":26}],74:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
-		ifvisible = require('ifvisible'),
 		Jua = require('Jua'),
+		ifvisible = require('ifvisible'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -16948,7 +16897,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxMessageListViewModel', MailBoxMessageListViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxMessageList', 'MailBoxMessageListViewModel'], MailBoxMessageListViewModel);
+	_.extend(MailBoxMessageListViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	/**
 	 * @type {string}
@@ -17481,7 +17431,7 @@ module.exports = window;
 
 		// change focused state
 		key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
-			if (event && handler && 'shift+tab' === handler.shortcut || 'left' === handler.shortcut)
+			if (event && handler && ('shift+tab' === handler.shortcut || 'left' === handler.shortcut))
 			{
 				self.folderList.focused(true);
 			}
@@ -17617,13 +17567,13 @@ module.exports = window;
 }(module, require));
 
 },{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Jua":16,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Selector":13,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:AdvancedSearch":79,"View:Popup:Compose":82,"View:Popup:FolderClear":85,"_":25,"ifvisible":19,"key":21,"ko":22}],75:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -17769,6 +17719,7 @@ module.exports = window;
 		this.viewCc = ko.observable('');
 		this.viewBcc = ko.observable('');
 		this.viewDate = ko.observable('');
+		this.viewSize = ko.observable('');
 		this.viewMoment = ko.observable('');
 		this.viewLineAsCcc = ko.observable('');
 		this.viewViewLink = ko.observable('');
@@ -17807,6 +17758,7 @@ module.exports = window;
 				this.viewCc(oMessage.ccToLine(false));
 				this.viewBcc(oMessage.bccToLine(false));
 				this.viewDate(oMessage.fullFormatDateValue());
+				this.viewSize(oMessage.friendlySize());
 				this.viewMoment(oMessage.momentDate());
 				this.viewLineAsCcc(oMessage.lineAsCcc());
 				this.viewViewLink(oMessage.viewLink());
@@ -17865,7 +17817,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxMessageViewViewModel', MailBoxMessageViewViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxMessageView', 'MailBoxMessageViewViewModel'], MailBoxMessageViewViewModel);
+	_.extend(MailBoxMessageViewViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	MailBoxMessageViewViewModel.prototype.isPgpActionVisible = function ()
 	{
@@ -17907,23 +17860,6 @@ module.exports = window;
 		}
 
 		return sResult;
-	};
-
-	MailBoxMessageViewViewModel.prototype.scrollToTop = function ()
-	{
-		var oCont = $('.messageItem.nano .content', this.viewModelDom);
-		if (oCont && oCont[0])
-		{
-	//		oCont.animate({'scrollTop': 0}, 300);
-			oCont.scrollTop(0);
-		}
-		else
-		{
-	//		$('.messageItem', this.viewModelDom).animate({'scrollTop': 0}, 300);
-			$('.messageItem', this.viewModelDom).scrollTop(0);
-		}
-
-		Utils.windowResize();
 	};
 
 	MailBoxMessageViewViewModel.prototype.fullScreen = function ()
@@ -17985,15 +17921,9 @@ module.exports = window;
 		});
 
 		oDom
-			.on('click', '.messageView .messageItem .messageItemHeader', function () {
-				if (Globals.useKeyboardShortcuts() && self.message())
-				{
-					self.message.focused(true);
-				}
-			})
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && require('App:RainLoop').mailToHelper($(this).attr('href')));
+				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View:Popup:Compose')));
 			})
 			.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
@@ -18019,6 +17949,8 @@ module.exports = window;
 				this.messageDomFocused(true);
 			} else {
 				this.messageDomFocused(false);
+				this.scrollMessageToTop();
+				this.scrollMessageToLeft();
 			}
 		}, this);
 
@@ -18135,7 +18067,7 @@ module.exports = window;
 		key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			if (Data.message() && Data.message().body)
 			{
-				Utils.toggleMessageBlockquote(Data.message().body);
+				Data.message().body.find('.rlBlockquoteSwitcher').click();
 				return false;
 			}
 		});
@@ -18178,10 +18110,26 @@ module.exports = window;
 		});
 
 		// change focused state
-		key('tab, shift+tab, left', Enums.KeyState.MessageView, function () {
+		key('tab, shift+tab, left', Enums.KeyState.MessageView, function (event, handler) {
 			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== Data.layout())
 			{
-				self.message.focused(false);
+				if (event && handler && 'left' === handler.shortcut)
+				{
+					if (self.oMessageScrollerDom && 0 < self.oMessageScrollerDom.scrollLeft())
+					{
+						return true;
+					}
+
+					self.message.focused(false);
+				}
+				else
+				{
+					self.message.focused(false);
+				}
+			}
+			else if (self.message() && Enums.Layout.NoPreview === Data.layout() && event && handler && 'left' === handler.shortcut)
+			{
+				return true;
 			}
 
 			return false;
@@ -18262,6 +18210,16 @@ module.exports = window;
 		if (this.oMessageScrollerDom)
 		{
 			this.oMessageScrollerDom.scrollTop(0);
+			Utils.windowResize();
+		}
+	};
+
+	MailBoxMessageViewViewModel.prototype.scrollMessageToLeft = function ()
+	{
+		if (this.oMessageScrollerDom)
+		{
+			this.oMessageScrollerDom.scrollLeft(0);
+			Utils.windowResize();
 		}
 	};
 
@@ -18331,14 +18289,15 @@ module.exports = window;
 	module.exports = MailBoxMessageViewViewModel;
 
 }(module, require));
-},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Compose":82,"key":21,"ko":22}],76:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Compose":82,"_":25,"key":21,"ko":22}],76:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		_ = require('_'),
+		
 		kn = require('App:Knoin'),
 		AbstractSystemDropDownViewModel = require('View:RainLoop:AbstractSystemDropDown')
 	;
@@ -18353,19 +18312,19 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('MailBoxSystemDropDownViewModel', MailBoxSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+	kn.extendAsViewModel(['View:RainLoop:MailBoxSystemDropDown', 'MailBoxSystemDropDownViewModel'], MailBoxSystemDropDownViewModel);
+	_.extend(MailBoxSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
 
 	module.exports = MailBoxSystemDropDownViewModel;
 
 }(module, require));
 
-},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71}],77:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71,"_":25}],77:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 		ko = require('ko'),
@@ -18449,7 +18408,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAddAccountViewModel', PopupsAddAccountViewModel);
+	kn.extendAsViewModel(['View:Popup:AddAccount', 'PopupsAddAccountViewModel'], PopupsAddAccountViewModel);
+	_.extend(PopupsAddAccountViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAddAccountViewModel.prototype.clearPopup = function ()
 	{
@@ -18477,13 +18437,13 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],78:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Utils = require('Utils'),
@@ -18565,7 +18525,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAddOpenPgpKeyViewModel', PopupsAddOpenPgpKeyViewModel);
+	kn.extendAsViewModel(['View:Popup:AddOpenPgpKey', 'PopupsAddOpenPgpKeyViewModel'], PopupsAddOpenPgpKeyViewModel);
+	_.extend(PopupsAddOpenPgpKeyViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAddOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{
@@ -18586,14 +18547,14 @@ module.exports = window;
 	module.exports = PopupsAddOpenPgpKeyViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"App:RainLoop":3,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22}],79:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"App:RainLoop":3,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22}],79:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		ko = require('ko'),
 		moment = require('moment'),
 
@@ -18639,7 +18600,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAdvancedSearchViewModel', PopupsAdvancedSearchViewModel);
+	kn.extendAsViewModel(['View:Popup:AdvancedSearch', 'PopupsAdvancedSearchViewModel'], PopupsAdvancedSearchViewModel);
+	_.extend(PopupsAdvancedSearchViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAdvancedSearchViewModel.prototype.buildSearchStringValue = function (sValue)
 	{
@@ -18744,14 +18706,14 @@ module.exports = window;
 	module.exports = PopupsAdvancedSearchViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22,"moment":23}],80:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22,"moment":23}],80:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -18786,7 +18748,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
+	kn.extendAsViewModel(['View:Popup:Ask', 'PopupsAskViewModel'], PopupsAskViewModel);
+	_.extend(PopupsAskViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAskViewModel.prototype.clearPopup = function ()
 	{
@@ -18875,13 +18838,12 @@ module.exports = window;
 	module.exports = PopupsAskViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Utils":14,"key":21,"ko":22}],81:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Utils":14,"_":25,"key":21,"ko":22}],81:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
 		_ = require('_'),
@@ -19037,7 +18999,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsComposeOpenPgpViewModel', PopupsComposeOpenPgpViewModel);
+	kn.extendAsViewModel(['View:Popup:ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], PopupsComposeOpenPgpViewModel);
+	_.extend(PopupsComposeOpenPgpViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsComposeOpenPgpViewModel.prototype.clearPopup = function ()
 	{
@@ -19142,7 +19105,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Model:Email":37,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"key":21,"ko":22,"window":26}],82:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -19150,8 +19112,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		moment = require('moment'),
 		JSON = require('JSON'),
@@ -19161,8 +19123,8 @@ module.exports = window;
 		Consts = require('Consts'),
 		Utils = require('Utils'),
 		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
 		Events = require('Events'),
+		LinkBuilder = require('LinkBuilder'),
 		HtmlEditor = require('HtmlEditor'),
 
 		Settings = require('Storage:Settings'),
@@ -19548,7 +19510,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsComposeViewModel', PopupsComposeViewModel);
+	kn.extendAsViewModel(['View:Popup:Compose', 'PopupsComposeViewModel'], PopupsComposeViewModel);
+	_.extend(PopupsComposeViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsComposeViewModel.prototype.emailsSource = function (oData, fResponse)
 	{
@@ -19938,7 +19901,15 @@ module.exports = window;
 			aDraftInfo = oMessage.aDraftInfo;
 
 			oText = $(oMessage.body).clone();
-			Utils.removeBlockquoteSwitcher(oText);
+			if (oText)
+			{
+				oText.find('blockquote.rl-bq-switcher').each(function () {
+					$(this).removeClass('rl-bq-switcher hidden-bq');
+				});
+				oText.find('.rlBlockquoteSwitcher').each(function () {
+					$(this).remove();
+				});
+			}
 
 			oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
 			sText = oText.html();
@@ -20925,7 +20896,6 @@ module.exports = window;
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Events":8,"Globals":9,"HtmlEditor":10,"JSON":15,"Jua":16,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Model:ComposeAttachment":33,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"View:Popup:Ask":80,"View:Popup:ComposeOpenPgp":81,"View:Popup:FolderSystem":87,"_":25,"ko":22,"moment":23,"window":26}],83:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -20933,8 +20903,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -20942,8 +20912,8 @@ module.exports = window;
 		Consts = require('Consts'),
 		Globals = require('Globals'),
 		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
 		Selector = require('Selector'),
+		LinkBuilder = require('LinkBuilder'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote'),
@@ -21318,7 +21288,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsContactsViewModel', PopupsContactsViewModel);
+	kn.extendAsViewModel(['View:Popup:Contacts', 'PopupsContactsViewModel'], PopupsContactsViewModel);
+	_.extend(PopupsContactsViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsContactsViewModel.prototype.contactTagsSource = function (oData, fResponse)
 	{
@@ -21707,13 +21678,13 @@ module.exports = window;
 
 }(module, require));
 },{"$":20,"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Model:Contact":34,"Model:ContactProperty":35,"Model:ContactTag":36,"Model:Email":37,"Selector":13,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"View:Popup:Compose":82,"View:Popup:Contacts":83,"_":25,"key":21,"ko":22,"window":26}],84:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Consts = require('Consts'),
@@ -21742,7 +21713,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFilterViewModel', PopupsFilterViewModel);
+	kn.extendAsViewModel(['View:Popup:Filter', 'PopupsFilterViewModel'], PopupsFilterViewModel);
+	_.extend(PopupsFilterViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFilterViewModel.prototype.clearPopup = function ()
 	{
@@ -21759,14 +21731,14 @@ module.exports = window;
 	module.exports = PopupsFilterViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Consts":6,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"ko":22}],85:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Consts":6,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22}],85:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -21826,7 +21798,7 @@ module.exports = window;
 				oFolderToClear.messageCountUnread(0);
 
 				Cache.setFolderHash(oFolderToClear.fullNameRaw, '');
-				
+
 				Remote.folderClear(function (sResult, oData) {
 
 					self.clearingProcess(false);
@@ -21863,7 +21835,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFolderClearViewModel', PopupsFolderClearViewModel);
+	kn.extendAsViewModel(['View:Popup:FolderClear', 'PopupsFolderClearViewModel'], PopupsFolderClearViewModel);
+	_.extend(PopupsFolderClearViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFolderClearViewModel.prototype.clearPopup = function ()
 	{
@@ -21884,14 +21857,14 @@ module.exports = window;
 
 }(module, require));
 
-},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],86:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Cache":63,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],86:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -21987,7 +21960,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFolderCreateViewModel', PopupsFolderCreateViewModel);
+	kn.extendAsViewModel(['View:Popup:FolderCreate', 'PopupsFolderCreateViewModel'], PopupsFolderCreateViewModel);
+	_.extend(PopupsFolderCreateViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFolderCreateViewModel.prototype.sNoParentText = '';
 
@@ -22016,14 +21990,14 @@ module.exports = window;
 	module.exports = PopupsFolderCreateViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],87:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"App:RainLoop":3,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],87:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -22113,7 +22087,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsFolderSystemViewModel', PopupsFolderSystemViewModel);
+	kn.extendAsViewModel(['View:Popup:FolderSystem', 'PopupsFolderSystemViewModel'], PopupsFolderSystemViewModel);
+	_.extend(PopupsFolderSystemViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsFolderSystemViewModel.prototype.sChooseOnText = '';
 	PopupsFolderSystemViewModel.prototype.sUnuseText = '';
@@ -22152,23 +22127,23 @@ module.exports = window;
 	module.exports = PopupsFolderSystemViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"ko":22}],88:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Consts":6,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Storage:Settings":69,"Utils":14,"_":25,"ko":22}],88:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
-		kn = require('App:Knoin'),
 
 		Remote = require('Storage:RainLoop:Remote'),
 		Data = require('Storage:RainLoop:Data'),
 
+		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
@@ -22270,7 +22245,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsIdentityViewModel', PopupsIdentityViewModel);
+	kn.extendAsViewModel(['View:Popup:Identity', 'PopupsIdentityViewModel'], PopupsIdentityViewModel);
+	_.extend(PopupsIdentityViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsIdentityViewModel.prototype.clearPopup = function ()
 	{
@@ -22323,8 +22299,7 @@ module.exports = window;
 	module.exports = PopupsIdentityViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],89:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"App:RainLoop":3,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],89:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -22353,7 +22328,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsKeyboardShortcutsHelpViewModel', PopupsKeyboardShortcutsHelpViewModel);
+	kn.extendAsViewModel(['View:Popup:KeyboardShortcutsHelp', 'PopupsKeyboardShortcutsHelpViewModel'], PopupsKeyboardShortcutsHelpViewModel);
+	_.extend(PopupsKeyboardShortcutsHelpViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsKeyboardShortcutsHelpViewModel.prototype.onBuild = function (oDom)
 	{
@@ -22389,7 +22365,6 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"_":25,"key":21}],90:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -22400,8 +22375,7 @@ module.exports = window;
 		ko = require('ko'),
 
 		Utils = require('Utils'),
-
-		Data = require('Storage:RainLoop:Data'),
+		Globals = require('Globals'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -22415,26 +22389,29 @@ module.exports = window;
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsLanguages');
 
+		this.Data = Globals.__APP.data(); // TODO
+
 		this.exp = ko.observable(false);
 
 		this.languages = ko.computed(function () {
-			return _.map(Data.languages(), function (sLanguage) {
+			return _.map(this.Data.languages(), function (sLanguage) {
 				return {
 					'key': sLanguage,
 					'selected': ko.observable(false),
 					'fullName': Utils.convertLangName(sLanguage)
 				};
 			});
-		});
+		}, this);
 
-		Data.mainLanguage.subscribe(function () {
+		this.Data.mainLanguage.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
 
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
+	kn.extendAsViewModel(['View:Popup:Languages', 'PopupsLanguagesViewModel'], PopupsLanguagesViewModel);
+	_.extend(PopupsLanguagesViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
 	{
@@ -22443,7 +22420,7 @@ module.exports = window;
 
 	PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
 	{
-		var sCurrent = Data.mainLanguage();
+		var sCurrent = this.Data.mainLanguage();
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
@@ -22463,15 +22440,14 @@ module.exports = window;
 
 	PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 	{
-		Data.mainLanguage(sLang);
+		this.Data.mainLanguage(sLang);
 		this.cancelCommand();
 	};
 
 	module.exports = PopupsLanguagesViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22}],91:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Globals":9,"Knoin:AbstractViewModel":30,"Utils":14,"_":25,"ko":22}],91:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -22562,7 +22538,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsNewOpenPgpKeyViewModel', PopupsNewOpenPgpKeyViewModel);
+	kn.extendAsViewModel(['View:Popup:NewOpenPgpKey', 'PopupsNewOpenPgpKeyViewModel'], PopupsNewOpenPgpKeyViewModel);
+	_.extend(PopupsNewOpenPgpKeyViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsNewOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{
@@ -22588,13 +22565,13 @@ module.exports = window;
 
 }(module, require));
 },{"App:Knoin":27,"App:RainLoop":3,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Data":64,"Utils":14,"_":25,"ko":22,"window":26}],92:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -22640,7 +22617,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsTwoFactorTestViewModel', PopupsTwoFactorTestViewModel);
+	kn.extendAsViewModel(['View:Popup:TwoFactorTest', 'PopupsTwoFactorTestViewModel'], PopupsTwoFactorTestViewModel);
+	_.extend(PopupsTwoFactorTestViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsTwoFactorTestViewModel.prototype.clearPopup = function ()
 	{
@@ -22663,14 +22641,14 @@ module.exports = window;
 	module.exports = PopupsTwoFactorTestViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Remote":68,"Utils":14,"ko":22}],93:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"Storage:RainLoop:Remote":68,"Utils":14,"_":25,"ko":22}],93:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Utils = require('Utils'),
@@ -22693,7 +22671,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsViewOpenPgpKeyViewModel', PopupsViewOpenPgpKeyViewModel);
+	kn.extendAsViewModel(['View:Popup:ViewOpenPgpKey', 'PopupsViewOpenPgpKeyViewModel'], PopupsViewOpenPgpKeyViewModel);
+	_.extend(PopupsViewOpenPgpKeyViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsViewOpenPgpKeyViewModel.prototype.clearPopup = function ()
 	{
@@ -22722,16 +22701,17 @@ module.exports = window;
 	module.exports = PopupsViewOpenPgpKeyViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Utils":14,"ko":22}],94:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Knoin:AbstractViewModel":30,"Utils":14,"_":25,"ko":22}],94:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		LinkBuilder = require('LinkBuilder'),
+		_ = require('_'),
+		
 		Globals = require('Globals'),
+		LinkBuilder = require('LinkBuilder'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -22754,7 +22734,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('SettingsMenuViewModel', SettingsMenuViewModel);
+	kn.extendAsViewModel(['View:RainLoop:SettingsMenu', 'SettingsMenuViewModel'], SettingsMenuViewModel);
+	_.extend(SettingsMenuViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	SettingsMenuViewModel.prototype.link = function (sRoute)
 	{
@@ -22769,14 +22750,14 @@ module.exports = window;
 	module.exports = SettingsMenuViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11}],95:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Globals":9,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"_":25}],95:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		key = require('key'),
 
 		Enums = require('Enums'),
@@ -22799,7 +22780,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('SettingsPaneViewModel', SettingsPaneViewModel);
+	kn.extendAsViewModel(['View:RainLoop:SettingsPane', 'SettingsPaneViewModel'], SettingsPaneViewModel);
+	_.extend(SettingsPaneViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	SettingsPaneViewModel.prototype.onBuild = function ()
 	{
@@ -22822,14 +22804,15 @@ module.exports = window;
 	module.exports = SettingsPaneViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"key":21}],96:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":27,"Enums":7,"Knoin:AbstractViewModel":30,"LinkBuilder":11,"Storage:RainLoop:Data":64,"_":25,"key":21}],96:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
+		
 		kn = require('App:Knoin'),
 		AbstractSystemDropDownViewModel = require('View:RainLoop:AbstractSystemDropDown')
 	;
@@ -22844,9 +22827,10 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('SettingsSystemDropDownViewModel', SettingsSystemDropDownViewModel, AbstractSystemDropDownViewModel);
+	kn.extendAsViewModel(['View:RainLoop:SettingsSystemDropDown', 'SettingsSystemDropDownViewModel'], SettingsSystemDropDownViewModel);
+	_.extend(SettingsSystemDropDownViewModel.prototype, AbstractSystemDropDownViewModel.prototype);
 
 	module.exports = SettingsSystemDropDownViewModel;
 
 }(module, require));
-},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71}]},{},[1]);
+},{"App:Knoin":27,"View:RainLoop:AbstractSystemDropDown":71,"_":25}]},{},[1]);

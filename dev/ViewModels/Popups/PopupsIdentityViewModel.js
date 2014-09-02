@@ -1,19 +1,19 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
-		kn = require('App:Knoin'),
 
 		Remote = require('Storage:RainLoop:Remote'),
 		Data = require('Storage:RainLoop:Data'),
 
+		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
@@ -115,7 +115,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsIdentityViewModel', PopupsIdentityViewModel);
+	kn.extendAsViewModel(['View:Popup:Identity', 'PopupsIdentityViewModel'], PopupsIdentityViewModel);
+	_.extend(PopupsIdentityViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsIdentityViewModel.prototype.clearPopup = function ()
 	{

@@ -1,13 +1,12 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
-		_ = require('_'),
 		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -20,8 +19,8 @@
 	;
 
 	/**
-	 * @param {*} Remote
 	 * @constructor
+	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 * @extends KnoinAbstractBoot
 	 */
 	function AbstractApp(Remote)
@@ -123,6 +122,9 @@
 		return true;
 	};
 
+	/**
+	 * @param {string} sTitle
+	 */
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +

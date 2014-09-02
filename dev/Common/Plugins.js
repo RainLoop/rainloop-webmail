@@ -1,56 +1,57 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		Plugins = {
-			__boot: null,
-			__remote: null,
-			__data: null
-		},
 		_ = require('_'),
-		Utils = require('Utils'),
-		Settings = require('Storage:Settings')
+
+		Utils = require('Utils')
 	;
 
 	/**
-	 * @type {Object}
+	 * @constructor
 	 */
-	Plugins.oViewModelsHooks = {};
-
-	/**
-	 * @type {Object}
-	 */
-	Plugins.oSimpleHooks = {};
-
-	/**
-	 * @param {string} sName
-	 * @param {Function} ViewModel
-	 */
-	Plugins.regViewModelHook = function (sName, ViewModel)
+	function Plugins()
 	{
-		if (ViewModel)
-		{
-			ViewModel.__hookName = sName;
-		}
-	};
+		this.__boot = null;
+		this.__data = null;
+		this.__remote = null;
+
+		this.oSettings = require('Storage:Settings');
+
+		this.oViewModelsHooks = {};
+		this.oSimpleHooks = {};
+	}
+
+	Plugins.prototype.__boot = null;
+	Plugins.prototype.__data = null;
+	Plugins.prototype.__remote = null;
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oViewModelsHooks = {};
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oSimpleHooks = {};
 
 	/**
 	 * @param {string} sName
 	 * @param {Function} fCallback
 	 */
-	Plugins.addHook = function (sName, fCallback)
+	Plugins.prototype.addHook = function (sName, fCallback)
 	{
 		if (Utils.isFunc(fCallback))
 		{
-			if (!Utils.isArray(Plugins.oSimpleHooks[sName]))
+			if (!Utils.isArray(this.oSimpleHooks[sName]))
 			{
-				Plugins.oSimpleHooks[sName] = [];
+				this.oSimpleHooks[sName] = [];
 			}
 
-			Plugins.oSimpleHooks[sName].push(fCallback);
+			this.oSimpleHooks[sName].push(fCallback);
 		}
 	};
 
@@ -58,13 +59,13 @@
 	 * @param {string} sName
 	 * @param {Array=} aArguments
 	 */
-	Plugins.runHook = function (sName, aArguments)
+	Plugins.prototype.runHook = function (sName, aArguments)
 	{
-		if (Utils.isArray(Plugins.oSimpleHooks[sName]))
+		if (Utils.isArray(this.oSimpleHooks[sName]))
 		{
 			aArguments = aArguments || [];
 
-			_.each(Plugins.oSimpleHooks[sName], function (fCallback) {
+			_.each(this.oSimpleHooks[sName], function (fCallback) {
 				fCallback.apply(null, aArguments);
 			});
 		}
@@ -74,9 +75,9 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.mainSettingsGet = function (sName)
+	Plugins.prototype.mainSettingsGet = function (sName)
 	{
-		return Settings.settingsGet(sName);
+		return this.oSettings.settingsGet(sName);
 	};
 
 	/**
@@ -87,11 +88,11 @@
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
 	 */
-	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (Plugins.__remote)
+		if (this.__remote)
 		{
-			Plugins.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			this.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 
@@ -100,13 +101,13 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.settingsGet = function (sPluginSection, sName)
+	Plugins.prototype.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = Settings.settingsGet('Plugins');
+		var oPlugin = this.oSettings.settingsGet('Plugins');
 		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
 
-	module.exports = Plugins;
+	module.exports = new Plugins();
 
 }(module, require));

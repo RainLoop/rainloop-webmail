@@ -1,21 +1,19 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (require) {
 	'use strict';
 	require('App:Boot')(require('App:Admin'));
 }(require));
 },{"App:Admin":3,"App:Boot":4}],2:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		$ = require('$'),
-		_ = require('_'),
 		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
 
 		Globals = require('Globals'),
 		Utils = require('Utils'),
@@ -28,8 +26,8 @@
 	;
 
 	/**
-	 * @param {*} Remote
 	 * @constructor
+	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 * @extends KnoinAbstractBoot
 	 */
 	function AbstractApp(Remote)
@@ -131,6 +129,9 @@
 		return true;
 	};
 
+	/**
+	 * @param {string} sTitle
+	 */
 	AbstractApp.prototype.setTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
@@ -277,23 +278,20 @@
 	module.exports = AbstractApp;
 
 }(module, require));
-},{"$":15,"App:Knoin":22,"Events":7,"Globals":8,"Knoin:AbstractBoot":23,"LinkBuilder":9,"Storage:Settings":53,"Utils":11,"_":20,"ssm":19,"window":21}],3:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":14,"App:Knoin":21,"Events":7,"Globals":8,"Knoin:AbstractBoot":22,"LinkBuilder":9,"Storage:Settings":45,"Utils":11,"_":19,"ssm":18,"window":20}],3:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		ko = require('ko'),
-		_ = require('_'),
 		window = require('window'),
+		_ = require('_'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Utils = require('Utils'),
 		LinkBuilder = require('LinkBuilder'),
-
-		kn = require('App:Knoin'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:Admin:Data'),
@@ -302,6 +300,7 @@
 		AdminSettingsScreen = require('Screen:Admin:Settings'),
 		AdminLoginScreen = require('Screen:Admin:Login'),
 
+		kn = require('App:Knoin'),
 		AbstractApp = require('App:Abstract')
 	;
 
@@ -594,8 +593,7 @@
 	module.exports = new AdminApp();
 
 }(module, require));
-},{"App:Abstract":2,"App:Knoin":22,"Enums":6,"LinkBuilder":9,"Screen:Admin:Login":31,"Screen:Admin:Settings":32,"Settings:Admin:About":33,"Settings:Admin:Branding":34,"Settings:Admin:Contacts":35,"Settings:Admin:Domains":36,"Settings:Admin:General":37,"Settings:Admin:Licensing":38,"Settings:Admin:Login":39,"Settings:Admin:Packages":40,"Settings:Admin:Plugins":41,"Settings:Admin:Security":42,"Settings:Admin:Social":43,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17,"window":21}],4:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Abstract":2,"App:Knoin":21,"Enums":6,"LinkBuilder":9,"Screen:Admin:Login":28,"Screen:Admin:Settings":29,"Settings:Admin:About":30,"Settings:Admin:Branding":31,"Settings:Admin:Contacts":32,"Settings:Admin:Domains":33,"Settings:Admin:General":34,"Settings:Admin:Licensing":35,"Settings:Admin:Login":36,"Settings:Admin:Packages":37,"Settings:Admin:Plugins":38,"Settings:Admin:Security":39,"Settings:Admin:Social":40,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16,"window":20}],4:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -627,7 +625,7 @@
 		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
 
 		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-		
+
 		Globals.$win.unload(function () {
 			Globals.bUnload = true;
 		});
@@ -638,10 +636,10 @@
 
 		// export
 		window['rl'] = window['rl'] || {};
-		window['rl']['addHook'] = Plugins.addHook;
-		window['rl']['settingsGet'] = Plugins.mainSettingsGet;
-		window['rl']['remoteRequest'] = Plugins.remoteRequest;
-		window['rl']['pluginSettingsGet'] = Plugins.settingsGet;
+		window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
+		window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
+		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
+		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['EmailModel'] = EmailModel;
@@ -675,8 +673,7 @@
 	};
 
 }(module, require));
-},{"$":15,"Enums":6,"Globals":8,"Model:Email":28,"Plugins":10,"Utils":11,"_":20,"window":21}],5:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":14,"Enums":6,"Globals":8,"Model:Email":26,"Plugins":10,"Utils":11,"_":19,"window":20}],5:[function(require,module,exports){
 
 (function (module) {
 
@@ -804,9 +801,8 @@
 
 	module.exports = Consts;
 
-}(module, require));
+}(module));
 },{}],6:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
 
@@ -1059,15 +1055,6 @@
 	/**
 	 * @enum {number}
 	 */
-	Enums.EmailType = {
-		'Defailt': 0,
-		'Facebook': 1,
-		'Google': 2
-	};
-
-	/**
-	 * @enum {number}
-	 */
 	Enums.SaveSettingsStep = {
 		'Animate': -2,
 		'Idle': -1,
@@ -1247,12 +1234,11 @@
 
 }(module, require));
 },{}],7:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 
@@ -1313,8 +1299,7 @@
 	module.exports = new Events();
 
 }(module, require));
-},{"Plugins":10,"Utils":11,"_":20}],8:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Plugins":10,"Utils":11,"_":19}],8:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -1322,7 +1307,9 @@
 
 	var
 		Globals = {},
+
 		window = require('window'),
+		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
@@ -1600,11 +1587,10 @@
 	module.exports = Globals;
 
 }(module, require));
-},{"$":15,"Enums":6,"key":16,"ko":17,"window":21}],9:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":14,"Enums":6,"_":19,"key":15,"ko":16,"window":20}],9:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -1736,7 +1722,6 @@
 	LinkBuilder.prototype.avatarLink = function (sEmail)
 	{
 		return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
-	//	return '//secure.gravatar.com/avatar/' + Utils.md5(sEmail.toLowerCase()) + '.jpg?s=80&d=mm';
 	};
 
 	/**
@@ -1939,60 +1924,61 @@
 	module.exports = new LinkBuilder();
 
 }(module, require));
-},{"Storage:Settings":53,"Utils":11,"window":21}],10:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Storage:Settings":45,"Utils":11,"window":20}],10:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		Plugins = {
-			__boot: null,
-			__remote: null,
-			__data: null
-		},
 		_ = require('_'),
-		Utils = require('Utils'),
-		Settings = require('Storage:Settings')
+
+		Utils = require('Utils')
 	;
 
 	/**
-	 * @type {Object}
+	 * @constructor
 	 */
-	Plugins.oViewModelsHooks = {};
-
-	/**
-	 * @type {Object}
-	 */
-	Plugins.oSimpleHooks = {};
-
-	/**
-	 * @param {string} sName
-	 * @param {Function} ViewModel
-	 */
-	Plugins.regViewModelHook = function (sName, ViewModel)
+	function Plugins()
 	{
-		if (ViewModel)
-		{
-			ViewModel.__hookName = sName;
-		}
-	};
+		this.__boot = null;
+		this.__data = null;
+		this.__remote = null;
+
+		this.oSettings = require('Storage:Settings');
+
+		this.oViewModelsHooks = {};
+		this.oSimpleHooks = {};
+	}
+
+	Plugins.prototype.__boot = null;
+	Plugins.prototype.__data = null;
+	Plugins.prototype.__remote = null;
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oViewModelsHooks = {};
+
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oSimpleHooks = {};
 
 	/**
 	 * @param {string} sName
 	 * @param {Function} fCallback
 	 */
-	Plugins.addHook = function (sName, fCallback)
+	Plugins.prototype.addHook = function (sName, fCallback)
 	{
 		if (Utils.isFunc(fCallback))
 		{
-			if (!Utils.isArray(Plugins.oSimpleHooks[sName]))
+			if (!Utils.isArray(this.oSimpleHooks[sName]))
 			{
-				Plugins.oSimpleHooks[sName] = [];
+				this.oSimpleHooks[sName] = [];
 			}
 
-			Plugins.oSimpleHooks[sName].push(fCallback);
+			this.oSimpleHooks[sName].push(fCallback);
 		}
 	};
 
@@ -2000,13 +1986,13 @@
 	 * @param {string} sName
 	 * @param {Array=} aArguments
 	 */
-	Plugins.runHook = function (sName, aArguments)
+	Plugins.prototype.runHook = function (sName, aArguments)
 	{
-		if (Utils.isArray(Plugins.oSimpleHooks[sName]))
+		if (Utils.isArray(this.oSimpleHooks[sName]))
 		{
 			aArguments = aArguments || [];
 
-			_.each(Plugins.oSimpleHooks[sName], function (fCallback) {
+			_.each(this.oSimpleHooks[sName], function (fCallback) {
 				fCallback.apply(null, aArguments);
 			});
 		}
@@ -2016,9 +2002,9 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.mainSettingsGet = function (sName)
+	Plugins.prototype.mainSettingsGet = function (sName)
 	{
-		return Settings.settingsGet(sName);
+		return this.oSettings.settingsGet(sName);
 	};
 
 	/**
@@ -2029,11 +2015,11 @@
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
 	 */
-	Plugins.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (Plugins.__remote)
+		if (this.__remote)
 		{
-			Plugins.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			this.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 
@@ -2042,30 +2028,29 @@
 	 * @param {string} sName
 	 * @return {?}
 	 */
-	Plugins.settingsGet = function (sPluginSection, sName)
+	Plugins.prototype.settingsGet = function (sPluginSection, sName)
 	{
-		var oPlugin = Settings.settingsGet('Plugins');
+		var oPlugin = this.oSettings.settingsGet('Plugins');
 		oPlugin = oPlugin && !Utils.isUnd(oPlugin[sPluginSection]) ? oPlugin[sPluginSection] : null;
 		return oPlugin ? (Utils.isUnd(oPlugin[sName]) ? null : oPlugin[sName]) : null;
 	};
 
-	module.exports = Plugins;
+	module.exports = new Plugins();
 
 }(module, require));
-},{"Storage:Settings":53,"Utils":11,"_":20}],11:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Storage:Settings":45,"Utils":11,"_":19}],11:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		Utils = {},
 
-		$ = require('$'),
-		_ = require('_'),
-		ko = require('ko'),
 		window = require('window'),
+		_ = require('_'),
+		$ = require('$'),
+		ko = require('ko'),
 
 		Enums = require('Enums'),
 		Consts = require('Consts'),
@@ -2178,7 +2163,46 @@
 	};
 
 	/**
-	 * @param {string} aValue
+	 * @param {string} sMailToUrl
+	 * @param {Function} PopupComposeVoreModel
+	 * @returns {boolean}
+	 */
+	Utils.mailToHelper = function (sMailToUrl, PopupComposeVoreModel)
+	{
+		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
+		{
+			sMailToUrl = sMailToUrl.toString().substr(7);
+
+			var
+				oParams = {},
+				oEmailModel = null,
+				sEmail = sMailToUrl.replace(/\?.+$/, ''),
+				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
+				EmailModel = require('Model:Email')
+			;
+
+			oEmailModel = new EmailModel();
+			oEmailModel.parse(window.decodeURIComponent(sEmail));
+
+			if (oEmailModel && oEmailModel.email)
+			{
+				oParams = Utils.simpleQueryParser(sQueryString);
+
+				require('App:Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
+					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+				]);
+			}
+
+			return true;
+		}
+
+		return false;
+	};
+
+	/**
+	 * @param {string} sValue
+	 * @param {string} sHash
 	 * @param {string} sKey
 	 * @param {string} sLongKey
 	 * @return {string|boolean}
@@ -2947,7 +2971,7 @@
 				NotificationClass = Utils.notificationClass(),
 				iResult = Enums.DesktopNotifications.NotSupported
 			;
-			
+
 			if (NotificationClass && NotificationClass.permission)
 			{
 				switch (NotificationClass.permission.toLowerCase())
@@ -2983,7 +3007,7 @@
 						NotificationClass = Utils.notificationClass(),
 						iPermission = oData.desktopNotificationsPermisions()
 					;
-					
+
 					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
 					{
 						oData.desktopNotifications(true);
@@ -3189,66 +3213,9 @@
 	};
 
 	/**
-	 * @param {Object} oMessageTextBody
+	 * @param {string} sTheme
+	 * @return {string}
 	 */
-	Utils.initBlockquoteSwitcher = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			var $oList = $('blockquote:not(.rl-bq-switcher)', oMessageTextBody).filter(function () {
-				return 0 === $(this).parent().closest('blockquote', oMessageTextBody).length;
-			});
-
-			if ($oList && 0 < $oList.length)
-			{
-				$oList.each(function () {
-					var $self = $(this), iH = $self.height();
-					if (0 === iH || 100 < iH)
-					{
-						$self.addClass('rl-bq-switcher hidden-bq');
-						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-							.insertBefore($self)
-							.click(function () {
-								$self.toggleClass('hidden-bq');
-								Utils.windowResize();
-							})
-							.after('<br />')
-							.before('<br />')
-						;
-					}
-				});
-			}
-		}
-	};
-
-	/**
-	 * @param {Object} oMessageTextBody
-	 */
-	Utils.removeBlockquoteSwitcher = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			$(oMessageTextBody).find('blockquote.rl-bq-switcher').each(function () {
-				$(this).removeClass('rl-bq-switcher hidden-bq');
-			});
-
-			$(oMessageTextBody).find('.rlBlockquoteSwitcher').each(function () {
-				$(this).remove();
-			});
-		}
-	};
-
-	/**
-	 * @param {Object} oMessageTextBody
-	 */
-	Utils.toggleMessageBlockquote = function (oMessageTextBody)
-	{
-		if (oMessageTextBody)
-		{
-			oMessageTextBody.find('.rlBlockquoteSwitcher').click();
-		}
-	};
-
 	Utils.convertThemeName = function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
@@ -3256,7 +3223,7 @@
 			sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
 		}
 
-		return Utils.trim(sTheme.replace(/[^a-zA-Z]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
+		return Utils.trim(sTheme.replace(/[^a-zA-Z0-9]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
 	};
 
 	/**
@@ -3309,14 +3276,10 @@
 		return sResult;
 	};
 
-	/* jshint ignore:start */
 	/**
-	 * @param {string} s
+	 * @param {string} sPlain
 	 * @return {string}
 	 */
-	Utils.md5 = function(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d){return(x^2147483648^F^H)}if(I|d){if(x&1073741824){return(x^3221225472^F^H)}else{return(x^1073741824^F^H)}}else{return(x^F^H)}}function r(d,F,k){return(d&F)|((~d)&k)}function q(d,F,k){return(d&k)|(F&(~k))}function p(d,F,k){return(d^F^k)}function n(d,F,k){return(F^(d|(~k)))}function u(G,F,aa,Z,k,H,I){G=K(G,K(K(r(F,aa,Z),k),I));return K(L(G,H),F)}function f(G,F,aa,Z,k,H,I){G=K(G,K(K(q(F,aa,Z),k),I));return K(L(G,H),F)}function D(G,F,aa,Z,k,H,I){G=K(G,K(K(p(F,aa,Z),k),I));return K(L(G,H),F)}function t(G,F,aa,Z,k,H,I){G=K(G,K(K(n(F,aa,Z),k),I));return K(L(G,H),F)}function e(G){var Z;var F=G.length;var x=F+8;var k=(x-(x%64))/64;var I=(k+1)*16;var aa=Array(I-1);var d=0;var H=0;while(H<F){Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=(aa[Z]|(G.charCodeAt(H)<<d));H++}Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=aa[Z]|(128<<d);aa[I-2]=F<<3;aa[I-1]=F>>>29;return aa}function B(x){var k="",F="",G,d;for(d=0;d<=3;d++){G=(x>>>(d*8))&255;F="0"+G.toString(16);k=k+F.substr(F.length-2,2)}return k}function J(k){k=k.replace(/rn/g,"n");var d="";for(var F=0;F<k.length;F++){var x=k.charCodeAt(F);if(x<128){d+=String.fromCharCode(x)}else{if((x>127)&&(x<2048)){d+=String.fromCharCode((x>>6)|192);d+=String.fromCharCode((x&63)|128)}else{d+=String.fromCharCode((x>>12)|224);d+=String.fromCharCode(((x>>6)&63)|128);d+=String.fromCharCode((x&63)|128)}}}return d}var C=Array();var P,h,E,v,g,Y,X,W,V;var S=7,Q=12,N=17,M=22;var A=5,z=9,y=14,w=20;var o=4,m=11,l=16,j=23;var U=6,T=10,R=15,O=21;s=J(s);C=e(s);Y=1732584193;X=4023233417;W=2562383102;V=271733878;for(P=0;P<C.length;P+=16){h=Y;E=X;v=W;g=V;Y=u(Y,X,W,V,C[P+0],S,3614090360);V=u(V,Y,X,W,C[P+1],Q,3905402710);W=u(W,V,Y,X,C[P+2],N,606105819);X=u(X,W,V,Y,C[P+3],M,3250441966);Y=u(Y,X,W,V,C[P+4],S,4118548399);V=u(V,Y,X,W,C[P+5],Q,1200080426);W=u(W,V,Y,X,C[P+6],N,2821735955);X=u(X,W,V,Y,C[P+7],M,4249261313);Y=u(Y,X,W,V,C[P+8],S,1770035416);V=u(V,Y,X,W,C[P+9],Q,2336552879);W=u(W,V,Y,X,C[P+10],N,4294925233);X=u(X,W,V,Y,C[P+11],M,2304563134);Y=u(Y,X,W,V,C[P+12],S,1804603682);V=u(V,Y,X,W,C[P+13],Q,4254626195);W=u(W,V,Y,X,C[P+14],N,2792965006);X=u(X,W,V,Y,C[P+15],M,1236535329);Y=f(Y,X,W,V,C[P+1],A,4129170786);V=f(V,Y,X,W,C[P+6],z,3225465664);W=f(W,V,Y,X,C[P+11],y,643717713);X=f(X,W,V,Y,C[P+0],w,3921069994);Y=f(Y,X,W,V,C[P+5],A,3593408605);V=f(V,Y,X,W,C[P+10],z,38016083);W=f(W,V,Y,X,C[P+15],y,3634488961);X=f(X,W,V,Y,C[P+4],w,3889429448);Y=f(Y,X,W,V,C[P+9],A,568446438);V=f(V,Y,X,W,C[P+14],z,3275163606);W=f(W,V,Y,X,C[P+3],y,4107603335);X=f(X,W,V,Y,C[P+8],w,1163531501);Y=f(Y,X,W,V,C[P+13],A,2850285829);V=f(V,Y,X,W,C[P+2],z,4243563512);W=f(W,V,Y,X,C[P+7],y,1735328473);X=f(X,W,V,Y,C[P+12],w,2368359562);Y=D(Y,X,W,V,C[P+5],o,4294588738);V=D(V,Y,X,W,C[P+8],m,2272392833);W=D(W,V,Y,X,C[P+11],l,1839030562);X=D(X,W,V,Y,C[P+14],j,4259657740);Y=D(Y,X,W,V,C[P+1],o,2763975236);V=D(V,Y,X,W,C[P+4],m,1272893353);W=D(W,V,Y,X,C[P+7],l,4139469664);X=D(X,W,V,Y,C[P+10],j,3200236656);Y=D(Y,X,W,V,C[P+13],o,681279174);V=D(V,Y,X,W,C[P+0],m,3936430074);W=D(W,V,Y,X,C[P+3],l,3572445317);X=D(X,W,V,Y,C[P+6],j,76029189);Y=D(Y,X,W,V,C[P+9],o,3654602809);V=D(V,Y,X,W,C[P+12],m,3873151461);W=D(W,V,Y,X,C[P+15],l,530742520);X=D(X,W,V,Y,C[P+2],j,3299628645);Y=t(Y,X,W,V,C[P+0],U,4096336452);V=t(V,Y,X,W,C[P+7],T,1126891415);W=t(W,V,Y,X,C[P+14],R,2878612391);X=t(X,W,V,Y,C[P+5],O,4237533241);Y=t(Y,X,W,V,C[P+12],U,1700485571);V=t(V,Y,X,W,C[P+3],T,2399980690);W=t(W,V,Y,X,C[P+10],R,4293915773);X=t(X,W,V,Y,C[P+1],O,2240044497);Y=t(Y,X,W,V,C[P+8],U,1873313359);V=t(V,Y,X,W,C[P+15],T,4264355552);W=t(W,V,Y,X,C[P+6],R,2734768916);X=t(X,W,V,Y,C[P+13],O,1309151649);Y=t(Y,X,W,V,C[P+4],U,4149444226);V=t(V,Y,X,W,C[P+11],T,3174756917);W=t(W,V,Y,X,C[P+2],R,718787259);X=t(X,W,V,Y,C[P+9],O,3951481745);Y=K(Y,h);X=K(X,E);W=K(W,v);V=K(V,g)}var i=B(Y)+B(X)+B(W)+B(V);return i.toLowerCase()};
-	/* jshint ignore:end */
-
 	Utils.convertPlainTextToHtml = function (sPlain)
 	{
 		return sPlain.toString()
@@ -3329,11 +3292,11 @@
 		return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 	};
 
-	Utils.defautOptionsAfterRender = function (oOption, oItem)
+	Utils.defautOptionsAfterRender = function (oDomOption, oItem)
 	{
-		if (oItem && !Utils.isUnd(oItem.disabled) && oOption)
+		if (oItem && !Utils.isUnd(oItem.disabled) && oDomOption)
 		{
-			$(oOption)
+			$(oDomOption)
 				.toggleClass('disabled', oItem.disabled)
 				.prop('disabled', oItem.disabled)
 			;
@@ -3394,10 +3357,18 @@
 		oWin.document.getElementsByTagName('head')[0].appendChild(oScript);
 	};
 
+	/**
+	 * @param {Function} fCallback
+	 * @param {?} koTrigger
+	 * @param {?} oContext = null
+	 * @param {number=} iTimer = 1000
+	 * @return {Function}
+	 */
 	Utils.settingsSaveHelperFunction = function (fCallback, koTrigger, oContext, iTimer)
 	{
 		oContext = oContext || null;
 		iTimer = Utils.isUnd(iTimer) ? 1000 : Utils.pInt(iTimer);
+
 		return function (sType, mData, bCached, sRequestAction, oRequestParameters) {
 			koTrigger.call(oContext, mData && mData['Result'] ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
 			if (fCallback)
@@ -3671,6 +3642,11 @@
 		return sHtml;
 	};
 
+	/**
+	 * @param {string} sUrl
+	 * @param {number} iValue
+	 * @param {Function} fCallback
+	 */
 	Utils.resizeAndCrop = function (sUrl, iValue, fCallback)
 	{
 		var oTempImg = new window.Image();
@@ -3836,6 +3812,7 @@
 	Utils.computedPagenatorHelper = function (koCurrentPage, koPageCount)
 	{
 		return function() {
+
 			var
 				iPrev = 0,
 				iNext = 0,
@@ -3846,8 +3823,8 @@
 
 				/**
 				 * @param {number} iIndex
-				 * @param {boolean=} bPush
-				 * @param {string=} sCustomName
+				 * @param {boolean=} bPush = true
+				 * @param {string=} sCustomName = ''
 				 */
 				fAdd = function (iIndex, bPush, sCustomName) {
 
@@ -3949,22 +3926,21 @@
 
 	Utils.selectElement = function (element)
 	{
-		/* jshint onevar: false */
+		var sel, range;
 		if (window.getSelection)
 		{
-			var sel = window.getSelection();
+			sel = window.getSelection();
 			sel.removeAllRanges();
-			var range = window.document.createRange();
+			range = window.document.createRange();
 			range.selectNodeContents(element);
 			sel.addRange(range);
 		}
 		else if (window.document.selection)
 		{
-			var textRange = window.document.body.createTextRange();
-			textRange.moveToElementText(element);
-			textRange.select();
+			range = window.document.body.createTextRange();
+			range.moveToElementText(element);
+			range.select();
 		}
-		/* jshint onevar: true */
 	};
 
 	Utils.detectDropdownVisibility = _.debounce(function () {
@@ -3973,13 +3949,16 @@
 		}));
 	}, 50);
 
+	/**
+	 * @param {boolean=} bDelay = false
+	 */
 	Utils.triggerAutocompleteInputChange = function (bDelay) {
 
 		var fFunc = function () {
 			$('.checkAutocomplete').trigger('change');
 		};
 
-		if (bDelay)
+		if (Utils.isUnd(bDelay) ? false : !!bDelay)
 		{
 			_.delay(fFunc, 100);
 		}
@@ -3992,33 +3971,20 @@
 	module.exports = Utils;
 
 }(module, require));
-},{"$":15,"Consts":5,"Enums":6,"Globals":8,"_":20,"ko":17,"window":21}],12:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-module.exports = JSON;
-},{}],13:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{"$":14,"App:Knoin":21,"Consts":5,"Enums":6,"Globals":8,"Model:Email":26,"_":19,"ko":16,"window":20}],12:[function(require,module,exports){
 module.exports = crossroads;
-},{}],14:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],13:[function(require,module,exports){
 module.exports = hasher;
-},{}],15:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],14:[function(require,module,exports){
 module.exports = $;
-},{}],16:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],15:[function(require,module,exports){
 module.exports = key;
-},{}],17:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{}],16:[function(require,module,exports){
 
 (function (module, ko) {
 
 	'use strict';
-	
+
 	var
 		window = require('window'),
 		_ = require('_'),
@@ -4920,41 +4886,30 @@ module.exports = key;
 
 }(module, ko));
 
-},{"$":15,"Globals":8,"Model:ContactTag":27,"Model:Email":28,"Utils":11,"_":20,"window":21}],18:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{"$":14,"Globals":8,"Model:ContactTag":25,"Model:Email":26,"Utils":11,"_":19,"window":20}],17:[function(require,module,exports){
 module.exports = moment;
-},{}],19:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],18:[function(require,module,exports){
 module.exports = ssm;
-},{}],20:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],19:[function(require,module,exports){
 module.exports = _;
-},{}],21:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
+},{}],20:[function(require,module,exports){
 module.exports = window;
-},{}],22:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{}],21:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
 
 		Globals = require('Globals'),
 		Plugins = require('Plugins'),
-		Utils = require('Utils'),
-
-		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
+		Utils = require('Utils')
 	;
 
 	/**
@@ -4988,22 +4943,23 @@ module.exports = window;
 	};
 
 	/**
-	 * @param {string} sName
+	 * @param {string|Array} mName
 	 * @param {Function} ViewModelClass
-	 * @param {Function=} AbstractViewModel = KnoinAbstractViewModel
 	 */
-	Knoin.prototype.extendAsViewModel = function (sName, ViewModelClass, AbstractViewModel)
+	Knoin.prototype.extendAsViewModel = function (mName, ViewModelClass)
 	{
 		if (ViewModelClass)
 		{
-			if (!AbstractViewModel)
+			if (Utils.isArray(mName))
 			{
-				AbstractViewModel = KnoinAbstractViewModel;
+				ViewModelClass.__names = mName;
+			}
+			else
+			{
+				ViewModelClass.__names = [mName];
 			}
 
-			ViewModelClass.__name = sName;
-			Plugins.regViewModelHook(sName, ViewModelClass);
-			_.extend(ViewModelClass.prototype, AbstractViewModel.prototype);
+			ViewModelClass.__name = ViewModelClass.__names[0];
 		}
 	};
 
@@ -5081,6 +5037,7 @@ module.exports = window;
 			ViewModelClass.__vm = oViewModel;
 
 			oViewModel.viewModelName = ViewModelClass.__name;
+			oViewModel.viewModelNames = ViewModelClass.__names;
 
 			if (oViewModelPlace && 1 === oViewModelPlace.length)
 			{
@@ -5114,6 +5071,10 @@ module.exports = window;
 							Utils.delegateRun(this, 'onHide');
 							this.restoreKeyScope();
 
+							_.each(this.viewModelNames, function (sName) {
+								Plugins.runHook('view-model-on-hide', [sName, self]);
+							});
+
 							Globals.popupVisibilityNames.remove(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 2000);
 
@@ -5127,7 +5088,9 @@ module.exports = window;
 					}, oViewModel);
 				}
 
-				Plugins.runHook('view-model-pre-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-pre-build', [sName, oViewModel, oViewModelDom]);
+				});
 
 				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
 					'i18nInit': true,
@@ -5140,14 +5103,16 @@ module.exports = window;
 					oViewModel.registerPopupKeyDown();
 				}
 
-				Plugins.runHook('view-model-post-build', [ViewModelClass.__name, oViewModel, oViewModelDom]);
+				_.each(ViewModelClass.__names, function (sName) {
+					Plugins.runHook('view-model-post-build', [sName, oViewModel, oViewModelDom]);
+				});
 			}
 			else
 			{
 				Utils.log('Cannot find view model position: ' + sPosition);
 			}
 		}
-		
+
 		return ViewModelClass ? ViewModelClass.__vm : null;
 	};
 
@@ -5159,7 +5124,6 @@ module.exports = window;
 		if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
 		{
 			ViewModelClassToHide.__vm.modalVisibility(false);
-			Plugins.runHook('view-model-on-hide', [ViewModelClassToHide.__name, ViewModelClassToHide.__vm]);
 		}
 	};
 
@@ -5177,7 +5141,10 @@ module.exports = window;
 			{
 				ViewModelClassToShow.__vm.modalVisibility(true);
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
-				Plugins.runHook('view-model-on-show', [ViewModelClassToShow.__name, ViewModelClassToShow.__vm, aParameters || []]);
+
+				_.each(ViewModelClassToShow.__names, function (sName) {
+					Plugins.runHook('view-model-on-show', [sName, ViewModelClassToShow.__vm, aParameters || []]);
+				});
 			}
 		}
 	};
@@ -5279,10 +5246,13 @@ module.exports = window;
 								{
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
+
 									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
 									Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
-									Plugins.runHook('view-model-on-show', [ViewModelClass.__name, ViewModelClass.__vm]);
+									_.each(ViewModelClass.__names, function (sName) {
+										Plugins.runHook('view-model-on-show', [sName, ViewModelClass.__vm]);
+									});
 								}
 
 							}, self);
@@ -5386,11 +5356,10 @@ module.exports = window;
 	module.exports = new Knoin();
 
 }(module, require));
-},{"$":15,"Globals":8,"Knoin:AbstractViewModel":25,"Plugins":10,"Utils":11,"_":20,"crossroads":13,"hasher":14,"ko":17}],23:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":14,"Globals":8,"Plugins":10,"Utils":11,"_":19,"crossroads":12,"hasher":13,"ko":16}],22:[function(require,module,exports){
 
 (function (module) {
-	
+
 	'use strict';
 
 	/**
@@ -5409,15 +5378,16 @@ module.exports = window;
 	module.exports = KnoinAbstractBoot;
 
 }(module, require));
-},{}],24:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{}],23:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		crossroads = require('crossroads'),
+
 		Utils = require('Utils')
 	;
 
@@ -5500,8 +5470,7 @@ module.exports = window;
 	module.exports = KnoinAbstractScreen;
 
 }(module, require));
-},{"Utils":11,"crossroads":13}],25:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":11,"_":19,"crossroads":12}],24:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -5511,14 +5480,14 @@ module.exports = window;
 		ko = require('ko'),
 
 		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils')
+		Utils = require('Utils'),
+		Globals = require('Globals')
 	;
 
 	/**
+	 * @constructor
 	 * @param {string=} sPosition = ''
 	 * @param {string=} sTemplate = ''
-	 * @constructor
 	 */
 	function KnoinAbstractViewModel(sPosition, sTemplate)
 	{
@@ -5529,12 +5498,18 @@ module.exports = window;
 		this.sDefaultKeyScope = Enums.KeyState.None;
 		this.sCurrentKeyScope = this.sDefaultKeyScope;
 
-		this.viewModelName = '';
 		this.viewModelVisibility = ko.observable(false);
 		this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
 
+		this.viewModelName = '';
+		this.viewModelNames = [];
 		this.viewModelDom = null;
 	}
+
+	/**
+	 * @type {boolean}
+	 */
+	KnoinAbstractViewModel.prototype.bDisabeCloseOnEsc = false;
 
 	/**
 	 * @type {string}
@@ -5549,7 +5524,22 @@ module.exports = window;
 	/**
 	 * @type {string}
 	 */
+	KnoinAbstractViewModel.prototype.sDefaultKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
+	KnoinAbstractViewModel.prototype.sCurrentKeyScope = Enums.KeyState.None;
+
+	/**
+	 * @type {string}
+	 */
 	KnoinAbstractViewModel.prototype.viewModelName = '';
+
+	/**
+	 * @type {Array}
+	 */
+	KnoinAbstractViewModel.prototype.viewModelNames = [];
 
 	/**
 	 * @type {?}
@@ -5611,268 +5601,15 @@ module.exports = window;
 	module.exports = KnoinAbstractViewModel;
 
 }(module, require));
-},{"Enums":6,"Globals":8,"Utils":11,"ko":17}],26:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Enums":6,"Globals":8,"Utils":11,"ko":16}],25:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
-	var
-		window = require('window'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder')
-	;
 
-	/**
-	 * @constructor
-	 */
-	function AttachmentModel()
-	{
-		this.mimeType = '';
-		this.fileName = '';
-		this.estimatedSize = 0;
-		this.friendlySize = '';
-		this.isInline = false;
-		this.isLinked = false;
-		this.cid = '';
-		this.cidWithOutTags = '';
-		this.contentLocation = '';
-		this.download = '';
-		this.folder = '';
-		this.uid = '';
-		this.mimeIndex = '';
-	}
-
-	/**
-	 * @static
-	 * @param {AjaxJsonAttachment} oJsonAttachment
-	 * @return {?AttachmentModel}
-	 */
-	AttachmentModel.newInstanceFromJson = function (oJsonAttachment)
-	{
-		var oAttachmentModel = new AttachmentModel();
-		return oAttachmentModel.initByJson(oJsonAttachment) ? oAttachmentModel : null;
-	};
-
-	AttachmentModel.prototype.mimeType = '';
-	AttachmentModel.prototype.fileName = '';
-	AttachmentModel.prototype.estimatedSize = 0;
-	AttachmentModel.prototype.friendlySize = '';
-	AttachmentModel.prototype.isInline = false;
-	AttachmentModel.prototype.isLinked = false;
-	AttachmentModel.prototype.cid = '';
-	AttachmentModel.prototype.cidWithOutTags = '';
-	AttachmentModel.prototype.contentLocation = '';
-	AttachmentModel.prototype.download = '';
-	AttachmentModel.prototype.folder = '';
-	AttachmentModel.prototype.uid = '';
-	AttachmentModel.prototype.mimeIndex = '';
-
-	/**
-	 * @param {AjaxJsonAttachment} oJsonAttachment
-	 */
-	AttachmentModel.prototype.initByJson = function (oJsonAttachment)
-	{
-		var bResult = false;
-		if (oJsonAttachment && 'Object/Attachment' === oJsonAttachment['@Object'])
-		{
-			this.mimeType = (oJsonAttachment.MimeType || '').toLowerCase();
-			this.fileName = oJsonAttachment.FileName;
-			this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
-			this.isInline = !!oJsonAttachment.IsInline;
-			this.isLinked = !!oJsonAttachment.IsLinked;
-			this.cid = oJsonAttachment.CID;
-			this.contentLocation = oJsonAttachment.ContentLocation;
-			this.download = oJsonAttachment.Download;
-
-			this.folder = oJsonAttachment.Folder;
-			this.uid = oJsonAttachment.Uid;
-			this.mimeIndex = oJsonAttachment.MimeIndex;
-
-			this.friendlySize = Utils.friendlySize(this.estimatedSize);
-			this.cidWithOutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
-
-			bResult = true;
-		}
-
-		return bResult;
-	};
-
-	/**
-	 * @return {boolean}
-	 */
-	AttachmentModel.prototype.isImage = function ()
-	{
-		return -1 < Utils.inArray(this.mimeType.toLowerCase(),
-			['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
-		);
-	};
-
-	/**
-	 * @return {boolean}
-	 */
-	AttachmentModel.prototype.isText = function ()
-	{
-		return 'text/' === this.mimeType.substr(0, 5) &&
-			-1 === Utils.inArray(this.mimeType, ['text/html']);
-	};
-
-	/**
-	 * @return {boolean}
-	 */
-	AttachmentModel.prototype.isPdf = function ()
-	{
-		return Globals.bAllowPdfPreview && 'application/pdf' === this.mimeType;
-	};
-
-	/**
-	 * @return {string}
-	 */
-	AttachmentModel.prototype.linkDownload = function ()
-	{
-		return LinkBuilder.attachmentDownload(this.download);
-	};
-
-	/**
-	 * @return {string}
-	 */
-	AttachmentModel.prototype.linkPreview = function ()
-	{
-		return LinkBuilder.attachmentPreview(this.download);
-	};
-
-	/**
-	 * @return {string}
-	 */
-	AttachmentModel.prototype.linkPreviewAsPlain = function ()
-	{
-		return LinkBuilder.attachmentPreviewAsPlain(this.download);
-	};
-
-	/**
-	 * @return {string}
-	 */
-	AttachmentModel.prototype.generateTransferDownloadUrl = function ()
-	{
-		var	sLink = this.linkDownload();
-		if ('http' !== sLink.substr(0, 4))
-		{
-			sLink = window.location.protocol + '//' + window.location.host + window.location.pathname + sLink;
-		}
-
-		return this.mimeType + ':' + this.fileName + ':' + sLink;
-	};
-
-	/**
-	 * @param {AttachmentModel} oAttachment
-	 * @param {*} oEvent
-	 * @return {boolean}
-	 */
-	AttachmentModel.prototype.eventDragStart = function (oAttachment, oEvent)
-	{
-		var	oLocalEvent = oEvent.originalEvent || oEvent;
-		if (oAttachment && oLocalEvent && oLocalEvent.dataTransfer && oLocalEvent.dataTransfer.setData)
-		{
-			oLocalEvent.dataTransfer.setData('DownloadURL', this.generateTransferDownloadUrl());
-		}
-
-		return true;
-	};
-
-	AttachmentModel.prototype.iconClass = function ()
-	{
-		var
-			aParts = this.mimeType.toLocaleString().split('/'),
-			sClass = 'icon-file'
-		;
-
-		if (aParts && aParts[1])
-		{
-			if ('image' === aParts[0])
-			{
-				sClass = 'icon-file-image';
-			}
-			else if ('text' === aParts[0])
-			{
-				sClass = 'icon-file-text';
-			}
-			else if ('audio' === aParts[0])
-			{
-				sClass = 'icon-file-music';
-			}
-			else if ('video' === aParts[0])
-			{
-				sClass = 'icon-file-movie';
-			}
-			else if (-1 < Utils.inArray(aParts[1],
-				['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed']))
-			{
-				sClass = 'icon-file-zip';
-			}
-	//		else if (-1 < Utils.inArray(aParts[1],
-	//			['pdf', 'x-pdf']))
-	//		{
-	//			sClass = 'icon-file-pdf';
-	//		}
-	//		else if (-1 < Utils.inArray(aParts[1], [
-	//			'exe', 'x-exe', 'x-winexe', 'bat'
-	//		]))
-	//		{
-	//			sClass = 'icon-console';
-	//		}
-			else if (-1 < Utils.inArray(aParts[1], [
-				'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'vnd.openxmlformats-officedocument.wordprocessingml.template',
-				'vnd.ms-word.document.macroEnabled.12',
-				'vnd.ms-word.template.macroEnabled.12'
-			]))
-			{
-				sClass = 'icon-file-text';
-			}
-			else if (-1 < Utils.inArray(aParts[1], [
-				'excel', 'ms-excel', 'vnd.ms-excel',
-				'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				'vnd.openxmlformats-officedocument.spreadsheetml.template',
-				'vnd.ms-excel.sheet.macroEnabled.12',
-				'vnd.ms-excel.template.macroEnabled.12',
-				'vnd.ms-excel.addin.macroEnabled.12',
-				'vnd.ms-excel.sheet.binary.macroEnabled.12'
-			]))
-			{
-				sClass = 'icon-file-excel';
-			}
-			else if (-1 < Utils.inArray(aParts[1], [
-				'powerpoint', 'ms-powerpoint', 'vnd.ms-powerpoint',
-				'vnd.openxmlformats-officedocument.presentationml.presentation',
-				'vnd.openxmlformats-officedocument.presentationml.template',
-				'vnd.openxmlformats-officedocument.presentationml.slideshow',
-				'vnd.ms-powerpoint.addin.macroEnabled.12',
-				'vnd.ms-powerpoint.presentation.macroEnabled.12',
-				'vnd.ms-powerpoint.template.macroEnabled.12',
-				'vnd.ms-powerpoint.slideshow.macroEnabled.12'
-			]))
-			{
-				sClass = 'icon-file-chart-graph';
-			}
-		}
-
-		return sClass;
-	};
-
-	module.exports = AttachmentModel;
-
-}(module, require));
-},{"Globals":8,"LinkBuilder":9,"Utils":11,"window":21}],27:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-	
 	var
 		ko = require('ko'),
+
 		Utils = require('Utils')
 	;
 
@@ -5923,15 +5660,13 @@ module.exports = window;
 	module.exports = ContactTagModel;
 
 }(module, require));
-},{"Utils":11,"ko":17}],28:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":11,"ko":16}],26:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
-		Enums = require('Enums'),
 		Utils = require('Utils')
 	;
 
@@ -5945,7 +5680,6 @@ module.exports = window;
 	{
 		this.email = sEmail || '';
 		this.name = sName || '';
-		this.privateType = null;
 
 		this.clearDuplicateName();
 	}
@@ -5971,16 +5705,10 @@ module.exports = window;
 	 */
 	EmailModel.prototype.email = '';
 
-	/**
-	 * @type {(number|null)}
-	 */
-	EmailModel.prototype.privateType = null;
-
 	EmailModel.prototype.clear = function ()
 	{
 		this.email = '';
 		this.name = '';
-		this.privateType = null;
 	};
 
 	/**
@@ -6006,27 +5734,6 @@ module.exports = window;
 		{
 			this.name = '';
 		}
-	};
-
-	/**
-	 * @return {number}
-	 */
-	EmailModel.prototype.type = function ()
-	{
-		if (null === this.privateType)
-		{
-			if (this.email && '@facebook.com' === this.email.substr(-13))
-			{
-				this.privateType = Enums.EmailType.Facebook;
-			}
-
-			if (null === this.privateType)
-			{
-				this.privateType = Enums.EmailType.Default;
-			}
-		}
-
-		return this.privateType;
 	};
 
 	/**
@@ -6302,1303 +6009,15 @@ module.exports = window;
 	module.exports = EmailModel;
 
 }(module, require));
-},{"Enums":6,"Utils":11}],29:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":11}],27:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
-		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
-		ko = require('ko'),
-		moment = require('moment'),
-
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
-
-		EmailModel = require('Model:Email'),
-		AttachmentModel = require('Model:Attachment')
-	;
-
-	/**
-	* @constructor
-	*/
-	function MessageModel()
-	{
-		this.folderFullNameRaw = '';
-		this.uid = '';
-		this.hash = '';
-		this.requestHash = '';
-		this.subject = ko.observable('');
-		this.subjectPrefix = ko.observable('');
-		this.subjectSuffix = ko.observable('');
-		this.size = ko.observable(0);
-		this.dateTimeStampInUTC = ko.observable(0);
-		this.priority = ko.observable(Enums.MessagePriority.Normal);
-
-		this.proxy = false;
-
-		this.fromEmailString = ko.observable('');
-		this.fromClearEmailString = ko.observable('');
-		this.toEmailsString = ko.observable('');
-		this.toClearEmailsString = ko.observable('');
-
-		this.senderEmailsString = ko.observable('');
-		this.senderClearEmailsString = ko.observable('');
-
-		this.emails = [];
-
-		this.from = [];
-		this.to = [];
-		this.cc = [];
-		this.bcc = [];
-		this.replyTo = [];
-		this.deliveredTo = [];
-
-		this.newForAnimation = ko.observable(false);
-
-		this.deleted = ko.observable(false);
-		this.unseen = ko.observable(false);
-		this.flagged = ko.observable(false);
-		this.answered = ko.observable(false);
-		this.forwarded = ko.observable(false);
-		this.isReadReceipt = ko.observable(false);
-
-		this.focused = ko.observable(false);
-		this.selected = ko.observable(false);
-		this.checked = ko.observable(false);
-		this.hasAttachments = ko.observable(false);
-		this.attachmentsMainType = ko.observable('');
-
-		this.moment = ko.observable(moment(moment.unix(0)));
-
-		this.attachmentIconClass = ko.computed(function () {
-			var sClass = '';
-			if (this.hasAttachments())
-			{
-				sClass = 'icon-attachment';
-				switch (this.attachmentsMainType())
-				{
-					case 'image':
-						sClass = 'icon-image';
-						break;
-					case 'archive':
-						sClass = 'icon-file-zip';
-						break;
-					case 'doc':
-						sClass = 'icon-file-text';
-						break;
-	 //				case 'pdf':
-	 //					sClass = 'icon-file-pdf';
-	 //					break;
-				}
-			}
-			return sClass;
-		}, this);
-
-		this.fullFormatDateValue = ko.computed(function () {
-			return MessageModel.calculateFullFromatDateValue(this.dateTimeStampInUTC());
-		}, this);
-
-		this.momentDate = Utils.createMomentDate(this);
-		this.momentShortDate = Utils.createMomentShortDate(this);
-
-		this.dateTimeStampInUTC.subscribe(function (iValue) {
-			var iNow = moment().unix();
-			this.moment(moment.unix(iNow < iValue ? iNow : iValue));
-		}, this);
-
-		this.body = null;
-		this.plainRaw = '';
-		this.isHtml = ko.observable(false);
-		this.hasImages = ko.observable(false);
-		this.attachments = ko.observableArray([]);
-
-		this.isPgpSigned = ko.observable(false);
-		this.isPgpEncrypted = ko.observable(false);
-		this.pgpSignedVerifyStatus = ko.observable(Enums.SignedVerifyStatus.None);
-		this.pgpSignedVerifyUser = ko.observable('');
-
-		this.priority = ko.observable(Enums.MessagePriority.Normal);
-		this.readReceipt = ko.observable('');
-
-		this.aDraftInfo = [];
-		this.sMessageId = '';
-		this.sInReplyTo = '';
-		this.sReferences = '';
-
-		this.parentUid = ko.observable(0);
-		this.threads = ko.observableArray([]);
-		this.threadsLen = ko.observable(0);
-		this.hasUnseenSubMessage = ko.observable(false);
-		this.hasFlaggedSubMessage = ko.observable(false);
-
-		this.lastInCollapsedThread = ko.observable(false);
-		this.lastInCollapsedThreadLoading = ko.observable(false);
-
-		this.threadsLenResult = ko.computed(function () {
-			var iCount = this.threadsLen();
-			return 0 === this.parentUid() && 0 < iCount ? iCount + 1 : '';
-		}, this);
-	}
-
-	/**
-	* @static
-	* @param {AjaxJsonMessage} oJsonMessage
-	* @return {?MessageModel}
-	*/
-	MessageModel.newInstanceFromJson = function (oJsonMessage)
-	{
-		var oMessageModel = new MessageModel();
-		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
-	};
-
-	/**
-	* @static
-	* @param {number} iTimeStampInUTC
-	* @return {string}
-	*/
-	MessageModel.calculateFullFromatDateValue = function (iTimeStampInUTC)
-	{
-		return 0 < iTimeStampInUTC ? moment.unix(iTimeStampInUTC).format('LLL') : '';
-	};
-
-	/**
-	* @static
-	* @param {Array} aEmail
-	* @param {boolean=} bFriendlyView
-	* @param {boolean=} bWrapWithLink = false
-	* @return {string}
-	*/
-	MessageModel.emailsToLine = function (aEmail, bFriendlyView, bWrapWithLink)
-	{
-		var
-			aResult = [],
-			iIndex = 0,
-			iLen = 0
-		;
-
-		if (Utils.isNonEmptyArray(aEmail))
-		{
-			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
-			{
-				aResult.push(aEmail[iIndex].toLine(bFriendlyView, bWrapWithLink));
-			}
-		}
-
-		return aResult.join(', ');
-	};
-
-	/**
-	* @static
-	* @param {Array} aEmail
-	* @return {string}
-	*/
-	MessageModel.emailsToLineClear = function (aEmail)
-	{
-		var
-			aResult = [],
-			iIndex = 0,
-			iLen = 0
-		;
-
-		if (Utils.isNonEmptyArray(aEmail))
-		{
-			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
-			{
-				if (aEmail[iIndex] && aEmail[iIndex].email && '' !== aEmail[iIndex].name)
-				{
-					aResult.push(aEmail[iIndex].email);
-				}
-			}
-		}
-
-		return aResult.join(', ');
-	};
-
-	/**
-	* @static
-	* @param {?Array} aJsonEmails
-	* @return {Array.<EmailModel>}
-	*/
-	MessageModel.initEmailsFromJson = function (aJsonEmails)
-	{
-		var
-			iIndex = 0,
-			iLen = 0,
-			oEmailModel = null,
-			aResult = []
-		;
-
-		if (Utils.isNonEmptyArray(aJsonEmails))
-		{
-			for (iIndex = 0, iLen = aJsonEmails.length; iIndex < iLen; iIndex++)
-			{
-				oEmailModel = EmailModel.newInstanceFromJson(aJsonEmails[iIndex]);
-				if (oEmailModel)
-				{
-					aResult.push(oEmailModel);
-				}
-			}
-		}
-
-		return aResult;
-	};
-
-	/**
-	* @static
-	* @param {Array.<EmailModel>} aMessageEmails
-	* @param {Object} oLocalUnic
-	* @param {Array} aLocalEmails
-	*/
-	MessageModel.replyHelper = function (aMessageEmails, oLocalUnic, aLocalEmails)
-	{
-	   if (aMessageEmails && 0 < aMessageEmails.length)
-	   {
-		   var
-			   iIndex = 0,
-			   iLen = aMessageEmails.length
-		   ;
-
-		   for (; iIndex < iLen; iIndex++)
-		   {
-			   if (Utils.isUnd(oLocalUnic[aMessageEmails[iIndex].email]))
-			   {
-				   oLocalUnic[aMessageEmails[iIndex].email] = true;
-				   aLocalEmails.push(aMessageEmails[iIndex]);
-			   }
-		   }
-	   }
-	};
-
-	MessageModel.prototype.clear = function ()
-	{
-	   this.folderFullNameRaw = '';
-	   this.uid = '';
-	   this.hash = '';
-	   this.requestHash = '';
-	   this.subject('');
-	   this.subjectPrefix('');
-	   this.subjectSuffix('');
-	   this.size(0);
-	   this.dateTimeStampInUTC(0);
-	   this.priority(Enums.MessagePriority.Normal);
-
-	   this.proxy = false;
-
-	   this.fromEmailString('');
-	   this.fromClearEmailString('');
-	   this.toEmailsString('');
-	   this.toClearEmailsString('');
-	   this.senderEmailsString('');
-	   this.senderClearEmailsString('');
-
-	   this.emails = [];
-
-	   this.from = [];
-	   this.to = [];
-	   this.cc = [];
-	   this.bcc = [];
-	   this.replyTo = [];
-	   this.deliveredTo = [];
-
-	   this.newForAnimation(false);
-
-	   this.deleted(false);
-	   this.unseen(false);
-	   this.flagged(false);
-	   this.answered(false);
-	   this.forwarded(false);
-	   this.isReadReceipt(false);
-
-	   this.selected(false);
-	   this.checked(false);
-	   this.hasAttachments(false);
-	   this.attachmentsMainType('');
-
-	   this.body = null;
-	   this.isHtml(false);
-	   this.hasImages(false);
-	   this.attachments([]);
-
-	   this.isPgpSigned(false);
-	   this.isPgpEncrypted(false);
-	   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-	   this.pgpSignedVerifyUser('');
-
-	   this.priority(Enums.MessagePriority.Normal);
-	   this.readReceipt('');
-	   this.aDraftInfo = [];
-	   this.sMessageId = '';
-	   this.sInReplyTo = '';
-	   this.sReferences = '';
-
-	   this.parentUid(0);
-	   this.threads([]);
-	   this.threadsLen(0);
-	   this.hasUnseenSubMessage(false);
-	   this.hasFlaggedSubMessage(false);
-
-	   this.lastInCollapsedThread(false);
-	   this.lastInCollapsedThreadLoading(false);
-	};
-
-	MessageModel.prototype.computeSenderEmail = function ()
-	{
-		var
-			Data = require('Storage:RainLoop:Data'),
-			sSent = Data.sentFolder(),
-			sDraft = Data.draftFolder()
-		;
-
-		this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-			this.toEmailsString() : this.fromEmailString());
-
-		this.senderClearEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
-			this.toClearEmailsString() : this.fromClearEmailString());
-	};
-
-	/**
-	* @param {AjaxJsonMessage} oJsonMessage
-	* @return {boolean}
-	*/
-	MessageModel.prototype.initByJson = function (oJsonMessage)
-	{
-	   var bResult = false;
-	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
-	   {
-		   this.folderFullNameRaw = oJsonMessage.Folder;
-		   this.uid = oJsonMessage.Uid;
-		   this.hash = oJsonMessage.Hash;
-		   this.requestHash = oJsonMessage.RequestHash;
-
-		   this.proxy = !!oJsonMessage.ExternalProxy;
-
-		   this.size(Utils.pInt(oJsonMessage.Size));
-
-		   this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
-		   this.to = MessageModel.initEmailsFromJson(oJsonMessage.To);
-		   this.cc = MessageModel.initEmailsFromJson(oJsonMessage.Cc);
-		   this.bcc = MessageModel.initEmailsFromJson(oJsonMessage.Bcc);
-		   this.replyTo = MessageModel.initEmailsFromJson(oJsonMessage.ReplyTo);
-		   this.deliveredTo = MessageModel.initEmailsFromJson(oJsonMessage.DeliveredTo);
-
-		   this.subject(oJsonMessage.Subject);
-		   if (Utils.isArray(oJsonMessage.SubjectParts))
-		   {
-			   this.subjectPrefix(oJsonMessage.SubjectParts[0]);
-			   this.subjectSuffix(oJsonMessage.SubjectParts[1]);
-		   }
-		   else
-		   {
-			   this.subjectPrefix('');
-			   this.subjectSuffix(this.subject());
-		   }
-
-		   this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
-		   this.hasAttachments(!!oJsonMessage.HasAttachments);
-		   this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
-
-		   this.fromEmailString(MessageModel.emailsToLine(this.from, true));
-		   this.fromClearEmailString(MessageModel.emailsToLineClear(this.from));
-		   this.toEmailsString(MessageModel.emailsToLine(this.to, true));
-		   this.toClearEmailsString(MessageModel.emailsToLineClear(this.to));
-
-		   this.parentUid(Utils.pInt(oJsonMessage.ParentThread));
-		   this.threads(Utils.isArray(oJsonMessage.Threads) ? oJsonMessage.Threads : []);
-		   this.threadsLen(Utils.pInt(oJsonMessage.ThreadsLen));
-
-		   this.initFlagsByJson(oJsonMessage);
-		   this.computeSenderEmail();
-
-		   bResult = true;
-	   }
-
-	   return bResult;
-	};
-
-	/**
-	* @param {AjaxJsonMessage} oJsonMessage
-	* @return {boolean}
-	*/
-	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
-	{
-	   var
-		   Data = require('Storage:RainLoop:Data'),
-		   bResult = false,
-		   iPriority = Enums.MessagePriority.Normal
-	   ;
-
-	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
-	   {
-		   iPriority = Utils.pInt(oJsonMessage.Priority);
-		   this.priority(-1 < Utils.inArray(iPriority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
-			   iPriority : Enums.MessagePriority.Normal);
-
-		   this.aDraftInfo = oJsonMessage.DraftInfo;
-
-		   this.sMessageId = oJsonMessage.MessageId;
-		   this.sInReplyTo = oJsonMessage.InReplyTo;
-		   this.sReferences = oJsonMessage.References;
-
-		   this.proxy = !!oJsonMessage.ExternalProxy;
-
-		   if (Data.capaOpenPGP())
-		   {
-			   this.isPgpSigned(!!oJsonMessage.PgpSigned);
-			   this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
-		   }
-
-		   this.hasAttachments(!!oJsonMessage.HasAttachments);
-		   this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
-
-		   this.foundedCIDs = Utils.isArray(oJsonMessage.FoundedCIDs) ? oJsonMessage.FoundedCIDs : [];
-		   this.attachments(this.initAttachmentsFromJson(oJsonMessage.Attachments));
-
-		   this.readReceipt(oJsonMessage.ReadReceipt || '');
-
-		   this.computeSenderEmail();
-
-		   bResult = true;
-	   }
-
-	   return bResult;
-	};
-
-	/**
-	* @param {(AjaxJsonAttachment|null)} oJsonAttachments
-	* @return {Array}
-	*/
-	MessageModel.prototype.initAttachmentsFromJson = function (oJsonAttachments)
-	{
-	   var
-		   iIndex = 0,
-		   iLen = 0,
-		   oAttachmentModel = null,
-		   aResult = []
-	   ;
-
-	   if (oJsonAttachments && 'Collection/AttachmentCollection' === oJsonAttachments['@Object'] &&
-		   Utils.isNonEmptyArray(oJsonAttachments['@Collection']))
-	   {
-		   for (iIndex = 0, iLen = oJsonAttachments['@Collection'].length; iIndex < iLen; iIndex++)
-		   {
-			   oAttachmentModel = AttachmentModel.newInstanceFromJson(oJsonAttachments['@Collection'][iIndex]);
-			   if (oAttachmentModel)
-			   {
-				   if ('' !== oAttachmentModel.cidWithOutTags && 0 < this.foundedCIDs.length &&
-					   0 <= Utils.inArray(oAttachmentModel.cidWithOutTags, this.foundedCIDs))
-				   {
-					   oAttachmentModel.isLinked = true;
-				   }
-
-				   aResult.push(oAttachmentModel);
-			   }
-		   }
-	   }
-
-	   return aResult;
-	};
-
-	/**
-	* @param {AjaxJsonMessage} oJsonMessage
-	* @return {boolean}
-	*/
-	MessageModel.prototype.initFlagsByJson = function (oJsonMessage)
-	{
-	   var bResult = false;
-
-	   if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
-	   {
-		   this.unseen(!oJsonMessage.IsSeen);
-		   this.flagged(!!oJsonMessage.IsFlagged);
-		   this.answered(!!oJsonMessage.IsAnswered);
-		   this.forwarded(!!oJsonMessage.IsForwarded);
-		   this.isReadReceipt(!!oJsonMessage.IsReadReceipt);
-
-		   bResult = true;
-	   }
-
-	   return bResult;
-	};
-
-	/**
-	* @param {boolean} bFriendlyView
-	* @param {boolean=} bWrapWithLink = false
-	* @return {string}
-	*/
-	MessageModel.prototype.fromToLine = function (bFriendlyView, bWrapWithLink)
-	{
-	   return MessageModel.emailsToLine(this.from, bFriendlyView, bWrapWithLink);
-	};
-
-	/**
-	* @param {boolean} bFriendlyView
-	* @param {boolean=} bWrapWithLink = false
-	* @return {string}
-	*/
-	MessageModel.prototype.toToLine = function (bFriendlyView, bWrapWithLink)
-	{
-	   return MessageModel.emailsToLine(this.to, bFriendlyView, bWrapWithLink);
-	};
-
-	/**
-	* @param {boolean} bFriendlyView
-	* @param {boolean=} bWrapWithLink = false
-	* @return {string}
-	*/
-	MessageModel.prototype.ccToLine = function (bFriendlyView, bWrapWithLink)
-	{
-	   return MessageModel.emailsToLine(this.cc, bFriendlyView, bWrapWithLink);
-	};
-
-	/**
-	* @param {boolean} bFriendlyView
-	* @param {boolean=} bWrapWithLink = false
-	* @return {string}
-	*/
-	MessageModel.prototype.bccToLine = function (bFriendlyView, bWrapWithLink)
-	{
-	   return MessageModel.emailsToLine(this.bcc, bFriendlyView, bWrapWithLink);
-	};
-
-	/**
-	* @return string
-	*/
-	MessageModel.prototype.lineAsCcc = function ()
-	{
-	   var aResult = [];
-	   if (this.deleted())
-	   {
-		   aResult.push('deleted');
-	   }
-	   if (this.selected())
-	   {
-		   aResult.push('selected');
-	   }
-	   if (this.checked())
-	   {
-		   aResult.push('checked');
-	   }
-	   if (this.flagged())
-	   {
-		   aResult.push('flagged');
-	   }
-	   if (this.unseen())
-	   {
-		   aResult.push('unseen');
-	   }
-	   if (this.answered())
-	   {
-		   aResult.push('answered');
-	   }
-	   if (this.forwarded())
-	   {
-		   aResult.push('forwarded');
-	   }
-	   if (this.focused())
-	   {
-		   aResult.push('focused');
-	   }
-	   if (this.hasAttachments())
-	   {
-		   aResult.push('withAttachments');
-		   switch (this.attachmentsMainType())
-		   {
-			   case 'image':
-				   aResult.push('imageOnlyAttachments');
-				   break;
-			   case 'archive':
-				   aResult.push('archiveOnlyAttachments');
-				   break;
-		   }
-	   }
-	   if (this.newForAnimation())
-	   {
-		   aResult.push('new');
-	   }
-	   if ('' === this.subject())
-	   {
-		   aResult.push('emptySubject');
-	   }
-	   if (0 < this.parentUid())
-	   {
-		   aResult.push('hasParentMessage');
-	   }
-	   if (0 < this.threadsLen() && 0 === this.parentUid())
-	   {
-		   aResult.push('hasChildrenMessage');
-	   }
-	   if (this.hasUnseenSubMessage())
-	   {
-		   aResult.push('hasUnseenSubMessage');
-	   }
-	   if (this.hasFlaggedSubMessage())
-	   {
-		   aResult.push('hasFlaggedSubMessage');
-	   }
-
-	   return aResult.join(' ');
-	};
-
-	/**
-	* @return {boolean}
-	*/
-	MessageModel.prototype.hasVisibleAttachments = function ()
-	{
-	   return !!_.find(this.attachments(), function (oAttachment) {
-		   return !oAttachment.isLinked;
-	   });
-	};
-
-	/**
-	* @param {string} sCid
-	* @return {*}
-	*/
-	MessageModel.prototype.findAttachmentByCid = function (sCid)
-	{
-	   var
-		   oResult = null,
-		   aAttachments = this.attachments()
-	   ;
-
-	   if (Utils.isNonEmptyArray(aAttachments))
-	   {
-		   sCid = sCid.replace(/^<+/, '').replace(/>+$/, '');
-		   oResult = _.find(aAttachments, function (oAttachment) {
-			   return sCid === oAttachment.cidWithOutTags;
-		   });
-	   }
-
-	   return oResult || null;
-	};
-
-	/**
-	* @param {string} sContentLocation
-	* @return {*}
-	*/
-	MessageModel.prototype.findAttachmentByContentLocation = function (sContentLocation)
-	{
-	   var
-		   oResult = null,
-		   aAttachments = this.attachments()
-	   ;
-
-	   if (Utils.isNonEmptyArray(aAttachments))
-	   {
-		   oResult = _.find(aAttachments, function (oAttachment) {
-			   return sContentLocation === oAttachment.contentLocation;
-		   });
-	   }
-
-	   return oResult || null;
-	};
-
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.messageId = function ()
-	{
-	   return this.sMessageId;
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.inReplyTo = function ()
-	{
-	   return this.sInReplyTo;
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.references = function ()
-	{
-	   return this.sReferences;
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.fromAsSingleEmail = function ()
-	{
-	   return Utils.isArray(this.from) && this.from[0] ? this.from[0].email : '';
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.viewLink = function ()
-	{
-	   return LinkBuilder.messageViewLink(this.requestHash);
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.downloadLink = function ()
-	{
-	   return LinkBuilder.messageDownloadLink(this.requestHash);
-	};
-
-	/**
-	* @param {Object} oExcludeEmails
-	* @return {Array}
-	*/
-	MessageModel.prototype.replyEmails = function (oExcludeEmails)
-	{
-	   var
-		   aResult = [],
-		   oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
-	   ;
-
-	   MessageModel.replyHelper(this.replyTo, oUnic, aResult);
-	   if (0 === aResult.length)
-	   {
-		   MessageModel.replyHelper(this.from, oUnic, aResult);
-	   }
-
-	   return aResult;
-	};
-
-	/**
-	* @param {Object} oExcludeEmails
-	* @return {Array.<Array>}
-	*/
-	MessageModel.prototype.replyAllEmails = function (oExcludeEmails)
-	{
-	   var
-		   aToResult = [],
-		   aCcResult = [],
-		   oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
-	   ;
-
-	   MessageModel.replyHelper(this.replyTo, oUnic, aToResult);
-	   if (0 === aToResult.length)
-	   {
-		   MessageModel.replyHelper(this.from, oUnic, aToResult);
-	   }
-
-	   MessageModel.replyHelper(this.to, oUnic, aToResult);
-	   MessageModel.replyHelper(this.cc, oUnic, aCcResult);
-
-	   return [aToResult, aCcResult];
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.textBodyToString = function ()
-	{
-	   return this.body ? this.body.html() : '';
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.attachmentsToStringLine = function ()
-	{
-	   var aAttachLines = _.map(this.attachments(), function (oItem) {
-		   return oItem.fileName + ' (' + oItem.friendlySize + ')';
-	   });
-
-	   return aAttachLines && 0 < aAttachLines.length ? aAttachLines.join(', ') : '';
-	};
-
-	/**
-	* @return {Object}
-	*/
-	MessageModel.prototype.getDataForWindowPopup = function ()
-	{
-	   return {
-		   'popupFrom': this.fromToLine(false),
-		   'popupTo': this.toToLine(false),
-		   'popupCc': this.ccToLine(false),
-		   'popupBcc': this.bccToLine(false),
-		   'popupSubject': this.subject(),
-		   'popupDate': this.fullFormatDateValue(),
-		   'popupAttachments': this.attachmentsToStringLine(),
-		   'popupBody': this.textBodyToString()
-	   };
-	};
-
-	/**
-	* @param {boolean=} bPrint = false
-	*/
-	MessageModel.prototype.viewPopupMessage = function (bPrint)
-	{
-	   Utils.windowPopupKnockout(this.getDataForWindowPopup(), 'PopupsWindowSimpleMessage', this.subject(), function (oPopupWin) {
-		   if (oPopupWin && oPopupWin.document && oPopupWin.document.body)
-		   {
-			   $('img.lazy', oPopupWin.document.body).each(function (iIndex, oImg) {
-
-				   var
-					   $oImg = $(oImg),
-					   sOrig = $oImg.data('original'),
-					   sSrc = $oImg.attr('src')
-				   ;
-
-				   if (0 <= iIndex && sOrig && !sSrc)
-				   {
-					   $oImg.attr('src', sOrig);
-				   }
-			   });
-
-			   if (bPrint)
-			   {
-				   window.setTimeout(function () {
-					   oPopupWin.print();
-				   }, 100);
-			   }
-		   }
-	   });
-	};
-
-	MessageModel.prototype.printMessage = function ()
-	{
-	   this.viewPopupMessage(true);
-	};
-
-	/**
-	* @returns {string}
-	*/
-	MessageModel.prototype.generateUid = function ()
-	{
-	   return this.folderFullNameRaw + '/' + this.uid;
-	};
-
-	/**
-	* @param {MessageModel} oMessage
-	* @return {MessageModel}
-	*/
-	MessageModel.prototype.populateByMessageListItem = function (oMessage)
-	{
-	   this.folderFullNameRaw = oMessage.folderFullNameRaw;
-	   this.uid = oMessage.uid;
-	   this.hash = oMessage.hash;
-	   this.requestHash = oMessage.requestHash;
-	   this.subject(oMessage.subject());
-	   this.subjectPrefix(this.subjectPrefix());
-	   this.subjectSuffix(this.subjectSuffix());
-
-	   this.size(oMessage.size());
-	   this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
-	   this.priority(oMessage.priority());
-
-	   this.proxy = oMessage.proxy;
-
-	   this.fromEmailString(oMessage.fromEmailString());
-	   this.fromClearEmailString(oMessage.fromClearEmailString());
-	   this.toEmailsString(oMessage.toEmailsString());
-	   this.toClearEmailsString(oMessage.toClearEmailsString());
-
-	   this.emails = oMessage.emails;
-
-	   this.from = oMessage.from;
-	   this.to = oMessage.to;
-	   this.cc = oMessage.cc;
-	   this.bcc = oMessage.bcc;
-	   this.replyTo = oMessage.replyTo;
-	   this.deliveredTo = oMessage.deliveredTo;
-
-	   this.unseen(oMessage.unseen());
-	   this.flagged(oMessage.flagged());
-	   this.answered(oMessage.answered());
-	   this.forwarded(oMessage.forwarded());
-	   this.isReadReceipt(oMessage.isReadReceipt());
-
-	   this.selected(oMessage.selected());
-	   this.checked(oMessage.checked());
-	   this.hasAttachments(oMessage.hasAttachments());
-	   this.attachmentsMainType(oMessage.attachmentsMainType());
-
-	   this.moment(oMessage.moment());
-
-	   this.body = null;
-
-	   this.priority(Enums.MessagePriority.Normal);
-	   this.aDraftInfo = [];
-	   this.sMessageId = '';
-	   this.sInReplyTo = '';
-	   this.sReferences = '';
-
-	   this.parentUid(oMessage.parentUid());
-	   this.threads(oMessage.threads());
-	   this.threadsLen(oMessage.threadsLen());
-
-	   this.computeSenderEmail();
-
-	   return this;
-	};
-
-	MessageModel.prototype.showExternalImages = function (bLazy)
-	{
-	   if (this.body && this.body.data('rl-has-images'))
-	   {
-		   var sAttr = '';
-		   bLazy = Utils.isUnd(bLazy) ? false : bLazy;
-
-		   this.hasImages(false);
-		   this.body.data('rl-has-images', false);
-
-		   sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
-		   $('[' + sAttr + ']', this.body).each(function () {
-			   if (bLazy && $(this).is('img'))
-			   {
-				   $(this)
-					   .addClass('lazy')
-					   .attr('data-original', $(this).attr(sAttr))
-					   .removeAttr(sAttr)
-				   ;
-			   }
-			   else
-			   {
-				   $(this).attr('src', $(this).attr(sAttr)).removeAttr(sAttr);
-			   }
-		   });
-
-		   sAttr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
-		   $('[' + sAttr + ']', this.body).each(function () {
-			   var sStyle = Utils.trim($(this).attr('style'));
-			   sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
-			   $(this).attr('style', sStyle + $(this).attr(sAttr)).removeAttr(sAttr);
-		   });
-
-		   if (bLazy)
-		   {
-			   $('img.lazy', this.body).addClass('lazy-inited').lazyload({
-				   'threshold' : 400,
-				   'effect' : 'fadeIn',
-				   'skip_invisible' : false,
-				   'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
-			   });
-
-			   Globals.$win.resize();
-		   }
-
-		   Utils.windowResize(500);
-	   }
-	};
-
-	MessageModel.prototype.showInternalImages = function (bLazy)
-	{
-	   if (this.body && !this.body.data('rl-init-internal-images'))
-	   {
-		   this.body.data('rl-init-internal-images', true);
-
-		   bLazy = Utils.isUnd(bLazy) ? false : bLazy;
-
-		   var self = this;
-
-		   $('[data-x-src-cid]', this.body).each(function () {
-
-			   var oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-cid'));
-			   if (oAttachment && oAttachment.download)
-			   {
-				   if (bLazy && $(this).is('img'))
-				   {
-					   $(this)
-						   .addClass('lazy')
-						   .attr('data-original', oAttachment.linkPreview());
-				   }
-				   else
-				   {
-					   $(this).attr('src', oAttachment.linkPreview());
-				   }
-			   }
-		   });
-
-		   $('[data-x-src-location]', this.body).each(function () {
-
-			   var oAttachment = self.findAttachmentByContentLocation($(this).attr('data-x-src-location'));
-			   if (!oAttachment)
-			   {
-				   oAttachment = self.findAttachmentByCid($(this).attr('data-x-src-location'));
-			   }
-
-			   if (oAttachment && oAttachment.download)
-			   {
-				   if (bLazy && $(this).is('img'))
-				   {
-					   $(this)
-						   .addClass('lazy')
-						   .attr('data-original', oAttachment.linkPreview());
-				   }
-				   else
-				   {
-					   $(this).attr('src', oAttachment.linkPreview());
-				   }
-			   }
-		   });
-
-		   $('[data-x-style-cid]', this.body).each(function () {
-
-			   var
-				   sStyle = '',
-				   sName = '',
-				   oAttachment = self.findAttachmentByCid($(this).attr('data-x-style-cid'))
-			   ;
-
-			   if (oAttachment && oAttachment.linkPreview)
-			   {
-				   sName = $(this).attr('data-x-style-cid-name');
-				   if ('' !== sName)
-				   {
-					   sStyle = Utils.trim($(this).attr('style'));
-					   sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
-					   $(this).attr('style', sStyle + sName + ': url(\'' + oAttachment.linkPreview() + '\')');
-				   }
-			   }
-		   });
-
-		   if (bLazy)
-		   {
-			   (function ($oImg, oContainer) {
-				   _.delay(function () {
-					   $oImg.addClass('lazy-inited').lazyload({
-						   'threshold' : 400,
-						   'effect' : 'fadeIn',
-						   'skip_invisible' : false,
-						   'container': oContainer
-					   });
-				   }, 300);
-			   }($('img.lazy', self.body), $('.RL-MailMessageView .messageView .messageItem .content')[0]));
-		   }
-
-		   Utils.windowResize(500);
-	   }
-	};
-
-	MessageModel.prototype.storeDataToDom = function ()
-	{
-	   if (this.body)
-	   {
-		   this.body.data('rl-is-html', !!this.isHtml());
-		   this.body.data('rl-has-images', !!this.hasImages());
-
-		   this.body.data('rl-plain-raw', this.plainRaw);
-
-		   var Data = require('Storage:RainLoop:Data');
-		   if (Data.capaOpenPGP())
-		   {
-			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
-			   this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
-			   this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
-			   this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
-		   }
-	   }
-	};
-
-	MessageModel.prototype.storePgpVerifyDataToDom = function ()
-	{
-		var Data = require('Storage:RainLoop:Data');
-		if (this.body && Data.capaOpenPGP())
-		{
-			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
-			this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
-		}
-	};
-
-	MessageModel.prototype.fetchDataToDom = function ()
-	{
-		if (this.body)
-		{
-			this.isHtml(!!this.body.data('rl-is-html'));
-			this.hasImages(!!this.body.data('rl-has-images'));
-
-			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
-
-			var Data = require('Storage:RainLoop:Data');
-			if (Data.capaOpenPGP())
-			{
-				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
-				this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
-				this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
-				this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
-			}
-			else
-			{
-				this.isPgpSigned(false);
-				this.isPgpEncrypted(false);
-				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-				this.pgpSignedVerifyUser('');
-			}
-		}
-	};
-
-	MessageModel.prototype.verifyPgpSignedClearMessage = function ()
-	{
-	   if (this.isPgpSigned())
-	   {
-		   var
-			   aRes = [],
-			   mPgpMessage = null,
-			   Data = require('Storage:RainLoop:Data'),
-			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
-			   oValidKey = null,
-			   oValidSysKey = null,
-			   sPlain = ''
-		   ;
-
-		   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
-		   this.pgpSignedVerifyUser('');
-
-		   try
-		   {
-			   mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
-			   if (mPgpMessage && mPgpMessage.getText)
-			   {
-				   this.pgpSignedVerifyStatus(
-					   aPublicKeys.length ? Enums.SignedVerifyStatus.Unverified : Enums.SignedVerifyStatus.UnknownPublicKeys);
-
-				   aRes = mPgpMessage.verify(aPublicKeys);
-				   if (aRes && 0 < aRes.length)
-				   {
-					   oValidKey = _.find(aRes, function (oItem) {
-						   return oItem && oItem.keyid && oItem.valid;
-					   });
-
-					   if (oValidKey)
-					   {
-						   oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
-						   if (oValidSysKey)
-						   {
-							   sPlain = mPgpMessage.getText();
-
-							   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
-							   this.pgpSignedVerifyUser(oValidSysKey.user);
-
-							   sPlain =
-								   Globals.$div.empty().append(
-									   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
-								   ).html()
-							   ;
-
-							   Globals.$div.empty();
-
-							   this.replacePlaneTextBody(sPlain);
-						   }
-					   }
-				   }
-			   }
-		   }
-		   catch (oExc) {}
-
-		   this.storePgpVerifyDataToDom();
-	   }
-	};
-
-	MessageModel.prototype.decryptPgpEncryptedMessage = function (sPassword)
-	{
-	   if (this.isPgpEncrypted())
-	   {
-		   var
-			   aRes = [],
-			   mPgpMessage = null,
-			   mPgpMessageDecrypted = null,
-			   Data = require('Storage:RainLoop:Data'),
-			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
-			   oPrivateKey = Data.findSelfPrivateKey(sPassword),
-			   oValidKey = null,
-			   oValidSysKey = null,
-			   sPlain = ''
-		   ;
-
-		   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
-		   this.pgpSignedVerifyUser('');
-
-		   if (!oPrivateKey)
-		   {
-			   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.UnknownPrivateKey);
-		   }
-
-		   try
-		   {
-			   mPgpMessage = window.openpgp.message.readArmored(this.plainRaw);
-			   if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
-			   {
-				   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
-
-				   mPgpMessageDecrypted = mPgpMessage.decrypt(oPrivateKey);
-				   if (mPgpMessageDecrypted)
-				   {
-					   aRes = mPgpMessageDecrypted.verify(aPublicKey);
-					   if (aRes && 0 < aRes.length)
-					   {
-						   oValidKey = _.find(aRes, function (oItem) {
-							   return oItem && oItem.keyid && oItem.valid;
-						   });
-
-						   if (oValidKey)
-						   {
-							   oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
-							   if (oValidSysKey)
-							   {
-								   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
-								   this.pgpSignedVerifyUser(oValidSysKey.user);
-							   }
-						   }
-					   }
-
-					   sPlain = mPgpMessageDecrypted.getText();
-
-					   sPlain =
-						   Globals.$div.empty().append(
-							   $('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
-						   ).html()
-					   ;
-
-					   Globals.$div.empty();
-
-					   this.replacePlaneTextBody(sPlain);
-				   }
-			   }
-		   }
-		   catch (oExc) {}
-
-		   this.storePgpVerifyDataToDom();
-	   }
-	};
-
-	MessageModel.prototype.replacePlaneTextBody = function (sPlain)
-	{
-	   if (this.body)
-	   {
-		   this.body.html(sPlain).addClass('b-text-part plain');
-	   }
-	};
-
-	/**
-	* @return {string}
-	*/
-	MessageModel.prototype.flagHash = function ()
-	{
-	   return [this.deleted(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
-		   this.isReadReceipt()].join('');
-	};
-
-	module.exports = MessageModel;
-
-}(module, require));
-},{"$":15,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Attachment":26,"Model:Email":28,"Storage:RainLoop:Data":49,"Utils":11,"_":20,"ko":17,"moment":18,"window":21}],30:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
 		$ = require('$'),
-		_ = require('_'),
 		ko = require('ko'),
 
 		Globals = require('Globals'),
@@ -7610,11 +6029,11 @@ module.exports = window;
 	;
 
 	/**
-	 * @param {Array} aViewModels
 	 * @constructor
+	 * @param {Array} aViewModels
 	 * @extends KnoinAbstractScreen
 	 */
-	function AbstractSettings(aViewModels)
+	function AbstractSettingsScreen(aViewModels)
 	{
 		KnoinAbstractScreen.call(this, 'settings', aViewModels);
 
@@ -7624,9 +6043,9 @@ module.exports = window;
 		this.oViewModelPlace = null;
 	}
 
-	_.extend(AbstractSettings.prototype, KnoinAbstractScreen.prototype);
+	_.extend(AbstractSettingsScreen.prototype, KnoinAbstractScreen.prototype);
 
-	AbstractSettings.prototype.onRoute = function (sSubName)
+	AbstractSettingsScreen.prototype.onRoute = function (sSubName)
 	{
 		var
 			self = this,
@@ -7733,7 +6152,7 @@ module.exports = window;
 		}
 	};
 
-	AbstractSettings.prototype.onHide = function ()
+	AbstractSettingsScreen.prototype.onHide = function ()
 	{
 		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
 		{
@@ -7742,7 +6161,7 @@ module.exports = window;
 		}
 	};
 
-	AbstractSettings.prototype.onBuild = function ()
+	AbstractSettingsScreen.prototype.onBuild = function ()
 	{
 		_.each(Globals.aViewModels['settings'], function (SettingsViewModel) {
 			if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
@@ -7764,7 +6183,7 @@ module.exports = window;
 		this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
 	};
 
-	AbstractSettings.prototype.routes = function ()
+	AbstractSettingsScreen.prototype.routes = function ()
 	{
 		var
 			DefaultViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
@@ -7787,18 +6206,18 @@ module.exports = window;
 		];
 	};
 
-	module.exports = AbstractSettings;
+	module.exports = AbstractSettingsScreen;
 
 }(module, require));
-},{"$":15,"App:Knoin":22,"Globals":8,"Knoin:AbstractScreen":24,"LinkBuilder":9,"Utils":11,"_":20,"ko":17}],31:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"$":14,"App:Knoin":21,"Globals":8,"Knoin:AbstractScreen":23,"LinkBuilder":9,"Utils":11,"_":19,"ko":16}],28:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
+
 		KnoinAbstractScreen = require('Knoin:AbstractScreen')
 	;
 
@@ -7823,8 +6242,7 @@ module.exports = window;
 	module.exports = AdminLoginScreen;
 
 }(module, require));
-},{"App:Admin":3,"Knoin:AbstractScreen":24,"View:Admin:Login":54,"_":20}],32:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"Knoin:AbstractScreen":23,"View:Admin:Login":46,"_":19}],29:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -7832,6 +6250,7 @@ module.exports = window;
 
 	var
 		_ = require('_'),
+
 		AbstractSettings = require('Screen:AbstractSettings')
 	;
 
@@ -7857,13 +6276,12 @@ module.exports = window;
 	module.exports = AdminSettingsScreen;
 
 }(module, require));
-},{"App:Admin":3,"Screen:AbstractSettings":30,"View:Admin:SettingsMenu":55,"View:Admin:SettingsPane":56,"_":20}],33:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"Screen:AbstractSettings":27,"View:Admin:SettingsMenu":47,"View:Admin:SettingsPane":48,"_":19}],30:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		ko = require('ko')
 	;
@@ -7947,11 +6365,10 @@ module.exports = window;
 	module.exports = AdminSettingsAbout;
 
 }(module, require));
-},{"App:Admin":3,"Storage:Admin:Data":46,"Storage:Settings":53,"ko":17}],34:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"Storage:Admin:Data":43,"Storage:Settings":45,"ko":16}],31:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8040,11 +6457,10 @@ module.exports = window;
 	module.exports = AdminSettingsBranding;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],35:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Enums":6,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16}],32:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8284,11 +6700,10 @@ module.exports = window;
 	module.exports = AdminSettingsContacts;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],36:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Enums":6,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16}],33:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8392,13 +6807,12 @@ module.exports = window;
 	module.exports = AdminSettingsDomains;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"View:Popup:Domain":59,"_":20,"ko":17,"window":21}],37:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Enums":6,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"View:Popup:Domain":51,"_":19,"ko":16,"window":20}],34:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 		ko = require('ko'),
@@ -8539,11 +6953,10 @@ module.exports = window;
 	module.exports = AdminSettingsGeneral;
 
 }(module, require));
-},{"App:Knoin":22,"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"View:Popup:Languages":60,"_":20,"ko":17}],38:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":21,"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"View:Popup:Languages":52,"_":19,"ko":16}],35:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8611,11 +7024,10 @@ module.exports = window;
 	module.exports = AdminSettingsLicensing;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Storage:Admin:Data":46,"Storage:Settings":53,"View:Popup:Activate":57,"ko":17,"moment":18}],39:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Storage:Admin:Data":43,"Storage:Settings":45,"View:Popup:Activate":49,"ko":16,"moment":17}],36:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8684,11 +7096,10 @@ module.exports = window;
 	module.exports = AdminSettingsLogin;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],40:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Enums":6,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16}],37:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8799,11 +7210,10 @@ module.exports = window;
 	module.exports = AdminSettingsPackages;
 
 }(module, require));
-},{"App:Admin":3,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Utils":11,"ko":17,"window":21}],41:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"Enums":6,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Utils":11,"ko":16,"window":20}],38:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -8914,13 +7324,12 @@ module.exports = window;
 	module.exports = AdminSettingsPlugins;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"View:Popup:Plugin":61,"_":20,"ko":17}],42:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Enums":6,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"View:Popup:Plugin":53,"_":19,"ko":16}],39:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
 		_ = require('_'),
 		ko = require('ko'),
@@ -9053,11 +7462,10 @@ module.exports = window;
 
 }(module, require));
 
-},{"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"_":20,"ko":17}],43:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Enums":6,"LinkBuilder":9,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16}],40:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -9208,7 +7616,7 @@ module.exports = window;
 	module.exports = AdminSettingsSocial;
 
 }(module, require));
-},{"Enums":6,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],44:[function(require,module,exports){
+},{"Enums":6,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Utils":11,"_":19,"ko":16}],41:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9302,7 +7710,7 @@ module.exports = window;
 	module.exports = AbstractData;
 
 }(module, require));
-},{"Enums":6,"Storage:Settings":53,"Utils":11}],45:[function(require,module,exports){
+},{"Enums":6,"Storage:Settings":45,"Utils":11}],42:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9311,8 +7719,8 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
 		_ = require('_'),
+		$ = require('$'),
 
 		Consts = require('Consts'),
 		Enums = require('Enums'),
@@ -9615,7 +8023,7 @@ module.exports = window;
 	module.exports = AbstractRemoteStorage;
 
 }(module, require));
-},{"$":15,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Storage:Settings":53,"Utils":11,"_":20,"window":21}],46:[function(require,module,exports){
+},{"$":14,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Plugins":10,"Storage:Settings":45,"Utils":11,"_":19,"window":20}],43:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9684,7 +8092,7 @@ module.exports = window;
 	module.exports = new AdminDataStorage();
 
 }(module, require));
-},{"Storage:Abstract:Data":44,"_":20,"ko":17}],47:[function(require,module,exports){
+},{"Storage:Abstract:Data":41,"_":19,"ko":16}],44:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -9961,357 +8369,7 @@ module.exports = window;
 	module.exports = new AdminRemoteStorage();
 
 }(module, require));
-},{"Storage:Abstract:Remote":45,"_":20}],48:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		_ = require('_'),
-
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
-
-		Settings = require('Storage:Settings')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function CacheStorage()
-	{
-		this.oFoldersCache = {};
-		this.oFoldersNamesCache = {};
-		this.oFolderHashCache = {};
-		this.oFolderUidNextCache = {};
-		this.oMessageListHashCache = {};
-		this.oMessageFlagsCache = {};
-		this.oNewMessage = {};
-		this.oRequestedMessage = {};
-
-		this.bCapaGravatar = Settings.capa(Enums.Capa.Gravatar);
-	}
-
-	/**
-	 * @type {boolean}
-	 */
-	CacheStorage.prototype.bCapaGravatar = false;
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oFoldersCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oFoldersNamesCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oFolderHashCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oFolderUidNextCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oMessageListHashCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oMessageFlagsCache = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oBodies = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oNewMessage = {};
-
-	/**
-	 * @type {Object}
-	 */
-	CacheStorage.prototype.oRequestedMessage = {};
-
-	CacheStorage.prototype.clear = function ()
-	{
-		this.oFoldersCache = {};
-		this.oFoldersNamesCache = {};
-		this.oFolderHashCache = {};
-		this.oFolderUidNextCache = {};
-		this.oMessageListHashCache = {};
-		this.oMessageFlagsCache = {};
-		this.oBodies = {};
-	};
-
-
-	/**
-	 * @param {string} sEmail
-	 * @param {Function} fCallback
-	 * @return {string}
-	 */
-	CacheStorage.prototype.getUserPic = function (sEmail, fCallback)
-	{
-		sEmail = Utils.trim(sEmail);
-		fCallback(this.bCapaGravatar && '' !== sEmail ? LinkBuilder.avatarLink(sEmail) : '', sEmail);
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {string} sUid
-	 * @return {string}
-	 */
-	CacheStorage.prototype.getMessageKey = function (sFolderFullNameRaw, sUid)
-	{
-		return sFolderFullNameRaw + '#' + sUid;
-	};
-
-	/**
-	 * @param {string} sFolder
-	 * @param {string} sUid
-	 */
-	CacheStorage.prototype.addRequestedMessage = function (sFolder, sUid)
-	{
-		this.oRequestedMessage[this.getMessageKey(sFolder, sUid)] = true;
-	};
-
-	/**
-	 * @param {string} sFolder
-	 * @param {string} sUid
-	 * @return {boolean}
-	 */
-	CacheStorage.prototype.hasRequestedMessage = function (sFolder, sUid)
-	{
-		return true === this.oRequestedMessage[this.getMessageKey(sFolder, sUid)];
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {string} sUid
-	 */
-	CacheStorage.prototype.addNewMessageCache = function (sFolderFullNameRaw, sUid)
-	{
-		this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = true;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {string} sUid
-	 */
-	CacheStorage.prototype.hasNewMessageAndRemoveFromCache = function (sFolderFullNameRaw, sUid)
-	{
-		if (this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)])
-		{
-			this.oNewMessage[this.getMessageKey(sFolderFullNameRaw, sUid)] = null;
-			return true;
-		}
-
-		return false;
-	};
-
-	CacheStorage.prototype.clearNewMessageCache = function ()
-	{
-		this.oNewMessage = {};
-	};
-
-	/**
-	 * @param {string} sFolderHash
-	 * @return {string}
-	 */
-	CacheStorage.prototype.getFolderFullNameRaw = function (sFolderHash)
-	{
-		return '' !== sFolderHash && this.oFoldersNamesCache[sFolderHash] ? this.oFoldersNamesCache[sFolderHash] : '';
-	};
-
-	/**
-	 * @param {string} sFolderHash
-	 * @param {string} sFolderFullNameRaw
-	 */
-	CacheStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
-	{
-		this.oFoldersNamesCache[sFolderHash] = sFolderFullNameRaw;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @return {string}
-	 */
-	CacheStorage.prototype.getFolderHash = function (sFolderFullNameRaw)
-	{
-		return '' !== sFolderFullNameRaw && this.oFolderHashCache[sFolderFullNameRaw] ? this.oFolderHashCache[sFolderFullNameRaw] : '';
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {string} sFolderHash
-	 */
-	CacheStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
-	{
-		this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @return {string}
-	 */
-	CacheStorage.prototype.getFolderUidNext = function (sFolderFullNameRaw)
-	{
-		return '' !== sFolderFullNameRaw && this.oFolderUidNextCache[sFolderFullNameRaw] ? this.oFolderUidNextCache[sFolderFullNameRaw] : '';
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {string} sUidNext
-	 */
-	CacheStorage.prototype.setFolderUidNext = function (sFolderFullNameRaw, sUidNext)
-	{
-		this.oFolderUidNextCache[sFolderFullNameRaw] = sUidNext;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @return {?FolderModel}
-	 */
-	CacheStorage.prototype.getFolderFromCacheList = function (sFolderFullNameRaw)
-	{
-		return '' !== sFolderFullNameRaw && this.oFoldersCache[sFolderFullNameRaw] ? this.oFoldersCache[sFolderFullNameRaw] : null;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {?FolderModel} oFolder
-	 */
-	CacheStorage.prototype.setFolderToCacheList = function (sFolderFullNameRaw, oFolder)
-	{
-		this.oFoldersCache[sFolderFullNameRaw] = oFolder;
-	};
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 */
-	CacheStorage.prototype.removeFolderFromCacheList = function (sFolderFullNameRaw)
-	{
-		this.setFolderToCacheList(sFolderFullNameRaw, null);
-	};
-
-	/**
-	 * @param {string} sFolderFullName
-	 * @param {string} sUid
-	 * @return {?Array}
-	 */
-	CacheStorage.prototype.getMessageFlagsFromCache = function (sFolderFullName, sUid)
-	{
-		return this.oMessageFlagsCache[sFolderFullName] && this.oMessageFlagsCache[sFolderFullName][sUid] ?
-			this.oMessageFlagsCache[sFolderFullName][sUid] : null;
-	};
-
-	/**
-	 * @param {string} sFolderFullName
-	 * @param {string} sUid
-	 * @param {Array} aFlagsCache
-	 */
-	CacheStorage.prototype.setMessageFlagsToCache = function (sFolderFullName, sUid, aFlagsCache)
-	{
-		if (!this.oMessageFlagsCache[sFolderFullName])
-		{
-			this.oMessageFlagsCache[sFolderFullName] = {};
-		}
-
-		this.oMessageFlagsCache[sFolderFullName][sUid] = aFlagsCache;
-	};
-
-	/**
-	 * @param {string} sFolderFullName
-	 */
-	CacheStorage.prototype.clearMessageFlagsFromCacheByFolder = function (sFolderFullName)
-	{
-		this.oMessageFlagsCache[sFolderFullName] = {};
-	};
-
-	/**
-	 * @param {(MessageModel|null)} oMessage
-	 */
-	CacheStorage.prototype.initMessageFlagsFromCache = function (oMessage)
-	{
-		if (oMessage)
-		{
-			var
-				self = this,
-				aFlags = this.getMessageFlagsFromCache(oMessage.folderFullNameRaw, oMessage.uid),
-				mUnseenSubUid = null,
-				mFlaggedSubUid = null
-			;
-
-			if (aFlags && 0 < aFlags.length)
-			{
-				oMessage.unseen(!!aFlags[0]);
-				oMessage.flagged(!!aFlags[1]);
-				oMessage.answered(!!aFlags[2]);
-				oMessage.forwarded(!!aFlags[3]);
-				oMessage.isReadReceipt(!!aFlags[4]);
-			}
-
-			if (0 < oMessage.threads().length)
-			{
-				mUnseenSubUid = _.find(oMessage.threads(), function (iSubUid) {
-					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
-					return aFlags && 0 < aFlags.length && !!aFlags[0];
-				});
-
-				mFlaggedSubUid = _.find(oMessage.threads(), function (iSubUid) {
-					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
-					return aFlags && 0 < aFlags.length && !!aFlags[1];
-				});
-
-				oMessage.hasUnseenSubMessage(mUnseenSubUid && 0 < Utils.pInt(mUnseenSubUid));
-				oMessage.hasFlaggedSubMessage(mFlaggedSubUid && 0 < Utils.pInt(mFlaggedSubUid));
-			}
-		}
-	};
-
-	/**
-	 * @param {(MessageModel|null)} oMessage
-	 */
-	CacheStorage.prototype.storeMessageFlagsToCache = function (oMessage)
-	{
-		if (oMessage)
-		{
-			this.setMessageFlagsToCache(
-				oMessage.folderFullNameRaw,
-				oMessage.uid,
-				[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(), oMessage.isReadReceipt()]
-			);
-		}
-	};
-	/**
-	 * @param {string} sFolder
-	 * @param {string} sUid
-	 * @param {Array} aFlags
-	 */
-	CacheStorage.prototype.storeMessageFlagsToCacheByFolderAndUid = function (sFolder, sUid, aFlags)
-	{
-		if (Utils.isArray(aFlags) && 0 < aFlags.length)
-		{
-			this.setMessageFlagsToCache(sFolder, sUid, aFlags);
-		}
-	};
-
-	module.exports = new CacheStorage();
-
-}(module, require));
-},{"Enums":6,"LinkBuilder":9,"Storage:Settings":53,"Utils":11,"_":20}],49:[function(require,module,exports){
+},{"Storage:Abstract:Remote":42,"_":19}],45:[function(require,module,exports){
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
@@ -10320,1273 +8378,7 @@ module.exports = window;
 
 	var
 		window = require('window'),
-		$ = require('$'),
-		_ = require('_'),
-		ko = require('ko'),
-		moment = require('moment'),
-
-		Consts = require('Consts'),
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
-
-		Settings = require('Storage:Settings'),
-		Cache = require('Storage:RainLoop:Cache'),
-
-		kn = require('App:Knoin'),
-
-		MessageModel = require('Model:Message'),
-
-		LocalStorage = require('Storage:LocalStorage'),
-		AbstractData = require('Storage:Abstract:Data')
-	;
-
-	/**
-	 * @constructor
-	 * @extends AbstractData
-	 */
-	function DataStorage()
-	{
-		AbstractData.call(this);
-
-		var
-			fRemoveSystemFolderType = function (observable) {
-				return function () {
-					var oFolder = Cache.getFolderFromCacheList(observable());
-					if (oFolder)
-					{
-						oFolder.type(Enums.FolderType.User);
-					}
-				};
-			},
-			fSetSystemFolderType = function (iType) {
-				return function (sValue) {
-					var oFolder = Cache.getFolderFromCacheList(sValue);
-					if (oFolder)
-					{
-						oFolder.type(iType);
-					}
-				};
-			}
-		;
-
-		this.devEmail = '';
-		this.devPassword = '';
-
-		this.accountEmail = ko.observable('');
-		this.accountIncLogin = ko.observable('');
-		this.accountOutLogin = ko.observable('');
-		this.projectHash = ko.observable('');
-		this.threading = ko.observable(false);
-
-		this.lastFoldersHash = '';
-		this.remoteSuggestions = false;
-
-		// system folders
-		this.sentFolder = ko.observable('');
-		this.draftFolder = ko.observable('');
-		this.spamFolder = ko.observable('');
-		this.trashFolder = ko.observable('');
-		this.archiveFolder = ko.observable('');
-
-		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
-		this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
-		this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
-		this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
-		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
-
-		this.sentFolder.subscribe(fSetSystemFolderType(Enums.FolderType.SentItems), this);
-		this.draftFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Draft), this);
-		this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
-		this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
-		this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
-
-		this.draftFolderNotEnabled = ko.computed(function () {
-			return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
-		}, this);
-
-		// personal
-		this.displayName = ko.observable('');
-		this.signature = ko.observable('');
-		this.signatureToAll = ko.observable(false);
-		this.replyTo = ko.observable('');
-
-		// security
-		this.enableTwoFactor = ko.observable(false);
-
-		// accounts
-		this.accounts = ko.observableArray([]);
-		this.accountsLoading = ko.observable(false).extend({'throttle': 100});
-
-		// identities
-		this.defaultIdentityID = ko.observable('');
-		this.identities = ko.observableArray([]);
-		this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
-
-		// contacts
-		this.contactTags = ko.observableArray([]);
-		this.contacts = ko.observableArray([]);
-		this.contacts.loading = ko.observable(false).extend({'throttle': 200});
-		this.contacts.importing = ko.observable(false).extend({'throttle': 200});
-		this.contacts.syncing = ko.observable(false).extend({'throttle': 200});
-		this.contacts.exportingVcf = ko.observable(false).extend({'throttle': 200});
-		this.contacts.exportingCsv = ko.observable(false).extend({'throttle': 200});
-
-		this.allowContactsSync = ko.observable(false);
-		this.enableContactsSync = ko.observable(false);
-		this.contactsSyncUrl = ko.observable('');
-		this.contactsSyncUser = ko.observable('');
-		this.contactsSyncPass = ko.observable('');
-
-		this.allowContactsSync = ko.observable(!!Settings.settingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync = ko.observable(!!Settings.settingsGet('EnableContactsSync'));
-		this.contactsSyncUrl = ko.observable(Settings.settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser = ko.observable(Settings.settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass = ko.observable(Settings.settingsGet('ContactsSyncPassword'));
-
-		// folders
-		this.namespace = '';
-		this.folderList = ko.observableArray([]);
-		this.folderList.focused = ko.observable(false);
-
-		this.foldersListError = ko.observable('');
-
-		this.foldersLoading = ko.observable(false);
-		this.foldersCreating = ko.observable(false);
-		this.foldersDeleting = ko.observable(false);
-		this.foldersRenaming = ko.observable(false);
-
-		this.foldersChanging = ko.computed(function () {
-			var
-				bLoading = this.foldersLoading(),
-				bCreating = this.foldersCreating(),
-				bDeleting = this.foldersDeleting(),
-				bRenaming = this.foldersRenaming()
-			;
-			return bLoading || bCreating || bDeleting || bRenaming;
-		}, this);
-
-		this.foldersInboxUnreadCount = ko.observable(0);
-
-		this.currentFolder = ko.observable(null).extend({'toggleSubscribe': [null,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.selected(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.selected(true);
-				}
-			}
-		]});
-
-		this.currentFolderFullNameRaw = ko.computed(function () {
-			return this.currentFolder() ? this.currentFolder().fullNameRaw : '';
-		}, this);
-
-		this.currentFolderFullName = ko.computed(function () {
-			return this.currentFolder() ? this.currentFolder().fullName : '';
-		}, this);
-
-		this.currentFolderFullNameHash = ko.computed(function () {
-			return this.currentFolder() ? this.currentFolder().fullNameHash : '';
-		}, this);
-
-		this.currentFolderName = ko.computed(function () {
-			return this.currentFolder() ? this.currentFolder().name() : '';
-		}, this);
-
-		this.folderListSystemNames = ko.computed(function () {
-
-			var
-				aList = ['INBOX'],
-				aFolders = this.folderList(),
-				sSentFolder = this.sentFolder(),
-				sDraftFolder = this.draftFolder(),
-				sSpamFolder = this.spamFolder(),
-				sTrashFolder = this.trashFolder(),
-				sArchiveFolder = this.archiveFolder()
-			;
-
-			if (Utils.isArray(aFolders) && 0 < aFolders.length)
-			{
-				if ('' !== sSentFolder && Consts.Values.UnuseOptionValue !== sSentFolder)
-				{
-					aList.push(sSentFolder);
-				}
-				if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
-				{
-					aList.push(sDraftFolder);
-				}
-				if ('' !== sSpamFolder && Consts.Values.UnuseOptionValue !== sSpamFolder)
-				{
-					aList.push(sSpamFolder);
-				}
-				if ('' !== sTrashFolder && Consts.Values.UnuseOptionValue !== sTrashFolder)
-				{
-					aList.push(sTrashFolder);
-				}
-				if ('' !== sArchiveFolder && Consts.Values.UnuseOptionValue !== sArchiveFolder)
-				{
-					aList.push(sArchiveFolder);
-				}
-			}
-
-			return aList;
-
-		}, this);
-
-		this.folderListSystem = ko.computed(function () {
-			return _.compact(_.map(this.folderListSystemNames(), function (sName) {
-				return Cache.getFolderFromCacheList(sName);
-			}));
-		}, this);
-
-		this.folderMenuForMove = ko.computed(function () {
-			return Utils.folderListOptionsBuilder(this.folderListSystem(), this.folderList(), [
-				this.currentFolderFullNameRaw()
-			], null, null, null, null, function (oItem) {
-				return oItem ? oItem.localName() : '';
-			});
-		}, this);
-
-		// message list
-		this.staticMessageList = [];
-
-		this.messageList = ko.observableArray([]).extend({'rateLimit': 0});
-
-		this.messageListCount = ko.observable(0);
-		this.messageListSearch = ko.observable('');
-		this.messageListPage = ko.observable(1);
-
-		this.messageListThreadFolder = ko.observable('');
-		this.messageListThreadUids = ko.observableArray([]);
-
-		this.messageListThreadFolder.subscribe(function () {
-			this.messageListThreadUids([]);
-		}, this);
-
-		this.messageListEndFolder = ko.observable('');
-		this.messageListEndSearch = ko.observable('');
-		this.messageListEndPage = ko.observable(1);
-
-		this.messageListEndHash = ko.computed(function () {
-			return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
-		}, this);
-
-		this.messageListPageCount = ko.computed(function () {
-			var iPage = window.Math.ceil(this.messageListCount() / this.messagesPerPage());
-			return 0 >= iPage ? 1 : iPage;
-		}, this);
-
-		this.mainMessageListSearch = ko.computed({
-			'read': this.messageListSearch,
-			'write': function (sValue) {
-				kn.setHash(LinkBuilder.mailBox(
-					this.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
-				));
-			},
-			'owner': this
-		});
-
-		this.messageListError = ko.observable('');
-
-		this.messageListLoading = ko.observable(false);
-		this.messageListIsNotCompleted = ko.observable(false);
-		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({'throttle': 200});
-
-		this.messageListCompleteLoading = ko.computed(function () {
-			var
-				bOne = this.messageListLoading(),
-				bTwo = this.messageListIsNotCompleted()
-			;
-			return bOne || bTwo;
-		}, this);
-
-		this.messageListCompleteLoading.subscribe(function (bValue) {
-			this.messageListCompleteLoadingThrottle(bValue);
-		}, this);
-
-		this.messageList.subscribe(_.debounce(function (aList) {
-			_.each(aList, function (oItem) {
-				if (oItem.newForAnimation())
-				{
-					oItem.newForAnimation(false);
-				}
-			});
-		}, 500));
-
-		// message preview
-		this.staticMessageList = new MessageModel();
-		this.message = ko.observable(null);
-		this.messageLoading = ko.observable(false);
-		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
-
-		this.message.focused = ko.observable(false);
-
-		this.message.subscribe(function (oMessage) {
-			if (!oMessage)
-			{
-				this.message.focused(false);
-				this.messageFullScreenMode(false);
-				this.hideMessageBodies();
-
-				if (Enums.Layout.NoPreview === this.layout() &&
-					-1 < window.location.hash.indexOf('message-preview'))
-				{
-					if (Globals.__APP)
-					{
-						Globals.__APP.historyBack();
-					}
-				}
-			}
-			else if (Enums.Layout.NoPreview === this.layout())
-			{
-				this.message.focused(true);
-			}
-		}, this);
-
-		this.message.focused.subscribe(function (bValue) {
-			if (bValue)
-			{
-				this.folderList.focused(false);
-				Globals.keyScope(Enums.KeyState.MessageView);
-			}
-			else if (Enums.KeyState.MessageView === Globals.keyScope())
-			{
-				if (Enums.Layout.NoPreview === this.layout() && this.message())
-				{
-					Globals.keyScope(Enums.KeyState.MessageView);
-				}
-				else
-				{
-					Globals.keyScope(Enums.KeyState.MessageList);
-				}
-			}
-		}, this);
-
-		this.folderList.focused.subscribe(function (bValue) {
-			if (bValue)
-			{
-				Globals.keyScope(Enums.KeyState.FolderList);
-			}
-			else if (Enums.KeyState.FolderList === Globals.keyScope())
-			{
-				Globals.keyScope(Enums.KeyState.MessageList);
-			}
-		});
-
-		this.messageLoading.subscribe(function (bValue) {
-			this.messageLoadingThrottle(bValue);
-		}, this);
-
-		this.messageFullScreenMode = ko.observable(false);
-
-		this.messageError = ko.observable('');
-
-		this.messagesBodiesDom = ko.observable(null);
-
-		this.messagesBodiesDom.subscribe(function (oDom) {
-			if (oDom && !(oDom instanceof $))
-			{
-				this.messagesBodiesDom($(oDom));
-			}
-		}, this);
-
-		this.messageActiveDom = ko.observable(null);
-
-		this.isMessageSelected = ko.computed(function () {
-			return null !== this.message();
-		}, this);
-
-		this.currentMessage = ko.observable(null);
-
-		this.messageListChecked = ko.computed(function () {
-			return _.filter(this.messageList(), function (oItem) {
-				return oItem.checked();
-			});
-		}, this).extend({'rateLimit': 0});
-
-		this.hasCheckedMessages = ko.computed(function () {
-			return 0 < this.messageListChecked().length;
-		}, this).extend({'rateLimit': 0});
-
-		this.messageListCheckedOrSelected = ko.computed(function () {
-
-			var
-				aChecked = this.messageListChecked(),
-				oSelectedMessage = this.currentMessage()
-			;
-
-			return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
-
-		}, this);
-
-		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
-			var aList = [];
-			_.each(this.messageListCheckedOrSelected(), function (oMessage) {
-				if (oMessage)
-				{
-					aList.push(oMessage.uid);
-					if (0 < oMessage.threadsLen() && 0 === oMessage.parentUid() && oMessage.lastInCollapsedThread())
-					{
-						aList = _.union(aList, oMessage.threads());
-					}
-				}
-			});
-			return aList;
-		}, this);
-
-		// quota
-		this.userQuota = ko.observable(0);
-		this.userUsageSize = ko.observable(0);
-		this.userUsageProc = ko.computed(function () {
-
-			var
-				iQuota = this.userQuota(),
-				iUsed = this.userUsageSize()
-			;
-
-			return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
-
-		}, this);
-
-		// other
-		this.capaOpenPGP = ko.observable(false);
-		this.openpgpkeys = ko.observableArray([]);
-		this.openpgpKeyring = null;
-
-		this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-
-		this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-
-		// google
-		this.googleActions = ko.observable(false);
-		this.googleLoggined = ko.observable(false);
-		this.googleUserName = ko.observable('');
-
-		// facebook
-		this.facebookActions = ko.observable(false);
-		this.facebookLoggined = ko.observable(false);
-		this.facebookUserName = ko.observable('');
-
-		// twitter
-		this.twitterActions = ko.observable(false);
-		this.twitterLoggined = ko.observable(false);
-		this.twitterUserName = ko.observable('');
-
-		this.customThemeType = ko.observable(Enums.CustomThemeType.Light);
-
-		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
-	}
-
-	_.extend(DataStorage.prototype, AbstractData.prototype);
-
-	DataStorage.prototype.purgeMessageBodyCache = function()
-	{
-		var
-			iCount = 0,
-			oMessagesBodiesDom = null,
-			iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
-		;
-
-		if (0 < iEnd)
-		{
-			oMessagesBodiesDom = this.messagesBodiesDom();
-			if (oMessagesBodiesDom)
-			{
-				oMessagesBodiesDom.find('.rl-cache-class').each(function () {
-					var oItem = $(this);
-					if (iEnd > oItem.data('rl-cache-count'))
-					{
-						oItem.addClass('rl-cache-purge');
-						iCount++;
-					}
-				});
-
-				if (0 < iCount)
-				{
-					_.delay(function () {
-						oMessagesBodiesDom.find('.rl-cache-purge').remove();
-					}, 300);
-				}
-			}
-		}
-	};
-
-	DataStorage.prototype.populateDataOnStart = function()
-	{
-		AbstractData.prototype.populateDataOnStart.call(this);
-
-		this.accountEmail(Settings.settingsGet('Email'));
-		this.accountIncLogin(Settings.settingsGet('IncLogin'));
-		this.accountOutLogin(Settings.settingsGet('OutLogin'));
-		this.projectHash(Settings.settingsGet('ProjectHash'));
-
-		this.defaultIdentityID(Settings.settingsGet('DefaultIdentityID'));
-
-		this.displayName(Settings.settingsGet('DisplayName'));
-		this.replyTo(Settings.settingsGet('ReplyTo'));
-		this.signature(Settings.settingsGet('Signature'));
-		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
-		this.enableTwoFactor(!!Settings.settingsGet('EnableTwoFactor'));
-
-		this.lastFoldersHash = LocalStorage.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
-
-		this.remoteSuggestions = !!Settings.settingsGet('RemoteSuggestions');
-
-		this.devEmail = Settings.settingsGet('DevEmail');
-		this.devPassword = Settings.settingsGet('DevPassword');
-	};
-
-	DataStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
-	{
-		if ('INBOX' === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
-		{
-			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
-			{
-				var
-					self = this,
-					iIndex = 0,
-					iLen = aNewMessages.length,
-					fNotificationHelper = function (sImageSrc, sTitle, sText)
-					{
-						var
-							NotificationClass = Utils.notificationClass(),
-							oNotification = null
-						;
-						
-						if (NotificationClass && self.useDesktopNotifications())
-						{
-							oNotification = new NotificationClass(sTitle, {
-								'body': sText,
-								'icon': sImageSrc
-							});
-
-							if (oNotification)
-							{
-								if (oNotification.show)
-								{
-									oNotification.show();
-								}
-
-								window.setTimeout((function (oLocalNotifications) {
-									return function () {
-										if (oLocalNotifications.cancel)
-										{
-											oLocalNotifications.cancel();
-										}
-										else if (oLocalNotifications.close)
-										{
-											oLocalNotifications.close();
-										}
-									};
-								}(oNotification)), 7000);
-							}
-						}
-					}
-				;
-
-				_.each(aNewMessages, function (oItem) {
-					Cache.addNewMessageCache(sFolder, oItem.Uid);
-				});
-
-				if (3 < iLen)
-				{
-					fNotificationHelper(
-						LinkBuilder.notificationMailIcon(),
-						this.accountEmail(),
-						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
-							'COUNT': iLen
-						})
-					);
-				}
-				else
-				{
-					for (; iIndex < iLen; iIndex++)
-					{
-						fNotificationHelper(
-							LinkBuilder.notificationMailIcon(),
-							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
-							aNewMessages[iIndex].Subject
-						);
-					}
-				}
-			}
-
-			Cache.setFolderUidNext(sFolder, sUidNext);
-		}
-	};
-
-	DataStorage.prototype.hideMessageBodies = function ()
-	{
-		var oMessagesBodiesDom = this.messagesBodiesDom();
-		if (oMessagesBodiesDom)
-		{
-			oMessagesBodiesDom.find('.b-text-part').hide();
-		}
-	};
-
-	/**
-	 * @param {boolean=} bBoot = false
-	 * @returns {Array}
-	 */
-	DataStorage.prototype.getNextFolderNames = function (bBoot)
-	{
-		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
-
-		var
-			aResult = [],
-			iLimit = 10,
-			iUtc = moment().unix(),
-			iTimeout = iUtc - 60 * 5,
-			aTimeouts = [],
-			fSearchFunction = function (aList) {
-				_.each(aList, function (oFolder) {
-					if (oFolder && 'INBOX' !== oFolder.fullNameRaw &&
-						oFolder.selectable && oFolder.existen &&
-						iTimeout > oFolder.interval &&
-						(!bBoot || oFolder.subScribed()))
-					{
-						aTimeouts.push([oFolder.interval, oFolder.fullNameRaw]);
-					}
-
-					if (oFolder && 0 < oFolder.subFolders().length)
-					{
-						fSearchFunction(oFolder.subFolders());
-					}
-				});
-			}
-		;
-
-		fSearchFunction(this.folderList());
-
-		aTimeouts.sort(function(a, b) {
-			if (a[0] < b[0])
-			{
-				return -1;
-			}
-			else if (a[0] > b[0])
-			{
-				return 1;
-			}
-
-			return 0;
-		});
-
-		_.find(aTimeouts, function (aItem) {
-			var oFolder = Cache.getFolderFromCacheList(aItem[1]);
-			if (oFolder)
-			{
-				oFolder.interval = iUtc;
-				aResult.push(aItem[1]);
-			}
-
-			return iLimit <= aResult.length;
-		});
-
-		return _.uniq(aResult);
-	};
-
-	/**
-	 * @param {string} sFromFolderFullNameRaw
-	 * @param {Array} aUidForRemove
-	 * @param {string=} sToFolderFullNameRaw = ''
-	 * @param {bCopy=} bCopy = false
-	 */
-	DataStorage.prototype.removeMessagesFromList = function (
-		sFromFolderFullNameRaw, aUidForRemove, sToFolderFullNameRaw, bCopy)
-	{
-		sToFolderFullNameRaw = Utils.isNormal(sToFolderFullNameRaw) ? sToFolderFullNameRaw : '';
-		bCopy = Utils.isUnd(bCopy) ? false : !!bCopy;
-
-		aUidForRemove = _.map(aUidForRemove, function (mValue) {
-			return Utils.pInt(mValue);
-		});
-
-		var
-			self = this,
-			iUnseenCount = 0,
-			aMessageList = this.messageList(),
-			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
-			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
-			sCurrentFolderFullNameRaw = this.currentFolderFullNameRaw(),
-			oCurrentMessage = this.message(),
-			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
-				return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
-			}) : []
-		;
-
-		_.each(aMessages, function (oMessage) {
-			if (oMessage && oMessage.unseen())
-			{
-				iUnseenCount++;
-			}
-		});
-
-		if (oFromFolder && !bCopy)
-		{
-			oFromFolder.messageCountAll(0 <= oFromFolder.messageCountAll() - aUidForRemove.length ?
-				oFromFolder.messageCountAll() - aUidForRemove.length : 0);
-
-			if (0 < iUnseenCount)
-			{
-				oFromFolder.messageCountUnread(0 <= oFromFolder.messageCountUnread() - iUnseenCount ?
-					oFromFolder.messageCountUnread() - iUnseenCount : 0);
-			}
-		}
-
-		if (oToFolder)
-		{
-			oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
-			if (0 < iUnseenCount)
-			{
-				oToFolder.messageCountUnread(oToFolder.messageCountUnread() + iUnseenCount);
-			}
-
-			oToFolder.actionBlink(true);
-		}
-
-		if (0 < aMessages.length)
-		{
-			if (bCopy)
-			{
-				_.each(aMessages, function (oMessage) {
-					oMessage.checked(false);
-				});
-			}
-			else
-			{
-				this.messageListIsNotCompleted(true);
-
-				_.each(aMessages, function (oMessage) {
-					if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
-					{
-						oCurrentMessage = null;
-						self.message(null);
-					}
-
-					oMessage.deleted(true);
-				});
-
-				_.delay(function () {
-					_.each(aMessages, function (oMessage) {
-						self.messageList.remove(oMessage);
-					});
-				}, 400);
-			}
-		}
-
-		if ('' !== sFromFolderFullNameRaw)
-		{
-			Cache.setFolderHash(sFromFolderFullNameRaw, '');
-		}
-
-		if ('' !== sToFolderFullNameRaw)
-		{
-			Cache.setFolderHash(sToFolderFullNameRaw, '');
-		}
-	};
-
-	DataStorage.prototype.setMessage = function (oData, bCached)
-	{
-		var
-			bIsHtml = false,
-			bHasExternals = false,
-			bHasInternals = false,
-			oBody = null,
-			oTextBody = null,
-			sId = '',
-			sResultHtml = '',
-			bPgpSigned = false,
-			bPgpEncrypted = false,
-			oMessagesBodiesDom = this.messagesBodiesDom(),
-			oMessage = this.message()
-		;
-
-		if (oData && oMessage && oData.Result && 'Object/Message' === oData.Result['@Object'] &&
-			oMessage.folderFullNameRaw === oData.Result.Folder && oMessage.uid === oData.Result.Uid)
-		{
-			this.messageError('');
-
-			oMessage.initUpdateByMessageJson(oData.Result);
-			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
-
-			if (!bCached)
-			{
-				oMessage.initFlagsByJson(oData.Result);
-			}
-
-			oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
-			if (oMessagesBodiesDom)
-			{
-				sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
-				oTextBody = oMessagesBodiesDom.find('#' + sId);
-				if (!oTextBody || !oTextBody[0])
-				{
-					bHasExternals = !!oData.Result.HasExternals;
-					bHasInternals = !!oData.Result.HasInternals;
-
-					oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
-					oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-
-					if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
-					{
-						bIsHtml = true;
-						sResultHtml = oData.Result.Html.toString();
-					}
-					else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
-					{
-						bIsHtml = false;
-						sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
-
-						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && this.capaOpenPGP())
-						{
-							oMessage.plainRaw = Utils.pString(oData.Result.Plain);
-
-							bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
-							if (!bPgpEncrypted)
-							{
-								bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
-									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
-							}
-
-							Globals.$div.empty();
-							if (bPgpSigned && oMessage.isPgpSigned())
-							{
-								sResultHtml =
-									Globals.$div.append(
-										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
-									).html()
-								;
-							}
-							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
-							{
-								sResultHtml =
-									Globals.$div.append(
-										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
-									).html()
-								;
-							}
-
-							Globals.$div.empty();
-
-							oMessage.isPgpSigned(bPgpSigned);
-							oMessage.isPgpEncrypted(bPgpEncrypted);
-						}
-					}
-					else
-					{
-						bIsHtml = false;
-					}
-
-					oBody
-						.html(Utils.linkify(sResultHtml))
-						.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
-					;
-
-					oMessage.isHtml(!!bIsHtml);
-					oMessage.hasImages(!!bHasExternals);
-					oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-					oMessage.pgpSignedVerifyUser('');
-
-					oMessage.body = oBody;
-					if (oMessage.body)
-					{
-						oMessagesBodiesDom.append(oMessage.body);
-					}
-
-					oMessage.storeDataToDom();
-
-					if (bHasInternals)
-					{
-						oMessage.showInternalImages(true);
-					}
-
-					if (oMessage.hasImages() && this.showImages())
-					{
-						oMessage.showExternalImages(true);
-					}
-
-					this.purgeMessageBodyCacheThrottle();
-				}
-				else
-				{
-					oMessage.body = oTextBody;
-					if (oMessage.body)
-					{
-						oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-						oMessage.fetchDataToDom();
-					}
-				}
-
-				this.messageActiveDom(oMessage.body);
-
-				this.hideMessageBodies();
-				oMessage.body.show();
-
-				if (oBody)
-				{
-					Utils.initBlockquoteSwitcher(oBody);
-				}
-			}
-
-			Cache.initMessageFlagsFromCache(oMessage);
-			if (oMessage.unseen())
-			{
-				if (Globals.__APP)
-				{
-					Globals.__APP.setMessageSeen(oMessage);
-				}
-			}
-
-			Utils.windowResize();
-		}
-	};
-
-	/**
-	 * @param {Array} aList
-	 * @returns {string}
-	 */
-	DataStorage.prototype.calculateMessageListHash = function (aList)
-	{
-		return _.map(aList, function (oMessage) {
-			return '' + oMessage.hash + '_' + oMessage.threadsLen() + '_' + oMessage.flagHash();
-		}).join('|');
-	};
-
-	DataStorage.prototype.findPublicKeyByHex = function (sHash)
-	{
-		return _.find(this.openpgpkeysPublic(), function (oItem) {
-			return oItem && sHash === oItem.id;
-		});
-	};
-
-	DataStorage.prototype.findPublicKeysByEmail = function (sEmail)
-	{
-		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
-
-			var oKey = null;
-			if (oItem && sEmail === oItem.email)
-			{
-				try
-				{
-					oKey = window.openpgp.key.readArmored(oItem.armor);
-					if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
-					{
-						return oKey.keys[0];
-					}
-				}
-				catch (e) {}
-			}
-
-			return null;
-
-		}));
-	};
-
-	/**
-	 * @param {string} sEmail
-	 * @param {string=} sPassword
-	 * @returns {?}
-	 */
-	DataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
-	{
-		var
-			oPrivateKey = null,
-			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
-				return oItem && sEmail === oItem.email;
-			})
-		;
-
-		if (oKey)
-		{
-			try
-			{
-				oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
-				if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
-				{
-					oPrivateKey = oPrivateKey.keys[0];
-					oPrivateKey.decrypt(Utils.pString(sPassword));
-				}
-				else
-				{
-					oPrivateKey = null;
-				}
-			}
-			catch (e)
-			{
-				oPrivateKey = null;
-			}
-		}
-
-		return oPrivateKey;
-	};
-
-	/**
-	 * @param {string=} sPassword
-	 * @returns {?}
-	 */
-	DataStorage.prototype.findSelfPrivateKey = function (sPassword)
-	{
-		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
-	};
-
-	module.exports = new DataStorage();
-
-}(module, require));
-
-},{"$":15,"App:Knoin":22,"Consts":5,"Enums":6,"Globals":8,"LinkBuilder":9,"Model:Message":29,"Storage:Abstract:Data":44,"Storage:LocalStorage":50,"Storage:RainLoop:Cache":48,"Storage:Settings":53,"Utils":11,"_":20,"ko":17,"moment":18,"window":21}],50:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	/**
-	 * @constructor
-	 */
-	function LocalStorage()
-	{
-		var
-			_ = require('_'),
-			NextStorageDriver = _.find([
-				require('Storage:LocalStorage:Cookie'),
-				require('Storage:LocalStorage:LocalStorage')
-			], function (NextStorageDriver) {
-				return NextStorageDriver.supported();
-			})
-		;
-
-		this.oDriver = null;
-
-		if (NextStorageDriver)
-		{
-			this.oDriver = new NextStorageDriver();
-		}
-	}
-
-	LocalStorage.prototype.oDriver = null;
-
-	/**
-	 * @param {number} iKey
-	 * @param {*} mData
-	 * @return {boolean}
-	 */
-	LocalStorage.prototype.set = function (iKey, mData)
-	{
-		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
-	};
-
-	/**
-	 * @param {number} iKey
-	 * @return {*}
-	 */
-	LocalStorage.prototype.get = function (iKey)
-	{
-		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
-	};
-
-	module.exports = new LocalStorage();
-
-}(module, require));
-},{"Storage:LocalStorage:Cookie":51,"Storage:LocalStorage:LocalStorage":52,"_":20}],51:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		$ = require('$'),
-		JSON = require('JSON'),
-
-		Consts = require('Consts'),
-		Utils = require('Utils')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function CookieDriver()
-	{
-
-	}
-
-	CookieDriver.supported = function ()
-	{
-		return true;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @param {*} mData
-	 * @returns {boolean}
-	 */
-	CookieDriver.prototype.set = function (sKey, mData)
-	{
-		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
-			bResult = false,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
-
-			mResult[sKey] = mData;
-			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
-				'expires': 30
-			});
-
-			bResult = true;
-		}
-		catch (oException) {}
-
-		return bResult;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @returns {*}
-	 */
-	CookieDriver.prototype.get = function (sKey)
-	{
-		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (mResult && !Utils.isUnd(mResult[sKey]))
-			{
-				mResult = mResult[sKey];
-			}
-			else
-			{
-				mResult = null;
-			}
-		}
-		catch (oException) {}
-
-		return mResult;
-	};
-
-	module.exports = CookieDriver;
-
-}(module, require));
-},{"$":15,"Consts":5,"JSON":12,"Utils":11}],52:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-
-	'use strict';
-
-	var
-		window = require('window'),
-		JSON = require('JSON'),
-
-		Consts = require('Consts'),
-		Utils = require('Utils')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function LocalStorageDriver()
-	{
-	}
-
-	LocalStorageDriver.supported = function ()
-	{
-		return !!window.localStorage;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @param {*} mData
-	 * @returns {boolean}
-	 */
-	LocalStorageDriver.prototype.set = function (sKey, mData)
-	{
-		var
-			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
-			bResult = false,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
-
-			mResult[sKey] = mData;
-			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
-
-			bResult = true;
-		}
-		catch (oException) {}
-
-		return bResult;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @returns {*}
-	 */
-	LocalStorageDriver.prototype.get = function (sKey)
-	{
-		var
-			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
-			mResult = null
-		;
-
-		try
-		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (mResult && !Utils.isUnd(mResult[sKey]))
-			{
-				mResult = mResult[sKey];
-			}
-			else
-			{
-				mResult = null;
-			}
-		}
-		catch (oException) {}
-
-		return mResult;
-	};
-
-	module.exports = LocalStorageDriver;
-
-}(module, require));
-},{"Consts":5,"JSON":12,"Utils":11,"window":21}],53:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
-
-(function (module, require) {
-	
-	'use strict';
-
-	var
-		window = require('window'),
+		
 		Utils = require('Utils')
 	;
 
@@ -11633,8 +8425,7 @@ module.exports = window;
 	module.exports = new SettingsStorage();
 
 }(module, require));
-},{"Utils":11,"window":21}],54:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"Utils":11,"window":20}],46:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -11725,7 +8516,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminLoginViewModel', AdminLoginViewModel);
+	kn.extendAsViewModel(['View:Admin:Login', 'AdminLoginViewModel'], AdminLoginViewModel);
+	_.extend(AdminLoginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	AdminLoginViewModel.prototype.onShow = function ()
 	{
@@ -11755,16 +8547,18 @@ module.exports = window;
 	module.exports = AdminLoginViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],55:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Enums":6,"Knoin:AbstractViewModel":24,"Storage:Admin:Remote":44,"Utils":11,"_":19,"ko":16}],47:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
-		kn = require('App:Knoin'),
+		_ = require('_'),
+		
 		Globals = require('Globals'),
+
+		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
 	;
 
@@ -11774,7 +8568,7 @@ module.exports = window;
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
 	 */
-	function AdminMenuViewModel(oScreen)
+	function AdminSettingsMenuViewModel(oScreen)
 	{
 		KnoinAbstractViewModel.call(this, 'Left', 'AdminMenu');
 
@@ -11785,25 +8579,26 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminMenuViewModel', AdminMenuViewModel);
+	kn.extendAsViewModel(['View:Admin:SettingsMenu', 'AdminSettingsMenuViewModel'], AdminSettingsMenuViewModel);
+	_.extend(AdminSettingsMenuViewModel.prototype, KnoinAbstractViewModel.prototype);
 
-	AdminMenuViewModel.prototype.link = function (sRoute)
+	AdminSettingsMenuViewModel.prototype.link = function (sRoute)
 	{
 		return '#/' + sRoute;
 	};
 
-	module.exports = AdminMenuViewModel;
+	module.exports = AdminSettingsMenuViewModel;
 
 }(module, require));
 
-},{"App:Knoin":22,"Globals":8,"Knoin:AbstractViewModel":25}],56:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":21,"Globals":8,"Knoin:AbstractViewModel":24,"_":19}],48:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Settings = require('Storage:Settings'),
@@ -11818,7 +8613,7 @@ module.exports = window;
 	 * @constructor
 	 * @extends KnoinAbstractViewModel
 	 */
-	function AdminPaneViewModel()
+	function AdminSettingsPaneViewModel()
 	{
 		KnoinAbstractViewModel.call(this, 'Right', 'AdminPane');
 
@@ -11830,26 +8625,27 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('AdminPaneViewModel', AdminPaneViewModel);
+	kn.extendAsViewModel(['View:Admin:SettingsPane', 'AdminSettingsPaneViewModel'], AdminSettingsPaneViewModel);
+	_.extend(AdminSettingsPaneViewModel.prototype, KnoinAbstractViewModel.prototype);
 
-	AdminPaneViewModel.prototype.logoutClick = function ()
+	AdminSettingsPaneViewModel.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
 			require('App:Admin').loginAndLogoutReload();
 		});
 	};
 
-	module.exports = AdminPaneViewModel;
+	module.exports = AdminSettingsPaneViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Knoin:AbstractViewModel":25,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"ko":17}],57:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Knoin:AbstractViewModel":24,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"_":19,"ko":16}],49:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Enums'),
@@ -11949,7 +8745,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsActivateViewModel', PopupsActivateViewModel);
+	kn.extendAsViewModel(['View:Popup:Activate', 'PopupsActivateViewModel'], PopupsActivateViewModel);
+	_.extend(PopupsActivateViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsActivateViewModel.prototype.onShow = function ()
 	{
@@ -11983,14 +8780,14 @@ module.exports = window;
 	module.exports = PopupsActivateViewModel;
 
 }(module, require));
-},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Data":46,"Storage:Admin:Remote":47,"Storage:Settings":53,"Utils":11,"ko":17}],58:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":21,"Enums":6,"Knoin:AbstractViewModel":24,"Storage:Admin:Data":43,"Storage:Admin:Remote":44,"Storage:Settings":45,"Utils":11,"_":19,"ko":16}],50:[function(require,module,exports){
 
 (function (module, require) {
 
 	'use strict';
-	
+
 	var
+		_ = require('_'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -12025,7 +8822,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsAskViewModel', PopupsAskViewModel);
+	kn.extendAsViewModel(['View:Popup:Ask', 'PopupsAskViewModel'], PopupsAskViewModel);
+	_.extend(PopupsAskViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsAskViewModel.prototype.clearPopup = function ()
 	{
@@ -12114,11 +8912,10 @@ module.exports = window;
 	module.exports = PopupsAskViewModel;
 
 }(module, require));
-},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Utils":11,"key":16,"ko":17}],59:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":21,"Enums":6,"Knoin:AbstractViewModel":24,"Utils":11,"_":19,"key":15,"ko":16}],51:[function(require,module,exports){
 
 (function (module, require) {
-	
+
 	'use strict';
 
 	var
@@ -12317,7 +9114,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsDomainViewModel', PopupsDomainViewModel);
+	kn.extendAsViewModel(['View:Popup:Domain', 'PopupsDomainViewModel'], PopupsDomainViewModel);
+	_.extend(PopupsDomainViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsDomainViewModel.prototype.onTestConnectionResponse = function (sResult, oData)
 	{
@@ -12433,8 +9231,7 @@ module.exports = window;
 	module.exports = PopupsDomainViewModel;
 
 }(module, require));
-},{"App:Admin":3,"App:Knoin":22,"Consts":5,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"_":20,"ko":17}],60:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Admin":3,"App:Knoin":21,"Consts":5,"Enums":6,"Knoin:AbstractViewModel":24,"Storage:Admin:Remote":44,"Utils":11,"_":19,"ko":16}],52:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -12445,8 +9242,7 @@ module.exports = window;
 		ko = require('ko'),
 
 		Utils = require('Utils'),
-
-		Data = require('Storage:RainLoop:Data'),
+		Globals = require('Globals'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -12460,26 +9256,29 @@ module.exports = window;
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsLanguages');
 
+		this.Data = Globals.__APP.data(); // TODO
+
 		this.exp = ko.observable(false);
 
 		this.languages = ko.computed(function () {
-			return _.map(Data.languages(), function (sLanguage) {
+			return _.map(this.Data.languages(), function (sLanguage) {
 				return {
 					'key': sLanguage,
 					'selected': ko.observable(false),
 					'fullName': Utils.convertLangName(sLanguage)
 				};
 			});
-		});
+		}, this);
 
-		Data.mainLanguage.subscribe(function () {
+		this.Data.mainLanguage.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
 
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsLanguagesViewModel', PopupsLanguagesViewModel);
+	kn.extendAsViewModel(['View:Popup:Languages', 'PopupsLanguagesViewModel'], PopupsLanguagesViewModel);
+	_.extend(PopupsLanguagesViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsLanguagesViewModel.prototype.languageEnName = function (sLanguage)
 	{
@@ -12488,7 +9287,7 @@ module.exports = window;
 
 	PopupsLanguagesViewModel.prototype.resetMainLanguage = function ()
 	{
-		var sCurrent = Data.mainLanguage();
+		var sCurrent = this.Data.mainLanguage();
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
@@ -12508,15 +9307,14 @@ module.exports = window;
 
 	PopupsLanguagesViewModel.prototype.changeLanguage = function (sLang)
 	{
-		Data.mainLanguage(sLang);
+		this.Data.mainLanguage(sLang);
 		this.cancelCommand();
 	};
 
 	module.exports = PopupsLanguagesViewModel;
 
 }(module, require));
-},{"App:Knoin":22,"Knoin:AbstractViewModel":25,"Storage:RainLoop:Data":49,"Utils":11,"_":20,"ko":17}],61:[function(require,module,exports){
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
+},{"App:Knoin":21,"Globals":8,"Knoin:AbstractViewModel":24,"Utils":11,"_":19,"ko":16}],53:[function(require,module,exports){
 
 (function (module, require) {
 
@@ -12603,7 +9401,8 @@ module.exports = window;
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsPluginViewModel', PopupsPluginViewModel);
+	kn.extendAsViewModel(['View:Popup:Plugin', 'PopupsPluginViewModel'], PopupsPluginViewModel);
+	_.extend(PopupsPluginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsPluginViewModel.prototype.onPluginSettingsUpdateResponse = function (sResult, oData)
 	{
@@ -12685,4 +9484,4 @@ module.exports = window;
 	module.exports = PopupsPluginViewModel;
 
 }(module, require));
-},{"App:Knoin":22,"Enums":6,"Knoin:AbstractViewModel":25,"Storage:Admin:Remote":47,"Utils":11,"View:Popup:Ask":58,"_":20,"key":16,"ko":17}]},{},[1]);
+},{"App:Knoin":21,"Enums":6,"Knoin:AbstractViewModel":24,"Storage:Admin:Remote":44,"Utils":11,"View:Popup:Ask":50,"_":19,"key":15,"ko":16}]},{},[1]);

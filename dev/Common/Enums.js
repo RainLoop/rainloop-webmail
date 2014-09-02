@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module) {
 
@@ -246,15 +245,6 @@
 		'Days3': 3,
 		'Days7': 7,
 		'Month': 30
-	};
-
-	/**
-	 * @enum {number}
-	 */
-	Enums.EmailType = {
-		'Defailt': 0,
-		'Facebook': 1,
-		'Google': 2
 	};
 
 	/**

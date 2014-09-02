@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function (module, require) {
 
@@ -85,7 +84,8 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel('PopupsPluginViewModel', PopupsPluginViewModel);
+	kn.extendAsViewModel(['View:Popup:Plugin', 'PopupsPluginViewModel'], PopupsPluginViewModel);
+	_.extend(PopupsPluginViewModel.prototype, KnoinAbstractViewModel.prototype);
 
 	PopupsPluginViewModel.prototype.onPluginSettingsUpdateResponse = function (sResult, oData)
 	{
