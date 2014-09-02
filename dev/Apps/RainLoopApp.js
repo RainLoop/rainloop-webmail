@@ -19,7 +19,7 @@
 
 		kn = require('App:Knoin'),
 
-		LocalStorage = require('Storage:LocalStorage'),
+		Local = require('Storage:LocalStorage'),
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:RainLoop:Data'),
 		Cache = require('Storage:RainLoop:Cache'),
@@ -1185,7 +1185,7 @@
 				});
 			}
 
-			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
+			Local.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 		}
 	};
 
@@ -1195,8 +1195,8 @@
 	 */
 	RainLoopApp.prototype.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
+		var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
+		return Utils.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
 	/**
@@ -1205,8 +1205,8 @@
 	 */
 	RainLoopApp.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		if (!_.isArray(aExpandedList))
+		var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
+		if (!Utils.isArray(aExpandedList))
 		{
 			aExpandedList = [];
 		}
@@ -1221,7 +1221,7 @@
 			aExpandedList = _.without(aExpandedList, sFullNameHash);
 		}
 
-		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
+		Local.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 	};
 
 	RainLoopApp.prototype.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
@@ -1232,7 +1232,7 @@
 			oLeft = $(sLeft),
 			oRight = $(sRight),
 
-			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
+			mLeftWidth = Local.get(sClientSideKeyName) || null,
 
 			fSetWidth = function (iWidth) {
 				if (iWidth)
@@ -1256,7 +1256,7 @@
 				else
 				{
 					oLeft.resizable('enable');
-					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
+					var iWidth = Utils.pInt(Local.get(sClientSideKeyName)) || iMinWidth;
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
@@ -1264,7 +1264,7 @@
 			fResizeFunction = function (oEvent, oObject) {
 				if (oObject && oObject.size && oObject.size.width)
 				{
-					LocalStorage.set(sClientSideKeyName, oObject.size.width);
+					Local.set(sClientSideKeyName, oObject.size.width);
 
 					oRight.css({
 						'left': '' + oObject.size.width + 'px'

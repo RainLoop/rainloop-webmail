@@ -17,37 +17,46 @@
 	 */
 	function CookieDriver()
 	{
-
 	}
 
+	/**
+	 * @static
+	 * @return {boolean}
+	 */
 	CookieDriver.supported = function ()
 	{
-		return true;
+		return !!(window.navigator && window.navigator.cookieEnabled);
 	};
 
 	/**
 	 * @param {string} sKey
 	 * @param {*} mData
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	CookieDriver.prototype.set = function (sKey, mData)
 	{
 		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
 			bResult = false,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
+		}
+		catch (oException) {}
 
-			mResult[sKey] = mData;
-			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
+		if (!mResult)
+		{
+			mResult = {};
+		}
+
+		mResult[sKey] = mData;
+
+		try
+		{
+			$.cookie(Consts.Values.ClientSideStorageIndexName, JSON.stringify(mResult), {
 				'expires': 30
 			});
 
@@ -60,18 +69,18 @@
 
 	/**
 	 * @param {string} sKey
-	 * @returns {*}
+	 * @return {*}
 	 */
 	CookieDriver.prototype.get = function (sKey)
 	{
 		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
 			if (mResult && !Utils.isUnd(mResult[sKey]))
 			{
 				mResult = mResult[sKey];

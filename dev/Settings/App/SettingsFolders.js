@@ -10,10 +10,10 @@
 		Utils = require('Utils'),
 
 		Settings = require('Storage:Settings'),
-		LocalStorage = require('Storage:LocalStorage'),
 		Data = require('Storage:RainLoop:Data'),
 		Cache = require('Storage:RainLoop:Cache'),
-		Remote = require('Storage:RainLoop:Remote')
+		Remote = require('Storage:RainLoop:Remote'),
+		LocalStorage = require('Storage:LocalStorage')
 	;
 
 	/**

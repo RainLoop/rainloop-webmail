@@ -300,7 +300,7 @@
 
 		kn = require('App:Knoin'),
 
-		LocalStorage = require('Storage:LocalStorage'),
+		Local = require('Storage:LocalStorage'),
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:RainLoop:Data'),
 		Cache = require('Storage:RainLoop:Cache'),
@@ -1466,7 +1466,7 @@
 				});
 			}
 
-			LocalStorage.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
+			Local.set(Enums.ClientSideKeyName.FoldersLashHash, oData.Result.FoldersHash);
 		}
 	};
 
@@ -1476,8 +1476,8 @@
 	 */
 	RainLoopApp.prototype.isFolderExpanded = function (sFullNameHash)
 	{
-		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		return _.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
+		var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
+		return Utils.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
 	};
 
 	/**
@@ -1486,8 +1486,8 @@
 	 */
 	RainLoopApp.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
 	{
-		var aExpandedList = LocalStorage.get(Enums.ClientSideKeyName.ExpandedFolders);
-		if (!_.isArray(aExpandedList))
+		var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
+		if (!Utils.isArray(aExpandedList))
 		{
 			aExpandedList = [];
 		}
@@ -1502,7 +1502,7 @@
 			aExpandedList = _.without(aExpandedList, sFullNameHash);
 		}
 
-		LocalStorage.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
+		Local.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 	};
 
 	RainLoopApp.prototype.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
@@ -1513,7 +1513,7 @@
 			oLeft = $(sLeft),
 			oRight = $(sRight),
 
-			mLeftWidth = LocalStorage.get(sClientSideKeyName) || null,
+			mLeftWidth = Local.get(sClientSideKeyName) || null,
 
 			fSetWidth = function (iWidth) {
 				if (iWidth)
@@ -1537,7 +1537,7 @@
 				else
 				{
 					oLeft.resizable('enable');
-					var iWidth = Utils.pInt(LocalStorage.get(sClientSideKeyName)) || iMinWidth;
+					var iWidth = Utils.pInt(Local.get(sClientSideKeyName)) || iMinWidth;
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
@@ -1545,7 +1545,7 @@
 			fResizeFunction = function (oEvent, oObject) {
 				if (oObject && oObject.size && oObject.size.width)
 				{
-					LocalStorage.set(sClientSideKeyName, oObject.size.width);
+					Local.set(sClientSideKeyName, oObject.size.width);
 
 					oRight.css({
 						'left': '' + oObject.size.width + 'px'
@@ -2131,7 +2131,7 @@
 	 * @const
 	 * @type {string}
 	 */
-	Consts.Values.ClientSideCookieIndexName = 'rlcsc';
+	Consts.Values.ClientSideStorageIndexName = 'rlcsc';
 
 	/**
 	 * @const
@@ -11718,10 +11718,10 @@ module.exports = window;
 		Utils = require('Utils'),
 
 		Settings = require('Storage:Settings'),
-		LocalStorage = require('Storage:LocalStorage'),
 		Data = require('Storage:RainLoop:Data'),
 		Cache = require('Storage:RainLoop:Cache'),
-		Remote = require('Storage:RainLoop:Remote')
+		Remote = require('Storage:RainLoop:Remote'),
+		LocalStorage = require('Storage:LocalStorage')
 	;
 
 	/**
@@ -14735,8 +14735,8 @@ module.exports = window;
 	{
 		var
 			NextStorageDriver = require('_').find([
-				require('Storage:LocalStorage:Cookie'),
-				require('Storage:LocalStorage:LocalStorage')
+				require('Storage:LocalStorage:LocalStorage'),
+				require('Storage:LocalStorage:Cookie')
 			], function (NextStorageDriver) {
 				return NextStorageDriver && NextStorageDriver.supported();
 			})
@@ -14750,6 +14750,9 @@ module.exports = window;
 		}
 	}
 
+	/**
+	 * @type {LocalStorageDriver|CookieDriver|null}
+	 */
 	LocalStorage.prototype.oDriver = null;
 
 	/**
@@ -14794,37 +14797,46 @@ module.exports = window;
 	 */
 	function CookieDriver()
 	{
-
 	}
 
+	/**
+	 * @static
+	 * @return {boolean}
+	 */
 	CookieDriver.supported = function ()
 	{
-		return true;
+		return !!(window.navigator && window.navigator.cookieEnabled);
 	};
 
 	/**
 	 * @param {string} sKey
 	 * @param {*} mData
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	CookieDriver.prototype.set = function (sKey, mData)
 	{
 		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
 			bResult = false,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
+		}
+		catch (oException) {}
 
-			mResult[sKey] = mData;
-			$.cookie(Consts.Values.ClientSideCookieIndexName, JSON.stringify(mResult), {
+		if (!mResult)
+		{
+			mResult = {};
+		}
+
+		mResult[sKey] = mData;
+
+		try
+		{
+			$.cookie(Consts.Values.ClientSideStorageIndexName, JSON.stringify(mResult), {
 				'expires': 30
 			});
 
@@ -14837,18 +14849,18 @@ module.exports = window;
 
 	/**
 	 * @param {string} sKey
-	 * @returns {*}
+	 * @return {*}
 	 */
 	CookieDriver.prototype.get = function (sKey)
 	{
 		var
-			mCokieValue = $.cookie(Consts.Values.ClientSideCookieIndexName),
+			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
 			if (mResult && !Utils.isUnd(mResult[sKey]))
 			{
 				mResult = mResult[sKey];
@@ -14888,6 +14900,10 @@ module.exports = window;
 	{
 	}
 
+	/**
+	 * @static
+	 * @return {boolean}
+	 */
 	LocalStorageDriver.supported = function ()
 	{
 		return !!window.localStorage;
@@ -14896,26 +14912,32 @@ module.exports = window;
 	/**
 	 * @param {string} sKey
 	 * @param {*} mData
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	LocalStorageDriver.prototype.set = function (sKey, mData)
 	{
 		var
-			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
 			bResult = false,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
+		}
+		catch (oException) {}
 
-			mResult[sKey] = mData;
-			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
+		if (!mResult)
+		{
+			mResult = {};
+		}
+
+		mResult[sKey] = mData;
+
+		try
+		{
+			window.localStorage[Consts.Values.ClientSideStorageIndexName] = JSON.stringify(mResult);
 
 			bResult = true;
 		}
@@ -14926,18 +14948,18 @@ module.exports = window;
 
 	/**
 	 * @param {string} sKey
-	 * @returns {*}
+	 * @return {*}
 	 */
 	LocalStorageDriver.prototype.get = function (sKey)
 	{
 		var
-			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
 			if (mResult && !Utils.isUnd(mResult[sKey]))
 			{
 				mResult = mResult[sKey];

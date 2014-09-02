@@ -67,7 +67,7 @@
 	 * @const
 	 * @type {string}
 	 */
-	Consts.Values.ClientSideCookieIndexName = 'rlcsc';
+	Consts.Values.ClientSideStorageIndexName = 'rlcsc';
 
 	/**
 	 * @const

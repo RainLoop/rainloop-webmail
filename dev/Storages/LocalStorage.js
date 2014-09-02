@@ -11,8 +11,8 @@
 	{
 		var
 			NextStorageDriver = require('_').find([
-				require('Storage:LocalStorage:Cookie'),
-				require('Storage:LocalStorage:LocalStorage')
+				require('Storage:LocalStorage:LocalStorage'),
+				require('Storage:LocalStorage:Cookie')
 			], function (NextStorageDriver) {
 				return NextStorageDriver && NextStorageDriver.supported();
 			})
@@ -26,6 +26,9 @@
 		}
 	}
 
+	/**
+	 * @type {LocalStorageDriver|CookieDriver|null}
+	 */
 	LocalStorage.prototype.oDriver = null;
 
 	/**

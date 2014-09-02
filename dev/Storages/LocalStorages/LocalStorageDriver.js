@@ -19,6 +19,10 @@
 	{
 	}
 
+	/**
+	 * @static
+	 * @return {boolean}
+	 */
 	LocalStorageDriver.supported = function ()
 	{
 		return !!window.localStorage;
@@ -27,26 +31,32 @@
 	/**
 	 * @param {string} sKey
 	 * @param {*} mData
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	LocalStorageDriver.prototype.set = function (sKey, mData)
 	{
 		var
-			mCookieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
 			bResult = false,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCookieValue ? null : JSON.parse(mCookieValue);
-			if (!mResult)
-			{
-				mResult = {};
-			}
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
+		}
+		catch (oException) {}
 
-			mResult[sKey] = mData;
-			window.localStorage[Consts.Values.ClientSideCookieIndexName] = JSON.stringify(mResult);
+		if (!mResult)
+		{
+			mResult = {};
+		}
+
+		mResult[sKey] = mData;
+
+		try
+		{
+			window.localStorage[Consts.Values.ClientSideStorageIndexName] = JSON.stringify(mResult);
 
 			bResult = true;
 		}
@@ -57,18 +67,18 @@
 
 	/**
 	 * @param {string} sKey
-	 * @returns {*}
+	 * @return {*}
 	 */
 	LocalStorageDriver.prototype.get = function (sKey)
 	{
 		var
-			mCokieValue = window.localStorage[Consts.Values.ClientSideCookieIndexName] || null,
+			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
 			mResult = null
 		;
 
 		try
 		{
-			mResult = null === mCokieValue ? null : JSON.parse(mCokieValue);
+			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
 			if (mResult && !Utils.isUnd(mResult[sKey]))
 			{
 				mResult = mResult[sKey];
