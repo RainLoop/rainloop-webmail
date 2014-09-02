@@ -619,7 +619,7 @@ class Message
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 		if (0 < \strlen($sHeaders))
 		{
-			$oHeaders = \MailSo\Mime\HeaderCollection::NewInstance()->Parse($sHeaders);
+			$oHeaders = \MailSo\Mime\HeaderCollection::NewInstance()->Parse($sHeaders, false, $sCharset);
 
 			$sContentTypeCharset = $oHeaders->ParameterValue(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,

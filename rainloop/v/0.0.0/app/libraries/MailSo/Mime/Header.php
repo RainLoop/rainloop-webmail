@@ -44,10 +44,11 @@ class Header
 	 * @param string $sName
 	 * @param string $sValue
 	 * @param string $sEncodedValueForReparse
+	 * @param string $sParentCharset = ''
 	 */
-	private function __construct($sName, $sValue, $sEncodedValueForReparse)
+	private function __construct($sName, $sValue, $sEncodedValueForReparse, $sParentCharset = '')
 	{
-		$this->sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+		$this->sParentCharset = $sParentCharset;
 
 		$this->initInputData($sName, $sValue, $sEncodedValueForReparse);
 	}
@@ -95,12 +96,13 @@ class Header
 	 * @param string $sName
 	 * @param string $sValue = ''
 	 * @param string $sEncodedValueForReparse = ''
+	 * @param string $sParentCharset = ''
 	 *
 	 * @return \MailSo\Mime\Header
 	 */
-	public static function NewInstance($sName, $sValue = '', $sEncodedValueForReparse = '')
+	public static function NewInstance($sName, $sValue = '', $sEncodedValueForReparse = '', $sParentCharset = '')
 	{
-		return new self($sName, $sValue, $sEncodedValueForReparse);
+		return new self($sName, $sValue, $sEncodedValueForReparse, $sParentCharset);
 	}
 
 	/**
@@ -111,13 +113,19 @@ class Header
 	 */
 	public static function NewInstanceFromEncodedString($sEncodedLines, $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
 	{
+		if (empty($sIncomingCharset))
+		{
+			$sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+		}
+
 		$aParts = \explode(':', \str_replace("\r", '', $sEncodedLines), 2);
 		if (isset($aParts[0]) && isset($aParts[1]) && 0 < \strlen($aParts[0]) && 0 < \strlen($aParts[1]))
 		{
 			return self::NewInstance(
 				\trim($aParts[0]),
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue(\trim($aParts[1]), $sIncomingCharset)),
-				\trim($aParts[1])
+				\trim($aParts[1]),
+				$sIncomingCharset
 			);
 		}
 
@@ -167,7 +175,8 @@ class Header
 			$this->initInputData(
 				$this->sName,
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue($this->sEncodedValueForReparse, $sParentCharset)),
-				$this->sEncodedValueForReparse);
+				$this->sEncodedValueForReparse
+			);
 		}
 
 		$this->sParentCharset = $sParentCharset;

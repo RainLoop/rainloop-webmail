@@ -29,7 +29,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		parent::__construct();
 
 		$this->sRawHeaders = '';
-		$this->sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
+		$this->sParentCharset = '';
 
 		if (0 < \strlen($sRawHeaders))
 		{
@@ -318,6 +318,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 					{
 						$this->Add($oHeader);
 					}
+					
 					$sName = null;
 					$sValue = null;
 				}

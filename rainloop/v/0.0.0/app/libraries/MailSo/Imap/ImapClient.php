@@ -1929,10 +1929,15 @@ class ImapClient extends \MailSo\Net\NetClient
 							$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.
 								$iLiteralLen.'" bytes', \MailSo\Log\Enumerations\Type::WARNING);
 						}
-
+						
 						if (!$bTreatAsAtom)
 						{
 							$aList[] = $sLiteral;
+							
+							if (\MailSo\Config::$LogSimpleLiterals)
+							{
+								$this->writeLog('{'.\strlen($sLiteral).'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
+							}
 						}
 					}
 					else

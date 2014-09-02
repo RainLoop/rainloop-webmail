@@ -44,6 +44,11 @@ class Config
 	public static $MessageListDateFilter = 0;
 
 	/**
+	 * @var int
+	 */
+	public static $LogSimpleLiterals = false;
+
+	/**
 	 * @var \MailSo\Log\Logger|null
 	 */
 	public static $SystemLogger = null;
