@@ -128,6 +128,8 @@ class Actions
 
 		$oConfig = $this->Config();
 		$this->Plugins()->RunHook('filter.application-config', array(&$oConfig));
+
+		$this->Logger()->Ping();
 	}
 
 	/**
@@ -726,8 +728,9 @@ class Actions
 
 				$this->oLogger->Add(
 					\MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath)
-						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', true))
-						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 30))
+						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
+						->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
+						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
@@ -1555,7 +1558,7 @@ class Actions
 					include_once 'Crypt/RSA.php';
 				}
 
-				\RainLoop\Service::$__HIDE_ERROR_NOTICES = true;
+				$oLogger->HideErrorNotices(true);
 
 				$oRsa = new \Crypt_RSA();
 				$oRsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
@@ -1575,7 +1578,7 @@ class Actions
 					$oLogger->Write('Invalid decrypted data', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
 				}
 
-				\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+				$oLogger->HideErrorNotices(false);
 			}
 			else
 			{
@@ -1591,9 +1594,11 @@ class Actions
 	 */
 	public function DoGetPublicKey()
 	{
+		$oLogger = $this->Logger();
+
 		if ($this->Config()->Get('security', 'use_rsa_encryption', false))
 		{
-			\RainLoop\Service::$__HIDE_ERROR_NOTICES = true;
+			$oLogger->HideErrorNotices(true);
 
 			if (!\class_exists('Crypt_RSA'))
 			{
@@ -1613,14 +1618,14 @@ class Actions
 
 				$sHash = \md5($e->toHex().$n->toHex());
 
-				\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+				$oLogger->HideErrorNotices(false);
 				return $this->DefaultResponse(__FUNCTION__,
 					$this->Cacher()->Set(\RainLoop\KeyPathHelper::RsaCacherKey($sHash), $aKeys['privatekey']) ?
 						array($sHash, $e->toHex(), $n->toHex()) : false);
 			}
 		}
 
-		\RainLoop\Service::$__HIDE_ERROR_NOTICES = false;
+		$oLogger->HideErrorNotices(false);
 		return $this->FalseResponse(__FUNCTION__);
 	}
 
@@ -6476,7 +6481,7 @@ class Actions
 	{
 		return $this->rawSmart(false);
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -6495,7 +6500,7 @@ class Actions
 
 			$iCode = 0;
 			$sContentType = '';
-			
+
 			$sData = $this->Http()->GetUrlAsString('http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404',
 				null, $sContentType, $iCode, $this->Logger(), 5,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
@@ -6524,7 +6529,7 @@ class Actions
 			$sContentType = 'image/png';
 			$sData = \file_get_contents(APP_VERSION_ROOT_PATH.'app/resources/images/empty-contact.png');
 		}
-		
+
 		$this->cacheByKey($sRawKey);
 		\header('Content-Type: '.$sContentType);
 		echo $sData;

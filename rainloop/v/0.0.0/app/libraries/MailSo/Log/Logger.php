@@ -29,6 +29,11 @@ class Logger extends \MailSo\Base\Collection
 	private $bShowSecter;
 
 	/**
+	 * @var bool
+	 */
+	private $bHideErrorNotices;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
@@ -39,7 +44,9 @@ class Logger extends \MailSo\Base\Collection
 		$this->aForbiddenTypes = array();
 		$this->aSecretWords = array();
 		$this->bShowSecter = false;
+		$this->bHideErrorNotices = false;
 
+		\set_error_handler(array(&$this, '__phpErrorHandler'));
 		\register_shutdown_function(array(&$this, '__loggerShutDown'));
 	}
 
@@ -86,6 +93,14 @@ class Logger extends \MailSo\Base\Collection
 	/**
 	 * @return bool
 	 */
+	public function Ping()
+	{
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IsEnabled()
 	{
 		return 0 < $this->Count();
@@ -107,13 +122,23 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param bool $bShow
-	 * 
+	 *
 	 * @return \MailSo\Log\Logger
 	 */
 	public function SetShowSecter($bShow)
 	{
 		$this->bShowSecter = !!$bShow;
+		return $this;
+	}
 
+	/**
+	 * @param bool $bValue
+	 *
+	 * @return \MailSo\Log\Logger
+	 */
+	public function HideErrorNotices($bValue)
+	{
+		$this->bHideErrorNotices = !!$bValue;
 		return $this;
 	}
 
@@ -145,8 +170,34 @@ class Logger extends \MailSo\Base\Collection
 	public function RemoveForbiddenType($iType)
 	{
 		$this->aForbiddenTypes[$iType] = false;
-
 		return $this;
+	}
+
+	/**
+	 * @param int $iErrNo
+	 * @param string $sErrStr
+	 * @param string $sErrFile
+	 * @param int $iErrLine
+	 *
+	 * @return bool
+	 */
+	public function __phpErrorHandler($iErrNo, $sErrStr, $sErrFile, $iErrLine)
+	{
+		$iType = \MailSo\Log\Enumerations\Type::NOTICE_PHP;
+		switch ($iErrNo)
+		{
+			 case E_USER_ERROR:
+				 $iType = \MailSo\Log\Enumerations\Type::ERROR_PHP;
+				 break;
+			 case E_USER_WARNING:
+				 $iType = \MailSo\Log\Enumerations\Type::WARNING_PHP;
+				 break;
+		}
+
+		$this->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
+		$this->Write('Error: '.$sErrStr, $iType, 'PHP');
+
+		return !!(\MailSo\Log\Enumerations\Type::NOTICE === $iType && $this->bHideErrorNotices);
 	}
 
 	/**
@@ -164,7 +215,7 @@ class Logger extends \MailSo\Base\Collection
 					$this->Write('Memory peak usage: '.$aStatistic['php']['memory_get_peak_usage'],
 						\MailSo\Log\Enumerations\Type::MEMORY);
 				}
-				
+
 				if (isset($aStatistic['time']))
 				{
 					$this->Write('Time delta: '.$aStatistic['time'], \MailSo\Log\Enumerations\Type::TIME_DELTA);
@@ -179,7 +230,7 @@ class Logger extends \MailSo\Base\Collection
 	public function WriteEmptyLine()
 	{
 		$iResult = 1;
-		
+
 		$aLoggers =& $this->GetAsArray();
 		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ &$oLogger)
 		{

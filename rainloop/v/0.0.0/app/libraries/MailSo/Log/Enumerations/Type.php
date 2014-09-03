@@ -18,4 +18,8 @@ class Type
 	const TIME = 6;
 	const MEMORY = 7;
 	const TIME_DELTA = 8;
+
+	const NOTICE_PHP = 11;
+	const WARNING_PHP = 12;
+	const ERROR_PHP = 13;
 }

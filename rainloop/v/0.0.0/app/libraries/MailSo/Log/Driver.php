@@ -51,6 +51,11 @@ abstract class Driver
 	/**
 	 * @var bool
 	 */
+	private $bWriteOnPhpErrorOnly;
+
+	/**
+	 * @var bool
+	 */
 	private $bFlushCache;
 
 	/**
@@ -71,9 +76,10 @@ abstract class Driver
 
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
+		$this->bWriteOnPhpErrorOnly = false;
 		$this->bFlushCache = false;
 		$this->aCache = array();
-		
+
 		$this->aPrefixes = array(
 			\MailSo\Log\Enumerations\Type::INFO => '[DATA]',
 			\MailSo\Log\Enumerations\Type::SECURE => '[SECURE]',
@@ -84,6 +90,10 @@ abstract class Driver
 			\MailSo\Log\Enumerations\Type::NOTICE => '[NOTICE]',
 			\MailSo\Log\Enumerations\Type::WARNING => '[WARNING]',
 			\MailSo\Log\Enumerations\Type::ERROR => '[ERROR]',
+
+			\MailSo\Log\Enumerations\Type::NOTICE_PHP => '[NOTICE]',
+			\MailSo\Log\Enumerations\Type::WARNING_PHP => '[WARNING]',
+			\MailSo\Log\Enumerations\Type::ERROR_PHP => '[ERROR]',
 		);
 	}
 
@@ -107,12 +117,23 @@ abstract class Driver
 
 	/**
 	 * @param bool $bValue
-	 * 
+	 *
 	 * @return \MailSo\Log\Driver
 	 */
 	public function WriteOnErrorOnly($bValue)
 	{
 		$this->bWriteOnErrorOnly = !!$bValue;
+		return $this;
+	}
+
+	/**
+	 * @param bool $bValue
+	 *
+	 * @return \MailSo\Log\Driver
+	 */
+	public function WriteOnPhpErrorOnly($bValue)
+	{
+		$this->bWriteOnPhpErrorOnly = !!$bValue;
 		return $this;
 	}
 
@@ -128,7 +149,7 @@ abstract class Driver
 		{
 			$this->iWriteOnTimeoutOnly = 0;
 		}
-		
+
 		return $this;
 	}
 
@@ -214,15 +235,31 @@ abstract class Driver
 	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
 	{
 		$bResult = true;
-		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{
-			if ($this->bWriteOnErrorOnly && \in_array($iType, array(
+			$bErrorPhp = false;
+			
+			$bError = $this->bWriteOnErrorOnly && \in_array($iType, array(
 				\MailSo\Log\Enumerations\Type::NOTICE,
+				\MailSo\Log\Enumerations\Type::NOTICE_PHP,
 				\MailSo\Log\Enumerations\Type::WARNING,
-				\MailSo\Log\Enumerations\Type::ERROR
-			)))
+				\MailSo\Log\Enumerations\Type::WARNING_PHP,
+				\MailSo\Log\Enumerations\Type::ERROR,
+				\MailSo\Log\Enumerations\Type::ERROR_PHP
+			));
+
+			if (!$bError)
 			{
-				$sFlush = '--- FlushLogCache: WriteOnErrorOnly';
+				$bErrorPhp = $this->bWriteOnPhpErrorOnly && \in_array($iType, array(
+					\MailSo\Log\Enumerations\Type::NOTICE_PHP,
+					\MailSo\Log\Enumerations\Type::WARNING_PHP,
+					\MailSo\Log\Enumerations\Type::ERROR_PHP
+				));
+			}
+
+			if ($bError || $bErrorPhp)
+			{
+				$sFlush = '--- FlushLogCache: '.($bError ? 'WriteOnErrorOnly' : 'WriteOnPhpErrorOnly');
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
 				{
 					$this->aCache[0] = $sFlush;
@@ -255,7 +292,7 @@ abstract class Driver
 
 				$this->aCache[] = '--- FlushLogCache: Trigger';
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
-				
+
 				$this->bFlushCache = true;
 				$bResult = $this->writeImplementation($this->aCache);
 				$this->aCache = array();
@@ -289,7 +326,7 @@ abstract class Driver
 	 */
 	final public function WriteEmptyLine()
 	{
-		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
+		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{
 			$this->aCache[] = '';
 		}

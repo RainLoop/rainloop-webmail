@@ -140,7 +140,8 @@ Values:
 
 				'enable' => array(false, 'Enable logging'),
 
-				'write_on_error_only' => array(false, 'Logs entire request only if error occured'),
+				'write_on_error_only' => array(false, 'Logs entire request only if error occured (php requred)'),
+				'write_on_php_error_only' => array(false, 'Logs entire request only if php error occured'),
 				'write_on_timeout_only' => array(0, 'Logs entire request only if request timeout (in seconds) occured.'),
 
 				'hide_passwords' => array(true, 'Required for development purposes only.

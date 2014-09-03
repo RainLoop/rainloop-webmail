@@ -5,11 +5,6 @@ namespace RainLoop;
 class Service
 {
 	/**
-	 * @var bool
-	 */
-	static $__HIDE_ERROR_NOTICES = false;
-
-	/**
 	 * @var \MailSo\Base\Http
 	 */
 	private $oHttp;
@@ -31,8 +26,6 @@ class Service
 	{
 		$this->oHttp = \MailSo\Base\Http::SingletonInstance();
 		$this->oActions = \RainLoop\Api::Actions();
-
-		\set_error_handler(array(&$this, 'LogPhpErrorHandler'));
 
 		$this->oServiceActions = new \RainLoop\ServiceActions($this->oHttp, $this->oActions);
 
@@ -63,33 +56,6 @@ class Service
 	public static function NewInstance()
 	{
 		return new self();
-	}
-
-	/**
-	 * @param int $iErrNo
-	 * @param string $sErrStr
-	 * @param string $sErrFile
-	 * @param int $iErrLine
-	 *
-	 * @return bool
-	 */
-	public function LogPhpErrorHandler($iErrNo, $sErrStr, $sErrFile, $iErrLine)
-	{
-		$iType = \MailSo\Log\Enumerations\Type::NOTICE;
-		switch ($iErrNo)
-		{
-			 case E_USER_ERROR:
-				 $iType = \MailSo\Log\Enumerations\Type::ERROR;
-				 break;
-			 case E_USER_WARNING:
-				 $iType = \MailSo\Log\Enumerations\Type::WARNING;
-				 break;
-		}
-
-		$this->oActions->Logger()->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
-		$this->oActions->Logger()->Write('Error: '.$sErrStr, $iType, 'PHP');
-
-		return !!(\MailSo\Log\Enumerations\Type::NOTICE === $iType && \RainLoop\Service::$__HIDE_ERROR_NOTICES);
 	}
 
 	/**

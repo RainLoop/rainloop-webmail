@@ -69,13 +69,13 @@ class Inline extends \MailSo\Log\Driver
 
 		return true;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
 	protected function clearImplementation()
 	{
-		if (\defined('PHP_SAPI') && 'cli' === PHP_SAPI)
+		if (\defined('PHP_SAPI') && 'cli' === PHP_SAPI && \MailSo\Base\Utils::FunctionExistsAndEnabled('system'))
 		{
 			\system('clear');
 		}
