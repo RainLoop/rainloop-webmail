@@ -461,7 +461,8 @@ class Utils
 	 */
 	public static function IsUtf8($sValue)
 	{
-		 return (bool) \preg_match('//u', $sValue);
+		return (bool) (\function_exists('mb_check_encoding') ?
+			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
 	}
 
 	/**
@@ -516,6 +517,11 @@ class Utils
 		$sValue = $sEncodedValue;
 		if (0 < \strlen($sIncomingCharset))
 		{
+			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sIncomingCharset && \MailSo\Base\Utils::IsUtf8($sValue))
+			{
+				$sIncomingCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
+			}
+			
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sIncomingCharset,
 				\MailSo\Base\Enumerations\Charset::UTF_8);
 		}
@@ -575,6 +581,7 @@ class Utils
 			if (0 < \strlen($aTempArr[0]))
 			{
 				$sCharset = 0 === \strlen($sForcedIncomingCharset) ? $aTempArr[0] : $sForcedIncomingCharset;
+				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset, true);
 
 				if ('' === $sMainCharset)
 				{
@@ -603,6 +610,11 @@ class Utils
 			}
 			else
 			{
+				if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $aParts[$iIndex][2] && \MailSo\Base\Utils::IsUtf8($aParts[$iIndex][1]))
+				{
+					$aParts[$iIndex][2] = \MailSo\Base\Enumerations\Charset::UTF_8;
+				}
+				
 				$sValue = \str_replace($aParts[$iIndex][0],
 					\MailSo\Base\Utils::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
 					$sValue);
@@ -611,6 +623,11 @@ class Utils
 
 		if ($bOneCharset && 0 < \strlen($sMainCharset))
 		{
+			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sMainCharset && \MailSo\Base\Utils::IsUtf8($sValue))
+			{
+				$sMainCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
+			}
+			
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
