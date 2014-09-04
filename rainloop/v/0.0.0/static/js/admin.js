@@ -2056,7 +2056,7 @@
 		Consts = require('Consts'),
 		Globals = require('Globals')
 	;
-
+	
 	Utils.trim = $.trim;
 	Utils.inArray = $.inArray;
 	Utils.isArray = _.isArray;
@@ -3342,13 +3342,13 @@
 
 		oWin.document.open();
 		oWin.document.write('<html><head>' +
-	'<meta charset="utf-8" />' +
-	'<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' +
-	'<meta name="viewport" content="user-scalable=no" />' +
-	'<meta name="apple-mobile-web-app-capable" content="yes" />' +
-	'<meta name="robots" content="noindex, nofollow, noodp" />' +
-	'<title>' + Utils.encodeHtml(sTitle) + '</title>' +
-	'</head><body><div id="rl-content"></div></body></html>');
+'<meta charset="utf-8" />' +
+'<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' +
+'<meta name="viewport" content="user-scalable=no" />' +
+'<meta name="apple-mobile-web-app-capable" content="yes" />' +
+'<meta name="robots" content="noindex, nofollow, noodp" />' +
+'<title>' + Utils.encodeHtml(sTitle) + '</title>' +
+'</head><body><div id="rl-content"></div></body></html>');
 		oWin.document.close();
 
 		oScript = oWin.document.createElement('script');

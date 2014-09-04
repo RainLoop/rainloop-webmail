@@ -68,9 +68,9 @@
 		this.checked = ko.observable(false);
 		this.hasAttachments = ko.observable(false);
 		this.attachmentsMainType = ko.observable('');
-
+		
 		this.moment = ko.observable(moment(moment.unix(0)));
-
+		
 		this.attachmentIconClass = ko.computed(function () {
 			var sClass = '';
 			if (this.hasAttachments())
@@ -825,6 +825,7 @@
 		   'popupCc': this.ccToLine(false),
 		   'popupBcc': this.bccToLine(false),
 		   'popupSubject': this.subject(),
+		   'popupIsHtml': this.isHtml(),
 		   'popupDate': this.fullFormatDateValue(),
 		   'popupAttachments': this.attachmentsToStringLine(),
 		   'popupBody': this.textBodyToString()
