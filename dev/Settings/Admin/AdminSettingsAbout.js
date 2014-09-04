@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -85,4 +85,4 @@
 
 	module.exports = AdminSettingsAbout;
 
-}(module, require));
+}());

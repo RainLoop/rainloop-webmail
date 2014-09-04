@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,7 +7,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -16,7 +16,7 @@
 	function AdminSettingsBranding()
 	{
 		var
-			Enums = require('Enums'),
+			Enums = require('Common/Enums'),
 			Settings = require('Storage:Settings')
 		;
 
@@ -88,4 +88,4 @@
 
 	module.exports = AdminSettingsBranding;
 
-}(module, require));
+}());

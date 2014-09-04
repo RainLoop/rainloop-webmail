@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Utils'),
-		Globals = require('Globals'),
+		Utils = require('Common/Utils'),
+		Globals = require('Common/Globals'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -79,4 +79,4 @@
 
 	module.exports = PopupsLanguagesViewModel;
 
-}(module, require));
+}());

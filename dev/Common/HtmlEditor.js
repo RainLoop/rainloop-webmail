@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,7 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 
-		Globals = require('Globals'),
+		Globals = require('Common/Globals'),
 		Settings = require('Storage:Settings')
 	;
 
@@ -272,4 +272,4 @@
 
 	module.exports = HtmlEditor;
 
-}(module, require));
+}());

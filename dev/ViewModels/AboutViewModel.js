@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -31,4 +31,4 @@
 
 	module.exports = AboutViewModel;
 
-}(module, require));
+}());

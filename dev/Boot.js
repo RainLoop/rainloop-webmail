@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -10,17 +10,15 @@
 			_ = require('_'),
 			$ = require('$'),
 
-			Globals = require('Globals'),
-			Plugins = require('Plugins'),
-			Utils = require('Utils'),
-			Enums = require('Enums'),
+			Globals = require('Common/Globals'),
+			Plugins = require('Common/Plugins'),
+			Utils = require('Common/Utils'),
+			Enums = require('Common/Enums'),
 
 			EmailModel = require('Model:Email')
 		;
 
 		Globals.__APP = App;
-
-		App.setupSettings();
 
 		Plugins.__boot = App;
 		Plugins.__remote = App.remote();
@@ -76,4 +74,4 @@
 
 	};
 
-}(module, require));
+}());

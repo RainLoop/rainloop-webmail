@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,7 +9,7 @@
 	function SettingsSocial()
 	{
 		var
-			Utils = require('Utils'),
+			Utils = require('Common/Utils'),
 			Data = require('Storage:RainLoop:Data')
 		;
 
@@ -73,4 +73,4 @@
 
 	module.exports = SettingsSocial;
 
-}(module, require));
+}());

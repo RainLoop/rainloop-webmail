@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Enums = require('Enums')
+		Enums = require('Common/Enums')
 	;
 
 	/**
@@ -59,4 +59,4 @@
 
 	module.exports = FilterConditionModel;
 
-}(module, require));
+}());

@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,7 +7,7 @@
 		_ = require('_'),
 		crossroads = require('crossroads'),
 
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -88,4 +88,4 @@
 
 	module.exports = KnoinAbstractScreen;
 
-}(module, require));
+}());

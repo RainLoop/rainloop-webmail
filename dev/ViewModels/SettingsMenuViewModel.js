@@ -1,13 +1,13 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		_ = require('_'),
 		
-		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
+		Globals = require('Common/Globals'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -45,4 +45,4 @@
 
 	module.exports = SettingsMenuViewModel;
 
-}(module, require));
+}());

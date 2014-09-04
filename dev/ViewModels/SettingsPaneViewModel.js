@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		_ = require('_'),
 		key = require('key'),
 
-		Enums = require('Enums'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Data = require('Storage:RainLoop:Data'),
 
@@ -50,4 +50,4 @@
 
 	module.exports = SettingsPaneViewModel;
 
-}(module, require));
+}());

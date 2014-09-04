@@ -1,7 +1,7 @@
 // Base64 encode / decode
 // http://www.webtoolkit.info/
 
-(function (module) {
+(function () {
 
 	'use strict';
 
@@ -168,4 +168,4 @@
 	module.exports = Base64;
 	/*jslint bitwise: false*/
 
-}(module, require));
+}());

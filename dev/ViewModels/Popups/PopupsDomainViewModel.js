@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,9 +7,9 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Utils = require('Common/Utils'),
 
 		Remote = require('Storage:Admin:Remote'),
 
@@ -315,4 +315,4 @@
 
 	module.exports = PopupsDomainViewModel;
 
-}(module, require));
+}());

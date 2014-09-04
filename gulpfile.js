@@ -20,8 +20,7 @@ var
 		},
 		uglify: {
 			mangle: true,
-			compress: true,
-			preserveComments: 'some'
+			compress: true
 		}
 	},
 
@@ -32,6 +31,7 @@ var
 	header = require('gulp-header'),
 	footer = require('gulp-footer'),
 	rename = require('gulp-rename'),
+	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
 	gutil = require('gulp-util')
 ;
@@ -69,6 +69,7 @@ function renameFileWothMd5Hash(sFile)
 
 cfg.paths.globjs = 'dev/**/*.js';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
+cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
 cfg.paths.staticCSS = 'rainloop/v/' + cfg.devVersion + '/static/css/';
 
 cfg.paths.less = {
@@ -111,13 +112,13 @@ cfg.paths.js = {
 		]
 	},
 	openpgp: {
-		name: 'openpgp.min.js',
+		name: 'openpgp.js',
 		src: [
 			'vendors/openpgp/openpgp-0.7.2.min.js'
 		]
 	},
 	encrypt: {
-		name: '_encrypt.min.js',
+		name: 'bundle.js',
 		header: '(function (window) {',
 		footer: '}(window));',
 		dest: 'vendors/jsbn/',
@@ -126,7 +127,7 @@ cfg.paths.js = {
 			'vendors/jsbn/prng4.js',
 			'vendors/jsbn/rng.js',
 			'vendors/jsbn/rsa.js',
-			'vendors/jsbn/_fix.js'
+			'vendors/jsbn/fix.js'
 		]
 	},
 	libs: {
@@ -153,12 +154,15 @@ cfg.paths.js = {
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
-			'vendors/jsbn/_encrypt.min.js',
+			'vendors/jsbn/bundle.js',
 			'vendors/keymaster/keymaster.js',
 			'vendors/ifvisible/ifvisible.min.js',
 			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
+	},
+	common: {
+		name: 'common.js'
 	},
 	app: {
 		name: 'app.js'
@@ -211,7 +215,7 @@ gulp.task('css:main:min', ['css:main'], function() {
 gulp.task('js:boot', function() {
 	return gulp.src(cfg.paths.js.boot.src)
 		.pipe(concat(cfg.paths.js.boot.name))
-		.pipe(gulp.dest(cfg.paths.staticJS));
+		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
 gulp.task('js:encrypt', function() {
@@ -220,65 +224,69 @@ gulp.task('js:encrypt', function() {
 		.pipe(header(cfg.paths.js.encrypt.header || ''))
 		.pipe(footer(cfg.paths.js.encrypt.footer || ''))
 		.pipe(uglify(cfg.uglify))
-		.pipe(gulp.dest(cfg.paths.js.encrypt.dest || cfg.paths.staticJS))
+		.pipe(gulp.dest(cfg.paths.js.encrypt.dest))
 		.on('error', gutil.log);
 });
 
 gulp.task('js:openpgp', function() {
 	return gulp.src(cfg.paths.js.openpgp.src)
 		.pipe(rename(cfg.paths.js.openpgp.name))
-		.pipe(gulp.dest(cfg.paths.staticJS));
+		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
-gulp.task('js:libs', function() {
+gulp.task('js:libs', ['js:encrypt'], function() {
 	return gulp.src(cfg.paths.js.libs.src)
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
-		.pipe(gulp.dest(cfg.paths.staticJS));
+		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
-gulp.task('js:app', function() {
-
+gulp.task('js:webpack:clear', function() {
+	return gulp.src([cfg.paths.staticJS + '*.chunk.js', cfg.paths.staticMinJS + '*.chunk.js'], {read: false})
+		.pipe(require('gulp-rimraf')());
+});
+gulp.task('js:webpack', ['js:webpack:clear'], function(callback) {
 	var
-		browserify = require('browserify'),
-//		exorcist = require('exorcist'),
-		source = require('vinyl-source-stream'),
-		buffer = require('vinyl-buffer')
+		webpack = require('webpack'),
+		webpackCfg = require('./webpack.config.js')
 	;
 
-    return browserify({
-			'basedir': './dev/',
-			'entries': './RainLoop.js',
-			'detectGlobals': false,
-			'debug': false
-		})
-		.bundle()
-//		.pipe(exorcist(cfg.paths.staticJS + cfg.paths.js.app.name + '.map'))
-        .pipe(source(cfg.paths.js.app.name))
-        .pipe(buffer())
+	if (webpackCfg && webpackCfg.output)
+	{
+		webpackCfg.output.publicPath = cfg.paths.staticJS;
+	}
+
+	webpack(webpackCfg, function(err, stats) {
+        if (err) {
+			throw new gutil.PluginError('webpack', err);
+		}
+		gutil.log('[webpack]', stats.toString({}));
+        callback();
+    });
+});
+
+gulp.task('js:app', ['js:webpack'], function() {
+	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
 });
 
-gulp.task('js:admin', function() {
+gulp.task('js:admin', ['js:webpack'], function() {
+	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
+		.pipe(gulp.dest(cfg.paths.staticJS))
+		.on('error', gutil.log);
+});
 
-	var
-		browserify = require('browserify'),
-//		exorcist = require('exorcist'),
-		source = require('vinyl-source-stream'),
-		buffer = require('vinyl-buffer')
-	;
+gulp.task('js:common', ['js:webpack'], function() {
+	return gulp.src(cfg.paths.staticJS + cfg.paths.js.common.name)
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
+		.pipe(gulp.dest(cfg.paths.staticJS))
+		.on('error', gutil.log);
+});
 
-    return browserify({
-			'basedir': './dev/',
-			'entries': './Admin.js',
-			'detectGlobals': false,
-			'debug': false
-		})
-		.bundle()
-//		.pipe(exorcist(cfg.paths.staticJS + cfg.paths.js.admin.name + '.map'))
-        .pipe(source(cfg.paths.js.admin.name))
-        .pipe(buffer())
+gulp.task('js:chunks', ['js:webpack'], function() {
+	return gulp.src(cfg.paths.staticJS + '*.chunk.js')
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(gulp.dest(cfg.paths.staticJS))
 		.on('error', gutil.log);
@@ -288,18 +296,37 @@ gulp.task('js:admin', function() {
 gulp.task('js:app:min', ['js:app'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
 		.pipe(uglify(cfg.uglify))
-		.pipe(rename({suffix: '.min'}))
+//		.pipe(rename({suffix: '.min'}))
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
-		.pipe(gulp.dest(cfg.paths.staticJS))
+		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
 });
 
 gulp.task('js:admin:min', ['js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.admin.name)
 		.pipe(uglify(cfg.uglify))
-		.pipe(rename({suffix: '.min'}))
+//		.pipe(rename({suffix: '.min'}))
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
-		.pipe(gulp.dest(cfg.paths.staticJS))
+		.pipe(gulp.dest(cfg.paths.staticMinJS))
+		.on('error', gutil.log);
+});
+
+gulp.task('js:common:min', ['js:common'], function() {
+	return gulp.src(cfg.paths.staticJS + cfg.paths.js.common.name)
+		.pipe(uglify(cfg.uglify))
+//		.pipe(rename({suffix: '.min'}))
+		.pipe(replace(/rainloop\/v\/([^\/]+)\/static\/js\//g, 'rainloop/v/$1/static/js/min/'))
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
+		.pipe(gulp.dest(cfg.paths.staticMinJS))
+		.on('error', gutil.log);
+});
+
+gulp.task('js:chunks:min', ['js:chunks'], function() {
+	return gulp.src(cfg.paths.staticJS + '*.chunk.js')
+		.pipe(uglify(cfg.uglify))
+//		.pipe(rename({suffix: '.min'}))
+		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
+		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
 });
 
@@ -462,8 +489,8 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', [ 'js:libs', 'js:boot', 'js:encrypt', 'js:openpgp', 'js:lint', 'js:app:min', 'js:admin:min', 'css:main:min']);
-gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
+gulp.task('default', [ 'js:libs', 'js:boot', 'js:encrypt', 'js:openpgp', 'js:lint', 'js:app:min', 'js:admin:min', 'js:common:min', 'js:chunks:min', 'css:main:min']);
+gulp.task('fast', ['js:app', 'js:admin', 'js:common', 'js:chunks', 'css:main']);
 
 gulp.task('rainloop', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
 gulp.task('rainloop+', ['rainloop', 'package-inc-release']);

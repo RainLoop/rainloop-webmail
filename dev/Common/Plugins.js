@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		_ = require('_'),
 
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -110,4 +110,4 @@
 
 	module.exports = new Plugins();
 
-}(module, require));
+}());

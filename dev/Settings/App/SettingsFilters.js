@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -39,4 +39,4 @@
 
 	module.exports = SettingsFilters;
 
-}(module, require));
+}());

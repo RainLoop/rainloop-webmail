@@ -1,14 +1,14 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		Globals = require('Globals')
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		Globals = require('Common/Globals')
 	;
 
 	/**
@@ -127,4 +127,4 @@
 
 	module.exports = KnoinAbstractViewModel;
 
-}(module, require));
+}());

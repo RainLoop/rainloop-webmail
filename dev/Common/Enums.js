@@ -1,5 +1,5 @@
 
-(function (module) {
+(function () {
 
 	'use strict';
 
@@ -427,4 +427,4 @@
 
 	module.exports = Enums;
 
-}(module, require));
+}());

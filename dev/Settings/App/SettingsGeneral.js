@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,11 +8,11 @@
 		$ = require('$'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote')
@@ -175,4 +175,4 @@
 
 	module.exports = SettingsGeneral;
 
-}(module, require));
+}());

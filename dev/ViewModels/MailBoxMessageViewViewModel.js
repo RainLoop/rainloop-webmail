@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,11 +9,11 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Consts = require('Consts'),
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		Events = require('Events'),
+		Consts = require('Common/Consts'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		Events = require('Common/Events'),
 
 		Cache = require('Storage:RainLoop:Cache'),
 		Data = require('Storage:RainLoop:Data'),
@@ -719,4 +719,4 @@
 
 	module.exports = MailBoxMessageViewViewModel;
 
-}(module, require));
+}());

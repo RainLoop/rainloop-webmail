@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,9 +7,9 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:Admin:Data'),
@@ -133,4 +133,4 @@
 
 	module.exports = AdminSettingsSecurity;
 
-}(module, require));
+}());

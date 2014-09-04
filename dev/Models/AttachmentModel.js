@@ -1,14 +1,14 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		window = require('window'),
 
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder')
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder')
 	;
 
 	/**
@@ -249,4 +249,4 @@
 
 	module.exports = AttachmentModel;
 
-}(module, require));
+}());

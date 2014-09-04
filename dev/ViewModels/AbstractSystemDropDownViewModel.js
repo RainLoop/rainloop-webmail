@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,9 +9,9 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:RainLoop:Data'),
@@ -117,4 +117,4 @@
 
 	module.exports = AbstractSystemDropDownViewModel;
 
-}(module, require));
+}());

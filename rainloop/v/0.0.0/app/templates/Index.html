@@ -82,9 +82,13 @@
 					.wait(function () {
 						__simplePace(30);
 					})
+					.script('{{BaseCommonMainScriptLink}}')
+					.wait(function () {
+						__simplePace(5);
+					})
 					.script('{{BaseAppMainScriptLink}}')
 					.wait(function () {
-						__simplePace(20);
+						__simplePace(15);
 					})
 					.script(function () {
 						return window.rainloopAppData['PluginsLink'] || null;

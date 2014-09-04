@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,13 +9,13 @@
 		$ = require('$'),
 		moment = require('moment'),
 
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Consts = require('Consts'),
-		Plugins = require('Plugins'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
-		Events = require('Events'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Consts = require('Common/Consts'),
+		Plugins = require('Common/Plugins'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
+		Events = require('Common/Events'),
 
 		kn = require('App:Knoin'),
 
@@ -112,78 +112,6 @@
 	RainLoopApp.prototype.data = function ()
 	{
 		return Data;
-	};
-
-	RainLoopApp.prototype.setupSettings = function ()
-	{
-		kn.addSettingsViewModel(require('Settings:RainLoop:General'),
-			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
-
-		if (Settings.settingsGet('ContactsIsAllowed'))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Contacts'),
-				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-		}
-
-		if (Settings.capa(Enums.Capa.AdditionalAccounts))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Accounts'),
-				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
-		}
-
-		if (Settings.capa(Enums.Capa.AdditionalIdentities))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Identities'),
-				'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
-		}
-		else
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Identity'),
-				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
-		}
-
-		if (Settings.capa(Enums.Capa.Filters))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Filters'),
-				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
-		}
-
-		if (Settings.capa(Enums.Capa.TwoFactor))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Security'),
-				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
-		}
-
-		if (Settings.settingsGet('AllowGoogleSocial') ||
-			Settings.settingsGet('AllowFacebookSocial') ||
-			Settings.settingsGet('AllowTwitterSocial'))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Social'),
-				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
-		}
-
-		if (Settings.settingsGet('ChangePasswordIsAllowed'))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:ChangePassword'),
-				'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
-		}
-
-		kn.addSettingsViewModel(require('Settings:RainLoop:Folders'),
-			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
-
-		if (Settings.capa(Enums.Capa.Themes))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:Themes'),
-				'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
-		}
-
-		if (Settings.capa(Enums.Capa.OpenPGP))
-		{
-			kn.addSettingsViewModel(require('Settings:RainLoop:OpenPGP'),
-				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
-		}
-
-		return true;
 	};
 
 	RainLoopApp.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
@@ -1372,107 +1300,112 @@
 
 			this.folders(_.bind(function (bValue) {
 
-				kn.hideLoading();
-
 				if (bValue)
 				{
-					if (window.$LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
-					{
-						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
-							if (window.openpgp)
+					require.ensure([], function () {
+
+						kn.hideLoading();
+
+						if (window.$LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
+						{
+							window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
+								if (window.openpgp)
+								{
+									Data.openpgpKeyring = new window.openpgp.Keyring();
+									Data.capaOpenPGP(true);
+
+									Events.pub('openpgp.init');
+
+									self.reloadOpenPgpKeys();
+								}
+							});
+						}
+						else
+						{
+							Data.capaOpenPGP(false);
+						}
+
+						kn.startScreens([
+							require('Screen:RainLoop:MailBox'),
+							require('Screen:RainLoop:Settings'),
+							require('Screen:RainLoop:About')
+						]);
+
+						if (bGoogle || bFacebook || bTwitter)
+						{
+							self.socialUsers(true);
+						}
+
+						Events.sub('interval.2m', function () {
+							self.folderInformation('INBOX');
+						});
+
+						Events.sub('interval.2m', function () {
+							var sF = Data.currentFolderFullNameRaw();
+							if ('INBOX' !== sF)
 							{
-								Data.openpgpKeyring = new window.openpgp.Keyring();
-								Data.capaOpenPGP(true);
-
-								Events.pub('openpgp.init');
-
-								self.reloadOpenPgpKeys();
+								self.folderInformation(sF);
 							}
 						});
-					}
-					else
-					{
-						Data.capaOpenPGP(false);
-					}
 
-					kn.startScreens([
-						require('Screen:RainLoop:MailBox'),
-						require('Screen:RainLoop:Settings'),
-						require('Screen:RainLoop:About')
-					]);
+						Events.sub('interval.3m', function () {
+							self.folderInformationMultiply();
+						});
 
-					if (bGoogle || bFacebook || bTwitter)
-					{
-						self.socialUsers(true);
-					}
+						Events.sub('interval.5m', function () {
+							self.quota();
+						});
 
-					Events.sub('interval.2m', function () {
-						self.folderInformation('INBOX');
-					});
+						Events.sub('interval.10m', function () {
+							self.folders();
+						});
 
-					Events.sub('interval.2m', function () {
-						var sF = Data.currentFolderFullNameRaw();
-						if ('INBOX' !== sF)
+						iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
+						iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
+
+						window.setInterval(function () {
+							self.contactsSync();
+						}, iContactsSyncInterval * 60000 + 5000);
+
+						_.delay(function () {
+							self.contactsSync();
+						}, 5000);
+
+						_.delay(function () {
+							self.folderInformationMultiply(true);
+						}, 500);
+
+						Plugins.runHook('rl-start-user-screens');
+						Events.pub('rl.bootstart-user-screens');
+
+						if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 						{
-							self.folderInformation(sF);
+							_.delay(function () {
+								try {
+									window.navigator.registerProtocolHandler('mailto',
+										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+										'' + (Settings.settingsGet('Title') || 'RainLoop'));
+								} catch(e) {}
+
+								if (Settings.settingsGet('MailToEmail'))
+								{
+									Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View:Popup:Compose'));
+								}
+							}, 500);
+						}
+
+						if (!Globals.bMobileDevice)
+						{
+							_.defer(function () {
+								self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
+							});
 						}
 					});
-
-					Events.sub('interval.3m', function () {
-						self.folderInformationMultiply();
-					});
-
-					Events.sub('interval.5m', function () {
-						self.quota();
-					});
-
-					Events.sub('interval.10m', function () {
-						self.folders();
-					});
-
-					iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
-					iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
-
-					window.setInterval(function () {
-						self.contactsSync();
-					}, iContactsSyncInterval * 60000 + 5000);
-
-					_.delay(function () {
-						self.contactsSync();
-					}, 5000);
-
-					_.delay(function () {
-						self.folderInformationMultiply(true);
-					}, 500);
-
-					Plugins.runHook('rl-start-user-screens');
-					Events.pub('rl.bootstart-user-screens');
-
-					if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
-					{
-						_.delay(function () {
-							try {
-								window.navigator.registerProtocolHandler('mailto',
-									window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-									'' + (Settings.settingsGet('Title') || 'RainLoop'));
-							} catch(e) {}
-
-							if (Settings.settingsGet('MailToEmail'))
-							{
-								Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View:Popup:Compose'));
-							}
-						}, 500);
-					}
-
-					if (!Globals.bMobileDevice)
-					{
-						_.defer(function () {
-							self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
-						});
-					}
 				}
 				else
 				{
+					kn.hideLoading();
+
 					self.bootstartLoginScreen();
 				}
 
@@ -1527,4 +1460,4 @@
 
 	module.exports = new RainLoopApp();
 
-}(module, require));
+}());

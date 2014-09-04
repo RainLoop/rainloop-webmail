@@ -13,8 +13,8 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				Globals = require('Globals'),
-				Utils = require('Utils')
+				Globals = require('Common/Globals'),
+				Utils = require('Common/Utils')
 			;
 
 			if (!Globals.bMobileDevice)
@@ -52,7 +52,7 @@
 	ko.bindingHandlers.tooltip2 = {
 		'init': function (oElement, fValueAccessor) {
 			var
-				Globals = require('Globals'),
+				Globals = require('Common/Globals'),
 				$oEl = $(oElement),
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
@@ -85,7 +85,7 @@
 
 			var
 				$oEl = $(oElement),
-				Globals = require('Globals')
+				Globals = require('Common/Globals')
 			;
 
 			$oEl.tooltip({
@@ -119,7 +119,7 @@
 
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
-			var Globals = require('Globals');
+			var Globals = require('Common/Globals');
 			Globals.aBootstrapDropdowns.push($(oElement));
 		}
 	};
@@ -130,7 +130,7 @@
 			{
 				var
 					$el = $(oElement),
-					Utils = require('Utils')
+					Utils = require('Common/Utils')
 				;
 
 				if (!$el.hasClass('open'))
@@ -160,7 +160,7 @@
 
 	ko.bindingHandlers.csstext = {
 		'init': function (oElement, fValueAccessor) {
-			var Utils = require('Utils');
+			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -171,7 +171,7 @@
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Utils');
+			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
 				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
@@ -239,8 +239,8 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				Globals = require('Globals'),
-				Utils = require('Utils')
+				Globals = require('Common/Globals'),
+				Utils = require('Common/Utils')
 			;
 
 			$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
@@ -262,14 +262,14 @@
 
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
-			var Utils = require('Utils');
+			var Utils = require('Common/Utils');
 			Utils.i18nToNode(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Utils');
+			var Utils = require('Common/Utils');
 			ko.utils.unwrapObservable(fValueAccessor());
 			Utils.i18nToNode(oElement);
 		}
@@ -310,8 +310,8 @@
 		'update': function (oElement, fValueAccessor) {
 
 			var
-				Utils = require('Utils'),
-				Globals = require('Globals'),
+				Utils = require('Common/Utils'),
+				Globals = require('Common/Globals'),
 				aValues = ko.utils.unwrapObservable(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
@@ -345,8 +345,8 @@
 	ko.bindingHandlers.draggable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
 			var
-				Globals = require('Globals'),
-				Utils = require('Utils')
+				Globals = require('Common/Globals'),
+				Utils = require('Common/Utils')
 			;
 			if (!Globals.bMobileDevice)
 			{
@@ -428,7 +428,7 @@
 
 	ko.bindingHandlers.droppable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
-			var Globals = require('Globals');
+			var Globals = require('Common/Globals');
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -470,7 +470,7 @@
 
 	ko.bindingHandlers.nano = {
 		'init': function (oElement) {
-			var Globals = require('Globals');
+			var Globals = require('Common/Globals');
 			if (!Globals.bDisableNanoScroll)
 			{
 				$(oElement)
@@ -567,7 +567,7 @@
 		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
-				Utils = require('Utils'),
+				Utils = require('Common/Utils'),
 				EmailModel = require('Model:Email'),
 
 				$oEl = $(oElement),
@@ -641,7 +641,7 @@
 		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
-				Utils = require('Utils'),
+				Utils = require('Common/Utils'),
 				ContactTagModel = require('Model:ContactTag'),
 
 				$oEl = $(oElement),
@@ -756,7 +756,7 @@
 	ko.extenders.trimmer = function (oTarget)
 	{
 		var
-			Utils = require('Utils'),
+			Utils = require('Common/Utils'),
 			oResult = ko.computed({
 				'read': oTarget,
 				'write': function (sNewValue) {
@@ -773,7 +773,7 @@
 	ko.extenders.posInterer = function (oTarget, iDefault)
 	{
 		var
-			Utils = require('Utils'),
+			Utils = require('Common/Utils'),
 			oResult = ko.computed({
 				'read': oTarget,
 				'write': function (sNewValue) {
@@ -829,7 +829,7 @@
 
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
-		var Utils = require('Utils');
+		var Utils = require('Common/Utils');
 
 		oTarget.iTimeout = 0;
 		oTarget.subscribe(function (bValue) {
@@ -854,7 +854,7 @@
 
 	ko.observable.fn.validateEmail = function ()
 	{
-		var Utils = require('Utils');
+		var Utils = require('Common/Utils');
 
 		this.hasError = ko.observable(false);
 
@@ -869,7 +869,7 @@
 
 	ko.observable.fn.validateSimpleEmail = function ()
 	{
-		var Utils = require('Utils');
+		var Utils = require('Common/Utils');
 
 		this.hasError = ko.observable(false);
 
@@ -884,7 +884,7 @@
 
 	ko.observable.fn.validateFunc = function (fFunc)
 	{
-		var Utils = require('Utils');
+		var Utils = require('Common/Utils');
 
 		this.hasFuncError = ko.observable(false);
 

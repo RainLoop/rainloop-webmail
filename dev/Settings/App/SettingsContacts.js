@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Utils = require('Utils'),
+		Utils = require('Common/Utils'),
 
 		Remote = require('Storage:RainLoop:Remote'),
 		Data = require('Storage:RainLoop:Data')
@@ -55,4 +55,4 @@
 
 	module.exports = SettingsContacts;
 
-}(module, require));
+}());

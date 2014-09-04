@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Cache = require('Storage:RainLoop:Cache'),
@@ -121,4 +121,4 @@
 
 	module.exports = PopupsFolderClearViewModel;
 
-}(module, require));
+}());

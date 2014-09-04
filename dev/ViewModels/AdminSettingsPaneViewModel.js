@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -43,4 +43,4 @@
 
 	module.exports = AdminSettingsPaneViewModel;
 
-}(module, require));
+}());

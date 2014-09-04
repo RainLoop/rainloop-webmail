@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -25,4 +25,4 @@
 
 	module.exports = MailBoxSystemDropDownViewModel;
 
-}(module, require));
+}());

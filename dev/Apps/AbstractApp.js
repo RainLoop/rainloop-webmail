@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,10 +8,10 @@
 		_ = require('_'),
 		$ = require('$'),
 
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
-		Events = require('Events'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
+		Events = require('Common/Events'),
 
 		Settings = require('Storage:Settings'),
 
@@ -72,11 +72,6 @@
 	AbstractApp.prototype.data = function ()
 	{
 		return null;
-	};
-
-	AbstractApp.prototype.setupSettings = function ()
-	{
-		return true;
 	};
 
 	/**
@@ -270,4 +265,4 @@
 
 	module.exports = AbstractApp;
 
-}(module, require));
+}());

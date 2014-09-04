@@ -1,15 +1,15 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		_ = require('_'),
 
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		Events = require('Events'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		Events = require('Common/Events'),
 
 		KnoinAbstractScreen = require('Knoin:AbstractScreen'),
 
@@ -193,4 +193,4 @@
 
 	module.exports = MailBoxScreen;
 
-}(module, require));
+}());

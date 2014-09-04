@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -33,9 +33,9 @@
 	 */
 	AccountModel.prototype.changeAccountLink = function ()
 	{
-		return require('LinkBuilder').change(this.email);
+		return require('Common/LinkBuilder').change(this.email);
 	};
 
 	module.exports = AccountModel;
 
-}(module, require));
+}());

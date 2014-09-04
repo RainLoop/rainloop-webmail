@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -11,11 +11,11 @@
 		$ = require('$'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Globals = require('Globals')
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals')
 	;
-	
+
 	Utils.trim = $.trim;
 	Utils.inArray = $.inArray;
 	Utils.isArray = _.isArray;
@@ -78,6 +78,15 @@
 	Utils.pString = function (mValue)
 	{
 		return Utils.isNormal(mValue) ? '' + mValue : '';
+	};
+
+	/**
+	 * @param {string} sComponent
+	 * @return {string}
+	 */
+	Utils.encodeURIComponent = function (sComponent)
+	{
+		return window.encodeURIComponent(sComponent);
 	};
 
 	/**
@@ -1929,4 +1938,4 @@
 
 	module.exports = Utils;
 
-}(module, require));
+}());

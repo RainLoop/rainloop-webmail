@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -29,4 +29,4 @@
 
 	module.exports = AboutScreen;
 
-}(module, require));
+}());

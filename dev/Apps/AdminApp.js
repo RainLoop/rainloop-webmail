@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,9 +8,9 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:Admin:Data'),
@@ -42,47 +42,6 @@
 	AdminApp.prototype.data = function ()
 	{
 		return Data;
-	};
-
-	AdminApp.prototype.setupSettings = function ()
-	{
-		kn.addSettingsViewModel(require('Settings:Admin:General'),
-			'AdminSettingsGeneral', 'General', 'general', true);
-
-		kn.addSettingsViewModel(require('Settings:Admin:Login'),
-			'AdminSettingsLogin', 'Login', 'login');
-
-		if (Settings.capa(Enums.Capa.Prem))
-		{
-			kn.addSettingsViewModel(require('Settings:Admin:Branding'),
-				'AdminSettingsBranding', 'Branding', 'branding');
-		}
-
-		kn.addSettingsViewModel(require('Settings:Admin:Contacts'),
-			'AdminSettingsContacts', 'Contacts', 'contacts');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Domains'),
-			'AdminSettingsDomains', 'Domains', 'domains');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Security'),
-			'AdminSettingsSecurity', 'Security', 'security');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Social'),
-			'AdminSettingsSocial', 'Social', 'social');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Plugins'),
-			'AdminSettingsPlugins', 'Plugins', 'plugins');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Packages'),
-			'AdminSettingsPackages', 'Packages', 'packages');
-
-		kn.addSettingsViewModel(require('Settings:Admin:Licensing'),
-			'AdminSettingsLicensing', 'Licensing', 'licensing');
-
-		kn.addSettingsViewModel(require('Settings:Admin:About'),
-			'AdminSettingsAbout', 'About', 'about');
-
-		return true;
 	};
 
 	AdminApp.prototype.reloadDomainList = function ()
@@ -311,4 +270,4 @@
 
 	module.exports = new AdminApp();
 
-}(module, require));
+}());

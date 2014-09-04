@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,7 +8,7 @@
 		ko = require('ko'),
 		moment = require('moment'),
 
-		Utils = require('Utils'),
+		Utils = require('Common/Utils'),
 
 		Data = require('Storage:RainLoop:Data'),
 
@@ -155,4 +155,4 @@
 
 	module.exports = PopupsAdvancedSearchViewModel;
 
-}(module, require));
+}());

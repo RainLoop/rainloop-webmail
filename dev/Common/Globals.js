@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -12,7 +12,7 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Enums = require('Enums')
+		Enums = require('Common/Enums')
 	;
 
 	Globals.$win = $(window);
@@ -284,4 +284,4 @@
 
 	module.exports = Globals;
 
-}(module, require));
+}());

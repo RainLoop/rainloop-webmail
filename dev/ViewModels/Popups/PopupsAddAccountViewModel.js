@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 
 		Remote = require('Storage:RainLoop:Remote'),
 
@@ -113,4 +113,4 @@
 
 	module.exports = PopupsAddAccountViewModel;
 
-}(module, require));
+}());

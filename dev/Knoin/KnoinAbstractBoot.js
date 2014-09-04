@@ -1,5 +1,5 @@
 
-(function (module) {
+(function () {
 
 	'use strict';
 
@@ -18,4 +18,4 @@
 
 	module.exports = KnoinAbstractBoot;
 
-}(module, require));
+}());

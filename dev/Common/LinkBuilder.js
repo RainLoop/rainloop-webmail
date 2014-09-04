@@ -1,11 +1,10 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
-		window = require('window'),
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -95,7 +94,7 @@
 	 */
 	LinkBuilder.prototype.change = function (sEmail)
 	{
-		return this.sServer + '/Change/' + this.sSpecSuffix + '/' + window.encodeURIComponent(sEmail) + '/';
+		return this.sServer + '/Change/' + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
 
 	/**
@@ -131,7 +130,7 @@
 	 */
 	LinkBuilder.prototype.avatarLink = function (sEmail)
 	{
-		return this.sServer + '/Raw/0/Avatar/' + window.encodeURIComponent(sEmail) + '/';
+		return this.sServer + '/Raw/0/Avatar/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
 
 	/**
@@ -304,7 +303,7 @@
 	 */
 	LinkBuilder.prototype.openPgpJs = function ()
 	{
-		return  this.sStaticPrefix + 'js/openpgp.min.js';
+		return  this.sStaticPrefix + 'js/min/openpgp.js';
 	};
 
 	/**
@@ -333,4 +332,4 @@
 
 	module.exports = new LinkBuilder();
 
-}(module, require));
+}());

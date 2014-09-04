@@ -1,6 +1,6 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,12 +9,12 @@
 		_ = require('_'),
 		$ = require('$'),
 
-		Consts = require('Consts'),
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		Plugins = require('Plugins'),
-		LinkBuilder = require('LinkBuilder'),
+		Consts = require('Common/Consts'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		Plugins = require('Common/Plugins'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings')
 	;
@@ -309,4 +309,4 @@
 
 	module.exports = AbstractRemoteStorage;
 
-}(module, require));
+}());

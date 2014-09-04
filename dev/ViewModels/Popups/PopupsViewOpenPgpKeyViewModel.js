@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,7 +7,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Utils'),
+		Utils = require('Common/Utils'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -56,4 +56,4 @@
 
 	module.exports = PopupsViewOpenPgpKeyViewModel;
 
-}(module, require));
+}());

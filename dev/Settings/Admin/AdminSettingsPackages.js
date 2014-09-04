@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		window = require('window'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 
 		Data = require('Storage:Admin:Data'),
 		Remote = require('Storage:Admin:Remote')
@@ -110,4 +110,4 @@
 
 	module.exports = AdminSettingsPackages;
 
-}(module, require));
+}());

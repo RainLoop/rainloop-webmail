@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,8 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Consts = require('Consts'),
-		Utils = require('Utils'),
+		Consts = require('Common/Consts'),
+		Utils = require('Common/Utils'),
 
 		Data = require('Storage:RainLoop:Data'),
 
@@ -50,4 +50,4 @@
 
 	module.exports = PopupsFilterViewModel;
 
-}(module, require));
+}());

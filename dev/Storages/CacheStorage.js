@@ -1,15 +1,15 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		_ = require('_'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings')
 	;
@@ -346,4 +346,4 @@
 
 	module.exports = new CacheStorage();
 
-}(module, require));
+}());

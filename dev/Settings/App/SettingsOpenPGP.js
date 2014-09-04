@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -80,4 +80,4 @@
 
 	module.exports = SettingsOpenPGP;
 
-}(module, require));
+}());

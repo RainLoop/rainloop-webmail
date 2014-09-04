@@ -1,10 +1,10 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -345,4 +345,4 @@
 
 	module.exports = EmailModel;
 
-}(module, require));
+}());

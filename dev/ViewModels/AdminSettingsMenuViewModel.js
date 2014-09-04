@@ -1,12 +1,12 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		_ = require('_'),
 		
-		Globals = require('Globals'),
+		Globals = require('Common/Globals'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -39,4 +39,4 @@
 
 	module.exports = AdminSettingsMenuViewModel;
 
-}(module, require));
+}());

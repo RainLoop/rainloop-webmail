@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -40,4 +40,4 @@
 
 	module.exports = OpenPgpKeyModel;
 
-}(module, require));
+}());

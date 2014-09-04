@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,10 +7,10 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		Events = require('Events')
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		Events = require('Common/Events')
 	;
 
 	/**
@@ -350,4 +350,4 @@
 
 	module.exports = FolderModel;
 
-}(module, require));
+}());

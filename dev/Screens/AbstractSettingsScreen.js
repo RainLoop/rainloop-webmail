@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,9 +8,9 @@
 		$ = require('$'),
 		ko = require('ko'),
 
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractScreen = require('Knoin:AbstractScreen')
@@ -29,9 +29,22 @@
 
 		this.oCurrentSubScreen = null;
 		this.oViewModelPlace = null;
+
+		this.setupSettings();
 	}
 
 	_.extend(AbstractSettingsScreen.prototype, KnoinAbstractScreen.prototype);
+
+	/**
+	 * @param {Function=} fCallback
+	 */
+	AbstractSettingsScreen.prototype.setupSettings = function (fCallback)
+	{
+		if (fCallback)
+		{
+			fCallback();
+		}
+	};
 
 	AbstractSettingsScreen.prototype.onRoute = function (sSubName)
 	{
@@ -196,4 +209,4 @@
 
 	module.exports = AbstractSettingsScreen;
 
-}(module, require));
+}());

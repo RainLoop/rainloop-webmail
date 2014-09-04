@@ -1,14 +1,14 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
 
 		Remote = require('Storage:RainLoop:Remote')
 	;
@@ -163,4 +163,4 @@
 
 	module.exports = SettingsSecurity;
 
-}(module, require));
+}());

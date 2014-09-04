@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -11,13 +11,13 @@
 		Jua = require('Jua'),
 		ifvisible = require('ifvisible'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		LinkBuilder = require('LinkBuilder'),
-		Events = require('Events'),
-		Selector = require('Selector'),
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		LinkBuilder = require('Common/LinkBuilder'),
+		Events = require('Common/Events'),
+		Selector = require('Common/Selector'),
 
 		Settings = require('Storage:Settings'),
 		Cache = require('Storage:RainLoop:Cache'),
@@ -932,4 +932,4 @@
 
 	module.exports = MailBoxMessageListViewModel;
 
-}(module, require));
+}());

@@ -1,6 +1,6 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module, require) {
+(function () {
 	
 	'use strict';
 
@@ -273,4 +273,4 @@
 
 	module.exports = new AdminRemoteStorage();
 
-}(module, require));
+}());

@@ -1,13 +1,13 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:RainLoop:Data'),
@@ -211,4 +211,4 @@
 
 	module.exports = SettingsFolders;
 
-}(module, require));
+}());

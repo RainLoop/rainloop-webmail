@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -67,4 +67,4 @@
 
 	module.exports = AdminSettingsLicensing;
 
-}(module, require));
+}());

@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,8 +8,8 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -128,4 +128,4 @@
 
 	module.exports = PopupsAskViewModel;
 
-}(module, require));
+}());

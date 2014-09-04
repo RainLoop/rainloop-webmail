@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -10,10 +10,10 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Utils = require('Utils'),
-		Enums = require('Enums'),
-		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
+		Utils = require('Common/Utils'),
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Settings = require('Storage:Settings'),
 		Cache = require('Storage:RainLoop:Cache'),
@@ -271,4 +271,4 @@
 
 	module.exports = MailBoxFolderListViewModel;
 
-}(module, require));
+}());

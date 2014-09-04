@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -10,10 +10,10 @@
 		ko = require('ko'),
 		moment = require('moment'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		Globals = require('Globals'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		Globals = require('Common/Globals'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		EmailModel = require('Model:Email'),
 		AttachmentModel = require('Model:Attachment')
@@ -1291,4 +1291,4 @@
 
 	module.exports = MessageModel;
 
-}(module, require));
+}());

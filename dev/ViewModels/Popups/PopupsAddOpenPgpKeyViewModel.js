@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,7 +7,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Utils'),
+		Utils = require('Common/Utils'),
 
 		Data = require('Storage:RainLoop:Data'),
 
@@ -107,4 +107,4 @@
 
 	module.exports = PopupsAddOpenPgpKeyViewModel;
 
-}(module, require));
+}());

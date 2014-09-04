@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -10,9 +10,9 @@
 		hasher = require('hasher'),
 		crossroads = require('crossroads'),
 
-		Globals = require('Globals'),
-		Plugins = require('Plugins'),
-		Utils = require('Utils')
+		Globals = require('Common/Globals'),
+		Plugins = require('Common/Plugins'),
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -458,4 +458,4 @@
 
 	module.exports = new Knoin();
 
-}(module, require));
+}());

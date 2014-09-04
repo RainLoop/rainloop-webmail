@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -12,13 +12,13 @@
 		JSON = require('JSON'),
 		Jua = require('Jua'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Utils = require('Utils'),
-		Globals = require('Globals'),
-		Events = require('Events'),
-		LinkBuilder = require('LinkBuilder'),
-		HtmlEditor = require('HtmlEditor'),
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Utils = require('Common/Utils'),
+		Globals = require('Common/Globals'),
+		Events = require('Common/Events'),
+		LinkBuilder = require('Common/LinkBuilder'),
+		HtmlEditor = require('Common/HtmlEditor'),
 
 		Settings = require('Storage:Settings'),
 		Data = require('Storage:RainLoop:Data'),
@@ -1787,4 +1787,4 @@
 
 	module.exports = PopupsComposeViewModel;
 
-}(module, require));
+}());

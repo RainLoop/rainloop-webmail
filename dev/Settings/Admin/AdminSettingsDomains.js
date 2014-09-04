@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -8,7 +8,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
+		Enums = require('Common/Enums'),
 
 		PopupsDomainViewModel = require('View:Popup:Domain'),
 
@@ -103,4 +103,4 @@
 
 	module.exports = AdminSettingsDomains;
 
-}(module, require));
+}());

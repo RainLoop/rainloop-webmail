@@ -200,11 +200,12 @@ class Service
 			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
-			'BootJsLink' => $sStaticPrefix.'js/boot.js',
-			'LibJsLink' => $sStaticPrefix.'js/libs.js',
+			'BootJsLink' => $sStaticPrefix.'js/min/boot.js',
+			'LibJsLink' => $sStaticPrefix.'js/min/libs.js',
 			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
-			'OpenPgpJsLink' => $sStaticPrefix.'js/openpgp.min.js',
-			'AppJsLink' => $sStaticPrefix.'js/'.($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js'
+			'OpenPgpJsLink' => $sStaticPrefix.'js/min/openpgp.min.js',
+			'CommonJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'common.js',
+			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
 		);
 
 		$aTemplateParameters =  array(
@@ -217,6 +218,7 @@ class Service
 			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
+			'{{BaseCommonMainScriptLink}}' => $aData['CommonJsLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
 			'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'

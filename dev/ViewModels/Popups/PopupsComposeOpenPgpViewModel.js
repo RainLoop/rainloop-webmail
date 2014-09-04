@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -9,8 +9,8 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Utils = require('Utils'),
-		Enums = require('Enums'),
+		Utils = require('Common/Utils'),
+		Enums = require('Common/Enums'),
 
 		Data = require('Storage:RainLoop:Data'),
 
@@ -262,4 +262,4 @@
 
 	module.exports = PopupsComposeOpenPgpViewModel;
 
-}(module, require));
+}());

@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -10,12 +10,12 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		Enums = require('Enums'),
-		Consts = require('Consts'),
-		Globals = require('Globals'),
-		Utils = require('Utils'),
-		Selector = require('Selector'),
-		LinkBuilder = require('LinkBuilder'),
+		Enums = require('Common/Enums'),
+		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+		Selector = require('Common/Selector'),
+		LinkBuilder = require('Common/LinkBuilder'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote'),
@@ -778,4 +778,4 @@
 
 	module.exports = PopupsContactsViewModel;
 
-}(module, require));
+}());

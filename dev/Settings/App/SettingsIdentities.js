@@ -1,5 +1,5 @@
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
@@ -7,9 +7,9 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Enums'),
-		Utils = require('Utils'),
-		HtmlEditor = require('HtmlEditor'),
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+		HtmlEditor = require('Common/HtmlEditor'),
 
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote')
@@ -230,4 +230,4 @@
 
 	module.exports = SettingsIdentities;
 
-}(module, require));
+}());

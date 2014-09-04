@@ -1,13 +1,13 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
-(function (module, require) {
+(function () {
 
 	'use strict';
 
 	var
 		window = require('window'),
 		
-		Utils = require('Utils')
+		Utils = require('Common/Utils')
 	;
 
 	/**
@@ -52,4 +52,4 @@
 
 	module.exports = new SettingsStorage();
 
-}(module, require));
+}());
