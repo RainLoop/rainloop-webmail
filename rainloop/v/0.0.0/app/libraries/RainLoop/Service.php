@@ -204,7 +204,6 @@ class Service
 			'LibJsLink' => $sStaticPrefix.'js/min/libs.js',
 			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
 			'OpenPgpJsLink' => $sStaticPrefix.'js/min/openpgp.min.js',
-			'CommonJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'common.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
 		);
 
@@ -218,7 +217,6 @@ class Service
 			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
-			'{{BaseCommonMainScriptLink}}' => $aData['CommonJsLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
 			'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
