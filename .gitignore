@@ -1,7 +1,9 @@
 /.idea
 /nbproject
 /npm-debug.log
-/rainloop/v/0.0.0/static/css/less.css
+/rainloop/v/0.0.0/static/css/*.css
+/rainloop/v/0.0.0/static/js/*.js
+/rainloop/v/0.0.0/static/js/**/*.js
 /node_modules
 /build/local
 /build/dist
