@@ -353,7 +353,7 @@
 	MessageModel.prototype.computeSenderEmail = function ()
 	{
 		var
-			Data = require('Storage:RainLoop:Data'),
+			Data = require('Storage/App/Data'),
 			sSent = Data.sentFolder(),
 			sDraft = Data.draftFolder()
 		;
@@ -432,7 +432,7 @@
 	{
 	   var
 		   bResult = false,
-		   Data = require('Storage:RainLoop:Data'),
+		   Data = require('Storage/App/Data'),
 		   iPriority = Enums.MessagePriority.Normal
 	   ;
 
@@ -1088,7 +1088,7 @@
 
 		   this.body.data('rl-plain-raw', this.plainRaw);
 
-		   var Data = require('Storage:RainLoop:Data');
+		   var Data = require('Storage/App/Data');
 		   if (Data.capaOpenPGP())
 		   {
 			   this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
@@ -1101,7 +1101,7 @@
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-		var Data = require('Storage:RainLoop:Data');
+		var Data = require('Storage/App/Data');
 		if (this.body && Data.capaOpenPGP())
 		{
 			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
@@ -1118,7 +1118,7 @@
 
 			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-			var Data = require('Storage:RainLoop:Data');
+			var Data = require('Storage/App/Data');
 			if (Data.capaOpenPGP())
 			{
 				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
@@ -1143,7 +1143,7 @@
 		   var
 			   aRes = [],
 			   mPgpMessage = null,
-			   Data = require('Storage:RainLoop:Data'),
+			   Data = require('Storage/App/Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKeys = Data.findPublicKeysByEmail(sFrom),
 			   oValidKey = null,
@@ -1207,7 +1207,7 @@
 			   aRes = [],
 			   mPgpMessage = null,
 			   mPgpMessageDecrypted = null,
-			   Data = require('Storage:RainLoop:Data'),
+			   Data = require('Storage/App/Data'),
 			   sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
 			   aPublicKey = Data.findPublicKeysByEmail(sFrom),
 			   oPrivateKey = Data.findSelfPrivateKey(sPassword),

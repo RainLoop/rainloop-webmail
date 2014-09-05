@@ -157,7 +157,7 @@
 			{
 				oParams = Utils.simpleQueryParser(sQueryString);
 
-				require('App:Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
+				require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
 					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
 					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
 				]);

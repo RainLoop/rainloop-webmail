@@ -41,7 +41,9 @@ $(function () {
 	if (window.rl)
 	{
 		window.rl.addHook('view-model-on-show', function (sName, oViewModel) {
-			if (!bStarted && ('View:RainLoop:Login' === sName || 'LoginViewModel' === sName) && oViewModel && window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
+			if (!bStarted && oViewModel &&
+				('View:RainLoop:Login' === sName || 'View/App/Login' === sName || 'LoginViewModel' === sName || 'LoginAppView' === sName) &&
+				window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
 			{
 				bStarted = true;
 				StartRecaptcha();

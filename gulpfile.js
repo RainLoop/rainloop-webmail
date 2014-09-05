@@ -68,6 +68,7 @@ function renameFileWothMd5Hash(sFile)
 }
 
 cfg.paths.globjs = 'dev/**/*.js';
+cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
 cfg.paths.staticCSS = 'rainloop/v/' + cfg.devVersion + '/static/css/';
@@ -236,6 +237,16 @@ gulp.task('js:libs', ['js:encrypt'], function() {
 	return gulp.src(cfg.paths.js.libs.src)
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
+});
+
+gulp.task('js:ckeditor:beautify', function() {
+	var beautify = require('gulp-beautify');
+	return gulp.src(cfg.paths.static + 'ckeditor/ckeditor.js')
+		.pipe(beautify({
+			'indentSize': 2
+		}))
+		.pipe(rename('ckeditor.beautify.js'))
+		.pipe(gulp.dest(cfg.paths.static + 'ckeditor/'));
 });
 
 gulp.task('js:webpack:clear', function() {

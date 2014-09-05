@@ -12,7 +12,7 @@
 	 */
 	function LinkBuilder()
 	{
-		var Settings = require('Storage:Settings');
+		var Settings = require('Storage/Settings');
 
 		this.sBase = '#/';
 		this.sServer = './?';

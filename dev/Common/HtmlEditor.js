@@ -8,7 +8,7 @@
 		_ = require('_'),
 
 		Globals = require('Common/Globals'),
-		Settings = require('Storage:Settings')
+		Settings = require('Storage/Settings')
 	;
 
 	/**
@@ -78,6 +78,7 @@
 	};
 
 	/**
+	 * @param {boolean=} bWrapIsHtml = false
 	 * @return {string}
 	 */
 	HtmlEditor.prototype.getData = function (bWrapIsHtml)

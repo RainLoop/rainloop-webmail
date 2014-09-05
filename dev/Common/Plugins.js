@@ -15,7 +15,7 @@
 	 */
 	function Plugins()
 	{
-		this.oSettings = require('Storage:Settings');
+		this.oSettings = require('Storage/Settings');
 		this.oViewModelsHooks = {};
 		this.oSimpleHooks = {};
 	}

@@ -1,6 +1,6 @@
 
 $(function () {
-	if (window.snowFall && !window.rl.settingsGet('Auth'))
+	if (window.snowFall && window.rl && !window.rl.settingsGet('Auth'))
 	{
 		var
 			sUserAgent = (navigator.userAgent || '').toLowerCase(),

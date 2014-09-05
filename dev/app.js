@@ -1,0 +1,1 @@
+require('App/Boot')(require('App/App'));
