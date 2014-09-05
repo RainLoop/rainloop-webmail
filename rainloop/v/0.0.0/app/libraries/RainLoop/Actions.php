@@ -2650,13 +2650,22 @@ class Actions
 		$bResult = false;
 		$oConfig = $this->Config();
 
+		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$sNewPassword = $this->GetActionParam('NewPassword', '');
 
+		$this->Logger()->AddSecret($sPassword);
+		$this->Logger()->AddSecret($sNewPassword);
+
 		if ($oConfig->ValidatePassword($sPassword))
 		{
-			$bResult = true;
+			if (0 < strlen($sLogin))
+			{
+				$oConfig->Set('security', 'admin_login', $sLogin);
+			}
+			
 			$oConfig->SetPassword($sNewPassword);
+			$bResult = true;
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult ? $oConfig->Save() : false);
@@ -7400,6 +7409,8 @@ class Actions
 					$mResult['Plain'] = $sPlain;
 //					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
 
+					$this->Logger()->WriteDump($mResult['Html']);
+					
 					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
 					$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();

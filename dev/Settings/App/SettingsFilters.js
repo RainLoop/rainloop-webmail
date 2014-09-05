@@ -30,7 +30,7 @@
 	SettingsFilters.prototype.addFilter = function ()
 	{
 		var
-			FilterModel = require('Model:Filter')
+			FilterModel = require('Model/Filter')
 		;
 
 		require('App:Knoin').showScreenPopup(

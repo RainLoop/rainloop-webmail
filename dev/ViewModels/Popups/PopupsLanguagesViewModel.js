@@ -22,7 +22,7 @@
 	{
 		KnoinAbstractViewModel.call(this, 'Popups', 'PopupsLanguages');
 
-		this.Data = Globals.__APP.data(); // TODO
+		this.Data = Globals.__APP__.data(); // TODO
 
 		this.exp = ko.observable(false);
 

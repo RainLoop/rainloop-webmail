@@ -381,10 +381,7 @@
 		}
 		else if (Data.useThreads())
 		{
-			if (Globals.__APP)
-			{
-				Globals.__APP.reloadFlagsCurrentMessageListAndMessageFromCache();
-			}
+			require('App:RainLoop').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 

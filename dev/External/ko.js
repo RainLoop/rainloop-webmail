@@ -568,7 +568,7 @@
 
 			var
 				Utils = require('Common/Utils'),
-				EmailModel = require('Model:Email'),
+				EmailModel = require('Model/Email'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
@@ -600,7 +600,6 @@
 						{
 							oEmail = new EmailModel();
 							oEmail.mailsoParse(sValue);
-							oEmail.clearDuplicateName();
 							return [oEmail.toLine(false), oEmail];
 						}
 
@@ -642,7 +641,7 @@
 
 			var
 				Utils = require('Common/Utils'),
-				ContactTagModel = require('Model:ContactTag'),
+				ContactTagModel = require('Model/ContactTag'),
 
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),

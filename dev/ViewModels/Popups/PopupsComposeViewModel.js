@@ -25,7 +25,7 @@
 		Cache = require('Storage:RainLoop:Cache'),
 		Remote = require('Storage:RainLoop:Remote'),
 
-		ComposeAttachmentModel = require('Model:ComposeAttachment'),
+		ComposeAttachmentModel = require('Model/ComposeAttachment'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')

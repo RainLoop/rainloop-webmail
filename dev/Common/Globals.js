@@ -118,7 +118,7 @@
 	/**
 	 * @type {*}
 	 */
-	Globals.__APP = null;
+	Globals.__APP__ = null;
 
 	/**
 	 * @type {Object}

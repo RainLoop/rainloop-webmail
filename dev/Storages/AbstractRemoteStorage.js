@@ -64,9 +64,9 @@
 
 				   if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
 				   {
-					   if (Globals.__APP)
+					   if (Globals.__APP__)
 					   {
-							Globals.__APP.loginAndLogoutReload(true);
+							Globals.__APP__.loginAndLogoutReload(true);
 					   }
 				   }
 
@@ -77,9 +77,9 @@
 						   window.__rlah_clear();
 					   }
 
-					   if (Globals.__APP)
+					   if (Globals.__APP__)
 					   {
-							Globals.__APP.loginAndLogoutReload(true);
+							Globals.__APP__.loginAndLogoutReload(true);
 					   }
 				   }
 			   }

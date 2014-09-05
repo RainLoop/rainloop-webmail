@@ -8,7 +8,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		FilterConditionModel = require('Model:FilterCondition')
+		FilterConditionModel = require('Model/FilterCondition')
 	;
 
 	/**

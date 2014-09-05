@@ -20,10 +20,10 @@
 		Data = require('Storage:RainLoop:Data'),
 		Remote = require('Storage:RainLoop:Remote'),
 
-		EmailModel = require('Model:Email'),
-		ContactModel = require('Model:Contact'),
-		ContactTagModel = require('Model:ContactTag'),
-		ContactPropertyModel = require('Model:ContactProperty'),
+		EmailModel = require('Model/Email'),
+		ContactModel = require('Model/Contact'),
+		ContactTagModel = require('Model/ContactTag'),
+		ContactPropertyModel = require('Model/ContactProperty'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')

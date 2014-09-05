@@ -22,7 +22,7 @@
 
 		kn = require('App:Knoin'),
 
-		MessageModel = require('Model:Message'),
+		MessageModel = require('Model/Message'),
 
 		LocalStorage = require('Storage:LocalStorage'),
 		AbstractData = require('Storage:Abstract:Data')
@@ -323,10 +323,7 @@
 				if (Enums.Layout.NoPreview === this.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
-					if (Globals.__APP)
-					{
-						Globals.__APP.historyBack();
-					}
+					require('App:RainLoop').historyBack();
 				}
 			}
 			else if (Enums.Layout.NoPreview === this.layout())
@@ -443,6 +440,7 @@
 		// other
 		this.capaOpenPGP = ko.observable(false);
 		this.openpgpkeys = ko.observableArray([]);
+		this.openpgp = null;
 		this.openpgpKeyring = null;
 
 		this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
@@ -782,7 +780,6 @@
 	};
 
 	/**
-	 * @private
 	 * @param {Object} oMessageTextBody
 	 */
 	DataStorage.prototype.initBlockquoteSwitcher = function (oMessageTextBody)
@@ -795,22 +792,24 @@
 
 			if ($oList && 0 < $oList.length)
 			{
-				$oList.each(function () {
-					var $self = $(this), iH = $self.height();
-					if (0 === iH || 100 < iH)
-					{
-						$self.addClass('rl-bq-switcher hidden-bq');
-						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-							.insertBefore($self)
-							.click(function () {
-								$self.toggleClass('hidden-bq');
-								Utils.windowResize();
-							})
-							.after('<br />')
-							.before('<br />')
-						;
-					}
-				});
+				_.delay(function () {
+					$oList.each(function () {
+						var $self = $(this), iH = $self.height();
+						if (0 === iH || 150 < iH)
+						{
+							$self.addClass('rl-bq-switcher hidden-bq');
+							$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
+								.insertBefore($self)
+								.click(function () {
+									$self.toggleClass('hidden-bq');
+									Utils.windowResize();
+								})
+								.after('<br />')
+								.before('<br />')
+							;
+						}
+					});
+				}, 100);
 			}
 		}
 	};
@@ -818,6 +817,7 @@
 	DataStorage.prototype.setMessage = function (oData, bCached)
 	{
 		var
+			self = this,
 			bIsHtml = false,
 			bHasExternals = false,
 			bHasInternals = false,
@@ -908,7 +908,7 @@
 					}
 
 					oBody
-						.html(Utils.linkify(sResultHtml))
+						.html(Utils.findEmailAndLinks(sResultHtml))
 						.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
 					;
 
@@ -961,10 +961,7 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 			if (oMessage.unseen())
 			{
-				if (Globals.__APP)
-				{
-					Globals.__APP.setMessageSeen(oMessage);
-				}
+				require('App:RainLoop').setMessageSeen(oMessage);
 			}
 
 			Utils.windowResize();
@@ -991,6 +988,7 @@
 
 	DataStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	{
+		var self = this;
 		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
 
 			var oKey = null;
@@ -998,7 +996,7 @@
 			{
 				try
 				{
-					oKey = window.openpgp.key.readArmored(oItem.armor);
+					oKey = self.openpgp.key.readArmored(oItem.armor);
 					if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
 					{
 						return oKey.keys[0];
@@ -1020,6 +1018,7 @@
 	DataStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 	{
 		var
+			self = this,
 			oPrivateKey = null,
 			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
 				return oItem && sEmail === oItem.email;
@@ -1030,7 +1029,7 @@
 		{
 			try
 			{
-				oPrivateKey = window.openpgp.key.readArmored(oKey.armor);
+				oPrivateKey = self.openpgp.key.readArmored(oKey.armor);
 				if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
 				{
 					oPrivateKey = oPrivateKey.keys[0];

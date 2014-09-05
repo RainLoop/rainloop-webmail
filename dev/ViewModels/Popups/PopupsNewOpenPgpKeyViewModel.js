@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
 
@@ -62,8 +61,8 @@
 			this.submitRequest(true);
 
 			_.delay(function () {
-	//			mKeyPair = window.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
-				mKeyPair = window.openpgp.generateKeyPair({
+	//			mKeyPair = Data.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
+				mKeyPair = Data.openpgp.generateKeyPair({
 					'userId': sUserID,
 					'numBits': Utils.pInt(self.keyBitLength()),
 					'passphrase': Utils.trim(self.password())

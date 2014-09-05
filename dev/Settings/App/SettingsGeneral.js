@@ -76,28 +76,23 @@
 
 				self.languageTrigger(Enums.SaveSettingsStep.Animate);
 
-				$.ajax({
-					'url': LinkBuilder.langLink(sValue),
-					'dataType': 'script',
-					'cache': true
-				}).done(function() {
-					Utils.i18nReload();
+				Utils.reloadLanguage(sValue, function() {
 					self.languageTrigger(Enums.SaveSettingsStep.TrueResult);
-				}).fail(function() {
+				}, function() {
 					self.languageTrigger(Enums.SaveSettingsStep.FalseResult);
-				}).always(function() {
+				}, function() {
 					_.delay(function () {
 						self.languageTrigger(Enums.SaveSettingsStep.Idle);
 					}, 1000);
 				});
 
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'Language': sValue
 				});
 			});
 
 			Data.editorDefaultType.subscribe(function (sValue) {
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'EditorDefaultType': sValue
 				});
 			});
@@ -109,20 +104,20 @@
 			});
 
 			Data.showImages.subscribe(function (bValue) {
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'ShowImages': bValue ? '1' : '0'
 				});
 			});
 
 			Data.interfaceAnimation.subscribe(function (sValue) {
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'InterfaceAnimation': sValue
 				});
 			});
 
 			Data.useDesktopNotifications.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveDesktopNotifications', function () {
-					Remote.saveSettings(Utils.emptyFunction, {
+					Remote.saveSettings(null, {
 						'DesktopNotifications': bValue ? '1' : '0'
 					});
 				}, 3000);
@@ -130,7 +125,7 @@
 
 			Data.replySameFolder.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveReplySameFolder', function () {
-					Remote.saveSettings(Utils.emptyFunction, {
+					Remote.saveSettings(null, {
 						'ReplySameFolder': bValue ? '1' : '0'
 					});
 				}, 3000);
@@ -140,7 +135,7 @@
 
 				Data.messageList([]);
 
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'UseThreads': bValue ? '1' : '0'
 				});
 			});
@@ -149,13 +144,13 @@
 
 				Data.messageList([]);
 
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'Layout': nValue
 				});
 			});
 
 			Data.useCheckboxesInList.subscribe(function (bValue) {
-				Remote.saveSettings(Utils.emptyFunction, {
+				Remote.saveSettings(null, {
 					'UseCheckboxesInList': bValue ? '1' : '0'
 				});
 			});

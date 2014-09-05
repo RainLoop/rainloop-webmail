@@ -25,12 +25,12 @@
 		Cache = require('Storage:RainLoop:Cache'),
 		Remote = require('Storage:RainLoop:Remote'),
 
-		EmailModel = require('Model:Email'),
-		FolderModel = require('Model:Folder'),
-		MessageModel = require('Model:Message'),
-		AccountModel = require('Model:Account'),
-		IdentityModel = require('Model:Identity'),
-		OpenPgpKeyModel = require('Model:OpenPgpKey'),
+		EmailModel = require('Model/Email'),
+		FolderModel = require('Model/Folder'),
+		MessageModel = require('Model/Message'),
+		AccountModel = require('Model/Account'),
+		IdentityModel = require('Model/Identity'),
+		OpenPgpKeyModel = require('Model/OpenPgpKey'),
 
 		AbstractApp = require('App:Abstract')
 	;
@@ -1298,19 +1298,20 @@
 		{
 			this.setTitle(Utils.i18n('TITLES/LOADING'));
 
-			this.folders(_.bind(function (bValue) {
+			require.ensure([], function () {
 
-				if (bValue)
-				{
-					require.ensure([], function () {
+				self.folders(_.bind(function (bValue) {
 
-						kn.hideLoading();
+					kn.hideLoading();
 
+					if (bValue)
+					{
 						if (window.$LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 								if (window.openpgp)
 								{
+									Data.openpgp = window.openpgp;
 									Data.openpgpKeyring = new window.openpgp.Keyring();
 									Data.capaOpenPGP(true);
 
@@ -1400,21 +1401,20 @@
 								self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
 							});
 						}
-					});
-				}
-				else
-				{
-					kn.hideLoading();
+					}
+					else
+					{
+						self.bootstartLoginScreen();
+					}
 
-					self.bootstartLoginScreen();
-				}
+					if (window.SimplePace)
+					{
+						window.SimplePace.set(100);
+					}
 
-				if (window.SimplePace)
-				{
-					window.SimplePace.set(100);
-				}
-
-			}, this));
+				}, self));
+				
+			});
 		}
 		else
 		{

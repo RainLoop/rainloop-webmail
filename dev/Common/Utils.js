@@ -10,6 +10,7 @@
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
+		Autolinker = require('Autolinker'),
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
@@ -146,7 +147,7 @@
 				oEmailModel = null,
 				sEmail = sMailToUrl.replace(/\?.+$/, ''),
 				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
-				EmailModel = require('Model:Email')
+				EmailModel = require('Model/Email')
 			;
 
 			oEmailModel = new EmailModel();
@@ -1517,10 +1518,10 @@
 
 	/**
 	 * @param {string} sPlain
-	 * @param {boolean} bLinkify = false
+	 * @param {boolean} bFindEmailAndLinks = false
 	 * @return {string}
 	 */
-	Utils.plainToHtml = function (sPlain, bLinkify)
+	Utils.plainToHtml = function (sPlain, bFindEmailAndLinks)
 	{
 		sPlain = sPlain.toString().replace(/\r/g, '');
 
@@ -1551,9 +1552,16 @@
 				}
 				else if (!bStart && bIn)
 				{
-					bIn = false;
-					aNextText.push('~~~/blockquote~~~');
-					aNextText.push(sLine);
+					if ('' !== sLine)
+					{
+						bIn = false;
+						aNextText.push('~~~/blockquote~~~');
+						aNextText.push(sLine);
+					}
+					else
+					{
+						aNextText.push(sLine);
+					}
 				}
 				else if (bStart && bIn)
 				{
@@ -1578,6 +1586,7 @@
 		sPlain = aText.join("\n");
 
 		sPlain = sPlain
+//			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
@@ -1585,7 +1594,7 @@
 			.replace(/[\-_~]{10,}/g, '<hr />')
 			.replace(/\n/g, '<br />');
 
-		return bLinkify ? Utils.linkify(sPlain) : sPlain;
+		return bFindEmailAndLinks ? Utils.findEmailAndLinks(sPlain) : sPlain;
 	};
 
 	window.rainloop_Utils_htmlToPlain = Utils.htmlToPlain;
@@ -1595,17 +1604,25 @@
 	 * @param {string} sHtml
 	 * @return {string}
 	 */
-	Utils.linkify = function (sHtml)
+	Utils.findEmailAndLinks = function (sHtml)
 	{
-		if ($.fn && $.fn.linkify)
-		{
-			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
-				.linkify()
-				.find('.linkified').removeClass('linkified').end()
-				.html()
-				.replace(/amp_amp_12345_amp_amp/g, '&amp;')
-			;
-		}
+		sHtml = Autolinker.link(sHtml, {
+			'newWindow': true,
+			'stripPrefix': false,
+			'urls': true,
+			'email': true,
+			'twitter': false
+		});
+
+//		if ($.fn && $.fn.linkify)
+//		{
+//			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
+//				.linkify()
+//				.find('.linkified').removeClass('linkified').end()
+//				.html()
+//				.replace(/amp_amp_12345_amp_amp/g, '&amp;')
+//			;
+//		}
 
 		return sHtml;
 	};
@@ -1934,6 +1951,29 @@
 		{
 			fFunc();
 		}
+	};
+
+
+	/**
+	 * @param {string} sLanguage
+	 * @param {Function=} fDone
+	 * @param {Function=} fFail
+	 * @param {Function=} fAllways
+	 */
+	Utils.reloadLanguage = function (sLanguage, fDone, fFail, fAllways)
+	{
+		$.ajax({
+				'url': require('Common/LinkBuilder').langLink(sLanguage),
+				'dataType': 'script',
+				'cache': true
+			})
+			.done(function () {
+				Utils.i18nReload();
+				(fDone || Utils.emptyFunction)();
+			})
+			.fail(fFail || Utils.emptyFunction)
+			.always(fAllways || Utils.emptyFunction)
+		;
 	};
 
 	module.exports = Utils;

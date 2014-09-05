@@ -47,7 +47,7 @@
 	SettingsContacts.prototype.onBuild = function ()
 	{
 		Data.contactsAutosave.subscribe(function (bValue) {
-			Remote.saveSettings(Utils.emptyFunction, {
+			Remote.saveSettings(null, {
 				'ContactsAutosave': bValue ? '1' : '0'
 			});
 		});

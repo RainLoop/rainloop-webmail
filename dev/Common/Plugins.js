@@ -6,6 +6,7 @@
 	var
 		_ = require('_'),
 
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils')
 	;
 
@@ -14,19 +15,15 @@
 	 */
 	function Plugins()
 	{
-		this.__boot = null;
-		this.__data = null;
-		this.__remote = null;
-
 		this.oSettings = require('Storage:Settings');
-
 		this.oViewModelsHooks = {};
 		this.oSimpleHooks = {};
 	}
 
-	Plugins.prototype.__boot = null;
-	Plugins.prototype.__data = null;
-	Plugins.prototype.__remote = null;
+	/**
+	 * @type {Object}
+	 */
+	Plugins.prototype.oSettings = {};
 
 	/**
 	 * @type {Object}
@@ -90,9 +87,9 @@
 	 */
 	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
 	{
-		if (this.__remote)
+		if (Globals.__APP__)
 		{
-			this.__remote.defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			Globals.__APP__.remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
 		}
 	};
 

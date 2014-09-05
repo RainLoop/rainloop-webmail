@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
 		key = require('key'),
@@ -14,7 +13,7 @@
 
 		Data = require('Storage:RainLoop:Data'),
 
-		EmailModel = require('Model:Email'),
+		EmailModel = require('Model/Email'),
 
 		kn = require('App:Knoin'),
 		KnoinAbstractViewModel = require('Knoin:AbstractViewModel')
@@ -114,19 +113,19 @@
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
 							self.resultCallback(
-								window.openpgp.signClearMessage([oPrivateKey], self.text())
+								Data.openpgp.signClearMessage([oPrivateKey], self.text())
 							);
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								window.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
+								Data.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
 							);
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								window.openpgp.encryptMessage(aPublicKeys, self.text())
+								Data.openpgp.encryptMessage(aPublicKeys, self.text())
 							);
 						}
 					}

@@ -15,26 +15,25 @@
 			Utils = require('Common/Utils'),
 			Enums = require('Common/Enums'),
 
-			EmailModel = require('Model:Email')
+			EmailModel = require('Model/Email')
 		;
 
-		Globals.__APP = App;
+		Globals.__APP__ = App;
 
-		Plugins.__boot = App;
-		Plugins.__remote = App.remote();
-		Plugins.__data = App.data();
+		Globals.$win
+			.keydown(Utils.killCtrlAandS)
+			.keyup(Utils.killCtrlAandS)
+			.unload(function () {
+				Globals.bUnload = true;
+			})
+		;
 
-		Globals.$html.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile');
-
-		Globals.$win.keydown(Utils.killCtrlAandS).keyup(Utils.killCtrlAandS);
-
-		Globals.$win.unload(function () {
-			Globals.bUnload = true;
-		});
-
-		Globals.$html.on('click.dropdown.data-api', function () {
-			Utils.detectDropdownVisibility();
-		});
+		Globals.$html
+			.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile')
+			.on('click.dropdown.data-api', function () {
+				Utils.detectDropdownVisibility();
+			})
+		;
 
 		// export
 		window['rl'] = window['rl'] || {};
@@ -49,7 +48,6 @@
 
 		window['__APP_BOOT'] = function (fCall) {
 
-			// boot
 			$(function () {
 
 				if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
@@ -59,7 +57,11 @@
 					_.delay(function () {
 
 						App.bootstart();
-						Globals.$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+						
+						Globals.$html
+							.removeClass('no-js rl-booted-trigger')
+							.addClass('rl-booted')
+						;
 
 					}, 10);
 				}

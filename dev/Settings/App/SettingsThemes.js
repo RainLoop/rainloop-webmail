@@ -29,8 +29,8 @@
 
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
 
-		this.oLastAjax = null;
 		this.iTimer = 0;
+		this.oThemeAjaxRequest = null;
 
 		Data.theme.subscribe(function (sValue) {
 
@@ -62,12 +62,12 @@
 				window.clearTimeout(self.iTimer);
 				self.themeTrigger(Enums.SaveSettingsStep.Animate);
 
-				if (this.oLastAjax && this.oLastAjax.abort)
+				if (this.oThemeAjaxRequest && this.oThemeAjaxRequest.abort)
 				{
-					this.oLastAjax.abort();
+					this.oThemeAjaxRequest.abort();
 				}
 
-				this.oLastAjax = $.ajax({
+				this.oThemeAjaxRequest = $.ajax({
 					'url': sUrl,
 					'dataType': 'json'
 				}).done(function(aData) {
@@ -103,7 +103,7 @@
 						self.themeTrigger(Enums.SaveSettingsStep.Idle);
 					}, 1000);
 
-					self.oLastAjax = null;
+					self.oThemeAjaxRequest = null;
 				});
 			}
 

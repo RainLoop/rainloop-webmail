@@ -15,8 +15,8 @@
 		Globals = require('Common/Globals'),
 		LinkBuilder = require('Common/LinkBuilder'),
 
-		EmailModel = require('Model:Email'),
-		AttachmentModel = require('Model:Attachment')
+		EmailModel = require('Model/Email'),
+		AttachmentModel = require('Model/Attachment')
 	;
 
 	/**
@@ -431,8 +431,8 @@
 	MessageModel.prototype.initUpdateByMessageJson = function (oJsonMessage)
 	{
 	   var
-		   Data = require('Storage:RainLoop:Data'),
 		   bResult = false,
+		   Data = require('Storage:RainLoop:Data'),
 		   iPriority = Enums.MessagePriority.Normal
 	   ;
 
@@ -1156,7 +1156,7 @@
 
 		   try
 		   {
-			   mPgpMessage = window.openpgp.cleartext.readArmored(this.plainRaw);
+			   mPgpMessage = Data.openpgp.cleartext.readArmored(this.plainRaw);
 			   if (mPgpMessage && mPgpMessage.getText)
 			   {
 				   this.pgpSignedVerifyStatus(
@@ -1226,7 +1226,7 @@
 
 		   try
 		   {
-			   mPgpMessage = window.openpgp.message.readArmored(this.plainRaw);
+			   mPgpMessage = Data.openpgp.message.readArmored(this.plainRaw);
 			   if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
 			   {
 				   this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);

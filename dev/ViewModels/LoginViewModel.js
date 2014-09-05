@@ -337,18 +337,16 @@
 
 		_.delay(function () {
 			Data.language.subscribe(function (sValue) {
+				
 				self.langRequest(true);
-				$.ajax({
-					'url': LinkBuilder.langLink(sValue),
-					'dataType': 'script',
-					'cache': true
-				}).done(function() {
+				
+				Utils.reloadLanguage(sValue, function() {
 					self.bSendLanguage = true;
-					Utils.i18nReload();
-					$.cookie('rllang', Data.language(), {'expires': 30});
-				}).always(function() {
+					$.cookie('rllang', sValue, {'expires': 30});
+				}, null, function() {
 					self.langRequest(false);
 				});
+				
 			});
 		}, 50);
 
