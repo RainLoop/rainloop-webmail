@@ -1219,7 +1219,8 @@ class Utils
 			{
 				if ('.' !== $sObject && '..' !== $sObject)
 				{
-					if ('dir' === \filetype($sDir.'/'.$sObject))
+//					if ('dir' === \filetype($sDir.'/'.$sObject))
+					if (\is_dir($sDir.'/'.$sObject))
 					{
 						self::RecRmDir($sDir.'/'.$sObject);
 					}
