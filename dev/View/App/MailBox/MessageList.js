@@ -690,7 +690,7 @@
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!Globals.bMobileDevice && Settings.capa(Enums.Capa.Prefetch) && ifvisible)
+		if (!Globals.bMobileDevice && ifvisible && Settings.capa(Enums.Capa.Prefetch))
 		{
 			ifvisible.setIdleDuration(10);
 
@@ -824,7 +824,7 @@
 
 	MessageListMailBoxAppView.prototype.prefetchNextTick = function ()
 	{
-		if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisibility())
+		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisibility())
 		{
 			var
 				self = this,
