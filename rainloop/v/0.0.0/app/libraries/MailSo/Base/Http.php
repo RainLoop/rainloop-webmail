@@ -522,11 +522,12 @@ class Http
 	 * @param string $sProxy = ''
 	 * @param string $sProxyAuth = ''
 	 * @param array $aHttpHeaders = array()
+	 * @param bool $bFollowLocation = true
 	 *
 	 * @return bool
 	 */
 	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array())
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array(), $bFollowLocation = true)
 	{
 		if (null === $sCustomUserAgent)
 		{
@@ -549,7 +550,7 @@ class Http
 			CURLOPT_FAILONERROR => true,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_FOLLOWLOCATION => !!$bFollowLocation,
 			CURLOPT_MAXREDIRS => 7,
 			CURLOPT_FILE => $rFile,
 			CURLOPT_TIMEOUT => (int) $iTimeout
@@ -620,14 +621,15 @@ class Http
 	 * @param string $sProxy = ''
 	 * @param string $sProxyAuth = ''
 	 * @param array $aHttpHeaders = array()
+	 * @param bool $bFollowLocation = true
 	 *
 	 * @return string|bool
 	 */
 	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array())
+		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array(), $bFollowLocation = true)
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth, $aHttpHeaders) && \is_resource($rMemFile))
+		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth, $aHttpHeaders, $bFollowLocation) && \is_resource($rMemFile))
 		{
 			\rewind($rMemFile);
 			return \stream_get_contents($rMemFile);

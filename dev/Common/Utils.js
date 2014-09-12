@@ -848,16 +848,14 @@
 	Utils.createCommand = function (oContext, fExecute, fCanExecute)
 	{
 		var
-			fResult = fExecute ? function () {
-
+			fNonEmpty = function () {
 				if (fResult && fResult.canExecute && fResult.canExecute())
 				{
 					fExecute.apply(oContext, Array.prototype.slice.call(arguments));
 				}
-
 				return false;
-
-			} : function () {}
+			},
+			fResult = fExecute ? fNonEmpty : Utils.emptyFunction;
 		;
 
 		fResult.enabled = ko.observable(true);

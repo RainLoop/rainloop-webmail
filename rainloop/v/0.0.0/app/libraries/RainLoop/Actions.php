@@ -2529,7 +2529,9 @@ class Actions
 
 				$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
 					'RainLoop',	$sContentType, $iCode, $this->Logger(), 10,
-					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
+					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+					array(), false
+				);
 
 				if (200 !== $iCode)
 				{
@@ -2599,7 +2601,9 @@ class Actions
 			\sleep(1);
 			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
 				'RainLoop',	$sContentType, $iCode, $this->Logger(), 10,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+				array(), false
+			);
 
 			if (200 !== $iCode)
 			{
