@@ -2667,7 +2667,7 @@ class Actions
 			{
 				$oConfig->Set('security', 'admin_login', $sLogin);
 			}
-			
+
 			$oConfig->SetPassword($sNewPassword);
 			$bResult = true;
 		}
@@ -4858,26 +4858,33 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 		}
 
-		if ($oMessage && $this->AddressBookProvider($oAccount)->IsActive())
+		try
 		{
-			$aArrayToFrec = array();
-			$oToCollection = $oMessage->GetTo();
-			if ($oToCollection)
+			if ($oMessage && $this->AddressBookProvider($oAccount)->IsActive())
 			{
-				$aTo =& $oToCollection->GetAsArray();
-				foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+				$aArrayToFrec = array();
+				$oToCollection = $oMessage->GetTo();
+				if ($oToCollection)
 				{
-					$aArrayToFrec[$oEmail->GetEmail(true)] = $oEmail->ToString(false, true);
+					$aTo =& $oToCollection->GetAsArray();
+					foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+					{
+						$aArrayToFrec[$oEmail->GetEmail(true)] = $oEmail->ToString(false, true);
+					}
+				}
+
+				if (0 < \count($aArrayToFrec))
+				{
+					$oSettings = $this->SettingsProvider()->Load($oAccount);
+
+					$this->AddressBookProvider($oAccount)->IncFrec(
+						$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
 				}
 			}
-
-			if (0 < \count($aArrayToFrec))
-			{
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-
-				$this->AddressBookProvider($oAccount)->IncFrec(
-					$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
-			}
+		}
+		catch (\Exception $oException)
+		{
+			$this->Logger()->WriteException($oException);
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
@@ -7414,7 +7421,7 @@ class Actions
 //					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
 
 					$this->Logger()->WriteDump($mResult['Html']);
-					
+
 					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
 					$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();
