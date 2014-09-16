@@ -196,57 +196,6 @@
 	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && window.RSAKey);
 
 	/**
-	 * @param {string} sPath
-	 * @param {*=} oObject
-	 * @param {Object=} oObjectToExportTo
-	 */
-	Utils.exportPath = function (sPath, oObject, oObjectToExportTo)
-	{
-		var
-			sPart = null,
-			aParts = sPath.split('.'),
-			oCur = oObjectToExportTo || window
-		;
-
-		for (; aParts.length && (sPart = aParts.shift());)
-		{
-			if (!aParts.length && !Utils.isUnd(oObject))
-			{
-				oCur[sPart] = oObject;
-			}
-			else if (oCur[sPart])
-			{
-				oCur = oCur[sPart];
-			}
-			else
-			{
-				oCur = oCur[sPart] = {};
-			}
-		}
-	};
-
-	/**
-	 * @param {Object} oObject
-	 * @param {string} sName
-	 * @param {*} mValue
-	 */
-	Utils.pImport = function (oObject, sName, mValue)
-	{
-		oObject[sName] = mValue;
-	};
-
-	/**
-	 * @param {Object} oObject
-	 * @param {string} sName
-	 * @param {*} mDefault
-	 * @return {*}
-	 */
-	Utils.pExport = function (oObject, sName, mDefault)
-	{
-		return Utils.isUnd(oObject[sName]) ? mDefault : oObject[sName];
-	};
-
-	/**
 	 * @param {string} sText
 	 * @return {string}
 	 */
@@ -855,7 +804,7 @@
 				}
 				return false;
 			},
-			fResult = fExecute ? fNonEmpty : Utils.emptyFunction;
+			fResult = fExecute ? fNonEmpty : Utils.emptyFunction
 		;
 
 		fResult.enabled = ko.observable(true);
