@@ -447,7 +447,7 @@ class Message
 	{
 		return $this->AddAlternative(
 			\MailSo\Mime\Enumerations\MimeType::TEXT_PLAIN, trim($sPlain),
-			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE);
+			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
 	}
 	/**
 	 * @param string $sHtml
@@ -458,7 +458,7 @@ class Message
 	{
 		return $this->AddAlternative(
 			\MailSo\Mime\Enumerations\MimeType::TEXT_HTML, trim($sHtml),
-			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE);
+			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
 	}
 
 	/**
@@ -583,7 +583,7 @@ class Message
 			$oAttachmentPart->Headers->Add(
 				Header::NewInstance(
 					\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING,
-					\MailSo\Base\Enumerations\Encoding::BASE64
+					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
 				)
 			);
 

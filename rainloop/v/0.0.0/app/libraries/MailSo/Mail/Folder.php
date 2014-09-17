@@ -261,45 +261,47 @@ class Folder
 	/**
 	 * @return int
 	 */
-	public function GetFolderXListType()
+	public function GetFolderListType()
 	{
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
-		$iXListType = \MailSo\Imap\Enumerations\FolderType::USER;
+		$iListType = \MailSo\Imap\Enumerations\FolderType::USER;
 
 		if (\is_array($aFlags))
 		{
 			switch (true)
 			{
-				case \in_array('\inbox', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::INBOX;
+				case \in_array('\inbox', $aFlags) || 'INBOX' === \strtoupper($this->FullNameRaw()):
+					$iListType = \MailSo\Imap\Enumerations\FolderType::INBOX;
 					break;
 				case \in_array('\sent', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::SENT;
+					$iListType = \MailSo\Imap\Enumerations\FolderType::SENT;
 					break;
 				case \in_array('\drafts', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
+					$iListType = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
 					break;
+				case \in_array('\junk', $aFlags):
 				case \in_array('\spam', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::SPAM;
+					$iListType = \MailSo\Imap\Enumerations\FolderType::JUNK;
 					break;
-				case \in_array('\bin', $aFlags):
 				case \in_array('\trash', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::TRASH;
+				case \in_array('\bin', $aFlags):
+					$iListType = \MailSo\Imap\Enumerations\FolderType::TRASH;
 					break;
 				case \in_array('\important', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::IMPORTANT;
+					$iListType = \MailSo\Imap\Enumerations\FolderType::IMPORTANT;
 					break;
+				case \in_array('\flagged', $aFlags):
 				case \in_array('\starred', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::STARRED;
+					$iListType = \MailSo\Imap\Enumerations\FolderType::FLAGGED;
 					break;
 				case \in_array('\all', $aFlags):
-				case \in_array('\archive', $aFlags):
 				case \in_array('\allmail', $aFlags):
-					$iXListType = \MailSo\Imap\Enumerations\FolderType::ARCHIVE;
+				case \in_array('\archive', $aFlags):
+					$iListType = \MailSo\Imap\Enumerations\FolderType::ALL;
 					break;
 			}
 		}
 
-		return $iXListType;
+		return $iListType;
 	}
 }

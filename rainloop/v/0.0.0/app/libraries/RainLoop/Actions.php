@@ -3786,23 +3786,23 @@ class Actions
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 
-				'Spam' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
-				'Junk' => \MailSo\Imap\Enumerations\FolderType::SPAM,
-				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::SPAM,
-				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::SPAM,
+				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
+				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
+				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
-				'Archive' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'Archive' => \MailSo\Imap\Enumerations\FolderType::ALL,
 
-				'All' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
-				'All Mail' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
-				'All Mails' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
-				'AllMail' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
-				'AllMails' => \MailSo\Imap\Enumerations\FolderType::ARCHIVE,
+				'All' => \MailSo\Imap\Enumerations\FolderType::ALL,
+				'All Mail' => \MailSo\Imap\Enumerations\FolderType::ALL,
+				'All Mails' => \MailSo\Imap\Enumerations\FolderType::ALL,
+				'AllMail' => \MailSo\Imap\Enumerations\FolderType::ALL,
+				'AllMails' => \MailSo\Imap\Enumerations\FolderType::ALL,
 			);
 
 			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
@@ -3815,29 +3815,29 @@ class Actions
 	 * @param \RainLoop\Account $oAccount
 	 * @param \MailSo\Mail\FolderCollection $oFolders
 	 * @param array $aResult
-	 * @param bool $bXList = true
+	 * @param bool $bListFolderTypes = true
 	 */
-	private function recFoldersTypes($oAccount, $oFolders, &$aResult, $bXList = true)
+	private function recFoldersTypes($oAccount, $oFolders, &$aResult, $bListFolderTypes = true)
 	{
 		if ($oFolders)
 		{
 			$aFolders =& $oFolders->GetAsArray();
 			if (\is_array($aFolders) && 0 < \count($aFolders))
 			{
-				if ($bXList)
+				if ($bListFolderTypes)
 				{
 					foreach ($aFolders as $oFolder)
 					{
-						$iFolderXListType = $oFolder->GetFolderXListType();
-						if (!isset($aResult[$iFolderXListType]) && \in_array($iFolderXListType, array(
+						$iFolderListType = $oFolder->GetFolderListType();
+						if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
 							\MailSo\Imap\Enumerations\FolderType::SENT,
 							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-							\MailSo\Imap\Enumerations\FolderType::SPAM,
+							\MailSo\Imap\Enumerations\FolderType::JUNK,
 							\MailSo\Imap\Enumerations\FolderType::TRASH,
-							\MailSo\Imap\Enumerations\FolderType::ARCHIVE
+							\MailSo\Imap\Enumerations\FolderType::ALL
 						)))
 						{
-							$aResult[$iFolderXListType] = $oFolder->FullNameRaw();
+							$aResult[$iFolderListType] = $oFolder->FullNameRaw();
 						}
 
 						$oSub = $oFolder->SubFolders();
@@ -3858,9 +3858,9 @@ class Actions
 						if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
 							\MailSo\Imap\Enumerations\FolderType::SENT,
 							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-							\MailSo\Imap\Enumerations\FolderType::SPAM,
+							\MailSo\Imap\Enumerations\FolderType::JUNK,
 							\MailSo\Imap\Enumerations\FolderType::TRASH,
-							\MailSo\Imap\Enumerations\FolderType::ARCHIVE
+							\MailSo\Imap\Enumerations\FolderType::ALL
 						)))
 						{
 							$aResult[$iFolderType] = $oFolder->FullNameRaw();
@@ -3927,7 +3927,7 @@ class Actions
 				}
 				if ('' === $this->GetActionParam('SpamFolder', ''))
 				{
-					$aList[] = \MailSo\Imap\Enumerations\FolderType::SPAM;
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::JUNK;
 				}
 				if ('' === $this->GetActionParam('TrashFolder', ''))
 				{
@@ -3935,7 +3935,7 @@ class Actions
 				}
 				if ('' === $this->GetActionParam('ArchiveFolder', ''))
 				{
-					$aList[] = \MailSo\Imap\Enumerations\FolderType::ARCHIVE;
+					$aList[] = \MailSo\Imap\Enumerations\FolderType::ALL;
 				}
 
 				$this->Plugins()->RunHook('filter.folders-system-types', array($oAccount, &$aList));
@@ -4236,6 +4236,7 @@ class Actions
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
+		
 		if (is_array($aValues) && 9 === count($aValues))
 		{
 			$sFolder =(string) $aValues[0];

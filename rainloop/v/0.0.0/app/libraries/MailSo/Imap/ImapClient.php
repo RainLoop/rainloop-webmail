@@ -686,6 +686,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param bool $bIsSubscribeList
 	 * @param string $sParentFolderName = ''
 	 * @param string $sListPattern = '*'
+	 * @param bool $bUseListStatus = false
 	 *
 	 * @return array
 	 *
@@ -697,12 +698,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sCmd = 'LSUB';
 		if (!$bIsSubscribeList)
 		{
-			if ($bUseListStatus)
-			{
-				$bUseListStatus = $this->IsSupported('LIST-STATUS');
-			}
-
-			$sCmd = (!$bUseListStatus && $this->IsSupported('XLIST') && !$this->IsSupported('LIST-EXTENDED')) ? 'XLIST' : 'LIST';
+			$sCmd = 'LIST';
 		}
 		
 		$sListPattern = 0 === strlen(trim($sListPattern)) ? '*' : $sListPattern;
@@ -711,8 +707,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->EscapeString($sParentFolderName),
 			$this->EscapeString($sListPattern)
 		);
-		
-		if ($bUseListStatus)
+
+		if ($bUseListStatus && $this->IsSupported('LIST-STATUS'))
 		{
 			$aParameters[] = 'RETURN';
 			$aParameters[] = array(
@@ -723,6 +719,10 @@ class ImapClient extends \MailSo\Net\NetClient
 					\MailSo\Imap\Enumerations\FolderStatus::UIDNEXT
 				 )
 			);
+		}
+		else
+		{
+			$bUseListStatus = false;
 		}
 		
 		$this->SendRequest($sCmd, $aParameters);
