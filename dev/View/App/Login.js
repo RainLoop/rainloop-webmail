@@ -163,29 +163,10 @@
 				}, this)
 			;
 
-			if (!!Settings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported)
+			if (!!Settings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported &&
+				Settings.settingsGet('RsaPublicKey'))
 			{
-				Remote.getPublicKey(_.bind(function (sResult, oData) {
-
-					var bRequest = false;
-					if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
-						Utils.isArray(oData.Result) && oData.Result[0] && oData.Result[1] && oData.Result[2])
-					{
-						var sEncryptedPassword = Utils.rsaEncode(sPassword, oData.Result[0], oData.Result[1], oData.Result[2]);
-						if (sEncryptedPassword)
-						{
-							fLoginRequest(sEncryptedPassword);
-							bRequest = true;
-						}
-					}
-
-					if (!bRequest)
-					{
-						this.submitRequest(false);
-						this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
-					}
-
-				}, this));
+				fLoginRequest(Utils.rsaEncode(sPassword, Settings.settingsGet('RsaPublicKey')));
 			}
 			else
 			{

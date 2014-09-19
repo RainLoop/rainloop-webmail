@@ -4,6 +4,8 @@
 	'use strict';
 
 	var
+		oEncryptObject = null,
+		
 		Utils = {},
 
 		window = require('window'),
@@ -170,30 +172,55 @@
 	};
 
 	/**
-	 * @param {string} sValue
-	 * @param {string} sHash
-	 * @param {string} sKey
-	 * @param {string} sLongKey
-	 * @return {string|boolean}
+	 * @param {string} sPublicKey
+	 * @return {JSEncrypt}
 	 */
-	Utils.rsaEncode = function (sValue, sHash, sKey, sLongKey)
+	Utils.rsaObject = function (sPublicKey)
 	{
-		if (window.crypto && window.crypto.getRandomValues && window.RSAKey && sHash && sKey && sLongKey)
+		if (sPublicKey && (null === oEncryptObject || (oEncryptObject && oEncryptObject.__sPublicKey !== sPublicKey)) &&
+			window.crypto && window.crypto.getRandomValues && window.JSEncrypt)
 		{
-			var oRsa = new window.RSAKey();
-			oRsa.setPublic(sLongKey, sKey);
+			oEncryptObject = new JSEncrypt();
+			oEncryptObject.setPublicKey(sPublicKey);
+			oEncryptObject.__sPublicKey = sPublicKey;
+		}
+		else
+		{
+			oEncryptObject = false;
+		}
 
-			sValue = oRsa.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5());
-			if (false !== sValue)
+		return oEncryptObject;
+	};
+
+	/**
+	 * @param {string} sValue
+	 * @param {string} sPublicKey
+	 * @return {string}
+	 */
+	Utils.rsaEncode = function (sValue, sPublicKey)
+	{
+		if (window.crypto && window.crypto.getRandomValues && window.JSEncrypt && sPublicKey)
+		{
+			var
+				sResultValue = false,
+				oEncrypt = Utils.rsaObject(sPublicKey);
+			;
+
+			if (oEncrypt)
 			{
-				return 'rsa:' + sHash + ':' + sValue;
+				sResultValue = oEncrypt.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5())
+			}
+			
+			if (false !== sResultValue && Utils.isNormal(sResultValue))
+			{
+				return 'rsa:xxx:' + sResultValue;
 			}
 		}
 
-		return false;
+		return sValue;
 	};
 
-	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && window.RSAKey);
+	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && window.JSEncrypt);
 
 	/**
 	 * @param {string} sText

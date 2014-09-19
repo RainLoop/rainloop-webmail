@@ -956,6 +956,7 @@ class Actions
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
+			'RsaPublicKey' => '',
 			'HideDangerousActions' => $oConfig->Get('labs', 'hide_dangerous_actions', false),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
@@ -971,6 +972,23 @@ class Actions
 			'Capa' => array(),
 			'Plugins' => array()
 		);
+
+		if ($aResult['UseRsaEncryption'] && 
+			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
+		{
+			$aResult['RsaPublicKey'] = \file_get_contents(APP_PRIVATE_DATA.'rsa/public');
+			$aResult['RsaPublicKey'] = $aResult['RsaPublicKey'] ? $aResult['RsaPublicKey'] : '';
+			
+			if (false === \strpos($aResult['RsaPublicKey'], 'PUBLIC KEY'))
+			{
+				$aResult['RsaPublicKey'] = '';
+			}
+		}
+
+		if (0 === strlen($aResult['RsaPublicKey']))
+		{
+			$aResult['UseRsaEncryption'] = false;
+		}
 
 		if (0 < \strlen($sAuthAccountHash))
 		{
@@ -1540,22 +1558,23 @@ class Actions
 	private function clientRsaDecryptHelper($sEncryptedData)
 	{
 		$aMatch = array();
-		if (\preg_match('/^rsa:([a-z0-9]{32}):/', $sEncryptedData, $aMatch) && !empty($aMatch[1]) &&
-			$this->Config()->Get('security', 'use_rsa_encryption', false))
+		if ('rsa:xxx:' === substr($sEncryptedData, 0, 8) && $this->Config()->Get('security', 'use_rsa_encryption', false))
 		{
 			$oLogger = $this->Logger();
 			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
 
-			$sPrivateKey = $this->Cacher()->Get(\RainLoop\KeyPathHelper::RsaCacherKey($aMatch[1]), true);
+			$sPrivateKey = file_exists(APP_PRIVATE_DATA.'rsa/private') ? 
+				\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
+
 			if (!empty($sPrivateKey))
 			{
-				$sData = \trim(\substr($sEncryptedData, 37));
+				$sData = \trim(\substr($sEncryptedData, 8));
 
 				if (!\class_exists('Crypt_RSA'))
 				{
 					\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-					\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
 					include_once 'Crypt/RSA.php';
+					\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
 				}
 
 				$oLogger->HideErrorNotices(true);
@@ -1566,9 +1585,7 @@ class Actions
 				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
 				$oRsa->loadKey($sPrivateKey, CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
 
-				$oMsg = new \Math_BigInteger($sData, 16);
-
-				$sData = $oRsa->decrypt($oMsg->toBytes());
+				$sData = $oRsa->decrypt(\base64_decode($sData));
 				if (\preg_match('/^[a-z0-9]{32}:(.+):[a-z0-9]{32}$/', $sData, $aMatch) && isset($aMatch[1]))
 				{
 					$sEncryptedData = $aMatch[1];
@@ -1587,46 +1604,6 @@ class Actions
 		}
 
 		return $sEncryptedData;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoGetPublicKey()
-	{
-		$oLogger = $this->Logger();
-
-		if ($this->Config()->Get('security', 'use_rsa_encryption', false))
-		{
-			$oLogger->HideErrorNotices(true);
-
-			if (!\class_exists('Crypt_RSA'))
-			{
-				\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
-				include_once 'Crypt/RSA.php';
-			}
-
-			$oRsa = new \Crypt_RSA();
-			$oRsa->setPublicKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_RAW);
-			$aKeys = $oRsa->createKey(1024);
-
-			if (!empty($aKeys['privatekey']) && !empty($aKeys['publickey']['e']) && !empty($aKeys['publickey']['n']))
-			{
-				$e = new \Math_BigInteger($aKeys['publickey']['e'], 10);
-				$n = new \Math_BigInteger($aKeys['publickey']['n'], 10);
-
-				$sHash = \md5($e->toHex().$n->toHex());
-
-				$oLogger->HideErrorNotices(false);
-				return $this->DefaultResponse(__FUNCTION__,
-					$this->Cacher()->Set(\RainLoop\KeyPathHelper::RsaCacherKey($sHash), $aKeys['privatekey']) ?
-						array($sHash, $e->toHex(), $n->toHex()) : false);
-			}
-		}
-
-		$oLogger->HideErrorNotices(false);
-		return $this->FalseResponse(__FUNCTION__);
 	}
 
 	/**

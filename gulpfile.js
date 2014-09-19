@@ -147,7 +147,6 @@ cfg.paths.js = {
 			'vendors/jquery-lazyload/jquery.lazyload.min.js',
 			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
-//			'vendors/jquery-linkify/jquery.linkify.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
 			'vendors/routes/signals.min.js',
@@ -158,7 +157,7 @@ cfg.paths.js = {
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
-			'vendors/jsbn/bundle.js',
+			'vendors/jsencrypt/jsencrypt.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
 			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
@@ -241,7 +240,7 @@ gulp.task('js:openpgp', function() {
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
-gulp.task('js:libs', ['js:encrypt'], function() {
+gulp.task('js:libs', function() {
 	return gulp.src(cfg.paths.js.libs.src)
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
 		.pipe(eol('\n', true))
@@ -481,7 +480,7 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:libs', 'js:boot', 'js:encrypt', 'js:openpgp', 'js:min', 'css:main:min']);
+gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min']);
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('rainloop', ['js:lint', 'rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);

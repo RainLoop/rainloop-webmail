@@ -7,6 +7,11 @@
 		@ini_set('magic_quotes_gpc', 0);
 		@ini_set('magic_quotes_runtime', 0);
 
+		define('APP_DEFAULT_DENY_ALL_HTACCESS', 'Deny from all
+<IfModule mod_autoindex.c>
+Options -Indexes
+</ifModule>');
+
 		if (isset($_ENV['RAINLOOP_INCLUDE_AS_VERSION']) && $_ENV['RAINLOOP_INCLUDE_AS_VERSION'])
 		{
 			$_ENV['RAINLOOP_INCLUDE_AS_VERSION'] = false;
@@ -150,12 +155,7 @@
 				@file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
-				@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess',
-'Deny from all
-
-<IfModule mod_autoindex.c>
-Options -Indexes
-</ifModule>');
+				@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', APP_DEFAULT_DENY_ALL_HTACCESS);
 
 				if (!@is_dir(APP_PRIVATE_DATA))
 				{
