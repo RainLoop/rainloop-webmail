@@ -125,7 +125,7 @@
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 			Settings.settingsGet('Title') || '';
 
-		window.document.title = '_';
+		window.document.title = '';
 		window.document.title = sTitle;
 	};
 

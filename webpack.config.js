@@ -25,6 +25,9 @@ module.exports = {
 	externals: {
 		'window': 'window',
 		'JSON': 'JSON',
+		'JSEncrypt': 'window.JSEncrypt',
+		'$LAB': 'window.$LAB',
+		'SimplePace': 'window.SimplePace',
 		'moment': 'moment',
 		'ifvisible': 'ifvisible',
 		'crossroads': 'crossroads',

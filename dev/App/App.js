@@ -8,6 +8,7 @@
 		_ = require('_'),
 		$ = require('$'),
 		moment = require('moment'),
+		SimplePace = require('SimplePace'),
 
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
@@ -1257,6 +1258,7 @@
 
 		var
 			self = this,
+			$LAB = require('$LAB'),
 			sJsHash = Settings.settingsGet('JsHash'),
 			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
 			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
@@ -1284,10 +1286,10 @@
 
 		}, this);
 
-		if (window.SimplePace)
+		if (SimplePace)
 		{
-			window.SimplePace.set(70);
-			window.SimplePace.sleep();
+			SimplePace.set(70);
+			SimplePace.sleep();
 		}
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
@@ -1304,9 +1306,9 @@
 
 				if (bValue)
 				{
-					if (window.$LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
+					if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 					{
-						window.$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
+						$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
 							if (window.openpgp)
 							{
 								Data.openpgp = window.openpgp;
@@ -1405,9 +1407,9 @@
 					self.bootstartLoginScreen();
 				}
 
-				if (window.SimplePace)
+				if (SimplePace)
 				{
-					window.SimplePace.set(100);
+					SimplePace.set(100);
 				}
 
 			}, self));
@@ -1416,9 +1418,9 @@
 		{
 			this.bootstartLoginScreen();
 
-			if (window.SimplePace)
+			if (SimplePace)
 			{
-				window.SimplePace.set(100);
+				SimplePace.set(100);
 			}
 		}
 

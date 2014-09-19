@@ -13,6 +13,7 @@
 		$ = require('$'),
 		ko = require('ko'),
 		Autolinker = require('Autolinker'),
+		JSEncrypt = require('JSEncrypt'),
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
@@ -177,8 +178,8 @@
 	 */
 	Utils.rsaObject = function (sPublicKey)
 	{
-		if (sPublicKey && (null === oEncryptObject || (oEncryptObject && oEncryptObject.__sPublicKey !== sPublicKey)) &&
-			window.crypto && window.crypto.getRandomValues && window.JSEncrypt)
+		if (JSEncrypt && sPublicKey && (null === oEncryptObject || (oEncryptObject && oEncryptObject.__sPublicKey !== sPublicKey)) &&
+			window.crypto && window.crypto.getRandomValues)
 		{
 			oEncryptObject = new JSEncrypt();
 			oEncryptObject.setPublicKey(sPublicKey);
@@ -199,7 +200,7 @@
 	 */
 	Utils.rsaEncode = function (sValue, sPublicKey)
 	{
-		if (window.crypto && window.crypto.getRandomValues && window.JSEncrypt && sPublicKey)
+		if (window.crypto && window.crypto.getRandomValues && sPublicKey)
 		{
 			var
 				sResultValue = false,
@@ -209,18 +210,17 @@
 			if (oEncrypt)
 			{
 				sResultValue = oEncrypt.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5())
-			}
-			
-			if (false !== sResultValue && Utils.isNormal(sResultValue))
-			{
-				return 'rsa:xxx:' + sResultValue;
+				if (false !== sResultValue && Utils.isNormal(sResultValue))
+				{
+					return 'rsa:xxx:' + sResultValue;
+				}
 			}
 		}
 
 		return sValue;
 	};
 
-	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && window.JSEncrypt);
+	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && JSEncrypt);
 
 	/**
 	 * @param {string} sText

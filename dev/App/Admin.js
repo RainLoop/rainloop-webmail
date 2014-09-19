@@ -7,6 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
+		SimplePace = require('SimplePace'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
@@ -263,9 +264,9 @@
 			}
 		}
 
-		if (window.SimplePace)
+		if (SimplePace)
 		{
-			window.SimplePace.set(100);
+			SimplePace.set(100);
 		}
 	};
 
