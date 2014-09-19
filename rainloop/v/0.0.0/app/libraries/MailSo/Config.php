@@ -44,9 +44,14 @@ class Config
 	public static $MessageListDateFilter = 0;
 
 	/**
-	 * @var int
+	 * @var bool
 	 */
 	public static $LogSimpleLiterals = false;
+
+	/**
+	 * @var bool
+	 */
+	public static $PreferStartTlsIfAutoDetect = true;
 
 	/**
 	 * @var \MailSo\Log\Logger|null
