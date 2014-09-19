@@ -1,5 +1,6 @@
 html.ssm-state-mobile {
-    &.rl-message-fullscreen.rl-left-panel-disabled {
+    
+    &.rl-message-fullscreen {
         #rl-right {
             .RL-MailMessageView {
                 #rl-sub-right {
@@ -64,7 +65,8 @@ html.ssm-state-mobile {
                             top:90px;
                             right:0px;
                             width:35px;
-                            height:100%;
+                            bottom:10px;
+                            height:auto;
                             opacity:1.0;
                             border:none;
                             border-radius:0px;
@@ -72,9 +74,16 @@ html.ssm-state-mobile {
                             &:hover {
                                 background:#FFFFFF;
                                 opacity:0.5;
+                                color:#000000;
                             }
                             i {
-                                display:none;
+                                position:absolute;
+                                bottom:5px;
+                                right:1px;
+                                background:#F5F5F5;
+                                border:1px solid #B7B7B7;
+                                border-radius:4px;
+                                padding:7px;
                             }
                         }
                     }
