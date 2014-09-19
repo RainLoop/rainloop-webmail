@@ -57,14 +57,14 @@ html.ssm-state-mobile {
                 .b-content {
                     right:0px;
                     width:500px;
+                    top:85px;
                     .messageItem {
                         .buttonFull {
                             z-index: 101;
-                            top:60px;
+                            top:90px;
                             right:0px;
-                            height:100%;
                             width:35px;
-                            bottom:10px;
+                            height:100%;
                             opacity:1.0;
                             border:none;
                             border-radius:0px;
@@ -86,7 +86,32 @@ html.ssm-state-mobile {
         width:auto;
         right:35px;
         .messageList {
+            .toolbar {
+                right:50px;
+                .btn-group {
+                    margin-bottom:5px;
+                    .dropdown-menu {
+                        left:auto;
+                        right:0px;
+                    }
+                    #move-dropdown-id + .dropdown-menu {
+                        left:0px;
+                        right:auto;
+                    }
+                }
+            }
             .b-message-list-wrapper {
+                top:80px;
+                .second-toolbar {
+                    .form-inline {
+                        .input-append {
+                            width:90%;
+                            .inputSearch {
+                                width:80%;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -100,59 +125,37 @@ html.ssm-state-mobile {
     #rl-center {
         min-width: 0px;
     }
+    
+    
+    .b-compose.modal,
+    .b-contacts-content.modal,
+    .b-compose.modal,
+    .b-contacts-content.modal,
+    .b-advanced-search-content.modal {
+        width: 95%;
+        max-width: 700px;
+    }
+    
+    .b-compose.modal {
+        .b-header {
+            max-height:130px;
+            padding-bottom:10px;
+            overflow:auto;
+        }
+        .cke_top {
+            max-height:30px;
+            overflow:auto;
+            
+        }
+    }
+    
+    .b-advanced-search-content.modal {
+        .control-label {
+            width:60px;
+        }
+        .controls {
+            margin-left:70px;
+        }
+    }
+    
 }
-
-
-
-
-/*
-
-
-
-
-
-
-html.ssm-state-mobile .b-compose.modal, html.ssm-state-mobile .b-contacts-content.modal, html.ssm-state-tablet .b-compose.modal, html.ssm-state-tablet .b-contacts-content.modal {
-  width: 90%;
-  max-width: 700px;
-}
-
-.b-compose .cke_chrome {
-  width:100%!important;
-}
-
-html.rl-left-panel-disabled #rl-right {
-  left: 15%!important;
-}
-html.ssm-state-mobile #rl-sub-left {
-  width:100%;
-}
-
-html.ssm-state-mobile #rl-sub-right {
-  right:0px;
-  left:auto;
-  width:35px;
-}
-html.ssm-state-mobile .messageView .b-content  {
-    right:0px;
-    width:500px;
-}
-
-html.ssm-state-mobile #rl-center {
-  min-width: 0px;
-}
-
-
-html.ssm-state-mobile #rl-sub-left .messageList .inputSearch {
-  width:80%;
-}
-
-.messageList .second-toolbar .form-inline {
-  margin-right:40px;
-}
-
-html.ssm-state-mobile .messageList .toolbar .dropdown-menu {
-  left:auto;
-  right:0px;
-}
-*/
