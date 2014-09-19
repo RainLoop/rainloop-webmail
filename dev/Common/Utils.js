@@ -1900,7 +1900,6 @@
 		}
 	};
 
-
 	/**
 	 * @param {string} sLanguage
 	 * @param {Function=} fDone
@@ -1921,6 +1920,19 @@
 			.fail(fFail || Utils.emptyFunction)
 			.always(fAllways || Utils.emptyFunction)
 		;
+	};
+	
+	/**
+	 * @param {Object} oParams
+	 */
+	Utils.setHeadViewport = function (oParams)
+	{
+		var aContent = [];
+		_.each(oParams, function (sKey, sValue) {
+			aContent.push('' + sKey + '=' + sValue);
+		});
+		
+		$('#rl-head-viewport').attr('content', aContent.join(', '));
 	};
 
 	module.exports = Utils;
