@@ -86,7 +86,7 @@ class Api
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
 			\MailSo\Config::$MessageListUndeletedFilter =
-				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', true);
+				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', false);
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 		}

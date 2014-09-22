@@ -647,10 +647,11 @@ class MailClient
 	 * @param int $iCount
 	 * @param int $iUnseenCount
 	 * @param string $sUidNext
+	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return void
 	 */
-	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount, &$sUidNext)
+	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount, &$sUidNext, $oCacher = null)
 	{
 		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, array(
 			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
@@ -667,7 +668,30 @@ class MailClient
 		$sUidNext = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT])
 			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] : '0';
 
-		if ($this->IsGmail())
+		if (\MailSo\Config::$MessageListUndeletedFilter)
+		{
+			$aUids = $this->getSearchUidsResult('',
+				$sFolderName, false, false, false, $oCacher);
+
+			$iNewCount = \count($aUids);
+			if (0 < $iNewCount && $iNewCount !== $iCount)
+			{
+				$iCount = $iNewCount;
+				
+				$aUids = $this->getSearchUidsResult('is:unread',
+					$sFolderName, false, false, false, $oCacher);
+
+				$iUnseenCount = \count($aUids);
+			}
+			else
+			{
+				$iCount = 0;
+				$iUnseenCount = 0;
+			}
+
+			unset($aUids);
+		}
+		else if ($this->IsGmail())
 		{
 			$oFolder = $this->oImapClient->FolderCurrentInformation();
 			if ($oFolder && null !== $oFolder->Exists && $oFolder->FolderName === $sFolderName)
@@ -770,6 +794,7 @@ class MailClient
 	 * @param string $sFolderName
 	 * @param string $sPrevUidNext = ''
 	 * @param array $aUids = ''
+	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return string
 	 *
@@ -777,7 +802,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderInformation($sFolderName, $sPrevUidNext = '', $aUids = array())
+	public function FolderInformation($sFolderName, $sPrevUidNext = '', $aUids = array(), $oCacher = null)
 	{
 		$aFlags = array();
 
@@ -816,7 +841,7 @@ class MailClient
 		$iUnseenCount = 0;
 		$sUidNext = '0';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $oCacher);
 
 		$aResult = array(
 			'Folder' => $sFolderName,
@@ -834,6 +859,7 @@ class MailClient
 
 	/**
 	 * @param string $sFolderName
+	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return string
 	 *
@@ -841,13 +867,13 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderHash($sFolderName)
+	public function FolderHash($sFolderName, $oCacher = null)
 	{
 		$iCount = 0;
 		$iUnseenCount = 0;
 		$sUidNext = '0';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $oCacher);
 
 		return self::GenerateHash($sFolderName, $iCount, $iUnseenCount, $sUidNext);
 	}
@@ -1538,7 +1564,7 @@ class MailClient
 	/**
 	 * @param string $sSearch
 	 * @param string $sFolderName
-	 * @param string $sFolderHash
+	 * @param string|bool $sFolderHash
 	 * @param bool $bUseSortIfSupported = true
 	 * @param bool $bUseESearchOrESortRequest = false
 	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
@@ -1576,7 +1602,7 @@ class MailClient
 				$aSerialized = @\unserialize($sSerialized);
 				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
 					\is_array($aSerialized['Uids']) &&
-					$sFolderHash === $aSerialized['FolderHash'])
+					($sFolderHash === $aSerialized['FolderHash'] || false === $sFolderHash))
 				{
 					if ($this->oLogger)
 					{
@@ -1730,7 +1756,7 @@ class MailClient
 			$oCacher = null;
 		}
 
-		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);
+		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext, $oCacher);
 		$iMessageCount = $iMessageRealCount;
 
 		$oMessageCollection->FolderHash = self::GenerateHash($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);

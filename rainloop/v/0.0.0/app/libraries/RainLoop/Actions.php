@@ -4123,7 +4123,9 @@ class Actions
 		$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
 		try
 		{
-			$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, $sPrevUidNext, $aFlagsFilteredUids);
+			$aInboxInformation = $this->MailClient()->FolderInformation(
+				$sFolder, $sPrevUidNext, $aFlagsFilteredUids, $this->cacherForUids()
+			);
 			if (\is_array($aInboxInformation) && isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
 			{
 				foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
@@ -4176,7 +4178,10 @@ class Actions
 				{
 					try
 					{
-						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
+						$aInboxInformation = $this->MailClient()->FolderInformation(
+							$sFolder, '', array(), $this->cacherForUids()
+						);
+						
 						if (\is_array($aInboxInformation) && isset($aInboxInformation['Folder']))
 						{
 							$aResult['List'][] = $aInboxInformation;
@@ -4269,7 +4274,7 @@ class Actions
 
 			$oMessageList = $this->MailClient()->MessageList(
 				$sFolder, $iOffset, $iLimit, $sSearch, $sUidNext,
-				($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher() : null,
+				$this->cacherForUids(),
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
 				$bUseThreads, $aExpandedThreadUid,
 				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
@@ -5577,7 +5582,7 @@ class Actions
 		try
 		{
 			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true,
-				!!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher() : null,
+				$this->cacherForThreads(),
 				(int) $this->Config()->Get('labs', 'imap_body_text_limit', 0)
 			);
 		}
@@ -5609,17 +5614,18 @@ class Actions
 		$this->initMailClientConnection();
 
 		$sFolder = $this->GetActionParam('Folder', '');
-		$aUids = explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = array_filter($aUids, function (&$sUid) {
-			$sUid = (int) trim($sUid);
+		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
+			$sUid = (int) \trim($sUid);
 			return 0 < $sUid;
 		});
 
 		try
 		{
 			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true);
-			$sHash = $this->MailClient()->FolderHash($sFolder);
+			
+			$sHash = $this->MailClient()->FolderHash($sFolder, $this->cacherForUids());
 		}
 		catch (\Exception $oException)
 		{
@@ -5640,10 +5646,10 @@ class Actions
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$aUids = explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = array_filter($aUids, function (&$mUid) {
-			$mUid = (int) trim($mUid);
+		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
+			$mUid = (int) \trim($mUid);
 			return 0 < $mUid;
 		});
 
@@ -5652,7 +5658,7 @@ class Actions
 			$this->MailClient()->MessageMove($sFromFolder, $sToFolder,
 				$aFilteredUids, true, $this->Config()->Get('labs', 'use_imap_move', true));
 
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+			$sHash = $this->MailClient()->FolderHash($sFromFolder, $this->cacherForUids());
 		}
 		catch (\Exception $oException)
 		{
@@ -5674,10 +5680,10 @@ class Actions
 
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
-		$aUids = explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = array_filter($aUids, function (&$mUid) {
-			$mUid = (int) trim($mUid);
+		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
+			$mUid = (int) \trim($mUid);
 			return 0 < $mUid;
 		});
 
@@ -5686,7 +5692,7 @@ class Actions
 			$this->MailClient()->MessageCopy($sFromFolder, $sToFolder,
 				$aFilteredUids, true);
 
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+			$sHash = $this->MailClient()->FolderHash($sFromFolder, $this->cacherForUids());
 		}
 		catch (\Exception $oException)
 		{
@@ -7191,6 +7197,22 @@ class Actions
 		}
 
 		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
+	}
+	
+	/**
+	 * @return MailSo\Cache\CacheClient|null
+	 */
+	private function cacherForUids()
+	{
+		return ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher() : null;
+	}
+
+	/**
+	 * @return MailSo\Cache\CacheClient|null
+	 */
+	private function cacherForThreads()
+	{
+		return !!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher() : null;
 	}
 
 	/**
