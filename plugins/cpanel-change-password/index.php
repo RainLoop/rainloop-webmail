@@ -21,7 +21,7 @@ class CpanelChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$iPost = (int) $this->Config()->Get('plugin', 'port', 2087);
 				$sUser = (string) $this->Config()->Get('plugin', 'user', '');
 				$sPassword = (string) $this->Config()->Get('plugin', 'password', '');
-				$sSsl = (bool) $this->Config()->Get('plugin', 'ssl', false);
+				$bSsl = (bool) $this->Config()->Get('plugin', 'ssl', false);
 
 				if (!empty($sHost) && 0 < $iPost && 0 < \strlen($sUser) && 0 < \strlen($sPassword))
 				{
@@ -29,7 +29,7 @@ class CpanelChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 					$oProvider = new CpanelChangePasswordDriver();
 					$oProvider->SetLogger($this->Manager()->Actions()->Logger());
-					$oProvider->SetConfig($sHost, $iPost, $sSsl, $sUser, $sPassword);
+					$oProvider->SetConfig($sHost, $iPost, $bSsl, $sUser, $sPassword);
 					$oProvider->SetAllowedEmails(\strtolower(\trim($this->Config()->Get('plugin', 'allowed_emails', ''))));
 				}
 

@@ -13,6 +13,11 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	private $iPost = 2087;
 
 	/**
+	 * @var bool
+	 */
+	private $bSsl = true;
+
+	/**
 	 * @var string
 	 */
 	private $sUser = '';
@@ -35,17 +40,17 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	/**
 	 * @param string $sHost
 	 * @param int $iPost
-	 * @param bool $sSsl
+	 * @param bool $bSsl
 	 * @param string $sUser
 	 * @param string $sPassword
 	 *
 	 * @return \CpanelChangePasswordDriver
 	 */
-	public function SetConfig($sHost, $iPost, $sSsl, $sUser, $sPassword)
+	public function SetConfig($sHost, $iPost, $bSsl, $sUser, $sPassword)
 	{
 		$this->sHost = $sHost;
 		$this->iPost = $iPost;
-		$this->sSsl = $sSsl;
+		$this->bSsl = !!$bSsl;
 		$this->sUser = $sUser;
 		$this->sPassword = $sPassword;
 
@@ -103,32 +108,48 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 			$this->oLogger->Write('Try to change password for '.$oAccount->Email());
 		}
 
-		include_once __DIR__.'/xmlapi.php';
+		if (!\class_exists('xmlapi'))
+		{
+			include_once __DIR__.'/xmlapi.php';
+		}
 
 		$bResult = false;
 		if (!empty($this->sHost) && 0 < $this->iPost &&
 			0 < \strlen($this->sUser) && 0 < \strlen($this->sPassword) &&
 			$oAccount && \class_exists('xmlapi'))
 		{
+			$sEmail = $oAccount->Email();
+			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
+			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+
+			$sHost = $this->sHost;
+			$sHost = \str_replace('{user:domain}', $sEmailDomain, $sHost);
+
+			$sUser = $this->sUser;
+			$sUser = \str_replace('{user:email}', $sEmail, $sUser);
+			$sUser = \str_replace('{user:login}', $sEmailUser, $sUser);
+
+			$sPassword = $this->sPassword;
+			$sPassword = \str_replace('{user:password}', $oAccount->Password(), $sPassword);
+
 			try
 			{
-				$oXmlApi = new \xmlapi($this->sHost);
+				$oXmlApi = new \xmlapi($sHost);
 				$oXmlApi->set_port($this->iPost);
-				$oXmlApi->set_protocol($this->sSsl ? 'https' : 'http');
+				$oXmlApi->set_protocol($this->bSsl ? 'https' : 'http');
 				$oXmlApi->set_debug(false);
 				$oXmlApi->set_output('json');
+//				$oXmlApi->set_http_client('fopen');
 				$oXmlApi->set_http_client('curl');
-				$oXmlApi->password_auth($this->sUser, $this->sPassword);
-
-				$sEmail = $oAccount->Email();
+				$oXmlApi->password_auth($sUser, $sPassword);
 
 				$aArgs = array(
-					'email' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail),
-					'domain' => \MailSo\Base\Utils::GetDomainFromEmail($sEmail),
+					'email' => $sEmailUser,
+					'domain' => $sEmailDomain,
 					'password' => $sNewPassword
 				);
 
-				$sResult = $oXmlApi->api2_query($this->sUser, 'Email', 'passwdpop', $aArgs);
+				$sResult = $oXmlApi->api2_query($sUser, 'Email', 'passwdpop', $aArgs);
 				if ($sResult)
 				{
 					$aResult = @\json_decode($sResult, true);
@@ -147,6 +168,13 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 				{
 					$this->oLogger->WriteException($oException);
 				}
+			}
+		}
+		else
+		{
+			if ($this->oLogger)
+			{
+				$this->oLogger->Write('CPANEL: Incorrent configuration data', \MailSo\Log\Enumerations\Type::ERROR);
 			}
 		}
 

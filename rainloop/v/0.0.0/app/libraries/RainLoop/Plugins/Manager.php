@@ -591,11 +591,11 @@ class Manager
 		{
 			foreach ($this->aProcessTemplate[$sName] as $sPlace => $aAddHtml)
 			{
-				if (is_array($aAddHtml) && 0 < count($aAddHtml))
+				if (\is_array($aAddHtml) && 0 < \count($aAddHtml))
 				{
 					foreach ($aAddHtml as $sAddHtml)
 					{
-						$sHtml = str_replace('{{INCLUDE/'.$sPlace.'/PLACE}}', $sAddHtml.'{{INCLUDE/'.$sPlace.'/PLACE}}', $sHtml);
+						$sHtml = \str_replace('{{INCLUDE/'.$sPlace.'/PLACE}}', $sAddHtml.'{{INCLUDE/'.$sPlace.'/PLACE}}', $sHtml);
 					}
 				}
 			}
