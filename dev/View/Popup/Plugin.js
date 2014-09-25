@@ -124,6 +124,7 @@
 				this.configures(_.map(aConfig, function (aItem) {
 					return {
 						'value': ko.observable(aItem[0]),
+						'placeholder': ko.observable(aItem[6]),
 						'Name': aItem[1],
 						'Type': aItem[2],
 						'Label': aItem[3],

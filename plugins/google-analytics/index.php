@@ -18,11 +18,17 @@ class GoogleAnalyticsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function configMapping()
 	{
-		return array(
-			\RainLoop\Plugins\Property::NewInstance('account')->SetLabel('Account')
-				->SetAllowedInJs(true)
-				->SetDescription('UA-XXXXXXXX-X')
-				->SetDefaultValue(''),
+		$oAccount = \RainLoop\Plugins\Property::NewInstance('account')->SetLabel('Account')
+			->SetAllowedInJs(true)
+			->SetDefaultValue('')
+		;
+
+		if (\method_exists($oAccount, 'SetPlaceholder'))
+		{
+			$oAccount->SetPlaceholder('UA-XXXXXXXX-X');
+		}
+		
+		return array($oAccount,
 			\RainLoop\Plugins\Property::NewInstance('domain_name')->SetLabel('Domain Name')
 				->SetAllowedInJs(true)
 				->SetDefaultValue(''),

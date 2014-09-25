@@ -33,6 +33,11 @@ class Property
 	 * @var mixed
 	 */
 	private $mDefaultValue;
+
+	/**
+	 * @var string
+	 */
+	private $sPlaceholder;
 	
 	private function __construct($sName)
 	{
@@ -42,6 +47,7 @@ class Property
 		$this->sLabel = '';
 		$this->sDesc = '';
 		$this->bAllowedInJs = false;
+		$this->sPlaceholder = '';
 	}
 	
 	/**
@@ -75,6 +81,18 @@ class Property
 	{
 		$this->mDefaultValue = $mDefaultValue;
 		
+		return $this;
+	}
+
+	/**
+	 * @param string $sPlaceholder
+	 *
+	 * @return \RainLoop\Plugins\Property
+	 */
+	public function SetPlaceholder($sPlaceholder)
+	{
+		$this->sPlaceholder = $sPlaceholder;
+
 		return $this;
 	}
 	
@@ -160,6 +178,14 @@ class Property
 	{
 		return $this->mDefaultValue;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function Placeholder()
+	{
+		return $this->sPlaceholder;
+	}
 	
 	/**
 	 * @return array
@@ -172,7 +198,8 @@ class Property
 			 $this->iType,
 			 $this->sLabel,
 			 $this->mDefaultValue,
-			 $this->sDesc
+			 $this->sDesc,
+			 $this->sPlaceholder
 		);
 	}
 }

@@ -295,7 +295,7 @@ class Manager
 					$aMap = $oPlugin->ConfigMap();
 					if (\is_array($aMap))
 					{
-						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */$oPluginProperty)
+						foreach ($aMap as /* @var $oPluginProperty \RainLoop\Plugins\Property */ $oPluginProperty)
 						{
 							if ($oPluginProperty && $oPluginProperty->AllowedInJs())
 							{
