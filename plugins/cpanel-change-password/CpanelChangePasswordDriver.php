@@ -152,6 +152,11 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 				$sResult = $oXmlApi->api2_query($sUser, 'Email', 'passwdpop', $aArgs);
 				if ($sResult)
 				{
+					if ($this->oLogger)
+					{
+						$this->oLogger->Write('CPANEL: '.$sResult, \MailSo\Log\Enumerations\Type::INFO);
+					}
+
 					$aResult = @\json_decode($sResult, true);
 					$bResult = isset($aResult['cpanelresult']['data'][0]['result']) &&
 						!!$aResult['cpanelresult']['data'][0]['result'];

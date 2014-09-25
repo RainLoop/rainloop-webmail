@@ -656,7 +656,7 @@ class xmlapi
 
         // Set the $auth string
 
-        $authstr;
+        $authstr = '';
         if ($this->auth_type == 'hash') {
             $authstr = 'Authorization: WHM ' . $this->user . ':' . $this->auth . "\r\n";
         } elseif ($this->auth_type == 'pass') {
@@ -671,12 +671,32 @@ class xmlapi
 
         // Perform the query (or pass the info to the functions that actually do perform the query)
 
-        $response;
+        $response = '';
         if ($this->http_client == 'curl') {
             $response = $this->curl_query($url, $args, $authstr);
         } elseif ($this->http_client == 'fopen') {
             $response = $this->fopen_query($url, $args, $authstr);
         }
+
+		// fix #1
+		$aMatch = array();
+		if ($response && false !== stripos($response, '<html>') &&
+			preg_match('/HTTP-EQUIV[\s]?=[\s]?"refresh"/i', $response) &&
+			preg_match('/<meta [^>]+url[\s]?=[\s]?([^">]+)/i', $response, $aMatch) &&
+			!empty($aMatch[1]) && 0 === strpos(trim($aMatch[1]), 'http'))
+		{
+			$url =  trim($aMatch[1]) . $query_type . $function;
+			if ($this->debug) {
+				error_log('new URL: ' . $url);
+			}
+
+			if ($this->http_client == 'curl') {
+				$response = $this->curl_query($url, $args, $authstr);
+			} elseif ($this->http_client == 'fopen') {
+				$response = $this->fopen_query($url, $args, $authstr);
+			}
+		}
+		// ---
 
         /*
         *	Post-Query Block
@@ -1543,7 +1563,7 @@ class xmlapi
     */
     public function editpkg($pkg)
     {
-        if (!$isset($pkg['name'])) {
+        if (!isset($pkg['name'])) {
             error_log("editpkg requires that name is defined in the array passed to it");
 
             return false;
@@ -2183,7 +2203,7 @@ class xmlapi
     * Service Status
     *
     * This function will return the status of all services on the and whether they are running or not
-    * @param string $service A single service to filter for.
+    * @param array $args A single service to filter for.
     * @return mixed
     * @link http://docs.cpanel.net/twiki/bin/view/AllDocumentation/AutomationIntegration/ServiceStatus XML API Call documentation
     */
@@ -2456,7 +2476,7 @@ class xmlapi
         }
         if (is_array($args)) {
         $display = '';
-            foreach ($args as $key => $value) {
+            foreach ($args as $value) {
                 $display .= $value . '|';
             }
             $values['display'] = substr($display, 0, -1);

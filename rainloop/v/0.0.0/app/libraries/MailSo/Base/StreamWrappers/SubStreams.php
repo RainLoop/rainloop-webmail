@@ -51,18 +51,18 @@ class SubStreams
 	 */
 	public static function CreateStream($aSubStreams)
 	{
-		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
+		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
-			stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
+			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
 		}
 
-		$sHashName = md5(microtime(true).rand(1000, 9999));
+		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
 
 		self::$aStreams[$sHashName] = $aSubStreams;
 
 		\MailSo\Base\Loader::IncStatistic('CreateStream/SubStreams');
 
-		return fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
+		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 
 	/**
@@ -71,10 +71,11 @@ class SubStreams
 	protected function &getPart()
 	{
 		$nNull = null;
-		if (isset($this->aSubStreams[$this->iIndex]));
+		if (isset($this->aSubStreams[$this->iIndex]))
 		{
 			return $this->aSubStreams[$this->iIndex];
 		}
+		
 		return $nNull;
 	}
 
@@ -88,16 +89,16 @@ class SubStreams
 		$this->aSubStreams = array();
 
 		$bResult = false;
-		$aPath = parse_url($sPath);
+		$aPath = \parse_url($sPath);
 
-		if (isset($aPath['host']) && isset($aPath['scheme']) &&
-			0 < strlen($aPath['host']) && 0 < strlen($aPath['scheme']) &&
+		if (isset($aPath['host'], $aPath['scheme']) &&
+			0 < \strlen($aPath['host']) && 0 < \strlen($aPath['scheme']) &&
 			self::STREAM_NAME === $aPath['scheme'])
 		{
 			$sHashName = $aPath['host'];
 			if (isset(self::$aStreams[$sHashName]) &&
-				is_array(self::$aStreams[$sHashName]) &&
-				0 < count(self::$aStreams[$sHashName]))
+				\is_array(self::$aStreams[$sHashName]) &&
+				0 < \count(self::$aStreams[$sHashName]))
 			{
 				$this->iIndex = 0;
 				$this->iPos = 0;
@@ -106,7 +107,7 @@ class SubStreams
 				$this->aSubStreams = self::$aStreams[$sHashName];
 			}
 
-			$bResult = 0 < count($this->aSubStreams);
+			$bResult = 0 < \count($this->aSubStreams);
 		}
 
 		return $bResult;
@@ -123,10 +124,10 @@ class SubStreams
 		$mCurrentPart = null;
 		if ($iCount > 0)
 		{
-			if ($iCount < strlen($this->sBuffer))
+			if ($iCount < \strlen($this->sBuffer))
 			{
-				$sReturn = substr($this->sBuffer, 0, $iCount);
-				$this->sBuffer = substr($this->sBuffer, $iCount);
+				$sReturn = \substr($this->sBuffer, 0, $iCount);
+				$this->sBuffer = \substr($this->sBuffer, $iCount);
 			}
 			else
 			{
@@ -142,11 +143,11 @@ class SubStreams
 						break;
 					}
 
-					if (is_resource($mCurrentPart))
+					if (\is_resource($mCurrentPart))
 					{
-						if (!feof($mCurrentPart))
+						if (!\feof($mCurrentPart))
 						{
-							$sReadResult = fread($mCurrentPart, 8192);
+							$sReadResult = @\fread($mCurrentPart, 8192);
 							if (false === $sReadResult)
 							{
 								return false;
@@ -154,11 +155,11 @@ class SubStreams
 
 							$sReturn .= $sReadResult;
 
-							$iLen = strlen($sReturn);
+							$iLen = \strlen($sReturn);
 							if ($iCount < $iLen)
 							{
-								$this->sBuffer = substr($sReturn, $iCount);
-								$sReturn = substr($sReturn, 0, $iCount);
+								$this->sBuffer = \substr($sReturn, $iCount);
+								$sReturn = \substr($sReturn, 0, $iCount);
 								$iCount = 0;
 							}
 							else
@@ -171,17 +172,17 @@ class SubStreams
 							$this->iIndex++;
 						}
 					}
-					else if (is_string($mCurrentPart))
+					else if (\is_string($mCurrentPart))
 					{
-						$sReadResult = substr($mCurrentPart, 0, $iCount);
+						$sReadResult = \substr($mCurrentPart, 0, $iCount);
 
 						$sReturn .= $sReadResult;
 
-						$iLen = strlen($sReadResult);
+						$iLen = \strlen($sReadResult);
 						if ($iCount < $iLen)
 						{
-							$this->sBuffer = substr($sReturn, $iCount);
-							$sReturn = substr($sReturn, 0, $iCount);
+							$this->sBuffer = \substr($sReturn, $iCount);
+							$sReturn = \substr($sReturn, 0, $iCount);
 							$iCount = 0;
 						}
 						else
@@ -194,7 +195,7 @@ class SubStreams
 				}
 			}
 
-			$this->iPos += strlen($sReturn);
+			$this->iPos += \strlen($sReturn);
 			return $sReturn;
 		}
 
