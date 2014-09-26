@@ -38,7 +38,7 @@
 			return Utils.folderListOptionsBuilder([], Data.folderList(), Data.folderListSystemNames(), [
 				['', this.sChooseOnText],
 				[Consts.Values.UnuseOptionValue, this.sUnuseText]
-			]);
+			], null, null, null, null, null, true);
 		}, this);
 
 		var

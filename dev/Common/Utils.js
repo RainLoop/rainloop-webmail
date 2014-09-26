@@ -1652,7 +1652,8 @@
 	 * @param {boolean=} bBuildUnvisible
 	 * @return {Array}
 	 */
-	Utils.folderListOptionsBuilder = function (aSystem, aList, aDisabled, aHeaderLines, iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible)
+	Utils.folderListOptionsBuilder = function (aSystem, aList, aDisabled, aHeaderLines,
+		iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible)
 	{
 		var
 			/**
@@ -1666,8 +1667,8 @@
 			aResult = []
 		;
 
-		bSystem = !Utils.isNormal(bSystem) ? 0 < aSystem.length : bSystem;
 		bBuildUnvisible = Utils.isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
+		bSystem = !Utils.isNormal(bSystem) ? 0 < aSystem.length : bSystem;
 		iUnDeep = !Utils.isNormal(iUnDeep) ? 0 : iUnDeep;
 		fDisableCallback = Utils.isNormal(fDisableCallback) ? fDisableCallback : null;
 		fVisibleCallback = Utils.isNormal(fVisibleCallback) ? fVisibleCallback : null;
@@ -1727,7 +1728,7 @@
 		for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
 		{
 			oItem = aList[iIndex];
-			if (oItem.subScribed() || !oItem.existen)
+			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
 			{
 				if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
 				{

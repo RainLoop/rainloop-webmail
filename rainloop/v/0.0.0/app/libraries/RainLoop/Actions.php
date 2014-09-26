@@ -3755,9 +3755,9 @@ class Actions
 				'Send Mail' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Mails' => \MailSo\Imap\Enumerations\FolderType::SENT,
 
-				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
-
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				
+				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
@@ -3801,7 +3801,7 @@ class Actions
 			$aFolders =& $oFolders->GetAsArray();
 			if (\is_array($aFolders) && 0 < \count($aFolders))
 			{
-				if ($bListFolderTypes)
+				if ($bListFolderTypes && false)
 				{
 					foreach ($aFolders as $oFolder)
 					{
@@ -3816,7 +3816,10 @@ class Actions
 						{
 							$aResult[$iFolderListType] = $oFolder->FullNameRaw();
 						}
-
+					}
+					
+					foreach ($aFolders as $oFolder)
+					{
 						$oSub = $oFolder->SubFolders();
 						if ($oSub && 0 < $oSub->Count())
 						{
@@ -3829,9 +3832,11 @@ class Actions
 				foreach ($aFolders as $oFolder)
 				{
 					$sName = $oFolder->Name();
-					if (isset($aMap[$sName]))
+					$sFullName = $oFolder->FullName();
+					
+					if (isset($aMap[$sName], $aMap[$sFullName]))
 					{
-						$iFolderType = $aMap[$sName];
+						$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
 						if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
 							\MailSo\Imap\Enumerations\FolderType::SENT,
 							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
@@ -3843,7 +3848,10 @@ class Actions
 							$aResult[$iFolderType] = $oFolder->FullNameRaw();
 						}
 					}
-
+				}
+				
+				foreach ($aFolders as $oFolder)
+				{
 					$oSub = $oFolder->SubFolders();
 					if ($oSub && 0 < $oSub->Count())
 					{
@@ -3890,7 +3898,10 @@ class Actions
 			{
 				$bDoItAgain = false;
 				$sNamespace = $oFolderCollection->GetNamespace();
-				$sNamespace = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
+				$sParent = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
+
+				$oInboxFolder = $oFolderCollection->GetByFullNameRaw('INBOX');
+				$sDelimiter = $oInboxFolder ? $oInboxFolder->Delimiter() : '/';
 
 				$aList = array();
 				$aMap = $this->systemFoldersNames($oAccount);
@@ -3924,9 +3935,25 @@ class Actions
 						$mFolderNameToCreate = \array_search($iType, $aMap);
 						if (!empty($mFolderNameToCreate))
 						{
+							$iPos = \strrpos($mFolderNameToCreate, $sDelimiter);
+							if (false !== $iPos)
+							{
+								$mNewParent = \substr($mFolderNameToCreate, 0, $iPos);
+								$mNewFolderNameToCreate = \substr($mFolderNameToCreate, $iPos + 1);
+								if (0 < \strlen($mNewFolderNameToCreate))
+								{
+									$mFolderNameToCreate = $mNewFolderNameToCreate;
+								}
+
+								if (0 < \strlen($mNewParent))
+								{
+									$sParent = 0 < \strlen($sParent) ? $sParent.$sDelimiter.$mNewParent : $mNewParent;
+								}
+							}
+
 							try
 							{
-								if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sNamespace))
+								if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent))
 								{
 									$bDoItAgain = true;
 								}
