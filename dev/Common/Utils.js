@@ -5,7 +5,7 @@
 
 	var
 		oEncryptObject = null,
-		
+
 		Utils = {},
 
 		window = require('window'),
@@ -204,12 +204,12 @@
 		{
 			var
 				sResultValue = false,
-				oEncrypt = Utils.rsaObject(sPublicKey);
+				oEncrypt = Utils.rsaObject(sPublicKey)
 			;
 
 			if (oEncrypt)
 			{
-				sResultValue = oEncrypt.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5())
+				sResultValue = oEncrypt.encrypt(Utils.fakeMd5() + ':' + sValue + ':' + Utils.fakeMd5());
 				if (false !== sResultValue && Utils.isNormal(sResultValue))
 				{
 					return 'rsa:xxx:' + sResultValue;
@@ -1187,6 +1187,14 @@
 	};
 
 	/**
+	 * @return {number}
+	 */
+	Utils.timestamp = function ()
+	{
+		return window.Math.round(Utils.microtime() / 1000);
+	};
+
+	/**
 	 *
 	 * @param {string} sLanguage
 	 * @param {boolean=} bEng = false
@@ -1932,24 +1940,25 @@
 	 * @param {string} sLanguage
 	 * @param {Function=} fDone
 	 * @param {Function=} fFail
-	 * @param {Function=} fAllways
 	 */
-	Utils.reloadLanguage = function (sLanguage, fDone, fFail, fAllways)
+	Utils.reloadLanguage = function (sLanguage, fDone, fFail)
 	{
+		var iStart = Utils.microtime();
 		$.ajax({
 				'url': require('Common/LinkBuilder').langLink(sLanguage),
 				'dataType': 'script',
 				'cache': true
 			})
-			.done(function () {
-				Utils.i18nReload();
-				(fDone || Utils.emptyFunction)();
-			})
 			.fail(fFail || Utils.emptyFunction)
-			.always(fAllways || Utils.emptyFunction)
+			.done(function () {
+				_.delay(function () {
+					Utils.i18nReload();
+					(fDone || Utils.emptyFunction)();
+				}, 500 < Utils.microtime() - iStart ? 1 : 500);
+			})
 		;
 	};
-	
+
 	/**
 	 * @param {Object} oParams
 	 */
@@ -1959,7 +1968,7 @@
 		_.each(oParams, function (sKey, sValue) {
 			aContent.push('' + sKey + '=' + sValue);
 		});
-		
+
 		$('#rl-head-viewport').attr('content', aContent.join(', '));
 	};
 

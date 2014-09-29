@@ -67,22 +67,24 @@
 		_.delay(function () {
 
 			var
-				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self)
+				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self),
+				fReloadLanguageHelper = function (iSaveSettingsStep) {
+					return function() {
+						self.languageTrigger(iSaveSettingsStep);
+						_.delay(function () {
+							self.languageTrigger(Enums.SaveSettingsStep.Idle);
+						}, 1000);
+					};
+				}
 			;
 
 			Data.language.subscribe(function (sValue) {
 
 				self.languageTrigger(Enums.SaveSettingsStep.Animate);
 
-				Utils.reloadLanguage(sValue, function() {
-					self.languageTrigger(Enums.SaveSettingsStep.TrueResult);
-				}, function() {
-					self.languageTrigger(Enums.SaveSettingsStep.FalseResult);
-				}, function() {
-					_.delay(function () {
-						self.languageTrigger(Enums.SaveSettingsStep.Idle);
-					}, 1000);
-				});
+				Utils.reloadLanguage(sValue,
+					fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
+					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult));
 
 				Remote.saveSettings(null, {
 					'Language': sValue
