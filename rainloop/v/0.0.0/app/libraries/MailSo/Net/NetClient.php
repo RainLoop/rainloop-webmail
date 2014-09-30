@@ -172,6 +172,7 @@ abstract class NetClient
 	 * @param string $sServerName
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bCapturePeerCertIfSsl = false
 	 *
 	 * @return void
 	 *
@@ -180,7 +181,7 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bCapturePeerCertIfSsl = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -206,6 +207,8 @@ abstract class NetClient
 		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL($iPort, $iSecurityType);
 		$this->sConnectedHost = $this->bSecure ? 'ssl://'.$sServerName : $sServerName;
 
+		$bCapturePeerCertIfSsl = !!($bCapturePeerCertIfSsl && $this->bSecure);
+
 		if (!$this->bSecure && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->iSecurityType)
 		{
 			$this->writeLogException(
@@ -217,8 +220,24 @@ abstract class NetClient
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
 			\MailSo\Log\Enumerations\Type::NOTE);
 
-		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
-			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
+		if ($bCapturePeerCertIfSsl && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_context_create') &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_client') && defined('STREAM_CLIENT_CONNECT'))
+		{
+			$rStreamContext = \stream_context_create(array('ssl' => array('capture_peer_cert' => true)));
+			$sRemoteSocket = (0 === \strpos($this->sConnectedHost, 'ssl://')
+					? $this->sConnectedHost : 'tcp://'.$this->sConnectedHost).':'.$this->iConnectedPort;
+
+			if ($rStreamContext)
+			{
+				$this->rConnect = @\stream_socket_client($sRemoteSocket, $iErrorNo, $sErrorStr,
+					$this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
+			}
+		}
+		else
+		{
+			$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
+				$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
+		}
 
 		if (!\is_resource($this->rConnect))
 		{
@@ -306,6 +325,15 @@ abstract class NetClient
 	public function IsConnectedWithException()
 	{
 		$this->IsConnected(true);
+	}
+
+	/**
+	 * @return array|bool
+	 */
+	public function StreamContextParams()
+	{
+		return \is_resource($this->rConnect) && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_context_get_options')
+			? \stream_context_get_params($this->rConnect) : false;
 	}
 
 	/**

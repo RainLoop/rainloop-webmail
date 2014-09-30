@@ -78,15 +78,12 @@ class Api
 
 			\MailSo\Config::$MessageListFastSimpleSearch =
 				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
-			
+
 			\MailSo\Config::$MessageListCountLimitTrigger =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
 
 			\MailSo\Config::$MessageListDateFilter =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
-
-			\MailSo\Config::$MessageListUndeletedFilter =
-				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', false);
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 		}

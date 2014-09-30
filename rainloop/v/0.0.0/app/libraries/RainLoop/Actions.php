@@ -973,12 +973,12 @@ class Actions
 			'Plugins' => array()
 		);
 
-		if ($aResult['UseRsaEncryption'] && 
+		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
 		{
 			$aResult['RsaPublicKey'] = \file_get_contents(APP_PRIVATE_DATA.'rsa/public');
 			$aResult['RsaPublicKey'] = $aResult['RsaPublicKey'] ? $aResult['RsaPublicKey'] : '';
-			
+
 			if (false === \strpos($aResult['RsaPublicKey'], 'PUBLIC KEY'))
 			{
 				$aResult['RsaPublicKey'] = '';
@@ -1563,7 +1563,7 @@ class Actions
 			$oLogger = $this->Logger();
 			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
 
-			$sPrivateKey = file_exists(APP_PRIVATE_DATA.'rsa/private') ? 
+			$sPrivateKey = file_exists(APP_PRIVATE_DATA.'rsa/private') ?
 				\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
 
 			if (!empty($sPrivateKey))
@@ -2737,13 +2737,27 @@ class Actions
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'domain-test-connection.de');
 		if ($oDomain)
 		{
+//			$oOpenSSL = \MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_x509_parse');
+			$oOpenSSL = false; // TODO in dev
+
 			try
 			{
 				$oImapClient = \MailSo\Imap\ImapClient::NewInstance()->SetLogger($this->Logger());
 				$oImapClient->SetTimeOuts(5);
 
 				$iTime = \microtime(true);
-				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(), $oDomain->IncSecure());
+				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(), $oDomain->IncSecure(), $oOpenSSL);
+
+				if ($oOpenSSL)
+				{
+					$aStreamContextParams = $oImapClient->StreamContextParams();
+					if (isset($aStreamContextParams['options']['ssl']['peer_certificate']))
+					{
+						$aParseData = @\openssl_x509_parse($aStreamContextParams['options']['ssl']['peer_certificate']);
+						$this->Logger()->WriteDump($aParseData);
+					}
+				}
+
 				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
 				$bImapResult = true;
@@ -3756,7 +3770,7 @@ class Actions
 				'Send Mails' => \MailSo\Imap\Enumerations\FolderType::SENT,
 
 				'Drafts' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
-				
+
 				'Draft' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
@@ -3817,7 +3831,7 @@ class Actions
 							$aResult[$iFolderListType] = $oFolder->FullNameRaw();
 						}
 					}
-					
+
 					foreach ($aFolders as $oFolder)
 					{
 						$oSub = $oFolder->SubFolders();
@@ -3833,7 +3847,7 @@ class Actions
 				{
 					$sName = $oFolder->Name();
 					$sFullName = $oFolder->FullName();
-					
+
 					if (isset($aMap[$sName], $aMap[$sFullName]))
 					{
 						$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
@@ -3849,7 +3863,7 @@ class Actions
 						}
 					}
 				}
-				
+
 				foreach ($aFolders as $oFolder)
 				{
 					$oSub = $oFolder->SubFolders();
@@ -4151,8 +4165,9 @@ class Actions
 		try
 		{
 			$aInboxInformation = $this->MailClient()->FolderInformation(
-				$sFolder, $sPrevUidNext, $aFlagsFilteredUids, $this->cacherForUids()
+				$sFolder, $sPrevUidNext, $aFlagsFilteredUids
 			);
+
 			if (\is_array($aInboxInformation) && isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
 			{
 				foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
@@ -4205,10 +4220,7 @@ class Actions
 				{
 					try
 					{
-						$aInboxInformation = $this->MailClient()->FolderInformation(
-							$sFolder, '', array(), $this->cacherForUids()
-						);
-						
+						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, '', array());
 						if (\is_array($aInboxInformation) && isset($aInboxInformation['Folder']))
 						{
 							$aResult['List'][] = $aInboxInformation;
@@ -4245,7 +4257,7 @@ class Actions
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
-		
+
 		if (is_array($aValues) && 9 === count($aValues))
 		{
 			$sFolder =(string) $aValues[0];
@@ -5650,9 +5662,10 @@ class Actions
 
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true);
-			
-			$sHash = $this->MailClient()->FolderHash($sFolder, $this->cacherForUids());
+			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true,
+				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
+
+			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
 		catch (\Exception $oException)
 		{
@@ -5682,10 +5695,12 @@ class Actions
 
 		try
 		{
-			$this->MailClient()->MessageMove($sFromFolder, $sToFolder,
-				$aFilteredUids, true, $this->Config()->Get('labs', 'use_imap_move', true));
+			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $aFilteredUids, true,
+				!!$this->Config()->Get('labs', 'use_imap_move', true),
+				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
+			);
 
-			$sHash = $this->MailClient()->FolderHash($sFromFolder, $this->cacherForUids());
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Exception $oException)
 		{
@@ -5719,7 +5734,7 @@ class Actions
 			$this->MailClient()->MessageCopy($sFromFolder, $sToFolder,
 				$aFilteredUids, true);
 
-			$sHash = $this->MailClient()->FolderHash($sFromFolder, $this->cacherForUids());
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Exception $oException)
 		{
@@ -7225,7 +7240,7 @@ class Actions
 
 		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
 	}
-	
+
 	/**
 	 * @return MailSo\Cache\CacheClient|null
 	 */

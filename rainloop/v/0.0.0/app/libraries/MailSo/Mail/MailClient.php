@@ -495,6 +495,7 @@ class MailClient
 	 * @param array $aIndexRange
 	 * @param bool $bIndexIsUid
 	 * @param bool $bUseExpunge = true
+	 * @param bool $bExpungeAll = false
 	 *
 	 * @return \MailSo\Mail\MailClient
 	 *
@@ -502,7 +503,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageDelete($sFolder, $aIndexRange, $bIndexIsUid, $bUseExpunge = true)
+	public function MessageDelete($sFolder, $aIndexRange, $bIndexIsUid, $bUseExpunge = true, $bExpungeAll = false)
 	{
 		if (0 === \strlen($sFolder) || !\is_array($aIndexRange) || 0 === \count($aIndexRange))
 		{
@@ -520,7 +521,7 @@ class MailClient
 
 		if ($bUseExpunge)
 		{
-			$this->oImapClient->MessageExpunge($bIndexIsUid ? $sIndexRange : '', $bIndexIsUid);
+			$this->oImapClient->MessageExpunge($bIndexIsUid ? $sIndexRange : '', $bIndexIsUid, $bExpungeAll);
 		}
 
 		return $this;
@@ -532,6 +533,7 @@ class MailClient
 	 * @param array $aIndexRange
 	 * @param bool $bIndexIsUid
 	 * @param bool $bUseMoveSupported = false
+	 * @param bool $bExpungeAll = false
 	 *
 	 * @return \MailSo\Mail\MailClient
 	 *
@@ -539,7 +541,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageMove($sFromFolder, $sToFolder, $aIndexRange, $bIndexIsUid, $bUseMoveSupported = false)
+	public function MessageMove($sFromFolder, $sToFolder, $aIndexRange, $bIndexIsUid, $bUseMoveSupported = false, $bExpungeAll = false)
 	{
 		if (0 === \strlen($sFromFolder) || 0 === \strlen($sToFolder) ||
 			!\is_array($aIndexRange) || 0 === \count($aIndexRange))
@@ -559,7 +561,7 @@ class MailClient
 			$this->oImapClient->MessageCopy($sToFolder,
 				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
 
-			$this->MessageDelete($sFromFolder, $aIndexRange, $bIndexIsUid, true);
+			$this->MessageDelete($sFromFolder, $aIndexRange, $bIndexIsUid, true, $bExpungeAll);
 		}
 
 		return $this;
@@ -647,11 +649,10 @@ class MailClient
 	 * @param int $iCount
 	 * @param int $iUnseenCount
 	 * @param string $sUidNext
-	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return void
 	 */
-	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount, &$sUidNext, $oCacher = null)
+	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount, &$sUidNext)
 	{
 		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, array(
 			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
@@ -668,36 +669,7 @@ class MailClient
 		$sUidNext = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT])
 			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] : '0';
 
-		if (\MailSo\Config::$MessageListUndeletedFilter)
-		{
-			$oFolder = $this->oImapClient->FolderCurrentInformation();
-			if (!$oFolder || $oFolder->FolderName !== $sFolderName)
-			{
-				$this->oImapClient->FolderExamine($sFolderName);
-			}
-
-			$aUids = $this->getSearchUidsResult('',
-				$sFolderName, false, false, false, $oCacher);
-
-			$iNewCount = \count($aUids);
-			if (0 < $iNewCount && $iNewCount !== $iCount)
-			{
-				$iCount = $iNewCount;
-
-				$aUids = $this->getSearchUidsResult('is:unread',
-					$sFolderName, false, false, false, $oCacher);
-
-				$iUnseenCount = \count($aUids);
-			}
-			else if (0 === $iNewCount)
-			{
-				$iCount = 0;
-				$iUnseenCount = 0;
-			}
-
-			unset($aUids);
-		}
-		else if ($this->IsGmail())
+		if ($this->IsGmail())
 		{
 			$oFolder = $this->oImapClient->FolderCurrentInformation();
 			if ($oFolder && null !== $oFolder->Exists && $oFolder->FolderName === $sFolderName)
@@ -800,7 +772,6 @@ class MailClient
 	 * @param string $sFolderName
 	 * @param string $sPrevUidNext = ''
 	 * @param array $aUids = ''
-	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return string
 	 *
@@ -808,7 +779,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderInformation($sFolderName, $sPrevUidNext = '', $aUids = array(), $oCacher = null)
+	public function FolderInformation($sFolderName, $sPrevUidNext = '', $aUids = array())
 	{
 		$aFlags = array();
 
@@ -847,7 +818,7 @@ class MailClient
 		$iUnseenCount = 0;
 		$sUidNext = '0';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $oCacher);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
 
 		$aResult = array(
 			'Folder' => $sFolderName,
@@ -865,7 +836,6 @@ class MailClient
 
 	/**
 	 * @param string $sFolderName
-	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
 	 *
 	 * @return string
 	 *
@@ -873,13 +843,13 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderHash($sFolderName, $oCacher = null)
+	public function FolderHash($sFolderName)
 	{
 		$iCount = 0;
 		$iUnseenCount = 0;
 		$sUidNext = '0';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $oCacher);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
 
 		return self::GenerateHash($sFolderName, $iCount, $iUnseenCount, $sUidNext);
 	}
@@ -1327,10 +1297,6 @@ class MailClient
 		}
 
 		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
-		if (\MailSo\Config::$MessageListUndeletedFilter)
-		{
-			$sCriteriasResult .= ' UNDELETED';
-		}
 
 		if (0 < $iTimeFilter)
 		{
@@ -1420,11 +1386,6 @@ class MailClient
 	public function MessageListThreadsMap($sFolderName, $sFolderHash, $oCacher)
 	{
 		$sSearchHash = '';
-		if (\MailSo\Config::$MessageListUndeletedFilter)
-		{
-			$sSearchHash .= ' UNDELETED';
-		}
-
 		if (0 < \MailSo\Config::$MessageListDateFilter)
 		{
 			$iD = \time() - 3600 * 24 * 30 * \MailSo\Config::$MessageListDateFilter;
@@ -1608,7 +1569,7 @@ class MailClient
 				$aSerialized = @\unserialize($sSerialized);
 				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
 					\is_array($aSerialized['Uids']) &&
-					($sFolderHash === $aSerialized['FolderHash'] || false === $sFolderHash))
+					($sFolderHash === $aSerialized['FolderHash']))
 				{
 					if ($this->oLogger)
 					{
@@ -1762,7 +1723,7 @@ class MailClient
 			$oCacher = null;
 		}
 
-		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext, $oCacher);
+		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);
 		$iMessageCount = $iMessageRealCount;
 
 		$oMessageCollection->FolderHash = self::GenerateHash($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);
@@ -1860,8 +1821,7 @@ class MailClient
 
 					if (1 < $iMessageCount)
 					{
-						if ($bMessageListOptimization ||
-							(!\MailSo\Config::$MessageListUndeletedFilter && 0 === \MailSo\Config::$MessageListDateFilter))
+						if ($bMessageListOptimization || 0 === \MailSo\Config::$MessageListDateFilter)
 						{
 							$aIndexOrUids = \array_reverse(\range(1, $iMessageCount));
 						}

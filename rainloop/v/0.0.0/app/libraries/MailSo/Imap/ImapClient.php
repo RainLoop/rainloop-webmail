@@ -126,6 +126,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param string $sServerName
 	 * @param int $iPort = 143
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bCapturePeerCertIfSsl = false
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
@@ -134,11 +135,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function Connect($sServerName, $iPort = 143,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bCapturePeerCertIfSsl = false)
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bCapturePeerCertIfSsl);
 
 		$this->parseResponseWithValidation('*', true);
 
@@ -628,19 +629,19 @@ class ImapClient extends \MailSo\Net\NetClient
 				}
 			}
 		}
-		
+
 		if ($bUseListStatus)
 		{
 			foreach ($aResult as /* @var $oImapResponse \MailSo\Imap\Response */ $oImapResponse)
 			{
 				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType &&
-					'STATUS' === $oImapResponse->StatusOrIndex && 
+					'STATUS' === $oImapResponse->StatusOrIndex &&
 					isset($oImapResponse->ResponseList[2]) &&
 					isset($oImapResponse->ResponseList[3]) &&
 					\is_array($oImapResponse->ResponseList[3]))
 				{
 					$sFolderNameRaw = $oImapResponse->ResponseList[2];
-					
+
 					$oCurrentFolder = null;
 					foreach ($aReturn as &$oFolder)
 					{
@@ -650,7 +651,7 @@ class ImapClient extends \MailSo\Net\NetClient
 							break;
 						}
 					}
-					
+
 					if (null !== $oCurrentFolder)
 					{
 						$sName = null;
@@ -667,13 +668,13 @@ class ImapClient extends \MailSo\Net\NetClient
 								$sName = null;
 							}
 						}
-						
+
 						if (0 < count($aStatus))
 						{
 							$oCurrentFolder->SetExtended('STATUS', $aStatus);
 						}
 					}
-					
+
 					unset($oCurrentFolder);
 				}
 			}
@@ -700,9 +701,9 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$sCmd = 'LIST';
 		}
-		
+
 		$sListPattern = 0 === strlen(trim($sListPattern)) ? '*' : $sListPattern;
-		
+
 		$aParameters = array(
 			$this->EscapeString($sParentFolderName),
 			$this->EscapeString($sListPattern)
@@ -724,7 +725,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$bUseListStatus = false;
 		}
-		
+
 		$this->SendRequest($sCmd, $aParameters);
 
 		return $this->getFoldersFromResult(
@@ -1085,7 +1086,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$iStart = 3;
 				}
-				
+
 				for ($iIndex = $iStart, $iLen = \count($oImapResponse->ResponseList); $iIndex < $iLen; $iIndex++)
 				{
 					$aReturn[] = (int) $oImapResponse->ResponseList[$iIndex];
@@ -1142,7 +1143,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$aRequest[] = 'RETURN';
 			$aRequest[] = $aSearchOrSortReturn;
-			
+
 			$aRequest[] = $aSortTypes;
 			$aRequest[] = \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? 'US-ASCII' : 'UTF-8';
 		}
@@ -1415,7 +1416,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$iStart = 3;
 				}
-				
+
 				for ($iIndex = $iStart, $iLen = \count($oImapResponse->ResponseList); $iIndex < $iLen; $iIndex++)
 				{
 					$aNewValue = $this->validateThreadItem($oImapResponse->ResponseList[$iIndex]);
@@ -1454,7 +1455,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->SendRequestWithCheck($sCommandPrefix.'COPY',
 			array($sIndexRange, $this->EscapeString($sToFolder)));
 	}
-	
+
 	/**
 	 * @param string $sToFolder
 	 * @param string $sIndexRange
@@ -1488,21 +1489,23 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sUidRangeIfSupported
+	 * @param string $sUidRangeIfSupported = ''
+	 * @param bool $bForceUidExpunge = false
+	 * @param bool $bExpungeAll = false
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageExpunge($sUidRangeIfSupported = '', $bForceUidExpunge = false)
+	public function MessageExpunge($sUidRangeIfSupported = '', $bForceUidExpunge = false, $bExpungeAll = false)
 	{
 		$sUidRangeIfSupported = \trim($sUidRangeIfSupported);
 
 		$sCmd = 'EXPUNGE';
 		$aArguments = array();
 
-		if ($bForceUidExpunge && 0 < \strlen($sUidRangeIfSupported) && $this->IsSupported('UIDPLUS'))
+		if (!$bExpungeAll && $bForceUidExpunge && 0 < \strlen($sUidRangeIfSupported) && $this->IsSupported('UIDPLUS'))
 		{
 			$sCmd = 'UID '.$sCmd;
 			$aArguments = array($sUidRangeIfSupported);
@@ -1737,7 +1740,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			$oImapResponse = null;
 			$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
-			
+
 			while (true)
 			{
 				$oImapResponse = Response::NewInstance();
@@ -1929,11 +1932,11 @@ class ImapClient extends \MailSo\Net\NetClient
 							$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.
 								$iLiteralLen.'" bytes', \MailSo\Log\Enumerations\Type::WARNING);
 						}
-						
+
 						if (!$bTreatAsAtom)
 						{
 							$aList[] = $sLiteral;
-							
+
 							if (\MailSo\Config::$LogSimpleLiterals)
 							{
 								$this->writeLog('{'.\strlen($sLiteral).'} '.$sLiteral, \MailSo\Log\Enumerations\Type::INFO);
@@ -1965,7 +1968,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$sAtomBlock = $this->partialParseResponseBranch($mNull, $iStackIndex, true,
 						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase));
-					
+
 					$sAtomBuilder .= $sAtomBlock;
 					$iPos = $this->iResponseBufParsedPos;
 					$sAtomBuilder .= ($bIsClosingBracketSquare) ? ']' : ')';
@@ -1987,7 +1990,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				if (null !== $oImapResponse && $oImapResponse->IsStatusResponse)
 				{
 					$oImapResponse->OptionalResponse = $aSubItems;
-					
+
 					$bIsGotoDefault = true;
 					$bIsGotoNotAtomBracket = false;
 					continue;
@@ -2350,7 +2353,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			if (\is_resource($rImapLiteralStream))
 			{
 				$iNotReadLiteralLen = 0;
-				
+
 				$bFeof = \feof($rImapLiteralStream);
 				$this->writeLog('End Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 					' - feof = '.($bFeof ? 'good' : 'BAD'), $bFeof ?

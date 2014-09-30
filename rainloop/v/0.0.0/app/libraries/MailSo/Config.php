@@ -17,7 +17,7 @@ class Config
 	 * @var bool
 	 */
 	public static $MBSTRING = true;
-	
+
 	/**
 	 * @var bool
 	 */
@@ -32,11 +32,6 @@ class Config
 	 * @var int
 	 */
 	public static $MessageListCountLimitTrigger = 0;
-	
-	/**
-	 * @var bool
-	 */
-	public static $MessageListUndeletedFilter = false;
 
 	/**
 	 * @var int
