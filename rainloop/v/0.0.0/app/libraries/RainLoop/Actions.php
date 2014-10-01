@@ -6414,14 +6414,9 @@ class Actions
 		$bResult = false;
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
-			$iLast = 1382478804;
-			$iExpires = 2002478804;
-
-			header('Cache-Control: private', true);
-			header('ETag: '.\md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', '')))), true);
-			header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLast).' UTC', true);
-			header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
-			header('Connection: close');
+			$this->oHttp->ServerUseCache(
+				\md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', '')))),
+				1382478804, 2002478804);
 
 			$bResult = true;
 		}

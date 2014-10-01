@@ -196,6 +196,7 @@ class ServiceActions
 		$this->Plugins()->RunHook('filter.ajax-response', array($sAction, &$aResponseItem));
 
 		@\header('Content-Type: application/json; charset=utf-8');
+
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
 		$sObResult = @\ob_get_clean();
@@ -1115,7 +1116,7 @@ class ServiceActions
 		$sResult = empty($sLangJs) ? 'null' : '{'.\substr($sLangJs, 0, -1).'}';
 
 		return
-			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
+			($bWrapByScriptTag ? '<script data-cfasync="false">' : '').
 			'window.rainloopI18N='.$sResult.';'.$sMoment.
 			($bWrapByScriptTag ? '</script>' : '')
 		;
@@ -1130,7 +1131,7 @@ class ServiceActions
 	private function compileAppData($aAppData, $bWrapByScriptTag = true)
 	{
 		return
-			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
+			($bWrapByScriptTag ? '<script data-cfasync="false">' : '').
 			'window.rainloopAppData='.\json_encode($aAppData).';'.
 			'if(window.__rlah_set){__rlah_set()};'.
 			($bWrapByScriptTag ? '</script>' : '')

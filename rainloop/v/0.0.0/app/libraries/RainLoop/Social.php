@@ -400,7 +400,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_google'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -520,11 +520,12 @@ class Social
 		else
 		{
 			$this->oHttp->ServerNoCache();
+
 			@\header('Content-Type: text/html; charset=utf-8');
 
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_facebook'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -720,7 +721,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_twitter'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 

@@ -466,7 +466,7 @@ class Http
 				{
 					$aAddOptions[CURLOPT_HTTPHEADER] = $aOptions[CURLOPT_HTTPHEADER];
 				}
-				
+
 				\curl_setopt_array($oCurl, $aAddOptions);
 
 				do
@@ -510,7 +510,7 @@ class Http
 
 		return null === $sNewUrl ? $sUrl : $sNewUrl;
 	}
-	
+
 	/**
 	 * @param string $sUrl
 	 * @param resource $rFile
@@ -540,7 +540,7 @@ class Http
 			{
 				$oLogger->Write('cURL: input resource invalid.', \MailSo\Log\Enumerations\Type::WARNING);
 			}
-			
+
 			return false;
 		}
 
@@ -590,10 +590,10 @@ class Http
 		\curl_setopt_array($oCurl, $aOptions);
 
 		$bResult = \curl_exec($oCurl);
-		
+
 		$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
 		$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
-		
+
 		if ($oLogger)
 		{
 			$oLogger->Write('cUrl: Request result: '.($bResult ? 'true' : 'false').' (Status: '.$iCode.', ContentType: '.$sContentType.')');
@@ -607,7 +607,7 @@ class Http
 		{
 			\curl_close($oCurl);
 		}
-		
+
 		return $bResult;
 	}
 
@@ -634,7 +634,7 @@ class Http
 			\rewind($rMemFile);
 			return \stream_get_contents($rMemFile);
 		}
-		
+
 		return false;
 	}
 
@@ -677,13 +677,43 @@ class Http
 		return $bResult;
 	}
 
+	/**
+	 * @staticvar bool $bCache
+	 */
 	public function ServerNoCache()
 	{
-		@\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-		@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
-		@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-		@\header('Cache-Control: post-check=0, pre-check=0', false);
-		@\header('Pragma: no-cache');
+		static $bCache = false;
+		if (false === $bCache)
+		{
+			$bCache = true;
+			@\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
+			@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+			@\header('Cache-Control: post-check=0, pre-check=0', false);
+			@\header('Pragma: no-cache');
+			@\header('X-RainLoop-Cache: no');
+		}
+	}
+
+	/**
+	 * @staticvar bool $bCache
+	 * @param string $sEtag
+	 * @param int $iLastModified
+	 * @param int $iExpires
+	 */
+	public function ServerUseCache($sEtag, $iLastModified, $iExpires)
+	{
+		static $bCache = false;
+		if (false === $bCache)
+		{
+			$bCache = true;
+			@\header('Cache-Control: private', true);
+			@\header('ETag: '.$sEtag, true);
+			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
+			@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
+			@\header('Connection: close');
+			@\header('X-RainLoop-Cache: yes');
+		}
 	}
 
 	/**

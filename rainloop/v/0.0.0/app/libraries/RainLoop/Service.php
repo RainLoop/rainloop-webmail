@@ -98,6 +98,11 @@ class Service
 			$bAdmin = true;
 		}
 
+		if ($this->oHttp->IsPost())
+		{
+			$this->oHttp->ServerNoCache();
+		}
+
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
 			echo $this->oActions->ErrorTemplates('Access Denied.',
@@ -127,7 +132,7 @@ class Service
 		{
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
-
+			
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
