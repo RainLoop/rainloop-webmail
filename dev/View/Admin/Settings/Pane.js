@@ -37,7 +37,7 @@
 	PaneSettingsAdminView.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
-			require('App/Admin').loginAndLogoutReload();
+			require('App/Admin').loginAndLogoutReload(true);
 		});
 	};
 

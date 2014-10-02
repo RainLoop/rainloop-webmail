@@ -125,8 +125,15 @@
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 			Settings.settingsGet('Title') || '';
 
-		window.document.title = '';
+		window.document.title = sTitle + ' ...';
 		window.document.title = sTitle;
+	};
+
+	AbstractApp.prototype.redirectToAdminPanel = function ()
+	{
+		_.delay(function () {
+			window.location.href = './?/Admin/';
+		}, 100);
 	};
 
 	/**
@@ -149,7 +156,8 @@
 			window.close();
 		}
 
-		if (bLogout && '' !== sCustomLogoutLink && window.location.href !== sCustomLogoutLink)
+		sCustomLogoutLink = sCustomLogoutLink || './';
+		if (bLogout && window.location.href !== sCustomLogoutLink)
 		{
 			_.delay(function () {
 				if (bInIframe && window.parent)

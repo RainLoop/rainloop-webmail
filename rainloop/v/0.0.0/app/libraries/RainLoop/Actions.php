@@ -1607,6 +1607,16 @@ class Actions
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return string
+	 */
+	private function generateSignMeToken($sEmail)
+	{
+		return \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail);
+	}
+
+	/**
 	 * @return array
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -1624,11 +1634,33 @@ class Actions
 		$oAccount = null;
 
 		$sPassword = $this->clientRsaDecryptHelper($sPassword);
+		$this->Logger()->AddSecret($sPassword);
+
+		if (0 < \strlen($sEmail) && 0 < \strlen($sPassword) &&
+			$this->Config()->Get('security', 'allow_universal_login', true) &&
+			$this->Config()->Get('security', 'allow_admin_panel', true) &&
+			$sEmail === $this->Config()->Get('security', 'admin_login', '')
+		)
+		{
+			if ($this->Config()->ValidatePassword($sPassword))
+			{
+				$this->setAdminAuthToken($this->getAdminToken());
+
+				return $this->DefaultResponse(__FUNCTION__, true, array(
+					'Admin' => true
+				));
+			}
+			else
+			{
+				$this->loginErrorDelay();
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
+			}
+		}
 
 		try
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sPassword,
-				$bSignMe ? \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail) : '',
+				$bSignMe ? $this->generateSignMeToken($sEmail) : '',
 				$sAdditionalCode, $bAdditionalCodeSignMe);
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)

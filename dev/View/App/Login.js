@@ -128,6 +128,10 @@
 
 									this.submitRequest(false);
 								}
+								else if (oData.Admin)
+								{
+									require('App/App').redirectToAdminPanel();
+								}
 								else
 								{
 									require('App/App').loginAndLogoutReload();
