@@ -5662,7 +5662,7 @@ class Actions
 
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true,
+			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true, true,
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
 
 			$sHash = $this->MailClient()->FolderHash($sFolder);
