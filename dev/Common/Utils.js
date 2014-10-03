@@ -1573,7 +1573,7 @@
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-			.replace(/[\-_~]{10,}/g, '<hr />')
+//			.replace(/[\-_~]{10,}/g, '<hr />')
 			.replace(/\n/g, '<br />');
 
 		return bFindEmailAndLinks ? Utils.findEmailAndLinks(sPlain) : sPlain;
