@@ -163,7 +163,7 @@ class Api
 			if (\RainLoop\Api::Actions()->AddressBookProvider() &&
 				\RainLoop\Api::Actions()->AddressBookProvider()->IsActive())
 			{
-				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContactsAndTags($sEmail);
+				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContacts($sEmail);
 			}
 
 			return true;

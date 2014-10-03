@@ -715,12 +715,11 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	RemoteAppStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, sTags, aProperties)
+	RemoteAppStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
 	{
 		this.defaultRequest(fCallback, 'ContactSave', {
 			'RequestUid': sRequestUid,
 			'Uid': Utils.trim(sUid),
-			'Tags': Utils.trim(sTags),
 			'Properties': aProperties
 		});
 	};

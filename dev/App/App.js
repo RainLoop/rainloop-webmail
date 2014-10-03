@@ -839,17 +839,6 @@
 		}, sQuery);
 	};
 
-	/**
-	 * @param {string} sQuery
-	 * @param {Function} fCallback
-	 */
-	AppApp.prototype.getContactTagsAutocomplete = function (sQuery, fCallback)
-	{
-		fCallback(_.filter(Data.contactTags(), function (oContactTag) {
-			return oContactTag && oContactTag.filterHelper(sQuery);
-		}));
-	};
-
 	AppApp.prototype.setMessageList = function (oData, bCached)
 	{
 		if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&

@@ -5390,7 +5390,6 @@ class Actions
 
 		$iResultCount = 0;
 		$mResult = array();
-		$aTags = array();
 
 		$oAbp = $this->AddressBookProvider($oAccount);
 		if ($oAbp->IsActive())
@@ -5398,8 +5397,6 @@ class Actions
 			$iResultCount = 0;
 			$mResult = $oAbp->GetContacts($oAccount->ParentEmailHelper(),
 				$iOffset, $iLimit, $sSearch, $iResultCount);
-
-			$aTags = $oAbp->GetContactTags($oAccount->ParentEmailHelper());
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
@@ -5407,8 +5404,7 @@ class Actions
 			'Limit' => $iLimit,
 			'Count' => $iResultCount,
 			'Search' => $sSearch,
-			'List' => $mResult,
-			'Tags' => $aTags
+			'List' => $mResult
 		));
 	}
 

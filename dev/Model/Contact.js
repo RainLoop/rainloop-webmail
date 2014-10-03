@@ -20,7 +20,6 @@
 		this.idContact = 0;
 		this.display = '';
 		this.properties = [];
-		this.tags = '';
 		this.readOnly = false;
 
 		this.focused = ko.observable(false);
@@ -71,7 +70,6 @@
 			this.idContact = Utils.pInt(oItem['IdContact']);
 			this.display = Utils.pString(oItem['Display']);
 			this.readOnly = !!oItem['ReadOnly'];
-			this.tags = '';
 
 			if (Utils.isNonEmptyArray(oItem['Properties']))
 			{
@@ -81,11 +79,6 @@
 						this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
 					}
 				}, this);
-			}
-
-			if (Utils.isNonEmptyArray(oItem['Tags']))
-			{
-				this.tags = oItem['Tags'].join(',');
 			}
 
 			bResult = true;

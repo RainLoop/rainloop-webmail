@@ -335,14 +335,6 @@
 		return true;
 	};
 
-	/**
-	 * @return {string}
-	 */
-	EmailModel.prototype.inputoTagLine = function ()
-	{
-		return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
-	};
-
 	module.exports = EmailModel;
 
 }());

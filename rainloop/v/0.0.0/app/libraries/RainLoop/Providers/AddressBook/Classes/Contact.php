@@ -35,11 +35,6 @@ class Contact
 	public $Properties;
 
 	/**
-	 * @var array
-	 */
-	public $Tags;
-
-	/**
 	 * @var bool
 	 */
 	public $ReadOnly;
@@ -66,7 +61,6 @@ class Contact
 		$this->Display = '';
 		$this->Changed = \time();
 		$this->Properties = array();
-		$this->Tags = array();
 		$this->ReadOnly = false;
 		$this->IdPropertyFromSearch = 0;
 		$this->Etag = '';
@@ -149,8 +143,6 @@ class Contact
 		{
 			$this->Properties[] = new \RainLoop\Providers\AddressBook\Classes\Property(PropertyType::FULLNAME, $this->Display);
 		}
-
-		$this->Tags = \array_map('trim', $this->Tags);
 	}
 
 	/**
@@ -211,7 +203,7 @@ class Contact
 		$oVCard->VERSION = '3.0';
 		$oVCard->PRODID = '-//RainLoop//'.APP_VERSION.'//EN';
 
-		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME, $oVCard->CATEGORIES, $oVCard->{'X-RL-TAGS'});
+		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME);
 
 		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
@@ -271,11 +263,6 @@ class Contact
 		$oVCard->UID = $this->IdContactStr;
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
 		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
-
-		if (0 < \count($this->Tags))
-		{
-			$oVCard->CATEGORIES = $this->Tags;
-		}
 
 		return (string) $oVCard->serialize();
 	}
@@ -589,13 +576,6 @@ class Contact
 			}
 
 			$this->Properties = $aProperties;
-
-			if (isset($oVCard->CATEGORIES))
-			{
-				$this->Tags = (array) $oVCard->CATEGORIES->getParts();
-				$this->Tags = \is_array($this->Tags) ? $this->Tags : array();
-				$this->Tags = \array_map('trim', $this->Tags);
-			}
 		}
 
 		$this->UpdateDependentValues();

@@ -22,7 +22,6 @@
 
 		EmailModel = require('Model/Email'),
 		ContactModel = require('Model/Contact'),
-		ContactTagModel = require('Model/ContactTag'),
 		ContactPropertyModel = require('Model/ContactProperty'),
 
 		kn = require('Knoin/Knoin'),
@@ -53,7 +52,6 @@
 		this.search = ko.observable('');
 		this.contactsCount = ko.observable(0);
 		this.contacts = Data.contacts;
-		this.contactTags = Data.contactTags;
 
 		this.currentContact = ko.observable(null);
 
@@ -73,21 +71,6 @@
 		this.viewID = ko.observable('');
 		this.viewReadOnly = ko.observable(false);
 		this.viewProperties = ko.observableArray([]);
-
-		this.viewTags = ko.observable('');
-		this.viewTags.visibility = ko.observable(false);
-		this.viewTags.focusTrigger = ko.observable(false);
-
-		this.viewTags.focusTrigger.subscribe(function (bValue) {
-			if (!bValue && '' === this.viewTags())
-			{
-				this.viewTags.visibility(false);
-			}
-			else if (bValue)
-			{
-				this.viewTags.visibility(true);
-			}
-		}, this);
 
 		this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -336,7 +319,7 @@
 					}, 1000);
 				}
 
-			}, sRequestUid, this.viewID(), this.viewTags(), aProperties);
+			}, sRequestUid, this.viewID(), aProperties);
 
 		}, function () {
 			var
@@ -369,7 +352,7 @@
 		this.watchHash = ko.observable(false);
 
 		this.viewHash = ko.computed(function () {
-			return '' + self.viewTags() + '|' + _.map(self.viewProperties(), function (oItem) {
+			return '' + _.map(self.viewProperties(), function (oItem) {
 				return oItem.value();
 			}).join('');
 		});
@@ -385,22 +368,11 @@
 
 		this.sDefaultKeyScope = Enums.KeyState.ContactList;
 
-		this.contactTagsSource = _.bind(this.contactTagsSource, this);
-
 		kn.constructorEnd(this);
 	}
 
 	kn.extendAsViewModel(['View/Popup/Contacts', 'PopupsContactsViewModel'], ContactsPopupView);
 	_.extend(ContactsPopupView.prototype, AbstractView.prototype);
-
-	ContactsPopupView.prototype.contactTagsSource = function (oData, fResponse)
-	{
-		require('App/App').getContactTagsAutocomplete(oData.term, function (aData) {
-			fResponse(_.map(aData, function (oTagItem) {
-				return oTagItem.toLine(false);
-			}));
-		});
-	};
 
 	ContactsPopupView.prototype.getPropertyPlceholder = function (sType)
 	{
@@ -440,12 +412,6 @@
 		{
 			this.addNewProperty(sType, sTypeStr);
 		}
-	};
-
-	ContactsPopupView.prototype.addNewTag = function ()
-	{
-		this.viewTags.visibility(true);
-		this.viewTags.focusTrigger(true);
 	};
 
 	ContactsPopupView.prototype.addNewEmail = function ()
@@ -621,7 +587,6 @@
 
 		this.emptySelection(false);
 		this.viewReadOnly(false);
-		this.viewTags('');
 
 		if (oContact)
 		{
@@ -647,13 +612,8 @@
 				});
 			}
 
-			this.viewTags(oContact.tags);
-
 			this.viewReadOnly(!!oContact.readOnly);
 		}
-
-		this.viewTags.focusTrigger.valueHasMutated();
-		this.viewTags.visibility('' !== this.viewTags());
 
 		aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false,
 			this.getPropertyPlceholder(Enums.ContactPropertyType.LastName)));
@@ -689,10 +649,10 @@
 
 		this.contacts.loading(true);
 		Remote.contacts(function (sResult, oData) {
+
 			var
 				iCount = 0,
-				aList = [],
-				aTagsList = []
+				aList = []
 			;
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.List)
@@ -709,23 +669,12 @@
 					iCount = Utils.pInt(oData.Result.Count);
 					iCount = 0 < iCount ? iCount : 0;
 				}
-
-				if (Utils.isNonEmptyArray(oData.Result.Tags))
-				{
-					aTagsList = _.map(oData.Result.Tags, function (oItem) {
-						var oContactTag = new ContactTagModel();
-						return oContactTag.parse(oItem) ? oContactTag : null;
-					});
-
-					aTagsList = _.compact(aTagsList);
-				}
 			}
 
 			self.contactsCount(iCount);
 
 			self.contacts(aList);
 			self.contacts.loading(false);
-			self.contactTags(aTagsList);
 
 			self.viewClearSearch('' !== self.search());
 

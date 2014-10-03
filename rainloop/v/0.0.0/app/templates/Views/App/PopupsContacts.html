@@ -153,14 +153,6 @@
 								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_NICKNAME"></span>
 							</a>
 						</li>
-						<li class="divider" role="presentation"></li>
-						<li class="e-item" role="presentation">
-							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewTag">
-								<i class="icon-tags"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_TAGS"></span>
-							</a>
-						</li>
 	<!--									<li class="e-item" role="presentation">
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewAddress">
 								<span class="i18n" data-i18n-text="CONTACTS/ADD_MENU_ADDRESS"></span>
@@ -259,18 +251,6 @@
 												<input type="text" class="contactValueInputLarge" placeholder="http://"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="control-group" data-bind="visible: !viewReadOnly() && viewTags.visibility()">
-									<label class="control-label remove-padding-top fix-width">
-										<i class="icon-tags iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_TAGS'"></i>
-									</label>
-									<div class="controls fix-width">
-										<div class="property-line">
-											<div class="tags-property-container">
-												<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="contactTags: viewTags, contactTagsFilter: viewTags.focusTrigger, autoCompleteSource: contactTagsSource" />
 											</div>
 										</div>
 									</div>
