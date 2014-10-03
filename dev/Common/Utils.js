@@ -1596,16 +1596,6 @@
 			'twitter': false
 		});
 
-//		if ($.fn && $.fn.linkify)
-//		{
-//			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
-//				.linkify()
-//				.find('.linkified').removeClass('linkified').end()
-//				.html()
-//				.replace(/amp_amp_12345_amp_amp/g, '&amp;')
-//			;
-//		}
-
 		return sHtml;
 	};
 
