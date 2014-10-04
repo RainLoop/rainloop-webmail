@@ -2769,8 +2769,8 @@ class Actions
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'domain-test-connection.de');
 		if ($oDomain)
 		{
-//			$oOpenSSL = \MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_x509_parse');
-			$oOpenSSL = false; // TODO in dev
+//			$bOpenSSL = \MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_x509_parse');
+			$bOpenSSL = false; // TODO in dev
 
 			try
 			{
@@ -2778,9 +2778,9 @@ class Actions
 				$oImapClient->SetTimeOuts(5);
 
 				$iTime = \microtime(true);
-				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(), $oDomain->IncSecure(), $oOpenSSL);
+				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(), $oDomain->IncSecure(), $bOpenSSL);
 
-				if ($oOpenSSL)
+				if ($bOpenSSL)
 				{
 					$aStreamContextParams = $oImapClient->StreamContextParams();
 					if (isset($aStreamContextParams['options']['ssl']['peer_certificate']))
@@ -2815,7 +2815,18 @@ class Actions
 				$oSmtpClient->SetTimeOuts(5);
 
 				$iTime = \microtime(true);
-				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1', $oDomain->OutSecure());
+				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1', $oDomain->OutSecure(), $bOpenSSL);
+
+				if ($bOpenSSL)
+				{
+					$aStreamContextParams = $oSmtpClient->StreamContextParams();
+					if (isset($aStreamContextParams['options']['ssl']['peer_certificate']))
+					{
+						$aParseData = @\openssl_x509_parse($aStreamContextParams['options']['ssl']['peer_certificate']);
+						$this->Logger()->WriteDump($aParseData);
+					}
+				}
+
 				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
 				$bSmtpResult = true;
