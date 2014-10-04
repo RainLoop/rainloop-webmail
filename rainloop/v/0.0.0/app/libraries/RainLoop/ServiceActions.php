@@ -184,7 +184,7 @@ class ServiceActions
 
 			if (\is_array($aResponseItem) && 'Folders' === $sAction && $oException instanceof \RainLoop\Exceptions\ClientException)
 			{
-				$aResponseItem['Logout'] = true;
+				$aResponseItem['ClearAuth'] = true;
 			}
 		}
 

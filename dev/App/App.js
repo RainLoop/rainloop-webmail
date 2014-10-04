@@ -404,24 +404,23 @@
 	AppApp.prototype.folders = function (fCallback)
 	{
 		Data.foldersLoading(true);
+
 		Remote.folders(_.bind(function (sResult, oData) {
 
+			var bResult = false;
 			Data.foldersLoading(false);
-			if (Enums.StorageResultType.Success === sResult)
+
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
+				bResult = true;
 				this.setFolders(oData);
-				if (fCallback)
-				{
-					fCallback(true);
-				}
 			}
-			else
+
+			if (fCallback)
 			{
-				if (fCallback)
-				{
-					fCallback(false);
-				}
+				fCallback(bResult);
 			}
+
 		}, this));
 	};
 
@@ -1396,7 +1395,7 @@
 				}
 				else
 				{
-					self.bootstartLoginScreen();
+					this.bootstartLoginScreen();
 				}
 
 				if (SimplePace)

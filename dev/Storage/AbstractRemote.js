@@ -70,14 +70,14 @@
 					   }
 				   }
 
-				   if (oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
+				   if (oData.ClearAuth || oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
 				   {
 					   if (window.__rlah_clear)
 					   {
 						   window.__rlah_clear();
 					   }
 
-					   if (Globals.__APP__)
+					   if (!oData.ClearAuth && Globals.__APP__)
 					   {
 							Globals.__APP__.loginAndLogoutReload(true);
 					   }

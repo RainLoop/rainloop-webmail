@@ -16,6 +16,7 @@
 
 		this.sBase = '#/';
 		this.sServer = './?';
+		this.sSubQuery = '&/s/=/';
 		this.sVersion = Settings.settingsGet('Version');
 		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
 		this.sStaticPrefix = Settings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
@@ -35,7 +36,7 @@
 	 */
 	LinkBuilder.prototype.attachmentDownload = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/Download/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sDownload;
 	};
 
 	/**
@@ -44,7 +45,7 @@
 	 */
 	LinkBuilder.prototype.attachmentPreview = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/View/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/View/' + sDownload;
 	};
 
 	/**
@@ -53,7 +54,7 @@
 	 */
 	LinkBuilder.prototype.attachmentPreviewAsPlain = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ViewAsPlain/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sDownload;
 	};
 
 	/**
@@ -103,7 +104,7 @@
 	 */
 	LinkBuilder.prototype.ajax = function (sAdd)
 	{
-		return this.sServer + '/Ajax/' + this.sSpecSuffix + '/' + sAdd;
+		return this.sServer + '/Ajax/' + this.sSubQuery + this.sSpecSuffix + '/' + sAdd;
 	};
 
 	/**
@@ -112,7 +113,7 @@
 	 */
 	LinkBuilder.prototype.messageViewLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ViewAsPlain/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sRequestHash;
 	};
 
 	/**
@@ -121,7 +122,7 @@
 	 */
 	LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/Download/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sRequestHash;
 	};
 
 	/**

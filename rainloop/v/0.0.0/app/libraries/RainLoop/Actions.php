@@ -300,21 +300,29 @@ class Actions
 	 */
 	public function ParseQueryAuthString()
 	{
+		$sQuery = \trim($this->Http()->GetQueryString());
+
+		$iPos = \strpos($sQuery, '&');
+		if (0 < $iPos)
+		{
+			$sQuery = \substr($sQuery, 0, $iPos);
+		}
+
+		$sQuery = \trim(\trim($sQuery), ' /');
+
+		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('/s/', '')), ' /');
+		$sQuery .= 0 < \strlen($sSubQuerty) ? '/'.$sSubQuerty : '';
+
 		if ('' === $this->GetSpecAuthToken())
 		{
-			$sQuery = \trim(\trim($this->Http()->GetServer('QUERY_STRING', '')), ' /');
-			$iPos = \strpos($sQuery, '&');
-			if (0 < $iPos)
-			{
-				$sQuery = \substr($sQuery, 0, $iPos);
-			}
-
 			$aPaths = \explode('/', $sQuery);
 			if (!empty($aPaths[0]) && !empty($aPaths[1]) && '_' === substr($aPaths[1], 0, 1))
 			{
 				$this->SetSpecAuthToken($aPaths[1]);
 			}
 		}
+
+		return $sQuery;
 	}
 
 	/**
@@ -555,7 +563,7 @@ class Actions
 		if (null === $this->oChangePasswordProvider)
 		{
 			$this->oChangePasswordProvider = new \RainLoop\Providers\ChangePassword(
-				$this, $this->fabrica('change-password'), !!$this->Config()->Get('labs', 'check_new_password_strength', false)
+				$this, $this->fabrica('change-password'), !!$this->Config()->Get('labs', 'check_new_password_strength', true)
 			);
 		}
 

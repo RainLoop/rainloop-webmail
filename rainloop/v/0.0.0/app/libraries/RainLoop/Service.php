@@ -70,17 +70,10 @@ class Service
 
 		$this->oActions->BootStart();
 
-		$this->oActions->ParseQueryAuthString();
-
-		$bCached = false;
 		$sResult = '';
+		$bCached = false;
 
-		$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
-		$iPos = \strpos($sQuery, '&');
-		if (0 < $iPos)
-		{
-			$sQuery = \substr($sQuery, 0, $iPos);
-		}
+		$sQuery = $this->oActions->ParseQueryAuthString();
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);
@@ -132,7 +125,7 @@ class Service
 		{
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
-			
+
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
