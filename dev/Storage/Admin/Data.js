@@ -48,7 +48,7 @@
 		this.licenseTrigger = ko.observable(false);
 
 		this.adminManLoading = ko.computed(function () {
-			return '000' !== [this.domains.loading() ? '1' : '0', this.plugins.loading() ? '1' : '0', this.packagesLoading() ? '1' : '0'].join('');
+			return '000' !== [this.domains.loading() ? '1' : '0', this.plugins.loading() ? '1' : '0', this.packages.loading() ? '1' : '0'].join('');
 		}, this);
 
 		this.adminManLoadingVisibility = ko.computed(function () {

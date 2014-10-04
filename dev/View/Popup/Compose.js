@@ -1481,7 +1481,6 @@
 		if (oMessage)
 		{
 			var
-				self = this,
 				oAttachment = null,
 				sTemp = oMessage.subject()
 			;
@@ -1506,7 +1505,6 @@
 	ComposePopupView.prototype.addDropboxAttachment = function (oDropboxFile)
 	{
 		var
-			self = this,
 			oAttachment = null,
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			mSize = oDropboxFile['bytes']
@@ -1561,7 +1559,6 @@
 	ComposePopupView.prototype.addDriveAttachment = function (oDriveFile, sAccessToken)
 	{
 		var
-			self = this,
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			oAttachment = null,
 			mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
