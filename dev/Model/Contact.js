@@ -9,7 +9,9 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder')
+		LinkBuilder = require('Common/LinkBuilder'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -17,6 +19,8 @@
 	 */
 	function ContactModel()
 	{
+		AbstractModel.call(this, 'ContactModel');
+
 		this.idContact = 0;
 		this.display = '';
 		this.properties = [];
@@ -27,6 +31,8 @@
 		this.checked = ko.observable(false);
 		this.deleted = ko.observable(false);
 	}
+
+	_.extend(ContactModel.prototype, AbstractModel.prototype);
 
 	/**
 	 * @return {Array|null}

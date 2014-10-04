@@ -10,7 +10,9 @@
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		Events = require('Common/Events')
+		Events = require('Common/Events'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -18,6 +20,8 @@
 	 */
 	function FolderModel()
 	{
+		AbstractModel.call(this, 'FolderModel');
+
 		this.name = ko.observable('');
 		this.fullName = '';
 		this.fullNameRaw = '';
@@ -48,6 +52,8 @@
 
 		this.collapsedPrivate = ko.observable(true);
 	}
+
+	_.extend(FolderModel.prototype, AbstractModel.prototype);
 
 	/**
 	 * @static

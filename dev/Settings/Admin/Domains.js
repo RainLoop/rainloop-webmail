@@ -22,12 +22,11 @@
 	function DomainsAdminSetting()
 	{
 		this.domains = Data.domains;
-		this.domainsLoading = Data.domainsLoading;
 
 		this.iDomainForDeletionTimeout = 0;
 
 		this.visibility = ko.computed(function () {
-			return Data.domainsLoading() ? 'visible' : 'hidden';
+			return Data.domains.loading() ? 'visible' : 'hidden';
 		}, this);
 
 		this.domainForDeletion = ko.observable(null).extend({'toggleSubscribe': [this,

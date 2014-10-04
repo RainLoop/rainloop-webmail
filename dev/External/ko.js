@@ -6,24 +6,48 @@
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$')
+		$ = require('$'),
+
+		fDisposalTooltipHelper = function (oElement, $oEl, oSubscription) {
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+
+				if (oSubscription && oSubscription.dispose)
+				{
+					oSubscription.dispose();
+				}
+
+				if ($oEl)
+				{
+					$oEl.off('click.koTooltip');
+
+					if ($oEl.tooltip)
+					{
+						$oEl.tooltip('destroy');
+					}
+				}
+
+				$oEl = null;
+			});
+		}
 	;
 
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 
 			var
+				$oEl = null,
+				sClass  = '',
+				sPlacement  = '',
+				oSubscription = null,
 				Globals = require('Common/Globals'),
 				Utils = require('Common/Utils')
 			;
 
 			if (!Globals.bMobileDevice)
 			{
-				var
-					$oEl = $(oElement),
-					sClass = $oEl.data('tooltip-class') || '',
-					sPlacement = $oEl.data('tooltip-placement') || 'top'
-				;
+				$oEl = $(oElement);
+				sClass = $oEl.data('tooltip-class') || '';
+				sPlacement = $oEl.data('tooltip-placement') || 'top';
 
 				$oEl.tooltip({
 					'delay': {
@@ -36,15 +60,17 @@
 					'trigger': 'hover',
 					'title': function () {
 						return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' : '<span class="tooltip-class ' + sClass + '">' +
-							Utils.i18n(ko.utils.unwrapObservable(fValueAccessor())) + '</span>';
+							Utils.i18n(ko.unwrap(fValueAccessor())) + '</span>';
 					}
-				}).click(function () {
+				}).on('click.koTooltip', function () {
 					$oEl.tooltip('hide');
 				});
 
-				Globals.tooltipTrigger.subscribe(function () {
+				oSubscription = Globals.tooltipTrigger.subscribe(function () {
 					$oEl.tooltip('hide');
 				});
+
+				fDisposalTooltipHelper(oElement, $oEl, oSubscription);
 			}
 		}
 	};
@@ -53,7 +79,9 @@
 		'init': function (oElement, fValueAccessor) {
 			var
 				Globals = require('Common/Globals'),
+
 				$oEl = $(oElement),
+				oSubscription = null,
 				sClass = $oEl.data('tooltip-class') || '',
 				sPlacement = $oEl.data('tooltip-placement') || 'top'
 			;
@@ -70,13 +98,15 @@
 					return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
 						'<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
 				}
-			}).click(function () {
+			}).on('click.koTooltip', function () {
 				$oEl.tooltip('hide');
 			});
 
-			Globals.tooltipTrigger.subscribe(function () {
+			oSubscription = Globals.tooltipTrigger.subscribe(function () {
 				$oEl.tooltip('hide');
 			});
+
+			fDisposalTooltipHelper(oElement, $oEl, oSubscription);
 		}
 	};
 
@@ -85,6 +115,7 @@
 
 			var
 				$oEl = $(oElement),
+				oSubscription = null,
 				Globals = require('Common/Globals')
 			;
 
@@ -96,16 +127,18 @@
 				}
 			});
 
-			$(window.document).click(function () {
+			$(window.document).on('click', function () {
 				$oEl.tooltip('hide');
 			});
 
-			Globals.tooltipTrigger.subscribe(function () {
+			oSubscription = Globals.tooltipTrigger.subscribe(function () {
 				$oEl.tooltip('hide');
 			});
+
+			fDisposalTooltipHelper(oElement, $oEl, oSubscription);
 		},
 		'update': function (oElement, fValueAccessor) {
-			var sValue = ko.utils.unwrapObservable(fValueAccessor());
+			var sValue = ko.unwrap(fValueAccessor());
 			if ('' === sValue)
 			{
 				$(oElement).data('tooltip3-data', '').tooltip('hide');
@@ -120,22 +153,28 @@
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
 			var Globals = require('Common/Globals');
-			Globals.aBootstrapDropdowns.push($(oElement));
+			if (Globals && Globals.aBootstrapDropdowns)
+			{
+				Globals.aBootstrapDropdowns.push($(oElement));
+//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+//					// TODO
+//				});
+			}
 		}
 	};
 
 	ko.bindingHandlers.openDropdownTrigger = {
 		'update': function (oElement, fValueAccessor) {
-			if (ko.utils.unwrapObservable(fValueAccessor()))
+			if (ko.unwrap(fValueAccessor()))
 			{
 				var
-					$el = $(oElement),
+					$oEl = $(oElement),
 					Utils = require('Common/Utils')
 				;
 
-				if (!$el.hasClass('open'))
+				if (!$oEl.hasClass('open'))
 				{
-					$el.find('.dropdown-toggle').dropdown('toggle');
+					$oEl.find('.dropdown-toggle').dropdown('toggle');
 					Utils.detectDropdownVisibility();
 				}
 
@@ -154,7 +193,11 @@
 
 	ko.bindingHandlers.popover = {
 		'init': function (oElement, fValueAccessor) {
-			$(oElement).popover(ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).popover(ko.unwrap(fValueAccessor()));
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).popover('destroy');
+			});
 		}
 	};
 
@@ -163,22 +206,22 @@
 			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
-				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
 			else
 			{
-				$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+				$(oElement).text(ko.unwrap(fValueAccessor()));
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
 			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
-				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
 			else
 			{
-				$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+				$(oElement).text(ko.unwrap(fValueAccessor()));
 			}
 		}
 	};
@@ -204,31 +247,39 @@
 
 	ko.bindingHandlers.onEnter = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-			$(oElement).on('keypress',  function (oEvent) {
+			$(oElement).on('keypress.koOnEnter', function (oEvent) {
 				if (oEvent && 13 === window.parseInt(oEvent.keyCode, 10))
 				{
 					$(oElement).trigger('change');
 					fValueAccessor().call(oViewModel);
 				}
 			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koOnEnter');
+			});
 		}
 	};
 
 	ko.bindingHandlers.onEsc = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-			$(oElement).on('keypress', function (oEvent) {
+			$(oElement).on('keypress.koOnEsc', function (oEvent) {
 				if (oEvent && 27 === window.parseInt(oEvent.keyCode, 10))
 				{
 					$(oElement).trigger('change');
 					fValueAccessor().call(oViewModel);
 				}
 			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koOnEsc');
+			});
 		}
 	};
 
 	ko.bindingHandlers.clickOnTrue = {
 		'update': function (oElement, fValueAccessor) {
-			if (ko.utils.unwrapObservable(fValueAccessor()))
+			if (ko.unwrap(fValueAccessor()))
 			{
 				$(oElement).click();
 			}
@@ -245,18 +296,25 @@
 
 			$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 				'keyboard': false,
-				'show': ko.utils.unwrapObservable(fValueAccessor())
+				'show': ko.unwrap(fValueAccessor())
 			})
-			.on('shown', function () {
+			.on('shown.koModal', function () {
 				Utils.windowResize();
 			})
-			.find('.close').click(function () {
+			.find('.close').on('click.koModal', function () {
 				fValueAccessor()(false);
 			});
 
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement)
+					.off('shown.koModal')
+					.find('.close')
+					.off('click.koModal')
+				;
+			});
 		},
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).modal(ko.utils.unwrapObservable(fValueAccessor()) ? 'show' : 'hide');
+			$(oElement).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 		}
 	};
 
@@ -270,26 +328,26 @@
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
 			var Utils = require('Common/Utils');
-			ko.utils.unwrapObservable(fValueAccessor());
+			ko.unwrap(fValueAccessor());
 			Utils.i18nToNode(oElement);
 		}
 	};
 
 	ko.bindingHandlers.link = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).attr('href', ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).attr('href', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.title = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).attr('title', ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).attr('title', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.textF = {
 		'init': function (oElement, fValueAccessor) {
-			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).text(ko.unwrap(fValueAccessor()));
 		}
 	};
 
@@ -301,7 +359,7 @@
 
 	ko.bindingHandlers.initResizeTrigger = {
 		'init': function (oElement, fValueAccessor) {
-			var aValues = ko.utils.unwrapObservable(fValueAccessor());
+			var aValues = ko.unwrap(fValueAccessor());
 			$(oElement).css({
 				'height': aValues[1],
 				'min-height': aValues[1]
@@ -312,7 +370,7 @@
 			var
 				Utils = require('Common/Utils'),
 				Globals = require('Common/Globals'),
-				aValues = ko.utils.unwrapObservable(fValueAccessor()),
+				aValues = ko.unwrap(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
 				iOffset = $(oElement).offset().top
@@ -338,16 +396,18 @@
 
 	ko.bindingHandlers.appendDom = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).hide().empty().append(ko.utils.unwrapObservable(fValueAccessor())).show();
+			$(oElement).hide().empty().append(ko.unwrap(fValueAccessor())).show();
 		}
 	};
 
 	ko.bindingHandlers.draggable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+
 			var
 				Globals = require('Common/Globals'),
 				Utils = require('Common/Utils')
 			;
+
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -419,8 +479,15 @@
 					return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 				};
 
-				$(oElement).draggable(oConf).on('mousedown', function () {
+				$(oElement).draggable(oConf).on('mousedown.koDraggable', function () {
 					Utils.removeInFocus();
+				});
+
+				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+					$(oElement)
+						.off('mousedown.koDraggable')
+						.draggable('destroy')
+					;
 				});
 			}
 		}
@@ -463,6 +530,10 @@
 					}
 
 					$(oElement).droppable(oConf);
+
+					ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+						$(oElement).droppable('destroy');
+					});
 				}
 			}
 		}
@@ -504,7 +575,7 @@
 		},
 		'update': function (oElement, fValueAccessor) {
 			var
-				mValue = ko.utils.unwrapObservable(fValueAccessor()),
+				mValue = ko.unwrap(fValueAccessor()),
 				$oEl = $(oElement)
 			;
 
@@ -619,7 +690,7 @@
 				$oEl = $(oElement),
 				fAllValueFunc = fAllBindingsAccessor(),
 				fEmailsTagsFilter = fAllValueFunc['emailsTagsFilter'] || null,
-				sValue = ko.utils.unwrapObservable(fValueAccessor())
+				sValue = ko.unwrap(fValueAccessor())
 			;
 
 			if ($oEl.data('EmailsTagsValue') !== sValue)
@@ -629,7 +700,7 @@
 				$oEl.inputosaurus('refresh');
 			}
 
-			if (fEmailsTagsFilter && ko.utils.unwrapObservable(fEmailsTagsFilter))
+			if (fEmailsTagsFilter && ko.unwrap(fEmailsTagsFilter))
 			{
 				$oEl.inputosaurus('focus');
 			}
@@ -677,6 +748,8 @@
 			}
 		}
 	};
+
+	// extenders
 
 	ko.extenders.trimmer = function (oTarget)
 	{
@@ -770,6 +843,8 @@
 
 		return oTarget;
 	};
+
+	// functions
 
 	ko.observable.fn.validateNone = function ()
 	{

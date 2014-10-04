@@ -25,10 +25,9 @@
 		this.pluginsError = ko.observable('');
 
 		this.plugins = Data.plugins;
-		this.pluginsLoading = Data.pluginsLoading;
 
 		this.visibility = ko.computed(function () {
-			return Data.pluginsLoading() ? 'visible' : 'hidden';
+			return Data.plugins.loading() ? 'visible' : 'hidden';
 		}, this);
 
 		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);

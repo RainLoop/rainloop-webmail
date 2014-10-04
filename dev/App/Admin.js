@@ -44,10 +44,10 @@
 
 	AdminApp.prototype.reloadDomainList = function ()
 	{
-		Data.domainsLoading(true);
+		Data.domains.loading(true);
 
 		Remote.domainList(function (sResult, oData) {
-			Data.domainsLoading(false);
+			Data.domains.loading(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				var aList = _.map(oData.Result, function (bEnabled, sName) {
@@ -65,10 +65,10 @@
 
 	AdminApp.prototype.reloadPluginList = function ()
 	{
-		Data.pluginsLoading(true);
+		Data.plugins.loading(true);
 		Remote.pluginList(function (sResult, oData) {
 
-			Data.pluginsLoading(false);
+			Data.plugins.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -87,12 +87,12 @@
 
 	AdminApp.prototype.reloadPackagesList = function ()
 	{
-		Data.packagesLoading(true);
+		Data.packages.loading(true);
 		Data.packagesReal(true);
 
 		Remote.packagesList(function (sResult, oData) {
 
-			Data.packagesLoading(false);
+			Data.packages.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{

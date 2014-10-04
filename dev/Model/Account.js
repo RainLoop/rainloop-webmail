@@ -4,9 +4,12 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils')
+		Utils = require('Common/Utils'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -17,11 +20,15 @@
 	 */
 	function AccountModel(sEmail, bCanBeDelete)
 	{
+		AbstractModel.call(this, 'AccountModel');
+
 		this.email = sEmail;
 
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
 	}
+
+	_.extend(AccountModel.prototype, AbstractModel.prototype);
 
 	/**
 	 * @type {string}

@@ -5,10 +5,13 @@
 
 	var
 		window = require('window'),
+		_ = require('_'),
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder')
+		LinkBuilder = require('Common/LinkBuilder'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -16,6 +19,8 @@
 	 */
 	function AttachmentModel()
 	{
+		AbstractModel.call(this, 'AttachmentModel');
+
 		this.mimeType = '';
 		this.fileName = '';
 		this.estimatedSize = 0;
@@ -30,6 +35,8 @@
 		this.uid = '';
 		this.mimeIndex = '';
 	}
+
+	_.extend(AttachmentModel.prototype, AbstractModel.prototype);
 
 	/**
 	 * @static

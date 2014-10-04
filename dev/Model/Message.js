@@ -16,7 +16,9 @@
 		LinkBuilder = require('Common/LinkBuilder'),
 
 		EmailModel = require('Model/Email'),
-		AttachmentModel = require('Model/Attachment')
+		AttachmentModel = require('Model/Attachment'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -24,6 +26,8 @@
 	*/
 	function MessageModel()
 	{
+		AbstractModel.call(this, 'MessageModel');
+
 		this.folderFullNameRaw = '';
 		this.uid = '';
 		this.hash = '';
@@ -68,9 +72,9 @@
 		this.checked = ko.observable(false);
 		this.hasAttachments = ko.observable(false);
 		this.attachmentsMainType = ko.observable('');
-		
+
 		this.moment = ko.observable(moment(moment.unix(0)));
-		
+
 		this.attachmentIconClass = ko.computed(function () {
 			var sClass = '';
 			if (this.hasAttachments())
@@ -102,10 +106,10 @@
 		this.momentDate = Utils.createMomentDate(this);
 		this.momentShortDate = Utils.createMomentShortDate(this);
 
-		this.dateTimeStampInUTC.subscribe(function (iValue) {
+		this.regDisposables(this.dateTimeStampInUTC.subscribe(function (iValue) {
 			var iNow = moment().unix();
 			this.moment(moment.unix(iNow < iValue ? iNow : iValue));
-		}, this);
+		}, this));
 
 		this.body = null;
 		this.plainRaw = '';
@@ -139,7 +143,11 @@
 			var iCount = this.threadsLen();
 			return 0 === this.parentUid() && 0 < iCount ? iCount + 1 : '';
 		}, this);
+
+		this.regDisposables([this.attachmentIconClass, this.fullFormatDateValue, this.threadsLenResult]);
 	}
+
+	_.extend(MessageModel.prototype, AbstractModel.prototype);
 
 	/**
 	* @static

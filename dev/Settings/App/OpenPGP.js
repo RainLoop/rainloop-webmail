@@ -4,7 +4,10 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
+
+		Utils = require('Common/Utils'),
 
 		kn = require('Knoin/Knoin'),
 
@@ -64,14 +67,20 @@
 
 			if (oOpenPgpKeyToRemove && Data.openpgpKeyring)
 			{
-				this.openpgpkeys.remove(function (oOpenPgpKey) {
+				var oFindedItem = _.find(this.openpgpkeys(), function (oOpenPgpKey) {
 					return oOpenPgpKeyToRemove === oOpenPgpKey;
 				});
 
-				Data.openpgpKeyring[oOpenPgpKeyToRemove.isPrivate ? 'privateKeys' : 'publicKeys']
-					.removeForId(oOpenPgpKeyToRemove.guid);
+				if (oFindedItem)
+				{
+					this.openpgpkeys.remove(oFindedItem);
+					Utils.delegateRunOnDestroy(oFindedItem);
 
-				Data.openpgpKeyring.store();
+					Data.openpgpKeyring[oFindedItem.isPrivate ? 'privateKeys' : 'publicKeys']
+						.removeForId(oFindedItem.guid);
+
+					Data.openpgpKeyring.store();
+				}
 
 				require('App/App').reloadOpenPgpKeys();
 			}

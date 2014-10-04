@@ -4,7 +4,10 @@
 	'use strict';
 
 	var
-		ko = require('ko')
+		_ = require('_'),
+		ko = require('ko'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -19,6 +22,8 @@
 	 */
 	function OpenPgpKeyModel(iIndex, sGuID, sID, sUserID, sEmail, bIsPrivate, sArmor)
 	{
+		AbstractModel.call(this, 'OpenPgpKeyModel');
+
 		this.index = iIndex;
 		this.id = sID;
 		this.guid = sGuID;
@@ -29,6 +34,8 @@
 
 		this.deleteAccess = ko.observable(false);
 	}
+
+	_.extend(OpenPgpKeyModel.prototype, AbstractModel.prototype);
 
 	OpenPgpKeyModel.prototype.index = 0;
 	OpenPgpKeyModel.prototype.id = '';

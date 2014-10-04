@@ -22,7 +22,6 @@
 		this.packagesError = ko.observable('');
 
 		this.packages = Data.packages;
-		this.packagesLoading = Data.packagesLoading;
 		this.packagesReal = Data.packagesReal;
 		this.packagesMainUpdatable = Data.packagesMainUpdatable;
 
@@ -39,7 +38,7 @@
 		});
 
 		this.visibility = ko.computed(function () {
-			return Data.packagesLoading() ? 'visible' : 'hidden';
+			return Data.packages.loading() ? 'visible' : 'hidden';
 		}, this);
 	}
 

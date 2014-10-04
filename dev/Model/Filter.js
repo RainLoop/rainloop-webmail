@@ -4,11 +4,14 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		FilterConditionModel = require('Model/FilterCondition')
+		FilterConditionModel = require('Model/FilterCondition'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -16,6 +19,8 @@
 	 */
 	function FilterModel()
 	{
+		AbstractModel.call(this, 'FilterModel');
+
 		this.isNew = ko.observable(true);
 		this.enabled = ko.observable(true);
 
@@ -25,9 +30,9 @@
 
 		this.conditions = ko.observableArray([]);
 
-		this.conditions.subscribe(function () {
+		this.regDisposables(this.conditions.subscribe(function () {
 			Utils.windowResize();
-		});
+		}));
 
 		// Actions
 		this.actionMarkAsRead = ko.observable(false);
@@ -69,7 +74,11 @@
 			return sTemplate;
 
 		}, this);
+
+		this.regDisposables([this.actionMarkAsReadVisiblity, this.actionTemplate]);
 	}
+
+	_.extend(FilterModel.prototype, AbstractModel.prototype);
 
 	FilterModel.prototype.addCondition = function ()
 	{

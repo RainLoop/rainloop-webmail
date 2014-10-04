@@ -1257,6 +1257,29 @@
 		return null;
 	};
 
+	ComposePopupView.prototype.cancelAttachmentHelper = function (sId, oJua) {
+
+		var self = this;
+		return function () {
+
+			var oItem = _.find(self.attachments(), function (oItem) {
+				return oItem && oItem.id === sId;
+			});
+
+			if (oItem)
+			{
+				self.attachments.remove(oItem);
+				Utils.delegateRunOnDestroy(oItem);
+
+				if (oJua)
+				{
+					oJua.cancel(sId);
+				}
+			}
+		};
+
+	};
+
 	ComposePopupView.prototype.initUploader = function ()
 	{
 		if (this.composeUploaderButton())
@@ -1325,20 +1348,7 @@
 							oAttachment = new ComposeAttachmentModel(sId, sFileName, mSize)
 						;
 
-						oAttachment.cancel = (function (sId) {
-
-							return function () {
-								that.attachments.remove(function (oItem) {
-									return oItem && oItem.id === sId;
-								});
-
-								if (oJua)
-								{
-									oJua.cancel(sId);
-								}
-							};
-
-						}(sId));
+						oAttachment.cancel = that.cancelAttachmentHelper(sId, oJua);
 
 						this.attachments.push(oAttachment);
 
@@ -1473,14 +1483,7 @@
 			var
 				self = this,
 				oAttachment = null,
-				sTemp = oMessage.subject(),
-				fCancelFunc = function (sId) {
-					return function () {
-						self.attachments.remove(function (oItem) {
-							return oItem && oItem.id === sId;
-						});
-					};
-				}
+				sTemp = oMessage.subject()
 			;
 
 			sTemp = '.eml' === sTemp.substr(-4).toLowerCase() ? sTemp : sTemp + '.eml';
@@ -1489,7 +1492,7 @@
 			);
 
 			oAttachment.fromMessage = true;
-			oAttachment.cancel = fCancelFunc(oMessage.requestHash);
+			oAttachment.cancel = this.cancelAttachmentHelper(oMessage.requestHash);
 			oAttachment.waiting(false).uploading(true);
 
 			this.attachments.push(oAttachment);
@@ -1505,13 +1508,6 @@
 		var
 			self = this,
 			oAttachment = null,
-			fCancelFunc = function (sId) {
-				return function () {
-					self.attachments.remove(function (oItem) {
-						return oItem && oItem.id === sId;
-					});
-				};
-			},
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			mSize = oDropboxFile['bytes']
 		;
@@ -1521,7 +1517,7 @@
 		);
 
 		oAttachment.fromMessage = false;
-		oAttachment.cancel = fCancelFunc(oDropboxFile['link']);
+		oAttachment.cancel = this.cancelAttachmentHelper(oDropboxFile['link']);
 		oAttachment.waiting(false).uploading(true);
 
 		this.attachments.push(oAttachment);
@@ -1566,13 +1562,6 @@
 	{
 		var
 			self = this,
-			fCancelFunc = function (sId) {
-				return function () {
-					self.attachments.remove(function (oItem) {
-						return oItem && oItem.id === sId;
-					});
-				};
-			},
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			oAttachment = null,
 			mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
@@ -1583,7 +1572,7 @@
 		);
 
 		oAttachment.fromMessage = false;
-		oAttachment.cancel = fCancelFunc(oDriveFile['downloadUrl']);
+		oAttachment.cancel = this.cancelAttachmentHelper(oDriveFile['downloadUrl']);
 		oAttachment.waiting(false).uploading(true);
 
 		this.attachments.push(oAttachment);
@@ -1629,20 +1618,12 @@
 		if (oMessage)
 		{
 			var
-				self = this,
 				aAttachments = Utils.isNonEmptyArray(oMessage.attachments()) ? oMessage.attachments() : [],
 				iIndex = 0,
 				iLen = aAttachments.length,
 				oAttachment = null,
 				oItem = null,
-				bAdd = false,
-				fCancelFunc = function (sId) {
-					return function () {
-						self.attachments.remove(function (oItem) {
-							return oItem && oItem.id === sId;
-						});
-					};
-				}
+				bAdd = false
 			;
 
 			if (Enums.ComposeType.ForwardAsAttachment === sType)
@@ -1677,7 +1658,7 @@
 						);
 
 						oAttachment.fromMessage = true;
-						oAttachment.cancel = fCancelFunc(oItem.download);
+						oAttachment.cancel = this.cancelAttachmentHelper(oItem.download);
 						oAttachment.waiting(false).uploading(true);
 
 						this.attachments.push(oAttachment);
@@ -1689,9 +1670,15 @@
 
 	ComposePopupView.prototype.removeLinkedAttachments = function ()
 	{
-		this.attachments.remove(function (oItem) {
+		var oItem = _.find(this.attachments(), function (oItem) {
 			return oItem && oItem.isLinked;
 		});
+
+		if (oItem)
+		{
+			this.attachments.remove(oItem);
+			Utils.delegateRunOnDestroy(oItem);
+		}
 	};
 
 	ComposePopupView.prototype.setMessageAttachmentFailedDowbloadText = function ()
@@ -1751,7 +1738,9 @@
 		this.attachmentsInProcessError(false);
 		this.showCcAndBcc(false);
 
+		Utils.delegateRunOnDestroy(this.attachments());
 		this.attachments([]);
+
 		this.dragAndDropOver(false);
 		this.dragAndDropVisible(false);
 

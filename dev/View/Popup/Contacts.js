@@ -41,6 +41,7 @@
 			fFastClearEmptyListHelper = function (aList) {
 				if (aList && 0 < aList.length) {
 					self.viewProperties.removeAll(aList);
+					Utils.delegateRunOnDestroy(aList);
 				}
 			}
 		;
@@ -527,6 +528,7 @@
 
 				_.each(aContacts, function (oContact) {
 					oKoContacts.remove(oContact);
+					Utils.delegateRunOnDestroy(oContact);
 				});
 
 			}, 500);
@@ -569,6 +571,7 @@
 	ContactsPopupView.prototype.removeProperty = function (oProp)
 	{
 		this.viewProperties.remove(oProp);
+		Utils.delegateRunOnDestroy(oProp);
 	};
 
 	/**
@@ -622,6 +625,9 @@
 			this.getPropertyPlceholder(Enums.ContactPropertyType.FirstName)));
 
 		this.viewID(sId);
+
+		Utils.delegateRunOnDestroy(this.viewProperties());
+
 		this.viewProperties([]);
 		this.viewProperties(aList);
 
@@ -673,9 +679,10 @@
 
 			self.contactsCount(iCount);
 
+			Utils.delegateRunOnDestroy(self.contacts());
 			self.contacts(aList);
-			self.contacts.loading(false);
 
+			self.contacts.loading(false);
 			self.viewClearSearch('' !== self.search());
 
 		}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
@@ -722,6 +729,8 @@
 		this.emptySelection(true);
 		this.search('');
 		this.contactsCount(0);
+
+		Utils.delegateRunOnDestroy(this.contacts());
 		this.contacts([]);
 	};
 

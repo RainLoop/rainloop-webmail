@@ -4,9 +4,12 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Common/Enums')
+		Enums = require('Common/Enums'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -15,6 +18,8 @@
 	 */
 	function FilterConditionModel(oKoList)
 	{
+		AbstractModel.call(this, 'FilterConditionModel');
+
 		this.parentList = oKoList;
 
 		this.field = ko.observable(Enums.FilterConditionField.From);
@@ -50,7 +55,11 @@
 			return sTemplate;
 
 		}, this);
+
+		this.regDisposables([this.template]);
 	}
+
+	_.extend(FilterConditionModel.prototype, AbstractModel.prototype);
 
 	FilterConditionModel.prototype.removeSelf = function ()
 	{

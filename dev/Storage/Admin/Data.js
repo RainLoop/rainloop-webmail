@@ -19,16 +19,16 @@
 	{
 		AbstractData.call(this);
 
-		this.domainsLoading = ko.observable(false).extend({'throttle': 100});
 		this.domains = ko.observableArray([]);
+		this.domains.loading = ko.observable(false).extend({'throttle': 100});
 
-		this.pluginsLoading = ko.observable(false).extend({'throttle': 100});
 		this.plugins = ko.observableArray([]);
+		this.plugins.loading = ko.observable(false).extend({'throttle': 100});
 
 		this.packagesReal = ko.observable(true);
 		this.packagesMainUpdatable = ko.observable(true);
-		this.packagesLoading = ko.observable(false).extend({'throttle': 100});
 		this.packages = ko.observableArray([]);
+		this.packages.loading = ko.observable(false).extend({'throttle': 100});
 
 		this.coreReal = ko.observable(true);
 		this.coreUpdatable = ko.observable(true);
@@ -48,7 +48,7 @@
 		this.licenseTrigger = ko.observable(false);
 
 		this.adminManLoading = ko.computed(function () {
-			return '000' !== [this.domainsLoading() ? '1' : '0', this.pluginsLoading() ? '1' : '0', this.packagesLoading() ? '1' : '0'].join('');
+			return '000' !== [this.domains.loading() ? '1' : '0', this.plugins.loading() ? '1' : '0', this.packagesLoading() ? '1' : '0'].join('');
 		}, this);
 
 		this.adminManLoadingVisibility = ko.computed(function () {

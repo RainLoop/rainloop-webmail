@@ -4,9 +4,12 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils')
+		Utils = require('Common/Utils'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -21,6 +24,8 @@
 	 */
 	function ComposeAttachmentModel(sId, sFileName, nSize, bInline, bLinked, sCID, sContentLocation)
 	{
+		AbstractModel.call(this, 'ComposeAttachmentModel');
+
 		this.id = sId;
 		this.isInline = Utils.isUnd(bInline) ? false : !!bInline;
 		this.isLinked = Utils.isUnd(bLinked) ? false : !!bLinked;
@@ -42,7 +47,11 @@
 			var mSize = this.size();
 			return null === mSize ? '' : Utils.friendlySize(this.size());
 		}, this);
+
+		this.regDisposables([this.friendlySize]);
 	}
+
+	_.extend(ComposeAttachmentModel.prototype, AbstractModel.prototype);
 
 	ComposeAttachmentModel.prototype.id = '';
 	ComposeAttachmentModel.prototype.isInline = false;

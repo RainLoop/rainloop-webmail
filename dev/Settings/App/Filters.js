@@ -25,6 +25,7 @@
 	FiltersAppSetting.prototype.deleteFilter = function (oFilter)
 	{
 		this.filters.remove(oFilter);
+		Utils.delegateRunOnDestroy(oFilter);
 	};
 
 	FiltersAppSetting.prototype.addFilter = function ()

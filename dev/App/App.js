@@ -464,6 +464,7 @@
 				}
 			});
 
+			Utils.delegateRunOnDestroy(Data.openpgpkeys());
 			Data.openpgpkeys(aKeys);
 		}
 	};
@@ -489,6 +490,7 @@
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
+					Utils.delegateRunOnDestroy(Data.accounts());
 					Data.accounts(_.map(oData.Result['Accounts'], function (sValue) {
 						return new AccountModel(sValue, sValue !== sParentEmail);
 					}));
@@ -496,6 +498,7 @@
 
 				if (Utils.isArray(oData.Result['Identities']))
 				{
+					Utils.delegateRunOnDestroy(Data.identities());
 					Data.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
 
 						var

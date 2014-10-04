@@ -1962,6 +1962,54 @@
 		$('#rl-head-viewport').attr('content', aContent.join(', '));
 	};
 
+	/**
+	 * @param {Object} oObject
+	 */
+	Utils.disposeOne = function (mPropOrValue, mValue)
+	{
+		var mDisposable = mValue || mPropOrValue;
+        if (mDisposable && typeof mDisposable.dispose === 'function')
+		{
+            mDisposable.dispose();
+        }
+	};
+
+	/**
+	 * @param {Object} oObject
+	 */
+	Utils.disposeObject = function (oObject)
+	{
+		if (oObject)
+		{
+			if (Utils.isArray(oObject.disposables))
+			{
+				_.each(oObject.disposables, Utils.disposeOne);
+			}
+
+			ko.utils.objectForEach(oObject, Utils.disposeOne);
+		}
+	};
+
+	/**
+	 * @param {Object|Array} mObjectOrObjects
+	 */
+	Utils.delegateRunOnDestroy = function (mObjectOrObjects)
+	{
+		if (mObjectOrObjects)
+		{
+			if (Utils.isArray(mObjectOrObjects))
+			{
+				_.each(mObjectOrObjects, function (oItem) {
+					Utils.delegateRunOnDestroy(oItem);
+				});
+			}
+			else if (mObjectOrObjects && mObjectOrObjects.onDestroy)
+			{
+				mObjectOrObjects.onDestroy();
+			}
+		}
+	};
+
 	module.exports = Utils;
 
 }());

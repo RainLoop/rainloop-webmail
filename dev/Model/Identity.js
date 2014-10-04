@@ -4,9 +4,12 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils')
+		Utils = require('Common/Utils'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -17,6 +20,8 @@
 	 */
 	function IdentityModel(sId, sEmail, bCanBeDelete)
 	{
+		AbstractModel.call(this, 'IdentityModel');
+
 		this.id = sId;
 		this.email = ko.observable(sEmail);
 		this.name = ko.observable('');
@@ -26,6 +31,8 @@
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(bCanBeDelete);
 	}
+
+	_.extend(IdentityModel.prototype, AbstractModel.prototype);
 
 	IdentityModel.prototype.formattedName = function ()
 	{
