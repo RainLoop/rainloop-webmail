@@ -7,7 +7,7 @@
 		_ = require('_'),
 
 		Globals = require('Common/Globals'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -35,12 +35,12 @@
 
 	MenuSettingsAppView.prototype.link = function (sRoute)
 	{
-		return LinkBuilder.settings(sRoute);
+		return Links.settings(sRoute);
 	};
 
 	MenuSettingsAppView.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(LinkBuilder.inbox());
+		kn.setHash(Links.inbox());
 	};
 
 	module.exports = MenuSettingsAppView;

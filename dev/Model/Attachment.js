@@ -9,7 +9,7 @@
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
@@ -125,7 +125,7 @@
 	 */
 	AttachmentModel.prototype.linkDownload = function ()
 	{
-		return LinkBuilder.attachmentDownload(this.download);
+		return Links.attachmentDownload(this.download);
 	};
 
 	/**
@@ -133,7 +133,7 @@
 	 */
 	AttachmentModel.prototype.linkPreview = function ()
 	{
-		return LinkBuilder.attachmentPreview(this.download);
+		return Links.attachmentPreview(this.download);
 	};
 
 	/**
@@ -141,7 +141,7 @@
 	 */
 	AttachmentModel.prototype.linkPreviewAsPlain = function ()
 	{
-		return LinkBuilder.attachmentPreviewAsPlain(this.download);
+		return Links.attachmentPreviewAsPlain(this.download);
 	};
 
 	/**

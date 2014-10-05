@@ -15,7 +15,7 @@
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/App/Cache'),
@@ -270,7 +270,7 @@
 		this.mainMessageListSearch = ko.computed({
 			'read': this.messageListSearch,
 			'write': function (sValue) {
-				kn.setHash(LinkBuilder.mailBox(
+				kn.setHash(Links.mailBox(
 					this.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
 				));
 			},
@@ -584,7 +584,7 @@
 				if (3 < iLen)
 				{
 					fNotificationHelper(
-						LinkBuilder.notificationMailIcon(),
+						Links.notificationMailIcon(),
 						this.accountEmail(),
 						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
@@ -596,7 +596,7 @@
 					for (; iIndex < iLen; iIndex++)
 					{
 						fNotificationHelper(
-							LinkBuilder.notificationMailIcon(),
+							Links.notificationMailIcon(),
 							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
 							aNewMessages[iIndex].Subject
 						);

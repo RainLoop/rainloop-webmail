@@ -9,7 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
@@ -128,7 +128,7 @@
 	 */
 	SecurityAdminSetting.prototype.phpInfoLink = function ()
 	{
-		return LinkBuilder.phpInfo();
+		return Links.phpInfo();
 	};
 
 	module.exports = SecurityAdminSetting;

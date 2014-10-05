@@ -40,7 +40,7 @@
 	 */
 	AccountModel.prototype.changeAccountLink = function ()
 	{
-		return require('Common/LinkBuilder').change(this.email);
+		return require('Common/Links').change(this.email);
 	};
 
 	module.exports = AccountModel;

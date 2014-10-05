@@ -10,7 +10,7 @@
 	/**
 	 * @constructor
 	 */
-	function LinkBuilder()
+	function Links()
 	{
 		var Settings = require('Storage/Settings');
 
@@ -25,16 +25,24 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.root = function ()
+	Links.prototype.root = function ()
 	{
 		return this.sBase;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	Links.prototype.rootAdmin = function ()
+	{
+		return this.sServer + '/Admin/';
 	};
 
 	/**
 	 * @param {string} sDownload
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.attachmentDownload = function (sDownload)
+	Links.prototype.attachmentDownload = function (sDownload)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sDownload;
 	};
@@ -43,7 +51,7 @@
 	 * @param {string} sDownload
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.attachmentPreview = function (sDownload)
+	Links.prototype.attachmentPreview = function (sDownload)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/View/' + sDownload;
 	};
@@ -52,7 +60,7 @@
 	 * @param {string} sDownload
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.attachmentPreviewAsPlain = function (sDownload)
+	Links.prototype.attachmentPreviewAsPlain = function (sDownload)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sDownload;
 	};
@@ -60,49 +68,49 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.upload = function ()
+	Links.prototype.upload = function ()
 	{
-		return this.sServer + '/Upload/' + this.sSpecSuffix + '/';
+		return this.sServer + '/Upload/' + this.sSubQuery + this.sSpecSuffix + '/';
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.uploadContacts = function ()
+	Links.prototype.uploadContacts = function ()
 	{
-		return this.sServer + '/UploadContacts/' + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadContacts/' + this.sSubQuery + this.sSpecSuffix + '/';
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.uploadBackground = function ()
+	Links.prototype.uploadBackground = function ()
 	{
-		return this.sServer + '/UploadBackground/' + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadBackground/' + this.sSubQuery + this.sSpecSuffix + '/';
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.append = function ()
+	Links.prototype.append = function ()
 	{
-		return this.sServer + '/Append/' + this.sSpecSuffix + '/';
+		return this.sServer + '/Append/' + this.sSubQuery + this.sSpecSuffix + '/';
 	};
 
 	/**
 	 * @param {string} sEmail
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.change = function (sEmail)
+	Links.prototype.change = function (sEmail)
 	{
-		return this.sServer + '/Change/' + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
+		return this.sServer + '/Change/' + this.sSubQuery + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
 
 	/**
 	 * @param {string=} sAdd
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.ajax = function (sAdd)
+	Links.prototype.ajax = function (sAdd)
 	{
 		return this.sServer + '/Ajax/' + this.sSubQuery + this.sSpecSuffix + '/' + sAdd;
 	};
@@ -111,7 +119,7 @@
 	 * @param {string} sRequestHash
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.messageViewLink = function (sRequestHash)
+	Links.prototype.messageViewLink = function (sRequestHash)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sRequestHash;
 	};
@@ -120,7 +128,7 @@
 	 * @param {string} sRequestHash
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.messageDownloadLink = function (sRequestHash)
+	Links.prototype.messageDownloadLink = function (sRequestHash)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sRequestHash;
 	};
@@ -129,7 +137,7 @@
 	 * @param {string} sEmail
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.avatarLink = function (sEmail)
+	Links.prototype.avatarLink = function (sEmail)
 	{
 		return this.sServer + '/Raw/0/Avatar/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
@@ -137,7 +145,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.inbox = function ()
+	Links.prototype.inbox = function ()
 	{
 		return this.sBase + 'mailbox/Inbox';
 	};
@@ -145,7 +153,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.messagePreview = function ()
+	Links.prototype.messagePreview = function ()
 	{
 		return this.sBase + 'mailbox/message-preview';
 	};
@@ -154,7 +162,7 @@
 	 * @param {string=} sScreenName
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.settings = function (sScreenName)
+	Links.prototype.settings = function (sScreenName)
 	{
 		var sResult = this.sBase + 'settings';
 		if (!Utils.isUnd(sScreenName) && '' !== sScreenName)
@@ -168,7 +176,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.about = function ()
+	Links.prototype.about = function ()
 	{
 		return this.sBase + 'about';
 	};
@@ -177,7 +185,7 @@
 	 * @param {string} sScreenName
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.admin = function (sScreenName)
+	Links.prototype.admin = function (sScreenName)
 	{
 		var sResult = this.sBase;
 		switch (sScreenName) {
@@ -201,7 +209,7 @@
 	 * @param {string=} sSearch = ''
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.mailBox = function (sFolder, iPage, sSearch)
+	Links.prototype.mailBox = function (sFolder, iPage, sSearch)
 	{
 		iPage = Utils.isNormal(iPage) ? Utils.pInt(iPage) : 1;
 		sSearch = Utils.pString(sSearch);
@@ -228,7 +236,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.phpInfo = function ()
+	Links.prototype.phpInfo = function ()
 	{
 		return this.sServer + 'Info';
 	};
@@ -237,7 +245,7 @@
 	 * @param {string} sLang
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.langLink = function (sLang)
+	Links.prototype.langLink = function (sLang)
 	{
 		return this.sServer + '/Lang/0/' + encodeURI(sLang) + '/' + this.sVersion + '/';
 	};
@@ -245,23 +253,23 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.exportContactsVcf = function ()
+	Links.prototype.exportContactsVcf = function ()
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsVcf/';
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ContactsVcf/';
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.exportContactsCsv = function ()
+	Links.prototype.exportContactsCsv = function ()
 	{
-		return this.sServer + '/Raw/' + this.sSpecSuffix + '/ContactsCsv/';
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ContactsCsv/';
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.emptyContactPic = function ()
+	Links.prototype.emptyContactPic = function ()
 	{
 		return this.sStaticPrefix + 'css/images/empty-contact.png';
 	};
@@ -270,7 +278,7 @@
 	 * @param {string} sFileName
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.sound = function (sFileName)
+	Links.prototype.sound = function (sFileName)
 	{
 		return  this.sStaticPrefix + 'sounds/' + sFileName;
 	};
@@ -279,7 +287,7 @@
 	 * @param {string} sTheme
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.themePreviewLink = function (sTheme)
+	Links.prototype.themePreviewLink = function (sTheme)
 	{
 		var sPrefix = 'rainloop/v/' + this.sVersion + '/';
 		if ('@custom' === sTheme.substr(-7))
@@ -294,7 +302,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.notificationMailIcon = function ()
+	Links.prototype.notificationMailIcon = function ()
 	{
 		return  this.sStaticPrefix + 'css/images/icom-message-notification.png';
 	};
@@ -302,7 +310,7 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.openPgpJs = function ()
+	Links.prototype.openPgpJs = function ()
 	{
 		return  this.sStaticPrefix + 'js/min/openpgp.js';
 	};
@@ -310,27 +318,27 @@
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.socialGoogle = function ()
+	Links.prototype.socialGoogle = function ()
 	{
-		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.socialTwitter = function ()
+	Links.prototype.socialTwitter = function ()
 	{
-		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
 	};
 
 	/**
 	 * @return {string}
 	 */
-	LinkBuilder.prototype.socialFacebook = function ()
+	Links.prototype.socialFacebook = function ()
 	{
-		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
 	};
 
-	module.exports = new LinkBuilder();
+	module.exports = new Links();
 
 }());

@@ -11,7 +11,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/App/Data'),
@@ -187,7 +187,7 @@
 
 		this.facebookCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialFacebook(), 'Facebook',
+			window.open(Links.socialFacebook(), 'Facebook',
 				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 			return true;
 
@@ -199,7 +199,7 @@
 
 		this.googleCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialGoogle(), 'Google',
+			window.open(Links.socialGoogle(), 'Google',
 				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 			return true;
 
@@ -211,7 +211,7 @@
 
 		this.twitterCommand = Utils.createCommand(this, function () {
 
-			window.open(LinkBuilder.socialTwitter(), 'Twitter',
+			window.open(Links.socialTwitter(), 'Twitter',
 				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 
 			return true;

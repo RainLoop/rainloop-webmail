@@ -11,7 +11,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
@@ -241,7 +241,7 @@
 		if (!Settings.settingsGet('AllowAdminPanel'))
 		{
 			kn.routeOff();
-			kn.setHash(LinkBuilder.root(), true);
+			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
 			_.defer(function () {

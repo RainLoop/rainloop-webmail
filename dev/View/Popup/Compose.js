@@ -17,7 +17,7 @@
 		Utils = require('Common/Utils'),
 		Globals = require('Common/Globals'),
 		Events = require('Common/Events'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 		HtmlEditor = require('Common/HtmlEditor'),
 
 		Settings = require('Storage/Settings'),
@@ -1288,7 +1288,7 @@
 				oUploadCache = {},
 				iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 				oJua = new Jua({
-					'action': LinkBuilder.upload(),
+					'action': Links.upload(),
 					'name': 'uploader',
 					'queueSize': 2,
 					'multipleSizeLimit': 50,

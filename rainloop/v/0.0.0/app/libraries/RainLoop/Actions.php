@@ -6631,7 +6631,7 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		\header('Content-Type: text/directory; charset=UTF-8');
+		\header('Content-Type: text/x-vcard; charset=UTF-8');
 		\header('Content-Disposition: attachment; filename="contacts.vcf"', true);
 		\header('Accept-Ranges: none', true);
 		\header('Content-Transfer-Encoding: binary');
@@ -6649,7 +6649,7 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		\header('Content-Type: ext/csv; charset=UTF-8');
+		\header('Content-Type: text/csv; charset=UTF-8');
 		\header('Content-Disposition: attachment; filename="contacts.csv"', true);
 		\header('Accept-Ranges: none', true);
 		\header('Content-Transfer-Encoding: binary');

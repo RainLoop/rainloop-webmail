@@ -9,7 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
@@ -98,7 +98,7 @@
 	 */
 	ContactModel.prototype.srcAttr = function ()
 	{
-		return LinkBuilder.emptyContactPic();
+		return Links.emptyContactPic();
 	};
 
 	/**

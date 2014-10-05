@@ -15,7 +15,7 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Selector = require('Common/Selector'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Data = require('Storage/App/Data'),
 		Remote = require('Storage/App/Remote'),
@@ -447,12 +447,12 @@
 
 	ContactsPopupView.prototype.exportVcf = function ()
 	{
-		require('App/App').download(LinkBuilder.exportContactsVcf());
+		require('App/App').download(Links.exportContactsVcf());
 	};
 
 	ContactsPopupView.prototype.exportCsv = function ()
 	{
-		require('App/App').download(LinkBuilder.exportContactsCsv());
+		require('App/App').download(Links.exportContactsCsv());
 	};
 
 	ContactsPopupView.prototype.initUploader = function ()
@@ -461,7 +461,7 @@
 		{
 			var
 				oJua = new Jua({
-					'action': LinkBuilder.uploadContacts(),
+					'action': Links.uploadContacts(),
 					'name': 'uploader',
 					'queueSize': 1,
 					'multipleSizeLimit': 1,

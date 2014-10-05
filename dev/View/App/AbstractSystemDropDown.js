@@ -4,14 +4,13 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
 		key = require('key'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/App/Data'),
@@ -34,7 +33,7 @@
 
 		this.accountMenuDropdownTrigger = ko.observable(false);
 
-		this.capaAdditionalAccounts = Settings.capa(Enums.Capa.AdditionalAccounts);
+		this.capaAdditionalAccounts = ko.observable(Settings.capa(Enums.Capa.AdditionalAccounts));
 
 		this.loading = ko.computed(function () {
 			return this.accountsLoading();
@@ -66,7 +65,7 @@
 
 	AbstractSystemDropDownAppView.prototype.settingsClick = function ()
 	{
-		require('Knoin/Knoin').setHash(LinkBuilder.settings());
+		require('Knoin/Knoin').setHash(Links.settings());
 	};
 
 	AbstractSystemDropDownAppView.prototype.settingsHelp = function ()
@@ -76,7 +75,7 @@
 
 	AbstractSystemDropDownAppView.prototype.addAccountClick = function ()
 	{
-		if (this.capaAdditionalAccounts)
+		if (this.capaAdditionalAccounts())
 		{
 			require('Knoin/Knoin').showScreenPopup(require('View/Popup/AddAccount'));
 		}
@@ -85,11 +84,6 @@
 	AbstractSystemDropDownAppView.prototype.logoutClick = function ()
 	{
 		Remote.logout(function () {
-			if (window.__rlah_clear)
-			{
-				window.__rlah_clear();
-			}
-
 			require('App/App').loginAndLogoutReload(true,
 				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
 		});

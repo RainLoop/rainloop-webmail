@@ -9,7 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings')
 	;
@@ -101,7 +101,7 @@
 	CacheAppStorage.prototype.getUserPic = function (sEmail, fCallback)
 	{
 		sEmail = Utils.trim(sEmail);
-		fCallback(this.bCapaGravatar && '' !== sEmail ? LinkBuilder.avatarLink(sEmail) : '', sEmail);
+		fCallback(this.bCapaGravatar && '' !== sEmail ? Links.avatarLink(sEmail) : '', sEmail);
 	};
 
 	/**

@@ -11,7 +11,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Data = require('Storage/App/Data'),
 		Remote = require('Storage/App/Remote')
@@ -122,7 +122,7 @@
 				'name': sTheme,
 				'nameDisplay': Utils.convertThemeName(sTheme),
 				'selected': ko.observable(sTheme === sCurrentTheme),
-				'themePreviewSrc': LinkBuilder.themePreviewLink(sTheme)
+				'themePreviewSrc': Links.themePreviewLink(sTheme)
 			};
 		}));
 	};

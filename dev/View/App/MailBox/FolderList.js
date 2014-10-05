@@ -13,7 +13,7 @@
 		Utils = require('Common/Utils'),
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/App/Cache'),
@@ -96,7 +96,7 @@
 						Cache.setFolderHash(oFolder.fullNameRaw, '');
 					}
 
-					kn.setHash(LinkBuilder.mailBox(oFolder.fullNameHash));
+					kn.setHash(Links.mailBox(oFolder.fullNameHash));
 				}
 			})
 		;
@@ -258,7 +258,7 @@
 
 	FolderListMailBoxAppView.prototype.configureFolders = function ()
 	{
-		kn.setHash(LinkBuilder.settings('folders'));
+		kn.setHash(Links.settings('folders'));
 	};
 
 	FolderListMailBoxAppView.prototype.contactsClick = function ()

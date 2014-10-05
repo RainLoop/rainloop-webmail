@@ -31,7 +31,7 @@
 
 	KeyboardShortcutsHelpPopupView.prototype.onBuild = function (oDom)
 	{
-		key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.bind(function (event, handler) {
+		key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.throttle(_.bind(function (event, handler) {
 			if (event && handler)
 			{
 				var
@@ -56,7 +56,7 @@
 				$tabs.eq(iIndex).find('a[data-toggle="tab"]').tab('show');
 				return false;
 			}
-		}, this));
+		}, this), 100));
 	};
 
 	module.exports = KeyboardShortcutsHelpPopupView;

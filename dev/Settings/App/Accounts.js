@@ -10,7 +10,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Data = require('Storage/App/Data'),
 		Remote = require('Storage/App/Remote')
@@ -77,7 +77,7 @@
 						oData.Result && oData.Reload)
 					{
 						kn.routeOff();
-						kn.setHash(LinkBuilder.root(), true);
+						kn.setHash(Links.root(), true);
 						kn.routeOff();
 
 						_.defer(function () {

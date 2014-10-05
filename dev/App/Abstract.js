@@ -10,7 +10,7 @@
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 		Events = require('Common/Events'),
 
 		Settings = require('Storage/Settings'),
@@ -132,8 +132,16 @@
 	AbstractApp.prototype.redirectToAdminPanel = function ()
 	{
 		_.delay(function () {
-			window.location.href = './?/Admin/';
+			window.location.href = Links.rootAdmin();
 		}, 100);
+	};
+
+	AbstractApp.prototype.clearClientSideToken = function ()
+	{
+		if (window.__rlah_clear)
+		{
+			window.__rlah_clear();
+		}
 	};
 
 	/**
@@ -150,6 +158,11 @@
 
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 		bClose = Utils.isUnd(bClose) ? false : !!bClose;
+
+		if (bLogout)
+		{
+			this.clearClientSideToken();
+		}
 
 		if (bLogout && bClose && window.close)
 		{
@@ -173,7 +186,7 @@
 		else
 		{
 			kn.routeOff();
-			kn.setHash(LinkBuilder.root(), true);
+			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
 			_.delay(function () {

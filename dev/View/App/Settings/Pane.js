@@ -8,7 +8,7 @@
 		key = require('key'),
 
 		Enums = require('Common/Enums'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		Data = require('Storage/App/Data'),
 
@@ -45,7 +45,7 @@
 
 	PaneSettingsAppView.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(LinkBuilder.inbox());
+		kn.setHash(Links.inbox());
 	};
 
 	module.exports = PaneSettingsAppView;

@@ -711,7 +711,6 @@ class Http
 			@\header('ETag: '.$sEtag, true);
 			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
 			@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
-			@\header('Connection: close');
 			@\header('X-RainLoop-Cache: yes');
 		}
 	}

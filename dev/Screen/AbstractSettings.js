@@ -10,7 +10,7 @@
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractScreen = require('Knoin/AbstractScreen')
@@ -149,7 +149,7 @@
 		}
 		else
 		{
-			kn.setHash(LinkBuilder.settings(), false, true);
+			kn.setHash(Links.settings(), false, true);
 		}
 	};
 

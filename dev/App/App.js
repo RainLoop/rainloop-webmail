@@ -15,7 +15,7 @@
 		Consts = require('Common/Consts'),
 		Plugins = require('Common/Plugins'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 		Events = require('Common/Events'),
 
 		kn = require('Knoin/Knoin'),
@@ -746,17 +746,17 @@
 
 	AppApp.prototype.googleConnect = function ()
 	{
-		window.open(LinkBuilder.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(Links.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	AppApp.prototype.twitterConnect = function ()
 	{
-		window.open(LinkBuilder.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(Links.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	AppApp.prototype.facebookConnect = function ()
 	{
-		window.open(LinkBuilder.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(Links.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
 	};
 
 	/**
@@ -1232,7 +1232,7 @@
 		else
 		{
 			kn.routeOff();
-			kn.setHash(LinkBuilder.root(), true);
+			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
 			_.defer(function () {
@@ -1299,7 +1299,7 @@
 				{
 					if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 					{
-						$LAB.script(window.openpgp ? '' : LinkBuilder.openPgpJs()).wait(function () {
+						$LAB.script(window.openpgp ? '' : Links.openPgpJs()).wait(function () {
 							if (window.openpgp)
 							{
 								Data.openpgp = window.openpgp;

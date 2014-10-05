@@ -13,7 +13,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Globals = require('Common/Globals'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		EmailModel = require('Model/Email'),
 		AttachmentModel = require('Model/Attachment'),
@@ -747,7 +747,7 @@
 	*/
 	MessageModel.prototype.viewLink = function ()
 	{
-	   return LinkBuilder.messageViewLink(this.requestHash);
+	   return Links.messageViewLink(this.requestHash);
 	};
 
 	/**
@@ -755,7 +755,7 @@
 	*/
 	MessageModel.prototype.downloadLink = function ()
 	{
-	   return LinkBuilder.messageDownloadLink(this.requestHash);
+	   return Links.messageDownloadLink(this.requestHash);
 	};
 
 	/**

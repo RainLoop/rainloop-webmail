@@ -1935,7 +1935,7 @@
 	{
 		var iStart = Utils.microtime();
 		$.ajax({
-				'url': require('Common/LinkBuilder').langLink(sLanguage),
+				'url': require('Common/Links').langLink(sLanguage),
 				'dataType': 'script',
 				'cache': true
 			})

@@ -15,7 +15,7 @@
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 		Events = require('Common/Events'),
 		Selector = require('Common/Selector'),
 
@@ -229,7 +229,7 @@
 
 				if (Enums.Layout.NoPreview === Data.layout())
 				{
-					kn.setHash(LinkBuilder.messagePreview(), true);
+					kn.setHash(Links.messagePreview(), true);
 					Data.message.focused(true);
 				}
 			}
@@ -672,7 +672,7 @@
 				var oPage = ko.dataFor(this);
 				if (oPage)
 				{
-					kn.setHash(LinkBuilder.mailBox(
+					kn.setHash(Links.mailBox(
 						Data.currentFolderFullNameHash(),
 						oPage.value,
 						Data.messageListSearch()
@@ -885,7 +885,7 @@
 
 		var
 			oJua = new Jua({
-				'action': LinkBuilder.append(),
+				'action': Links.append(),
 				'name': 'AppendFile',
 				'queueSize': 1,
 				'multipleSizeLimit': 1,
