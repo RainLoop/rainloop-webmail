@@ -220,10 +220,10 @@ abstract class NetClient
 		$this->iSecurityType = $iSecurityType;
 		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
 			$this->iConnectedPort, $this->iSecurityType);
-		
+
 		$this->sConnectedHost = \in_array(\strtolower(\substr($this->sConnectedHost, 0, 6)), array('ssl://', 'tcp://')) ?
 			\substr($this->sConnectedHost, 6) : $this->sConnectedHost;
-		
+
 		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
 //		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
 
@@ -546,7 +546,7 @@ abstract class NetClient
 			{
 				$this->oLogger->Write('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
 			}
-			
+
 			$this->oLogger->WriteException($oException, $iDescType, $this->getLogName());
 		}
 

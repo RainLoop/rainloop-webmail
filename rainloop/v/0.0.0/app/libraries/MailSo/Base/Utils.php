@@ -123,6 +123,7 @@ class Utils
 	 */
 	public static function ConvertSystemString($sSrt)
 	{
+		$sSrt = \trim($sSrt);
 		if (!empty($sSrt) && !\MailSo\Base\Utils::IsUtf8($sSrt))
 		{
 			$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
@@ -282,7 +283,7 @@ class Utils
 //		{
 //			$sIconvOptions .= '//TRANSLIT';
 //		}
-		
+
 		$mResult = @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvOptions, $sInputString);
 		if (false === $mResult)
 		{
@@ -430,7 +431,7 @@ class Utils
 		{
 			return true;
 		}
-		
+
 		return !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
@@ -521,7 +522,7 @@ class Utils
 			{
 				$sIncomingCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
 			}
-			
+
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sIncomingCharset,
 				\MailSo\Base\Enumerations\Charset::UTF_8);
 		}
@@ -614,7 +615,7 @@ class Utils
 				{
 					$aParts[$iIndex][2] = \MailSo\Base\Enumerations\Charset::UTF_8;
 				}
-				
+
 				$sValue = \str_replace($aParts[$iIndex][0],
 					\MailSo\Base\Utils::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
 					$sValue);
@@ -627,7 +628,7 @@ class Utils
 			{
 				$sMainCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
 			}
-			
+
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
@@ -712,7 +713,7 @@ class Utils
 
 		$iNlen = \strlen($sAttrName);
 		$iVlen = \strlen($sValue);
-		
+
 		if (\strlen($sAttrName) + $iVlen > $iLen - 3)
 		{
 			$sections = array();
@@ -728,7 +729,7 @@ class Utils
 			{
 				$sections[$i] = ' '.$sAttrName.'*'.$i.'*='.$sections[$i];
 			}
-			
+
 			return \implode(";\r\n", $sections);
 		}
 		else
@@ -746,7 +747,7 @@ class Utils
 	{
 		$sAttrName = \trim($sAttrName);
 		$sValue = \trim($sValue);
-		
+
 		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
 		{
 			if (!empty($_SERVER['HTTP_USER_AGENT']) && 0 < \strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
