@@ -1375,7 +1375,9 @@ class MailClient
 	/**
 	 * @param string $sFolderName
 	 * @param string $sFolderHash
+	 * @param array $aIndexOrUids
 	 * @param \MailSo\Cache\CacheClient $oCacher
+	 * @param int $iThreadLimit = 100
 	 *
 	 * @return array
 	 *
@@ -1383,8 +1385,10 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListThreadsMap($sFolderName, $sFolderHash, $oCacher)
+	public function MessageListThreadsMap($sFolderName, $sFolderHash, $aIndexOrUids, $oCacher, $iThreadLimit = 100)
 	{
+		$iThreadLimit = \is_int($iThreadLimit) && 0 < $iThreadLimit ? $iThreadLimit : 0;
+
 		$sSearchHash = '';
 		if (0 < \MailSo\Config::$MessageListDateFilter)
 		{
@@ -1402,7 +1406,8 @@ class MailClient
 		if ($oCacher && $oCacher->IsInited())
 		{
 			$sSerializedHash =
-				'ThreadsMap/'.$sSearchHash.'/'.
+				'ThreadsMapSorted/'.$sSearchHash.'/'.
+				'Limit='.$iThreadLimit.'/'.
 				$this->oImapClient->GetLogginedUser().'@'.
 				$this->oImapClient->GetConnectedHost().':'.
 				$this->oImapClient->GetConnectedPort().'/'.
@@ -1454,6 +1459,95 @@ class MailClient
 				$aResult[(int) $mData] = (int) $mData;
 			}
 		}
+
+		$aParentsMap = array();
+		foreach ($aIndexOrUids as $iUid)
+		{
+			if (isset($aResult[$iUid]) && \is_array($aResult[$iUid]))
+			{
+				foreach ($aResult[$iUid] as $iTempUid)
+				{
+					$aParentsMap[$iTempUid] = $iUid;
+					if (isset($aResult[$iTempUid]))
+					{
+						unset($aResult[$iTempUid]);
+					}
+				}
+			}
+		}
+
+		$aSortedThreads = array();
+		foreach ($aIndexOrUids as $iUid)
+		{
+			if (isset($aResult[$iUid]))
+			{
+				$aSortedThreads[$iUid] = $iUid;
+			}
+		}
+
+		foreach ($aIndexOrUids as $iUid)
+		{
+			if (!isset($aSortedThreads[$iUid]) &&
+				isset($aParentsMap[$iUid]) &&
+				isset($aSortedThreads[$aParentsMap[$iUid]]))
+			{
+				if (!\is_array($aSortedThreads[$aParentsMap[$iUid]]))
+				{
+					$aSortedThreads[$aParentsMap[$iUid]] = array();
+				}
+
+				$aSortedThreads[$aParentsMap[$iUid]][] = $iUid;
+			}
+		}
+
+		$aResult = $aSortedThreads;
+		unset($aParentsMap, $aSortedThreads);
+
+		$aTemp = array();
+		foreach ($aResult as $iUid => $mValue)
+		{
+			if (0 < $iThreadLimit && \is_array($mValue) && $iThreadLimit < \count($mValue))
+			{
+				$aParts = \array_chunk($mValue, $iThreadLimit);
+				if (0 < count($aParts))
+				{
+					foreach ($aParts as $iIndex => $aItem)
+					{
+						if (0 === $iIndex)
+						{
+							$aResult[$iUid] = $aItem;
+						}
+						else if (0 < $iIndex && \is_array($aItem))
+						{
+							$mFirst = \array_shift($aItem);
+							if (!empty($mFirst))
+							{
+								$aTemp[$mFirst] = 0 < \count($aItem) ? $aItem : $mFirst;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		foreach ($aTemp as $iUid => $mValue)
+		{
+			$aResult[$iUid] = $mValue;
+		}
+
+		unset($aTemp);
+
+		$aLastResult = array();
+		foreach ($aIndexOrUids as $iUid)
+		{
+			if (isset($aResult[$iUid]))
+			{
+				$aLastResult[$iUid] = $aResult[$iUid];
+			}
+		}
+
+		$aResult = $aLastResult;
+		unset($aLastResult);
 
 		if ($oCacher && $oCacher->IsInited() && !empty($sSerializedHash))
 		{
@@ -1762,24 +1856,11 @@ class MailClient
 						$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
 						$bUseSortIfSupported, $bUseESearchOrESortRequest, $oCacher);
 
-					$aThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oCacher);
+					$aThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $aIndexOrUids,
+						$oCacher, \MailSo\Config::$LargeThreadLimit);
 
 					$aExpandedThreadsUids = \is_array($aExpandedThreadsUids) ? $aExpandedThreadsUids : array();
 					$bWatchExpanded = 0 < \count($aExpandedThreadsUids);
-
-					foreach ($aIndexOrUids as $iUid)
-					{
-						if (isset($aThreads[$iUid]) && \is_array($aThreads[$iUid]))
-						{
-							foreach ($aThreads[$iUid] as $iTempUid)
-							{
-								if (isset($aThreads[$iTempUid]))
-								{
-									unset($aThreads[$iTempUid]);
-								}
-							}
-						}
-					}
 
 					$aNewIndexOrUids = array();
 					foreach ($aIndexOrUids as $iUid)
@@ -1792,12 +1873,9 @@ class MailClient
 								if ($bWatchExpanded && \in_array($iUid, $aExpandedThreadsUids))
 								{
 									$aSubArray = $aThreads[$iUid];
-									foreach ($aIndexOrUids as $iSubRootUid)
+									foreach ($aSubArray as $iSubRootUid)
 									{
-										if (\in_array($iSubRootUid, $aSubArray))
-										{
-											$aNewIndexOrUids[] = $iSubRootUid;
-										}
+										$aNewIndexOrUids[] = $iSubRootUid;
 									}
 								}
 								else

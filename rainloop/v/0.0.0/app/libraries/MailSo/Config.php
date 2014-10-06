@@ -39,6 +39,11 @@ class Config
 	public static $MessageListDateFilter = 0;
 
 	/**
+	 * @var int
+	 */
+	public static $LargeThreadLimit = 100;
+
+	/**
 	 * @var bool
 	 */
 	public static $LogSimpleLiterals = false;
