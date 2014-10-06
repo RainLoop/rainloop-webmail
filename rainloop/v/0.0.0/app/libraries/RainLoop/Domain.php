@@ -31,6 +31,11 @@ class Domain
 	/**
 	 * @var bool
 	 */
+	private $bIncVerifySsl;
+
+	/**
+	 * @var bool
+	 */
 	private $bIncShortLogin;
 
 	/**
@@ -47,6 +52,11 @@ class Domain
 	 * @var int
 	 */
 	private $iOutSecure;
+
+	/**
+	 * @var bool
+	 */
+	private $bOutVerifySsl;
 
 	/**
 	 * @var bool
@@ -83,10 +93,12 @@ class Domain
 		$this->sIncHost = $sIncHost;
 		$this->iIncPort = $iIncPort;
 		$this->iIncSecure = $iIncSecure;
+		$this->bIncVerifySsl = false;
 		$this->bIncShortLogin = $bIncShortLogin;
 		$this->sOutHost = $sOutHost;
 		$this->iOutPort = $iOutPort;
 		$this->iOutSecure = $iOutSecure;
+		$this->bOutVerifySsl = false;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
 		$this->sWhiteList = \trim($sWhiteList);
@@ -314,6 +326,14 @@ class Domain
 	/**
 	 * @return bool
 	 */
+	public function IncVerifySsl()
+	{
+		return $this->bIncVerifySsl;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IncShortLogin()
 	{
 		return $this->bIncShortLogin;
@@ -342,6 +362,14 @@ class Domain
 	public function OutSecure()
 	{
 		return $this->iOutSecure;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function OutVerifySsl()
+	{
+		return $this->bOutVerifySsl;
 	}
 
 	/**

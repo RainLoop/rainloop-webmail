@@ -141,6 +141,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param int $iPort = 25
 	 * @param string $sEhloHost = '[127.0.0.1]'
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
@@ -149,11 +150,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
 		$this->validateResponse(220);
 
 		$this->preLoginStartTLSAndEhloProcess($sEhloHost);

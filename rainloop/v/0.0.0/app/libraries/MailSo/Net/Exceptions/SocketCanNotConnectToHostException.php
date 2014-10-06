@@ -47,6 +47,6 @@ class SocketCanNotConnectToHostException extends \MailSo\Net\Exceptions\Connecti
 	 */
 	public function getSocketCode()
 	{
-		return $this->sSocketMessage;
+		return $this->iSocketCode;
 	}
 }

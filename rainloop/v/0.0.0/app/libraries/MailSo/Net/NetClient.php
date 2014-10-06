@@ -169,10 +169,23 @@ abstract class NetClient
 	}
 
 	/**
+	 * @param int $iErrNo
+	 * @param string $sErrStr
+	 * @param string $sErrFile
+	 * @param int $iErrLine
+	 *
+	 * @return bool
+	 */
+	public function capturePhpErrorWithException($iErrNo, $sErrStr, $sErrFile, $iErrLine)
+	{
+		throw new \MailSo\Base\Exceptions\Exception($sErrStr, $iErrNo);
+	}
+
+	/**
 	 * @param string $sServerName
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bCapturePeerCertIfSsl = false
+	 * @param bool $bVerifySsl = false
 	 *
 	 * @return void
 	 *
@@ -181,7 +194,7 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bCapturePeerCertIfSsl = false)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -202,17 +215,22 @@ abstract class NetClient
 		$sErrorStr = '';
 		$iErrorNo = 0;
 
-		$this->iSecurityType = $iSecurityType;
+		$this->sConnectedHost = $sServerName;
 		$this->iConnectedPort = $iPort;
-		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL($iPort, $iSecurityType);
-		$this->sConnectedHost = $this->bSecure ? 'ssl://'.$sServerName : $sServerName;
-
-		$bCapturePeerCertIfSsl = !!($bCapturePeerCertIfSsl && $this->bSecure);
+		$this->iSecurityType = $iSecurityType;
+		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
+			$this->iConnectedPort, $this->iSecurityType);
+		
+		$this->sConnectedHost = \in_array(\strtolower(\substr($this->sConnectedHost, 0, 6)), array('ssl://', 'tcp://')) ?
+			\substr($this->sConnectedHost, 6) : $this->sConnectedHost;
+		
+		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
+//		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
 
 		if (!$this->bSecure && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->iSecurityType)
 		{
 			$this->writeLogException(
-				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported'),
+				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported: ('.\implode(', ', \stream_get_transports()).')'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -220,24 +238,33 @@ abstract class NetClient
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
 			\MailSo\Log\Enumerations\Type::NOTE);
 
-		if ($bCapturePeerCertIfSsl && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_context_create') &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_client') && defined('STREAM_CLIENT_CONNECT'))
-		{
-			$rStreamContext = \stream_context_create(array('ssl' => array('capture_peer_cert' => true)));
-			$sRemoteSocket = (0 === \strpos($this->sConnectedHost, 'ssl://')
-					? $this->sConnectedHost : 'tcp://'.$this->sConnectedHost).':'.$this->iConnectedPort;
+//		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
+//			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
 
-			if ($rStreamContext)
-			{
-				$this->rConnect = @\stream_socket_client($sRemoteSocket, $iErrorNo, $sErrorStr,
-					$this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
-			}
-		}
-		else
+		$bVerifySsl = !!$bVerifySsl;
+		$rStreamContext = \stream_context_create(array(
+			'ssl' => array(
+				'verify_host' => $bVerifySsl,
+				'verify_peer' => $bVerifySsl,
+				'verify_peer_name' => $bVerifySsl,
+				'allow_self_signed' => !$bVerifySsl
+			)
+		));
+
+		\set_error_handler(array(&$this, 'capturePhpErrorWithException'));
+
+		try
 		{
-			$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
-				$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
+			$this->rConnect = \stream_socket_client($this->sConnectedHost.':'.$this->iConnectedPort,
+				$iErrorNo, $sErrorStr, $this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
 		}
+		catch (\Exception $oExc)
+		{
+			$sErrorStr = $oExc->getMessage();
+			$iErrorNo = $oExc->getCode();
+		}
+
+		\restore_error_handler();
 
 		if (!\is_resource($this->rConnect))
 		{
@@ -515,6 +542,11 @@ abstract class NetClient
 	{
 		if ($this->oLogger)
 		{
+			if ($oException instanceof Exceptions\SocketCanNotConnectToHostException)
+			{
+				$this->oLogger->Write('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
+			}
+			
 			$this->oLogger->WriteException($oException, $iDescType, $this->getLogName());
 		}
 
