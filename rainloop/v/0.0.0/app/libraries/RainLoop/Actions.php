@@ -1373,7 +1373,8 @@ class Actions
 		{
 			$this->MailClient()
 				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
+					$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')))
 				->Login($oAccount->IncLogin(), $oAccount->Password())
 			;
 		}
@@ -2784,7 +2785,7 @@ class Actions
 
 				$iTime = \microtime(true);
 				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(),
-					$oDomain->IncSecure(), $oDomain->IncVerifySsl());
+					$oDomain->IncSecure(), $oDomain->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')));
 
 				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
@@ -2812,7 +2813,7 @@ class Actions
 
 				$iTime = \microtime(true);
 				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1',
-					$oDomain->OutSecure(), $oDomain->OutVerifySsl());
+					$oDomain->OutSecure(), $oDomain->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')));
 
 				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
@@ -4651,6 +4652,15 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
+	/**
+	 *
+	 * @param \RainLoop\Account $oAccount
+	 * @param type $oMessage
+	 * @param type $rMessageStream
+	 * @param type $bAddHiddenRcpt
+	 * @throws \RainLoop\Exceptions\ClientException
+	 * @throws \MailSo\Net\Exceptions\ConnectionException
+	 */
 	private function smtpSendMessage($oAccount, $oMessage, $rMessageStream, $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
@@ -4674,6 +4684,7 @@ class Actions
 					'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
 					'Login' => $oAccount->OutLogin(),
 					'Password' => $oAccount->Password(),
+					'VerifySsl' => $oAccount->Domain()->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')),
 					'HiddenRcpt' => array()
 				);
 
@@ -4692,7 +4703,7 @@ class Actions
 				if (!$bHookConnect)
 				{
 					$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
-						$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure']);
+						$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl']);
 				}
 
 				if (!$bHookAuth)
@@ -5442,10 +5453,6 @@ class Actions
 		if ($oAddressBookProvider && $oAddressBookProvider->IsActive() && 0 < \strlen($sRequestUid))
 		{
 			$sUid = \trim($this->GetActionParam('Uid', ''));
-			$sTags = \trim($this->GetActionParam('Tags', ''));
-			$aTags = \explode(',', $sTags);
-			$aTags = \array_map('trim', $aTags);
-			$aTags = \array_unique($aTags);
 
 			$oContact = null;
 			if (0 < \strlen($sUid))
@@ -5462,7 +5469,6 @@ class Actions
 				}
 			}
 
-			$oContact->Tags = $aTags;
 			$oContact->Properties = array();
 			$aProperties = $this->GetActionParam('Properties', array());
 			if (\is_array($aProperties))
@@ -6654,7 +6660,8 @@ class Actions
 			{
 				$this->MailClient()
 					->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-						$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure())
+						$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
+						$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')))
 					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
 				;
 			}
@@ -7543,7 +7550,6 @@ class Actions
 					'Display' => \MailSo\Base\Utils::Utf8Clear($mResponse->Display),
 					'ReadOnly' => $mResponse->ReadOnly,
 					'IdPropertyFromSearch' => $mResponse->IdPropertyFromSearch,
-					'Tags' => $this->responseObject($mResponse->Tags, $sParent, $aParameters),
 					'Properties' => $this->responseObject($mResponse->Properties, $sParent, $aParameters)
 				));
 			}

@@ -49,6 +49,7 @@ class MailClient
 	 * @param string $sServerName
 	 * @param int $iPort = 143
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = true
 	 *
 	 * @return \MailSo\Mail\MailClient
 	 *
@@ -57,9 +58,9 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function Connect($sServerName, $iPort = 143,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = true)
 	{
-		$this->oImapClient->Connect($sServerName, $iPort, $iSecurityType);
+		$this->oImapClient->Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
 		return $this;
 	}
 

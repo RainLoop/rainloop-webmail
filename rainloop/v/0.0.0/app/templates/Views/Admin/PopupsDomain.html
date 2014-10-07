@@ -48,7 +48,7 @@
 									<option value="2">STARTTLS</option>
 								</select>
 								&nbsp;&nbsp;&nbsp;&nbsp;
-								<label class="inline" data-bind="visible: '1' === imapSecure(), click: function () { imapVerifySsl(!imapVerifySsl()); }">
+								<label class="inline" data-bind="visible: '1' === imapSecure() && false, click: function () { imapVerifySsl(!imapVerifySsl()); }">
 									<i data-bind="css: imapVerifySsl() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 									&nbsp;&nbsp;
 									Verify ssl certificate
@@ -95,7 +95,7 @@
 									<option value="2">STARTTLS</option>
 								</select>
 								&nbsp;&nbsp;&nbsp;&nbsp;
-								<label class="inline" data-bind="visible: '1' === smtpSecure(), click: function () { smtpVerifySsl(!smtpVerifySsl()); }">
+								<label class="inline" data-bind="visible: '1' === smtpSecure() && false, click: function () { smtpVerifySsl(!smtpVerifySsl()); }">
 									<i data-bind="css: smtpVerifySsl() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 									&nbsp;&nbsp;
 									Verify ssl certificate

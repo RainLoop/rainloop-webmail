@@ -42,6 +42,12 @@ class Service
 		{
 			@\header('Server: '.$sServer, true);
 		}
+		
+		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', ''));
+		if (0 < \strlen($sXFrameOptionsHeader))
+		{
+			@\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
+		}
 
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{

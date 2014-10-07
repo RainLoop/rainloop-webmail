@@ -338,11 +338,13 @@ class Domain
 	}
 
 	/**
+	 * @param bool|null $bGlobalVerify = null
+	 * 
 	 * @return bool
 	 */
-	public function IncVerifySsl()
+	public function IncVerifySsl($bGlobalVerify = null)
 	{
-		return $this->bIncVerifySsl;
+		return null === $bGlobalVerify ? $this->bIncVerifySsl : !!$bGlobalVerify;
 	}
 
 	/**
@@ -379,11 +381,13 @@ class Domain
 	}
 
 	/**
+	 * @param bool|null $bGlobalVerify = null
+	 *
 	 * @return bool
 	 */
-	public function OutVerifySsl()
+	public function OutVerifySsl($bGlobalVerify = null)
 	{
-		return $this->bOutVerifySsl;
+		return null === $bGlobalVerify ? $this->bOutVerifySsl : !!$bGlobalVerify;
 	}
 
 	/**

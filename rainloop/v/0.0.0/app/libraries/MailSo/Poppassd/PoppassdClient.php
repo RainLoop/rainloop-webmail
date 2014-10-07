@@ -41,6 +41,7 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 * @param string $sServerName
 	 * @param int $iPort = 106
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = true
 	 *
 	 * @return \MailSo\Poppassd\PoppassdClient
 	 *
@@ -49,11 +50,11 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Poppassd\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 106,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = true)
 	{
 		$this->iRequestTime = \microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
 		$this->validateResponse();
 
 		return $this;

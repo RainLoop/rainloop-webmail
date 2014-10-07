@@ -78,6 +78,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @param string $sServerName
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = true
 	 *
 	 * @return \MailSo\Sieve\ManageSieveClient
 	 *
@@ -86,11 +87,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Sieve\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = true)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
 		
 		$mResponse = $this->parseResponse();
 		$this->validateResponse($mResponse);
