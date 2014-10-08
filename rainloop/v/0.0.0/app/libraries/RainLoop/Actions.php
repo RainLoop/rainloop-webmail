@@ -1374,7 +1374,7 @@ class Actions
 			$this->MailClient()
 				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
 					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
-					$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')))
+					$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificates')))
 				->Login($oAccount->IncLogin(), $oAccount->Password())
 			;
 		}
@@ -2785,7 +2785,7 @@ class Actions
 
 				$iTime = \microtime(true);
 				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(),
-					$oDomain->IncSecure(), $oDomain->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')));
+					$oDomain->IncSecure(), $oDomain->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificates')));
 
 				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
@@ -2813,7 +2813,7 @@ class Actions
 
 				$iTime = \microtime(true);
 				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1',
-					$oDomain->OutSecure(), $oDomain->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')));
+					$oDomain->OutSecure(), $oDomain->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificates')));
 
 				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
@@ -4684,7 +4684,7 @@ class Actions
 					'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
 					'Login' => $oAccount->OutLogin(),
 					'Password' => $oAccount->Password(),
-					'VerifySsl' => $oAccount->Domain()->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')),
+					'VerifySsl' => $oAccount->Domain()->OutVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificates')),
 					'HiddenRcpt' => array()
 				);
 
@@ -6661,7 +6661,7 @@ class Actions
 				$this->MailClient()
 					->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
 						$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
-						$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificate')))
+						$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('labs', 'verify_ssl_certificates')))
 					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
 				;
 			}
