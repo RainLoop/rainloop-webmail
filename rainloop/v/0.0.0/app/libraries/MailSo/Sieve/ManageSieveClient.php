@@ -101,12 +101,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			$this->IsSupported('STARTTLS'), $this->iSecurityType))
 		{
 			$this->sendRequestWithCheck('STARTTLS');
-			if (!@stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Sieve\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
-			}
+			$this->EnableCrypto();
 
 			$mResponse = $this->parseResponse();
 			$this->validateResponse($mResponse);

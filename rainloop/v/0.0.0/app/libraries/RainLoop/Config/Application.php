@@ -101,7 +101,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 					'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
 
 				'custom_server_signature' => array('RainLoop'),
-				'x_frame_options_header' => array('SAMEORIGIN'),
+				'x_frame_options_header' => array(''),
 				'openpgp'				=> array(false),
 				'use_rsa_encryption'	=> array(false),
 				'admin_login'		=> array('admin', 'Login and password for web admin panel'),

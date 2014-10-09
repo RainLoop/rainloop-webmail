@@ -468,7 +468,8 @@ class PdoAddressBook
 			else
 			{
 				$sSql = 'INSERT INTO rainloop_ab_contacts '.
-					'( id_user,  id_contact_str,  display,  changed,  etag) VALUES '.
+					'( id_user,  id_contact_str,  display,  changed,  etag)'.
+					' VALUES '.
 					'(:id_user, :id_contact_str, :display, :changed, :etag)';
 
 				$this->prepareAndExecute($sSql,
@@ -514,7 +515,8 @@ class PdoAddressBook
 				if (0 < \count($aParams))
 				{
 					$sSql = 'INSERT INTO rainloop_ab_properties '.
-						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec) VALUES '.
+						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec)'.
+						' VALUES '.
 						'(:id_contact, :id_user, :prop_type, :prop_type_str, :prop_value, :prop_value_custom, :prop_frec)';
 
 					$this->prepareAndExecute($sSql, $aParams, true);

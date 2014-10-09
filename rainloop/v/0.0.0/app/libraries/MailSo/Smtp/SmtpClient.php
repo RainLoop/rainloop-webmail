@@ -528,13 +528,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->IsSupported('STARTTLS'), $this->iSecurityType, $this->HasSupportedAuth()))
 		{
 			$this->sendRequestWithCheck('STARTTLS', 220);
-			if (!@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::WARNING, true);
-			}
-
+			$this->EnableCrypto();
+			
 			$this->ehloOrHelo($sEhloHost);
 		}
 		else if (\MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS === $this->iSecurityType)

@@ -4,7 +4,6 @@ namespace MailSo;
 
 /**
  * @category MailSo
- * @package Base
  */
 class Config
 {

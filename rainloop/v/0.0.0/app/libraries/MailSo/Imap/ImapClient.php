@@ -147,12 +147,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->IsSupported('STARTTLS'), $this->iSecurityType))
 		{
 			$this->SendRequestWithCheck('STARTTLS');
-			if (!@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Imap\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
-			}
+			$this->EnableCrypto();
 
 			$this->aCapabilityItems = null;
 		}

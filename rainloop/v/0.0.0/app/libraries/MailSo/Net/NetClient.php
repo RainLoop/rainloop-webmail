@@ -242,14 +242,18 @@ abstract class NetClient
 //			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
 
 		$bVerifySsl = !!$bVerifySsl;
-		$rStreamContext = \stream_context_create(array(
+		$aStreamContextSettings = array(
 			'ssl' => array(
 				'verify_host' => $bVerifySsl,
 				'verify_peer' => $bVerifySsl,
 				'verify_peer_name' => $bVerifySsl,
 				'allow_self_signed' => !$bVerifySsl
 			)
-		));
+		);
+
+		\MailSo\Hooks::Run('Net.NetClient.StreamContextSettings/Filter', array(&$aStreamContextSettings));
+
+		$rStreamContext = \stream_context_create($aStreamContextSettings);
 
 		\set_error_handler(array(&$this, 'capturePhpErrorWithException'));
 
@@ -287,6 +291,23 @@ abstract class NetClient
 		}
 	}
 
+	/**
+	 * @param {int} $iCryptoType = STREAM_CRYPTO_METHOD_TLS_CLIENT
+	 */
+	public function EnableCrypto($iCryptoType = STREAM_CRYPTO_METHOD_TLS_CLIENT)
+	{
+		if (\is_resource($this->rConnect) &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'))
+		{
+			if (!@\stream_socket_enable_crypto($this->rConnect, true, $iCryptoType))
+			{
+				$this->writeLogException(
+					new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS. [type='.$iCryptoType.']'),
+					\MailSo\Log\Enumerations\Type::ERROR, true);
+			}
+		}
+	}
+	
 	/**
 	 * @return void
 	 */

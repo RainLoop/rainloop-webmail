@@ -73,12 +73,7 @@ class Pop3Client extends \MailSo\Net\NetClient
 			in_array('STLS', $this->Capa()), $this->iSecurityType))
 		{
 			$this->sendRequestWithCheck('STLS');
-			if (!@stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Pop3\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
-			}
+			$this->EnableCrypto();
 
 			$this->aCapa = null;
 		}
