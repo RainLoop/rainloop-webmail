@@ -7205,9 +7205,9 @@ class Actions
 	 */
 	private function hashFolderFullName($sFolderFullName)
 	{
-		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
+		return \in_array(($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
 			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail')) ?
-				\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
+				\ucfirst(($sFolderFullName)) : \md5($sFolderFullName);
 
 //		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
 //			\ucfirst(\strtolower($sFolderFullName)) :
