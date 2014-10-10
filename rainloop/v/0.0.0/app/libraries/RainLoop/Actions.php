@@ -7207,15 +7207,7 @@ class Actions
 	{
 		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
 			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail')) ?
-				\ucfirst(\strtolower($sFolderFullName)) : \md5($sFolderFullName);
-
-//		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts', 'spam', 'junk', 'bin', 'trash')) ?
-//			\ucfirst(\strtolower($sFolderFullName)) :
-//				\RainLoop\Utils::CustomBaseConvert(\sprintf('%u', \crc32(md5($sFolderFullName).$sFolderFullName)), '0123456789',
-//					'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-//		return \preg_match('/^[a-zA-Z0-9]+$/', $sFolderFullName) ? $sFolderFullName : \md5($sFolderFullName);
-//		return \preg_match('/^[a-zA-Z0-9]+$/', $sFolderFullName) ? $sFolderFullName : \rtrim(\base_convert(\md5($sFolderFullName), 16, 32), '0');
-//		return 'INBOX' === $sFolderFullName ? $sFolderFullName : \base_convert(\sprintf('%u', \crc32(\md5($sFolderFullName))), 10, 32);
+				$sFolderFullName : \md5($sFolderFullName);
 	}
 
 	/**
