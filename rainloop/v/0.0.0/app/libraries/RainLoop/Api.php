@@ -89,6 +89,18 @@ class Api
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 100);
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
+
+			$sSslCafile = $this->Config()->Get('ssl', 'cafile', '');
+			if (!empty($sSslCafile))
+			{
+				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile) {
+					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']) &&
+						empty($aStreamContextSettings['ssl']['cafile']))
+					{
+						$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
+					}
+				});
+			}
 		}
 	}
 

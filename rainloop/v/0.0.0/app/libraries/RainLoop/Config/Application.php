@@ -113,6 +113,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'core_install_access_domain' => array('')
 			),
 
+			'ssl' => array(
+				'verify_certificate'	=> array(false, 'Require verification of SSL certificate used.'),
+				'cafile'			=> array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+			),
+
 			'login' => array(
 
 				'default_domain' => array('', ''),
@@ -249,7 +254,6 @@ Enables caching in the system'),
 				'imap_message_list_date_filter' => array(0),
 				'imap_large_thread_limit' => array(100),
 				'smtp_show_server_errors' => array(false),
-				'verify_ssl_certificates' => array(false),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),
