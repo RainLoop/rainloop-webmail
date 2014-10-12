@@ -90,7 +90,7 @@ class Api
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 
-			$sSslCafile = $this->Config()->Get('ssl', 'cafile', '');
+			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
 			if (!empty($sSslCafile))
 			{
 				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile) {
