@@ -7482,8 +7482,6 @@ class Actions
 					$mResult['Plain'] = $sPlain;
 //					$mResult['Plain'] = 0 === \strlen($sPlain) ? '' : \MailSo\Base\HtmlUtils::ConvertPlainToHtml($sPlain);
 
-					$this->Logger()->WriteDump($mResult['Html']);
-
 					$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
 					$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();

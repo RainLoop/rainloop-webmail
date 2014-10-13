@@ -73,6 +73,8 @@
 		this.smtpAuth = ko.observable(true);
 		this.whiteList = ko.observable('');
 
+		this.enableSmartPorts = ko.observable(false);
+
 		this.headerText = ko.computed(function () {
 			var sName = this.name();
 			return this.edit() ? 'Edit Domain "' + sName + '"' :
@@ -157,48 +159,54 @@
 		}, this);
 
 		this.imapSecure.subscribe(function (sValue) {
-			var iPort = Utils.pInt(this.imapPort());
-			sValue = Utils.pString(sValue);
-			switch (sValue)
+			if (this.enableSmartPorts())
 			{
-				case '0':
-					if (993 === iPort)
-					{
-						this.imapPort('143');
-					}
-					break;
-				case '1':
-					if (143 === iPort)
-					{
-						this.imapPort('993');
-					}
-					break;
+				var iPort = Utils.pInt(this.imapPort());
+				sValue = Utils.pString(sValue);
+				switch (sValue)
+				{
+					case '0':
+						if (993 === iPort)
+						{
+							this.imapPort('143');
+						}
+						break;
+					case '1':
+						if (143 === iPort)
+						{
+							this.imapPort('993');
+						}
+						break;
+				}
 			}
 		}, this);
 
 		this.smtpSecure.subscribe(function (sValue) {
-			var iPort = Utils.pInt(this.smtpPort());
-			sValue = Utils.pString(sValue);
-			switch (sValue)
+			if (this.enableSmartPorts())
 			{
-				case '0':
-					if (465 === iPort || 587 === iPort)
-					{
-						this.smtpPort('25');
-					}
-					break;
-				case '1':
-					if (25 === iPort || 587 === iPort)
-					{
-						this.smtpPort('465');
-					}
-					break;
-				case '2':
-					if (25 === iPort || 465 === iPort)
-					{
-						this.smtpPort('587');
-					}
-					break;
+				var iPort = Utils.pInt(this.smtpPort());
+				sValue = Utils.pString(sValue);
+				switch (sValue)
+				{
+					case '0':
+						if (465 === iPort || 587 === iPort)
+						{
+							this.smtpPort('25');
+						}
+						break;
+					case '1':
+						if (25 === iPort || 587 === iPort)
+						{
+							this.smtpPort('465');
+						}
+						break;
+					case '2':
+						if (25 === iPort || 465 === iPort)
+						{
+							this.smtpPort('587');
+						}
+						break;
+				}
 			}
 		}, this);
 
@@ -273,6 +281,8 @@
 		this.clearForm();
 		if (oDomain)
 		{
+			this.enableSmartPorts(false);
+
 			this.edit(true);
 
 			this.name(Utils.trim(oDomain.Name));
@@ -288,6 +298,8 @@
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
 			this.whiteList(Utils.trim(oDomain.WhiteList));
+
+			this.enableSmartPorts(true);
 		}
 	};
 
@@ -303,6 +315,7 @@
 	{
 		this.edit(false);
 		this.whiteListPage(false);
+		this.enableSmartPorts(false);
 
 		this.savingError('');
 
@@ -321,6 +334,8 @@
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
 		this.whiteList('');
+
+		this.enableSmartPorts(true);
 	};
 
 	module.exports = DomainPopupView;
