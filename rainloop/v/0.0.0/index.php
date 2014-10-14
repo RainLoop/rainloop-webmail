@@ -24,6 +24,8 @@ Options -Indexes
 			define('APP_REQUEST_RND', md5(APP_START.rand(10000, 99999).APP_START));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
+			define('APP_USE_APC_CACHE', true);
+
 			$sCustomDataPath = '';
 			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
 			{

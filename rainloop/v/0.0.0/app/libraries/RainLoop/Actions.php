@@ -673,16 +673,22 @@ class Actions
 
 			switch (true)
 			{
-				case 'APC' === $sDriver && \MailSo\Base\Utils::FunctionExistsAndEnabled('apc_store'):
+				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
+					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
+						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
+					
 					$oDriver = \MailSo\Cache\Drivers\APC::NewInstance();
 					break;
-				case 'MEMCACHE' === $sDriver && \MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
-				case 'MEMCACHED' === $sDriver && \MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
+
+				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
+					\MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
+					
 					$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
 						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
 						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211)
 					);
 					break;
+
 				default:
 					$oDriver = \MailSo\Cache\Drivers\File::NewInstance(APP_PRIVATE_DATA.'cache');
 					break;
@@ -749,9 +755,17 @@ class Actions
 				$this->oLogger->WriteEmptyLine();
 
 				$oHttp = $this->Http();
+				
 				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
 					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').
 					'][GUID:'.\MailSo\Log\Logger::Guid().']');
+				
+				$this->oLogger->Write(
+					'[APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').']'.
+					'[MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').']'.
+					'[PDO:'.(\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off').']'.
+					'[Streams:'.\implode(',', \stream_get_transports()).']'
+				);
 
 				$this->oLogger->Write(
 					'['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),

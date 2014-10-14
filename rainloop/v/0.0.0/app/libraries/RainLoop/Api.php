@@ -186,4 +186,13 @@ class Api
 
 		return false;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public static function LogoutCurrentLogginedUser()
+	{
+		\RainLoop\Utils::ClearCookie('rlsession');
+		return false;
+	}
 }
