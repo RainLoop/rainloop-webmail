@@ -153,7 +153,7 @@
 	{
 		var
 			fNormP = function () {
-				return ['Inbox', 1, '', true];
+				return ['INBOX', 1, '', true];
 			},
 			fNormS = function (oRequest, oVals) {
 				oVals[0] = Utils.pString(oVals[0]);
@@ -163,7 +163,7 @@
 
 				if ('' === oRequest)
 				{
-					oVals[0] = 'Inbox';
+					oVals[0] = 'INBOX';
 					oVals[1] = 1;
 				}
 
@@ -175,7 +175,7 @@
 
 				if ('' === oRequest)
 				{
-					oVals[0] = 'Inbox';
+					oVals[0] = 'INBOX';
 				}
 
 				return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];

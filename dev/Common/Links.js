@@ -147,7 +147,7 @@
 	 */
 	Links.prototype.inbox = function ()
 	{
-		return this.sBase + 'mailbox/Inbox';
+		return this.sBase + 'mailbox/INBOX';
 	};
 
 	/**

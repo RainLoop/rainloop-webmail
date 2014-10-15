@@ -1593,7 +1593,10 @@
 			'stripPrefix': false,
 			'urls': true,
 			'email': true,
-			'twitter': false
+			'twitter': false,
+			'replaceFn': function (autolinker, match) {
+				return !(autolinker && match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
+			}
 		});
 
 		return sHtml;
