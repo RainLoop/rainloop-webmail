@@ -35,8 +35,6 @@ class Service
 			\ini_set('display_errors', 1);
 		}
 
-		\RainLoop\Api::SetupDefaultMailSoConfig();
-
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))
 		{
@@ -54,20 +52,43 @@ class Service
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
 			exit();
 		}
+
+		$this->localHandle();
 	}
 
 	/**
-	 * @return \RainLoop\Service
+	 * @return bool
 	 */
-	public static function NewInstance()
+	public function RunResult()
 	{
-		return new self();
+		return true;
+	}
+
+	/**
+	 * @staticvar bool $bOne
+	 * @return bool
+	 */
+	public static function Handle()
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$oService = null;
+			if (\class_exists('MailSo\Version'))
+			{
+				$oService = new self();
+			}
+
+			$bOne = $oService->RunResult();
+		}
+		
+		return $bOne;
 	}
 
 	/**
 	 * @return \RainLoop\Service
 	 */
-	public function Handle()
+	private function localHandle()
 	{
 		if (!\class_exists('MailSo\Version'))
 		{

@@ -10,6 +10,34 @@ class Api
 	private function __construct()
 	{
 	}
+	
+	/**
+	 * @return bool
+	 */
+	public static function RunResult()
+	{
+		return true;
+	}
+	
+	/**
+	 * @staticvar bool $bOne
+	 * @return bool
+	 */
+	public static function Handle()
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$bOne = \class_exists('MailSo\Version');
+			if ($bOne)
+			{
+				\RainLoop\Api::SetupDefaultMailSoConfig();
+				$bOne = \RainLoop\Api::RunResult();
+			}
+		}
+
+		return $bOne;
+	}
 
 	/**
 	 * @return \RainLoop\Actions
@@ -39,28 +67,6 @@ class Api
 	public static function Logger()
 	{
 		return \RainLoop\Api::Actions()->Logger();
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function Handle()
-	{
-		static $bOne = null;
-		if ($bOne)
-		{
-			return true;
-		}
-
-		if (!\class_exists('MailSo\Version'))
-		{
-			return false;
-		}
-
-		\RainLoop\Api::SetupDefaultMailSoConfig();
-
-		$bOne = true;
-		return true;
 	}
 
 	/**
@@ -193,6 +199,6 @@ class Api
 	public static function LogoutCurrentLogginedUser()
 	{
 		\RainLoop\Utils::ClearCookie('rlsession');
-		return false;
+		return true;
 	}
 }

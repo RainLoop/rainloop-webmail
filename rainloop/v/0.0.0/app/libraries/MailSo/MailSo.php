@@ -7,10 +7,18 @@ if (!\defined('MAILSO_LIBRARY_ROOT_PATH'))
 	\define('MAILSO_LIBRARY_ROOT_PATH', \defined('MAILSO_LIBRARY_USE_PHAR')
 		? 'phar://mailso.phar/' : \rtrim(\realpath(__DIR__), '\\/').'/');
 
-	\spl_autoload_register(function ($sClassName) {
+	/**
+	 * @param string $sClassName
+	 *
+	 * @return mixed
+	 */
+	function MailSoSplAutoloadRegisterFunction($sClassName)
+	{
 		return (0 === \strpos($sClassName, 'MailSo') && false !== \strpos($sClassName, '\\')) ?
 			include MAILSO_LIBRARY_ROOT_PATH.\str_replace('\\', '/', \substr($sClassName, 7)).'.php' : false;
-	});
+	}
+
+	\spl_autoload_register('MailSo\MailSoSplAutoloadRegisterFunction', false);
 
 	if (\class_exists('MailSo\Base\Loader'))
 	{
@@ -18,6 +26,6 @@ if (!\defined('MAILSO_LIBRARY_ROOT_PATH'))
 	}
 	else
 	{
-		throw new \Exception('MailSo initialisation error');
+		\spl_autoload_unregister('MailSo\MailSoSplAutoloadRegisterFunction');
 	}
 }

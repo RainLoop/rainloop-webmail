@@ -941,8 +941,6 @@ class ServiceActions
 			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
-			\RainLoop\Api::Handle();
-
 			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
 			$bLogout = 0 === \strlen($sResult);
 

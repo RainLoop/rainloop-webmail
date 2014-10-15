@@ -18,4 +18,11 @@ interface SettingsInterface
 	 * @return bool
 	 */
 	public function Save(\RainLoop\Account $oAccount, array $aSettings);
+
+	/**
+	 * @param string $sEmail
+	 *
+	 * @return bool
+	 */
+	public function ClearByEmail($sEmail);
 }

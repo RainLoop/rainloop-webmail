@@ -5,8 +5,13 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	\define('RAINLOOP_APP_LIBRARIES_PATH', \rtrim(\realpath(__DIR__), '\\/').'/libraries/');
 	\define('RAINLOOP_MB_SUPPORTED', \function_exists('mb_strtoupper'));
 
-	\spl_autoload_register(function ($sClassName) {
-
+	/**
+	 * @param string $sClassName
+	 * 
+	 * @return mixed
+	 */
+	function RainLoopSplAutoloadRegisterFunction($sClassName)
+	{
 		if (0 === \strpos($sClassName, 'RainLoop') && false !== \strpos($sClassName, '\\'))
 		{
 			return include RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
@@ -31,34 +36,36 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		}
 
 		return false;
-	});
+	}
+
+	\spl_autoload_register('RainLoopSplAutoloadRegisterFunction', false);
 }
 
 if (\class_exists('RainLoop\Service'))
 {
-	$oException = null;
 	if (!\class_exists('MailSo\Version'))
 	{
-		try
-		{
-			include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
-		}
-		catch (\Exception $oException) {}
+		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
 	}
 
-	if (!$oException)
+	if (\class_exists('MailSo\Version'))
 	{
-		if (isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API'])
+		if (isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API'] && !\defined('APP_API_STARTED'))
 		{
-			$_ENV['RAINLOOP_INCLUDE_AS_API'] = false;
+			\define('APP_API_STARTED', true);
 			\RainLoop\Api::Handle();
 		}
 		else if (!\defined('APP_STARTED'))
 		{
 			\define('APP_STARTED', true);
-			\RainLoop\Service::NewInstance()->Handle();
+			\RainLoop\Api::Handle();
+			\RainLoop\Service::Handle();
 		}
 	}
+}
+else if (\function_exists('RainLoopSplAutoloadRegisterFunction'))
+{
+	\spl_autoload_unregister('RainLoopSplAutoloadRegisterFunction');
 }
 
 return '';
