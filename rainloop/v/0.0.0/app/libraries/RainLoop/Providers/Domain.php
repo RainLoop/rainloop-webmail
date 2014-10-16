@@ -10,6 +10,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	private $oDriver;
 
 	/**
+	 * @var \RainLoop\Plugins\Manager
+	 */
+	private $oPlugins;
+
+	/**
 	 * @var bool
 	 */
 	private $bAdmin;
@@ -19,9 +24,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 *
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver,
+		\RainLoop\Plugins\Manager $oPlugins)
 	{
 		$this->oDriver = $oDriver;
+		$this->oPlugins = $oPlugins;
 		$this->bAdmin = $this->oDriver instanceof \RainLoop\Providers\Domain\DomainAdminInterface;
 	}
 
@@ -42,7 +49,13 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
-		return $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
+		$oDomain = $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
+		if ($oDomain instanceof \RainLoop\Domain)
+		{
+			$this->oPlugins->RunHook('filter.domain', array(&$oDomain));
+		}
+
+		return $oDomain;
 	}
 
 	/**

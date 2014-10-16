@@ -805,7 +805,7 @@ class ServiceActions
 					try
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-						$this->oActions->AuthProcess($oAccount);
+						$this->oActions->AuthToken($oAccount);
 
 						$bLogout = !($oAccount instanceof \RainLoop\Account);
 					}
@@ -843,7 +843,7 @@ class ServiceActions
 			try
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				$this->oActions->AuthProcess($oAccount);
+				$this->oActions->AuthToken($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
 			catch (\Exception $oException)
@@ -878,7 +878,7 @@ class ServiceActions
 			try
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				$this->oActions->AuthProcess($oAccount);
+				$this->oActions->AuthToken($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Account);
 			}
 			catch (\Exception $oException)
@@ -994,7 +994,7 @@ class ServiceActions
 
 			if ($oAccountToLogin)
 			{
-				$this->oActions->AuthProcess($oAccountToLogin);
+				$this->oActions->AuthToken($oAccountToLogin);
 			}
 		}
 
@@ -1042,7 +1042,7 @@ class ServiceActions
 					{
 						$this->oActions->CheckMailConnection($oAccount);
 
-						$this->oActions->AuthProcess($oAccount);
+						$this->oActions->AuthToken($oAccount);
 
 						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
 					}

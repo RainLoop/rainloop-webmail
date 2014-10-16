@@ -621,7 +621,7 @@ class Actions
 		if (null === $this->oDomainProvider)
 		{
 			$this->oDomainProvider = new \RainLoop\Providers\Domain(
-				$this->fabrica('domain'));
+				$this->fabrica('domain'), $this->Plugins());
 		}
 
 		return $this->oDomainProvider;
@@ -833,23 +833,41 @@ class Actions
 	 * @param string $sEmail
 	 * @param string $sLogin
 	 * @param string $sPassword
-	 * @param bool $sSignMeToken = ''
+	 * @param string $sSignMeToken = ''
+	 * @param bool $bThrowProvideException = false
 	 *
 	 * @return \RainLoop\Account|null
 	 */
-	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '')
+	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '', $bThrowProvideException = false)
 	{
-		$oResult = null;
+		$oAccount = null;
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
 		{
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain instanceof \RainLoop\Domain && $oDomain->ValidateWhiteList($sEmail, $sLogin))
+			if ($oDomain instanceof \RainLoop\Domain)
 			{
-				$oResult = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
+				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
+				{
+					$oAccount = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
+					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
+
+					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Account))
+					{
+						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
+					}
+				}
+				else if ($bThrowProvideException)
+				{
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountNotAllowed);
+				}
+			}
+			else if ($bThrowProvideException)
+			{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
 			}
 		}
 
-		return $oResult;
+		return $oAccount;
 	}
 
 	/**
@@ -866,35 +884,29 @@ class Actions
 		if (!empty($sToken))
 		{
 			$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
-			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && 8 === \count($aAccountHash) &&
-//				!empty($aAccountHash[4]) && \RainLoop\Utils::Fingerprint() === $aAccountHash[4] &&
-				!empty($aAccountHash[7]) && (!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7])
+			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
+				8 <= \count($aAccountHash) && // length checking
+				!empty($aAccountHash[7]) && // does short token exist
+				(!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7]) // check short token if needed
 			)
 			{
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
-					empty($aAccountHash[5]) ? '' : $aAccountHash[5]);
+					empty($aAccountHash[5]) ? '' : $aAccountHash[5], $bThrowExceptionOnFalse);
+
 
 				if ($oAccount instanceof \RainLoop\Account)
 				{
+					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
+					{
+						$oAccount->SetProxyAuthUser($aAccountHash[8]);
+						$oAccount->SetProxyAuthUser($aAccountHash[89]);
+					}
+					
 					$this->Logger()->AddSecret($oAccount->Password());
+					$this->Logger()->AddSecret($oAccount->ProxyAuthPassword());
 
 					$oAccount->SetParentEmail($aAccountHash[6]);
 					$oResult = $oAccount;
-				}
-				else
-				{
-					$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($aAccountHash[1]), true);
-					if ($bThrowExceptionOnFalse)
-					{
-						if (!($oDomain instanceof \RainLoop\Domain))
-						{
-							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
-						}
-						else if (!$oDomain->ValidateWhiteList($aAccountHash[1], $aAccountHash[2]))
-						{
-							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountNotAllowed);
-						}
-					}
 				}
 			}
 			else if ($bThrowExceptionOnFalse)
@@ -1361,7 +1373,7 @@ class Actions
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 */
-	public function AuthProcess($oAccount)
+	public function AuthToken($oAccount)
 	{
 		if ($oAccount instanceof \RainLoop\Account)
 		{
@@ -1385,12 +1397,7 @@ class Actions
 	{
 		try
 		{
-			$this->MailClient()
-				->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-					$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
-					$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('ssl', 'verify_certificate')))
-				->Login($oAccount->IncLogin(), $oAccount->Password())
-			;
+			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
 		{
@@ -1481,6 +1488,8 @@ class Actions
 
 		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword))
 		{
+			$this->loginErrorDelay();
+			
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
@@ -1491,28 +1500,33 @@ class Actions
 
 		$this->Logger()->AddSecret($sPassword);
 
-		$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken);
-		if (!($oAccount instanceof \RainLoop\Account))
+		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
+		
+		try
 		{
-			$this->loginErrorDelay();
+			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, true);
 
-			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if (!($oDomain instanceof \RainLoop\Domain))
+			if (!($oAccount instanceof \RainLoop\Account))
 			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainNotAllowed);
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
-			else if (!$oDomain->ValidateWhiteList($sEmail, $sLogin))
-			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountNotAllowed);
-			}
-			else
+
+			$this->Plugins()->RunHook('event.login-post-login-provide', array(&$oAccount));
+
+			if (!($oAccount instanceof \RainLoop\Account))
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 		}
+		catch (\Exception $oException)
+		{
+			$this->loginErrorDelay();
+
+			throw $oException;
+		}
 
 		// Two factor auth
-		if ($oAccount && $this->TwoFactorAuthProvider()->IsActive())
+		if ($this->TwoFactorAuthProvider()->IsActive())
 		{
 			$aData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable'])
@@ -1526,6 +1540,7 @@ class Actions
 					if (empty($sAdditionalCode))
 					{
 						$this->Logger()->Write('TFA: Required Code for '.$oAccount->ParentEmailHelper().' account.');
+						
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
 					}
 					else
@@ -1553,6 +1568,7 @@ class Actions
 						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
 						{
 							$this->loginErrorDelay();
+
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
 						}
 					}
@@ -1567,6 +1583,7 @@ class Actions
 		catch (\Exception $oException)
 		{
 			$this->loginErrorDelay();
+
 			throw $oException;
 		}
 
@@ -1701,7 +1718,7 @@ class Actions
 			}
 		}
 
-		$this->AuthProcess($oAccount);
+		$this->AuthToken($oAccount);
 
 		if ($oAccount && 0 < \strlen($sLanguage))
 		{
@@ -1983,7 +2000,7 @@ class Actions
 				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail], false, false);
 				if ($oAccountToChange)
 				{
-					$this->AuthProcess($oAccountToChange);
+					$this->AuthToken($oAccountToChange);
 				}
 			}
 
@@ -4688,62 +4705,34 @@ class Actions
 
 				$oFrom = $oMessage->GetFrom();
 				$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
+				$sFrom = empty($sFrom) ? $oAccount->Email() : $sFrom;
 
-				$aSmtpCredentials = array(
-					'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
-					'Host' => $oAccount->Domain()->OutHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-					'Port' => $oAccount->Domain()->OutPort(),
-					'Secure' => $oAccount->Domain()->OutSecure(),
-					'UseAuth' => $oAccount->Domain()->OutAuth(),
-					'From' => empty($sFrom) ? $oAccount->Email() : $sFrom,
-					'Login' => $oAccount->OutLogin(),
-					'Password' => $oAccount->Password(),
-					'VerifySsl' => $oAccount->Domain()->OutVerifySsl(!!$this->Config()->Get('ssl', 'verify_certificate')),
-					'HiddenRcpt' => array()
-				);
+				$aHiddenRcpt = array();
+				$this->Plugins()->RunHook('filter.smtp-from', array($oAccount, $oMessage, &$sFrom));
 
-				$this->Plugins()->RunHook('filter.smtp-credentials', array($oAccount, &$aSmtpCredentials));
-
-				if (!$bAddHiddenRcpt)
+				if ($bAddHiddenRcpt)
 				{
-					$aSmtpCredentials['HiddenRcpt'] = array();
+					$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
 				}
 
-				$bHookConnect = $bHookAuth = $bHookFrom = $bHookFrom = $bHookTo = $bHookData = $bHookLogoutAndDisconnect = false;
-				$this->Plugins()->RunHook('filter.smtp-connect', array($oAccount, $aSmtpCredentials,
-					&$oSmtpClient, $oMessage, &$oRcpt,
-					&$bHookConnect, &$bHookAuth, &$bHookFrom, &$bHookTo, &$bHookData, &$bHookLogoutAndDisconnect));
+				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config());
 
-				if (!$bHookConnect)
+				if ($oSmtpClient->IsConnected())
 				{
-					$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
-						$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl']);
-				}
-
-				if (!$bHookAuth)
-				{
-					if ($aSmtpCredentials['UseAuth'])
+					if (!empty($sFrom))
 					{
-						$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
+						$oSmtpClient->MailFrom($sFrom);
 					}
-				}
 
-				if (!$bHookFrom)
-				{
-					$oSmtpClient->MailFrom($aSmtpCredentials['From']);
-				}
-
-				if (!$bHookTo)
-				{
 					$aRcpt =& $oRcpt->GetAsArray();
 					foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 					{
 						$oSmtpClient->Rcpt($oEmail->GetEmail());
 					}
 
-					if (isset($aSmtpCredentials['HiddenRcpt']) && is_array($aSmtpCredentials['HiddenRcpt']))
+					if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && 0 < \count($aHiddenRcpt))
 					{
-						foreach ($aSmtpCredentials['HiddenRcpt'] as $sEmail)
+						foreach ($aHiddenRcpt as $sEmail)
 						{
 							if (\preg_match('/^[^@\s]+@[^@\s]+$/', $sEmail))
 							{
@@ -4751,16 +4740,15 @@ class Actions
 							}
 						}
 					}
-				}
 
-				if (!$bHookData)
-				{
 					$oSmtpClient->DataWithStream($rMessageStream);
-				}
 
-				if (!$bHookLogoutAndDisconnect)
-				{
-					$oSmtpClient->LogoutAndDisconnect();
+					if ($bLoggined)
+					{
+						$oSmtpClient->Logout();
+					}
+					
+					$oSmtpClient->Disconnect();
 				}
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
@@ -6672,12 +6660,7 @@ class Actions
 
 			try
 			{
-				$this->MailClient()
-					->Connect($oAccount->Domain()->IncHost(\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email())),
-						$oAccount->Domain()->IncPort(), $oAccount->Domain()->IncSecure(),
-						$oAccount->Domain()->IncVerifySsl(!!$this->Config()->Get('ssl', 'verify_certificate')))
-					->Login($oAccount->IncLogin(), $oAccount->Password(), !!$this->Config()->Get('labs', 'use_imap_auth_plain'))
-				;
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 			{

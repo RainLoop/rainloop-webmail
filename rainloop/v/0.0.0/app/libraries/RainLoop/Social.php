@@ -348,7 +348,7 @@ class Social
 									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 									if ($oAccount instanceof \RainLoop\Account)
 									{
-										$this->oActions->AuthProcess($oAccount);
+										$this->oActions->AuthToken($oAccount);
 
 										$iErrorCode = 0;
 									}
@@ -495,7 +495,7 @@ class Social
 							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 							if ($oAccount instanceof \RainLoop\Account)
 							{
-								$this->oActions->AuthProcess($oAccount);
+								$this->oActions->AuthToken($oAccount);
 
 								$iErrorCode = 0;
 							}
@@ -671,7 +671,7 @@ class Social
 										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
 										if ($oAccount instanceof \RainLoop\Account)
 										{
-											$this->oActions->AuthProcess($oAccount);
+											$this->oActions->AuthToken($oAccount);
 
 											$iErrorCode = 0;
 										}
