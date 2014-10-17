@@ -102,6 +102,7 @@
 	MailBoxAppScreen.prototype.onStart = function ()
 	{
 		var
+			sInboxFolderName = Cache.getFolderInboxName(),
 			fResizeFunction = function () {
 				Utils.windowResize();
 			}
@@ -113,9 +114,9 @@
 		}
 
 		_.delay(function () {
-			if ('INBOX' !== Data.currentFolderFullNameRaw())
+			if (sInboxFolderName !== Data.currentFolderFullNameRaw())
 			{
-				require('App/App').folderInformation('INBOX');
+				require('App/App').folderInformation(sInboxFolderName);
 			}
 		}, 1000);
 
@@ -152,8 +153,9 @@
 	MailBoxAppScreen.prototype.routes = function ()
 	{
 		var
+			sInboxFolderName = Cache.getFolderInboxName(),
 			fNormP = function () {
-				return ['INBOX', 1, '', true];
+				return [sInboxFolderName, 1, '', true];
 			},
 			fNormS = function (oRequest, oVals) {
 				oVals[0] = Utils.pString(oVals[0]);
@@ -163,7 +165,7 @@
 
 				if ('' === oRequest)
 				{
-					oVals[0] = 'INBOX';
+					oVals[0] = sInboxFolderName;
 					oVals[1] = 1;
 				}
 
@@ -175,7 +177,7 @@
 
 				if ('' === oRequest)
 				{
-					oVals[0] = 'INBOX';
+					oVals[0] = sInboxFolderName;
 				}
 
 				return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];

@@ -279,6 +279,9 @@ abstract class NetClient
 
 		\restore_error_handler();
 
+		$this->writeLog('Connected ('.(\is_resource($this->rConnect) ? 'success' : 'unsuccess').')',
+			\MailSo\Log\Enumerations\Type::NOTE);
+
 		if (!\is_resource($this->rConnect))
 		{
 			$this->writeLogException(
@@ -316,7 +319,7 @@ abstract class NetClient
 			}
 		}
 	}
-	
+
 	/**
 	 * @return void
 	 */

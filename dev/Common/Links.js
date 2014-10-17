@@ -143,11 +143,13 @@
 	};
 
 	/**
+	 * @param {string} sInboxFolderName = 'INBOX'
 	 * @return {string}
 	 */
-	Links.prototype.inbox = function ()
+	Links.prototype.inbox = function (sInboxFolderName)
 	{
-		return this.sBase + 'mailbox/INBOX';
+		sInboxFolderName = Utils.isUnd(sInboxFolderName) ? 'INBOX' : sInboxFolderName;
+		return this.sBase + 'mailbox/' + sInboxFolderName;
 	};
 
 	/**

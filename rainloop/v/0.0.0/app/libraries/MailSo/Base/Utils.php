@@ -199,6 +199,27 @@ class Utils
 	}
 
 	/**
+	 * @param string $sCharset
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function NormalizeCharsetByValue($sCharset, $sValue)
+	{
+		$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
+
+		if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sCharset &&
+			\MailSo\Base\Utils::IsUtf8($sValue) &&
+			false === \strpos($sCharset, \MailSo\Base\Enumerations\Charset::ISO_2022_JP)
+		)
+		{
+			$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
+		}
+
+		return $sCharset;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public static function IsMbStringSupported()
@@ -296,14 +317,13 @@ class Utils
 		$mResult = @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvOptions, $sInputString);
 		if (false === $mResult)
 		{
-			if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			if (\MailSo\Log\Logger::IsSystemEnabled())
 			{
-				$sHex = 500 < \strlen($sInputString) ? '' : \bin2hex($sInputString);
-				\MailSo\Config::$SystemLogger->WriteDump(array(
+				\MailSo\Log\Logger::SystemLog(array(
 					'inc' => \strtoupper($sInputFromEncoding),
 					'out' => \strtoupper($sInputToEncoding).$sIconvOptions,
-					'val' => $sInputString,
-					'hex' => $sHex
+					'val' => 500 < \strlen($sInputString) ? \substr($sInputString, 0, 500) : $sInputString,
+					'hex' => 500 < \strlen($sInputString) ? '-- to long --' : \bin2hex($sInputString)
 				), \MailSo\Log\Enumerations\Type::NOTICE);
 			}
 
@@ -471,7 +491,7 @@ class Utils
 	 */
 	public static function IsUtf8($sValue)
 	{
-		return (bool) (\function_exists('mb_check_encoding') ?
+		return (bool) ( \function_exists('mb_check_encoding') ?
 			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
 	}
 
@@ -527,10 +547,7 @@ class Utils
 		$sValue = $sEncodedValue;
 		if (0 < \strlen($sIncomingCharset))
 		{
-			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sIncomingCharset && \MailSo\Base\Utils::IsUtf8($sValue))
-			{
-				$sIncomingCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
-			}
+			$sIncomingCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sIncomingCharset, $sValue);
 
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sIncomingCharset,
 				\MailSo\Base\Enumerations\Charset::UTF_8);
@@ -620,10 +637,7 @@ class Utils
 			}
 			else
 			{
-				if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $aParts[$iIndex][2] && \MailSo\Base\Utils::IsUtf8($aParts[$iIndex][1]))
-				{
-					$aParts[$iIndex][2] = \MailSo\Base\Enumerations\Charset::UTF_8;
-				}
+				$aParts[$iIndex][2] = \MailSo\Base\Utils::NormalizeCharsetByValue($aParts[$iIndex][2], $aParts[$iIndex][1]);
 
 				$sValue = \str_replace($aParts[$iIndex][0],
 					\MailSo\Base\Utils::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
@@ -633,11 +647,7 @@ class Utils
 
 		if ($bOneCharset && 0 < \strlen($sMainCharset))
 		{
-			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sMainCharset && \MailSo\Base\Utils::IsUtf8($sValue))
-			{
-				$sMainCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
-			}
-
+			$sMainCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sMainCharset, $sValue);
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
@@ -1163,12 +1173,17 @@ class Utils
 		$sResult = @\json_encode($mInput, $iOpt);
 		if (!\is_string($sResult) || '' === $sResult)
 		{
-			if (!$oLogger && \MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			if (!$oLogger && \MailSo\Log\Logger::IsSystemEnabled())
 			{
 				$oLogger = \MailSo\Config::$SystemLogger;
 			}
 
-			if ($oLogger instanceof \MailSo\Log\Logger)
+			if (!($oLogger instanceof \MailSo\Log\Logger))
+			{
+				$oLogger = null;
+			}
+
+			if ($oLogger)
 			{
 				$oLogger->Write('json_encode: '.\trim(
 						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
@@ -1179,7 +1194,7 @@ class Utils
 
 			if (\is_array($mInput))
 			{
-				if ($oLogger instanceof \MailSo\Log\Logger)
+				if ($oLogger)
 				{
 					$oLogger->WriteDump($mInput, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
 					$oLogger->Write('Trying to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');

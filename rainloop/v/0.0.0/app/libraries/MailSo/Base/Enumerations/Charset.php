@@ -33,4 +33,5 @@ class Charset
 	const ISO_8859_1 = 'iso-8859-1';
 	const ISO_8859_8 = 'iso-8859-8';
 	const ISO_8859_8_I = 'iso-8859-8-i';
+	const ISO_2022_JP = 'iso-2022-jp';
 }

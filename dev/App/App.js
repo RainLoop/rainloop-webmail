@@ -174,7 +174,7 @@
 
 	AppApp.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, 'INBOX', 0, Data.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, Data.messagesPerPage(), '', true);
 	};
 
 	AppApp.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -220,7 +220,7 @@
 
 			var
 				bSpam = sSpamFolder === oItem['To'],
-				bHam = !bSpam && sSpamFolder === oItem['From'] && 'INBOX' === oItem['To']
+				bHam = !bSpam && sSpamFolder === oItem['From'] && Cache.getFolderInboxName() === oItem['To']
 			;
 
 			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
@@ -320,7 +320,7 @@
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
 				break;
 			case Enums.FolderType.NotSpam:
-				oMoveFolder = Cache.getFolderFromCacheList('INBOX');
+				oMoveFolder = Cache.getFolderFromCacheList(Cache.getFolderInboxName());
 				break;
 			case Enums.FolderType.Trash:
 				oMoveFolder = Cache.getFolderFromCacheList(Data.trashFolder());
@@ -612,7 +612,7 @@
 								{
 									self.reloadMessageList();
 								}
-								else if ('INBOX' === oFolder.fullNameRaw)
+								else if (Cache.getFolderInboxName() === oFolder.fullNameRaw)
 								{
 									self.recacheInboxMessageList();
 								}
@@ -1003,7 +1003,7 @@
 					if (oCacheFolder)
 					{
 						Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);
-						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw);
+						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw, oCacheFolder);
 					}
 				}
 
@@ -1329,12 +1329,12 @@
 					}
 
 					Events.sub('interval.2m', function () {
-						self.folderInformation('INBOX');
+						self.folderInformation(Cache.getFolderInboxName());
 					});
 
 					Events.sub('interval.2m', function () {
 						var sF = Data.currentFolderFullNameRaw();
-						if ('INBOX' !== sF)
+						if (Cache.getFolderInboxName() !== sF)
 						{
 							self.folderInformation(sF);
 						}

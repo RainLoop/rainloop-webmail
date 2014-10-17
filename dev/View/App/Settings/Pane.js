@@ -11,6 +11,7 @@
 		Links = require('Common/Links'),
 
 		Data = require('Storage/App/Data'),
+		Cache = require('Storage/App/Cache'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -45,7 +46,7 @@
 
 	PaneSettingsAppView.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(Links.inbox());
+		kn.setHash(Links.inbox(Cache.getFolderInboxName()));
 	};
 
 	module.exports = PaneSettingsAppView;

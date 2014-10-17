@@ -251,7 +251,7 @@
 					sSearch,
 					Data.projectHash(),
 					sFolderHash,
-					'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 					Data.threading() && Data.useThreads() ? '1' : '0',
 					Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
@@ -263,7 +263,7 @@
 				'Offset': iOffset,
 				'Limit': iLimit,
 				'Search': sSearch,
-				'UidNext': 'INBOX' === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 				'UseThreads': Data.threading() && Data.useThreads() ? '1' : '0',
 				'ExpandedThreadUid': Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
@@ -375,7 +375,7 @@
 			this.defaultRequest(fCallback, 'FolderInformation', {
 				'Folder': sFolder,
 				'FlagsUids': Utils.isArray(aUids) ? aUids.join(',') : '',
-				'UidNext': 'INBOX' === sFolder ? Cache.getFolderUidNext(sFolder) : ''
+				'UidNext': Cache.getFolderInboxName() === sFolder ? Cache.getFolderUidNext(sFolder) : ''
 			});
 		}
 		else if (Data.useThreads())

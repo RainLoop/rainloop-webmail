@@ -9,6 +9,8 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
+		Cache = require('Storage/App/Cache'),
+
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
 	;
@@ -40,7 +42,7 @@
 
 	MenuSettingsAppView.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(Links.inbox());
+		kn.setHash(Links.inbox(Cache.getFolderInboxName()));
 	};
 
 	module.exports = MenuSettingsAppView;

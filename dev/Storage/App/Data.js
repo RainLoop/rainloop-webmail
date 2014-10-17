@@ -187,7 +187,7 @@
 		this.folderListSystemNames = ko.computed(function () {
 
 			var
-				aList = ['INBOX'],
+				aList = [Cache.getFolderInboxName()],
 				aFolders = this.folderList(),
 				sSentFolder = this.sentFolder(),
 				sDraftFolder = this.draftFolder(),
@@ -531,7 +531,7 @@
 
 	DataAppStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
 	{
-		if ('INBOX' === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
+		if (Cache.getFolderInboxName() === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
 		{
 			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
 			{
@@ -632,8 +632,9 @@
 			iTimeout = iUtc - 60 * 5,
 			aTimeouts = [],
 			fSearchFunction = function (aList) {
+				var sInboxFolderName = Cache.getFolderInboxName();
 				_.each(aList, function (oFolder) {
-					if (oFolder && 'INBOX' !== oFolder.fullNameRaw &&
+					if (oFolder && sInboxFolderName !== oFolder.fullNameRaw &&
 						oFolder.selectable && oFolder.existen &&
 						iTimeout > oFolder.interval &&
 						(!bBoot || oFolder.subScribed()))

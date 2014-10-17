@@ -12,6 +12,8 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 
+		Cache = require('Storage/App/Cache'),
+
 		AbstractModel = require('Knoin/AbstractModel')
 	;
 
@@ -71,6 +73,8 @@
 	 */
 	FolderModel.prototype.initComputed = function ()
 	{
+		var sInboxFolderName = Cache.getFolderInboxName();
+
 		this.hasSubScribedSubfolders = ko.computed(function () {
 			return !!_.find(this.subFolders(), function (oFolder) {
 				return oFolder.subScribed() && !oFolder.isSystemFolder();
@@ -165,11 +169,11 @@
 			var
 				bSystem = this.isSystemFolder()
 			;
-			return !bSystem && 0 === this.subFolders().length && 'INBOX' !== this.fullNameRaw;
+			return !bSystem && 0 === this.subFolders().length && sInboxFolderName !== this.fullNameRaw;
 		}, this);
 
 		this.canBeSubScribed = ko.computed(function () {
-			return !this.isSystemFolder() && this.selectable && 'INBOX' !== this.fullNameRaw;
+			return !this.isSystemFolder() && this.selectable && sInboxFolderName !== this.fullNameRaw;
 		}, this);
 
 //		this.visible.subscribe(function () {
@@ -325,7 +329,11 @@
 	 */
 	FolderModel.prototype.initByJson = function (oJsonFolder)
 	{
-		var bResult = false;
+		var
+			bResult = false,
+			sInboxFolderName = Cache.getFolderInboxName()
+		;
+
 		if (oJsonFolder && 'Object/Folder' === oJsonFolder['@Object'])
 		{
 			this.name(oJsonFolder.Name);
@@ -338,7 +346,7 @@
 			this.existen = !!oJsonFolder.IsExists;
 
 			this.subScribed(!!oJsonFolder.IsSubscribed);
-			this.type('INBOX' === this.fullNameRaw ? Enums.FolderType.Inbox : Enums.FolderType.User);
+			this.type(sInboxFolderName === this.fullNameRaw ? Enums.FolderType.Inbox : Enums.FolderType.User);
 
 			bResult = true;
 		}

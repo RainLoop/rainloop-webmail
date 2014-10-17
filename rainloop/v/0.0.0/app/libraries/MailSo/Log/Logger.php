@@ -84,6 +84,26 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function IsSystemEnabled()
+	{
+		return !!(\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger);
+	}
+
+	/**
+	 * @param mixed $mData
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
+	 */
+	public static function SystemLog($mData, $iType = \MailSo\Log\Enumerations\Type::INFO)
+	{
+		if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+		{
+			\MailSo\Config::$SystemLogger->WriteMixed($mData, $iType);
+		}
+	}
+
+	/**
 	 * @staticvar string $sCache;
 	 *
 	 * @return string

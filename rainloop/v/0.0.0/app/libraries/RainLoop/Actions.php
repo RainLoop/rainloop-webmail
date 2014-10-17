@@ -676,13 +676,13 @@ class Actions
 				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
 					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
 						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
-					
+
 					$oDriver = \MailSo\Cache\Drivers\APC::NewInstance();
 					break;
 
 				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
 					\MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
-					
+
 					$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
 						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
 						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211)
@@ -755,11 +755,11 @@ class Actions
 				$this->oLogger->WriteEmptyLine();
 
 				$oHttp = $this->Http();
-				
+
 				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
 					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').
 					'][GUID:'.\MailSo\Log\Logger::Guid().']');
-				
+
 				$this->oLogger->Write(
 					'[APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').']'.
 					'[MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').']'.
@@ -901,7 +901,7 @@ class Actions
 						$oAccount->SetProxyAuthUser($aAccountHash[8]);
 						$oAccount->SetProxyAuthUser($aAccountHash[89]);
 					}
-					
+
 					$this->Logger()->AddSecret($oAccount->Password());
 					$this->Logger()->AddSecret($oAccount->ProxyAuthPassword());
 
@@ -1489,7 +1489,7 @@ class Actions
 		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword))
 		{
 			$this->loginErrorDelay();
-			
+
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
@@ -1501,7 +1501,7 @@ class Actions
 		$this->Logger()->AddSecret($sPassword);
 
 		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
-		
+
 		try
 		{
 			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, true);
@@ -1540,7 +1540,7 @@ class Actions
 					if (empty($sAdditionalCode))
 					{
 						$this->Logger()->Write('TFA: Required Code for '.$oAccount->ParentEmailHelper().' account.');
-						
+
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
 					}
 					else
@@ -4747,7 +4747,7 @@ class Actions
 					{
 						$oSmtpClient->Logout();
 					}
-					
+
 					$oSmtpClient->Disconnect();
 				}
 			}

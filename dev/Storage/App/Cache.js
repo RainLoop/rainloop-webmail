@@ -163,6 +163,19 @@
 	};
 
 	/**
+	 * @type {string}
+	 */
+	CacheAppStorage.prototype.sInboxFolderName = '';
+
+	/**
+	 * @return {string}
+	 */
+	CacheAppStorage.prototype.getFolderInboxName = function ()
+	{
+		return '' === this.sInboxFolderName ? 'INBOX' : this.sInboxFolderName;
+	};
+
+	/**
 	 * @param {string} sFolderHash
 	 * @return {string}
 	 */
@@ -178,6 +191,10 @@
 	CacheAppStorage.prototype.setFolderFullNameRaw = function (sFolderHash, sFolderFullNameRaw)
 	{
 		this.oFoldersNamesCache[sFolderHash] = sFolderFullNameRaw;
+		if ('INBOX' === sFolderFullNameRaw || '' === this.sInboxFolderName)
+		{
+			this.sInboxFolderName = sFolderFullNameRaw;
+		}
 	};
 
 	/**
