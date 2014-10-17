@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Net;
 
 /**
@@ -185,7 +194,7 @@ abstract class NetClient
 	 * @param string $sServerName
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = true
+	 * @param bool $bVerifySsl = false
 	 *
 	 * @return void
 	 *
@@ -194,7 +203,7 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = true)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{

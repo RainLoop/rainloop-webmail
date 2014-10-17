@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Smtp;
 
 /**
@@ -141,7 +150,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param int $iPort = 25
 	 * @param string $sEhloHost = '[127.0.0.1]'
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = true
+	 * @param bool $bVerifySsl = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
@@ -150,7 +159,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = true)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
 	{
 		$this->iRequestTime = microtime(true);
 

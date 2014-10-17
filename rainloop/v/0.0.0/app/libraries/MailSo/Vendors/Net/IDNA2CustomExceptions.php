@@ -9,11 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace MailSo\Imap\Exceptions;
+class Net_IDNA2_Exception extends Exception
+{
+}
 
-/**
- * @category MailSo
- * @package Imap
- * @subpackage Exceptions
- */
-class Exception extends \MailSo\Base\Exceptions\Exception {}
+class Net_IDNA2_Exception_Nameprep extends Net_IDNA2_Exception
+{
+}
