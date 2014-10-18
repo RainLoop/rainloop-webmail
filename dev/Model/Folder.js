@@ -12,7 +12,7 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 
-		Cache = require('Storage/App/Cache'),
+		Cache = require('Storage/User/Cache'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;

@@ -9,7 +9,7 @@
 
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/App/Data'),
+		Data = require('Storage/User/Data'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -77,7 +77,7 @@
 
 			oOpenpgpKeyring.store();
 
-			require('App/App').reloadOpenPgpKeys();
+			require('App/User').reloadOpenPgpKeys();
 			Utils.delegateRun(this, 'cancelCommand');
 
 			return true;

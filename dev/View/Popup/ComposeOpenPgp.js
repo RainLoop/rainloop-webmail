@@ -11,7 +11,7 @@
 		Utils = require('Common/Utils'),
 		Enums = require('Common/Enums'),
 
-		Data = require('Storage/App/Data'),
+		Data = require('Storage/User/Data'),
 
 		EmailModel = require('Model/Email'),
 

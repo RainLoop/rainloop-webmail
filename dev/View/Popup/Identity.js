@@ -10,8 +10,8 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		Remote = require('Storage/App/Remote'),
-		Data = require('Storage/App/Data'),
+		Remote = require('Storage/User/Remote'),
+		Data = require('Storage/User/Data'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -83,7 +83,7 @@
 				{
 					if (oData.Result)
 					{
-						require('App/App').accountsAndIdentities();
+						require('App/User').accountsAndIdentities();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)

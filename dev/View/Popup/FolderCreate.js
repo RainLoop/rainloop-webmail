@@ -11,8 +11,8 @@
 		Consts = require('Common/Consts'),
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/App/Data'),
-		Remote = require('Storage/App/Remote'),
+		Data = require('Storage/User/Data'),
+		Remote = require('Storage/User/Remote'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -79,7 +79,7 @@
 				Data.foldersCreating(false);
 				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 				{
-					require('App/App').folders();
+					require('App/User').folders();
 				}
 				else
 				{

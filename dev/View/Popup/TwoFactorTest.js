@@ -10,7 +10,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		Remote = require('Storage/App/Remote'),
+		Remote = require('Storage/User/Remote'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

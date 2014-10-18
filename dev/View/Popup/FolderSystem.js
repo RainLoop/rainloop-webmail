@@ -12,8 +12,8 @@
 		Utils = require('Common/Utils'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/App/Data'),
-		Remote = require('Storage/App/Remote'),
+		Data = require('Storage/User/Data'),
+		Remote = require('Storage/User/Remote'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

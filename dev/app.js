@@ -1,1 +1,1 @@
-require('App/Boot')(require('App/App'));
+require('bootstrap')(require('App/User'));

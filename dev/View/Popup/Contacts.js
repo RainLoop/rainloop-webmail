@@ -17,8 +17,8 @@
 		Selector = require('Common/Selector'),
 		Links = require('Common/Links'),
 
-		Data = require('Storage/App/Data'),
-		Remote = require('Storage/App/Remote'),
+		Data = require('Storage/User/Data'),
+		Remote = require('Storage/User/Remote'),
 
 		EmailModel = require('Model/Email'),
 		ContactModel = require('Model/Contact'),
@@ -333,7 +333,7 @@
 		this.syncCommand = Utils.createCommand(this, function () {
 
 			var self = this;
-			require('App/App').contactsSync(function (sResult, oData) {
+			require('App/User').contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
 					window.alert(Utils.getNotification(
@@ -447,12 +447,12 @@
 
 	ContactsPopupView.prototype.exportVcf = function ()
 	{
-		require('App/App').download(Links.exportContactsVcf());
+		require('App/User').download(Links.exportContactsVcf());
 	};
 
 	ContactsPopupView.prototype.exportCsv = function ()
 	{
-		require('App/App').download(Links.exportContactsCsv());
+		require('App/User').download(Links.exportContactsCsv());
 	};
 
 	ContactsPopupView.prototype.initUploader = function ()

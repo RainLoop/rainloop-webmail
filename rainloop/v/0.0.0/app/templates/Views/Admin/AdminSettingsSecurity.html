@@ -5,20 +5,20 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { capaOpenPGP(!capaOpenPGP()); }">
-					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label data-bind="click: function () { capaTwoFactorAuth(!capaTwoFactorAuth()); }">
+					<i data-bind="css: capaTwoFactorAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
-					Allow OpenPGP
-					<span style="color:red">(beta)</span>
+					Allow 2-Step Verification (Google Authenticator)
 				</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { capaTwoFactorAuth(!capaTwoFactorAuth()); }">
-					<i data-bind="css: capaTwoFactorAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				<label data-bind="click: function () { capaOpenPGP(!capaOpenPGP()); }">
+					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
-					Allow 2-Step Verification (Google Authenticator)
+					Allow OpenPGP
+					<span style="color:red">(beta)</span>
 				</label>
 			</div>
 		</div>
@@ -63,7 +63,7 @@
 		</div>
 		<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 			<label class="control-label">
-				Repeat new password
+				Repeat
 			</label>
 			<div class="controls">
 				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"

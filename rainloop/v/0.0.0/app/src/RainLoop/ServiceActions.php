@@ -1070,7 +1070,7 @@ class ServiceActions
 	 */
 	private function compileTemplates($bAdmin = false)
 	{
-		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'App'), $this->oActions).
+		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'), $this->oActions).
 			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 

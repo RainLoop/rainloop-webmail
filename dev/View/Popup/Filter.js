@@ -10,7 +10,7 @@
 		Consts = require('Common/Consts'),
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/App/Data'),
+		Data = require('Storage/User/Data'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

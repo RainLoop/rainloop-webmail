@@ -1,1 +1,1 @@
-require('App/Boot')(require('App/Admin'));
+require('bootstrap')(require('App/Admin'));
