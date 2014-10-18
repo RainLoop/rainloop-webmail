@@ -1337,6 +1337,46 @@
 		return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
 	};
 
+	Utils.settingsSaveHelperSubscribeFunction = function (oRemote, sSettingName, sType, fTriggerFunction)
+	{
+		return function (mValue) {
+
+			if (oRemote)
+			{
+				switch (sType)
+				{
+					default:
+						mValue = Utils.pString(mValue);
+						break;
+					case 'bool':
+					case 'boolean':
+						mValue = mValue ? '1' : '0';
+						break;
+					case 'int':
+					case 'integer':
+					case 'number':
+						mValue = Utils.pInt(mValue);
+						break;
+					case 'trim':
+						mValue = Utils.trim(mValue);
+						break;
+				}
+
+				var oData = {};
+				oData[sSettingName] = mValue;
+
+				if (oRemote.saveAdminConfig)
+				{
+					oRemote.saveAdminConfig(fTriggerFunction || null, oData);
+				}
+				else if (oRemote.saveSettings)
+				{
+					oRemote.saveSettings(fTriggerFunction || null, oData);
+				}
+			}
+		};
+	};
+
 	/**
 	 * @param {string} sHtml
 	 * @return {string}
@@ -2010,6 +2050,81 @@
 			{
 				mObjectOrObjects.onDestroy();
 			}
+		}
+	};
+
+	Utils.__themeTimer = 0;
+	Utils.__themeAjax = null;
+	
+	Utils.changeTheme = function (sValue, themeTrigger)
+	{
+		var
+			oThemeLink = $('#rlThemeLink'),
+			oThemeStyle = $('#rlThemeStyle'),
+			sUrl = oThemeLink.attr('href')
+		;
+
+		if (!sUrl)
+		{
+			sUrl = oThemeStyle.attr('data-href');
+		}
+
+		if (sUrl)
+		{
+			sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
+			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
+
+			if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
+			{
+				sUrl += 'Json/';
+			}
+
+			window.clearTimeout(Utils.__themeTimer);
+			themeTrigger(Enums.SaveSettingsStep.Animate);
+
+			if (Utils.__themeAjax && Utils.__themeAjax.abort)
+			{
+				Utils.__themeAjax.abort();
+			}
+
+			Utils.__themeAjax = $.ajax({
+				'url': sUrl,
+				'dataType': 'json'
+			}).done(function(aData) {
+
+				if (aData && Utils.isArray(aData) && 2 === aData.length)
+				{
+					if (oThemeLink && oThemeLink[0] && (!oThemeStyle || !oThemeStyle[0]))
+					{
+						oThemeStyle = $('<style id="rlThemeStyle"></style>');
+						oThemeLink.after(oThemeStyle);
+						oThemeLink.remove();
+					}
+
+					if (oThemeStyle && oThemeStyle[0])
+					{
+						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
+						if (oThemeStyle && oThemeStyle[0] && oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						{
+							oThemeStyle[0].styleSheet.cssText = aData[1];
+						}
+						else
+						{
+							oThemeStyle.text(aData[1]);
+						}
+					}
+
+					themeTrigger(Enums.SaveSettingsStep.TrueResult);
+				}
+
+			}).always(function() {
+
+				Utils.__themeTimer = window.setTimeout(function () {
+					themeTrigger(Enums.SaveSettingsStep.Idle);
+				}, 1000);
+
+				Utils.__themeAjax = null;
+			});
 		}
 	};
 

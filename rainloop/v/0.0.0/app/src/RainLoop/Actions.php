@@ -1286,7 +1286,7 @@ class Actions
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
 		$sTheme = $this->ValidateTheme($sTheme);
-		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.($bAdmin ? 'Default' : $sTheme).'/-/'.$sStaticCache.'/';
+		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/';
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
@@ -2705,19 +2705,26 @@ class Actions
 
 		$sLogin = \trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$sNewPassword = $this->GetActionParam('NewPassword', '');
-
 		$this->Logger()->AddSecret($sPassword);
-		$this->Logger()->AddSecret($sNewPassword);
+
+		$sNewPassword = $this->GetActionParam('NewPassword', '');
+		if (0 < \strlen(\trim($sNewPassword)))
+		{
+			$this->Logger()->AddSecret($sNewPassword);
+		}
 
 		if ($oConfig->ValidatePassword($sPassword))
 		{
-			if (0 < strlen($sLogin))
+			if (0 < \strlen($sLogin))
 			{
 				$oConfig->Set('security', 'admin_login', $sLogin);
 			}
 
-			$oConfig->SetPassword($sNewPassword);
+			if (0 < \strlen(\trim($sNewPassword)))
+			{
+				$oConfig->SetPassword($sNewPassword);
+			}
+
 			$bResult = true;
 		}
 

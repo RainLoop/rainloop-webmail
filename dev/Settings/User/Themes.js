@@ -38,74 +38,7 @@
 				oTheme.selected(sValue === oTheme.name);
 			});
 
-			var
-				oThemeLink = $('#rlThemeLink'),
-				oThemeStyle = $('#rlThemeStyle'),
-				sUrl = oThemeLink.attr('href')
-			;
-
-			if (!sUrl)
-			{
-				sUrl = oThemeStyle.attr('data-href');
-			}
-
-			if (sUrl)
-			{
-				sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
-				sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
-
-				if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
-				{
-					sUrl += 'Json/';
-				}
-
-				window.clearTimeout(self.iTimer);
-				self.themeTrigger(Enums.SaveSettingsStep.Animate);
-
-				if (this.oThemeAjaxRequest && this.oThemeAjaxRequest.abort)
-				{
-					this.oThemeAjaxRequest.abort();
-				}
-
-				this.oThemeAjaxRequest = $.ajax({
-					'url': sUrl,
-					'dataType': 'json'
-				}).done(function(aData) {
-
-					if (aData && Utils.isArray(aData) && 2 === aData.length)
-					{
-						if (oThemeLink && oThemeLink[0] && (!oThemeStyle || !oThemeStyle[0]))
-						{
-							oThemeStyle = $('<style id="rlThemeStyle"></style>');
-							oThemeLink.after(oThemeStyle);
-							oThemeLink.remove();
-						}
-
-						if (oThemeStyle && oThemeStyle[0])
-						{
-							oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
-							if (oThemeStyle && oThemeStyle[0] && oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
-							{
-								oThemeStyle[0].styleSheet.cssText = aData[1];
-							}
-							else
-							{
-								oThemeStyle.text(aData[1]);
-							}
-						}
-
-						self.themeTrigger(Enums.SaveSettingsStep.TrueResult);
-					}
-
-				}).always(function() {
-
-					self.iTimer = window.setTimeout(function () {
-						self.themeTrigger(Enums.SaveSettingsStep.Idle);
-					}, 1000);
-
-					self.oThemeAjaxRequest = null;
-				});
-			}
+			Utils.changeTheme(sValue, self.themeTrigger);
 
 			Remote.saveSettings(null, {
 				'Theme': sValue

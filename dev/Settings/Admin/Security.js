@@ -27,6 +27,7 @@
 		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
 		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
+		this.adminLoginError = ko.observable(false);
 		this.adminPassword = ko.observable('');
 		this.adminPasswordNew = ko.observable('');
 		this.adminPasswordNew2 = ko.observable('');
@@ -38,6 +39,10 @@
 		this.adminPassword.subscribe(function () {
 			this.adminPasswordUpdateError(false);
 			this.adminPasswordUpdateSuccess(false);
+		}, this);
+
+		this.adminLogin.subscribe(function () {
+			this.adminLoginError(false);
 		}, this);
 
 		this.adminPasswordNew.subscribe(function () {
@@ -54,6 +59,12 @@
 
 		this.saveNewAdminPasswordCommand = Utils.createCommand(this, function () {
 
+			if ('' === Utils.trim(this.adminLogin()))
+			{
+				this.adminLoginError(true);
+				return false;
+			}
+
 			if (this.adminPasswordNew() !== this.adminPasswordNew2())
 			{
 				this.adminPasswordNewError(true);
@@ -64,12 +75,13 @@
 			this.adminPasswordUpdateSuccess(false);
 
 			Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
+				'Login': this.adminLogin(),
 				'Password': this.adminPassword(),
 				'NewPassword': this.adminPasswordNew()
 			});
 
 		}, function () {
-			return '' !== this.adminPassword() && '' !== this.adminPasswordNew() && '' !== this.adminPasswordNew2();
+			return '' !== Utils.trim(this.adminLogin()) && '' !== this.adminPassword();
 		});
 
 		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
