@@ -2,19 +2,20 @@
 
 if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 {
-	\define('RAINLOOP_APP_LIBRARIES_PATH', \rtrim(\realpath(__DIR__), '\\/').'/libraries/');
+	\define('RAINLOOP_APP_PATH', \rtrim(\realpath(__DIR__), '\\/').'/');
+	\define('RAINLOOP_APP_LIBRARIES_PATH', RAINLOOP_APP_PATH.'libraries/');
 	\define('RAINLOOP_MB_SUPPORTED', \function_exists('mb_strtoupper'));
 
 	/**
 	 * @param string $sClassName
-	 * 
+	 *
 	 * @return mixed
 	 */
 	function RainLoopSplAutoloadRegisterFunction($sClassName)
 	{
 		if (0 === \strpos($sClassName, 'RainLoop') && false !== \strpos($sClassName, '\\'))
 		{
-			return include RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
+			return include RAINLOOP_APP_PATH.'src/RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
 		}
 		else if (0 === \strpos($sClassName, 'Facebook') && false !== \strpos($sClassName, '\\'))
 		{
