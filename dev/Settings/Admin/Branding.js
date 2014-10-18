@@ -20,6 +20,9 @@
 			Settings = require('Storage/Settings')
 		;
 
+		this.capa = !!Settings.capa(Enums.Capa.Prem);
+		this.capa = true;
+
 		this.title = ko.observable(Settings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -43,47 +46,50 @@
 			Remote = require('Storage/Admin/Remote')
 		;
 
-		_.delay(function () {
+		if (this.capa)
+		{
+			_.delay(function () {
 
-			var
-				f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
-				f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
-				f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
-				f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
-				f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self)
-			;
+				var
+					f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
+					f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
+					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
+					f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
+					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self)
+				;
 
-			self.title.subscribe(function (sValue) {
-				Remote.saveAdminConfig(f1, {
-					'Title': Utils.trim(sValue)
+				self.title.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f1, {
+						'Title': Utils.trim(sValue)
+					});
 				});
-			});
 
-			self.loadingDesc.subscribe(function (sValue) {
-				Remote.saveAdminConfig(f2, {
-					'LoadingDescription': Utils.trim(sValue)
+				self.loadingDesc.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f2, {
+						'LoadingDescription': Utils.trim(sValue)
+					});
 				});
-			});
 
-			self.loginLogo.subscribe(function (sValue) {
-				Remote.saveAdminConfig(f3, {
-					'LoginLogo': Utils.trim(sValue)
+				self.loginLogo.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f3, {
+						'LoginLogo': Utils.trim(sValue)
+					});
 				});
-			});
 
-			self.loginDescription.subscribe(function (sValue) {
-				Remote.saveAdminConfig(f4, {
-					'LoginDescription': Utils.trim(sValue)
+				self.loginDescription.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f4, {
+						'LoginDescription': Utils.trim(sValue)
+					});
 				});
-			});
 
-			self.loginCss.subscribe(function (sValue) {
-				Remote.saveAdminConfig(f5, {
-					'LoginCss': Utils.trim(sValue)
+				self.loginCss.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f5, {
+						'LoginCss': Utils.trim(sValue)
+					});
 				});
-			});
 
-		}, 50);
+			}, 50);
+		}
 	};
 
 	module.exports = BrandingAdminSetting;

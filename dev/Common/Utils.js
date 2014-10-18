@@ -1082,6 +1082,8 @@
 		oData.twitterConsumerSecret = ko.observable('');
 
 		oData.googleEnable = ko.observable(false);
+		oData.googleEnable.auth = ko.observable(false);
+		oData.googleEnable.drive = ko.observable(false);
 		oData.googleClientID = ko.observable('');
 		oData.googleClientSecret = ko.observable('');
 		oData.googleApiKey = ko.observable('');

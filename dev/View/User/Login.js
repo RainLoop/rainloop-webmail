@@ -286,7 +286,8 @@
 
 		this.facebookLoginEnabled(!!Settings.settingsGet('AllowFacebookSocial'));
 		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial'));
+		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
+			!!Settings.settingsGet('AllowGoogleSocialAuth'));
 
 		switch ((Settings.settingsGet('SignMe') || 'unused').toLowerCase())
 		{

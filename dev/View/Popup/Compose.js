@@ -378,6 +378,7 @@
 		});
 
 		this.driveEnabled = ko.observable(Globals.bXMLHttpRequestSupported &&
+			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialDrive') &&
 			!!Settings.settingsGet('GoogleClientID') && !!Settings.settingsGet('GoogleApiKey'));
 
 		this.driveVisible = ko.observable(false);

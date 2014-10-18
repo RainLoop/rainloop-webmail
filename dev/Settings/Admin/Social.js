@@ -22,7 +22,7 @@
 		this.googleClientID = Data.googleClientID;
 		this.googleApiKey = Data.googleApiKey;
 		this.googleClientSecret = Data.googleClientSecret;
-		
+
 		this.googleTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.googleTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.googleTrigger3 = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -113,6 +113,18 @@
 			self.googleEnable.subscribe(function (bValue) {
 				Remote.saveAdminConfig(Utils.emptyFunction, {
 					'GoogleEnable': bValue ? '1' : '0'
+				});
+			});
+
+			self.googleEnable.auth.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnableAuth': bValue ? '1' : '0'
+				});
+			});
+
+			self.googleEnable.drive.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnableDrive': bValue ? '1' : '0'
 				});
 			});
 

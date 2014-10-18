@@ -188,6 +188,8 @@ Examples:
 
 			'social' => array(
 				'google_enable' => array(false, 'Google'),
+				'google_enable_auth' => array(true),
+				'google_enable_drive' => array(true),
 				'google_client_id' => array(''),
 				'google_client_secret' => array(''),
 				'google_api_key' => array(''),

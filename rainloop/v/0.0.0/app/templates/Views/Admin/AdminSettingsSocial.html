@@ -15,6 +15,19 @@
 					<i data-bind="css: googleEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					Enable Google Integration
 				</label>
+				<div data-bind="visible: googleEnable">
+					<br />
+					<blockquote>
+						<label data-bind="click: function () { googleEnable.auth(!googleEnable.auth()); }">
+							<i data-bind="css: googleEnable.auth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+							Authentication
+						</label>
+						<label data-bind="click: function () { googleEnable.drive(!googleEnable.drive()); }" style="margin-top: 5px">
+							<i data-bind="css: googleEnable.drive() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+							Google Drive Integration (Compose view)
+						</label>
+					</blockquote>
+				</div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -44,7 +57,7 @@
 			</label>
 			<div class="controls">
 				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleApiKey, saveTrigger: googleTrigger3" />
+					data-bind="value: googleApiKey, saveTrigger: googleTrigger3, enable: googleEnable.drive" />
 				<div data-bind="saveTrigger: googleTrigger3"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">
 					<p class="muted">
@@ -62,7 +75,7 @@
 				<div class="controls">
 					<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
 						<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-						Enable Facebook Integration
+						Enable Facebook Integration (Authentication)
 					</label>
 				</div>
 			</div>
@@ -94,7 +107,7 @@
 			<div class="controls">
 				<label data-bind="click: function () { twitterEnable(!twitterEnable()); }">
 					<i data-bind="css: twitterEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Twitter Integration
+					Enable Twitter Integration (Authentication)
 				</label>
 			</div>
 		</div>
@@ -125,7 +138,7 @@
 			<div class="controls">
 				<label data-bind="click: function () { dropboxEnable(!dropboxEnable()); }">
 					<i data-bind="css: dropboxEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Dropbox Integration
+					Enable Dropbox Integration (Compose attachments)
 				</label>
 			</div>
 		</div>

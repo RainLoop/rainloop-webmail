@@ -1,5 +1,12 @@
 <div class="b-admin-branding">
-	<div class="form-horizontal">
+	<div class="row" data-bind="visible: !capa">
+		<div class="alert alert-error span8" style="margin-top: 10px;">
+			<h4>Premium version only</h4>
+			<br />
+			<strong><a href="#/licensing">Licensing</a></strong>
+		</div>
+	</div>
+	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa}">
 		<div class="legend">
 			Branding
 		</div>
@@ -9,7 +16,7 @@
 			</label>
 			<div class="controls">
 				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: title, saveTrigger: title.trigger" />
+					data-bind="value: title, saveTrigger: title.trigger, enable: capa" />
 				<div data-bind="saveTrigger: title.trigger"></div>
 			</div>
 		</div>
@@ -19,7 +26,7 @@
 			</label>
 			<div class="controls">
 				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger" />
+					data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger, enable: capa" />
 				<div data-bind="saveTrigger: loadingDesc.trigger"></div>
 			</div>
 		</div>
@@ -33,7 +40,7 @@
 			</label>
 			<div class="controls">
 				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					placeholder="https://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger" />
+					placeholder="https://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger, enable: capa" />
 				<div data-bind="saveTrigger: loginLogo.trigger"></div>
 			</div>
 		</div>
@@ -43,7 +50,7 @@
 			</label>
 			<div class="controls">
 				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loginDescription, saveTrigger: loginDescription.trigger" />
+					data-bind="value: loginDescription, saveTrigger: loginDescription.trigger, enable: capa" />
 				<div data-bind="saveTrigger: loginDescription.trigger"></div>
 			</div>
 		</div>
@@ -52,7 +59,7 @@
 				Custom CSS
 			</label>
 			<div class="controls">
-				<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger" rows="7" spellcheck="true"></textarea>
+				<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger, enable: capa" rows="7" spellcheck="true"></textarea>
 				<div style="vertical-align: top;" data-bind="saveTrigger: loginCss.trigger"></div>
 			</div>
 		</div>

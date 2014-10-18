@@ -1102,12 +1102,17 @@ class Actions
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
+			$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
+			$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
+
 			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
 			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
 			if ($aResult['AllowGoogleSocial'] && (
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
 			{
 				$aResult['AllowGoogleSocial'] = false;
+				$aResult['AllowGoogleSocialAuth'] = false;
+				$aResult['AllowGoogleSocialDrive'] = false;
 				$aResult['GoogleClientID'] = '';
 				$aResult['GoogleApiKey'] = '';
 			}
@@ -1165,6 +1170,9 @@ class Actions
 				$aResult['ContactsPdoPassword'] = APP_DUMMY;
 
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
+				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
+				$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
+
 				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
 				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
 				$aResult['GoogleApiKey'] = (string) $oConfig->Get('social', 'google_api_key', '');
@@ -1280,6 +1288,8 @@ class Actions
 		if (0 < \strlen($aResult['ParentEmail']))
 		{
 			$aResult['AllowGoogleSocial'] = false;
+			$aResult['AllowGoogleSocialAuth'] = false;
+			$aResult['AllowGoogleSocialDrive'] = false;
 			$aResult['AllowFacebookSocial'] = false;
 			$aResult['AllowTwitterSocial'] = false;
 		}
@@ -2456,6 +2466,8 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'GoogleEnableAuth', 'social', 'google_enable_auth', 'bool');
+		$this->setConfigFromParams($oConfig, 'GoogleEnableDrive', 'social', 'google_enable_drive', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
