@@ -18,7 +18,6 @@
 					<i data-bind="css: useLocalProxyForExternalImages() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
 					Use local proxy for external images
-					<span style="color:red">(beta)</span>
 				</label>
 			</div>
 		</div>
@@ -28,6 +27,16 @@
 					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
 					&nbsp;&nbsp;
 					Allow OpenPGP
+					<span style="color:red">(beta)</span>
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label data-bind="click: function () { verifySslCertificate(!verifySslCertificate()); }">
+					<i data-bind="css: verifySslCertificate() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+					&nbsp;&nbsp;
+					Require verification of SSL certificate used (IMAP/SMTP).
 					<span style="color:red">(beta)</span>
 				</label>
 			</div>

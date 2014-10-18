@@ -28,6 +28,8 @@
 		this.capaOpenPGP = ko.observable(Settings.capa(Enums.Capa.OpenPGP));
 		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
+		this.verifySslCertificate = ko.observable(!!Settings.settingsGet('VerifySslCertificate'));
+
 		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
 		this.adminLoginError = ko.observable(false);
 		this.adminPassword = ko.observable('');
@@ -128,6 +130,12 @@
 		this.useLocalProxyForExternalImages.subscribe(function (bValue) {
 			Remote.saveAdminConfig(null, {
 				'UseLocalProxyForExternalImages': bValue ? '1' : '0'
+			});
+		});
+
+		this.verifySslCertificate.subscribe(function (bValue) {
+			Remote.saveAdminConfig(null, {
+				'VerifySslCertificate': bValue ? '1' : '0'
 			});
 		});
 	};
