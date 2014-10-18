@@ -32,14 +32,14 @@
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
 
+		this.weakPassword = Data.weakPassword;
+
 		this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
 		this.uploadData = Settings.settingsGet('PhpUploadSizes');
-		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ?
-			[
-				this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
-				this.uploadData['post_max_size'] ? 'post_max_size = ' + this.uploadData['post_max_size'] : ''
-			].join('')
-				: '';
+		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ? [
+			this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
+			this.uploadData['post_max_size'] ? 'post_max_size = ' + this.uploadData['post_max_size'] : ''
+		].join('') : '';
 
 		this.themesOptions = ko.computed(function () {
 			return _.map(Data.themes(), function (sTheme) {
@@ -53,8 +53,6 @@
 		this.mainLanguageFullName = ko.computed(function () {
 			return Utils.convertLangName(this.mainLanguage());
 		}, this);
-
-		this.weakPassword = !!Settings.settingsGet('WeakPassword');
 
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -89,7 +87,7 @@
 			});
 
 			self.theme.subscribe(function (sValue) {
-				
+
 				Utils.changeTheme(sValue, self.themeTrigger);
 
 				Remote.saveAdminConfig(f3, {

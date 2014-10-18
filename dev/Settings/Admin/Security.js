@@ -23,6 +23,8 @@
 	{
 		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
 
+		this.weakPassword = Data.weakPassword;
+
 		this.capaOpenPGP = ko.observable(Settings.capa(Enums.Capa.OpenPGP));
 		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
@@ -96,6 +98,8 @@
 			this.adminPasswordNew2('');
 
 			this.adminPasswordUpdateSuccess(true);
+
+			this.weakPassword(!!oData.Result.Weak);
 		}
 		else
 		{

@@ -1050,6 +1050,8 @@
 		oData.determineUserLanguage = ko.observable(false);
 		oData.determineUserDomain = ko.observable(false);
 
+		oData.weakPassword = ko.observable(false);
+
 		oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
 
 		oData.mainMessagesPerPage = oData.messagesPerPage;
@@ -2055,7 +2057,7 @@
 
 	Utils.__themeTimer = 0;
 	Utils.__themeAjax = null;
-	
+
 	Utils.changeTheme = function (sValue, themeTrigger)
 	{
 		var

@@ -2728,7 +2728,8 @@ class Actions
 			$bResult = true;
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult ? $oConfig->Save() : false);
+		return $this->DefaultResponse(__FUNCTION__, $bResult ?
+			($oConfig->Save() ? array('Weak' => $oConfig->ValidatePassword('12345')) : false) : false);
 	}
 
 	/**

@@ -46,6 +46,8 @@
 		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
 
+		this.weakPassword(!!Settings.settingsGet('WeakPassword'));
+
 		this.capaThemes(Settings.capa(Enums.Capa.Themes));
 		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
 		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
