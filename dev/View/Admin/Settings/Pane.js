@@ -7,8 +7,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Common/Enums'),
-
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote'),
@@ -29,7 +27,7 @@
 		this.version = ko.observable(Settings.settingsGet('Version'));
 
 		this.adminManLoadingVisibility = Data.adminManLoadingVisibility;
-		this.capa = !!Settings.capa(Enums.Capa.Prem);
+		this.capa = !!Settings.settingsGet('PremType');
 		this.capa = false;
 
 		kn.constructorEnd(this);

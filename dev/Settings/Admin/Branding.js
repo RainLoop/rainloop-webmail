@@ -20,7 +20,7 @@
 			Settings = require('Storage/Settings')
 		;
 
-		this.capa = !!Settings.capa(Enums.Capa.Prem);
+		this.capa = !!Settings.settingsGet('PremType');
 		this.capa = true;
 
 		this.title = ko.observable(Settings.settingsGet('Title'));

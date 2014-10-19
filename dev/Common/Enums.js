@@ -36,7 +36,6 @@
 	 * @enum {string}
 	 */
 	Enums.Capa = {
-		'Prem': 'PREM',
 		'TwoFactor': 'TWO_FACTOR',
 		'OpenPGP': 'OPEN_PGP',
 		'Prefetch': 'PREFETCH',

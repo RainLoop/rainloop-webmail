@@ -4,9 +4,7 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
-		$ = require('$'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),

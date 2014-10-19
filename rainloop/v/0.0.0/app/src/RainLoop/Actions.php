@@ -954,6 +954,14 @@ class Actions
 	}
 
 	/**
+	 * @return bool
+	 */
+	private function PremType()
+	{
+		return false;
+	}
+
+	/**
 	 * @param bool $bAdmin
 	 * @param string $sAuthAccountHash = ''
 	 *
@@ -1003,6 +1011,7 @@ class Actions
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
+			'PremType' => $this->PremType(),
 			'Capa' => array(),
 			'Plugins' => array()
 		);
@@ -1029,7 +1038,7 @@ class Actions
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		if ($this->GetCapa(true, \RainLoop\Enumerations\Capa::PREM))
+		if ($this->PremType() || true)
 		{
 			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
 			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
@@ -2452,7 +2461,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		if ($this->GetCapa(true, \RainLoop\Enumerations\Capa::PREM))
+		if ($this->PremType() || true)
 		{
 			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
@@ -2557,6 +2566,57 @@ class Actions
 	}
 
 	/**
+	 * @return string
+	 */
+	public function licenseHelper($sForce = false, $iCacheTimeInMin = 5)
+	{
+		$sDomain = APP_SITE;
+
+		$oCacher = $this->Cacher();
+		$oHttp = \MailSo\Base\Http::SingletonInstance();
+
+		if ($oHttp->CheckLocalhost($sDomain))
+		{
+			return 'NO';
+		}
+
+		$sValue = '';
+		if (!$sForce && $oCacher)
+		{
+			$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+			if ($iTime + 60 * $iCacheTimeInMin > \time())
+			{
+				$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+			}
+		}
+
+		if (0 === \strlen($sValue))
+		{
+			$iCode = 0;
+			$sContentType = '';
+
+			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
+				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+				array(), false
+			);
+
+			if (200 !== $iCode)
+			{
+				$sValue = '';
+			}
+
+			if ($oCacher)
+			{
+				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain), $sValue);
+				$oCacher->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+			}
+		}
+
+		return $sValue;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function DoAdminLicensing()
@@ -2564,54 +2624,22 @@ class Actions
 		$iStart = \time();
 		$this->IsAdminLoggined();
 
-		$sForce = '1' === (string) $this->GetActionParam('Force', '0');
+		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
 
 		$mResult = false;
 		$iErrorCode = -1;
 
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-		if ($oHttp->CheckLocalhost(APP_SITE))
+		if (2 < \strlen(APP_SITE))
 		{
-			return $this->DefaultResponse(__FUNCTION__, $mResult);
-		}
+			$sValue = $this->licenseHelper($bForce);
 
-		$sDomain = APP_SITE;
-		if (2 < \strlen($sDomain))
-		{
-			$sValue = '';
-			$iTime = $this->Cacher()->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
-			if (!$sForce && $iTime + 60 * 5 > \time())
+			if ($iStart === \time())
 			{
-				$sValue = $this->Cacher()->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
-			}
-
-			if (0 === \strlen($sValue))
-			{
-				$iCode = 0;
-				$sContentType = '';
-
-				$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
-					'RainLoop',	$sContentType, $iCode, $this->Logger(), 10,
-					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-					array(), false
-				);
-
-				if (200 !== $iCode)
-				{
-					$sValue = '';
-				}
-
-				if ($iStart === \time())
-				{
-					\sleep(1);
-				}
-
-				$this->Cacher()->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain), $sValue);
-				$this->Cacher()->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+				\sleep(1);
 			}
 
 			$aMatch = array();
-			if (5 < \strlen($sValue) && \preg_match('/^EXPIRED:([\d]+)$/', $sValue, $aMatch))
+			if (\preg_match('/^EXPIRED:([\d]+)$/', $sValue, $aMatch))
 			{
 				$mResult = array(
 					'Banned' => false,
@@ -6406,7 +6434,6 @@ class Actions
 		$oConfig = $this->Config();
 
 		$aResult = array(
-			\RainLoop\Enumerations\Capa::PREM,
 //			\RainLoop\Enumerations\Capa::FILTERS
 		);
 
