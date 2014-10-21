@@ -24,6 +24,8 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsAddAccount');
 
+		this.isNew = ko.observable(true);
+
 		this.email = ko.observable('');
 		this.password = ko.observable('');
 
@@ -55,10 +57,10 @@
 
 			this.submitRequest(true);
 
-			Remote.accountAdd(_.bind(function (sResult, oData) {
+			Remote.accountSetup(_.bind(function (sResult, oData) {
 
 				this.submitRequest(false);
-				if (Enums.StorageResultType.Success === sResult && oData && 'AccountAdd' === oData.Action)
+				if (Enums.StorageResultType.Success === sResult && oData && 'AccountSetup' === oData.Action)
 				{
 					if (oData.Result)
 					{
@@ -75,7 +77,7 @@
 					this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
 				}
 
-			}, this), this.email(), '', this.password());
+			}, this), this.email(), this.password(), this.isNew());
 
 			return true;
 
@@ -91,6 +93,8 @@
 
 	AddAccountPopupView.prototype.clearPopup = function ()
 	{
+		this.isNew(true);
+
 		this.email('');
 		this.password('');
 
@@ -101,9 +105,14 @@
 		this.submitError('');
 	};
 
-	AddAccountPopupView.prototype.onShow = function ()
+	AddAccountPopupView.prototype.onShow = function (oAccount)
 	{
 		this.clearPopup();
+		if (oAccount && oAccount.canBeEdit())
+		{
+			this.isNew(false);
+			this.email(oAccount.email);
+		}
 	};
 
 	AddAccountPopupView.prototype.onFocus = function ()

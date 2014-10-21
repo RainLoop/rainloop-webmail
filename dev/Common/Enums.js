@@ -416,6 +416,7 @@
 		'DemoSendMessageError': 750,
 
 		'AccountAlreadyExists': 801,
+		'AccountDoesNotExist': 802,
 
 		'MailServerError': 901,
 		'ClientViewError': 902,

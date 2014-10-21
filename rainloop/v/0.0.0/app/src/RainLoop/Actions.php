@@ -398,7 +398,7 @@ class Actions
 	 */
 	public function SetAuthLogoutToken()
 	{
-		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, \md5(APP_START_TIME), 0, '/', null, null, true);
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0, '/', null, null, true);
 	}
 
 	/**
@@ -764,7 +764,7 @@ class Actions
 					'[APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').']'.
 					'[MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').']'.
 					'[PDO:'.(\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off').']'.
-					'[Streams:'.\implode(',', \stream_get_transports()).']'
+					'['.\implode(',', \stream_get_transports()).']'
 				);
 
 				$this->oLogger->Write(
@@ -1941,7 +1941,7 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountAdd()
+	public function DoAccountSetup()
 	{
 		if (!$this->Config()->Get('webmail', 'allow_additional_accounts', true))
 		{
@@ -1949,38 +1949,32 @@ class Actions
 		}
 
 		$oAccount = $this->getAccountFromToken();
+		$sParentEmail = $oAccount->ParentEmailHelper();
+
+		$aAccounts = $this->GetAccounts($oAccount);
+		if (!\is_array($aAccounts))
+		{
+			$aAccounts = array();
+		}
 
 		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-
-		$sParentEmail = $oAccount->ParentEmailHelper();
+		$bNew = '1' === (string) $this->GetActionParam('New', '1');
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		if ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail)
+		if ($bNew && ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail || isset($aAccounts[$sEmail])))
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountAlreadyExists);
+		}
+		else if (!$bNew && !isset($aAccounts[$sEmail]))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountDoesNotExist);
 		}
 
 		$oNewAccount = $this->LoginProcess($sEmail, $sPassword);
 		$oNewAccount->SetParentEmail($sParentEmail);
 
-		$aAccounts = $this->GetAccounts($oAccount);
-		if (\is_array($aAccounts))
-		{
-			if (isset($aAccounts[$oNewAccount->Email()]))
-			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountAlreadyExists);
-			}
-			else
-			{
-				$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
-			}
-		}
-		else
-		{
-			$aAccounts = array();
-		}
-
+		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
 		if (0 === \strlen($oAccount->ParentEmail()))
 		{
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
@@ -2209,6 +2203,11 @@ class Actions
 		if ($oAccount && $oAccount->SignMe())
 		{
 			$this->ClearSignMeData($oAccount);
+		}
+
+		if ($oAccount && '' === $oAccount->ParentEmail())
+		{
+			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SPEC_TOKEN_KEY);
 		}
 
 		return $this->TrueResponse(__FUNCTION__);

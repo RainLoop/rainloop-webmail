@@ -104,14 +104,6 @@
 			return !this.submitRequest();
 		});
 
-		this.label = ko.computed(function () {
-			return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'TITLE_UPDATE_IDENTITY': 'TITLE_ADD_IDENTITY'));
-		}, this);
-
-		this.button = ko.computed(function () {
-			return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'BUTTON_UPDATE_IDENTITY': 'BUTTON_ADD_IDENTITY'));
-		}, this);
-
 		kn.constructorEnd(this);
 	}
 

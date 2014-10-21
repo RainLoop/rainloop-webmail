@@ -26,6 +26,7 @@
 
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
+		this.canBeEdit = this.canBeDalete;
 	}
 
 	_.extend(AccountModel.prototype, AbstractModel.prototype);

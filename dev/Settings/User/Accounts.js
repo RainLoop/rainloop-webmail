@@ -51,6 +51,14 @@
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/AddAccount'));
 	};
 
+	AccountsUserSetting.prototype.editAccount = function (oAccountItem)
+	{
+		if (oAccountItem && oAccountItem.canBeEdit())
+		{
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/AddAccount'), [oAccountItem]);
+		}
+	};
+
 	/**
 	 * @param {AccountModel} oAccountToRemove
 	 */
@@ -92,6 +100,21 @@
 				}, oAccountToRemove.email);
 			}
 		}
+	};
+
+	AccountsUserSetting.prototype.onBuild = function (oDom)
+	{
+		var self = this;
+
+		oDom
+			.on('click', '.account-item .e-action', function () {
+				var oAccountItem = ko.dataFor(this);
+				if (oAccountItem)
+				{
+					self.editAccount(oAccountItem);
+				}
+			})
+		;
 	};
 
 	module.exports = AccountsUserSetting;

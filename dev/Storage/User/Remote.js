@@ -158,15 +158,17 @@
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sEmail
-	 * @param {string} sLogin
 	 * @param {string} sPassword
+	 * @param {boolean=} bNew
 	 */
-	RemoteUserStorage.prototype.accountAdd = function (fCallback, sEmail, sLogin, sPassword)
+	RemoteUserStorage.prototype.accountSetup = function (fCallback, sEmail, sPassword, bNew)
 	{
-		this.defaultRequest(fCallback, 'AccountAdd', {
+		bNew = Utils.isUnd(bNew) ? true : !!bNew;
+
+		this.defaultRequest(fCallback, 'AccountSetup', {
 			'Email': sEmail,
-			'Login': sLogin,
-			'Password': sPassword
+			'Password': sPassword,
+			'New': bNew ? '1' : '0'
 		});
 	};
 

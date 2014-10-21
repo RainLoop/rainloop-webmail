@@ -4,7 +4,8 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 				<h3>
-					<span data-bind="text: label"></span>
+					<span data-bind="visible: !edit()" class="i18n" data-i18n-text="POPUPS_IDENTITIES/TITLE_ADD_IDENTITY"></span>
+					<span data-bind="visible: edit" class="i18n" data-i18n-text="POPUPS_IDENTITIES/TITLE_UPDATE_IDENTITY"></span>
 				</h3>
 			</div>
 			<div class="modal-body">
@@ -56,9 +57,11 @@
 			</div>
 			<div class="modal-footer">
 				<a class="btn buttonAddAccount" data-bind="command: addOrEditIdentityCommand">
-					<i data-bind="css: {'icon-user-add': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
+					<i data-bind="visible: !edit(), css: {'icon-user-add': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
+					<i data-bind="visible: edit, css: {'icon-ok': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
-					<span data-bind="text: button"></span>
+					<span data-bind="visible: !edit()" class="i18n" data-i18n-text="POPUPS_IDENTITIES/BUTTON_ADD_IDENTITY"></span>
+					<span data-bind="visible: edit" class="i18n" data-i18n-text="POPUPS_IDENTITIES/BUTTON_UPDATE_IDENTITY"></span>
 				</a>
 			</div>
 		</div>
