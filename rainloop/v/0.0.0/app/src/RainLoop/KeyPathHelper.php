@@ -65,6 +65,16 @@ class KeyPathHelper
 	}
 
 	/**
+	 * @param string $sDomain
+	 *
+	 * @return string
+	 */
+	static public function LicensingDomainKeyOtherValue($sDomain)
+	{
+		return '/Licensing/DomainKeyOther/Value/'.$sDomain;
+	}
+
+	/**
 	 * @param string $sRepo
 	 * @param string $sRepoFile
 	 *

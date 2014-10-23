@@ -29,7 +29,6 @@ var
 	gulp = require('gulp'),
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
-	footer = require('gulp-footer'),
 	eol = require('gulp-eol'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
@@ -225,8 +224,8 @@ gulp.task('js:boot', function() {
 gulp.task('js:encrypt', function() {
 	return gulp.src(cfg.paths.js.encrypt.src)
 		.pipe(concat(cfg.paths.js.encrypt.name))
-		.pipe(header(cfg.paths.js.encrypt.header || ''))
-		.pipe(footer(cfg.paths.js.encrypt.footer || ''))
+		.pipe(concat.header(cfg.paths.js.encrypt.header || ''))
+		.pipe(concat.footer(cfg.paths.js.encrypt.footer || ''))
 		.pipe(uglify(cfg.uglify))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.js.encrypt.dest))

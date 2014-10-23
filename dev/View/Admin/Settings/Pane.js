@@ -28,7 +28,7 @@
 
 		this.adminManLoadingVisibility = Data.adminManLoadingVisibility;
 		this.capa = !!Settings.settingsGet('PremType');
-		this.capa = false;
+		this.capa = false; // TODO
 
 		kn.constructorEnd(this);
 	}

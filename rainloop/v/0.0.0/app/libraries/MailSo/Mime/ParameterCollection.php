@@ -26,7 +26,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	{
 		parent::__construct();
 
-		if (0 < strlen($sRawParams))
+		if (0 < \strlen($sRawParams))
 		{
 			$this->Parse($sRawParams);
 		}
@@ -74,12 +74,12 @@ class ParameterCollection extends \MailSo\Base\Collection
 	public function ParameterValueByName($sName)
 	{
 		$sResult = '';
-		$sName = trim($sName);
+		$sName = \trim($sName);
 
 		$aParams =& $this->GetAsArray();
 		foreach ($aParams as /* @var $oParam \MailSo\Mime\ParameterCollection */ $oParam)
 		{
-			if (strtolower($sName) === strtolower($oParam->Name()))
+			if (\strtolower($sName) === \strtolower($oParam->Name()))
 			{
 				$sResult = $oParam->Value();
 				break;
@@ -98,7 +98,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	{
 		$this->Clear();
 
-		$aDataToParse = explode(';', $sRawParams);
+		$aDataToParse = \explode(';', $sRawParams);
 
 		foreach ($aDataToParse as $sParam)
 		{
@@ -122,13 +122,13 @@ class ParameterCollection extends \MailSo\Base\Collection
 		foreach ($aParams as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
 		{
 			$sLine = $oParam->ToString($bConvertSpecialsName);
-			if (0 < strlen($sLine))
+			if (0 < \strlen($sLine))
 			{
 				$aResult[] = $sLine;
 			}
 		}
 
-		return 0 < count($aResult) ? implode('; ', $aResult) : '';
+		return 0 < \count($aResult) ? \implode('; ', $aResult) : '';
 	}
 
 	/**
@@ -147,8 +147,8 @@ class ParameterCollection extends \MailSo\Base\Collection
 			$aMatch = array();
 			$sParamName = $oParam->Name();
 
-			if (preg_match('/([^\*]+)\*([\d]{1,2})\*/', $sParamName, $aMatch) && isset($aMatch[1], $aMatch[2])
-				&& 0 < strlen($aMatch[1]) && is_numeric($aMatch[2]))
+			if (\preg_match('/([^\*]+)\*([\d]{1,2})\*/', $sParamName, $aMatch) && isset($aMatch[1], $aMatch[2])
+				&& 0 < \strlen($aMatch[1]) && \is_numeric($aMatch[2]))
 			{
 				if (!isset($aPreParams[$aMatch[1]]))
 				{
@@ -156,16 +156,20 @@ class ParameterCollection extends \MailSo\Base\Collection
 				}
 
 				$sValue = $oParam->Value();
-				$aValueParts = explode('\'\'', $sValue, 2);
-				if (is_array($aValueParts) && 2 === count($aValueParts) && 0 < strlen($aValueParts[1]))
+
+				if (false !== \strpos($sValue, "''"))
 				{
-					$sCharset = $aValueParts[0];
-					$sValue = $aValueParts[1];
+					$aValueParts = \explode("''", $sValue, 2);
+					if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[1]))
+					{
+						$sCharset = $aValueParts[0];
+						$sValue = $aValueParts[1];
+					}
 				}
 
 				$aPreParams[$aMatch[1]][(int) $aMatch[2]] = $sValue;
 			}
-			else if (preg_match('/([^\*]+)\*/', $sParamName, $aMatch) && isset($aMatch[1]))
+			else if (\preg_match('/([^\*]+)\*/', $sParamName, $aMatch) && isset($aMatch[1]))
 			{
 				if (!isset($aPreParams[$aMatch[1]]))
 				{
@@ -173,11 +177,14 @@ class ParameterCollection extends \MailSo\Base\Collection
 				}
 
 				$sValue = $oParam->Value();
-				$aValueParts = explode('\'\'', $sValue, 2);
-				if (is_array($aValueParts) && 2 === count($aValueParts) && 0 < strlen($aValueParts[1]))
+				if (false !== \strpos($sValue, "''"))
 				{
-					$sCharset = $aValueParts[0];
-					$sValue = $aValueParts[1];
+					$aValueParts = \explode("''", $sValue, 2);
+					if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[1]))
+					{
+						$sCharset = $aValueParts[0];
+						$sValue = $aValueParts[1];
+					}
 				}
 
 				$aPreParams[$aMatch[1]][0] = $sValue;
@@ -191,10 +198,10 @@ class ParameterCollection extends \MailSo\Base\Collection
 		foreach ($aPreParams as $sName => $aValues)
 		{
 			ksort($aValues);
-			$sResult = implode(array_values($aValues));
-			$sResult = urldecode($sResult);
+			$sResult = \implode(\array_values($aValues));
+			$sResult = \urldecode($sResult);
 
-			if (0 < strlen($sCharset))
+			if (0 < \strlen($sCharset))
 			{
 				$sResult = \MailSo\Base\Utils::ConvertEncoding($sResult,
 					$sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);

@@ -1,66 +1,77 @@
 <div class="b-admin-branding">
 	<div class="row" data-bind="visible: !capa">
-		<div class="alert alert-error span8" style="margin-top: 10px;">
-			<h4>Premium version only</h4>
-			<br />
-			<strong><a href="#/licensing">Licensing</a></strong>
+		<div class="alert span8" style="margin-top: 10px;">
+			Full functionality available in <strong><a href="#/licensing">Premium version</a></strong> only.
 		</div>
 	</div>
-	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa}">
-		<div class="legend">
-			Branding
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				Page Title
-			</label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: title, saveTrigger: title.trigger, enable: capa" />
-				<div data-bind="saveTrigger: title.trigger"></div>
+	<div class="form-horizontal">
+		<div>
+			<div class="legend">
+				Branding
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				Loading Description
-			</label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loadingDesc.trigger"></div>
+			<div class="control-group">
+				<label class="control-label">
+					Page Title
+				</label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: title, saveTrigger: title.trigger" />
+					<div data-bind="saveTrigger: title.trigger"></div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Loading Description
+				</label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger" />
+					<div data-bind="saveTrigger: loadingDesc.trigger"></div>
+				</div>
 			</div>
 		</div>
 		<br />
-		<div class="legend">
-			Login Screen
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				Logo
-			</label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					placeholder="https://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loginLogo.trigger"></div>
+		<div data-bind="css: {'disabled-form': !capa}">
+			<div class="legend">
+				Login Screen
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				Description
-			</label>
-			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loginDescription, saveTrigger: loginDescription.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loginDescription.trigger"></div>
+			<div class="control-group">
+				<label class="control-label">
+					Logo
+				</label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						placeholder="https://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger, enable: capa" />
+					<div data-bind="saveTrigger: loginLogo.trigger"></div>
+				</div>
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				Custom CSS
-			</label>
-			<div class="controls">
-				<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger, enable: capa" rows="7" spellcheck="true"></textarea>
-				<div style="vertical-align: top;" data-bind="saveTrigger: loginCss.trigger"></div>
+			<div class="control-group">
+				<label class="control-label">
+					Description
+				</label>
+				<div class="controls">
+					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-bind="value: loginDescription, saveTrigger: loginDescription.trigger, enable: capa" />
+					<div data-bind="saveTrigger: loginDescription.trigger"></div>
+				</div>
+			</div>
+<!--			<div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+					<label data-bind="click: function () { if (capa) { loginPowered(!loginPowered()); }}">
+						<i data-bind="css: loginPowered() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+						Show "Powered by RainLoop" link
+					</label>
+				</div>
+			</div>-->
+			<div class="control-group">
+				<label class="control-label">
+					Custom CSS
+				</label>
+				<div class="controls">
+					<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger, enable: capa" rows="7" spellcheck="true"></textarea>
+					<div style="vertical-align: top;" data-bind="saveTrigger: loginCss.trigger"></div>
+				</div>
 			</div>
 		</div>
 	</div>

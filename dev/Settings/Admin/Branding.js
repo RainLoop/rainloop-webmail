@@ -21,7 +21,6 @@
 		;
 
 		this.capa = !!Settings.settingsGet('PremType');
-		this.capa = true;
 
 		this.title = ko.observable(Settings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -37,6 +36,8 @@
 
 		this.loginCss = ko.observable(Settings.settingsGet('LoginCss'));
 		this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.loginPowered = ko.observable(!!Settings.settingsGet('LoginPowered'));
 	}
 
 	BrandingAdminSetting.prototype.onBuild = function ()
@@ -46,29 +47,36 @@
 			Remote = require('Storage/Admin/Remote')
 		;
 
+		_.delay(function () {
+
+			var
+				f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
+				f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self)
+			;
+
+			self.title.subscribe(function (sValue) {
+				Remote.saveAdminConfig(f1, {
+					'Title': Utils.trim(sValue)
+				});
+			});
+
+			self.loadingDesc.subscribe(function (sValue) {
+				Remote.saveAdminConfig(f2, {
+					'LoadingDescription': Utils.trim(sValue)
+				});
+			});
+
+		}, 50);
+
 		if (this.capa)
 		{
 			_.delay(function () {
 
 				var
-					f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
-					f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
 					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
 					f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
 					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self)
 				;
-
-				self.title.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f1, {
-						'Title': Utils.trim(sValue)
-					});
-				});
-
-				self.loadingDesc.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f2, {
-						'LoadingDescription': Utils.trim(sValue)
-					});
-				});
 
 				self.loginLogo.subscribe(function (sValue) {
 					Remote.saveAdminConfig(f3, {
@@ -88,7 +96,13 @@
 					});
 				});
 
-			}, 50);
+				self.loginPowered.subscribe(function (bValue) {
+					Remote.saveAdminConfig(null, {
+						'LoginPowered': bValue ? '1' : '0'
+					});
+				});
+
+			}, 100);
 		}
 	};
 

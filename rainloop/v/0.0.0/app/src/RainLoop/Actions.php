@@ -958,7 +958,14 @@ class Actions
 	 */
 	private function PremType()
 	{
-		return false;
+		static $bResult = null;
+		if (null === $bResult)
+		{
+//			$bResult = $this->licenseParser($this->licenseHelper(false, true));
+			$bResult = true;
+		}
+
+		return $bResult;
 	}
 
 	/**
@@ -993,6 +1000,7 @@ class Actions
 			'LoginLogo' => '',
 			'LoginDescription' => '',
 			'LoginCss' => '',
+			'LoginPowered' => true,
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
@@ -1038,14 +1046,15 @@ class Actions
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		if ($this->PremType() || true)
-		{
-			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
-			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
+		$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
+		$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
 
+		if ($this->PremType())
+		{
 			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
 			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
 			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
+			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 		}
 
 		$oSettings = null;
@@ -2460,14 +2469,15 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		if ($this->PremType() || true)
-		{
-			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
+		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
+		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
+		if ($this->HasOneOfActionParams(array('LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered')) && $this->PremType())
+		{
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginPowered', 'branding', 'login_powered', 'bool');
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
@@ -2567,7 +2577,7 @@ class Actions
 	/**
 	 * @return string
 	 */
-	public function licenseHelper($sForce = false, $iCacheTimeInMin = 5)
+	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 5, $iLongCacheTimeInDays = 2)
 	{
 		$sDomain = APP_SITE;
 
@@ -2582,15 +2592,31 @@ class Actions
 		$sValue = '';
 		if (!$sForce && $oCacher)
 		{
-			$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
-			if ($iTime + 60 * $iCacheTimeInMin > \time())
+			if (!$bLongCache)
 			{
-				$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+				$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+				if ($iTime + 60 * $iFastCacheTimeInMin > \time())
+				{
+					$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+				}
+			}
+			else
+			{
+				$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain));
+				if ($iTime + (60 * 60 * 24) * $iLongCacheTimeInDays > \time())
+				{
+					$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain));
+				}
 			}
 		}
 
 		if (0 === \strlen($sValue))
 		{
+			if ($bLongCache && (!$oCacher || !$oCacher->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain))))
+			{
+				return 'NO';
+			}
+
 			$iCode = 0;
 			$sContentType = '';
 
@@ -2607,12 +2633,31 @@ class Actions
 
 			if ($oCacher)
 			{
-				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain), $sValue);
 				$oCacher->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+
+				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain), $sValue);
+				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain), $sValue);
 			}
 		}
 
 		return $sValue;
+	}
+
+	/**
+	 * @param string $sInput
+	 *
+	 * @return bool
+	 */
+	public function licenseParser($sInput)
+	{
+		$aMatch = array();
+		if (\preg_match('/^EXPIRED:([\d]+)$/', $sInput, $aMatch))
+		{
+			$iTime = (int) $aMatch[1];
+			return \time() < $iTime;
+		}
+
+		return false;
 	}
 
 	/**
@@ -7181,6 +7226,24 @@ class Actions
 	public function HasActionParam($sKey)
 	{
 		return isset($this->aCurrentActionParams[$sKey]);
+	}
+
+	/**
+	 * @param array $aKeys
+	 *
+	 * @return bool
+	 */
+	public function HasOneOfActionParams($aKeys)
+	{
+		foreach ($aKeys as $sKey)
+		{
+			if ($this->HasActionParam($sKey))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -42,6 +42,7 @@
 		this.logoImg = Utils.trim(Settings.settingsGet('LoginLogo'));
 		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
 		this.logoCss = Utils.trim(Settings.settingsGet('LoginCss'));
+		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);

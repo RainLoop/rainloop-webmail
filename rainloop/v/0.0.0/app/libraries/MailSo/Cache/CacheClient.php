@@ -54,7 +54,7 @@ class CacheClient
 	{
 		return $this->oDriver ? $this->oDriver->Set($sKey.$this->sCacheIndex, $sValue) : false;
 	}
-	
+
 	/**
 	 * @param string $sKey
 	 *

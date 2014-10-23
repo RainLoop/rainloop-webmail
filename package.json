@@ -57,7 +57,6 @@
 		"gulp-rename": "*",
 		"gulp-replace": "*",
 		"gulp-header": "*",
-		"gulp-footer": "*",
 		"gulp-eol": "*",
 		"gulp-minify-css": "*",
 		"gulp-autoprefixer": "*",
