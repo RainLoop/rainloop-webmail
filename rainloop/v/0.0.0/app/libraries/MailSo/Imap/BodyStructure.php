@@ -490,30 +490,40 @@ class BodyStructure
 				$sResult = \urldecode($aParams[$sParamName.'*']);
 			}
 		}
-		else if (isset($aParams[$sParamName.'*0*']))
+		else 
 		{
-			$sCharset = '';
-			$aFileNames = array();
-			foreach ($aParams as $sName => $sValue)
+			$aParamKeys = array_keys($aParams);
+			$aKeyMatches = array();
+			if (0 < count($aParamKeys))
 			{
-				$aMatches = array();
-				if ($sParamName.'*0*' === $sName)
+				\preg_match('/^'.\preg_quote($sParamName, '/').'\*([0-9]+)\*$/i', $aParamKeys[0], $aKeyMatches);
+			}
+			$aFileNames = array();
+			if (isset($aKeyMatches[1]) && \strlen($aKeyMatches[1]))
+			{
+				$sParamIndex = $aKeyMatches[1];
+				$sCharset = '';
+				foreach ($aParams as $sName => $sValue)
 				{
-					if (0 === \strlen($sCharset))
+					$aMatches = array();
+					if ($sParamName.'*'.$sParamIndex.'*' === $sName)
 					{
-						$aValueParts = \explode('\'\'', $sValue, 2);
-						if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
+						if (0 === \strlen($sCharset))
 						{
-							$sCharset = $aValueParts[0];
-							$sValue = $aValueParts[1];
+							$aValueParts = \explode('\'\'', $sValue, 2);
+							if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
+							{
+								$sCharset = $aValueParts[0];
+								$sValue = $aValueParts[1];
+							}
 						}
+
+						$aFileNames[(int) $sParamIndex] = $sValue;
 					}
-					
-					$aFileNames[0] = $sValue;
-				}
-				else if ($sParamName.'*0*' !== $sName && \preg_match('/^'.\preg_quote($sParamName, '/').'\*([0-9]+)\*$/i', $sName, $aMatches) && 0 < \strlen($aMatches[1]))
-				{
-					$aFileNames[(int) $aMatches[1]] = $sValue;
+					else if ($sParamName.'*'.$sParamIndex.'*' !== $sName && \preg_match('/^'.\preg_quote($sParamName, '/').'\*([0-9]+)\*$/i', $sName, $aMatches) && 0 < \strlen($aMatches[1]))
+					{
+						$aFileNames[(int) $aMatches[1]] = $sValue;
+					}
 				}
 			}
 
