@@ -40,7 +40,7 @@ class Service
 		{
 			@\header('Server: '.$sServer, true);
 		}
-		
+
 		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', ''));
 		if (0 < \strlen($sXFrameOptionsHeader))
 		{
@@ -81,7 +81,7 @@ class Service
 
 			$bOne = $oService->RunResult();
 		}
-		
+
 		return $bOne;
 	}
 
@@ -220,7 +220,6 @@ class Service
 		$aData = array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,
-			'LoadingDescription' => $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop'),
 			'FaviconIcoLink' => $sStaticPrefix.'favicon.ico',
 			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
@@ -243,7 +242,6 @@ class Service
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
 

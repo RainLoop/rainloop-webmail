@@ -997,6 +997,7 @@ class Actions
 			'DevPassword' => '',
 			'Title' => 'RainLoop Webmail',
 			'LoadingDescription' => 'RainLoop',
+			'LoadingDescriptionEsc' => 'RainLoop',
 			'LoginLogo' => '',
 			'LoginDescription' => '',
 			'LoginCss' => '',
@@ -1046,16 +1047,19 @@ class Actions
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
-		$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
 
 		if ($this->PremType())
 		{
+			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
+			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
+
 			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
 			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
 			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 		}
+
+		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
 
 		$oSettings = null;
 		if (!$bAdmin)
@@ -2469,11 +2473,12 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
-		if ($this->HasOneOfActionParams(array('LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered')) && $this->PremType())
+		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered')) && $this->PremType())
 		{
+			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
+			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
+
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');

@@ -37,7 +37,7 @@
 	<body>
 		<div id="rl-bg" class="thm-body"></div>
 		<div id="rl-loading" class="thm-loading">
-			{{BaseAppLoadingDescription}}
+			<div id="rl-loading-desc">Loading</div>
 			<div class="e-spinner">
 				<div class="e-bounce bounce1"></div>
 				<div class="e-bounce bounce2"></div>
@@ -45,7 +45,14 @@
 			</div>
 		</div>
 		<script data-cfasync="false">
-			var oE = window.document.getElementById('rl-loading');
+			var
+				oE = window.document.getElementById('rl-loading'),
+				oElDesc = window.document.getElementById('rl-loading-desc')
+			;
+
+			if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
+				oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
+			}
 			if (oE && oE.style) {
 				oE.style.opacity = 0;
 				window.setTimeout(function () {
