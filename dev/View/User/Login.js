@@ -328,9 +328,10 @@
 				self.langRequest(true);
 
 				Utils.reloadLanguage(sValue, function() {
+					self.langRequest(false);
 					self.bSendLanguage = true;
 					$.cookie('rllang', sValue, {'expires': 30});
-				}, null, function() {
+				}, function() {
 					self.langRequest(false);
 				});
 

@@ -47,4 +47,5 @@
 
 .flag.flag-tr, .flag.flag-tr-tr {background-position: -16px -154px}
 
-.flag.flag-cn, .flag.flag-zh-tw, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
+.flag.flag-cn, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
+.flag.flag-tw, .flag.flag-zh-tw {background-position: -64px -154px}
