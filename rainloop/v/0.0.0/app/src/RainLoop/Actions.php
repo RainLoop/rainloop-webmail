@@ -2427,6 +2427,7 @@ class Actions
 	 */
 	public function DoAdminSettingsUpdate()
 	{
+//		sleep(3);
 //		return $this->DefaultResponse(__FUNCTION__, false);
 
 		$this->IsAdminLoggined();

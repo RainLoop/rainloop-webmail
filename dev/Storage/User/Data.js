@@ -627,7 +627,7 @@
 
 		var
 			aResult = [],
-			iLimit = 10,
+			iLimit = 5,
 			iUtc = moment().unix(),
 			iTimeout = iUtc - 60 * 5,
 			aTimeouts = [],

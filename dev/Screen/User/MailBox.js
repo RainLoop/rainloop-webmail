@@ -102,31 +102,10 @@
 	MailBoxUserScreen.prototype.onStart = function ()
 	{
 		var
-			sInboxFolderName = Cache.getFolderInboxName(),
 			fResizeFunction = function () {
 				Utils.windowResize();
 			}
 		;
-
-		if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.AdditionalIdentities))
-		{
-			require('App/User').accountsAndIdentities();
-		}
-
-		_.delay(function () {
-			if (sInboxFolderName !== Data.currentFolderFullNameRaw())
-			{
-				require('App/User').folderInformation(sInboxFolderName);
-			}
-		}, 1000);
-
-		_.delay(function () {
-			require('App/User').quota();
-		}, 5000);
-
-		_.delay(function () {
-			Remote.appDelayStart(Utils.emptyFunction);
-		}, 35000);
 
 		Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
 

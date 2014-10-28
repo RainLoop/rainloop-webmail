@@ -57,7 +57,7 @@
 					_.delay(function () {
 
 						App.bootstart();
-						
+
 						Globals.$html
 							.removeClass('no-js rl-booted-trigger')
 							.addClass('rl-booted')

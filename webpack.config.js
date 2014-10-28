@@ -13,6 +13,7 @@ module.exports = {
 		chunkFilename: '[chunkhash].chunk.js'
 	},
 	plugins: [
+//		new webpack.optimize.CommonsChunkPlugin('common.js'),
 		new webpack.optimize.OccurenceOrderPlugin()
 	],
 	resolve: {

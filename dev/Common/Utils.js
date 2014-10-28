@@ -1982,6 +1982,9 @@
 	Utils.reloadLanguage = function (sLanguage, fDone, fFail)
 	{
 		var iStart = Utils.microtime();
+
+		Globals.$html.addClass('rl-changing-language');
+
 		$.ajax({
 				'url': require('Common/Links').langLink(sLanguage),
 				'dataType': 'script',
@@ -1992,6 +1995,7 @@
 				_.delay(function () {
 					Utils.i18nReload();
 					(fDone || Utils.emptyFunction)();
+					Globals.$html.removeClass('rl-changing-language');
 				}, 500 < Utils.microtime() - iStart ? 1 : 500);
 			})
 		;

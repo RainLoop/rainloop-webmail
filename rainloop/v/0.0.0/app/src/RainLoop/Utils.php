@@ -245,10 +245,12 @@ class Utils
 
 	/**
 	 * @param string $sDirName
+	 * @param \RainLoop\Actions $oAction
+	 * @param string $sNameSuffix = ''
 	 *
 	 * @return string
 	 */
-	public static function CompileTemplates($sDirName, $oAction)
+	public static function CompileTemplates($sDirName, $oAction, $sNameSuffix = '')
 	{
 		$sResult = '';
 		if (\file_exists($sDirName))
@@ -257,7 +259,7 @@ class Utils
 
 			foreach ($aList as $sName)
 			{
-				$sTemplateName = \substr($sName, 0, -5);
+				$sTemplateName = \substr($sName, 0, -5).$sNameSuffix;
 				$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
 					$oAction->ProcessTemplate($sTemplateName, \file_get_contents($sDirName.'/'.$sName)).'</script>';
 			}

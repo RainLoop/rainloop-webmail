@@ -8,26 +8,31 @@
 				Default Domain
 			 </label>
 			<div class="controls">
-				<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: defaultDomain, saveTrigger: defaultDomainTrigger" />
-				<div data-bind="saveTrigger: defaultDomainTrigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: defaultDomain,
+						trigger: defaultDomainTrigger,
+						size: 3
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { determineUserDomain(!determineUserDomain()); }">
-					<i data-bind="css: determineUserDomain() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Try to determine user domain
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: determineUserDomain, label: 'Try to determine user domain' }
+				}"></div>
 				<br />
-				<label data-bind="click: function () { allowLanguagesOnLogin(!allowLanguagesOnLogin()); }">
-					<i data-bind="css: allowLanguagesOnLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow language selection on login screen
-				</label>
-				<label data-bind="click: function () { determineUserLanguage(!determineUserLanguage()); }">
-					<i data-bind="css: determineUserLanguage() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Try to determine user language
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: allowLanguagesOnLogin, label: 'Allow language selection on login screen' }
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: determineUserLanguage, label: 'Try to determine user language' }
+				}"></div>
 			</div>
 		</div>
 	</div>

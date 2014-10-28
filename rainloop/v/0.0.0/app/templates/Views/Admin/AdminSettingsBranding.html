@@ -13,9 +13,15 @@
 				Page Title
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: title, saveTrigger: title.trigger, enable: capa" />
-				<div data-bind="saveTrigger: title.trigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: title,
+						trigger: title.trigger,
+						size: 5,
+						enable: capa
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -23,9 +29,15 @@
 				Loading Description
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loadingDesc, saveTrigger: loadingDesc.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loadingDesc.trigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: loadingDesc,
+						trigger: loadingDesc.trigger,
+						size: 5,
+						enable: capa
+					}
+				}"></div>
 			</div>
 		</div>
 		<br />
@@ -37,9 +49,16 @@
 				Logo
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					placeholder="https://" data-bind="value: loginLogo, saveTrigger: loginLogo.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loginLogo.trigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: loginLogo,
+						trigger: loginLogo.trigger,
+						placeholder: 'https://',
+						size: 5,
+						enable: capa
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -47,18 +66,26 @@
 				Description
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: loginDescription, saveTrigger: loginDescription.trigger, enable: capa" />
-				<div data-bind="saveTrigger: loginDescription.trigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: loginDescription,
+						trigger: loginDescription.trigger,
+						size: 5,
+						enable: capa
+					}
+				}"></div>
 			</div>
 		</div>
 <!--		<div class="control-group">
-			<label class="control-label"></label>
 			<div class="controls">
-				<label data-bind="click: function () { if (capa) { loginPowered(!loginPowered()); }}">
-					<i data-bind="css: loginPowered() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Show "Powered by RainLoop" link
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Show &quot;Powered by RainLoop&quot; link',
+						value: loginPowered
+					}
+				}"></div>
 			</div>
 		</div>-->
 		<div class="control-group">
@@ -66,8 +93,16 @@
 				Custom CSS
 			</label>
 			<div class="controls">
-				<textarea class="input-xxlarge" data-bind="value: loginCss, saveTrigger: loginCss.trigger, enable: capa" rows="7" spellcheck="true"></textarea>
-				<div style="vertical-align: top;" data-bind="saveTrigger: loginCss.trigger"></div>
+				<div data-bind="component: {
+					name: 'TextArea',
+					params: {
+						value: loginCss,
+						trigger: loginCss.trigger,
+						width: 530,
+						enable: capa,
+						rows: 7
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>

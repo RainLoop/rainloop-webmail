@@ -5,40 +5,38 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { capaTwoFactorAuth(!capaTwoFactorAuth()); }">
-					<i data-bind="css: capaTwoFactorAuth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					Allow 2-Step Verification (Google Authenticator)
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: capaTwoFactorAuth, label: 'Allow 2-Step Verification (Google Authenticator)' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { useLocalProxyForExternalImages(!useLocalProxyForExternalImages()); }">
-					<i data-bind="css: useLocalProxyForExternalImages() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					Use local proxy for external images
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: useLocalProxyForExternalImages, label: 'Use local proxy for external images' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { capaOpenPGP(!capaOpenPGP()); }">
-					<i data-bind="css: capaOpenPGP() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					Allow OpenPGP
-					<span style="color:red">(beta)</span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: capaOpenPGP, label: 'Allow OpenPGP', inline: true }
+				}"></div>
+				&nbsp;&nbsp;
+				<span style="color:red">(beta)</span>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { verifySslCertificate(!verifySslCertificate()); }">
-					<i data-bind="css: verifySslCertificate() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					Require verification of SSL certificate used (IMAP/SMTP).
-					<span style="color:red">(beta)</span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: verifySslCertificate, label: 'Require verification of SSL certificate used (IMAP/SMTP)', inline: true }
+				}"></div>
+				&nbsp;&nbsp;
+				<span style="color:red">(beta)</span>
 			</div>
 		</div>
 		<div class="control-group">

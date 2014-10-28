@@ -11,21 +11,21 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { googleEnable(!googleEnable()); }">
-					<i data-bind="css: googleEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Google Integration
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: googleEnable, label: 'Enable Google Integration' }
+				}"></div>
 				<div data-bind="visible: googleEnable">
 					<br />
 					<blockquote>
-						<label data-bind="click: function () { googleEnable.auth(!googleEnable.auth()); }">
-							<i data-bind="css: googleEnable.auth() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							Authentication
-						</label>
-						<label data-bind="click: function () { googleEnable.drive(!googleEnable.drive()); }" style="margin-top: 5px">
-							<i data-bind="css: googleEnable.drive() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							Google Drive Integration (Compose view)
-						</label>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: { value: googleEnable.auth, label: 'Authentication' }
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: { value: googleEnable.drive, label: 'Google Drive Integration (Compose view)' }
+						}"></div>
 					</blockquote>
 				</div>
 			</div>
@@ -56,9 +56,15 @@
 				Api Key
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleApiKey, saveTrigger: googleTrigger3, enable: googleEnable.drive" />
-				<div data-bind="saveTrigger: googleTrigger3"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: googleApiKey,
+						trigger: googleTrigger3,
+						size: 5,
+						enable: googleEnable.drive
+					}
+				}"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">
 					<p class="muted">
 						Required for Google Drive File Picker
@@ -73,10 +79,10 @@
 		<div data-bind="if: facebookSupported">
 			<div class="control-group">
 				<div class="controls">
-					<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
-						<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-						Enable Facebook Integration (Authentication)
-					</label>
+					<div data-bind="component: {
+						name: 'Checkbox',
+						params: { value: facebookEnable, label: 'Enable Facebook Integration (Authentication)' }
+					}"></div>
 				</div>
 			</div>
 			<div class="control-group">
@@ -105,10 +111,10 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { twitterEnable(!twitterEnable()); }">
-					<i data-bind="css: twitterEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Twitter Integration (Authentication)
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: twitterEnable, label: 'Enable Twitter Integration (Authentication)' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -136,10 +142,10 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { dropboxEnable(!dropboxEnable()); }">
-					<i data-bind="css: dropboxEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Dropbox Integration (Compose view)
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: dropboxEnable, label: 'Enable Dropbox Integration (Compose view)' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">

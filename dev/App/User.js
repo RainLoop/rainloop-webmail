@@ -1355,17 +1355,38 @@
 					iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
 					iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
 
+					_.delay(function () {
+						self.contactsSync();
+					}, 10000);
+
+					_.delay(function () {
+						self.folderInformationMultiply(true);
+					}, 2000);
+
 					window.setInterval(function () {
 						self.contactsSync();
 					}, iContactsSyncInterval * 60000 + 5000);
 
+					if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.AdditionalIdentities))
+					{
+						self.accountsAndIdentities();
+					}
+
 					_.delay(function () {
-						self.contactsSync();
+						var sF = Data.currentFolderFullNameRaw();
+						if (Cache.getFolderInboxName() !== sF)
+						{
+							self.folderInformation(sF);
+						}
+					}, 1000);
+
+					_.delay(function () {
+						self.quota();
 					}, 5000);
 
 					_.delay(function () {
-						self.folderInformationMultiply(true);
-					}, 500);
+						Remote.appDelayStart(Utils.emptyFunction);
+					}, 35000);
 
 					Plugins.runHook('rl-start-user-screens');
 					Events.pub('rl.bootstart-user-screens');

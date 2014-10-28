@@ -36,6 +36,13 @@
 		this.useCheckboxesInList = Data.useCheckboxesInList;
 		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 
+		this.usePreviewPaneCheckbox = ko.computed({
+			read: this.usePreviewPane,
+			write: function (bValue) {
+				this.layout(bValue ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
+			}
+		}, this);
+
 		this.isDesktopNotificationsSupported = ko.computed(function () {
 			return Enums.DesktopNotifications.NotSupported !== Data.desktopNotificationsPermisions();
 		});

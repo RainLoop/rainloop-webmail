@@ -14,18 +14,14 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { enableContacts(!enableContacts()); }">
-					<i data-bind="css: enableContacts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable contacts
-				</label>
-<!--				<label data-bind="click: function () { contactsSharing(!contactsSharing()); }">
-					<i data-bind="css: contactsSharing() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow contacts sharing (disabled)
-				</label>-->
-				<label data-bind="click: function () { contactsSync(!contactsSync()); }">
-					<i data-bind="css: contactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow contacts sync (with external CardDAV server)
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: enableContacts, label: 'Enable contacts' }
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: contactsSync, label: 'Allow contacts sync (with external CardDAV server)' }
+				}"></div>
 			</div>
 		</div>
 	</div>

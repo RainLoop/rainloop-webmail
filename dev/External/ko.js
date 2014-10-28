@@ -1,5 +1,5 @@
 
-(function (module, ko) {
+(function (ko) {
 
 	'use strict';
 
@@ -902,4 +902,4 @@
 
 	module.exports = ko;
 
-}(module, ko));
+}(ko));

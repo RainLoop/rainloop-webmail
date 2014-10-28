@@ -225,9 +225,11 @@ class Service
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
 			'BootJsLink' => $sStaticPrefix.'js/min/boot.js',
+			'ComponentsJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'components.js',
 			'LibJsLink' => $sStaticPrefix.'js/min/libs.js',
 			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
 			'OpenPgpJsLink' => $sStaticPrefix.'js/min/openpgp.min.js',
+			'AppJsCommonLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'common.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
 		);
 
@@ -238,9 +240,11 @@ class Service
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
 			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
+			'{{BaseAppComponentsScriptLink}}' => $aData['ComponentsJsLink'],
 			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
+			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
 			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);

@@ -23,7 +23,11 @@
 						<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
 					</span>
 					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
-					<div data-bind="saveTrigger: languageTrigger"></div>
+					&nbsp;&nbsp;
+					<div data-bind="component: {
+						name: 'SaveTrigger',
+						params: { value: languageTrigger }
+					}"></div>
 				</label>
 			</div>
 		</div>
@@ -32,28 +36,47 @@
 				Theme
 			</label>
 			<div class="controls">
-				<select class="span2" data-bind="options: themesOptions, value: mainTheme, optionsText: 'optText', optionsValue: 'optValue', saveTrigger: themeTrigger"></select>
-				<div data-bind="saveTrigger: themeTrigger"></div>
+				<div data-bind="component: {
+					name: 'Select',
+					params: {
+						options: themesOptions,
+						value: mainTheme,
+						trigger: themeTrigger,
+						optionsText: 'optText',
+						optionsValue: 'optValue',
+						size: 2
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { allowLanguagesOnSettings(!allowLanguagesOnSettings()); }">
-					<i data-bind="css: allowLanguagesOnSettings() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow language selection on settings screen
-				</label>
-				<label data-bind="click: function () { capaThemes(!capaThemes()); }">
-					<i data-bind="css: capaThemes() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow theme selection on settings screen
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Allow language selection on settings screen',
+						value: allowLanguagesOnSettings
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Allow theme selection on settings screen',
+						value: capaThemes
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label class="inline" data-bind="click: function () { capaGravatar(!capaGravatar()); }">
-					<i data-bind="css: capaGravatar() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow Gravatar
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Allow Gravatar',
+						value: capaGravatar,
+						inline: true
+					}
+				}"></div>
 				(<a class="g-ui-link" href="http://en.gravatar.com/" target="_blank">http://en.gravatar.com/</a>)
 			</div>
 		</div>
@@ -66,8 +89,15 @@
 				size limit
 			</label>
 			<div class="controls">
-				<input class="span1" type="text" maxlength="3" data-bind="value: mainAttachmentLimit, saveTrigger: attachmentLimitTrigger" /> MB
-				<div data-bind="saveTrigger: attachmentLimitTrigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						label: 'MB',
+						value: mainAttachmentLimit,
+						trigger: attachmentLimitTrigger,
+						size: 1
+					}
+				}"></div>
 				<br />
 				<br />
 				<span class="well well-small" data-bind="visible: '' !== uploadDataDesc">
@@ -84,14 +114,20 @@
 		<br />
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { capaAdditionalAccounts(!capaAdditionalAccounts()); }">
-					<i data-bind="css: capaAdditionalAccounts() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow additional accounts
-				</label>
-				<label data-bind="click: function () { capaAdditionalIdentities(!capaAdditionalIdentities()); }">
-					<i data-bind="css: capaAdditionalIdentities() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow additional identities
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Allow additional accounts',
+						value: capaAdditionalAccounts
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'Allow additional identities',
+						value: capaAdditionalIdentities
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>

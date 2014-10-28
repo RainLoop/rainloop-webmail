@@ -211,7 +211,16 @@
 	{
 		Events.pub('rl.bootstart');
 
-		var ssm = require('ssm');
+		var
+			ssm = require('ssm'),
+			ko = require('ko')
+		;
+
+		ko.components.register('SaveTrigger', require('Components/SaveTrigger'));
+		ko.components.register('Checkbox', require('Components/Checkbox'));
+		ko.components.register('Input', require('Components/Input'));
+		ko.components.register('Select', require('Components/Select'));
+		ko.components.register('TextArea', require('Components/TextArea'));
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();

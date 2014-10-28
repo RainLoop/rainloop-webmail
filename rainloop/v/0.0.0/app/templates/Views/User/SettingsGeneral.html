@@ -13,7 +13,11 @@
 						<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
 					</span>
 					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
-					<div data-bind="saveTrigger: languageTrigger"></div>
+					&nbsp;&nbsp;
+					<div data-bind="component: {
+						name: 'SaveTrigger',
+						params: { value: languageTrigger }
+					}"></div>
 				</label>
 			</div>
 		</div>
@@ -43,38 +47,56 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<select class="span2" data-bind="options: mainMessagesPerPageArray, value: mainMessagesPerPage, saveTrigger: mppTrigger" style="width: 70px;"></select>
-				<span class="i18n help-inline" data-i18n-text="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></span>
-				<div data-bind="saveTrigger: mppTrigger"></div>
+				<div data-bind="component: {
+					name: 'Select',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE',
+						options: mainMessagesPerPageArray,
+						value: mainMessagesPerPage,
+						trigger: mppTrigger,
+						size: 2,
+						width: 70
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { showImages(!showImages()); }">
-					<i data-bind="css: showImages() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_SHOW_IMAGES"></span>
-				</label>
-				<label data-bind="click: function () { useCheckboxesInList(!useCheckboxesInList()); }">
-					<i data-bind="css: useCheckboxesInList() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST"></span>
-				</label>
-				<label data-bind="click: toggleLayout">
-					<i data-bind="css: usePreviewPane() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_PREVIEW_PANE"></span>
-				</label>
-				<label data-bind="visible: threading, click: function () { useThreads(!useThreads()); }">
-					<i data-bind="css: useThreads() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_USE_THREADS"></span>
-				</label>
-				<label data-bind="click: function () { replySameFolder(!replySameFolder()); }">
-					<i data-bind="css: replySameFolder() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER"></span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_SHOW_IMAGES',
+						value: showImages
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST',
+						value: useCheckboxesInList
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_USE_PREVIEW_PANE',
+						value: usePreviewPaneCheckbox
+					}
+				}"></div>
+				<div data-bind="visible: threading, component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_USE_THREADS',
+						value: useThreads
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_REPLY_SAME_FOLDER',
+						value: replySameFolder
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>

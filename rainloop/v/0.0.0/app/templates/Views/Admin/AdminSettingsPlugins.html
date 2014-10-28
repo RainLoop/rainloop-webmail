@@ -12,11 +12,10 @@
 	</div>
 
 	<div>
-		<label data-bind="click: function () { enabledPlugins(!enabledPlugins()); }">
-			<i data-bind="css: enabledPlugins() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-			&nbsp;&nbsp;
-			Enable plugins
-		</label>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: { value: enabledPlugins, label: 'Enable plugins' }
+		}"></div>
 	</div>
 	<br />
 	<div class="row">

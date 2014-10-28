@@ -442,6 +442,7 @@ class ServiceActions
 	 */
 	public function ServiceLang()
 	{
+//		sleep(2);
 		$sResult = '';
 		@\header('Content-Type: application/javascript; charset=utf-8');
 
@@ -1070,7 +1071,9 @@ class ServiceActions
 	 */
 	private function compileTemplates($bAdmin = false)
 	{
-		$sHtml = \RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'), $this->oActions).
+		$sHtml =
+			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Components', $this->oActions, 'Component').
+			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'), $this->oActions).
 			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 
