@@ -57,17 +57,19 @@
 		}, this);
 
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
+
 		this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.editorDefaultTypeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
 
 		this.editorDefaultTypes = ko.computed(function () {
 			Globals.langChangeTrigger();
 			return [
-				{'id': Enums.EditorDefaultType.Html, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_AS_DEFAULT')},
-				{'id': Enums.EditorDefaultType.Plain, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_AS_DEFAULT')},
-				{'id': Enums.EditorDefaultType.HtmlForce, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCE_AS_DEFAULT')},
-				{'id': Enums.EditorDefaultType.PlainForce, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCE_AS_DEFAULT')}
+				{'id': Enums.EditorDefaultType.Html, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML')},
+				{'id': Enums.EditorDefaultType.Plain, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN')},
+				{'id': Enums.EditorDefaultType.HtmlForced, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED')},
+				{'id': Enums.EditorDefaultType.PlainForced, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED')}
 			];
 		}, this);
 	}
@@ -84,6 +86,7 @@
 		_.delay(function () {
 
 			var
+				f0 = Utils.settingsSaveHelperSimpleFunction(self.editorDefaultTypeTrigger, self),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self),
 				fReloadLanguageHelper = function (iSaveSettingsStep) {
 					return function() {
@@ -109,7 +112,7 @@
 			});
 
 			Data.editorDefaultType.subscribe(function (sValue) {
-				Remote.saveSettings(null, {
+				Remote.saveSettings(f0, {
 					'EditorDefaultType': sValue
 				});
 			});

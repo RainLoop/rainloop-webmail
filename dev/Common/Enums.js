@@ -217,8 +217,8 @@
 	Enums.EditorDefaultType = {
 		'Html': 'Html',
 		'Plain': 'Plain',
-		'HtmlForce': 'HtmlForce',
-		'PlainForce': 'PlainForce'
+		'HtmlForced': 'HtmlForced',
+		'PlainForced': 'PlainForced'
 	};
 
 	/**
