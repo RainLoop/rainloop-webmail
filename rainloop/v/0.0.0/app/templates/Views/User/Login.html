@@ -116,6 +116,14 @@
 			<div class="e-powered thm-powered" data-bind="visible: logoPowered">
 				Powered by <a href="http://rainloop.net" target="_blank">RainLoop</a>
 			</div>
+			<div class="e-languages thm-languages" data-bind="visible: allowLanguagesOnLogin">
+				<label class="flag-selector">
+					<span class="flag-wrapper">
+						<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
+					</span>
+					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
+				</label>
+			</div>
 		</div>
 	</center>
 	<div class="loginAfter"></div>
