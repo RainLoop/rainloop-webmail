@@ -679,7 +679,7 @@
 
 			if (!bHtml)
 			{
-				sSignature = Utils.convertPlainTextToHtml(sSignature);
+				sSignature = Utils.plainToHtml(sSignature, true);
 			}
 		}
 
@@ -935,7 +935,7 @@
 			if (bSignatureToAll && '' !== sSignature)
 			{
 				sText = this.convertSignature(sSignature, '',
-					Utils.convertPlainTextToHtml(sText), sComposeType);
+					Utils.plainToHtml(sText, true), sComposeType);
 			}
 
 			this.editor(function (oEditor) {

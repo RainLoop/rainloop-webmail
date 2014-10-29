@@ -1240,17 +1240,6 @@
 		return sResult;
 	};
 
-	/**
-	 * @param {string} sPlain
-	 * @return {string}
-	 */
-	Utils.convertPlainTextToHtml = function (sPlain)
-	{
-		return sPlain.toString()
-			.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
-			.replace(/\r/g, '').replace(/\n/g, '<br />');
-	};
-
 	Utils.draggeblePlace = function ()
 	{
 		return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
