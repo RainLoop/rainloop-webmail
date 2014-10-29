@@ -45,20 +45,21 @@
 			</div>
 		</div>
 		<script data-cfasync="false">
-			var
-				oE = window.document.getElementById('rl-loading'),
-				oElDesc = window.document.getElementById('rl-loading-desc')
-			;
-
-			if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
-				oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
-			}
-			if (oE && oE.style) {
-				oE.style.opacity = 0;
-				window.setTimeout(function () {
-					oE.style.opacity = 1;
-				}, 300);
-			}
+			(function (window) {
+				var
+					oE = window.document.getElementById('rl-loading'),
+					oElDesc = window.document.getElementById('rl-loading-desc')
+				;
+				if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
+					oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
+				}
+				if (oE && oE.style) {
+					oE.style.opacity = 0;
+					window.setTimeout(function () {
+						oE.style.opacity = 1;
+					}, 300);
+				}
+			}(window));
 		</script>
 		<div id="rl-loading-error" class="thm-loading">
 			An Error occurred,

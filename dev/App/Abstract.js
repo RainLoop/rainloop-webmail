@@ -216,11 +216,20 @@
 			ko = require('ko')
 		;
 
-		ko.components.register('SaveTrigger', require('Components/SaveTrigger'));
-		ko.components.register('Checkbox', require('Components/Checkbox'));
-		ko.components.register('Input', require('Components/Input'));
-		ko.components.register('Select', require('Components/Select'));
-		ko.components.register('TextArea', require('Components/TextArea'));
+		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
+		ko.components.register('Input', require('Component/Input'));
+		ko.components.register('Select', require('Component/Select'));
+		ko.components.register('TextArea', require('Component/TextArea'));
+		ko.components.register('Radio', require('Component/Radio'));
+
+		if (Settings.settingsGet('MaterialDesign'))
+		{
+			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
+		}
+		else
+		{
+			ko.components.register('Checkbox', require('Component/Checkbox'));
+		}
 
 		Utils.initOnStartOrLangChange(function () {
 			Utils.initNotificationLanguage();

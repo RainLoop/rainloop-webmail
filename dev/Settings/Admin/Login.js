@@ -26,6 +26,8 @@
 
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 		this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.dummy = ko.observable(false);
 	}
 
 	LoginAdminSetting.prototype.onBuild = function ()

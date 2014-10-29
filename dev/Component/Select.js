@@ -6,10 +6,9 @@
 	var
 		_ = require('_'),
 
-		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		AbstractInput = require('Components/AbstractInput')
+		AbstractInput = require('Component/AbstractInput')
 	;
 
 	/**
@@ -27,6 +26,8 @@
 
 		this.optionsText = oParams.optionsText || null;
 		this.optionsValue = oParams.optionsValue || null;
+
+		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 	};
 
 	_.extend(SelectComponent.prototype, AbstractInput.prototype);

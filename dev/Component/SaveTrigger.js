@@ -9,7 +9,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		AbstractComponent = require('Components/Abstract')
+		AbstractComponent = require('Component/Abstract')
 	;
 
 	/**
@@ -36,7 +36,7 @@
 				{
 					this.element.css('vertical-align', oParams.verticalAlign);
 				}
-				
+
 				this.setState(this.value());
 
 				this.disposable.push(

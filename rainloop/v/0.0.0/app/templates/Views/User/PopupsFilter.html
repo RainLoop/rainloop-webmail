@@ -41,17 +41,21 @@
 						<hr />
 						<div data-bind="template: {'name': actionTemplate()}"></div>
 
-						<label data-bind="visible: actionMarkAsReadVisiblity, click: function () { actionMarkAsRead(!actionMarkAsRead()); }">
-							<i data-bind="css: actionMarkAsRead() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							&nbsp;&nbsp;
-							<span>Mark as read</span>
-						</label>
+						<div data-bind="visible: actionMarkAsReadVisiblity, component: {
+							name: 'Checkbox',
+							params: {
+								label: 'Mark as read',
+								value: actionMarkAsRead
+							}
+						}"></div>
 
-						<label data-bind="click: function () { actionSkipOtherFilters(!actionSkipOtherFilters()); }">
-							<i data-bind="css: actionSkipOtherFilters() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-							&nbsp;&nbsp;
-							<span>Skip other filters</span>
-						</label>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								label: 'Skip other filters',
+								value: actionSkipOtherFilters
+							actionSkipOtherFilters
+						}"></div>
 					</div>
 				</div>
 			</div>

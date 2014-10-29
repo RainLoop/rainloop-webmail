@@ -1066,10 +1066,11 @@ class ServiceActions
 
 	/**
 	 * @param bool $bAdmin = false
+	 * @param bool $bJsOutput = true
 	 *
 	 * @return string
 	 */
-	private function compileTemplates($bAdmin = false)
+	public function compileTemplates($bAdmin = false, $bJsOutput = true)
 	{
 		$sHtml =
 			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Components', $this->oActions, 'Component').
@@ -1077,7 +1078,7 @@ class ServiceActions
 			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
 			$this->oActions->Plugins()->CompileTemplate($bAdmin);
 
-		return 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';';
+		return $bJsOutput ? 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';' : $sHtml;
 	}
 
 	/**

@@ -1020,10 +1020,13 @@ class Actions
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
+			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
 			'Capa' => array(),
 			'Plugins' => array()
 		);
+
+//		$aResult['MaterialDesign'] = false;
 
 		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))

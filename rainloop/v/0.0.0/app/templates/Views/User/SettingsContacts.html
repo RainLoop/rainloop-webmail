@@ -5,11 +5,13 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { contactsAutosave(!contactsAutosave()); }">
-					<i data-bind="css: contactsAutosave() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_AUTOSAVE"></span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_AUTOSAVE',
+						value: contactsAutosave
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>
@@ -20,11 +22,13 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { enableContactsSync(!enableContactsSync()); }">
-					<i data-bind="css: enableContactsSync() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE"></span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE',
+						value: enableContactsSync
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">

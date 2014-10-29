@@ -15,16 +15,20 @@
 					<br />
 					<div class="control-group">
 						<div class="controls">
-							<label data-bind="click: function () { sign(!sign()); }">
-								<i data-bind="css: sign() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN"></span>
-							</label>
-							<label data-bind="click: function () { encrypt(!encrypt()); }">
-								<i data-bind="css: encrypt() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT"></span>
-							</label>
+							<div data-bind="component: {
+								name: 'Checkbox',
+								params: {
+									label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_SIGN',
+									value: sign
+								}
+							}"></div>
+							<div data-bind="component: {
+								name: 'Checkbox',
+								params: {
+									label: 'POPUPS_COMPOSE_OPEN_PGP/LABEL_ENCRYPT',
+									value: encrypt
+								}
+							}"></div>
 						</div>
 					</div>
 					<div class="control-group">

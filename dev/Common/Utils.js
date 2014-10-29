@@ -403,8 +403,9 @@
 
 	/**
 	 * @param {Object} oElement
+	 * @param {boolean=} bAnimate = false
 	 */
-	Utils.i18nToNode = function (oElement)
+	Utils.i18nToNode = function (oElement, bAnimate)
 	{
 		_.defer(function () {
 			$('.i18n', oElement).each(function () {
@@ -439,6 +440,13 @@
 					}
 				}
 			});
+
+			if (bAnimate)
+			{
+				$('.i18n-animation.i18n', oElement).letterfx({
+					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'
+				});
+			}
 		});
 	};
 
@@ -448,7 +456,7 @@
 		{
 			Globals.oI18N = window['rainloopI18N'] || {};
 
-			Utils.i18nToNode(Globals.$doc);
+			Utils.i18nToNode(Globals.$doc, true);
 
 			Globals.langChangeTrigger(!Globals.langChangeTrigger());
 		}
@@ -1618,8 +1626,9 @@
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-//			.replace(/[\-_~]{10,}/g, '<hr />')
-			.replace(/\n/g, '<br />');
+			.replace(/ /g, '&nbsp;')
+			.replace(/\n/g, '<br />')
+		;
 
 		return bFindEmailAndLinks ? Utils.findEmailAndLinks(sPlain) : sPlain;
 	};
@@ -2015,7 +2024,8 @@
 	};
 
 	/**
-	 * @param {Object} oObject
+	 * @param {mixed} mPropOrValue
+	 * @param {mixed} mValue
 	 */
 	Utils.disposeOne = function (mPropOrValue, mValue)
 	{

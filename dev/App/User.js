@@ -1291,6 +1291,8 @@
 		{
 			this.setTitle(Utils.i18n('TITLES/LOADING'));
 
+//require.ensure([], function() { // require code splitting
+
 			self.folders(_.bind(function (bValue) {
 
 				kn.hideLoading();
@@ -1425,6 +1427,9 @@
 				}
 
 			}, self));
+
+//}); // require code splitting
+
 		}
 		else
 		{

@@ -58,14 +58,14 @@
 				<div class="control-group">
 					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">
 						<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
-						<span class="i18n" data-i18n-text="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
+						<span class="i18n i18n-animation" data-i18n-text="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
 					</button>
 				</div>
 				<div class="control-group">
 					<label class="pull-left signMeLabel" data-bind="click: function () { signMe(!signMe()); }, visible: signMeVisibility">
 						<i data-bind="css: signMe() ? 'checkboxSignMe icon-checkbox-checked' : 'checkboxSignMe icon-checkbox-unchecked'"></i>
 						&nbsp;&nbsp;
-						<span class="i18n" data-i18n-text="LOGIN/LABEL_SIGN_ME"></span>
+						<span class="i18n i18n-animation" data-i18n-text="LOGIN/LABEL_SIGN_ME"></span>
 					</label>
 					<div class="pull-right">
 						<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, visible: socialLoginEnabled() || allowLanguagesOnLogin()">

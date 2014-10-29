@@ -95,6 +95,7 @@ cfg.paths.css = {
 			'vendors/jquery-nanoscroller/nanoscroller.css',
 			'vendors/jquery-magnific-popup/magnific-popup.css',
 			'vendors/jquery-magnific-popup/magnific-popup-animations.css',
+			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/simple-pace/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
@@ -146,6 +147,7 @@ cfg.paths.js = {
 			'vendors/jquery-lazyload/jquery.lazyload.min.js',
 			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
+			'vendors/jquery-letterfx/jquery-letterfx.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
 			'vendors/routes/signals.min.js',
@@ -194,7 +196,7 @@ gulp.task('css:main', ['less:main'], function() {
 	return gulp.src(cfg.paths.css.main.src)
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
-		.pipe(csscomb())
+//		.pipe(csscomb())
 //		.pipe(csslint())
 //		.pipe(csslint.reporter())
 		.pipe(eol('\n', true))

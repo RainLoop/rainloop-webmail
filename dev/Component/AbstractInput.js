@@ -10,7 +10,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		AbstractComponent = require('Components/Abstract')
+		AbstractComponent = require('Component/Abstract')
 	;
 
 	/**
@@ -29,6 +29,7 @@
 		this.label = oParams.label || '';
 		this.enable = oParams.enable || true;
 		this.trigger = oParams.trigger && oParams.trigger.subscribe ? oParams.trigger : null;
+		this.placeholder = oParams.placeholder || '';
 
 		this.labeled = !Utils.isUnd(oParams.label);
 		this.triggered = !Utils.isUnd(oParams.trigger) && !!this.trigger;

@@ -6,10 +6,9 @@
 	var
 		_ = require('_'),
 
-		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		AbstractInput = require('Components/AbstractInput')
+		AbstractInput = require('Component/AbstractInput')
 	;
 
 	/**
@@ -24,6 +23,7 @@
 		AbstractInput.call(this, oParams);
 
 		this.rows = oParams.rows || 5;
+		this.spellcheck = Utils.isUnd(oParams.spellcheck) ? false : !!oParams.spellcheck;
 	};
 
 	_.extend(TextAreaComponent.prototype, AbstractInput.prototype);

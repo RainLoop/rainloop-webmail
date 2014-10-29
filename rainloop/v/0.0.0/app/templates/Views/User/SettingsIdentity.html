@@ -8,38 +8,52 @@
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_DISPLAY_NAME"></span>
 			 </label>
 			<div class="controls">
-				<input type="text" class="input-xlarge"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: displayName, saveTrigger: displayNameTrigger" />
-				<div data-bind="saveTrigger: displayNameTrigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: displayName,
+						size: 4,
+						trigger: displayNameTrigger
+					}
+				}"></div>
 			</div>
 		</div>
-		<div class="control-group g-ui-user-select-none" style="display: none">
+<!--		<div class="control-group g-ui-user-select-none" style="display: none">
 			 <label class="control-label">
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_REPLY_TO"></span>
 			 </label>
 			<div class="controls">
-				<input type="text" class="input-xlarge"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: replyTo" />
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: replyTo,
+						size: 4
+					}
+				}"></div>
 			</div>
-		</div>
+		</div>-->
 		<div class="control-group">
 			 <label class="control-label g-ui-user-select-none">
 				 <span class="i18n" data-i18n-text="SETTINGS_IDENTITY/LABEL_SIGNATURE"></span>
 			 </label>
 			<div class="controls">
 				<div class="e-signature-place" data-bind="initDom: signatureDom"></div>
-				<div style="vertical-align: top;" data-bind="saveTrigger: signatureTrigger"></div>
+				&nbsp;&nbsp;
+				<div data-bind="component: {
+					name: 'SaveTrigger',
+					params: { value: signatureTrigger, verticalAlign: 'top' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group g-ui-user-select-none">
 			<div class="controls">
-				<label data-bind="click: function () { signatureToAll(!signatureToAll()); }">
-					<i data-bind="css: signatureToAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="SETTINGS_IDENTITIES/LABEL_ADD_SIGNATURE_TO_ALL"></span>
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_IDENTITIES/LABEL_ADD_SIGNATURE_TO_ALL',
+						value: signatureToAll
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>
