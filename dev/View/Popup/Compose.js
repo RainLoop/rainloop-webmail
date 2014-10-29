@@ -921,7 +921,8 @@
 
 			this.editor(function (oEditor) {
 				oEditor.setHtml(sText, false);
-				if (!oMessage.isHtml())
+				if (Enums.EditorDefaultType.PlainForce === Data.editorDefaultType() ||
+					(!oMessage.isHtml() && Enums.EditorDefaultType.HtmlForce !== Data.editorDefaultType()))
 				{
 					oEditor.modeToggle(false);
 				}
@@ -940,7 +941,8 @@
 
 			this.editor(function (oEditor) {
 				oEditor.setHtml(sText, false);
-				if (Enums.EditorDefaultType.Html !== Data.editorDefaultType())
+				if (Enums.EditorDefaultType.Html !== Data.editorDefaultType() &&
+					Enums.EditorDefaultType.HtmlForce !== Data.editorDefaultType())
 				{
 					oEditor.modeToggle(false);
 				}

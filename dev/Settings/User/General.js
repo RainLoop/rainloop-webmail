@@ -60,6 +60,16 @@
 		this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
+
+		this.editorDefaultTypes = ko.computed(function () {
+			Globals.langChangeTrigger();
+			return [
+				{'id': Enums.EditorDefaultType.Html, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_AS_DEFAULT')},
+				{'id': Enums.EditorDefaultType.Plain, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_AS_DEFAULT')},
+				{'id': Enums.EditorDefaultType.HtmlForce, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCE_AS_DEFAULT')},
+				{'id': Enums.EditorDefaultType.PlainForce, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCE_AS_DEFAULT')}
+			];
+		}, this);
 	}
 
 	GeneralUserSetting.prototype.toggleLayout = function ()
