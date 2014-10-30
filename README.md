@@ -1,6 +1,8 @@
 RainLoop Webmail
 ==================
 
+[![Flattr Button](http://api.flattr.com/button/button-static-50x60.png "Flattr This!")](https://github.com/RainLoop/rainloop-webmail "RainLoop Webmail")
+
 ## About
 
 Simple, modern &amp; fast web-based email client.
