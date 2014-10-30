@@ -20,8 +20,8 @@
 	 *
 	 * @extends AbstractComponent
 	 */
-	function AbstractInput(oParams) {
-
+	function AbstractInput(oParams)
+	{
 		AbstractComponent.call(this);
 
 		this.value = oParams.value || '';
@@ -63,7 +63,7 @@
 				this.trigger.subscribe(this.setTriggerState, this)
 			);
 		}
-	};
+	}
 
 	AbstractInput.prototype.setTriggerState = function (nValue)
 	{

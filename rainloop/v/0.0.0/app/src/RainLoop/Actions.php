@@ -961,7 +961,7 @@ class Actions
 		static $bResult = null;
 		if (null === $bResult)
 		{
-//			$bResult = $this->licenseParser($this->licenseHelper(false, true));
+			$bResult = $this->licenseParser($this->licenseHelper(false, true));
 			$bResult = true;
 		}
 

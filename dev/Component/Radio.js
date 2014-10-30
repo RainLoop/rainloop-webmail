@@ -16,10 +16,10 @@
 	 *
 	 * @extends AbstracRadio
 	 */
-	function RadioComponent(oParams) {
-
+	function RadioComponent(oParams)
+	{
 		AbstracRadio.call(this, oParams);
-	};
+	}
 
 	_.extend(RadioComponent.prototype, AbstracRadio.prototype);
 

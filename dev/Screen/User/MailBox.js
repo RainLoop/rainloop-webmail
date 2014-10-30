@@ -11,10 +11,8 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 
-		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
 
 		AbstractScreen = require('Knoin/AbstractScreen')
 	;

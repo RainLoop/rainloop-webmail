@@ -19,8 +19,8 @@
 	 *
 	 * @extends AbstractComponent
 	 */
-	function AbstracCheckbox(oParams) {
-
+	function AbstracCheckbox(oParams)
+	{
 		AbstractComponent.call(this);
 
 		this.value = oParams.value;
@@ -48,7 +48,7 @@
 		this.inverted = Utils.isUnd(oParams.inverted) ? false : !!oParams.inverted;
 
 		this.labeled = !Utils.isUnd(oParams.label);
-	};
+	}
 
 	_.extend(AbstracCheckbox.prototype, AbstractComponent.prototype);
 

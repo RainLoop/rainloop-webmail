@@ -79,7 +79,7 @@
 						</a>
 						<a href="#" tabindex="-1" class="language-button" data-bind="click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES',
 								visible: allowLanguagesOnLogin() && !socialLoginEnabled()">
-							<i class="icon-world"></i>
+							<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
 						</a>
 					</div>
 				</div>
@@ -89,7 +89,7 @@
 			</div>
 			<div class="e-languages thm-languages" data-bind="visible: allowLanguagesOnLogin() && socialLoginEnabled()">
 				<label class="flag-selector">
-					<i class="icon-world"></i>
+					<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
 					&nbsp;
 					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
 				</label>

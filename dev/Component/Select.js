@@ -18,8 +18,8 @@
 	 *
 	 * @extends AbstractInput
 	 */
-	function SelectComponent(oParams) {
-
+	function SelectComponent(oParams)
+	{
 		AbstractInput.call(this, oParams);
 
 		this.options = oParams.options || '';
@@ -28,7 +28,7 @@
 		this.optionsValue = oParams.optionsValue || null;
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-	};
+	}
 
 	_.extend(SelectComponent.prototype, AbstractInput.prototype);
 

@@ -19,8 +19,8 @@
 	 *
 	 * @extends AbstractComponent
 	 */
-	function AbstracRadio(oParams) {
-
+	function AbstracRadio(oParams)
+	{
 		AbstractComponent.call(this);
 
 		this.values = ko.observableArray([]);
@@ -47,7 +47,7 @@
 		}
 
 		this.click = _.bind(this.click, this);
-	};
+	}
 
 	AbstracRadio.prototype.click = function(oValue) {
 		if (!this.readOnly && oValue)

@@ -34,11 +34,11 @@
 	};
 
 	/**
-	 * @param {AbstractComponent} fClassObject
+	 * @param {*} ClassObject
 	 * @param {string} sTemplateID
 	 * @return {Object}
 	 */
-	AbstractComponent.componentExportHelper = function (fClassObject, sTemplateID) {
+	AbstractComponent.componentExportHelper = function (ClassObject, sTemplateID) {
 		return {
 			viewModel: {
 				createViewModel: function(oParams, oCmponentInfo) {
@@ -58,7 +58,7 @@
 						}
 					}
 
-					return new fClassObject(oParams);
+					return new ClassObject(oParams);
 				}
 			},
 			template: {

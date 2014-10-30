@@ -503,7 +503,8 @@ gulp.task('rl', ['rainloop']);
 gulp.task('rl+', ['rainloop+']);
 gulp.task('build', ['rainloop']);
 gulp.task('build+', ['rainloop+']);
-gulp.task('b', ['rainloop']);
-gulp.task('b+', ['rainloop+']);
+gulp.task('b', ['build']);
+gulp.task('b+', ['build+']);
 
 gulp.task('own', ['owncloud']);
+gulp.task('js:hint', ['js:lint']);

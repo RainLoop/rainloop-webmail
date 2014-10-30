@@ -17,8 +17,8 @@
 	 *
 	 * @extends AbstracCheckbox
 	 */
-	function CheckboxMaterialDesignComponent(oParams) {
-
+	function CheckboxMaterialDesignComponent(oParams)
+	{
 		AbstracCheckbox.call(this, oParams);
 
 		this.animationBox = ko.observable(false).extend({'falseTimeout': 200});
@@ -32,7 +32,7 @@
 				this.triggerAnimation(bValue);
 			}, this)
 		);
-	};
+	}
 
 	_.extend(CheckboxMaterialDesignComponent.prototype, AbstracCheckbox.prototype);
 

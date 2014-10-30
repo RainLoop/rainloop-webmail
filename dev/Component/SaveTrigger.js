@@ -19,8 +19,8 @@
 	 *
 	 * @extends AbstractComponent
 	 */
-	function SaveTriggerComponent(oParams) {
-
+	function SaveTriggerComponent(oParams)
+	{
 		AbstractComponent.call(this);
 
 		this.element = oParams.element || null;
@@ -48,7 +48,7 @@
 				this.element.hide();
 			}
 		}
-	};
+	}
 
 	SaveTriggerComponent.prototype.setState = function (nValue)
 	{
@@ -75,8 +75,8 @@
 					.find('.animated').show().addClass('visible')
 				;
 				break;
-			case Enums.SaveSettingsStep.Idle:
 			default:
+			case Enums.SaveSettingsStep.Idle:
 				this.element
 					.find('.animated').hide()
 					.end()

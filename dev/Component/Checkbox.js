@@ -16,10 +16,10 @@
 	 *
 	 * @extends AbstracCheckbox
 	 */
-	function CheckboxComponent(oParams) {
-
+	function CheckboxComponent(oParams)
+	{
 		AbstracCheckbox.call(this, oParams);
-	};
+	}
 
 	_.extend(CheckboxComponent.prototype, AbstracCheckbox.prototype);
 

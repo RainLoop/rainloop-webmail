@@ -6,9 +6,6 @@
 	var
 		_ = require('_'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-
 		AbstractInput = require('Component/AbstractInput')
 	;
 
@@ -19,10 +16,10 @@
 	 *
 	 * @extends AbstractInput
 	 */
-	function InputComponent(oParams) {
-
+	function InputComponent(oParams)
+	{
 		AbstractInput.call(this, oParams);
-	};
+	}
 
 	_.extend(InputComponent.prototype, AbstractInput.prototype);
 

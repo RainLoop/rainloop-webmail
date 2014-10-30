@@ -18,13 +18,13 @@
 	 *
 	 * @extends AbstractInput
 	 */
-	function TextAreaComponent(oParams) {
-
+	function TextAreaComponent(oParams)
+	{
 		AbstractInput.call(this, oParams);
 
 		this.rows = oParams.rows || 5;
 		this.spellcheck = Utils.isUnd(oParams.spellcheck) ? false : !!oParams.spellcheck;
-	};
+	}
 
 	_.extend(TextAreaComponent.prototype, AbstractInput.prototype);
 
