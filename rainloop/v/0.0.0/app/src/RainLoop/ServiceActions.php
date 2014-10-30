@@ -395,7 +395,8 @@ class ServiceActions
 				{
 					$sRawError = '';
 					$this->oActions->SetActionParams(array(
-						'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]
+						'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3],
+						'Params' => $this->aPaths
 					), $sMethodName);
 
 					if (!\call_user_func(array($this->oActions, $sMethodName)))

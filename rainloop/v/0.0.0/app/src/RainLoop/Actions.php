@@ -161,6 +161,22 @@ class Actions
 	}
 
 	/**
+	 * @return string
+	 */
+	public function GetShortLifeSpecAuthToken($iLife = 60)
+	{
+		$sToken = $this->getAuthToken();
+		$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
+		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && is_array($aAccountHash))
+		{
+			$aAccountHash[10] = \time() + $iLife;
+			return \RainLoop\Utils::EncodeKeyValues($aAccountHash);
+		}
+
+		return '';
+	}
+
+	/**
 	 * @return \RainLoop\Application
 	 */
 	public function Config()
@@ -471,7 +487,7 @@ class Actions
 	private function getAuthToken()
 	{
 		$sToken = $this->GetSpecAuthToken();
-		return $sToken && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
+		return !empty($sToken) && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
 	}
 
 	/**
@@ -887,12 +903,12 @@ class Actions
 			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
 				8 <= \count($aAccountHash) && // length checking
 				!empty($aAccountHash[7]) && // does short token exist
-				(!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7]) // check short token if needed
+				(!$bValidateShortToken || \RainLoop\Utils::GetShortToken() === $aAccountHash[7] ||  // check short token if needed
+					(isset($aAccountHash[10]) && 0 < $aAccountHash[10] && \time() < $aAccountHash[10]))
 			)
 			{
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5], $bThrowExceptionOnFalse);
-
 
 				if ($oAccount instanceof \RainLoop\Account)
 				{
@@ -1129,17 +1145,28 @@ class Actions
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
 			$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
+			$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
 			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
 			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
-			if ($aResult['AllowGoogleSocial'] && (
-				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', ''))))
+
+			if (!$aResult['AllowGoogleSocial'] || ($aResult['AllowGoogleSocial'] && (
+				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', '')))))
 			{
-				$aResult['AllowGoogleSocial'] = false;
 				$aResult['AllowGoogleSocialAuth'] = false;
 				$aResult['AllowGoogleSocialDrive'] = false;
 				$aResult['GoogleClientID'] = '';
 				$aResult['GoogleApiKey'] = '';
+			}
+			
+			if (!$aResult['AllowGoogleSocial'])
+			{
+				$aResult['AllowGoogleSocialPreview'] = false;
+			}
+
+			if ($aResult['AllowGoogleSocial'] && !$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialDrive'] && !$aResult['AllowGoogleSocialPreview'])
+			{
+				$aResult['AllowGoogleSocial'] = false;
 			}
 
 			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
@@ -1197,6 +1224,7 @@ class Actions
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
 				$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
+				$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
 				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
 				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
@@ -2495,6 +2523,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableAuth', 'social', 'google_enable_auth', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableDrive', 'social', 'google_enable_drive', 'bool');
+		$this->setConfigFromParams($oConfig, 'GoogleEnablePreview', 'social', 'google_enable_preview', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
 		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
@@ -6439,6 +6468,50 @@ class Actions
 	}
 
 	/**
+	 * @return string
+	 */
+	public function RawFramedView()
+	{
+		$oAccount = $this->getAccountFromToken(false);
+		if ($oAccount)
+		{
+			$sRawKey = (string) $this->GetActionParam('RawKey', '');
+			$aParams = $this->GetActionParam('Params', null);
+			$this->Http()->ServerNoCache();
+
+			$aData = \RainLoop\Utils::DecodeKeyValues($sRawKey);
+			if (isset($aParams[0], $aParams[1], $aParams[2]) &&
+				'Raw' === $aParams[0] && 'FramedView' === $aParams[2] && isset($aData['Framed']) && $aData['Framed'] && $aData['FileName'])
+			{
+				if ($this->isFileHasFramedPreview($aData['FileName']))
+				{
+					$sNewSpecAuthToken = $this->GetShortLifeSpecAuthToken();
+					if (!empty($sNewSpecAuthToken))
+					{
+						$aParams[1] = '_'.$sNewSpecAuthToken;
+						$aParams[2] = 'View';
+
+						\array_shift($aParams);
+
+						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&/s/=/'.implode('/', $aParams);
+						$sFullUrl = 'http://docs.google.com/viewer?embedded=true&url='.urlencode($sUrl);
+
+						@\header('Content-Type: text/html; charset=utf-8');
+						echo '<html style="height: 100%; width: 100%; margin: 0; padding: 0"><head></head>'.
+							'<body style="height: 100%; width: 100%; margin: 0; padding: 0">'.
+							'<iframe style="height: 100%; width: 100%; margin: 0; padding: 0; border: 0" src="'.$sFullUrl.'"></iframe>'.
+							'</body></html>';
+					}
+				}
+			}
+		}
+
+
+		return true;
+
+	}
+
+	/**
 	 * @return bool
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -6657,6 +6730,17 @@ class Actions
 	public function RawView()
 	{
 		return $this->rawSmart(false);
+	}
+
+	/**
+	 * @param string $sFileName
+	 *
+	 * @return bool
+	 */
+	public function isFileHasFramedPreview($sFileName)
+	{
+		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
+		return \in_array($sExt, array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'));
 	}
 
 	/**
@@ -7709,6 +7793,7 @@ class Actions
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
 					'Uid' => (string) $mResponse->Uid(),
+					'Framed' => false,
 					'MimeIndex' => (string) $mResponse->MimeIndex(),
 					'MimeType' => $mResponse->MimeType(),
 					'FileName' => \MailSo\Base\Utils::ClearFileName(
@@ -7721,6 +7806,8 @@ class Actions
 						($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls))
 				));
 
+				$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
+
 				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
 					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
@@ -7728,7 +7815,8 @@ class Actions
 					'Uid' => $mResult['Uid'],
 					'MimeIndex' => $mResult['MimeIndex'],
 					'MimeType' => $mResult['MimeType'],
-					'FileName' => $mResult['FileName']
+					'FileName' => $mResult['FileName'],
+					'Framed' => $mResult['Framed']
 				));
 			}
 			else if ('MailSo\Mail\Folder' === $sClassName)

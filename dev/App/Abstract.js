@@ -117,6 +117,22 @@
 		return true;
 	};
 
+	AbstractApp.prototype.googlePreviewSupportedCache = null;
+
+	/**
+	 * @return {boolean}
+	 */
+	AbstractApp.prototype.googlePreviewSupported = function ()
+	{
+		if (null === this.googlePreviewSupportedCache)
+		{
+			this.googlePreviewSupportedCache = !!Settings.settingsGet('AllowGoogleSocial') &&
+				!!Settings.settingsGet('AllowGoogleSocialPreview');
+		}
+		
+		return this.googlePreviewSupportedCache;
+	};
+
 	/**
 	 * @param {string} sTitle
 	 */

@@ -115,7 +115,7 @@ class Account
 	{
 		return $this->sProxyAuthPassword;
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -324,7 +324,7 @@ class Account
 	{
 		return $this->Domain()->OutVerifySsl($bGlobalVerify);
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -340,7 +340,8 @@ class Account
 			$this->sParentEmail,				// 6
 			\RainLoop\Utils::GetShortToken(),	// 7
 			$this->sProxyAuthUser,				// 8
-			$this->sProxyAuthPassword			// 9
+			$this->sProxyAuthPassword,			// 9
+			0									// 10
 		));
 	}
 
@@ -354,7 +355,7 @@ class Account
 	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig)
 	{
 		$bLogin = false;
-		
+
 		$aImapCredentials = array(
 			'UseConnect' => true,
 			'UseAuth' => true,
@@ -409,7 +410,7 @@ class Account
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
 	 * @param \RainLoop\Application $oConfig
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig)
@@ -433,7 +434,7 @@ class Account
 		$oPlugins->RunHook('filter.smtp-credentials', array($this, &$aSmtpCredentials));
 
 		$oPlugins->RunHook('event.smtp-pre-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
-		
+
 		if ($aSmtpCredentials['UseConnect'])
 		{
 			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
@@ -442,7 +443,7 @@ class Account
 
 		$oPlugins->RunHook('event.smtp-post-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
 		$oPlugins->RunHook('event.smtp-pre-login', array($this, $aSmtpCredentials['UseAuth'], $aSmtpCredentials));
-		
+
 		if ($aSmtpCredentials['UseAuth'])
 		{
 			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);

@@ -282,6 +282,10 @@
 													   data-bind="visible: isPdf(), attr: {href: linkPreview(), title: fileName}" target="_blank">
 														<i class="icon-eye"></i>
 													</a>
+													<a class="attachmentPreview pull-left"
+													   data-bind="visible: isFramed(), attr: {href: linkFramed(), title: fileName}" target="_blank">
+														<i class="icon-eye"></i>
+													</a>
 													<span class="attachmentSize pull-right" data-bind="text: friendlySize"></span>
 												</div>
 											</li>

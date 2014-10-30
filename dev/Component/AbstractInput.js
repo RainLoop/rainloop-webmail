@@ -27,7 +27,7 @@
 		this.value = oParams.value || '';
 		this.size = oParams.size || 0;
 		this.label = oParams.label || '';
-		this.enable = oParams.enable || true;
+		this.enable = Utils.isUnd(oParams.enable) ? true : oParams.enable;
 		this.trigger = oParams.trigger && oParams.trigger.subscribe ? oParams.trigger : null;
 		this.placeholder = oParams.placeholder || '';
 

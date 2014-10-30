@@ -49,7 +49,7 @@
 			'AdminSettingsSecurity', 'Security', 'security');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Social'),
-			'AdminSettingsSocial', 'Social', 'social');
+			'AdminSettingsSocial', 'Integrations', 'integrations');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Plugins'),
 			'AdminSettingsPlugins', 'Plugins', 'plugins');

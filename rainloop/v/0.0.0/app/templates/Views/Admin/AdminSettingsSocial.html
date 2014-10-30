@@ -20,11 +20,24 @@
 					<blockquote>
 						<div data-bind="component: {
 							name: 'Checkbox',
-							params: { value: googleEnable.auth, label: 'Authentication' }
+							params: {
+								value: googleEnable.auth,
+								label: 'Authentication'
+							}
 						}"></div>
 						<div data-bind="component: {
 							name: 'Checkbox',
-							params: { value: googleEnable.drive, label: 'Google Drive Integration (Compose view)' }
+							params: {
+								value: googleEnable.drive,
+								label: 'Google Drive Integration (Compose view)'
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								value: googleEnable.preview,
+								label: 'Google Viewer Integration (Preview Microsoft Word, Excel and PowerPoint files)'
+							}
 						}"></div>
 					</blockquote>
 				</div>
@@ -35,9 +48,16 @@
 			   Client ID
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleClientID, saveTrigger: googleTrigger1" />
-				<div data-bind="saveTrigger: googleTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						name: 'xx',
+						value: googleClientID,
+						trigger: googleTrigger1,
+						enable: googleEnable.requireClientSettings,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -45,9 +65,15 @@
 			   Client Secret
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleClientSecret, saveTrigger: googleTrigger2" />
-				<div data-bind="saveTrigger: googleTrigger2"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: googleClientSecret,
+						trigger: googleTrigger2,
+						enable: googleEnable.requireClientSettings,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<br />
@@ -62,7 +88,7 @@
 						value: googleApiKey,
 						trigger: googleTrigger3,
 						size: 5,
-						enable: googleEnable.drive
+						enable: googleEnable.requireApiKey
 					}
 				}"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">
@@ -90,9 +116,15 @@
 				   App ID
 				</label>
 				<div class="controls">
-					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: facebookAppID, saveTrigger: facebookTrigger1" />
-					<div data-bind="saveTrigger: facebookTrigger1"></div>
+					<div data-bind="component: {
+						name: 'Input',
+						params: {
+							value: facebookAppID,
+							trigger: facebookTrigger1,
+							enable: facebookEnable,
+							size: 5
+						}
+					}"></div>
 				</div>
 			</div>
 			<div class="control-group">
@@ -100,9 +132,15 @@
 				   App Secret
 				</label>
 				<div class="controls">
-					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: facebookAppSecret, saveTrigger: facebookTrigger2" />
-					<div data-bind="saveTrigger: facebookTrigger2"></div>
+					<div data-bind="component: {
+						name: 'Input',
+						params: {
+							value: facebookAppSecret,
+							trigger: facebookTrigger2,
+							enable: facebookEnable,
+							size: 5
+						}
+					}"></div>
 				</div>
 			</div>
 		</div>
@@ -122,9 +160,15 @@
 			   Consumer Key
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: twitterConsumerKey, saveTrigger: twitterTrigger1" />
-				<div data-bind="saveTrigger: twitterTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: twitterConsumerKey,
+						trigger: twitterTrigger1,
+						enable: twitterEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
@@ -132,9 +176,15 @@
 			   Consumer Secret
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: twitterConsumerSecret, saveTrigger: twitterTrigger2" />
-				<div data-bind="saveTrigger: twitterTrigger2"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: twitterConsumerSecret,
+						trigger: twitterTrigger2,
+						enable: twitterEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="legend">
@@ -153,9 +203,15 @@
 			   Api Key
 			</label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: dropboxApiKey, saveTrigger: dropboxTrigger1" />
-				<div data-bind="saveTrigger: dropboxTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: dropboxApiKey,
+						trigger: dropboxTrigger1,
+						enable: dropboxEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>

@@ -1093,9 +1093,18 @@
 		oData.googleEnable = ko.observable(false);
 		oData.googleEnable.auth = ko.observable(false);
 		oData.googleEnable.drive = ko.observable(false);
+		oData.googleEnable.preview = ko.observable(false);
 		oData.googleClientID = ko.observable('');
 		oData.googleClientSecret = ko.observable('');
 		oData.googleApiKey = ko.observable('');
+
+		oData.googleEnable.requireClientSettings = ko.computed(function () {
+			return oData.googleEnable() && (oData.googleEnable.auth() || oData.googleEnable.drive());
+		});
+
+		oData.googleEnable.requireApiKey = ko.computed(function () {
+			return oData.googleEnable() && oData.googleEnable.drive();
+		});
 
 		oData.dropboxEnable = ko.observable(false);
 		oData.dropboxApiKey = ko.observable('');

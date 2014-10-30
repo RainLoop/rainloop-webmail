@@ -128,6 +128,12 @@
 				});
 			});
 
+			self.googleEnable.preview.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnablePreview': bValue ? '1' : '0'
+				});
+			});
+
 			self.googleClientID.subscribe(function (sValue) {
 				Remote.saveAdminConfig(f5, {
 					'GoogleClientID': Utils.trim(sValue)

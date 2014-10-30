@@ -34,6 +34,7 @@
 		this.folder = '';
 		this.uid = '';
 		this.mimeIndex = '';
+		this.framed = false;
 	}
 
 	_.extend(AttachmentModel.prototype, AbstractModel.prototype);
@@ -62,6 +63,7 @@
 	AttachmentModel.prototype.folder = '';
 	AttachmentModel.prototype.uid = '';
 	AttachmentModel.prototype.mimeIndex = '';
+	AttachmentModel.prototype.framed = false;
 
 	/**
 	 * @param {AjaxJsonAttachment} oJsonAttachment
@@ -83,6 +85,7 @@
 			this.folder = oJsonAttachment.Folder;
 			this.uid = oJsonAttachment.Uid;
 			this.mimeIndex = oJsonAttachment.MimeIndex;
+			this.framed = !!oJsonAttachment.Framed;
 
 			this.friendlySize = Utils.friendlySize(this.estimatedSize);
 			this.cidWithOutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
@@ -121,6 +124,15 @@
 	};
 
 	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.isFramed = function ()
+	{
+		return this.framed && (Globals.__APP__ && Globals.__APP__.googlePreviewSupported()) &&
+			!this.isPdf() && !this.isText() && !this.isImage();
+	};
+
+	/**
 	 * @return {string}
 	 */
 	AttachmentModel.prototype.linkDownload = function ()
@@ -134,6 +146,14 @@
 	AttachmentModel.prototype.linkPreview = function ()
 	{
 		return Links.attachmentPreview(this.download);
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.linkFramed = function ()
+	{
+		return Links.attachmentFramed(this.download);
 	};
 
 	/**

@@ -82,6 +82,7 @@
 		this.googleEnable(!!Settings.settingsGet('AllowGoogleSocial'));
 		this.googleEnable.auth(!!Settings.settingsGet('AllowGoogleSocialAuth'));
 		this.googleEnable.drive(!!Settings.settingsGet('AllowGoogleSocialDrive'));
+		this.googleEnable.preview(!!Settings.settingsGet('AllowGoogleSocialPreview'));
 		this.googleClientID(Settings.settingsGet('GoogleClientID'));
 		this.googleClientSecret(Settings.settingsGet('GoogleClientSecret'));
 		this.googleApiKey(Settings.settingsGet('GoogleApiKey'));

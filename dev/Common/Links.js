@@ -66,6 +66,15 @@
 	};
 
 	/**
+	 * @param {string} sDownload
+	 * @return {string}
+	 */
+	Links.prototype.attachmentFramed = function (sDownload)
+	{
+		return this.sServer + '/Raw' + this.sSubQuery + this.sSpecSuffix + '/FramedView/' + sDownload;
+	};
+
+	/**
 	 * @return {string}
 	 */
 	Links.prototype.upload = function ()
