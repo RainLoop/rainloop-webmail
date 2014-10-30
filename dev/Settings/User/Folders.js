@@ -19,7 +19,7 @@
 	/**
 	 * @constructor
 	 */
-	function FoldersUserSetting()
+	function FoldersUserSettings()
 	{
 		this.foldersListError = Data.foldersListError;
 		this.folderList = Data.folderList;
@@ -89,7 +89,7 @@
 		this.useImapSubscribe = !!Settings.settingsGet('UseImapSubscribe');
 	}
 
-	FoldersUserSetting.prototype.folderEditOnEnter = function (oFolder)
+	FoldersUserSettings.prototype.folderEditOnEnter = function (oFolder)
 	{
 		var
 			sEditName = oFolder ? Utils.trim(oFolder.nameForEdit()) : ''
@@ -121,7 +121,7 @@
 		oFolder.edited(false);
 	};
 
-	FoldersUserSetting.prototype.folderEditOnEsc = function (oFolder)
+	FoldersUserSettings.prototype.folderEditOnEsc = function (oFolder)
 	{
 		if (oFolder)
 		{
@@ -129,22 +129,22 @@
 		}
 	};
 
-	FoldersUserSetting.prototype.onShow = function ()
+	FoldersUserSettings.prototype.onShow = function ()
 	{
 		Data.foldersListError('');
 	};
 
-	FoldersUserSetting.prototype.createFolder = function ()
+	FoldersUserSettings.prototype.createFolder = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/FolderCreate'));
 	};
 
-	FoldersUserSetting.prototype.systemFolder = function ()
+	FoldersUserSettings.prototype.systemFolder = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/FolderSystem'));
 	};
 
-	FoldersUserSetting.prototype.deleteFolder = function (oFolderToRemove)
+	FoldersUserSettings.prototype.deleteFolder = function (oFolderToRemove)
 	{
 		if (oFolderToRemove && oFolderToRemove.canBeDeleted() && oFolderToRemove.deleteAccess() &&
 			0 === oFolderToRemove.privateMessageCountAll())
@@ -193,7 +193,7 @@
 		}
 	};
 
-	FoldersUserSetting.prototype.subscribeFolder = function (oFolder)
+	FoldersUserSettings.prototype.subscribeFolder = function (oFolder)
 	{
 		Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, true);
@@ -201,7 +201,7 @@
 		oFolder.subScribed(true);
 	};
 
-	FoldersUserSetting.prototype.unSubscribeFolder = function (oFolder)
+	FoldersUserSettings.prototype.unSubscribeFolder = function (oFolder)
 	{
 		Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, false);
@@ -209,6 +209,6 @@
 		oFolder.subScribed(false);
 	};
 
-	module.exports = FoldersUserSetting;
+	module.exports = FoldersUserSettings;
 
 }());

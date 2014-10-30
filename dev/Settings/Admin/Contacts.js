@@ -16,7 +16,7 @@
 	/**
 	 * @constructor
 	 */
-	function ContactsAdminSetting()
+	function ContactsAdminSettings()
 	{
 		var
 			Remote = require('Storage/Admin/Remote')
@@ -141,7 +141,7 @@
 		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 	}
 
-	ContactsAdminSetting.prototype.onTestContactsResponse = function (sResult, oData)
+	ContactsAdminSettings.prototype.onTestContactsResponse = function (sResult, oData)
 	{
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
@@ -167,14 +167,14 @@
 		this.testing(false);
 	};
 
-	ContactsAdminSetting.prototype.onShow = function ()
+	ContactsAdminSettings.prototype.onShow = function ()
 	{
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 	};
 
-	ContactsAdminSetting.prototype.onBuild = function ()
+	ContactsAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
@@ -237,6 +237,6 @@
 		}, 50);
 	};
 
-	module.exports = ContactsAdminSetting;
+	module.exports = ContactsAdminSettings;
 
 }());

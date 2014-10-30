@@ -13,7 +13,7 @@
 	/**
 	 * @constructor
 	 */
-	function BrandingAdminSetting()
+	function BrandingAdminSettings()
 	{
 		var
 			Enums = require('Common/Enums'),
@@ -40,7 +40,7 @@
 		this.loginPowered = ko.observable(!!Settings.settingsGet('LoginPowered'));
 	}
 
-	BrandingAdminSetting.prototype.onBuild = function ()
+	BrandingAdminSettings.prototype.onBuild = function ()
 	{
 		if (this.capa)
 		{
@@ -99,6 +99,6 @@
 		}
 	};
 
-	module.exports = BrandingAdminSetting;
+	module.exports = BrandingAdminSettings;
 
 }());

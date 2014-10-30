@@ -14,7 +14,7 @@
 	/**
 	 * @constructor
 	 */
-	function SocialAdminSetting()
+	function SocialAdminSettings()
 	{
 		var Data = require('Storage/Admin/Data');
 
@@ -45,7 +45,7 @@
 		this.dropboxTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	SocialAdminSetting.prototype.onBuild = function ()
+	SocialAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
@@ -161,6 +161,6 @@
 		}, 50);
 	};
 
-	module.exports = SocialAdminSetting;
+	module.exports = SocialAdminSettings;
 
 }());

@@ -18,7 +18,7 @@
 	/**
 	 * @constructor
 	 */
-	function GeneralAdminSetting()
+	function GeneralAdminSettings()
 	{
 		this.mainLanguage = Data.mainLanguage;
 		this.mainTheme = Data.mainTheme;
@@ -59,7 +59,7 @@
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	GeneralAdminSetting.prototype.onBuild = function ()
+	GeneralAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
@@ -128,7 +128,7 @@
 		}, 50);
 	};
 
-	GeneralAdminSetting.prototype.selectLanguage = function ()
+	GeneralAdminSettings.prototype.selectLanguage = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'));
 	};
@@ -136,11 +136,11 @@
 	/**
 	 * @return {string}
 	 */
-	GeneralAdminSetting.prototype.phpInfoLink = function ()
+	GeneralAdminSettings.prototype.phpInfoLink = function ()
 	{
 		return Links.phpInfo();
 	};
 
-	module.exports = GeneralAdminSetting;
+	module.exports = GeneralAdminSettings;
 
 }());

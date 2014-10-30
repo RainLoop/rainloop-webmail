@@ -17,7 +17,7 @@
 	/**
 	 * @constructor
 	 */
-	function LoginAdminSetting()
+	function LoginAdminSettings()
 	{
 		this.determineUserLanguage = Data.determineUserLanguage;
 		this.determineUserDomain = Data.determineUserDomain;
@@ -30,7 +30,7 @@
 		this.dummy = ko.observable(false);
 	}
 
-	LoginAdminSetting.prototype.onBuild = function ()
+	LoginAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
@@ -68,6 +68,6 @@
 		}, 50);
 	};
 
-	module.exports = LoginAdminSetting;
+	module.exports = LoginAdminSettings;
 
 }());

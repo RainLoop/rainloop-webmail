@@ -67,60 +67,30 @@
 						&nbsp;&nbsp;
 						<span class="i18n i18n-animation" data-i18n-text="LOGIN/LABEL_SIGN_ME"></span>
 					</label>
-					<div class="pull-right">
-						<div class="btn-group dropdown" data-bind="registrateBootstrapDropdown: true, visible: socialLoginEnabled() || allowLanguagesOnLogin()">
-							<a id="login-more-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonLoginMore" data-toggle="dropdown">
-								<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-list'"></i>
-							</a>
-							<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="login-more-dropdown-id">
-								{{INCLUDE/MenuDropdownTop/PLACE}}
-								<li class="e-item" role="presentation" data-bind="visible: facebookLoginEnabled">
-									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: facebookCommand">
-										<i class="icon-facebook-alt"></i>
-										&nbsp;&nbsp;
-										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_FACEBOOK"></span>
-									</a>
-								</li>
-								<li class="e-item" role="presentation" data-bind="visible: googleLoginEnabled">
-									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: googleCommand">
-										<i class="icon-google"></i>
-										&nbsp;&nbsp;
-										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_GOOGLE"></span>
-									</a>
-								</li>
-								<li class="e-item" role="presentation" data-bind="visible: twitterLoginEnabled">
-									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: twitterCommand">
-										<i class="icon-twitter"></i>
-										&nbsp;&nbsp;
-										<span class="i18n" data-i18n-text="LOGIN/TITLE_SIGN_IN_TWITTER"></span>
-									</a>
-								</li>
-								{{INCLUDE/MenuDropdownMiddle/PLACE}}
-								<li class="divider" role="presentation" data-bind="visible: socialLoginEnabled() && allowLanguagesOnLogin()"></li>
-								<li class="e-item" role="presentation" data-bind="visible: allowLanguagesOnLogin">
-									<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: selectLanguage">
-										<label class="flag-selector">
-											<span class="flag-wrapper">
-												<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
-											</span>
-											<span class="flag-name" data-bind="text: mainLanguageFullName"></span>
-										</label>
-									</a>
-								</li>
-								{{INCLUDE/MenuDropdownBottom/PLACE}}
-							</ul>
-						</div>
+					<div class="pull-right social-buttons">
+						<a href="#" tabindex="-1" class="social-button" data-bind="command: facebookCommand, visible: facebookLoginEnabled, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
+							<i class="icon-facebook-alt"></i>
+						</a>
+						<a href="#" tabindex="-1" class="social-button" data-bind="command: googleCommand, visible: googleLoginEnabled, tooltip: 'LOGIN/TITLE_SIGN_IN_GOOGLE'">
+							<i class="icon-google"></i>
+						</a>
+						<a href="#" tabindex="-1" class="social-button" data-bind="command: twitterCommand, visible: twitterLoginEnabled, tooltip: 'LOGIN/TITLE_SIGN_IN_TWITTER'">
+							<i class="icon-twitter"></i>
+						</a>
+						<a href="#" tabindex="-1" class="language-button" data-bind="click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES',
+								visible: allowLanguagesOnLogin() && !socialLoginEnabled()">
+							<i class="icon-world"></i>
+						</a>
 					</div>
 				</div>
 			</form>
 			<div class="e-powered thm-powered" data-bind="visible: logoPowered">
 				Powered by <a href="http://rainloop.net" target="_blank">RainLoop</a>
 			</div>
-			<div class="e-languages thm-languages" data-bind="visible: allowLanguagesOnLogin">
+			<div class="e-languages thm-languages" data-bind="visible: allowLanguagesOnLogin() && socialLoginEnabled()">
 				<label class="flag-selector">
-					<span class="flag-wrapper">
-						<span data-bind="css: 'flag flag-' + mainLanguage()" style=""></span>
-					</span>
+					<i class="icon-world"></i>
+					&nbsp;
 					<span class="flag-name" data-bind="text: mainLanguageFullName, click: selectLanguage"></span>
 				</label>
 			</div>

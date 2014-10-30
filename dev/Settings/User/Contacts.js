@@ -13,7 +13,7 @@
 	/**
 	 * @constructor
 	 */
-	function ContactsUserSetting()
+	function ContactsUserSettings()
 	{
 		this.contactsAutosave = Data.contactsAutosave;
 
@@ -31,6 +31,15 @@
 				this.contactsSyncPass()
 			].join('|');
 		}, this).extend({'throttle': 500});
+	}
+
+	ContactsUserSettings.prototype.onBuild = function ()
+	{
+		Data.contactsAutosave.subscribe(function (bValue) {
+			Remote.saveSettings(null, {
+				'ContactsAutosave': bValue ? '1' : '0'
+			});
+		});
 
 		this.saveTrigger.subscribe(function () {
 			Remote.saveContactsSyncData(null,
@@ -40,17 +49,8 @@
 				this.contactsSyncPass()
 			);
 		}, this);
-	}
-
-	ContactsUserSetting.prototype.onBuild = function ()
-	{
-		Data.contactsAutosave.subscribe(function (bValue) {
-			Remote.saveSettings(null, {
-				'ContactsAutosave': bValue ? '1' : '0'
-			});
-		});
 	};
 
-	module.exports = ContactsUserSetting;
+	module.exports = ContactsUserSettings;
 
 }());

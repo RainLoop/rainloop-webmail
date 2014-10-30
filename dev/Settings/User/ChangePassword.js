@@ -16,7 +16,7 @@
 	/**
 	 * @constructor
 	 */
-	function ChangePasswordUserSetting()
+	function ChangePasswordUserSettings()
 	{
 		this.changeProcess = ko.observable(false);
 
@@ -76,7 +76,7 @@
 		this.onChangePasswordResponse = _.bind(this.onChangePasswordResponse, this);
 	}
 
-	ChangePasswordUserSetting.prototype.onHide = function ()
+	ChangePasswordUserSettings.prototype.onHide = function ()
 	{
 		this.changeProcess(false);
 		this.currentPassword('');
@@ -87,7 +87,7 @@
 		this.currentPassword.error(false);
 	};
 
-	ChangePasswordUserSetting.prototype.onChangePasswordResponse = function (sResult, oData)
+	ChangePasswordUserSettings.prototype.onChangePasswordResponse = function (sResult, oData)
 	{
 		this.changeProcess(false);
 		this.passwordMismatch(false);
@@ -116,6 +116,6 @@
 		}
 	};
 
-	module.exports = ChangePasswordUserSetting;
+	module.exports = ChangePasswordUserSettings;
 
 }());

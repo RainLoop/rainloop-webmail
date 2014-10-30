@@ -12,7 +12,7 @@
 	/**
 	 * @constructor
 	 */
-	function FiltersUserSetting()
+	function FiltersUserSettings()
 	{
 		this.filters = ko.observableArray([]);
 		this.filters.loading = ko.observable(false);
@@ -22,13 +22,13 @@
 		});
 	}
 
-	FiltersUserSetting.prototype.deleteFilter = function (oFilter)
+	FiltersUserSettings.prototype.deleteFilter = function (oFilter)
 	{
 		this.filters.remove(oFilter);
 		Utils.delegateRunOnDestroy(oFilter);
 	};
 
-	FiltersUserSetting.prototype.addFilter = function ()
+	FiltersUserSettings.prototype.addFilter = function ()
 	{
 		var
 			FilterModel = require('Model/Filter')
@@ -38,6 +38,6 @@
 			require('View/Popup/Filter'), [new FilterModel()]);
 	};
 
-	module.exports = FiltersUserSetting;
+	module.exports = FiltersUserSettings;
 
 }());

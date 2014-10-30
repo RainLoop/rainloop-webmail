@@ -17,7 +17,7 @@
 	/**
 	 * @constructor
 	 */
-	function PackagesAdminSetting()
+	function PackagesAdminSettings()
 	{
 		this.packagesError = ko.observable('');
 
@@ -42,17 +42,17 @@
 		}, this);
 	}
 
-	PackagesAdminSetting.prototype.onShow = function ()
+	PackagesAdminSettings.prototype.onShow = function ()
 	{
 		this.packagesError('');
 	};
 
-	PackagesAdminSetting.prototype.onBuild = function ()
+	PackagesAdminSettings.prototype.onBuild = function ()
 	{
 		require('App/Admin').reloadPackagesList();
 	};
 
-	PackagesAdminSetting.prototype.requestHelper = function (oPackage, bInstall)
+	PackagesAdminSettings.prototype.requestHelper = function (oPackage, bInstall)
 	{
 		var self = this;
 		return function (sResult, oData) {
@@ -89,7 +89,7 @@
 		};
 	};
 
-	PackagesAdminSetting.prototype.deletePackage = function (oPackage)
+	PackagesAdminSettings.prototype.deletePackage = function (oPackage)
 	{
 		if (oPackage)
 		{
@@ -98,7 +98,7 @@
 		}
 	};
 
-	PackagesAdminSetting.prototype.installPackage = function (oPackage)
+	PackagesAdminSettings.prototype.installPackage = function (oPackage)
 	{
 		if (oPackage)
 		{
@@ -107,6 +107,6 @@
 		}
 	};
 
-	module.exports = PackagesAdminSetting;
+	module.exports = PackagesAdminSettings;
 
 }());

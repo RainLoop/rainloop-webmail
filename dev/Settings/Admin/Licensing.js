@@ -14,7 +14,7 @@
 	/**
 	 * @constructor
 	 */
-	function LicensingAdminSetting()
+	function LicensingAdminSettings()
 	{
 		this.licensing = Data.licensing;
 		this.licensingProcess = Data.licensingProcess;
@@ -34,7 +34,7 @@
 		}, this);
 	}
 
-	LicensingAdminSetting.prototype.onBuild = function ()
+	LicensingAdminSettings.prototype.onBuild = function ()
 	{
 		if (this.subscriptionEnabled())
 		{
@@ -42,12 +42,12 @@
 		}
 	};
 
-	LicensingAdminSetting.prototype.onShow = function ()
+	LicensingAdminSettings.prototype.onShow = function ()
 	{
 		this.adminDomain(Settings.settingsGet('AdminDomain'));
 	};
 
-	LicensingAdminSetting.prototype.showActivationForm = function ()
+	LicensingAdminSettings.prototype.showActivationForm = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Activate'));
 	};
@@ -55,7 +55,7 @@
 	/**
 	 * @returns {string}
 	 */
-	LicensingAdminSetting.prototype.licenseExpiredMomentValue = function ()
+	LicensingAdminSettings.prototype.licenseExpiredMomentValue = function ()
 	{
 		var
 			iTime = this.licenseExpired(),
@@ -65,6 +65,6 @@
 		return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
 	};
 
-	module.exports = LicensingAdminSetting;
+	module.exports = LicensingAdminSettings;
 
 }());

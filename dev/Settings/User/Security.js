@@ -16,7 +16,7 @@
 	/**
 	 * @constructor
 	 */
-	function SecurityUserSetting()
+	function SecurityUserSettings()
 	{
 		this.processing = ko.observable(false);
 		this.clearing = ko.observable(false);
@@ -46,37 +46,37 @@
 		this.onSecretResult = _.bind(this.onSecretResult, this);
 	}
 
-	SecurityUserSetting.prototype.showSecret = function ()
+	SecurityUserSettings.prototype.showSecret = function ()
 	{
 		this.secreting(true);
 		Remote.showTwoFactorSecret(this.onSecretResult);
 	};
 
-	SecurityUserSetting.prototype.hideSecret = function ()
+	SecurityUserSettings.prototype.hideSecret = function ()
 	{
 		this.viewSecret('');
 		this.viewBackupCodes('');
 		this.viewUrl('');
 	};
 
-	SecurityUserSetting.prototype.createTwoFactor = function ()
+	SecurityUserSettings.prototype.createTwoFactor = function ()
 	{
 		this.processing(true);
 		Remote.createTwoFactor(this.onResult);
 	};
 
-	SecurityUserSetting.prototype.enableTwoFactor = function ()
+	SecurityUserSettings.prototype.enableTwoFactor = function ()
 	{
 		this.processing(true);
 		Remote.enableTwoFactor(this.onResult, this.viewEnable());
 	};
 
-	SecurityUserSetting.prototype.testTwoFactor = function ()
+	SecurityUserSettings.prototype.testTwoFactor = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorTest'));
 	};
 
-	SecurityUserSetting.prototype.clearTwoFactor = function ()
+	SecurityUserSettings.prototype.clearTwoFactor = function ()
 	{
 		this.viewSecret('');
 		this.viewBackupCodes('');
@@ -86,14 +86,14 @@
 		Remote.clearTwoFactor(this.onResult);
 	};
 
-	SecurityUserSetting.prototype.onShow = function ()
+	SecurityUserSettings.prototype.onShow = function ()
 	{
 		this.viewSecret('');
 		this.viewBackupCodes('');
 		this.viewUrl('');
 	};
 
-	SecurityUserSetting.prototype.onResult = function (sResult, oData)
+	SecurityUserSettings.prototype.onResult = function (sResult, oData)
 	{
 		this.processing(false);
 		this.clearing(false);
@@ -139,7 +139,7 @@
 		}
 	};
 
-	SecurityUserSetting.prototype.onSecretResult = function (sResult, oData)
+	SecurityUserSettings.prototype.onSecretResult = function (sResult, oData)
 	{
 		this.secreting(false);
 
@@ -155,12 +155,12 @@
 		}
 	};
 
-	SecurityUserSetting.prototype.onBuild = function ()
+	SecurityUserSettings.prototype.onBuild = function ()
 	{
 		this.processing(true);
 		Remote.getTwoFactor(this.onResult);
 	};
 
-	module.exports = SecurityUserSetting;
+	module.exports = SecurityUserSettings;
 
 }());

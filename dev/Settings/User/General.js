@@ -19,7 +19,7 @@
 	/**
 	 * @constructor
 	 */
-	function GeneralUserSetting()
+	function GeneralUserSettings()
 	{
 		this.mainLanguage = Data.mainLanguage;
 		this.mainMessagesPerPage = Data.mainMessagesPerPage;
@@ -74,12 +74,12 @@
 		}, this);
 	}
 
-	GeneralUserSetting.prototype.toggleLayout = function ()
+	GeneralUserSettings.prototype.toggleLayout = function ()
 	{
 		this.layout(Enums.Layout.NoPreview === this.layout() ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
 	};
 
-	GeneralUserSetting.prototype.onBuild = function ()
+	GeneralUserSettings.prototype.onBuild = function ()
 	{
 		var self = this;
 
@@ -178,16 +178,16 @@
 		}, 50);
 	};
 
-	GeneralUserSetting.prototype.onShow = function ()
+	GeneralUserSettings.prototype.onShow = function ()
 	{
 		Data.desktopNotifications.valueHasMutated();
 	};
 
-	GeneralUserSetting.prototype.selectLanguage = function ()
+	GeneralUserSettings.prototype.selectLanguage = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'));
 	};
 
-	module.exports = GeneralUserSetting;
+	module.exports = GeneralUserSettings;
 
 }());

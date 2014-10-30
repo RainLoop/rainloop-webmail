@@ -368,3 +368,6 @@
 .icon-resize-out:before {
   content: "\e06d";
 }
+.icon-world:before {
+  content: "\e06f";
+}

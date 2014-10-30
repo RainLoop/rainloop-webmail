@@ -18,7 +18,7 @@
 	/**
 	 * @constructor
 	 */
-	function IdentityUserSetting()
+	function IdentityUserSettings()
 	{
 		this.editor = null;
 
@@ -34,7 +34,7 @@
 		this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	IdentityUserSetting.prototype.onFocus = function ()
+	IdentityUserSettings.prototype.onFocus = function ()
 	{
 		if (!this.editor && this.signatureDom())
 		{
@@ -60,7 +60,7 @@
 		}
 	};
 
-	IdentityUserSetting.prototype.onBuild = function ()
+	IdentityUserSettings.prototype.onBuild = function ()
 	{
 		var self = this;
 		_.delay(function () {
@@ -98,6 +98,6 @@
 		}, 50);
 	};
 
-	module.exports = IdentityUserSetting;
+	module.exports = IdentityUserSettings;
 
 }());

@@ -18,7 +18,7 @@
 	/**
 	 * @constructor
 	 */
-	function PluginsAdminSetting()
+	function PluginsAdminSettings()
 	{
 		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
@@ -34,18 +34,18 @@
 		this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
 	}
 
-	PluginsAdminSetting.prototype.disablePlugin = function (oPlugin)
+	PluginsAdminSettings.prototype.disablePlugin = function (oPlugin)
 	{
 		oPlugin.disabled(!oPlugin.disabled());
 		Remote.pluginDisable(this.onPluginDisableRequest, oPlugin.name, oPlugin.disabled());
 	};
 
-	PluginsAdminSetting.prototype.configurePlugin = function (oPlugin)
+	PluginsAdminSettings.prototype.configurePlugin = function (oPlugin)
 	{
 		Remote.plugin(this.onPluginLoadRequest, oPlugin.name);
 	};
 
-	PluginsAdminSetting.prototype.onBuild = function (oDom)
+	PluginsAdminSettings.prototype.onBuild = function (oDom)
 	{
 		var self = this;
 
@@ -73,13 +73,13 @@
 		});
 	};
 
-	PluginsAdminSetting.prototype.onShow = function ()
+	PluginsAdminSettings.prototype.onShow = function ()
 	{
 		this.pluginsError('');
 		require('App/Admin').reloadPluginList();
 	};
 
-	PluginsAdminSetting.prototype.onPluginLoadRequest = function (sResult, oData)
+	PluginsAdminSettings.prototype.onPluginLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
@@ -87,7 +87,7 @@
 		}
 	};
 
-	PluginsAdminSetting.prototype.onPluginDisableRequest = function (sResult, oData)
+	PluginsAdminSettings.prototype.onPluginDisableRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData)
 		{
@@ -107,6 +107,6 @@
 		require('App/Admin').reloadPluginList();
 	};
 
-	module.exports = PluginsAdminSetting;
+	module.exports = PluginsAdminSettings;
 
 }());

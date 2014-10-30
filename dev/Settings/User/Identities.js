@@ -18,7 +18,7 @@
 	/**
 	 * @constructor
 	 */
-	function IdentitiesUserSetting()
+	function IdentitiesUserSettings()
 	{
 		this.editor = null;
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
@@ -100,7 +100,7 @@
 	 *
 	 * @return {string}
 	 */
-	IdentitiesUserSetting.prototype.formattedAccountIdentity = function ()
+	IdentitiesUserSettings.prototype.formattedAccountIdentity = function ()
 	{
 		var
 			sDisplayName = this.displayName.peek(),
@@ -110,12 +110,12 @@
 		return '' === sDisplayName ? sEmail : '"' + Utils.quoteName(sDisplayName) + '" <' + sEmail + '>';
 	};
 
-	IdentitiesUserSetting.prototype.addNewIdentity = function ()
+	IdentitiesUserSettings.prototype.addNewIdentity = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Identity'));
 	};
 
-	IdentitiesUserSetting.prototype.editIdentity = function (oIdentity)
+	IdentitiesUserSettings.prototype.editIdentity = function (oIdentity)
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Identity'), [oIdentity]);
 	};
@@ -123,7 +123,7 @@
 	/**
 	 * @param {IdentityModel} oIdentityToRemove
 	 */
-	IdentitiesUserSetting.prototype.deleteIdentity = function (oIdentityToRemove)
+	IdentitiesUserSettings.prototype.deleteIdentity = function (oIdentityToRemove)
 	{
 		if (oIdentityToRemove && oIdentityToRemove.deleteAccess())
 		{
@@ -146,7 +146,7 @@
 		}
 	};
 
-	IdentitiesUserSetting.prototype.onFocus = function ()
+	IdentitiesUserSettings.prototype.onFocus = function ()
 	{
 		if (!this.editor && this.signatureDom())
 		{
@@ -172,7 +172,7 @@
 		}
 	};
 
-	IdentitiesUserSetting.prototype.onBuild = function (oDom)
+	IdentitiesUserSettings.prototype.onBuild = function (oDom)
 	{
 		var self = this;
 
@@ -228,6 +228,6 @@
 		}, 50);
 	};
 
-	module.exports = IdentitiesUserSetting;
+	module.exports = IdentitiesUserSettings;
 
 }());

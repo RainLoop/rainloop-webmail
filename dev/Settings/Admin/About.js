@@ -10,7 +10,7 @@
 	/**
 	 * @constructor
 	 */
-	function AboutAdminSetting()
+	function AboutAdminSettings()
 	{
 		var
 			Settings = require('Storage/Settings'),
@@ -67,7 +67,7 @@
 		}, this);
 	}
 
-	AboutAdminSetting.prototype.onBuild = function ()
+	AboutAdminSettings.prototype.onBuild = function ()
 	{
 		if (this.access())
 		{
@@ -75,7 +75,7 @@
 		}
 	};
 
-	AboutAdminSetting.prototype.updateCoreData = function ()
+	AboutAdminSettings.prototype.updateCoreData = function ()
 	{
 		if (!this.coreUpdating())
 		{
@@ -83,6 +83,6 @@
 		}
 	};
 
-	module.exports = AboutAdminSetting;
+	module.exports = AboutAdminSettings;
 
 }());

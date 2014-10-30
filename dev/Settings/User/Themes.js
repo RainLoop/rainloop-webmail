@@ -18,7 +18,7 @@
 	/**
 	 * @constructor
 	 */
-	function ThemesUserSetting()
+	function ThemesUserSettings()
 	{
 		var self = this;
 
@@ -45,7 +45,7 @@
 		}, this);
 	}
 
-	ThemesUserSetting.prototype.onBuild = function ()
+	ThemesUserSettings.prototype.onBuild = function ()
 	{
 		var sCurrentTheme = Data.theme();
 		this.themesObjects(_.map(Data.themes(), function (sTheme) {
@@ -58,6 +58,6 @@
 		}));
 	};
 
-	module.exports = ThemesUserSetting;
+	module.exports = ThemesUserSettings;
 
 }());

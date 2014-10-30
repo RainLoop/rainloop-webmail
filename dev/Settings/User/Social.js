@@ -6,7 +6,7 @@
 	/**
 	 * @constructor
 	 */
-	function SocialUserSetting()
+	function SocialUserSettings()
 	{
 		var
 			Utils = require('Common/Utils'),
@@ -71,6 +71,6 @@
 		});
 	}
 
-	module.exports = SocialUserSetting;
+	module.exports = SocialUserSettings;
 
 }());

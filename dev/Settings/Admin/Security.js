@@ -19,7 +19,7 @@
 	/**
 	 * @constructor
 	 */
-	function SecurityAdminSetting()
+	function SecurityAdminSettings()
 	{
 		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
 
@@ -91,7 +91,7 @@
 		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
 	}
 
-	SecurityAdminSetting.prototype.onNewAdminPasswordResponse = function (sResult, oData)
+	SecurityAdminSettings.prototype.onNewAdminPasswordResponse = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
@@ -109,7 +109,7 @@
 		}
 	};
 
-	SecurityAdminSetting.prototype.onBuild = function ()
+	SecurityAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			Remote = require('Storage/Admin/Remote')
@@ -140,7 +140,7 @@
 		});
 	};
 
-	SecurityAdminSetting.prototype.onHide = function ()
+	SecurityAdminSettings.prototype.onHide = function ()
 	{
 		this.adminPassword('');
 		this.adminPasswordNew('');
@@ -150,11 +150,11 @@
 	/**
 	 * @return {string}
 	 */
-	SecurityAdminSetting.prototype.phpInfoLink = function ()
+	SecurityAdminSettings.prototype.phpInfoLink = function ()
 	{
 		return Links.phpInfo();
 	};
 
-	module.exports = SecurityAdminSetting;
+	module.exports = SecurityAdminSettings;
 
 }());

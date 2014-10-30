@@ -19,7 +19,7 @@
 	/**
 	 * @constructor
 	 */
-	function AccountsUserSetting()
+	function AccountsUserSettings()
 	{
 		this.accounts = Data.accounts;
 
@@ -46,12 +46,12 @@
 		]});
 	}
 
-	AccountsUserSetting.prototype.addNewAccount = function ()
+	AccountsUserSettings.prototype.addNewAccount = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/AddAccount'));
 	};
 
-	AccountsUserSetting.prototype.editAccount = function (oAccountItem)
+	AccountsUserSettings.prototype.editAccount = function (oAccountItem)
 	{
 		if (oAccountItem && oAccountItem.canBeEdit())
 		{
@@ -62,7 +62,7 @@
 	/**
 	 * @param {AccountModel} oAccountToRemove
 	 */
-	AccountsUserSetting.prototype.deleteAccount = function (oAccountToRemove)
+	AccountsUserSettings.prototype.deleteAccount = function (oAccountToRemove)
 	{
 		if (oAccountToRemove && oAccountToRemove.deleteAccess())
 		{
@@ -102,7 +102,7 @@
 		}
 	};
 
-	AccountsUserSetting.prototype.onBuild = function (oDom)
+	AccountsUserSettings.prototype.onBuild = function (oDom)
 	{
 		var self = this;
 
@@ -117,6 +117,6 @@
 		;
 	};
 
-	module.exports = AccountsUserSetting;
+	module.exports = AccountsUserSettings;
 
 }());

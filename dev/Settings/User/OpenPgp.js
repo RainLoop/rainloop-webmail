@@ -17,7 +17,7 @@
 	/**
 	 * @constructor
 	 */
-	function OpenPgpUserSetting()
+	function OpenPgpUserSettings()
 	{
 		this.openpgpkeys = Data.openpgpkeys;
 		this.openpgpkeysPublic = Data.openpgpkeysPublic;
@@ -38,17 +38,17 @@
 		]});
 	}
 
-	OpenPgpUserSetting.prototype.addOpenPgpKey = function ()
+	OpenPgpUserSettings.prototype.addOpenPgpKey = function ()
 	{
 		kn.showScreenPopup(require('View/Popup/AddOpenPgpKey'));
 	};
 
-	OpenPgpUserSetting.prototype.generateOpenPgpKey = function ()
+	OpenPgpUserSettings.prototype.generateOpenPgpKey = function ()
 	{
 		kn.showScreenPopup(require('View/Popup/NewOpenPgpKey'));
 	};
 
-	OpenPgpUserSetting.prototype.viewOpenPgpKey = function (oOpenPgpKey)
+	OpenPgpUserSettings.prototype.viewOpenPgpKey = function (oOpenPgpKey)
 	{
 		if (oOpenPgpKey)
 		{
@@ -59,7 +59,7 @@
 	/**
 	 * @param {OpenPgpKeyModel} oOpenPgpKeyToRemove
 	 */
-	OpenPgpUserSetting.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
+	OpenPgpUserSettings.prototype.deleteOpenPgpKey = function (oOpenPgpKeyToRemove)
 	{
 		if (oOpenPgpKeyToRemove && oOpenPgpKeyToRemove.deleteAccess())
 		{
@@ -87,6 +87,6 @@
 		}
 	};
 
-	module.exports = OpenPgpUserSetting;
+	module.exports = OpenPgpUserSettings;
 
 }());
