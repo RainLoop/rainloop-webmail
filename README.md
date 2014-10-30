@@ -1,7 +1,7 @@
 RainLoop Webmail
 ==================
 
-[![Flattr Button](http://api.flattr.com/button/button-static-50x60.png "Flattr This!")](https://github.com/RainLoop/rainloop-webmail "RainLoop Webmail")
+[![Flattr donate button](http://api.flattr.com/button/button-static-50x60.png "Flattr This!")](https://flattr.com/thing/2999968 "RainLoop Webmail")
 
 ## About
 
