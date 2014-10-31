@@ -441,7 +441,7 @@
 				}
 			});
 
-			if (bAnimate && !Globals.bMobileDevice)
+			if (bAnimate && Globals.bAnimationSupported)
 			{
 				$('.i18n-animation.i18n', oElement).letterfx({
 					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'

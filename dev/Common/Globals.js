@@ -103,7 +103,8 @@
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions');
+	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions') &&
+		 Globals.$html.hasClass('cssanimations');
 
 	/**
 	 * @type {boolean}
@@ -145,9 +146,7 @@
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 		'extraPlugins': 'plain',
-
 		'allowedContent': true,
-		'autoParagraph': false,
 
 		'font_defaultLabel': 'Arial',
 		'fontSize_defaultLabel': '13',
@@ -158,6 +157,7 @@
 	 * @type {Object}
 	 */
 	Globals.oHtmlEditorLangsMap = {
+		'bg': 'bg',
 		'de': 'de',
 		'es': 'es',
 		'fr': 'fr',
@@ -168,6 +168,7 @@
 		'ja-jp': 'ja',
 		'ko': 'ko',
 		'ko-kr': 'ko',
+		'lt': 'lt',
 		'lv': 'lv',
 		'nl': 'nl',
 		'no': 'no',
@@ -178,9 +179,11 @@
 		'ro': 'ro',
 		'ru': 'ru',
 		'sk': 'sk',
+		'sv': 'sv',
 		'tr': 'tr',
 		'ua': 'ru',
 		'zh': 'zh',
+		'zh-tw': 'zh',
 		'zh-cn': 'zh-cn'
 	};
 

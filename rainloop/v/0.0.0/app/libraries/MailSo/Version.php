@@ -19,7 +19,7 @@ final class Version
 	/**
 	 * @var string
 	 */
-	const APP_VERSION = '1.3.3';
+	const APP_VERSION = '2.0.0';
 
 	/**
 	 * @var string
@@ -53,7 +53,7 @@ final class Version
 			$oPhar = new \Phar('mailso.phar');
 			$sSignature = $oPhar->getSignature();
 		}
-		
+
 		return $sSignature;
 	}
 }

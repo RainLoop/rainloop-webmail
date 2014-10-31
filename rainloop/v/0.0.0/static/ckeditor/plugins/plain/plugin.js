@@ -8,10 +8,11 @@
 				.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 				.replace(/[\-_~]{10,}/g, '<hr />')
 				.replace(/\n/g, '<br />')
+				.replace(/ /g, '&nbsp;')
 			;
 		},
 		simpleHtmlToPlain = function (sHtml) {
-			
+
 			var sText = sHtml
 				.replace(/[\s]+/gm, ' ')
 				.replace(/<br[^>]*>/gmi, '\n')
@@ -125,7 +126,7 @@
 			setData: function(data) {
 				this.setValue(window.rainloop_Utils_htmlToPlain ?
 					window.rainloop_Utils_htmlToPlain(data) : simpleHtmlToPlain(data));
-					
+
 				this.editor.fire('dataReady');
 			},
 			setRawData: function(data) {

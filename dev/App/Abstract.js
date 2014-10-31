@@ -129,7 +129,7 @@
 			this.googlePreviewSupportedCache = !!Settings.settingsGet('AllowGoogleSocial') &&
 				!!Settings.settingsGet('AllowGoogleSocialPreview');
 		}
-		
+
 		return this.googlePreviewSupportedCache;
 	};
 
@@ -238,7 +238,7 @@
 		ko.components.register('TextArea', require('Component/TextArea'));
 		ko.components.register('Radio', require('Component/Radio'));
 
-		if (Settings.settingsGet('MaterialDesign'))
+		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
 		}

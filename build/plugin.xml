@@ -38,6 +38,11 @@
 			<param name="plugin-name" value="google-analytics"/>
 		</antcall>
 	</target>
+	<target name="piwik-analytics">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="piwik-analytics"/>
+		</antcall>
+	</target>
 	<target name="convert-headers-styles">
 		<antcall target="_build_plugin_">
 			<param name="plugin-name" value="convert-headers-styles"/>
