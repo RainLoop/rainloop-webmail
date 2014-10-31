@@ -7,12 +7,13 @@ class PiwikAnalyticsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function Init()
 	{
-		if ('' !== $this->Config()->Get('plugin', 'account', ''))
+		if ('' !== $this->Config()->Get('plugin', 'piwik_url', '') &&
+			'' !== $this->Config()->Get('plugin', 'site_id', ''))
 		{
 			$this->addJs('js/include.js');
 		}
 	}
-	
+
 	/**
 	 * @return array
 	 */

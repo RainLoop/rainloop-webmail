@@ -1,6 +1,6 @@
 
 $(function () {
-	
+
 	var
 		sPiwikURL = '' + window.rl.pluginSettingsGet('piwik-analytics', 'piwik_url'),
 		sSiteID = '' + window.rl.pluginSettingsGet('piwik-analytics', 'site_id')
@@ -9,7 +9,7 @@ $(function () {
 	if ('' !== sPiwikURL && '' !== sSiteID)
 	{
 		sPiwikURL = sPiwikURL.replace(/[\\\/\s]+$/, '') + '/';
-		if (/^https?:/i.test(sPiwikURL))
+		if (!/^https?:/i.test(sPiwikURL))
 		{
 			sPiwikURL = 'http://' + sPiwikURL;
 		}
