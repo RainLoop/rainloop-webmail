@@ -408,6 +408,14 @@ class ServiceActions
 						$sRawError = '';
 					}
 				}
+				else
+				{
+					$sRawError = 'Unknown action "'.$sAction.'"';
+				}
+			}
+			else
+			{
+				$sRawError = 'Empty action';
 			}
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
@@ -428,6 +436,7 @@ class ServiceActions
 		if (0 < \strlen($sRawError))
 		{
 			$this->oActions->Logger()->Write($sRawError, \MailSo\Log\Enumerations\Type::ERROR);
+			$this->oActions->Logger()->WriteDump($this->aPaths, \MailSo\Log\Enumerations\Type::ERROR, 'PATHS');
 		}
 
 		if ($oException)

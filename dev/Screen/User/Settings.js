@@ -81,7 +81,7 @@
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if (Settings.settingsGet('AllowGoogleSocial') ||
+		if ((Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
 			Settings.settingsGet('AllowFacebookSocial') ||
 			Settings.settingsGet('AllowTwitterSocial'))
 		{

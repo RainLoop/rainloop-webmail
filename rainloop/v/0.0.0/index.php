@@ -7,6 +7,10 @@
 		@ini_set('magic_quotes_gpc', 0);
 		@ini_set('magic_quotes_runtime', 0);
 
+		@ini_set('suhosin.session.encrypt', 0);
+		@ini_set('suhosin.get.max_name_length', 2014);
+		@ini_set('suhosin.get.max_value_length', 2014);
+
 		define('APP_DEFAULT_DENY_ALL_HTACCESS', 'Deny from all
 <IfModule mod_autoindex.c>
 Options -Indexes

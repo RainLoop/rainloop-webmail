@@ -10,6 +10,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
+		Settings = require('Storage/Settings'),
 		Remote = require('Storage/Admin/Remote'),
 
 		kn = require('Knoin/Knoin'),
@@ -23,6 +24,8 @@
 	function LoginAdminView()
 	{
 		AbstractView.call(this, 'Center', 'AdminLogin');
+
+		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 
 		this.login = ko.observable('');
 		this.password = ko.observable('');

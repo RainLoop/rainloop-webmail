@@ -55,6 +55,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 	protected function defaultValues()
 	{
 		return array(
+
 			'webmail' => array(
 
 				'title'							=> array('RainLoop Webmail', 'Text displayed as page title'),
@@ -188,9 +189,9 @@ Examples:
 			),
 
 			'social' => array(
-				'google_enable' => array(false, 'Google'),
-				'google_enable_auth' => array(true),
-				'google_enable_drive' => array(true),
+				'google_enable' => array(true, 'Google'),
+				'google_enable_auth' => array(false),
+				'google_enable_drive' => array(false),
 				'google_enable_preview' => array(true),
 				'google_client_id' => array(''),
 				'google_client_secret' => array(''),

@@ -326,8 +326,11 @@ class Actions
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
-		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('/s/', '')), ' /');
+		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('s', '')), ' /');
+		$sSubSubQuerty = \trim(\trim($this->Http()->GetQuery('ss', '')), ' /');
+
 		$sQuery .= 0 < \strlen($sSubQuerty) ? '/'.$sSubQuerty : '';
+		$sQuery .= 0 < \strlen($sSubSubQuerty) ? '/'.$sSubSubQuerty : '';
 
 		if ('' === $this->GetSpecAuthToken())
 		{
@@ -773,15 +776,21 @@ class Actions
 				$oHttp = $this->Http();
 
 				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
-					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').
-					'][GUID:'.\MailSo\Log\Logger::Guid().']');
-
-				$this->oLogger->Write(
-					'[APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').']'.
-					'[MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').']'.
-					'[PDO:'.(\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off').']'.
-					'['.\implode(',', \stream_get_transports()).']'
+					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
+					$oHttp->GetServer('SERVER_SOFTWARE', '~').']['.
+					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~' ).']'
 				);
+
+				$sPdo = (\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off');
+				$sPdo = empty($sPdo) ? '~' : $sPdo;
+
+				$this->oLogger->Write('['.
+					'Suhosin:'.(\extension_loaded('suhosin') || @\ini_get('suhosin.get.max_value_length') ? 'on' : 'off').
+					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
+					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
+					'][PDO:'.$sPdo.
+					'][Streams:'.\implode(',', \stream_get_transports()).
+				']');
 
 				$this->oLogger->Write(
 					'['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
@@ -977,7 +986,7 @@ class Actions
 		static $bResult = null;
 		if (null === $bResult)
 		{
-			$bResult = $this->licenseParser($this->licenseHelper(false, true));
+//			$bResult = $this->licenseParser($this->licenseHelper(false, true));
 			$bResult = true;
 		}
 
@@ -4009,7 +4018,7 @@ class Actions
 			$aFolders =& $oFolders->GetAsArray();
 			if (\is_array($aFolders) && 0 < \count($aFolders))
 			{
-				if ($bListFolderTypes && false)
+				if ($bListFolderTypes)
 				{
 					foreach ($aFolders as $oFolder)
 					{
@@ -4042,7 +4051,7 @@ class Actions
 					$sName = $oFolder->Name();
 					$sFullName = $oFolder->FullName();
 
-					if (isset($aMap[$sName], $aMap[$sFullName]))
+					if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
 					{
 						$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
 						if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
@@ -4159,16 +4168,27 @@ class Actions
 								}
 							}
 
-							try
+							$sFullNameToCheck = \MailSo\Base\Utils::ConvertEncoding($mFolderNameToCreate,
+								\MailSo\Base\Enumerations\Charset::UTF_8, \MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
+
+							if (0 < \strlen(\trim($sParent)))
 							{
-								if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent))
-								{
-									$bDoItAgain = true;
-								}
+								$sFullNameToCheck = $sParent.$sDelimiter.$sFullNameToCheck;
 							}
-							catch (\Exception $oException)
+
+							if (!$oFolderCollection->GetByFullNameRaw($sFullNameToCheck))
 							{
-								$this->Logger()->WriteException($oException);
+								try
+								{
+									if ($this->MailClient()->FolderCreate($mFolderNameToCreate, $sParent, true, $sDelimiter))
+									{
+										$bDoItAgain = true;
+									}
+								}
+								catch (\Exception $oException)
+								{
+									$this->Logger()->WriteException($oException);
+								}
 							}
 						}
 					}
@@ -6492,8 +6512,9 @@ class Actions
 						$aParams[2] = 'View';
 
 						\array_shift($aParams);
+						$sLast = \array_pop($aParams);
 
-						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&/s/=/'.implode('/', $aParams);
+						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&s=/'.implode('/', $aParams).'/&ss=/'.$sLast;
 						$sFullUrl = 'http://docs.google.com/viewer?embedded=true&url='.urlencode($sUrl);
 
 						@\header('Content-Type: text/html; charset=utf-8');

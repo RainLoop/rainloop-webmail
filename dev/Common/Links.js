@@ -16,7 +16,8 @@
 
 		this.sBase = '#/';
 		this.sServer = './?';
-		this.sSubQuery = '&/s/=/';
+		this.sSubQuery = '&s=/';
+		this.sSubSubQuery = '&ss=/';
 		this.sVersion = Settings.settingsGet('Version');
 		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
 		this.sStaticPrefix = Settings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
@@ -44,7 +45,7 @@
 	 */
 	Links.prototype.attachmentDownload = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + this.sSubSubQuery + sDownload;
 	};
 
 	/**
@@ -53,7 +54,7 @@
 	 */
 	Links.prototype.attachmentPreview = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/View/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/View/' + this.sSubSubQuery + sDownload;
 	};
 
 	/**
@@ -62,7 +63,7 @@
 	 */
 	Links.prototype.attachmentPreviewAsPlain = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + this.sSubSubQuery + sDownload;
 	};
 
 	/**
@@ -71,7 +72,7 @@
 	 */
 	Links.prototype.attachmentFramed = function (sDownload)
 	{
-		return this.sServer + '/Raw' + this.sSubQuery + this.sSpecSuffix + '/FramedView/' + sDownload;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/FramedView/' + this.sSubSubQuery + sDownload;
 	};
 
 	/**
@@ -130,7 +131,7 @@
 	 */
 	Links.prototype.messageViewLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + this.sSubSubQuery + sRequestHash;
 	};
 
 	/**
@@ -139,7 +140,7 @@
 	 */
 	Links.prototype.messageDownloadLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + this.sSubSubQuery + sRequestHash;
 	};
 
 	/**

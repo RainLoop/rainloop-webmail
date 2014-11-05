@@ -63,7 +63,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	 *
 	 * @return \MailSo\Mail\Folder|null
 	 */
-	public function &GetByFullNameRaw($sFullNameRaw)
+	public function GetByFullNameRaw($sFullNameRaw)
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -72,6 +72,18 @@ class FolderCollection extends \MailSo\Base\Collection
 			{
 				$mResult = $oFolder;
 				break;
+			}
+			else if ($oFolder->HasSubFolders())
+			{
+				$mResult = $oFolder->SubFolders(true)->GetByFullNameRaw($sFullNameRaw);
+				if ($mResult)
+				{
+					break;
+				}
+				else
+				{
+					$mResult = null;
+				}
 			}
 		}
 
@@ -97,7 +109,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param array $aUnsortedMailFolders
 	 *

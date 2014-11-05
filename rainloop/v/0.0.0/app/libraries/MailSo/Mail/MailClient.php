@@ -2095,41 +2095,45 @@ class MailClient
 	}
 
 	/**
-	 * @param string $sFolderNameInUtf
+	 * @param string $sFolderNameInUtf8
 	 * @param string $sFolderParentFullNameRaw = ''
 	 * @param bool $bSubscribeOnCreation = true
+	 * @param string $sDelimiter = ''
 	 *
 	 * @return \MailSo\Mail\MailClient
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function FolderCreate($sFolderNameInUtf, $sFolderParentFullNameRaw = '', $bSubscribeOnCreation = true)
+	public function FolderCreate($sFolderNameInUtf8, $sFolderParentFullNameRaw = '', $bSubscribeOnCreation = true, $sDelimiter = '')
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sFolderNameInUtf, true) ||
+		if (!\MailSo\Base\Validator::NotEmptyString($sFolderNameInUtf8, true) ||
 			!\is_string($sFolderParentFullNameRaw))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$sFolderNameInUtf = trim($sFolderNameInUtf);
+		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
 
-		$aFolders = $this->oImapClient->FolderList('', 0 === \strlen(\trim($sFolderParentFullNameRaw)) ? 'INBOX' : $sFolderParentFullNameRaw);
-		if (!\is_array($aFolders) || !isset($aFolders[0]))
+		if (0 === \strlen($sDelimiter) || 0 < \strlen(\trim($sFolderParentFullNameRaw)))
 		{
-			// TODO
-			throw new \MailSo\Mail\Exceptions\RuntimeException(
-				0 === \strlen(trim($sFolderParentFullNameRaw))
-					? 'Cannot get folder delimiter'
-					: 'Cannot create folder in non-existen parent folder');
+			$aFolders = $this->oImapClient->FolderList('', 0 === \strlen(\trim($sFolderParentFullNameRaw)) ? 'INBOX' : $sFolderParentFullNameRaw);
+			if (!\is_array($aFolders) || !isset($aFolders[0]))
+			{
+				// TODO
+				throw new \MailSo\Mail\Exceptions\RuntimeException(
+					0 === \strlen(trim($sFolderParentFullNameRaw))
+						? 'Cannot get folder delimiter'
+						: 'Cannot create folder in non-existen parent folder');
+			}
+
+			$sDelimiter = $aFolders[0]->Delimiter();
+			if (0 < \strlen($sDelimiter) && 0 < \strlen(\trim($sFolderParentFullNameRaw)))
+			{
+				$sFolderParentFullNameRaw .= $sDelimiter;
+			}
 		}
 
-		$sDelimiter = $aFolders[0]->Delimiter();
-		if (0 < \strlen($sDelimiter) && 0 < \strlen(\trim($sFolderParentFullNameRaw)))
-		{
-			$sFolderParentFullNameRaw .= $sDelimiter;
-		}
-
-		$sFullNameRawToCreate = \MailSo\Base\Utils::ConvertEncoding($sFolderNameInUtf,
+		$sFullNameRawToCreate = \MailSo\Base\Utils::ConvertEncoding($sFolderNameInUtf8,
 			\MailSo\Base\Enumerations\Charset::UTF_8,
 			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
 

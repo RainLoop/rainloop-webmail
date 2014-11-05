@@ -244,6 +244,7 @@
 		}
 		else
 		{
+//			ko.components.register('Checkbox', require('Component/Classic/Checkbox'));
 			ko.components.register('Checkbox', require('Component/Checkbox'));
 		}
 
