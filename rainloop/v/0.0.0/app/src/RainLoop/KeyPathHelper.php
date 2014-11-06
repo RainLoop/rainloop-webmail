@@ -25,6 +25,16 @@ class KeyPathHelper
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return string
+	 */
+	static public function UserBackground($sEmail)
+	{
+		return '/UserBackground/Base64/'.$sEmail.'/Data/';
+	}
+
+	/**
 	 * @param string $sSsoHash
 	 *
 	 * @return string

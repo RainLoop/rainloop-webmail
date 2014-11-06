@@ -26,8 +26,9 @@
 		this.language = Data.language;
 		this.theme = Data.theme;
 
-		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 		this.capaThemes = Data.capaThemes;
+		this.capaUserBackground = Data.capaUserBackground;
+		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 		this.capaGravatar = Data.capaGravatar;
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
@@ -116,6 +117,12 @@
 			self.capaThemes.subscribe(function (bValue) {
 				Remote.saveAdminConfig(null, {
 					'CapaThemes': bValue ? '1' : '0'
+				});
+			});
+
+			self.capaUserBackground.subscribe(function (bValue) {
+				Remote.saveAdminConfig(null, {
+					'CapaUserBackground': bValue ? '1' : '0'
 				});
 			});
 

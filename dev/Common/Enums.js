@@ -41,6 +41,7 @@
 		'Prefetch': 'PREFETCH',
 		'Gravatar': 'GRAVATAR',
 		'Themes': 'THEMES',
+		'UserBackground': 'USER_BACKGROUND',
 		'Filters': 'FILTERS',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'

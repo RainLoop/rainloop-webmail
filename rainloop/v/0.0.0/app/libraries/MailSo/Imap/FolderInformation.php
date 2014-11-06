@@ -64,7 +64,7 @@ class FolderInformation
 
 	/**
 	 * @access private
-	 * 
+	 *
 	 * @param string $sFolderName
 	 * @param bool $bIsWritable
 	 */
@@ -99,6 +99,6 @@ class FolderInformation
 	 */
 	public function IsFlagSupported($sFlag)
 	{
-		return in_array('\\*', $this->PermanentFlags) || in_array($sFlag, $this->PermanentFlags);
+		return \in_array('\\*', $this->PermanentFlags) || \in_array($sFlag, $this->PermanentFlags);
 	}
 }

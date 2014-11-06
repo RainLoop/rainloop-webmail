@@ -874,7 +874,8 @@
 
 		Globals.sAnimationType = Enums.InterfaceAnimation.Full;
 
-		oData.capaThemes = ko.observable(false);
+		oData.capaThemes = ko.observable(true);
+		oData.capaUserBackground = ko.observable(false);
 		oData.allowLanguagesOnSettings = ko.observable(true);
 		oData.allowLanguagesOnLogin = ko.observable(true);
 

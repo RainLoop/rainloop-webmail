@@ -192,23 +192,27 @@ class MailClient
 	 * @param string $sFolderName
 	 * @param string $sMessageFlag
 	 * @param bool $bSetAction = true
+	 * @param bool $sSkipUnsupportedFlag = false
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 * @throws \MailSo\Mail\Exceptions\Exception
 	 */
-	public function MessageSetFlagToAll($sFolderName, $sMessageFlag, $bSetAction = true)
+	public function MessageSetFlagToAll($sFolderName, $sMessageFlag, $bSetAction = true, $sSkipUnsupportedFlag = false)
 	{
 		$this->oImapClient->FolderSelect($sFolderName);
 
 		$oFolderInfo = $this->oImapClient->FolderCurrentInformation();
 		if (!$oFolderInfo || !$oFolderInfo->IsFlagSupported($sMessageFlag))
 		{
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag is not supported.');
+			if (!$sSkipUnsupportedFlag)
+			{
+				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+			}
 		}
 
-		if (0 < $oFolderInfo->Exists)
+		if ($oFolderInfo && 0 < $oFolderInfo->Exists)
 		{
 			$sStoreAction = $bSetAction
 				? \MailSo\Imap\Enumerations\StoreAction::ADD_FLAGS_SILENT
@@ -241,7 +245,7 @@ class MailClient
 		{
 			if (!$sSkipUnsupportedFlag)
 			{
-				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag is not supported.');
+				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 		else
@@ -269,7 +273,7 @@ class MailClient
 	public function MessageSetFlagged($sFolderName, $aIndexRange, $bIndexIsUid, $bSetAction = true)
 	{
 		$this->MessageSetFlag($sFolderName, $aIndexRange, $bIndexIsUid,
-			\MailSo\Imap\Enumerations\MessageFlag::FLAGGED, $bSetAction);
+			\MailSo\Imap\Enumerations\MessageFlag::FLAGGED, $bSetAction, true);
 	}
 
 	/**
@@ -282,7 +286,7 @@ class MailClient
 	 */
 	public function MessageSetSeenToAll($sFolderName, $bSetAction = true)
 	{
-		$this->MessageSetFlagToAll($sFolderName, \MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction);
+		$this->MessageSetFlagToAll($sFolderName, \MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true);
 	}
 
 	/**
@@ -298,7 +302,7 @@ class MailClient
 	public function MessageSetSeen($sFolderName, $aIndexRange, $bIndexIsUid, $bSetAction = true)
 	{
 		$this->MessageSetFlag($sFolderName, $aIndexRange, $bIndexIsUid,
-			\MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction);
+			\MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true);
 	}
 
 	/**
@@ -321,7 +325,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->oImapClient->FolderExamine($sFolderName);
+		$this->oImapClient->FolderSelect($sFolderName);
 
 		$oBodyStructure = null;
 		$oMessage = false;
@@ -421,7 +425,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->oImapClient->FolderExamine($sFolderName);
+		$this->oImapClient->FolderSelect($sFolderName);
 
 		$sFileName = '';
 		$sContentType = '';
@@ -720,7 +724,7 @@ class MailClient
 
 		if (0 < \strlen($sPrevUidNext) && (string) $sPrevUidNext !== (string) $sCurrentUidNext)
 		{
-			$this->oImapClient->FolderExamine($sFolderName);
+			$this->oImapClient->FolderSelect($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
@@ -796,7 +800,7 @@ class MailClient
 		$bSelect = false;
 		if ($this->IsGmail())
 		{
-			$this->oImapClient->FolderExamine($sFolderName);
+			$this->oImapClient->FolderSelect($sFolderName);
 			$bSelect = true;
 		}
 
@@ -804,7 +808,7 @@ class MailClient
 		{
 			if (!$bSelect)
 			{
-				$this->oImapClient->FolderExamine($sFolderName);
+				$this->oImapClient->FolderSelect($sFolderName);
 			}
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(
@@ -1800,7 +1804,7 @@ class MailClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->oImapClient->FolderExamine($sFolderName);
+		$this->oImapClient->FolderSelect($sFolderName);
 
 		$oMessageCollection = MessageCollection::NewInstance();
 		$oMessageCollection->FolderName = $sFolderName;

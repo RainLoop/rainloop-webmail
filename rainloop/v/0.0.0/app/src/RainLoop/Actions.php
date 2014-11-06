@@ -2277,9 +2277,11 @@ class Actions
 
 		$bMainCache = false;
 		$bFilesCache = false;
+		$bVersionsCache = false;
 
 		$iOneDay1 = 60 * 60 * 23;
 		$iOneDay2 = 60 * 60 * 25;
+		$iOneDay3 = 60 * 60 * 30;
 
 		$sTimers = $this->StorageProvider()->Get(null,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers', '');
@@ -2288,6 +2290,7 @@ class Actions
 
 		$iMainCacheTime = !empty($aTimers[0]) && \is_numeric($aTimers[0]) ? (int) $aTimers[0] : 0;
 		$iFilesCacheTime = !empty($aTimers[1]) && \is_numeric($aTimers[1]) ? (int) $aTimers[1] : 0;
+		$iVersionsCacheTime = !empty($aTimers[2]) && \is_numeric($aTimers[2]) ? (int) $aTimers[2] : 0;
 
 		if (0 === $iMainCacheTime || $iMainCacheTime + $iOneDay1 < \time())
 		{
@@ -2301,13 +2304,19 @@ class Actions
 			$iFilesCacheTime = \time();
 		}
 
-		if ($bMainCache || $bFilesCache)
+		if (0 === $iVersionsCacheTime || $iVersionsCacheTime + $iOneDay3 < \time())
+		{
+			$bVersionsCache = true;
+			$iVersionsCacheTime = \time();
+		}
+
+		if ($bMainCache || $bFilesCache || $bVersionsCache)
 		{
 			if (!$this->StorageProvider()->Put(null,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
-				\implode(',', array($iMainCacheTime, $iFilesCacheTime))))
+				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iVersionsCacheTime))))
 			{
-				$bMainCache = $bFilesCache = false;
+				$bMainCache = $bFilesCache = $bVersionsCache = false;
 			}
 		}
 
@@ -2317,12 +2326,15 @@ class Actions
 			$this->Cacher()->GC(48);
 			$this->Logger()->Write('Cacher GC: End');
 		}
-
-		if ($bFilesCache)
+		else if ($bFilesCache)
 		{
 			$this->Logger()->Write('Files GC: Begin');
 			$this->FilesProvider()->GC(48);
 			$this->Logger()->Write('Files GC: End');
+		}
+		else if ($bVersionsCache)
+		{
+			$this->removeOldVersion();
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
@@ -2420,6 +2432,9 @@ class Actions
 			case \RainLoop\Enumerations\Capa::THEMES:
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_themes', 'bool');
 				break;
+			case \RainLoop\Enumerations\Capa::USER_BACKGROUND:
+				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_user_background', 'bool');
+				break;
 			case \RainLoop\Enumerations\Capa::OPEN_PGP:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'openpgp', 'bool');
 				break;
@@ -2510,10 +2525,10 @@ class Actions
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
 		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
 		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
+		$this->setCapaFromParams($oConfig, 'CapaUserBackground', \RainLoop\Enumerations\Capa::USER_BACKGROUND);
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
-
 
 		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered')) && $this->PremType())
 		{
@@ -3311,6 +3326,7 @@ class Actions
 		$this->IsAdminLoggined();
 
 		$bReal = false;
+		$sNewVersion = '';
 
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 		$bRainLoopAccess = $this->rainLoopCoreAccess();
@@ -3347,7 +3363,6 @@ class Actions
 						\is_dir($sTmpFolder.'/rainloop/'))
 					{
 						$aMatch = array();
-						$sNewVersion = '';
 						$sIndexFile = \file_get_contents($sTmpFolder.'/index.php');
 						if (\preg_match('/\'APP_VERSION\', \'([^\']+)\'/', $sIndexFile, $aMatch) && !empty($aMatch[1]))
 						{
@@ -3395,6 +3410,40 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
+	}
+
+	public function removeOldVersion()
+	{
+		$this->Logger()->Write('Versions GC: Begin');
+
+		$iLimitToDelete = 3;
+
+		$sVPath = APP_INDEX_ROOT_PATH.'rainloop/v/';
+		$aDirs = @\array_map('basename', @\array_filter(@\glob($sVPath.'*'), 'is_dir'));
+
+		if (\is_array($aDirs) && 5 < \count($aDirs))
+		{
+			\uasort($aDirs, 'version_compare');
+
+			foreach ($aDirs as $sName)
+			{
+				if (APP_DEV_VERSION !== $sName && APP_VERSION !== $sName)
+				{
+					$this->Logger()->Write('Versions GC: Begin to remove  "'.$sVPath.$sName.'" version');
+					@\MailSo\Base\Utils::RecRmDir($sVPath.$sName);
+					$this->Logger()->Write('Versions GC: End to remove  "'.$sVPath.$sName.'" version');
+
+					$iLimitToDelete--;
+
+					if (0 > $iLimitToDelete)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		$this->Logger()->Write('Versions GC: End');
 	}
 
 	/**
@@ -6208,39 +6257,24 @@ class Actions
 	public function Upload()
 	{
 		$oAccount = $this->getAccountFromToken();
-		$oConfig = $this->Config();
 
-		$sInputName = 'uploader';
 		$aResponse = array();
 
-		$iError = UploadError::UNKNOWN;
-		$iSizeLimit = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0)) * 1024 * 1024;
-		if ($oAccount)
+		$aFile = $this->GetActionParam('File', null);
+		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
+
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
 		{
-			$iError = UPLOAD_ERR_OK;
-			$_FILES = isset($_FILES) ? $_FILES : null;
-			if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
+			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
 			{
-				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
-
-				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
-				{
-					$iError = UploadError::CONFIG_SIZE;
-				}
-
-				$sSavedName = 'upload-post-'.md5($_FILES[$sInputName]['name'].$_FILES[$sInputName]['tmp_name']);
-
-				if (UPLOAD_ERR_OK === $iError)
-				{
-					if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES[$sInputName]['tmp_name']))
-					{
-						$iError = UploadError::ON_SAVING;
-					}
-				}
-
-				$sUploadName = $_FILES[$sInputName]['name'];
-				$iSize = $_FILES[$sInputName]['size'];
-				$sMimeType = $_FILES[$sInputName]['type'];
+				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+			}
+			else
+			{
+				$sUploadName = $aFile['name'];
+				$iSize = $aFile['size'];
+				$sMimeType = $aFile['type'];
 
 				$aResponse['Attachment'] = array(
 					'Name' => $sUploadName,
@@ -6249,20 +6283,13 @@ class Actions
 					'Size' =>  (int) $iSize
 				);
 			}
-			else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
-			{
-				$iError = UPLOAD_ERR_INI_SIZE;
-			}
-			else
-			{
-				$iError = UploadError::EMPTY_FILES_DATA;
-			}
 		}
 
 		if (UPLOAD_ERR_OK !== $iError)
 		{
-			$iClientError = UploadClientError::NORMAL;
+			$iClientError = \RainLoop\Enumerations\UploadClientError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+
 			if (!empty($sError))
 			{
 				$aResponse['ErrorCode'] = $iClientError;
@@ -6271,6 +6298,136 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aResponse);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function UploadBackground()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$bResponse = false;
+
+		$aFile = $this->GetActionParam('File', null);
+		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
+
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
+		{
+			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
+			{
+				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+			}
+			else
+			{
+				$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+				if (@\is_resource($rData))
+				{
+					$sData = @\stream_get_contents($rData);
+					if (!empty($sData) && 0 < \strlen($sData))
+					{
+						$bResponse = $this->StorageProvider()->Put($oAccount,
+							\RainLoop\Providers\Storage\Enumerations\StorageType::USER,
+							\RainLoop\KeyPathHelper::UserBackground($oAccount->Email()),
+							\base64_encode($sData)
+						);
+					}
+
+					unset($sData);
+				}
+
+				if (@\is_resource($rData))
+				{
+					@\fclose($rData);
+				}
+
+				unset($rData);
+			}
+
+			$this->FilesProvider()->Clear($oAccount, $sSavedName);
+		}
+
+		if (UPLOAD_ERR_OK !== $iError)
+		{
+			$iClientError = \RainLoop\Enumerations\UploadClientError::NORMAL;
+			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+
+			if (!empty($sError))
+			{
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $bResponse);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function UploadContacts()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$mResponse = false;
+
+		$aFile = $this->GetActionParam('File', null);
+		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
+
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
+		{
+			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
+			{
+				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+			}
+			else
+			{
+				@\ini_set('auto_detect_line_endings', true);
+				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+				if ($mData)
+				{
+					$sFileStart = @\fread($mData, 20);
+					\rewind($mData);
+
+					if (false !== $sFileStart)
+					{
+						$sFileStart = \trim($sFileStart);
+						if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
+						{
+							$mResponse = $this->importContactsFromVcfFile($oAccount, $mData, $sFileStart);
+						}
+						else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
+						{
+							$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
+						}
+					}
+				}
+
+				if (\is_resource($mData))
+				{
+					@\fclose($mData);
+				}
+
+				unset($mData);
+				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+
+				@\ini_set('auto_detect_line_endings', false);
+			}
+		}
+
+		if (UPLOAD_ERR_OK !== $iError)
+		{
+			$iClientError = \RainLoop\Enumerations\UploadClientError::NORMAL;
+			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+
+			if (!empty($sError))
+			{
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $mResponse);
 	}
 
 	/**
@@ -6363,102 +6520,6 @@ class Actions
 		}
 
 		return $iCount;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function UploadContacts()
-	{
-		$oAccount = $this->getAccountFromToken();
-		$oConfig = $this->Config();
-
-		$sInputName = 'uploader';
-		$mResponse = false;
-
-		$iError = UploadError::UNKNOWN;
-		$iSizeLimit = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0)) * 1024 * 1024;
-
-		if ($oAccount)
-		{
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
-			{
-				$iError = UPLOAD_ERR_OK;
-				$_FILES = isset($_FILES) ? $_FILES : null;
-				if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
-				{
-					$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
-
-					if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
-					{
-						$iError = UploadError::CONFIG_SIZE;
-					}
-
-					$sSavedName = 'upload-post-'.md5($_FILES[$sInputName]['name'].$_FILES[$sInputName]['tmp_name']);
-
-					if (UPLOAD_ERR_OK === $iError)
-					{
-						if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES[$sInputName]['tmp_name']))
-						{
-							$iError = UploadError::ON_SAVING;
-						}
-
-						@\ini_set('auto_detect_line_endings', true);
-						$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-						if ($mData)
-						{
-							$sFileStart = @\fread($mData, 20);
-							\rewind($mData);
-
-							if (false !== $sFileStart)
-							{
-								$sFileStart = \trim($sFileStart);
-								if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
-								{
-									$mResponse = $this->importContactsFromVcfFile($oAccount, $mData, $sFileStart);
-								}
-								else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
-								{
-									$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
-								}
-							}
-						}
-
-						if (\is_resource($mData))
-						{
-							@\fclose($mData);
-						}
-
-						unset($mData);
-						$this->FilesProvider()->Clear($oAccount, $sSavedName);
-
-						@\ini_set('auto_detect_line_endings', false);
-					}
-				}
-				else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
-				{
-					$iError = UPLOAD_ERR_INI_SIZE;
-				}
-				else
-				{
-					$iError = UploadError::EMPTY_FILES_DATA;
-				}
-			}
-		}
-
-		if (UPLOAD_ERR_OK !== $iError)
-		{
-			$iClientError = UploadClientError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-
-			if (!empty($sError))
-			{
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResponse);
 	}
 
 	/**
@@ -6612,6 +6673,11 @@ class Actions
 		if ($oConfig->Get('webmail', 'allow_themes', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::THEMES;
+		}
+
+		if ($oConfig->Get('webmail', 'allow_user_background', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::USER_BACKGROUND;
 		}
 
 		if ($oConfig->Get('security', 'openpgp', false))

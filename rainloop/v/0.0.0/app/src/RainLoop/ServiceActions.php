@@ -269,14 +269,51 @@ class ServiceActions
 	 */
 	private function privateUpload($sAction)
 	{
+		$oConfig = $this->Config();
+
 		@\ob_start();
 		$aResponseItem = null;
 		try
 		{
+			$aFile = null;
+			$sInputName = 'uploader';
+			$iError = \RainLoop\Enumerations\UploadError::UNKNOWN;
+			$iSizeLimit = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0)) * 1024 * 1024;
+
+			$iError = UPLOAD_ERR_OK;
+			$_FILES = isset($_FILES) ? $_FILES : null;
+			if (isset($_FILES, $_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size']))
+			{
+				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
+
+				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
+				{
+					$iError = \RainLoop\Enumerations\UploadError::CONFIG_SIZE;
+				}
+
+				if (UPLOAD_ERR_OK === $iError)
+				{
+					$aFile = $_FILES[$sInputName];
+				}
+			}
+			else if (!isset($_FILES) || !is_array($_FILES) || 0 === count($_FILES))
+			{
+				$iError = UPLOAD_ERR_INI_SIZE;
+			}
+			else
+			{
+				$iError = \RainLoop\Enumerations\UploadError::EMPTY_FILES_DATA;
+			}
+
 			if (\method_exists($this->oActions, $sAction) &&
 				\is_callable(array($this->oActions, $sAction)))
 			{
-				$this->oActions->SetActionParams($this->oHttp->GetQueryAsArray(), $sAction);
+				$aActionParams = $this->oHttp->GetQueryAsArray();
+
+				$aActionParams['File'] = $aFile;
+				$aActionParams['Error'] = $iError;
+
+				$this->oActions->SetActionParams($aActionParams, $sAction);
 
 				$aResponseItem = \call_user_func(array($this->oActions, $sAction));
 			}

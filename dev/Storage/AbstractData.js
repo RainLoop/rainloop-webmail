@@ -49,6 +49,7 @@
 		this.weakPassword(!!Settings.settingsGet('WeakPassword'));
 
 		this.capaThemes(Settings.capa(Enums.Capa.Themes));
+		this.capaUserBackground(Settings.capa(Enums.Capa.UserBackground));
 		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
 		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
