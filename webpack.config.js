@@ -29,6 +29,7 @@ module.exports = {
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
 		'SimplePace': 'window.SimplePace',
+		'queue': 'window.queue',
 		'moment': 'moment',
 		'ifvisible': 'ifvisible',
 		'crossroads': 'crossroads',

@@ -39,6 +39,8 @@
 
 		this.mainLanguage(Settings.settingsGet('Language'));
 		this.mainTheme(Settings.settingsGet('Theme'));
+		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
+		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
 
 		this.capaAdditionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
 		this.capaAdditionalIdentities(Settings.capa(Enums.Capa.AdditionalIdentities));

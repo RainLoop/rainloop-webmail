@@ -111,7 +111,7 @@ cfg.paths.js = {
 			'vendors/json2.min.js',
 			'vendors/labjs/LAB.min.js',
 			'vendors/simple-pace/simple-pace-1.0.min.js',
-			'vendors/rl/rl-1.2.min.js'
+			'vendors/rl/rl-1.3.min.js'
 		]
 	},
 	openpgp: {
@@ -148,6 +148,8 @@ cfg.paths.js = {
 			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
 			'vendors/jquery-letterfx/jquery-letterfx.min.js',
+			'vendors/jquery-backstretch/jquery.backstretch.min.js',
+			'vendors/queue/queue.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
 			'vendors/routes/signals.min.js',
@@ -367,8 +369,8 @@ regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js'
 regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
 	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.2.min.js',
-	'/*! RainLoop Index Helper v1.2 (c) 2014 RainLoop Team; Licensed under MIT */\n');
+regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.3.min.js',
+	'/*! RainLoop Index Helper v1.3 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
 gulp.task('package-inc-release', function() {
 	fs.writeFileSync('package.json',

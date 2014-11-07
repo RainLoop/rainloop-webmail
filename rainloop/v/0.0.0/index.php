@@ -2,28 +2,20 @@
 
 	if (defined('APP_VERSION'))
 	{
-		@ini_set('register_globals', 0);
-		@ini_set('zend.ze1_compatibility_mode', 0);
-		@ini_set('magic_quotes_gpc', 0);
-		@ini_set('magic_quotes_runtime', 0);
+		if (!defined('APP_START'))
+		{
+			define('APP_START', microtime(true));
 
-		@ini_set('suhosin.session.encrypt', 0);
-		@ini_set('suhosin.get.max_name_length', 2014);
-		@ini_set('suhosin.get.max_value_length', 2014);
+			@ini_set('register_globals', 0);
+			@ini_set('zend.ze1_compatibility_mode', 0);
+			@ini_set('magic_quotes_gpc', 0);
+			@ini_set('magic_quotes_runtime', 0);
 
-		define('APP_DEFAULT_DENY_ALL_HTACCESS', 'Deny from all
+			define('APP_DEFAULT_DENY_ALL_HTACCESS', 'Deny from all
 <IfModule mod_autoindex.c>
 Options -Indexes
 </ifModule>');
 
-		if (isset($_ENV['RAINLOOP_INCLUDE_AS_VERSION']) && $_ENV['RAINLOOP_INCLUDE_AS_VERSION'])
-		{
-			$_ENV['RAINLOOP_INCLUDE_AS_VERSION'] = false;
-			return APP_VERSION;
-		}
-		else if (!defined('APP_START'))
-		{
-			define('APP_START', microtime(true));
 			define('APP_START_TIME', time());
 			define('APP_REQUEST_RND', md5(APP_START.rand(10000, 99999).APP_START));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
@@ -196,7 +188,5 @@ Options -Indexes
 			unset($sSite, $sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
 		}
 
-		return include APP_VERSION_ROOT_PATH.'app/handle.php';
+		include APP_VERSION_ROOT_PATH.'app/handle.php';
 	}
-
-	return '';

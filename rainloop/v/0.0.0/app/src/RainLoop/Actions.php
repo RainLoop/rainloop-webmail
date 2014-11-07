@@ -1051,8 +1051,6 @@ class Actions
 			'Plugins' => array()
 		);
 
-//		$aResult['MaterialDesign'] = false;
-
 		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
 		{
@@ -1074,7 +1072,6 @@ class Actions
 		{
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
-
 
 		if ($this->PremType())
 		{
@@ -1304,6 +1301,8 @@ class Actions
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
+		$aResult['UserBackgroundName'] = '';
+		$aResult['UserBackgroundHash'] = '';
 
 		if (!$bAdmin && $oSettings instanceof \RainLoop\Settings)
 		{
@@ -1334,6 +1333,12 @@ class Actions
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
 			$aResult['InterfaceAnimation'] = (string) $oSettings->GetConf('InterfaceAnimation', $aResult['InterfaceAnimation']);
 
+			if ($oConfig->Get('webmail', 'allow_user_background', false))
+			{
+				$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+				$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+			}
+
 			$aResult['DefaultIdentityID'] = $oSettings->GetConf('DefaultIdentityID', $oAccount ? $oAccount->Email() : $aResult['DefaultIdentityID']);
 			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['DisplayName']);
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
@@ -1356,10 +1361,11 @@ class Actions
 			$aResult['AllowTwitterSocial'] = false;
 		}
 
-		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
+		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash().$aResult['UserBackgroundHash']);
 
 		$sTheme = $this->ValidateTheme($sTheme);
-		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/';
+		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/'.
+			(empty($aResult['UserBackgroundHash']) ? '-' : $aResult['UserBackgroundHash']).'/';
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
@@ -4507,7 +4513,7 @@ class Actions
 	 */
 	public function DoMessageList()
 	{
-//		sleep(5);
+//		sleep(2);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 
 		$sFolder = '';
@@ -6303,49 +6309,118 @@ class Actions
 	/**
 	 * @return array
 	 */
+	public function DoClearUserBackground()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$oSettings = $this->SettingsProvider()->Load($oAccount);
+		if ($oAccount && $oSettings)
+		{
+			$sHash = $oSettings->GetConf('UserBackgroundHash', '');
+			if (!empty($sHash))
+			{
+				$this->StorageProvider()->Clear(null,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+					\RainLoop\KeyPathHelper::PublicFile($sHash)
+				);
+			}
+
+			$oSettings->SetConf('UserBackgroundName', '');
+			$oSettings->SetConf('UserBackgroundHash', '');
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $oAccount && $oSettings ? $this->SettingsProvider()->Save($oAccount, $oSettings) : false);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function UploadBackground()
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$bResponse = false;
+		$sName = '';
+		$sHash = '';
 
 		$aFile = $this->GetActionParam('File', null);
 		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
 		{
-			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
-			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
+			$sMimeType = \strtolower(\MailSo\Base\Utils::MimeContentType($aFile['name']));
+			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg')))
 			{
-				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+				$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
+				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
+				{
+					$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+				}
+				else
+				{
+					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+					if (@\is_resource($rData))
+					{
+						$sData = @\stream_get_contents($rData);
+						if (!empty($sData) && 0 < \strlen($sData))
+						{
+							$iLimit = 3;
+							while (true)
+							{
+								$iLimit--;
+								if (0 > $iLimit)
+								{
+									$sHash = '';
+									break;
+								}
+
+								$sHash = \sha1($sSavedName.\microtime(true).\rand(10000, 99999));
+								if (!$this->StorageProvider()->Get(null,
+									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+									\RainLoop\KeyPathHelper::PublicFile($sHash), null))
+								{
+									break;
+								}
+							}
+
+							if (!empty($sHash))
+							{
+								if ($this->StorageProvider()->Put(null,
+									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+									\RainLoop\KeyPathHelper::PublicFile($sHash),
+									'data:'.$sMimeType.':'.$sData
+								))
+								{
+									$sName = $aFile['name'];
+
+									$oSettings = $this->SettingsProvider()->Load($oAccount);
+									if ($oSettings)
+									{
+										$oSettings->SetConf('UserBackgroundName', $sName);
+										$oSettings->SetConf('UserBackgroundHash', $sHash);
+
+										$this->SettingsProvider()->Save($oAccount, $oSettings);
+									}
+								}
+							}
+						}
+
+						unset($sData);
+					}
+
+					if (@\is_resource($rData))
+					{
+						@\fclose($rData);
+					}
+
+					unset($rData);
+				}
+
+				$this->FilesProvider()->Clear($oAccount, $sSavedName);
 			}
 			else
 			{
-				$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-				if (@\is_resource($rData))
-				{
-					$sData = @\stream_get_contents($rData);
-					if (!empty($sData) && 0 < \strlen($sData))
-					{
-						$bResponse = $this->StorageProvider()->Put($oAccount,
-							\RainLoop\Providers\Storage\Enumerations\StorageType::USER,
-							\RainLoop\KeyPathHelper::UserBackground($oAccount->Email()),
-							\base64_encode($sData)
-						);
-					}
-
-					unset($sData);
-				}
-
-				if (@\is_resource($rData))
-				{
-					@\fclose($rData);
-				}
-
-				unset($rData);
+				$iError = \RainLoop\Enumerations\UploadError::FILE_TYPE;
 			}
-
-			$this->FilesProvider()->Clear($oAccount, $sSavedName);
 		}
 
 		if (UPLOAD_ERR_OK !== $iError)
@@ -6359,7 +6434,10 @@ class Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResponse);
+		return $this->DefaultResponse(__FUNCTION__, !empty($sName) && !empty($sHash) ? array(
+			'Name' => $sName,
+			'Hash' => $sHash
+		) : false);
 	}
 
 	/**
@@ -6817,6 +6895,44 @@ class Actions
 	public function RawView()
 	{
 		return $this->rawSmart(false);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function RawPublic()
+	{
+		$sRawKey = (string) $this->GetActionParam('RawKey', '');
+		$this->verifyCacheByKey($sRawKey);
+
+		$sHash = $sRawKey;
+		$sData = '';
+
+		if (!empty($sHash))
+		{
+			$sData = $this->StorageProvider()->Get(null,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+				\RainLoop\KeyPathHelper::PublicFile($sHash)
+			);
+		}
+
+		$aMatch = array();
+		if (!empty($sData) && 0 === \strpos($sData, 'data:') &&
+			\preg_match('/^data:([^:]+):/', $sData, $aMatch) && !empty($aMatch[1]))
+		{
+			$sContentType = \trim($aMatch[1]);
+			if (\in_array($sContentType, array('image/png', 'image/jpg', 'image/jpeg')))
+			{
+				$this->cacheByKey($sRawKey);
+
+				@\header('Content-Type: '.$sContentType);
+				echo \preg_replace('/^data:[^:]+:/', '', $sData);
+				unset($sData);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -9,7 +9,8 @@ if (!defined('APP_VERSION'))
 
 if (file_exists(APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php'))
 {
-	return include APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php';
+	include APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php';
+	exit(0);
 }
 else
 {

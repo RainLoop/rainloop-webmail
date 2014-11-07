@@ -99,6 +99,14 @@
 
 		}, {}, 60 * 60 * 1000);
 
+		if (Settings.settingsGet('UserBackgroundHash'))
+		{
+			_.delay(function () {
+				$('#rl-bg').backstretch(Links.publicLink(Settings.settingsGet('UserBackgroundHash')), {
+					'fade': Globals.bAnimationSupported ? 1000 : 0
+				});
+			}, 3000);
+		}
 
 		this.socialUsers = _.bind(this.socialUsers, this);
 	}

@@ -153,6 +153,15 @@
 	};
 
 	/**
+	 * @param {string} sHash
+	 * @return {string}
+	 */
+	Links.prototype.publicLink = function (sHash)
+	{
+		return this.sServer + '/Raw/0/Public/' + sHash + '/';
+	};
+
+	/**
 	 * @param {string} sInboxFolderName = 'INBOX'
 	 * @return {string}
 	 */

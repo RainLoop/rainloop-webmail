@@ -89,7 +89,7 @@
 
 			self.theme.subscribe(function (sValue) {
 
-				Utils.changeTheme(sValue, self.themeTrigger);
+				Utils.changeTheme(sValue, '', self.themeTrigger);
 
 				Remote.saveAdminConfig(f3, {
 					'Theme': Utils.trim(sValue)

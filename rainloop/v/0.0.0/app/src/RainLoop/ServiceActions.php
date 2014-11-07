@@ -264,10 +264,11 @@ class ServiceActions
 
 	/**
 	 * @param string $sAction
+	 * @param int $iSizeLimit = 0
 	 *
 	 * @return string
 	 */
-	private function privateUpload($sAction)
+	private function privateUpload($sAction, $iSizeLimit = 0)
 	{
 		$oConfig = $this->Config();
 
@@ -278,7 +279,7 @@ class ServiceActions
 			$aFile = null;
 			$sInputName = 'uploader';
 			$iError = \RainLoop\Enumerations\UploadError::UNKNOWN;
-			$iSizeLimit = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0)) * 1024 * 1024;
+			$iSizeLimit = (0 < $iSizeLimit ? $iSizeLimit : ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0))) * 1024 * 1024;
 
 			$iError = UPLOAD_ERR_OK;
 			$_FILES = isset($_FILES) ? $_FILES : null;
@@ -364,7 +365,7 @@ class ServiceActions
 	 */
 	public function ServiceUploadContacts()
 	{
-		return $this->privateUpload('UploadContacts');
+		return $this->privateUpload('UploadContacts', 5);
 	}
 
 	/**
@@ -372,7 +373,7 @@ class ServiceActions
 	 */
 	public function ServiceUploadBackground()
 	{
-		return $this->privateUpload('UploadBackground');
+		return $this->privateUpload('UploadBackground', 1);
 	}
 
 	/**
@@ -410,6 +411,8 @@ class ServiceActions
 		{
 			$this->oHttp->StatusHeader(404);
 		}
+
+		return '';
 	}
 
 	/**
@@ -616,7 +619,8 @@ class ServiceActions
 		$sResult = '';
 
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
-		$bJson = !empty($this->aPaths[7]) && 'Json' === $this->aPaths[7];
+		$bJson = !empty($this->aPaths[9]) && 'Json' === $this->aPaths[9];
+		$sHash = !empty($this->aPaths[8]) && 5 < \strlen($this->aPaths[8]) ? $this->aPaths[8] : '';
 
 		if ($bJson)
 		{
@@ -648,7 +652,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
+				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash(), $sHash);
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -686,6 +690,15 @@ class ServiceActions
 					$aResult[] = $this->Plugins()->CompileCss($bAdmin);
 
 					$sResult = $oLess->compile(\implode("\n", $aResult));
+
+					if (!empty($sHash))
+					{
+						$sResult .= "\n".'.thm-body {'.
+							'background-image:none;'.
+							'background-image: url("./?/Raw/0/Public/'.$sHash.'/") !important;'.
+							'-moz-background-size:cover;-webkit-background-size:cover;background-size:cover;'.
+						'}';
+					}
 
 					if ($bCacheEnabled)
 					{

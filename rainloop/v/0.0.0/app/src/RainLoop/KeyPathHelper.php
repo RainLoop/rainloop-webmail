@@ -25,13 +25,13 @@ class KeyPathHelper
 	}
 
 	/**
-	 * @param string $sEmail
+	 * @param string $sHash
 	 *
 	 * @return string
 	 */
-	static public function UserBackground($sEmail)
+	static public function PublicFile($sHash)
 	{
-		return '/UserBackground/Base64/'.$sEmail.'/Data/';
+		return '/Public/Files/'.sha1($sHash).'/Data/';
 	}
 
 	/**

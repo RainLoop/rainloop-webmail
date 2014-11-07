@@ -244,7 +244,7 @@
 
 		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
 		{
-			this.defaultRequest(fCallback, 'MessageList', {},
+			return this.defaultRequest(fCallback, 'MessageList', {},
 				'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
 				'MessageList/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
@@ -260,7 +260,7 @@
 		}
 		else
 		{
-			this.defaultRequest(fCallback, 'MessageList', {
+			return this.defaultRequest(fCallback, 'MessageList', {
 				'Folder': sFolderFullNameRaw,
 				'Offset': iOffset,
 				'Limit': iLimit,
@@ -716,6 +716,9 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {string} sRequestUid
+	 * @param {string} sUid
+	 * @param {Array} aProperties
 	 */
 	RemoteUserStorage.prototype.contactSave = function (fCallback, sRequestUid, sUid, aProperties)
 	{
@@ -748,6 +751,14 @@
 			'Query': sQuery,
 			'Page': iPage
 		}, null, '', ['Suggestions']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.clearUserBackground = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'ClearUserBackground');
 	};
 
 	/**

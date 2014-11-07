@@ -1031,6 +1031,8 @@
 
 		oData.theme = ko.observable('');
 		oData.themes = ko.observableArray([]);
+		oData.themeBackgroundName = ko.observable('');
+		oData.themeBackgroundHash = ko.observable('');
 
 		oData.mainTheme = ko.computed({
 			'read': oData.theme,
@@ -2074,7 +2076,7 @@
 	Utils.__themeTimer = 0;
 	Utils.__themeAjax = null;
 
-	Utils.changeTheme = function (sValue, themeTrigger)
+	Utils.changeTheme = function (sValue, sHash, themeTrigger, Links)
 	{
 		var
 			oThemeLink = $('#rlThemeLink'),
@@ -2091,6 +2093,7 @@
 		{
 			sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
 			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
+			sUrl = sUrl.toString().replace(/\/Hash\/[^\/]+\//, '/Hash/-/');
 
 			if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
 			{
@@ -2122,13 +2125,33 @@
 					if (oThemeStyle && oThemeStyle[0])
 					{
 						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
-						if (oThemeStyle && oThemeStyle[0] && oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						if (oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
 						{
 							oThemeStyle[0].styleSheet.cssText = aData[1];
 						}
 						else
 						{
 							oThemeStyle.text(aData[1]);
+						}
+					}
+
+					if (Links)
+					{
+						var $oBg = $('#rl-bg');
+						if (!sHash)
+						{
+							if ($oBg.data('backstretch'))
+							{
+								$oBg.backstretch('destroy').attr('style', '');
+							}
+						}
+						else
+						{
+							$oBg.backstretch(Links.publicLink(sHash), {
+								'fade': Globals.bAnimationSupported ? 1000 : 0,
+								'centeredX': true,
+								'centeredY': true
+							});
 						}
 					}
 

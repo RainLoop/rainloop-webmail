@@ -240,7 +240,7 @@
 
 		Plugins.runHook('ajax-default-request', [sAction, oParameters, sGetAdd]);
 
-		this.ajaxRequest(fCallback, oParameters,
+		return this.ajaxRequest(fCallback, oParameters,
 			Utils.isUnd(iTimeout) ? Consts.Defaults.DefaultAjaxTimeout : Utils.pInt(iTimeout), sGetAdd, aAbortActions);
 	};
 

@@ -68,5 +68,3 @@ else if (\function_exists('RainLoopSplAutoloadRegisterFunction'))
 {
 	\spl_autoload_unregister('RainLoopSplAutoloadRegisterFunction');
 }
-
-return '';

@@ -1,5 +1,5 @@
-/*! RainLoop Index Helper v1.2 (c) 2013 RainLoop Team; Licensed under MIT */
-(function (window, document, JSON) {
+/*! RainLoop Index Helper v1.3 (c) 2014 RainLoop Team; Licensed under MIT */
+(function (window, document, JSON, undefined) {
 
 	/**
 	 * @constructor
@@ -7,7 +7,7 @@
 	function CRLTopDriver() {}
 
 	CRLTopDriver.prototype.s = window['sessionStorage'];
-	
+
 	CRLTopDriver.prototype.t = window['top'] || window;
 
 	/**
@@ -51,7 +51,7 @@
 	window['__rlah'] = function () {
 		return window['_rlhh'] ? window['_rlhh']['getHash']() : null;
 	};
-	
+
 	window['__rlah_set'] = function () {
 		if (window['_rlhh']) {
 			window['_rlhh']['setHash']();
@@ -68,7 +68,7 @@
 	window['__includeScr'] = function (sSrc) {
 		document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 	};
-	
+
 	window['__showError'] = function () {
 		var oR = document.getElementById('rl-loading'),
 			oL = document.getElementById('rl-loading-error');
@@ -95,5 +95,5 @@
 			__showError();
 		}
 	};
-	
+
 }(window, window.document, window.JSON));
