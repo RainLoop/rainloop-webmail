@@ -50,16 +50,20 @@
 							</div>
 						</div>
 						<br />
-						<div data-bind="component: {
-							name: 'Checkbox',
-							params: {
-								label: 'Use short login',
-								value: imapShortLogin,
-								inline: true
-							}
-						}"></div>
-						&nbsp;
-						<span style="color: #aaa">(user@domain.com &rarr; user)</span>
+						<div class="row">
+							<div class="span5">
+								<div data-bind="component: {
+									name: 'Checkbox',
+									params: {
+										label: 'Use short login',
+										value: imapShortLogin,
+										inline: true
+									}
+								}"></div>
+								&nbsp;&nbsp;
+								<span style="color: #aaa">(user@domain.com &rarr; user)</span>
+							</div>
+						</div>
 					</div>
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
 						<div class="legend smtp-header">
@@ -67,51 +71,72 @@
 								SMTP
 							</span>
 						</div>
-						<div class="row">
-							<div class="span3">
-								Server
-								<br />
-								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="textInput: smtpServer, hasfocus: smtpServerFocus" />
+						<div data-bind="visible: !smtpPhpMail()">
+							<div class="row">
+								<div class="span3">
+									Server
+									<br />
+									<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+										data-bind="textInput: smtpServer, hasfocus: smtpServerFocus" />
+								</div>
+								<div class="span1">
+									Port
+									<br />
+									<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+										data-bind="textInput: smtpPort" />
+								</div>
 							</div>
-							<div class="span1">
-								Port
-								<br />
-								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="textInput: smtpPort" />
+							<br />
+							<div class="row">
+								<div class="span4">
+									Secure
+									<br />
+									<select class="span2" data-bind="value: smtpSecure">
+										<option value="0">None</option>
+										<option value="1">SSL/TLS</option>
+										<option value="2">STARTTLS</option>
+									</select>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="span5">
+									<div data-bind="component: {
+										name: 'Checkbox',
+										params: {
+											label: 'Use short login',
+											value: smtpShortLogin,
+											inline: true
+										}
+									}"></div>
+									&nbsp;&nbsp;
+									<span style="color: #aaa">(user@domain.com &rarr; user)</span>
+									<br />
+									<div data-bind="component: {
+										name: 'Checkbox',
+										params: {
+											label: 'Use authentication',
+											value: smtpAuth
+										}
+									}"></div>
+								</div>
+							</div>
+							<br />
+						</div>
+						<div class="row">
+							<div class="span5">
+								<div data-bind="component: {
+									name: 'Checkbox',
+									params: {
+										label: 'Use php mail() function',
+										value: smtpPhpMail,
+										inline: true
+									}
+								}"></div>
+								&nbsp;&nbsp;
+								<span style="color: red">(beta)</span>
 							</div>
 						</div>
-						<br />
-						<div class="row">
-							<div class="span4">
-								Secure
-								<br />
-								<select class="span2" data-bind="value: smtpSecure">
-									<option value="0">None</option>
-									<option value="1">SSL/TLS</option>
-									<option value="2">STARTTLS</option>
-								</select>
-							</div>
-						</div>
-						<br />
-						<div data-bind="component: {
-							name: 'Checkbox',
-							params: {
-								label: 'Use short login',
-								value: smtpShortLogin,
-								inline: true
-							}
-						}"></div>
-						&nbsp;
-						<span style="color: #aaa">(user@domain.com &rarr; user)</span>
-						<br />
-						<div data-bind="component: {
-							name: 'Checkbox',
-							params: {
-								label: 'Use authentication',
-								value: smtpAuth
-							}
-						}"></div>
 					</div>
 					<div class="span10">
 						<div class="legend white-list-header">

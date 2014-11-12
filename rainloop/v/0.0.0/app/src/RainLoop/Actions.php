@@ -206,7 +206,7 @@ class Actions
 
 	/**
 	 * @param string $sName
-	 * @param \RainLoop\Account $oAccount = null
+	 * @param \RainLoop\Model\Account $oAccount = null
 	 *
 	 * @return mixed
 	 */
@@ -308,7 +308,7 @@ class Actions
 				$this->MailClient()->LogoutAndDisconnect();
 			}
 		}
-		catch (\Exception $oException) {}
+		catch (\Exception $oException) { unset($oException); }
 	}
 
 	/**
@@ -421,7 +421,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return void
 	 */
@@ -512,7 +512,7 @@ class Actions
 	/**
 	 * @param bool $bThrowExceptionOnFalse = false
 	 *
-	 * @return \RainLoop\Account|bool
+	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function GetAccount($bThrowExceptionOnFalse = false)
@@ -660,7 +660,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount = null
+	 * @param \RainLoop\Model\Account $oAccount = null
 	 * @param bool $bForceEnable = false
 	 *
 	 * @return \RainLoop\Providers\AddressBook
@@ -861,7 +861,7 @@ class Actions
 	 * @param string $sSignMeToken = ''
 	 * @param bool $bThrowProvideException = false
 	 *
-	 * @return \RainLoop\Account|null
+	 * @return \RainLoop\Model\Account|null
 	 */
 	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '', $bThrowProvideException = false)
 	{
@@ -873,10 +873,10 @@ class Actions
 			{
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
-					$oAccount = \RainLoop\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
+					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
 					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
 
-					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Account))
+					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
 					{
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 					}
@@ -900,7 +900,7 @@ class Actions
 	 * @param bool $bThrowExceptionOnFalse = true
 	 * @param bool $bValidateShortToken = true
 	 *
-	 * @return \RainLoop\Account|bool
+	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function GetAccountFromCustomToken($sToken, $bThrowExceptionOnFalse = true, $bValidateShortToken = true)
@@ -919,7 +919,7 @@ class Actions
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5], $bThrowExceptionOnFalse);
 
-				if ($oAccount instanceof \RainLoop\Account)
+				if ($oAccount instanceof \RainLoop\Model\Account)
 				{
 					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
 					{
@@ -940,7 +940,7 @@ class Actions
 			}
 		}
 
-		if ($bThrowExceptionOnFalse && !($oResult instanceof \RainLoop\Account))
+		if ($bThrowExceptionOnFalse && !($oResult instanceof \RainLoop\Model\Account))
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
@@ -949,7 +949,7 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Account|bool
+	 * @return \RainLoop\Model\Account|bool
 	 */
 	public function GetAccountFromSignMeToken()
 	{
@@ -970,7 +970,7 @@ class Actions
 	/**
 	 * @param bool $bThrowExceptionOnFalse = true
 	 *
-	 * @return \RainLoop\Account|bool
+	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	private function getAccountFromToken($bThrowExceptionOnFalse = true)
@@ -1090,7 +1090,7 @@ class Actions
 		if (!$bAdmin)
 		{
 			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount instanceof \RainLoop\Account)
+			if ($oAccount instanceof \RainLoop\Model\Account)
 			{
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 
@@ -1450,11 +1450,11 @@ class Actions
 		}
 	}
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 */
 	public function AuthToken($oAccount)
 	{
-		if ($oAccount instanceof \RainLoop\Account)
+		if ($oAccount instanceof \RainLoop\Model\Account)
 		{
 			$this->SetAuthToken($oAccount);
 
@@ -1468,7 +1468,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
@@ -1499,7 +1499,7 @@ class Actions
 	 * @param string $sAdditionalCode = ''
 	 * @param string $bAdditionalCodeSignMe = false
 	 *
-	 * @return \RainLoop\Account
+	 * @return \RainLoop\Model\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
@@ -1585,14 +1585,14 @@ class Actions
 		{
 			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, true);
 
-			if (!($oAccount instanceof \RainLoop\Account))
+			if (!($oAccount instanceof \RainLoop\Model\Account))
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 
 			$this->Plugins()->RunHook('event.login-post-login-provide', array(&$oAccount));
 
-			if (!($oAccount instanceof \RainLoop\Account))
+			if (!($oAccount instanceof \RainLoop\Model\Account))
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
@@ -1813,7 +1813,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
@@ -1851,7 +1851,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
@@ -1892,7 +1892,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
@@ -1950,7 +1950,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aAccounts = array()
 	 *
 	 * @return array
@@ -1972,7 +1972,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aIdentities = array()
 	 *
 	 * @return array
@@ -2238,7 +2238,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 */
 	public function ClearSignMeData($oAccount)
 	{
@@ -3998,7 +3998,7 @@ class Actions
 
 	/**
 	 * @staticvar array $aCache
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
@@ -4055,7 +4055,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \MailSo\Mail\FolderCollection $oFolders
 	 * @param array $aResult
 	 * @param bool $bListFolderTypes = true
@@ -4596,7 +4596,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param bool $bWithDraftInfo = true
 	 *
 	 * @return \MailSo\Mime\Message
@@ -4763,7 +4763,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
@@ -4886,10 +4886,11 @@ class Actions
 
 	/**
 	 *
-	 * @param \RainLoop\Account $oAccount
-	 * @param type $oMessage
-	 * @param type $rMessageStream
-	 * @param type $bAddHiddenRcpt
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \MailSo\Mime\Message $oMessage
+	 * @param resource $rMessageStream
+	 * @param bool $bAddHiddenRcpt = true
+	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
@@ -4902,8 +4903,6 @@ class Actions
 
 			try
 			{
-				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
-
 				$oFrom = $oMessage->GetFrom();
 				$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
 				$sFrom = empty($sFrom) ? $oAccount->Email() : $sFrom;
@@ -4916,9 +4915,48 @@ class Actions
 					$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
 				}
 
-				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config());
+				$bUsePhpMail = $oAccount->Domain()->OutUsePhpMail();
 
-				if ($oSmtpClient->IsConnected())
+				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+
+				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+
+				if ($bUsePhpMail)
+				{
+					if (\MailSo\Base\Utils::FunctionExistsAndEnabled('mail'))
+					{
+						$aToCollection = $oMessage->GetTo();
+						if ($aToCollection && $oFrom)
+						{
+							$sRawBody = @\stream_get_contents($rMessageStream);
+							if (!empty($sRawBody))
+							{
+								$sMailTo = \trim($aToCollection->ToString(true));
+								$sMailSubject = \trim($oMessage->GetSubject());
+								$sMailSubject = 0 === \strlen($sMailSubject) ? '' : \MailSo\Base\Utils::EncodeUnencodedValue(
+									\MailSo\Base\Enumerations\Encoding::BASE64_SHORT, $sMailSubject);
+
+								$sMailHeaders = $sMailBody = '';
+								list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
+								unset($sRawBody);
+
+								$this->Logger()->WriteDump(array(
+									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+								));
+
+								if (!\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders/*, '-f'.$oFrom->GetEmail()*/))
+								{
+									throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
+								}
+							}
+						}
+					}
+					else
+					{
+						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
+					}
+				}
+				else if ($oSmtpClient->IsConnected())
 				{
 					if (!empty($sFrom))
 					{
@@ -6503,7 +6541,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param resource $rFile
 	 * @param string $sFileStart
 	 *
@@ -6563,7 +6601,7 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param resource $rFile
 	 * @param string $sFileStart
 	 *
@@ -6677,7 +6715,7 @@ class Actions
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 
 		$_FILES = isset($_FILES) ? $_FILES : null;
-		if ($oAccount instanceof \RainLoop\Account &&
+		if ($oAccount instanceof \RainLoop\Model\Account &&
 			$this->Config()->Get('labs', 'allow_message_append', false) &&
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
 				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size']))
@@ -6705,7 +6743,7 @@ class Actions
 
 	/**
 	 * @param bool $bAdmin
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
@@ -7031,7 +7069,7 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Account|bool
+	 * @return \RainLoop\Model\Account|bool
 	 */
 	private function initMailClientConnection()
 	{
@@ -7614,7 +7652,7 @@ class Actions
 	public function GetLanguageAndTheme()
 	{
 		$oAccount = $this->GetAccount();
-		$oSettings = $oAccount instanceof \RainLoop\Account ? $this->SettingsProvider()->Load($oAccount) : null;
+		$oSettings = $oAccount instanceof \RainLoop\Model\Account ? $this->SettingsProvider()->Load($oAccount) : null;
 
 		$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
@@ -7912,7 +7950,7 @@ class Actions
 									$mResult['ReadReceipt'] = '';
 								}
 							}
-							catch (\Exception $oException) {}
+							catch (\Exception $oException) { unset($oException); }
 						}
 
 						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher()->Get(

@@ -20,11 +20,11 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return \RainLoop\Settings
 	 */
-	public function Load(\RainLoop\Account $oAccount)
+	public function Load(\RainLoop\Model\Account $oAccount)
 	{
 		$oSettings = new \RainLoop\Settings();
 		$oSettings->InitData($this->oDriver->Load($oAccount));
@@ -32,12 +32,12 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \RainLoop\Settings $oSettings
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Account $oAccount, \RainLoop\Settings $oSettings)
+	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings)
 	{
 		return $this->oDriver->Save($oAccount, $oSettings->DataAsArray());
 	}

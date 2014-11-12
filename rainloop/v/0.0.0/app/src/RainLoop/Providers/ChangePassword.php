@@ -34,24 +34,24 @@ class ChangePassword extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
 	public function PasswordChangePossibility($oAccount)
 	{
 		return $this->IsActive() &&
-			$oAccount instanceof \RainLoop\Account &&
+			$oAccount instanceof \RainLoop\Model\Account &&
 			$this->oDriver && $this->oDriver->PasswordChangePossibility($oAccount)
 		;
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, $sPrevPassword, $sNewPassword)
 	{
 		if ($this->oDriver instanceof \RainLoop\Providers\ChangePassword\ChangePasswordInterface &&
 			$this->PasswordChangePossibility($oAccount))

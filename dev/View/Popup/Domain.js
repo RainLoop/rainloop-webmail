@@ -69,6 +69,7 @@
 		this.smtpSecure = ko.observable(Enums.ServerSecure.None);
 		this.smtpShortLogin = ko.observable(false);
 		this.smtpAuth = ko.observable(true);
+		this.smtpPhpMail = ko.observable(false);
 		this.whiteList = ko.observable('');
 
 		this.enableSmartPorts = ko.observable(false);
@@ -110,6 +111,7 @@
 				this.smtpSecure(),
 				this.smtpShortLogin(),
 				this.smtpAuth(),
+				this.smtpPhpMail(),
 				this.whiteList()
 			);
 		}, this.canBeSaved);
@@ -129,7 +131,8 @@
 				this.smtpServer(),
 				Utils.pInt(this.smtpPort()),
 				this.smtpSecure(),
-				this.smtpAuth()
+				this.smtpAuth(),
+				this.smtpPhpMail()
 			);
 		}, this.canBeTested);
 
@@ -289,6 +292,7 @@
 			this.smtpSecure(Utils.trim(oDomain.OutSecure));
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
+			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
 			this.whiteList(Utils.trim(oDomain.WhiteList));
 
 			this.enableSmartPorts(true);
@@ -323,6 +327,7 @@
 		this.smtpSecure(Enums.ServerSecure.None);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
+		this.smtpPhpMail(false);
 		this.whiteList('');
 
 		this.enableSmartPorts(true);

@@ -59,6 +59,11 @@ class Domain
 	private $bOutAuth;
 
 	/**
+	 * @var bool
+	 */
+	private $bOutUsePhpMail;
+
+	/**
 	 * @var string
 	 */
 	private $sWhiteList;
@@ -74,10 +79,11 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
+	 * @param bool $bOutUsePhpMail = false
 	 * @param string $sWhiteList = ''
 	 */
 	private function __construct($sName, $sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $sWhiteList = '')
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail = false, $sWhiteList = '')
 	{
 		$this->sName = $sName;
 		$this->sIncHost = $sIncHost;
@@ -89,6 +95,7 @@ class Domain
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
+		$this->bOutUsePhpMail = $bOutUsePhpMail;
 		$this->sWhiteList = \trim($sWhiteList);
 	}
 
@@ -103,18 +110,19 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
+	 * @param bool $bOutUsePhpMail = false
 	 * @param string $sWhiteList = ''
 	 *
 	 * @return \RainLoop\Model\Domain
 	 */
 	public static function NewInstance($sName,
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 		$sWhiteList = '')
 	{
 		return new self($sName,
 			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 			$sWhiteList);
 	}
 
@@ -142,6 +150,7 @@ class Domain
 				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
 
 			$bOutAuth = isset($aDomain['smtp_auth']) ? (bool) $aDomain['smtp_auth'] : true;
+			$bOutUsePhpMail = isset($aDomain['smtp_php_mail']) ? (bool) $aDomain['smtp_php_mail'] : false;
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
 			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
@@ -149,7 +158,7 @@ class Domain
 
 			$oDomain = self::NewInstance($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 				$sWhiteList);
 		}
 
@@ -199,6 +208,7 @@ class Domain
 			'smtp_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iOutSecure).'"',
 			'smtp_short_login = '.($this->bOutShortLogin ? 'On' : 'Off'),
 			'smtp_auth = '.($this->bOutAuth ? 'On' : 'Off'),
+			'smtp_php_mail = '.($this->bOutUsePhpMail ? 'On' : 'Off'),
 			'white_list = "'.$this->encodeIniString($this->sWhiteList).'"'
 		));
 	}
@@ -254,13 +264,14 @@ class Domain
 	 * @param int $iOutSecure
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
+	 * @param bool $bOutUsePhpMail = false
 	 * @param string $sWhiteList = ''
 	 *
 	 * @return \RainLoop\Model\Domain
 	 */
 	public function UpdateInstance(
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 		$sWhiteList = '')
 	{
 		$this->sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
@@ -272,6 +283,7 @@ class Domain
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
+		$this->bOutUsePhpMail = $bOutUsePhpMail;
 		$this->sWhiteList = \trim($sWhiteList);
 
 		return $this;
@@ -342,16 +354,6 @@ class Domain
 	}
 
 	/**
-	 * @param bool|null $bGlobalVerify = null
-	 *
-	 * @return bool
-	 */
-	public function OutVerifySsl($bGlobalVerify = null)
-	{
-		return null === $bGlobalVerify ? $this->bOutVerifySsl : !!$bGlobalVerify;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function OutShortLogin()
@@ -365,6 +367,14 @@ class Domain
 	public function OutAuth()
 	{
 		return $this->bOutAuth;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function OutUsePhpMail()
+	{
+		return $this->bOutUsePhpMail;
 	}
 
 	/**
@@ -417,6 +427,7 @@ class Domain
 			'OutSecure' => $this->OutSecure(),
 			'OutShortLogin' => $this->OutShortLogin(),
 			'OutAuth' => $this->OutAuth(),
+			'OutUsePhpMail' => $this->OutUsePhpMail(),
 			'WhiteList' => $this->WhiteList()
 		);
 	}

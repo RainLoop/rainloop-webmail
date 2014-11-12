@@ -868,7 +868,7 @@ class ServiceActions
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 						$this->oActions->AuthToken($oAccount);
 
-						$bLogout = !($oAccount instanceof \RainLoop\Account);
+						$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 					}
 					catch (\Exception $oException)
 					{
@@ -905,7 +905,7 @@ class ServiceActions
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthToken($oAccount);
-				$bLogout = !($oAccount instanceof \RainLoop\Account);
+				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 			}
 			catch (\Exception $oException)
 			{
@@ -940,7 +940,7 @@ class ServiceActions
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthToken($oAccount);
-				$bLogout = !($oAccount instanceof \RainLoop\Account);
+				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 			}
 			catch (\Exception $oException)
 			{
@@ -961,7 +961,7 @@ class ServiceActions
 
 				$aResult = array(
 					'Action' => 'ExternalLogin',
-					'Result' => $oAccount instanceof \RainLoop\Account ? true : false,
+					'Result' => $oAccount instanceof \RainLoop\Model\Account ? true : false,
 					'ErrorCode' => 0
 				);
 

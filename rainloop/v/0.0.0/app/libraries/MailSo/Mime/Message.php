@@ -124,6 +124,15 @@ class Message
 	}
 
 	/**
+	 * @return string
+	 */
+	public function GetSubject()
+	{
+		return isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT]) ?
+			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT] : '';
+	}
+
+	/**
 	 * @return \MailSo\Mime\Email|null
 	 */
 	public function GetFrom()

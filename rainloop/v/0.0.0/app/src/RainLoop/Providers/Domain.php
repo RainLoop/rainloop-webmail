@@ -134,6 +134,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
 			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
+			$bOutUsePhpMail = '1' === (string) $oActions->GetActionParam('OutUsePhpMail', '0');
 			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
 
 			if (0 < \strlen($sName) && 0 < strlen($sNameForTest) && false === \strpos($sName, '*'))
@@ -154,7 +155,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 					{
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 							$sWhiteList);
 					}
 				}
@@ -162,7 +163,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 				{
 					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 						$sWhiteList);
 				}
 			}

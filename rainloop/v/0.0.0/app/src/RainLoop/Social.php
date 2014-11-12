@@ -346,7 +346,7 @@ class Social
 									!empty($aUserData['Email']) && isset($aUserData['Password']))
 								{
 									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-									if ($oAccount instanceof \RainLoop\Account)
+									if ($oAccount instanceof \RainLoop\Model\Account)
 									{
 										$this->oActions->AuthToken($oAccount);
 
@@ -493,7 +493,7 @@ class Social
 							!empty($aUserData['Email']) && isset($aUserData['Password']))
 						{
 							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-							if ($oAccount instanceof \RainLoop\Account)
+							if ($oAccount instanceof \RainLoop\Model\Account)
 							{
 								$this->oActions->AuthToken($oAccount);
 
@@ -669,7 +669,7 @@ class Social
 										isset($aUserData['Password']))
 									{
 										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-										if ($oAccount instanceof \RainLoop\Account)
+										if ($oAccount instanceof \RainLoop\Model\Account)
 										{
 											$this->oActions->AuthToken($oAccount);
 
@@ -800,7 +800,7 @@ class Social
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount = null
+	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 *
 	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */

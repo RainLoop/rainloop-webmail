@@ -2,7 +2,7 @@
 
 namespace RainLoop\Model;
 
-class Account
+class Account extends \RainLoop\Account // for backward compatibility
 {
 	/**
 	 * @var string
@@ -388,18 +388,20 @@ class Account
 
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
-	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
+	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
 	 * @param \RainLoop\Application $oConfig
+	 * @param bool $bUsePhpMail = false
 	 *
 	 * @return bool
 	 */
-	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig)
+	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, &$bUsePhpMail = false)
 	{
 		$bLogin = false;
 
 		$aSmtpCredentials = array(
 			'UseConnect' => true,
 			'UseAuth' => $this->DomainOutAuth(),
+			'UsePhpMail' => $bUsePhpMail,
 			'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
 			'Host' => $this->DomainOutHost(),
 			'Port' => $this->DomainOutPort(),
@@ -413,9 +415,11 @@ class Account
 
 		$oPlugins->RunHook('filter.smtp-credentials', array($this, &$aSmtpCredentials));
 
+		$bUsePhpMail = $aSmtpCredentials['UsePhpMail'];
+
 		$oPlugins->RunHook('event.smtp-pre-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
 
-		if ($aSmtpCredentials['UseConnect'])
+		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
 			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
 				$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl']);
@@ -424,7 +428,7 @@ class Account
 		$oPlugins->RunHook('event.smtp-post-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
 		$oPlugins->RunHook('event.smtp-pre-login', array($this, $aSmtpCredentials['UseAuth'], $aSmtpCredentials));
 
-		if ($aSmtpCredentials['UseAuth'])
+		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
 			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
 

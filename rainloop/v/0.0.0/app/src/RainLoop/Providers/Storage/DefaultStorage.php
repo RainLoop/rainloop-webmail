@@ -20,7 +20,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param string $sValue
@@ -34,7 +34,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param mixed $mDefault = false
@@ -54,7 +54,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 *
@@ -73,7 +73,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $mAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param bool $bMkDir = false
@@ -87,7 +87,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 			$iStorageType = \RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY;
 		}
 
-		$sEmail = $mAccount instanceof \RainLoop\Account ? \preg_replace('/[^a-z0-9\-\.@]+/', '_',
+		$sEmail = $mAccount instanceof \RainLoop\Model\Account ? \preg_replace('/[^a-z0-9\-\.@]+/', '_',
 			('' === $mAccount->ParentEmail() ? '' : $mAccount->ParentEmail().'/').$mAccount->Email()) : '';
 
 		if (\is_string($mAccount) && empty($sEmail))

@@ -282,7 +282,7 @@ class Manager
 	/**
 	 * @param bool $bAdmin
 	 * @param array $aAppData
-	 * @param \RainLoop\Account|null $oAccount = null
+	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 *
 	 * @return \RainLoop\PluginsNext\Manager
 	 */
@@ -399,7 +399,7 @@ class Manager
 	/**
 	 * @param string $sHookName
 	 * @param array $aArg = array()
-	 * @param \RainLoop\Account|null $oAccount = null
+	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 * @param bool $bLogHook = true
 	 *
 	 * @return \RainLoop\PluginsNext\Manager

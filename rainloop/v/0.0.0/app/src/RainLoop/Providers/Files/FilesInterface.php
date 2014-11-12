@@ -5,7 +5,7 @@ namespace RainLoop\Providers\Files;
 interface FilesInterface
 {
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param resource $rSource
 	 *
@@ -23,7 +23,7 @@ interface FilesInterface
 	public function MoveUploadedFile($oAccount, $sKey, $sSource);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sOpenMode = 'rb'
 	 *
@@ -32,7 +32,7 @@ interface FilesInterface
 	public function GetFile($oAccount, $sKey, $sOpenMode = 'rb');
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return string|bool
@@ -40,7 +40,7 @@ interface FilesInterface
 	public function GetFileName($oAccount, $sKey);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -48,7 +48,7 @@ interface FilesInterface
 	public function Clear($oAccount, $sKey);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return int | bool
@@ -56,7 +56,7 @@ interface FilesInterface
 	public function FileSize($oAccount, $sKey);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool

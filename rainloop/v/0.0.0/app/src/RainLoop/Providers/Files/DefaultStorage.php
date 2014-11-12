@@ -20,7 +20,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param resource $rSource
 	 *
@@ -42,7 +42,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sSource
 	 *
@@ -55,7 +55,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sOpenMode = 'rb'
 	 *
@@ -76,7 +76,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return string|bool
@@ -94,7 +94,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -112,7 +112,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return int|bool
@@ -130,7 +130,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -157,7 +157,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param bool $bMkDir = false
 	 *

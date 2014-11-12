@@ -84,11 +84,6 @@
 			.checkbox-box-sizes();
 		}
 
-		&.disabled .sub-checkbox {
-			cursor: default;
-			color: #aaa;
-		}
-
 		.sub-checkbox.checked {
 			border-top: none;
 			border-left: none;
@@ -119,6 +114,18 @@
 				border-top: none;
 				transform: rotate(45deg);
 				animation: checkmark-shrink 140ms ease-out forwards;
+			}
+		}
+
+		&.disabled {
+			.sub-checkbox {
+				border-color: #aaa;
+				cursor: not-allowed;
+				color: #aaa;
+			}
+			.sub-label {
+				cursor: not-allowed;
+				color: #aaa;
 			}
 		}
 	}

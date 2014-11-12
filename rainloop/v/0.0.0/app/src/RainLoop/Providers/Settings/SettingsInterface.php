@@ -5,19 +5,19 @@ namespace RainLoop\Providers\Settings;
 interface SettingsInterface
 {
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return array
 	 */
-	public function Load(\RainLoop\Account $oAccount);
+	public function Load(\RainLoop\Model\Account $oAccount);
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSettings
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Account $oAccount, array $aSettings);
+	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings);
 
 	/**
 	 * @param string $sEmail

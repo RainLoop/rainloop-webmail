@@ -211,7 +211,7 @@
 
 	RemoteAdminStorage.prototype.createOrUpdateDomain = function (fCallback,
 		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, sWhiteList)
+		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail, sWhiteList)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainSave', {
 			'Create': bCreate ? '1' : '0',
@@ -225,12 +225,13 @@
 			'OutSecure': sOutSecure,
 			'OutShortLogin': bOutShortLogin ? '1' : '0',
 			'OutAuth': bOutAuth ? '1' : '0',
+			'OutUsePhpMail': bOutPhpMail ? '1' : '0',
 			'WhiteList': sWhiteList
 		});
 	};
 
 	RemoteAdminStorage.prototype.testConnectionForDomain = function (fCallback, sName,
-		sIncHost, iIncPort, sIncSecure, sOutHost, iOutPort, sOutSecure, bOutAuth)
+		sIncHost, iIncPort, sIncSecure, sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
 			'Name': sName,
@@ -240,7 +241,8 @@
 			'OutHost': sOutHost,
 			'OutPort': iOutPort,
 			'OutSecure': sOutSecure,
-			'OutAuth': bOutAuth ? '1' : '0'
+			'OutAuth': bOutAuth ? '1' : '0',
+			'OutUsePhpMail': bOutPhpMail ? '1' : '0'
 		});
 	};
 

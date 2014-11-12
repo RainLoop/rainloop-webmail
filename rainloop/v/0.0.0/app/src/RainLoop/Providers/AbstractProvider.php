@@ -5,7 +5,7 @@ namespace RainLoop\Providers;
 abstract class AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Account
+	 * @var \RainLoop\Model\Account
 	 */
 	protected $oAccount;
 	
@@ -23,7 +23,7 @@ abstract class AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 */
 	public function SetAccount($oAccount)
 	{

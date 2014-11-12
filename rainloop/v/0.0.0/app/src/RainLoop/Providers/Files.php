@@ -18,7 +18,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param resource $rSource
 	 *
@@ -30,7 +30,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sSource
 	 *
@@ -42,7 +42,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sOpenMode = 'rb'
 	 *
@@ -54,7 +54,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return string | bool
@@ -65,7 +65,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -76,7 +76,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return int|bool
@@ -87,7 +87,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool

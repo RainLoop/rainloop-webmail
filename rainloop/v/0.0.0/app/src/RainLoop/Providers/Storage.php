@@ -18,7 +18,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 *
 	 * @return bool
@@ -26,7 +26,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	public function verifyAccount($oAccount, $iStorageType)
 	{
 		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType &&
-			!($oAccount instanceof \RainLoop\Account || \is_string($oAccount)))
+			!($oAccount instanceof \RainLoop\Model\Account || \is_string($oAccount)))
 		{
 			return false;
 		}
@@ -35,7 +35,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param string $sValue
@@ -53,7 +53,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 * @param mixed $mDefault = false
@@ -71,7 +71,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param int $iStorageType
 	 * @param string $sKey
 	 *
