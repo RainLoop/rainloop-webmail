@@ -210,8 +210,8 @@
 	};
 
 	RemoteAdminStorage.prototype.createOrUpdateDomain = function (fCallback,
-		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncVerifySsl, bIncShortLogin,
-		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutVerifySsl, bOutAuth, sWhiteList)
+		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
+		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, sWhiteList)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainSave', {
 			'Create': bCreate ? '1' : '0',
@@ -219,12 +219,10 @@
 			'IncHost': sIncHost,
 			'IncPort': iIncPort,
 			'IncSecure': sIncSecure,
-			'IncVerifySsl': bIncVerifySsl ? '1' : '0',
 			'IncShortLogin': bIncShortLogin ? '1' : '0',
 			'OutHost': sOutHost,
 			'OutPort': iOutPort,
 			'OutSecure': sOutSecure,
-			'OutVerifySsl': bOutVerifySsl ? '1' : '0',
 			'OutShortLogin': bOutShortLogin ? '1' : '0',
 			'OutAuth': bOutAuth ? '1' : '0',
 			'WhiteList': sWhiteList
@@ -232,19 +230,16 @@
 	};
 
 	RemoteAdminStorage.prototype.testConnectionForDomain = function (fCallback, sName,
-		sIncHost, iIncPort, sIncSecure, bIncVerifySsl,
-		sOutHost, iOutPort, sOutSecure, bOutVerifySsl, bOutAuth)
+		sIncHost, iIncPort, sIncSecure, sOutHost, iOutPort, sOutSecure, bOutAuth)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
 			'Name': sName,
 			'IncHost': sIncHost,
 			'IncPort': iIncPort,
 			'IncSecure': sIncSecure,
-			'IncVerifySsl': bIncVerifySsl ? '1' : '0',
 			'OutHost': sOutHost,
 			'OutPort': iOutPort,
 			'OutSecure': sOutSecure,
-			'OutVerifySsl': bOutVerifySsl ? '1' : '0',
 			'OutAuth': bOutAuth ? '1' : '0'
 		});
 	};

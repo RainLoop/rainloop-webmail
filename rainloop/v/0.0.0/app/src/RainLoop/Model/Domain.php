@@ -1,6 +1,6 @@
 <?php
 
-namespace RainLoop;
+namespace RainLoop\Model;
 
 use MailSo\Net\Enumerations\ConnectionSecurityType;
 
@@ -31,11 +31,6 @@ class Domain
 	/**
 	 * @var bool
 	 */
-	private $bIncVerifySsl;
-
-	/**
-	 * @var bool
-	 */
 	private $bIncShortLogin;
 
 	/**
@@ -52,11 +47,6 @@ class Domain
 	 * @var int
 	 */
 	private $iOutSecure;
-
-	/**
-	 * @var bool
-	 */
-	private $bOutVerifySsl;
 
 	/**
 	 * @var bool
@@ -78,29 +68,25 @@ class Domain
 	 * @param string $sIncHost
 	 * @param int $iIncPort
 	 * @param int $iIncSecure
-	 * @param bool $bIncVerifySsl
 	 * @param bool $bIncShortLogin
 	 * @param string $sOutHost
 	 * @param int $iOutPort
 	 * @param int $iOutSecure
-	 * @param bool $bOutVerifySsl
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
 	 * @param string $sWhiteList = ''
 	 */
-	private function __construct($sName, $sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth, $sWhiteList = '')
+	private function __construct($sName, $sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $sWhiteList = '')
 	{
 		$this->sName = $sName;
 		$this->sIncHost = $sIncHost;
 		$this->iIncPort = $iIncPort;
 		$this->iIncSecure = $iIncSecure;
-		$this->bIncVerifySsl = !!$bIncVerifySsl;
 		$this->bIncShortLogin = $bIncShortLogin;
 		$this->sOutHost = $sOutHost;
 		$this->iOutPort = $iOutPort;
 		$this->iOutSecure = $iOutSecure;
-		$this->bOutVerifySsl = !!$bOutVerifySsl;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
 		$this->sWhiteList = \trim($sWhiteList);
@@ -111,26 +97,24 @@ class Domain
 	 * @param string $sIncHost
 	 * @param int $iIncPort
 	 * @param int $iIncSecure
-	 * @param bool $bIncVerifySsl
 	 * @param bool $bIncShortLogin
 	 * @param string $sOutHost
 	 * @param int $iOutPort
 	 * @param int $iOutSecure
-	 * @param bool $bOutVerifySsl
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
 	 * @param string $sWhiteList = ''
 	 *
-	 * @return \RainLoop\Domain
+	 * @return \RainLoop\Model\Domain
 	 */
 	public static function NewInstance($sName,
-		$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 		$sWhiteList = '')
 	{
 		return new self($sName,
-			$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-			$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 			$sWhiteList);
 	}
 
@@ -138,7 +122,7 @@ class Domain
 	 * @param string $sName
 	 * @param array $aDomain
 	 *
-	 * @return \RainLoop\Domain|null
+	 * @return \RainLoop\Model\Domain|null
 	 */
 	public static function NewInstanceFromDomainConfigArray($sName, $aDomain)
 	{
@@ -152,14 +136,10 @@ class Domain
 			$iIncSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
-			$bIncVerifySsl = isset($aDomain['imap_verify_ssl']) ? (bool) $aDomain['smtp_verify_ssl'] : false;;
-
 			$sOutHost = (string) $aDomain['smtp_host'];
 			$iOutPort = (int) $aDomain['smtp_port'];
 			$iOutSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
-
-			$bOutVerifySsl = isset($aDomain['smtp_verify_ssl']) ? (bool) $aDomain['smtp_verify_ssl'] : false;
 
 			$bOutAuth = isset($aDomain['smtp_auth']) ? (bool) $aDomain['smtp_auth'] : true;
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
@@ -168,8 +148,8 @@ class Domain
 			$bOutShortLogin = isset($aDomain['smtp_short_login']) ? (bool) $aDomain['smtp_short_login'] : false;
 
 			$oDomain = self::NewInstance($sName,
-				$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-				$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 				$sWhiteList);
 		}
 
@@ -213,12 +193,10 @@ class Domain
 			'imap_host = "'.$this->encodeIniString($this->sIncHost).'"',
 			'imap_port = '.$this->iIncPort,
 			'imap_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iIncSecure).'"',
-			'imap_verify_ssl = '.($this->bIncVerifySsl ? 'On' : 'Off'),
 			'imap_short_login = '.($this->bIncShortLogin ? 'On' : 'Off'),
 			'smtp_host = "'.$this->encodeIniString($this->sOutHost).'"',
 			'smtp_port = '.$this->iOutPort,
 			'smtp_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iOutSecure).'"',
-			'smtp_verify_ssl = '.($this->bOutVerifySsl ? 'On' : 'Off'),
 			'smtp_short_login = '.($this->bOutShortLogin ? 'On' : 'Off'),
 			'smtp_auth = '.($this->bOutAuth ? 'On' : 'Off'),
 			'white_list = "'.$this->encodeIniString($this->sWhiteList).'"'
@@ -270,32 +248,28 @@ class Domain
 	 * @param string $sIncHost
 	 * @param int $iIncPort
 	 * @param int $iIncSecure
-	 * @param bool $bIncVerifySsl
 	 * @param bool $bIncShortLogin
 	 * @param string $sOutHost
 	 * @param int $iOutPort
 	 * @param int $iOutSecure
-	 * @param bool $bOutVerifySsl
 	 * @param bool $bOutShortLogin
 	 * @param bool $bOutAuth
 	 * @param string $sWhiteList = ''
 	 *
-	 * @return \RainLoop\Domain
+	 * @return \RainLoop\Model\Domain
 	 */
 	public function UpdateInstance(
-		$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 		$sWhiteList = '')
 	{
 		$this->sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
 		$this->iIncPort = $iIncPort;
 		$this->iIncSecure = $iIncSecure;
-		$this->bIncVerifySsl = !!$bIncVerifySsl;
 		$this->bIncShortLogin = $bIncShortLogin;
 		$this->sOutHost = \MailSo\Base\Utils::IdnToAscii($sOutHost);
 		$this->iOutPort = $iOutPort;
 		$this->iOutSecure = $iOutSecure;
-		$this->bOutVerifySsl = !!$bOutVerifySsl;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
 		$this->sWhiteList = \trim($sWhiteList);
@@ -312,13 +286,11 @@ class Domain
 	}
 
 	/**
-	 * @param string $sRealDomainName = ''
-	 *
 	 * @return string
 	 */
-	public function IncHost($sRealDomainName = '')
+	public function IncHost()
 	{
-		return 0 < \strlen($sRealDomainName) ? \str_replace('{domain:name}', $sRealDomainName, $this->sIncHost) : $this->sIncHost;
+		return $this->sIncHost;
 	}
 
 	/**
@@ -338,16 +310,6 @@ class Domain
 	}
 
 	/**
-	 * @param bool|null $bGlobalVerify = null
-	 * 
-	 * @return bool
-	 */
-	public function IncVerifySsl($bGlobalVerify = null)
-	{
-		return null === $bGlobalVerify ? $this->bIncVerifySsl : !!$bGlobalVerify;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function IncShortLogin()
@@ -356,12 +318,11 @@ class Domain
 	}
 
 	/**
-	 * @param string $sRealDomainName = ''
 	 * @return string
 	 */
-	public function OutHost($sRealDomainName = '')
+	public function OutHost()
 	{
-		return 0 < \strlen($sRealDomainName) ? \str_replace('{domain:name}', $sRealDomainName, $this->sOutHost) : $this->sOutHost;
+		return $this->sOutHost;
 	}
 
 	/**
@@ -450,12 +411,10 @@ class Domain
 			'IncHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->IncHost()) : $this->IncHost(),
 			'IncPort' => $this->IncPort(),
 			'IncSecure' => $this->IncSecure(),
-			'IncVerifySsl' => $this->IncVerifySsl(),
 			'IncShortLogin' => $this->IncShortLogin(),
 			'OutHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->OutHost()) : $this->OutHost(),
 			'OutPort' => $this->OutPort(),
 			'OutSecure' => $this->OutSecure(),
-			'OutVerifySsl' => $this->OutVerifySsl(),
 			'OutShortLogin' => $this->OutShortLogin(),
 			'OutAuth' => $this->OutAuth(),
 			'WhiteList' => $this->WhiteList()

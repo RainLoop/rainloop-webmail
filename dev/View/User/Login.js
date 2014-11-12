@@ -189,7 +189,8 @@
 		this.facebookCommand = Utils.createCommand(this, function () {
 
 			window.open(Links.socialFacebook(), 'Facebook',
-				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
+				
 			return true;
 
 		}, function () {
@@ -201,7 +202,8 @@
 		this.googleCommand = Utils.createCommand(this, function () {
 
 			window.open(Links.socialGoogle(), 'Google',
-				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
+
 			return true;
 
 		}, function () {
@@ -213,7 +215,7 @@
 		this.twitterCommand = Utils.createCommand(this, function () {
 
 			window.open(Links.socialTwitter(), 'Twitter',
-				'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
+				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
 
 			return true;
 

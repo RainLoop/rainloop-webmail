@@ -869,7 +869,7 @@ class Actions
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
 		{
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain instanceof \RainLoop\Domain)
+			if ($oDomain instanceof \RainLoop\Model\Domain)
 			{
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
@@ -1529,7 +1529,7 @@ class Actions
 					$sLine = \trim(\implode('.', $aDomainParts), '. ');
 
 					$oDomain = $oDomainProvider->Load($sLine);
-					if ($oDomain && $oDomain instanceof \RainLoop\Domain)
+					if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
 					{
 						$bAdded = true;
 						$this->Logger()->Write('Check "'.$sLine.'": OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
@@ -2950,7 +2950,7 @@ class Actions
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this);
 
 		return $this->DefaultResponse(__FUNCTION__,
-			$oDomain instanceof \RainLoop\Domain ? $this->DomainProvider()->Save($oDomain) : false);
+			$oDomain instanceof \RainLoop\Model\Domain ? $this->DomainProvider()->Save($oDomain) : false);
 	}
 
 	/**
@@ -2977,8 +2977,8 @@ class Actions
 				$oImapClient->SetTimeOuts(5);
 
 				$iTime = \microtime(true);
-				$oImapClient->Connect($oDomain->IncHost($oDomain->Name()), $oDomain->IncPort(),
-					$oDomain->IncSecure(), $oDomain->IncVerifySsl(!!$this->Config()->Get('ssl', 'verify_certificate')));
+				$oImapClient->Connect($oDomain->IncHost(), $oDomain->IncPort(),
+					$oDomain->IncSecure(), !!$this->Config()->Get('ssl', 'verify_certificate'));
 
 				$iImapTime = \microtime(true) - $iTime;
 				$oImapClient->Disconnect();
@@ -3005,8 +3005,8 @@ class Actions
 				$oSmtpClient->SetTimeOuts(5);
 
 				$iTime = \microtime(true);
-				$oSmtpClient->Connect($oDomain->OutHost($oDomain->Name()), $oDomain->OutPort(), '127.0.0.1',
-					$oDomain->OutSecure(), $oDomain->OutVerifySsl(!!$this->Config()->Get('ssl', 'verify_certificate')));
+				$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1',
+					$oDomain->OutSecure(), !!$this->Config()->Get('ssl', 'verify_certificate'));
 
 				$iSmtpTime = \microtime(true) - $iTime;
 				$oSmtpClient->Disconnect();
@@ -3422,11 +3422,10 @@ class Actions
 	{
 		$this->Logger()->Write('Versions GC: Begin');
 
-		$iLimitToDelete = 3;
-
 		$sVPath = APP_INDEX_ROOT_PATH.'rainloop/v/';
 		$aDirs = @\array_map('basename', @\array_filter(@\glob($sVPath.'*'), 'is_dir'));
 
+		$this->Logger()->Write('Versions GC: Count:'.(\is_array($aDirs) ? \count($aDirs) : 0));
 		if (\is_array($aDirs) && 5 < \count($aDirs))
 		{
 			\uasort($aDirs, 'version_compare');
@@ -3439,12 +3438,7 @@ class Actions
 					@\MailSo\Base\Utils::RecRmDir($sVPath.$sName);
 					$this->Logger()->Write('Versions GC: End to remove  "'.$sVPath.$sName.'" version');
 
-					$iLimitToDelete--;
-
-					if (0 > $iLimitToDelete)
-					{
-						break;
-					}
+					break;
 				}
 			}
 		}

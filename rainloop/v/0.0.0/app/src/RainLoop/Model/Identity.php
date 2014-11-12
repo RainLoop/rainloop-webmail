@@ -1,6 +1,6 @@
 <?php
 
-namespace RainLoop;
+namespace RainLoop\Model;
 
 class Identity
 {
@@ -54,7 +54,7 @@ class Identity
 	 * @param string $sReplyTo = ''
 	 * @param string $sBcc = ''
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public static function NewInstance($sId, $sEmail, $sName = '', $sReplyTo = '', $sBcc = '')
 	{
@@ -72,12 +72,12 @@ class Identity
 	/**
 	 * @param string $sId
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public function SetId($sId)
 	{
 		$this->sId = $sId;
-		
+
 		return $this;
 	}
 
@@ -92,7 +92,7 @@ class Identity
 	/**
 	 * @param string $sEmail
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public function SetEmail($sEmail)
 	{
@@ -112,7 +112,7 @@ class Identity
 	/**
 	 * @param string $sName
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public function SetName($sName)
 	{
@@ -132,7 +132,7 @@ class Identity
 	/**
 	 * @param string $sReplyTo
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public function SetReplyTo($sReplyTo)
 	{
@@ -152,7 +152,7 @@ class Identity
 	/**
 	 * @param string $sBcc
 	 *
-	 * @return \RainLoop\Identity
+	 * @return \RainLoop\Model\Identity
 	 */
 	public function SetBcc($sBcc)
 	{
@@ -163,7 +163,7 @@ class Identity
 
 	/**
 	 * @param bool $bAjax = false
-	 * 
+	 *
 	 * @return array
 	 */
 	public function ToSimpleJSON($bAjax = false)

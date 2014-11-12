@@ -92,7 +92,7 @@
 		sString = Utils.trim(sString);
 
 		var
-			mRegex = /(?:"([^"]+)")? ?<?(.*?@[^>,]+)>?,? ?/g,
+			mRegex = /(?:"([^"]+)")? ?[<]?(.*?@[^>,]+)>?,? ?/g,
 			mMatch = mRegex.exec(sString)
 		;
 

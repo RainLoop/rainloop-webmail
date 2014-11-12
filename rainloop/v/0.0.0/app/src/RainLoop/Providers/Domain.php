@@ -45,12 +45,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 * @param bool $bFindWithWildCard = false
 	 * @param bool $bCheckDisabled = true
 	 *
-	 * @return \RainLoop\Domain|null
+	 * @return \RainLoop\Model\Domain|null
 	 */
 	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
 		$oDomain = $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
-		if ($oDomain instanceof \RainLoop\Domain)
+		if ($oDomain instanceof \RainLoop\Model\Domain)
 		{
 			$this->oPlugins->RunHook('filter.domain', array(&$oDomain));
 		}
@@ -59,11 +59,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Domain $oDomain
+	 * @param \RainLoop\Model\Domain $oDomain
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Domain $oDomain)
+	public function Save(\RainLoop\Model\Domain $oDomain)
 	{
 		return $this->bAdmin ? $this->oDriver->Save($oDomain) : false;
 	}
@@ -115,7 +115,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 * @param \RainLoop\Actions $oActions
 	 * @param string $sNameForTest = ''
 	 *
-	 * @return \RainLoop\Domain | null
+	 * @return \RainLoop\Model\Domain | null
 	 */
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, $sNameForTest = '')
 	{
@@ -128,12 +128,10 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$sIncHost = (string) $oActions->GetActionParam('IncHost', '');
 			$iIncPort = (int) $oActions->GetActionParam('IncPort', 143);
 			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
-			$bIncVerifySsl = '1' === (string) $oActions->GetActionParam('IncVerifySsl', '0');
 			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
 			$sOutHost = (string) $oActions->GetActionParam('OutHost', '');
 			$iOutPort = (int) $oActions->GetActionParam('OutPort', 25);
 			$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
-			$bOutVerifySsl = '1' === (string) $oActions->GetActionParam('OutVerifySsl', '0');
 			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
 			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
 			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
@@ -146,7 +144,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			if (0 < strlen($sName) || 0 < strlen($sNameForTest))
 			{
 				$oDomain = 0 < strlen($sNameForTest) ? null : $this->Load($sName);
-				if ($oDomain instanceof \RainLoop\Domain)
+				if ($oDomain instanceof \RainLoop\Model\Domain)
 				{
 					if ($bCreate)
 					{
@@ -155,16 +153,16 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 					else
 					{
 						$oDomain->UpdateInstance(
-							$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 							$sWhiteList);
 					}
 				}
 				else
 				{
-					$oDomain = \RainLoop\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
-						$sIncHost, $iIncPort, $iIncSecure, $bIncVerifySsl, $bIncShortLogin,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutVerifySsl, $bOutShortLogin, $bOutAuth,
+					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
+						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
+						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
 						$sWhiteList);
 				}
 			}

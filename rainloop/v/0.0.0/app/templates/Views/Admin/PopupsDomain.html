@@ -6,16 +6,16 @@
 		</div>
 		<div class="modal-body">
 			<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
-				<div class="row" data-bind="visible: !edit()">
+				<div class="row" data-bind="visible: !edit()" style="margin-bottom: 20px;">
 					<div class="span10">
 						Name <span style="color: #aaa">(wildcard supported)</span>
 						<br />
-						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="text" class="span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: name, hasfocus: name.focused" />
+
 						<span class="error-desc" data-bind="text: savingError"></span>
 					</div>
 				</div>
-				<br />
 				<div class="row">
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
 						<div class="legend imap-header">
@@ -47,21 +47,13 @@
 									<option value="1">SSL/TLS</option>
 									<option value="2">STARTTLS</option>
 								</select>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div data-bind="visible: '1' === imapSecure() && false, component: {
-									name: 'Checkbox',
-									params: {
-										label: 'Verify ssl certificate',
-										value: imapVerifySsl
-									}
-								}"></div>
 							</div>
 						</div>
 						<br />
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
-								label: 'Use short login form',
+								label: 'Use short login',
 								value: imapShortLogin,
 								inline: true
 							}
@@ -99,21 +91,13 @@
 									<option value="1">SSL/TLS</option>
 									<option value="2">STARTTLS</option>
 								</select>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div data-bind="visible: '1' === smtpSecure() && false, component: {
-									name: 'Checkbox',
-									params: {
-										label: 'Verify ssl certificate',
-										value: smtpVerifySsl
-									}
-								}"></div>
 							</div>
 						</div>
 						<br />
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
-								label: 'Use short login form',
+								label: 'Use short login',
 								value: smtpShortLogin,
 								inline: true
 							}
@@ -151,7 +135,7 @@
 				Test
 			</a>
 			<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand">
-				<i data-bind="css: {'icon-right': !whiteListPage(), 'icon-left': whiteListPage()}"></i>
+				<i data-bind="css: {'icon-users': !whiteListPage(), 'icon-left': whiteListPage()}"></i>
 				&nbsp;&nbsp;
 				<span data-bind="visible: !whiteListPage()">White List</span>
 				<span data-bind="visible: whiteListPage()">Back</span>

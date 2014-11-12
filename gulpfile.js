@@ -33,6 +33,7 @@ var
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
+	plumber = require('gulp-plumber'),
 	gutil = require('gulp-util')
 ;
 
@@ -191,11 +192,12 @@ gulp.task('css:main', ['less:main'], function() {
 
 	var
 //		csslint = require('gulp-csslint'),
-		csscomb = require('gulp-csscomb'),
+//		csscomb = require('gulp-csscomb'),
 		autoprefixer = require('gulp-autoprefixer')
 	;
 
 	return gulp.src(cfg.paths.css.main.src)
+		.pipe(plumber())
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
 //		.pipe(csscomb())
@@ -209,6 +211,7 @@ gulp.task('css:main', ['less:main'], function() {
 gulp.task('css:main:min', ['css:main'], function() {
 	var minifyCss = require('gulp-minify-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
+		.pipe(plumber())
 		.pipe(minifyCss({
 			'keepSpecialComments': 0
 		}))

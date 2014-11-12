@@ -63,12 +63,10 @@
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
-		this.imapVerifySsl = ko.observable(false);
 		this.imapShortLogin = ko.observable(false);
 		this.smtpServer = ko.observable('');
 		this.smtpPort = ko.observable('' + Consts.Values.SmtpDefaulPort);
 		this.smtpSecure = ko.observable(Enums.ServerSecure.None);
-		this.smtpVerifySsl = ko.observable(false);
 		this.smtpShortLogin = ko.observable(false);
 		this.smtpAuth = ko.observable(true);
 		this.whiteList = ko.observable('');
@@ -106,12 +104,10 @@
 				this.imapServer(),
 				Utils.pInt(this.imapPort()),
 				this.imapSecure(),
-				this.imapVerifySsl(),
 				this.imapShortLogin(),
 				this.smtpServer(),
 				Utils.pInt(this.smtpPort()),
 				this.smtpSecure(),
-				this.smtpVerifySsl(),
 				this.smtpShortLogin(),
 				this.smtpAuth(),
 				this.whiteList()
@@ -130,11 +126,9 @@
 				this.imapServer(),
 				Utils.pInt(this.imapPort()),
 				this.imapSecure(),
-				this.imapVerifySsl(),
 				this.smtpServer(),
 				Utils.pInt(this.smtpPort()),
 				this.smtpSecure(),
-				this.smtpVerifySsl(),
 				this.smtpAuth()
 			);
 		}, this.canBeTested);
@@ -289,12 +283,10 @@
 			this.imapServer(Utils.trim(oDomain.IncHost));
 			this.imapPort('' + Utils.pInt(oDomain.IncPort));
 			this.imapSecure(Utils.trim(oDomain.IncSecure));
-			this.imapVerifySsl(!!oDomain.IncVerifySsl);
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.smtpServer(Utils.trim(oDomain.OutHost));
 			this.smtpPort('' + Utils.pInt(oDomain.OutPort));
 			this.smtpSecure(Utils.trim(oDomain.OutSecure));
-			this.smtpVerifySsl(!!oDomain.OutVerifySsl);
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
 			this.whiteList(Utils.trim(oDomain.WhiteList));
@@ -325,12 +317,10 @@
 		this.imapServer('');
 		this.imapPort('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure(Enums.ServerSecure.None);
-		this.imapVerifySsl(false);
 		this.imapShortLogin(false);
 		this.smtpServer('');
 		this.smtpPort('' + Consts.Values.SmtpDefaulPort);
 		this.smtpSecure(Enums.ServerSecure.None);
-		this.smtpVerifySsl(false);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
 		this.whiteList('');
