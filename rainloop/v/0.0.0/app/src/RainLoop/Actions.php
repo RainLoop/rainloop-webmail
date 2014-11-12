@@ -292,7 +292,7 @@ class Actions
 			{
 				$this->KeenIO('Install');
 			}
-			catch (\Exception $oException) {}
+			catch (\Exception $oException) { unset($oException); }
 		}
 	}
 
@@ -5767,19 +5767,26 @@ class Actions
 
 		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
 		{
-			// Address Book
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
+			try
 			{
-				$aSuggestions = $oAddressBookProvider->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
-				if (0 === \count($aResult))
+				// Address Book
+				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+				if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 				{
-					$aResult = $aSuggestions;
+					$aSuggestions = $oAddressBookProvider->GetSuggestions($oAccount->ParentEmailHelper(), $sQuery, $iLimit);
+					if (0 === \count($aResult))
+					{
+						$aResult = $aSuggestions;
+					}
+					else
+					{
+						$aResult = \array_merge($aResult, $aSuggestions);
+					}
 				}
-				else
-				{
-					$aResult = \array_merge($aResult, $aSuggestions);
-				}
+			}
+			catch (\Exception $oException)
+			{
+				$this->Logger()->WriteException($oException);
 			}
 		}
 
