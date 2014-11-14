@@ -8,12 +8,12 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSmtpCredentials
 	 */
 	public function FilterSmtpCredentials($oAccount, &$aSmtpCredentials)
 	{
-		if ($oAccount instanceof \RainLoop\Account && \is_array($aSmtpCredentials))
+		if ($oAccount instanceof \RainLoop\Model\Account && \is_array($aSmtpCredentials))
 		{
 			$sEmail = $oAccount->Email();
 

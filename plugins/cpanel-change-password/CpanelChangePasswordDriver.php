@@ -84,7 +84,7 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
@@ -95,7 +95,7 @@ class CpanelChangePasswordDriver implements \RainLoop\Providers\ChangePassword\C
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *

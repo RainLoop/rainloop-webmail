@@ -986,8 +986,7 @@ class Actions
 		static $bResult = null;
 		if (null === $bResult)
 		{
-//			$bResult = $this->licenseParser($this->licenseHelper(false, true));
-			$bResult = true;
+			$bResult = $this->licenseParser($this->licenseHelper(false, true));
 		}
 
 		return $bResult;
@@ -2645,7 +2644,7 @@ class Actions
 	/**
 	 * @return string
 	 */
-	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 5, $iLongCacheTimeInDays = 2)
+	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
 	{
 		$sDomain = APP_SITE;
 
@@ -2713,16 +2712,17 @@ class Actions
 
 	/**
 	 * @param string $sInput
+	 * @param int $iExpired = 0
 	 *
 	 * @return bool
 	 */
-	public function licenseParser($sInput)
+	public function licenseParser($sInput, &$iExpired = 0)
 	{
 		$aMatch = array();
 		if (\preg_match('/^EXPIRED:([\d]+)$/', $sInput, $aMatch))
 		{
-			$iTime = (int) $aMatch[1];
-			return \time() < $iTime;
+			$iExpired = (int) $aMatch[1];
+			return \time() < $iExpired;
 		}
 
 		return false;
@@ -2750,15 +2750,15 @@ class Actions
 				\sleep(1);
 			}
 
-			$aMatch = array();
-			if (\preg_match('/^EXPIRED:([\d]+)$/', $sValue, $aMatch))
+			$iExpired = 0;
+			if ($this->licenseParser($sValue, $iExpired))
 			{
 				$mResult = array(
 					'Banned' => false,
-					'Expired' => (int) $aMatch[1],
+					'Expired' => $iExpired,
 				);
 			}
-			else if ($sValue === 'NO')
+			else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
 			{
 				$iErrorCode = -1;
 			}

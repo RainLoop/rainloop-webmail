@@ -53,6 +53,14 @@
 	};
 
 	/**
+	 * @returns {boolean}
+	 */
+	LicensingAdminSettings.prototype.licenseIsUnlim = function ()
+	{
+		return 1898625600 === this.licenseExpired();
+	};
+
+	/**
 	 * @returns {string}
 	 */
 	LicensingAdminSettings.prototype.licenseExpiredMomentValue = function ()
@@ -62,7 +70,8 @@
 			oDate = moment.unix(iTime)
 		;
 
-		return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
+		return this.licenseIsUnlim() ? 'Never' :
+			(iTime && (oDate.format('LL') + ' (' + oDate.from(moment()) + ')'));
 	};
 
 	module.exports = LicensingAdminSettings;

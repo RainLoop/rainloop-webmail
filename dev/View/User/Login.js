@@ -141,6 +141,11 @@
 							else if (oData.ErrorCode)
 							{
 								this.submitRequest(false);
+								if (-1 < Utils.inArray(oData.ErrorCode, [Enums.Notification.InvalidInputArgument]))
+								{
+									oData.ErrorCode = Enums.Notification.AuthError;
+								}
+
 								this.submitError(Utils.getNotification(oData.ErrorCode));
 
 								if ('' === this.submitError())
@@ -190,7 +195,7 @@
 
 			window.open(Links.socialFacebook(), 'Facebook',
 				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
-				
+
 			return true;
 
 		}, function () {

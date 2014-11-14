@@ -1,7 +1,7 @@
 <div class="b-admin-branding">
 	<div class="row" data-bind="visible: !capa">
 		<div class="alert span8" style="margin-top: 10px;">
-			Full functionality available in <strong><a href="#/licensing">Premium version</a></strong> only.
+			This functionality is available for <strong><a href="#/licensing">Premium</a></strong> subscribers.
 		</div>
 	</div>
 	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa}">
@@ -77,17 +77,18 @@
 				}"></div>
 			</div>
 		</div>
-<!--		<div class="control-group">
+		<div class="control-group">
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
-						label: 'Show &quot;Powered by RainLoop&quot; link',
+						enable: capa,
+						label: 'Show &quot;Powered by RainLoop&quot; link (White Labeling)',
 						value: loginPowered
 					}
 				}"></div>
 			</div>
-		</div>-->
+		</div>
 		<div class="control-group">
 			<label class="control-label">
 				Custom CSS

@@ -135,7 +135,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
@@ -146,7 +146,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *

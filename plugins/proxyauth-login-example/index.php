@@ -8,11 +8,20 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param string $sLogin
+	 * @param string $sPassword
+	 */
+	public function isValidAccount($sLogin, $sPassword)
+	{
+		return !empty($sLogin) && !empty($sPassword);
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
 	 */
 	public function EventLoginPostLoginProvide(&$oAccount)
 	{
-		if ($oAccount instanceof \RainLoop\Account)
+		if ($oAccount instanceof \RainLoop\Model\Account)
 		{
 			// Verify logic
 			$bValid = isValidAccount($oAccount->Login(), $oAccount->Password());
@@ -23,10 +32,10 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 			 * $oAccount->Password();		// IMAP password
 			 * $oAccount->DomainIncHost();  // IMAP host
 			 *
-			 * @see \RainLoo\Account for more
+			 * @see \RainLoo\Model\Account for more
 			 */
 
-			if ($bValid) // if verify failed
+			if (!$bValid) // if verify failed
 			{
 				// throw a Auth Error Exception
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);

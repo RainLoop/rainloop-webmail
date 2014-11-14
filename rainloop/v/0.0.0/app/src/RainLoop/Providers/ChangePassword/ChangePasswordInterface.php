@@ -5,18 +5,18 @@ namespace RainLoop\Providers\ChangePassword;
 interface ChangePasswordInterface
 {
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \RainLoop\Account $oAccount
 	 *
 	 * @return bool
 	 */
 	public function PasswordChangePossibility($oAccount);
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \RainLoop\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *
 	 * @return bool
 	 */
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, $sPrevPassword, $sNewPassword);
+	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword);
 }

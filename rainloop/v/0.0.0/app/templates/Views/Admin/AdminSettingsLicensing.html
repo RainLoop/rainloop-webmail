@@ -6,17 +6,18 @@
 			Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</strong> license.
 			<br />
 			<br />
-			You are <strong>free</strong> to use it for your <strong>personal</strong> or <strong>non-profit</strong> projects.
+			You are <strong>free</strong> to use it for your <strong>personal</strong> projects.
 			<br />
 			<br />
-			Commercial use of <strong>RainLoop Webmail</strong> requires getting a
-			<a href="http://rainloop.net/purchase/" target="_blank">permission</a>.
+			Commercial use (with additional features) of <strong>RainLoop Webmail</strong> requires getting a
+			<a href="http://rainloop.net/purchase/" target="_blank">subscription</a>.
 		</div>
 	</div>
+	<br />
 	<div class="form-horizontal">
 		<div class="control-group">
 			<label class="control-label">
-				Your Domain
+				Your domain
 			</label>
 			<div class="controls">
 				<span class="help-inline" style="padding-top: 5px;">
@@ -25,29 +26,49 @@
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: !subscriptionEnabled()">
+			<label class="control-label" style="padding-top: 20px">
+				Version
+			</label>
 			<div class="controls">
 				<div class="alert alert-block span8" style="margin-left: 0">
-					This domain can't be licensed for commercial use.
+					<h4>
+						Basic
+						<span data-bind="visible: licenseIsUnlim()">&nbsp;(Unlim)</span>
+					</h4>
+					<br />
+					<p>
+						This domain can't be licensed.
+					</p>
 				</div>
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: subscriptionEnabled">
+			<label class="control-label" style="padding-top: 20px">
+				Version
+			</label>
 			<div class="controls">
-				<div data-bind="visible: licensingProcess()">
+				<div data-bind="visible: licensingProcess()" style="padding-top: 20px">
 					<i class="icon-spinner animated"></i>
 					&nbsp;&nbsp;
 					Checking&hellip;
 				</div>
 				<div data-bind="visible: !licensingProcess()">
-					<div class="alert alert-block span8" style="margin-left: 0" data-bind="visible: !licensing()">
-						This domain isn't licensed for commercial use.
+					<div class="alert alert-block span8" style="margin-left: 0;  padding-top: 20px" data-bind="visible: !licensing()">
+						<h4>
+							Basic
+						</h4>
+						<br />
+						<p>
+							This domain isn't licensed for commercial use (with additional features).
+						</p>
 					</div>
 					<div data-bind="visible: licensing()">
-						<div class="alert alert-success span8" style="margin-left: 0" data-bind="visible: licenseValid() && '' === licenseError()">
-							<p>
-								This domain is licensed for commercial use
-							</p>
-							<p data-bind="visible: 0 < licenseExpired()">
+						<div class="alert alert-success span8" style="margin-left: 0; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
+							<h4>
+								<span data-bind="visible: licenseIsUnlim()">Lifetime (Premium)</span>
+								<span data-bind="visible: !licenseIsUnlim()">Premium</span>
+							</h4>
+							<p data-bind="visible: 0 < licenseExpired()" style="padding-top: 10px">
 								<b>Subscription expires:</b>
 								&nbsp;
 								<span data-bind="text: licenseExpiredMomentValue()"></span>
