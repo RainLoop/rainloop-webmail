@@ -1030,6 +1030,7 @@ class Actions
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
+			'AllowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
 			'RsaPublicKey' => '',
 			'HideDangerousActions' => $oConfig->Get('labs', 'hide_dangerous_actions', false),
@@ -2651,35 +2652,27 @@ class Actions
 		$oCacher = $this->Cacher();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-		if ($oHttp->CheckLocalhost($sDomain))
+		if ($oHttp->CheckLocalhost($sDomain) || !$oCacher)
 		{
 			return 'NO';
 		}
 
+		$sDomainKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain);
+		$sDomainLongKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain);
+
 		$sValue = '';
-		if (!$sForce && $oCacher)
+		if (!$sForce)
 		{
-			if (!$bLongCache)
+			$iTime = $oCacher->GetTimer($bLongCache ? $sDomainLongKeyValue : $sDomainKeyValue);
+			if (0 < $iTime && \time() < $iTime + (60 * ($bLongCache ? 60 * 24 : 1)) * ($bLongCache ? $iLongCacheTimeInDays : $iFastCacheTimeInMin))
 			{
-				$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
-				if ($iTime + 60 * $iFastCacheTimeInMin > \time())
-				{
-					$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
-				}
-			}
-			else
-			{
-				$iTime = $oCacher->GetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain));
-				if ($iTime + (60 * 60 * 24) * $iLongCacheTimeInDays > \time())
-				{
-					$sValue = $oCacher->Get(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain));
-				}
+				$sValue = $oCacher->Get($bLongCache ? $sDomainLongKeyValue : $sDomainKeyValue);
 			}
 		}
 
 		if (0 === \strlen($sValue))
 		{
-			if ($bLongCache && (!$oCacher || !$oCacher->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain))))
+			if ($bLongCache && !$oCacher->SetTimer($sDomainLongKeyValue))
 			{
 				return 'NO';
 			}
@@ -2698,13 +2691,10 @@ class Actions
 				$sValue = '';
 			}
 
-			if ($oCacher)
-			{
-				$oCacher->SetTimer(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain));
+			$oCacher->SetTimer($sDomainKeyValue);
 
-				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain), $sValue);
-				$oCacher->Set(\RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain), $sValue);
-			}
+			$oCacher->Set($sDomainKeyValue, $sValue);
+			$oCacher->Set($sDomainLongKeyValue, $sValue);
 		}
 
 		return $sValue;

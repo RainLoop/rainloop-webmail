@@ -132,17 +132,17 @@
 		'toolbarGroups': [
 			{name: 'spec'},
 			{name: 'styles'},
-			{name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+			{name: 'basicstyles', groups: ['basicstyles', 'cleanup', 'bidi']},
 			{name: 'colors'},
 			{name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align']},
 			{name: 'links'},
 			{name: 'insert'},
+			{name: 'document', groups: ['mode', 'document', 'doctools']},
 			{name: 'others'}
-	//		{name: 'document', groups: ['mode', 'document', 'doctools']}
 		],
 
 		'removePlugins': 'liststyle,tabletools,contextmenu', //blockquote
-		'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll',
+		'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 		'extraPlugins': 'plain',

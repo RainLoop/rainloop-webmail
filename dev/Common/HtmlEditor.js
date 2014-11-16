@@ -8,6 +8,8 @@
 		_ = require('_'),
 
 		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
+
 		Settings = require('Storage/Settings')
 	;
 
@@ -167,13 +169,23 @@
 					var
 						oConfig = Globals.oHtmlEditorDefaultConfig,
 						sLanguage = Settings.settingsGet('Language'),
-						bSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton')
+						bSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton'),
+						bBiti = !!Settings.settingsGet('AllowHtmlEditorBitiButtons')
 					;
 
-					if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+					if ((bSource || bBiti) && !oConfig.toolbarGroups.__SourceInited)
 					{
 						oConfig.toolbarGroups.__SourceInited = true;
-						oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+
+						if (bSource)
+						{
+							oConfig.removeButtons = oConfig.removeButtons.replace(',Source', '');
+						}
+
+						if (bBiti)
+						{
+							oConfig.extraPlugins += (oConfig.extraPlugins ? ',' : '')  + 'bidi';
+						}
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
