@@ -8,7 +8,6 @@
 		_ = require('_'),
 
 		Globals = require('Common/Globals'),
-		Utils = require('Common/Utils'),
 
 		Settings = require('Storage/Settings')
 	;

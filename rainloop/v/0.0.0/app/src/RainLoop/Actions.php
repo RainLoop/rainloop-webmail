@@ -1879,7 +1879,7 @@ class Actions
 					if (isset($aItem['Id'], $aItem['Email'], $aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']) &&
 						$aItem['Id'] !== $oAccount->Email())
 					{
-						$oItem = \RainLoop\Identity::NewInstance($aItem['Id'], $aItem['Email'],
+						$oItem = \RainLoop\Model\Identity::NewInstance($aItem['Id'], $aItem['Email'],
 							$aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']);
 
 						$aIdentities[] = $oItem;
@@ -1901,7 +1901,7 @@ class Actions
 		$aIdentities = array();
 		if ($oAccount)
 		{
-			$oAccountIdentity = \RainLoop\Identity::NewInstance('', $oAccount->Email());
+			$oAccountIdentity = \RainLoop\Model\Identity::NewInstance('', $oAccount->Email());
 
 			$aSubIdentities = array();
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
@@ -1923,7 +1923,7 @@ class Actions
 					{
 						if (0 < \strlen($aItem['Id']))
 						{
-							$oItem = \RainLoop\Identity::NewInstance($aItem['Id'], $aItem['Email']);
+							$oItem = \RainLoop\Model\Identity::NewInstance($aItem['Id'], $aItem['Email']);
 						}
 						else
 						{
@@ -2129,7 +2129,7 @@ class Actions
 
 		if (!$oEditIdentity)
 		{
-			$aIdentities[] = \RainLoop\Identity::NewInstance($sId, $sEmail, $sName, $sReplyTo, $sBcc);
+			$aIdentities[] = \RainLoop\Model\Identity::NewInstance($sId, $sEmail, $sName, $sReplyTo, $sBcc);
 		}
 		else
 		{
