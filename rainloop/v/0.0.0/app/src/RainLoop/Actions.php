@@ -1403,7 +1403,8 @@ class Actions
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
 		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
-		$aResult['EditorDefaultType'] = 'Html' === $aResult['EditorDefaultType'] ? 'Html' : 'Plain';
+		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
+			$aResult['EditorDefaultType'] : 'Plain';
 
 		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);

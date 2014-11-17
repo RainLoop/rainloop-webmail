@@ -9,7 +9,7 @@ interface SettingsInterface
 	 *
 	 * @return array
 	 */
-	public function Load(\RainLoop\Model\Account $oAccount);
+	public function Load($oAccount);
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
@@ -17,7 +17,7 @@ interface SettingsInterface
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings);
+	public function Save($oAccount, array $aSettings);
 
 	/**
 	 * @param string $sEmail

@@ -24,7 +24,7 @@ class DefaultSettings implements \RainLoop\Providers\Settings\SettingsInterface
 	 *
 	 * @return array
 	 */
-	public function Load(\RainLoop\Model\Account $oAccount)
+	public function Load($oAccount)
 	{
 		$sValue = $this->oStorageProvider->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -49,7 +49,7 @@ class DefaultSettings implements \RainLoop\Providers\Settings\SettingsInterface
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings)
+	public function Save($oAccount, array $aSettings)
 	{
 		return $this->oStorageProvider->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
