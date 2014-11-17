@@ -44,6 +44,9 @@
 		this.logoCss = Utils.trim(Settings.settingsGet('LoginCss'));
 		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 
+		this.forgotPasswordLinkUrl = Settings.settingsGet('ForgotPasswordLinkUrl');
+		this.registrationLinkUrl = Settings.settingsGet('RegistrationLinkUrl');
+
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
 

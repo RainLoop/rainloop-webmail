@@ -131,6 +131,9 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'determine_user_language' => array(true, ''),
 				'determine_user_domain' => array(false, ''),
 
+				'forgot_password_link_url' => array('', ''),
+				'registration_link_url' => array('', ''),
+
 				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAILT_OFF,
 					'This option allows webmail to remember the logged in user
 once they closed the browser window.

@@ -1039,6 +1039,8 @@ class Actions
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
+			'ForgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
+			'RegistrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
