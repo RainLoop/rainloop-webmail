@@ -10,7 +10,7 @@ class Api
 	private function __construct()
 	{
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -18,7 +18,7 @@ class Api
 	{
 		return true;
 	}
-	
+
 	/**
 	 * @staticvar bool $bOne
 	 * @return bool
@@ -200,5 +200,16 @@ class Api
 	{
 		\RainLoop\Utils::ClearCookie('rlsession');
 		return true;
+	}
+
+	/**
+	 * @return void
+	 */
+	public static function ExitOnEnd()
+	{
+		if (!\defined('RAINLOOP_EXIT_ON_END'))
+		{
+			\define('RAINLOOP_EXIT_ON_END', true);
+		}
 	}
 }

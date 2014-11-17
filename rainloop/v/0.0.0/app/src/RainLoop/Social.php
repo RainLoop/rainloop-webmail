@@ -812,7 +812,9 @@ class Social
 
 		if (\version_compare(PHP_VERSION, '5.4.0', '>=') &&
 			$oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
-			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')))
+			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')) &&
+			\class_exists('Facebook\FacebookSession')
+		)
 		{
 			\Facebook\FacebookSession::setDefaultApplication($sAppID,
 				\trim($oConfig->Get('social', 'fb_app_secret', '')));

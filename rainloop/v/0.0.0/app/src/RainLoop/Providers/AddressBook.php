@@ -317,7 +317,8 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportVcfFile($sEmail, $sVcfData)
 	{
 		$iCount = 0;
-		if ($this->IsActive() && \is_string($sVcfData))
+
+		if (\class_exists('Sabre\DAV\Client') && $this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
 			if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3))

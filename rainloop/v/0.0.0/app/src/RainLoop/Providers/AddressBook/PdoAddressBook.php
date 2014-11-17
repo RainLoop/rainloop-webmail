@@ -232,6 +232,11 @@ class PdoAddressBook
 
 		$sPath = $aUrl['path'];
 
+		if (!\class_exists('Sabre\DAV\Client'))
+		{
+			return false;
+		}
+
 		$oClient = new \Sabre\DAV\Client($aSettings);
 		$oClient->setVerifyPeer(false);
 

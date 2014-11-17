@@ -189,4 +189,9 @@ Options -Indexes
 		}
 
 		include APP_VERSION_ROOT_PATH.'app/handle.php';
+
+		if (defined('RAINLOOP_EXIT_ON_END') && RAINLOOP_EXIT_ON_END)
+		{
+			exit(0);
+		}
 	}

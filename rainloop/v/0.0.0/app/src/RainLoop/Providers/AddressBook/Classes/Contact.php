@@ -150,7 +150,8 @@ class Contact
 	 */
 	public function RegenerateContactStr()
 	{
-		$this->IdContactStr = \Sabre\DAV\UUIDUtil::getUUID();
+		$this->IdContactStr = \class_exists('Sabre\DAV\Client') ?
+			\Sabre\DAV\UUIDUtil::getUUID() : \md5(\microtime(true).'-'.\rand(10000, 99999));
 	}
 
 	/**
@@ -184,6 +185,11 @@ class Contact
 	public function ToVCard($sPreVCard = '')
 	{
 		$this->UpdateDependentValues();
+
+		if (!\class_exists('Sabre\DAV\Client'))
+		{
+			return '';
+		}
 
 		$oVCard = null;
 		if (0 < \strlen($sPreVCard))
@@ -482,6 +488,11 @@ class Contact
 	{
 		$this->Properties = array();
 
+		if (!\class_exists('Sabre\DAV\Client'))
+		{
+			return false;
+		}
+
 		if (!empty($sEtag))
 		{
 			$this->Etag = $sEtag;
@@ -579,5 +590,7 @@ class Contact
 		}
 
 		$this->UpdateDependentValues();
+
+		return true;
 	}
 }
