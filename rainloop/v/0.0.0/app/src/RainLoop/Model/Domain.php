@@ -136,16 +136,15 @@ class Domain
 	{
 		$oDomain = null;
 
-		if (0 < \strlen($sName) && \is_array($aDomain) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']) &&
-			0 < \strlen($aDomain['smtp_host']) && 0 < \strlen($aDomain['smtp_port']))
+		if (0 < \strlen($sName) && \is_array($aDomain) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']))
 		{
 			$sIncHost = (string) $aDomain['imap_host'];
 			$iIncPort = (int) $aDomain['imap_port'];
 			$iIncSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
-			$sOutHost = (string) $aDomain['smtp_host'];
-			$iOutPort = (int) $aDomain['smtp_port'];
+			$sOutHost = empty($aDomain['smtp_host']) ? '' : (string) $aDomain['smtp_host'];
+			$iOutPort = empty($aDomain['smtp_port']) ? 25 : (int) $aDomain['smtp_port'];
 			$iOutSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
 

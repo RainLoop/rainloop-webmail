@@ -2989,32 +2989,44 @@ class Actions
 				$sImapErrorDesc = $oException->getMessage();
 			}
 
-			try
+			if ($oDomain->OutUsePhpMail())
 			{
-				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
-				$oSmtpClient->SetTimeOuts(5);
-
-				$iTime = \microtime(true);
-				$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1',
-					$oDomain->OutSecure(), !!$this->Config()->Get('ssl', 'verify_certificate'));
-
-				$iSmtpTime = \microtime(true) - $iTime;
-				$oSmtpClient->Disconnect();
-				$bSmtpResult = true;
-			}
-			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-				$sSmtpErrorDesc = $oException->getSocketMessage();
-				if (empty($sSmtpErrorDesc))
+				$bSmtpResult = \MailSo\Base\Utils::FunctionExistsAndEnabled('mail');
+				$bSmtpResult = false;
+				if (!$bSmtpResult)
 				{
-					$sSmtpErrorDesc = $oException->getMessage();
+					$sSmtpErrorDesc = 'PHP: mail() function is undefined';
 				}
 			}
-			catch (\Exception $oException)
+			else
 			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-				$sSmtpErrorDesc = $oException->getMessage();
+				try
+				{
+					$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+					$oSmtpClient->SetTimeOuts(5);
+
+					$iTime = \microtime(true);
+					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1',
+						$oDomain->OutSecure(), !!$this->Config()->Get('ssl', 'verify_certificate'));
+
+					$iSmtpTime = \microtime(true) - $iTime;
+					$oSmtpClient->Disconnect();
+					$bSmtpResult = true;
+				}
+				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+				{
+					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$sSmtpErrorDesc = $oException->getSocketMessage();
+					if (empty($sSmtpErrorDesc))
+					{
+						$sSmtpErrorDesc = $oException->getMessage();
+					}
+				}
+				catch (\Exception $oException)
+				{
+					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$sSmtpErrorDesc = $oException->getMessage();
+				}
 			}
 		}
 

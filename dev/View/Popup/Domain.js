@@ -81,11 +81,11 @@
 		}, this);
 
 		this.domainIsComputed = ko.computed(function () {
+			var bPhpMail = this.smtpPhpMail();
 			return '' !== this.name() &&
 				'' !== this.imapServer() &&
 				'' !== this.imapPort() &&
-				'' !== this.smtpServer() &&
-				'' !== this.smtpPort();
+				(('' !== this.smtpServer() && '' !== this.smtpPort()) || bPhpMail);
 		}, this);
 
 		this.canBeTested = ko.computed(function () {
