@@ -2995,7 +2995,6 @@ class Actions
 			if ($oDomain->OutUsePhpMail())
 			{
 				$bSmtpResult = \MailSo\Base\Utils::FunctionExistsAndEnabled('mail');
-				$bSmtpResult = false;
 				if (!$bSmtpResult)
 				{
 					$sSmtpErrorDesc = 'PHP: mail() function is undefined';
