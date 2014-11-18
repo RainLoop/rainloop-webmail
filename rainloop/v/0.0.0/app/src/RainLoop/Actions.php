@@ -2666,18 +2666,36 @@ class Actions
 		$sValue = '';
 		if (!$sForce)
 		{
-			$iTime = $oCacher->GetTimer($bLongCache ? $sDomainLongKeyValue : $sDomainKeyValue);
-			if (0 < $iTime && \time() < $iTime + (60 * ($bLongCache ? 60 * 24 : 1)) * ($bLongCache ? $iLongCacheTimeInDays : $iFastCacheTimeInMin))
+			if ($bLongCache)
 			{
-				$sValue = $oCacher->Get($bLongCache ? $sDomainLongKeyValue : $sDomainKeyValue);
+				$bLock = $oCacher->GetLock($sDomainLongKeyValue);
+				$iTime = $bLock ? 0 : $oCacher->GetTimer($sDomainLongKeyValue);
+
+				if ($bLock || (0 < $iTime && \time() < $iTime + (60 * 60 * 24) * $iLongCacheTimeInDays))
+				{
+					$sValue = $oCacher->Get($sDomainLongKeyValue);
+				}
+			}
+			else
+			{
+				$iTime = $oCacher->GetTimer($sDomainKeyValue);
+				if (0 < $iTime && \time() < $iTime + 60 * $iFastCacheTimeInMin)
+				{
+					$sValue = $oCacher->Get($sDomainKeyValue);
+				}
 			}
 		}
 
 		if (0 === \strlen($sValue))
 		{
-			if ($bLongCache && !$oCacher->SetTimer($sDomainLongKeyValue))
+			if ($bLongCache)
 			{
-				return 'NO';
+				if (!$oCacher->SetTimer($sDomainLongKeyValue))
+				{
+					return 'NO';
+				}
+
+				$oCacher->SetLock($sDomainLongKeyValue);
 			}
 
 			$iCode = 0;
@@ -2698,6 +2716,11 @@ class Actions
 
 			$oCacher->Set($sDomainKeyValue, $sValue);
 			$oCacher->Set($sDomainLongKeyValue, $sValue);
+
+			if ($bLongCache)
+			{
+				$oCacher->RemoveLock($sDomainLongKeyValue);
+			}
 		}
 
 		return $sValue;

@@ -67,6 +67,36 @@ class CacheClient
 
 	/**
 	 * @param string $sKey
+	 *
+	 * @return bool
+	 */
+	public function SetLock($sKey)
+	{
+		return $this->Set($sKey.'/LOCK', '1');
+	}
+
+	/**
+	 * @param string $sKey
+	 *
+	 * @return bool
+	 */
+	public function RemoveLock($sKey)
+	{
+		return $this->Set($sKey.'/LOCK', '0');
+	}
+
+	/**
+	 * @param string $sKey
+	 *
+	 * @return bool
+	 */
+	public function GetLock($sKey)
+	{
+		return '1' === $this->Get($sKey.'/LOCK');
+	}
+
+	/**
+	 * @param string $sKey
 	 * @param string $bClearAfterGet = false
 	 *
 	 * @return string
