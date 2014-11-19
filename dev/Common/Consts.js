@@ -85,6 +85,12 @@
 	 * @const
 	 * @type {number}
 	 */
+	Consts.Values.SieveDefaulPort = 2000;
+
+	/**
+	 * @const
+	 * @type {number}
+	 */
 	Consts.Values.SmtpDefaulPort = 25;
 
 	/**

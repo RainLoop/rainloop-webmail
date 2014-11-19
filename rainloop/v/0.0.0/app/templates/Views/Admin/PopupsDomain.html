@@ -1,5 +1,6 @@
 <div class="popups">
-	<div class="modal hide b-domain-content g-ui-user-select-none" data-bind="modal: modalVisibility, css: {'domain-edit': edit, 'domain-white-list-page': whiteListPage}">
+	<div class="modal hide b-domain-content g-ui-user-select-none"
+		data-bind="modal: modalVisibility, css: {'domain-edit': edit, 'domain-second-page': 'main' !== page()}">
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 			<h3 data-bind="text: headerText"></h3>
@@ -20,48 +21,124 @@
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
 						<div class="legend imap-header">
 							<span data-placement="bottom" data-bind="tooltip3: testingImapErrorDesc">
-								IMAP
+								<span data-bind="text: sieveSettings() ? 'SIEVE' : 'IMAP'">IMAP</span>
 							</span>
 						</div>
-						<div class="row">
-							<div class="span3">
-								Server
-								<br />
-								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="textInput: imapServer, hasfocus: imapServerFocus" />
+						<div data-bind="visible: !sieveSettings()">
+							<div class="row">
+								<div class="span3">
+									Server
+									<br />
+									<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+										data-bind="textInput: imapServer, hasfocus: imapServerFocus" />
+								</div>
+								<div class="span1">
+									Port
+									<br />
+									<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+										data-bind="textInput: imapPort" />
+								</div>
 							</div>
-							<div class="span1">
-								Port
-								<br />
-								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-									data-bind="textInput: imapPort" />
+							<br />
+							<div class="row">
+								<div class="span4">
+									Secure
+									<br />
+									<select class="span2" data-bind="value: imapSecure">
+										<option value="0">None</option>
+										<option value="1">SSL/TLS</option>
+										<option value="2">STARTTLS</option>
+									</select>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="span5">
+									<div data-bind="component: {
+										name: 'Checkbox',
+										params: {
+											label: 'Use short login',
+											value: imapShortLogin,
+											inline: true
+										}
+									}"></div>
+									&nbsp;&nbsp;
+									<span style="color: #aaa">(user@domain.com &rarr; user)</span>
+								</div>
+							</div>
+							<br />
+							<br />
+							<div class="row" data-bind="visible: allowSieve">
+								<div class="span5">
+									<span data-bind="command: sieveCommand">
+										<i class="icon-filter"></i>
+										&nbsp;
+										<a href="#" class="g-ui-link">Sieve configuration</a>
+									</span>
+								</div>
 							</div>
 						</div>
-						<br />
-						<div class="row">
-							<div class="span4">
-								Secure
-								<br />
-								<select class="span2" data-bind="value: imapSecure">
-									<option value="0">None</option>
-									<option value="1">SSL/TLS</option>
-									<option value="2">STARTTLS</option>
-								</select>
+						<div data-bind="visible: sieveSettings">
+							<div class="row">
+								<div class="span5">
+									<div data-bind="component: {
+										name: 'Checkbox',
+										params: {
+											label: 'use Sieve for this domain',
+											value: useSieve
+										}
+									}"></div>
+								</div>
 							</div>
-						</div>
-						<br />
-						<div class="row">
-							<div class="span5">
-								<div data-bind="component: {
-									name: 'Checkbox',
-									params: {
-										label: 'Use short login',
-										value: imapShortLogin,
-										inline: true
-									}
-								}"></div>
-								&nbsp;&nbsp;
-								<span style="color: #aaa">(user@domain.com &rarr; user)</span>
+							<div class="row" data-bind="visible: useSieve">
+								<div class="span5">
+									<div data-bind="component: {
+										name: 'Checkbox',
+										params: {
+											label: 'use IMAP Server',
+											value: useImapServerForSieve
+										}
+									}"></div>
+								</div>
+							</div>
+							<div data-bind="visible: !useImapServerForSieve() && useSieve()">
+								<br />
+								<div class="row">
+									<div class="span3">
+										Server
+										<br />
+										<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+											data-bind="textInput: sieveServer, hasfocus: sieveServerFocus" />
+									</div>
+									<div class="span1">
+										Port
+										<br />
+										<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+											data-bind="textInput: sievePort" />
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="span4">
+										Secure
+										<br />
+										<select class="span2" data-bind="value: sieveSecure">
+											<option value="0">None</option>
+											<option value="1">SSL/TLS</option>
+											<option value="2">STARTTLS</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="span5">
+									<span data-bind="command: sieveCommand">
+										<i class="icon-left"></i>
+										&nbsp;
+										<a href="#" class="g-ui-link">Back to IMAP settings</a>
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -138,7 +215,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="span10">
+					<div class="span10" data-bind="visible: 'white-list' === page()">
 						<div class="legend white-list-header">
 							White List
 						</div>
@@ -152,18 +229,22 @@
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a class="btn button-test-connection pull-left" data-bind="command: testConnectionCommand, css: {
+			<a class="btn button-test-connection pull-left" data-bind="visible: 'main' === page(), command: testConnectionCommand, css: {
 			   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 			   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
 				<i data-bind="css: {'icon-info': !testing(), 'icon-spinner animated': testing(), 'icon-white': testingDone()}"></i>
 				&nbsp;&nbsp;
 				Test
 			</a>
-			<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand">
-				<i data-bind="css: {'icon-users': !whiteListPage(), 'icon-left': whiteListPage()}"></i>
+			<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand, visible: 'main' === page()">
+				<i class="icon-users"></i>
 				&nbsp;&nbsp;
-				<span data-bind="visible: !whiteListPage()">White List</span>
-				<span data-bind="visible: whiteListPage()">Back</span>
+				White List
+			</a>
+			<a class="btn button-white-list pull-left" data-bind="command: backCommand, visible: 'main' !== page()">
+				<i class="icon-left"></i>
+				&nbsp;&nbsp;
+				Back
 			</a>
 			<a class="btn buttonClose" data-bind="command: cancelCommand">
 				<i class="icon-remove"></i>

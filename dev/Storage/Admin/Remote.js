@@ -210,34 +210,53 @@
 	};
 
 	RemoteAdminStorage.prototype.createOrUpdateDomain = function (fCallback,
-		bCreate, sName, sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail, sWhiteList)
+		bCreate, sName,
+		sIncHost, iIncPort, sIncSecure, bIncShortLogin,
+		bUseSieve, bUseImapServerForSieve, sSieveHost, iSievePort, sSieveSecure,
+		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail,
+		sWhiteList)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainSave', {
 			'Create': bCreate ? '1' : '0',
 			'Name': sName,
+
 			'IncHost': sIncHost,
 			'IncPort': iIncPort,
 			'IncSecure': sIncSecure,
 			'IncShortLogin': bIncShortLogin ? '1' : '0',
+
+			'UseSieve': bUseSieve ? '1' : '0',
+			'UseImapServerForSieve': bUseImapServerForSieve ? '1' : '0',
+			'SieveHost': sSieveHost,
+			'SievePort': iSievePort,
+			'SieveSecure': sSieveSecure,
+
 			'OutHost': sOutHost,
 			'OutPort': iOutPort,
 			'OutSecure': sOutSecure,
 			'OutShortLogin': bOutShortLogin ? '1' : '0',
 			'OutAuth': bOutAuth ? '1' : '0',
 			'OutUsePhpMail': bOutPhpMail ? '1' : '0',
+
 			'WhiteList': sWhiteList
 		});
 	};
 
 	RemoteAdminStorage.prototype.testConnectionForDomain = function (fCallback, sName,
-		sIncHost, iIncPort, sIncSecure, sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail)
+		sIncHost, iIncPort, sIncSecure,
+		bUseSieve, bUseImapServerForSieve, sSieveHost, iSievePort, sSieveSecure,
+		sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
 			'Name': sName,
 			'IncHost': sIncHost,
 			'IncPort': iIncPort,
 			'IncSecure': sIncSecure,
+			'UseSieve': bUseSieve ? '1' : '0',
+			'UseImapServerForSieve': bUseImapServerForSieve ? '1' : '0',
+			'SieveHost': sSieveHost,
+			'SievePort': iSievePort,
+			'SieveSecure': sSieveSecure,
 			'OutHost': sOutHost,
 			'OutPort': iOutPort,
 			'OutSecure': sOutSecure,

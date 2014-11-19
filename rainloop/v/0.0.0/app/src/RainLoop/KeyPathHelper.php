@@ -152,11 +152,12 @@ class KeyPathHelper
 	/**
 	 * @param string $sTheme
 	 * @param string $sPluginsHash
+	 * @param string $sPublickHash
 	 *
 	 * @return string
 	 */
-	static public function CssCache($sTheme, $sPluginsHash)
+	static public function CssCache($sTheme, $sPluginsHash, $sPublickHash = '')
 	{
-		return '/CssCache/'.$sPluginsHash.'/'.$sTheme.'/'.APP_VERSION.'/';
+		return '/CssCache/'.$sPluginsHash.'/'.$sPublickHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}
 }

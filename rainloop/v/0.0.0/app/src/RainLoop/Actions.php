@@ -2984,13 +2984,15 @@ class Actions
 		$iImapTime = 0;
 		$iSmtpTime = 0;
 
+		$iConnectionTimeout = 5;
+
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'domain-test-connection.de');
 		if ($oDomain)
 		{
 			try
 			{
 				$oImapClient = \MailSo\Imap\ImapClient::NewInstance()->SetLogger($this->Logger());
-				$oImapClient->SetTimeOuts(5);
+				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
 				$iTime = \microtime(true);
 				$oImapClient->Connect($oDomain->IncHost(), $oDomain->IncPort(),
@@ -3028,7 +3030,7 @@ class Actions
 				try
 				{
 					$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
-					$oSmtpClient->SetTimeOuts(5);
+					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
 					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1',
@@ -6994,6 +6996,7 @@ class Actions
 				@\header('Content-Type: '.$sContentType);
 				echo \preg_replace('/^data:[^:]+:/', '', $sData);
 				unset($sData);
+
 				return true;
 			}
 		}

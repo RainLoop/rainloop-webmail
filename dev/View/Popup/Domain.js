@@ -28,7 +28,8 @@
 		this.edit = ko.observable(false);
 		this.saving = ko.observable(false);
 		this.savingError = ko.observable('');
-		this.whiteListPage = ko.observable(false);
+		this.page = ko.observable('main');
+		this.sieveSettings = ko.observable(false);
 
 		this.testing = ko.observable(false);
 		this.testingDone = ko.observable(false);
@@ -55,15 +56,23 @@
 		this.testingSmtpErrorDesc = ko.observable('');
 
 		this.imapServerFocus = ko.observable(false);
+		this.sieveServerFocus = ko.observable(false);
 		this.smtpServerFocus = ko.observable(false);
 
 		this.name = ko.observable('');
 		this.name.focused = ko.observable(false);
 
+		this.allowSieve = ko.observable(false);
+
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
 		this.imapShortLogin = ko.observable(false);
+		this.useSieve = ko.observable(false);
+		this.useImapServerForSieve = ko.observable(true);
+		this.sieveServer = ko.observable('');
+		this.sievePort = ko.observable('' + Consts.Values.SieveDefaulPort);
+		this.sieveSecure = ko.observable(Enums.ServerSecure.None);
 		this.smtpServer = ko.observable('');
 		this.smtpPort = ko.observable('' + Consts.Values.SmtpDefaulPort);
 		this.smtpSecure = ko.observable(Enums.ServerSecure.None);
@@ -81,11 +90,20 @@
 		}, this);
 
 		this.domainIsComputed = ko.computed(function () {
-			var bPhpMail = this.smtpPhpMail();
+
+			var
+				bPhpMail = this.smtpPhpMail(),
+				bAllowSieve = this.allowSieve(),
+				bUseSieve = this.useSieve(),
+				bIseImapServerForSieve = this.useImapServerForSieve()
+			;
+
 			return '' !== this.name() &&
 				'' !== this.imapServer() &&
 				'' !== this.imapPort() &&
+				(bAllowSieve && bUseSieve ? (bIseImapServerForSieve ? true : ('' !== this.sieveServer() && '' !== this.sievePort())) : true) &&
 				(('' !== this.smtpServer() && '' !== this.smtpPort()) || bPhpMail);
+
 		}, this);
 
 		this.canBeTested = ko.computed(function () {
@@ -102,32 +120,53 @@
 				_.bind(this.onDomainCreateOrSaveResponse, this),
 				!this.edit(),
 				this.name(),
+
 				this.imapServer(),
 				Utils.pInt(this.imapPort()),
 				this.imapSecure(),
 				this.imapShortLogin(),
+
+				this.useSieve(),
+				this.useImapServerForSieve(),
+				this.sieveServer(),
+				Utils.pInt(this.sievePort()),
+				this.sieveSecure(),
+
 				this.smtpServer(),
 				Utils.pInt(this.smtpPort()),
 				this.smtpSecure(),
 				this.smtpShortLogin(),
 				this.smtpAuth(),
 				this.smtpPhpMail(),
+
 				this.whiteList()
 			);
 		}, this.canBeSaved);
 
 		this.testConnectionCommand = Utils.createCommand(this, function () {
-			this.whiteListPage(false);
+
+			this.page('main');
+			this.sieveSettings(false);
+
 			this.testingDone(false);
 			this.testingImapError(false);
 			this.testingSmtpError(false);
 			this.testing(true);
+
 			Remote.testConnectionForDomain(
 				_.bind(this.onTestConnectionResponse, this),
 				this.name(),
+
 				this.imapServer(),
 				Utils.pInt(this.imapPort()),
 				this.imapSecure(),
+
+				this.useSieve(),
+				this.useImapServerForSieve(),
+				this.sieveServer(),
+				Utils.pInt(this.sievePort()),
+				this.sieveSecure(),
+
 				this.smtpServer(),
 				Utils.pInt(this.smtpPort()),
 				this.smtpSecure(),
@@ -137,14 +176,34 @@
 		}, this.canBeTested);
 
 		this.whiteListCommand = Utils.createCommand(this, function () {
-			this.whiteListPage(!this.whiteListPage());
+			this.page('white-list');
 		});
+
+		this.backCommand = Utils.createCommand(this, function () {
+			this.page('main');
+		});
+
+		this.sieveCommand = Utils.createCommand(this, function () {
+			this.sieveSettings(!this.sieveSettings());
+			this.clearTesting();
+		});
+
+		this.page.subscribe(function () {
+			this.sieveSettings(false);
+		}, this);
 
 		// smart form improvements
 		this.imapServerFocus.subscribe(function (bValue) {
 			if (bValue && '' !== this.name() && '' === this.imapServer())
 			{
 				this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
+			}
+		}, this);
+
+		this.sieveServerFocus.subscribe(function (bValue) {
+			if (bValue && '' !== this.name() && '' === this.sieveServer())
+			{
+				this.sieveServer(this.name().replace(/[.]?[*][.]?/g, ''));
 			}
 		}, this);
 
@@ -260,20 +319,29 @@
 		}
 	};
 
-	DomainPopupView.prototype.onHide = function ()
+	DomainPopupView.prototype.clearTesting = function ()
 	{
-		this.whiteListPage(false);
-	};
-
-	DomainPopupView.prototype.onShow = function (oDomain)
-	{
-		this.saving(false);
-		this.whiteListPage(false);
-
 		this.testing(false);
 		this.testingDone(false);
 		this.testingImapError(false);
 		this.testingSmtpError(false);
+	}
+
+	DomainPopupView.prototype.onHide = function ()
+	{
+		this.page('main');
+		this.sieveSettings(false);
+	};
+
+
+	DomainPopupView.prototype.onShow = function (oDomain)
+	{
+		this.saving(false);
+
+		this.page('main');
+		this.sieveSettings(false);
+
+		this.clearTesting();
 
 		this.clearForm();
 		if (oDomain)
@@ -287,6 +355,11 @@
 			this.imapPort('' + Utils.pInt(oDomain.IncPort));
 			this.imapSecure(Utils.trim(oDomain.IncSecure));
 			this.imapShortLogin(!!oDomain.IncShortLogin);
+			this.useSieve(!!oDomain.UseSieve);
+			this.useImapServerForSieve(!!oDomain.UseImapServerForSieve);
+			this.sieveServer(Utils.trim(oDomain.SieveHost));
+			this.sievePort('' + Utils.pInt(oDomain.SievePort));
+			this.sieveSecure(Utils.trim(oDomain.SieveSecure));
 			this.smtpServer(Utils.trim(oDomain.OutHost));
 			this.smtpPort('' + Utils.pInt(oDomain.OutPort));
 			this.smtpSecure(Utils.trim(oDomain.OutSecure));
@@ -310,7 +383,10 @@
 	DomainPopupView.prototype.clearForm = function ()
 	{
 		this.edit(false);
-		this.whiteListPage(false);
+
+		this.page('main');
+		this.sieveSettings(false);
+
 		this.enableSmartPorts(false);
 
 		this.savingError('');
@@ -322,14 +398,21 @@
 		this.imapPort('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure(Enums.ServerSecure.None);
 		this.imapShortLogin(false);
+
+		this.useSieve(false);
+		this.useImapServerForSieve(true);
+		this.sieveServer('');
+		this.sievePort('' + Consts.Values.SieveDefaulPort);
+		this.sieveSecure(Enums.ServerSecure.None);
+
 		this.smtpServer('');
 		this.smtpPort('' + Consts.Values.SmtpDefaulPort);
 		this.smtpSecure(Enums.ServerSecure.None);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
 		this.smtpPhpMail(false);
-		this.whiteList('');
 
+		this.whiteList('');
 		this.enableSmartPorts(true);
 	};
 
