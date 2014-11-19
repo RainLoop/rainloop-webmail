@@ -640,7 +640,18 @@
 	{
 		if (this.oMessageScrollerDom)
 		{
-			this.oMessageScrollerDom.scrollTop(0);
+			if (50 < this.oMessageScrollerDom.scrollTop())
+			{
+				this.oMessageScrollerDom
+					.scrollTop(50)
+					.animate({'scrollTop': 0}, 200)
+				;
+			}
+			else
+			{
+				this.oMessageScrollerDom.scrollTop(0);
+			}
+
 			Utils.windowResize();
 		}
 	};

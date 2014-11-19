@@ -607,7 +607,7 @@
 			return false;
 		}
 
-		if (bFast)
+		if (bFast || 50 > this.oContentScrollable.scrollTop())
 		{
 			this.oContentScrollable.scrollTop(0);
 		}

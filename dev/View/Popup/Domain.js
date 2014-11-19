@@ -325,7 +325,7 @@
 		this.testingDone(false);
 		this.testingImapError(false);
 		this.testingSmtpError(false);
-	}
+	};
 
 	DomainPopupView.prototype.onHide = function ()
 	{
