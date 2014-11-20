@@ -5851,7 +5851,7 @@ class Actions
 
 		try
 		{
-			$this->MailClient()->{$sActionFunction}($sFolder, $aFilteredUids, true, $bSetAction);
+			$this->MailClient()->{$sActionFunction}($sFolder, $aFilteredUids, true, $bSetAction, true);
 		}
 		catch (\Exception $oException)
 		{

@@ -206,7 +206,7 @@ class Domain
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
 			$bUseSieve = isset($aDomain['sieve_use']) ? (bool) $aDomain['sieve_use'] : false;
-			$bUseImapServerForSieve = isset($aDomain['sieve_use_imap_server']) ? (bool) $aDomain['sieve_use_imap_server'] : ytir;
+			$bUseImapServerForSieve = isset($aDomain['sieve_use_imap_server']) ? (bool) $aDomain['sieve_use_imap_server'] : true;
 
 			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
 			$bOutShortLogin = isset($aDomain['smtp_short_login']) ? (bool) $aDomain['smtp_short_login'] : false;
