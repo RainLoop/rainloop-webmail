@@ -452,12 +452,6 @@
 			}
 		});
 
-		// TODO // more toggle
-	//	key('', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-	//		self.moreDropdownTrigger(true);
-	//		return false;
-	//	});
-
 		// reply
 		key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			if (Data.message())

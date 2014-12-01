@@ -130,7 +130,6 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
 			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
-			$bUseImapServerForSieve = '1' === (string) $oActions->GetActionParam('UseImapServerForSieve', '1');
 			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
 			$iSievePort = (int) $oActions->GetActionParam('SievePort', 2000);
 			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
@@ -160,7 +159,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 					{
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-							$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+							$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 							$sWhiteList);
 					}
@@ -169,7 +168,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 				{
 					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-						$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 						$sWhiteList);
 				}

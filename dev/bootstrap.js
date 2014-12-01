@@ -42,6 +42,7 @@
 		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
 		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
+		window['rl']['i18n'] = Utils.i18n;
 
 		window['rl']['EmailModel'] = EmailModel;
 		window['rl']['Enums'] = Enums;

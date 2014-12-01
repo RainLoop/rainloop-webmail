@@ -4,29 +4,28 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 				<h3>
-					<span class="i18n" data-i18n-text="POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></span>
+					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/TITLE_CREATE_FILTER"></span>
 				</h3>
 			</div>
 			<div class="modal-body">
 				<div class="row filter" data-bind="with: filter">
 					<div class="span9">
 						<br />
-						<input type="text" class="span4" data-bind="value: name" placeholder="Description" />
-						<hr />
+						<input type="text" class="span5" data-bind="value: name" placeholder="Name" />
+						<br />
+						<br />
+						<div class="legend">
+							<span>
+								Conditions
+							</span>
+						</div>
 						<div>
-							<a class="btn" data-bind="click: addCondition">
-								<i class="icon-plus"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
-							</a>
-							<br />
-							<br />
 							<div data-bind="visible: 1 < conditions().length">
 								<select class="span4" data-bind="value: conditionsType">
-									<option value="And">
+									<option value="All">
 										Matching all of the following rules
 									</option>
-									<option value="Or">
+									<option value="Any">
 										Matching any of the following rules
 									</option>
 								</select>
@@ -35,13 +34,24 @@
 								<div data-bind="template: {'name': template(), 'data': $data}"></div>
 							</div>
 							<div data-bind="visible: 0 === conditions().length">
-								All messages
+								All incoming messages
 							</div>
+							<br />
+							<a class="btn" data-bind="click: addCondition, i18nInit: true">
+								<i class="icon-plus"></i>
+								&nbsp;&nbsp;
+								<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_CONDITION"></span>
+							</a>
 						</div>
-						<hr />
+						<br />
+						<div class="legend">
+							<span>
+								Actions
+							</span>
+						</div>
 						<div data-bind="template: {'name': actionTemplate()}"></div>
-
-						<div data-bind="visible: actionMarkAsReadVisiblity, component: {
+						<br />
+						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
 								label: 'Mark as read',
@@ -53,8 +63,9 @@
 							name: 'Checkbox',
 							params: {
 								label: 'Skip other filters',
-								value: actionSkipOtherFilters
-							actionSkipOtherFilters
+								enable: enableSkipOtherFilters,
+								value: actionSkipOtherFiltersResult
+							}
 						}"></div>
 					</div>
 				</div>
@@ -63,7 +74,7 @@
 				<a class="btn buttonSave">
 					<i class="icon-folder-add"></i>
 					&nbsp;&nbsp;
-					<span class="i18n" data-i18n-text="POPUPS_CREATE_FOLDER/BUTTON_CREATE"></span>
+					<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_CREATE"></span>
 				</a>
 			</div>
 		</div>

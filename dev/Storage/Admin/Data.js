@@ -31,6 +31,8 @@
 		this.packages.loading = ko.observable(false).extend({'throttle': 100});
 
 		this.coreReal = ko.observable(true);
+		this.coreChannel = ko.observable('stable');
+		this.coreType = ko.observable('stable');
 		this.coreUpdatable = ko.observable(true);
 		this.coreAccess = ko.observable(true);
 		this.coreChecking = ko.observable(false).extend({'throttle': 100});

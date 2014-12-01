@@ -1052,10 +1052,10 @@
 			return false;
 		});
 
-		key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
-			self.sendCommand();
-			return false;
-		});
+//		key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
+//			self.sendCommand();
+//			return false;
+//		});
 
 		key('esc', Enums.KeyState.Compose, function () {
 			if (self.modalVisibility())

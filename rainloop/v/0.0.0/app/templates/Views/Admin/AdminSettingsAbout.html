@@ -25,7 +25,12 @@
 					<div data-bind="visible: 'available' === statusType()">
 						<i class="icon-bolt" style="color: red"></i>
 						&nbsp;&nbsp;
-						New <b data-bind="text: coreRemoteVersion"></b> version is available.
+						New
+						<b data-bind="text: coreRemoteVersion"></b>
+						<span data-bind="visible: 'stable' !== coreType()" style="color:red">
+							(<span data-bind="text: coreType"></span>)
+						</span>
+						version is available.
 						<span data-bind="visible: '' !== coreRemoteRelease()">
 							(<span data-bind="text: coreRemoteRelease"></span>)
 						</span>
@@ -56,7 +61,11 @@
 					<div data-bind="visible: 'up-to-date' === statusType()">
 						<i class="icon-ok" style="color: green"></i>
 						&nbsp;&nbsp;
-						RainLoop is up to date.
+						RainLoop
+						<span data-bind="visible: 'stable' !== coreType()" style="color:red">
+							(<span data-bind="text: coreType"></span>)
+						</span>
+						is up to date.
 					</div>
 					<div data-bind="visible: 'updating' === statusType()">
 						<i class="icon-spinner animated"></i>

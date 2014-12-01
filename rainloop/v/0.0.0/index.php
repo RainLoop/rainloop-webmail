@@ -55,7 +55,7 @@ Options -Indexes
 			define('APP_DEV_VERSION', '0.0.0');
 			define('APP_API_PATH', 'http://api.rainloop.net/');
 			define('APP_REP_PATH', 'http://repository.rainloop.net/v1/');
-			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.json');
+			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
 			define('APP_WEB_PATH', 'rainloop/v/'.APP_VERSION.'/');
 			define('APP_WEB_STATIC_PATH', APP_WEB_PATH.'static/');
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));

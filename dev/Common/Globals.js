@@ -145,7 +145,7 @@
 		'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
-		'extraPlugins': 'plain',
+		'extraPlugins': 'plain,signature',
 		'allowedContent': true,
 
 		'font_defaultLabel': 'Arial',

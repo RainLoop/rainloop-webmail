@@ -26,13 +26,9 @@
 
 		this.name = ko.observable('');
 
-		this.conditionsType = ko.observable(Enums.FilterRulesType.And);
+		this.conditionsType = ko.observable(Enums.FilterRulesType.All);
 
 		this.conditions = ko.observableArray([]);
-
-		this.regDisposables(this.conditions.subscribe(function () {
-			Utils.windowResize();
-		}));
 
 		// Actions
 		this.actionMarkAsRead = ko.observable(false);
@@ -41,17 +37,26 @@
 
 		this.actionType = ko.observable(Enums.FiltersAction.Move);
 		this.actionTypeOptions = [ // TODO i18n
-			{'id': Enums.FiltersAction.None, 'name': 'Action - None'},
-			{'id': Enums.FiltersAction.Move, 'name': 'Action - Move to'},
-	//		{'id': Enums.FiltersAction.Forward, 'name': 'Action - Forward to'},
-			{'id': Enums.FiltersAction.Discard, 'name': 'Action - Discard'}
+			{'id': Enums.FiltersAction.None, 'name': 'None'},
+			{'id': Enums.FiltersAction.Move, 'name': ' Move to'},
+	//		{'id': Enums.FiltersAction.Forward, 'name': 'Forward to'},
+			{'id': Enums.FiltersAction.Discard, 'name': 'Discard'}
 		];
 
-		this.actionMarkAsReadVisiblity = ko.computed(function () {
-			return -1 < Utils.inArray(this.actionType(), [
-				Enums.FiltersAction.None, Enums.FiltersAction.Forward, Enums.FiltersAction.Move
+		this.enableSkipOtherFilters = ko.computed(function () {
+			return -1 === Utils.inArray(this.actionType(), [
+				Enums.FiltersAction.Move, Enums.FiltersAction.Forward, Enums.FiltersAction.Discard
 			]);
 		}, this);
+
+		this.actionSkipOtherFiltersResult = ko.computed({
+			'read': function () {
+				return this.actionSkipOtherFilters() ||
+					!this.enableSkipOtherFilters();
+			},
+			'write': this.actionSkipOtherFilters,
+			'owner': this
+		});
 
 		this.actionTemplate = ko.computed(function () {
 
@@ -75,7 +80,11 @@
 
 		}, this);
 
-		this.regDisposables([this.actionMarkAsReadVisiblity, this.actionTemplate]);
+		this.regDisposables(this.conditions.subscribe(function () {
+			Utils.windowResize();
+		}));
+
+		this.regDisposables([this.enableSkipOtherFilters, this.actionSkipOtherFiltersResult, this.actionTemplate]);
 	}
 
 	_.extend(FilterModel.prototype, AbstractModel.prototype);

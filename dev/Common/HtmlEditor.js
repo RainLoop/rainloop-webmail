@@ -63,6 +63,19 @@
 	};
 
 	/**
+	 * @param {string} sSignature
+	 */
+	HtmlEditor.prototype.setSignature = function (sSignature)
+	{
+		if (this.editor)
+		{
+			this.editor.execCommand('insertSignature', {
+				'signature': sSignature
+			});
+		}
+	};
+
+	/**
 	 * @return {boolean}
 	 */
 	HtmlEditor.prototype.checkDirty = function ()
@@ -172,7 +185,7 @@
 						bBiti = !!Settings.settingsGet('AllowHtmlEditorBitiButtons')
 					;
 
-					if ((bSource || bBiti) && !oConfig.toolbarGroups.__SourceInited)
+					if ((bSource || !bBiti) && !oConfig.toolbarGroups.__SourceInited)
 					{
 						oConfig.toolbarGroups.__SourceInited = true;
 
@@ -181,9 +194,9 @@
 							oConfig.removeButtons = oConfig.removeButtons.replace(',Source', '');
 						}
 
-						if (bBiti)
+						if (!bBiti)
 						{
-							oConfig.extraPlugins += (oConfig.extraPlugins ? ',' : '')  + 'bidi';
+							oConfig.removePlugins += (oConfig.removePlugins ? ',' : '')  + 'bidi';
 						}
 					}
 

@@ -30,6 +30,7 @@ var
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
 	eol = require('gulp-eol'),
+	stripbom = require('gulp-stripbom'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
@@ -188,7 +189,7 @@ gulp.task('less:main', function() {
 		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
 
-gulp.task('css:main', ['less:main'], function() {
+gulp.task('css:main-begin', ['less:main'], function() {
 
 	var
 //		csslint = require('gulp-csslint'),
@@ -207,6 +208,14 @@ gulp.task('css:main', ['less:main'], function() {
 		.pipe(gulp.dest(cfg.paths.staticCSS))
 	;
 });
+
+gulp.task('css:clear-less', ['css:main-begin'], function() {
+
+	return gulp.src(cfg.paths.staticCSS + cfg.paths.less.main.name, {read: false})
+		.pipe(require('gulp-rimraf')());
+});
+
+gulp.task('css:main', ['css:clear-less']);
 
 gulp.task('css:main:min', ['css:main'], function() {
 	var minifyCss = require('gulp-minify-css');
@@ -381,6 +390,39 @@ gulp.task('package-inc-release', function() {
 			(1 + parseInt(pkg.release, 10)) + '",'));
 });
 
+gulp.task('fontastic-fonts:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
+});
+
+gulp.task('fontastic-fonts:copy', ['fontastic-fonts:clear'], function() {
+	return gulp.src('vendors/fontastic/fonts/rainloop.*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
+});
+
+gulp.task('fontastic', ['fontastic-fonts:copy']);
+
+gulp.task('ckeditor:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/ckeditor');
+});
+
+gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
+	return gulp.src('vendors/ckeditor/**/*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
+});
+
+gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
+	return gulp.src('vendors/ckeditor-plugins/**/*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor/plugins'));
+});
+
+gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
+	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
+		.pipe(stripbom())
+		.pipe(replace("\u200B", "\\u200B"))
+		.pipe(header("\uFEFF")) // BOM
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
+});
+
 // BUILD (RainLoop)
 gulp.task('rainloop:copy', ['default'], function() {
 
@@ -411,8 +453,6 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 		fs.readFileSync('index.php', 'utf8').replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\''));
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
-
-	fs.unlinkSync(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
 
 	cfg.destPath = cfg.releasesPath + '/webmail/' + versionFull + '/';
 	cfg.cleanPath = dist;
@@ -486,7 +526,7 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min']);
+gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('rainloop', ['js:lint', 'rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);

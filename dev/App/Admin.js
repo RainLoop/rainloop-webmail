@@ -167,6 +167,8 @@
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				Data.coreReal(!!oData.Result.Real);
+				Data.coreChannel(oData.Result.Channel || 'stable');
+				Data.coreType(oData.Result.Type || 'stable');
 				Data.coreUpdatable(!!oData.Result.Updatable);
 				Data.coreAccess(!!oData.Result.Access);
 				Data.coreRemoteVersion(oData.Result.RemoteVersion || '');
@@ -176,6 +178,8 @@
 			else
 			{
 				Data.coreReal(false);
+				Data.coreChannel('stable');
+				Data.coreType('stable');
 				Data.coreRemoteVersion('');
 				Data.coreRemoteRelease('');
 				Data.coreVersionCompare(-2);

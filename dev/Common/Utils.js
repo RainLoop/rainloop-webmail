@@ -1059,6 +1059,7 @@
 		oData.capaAdditionalAccounts = ko.observable(false);
 		oData.capaAdditionalIdentities = ko.observable(false);
 		oData.capaGravatar = ko.observable(false);
+		oData.capaSieve = ko.observable(false);
 		oData.determineUserLanguage = ko.observable(false);
 		oData.determineUserDomain = ko.observable(false);
 
@@ -1561,6 +1562,8 @@
 	{
 		sPlain = sPlain.toString().replace(/\r/g, '');
 
+		bFindEmailAndLinks = Utils.isUnd(bFindEmailAndLinks) ? false : !!bFindEmailAndLinks;
+
 		var
 			bIn = false,
 			bDo = true,
@@ -1627,7 +1630,6 @@
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-			.replace(/ /g, '&nbsp;')
 			.replace(/\n/g, '<br />')
 		;
 
@@ -1784,11 +1786,12 @@
 		for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
 		{
 			oItem = aList[iIndex];
-			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+//			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+			if ((oItem.subScribed() || !oItem.existen || bBuildUnvisible) && (oItem.selectable || oItem.hasSubScribedSubfolders()))
 			{
 				if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
 				{
-					if (Enums.FolderType.User === oItem.type() || !bSystem || 0 < oItem.subFolders().length)
+					if (Enums.FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders())
 					{
 						if (bSep && 0 < aResult.length)
 						{

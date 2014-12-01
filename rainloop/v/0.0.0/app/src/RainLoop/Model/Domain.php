@@ -69,11 +69,6 @@ class Domain
 	private $bUseSieve;
 
 	/**
-	 * @var bool
-	 */
-	private $bUseImapServerForSieve;
-
-	/**
 	 * @var string
 	 */
 	private $sSieveHost;
@@ -100,7 +95,6 @@ class Domain
 	 * @param int $iIncSecure
 	 * @param bool $bIncShortLogin
 	 * @param bool $bUseSieve
-	 * @param bool $bUseImapServerForSieve
 	 * @param string $sSieveHost
 	 * @param int $iSievePort
 	 * @param int $iSieveSecure
@@ -114,7 +108,7 @@ class Domain
 	 */
 	private function __construct($sName,
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+		$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail = false,
 		$sWhiteList = '')
 	{
@@ -132,7 +126,6 @@ class Domain
 		$this->bOutUsePhpMail = $bOutUsePhpMail;
 
 		$this->bUseSieve = $bUseSieve;
-		$this->bUseImapServerForSieve = $bUseImapServerForSieve;
 		$this->sSieveHost = $sSieveHost;
 		$this->iSievePort = $iSievePort;
 		$this->iSieveSecure = $iSieveSecure;
@@ -147,7 +140,6 @@ class Domain
 	 * @param int $iIncSecure
 	 * @param bool $bIncShortLogin
 	 * @param bool $bUseSieve
-	 * @param bool $bUseImapServerForSieve
 	 * @param string $sSieveHost
 	 * @param int $iSievePort
 	 * @param int $iSieveSecure
@@ -163,13 +155,13 @@ class Domain
 	 */
 	public static function NewInstance($sName,
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+		$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 		$sWhiteList = '')
 	{
 		return new self($sName,
 			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-			$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+			$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 			$sWhiteList);
 	}
@@ -191,6 +183,8 @@ class Domain
 			$iIncSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
+			$bUseSieve = isset($aDomain['sieve_use']) ? (bool) $aDomain['sieve_use'] : false;
+
 			$sSieveHost = empty($aDomain['sieve_host']) ? '' : (string) $aDomain['sieve_host'];
 			$iSievePort = empty($aDomain['sieve_port']) ? 2000 : (int) $aDomain['sieve_port'];
 			$iSieveSecure = self::StrConnectionSecurityTypeToCons(
@@ -205,15 +199,12 @@ class Domain
 			$bOutUsePhpMail = isset($aDomain['smtp_php_mail']) ? (bool) $aDomain['smtp_php_mail'] : false;
 			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
 
-			$bUseSieve = isset($aDomain['sieve_use']) ? (bool) $aDomain['sieve_use'] : false;
-			$bUseImapServerForSieve = isset($aDomain['sieve_use_imap_server']) ? (bool) $aDomain['sieve_use_imap_server'] : true;
-
 			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
 			$bOutShortLogin = isset($aDomain['smtp_short_login']) ? (bool) $aDomain['smtp_short_login'] : false;
 
 			$oDomain = self::NewInstance($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-				$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+				$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 				$sWhiteList);
 		}
@@ -266,7 +257,6 @@ class Domain
 			'imap_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iIncSecure).'"',
 			'imap_short_login = '.($this->bIncShortLogin ? 'On' : 'Off'),
 			'sieve_use = '.($this->bUseSieve ? 'On' : 'Off'),
-			'sieve_use_imap_server = '.($this->bUseImapServerForSieve ? 'On' : 'Off'),
 			'sieve_host = "'.$this->encodeIniString($this->sSieveHost).'"',
 			'sieve_port = '.$this->iSievePort,
 			'sieve_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iSieveSecure).'"',
@@ -327,7 +317,6 @@ class Domain
 	 * @param int $iIncSecure
 	 * @param bool $bIncShortLogin
 	 * @param bool $bUseSieve
-	 * @param bool $bUseImapServerForSieve
 	 * @param string $sOutHost
 	 * @param int $iOutPort
 	 * @param int $iOutSecure
@@ -340,7 +329,7 @@ class Domain
 	 */
 	public function UpdateInstance(
 		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$bUseSieve, $bUseImapServerForSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+		$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 		$sWhiteList = '')
 	{
@@ -350,7 +339,6 @@ class Domain
 		$this->bIncShortLogin = $bIncShortLogin;
 
 		$this->bUseSieve = $bUseSieve;
-		$this->bUseImapServerForSieve = $bUseImapServerForSieve;
 		$this->sSieveHost = \MailSo\Base\Utils::IdnToAscii($sSieveHost);
 		$this->iSievePort = $iSievePort;
 		$this->iSieveSecure = $iSieveSecure;
@@ -413,14 +401,6 @@ class Domain
 	public function UseSieve()
 	{
 		return $this->bUseSieve;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function UseImapServerForSieve()
-	{
-		return $this->bUseImapServerForSieve;
 	}
 
 	/**
@@ -541,7 +521,6 @@ class Domain
 			'IncSecure' => $this->IncSecure(),
 			'IncShortLogin' => $this->IncShortLogin(),
 			'UseSieve' => $this->UseSieve(),
-			'UseImapServerForSieve' => $this->UseImapServerForSieve(),
 			'SieveHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->SieveHost()) : $this->SieveHost(),
 			'SievePort' => $this->SievePort(),
 			'SieveSecure' => $this->SieveSecure(),

@@ -71,6 +71,11 @@ class Actions
 	private $oSettingsProvider;
 
 	/**
+	 * @var \RainLoop\Providers\Filters
+	 */
+	private $oFiltersProvider;
+
+	/**
 	 * @var \RainLoop\Providers\AddressBook
 	 */
 	private $oAddressBookProvider;
@@ -118,6 +123,7 @@ class Actions
 		$this->oStorageProvider = null;
 		$this->oFilesProvider = null;
 		$this->oSettingsProvider = null;
+		$this->oFiltersProvider = null;
 		$this->oDomainProvider = null;
 		$this->oAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
@@ -241,6 +247,10 @@ class Actions
 				case 'domain':
 					// \RainLoop\Providers\Domain\DomainAdminInterface
 					$oResult = new \RainLoop\Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains', $this->Cacher());
+					break;
+				case 'filters':
+					// \RainLoop\Providers\Filters\FiltersInterface
+					$oResult = new \RainLoop\Providers\Filters\SieveStorage();
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
@@ -572,6 +582,20 @@ class Actions
 		}
 
 		return $this->oSettingsProvider;
+	}
+
+	/**
+	 * @return \RainLoop\Providers\Filters
+	 */
+	public function FiltersProvider()
+	{
+		if (null === $this->oFiltersProvider)
+		{
+			$this->oFiltersProvider = new \RainLoop\Providers\Filters(
+				$this->fabrica('filters'));
+		}
+
+		return $this->oFiltersProvider;
 	}
 
 	/**
@@ -993,6 +1017,14 @@ class Actions
 	}
 
 	/**
+	 * @return bool
+	 */
+	private function UseSieve()
+	{
+		return false; // TODO
+	}
+
+	/**
 	 * @param bool $bAdmin
 	 * @param string $sAuthAccountHash = ''
 	 *
@@ -1044,6 +1076,7 @@ class Actions
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
+			'UseSieve' => $this->UseSieve(),
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
@@ -3188,10 +3221,27 @@ class Actions
 		return $aResult;
 	}
 
+	/**
+	 * @return string
+	 */
+	private function getCoreChannel()
+	{
+		$sChannel = \trim(\strtolower($this->Config()->Get('labs', 'update_channel', 'stable')));
+		if (empty($sChannel) || !\in_array($sChannel, array('stable', 'beta')))
+		{
+			$sChannel = 'stable';
+		}
+
+		return $sChannel;
+	}
+
 	private function getCoreData(&$bReal)
 	{
 		$bReal = false;
-		$sRepo = APP_REPO_CORE_FILE;
+
+		$sChannel = $this->getCoreChannel();
+
+		$sRepo = \str_replace('{{channel}}', $sChannel, APP_REPO_CORE_FILE);
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
@@ -3341,11 +3391,14 @@ class Actions
 		}
 
 		$sVersion = empty($aData['version']) ? '' : $aData['version'];
+		$sType = empty($aData['channel']) ? 'stable' : $aData['channel'];
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			 'Real' => $bReal,
 			 'Access' => $bRainLoopAccess,
 			 'Updatable' => $bRainLoopUpdatable,
+			 'Channel' => $this->getCoreChannel(),
+			 'Type' => $sType,
 			 'Version' => APP_VERSION,
 			 'RemoteVersion' => $sVersion,
 			 'RemoteRelease' => empty($aData['release']) ? '' : $aData['release'],
@@ -6058,19 +6111,19 @@ class Actions
 	 * @param string $sFileName
 	 * @param string $sContentType
 	 * @param string $sMimeIndex
+	 * @param int $iMaxLength = 250
 	 *
 	 * @return string
 	 */
-	public function MainClearFileName($sFileName, $sContentType, $sMimeIndex)
+	public function MainClearFileName($sFileName, $sContentType, $sMimeIndex, $iMaxLength = 250)
 	{
-		$sFileName = 0 === strlen($sFileName) ? preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex.'.').$sContentType) : $sFileName;
-		$sClearedFileName = preg_replace('/[\s]+/', ' ', preg_replace('/[\.]+/', '.', $sFileName));
+		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex.'.').$sContentType) : $sFileName;
+		$sClearedFileName = \preg_replace('/[\s]+/', ' ', \preg_replace('/[\.]+/', '.', $sFileName));
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sClearedFileName);
 
-		$iSize = 50;
-		if ($iSize < strlen($sClearedFileName) - strlen($sExt))
+		if (10 < $iMaxLength && $iMaxLength < \strlen($sClearedFileName) - \strlen($sExt))
 		{
-			$sClearedFileName = substr($sClearedFileName, 0, $iSize).(empty($sExt) ? '' : '.'.$sExt);
+			$sClearedFileName = \substr($sClearedFileName, 0, $iMaxLength).(empty($sExt) ? '' : '.'.$sExt);
 		}
 
 		return \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
@@ -6787,9 +6840,15 @@ class Actions
 	{
 		$oConfig = $this->Config();
 
-		$aResult = array(
-//			\RainLoop\Enumerations\Capa::FILTERS
-		);
+		$aResult = array();
+
+		if ($this->UseSieve())
+		{
+			if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve()))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::SIEVE;
+			}
+		}
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
 		{

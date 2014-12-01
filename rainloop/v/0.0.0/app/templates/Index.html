@@ -84,24 +84,33 @@
 				__simplePace(10);
 
 				window.$LAB
-					.script('{{BaseAppLibsScriptLink}}')
-					.script(window.rainloopAppData['TemplatesLink'])
-					.script(window.rainloopAppData['LangLink'])
+					.script(function () {
+						return [
+							{'src': '{{BaseAppLibsScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'},
+							{'src': window.rainloopAppData['TemplatesLink'], 'type': 'text/javascript', 'charset': 'utf-8'},
+							{'src': window.rainloopAppData['LangLink'], 'type': 'text/javascript', 'charset': 'utf-8'}
+						];
+					})
 					.wait(function () {
 						__simplePace(30);
 					})
-					.script('{{BaseAppMainScriptLink}}')
+					.script(function () {
+						return {'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};
+					})
 					.wait(function () {
 						__simplePace(20);
 					})
 					.script(function () {
-						return window.rainloopAppData['PluginsLink'] || null;
+						return window.rainloopAppData['PluginsLink'] ?
+							{'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'} : null;
 					})
 					.wait(function () {
 						__simplePace(5);
 						__runBoot(false);
 					})
-					.script('{{BaseAppEditorScriptLink}}')
+					.script(function () {
+						return {'src': '{{BaseAppEditorScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};
+					})
 					.wait(function () {
 						if (window.CKEDITOR && window.__initEditor) {
 							window.__initEditor();

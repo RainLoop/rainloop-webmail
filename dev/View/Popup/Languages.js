@@ -48,7 +48,8 @@
 
 	LanguagesPopupView.prototype.languageEnName = function (sLanguage)
 	{
-		return Utils.convertLangName(sLanguage, true);
+		var sResult = Utils.convertLangName(sLanguage, true);
+		return 'English' === sResult ? '' : sResult;
 	};
 
 	LanguagesPopupView.prototype.resetMainLanguage = function ()

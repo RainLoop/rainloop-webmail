@@ -86,12 +86,14 @@
 		}, this);
 
 		this.visible = ko.computed(function () {
+			
 			var
 				bSubScribed = this.subScribed(),
 				bSubFolders = this.hasSubScribedSubfolders()
 			;
 
 			return (bSubScribed || (bSubFolders && (!this.existen || !this.selectable)));
+
 		}, this);
 
 		this.isSystemFolder = ko.computed(function () {

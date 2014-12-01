@@ -22,6 +22,8 @@
 		this.errorDesc = ko.observable('');
 
 		this.coreReal = Data.coreReal;
+		this.coreChannel = Data.coreChannel;
+		this.coreType = Data.coreType;
 		this.coreUpdatable = Data.coreUpdatable;
 		this.coreAccess = Data.coreAccess;
 		this.coreChecking = Data.coreChecking;

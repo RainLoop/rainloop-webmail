@@ -1,0 +1,59 @@
+
+.b-settings-filters {
+
+	.process-place {
+		text-align: center;
+		width: 600px;
+		padding: 14px 0;
+	}
+
+	.list-table {
+
+		width: 600px;
+
+		td {
+			padding: 4px 8px;
+			line-height: 30px;
+		}
+
+		.filter-img {
+			font-size: 12px;
+			margin-right: 5px;
+		}
+
+		.filter-name {
+			display: inline-block;
+			word-break: break-all;
+			box-sizing: border-box;
+			line-height: 22px;
+			cursor: pointer;
+		}
+	}
+
+	.filter-item {
+
+		.e-action {
+			cursor: pointer;
+		}
+
+		.button-delete {
+			margin-right: 15px;
+			margin-top: 5px;
+			visibility: hidden;
+			opacity: 0;
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				opacity: 1;
+			}
+		}
+
+		.delete-filter {
+			cursor: pointer;
+			opacity: 0.5;
+		}
+	}
+}

@@ -27,7 +27,6 @@
 		this.fieldOptions = [ // TODO i18n
 			{'id': Enums.FilterConditionField.From, 'name': 'From'},
 			{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC)'},
-			{'id': Enums.FilterConditionField.To, 'name': 'To'},
 			{'id': Enums.FilterConditionField.Subject, 'name': 'Subject'}
 		];
 

@@ -51,7 +51,7 @@
 		'Gravatar': 'GRAVATAR',
 		'Themes': 'THEMES',
 		'UserBackground': 'USER_BACKGROUND',
-		'Filters': 'FILTERS',
+		'Sieve': 'SIEVE',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 	};
@@ -291,7 +291,6 @@
 	 */
 	Enums.FilterConditionField = {
 		'From': 'From',
-		'To': 'To',
 		'Recipient': 'Recipient',
 		'Subject': 'Subject'
 	};
@@ -320,8 +319,8 @@
 	 * @enum {string}
 	 */
 	Enums.FilterRulesType = {
-		'And': 'And',
-		'Or': 'Or'
+		'All': 'All',
+		'Any': 'Any'
 	};
 
 	/**

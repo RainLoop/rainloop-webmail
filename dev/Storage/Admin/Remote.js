@@ -212,7 +212,7 @@
 	RemoteAdminStorage.prototype.createOrUpdateDomain = function (fCallback,
 		bCreate, sName,
 		sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		bUseSieve, bUseImapServerForSieve, sSieveHost, iSievePort, sSieveSecure,
+		bUseSieve, sSieveHost, iSievePort, sSieveSecure,
 		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail,
 		sWhiteList)
 	{
@@ -226,7 +226,6 @@
 			'IncShortLogin': bIncShortLogin ? '1' : '0',
 
 			'UseSieve': bUseSieve ? '1' : '0',
-			'UseImapServerForSieve': bUseImapServerForSieve ? '1' : '0',
 			'SieveHost': sSieveHost,
 			'SievePort': iSievePort,
 			'SieveSecure': sSieveSecure,
@@ -244,7 +243,7 @@
 
 	RemoteAdminStorage.prototype.testConnectionForDomain = function (fCallback, sName,
 		sIncHost, iIncPort, sIncSecure,
-		bUseSieve, bUseImapServerForSieve, sSieveHost, iSievePort, sSieveSecure,
+		bUseSieve, sSieveHost, iSievePort, sSieveSecure,
 		sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
@@ -253,7 +252,6 @@
 			'IncPort': iIncPort,
 			'IncSecure': sIncSecure,
 			'UseSieve': bUseSieve ? '1' : '0',
-			'UseImapServerForSieve': bUseImapServerForSieve ? '1' : '0',
 			'SieveHost': sSieveHost,
 			'SievePort': iSievePort,
 			'SieveSecure': sSieveSecure,

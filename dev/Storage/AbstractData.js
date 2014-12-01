@@ -45,6 +45,7 @@
 		this.capaAdditionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
 		this.capaAdditionalIdentities(Settings.capa(Enums.Capa.AdditionalIdentities));
 		this.capaGravatar(Settings.capa(Enums.Capa.Gravatar));
+		this.capaSieve(Settings.capa(Enums.Capa.Sieve));
 		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
 

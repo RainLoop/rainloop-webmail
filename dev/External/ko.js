@@ -36,6 +36,7 @@
 
 			var
 				$oEl = null,
+				bi18n = true,
 				sClass  = '',
 				sPlacement  = '',
 				oSubscription = null,
@@ -47,6 +48,7 @@
 			{
 				$oEl = $(oElement);
 				sClass = $oEl.data('tooltip-class') || '';
+				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
 				sPlacement = $oEl.data('tooltip-placement') || 'top';
 
 				$oEl.tooltip({
@@ -59,8 +61,9 @@
 					'placement': sPlacement,
 					'trigger': 'hover',
 					'title': function () {
-						return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' : '<span class="tooltip-class ' + sClass + '">' +
-							Utils.i18n(ko.unwrap(fValueAccessor())) + '</span>';
+						var sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
+						return '' === sValue || $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
+							'<span class="tooltip-class ' + sClass + '">' + (bi18n ? Utils.i18n(sValue) : sValue) + '</span>';
 					}
 				}).on('click.koTooltip', function () {
 					$oEl.tooltip('hide');
@@ -75,42 +78,7 @@
 		}
 	};
 
-	ko.bindingHandlers.tooltip2 = {
-		'init': function (oElement, fValueAccessor) {
-			var
-				Globals = require('Common/Globals'),
-
-				$oEl = $(oElement),
-				oSubscription = null,
-				sClass = $oEl.data('tooltip-class') || '',
-				sPlacement = $oEl.data('tooltip-placement') || 'top'
-			;
-
-			$oEl.tooltip({
-				'delay': {
-					'show': 500,
-					'hide': 100
-				},
-				'html': true,
-				'container': 'body',
-				'placement': sPlacement,
-				'title': function () {
-					return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
-						'<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
-				}
-			}).on('click.koTooltip', function () {
-				$oEl.tooltip('hide');
-			});
-
-			oSubscription = Globals.tooltipTrigger.subscribe(function () {
-				$oEl.tooltip('hide');
-			});
-
-			fDisposalTooltipHelper(oElement, $oEl, oSubscription);
-		}
-	};
-
-	ko.bindingHandlers.tooltip3 = {
+	ko.bindingHandlers.tooltipForTest = {
 		'init': function (oElement) {
 
 			var

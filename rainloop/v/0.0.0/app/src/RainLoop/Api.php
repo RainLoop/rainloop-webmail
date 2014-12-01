@@ -97,13 +97,22 @@ class Api
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 
 			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
-			if (!empty($sSslCafile))
+			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
+
+			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
-				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile) {
-					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']) &&
-						empty($aStreamContextSettings['ssl']['cafile']))
+				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
+					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
 					{
-						$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
+						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))
+						{
+							$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
+						}
+
+						if (empty($aStreamContextSettings['ssl']['capath']) && !empty($sSslCapath))
+						{
+							$aStreamContextSettings['ssl']['capath'] = $sSslCapath;
+						}
 					}
 				});
 			}

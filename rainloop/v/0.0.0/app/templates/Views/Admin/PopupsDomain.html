@@ -20,8 +20,8 @@
 				<div class="row">
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
 						<div class="legend imap-header">
-							<span data-placement="bottom" data-bind="tooltip3: testingImapErrorDesc">
-								<span data-bind="text: sieveSettings() ? 'SIEVE' : 'IMAP'">IMAP</span>
+							<span data-placement="bottom" data-bind="tooltipForTest: testingImapErrorDesc">
+								<span data-bind="text: sieveSettings() ? 'SIEVE (Filters)' : 'IMAP'">IMAP</span>
 							</span>
 						</div>
 						<div data-bind="visible: !sieveSettings()">
@@ -73,7 +73,7 @@
 									<span data-bind="command: sieveCommand">
 										<i class="icon-filter"></i>
 										&nbsp;
-										<a href="#" class="g-ui-link">Sieve configuration</a>
+										<a href="#" class="g-ui-link">Sieve (Filetrs) configuration</a>
 									</span>
 								</div>
 							</div>
@@ -90,18 +90,7 @@
 									}"></div>
 								</div>
 							</div>
-							<div class="row" data-bind="visible: useSieve">
-								<div class="span5">
-									<div data-bind="component: {
-										name: 'Checkbox',
-										params: {
-											label: 'use IMAP Server',
-											value: useImapServerForSieve
-										}
-									}"></div>
-								</div>
-							</div>
-							<div data-bind="visible: !useImapServerForSieve() && useSieve()">
+							<div data-bind="visible: useSieve">
 								<br />
 								<div class="row">
 									<div class="span3">
@@ -144,7 +133,7 @@
 					</div>
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
 						<div class="legend smtp-header">
-							<span data-placement="bottom" data-bind="tooltip3: testingSmtpErrorDesc">
+							<span data-placement="bottom" data-bind="tooltipForTest: testingSmtpErrorDesc">
 								SMTP
 							</span>
 						</div>

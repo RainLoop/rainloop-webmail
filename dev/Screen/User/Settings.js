@@ -69,7 +69,7 @@
 				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
 		}
 
-		if (Settings.capa(Enums.Capa.Filters))
+		if (Settings.capa(Enums.Capa.Sieve))
 		{
 			kn.addSettingsViewModel(require('Settings/User/Filters'),
 				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');

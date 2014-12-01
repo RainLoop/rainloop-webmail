@@ -130,15 +130,15 @@ abstract class AbstractPlugin
 	{
 		return array();
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	public function Hash()
 	{
-		return \md5($this->sVersion);
+		return \md5($this->sName.'@'.$this->sVersion);
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -146,7 +146,7 @@ abstract class AbstractPlugin
 	{
 		return '';
 	}
-	
+
 	/**
 	 * @final
 	 * @return array
@@ -161,22 +161,41 @@ abstract class AbstractPlugin
 				$this->aConfigMap = array();
 			}
 		}
-		
+
 		return $this->aConfigMap;
 	}
 
 	/**
 	 * @param string $sPath
-	 * @param string $sName
-	 * @param string $sVersion = ''
 	 *
 	 * @return self
 	 */
-	public function SetValues($sPath, $sName, $sVersion = '')
+	public function SetPath($sPath)
 	{
-		$this->sName = $sName;
 		$this->sPath = $sPath;
 
+		return $this;
+	}
+	
+	/**
+	 * @param string $sName
+	 *
+	 * @return self
+	 */
+	public function SetName($sName)
+	{
+		$this->sName = $sName;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $sVersion
+	 *
+	 * @return self
+	 */
+	public function SetVersion($sVersion)
+	{
 		if (0 < \strlen($sVersion))
 		{
 			$this->sVersion = $sVersion;
@@ -222,14 +241,14 @@ abstract class AbstractPlugin
 	 */
 	public function Init()
 	{
-		
+
 	}
 
 	/**
 	 * @param bool $bAdmin
 	 * @param bool $bAuth
 	 * @param array $aConfig
-	 * 
+	 *
 	 * @return void
 	 */
 	public function FilterAppDataPluginSection($bAdmin, $bAuth, &$aConfig)

@@ -119,6 +119,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			'ssl' => array(
 				'verify_certificate'	=> array(false, 'Require verification of SSL certificate used.'),
 				'cafile'			=> array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+				'capath'			=> array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
 			),
 
 			'login' => array(
@@ -233,6 +234,7 @@ Enables caching in the system'),
 					'Experimental settings. Handle with care.
 '),
 				'check_new_password_strength' => array(true),
+				'update_channel' => array('stable'),
 				'allow_gravatar' => array(true),
 				'allow_prefetch' => array(true),
 				'allow_smart_html_links' => array(true),

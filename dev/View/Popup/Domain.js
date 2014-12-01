@@ -12,6 +12,7 @@
 		Utils = require('Common/Utils'),
 
 		Remote = require('Storage/Admin/Remote'),
+		Settings = require('Storage/Settings'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -62,14 +63,13 @@
 		this.name = ko.observable('');
 		this.name.focused = ko.observable(false);
 
-		this.allowSieve = ko.observable(false);
+		this.allowSieve = ko.observable(Settings.capa(Enums.Capa.Sieve));
 
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
 		this.imapShortLogin = ko.observable(false);
 		this.useSieve = ko.observable(false);
-		this.useImapServerForSieve = ko.observable(true);
 		this.sieveServer = ko.observable('');
 		this.sievePort = ko.observable('' + Consts.Values.SieveDefaulPort);
 		this.sieveSecure = ko.observable(Enums.ServerSecure.None);
@@ -94,14 +94,13 @@
 			var
 				bPhpMail = this.smtpPhpMail(),
 				bAllowSieve = this.allowSieve(),
-				bUseSieve = this.useSieve(),
-				bIseImapServerForSieve = this.useImapServerForSieve()
+				bUseSieve = this.useSieve()
 			;
 
 			return '' !== this.name() &&
 				'' !== this.imapServer() &&
 				'' !== this.imapPort() &&
-				(bAllowSieve && bUseSieve ? (bIseImapServerForSieve ? true : ('' !== this.sieveServer() && '' !== this.sievePort())) : true) &&
+				(bAllowSieve && bUseSieve ? ('' !== this.sieveServer() && '' !== this.sievePort()) : true) &&
 				(('' !== this.smtpServer() && '' !== this.smtpPort()) || bPhpMail);
 
 		}, this);
@@ -127,7 +126,6 @@
 				this.imapShortLogin(),
 
 				this.useSieve(),
-				this.useImapServerForSieve(),
 				this.sieveServer(),
 				Utils.pInt(this.sievePort()),
 				this.sieveSecure(),
@@ -162,7 +160,6 @@
 				this.imapSecure(),
 
 				this.useSieve(),
-				this.useImapServerForSieve(),
 				this.sieveServer(),
 				Utils.pInt(this.sievePort()),
 				this.sieveSecure(),
@@ -201,9 +198,9 @@
 		}, this);
 
 		this.sieveServerFocus.subscribe(function (bValue) {
-			if (bValue && '' !== this.name() && '' === this.sieveServer())
+			if (bValue && '' !== this.imapServer() && '' === this.sieveServer())
 			{
-				this.sieveServer(this.name().replace(/[.]?[*][.]?/g, ''));
+				this.sieveServer(this.imapServer());
 			}
 		}, this);
 
@@ -356,7 +353,6 @@
 			this.imapSecure(Utils.trim(oDomain.IncSecure));
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
-			this.useImapServerForSieve(!!oDomain.UseImapServerForSieve);
 			this.sieveServer(Utils.trim(oDomain.SieveHost));
 			this.sievePort('' + Utils.pInt(oDomain.SievePort));
 			this.sieveSecure(Utils.trim(oDomain.SieveSecure));
@@ -400,7 +396,6 @@
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
-		this.useImapServerForSieve(true);
 		this.sieveServer('');
 		this.sievePort('' + Consts.Values.SieveDefaulPort);
 		this.sieveSecure(Enums.ServerSecure.None);
