@@ -102,7 +102,7 @@
 					})
 					.script(function () {
 						return window.rainloopAppData['PluginsLink'] ?
-							{'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'} : null;
+							{'src': window.rainloopAppData['PluginsLink'], 'type': 'text/javascript', 'charset': 'utf-8'} : null;
 					})
 					.wait(function () {
 						__simplePace(5);

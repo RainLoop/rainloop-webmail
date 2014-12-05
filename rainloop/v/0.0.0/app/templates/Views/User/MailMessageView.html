@@ -1,3 +1,4 @@
+<!-- ko template: { name: 'PhotoSwipe' } --><!-- /ko -->
 <div id="rl-sub-right">
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused}">
 		<div class="toolbar g-ui-user-select-none">
@@ -270,8 +271,8 @@
 													<span class="attachmentName" data-bind="text: fileName"></span>
 												</div>
 												<div>
-													<a class="attachmentPreview magnificPopupImage pull-left"
-													   data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName}" target="_blank">
+													<a class="attachmentPreview attachmentImagePreview magnificPopupImage pull-left"
+													   data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName, 'data-index': $index}" target="_blank">
 														<i class="icon-eye"></i>
 													</a>
 													<a class="attachmentPreview pull-left"
@@ -290,7 +291,6 @@
 												</div>
 											</li>
 										</ul>
-										<hr />
 									</div>
 									<div class="bodyText g-ui-min-height-300" data-bind="initDom: messagesBodiesDom"></div>
 								</div>

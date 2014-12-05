@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
@@ -13,10 +13,10 @@
  * (1) http://ckeditor.com/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/7bd3f7a14b9b0ff5faf671393bb9720b
+ * (2) http://ckeditor.com/builder/b1845fab7060f947b250c67fb9992be5
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/7bd3f7a14b9b0ff5faf671393bb9720b
+ * (3) http://ckeditor.com/builder/download/b1845fab7060f947b250c67fb9992be5
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -25,7 +25,7 @@
  */
 
 var CKBUILDER_CONFIG = {
-	skin: 'icy_orange',
+	skin: 'moono',
 	preset: 'basic',
 	ignore: [
 		'.bender',
@@ -36,7 +36,7 @@ var CKBUILDER_CONFIG = {
 		'.DS_Store',
 		'.gitattributes',
 		'.gitignore',
-		'gruntfile.js',
+		'Gruntfile.js',
 		'.idea',
 		'.jscsrc',
 		'.jshintignore',
@@ -50,7 +50,6 @@ var CKBUILDER_CONFIG = {
 	plugins : {
 		'base64image' : 1,
 		'basicstyles' : 1,
-		'bidi' : 1,
 		'blockquote' : 1,
 		'clipboard' : 1,
 		'colorbutton' : 1,

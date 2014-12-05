@@ -13,6 +13,8 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
+		Plugins = require('Common/Plugins'),
+
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -108,6 +110,27 @@
 
 			if (this.emailError() || this.passwordError() || this.additionalCode.error())
 			{
+				return false;
+			}
+
+			var
+				iPluginResultCode = 0,
+				sPluginResultMessage = '',
+				fSubmitResult = function (iResultCode, sResultMessage) {
+					iPluginResultCode = iResultCode || 0;
+					sPluginResultMessage = sResultMessage || '';
+				}
+			;
+
+			Plugins.runHook('user-login-submit', [fSubmitResult]);
+			if (0 < iPluginResultCode)
+			{
+				this.submitError(Utils.getNotification(iPluginResultCode));
+				return false;
+			}
+			else if ('' !== sPluginResultMessage)
+			{
+				this.submitError(sPluginResultMessage);
 				return false;
 			}
 

@@ -95,11 +95,13 @@ cfg.paths.css = {
 			'vendors/normalize/normalize.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
-			'vendors/jquery-magnific-popup/magnific-popup.css',
-			'vendors/jquery-magnific-popup/magnific-popup-animations.css',
+//			'vendors/jquery-magnific-popup/magnific-popup.css',
+//			'vendors/jquery-magnific-popup/magnific-popup-animations.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/simple-pace/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
+			'vendors/photoswipe/photoswipe.css',
+			'vendors/photoswipe/default-skin/default-skin.css',
 			'vendors/flags/flags-fixed.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
@@ -162,10 +164,12 @@ cfg.paths.js = {
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
+			'vendors/photoswipe/photoswipe.min.js',
+			'vendors/photoswipe/photoswipe-ui-default.min.js',
 			'vendors/jsencrypt/jsencrypt.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
-			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
+//			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},
@@ -411,6 +415,7 @@ gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
 });
 
 gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
+	return true;
 	return gulp.src('vendors/ckeditor-plugins/**/*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor/plugins'));
 });
@@ -418,7 +423,7 @@ gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
 gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
 		.pipe(stripbom())
-		.pipe(replace("\u200B", "\\u200B"))
+//		.pipe(replace("\u200B", "\\u200B"))
 		.pipe(header("\uFEFF")) // BOM
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });

@@ -5,10 +5,10 @@
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>
 			</div>
-			<form class="form-horizontal span4 wrapper loginForm thm-login" action="#/" data-bind="submit: submitForm">
-				<div class="control-group" data-bind="css: {'error': loginError}">
+			<form class="wrapper loginForm thm-login" action="#/" data-bind="submit: submitForm">
+				<div class="controls" data-bind="css: {'error': loginError}">
 					<div class="input-append">
-						<input type="text" class="inputLogin span4 checkAutocomplete" placeholder="Login" name="RainLoopAdminLogin" id="RainLoopAdminLogin"
+						<input type="text" class="input-block-level inputLogin checkAutocomplete" placeholder="Login" name="RainLoopAdminLogin" id="RainLoopAdminLogin"
 							autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: login, hasFocus: loginFocus" />
 						<span class="add-on">
@@ -16,9 +16,9 @@
 						</span>
 					</div>
 				</div>
-				<div class="control-group" data-bind="css: {'error': passwordError}">
+				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
-						<input type="password" class="inputPassword span4 checkAutocomplete" placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
+						<input type="password" class="input-block-level inputPassword checkAutocomplete" placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
 							autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: password" />
 						<span class="add-on">
@@ -26,8 +26,8 @@
 						</span>
 					</div>
 				</div>
-				<div class="control-group">
-					<button type="submit" class="btn btn-large span4 buttonLogin" data-bind="command: submitCommand">
+				<div class="controls">
+					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 						<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
 						<span data-bind="visible: !submitRequest()">Log into the admin panel</span>
 					</button>

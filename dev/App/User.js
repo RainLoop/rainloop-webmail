@@ -1265,25 +1265,25 @@
 			bTwitter = Settings.settingsGet('AllowTwitterSocial')
 		;
 
-		Utils.initOnStartOrLangChange(function () {
-
-			$.extend(true, $.magnificPopup.defaults, {
-				'tClose': Utils.i18n('MAGNIFIC_POPUP/CLOSE'),
-				'tLoading': Utils.i18n('MAGNIFIC_POPUP/LOADING'),
-				'gallery': {
-					'tPrev': Utils.i18n('MAGNIFIC_POPUP/GALLERY_PREV'),
-					'tNext': Utils.i18n('MAGNIFIC_POPUP/GALLERY_NEXT'),
-					'tCounter': Utils.i18n('MAGNIFIC_POPUP/GALLERY_COUNTER')
-				},
-				'image': {
-					'tError': Utils.i18n('MAGNIFIC_POPUP/IMAGE_ERROR')
-				},
-				'ajax': {
-					'tError': Utils.i18n('MAGNIFIC_POPUP/AJAX_ERROR')
-				}
-			});
-
-		}, this);
+//		Utils.initOnStartOrLangChange(function () {
+//
+//			$.extend(true, $.magnificPopup.defaults, {
+//				'tClose': Utils.i18n('PREVIEW_POPUP/CLOSE'),
+//				'tLoading': Utils.i18n('PREVIEW_POPUP/LOADING'),
+//				'gallery': {
+//					'tPrev': Utils.i18n('PREVIEW_POPUP/GALLERY_PREV'),
+//					'tNext': Utils.i18n('PREVIEW_POPUP/GALLERY_NEXT'),
+//					'tCounter': Utils.i18n('PREVIEW_POPUP/GALLERY_COUNTER')
+//				},
+//				'image': {
+//					'tError': Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR')
+//				},
+//				'ajax': {
+//					'tError': Utils.i18n('PREVIEW_POPUP/AJAX_ERROR')
+//				}
+//			});
+//
+//		}, this);
 
 		if (SimplePace)
 		{

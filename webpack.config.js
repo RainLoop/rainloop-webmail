@@ -29,6 +29,8 @@ module.exports = {
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
 		'SimplePace': 'window.SimplePace',
+		'PhotoSwipe': 'window.PhotoSwipe',
+		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',
 		'moment': 'moment',
 		'ifvisible': 'ifvisible',

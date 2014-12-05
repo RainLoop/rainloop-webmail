@@ -30,14 +30,15 @@
 			color: #333;
 			margin: 0;
 			float: none;
+			width: 303px;
 		}
 
-		.control-label {
+/*		.control-label {
 			font-size: 16px;
 			line-height: 30px;
-		}
+		}*/
 
-		.control-group {
+		.controls, .control-group {
 			margin-bottom: 25px;
 		}
 
@@ -50,10 +51,20 @@
 			border-radius: 3px;
 		}
 
-		.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
-			font-size: 18px;
-			height: 30px;
-			line-height: 29px;
+		.control-group {
+			.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
+				font-size: 18px;
+				height: 30px;
+				line-height: 29px;
+			}
+		}
+
+		.controls {
+			.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
+				font-size: 18px;
+				height: 40px;
+				line-height: 39px;
+			}
 		}
 
 		.signMeLabel, .languageLabel {
@@ -79,7 +90,7 @@
 			color: #999;
 		}
 
-		.control-group.error .add-on i {
+		.controls.error .add-on i, .control-group.error .add-on i {
 			color: #b94a48;
 		}
 	}

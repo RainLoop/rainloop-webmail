@@ -461,9 +461,12 @@
 		var
 			oIDs = {},
 			sResult = '',
+			sEmail = '',
+
 			fFindHelper = function (oItem) {
 				if (oItem && oItem.email && oIDs[oItem.email])
 				{
+					sEmail = oItem.email;
 					sResult = oIDs[oItem.email];
 					return true;
 				}
@@ -507,9 +510,10 @@
 		if ('' === sResult)
 		{
 			sResult = Data.accountEmail();
+			sEmail = sResult;
 		}
 
-		return sResult;
+		return [sResult, sEmail];
 	};
 
 	ComposePopupView.prototype.selectIdentity = function (oIdentity)
@@ -744,6 +748,7 @@
 			sReplyTitle = '',
 			aResplyAllParts = [],
 			oExcludeEmail = {},
+			oIdResult = null,
 			mEmail = Data.accountEmail(),
 			sSignature = Data.signature(),
 			bSignatureToAll = Data.signatureToAll(),
@@ -780,7 +785,13 @@
 			oExcludeEmail[mEmail] = true;
 		}
 
-		this.currentIdentityID(this.findIdentityIdByMessage(sComposeType, oMessage));
+		oIdResult = this.findIdentityIdByMessage(sComposeType, oMessage);
+		if (oIdResult && oIdResult[0])
+		{
+			oExcludeEmail[oIdResult[1]] = true;
+			this.currentIdentityID(oIdResult[0]);
+		}
+
 		this.reset();
 
 		if (Utils.isNonEmptyArray(aToEmails))

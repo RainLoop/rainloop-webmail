@@ -9,6 +9,9 @@
 		ko = require('ko'),
 		key = require('key'),
 
+		PhotoSwipe = require('PhotoSwipe'),
+		PhotoSwipeUI_Default = require('PhotoSwipeUI_Default'),
+
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
@@ -42,6 +45,8 @@
 		;
 
 		this.oMessageScrollerDom = null;
+
+		this.pswp = null;
 
 		this.message = Data.message;
 		this.currentMessage = Data.currentMessage;
@@ -323,7 +328,11 @@
 
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
-		var self = this;
+		var
+			self = this,
+			sErrorMessage = Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR')
+		;
+
 		this.fullScreenMode.subscribe(function (bValue) {
 			if (bValue)
 			{
@@ -331,25 +340,89 @@
 			}
 		}, this);
 
-		$('.attachmentsPlace', oDom).magnificPopup({
-			'delegate': '.magnificPopupImage:visible',
-			'type': 'image',
-			'gallery': {
-				'enabled': true,
-				'preload': [1, 1],
-				'navigateByImgClick': true
-			},
-			'callbacks': {
-				'open': function() {
-					Globals.useKeyboardShortcuts(false);
-				},
-				'close': function() {
-					Globals.useKeyboardShortcuts(true);
-				}
-			},
-			'mainClass': 'mfp-fade',
-			'removalDelay': 400
-		});
+//		$('.attachmentsPlace', oDom).magnificPopup({
+//			'delegate': '.attachmentImagePreview:visible',
+//			'type': 'image',
+//			'gallery': {
+//				'enabled': true,
+//				'preload': [1, 1],
+//				'navigateByImgClick': true
+//			},
+//			'callbacks': {
+//				'open': function() {
+//					Globals.useKeyboardShortcuts(false);
+//				},
+//				'close': function() {
+//					Globals.useKeyboardShortcuts(true);
+//				}
+//			},
+//			'mainClass': 'mfp-fade',
+//			'removalDelay': 400
+//		});
+
+		this.pswpDom = $('.pswp', oDom)[0];
+		if (this.pswpDom)
+		{
+			oDom
+				.on('click', 'a.attachmentImagePreview[data-index]:visible', function (oEvent) {
+
+					var
+						oPs = null,
+						oEl = oEvent.currentTarget || null,
+						aItems = []
+					;
+
+					oDom.find('a.attachmentImagePreview:visible').each(function (index, oSubElement) {
+
+						var $oItem = $(oSubElement);
+
+						aItems.push({
+							w: 600, h: 400,
+							'src': $oItem.attr('href'),
+							'title': $oItem.attr('title') || ''
+						});
+
+					});
+
+					if (aItems && 0 < aItems.length)
+					{
+						Globals.useKeyboardShortcuts(false);
+
+						oPs = new PhotoSwipe(self.pswpDom, PhotoSwipeUI_Default, aItems, {
+							'index': Utils.pInt($(oEl).data('index')),
+							'bgOpacity': 0.85,
+							'loadingIndicatorDelay': 500,
+							'errorMsg': '<div class="pswp__error-msg">' + sErrorMessage + '</div>',
+							'showHideOpacity': true,
+							'tapToToggleControls': false,
+							'timeToIdle': 0,
+							'timeToIdleOutside': 0,
+							'history': false,
+							'arrowEl': 1 < aItems.length,
+							'counterEl': 1 < aItems.length,
+							'shareEl': false
+						});
+
+						oPs.listen('imageLoadComplete', function(index, item) {
+							if (item && item.img && item.img.width && item.img.height)
+							{
+								item.w = item.img.width;
+								item.h = item.img.height;
+
+								oPs.updateSize();
+							}
+						});
+
+						oPs.listen('close', function() {
+							Globals.useKeyboardShortcuts(true);
+						});
+
+						oPs.init();
+					}
+
+					return false;
+				});
+		}
 
 		oDom
 			.on('click', 'a', function (oEvent) {

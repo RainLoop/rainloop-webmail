@@ -33,7 +33,7 @@ html.rl-no-preview-pane {
 		left: -1px;
 		overflow: hidden;
 		border: @rlLowBorderSize solid @rlMainDarkColor;
-		
+
 		.border-top-right-radius(@rlLowBorderRadius);
 		.border-bottom-right-radius(@rlLowBorderRadius);
 
@@ -218,7 +218,9 @@ html.rl-no-preview-pane {
 
 			.attachmentsPlace {
 
-				padding: 10px;
+				padding: 10px 10px 6px 10px;
+				background: #eee;
+				border-bottom: 1px solid #ddd;
 
 				.attachmentList {
 
@@ -235,17 +237,20 @@ html.rl-no-preview-pane {
 						cursor: pointer;
 						list-style: none;
 						line-height: 24px;
-						border: 2px solid grey;
+						/*border: 2px solid grey;*/
+						border: 0;
 						background-color: #fff;
-						box-shadow: 1px 1px 5px #ccc;
-						box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+						box-shadow: 0 1px 5px #ccc;
+						box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+						box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
 
-						border-radius: 6px;
+						border-radius: 2px;
 
 						.attachmentIcon {
 							font-size: 23px;
 							width: 23px;
 							height: 23px;
+							color: #666;
 						}
 
 						.attachmentPreview {

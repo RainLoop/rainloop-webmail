@@ -198,6 +198,10 @@
 						{
 							oConfig.removePlugins += (oConfig.removePlugins ? ',' : '')  + 'bidi';
 						}
+						else
+						{
+							oConfig.removeButtons = oConfig.removeButtons.replace(',bidi', '');
+						}
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
