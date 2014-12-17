@@ -5,15 +5,57 @@
 		</div>
 	</div>
 	<div class="row">
-		<div data-bind="foreach: filters, i18nUpdate: filters">
-			<span  data-bind="text: name" ></span>
-			<br />
+		<div class="span8">
+			<a class="btn" data-bind="click: addFilter">
+				<i class="icon-plus"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_FILTER"></span>
+			</a>
+			&nbsp;&nbsp;&nbsp;
+			<a class="btn" data-bind="command: saveChanges">
+				<i data-bind="css: {'icon-floppy': !filters.saving(), 'icon-spinner animated': filters.saving()}"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_SAVE"></span>
+			</a>
 		</div>
 	</div>
-	<br />
-	<a class="btn" data-bind="click: addFilter">
-		<i class="icon-filter"></i>
-		&nbsp;&nbsp;
-		<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_FILTER"></span>
-	</a>
+	<div class="row">
+		<div class="span8">
+			<div class="process-place g-ui-user-select-none" data-bind="style: {'visibility': visibility }">
+				<i class="icon-spinner animated"></i>
+				&nbsp;&nbsp;
+				<span data-bind="text: processText"></span>
+			</div>
+			<table class="table table-hover list-table g-ui-user-select-none" data-bind="i18nUpdate: filters">
+				<colgroup>
+					<col style="width: 30px" />
+					<col />
+					<col style="width: 140px" />
+					<col style="width: 1%" />
+				</colgroup>
+				<tbody data-bind="sortable: {data: filters, options: scrollableOptions()}">
+					<tr class="filter-item">
+						<td>
+							<span class="disabled-filter" data-bind="click: function () { $root.haveChanges(true); enabled(!enabled()); }">
+								<i data-bind="css: {'icon-checkbox-checked': enabled, 'icon-checkbox-unchecked': !enabled()}"></i>
+							</span>
+						</td>
+						<td class="e-action">
+							<span class="filter-name" data-bind="text: name()"></span>
+						</td>
+						<td>
+							<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }">
+								<span class="i18n" data-i18n-text="SETTINGS_FILTERS/DELETING_ASK"></span>
+							</a>
+						</td>
+						<td>
+							<span class="delete-filter" data-bind="visible: !deleteAccess() && canBeDalete(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">
+								<i class="icon-trash"></i>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

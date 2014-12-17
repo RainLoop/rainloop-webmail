@@ -17,12 +17,15 @@
 	 *
 	 * @param {string} sEmail
 	 * @param {boolean=} bCanBeDelete = true
+	 * @param {number=} iCount = 0
 	 */
-	function AccountModel(sEmail, bCanBeDelete)
+	function AccountModel(sEmail, bCanBeDelete, iCount)
 	{
 		AbstractModel.call(this, 'AccountModel');
 
 		this.email = sEmail;
+
+		this.count = ko.observable(iCount || 0);
 
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);

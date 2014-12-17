@@ -21,42 +21,20 @@
 	{
 		AbstractModel.call(this, 'FilterModel');
 
-		this.isNew = ko.observable(true);
 		this.enabled = ko.observable(true);
 
 		this.name = ko.observable('');
-
-		this.conditionsType = ko.observable(Enums.FilterRulesType.All);
+		this.name.error = ko.observable(false);
+		this.name.focused = ko.observable(false);
 
 		this.conditions = ko.observableArray([]);
+		this.conditionsType = ko.observable(Enums.FilterRulesType.All);
 
 		// Actions
-		this.actionMarkAsRead = ko.observable(false);
-		this.actionSkipOtherFilters = ko.observable(true);
 		this.actionValue = ko.observable('');
+		this.actionMarkAsRead = ko.observable(false);
 
 		this.actionType = ko.observable(Enums.FiltersAction.Move);
-		this.actionTypeOptions = [ // TODO i18n
-			{'id': Enums.FiltersAction.None, 'name': 'None'},
-			{'id': Enums.FiltersAction.Move, 'name': ' Move to'},
-	//		{'id': Enums.FiltersAction.Forward, 'name': 'Forward to'},
-			{'id': Enums.FiltersAction.Discard, 'name': 'Discard'}
-		];
-
-		this.enableSkipOtherFilters = ko.computed(function () {
-			return -1 === Utils.inArray(this.actionType(), [
-				Enums.FiltersAction.Move, Enums.FiltersAction.Forward, Enums.FiltersAction.Discard
-			]);
-		}, this);
-
-		this.actionSkipOtherFiltersResult = ko.computed({
-			'read': function () {
-				return this.actionSkipOtherFilters() ||
-					!this.enableSkipOtherFilters();
-			},
-			'write': this.actionSkipOtherFilters,
-			'owner': this
-		});
 
 		this.actionTemplate = ko.computed(function () {
 
@@ -84,14 +62,42 @@
 			Utils.windowResize();
 		}));
 
-		this.regDisposables([this.enableSkipOtherFilters, this.actionSkipOtherFiltersResult, this.actionTemplate]);
+		this.regDisposables(this.name.subscribe(function (sValue) {
+			this.name.error('' === sValue);
+		}, this));
+
+		this.regDisposables([this.actionTemplate]);
+
+		this.deleteAccess = ko.observable(false);
+		this.canBeDalete = ko.observable(true);
 	}
 
 	_.extend(FilterModel.prototype, AbstractModel.prototype);
 
+	FilterModel.prototype.toJson = function ()
+	{
+		return {
+			'Enabled': this.enabled(),
+			'Name': this.name(),
+			'ConditionsType': this.conditionsType(),
+			'Conditions': _.map(this.conditions(), function (oItem) {
+				return oItem.toJson();
+			}),
+			'ActionMarkAsRead': this.actionMarkAsRead(),
+			'ActionValue': this.actionValue(),
+			'ActionType': this.actionType()
+		};
+	};
+
 	FilterModel.prototype.addCondition = function ()
 	{
-		this.conditions.push(new FilterConditionModel(this.conditions));
+		this.conditions.push(new FilterConditionModel());
+	};
+
+	FilterModel.prototype.removeCondition = function (oConditionToDelete)
+	{
+		this.conditions.remove(oConditionToDelete);
+		Utils.delegateRunOnDestroy(oConditionToDelete);
 	};
 
 	FilterModel.prototype.parse = function (oItem)
@@ -105,6 +111,29 @@
 		}
 
 		return bResult;
+	};
+
+	FilterModel.prototype.cloneSelf = function ()
+	{
+		var oClone = new FilterModel();
+
+		oClone.enabled(this.enabled());
+
+		oClone.name(this.name());
+		oClone.name.error(this.name.error());
+
+		oClone.conditionsType(this.conditionsType());
+
+		oClone.actionMarkAsRead(this.actionMarkAsRead());
+		oClone.actionValue(this.actionValue());
+
+		oClone.actionType(this.actionType());
+
+		oClone.conditions(_.map(this.conditions(), function (oCondition) {
+			return oCondition.cloneSelf();
+		}));
+
+		return oClone;
 	};
 
 	module.exports = FilterModel;

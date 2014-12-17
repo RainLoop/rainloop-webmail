@@ -129,15 +129,11 @@
 		{
 			this.identityForDeletion(null);
 
-			var
-				fRemoveFolder = function (oIdentity) {
-					return oIdentityToRemove === oIdentity;
-				}
-			;
-
 			if (oIdentityToRemove)
 			{
-				this.identities.remove(fRemoveFolder);
+				this.identities.remove(function (oIdentity) {
+					return oIdentityToRemove === oIdentity;
+				});
 
 				Remote.identityDelete(function () {
 					require('App/User').accountsAndIdentities();

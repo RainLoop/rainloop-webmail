@@ -2036,6 +2036,28 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
+	public function DoFilters()
+	{
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoFiltersSave()
+	{
+		sleep(2);
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
 	public function DoAccountSetup()
 	{
 		if (!$this->Config()->Get('webmail', 'allow_additional_accounts', true))
@@ -2243,6 +2265,35 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
 			'Identities' => $mIdentities
+		));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoAccountsCounts()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$aCounts = array();
+		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
+		{
+			$mAccounts = $this->GetAccounts($oAccount);
+			foreach ($mAccounts as $sEmail => $sHash)
+			{
+				$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail), 0);
+			}
+		}
+		else
+		{
+			$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($oAccount->Email()), 0);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Complete' => true,
+			'Counts' => $aCounts
 		));
 	}
 

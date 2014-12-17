@@ -30,5 +30,31 @@
 		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		margin-right: 28px;
+		vertical-align: middle;
+	}
+
+	.account-item {
+
+		.icon-ok {
+			display: none;
+		}
+
+		&.current {
+			.icon-ok {
+				display: inline-block;
+			}
+			.icon-user {
+				display: none;
+			}
+		}
+	}
+
+	.counter {
+		display: inline-block;
+	}
+
+	.g-ui-menu .e-link.account-item {
+		padding-right: 5px;
 	}
 }

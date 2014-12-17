@@ -11,19 +11,26 @@
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
+
 					<!-- ko if: accounts().length -->
-					<!-- ko foreach: accounts -->
-						<li class="e-item" role="presentation">
-							<a class="e-link menuitem" href="#" data-bind="click: $root.accountClick, attr: {'href': changeAccountLink() }">
-								<i class="icon-ok" data-bind="visible: $root.accountEmail() === email"></i>
-								<i class="icon-user" data-bind="visible: $root.accountEmail() !== email"></i>
-								&nbsp;&nbsp;
-								<span data-bind="text: email"></span>
-							</a>
-						</li>
+						<!-- ko foreach: accounts -->
+							<li class="e-item" role="presentation">
+								<a class="e-link menuitem account-item" href="#" data-bind="click: $root.accountClick,
+									attr: {'href': changeAccountLink()}, css: {current: $root.accountEmail() === email}">
+									<b class="pull-right counter" data-bind="visible: 0 < count()">
+										<span data-bind="text: count, visible: 100 > count()"></span>
+										<span data-bind="visible: 99 < count()">99+</span>
+									</b>
+									<i class="icon-ok"></i>
+									<i class="icon-user"></i>
+									&nbsp;&nbsp;
+									<span class="email-title" data-bind="text: email"></span>
+								</a>
+							</li>
+						<!-- /ko -->
+						<li class="divider" role="presentation"></li>
 					<!-- /ko -->
-					<li class="divider" role="presentation"></li>
-					<!-- /ko -->
+
 					<!-- ko if: capaAdditionalAccounts -->
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">

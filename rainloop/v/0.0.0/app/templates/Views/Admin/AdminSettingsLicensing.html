@@ -65,8 +65,8 @@
 					<div data-bind="visible: licensing()">
 						<div class="alert alert-success span8" style="margin-left: 0; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
 							<h4>
-								<span data-bind="visible: licenseIsUnlim()">Lifetime (Premium)</span>
-								<span data-bind="visible: !licenseIsUnlim()">Premium</span>
+								Premium
+								<span data-bind="visible: licenseIsUnlim()">(Lifetime)</span>
 							</h4>
 							<p data-bind="visible: 0 < licenseExpired()" style="padding-top: 10px">
 								<b>Subscription expires:</b>

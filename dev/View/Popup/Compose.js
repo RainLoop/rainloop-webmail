@@ -1180,14 +1180,13 @@
 				if (window.google && window.google.picker)
 				{
 					var drivePicker = new window.google.picker.PickerBuilder()
-						.addView(
-							new window.google.picker.DocsView()
-								.setIncludeFolders(true)
-						)
+						// .addView(window.google.picker.ViewId.FOLDERS)
+						.addView(window.google.picker.ViewId.DOCS)
 						.setAppId(Settings.settingsGet('GoogleClientID'))
 						.setOAuthToken(oOauthToken.access_token)
 						.setCallback(_.bind(self.driveCallback, self, oOauthToken.access_token))
 						.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
+						// .setOrigin(window.location.protocol + '//' + window.location.host)
 						.build()
 					;
 
@@ -1205,14 +1204,9 @@
 
 			window.gapi.load('auth', {'callback': function () {
 
-				var oAuthToken = window.gapi.auth.getToken();
-				if (!oAuthToken)
-				{
-					window.gapi.auth.authorize({
-						'client_id': Settings.settingsGet('GoogleClientID'),
-						'scope': 'https://www.googleapis.com/auth/drive.readonly',
-						'immediate': true
-					}, function (oAuthResult) {
+				var 
+					oAuthToken = window.gapi.auth.getToken(),
+					fResult = function (oAuthResult) {
 						if (oAuthResult && !oAuthResult.error)
 						{
 							var oAuthToken = window.gapi.auth.getToken();
@@ -1220,23 +1214,29 @@
 							{
 								self.driveCreatePiker(oAuthToken);
 							}
+
+							return true;
 						}
-						else
+
+						return false;
+					}
+				;
+
+				if (!oAuthToken)
+				{
+					window.gapi.auth.authorize({
+						'client_id': Settings.settingsGet('GoogleClientID'),
+						'scope': 'https://www.googleapis.com/auth/drive.readonly',
+						'immediate': true
+					}, function (oAuthResult) {
+
+						if (!fResult(oAuthResult))
 						{
 							window.gapi.auth.authorize({
 								'client_id': Settings.settingsGet('GoogleClientID'),
 								'scope': 'https://www.googleapis.com/auth/drive.readonly',
 								'immediate': false
-							}, function (oAuthResult) {
-								if (oAuthResult && !oAuthResult.error)
-								{
-									var oAuthToken = window.gapi.auth.getToken();
-									if (oAuthToken)
-									{
-										self.driveCreatePiker(oAuthToken);
-									}
-								}
-							});
+							}, fResult);
 						}
 					});
 				}

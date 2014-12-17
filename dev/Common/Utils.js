@@ -1253,9 +1253,11 @@
 		return sResult;
 	};
 
-	Utils.draggeblePlace = function ()
+	Utils.draggablePlace = function ()
 	{
-		return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
+		return $('<div class="draggablePlace">' +
+			'<span class="text"></span>&nbsp;' + 
+			'<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 	};
 
 	Utils.defautOptionsAfterRender = function (oDomOption, oItem)

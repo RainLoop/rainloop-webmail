@@ -631,8 +631,8 @@
 			iUtc = moment().unix(),
 			iTimeout = iUtc - 60 * 5,
 			aTimeouts = [],
+			sInboxFolderName = Cache.getFolderInboxName(),
 			fSearchFunction = function (aList) {
-				var sInboxFolderName = Cache.getFolderInboxName();
 				_.each(aList, function (oFolder) {
 					if (oFolder && sInboxFolderName !== oFolder.fullNameRaw &&
 						oFolder.selectable && oFolder.existen &&
@@ -653,12 +653,9 @@
 		fSearchFunction(this.folderList());
 
 		aTimeouts.sort(function(a, b) {
-			if (a[0] < b[0])
-			{
+			if (a[0] < b[0]) {
 				return -1;
-			}
-			else if (a[0] > b[0])
-			{
+			} else if (a[0] > b[0]) {
 				return 1;
 			}
 

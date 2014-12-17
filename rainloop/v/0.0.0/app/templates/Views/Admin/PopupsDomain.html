@@ -21,7 +21,7 @@
 					<div class="span5" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
 						<div class="legend imap-header">
 							<span data-placement="bottom" data-bind="tooltipForTest: testingImapErrorDesc">
-								<span data-bind="text: sieveSettings() ? 'SIEVE (Filters)' : 'IMAP'">IMAP</span>
+								<span data-bind="text: sieveSettings() ? 'SIEVE' : 'IMAP'">IMAP</span>
 							</span>
 						</div>
 						<div data-bind="visible: !sieveSettings()">
@@ -73,7 +73,7 @@
 									<span data-bind="command: sieveCommand">
 										<i class="icon-filter"></i>
 										&nbsp;
-										<a href="#" class="g-ui-link">Sieve (Filetrs) configuration</a>
+										<a href="#" class="g-ui-link">Sieve configuration</a>
 									</span>
 								</div>
 							</div>

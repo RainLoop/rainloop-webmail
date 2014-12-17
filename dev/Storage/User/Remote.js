@@ -223,6 +223,35 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.accountsCounts = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'AccountsCounts');
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.filtersSave = function (fCallback, aFilters)
+	{
+		this.defaultRequest(fCallback, 'FiltersSave', {
+			'Filters': _.map(aFilters, function (oItem) {
+				return oItem.toJson();
+			})
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.filtersGet = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'Filters', {
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20

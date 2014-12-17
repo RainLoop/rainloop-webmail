@@ -16,29 +16,12 @@
 	 * @param {*} oKoList
 	 * @constructor
 	 */
-	function FilterConditionModel(oKoList)
+	function FilterConditionModel()
 	{
 		AbstractModel.call(this, 'FilterConditionModel');
 
-		this.parentList = oKoList;
-
 		this.field = ko.observable(Enums.FilterConditionField.From);
-
-		this.fieldOptions = [ // TODO i18n
-			{'id': Enums.FilterConditionField.From, 'name': 'From'},
-			{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC)'},
-			{'id': Enums.FilterConditionField.Subject, 'name': 'Subject'}
-		];
-
 		this.type = ko.observable(Enums.FilterConditionType.EqualTo);
-
-		this.typeOptions = [ // TODO i18n
-			{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To'},
-			{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To'},
-			{'id': Enums.FilterConditionType.Contains, 'name': 'Contains'},
-			{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains'}
-		];
-
 		this.value = ko.observable('');
 
 		this.template = ko.computed(function () {
@@ -60,9 +43,24 @@
 
 	_.extend(FilterConditionModel.prototype, AbstractModel.prototype);
 
-	FilterConditionModel.prototype.removeSelf = function ()
+	FilterConditionModel.prototype.toJson = function ()
 	{
-		this.parentList.remove(this);
+		return {
+			'Field': this.field(),
+			'Type': this.type(),
+			'Value': this.value()
+		};
+	};
+
+	FilterConditionModel.prototype.cloneSelf = function ()
+	{
+		var oClone = new FilterConditionModel();
+
+		oClone.field(this.field());
+		oClone.type(this.type());
+		oClone.value(this.value());
+
+		return oClone;
 	};
 
 	module.exports = FilterConditionModel;

@@ -6,7 +6,10 @@
 	var
 		ko = require('ko'),
 
-		Utils = require('Common/Utils')
+		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
+
+		Remote = require('Storage/User/Remote')
 	;
 
 	/**
@@ -14,13 +17,79 @@
 	 */
 	function FiltersUserSettings()
 	{
+		var self = this;
+
+		this.haveChanges = ko.observable(false);
+
+		this.processText = ko.observable('');
+		this.visibility = ko.observable(false);
+
 		this.filters = ko.observableArray([]);
-		this.filters.loading = ko.observable(false);
+		this.filters.loading = ko.observable(false).extend({'throttle': 200});
+		this.filters.saving = ko.observable(false).extend({'throttle': 200});
 
 		this.filters.subscribe(function () {
 			Utils.windowResize();
 		});
+
+		this.processText = ko.computed(function () {
+			return this.filters.loading() ? Utils.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
+		}, this);
+
+		this.visibility = ko.computed(function () {
+			return '' === this.processText() ? 'hidden' : 'visible';
+		}, this);
+
+		this.filterForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend(
+			{'toggleSubscribeProperty': [this, 'deleteAccess']});
+
+		this.saveChanges = Utils.createCommand(this, function () {
+			
+			if (!this.filters.saving())
+			{
+				this.filters.saving(true);
+
+				Remote.filtersSave(function (sResult, oData) {
+
+					self.filters.saving(false);
+
+					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+					{
+
+						self.haveChanges(false);
+						self.updateList();
+					}
+
+				}, this.filters());
+			}
+
+			return true;
+
+		}, function () {
+			return this.haveChanges();
+		});
+
+		this.filters.subscribe(function () {
+			this.haveChanges(true);	
+		}, this);		
 	}
+
+	FiltersUserSettings.prototype.scrollableOptions = function ()
+	{
+		return {
+			// handle: '.drag-handle'
+		};
+	};
+
+	FiltersUserSettings.prototype.updateList = function ()
+	{
+		var self = this;
+
+		this.filters.loading(true);
+		// Remote.filtersGet(function (sResult, oData) {
+			self.filters.loading(false);
+		// });
+	};
 
 	FiltersUserSettings.prototype.deleteFilter = function (oFilter)
 	{
@@ -31,11 +100,60 @@
 	FiltersUserSettings.prototype.addFilter = function ()
 	{
 		var
-			FilterModel = require('Model/Filter')
+			self = this,
+			FilterModel = require('Model/Filter'),
+			oNew = new FilterModel()
 		;
 
 		require('Knoin/Knoin').showScreenPopup(
-			require('View/Popup/Filter'), [new FilterModel()]);
+			require('View/Popup/Filter'), [oNew, function  () {
+				self.filters.push(oNew);
+				self.haveChanges(true);
+			}, false]);
+	};
+
+	FiltersUserSettings.prototype.editFilter = function (oEdit)
+	{
+		var
+			self = this,
+			oCloned = oEdit.cloneSelf()
+		;
+
+		require('Knoin/Knoin').showScreenPopup(
+			require('View/Popup/Filter'), [oCloned, function  () {
+
+				var
+					oFilters = self.filters(),
+					iIndex = oFilters.indexOf(oEdit)
+				;
+
+				if (-1 < iIndex && oFilters[iIndex])
+				{
+					Utils.delegateRunOnDestroy(oFilters[iIndex]);
+					oFilters[iIndex] = oCloned;
+
+					self.filters(oFilters);
+					self.haveChanges(true);
+				}
+
+			}, false]);
+	};
+
+	FiltersUserSettings.prototype.onBuild = function (oDom)
+	{
+		var self = this;
+
+		oDom
+			.on('click', '.filter-item .e-action', function () {
+				var oFilterItem = ko.dataFor(this);
+				if (oFilterItem)
+				{
+					self.editFilter(oFilterItem);
+				}
+			})
+		;
+
+		this.updateList();
 	};
 
 	module.exports = FiltersUserSettings;

@@ -319,7 +319,7 @@
 		}
 
 		var
-			oEl = Utils.draggeblePlace(),
+			oEl = Utils.draggablePlace(),
 			aUids = Data.messageListCheckedOrSelectedUidsWithSubMails()
 		;
 

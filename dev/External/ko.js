@@ -793,6 +793,30 @@
 		return oTarget;
 	};
 
+	ko.extenders.toggleSubscribeProperty = function (oTarget, oOptions)
+	{
+		var sProp = oOptions[1];
+
+		if (sProp)
+		{
+			oTarget.subscribe(function (oPrev) {
+				if (oPrev && oPrev[sProp])
+				{
+					oPrev[sProp](false);
+				}
+			}, oOptions[0], 'beforeChange');
+
+			oTarget.subscribe(function (oNext) {
+				if (oNext && oNext[sProp])
+				{
+					oNext[sProp](true);
+				}
+			}, oOptions[0]);
+		}
+
+		return oTarget;
+	};
+
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
 		var Utils = require('Common/Utils');

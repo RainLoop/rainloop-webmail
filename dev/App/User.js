@@ -75,6 +75,20 @@
 			Events.pub('interval.10m');
 		}, 60000 * 10);
 
+		window.setInterval(function () {
+			Events.pub('interval.15m');
+		}, 60000 * 15);
+
+		window.setInterval(function () {
+			Events.pub('interval.20m');
+		}, 60000 * 15);
+
+		window.setTimeout(function () {
+			window.setInterval(function () {
+				Events.pub('interval.5m-after5m');
+			}, 60000 * 5);
+		}, 60000 * 5);
+
 		window.setTimeout(function () {
 			window.setInterval(function () {
 				Events.pub('interval.10m-after5m');
@@ -476,8 +490,32 @@
 		}
 	};
 
-	AppUser.prototype.accountsAndIdentities = function ()
+	AppUser.prototype.accountsCounts = function ()
 	{
+		Remote.accountsCounts(function (sResult, oData) {
+			if (Enums.StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
+			{
+				var aAcounts = Data.accounts();
+
+				_.each(oData.Result['Counts'], function (oItem) {
+
+					var oAccount = _.find(aAcounts, function (oAccount) {
+						return oAccount && oItem[0] === oAccount.email;
+					});
+
+					if (oAccount)
+					{
+						oAccount.count(Utils.pInt(oItem[1]));
+					}
+				});
+			}
+		});
+	};
+
+	AppUser.prototype.accountsAndIdentities = function (bBoot)
+	{
+		var self = this;
+
 		Data.accountsLoading(true);
 		Data.identitiesLoading(true);
 
@@ -489,6 +527,7 @@
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
 				var
+					aCounts = {},
 					sParentEmail = Settings.settingsGet('ParentEmail'),
 					sAccountEmail = Data.accountEmail()
 				;
@@ -497,10 +536,20 @@
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
+					_.each(Data.accounts(), function (oAccount) {
+						aCounts[oAccount.email] = oAccount.count();
+					});
+
 					Utils.delegateRunOnDestroy(Data.accounts());
+
 					Data.accounts(_.map(oData.Result['Accounts'], function (sValue) {
-						return new AccountModel(sValue, sValue !== sParentEmail);
+						return new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0);
 					}));
+				}
+
+				if (Utils.isUnd(bBoot) ? false : !!bBoot)
+				{
+					self.accountsCounts();
 				}
 
 				if (Utils.isArray(oData.Result['Identities']))
@@ -723,8 +772,9 @@
 						});
 
 						if (bBoot)
-						{
-							self.folderInformationMultiply(true);
+						{	_.delay(function () {
+								self.folderInformationMultiply(true);
+							}, 2000);
 						}
 					}
 				}
@@ -1342,7 +1392,7 @@
 						self.folderInformation(Cache.getFolderInboxName());
 					});
 
-					Events.sub('interval.2m', function () {
+					Events.sub('interval.3m', function () {
 						var sF = Data.currentFolderFullNameRaw();
 						if (Cache.getFolderInboxName() !== sF)
 						{
@@ -1350,15 +1400,15 @@
 						}
 					});
 
-					Events.sub('interval.3m', function () {
+					Events.sub('interval.5m-after5m', function () {
 						self.folderInformationMultiply();
 					});
 
-					Events.sub('interval.5m', function () {
+					Events.sub('interval.15m', function () {
 						self.quota();
 					});
 
-					Events.sub('interval.10m', function () {
+					Events.sub('interval.20m', function () {
 						self.folders();
 					});
 
@@ -1379,7 +1429,7 @@
 
 					if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.AdditionalIdentities))
 					{
-						self.accountsAndIdentities();
+						self.accountsAndIdentities(true);
 					}
 
 					_.delay(function () {
