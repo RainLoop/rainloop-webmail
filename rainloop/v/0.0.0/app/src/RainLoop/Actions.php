@@ -1063,6 +1063,7 @@ class Actions
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'AllowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
+			'AllowСtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
 			'RsaPublicKey' => '',
 			'HideDangerousActions' => $oConfig->Get('labs', 'hide_dangerous_actions', false),

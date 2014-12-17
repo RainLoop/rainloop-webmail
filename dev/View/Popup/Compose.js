@@ -1063,10 +1063,13 @@
 			return false;
 		});
 
-//		key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
-//			self.sendCommand();
-//			return false;
-//		});
+		if (!!Settings.settingsGet('AllowСtrlEnterOnCompose'))
+		{
+			key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
+				self.sendCommand();
+				return false;
+			});
+		}
 
 		key('esc', Enums.KeyState.Compose, function () {
 			if (self.modalVisibility())
@@ -1204,7 +1207,7 @@
 
 			window.gapi.load('auth', {'callback': function () {
 
-				var 
+				var
 					oAuthToken = window.gapi.auth.getToken(),
 					fResult = function (oAuthResult) {
 						if (oAuthResult && !oAuthResult.error)
