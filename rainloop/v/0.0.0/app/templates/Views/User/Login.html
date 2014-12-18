@@ -48,7 +48,7 @@
 					</div>
 				</div>
 				<div class="controls" data-bind="visible: additionalCode.visibility()">
-					<label class="pull-left additionalCodeSignMeLabel" data-bind="click: function () { additionalCodeSignMe(!additionalCodeSignMe()); }">
+					<label class="additionalCodeSignMeLabel" data-bind="click: function () { additionalCodeSignMe(!additionalCodeSignMe()); }">
 						<i data-bind="css: additionalCodeSignMe() ? 'checkboxAdditionalCodeSignMe icon-checkbox-checked' : 'checkboxAdditionalCodeSignMe icon-checkbox-unchecked'"></i>
 						&nbsp;&nbsp;
 						<span class="i18n" data-i18n-text="LOGIN/LABEL_DONT_ASK_VERIFICATION_CODE"></span>
@@ -88,6 +88,7 @@
 						<a href="#" target="_blank" class="g-ui-link" data-bind="attr: {href: forgotPasswordLinkUrl}, css: {'pull-right': '' !== registrationLinkUrl}"
 							><span class="i18n" data-i18n-text="LOGIN/LABEL_FORGOT_PASSWORD"></span></a>
 					</div>
+					&nbsp;
 					<div class="registration-link thm-registration" data-bind="visible: '' !== registrationLinkUrl" style="text-align: center">
 						<a href="#" target="_blank" class="g-ui-link" data-bind="attr: {href: registrationLinkUrl}, css: {'pull-left': '' !== forgotPasswordLinkUrl}"
 							><span class="i18n" data-i18n-text="LOGIN/LABEL_REGISTRATION"></span></a>
