@@ -2050,8 +2050,24 @@ class Actions
 	 */
 	public function DoFiltersSave()
 	{
-		sleep(2);
+		$aIncFilters = $this->GetActionParam('Filters', array());
+
+		$aFilters = array();
+		foreach ($aIncFilters as $aFilter)
+		{
+			if ($aFilter)
+			{
+				$oFilter = new \RainLoop\Providers\Filters\Classes\Filter();
+				if ($oFilter->FromJSON($aFilter))
+				{
+					$this->Logger()->WriteDump($oFilter);
+					$aFilters[] = $oFilter;
+				}
+			}
+		}
+
 		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
 	}
 
 	/**
@@ -7001,10 +7017,11 @@ class Actions
 
 	/**
 	 * @param bool $bDownload
+	 * @param bool $bThumbnail = false
 	 *
 	 * @return bool
 	 */
-	private function rawSmart($bDownload)
+	private function rawSmart($bDownload, $bThumbnail = false)
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
@@ -7021,11 +7038,11 @@ class Actions
 			$this->verifyCacheByKey($sRawKey);
 		}
 
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
 
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
-			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload) {
+			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail) {
 				if (\is_resource($rResource))
 				{
 					$sContentTypeOut = $sContentTypeIn;
@@ -7046,16 +7063,41 @@ class Actions
 
 					$sFileNameOut = $self->MainClearFileName($sFileNameOut, $sContentTypeOut, $sMimeIndex);
 
-					\header('Content-Type: '.$sContentTypeOut);
-					\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
-						\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
-
-					\header('Accept-Ranges: none', true);
-					\header('Content-Transfer-Encoding: binary');
-
 					$self->cacheByKey($sRawKey);
 
-					\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+					$bDone = false;
+					if ($bThumbnail && !$bDownload)
+					{
+						\MailSo\Base\StreamWrappers\TempFile::Reg();
+
+						$sFileName = 'mailsotempfile://'.\md5($sFileNameOut.\rand(1000, 9999));
+
+						$rTempResource = \fopen($sFileName, 'r+b');
+						if (@\is_resource($rTempResource))
+						{
+							\MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource));
+							@\fclose($rTempResource);
+
+							$oThumb =@ new \PHPThumb\GD($sFileName);
+							if ($oThumb)
+							{
+								$oThumb->adaptiveResize(220, 80)->show();
+								$bDone = true;
+							}
+						}
+					}
+
+					if (!$bDone)
+					{
+						\header('Content-Type: '.$sContentTypeOut);
+						\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
+							\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+
+						\header('Accept-Ranges: none', true);
+						\header('Content-Transfer-Encoding: binary');
+
+						\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+					}
 				}
 			}, $sFolder, $iUid, true, $sMimeIndex);
 	}
@@ -7074,6 +7116,14 @@ class Actions
 	public function RawView()
 	{
 		return $this->rawSmart(false);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function RawViewThumbnail()
+	{
+		return $this->rawSmart(false, true);
 	}
 
 	/**
@@ -7124,6 +7174,42 @@ class Actions
 	{
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
 		return \in_array($sExt, array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'));
+	}
+
+	/**
+	 * @param string $sFileName
+	 *
+	 * @return bool
+	 */
+	public function isFileHasThumbnail($sFileName)
+	{
+		static $aCache = array();
+
+		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
+		if (isset($aCache[$sExt]))
+		{
+			return $aCache[$sExt];
+		}
+
+		$bResult = \function_exists('gd_info');
+		if ($bResult)
+		{
+			$bResult = false;
+			switch ($sExt)
+			{
+				case 'png':
+					$bResult = \function_exists('imagecreatefrompng');
+					break;
+				case 'jpg':
+				case 'jpeg':
+					$bResult = \function_exists('imagecreatefromjpeg');
+					break;
+			}
+		}
+
+		$aCache[$sExt] = $bResult;
+
+		return $bResult;
 	}
 
 	/**
@@ -8185,11 +8271,17 @@ class Actions
 					'CID' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),
 					'IsInline' => $mResponse->IsInline(),
+					'IsThumbnail' => !!$this->Config()->Get('interface', 'show_attachment_thumbnail', true),
 					'IsLinked' => ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs)) ||
 						($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls))
 				));
 
 				$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
+
+				if ($mResult['IsThumbnail'])
+				{
+					$mResult['IsThumbnail'] = $this->isFileHasThumbnail($mResult['FileName']);
+				}
 
 				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValues(array(
 					'V' => APP_VERSION,
@@ -8201,6 +8293,8 @@ class Actions
 					'FileName' => $mResult['FileName'],
 					'Framed' => $mResult['Framed']
 				));
+
+				$this->Logger()->WriteDump($mResult);
 			}
 			else if ('MailSo\Mail\Folder' === $sClassName)
 			{

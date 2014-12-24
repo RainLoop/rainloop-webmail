@@ -15,17 +15,6 @@
 						<i class="icon-pencil icon-white"></i>
 					</a>
 				</div>
-				<div class="btn-group" data-bind="visible: !isDraftFolder()">
-					<a class="btn btn-dark-disabled-border buttonReply" data-tooltip-placement="bottom" data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
-						<i class="icon-reply"></i>
-					</a>
-					<a class="btn btn-dark-disabled-border buttonReplyAll" data-tooltip-placement="bottom" data-bind="command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
-						<i class="icon-reply-all"></i>
-					</a>
-					<a class="btn btn-dark-disabled-border buttonForward" data-tooltip-placement="bottom" data-bind=" command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
-						<i class="icon-forward"></i>
-					</a>
-				</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">
 					<a class="btn btn-dark-disabled-border button-archive" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
@@ -40,87 +29,6 @@
 					<a class="btn btn-dark-disabled-border button-delete" data-tooltip-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash"></i>
 					</a>
-				</div>
-				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
-					<a id="more-view-dropdown-id" class="btn btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
-						<i class="icon-list"></i>
-					</a>
-					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
-						<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
-							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
-								<i class="icon-reply"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
-							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
-								<i class="icon-pencil"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
-							</a>
-						</li>
-						<li class="divider" role="presentation" data-bind="visible: !isDraftFolder()"></li>
-						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
-								<i class="icon-archive"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_ARCHIVE"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
-								<i class="icon-angry-smiley"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_SPAM"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
-								<i class="icon-happy-smiley"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_NOT_SPAM"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation" data-bind="visible: usePreviewPane()">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
-								<i class="icon-trash"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_DELETE"></span>
-							</a>
-						</li>
-						<li class="divider" role="presentation" data-bind="visible: usePreviewPane()"></li>
-						<li class="e-item" role="presentation">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
-								<i class="icon-print"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/MENU_PRINT"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
-								<i class="icon-popup"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
-							</a>
-						</li>
-						<li class="divider" role="presentation"></li>
-						<li class="e-item" role="presentation">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
-								<i class="icon-file-code"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/MENU_VIEW_ORIGINAL"></span>
-							</a>
-						</li>
-						<li class="e-item" role="presentation">
-							<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
-								<i class="icon-download"></i>
-								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
-							</a>
-						</li>
-					</ul>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">
@@ -146,7 +54,129 @@
 				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">
 					<span class="text" data-bind="text: messageError()"></span>
 				</div>
+
 				<div data-bind="visible: message">
+
+					<div class="btn-group colored-toggle pull-right messageItemDropdown">
+						<a class="btn btn-dark-disabled-border buttonReply" data-tooltip-placement="bottom"
+							data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+							<i class="icon-reply"></i>
+						</a>
+						<!--
+						<a class="btn btn-dark-disabled-border buttonReplyAll" data-tooltip-placement="bottom"
+							data-bind="command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+							<i class="icon-reply-all"></i>
+						</a>
+						<a class="btn btn-dark-disabled-border buttonForward" data-tooltip-placement="bottom"
+							data-bind="command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+							<i class="icon-reply-all"></i>
+						</a>
+						-->
+						<a id="more-view-dropdown-id" class="btn btn-dark-disabled-border dropdown-toggle buttonMore"
+							href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom"
+							data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
+								<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
+							<!--
+							<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
+									<i class="icon-reply"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_REPLY"></span>
+								</a>
+							</li>
+							-->
+							<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
+									<i class="icon-reply-all"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_REPLY_ALL"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
+									<i class="icon-forward"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
+									<i class="icon-pencil"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
+								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
+									<i class="icon-forward"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
+								</a>
+							</li>
+							<li class="divider" role="presentation" data-bind="visible: !isDraftFolder()"></li>
+							<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
+									<i class="icon-archive"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_ARCHIVE"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
+									<i class="icon-angry-smiley"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_SPAM"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
+									<i class="icon-happy-smiley"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_NOT_SPAM"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation" data-bind="visible: usePreviewPane()">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
+									<i class="icon-trash"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_DELETE"></span>
+								</a>
+							</li>
+							<li class="divider" role="presentation" data-bind="visible: usePreviewPane()"></li>
+							<li class="e-item" role="presentation">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
+									<i class="icon-print"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/MENU_PRINT"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
+									<i class="icon-popup"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+								</a>
+							</li>
+							<li class="divider" role="presentation"></li>
+							<li class="e-item" role="presentation">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
+									<i class="icon-file-code"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/MENU_VIEW_ORIGINAL"></span>
+								</a>
+							</li>
+							<li class="e-item" role="presentation">
+								<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
+									<i class="icon-download"></i>
+									&nbsp;&nbsp;
+									<span class="i18n" data-i18n-text="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
+
 					<div class="messageItem" data-bind="css: viewLineAsCcc(), nano: true">
 						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
 							<div class="content-wrapper">
@@ -264,30 +294,40 @@
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
-											<li class="attachmentItem" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart }">
-												<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-													<i class="attachmentIcon" data-bind="css: iconClass()"></i>
-													&nbsp;&nbsp;
-													<span class="attachmentName" data-bind="text: fileName"></span>
+											<li class="attachmentItem clearfix" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart },
+												css: { 'hasThumbnail': hasThumbnail() }, attr: { 'style': linkThumbnailPreviewStyle() }">
+												<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview() }">
+													<div class="attachmentNonePreview">
+														<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+													</div>
+													<a class="attachmentPreview attachmentImagePreview magnificPopupImage"
+														data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName, 'data-index': $index}" target="_blank">
+														<i class="attachmentIcon icon-eye show-hover"></i>
+														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
+													</a>
+													<a class="attachmentPreview"
+														data-bind="visible: isText(), attr: {href: linkPreviewAsPlain(), title: fileName}" target="_blank">
+														<i class="attachmentIcon icon-eye show-hover"></i>
+														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
+													</a>
+													<a class="attachmentPreview"
+														data-bind="visible: isPdf(), attr: {href: linkPreview(), title: fileName}" target="_blank">
+														<i class="attachmentIcon icon-eye show-hover"></i>
+														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
+													</a>
+													<a class="attachmentPreview"
+														data-bind="visible: isFramed(), attr: {href: linkFramed(), title: fileName}" target="_blank">
+														<i class="attachmentIcon icon-eye show-hover"></i>
+														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
+													</a>
 												</div>
-												<div>
-													<a class="attachmentPreview attachmentImagePreview magnificPopupImage pull-left"
-													   data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName, 'data-index': $index}" target="_blank">
-														<i class="icon-eye"></i>
-													</a>
-													<a class="attachmentPreview pull-left"
-													   data-bind="visible: isText(), attr: {href: linkPreviewAsPlain(), title: fileName}" target="_blank">
-														<i class="icon-eye"></i>
-													</a>
-													<a class="attachmentPreview pull-left"
-													   data-bind="visible: isPdf(), attr: {href: linkPreview(), title: fileName}" target="_blank">
-														<i class="icon-eye"></i>
-													</a>
-													<a class="attachmentPreview pull-left"
-													   data-bind="visible: isFramed(), attr: {href: linkFramed(), title: fileName}" target="_blank">
-														<i class="icon-eye"></i>
-													</a>
-													<span class="attachmentSize pull-right" data-bind="text: friendlySize"></span>
+												<div class="attachmentNameParent">
+													<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+														<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
+													</div>
+													<div>
+														<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
+													</div>
 												</div>
 											</li>
 										</ul>

@@ -7,6 +7,11 @@ class Filter
 	/**
 	 * @var string
 	 */
+	private $sID;
+
+	/**
+	 * @var string
+	 */
 	private $sName;
 
 	/**
@@ -41,6 +46,7 @@ class Filter
 
 	public function Clear()
 	{
+		$this->sID = '';
 		$this->sName = '';
 
 		$this->aConditions = array();
@@ -52,6 +58,14 @@ class Filter
 
 		$this->bMarkAsRead = false;
 		$this->bSkipOthers = false;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ID()
+	{
+		return $this->sID;
 	}
 
 	/**
@@ -130,6 +144,16 @@ class Filter
 	}
 
 	/**
+	 * @param array $aFilter
+	 *
+	 * @return array
+	 */
+	public function FromJSON($aFilter)
+	{
+//		
+	}
+
+	/**
 	 * @param bool $bAjax = false
 	 *
 	 * @return array
@@ -138,6 +162,7 @@ class Filter
 	{
 		$aConditions = $this->Conditions();
 		return array(
+			'ID' => $this->ID(),
 			'Name' => $this->Name(),
 			'Conditions' => $aConditions,
 			'FilterRulesType' => $this->FilterRulesType(),

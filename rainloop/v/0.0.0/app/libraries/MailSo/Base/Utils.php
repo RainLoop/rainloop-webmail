@@ -1215,7 +1215,7 @@ class Utils
 	 */
 	public static function ClearFileName($sFileName)
 	{
-		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/', ' ',
+		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/u', ' ',
 			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName)));
 	}
 

@@ -27,6 +27,7 @@
 		this.friendlySize = '';
 		this.isInline = false;
 		this.isLinked = false;
+		this.isThumbnail = false;
 		this.cid = '';
 		this.cidWithOutTags = '';
 		this.contentLocation = '';
@@ -56,6 +57,7 @@
 	AttachmentModel.prototype.friendlySize = '';
 	AttachmentModel.prototype.isInline = false;
 	AttachmentModel.prototype.isLinked = false;
+	AttachmentModel.prototype.isThumbnail = false;
 	AttachmentModel.prototype.cid = '';
 	AttachmentModel.prototype.cidWithOutTags = '';
 	AttachmentModel.prototype.contentLocation = '';
@@ -78,6 +80,7 @@
 			this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
 			this.isInline = !!oJsonAttachment.IsInline;
 			this.isLinked = !!oJsonAttachment.IsLinked;
+			this.isThumbnail = !!oJsonAttachment.IsThumbnail;
 			this.cid = oJsonAttachment.CID;
 			this.contentLocation = oJsonAttachment.ContentLocation;
 			this.download = oJsonAttachment.Download;
@@ -109,6 +112,14 @@
 	/**
 	 * @return {boolean}
 	 */
+	AttachmentModel.prototype.hasThumbnail = function ()
+	{
+		return this.isThumbnail;
+	};
+
+	/**
+	 * @return {boolean}
+	 */
 	AttachmentModel.prototype.isText = function ()
 	{
 		return 'text/' === this.mimeType.substr(0, 5) &&
@@ -133,6 +144,14 @@
 	};
 
 	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.hasPreview = function ()
+	{
+		return this.isImage() || this.isPdf() || this.isText() || this.isFramed();
+	};
+
+	/**
 	 * @return {string}
 	 */
 	AttachmentModel.prototype.linkDownload = function ()
@@ -146,6 +165,15 @@
 	AttachmentModel.prototype.linkPreview = function ()
 	{
 		return Links.attachmentPreview(this.download);
+	};
+
+	/**
+	 * @return {string}
+	 */
+	AttachmentModel.prototype.linkThumbnailPreviewStyle = function ()
+	{
+		return !this.hasThumbnail() ? '' :
+			'background:url(' + Links.attachmentThumbnailPreview(this.download) + ')';
 	};
 
 	/**

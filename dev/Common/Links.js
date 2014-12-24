@@ -61,6 +61,15 @@
 	 * @param {string} sDownload
 	 * @return {string}
 	 */
+	Links.prototype.attachmentThumbnailPreview = function (sDownload)
+	{
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewThumbnail/' + this.sSubSubQuery + sDownload;
+	};
+
+	/**
+	 * @param {string} sDownload
+	 * @return {string}
+	 */
 	Links.prototype.attachmentPreviewAsPlain = function (sDownload)
 	{
 		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + this.sSubSubQuery + sDownload;

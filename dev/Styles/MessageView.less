@@ -70,6 +70,13 @@ html.rl-no-preview-pane {
 			-webkit-overflow-scrolling: touch;
 		}
 
+		.messageItemDropdown {
+			z-index: 100;
+			position: fixed;
+			top: 70px;
+			right: 25px;
+		}
+
 		.messageItem {
 
 			position: absolute;
@@ -94,8 +101,8 @@ html.rl-no-preview-pane {
 			.buttonUp, .buttonUnFull, .buttonFull {
 				display: inline-block;
 				position: fixed;
-				right: 30px;
-				top: 90px;
+				right: 25px;
+				bottom: 25px;
 				height: 30px;
 				width: 30px;
 				text-align: center;
@@ -119,11 +126,11 @@ html.rl-no-preview-pane {
 			}
 
 			.buttonUp {
-				right: 70px;
+				right: 65px;
 				z-index: 0;
 			}
 
-			.buttonUnFull {
+			.buttonUp, .buttonUnFull {
 				display: none;
 			}
 
@@ -230,8 +237,7 @@ html.rl-no-preview-pane {
 
 						display: inline-block;
 						margin: 5px;
-						padding: 5px;
-						max-width: 170px;
+						max-width: 200px;
 						min-width: 60px;
 						overflow: hidden;
 						cursor: pointer;
@@ -246,19 +252,83 @@ html.rl-no-preview-pane {
 
 						border-radius: 2px;
 
-						.attachmentIcon {
-							font-size: 23px;
-							width: 23px;
-							height: 23px;
-							color: #666;
+						.attachmentIconParent {
+							height: 56px;
+							width: 60px;
+
+							background: none;
 						}
 
-						.attachmentPreview {
-							color: #999;
-							margin: 0px 5px;
-						}
-						.attachmentPreview:hover {
+						.attachmentNameParent {
+							margin-left: 60px;
+							padding: 4px;
+							padding-left: 6px;
+							min-width: 90px;
+
+							color: #fff;
+							background: #eee;
+
 							color: #333;
+							background: #fafafa;
+							border-left: 1px solid #ddd;
+						}
+
+						&.hasThumbnail .attachmentNameParent {
+							background: rgba(0, 0, 0, .6);
+
+							color: #fff;
+							text-shadow: 0 1px 0 #000;
+							border-left: 0px;
+						}
+
+						.attachmentIcon {
+							margin: 6px 0 0 13px;
+							font-size: 36px;
+							width: 36px;
+							height: 36px;
+							color: #aaa;
+						}
+
+						.attachmentIconParent.hasPreview {
+							.attachmentNonePreview {
+								display: none;
+							}
+						}
+
+						a.attachmentPreview {
+							display: inline-block;
+							height: 100%;
+							width: 100%;
+						}
+
+						.attachmentIconParent.hasPreview:hover {
+
+							background: #555 !important;
+							background-image: none !important;
+							background: rgba(0, 0, 0, .8) !important;
+
+							color: #fff;
+
+							.attachmentIcon {
+								color: #fff;
+								text-shadow: 0 1px 0 #000;
+							}
+						}
+
+						.attachmentIconParent.hasPreview .show-hover {
+							display: none;
+						}
+
+						.attachmentIconParent.hasPreview:hover .show-hover {
+							display: inline-block;
+						}
+
+						.attachmentIconParent.hasPreview:hover .hide-hover {
+							display: none;
+						}
+
+						&.hasThumbnail .attachmentMainIcon {
+							display: none;
 						}
 					}
 				}
@@ -382,6 +452,7 @@ html.rl-no-preview-pane .messageView {
 	.toolbar {
 		padding-left: @rlMainBorderSize;
 	}
+
 	.b-content {
 		top: 50px;
 		bottom: @rlBottomMargin;
@@ -389,10 +460,6 @@ html.rl-no-preview-pane .messageView {
 		border: @rlMainBorderSize solid @rlMainDarkColor;
 		box-shadow: @rlMainShadow;
 		border-radius: @rlMainBorderRadius;
-
-		.buttonUp, .buttonUnFull, .buttonFull {
-			top: 70px;
-		}
 	}
 }
 
@@ -423,13 +490,20 @@ html.rl-message-fullscreen {
 		border: @rlLowBorderSize solid @rlMainDarkColor;
 		border-radius: @rlLowBorderRadius;
 
-		.buttonUp, .buttonUnFull {
+		.messageItemDropdown {
+			top: 20px;
+		}
+
+		.buttonUnFull {
 			display: inline-block;
-			top: 36px;
 		}
 
 		.buttonFull {
 			display: none;
 		}
 	}
+}
+
+.nano-scrolllimit-top .buttonUp {
+	display: inline-block !important;
 }

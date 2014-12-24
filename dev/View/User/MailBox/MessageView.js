@@ -81,7 +81,10 @@
 			}
 		}, this);
 
-		this.canBeRepliedOrForwarded = this.messageVisibility;
+		this.canBeRepliedOrForwarded = ko.computed(function () {
+			var bV = this.messageVisibility();
+			return !this.isDraftFolder() && bV;
+		}, this);
 
 		// commands
 		this.closeMessage = Utils.createCommand(this, function () {

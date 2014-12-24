@@ -80,6 +80,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 0 for unlimited.')
 			),
 
+			'interface' => array(
+				'show_attachment_thumbnail' => array(true, '')
+			),
+
 			'branding' => array(
 				'login_logo'		=> array(''),
 				'login_desc'		=> array(''),

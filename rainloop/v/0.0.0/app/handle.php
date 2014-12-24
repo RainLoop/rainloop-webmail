@@ -35,6 +35,14 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 			{
 				return include RAINLOOP_APP_LIBRARIES_PATH.'GuzzleHttp/'.\str_replace('\\', '/', \substr($sClassName, 11)).'.php';
 			}
+			else if (0 === \strpos($sClassName, 'Symfony') && false !== \strpos($sClassName, '\\'))
+			{
+				return include RAINLOOP_APP_LIBRARIES_PATH.'Symfony/'.\str_replace('\\', '/', \substr($sClassName, 8)).'.php';
+			}
+			else if (0 === \strpos($sClassName, 'PHPThumb') && false !== \strpos($sClassName, '\\'))
+			{
+				return include RAINLOOP_APP_LIBRARIES_PATH.'PHPThumb/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
+			}
 			else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
 			{
 				if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
@@ -67,7 +75,7 @@ if (\class_exists('RainLoop\Service'))
 			if (!\defined('APP_API_STARTED'))
 			{
 				\define('APP_API_STARTED', true);
-				
+
 				\RainLoop\Api::Handle();
 			}
 		}
