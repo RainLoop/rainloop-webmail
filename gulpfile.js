@@ -142,7 +142,7 @@ cfg.paths.js = {
 		src: [
 			'vendors/modernizr.js',
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-1.11.1.min.js',
+			'vendors/jquery/jquery-1.11.2.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
 //			'vendors/jquery-ui.touch-punch/jquery.ui.touch-punch.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
