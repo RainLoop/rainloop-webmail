@@ -34,6 +34,8 @@
 		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
+		this.composeInEdit = Data.composeInEdit;
+
 		this.messageList = Data.messageList;
 		this.folderList = Data.folderList;
 		this.folderListSystem = Data.folderListSystem;

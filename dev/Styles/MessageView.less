@@ -253,32 +253,50 @@ html.rl-no-preview-pane {
 						border-radius: 2px;
 
 						.attachmentIconParent {
+
+							position: relative;
+
 							height: 56px;
 							width: 60px;
 
 							background: none;
+
+							.iconPreview, .iconBG, .iconMain {
+								position: absolute;
+								top: 0;
+								left: 0;
+
+								display: inline-block;
+								width: 100%;
+								height: 100%;
+							}
+
+							.iconPreview {
+								display: none;
+
+								background: #555;
+								background-image: none;
+								background: rgba(0, 0, 0, .5) !important;
+
+								.attachmentIcon {
+									color: #fff;
+									text-shadow: 0 1px 0 #000;
+								}
+							}
 						}
 
 						.attachmentNameParent {
+
+							position: relative;
+
 							margin-left: 60px;
 							padding: 4px;
 							padding-left: 6px;
 							min-width: 90px;
 
-							color: #fff;
-							background: #eee;
-
 							color: #333;
 							background: #fafafa;
 							border-left: 1px solid #ddd;
-						}
-
-						&.hasThumbnail .attachmentNameParent {
-							background: rgba(0, 0, 0, .6);
-
-							color: #fff;
-							text-shadow: 0 1px 0 #000;
-							border-left: 0px;
 						}
 
 						.attachmentIcon {
@@ -289,46 +307,27 @@ html.rl-no-preview-pane {
 							color: #aaa;
 						}
 
-						.attachmentIconParent.hasPreview {
-							.attachmentNonePreview {
+						.attachmentIconParent.hasPreview:hover {
+							.iconPreview {
+								display: inline-block;
+							}
+							.iconMain {
 								display: none;
 							}
 						}
 
-						a.attachmentPreview {
-							display: inline-block;
-							height: 100%;
-							width: 100%;
+						.showPreview {
+							display: none;
 						}
 
-						.attachmentIconParent.hasPreview:hover {
-
-							background: #555 !important;
-							background-image: none !important;
-							background: rgba(0, 0, 0, .8) !important;
-
-							color: #fff;
-
-							.attachmentIcon {
-								color: #fff;
-								text-shadow: 0 1px 0 #000;
+						.attachmentIconParent.hasPreview {
+							.showPreview {
+								display: inline;
 							}
-						}
 
-						.attachmentIconParent.hasPreview .show-hover {
-							display: none;
-						}
-
-						.attachmentIconParent.hasPreview:hover .show-hover {
-							display: inline-block;
-						}
-
-						.attachmentIconParent.hasPreview:hover .hide-hover {
-							display: none;
-						}
-
-						&.hasThumbnail .attachmentMainIcon {
-							display: none;
+							.hidePreview {
+								display: none;
+							}
 						}
 					}
 				}

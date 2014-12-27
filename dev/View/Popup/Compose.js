@@ -43,7 +43,6 @@
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
 		this.bFromDraft = false;
-		this.bSkipNext = false;
 		this.sReferences = '';
 
 		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
@@ -57,6 +56,9 @@
 				}
 			}
 		;
+
+		this.bSkipNextHide = false;
+		this.composeInEdit = Data.composeInEdit;
 
 		this.capaOpenPGP = Data.capaOpenPGP;
 
@@ -313,7 +315,7 @@
 				this.savedError(false);
 				this.saving(true);
 
-				this.bSkipNext = true;
+				this.autosaveStart();
 
 				Cache.setFolderHash(Data.draftFolder(), '');
 
@@ -338,11 +340,25 @@
 
 		}, this.canBeSendedOrSaved);
 
-		Events.sub('interval.1m', function () {
-			if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
-				!this.bSkipNext && !this.saving() && !this.sending() && !this.savedError())
+		this.skipCommand = Utils.createCommand(this, function () {
+
+			this.bSkipNextHide = true;
+
+			if (this.modalVisibility() && !this.saving() && !this.sending() &&
+				!Data.draftFolderNotEnabled())
 			{
-				this.bSkipNext = false;
+				this.saveCommand();
+			}
+
+			this.tryToClosePopup();
+
+		}, this.canBeSendedOrSaved);
+
+		Events.sub('interval.2m', function () {
+
+			if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
+				!this.saving() && !this.sending() && !this.savedError())
+			{
 				this.saveCommand();
 			}
 		}, this);
@@ -400,12 +416,37 @@
 		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
 
 		this.emailsSource = _.bind(this.emailsSource, this);
+		this.autosaveFunction = _.bind(this.autosaveFunction, this);
+
+		this.iTimer = 0;
 
 		kn.constructorEnd(this);
 	}
 
 	kn.extendAsViewModel(['View/Popup/Compose', 'PopupsComposeViewModel'], ComposePopupView);
 	_.extend(ComposePopupView.prototype, AbstractView.prototype);
+
+	ComposePopupView.prototype.autosaveFunction = function ()
+	{
+		if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
+			!this.saving() && !this.sending() && !this.savedError())
+		{
+			this.saveCommand();
+		}
+
+		this.autosaveStart();
+	};
+
+	ComposePopupView.prototype.autosaveStart = function ()
+	{
+		window.clearTimeout(this.iTimer);
+		this.iTimer = window.setTimeout(this.autosaveFunction, 1000 * 60 * 1);
+	};
+
+	ComposePopupView.prototype.autosaveStop = function ()
+	{
+		window.clearTimeout(this.iTimer);
+	};
 
 	ComposePopupView.prototype.emailsSource = function (oData, fResponse)
 	{
@@ -594,6 +635,8 @@
 		{
 			if (oData.Result.NewFolder && oData.Result.NewUid)
 			{
+				bResult = true;
+
 				if (this.bFromDraft)
 				{
 					oMessage = Data.message();
@@ -606,27 +649,22 @@
 				this.draftFolder(oData.Result.NewFolder);
 				this.draftUid(oData.Result.NewUid);
 
-				if (this.modalVisibility())
+				this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
+
+				this.savedOrSendingText(
+					0 < this.savedTime() ? Utils.i18n('COMPOSE/SAVED_TIME', {
+						'TIME': moment.unix(this.savedTime() - 1).format('LT')
+					}) : ''
+				);
+
+				if (this.bFromDraft)
 				{
-					this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
-
-					this.savedOrSendingText(
-						0 < this.savedTime() ? Utils.i18n('COMPOSE/SAVED_TIME', {
-							'TIME': moment.unix(this.savedTime() - 1).format('LT')
-						}) : ''
-					);
-
-					bResult = true;
-
-					if (this.bFromDraft)
-					{
-						Cache.setFolderHash(this.draftFolder(), '');
-					}
+					Cache.setFolderHash(this.draftFolder(), '');
 				}
 			}
 		}
 
-		if (!this.modalVisibility() && !bResult)
+		if (!bResult)
 		{
 			this.savedError(true);
 			this.savedOrSendingText(Utils.getNotification(Enums.Notification.CantSaveMessage));
@@ -637,7 +675,16 @@
 
 	ComposePopupView.prototype.onHide = function ()
 	{
-		this.reset();
+		this.autosaveStop();
+
+		if (!this.bSkipNextHide)
+		{
+			this.composeInEdit(false);
+			this.reset();
+		}
+
+		this.bSkipNextHide = false;
+
 		kn.routeOn();
 	};
 
@@ -735,6 +782,41 @@
 	ComposePopupView.prototype.onShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
 	{
 		kn.routeOff();
+
+		this.autosaveStart();
+
+		if (this.composeInEdit())
+		{
+			sType = sType || Enums.ComposeType.Empty;
+
+			var
+				self = this,
+				PopupsAskViewModel = require('View/Popup/Ask')
+			;
+
+			if (Enums.ComposeType.Empty !== sType)
+			{
+				kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function () {
+					self.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
+				}, null, null, null, false]);
+			}
+		}
+		else
+		{
+			this.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
+		}
+	};
+
+	/**
+	 * @param {string=} sType = Enums.ComposeType.Empty
+	 * @param {?MessageModel|Array=} oMessageOrArray = null
+	 * @param {Array=} aToEmails = null
+	 * @param {string=} sCustomSubject = null
+	 * @param {string=} sCustomPlainText = null
+	 */
+	ComposePopupView.prototype.initOnShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
+	{
+		this.composeInEdit(true);
 
 		var
 			self = this,
@@ -1033,14 +1115,21 @@
 			PopupsAskViewModel = require('View/Popup/Ask')
 		;
 
-		if (!kn.isPopupVisible(PopupsAskViewModel))
+		if (!kn.isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
 		{
-			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
-				if (self.modalVisibility())
-				{
-					Utils.delegateRun(self, 'closeCommand');
-				}
-			}]);
+			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid()))
+			{
+				Utils.delegateRun(self, 'closeCommand');
+			}
+			else
+			{
+				kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+					if (self.modalVisibility())
+					{
+						Utils.delegateRun(self, 'closeCommand');
+					}
+				}]);
+			}
 		}
 	};
 
@@ -1716,14 +1805,14 @@
 	ComposePopupView.prototype.isEmptyForm = function (bIncludeAttachmentInProgress)
 	{
 		bIncludeAttachmentInProgress = Utils.isUnd(bIncludeAttachmentInProgress) ? true : !!bIncludeAttachmentInProgress;
-		var bAttach = bIncludeAttachmentInProgress ?
+		var bWithoutAttach = bIncludeAttachmentInProgress ?
 			0 === this.attachments().length : 0 === this.attachmentsInReady().length;
 
 		return 0 === this.to().length &&
 			0 === this.cc().length &&
 			0 === this.bcc().length &&
 			0 === this.subject().length &&
-			bAttach &&
+			bWithoutAttach &&
 			(!this.oEditor || '' === this.oEditor.getData())
 		;
 	};

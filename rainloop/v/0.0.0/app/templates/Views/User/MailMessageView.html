@@ -294,32 +294,24 @@
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
-											<li class="attachmentItem clearfix" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart },
-												css: { 'hasThumbnail': hasThumbnail() }, attr: { 'style': linkThumbnailPreviewStyle() }">
+											<li class="attachmentItem clearfix" draggable="true" data-bind="visible: !isLinked, title: fileName, event: { 'dragstart': eventDragStart }">
 												<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview() }">
-													<div class="attachmentNonePreview">
-														<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+													<div class="hidePreview">
+														<div class="iconMain">
+															<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+														</div>
 													</div>
-													<a class="attachmentPreview attachmentImagePreview magnificPopupImage"
-														data-bind="visible: isImage(), attr: {href: linkPreview(), title: fileName, 'data-index': $index}" target="_blank">
-														<i class="attachmentIcon icon-eye show-hover"></i>
-														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
-													</a>
-													<a class="attachmentPreview"
-														data-bind="visible: isText(), attr: {href: linkPreviewAsPlain(), title: fileName}" target="_blank">
-														<i class="attachmentIcon icon-eye show-hover"></i>
-														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
-													</a>
-													<a class="attachmentPreview"
-														data-bind="visible: isPdf(), attr: {href: linkPreview(), title: fileName}" target="_blank">
-														<i class="attachmentIcon icon-eye show-hover"></i>
-														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
-													</a>
-													<a class="attachmentPreview"
-														data-bind="visible: isFramed(), attr: {href: linkFramed(), title: fileName}" target="_blank">
-														<i class="attachmentIcon icon-eye show-hover"></i>
-														<i class="attachmentIcon attachmentMainIcon hide-hover" data-bind="css: iconClass()"></i>
-													</a>
+													<div class="showPreview">
+														<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: {'href': linkPreviewMain(), title: fileName, 'data-index': $index}">
+															<div class="iconMain">
+																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+															</div>
+															<div class="iconBG" data-bind="attr: { 'style': linkThumbnailPreviewStyle() }"></div>
+															<div class="iconPreview">
+																<i class="attachmentIcon icon-eye show-hover"></i>
+															</div>
+														</a>
+													</div>
 												</div>
 												<div class="attachmentNameParent">
 													<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">

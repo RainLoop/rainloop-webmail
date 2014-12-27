@@ -195,6 +195,37 @@
 	/**
 	 * @return {string}
 	 */
+	AttachmentModel.prototype.linkPreviewMain = function ()
+	{
+		var sResult = '';
+		switch (true)
+		{
+			case this.isImage():
+			case this.isPdf():
+				sResult = this.linkPreview();
+				break;
+			case this.isText():
+				sResult = this.linkPreviewAsPlain();
+				break;
+			case this.isFramed():
+				sResult = this.linkFramed();
+				break;
+		}
+		
+		return sResult;
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.hasPreview = function ()
+	{
+		return this.isImage() || this.isPdf() || this.isText() || this.isFramed();
+	};
+
+	/**
+	 * @return {string}
+	 */
 	AttachmentModel.prototype.generateTransferDownloadUrl = function ()
 	{
 		var	sLink = this.linkDownload();

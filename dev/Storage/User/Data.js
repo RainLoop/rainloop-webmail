@@ -437,6 +437,7 @@
 		}, this);
 
 		// other
+		this.composeInEdit = ko.observable(false);
 		this.capaOpenPGP = ko.observable(false);
 		this.openpgpkeys = ko.observableArray([]);
 		this.openpgp = null;

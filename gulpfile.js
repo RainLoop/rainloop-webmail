@@ -191,7 +191,8 @@ gulp.task('less:main', function() {
 		}))
 		.pipe(rename(cfg.paths.less.main.name))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticCSS));
+		.pipe(gulp.dest(cfg.paths.staticCSS))
+		.on('error', gutil.log);
 });
 
 gulp.task('css:main-begin', ['less:main'], function() {

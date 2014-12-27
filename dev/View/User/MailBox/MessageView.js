@@ -367,7 +367,7 @@
 		if (this.pswpDom)
 		{
 			oDom
-				.on('click', 'a.attachmentImagePreview[data-index]:visible', function (oEvent) {
+				.on('click', '.attachmentImagePreview[data-index]', function (oEvent) {
 
 					var
 						oPs = null,
@@ -375,7 +375,7 @@
 						aItems = []
 					;
 
-					oDom.find('a.attachmentImagePreview:visible').each(function (index, oSubElement) {
+					oDom.find('.attachmentImagePreview[data-index]').each(function (index, oSubElement) {
 
 						var $oItem = $(oSubElement);
 

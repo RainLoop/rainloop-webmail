@@ -33,6 +33,7 @@
 		this.fYesAction = null;
 		this.fNoAction = null;
 
+		this.bFocusYesOnShow = true;
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
 
@@ -81,8 +82,9 @@
 	 * @param {Function=} fNoFunc
 	 * @param {string=} sYesButton
 	 * @param {string=} sNoButton
+	 * @param {boolean=} bFocusYesOnShow
 	 */
-	AskPopupView.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
+	AskPopupView.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton, bFocusYesOnShow)
 	{
 		this.clearPopup();
 
@@ -99,11 +101,16 @@
 		{
 			this.yesButton(sNoButton);
 		}
+
+		this.bFocusYesOnShow = Utils.isUnd(bFocusYesOnShow) ? true : !!bFocusYesOnShow;
 	};
 
 	AskPopupView.prototype.onFocus = function ()
 	{
-		this.yesFocus(true);
+		if (this.bFocusYesOnShow)
+		{
+			this.yesFocus(true);
+		}
 	};
 
 	AskPopupView.prototype.onBuild = function ()

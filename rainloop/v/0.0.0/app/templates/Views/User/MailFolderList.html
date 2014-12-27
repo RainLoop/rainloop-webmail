@@ -1,6 +1,7 @@
 <div class="b-folders g-ui-user-select-none thm-folders" data-bind="css: {'focused': folderList.focused}">
     <div class="b-toolbar btn-toolbar">
-        <a class="btn buttonCompose pull-left" data-tooltip-placement="bottom" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_COMPOSE'">
+        <a class="btn buttonCompose pull-left" data-tooltip-placement="bottom"
+			data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_COMPOSE', css: {'btn-warning': composeInEdit}">
             <i class="icon-paper-plane"></i>
         </a>
         <a class="btn buttonContacts pull-left" data-tooltip-placement="bottom" data-bind="visible: allowContacts, click: contactsClick, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">

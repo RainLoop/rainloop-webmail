@@ -7081,7 +7081,7 @@ class Actions
 							$oThumb =@ new \PHPThumb\GD($sFileName);
 							if ($oThumb)
 							{
-								$oThumb->adaptiveResize(220, 80)->show();
+								$oThumb->adaptiveResize(60, 60)->show();
 								$bDone = true;
 							}
 						}
