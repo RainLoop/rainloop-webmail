@@ -3134,7 +3134,8 @@ class Actions
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), '127.0.0.1',
+					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(),
+						\MailSo\Smtp\SmtpClient::EhloHelper(),
 						$oDomain->OutSecure(), !!$this->Config()->Get('ssl', 'verify_certificate'));
 
 					$iSmtpTime = \microtime(true) - $iTime;
