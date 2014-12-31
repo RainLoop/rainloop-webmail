@@ -165,6 +165,7 @@
 		this.viewDownloadLink = ko.observable('');
 		this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 		this.viewUserPicVisible = ko.observable(false);
+		this.viewIsImportant = ko.observable(false);
 
 		this.viewPgpPassword = ko.observable('');
 		this.viewPgpSignedVerifyStatus = ko.computed(function () {
@@ -202,6 +203,7 @@
 				this.viewLineAsCcc(oMessage.lineAsCcc());
 				this.viewViewLink(oMessage.viewLink());
 				this.viewDownloadLink(oMessage.downloadLink());
+				this.viewIsImportant(oMessage.isImportant());
 
 				sLastEmail = oMessage.fromAsSingleEmail();
 				Cache.getUserPic(sLastEmail, function (sPic, $sEmail) {

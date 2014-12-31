@@ -46,6 +46,8 @@
 			}
 		;
 
+		this.bBackToCompose = false;
+
 		this.allowContactsSync = Data.allowContactsSync;
 		this.enableContactsSync = Data.enableContactsSync;
 		this.allowExport = !Globals.bMobileDevice;
@@ -261,8 +263,13 @@
 
 			if (Utils.isNonEmptyArray(aE))
 			{
+				self.bBackToCompose = false;
+
 				kn.hideScreenPopup(require('View/Popup/Contacts'));
-				kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Empty, null, aE]);
+
+				_.delay(function () {
+					kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Empty, null, aE]);
+				}, 200);
 			}
 
 		}, function () {
@@ -716,8 +723,10 @@
 		this.initUploader();
 	};
 
-	ContactsPopupView.prototype.onShow = function ()
+	ContactsPopupView.prototype.onShow = function (bBackToCompose)
 	{
+		this.bBackToCompose = Utils.isUnd(bBackToCompose) ? false : !!bBackToCompose;
+
 		kn.routeOff();
 		this.reloadContactList(true);
 	};
@@ -732,6 +741,13 @@
 
 		Utils.delegateRunOnDestroy(this.contacts());
 		this.contacts([]);
+
+		if (this.bBackToCompose)
+		{
+			this.bBackToCompose = false;
+			
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
 	};
 
 	module.exports = ContactsPopupView;

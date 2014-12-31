@@ -493,9 +493,10 @@
 	 * @param {(Array|null)} aDraftInfo
 	 * @param {string} sInReplyTo
 	 * @param {string} sReferences
+	 * @param {boolean} bMarkAsImportant
 	 */
 	RemoteUserStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
-		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences)
+		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bMarkAsImportant)
 	{
 		this.defaultRequest(fCallback, 'SaveMessage', {
 			'MessageFolder': sMessageFolder,
@@ -511,6 +512,7 @@
 			'DraftInfo': aDraftInfo,
 			'InReplyTo': sInReplyTo,
 			'References': sReferences,
+			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
 			'Attachments': aAttachments
 		}, Consts.Defaults.SaveMessageAjaxTimeout);
 	};
@@ -552,9 +554,11 @@
 	 * @param {string} sInReplyTo
 	 * @param {string} sReferences
 	 * @param {boolean} bRequestReadReceipt
+	 * @param {boolean} bMarkAsImportant
 	 */
 	RemoteUserStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
-		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bRequestReadReceipt)
+		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences,
+		bRequestReadReceipt, bMarkAsImportant)
 	{
 		this.defaultRequest(fCallback, 'SendMessage', {
 			'MessageFolder': sMessageFolder,
@@ -571,6 +575,7 @@
 			'InReplyTo': sInReplyTo,
 			'References': sReferences,
 			'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
+			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
 			'Attachments': aAttachments
 		}, Consts.Defaults.SendMessageAjaxTimeout);
 	};

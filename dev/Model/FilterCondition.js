@@ -13,7 +13,6 @@
 	;
 
 	/**
-	 * @param {*} oKoList
 	 * @constructor
 	 */
 	function FilterConditionModel()

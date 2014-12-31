@@ -47,6 +47,8 @@
 
 		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
 
+		this.allowContacts = !!Settings.settingsGet('ContactsIsAllowed');
+
 		var
 			self = this,
 			fCcAndBccCheckHelper = function (aValue) {
@@ -76,6 +78,7 @@
 		this.isHtml = ko.observable(false);
 
 		this.requestReadReceipt = ko.observable(false);
+		this.markAsImportant = ko.observable(false);
 
 		this.sendError = ko.observable(false);
 		this.sendSuccessButSaveError = ko.observable(false);
@@ -298,7 +301,8 @@
 						this.aDraftInfo,
 						this.sInReplyTo,
 						this.sReferences,
-						this.requestReadReceipt()
+						this.requestReadReceipt(),
+						this.markAsImportant()
 					);
 				}
 			}
@@ -334,7 +338,8 @@
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
-					this.sReferences
+					this.sReferences,
+					this.markAsImportant()
 				);
 			}
 
@@ -353,6 +358,21 @@
 			this.tryToClosePopup();
 
 		}, this.canBeSendedOrSaved);
+
+		this.contactsCommand = Utils.createCommand(this, function () {
+
+			if (this.allowContacts)
+			{
+				this.skipCommand();
+
+				_.delay(function () {
+					kn.showScreenPopup(require('View/Popup/Contacts'), [true]);
+				}, 200);
+			}
+
+		}, function () {
+			return this.allowContacts;
+		});
 
 		Events.sub('interval.2m', function () {
 
@@ -800,11 +820,32 @@
 					self.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
 				}, null, null, null, false]);
 			}
+			else if (aToEmails && 0 < aToEmails.length)
+			{
+				this.addEmailsToTo(aToEmails);
+			}
 		}
 		else
 		{
 			this.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
 		}
+	};
+
+	/**
+	 * @param {Array} aEmails
+	 */
+	ComposePopupView.prototype.addEmailsToTo = function (aEmails)
+	{
+		var
+			sTo = Utils.trim(this.to()),
+			aTo = []
+		;
+
+		aTo = _.uniq(_.compact(_.map(aEmails, function (oItem) {
+			return oItem ? oItem.toLine(false) : null;
+		})));
+
+		this.to(sTo + ('' === sTo ? '' : ', ') + Utils.trim(aTo.join(', ')));
 	};
 
 	/**
@@ -1826,6 +1867,7 @@
 		this.subject('');
 
 		this.requestReadReceipt(false);
+		this.markAsImportant(false);
 
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';

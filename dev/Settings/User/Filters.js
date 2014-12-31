@@ -44,7 +44,7 @@
 			{'toggleSubscribeProperty': [this, 'deleteAccess']});
 
 		this.saveChanges = Utils.createCommand(this, function () {
-			
+
 			if (!this.filters.saving())
 			{
 				this.filters.saving(true);
@@ -70,8 +70,8 @@
 		});
 
 		this.filters.subscribe(function () {
-			this.haveChanges(true);	
-		}, this);		
+			this.haveChanges(true);
+		}, this);
 	}
 
 	FiltersUserSettings.prototype.scrollableOptions = function ()
@@ -105,6 +105,7 @@
 			oNew = new FilterModel()
 		;
 
+		oNew.generateID();
 		require('Knoin/Knoin').showScreenPopup(
 			require('View/Popup/Filter'), [oNew, function  () {
 				self.filters.push(oNew);

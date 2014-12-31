@@ -2751,12 +2751,12 @@ class Actions
 	 */
 	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
 	{
-		$sDomain = APP_SITE;
+		$sDomain = \trim(APP_SITE);
 
 		$oCacher = $this->Cacher();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-		if ($oHttp->CheckLocalhost($sDomain) || !$oCacher)
+		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher)
 		{
 			return 'NO';
 		}
@@ -4761,6 +4761,7 @@ class Actions
 		$sSubject = $this->GetActionParam('Subject', '');
 		$bTextIsHtml = '1' === $this->GetActionParam('TextIsHtml', '0');
 		$bReadReceiptRequest = '1' === $this->GetActionParam('ReadReceiptRequest', '0');
+		$bMarkAsImportant = '1' === $this->GetActionParam('MarkAsImportant', '0');
 		$sText = $this->GetActionParam('Text', '');
 		$aAttachments = $this->GetActionParam('Attachments', null);
 
@@ -4799,6 +4800,11 @@ class Actions
 		if ($bReadReceiptRequest)
 		{
 			$oMessage->SetReadReceipt($oAccount->Email());
+		}
+
+		if ($bMarkAsImportant)
+		{
+			$oMessage->SetPriority(\MailSo\Mime\Enumerations\MessagePriority::HIGH);
 		}
 
 		$oMessage->SetSubject($sSubject);

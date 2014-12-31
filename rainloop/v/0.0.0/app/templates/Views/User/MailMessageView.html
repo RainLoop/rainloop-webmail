@@ -195,6 +195,7 @@
 											<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
 											<div style="overflow: hidden;">
 												<div class="subjectParent" data-bind="event: { 'dblclick': toggleFullScreen }">
+													<b style="color:red;margin-right:5px" data-bind="visible: viewIsImportant">!</b>
 													<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
 													<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
 												</div>

@@ -304,7 +304,7 @@
 		'EqualTo': 'EqualTo',
 		'NotEqualTo': 'NotEqualTo'
 	};
-
+	
 	/**
 	 * @enum {string}
 	 */

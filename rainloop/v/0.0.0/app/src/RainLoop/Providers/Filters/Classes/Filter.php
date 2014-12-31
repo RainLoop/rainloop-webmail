@@ -150,7 +150,22 @@ class Filter
 	 */
 	public function FromJSON($aFilter)
 	{
-//		
+		if (\is_array($aFilter))
+		{
+			$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
+			$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';
+
+			$this->sFilterRulesType = isset($aFilter['FilterRulesType']) ? $aFilter['FilterRulesType'] :
+				\RainLoop\Providers\Filters\Enumerations\FilterRulesType::ALL;
+
+			$this->sActionType = isset($aFilter['ActionType']) ? $aFilter['ActionType'] :
+				\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
+
+			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
+
+			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? $aFilter['MarkAsRead'] : false;
+			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? $aFilter['SkipOthers'] : false;
+		}
 	}
 
 	/**
@@ -160,7 +175,15 @@ class Filter
 	 */
 	public function ToSimpleJSON($bAjax = false)
 	{
-		$aConditions = $this->Conditions();
+		$aConditions = array();
+		foreach ($this->Conditions() as $oItem)
+		{
+			if ($oItem)
+			{
+				$aConditions[] = $oItem->ToSimpleJSON($bAjax);
+			}
+		}
+
 		return array(
 			'ID' => $this->ID(),
 			'Name' => $this->Name(),

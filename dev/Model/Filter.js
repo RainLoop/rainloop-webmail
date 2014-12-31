@@ -23,6 +23,8 @@
 
 		this.enabled = ko.observable(true);
 
+		this.id = '';
+
 		this.name = ko.observable('');
 		this.name.error = ko.observable(false);
 		this.name.focused = ko.observable(false);
@@ -33,6 +35,7 @@
 		// Actions
 		this.actionValue = ko.observable('');
 		this.actionMarkAsRead = ko.observable(false);
+		this.actionSkipOthers = ko.observable(false);
 
 		this.actionType = ko.observable(Enums.FiltersAction.Move);
 
@@ -74,18 +77,27 @@
 
 	_.extend(FilterModel.prototype, AbstractModel.prototype);
 
+	FilterModel.prototype.generateID = function ()
+	{
+		this.id = Utils.fakeMd5();
+	};
+
 	FilterModel.prototype.toJson = function ()
 	{
 		return {
+			'ID': this.id,
 			'Enabled': this.enabled(),
 			'Name': this.name(),
 			'ConditionsType': this.conditionsType(),
 			'Conditions': _.map(this.conditions(), function (oItem) {
 				return oItem.toJson();
 			}),
-			'ActionMarkAsRead': this.actionMarkAsRead(),
+			
 			'ActionValue': this.actionValue(),
-			'ActionType': this.actionType()
+			'ActionType': this.actionType(),
+
+			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0',
+			'SkipOthers': this.actionSkipOthers() ? '1' : '0'
 		};
 	};
 
@@ -105,6 +117,7 @@
 		var bResult = false;
 		if (oItem && 'Object/Filter' === oItem['@Object'])
 		{
+			this.ID = Utils.pString(oItem['ID']);
 			this.name(Utils.pString(oItem['Name']));
 
 			bResult = true;
@@ -117,6 +130,8 @@
 	{
 		var oClone = new FilterModel();
 
+		oClone.ID = this.ID;
+
 		oClone.enabled(this.enabled());
 
 		oClone.name(this.name());
@@ -125,6 +140,8 @@
 		oClone.conditionsType(this.conditionsType());
 
 		oClone.actionMarkAsRead(this.actionMarkAsRead());
+		oClone.actionSkipOthers(this.actionSkipOthers());
+
 		oClone.actionValue(this.actionValue());
 
 		oClone.actionType(this.actionType());
