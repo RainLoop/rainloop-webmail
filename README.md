@@ -23,4 +23,4 @@ It's not recommended to use in production environment.
 **Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)**
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 
-Copyright (c) 2014 Rainloop Team
+Copyright (c) 2015 Rainloop Team
