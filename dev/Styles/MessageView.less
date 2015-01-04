@@ -30,12 +30,11 @@ html.rl-no-preview-pane {
 		top: 50px + @rlLowMargin;
 		bottom: @rlLowMargin + @rlBottomMargin;
 		right: @rlLowMargin;
-		left: -1px;
-		overflow: hidden;
+		left: -2px;
+		/*overflow: hidden;*/
 		border: @rlLowBorderSize solid @rlMainDarkColor;
 
-		.border-top-right-radius(@rlLowBorderRadius);
-		.border-bottom-right-radius(@rlLowBorderRadius);
+		.border-radius(@rlLowBorderRadius);
 
 		background-color: #fff;
 
@@ -58,8 +57,8 @@ html.rl-no-preview-pane {
 			text-align: center;
 			font-size: 24px;
 			line-height: 30px;
-			padding-top: 120px;
 			color: #999;
+			padding: 120px 10px 0 10px;
 		}
 
 		.b-message-view-desc.error {
@@ -70,7 +69,10 @@ html.rl-no-preview-pane {
 			-webkit-overflow-scrolling: touch;
 		}
 
-		.messageItemDropdown {
+		.message-fixed-button-toolbar {
+
+			float: right;
+
 			z-index: 100;
 			position: fixed;
 			top: 70px;
@@ -155,7 +157,7 @@ html.rl-no-preview-pane {
 					margin: 0 5px 0 0;
 					background: #fff;
 					border: 1px solid #ccc;
-					border-radius: 10px;
+					border-radius: 6px;
 					box-sizing: border-box;
 				}
 
@@ -240,10 +242,8 @@ html.rl-no-preview-pane {
 						max-width: 200px;
 						min-width: 60px;
 						overflow: hidden;
-						cursor: pointer;
 						list-style: none;
 						line-height: 24px;
-						/*border: 2px solid grey;*/
 						border: 0;
 						background-color: #fff;
 						box-shadow: 0 1px 5px #ccc;
@@ -293,6 +293,8 @@ html.rl-no-preview-pane {
 							padding: 4px;
 							padding-left: 6px;
 							min-width: 90px;
+
+							cursor: pointer;
 
 							color: #333;
 							background: #fafafa;
@@ -441,7 +443,7 @@ html.rl-no-preview-pane {
 
 	&.message-focused .b-content {
 		z-index: 102;
-		box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+		box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
 		border-radius: @rlLowBorderRadius;
 		border-color: darken(@rlMainDarkColor, 5%);
 	}
@@ -479,26 +481,26 @@ html.rl-message-fullscreen {
 	}
 
 	.messageView .b-content {
-		position: fixed;
-		margin: 5px;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 10000;
-		border: @rlLowBorderSize solid @rlMainDarkColor;
-		border-radius: @rlLowBorderRadius;
+		position: fixed !important;
+		margin: 5px !important;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		z-index: 10000 !important;
+		border: @rlLowBorderSize solid @rlMainDarkColor  !important;
+		border-radius: @rlLowBorderRadius  !important;
 
-		.messageItemDropdown {
-			top: 20px;
+		.message-fixed-button-toolbar {
+			top: 20px !important;
 		}
 
 		.buttonUnFull {
-			display: inline-block;
+			display: inline-block !important;
 		}
 
 		.buttonFull {
-			display: none;
+			display: none  !important;
 		}
 	}
 }

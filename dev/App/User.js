@@ -1315,26 +1315,6 @@
 			bTwitter = Settings.settingsGet('AllowTwitterSocial')
 		;
 
-//		Utils.initOnStartOrLangChange(function () {
-//
-//			$.extend(true, $.magnificPopup.defaults, {
-//				'tClose': Utils.i18n('PREVIEW_POPUP/CLOSE'),
-//				'tLoading': Utils.i18n('PREVIEW_POPUP/LOADING'),
-//				'gallery': {
-//					'tPrev': Utils.i18n('PREVIEW_POPUP/GALLERY_PREV'),
-//					'tNext': Utils.i18n('PREVIEW_POPUP/GALLERY_NEXT'),
-//					'tCounter': Utils.i18n('PREVIEW_POPUP/GALLERY_COUNTER')
-//				},
-//				'image': {
-//					'tError': Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR')
-//				},
-//				'ajax': {
-//					'tError': Utils.i18n('PREVIEW_POPUP/AJAX_ERROR')
-//				}
-//			});
-//
-//		}, this);
-
 		if (SimplePace)
 		{
 			SimplePace.set(70);
@@ -1359,18 +1339,29 @@
 				{
 					if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 					{
-						$LAB.script(window.openpgp ? '' : Links.openPgpJs()).wait(function () {
-							if (window.openpgp)
-							{
-								Data.openpgp = window.openpgp;
-								Data.openpgpKeyring = new window.openpgp.Keyring();
-								Data.capaOpenPGP(true);
+						var fOpenpgpCallback = function (openpgp) {
+							Data.openpgp = openpgp;
+							Data.openpgpKeyring = new openpgp.Keyring();
+							Data.capaOpenPGP(true);
 
-								Events.pub('openpgp.init');
+							Events.pub('openpgp.init');
 
-								self.reloadOpenPgpKeys();
-							}
-						});
+							self.reloadOpenPgpKeys();
+						};
+
+						if (window.openpgp)
+						{
+							fOpenpgpCallback(window.openpgp);
+						}
+						else
+						{
+							$LAB.script(Links.openPgpJs()).wait(function () {
+								if (window.openpgp)
+								{
+									fOpenpgpCallback(window.openpgp);
+								}
+							});
+						}
 					}
 					else
 					{

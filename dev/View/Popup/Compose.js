@@ -51,6 +51,9 @@
 
 		var
 			self = this,
+			fResizeSub = function () {
+				Utils.windowResize();
+			},
 			fCcAndBccCheckHelper = function (aValue) {
 				if (false === self.showCcAndBcc() && 0 < aValue.length)
 				{
@@ -89,6 +92,7 @@
 
 		this.emptyToError = ko.observable(false);
 		this.attachmentsInProcessError = ko.observable(false);
+		this.attachmentsInErrorError = ko.observable(false);
 		this.showCcAndBcc = ko.observable(false);
 
 		this.cc.subscribe(fCcAndBccCheckHelper, this);
@@ -101,19 +105,43 @@
 		this.attachments = ko.observableArray([]);
 
 		this.attachmentsInProcess = this.attachments.filter(function (oItem) {
-			return oItem && '' === oItem.tempName();
+			return oItem && !oItem.complete();
 		});
 
 		this.attachmentsInReady = this.attachments.filter(function (oItem) {
-			return oItem && '' !== oItem.tempName();
+			return oItem && oItem.complete();
 		});
 
-		this.attachments.subscribe(function () {
-			this.triggerForResize();
+		this.attachmentsInError = this.attachments.filter(function (oItem) {
+			return oItem && '' !== oItem.error();
+		});
+
+		this.attachmentsCount = ko.computed(function () {
+			return this.attachments().length;
+		}, this);
+
+		this.attachmentsInErrorCount = ko.computed(function () {
+			return this.attachmentsInError().length;
+		}, this);
+
+		this.attachmentsInProcessCount = ko.computed(function () {
+			return this.attachmentsInProcess().length;
 		}, this);
 
 		this.isDraftFolderMessage = ko.computed(function () {
 			return '' !== this.draftFolder() && '' !== this.draftUid();
+		}, this);
+
+		this.attachmentsPlace = ko.observable(false);
+
+		this.attachments.subscribe(fResizeSub);
+		this.attachmentsPlace.subscribe(fResizeSub);
+
+		this.attachmentsInErrorCount.subscribe(function (iN) {
+			if (0 === iN)
+			{
+				this.attachmentsInErrorError(false);
+			}
 		}, this);
 
 		this.composeUploaderButton = ko.observable(null);
@@ -227,6 +255,7 @@
 		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
 
 		this.sendCommand = Utils.createCommand(this, function () {
+
 			var
 				sTo = Utils.trim(this.to()),
 				sSentFolder = Data.sentFolder(),
@@ -236,6 +265,12 @@
 			if (0 < this.attachmentsInProcess().length)
 			{
 				this.attachmentsInProcessError(true);
+				this.attachmentsPlace(true);
+			}
+			else if (0 < this.attachmentsInError().length)
+			{
+				this.attachmentsInErrorError(true);
+				this.attachmentsPlace(true);
 			}
 			else if (0 === sTo.length)
 			{
@@ -1111,6 +1146,7 @@
 								if (oAttachment)
 								{
 									oAttachment.tempName(sTempName);
+									oAttachment.waiting(false).uploading(false).complete(true);
 								}
 							}
 						}
@@ -1118,7 +1154,7 @@
 				}
 				else
 				{
-					self.setMessageAttachmentFailedDowbloadText();
+					self.setMessageAttachmentFailedDownloadText();
 				}
 
 			}, aDownloads);
@@ -1480,7 +1516,7 @@
 
 						if (oItem)
 						{
-							oItem.progress(' - ' + window.Math.floor(iLoaded / iTotal * 100) + '%');
+							oItem.progress(window.Math.floor(iLoaded / iTotal * 100));
 						}
 
 					}, this))
@@ -1499,9 +1535,14 @@
 
 						this.attachments.push(oAttachment);
 
+						this.attachmentsPlace(true);
+
 						if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 						{
-							oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+							oAttachment
+								.waiting(false).uploading(true).complete(true)
+								.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+
 							return false;
 						}
 
@@ -1529,8 +1570,7 @@
 
 						if (oItem)
 						{
-							oItem.waiting(false);
-							oItem.uploading(true);
+							oItem.waiting(false).uploading(true).complete(false);
 						}
 
 					}, this))
@@ -1562,6 +1602,7 @@
 								oAttachment
 									.waiting(false)
 									.uploading(false)
+									.complete(true)
 									.error(sError)
 								;
 							}
@@ -1570,6 +1611,7 @@
 								oAttachment
 									.waiting(false)
 									.uploading(false)
+									.complete(true)
 								;
 
 								oAttachment.initByUploadJson(oAttachmentJson);
@@ -1639,7 +1681,7 @@
 
 			oAttachment.fromMessage = true;
 			oAttachment.cancel = this.cancelAttachmentHelper(oMessage.requestHash);
-			oAttachment.waiting(false).uploading(true);
+			oAttachment.waiting(false).uploading(true).complete(true);
 
 			this.attachments.push(oAttachment);
 		}
@@ -1663,13 +1705,15 @@
 
 		oAttachment.fromMessage = false;
 		oAttachment.cancel = this.cancelAttachmentHelper(oDropboxFile['link']);
-		oAttachment.waiting(false).uploading(true);
+		oAttachment.waiting(false).uploading(true).complete(false);
 
 		this.attachments.push(oAttachment);
 
+		this.attachmentsPlace(true);
+
 		if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 		{
-			oAttachment.uploading(false);
+			oAttachment.uploading(false).complete(true);
 			oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
 			return false;
 		}
@@ -1677,7 +1721,7 @@
 		Remote.composeUploadExternals(function (sResult, oData) {
 
 			var bResult = false;
-			oAttachment.uploading(false);
+			oAttachment.uploading(false).complete(true);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -1717,13 +1761,15 @@
 
 		oAttachment.fromMessage = false;
 		oAttachment.cancel = this.cancelAttachmentHelper(oDriveFile['downloadUrl']);
-		oAttachment.waiting(false).uploading(true);
+		oAttachment.waiting(false).uploading(true).complete(false);
 
 		this.attachments.push(oAttachment);
 
+		this.attachmentsPlace(true);
+
 		if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 		{
-			oAttachment.uploading(false);
+			oAttachment.uploading(false).complete(true);
 			oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
 			return false;
 		}
@@ -1731,7 +1777,7 @@
 		Remote.composeUploadDrive(function (sResult, oData) {
 
 			var bResult = false;
-			oAttachment.uploading(false);
+			oAttachment.uploading(false).complete(true);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -1803,7 +1849,7 @@
 
 						oAttachment.fromMessage = true;
 						oAttachment.cancel = this.cancelAttachmentHelper(oItem.download);
-						oAttachment.waiting(false).uploading(true);
+						oAttachment.waiting(false).uploading(true).complete(false);
 
 						this.attachments.push(oAttachment);
 					}
@@ -1825,7 +1871,7 @@
 		}
 	};
 
-	ComposePopupView.prototype.setMessageAttachmentFailedDowbloadText = function ()
+	ComposePopupView.prototype.setMessageAttachmentFailedDownloadText = function ()
 	{
 		_.each(this.attachments(), function(oAttachment) {
 			if (oAttachment && oAttachment.fromMessage)
@@ -1833,6 +1879,7 @@
 				oAttachment
 					.waiting(false)
 					.uploading(false)
+					.complete(true)
 					.error(Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded))
 				;
 			}
@@ -1868,6 +1915,8 @@
 
 		this.requestReadReceipt(false);
 		this.markAsImportant(false);
+
+		this.attachmentsPlace(false);
 
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';

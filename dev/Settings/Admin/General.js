@@ -32,6 +32,7 @@
 		this.capaGravatar = Data.capaGravatar;
 		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
 		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
+		this.capaAttachmentThumbnails = Data.capaAttachmentThumbnails;
 
 		this.weakPassword = Data.weakPassword;
 
@@ -111,6 +112,12 @@
 			self.capaGravatar.subscribe(function (bValue) {
 				Remote.saveAdminConfig(null, {
 					'CapaGravatar': bValue ? '1' : '0'
+				});
+			});
+
+			self.capaAttachmentThumbnails.subscribe(function (bValue) {
+				Remote.saveAdminConfig(null, {
+					'CapaAttachmentThumbnails': bValue ? '1' : '0'
 				});
 			});
 

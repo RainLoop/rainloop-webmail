@@ -166,7 +166,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
 			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
 		{
-			$aDomain = @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			$aDomain = \RainLoop\Utils::CustomParseIniFile($this->sDomainPath.'/'.$sRealFileName.'.ini');
 			// fix misspellings (#119)
 			if (\is_array($aDomain))
 			{

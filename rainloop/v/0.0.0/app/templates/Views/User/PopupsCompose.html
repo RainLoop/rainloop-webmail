@@ -26,7 +26,7 @@
 			<div>
 				<div class="b-header g-ui-user-select-none">
 					<div class="g-ui-table">
-						<div class="e-row">
+						<div class="e-row" style="height: 40px;">
 							<div class="e-cell e-label">
 								<label class="control-label">
 									<span class="i18n" data-i18n-text="COMPOSE/TITLE_FROM"></span>
@@ -50,7 +50,7 @@
 										</ul>
 									<!-- /ko -->
 								</div>
-								<div class="btn-group dropdown colored-toggle pull-right">
+								<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;">
 									<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
 										<i class="icon-list"></i>
 									</a>
@@ -139,18 +139,33 @@
 						<div class="e-row">
 							<div class="e-cell e-label"></div>
 							<div class="e-cell e-value">
-								<div class="b-appachments pull-left" data-bind="visible: 0 < attachments().length">
-									<div data-bind="template: { name: 'ComposeAttachment', foreach: attachmentsInReady }"></div>
-									<div data-bind="template: { name: 'ComposeAttachmentInProcess', foreach: attachmentsInProcess }"></div>
-									<span class="help-block error-desc" data-bind="visible: attachmentsInProcessError">
-										<span class="i18n" data-i18n-text="COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC"></span>
-									</span>
-								</div>
 								<div>
 									<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
 										<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
 									</div>
-									<div class="pull-right">
+									<div class="pull-left">
+										<div class="btn-group" data-toggle="buttons-radio">
+											<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
+												css: { 'active': !attachmentsPlace() }">
+												<i class="icon-file-text"></i>
+											</button>
+											<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
+												css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() }">
+												<span data-bind="visible: 0 < attachmentsCount()">
+													<b data-bind="text: attachmentsCount"></b>
+													&nbsp;&nbsp;
+												</span>
+												<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner animated': 0 < attachmentsInProcessCount(), 'icon-white': 0 < attachmentsInErrorCount() }"></i>
+											</button>
+										</div>
+										<span class="help-block error-desc" data-bind="visible: attachmentsInProcessError">
+											<span class="i18n" data-i18n-text="COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC"></span>
+										</span>
+										<span class="help-block error-desc" data-bind="visible: !attachmentsInProcessError() && attachmentsInErrorError()">
+											<span class="i18n" data-i18n-text="COMPOSE/ATTACHMENTS_ERROR_DESC"></span>
+										</span>
+									</div>
+									<div class="pull-right" style="margin-right: 4px;">
 										<div class="btn-group pull-right">
 											<a class="btn" data-tooltip-placement="top" data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<i class="icon-attachment"></i>
@@ -169,8 +184,19 @@
 					</div>
 				</div>
 
+				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 47]">
+					<div class="content g-scrollbox">
+						<div class="content-wrapper">
+							<ul class="attachmentList" data-bind="template: { name: 'ComposeAttachment', foreach: attachments }"></ul>
+							<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length">
+								<span class="i18n" data-i18n-text="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="textAreaParent" style="height: 200px; min-height: 200px"
-					data-bind="initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 30]"></div>
+					data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 30]"></div>
 			</div>
 		</div>
 	</div>

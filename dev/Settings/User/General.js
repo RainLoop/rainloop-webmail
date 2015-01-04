@@ -36,13 +36,6 @@
 		this.useCheckboxesInList = Data.useCheckboxesInList;
 		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 
-		this.usePreviewPaneCheckbox = ko.computed({
-			read: this.usePreviewPane,
-			write: function (bValue) {
-				this.layout(bValue ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
-			}
-		}, this);
-
 		this.isDesktopNotificationsSupported = ko.computed(function () {
 			return Enums.DesktopNotifications.NotSupported !== Data.desktopNotificationsPermisions();
 		});
@@ -60,6 +53,7 @@
 
 		this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.editorDefaultTypeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.layoutTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
 
@@ -72,12 +66,16 @@
 				{'id': Enums.EditorDefaultType.PlainForced, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED')}
 			];
 		}, this);
-	}
 
-	GeneralUserSettings.prototype.toggleLayout = function ()
-	{
-		this.layout(Enums.Layout.NoPreview === this.layout() ? Enums.Layout.SidePreview : Enums.Layout.NoPreview);
-	};
+		this.layoutTypes = ko.computed(function () {
+			Globals.langChangeTrigger();
+			return [
+				{'id': Enums.Layout.NoPreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT')},
+				{'id': Enums.Layout.SidePreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT')},
+				{'id': Enums.Layout.BottomPreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT')}
+			];
+		}, this);
+	}
 
 	GeneralUserSettings.prototype.onBuild = function ()
 	{
@@ -88,6 +86,7 @@
 			var
 				f0 = Utils.settingsSaveHelperSimpleFunction(self.editorDefaultTypeTrigger, self),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self),
+				f2 = Utils.settingsSaveHelperSimpleFunction(self.layoutTrigger, self),
 				fReloadLanguageHelper = function (iSaveSettingsStep) {
 					return function() {
 						self.languageTrigger(iSaveSettingsStep);
@@ -164,7 +163,7 @@
 
 				Data.messageList([]);
 
-				Remote.saveSettings(null, {
+				Remote.saveSettings(f2, {
 					'Layout': nValue
 				});
 			});

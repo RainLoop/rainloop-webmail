@@ -95,8 +95,6 @@ cfg.paths.css = {
 			'vendors/normalize/normalize.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
-//			'vendors/jquery-magnific-popup/magnific-popup.css',
-//			'vendors/jquery-magnific-popup/magnific-popup-animations.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/simple-pace/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
@@ -390,12 +388,6 @@ regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-
 regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.3.min.js',
 	'/*! RainLoop Index Helper v1.3 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-gulp.task('package-inc-release', function() {
-	fs.writeFileSync('package.json',
-		fs.readFileSync('package.json', 'utf8').replace(/"release":\s?"[\d]+",/, '"release": "' +
-			(1 + parseInt(pkg.release, 10)) + '",'));
-});
-
 gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
 });
@@ -537,8 +529,6 @@ gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:mi
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('rainloop', ['js:lint', 'rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
-gulp.task('rainloop+', ['rainloop', 'package-inc-release']);
-
 gulp.task('owncloud', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
 
 //WATCH
@@ -547,16 +537,13 @@ gulp.task('watch', ['fast'], function() {
 	gulp.watch(cfg.paths.less.main.watch, {interval: 500}, ['css:main']);
 });
 
-// aliases
+// ALIASES
 gulp.task('w', ['watch']);
 gulp.task('f', ['fast']);
 
 gulp.task('rl', ['rainloop']);
-gulp.task('rl+', ['rainloop+']);
 gulp.task('build', ['rainloop']);
-gulp.task('build+', ['rainloop+']);
 gulp.task('b', ['build']);
-gulp.task('b+', ['build+']);
 
 gulp.task('own', ['owncloud']);
 gulp.task('js:hint', ['js:lint']);

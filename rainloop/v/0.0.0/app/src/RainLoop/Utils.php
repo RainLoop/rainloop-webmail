@@ -149,16 +149,16 @@ class Utils
 	}
 
 	/**
-	 * @param string $FileName
+	 * @param string $sFileName
 	 * @param array $aResultLang
 	 *
 	 * @return void
 	 */
-	public static function ReadAndAddLang($FileName, &$aResultLang)
+	public static function ReadAndAddLang($sFileName, &$aResultLang)
 	{
-		if (\file_exists($FileName))
+		if (\file_exists($sFileName))
 		{
-			$aLang = @\parse_ini_file($FileName, true);
+			$aLang = \RainLoop\Utils::CustomParseIniFile($sFileName, true);
 			if (\is_array($aLang))
 			{
 				foreach ($aLang as $sKey => $mValue)
@@ -305,6 +305,23 @@ class Utils
 
 		unset(self::$Cookies[$sName]);
 		@\setcookie($sName, '', \time() - 3600 * 24 * 30, '/');
+	}
+
+	/**
+	 * @param string $sFileName
+	 * @param bool $bProcessSections = false
+	 *
+	 * @return array
+	 */
+	public static function CustomParseIniFile($sFileName, $bProcessSections = false)
+	{
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
+		{
+			return @\parse_ini_file($sFileName, !!$bProcessSections);
+		}
+
+		$sData = @\file_get_contents($sFileName);
+		return \is_string($sData) ? @\parse_ini_string($sData, !!$bProcessSections) : null;
 	}
 
 	public static function CustomBaseConvert($sNumberInput, $sFromBaseInput = '0123456789', $sToBaseInput = '0123456789')

@@ -81,7 +81,7 @@
 		this.dragOverBodyArea = ko.observable(null);
 
 		this.messageListItemTemplate = ko.computed(function () {
-			return Enums.Layout.NoPreview !== Data.layout() ?
+			return Enums.Layout.SidePreview === Data.layout() ?
 				'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 		});
 

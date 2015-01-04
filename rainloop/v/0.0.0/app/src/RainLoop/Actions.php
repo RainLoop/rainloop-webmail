@@ -2067,7 +2067,7 @@ class Actions
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
+//		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
 	}
 
 	/**
@@ -2539,6 +2539,9 @@ class Actions
 			case \RainLoop\Enumerations\Capa::GRAVATAR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'labs', 'allow_gravatar', 'bool');
 				break;
+			case \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS:
+				$this->setConfigFromParams($oConfig, $sParamName, 'interface', 'show_attachment_thumbnail', 'bool');
+				break;
 			case \RainLoop\Enumerations\Capa::THEMES:
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_themes', 'bool');
 				break;
@@ -2636,6 +2639,7 @@ class Actions
 		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
 		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
 		$this->setCapaFromParams($oConfig, 'CapaUserBackground', \RainLoop\Enumerations\Capa::USER_BACKGROUND);
+		$this->setCapaFromParams($oConfig, 'CapaAttachmentThumbnails', \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
 
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
@@ -3538,6 +3542,19 @@ class Actions
 								\is_file(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion.'/index.php'))
 							{
 								$bResult = \copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
+
+								if ($bResult)
+								{
+									if (\MailSo\Base\Utils::FunctionExistsAndEnabled('opcache_invalidate'))
+									{
+										@\opcache_invalidate(APP_INDEX_ROOT_PATH.'index.php', true);
+									}
+
+									if (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_delete_file'))
+									{
+										@\apc_delete_file(APP_INDEX_ROOT_PATH.'index.php');
+									}
+								}
 							}
 							else
 							{
@@ -3577,6 +3594,7 @@ class Actions
 		$aDirs = @\array_map('basename', @\array_filter(@\glob($sVPath.'*'), 'is_dir'));
 
 		$this->Logger()->Write('Versions GC: Count:'.(\is_array($aDirs) ? \count($aDirs) : 0));
+
 		if (\is_array($aDirs) && 5 < \count($aDirs))
 		{
 			\uasort($aDirs, 'version_compare');
@@ -6945,6 +6963,11 @@ class Actions
 			$aResult[] = \RainLoop\Enumerations\Capa::GRAVATAR;
 		}
 
+		if ($oConfig->Get('interface', 'show_attachment_thumbnail', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS;
+		}
+
 		if ($oConfig->Get('labs', 'allow_prefetch', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::PREFETCH;
@@ -8017,6 +8040,7 @@ class Actions
 			$bHook = true;
 			$sClassName = \get_class($mResponse);
 			$bHasSimpleJsonFunc = \method_exists($mResponse, 'ToSimpleJSON');
+			$bThumb = $this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
 
 			if ($bHasSimpleJsonFunc)
 			{
@@ -8278,7 +8302,7 @@ class Actions
 					'CID' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),
 					'IsInline' => $mResponse->IsInline(),
-					'IsThumbnail' => !!$this->Config()->Get('interface', 'show_attachment_thumbnail', true),
+					'IsThumbnail' => $bThumb,
 					'IsLinked' => ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs)) ||
 						($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls))
 				));
@@ -8300,8 +8324,6 @@ class Actions
 					'FileName' => $mResult['FileName'],
 					'Framed' => $mResult['Framed']
 				));
-
-				$this->Logger()->WriteDump($mResult);
 			}
 			else if ('MailSo\Mail\Folder' === $sClassName)
 			{

@@ -15,6 +15,8 @@
 		Autolinker = require('Autolinker'),
 		JSEncrypt = require('JSEncrypt'),
 
+		Mime = require('Common/Mime'),
+
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals')
@@ -1060,6 +1062,7 @@
 		oData.capaAdditionalIdentities = ko.observable(false);
 		oData.capaGravatar = ko.observable(false);
 		oData.capaSieve = ko.observable(false);
+		oData.capaAttachmentThumbnails = ko.observable(false);
 		oData.determineUserLanguage = ko.observable(false);
 		oData.determineUserDomain = ko.observable(false);
 
@@ -1256,7 +1259,7 @@
 	Utils.draggablePlace = function ()
 	{
 		return $('<div class="draggablePlace">' +
-			'<span class="text"></span>&nbsp;' + 
+			'<span class="text"></span>&nbsp;' +
 			'<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 	};
 
@@ -2027,6 +2030,45 @@
 		});
 
 		$('#rl-head-viewport').attr('content', aContent.join(', '));
+	};
+
+	/**
+	 * @param {string} sFileName
+	 * @return {string}
+	 */
+	Utils.getFileExtension = function (sFileName)
+	{
+		sFileName = Utils.trim(sFileName).toLowerCase();
+
+		var sResult = sFileName.split('.').pop();
+		return (sResult === sFileName) ? '' : sResult;
+	};
+
+	/**
+	 * @param {string} sFileName
+	 * @return {string}
+	 */
+	Utils.mimeContentType = function (sFileName)
+	{
+		var
+			sExt = '',
+			sResult = 'application/octet-stream'
+		;
+
+		sFileName = Utils.trim(sFileName).toLowerCase();
+
+		if ('winmail.dat' === sFileName)
+		{
+			return 'application/ms-tnef';
+		}
+
+		sExt = Utils.getFileExtension(sFileName);
+		if (sExt && 0 < sExt.length && !Utils.isUnd(Mime[sExt]))
+		{
+			sResult = Mime[sExt];
+		}
+
+		return sResult;
 	};
 
 	/**

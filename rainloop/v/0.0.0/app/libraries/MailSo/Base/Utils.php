@@ -882,7 +882,6 @@ class Utils
 			'p7c'	=> 'application/pkcs7-mime',
 			'p7m'	=> 'application/pkcs7-mime',
 			'p7s'	=> 'application/pkcs7-signature',
-			'ttf'	=> 'application/x-ttf',
 			'torrent'	=> 'application/x-bittorrent',
 
 			// scripts
@@ -963,7 +962,6 @@ class Utils
 			'flv'	=> 'video/x-flv',
 			'qt'	=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
-			'wmv'	=> 'video/windows-media',
 			'avi'	=> 'video/x-msvideo',
 			'mpg'	=> 'video/mpeg',
 			'mpeg'	=> 'video/mpeg',
@@ -976,6 +974,7 @@ class Utils
 			'h263'	=> 'video/h263',
 			'h264'	=> 'video/h264',
 			'jpgv'	=> 'video/jpgv',
+			'mp4'	=> 'video/mp4',
 			'mp4v'	=> 'video/mp4',
 			'mpg4'	=> 'video/mp4',
 			'ogv'	=> 'video/ogg',

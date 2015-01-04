@@ -52,6 +52,7 @@
 		'Themes': 'THEMES',
 		'UserBackground': 'USER_BACKGROUND',
 		'Sieve': 'SIEVE',
+		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
 	};
@@ -304,7 +305,7 @@
 		'EqualTo': 'EqualTo',
 		'NotEqualTo': 'NotEqualTo'
 	};
-	
+
 	/**
 	 * @enum {string}
 	 */

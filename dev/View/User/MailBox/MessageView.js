@@ -345,27 +345,8 @@
 			}
 		}, this);
 
-//		$('.attachmentsPlace', oDom).magnificPopup({
-//			'delegate': '.attachmentImagePreview:visible',
-//			'type': 'image',
-//			'gallery': {
-//				'enabled': true,
-//				'preload': [1, 1],
-//				'navigateByImgClick': true
-//			},
-//			'callbacks': {
-//				'open': function() {
-//					Globals.useKeyboardShortcuts(false);
-//				},
-//				'close': function() {
-//					Globals.useKeyboardShortcuts(true);
-//				}
-//			},
-//			'mainClass': 'mfp-fade',
-//			'removalDelay': 400
-//		});
-
 		this.pswpDom = $('.pswp', oDom)[0];
+
 		if (this.pswpDom)
 		{
 			oDom
@@ -375,18 +356,31 @@
 						oPs = null,
 						oEl = oEvent.currentTarget || null,
 						aItems = []
+//						fThumbBoundsFn = function (index) {
+//							var oRes = null, oEl = aItems[index], oPos = null;
+//							if (oEl && oEl.el)
+//							{
+//								oPos = oEl.el.find('.iconBG').offset();
+//								oRes = oPos && oPos.top && oPos.left ?
+//									{x: oPos.left, y: oPos.top, w: 60} : null;
+//							}
+//
+//							return oRes;
+//						}
 					;
 
 					oDom.find('.attachmentImagePreview[data-index]').each(function (index, oSubElement) {
 
-						var $oItem = $(oSubElement);
+						var
+							$oItem = $(oSubElement)
+						;
 
 						aItems.push({
-							w: 600, h: 400,
+//							'el': $oItem,
+							'w': 600, 'h': 400,
 							'src': $oItem.attr('href'),
 							'title': $oItem.attr('title') || ''
 						});
-
 					});
 
 					if (aItems && 0 < aItems.length)
@@ -400,6 +394,7 @@
 							'errorMsg': '<div class="pswp__error-msg">' + sErrorMessage + '</div>',
 							'showHideOpacity': true,
 							'tapToToggleControls': false,
+//							'getThumbBoundsFn': fThumbBoundsFn,
 							'timeToIdle': 0,
 							'timeToIdleOutside': 0,
 							'history': false,
@@ -414,7 +409,7 @@
 								item.w = item.img.width;
 								item.h = item.img.height;
 
-								oPs.updateSize();
+								oPs.updateSize(true);
 							}
 						});
 
@@ -434,13 +429,13 @@
 				// setup maito protocol
 				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View/Popup/Compose')));
 			})
-			.on('click', '.attachmentsPlace .attachmentPreview', function (oEvent) {
+			.on('click', '.attachmentsPlace .attachmentIconParent', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
 				{
 					oEvent.stopPropagation();
 				}
 			})
-			.on('click', '.attachmentsPlace .attachmentItem', function () {
+			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function () {
 
 				var
 					oAttachment = ko.dataFor(this)

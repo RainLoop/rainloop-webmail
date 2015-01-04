@@ -230,6 +230,51 @@ html.rl-no-preview-pane {
 	}
 }
 
+html.rl-bottom-preview-pane {
+
+	#rl-sub-left {
+		right: @rlBottomMargin !important;
+		width: inherit;
+
+		.b-message-list-wrapper {
+			bottom: inherit;
+			height: 300px;
+
+			box-shadow: none;
+		}
+
+		.messageList .inputSearch {
+			width: 300px !important;
+		}
+	}
+
+	#rl-sub-right {
+
+		left: 0 !important;
+
+		.messageView .top-toolbar {
+			display: none;
+		}
+
+		.b-message-view-wrapper {
+			top: 356px;
+			left: 0;
+			right: 5px;
+
+
+			box-shadow: none;
+		}
+
+		.message-fixed-button-toolbar {
+			top: 370px;
+		}
+	}
+
+	#rl-right .ui-resizable-handle {
+		display: none !important;
+	}
+}
+
 .visible-on-ctrl, .visible-on-ctrl-btn {
 	display: none;
 }

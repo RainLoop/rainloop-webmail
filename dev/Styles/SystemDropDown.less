@@ -34,6 +34,29 @@
 		vertical-align: middle;
 	}
 
+	.accountPlace {
+		background-color: #000;
+		background-color: rgba(0, 0, 0, 0.5);
+
+		color: #fff;
+		text-shadow: 0 1px 0 #000;
+
+		position: absolute;
+		top: 11px;
+		right: 70px;
+		display: inline-block;
+		height: 28px;
+		max-width: 250px;
+		border-radius: 4px;
+		font-size: 16px;
+		line-height: 30px;
+		padding: 1px 8px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		border-radius: 4px;
+		font-weight: bold;
+	}
+
 	.account-item {
 
 		.icon-ok {
@@ -57,4 +80,8 @@
 	.g-ui-menu .e-link.account-item {
 		padding-right: 5px;
 	}
+}
+
+html.ssm-state-mobile .accountPlace {
+	max-width: 150px !important;
 }

@@ -9,6 +9,8 @@
 
 		Utils = require('Common/Utils'),
 
+		AttachmentModel = require('Model/Attachment'),
+
 		AbstractModel = require('Knoin/AbstractModel')
 	;
 
@@ -37,15 +39,35 @@
 		this.size = ko.observable(Utils.isUnd(nSize) ? null : nSize);
 		this.tempName = ko.observable('');
 
-		this.progress = ko.observable('');
+		this.progress = ko.observable(0);
 		this.error = ko.observable('');
 		this.waiting = ko.observable(true);
 		this.uploading = ko.observable(false);
 		this.enabled = ko.observable(true);
+		this.complete = ko.observable(false);
+
+		this.progressText = ko.computed(function () {
+			var iP = this.progress();
+			return 0 === iP ? '' : '' + (99 === iP ? 100 : iP) + '%';
+		}, this);
+
+		this.progressStyle = ko.computed(function () {
+			var iP = this.progress();
+			return 0 === iP ? '' : 'width:' + (99 === iP ? 100 : iP) + '%';
+		}, this);
+
+		this.title = ko.computed(function () {
+			var sError = this.error();
+			return '' !== sError ? sError : this.fileName();
+		}, this);
 
 		this.friendlySize = ko.computed(function () {
 			var mSize = this.size();
 			return null === mSize ? '' : Utils.friendlySize(this.size());
+		}, this);
+
+		this.mimeType = ko.computed(function () {
+			return Utils.mimeContentType(this.fileName());
 		}, this);
 
 		this.regDisposables([this.friendlySize]);
@@ -63,6 +85,7 @@
 
 	/**
 	 * @param {AjaxJsonComposeAttachment} oJsonAttachment
+	 * @return {boolean}
 	 */
 	ComposeAttachmentModel.prototype.initByUploadJson = function (oJsonAttachment)
 	{
@@ -79,6 +102,15 @@
 
 		return bResult;
 	};
+
+	/**
+	 * @return {string}
+	 */
+	ComposeAttachmentModel.prototype.iconClass = function ()
+	{
+		return AttachmentModel.staticIconClassHelper(this.mimeType());
+	};
+
 
 	module.exports = ComposeAttachmentModel;
 

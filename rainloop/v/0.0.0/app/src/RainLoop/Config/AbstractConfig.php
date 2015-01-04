@@ -151,7 +151,7 @@ abstract class AbstractConfig
 			if (\is_int($iMTime) && 0 < $iMTime)
 			{
 				$sKey = $this->cacheKey();
-				
+
 				\apc_store($sKey.'time', $iMTime);
 				\apc_store($sKey.'data', $this->aData);
 
@@ -161,7 +161,7 @@ abstract class AbstractConfig
 
 		return false;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -192,7 +192,7 @@ abstract class AbstractConfig
 				return true;
 			}
 
-			$aData = @\parse_ini_file($this->sFile, true);
+			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
 			if (\is_array($aData) && 0 < count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)

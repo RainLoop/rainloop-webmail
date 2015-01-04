@@ -45,6 +45,7 @@
 		this.capaAdditionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
 		this.capaAdditionalIdentities(Settings.capa(Enums.Capa.AdditionalIdentities));
 		this.capaGravatar(Settings.capa(Enums.Capa.Gravatar));
+		this.capaAttachmentThumbnails(Settings.capa(Enums.Capa.AttachmentThumbnails));
 		this.capaSieve(Settings.capa(Enums.Capa.Sieve));
 		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
@@ -74,6 +75,7 @@
 		{
 			this.layout(mLayout);
 		}
+		
 		this.facebookSupported(!!Settings.settingsGet('SupportedFacebookSocial'));
 		this.facebookEnable(!!Settings.settingsGet('AllowFacebookSocial'));
 		this.facebookAppID(Settings.settingsGet('FacebookAppID'));

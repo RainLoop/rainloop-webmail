@@ -170,10 +170,18 @@
 	/**
 	 * @return {string}
 	 */
+	AttachmentModel.prototype.linkThumbnail = function ()
+	{
+		return this.hasThumbnail() ? Links.attachmentThumbnailPreview(this.download) : '';
+	};
+
+	/**
+	 * @return {string}
+	 */
 	AttachmentModel.prototype.linkThumbnailPreviewStyle = function ()
 	{
-		return !this.hasThumbnail() ? '' :
-			'background:url(' + Links.attachmentThumbnailPreview(this.download) + ')';
+		var sLink = this.linkThumbnail();
+		return '' === sLink ? '' : 'background:url(' + sLink + ')';
 	};
 
 	/**
@@ -211,7 +219,7 @@
 				sResult = this.linkFramed();
 				break;
 		}
-		
+
 		return sResult;
 	};
 
@@ -253,10 +261,14 @@
 		return true;
 	};
 
-	AttachmentModel.prototype.iconClass = function ()
+	/**
+	 * @param {string} sMimeType
+	 * @returns {string}
+	 */
+	AttachmentModel.staticIconClassHelper = function (sMimeType)
 	{
 		var
-			aParts = this.mimeType.toLocaleString().split('/'),
+			aParts = sMimeType.toLocaleString().split('/'),
 			sClass = 'icon-file'
 		;
 
@@ -331,6 +343,14 @@
 		}
 
 		return sClass;
+	};
+
+	/**
+	 * @returns {string}
+	 */
+	AttachmentModel.prototype.iconClass = function ()
+	{
+		return AttachmentModel.staticIconClassHelper(this.mimeType);
 	};
 
 	module.exports = AttachmentModel;

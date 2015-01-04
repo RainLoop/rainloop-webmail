@@ -79,6 +79,14 @@
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
+						label: 'Show thumbnails (attachments)',
+						value: capaAttachmentThumbnails,
+						inline: false
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
 						label: 'Allow Gravatar',
 						value: capaGravatar,
 						inline: true
