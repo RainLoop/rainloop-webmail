@@ -196,11 +196,22 @@ Options -Indexes
 						}
 
 						unset($aFiles, $sFile, $sNewFile);
+						
+						if (@file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist'))
+						{
+							$sConfigTemplate = @file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
+							$sConfigDomain = str_replace('IMAP_HOST','imap.'.$sSite,$sConfigTemplate);
+							$sConfigDomain = str_replace('IMAP_PORT','993',$sConfigDomain);
+							$sConfigDomain = str_replace('SMTP_HOST','smtp.'.$sSite,$sConfigDomain);
+							$sConfigDomain = str_replace('SMTP_PORT','465',$sConfigDomain);
+	
+							@file_put_contents(APP_PRIVATE_DATA.'domains/'.$sSite.'.ini', $sConfigDomain);
+						}
 					}
 				}
 			}
 
-			unset($sSite, $sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
+			unset($sSite, $sSalt, $sData, $sInstalled, $sConfigTemplate, $sConfigDomain, $sPrivateDataFolderInternalName);
 		}
 
 		include APP_VERSION_ROOT_PATH.'app/handle.php';
