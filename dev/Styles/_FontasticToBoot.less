@@ -70,6 +70,7 @@
 	line-height: 20px;
 }
 
+/*
 @keyframes rotation {
 	to   {transform: rotate(1turn);}
 }
@@ -86,19 +87,56 @@
 		line-height: 100%;
 	}
 }
+*/
+
+@keyframes rotation {
+	to   {transform: rotate(1turn);}
+}
+
+.icon-spinner {
+
+	font-family: Arial;
+
+	&:before {
+		content: "";
+	}
+
+	height: 11px;
+	width: 11px;
+
+	margin-right: -1px;
+	background: none;
+
+	border: 3px solid #aaa;
+	border-top-color: #333;
+	border-radius: 100%;
+
+	animation: none;
+
+	&.animated {
+		border-color: transparent;
+		border-top-color: #999;
+
+		animation: rotation .8s infinite linear;
+	}
+}
 
 html.no-cssanimations .icon-spinner {
+	background: none;
 	background-image: url('@{rlSyncFileStop}');
 	background-repeat: no-repeat;
+
+	border: none;
+	box-shadow: none;
+	height: 16px;
+	width: 16px;
+
 	font-family: Arial;
 	&:before {
 		content: "";
 	}
 	&.animated {
+		background: none;
 		background-image: url('@{rlSyncFile}');
 	}
-}
-
-html.cssanimations .icon-spinner.animated:before {
-	animation: rotation 1s infinite steps(40);
 }

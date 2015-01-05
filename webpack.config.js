@@ -25,22 +25,22 @@ module.exports = {
 	},
 	externals: {
 		'window': 'window',
-		'JSON': 'JSON',
+		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
 		'SimplePace': 'window.SimplePace',
 		'PhotoSwipe': 'window.PhotoSwipe',
 		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',
-		'moment': 'moment',
-		'ifvisible': 'ifvisible',
-		'crossroads': 'crossroads',
-		'hasher': 'hasher',
-		'Jua': 'Jua',
-		'Autolinker': 'Autolinker',
-		'ssm': 'ssm',
-		'key': 'key',
-		'_': '_',
-		'$': 'jQuery'
+		'moment': 'window.moment',
+		'ifvisible': 'window.ifvisible',
+		'crossroads': 'window.crossroads',
+		'hasher': 'window.hasher',
+		'Jua': 'window.Jua',
+		'Autolinker': 'window.Autolinker',
+		'ssm': 'window.ssm',
+		'key': 'window.key',
+		'_': 'window._',
+		'$': 'window.jQuery'
 	}
 };
