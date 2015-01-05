@@ -195,6 +195,7 @@ abstract class NetClient
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return void
 	 *
@@ -203,7 +204,8 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -251,12 +253,14 @@ abstract class NetClient
 //			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
 
 		$bVerifySsl = !!$bVerifySsl;
+		$bAllowSelfSigned = $bVerifySsl ? !!$bAllowSelfSigned : true;
+
 		$aStreamContextSettings = array(
 			'ssl' => array(
 				'verify_host' => $bVerifySsl,
 				'verify_peer' => $bVerifySsl,
 				'verify_peer_name' => $bVerifySsl,
-				'allow_self_signed' => !$bVerifySsl
+				'allow_self_signed' => $bAllowSelfSigned
 			)
 		);
 

@@ -26,12 +26,12 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @var array
 	 */
 	private $aCapa;
-	
+
 	/**
 	 * @var int
 	 */
 	private $iRequestTime;
-	
+
 	/**
 	 * @access protected
 	 */
@@ -55,7 +55,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sCapa
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function IsSupported($sCapa)
@@ -72,7 +72,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	{
 		return $this->IsSupported('SIEVE') && \in_array(\strtoupper($sModule), $this->aModules);
 	}
-	
+
 	/**
 	 * @param string $sAuth
 	 *
@@ -88,6 +88,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return \MailSo\Sieve\ManageSieveClient
 	 *
@@ -96,12 +97,13 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Sieve\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
-		
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+
 		$mResponse = $this->parseResponse();
 		$this->validateResponse($mResponse);
 		$this->parseStartupResponse($mResponse);
@@ -122,7 +124,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-		
+
 		return $this;
 	}
 
@@ -254,7 +256,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 		return $aResult;
 	}
-	
+
 	/**
 	 * @return array
 	 *
@@ -273,7 +275,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @return \MailSo\Sieve\ManageSieveClient
-	 * 
+	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -286,7 +288,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sScriptName
-	 * 
+	 *
 	 * @return string
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -365,10 +367,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	public function SetActiveScript($sScriptName)
 	{
 		$this->sendRequestWithCheck('SETACTIVE "'.$sScriptName.'"');
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * @param string $sScriptName
 	 *
@@ -409,7 +411,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sScriptName
-	 * 
+	 *
 	 * @return bool
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
@@ -419,7 +421,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	{
 		return $sScriptName === $this->GetActiveScriptName();
 	}
-	
+
 	/**
 	 * @param string $sLine
 	 * @return array|false
@@ -532,7 +534,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sLine
-	 * 
+	 *
 	 * @return string
 	 */
 	private function convertEndOfLine($sLine)
@@ -560,7 +562,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 		return $sLine;
 	}
-	
+
 	/**
 	 * @return array|bool
 	 */
@@ -572,7 +574,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		do
 		{
 			$this->getNextBuffer();
-			
+
 			$sLine = $this->sResponseBuffer;
 			if (false === $sLine)
 			{
@@ -620,7 +622,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
-	 * 
+	 *
 	 * @return \MailSo\Sieve\ManageSieveClient
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException

@@ -171,7 +171,9 @@ class Manager
 					\file_exists($sPathName.'/index.php'))
 				{
 					$aList[] = array(
-						$sName, @\file_get_contents($sPathName.'/VERSION')
+						$sName,
+						\file_exists($sPathName.'/VERSION') ?
+							\file_get_contents($sPathName.'/VERSION') : '0.0'
 					);
 				}
 			}

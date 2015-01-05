@@ -8,27 +8,31 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function Init()
 	{
 		$this->UseLangs(true);
-		
+
 		$this->addJs('js/recaptcha.js');
-		
+
 		$this->addHook('ajax.action-pre-call', 'AjaxActionPreCall');
 		$this->addHook('filter.ajax-response', 'FilterAjaxResponse');
 
 		$this->addTemplate('templates/PluginLoginReCaptchaGroup.html');
 		$this->addTemplateHook('Login', 'BottomControlGroup', 'PluginLoginReCaptchaGroup');
 	}
-	
+
 	/**
 	 * @return array
 	 */
 	public function configMapping()
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('public_key')->SetLabel('Public Key')
+			\RainLoop\Plugins\Property::NewInstance('public_key')->SetLabel('Site key')
 				->SetAllowedInJs(true)
 				->SetDefaultValue(''),
-			\RainLoop\Plugins\Property::NewInstance('private_key')->SetLabel('Private Key')
+			\RainLoop\Plugins\Property::NewInstance('private_key')->SetLabel('Secret key')
 				->SetDefaultValue(''),
+			\RainLoop\Plugins\Property::NewInstance('theme')->SetLabel('Theme')
+				->SetAllowedInJs(true)
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
+				->SetDefaultValue(array('light', 'dark')),
 			\RainLoop\Plugins\Property::NewInstance('error_limit')->SetLabel('Limit')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
 				->SetDefaultValue(array(0, 1, 2, 3, 4, 5))
@@ -41,7 +45,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	private function getCaptchaCacherKey()
 	{
-		return 'Captcha/Login/'.\RainLoop\Utils::GetConnectionToken();
+		return 'CaptchaNew/Login/'.\RainLoop\Utils::GetConnectionToken();
 	}
 
 	/**
@@ -54,8 +58,8 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$oCacher = $this->Manager()->Actions()->Cacher();
 			$sLimit = $oCacher && $oCacher->IsInited() ? $oCacher->Get($this->getCaptchaCacherKey()) : '0';
-			
-			if (0 < strlen($sLimit) && is_numeric($sLimit))
+
+			if (0 < \strlen($sLimit) && \is_numeric($sLimit))
 			{
 				$iConfigLimit -= (int) $sLimit;
 			}
@@ -69,7 +73,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterAppDataPluginSection($bAdmin, $bAuth, &$aData)
 	{
-		if (!$bAdmin && !$bAuth && is_array($aData))
+		if (!$bAdmin && !$bAuth && \is_array($aData))
 		{
 			$aData['show_captcha_on_login'] = 1 > $this->getLimit();
 		}
@@ -82,18 +86,25 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if ('Login' === $sAction && 0 >= $this->getLimit())
 		{
-			require_once __DIR__.'/recaptchalib.php';
+			$bResult = false;
 
-			$oResp = recaptcha_check_answer(
-				$this->Config()->Get('plugin', 'private_key', ''),
-				isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
-				$this->Manager()->Actions()->GetActionParam('RecaptchaChallenge', ''),
-				$this->Manager()->Actions()->GetActionParam('RecaptchaResponse', '')
-			);
+			$sResult = $this->Manager()->Actions()->Http()->GetUrlAsString(
+				'https://www.google.com/recaptcha/api/siteverify?secret='.
+					\urlencode($this->Config()->Get('plugin', 'private_key', '')).'&response='.
+					\urlencode($this->Manager()->Actions()->GetActionParam('RecaptchaResponse', '')));
 
-			if (!$oResp || !isset($oResp->is_valid) || !$oResp->is_valid)
+			if ($sResult)
 			{
-				$this->Manager()->Actions()->Logger()->WriteDump($oResp);
+				$aResp = @\json_decode($sResult, true);
+				if (\is_array($aResp) && isset($aResp['success']) && $aResp['success'])
+				{
+					$bResult = true;
+				}
+			}
+
+			if (!$bResult)
+			{
+				$this->Manager()->Actions()->Logger()->Write('RecaptchaResponse:'.$sResult);
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CaptchaError);
 			}
 		}
@@ -109,6 +120,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$oCacher = $this->Manager()->Actions()->Cacher();
 			$iConfigLimit = (int) $this->Config()->Get('plugin', 'error_limit', 0);
+			
 			$sKey = $this->getCaptchaCacherKey();
 
 			if (0 < $iConfigLimit && $oCacher && $oCacher->IsInited())
@@ -117,7 +129,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 				{
 					$iLimit = 0;
 					$sLimut = $oCacher->Get($sKey);
-					if (0 < strlen($sLimut) && is_numeric($sLimut))
+					if (0 < \strlen($sLimut) && \is_numeric($sLimut))
 					{
 						$iLimit = (int) $sLimut;
 					}

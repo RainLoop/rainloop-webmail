@@ -122,6 +122,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'ssl' => array(
 				'verify_certificate'	=> array(false, 'Require verification of SSL certificate used.'),
+				'allow_self_signed'		=> array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
 				'cafile'			=> array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
 				'capath'			=> array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
 			),

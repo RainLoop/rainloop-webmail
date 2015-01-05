@@ -346,7 +346,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			'Password' => $this->Password(),
 			'ProxyAuthUser' => $this->ProxyAuthUser(),
 			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
-			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate'),
+			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
 			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'use_imap_auth_plain')
 		);
 
@@ -358,7 +359,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 		{
 			$oMailClient
 				->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
-					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl']);
+					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'], $aImapCredentials['AllowSelfSigned']);
+
 		}
 
 		$oPlugins->RunHook('event.imap-pre-login', array($this, $aImapCredentials['UseAuth'], $aImapCredentials));
@@ -410,7 +412,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			'Password' => $this->Password(),
 			'ProxyAuthUser' => $this->ProxyAuthUser(),
 			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
-			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate')
+			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
 		);
 
 		$oPlugins->RunHook('filter.smtp-credentials', array($this, &$aSmtpCredentials));
@@ -421,8 +424,9 @@ class Account extends \RainLoop\Account // for backward compatibility
 
 		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
-				$aSmtpCredentials['Ehlo'], $aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl']);
+			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'], $aSmtpCredentials['Ehlo'],
+				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned']
+			);
 		}
 
 		$oPlugins->RunHook('event.smtp-post-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));

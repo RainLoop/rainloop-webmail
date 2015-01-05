@@ -31,17 +31,36 @@
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: { value: verifySslCertificate, label: 'Require verification of SSL certificate used (IMAP/SMTP)', inline: true }
-				}"></div>
-				&nbsp;&nbsp;
-				<span style="color:red">(unstable)</span>
+				<a href="#" target="_blank" class="g-ui-link" data-bind="link: phpInfoLink()">Show PHP information</a>
 			</div>
+		</div>
+	</div>
+	<div class="form-horizontal">
+		<div class="legend">
+			SSL
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<a href="#" target="_blank" class="g-ui-link" data-bind="link: phpInfoLink()">Show PHP information</a>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: verifySslCertificate,
+						label: 'Require verification of SSL certificate used (IMAP/SMTP)',
+						inline: true
+					}
+				}"></div>
+				&nbsp;&nbsp;
+				<span style="color:red">(unstable)</span>
+				<br />
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						enable: verifySslCertificate,
+						value: allowSelfSigned,
+						label: 'Allow self signed certificates'
+					}
+				}"></div>
+
 			</div>
 		</div>
 	</div>

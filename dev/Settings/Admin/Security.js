@@ -29,6 +29,7 @@
 		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
 
 		this.verifySslCertificate = ko.observable(!!Settings.settingsGet('VerifySslCertificate'));
+		this.allowSelfSigned = ko.observable(!!Settings.settingsGet('AllowSelfSigned'));
 
 		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
 		this.adminLoginError = ko.observable(false);
@@ -136,6 +137,12 @@
 		this.verifySslCertificate.subscribe(function (bValue) {
 			Remote.saveAdminConfig(null, {
 				'VerifySslCertificate': bValue ? '1' : '0'
+			});
+		});
+
+		this.allowSelfSigned.subscribe(function (bValue) {
+			Remote.saveAdminConfig(null, {
+				'AllowSelfSigned': bValue ? '1' : '0'
 			});
 		});
 	};

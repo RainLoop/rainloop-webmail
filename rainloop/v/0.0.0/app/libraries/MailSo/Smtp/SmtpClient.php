@@ -129,7 +129,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$sEhloHost = empty($_SERVER['HTTP_HOST']) ? '' : \trim($_SERVER['HTTP_HOST']);
 		}
-		
+
 		if (empty($sEhloHost))
 		{
 			$sEhloHost = \function_exists('gethostname') ? \gethostname() : 'localhost';
@@ -151,6 +151,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param string $sEhloHost = '[127.0.0.1]'
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
@@ -159,11 +160,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT, $bVerifySsl = false)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+
 		$this->validateResponse(220);
 
 		$this->preLoginStartTLSAndEhloProcess($sEhloHost);
@@ -184,7 +187,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	public function Login($sLogin, $sPassword)
 	{
 		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
-		
+
 		if ($this->IsAuthSupported('LOGIN'))
 		{
 			try
@@ -313,7 +316,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		$sFrom = \MailSo\Base\Utils::IdnToAscii($sFrom, true);
 		$sCmd = 'FROM:<'.$sFrom.'>';
-		
+
 		$sSizeIfSupported = (string) $sSizeIfSupported;
 		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
@@ -538,7 +541,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->sendRequestWithCheck('STARTTLS', 220);
 			$this->EnableCrypto();
-			
+
 			$this->ehloOrHelo($sEhloHost);
 		}
 		else if (\MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS === $this->iSecurityType)
