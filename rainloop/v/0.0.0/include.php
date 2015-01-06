@@ -40,10 +40,12 @@ Options -Indexes
 			$sSite = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
 			$sSite = 'www.' === substr($sSite, 0, 4) ? substr($sSite, 4) : $sSite;
 			$sSite = preg_replace('/^.+@/', '', preg_replace('/:[\d]+$/', '', $sSite));
-			$sSite = in_array($sSite, array('localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : $sSite;
+			$sSite = in_array($sSite, array('localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : trim($sSite);
+			$sSite = 0 === strlen($sSite) ? 'localhost' : $sSite;
 
 			define('APP_SITE', $sSite);
-			define('APP_SITE_CLEAR', 0 < strlen(APP_SITE) ? trim(preg_replace('/[^a-zA-Z0-9_.\-]+/', '_', trim(strtolower(APP_SITE))), ' _') : '');
+
+			unset($sSite);
 
 			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
@@ -177,7 +179,7 @@ Options -Indexes
 
 					if (@is_dir(APP_PRIVATE_DATA.'domains'))
 					{
-						$sFile = $sNewFile = '';
+						$sFile = $sNewFile = $sNewFileName = '';
 						$aFiles = @glob(APP_VERSION_ROOT_PATH.'app/domains/*');
 
 						if (is_array($aFiles) && 0 < \count($aFiles))
@@ -186,32 +188,45 @@ Options -Indexes
 							{
 								if (@is_file($sFile))
 								{
-									$sNewFile = APP_PRIVATE_DATA.'domains/'.basename($sFile);
-									if (!@file_exists($sNewFile))
+									$sNewFileName = basename($sFile);
+									if ('default.ini.dist' !== $sNewFileName)
 									{
-										@copy($sFile, $sNewFile);
+										$sNewFile = APP_PRIVATE_DATA.'domains/'.$sNewFileName;
+										if (!@file_exists($sNewFile))
+										{
+											@copy($sFile, $sNewFile);
+										}
 									}
 								}
 							}
 						}
 
-						unset($aFiles, $sFile, $sNewFile);
-						
-						if (@file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist'))
+						unset($aFiles, $sFile, $sNewFileName, $sNewFile);
+
+						if (@file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
+							!file_exists(APP_PRIVATE_DATA.'domains/'.APP_SITE.'.ini'))
 						{
+							$sClearedSiteName = preg_replace('/^(webmail|email|mail||imap|smtp)\./i', '', trim(APP_SITE));
+
 							$sConfigTemplate = @file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
-							$sConfigDomain = str_replace('IMAP_HOST','imap.'.$sSite,$sConfigTemplate);
-							$sConfigDomain = str_replace('IMAP_PORT','993',$sConfigDomain);
-							$sConfigDomain = str_replace('SMTP_HOST','smtp.'.$sSite,$sConfigDomain);
-							$sConfigDomain = str_replace('SMTP_PORT','465',$sConfigDomain);
-	
-							@file_put_contents(APP_PRIVATE_DATA.'domains/'.$sSite.'.ini', $sConfigDomain);
+
+							if (!empty($sConfigTemplate) && !empty($sClearedSiteName))
+							{
+								@file_put_contents(APP_PRIVATE_DATA.'domains/'.APP_SITE.'.ini', strtr($sConfigTemplate, array(
+									'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
+									'IMAP_PORT' => '993',
+									'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,
+									'SMTP_PORT' => '465'
+								)));
+							}
+
+							unset($sConfigTemplate, $sClearedSiteName);
 						}
 					}
 				}
 			}
 
-			unset($sSite, $sSalt, $sData, $sInstalled, $sConfigTemplate, $sConfigDomain, $sPrivateDataFolderInternalName);
+			unset($sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
 		}
 
 		include APP_VERSION_ROOT_PATH.'app/handle.php';

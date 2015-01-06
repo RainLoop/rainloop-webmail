@@ -3588,9 +3588,10 @@ class Actions
 
 	public function removeOldVersion()
 	{
+		$sVPath = APP_INDEX_ROOT_PATH.'rainloop/v/';
+
 		$this->Logger()->Write('Versions GC: Begin');
 
-		$sVPath = APP_INDEX_ROOT_PATH.'rainloop/v/';
 		$aDirs = @\array_map('basename', @\array_filter(@\glob($sVPath.'*'), 'is_dir'));
 
 		$this->Logger()->Write('Versions GC: Count:'.(\is_array($aDirs) ? \count($aDirs) : 0));
@@ -3604,9 +3605,18 @@ class Actions
 				if (APP_DEV_VERSION !== $sName && APP_VERSION !== $sName)
 				{
 					$this->Logger()->Write('Versions GC: Begin to remove  "'.$sVPath.$sName.'" version');
-					@\MailSo\Base\Utils::RecRmDir($sVPath.$sName);
-					$this->Logger()->Write('Versions GC: End to remove  "'.$sVPath.$sName.'" version');
 
+					if (@\unlink($sVPath.$sName.'/index.php'))
+					{
+						@\MailSo\Base\Utils::RecRmDir($sVPath.$sName);
+					}
+					else
+					{
+						$this->Logger()->Write('Versions GC (Error): index file cant be removed from"'.$sVPath.$sName.'"',
+							\MailSo\Log\Enumerations\Type::ERROR);
+					}
+
+					$this->Logger()->Write('Versions GC: End to remove  "'.$sVPath.$sName.'" version');
 					break;
 				}
 			}
