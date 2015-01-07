@@ -2,7 +2,7 @@
 	<div class="modal hide b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
 			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
-				<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
+				<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SEND"></span>
 			</a>

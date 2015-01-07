@@ -1914,7 +1914,8 @@ class MailClient
 
 					if (1 < $iMessageCount)
 					{
-						if ($bMessageListOptimization || 0 === \MailSo\Config::$MessageListDateFilter)
+						if (0 === \MailSo\Config::$MessageListDateFilter &&
+							($bMessageListOptimization || !$bUseSortIfSupported))
 						{
 							$aIndexOrUids = \array_reverse(\range(1, $iMessageCount));
 						}
@@ -2014,17 +2015,138 @@ class MailClient
 	}
 
 	/**
+	 * @param array $aMailFoldersHelper
+	 * @param int $iOptimizationLimit = 0
+	 *
+	 * @return array
+	 */
+	public function folerListOptimization($aMailFoldersHelper, $iOptimizationLimit = 0)
+	{
+		// optimization
+		if (10 < $iOptimizationLimit && $iOptimizationLimit < \count($aMailFoldersHelper))
+		{
+			if ($this->oLogger)
+			{
+				$this->oLogger->Write('Start optimization (limit:'.$iOptimizationLimit.') for '.\count($aMailFoldersHelper).' folders');
+			}
+
+			$iForeachLimit = 1;
+
+			$aFilteredNames = array(
+				'inbox',
+				'sent', 'outbox', 'sentmail',
+				'drafts',
+				'junk', 'spam',
+				'trash', 'bin',
+				'archive', 'allmail', 'all',
+				'starred', 'flagged', 'important'
+			);
+
+			$aNewMailFoldersHelper = array();
+
+			$iCountLimit = $iForeachLimit;
+			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+			{
+				// normal and subscribed only
+				if ($oFolder && ($oFolder->IsSubscribed() || \in_array(\strtolower($oFolder->NameRaw()), $aFilteredNames)))
+				{
+					$aNewMailFoldersHelper[] = $oFolder;
+
+					$aMailFoldersHelper[$iIndex] = null;
+					$iCountLimit--;
+				}
+
+				if (0 > $iCountLimit)
+				{
+					if ($iOptimizationLimit < \count($aNewMailFoldersHelper))
+					{
+						break;
+					}
+					else
+					{
+						$iCountLimit = $iForeachLimit;
+					}
+				}
+			}
+
+			$iCountLimit = $iForeachLimit;
+			if ($iOptimizationLimit >= \count($aNewMailFoldersHelper))
+			{
+				// name filter
+				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+				{
+					if ($oFolder && !\preg_match('/[{}\[\]]/', $oFolder->NameRaw()))
+					{
+						$aNewMailFoldersHelper[] = $oFolder;
+
+						$aMailFoldersHelper[$iIndex] = null;
+						$iCountLimit--;
+					}
+
+					if (0 > $iCountLimit)
+					{
+						if ($iOptimizationLimit < \count($aNewMailFoldersHelper))
+						{
+							break;
+						}
+						else
+						{
+							$iCountLimit = $iForeachLimit;
+						}
+					}
+				}
+			}
+
+			$iCountLimit = $iForeachLimit;
+			if ($iOptimizationLimit >= \count($aNewMailFoldersHelper))
+			{
+				// other
+				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+				{
+					if ($oFolder)
+					{
+						$aNewMailFoldersHelper[] = $oFolder;
+
+						$aMailFoldersHelper[$iIndex] = null;
+						$iCountLimit--;
+					}
+
+					if (0 > $iCountLimit)
+					{
+						if ($iOptimizationLimit < \count($aNewMailFoldersHelper))
+						{
+							break;
+						}
+						else
+						{
+							$iCountLimit = $iForeachLimit;
+						}
+					}
+				}
+			}
+
+			$aMailFoldersHelper = $aNewMailFoldersHelper;
+
+			if ($this->oLogger)
+			{
+				$this->oLogger->Write('Result optimization: '.\count($aMailFoldersHelper).' folders');
+			}
+		}
+
+		return $aMailFoldersHelper;
+	}
+
+	/**
 	 * @param string $sParent = ''
 	 * @param string $sListPattern = '*'
 	 * @param bool $bUseListSubscribeStatus = false
+	 * @param int $iOptimizationLimit = 0
 	 *
 	 * @return \MailSo\Mail\FolderCollection|false
 	 */
-	public function Folders($sParent = '', $sListPattern = '*', $bUseListSubscribeStatus = true)
+	public function Folders($sParent = '', $sListPattern = '*', $bUseListSubscribeStatus = true, $iOptimizationLimit = 0)
 	{
 		$oFolderCollection = false;
-
-		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
 
 		$aSubscribedFolders = null;
 		if ($bUseListSubscribeStatus)
@@ -2046,7 +2168,11 @@ class MailClient
 			}
 		}
 
+		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
+
+		$bOptimized = false;
 		$aMailFoldersHelper = null;
+
 		if (\is_array($aFolders))
 		{
 			$aMailFoldersHelper = array();
@@ -2058,12 +2184,19 @@ class MailClient
 					$oImapFolder->IsInbox()
 				);
 			}
+
+			$iCount = \count($aMailFoldersHelper);
+			$aMailFoldersHelper = $this->folerListOptimization($aMailFoldersHelper, $iOptimizationLimit);
+
+			$bOptimized = $iCount !== \count($aMailFoldersHelper);
 		}
 
 		if (\is_array($aMailFoldersHelper))
 		{
 			$oFolderCollection = FolderCollection::NewInstance();
 			$oFolderCollection->InitByUnsortedMailFolderArray($aMailFoldersHelper);
+
+			$oFolderCollection->Optimized = $bOptimized;
 		}
 
 		if ($oFolderCollection)

@@ -75,7 +75,7 @@
 		{
 			this.layout(mLayout);
 		}
-		
+
 		this.facebookSupported(!!Settings.settingsGet('SupportedFacebookSocial'));
 		this.facebookEnable(!!Settings.settingsGet('AllowFacebookSocial'));
 		this.facebookAppID(Settings.settingsGet('FacebookAppID'));

@@ -308,12 +308,14 @@
 													<div class="hidePreview">
 														<div class="iconMain">
 															<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+															<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText()"></i>
 														</div>
 													</div>
 													<div class="showPreview">
 														<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: {'href': linkPreviewMain(), 'data-index': $index}" target="_blank">
 															<div class="iconMain">
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+																<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText()"></i>
 															</div>
 															<div class="iconBG" data-bind="attr: { 'style': linkThumbnailPreviewStyle() }"></div>
 															<div class="iconPreview">

@@ -91,6 +91,9 @@
 					case 'doc':
 						sClass = 'icon-file-text';
 						break;
+					case 'certificate':
+						sClass = 'icon-file-certificate';
+						break;
 //					case 'pdf':
 //						sClass = 'icon-file-pdf';
 //						break;
@@ -627,6 +630,10 @@
 		if (this.focused())
 		{
 			aResult.push('focused');
+		}
+		if (this.isImportant())
+		{
+			aResult.push('important');
 		}
 		if (this.hasAttachments())
 		{

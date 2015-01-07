@@ -75,8 +75,8 @@
 		var bResult = false;
 		if (oJsonAttachment && 'Object/Attachment' === oJsonAttachment['@Object'])
 		{
-			this.mimeType = (oJsonAttachment.MimeType || '').toLowerCase();
-			this.fileName = oJsonAttachment.FileName;
+			this.mimeType = Utils.trim((oJsonAttachment.MimeType || '').toLowerCase());
+			this.fileName = Utils.trim(oJsonAttachment.FileName);
 			this.estimatedSize = Utils.pInt(oJsonAttachment.EstimatedSize);
 			this.isInline = !!oJsonAttachment.IsInline;
 			this.isLinked = !!oJsonAttachment.IsLinked;
@@ -122,8 +122,8 @@
 	 */
 	AttachmentModel.prototype.isText = function ()
 	{
-		return 'text/' === this.mimeType.substr(0, 5) &&
-			-1 === Utils.inArray(this.mimeType, ['text/html']);
+		return -1 < Utils.inArray(this.mimeType, ['application/pgp-signature']) ||
+			('text/' === this.mimeType.substr(0, 5) && -1 === Utils.inArray(this.mimeType, ['text/html']));
 	};
 
 	/**
@@ -267,9 +267,12 @@
 	 */
 	AttachmentModel.staticIconClassHelper = function (sMimeType)
 	{
+		sMimeType = Utils.trim(sMimeType).toLowerCase();
+
 		var
-			aParts = sMimeType.toLocaleString().split('/'),
-			sClass = 'icon-file'
+			sText = '',
+			sClass = 'icon-file',
+			aParts = sMimeType.split('/')
 		;
 
 		if (aParts && aParts[1])
@@ -295,17 +298,24 @@
 			{
 				sClass = 'icon-file-zip';
 			}
-	//		else if (-1 < Utils.inArray(aParts[1],
-	//			['pdf', 'x-pdf']))
-	//		{
-	//			sClass = 'icon-file-pdf';
-	//		}
+			else if (-1 < Utils.inArray(aParts[1],
+				['pdf', 'x-pdf']))
+			{
+				sText = 'pdf'
+				sClass = 'icon-none';
+			}
 	//		else if (-1 < Utils.inArray(aParts[1], [
 	//			'exe', 'x-exe', 'x-winexe', 'bat'
 	//		]))
 	//		{
 	//			sClass = 'icon-console';
 	//		}
+			else if (-1 < Utils.inArray(sMimeType, [
+				'application/pgp-signature'
+			]))
+			{
+				sClass = 'icon-file-certificate';
+			}
 			else if (-1 < Utils.inArray(aParts[1], [
 				'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
 				'vnd.openxmlformats-officedocument.wordprocessingml.template',
@@ -342,7 +352,7 @@
 			}
 		}
 
-		return sClass;
+		return [sClass, sText];
 	};
 
 	/**
@@ -350,7 +360,15 @@
 	 */
 	AttachmentModel.prototype.iconClass = function ()
 	{
-		return AttachmentModel.staticIconClassHelper(this.mimeType);
+		return AttachmentModel.staticIconClassHelper(this.mimeType)[0];
+	};
+
+	/**
+	 * @returns {string}
+	 */
+	AttachmentModel.prototype.iconText = function ()
+	{
+		return AttachmentModel.staticIconClassHelper(this.mimeType)[1];
 	};
 
 	module.exports = AttachmentModel;

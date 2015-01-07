@@ -608,7 +608,8 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param array $aResult
-	 * @param bool $bIsSubscribeList
+	 * @param string $sStatus
+	 * @param bool $bUseListStatus = false
 	 *
 	 * @return array
 	 */

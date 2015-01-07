@@ -197,6 +197,14 @@ class Attachment
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsPgpSignature()
+	{
+		return $this->oBodyStructure ? $this->oBodyStructure->IsPgpSignature() : false;
+	}
+
+	/**
 	 * @return \MailSo\Mail\Attachment
 	 */
 	public static function NewInstance()

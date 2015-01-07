@@ -104,4 +104,16 @@ class AttachmentCollection extends \MailSo\Base\Collection
 
 		return \is_array($aList) ? \count($aList) : 0;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function CertificateCount()
+	{
+		$aList = $this->FilterList(function ($oAttachment) {
+			return $oAttachment && $oAttachment->IsPgpSignature();
+		});
+
+		return \is_array($aList) ? \count($aList) : 0;
+	}
 }

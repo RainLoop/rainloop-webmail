@@ -35,7 +35,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
 
 		return 0 < \strlen($sPassword) &&
-			($sPassword === $sConfigPassword || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
+			(($sPassword === $sConfigPassword && '12345' === $sConfigPassword) || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
 	}
 
 	/**
@@ -193,11 +193,6 @@ Examples:
 				'enable'	=> array(false, 'Special option required for development purposes')
 			),
 
-			'version' => array(
-				'current' => array(''),
-				'saved' => array('')
-			),
-
 			'social' => array(
 				'google_enable' => array(false, 'Google'),
 				'google_enable_auth' => array(false),
@@ -271,6 +266,7 @@ Enables caching in the system'),
 				'imap_message_list_count_limit_trigger' => array(0),
 				'imap_message_list_date_filter' => array(0),
 				'imap_large_thread_limit' => array(100),
+				'imap_folder_list_limit' => array(200),
 				'smtp_show_server_errors' => array(false),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
@@ -287,6 +283,11 @@ Enables caching in the system'),
 				'use_local_proxy_for_external_images' => array(false),
 				'dev_email' => array(''),
 				'dev_password' => array('')
+			),
+
+			'version' => array(
+				'current' => array(''),
+				'saved' => array('')
 			)
 		);
 	}

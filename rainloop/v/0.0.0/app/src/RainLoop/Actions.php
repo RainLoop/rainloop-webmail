@@ -4334,7 +4334,8 @@ class Actions
 		if (null === $oFolderCollection)
 		{
 			$oFolderCollection = $this->MailClient()->Folders('', '*',
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
+				(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 			);
 		}
 
@@ -4694,7 +4695,7 @@ class Actions
 	 */
 	public function DoMessageList()
 	{
-//		sleep(2);
+//		\sleep(2);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 
 		$sFolder = '';
@@ -4708,7 +4709,7 @@ class Actions
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
 
-		if (is_array($aValues) && 9 === count($aValues))
+		if (\is_array($aValues) && 9 === \count($aValues))
 		{
 			$sFolder =(string) $aValues[0];
 			$iOffset = (int) $aValues[1];
@@ -4753,7 +4754,7 @@ class Actions
 
 				$aExpandedThreadUid = \array_map(function ($sValue) {
 					$sValue = \trim($sValue);
-					return is_numeric($sValue) ? (int) $sValue : 0;
+					return \is_numeric($sValue) ? (int) $sValue : 0;
 				}, $aExpandedThreadUid);
 
 				$aExpandedThreadUid = \array_filter($aExpandedThreadUid, function ($iValue) {
@@ -8115,6 +8116,9 @@ class Actions
 						case $iAttachmentsCount === $oAttachments->DocCount():
 							$mResult['AttachmentsMainType'] = 'doc';
 							break;
+						case $iAttachmentsCount === $oAttachments->CertificateCount():
+							$mResult['AttachmentsMainType'] = 'certificate';
+							break;
 					}
 				}
 
@@ -8382,6 +8386,7 @@ class Actions
 					'Folder' => $mResponse->FolderName,
 					'FolderHash' => $mResponse->FolderHash,
 					'UidNext' => $mResponse->UidNext,
+					'Optimized' => $mResponse->Optimized,
 					'NewMessages' => $this->responseObject($mResponse->NewMessages),
 					'LastCollapsedThreadUids' => $mResponse->LastCollapsedThreadUids,
 					'Offset' => $mResponse->Offset,

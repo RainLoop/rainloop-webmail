@@ -900,6 +900,13 @@
 			})
 		;
 
+		this.dragOver.subscribe(function (bValue) {
+			if (bValue)
+			{
+				this.selector.scrollToTop();
+			}
+		}, this);
+
 		oJua
 			.on('onDragEnter', _.bind(function () {
 				this.dragOverEnter(true);

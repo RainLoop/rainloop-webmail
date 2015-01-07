@@ -48,6 +48,7 @@
 			'placement': 'top',
 			'trigger': 'hover',
 			'title': 'About',
+			'container': 'body',
 			'content': function () {
 				return self.readme();
 			}
