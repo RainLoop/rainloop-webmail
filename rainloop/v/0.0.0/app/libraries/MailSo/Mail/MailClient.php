@@ -2039,7 +2039,8 @@ class MailClient
 				'junk', 'spam',
 				'trash', 'bin',
 				'archive', 'allmail', 'all',
-				'starred', 'flagged', 'important'
+				'starred', 'flagged', 'important',
+				'contacts', 'chats'
 			);
 
 			$aNewMailFoldersHelper = array();
