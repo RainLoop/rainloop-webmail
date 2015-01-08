@@ -1202,13 +1202,94 @@
 		Local.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
 	};
 
-	AppUser.prototype.initLayoutResizer = function (sLeft, sRight, sClientSideKeyName)
+	AppUser.prototype.initHorizontalLayoutResizer = function (sClientSideKeyName)
+	{
+		var
+			iMinHeight = 200,
+			iMaxHeight = 500,
+			oTop = null,
+			oBottom = null,
+
+			fResizeFunction = function (oEvent, oObject) {
+				if (oObject && oObject.size && oObject.size.height)
+				{
+					Local.set(sClientSideKeyName, oObject.size.height);
+
+					fSetHeight(oObject.size.height);
+
+					Utils.windowResize();
+				}
+			},
+
+			oOptions = {
+				'helper': 'ui-resizable-helper-h',
+				'minHeight': iMinHeight,
+				'maxHeight': iMaxHeight,
+				'handles': 's',
+				'stop': fResizeFunction
+			},
+
+			fSetHeight = function (iHeight) {
+				if (iHeight)
+				{
+					if (oTop)
+					{
+						oTop.attr('style', 'height:' + iHeight + 'px');
+					}
+
+					if (oBottom)
+					{
+						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + iHeight) + 'px');
+					}
+				}
+			},
+
+			fDisable = function (bDisable) {
+				if (bDisable)
+				{
+					if (oTop && oTop.hasClass('ui-resizable'))
+					{
+						oTop
+							.resizable('destroy')
+							.removeAttr('style')
+						;
+					}
+
+					if (oBottom)
+					{
+						oBottom.removeAttr('style');
+					}
+				}
+				else if (Globals.$html.hasClass('rl-bottom-preview-pane'))
+				{
+					oTop = $('.b-message-list-wrapper');
+					oBottom = $('.b-message-view-wrapper');
+
+					if (!oTop.hasClass('ui-resizable'))
+					{
+						oTop.resizable(oOptions);
+					}
+
+					var iHeight = Utils.pInt(Local.get(sClientSideKeyName)) || 300;
+					fSetHeight(iHeight > iMinHeight ? iHeight : iMinHeight);
+				}
+			}
+		;
+
+		fDisable(false);
+
+		Events.sub('layout', function (sLayout) {
+			fDisable(Enums.Layout.BottomPreview !== sLayout);
+		});
+	};
+
+	AppUser.prototype.initVerticalLayoutResizer = function (sClientSideKeyName)
 	{
 		var
 			iDisabledWidth = 60,
 			iMinWidth = 155,
-			oLeft = $(sLeft),
-			oRight = $(sRight),
+			oLeft = $('#rl-left'),
+			oRight = $('#rl-right'),
 
 			mLeftWidth = Local.get(sClientSideKeyName) || null,
 
@@ -1257,7 +1338,7 @@
 		}
 
 		oLeft.resizable({
-			'helper': 'ui-resizable-helper',
+			'helper': 'ui-resizable-helper-w',
 			'minWidth': iMinWidth,
 			'maxWidth': 350,
 			'handles': 'e',
@@ -1461,7 +1542,7 @@
 					if (!Globals.bMobileDevice)
 					{
 						_.defer(function () {
-							self.initLayoutResizer('#rl-left', '#rl-right', Enums.ClientSideKeyName.FolderListSize);
+							self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 						});
 					}
 				}

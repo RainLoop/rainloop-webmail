@@ -108,9 +108,16 @@
 	 */
 	ComposeAttachmentModel.prototype.iconClass = function ()
 	{
-		return AttachmentModel.staticIconClassHelper(this.mimeType());
+		return AttachmentModel.staticIconClassHelper(this.mimeType())[0];
 	};
 
+	/**
+	 * @return {string}
+	 */
+	ComposeAttachmentModel.prototype.iconText = function ()
+	{
+		return AttachmentModel.staticIconClassHelper(this.mimeType())[1];
+	};
 
 	module.exports = ComposeAttachmentModel;
 

@@ -48,16 +48,18 @@
 					<span data-bind="text: printableCheckedMessageCount()"></span>
 					<i class="icon-mail"></i>
 				</div>
+
 				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 					<span class="i18n" data-i18n-text="MESSAGE/MESSAGE_VIEW_DESC"></span>
 				</div>
+
 				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">
 					<span class="text" data-bind="text: messageError()"></span>
 				</div>
 
-				<div data-bind="visible: message">
-
-					<div class="message-fixed-button-toolbar clearfix">
+				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
+				<!--<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message, initFixedTrigger: ['.b-message-view-wrapper', 20]">-->
+					<nobr>
 						<div class="btn-group colored-toggle pull-right">
 							<a class="btn btn-dark-disabled-border buttonReply" data-tooltip-placement="bottom"
 								data-bind="command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
@@ -182,9 +184,11 @@
 								<i class="icon-pencil icon-white"></i>
 							</a>
 						</div>
-					</div>
+					</nobr>
+				</div>
 
-					<div class="messageItem" data-bind="css: viewLineAsCcc(), nano: true">
+				<div data-bind="visible: message">
+					<div class="messageItem fixIndex" data-bind="css: viewLineAsCcc(), nano: true">
 						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
 							<div class="content-wrapper">
 								<div>
@@ -312,7 +316,7 @@
 														</div>
 													</div>
 													<div class="showPreview">
-														<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: {'href': linkPreviewMain(), 'data-index': $index}" target="_blank">
+														<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: { 'title': fileName, 'href': linkPreviewMain(), 'data-index': $index }" target="_blank">
 															<div class="iconMain">
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
 																<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText()"></i>

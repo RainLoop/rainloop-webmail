@@ -325,6 +325,33 @@
 		}
 	};
 
+	ko.bindingHandlers.initFixedTrigger = {
+		'init': function (oElement, fValueAccessor) {
+			var
+				aValues = ko.unwrap(fValueAccessor()),
+				$oContainer = null,
+				$oElement = $(oElement),
+				oOffset = null,
+
+				iTop = aValues[1] || 0
+			;
+
+			$oContainer = $(aValues[0] || null);
+			$oContainer = $oContainer[0] ? $oContainer : null;
+
+			if ($oContainer)
+			{
+				$(window).resize(function () {
+					oOffset = $oContainer.offset();
+					if (oOffset && oOffset.top)
+					{
+						$oElement.css('top', oOffset.top + iTop);
+					}
+				});
+			}
+		}
+	};
+
 	ko.bindingHandlers.initResizeTrigger = {
 		'init': function (oElement, fValueAccessor) {
 			var aValues = ko.unwrap(fValueAccessor());

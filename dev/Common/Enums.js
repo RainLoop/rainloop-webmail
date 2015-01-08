@@ -154,7 +154,8 @@
 		'MessagesInboxLastHash': 1,
 		'MailBoxListSize': 2,
 		'ExpandedFolders': 3,
-		'FolderListSize': 4
+		'FolderListSize': 4,
+		'MessageListSize': 5
 	};
 
 	/**

@@ -105,17 +105,20 @@
 			}
 		;
 
-		Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === Data.layout());
-		Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === Data.layout());
-
 		Data.folderList.subscribe(fResizeFunction);
 		Data.messageList.subscribe(fResizeFunction);
 		Data.message.subscribe(fResizeFunction);
 
 		Data.layout.subscribe(function (nValue) {
+
 			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
 			Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
+
+			Events.pub('layout', [nValue]);
 		});
+
+		Data.layout.valueHasMutated();
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
 			Data.foldersInboxUnreadCount(nCount);
@@ -124,6 +127,17 @@
 		Data.foldersInboxUnreadCount.subscribe(function () {
 			this.setNewTitle();
 		}, this);
+
+	};
+
+	MailBoxUserScreen.prototype.onBuild = function ()
+	{
+		if (!Globals.bMobileDevice)
+		{
+			_.defer(function () {
+				require('App/User').initHorizontalLayoutResizer(Enums.ClientSideKeyName.MessageListSize);
+			});
+		}
 	};
 
 	/**

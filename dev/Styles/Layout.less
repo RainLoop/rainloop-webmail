@@ -205,9 +205,18 @@ html.rl-left-panel-disabled {
 	}
 }
 
-.ui-resizable-helper {
+.ui-resizable-helper-w {
 	border-right: 5px solid #777;
 	border-right-color: rgba(255,255,255,0.7);
+}
+
+.ui-resizable-helper-h {
+	border-bottom: 5px solid #ccc;
+	border-bottom-color: rgba(0,0,0,0.3);
+}
+
+.ui-resizable-handle {
+	/*background: red;*/
 }
 
 html.rl-no-preview-pane {
@@ -228,6 +237,10 @@ html.rl-no-preview-pane {
 	#rl-right .ui-resizable-handle {
 		display: none !important;
 	}
+}
+
+html.rl-side-preview-pane #rl-right .ui-resizable-handle {
+	display: none !important;
 }
 
 html.rl-bottom-preview-pane {
@@ -264,14 +277,6 @@ html.rl-bottom-preview-pane {
 
 			box-shadow: none;
 		}
-
-		.message-fixed-button-toolbar {
-			top: 370px;
-		}
-	}
-
-	#rl-right .ui-resizable-handle {
-		display: none !important;
 	}
 }
 
