@@ -262,7 +262,8 @@ class BodyStructure
 	 */
 	public function IsPgpSignature()
 	{
-		return 'application/pgp-signature' === \strtolower($this->ContentType());
+		return \in_array(\strtolower($this->ContentType()),
+			array('application/pgp-signature', 'application/pkcs7-signature'));
 	}
 
 	/**

@@ -301,7 +301,7 @@
 			else if (-1 < Utils.inArray(aParts[1],
 				['pdf', 'x-pdf']))
 			{
-				sText = 'pdf'
+				sText = 'pdf';
 				sClass = 'icon-none';
 			}
 	//		else if (-1 < Utils.inArray(aParts[1], [
@@ -311,7 +311,7 @@
 	//			sClass = 'icon-console';
 	//		}
 			else if (-1 < Utils.inArray(sMimeType, [
-				'application/pgp-signature'
+				'application/pgp-signature', 'application/pkcs7-signature'
 			]))
 			{
 				sClass = 'icon-file-certificate';

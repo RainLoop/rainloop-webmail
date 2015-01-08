@@ -8386,7 +8386,6 @@ class Actions
 					'Folder' => $mResponse->FolderName,
 					'FolderHash' => $mResponse->FolderHash,
 					'UidNext' => $mResponse->UidNext,
-					'Optimized' => $mResponse->Optimized,
 					'NewMessages' => $this->responseObject($mResponse->NewMessages),
 					'LastCollapsedThreadUids' => $mResponse->LastCollapsedThreadUids,
 					'Offset' => $mResponse->Offset,
@@ -8406,6 +8405,7 @@ class Actions
 					'Namespace' => $mResponse->GetNamespace(),
 					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : '',
 					'IsThreadsSupported' => $mResponse->IsThreadsSupported,
+					'Optimized' => $mResponse->Optimized,
 					'SystemFolders' => isset($mResponse->SystemFolders) && \is_array($mResponse->SystemFolders) ? $mResponse->SystemFolders : array()
 				));
 			}

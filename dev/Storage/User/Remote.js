@@ -226,7 +226,8 @@
 	 */
 	RemoteUserStorage.prototype.accountsCounts = function (fCallback)
 	{
-		this.defaultRequest(fCallback, 'AccountsCounts');
+		return !!fCallback; // TODO
+//		this.defaultRequest(fCallback, 'AccountsCounts');
 	};
 
 	/**
