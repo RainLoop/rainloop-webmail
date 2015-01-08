@@ -75,6 +75,14 @@
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
+		this.submitErrorAddidional = ko.observable('');
+
+		this.submitError.subscribe(function (sValue) {
+			if ('' === sValue)
+			{
+				this.submitErrorAddidional('');
+			}
+		}, this);
 
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 
@@ -177,6 +185,13 @@
 								if ('' === this.submitError())
 								{
 									this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+								}
+								else
+								{
+									if (oData.ErrorMessageAdditional)
+									{
+										this.submitErrorAddidional(oData.ErrorMessageAdditional);
+									}
 								}
 							}
 							else

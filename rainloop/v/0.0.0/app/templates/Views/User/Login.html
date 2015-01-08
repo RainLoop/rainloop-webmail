@@ -15,6 +15,10 @@
 			<div class="alert alertError" data-bind="visible: '' !== submitError()">
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>
+				<div data-bind="visible: '' !== submitErrorAddidional()">
+					<br />
+					<span data-bind="text: submitErrorAddidional"></span>
+				</div>
 			</div>
 			<form class="wrapper loginForm thm-login" action="#/" data-bind="submit: submitForm">
 				{{INCLUDE/TopControlGroup/PLACE}}

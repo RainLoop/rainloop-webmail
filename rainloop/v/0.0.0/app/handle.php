@@ -11,7 +11,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	if (!defined('RL_BACKWARD_CAPABILITY'))
 	{
 		\define('RL_BACKWARD_CAPABILITY', true);
-		include_once RAINLOOP_APP_PATH.'src/RainLoop/Common/BackwardCapability/Account.php';
+		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/BackwardCapability/Account.php';
 	}
 
 	/**
@@ -19,49 +19,45 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	 *
 	 * @return mixed
 	 */
-	function RainLoopSplAutoloadRegisterFunction($sClassName)
+	function rainLoopSplAutoloadNamespaces()
 	{
-		if (0 === \strpos($sClassName, 'RainLoop') && false !== \strpos($sClassName, '\\'))
+		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop') :
+			array('RainLoop', 'Facebook', 'GuzzleHttp', 'Symfony', 'PHPThumb', 'Sabre');
+	}
+
+	/**
+	 * @param string $sClassName
+	 *
+	 * @return mixed
+	 */
+	function rainLoopSplAutoloadRegisterFunction($sClassName)
+	{
+		if ($sClassName && '\\' === $sClassName[0])
 		{
-			return include RAINLOOP_APP_PATH.'src/RainLoop/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
+			$sClassName = \substr($sClassName, 1);
 		}
-		else if (!RAINLOOP_INCLUDE_AS_API_DEF)
+
+		foreach (rainLoopSplAutoloadNamespaces() as $sNamespaceName)
 		{
-			if (0 === \strpos($sClassName, 'Facebook') && false !== \strpos($sClassName, '\\'))
+			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
 			{
-				return include RAINLOOP_APP_LIBRARIES_PATH.'Facebook/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
-			}
-			else if (0 === \strpos($sClassName, 'GuzzleHttp') && false !== \strpos($sClassName, '\\'))
-			{
-				return include RAINLOOP_APP_LIBRARIES_PATH.'GuzzleHttp/'.\str_replace('\\', '/', \substr($sClassName, 11)).'.php';
-			}
-			else if (0 === \strpos($sClassName, 'Symfony') && false !== \strpos($sClassName, '\\'))
-			{
-				return include RAINLOOP_APP_LIBRARIES_PATH.'Symfony/'.\str_replace('\\', '/', \substr($sClassName, 8)).'.php';
-			}
-			else if (0 === \strpos($sClassName, 'PHPThumb') && false !== \strpos($sClassName, '\\'))
-			{
-				return include RAINLOOP_APP_LIBRARIES_PATH.'PHPThumb/'.\str_replace('\\', '/', \substr($sClassName, 9)).'.php';
-			}
-			else if (0 === \strpos($sClassName, 'Sabre') && false !== \strpos($sClassName, '\\'))
-			{
-				if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
+				if ('Sabre' === $sNamespaceName && !RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
 				{
 					\define('RL_MB_FIXED', true);
-					include_once RAINLOOP_APP_PATH.'src/RainLoop/Common/MbStringFix.php';
+					include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
 				}
 
-				return include RAINLOOP_APP_LIBRARIES_PATH.'Sabre/'.\str_replace('\\', '/', \substr($sClassName, 6)).'.php';
+				return include RAINLOOP_APP_LIBRARIES_PATH.\strtr($sClassName, '\\', '/').'.php';
 			}
 		}
 
 		return false;
 	}
 
-	\spl_autoload_register('RainLoopSplAutoloadRegisterFunction', false);
+	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction', false);
 }
 
-if (\class_exists('RainLoop\Service'))
+if (\class_exists('RainLoop\Api'))
 {
 	if (!\class_exists('MailSo\Version'))
 	{
@@ -90,7 +86,7 @@ if (\class_exists('RainLoop\Service'))
 		}
 	}
 }
-else if (\function_exists('RainLoopSplAutoloadRegisterFunction'))
+else if (\function_exists('rainLoopSplAutoloadRegisterFunction'))
 {
-	\spl_autoload_unregister('RainLoopSplAutoloadRegisterFunction');
+	\spl_autoload_unregister('rainLoopSplAutoloadRegisterFunction');
 }

@@ -1525,6 +1525,18 @@ class Actions
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
 		}
+		catch (\MailSo\Imap\Exceptions\LoginBadCredentialsException $oException)
+		{
+			if ($this->Config()->Get('labs', 'imap_show_login_alert', true))
+			{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError,
+					$oException, $oException->getAlertFromStatus());
+			}
+			else
+			{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
+			}
+		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
@@ -7739,10 +7751,11 @@ class Actions
 	 * @param string $sActionName
 	 * @param int $iErrorCode = null
 	 * @param string $sErrorMessage = null
+	 * @param string $sAdditionalErrorMessage = null
 	 *
 	 * @return array
 	 */
-	public function FalseResponse($sActionName, $iErrorCode = null, $sErrorMessage = null)
+	public function FalseResponse($sActionName, $iErrorCode = null, $sErrorMessage = null, $sAdditionalErrorMessage = null)
 	{
 		$mResult = false;
 		$this->Plugins()
@@ -7755,6 +7768,7 @@ class Actions
 		{
 			$aAdditionalParams['ErrorCode'] = (int) $iErrorCode;
 			$aAdditionalParams['ErrorMessage'] = null === $sErrorMessage ? '' : (string) $sErrorMessage;
+			$aAdditionalParams['ErrorMessageAdditional'] = null === $sAdditionalErrorMessage ? '' : (string) $sAdditionalErrorMessage;
 		}
 
 		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
@@ -7773,14 +7787,22 @@ class Actions
 	{
 		$iErrorCode = null;
 		$sErrorMessage = null;
+		$sErrorMessageAdditional = null;
 
 		if ($oException instanceof \RainLoop\Exceptions\ClientException)
 		{
 			$iErrorCode = $oException->getCode();
 			$sErrorMessage = null;
+
 			if ($iErrorCode === \RainLoop\Notifications::ClientViewError)
 			{
 				$sErrorMessage = $oException->getMessage();
+			}
+
+			$sErrorMessageAdditional = $oException->getAdditionalMessage();
+			if (empty($sErrorMessageAdditional))
+			{
+				$sErrorMessageAdditional = null;
 			}
 		}
 		else
@@ -7799,7 +7821,7 @@ class Actions
 			$this->Logger()->WriteException($oException);
 		}
 
-		return $this->FalseResponse($sActionName, $iErrorCode, $sErrorMessage);
+		return $this->FalseResponse($sActionName, $iErrorCode, $sErrorMessage, $sErrorMessageAdditional);
 	}
 
 	/**

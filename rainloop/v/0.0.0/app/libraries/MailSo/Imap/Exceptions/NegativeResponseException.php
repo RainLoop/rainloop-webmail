@@ -16,4 +16,22 @@ namespace MailSo\Imap\Exceptions;
  * @package Imap
  * @subpackage Exceptions
  */
-class NegativeResponseException extends \MailSo\Imap\Exceptions\ResponseException {}
+class NegativeResponseException extends \MailSo\Imap\Exceptions\ResponseException
+{
+	/**
+	 * @return string
+	 */
+	public function getAlertFromStatus()
+	{
+		$sResult = '';
+
+		$oResponse = $this->GetLastResponse();
+		if ($oResponse && $oResponse->IsStatusResponse && !empty($oResponse->HumanReadable) &&
+			isset($oResponse->OptionalResponse[0]) && 'ALERT' === $oResponse->OptionalResponse[0])
+		{
+			$sResult = $oResponse->HumanReadable;
+		}
+
+		return $sResult;
+	}
+}
