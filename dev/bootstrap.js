@@ -51,6 +51,11 @@
 
 			$(function () {
 
+				if (!$('#rl-content').is(':visible'))
+				{
+					Globals.$html.addClass('no-css');
+				}
+
 				if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
 				{
 					$('#rl-templates').html(window['rainloopTEMPLATES'][0]);

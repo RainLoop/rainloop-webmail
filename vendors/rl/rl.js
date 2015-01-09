@@ -69,12 +69,14 @@
 		document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 	};
 
-	window['__showError'] = function () {
+	window['__showError'] = function (sAdditionalError) {
 		var oR = document.getElementById('rl-loading'),
-			oL = document.getElementById('rl-loading-error');
+			oL = document.getElementById('rl-loading-error'),
+			oLA = document.getElementById('rl-loading-error-additional');
 
 		if (oR) {oR.style.display = 'none';}
 		if (oL) {oL.style.display = 'block';}
+		if (oLA && sAdditionalError) { oLA.style.display = 'block'; oLA.innerHTML = sAdditionalError; }
 		if (window.SimplePace) {window.SimplePace.set(100);}
 	};
 
@@ -84,15 +86,15 @@
 		}
 	};
 
-	window['__runBoot'] = function (bWithError) {
+	window['__runBoot'] = function (bWithError, sAdditionalError) {
 		if (window.__APP_BOOT && !bWithError) {
 			window.__APP_BOOT(function (bV) {
 				if (!bV) {
-					__showError();
+					__showError(sAdditionalError);
 				}
 			});
 		} else {
-			__showError();
+			__showError(sAdditionalError);
 		}
 	};
 

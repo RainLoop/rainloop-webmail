@@ -183,3 +183,27 @@
 .thm-message-view-background-color {
 	.thm-rgba-background-color(@message-background-color, @message-rgba-background-color);
 }
+
+
+html.no-css {
+
+	.thm-body {
+		color: #333;
+		background-color: #aaa;
+		background-image: none;
+	}
+
+	.thm-loading {
+		color: #333 !important;
+		text-shadow: none !important;
+
+		.e-spinner .e-bounce {
+			display: none !important;
+		}
+	}
+
+	.thm-login-desc .desc {
+		color: #333 !important;
+		text-shadow: none !important;
+	}
+}

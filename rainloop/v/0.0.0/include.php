@@ -206,7 +206,7 @@ Options -Indexes
 						if (@file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
 							!file_exists(APP_PRIVATE_DATA.'domains/'.APP_SITE.'.ini'))
 						{
-							$sClearedSiteName = preg_replace('/^(webmail|email|mail||imap|smtp)\./i', '', trim(APP_SITE));
+							$sClearedSiteName = preg_replace('/^(webmail|email|mail|imap|smtp)\./i', '', trim(APP_SITE));
 
 							$sConfigTemplate = @file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
 
