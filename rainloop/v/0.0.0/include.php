@@ -39,6 +39,7 @@ Options -Indexes
 
 			$sSite = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
 			$sSite = 'www.' === substr($sSite, 0, 4) ? substr($sSite, 4) : $sSite;
+			$sSite = 'webmail.' === substr($sSite, 0, 8) ? substr($sSite, 8) : $sSite;
 			$sSite = preg_replace('/^.+@/', '', preg_replace('/:[\d]+$/', '', $sSite));
 			$sSite = in_array($sSite, array('localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : trim($sSite);
 			$sSite = 0 === strlen($sSite) ? 'localhost' : $sSite;
