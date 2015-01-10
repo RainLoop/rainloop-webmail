@@ -44,7 +44,6 @@ Options -Indexes
 			$sSite = 0 === strlen($sSite) ? 'localhost' : $sSite;
 
 			define('APP_SITE', $sSite);
-
 			unset($sSite);
 
 			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
@@ -201,18 +200,14 @@ Options -Indexes
 							}
 						}
 
-						unset($aFiles, $sFile, $sNewFileName, $sNewFile);
-
-						if (@file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
-							!file_exists(APP_PRIVATE_DATA.'domains/'.APP_SITE.'.ini'))
+						$sClearedSiteName = preg_replace('/^(www|demo|rainloop|webmail|email|mail|imap|imap4|smtp|pop|pop3)\./i', '', trim(APP_SITE));
+						if (!empty($sClearedSiteName) && @file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
+							!@file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
 						{
-							$sClearedSiteName = preg_replace('/^(webmail|email|mail|imap|smtp)\./i', '', trim(APP_SITE));
-
 							$sConfigTemplate = @file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
-
-							if (!empty($sConfigTemplate) && !empty($sClearedSiteName))
+							if (!empty($sConfigTemplate))
 							{
-								@file_put_contents(APP_PRIVATE_DATA.'domains/'.APP_SITE.'.ini', strtr($sConfigTemplate, array(
+								@file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
 									'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
 									'IMAP_PORT' => '993',
 									'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,
@@ -220,8 +215,10 @@ Options -Indexes
 								)));
 							}
 
-							unset($sConfigTemplate, $sClearedSiteName);
+							unset($sConfigTemplate);
 						}
+
+						unset($aFiles, $sFile, $sNewFileName, $sNewFile, $sClearedSiteName);
 					}
 				}
 			}
