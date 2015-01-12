@@ -217,6 +217,8 @@
 													<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
 														<span data-bind="visible: !isDraftOrSentFolder()">
 															<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
+															&nbsp;
+															<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
 														</span>
 														<span data-bind="visible: isDraftOrSentFolder()">
 															<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:

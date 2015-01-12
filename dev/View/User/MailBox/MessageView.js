@@ -152,6 +152,7 @@
 		this.viewHash = '';
 		this.viewSubject = ko.observable('');
 		this.viewFromShort = ko.observable('');
+		this.viewFromDkimData = ko.observable(['none', '']);
 		this.viewToShort = ko.observable('');
 		this.viewFrom = ko.observable('');
 		this.viewTo = ko.observable('');
@@ -176,6 +177,33 @@
 			return this.message() ? this.message().pgpSignedVerifyUser() : '';
 		}, this);
 
+		this.viewFromDkimStatusIconClass = ko.computed(function () {
+
+//			var sResult = 'icon-warning-alt iconcolor-grey';
+			var sResult = 'icon-none iconcolor-display-none';
+			switch (this.viewFromDkimData()[0])
+			{
+				case 'none':
+//					sResult = 'icon-warning-alt iconcolor-grey';
+					sResult = 'icon-none iconcolor-display-none';
+					break;
+				case 'pass':
+					sResult = 'icon-ok iconcolor-green';
+					break;
+				default:
+					sResult = 'icon-warning-alt iconcolor-red';
+					break;
+			}
+
+			return sResult;
+
+		}, this);
+
+		this.viewFromDkimStatusTitle = ko.computed(function () {
+			var aStatus = this.viewFromDkimData();
+			return Utils.isNonEmptyArray(aStatus) ? 'DKIM: ' + aStatus[0] + ' (' + aStatus[1] + ')' : '';
+		}, this);
+
 		this.message.subscribe(function (oMessage) {
 
 			this.messageActiveDom(null);
@@ -192,6 +220,7 @@
 				this.viewHash = oMessage.hash;
 				this.viewSubject(oMessage.subject());
 				this.viewFromShort(oMessage.fromToLine(true, true));
+				this.viewFromDkimData(oMessage.fromDkimData());
 				this.viewToShort(oMessage.toToLine(true, true));
 				this.viewFrom(oMessage.fromToLine(false));
 				this.viewTo(oMessage.toToLine(false));

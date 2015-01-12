@@ -10,13 +10,15 @@
 	/**
 	 * @param {string=} sEmail
 	 * @param {string=} sName
+	 * @param {string=} sDkimStatus
 	 *
 	 * @constructor
 	 */
-	function EmailModel(sEmail, sName)
+	function EmailModel(sEmail, sName, sDkimStatus)
 	{
 		this.email = sEmail || '';
 		this.name = sName || '';
+		this.dkimStatus = sDkimStatus || 'none';
 
 		this.clearDuplicateName();
 	}
@@ -42,10 +44,16 @@
 	 */
 	EmailModel.prototype.email = '';
 
+	/**
+	 * @type {string}
+	 */
+	EmailModel.prototype.dkimStatus = 'none';
+
 	EmailModel.prototype.clear = function ()
 	{
 		this.email = '';
 		this.name = '';
+		this.dkimStatus = 'none';
 	};
 
 	/**
@@ -121,6 +129,7 @@
 		{
 			this.name = Utils.trim(oJsonEmail.Name);
 			this.email = Utils.trim(oJsonEmail.Email);
+			this.dkimStatus = Utils.trim(oJsonEmail.DkimStatus || '');
 
 			bResult = '' !== this.email;
 			this.clearDuplicateName();

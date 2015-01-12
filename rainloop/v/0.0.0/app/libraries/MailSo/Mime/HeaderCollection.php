@@ -147,7 +147,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 	/**
 	 * @param string $sHeaderName
 	 * @param bool $bCharsetAutoDetect = false
-	 * @return string
+	 *
+	 * @return \MailSo\Mime\EmailCollection|null
 	 */
 	public function GetAsEmailCollection($sHeaderName, $bCharsetAutoDetect = false)
 	{
@@ -163,7 +164,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param string $sHeaderName
-	 * @return \MailSo\Mime\ParameterCollection | null
+	 * @return \MailSo\Mime\ParameterCollection|null
 	 */
 	public function ParametersByName($sHeaderName)
 	{
@@ -327,7 +328,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 					{
 						$this->Add($oHeader);
 					}
-					
+
 					$sName = null;
 					$sValue = null;
 				}
@@ -353,6 +354,79 @@ class HeaderCollection extends \MailSo\Base\Collection
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function DkimStatuses()
+	{
+		$aResult = array();
+
+		$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS);
+		if (\is_array($aHeaders) && 0 < \count($aHeaders))
+		{
+			foreach ($aHeaders as $sHeaderValue)
+			{
+				$sStatus = '';
+				$sDomain = '';
+				$sDkimLine = '';
+
+				$aMatch = array();
+
+				if (\preg_match('/dkim=[^\r\n;]+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
+				{
+					$sDkimLine = $aMatch[0];
+
+					$aMatch = array();
+					if (\preg_match('/dkim=([a-zA-Z0-9]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[1]))
+					{
+						$sStatus = $aMatch[1];
+					}
+
+					$aMatch = array();
+					if (\preg_match('/header\.(d|i|from)=([^\s]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2]))
+					{
+						$sDomain = \trim($aMatch[2]);
+						$sDomain = \trim($sDomain, '@.');
+					}
+
+					if (!empty($sStatus) && !empty($sDomain))
+					{
+						$aResult[] = array($sStatus, $sDomain);
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function PopulateEmailColectionByDkim($oEmails)
+	{
+		if ($oEmails && $oEmails instanceof \MailSo\Mime\EmailCollection)
+		{
+			$aDkimStatuses = $this->DkimStatuses();
+			if (\is_array($aDkimStatuses) && 0 < \count($aDkimStatuses))
+			{
+				$oEmails->ForeachList(function (/* @var $oItem \MailSo\Mime\Email */ $oItem) use ($aDkimStatuses) {
+					if ($oItem && $oItem instanceof \MailSo\Mime\Email)
+					{
+						$sEmailDomain = $oItem->GetDomain();
+						foreach ($aDkimStatuses as $aDkimData)
+						{
+							if (isset($aDkimData[0], $aDkimData[1]) && $sEmailDomain === $aDkimData[1])
+							{
+								$oItem->SetDkimStatus($aDkimData[0]);
+							}
+						}
+					}
+				});
+			}
+		}
 	}
 
 	/**

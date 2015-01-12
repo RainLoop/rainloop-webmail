@@ -564,6 +564,21 @@
 	};
 
 	/**
+	 * @return {string}
+	 */
+	MessageModel.prototype.fromDkimData = function ()
+	{
+		var aResult = ['none', ''];
+		if (Utils.isNonEmptyArray(this.from) && 1 === this.from.length &&
+			this.from[0] && this.from[0].dkimStatus)
+		{
+			aResult = [this.from[0].dkimStatus, this.from[0].email];
+		}
+
+		return aResult;
+	};
+
+	/**
 	 * @param {boolean} bFriendlyView
 	 * @param {boolean=} bWrapWithLink = false
 	 * @return {string}

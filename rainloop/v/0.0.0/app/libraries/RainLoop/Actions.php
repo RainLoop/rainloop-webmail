@@ -8274,7 +8274,8 @@ class Actions
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetDisplayName()),
-					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail(true))
+					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail(true)),
+					'DkimStatus' => $mResponse->GetDkimStatus()
 				));
 			}
 			else if ('RainLoop\Providers\AddressBook\Classes\Contact' === $sClassName)
