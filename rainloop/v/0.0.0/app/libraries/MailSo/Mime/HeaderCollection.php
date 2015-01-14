@@ -369,12 +369,14 @@ class HeaderCollection extends \MailSo\Base\Collection
 			foreach ($aHeaders as $sHeaderValue)
 			{
 				$sStatus = '';
-				$sDomain = '';
+				$sHeader = '';
 				$sDkimLine = '';
 
 				$aMatch = array();
 
-				if (\preg_match('/dkim=[^\r\n;]+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
+				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+				if (\preg_match('/dkim=[^;]+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
 				{
 					$sDkimLine = $aMatch[0];
 
@@ -385,15 +387,14 @@ class HeaderCollection extends \MailSo\Base\Collection
 					}
 
 					$aMatch = array();
-					if (\preg_match('/header\.(d|i|from)=([^\s]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2]))
+					if (\preg_match('/header\.(d|i|from)=([^\s;]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2]))
 					{
-						$sDomain = \trim($aMatch[2]);
-						$sDomain = \trim($sDomain, '@.');
+						$sHeader = \trim($aMatch[2]);
 					}
 
-					if (!empty($sStatus) && !empty($sDomain))
+					if (!empty($sStatus) && !empty($sHeader))
 					{
-						$aResult[] = array($sStatus, $sDomain);
+						$aResult[] = array($sStatus, $sHeader);
 					}
 				}
 			}
@@ -415,10 +416,11 @@ class HeaderCollection extends \MailSo\Base\Collection
 				$oEmails->ForeachList(function (/* @var $oItem \MailSo\Mime\Email */ $oItem) use ($aDkimStatuses) {
 					if ($oItem && $oItem instanceof \MailSo\Mime\Email)
 					{
-						$sEmailDomain = $oItem->GetDomain();
+						$sEmail = $oItem->GetEmail();
 						foreach ($aDkimStatuses as $aDkimData)
 						{
-							if (isset($aDkimData[0], $aDkimData[1]) && $sEmailDomain === $aDkimData[1])
+							if (isset($aDkimData[0], $aDkimData[1]) &&
+								$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
 							{
 								$oItem->SetDkimStatus($aDkimData[0]);
 							}
