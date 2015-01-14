@@ -399,6 +399,38 @@ class HeaderCollection extends \MailSo\Base\Collection
 				}
 			}
 		}
+		else
+		{
+			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
+			$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
+			if (\is_array($aHeaders) && 0 < \count($aHeaders))
+			{
+				foreach ($aHeaders as $sHeaderValue)
+				{
+					$sStatus = '';
+					$sHeader = '';
+
+					$aMatch = array();
+
+					$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+					if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+					{
+						$sStatus = $aMatch[1];
+					}
+
+					if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+					{
+						$sHeader = \trim($aMatch[1]);
+					}
+
+					if (!empty($sStatus) && !empty($sHeader))
+					{
+						$aResult[] = array($sStatus, $sHeader);
+					}
+				}
+			}
+		}
 
 		return $aResult;
 	}
