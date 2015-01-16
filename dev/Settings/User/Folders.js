@@ -21,7 +21,6 @@
 	 */
 	function FoldersUserSettings()
 	{
-		this.foldersListError = Data.foldersListError;
 		this.folderList = Data.folderList;
 
 		this.processText = ko.computed(function () {
@@ -105,7 +104,7 @@
 				Data.foldersRenaming(false);
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
-					Data.foldersListError(
+					Data.folderList.error(
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 				}
 
@@ -131,7 +130,7 @@
 
 	FoldersUserSettings.prototype.onShow = function ()
 	{
-		Data.foldersListError('');
+		Data.folderList.error('');
 	};
 
 	FoldersUserSettings.prototype.createFolder = function ()
@@ -176,7 +175,7 @@
 					Data.foldersDeleting(false);
 					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 					{
-						Data.foldersListError(
+						Data.folderList.error(
 							oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 					}
 
@@ -189,7 +188,7 @@
 		}
 		else if (0 < oFolderToRemove.privateMessageCountAll())
 		{
-			Data.foldersListError(Utils.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
+			Data.folderList.error(Utils.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
 		}
 	};
 

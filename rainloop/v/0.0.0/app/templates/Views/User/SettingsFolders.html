@@ -15,9 +15,14 @@
 		&nbsp;&nbsp;
 		<span class="i18n" data-i18n-text="SETTINGS_FOLDERS/BUTTON_SYSTEM"></span>
 	</a>
-	<div class="alert folders-list-error" data-bind="visible: '' !== foldersListError()">
-		<button type="button" class="close" data-bind="click: function () { foldersListError(''); }">&times;</button>
-		<span data-bind="text: foldersListError"></span>
+	<div class="alert folders-list-error" data-bind="visible: folderList.optimized">
+		<b class="i18n" data-i18n-text="SETTINGS_FOLDERS/TO_MANY_FOLDERS_DESC_1"></b>
+		<br />
+		<span class="i18n" data-i18n-text="SETTINGS_FOLDERS/TO_MANY_FOLDERS_DESC_2"></span>
+	</div>
+	<div class="alert folders-list-error" data-bind="visible: '' !== folderList.error()">
+		<button type="button" class="close" data-bind="click: function () { folderList.error(''); }">&times;</button>
+		<span data-bind="text: folderList.error"></span>
 	</div>
 	<div class="process-place" data-bind="style: {'visibility': visibility }">
 		<i class="icon-spinner animated"></i>

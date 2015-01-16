@@ -134,8 +134,8 @@
 		this.namespace = '';
 		this.folderList = ko.observableArray([]);
 		this.folderList.focused = ko.observable(false);
-
-		this.foldersListError = ko.observable('');
+		this.folderList.optimized = ko.observable(false);
+		this.folderList.error = ko.observable('');
 
 		this.foldersLoading = ko.observable(false);
 		this.foldersCreating = ko.observable(false);

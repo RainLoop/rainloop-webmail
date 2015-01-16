@@ -83,7 +83,7 @@
 				}
 				else
 				{
-					Data.foldersListError(
+					Data.folderList.error(
 						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
 				}
 
