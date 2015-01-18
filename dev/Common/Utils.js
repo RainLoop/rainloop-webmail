@@ -871,10 +871,8 @@
 	{
 		oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
 		oData.showImages = ko.observable(false);
-		oData.interfaceAnimation = ko.observable(Enums.InterfaceAnimation.Full);
 		oData.contactsAutosave = ko.observable(false);
-
-		Globals.sAnimationType = Enums.InterfaceAnimation.Full;
+		oData.interfaceAnimation = ko.observable(true);
 
 		oData.capaThemes = ko.observable(true);
 		oData.capaUserBackground = ko.observable(false);
@@ -893,26 +891,14 @@
 			return Enums.Layout.NoPreview !== oData.layout();
 		});
 
-		oData.interfaceAnimation.subscribe(function (sValue) {
-			if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
+		oData.interfaceAnimation.subscribe(function (bValue) {
+			if (Globals.bMobileDevice || !bValue)
 			{
-				Globals.$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
-
-				Globals.sAnimationType = Enums.InterfaceAnimation.None;
+				Globals.$html.removeClass('rl-anim').addClass('no-rl-anim');
 			}
 			else
 			{
-				switch (sValue)
-				{
-					case Enums.InterfaceAnimation.Full:
-						Globals.$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
-						Globals.sAnimationType = sValue;
-						break;
-					case Enums.InterfaceAnimation.Normal:
-						Globals.$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
-						Globals.sAnimationType = sValue;
-						break;
-				}
+				Globals.$html.removeClass('no-rl-anim').addClass('rl-anim');
 			}
 		});
 

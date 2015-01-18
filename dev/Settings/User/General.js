@@ -26,7 +26,6 @@
 		this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 		this.editorDefaultType = Data.editorDefaultType;
 		this.showImages = Data.showImages;
-		this.interfaceAnimation = Data.interfaceAnimation;
 		this.useDesktopNotifications = Data.useDesktopNotifications;
 		this.threading = Data.threading;
 		this.useThreads = Data.useThreads;
@@ -125,12 +124,6 @@
 			Data.showImages.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'ShowImages': bValue ? '1' : '0'
-				});
-			});
-
-			Data.interfaceAnimation.subscribe(function (sValue) {
-				Remote.saveSettings(null, {
-					'InterfaceAnimation': sValue
 				});
 			});
 

@@ -112,11 +112,6 @@
 	Globals.bXMLHttpRequestSupported = !!window.XMLHttpRequest;
 
 	/**
-	 * @type {string}
-	 */
-	Globals.sAnimationType = '';
-
-	/**
 	 * @type {*}
 	 */
 	Globals.__APP__ = null;

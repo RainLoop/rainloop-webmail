@@ -28,8 +28,11 @@
 		this.loadingDesc = ko.observable(Settings.settingsGet('LoadingDescription'));
 		this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo'));
+		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo') || '');
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.userLogo = ko.observable(Settings.settingsGet('UserLogo') || '');
+		this.userLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.loginDescription = ko.observable(Settings.settingsGet('LoginDescription'));
 		this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -56,7 +59,8 @@
 					f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
 					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
 					f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
-					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self)
+					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self),
+					f6 = Utils.settingsSaveHelperSimpleFunction(self.userLogo.trigger, self)
 				;
 
 				self.title.subscribe(function (sValue) {
@@ -74,6 +78,12 @@
 				self.loginLogo.subscribe(function (sValue) {
 					Remote.saveAdminConfig(f3, {
 						'LoginLogo': Utils.trim(sValue)
+					});
+				});
+
+				self.userLogo.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f6, {
+						'UserLogo': Utils.trim(sValue)
 					});
 				});
 

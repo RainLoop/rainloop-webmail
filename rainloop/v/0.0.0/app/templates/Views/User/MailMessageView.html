@@ -58,7 +58,6 @@
 				</div>
 
 				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
-				<!--<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message, initFixedTrigger: ['.b-message-view-wrapper', 20]">-->
 					<nobr>
 						<div class="btn-group colored-toggle pull-right">
 							<a class="btn btn-dark-disabled-border buttonReply" data-tooltip-placement="bottom"
@@ -187,7 +186,7 @@
 				</div>
 
 				<div data-bind="visible: message">
-					<div class="messageItemHeader">
+					<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 						<div>
 							<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
 							<div style="overflow: hidden;">

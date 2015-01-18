@@ -61,7 +61,7 @@
 		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
 		this.showImages(!!Settings.settingsGet('ShowImages'));
 		this.contactsAutosave(!!Settings.settingsGet('ContactsAutosave'));
-		this.interfaceAnimation(Settings.settingsGet('InterfaceAnimation'));
+		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
 
 		this.mainMessagesPerPage(Settings.settingsGet('MPP'));
 

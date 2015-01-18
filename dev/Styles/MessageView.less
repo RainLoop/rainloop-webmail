@@ -134,6 +134,16 @@ html.rl-no-preview-pane {
 				border-radius: 5px;
 				padding: 10px 15px;
 			}
+
+			.emptySubjectText {
+				display: none;
+				font-style: italic;
+				color: #999;
+			}
+
+			&.emptySubject .emptySubjectText {
+				display: inline;
+			}
 		}
 
 		.messageItem {
@@ -146,16 +156,6 @@ html.rl-no-preview-pane {
 			overflow: auto;
 			-webkit-overflow-scrolling: touch;
 			border-radius: @rlLowBorderRadius;
-
-			.emptySubjectText {
-				display: none;
-				font-style: italic;
-				color: #999;
-			}
-
-			&.emptySubject .emptySubjectText {
-				display: inline;
-			}
 
 			.buttonUp, .buttonUnFull, .buttonFull {
 				display: inline-block;

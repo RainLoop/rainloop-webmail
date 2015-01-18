@@ -272,15 +272,6 @@
 	};
 
 	/**
-	 * @enum {string}
-	 */
-	Enums.InterfaceAnimation = {
-		'None': 'None',
-		'Normal': 'Normal',
-		'Full': 'Full'
-	};
-
-	/**
 	 * @enum {number}
 	 */
 	Enums.Layout = {

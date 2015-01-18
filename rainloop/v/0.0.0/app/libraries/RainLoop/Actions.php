@@ -1060,6 +1060,7 @@ class Actions
 			'LoginDescription' => '',
 			'LoginCss' => '',
 			'LoginPowered' => true,
+			'UserLogo' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
@@ -1120,6 +1121,7 @@ class Actions
 			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
 			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
+			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
 		}
 
 		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
@@ -1340,7 +1342,7 @@ class Actions
 		$aResult['SignatureToAll'] = false;
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
-		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
+		$aResult['InterfaceAnimation'] = true;
 		$aResult['UserBackgroundName'] = '';
 		$aResult['UserBackgroundHash'] = '';
 
@@ -1371,7 +1373,6 @@ class Actions
 			$aResult['ReplySameFolder'] = (bool) $oSettings->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
-			$aResult['InterfaceAnimation'] = (string) $oSettings->GetConf('InterfaceAnimation', $aResult['InterfaceAnimation']);
 
 			if ($oConfig->Get('webmail', 'allow_user_background', false))
 			{
@@ -1388,9 +1389,6 @@ class Actions
 
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 		}
-
-		$aResult['InterfaceAnimation'] = \RainLoop\Enumerations\InterfaceAnimation::NONE === $aResult['InterfaceAnimation']
-			? $aResult['InterfaceAnimation'] : \RainLoop\Enumerations\InterfaceAnimation::NORMAL;
 
 		if (0 < \strlen($aResult['ParentEmail']))
 		{
@@ -2661,7 +2659,7 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered')) && $this->PremType())
+		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo')) && $this->PremType())
 		{
 			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
@@ -2670,6 +2668,8 @@ class Actions
 			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginPowered', 'branding', 'login_powered', 'bool');
+
+			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
@@ -4048,13 +4048,6 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
-		$this->setSettingsFromParams($oSettings, 'InterfaceAnimation', 'string', function ($sValue) {
-			return (\in_array($sValue,
-				array(\RainLoop\Enumerations\InterfaceAnimation::NONE,
-					\RainLoop\Enumerations\InterfaceAnimation::NORMAL,
-					\RainLoop\Enumerations\InterfaceAnimation::FULL)) ? $sValue :
-						\RainLoop\Enumerations\InterfaceAnimation::FULL);
-		});
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ReplySameFolder', 'bool');
