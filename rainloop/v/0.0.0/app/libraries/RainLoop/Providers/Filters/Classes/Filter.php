@@ -10,6 +10,11 @@ class Filter
 	private $sID;
 
 	/**
+	 * @var bool
+	 */
+	private $bEnabled;
+
+	/**
 	 * @var string
 	 */
 	private $sName;
@@ -18,6 +23,11 @@ class Filter
 	 * @var array
 	 */
 	private $aConditions;
+
+	/**
+	 * @var string
+	 */
+	private $sConditionsType;
 
 	/**
 	 * @var string
@@ -39,6 +49,11 @@ class Filter
 	 */
 	private $bSkipOthers;
 
+	/**
+	 * @var bool
+	 */
+	private $bKeepForward;
+
 	public function __construct()
 	{
 		$this->Clear();
@@ -49,15 +64,18 @@ class Filter
 		$this->sID = '';
 		$this->sName = '';
 
+		$this->bEnabled = true;
+
 		$this->aConditions = array();
 
-		$this->sFilterRulesType = \RainLoop\Providers\Filters\Enumerations\FilterRulesType::ALL;
+		$this->sConditionsType = \RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
 
 		$this->sActionType = \RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 		$this->sActionValue = '';
 
 		$this->bMarkAsRead = false;
 		$this->bSkipOthers = false;
+		$this->bKeepForward = true;
 	}
 
 	/**
@@ -66,6 +84,14 @@ class Filter
 	public function ID()
 	{
 		return $this->sID;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function Enabled()
+	{
+		return $this->bEnabled;
 	}
 
 	/**
@@ -87,9 +113,9 @@ class Filter
 	/**
 	 * @return string
 	 */
-	public function FilterRulesType()
+	public function ConditionsType()
 	{
-		return $this->sFilterRulesType;
+		return $this->sConditionsType;
 	}
 
 	/**
@@ -125,6 +151,14 @@ class Filter
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function KeepForward()
+	{
+		return $this->bKeepForward;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function serializeToJson()
@@ -137,10 +171,13 @@ class Filter
 	 */
 	public function unserializeFromJson($sFilterJson)
 	{
-		$sFilterJson = \json_decode(\trim($sFilterJson));
-		if (!empty($sFilterJson))
+		$aFilterJson = \json_decode(\trim($sFilterJson), true);
+		if (\is_array($aFilterJson))
 		{
+			return $this->FromJSON($aFilterJson);
 		}
+
+		return false;
 	}
 
 	/**
@@ -155,8 +192,10 @@ class Filter
 			$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
 			$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';
 
-			$this->sFilterRulesType = isset($aFilter['FilterRulesType']) ? $aFilter['FilterRulesType'] :
-				\RainLoop\Providers\Filters\Enumerations\FilterRulesType::ALL;
+			$this->bEnabled = isset($aFilter['Enabled']) ? '1' === (string) $aFilter['Enabled'] : true;
+
+			$this->sConditionsType = isset($aFilter['ConditionsType']) ? $aFilter['ConditionsType'] :
+				\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
 
 			$this->sActionType = isset($aFilter['ActionType']) ? $aFilter['ActionType'] :
 				\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
@@ -165,7 +204,15 @@ class Filter
 
 			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? $aFilter['MarkAsRead'] : false;
 			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? $aFilter['SkipOthers'] : false;
+			$this->bKeepForward = isset($aFilter['KeepForward']) ? $aFilter['KeepForward'] : true;
+
+			$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
+				isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -186,9 +233,10 @@ class Filter
 
 		return array(
 			'ID' => $this->ID(),
+			'Enabled' => $this->Enabled(),
 			'Name' => $this->Name(),
 			'Conditions' => $aConditions,
-			'FilterRulesType' => $this->FilterRulesType(),
+			'ConditionsType' => $this->ConditionsType(),
 			'ActionType' => $this->ActionType(),
 			'ActionValue' => $this->ActionValue(),
 			'MarkAsRead' => $this->MarkAsRead(),

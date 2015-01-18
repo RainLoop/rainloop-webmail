@@ -29,15 +29,24 @@
 		this.name.error = ko.observable(false);
 		this.name.focused = ko.observable(false);
 
+		this.raw = ko.observable('');
+
 		this.conditions = ko.observableArray([]);
-		this.conditionsType = ko.observable(Enums.FilterRulesType.All);
+		this.conditionsType = ko.observable(Enums.FilterRulesType.Any);
 
 		// Actions
 		this.actionValue = ko.observable('');
 		this.actionMarkAsRead = ko.observable(false);
+
 		this.actionSkipOthers = ko.observable(false);
 
-		this.actionType = ko.observable(Enums.FiltersAction.Move);
+		this.keepForward = ko.observable(true);
+
+		this.actionType = ko.observable(Enums.FiltersAction.MoveTo);
+
+		this.actionType.subscribe(function (sValue) {
+			this.actionValue('');
+		}, this);
 
 		this.actionTemplate = ko.computed(function () {
 
@@ -45,11 +54,14 @@
 			switch (this.actionType())
 			{
 				default:
-				case Enums.FiltersAction.Move:
+				case Enums.FiltersAction.MoveTo:
 					sTemplate = 'SettingsFiltersActionValueAsFolders';
 					break;
+//				case Enums.FiltersAction.Forward:
+//					sTemplate = 'SettingsFiltersActionWithValue';
+//					break;
 				case Enums.FiltersAction.Forward:
-					sTemplate = 'SettingsFiltersActionWithValue';
+					sTemplate = 'SettingsFiltersActionForward';
 					break;
 				case Enums.FiltersAction.None:
 				case Enums.FiltersAction.Discard:
@@ -86,17 +98,20 @@
 	{
 		return {
 			'ID': this.id,
-			'Enabled': this.enabled(),
+			'Enabled': this.enabled() ? '1' : '0',
 			'Name': this.name(),
 			'ConditionsType': this.conditionsType(),
 			'Conditions': _.map(this.conditions(), function (oItem) {
 				return oItem.toJson();
 			}),
-			
+
 			'ActionValue': this.actionValue(),
 			'ActionType': this.actionType(),
 
+			'Raw': this.raw(),
+
 			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0',
+			'KeepForward': this.keepForward() ? '1' : '0',
 			'SkipOthers': this.actionSkipOthers() ? '1' : '0'
 		};
 	};
@@ -117,7 +132,7 @@
 		var bResult = false;
 		if (oItem && 'Object/Filter' === oItem['@Object'])
 		{
-			this.ID = Utils.pString(oItem['ID']);
+			this.id = Utils.pString(oItem['ID']);
 			this.name(Utils.pString(oItem['Name']));
 
 			bResult = true;
@@ -130,12 +145,14 @@
 	{
 		var oClone = new FilterModel();
 
-		oClone.ID = this.ID;
+		oClone.id = this.id;
 
 		oClone.enabled(this.enabled());
 
 		oClone.name(this.name());
 		oClone.name.error(this.name.error());
+
+		oClone.raw(this.raw());
 
 		oClone.conditionsType(this.conditionsType());
 
@@ -145,6 +162,8 @@
 		oClone.actionValue(this.actionValue());
 
 		oClone.actionType(this.actionType());
+
+		oClone.keepForward(this.keepForward());
 
 		oClone.conditions(_.map(this.conditions(), function (oCondition) {
 			return oCondition.cloneSelf();

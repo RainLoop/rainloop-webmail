@@ -1,0 +1,11 @@
+<select data-bind="options: $root.actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
+&nbsp;
+<input type="text" data-bind="value: actionValue" />
+&nbsp;
+<div data-bind="component: {
+	name: 'Checkbox',
+	params: {
+		label: 'keep in INBOX @i18n',
+		value: keepForward
+	}
+}"></div>

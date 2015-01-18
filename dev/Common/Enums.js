@@ -312,7 +312,7 @@
 	 */
 	Enums.FiltersAction = {
 		'None': 'None',
-		'Move': 'Move',
+		'MoveTo': 'MoveTo',
 		'Discard': 'Discard',
 		'Forward': 'Forward'
 	};

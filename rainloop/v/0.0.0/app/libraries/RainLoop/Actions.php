@@ -250,7 +250,9 @@ class Actions
 					break;
 				case 'filters':
 					// \RainLoop\Providers\Filters\FiltersInterface
-					$oResult = new \RainLoop\Providers\Filters\SieveStorage();
+					$oResult = new \RainLoop\Providers\Filters\SieveStorage(
+						!!$this->Config()->Get('labs', 'sieve_utf8_folder_name', true)
+					);
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
@@ -2053,9 +2055,8 @@ class Actions
 	 */
 	public function DoFilters()
 	{
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Load());
 	}
-
 
 	/**
 	 * @return array
@@ -2064,6 +2065,7 @@ class Actions
 	 */
 	public function DoFiltersSave()
 	{
+		sleep(1);
 		$aIncFilters = $this->GetActionParam('Filters', array());
 
 		$aFilters = array();
@@ -2074,14 +2076,13 @@ class Actions
 				$oFilter = new \RainLoop\Providers\Filters\Classes\Filter();
 				if ($oFilter->FromJSON($aFilter))
 				{
-					$this->Logger()->WriteDump($oFilter);
 					$aFilters[] = $oFilter;
 				}
 			}
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
-//		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
+		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
+//		return $this->TrueResponse(__FUNCTION__);
 	}
 
 	/**

@@ -55,7 +55,6 @@
 
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 					{
-
 						self.haveChanges(false);
 						self.updateList();
 					}
@@ -86,9 +85,9 @@
 		var self = this;
 
 		this.filters.loading(true);
-		// Remote.filtersGet(function (sResult, oData) {
+		Remote.filtersGet(function (sResult, oData) {
 			self.filters.loading(false);
-		// });
+		});
 	};
 
 	FiltersUserSettings.prototype.deleteFilter = function (oFilter)

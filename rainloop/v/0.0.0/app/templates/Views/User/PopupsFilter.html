@@ -14,7 +14,7 @@
 
 						<div class="control-group" data-bind="css: {'error': name.error}">
 							<div class="controls">
-								<input type="text" class="span5" data-bind="value: name,  hasFocus: name.focused" placeholder="Name" 
+								<input type="text" class="span5" data-bind="value: name,  hasFocus: name.focused" placeholder="Name"
 									autocorrect="off" autocapitalize="off" spellcheck="false" />
 							</div>
 						</div>
@@ -27,11 +27,11 @@
 						<div>
 							<div data-bind="visible: 1 < conditions().length">
 								<select class="span4" data-bind="value: conditionsType">
-									<option value="All">
-										Matching all of the following rules @i18n
-									</option>
 									<option value="Any">
 										Matching any of the following rules @i18n
+									</option>
+									<option value="All">
+										Matching all of the following rules @i18n
 									</option>
 								</select>
 							</div>

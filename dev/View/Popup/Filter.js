@@ -31,7 +31,7 @@
 		this.filter = ko.observable(null);
 
 		this.selectedFolderValue = ko.observable(Consts.Values.UnuseOptionValue);
-		this.folderSelectList = Data.folderMenuForMove;
+		this.folderSelectList = Data.folderMenuForFilters;
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
 		this.saveFilter = Utils.createCommand(this, function () {
@@ -46,6 +46,15 @@
 
 				if (this.fTrueCallback)
 				{
+					if (Enums.FiltersAction.MoveTo === this.filter().actionType())
+					{
+						this.filter().actionValue(this.selectedFolderValue());
+					}
+					else if (Enums.FiltersAction.Forward !== this.filter().actionType())
+					{
+						this.filter().actionValue('');
+					}
+
 					this.fTrueCallback(this.filter());
 				}
 
@@ -60,8 +69,8 @@
 
 		this.actionTypeOptions = [
 			{'id': Enums.FiltersAction.None, 'name': 'None @i18n'},
-			{'id': Enums.FiltersAction.Move, 'name': ' Move to @i18n'},
-//			{'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'},
+			{'id': Enums.FiltersAction.MoveTo, 'name': ' Move to @i18n'},
+			{'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'},
 			{'id': Enums.FiltersAction.Discard, 'name': 'Discard @i18n'}
 		];
 
@@ -72,10 +81,10 @@
 		];
 
 		this.typeOptions = [
-			{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To @i18n'},
-			{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To @i18n'},
 			{'id': Enums.FilterConditionType.Contains, 'name': 'Contains @i18n'},
-			{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains @i18n'}
+			{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains @i18n'},
+			{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To @i18n'},
+			{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To @i18n'}
 		];
 
 		kn.constructorEnd(this);
@@ -119,7 +128,7 @@
 	{
 		if (this.isNew() &&  this.filter())
 		{
-			 this.filter().name.focused(true);
+			this.filter().name.focused(true);
 		}
 	};
 

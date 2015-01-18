@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Filters\Enumerations;
 
-class FilterRulesType
+class ConditionsType
 {
 	const ALL = 'All';
 	const ANY = 'Any';

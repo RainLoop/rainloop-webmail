@@ -56,22 +56,26 @@ class FilterCondition
 	}
 
 	/**
-	 * @param array $aFilter
+	 * @param array $aData
 	 *
 	 * @return array
 	 */
-	public function FromJSON($aFilter)
+	public function FromJSON($aData)
 	{
-		if (\is_array($aFilter))
+		if (\is_array($aData))
 		{
-			$this->sField = isset($aFilter['Field']) ? $aFilter['Field'] :
+			$this->sField = isset($aData['Field']) ? $aData['Field'] :
 				\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
 
-			$this->sType = isset($aFilter['Type']) ? $aFilter['Type'] :
+			$this->sType = isset($aData['Type']) ? $aData['Type'] :
 				\RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
 
-			$this->sValue = isset($aFilter['Value']) ? $aFilter['Value'] : '';
+			$this->sValue = isset($aData['Value']) ? $aData['Value'] : '';
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -86,5 +90,29 @@ class FilterCondition
 			'Type' => $this->Type(),
 			'Value' => $this->Value()
 		);
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function CollectionFromJSON($aCollection)
+	{
+		$aResult = array();
+		if (\is_array($aCollection) && 0 < \count($aCollection))
+		{
+			foreach ($aCollection as $aItem)
+			{
+				if (\is_array($aItem) && 0 < \count($aItem))
+				{
+					$oItem = new \RainLoop\Providers\Filters\Classes\FilterCondition();
+					if ($oItem->FromJSON($aItem))
+					{
+						$aResult[] = $oItem;
+					}
+				}
+			}
+		}
+
+		return $aResult;
 	}
 }

@@ -247,8 +247,7 @@
 	 */
 	RemoteUserStorage.prototype.filtersGet = function (fCallback)
 	{
-		this.defaultRequest(fCallback, 'Filters', {
-		});
+		this.defaultRequest(fCallback, 'Filters', {});
 	};
 
 	/**
