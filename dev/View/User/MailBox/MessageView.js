@@ -18,6 +18,7 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 
+		Local = require('Storage/Local'),
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -39,6 +40,7 @@
 			sLastEmail = '',
 			createCommandHelper = function (sType) {
 				return Utils.createCommand(self, function () {
+					this.lastReplyAction(sType);
 					this.replyOrforward(sType);
 				}, self.canBeRepliedOrForwarded);
 			}
@@ -66,6 +68,23 @@
 		this.messageError = Data.messageError;
 
 		this.fullScreenMode = Data.messageFullScreenMode;
+
+		this.lastReplyAction_ = ko.observable('');
+		this.lastReplyAction = ko.computed({
+			read: this.lastReplyAction_,
+			write: function (sValue) {
+				sValue = -1 === Utils.inArray(sValue, [
+					Enums.ComposeType.Reply, Enums.ComposeType.ReplyAll, Enums.ComposeType.Forward
+				]) ? Enums.ComposeType.Reply : sValue;
+				this.lastReplyAction_(sValue);
+			},
+			owner: this
+		});
+
+		this.lastReplyAction(Local.get(Enums.ClientSideKeyName.LastReplyAction) || Enums.ComposeType.Reply);
+		this.lastReplyAction_.subscribe(function (sValue) {
+			Local.set(Enums.ClientSideKeyName.LastReplyAction, sValue);
+		});
 
 		this.showFullInfo = ko.observable(false);
 		this.moreDropdownTrigger = ko.observable(false);

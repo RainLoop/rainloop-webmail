@@ -155,7 +155,8 @@
 		'MailBoxListSize': 2,
 		'ExpandedFolders': 3,
 		'FolderListSize': 4,
-		'MessageListSize': 5
+		'MessageListSize': 5,
+		'LastReplyAction': 6
 	};
 
 	/**
