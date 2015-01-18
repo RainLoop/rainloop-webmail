@@ -44,6 +44,7 @@
 			}
 		;
 
+		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
 		this.pswp = null;
@@ -149,6 +150,9 @@
 		}, this.messageVisibility);
 
 		// viewer
+
+		this.viewBodyTopValue = ko.observable(0);
+
 		this.viewHash = '';
 		this.viewSubject = ko.observable('');
 		this.viewFromShort = ko.observable('');
@@ -364,7 +368,14 @@
 	{
 		var
 			self = this,
-			sErrorMessage = Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR')
+			sErrorMessage = Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
+			fCheckHeaderHeight = function () {
+				if (self.oHeaderDom)
+				{
+					self.viewBodyTopValue(self.message() ? self.oHeaderDom.height() +
+						20 /* padding-(top/bottom): 20px */ + 1 /* borded-bottom: 1px */ : 0);
+				}
+			}
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {
@@ -373,6 +384,24 @@
 				self.message.focused(true);
 			}
 		}, this);
+
+		this.fullScreenMode.subscribe(fCheckHeaderHeight);
+		this.showFullInfo.subscribe(fCheckHeaderHeight);
+		this.message.subscribe(fCheckHeaderHeight);
+
+		Globals.$win.on('resize', function () {
+			_.delay(fCheckHeaderHeight, 1);
+			_.delay(fCheckHeaderHeight, 200);
+			_.delay(fCheckHeaderHeight, 500);
+		});
+
+		this.showFullInfo.subscribe(function () {
+			Utils.windowResize();
+			Utils.windowResize(250);
+		});
+
+		this.oHeaderDom = $('.messageItemHeader', oDom);
+		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
 		this.pswpDom = $('.pswp', oDom)[0];
 

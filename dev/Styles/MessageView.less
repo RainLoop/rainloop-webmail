@@ -76,6 +76,66 @@ html.rl-no-preview-pane {
 			right: 20px;
 		}
 
+		.messageItemHeader {
+
+			position: absolute;
+			padding: 10px;
+			background-color: #f8f8f8;
+			border-top: 0px;
+			border-bottom: 1px solid #ddd;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			right: 0;
+
+			.date {
+			}
+
+			.fromPic {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				float: left;
+				padding: 2px;
+				margin: 0 5px 0 0;
+				background: #fff;
+				border: 1px solid #ccc;
+				border-radius: 6px;
+				box-sizing: border-box;
+			}
+
+			.subjectParent {
+				font-size: 16px;
+				font-weight: bold;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+				margin-left: 3px;
+			}
+
+			.senderParent {
+				margin-top: 10px;
+			}
+
+			.messageButtons {
+				margin-top: 5px;
+			}
+
+			.informationShort {
+				margin-left: 15px;
+				a {
+					.g-ui-link;
+				}
+			}
+			.informationFull {
+				margin-top: 10px;
+				border: 1px solid #ddd;
+				background-color: #fff;
+				border-radius: 5px;
+				padding: 10px 15px;
+			}
+		}
+
 		.messageItem {
 
 			position: absolute;
@@ -131,63 +191,6 @@ html.rl-no-preview-pane {
 
 			.buttonUp, .buttonUnFull {
 				display: none;
-			}
-
-			.messageItemHeader {
-
-				position: relative;
-				padding: 10px;
-				background-color: #f8f8f8;
-				border-top: 0px;
-				border-bottom: 1px solid #ddd;
-				z-index: 1;
-
-				.date {
-				}
-
-				.fromPic {
-					display: inline-block;
-					width: 50px;
-					height: 50px;
-					float: left;
-					padding: 2px;
-					margin: 0 5px 0 0;
-					background: #fff;
-					border: 1px solid #ccc;
-					border-radius: 6px;
-					box-sizing: border-box;
-				}
-
-				.subjectParent {
-					font-size: 16px;
-					font-weight: bold;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-					margin-left: 3px;
-				}
-
-				.senderParent {
-					margin-top: 10px;
-				}
-
-				.messageButtons {
-					margin-top: 5px;
-				}
-
-				.informationShort {
-					margin-left: 15px;
-					a {
-						.g-ui-link;
-					}
-				}
-				.informationFull {
-					margin-top: 10px;
-					border: 1px solid #ddd;
-					background-color: #fff;
-					border-radius: 5px;
-					padding: 10px 15px;
-				}
 			}
 
 			.loading {
