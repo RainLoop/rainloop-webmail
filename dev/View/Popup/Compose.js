@@ -51,9 +51,6 @@
 
 		var
 			self = this,
-			fResizeSub = function () {
-				Utils.windowResize();
-			},
 			fCcAndBccCheckHelper = function (aValue) {
 				if (false === self.showCcAndBcc() && 0 < aValue.length)
 				{
@@ -134,8 +131,8 @@
 
 		this.attachmentsPlace = ko.observable(false);
 
-		this.attachments.subscribe(fResizeSub);
-		this.attachmentsPlace.subscribe(fResizeSub);
+		this.attachments.subscribe(Utils.windowResizeCallback);
+		this.attachmentsPlace.subscribe(Utils.windowResizeCallback);
 
 		this.attachmentsInErrorCount.subscribe(function (iN) {
 			if (0 === iN)

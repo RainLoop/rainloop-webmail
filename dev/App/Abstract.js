@@ -252,9 +252,7 @@
 			Utils.initNotificationLanguage();
 		}, null);
 
-		_.delay(function () {
-			Utils.windowResize();
-		}, 1000);
+		_.delay(Utils.windowResizeCallback, 1000);
 
 		ssm.addState({
 			'id': 'mobile',

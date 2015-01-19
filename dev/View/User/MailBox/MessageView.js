@@ -292,12 +292,7 @@
 			Utils.windowResize();
 		});
 
-		this.messageLoadingThrottle.subscribe(function (bV) {
-			if (bV)
-			{
-				Utils.windowResize();
-			}
-		});
+		this.messageLoadingThrottle.subscribe(Utils.windowResizeCallback);
 
 		this.goUpCommand = Utils.createCommand(this, function () {
 			Events.pub('mailbox.message-list.selector.go-up');

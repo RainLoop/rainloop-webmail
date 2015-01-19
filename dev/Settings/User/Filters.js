@@ -28,9 +28,7 @@
 		this.filters.loading = ko.observable(false).extend({'throttle': 200});
 		this.filters.saving = ko.observable(false).extend({'throttle': 200});
 
-		this.filters.subscribe(function () {
-			Utils.windowResize();
-		});
+		this.filters.subscribe(Utils.windowResizeCallback);
 
 		this.processText = ko.computed(function () {
 			return this.filters.loading() ? Utils.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
@@ -136,7 +134,7 @@
 					self.haveChanges(true);
 				}
 
-			}, false]);
+			}, true]);
 	};
 
 	FiltersUserSettings.prototype.onBuild = function (oDom)

@@ -99,15 +99,9 @@
 
 	MailBoxUserScreen.prototype.onStart = function ()
 	{
-		var
-			fResizeFunction = function () {
-				Utils.windowResize();
-			}
-		;
-
-		Data.folderList.subscribe(fResizeFunction);
-		Data.messageList.subscribe(fResizeFunction);
-		Data.message.subscribe(fResizeFunction);
+		Data.folderList.subscribe(Utils.windowResizeCallback);
+		Data.messageList.subscribe(Utils.windowResizeCallback);
+		Data.message.subscribe(Utils.windowResizeCallback);
 
 		Data.layout.subscribe(function (nValue) {
 

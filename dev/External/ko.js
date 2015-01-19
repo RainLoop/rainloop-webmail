@@ -266,9 +266,7 @@
 				'keyboard': false,
 				'show': ko.unwrap(fValueAccessor())
 			})
-			.on('shown.koModal', function () {
-				Utils.windowResize();
-			})
+			.on('shown.koModal', Utils.windowResizeCallback)
 			.find('.close').on('click.koModal', function () {
 				fValueAccessor()(false);
 			});

@@ -239,11 +239,11 @@
 		}, this);
 
 		this.folderMenuForFilters = ko.computed(function () {
-			return Utils.folderListOptionsBuilder(this.folderListSystem(), this.folderList(), [
-				'INBOX'
-			], null, null, null, null, function (oItem) {
-				return oItem ? oItem.localName() : '';
-			});
+			return Utils.folderListOptionsBuilder(this.folderListSystem(), this.folderList(),
+				['INBOX'], [['', '']], null, null, null, function (oItem) {
+					return oItem ? oItem.localName() : '';
+				}
+			);
 		}, this);
 
 		// message list

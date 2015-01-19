@@ -306,6 +306,7 @@
 		'None': 'None',
 		'MoveTo': 'MoveTo',
 		'Discard': 'Discard',
+		'Vacation': 'Vacation',
 		'Forward': 'Forward'
 	};
 

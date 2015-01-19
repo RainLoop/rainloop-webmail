@@ -7,5 +7,6 @@ class ActionType
 	const NONE = 'None';
 	const MOVE_TO = 'MoveTo';
 	const DISCARD = 'Discard';
+	const VACATION = 'Vacation';
 	const FORWARD = 'Forward';
 }

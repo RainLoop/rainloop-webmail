@@ -1,17 +1,11 @@
 <div class="control-group" data-bind="css: {'error': actionValue.error}">
 	<div class="controls">
-		<input type="text" data-bind="value: actionValue" placeholder="Email @i18n" />
+		<select data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
+			optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defautOptionsAfterRender"></select>
 	</div>
 </div>
 <div class="control-group">
 	<div class="controls">
-		<div data-bind="component: {
-			name: 'Checkbox',
-			params: {
-				label: 'keep in INBOX @i18n',
-				value: keepForward
-			}
-		}"></div>
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {

@@ -40,6 +40,11 @@ class Filter
 	private $sActionValue;
 
 	/**
+	 * @var string
+	 */
+	private $sActionValueSecond;
+
+	/**
 	 * @var bool
 	 */
 	private $bMarkAsRead;
@@ -72,6 +77,7 @@ class Filter
 
 		$this->sActionType = \RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 		$this->sActionValue = '';
+		$this->sActionValueSecond = '';
 
 		$this->bMarkAsRead = false;
 		$this->bSkipOthers = false;
@@ -132,6 +138,14 @@ class Filter
 	public function ActionValue()
 	{
 		return $this->sActionValue;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ActionValueSecond()
+	{
+		return $this->sActionValueSecond;
 	}
 
 	/**
@@ -201,6 +215,7 @@ class Filter
 				\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 
 			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
+			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
 
 			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? $aFilter['MarkAsRead'] : false;
 			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? $aFilter['SkipOthers'] : false;
@@ -239,6 +254,7 @@ class Filter
 			'ConditionsType' => $this->ConditionsType(),
 			'ActionType' => $this->ActionType(),
 			'ActionValue' => $this->ActionValue(),
+			'ActionValueSecond' => $this->ActionValueSecond(),
 			'MarkAsRead' => $this->MarkAsRead(),
 			'SkipOthers' => $this->SkipOthers()
 		);

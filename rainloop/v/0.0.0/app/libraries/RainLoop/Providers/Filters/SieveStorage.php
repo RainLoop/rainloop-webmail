@@ -195,6 +195,28 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				$aResult[] = $sTab.'discard;';
 				$aResult[] = $sTab.'stop;';
 				break;
+			case \RainLoop\Providers\Filters\Enumerations\ActionType::VACATION:
+				$sValue = \trim($oFilter->ActionValue());
+				$sValueSecond = \trim($oFilter->ActionValueSecond());
+				if (0 < \strlen($sValue))
+				{
+					$aCapa['vacation'] = true;
+
+					$sSubject = '';
+					if (0 < \strlen($sValueSecond))
+					{
+						$sSubject = ':subject "'.$this->quote(
+							\preg_replace('/[\s]+/u', ' ', $sValueSecond)).'" ';
+					}
+
+					$aResult[] = $sTab.'vacation :days 1 '.$sSubject.'"'.$this->quote($sValue).'";';
+					$aResult[] = $sTab.'stop;';
+				}
+				else
+				{
+					$aResult[] = $sTab.'# @Error (vacation): empty action value';
+				}
+				break;
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::FORWARD:
 				$sValue = $oFilter->ActionValue();
 				if (0 < \strlen($sValue))

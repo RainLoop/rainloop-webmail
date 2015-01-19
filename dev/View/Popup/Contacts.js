@@ -178,13 +178,8 @@
 			this.reloadContactList();
 		}, this);
 
-		this.contacts.subscribe(function () {
-			Utils.windowResize();
-		}, this);
-
-		this.viewProperties.subscribe(function () {
-			Utils.windowResize();
-		}, this);
+		this.contacts.subscribe(Utils.windowResizeCallback);
+		this.viewProperties.subscribe(Utils.windowResizeCallback);
 
 		this.contactsChecked = ko.computed(function () {
 			return _.filter(this.contacts(), function (oItem) {
@@ -745,7 +740,7 @@
 		if (this.bBackToCompose)
 		{
 			this.bBackToCompose = false;
-			
+
 			kn.showScreenPopup(require('View/Popup/Compose'));
 		}
 	};

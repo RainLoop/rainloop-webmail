@@ -30,31 +30,33 @@
 		this.fTrueCallback = null;
 		this.filter = ko.observable(null);
 
-		this.selectedFolderValue = ko.observable(Consts.Values.UnuseOptionValue);
-		this.folderSelectList = Data.folderMenuForFilters;
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+		this.folderSelectList = Data.folderMenuForFilters;
+		this.selectedFolderValue = ko.observable('');
+
+		this.selectedFolderValue.subscribe(function() {
+			if (this.filter())
+			{
+				this.filter().actionValue.error(false);
+			}
+		}, this);
 
 		this.saveFilter = Utils.createCommand(this, function () {
 
 			if (this.filter())
 			{
-				if ('' === this.filter().name())
+				if (Enums.FiltersAction.MoveTo === this.filter().actionType())
 				{
-					this.filter().name.error(true);
+					this.filter().actionValue(this.selectedFolderValue());
+				}
+
+				if (!this.filter().verify())
+				{
 					return false;
 				}
 
 				if (this.fTrueCallback)
 				{
-					if (Enums.FiltersAction.MoveTo === this.filter().actionType())
-					{
-						this.filter().actionValue(this.selectedFolderValue());
-					}
-					else if (Enums.FiltersAction.Forward !== this.filter().actionType())
-					{
-						this.filter().actionValue('');
-					}
-
 					this.fTrueCallback(this.filter());
 				}
 
@@ -68,9 +70,10 @@
 		});
 
 		this.actionTypeOptions = [
-			{'id': Enums.FiltersAction.None, 'name': 'None @i18n'},
+//			{'id': Enums.FiltersAction.None, 'name': 'None @i18n'},
 			{'id': Enums.FiltersAction.MoveTo, 'name': ' Move to @i18n'},
 			{'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'},
+			{'id': Enums.FiltersAction.Vacation, 'name': 'Vacation message @i18n'},
 			{'id': Enums.FiltersAction.Discard, 'name': 'Discard @i18n'}
 		];
 

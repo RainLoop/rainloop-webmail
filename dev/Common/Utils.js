@@ -52,6 +52,10 @@
 		}
 	}, 50);
 
+	Utils.windowResizeCallback = function () {
+		Utils.windowResize();
+	};
+
 	/**
 	 * @param {(string|number)} mValue
 	 * @param {boolean=} bIncludeZero

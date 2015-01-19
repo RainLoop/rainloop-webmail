@@ -9,6 +9,9 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+
+		Cache = require('Storage/User/Cache'),
+
 		FilterConditionModel = require('Model/FilterCondition'),
 
 		AbstractModel = require('Knoin/AbstractModel')
@@ -29,13 +32,15 @@
 		this.name.error = ko.observable(false);
 		this.name.focused = ko.observable(false);
 
-		this.raw = ko.observable('');
-
 		this.conditions = ko.observableArray([]);
 		this.conditionsType = ko.observable(Enums.FilterRulesType.Any);
 
 		// Actions
 		this.actionValue = ko.observable('');
+		this.actionValue.error = ko.observable(false);
+
+		this.actionValueSecond = ko.observable('');
+
 		this.actionMarkAsRead = ko.observable(false);
 
 		this.actionSkipOthers = ko.observable(false);
@@ -44,8 +49,43 @@
 
 		this.actionType = ko.observable(Enums.FiltersAction.MoveTo);
 
-		this.actionType.subscribe(function (sValue) {
+		this.actionType.subscribe(function () {
 			this.actionValue('');
+			this.actionValue.error(false);
+			this.actionValueSecond('');
+		}, this);
+
+		var fGetRealFolderName = function (sFolderFullNameRaw) {
+			var oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+			return oFolder ? oFolder.fullName.replace(
+				'.' === oFolder.delimiter ? /\./ : /[\\\/]+/, ' / ') : sFolderFullNameRaw;
+		};
+
+		this.nameSub = ko.computed(function () {
+
+			var
+				sResult = '',
+				sActionValue = this.actionValue()
+			;
+
+			switch (this.actionType())
+			{
+				case Enums.FiltersAction.MoveTo:
+					sResult = 'MoveTo $i18n "' + fGetRealFolderName(sActionValue) + '"';
+					break;
+				case Enums.FiltersAction.Forward:
+					sResult = 'Forward @i18n "' + sActionValue + '"';
+					break;
+				case Enums.FiltersAction.Vacation:
+					sResult = 'Vacation message @i18n';
+					break;
+				case Enums.FiltersAction.Discard:
+					sResult = 'Discard @i18n';
+					break;
+			}
+
+			return sResult ? '(' + sResult + ')' : '';
+
 		}, this);
 
 		this.actionTemplate = ko.computed(function () {
@@ -55,17 +95,19 @@
 			{
 				default:
 				case Enums.FiltersAction.MoveTo:
-					sTemplate = 'SettingsFiltersActionValueAsFolders';
+					sTemplate = 'SettingsFiltersActionMoveToFolder';
 					break;
-//				case Enums.FiltersAction.Forward:
-//					sTemplate = 'SettingsFiltersActionWithValue';
-//					break;
 				case Enums.FiltersAction.Forward:
 					sTemplate = 'SettingsFiltersActionForward';
 					break;
+				case Enums.FiltersAction.Vacation:
+					sTemplate = 'SettingsFiltersActionVacation';
+					break;
 				case Enums.FiltersAction.None:
+					sTemplate = 'SettingsFiltersActionNone';
+					break;
 				case Enums.FiltersAction.Discard:
-					sTemplate = 'SettingsFiltersActionNoValue';
+					sTemplate = 'SettingsFiltersActionDiscard';
 					break;
 			}
 
@@ -73,12 +115,14 @@
 
 		}, this);
 
-		this.regDisposables(this.conditions.subscribe(function () {
-			Utils.windowResize();
-		}));
+		this.regDisposables(this.conditions.subscribe(Utils.windowResizeCallback));
 
 		this.regDisposables(this.name.subscribe(function (sValue) {
 			this.name.error('' === sValue);
+		}, this));
+
+		this.regDisposables(this.actionValue.subscribe(function (sValue) {
+			this.actionValue.error('' === sValue);
 		}, this));
 
 		this.regDisposables([this.actionTemplate]);
@@ -94,6 +138,40 @@
 		this.id = Utils.fakeMd5();
 	};
 
+	FilterModel.prototype.verify = function ()
+	{
+		if ('' === this.name())
+		{
+			this.name.error(true);
+			return false;
+		}
+
+		if ('' === this.actionValue())
+		{
+			if (-1 < Utils.inArray(this.actionType(), [
+				Enums.FiltersAction.MoveTo,
+				Enums.FiltersAction.Forward,
+				Enums.FiltersAction.Vacation
+			]))
+			{
+				this.actionValue.error(true);
+				return false;
+			}
+		}
+
+		if (Enums.FiltersAction.Forward === this.actionType() &&
+			-1 === this.actionValue().indexOf('@'))
+		{
+			this.actionValue.error(true);
+			return false;
+		}
+
+		this.name.error(false);
+		this.actionValue.error(false);
+
+		return true;
+	};
+
 	FilterModel.prototype.toJson = function ()
 	{
 		return {
@@ -106,9 +184,8 @@
 			}),
 
 			'ActionValue': this.actionValue(),
+			'ActionValueSecond': this.actionValueSecond(),
 			'ActionType': this.actionType(),
-
-			'Raw': this.raw(),
 
 			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0',
 			'KeepForward': this.keepForward() ? '1' : '0',
@@ -152,16 +229,17 @@
 		oClone.name(this.name());
 		oClone.name.error(this.name.error());
 
-		oClone.raw(this.raw());
-
 		oClone.conditionsType(this.conditionsType());
 
 		oClone.actionMarkAsRead(this.actionMarkAsRead());
 		oClone.actionSkipOthers(this.actionSkipOthers());
 
-		oClone.actionValue(this.actionValue());
-
 		oClone.actionType(this.actionType());
+
+		oClone.actionValue(this.actionValue());
+		oClone.actionValue.error(this.actionValue.error());
+
+		oClone.actionValueSecond(this.actionValueSecond());
 
 		oClone.keepForward(this.keepForward());
 
