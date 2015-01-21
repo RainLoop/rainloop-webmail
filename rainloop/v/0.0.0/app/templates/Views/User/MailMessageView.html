@@ -280,7 +280,7 @@
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 									</div>
-									<div class="readReceipt" data-bind="visible: message() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
+									<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
 										<i class="icon-mail"></i>
 										&nbsp;&nbsp;
 										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>

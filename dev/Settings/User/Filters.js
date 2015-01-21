@@ -5,6 +5,7 @@
 
 	var
 		ko = require('ko'),
+		_ = require('_'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
@@ -80,11 +81,33 @@
 
 	FiltersUserSettings.prototype.updateList = function ()
 	{
-		var self = this;
+		var
+			self = this,
+			FilterModel = require('Model/Filter')
+		;
 
 		this.filters.loading(true);
+
 		Remote.filtersGet(function (sResult, oData) {
+
 			self.filters.loading(false);
+
+			if (Enums.StorageResultType.Success === sResult && oData &&
+				oData.Result && Utils.isArray(oData.Result))
+			{
+				var aResult = _.compact(_.map(oData.Result, function (aItem) {
+					var oNew = new FilterModel();
+					return (oNew && oNew.parse(aItem)) ? oNew : null;
+				}));
+
+				self.filters(aResult);
+			}
+			else
+			{
+				self.filters([]);
+			}
+
+			self.haveChanges(false);
 		});
 	};
 
@@ -121,16 +144,16 @@
 			require('View/Popup/Filter'), [oCloned, function  () {
 
 				var
-					oFilters = self.filters(),
-					iIndex = oFilters.indexOf(oEdit)
+					aFilters = self.filters(),
+					iIndex = aFilters.indexOf(oEdit)
 				;
 
-				if (-1 < iIndex && oFilters[iIndex])
+				if (-1 < iIndex && aFilters[iIndex])
 				{
-					Utils.delegateRunOnDestroy(oFilters[iIndex]);
-					oFilters[iIndex] = oCloned;
+					Utils.delegateRunOnDestroy(aFilters[iIndex]);
+					aFilters[iIndex] = oCloned;
 
-					self.filters(oFilters);
+					self.filters(aFilters);
 					self.haveChanges(true);
 				}
 

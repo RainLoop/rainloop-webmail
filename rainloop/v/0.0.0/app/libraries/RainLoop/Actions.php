@@ -2063,7 +2063,6 @@ class Actions
 	 */
 	public function DoFiltersSave()
 	{
-		sleep(1);
 		$aIncFilters = $this->GetActionParam('Filters', array());
 
 		$aFilters = array();

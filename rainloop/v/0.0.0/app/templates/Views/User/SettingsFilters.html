@@ -19,6 +19,16 @@
 			</a>
 		</div>
 	</div>
+	<div class="row" data-bind="visible: haveChanges">
+		<div class="span8">
+			<br />
+			<div class="alert g-ui-user-select-none" style="margin-bottom: 0">
+				<i class="icon-warning"></i>
+				&nbsp;&nbsp;
+				These changes need to be saved to the server. @i18n
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="span8">
 			<div class="process-place g-ui-user-select-none" data-bind="style: {'visibility': visibility }">

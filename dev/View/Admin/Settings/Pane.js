@@ -7,8 +7,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils'),
-
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote'),

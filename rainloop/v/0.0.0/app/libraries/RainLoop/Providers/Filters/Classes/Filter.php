@@ -217,9 +217,9 @@ class Filter
 			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
 			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
 
-			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? $aFilter['MarkAsRead'] : false;
-			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? $aFilter['SkipOthers'] : false;
-			$this->bKeepForward = isset($aFilter['KeepForward']) ? $aFilter['KeepForward'] : true;
+			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
+			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? '1' === (string) $aFilter['SkipOthers'] : false;
+			$this->bKeepForward = isset($aFilter['KeepForward']) ? '1' === (string) $aFilter['KeepForward'] : true;
 
 			$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
 				isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());

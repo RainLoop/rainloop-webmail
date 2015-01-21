@@ -146,6 +146,16 @@
 			return false;
 		}
 
+		if (0 < this.conditions().length)
+		{
+			if (_.find(this.conditions(), function (oCond) {
+				return oCond && !oCond.verify();
+			}))
+			{
+				return false;
+			}
+		}
+
 		if ('' === this.actionValue())
 		{
 			if (-1 < Utils.inArray(this.actionType(), [
@@ -211,6 +221,29 @@
 		{
 			this.id = Utils.pString(oItem['ID']);
 			this.name(Utils.pString(oItem['Name']));
+			this.enabled(!!oItem['Enabled']);
+
+			this.conditionsType(Utils.pString(oItem['ConditionsType']));
+
+			this.conditions([]);
+
+			if (Utils.isNonEmptyArray(oItem['Conditions']))
+			{
+				this.conditions(_.compact(_.map(oItem['Conditions'], function (aData) {
+					var oFilterCondition = new FilterConditionModel();
+					return oFilterCondition && oFilterCondition.parse(aData) ?
+						oFilterCondition : null;
+				})));
+			}
+
+			this.actionType(Utils.pString(oItem['ActionType']));
+
+			this.actionValue(Utils.pString(oItem['ActionValue']));
+			this.actionValueSecond(Utils.pString(oItem['ActionValueSecond']));
+
+			this.actionMarkAsRead(!!oItem['MarkAsRead']);
+			this.keepForward(!!oItem['KeepForward']);
+			this.actionSkipOthers(!!oItem['SkipOthers']);
 
 			bResult = true;
 		}

@@ -180,7 +180,11 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			$sTab = '';
 		}
 
-		if ($oFilter->MarkAsRead())
+		if ($oFilter->MarkAsRead() && \in_array($oFilter->ActionType(), array(
+			\RainLoop\Providers\Filters\Enumerations\ActionType::NONE,
+			\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO,
+			\RainLoop\Providers\Filters\Enumerations\ActionType::FORWARD
+		)))
 		{
 			$aCapa['imap4flags'] = true;
 			$aResult[] = $sTab.'addflag "\\\\Seen";';
@@ -353,6 +357,6 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	 */
 	private function quote($sValue)
 	{
-		return \str_replace('"', '\\"', \trim($sValue));
+		return \str_replace(array('\\', '"'), array('\\\\', '\\"'), \trim($sValue));
 	}
 }

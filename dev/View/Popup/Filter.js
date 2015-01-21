@@ -7,7 +7,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
@@ -118,6 +117,11 @@
 
 		this.fTrueCallback = fTrueCallback;
 		this.filter(oFilter);
+
+		if (oFilter)
+		{
+			this.selectedFolderValue(oFilter.actionValue());
+		}
 
 		this.isNew(!bEdit);
 
