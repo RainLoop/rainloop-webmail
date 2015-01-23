@@ -45,7 +45,7 @@
 
 		this.actionSkipOthers = ko.observable(false);
 
-		this.keepForward = ko.observable(true);
+		this.actionKeep = ko.observable(true);
 
 		this.actionType = ko.observable(Enums.FiltersAction.MoveTo);
 
@@ -79,6 +79,9 @@
 				case Enums.FiltersAction.Vacation:
 					sResult = 'Vacation message @i18n';
 					break;
+				case Enums.FiltersAction.Reject:
+					sResult = 'Reject @i18n';
+					break;
 				case Enums.FiltersAction.Discard:
 					sResult = 'Discard @i18n';
 					break;
@@ -102,6 +105,9 @@
 					break;
 				case Enums.FiltersAction.Vacation:
 					sTemplate = 'SettingsFiltersActionVacation';
+					break;
+				case Enums.FiltersAction.Reject:
+					sTemplate = 'SettingsFiltersActionReject';
 					break;
 				case Enums.FiltersAction.None:
 					sTemplate = 'SettingsFiltersActionNone';
@@ -161,6 +167,7 @@
 			if (-1 < Utils.inArray(this.actionType(), [
 				Enums.FiltersAction.MoveTo,
 				Enums.FiltersAction.Forward,
+				Enums.FiltersAction.Reject,
 				Enums.FiltersAction.Vacation
 			]))
 			{
@@ -197,8 +204,8 @@
 			'ActionValueSecond': this.actionValueSecond(),
 			'ActionType': this.actionType(),
 
+			'Keep': this.actionKeep() ? '1' : '0',
 			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0',
-			'KeepForward': this.keepForward() ? '1' : '0',
 			'SkipOthers': this.actionSkipOthers() ? '1' : '0'
 		};
 	};
@@ -241,8 +248,8 @@
 			this.actionValue(Utils.pString(oItem['ActionValue']));
 			this.actionValueSecond(Utils.pString(oItem['ActionValueSecond']));
 
+			this.actionKeep(!!oItem['Keep']);
 			this.actionMarkAsRead(!!oItem['MarkAsRead']);
-			this.keepForward(!!oItem['KeepForward']);
 			this.actionSkipOthers(!!oItem['SkipOthers']);
 
 			bResult = true;
@@ -274,7 +281,7 @@
 
 		oClone.actionValueSecond(this.actionValueSecond());
 
-		oClone.keepForward(this.keepForward());
+		oClone.actionKeep(this.actionKeep());
 
 		oClone.conditions(_.map(this.conditions(), function (oCondition) {
 			return oCondition.cloneSelf();

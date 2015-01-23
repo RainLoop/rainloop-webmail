@@ -212,7 +212,7 @@
 	RemoteAdminStorage.prototype.createOrUpdateDomain = function (fCallback,
 		bCreate, sName,
 		sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		bUseSieve, sSieveHost, iSievePort, sSieveSecure,
+		bUseSieve, sSieveAllowRaw, sSieveHost, iSievePort, sSieveSecure,
 		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail,
 		sWhiteList)
 	{
@@ -226,6 +226,7 @@
 			'IncShortLogin': bIncShortLogin ? '1' : '0',
 
 			'UseSieve': bUseSieve ? '1' : '0',
+			'SieveAllowRaw': sSieveAllowRaw ? '1' : '0',
 			'SieveHost': sSieveHost,
 			'SievePort': iSievePort,
 			'SieveSecure': sSieveSecure,

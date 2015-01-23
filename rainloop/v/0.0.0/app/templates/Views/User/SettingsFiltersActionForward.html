@@ -9,10 +9,10 @@
 			name: 'Checkbox',
 			params: {
 				label: 'keep in INBOX @i18n',
-				value: keepForward
+				value: actionKeep
 			}
 		}"></div>
-		<div data-bind="component: {
+		<div data-bind="visible: $root.allowMarkAsRead, component: {
 			name: 'Checkbox',
 			params: {
 				label: 'Mark as read @i18n',

@@ -29,6 +29,9 @@
 		this.fTrueCallback = null;
 		this.filter = ko.observable(null);
 
+		this.modules = Data.filterModules;
+		this.allowMarkAsRead = ko.observable(false);
+
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 		this.folderSelectList = Data.folderMenuForFilters;
 		this.selectedFolderValue = ko.observable('');
@@ -68,13 +71,55 @@
 			return true;
 		});
 
-		this.actionTypeOptions = [
-//			{'id': Enums.FiltersAction.None, 'name': 'None @i18n'},
-			{'id': Enums.FiltersAction.MoveTo, 'name': ' Move to @i18n'},
-			{'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'},
-			{'id': Enums.FiltersAction.Vacation, 'name': 'Vacation message @i18n'},
-			{'id': Enums.FiltersAction.Discard, 'name': 'Discard @i18n'}
-		];
+		this.actionTypeOptions = [];
+		this.fieldOptions = [];
+		this.typeOptions = [];
+
+		this.populateOptions();
+
+		this.modules.subscribe(this.populateOptions, this)
+
+		kn.constructorEnd(this);
+	}
+
+	kn.extendAsViewModel(['View/Popup/Filter', 'PopupsFilterViewModel'], FilterPopupView);
+	_.extend(FilterPopupView.prototype, AbstractView.prototype);
+
+	FilterPopupView.prototype.populateOptions = function ()
+	{
+		this.actionTypeOptions = []
+//		this.actionTypeOptions.push({'id': Enums.FiltersAction.None, 'name': 'None @i18n'});
+
+		var oModules = this.modules();
+		if (oModules)
+		{
+			if (oModules.markasread)
+			{
+				this.allowMarkAsRead(true);
+			}
+
+			if (oModules.moveto)
+			{
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo, 'name': 'Move to @i18n'});
+			}
+
+			if (oModules.redirect)
+			{
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'});
+			}
+
+			if (oModules.reject)
+			{
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject, 'name': 'Reject @i18n'});
+			}
+
+			if (oModules.vacation)
+			{
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation, 'name': 'Vacation message @i18n'});
+			}
+		}
+
+		this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard, 'name': 'Discard @i18n'});
 
 		this.fieldOptions = [
 			{'id': Enums.FilterConditionField.From, 'name': 'From @i18n'},
@@ -88,12 +133,8 @@
 			{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To @i18n'},
 			{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To @i18n'}
 		];
+	};
 
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/Popup/Filter', 'PopupsFilterViewModel'], FilterPopupView);
-	_.extend(FilterPopupView.prototype, AbstractView.prototype);
 
 	FilterPopupView.prototype.removeCondition = function (oConditionToDelete)
 	{

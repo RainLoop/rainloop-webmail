@@ -10,6 +10,8 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
+		Data = require('Storage/User/Data'),
+
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -25,11 +27,18 @@
 		this.processText = ko.observable('');
 		this.visibility = ko.observable(false);
 
+		this.modules = Data.filterModules;
+
 		this.filters = ko.observableArray([]);
 		this.filters.loading = ko.observable(false).extend({'throttle': 200});
 		this.filters.saving = ko.observable(false).extend({'throttle': 200});
 
 		this.filters.subscribe(Utils.windowResizeCallback);
+
+		this.filterRaw = ko.observable('');
+		this.filterRaw.capa = ko.observable('');
+		this.filterRaw.active = ko.observable(false);
+		this.filterRaw.allow = ko.observable(false);
 
 		this.processText = ko.computed(function () {
 			return this.filters.loading() ? Utils.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
@@ -58,7 +67,7 @@
 						self.updateList();
 					}
 
-				}, this.filters());
+				}, this.filters(), this.filterRaw(), this.filterRaw.active());
 			}
 
 			return true;
@@ -68,6 +77,14 @@
 		});
 
 		this.filters.subscribe(function () {
+			this.haveChanges(true);
+		}, this);
+
+		this.filterRaw.subscribe(function () {
+			this.haveChanges(true);
+		}, this);
+
+		this.filterRaw.active.subscribe(function () {
 			this.haveChanges(true);
 		}, this);
 	}
@@ -93,18 +110,28 @@
 			self.filters.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData &&
-				oData.Result && Utils.isArray(oData.Result))
+				oData.Result && Utils.isArray(oData.Result.Filters))
 			{
-				var aResult = _.compact(_.map(oData.Result, function (aItem) {
+				var aResult = _.compact(_.map(oData.Result.Filters, function (aItem) {
 					var oNew = new FilterModel();
 					return (oNew && oNew.parse(aItem)) ? oNew : null;
 				}));
 
 				self.filters(aResult);
+
+				self.modules(oData.Result.Modules ? oData.Result.Modules : {});
+
+				self.filterRaw(oData.Result.Raw || '');
+				self.filterRaw.capa(Utils.isArray(oData.Result.Capa) ? oData.Result.Capa.join(' ') : '');
+				self.filterRaw.active(!!oData.Result.RawIsActive);
+				self.filterRaw.allow(!!oData.Result.RawIsAllow);
 			}
 			else
 			{
 				self.filters([]);
+				self.modules({});
+				self.filterRaw('');
+				self.filterRaw.capa({});
 			}
 
 			self.haveChanges(false);
@@ -130,6 +157,7 @@
 			require('View/Popup/Filter'), [oNew, function  () {
 				self.filters.push(oNew);
 				self.haveChanges(true);
+				self.filterRaw.active(false);
 			}, false]);
 	};
 

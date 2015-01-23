@@ -308,6 +308,38 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @return string
 	 */
+	public function DomainSieveHost()
+	{
+		return $this->Domain()->SieveHost();
+	}
+
+	/**
+	 * @return int
+	 */
+	public function DomainSievePort()
+	{
+		return $this->Domain()->SievePort();
+	}
+
+	/**
+	 * @return int
+	 */
+	public function DomainSieveSecure()
+	{
+		return $this->Domain()->SieveSecure();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function DomainSieveAllowRaw()
+	{
+		return $this->Domain()->SieveAllowRaw();
+	}
+
+	/**
+	 * @return string
+	 */
 	public function GetAuthToken()
 	{
 		return \RainLoop\Utils::EncodeKeyValues(array(
@@ -440,6 +472,54 @@ class Account extends \RainLoop\Account // for backward compatibility
 		}
 
 		$oPlugins->RunHook('event.smtp-post-login', array($this, $aSmtpCredentials['UseAuth'], $bLogin, $aSmtpCredentials));
+
+		return $bLogin;
+	}
+
+	/**
+	 * @param \RainLoop\Plugins\Manager $oPlugins
+	 * @param \MailSo\Sieve\ManageSieveClient $oSieveClient
+	 * @param \RainLoop\Application $oConfig
+	 */
+	public function SieveConnectAndLoginHelper($oPlugins, $oSieveClient, $oConfig)
+	{
+		$bLogin = false;
+
+		$aSieveCredentials = array(
+			'UseConnect' => true,
+			'UseAuth' => true,
+			'Host' => $this->DomainSieveHost(),
+			'Port' => $this->DomainSievePort(),
+			'Secure' => $this->DomainSieveSecure(),
+			'Login' => $this->IncLogin(),
+			'Password' => $this->Password(),
+			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+		);
+
+		$oPlugins->RunHook('filter.sieve-credentials', array($this, &$aSieveCredentials));
+
+		$oPlugins->RunHook('event.sieve-pre-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
+
+		if ($aSieveCredentials['UseConnect'] && $oSieveClient)
+		{
+			$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
+				$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
+			);
+		}
+
+		$oPlugins->RunHook('event.sieve-post-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
+
+		$oPlugins->RunHook('event.sieve-pre-login', array($this, $aSieveCredentials['UseAuth'], $aSieveCredentials));
+
+		if ($aSieveCredentials['UseAuth'])
+		{
+			$oSieveClient->Login($aSieveCredentials['Login'], $aSieveCredentials['Password']);
+
+			$bLogin = true;
+		}
+
+		$oPlugins->RunHook('event.sieve-post-login', array($this, $aSieveCredentials['UseAuth'], $bLogin, $aSieveCredentials));
 
 		return $bLogin;
 	}

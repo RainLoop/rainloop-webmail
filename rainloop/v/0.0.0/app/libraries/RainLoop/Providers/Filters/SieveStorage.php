@@ -4,7 +4,25 @@ namespace RainLoop\Providers\Filters;
 
 class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 {
-	const NEW_LINE = "\n";
+	const NEW_LINE = "\r\n";
+
+	const SIEVE_FILE_NAME = 'rainloop.user';
+	const SIEVE_FILE_NAME_RAW = 'rainloop.raw';
+
+	/**
+	 * @var \MailSo\Log\Logger
+	 */
+	private $oLogger;
+
+	/**
+	 * @var \RainLoop\Plugins\Manager
+	 */
+	private $oPlugins;
+
+	/**
+	 * @var \RainLoop\Application
+	 */
+	private $oConfig;
 
 	/**
 	 * @var bool
@@ -12,31 +30,130 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	private $bUtf8FolderName;
 
 	/**
-	 * @param bool $bUtf8FolderName = true
-	 *
 	 * @return void
 	 */
-	public function __construct($bUtf8FolderName = true)
+	public function __construct($oPlugins, $oConfig)
 	{
-		$this->bUtf8FolderName = !!$bUtf8FolderName;
+		$this->oLogger = null;
+
+		$this->oPlugins = $oPlugins;
+		$this->oConfig = $oConfig;
+
+		$this->bUtf8FolderName = !!$this->oConfig->Get('labs', 'sieve_utf8_folder_name', true);
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param bool $bAllowRaw = false
+	 *
 	 * @return array
 	 */
-	public function Load()
+	public function Load($oAccount, $bAllowRaw = false)
 	{
-		return $this->fileStringToCollection(@\file_get_contents('e:/sieve.txt'));
+		$sRaw = '';
+
+		$bBasicIsActive = false;
+		$bRawIsActive = false;
+
+		$aModules = array();
+		$aFilters = array();
+
+		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->oLogger);
+
+		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
+		{
+			$aModules = $oSieveClient->Modules();
+			$aList = $oSieveClient->ListScripts();
+
+			if (\is_array($aList) && 0 < \count($aList))
+			{
+				if (isset($aList[self::SIEVE_FILE_NAME]))
+				{
+					$bBasicIsActive = !!$aList[self::SIEVE_FILE_NAME];
+					$sS = $oSieveClient->GetScript(self::SIEVE_FILE_NAME);
+					if ($sS)
+					{
+						$aFilters = $this->fileStringToCollection($sS);
+					}
+				}
+
+				if ($bAllowRaw && isset($aList[self::SIEVE_FILE_NAME_RAW]))
+				{
+					$bRawIsActive = !!$aList[self::SIEVE_FILE_NAME_RAW];
+					$sRaw = \trim($oSieveClient->GetScript(self::SIEVE_FILE_NAME_RAW));
+				}
+			}
+
+			$oSieveClient->LogoutAndDisconnect();
+		}
+
+		return array(
+			'RawIsAllow' => $bAllowRaw,
+			'RawIsActive' => $bRawIsActive,
+			'Raw' => $bAllowRaw ? $sRaw : '',
+			'Filters' => !$bBasicIsActive && !$bRawIsActive ? array() : $aFilters,
+			'Capa' => $bAllowRaw ? $aModules : array(),
+			'Modules' => array(
+				'redirect' => \in_array('fileinto', $aModules),
+				'moveto' => \in_array('fileinto', $aModules),
+				'reject' => \in_array('reject', $aModules),
+				'vacation' => \in_array('vacation', $aModules),
+				'markasread' => \in_array('imap4flags', $aModules) && false
+			)
+		);
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aFilters
+	 * @param string $sRaw = ''
+	 * @param bool $bRawIsActive = false
 	 *
 	 * @return bool
 	 */
-	public function Save($aFilters)
+	public function Save($oAccount, $aFilters, $sRaw = '', $bRawIsActive = false)
 	{
-		return @\file_put_contents('e:/sieve.txt', $this->collectionToFileString($aFilters));
+		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->oLogger);
+
+		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
+		{
+			$aList = $oSieveClient->ListScripts();
+
+			$sUserFilter = $this->collectionToFileString($aFilters);
+
+			if (!empty($sUserFilter))
+			{
+				$oSieveClient->PutScript(self::SIEVE_FILE_NAME, $sUserFilter);
+				if (!$bRawIsActive)
+				{
+					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME);
+				}
+			}
+			else if (isset($aList[self::SIEVE_FILE_NAME]))
+			{
+				$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME);
+			}
+
+			$sRaw = \trim($sRaw);
+			if (!empty($sRaw))
+			{
+				$oSieveClient->PutScript(self::SIEVE_FILE_NAME_RAW, $sRaw);
+				if ($bRawIsActive)
+				{
+					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME_RAW);
+				}
+			}
+			else if (isset($aList[self::SIEVE_FILE_NAME_RAW]))
+			{
+				$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME_RAW);
+			}
+
+			$oSieveClient->LogoutAndDisconnect();
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -221,20 +338,31 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aResult[] = $sTab.'# @Error (vacation): empty action value';
 				}
 				break;
+			case \RainLoop\Providers\Filters\Enumerations\ActionType::REJECT:
+				$sValue = \trim($oFilter->ActionValue());
+				if (0 < \strlen($sValue))
+				{
+					$aCapa['reject'] = true;
+
+					$aResult[] = $sTab.'reject "'.$this->quote($sValue).'";';
+					$aResult[] = $sTab.'stop;';
+				}
+				else
+				{
+					$aResult[] = $sTab.'# @Error (reject): empty action value';
+				}
+				break;
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::FORWARD:
 				$sValue = $oFilter->ActionValue();
 				if (0 < \strlen($sValue))
 				{
-					if ($oFilter->KeepForward())
+					if ($oFilter->Keep())
 					{
-						$aCapa['copy'] = true;
-						$aResult[] = $sTab.'redirect :copy "'.$this->quote($sValue).'";';
-					}
-					else
-					{
-						$aResult[] = $sTab.'redirect "'.$this->quote($sValue).'";';
+						$aCapa['fileinto'] = true;
+						$aResult[] = $sTab.'fileinto "INBOX";';
 					}
 
+					$aResult[] = $sTab.'redirect "'.$this->quote($sValue).'";';
 					$aResult[] = $sTab.'stop;';
 				}
 				else
@@ -246,8 +374,6 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				$sValue = $oFilter->ActionValue();
 				if (0 < \strlen($sValue))
 				{
-					$aCapa['fileinto'] = true;
-
 					$sFolderName = $sValue; // utf7-imap
 					if ($this->bUtf8FolderName) // to utf-8
 					{
@@ -256,6 +382,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 							\MailSo\Base\Enumerations\Charset::UTF_8);
 					}
 
+					$aCapa['fileinto'] = true;
 					$aResult[] = $sTab.'fileinto "'.$this->quote($sFolderName).'";';
 					$aResult[] = $sTab.'stop;';
 				}
@@ -358,5 +485,13 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	private function quote($sValue)
 	{
 		return \str_replace(array('\\', '"'), array('\\\\', '\\"'), \trim($sValue));
+	}
+
+	/**
+	 * @param \MailSo\Log\Logger $oLogger
+	 */
+	public function SetLogger($oLogger)
+	{
+		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
 	}
 }

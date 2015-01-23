@@ -116,7 +116,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_password'			=> array('12345'),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
-				'allow_universal_login'		=> array(true),
+				'allow_universal_login'		=> array(false),
 				'admin_panel_host'			=> array(''),
 				'core_install_access_domain' => array('')
 			),

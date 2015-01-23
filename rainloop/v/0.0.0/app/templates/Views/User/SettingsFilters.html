@@ -11,7 +11,12 @@
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_ADD_FILTER"></span>
 			</a>
-			&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;
+			<a class="btn" data-bind="visible: filterRaw.allow, click: function () { filterRaw.active(!filterRaw.active()) },
+				css: {'active': filterRaw.active }">
+				<i class="icon-file-code"></i>
+			</a>
+			&nbsp;&nbsp;
 			<a class="btn" data-bind="command: saveChanges">
 				<i data-bind="css: {'icon-floppy': !filters.saving(), 'icon-spinner animated': filters.saving()}"></i>
 				&nbsp;&nbsp;
@@ -36,7 +41,11 @@
 				&nbsp;&nbsp;
 				<span data-bind="text: processText"></span>
 			</div>
-			<table class="table table-hover list-table g-ui-user-select-none" data-bind="i18nUpdate: filters">
+			<div data-bind="visible: filterRaw.allow() && filterRaw.active()">
+				<textarea class="span8" style="height: 300px" data-bind="value: filterRaw, valueUpdate: 'afterkeydown'"></textarea>
+			</div>
+			<table class="table table-hover list-table g-ui-user-select-none"
+				data-bind="visible: !filterRaw.active() || !filterRaw.active(), i18nUpdate: filters">
 				<colgroup>
 					<col style="width: 30px" />
 					<col />

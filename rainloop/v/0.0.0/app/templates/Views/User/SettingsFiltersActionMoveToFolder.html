@@ -6,7 +6,7 @@
 </div>
 <div class="control-group">
 	<div class="controls">
-		<div data-bind="component: {
+		<div data-bind="visible: $root.allowMarkAsRead, component: {
 			name: 'Checkbox',
 			params: {
 				label: 'Mark as read @i18n',

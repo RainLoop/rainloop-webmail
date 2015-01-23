@@ -233,9 +233,12 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	RemoteUserStorage.prototype.filtersSave = function (fCallback, aFilters)
+	RemoteUserStorage.prototype.filtersSave = function (fCallback,
+		aFilters, sRaw, bRawIsActive)
 	{
 		this.defaultRequest(fCallback, 'FiltersSave', {
+			'Raw': sRaw,
+			'RawIsActive': bRawIsActive ? '1' : '0',
 			'Filters': _.map(aFilters, function (oItem) {
 				return oItem.toJson();
 			})

@@ -8,5 +8,6 @@ class ActionType
 	const MOVE_TO = 'MoveTo';
 	const DISCARD = 'Discard';
 	const VACATION = 'Vacation';
+	const REJECT = 'Reject';
 	const FORWARD = 'Forward';
 }

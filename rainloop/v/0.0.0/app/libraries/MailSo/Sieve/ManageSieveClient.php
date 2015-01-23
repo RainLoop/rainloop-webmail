@@ -70,7 +70,15 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function IsModuleSupported($sModule)
 	{
-		return $this->IsSupported('SIEVE') && \in_array(\strtoupper($sModule), $this->aModules);
+		return $this->IsSupported('SIEVE') && \in_array(\strtolower(\trim($sModule)), $this->aModules);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function Modules()
+	{
+		return $this->aModules;
 	}
 
 	/**
@@ -487,7 +495,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 						$this->aAuth = \explode(' ', \strtoupper($aTokens[1]));
 						break;
 					case 'SIEVE':
-						$this->aModules = \explode(' ', \strtoupper($aTokens[1]));
+						$this->aModules = \explode(' ', \strtolower($aTokens[1]));
 						break;
 				}
 			}
@@ -513,7 +521,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 		$this->IsConnected(true);
 
-		$sRequest = \trim($sRequest);
 		$this->sendRaw($sRequest);
 	}
 
@@ -617,7 +624,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	protected function getLogName()
 	{
-		return 'MANAGE-SIEVE';
+		return 'SIEVE';
 	}
 
 	/**

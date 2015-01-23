@@ -70,6 +70,7 @@
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
 		this.imapShortLogin = ko.observable(false);
 		this.useSieve = ko.observable(false);
+		this.sieveAllowRaw = ko.observable(false);
 		this.sieveServer = ko.observable('');
 		this.sievePort = ko.observable('' + Consts.Values.SieveDefaulPort);
 		this.sieveSecure = ko.observable(Enums.ServerSecure.None);
@@ -126,6 +127,7 @@
 				this.imapShortLogin(),
 
 				this.useSieve(),
+				this.sieveAllowRaw(),
 				this.sieveServer(),
 				Utils.pInt(this.sievePort()),
 				this.sieveSecure(),
@@ -353,6 +355,7 @@
 			this.imapSecure(Utils.trim(oDomain.IncSecure));
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
+			this.sieveAllowRaw(!!oDomain.SieveAllowRaw);
 			this.sieveServer(Utils.trim(oDomain.SieveHost));
 			this.sievePort('' + Utils.pInt(oDomain.SievePort));
 			this.sieveSecure(Utils.trim(oDomain.SieveSecure));
@@ -396,6 +399,7 @@
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
+		this.sieveAllowRaw(false);
 		this.sieveServer('');
 		this.sievePort('' + Consts.Values.SieveDefaulPort);
 		this.sieveSecure(Enums.ServerSecure.None);

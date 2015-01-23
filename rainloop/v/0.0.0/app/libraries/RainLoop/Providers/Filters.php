@@ -18,21 +18,28 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
+	 * @param bool $bAllowRaw = false
+	 *
 	 * @return array
 	 */
-	public function Load()
+	public function Load($oAccount, $bAllowRaw = false)
 	{
-		return $this->IsActive() ? $this->oDriver->Load() : array();
+		return $this->IsActive() ? $this->oDriver->Load($oAccount, $bAllowRaw) : array();
 	}
 
 	/**
+	 * @param \RainLoop\Account $oAccount
 	 * @param array $aFilters
+	 * @param string $sRaw = ''
+	 * @param bool $bRawIsActive = false
 	 *
 	 * @return bool
 	 */
-	public function Save($aFilters)
+	public function Save($oAccount, $aFilters, $sRaw = '', $bRawIsActive = false)
 	{
-		return $this->IsActive() ? $this->oDriver->Save($aFilters) : false;
+		return $this->IsActive() ? $this->oDriver->Save($oAccount,
+			$aFilters, $sRaw, $bRawIsActive) : false;
 	}
 
 	/**

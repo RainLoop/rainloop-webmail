@@ -57,7 +57,7 @@ class Filter
 	/**
 	 * @var bool
 	 */
-	private $bKeepForward;
+	private $bKeep;
 
 	public function __construct()
 	{
@@ -81,7 +81,7 @@ class Filter
 
 		$this->bMarkAsRead = false;
 		$this->bSkipOthers = false;
-		$this->bKeepForward = true;
+		$this->bKeep = true;
 	}
 
 	/**
@@ -167,9 +167,9 @@ class Filter
 	/**
 	 * @return bool
 	 */
-	public function KeepForward()
+	public function Keep()
 	{
-		return $this->bKeepForward;
+		return $this->bKeep;
 	}
 
 	/**
@@ -217,9 +217,9 @@ class Filter
 			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
 			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
 
+			$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
 			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
 			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? '1' === (string) $aFilter['SkipOthers'] : false;
-			$this->bKeepForward = isset($aFilter['KeepForward']) ? '1' === (string) $aFilter['KeepForward'] : true;
 
 			$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
 				isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
@@ -255,6 +255,7 @@ class Filter
 			'ActionType' => $this->ActionType(),
 			'ActionValue' => $this->ActionValue(),
 			'ActionValueSecond' => $this->ActionValueSecond(),
+			'Keep' => $this->Keep(),
 			'MarkAsRead' => $this->MarkAsRead(),
 			'SkipOthers' => $this->SkipOthers()
 		);

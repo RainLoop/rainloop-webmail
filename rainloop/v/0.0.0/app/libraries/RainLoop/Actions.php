@@ -251,8 +251,10 @@ class Actions
 				case 'filters':
 					// \RainLoop\Providers\Filters\FiltersInterface
 					$oResult = new \RainLoop\Providers\Filters\SieveStorage(
-						!!$this->Config()->Get('labs', 'sieve_utf8_folder_name', true)
+						$this->Plugins(), $this->Config()
 					);
+
+					$oResult->SetLogger($this->Logger());
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
@@ -2053,7 +2055,9 @@ class Actions
 	 */
 	public function DoFilters()
 	{
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Load());
+		$oAccount = $this->getAccountFromToken();
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->FiltersProvider()->Load($oAccount, $oAccount->DomainSieveAllowRaw()));
 	}
 
 	/**
@@ -2063,7 +2067,12 @@ class Actions
 	 */
 	public function DoFiltersSave()
 	{
+		$oAccount = $this->getAccountFromToken();
+
 		$aIncFilters = $this->GetActionParam('Filters', array());
+
+		$sRaw = $this->GetActionParam('Raw', '');
+		$bRawIsActive = '1' === (string) $this->GetActionParam('RawIsActive', '0');
 
 		$aFilters = array();
 		foreach ($aIncFilters as $aFilter)
@@ -2078,8 +2087,8 @@ class Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($aFilters));
-//		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($oAccount,
+			$aFilters, $sRaw, $bRawIsActive));
 	}
 
 	/**
