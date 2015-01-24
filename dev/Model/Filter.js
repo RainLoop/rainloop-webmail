@@ -71,19 +71,23 @@
 			switch (this.actionType())
 			{
 				case Enums.FiltersAction.MoveTo:
-					sResult = 'MoveTo $i18n "' + fGetRealFolderName(sActionValue) + '"';
+					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
+						'FOLDER': fGetRealFolderName(sActionValue)
+					});
 					break;
 				case Enums.FiltersAction.Forward:
-					sResult = 'Forward @i18n "' + sActionValue + '"';
+					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
+						'EMAIL': sActionValue
+					});
 					break;
 				case Enums.FiltersAction.Vacation:
-					sResult = 'Vacation message @i18n';
+					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
 					break;
 				case Enums.FiltersAction.Reject:
-					sResult = 'Reject @i18n';
+					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
 					break;
 				case Enums.FiltersAction.Discard:
-					sResult = 'Discard @i18n';
+					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
 					break;
 			}
 

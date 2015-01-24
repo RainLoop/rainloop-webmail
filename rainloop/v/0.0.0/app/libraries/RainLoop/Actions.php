@@ -1025,7 +1025,7 @@ class Actions
 	 */
 	private function UseSieve()
 	{
-		return false; // TODO
+		return $this->Config()->Get('capa', 'filters', false);
 	}
 
 	/**

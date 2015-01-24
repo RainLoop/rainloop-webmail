@@ -38,8 +38,21 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Save($oAccount, $aFilters, $sRaw = '', $bRawIsActive = false)
 	{
-		return $this->IsActive() ? $this->oDriver->Save($oAccount,
-			$aFilters, $sRaw, $bRawIsActive) : false;
+		try
+		{
+			return $this->IsActive() ? $this->oDriver->Save(
+				$oAccount, $aFilters, $sRaw, $bRawIsActive) : false;
+		}
+		catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveFilters, $oException);
+		}
+
+		return false;
 	}
 
 	/**

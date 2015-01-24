@@ -1,6 +1,7 @@
 <div class="control-group" data-bind="css: {'error': actionValue.error}">
 	<div class="controls">
-		<input type="text" data-bind="value: actionValue" placeholder="Email @i18n" />
+		<input type="text" class="span3 i18n" data-bind="value: actionValue" placeholder=""
+			data-i18n-placeholder="POPUPS_FILTER/EMAIL_LABEL" />
 	</div>
 </div>
 <div class="control-group">
@@ -8,14 +9,14 @@
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
-				label: 'keep in INBOX @i18n',
+				label: 'POPUPS_FILTER/KEEP_LABEL',
 				value: actionKeep
 			}
 		}"></div>
 		<div data-bind="visible: $root.allowMarkAsRead, component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Mark as read @i18n',
+				label: 'POPUPS_FILTER/MARK_AS_READ_LABEL',
 				value: actionMarkAsRead
 			}
 		}"></div>

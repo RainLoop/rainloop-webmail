@@ -13,15 +13,17 @@
 			</a>
 			&nbsp;&nbsp;
 			<a class="btn" data-bind="visible: filterRaw.allow, click: function () { filterRaw.active(!filterRaw.active()) },
-				css: {'active': filterRaw.active }">
+				css: {'active': filterRaw.active }, tooltip: 'SETTINGS_FILTERS/BUTTON_RAW_SCRIPT'">
 				<i class="icon-file-code"></i>
 			</a>
 			&nbsp;&nbsp;
-			<a class="btn" data-bind="command: saveChanges">
+			<a class="btn hide-on-disabled-command" data-bind="command: saveChanges">
 				<i data-bind="css: {'icon-floppy': !filters.saving(), 'icon-spinner animated': filters.saving()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_SAVE"></span>
 			</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<span data-bind="text: saveErrorText"style="color:red"></span>
 		</div>
 	</div>
 	<div class="row" data-bind="visible: haveChanges">
@@ -30,7 +32,7 @@
 			<div class="alert g-ui-user-select-none" style="margin-bottom: 0">
 				<i class="icon-warning"></i>
 				&nbsp;&nbsp;
-				These changes need to be saved to the server. @i18n
+				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/CHACHES_NEED_TO_BE_SAVED_DESC"></span>
 			</div>
 		</div>
 	</div>
@@ -41,8 +43,15 @@
 				&nbsp;&nbsp;
 				<span data-bind="text: processText"></span>
 			</div>
-			<div data-bind="visible: filterRaw.allow() && filterRaw.active()">
-				<textarea class="span8" style="height: 300px" data-bind="value: filterRaw, valueUpdate: 'afterkeydown'"></textarea>
+			<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: filterRaw.allow() && filterRaw.active()">
+				<div class="controls">
+					<pre style="word-break: break-word;" data-bind="visible: '' !== filterRaw.capa()">
+						<b class="i18n" data-i18n-text="SETTINGS_FILTERS/CAPABILITY_LABEL"></b>:
+						<span data-bind="text: filterRaw.capa"></span>
+					</pre>
+					<textarea class="span8" style="height: 300px; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;"
+						data-bind="value: filterRaw, valueUpdate: 'afterkeydown'"></textarea>
+				</div>
 			</div>
 			<table class="table table-hover list-table g-ui-user-select-none"
 				data-bind="visible: !filterRaw.active() || !filterRaw.active(), i18nUpdate: filters">

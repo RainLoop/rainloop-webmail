@@ -1,6 +1,6 @@
 <div class="control-group" data-bind="css: {'error': actionValue.error}">
 	<div class="controls">
-		<select data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
+		<select class="span3" data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
 			optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defautOptionsAfterRender"></select>
 	</div>
 </div>
@@ -9,7 +9,7 @@
 		<div data-bind="visible: $root.allowMarkAsRead, component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Mark as read @i18n',
+				label: 'POPUPS_FILTER/MARK_AS_READ_LABEL',
 				value: actionMarkAsRead
 			}
 		}"></div>

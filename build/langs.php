@@ -33,7 +33,7 @@ function mergeLangStructure($aFromLang, $aEngLang, &$iCount = 0)
 function saveLangStructure($sLangFile, $aLang)
 {
 	$aResultLines = array();
-	$aResultLines[] = '; '.$sLangFile;
+//	$aResultLines[] = '; '.$sLangFile;
 
 	foreach ($aLang as $sSectionKey => $aSectionValue)
 	{
@@ -62,7 +62,7 @@ foreach ($aFiles as $sFile)
 	$aNextLang = \getLangStructure($sFileName);
 	$aNewLang = \mergeLangStructure($aNextLang, $aEngLang, $iCount);
 
-	if (\json_encode($aNextLang) === \json_encode($aNewLang))
+	if (0 === $iCount)
 	{
 		echo $sFileName.': ok'.$sNL;
 	}

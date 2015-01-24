@@ -25,6 +25,8 @@
 		this.haveChanges = ko.observable(false);
 
 		this.processText = ko.observable('');
+		this.saveErrorText = ko.observable('');
+
 		this.visibility = ko.observable(false);
 
 		this.modules = Data.filterModules;
@@ -39,6 +41,7 @@
 		this.filterRaw.capa = ko.observable('');
 		this.filterRaw.active = ko.observable(false);
 		this.filterRaw.allow = ko.observable(false);
+		this.filterRaw.error = ko.observable(false);
 
 		this.processText = ko.computed(function () {
 			return this.filters.loading() ? Utils.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
@@ -55,7 +58,14 @@
 
 			if (!this.filters.saving())
 			{
+				if ('' === Utils.trim(this.filterRaw()))
+				{
+					this.filterRaw.error(true);
+					return false;
+				}
+
 				this.filters.saving(true);
+				this.saveErrorText('');
 
 				Remote.filtersSave(function (sResult, oData) {
 
@@ -65,6 +75,11 @@
 					{
 						self.haveChanges(false);
 						self.updateList();
+					}
+					else
+					{
+						self.saveErrorText(oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) :
+							Utils.getNotification(Enums.Notification.CantSaveFilters));
 					}
 
 				}, this.filters(), this.filterRaw(), this.filterRaw.active());
@@ -82,10 +97,12 @@
 
 		this.filterRaw.subscribe(function () {
 			this.haveChanges(true);
+			this.filterRaw.error(false);
 		}, this);
 
 		this.filterRaw.active.subscribe(function () {
 			this.haveChanges(true);
+			this.filterRaw.error(false);
 		}, this);
 	}
 

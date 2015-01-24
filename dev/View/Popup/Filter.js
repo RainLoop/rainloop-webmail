@@ -77,7 +77,7 @@
 
 		this.populateOptions();
 
-		this.modules.subscribe(this.populateOptions, this)
+		this.modules.subscribe(this.populateOptions, this);
 
 		kn.constructorEnd(this);
 	}
@@ -87,8 +87,9 @@
 
 	FilterPopupView.prototype.populateOptions = function ()
 	{
-		this.actionTypeOptions = []
-//		this.actionTypeOptions.push({'id': Enums.FiltersAction.None, 'name': 'None @i18n'});
+		this.actionTypeOptions = [];
+//		this.actionTypeOptions.push({'id': Enums.FiltersAction.None,
+//			'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
 
 		var oModules = this.modules();
 		if (oModules)
@@ -100,38 +101,44 @@
 
 			if (oModules.moveto)
 			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo, 'name': 'Move to @i18n'});
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo,
+					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')});
 			}
 
 			if (oModules.redirect)
 			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward, 'name': 'Forward to @i18n'});
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward,
+					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')});
 			}
 
 			if (oModules.reject)
 			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject, 'name': 'Reject @i18n'});
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject,
+					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_REJECT')});
 			}
 
 			if (oModules.vacation)
 			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation, 'name': 'Vacation message @i18n'});
+				this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation,
+					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')});
+
 			}
 		}
 
-		this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard, 'name': 'Discard @i18n'});
+		this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard,
+			'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD')});
 
 		this.fieldOptions = [
-			{'id': Enums.FilterConditionField.From, 'name': 'From @i18n'},
-			{'id': Enums.FilterConditionField.Recipient, 'name': 'Recipient (To or CC) @i18n'},
-			{'id': Enums.FilterConditionField.Subject, 'name': 'Subject @i18n'}
+			{'id': Enums.FilterConditionField.From, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_FROM')},
+			{'id': Enums.FilterConditionField.Recipient, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS')},
+			{'id': Enums.FilterConditionField.Subject, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT')}
 		];
 
 		this.typeOptions = [
-			{'id': Enums.FilterConditionType.Contains, 'name': 'Contains @i18n'},
-			{'id': Enums.FilterConditionType.NotContains, 'name': 'Not Contains @i18n'},
-			{'id': Enums.FilterConditionType.EqualTo, 'name': 'Equal To @i18n'},
-			{'id': Enums.FilterConditionType.NotEqualTo, 'name': 'Not Equal To @i18n'}
+			{'id': Enums.FilterConditionType.Contains, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS')},
+			{'id': Enums.FilterConditionType.NotContains, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS')},
+			{'id': Enums.FilterConditionType.EqualTo, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO')},
+			{'id': Enums.FilterConditionType.NotEqualTo, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
 		];
 	};
 

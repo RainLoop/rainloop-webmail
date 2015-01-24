@@ -1,10 +1,12 @@
 <div class="control-group" style="margin-bottom: 0">
 	<div class="controls">
-		<input type="text" class="span5" data-bind="value: actionValueSecond" placeholder="Subject (optional) @i18n" />
+		<input type="text" class="span5 i18n" data-bind="value: actionValueSecond" placeholder=""
+			data-i18n-placeholder="POPUPS_FILTER/VACATION_SUBJECT_LABEL" />
 	</div>
 </div>
 <div class="control-group" data-bind="css: {'error': actionValue.error}" style="margin-bottom: 0">
 	<div class="controls">
-		<textarea class="span5" data-bind="value: actionValue" style="height: 100px;" placeholder="Message @i18n"></textarea>
+		<textarea class="span5 i18n" data-bind="value: actionValue" style="height: 100px;"
+			placeholder="" data-i18n-placeholder="POPUPS_FILTER/VACATION_MESSAGE_LABEL"></textarea>
 	</div>
 </div>

@@ -128,6 +128,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'capath'			=> array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
 			),
 
+			'capa' => array(
+				'filters' => array(true)
+			),
+
 			'login' => array(
 
 				'default_domain' => array('', ''),

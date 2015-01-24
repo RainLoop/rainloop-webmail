@@ -700,6 +700,9 @@
 		oN[Enums.Notification.CantSendMessage] = Utils.i18n('NOTIFICATIONS/CANT_SEND_MESSAGE');
 		oN[Enums.Notification.InvalidRecipients] = Utils.i18n('NOTIFICATIONS/INVALID_RECIPIENTS');
 
+		oN[Enums.Notification.CantSaveFilters] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_FILTERS');
+		oN[Enums.Notification.FiltersAreNotCorrect] = Utils.i18n('NOTIFICATIONS/FILTERS_ARE_NOT_CORRECT');
+
 		oN[Enums.Notification.CantCreateFolder] = Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER');
 		oN[Enums.Notification.CantRenameFolder] = Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER');
 		oN[Enums.Notification.CantDeleteFolder] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER');

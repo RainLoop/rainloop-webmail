@@ -139,6 +139,9 @@
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = oViewModel;
 
+			oViewModel.onShowTrigger = ko.observable(false);
+			oViewModel.onHideTrigger = ko.observable(false);
+
 			oViewModel.viewModelName = ViewModelClass.__name;
 			oViewModel.viewModelNames = ViewModelClass.__names;
 
@@ -172,6 +175,11 @@
 						else
 						{
 							Utils.delegateRun(this, 'onHide');
+							if (this.onHideTrigger)
+							{
+								this.onHideTrigger(!this.onHideTrigger());
+							}
+
 							this.restoreKeyScope();
 
 							_.each(this.viewModelNames, function (sName) {
@@ -244,6 +252,10 @@
 			{
 				ViewModelClassToShow.__vm.modalVisibility(true);
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
+				if (ViewModelClassToShow.__vm.onShowTrigger)
+				{
+					ViewModelClassToShow.__vm.onShowTrigger(!ViewModelClassToShow.__vm.onShowTrigger());
+				}
 
 				_.each(ViewModelClassToShow.__names, function (sName) {
 					Plugins.runHook('view-model-on-show', [sName, ViewModelClassToShow.__vm, aParameters || []]);
@@ -314,6 +326,11 @@
 					{
 						Utils.delegateRun(self.oCurrentScreen, 'onHide');
 
+						if (self.oCurrentScreen.onHideTrigger)
+						{
+							self.oCurrentScreen.onHideTrigger(!self.oCurrentScreen.onHideTrigger());
+						}
+
 						if (Utils.isNonEmptyArray(self.oCurrentScreen.viewModels()))
 						{
 							_.each(self.oCurrentScreen.viewModels(), function (ViewModelClass) {
@@ -324,6 +341,11 @@
 									ViewModelClass.__dom.hide();
 									ViewModelClass.__vm.viewModelVisibility(false);
 									Utils.delegateRun(ViewModelClass.__vm, 'onHide');
+
+									if (ViewModelClass.__vm.onHideTrigger)
+									{
+										ViewModelClass.__vm.onHideTrigger(!ViewModelClass.__vm.onHideTrigger());
+									}
 								}
 
 							});
@@ -337,6 +359,10 @@
 					if (self.oCurrentScreen)
 					{
 						Utils.delegateRun(self.oCurrentScreen, 'onShow');
+						if (self.oCurrentScreen.onShowTrigger)
+						{
+							self.oCurrentScreen.onShowTrigger(!self.oCurrentScreen.onShowTrigger());
+						}
 
 						Plugins.runHook('screen-on-show', [self.oCurrentScreen.screenName(), self.oCurrentScreen]);
 
@@ -351,6 +377,11 @@
 									ViewModelClass.__vm.viewModelVisibility(true);
 
 									Utils.delegateRun(ViewModelClass.__vm, 'onShow');
+									if (ViewModelClass.__vm.onShowTrigger)
+									{
+										ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
+									}
+
 									Utils.delegateRun(ViewModelClass.__vm, 'onFocus', [], 200);
 
 									_.each(ViewModelClass.__names, function (sName) {

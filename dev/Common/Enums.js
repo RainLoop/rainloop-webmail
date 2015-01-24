@@ -399,6 +399,9 @@
 		'CantSendMessage': 302,
 		'InvalidRecipients': 303,
 
+		'CantSaveFilters': 351,
+		'FiltersAreNotCorrect': 352,
+
 		'CantCreateFolder': 400,
 		'CantRenameFolder': 401,
 		'CantDeleteFolder': 402,
