@@ -8,7 +8,6 @@
 		ko = require('ko'),
 
 		Utils = require('Common/Utils'),
-		Globals = require('Common/Globals'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -22,12 +21,12 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsLanguages');
 
-		this.Data = Globals.__APP__.data(); // TODO
+		this.UserSettingsStore = require('Stores/UserSettings');
 
 		this.exp = ko.observable(false);
 
 		this.languages = ko.computed(function () {
-			return _.map(this.Data.languages(), function (sLanguage) {
+			return _.map(this.UserSettingsStore.languages(), function (sLanguage) {
 				return {
 					'key': sLanguage,
 					'selected': ko.observable(false),
@@ -36,7 +35,7 @@
 			});
 		}, this);
 
-		this.Data.mainLanguage.subscribe(function () {
+		this.UserSettingsStore.language.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
 
@@ -54,7 +53,7 @@
 
 	LanguagesPopupView.prototype.resetMainLanguage = function ()
 	{
-		var sCurrent = this.Data.mainLanguage();
+		var sCurrent = this.UserSettingsStore.language();
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
@@ -74,7 +73,7 @@
 
 	LanguagesPopupView.prototype.changeLanguage = function (sLang)
 	{
-		this.Data.mainLanguage(sLang);
+		this.UserSettingsStore.language(sLang);
 		this.cancelCommand();
 	};
 

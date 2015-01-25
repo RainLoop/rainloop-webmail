@@ -41,11 +41,6 @@
 	Globals.tooltipTrigger = ko.observable(false).extend({'rateLimit': 0});
 
 	/**
-	 * @type {?}
-	 */
-	Globals.langChangeTrigger = ko.observable(true);
-
-	/**
 	 * @type {boolean}
 	 */
 	Globals.useKeyboardShortcuts = ko.observable(true);
@@ -188,10 +183,6 @@
 			return oType && 'application/pdf' === oType.type;
 		});
 	}
-
-	Globals.oI18N = window['rainloopI18N'] || {};
-
-	Globals.oNotificationI18N = {};
 
 	Globals.aBootstrapDropdowns = [];
 

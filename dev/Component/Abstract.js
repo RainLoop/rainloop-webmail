@@ -50,7 +50,7 @@
 					{
 						oParams.element = $(oCmponentInfo.element);
 
-						Utils.i18nToNode(oParams.element);
+						require('Common/Translator').i18nToNode(oParams.element);
 
 						if (!Utils.isUnd(oParams.inline) && ko.unwrap(oParams.inline))
 						{

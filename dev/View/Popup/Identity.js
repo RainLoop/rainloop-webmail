@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Remote = require('Storage/User/Remote'),
 		Data = require('Storage/User/Data'),
@@ -88,12 +89,12 @@
 					}
 					else if (oData.ErrorCode)
 					{
-						this.submitError(Utils.getNotification(oData.ErrorCode));
+						this.submitError(Translator.getNotification(oData.ErrorCode));
 					}
 				}
 				else
 				{
-					this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+					this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 				}
 
 			}, this), this.id, this.email(), this.name(), this.replyTo(), this.bcc());

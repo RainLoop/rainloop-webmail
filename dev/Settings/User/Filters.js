@@ -9,8 +9,9 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
+		FilterStore = require('Stores/Filter'),
 
 		Remote = require('Storage/User/Remote')
 	;
@@ -22,6 +23,9 @@
 	{
 		var self = this;
 
+		this.modules = FilterStore.modules;
+		this.filters = FilterStore.collection;
+
 		this.haveChanges = ko.observable(false);
 
 		this.processText = ko.observable('');
@@ -29,22 +33,16 @@
 
 		this.visibility = ko.observable(false);
 
-		this.modules = Data.filterModules;
-
-		this.filters = ko.observableArray([]);
-		this.filters.loading = ko.observable(false).extend({'throttle': 200});
-		this.filters.saving = ko.observable(false).extend({'throttle': 200});
-
 		this.filters.subscribe(Utils.windowResizeCallback);
 
-		this.filterRaw = ko.observable('');
-		this.filterRaw.capa = ko.observable('');
+		this.filterRaw = FilterStore.raw;
+		this.filterRaw.capa = FilterStore.capa;
 		this.filterRaw.active = ko.observable(false);
 		this.filterRaw.allow = ko.observable(false);
 		this.filterRaw.error = ko.observable(false);
 
 		this.processText = ko.computed(function () {
-			return this.filters.loading() ? Utils.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
+			return this.filters.loading() ? Translator.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {
@@ -78,8 +76,8 @@
 					}
 					else
 					{
-						self.saveErrorText(oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) :
-							Utils.getNotification(Enums.Notification.CantSaveFilters));
+						self.saveErrorText(oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
+							Translator.getNotification(Enums.Notification.CantSaveFilters));
 					}
 
 				}, this.filters(), this.filterRaw(), this.filterRaw.active());
@@ -173,7 +171,6 @@
 		require('Knoin/Knoin').showScreenPopup(
 			require('View/Popup/Filter'), [oNew, function  () {
 				self.filters.push(oNew);
-				self.haveChanges(true);
 				self.filterRaw.active(false);
 			}, false]);
 	};

@@ -7,8 +7,8 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Remote = require('Storage/User/Remote')
 	;
@@ -34,8 +34,8 @@
 		this.bFirst = true;
 
 		this.viewTwoFactorStatus = ko.computed(function () {
-			Globals.langChangeTrigger();
-			return Utils.i18n(
+			Translator.trigger();
+			return Translator.i18n(
 				this.twoFactorStatus() ?
 					'SETTINGS_SECURITY/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
 					'SETTINGS_SECURITY/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'

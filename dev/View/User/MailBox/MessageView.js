@@ -17,6 +17,9 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
+
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Local = require('Storage/Local'),
 		Cache = require('Storage/User/Cache'),
@@ -61,8 +64,8 @@
 		this.messagesBodiesDom = Data.messagesBodiesDom;
 		this.useThreads = Data.useThreads;
 		this.replySameFolder = Data.replySameFolder;
-		this.layout = Data.layout;
-		this.usePreviewPane = Data.usePreviewPane;
+		this.layout = UserSettingsStore.layout;
+		this.usePreviewPane = UserSettingsStore.usePreviewPane;
 		this.isMessageSelected = Data.isMessageSelected;
 		this.messageActiveDom = Data.messageActiveDom;
 		this.messageError = Data.messageError;
@@ -329,19 +332,19 @@
 		switch (this.viewPgpSignedVerifyStatus())
 		{
 			case Enums.SignedVerifyStatus.UnknownPublicKeys:
-				sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
+				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
 				break;
 			case Enums.SignedVerifyStatus.UnknownPrivateKey:
-				sResult = Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
+				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
 				break;
 			case Enums.SignedVerifyStatus.Unverified:
-				sResult = Utils.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
+				sResult = Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
 				break;
 			case Enums.SignedVerifyStatus.Error:
-				sResult = Utils.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
+				sResult = Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
 				break;
 			case Enums.SignedVerifyStatus.Success:
-				sResult = Utils.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+				sResult = Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
 					'USER': this.viewPgpSignedVerifyUser()
 				});
 				break;
@@ -382,7 +385,7 @@
 	{
 		var
 			self = this,
-			sErrorMessage = Utils.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
+			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 			fCheckHeaderHeight = function () {
 				if (self.oHeaderDom)
 				{
@@ -561,7 +564,7 @@
 			{
 				this.fullScreenMode(false);
 			}
-			else if (Enums.Layout.NoPreview === Data.layout())
+			else if (Enums.Layout.NoPreview === this.layout())
 			{
 				this.message(null);
 			}
@@ -590,7 +593,7 @@
 		});
 
 		key('enter', Enums.KeyState.MessageList, function () {
-			if (Enums.Layout.NoPreview !== Data.layout() && self.message())
+			if (Enums.Layout.NoPreview !== self.layout() && self.message())
 			{
 				self.toggleFullScreen();
 				return false;
@@ -681,7 +684,7 @@
 
 		// change focused state
 		key('tab, shift+tab, left', Enums.KeyState.MessageView, function (event, handler) {
-			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== Data.layout())
+			if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== self.layout())
 			{
 				if (event && handler && 'left' === handler.shortcut)
 				{
@@ -697,7 +700,7 @@
 					self.message.focused(false);
 				}
 			}
-			else if (self.message() && Enums.Layout.NoPreview === Data.layout() && event && handler && 'left' === handler.shortcut)
+			else if (self.message() && Enums.Layout.NoPreview === self.layout() && event && handler && 'left' === handler.shortcut)
 			{
 				return true;
 			}
@@ -856,8 +859,8 @@
 		{
 			Remote.sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
 				oMessage.readReceipt(),
-				Utils.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-				Utils.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': Data.accountEmail()}));
+				Translator.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
+				Translator.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': Data.accountEmail()}));
 
 			oMessage.isReadReceipt(true);
 

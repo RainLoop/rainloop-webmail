@@ -208,7 +208,7 @@
 	/**
 	 * @enum {number}
 	 */
-	Enums.DesktopNotifications = {
+	Enums.DesktopNotification = {
 		'Allowed': 0,
 		'NotAllowed': 1,
 		'Denied': 2,

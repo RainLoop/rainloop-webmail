@@ -4,6 +4,7 @@
 	'use strict';
 
 	var
+		window = require('window'),
 		Utils = require('Common/Utils')
 	;
 
@@ -326,7 +327,7 @@
 			sPrefix  = '';
 		}
 
-		return sPrefix + 'themes/' + encodeURI(sTheme) + '/images/preview.png';
+		return sPrefix + 'themes/' + window.encodeURI(sTheme) + '/images/preview.png';
 	};
 
 	/**

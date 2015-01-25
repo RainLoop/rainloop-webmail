@@ -10,6 +10,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Remote = require('Storage/Admin/Remote'),
 
@@ -99,11 +100,11 @@
 			this.saveError('');
 			if (oData && oData.ErrorCode)
 			{
-				this.saveError(Utils.getNotification(oData.ErrorCode));
+				this.saveError(Translator.getNotification(oData.ErrorCode));
 			}
 			else
 			{
-				this.saveError(Utils.getNotification(Enums.Notification.CantSavePluginSettings));
+				this.saveError(Translator.getNotification(Enums.Notification.CantSavePluginSettings));
 			}
 		}
 	};
@@ -146,7 +147,7 @@
 
 		if (!kn.isPopupVisible(PopupsAskViewModel))
 		{
-			kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+			kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
 				if (self.modalVisibility())
 				{
 					Utils.delegateRun(self, 'cancelCommand');

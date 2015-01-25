@@ -9,8 +9,11 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
+
+		FilterStore = require('Stores/Filter'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -26,10 +29,11 @@
 
 		this.isNew = ko.observable(true);
 
+		this.modules = FilterStore.modules;
+
 		this.fTrueCallback = null;
 		this.filter = ko.observable(null);
 
-		this.modules = Data.filterModules;
 		this.allowMarkAsRead = ko.observable(false);
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
@@ -71,11 +75,11 @@
 			return true;
 		});
 
-		this.actionTypeOptions = [];
-		this.fieldOptions = [];
-		this.typeOptions = [];
+		this.actionTypeOptions = ko.observableArray([]);
+		this.fieldOptions = ko.observableArray([]);
+		this.typeOptions = ko.observableArray([]);
 
-		this.populateOptions();
+		Translator.initOnStartOrLangChange(this.populateOptions, this);
 
 		this.modules.subscribe(this.populateOptions, this);
 
@@ -87,9 +91,10 @@
 
 	FilterPopupView.prototype.populateOptions = function ()
 	{
-		this.actionTypeOptions = [];
+		this.actionTypeOptions([]);
+
 //		this.actionTypeOptions.push({'id': Enums.FiltersAction.None,
-//			'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
+//			'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
 
 		var oModules = this.modules();
 		if (oModules)
@@ -102,44 +107,44 @@
 			if (oModules.moveto)
 			{
 				this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo,
-					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')});
+					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')});
 			}
 
 			if (oModules.redirect)
 			{
 				this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward,
-					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')});
+					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')});
 			}
 
 			if (oModules.reject)
 			{
 				this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject,
-					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_REJECT')});
+					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_REJECT')});
 			}
 
 			if (oModules.vacation)
 			{
 				this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation,
-					'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')});
+					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')});
 
 			}
 		}
 
 		this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard,
-			'name': Utils.i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD')});
+			'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD')});
 
-		this.fieldOptions = [
-			{'id': Enums.FilterConditionField.From, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_FROM')},
-			{'id': Enums.FilterConditionField.Recipient, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS')},
-			{'id': Enums.FilterConditionField.Subject, 'name': Utils.i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT')}
-		];
+		this.fieldOptions([
+			{'id': Enums.FilterConditionField.From, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_FROM')},
+			{'id': Enums.FilterConditionField.Recipient, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS')},
+			{'id': Enums.FilterConditionField.Subject, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT')}
+		]);
 
-		this.typeOptions = [
-			{'id': Enums.FilterConditionType.Contains, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS')},
-			{'id': Enums.FilterConditionType.NotContains, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS')},
-			{'id': Enums.FilterConditionType.EqualTo, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO')},
-			{'id': Enums.FilterConditionType.NotEqualTo, 'name': Utils.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
-		];
+		this.typeOptions([
+			{'id': Enums.FilterConditionType.Contains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS')},
+			{'id': Enums.FilterConditionType.NotContains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS')},
+			{'id': Enums.FilterConditionType.EqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO')},
+			{'id': Enums.FilterConditionType.NotEqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
+		]);
 	};
 
 

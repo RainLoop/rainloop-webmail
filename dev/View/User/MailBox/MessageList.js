@@ -18,6 +18,10 @@
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
 		Selector = require('Common/Selector'),
+		Translator = require('Common/Translator'),
+
+		QuotaStore = require('Stores/Quota'),
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
@@ -63,13 +67,13 @@
 		this.messageListCheckedOrSelectedUidsWithSubMails = Data.messageListCheckedOrSelectedUidsWithSubMails;
 		this.messageListCompleteLoadingThrottle = Data.messageListCompleteLoadingThrottle;
 
-		Utils.initOnStartOrLangChange(function () {
-			this.emptySubjectValue = Utils.i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
+		Translator.initOnStartOrLangChange(function () {
+			this.emptySubjectValue = Translator.i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
 		}, this);
 
-		this.userQuota = Data.userQuota;
-		this.userUsageSize = Data.userUsageSize;
-		this.userUsageProc = Data.userUsageProc;
+		this.userQuota = QuotaStore.quota;
+		this.userUsageSize = QuotaStore.usage;
+		this.userUsageProc = QuotaStore.percentage;
 
 		this.moveDropdownTrigger = ko.observable(false);
 		this.moreDropdownTrigger = ko.observable(false);
@@ -81,13 +85,13 @@
 		this.dragOverBodyArea = ko.observable(null);
 
 		this.messageListItemTemplate = ko.computed(function () {
-			return Enums.Layout.SidePreview === Data.layout() ?
+			return Enums.Layout.SidePreview === UserSettingsStore.layout() ?
 				'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 		});
 
 		this.messageListSearchDesc = ko.computed(function () {
 			var sValue = Data.messageListEndSearch();
-			return '' === sValue ? '' : Utils.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
+			return '' === sValue ? '' : Translator.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
 		});
 
 		this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(Data.messageListPage, Data.messageListPageCount));
@@ -227,7 +231,7 @@
 				Data.message(Data.staticMessageList.populateByMessageListItem(oMessage));
 				this.populateMessageBody(Data.message());
 
-				if (Enums.Layout.NoPreview === Data.layout())
+				if (Enums.Layout.NoPreview === UserSettingsStore.layout())
 				{
 					kn.setHash(Links.messagePreview(), true);
 					Data.message.focused(true);
@@ -247,11 +251,11 @@
 			this.selector.scrollToTop();
 		}, this);
 
-		Data.layout.subscribe(function (mValue) {
+		UserSettingsStore.layout.subscribe(function (mValue) {
 			this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
 		}, this);
 
-		Data.layout.valueHasMutated();
+		UserSettingsStore.layout.valueHasMutated();
 
 		Events
 			.sub('mailbox.message-list.selector.go-down', function () {
@@ -360,8 +364,8 @@
 		{
 			Data.message(null);
 			Data.messageError((oData && oData.ErrorCode ?
-				Utils.getNotification(oData.ErrorCode) :
-				Utils.getNotification(Enums.Notification.UnknownError)));
+				Translator.getNotification(oData.ErrorCode) :
+				Translator.getNotification(Enums.Notification.UnknownError)));
 		}
 	};
 
@@ -869,7 +873,7 @@
 
 	MessageListMailBoxUserView.prototype.quotaTooltip = function ()
 	{
-		return Utils.i18n('MESSAGE_LIST/QUOTA_SIZE', {
+		return Translator.i18n('MESSAGE_LIST/QUOTA_SIZE', {
 			'SIZE': Utils.friendlySize(this.userUsageSize()),
 			'PROC': this.userUsageProc(),
 			'LIMIT': Utils.friendlySize(this.userQuota())

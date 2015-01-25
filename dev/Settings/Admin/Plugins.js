@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
@@ -99,7 +100,7 @@
 				}
 				else
 				{
-					this.pluginsError(Utils.getNotification(oData.ErrorCode));
+					this.pluginsError(Translator.getNotification(oData.ErrorCode));
 				}
 			}
 		}

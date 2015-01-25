@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
@@ -34,7 +35,7 @@
 
 		this.placeholderValue = ko.computed(function () {
 			var sPlaceholder = this.placeholder();
-			return sPlaceholder ? Utils.i18n(sPlaceholder) : '';
+			return sPlaceholder ? Translator.i18n(sPlaceholder) : '';
 		}, this);
 
 		this.largeValue = ko.computed(function () {

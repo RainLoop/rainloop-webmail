@@ -19,6 +19,10 @@
 		Events = require('Common/Events'),
 		Links = require('Common/Links'),
 		HtmlEditor = require('Common/HtmlEditor'),
+		Translator = require('Common/Translator'),
+
+		SocialStore = require('Stores/Social'),
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -61,6 +65,7 @@
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = Data.composeInEdit;
+		this.editorDefaultType = UserSettingsStore.editorDefaultType;
 
 		this.capaOpenPGP = Data.capaOpenPGP;
 
@@ -419,7 +424,8 @@
 			this.triggerForResize();
 		}, this);
 
-		this.dropboxEnabled = ko.observable(!!Settings.settingsGet('DropboxApiKey'));
+		this.dropboxEnabled = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
 		this.dropboxCommand = Utils.createCommand(this, function () {
 
@@ -659,15 +665,15 @@
 			if (oData && Enums.Notification.CantSaveMessage === oData.ErrorCode)
 			{
 				this.sendSuccessButSaveError(true);
-				window.alert(Utils.trim(Utils.i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
+				window.alert(Utils.trim(Translator.i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
 			}
 			else
 			{
-				sMessage = Utils.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage,
+				sMessage = Translator.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage,
 					oData && oData.ErrorMessage ? oData.ErrorMessage : '');
 
 				this.sendError(true);
-				window.alert(sMessage || Utils.getNotification(Enums.Notification.CantSendMessage));
+				window.alert(sMessage || Translator.getNotification(Enums.Notification.CantSendMessage));
 			}
 		}
 
@@ -704,7 +710,7 @@
 				this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
 
 				this.savedOrSendingText(
-					0 < this.savedTime() ? Utils.i18n('COMPOSE/SAVED_TIME', {
+					0 < this.savedTime() ? Translator.i18n('COMPOSE/SAVED_TIME', {
 						'TIME': moment.unix(this.savedTime() - 1).format('LT')
 					}) : ''
 				);
@@ -719,7 +725,7 @@
 		if (!bResult)
 		{
 			this.savedError(true);
-			this.savedOrSendingText(Utils.getNotification(Enums.Notification.CantSaveMessage));
+			this.savedOrSendingText(Translator.getNotification(Enums.Notification.CantSaveMessage));
 		}
 
 		this.reloadDraftFolder();
@@ -848,7 +854,7 @@
 
 			if (Enums.ComposeType.Empty !== sType)
 			{
-				kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function () {
+				kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function () {
 					self.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
 				}, null, null, null, false]);
 			}
@@ -1052,7 +1058,7 @@
 				case Enums.ComposeType.Reply:
 				case Enums.ComposeType.ReplyAll:
 					sFrom = oMessage.fromToLine(false, true);
-					sReplyTitle = Utils.i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
+					sReplyTitle = Translator.i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
 						'DATETIME': sDate,
 						'EMAIL': sFrom
 					});
@@ -1066,12 +1072,12 @@
 					sFrom = oMessage.fromToLine(false, true);
 					sTo = oMessage.toToLine(false, true);
 					sCc = oMessage.ccToLine(false, true);
-					sText = '<br /><br /><br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
-							(0 < sCc.length ? '<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
-							'<br />' + Utils.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
+					sText = '<br /><br /><br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
+							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
+							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
+							(0 < sCc.length ? '<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
+							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
+							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
 							'<br /><br />' + sText;
 					break;
 				case Enums.ComposeType.ForwardAsAttachment:
@@ -1087,8 +1093,8 @@
 
 			this.editor(function (oEditor) {
 				oEditor.setHtml(sText, false);
-				if (Enums.EditorDefaultType.PlainForced === Data.editorDefaultType() ||
-					(!oMessage.isHtml() && Enums.EditorDefaultType.HtmlForced !== Data.editorDefaultType()))
+				if (Enums.EditorDefaultType.PlainForced === self.editorDefaultType() ||
+					(!oMessage.isHtml() && Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType()))
 				{
 					oEditor.modeToggle(false);
 				}
@@ -1107,8 +1113,8 @@
 
 			this.editor(function (oEditor) {
 				oEditor.setHtml(sText, false);
-				if (Enums.EditorDefaultType.Html !== Data.editorDefaultType() &&
-					Enums.EditorDefaultType.HtmlForced !== Data.editorDefaultType())
+				if (Enums.EditorDefaultType.Html !== self.editorDefaultType() &&
+					Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType())
 				{
 					oEditor.modeToggle(false);
 				}
@@ -1197,7 +1203,7 @@
 			}
 			else
 			{
-				kn.showScreenPopup(PopupsAskViewModel, [Utils.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
+				kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
 					if (self.modalVisibility())
 					{
 						Utils.delegateRun(self, 'closeCommand');
@@ -1251,7 +1257,7 @@
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
 			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
-			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', Settings.settingsGet('DropboxApiKey'));
+			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
 
 			window.document.body.appendChild(oScript);
 		}
@@ -1538,7 +1544,7 @@
 						{
 							oAttachment
 								.waiting(false).uploading(true).complete(true)
-								.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+								.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
 
 							return false;
 						}
@@ -1585,11 +1591,11 @@
 
 						if (null !== mErrorCode)
 						{
-							sError = Utils.getUploadErrorDescByCode(mErrorCode);
+							sError = Translator.getUploadErrorDescByCode(mErrorCode);
 						}
 						else if (!oAttachmentJson)
 						{
-							sError = Utils.i18n('UPLOAD/ERROR_UNKNOWN');
+							sError = Translator.i18n('UPLOAD/ERROR_UNKNOWN');
 						}
 
 						if (oAttachment)
@@ -1711,7 +1717,7 @@
 		if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 		{
 			oAttachment.uploading(false).complete(true);
-			oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+			oAttachment.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
 			return false;
 		}
 
@@ -1731,7 +1737,7 @@
 
 			if (!bResult)
 			{
-				oAttachment.error(Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
+				oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
 			}
 
 		}, [oDropboxFile['link']]);
@@ -1767,7 +1773,7 @@
 		if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 		{
 			oAttachment.uploading(false).complete(true);
-			oAttachment.error(Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+			oAttachment.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
 			return false;
 		}
 
@@ -1788,7 +1794,7 @@
 
 			if (!bResult)
 			{
-				oAttachment.error(Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
+				oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
 			}
 
 		}, oDriveFile['downloadUrl'], sAccessToken);
@@ -1877,7 +1883,7 @@
 					.waiting(false)
 					.uploading(false)
 					.complete(true)
-					.error(Utils.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded))
+					.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded))
 				;
 			}
 		}, this);

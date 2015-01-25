@@ -10,6 +10,7 @@
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -26,8 +27,8 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsFolderCreate');
 
-		Utils.initOnStartOrLangChange(function () {
-			this.sNoParentText = Utils.i18n('POPUPS_CREATE_FOLDER/SELECT_NO_PARENT');
+		Translator.initOnStartOrLangChange(function () {
+			this.sNoParentText = Translator.i18n('POPUPS_CREATE_FOLDER/SELECT_NO_PARENT');
 		}, this);
 
 		this.folderName = ko.observable('');
@@ -84,7 +85,7 @@
 				else
 				{
 					Data.folderList.error(
-						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
+						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
 				}
 
 			},	this.folderName(), sParentFolderName);

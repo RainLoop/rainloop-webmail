@@ -41,7 +41,7 @@
 				sPlacement  = '',
 				oSubscription = null,
 				Globals = require('Common/Globals'),
-				Utils = require('Common/Utils')
+				Translator = require('Common/Translator')
 			;
 
 			if (!Globals.bMobileDevice)
@@ -63,7 +63,7 @@
 					'title': function () {
 						var sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
 						return '' === sValue || $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
-							'<span class="tooltip-class ' + sClass + '">' + (bi18n ? Utils.i18n(sValue) : sValue) + '</span>';
+							'<span class="tooltip-class ' + sClass + '">' + (bi18n ? Translator.i18n(sValue) : sValue) + '</span>';
 					}
 				}).on('click.koTooltip', function () {
 					$oEl.tooltip('hide');
@@ -286,16 +286,14 @@
 
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
-			var Utils = require('Common/Utils');
-			Utils.i18nToNode(oElement);
+			require('Common/Translator').i18nToNode(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
 			ko.unwrap(fValueAccessor());
-			Utils.i18nToNode(oElement);
+			require('Common/Translator').i18nToNode(oElement);
 		}
 	};
 
@@ -785,6 +783,56 @@
 		;
 
 		oResult(oTarget());
+		return oResult;
+	};
+
+	ko.extenders.limitedList = function (oTarget, mList)
+	{
+		var
+			Utils = require('Common/Utils'),
+			oResult = ko.computed({
+				'read': oTarget,
+				'write': function (sNewValue) {
+
+					var
+						sCurrentValue = ko.unwrap(oTarget),
+						aList = ko.unwrap(mList)
+					;
+
+					if (Utils.isNonEmptyArray(aList))
+					{
+						if (-1 < Utils.inArray(sNewValue, aList))
+						{
+							oTarget(sNewValue);
+						}
+						else if (-1 < Utils.inArray(sCurrentValue, aList))
+						{
+							oTarget(sCurrentValue + ' ');
+							oTarget(sCurrentValue);
+						}
+						else
+						{
+							oTarget(aList[0] + ' ');
+							oTarget(aList[0]);
+						}
+					}
+					else
+					{
+						oTarget('');
+					}
+				}
+			})
+		;
+
+		oResult(oTarget());
+
+		if (!oResult.valueHasMutated)
+		{
+			oResult.valueHasMutated = function () {
+				oTarget.valueHasMutated();
+			};
+		}
+
 		return oResult;
 	};
 

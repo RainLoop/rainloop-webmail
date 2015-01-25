@@ -11,6 +11,8 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
+		UserSettingsStore = require('Stores/UserSettings'),
+
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data')
 	;
@@ -20,11 +22,10 @@
 	 */
 	function GeneralAdminSettings()
 	{
-		this.mainLanguage = Data.mainLanguage;
-		this.mainTheme = Data.mainTheme;
-
-		this.language = Data.language;
-		this.theme = Data.theme;
+		this.language = UserSettingsStore.language;
+		this.languages = UserSettingsStore.languages;
+		this.theme = UserSettingsStore.theme;
+		this.themes = UserSettingsStore.themes;
 
 		this.capaThemes = Data.capaThemes;
 		this.capaUserBackground = Data.capaUserBackground;
@@ -44,16 +45,16 @@
 		].join('') : '';
 
 		this.themesOptions = ko.computed(function () {
-			return _.map(Data.themes(), function (sTheme) {
+			return _.map(this.themes(), function (sTheme) {
 				return {
 					'optValue': sTheme,
 					'optText': Utils.convertThemeName(sTheme)
 				};
 			});
-		});
+		}, this);
 
-		this.mainLanguageFullName = ko.computed(function () {
-			return Utils.convertLangName(this.mainLanguage());
+		this.languageFullName = ko.computed(function () {
+			return Utils.convertLangName(this.language());
 		}, this);
 
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);

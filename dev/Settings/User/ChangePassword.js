@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Remote = require('Storage/User/Remote')
 	;
@@ -53,7 +54,7 @@
 			if (this.newPassword() !== this.newPassword2())
 			{
 				this.passwordMismatch(true);
-				this.errorDescription(Utils.i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
+				this.errorDescription(Translator.i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
 			}
 			else
 			{
@@ -112,7 +113,7 @@
 
 			this.passwordUpdateError(true);
 			this.errorDescription(oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) :
-				Utils.getNotification(Enums.Notification.CouldNotSaveNewPassword));
+				Translator.getNotification(Enums.Notification.CouldNotSaveNewPassword));
 		}
 	};
 

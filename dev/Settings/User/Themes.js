@@ -12,6 +12,9 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
+
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
@@ -22,12 +25,13 @@
 	 */
 	function ThemesUserSettings()
 	{
-		this.mainTheme = Data.mainTheme;
+		this.theme = UserSettingsStore.theme;
+		this.themes = UserSettingsStore.themes;
 		this.themesObjects = ko.observableArray([]);
 
 		this.background = {};
-		this.background.name = Data.themeBackgroundName;
-		this.background.hash = Data.themeBackgroundHash;
+		this.background.name = UserSettingsStore.themeBackgroundName;
+		this.background.hash = UserSettingsStore.themeBackgroundHash;
 		this.background.uploaderButton = ko.observable(null);
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');
@@ -39,7 +43,7 @@
 		this.iTimer = 0;
 		this.oThemeAjaxRequest = null;
 
-		Data.theme.subscribe(function (sValue) {
+		this.theme.subscribe(function (sValue) {
 
 			_.each(this.themesObjects(), function (oTheme) {
 				oTheme.selected(sValue === oTheme.name);
@@ -54,14 +58,14 @@
 		}, this);
 
 		this.background.hash.subscribe(function (sValue) {
-			Utils.changeTheme(Data.theme(), sValue, this.themeTrigger, Links);
+			Utils.changeTheme(this.theme(), sValue, this.themeTrigger, Links);
 		}, this);
 	}
 
 	ThemesUserSettings.prototype.onBuild = function ()
 	{
-		var sCurrentTheme = Data.theme();
-		this.themesObjects(_.map(Data.themes(), function (sTheme) {
+		var sCurrentTheme = this.theme();
+		this.themesObjects(_.map(this.themes(), function (sTheme) {
 			return {
 				'name': sTheme,
 				'nameDisplay': Utils.convertThemeName(sTheme),
@@ -135,10 +139,10 @@
 							switch (oData.ErrorCode)
 							{
 								case Enums.UploadErrorCode.FileIsTooBig:
-									sError = Utils.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG');
+									sError = Translator.i18n('SETTINGS_THEMES/ERROR_FILE_IS_TOO_BIG');
 									break;
 								case Enums.UploadErrorCode.FileType:
-									sError = Utils.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR');
+									sError = Translator.i18n('SETTINGS_THEMES/ERROR_FILE_TYPE_ERROR');
 									break;
 							}
 						}
@@ -148,7 +152,7 @@
 							sError = oData.ErrorMessage;
 						}
 
-						this.background.error(sError || Utils.i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
+						this.background.error(sError || Translator.i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
 					}
 
 					return true;

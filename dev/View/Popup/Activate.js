@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
@@ -76,13 +77,13 @@
 					}
 					else if (oData.ErrorCode)
 					{
-						self.activateText(Utils.getNotification(oData.ErrorCode));
+						self.activateText(Translator.getNotification(oData.ErrorCode));
 						self.activateText.isError(true);
 						self.key.focus(true);
 					}
 					else
 					{
-						self.activateText(Utils.getNotification(Enums.Notification.UnknownError));
+						self.activateText(Translator.getNotification(Enums.Notification.UnknownError));
 						self.activateText.isError(true);
 						self.key.focus(true);
 					}

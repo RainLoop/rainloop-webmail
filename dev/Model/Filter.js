@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Cache = require('Storage/User/Cache'),
 
@@ -71,23 +72,23 @@
 			switch (this.actionType())
 			{
 				case Enums.FiltersAction.MoveTo:
-					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
+					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
 						'FOLDER': fGetRealFolderName(sActionValue)
 					});
 					break;
 				case Enums.FiltersAction.Forward:
-					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
+					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
 						'EMAIL': sActionValue
 					});
 					break;
 				case Enums.FiltersAction.Vacation:
-					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
+					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
 					break;
 				case Enums.FiltersAction.Reject:
-					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
+					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
 					break;
 				case Enums.FiltersAction.Discard:
-					sResult = Utils.i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
+					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
 					break;
 			}
 

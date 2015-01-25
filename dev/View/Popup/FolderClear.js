@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
@@ -41,7 +42,7 @@
 		}, this);
 
 		this.dangerDescHtml = ko.computed(function () {
-			return Utils.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
+			return Translator.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
 				'FOLDER': this.folderNameForClear()
 			});
 		}, this);
@@ -77,11 +78,11 @@
 					{
 						if (oData && oData.ErrorCode)
 						{
-							self.clearingError(Utils.getNotification(oData.ErrorCode));
+							self.clearingError(Translator.getNotification(oData.ErrorCode));
 						}
 						else
 						{
-							self.clearingError(Utils.getNotification(Enums.Notification.MailServerError));
+							self.clearingError(Translator.getNotification(Enums.Notification.MailServerError));
 						}
 					}
 				}, oFolderToClear.fullNameRaw);

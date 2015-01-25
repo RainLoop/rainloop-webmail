@@ -8,7 +8,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote')
@@ -61,11 +61,11 @@
 			{
 				if (oData && oData.ErrorCode)
 				{
-					self.packagesError(Utils.getNotification(oData.ErrorCode));
+					self.packagesError(Translator.getNotification(oData.ErrorCode));
 				}
 				else
 				{
-					self.packagesError(Utils.getNotification(
+					self.packagesError(Translator.getNotification(
 						bInstall ? Enums.Notification.CantInstallPackage : Enums.Notification.CantDeletePackage));
 				}
 			}

@@ -15,6 +15,8 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
+		UserSettingsStore = require('Stores/UserSettings'),
+
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
@@ -88,7 +90,7 @@
 
 				if (oFolder)
 				{
-					if (Enums.Layout.NoPreview === Data.layout())
+					if (Enums.Layout.NoPreview === UserSettingsStore.layout())
 					{
 						Data.message(null);
 					}

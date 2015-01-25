@@ -8,6 +8,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -34,19 +35,19 @@
 
 			if (bCreating)
 			{
-				return Utils.i18n('SETTINGS_FOLDERS/CREATING_PROCESS');
+				return Translator.i18n('SETTINGS_FOLDERS/CREATING_PROCESS');
 			}
 			else if (bDeleting)
 			{
-				return Utils.i18n('SETTINGS_FOLDERS/DELETING_PROCESS');
+				return Translator.i18n('SETTINGS_FOLDERS/DELETING_PROCESS');
 			}
 			else if (bRenaming)
 			{
-				return Utils.i18n('SETTINGS_FOLDERS/RENAMING_PROCESS');
+				return Translator.i18n('SETTINGS_FOLDERS/RENAMING_PROCESS');
 			}
 			else if (bLoading)
 			{
-				return Utils.i18n('SETTINGS_FOLDERS/LOADING_PROCESS');
+				return Translator.i18n('SETTINGS_FOLDERS/LOADING_PROCESS');
 			}
 
 			return '';
@@ -105,7 +106,7 @@
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
 					Data.folderList.error(
-						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
+						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 				}
 
 				require('App/User').folders();
@@ -176,7 +177,7 @@
 					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 					{
 						Data.folderList.error(
-							oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
+							oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 					}
 
 					require('App/User').folders();
@@ -188,7 +189,7 @@
 		}
 		else if (0 < oFolderToRemove.privateMessageCountAll())
 		{
-			Data.folderList.error(Utils.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
+			Data.folderList.error(Translator.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
 		}
 	};
 

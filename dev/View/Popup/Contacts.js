@@ -16,6 +16,7 @@
 		Utils = require('Common/Utils'),
 		Selector = require('Common/Selector'),
 		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -338,7 +339,7 @@
 			require('App/User').contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
-					window.alert(Utils.getNotification(
+					window.alert(Translator.getNotification(
 						oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.ContactsSyncError));
 				}
 
@@ -488,7 +489,7 @@
 
 						if (!sId || !bResult || !oData || !oData.Result)
 						{
-							window.alert(Utils.i18n('CONTACTS/ERROR_IMPORT_FILE'));
+							window.alert(Translator.i18n('CONTACTS/ERROR_IMPORT_FILE'));
 						}
 
 					}, this))

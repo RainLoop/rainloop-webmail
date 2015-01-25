@@ -10,6 +10,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -46,8 +47,8 @@
 	AskPopupView.prototype.clearPopup = function ()
 	{
 		this.askDesc('');
-		this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
-		this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
+		this.yesButton(Translator.i18n('POPUPS_ASK/BUTTON_YES'));
+		this.noButton(Translator.i18n('POPUPS_ASK/BUTTON_NO'));
 
 		this.yesFocus(false);
 		this.noFocus(false);

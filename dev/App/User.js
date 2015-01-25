@@ -17,8 +17,12 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
 
 		kn = require('Knoin/Knoin'),
+
+		SocialStore = require('Stores/Social'),
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Local = require('Storage/Local'),
 		Settings = require('Storage/Settings'),
@@ -154,7 +158,7 @@
 	{
 		var
 			self = this,
-			iOffset = (Data.messageListPage() - 1) * Data.messagesPerPage()
+			iOffset = (Data.messageListPage() - 1) * UserSettingsStore.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
@@ -187,16 +191,16 @@
 				Data.messageList([]);
 				Data.messageListLoading(false);
 				Data.messageListError(oData && oData.ErrorCode ?
-					Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
+					Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
 				);
 			}
 
-		}, Data.currentFolderFullNameRaw(), iOffset, Data.messagesPerPage(), Data.messageListSearch());
+		}, Data.currentFolderFullNameRaw(), iOffset, UserSettingsStore.messagesPerPage(), Data.messageListSearch());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, Data.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, UserSettingsStore.messagesPerPage(), '', true);
 	};
 
 	AppUser.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -302,7 +306,7 @@
 				if (oData && -1 < Utils.inArray(oData.ErrorCode,
 					[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
 				{
-					window.alert(Utils.getNotification(oData.ErrorCode));
+					window.alert(Translator.getNotification(oData.ErrorCode));
 				}
 			}
 
@@ -372,7 +376,7 @@
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
 			(sFromFolderFullNameRaw === Data.spamFolder() || sFromFolderFullNameRaw === Data.trashFolder())))
 		{
-			kn.showScreenPopup(require('View/Popup/Ask'), [Utils.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
+			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 				Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
@@ -581,8 +585,8 @@
 				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 			{
-				Data.userQuota(Utils.pInt(oData.Result[1]) * 1024);
-				Data.userUsageSize(Utils.pInt(oData.Result[0]) * 1024);
+				require('Stores/Quota').populateData(
+					Utils.pInt(oData.Result[1]), Utils.pInt(oData.Result[0]));
 			}
 		});
 	};
@@ -822,53 +826,49 @@
 	 */
 	AppUser.prototype.socialUsers = function (bFireAllActions)
 	{
-		if (bFireAllActions)
+		if (true === bFireAllActions)
 		{
-			Data.googleActions(true);
-			Data.facebookActions(true);
-			Data.twitterActions(true);
+			SocialStore.google.loading(true);
+			SocialStore.facebook.loading(true);
+			SocialStore.twitter.loading(true);
 		}
 
 		Remote.socialUsers(function (sResult, oData) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				Data.googleUserName(oData.Result['Google'] || '');
-				Data.facebookUserName(oData.Result['Facebook'] || '');
-				Data.twitterUserName(oData.Result['Twitter'] || '');
+				SocialStore.google.userName(oData.Result['Google'] || '');
+				SocialStore.facebook.userName(oData.Result['Facebook'] || '');
+				SocialStore.twitter.userName(oData.Result['Twitter'] || '');
 			}
 			else
 			{
-				Data.googleUserName('');
-				Data.facebookUserName('');
-				Data.twitterUserName('');
+				SocialStore.google.userName('');
+				SocialStore.facebook.userName('');
+				SocialStore.twitter.userName('');
 			}
 
-			Data.googleLoggined('' !== Data.googleUserName());
-			Data.facebookLoggined('' !== Data.facebookUserName());
-			Data.twitterLoggined('' !== Data.twitterUserName());
-
-			Data.googleActions(false);
-			Data.facebookActions(false);
-			Data.twitterActions(false);
+			SocialStore.google.loading(false);
+			SocialStore.facebook.loading(false);
+			SocialStore.twitter.loading(false);
 		});
 	};
 
 	AppUser.prototype.googleDisconnect = function ()
 	{
-		Data.googleActions(true);
+		SocialStore.google.loading(true);
 		Remote.googleDisconnect(this.socialUsers);
 	};
 
 	AppUser.prototype.facebookDisconnect = function ()
 	{
-		Data.facebookActions(true);
+		SocialStore.facebook.loading(true);
 		Remote.facebookDisconnect(this.socialUsers);
 	};
 
 	AppUser.prototype.twitterDisconnect = function ()
 	{
-		Data.twitterActions(true);
+		SocialStore.twitter.loading(true);
 		Remote.twitterDisconnect(this.socialUsers);
 	};
 
@@ -999,7 +999,7 @@
 
 			Data.messageListCount(iCount);
 			Data.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			Data.messageListPage(window.Math.ceil((iOffset / Data.messagesPerPage()) + 1));
+			Data.messageListPage(window.Math.ceil((iOffset / UserSettingsStore.messagesPerPage()) + 1));
 			Data.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 			Data.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			Data.messageListEndPage(Data.messageListPage());
@@ -1023,7 +1023,7 @@
 		{
 			Data.messageListCount(0);
 			Data.messageList([]);
-			Data.messageListError(Utils.getNotification(
+			Data.messageListError(Translator.getNotification(
 				oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
 			));
 		}
@@ -1408,7 +1408,7 @@
 
 		if (!!Settings.settingsGet('Auth'))
 		{
-			this.setTitle(Utils.i18n('TITLES/LOADING'));
+			this.setTitle(Translator.i18n('TITLES/LOADING'));
 
 //require.ensure([], function() { // require code splitting
 
@@ -1574,7 +1574,7 @@
 		if (bGoogle)
 		{
 			window['rl_' + sJsHash + '_google_service'] = function () {
-				Data.googleActions(true);
+				SocialStore.google.loading(true);
 				self.socialUsers();
 			};
 		}
@@ -1582,7 +1582,7 @@
 		if (bFacebook)
 		{
 			window['rl_' + sJsHash + '_facebook_service'] = function () {
-				Data.facebookActions(true);
+				SocialStore.facebook.loading(true);
 				self.socialUsers();
 			};
 		}
@@ -1590,7 +1590,7 @@
 		if (bTwitter)
 		{
 			window['rl_' + sJsHash + '_twitter_service'] = function () {
-				Data.twitterActions(true);
+				SocialStore.twitter.loading(true);
 				self.socialUsers();
 			};
 		}

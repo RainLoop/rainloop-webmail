@@ -12,6 +12,7 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 
@@ -248,9 +249,7 @@
 			ko.components.register('Checkbox', require('Component/Checkbox'));
 		}
 
-		Utils.initOnStartOrLangChange(function () {
-			Utils.initNotificationLanguage();
-		}, null);
+		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);
 
 		_.delay(Utils.windowResizeCallback, 1000);
 

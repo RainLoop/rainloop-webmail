@@ -10,6 +10,9 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
+
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
@@ -48,7 +51,8 @@
 		;
 
 		require('App/User').setTitle(('' === sEmail ? '' :
-			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') + sEmail + ' - ') + Utils.i18n('TITLES/MAILBOX'));
+			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') +
+				sEmail + ' - ') + Translator.i18n('TITLES/MAILBOX'));
 	};
 
 	MailBoxUserScreen.prototype.onShow = function ()
@@ -67,7 +71,7 @@
 	{
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
-			if (Enums.Layout.NoPreview === Data.layout() && !Data.message())
+			if (Enums.Layout.NoPreview === UserSettingsStore.layout() && !Data.message())
 			{
 				require('App/User').historyBack();
 			}
@@ -87,7 +91,7 @@
 					.messageListSearch(sSearch)
 				;
 
-				if (Enums.Layout.NoPreview === Data.layout() && Data.message())
+				if (Enums.Layout.NoPreview === UserSettingsStore.layout() && Data.message())
 				{
 					Data.message(null);
 				}
@@ -103,7 +107,7 @@
 		Data.messageList.subscribe(Utils.windowResizeCallback);
 		Data.message.subscribe(Utils.windowResizeCallback);
 
-		Data.layout.subscribe(function (nValue) {
+		UserSettingsStore.layout.subscribe(function (nValue) {
 
 			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
@@ -112,7 +116,7 @@
 			Events.pub('layout', [nValue]);
 		});
 
-		Data.layout.valueHasMutated();
+		UserSettingsStore.layout.valueHasMutated();
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
 			Data.foldersInboxUnreadCount(nCount);

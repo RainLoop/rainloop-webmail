@@ -8,9 +8,9 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
 
 		Cache = require('Storage/User/Cache'),
 
@@ -86,7 +86,7 @@
 		}, this);
 
 		this.visible = ko.computed(function () {
-			
+
 			var
 				bSubScribed = this.subScribed(),
 				bSubFolders = this.hasSubScribedSubfolders()
@@ -186,7 +186,7 @@
 
 		this.localName = ko.computed(function () {
 
-			Globals.langChangeTrigger();
+			Translator.trigger();
 
 			var
 				iType = this.type(),
@@ -198,22 +198,22 @@
 				switch (iType)
 				{
 					case Enums.FolderType.Inbox:
-						sName = Utils.i18n('FOLDER_LIST/INBOX_NAME');
+						sName = Translator.i18n('FOLDER_LIST/INBOX_NAME');
 						break;
 					case Enums.FolderType.SentItems:
-						sName = Utils.i18n('FOLDER_LIST/SENT_NAME');
+						sName = Translator.i18n('FOLDER_LIST/SENT_NAME');
 						break;
 					case Enums.FolderType.Draft:
-						sName = Utils.i18n('FOLDER_LIST/DRAFTS_NAME');
+						sName = Translator.i18n('FOLDER_LIST/DRAFTS_NAME');
 						break;
 					case Enums.FolderType.Spam:
-						sName = Utils.i18n('FOLDER_LIST/SPAM_NAME');
+						sName = Translator.i18n('FOLDER_LIST/SPAM_NAME');
 						break;
 					case Enums.FolderType.Trash:
-						sName = Utils.i18n('FOLDER_LIST/TRASH_NAME');
+						sName = Translator.i18n('FOLDER_LIST/TRASH_NAME');
 						break;
 					case Enums.FolderType.Archive:
-						sName = Utils.i18n('FOLDER_LIST/ARCHIVE_NAME');
+						sName = Translator.i18n('FOLDER_LIST/ARCHIVE_NAME');
 						break;
 				}
 			}
@@ -224,7 +224,7 @@
 
 		this.manageFolderSystemName = ko.computed(function () {
 
-			Globals.langChangeTrigger();
+			Translator.trigger();
 
 			var
 				sSuffix = '',
@@ -237,22 +237,22 @@
 				switch (iType)
 				{
 					case Enums.FolderType.Inbox:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/INBOX_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/INBOX_NAME') + ')';
 						break;
 					case Enums.FolderType.SentItems:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/SENT_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/SENT_NAME') + ')';
 						break;
 					case Enums.FolderType.Draft:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
 						break;
 					case Enums.FolderType.Spam:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/SPAM_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/SPAM_NAME') + ')';
 						break;
 					case Enums.FolderType.Trash:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/TRASH_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/TRASH_NAME') + ')';
 						break;
 					case Enums.FolderType.Archive:
-						sSuffix = '(' + Utils.i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
+						sSuffix = '(' + Translator.i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
 						break;
 				}
 			}

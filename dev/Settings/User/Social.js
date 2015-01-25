@@ -10,26 +10,29 @@
 	{
 		var
 			Utils = require('Common/Utils'),
-			Data = require('Storage/User/Data')
+			SocialStore = require('Stores/Social')
 		;
 
-		this.googleEnable = Data.googleEnable;
+		this.googleEnable = SocialStore.google.enabled;
+		this.googleEnableAuth = SocialStore.google.capa.auth;
+		this.googleEnableDrive = SocialStore.google.capa.drive;
+		this.googleEnablePreview = SocialStore.google.capa.preview;
 
-		this.googleActions = Data.googleActions;
-		this.googleLoggined = Data.googleLoggined;
-		this.googleUserName = Data.googleUserName;
+		this.googleActions = SocialStore.google.loading;
+		this.googleLoggined = SocialStore.google.loggined;
+		this.googleUserName = SocialStore.google.userName;
 
-		this.facebookEnable = Data.facebookEnable;
+		this.facebookEnable = SocialStore.facebook.enabled;
 
-		this.facebookActions = Data.facebookActions;
-		this.facebookLoggined = Data.facebookLoggined;
-		this.facebookUserName = Data.facebookUserName;
+		this.facebookActions = SocialStore.facebook.loading;
+		this.facebookLoggined = SocialStore.facebook.loggined;
+		this.facebookUserName = SocialStore.facebook.userName;
 
-		this.twitterEnable = Data.twitterEnable;
+		this.twitterEnable = SocialStore.twitter.enabled;
 
-		this.twitterActions = Data.twitterActions;
-		this.twitterLoggined = Data.twitterLoggined;
-		this.twitterUserName = Data.twitterUserName;
+		this.twitterActions = SocialStore.twitter.loading;
+		this.twitterLoggined = SocialStore.twitter.loggined;
+		this.twitterUserName = SocialStore.twitter.userName;
 
 		this.connectGoogle = Utils.createCommand(this, function () {
 			if (!this.googleLoggined())

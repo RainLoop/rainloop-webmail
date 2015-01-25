@@ -13,7 +13,11 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
+		Translator = require('Common/Translator'),
+
 		Plugins = require('Common/Plugins'),
+
+		UserSettingsStore = require('Stores/UserSettings'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -87,11 +91,12 @@
 		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
 
 		this.langRequest = ko.observable(false);
-		this.mainLanguage = Data.mainLanguage;
+		this.language = UserSettingsStore.language;
+
 		this.bSendLanguage = false;
 
-		this.mainLanguageFullName = ko.computed(function () {
-			return Utils.convertLangName(this.mainLanguage());
+		this.languageFullName = ko.computed(function () {
+			return Utils.convertLangName(this.language());
 		}, this);
 
 		this.signMeType = ko.observable(Enums.LoginSignMeType.Unused);
@@ -133,7 +138,7 @@
 			Plugins.runHook('user-login-submit', [fSubmitResult]);
 			if (0 < iPluginResultCode)
 			{
-				this.submitError(Utils.getNotification(iPluginResultCode));
+				this.submitError(Translator.getNotification(iPluginResultCode));
 				return false;
 			}
 			else if ('' !== sPluginResultMessage)
@@ -180,11 +185,11 @@
 									oData.ErrorCode = Enums.Notification.AuthError;
 								}
 
-								this.submitError(Utils.getNotification(oData.ErrorCode));
+								this.submitError(Translator.getNotification(oData.ErrorCode));
 
 								if ('' === this.submitError())
 								{
-									this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+									this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 								}
 								else
 								{
@@ -202,11 +207,11 @@
 						else
 						{
 							this.submitRequest(false);
-							this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+							this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 						}
 
 					}, this), this.email(), '', sPassword, !!this.signMe(),
-						this.bSendLanguage ? this.mainLanguage() : '',
+						this.bSendLanguage ? this.language() : '',
 						this.additionalCode.visibility() ? this.additionalCode() : '',
 						this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
 					);
@@ -302,7 +307,7 @@
 
 			if (Settings.settingsGet('UserLanguage'))
 			{
-				$.cookie('rllang', Data.language(), {'expires': 30});
+				$.cookie('rllang', UserSettingsStore.language(), {'expires': 30});
 			}
 
 		}, this), 100);
@@ -328,7 +333,7 @@
 				}
 				else
 				{
-					self.submitError(Utils.getNotification(iErrorCode));
+					self.submitError(Translator.getNotification(iErrorCode));
 				}
 			}
 		;
@@ -371,11 +376,11 @@
 		}
 
 		_.delay(function () {
-			Data.language.subscribe(function (sValue) {
+			UserSettingsStore.language.subscribe(function (sValue) {
 
 				self.langRequest(true);
 
-				Utils.reloadLanguage(sValue, function() {
+				Translator.reload(sValue, function() {
 					self.langRequest(false);
 					self.bSendLanguage = true;
 					$.cookie('rllang', sValue, {'expires': 30});

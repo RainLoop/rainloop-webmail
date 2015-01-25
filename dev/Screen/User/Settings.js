@@ -7,8 +7,8 @@
 		_ = require('_'),
 
 		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
 		Globals = require('Common/Globals'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 
@@ -29,8 +29,8 @@
 			require('View/User/Settings/Pane')
 		]);
 
-		Utils.initOnStartOrLangChange(function () {
-			this.sSettingsTitle = Utils.i18n('TITLES/SETTINGS');
+		Translator.initOnStartOrLangChange(function () {
+			this.sSettingsTitle = Translator.i18n('TITLES/SETTINGS');
 		}, this, function () {
 			this.setSettingsTitle();
 		});

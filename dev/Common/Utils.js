@@ -18,7 +18,6 @@
 		Mime = require('Common/Mime'),
 
 		Enums = require('Common/Enums'),
-		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals')
 	;
 
@@ -106,14 +105,6 @@
 	Utils.isNonEmptyArray = function (aValue)
 	{
 		return Utils.isArray(aValue) && 0 < aValue.length;
-	};
-
-	/**
-	 * @return {*|null}
-	 */
-	Utils.notificationClass = function ()
-	{
-		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
 	};
 
 	/**
@@ -381,125 +372,6 @@
 	};
 
 	/**
-	 * @param {string} sKey
-	 * @param {Object=} oValueList
-	 * @param {string=} sDefaulValue
-	 * @return {string}
-	 */
-	Utils.i18n = function (sKey, oValueList, sDefaulValue)
-	{
-		var
-			sValueName = '',
-			sResult = Utils.isUnd(Globals.oI18N[sKey]) ? (Utils.isUnd(sDefaulValue) ? sKey : sDefaulValue) : Globals.oI18N[sKey]
-		;
-
-		if (!Utils.isUnd(oValueList) && !Utils.isNull(oValueList))
-		{
-			for (sValueName in oValueList)
-			{
-				if (Utils.hos(oValueList, sValueName))
-				{
-					sResult = sResult.replace('%' + sValueName + '%', oValueList[sValueName]);
-				}
-			}
-		}
-
-		return sResult;
-	};
-
-	/**
-	 * @param {Object} oElement
-	 * @param {boolean=} bAnimate = false
-	 */
-	Utils.i18nToNode = function (oElement, bAnimate)
-	{
-		_.defer(function () {
-			$('.i18n', oElement).each(function () {
-				var
-					jqThis = $(this),
-					sKey = ''
-				;
-
-				sKey = jqThis.data('i18n-text');
-				if (sKey)
-				{
-					jqThis.text(Utils.i18n(sKey));
-				}
-				else
-				{
-					sKey = jqThis.data('i18n-html');
-					if (sKey)
-					{
-						jqThis.html(Utils.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-placeholder');
-					if (sKey)
-					{
-						jqThis.attr('placeholder', Utils.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-title');
-					if (sKey)
-					{
-						jqThis.attr('title', Utils.i18n(sKey));
-					}
-				}
-			});
-
-			if (bAnimate && Globals.bAnimationSupported)
-			{
-				$('.i18n-animation.i18n', oElement).letterfx({
-					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'
-				});
-			}
-		});
-	};
-
-	Utils.i18nReload = function ()
-	{
-		if (window['rainloopI18N'])
-		{
-			Globals.oI18N = window['rainloopI18N'] || {};
-
-			Utils.i18nToNode(Globals.$doc, true);
-
-			Globals.langChangeTrigger(!Globals.langChangeTrigger());
-		}
-
-		window['rainloopI18N'] = null;
-	};
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {Object} oScope
-	 * @param {Function=} fLangCallback
-	 */
-	Utils.initOnStartOrLangChange = function (fCallback, oScope, fLangCallback)
-	{
-		if (fCallback)
-		{
-			fCallback.call(oScope);
-		}
-
-		if (fLangCallback)
-		{
-			Globals.langChangeTrigger.subscribe(function () {
-				if (fCallback)
-				{
-					fCallback.call(oScope);
-				}
-
-				fLangCallback.call(oScope);
-			});
-		}
-		else if (fCallback)
-		{
-			Globals.langChangeTrigger.subscribe(fCallback, oScope);
-		}
-	};
-
-	/**
 	 * @return {boolean}
 	 */
 	Utils.inFocus = function ()
@@ -650,126 +522,6 @@
 	};
 
 	/**
-	 * @param {number} iCode
-	 * @param {*=} mMessage = ''
-	 * @return {string}
-	 */
-	Utils.getNotification = function (iCode, mMessage)
-	{
-		iCode = Utils.pInt(iCode);
-		if (Enums.Notification.ClientViewError === iCode && mMessage)
-		{
-			return mMessage;
-		}
-
-		return Utils.isUnd(Globals.oNotificationI18N[iCode]) ? '' : Globals.oNotificationI18N[iCode];
-	};
-
-	Utils.initNotificationLanguage = function ()
-	{
-		var oN = Globals.oNotificationI18N || {};
-		oN[Enums.Notification.InvalidToken] = Utils.i18n('NOTIFICATIONS/INVALID_TOKEN');
-		oN[Enums.Notification.AuthError] = Utils.i18n('NOTIFICATIONS/AUTH_ERROR');
-		oN[Enums.Notification.AccessError] = Utils.i18n('NOTIFICATIONS/ACCESS_ERROR');
-		oN[Enums.Notification.ConnectionError] = Utils.i18n('NOTIFICATIONS/CONNECTION_ERROR');
-		oN[Enums.Notification.CaptchaError] = Utils.i18n('NOTIFICATIONS/CAPTCHA_ERROR');
-		oN[Enums.Notification.SocialFacebookLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.SocialTwitterLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.SocialGoogleLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.DomainNotAllowed] = Utils.i18n('NOTIFICATIONS/DOMAIN_NOT_ALLOWED');
-		oN[Enums.Notification.AccountNotAllowed] = Utils.i18n('NOTIFICATIONS/ACCOUNT_NOT_ALLOWED');
-
-		oN[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
-		oN[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
-
-		oN[Enums.Notification.CouldNotSaveNewPassword] = Utils.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD');
-		oN[Enums.Notification.CurrentPasswordIncorrect] = Utils.i18n('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT');
-		oN[Enums.Notification.NewPasswordShort] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_SHORT');
-		oN[Enums.Notification.NewPasswordWeak] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_WEAK');
-		oN[Enums.Notification.NewPasswordForbidden] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT');
-
-		oN[Enums.Notification.ContactsSyncError] = Utils.i18n('NOTIFICATIONS/CONTACTS_SYNC_ERROR');
-
-		oN[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
-		oN[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
-		oN[Enums.Notification.CantDeleteMessage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_MESSAGE');
-		oN[Enums.Notification.CantMoveMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
-		oN[Enums.Notification.CantCopyMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
-
-		oN[Enums.Notification.CantSaveMessage] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_MESSAGE');
-		oN[Enums.Notification.CantSendMessage] = Utils.i18n('NOTIFICATIONS/CANT_SEND_MESSAGE');
-		oN[Enums.Notification.InvalidRecipients] = Utils.i18n('NOTIFICATIONS/INVALID_RECIPIENTS');
-
-		oN[Enums.Notification.CantSaveFilters] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_FILTERS');
-		oN[Enums.Notification.FiltersAreNotCorrect] = Utils.i18n('NOTIFICATIONS/FILTERS_ARE_NOT_CORRECT');
-
-		oN[Enums.Notification.CantCreateFolder] = Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER');
-		oN[Enums.Notification.CantRenameFolder] = Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER');
-		oN[Enums.Notification.CantDeleteFolder] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER');
-		oN[Enums.Notification.CantDeleteNonEmptyFolder] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_NON_EMPTY_FOLDER');
-		oN[Enums.Notification.CantSubscribeFolder] = Utils.i18n('NOTIFICATIONS/CANT_SUBSCRIBE_FOLDER');
-		oN[Enums.Notification.CantUnsubscribeFolder] = Utils.i18n('NOTIFICATIONS/CANT_UNSUBSCRIBE_FOLDER');
-
-		oN[Enums.Notification.CantSaveSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_SETTINGS');
-		oN[Enums.Notification.CantSavePluginSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS');
-
-		oN[Enums.Notification.DomainAlreadyExists] = Utils.i18n('NOTIFICATIONS/DOMAIN_ALREADY_EXISTS');
-
-		oN[Enums.Notification.CantInstallPackage] = Utils.i18n('NOTIFICATIONS/CANT_INSTALL_PACKAGE');
-		oN[Enums.Notification.CantDeletePackage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_PACKAGE');
-		oN[Enums.Notification.InvalidPluginPackage] = Utils.i18n('NOTIFICATIONS/INVALID_PLUGIN_PACKAGE');
-		oN[Enums.Notification.UnsupportedPluginPackage] = Utils.i18n('NOTIFICATIONS/UNSUPPORTED_PLUGIN_PACKAGE');
-
-		oN[Enums.Notification.LicensingServerIsUnavailable] = Utils.i18n('NOTIFICATIONS/LICENSING_SERVER_IS_UNAVAILABLE');
-		oN[Enums.Notification.LicensingExpired] = Utils.i18n('NOTIFICATIONS/LICENSING_EXPIRED');
-		oN[Enums.Notification.LicensingBanned] = Utils.i18n('NOTIFICATIONS/LICENSING_BANNED');
-
-		oN[Enums.Notification.DemoSendMessageError] = Utils.i18n('NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR');
-
-		oN[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
-		oN[Enums.Notification.AccountDoesNotExist] = Utils.i18n('NOTIFICATIONS/ACCOUNT_DOES_NOT_EXIST');
-
-		oN[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
-		oN[Enums.Notification.InvalidInputArgument] = Utils.i18n('NOTIFICATIONS/INVALID_INPUT_ARGUMENT');
-		oN[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
-		oN[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
-	};
-
-	/**
-	 * @param {*} mCode
-	 * @return {string}
-	 */
-	Utils.getUploadErrorDescByCode = function (mCode)
-	{
-		var sResult = '';
-		switch (Utils.pInt(mCode)) {
-		case Enums.UploadErrorCode.FileIsTooBig:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG');
-			break;
-		case Enums.UploadErrorCode.FilePartiallyUploaded:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_PARTIALLY_UPLOADED');
-			break;
-		case Enums.UploadErrorCode.FileNoUploaded:
-			sResult = Utils.i18n('UPLOAD/ERROR_NO_FILE_UPLOADED');
-			break;
-		case Enums.UploadErrorCode.MissingTempFolder:
-			sResult = Utils.i18n('UPLOAD/ERROR_MISSING_TEMP_FOLDER');
-			break;
-		case Enums.UploadErrorCode.FileOnSaveingError:
-			sResult = Utils.i18n('UPLOAD/ERROR_ON_SAVING_FILE');
-			break;
-		case Enums.UploadErrorCode.FileType:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_TYPE');
-			break;
-		default:
-			sResult = Utils.i18n('UPLOAD/ERROR_UNKNOWN');
-			break;
-		}
-
-		return sResult;
-	};
-
-	/**
 	 * @param {?} oObject
 	 * @param {string} sMethodName
 	 * @param {Array=} aParameters
@@ -876,7 +628,6 @@
 	 */
 	Utils.initDataConstructorBySettings = function (oData)
 	{
-		oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
 		oData.showImages = ko.observable(false);
 		oData.contactsAutosave = ko.observable(false);
 		oData.interfaceAnimation = ko.observable(true);
@@ -888,15 +639,9 @@
 
 		oData.useLocalProxyForExternalImages = ko.observable(false);
 
-		oData.desktopNotifications = ko.observable(false);
 		oData.useThreads = ko.observable(true);
 		oData.replySameFolder = ko.observable(true);
 		oData.useCheckboxesInList = ko.observable(true);
-
-		oData.layout = ko.observable(Enums.Layout.SidePreview);
-		oData.usePreviewPane = ko.computed(function () {
-			return Enums.Layout.NoPreview !== oData.layout();
-		});
 
 		oData.interfaceAnimation.subscribe(function (bValue) {
 			if (Globals.bMobileDevice || !bValue)
@@ -911,146 +656,6 @@
 
 		oData.interfaceAnimation.valueHasMutated();
 
-		oData.desktopNotificationsPermisions = ko.computed(function () {
-
-			oData.desktopNotifications();
-
-			var
-				NotificationClass = Utils.notificationClass(),
-				iResult = Enums.DesktopNotifications.NotSupported
-			;
-
-			if (NotificationClass && NotificationClass.permission)
-			{
-				switch (NotificationClass.permission.toLowerCase())
-				{
-					case 'granted':
-						iResult = Enums.DesktopNotifications.Allowed;
-						break;
-					case 'denied':
-						iResult = Enums.DesktopNotifications.Denied;
-						break;
-					case 'default':
-						iResult = Enums.DesktopNotifications.NotAllowed;
-						break;
-				}
-			}
-			else if (window.webkitNotifications && window.webkitNotifications.checkPermission)
-			{
-				iResult = window.webkitNotifications.checkPermission();
-			}
-
-			return iResult;
-		});
-
-		oData.useDesktopNotifications = ko.computed({
-			'read': function () {
-				return oData.desktopNotifications() &&
-					Enums.DesktopNotifications.Allowed === oData.desktopNotificationsPermisions();
-			},
-			'write': function (bValue) {
-				if (bValue)
-				{
-					var
-						NotificationClass = Utils.notificationClass(),
-						iPermission = oData.desktopNotificationsPermisions()
-					;
-
-					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
-					{
-						oData.desktopNotifications(true);
-					}
-					else if (NotificationClass && Enums.DesktopNotifications.NotAllowed === iPermission)
-					{
-						NotificationClass.requestPermission(function () {
-							oData.desktopNotifications.valueHasMutated();
-							if (Enums.DesktopNotifications.Allowed === oData.desktopNotificationsPermisions())
-							{
-								if (oData.desktopNotifications())
-								{
-									oData.desktopNotifications.valueHasMutated();
-								}
-								else
-								{
-									oData.desktopNotifications(true);
-								}
-							}
-							else
-							{
-								if (oData.desktopNotifications())
-								{
-									oData.desktopNotifications(false);
-								}
-								else
-								{
-									oData.desktopNotifications.valueHasMutated();
-								}
-							}
-						});
-					}
-					else
-					{
-						oData.desktopNotifications(false);
-					}
-				}
-				else
-				{
-					oData.desktopNotifications(false);
-				}
-			}
-		});
-
-		oData.language = ko.observable('');
-		oData.languages = ko.observableArray([]);
-
-		oData.mainLanguage = ko.computed({
-			'read': oData.language,
-			'write': function (sValue) {
-				if (sValue !== oData.language())
-				{
-					if (-1 < Utils.inArray(sValue, oData.languages()))
-					{
-						oData.language(sValue);
-					}
-					else if (0 < oData.languages().length)
-					{
-						oData.language(oData.languages()[0]);
-					}
-				}
-				else
-				{
-					oData.language.valueHasMutated();
-				}
-			}
-		});
-
-		oData.theme = ko.observable('');
-		oData.themes = ko.observableArray([]);
-		oData.themeBackgroundName = ko.observable('');
-		oData.themeBackgroundHash = ko.observable('');
-
-		oData.mainTheme = ko.computed({
-			'read': oData.theme,
-			'write': function (sValue) {
-				if (sValue !== oData.theme())
-				{
-					var aThemes = oData.themes();
-					if (-1 < Utils.inArray(sValue, aThemes))
-					{
-						oData.theme(sValue);
-					}
-					else if (0 < aThemes.length)
-					{
-						oData.theme(aThemes[0]);
-					}
-				}
-				else
-				{
-					oData.theme.valueHasMutated();
-				}
-			}
-		});
-
 		oData.capaAdditionalAccounts = ko.observable(false);
 		oData.capaAdditionalIdentities = ko.observable(false);
 		oData.capaGravatar = ko.observable(false);
@@ -1060,54 +665,6 @@
 		oData.determineUserDomain = ko.observable(false);
 
 		oData.weakPassword = ko.observable(false);
-
-		oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
-
-		oData.mainMessagesPerPage = oData.messagesPerPage;
-		oData.mainMessagesPerPage = ko.computed({
-			'read': oData.messagesPerPage,
-			'write': function (iValue) {
-				if (-1 < Utils.inArray(Utils.pInt(iValue), Consts.Defaults.MessagesPerPageArray))
-				{
-					if (iValue !== oData.messagesPerPage())
-					{
-						oData.messagesPerPage(iValue);
-					}
-				}
-				else
-				{
-					oData.messagesPerPage.valueHasMutated();
-				}
-			}
-		});
-
-		oData.facebookSupported = ko.observable(false);
-		oData.facebookEnable = ko.observable(false);
-		oData.facebookAppID = ko.observable('');
-		oData.facebookAppSecret = ko.observable('');
-
-		oData.twitterEnable = ko.observable(false);
-		oData.twitterConsumerKey = ko.observable('');
-		oData.twitterConsumerSecret = ko.observable('');
-
-		oData.googleEnable = ko.observable(false);
-		oData.googleEnable.auth = ko.observable(false);
-		oData.googleEnable.drive = ko.observable(false);
-		oData.googleEnable.preview = ko.observable(false);
-		oData.googleClientID = ko.observable('');
-		oData.googleClientSecret = ko.observable('');
-		oData.googleApiKey = ko.observable('');
-
-		oData.googleEnable.requireClientSettings = ko.computed(function () {
-			return oData.googleEnable() && (oData.googleEnable.auth() || oData.googleEnable.drive());
-		});
-
-		oData.googleEnable.requireApiKey = ko.computed(function () {
-			return oData.googleEnable() && oData.googleEnable.drive();
-		});
-
-		oData.dropboxEnable = ko.observable(false);
-		oData.dropboxApiKey = ko.observable('');
 
 		oData.contactsIsAllowed = ko.observable(false);
 	};
@@ -1153,13 +710,13 @@
 			}
 			else if (oMomentNow.format('L') === oMoment.format('L'))
 			{
-				sResult = Utils.i18n('MESSAGE_LIST/TODAY_AT', {
+				sResult = require('Common/Translator').i18n('MESSAGE_LIST/TODAY_AT', {
 					'TIME': oMoment.format('LT')
 				});
 			}
 			else if (oMomentNow.clone().subtract('days', 1).format('L') === oMoment.format('L'))
 			{
-				sResult = Utils.i18n('MESSAGE_LIST/YESTERDAY_AT', {
+				sResult = require('Common/Translator').i18n('MESSAGE_LIST/YESTERDAY_AT', {
 					'TIME': oMoment.format('LT')
 				});
 			}
@@ -1224,7 +781,7 @@
 	 */
 	Utils.convertLangName = function (sLanguage, bEng)
 	{
-		return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
+		return require('Common/Translator').i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
 			sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'), null, sLanguage);
 	};
 
@@ -1291,7 +848,7 @@
 				$('#rl-content', oBody).html(oTemplate.html());
 				$('html', oWin.document).addClass('external ' + $('html').attr('class'));
 
-				Utils.i18nToNode(oBody);
+				require('Common/Translator').i18nToNode(oBody);
 
 				if (oViewModel && $('#rl-content', oBody)[0])
 				{
@@ -1983,33 +1540,6 @@
 		{
 			fFunc();
 		}
-	};
-
-	/**
-	 * @param {string} sLanguage
-	 * @param {Function=} fDone
-	 * @param {Function=} fFail
-	 */
-	Utils.reloadLanguage = function (sLanguage, fDone, fFail)
-	{
-		var iStart = Utils.microtime();
-
-		Globals.$html.addClass('rl-changing-language');
-
-		$.ajax({
-				'url': require('Common/Links').langLink(sLanguage),
-				'dataType': 'script',
-				'cache': true
-			})
-			.fail(fFail || Utils.emptyFunction)
-			.done(function () {
-				_.delay(function () {
-					Utils.i18nReload();
-					(fDone || Utils.emptyFunction)();
-					Globals.$html.removeClass('rl-changing-language');
-				}, 500 < Utils.microtime() - iStart ? 1 : 500);
-			})
-		;
 	};
 
 	/**

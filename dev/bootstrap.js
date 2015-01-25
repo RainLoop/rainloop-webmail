@@ -14,6 +14,7 @@
 			Plugins = require('Common/Plugins'),
 			Utils = require('Common/Utils'),
 			Enums = require('Common/Enums'),
+			Translator = require('Common/Translator'),
 
 			EmailModel = require('Model/Email')
 		;
@@ -37,12 +38,12 @@
 
 		// export
 		window['rl'] = window['rl'] || {};
+		window['rl']['i18n'] = _.bind(Translator.i18n, Translator);
 		window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
 		window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
 		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
 		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
-		window['rl']['i18n'] = Utils.i18n;
 
 		window['rl']['EmailModel'] = EmailModel;
 		window['rl']['Enums'] = Enums;

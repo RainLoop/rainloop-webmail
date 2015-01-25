@@ -9,7 +9,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 		Links = require('Common/Links'),
 
 		Data = require('Storage/User/Data'),
@@ -24,7 +24,7 @@
 		this.accounts = Data.accounts;
 
 		this.processText = ko.computed(function () {
-			return Data.accountsLoading() ? Utils.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
+			return Data.accountsLoading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {

@@ -11,6 +11,10 @@
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
+
+		UserSettingsStore = require('Stores/UserSettings'),
+		NotificationSettingsStore = require('Stores/NotificationSettings'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
@@ -21,31 +25,28 @@
 	 */
 	function GeneralUserSettings()
 	{
-		this.mainLanguage = Data.mainLanguage;
-		this.mainMessagesPerPage = Data.mainMessagesPerPage;
-		this.mainMessagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
-		this.editorDefaultType = Data.editorDefaultType;
+		this.language = UserSettingsStore.language;
+		this.messagesPerPage = UserSettingsStore.messagesPerPage;
+		this.messagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
+
+		this.editorDefaultType = UserSettingsStore.editorDefaultType;
+		this.layout = UserSettingsStore.layout;
+		this.usePreviewPane = UserSettingsStore.usePreviewPane;
+
 		this.showImages = Data.showImages;
-		this.useDesktopNotifications = Data.useDesktopNotifications;
+
+		this.enableDesktopNotification = NotificationSettingsStore.enableDesktopNotification;
+		this.isDesktopNotificationSupported = NotificationSettingsStore.isDesktopNotificationSupported;
+		this.isDesktopNotificationDenied = NotificationSettingsStore.isDesktopNotificationDenied;
+
 		this.threading = Data.threading;
 		this.useThreads = Data.useThreads;
 		this.replySameFolder = Data.replySameFolder;
-		this.layout = Data.layout;
-		this.usePreviewPane = Data.usePreviewPane;
 		this.useCheckboxesInList = Data.useCheckboxesInList;
 		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
 
-		this.isDesktopNotificationsSupported = ko.computed(function () {
-			return Enums.DesktopNotifications.NotSupported !== Data.desktopNotificationsPermisions();
-		});
-
-		this.isDesktopNotificationsDenied = ko.computed(function () {
-			return Enums.DesktopNotifications.NotSupported === Data.desktopNotificationsPermisions() ||
-				Enums.DesktopNotifications.Denied === Data.desktopNotificationsPermisions();
-		});
-
-		this.mainLanguageFullName = ko.computed(function () {
-			return Utils.convertLangName(this.mainLanguage());
+		this.languageFullName = ko.computed(function () {
+			return Utils.convertLangName(this.language());
 		}, this);
 
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
@@ -57,21 +58,21 @@
 		this.isAnimationSupported = Globals.bAnimationSupported;
 
 		this.editorDefaultTypes = ko.computed(function () {
-			Globals.langChangeTrigger();
+			Translator.trigger();
 			return [
-				{'id': Enums.EditorDefaultType.Html, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML')},
-				{'id': Enums.EditorDefaultType.Plain, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN')},
-				{'id': Enums.EditorDefaultType.HtmlForced, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED')},
-				{'id': Enums.EditorDefaultType.PlainForced, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED')}
+				{'id': Enums.EditorDefaultType.Html, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML')},
+				{'id': Enums.EditorDefaultType.Plain, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN')},
+				{'id': Enums.EditorDefaultType.HtmlForced, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED')},
+				{'id': Enums.EditorDefaultType.PlainForced, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED')}
 			];
 		}, this);
 
 		this.layoutTypes = ko.computed(function () {
-			Globals.langChangeTrigger();
+			Translator.trigger();
 			return [
-				{'id': Enums.Layout.NoPreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT')},
-				{'id': Enums.Layout.SidePreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT')},
-				{'id': Enums.Layout.BottomPreview, 'name': Utils.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT')}
+				{'id': Enums.Layout.NoPreview, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT')},
+				{'id': Enums.Layout.SidePreview, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT')},
+				{'id': Enums.Layout.BottomPreview, 'name': Translator.i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT')}
 			];
 		}, this);
 	}
@@ -96,11 +97,11 @@
 				}
 			;
 
-			Data.language.subscribe(function (sValue) {
+			self.language.subscribe(function (sValue) {
 
 				self.languageTrigger(Enums.SaveSettingsStep.Animate);
 
-				Utils.reloadLanguage(sValue,
+				Translator.reload(sValue,
 					fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
 					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult));
 
@@ -109,13 +110,13 @@
 				});
 			});
 
-			Data.editorDefaultType.subscribe(function (sValue) {
+			self.editorDefaultType.subscribe(function (sValue) {
 				Remote.saveSettings(f0, {
 					'EditorDefaultType': sValue
 				});
 			});
 
-			Data.messagesPerPage.subscribe(function (iValue) {
+			self.messagesPerPage.subscribe(function (iValue) {
 				Remote.saveSettings(f1, {
 					'MPP': iValue
 				});
@@ -127,7 +128,7 @@
 				});
 			});
 
-			Data.useDesktopNotifications.subscribe(function (bValue) {
+			self.enableDesktopNotification.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveDesktopNotifications', function () {
 					Remote.saveSettings(null, {
 						'DesktopNotifications': bValue ? '1' : '0'
@@ -152,7 +153,7 @@
 				});
 			});
 
-			Data.layout.subscribe(function (nValue) {
+			self.layout.subscribe(function (nValue) {
 
 				Data.messageList([]);
 
@@ -172,7 +173,7 @@
 
 	GeneralUserSettings.prototype.onShow = function ()
 	{
-		Data.desktopNotifications.valueHasMutated();
+		this.enableDesktopNotification.valueHasMutated();
 	};
 
 	GeneralUserSettings.prototype.selectLanguage = function ()

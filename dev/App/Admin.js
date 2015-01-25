@@ -12,6 +12,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/Admin/Data'),
@@ -215,14 +216,14 @@
 					Enums.Notification.LicensingExpired
 				]))
 				{
-					Data.licenseError(Utils.getNotification(Utils.pInt(oData.ErrorCode)));
+					Data.licenseError(Translator.getNotification(Utils.pInt(oData.ErrorCode)));
 					Data.licensing(true);
 				}
 				else
 				{
 					if (Enums.StorageResultType.Abort === sResult)
 					{
-						Data.licenseError(Utils.getNotification(Enums.Notification.LicensingServerIsUnavailable));
+						Data.licenseError(Translator.getNotification(Enums.Notification.LicensingServerIsUnavailable));
 						Data.licensing(true);
 					}
 					else

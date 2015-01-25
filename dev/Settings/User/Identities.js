@@ -10,6 +10,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		HtmlEditor = require('Common/HtmlEditor'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
@@ -74,7 +75,7 @@
 		}, this);
 
 		this.processText = ko.computed(function () {
-			return Data.identitiesLoading() ? Utils.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
+			return Data.identitiesLoading() ? Translator.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {

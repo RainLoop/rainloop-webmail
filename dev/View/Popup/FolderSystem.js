@@ -10,6 +10,7 @@
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -27,9 +28,9 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsFolderSystem');
 
-		Utils.initOnStartOrLangChange(function () {
-			this.sChooseOnText = Utils.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE');
-			this.sUnuseText = Utils.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME');
+		Translator.initOnStartOrLangChange(function () {
+			this.sChooseOnText = Translator.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE');
+			this.sUnuseText = Translator.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME');
 		}, this);
 
 		this.notification = ko.observable('');
@@ -112,19 +113,19 @@
 		switch (iNotificationType)
 		{
 			case Enums.SetSystemFoldersNotification.Sent:
-				sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SENT');
+				sNotification = Translator.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SENT');
 				break;
 			case Enums.SetSystemFoldersNotification.Draft:
-				sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_DRAFTS');
+				sNotification = Translator.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_DRAFTS');
 				break;
 			case Enums.SetSystemFoldersNotification.Spam:
-				sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SPAM');
+				sNotification = Translator.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SPAM');
 				break;
 			case Enums.SetSystemFoldersNotification.Trash:
-				sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
+				sNotification = Translator.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
 				break;
 			case Enums.SetSystemFoldersNotification.Archive:
-				sNotification = Utils.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
+				sNotification = Translator.i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
 				break;
 		}
 

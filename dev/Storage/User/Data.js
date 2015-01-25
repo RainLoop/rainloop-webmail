@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function () {
 
@@ -16,6 +15,7 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
@@ -271,7 +271,8 @@
 		}, this);
 
 		this.messageListPageCount = ko.computed(function () {
-			var iPage = window.Math.ceil(this.messageListCount() / this.messagesPerPage());
+			var iPage = window.Math.ceil(this.messageListCount() /
+				require('Stores/UserSettings').messagesPerPage());
 			return 0 >= iPage ? 1 : iPage;
 		}, this);
 
@@ -327,13 +328,13 @@
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
 
-				if (Enums.Layout.NoPreview === this.layout() &&
+				if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
 					require('App/User').historyBack();
 				}
 			}
-			else if (Enums.Layout.NoPreview === this.layout())
+			else if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout())
 			{
 				this.message.focused(true);
 			}
@@ -347,7 +348,7 @@
 			}
 			else if (Enums.KeyState.MessageView === Globals.keyScope())
 			{
-				if (Enums.Layout.NoPreview === this.layout() && this.message())
+				if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout() && this.message())
 				{
 					Globals.keyScope(Enums.KeyState.MessageView);
 				}
@@ -430,22 +431,7 @@
 			return aList;
 		}, this);
 
-		// quota
-		this.userQuota = ko.observable(0);
-		this.userUsageSize = ko.observable(0);
-		this.userUsageProc = ko.computed(function () {
-
-			var
-				iQuota = this.userQuota(),
-				iUsed = this.userUsageSize()
-			;
-
-			return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
-
-		}, this);
-
 		// other
-		this.filterModules = ko.observable({});
 		this.composeInEdit = ko.observable(false);
 		this.capaOpenPGP = ko.observable(false);
 		this.openpgpkeys = ko.observableArray([]);
@@ -459,21 +445,6 @@
 		this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
 			return !!(oItem && oItem.isPrivate);
 		});
-
-		// google
-		this.googleActions = ko.observable(false);
-		this.googleLoggined = ko.observable(false);
-		this.googleUserName = ko.observable('');
-
-		// facebook
-		this.facebookActions = ko.observable(false);
-		this.facebookLoggined = ko.observable(false);
-		this.facebookUserName = ko.observable('');
-
-		// twitter
-		this.twitterActions = ko.observable(false);
-		this.twitterLoggined = ko.observable(false);
-		this.twitterUserName = ko.observable('');
 
 		this.customThemeType = ko.observable(Enums.CustomThemeType.Light);
 
@@ -546,17 +517,17 @@
 			if (Utils.isArray(aNewMessages) && 0 < aNewMessages.length)
 			{
 				var
-					self = this,
 					iIndex = 0,
 					iLen = aNewMessages.length,
 					fNotificationHelper = function (sImageSrc, sTitle, sText)
 					{
 						var
-							NotificationClass = Utils.notificationClass(),
+							NotificationSettingsStore = require('Stores/NotificationSettings'),
+							NotificationClass = NotificationSettingsStore.notificationClass(),
 							oNotification = null
 						;
 
-						if (NotificationClass && self.useDesktopNotifications())
+						if (NotificationClass && NotificationSettingsStore.enableDesktopNotification())
 						{
 							oNotification = new NotificationClass(sTitle, {
 								'body': sText,
@@ -596,7 +567,7 @@
 					fNotificationHelper(
 						Links.notificationMailIcon(),
 						this.accountEmail(),
-						Utils.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
+						Translator.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
 						})
 					);

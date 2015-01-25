@@ -21,22 +21,22 @@
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
-								value: googleEnable.auth,
+								value: googleEnableAuth,
 								label: 'Authentication'
 							}
 						}"></div>
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
-								value: googleEnable.drive,
+								value: googleEnableDrive,
 								label: 'Google Drive Integration (Compose view)'
 							}
 						}"></div>
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
-								value: googleEnable.preview,
-								label: 'Google Viewer Integration (Preview Microsoft Word, Excel and PowerPoint files)'
+								value: googleEnablePreview,
+								label: 'Google Viewer Integration (Preview for Microsoft Word, Excel and PowerPoint files)'
 							}
 						}"></div>
 					</blockquote>
@@ -54,7 +54,7 @@
 						name: 'xx',
 						value: googleClientID,
 						trigger: googleTrigger1,
-						enable: googleEnable.requireClientSettings,
+						enable: googleEnableRequireClientSettings,
 						size: 5
 					}
 				}"></div>
@@ -70,7 +70,7 @@
 					params: {
 						value: googleClientSecret,
 						trigger: googleTrigger2,
-						enable: googleEnable.requireClientSettings,
+						enable: googleEnableRequireClientSettings,
 						size: 5
 					}
 				}"></div>
@@ -88,7 +88,7 @@
 						value: googleApiKey,
 						trigger: googleTrigger3,
 						size: 5,
-						enable: googleEnable.requireApiKey
+						enable: googleEnableRequireApiKey
 					}
 				}"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">

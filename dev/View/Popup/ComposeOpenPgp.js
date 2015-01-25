@@ -10,6 +10,7 @@
 
 		Utils = require('Common/Utils'),
 		Enums = require('Common/Enums'),
+		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
 
@@ -58,7 +59,7 @@
 
 			if (bResult && this.sign() && '' === this.from())
 			{
-				this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
+				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
 				bResult = false;
 			}
 
@@ -67,7 +68,7 @@
 				oPrivateKey = Data.findPrivateKeyByEmail(this.from(), this.password());
 				if (!oPrivateKey)
 				{
-					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
 						'EMAIL': this.from()
 					}));
 
@@ -77,7 +78,7 @@
 
 			if (bResult && this.encrypt() && 0 === this.to().length)
 			{
-				this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
+				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
 				bResult = false;
 			}
 
@@ -88,7 +89,7 @@
 					var aKeys = Data.findPublicKeysByEmail(sEmail);
 					if (0 === aKeys.length && bResult)
 					{
-						self.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+						self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
 							'EMAIL': sEmail
 						}));
 
@@ -131,7 +132,7 @@
 					}
 					catch (e)
 					{
-						self.notification(Utils.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));
 
