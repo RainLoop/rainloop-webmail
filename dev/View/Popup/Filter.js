@@ -13,7 +13,7 @@
 
 		Data = require('Storage/User/Data'),
 
-		FilterStore = require('Stores/Filter'),
+		FilterStore = require('Stores/User/Filter'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

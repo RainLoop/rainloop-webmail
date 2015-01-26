@@ -6,6 +6,8 @@
 	var
 		ko = require('ko'),
 
+		AppStore = require('Stores/User/App'),
+
 		Remote = require('Storage/User/Remote'),
 		Data = require('Storage/User/Data')
 	;
@@ -15,7 +17,7 @@
 	 */
 	function ContactsUserSettings()
 	{
-		this.contactsAutosave = Data.contactsAutosave;
+		this.contactsAutosave = AppStore.contactsAutosave;
 
 		this.allowContactsSync = Data.allowContactsSync;
 		this.enableContactsSync = Data.enableContactsSync;
@@ -35,7 +37,7 @@
 
 	ContactsUserSettings.prototype.onBuild = function ()
 	{
-		Data.contactsAutosave.subscribe(function (bValue) {
+		this.contactsAutosave.subscribe(function (bValue) {
 			Remote.saveSettings(null, {
 				'ContactsAutosave': bValue ? '1' : '0'
 			});

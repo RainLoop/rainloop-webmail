@@ -14,9 +14,9 @@
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
+		ThemeStore = require('Stores/Theme'),
 
-		Data = require('Storage/User/Data'),
+		Settings = require('Storage/Settings'),
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -25,18 +25,18 @@
 	 */
 	function ThemesUserSettings()
 	{
-		this.theme = UserSettingsStore.theme;
-		this.themes = UserSettingsStore.themes;
+		this.theme = ThemeStore.theme;
+		this.themes = ThemeStore.themes;
 		this.themesObjects = ko.observableArray([]);
 
 		this.background = {};
-		this.background.name = UserSettingsStore.themeBackgroundName;
-		this.background.hash = UserSettingsStore.themeBackgroundHash;
+		this.background.name = ThemeStore.themeBackgroundName;
+		this.background.hash = ThemeStore.themeBackgroundHash;
 		this.background.uploaderButton = ko.observable(null);
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');
 
-		this.capaUserBackground = Data.capaUserBackground;
+		this.capaUserBackground = ko.observable(Settings.capa(Enums.Capa.UserBackground));
 
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
 

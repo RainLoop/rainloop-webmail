@@ -14,7 +14,7 @@
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
 		Remote = require('Storage/User/Remote'),
-		Local = require('Storage/Local')
+		Local = require('Storage/Client')
 	;
 
 	/**

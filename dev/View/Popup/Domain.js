@@ -11,8 +11,9 @@
 		Consts = require('Common/Consts'),
 		Utils = require('Common/Utils'),
 
+		CapaAdminStore = require('Stores/Admin/Capa'),
+
 		Remote = require('Storage/Admin/Remote'),
-		Settings = require('Storage/Settings'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -63,7 +64,7 @@
 		this.name = ko.observable('');
 		this.name.focused = ko.observable(false);
 
-		this.allowSieve = ko.observable(Settings.capa(Enums.Capa.Sieve));
+		this.allowSieve = CapaAdminStore.sieve;
 
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);

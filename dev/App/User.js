@@ -22,9 +22,9 @@
 		kn = require('Knoin/Knoin'),
 
 		SocialStore = require('Stores/Social'),
-		UserSettingsStore = require('Stores/UserSettings'),
+		SettingsUserStore = require('Stores/User/Settings'),
 
-		Local = require('Storage/Local'),
+		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
@@ -136,11 +136,6 @@
 		return Remote;
 	};
 
-	AppUser.prototype.data = function ()
-	{
-		return Data;
-	};
-
 	AppUser.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
 	{
 		_.each(Data.messageList(), function (oMessage) {
@@ -158,7 +153,7 @@
 	{
 		var
 			self = this,
-			iOffset = (Data.messageListPage() - 1) * UserSettingsStore.messagesPerPage()
+			iOffset = (Data.messageListPage() - 1) * SettingsUserStore.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
@@ -195,12 +190,12 @@
 				);
 			}
 
-		}, Data.currentFolderFullNameRaw(), iOffset, UserSettingsStore.messagesPerPage(), Data.messageListSearch());
+		}, Data.currentFolderFullNameRaw(), iOffset, SettingsUserStore.messagesPerPage(), Data.messageListSearch());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, UserSettingsStore.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsUserStore.messagesPerPage(), '', true);
 	};
 
 	AppUser.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -585,7 +580,7 @@
 				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
 				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
 			{
-				require('Stores/Quota').populateData(
+				require('Stores/User/Quota').populateData(
 					Utils.pInt(oData.Result[1]), Utils.pInt(oData.Result[0]));
 			}
 		});
@@ -999,7 +994,7 @@
 
 			Data.messageListCount(iCount);
 			Data.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			Data.messageListPage(window.Math.ceil((iOffset / UserSettingsStore.messagesPerPage()) + 1));
+			Data.messageListPage(window.Math.ceil((iOffset / SettingsUserStore.messagesPerPage()) + 1));
 			Data.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 			Data.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			Data.messageListEndPage(Data.messageListPage());
@@ -1014,7 +1009,7 @@
 
 			Cache.clearNewMessageCache();
 
-			if (oFolder && (bCached || bUnreadCountChange || Data.useThreads()))
+			if (oFolder && (bCached || bUnreadCountChange || SettingsUserStore.useThreads()))
 			{
 				this.folderInformation(oFolder.fullNameRaw, aList);
 			}
@@ -1383,6 +1378,10 @@
 	AppUser.prototype.bootstart = function ()
 	{
 		AbstractApp.prototype.bootstart.call(this);
+
+		require('Stores/User/App').populate();
+		require('Stores/User/Settings').populate();
+		require('Stores/User/Notification').populate();
 
 		Data.populateDataOnStart();
 

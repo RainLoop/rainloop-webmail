@@ -314,6 +314,10 @@
 		});
 
 		ssm.ready();
+
+		require('Stores/Language').populate();
+		require('Stores/Theme').populate();
+		require('Stores/Social').populate();
 	};
 
 	module.exports = AbstractApp;

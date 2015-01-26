@@ -91,6 +91,7 @@
 						value: useCheckboxesInList
 					}
 				}"></div>
+				<br />
 				<div data-bind="visible: threading, component: {
 					name: 'Checkbox',
 					params: {
@@ -108,9 +109,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-horizontal" data-bind="visible: isDesktopNotificationSupported">
+	<div class="form-horizontal" data-bind="visible: isDesktopNotificationSupported() || soundNotificationIsSupported()">
 		<div class="legend">
-			<span class="i18n i18n-animation" data-i18n-text="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION"></span>
+			<span class="i18n i18n-animation" data-i18n-text="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></span>
 		</div>
 		<div class="control-group">
 			<div class="controls">
@@ -127,6 +128,20 @@
 					&nbsp;
 					<span data-bind="visible: isDesktopNotificationDenied">
 						<span class="i18n" style="color: #999" data-i18n-text="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+					</span>
+				</div>
+				<div data-bind="visible: soundNotificationIsSupported">
+					<div data-bind="component: {
+						name: 'Checkbox',
+						params: {
+							label: 'SETTINGS_GENERAL/LABEL_SOUND_NOTIFICATION',
+							value: enableSoundNotification,
+							inline: true
+						}
+					}"></div>
+					&nbsp;&nbsp;
+					<span data-bind="click: testSoundNotification" style="color:red;cursor:pointer">
+						<i class="icon-right-dir iconsize20"></i>
 					</span>
 				</div>
 			</div>

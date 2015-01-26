@@ -21,8 +21,9 @@
 		HtmlEditor = require('Common/HtmlEditor'),
 		Translator = require('Common/Translator'),
 
+		AppStore = require('Stores/User/App'),
+		SettingsUserStore = require('Stores/User/Settings'),
 		SocialStore = require('Stores/Social'),
-		UserSettingsStore = require('Stores/UserSettings'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -51,7 +52,7 @@
 
 		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
 
-		this.allowContacts = !!Settings.settingsGet('ContactsIsAllowed');
+		this.allowContacts = !!AppStore.contactsIsAllowed();
 
 		var
 			self = this,
@@ -65,7 +66,7 @@
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = Data.composeInEdit;
-		this.editorDefaultType = UserSettingsStore.editorDefaultType;
+		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 
 		this.capaOpenPGP = Data.capaOpenPGP;
 
@@ -280,7 +281,7 @@
 			}
 			else
 			{
-				if (Data.replySameFolder())
+				if (SettingsUserStore.replySameFolder())
 				{
 					if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && Utils.isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
 					{

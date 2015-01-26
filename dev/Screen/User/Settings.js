@@ -10,6 +10,7 @@
 		Globals = require('Common/Globals'),
 		Translator = require('Common/Translator'),
 
+		AppStore = require('Stores/User/App'),
 		Settings = require('Storage/Settings'),
 
 		kn = require('Knoin/Knoin'),
@@ -46,7 +47,7 @@
 		kn.addSettingsViewModel(require('Settings/User/General'),
 			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
-		if (Settings.settingsGet('ContactsIsAllowed'))
+		if (AppStore.contactsIsAllowed())
 		{
 			kn.addSettingsViewModel(require('Settings/User/Contacts'),
 				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');

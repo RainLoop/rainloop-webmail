@@ -8,7 +8,6 @@
 		ko = require('ko'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote'),
 
 		kn = require('Knoin/Knoin'),
@@ -26,8 +25,19 @@
 		this.adminDomain = ko.observable(Settings.settingsGet('AdminDomain'));
 		this.version = ko.observable(Settings.settingsGet('Version'));
 
-		this.adminManLoadingVisibility = Data.adminManLoadingVisibility;
 		this.capa = !!Settings.settingsGet('PremType');
+
+		this.adminManLoading = ko.computed(function () {
+			return '000' !== [
+				require('Stores/Admin/Domain').collection.loading() ? '1' : '0',
+				require('Stores/Admin/Plugin').collection.loading() ? '1' : '0',
+				require('Stores/Admin/Package').collection.loading() ? '1' : '0'
+			].join('');
+		}, this);
+
+		this.adminManLoadingVisibility = ko.computed(function () {
+			return this.adminManLoading() ? 'visible' : 'hidden';
+		}, this).extend({'rateLimit': 300});
 
 		kn.constructorEnd(this);
 	}

@@ -11,7 +11,7 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		FilterStore = require('Stores/Filter'),
+		FilterStore = require('Stores/User/Filter'),
 
 		Remote = require('Storage/User/Remote')
 	;

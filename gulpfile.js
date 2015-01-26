@@ -164,10 +164,11 @@ cfg.paths.js = {
 			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
+			'vendors/buzz/buzz.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
 			'vendors/photoswipe/photoswipe.min.js',
 			'vendors/photoswipe/photoswipe-ui-default.min.js',
-			'vendors/jsencrypt/jsencrypt.min.js',
+//			'vendors/jsencrypt/jsencrypt.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
@@ -279,7 +280,7 @@ gulp.task('js:ckeditor:beautify', function() {
 });
 
 gulp.task('js:webpack:clear', function() {
-	return gulp.src([cfg.paths.staticJS + '*.chunk.js', cfg.paths.staticMinJS + '*.chunk.js'], {read: false})
+	return gulp.src([cfg.paths.staticJS + '*.subapp.js', cfg.paths.staticMinJS + '*.subapp.js'], {read: false})
 		.pipe(require('gulp-rimraf')());
 });
 
@@ -320,7 +321,7 @@ gulp.task('js:admin', ['js:webpack'], function() {
 });
 
 gulp.task('js:chunks', ['js:webpack'], function() {
-	return gulp.src(cfg.paths.staticJS + '*.chunk.js')
+	return gulp.src(cfg.paths.staticJS + '*.subapp.js')
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticJS))

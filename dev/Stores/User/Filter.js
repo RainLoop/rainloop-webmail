@@ -10,7 +10,7 @@
 	/**
 	 * @constructor
 	 */
-	function FilterStore()
+	function FilterUserStore()
 	{
 		this.capa = ko.observable('');
 		this.modules = ko.observable({});
@@ -23,6 +23,6 @@
 		this.raw = ko.observable('');
 	}
 
-	module.exports = new FilterStore();
+	module.exports = new FilterUserStore();
 
 }());

@@ -17,6 +17,8 @@
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
 
+		SettingsUserStore = require('Stores/User/Settings'),
+
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
 
@@ -24,18 +26,14 @@
 
 		MessageModel = require('Model/Message'),
 
-		Local = require('Storage/Local'),
-		AbstractData = require('Storage/AbstractData')
+		Local = require('Storage/Client')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractData
 	 */
 	function DataUserStorage()
 	{
-		AbstractData.call(this);
-
 		var
 			fRemoveSystemFolderType = function (observable) {
 				return function () {
@@ -272,7 +270,7 @@
 
 		this.messageListPageCount = ko.computed(function () {
 			var iPage = window.Math.ceil(this.messageListCount() /
-				require('Stores/UserSettings').messagesPerPage());
+				SettingsUserStore.messagesPerPage());
 			return 0 >= iPage ? 1 : iPage;
 		}, this);
 
@@ -328,13 +326,13 @@
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
 
-				if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout() &&
+				if (Enums.Layout.NoPreview === SettingsUserStore.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
 					require('App/User').historyBack();
 				}
 			}
-			else if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout())
+			else if (Enums.Layout.NoPreview === SettingsUserStore.layout())
 			{
 				this.message.focused(true);
 			}
@@ -348,7 +346,7 @@
 			}
 			else if (Enums.KeyState.MessageView === Globals.keyScope())
 			{
-				if (Enums.Layout.NoPreview === require('Stores/UserSettings').layout() && this.message())
+				if (Enums.Layout.NoPreview === SettingsUserStore.layout() && this.message())
 				{
 					Globals.keyScope(Enums.KeyState.MessageView);
 				}
@@ -451,8 +449,6 @@
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
 	}
 
-	_.extend(DataUserStorage.prototype, AbstractData.prototype);
-
 	DataUserStorage.prototype.purgeMessageBodyCache = function()
 	{
 		var
@@ -487,8 +483,6 @@
 
 	DataUserStorage.prototype.populateDataOnStart = function()
 	{
-		AbstractData.prototype.populateDataOnStart.call(this);
-
 		this.accountEmail(Settings.settingsGet('Email'));
 		this.accountIncLogin(Settings.settingsGet('IncLogin'));
 		this.accountOutLogin(Settings.settingsGet('OutLogin'));
@@ -519,52 +513,18 @@
 				var
 					iIndex = 0,
 					iLen = aNewMessages.length,
-					fNotificationHelper = function (sImageSrc, sTitle, sText)
-					{
-						var
-							NotificationSettingsStore = require('Stores/NotificationSettings'),
-							NotificationClass = NotificationSettingsStore.notificationClass(),
-							oNotification = null
-						;
-
-						if (NotificationClass && NotificationSettingsStore.enableDesktopNotification())
-						{
-							oNotification = new NotificationClass(sTitle, {
-								'body': sText,
-								'icon': sImageSrc
-							});
-
-							if (oNotification)
-							{
-								if (oNotification.show)
-								{
-									oNotification.show();
-								}
-
-								window.setTimeout((function (oLocalNotifications) {
-									return function () {
-										if (oLocalNotifications.cancel)
-										{
-											oLocalNotifications.cancel();
-										}
-										else if (oLocalNotifications.close)
-										{
-											oLocalNotifications.close();
-										}
-									};
-								}(oNotification)), 7000);
-							}
-						}
-					}
+					NotificationStore = require('Stores/User/Notification')
 				;
 
 				_.each(aNewMessages, function (oItem) {
 					Cache.addNewMessageCache(sFolder, oItem.Uid);
 				});
 
+				NotificationStore.playSoundNotification();
+
 				if (3 < iLen)
 				{
-					fNotificationHelper(
+					NotificationStore.displayDesktopNotification(
 						Links.notificationMailIcon(),
 						this.accountEmail(),
 						Translator.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
@@ -576,7 +536,7 @@
 				{
 					for (; iIndex < iLen; iIndex++)
 					{
-						fNotificationHelper(
+						NotificationStore.displayDesktopNotification(
 							Links.notificationMailIcon(),
 							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
 							aNewMessages[iIndex].Subject
@@ -907,7 +867,7 @@
 						oMessage.showInternalImages(true);
 					}
 
-					if (oMessage.hasImages() && this.showImages())
+					if (oMessage.hasImages() && SettingsUserStore.showImages())
 					{
 						oMessage.showExternalImages(true);
 					}

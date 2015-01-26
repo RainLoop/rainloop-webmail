@@ -8,7 +8,7 @@
 		moment = require('moment'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data')
+		LicenseStore = require('Stores/Admin/License')
 	;
 
 	/**
@@ -16,12 +16,12 @@
 	 */
 	function LicensingAdminSettings()
 	{
-		this.licensing = Data.licensing;
-		this.licensingProcess = Data.licensingProcess;
-		this.licenseValid = Data.licenseValid;
-		this.licenseExpired = Data.licenseExpired;
-		this.licenseError = Data.licenseError;
-		this.licenseTrigger = Data.licenseTrigger;
+		this.licensing = LicenseStore.licensing;
+		this.licensingProcess = LicenseStore.licensingProcess;
+		this.licenseValid = LicenseStore.licenseValid;
+		this.licenseExpired = LicenseStore.licenseExpired;
+		this.licenseError = LicenseStore.licenseError;
+		this.licenseTrigger = LicenseStore.licenseTrigger;
 
 		this.adminDomain = ko.observable('');
 		this.subscriptionEnabled = ko.observable(!!Settings.settingsGet('SubscriptionEnabled'));

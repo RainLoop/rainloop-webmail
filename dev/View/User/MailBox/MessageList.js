@@ -20,8 +20,8 @@
 		Selector = require('Common/Selector'),
 		Translator = require('Common/Translator'),
 
-		QuotaStore = require('Stores/Quota'),
-		UserSettingsStore = require('Stores/UserSettings'),
+		QuotaStore = require('Stores/User/Quota'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
@@ -57,7 +57,7 @@
 		this.messageListError = Data.messageListError;
 		this.folderMenuForMove = Data.folderMenuForMove;
 
-		this.useCheckboxesInList = Data.useCheckboxesInList;
+		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
 		this.mainMessageListSearch = Data.mainMessageListSearch;
 		this.messageListEndFolder = Data.messageListEndFolder;
@@ -85,7 +85,7 @@
 		this.dragOverBodyArea = ko.observable(null);
 
 		this.messageListItemTemplate = ko.computed(function () {
-			return Enums.Layout.SidePreview === UserSettingsStore.layout() ?
+			return Enums.Layout.SidePreview === SettingsStore.layout() ?
 				'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
 		});
 
@@ -231,7 +231,7 @@
 				Data.message(Data.staticMessageList.populateByMessageListItem(oMessage));
 				this.populateMessageBody(Data.message());
 
-				if (Enums.Layout.NoPreview === UserSettingsStore.layout())
+				if (Enums.Layout.NoPreview === SettingsStore.layout())
 				{
 					kn.setHash(Links.messagePreview(), true);
 					Data.message.focused(true);
@@ -251,11 +251,11 @@
 			this.selector.scrollToTop();
 		}, this);
 
-		UserSettingsStore.layout.subscribe(function (mValue) {
+		SettingsStore.layout.subscribe(function (mValue) {
 			this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
 		}, this);
 
-		UserSettingsStore.layout.valueHasMutated();
+		SettingsStore.layout.valueHasMutated();
 
 		Events
 			.sub('mailbox.message-list.selector.go-down', function () {
@@ -815,14 +815,12 @@
 			return false;
 		});
 
-		// TODO
 		key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
-			return false;
+			return false; // TODO
 		});
 
-		// TODO
 		key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
-			return false;
+			return false; // TODO
 		});
 	};
 

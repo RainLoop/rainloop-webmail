@@ -16,7 +16,7 @@
 	/**
 	 * @constructor
 	 */
-	function UserSettingsStore()
+	function SettingsUserStore()
 	{
 		this.layout = ko.observable(Enums.Layout.SidePreview)
 			.extend({'limitedList': [
@@ -29,52 +29,37 @@
 				Enums.EditorDefaultType.HtmlForced, Enums.EditorDefaultType.PlainForced
 			]});
 
-		this.languages = ko.observableArray([]);
-
-		this.language = ko.observable('')
-			.extend({'limitedList': this.languages});
-
-		this.themes = ko.observableArray([]);
-		this.themeBackgroundName = ko.observable('');
-		this.themeBackgroundHash = ko.observable('');
-
-		this.theme = ko.observable('')
-			.extend({'limitedList': this.themes});
-
 		this.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage)
 			.extend({'limitedList': Consts.Defaults.MessagesPerPageArray});
+
+		this.showImages = ko.observable(false);
+		this.useCheckboxesInList = ko.observable(true);
+		this.useThreads = ko.observable(false);
+		this.replySameFolder = ko.observable(false);
 
 		this.computedProperies();
 	}
 
-	UserSettingsStore.prototype.computedProperies = function ()
+	SettingsUserStore.prototype.computedProperies = function ()
 	{
 		this.usePreviewPane = ko.computed(function () {
 			return Enums.Layout.NoPreview !== this.layout();
 		}, this);
 	};
 
-	UserSettingsStore.prototype.populate = function ()
+	SettingsUserStore.prototype.populate = function ()
 	{
-		var
-			aLanguages = Settings.settingsGet('Languages'),
-			aThemes = Settings.settingsGet('Themes')
-		;
-
 		this.layout(Utils.pInt(Settings.settingsGet('Layout')));
 		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
 
-		this.languages(Utils.isArray(aLanguages) ? aLanguages : []);
-		this.language(Settings.settingsGet('Language'));
-
-		this.themes(Utils.isArray(aThemes) ? aThemes : []);
-		this.theme(Settings.settingsGet('Theme'));
-		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
-		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
-
 		this.messagesPerPage(Settings.settingsGet('MPP'));
+
+		this.showImages(!!Settings.settingsGet('ShowImages'));
+		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
+		this.useThreads(!!Settings.settingsGet('UseThreads'));
+		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
 	};
 
-	module.exports = new UserSettingsStore();
+	module.exports = new SettingsUserStore();
 
 }());

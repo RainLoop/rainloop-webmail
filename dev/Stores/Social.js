@@ -12,7 +12,6 @@
 	 */
 	function SocialStore()
 	{
-		// TODO
 		this.google = {};
 		this.twitter = {};
 		this.facebook = {};

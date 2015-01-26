@@ -13,8 +13,10 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
-		NotificationSettingsStore = require('Stores/NotificationSettings'),
+		AppStore = require('Stores/User/App'),
+		LanguageStore = require('Stores/Language'),
+		SettingsStore = require('Stores/User/Settings'),
+		NotificationStore = require('Stores/User/Notification'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
@@ -25,25 +27,27 @@
 	 */
 	function GeneralUserSettings()
 	{
-		this.language = UserSettingsStore.language;
-		this.messagesPerPage = UserSettingsStore.messagesPerPage;
+		this.language = LanguageStore.language;
+		this.messagesPerPage = SettingsStore.messagesPerPage;
 		this.messagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 
-		this.editorDefaultType = UserSettingsStore.editorDefaultType;
-		this.layout = UserSettingsStore.layout;
-		this.usePreviewPane = UserSettingsStore.usePreviewPane;
+		this.editorDefaultType = SettingsStore.editorDefaultType;
+		this.layout = SettingsStore.layout;
+		this.usePreviewPane = SettingsStore.usePreviewPane;
 
-		this.showImages = Data.showImages;
+		this.soundNotificationIsSupported = NotificationStore.soundNotificationIsSupported;
+		this.enableSoundNotification = NotificationStore.enableSoundNotification;
 
-		this.enableDesktopNotification = NotificationSettingsStore.enableDesktopNotification;
-		this.isDesktopNotificationSupported = NotificationSettingsStore.isDesktopNotificationSupported;
-		this.isDesktopNotificationDenied = NotificationSettingsStore.isDesktopNotificationDenied;
+		this.enableDesktopNotification = NotificationStore.enableDesktopNotification;
+		this.isDesktopNotificationSupported = NotificationStore.isDesktopNotificationSupported;
+		this.isDesktopNotificationDenied = NotificationStore.isDesktopNotificationDenied;
 
+		this.showImages = SettingsStore.showImages;
+		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 		this.threading = Data.threading;
-		this.useThreads = Data.useThreads;
-		this.replySameFolder = Data.replySameFolder;
-		this.useCheckboxesInList = Data.useCheckboxesInList;
-		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
+		this.useThreads = SettingsStore.useThreads;
+		this.replySameFolder = SettingsStore.replySameFolder;
+		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;
 
 		this.languageFullName = ko.computed(function () {
 			return Utils.convertLangName(this.language());
@@ -76,6 +80,11 @@
 			];
 		}, this);
 	}
+
+	GeneralUserSettings.prototype.testSoundNotification = function ()
+	{
+		NotificationStore.playSoundNotification(true);
+	};
 
 	GeneralUserSettings.prototype.onBuild = function ()
 	{
@@ -122,7 +131,7 @@
 				});
 			});
 
-			Data.showImages.subscribe(function (bValue) {
+			self.showImages.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'ShowImages': bValue ? '1' : '0'
 				});
@@ -136,7 +145,15 @@
 				}, 3000);
 			});
 
-			Data.replySameFolder.subscribe(function (bValue) {
+			self.enableSoundNotification.subscribe(function (bValue) {
+				Utils.timeOutAction('SaveSoundNotification', function () {
+					Remote.saveSettings(null, {
+						'SoundNotification': bValue ? '1' : '0'
+					});
+				}, 3000);
+			});
+
+			self.replySameFolder.subscribe(function (bValue) {
 				Utils.timeOutAction('SaveReplySameFolder', function () {
 					Remote.saveSettings(null, {
 						'ReplySameFolder': bValue ? '1' : '0'
@@ -144,7 +161,7 @@
 				}, 3000);
 			});
 
-			Data.useThreads.subscribe(function (bValue) {
+			self.useThreads.subscribe(function (bValue) {
 
 				Data.messageList([]);
 
@@ -162,7 +179,7 @@
 				});
 			});
 
-			Data.useCheckboxesInList.subscribe(function (bValue) {
+			self.useCheckboxesInList.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'UseCheckboxesInList': bValue ? '1' : '0'
 				});

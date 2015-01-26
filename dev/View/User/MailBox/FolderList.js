@@ -15,9 +15,9 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
+		AppStore = require('Stores/User/App'),
+		SettingsUserStore = require('Stores/User/Settings'),
 
-		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
 
@@ -47,7 +47,7 @@
 
 		this.iDropOverTimer = 0;
 
-		this.allowContacts = !!Settings.settingsGet('ContactsIsAllowed');
+		this.allowContacts = !!AppStore.contactsIsAllowed();
 
 		kn.constructorEnd(this);
 	}
@@ -90,7 +90,7 @@
 
 				if (oFolder)
 				{
-					if (Enums.Layout.NoPreview === UserSettingsStore.layout())
+					if (Enums.Layout.NoPreview === SettingsUserStore.layout())
 					{
 						Data.message(null);
 					}

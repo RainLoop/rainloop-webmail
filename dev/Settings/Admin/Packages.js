@@ -5,12 +5,13 @@
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/Admin/Data'),
+		PackageStore = require('Stores/Admin/Package'),
 		Remote = require('Storage/Admin/Remote')
 	;
 
@@ -21,9 +22,9 @@
 	{
 		this.packagesError = ko.observable('');
 
-		this.packages = Data.packages;
-		this.packagesReal = Data.packagesReal;
-		this.packagesMainUpdatable = Data.packagesMainUpdatable;
+		this.packages = PackageStore.collection;
+		this.packagesReal = PackageStore.packagesReal;
+		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
 		this.packagesCurrent = this.packages.filter(function (oItem) {
 			return oItem && '' !== oItem['installed'] && !oItem['compare'];
@@ -38,7 +39,7 @@
 		});
 
 		this.visibility = ko.computed(function () {
-			return Data.packages.loading() ? 'visible' : 'hidden';
+			return PackageStore.collection.loading() ? 'visible' : 'hidden';
 		}, this);
 	}
 
@@ -70,7 +71,7 @@
 				}
 			}
 
-			_.each(Data.packages(), function (oItem) {
+			_.each(self.packages(), function (oItem) {
 				if (oItem && oPackage && oItem['loading']() && oPackage['file'] === oItem['file'])
 				{
 					oPackage['loading'](false);

@@ -19,9 +19,9 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
+		SettingsUserStore = require('Stores/User/Settings'),
 
-		Local = require('Storage/Local'),
+		Local = require('Storage/Client'),
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -62,10 +62,10 @@
 		this.messageLoading = Data.messageLoading;
 		this.messageLoadingThrottle = Data.messageLoadingThrottle;
 		this.messagesBodiesDom = Data.messagesBodiesDom;
-		this.useThreads = Data.useThreads;
-		this.replySameFolder = Data.replySameFolder;
-		this.layout = UserSettingsStore.layout;
-		this.usePreviewPane = UserSettingsStore.usePreviewPane;
+		this.useThreads = SettingsUserStore.useThreads;
+		this.replySameFolder = SettingsUserStore.replySameFolder;
+		this.layout = SettingsUserStore.layout;
+		this.usePreviewPane = SettingsUserStore.usePreviewPane;
 		this.isMessageSelected = Data.isMessageSelected;
 		this.messageActiveDom = Data.messageActiveDom;
 		this.messageError = Data.messageError;

@@ -9,18 +9,10 @@
 					name: 'Checkbox',
 					params: { value: capaTwoFactorAuth, label: 'Allow 2-Step Verification (Google Authenticator)' }
 				}"></div>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: { value: useLocalProxyForExternalImages, label: 'Use local proxy for external images' }
 				}"></div>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: { value: capaOpenPGP, label: 'Allow OpenPGP', inline: true }
@@ -35,36 +27,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-horizontal">
-		<div class="legend">
-			SSL
-		</div>
-		<div class="control-group">
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: verifySslCertificate,
-						label: 'Require verification of SSL certificate used (IMAP/SMTP)',
-						inline: true
-					}
-				}"></div>
-				&nbsp;&nbsp;
-				<span style="color:red">(unstable)</span>
-				<br />
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						enable: verifySslCertificate,
-						value: allowSelfSigned,
-						label: 'Allow self signed certificates'
-					}
-				}"></div>
-
-			</div>
-		</div>
-	</div>
-	<br />
 	<div class="form-horizontal">
 		<div class="legend">
 			Admin Panel Access Credentials
@@ -113,6 +75,35 @@
 					&nbsp;&nbsp;
 					Update Password
 				</a>
+			</div>
+		</div>
+	</div>
+	<div class="form-horizontal">
+		<div class="legend">
+			SSL
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: verifySslCertificate,
+						label: 'Require verification of SSL certificate used (IMAP/SMTP)',
+						inline: true
+					}
+				}"></div>
+				&nbsp;&nbsp;
+				<span style="color:red">(unstable)</span>
+				<br />
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						enable: verifySslCertificate,
+						value: allowSelfSigned,
+						label: 'Allow self signed certificates'
+					}
+				}"></div>
+
 			</div>
 		</div>
 	</div>

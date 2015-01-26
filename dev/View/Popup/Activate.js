@@ -12,8 +12,8 @@
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote'),
+		LicenseStore = require('Stores/Admin/License'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -34,7 +34,7 @@
 		this.key.focus = ko.observable(false);
 		this.activationSuccessed = ko.observable(false);
 
-		this.licenseTrigger = Data.licenseTrigger;
+		this.licenseTrigger = LicenseStore.licenseTrigger;
 
 		this.activateProcess = ko.observable(false);
 		this.activateText = ko.observable('');

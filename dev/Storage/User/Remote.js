@@ -10,6 +10,8 @@
 		Consts = require('Common/Consts'),
 		Base64 = require('Common/Base64'),
 
+		SettingsUserStore = require('Stores/User/Settings'),
+
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
@@ -285,7 +287,7 @@
 					Data.projectHash(),
 					sFolderHash,
 					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-					Data.threading() && Data.useThreads() ? '1' : '0',
+					Data.threading() && SettingsUserStore.useThreads() ? '1' : '0',
 					Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
@@ -297,7 +299,7 @@
 				'Limit': iLimit,
 				'Search': sSearch,
 				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': Data.threading() && Data.useThreads() ? '1' : '0',
+				'UseThreads': Data.threading() && SettingsUserStore.useThreads() ? '1' : '0',
 				'ExpandedThreadUid': Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
@@ -332,7 +334,7 @@
 					sFolderFullNameRaw,
 					iUid,
 					Data.projectHash(),
-					Data.threading() && Data.useThreads() ? '1' : '0'
+					Data.threading() && SettingsUserStore.useThreads() ? '1' : '0'
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
@@ -411,7 +413,7 @@
 				'UidNext': Cache.getFolderInboxName() === sFolder ? Cache.getFolderUidNext(sFolder) : ''
 			});
 		}
-		else if (Data.useThreads())
+		else if (SettingsUserStore.useThreads())
 		{
 			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}

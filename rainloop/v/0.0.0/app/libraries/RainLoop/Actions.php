@@ -1233,7 +1233,7 @@ class Actions
 
 			$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
-			
+
 			if (!$aResult['AllowDropboxSocial'])
 			{
 				$aResult['DropboxApiKey'] = '';
@@ -1332,6 +1332,7 @@ class Actions
 		$aResult['ShowImages'] = (bool) $oConfig->Get('webmail', 'show_images', false);
 		$aResult['ContactsAutosave'] = true;
 		$aResult['MPP'] = (int) $oConfig->Get('webmail', 'messages_per_page', 25);
+		$aResult['SoundNotification'] = false;
 		$aResult['DesktopNotifications'] = false;
 		$aResult['UseThreads'] = false;
 		$aResult['ReplySameFolder'] = false;
@@ -1370,6 +1371,7 @@ class Actions
 			$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
 			$aResult['ContactsAutosave'] = (bool) $oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 			$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
+			$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 			$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 			$aResult['UseThreads'] = (bool) $oSettings->GetConf('UseThreads', $aResult['UseThreads']);
 			$aResult['ReplySameFolder'] = (bool) $oSettings->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
@@ -1409,7 +1411,7 @@ class Actions
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
-			$oConfig->Get('webmail', 'allow_languages_on_login', true))
+			$oConfig->Get('login', 'allow_languages_on_login', true))
 		{
 			$sLanguage = $_COOKIE['rllang'];
 		}
@@ -1417,6 +1419,7 @@ class Actions
 		{
 			$sUserLanguage = '';
 			if (!$bAdmin && !$aResult['Auth'] &&
+				$oConfig->Get('login', 'allow_languages_on_login', true) &&
 				$oConfig->Get('login', 'determine_user_language', true))
 			{
 				$sUserLanguage = $this->detectUserLanguage();
@@ -4057,6 +4060,7 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
+		$this->setSettingsFromParams($oSettings, 'SoundNotification', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');

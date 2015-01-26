@@ -29,9 +29,9 @@
 					name: 'Checkbox',
 					params: { value: allowLanguagesOnLogin, label: 'Allow language selection on login screen' }
 				}"></div>
-				<div data-bind="component: {
+				<div data-bind="visible: allowLanguagesOnLogin, component: {
 					name: 'Checkbox',
-					params: { value: determineUserLanguage, label: 'Try to determine user language' }
+					params: { enable: allowLanguagesOnLogin, value: determineUserLanguage, label: 'Try to determine user language' }
 				}"></div>
 			</div>
 		</div>

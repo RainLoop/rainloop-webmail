@@ -14,7 +14,7 @@
 	/**
 	 * @constructor
 	 */
-	function LocalStorageLocalDriver()
+	function LocalStorageDriver()
 	{
 	}
 
@@ -22,7 +22,7 @@
 	 * @static
 	 * @return {boolean}
 	 */
-	LocalStorageLocalDriver.supported = function ()
+	LocalStorageDriver.supported = function ()
 	{
 		return !!window.localStorage;
 	};
@@ -32,7 +32,7 @@
 	 * @param {*} mData
 	 * @return {boolean}
 	 */
-	LocalStorageLocalDriver.prototype.set = function (sKey, mData)
+	LocalStorageDriver.prototype.set = function (sKey, mData)
 	{
 		var
 			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
@@ -68,7 +68,7 @@
 	 * @param {string} sKey
 	 * @return {*}
 	 */
-	LocalStorageLocalDriver.prototype.get = function (sKey)
+	LocalStorageDriver.prototype.get = function (sKey)
 	{
 		var
 			mStorageValue = window.localStorage[Consts.Values.ClientSideStorageIndexName] || null,
@@ -92,6 +92,6 @@
 		return mResult;
 	};
 
-	module.exports = LocalStorageLocalDriver;
+	module.exports = LocalStorageDriver;
 
 }());

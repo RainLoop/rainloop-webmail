@@ -6,12 +6,12 @@
 	/**
 	 * @constructor
 	 */
-	function LocalStorage()
+	function ClientStorage()
 	{
 		var
 			NextStorageDriver = require('_').find([
-				require('Storage/LocalDriver/LocalStorage'),
-				require('Storage/LocalDriver/Cookie')
+				require('Common/ClientStorageDriver/LocalStorage'),
+				require('Common/ClientStorageDriver/Cookie')
 			], function (NextStorageDriver) {
 				return NextStorageDriver && NextStorageDriver.supported();
 			})
@@ -28,14 +28,14 @@
 	/**
 	 * @type {LocalStorageDriver|CookieDriver|null}
 	 */
-	LocalStorage.prototype.oDriver = null;
+	ClientStorage.prototype.oDriver = null;
 
 	/**
 	 * @param {number} iKey
 	 * @param {*} mData
 	 * @return {boolean}
 	 */
-	LocalStorage.prototype.set = function (iKey, mData)
+	ClientStorage.prototype.set = function (iKey, mData)
 	{
 		return this.oDriver ? this.oDriver.set('p' + iKey, mData) : false;
 	};
@@ -44,11 +44,11 @@
 	 * @param {number} iKey
 	 * @return {*}
 	 */
-	LocalStorage.prototype.get = function (iKey)
+	ClientStorage.prototype.get = function (iKey)
 	{
 		return this.oDriver ? this.oDriver.get('p' + iKey) : null;
 	};
 
-	module.exports = new LocalStorage();
+	module.exports = new ClientStorage();
 
 }());

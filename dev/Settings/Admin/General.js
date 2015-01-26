@@ -11,10 +11,12 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
+		ThemeStore = require('Stores/Theme'),
+		LanguageStore = require('Stores/Language'),
+		AppAdminStore = require('Stores/Admin/App'),
+		CapaAdminStore = require('Stores/Admin/Capa'),
 
-		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data')
+		Settings = require('Storage/Settings')
 	;
 
 	/**
@@ -22,20 +24,20 @@
 	 */
 	function GeneralAdminSettings()
 	{
-		this.language = UserSettingsStore.language;
-		this.languages = UserSettingsStore.languages;
-		this.theme = UserSettingsStore.theme;
-		this.themes = UserSettingsStore.themes;
+		this.language = LanguageStore.language;
+		this.languages = LanguageStore.languages;
+		this.theme = ThemeStore.theme;
+		this.themes = ThemeStore.themes;
 
-		this.capaThemes = Data.capaThemes;
-		this.capaUserBackground = Data.capaUserBackground;
-		this.allowLanguagesOnSettings = Data.allowLanguagesOnSettings;
-		this.capaGravatar = Data.capaGravatar;
-		this.capaAdditionalAccounts = Data.capaAdditionalAccounts;
-		this.capaAdditionalIdentities = Data.capaAdditionalIdentities;
-		this.capaAttachmentThumbnails = Data.capaAttachmentThumbnails;
+		this.capaThemes = CapaAdminStore.themes;
+		this.capaUserBackground = CapaAdminStore.userBackground;
+		this.capaGravatar = CapaAdminStore.gravatar;
+		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
+		this.capaAdditionalIdentities = CapaAdminStore.additionalIdentities;
+		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
 
-		this.weakPassword = Data.weakPassword;
+		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
+		this.weakPassword = AppAdminStore.weakPassword;
 
 		this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
 		this.uploadData = Settings.settingsGet('PhpUploadSizes');

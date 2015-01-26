@@ -10,7 +10,7 @@ module.exports = {
 		path: __dirname + '/rainloop/v/0.0.0/static/js/',
 		filename: '[name].js',
 		publicPath: 'rainloop/v/0.0.0/static/js/',
-		chunkFilename: '[chunkhash].chunk.js'
+		chunkFilename: '[chunkhash].subapp.js'
 	},
 	plugins: [
 //		new webpack.optimize.CommonsChunkPlugin('common.js'),
@@ -38,6 +38,7 @@ module.exports = {
 		'hasher': 'window.hasher',
 		'Jua': 'window.Jua',
 		'Autolinker': 'window.Autolinker',
+		'buzz': 'window.buzz',
 		'ssm': 'window.ssm',
 		'key': 'window.key',
 		'_': 'window._',

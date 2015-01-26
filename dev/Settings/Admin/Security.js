@@ -11,8 +11,10 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
+		AppAdminStore = require('Stores/Admin/App'),
+		CapaAdminStore = require('Stores/Admin/Capa'),
+
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
 		Remote = require('Storage/Admin/Remote')
 	;
 
@@ -21,12 +23,12 @@
 	 */
 	function SecurityAdminSettings()
 	{
-		this.useLocalProxyForExternalImages = Data.useLocalProxyForExternalImages;
+		this.useLocalProxyForExternalImages = AppAdminStore.useLocalProxyForExternalImages;
 
-		this.weakPassword = Data.weakPassword;
+		this.weakPassword = AppAdminStore.weakPassword;
 
-		this.capaOpenPGP = ko.observable(Settings.capa(Enums.Capa.OpenPGP));
-		this.capaTwoFactorAuth = ko.observable(Settings.capa(Enums.Capa.TwoFactor));
+		this.capaOpenPGP = CapaAdminStore.openPGP;
+		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
 
 		this.verifySslCertificate = ko.observable(!!Settings.settingsGet('VerifySslCertificate'));
 		this.allowSelfSigned = ko.observable(!!Settings.settingsGet('AllowSelfSigned'));

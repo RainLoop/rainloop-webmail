@@ -21,12 +21,12 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsLanguages');
 
-		this.UserSettingsStore = require('Stores/UserSettings');
+		this.LanguageStore = require('Stores/Language');
 
 		this.exp = ko.observable(false);
 
 		this.languages = ko.computed(function () {
-			return _.map(this.UserSettingsStore.languages(), function (sLanguage) {
+			return _.map(this.LanguageStore.languages(), function (sLanguage) {
 				return {
 					'key': sLanguage,
 					'selected': ko.observable(false),
@@ -35,7 +35,7 @@
 			});
 		}, this);
 
-		this.UserSettingsStore.language.subscribe(function () {
+		this.LanguageStore.language.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
 
@@ -53,7 +53,7 @@
 
 	LanguagesPopupView.prototype.resetMainLanguage = function ()
 	{
-		var sCurrent = this.UserSettingsStore.language();
+		var sCurrent = this.LanguageStore.language();
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
@@ -73,7 +73,7 @@
 
 	LanguagesPopupView.prototype.changeLanguage = function (sLang)
 	{
-		this.UserSettingsStore.language(sLang);
+		this.LanguageStore.language(sLang);
 		this.cancelCommand();
 	};
 

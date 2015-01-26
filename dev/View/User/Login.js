@@ -17,7 +17,8 @@
 
 		Plugins = require('Common/Plugins'),
 
-		UserSettingsStore = require('Stores/UserSettings'),
+		LanguageStore = require('Stores/Language'),
+		AppStore = require('Stores/User/App'),
 
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
@@ -88,10 +89,10 @@
 			}
 		}, this);
 
-		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
+		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
 
 		this.langRequest = ko.observable(false);
-		this.language = UserSettingsStore.language;
+		this.language = LanguageStore.language;
 
 		this.bSendLanguage = false;
 
@@ -307,7 +308,7 @@
 
 			if (Settings.settingsGet('UserLanguage'))
 			{
-				$.cookie('rllang', UserSettingsStore.language(), {'expires': 30});
+				$.cookie('rllang', LanguageStore.language(), {'expires': 30});
 			}
 
 		}, this), 100);
@@ -376,7 +377,7 @@
 		}
 
 		_.delay(function () {
-			UserSettingsStore.language.subscribe(function (sValue) {
+			LanguageStore.language.subscribe(function (sValue) {
 
 				self.langRequest(true);
 

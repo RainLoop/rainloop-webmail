@@ -217,7 +217,7 @@
 		return sValue;
 	};
 
-	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && JSEncrypt);
+	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && false && JSEncrypt);
 
 	/**
 	 * @param {string} sText
@@ -621,52 +621,6 @@
 		}
 
 		return fResult;
-	};
-
-	/**
-	 * @param {Object} oData
-	 */
-	Utils.initDataConstructorBySettings = function (oData)
-	{
-		oData.showImages = ko.observable(false);
-		oData.contactsAutosave = ko.observable(false);
-		oData.interfaceAnimation = ko.observable(true);
-
-		oData.capaThemes = ko.observable(true);
-		oData.capaUserBackground = ko.observable(false);
-		oData.allowLanguagesOnSettings = ko.observable(true);
-		oData.allowLanguagesOnLogin = ko.observable(true);
-
-		oData.useLocalProxyForExternalImages = ko.observable(false);
-
-		oData.useThreads = ko.observable(true);
-		oData.replySameFolder = ko.observable(true);
-		oData.useCheckboxesInList = ko.observable(true);
-
-		oData.interfaceAnimation.subscribe(function (bValue) {
-			if (Globals.bMobileDevice || !bValue)
-			{
-				Globals.$html.removeClass('rl-anim').addClass('no-rl-anim');
-			}
-			else
-			{
-				Globals.$html.removeClass('no-rl-anim').addClass('rl-anim');
-			}
-		});
-
-		oData.interfaceAnimation.valueHasMutated();
-
-		oData.capaAdditionalAccounts = ko.observable(false);
-		oData.capaAdditionalIdentities = ko.observable(false);
-		oData.capaGravatar = ko.observable(false);
-		oData.capaSieve = ko.observable(false);
-		oData.capaAttachmentThumbnails = ko.observable(false);
-		oData.determineUserLanguage = ko.observable(false);
-		oData.determineUserDomain = ko.observable(false);
-
-		oData.weakPassword = ko.observable(false);
-
-		oData.contactsIsAllowed = ko.observable(false);
 	};
 
 	/**

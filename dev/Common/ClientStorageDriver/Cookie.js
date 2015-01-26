@@ -14,7 +14,7 @@
 	/**
 	 * @constructor
 	 */
-	function CookieLocalDriver()
+	function CookieDriver()
 	{
 	}
 
@@ -22,7 +22,7 @@
 	 * @static
 	 * @return {boolean}
 	 */
-	CookieLocalDriver.supported = function ()
+	CookieDriver.supported = function ()
 	{
 		return !!(window.navigator && window.navigator.cookieEnabled);
 	};
@@ -32,7 +32,7 @@
 	 * @param {*} mData
 	 * @return {boolean}
 	 */
-	CookieLocalDriver.prototype.set = function (sKey, mData)
+	CookieDriver.prototype.set = function (sKey, mData)
 	{
 		var
 			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
@@ -70,7 +70,7 @@
 	 * @param {string} sKey
 	 * @return {*}
 	 */
-	CookieLocalDriver.prototype.get = function (sKey)
+	CookieDriver.prototype.get = function (sKey)
 	{
 		var
 			mStorageValue = $.cookie(Consts.Values.ClientSideStorageIndexName),
@@ -94,6 +94,6 @@
 		return mResult;
 	};
 
-	module.exports = CookieLocalDriver;
+	module.exports = CookieDriver;
 
 }());

@@ -4,7 +4,10 @@
 	'use strict';
 
 	var
-		ko = require('ko')
+		ko = require('ko'),
+
+		Settings = require('Storage/Settings'),
+		CoreStore = require('Stores/Admin/Core')
 	;
 
 	/**
@@ -12,25 +15,20 @@
 	 */
 	function AboutAdminSettings()
 	{
-		var
-			Settings = require('Storage/Settings'),
-			Data = require('Storage/Admin/Data')
-		;
-
 		this.version = ko.observable(Settings.settingsGet('Version'));
 		this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 
-		this.coreReal = Data.coreReal;
-		this.coreChannel = Data.coreChannel;
-		this.coreType = Data.coreType;
-		this.coreUpdatable = Data.coreUpdatable;
-		this.coreAccess = Data.coreAccess;
-		this.coreChecking = Data.coreChecking;
-		this.coreUpdating = Data.coreUpdating;
-		this.coreRemoteVersion = Data.coreRemoteVersion;
-		this.coreRemoteRelease = Data.coreRemoteRelease;
-		this.coreVersionCompare = Data.coreVersionCompare;
+		this.coreReal = CoreStore.coreReal;
+		this.coreChannel = CoreStore.coreChannel;
+		this.coreType = CoreStore.coreType;
+		this.coreUpdatable = CoreStore.coreUpdatable;
+		this.coreAccess = CoreStore.coreAccess;
+		this.coreChecking = CoreStore.coreChecking;
+		this.coreUpdating = CoreStore.coreUpdating;
+		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
+		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
+		this.coreVersionCompare = CoreStore.coreVersionCompare;
 
 		this.statusType = ko.computed(function () {
 

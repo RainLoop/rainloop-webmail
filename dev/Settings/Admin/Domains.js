@@ -12,7 +12,7 @@
 
 		PopupsDomainViewModel = require('View/Popup/Domain'),
 
-		Data = require('Storage/Admin/Data'),
+		DomainStore = require('Stores/Admin/Domain'),
 		Remote = require('Storage/Admin/Remote')
 	;
 
@@ -21,12 +21,12 @@
 	 */
 	function DomainsAdminSettings()
 	{
-		this.domains = Data.domains;
+		this.domains = DomainStore.collection;
 
 		this.iDomainForDeletionTimeout = 0;
 
 		this.visibility = ko.computed(function () {
-			return Data.domains.loading() ? 'visible' : 'hidden';
+			return this.domains.loading() ? 'visible' : 'hidden';
 		}, this);
 
 		this.domainForDeletion = ko.observable(null).extend({'toggleSubscribe': [this,

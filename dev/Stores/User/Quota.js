@@ -11,7 +11,7 @@
 	/**
 	 * @constructor
 	 */
-	function QuotaStore()
+	function QuotaUserStore()
 	{
 		this.quota = ko.observable(0);
 		this.usage = ko.observable(0);
@@ -32,12 +32,12 @@
 	 * @param {number} iQuota
 	 * @param {number} iUsage
 	 */
-	QuotaStore.prototype.populateData = function(iQuota, iUsage)
+	QuotaUserStore.prototype.populateData = function(iQuota, iUsage)
 	{
 		this.quota(iQuota * 1024);
 		this.usage(iUsage * 1024);
 	};
 
-	module.exports = new QuotaStore();
+	module.exports = new QuotaUserStore();
 
 }());
