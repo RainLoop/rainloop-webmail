@@ -12,7 +12,8 @@
 		Translator = require('Common/Translator'),
 		Links = require('Common/Links'),
 
-		Data = require('Storage/User/Data'),
+		AccountStore = require('Stores/User/Account'),
+
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -21,10 +22,10 @@
 	 */
 	function AccountsUserSettings()
 	{
-		this.accounts = Data.accounts;
+		this.accounts = AccountStore.collection;
 
 		this.processText = ko.computed(function () {
-			return Data.accountsLoading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
+			return AccountStore.loading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {
@@ -45,6 +46,13 @@
 			}
 		]});
 	}
+
+	AccountsUserSettings.prototype.scrollableOptions = function ()
+	{
+		return {
+
+		};
+	};
 
 	AccountsUserSettings.prototype.addNewAccount = function ()
 	{

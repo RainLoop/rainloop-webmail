@@ -1891,6 +1891,21 @@ class Actions
 				if (1 === \count($aAccounts))
 				{
 					$this->SetAccounts($oAccount, array());
+
+				}
+				else if (1 < \count($aAccounts))
+				{
+					$sOrder = $this->StorageProvider()->Get(null,
+						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+						\RainLoop\KeyPathHelper::WebmailAccountsOrder($sParentEmail),
+						null
+					);
+
+					$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+					if (\is_array($aAccounts) && \is_array($aOrder) && 0 < \count($aOrder))
+					{
+						$aAccounts = \array_merge(\array_flip($aOrder), $aAccounts);
+					}
 				}
 
 				return $aAccounts;
@@ -2274,6 +2289,28 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoAccountSortOrder()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$aList = $this->GetActionParam('Accounts', null);
+		if (!\is_array($aList) || 2 > \count($aList))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put(null,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+			\RainLoop\KeyPathHelper::WebmailAccountsOrder($oAccount->ParentEmailHelper()),
+			\json_encode($aList)
+		));
 	}
 
 	/**

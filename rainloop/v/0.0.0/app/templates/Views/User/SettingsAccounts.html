@@ -20,7 +20,7 @@
 			<col style="width: 150px" />
 			<col style="width: 1%" />
 		</colgroup>
-		<tbody data-bind="foreach: accounts">
+		<tbody data-bind="sortable: {data: accounts, options: scrollableOptions()}">
 			<tr class="account-item">
 				<td class="e-action" data-bind="css: {'e-action': canBeEdit}">
 					<span class="account-img icon-user"></span>

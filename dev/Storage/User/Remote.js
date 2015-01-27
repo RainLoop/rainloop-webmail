@@ -186,6 +186,17 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {Array} aAccounts
+	 */
+	RemoteUserStorage.prototype.accountSortOrder = function (fCallback, aAccounts)
+	{
+		this.defaultRequest(fCallback, 'AccountSortOrder', {
+			'Accounts': aAccounts
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
 	 * @param {string} sId
 	 * @param {string} sEmail
 	 * @param {string} sName

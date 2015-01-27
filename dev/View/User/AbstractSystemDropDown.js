@@ -12,6 +12,8 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
+		AccountStore = require('Stores/User/Account'),
+
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -27,9 +29,9 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
-		this.accounts = Data.accounts;
+		this.accounts = AccountStore.collection;
 		this.accountEmail = Data.accountEmail;
-		this.accountsLoading = Data.accountsLoading;
+		this.accountsLoading = AccountStore.loading;
 
 		this.accountMenuDropdownTrigger = ko.observable(false);
 

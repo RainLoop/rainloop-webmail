@@ -25,6 +25,16 @@ class KeyPathHelper
 	}
 
 	/**
+	 * @param string $sEmail
+	 *
+	 * @return string
+	 */
+	static public function WebmailAccountsOrder($sEmail)
+	{
+		return 'Webmail/AccountsSortOrder/'.$sEmail.'/Array';
+	}
+
+	/**
 	 * @param string $sHash
 	 *
 	 * @return string

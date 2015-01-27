@@ -99,10 +99,6 @@
 		// security
 		this.enableTwoFactor = ko.observable(false);
 
-		// accounts
-		this.accounts = ko.observableArray([]);
-		this.accountsLoading = ko.observable(false).extend({'throttle': 100});
-
 		// identities
 		this.defaultIdentityID = ko.observable('');
 		this.identities = ko.observableArray([]);

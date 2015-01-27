@@ -770,22 +770,35 @@
 			sFrom = Utils.pString(sFrom);
 			if ('' !== sFrom)
 			{
+				sSignature = sSignature.replace(/{{FROM-FULL}}/g, sFrom);
+
+				if (-1 === sFrom.indexOf(' ') && 0 < sFrom.indexOf('@'))
+				{
+					sFrom = sFrom.replace(/@(.+)$/, '');
+				}
+
 				sSignature = sSignature.replace(/{{FROM}}/g, sFrom);
 			}
 
 			sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
+			sSignature = sSignature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
 
 			sSignature = sSignature.replace(/{{FROM}}/g, '');
-			sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
+			sSignature = sSignature.replace(/{{FROM-FULL}}/g, '');
 
-			if (sData && Enums.ComposeType.Empty === sComposeType &&
-				-1 < sSignature.indexOf('{{DATA}}'))
+			if (-1 < sSignature.indexOf('{{DATE}}'))
 			{
-				bData = true;
-				sSignature = sSignature.replace('{{DATA}}', sData);
+				sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
 			}
 
-			sSignature = sSignature.replace(/{{DATA}}/g, '');
+			if (sData && Enums.ComposeType.Empty === sComposeType &&
+				-1 < sSignature.indexOf('{{BODY}}'))
+			{
+				bData = true;
+				sSignature = sSignature.replace('{{BODY}}', sData);
+			}
+
+			sSignature = sSignature.replace(/{{BODY}}/g, '');
 
 			if (!bHtml)
 			{

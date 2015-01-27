@@ -22,7 +22,8 @@
 		kn = require('Knoin/Knoin'),
 
 		SocialStore = require('Stores/Social'),
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
+		AccountStore = require('Stores/User/Account'),
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
@@ -153,7 +154,7 @@
 	{
 		var
 			self = this,
-			iOffset = (Data.messageListPage() - 1) * SettingsUserStore.messagesPerPage()
+			iOffset = (Data.messageListPage() - 1) * SettingsStore.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
@@ -190,12 +191,12 @@
 				);
 			}
 
-		}, Data.currentFolderFullNameRaw(), iOffset, SettingsUserStore.messagesPerPage(), Data.messageListSearch());
+		}, Data.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), Data.messageListSearch());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsUserStore.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', true);
 	};
 
 	AppUser.prototype.reloadMessageListHelper = function (bEmptyList)
@@ -494,7 +495,7 @@
 		Remote.accountsCounts(function (sResult, oData) {
 			if (Enums.StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
 			{
-				var aAcounts = Data.accounts();
+				var aAcounts = AccountStore.collection();
 
 				_.each(oData.Result['Counts'], function (oItem) {
 
@@ -515,12 +516,12 @@
 	{
 		var self = this;
 
-		Data.accountsLoading(true);
+		AccountStore.loading(true);
 		Data.identitiesLoading(true);
 
 		Remote.accountsAndIdentities(function (sResult, oData) {
 
-			Data.accountsLoading(false);
+			AccountStore.loading(false);
 			Data.identitiesLoading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
@@ -535,13 +536,13 @@
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
-					_.each(Data.accounts(), function (oAccount) {
+					_.each(AccountStore.collection(), function (oAccount) {
 						aCounts[oAccount.email] = oAccount.count();
 					});
 
-					Utils.delegateRunOnDestroy(Data.accounts());
+					Utils.delegateRunOnDestroy(AccountStore.collection());
 
-					Data.accounts(_.map(oData.Result['Accounts'], function (sValue) {
+					AccountStore.collection(_.map(oData.Result['Accounts'], function (sValue) {
 						return new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0);
 					}));
 				}
@@ -994,7 +995,7 @@
 
 			Data.messageListCount(iCount);
 			Data.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			Data.messageListPage(window.Math.ceil((iOffset / SettingsUserStore.messagesPerPage()) + 1));
+			Data.messageListPage(window.Math.ceil((iOffset / SettingsStore.messagesPerPage()) + 1));
 			Data.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 			Data.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			Data.messageListEndPage(Data.messageListPage());
@@ -1009,7 +1010,7 @@
 
 			Cache.clearNewMessageCache();
 
-			if (oFolder && (bCached || bUnreadCountChange || SettingsUserStore.useThreads()))
+			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
 			{
 				this.folderInformation(oFolder.fullNameRaw, aList);
 			}
