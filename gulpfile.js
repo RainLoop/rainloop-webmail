@@ -411,7 +411,6 @@ gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
 });
 
 gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
-	return true;
 	return gulp.src('vendors/ckeditor-plugins/**/*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor/plugins'));
 });

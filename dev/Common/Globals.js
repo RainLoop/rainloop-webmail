@@ -131,11 +131,11 @@
 			{name: 'others'}
 		],
 
-		'removePlugins': 'liststyle,tabletools,contextmenu', //blockquote
+		'removePlugins': 'liststyle,table,quicktable,tableresize,tabletools,contextmenu', //blockquote
 		'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
-		'extraPlugins': 'plain,bidi', // signature
+		'extraPlugins': 'plain', // signature
 		'allowedContent': true,
 
 		'font_defaultLabel': 'Arial',

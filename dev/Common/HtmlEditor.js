@@ -185,9 +185,9 @@
 						bBiti = !!Settings.settingsGet('AllowHtmlEditorBitiButtons')
 					;
 
-					if ((bSource || !bBiti) && !oConfig.toolbarGroups.__SourceInited)
+					if ((bSource || !bBiti) && !oConfig.toolbarGroups.__cfgInited)
 					{
-						oConfig.toolbarGroups.__SourceInited = true;
+						oConfig.toolbarGroups.__cfgInited = true;
 
 						if (bSource)
 						{
@@ -197,10 +197,6 @@
 						if (!bBiti)
 						{
 							oConfig.removePlugins += (oConfig.removePlugins ? ',' : '')  + 'bidi';
-						}
-						else
-						{
-							oConfig.removeButtons = oConfig.removeButtons.replace(',bidi', '');
 						}
 					}
 
@@ -243,6 +239,13 @@
 					if (self.fOnReady)
 					{
 						self.editor.on('instanceReady', function () {
+
+							if (self.editor.removeMenuItem)
+							{
+								self.editor.removeMenuItem('cut');
+								self.editor.removeMenuItem('copy');
+								self.editor.removeMenuItem('paste');
+							}
 
 							self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
 							self.editor.editable().addClass('cke_enable_context_menu');

@@ -100,7 +100,7 @@
 
 			if (editor.ui.addButton) {
 				editor.ui.addButton('plain', {
-					label: '',
+					label: window.rl && window.rl.i18n ? window.rl.i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT') : 'Plain',
 					command: 'plain',
 					toolbar: 'spec,10'
 				});
