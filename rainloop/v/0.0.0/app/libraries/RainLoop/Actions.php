@@ -3150,9 +3150,12 @@ class Actions
 		$sImapErrorDesc = '';
 		$bSmtpResult = false;
 		$sSmtpErrorDesc = '';
+		$bSieveResult = false;
+		$sSieveErrorDesc = '';
 
 		$iImapTime = 0;
 		$iSmtpTime = 0;
+		$iSieveTime = 0;
 
 		$iConnectionTimeout = 5;
 
@@ -3230,11 +3233,42 @@ class Actions
 					$sSmtpErrorDesc = $oException->getMessage();
 				}
 			}
+
+			try
+			{
+				$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->Logger());
+				$oSieveClient->SetTimeOuts($iConnectionTimeout);
+
+				$iTime = \microtime(true);
+				$oSieveClient->Connect($oDomain->SieveHost(), $oDomain->SievePort(), $oDomain->SieveSecure(),
+					!!$this->Config()->Get('ssl', 'verify_certificate', false),
+					!!$this->Config()->Get('ssl', 'allow_self_signed', true)
+				);
+
+				$iSieveTime = \microtime(true) - $iTime;
+				$oSieveClient->Disconnect();
+				$bSieveResult = true;
+			}
+			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+			{
+				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sSieveErrorDesc = $oException->getSocketMessage();
+				if (empty($sSieveErrorDesc))
+				{
+					$sSieveErrorDesc = $oException->getMessage();
+				}
+			}
+			catch (\Exception $oException)
+			{
+				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+				$sSieveErrorDesc = $oException->getMessage();
+			}
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Imap' => $bImapResult ? true : $sImapErrorDesc,
-			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc
+			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc,
+			'Sieve' => $bSieveResult ? true : $sSieveErrorDesc
 		));
 	}
 

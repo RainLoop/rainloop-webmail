@@ -114,6 +114,13 @@
 			else
 			{
 				$(oElement).data('tooltip3-data', sValue).tooltip('show');
+
+				_.delay(function () {
+					if ($(oElement).is(':visible'))
+					{
+						$(oElement).tooltip('show');
+					}
+				}, 100);
 			}
 		}
 	};

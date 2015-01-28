@@ -36,8 +36,10 @@
 		this.testing = ko.observable(false);
 		this.testingDone = ko.observable(false);
 		this.testingImapError = ko.observable(false);
+		this.testingSieveError = ko.observable(false);
 		this.testingSmtpError = ko.observable(false);
 		this.testingImapErrorDesc = ko.observable('');
+		this.testingSieveErrorDesc = ko.observable('');
 		this.testingSmtpErrorDesc = ko.observable('');
 
 		this.testingImapError.subscribe(function (bValue) {
@@ -47,15 +49,19 @@
 			}
 		}, this);
 
+		this.testingSieveError.subscribe(function (bValue) {
+			if (!bValue)
+			{
+				this.testingSieveErrorDesc('');
+			}
+		}, this);
+
 		this.testingSmtpError.subscribe(function (bValue) {
 			if (!bValue)
 			{
 				this.testingSmtpErrorDesc('');
 			}
 		}, this);
-
-		this.testingImapErrorDesc = ko.observable('');
-		this.testingSmtpErrorDesc = ko.observable('');
 
 		this.imapServerFocus = ko.observable(false);
 		this.sieveServerFocus = ko.observable(false);
@@ -147,7 +153,6 @@
 		this.testConnectionCommand = Utils.createCommand(this, function () {
 
 			this.page('main');
-			this.sieveSettings(false);
 
 			this.testingDone(false);
 			this.testingImapError(false);
@@ -277,12 +282,19 @@
 		this.testing(false);
 		if (Enums.StorageResultType.Success === sResult && oData.Result)
 		{
+			var
+				bImap = false,
+				bSieve = false
+			;
+
 			this.testingDone(true);
 			this.testingImapError(true !== oData.Result.Imap);
 			this.testingSmtpError(true !== oData.Result.Smtp);
+			this.testingSieveError(true !== oData.Result.Sieve);
 
 			if (this.testingImapError() && oData.Result.Imap)
 			{
+				bImap = true;
 				this.testingImapErrorDesc(oData.Result.Imap);
 			}
 
@@ -290,11 +302,28 @@
 			{
 				this.testingSmtpErrorDesc(oData.Result.Smtp);
 			}
+
+			if (this.testingSieveError() && oData.Result.Sieve)
+			{
+				bSieve = true;
+				this.testingSieveErrorDesc(oData.Result.Sieve);
+			}
+
+			if (bImap)
+			{
+				this.sieveSettings(false);
+			}
+			else if (bSieve)
+			{
+				this.sieveSettings(true);
+			}
 		}
 		else
 		{
 			this.testingImapError(true);
 			this.testingSmtpError(true);
+			this.testingSieveError(true);
+			this.sieveSettings(false);
 		}
 	};
 
@@ -325,6 +354,7 @@
 		this.testingDone(false);
 		this.testingImapError(false);
 		this.testingSmtpError(false);
+		this.testingSieveError(false);
 	};
 
 	DomainPopupView.prototype.onHide = function ()
