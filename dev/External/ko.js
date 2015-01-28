@@ -113,7 +113,7 @@
 			}
 			else
 			{
-				$(oElement).data('tooltip3-data', sValue).tooltip('show');
+				$(oElement).data('tooltip3-data', sValue);
 
 				_.delay(function () {
 					if ($(oElement).is(':visible'))

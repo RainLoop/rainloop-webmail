@@ -4,7 +4,7 @@
 			<span class="i18n" data-i18n-text="SETTINGS_FILTERS/LEGEND_FILTERS"></span>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" data-bind="visible: inited() && !serverError()">
 		<div class="span8">
 			<a class="btn" data-bind="click: addFilter">
 				<i class="icon-plus"></i>
@@ -36,6 +36,15 @@
 			</div>
 		</div>
 	</div>
+	<div class="row" data-bind="visible: serverError">
+		<div class="span8">
+			<div class="alert alert-error g-ui-user-select-none" style="margin-bottom: 0">
+				<i class="icon-warning"></i>
+				&nbsp;&nbsp;
+				<span data-bind="text: serverErrorDesc"></span>
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="span8">
 			<div class="process-place g-ui-user-select-none" data-bind="style: {'visibility': visibility }">
@@ -43,7 +52,7 @@
 				&nbsp;&nbsp;
 				<span data-bind="text: processText"></span>
 			</div>
-			<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: filterRaw.allow() && filterRaw.active()">
+			<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: inited() && filterRaw.allow() && filterRaw.active()">
 				<div class="controls">
 					<pre style="word-break: break-word;" data-bind="visible: '' !== filterRaw.capa()">
 						<b class="i18n" data-i18n-text="SETTINGS_FILTERS/CAPABILITY_LABEL"></b>:
@@ -54,7 +63,7 @@
 				</div>
 			</div>
 			<table class="table table-hover list-table g-ui-user-select-none"
-				data-bind="visible: !filterRaw.active() || !filterRaw.active(), i18nUpdate: filters">
+				data-bind="visible: inited() && (!filterRaw.active() || !filterRaw.active()), i18nUpdate: filters">
 				<colgroup>
 					<col style="width: 30px" />
 					<col />

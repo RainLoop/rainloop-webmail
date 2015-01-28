@@ -99,11 +99,6 @@
 		// security
 		this.enableTwoFactor = ko.observable(false);
 
-		// identities
-		this.defaultIdentityID = ko.observable('');
-		this.identities = ko.observableArray([]);
-		this.identitiesLoading = ko.observable(false).extend({'throttle': 100});
-
 		// contacts
 		this.contacts = ko.observableArray([]);
 		this.contacts.loading = ko.observable(false).extend({'throttle': 200});
@@ -483,8 +478,6 @@
 		this.accountIncLogin(Settings.settingsGet('IncLogin'));
 		this.accountOutLogin(Settings.settingsGet('OutLogin'));
 		this.projectHash(Settings.settingsGet('ProjectHash'));
-
-		this.defaultIdentityID(Settings.settingsGet('DefaultIdentityID'));
 
 		this.displayName(Settings.settingsGet('DisplayName'));
 		this.replyTo(Settings.settingsGet('ReplyTo'));

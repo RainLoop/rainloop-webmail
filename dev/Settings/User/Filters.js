@@ -26,6 +26,9 @@
 		this.modules = FilterStore.modules;
 		this.filters = FilterStore.collection;
 
+		this.inited = ko.observable(false);
+		this.serverError = ko.observable(false);
+		this.serverErrorDesc = ko.observable('');
 		this.haveChanges = ko.observable(false);
 
 		this.processText = ko.observable('');
@@ -34,6 +37,13 @@
 		this.visibility = ko.observable(false);
 
 		this.filters.subscribe(Utils.windowResizeCallback);
+
+		this.serverError.subscribe(function (bValue) {
+			if (!bValue)
+			{
+				this.serverErrorDesc('');
+			}
+		}, this);
 
 		this.filterRaw = FilterStore.raw;
 		this.filterRaw.capa = FilterStore.capa;
@@ -118,39 +128,52 @@
 			FilterModel = require('Model/Filter')
 		;
 
-		this.filters.loading(true);
+		if (!this.filters.loading())
+		{
+			this.filters.loading(true);
 
-		Remote.filtersGet(function (sResult, oData) {
+			Remote.filtersGet(function (sResult, oData) {
 
-			self.filters.loading(false);
+				self.filters.loading(false);
+				self.serverError(false);
 
-			if (Enums.StorageResultType.Success === sResult && oData &&
-				oData.Result && Utils.isArray(oData.Result.Filters))
-			{
-				var aResult = _.compact(_.map(oData.Result.Filters, function (aItem) {
-					var oNew = new FilterModel();
-					return (oNew && oNew.parse(aItem)) ? oNew : null;
-				}));
+				if (Enums.StorageResultType.Success === sResult && oData &&
+					oData.Result && Utils.isArray(oData.Result.Filters))
+				{
+					self.inited(true);
+					self.serverError(false);
 
-				self.filters(aResult);
+					var aResult = _.compact(_.map(oData.Result.Filters, function (aItem) {
+						var oNew = new FilterModel();
+						return (oNew && oNew.parse(aItem)) ? oNew : null;
+					}));
 
-				self.modules(oData.Result.Modules ? oData.Result.Modules : {});
+					self.filters(aResult);
 
-				self.filterRaw(oData.Result.Raw || '');
-				self.filterRaw.capa(Utils.isArray(oData.Result.Capa) ? oData.Result.Capa.join(' ') : '');
-				self.filterRaw.active(!!oData.Result.RawIsActive);
-				self.filterRaw.allow(!!oData.Result.RawIsAllow);
-			}
-			else
-			{
-				self.filters([]);
-				self.modules({});
-				self.filterRaw('');
-				self.filterRaw.capa({});
-			}
+					self.modules(oData.Result.Modules ? oData.Result.Modules : {});
 
-			self.haveChanges(false);
-		});
+					self.filterRaw(oData.Result.Raw || '');
+					self.filterRaw.capa(Utils.isArray(oData.Result.Capa) ? oData.Result.Capa.join(' ') : '');
+					self.filterRaw.active(!!oData.Result.RawIsActive);
+					self.filterRaw.allow(!!oData.Result.RawIsAllow);
+				}
+				else
+				{
+					self.filters([]);
+					self.modules({});
+					self.filterRaw('');
+					self.filterRaw.capa({});
+
+					self.serverError(true);
+					self.serverErrorDesc('ERROR');
+
+					self.serverErrorDesc(oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
+						Translator.getNotification(Enums.Notification.CantGetFilters));
+				}
+
+				self.haveChanges(false);
+			});
+		}
 	};
 
 	FiltersUserSettings.prototype.deleteFilter = function (oFilter)
@@ -215,7 +238,10 @@
 				}
 			})
 		;
+	};
 
+	FiltersUserSettings.prototype.onShow = function ()
+	{
 		this.updateList();
 	};
 

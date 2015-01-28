@@ -37,7 +37,8 @@ class Notifications
 	const InvalidRecipients = 303;
 
 	const CantSaveFilters = 351;
-	const FiltersAreNotCorrect = 352;
+	const CantGetFilters = 352;
+	const FiltersAreNotCorrect = 355;
 
 	const CantCreateFolder = 400;
 	const CantRenameFolder = 401;
@@ -111,6 +112,7 @@ class Notifications
 			self::CantSendMessage => 'CantSendMessage',
 			self::InvalidRecipients => 'InvalidRecipients',
 			self::CantSaveFilters => 'CantSaveFilters',
+			self::CantGetFilters => 'CantGetFilters',
 			self::FiltersAreNotCorrect => 'FiltersAreNotCorrect',
 
 			self::CantCreateFolder => 'CantCreateFolder',

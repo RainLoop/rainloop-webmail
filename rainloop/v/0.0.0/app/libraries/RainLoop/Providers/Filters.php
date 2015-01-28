@@ -25,7 +25,20 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Load($oAccount, $bAllowRaw = false)
 	{
-		return $this->IsActive() ? $this->oDriver->Load($oAccount, $bAllowRaw) : array();
+		try
+		{
+			return $this->IsActive() ? $this->oDriver->Load($oAccount, $bAllowRaw) : array();
+		}
+		catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetFilters, $oException);
+		}
+
+		return false;
 	}
 
 	/**

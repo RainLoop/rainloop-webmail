@@ -22,7 +22,8 @@
 		Translator = require('Common/Translator'),
 
 		AppStore = require('Stores/User/App'),
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
+		IdentityStore = require('Stores/User/Identity'),
 		SocialStore = require('Stores/Social'),
 
 		Settings = require('Storage/Settings'),
@@ -66,7 +67,7 @@
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = Data.composeInEdit;
-		this.editorDefaultType = SettingsUserStore.editorDefaultType;
+		this.editorDefaultType = SettingsStore.editorDefaultType;
 
 		this.capaOpenPGP = Data.capaOpenPGP;
 
@@ -157,8 +158,8 @@
 
 		this.composeEditorArea = ko.observable(null);
 
-		this.identities = Data.identities;
-		this.defaultIdentityID = Data.defaultIdentityID;
+		this.identities = IdentityStore.identities;
+		this.defaultIdentityID = IdentityStore.defaultIdentityID;
 		this.currentIdentityID = ko.observable('');
 
 		this.currentIdentityString = ko.observable('');
@@ -171,7 +172,7 @@
 				'optText': this.formattedFrom(false)
 			}];
 
-			_.each(Data.identities(), function (oItem) {
+			_.each(IdentityStore.identities(), function (oItem) {
 				aList.push({
 					'optValue': oItem.id,
 					'optText': oItem.formattedNameForCompose()
@@ -188,7 +189,7 @@
 				sResult = '',
 				sResultEmail = '',
 				oItem = null,
-				aList = this.identities(),
+				aList = IdentityStore.identities(),
 				sID = this.currentIdentityID()
 			;
 
@@ -281,7 +282,7 @@
 			}
 			else
 			{
-				if (SettingsUserStore.replySameFolder())
+				if (SettingsStore.replySameFolder())
 				{
 					if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && Utils.isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
 					{
@@ -577,7 +578,7 @@
 
 		if (this.bCapaAdditionalIdentities)
 		{
-			_.each(this.identities(), function (oItem) {
+			_.each(IdentityStore.identities(), function (oItem) {
 				oIDs[oItem.email()] = oItem['id'];
 			});
 		}
@@ -604,7 +605,7 @@
 
 		if ('' === sResult)
 		{
-			sResult = this.defaultIdentityID();
+			sResult = IdentityStore.defaultIdentityID();
 		}
 
 		if ('' === sResult)

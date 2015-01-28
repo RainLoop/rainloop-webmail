@@ -12,6 +12,8 @@
 		HtmlEditor = require('Common/HtmlEditor'),
 		Translator = require('Common/Translator'),
 
+		IdentityStore = require('Stores/User/Identity'),
+
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
 	;
@@ -37,13 +39,13 @@
 		this.replyTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.signatureTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.identities = Data.identities;
-		this.defaultIdentityID = Data.defaultIdentityID;
+		this.identities = IdentityStore.identities;
+		this.defaultIdentityID = IdentityStore.defaultIdentityID;
 
 		this.identitiesOptions = ko.computed(function () {
 
 			var
-				aList = this.identities(),
+				aList = IdentityStore.identities(),
 				aResult = []
 			;
 
@@ -75,7 +77,7 @@
 		}, this);
 
 		this.processText = ko.computed(function () {
-			return Data.identitiesLoading() ? Translator.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
+			return IdentityStore.identities.loading() ? Translator.i18n('SETTINGS_IDENTITIES/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {
@@ -132,7 +134,7 @@
 
 			if (oIdentityToRemove)
 			{
-				this.identities.remove(function (oIdentity) {
+				IdentityStore.identities.remove(function (oIdentity) {
 					return oIdentityToRemove === oIdentity;
 				});
 
@@ -192,7 +194,7 @@
 				f4 = Utils.settingsSaveHelperSimpleFunction(self.defaultIdentityIDTrigger, self)
 			;
 
-			Data.defaultIdentityID.subscribe(function (sValue) {
+			IdentityStore.defaultIdentityID.subscribe(function (sValue) {
 				Remote.saveSettings(f4, {
 					'DefaultIdentityID': sValue
 				});

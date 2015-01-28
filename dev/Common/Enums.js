@@ -400,7 +400,8 @@
 		'InvalidRecipients': 303,
 
 		'CantSaveFilters': 351,
-		'FiltersAreNotCorrect': 352,
+		'CantGetFilters': 352,
+		'FiltersAreNotCorrect': 355,
 
 		'CantCreateFolder': 400,
 		'CantRenameFolder': 401,

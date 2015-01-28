@@ -24,6 +24,7 @@
 		SocialStore = require('Stores/Social'),
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
+		IdentityStore = require('Stores/User/Identity'),
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
@@ -517,12 +518,12 @@
 		var self = this;
 
 		AccountStore.loading(true);
-		Data.identitiesLoading(true);
+		IdentityStore.identities.loading(true);
 
 		Remote.accountsAndIdentities(function (sResult, oData) {
 
 			AccountStore.loading(false);
-			Data.identitiesLoading(false);
+			IdentityStore.identities.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
 			{
@@ -554,8 +555,9 @@
 
 				if (Utils.isArray(oData.Result['Identities']))
 				{
-					Utils.delegateRunOnDestroy(Data.identities());
-					Data.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
+					Utils.delegateRunOnDestroy(IdentityStore.identities());
+
+					IdentityStore.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
 
 						var
 							sId = Utils.pString(oIdentityData['Id']),
@@ -1383,6 +1385,7 @@
 		require('Stores/User/App').populate();
 		require('Stores/User/Settings').populate();
 		require('Stores/User/Notification').populate();
+		require('Stores/User/Identity').populate();
 
 		Data.populateDataOnStart();
 

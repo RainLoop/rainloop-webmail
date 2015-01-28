@@ -309,13 +309,19 @@
 				this.testingSieveErrorDesc(oData.Result.Sieve);
 			}
 
-			if (bImap)
+			if (this.sieveSettings())
 			{
-				this.sieveSettings(false);
+				if (!bSieve && bImap)
+				{
+					this.sieveSettings(false);
+				}
 			}
-			else if (bSieve)
+			else
 			{
-				this.sieveSettings(true);
+				if (bSieve && !bImap)
+				{
+					this.sieveSettings(true);
+				}
 			}
 		}
 		else
