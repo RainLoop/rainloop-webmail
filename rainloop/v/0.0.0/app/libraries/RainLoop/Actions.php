@@ -5882,6 +5882,11 @@ class Actions
 		$oData = $this->getTwoFactorInfo($oAccount->ParentEmailHelper());
 		$sSecret = !empty($oData['Secret']) ? $oData['Secret'] : '';
 
+		$this->Logger()->WriteDump(array(
+			$sCode, $sSecret, $oData,
+			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode)
+		));
+
 		\sleep(1);
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode));
@@ -8352,7 +8357,8 @@ class Actions
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetDisplayName()),
 					'Email' => \MailSo\Base\Utils::Utf8Clear($mResponse->GetEmail(true)),
-					'DkimStatus' => $mResponse->GetDkimStatus()
+					'DkimStatus' => $mResponse->GetDkimStatus(),
+					'DkimValue' => $mResponse->GetDkimValue()
 				));
 			}
 			else if ('RainLoop\Providers\AddressBook\Classes\Contact' === $sClassName)

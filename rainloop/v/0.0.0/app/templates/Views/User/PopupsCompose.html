@@ -86,8 +86,12 @@
 									</a>
 								</div>
 								<div class="btn-group pull-right">&nbsp;</div>
-								<span class="pull-right" data-bind="visible: !showCcAndBcc()">
-									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/LINK_SHOW_INPUTS" data-bind="click: function () { showCcAndBcc(true); }"></span>
+								<span class="pull-right">
+									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_CC"
+										data-bind="visible: !showCc(), click: function () { showCc(true); }"></span>
+									&nbsp;&nbsp;
+									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_BCC"
+										data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></span>
 								</span>
 							</div>
 						</div>
@@ -104,7 +108,7 @@
 								</span>
 							</div>
 						</div>
-						<div class="e-row cc-row" data-bind="visible: showCcAndBcc">
+						<div class="e-row cc-row" data-bind="visible: showCc">
 							<div class="e-cell e-label">
 								<span class="i18n" data-i18n-text="COMPOSE/TITLE_CC"></span>
 							</div>
@@ -112,7 +116,7 @@
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource" />
 							</div>
 						</div>
-						<div class="e-row bcc-row" data-bind="visible: showCcAndBcc">
+						<div class="e-row bcc-row" data-bind="visible: showBcc">
 							<div class="e-cell e-label">
 								<span class="i18n" data-i18n-text="COMPOSE/TITLE_BCC"></span>
 							</div>

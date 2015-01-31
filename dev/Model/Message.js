@@ -572,7 +572,7 @@
 		if (Utils.isNonEmptyArray(this.from) && 1 === this.from.length &&
 			this.from[0] && this.from[0].dkimStatus)
 		{
-			aResult = [this.from[0].dkimStatus, this.from[0].email];
+			aResult = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 
 		return aResult;

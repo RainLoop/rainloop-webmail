@@ -10,8 +10,6 @@
 
 		Enums = require('Common/Enums'),
 
-		PopupsDomainViewModel = require('View/Popup/Domain'),
-
 		DomainStore = require('Stores/Admin/Domain'),
 		Remote = require('Storage/Admin/Remote')
 	;
@@ -56,7 +54,7 @@
 
 	DomainsAdminSettings.prototype.createDomain = function ()
 	{
-		require('Knoin/Knoin').showScreenPopup(PopupsDomainViewModel);
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Domain'));
 	};
 
 	DomainsAdminSettings.prototype.deleteDomain = function (oDomain)
@@ -91,7 +89,7 @@
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('Knoin/Knoin').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Domain'), [oData.Result]);
 		}
 	};
 

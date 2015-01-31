@@ -8,7 +8,9 @@
 
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Events = require('Common/Events'),
 
 		Settings = require('Storage/Settings')
 	;
@@ -38,6 +40,7 @@
 		this.replySameFolder = ko.observable(false);
 
 		this.computedProperies();
+		this.subscribes();
 	}
 
 	SettingsUserStore.prototype.computedProperies = function ()
@@ -45,6 +48,18 @@
 		this.usePreviewPane = ko.computed(function () {
 			return Enums.Layout.NoPreview !== this.layout();
 		}, this);
+	};
+
+	SettingsUserStore.prototype.subscribes = function ()
+	{
+		this.layout.subscribe(function (nValue) {
+
+			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
+			Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
+
+			Events.pub('layout', [nValue]);
+		});
 	};
 
 	SettingsUserStore.prototype.populate = function ()

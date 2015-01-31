@@ -66,7 +66,7 @@
 
 			if (!this.filters.saving())
 			{
-				if ('' === Utils.trim(this.filterRaw()))
+				if (this.filterRaw.active() && '' === Utils.trim(this.filterRaw()))
 				{
 					this.filterRaw.error(true);
 					return false;
@@ -165,8 +165,6 @@
 					self.filterRaw.capa({});
 
 					self.serverError(true);
-					self.serverErrorDesc('ERROR');
-
 					self.serverErrorDesc(oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
 						Translator.getNotification(Enums.Notification.CantGetFilters));
 				}

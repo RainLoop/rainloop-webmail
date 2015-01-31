@@ -38,6 +38,11 @@ class Email
 	private $sDkimStatus;
 
 	/**
+	 * @var string
+	 */
+	private $sDkimValue;
+
+	/**
 	 * @access private
 	 *
 	 * @param string $sEmail
@@ -58,6 +63,7 @@ class Email
 		$this->sRemark = \trim($sRemark);
 
 		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::NONE;
+		$this->sDkimValue = '';
 	}
 
 	/**
@@ -241,6 +247,14 @@ class Email
 	/**
 	 * @return string
 	 */
+	public function GetDkimValue()
+	{
+		return $this->sDkimValue;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function GetAccountName()
 	{
 		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
@@ -258,10 +272,12 @@ class Email
 
 	/**
 	 * @param string $sDkimStatus
+	 * @param string $sDkimValue = ''
 	 */
-	public function SetDkimStatus($sDkimStatus)
+	public function SetDkimStatusAndValue($sDkimStatus, $sDkimValue = '')
 	{
 		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
+		$this->sDkimValue = $sDkimValue;
 	}
 
 	/**
@@ -271,7 +287,8 @@ class Email
 	 */
 	public function ToArray($bIdn = false)
 	{
-		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark, $this->sDkimStatus);
+		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark,
+			$this->sDkimStatus, $this->sDkimValue);
 	}
 
 	/**

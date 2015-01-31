@@ -394,7 +394,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 					if (!empty($sStatus) && !empty($sHeader))
 					{
-						$aResult[] = array($sStatus, $sHeader);
+						$aResult[] = array($sStatus, $sHeader, $sDkimLine);
 					}
 				}
 			}
@@ -426,7 +426,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 					if (!empty($sStatus) && !empty($sHeader))
 					{
-						$aResult[] = array($sStatus, $sHeader);
+						$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
 					}
 				}
 			}
@@ -454,7 +454,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 							if (isset($aDkimData[0], $aDkimData[1]) &&
 								$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
 							{
-								$oItem->SetDkimStatus($aDkimData[0]);
+								$oItem->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
 							}
 						}
 					}

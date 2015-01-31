@@ -6,8 +6,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 {
 	const NEW_LINE = "\r\n";
 
-	const SIEVE_FILE_NAME = 'rainloop.user';
-	const SIEVE_FILE_NAME_RAW = 'rainloop.raw';
+	const SIEVE_FILE_NAME = 'rainloop.sieve.user';
+	const SIEVE_FILE_NAME_RAW = 'rainloop.sieve.raw';
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -98,7 +98,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				'moveto' => \in_array('fileinto', $aModules),
 				'reject' => \in_array('reject', $aModules),
 				'vacation' => \in_array('vacation', $aModules),
-				'markasread' => \in_array('imap4flags', $aModules) && false
+				'markasread' => \in_array('imap4flags', $aModules)
 			)
 		);
 	}
@@ -119,33 +119,31 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		{
 			$aList = $oSieveClient->ListScripts();
 
-			$sUserFilter = $this->collectionToFileString($aFilters);
-
-			if (!empty($sUserFilter))
+			if ($bRawIsActive)
 			{
-				$oSieveClient->PutScript(self::SIEVE_FILE_NAME, $sUserFilter);
-				if (!$bRawIsActive)
+				if (!empty($sRaw))
 				{
-					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME);
-				}
-			}
-			else if (isset($aList[self::SIEVE_FILE_NAME]))
-			{
-				$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME);
-			}
-
-			$sRaw = \trim($sRaw);
-			if (!empty($sRaw))
-			{
-				$oSieveClient->PutScript(self::SIEVE_FILE_NAME_RAW, $sRaw);
-				if ($bRawIsActive)
-				{
+					$oSieveClient->PutScript(self::SIEVE_FILE_NAME_RAW, $sRaw);
 					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME_RAW);
 				}
+				else if (isset($aList[self::SIEVE_FILE_NAME_RAW]))
+				{
+					$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME_RAW);
+				}
 			}
-			else if (isset($aList[self::SIEVE_FILE_NAME_RAW]))
+			else
 			{
-				$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME_RAW);
+				$sUserFilter = $this->collectionToFileString($aFilters);
+
+				if (!empty($sUserFilter))
+				{
+					$oSieveClient->PutScript(self::SIEVE_FILE_NAME, $sUserFilter);
+					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME);
+				}
+				else if (isset($aList[self::SIEVE_FILE_NAME]))
+				{
+					$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME);
+				}
 			}
 
 			$oSieveClient->LogoutAndDisconnect();

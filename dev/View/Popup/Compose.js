@@ -45,25 +45,19 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsCompose');
 
+		var self = this;
+
 		this.oEditor = null;
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
 		this.bFromDraft = false;
 		this.sReferences = '';
 
+		this.triggerForResize = _.bind(this.triggerForResize, this);
+
 		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
-
-		var
-			self = this,
-			fCcAndBccCheckHelper = function (aValue) {
-				if (false === self.showCcAndBcc() && 0 < aValue.length)
-				{
-					self.showCcAndBcc(true);
-				}
-			}
-		;
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = Data.composeInEdit;
@@ -97,10 +91,23 @@
 		this.emptyToError = ko.observable(false);
 		this.attachmentsInProcessError = ko.observable(false);
 		this.attachmentsInErrorError = ko.observable(false);
-		this.showCcAndBcc = ko.observable(false);
 
-		this.cc.subscribe(fCcAndBccCheckHelper, this);
-		this.bcc.subscribe(fCcAndBccCheckHelper, this);
+		this.showCc = ko.observable(false);
+		this.showBcc = ko.observable(false);
+
+		this.cc.subscribe(function (aValue) {
+			if (false === self.showCc() && 0 < aValue.length)
+			{
+				self.showCc(true);
+			}
+		}, this);
+
+		this.bcc.subscribe(function (aValue) {
+			if (false === self.showBcc() && 0 < aValue.length)
+			{
+				self.showBcc(true);
+			}
+		}, this);
 
 		this.draftFolder = ko.observable('');
 		this.draftUid = ko.observable('');
@@ -422,9 +429,8 @@
 			}
 		}, this);
 
-		this.showCcAndBcc.subscribe(function () {
-			this.triggerForResize();
-		}, this);
+		this.showCc.subscribe(this.triggerForResize);
+		this.showBcc.subscribe(this.triggerForResize);
 
 		this.dropboxEnabled = SocialStore.dropbox.enabled;
 		this.dropboxApiKey = SocialStore.dropbox.apiKey;
@@ -849,10 +855,13 @@
 	 * @param {string=} sType = Enums.ComposeType.Empty
 	 * @param {?MessageModel|Array=} oMessageOrArray = null
 	 * @param {Array=} aToEmails = null
+	 * @param {Array=} aCcEmails = null
+	 * @param {Array=} aBccEmails = null
 	 * @param {string=} sCustomSubject = null
 	 * @param {string=} sCustomPlainText = null
 	 */
-	ComposePopupView.prototype.onShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
+	ComposePopupView.prototype.onShow = function (sType, oMessageOrArray,
+		aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
 	{
 		kn.routeOff();
 
@@ -862,53 +871,65 @@
 		{
 			sType = sType || Enums.ComposeType.Empty;
 
-			var
-				self = this,
-				PopupsAskViewModel = require('View/Popup/Ask')
-			;
+			var self = this;
 
 			if (Enums.ComposeType.Empty !== sType)
 			{
-				kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function () {
-					self.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
+				kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function () {
+					self.initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 				}, null, null, null, false]);
 			}
-			else if (aToEmails && 0 < aToEmails.length)
+			else
 			{
-				this.addEmailsToTo(aToEmails);
+				this.addEmailsTo(this.to, aToEmails);
+				this.addEmailsTo(this.cc, aCcEmails);
+				this.addEmailsTo(this.bcc, aBccEmails);
+
+				if (Utils.isNormal(sCustomSubject) && '' !== sCustomSubject &&
+					'' === this.subject())
+				{
+					this.subject(sCustomSubject);
+				}
 			}
 		}
 		else
 		{
-			this.initOnShow(sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText);
+			this.initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 		}
 	};
 
 	/**
+	 * @param {Function} fKoValue
 	 * @param {Array} aEmails
 	 */
-	ComposePopupView.prototype.addEmailsToTo = function (aEmails)
+	ComposePopupView.prototype.addEmailsTo = function (fKoValue, aEmails)
 	{
 		var
-			sTo = Utils.trim(this.to()),
-			aTo = []
+			sValue = Utils.trim(fKoValue()),
+			aValue = []
 		;
 
-		aTo = _.uniq(_.compact(_.map(aEmails, function (oItem) {
-			return oItem ? oItem.toLine(false) : null;
-		})));
+		if (Utils.isNonEmptyArray(aEmails))
+		{
+			aValue = _.uniq(_.compact(_.map(aEmails, function (oItem) {
+				return oItem ? oItem.toLine(false) : null;
+			})));
 
-		this.to(sTo + ('' === sTo ? '' : ', ') + Utils.trim(aTo.join(', ')));
+			fKoValue(sValue + ('' === sValue ? '' : ', ') + Utils.trim(aValue.join(', ')));
+		}
 	};
 
 	/**
 	 * @param {string=} sType = Enums.ComposeType.Empty
 	 * @param {?MessageModel|Array=} oMessageOrArray = null
 	 * @param {Array=} aToEmails = null
+	 * @param {Array=} aCcEmails = null
+	 * @param {Array=} aBccEmails = null
 	 * @param {string=} sCustomSubject = null
 	 * @param {string=} sCustomPlainText = null
 	 */
-	ComposePopupView.prototype.initOnShow = function (sType, oMessageOrArray, aToEmails, sCustomSubject, sCustomPlainText)
+	ComposePopupView.prototype.initOnShow = function (sType, oMessageOrArray,
+		aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
 	{
 		this.composeInEdit(true);
 
@@ -973,6 +994,16 @@
 		if (Utils.isNonEmptyArray(aToEmails))
 		{
 			this.to(fEmailArrayToStringLineHelper(aToEmails));
+		}
+
+		if (Utils.isNonEmptyArray(aCcEmails))
+		{
+			this.cc(fEmailArrayToStringLineHelper(aCcEmails));
+		}
+
+		if (Utils.isNonEmptyArray(aBccEmails))
+		{
+			this.bcc(fEmailArrayToStringLineHelper(aBccEmails));
 		}
 
 		if ('' !== sComposeType && oMessage)
@@ -1263,9 +1294,7 @@
 			return false;
 		});
 
-		Globals.$win.on('resize', function () {
-			self.triggerForResize();
-		});
+		Globals.$win.on('resize', self.triggerForResize);
 
 		if (this.dropboxEnabled())
 		{
@@ -1948,7 +1977,9 @@
 		this.savedOrSendingText('');
 		this.emptyToError(false);
 		this.attachmentsInProcessError(false);
-		this.showCcAndBcc(false);
+
+		this.showCc(false);
+		this.showBcc(false);
 
 		Utils.delegateRunOnDestroy(this.attachments());
 		this.attachments([]);

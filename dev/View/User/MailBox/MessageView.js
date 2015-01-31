@@ -205,16 +205,15 @@
 
 		this.viewFromDkimStatusIconClass = ko.computed(function () {
 
-//			var sResult = 'icon-warning-alt iconcolor-grey';
 			var sResult = 'icon-none iconcolor-display-none';
+//			var sResult = 'icon-warning-alt iconcolor-grey';
 			switch (this.viewFromDkimData()[0])
 			{
 				case 'none':
-//					sResult = 'icon-warning-alt iconcolor-grey';
-					sResult = 'icon-none iconcolor-display-none';
 					break;
 				case 'pass':
 					sResult = 'icon-ok iconcolor-green';
+//					sResult = 'icon-warning-alt iconcolor-green';
 					break;
 				default:
 					sResult = 'icon-warning-alt iconcolor-red';
@@ -226,8 +225,22 @@
 		}, this);
 
 		this.viewFromDkimStatusTitle = ko.computed(function () {
+
 			var aStatus = this.viewFromDkimData();
-			return Utils.isNonEmptyArray(aStatus) ? 'DKIM: ' + aStatus[0] + ' (' + aStatus[1] + ')' : '';
+			if (Utils.isNonEmptyArray(aStatus))
+			{
+				if (aStatus[0] && aStatus[1])
+				{
+					return aStatus[1];
+				}
+				else if (aStatus[0])
+				{
+					return 'DKIM: ' + aStatus[0];
+				}
+			}
+
+			return '';
+
 		}, this);
 
 		this.message.subscribe(function (oMessage) {

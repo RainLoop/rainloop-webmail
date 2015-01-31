@@ -1109,6 +1109,7 @@ class ServiceActions
 					}
 					catch (\Exception $oException)
 					{
+						$oException = null;
 						$this->oActions->ClearSignMeData($oAccount);
 					}
 				}

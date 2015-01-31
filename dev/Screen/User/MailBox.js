@@ -12,7 +12,7 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
@@ -71,7 +71,7 @@
 	{
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
-			if (Enums.Layout.NoPreview === SettingsUserStore.layout() && !Data.message())
+			if (Enums.Layout.NoPreview === SettingsStore.layout() && !Data.message())
 			{
 				require('App/User').historyBack();
 			}
@@ -91,7 +91,7 @@
 					.messageListSearch(sSearch)
 				;
 
-				if (Enums.Layout.NoPreview === SettingsUserStore.layout() && Data.message())
+				if (Enums.Layout.NoPreview === SettingsStore.layout() && Data.message())
 				{
 					Data.message(null);
 				}
@@ -107,16 +107,9 @@
 		Data.messageList.subscribe(Utils.windowResizeCallback);
 		Data.message.subscribe(Utils.windowResizeCallback);
 
-		SettingsUserStore.layout.subscribe(function (nValue) {
-
-			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
-			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
-			Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
-
-			Events.pub('layout', [nValue]);
-		});
-
-		SettingsUserStore.layout.valueHasMutated();
+		_.delay(function () {
+			SettingsStore.layout.valueHasMutated();
+		}, 50);
 
 		Events.sub('mailbox.inbox-unread-count', function (nCount) {
 			Data.foldersInboxUnreadCount(nCount);

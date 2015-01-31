@@ -144,24 +144,38 @@
 
 			var
 				oParams = {},
-				oEmailModel = null,
+				oToEmailModel = null,
+				oCcEmailModel = null,
+				oBccEmailModel = null,
 				sEmail = sMailToUrl.replace(/\?.+$/, ''),
 				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
 				EmailModel = require('Model/Email')
 			;
 
-			oEmailModel = new EmailModel();
-			oEmailModel.parse(window.decodeURIComponent(sEmail));
+			oToEmailModel = new EmailModel();
+			oToEmailModel.parse(window.decodeURIComponent(sEmail));
 
-			if (oEmailModel && oEmailModel.email)
+			oParams = Utils.simpleQueryParser(sQueryString);
+
+			if (!Utils.isUnd(oParams.cc))
 			{
-				oParams = Utils.simpleQueryParser(sQueryString);
-
-				require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
-					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
-					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
-				]);
+				oCcEmailModel = new EmailModel();
+				oCcEmailModel.parse(window.decodeURIComponent(oParams.cc));
 			}
+
+			if (!Utils.isUnd(oParams.bcc))
+			{
+				oBccEmailModel = new EmailModel();
+				oBccEmailModel.parse(window.decodeURIComponent(oParams.bcc));
+			}
+
+			require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null,
+				oToEmailModel && oToEmailModel.email ? [oToEmailModel] : null,
+				oCcEmailModel && oCcEmailModel.email ? [oCcEmailModel] : null,
+				oBccEmailModel && oBccEmailModel.email ? [oBccEmailModel] : null,
+				Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
+				Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+			]);
 
 			return true;
 		}
