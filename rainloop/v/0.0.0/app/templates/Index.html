@@ -34,6 +34,11 @@
 				window.document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
 			}
 		</script>
+		<script data-cfasync="false">
+			if (window.rainloopAppData && window.rainloopAppData['IncludeCss']) {
+				__includeStyle(window.rainloopAppData['IncludeCss']);
+			}
+		</script>
 		<script data-cfasync="false"></script>
 	</head>
 	<body>
@@ -89,13 +94,25 @@
 				window.$LAB
 					.script(function () {
 						return [
-							{'src': '{{BaseAppLibsScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'},
+							{'src': '{{BaseAppLibsScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'}
+						];
+					})
+					.wait(function () {
+						__simplePace(20);
+						if (window.rainloopAppData['IncludeBackground']) {
+							$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(window.rainloopAppData['IncludeBackground'], {
+								'fade': 1000
+							}).removeAttr('style');
+						}
+					})
+					.script(function () {
+						return [
 							{'src': window.rainloopAppData['TemplatesLink'], 'type': 'text/javascript', 'charset': 'utf-8'},
 							{'src': window.rainloopAppData['LangLink'], 'type': 'text/javascript', 'charset': 'utf-8'}
 						];
 					})
 					.wait(function () {
-						__simplePace(30);
+						__simplePace(10);
 					})
 					.script(function () {
 						return {'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};

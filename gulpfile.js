@@ -113,7 +113,7 @@ cfg.paths.js = {
 			'vendors/json2.min.js',
 			'vendors/labjs/LAB.min.js',
 			'vendors/simple-pace/simple-pace-1.0.min.js',
-			'vendors/rl/rl-1.4.min.js'
+			'vendors/rl/rl-1.5.min.js'
 		]
 	},
 	openpgp: {
@@ -387,8 +387,8 @@ regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js'
 regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
 	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.4.min.js',
-	'/*! RainLoop Index Helper v1.4 (c) 2014 RainLoop Team; Licensed under MIT */\n');
+regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.5.min.js',
+	'/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */\n');
 
 gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');

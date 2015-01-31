@@ -122,10 +122,11 @@
 		if (Settings.settingsGet('UserBackgroundHash'))
 		{
 			_.delay(function () {
-				$('#rl-bg').backstretch(Links.publicLink(Settings.settingsGet('UserBackgroundHash')), {
+				$('#rl-bg').attr('style', 'background-image: none !important;')
+						.backstretch(Links.publicLink(Settings.settingsGet('UserBackgroundHash')), {
 					'fade': Globals.bAnimationSupported ? 1000 : 0
-				});
-			}, 3000);
+				}).removeAttr('style');
+			}, 2000);
 		}
 
 		this.socialUsers = _.bind(this.socialUsers, this);
@@ -1354,6 +1355,8 @@
 
 	AppUser.prototype.bootstartLoginScreen = function ()
 	{
+		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
+
 		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
 		if (!sCustomLoginLink)
 		{
@@ -1411,6 +1414,8 @@
 
 		if (!!Settings.settingsGet('Auth'))
 		{
+			Globals.$html.addClass('rl-user-auth');
+
 			this.setTitle(Translator.i18n('TITLES/LOADING'));
 
 //require.ensure([], function() { // require code splitting

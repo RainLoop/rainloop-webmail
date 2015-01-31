@@ -47,9 +47,8 @@
 		this.additionalCodeSignMe = ko.observable(false);
 
 		this.logoImg = Utils.trim(Settings.settingsGet('LoginLogo'));
-		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
-		this.logoCss = Utils.trim(Settings.settingsGet('LoginCss'));
 		this.logoPowered = !!Settings.settingsGet('LoginPowered');
+		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
 
 		this.forgotPasswordLinkUrl = Settings.settingsGet('ForgotPasswordLinkUrl');
 		this.registrationLinkUrl = Settings.settingsGet('RegistrationLinkUrl');

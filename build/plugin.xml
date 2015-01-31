@@ -103,5 +103,10 @@
 			<param name="plugin-name" value="custom-login-mapping"/>
 		</antcall>
 	</target>
+	<target name="video-on-login-screen">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="video-on-login-screen"/>
+		</antcall>
+	</target>
 
 </project>

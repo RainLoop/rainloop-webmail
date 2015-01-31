@@ -1058,11 +1058,15 @@ class Actions
 			'Title' => 'RainLoop Webmail',
 			'LoadingDescription' => 'RainLoop',
 			'LoadingDescriptionEsc' => 'RainLoop',
-			'LoginLogo' => '',
 			'LoginDescription' => '',
-			'LoginCss' => '',
 			'LoginPowered' => true,
+			'LoginLogo' => '',
+			'LoginBackground' => '',
+			'LoginCss' => '',
 			'UserLogo' => '',
+			'UserCss' => '',
+			'IncludeCss' => '',
+			'IncludeBackground' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
 			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
 			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
@@ -1120,10 +1124,12 @@ class Actions
 			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
 
 			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
-			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
+			$aResult['LoginBackground'] = $oConfig->Get('branding', 'login_background', '');
 			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
+			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
+			$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
 		}
 
 		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
@@ -1134,6 +1140,8 @@ class Actions
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount instanceof \RainLoop\Model\Account)
 			{
+				$aResult['IncludeCss'] = $aResult['UserCss'];
+
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 
 				$aResult['Auth'] = true;
@@ -1185,6 +1193,9 @@ class Actions
 			else
 			{
 				$oAccount = null;
+
+				$aResult['IncludeBackground'] = $aResult['LoginBackground'];
+				$aResult['IncludeCss'] = $aResult['LoginCss'];
 
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
@@ -2707,17 +2718,19 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo')) && $this->PremType())
+		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo', 'UserCss')) && $this->PremType())
 		{
 			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginPowered', 'branding', 'login_powered', 'bool');
 
 			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');

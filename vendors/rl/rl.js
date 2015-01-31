@@ -1,4 +1,4 @@
-/*! RainLoop Index Helper v1.3 (c) 2014 RainLoop Team; Licensed under MIT */
+/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */
 (function (window, document, JSON, undefined) {
 
 	/**
@@ -67,6 +67,10 @@
 	// index function
 	window['__includeScr'] = function (sSrc) {
 		document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + sSrc + '"%3E%3C/' + 'scr' + 'ipt%3E'));
+	};
+
+	window['__includeStyle'] = function (sStyles) {
+		document.write(unescape('%3Csty' + 'le%3E' + sStyles + '"%3E%3C/' + 'sty' + 'le%3E'));
 	};
 
 	window['__showError'] = function (sAdditionalError) {

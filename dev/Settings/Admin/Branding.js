@@ -31,6 +31,9 @@
 		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo') || '');
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
+		this.loginBackground = ko.observable(Settings.settingsGet('LoginBackground') || '');
+		this.loginBackground.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
 		this.userLogo = ko.observable(Settings.settingsGet('UserLogo') || '');
 		this.userLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -39,6 +42,9 @@
 
 		this.loginCss = ko.observable(Settings.settingsGet('LoginCss'));
 		this.loginCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.userCss = ko.observable(Settings.settingsGet('UserCss'));
+		this.userCss.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.loginPowered = ko.observable(!!Settings.settingsGet('LoginPowered'));
 	}
@@ -60,7 +66,9 @@
 					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
 					f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
 					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self),
-					f6 = Utils.settingsSaveHelperSimpleFunction(self.userLogo.trigger, self)
+					f6 = Utils.settingsSaveHelperSimpleFunction(self.userLogo.trigger, self),
+					f7 = Utils.settingsSaveHelperSimpleFunction(self.loginBackground.trigger, self),
+					f8 = Utils.settingsSaveHelperSimpleFunction(self.userCss.trigger, self)
 				;
 
 				self.title.subscribe(function (sValue) {
@@ -81,6 +89,12 @@
 					});
 				});
 
+				self.loginBackground.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f7, {
+						'LoginBackground': Utils.trim(sValue)
+					});
+				});
+
 				self.userLogo.subscribe(function (sValue) {
 					Remote.saveAdminConfig(f6, {
 						'UserLogo': Utils.trim(sValue)
@@ -96,6 +110,12 @@
 				self.loginCss.subscribe(function (sValue) {
 					Remote.saveAdminConfig(f5, {
 						'LoginCss': Utils.trim(sValue)
+					});
+				});
+
+				self.userCss.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f8, {
+						'UserCss': Utils.trim(sValue)
 					});
 				});
 
