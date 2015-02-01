@@ -425,6 +425,7 @@
 		'LicensingBanned': 712,
 
 		'DemoSendMessageError': 750,
+		'DemoAccountError': 751,
 
 		'AccountAlreadyExists': 801,
 		'AccountDoesNotExist': 802,

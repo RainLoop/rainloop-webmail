@@ -1,4 +1,5 @@
 /.idea
+/error.log
 /nbproject
 /npm-debug.log
 /rainloop.sublime-project

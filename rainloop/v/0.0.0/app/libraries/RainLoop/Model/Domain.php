@@ -194,7 +194,7 @@ class Domain
 			$bSieveAllowRaw = isset($aDomain['sieve_allow_raw']) ? (bool) $aDomain['sieve_allow_raw'] : false;
 
 			$sSieveHost = empty($aDomain['sieve_host']) ? '' : (string) $aDomain['sieve_host'];
-			$iSievePort = empty($aDomain['sieve_port']) ? 2000 : (int) $aDomain['sieve_port'];
+			$iSievePort = empty($aDomain['sieve_port']) ? 4190 : (int) $aDomain['sieve_port'];
 			$iSieveSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['sieve_secure']) ? $aDomain['sieve_secure'] : '');
 
@@ -246,7 +246,7 @@ class Domain
 
 		if ($this->iSievePort <= 0)
 		{
-			$this->iSievePort = 2000;
+			$this->iSievePort = 4190;
 		}
 
 		if ($this->iOutPort <= 0)

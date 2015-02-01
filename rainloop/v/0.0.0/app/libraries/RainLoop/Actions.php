@@ -2085,6 +2085,18 @@ class Actions
 	public function DoFilters()
 	{
 		$oAccount = $this->getAccountFromToken();
+
+		$aFakeFilters = null;
+
+		$this->Plugins()
+			->RunHook('filter.filters-fake', array($oAccount, &$aFakeFilters))
+		;
+
+		if ($aFakeFilters)
+		{
+			return $this->DefaultResponse(__FUNCTION__, $aFakeFilters);
+		}
+
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->FiltersProvider()->Load($oAccount, $oAccount->DomainSieveAllowRaw()));
 	}
@@ -2115,6 +2127,10 @@ class Actions
 				}
 			}
 		}
+
+		$this->Plugins()
+			->RunHook('filter.filters-save', array($oAccount, &$aFilters, &$sRaw, &$bRawIsActive))
+		;
 
 		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Save($oAccount,
 			$aFilters, $sRaw, $bRawIsActive));

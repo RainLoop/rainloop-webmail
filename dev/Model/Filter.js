@@ -41,12 +41,12 @@
 		this.actionValue.error = ko.observable(false);
 
 		this.actionValueSecond = ko.observable('');
+		this.actionValueThird = ko.observable('');
 
 		this.actionMarkAsRead = ko.observable(false);
 
-		this.actionSkipOthers = ko.observable(false);
-
 		this.actionKeep = ko.observable(true);
+		this.actionNoStop = ko.observable(false);
 
 		this.actionType = ko.observable(Enums.FiltersAction.MoveTo);
 
@@ -54,6 +54,7 @@
 			this.actionValue('');
 			this.actionValue.error(false);
 			this.actionValueSecond('');
+			this.actionValueThird('');
 		}, this);
 
 		var fGetRealFolderName = function (sFolderFullNameRaw) {
@@ -136,7 +137,7 @@
 			this.actionValue.error('' === sValue);
 		}, this));
 
-		this.regDisposables([this.actionTemplate]);
+		this.regDisposables([this.actionNoStop, this.actionTemplate]);
 
 		this.deleteAccess = ko.observable(false);
 		this.canBeDalete = ko.observable(true);
@@ -207,11 +208,12 @@
 
 			'ActionValue': this.actionValue(),
 			'ActionValueSecond': this.actionValueSecond(),
+			'ActionValueThird': this.actionValueThird(),
 			'ActionType': this.actionType(),
 
+			'Stop': this.actionNoStop() ? '0' : '1',
 			'Keep': this.actionKeep() ? '1' : '0',
-			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0',
-			'SkipOthers': this.actionSkipOthers() ? '1' : '0'
+			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0'
 		};
 	};
 
@@ -252,10 +254,11 @@
 
 			this.actionValue(Utils.pString(oItem['ActionValue']));
 			this.actionValueSecond(Utils.pString(oItem['ActionValueSecond']));
+			this.actionValueThird(Utils.pString(oItem['ActionValueThird']));
 
+			this.actionNoStop(!oItem['Stop']);
 			this.actionKeep(!!oItem['Keep']);
 			this.actionMarkAsRead(!!oItem['MarkAsRead']);
-			this.actionSkipOthers(!!oItem['SkipOthers']);
 
 			bResult = true;
 		}
@@ -277,7 +280,6 @@
 		oClone.conditionsType(this.conditionsType());
 
 		oClone.actionMarkAsRead(this.actionMarkAsRead());
-		oClone.actionSkipOthers(this.actionSkipOthers());
 
 		oClone.actionType(this.actionType());
 
@@ -285,8 +287,10 @@
 		oClone.actionValue.error(this.actionValue.error());
 
 		oClone.actionValueSecond(this.actionValueSecond());
+		oClone.actionValueThird(this.actionValueThird());
 
 		oClone.actionKeep(this.actionKeep());
+		oClone.actionNoStop(this.actionNoStop());
 
 		oClone.conditions(_.map(this.conditions(), function (oCondition) {
 			return oCondition.cloneSelf();

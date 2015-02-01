@@ -85,7 +85,7 @@
 	 * @const
 	 * @type {number}
 	 */
-	Consts.Values.SieveDefaulPort = 2000;
+	Consts.Values.SieveDefaulPort = 4190;
 
 	/**
 	 * @const

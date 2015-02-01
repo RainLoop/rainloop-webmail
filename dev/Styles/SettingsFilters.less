@@ -14,6 +14,18 @@
 		td {
 			padding: 4px 8px;
 			line-height: 30px;
+
+			&.drag-wrapper {
+				padding: 4px 0;
+			}
+		}
+
+		.drag-handle {
+			color: #eee;
+		}
+
+		tr:hover .drag-handle {
+			color: #aaa;
 		}
 
 		.filter-img {
@@ -37,6 +49,10 @@
 	.filter-item {
 
 		.e-action {
+			cursor: pointer;
+		}
+
+		.drag-handle {
 			cursor: pointer;
 		}
 

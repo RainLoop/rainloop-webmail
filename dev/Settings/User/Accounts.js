@@ -50,7 +50,7 @@
 	AccountsUserSettings.prototype.scrollableOptions = function ()
 	{
 		return {
-
+			handle: '.drag-handle'
 		};
 	};
 

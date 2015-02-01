@@ -45,6 +45,11 @@ class Filter
 	private $sActionValueSecond;
 
 	/**
+	 * @var string
+	 */
+	private $sActionValueThird;
+
+	/**
 	 * @var bool
 	 */
 	private $bMarkAsRead;
@@ -58,6 +63,11 @@ class Filter
 	 * @var bool
 	 */
 	private $bKeep;
+
+	/**
+	 * @var bool
+	 */
+	private $bStop;
 
 	public function __construct()
 	{
@@ -78,10 +88,11 @@ class Filter
 		$this->sActionType = \RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 		$this->sActionValue = '';
 		$this->sActionValueSecond = '';
+		$this->sActionValueThird = '';
 
 		$this->bMarkAsRead = false;
-		$this->bSkipOthers = false;
 		$this->bKeep = true;
+		$this->bStop = true;
 	}
 
 	/**
@@ -149,6 +160,14 @@ class Filter
 	}
 
 	/**
+	 * @return string
+	 */
+	public function ActionValueThird()
+	{
+		return $this->sActionValueThird;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function MarkAsRead()
@@ -159,9 +178,9 @@ class Filter
 	/**
 	 * @return bool
 	 */
-	public function SkipOthers()
+	public function Stop()
 	{
-		return $this->bSkipOthers;
+		return $this->bStop;
 	}
 
 	/**
@@ -216,10 +235,11 @@ class Filter
 
 			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
 			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
+			$this->sActionValueThird = isset($aFilter['ActionValueThird']) ? $aFilter['ActionValueThird'] : '';
 
 			$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
+			$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
 			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
-			$this->bSkipOthers = isset($aFilter['SkipOthers']) ? '1' === (string) $aFilter['SkipOthers'] : false;
 
 			$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
 				isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
@@ -255,9 +275,10 @@ class Filter
 			'ActionType' => $this->ActionType(),
 			'ActionValue' => $this->ActionValue(),
 			'ActionValueSecond' => $this->ActionValueSecond(),
+			'ActionValueThird' => $this->ActionValueThird(),
 			'Keep' => $this->Keep(),
-			'MarkAsRead' => $this->MarkAsRead(),
-			'SkipOthers' => $this->SkipOthers()
+			'Stop' => $this->Stop(),
+			'MarkAsRead' => $this->MarkAsRead()
 		);
 	}
 }

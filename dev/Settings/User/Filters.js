@@ -117,7 +117,7 @@
 	FiltersUserSettings.prototype.scrollableOptions = function ()
 	{
 		return {
-			// handle: '.drag-handle'
+			handle: '.drag-handle'
 		};
 	};
 

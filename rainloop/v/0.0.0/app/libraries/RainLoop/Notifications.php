@@ -62,6 +62,7 @@ class Notifications
 	const LicensingBanned = 712;
 
 	const DemoSendMessageError = 750;
+	const DemoAccountError = 751;
 
 	const AccountAlreadyExists = 801;
 	const AccountDoesNotExist = 802;
@@ -132,6 +133,7 @@ class Notifications
 			self::LicensingExpired => 'LicensingExpired',
 			self::LicensingBanned => 'LicensingBanned',
 			self::DemoSendMessageError => 'DemoSendMessageError',
+			self::DemoAccountError => 'DemoAccountError',
 			self::AccountAlreadyExists => 'AccountAlreadyExists',
 			self::AccountDoesNotExist => 'AccountDoesNotExist',
 			self::MailServerError => 'MailServerError',

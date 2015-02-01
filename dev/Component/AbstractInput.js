@@ -27,11 +27,13 @@
 		this.value = oParams.value || '';
 		this.size = oParams.size || 0;
 		this.label = oParams.label || '';
+		this.preLabel = oParams.preLabel || '';
 		this.enable = Utils.isUnd(oParams.enable) ? true : oParams.enable;
 		this.trigger = oParams.trigger && oParams.trigger.subscribe ? oParams.trigger : null;
 		this.placeholder = oParams.placeholder || '';
 
 		this.labeled = !Utils.isUnd(oParams.label);
+		this.preLabeled = !Utils.isUnd(oParams.preLabel);
 		this.triggered = !Utils.isUnd(oParams.trigger) && !!this.trigger;
 
 		this.classForTrigger = ko.observable('');

@@ -132,7 +132,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
 			$bSieveAllowRaw = '1' === (string) $oActions->GetActionParam('SieveAllowRaw', '0');
 			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
-			$iSievePort = (int) $oActions->GetActionParam('SievePort', 2000);
+			$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
 			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$sOutHost = (string) $oActions->GetActionParam('OutHost', '');
 			$iOutPort = (int) $oActions->GetActionParam('OutPort', 25);

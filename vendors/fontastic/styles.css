@@ -371,3 +371,6 @@
 .icon-world:before {
   content: "\e06f";
 }
+.icon-braille:before {
+  content: "\e06e";
+}

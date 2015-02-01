@@ -6,8 +6,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 {
 	const NEW_LINE = "\r\n";
 
-	const SIEVE_FILE_NAME = 'rainloop.sieve.user';
-	const SIEVE_FILE_NAME_RAW = 'rainloop.sieve.raw';
+	const SIEVE_FILE_NAME = 'rainloop.user';
+	const SIEVE_FILE_NAME_RAW = 'rainloop.user.raw';
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -317,10 +317,12 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::VACATION:
 				$sValue = \trim($oFilter->ActionValue());
 				$sValueSecond = \trim($oFilter->ActionValueSecond());
+				$sValueThird = \trim($oFilter->ActionValueThird());
 				if (0 < \strlen($sValue))
 				{
 					$aCapa['vacation'] = true;
 
+					$iDays = 1;
 					$sSubject = '';
 					if (0 < \strlen($sValueSecond))
 					{
@@ -328,8 +330,17 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 							\preg_replace('/[\s]+/u', ' ', $sValueSecond)).'" ';
 					}
 
-					$aResult[] = $sTab.'vacation :days 1 '.$sSubject.'"'.$this->quote($sValue).'";';
-					$aResult[] = $sTab.'stop;';
+					if (0 < \strlen($sValueThird) && \is_numeric($sValueThird) && 1 < (int) $sValueThird)
+					{
+						$iDays = (int) $sValueThird;
+					}
+
+					$aResult[] = $sTab.'vacation :days '.$iDays.' '.$sSubject.'"'.$this->quote($sValue).'";';
+
+					if ($oFilter->Stop())
+					{
+						$aResult[] = $sTab.'stop;';
+					}
 				}
 				else
 				{

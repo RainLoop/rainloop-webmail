@@ -5,7 +5,7 @@
 		</div>
 	</div>
 	<div class="row" data-bind="visible: inited() && !serverError()">
-		<div class="span8">
+		<div class="span4">
 			<a class="btn" data-bind="click: addFilter">
 				<i class="icon-plus"></i>
 				&nbsp;&nbsp;
@@ -22,7 +22,8 @@
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="SETTINGS_FILTERS/BUTTON_SAVE"></span>
 			</a>
-			&nbsp;&nbsp;&nbsp;&nbsp;
+		</div>
+		<div class="span4" style="margin-left: 0;">
 			<span data-bind="text: saveErrorText"style="color:red"></span>
 		</div>
 	</div>
@@ -66,20 +67,24 @@
 				data-bind="visible: inited() && (!filterRaw.active() || !filterRaw.active()), i18nUpdate: filters">
 				<colgroup>
 					<col style="width: 30px" />
+					<col style="width: 16px" />
 					<col />
 					<col style="width: 140px" />
 					<col style="width: 1%" />
 				</colgroup>
-				<tbody data-bind="sortable: {data: filters, options: scrollableOptions()}">
+				<tbody data-bind="sortable: {data: filters, options: scrollableOptions()}" style="width: 600px">
 					<tr class="filter-item">
 						<td>
 							<span class="disabled-filter" data-bind="click: function () { $root.haveChanges(true); enabled(!enabled()); }">
 								<i data-bind="css: {'icon-checkbox-checked': enabled, 'icon-checkbox-unchecked': !enabled()}"></i>
 							</span>
 						</td>
+						<td class="drag-wrapper">
+							<i class="icon-braille drag-handle"></i>
+						</td>
 						<td class="e-action">
 							<span class="filter-name" data-bind="text: name()"></span>
-							&nbsp;
+							&nbsp;&nbsp;
 							<span class="filter-sub-name" data-bind="text: nameSub()"></span>
 						</td>
 						<td>

@@ -24,7 +24,7 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ($oAccount instanceof \RainLoop\Model\Account)
 		{
 			// Verify logic
-			$bValid = isValidAccount($oAccount->Login(), $oAccount->Password());
+			$bValid = $this->isValidAccount($oAccount->Login(), $oAccount->Password());
 
 			/**
 			 * $oAccount->Email();			// Email (It is not a IMAP login)
