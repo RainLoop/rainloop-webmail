@@ -494,15 +494,23 @@
 
 	AppUser.prototype.accountsCounts = function ()
 	{
+		AccountStore.accounts.loading(true);
+
 		Remote.accountsCounts(function (sResult, oData) {
+
+			AccountStore.accounts.loading(false);
+
 			if (Enums.StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
 			{
-				var aAcounts = AccountStore.collection();
+				var
+					sEmail = Data.accountEmail(),
+					aAcounts = AccountStore.accounts()
+				;
 
 				_.each(oData.Result['Counts'], function (oItem) {
 
 					var oAccount = _.find(aAcounts, function (oAccount) {
-						return oAccount && oItem[0] === oAccount.email;
+						return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
 					});
 
 					if (oAccount)
@@ -518,12 +526,12 @@
 	{
 		var self = this;
 
-		AccountStore.loading(true);
+		AccountStore.accounts.loading(true);
 		IdentityStore.identities.loading(true);
 
 		Remote.accountsAndIdentities(function (sResult, oData) {
 
-			AccountStore.loading(false);
+			AccountStore.accounts.loading(false);
 			IdentityStore.identities.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData.Result)
@@ -538,20 +546,26 @@
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
-					_.each(AccountStore.collection(), function (oAccount) {
+					_.each(AccountStore.accounts(), function (oAccount) {
 						aCounts[oAccount.email] = oAccount.count();
 					});
 
-					Utils.delegateRunOnDestroy(AccountStore.collection());
+					Utils.delegateRunOnDestroy(AccountStore.accounts());
 
-					AccountStore.collection(_.map(oData.Result['Accounts'], function (sValue) {
+					AccountStore.accounts(_.map(oData.Result['Accounts'], function (sValue) {
 						return new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0);
 					}));
 				}
 
 				if (Utils.isUnd(bBoot) ? false : !!bBoot)
 				{
-					self.accountsCounts();
+					_.delay(function () {
+						self.accountsCounts();
+					}, 1000 * 5);
+
+					Events.sub('interval.10m-after5m', function () {
+						self.accountsCounts();
+					});
 				}
 
 				if (Utils.isArray(oData.Result['Identities']))

@@ -127,7 +127,7 @@
 				}
 			},
 			'owner': this
-		});
+		}).extend({'notify': 'always'});
 
 		this.messageCountUnread = ko.computed({
 			'read': this.privateMessageCountUnread,
@@ -142,7 +142,7 @@
 				}
 			},
 			'owner': this
-		});
+		}).extend({'notify': 'always'});
 
 		this.printableUnreadCount = ko.computed(function () {
 			var

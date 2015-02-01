@@ -337,11 +337,11 @@ class Http
 	}
 
 	/**
-	 * @param bool $bCheckProxy = true
+	 * @param bool $bCheckProxy = false
 	 *
 	 * @return string
 	 */
-	public function GetClientIp($bCheckProxy = true)
+	public function GetClientIp($bCheckProxy = false)
 	{
 		$sIp = '';
 		if ($bCheckProxy && null !== $this->GetServer('HTTP_CLIENT_IP', null))

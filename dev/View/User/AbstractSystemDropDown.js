@@ -29,17 +29,13 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
-		this.accounts = AccountStore.collection;
 		this.accountEmail = Data.accountEmail;
-		this.accountsLoading = AccountStore.loading;
+
+		this.accounts = AccountStore.accounts;
+		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
 
 		this.accountMenuDropdownTrigger = ko.observable(false);
-
 		this.capaAdditionalAccounts = ko.observable(Settings.capa(Enums.Capa.AdditionalAccounts));
-
-		this.loading = ko.computed(function () {
-			return this.accountsLoading();
-		}, this);
 
 		this.accountClick = _.bind(this.accountClick, this);
 	}
@@ -50,10 +46,10 @@
 	{
 		if (oAccount && oEvent && !Utils.isUnd(oEvent.which) && 1 === oEvent.which)
 		{
-			var self = this;
-			this.accountsLoading(true);
+			AccountStore.accounts.loading(true);
+
 			_.delay(function () {
-				self.accountsLoading(false);
+				AccountStore.accounts.loading(false);
 			}, 1000);
 		}
 

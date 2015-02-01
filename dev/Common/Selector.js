@@ -48,7 +48,10 @@
 			{
 				if (null === this.selectedItem())
 				{
-					this.selectedItem.valueHasMutated();
+					if (this.selectedItem.valueHasMutated)
+					{
+						this.selectedItem.valueHasMutated();
+					}
 				}
 				else
 				{

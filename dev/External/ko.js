@@ -828,7 +828,7 @@
 						oTarget('');
 					}
 				}
-			})
+			}).extend({'notify': 'always'})
 		;
 
 		oResult(oTarget());

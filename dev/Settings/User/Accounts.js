@@ -22,10 +22,10 @@
 	 */
 	function AccountsUserSettings()
 	{
-		this.accounts = AccountStore.collection;
+		this.accounts = AccountStore.accounts;
 
 		this.processText = ko.computed(function () {
-			return AccountStore.loading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
+			return AccountStore.accounts.loading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
 		}, this);
 
 		this.visibility = ko.computed(function () {

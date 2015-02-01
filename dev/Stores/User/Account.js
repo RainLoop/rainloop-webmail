@@ -15,27 +15,42 @@
 	 */
 	function AccountUserStore()
 	{
-		this.loading = ko.observable(false).extend({'throttle': 100});
+		this.accounts = ko.observableArray([]);
+		this.accounts.loading = ko.observable(false).extend({'throttle': 100});
 
-		this.collection = ko.observableArray([]);
-		this.collectionEmailNames = ko.observableArray([]).extend({'throttle': 1000});
-		this.collectionEmailNames.skipFirst = true;
+		this.accountsEmailNames = ko.observableArray([]).extend({'throttle': 1000});
+		this.accountsEmailNames.skipFirst = true;
 
-		this.collection.subscribe(function (aList) {
-			this.collectionEmailNames(_.compact(_.map(aList, function (oItem) {
+		this.accounts.subscribe(function (aList) {
+			this.accountsEmailNames(_.compact(_.map(aList, function (oItem) {
 				return oItem ? oItem.email : null;
 			})));
 		}, this);
 
-		this.collectionEmailNames.subscribe(function (aList) {
-			if (this.collectionEmailNames.skipFirst)
+		this.accountsEmailNames.subscribe(function (aList) {
+			if (this.accountsEmailNames.skipFirst)
 			{
-				this.collectionEmailNames.skipFirst = false;
+				this.accountsEmailNames.skipFirst = false;
 			}
 			else if (aList && 1 < aList.length)
 			{
 				Remote.accountSortOrder(null, aList);
 			}
+		}, this);
+
+		this.accountsUnreadCount = ko.computed(function () {
+
+			var iResult = 0;
+
+			_.each(this.accounts(), function (oItem) {
+				if (oItem)
+				{
+					iResult += oItem.count();
+				}
+			});
+
+			return iResult;
+
 		}, this);
 	}
 

@@ -188,12 +188,22 @@ Patterns:
   {user:domain} - Replaced by user\'s domain name (the domain part of an email)
                   If user is not logged in, value is set to "unknown"
   {user:uid}    - Replaced by user\'s UID regardless of account currently used
-  {user:ip}     - Replaced by user\'s IP address
+
+  {user:ip}
+  {request:ip}  - Replaced by user\'s IP address
+
+Others:
+  {imap:login} {imap:host} {imap:port}
+  {smtp:login} {smtp:host} {smtp:port}
 
 Examples:
   filename = "log-{date:Y-m-d}.txt"
   filename = "{date:Y-m-d}/{user:domain}/{user:email}_{user:uid}.log"
-  filename = "{user:email}-{date:Y-m-d}.txt"')
+  filename = "{user:email}-{date:Y-m-d}.txt"'),
+
+				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
+				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
+				'auth_logging_format' => array('Auth failed: ip={request:ip} user={imap:login} host={imap:host} port={imap:port}')
 			),
 
 			'debug' => array(
@@ -287,6 +297,7 @@ Enables caching in the system'),
 				'allow_external_login' => array(false),
 				'allow_external_sso' => array(false),
 				'external_sso_key' => array(''),
+				'http_client_ip_check_proxy' => array(false),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),

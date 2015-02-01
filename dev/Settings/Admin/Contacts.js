@@ -96,7 +96,7 @@
 					this.contactsType.valueHasMutated();
 				}
 			}
-		});
+		}).extend({'notify': 'always'});
 
 		this.contactsType.subscribe(function () {
 			this.testContactsSuccess(false);

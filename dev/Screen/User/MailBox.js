@@ -12,6 +12,7 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
+		AccountStore = require('Stores/User/Account'),
 		SettingsStore = require('Stores/User/Settings'),
 
 		Data = require('Storage/User/Data'),
@@ -111,8 +112,18 @@
 			SettingsStore.layout.valueHasMutated();
 		}, 50);
 
-		Events.sub('mailbox.inbox-unread-count', function (nCount) {
-			Data.foldersInboxUnreadCount(nCount);
+		Events.sub('mailbox.inbox-unread-count', function (iCount) {
+			
+			Data.foldersInboxUnreadCount(iCount);
+
+			var sEmail = Data.accountEmail();
+
+			_.each(AccountStore.accounts(), function (oItem) {
+				if (oItem && sEmail === oItem.email)
+				{
+					oItem.count(iCount);
+				}
+			});
 		});
 
 		Data.foldersInboxUnreadCount.subscribe(function () {

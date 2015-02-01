@@ -59,7 +59,7 @@
 
 			return iResult;
 
-		}, this);
+		}, this).extend({'notify': 'always'});
 
 		this.enableDesktopNotification = ko.computed({
 			'owner': this,
@@ -117,7 +117,7 @@
 					this.allowDesktopNotification(false);
 				}
 			}
-		});
+		}).extend({'notify': 'always'});
 
 		if (!this.enableDesktopNotification.valueHasMutated)
 		{
@@ -150,7 +150,8 @@
 			this.soundNotificationIsSupported(true);
 
 			this.buzz = new buzz.sound(Links.sound('new-mail'), {
-				formats: ['ogg', 'mp3']
+				'preload': 'none',
+				'formats': ['mp3', 'ogg']
 			});
 		}
 		else

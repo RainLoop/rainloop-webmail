@@ -41,6 +41,11 @@ class Actions
 	private $oLogger;
 
 	/**
+	 * @var \MailSo\Log\Logger
+	 */
+	private $oLoggerAuth;
+
+	/**
 	 * @var \RainLoop\Social
 	 */
 	private $oSocial;
@@ -359,69 +364,125 @@ class Actions
 	}
 
 	/**
+	 * @param string $sLine
+	 * @param \RainLoop\Model\Account $oAccount = null
+	 *
 	 * @return string
 	 */
-	private function compileLogFileName()
+	private function compileLogParams($sLine, $oAccount = null)
 	{
-		$sFileName = (string) $this->Config()->Get('logs', 'filename', '');
-
-		if (false !== \strpos($sFileName, '{date:'))
+		if (false !== \strpos($sLine, '{date:'))
 		{
-			$sFileName = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) {
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) {
 				return \gmdate($aMatch[1]);
-			}, $sFileName);
+			}, $sLine);
 
-			$sFileName = \preg_replace('/\{date:([^}]*)\}/', 'date', $sFileName);
+			$sLine = \preg_replace('/\{date:([^}]*)\}/', 'date', $sLine);
 		}
 
-		if (false !== \strpos($sFileName, '{user:'))
+		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:'))
 		{
-			if (false !== \strpos($sFileName, '{user:uid}'))
+			if (!$oAccount)
 			{
-				$sFileName = \str_replace('{user:uid}',
+				$this->ParseQueryAuthString();
+				$oAccount = $this->getAccountFromToken(false);
+			}
+
+			if ($oAccount)
+			{
+				$sLine = \str_replace('{imap:login}', $oAccount->IncLogin(), $sLine);
+				$sLine = \str_replace('{imap:host}', $oAccount->DomainIncHost(), $sLine);
+				$sLine = \str_replace('{imap:port}', $oAccount->DomainIncPort(), $sLine);
+
+				$sLine = \str_replace('{smtp:login}', $oAccount->OutLogin(), $sLine);
+				$sLine = \str_replace('{smtp:host}', $oAccount->DomainOutHost(), $sLine);
+				$sLine = \str_replace('{smtp:port}', $oAccount->DomainOutPort(), $sLine);
+			}
+
+			$sLine = \preg_replace('/\{imap:([^}]*)\}/i', 'imap', $sLine);
+			$sLine = \preg_replace('/\{smtp:([^}]*)\}/i', 'imap', $sLine);
+		}
+
+		if (false !== \strpos($sLine, '{request:'))
+		{
+			if (false !== \strpos($sLine, '{request:ip}'))
+			{
+				$sLine = \str_replace('{request:ip}', $this->Http()->GetClientIp(
+					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $sLine);
+			}
+
+			$sLine = \preg_replace('/\{request:([^}]*)\}/i', 'request', $sLine);
+		}
+
+		if (false !== \strpos($sLine, '{user:'))
+		{
+			if (false !== \strpos($sLine, '{user:uid}'))
+			{
+				$sLine = \str_replace('{user:uid}',
 					\base_convert(\sprintf('%u', \crc32(\md5(\RainLoop\Utils::GetConnectionToken()))), 10, 32),
-					$sFileName
+					$sLine
 				);
 			}
 
-			if (false !== \strpos($sFileName, '{user:ip}'))
+			if (false !== \strpos($sLine, '{user:ip}'))
 			{
-				$sFileName = \str_replace('{user:ip}', $this->Http()->GetClientIp(), $sFileName);
+				$sLine = \str_replace('{user:ip}', $this->Http()->GetClientIp(
+					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $sLine);
 			}
 
-			if (\preg_match('/\{user:(email|login|domain)\}/i', $sFileName))
+			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine))
 			{
-				$this->ParseQueryAuthString();
+				if (!$oAccount)
+				{
+					$this->ParseQueryAuthString();
+					$oAccount = $this->getAccountFromToken(false);
+				}
 
-				$oAccount = $this->getAccountFromToken(false);
 				if ($oAccount)
 				{
 					$sEmail = $oAccount->Email();
-					$sFileName = \str_replace('{user:email}', $sEmail, $sFileName);
-					$sFileName = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sFileName);
-					$sFileName = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sFileName);
+					$sLine = \str_replace('{user:email}', $sEmail, $sLine);
+					$sLine = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
 				}
 			}
 
-			$sFileName = \preg_replace('/\{user:([^}]*)\}/i', 'unknown', $sFileName);
+			$sLine = \preg_replace('/\{user:([^}]*)\}/i', 'unknown', $sLine);
 		}
 
-		if (false !== \strpos($sFileName, '{labs:'))
+		if (false !== \strpos($sLine, '{labs:'))
 		{
-			$sFileName = \preg_replace_callback('/\{labs:rand:([1-9])\}/', function ($aMatch) {
+			$sLine = \preg_replace_callback('/\{labs:rand:([1-9])\}/', function ($aMatch) {
 				return \rand(\pow(10, $aMatch[1] - 1), \pow(10, $aMatch[1]) - 1);
-			}, $sFileName);
+			}, $sLine);
 
-			$sFileName = \preg_replace('/\{labs:([^}]*)\}/', 'labs', $sFileName);
+			$sLine = \preg_replace('/\{labs:([^}]*)\}/', 'labs', $sLine);
+		}
+
+		return $sLine;
+	}
+
+	/**
+	 * @param string $sFileName
+	 *
+	 * @return string
+	 */
+	private function compileLogFileName($sFileName)
+	{
+		$sFileName = \trim($sFileName);
+
+		if (0 !== \strlen($sFileName))
+		{
+			$sFileName = $this->compileLogParams($sFileName);
+
+			$sFileName = \preg_replace('/[\/]+/', '/', \preg_replace('/[.]+/', '.', $sFileName));
+			$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()\[\]]/', '', $sFileName);
 		}
 
 		if (0 === \strlen($sFileName))
 		{
 			$sFileName = 'rainloop-log.txt';
 		}
-
-		$sFileName = \preg_replace('/[\/]+/', '/', \preg_replace('/[.]+/', '.', $sFileName));
-		$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()\[\]]/', '', $sFileName);
 
 		return $sFileName;
 	}
@@ -775,11 +836,13 @@ class Actions
 		{
 			$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
 
-			if (!!$this->Config()->Get('logs', 'enable', true))
+			if (!!$this->Config()->Get('logs', 'enable', false))
 			{
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
-				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName();
+				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
+					$this->Config()->Get('logs', 'filename', ''));
+
 				$sLogFileDir = \dirname($sLogFileFullPath);
 
 				if (!@is_dir($sLogFileDir))
@@ -804,7 +867,8 @@ class Actions
 				$oHttp = $this->Http();
 
 				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
-					$oHttp->GetClientIp().'][PID:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
+					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)).'][PID:'.
+					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
 					$oHttp->GetServer('SERVER_SOFTWARE', '~').']['.
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~' ).']'
 				);
@@ -827,6 +891,40 @@ class Actions
 		}
 
 		return $this->oLogger;
+	}
+
+	/**
+	 * @return \MailSo\Log\Logger
+	 */
+	public function LoggerAuth()
+	{
+		if (null === $this->oLoggerAuth)
+		{
+			$this->oLoggerAuth = \MailSo\Log\Logger::NewInstance(false);
+
+			if (!!$this->Config()->Get('logs', 'auth_logging', false))
+			{
+				$sAuthLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
+					$this->Config()->Get('logs', 'auth_logging_filename', ''));
+
+				$sLogFileDir = \dirname($sAuthLogFileFullPath);
+
+				if (!@is_dir($sLogFileDir))
+				{
+					@mkdir($sLogFileDir, 0755, true);
+				}
+
+				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::MEMORY);
+				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
+				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
+
+				$this->oLoggerAuth->Add(
+					\MailSo\Log\Drivers\File::NewInstance($sAuthLogFileFullPath)
+				);
+			}
+		}
+
+		return $this->oLoggerAuth;
 	}
 
 	/**
@@ -1524,10 +1622,11 @@ class Actions
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
+	 * @param bool $bAuthLog = false
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function CheckMailConnection($oAccount)
+	public function CheckMailConnection($oAccount, $bAuthLog = false)
 	{
 		try
 		{
@@ -1543,6 +1642,16 @@ class Actions
 		}
 		catch (\MailSo\Imap\Exceptions\LoginBadCredentialsException $oException)
 		{
+			if ($bAuthLog)
+			{
+				$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
+				if (!empty($sLine))
+				{
+					$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount),
+						\MailSo\Log\Enumerations\Type::WARNING, 'IMAP');
+				}
+			}
+
 			if ($this->Config()->Get('labs', 'imap_show_login_alert', true))
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError,
@@ -1724,7 +1833,7 @@ class Actions
 
 		try
 		{
-			$this->CheckMailConnection($oAccount);
+			$this->CheckMailConnection($oAccount, true);
 		}
 		catch (\Exception $oException)
 		{
@@ -2374,6 +2483,40 @@ class Actions
 	}
 
 	/**
+	 * @param string $sHash
+	 *
+	 * @return int
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function getAccountUnredCountFromHash($sHash)
+	{
+		$iResult = 0;
+
+		$oAccount = $this->GetAccountFromCustomToken($sHash, false);
+		if ($oAccount)
+		{
+			try
+			{
+				$oMailClient = \MailSo\Mail\MailClient::NewInstance();
+				$oMailClient->SetLogger($this->Logger());
+
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(),$oMailClient, $this->Config());
+
+				$iResult = $oMailClient->InboxUnreadCount();
+
+				$oMailClient->LogoutAndDisconnect();
+			}
+			catch (\Exception $oException)
+			{
+				$this->Logger()->WriteException($oException);
+			}
+		}
+
+		return $iResult;
+	}
+
+	/**
 	 * @return array
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -2382,13 +2525,32 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
+		$bComplete = true;
 		$aCounts = array();
+		
 		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
 		{
+			$iLimit = 7;
 			$mAccounts = $this->GetAccounts($oAccount);
-			foreach ($mAccounts as $sEmail => $sHash)
+			if (\is_array($mAccounts) && 0 < \count($mAccounts))
 			{
-				$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail), 0);
+				if ($iLimit > \count($mAccounts))
+				{
+					$mAccounts = \array_slice($mAccounts, 0, $iLimit);
+				}
+				else
+				{
+					$bComplete = false;
+				}
+
+				if (0 < \count($mAccounts))
+				{
+					foreach ($mAccounts as $sEmail => $sHash)
+					{
+						$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail),
+							$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnredCountFromHash($sHash));
+					}
+				}
 			}
 		}
 		else
@@ -2397,7 +2559,7 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, array(
-			'Complete' => true,
+			'Complete' => $bComplete,
 			'Counts' => $aCounts
 		));
 	}

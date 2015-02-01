@@ -870,6 +870,24 @@ class MailClient
 	}
 
 	/**
+	 * @return int
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function InboxUnreadCount()
+	{
+		$aFolderStatus = $this->oImapClient->FolderStatus('INBOX', array(
+			\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN
+		));
+
+		$iResult = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN]) ?
+			(int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN] : 0;
+
+		return 0 < $iResult ? $iResult : 0;
+	}
+
+	/**
 	 * @param string $sSearch
 	 * @param bool $bDetectGmail = true
 	 *
