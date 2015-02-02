@@ -18,7 +18,7 @@
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
 
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -175,7 +175,7 @@
 
 		this.viewSaving = ko.observable(false);
 
-		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
+		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
 		this.search.subscribe(function () {
 			this.reloadContactList();

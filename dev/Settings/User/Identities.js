@@ -12,6 +12,7 @@
 		HtmlEditor = require('Common/HtmlEditor'),
 		Translator = require('Common/Translator'),
 
+		AccountStore = require('Stores/User/Account'),
 		IdentityStore = require('Stores/User/Identity'),
 
 		Data = require('Storage/User/Data'),
@@ -26,11 +27,12 @@
 		this.editor = null;
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 
-		this.accountEmail = Data.accountEmail;
-		this.displayName = Data.displayName;
-		this.signature = Data.signature;
-		this.signatureToAll = Data.signatureToAll;
-		this.replyTo = Data.replyTo;
+		this.accountEmail = AccountStore.email;
+
+		this.displayName = AccountStore.displayName;
+		this.signature = AccountStore.signature;
+		this.signatureToAll = AccountStore.signatureToAll;
+		this.replyTo = AccountStore.replyTo;
 
 		this.signatureDom = ko.observable(null);
 
@@ -52,7 +54,7 @@
 			if (0 < aList.length)
 			{
 				aResult.push({
-					'id': this.accountEmail.peek(),
+					'id': AccountStore.email.peek(),
 					'name': this.formattedAccountIdentity(),
 					'seporator': false
 				});
@@ -106,8 +108,8 @@
 	IdentitiesUserSettings.prototype.formattedAccountIdentity = function ()
 	{
 		var
-			sDisplayName = this.displayName.peek(),
-			sEmail = this.accountEmail.peek()
+			sDisplayName = AccountStore.displayName.peek(),
+			sEmail = AccountStore.email.peek()
 		;
 
 		return '' === sDisplayName ? sEmail : '"' + Utils.quoteName(sDisplayName) + '" <' + sEmail + '>';
@@ -151,11 +153,11 @@
 		{
 			var
 				self = this,
-				sSignature = Data.signature()
+				sSignature = AccountStore.signature()
 			;
 
 			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				Data.signature(
+				AccountStore.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);
 			}, function () {
@@ -200,25 +202,25 @@
 				});
 			});
 
-			Data.displayName.subscribe(function (sValue) {
+			AccountStore.displayName.subscribe(function (sValue) {
 				Remote.saveSettings(f1, {
 					'DisplayName': sValue
 				});
 			});
 
-			Data.replyTo.subscribe(function (sValue) {
+			AccountStore.replyTo.subscribe(function (sValue) {
 				Remote.saveSettings(f2, {
 					'ReplyTo': sValue
 				});
 			});
 
-			Data.signature.subscribe(function (sValue) {
+			AccountStore.signature.subscribe(function (sValue) {
 				Remote.saveSettings(f3, {
 					'Signature': sValue
 				});
 			});
 
-			Data.signatureToAll.subscribe(function (bValue) {
+			AccountStore.signatureToAll.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'SignatureToAll': bValue ? '1' : '0'
 				});

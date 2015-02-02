@@ -10,6 +10,7 @@
 		Utils = require('Common/Utils'),
 
 		Data = require('Storage/User/Data'),
+		PgpStore = require('Stores/User/Pgp'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -43,7 +44,7 @@
 				self = this,
 				sUserID = '',
 				mKeyPair = null,
-				oOpenpgpKeyring = Data.openpgpKeyring
+				oOpenpgpKeyring = PgpStore.openpgpKeyring
 			;
 
 			this.email.error('' === Utils.trim(this.email()));
@@ -61,8 +62,7 @@
 			this.submitRequest(true);
 
 			_.delay(function () {
-	//			mKeyPair = Data.openpgp.generateKeyPair(1, Utils.pInt(self.keyBitLength()), sUserID, Utils.trim(self.password()));
-				mKeyPair = Data.openpgp.generateKeyPair({
+				mKeyPair = PgpStore.openpgp.generateKeyPair({
 					'userId': sUserID,
 					'numBits': Utils.pInt(self.keyBitLength()),
 					'passphrase': Utils.trim(self.password())

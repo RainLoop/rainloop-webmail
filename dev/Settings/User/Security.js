@@ -4,6 +4,7 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
@@ -65,12 +66,6 @@
 		Remote.createTwoFactor(this.onResult);
 	};
 
-	SecurityUserSettings.prototype.enableTwoFactor = function ()
-	{
-		this.processing(true);
-		Remote.enableTwoFactor(this.onResult, this.viewEnable());
-	};
-
 	SecurityUserSettings.prototype.testTwoFactor = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorTest'));
@@ -122,6 +117,7 @@
 		if (this.bFirst)
 		{
 			this.bFirst = false;
+
 			var self = this;
 			this.viewEnable.subscribe(function (bValue) {
 				if (this.viewEnable.subs)

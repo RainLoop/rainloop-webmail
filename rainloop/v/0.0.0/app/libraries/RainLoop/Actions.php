@@ -2527,7 +2527,7 @@ class Actions
 
 		$bComplete = true;
 		$aCounts = array();
-		
+
 		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
 		{
 			$iLimit = 7;
@@ -3007,6 +3007,21 @@ class Actions
 	}
 
 	/**
+	 * @param string $sDomain
+	 *
+	 * @return string
+	 */
+	public function domainPathHelper($sDomain)
+	{
+		$sDomain = \strtolower(\trim($sDomain));
+
+		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomain), 0, 2);
+		$sDomainPrefix = \str_pad($sDomainPrefix, 2, '_');
+
+		return 'domains/'.$sDomainPrefix.'/'.\urlencode($sDomain);
+	}
+
+	/**
 	 * @return string
 	 */
 	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
@@ -3062,13 +3077,23 @@ class Actions
 			$iCode = 0;
 			$sContentType = '';
 
-			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
+			$sValue = $oHttp->GetUrlAsString(APP_STATUS_PATH.$this->domainPathHelper($sDomain),
 				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
 				array(), false
 			);
 
-			if (200 !== $iCode)
+//			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
+//				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
+//				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+//				array(), false
+//			);
+
+			if (404 === $iCode)
+			{
+				$sValue = 'NO';
+			}
+			else if (200 !== $iCode)
 			{
 				$sValue = '';
 			}
@@ -3425,34 +3450,41 @@ class Actions
 				}
 			}
 
-			try
+			if ($oDomain->UseSieve())
 			{
-				$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->Logger());
-				$oSieveClient->SetTimeOuts($iConnectionTimeout);
-
-				$iTime = \microtime(true);
-				$oSieveClient->Connect($oDomain->SieveHost(), $oDomain->SievePort(), $oDomain->SieveSecure(),
-					!!$this->Config()->Get('ssl', 'verify_certificate', false),
-					!!$this->Config()->Get('ssl', 'allow_self_signed', true)
-				);
-
-				$iSieveTime = \microtime(true) - $iTime;
-				$oSieveClient->Disconnect();
-				$bSieveResult = true;
-			}
-			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-				$sSieveErrorDesc = $oException->getSocketMessage();
-				if (empty($sSieveErrorDesc))
+				try
 				{
+					$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->Logger());
+					$oSieveClient->SetTimeOuts($iConnectionTimeout);
+
+					$iTime = \microtime(true);
+					$oSieveClient->Connect($oDomain->SieveHost(), $oDomain->SievePort(), $oDomain->SieveSecure(),
+						!!$this->Config()->Get('ssl', 'verify_certificate', false),
+						!!$this->Config()->Get('ssl', 'allow_self_signed', true)
+					);
+
+					$iSieveTime = \microtime(true) - $iTime;
+					$oSieveClient->Disconnect();
+					$bSieveResult = true;
+				}
+				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
+				{
+					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
+					$sSieveErrorDesc = $oException->getSocketMessage();
+					if (empty($sSieveErrorDesc))
+					{
+						$sSieveErrorDesc = $oException->getMessage();
+					}
+				}
+				catch (\Exception $oException)
+				{
+					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 					$sSieveErrorDesc = $oException->getMessage();
 				}
 			}
-			catch (\Exception $oException)
+			else
 			{
-				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
-				$sSieveErrorDesc = $oException->getMessage();
+				$bSieveResult = true;
 			}
 		}
 

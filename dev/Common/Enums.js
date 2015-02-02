@@ -18,15 +18,6 @@
 	/**
 	 * @enum {number}
 	 */
-	Enums.SpoolerType = {
-		'Delay': 0,
-		'MessageList': 1,
-		'Move': 2
-	};
-
-	/**
-	 * @enum {number}
-	 */
 	Enums.State = {
 		'Empty': 10,
 		'Login': 20,
@@ -233,15 +224,7 @@
 		'HtmlForced': 'HtmlForced',
 		'PlainForced': 'PlainForced'
 	};
-
-	/**
-	 * @enum {string}
-	 */
-	Enums.CustomThemeType = {
-		'Light': 'Light',
-		'Dark': 'Dark'
-	};
-
+	
 	/**
 	 * @enum {number}
 	 */

@@ -6,9 +6,9 @@
 	var
 		ko = require('ko'),
 
-		Globals = require('Common/Globals'),
-
-		Settings = require('Storage/Settings')
+		Settings = require('Storage/Settings'),
+		
+		AppStore = require('Stores/App')
 	;
 
 	/**
@@ -16,40 +16,31 @@
 	 */
 	function AppUserStore()
 	{
-		// same
-		this.allowLanguagesOnSettings = ko.observable(true);
-		this.allowLanguagesOnLogin = ko.observable(true);
-		// ----
+		AppStore.call(this);
+
+		this.projectHash = ko.observable('');
+		this.threadsAllowed = ko.observable(false);
 
 		this.contactsAutosave = ko.observable(false);
 		this.useLocalProxyForExternalImages = ko.observable(false);
 
 		this.contactsIsAllowed = ko.observable(false);
 
-		this.interfaceAnimation = ko.observable(true);
-
-		this.interfaceAnimation.subscribe(function (bValue) {
-			if (Globals.bMobileDevice || !bValue)
-			{
-				Globals.$html.removeClass('rl-anim').addClass('no-rl-anim');
-			}
-			else
-			{
-				Globals.$html.removeClass('no-rl-anim').addClass('rl-anim');
-			}
-		});
-
-		this.interfaceAnimation.valueHasMutated();
+		this.devEmail = '';
+		this.devPassword = '';
 	}
 
 	AppUserStore.prototype.populate = function()
 	{
-		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
+		AppStore.prototype.populate.call(this);
+
+		this.projectHash(Settings.settingsGet('ProjectHash'));
 
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
-		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
+
+		this.devEmail = Settings.settingsGet('DevEmail');
+		this.devPassword = Settings.settingsGet('DevPassword');
 	};
 
 	module.exports = new AppUserStore();

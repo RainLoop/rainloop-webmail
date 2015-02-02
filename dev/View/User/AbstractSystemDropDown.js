@@ -29,7 +29,7 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
-		this.accountEmail = Data.accountEmail;
+		this.accountEmail = AccountStore.email;
 
 		this.accounts = AccountStore.accounts;
 		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
@@ -58,7 +58,7 @@
 
 	AbstractSystemDropDownUserView.prototype.emailTitle = function ()
 	{
-		return Data.accountEmail();
+		return AccountStore.email();
 	};
 
 	AbstractSystemDropDownUserView.prototype.settingsClick = function ()

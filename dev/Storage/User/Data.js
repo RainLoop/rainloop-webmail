@@ -17,16 +17,14 @@
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
 
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
 
 		kn = require('Knoin/Knoin'),
 
-		MessageModel = require('Model/Message'),
-
-		Local = require('Storage/Client')
+		MessageModel = require('Model/Message')
 	;
 
 	/**
@@ -34,71 +32,6 @@
 	 */
 	function DataUserStorage()
 	{
-		var
-			fRemoveSystemFolderType = function (observable) {
-				return function () {
-					var oFolder = Cache.getFolderFromCacheList(observable());
-					if (oFolder)
-					{
-						oFolder.type(Enums.FolderType.User);
-					}
-				};
-			},
-			fSetSystemFolderType = function (iType) {
-				return function (sValue) {
-					var oFolder = Cache.getFolderFromCacheList(sValue);
-					if (oFolder)
-					{
-						oFolder.type(iType);
-					}
-				};
-			}
-		;
-
-		this.devEmail = '';
-		this.devPassword = '';
-
-		this.accountEmail = ko.observable('');
-		this.accountIncLogin = ko.observable('');
-		this.accountOutLogin = ko.observable('');
-		this.projectHash = ko.observable('');
-		this.threading = ko.observable(false);
-
-		this.lastFoldersHash = '';
-		this.remoteSuggestions = false;
-
-		// system folders
-		this.sentFolder = ko.observable('');
-		this.draftFolder = ko.observable('');
-		this.spamFolder = ko.observable('');
-		this.trashFolder = ko.observable('');
-		this.archiveFolder = ko.observable('');
-
-		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
-		this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
-		this.spamFolder.subscribe(fRemoveSystemFolderType(this.spamFolder), this, 'beforeChange');
-		this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
-		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
-
-		this.sentFolder.subscribe(fSetSystemFolderType(Enums.FolderType.SentItems), this);
-		this.draftFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Draft), this);
-		this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
-		this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
-		this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
-
-		this.draftFolderNotEnabled = ko.computed(function () {
-			return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
-		}, this);
-
-		// personal
-		this.displayName = ko.observable('');
-		this.signature = ko.observable('');
-		this.signatureToAll = ko.observable(false);
-		this.replyTo = ko.observable('');
-
-		// security
-		this.enableTwoFactor = ko.observable(false);
-
 		// contacts
 		this.contacts = ko.observableArray([]);
 		this.contacts.loading = ko.observable(false).extend({'throttle': 200});
@@ -176,13 +109,15 @@
 		this.folderListSystemNames = ko.computed(function () {
 
 			var
+				FolderStore = require('Stores/User/Folder'),
+
 				aList = [Cache.getFolderInboxName()],
 				aFolders = this.folderList(),
-				sSentFolder = this.sentFolder(),
-				sDraftFolder = this.draftFolder(),
-				sSpamFolder = this.spamFolder(),
-				sTrashFolder = this.trashFolder(),
-				sArchiveFolder = this.archiveFolder()
+				sSentFolder = FolderStore.sentFolder(),
+				sDraftFolder = FolderStore.draftFolder(),
+				sSpamFolder = FolderStore.spamFolder(),
+				sTrashFolder = FolderStore.trashFolder(),
+				sArchiveFolder = FolderStore.archiveFolder()
 			;
 
 			if (Utils.isArray(aFolders) && 0 < aFolders.length)
@@ -261,7 +196,7 @@
 
 		this.messageListPageCount = ko.computed(function () {
 			var iPage = window.Math.ceil(this.messageListCount() /
-				SettingsUserStore.messagesPerPage());
+				SettingsStore.messagesPerPage());
 			return 0 >= iPage ? 1 : iPage;
 		}, this);
 
@@ -317,13 +252,13 @@
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
 
-				if (Enums.Layout.NoPreview === SettingsUserStore.layout() &&
+				if (Enums.Layout.NoPreview === SettingsStore.layout() &&
 					-1 < window.location.hash.indexOf('message-preview'))
 				{
 					require('App/User').historyBack();
 				}
 			}
-			else if (Enums.Layout.NoPreview === SettingsUserStore.layout())
+			else if (Enums.Layout.NoPreview === SettingsStore.layout())
 			{
 				this.message.focused(true);
 			}
@@ -337,7 +272,7 @@
 			}
 			else if (Enums.KeyState.MessageView === Globals.keyScope())
 			{
-				if (Enums.Layout.NoPreview === SettingsUserStore.layout() && this.message())
+				if (Enums.Layout.NoPreview === SettingsStore.layout() && this.message())
 				{
 					Globals.keyScope(Enums.KeyState.MessageView);
 				}
@@ -422,20 +357,6 @@
 
 		// other
 		this.composeInEdit = ko.observable(false);
-		this.capaOpenPGP = ko.observable(false);
-		this.openpgpkeys = ko.observableArray([]);
-		this.openpgp = null;
-		this.openpgpKeyring = null;
-
-		this.openpgpkeysPublic = this.openpgpkeys.filter(function (oItem) {
-			return !!(oItem && !oItem.isPrivate);
-		});
-
-		this.openpgpkeysPrivate = this.openpgpkeys.filter(function (oItem) {
-			return !!(oItem && oItem.isPrivate);
-		});
-
-		this.customThemeType = ko.observable(Enums.CustomThemeType.Light);
 
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
 	}
@@ -472,27 +393,6 @@
 		}
 	};
 
-	DataUserStorage.prototype.populateDataOnStart = function()
-	{
-		this.accountEmail(Settings.settingsGet('Email'));
-		this.accountIncLogin(Settings.settingsGet('IncLogin'));
-		this.accountOutLogin(Settings.settingsGet('OutLogin'));
-		this.projectHash(Settings.settingsGet('ProjectHash'));
-
-		this.displayName(Settings.settingsGet('DisplayName'));
-		this.replyTo(Settings.settingsGet('ReplyTo'));
-		this.signature(Settings.settingsGet('Signature'));
-		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
-		this.enableTwoFactor(!!Settings.settingsGet('EnableTwoFactor'));
-
-		this.lastFoldersHash = Local.get(Enums.ClientSideKeyName.FoldersLashHash) || '';
-
-		this.remoteSuggestions = !!Settings.settingsGet('RemoteSuggestions');
-
-		this.devEmail = Settings.settingsGet('DevEmail');
-		this.devPassword = Settings.settingsGet('DevPassword');
-	};
-
 	DataUserStorage.prototype.initUidNextAndNewMessages = function (sFolder, sUidNext, aNewMessages)
 	{
 		if (Cache.getFolderInboxName() === sFolder && Utils.isNormal(sUidNext) && sUidNext !== '')
@@ -515,7 +415,7 @@
 				{
 					NotificationStore.displayDesktopNotification(
 						Links.notificationMailIcon(),
-						this.accountEmail(),
+						require('Stores/User/Account').email(),
 						Translator.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
 						})
@@ -793,7 +693,7 @@
 						bIsHtml = false;
 						sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
 
-						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && this.capaOpenPGP())
+						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
 						{
 							oMessage.plainRaw = Utils.pString(oData.Result.Plain);
 
@@ -856,7 +756,7 @@
 						oMessage.showInternalImages(true);
 					}
 
-					if (oMessage.hasImages() && SettingsUserStore.showImages())
+					if (oMessage.hasImages() && SettingsStore.showImages())
 					{
 						oMessage.showExternalImages(true);
 					}
@@ -907,7 +807,7 @@
 
 	DataUserStorage.prototype.findPublicKeyByHex = function (sHash)
 	{
-		return _.find(this.openpgpkeysPublic(), function (oItem) {
+		return _.find(require('Stores/User/Pgp').openpgpkeysPublic(), function (oItem) {
 			return oItem && sHash === oItem.id;
 		});
 	};
@@ -915,7 +815,7 @@
 	DataUserStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	{
 		var self = this;
-		return _.compact(_.map(this.openpgpkeysPublic(), function (oItem) {
+		return _.compact(_.map(require('Stores/User/Pgp').openpgpkeysPublic(), function (oItem) {
 
 			var oKey = null;
 			if (oItem && sEmail === oItem.email)
@@ -946,7 +846,7 @@
 		var
 			self = this,
 			oPrivateKey = null,
-			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
+			oKey = _.find(require('Stores/User/Pgp').openpgpkeysPrivate(), function (oItem) {
 				return oItem && sEmail === oItem.email;
 			})
 		;
@@ -981,7 +881,7 @@
 	 */
 	DataUserStorage.prototype.findSelfPrivateKey = function (sPassword)
 	{
-		return this.findPrivateKeyByEmail(this.accountEmail(), sPassword);
+		return this.findPrivateKeyByEmail(require('Stores/User/Account').email(), sPassword);
 	};
 
 	module.exports = new DataUserStorage();

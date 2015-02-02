@@ -10,15 +10,15 @@
 	/**
 	 * @constructor
 	 */
-	function PluginAdminStore()
+	function PackageAdminStore()
 	{
-		this.collection = ko.observableArray([]);
-		this.collection.loading = ko.observable(false).extend({'throttle': 100});
+		this.packages = ko.observableArray([]);
+		this.packages.loading = ko.observable(false).extend({'throttle': 100});
 
 		this.packagesReal = ko.observable(true);
 		this.packagesMainUpdatable = ko.observable(true);
 	}
 
-	module.exports = new PluginAdminStore();
+	module.exports = new PackageAdminStore();
 
 }());

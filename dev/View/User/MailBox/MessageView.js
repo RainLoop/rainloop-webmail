@@ -19,7 +19,9 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
+		AccountStore = require('Stores/User/Account'),
+		FolderStore = require('Stores/User/Folder'),
 
 		Local = require('Storage/Client'),
 		Cache = require('Storage/User/Cache'),
@@ -62,10 +64,10 @@
 		this.messageLoading = Data.messageLoading;
 		this.messageLoadingThrottle = Data.messageLoadingThrottle;
 		this.messagesBodiesDom = Data.messagesBodiesDom;
-		this.useThreads = SettingsUserStore.useThreads;
-		this.replySameFolder = SettingsUserStore.replySameFolder;
-		this.layout = SettingsUserStore.layout;
-		this.usePreviewPane = SettingsUserStore.usePreviewPane;
+		this.useThreads = SettingsStore.useThreads;
+		this.replySameFolder = SettingsStore.replySameFolder;
+		this.layout = SettingsStore.layout;
+		this.usePreviewPane = SettingsStore.usePreviewPane;
 		this.isMessageSelected = Data.isMessageSelected;
 		this.messageActiveDom = Data.messageActiveDom;
 		this.messageError = Data.messageError;
@@ -727,7 +729,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isDraftFolder = function ()
 	{
-		return Data.message() && Data.draftFolder() === Data.message().folderFullNameRaw;
+		return Data.message() && FolderStore.draftFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -735,7 +737,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSentFolder = function ()
 	{
-		return Data.message() && Data.sentFolder() === Data.message().folderFullNameRaw;
+		return Data.message() && FolderStore.sentFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -743,7 +745,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSpamFolder = function ()
 	{
-		return Data.message() && Data.spamFolder() === Data.message().folderFullNameRaw;
+		return Data.message() && FolderStore.spamFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -751,7 +753,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSpamDisabled = function ()
 	{
-		return Data.message() && Data.spamFolder() === Consts.Values.UnuseOptionValue;
+		return Data.message() && FolderStore.spamFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -759,7 +761,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isArchiveFolder = function ()
 	{
-		return Data.message() && Data.archiveFolder() === Data.message().folderFullNameRaw;
+		return Data.message() && FolderStore.archiveFolder() === Data.message().folderFullNameRaw;
 	};
 
 	/**
@@ -767,7 +769,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isArchiveDisabled = function ()
 	{
-		return Data.message() && Data.archiveFolder() === Consts.Values.UnuseOptionValue;
+		return Data.message() && FolderStore.archiveFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -873,7 +875,7 @@
 			Remote.sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
 				oMessage.readReceipt(),
 				Translator.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-				Translator.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': Data.accountEmail()}));
+				Translator.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': AccountStore.email()}));
 
 			oMessage.isReadReceipt(true);
 

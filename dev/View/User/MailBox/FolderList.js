@@ -16,7 +16,7 @@
 		Links = require('Common/Links'),
 
 		AppStore = require('Stores/User/App'),
-		SettingsUserStore = require('Stores/User/Settings'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Cache = require('Storage/User/Cache'),
 		Data = require('Storage/User/Data'),
@@ -90,7 +90,7 @@
 
 				if (oFolder)
 				{
-					if (Enums.Layout.NoPreview === SettingsUserStore.layout())
+					if (Enums.Layout.NoPreview === SettingsStore.layout())
 					{
 						Data.message(null);
 					}

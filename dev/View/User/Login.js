@@ -357,8 +357,8 @@
 				break;
 		}
 
-		this.email(Data.devEmail);
-		this.password(Data.devPassword);
+		this.email(AppStore.devEmail);
+		this.password(AppStore.devPassword);
 
 		if (this.googleLoginEnabled())
 		{

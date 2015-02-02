@@ -6,9 +6,9 @@
 					<i data-bind="css: {'icon-user': !accounts.loading(), 'icon-spinner animated': accounts.loading()}"
 						></i>
 					&nbsp;
-					<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
+<!--					<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
 					<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
-					&nbsp;
+					&nbsp;-->
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
@@ -18,10 +18,10 @@
 							<li class="e-item" role="presentation">
 								<a class="e-link menuitem account-item" href="#" data-bind="click: $root.accountClick,
 									attr: {'href': changeAccountLink()}, css: {current: $root.accountEmail() === email}">
-									<b class="pull-right counter" data-bind="visible: 0 < count()">
+<!--									<b class="pull-right counter" data-bind="visible: 0 < count()">
 										<span data-bind="text: count, visible: 100 > count()"></span>
 										<span data-bind="visible: 99 < count()">99+</span>
-									</b>
+									</b>-->
 									<i class="icon-ok"></i>
 									<i class="icon-user"></i>
 									&nbsp;&nbsp;

@@ -22,17 +22,6 @@
 				<strong><span data-bind="text: viewUser"></span></strong>
 			</div>
 		</div>
-<!--
-		<div class="control-group">
-			<label class="control-label">
-				<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LABEL_TWO_FACTOR_STATUS"></span>
-			</label>
-			<div class="controls" style="padding-top: 5px;">
-				<strong data-bind="visible: !processing()"><span data-bind="text: viewTwoFactorStatus"></span></strong>
-				<strong data-bind="visible: processing()">...</strong>
-			</div>
-		</div>
--->
 		<div class="control-group">
 			<div class="controls">
 				<a class="btn" data-bind="click: clearTwoFactor, visible: twoFactorStatus">
@@ -75,7 +64,7 @@
 					<p class="muted i18n" style="width: 550px" data-i18n-text="SETTINGS_SECURITY/TWO_FACTOR_SECRET_DESC"></p>
 				</blockquote>
 				<!-- ko if: '' !== viewUrl() -->
-				<img style="margin-left: -7px;" src="javascript:void();" data-bind="attr: {'src': viewUrl}" />
+				<img style="margin-left: -7px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2P8DwQACgAD/il4QJ8AAAAASUVORK5CYII=" data-bind="attr: {'src': viewUrl}" />
 				<!-- /ko -->
 			</div>
 		</div>

@@ -22,9 +22,12 @@
 		kn = require('Knoin/Knoin'),
 
 		SocialStore = require('Stores/Social'),
+		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
 		IdentityStore = require('Stores/User/Identity'),
+		FolderStore = require('Stores/User/Folder'),
+		PgpStore = require('Stores/User/Pgp'),
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
@@ -237,7 +240,7 @@
 	{
 		var
 			self = this,
-			sSpamFolder = Data.spamFolder()
+			sSpamFolder = FolderStore.spamFolder()
 		;
 
 		_.each(this.oMoveCache, function (oItem) {
@@ -340,18 +343,18 @@
 		switch (iDeleteType)
 		{
 			case Enums.FolderType.Spam:
-				oMoveFolder = Cache.getFolderFromCacheList(Data.spamFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(FolderStore.spamFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Spam;
 				break;
 			case Enums.FolderType.NotSpam:
 				oMoveFolder = Cache.getFolderFromCacheList(Cache.getFolderInboxName());
 				break;
 			case Enums.FolderType.Trash:
-				oMoveFolder = Cache.getFolderFromCacheList(Data.trashFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(FolderStore.trashFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Trash;
 				break;
 			case Enums.FolderType.Archive:
-				oMoveFolder = Cache.getFolderFromCacheList(Data.archiveFolder());
+				oMoveFolder = Cache.getFolderFromCacheList(FolderStore.archiveFolder());
 				nSetSystemFoldersNotification = Enums.SetSystemFoldersNotification.Archive;
 				break;
 		}
@@ -359,9 +362,9 @@
 		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 		if (bUseFolder)
 		{
-			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === Data.spamFolder()) ||
-				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === Data.trashFolder()) ||
-				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === Data.archiveFolder()))
+			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.spamFolder()) ||
+				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.trashFolder()) ||
+				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.archiveFolder()))
 			{
 				bUseFolder = false;
 			}
@@ -372,7 +375,7 @@
 			kn.showScreenPopup(require('View/Popup/FolderSystem'), [nSetSystemFoldersNotification]);
 		}
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
-			(sFromFolderFullNameRaw === Data.spamFolder() || sFromFolderFullNameRaw === Data.trashFolder())))
+			(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder())))
 		{
 			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
@@ -450,12 +453,12 @@
 
 	AppUser.prototype.reloadOpenPgpKeys = function ()
 	{
-		if (Data.capaOpenPGP())
+		if (PgpStore.capaOpenPGP())
 		{
 			var
 				aKeys = [],
 				oEmail = new EmailModel(),
-				oOpenpgpKeyring = Data.openpgpKeyring,
+				oOpenpgpKeyring = PgpStore.openpgpKeyring,
 				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 			;
 
@@ -487,39 +490,40 @@
 				}
 			});
 
-			Utils.delegateRunOnDestroy(Data.openpgpkeys());
-			Data.openpgpkeys(aKeys);
+			Utils.delegateRunOnDestroy(PgpStore.openpgpkeys());
+			PgpStore.openpgpkeys(aKeys);
 		}
 	};
 
 	AppUser.prototype.accountsCounts = function ()
 	{
-		AccountStore.accounts.loading(true);
-
-		Remote.accountsCounts(function (sResult, oData) {
-
-			AccountStore.accounts.loading(false);
-
-			if (Enums.StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
-			{
-				var
-					sEmail = Data.accountEmail(),
-					aAcounts = AccountStore.accounts()
-				;
-
-				_.each(oData.Result['Counts'], function (oItem) {
-
-					var oAccount = _.find(aAcounts, function (oAccount) {
-						return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
-					});
-
-					if (oAccount)
-					{
-						oAccount.count(Utils.pInt(oItem[1]));
-					}
-				});
-			}
-		});
+		return false;
+//		AccountStore.accounts.loading(true);
+//
+//		Remote.accountsCounts(function (sResult, oData) {
+//
+//			AccountStore.accounts.loading(false);
+//
+//			if (Enums.StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
+//			{
+//				var
+//					sEmail = AccountStore.email(),
+//					aAcounts = AccountStore.accounts()
+//				;
+//
+//				_.each(oData.Result['Counts'], function (oItem) {
+//
+//					var oAccount = _.find(aAcounts, function (oAccount) {
+//						return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
+//					});
+//
+//					if (oAccount)
+//					{
+//						oAccount.count(Utils.pInt(oItem[1]));
+//					}
+//				});
+//			}
+//		});
 	};
 
 	AppUser.prototype.accountsAndIdentities = function (bBoot)
@@ -539,7 +543,7 @@
 				var
 					aCounts = {},
 					sParentEmail = Settings.settingsGet('ParentEmail'),
-					sAccountEmail = Data.accountEmail()
+					sAccountEmail = AccountStore.email()
 				;
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
@@ -1138,14 +1142,18 @@
 				Data.namespace = oData.Result.Namespace;
 			}
 
-			Data.threading(!!Settings.settingsGet('UseImapThread') && oData.Result.IsThreadsSupported && true);
+			AppStore.threadsAllowed(!!Settings.settingsGet('UseImapThread') &&
+				oData.Result.IsThreadsSupported && true);
 
 			aList = this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']);
 			Data.folderList(aList);
 
-			if (oData.Result['SystemFolders'] &&
-				'' === '' + Settings.settingsGet('SentFolder') + Settings.settingsGet('DraftFolder') +
-				Settings.settingsGet('SpamFolder') + Settings.settingsGet('TrashFolder') + Settings.settingsGet('ArchiveFolder') +
+			if (oData.Result['SystemFolders'] && '' === '' +
+				Settings.settingsGet('SentFolder') +
+				Settings.settingsGet('DraftFolder') +
+				Settings.settingsGet('SpamFolder') +
+				Settings.settingsGet('TrashFolder') +
+				Settings.settingsGet('ArchiveFolder') +
 				Settings.settingsGet('NullFolder'))
 			{
 				// TODO Magic Numbers
@@ -1158,20 +1166,20 @@
 				bUpdate = true;
 			}
 
-			Data.sentFolder(fNormalizeFolder(Settings.settingsGet('SentFolder')));
-			Data.draftFolder(fNormalizeFolder(Settings.settingsGet('DraftFolder')));
-			Data.spamFolder(fNormalizeFolder(Settings.settingsGet('SpamFolder')));
-			Data.trashFolder(fNormalizeFolder(Settings.settingsGet('TrashFolder')));
-			Data.archiveFolder(fNormalizeFolder(Settings.settingsGet('ArchiveFolder')));
+			FolderStore.sentFolder(fNormalizeFolder(Settings.settingsGet('SentFolder')));
+			FolderStore.draftFolder(fNormalizeFolder(Settings.settingsGet('DraftFolder')));
+			FolderStore.spamFolder(fNormalizeFolder(Settings.settingsGet('SpamFolder')));
+			FolderStore.trashFolder(fNormalizeFolder(Settings.settingsGet('TrashFolder')));
+			FolderStore.archiveFolder(fNormalizeFolder(Settings.settingsGet('ArchiveFolder')));
 
 			if (bUpdate)
 			{
 				Remote.saveSystemFolders(Utils.emptyFunction, {
-					'SentFolder': Data.sentFolder(),
-					'DraftFolder': Data.draftFolder(),
-					'SpamFolder': Data.spamFolder(),
-					'TrashFolder': Data.trashFolder(),
-					'ArchiveFolder': Data.archiveFolder(),
+					'SentFolder': FolderStore.sentFolder(),
+					'DraftFolder': FolderStore.draftFolder(),
+					'SpamFolder': FolderStore.spamFolder(),
+					'TrashFolder': FolderStore.trashFolder(),
+					'ArchiveFolder': FolderStore.archiveFolder(),
 					'NullFolder': 'NullFolder'
 				});
 			}
@@ -1403,8 +1411,7 @@
 		require('Stores/User/Settings').populate();
 		require('Stores/User/Notification').populate();
 		require('Stores/User/Identity').populate();
-
-		Data.populateDataOnStart();
+		require('Stores/User/Account').populate();
 
 		var
 			self = this,
@@ -1443,9 +1450,9 @@
 					if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 					{
 						var fOpenpgpCallback = function (openpgp) {
-							Data.openpgp = openpgp;
-							Data.openpgpKeyring = new openpgp.Keyring();
-							Data.capaOpenPGP(true);
+							PgpStore.openpgp = openpgp;
+							PgpStore.openpgpKeyring = new openpgp.Keyring();
+							PgpStore.capaOpenPGP(true);
 
 							Events.pub('openpgp.init');
 
@@ -1468,7 +1475,7 @@
 					}
 					else
 					{
-						Data.capaOpenPGP(false);
+						PgpStore.capaOpenPGP(false);
 					}
 
 					kn.startScreens([

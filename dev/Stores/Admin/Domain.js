@@ -12,8 +12,8 @@
 	 */
 	function DomainAdminStore()
 	{
-		this.collection = ko.observableArray([]);
-		this.collection.loading = ko.observable(false).extend({'throttle': 100});
+		this.domains = ko.observableArray([]);
+		this.domains.loading = ko.observable(false).extend({'throttle': 100});
 	}
 
 	module.exports = new DomainAdminStore();

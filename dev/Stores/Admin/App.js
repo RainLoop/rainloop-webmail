@@ -6,7 +6,9 @@
 	var
 		ko = require('ko'),
 
-		Settings = require('Storage/Settings')
+		Settings = require('Storage/Settings'),
+
+		AppStore = require('Stores/App')
 	;
 
 	/**
@@ -14,10 +16,7 @@
 	 */
 	function AppAdminStore()
 	{
-		// same
-		this.allowLanguagesOnSettings = ko.observable(true);
-		this.allowLanguagesOnLogin = ko.observable(true);
-		// ----
+		AppStore.call(this);
 
 		this.determineUserLanguage = ko.observable(false);
 		this.determineUserDomain = ko.observable(false);
@@ -28,8 +27,7 @@
 
 	AppAdminStore.prototype.populate = function()
 	{
-		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
+		AppStore.prototype.populate.call(this);
 
 		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));

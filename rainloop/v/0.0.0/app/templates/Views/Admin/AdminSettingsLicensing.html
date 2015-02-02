@@ -63,7 +63,7 @@
 						</p>
 					</div>
 					<div data-bind="visible: licensing()">
-						<div class="alert alert-success span8" style="margin-left: 0; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
+						<div class="alert alert-success span8" style="margin-left: 0; margin-top: 10px; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
 							<h4>
 								Premium
 								<span data-bind="visible: licenseIsUnlim()">(Lifetime)</span>
@@ -74,7 +74,7 @@
 								<span data-bind="text: licenseExpiredMomentValue()"></span>
 							</p>
 						</div>
-						<div class="alert alert-error span8" style="margin-left: 0" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
+						<div class="alert alert-error span8" style="margin-left: 0; margin-top: 10px;" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
 					</div>
 				</div>
 			</div>

@@ -114,19 +114,19 @@
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.signClearMessage([oPrivateKey], self.text())
+								PgpStore.openpgp.signClearMessage([oPrivateKey], self.text())
 							);
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
+								PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
 							);
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.encryptMessage(aPublicKeys, self.text())
+								PgpStore.openpgp.encryptMessage(aPublicKeys, self.text())
 							);
 						}
 					}

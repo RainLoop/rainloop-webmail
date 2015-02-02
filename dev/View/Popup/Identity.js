@@ -12,7 +12,7 @@
 		Translator = require('Common/Translator'),
 
 		Remote = require('Storage/User/Remote'),
-		Data = require('Storage/User/Data'),
+		AccountStore = require('Stores/User/Account'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -147,7 +147,7 @@
 			this.replyTo(oIdentity.replyTo());
 			this.bcc(oIdentity.bcc());
 
-			this.owner(this.id === Data.accountEmail());
+			this.owner(this.id === AccountStore.email());
 		}
 	};
 

@@ -7,6 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
+		Settings = require('Storage/Settings'),
+
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -15,6 +17,15 @@
 	 */
 	function AccountUserStore()
 	{
+		this.email = ko.observable('');
+//		this.incLogin = ko.observable('');
+//		this.outLogin = ko.observable('');
+
+		this.displayName = ko.observable('');
+		this.replyTo = ko.observable('');
+		this.signature = ko.observable('');
+		this.signatureToAll = ko.observable(false);
+
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({'throttle': 100});
 
@@ -42,17 +53,29 @@
 
 			var iResult = 0;
 
-			_.each(this.accounts(), function (oItem) {
-				if (oItem)
-				{
-					iResult += oItem.count();
-				}
-			});
+//			_.each(this.accounts(), function (oItem) {
+//				if (oItem)
+//				{
+//					iResult += oItem.count();
+//				}
+//			});
 
 			return iResult;
 
 		}, this);
 	}
+
+	AccountUserStore.prototype.populate = function ()
+	{
+		this.email(Settings.settingsGet('Email'));
+//		this.incLogin(Settings.settingsGet('IncLogin'));
+//		this.outLogin(Settings.settingsGet('OutLogin'));
+
+		this.displayName(Settings.settingsGet('DisplayName'));
+		this.replyTo(Settings.settingsGet('ReplyTo'));
+		this.signature(Settings.settingsGet('Signature'));
+		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
+	};
 
 	module.exports = new AccountUserStore();
 

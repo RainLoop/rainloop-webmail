@@ -29,9 +29,9 @@
 
 		this.adminManLoading = ko.computed(function () {
 			return '000' !== [
-				require('Stores/Admin/Domain').collection.loading() ? '1' : '0',
-				require('Stores/Admin/Plugin').collection.loading() ? '1' : '0',
-				require('Stores/Admin/Package').collection.loading() ? '1' : '0'
+				require('Stores/Admin/Domain').domains.loading() ? '1' : '0',
+				require('Stores/Admin/Plugin').plugins.loading() ? '1' : '0',
+				require('Stores/Admin/Package').packages.loading() ? '1' : '0'
 			].join('');
 		}, this);
 

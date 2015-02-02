@@ -24,7 +24,7 @@
 		var self = this;
 
 		this.modules = FilterStore.modules;
-		this.filters = FilterStore.collection;
+		this.filters = FilterStore.filters;
 
 		this.inited = ko.observable(false);
 		this.serverError = ko.observable(false);

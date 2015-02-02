@@ -11,7 +11,7 @@
 
 		kn = require('Knoin/Knoin'),
 
-		Data = require('Storage/User/Data')
+		PgpStore = require('Stores/User/Pgp')
 	;
 
 	/**
@@ -19,9 +19,9 @@
 	 */
 	function OpenPgpUserSettings()
 	{
-		this.openpgpkeys = Data.openpgpkeys;
-		this.openpgpkeysPublic = Data.openpgpkeysPublic;
-		this.openpgpkeysPrivate = Data.openpgpkeysPrivate;
+		this.openpgpkeys = PgpStore.openpgpkeys;
+		this.openpgpkeysPublic = PgpStore.openpgpkeysPublic;
+		this.openpgpkeysPrivate = PgpStore.openpgpkeysPrivate;
 
 		this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
 			function (oPrev) {
@@ -65,21 +65,21 @@
 		{
 			this.openPgpKeyForDeletion(null);
 
-			if (oOpenPgpKeyToRemove && Data.openpgpKeyring)
+			if (oOpenPgpKeyToRemove && PgpStore.openpgpKeyring)
 			{
-				var oFindedItem = _.find(this.openpgpkeys(), function (oOpenPgpKey) {
+				var oFindedItem = _.find(PgpStore.openpgpkeys(), function (oOpenPgpKey) {
 					return oOpenPgpKeyToRemove === oOpenPgpKey;
 				});
 
 				if (oFindedItem)
 				{
-					this.openpgpkeys.remove(oFindedItem);
+					PgpStore.openpgpkeys.remove(oFindedItem);
 					Utils.delegateRunOnDestroy(oFindedItem);
 
-					Data.openpgpKeyring[oFindedItem.isPrivate ? 'privateKeys' : 'publicKeys']
+					PgpStore.openpgpKeyring[oFindedItem.isPrivate ? 'privateKeys' : 'publicKeys']
 						.removeForId(oFindedItem.guid);
 
-					Data.openpgpKeyring.store();
+					PgpStore.openpgpKeyring.store();
 				}
 
 				require('App/User').reloadOpenPgpKeys();

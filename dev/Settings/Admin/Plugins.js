@@ -23,11 +23,11 @@
 	{
 		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
-		this.plugins = PluginStore.collection;
-		this.pluginsError = PluginStore.collection.error;
+		this.plugins = PluginStore.plugins;
+		this.pluginsError = PluginStore.plugins.error;
 
 		this.visibility = ko.computed(function () {
-			return PluginStore.collection.loading() ? 'visible' : 'hidden';
+			return PluginStore.plugins.loading() ? 'visible' : 'hidden';
 		}, this);
 
 		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
@@ -75,7 +75,7 @@
 
 	PluginsAdminSettings.prototype.onShow = function ()
 	{
-		PluginStore.collection.error('');
+		PluginStore.plugins.error('');
 		require('App/Admin').reloadPluginList();
 	};
 
@@ -95,11 +95,11 @@
 			{
 				if (Enums.Notification.UnsupportedPluginPackage === oData.ErrorCode && oData.ErrorMessage && '' !== oData.ErrorMessage)
 				{
-					PluginStore.collection.error(oData.ErrorMessage);
+					PluginStore.plugins.error(oData.ErrorMessage);
 				}
 				else
 				{
-					PluginStore.collection.error(Translator.getNotification(oData.ErrorCode));
+					PluginStore.plugins.error(Translator.getNotification(oData.ErrorCode));
 				}
 			}
 		}

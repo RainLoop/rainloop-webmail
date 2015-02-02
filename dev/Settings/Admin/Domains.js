@@ -19,7 +19,7 @@
 	 */
 	function DomainsAdminSettings()
 	{
-		this.domains = DomainStore.collection;
+		this.domains = DomainStore.domains;
 
 		this.iDomainForDeletionTimeout = 0;
 

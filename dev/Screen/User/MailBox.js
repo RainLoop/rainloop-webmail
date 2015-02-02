@@ -47,7 +47,7 @@
 	MailBoxUserScreen.prototype.setNewTitle  = function ()
 	{
 		var
-			sEmail = Data.accountEmail(),
+			sEmail = AccountStore.email(),
 			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
 		;
 
@@ -113,10 +113,10 @@
 		}, 50);
 
 		Events.sub('mailbox.inbox-unread-count', function (iCount) {
-			
+
 			Data.foldersInboxUnreadCount(iCount);
 
-			var sEmail = Data.accountEmail();
+			var sEmail = AccountStore.email();
 
 			_.each(AccountStore.accounts(), function (oItem) {
 				if (oItem && sEmail === oItem.email)

@@ -11,6 +11,8 @@
 		Utils = require('Common/Utils'),
 		HtmlEditor = require('Common/HtmlEditor'),
 
+		AccountStore = require('Stores/User/Account'),
+
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
 	;
@@ -22,10 +24,10 @@
 	{
 		this.editor = null;
 
-		this.displayName = Data.displayName;
-		this.signature = Data.signature;
-		this.signatureToAll = Data.signatureToAll;
-		this.replyTo = Data.replyTo;
+		this.displayName = AccountStore.displayName;
+		this.signature = AccountStore.signature;
+		this.signatureToAll = AccountStore.signatureToAll;
+		this.replyTo = AccountStore.replyTo;
 
 		this.signatureDom = ko.observable(null);
 
@@ -40,11 +42,11 @@
 		{
 			var
 				self = this,
-				sSignature = Data.signature()
+				sSignature = AccountStore.signature()
 			;
 
 			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				Data.signature(
+				AccountStore.signature(
 					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
 				);
 			}, function () {
@@ -71,25 +73,25 @@
 				f3 = Utils.settingsSaveHelperSimpleFunction(self.signatureTrigger, self)
 			;
 
-			Data.displayName.subscribe(function (sValue) {
+			AccountStore.displayName.subscribe(function (sValue) {
 				Remote.saveSettings(f1, {
 					'DisplayName': sValue
 				});
 			});
 
-			Data.replyTo.subscribe(function (sValue) {
+			AccountStore.replyTo.subscribe(function (sValue) {
 				Remote.saveSettings(f2, {
 					'ReplyTo': sValue
 				});
 			});
 
-			Data.signature.subscribe(function (sValue) {
+			AccountStore.signature.subscribe(function (sValue) {
 				Remote.saveSettings(f3, {
 					'Signature': sValue
 				});
 			});
 
-			Data.signatureToAll.subscribe(function (bValue) {
+			AccountStore.signatureToAll.subscribe(function (bValue) {
 				Remote.saveSettings(null, {
 					'SignatureToAll': bValue ? '1' : '0'
 				});

@@ -24,6 +24,9 @@
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		IdentityStore = require('Stores/User/Identity'),
+		AccountStore = require('Stores/User/Account'),
+		FolderStore = require('Stores/User/Folder'),
+		PgpStore = require('Stores/User/Pgp'),
 		SocialStore = require('Stores/Social'),
 
 		Settings = require('Storage/Settings'),
@@ -63,7 +66,7 @@
 		this.composeInEdit = Data.composeInEdit;
 		this.editorDefaultType = SettingsStore.editorDefaultType;
 
-		this.capaOpenPGP = Data.capaOpenPGP;
+		this.capaOpenPGP = PgpStore.capaOpenPGP;
 
 		this.resizer = ko.observable(false).extend({'throttle': 50});
 
@@ -175,7 +178,7 @@
 		this.identitiesOptions = ko.computed(function () {
 
 			var aList = [{
-				'optValue': Data.accountEmail(),
+				'optValue': AccountStore.email(),
 				'optText': this.formattedFrom(false)
 			}];
 
@@ -200,7 +203,7 @@
 				sID = this.currentIdentityID()
 			;
 
-			if (this.bCapaAdditionalIdentities && sID && sID !== Data.accountEmail())
+			if (this.bCapaAdditionalIdentities && sID && sID !== AccountStore.email())
 			{
 				oItem = _.find(aList, function (oItem) {
 					return oItem && sID === oItem['id'];
@@ -269,7 +272,7 @@
 
 			var
 				sTo = Utils.trim(this.to()),
-				sSentFolder = Data.sentFolder(),
+				sSentFolder = FolderStore.sentFolder(),
 				aFlagsCache = []
 			;
 
@@ -356,7 +359,7 @@
 
 		this.saveCommand = Utils.createCommand(this, function () {
 
-			if (Data.draftFolderNotEnabled())
+			if (FolderStore.draftFolderNotEnabled())
 			{
 				kn.showScreenPopup(require('View/Popup/FolderSystem'), [Enums.SetSystemFoldersNotification.Draft]);
 			}
@@ -367,13 +370,13 @@
 
 				this.autosaveStart();
 
-				Cache.setFolderHash(Data.draftFolder(), '');
+				Cache.setFolderHash(FolderStore.draftFolder(), '');
 
 				Remote.saveMessage(
 					this.saveMessageResponse,
 					this.draftFolder(),
 					this.draftUid(),
-					Data.draftFolder(),
+					FolderStore.draftFolder(),
 					this.currentIdentityResultEmail(),
 					this.to(),
 					this.cc(),
@@ -396,7 +399,7 @@
 			this.bSkipNextHide = true;
 
 			if (this.modalVisibility() && !this.saving() && !this.sending() &&
-				!Data.draftFolderNotEnabled())
+				!FolderStore.draftFolderNotEnabled())
 			{
 				this.saveCommand();
 			}
@@ -422,7 +425,7 @@
 
 		Events.sub('interval.2m', function () {
 
-			if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
+			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
 				!this.saving() && !this.sending() && !this.savedError())
 			{
 				this.saveCommand();
@@ -494,7 +497,7 @@
 
 	ComposePopupView.prototype.autosaveFunction = function ()
 	{
-		if (this.modalVisibility() && !Data.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
+		if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
 			!this.saving() && !this.sending() && !this.savedError())
 		{
 			this.saveCommand();
@@ -525,7 +528,7 @@
 
 	ComposePopupView.prototype.openOpenPgpPopup = function ()
 	{
-		if (this.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
+		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 		{
 			var self = this;
 			kn.showScreenPopup(require('View/Popup/ComposeOpenPgp'), [
@@ -546,7 +549,7 @@
 	ComposePopupView.prototype.reloadDraftFolder = function ()
 	{
 		var
-			sDraftFolder = Data.draftFolder()
+			sDraftFolder = FolderStore.draftFolder()
 		;
 
 		if ('' !== sDraftFolder)
@@ -589,7 +592,7 @@
 			});
 		}
 
-		oIDs[Data.accountEmail()] = Data.accountEmail();
+		oIDs[AccountStore.email()] = AccountStore.email();
 
 		if (oMessage)
 		{
@@ -616,7 +619,7 @@
 
 		if ('' === sResult)
 		{
-			sResult = Data.accountEmail();
+			sResult = AccountStore.email();
 			sEmail = sResult;
 		}
 
@@ -639,8 +642,8 @@
 	ComposePopupView.prototype.formattedFrom = function (bHeaderResult)
 	{
 		var
-			sDisplayName = Data.displayName(),
-			sEmail = Data.accountEmail()
+			sDisplayName = AccountStore.displayName(),
+			sEmail = AccountStore.email()
 		;
 
 		return '' === sDisplayName ? sEmail :
@@ -946,9 +949,9 @@
 			aResplyAllParts = [],
 			oExcludeEmail = {},
 			oIdResult = null,
-			mEmail = Data.accountEmail(),
-			sSignature = Data.signature(),
-			bSignatureToAll = Data.signatureToAll(),
+			mEmail = AccountStore.email(),
+			sSignature = AccountStore.signature(),
+			bSignatureToAll = AccountStore.signatureToAll(),
 			aDownloads = [],
 			aDraftInfo = null,
 			oMessage = null,

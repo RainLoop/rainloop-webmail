@@ -10,7 +10,8 @@
 		Consts = require('Common/Consts'),
 		Base64 = require('Common/Base64'),
 
-		SettingsUserStore = require('Stores/User/Settings'),
+		AppStore = require('Stores/User/App'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
@@ -294,11 +295,11 @@
 					iOffset,
 					iLimit,
 					sSearch,
-					Data.projectHash(),
+					AppStore.projectHash(),
 					sFolderHash,
 					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-					Data.threading() && SettingsUserStore.useThreads() ? '1' : '0',
-					Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
+					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
+					AppStore.threadsAllowed() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -309,8 +310,8 @@
 				'Limit': iLimit,
 				'Search': sSearch,
 				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': Data.threading() && SettingsUserStore.useThreads() ? '1' : '0',
-				'ExpandedThreadUid': Data.threading() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
+				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
+				'ExpandedThreadUid': AppStore.threadsAllowed() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
 	};
@@ -343,8 +344,8 @@
 				'Message/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iUid,
-					Data.projectHash(),
-					Data.threading() && SettingsUserStore.useThreads() ? '1' : '0'
+					AppStore.projectHash(),
+					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
@@ -423,7 +424,7 @@
 				'UidNext': Cache.getFolderInboxName() === sFolder ? Cache.getFolderUidNext(sFolder) : ''
 			});
 		}
-		else if (SettingsUserStore.useThreads())
+		else if (SettingsStore.useThreads())
 		{
 			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}

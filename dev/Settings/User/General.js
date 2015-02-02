@@ -44,7 +44,7 @@
 
 		this.showImages = SettingsStore.showImages;
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
-		this.threading = Data.threading;
+		this.threadsAllowed = AppStore.threadsAllowed;
 		this.useThreads = SettingsStore.useThreads;
 		this.replySameFolder = SettingsStore.replySameFolder;
 		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;

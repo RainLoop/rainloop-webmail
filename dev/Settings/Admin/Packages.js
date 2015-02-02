@@ -22,7 +22,7 @@
 	{
 		this.packagesError = ko.observable('');
 
-		this.packages = PackageStore.collection;
+		this.packages = PackageStore.packages;
 		this.packagesReal = PackageStore.packagesReal;
 		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
@@ -39,7 +39,7 @@
 		});
 
 		this.visibility = ko.computed(function () {
-			return PackageStore.collection.loading() ? 'visible' : 'hidden';
+			return PackageStore.packages.loading() ? 'visible' : 'hidden';
 		}, this);
 	}
 

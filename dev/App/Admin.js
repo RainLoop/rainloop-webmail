@@ -44,10 +44,10 @@
 
 	AdminApp.prototype.reloadDomainList = function ()
 	{
-		DomainStore.collection.loading(true);
+		DomainStore.domains.loading(true);
 
 		Remote.domainList(function (sResult, oData) {
-			DomainStore.collection.loading(false);
+			DomainStore.domains.loading(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				var aList = _.map(oData.Result, function (bEnabled, sName) {
@@ -58,18 +58,18 @@
 					};
 				}, this);
 
-				DomainStore.collection(aList);
+				DomainStore.domains(aList);
 			}
 		});
 	};
 
 	AdminApp.prototype.reloadPluginList = function ()
 	{
-		PluginStore.collection.loading(true);
+		PluginStore.plugins.loading(true);
 
 		Remote.pluginList(function (sResult, oData) {
 
-			PluginStore.collection.loading(false);
+			PluginStore.plugins.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -81,19 +81,19 @@
 					};
 				}, this);
 
-				PluginStore.collection(aList);
+				PluginStore.plugins(aList);
 			}
 		});
 	};
 
 	AdminApp.prototype.reloadPackagesList = function ()
 	{
-		PackageStore.collection.loading(true);
+		PackageStore.packages.loading(true);
 		PackageStore.packagesReal(true);
 
 		Remote.packagesList(function (sResult, oData) {
 
-			PackageStore.collection.loading(false);
+			PackageStore.packages.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -105,7 +105,7 @@
 					aLoading = {}
 				;
 
-				_.each(PackageStore.collection(), function (oItem) {
+				_.each(PackageStore.packages(), function (oItem) {
 					if (oItem && oItem['loading']())
 					{
 						aLoading[oItem['file']] = oItem;
@@ -124,7 +124,7 @@
 					}));
 				}
 
-				PackageStore.collection(aList);
+				PackageStore.packages(aList);
 			}
 			else
 			{

@@ -22,6 +22,7 @@
 
 		QuotaStore = require('Stores/User/Quota'),
 		SettingsStore = require('Stores/User/Settings'),
+		FolderStore = require('Stores/User/Folder'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
@@ -137,36 +138,36 @@
 		}, this);
 
 		this.isSpamFolder = ko.computed(function () {
-			return Data.spamFolder() === this.messageListEndFolder() &&
-				'' !== Data.spamFolder();
+			return FolderStore.spamFolder() === this.messageListEndFolder() &&
+				'' !== FolderStore.spamFolder();
 		}, this);
 
 		this.isSpamDisabled = ko.computed(function () {
-			return Consts.Values.UnuseOptionValue === Data.spamFolder();
+			return Consts.Values.UnuseOptionValue === FolderStore.spamFolder();
 		}, this);
 
 		this.isTrashFolder = ko.computed(function () {
-			return Data.trashFolder() === this.messageListEndFolder() &&
-				'' !== Data.trashFolder();
+			return FolderStore.trashFolder() === this.messageListEndFolder() &&
+				'' !== FolderStore.trashFolder();
 		}, this);
 
 		this.isDraftFolder = ko.computed(function () {
-			return Data.draftFolder() === this.messageListEndFolder() &&
-				'' !== Data.draftFolder();
+			return FolderStore.draftFolder() === this.messageListEndFolder() &&
+				'' !== FolderStore.draftFolder();
 		}, this);
 
 		this.isSentFolder = ko.computed(function () {
-			return Data.sentFolder() === this.messageListEndFolder() &&
-				'' !== Data.sentFolder();
+			return FolderStore.sentFolder() === this.messageListEndFolder() &&
+				'' !== FolderStore.sentFolder();
 		}, this);
 
 		this.isArchiveFolder = ko.computed(function () {
-			return Data.archiveFolder() === this.messageListEndFolder() &&
-				'' !== Data.archiveFolder();
+			return FolderStore.archiveFolder() === this.messageListEndFolder() &&
+				'' !== FolderStore.archiveFolder();
 		}, this);
 
 		this.isArchiveDisabled = ko.computed(function () {
-			return Consts.Values.UnuseOptionValue === Data.archiveFolder();
+			return Consts.Values.UnuseOptionValue === FolderStore.archiveFolder();
 		}, this);
 
 		this.canBeMoved = this.hasCheckedOrSelectedLines;

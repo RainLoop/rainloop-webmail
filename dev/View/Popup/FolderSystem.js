@@ -12,6 +12,8 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
+		FolderStore = require('Stores/User/Folder'),
+
 		Settings = require('Storage/Settings'),
 		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
@@ -43,31 +45,30 @@
 		}, this);
 
 		var
-			self = this,
 			fSaveSystemFolders = null,
 			fCallback = null
 		;
 
-		this.sentFolder = Data.sentFolder;
-		this.draftFolder = Data.draftFolder;
-		this.spamFolder = Data.spamFolder;
-		this.trashFolder = Data.trashFolder;
-		this.archiveFolder = Data.archiveFolder;
+		this.sentFolder = FolderStore.sentFolder;
+		this.draftFolder = FolderStore.draftFolder;
+		this.spamFolder = FolderStore.spamFolder;
+		this.trashFolder = FolderStore.trashFolder;
+		this.archiveFolder = FolderStore.archiveFolder;
 
 		fSaveSystemFolders = _.debounce(function () {
 
-			Settings.settingsSet('SentFolder', self.sentFolder());
-			Settings.settingsSet('DraftFolder', self.draftFolder());
-			Settings.settingsSet('SpamFolder', self.spamFolder());
-			Settings.settingsSet('TrashFolder', self.trashFolder());
-			Settings.settingsSet('ArchiveFolder', self.archiveFolder());
+			Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+			Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+			Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+			Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+			Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 
 			Remote.saveSystemFolders(Utils.emptyFunction, {
-				'SentFolder': self.sentFolder(),
-				'DraftFolder': self.draftFolder(),
-				'SpamFolder': self.spamFolder(),
-				'TrashFolder': self.trashFolder(),
-				'ArchiveFolder': self.archiveFolder(),
+				'SentFolder': FolderStore.sentFolder(),
+				'DraftFolder': FolderStore.draftFolder(),
+				'SpamFolder': FolderStore.spamFolder(),
+				'TrashFolder': FolderStore.trashFolder(),
+				'ArchiveFolder': FolderStore.archiveFolder(),
 				'NullFolder': 'NullFolder'
 			});
 
@@ -75,20 +76,20 @@
 
 		fCallback = function () {
 
-			Settings.settingsSet('SentFolder', self.sentFolder());
-			Settings.settingsSet('DraftFolder', self.draftFolder());
-			Settings.settingsSet('SpamFolder', self.spamFolder());
-			Settings.settingsSet('TrashFolder', self.trashFolder());
-			Settings.settingsSet('ArchiveFolder', self.archiveFolder());
+			Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+			Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+			Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+			Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+			Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 
 			fSaveSystemFolders();
 		};
 
-		this.sentFolder.subscribe(fCallback);
-		this.draftFolder.subscribe(fCallback);
-		this.spamFolder.subscribe(fCallback);
-		this.trashFolder.subscribe(fCallback);
-		this.archiveFolder.subscribe(fCallback);
+		FolderStore.sentFolder.subscribe(fCallback);
+		FolderStore.draftFolder.subscribe(fCallback);
+		FolderStore.spamFolder.subscribe(fCallback);
+		FolderStore.trashFolder.subscribe(fCallback);
+		FolderStore.archiveFolder.subscribe(fCallback);
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 

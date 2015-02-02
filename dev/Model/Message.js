@@ -369,9 +369,8 @@
 	MessageModel.prototype.computeSenderEmail = function ()
 	{
 		var
-			Data = require('Storage/User/Data'),
-			sSent = Data.sentFolder(),
-			sDraft = Data.draftFolder()
+			sSent = require('Stores/User/Folder').sentFolder(),
+			sDraft = require('Stores/User/Folder').draftFolder()
 		;
 
 		this.senderEmailsString(this.folderFullNameRaw === sSent || this.folderFullNameRaw === sDraft ?
@@ -456,7 +455,6 @@
 	{
 		var
 			bResult = false,
-			Data = require('Storage/User/Data'),
 			iPriority = Enums.MessagePriority.Normal
 		;
 
@@ -474,7 +472,7 @@
 
 			this.proxy = !!oJsonMessage.ExternalProxy;
 
-			if (Data.capaOpenPGP())
+			if (require('Stores/User/Pgp').capaOpenPGP())
 			{
 				this.isPgpSigned(!!oJsonMessage.PgpSigned);
 				this.isPgpEncrypted(!!oJsonMessage.PgpEncrypted);
@@ -1134,8 +1132,7 @@
 
 			this.body.data('rl-plain-raw', this.plainRaw);
 
-			var Data = require('Storage/User/Data');
-			if (Data.capaOpenPGP())
+			if (require('Stores/User/Pgp').capaOpenPGP())
 			{
 				this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
 				this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
@@ -1147,8 +1144,7 @@
 
 	MessageModel.prototype.storePgpVerifyDataToDom = function ()
 	{
-		var Data = require('Storage/User/Data');
-		if (this.body && Data.capaOpenPGP())
+		if (this.body && require('Stores/User/Pgp').capaOpenPGP())
 		{
 			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
 			this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
@@ -1164,8 +1160,7 @@
 
 			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
 
-			var Data = require('Storage/User/Data');
-			if (Data.capaOpenPGP())
+			if (require('Stores/User/Pgp').capaOpenPGP())
 			{
 				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
 				this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
@@ -1202,7 +1197,7 @@
 
 			try
 			{
-				mPgpMessage = Data.openpgp.cleartext.readArmored(this.plainRaw);
+				mPgpMessage = PgpStore.openpgp.cleartext.readArmored(this.plainRaw);
 				if (mPgpMessage && mPgpMessage.getText)
 				{
 					this.pgpSignedVerifyStatus(
@@ -1272,7 +1267,7 @@
 
 			try
 			{
-				mPgpMessage = Data.openpgp.message.readArmored(this.plainRaw);
+				mPgpMessage = PgpStore.openpgp.message.readArmored(this.plainRaw);
 				if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
 				{
 					this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
