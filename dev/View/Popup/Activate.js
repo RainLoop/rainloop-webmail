@@ -15,7 +15,6 @@
 		Settings = require('Storage/Settings'),
 		Remote = require('Storage/Admin/Remote'),
 
-		AppStore = require('Stores/Admin/App'),
 		LicenseStore = require('Stores/Admin/License'),
 
 		kn = require('Knoin/Knoin'),

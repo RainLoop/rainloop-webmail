@@ -13,7 +13,6 @@
 
 		AccountStore = require('Stores/User/Account'),
 
-		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
 	;
 

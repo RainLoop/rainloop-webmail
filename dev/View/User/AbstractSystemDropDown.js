@@ -15,7 +15,6 @@
 		AccountStore = require('Stores/User/Account'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
 
 		AbstractView = require('Knoin/AbstractView')

@@ -15,6 +15,8 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
+		PgpStore = require('Stores/User/Pgp'),
+
 		EmailModel = require('Model/Email'),
 		AttachmentModel = require('Model/Attachment'),
 

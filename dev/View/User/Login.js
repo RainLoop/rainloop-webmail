@@ -21,7 +21,6 @@
 		AppStore = require('Stores/User/App'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
 
 		kn = require('Knoin/Knoin'),

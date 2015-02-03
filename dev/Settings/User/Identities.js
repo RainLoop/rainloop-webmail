@@ -15,7 +15,6 @@
 		AccountStore = require('Stores/User/Account'),
 		IdentityStore = require('Stores/User/Identity'),
 
-		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote')
 	;
 

@@ -9,7 +9,6 @@
 
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/User/Data'),
 		PgpStore = require('Stores/User/Pgp'),
 
 		kn = require('Knoin/Knoin'),

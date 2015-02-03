@@ -13,6 +13,7 @@
 		Translator = require('Common/Translator'),
 
 		Data = require('Storage/User/Data'),
+		PgpStore = require('Stores/User/Pgp'),
 
 		EmailModel = require('Model/Email'),
 
