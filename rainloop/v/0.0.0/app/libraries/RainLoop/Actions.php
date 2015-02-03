@@ -5400,11 +5400,14 @@ class Actions
 	 * @throws \RainLoop\Exceptions\ClientException
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
-	private function smtpSendMessage($oAccount, $oMessage, $rMessageStream, $bAddHiddenRcpt = true)
+	private function smtpSendMessage($oAccount, $oMessage, &$rMessageStream, &$iMessageStreamSize, $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if ($oRcpt && 0 < $oRcpt->Count())
 		{
+			$this->Plugins()->RunHook('filter.smtp-message-stream',
+				array($oAccount, &$rMessageStream, &$iMessageStreamSize));
+
 			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, &$oRcpt));
 
 			try
@@ -5560,7 +5563,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize);
 
 					if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
 					{
@@ -5621,7 +5624,7 @@ class Actions
 										\MailSo\Imap\Enumerations\MessageFlag::SEEN
 									));
 
-								if (is_resource($rAppendMessageStream))
+								if (\is_resource($rAppendMessageStream))
 								{
 									@fclose($rAppendMessageStream);
 								}
@@ -5723,7 +5726,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize);
 
 					if (\is_resource($rMessageStream))
 					{
