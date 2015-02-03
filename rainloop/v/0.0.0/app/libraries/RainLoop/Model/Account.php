@@ -65,6 +65,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 		$this->sSignMeToken = $sSignMeToken;
 		$this->sProxyAuthUser = $sProxyAuthUser;
 		$this->sProxyAuthPassword = $sProxyAuthPassword;
+		$this->sParentEmail = '';
 	}
 
 	/**
@@ -226,7 +227,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 */
 	public function SetParentEmail($sParentEmail)
 	{
-		$this->sParentEmail = \MailSo\Base\Utils::IdnToAscii($sParentEmail, true);
+		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
 	/**
