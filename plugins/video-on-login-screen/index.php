@@ -29,6 +29,10 @@ class VideoOnLoginScreenPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetPlaceholder('http://')
 				->SetAllowedInJs(true)
 				->SetDefaultValue(''),
+			\RainLoop\Plugins\Property::NewInstance('playback_rate')->SetLabel('Playback rate')
+				->SetAllowedInJs(true)
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
+				->SetDefaultValue(array('100%', '25%', '50%', '75%', '125%', '150%', '200%')),
 			\RainLoop\Plugins\Property::NewInstance('muted')->SetLabel('Muted')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetAllowedInJs(true)
