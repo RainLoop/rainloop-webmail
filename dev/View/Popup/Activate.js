@@ -9,10 +9,13 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Consts = require('Common/Consts'),
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 		Remote = require('Storage/Admin/Remote'),
+
+		AppStore = require('Stores/Admin/App'),
 		LicenseStore = require('Stores/Admin/License'),
 
 		kn = require('Knoin/Knoin'),
@@ -108,12 +111,14 @@
 	kn.extendAsViewModel(['View/Popup/Activate', 'PopupsActivateViewModel'], ActivatePopupView);
 	_.extend(ActivatePopupView.prototype, AbstractView.prototype);
 
-	ActivatePopupView.prototype.onShow = function ()
+	ActivatePopupView.prototype.onShow = function (bTrial)
 	{
 		this.domain(Settings.settingsGet('AdminDomain'));
 		if (!this.activateProcess())
 		{
-			this.key('');
+			bTrial = Utils.isUnd(bTrial) ? false : !!bTrial;
+
+			this.key(bTrial ? Consts.Values.RainLoopTrialKey : '');
 			this.activateText('');
 			this.activateText.isError(false);
 			this.activationSuccessed(false);
@@ -134,7 +139,8 @@
 	ActivatePopupView.prototype.validateSubscriptionKey = function ()
 	{
 		var sValue = this.key();
-		return '' === sValue || !!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
+		return '' === sValue || Consts.Values.RainLoopTrialKey === sValue ||
+			!!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 	};
 
 	module.exports = ActivatePopupView;

@@ -27,6 +27,8 @@
 		});
 
 		this.interfaceAnimation.valueHasMutated();
+
+		this.prem = ko.observable(false);
 	}
 
 	AppStore.prototype.populate = function()
@@ -35,6 +37,8 @@
 		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
 
 		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
+
+		this.prem(!!Settings.settingsGet('PremType'));
 	};
 
 	module.exports = AppStore;

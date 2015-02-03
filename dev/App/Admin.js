@@ -15,6 +15,7 @@
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
+		AppStore = require('Stores/Admin/App'),
 		DomainStore = require('Stores/Admin/Domain'),
 		PluginStore = require('Stores/Admin/Plugin'),
 		LicenseStore = require('Stores/Admin/License'),
@@ -208,6 +209,8 @@
 				LicenseStore.licenseError('');
 
 				LicenseStore.licensing(true);
+
+				AppStore.prem(true);
 			}
 			else
 			{

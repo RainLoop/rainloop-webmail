@@ -17,10 +17,11 @@
 	{
 		var
 			Enums = require('Common/Enums'),
-			Settings = require('Storage/Settings')
+			Settings = require('Storage/Settings'),
+			AppStore = require('Stores/Admin/App')
 		;
 
-		this.capa = !!Settings.settingsGet('PremType');
+		this.capa = AppStore.prem;
 
 		this.title = ko.observable(Settings.settingsGet('Title'));
 		this.title.trigger = ko.observable(Enums.SaveSettingsStep.Idle);

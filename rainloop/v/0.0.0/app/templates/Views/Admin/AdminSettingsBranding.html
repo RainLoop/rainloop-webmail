@@ -1,10 +1,10 @@
 <div class="b-admin-branding">
-	<div class="row" data-bind="visible: !capa">
+	<div class="row" data-bind="visible: !capa()">
 		<div class="alert span8" style="margin-top: 10px;">
 			This functionality is available for <strong><a href="#/licensing">Premium</a></strong> subscribers.
 		</div>
 	</div>
-	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa}">
+	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
 		<div class="legend">
 			Branding
 		</div>

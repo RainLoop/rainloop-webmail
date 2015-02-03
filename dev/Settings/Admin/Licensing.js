@@ -52,12 +52,17 @@
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Activate'));
 	};
 
+	LicensingAdminSettings.prototype.showTrialForm = function ()
+	{
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Activate'), [true]);
+	};
+
 	/**
 	 * @returns {boolean}
 	 */
 	LicensingAdminSettings.prototype.licenseIsUnlim = function ()
 	{
-		return 1898625600 === this.licenseExpired();
+		return 1898625600 === this.licenseExpired() || 1898625700 === this.licenseExpired();
 	};
 
 	/**
