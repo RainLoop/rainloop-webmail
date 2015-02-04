@@ -758,13 +758,13 @@
 	};
 
 	/**
+	 * @param {string} sInputText
 	 * @param {string} sSignature
 	 * @param {string=} sFrom
-	 * @param {string=} sData
 	 * @param {string=} sComposeType
 	 * @return {string}
 	 */
-	ComposePopupView.prototype.convertSignature = function (sSignature, sFrom, sData, sComposeType)
+	ComposePopupView.prototype.convertSignature = function (sInputText, sSignature, sFrom, sComposeType)
 	{
 		var bHtml = false, bData = false;
 		if ('' !== sSignature)
@@ -801,35 +801,51 @@
 				sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
 			}
 
-			if (sData && Enums.ComposeType.Empty === sComposeType &&
-				-1 < sSignature.indexOf('{{BODY}}'))
+			// Enums.ComposeType.Empty === sComposeType
+			if (-1 < sSignature.indexOf('{{BODY}}'))
 			{
-				bData = true;
-				sSignature = sSignature.replace('{{BODY}}', sData);
+				if (sInputText)
+				{
+					bData = true;
+
+					sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
+					sSignature = sSignature.replace('{{BODY}}', sInputText);
+				}
+				else
+				{
+					sSignature = sSignature.replace(/[\n]?{{BODY}}[\n]?/g, '{{BODY}}');
+					sSignature = sSignature.replace(/{{BODY}}/g, '');
+
+					sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
+				}
 			}
-
-			sSignature = sSignature.replace(/{{BODY}}/g, '');
-
-			if (!bHtml)
+			else
 			{
-				sSignature = Utils.plainToHtml(sSignature, true);
+				sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
 			}
 		}
 
-		if (sData && !bData)
+		if (!bData)
 		{
-			switch (sComposeType)
+			if (sSignature)
 			{
-				case Enums.ComposeType.Empty:
-					sSignature = sData + '<br />' + sSignature;
-					break;
-				default:
-					sSignature = sSignature + '<br />' + sData;
-					break;
+				switch (sComposeType)
+				{
+					case Enums.ComposeType.Empty:
+						sInputText = sInputText + '<br />' + sSignature;
+						break;
+					default:
+						sInputText = sSignature + '<br />' + sInputText;
+						break;
+				}
 			}
 		}
+		else
+		{
+			sInputText = sSignature;
+		}
 
-		return sSignature;
+		return sInputText;
 	};
 
 	ComposePopupView.prototype.editor = function (fOnInit)
@@ -951,7 +967,6 @@
 			oIdResult = null,
 			mEmail = AccountStore.email(),
 			sSignature = AccountStore.signature(),
-			bSignatureToAll = AccountStore.signatureToAll(),
 			aDownloads = [],
 			aDraftInfo = null,
 			oMessage = null,
@@ -1134,10 +1149,10 @@
 					break;
 			}
 
-			if (bSignatureToAll && '' !== sSignature &&
+			if ('' !== sSignature &&
 				Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
 			{
-				sText = this.convertSignature(sSignature, fEmailArrayToStringLineHelper(oMessage.from, true), sText, sComposeType);
+				sText = this.convertSignature(sText, sSignature, fEmailArrayToStringLineHelper(oMessage.from, true), sComposeType);
 			}
 
 			this.editor(function (oEditor) {
@@ -1154,10 +1169,9 @@
 			this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
 
 			sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
-			if (bSignatureToAll && '' !== sSignature)
+			if ('' !== sSignature)
 			{
-				sText = this.convertSignature(sSignature, '',
-					Utils.plainToHtml(sText, true), sComposeType);
+				sText = this.convertSignature(Utils.plainToHtml(sText, true), sSignature, '', sComposeType);
 			}
 
 			this.editor(function (oEditor) {

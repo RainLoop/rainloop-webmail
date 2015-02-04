@@ -24,7 +24,6 @@
 		this.displayName = ko.observable('');
 		this.replyTo = ko.observable('');
 		this.signature = ko.observable('');
-		this.signatureToAll = ko.observable(false);
 
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({'throttle': 100});
@@ -74,7 +73,6 @@
 		this.displayName(Settings.settingsGet('DisplayName'));
 		this.replyTo(Settings.settingsGet('ReplyTo'));
 		this.signature(Settings.settingsGet('Signature'));
-		this.signatureToAll(!!Settings.settingsGet('SignatureToAll'));
 	};
 
 	module.exports = new AccountUserStore();

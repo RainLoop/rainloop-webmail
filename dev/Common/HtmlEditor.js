@@ -140,7 +140,10 @@
 		if (this.editor)
 		{
 			this.modeToggle(true);
-			this.editor.setData(sHtml);
+
+			try {
+				this.editor.setData(sHtml);
+			} catch (e) {}
 
 			if (bFocus)
 			{
@@ -160,7 +163,9 @@
 			}
 			else
 			{
-				this.editor.setData(sPlain);
+				try {
+					this.editor.setData(sPlain);
+				} catch (e) {}
 			}
 
 			if (bFocus)
@@ -273,7 +278,9 @@
 	{
 		if (this.editor)
 		{
-			this.editor.focus();
+			try {
+				this.editor.focus();
+			} catch (e) {}
 		}
 	};
 

@@ -1451,7 +1451,6 @@ class Actions
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
 		$aResult['Signature'] = '';
-		$aResult['SignatureToAll'] = false;
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = true;
@@ -1497,7 +1496,6 @@ class Actions
 			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['DisplayName']);
 			$aResult['ReplyTo'] = $oSettings->GetConf('ReplyTo', $aResult['ReplyTo']);
 			$aResult['Signature'] = $oSettings->GetConf('Signature', $aResult['Signature']);
-			$aResult['SignatureToAll'] = !!$oSettings->GetConf('SignatureToAll', $aResult['SignatureToAll']);
 			$aResult['EnableTwoFactor'] = !!$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
 
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
@@ -4363,7 +4361,6 @@ class Actions
 		$this->setSettingsFromParams($oSettings, 'DisplayName', 'string');
 		$this->setSettingsFromParams($oSettings, 'ReplyTo', 'string');
 		$this->setSettingsFromParams($oSettings, 'Signature', 'string');
-		$this->setSettingsFromParams($oSettings, 'SignatureToAll', 'bool');
 		$this->setSettingsFromParams($oSettings, 'EnableTwoFactor', 'bool');
 
 		return $this->DefaultResponse(__FUNCTION__,

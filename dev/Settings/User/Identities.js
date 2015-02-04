@@ -30,7 +30,6 @@
 
 		this.displayName = AccountStore.displayName;
 		this.signature = AccountStore.signature;
-		this.signatureToAll = AccountStore.signatureToAll;
 		this.replyTo = AccountStore.replyTo;
 
 		this.signatureDom = ko.observable(null);
@@ -216,12 +215,6 @@
 			AccountStore.signature.subscribe(function (sValue) {
 				Remote.saveSettings(f3, {
 					'Signature': sValue
-				});
-			});
-
-			AccountStore.signatureToAll.subscribe(function (bValue) {
-				Remote.saveSettings(null, {
-					'SignatureToAll': bValue ? '1' : '0'
 				});
 			});
 
