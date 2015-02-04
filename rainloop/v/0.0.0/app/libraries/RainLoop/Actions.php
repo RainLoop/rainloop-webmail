@@ -1437,16 +1437,16 @@ class Actions
 		$aResult['UseLocalProxyForExternalImages'] = (bool) $oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
 
 		// user
-		$aResult['EditorDefaultType'] = (string) $oConfig->Get('webmail', 'editor_default_type', '');
 		$aResult['ShowImages'] = (bool) $oConfig->Get('webmail', 'show_images', false);
-		$aResult['ContactsAutosave'] = true;
 		$aResult['MPP'] = (int) $oConfig->Get('webmail', 'messages_per_page', 25);
 		$aResult['SoundNotification'] = false;
 		$aResult['DesktopNotifications'] = false;
-		$aResult['UseThreads'] = false;
-		$aResult['ReplySameFolder'] = false;
-		$aResult['Layout'] = \RainLoop\Enumerations\Layout::SIDE_PREVIEW;
-		$aResult['UseCheckboxesInList'] = true;
+		$aResult['Layout'] = (int) $oConfig->Get('defaults', 'view_layout', \RainLoop\Enumerations\Layout::SIDE_PREVIEW);
+		$aResult['EditorDefaultType'] = (string) $oConfig->Get('defaults', 'view_editor_type', '');
+		$aResult['UseCheckboxesInList'] = (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true);
+		$aResult['UseThreads'] = (bool) $oConfig->Get('defaults', 'mail_use_threads', false);
+		$aResult['ReplySameFolder'] = (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false);
+		$aResult['ContactsAutosave'] = (bool) $oConfig->Get('defaults', 'contacts_autosave', true);
 		$aResult['DefaultIdentityID'] = '';
 		$aResult['DisplayName'] = '';
 		$aResult['ReplyTo'] = '';
@@ -5539,6 +5539,8 @@ class Actions
 	{
 		$oAccount = $this->initMailClientConnection();
 
+		$oConfig = $this->Config();
+
 		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
 		$sSentFolder = $this->GetActionParam('SentFolder', '');
@@ -5691,7 +5693,9 @@ class Actions
 					$oSettings = $this->SettingsProvider()->Load($oAccount);
 
 					$this->AddressBookProvider($oAccount)->IncFrec(
-						$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec), !!$oSettings->GetConf('ContactsAutosave', true));
+						$oAccount->ParentEmailHelper(), \array_values($aArrayToFrec),
+							!!$oSettings->GetConf('ContactsAutosave',
+								!!$oConfig->Get('defaults', 'contacts_autosave', true)));
 				}
 			}
 		}

@@ -73,8 +73,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'messages_per_page'		=> array(20, ' Number of messages displayed on page by default'),
 
-				'editor_default_type'	=> array('Html', 'Editor mode used by default (Html or Plain)'),
-
 				'attachment_size_limit'	=> array(25,
 					'File size limit (MB) for file upload on compose screen
 0 for unlimited.')
@@ -160,6 +158,15 @@ Values:
 			'plugins' => array(
 				'enable'		=> array(false, 'Enable plugin support'),
 				'enabled_list'	=> array('', 'List of enabled plugins'),
+			),
+
+			'defaults' => array(
+				'view_editor_type'		=> array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
+				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 3 - bottom preview'),
+				'view_use_checkboxes'	=> array(true),
+				'contacts_autosave'		=> array(true),
+				'mail_use_threads'		=> array(false),
+				'mail_reply_same_folder' => array(false)
 			),
 
 			'logs' => array(
