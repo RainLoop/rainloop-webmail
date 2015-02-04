@@ -71,7 +71,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		{
 			$mResult = @\fopen($sFileName, $sOpenMode);
 		}
-		
+
 		return $mResult;
 	}
 
@@ -107,7 +107,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		{
 			$mResult = @\unlink($sFileName);
 		}
-		
+
 		return $mResult;
 	}
 
@@ -125,7 +125,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		{
 			$mResult = \filesize($sFileName);
 		}
-		
+
 		return $mResult;
 	}
 
@@ -165,13 +165,28 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	 */
 	private function generateFileName($oAccount, $sKey, $bMkDir = false)
 	{
-		$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', 
-			('' === $oAccount->ParentEmail() ? '' : $oAccount->ParentEmail().'/').$oAccount->Email());
+		$sEmail = $sSubEmail = '';
+		if ($oAccount instanceof \RainLoop\Model\Account)
+		{
+			$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', $oAccount->ParentEmailHelper());
+			if ($oAccount->IsAdditionalAccount())
+			{
+				$sSubEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', $oAccount->Email());
+			}
+		}
+
+		if (empty($sEmail))
+		{
+			$sEmail = '__unknown__';
+		}
 
 		$sKeyPath = \sha1($sKey);
 		$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
 
-		$sFilePath = $this->sDataPath.'/'.rtrim(substr($sEmail, 0, 2), '@').'/'.$sEmail.'/'.$sKeyPath;
+		$sFilePath = $this->sDataPath.'/'.
+			\str_pad(\rtrim(\substr($sEmail, 0, 2), '@'), 2, '_').'/'.$sEmail.'/'.
+			(0 < \strlen($sSubEmail) ? $sSubEmail.'/' : '').
+			$sKeyPath;
 
 		if ($bMkDir && !empty($sFilePath) && !@\is_dir(\dirname($sFilePath)))
 		{

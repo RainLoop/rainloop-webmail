@@ -620,7 +620,6 @@ class ServiceActions
 
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
 		$bJson = !empty($this->aPaths[9]) && 'Json' === $this->aPaths[9];
-		$sHash = !empty($this->aPaths[8]) && 5 < \strlen($this->aPaths[8]) ? $this->aPaths[8] : '';
 
 		if ($bJson)
 		{
@@ -652,7 +651,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash(), $sHash);
+				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -690,15 +689,6 @@ class ServiceActions
 					$aResult[] = $this->Plugins()->CompileCss($bAdmin);
 
 					$sResult = $oLess->compile(\implode("\n", $aResult));
-
-					if (!empty($sHash))
-					{
-						$sResult .= "\n".'.thm-body {'.
-							'background-image:none;'.
-							'background-image: url("./?/Raw/0/Public/'.$sHash.'/") !important;'.
-							'-moz-background-size:cover;-webkit-background-size:cover;background-size:cover;'.
-						'}';
-					}
 
 					if ($bCacheEnabled)
 					{
@@ -1034,7 +1024,9 @@ class ServiceActions
 	 */
 	public function ServiceChange()
 	{
-		if ($this->Config()->Get('webmail', 'allow_additional_accounts', true))
+		$oAccount = $this->oActions->GetAccount();
+
+		if ($oAccount && $this->oActions->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$oAccountToLogin = null;
 			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
@@ -1042,14 +1034,10 @@ class ServiceActions
 			{
 				$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
-				$oAccount = $this->oActions->GetAccount();
-				if ($oAccount)
+				$aAccounts = $this->oActions->GetAccounts($oAccount);
+				if (isset($aAccounts[$sEmail]))
 				{
-					$aAccounts = $this->oActions->GetAccounts($oAccount);
-					if (isset($aAccounts[$sEmail]))
-					{
-						$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail], false, false);
-					}
+					$oAccountToLogin = $this->oActions->GetAccountFromCustomToken($aAccounts[$sEmail], false, false);
 				}
 			}
 

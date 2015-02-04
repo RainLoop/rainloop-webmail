@@ -196,6 +196,7 @@ class Social
 
 			$oSettings->SetConf('GoogleAccessToken', '');
 			$oSettings->SetConf('GoogleSocialName', '');
+
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 		}
 
@@ -260,6 +261,7 @@ class Social
 
 			$oSettings->SetConf('TwitterAccessToken', '');
 			$oSettings->SetConf('TwitterSocialName', '');
+			
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 		}
 

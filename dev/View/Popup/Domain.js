@@ -70,8 +70,6 @@
 		this.name = ko.observable('');
 		this.name.focused = ko.observable(false);
 
-		this.allowSieve = CapaAdminStore.sieve;
-
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
@@ -90,6 +88,10 @@
 		this.whiteList = ko.observable('');
 
 		this.enableSmartPorts = ko.observable(false);
+
+		this.allowSieve = ko.computed(function () {
+			return CapaAdminStore.filters() && CapaAdminStore.sieve();
+		}, this);
 
 		this.headerText = ko.computed(function () {
 			var sName = this.name();

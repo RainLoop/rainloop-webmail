@@ -1,10 +1,6 @@
 RainLoop Webmail
 ==================
 
-[![Flattr donate button](http://api.flattr.com/button/button-static-50x60.png "Flattr This!")](https://flattr.com/thing/2999968 "RainLoop Webmail")
-
-## About
-
 Simple, modern &amp; fast web-based email client.
 
 Modest system requirements, decent performance, simple installation and upgrade, no database required - all these make RainLoop Webmail a perfect choice for your email solution.

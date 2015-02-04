@@ -10,11 +10,17 @@ class Settings
 	protected $aData;
 
 	/**
+	 * @var bool
+	 */
+	protected $bLocal;
+
+	/**
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct($bLocal = false)
 	{
 		$this->aData = array();
+		$this->bLocal = !!$bLocal;
 	}
 
 	/**
@@ -38,6 +44,14 @@ class Settings
 	public function DataAsArray()
 	{
 		return $this->aData;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsLocal()
+	{
+		return $this->bLocal;
 	}
 
 	/**

@@ -43,6 +43,7 @@
 		'Themes': 'THEMES',
 		'UserBackground': 'USER_BACKGROUND',
 		'Sieve': 'SIEVE',
+		'Filters': 'FILTERS',
 		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
@@ -224,7 +225,7 @@
 		'HtmlForced': 'HtmlForced',
 		'PlainForced': 'PlainForced'
 	};
-	
+
 	/**
 	 * @enum {number}
 	 */

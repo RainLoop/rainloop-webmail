@@ -21,6 +21,7 @@
 		this.gravatar = ko.observable(false);
 		this.attachmentThumbnails = ko.observable(false);
 		this.sieve = ko.observable(false);
+		this.filters = ko.observable(false);
 		this.themes = ko.observable(true);
 		this.userBackground = ko.observable(false);
 		this.openPGP = ko.observable(false);
@@ -34,6 +35,7 @@
 		this.gravatar(Settings.capa(Enums.Capa.Gravatar));
 		this.attachmentThumbnails(Settings.capa(Enums.Capa.AttachmentThumbnails));
 		this.sieve(Settings.capa(Enums.Capa.Sieve));
+		this.filters(Settings.capa(Enums.Capa.Filters));
 		this.themes(Settings.capa(Enums.Capa.Themes));
 		this.userBackground(Settings.capa(Enums.Capa.UserBackground));
 		this.openPGP(Settings.capa(Enums.Capa.OpenPGP));

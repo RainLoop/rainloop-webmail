@@ -32,4 +32,9 @@ interface StorageInterface
 	 * @return bool
 	 */
 	public function Clear($oAccount, $iStorageType, $sKey);
+
+	/**
+	 * @return bool
+	 */
+	public function IsLocal();
 }

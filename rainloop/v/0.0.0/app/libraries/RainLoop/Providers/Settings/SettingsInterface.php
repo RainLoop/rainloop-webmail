@@ -20,9 +20,9 @@ interface SettingsInterface
 	public function Save($oAccount, array $aSettings);
 
 	/**
-	 * @param string $sEmail
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
-	public function ClearByEmail($sEmail);
+	public function Delete($oAccount);
 }

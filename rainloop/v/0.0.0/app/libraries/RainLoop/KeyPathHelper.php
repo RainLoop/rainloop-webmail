@@ -5,36 +5,6 @@ namespace RainLoop;
 class KeyPathHelper
 {
 	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	static public function TwoFactorAuthUserData($sEmail)
-	{
-		return 'TwoFactorAuth/User/'.$sEmail.'/Data/';
-	}
-
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	static public function WebmailAccounts($sEmail)
-	{
-		return 'Webmail/Accounts/'.$sEmail.'/Array';
-	}
-
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	static public function WebmailAccountsOrder($sEmail)
-	{
-		return 'Webmail/AccountsSortOrder/'.$sEmail.'/Array';
-	}
-
-	/**
 	 * @param string $sHash
 	 *
 	 * @return string
@@ -161,13 +131,13 @@ class KeyPathHelper
 
 	/**
 	 * @param string $sTheme
-	 * @param string $sPluginsHash
+	 * @param string $sHash
 	 * @param string $sPublickHash
 	 *
 	 * @return string
 	 */
-	static public function CssCache($sTheme, $sPluginsHash, $sPublickHash = '')
+	static public function CssCache($sTheme, $sHash)
 	{
-		return '/CssCache/'.$sPluginsHash.'/'.$sPublickHash.'/'.$sTheme.'/'.APP_VERSION.'/';
+		return '/CssCache/'.$sHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}
 }

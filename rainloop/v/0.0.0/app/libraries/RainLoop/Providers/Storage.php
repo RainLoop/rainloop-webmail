@@ -18,15 +18,15 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account|string|null $oAccount
+	 * @param \RainLoop\Model\Account|string|null $mAccount
 	 * @param int $iStorageType
 	 *
 	 * @return bool
 	 */
-	public function verifyAccount($oAccount, $iStorageType)
+	private function verifyAccount($mAccount, $iStorageType)
 	{
 		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType &&
-			!($oAccount instanceof \RainLoop\Model\Account || \is_string($oAccount)))
+			!($mAccount instanceof \RainLoop\Model\Account || \is_string($mAccount)))
 		{
 			return false;
 		}
@@ -83,8 +83,18 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 		{
 			return false;
 		}
-		
+
 		return $this->oDriver->Clear($oAccount, $iStorageType, $sKey);
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account|string $oAccount
+	 *
+	 * @return bool
+	 */
+	public function DeleteStorage($oAccount)
+	{
+		return $this->oDriver->DeleteStorage($oAccount);
 	}
 
 	/**
@@ -93,5 +103,14 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	public function IsActive()
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Storage\StorageInterface;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsLocal()
+	{
+		return $this->oDriver instanceof \RainLoop\Providers\Storage\StorageInterface &&
+			$this->oDriver->IsLocal();
 	}
 }

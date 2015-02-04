@@ -128,6 +128,14 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @return string
 	 */
+	public function IsAdditionalAccount()
+	{
+		return 0 < \strlen($this->sParentEmail);
+	}
+
+	/**
+	 * @return string
+	 */
 	public function IncLogin()
 	{
 		$sLogin = $this->sLogin;

@@ -169,26 +169,8 @@ class Api
 			$oStorageProvider = \RainLoop\Api::Actions()->StorageProvider();
 			if ($oStorageProvider && $oStorageProvider->IsActive())
 			{
-				// TwoFactor Auth User Data
-				$oStorageProvider->Clear(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::TwoFactorAuthUserData($sEmail)
-				);
-
-				// Accounts list
-				$oStorageProvider->Clear(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::WebmailAccounts($sEmail)
-				);
-
-				// Contact sync data
-				$oStorageProvider->Clear($sEmail,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-					'contacts_sync'
-				);
+				$oStorageProvider->DeleteStorage($sEmail);
 			}
-
-			\RainLoop\Api::Actions()->SettingsProvider()->ClearByEmail($sEmail);
 
 			if (\RainLoop\Api::Actions()->AddressBookProvider() &&
 				\RainLoop\Api::Actions()->AddressBookProvider()->IsActive())
