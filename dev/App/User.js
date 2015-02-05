@@ -126,10 +126,10 @@
 		{
 			_.delay(function () {
 				$('#rl-bg').attr('style', 'background-image: none !important;')
-						.backstretch(Links.publicLink(Settings.settingsGet('UserBackgroundHash')), {
-					'fade': Globals.bAnimationSupported ? 1000 : 0
+						.backstretch(Links.userBackground(Settings.settingsGet('UserBackgroundHash')), {
+					'fade': Globals.bAnimationSupported ? 1000 : 0, 'centeredX': true, 'centeredY': true
 				}).removeAttr('style');
-			}, 2000);
+			}, 1000);
 		}
 
 		this.socialUsers = _.bind(this.socialUsers, this);

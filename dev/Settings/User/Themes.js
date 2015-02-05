@@ -5,6 +5,7 @@
 
 	var
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 
 		Jua = require('Jua'),
@@ -49,7 +50,7 @@
 				oTheme.selected(sValue === oTheme.name);
 			});
 
-			Utils.changeTheme(sValue, this.background.hash(), this.themeTrigger, Links);
+			Utils.changeTheme(sValue, this.themeTrigger);
 
 			Remote.saveSettings(null, {
 				'Theme': sValue
@@ -58,7 +59,23 @@
 		}, this);
 
 		this.background.hash.subscribe(function (sValue) {
-			Utils.changeTheme(this.theme(), sValue, this.themeTrigger, Links);
+
+			var $oBg = $('#rl-bg');
+			if (!sValue)
+			{
+				if ($oBg.data('backstretch'))
+				{
+					$oBg.backstretch('destroy').attr('style', '');
+				}
+			}
+			else
+			{
+				$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(
+					Links.userBackground(sValue), {
+						'fade': 1000, 'centeredX': true, 'centeredY': true
+					}).removeAttr('style');
+			}
+
 		}, this);
 	}
 

@@ -172,6 +172,16 @@
 	};
 
 	/**
+	 * @param {string} sHash
+	 * @return {string}
+	 */
+	Links.prototype.userBackground = function (sHash)
+	{
+		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/UserBackground/' +
+			this.sSubSubQuery + sHash;
+	};
+
+	/**
 	 * @param {string} sInboxFolderName = 'INBOX'
 	 * @return {string}
 	 */

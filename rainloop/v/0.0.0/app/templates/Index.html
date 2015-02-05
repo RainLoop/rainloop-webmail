@@ -12,6 +12,7 @@
 			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
 		<![endif]-->
 		<script data-cfasync="false">
+			window.__rlt__ = (new Date).getTime();
 			if (!window.navigator || !window.navigator.cookieEnabled) {
 				window.document.location.replace('./?/NoCookie');
 			}
@@ -100,8 +101,10 @@
 					.wait(function () {
 						__simplePace(20);
 						if (window.rainloopAppData['IncludeBackground']) {
-							$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(window.rainloopAppData['IncludeBackground'], {
-								'fade': 1000
+							$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(
+								window.rainloopAppData['IncludeBackground'].replace('{{USER}}',
+									(window.__rlah ? window.__rlah() || '0' : '0')), {
+								'fade': 100, 'centeredX': true, 'centeredY': true
 							}).removeAttr('style');
 						}
 					})

@@ -1614,7 +1614,7 @@
 	Utils.__themeTimer = 0;
 	Utils.__themeAjax = null;
 
-	Utils.changeTheme = function (sValue, sHash, themeTrigger, Links)
+	Utils.changeTheme = function (sValue, themeTrigger)
 	{
 		var
 			oThemeLink = $('#rlThemeLink'),
@@ -1670,26 +1670,6 @@
 						else
 						{
 							oThemeStyle.text(aData[1]);
-						}
-					}
-
-					if (Links)
-					{
-						var $oBg = $('#rl-bg');
-						if (!sHash)
-						{
-							if ($oBg.data('backstretch'))
-							{
-								$oBg.backstretch('destroy').attr('style', '');
-							}
-						}
-						else
-						{
-							$oBg.backstretch(Links.publicLink(sHash), {
-								'fade': Globals.bAnimationSupported ? 1000 : 0,
-								'centeredX': true,
-								'centeredY': true
-							});
 						}
 					}
 

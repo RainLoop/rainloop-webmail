@@ -1567,11 +1567,11 @@ class Actions
 			{
 				$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 				$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-
-				if (!empty($aResult['UserBackgroundHash'])) // TODO
-				{
-					$aResult['IncludeBackground'] = './?/Raw/0/Public/'.$aResult['UserBackgroundHash'].'/';
-				}
+//				if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
+//				{
+//					$aResult['IncludeBackground'] = './?/Raw/&s=/{{USER}}/UserBackground/&ss=/'.
+//						$aResult['UserBackgroundHash'].'/';
+//				}
 			}
 
 			$aResult['DefaultIdentityID'] = $oSettingsLocal->GetConf('DefaultIdentityID', $oAccount ? $oAccount->Email() : $aResult['DefaultIdentityID']);
@@ -1593,10 +1593,10 @@ class Actions
 			$aResult['AllowTwitterSocial'] = false;
 		}
 
-		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash().$aResult['UserBackgroundHash']);
+		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
 		$sTheme = $this->ValidateTheme($sTheme);
-		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/';
+		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/-/';
 
 		$bUserLanguage = false;
 		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
@@ -5703,35 +5703,16 @@ class Actions
 					{
 						try
 						{
-							if (!$oMessage->GetBcc())
+							if (\is_resource($rMessageStream))
 							{
-								if (\is_resource($rMessageStream))
-								{
-									\rewind($rMessageStream);
-								}
-
-								$this->MailClient()->MessageAppendStream(
-									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
-										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-									));
+								\rewind($rMessageStream);
 							}
-							else
-							{
-								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
-								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
-
-								$this->MailClient()->MessageAppendStream(
-									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
-										\MailSo\Imap\Enumerations\MessageFlag::SEEN
-									));
-
-								if (\is_resource($rAppendMessageStream))
-								{
-									@fclose($rAppendMessageStream);
-								}
-							}
+							$this->MailClient()->MessageAppendStream(
+								$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
+									\MailSo\Imap\Enumerations\MessageFlag::SEEN
+								)
+							);
 						}
 						catch (\Exception $oException)
 						{
@@ -5900,8 +5881,7 @@ class Actions
 	{
 		$mResult = null;
 
-		$sData = $this->StorageProvider()->Get(
-			$oAccount,
+		$sData = $this->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'contacts_sync'
 		);
@@ -5943,8 +5923,7 @@ class Actions
 
 		$mData = $this->getContactsSyncData($oAccount);
 
-		$bResult = $this->StorageProvider()->Put(
-			$oAccount,
+		$bResult = $this->StorageProvider()->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'contacts_sync',
 			\RainLoop\Utils::EncodeKeyValues(array(
@@ -6988,14 +6967,10 @@ class Actions
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
 		if ($oAccount && $oSettings)
 		{
-			$sHash = $oSettings->GetConf('UserBackgroundHash', '');
-			if (!empty($sHash))
-			{
-				$this->StorageProvider()->Clear(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::PublicFile($sHash)
-				);
-			}
+			$this->StorageProvider()->Clear($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'background'
+			);
 
 			$oSettings->SetConf('UserBackgroundName', '');
 			$oSettings->SetConf('UserBackgroundHash', '');
@@ -7041,43 +7016,30 @@ class Actions
 						$sData = @\stream_get_contents($rData);
 						if (!empty($sData) && 0 < \strlen($sData))
 						{
-							$iLimit = 3;
-							while (true)
+							$sName = $aFile['name'];
+							if (empty($sName))
 							{
-								$iLimit--;
-								if (0 > $iLimit)
-								{
-									$sHash = '';
-									break;
-								}
-
-								$sHash = \sha1($sSavedName.\microtime(true).\rand(10000, 99999));
-								if (!$this->StorageProvider()->Get(null,
-									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-									\RainLoop\KeyPathHelper::PublicFile($sHash), null))
-								{
-									break;
-								}
+								$sName = '_';
 							}
 
-							if (!empty($sHash))
-							{
-								if ($this->StorageProvider()->Put(null,
-									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-									\RainLoop\KeyPathHelper::PublicFile($sHash),
-									'data:'.$sMimeType.':'.$sData
+							if ($this->StorageProvider()->Put($oAccount,
+								\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+								'background',
+								\json_encode(array(
+									'Name' => $aFile['name'],
+									'ContentType' => $sMimeType,
+									'Raw' => \base64_encode($sData)
 								))
+							))
+							{
+								$oSettings = $this->SettingsProvider()->Load($oAccount);
+								if ($oSettings)
 								{
-									$sName = $aFile['name'];
+									$sHash = \md5($sName.APP_VERSION.APP_SALT.\rand(1000, 9999).\microtime(true));
 
-									$oSettings = $this->SettingsProvider()->Load($oAccount);
-									if ($oSettings)
-									{
-										$oSettings->SetConf('UserBackgroundName', $sName);
-										$oSettings->SetConf('UserBackgroundHash', $sHash);
-
-										$this->SettingsProvider()->Save($oAccount, $oSettings);
-									}
+									$oSettings->SetConf('UserBackgroundName', $sName);
+									$oSettings->SetConf('UserBackgroundHash', $sHash);
+									$this->SettingsProvider()->Save($oAccount, $oSettings);
 								}
 							}
 						}
@@ -7620,6 +7582,42 @@ class Actions
 	public function RawViewThumbnail()
 	{
 		return $this->rawSmart(false, true);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function RawUserBackground()
+	{
+		$sRawKey = (string) $this->GetActionParam('RawKey', '');
+		$this->verifyCacheByKey($sRawKey);
+
+		$oAccount = $this->getAccountFromToken();
+
+		$sData = $this->StorageProvider()->Get($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'background'
+		);
+
+		if (!empty($sData))
+		{
+			$aData = \json_decode($sData, true);
+			unset($sData);
+
+			if (!empty($aData['ContentType']) && !empty($aData['Raw']) &&
+				\in_array($aData['ContentType'], array('image/png', 'image/jpg', 'image/jpeg')))
+			{
+				$this->cacheByKey($sRawKey);
+
+				@\header('Content-Type: '.$aData['ContentType']);
+				echo \base64_decode($aData['Raw']);
+				unset($aData);
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
