@@ -143,38 +143,42 @@
 			sMailToUrl = sMailToUrl.toString().substr(7);
 
 			var
+				aTo = [],
+				aCc = null,
+				aBcc = null,
 				oParams = {},
-				oToEmailModel = null,
-				oCcEmailModel = null,
-				oBccEmailModel = null,
+				EmailModel = require('Model/Email'),
 				sEmail = sMailToUrl.replace(/\?.+$/, ''),
 				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
-				EmailModel = require('Model/Email')
+				fParseEmailLine = function (sLine) {
+					return sLine ? _.compact(_.map(window.decodeURIComponent(sLine).split(/[,]/), function (sItem) {
+						var oEmailModel = new EmailModel();
+						oEmailModel.mailsoParse(sItem);
+						return '' !== oEmailModel.email ? oEmailModel : null;
+					})) : null;
+				}
 			;
 
-			oToEmailModel = new EmailModel();
-			oToEmailModel.parse(window.decodeURIComponent(sEmail));
+			aTo = fParseEmailLine(sEmail);
 
 			oParams = Utils.simpleQueryParser(sQueryString);
 
 			if (!Utils.isUnd(oParams.cc))
 			{
-				oCcEmailModel = new EmailModel();
-				oCcEmailModel.parse(window.decodeURIComponent(oParams.cc));
+				aCc = fParseEmailLine(window.decodeURIComponent(oParams.cc));
 			}
 
 			if (!Utils.isUnd(oParams.bcc))
 			{
-				oBccEmailModel = new EmailModel();
-				oBccEmailModel.parse(window.decodeURIComponent(oParams.bcc));
+				aBcc = fParseEmailLine(window.decodeURIComponent(oParams.bcc));
 			}
 
 			require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null,
-				oToEmailModel && oToEmailModel.email ? [oToEmailModel] : null,
-				oCcEmailModel && oCcEmailModel.email ? [oCcEmailModel] : null,
-				oBccEmailModel && oBccEmailModel.email ? [oBccEmailModel] : null,
-				Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
-				Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
+				aTo, aCc, aBcc,
+				Utils.isUnd(oParams.subject) ? null :
+					Utils.pString(window.decodeURIComponent(oParams.subject)),
+				Utils.isUnd(oParams.body) ? null :
+					Utils.plainToHtml(Utils.pString(window.decodeURIComponent(oParams.body)))
 			]);
 
 			return true;
