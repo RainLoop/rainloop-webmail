@@ -108,7 +108,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
 		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
-		$this->iRequestTime = microtime(true);
+		$this->iRequestTime = \microtime(true);
 
 		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
 
@@ -164,9 +164,9 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			{
 				if ($this->IsAuthSupported('PLAIN'))
 				{
-					$sAuth = base64_encode($sLoginAuthKey."\0".$sLogin."\0".$sPassword);
+					$sAuth = \base64_encode($sLoginAuthKey."\0".$sLogin."\0".$sPassword);
 
-					$this->sendRequest('AUTHENTICATE "PLAIN" {'.strlen($sAuth).'+}');
+					$this->sendRequest('AUTHENTICATE "PLAIN" {'.\strlen($sAuth).'+}');
 					$this->sendRequest($sAuth);
 
 					$mResponse = $this->parseResponse();
@@ -176,13 +176,13 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				}
 				else if ($this->IsAuthSupported('LOGIN'))
 				{
-					$sLogin = base64_encode($sLogin);
-					$sPassword = base64_encode($sPassword);
+					$sLogin = \base64_encode($sLogin);
+					$sPassword = \base64_encode($sPassword);
 
 					$this->sendRequest('AUTHENTICATE "LOGIN"');
-					$this->sendRequest('{'.strlen($sLogin).'+}');
+					$this->sendRequest('{'.\strlen($sLogin).'+}');
 					$this->sendRequest($sLogin);
-					$this->sendRequest('{'.strlen($sPassword).'+}');
+					$this->sendRequest('{'.\strlen($sPassword).'+}');
 					$this->sendRequest($sPassword);
 
 					$mResponse = $this->parseResponse();
@@ -248,7 +248,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($mResponse);
 
 		$aResult = array();
-		if (is_array($mResponse))
+		if (\is_array($mResponse))
 		{
 			foreach ($mResponse as $sLine)
 			{
@@ -309,16 +309,16 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->validateResponse($mResponse);
 
 		$sScript = '';
-		if (is_array($mResponse) && 0 < count($mResponse))
+		if (\is_array($mResponse) && 0 < \count($mResponse))
 		{
 			if ('{' === $mResponse[0]{0})
 			{
-				array_shift($mResponse);
+				\array_shift($mResponse);
 			}
 
 			if (\in_array(\substr($mResponse[\count($mResponse) - 1], 0, 2), array('OK', 'NO')))
 			{
-				array_pop($mResponse);
+				\array_pop($mResponse);
 			}
 
 			$sScript = \implode("\n", $mResponse);
@@ -338,9 +338,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function PutScript($sScriptName, $sScriptSource)
 	{
-		$sScriptSource = stripslashes($sScriptSource);
-
-		$this->sendRequest('PUTSCRIPT "'.$sScriptName.'" {'.strlen($sScriptSource).'+}');
+		$this->sendRequest('PUTSCRIPT "'.$sScriptName.'" {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
 
 		return $this;
@@ -356,9 +354,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function CheckScript($sScriptSource)
 	{
-		$sScriptSource = stripslashes($sScriptSource);
-
-		$this->sendRequest('CHECKSCRIPT {'.strlen($sScriptSource).'+}');
+		$this->sendRequest('CHECKSCRIPT {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
 
 		return $this;
@@ -403,7 +399,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	public function GetActiveScriptName()
 	{
 		$aList = $this->ListScripts();
-		if (is_array($aList) && 0 < count($aList))
+		if (\is_array($aList) && 0 < \count($aList))
 		{
 			foreach ($aList as $sName => $bIsActive)
 			{
@@ -466,7 +462,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sCommand
+	 * @param string $mResponse
 	 *
 	 * @return void
 	 *
@@ -559,7 +555,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 					$this->getNextBuffer($iLen, true);
 
-					if (strlen($this->sResponseBuffer) === $iLen)
+					if (\strlen($this->sResponseBuffer) === $iLen)
 					{
 						$sLine = \trim(\substr_replace($sLine, $this->sResponseBuffer, $iPos));
 					}
