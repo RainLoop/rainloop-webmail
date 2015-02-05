@@ -20,6 +20,7 @@
 		LanguageStore = require('Stores/Language'),
 		AppStore = require('Stores/User/App'),
 
+		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
 		Remote = require('Storage/User/Remote'),
 
@@ -215,6 +216,8 @@
 						this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
 					);
 
+					Local.set(Enums.ClientSideKeyName.LastSignMe, !!this.signMe() ? '-1-' : '-0-');
+
 				}, this)
 			;
 
@@ -322,6 +325,8 @@
 	{
 		var
 			self = this,
+			sSignMeLocal = Local.get(Enums.ClientSideKeyName.LastSignMe),
+			sSignMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase(),
 			sJsHash = Settings.settingsGet('JsHash'),
 			fSocial = function (iErrorCode) {
 				iErrorCode = Utils.pInt(iErrorCode);
@@ -342,13 +347,24 @@
 		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
 			!!Settings.settingsGet('AllowGoogleSocialAuth'));
 
-		switch ((Settings.settingsGet('SignMe') || 'unused').toLowerCase())
+		switch (sSignMe)
 		{
 			case Enums.LoginSignMeTypeAsString.DefaultOff:
-				this.signMeType(Enums.LoginSignMeType.DefaultOff);
-				break;
 			case Enums.LoginSignMeTypeAsString.DefaultOn:
-				this.signMeType(Enums.LoginSignMeType.DefaultOn);
+				
+				this.signMeType(Enums.LoginSignMeTypeAsString.DefaultOn === sSignMe ?
+					Enums.LoginSignMeType.DefaultOn : Enums.LoginSignMeType.DefaultOff);
+
+				switch (sSignMeLocal)
+				{
+					case '-1-':
+						this.signMeType(Enums.LoginSignMeType.DefaultOn);
+						break;
+					case '-0-':
+						this.signMeType(Enums.LoginSignMeType.DefaultOff);
+						break;
+				}
+
 				break;
 			default:
 			case Enums.LoginSignMeTypeAsString.Unused:

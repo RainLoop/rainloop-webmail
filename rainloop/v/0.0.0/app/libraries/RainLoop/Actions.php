@@ -531,13 +531,21 @@ class Actions
 
 			if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
 			{
-				\RainLoop\Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY, $oAccount->SignMeToken(),
+				\RainLoop\Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
+					\RainLoop\Utils::EncodeKeyValues(array(
+						'e' => $oAccount->Email(),
+						't' => $oAccount->SignMeToken()
+					)),
 					\time() + 60 * 60 * 24 * 30, '/', null, null, true);
 
-				$this->StorageProvider()->Put(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::SignMeUserToken($oAccount->SignMeToken()),
-					$oAccount->GetAuthToken()
+				$this->StorageProvider()->Put($oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'sign_me',
+					\RainLoop\Utils::EncodeKeyValues(array(
+						'Time' => \time(),
+						'AuthToken' => $oAccount->GetAuthToken(),
+						'SignMetToken' => $oAccount->SignMeToken()
+					))
 				);
 			}
 		}
@@ -1136,10 +1144,30 @@ class Actions
 		$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
 		if (!empty($sSignMeToken))
 		{
-			$oAccount = $this->GetAccountFromCustomToken($this->StorageProvider()->Get(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-				\RainLoop\KeyPathHelper::SignMeUserToken($sSignMeToken)
-			), false, false);
+			$aTokenData = \RainLoop\Utils::DecodeKeyValues($sSignMeToken);
+			if (\is_array($aTokenData) && !empty($aTokenData['e']) && !empty($aTokenData['t']))
+			{
+				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'sign_me'
+				);
+
+				if (!empty($sTokenSettings))
+				{
+					$aSignMeData = \RainLoop\Utils::DecodeKeyValues($sTokenSettings);
+					if (\is_array($aSignMeData) &&
+						!empty($aSignMeData['AuthToken']) &&
+						!empty($aSignMeData['SignMetToken']) &&
+						$aSignMeData['SignMetToken'] === $aTokenData['t'])
+					{
+						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false);
+					}
+				}
+			}
+		}
+		else
+		{
+			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 
 		return $oAccount;
@@ -2671,9 +2699,9 @@ class Actions
 		{
 			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY);
 
-			$this->StorageProvider()->Clear(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-				\RainLoop\KeyPathHelper::SignMeUserToken($oAccount->SignMeToken())
+			$this->StorageProvider()->Clear($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'sign_me'
 			);
 		}
 	}

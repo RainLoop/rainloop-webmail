@@ -35,16 +35,6 @@ class KeyPathHelper
 	}
 
 	/**
-	 * @param string $sSignMeToken
-	 *
-	 * @return string
-	 */
-	static public function SignMeUserToken($sSignMeToken)
-	{
-		return '/SignMe/UserToken/'.$sSignMeToken;
-	}
-
-	/**
 	 * @param string $sDomain
 	 *
 	 * @return string
