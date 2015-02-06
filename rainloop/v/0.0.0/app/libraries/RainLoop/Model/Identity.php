@@ -30,35 +30,36 @@ class Identity
 	private $sBcc;
 
 	/**
-	 * @param string $sId
-	 * @param string $sEmail
-	 * @param string $sName
-	 * @param string $sReplyTo
-	 * @param string $sBcc
+	 * @param string $sId = ''
+	 * @param string $sEmail = ''
 	 *
 	 * @return void
 	 */
-	protected function __construct($sId, $sEmail, $sName, $sReplyTo, $sBcc)
+	protected function __construct($sId = '', $sEmail = '')
 	{
 		$this->sId = $sId;
-		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		$this->sName = \trim($sName);
-		$this->sReplyTo = \trim($sReplyTo);
-		$this->sBcc = \trim($sBcc);
+		$this->sEmail = $sEmail;
+		$this->sName = '';
+		$this->sReplyTo = '';
+		$this->sBcc = '';
 	}
 
 	/**
-	 * @param string $sId
-	 * @param string $sEmail
-	 * @param string $sName = ''
-	 * @param string $sReplyTo = ''
-	 * @param string $sBcc = ''
+	 * @return \RainLoop\Model\Identity
+	 */
+	public static function NewInstance()
+	{
+		return new self();
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return \RainLoop\Model\Identity
 	 */
-	public static function NewInstance($sId, $sEmail, $sName = '', $sReplyTo = '', $sBcc = '')
+	public static function NewInstanceFromAccount(\RainLoop\Model\Account $oAccount)
 	{
-		return new self($sId, $sEmail, $sName, $sReplyTo, $sBcc);
+		return new self('', $oAccount->Email());
 	}
 
 	/**
@@ -67,18 +68,6 @@ class Identity
 	public function Id()
 	{
 		return $this->sId;
-	}
-
-	/**
-	 * @param string $sId
-	 *
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function SetId($sId)
-	{
-		$this->sId = $sId;
-
-		return $this;
 	}
 
 	/**
@@ -96,7 +85,7 @@ class Identity
 	 */
 	public function SetEmail($sEmail)
 	{
-		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+		$this->sEmail = $sEmail;
 
 		return $this;
 	}
@@ -110,35 +99,11 @@ class Identity
 	}
 
 	/**
-	 * @param string $sName
-	 *
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function SetName($sName)
-	{
-		$this->sName = $sName;
-
-		return $this;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function ReplyTo()
 	{
 		return $this->sReplyTo;
-	}
-
-	/**
-	 * @param string $sReplyTo
-	 *
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function SetReplyTo($sReplyTo)
-	{
-		$this->sReplyTo = $sReplyTo;
-
-		return $this;
 	}
 
 	/**
@@ -150,15 +115,25 @@ class Identity
 	}
 
 	/**
-	 * @param string $sBcc
+	 * @param array $aData
+	 * @param bool $bAjax = false
 	 *
-	 * @return \RainLoop\Model\Identity
+	 * @return bool
 	 */
-	public function SetBcc($sBcc)
+	public function FromJSON($aData, $bAjax = false)
 	{
-		$this->sBcc = $sBcc;
+		if (isset($aData['Id'], $aData['Email']) && !empty($aData['Email']))
+		{
+			$this->sId = $aData['Id'];
+			$this->sEmail = $bAjax ? \MailSo\Base\Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
+			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
+			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
+			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 
-		return $this;
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -175,5 +150,13 @@ class Identity
 			'ReplyTo' => $this->ReplyTo(),
 			'Bcc' => $this->Bcc()
 		);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function Validate()
+	{
+		return !empty($this->sEmail);
 	}
 }

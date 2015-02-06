@@ -36,7 +36,7 @@
 								<div class="dropdown pull-left" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
 									<a class="dropdown-toggle g-ui-dropdown e-identity" href="#" tabindex="-1"
 										id="identity-label-id" role="button" data-toggle="dropdown"
-										data-bind="text: currentIdentityString, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
+										data-bind="text: currentIdentityView, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
 									</a>
 									<!-- ko if: 1 < identitiesOptions().length -->
 										<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="identity-label-id">
@@ -90,8 +90,14 @@
 									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_CC"
 										data-bind="visible: !showCc(), click: function () { showCc(true); }"></span>
 									&nbsp;&nbsp;
-									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_BCC"
-										data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></span>
+									<span data-bind="visible: !showBcc()">
+										<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_BCC"
+											data-bind="click: function () { showBcc(true); }"></span>
+										&nbsp;&nbsp;
+									</span>
+									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_REPLY_TO"
+										data-bind="visible: !showReplyTo(), click: function () { showReplyTo(true); }"></span>
+									&nbsp;
 								</span>
 							</div>
 						</div>
@@ -124,7 +130,7 @@
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource" />
 							</div>
 						</div>
-						<div class="e-row reply-to-row" data-bind="visible: false">
+						<div class="e-row reply-to-row" data-bind="visible: showReplyTo">
 							<div class="e-cell e-label">
 								<span class="i18n" data-i18n-text="COMPOSE/TITLE_REPLY_TO"></span>
 							</div>

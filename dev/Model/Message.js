@@ -609,6 +609,16 @@
 	};
 
 	/**
+	 * @param {boolean} bFriendlyView
+	 * @param {boolean=} bWrapWithLink = false
+	 * @return {string}
+	 */
+	MessageModel.prototype.replyToToLine = function (bFriendlyView, bWrapWithLink)
+	{
+		return MessageModel.emailsToLine(this.replyTo, bFriendlyView, bWrapWithLink);
+	};
+
+	/**
 	 * @return string
 	 */
 	MessageModel.prototype.lineAsCcc = function ()
@@ -867,6 +877,7 @@
 			'popupTo': this.toToLine(false),
 			'popupCc': this.ccToLine(false),
 			'popupBcc': this.bccToLine(false),
+			'popupReplyTo': this.replyToToLine(false),
 			'popupSubject': this.subject(),
 			'popupIsHtml': this.isHtml(),
 			'popupDate': this.fullFormatDateValue(),

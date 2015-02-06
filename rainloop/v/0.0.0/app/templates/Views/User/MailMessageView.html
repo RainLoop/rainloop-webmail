@@ -243,6 +243,11 @@
 									&nbsp;
 									<span class="bcc" data-bind="text: viewBcc, title: viewBcc"></span>
 								</div>
+								<div data-bind="visible: '' !== viewReplyTo()">
+									<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_REPLY_TO"></span>:
+									&nbsp;
+									<span class="bcc" data-bind="text: viewReplyTo, title: viewReplyTo"></span>
+								</div>
 								<div data-bind="visible: '' !== viewDate()">
 									<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_DATE"></span>:
 									&nbsp;

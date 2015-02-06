@@ -10,9 +10,9 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
+		HtmlEditor = require('Common/HtmlEditor'),
 
 		Remote = require('Storage/User/Remote'),
-		AccountStore = require('Stores/User/Account'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -30,6 +30,9 @@
 		this.edit = ko.observable(false);
 		this.owner = ko.observable(false);
 
+		this.editor = null;
+		this.signatureDom = ko.observable(null);
+
 		this.email = ko.observable('').validateEmail();
 		this.email.focused = ko.observable(false);
 		this.name = ko.observable('');
@@ -38,6 +41,8 @@
 		this.replyTo.focused = ko.observable(false);
 		this.bcc = ko.observable('').validateSimpleEmail();
 		this.bcc.focused = ko.observable(false);
+
+		this.signature = ko.observable('');
 
 	//	this.email.subscribe(function () {
 	//		this.email.hasError(false);
@@ -128,6 +133,11 @@
 
 		this.submitRequest(false);
 		this.submitError('');
+
+		if (this.editor)
+		{
+			this.editor.clear(false);
+		}
 	};
 
 	/**
@@ -141,18 +151,58 @@
 		{
 			this.edit(true);
 
-			this.id = oIdentity.id;
+			this.id = oIdentity.id();
 			this.name(oIdentity.name());
 			this.email(oIdentity.email());
 			this.replyTo(oIdentity.replyTo());
 			this.bcc(oIdentity.bcc());
 
-			this.owner(this.id === AccountStore.email());
+			this.owner(this.id === '');
+		}
+		else
+		{
+			this.id = Utils.fakeMd5();
+		}
+	};
+
+	IdentityPopupView.prototype.onHide = function ()
+	{
+		this.clearPopup();
+	};
+
+	IdentityPopupView.prototype.setSignature = function (sSignature)
+	{
+		if (this.editor)
+		{
+			if (':HTML:' === sSignature.substr(0, 6))
+			{
+				this.editor.setHtml(sSignature.substr(6), false);
+			}
+			else
+			{
+				this.editor.setPlain(sSignature, false);
+			}
 		}
 	};
 
 	IdentityPopupView.prototype.onFocus = function ()
 	{
+		if (!this.editor && this.signatureDom())
+		{
+			var self = this;
+			this.editor = new HtmlEditor(self.signatureDom(), function () {
+				self.signature(
+					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
+				);
+			}, function () {
+				self.setSignature(self.signature());
+			});
+		}
+		else
+		{
+			this.setSignature(this.signature());
+		}
+
 		if (!this.owner())
 		{
 			this.email.focused(true);

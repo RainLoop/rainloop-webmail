@@ -21,8 +21,6 @@
 //		this.incLogin = ko.observable('');
 //		this.outLogin = ko.observable('');
 
-		this.displayName = ko.observable('');
-		this.replyTo = ko.observable('');
 		this.signature = ko.observable('');
 
 		this.accounts = ko.observableArray([]);
@@ -70,9 +68,7 @@
 //		this.incLogin(Settings.settingsGet('IncLogin'));
 //		this.outLogin(Settings.settingsGet('OutLogin'));
 
-		this.displayName(Settings.settingsGet('DisplayName'));
-		this.replyTo(Settings.settingsGet('ReplyTo'));
-		this.signature(Settings.settingsGet('Signature'));
+//		this.signature(Settings.settingsGet('Signature'));
 	};
 
 	module.exports = new AccountUserStore();

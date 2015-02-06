@@ -59,17 +59,6 @@
 				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
 		}
 
-		if (Settings.capa(Enums.Capa.AdditionalIdentities))
-		{
-			kn.addSettingsViewModel(require('Settings/User/Identities'),
-				'SettingsIdentities', 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'identities');
-		}
-		else
-		{
-			kn.addSettingsViewModel(require('Settings/User/Identity'),
-				'SettingsIdentity', 'SETTINGS_LABELS/LABEL_IDENTITY_NAME', 'identity');
-		}
-
 		if (Settings.capa(Enums.Capa.Sieve))
 		{
 			kn.addSettingsViewModel(require('Settings/User/Filters'),

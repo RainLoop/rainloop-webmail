@@ -37,7 +37,7 @@
 								data-bind="value: name, onEnter: addOrEditIdentityCommand, hasfocus: name.focused" />
 						</div>
 					</div>
-					<div class="control-group" data-bind="css: {'error': replyTo.hasError}"  style="display: none">
+					<div class="control-group" data-bind="css: {'error': replyTo.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_REPLY_TO"></label>
 						<div class="controls">
 							<input type="text" class="inputReplyTo input-large"
@@ -45,7 +45,7 @@
 								data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyTo.focused" />
 						</div>
 					</div>
-					<div class="control-group" data-bind="css: {'error': bcc.hasError}"  style="display: none">
+					<div class="control-group" data-bind="css: {'error': bcc.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_BCC"></label>
 						<div class="controls">
 							<input type="text" class="inputBcc input-large"
@@ -56,7 +56,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a class="btn buttonAddAccount" data-bind="command: addOrEditIdentityCommand">
+				<a class="btn buttonAddIdentity" data-bind="command: addOrEditIdentityCommand">
 					<i data-bind="visible: !edit(), css: {'icon-user-add': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					<i data-bind="visible: edit, css: {'icon-ok': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;

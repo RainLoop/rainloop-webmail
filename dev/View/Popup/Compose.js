@@ -33,6 +33,7 @@
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
 		Remote = require('Storage/User/Remote'),
+		Local = require('Storage/Client'),
 
 		ComposeAttachmentModel = require('Model/ComposeAttachment'),
 
@@ -48,7 +49,30 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsCompose');
 
-		var self = this;
+		var
+			self = this,
+			fEmailOutInHelper = function (self, oIdentity, sName, bIn) {
+				if (oIdentity && self && oIdentity[sName]() && (bIn ? true : self[sName]()))
+				{
+					var
+						sIdentityEmail = oIdentity[sName](),
+						aList = Utils.trim(self[sName]()).split(/[,]/)
+					;
+
+					aList = _.filter(aList, function (sEmail) {
+						sEmail = Utils.trim(sEmail);
+						return sEmail && Utils.trim(sIdentityEmail) !== sEmail;
+					});
+
+					if (bIn)
+					{
+						aList.push(sIdentityEmail);
+					}
+
+					self[sName](aList.join(','));
+				}
+			}
+		;
 
 		this.oEditor = null;
 		this.aDraftInfo = null;
@@ -57,8 +81,6 @@
 		this.sReferences = '';
 
 		this.triggerForResize = _.bind(this.triggerForResize, this);
-
-		this.bCapaAdditionalIdentities = Settings.capa(Enums.Capa.AdditionalIdentities);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 
@@ -76,8 +98,8 @@
 		this.to.focusTrigger = ko.observable(false);
 		this.cc = ko.observable('');
 		this.bcc = ko.observable('');
-
 		this.replyTo = ko.observable('');
+
 		this.subject = ko.observable('');
 		this.isHtml = ko.observable(false);
 
@@ -97,6 +119,7 @@
 
 		this.showCc = ko.observable(false);
 		this.showBcc = ko.observable(false);
+		this.showReplyTo = ko.observable(false);
 
 		this.cc.subscribe(function (aValue) {
 			if (false === self.showCc() && 0 < aValue.length)
@@ -109,6 +132,13 @@
 			if (false === self.showBcc() && 0 < aValue.length)
 			{
 				self.showBcc(true);
+			}
+		}, this);
+
+		this.replyTo.subscribe(function (aValue) {
+			if (false === self.showReplyTo() && 0 < aValue.length)
+			{
+				self.showReplyTo(true);
 			}
 		}, this);
 
@@ -168,68 +198,63 @@
 
 		this.composeEditorArea = ko.observable(null);
 
-		this.identities = IdentityStore.identities;
-		this.defaultIdentityID = IdentityStore.defaultIdentityID;
-		this.currentIdentityID = ko.observable('');
-
-		this.currentIdentityString = ko.observable('');
-		this.currentIdentityResultEmail = ko.observable('');
-
+		this.identities = AccountStore.identities;
 		this.identitiesOptions = ko.computed(function () {
-
-			var aList = [{
-				'optValue': AccountStore.email(),
-				'optText': this.formattedFrom(false)
-			}];
-
-			_.each(IdentityStore.identities(), function (oItem) {
-				aList.push({
-					'optValue': oItem.id,
-					'optText': oItem.formattedNameForCompose()
-				});
+			return _.map(IdentityStore.identities(), function (oItem) {
+				return {
+					'optValue': oItem.id(),
+					'optText': oItem.formattedName()
+				};
 			});
-
-			return aList;
-
 		}, this);
 
-		ko.computed(function () {
+		this.currentIdentityID = ko.observable(
+			Local.get(Enums.ClientSideKeyName.ComposeLastIdentityID, ''));
+
+		this.currentIdentity = ko.computed(function () {
 
 			var
-				sResult = '',
-				sResultEmail = '',
 				oItem = null,
-				aList = IdentityStore.identities(),
-				sID = this.currentIdentityID()
+				sID = this.currentIdentityID(),
+				aList = IdentityStore.identities()
 			;
 
-			if (this.bCapaAdditionalIdentities && sID && sID !== AccountStore.email())
+			if (Utils.isArray(aList))
 			{
 				oItem = _.find(aList, function (oItem) {
-					return oItem && sID === oItem['id'];
+					return oItem && sID === oItem.id();
 				});
 
-				sResult = oItem ? oItem.formattedNameForCompose() : '';
-				sResultEmail = oItem ? oItem.formattedNameForEmail() : '';
-
-				if ('' === sResult && aList[0])
+				if (!oItem)
 				{
-					this.currentIdentityID(aList[0]['id']);
-					return '';
+					oItem = _.find(aList, function (oItem) {
+						return oItem && '' === oItem.id();
+					});
+				}
+
+				if (!oItem)
+				{
+					oItem = aList[0] ? aList[0] : null;
 				}
 			}
 
-			if ('' === sResult)
-			{
-				sResult = this.formattedFrom(false);
-				sResultEmail = this.formattedFrom(true);
+			return oItem ? oItem : null;
+
+		}, this);
+
+		this.currentIdentity.extend({'toggleSubscribe': [this,
+			function (oIdentity) {
+				fEmailOutInHelper(this, oIdentity, 'bcc');
+				fEmailOutInHelper(this, oIdentity, 'replyTo');
+			}, function (oIdentity) {
+				fEmailOutInHelper(this, oIdentity, 'bcc', true);
+				fEmailOutInHelper(this, oIdentity, 'replyTo', true);
 			}
+		]});
 
-			this.currentIdentityString(sResult);
-			this.currentIdentityResultEmail(sResultEmail);
-
-			return sResult;
-
+		this.currentIdentityView = ko.computed(function () {
+			var oItem = this.currentIdentity();
+			return oItem ? oItem.formattedName() : 'unknown';
 		}, this);
 
 		this.to.subscribe(function (sValue) {
@@ -336,13 +361,14 @@
 
 					Remote.sendMessage(
 						this.sendMessageResponse,
+						this.currentIdentityID(),
 						this.draftFolder(),
 						this.draftUid(),
 						sSentFolder,
-						this.currentIdentityResultEmail(),
 						sTo,
 						this.cc(),
 						this.bcc(),
+						this.replyTo(),
 						this.subject(),
 						this.oEditor ? this.oEditor.isHtml() : false,
 						this.oEditor ? this.oEditor.getData(true) : '',
@@ -374,13 +400,14 @@
 
 				Remote.saveMessage(
 					this.saveMessageResponse,
+					this.currentIdentityID(),
 					this.draftFolder(),
 					this.draftUid(),
 					FolderStore.draftFolder(),
-					this.currentIdentityResultEmail(),
 					this.to(),
 					this.cc(),
 					this.bcc(),
+					this.replyTo(),
 					this.subject(),
 					this.oEditor ? this.oEditor.isHtml() : false,
 					this.oEditor ? this.oEditor.getData(true) : '',
@@ -434,6 +461,7 @@
 
 		this.showCc.subscribe(this.triggerForResize);
 		this.showBcc.subscribe(this.triggerForResize);
+		this.showReplyTo.subscribe(this.triggerForResize);
 
 		this.dropboxEnabled = SocialStore.dropbox.enabled;
 		this.dropboxApiKey = SocialStore.dropbox.apiKey;
@@ -538,7 +566,7 @@
 					});
 				},
 				this.oEditor.getData(),
-				this.currentIdentityResultEmail(),
+				this.currentIdentity(),
 				this.to(),
 				this.cc(),
 				this.bcc()
@@ -566,18 +594,23 @@
 		}
 	};
 
-	ComposePopupView.prototype.findIdentityIdByMessage = function (sComposeType, oMessage)
+	ComposePopupView.prototype.findIdentityByMessage = function (sComposeType, oMessage)
 	{
 		var
-			oIDs = {},
-			sResult = '',
-			sEmail = '',
+			sDefaultIdentityID = Local.get(Enums.ClientSideKeyName.ComposeLastIdentityID, ''),
+			aIdentities = IdentityStore.identities(),
+			oResultIdentity = null,
+			oIdentitiesCache = {},
 
 			fFindHelper = function (oItem) {
-				if (oItem && oItem.email && oIDs[oItem.email])
+				if (oResultIdentity)
 				{
-					sEmail = oItem.email;
-					sResult = oIDs[oItem.email];
+					return true;
+				}
+
+				if (!oResultIdentity && oItem && oItem.email && oIdentitiesCache[oItem.email])
+				{
+					oResultIdentity = oIdentitiesCache[oItem.email];
 					return true;
 				}
 
@@ -585,14 +618,9 @@
 			}
 		;
 
-		if (this.bCapaAdditionalIdentities)
-		{
-			_.each(IdentityStore.identities(), function (oItem) {
-				oIDs[oItem.email()] = oItem['id'];
-			});
-		}
-
-		oIDs[AccountStore.email()] = AccountStore.email();
+		_.each(aIdentities, function (oItem) {
+			oIdentitiesCache[oItem.email()] = oItem;
+		});
 
 		if (oMessage)
 		{
@@ -612,18 +640,26 @@
 			}
 		}
 
-		if ('' === sResult)
+		if (!oResultIdentity)
 		{
-			sResult = IdentityStore.defaultIdentityID();
+			oResultIdentity = _.find(aIdentities, function (oItem) {
+				return oItem.id() === sDefaultIdentityID;
+			});
 		}
 
-		if ('' === sResult)
+		if (!oResultIdentity && '' !== sDefaultIdentityID)
 		{
-			sResult = AccountStore.email();
-			sEmail = sResult;
+			oResultIdentity = _.find(aIdentities, function (oItem) {
+				return oItem.id() === '';
+			});
 		}
 
-		return [sResult, sEmail];
+		if (!oResultIdentity)
+		{
+			oResultIdentity = aIdentities[0] || null;
+		}
+
+		return oResultIdentity;
 	};
 
 	ComposePopupView.prototype.selectIdentity = function (oIdentity)
@@ -631,26 +667,8 @@
 		if (oIdentity)
 		{
 			this.currentIdentityID(oIdentity.optValue);
+			Local.set(Enums.ClientSideKeyName.ComposeLastIdentityID, oIdentity.optValue);
 		}
-	};
-
-	/**
-	 *
-	 * @param {boolean=} bHeaderResult = false
-	 * @returns {string}
-	 */
-	ComposePopupView.prototype.formattedFrom = function (bHeaderResult)
-	{
-		var
-			sDisplayName = AccountStore.displayName(),
-			sEmail = AccountStore.email()
-		;
-
-		return '' === sDisplayName ? sEmail :
-			((Utils.isUnd(bHeaderResult) ? false : !!bHeaderResult) ?
-				'"' + Utils.quoteName(sDisplayName) + '" <' + sEmail + '>' :
-				sDisplayName + ' (' + sEmail + ')')
-		;
 	};
 
 	ComposePopupView.prototype.sendMessageResponse = function (sResult, oData)
@@ -964,7 +982,7 @@
 			sReplyTitle = '',
 			aResplyAllParts = [],
 			oExcludeEmail = {},
-			oIdResult = null,
+			oIdentity = null,
 			mEmail = AccountStore.email(),
 			sSignature = AccountStore.signature(),
 			aDownloads = [],
@@ -1000,14 +1018,20 @@
 			oExcludeEmail[mEmail] = true;
 		}
 
-		oIdResult = this.findIdentityIdByMessage(sComposeType, oMessage);
-		if (oIdResult && oIdResult[0])
+		oIdentity = this.findIdentityByMessage(sComposeType, oMessage);
+		if (oIdentity)
 		{
-			oExcludeEmail[oIdResult[1]] = true;
-			this.currentIdentityID(oIdResult[0]);
+			oExcludeEmail[oIdentity.email()] = true;
+			this.currentIdentityID(oIdentity.id());
+		}
+		else
+		{
+			this.currentIdentityID('');
 		}
 
 		this.reset();
+
+		this.currentIdentityID.valueHasMutated(); // Populate BBC from Identity
 
 		if (Utils.isNonEmptyArray(aToEmails))
 		{
@@ -1089,6 +1113,7 @@
 					this.to(fEmailArrayToStringLineHelper(oMessage.to));
 					this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
 					this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
+					this.replyTo(fEmailArrayToStringLineHelper(oMessage.replyTo));
 
 					this.bFromDraft = true;
 
@@ -1107,6 +1132,7 @@
 					this.to(fEmailArrayToStringLineHelper(oMessage.to));
 					this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
 					this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
+					this.replyTo(fEmailArrayToStringLineHelper(oMessage.replyTo));
 
 					this.subject(sSubject);
 					this.prepearMessageAttachments(oMessage, sComposeType);
@@ -1963,6 +1989,7 @@
 		return 0 === this.to().length &&
 			0 === this.cc().length &&
 			0 === this.bcc().length &&
+			0 === this.replyTo().length &&
 			0 === this.subject().length &&
 			bWithoutAttach &&
 			(!this.oEditor || '' === this.oEditor.getData())
@@ -1997,6 +2024,7 @@
 
 		this.showCc(false);
 		this.showBcc(false);
+		this.showReplyTo(false);
 
 		Utils.delegateRunOnDestroy(this.attachments());
 		this.attachments([]);

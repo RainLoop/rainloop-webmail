@@ -1521,9 +1521,6 @@ class Actions
 		$aResult['UseThreads'] = (bool) $oConfig->Get('defaults', 'mail_use_threads', false);
 		$aResult['ReplySameFolder'] = (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false);
 		$aResult['ContactsAutosave'] = (bool) $oConfig->Get('defaults', 'contacts_autosave', true);
-		$aResult['DefaultIdentityID'] = '';
-		$aResult['DisplayName'] = '';
-		$aResult['ReplyTo'] = '';
 		$aResult['Signature'] = '';
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
@@ -1557,11 +1554,13 @@ class Actions
 			$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
 			$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 			$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
-			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 
 			$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 			$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+
+			$aResult['Signature'] = $oSettingsLocal->GetConf('Signature', $aResult['Signature']);
 
 			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
 			{
@@ -1573,11 +1572,6 @@ class Actions
 //						$aResult['UserBackgroundHash'].'/';
 //				}
 			}
-
-			$aResult['DefaultIdentityID'] = $oSettingsLocal->GetConf('DefaultIdentityID', $oAccount ? $oAccount->Email() : $aResult['DefaultIdentityID']);
-			$aResult['DisplayName'] = $oSettingsLocal->GetConf('DisplayName', $aResult['DisplayName']);
-			$aResult['ReplyTo'] = $oSettingsLocal->GetConf('ReplyTo', $aResult['ReplyTo']);
-			$aResult['Signature'] = $oSettingsLocal->GetConf('Signature', $aResult['Signature']);
 
 			$aResult['EnableTwoFactor'] = !!$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
 
@@ -2088,7 +2082,11 @@ class Actions
 				'accounts'
 			);
 
-			$aAccounts = $sAccounts ? @\unserialize($sAccounts) : array();
+			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1))
+			{
+				$aAccounts = @\json_decode($sAccounts, true);
+			}
+
 			if (\is_array($aAccounts) && 0 < \count($aAccounts))
 			{
 				if (1 === \count($aAccounts))
@@ -2135,30 +2133,46 @@ class Actions
 		{
 			$aSubIdentities = array();
 
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal)
+			$sData = $this->StorageProvider(true)->Get($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'identities'
+			);
+
+			if ('' !== $sData && '[' === \substr($sData, 0, 1))
 			{
-				$sData = $oSettingsLocal->GetConf('Identities', '');
-				if ('' !== $sData && '[' === \substr($sData, 0, 1))
-				{
-					$aSubIdentities = @\json_decode($sData, true);
-					$aSubIdentities = \is_array($aSubIdentities) ? $aSubIdentities : array();
-				}
+				$aSubIdentities = @\json_decode($sData, true);
 			}
 
-			if (0 < \count($aSubIdentities))
+			$bHasAccountIdentity = false;
+
+			if (\is_array($aSubIdentities) && 0 < \count($aSubIdentities))
 			{
 				foreach ($aSubIdentities as $aItem)
 				{
-					if (isset($aItem['Id'], $aItem['Email'], $aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']) &&
-						$aItem['Id'] !== $oAccount->Email())
-					{
-						$oItem = \RainLoop\Model\Identity::NewInstance($aItem['Id'], $aItem['Email'],
-							$aItem['Name'], $aItem['ReplyTo'], $aItem['Bcc']);
+					$oItem = \RainLoop\Model\Identity::NewInstance();
+					$oItem->FromJSON($aItem);
 
-						$aIdentities[] = $oItem;
+					if ($oItem && $oItem->Validate())
+					{
+						if ('' === $oItem->Id())
+						{
+							$oItem->SetEmail($oAccount->Email());
+							$bHasAccountIdentity = true;
+
+							\array_unshift($aIdentities, $oItem);
+						}
+						else
+						{
+							\array_push($aIdentities, $oItem);
+						}
 					}
 				}
+			}
+
+			if (!$bHasAccountIdentity)
+			{
+				\array_unshift($aIdentities,
+					\RainLoop\Model\Identity::NewInstanceFromAccount($oAccount));
 			}
 		}
 
@@ -2167,61 +2181,35 @@ class Actions
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sID
+	 * @param bool $bFirstOnEmpty = false
 	 *
-	 * @return array
+	 * @return \RainLoop\Model\Identity
 	 */
-	public function GetIdentitiesNew($oAccount)
+	public function GetIdentityByID($oAccount, $sID, $bFirstOnEmpty = false)
 	{
-		$aIdentities = array();
-		if ($oAccount)
+		$aIdentities = $this->GetIdentities($oAccount);
+		if (\is_array($aIdentities))
 		{
-			$oAccountIdentity = \RainLoop\Model\Identity::NewInstance('', $oAccount->Email());
-
-			$aSubIdentities = array();
-
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal)
+			foreach ($aIdentities as $oIdentity)
 			{
-				$sData = $oSettingsLocal->GetConf('Identities', '');
-				if ('' !== $sData && '[' === \substr($sData, 0, 1))
+				if ($oIdentity && $sID === $oIdentity->Id())
 				{
-					$aSubIdentities = @\json_decode($sData, true);
-					$aSubIdentities = \is_array($aSubIdentities) ? $aSubIdentities : array();
+					return $oIdentity;
 				}
 			}
-
-			if (0 < \count($aSubIdentities))
-			{
-				foreach ($aSubIdentities as $aItem)
-				{
-					if (isset($aItem['Id'], $aItem['Email']))
-					{
-						if (0 < \strlen($aItem['Id']))
-						{
-							$oItem = \RainLoop\Model\Identity::NewInstance($aItem['Id'], $aItem['Email']);
-						}
-						else
-						{
-							$oItem = $oAccountIdentity;
-						}
-
-						$oItem->SetName(isset($aItem['Name']) ? $aItem['Name'] : '');
-						$oItem->SetReplyTo(isset($aItem['ReplyTo']) ? $aItem['ReplyTo'] : '');
-						$oItem->SetBcc(isset($aItem['Bcc']) ? $aItem['Bcc'] : '');
-						$oItem->SetSignature(isset($aItem['Signature']) ? $aItem['Signature'] : '');
-
-						if ('' !== $oItem->Id())
-						{
-							\array_push($aIdentities, $oItem);
-						}
-					}
-				}
-			}
-
-			\array_unshift($aIdentities, $oAccountIdentity);
 		}
 
-		return $aIdentities;
+		return $bFirstOnEmpty && \is_array($aIdentities) && isset($aIdentities[0]) ? $aIdentities[0] : null;
+	}
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 *
+	 * @return \RainLoop\Model\Identity
+	 */
+	public function GetAccountIdentity($oAccount)
+	{
+		return $this->GetIdentityByID($oAccount, '', true);
 	}
 
 	/**
@@ -2246,7 +2234,7 @@ class Actions
 			$this->StorageProvider()->Put($oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts',
-				@\serialize($aAccounts)
+				@\json_encode($aAccounts)
 			);
 		}
 	}
@@ -2259,20 +2247,17 @@ class Actions
 	 */
 	public function SetIdentities($oAccount, $aIdentities = array())
 	{
-		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-		if ($oSettingsLocal)
+		$aResult = array();
+		foreach ($aIdentities as $oItem)
 		{
-			$aResult = array();
-			foreach ($aIdentities as $oItem)
-			{
-				$aResult[] = $oItem->ToSimpleJSON(false);
-			}
-
-			$oSettingsLocal->SetConf('Identities', @\json_encode($aResult));
-			return $this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal);
+			$aResult[] = $oItem->ToSimpleJSON(false);
 		}
 
-		return false;
+		return $this->StorageProvider(true)->Put($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'identities',
+			@\json_encode($aResult)
+		);
 	}
 
 	/**
@@ -2443,55 +2428,26 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES, $oAccount))
+		$oIdentity = \RainLoop\Model\Identity::NewInstance();
+		if (!$oIdentity->FromJSON($this->GetActionParams(), true))
 		{
-			return $this->FalseResponse(__FUNCTION__);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
-		$sId = \trim($this->GetActionParam('Id', ''));
-		$sEmail = \trim($this->GetActionParam('Email', ''));
-		$sName = \trim($this->GetActionParam('Name', ''));
-		$sReplyTo = \trim($this->GetActionParam('ReplyTo', ''));
-		$sBcc = \trim($this->GetActionParam('Bcc', ''));
+		$aIdentitiesForSave = array();
 
-		if (empty($sEmail))
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
-		}
-
-		$oEditIdentity = null;
 		$aIdentities = $this->GetIdentities($oAccount);
-		if (0 < \strlen($sId))
+		foreach ($aIdentities as $oItem)
 		{
-			foreach ($aIdentities as &$oItem)
+			if ($oItem && $oItem->Id() !== $oIdentity->Id())
 			{
-				if ($oItem && $sId === $oItem->Id())
-				{
-					$oEditIdentity =& $oItem;
-					break;
-				}
+				$aIdentitiesForSave[] = $oItem;
 			}
 		}
-		else
-		{
-			$sId = \md5($sEmail.\microtime(true));
-		}
 
-		if (!$oEditIdentity)
-		{
-			$aIdentities[] = \RainLoop\Model\Identity::NewInstance($sId, $sEmail, $sName, $sReplyTo, $sBcc);
-		}
-		else
-		{
-			$oEditIdentity
-				->SetEmail($sEmail)
-				->SetName($sName)
-				->SetReplyTo($sReplyTo)
-				->SetBcc($sBcc)
-			;
-		}
+		$aIdentitiesForSave[] = $oIdentity;
 
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentities));
+		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave));
 	}
 
 	/**
@@ -2502,11 +2458,6 @@ class Actions
 	public function DoIdentityDelete()
 	{
 		$oAccount = $this->getAccountFromToken();
-
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$sId = \trim($this->GetActionParam('IdToDelete', ''));
 		if (empty($sId))
@@ -2569,15 +2520,9 @@ class Actions
 			}
 		}
 
-		$mIdentities = false;
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES, $oAccount))
-		{
-			$mIdentities = $this->GetIdentities($oAccount);
-		}
-
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
-			'Identities' => $mIdentities
+			'Identities' => $this->GetIdentities($oAccount)
 		));
 	}
 
@@ -2660,33 +2605,6 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Complete' => $bComplete,
 			'Counts' => $aCounts
-		));
-	}
-
-	/**
-	 * @return array
-	 *
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function DoAccountsAndIdentitiesNew()
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$mAccounts = false;
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
-			$mAccounts = $this->GetAccounts($oAccount);
-			$mAccounts = \array_keys($mAccounts);
-
-			foreach ($mAccounts as $iIndex => $sName)
-			{
-				$mAccounts[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sName);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'Accounts' => $mAccounts,
-			'Identities' => $this->GetIdentitiesNew($oAccount)
 		));
 	}
 
@@ -2879,9 +2797,6 @@ class Actions
 			case \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS:
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_accounts', 'bool');
 				break;
-			case \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES:
-				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_identities', 'bool');
-				break;
 			case \RainLoop\Enumerations\Capa::TWO_FACTOR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
 				break;
@@ -2984,7 +2899,6 @@ class Actions
 		});
 
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS);
-		$this->setCapaFromParams($oConfig, 'CapaAdditionalIdentities', \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
 		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
@@ -4461,9 +4375,6 @@ class Actions
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
 
-		$this->setSettingsFromParams($oSettingsLocal, 'DefaultIdentityID', 'string');
-		$this->setSettingsFromParams($oSettingsLocal, 'DisplayName', 'string');
-		$this->setSettingsFromParams($oSettingsLocal, 'ReplyTo', 'string');
 		$this->setSettingsFromParams($oSettingsLocal, 'Signature', 'string');
 
 		return $this->DefaultResponse(__FUNCTION__,
@@ -5204,10 +5115,11 @@ class Actions
 	 */
 	private function buildMessage($oAccount, $bWithDraftInfo = true)
 	{
-		$sFrom = $this->GetActionParam('From', '');
+		$sIdentityID = $this->GetActionParam('IdentityID', '');
 		$sTo = $this->GetActionParam('To', '');
 		$sCc = $this->GetActionParam('Cc', '');
 		$sBcc = $this->GetActionParam('Bcc', '');
+		$sReplyTo = $this->GetActionParam('ReplyTo', '');
 		$sSubject = $this->GetActionParam('Subject', '');
 		$bTextIsHtml = '1' === $this->GetActionParam('TextIsHtml', '0');
 		$bReadReceiptRequest = '1' === $this->GetActionParam('ReadReceiptRequest', '0');
@@ -5224,26 +5136,23 @@ class Actions
 
 		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
 
-		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES, $oAccount))
+		$oFromIdentity = $this->GetIdentityByID($oAccount, $sIdentityID);
+		if ($oFromIdentity)
 		{
-			$oMessage->SetFrom(\MailSo\Mime\Email::Parse($sFrom));
+			$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance(
+				$oFromIdentity->Email(), $oFromIdentity->Name()));
 		}
 		else
 		{
-			$sDisplayName = \trim($oSettingsLocal->GetConf('DisplayName', ''));
-			$sReplyTo = \trim($oSettingsLocal->GetConf('ReplyTo', ''));
+			$oMessage->SetFrom(\MailSo\Mime\Email::Parse($oAccount->Email()));
+		}
 
-			$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance($oAccount->Email(), $sDisplayName));
-
-			if (!empty($sReplyTo))
+		if (!empty($sReplyTo))
+		{
+			$oReplyTo = \MailSo\Mime\EmailCollection::NewInstance($sReplyTo);
+			if ($oReplyTo && 0 < $oReplyTo->Count())
 			{
-				$oReplyTo = \MailSo\Mime\EmailCollection::NewInstance($sReplyTo);
-				if ($oReplyTo && $oReplyTo->Count())
-				{
-					$oMessage->SetReplyTo($oReplyTo);
-				}
+				$oMessage->SetReplyTo($oReplyTo);
 			}
 		}
 
@@ -5380,7 +5289,9 @@ class Actions
 		$sSubject = $this->GetActionParam('Subject', '');
 		$sText = $this->GetActionParam('Text', '');
 
-		if (empty($sReadReceipt) || empty($sSubject) || empty($sText))
+		$oIdentity = $this->GetAccountIdentity($oAccount);
+
+		if (empty($sReadReceipt) || empty($sSubject) || empty($sText) || !$oIdentity)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 		}
@@ -5390,13 +5301,9 @@ class Actions
 
 		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
 
-		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+		$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance($oIdentity->Email(), $oIdentity->Name()));
 
-		$sDisplayName = \trim($oSettingsLocal->GetConf('DisplayName', ''));
-		$sReplyTo = \trim($oSettingsLocal->GetConf('ReplyTo', ''));
-
-		$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance($oAccount->Email(), $sDisplayName));
-
+		$sReplyTo = $oIdentity->ReplyTo();
 		if (!empty($sReplyTo))
 		{
 			$oReplyTo = \MailSo\Mime\EmailCollection::NewInstance($sReplyTo);
@@ -7374,11 +7281,6 @@ class Actions
 			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS;
 		}
 
-		if ($oConfig->Get('webmail', 'allow_identities', true))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_IDENTITIES;
-		}
-
 		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
 			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
 		{
@@ -8282,6 +8184,14 @@ class Actions
 	{
 		return is_array($this->aCurrentActionParams) && isset($this->aCurrentActionParams[$sKey]) ?
 			$this->aCurrentActionParams[$sKey] : $mDefault;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function GetActionParams()
+	{
+		return $this->aCurrentActionParams;
 	}
 
 	/**

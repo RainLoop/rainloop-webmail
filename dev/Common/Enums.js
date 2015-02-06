@@ -45,8 +45,7 @@
 		'Sieve': 'SIEVE',
 		'Filters': 'FILTERS',
 		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
-		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
-		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
+		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS'
 	};
 
 	/**
@@ -149,7 +148,8 @@
 		'FolderListSize': 4,
 		'MessageListSize': 5,
 		'LastReplyAction': 6,
-		'LastSignMe': 7
+		'LastSignMe': 7,
+		'ComposeLastIdentityID': 8
 	};
 
 	/**

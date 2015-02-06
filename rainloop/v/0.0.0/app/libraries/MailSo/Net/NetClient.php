@@ -232,11 +232,11 @@ abstract class NetClient
 		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
 			$this->iConnectedPort, $this->iSecurityType);
 
-		$this->sConnectedHost = \in_array(\strtolower(\substr($this->sConnectedHost, 0, 6)), array('ssl://', 'tcp://')) ?
-			\substr($this->sConnectedHost, 6) : $this->sConnectedHost;
-
-		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
-//		$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
+		if (!\preg_match('/^[a-z0-9._]{2,8}:\/\//i', $this->sConnectedHost))
+		{
+			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
+//			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
+		}
 
 		if (!$this->bSecure && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->iSecurityType)
 		{
@@ -307,20 +307,28 @@ abstract class NetClient
 		}
 	}
 
-	/**
-	 * @param {int} $iCryptoType = STREAM_CRYPTO_METHOD_TLS_CLIENT
-	 */
-	public function EnableCrypto($iCryptoType = STREAM_CRYPTO_METHOD_TLS_CLIENT)
+	public function EnableCrypto()
 	{
+		$bError = true;
 		if (\is_resource($this->rConnect) &&
 			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'))
 		{
-			if (!@\stream_socket_enable_crypto($this->rConnect, true, $iCryptoType))
+			switch (true)
 			{
-				$this->writeLogException(
-					new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS. [type='.$iCryptoType.']'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
+				case defined('STREAM_CRYPTO_METHOD_ANY_CLIENT') &&
+					@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
+				case @\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT):
+				case @\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT):
+					$bError = false;
+					break;
 			}
+		}
+
+		if ($bError)
+		{
+			$this->writeLogException(
+				new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS.'),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 	}
 

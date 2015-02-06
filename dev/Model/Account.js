@@ -28,8 +28,8 @@
 		this.count = ko.observable(iCount || 0);
 
 		this.deleteAccess = ko.observable(false);
-		this.canBeDalete = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
-		this.canBeEdit = this.canBeDalete;
+		this.canBeDeleted = ko.observable(Utils.isUnd(bCanBeDelete) ? true : !!bCanBeDelete);
+		this.canBeEdit = this.canBeDeleted;
 	}
 
 	_.extend(AccountModel.prototype, AbstractModel.prototype);

@@ -186,6 +186,7 @@
 		this.viewTo = ko.observable('');
 		this.viewCc = ko.observable('');
 		this.viewBcc = ko.observable('');
+		this.viewReplyTo = ko.observable('');
 		this.viewDate = ko.observable('');
 		this.viewSize = ko.observable('');
 		this.viewMoment = ko.observable('');
@@ -267,6 +268,7 @@
 				this.viewTo(oMessage.toToLine(false));
 				this.viewCc(oMessage.ccToLine(false));
 				this.viewBcc(oMessage.bccToLine(false));
+				this.viewReplyTo(oMessage.replyToToLine(false));
 				this.viewDate(oMessage.fullFormatDateValue());
 				this.viewSize(oMessage.friendlySize());
 				this.viewMoment(oMessage.momentDate());

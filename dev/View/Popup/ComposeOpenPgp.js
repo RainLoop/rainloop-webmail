@@ -215,24 +215,16 @@
 		}
 	};
 
-	ComposeOpenPgpPopupView.prototype.onShow = function (fCallback, sText, sFromEmail, sTo, sCc, sBcc)
+	ComposeOpenPgpPopupView.prototype.onShow = function (fCallback, sText, oIdentity, sTo, sCc, sBcc)
 	{
 		this.clearPopup();
 
 		var
-			oEmail = new EmailModel(),
-			sResultFromEmail = '',
-			aRec = []
+			aRec = [],
+			oEmail = new EmailModel()
 		;
 
 		this.resultCallback = fCallback;
-
-		oEmail.clear();
-		oEmail.mailsoParse(sFromEmail);
-		if ('' !== oEmail.email)
-		{
-			sResultFromEmail = oEmail.email;
-		}
 
 		if ('' !== sTo)
 		{
@@ -256,7 +248,7 @@
 			return '' === oEmail.email ? false : oEmail.email;
 		}));
 
-		this.from(sResultFromEmail);
+		this.from(oIdentity ? oIdentity.email() : '');
 		this.to(aRec);
 		this.text(sText);
 	};

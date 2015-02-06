@@ -33,7 +33,6 @@
 		this.capaUserBackground = CapaAdminStore.userBackground;
 		this.capaGravatar = CapaAdminStore.gravatar;
 		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
-		this.capaAdditionalIdentities = CapaAdminStore.additionalIdentities;
 		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
 
 		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
@@ -103,12 +102,6 @@
 			self.capaAdditionalAccounts.subscribe(function (bValue) {
 				Remote.saveAdminConfig(null, {
 					'CapaAdditionalAccounts': bValue ? '1' : '0'
-				});
-			});
-
-			self.capaAdditionalIdentities.subscribe(function (bValue) {
-				Remote.saveAdminConfig(null, {
-					'CapaAdditionalIdentities': bValue ? '1' : '0'
 				});
 			});
 

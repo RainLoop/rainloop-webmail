@@ -581,7 +581,7 @@
 						var
 							sId = Utils.pString(oIdentityData['Id']),
 							sEmail = Utils.pString(oIdentityData['Email']),
-							oIdentity = new IdentityModel(sId, sEmail, sId !== sAccountEmail)
+							oIdentity = new IdentityModel(sId, sEmail)
 						;
 
 						oIdentity.name(Utils.pString(oIdentityData['Name']));
@@ -1410,7 +1410,6 @@
 		require('Stores/User/App').populate();
 		require('Stores/User/Settings').populate();
 		require('Stores/User/Notification').populate();
-		require('Stores/User/Identity').populate();
 		require('Stores/User/Account').populate();
 
 		var
@@ -1528,10 +1527,7 @@
 						self.contactsSync();
 					}, iContactsSyncInterval * 60000 + 5000);
 
-					if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.AdditionalIdentities))
-					{
-						self.accountsAndIdentities(true);
-					}
+					self.accountsAndIdentities(true);
 
 					_.delay(function () {
 						var sF = Data.currentFolderFullNameRaw();

@@ -140,7 +140,7 @@
 		this.regDisposables([this.actionNoStop, this.actionTemplate]);
 
 		this.deleteAccess = ko.observable(false);
-		this.canBeDalete = ko.observable(true);
+		this.canBeDeleted = ko.observable(true);
 	}
 
 	_.extend(FilterModel.prototype, AbstractModel.prototype);

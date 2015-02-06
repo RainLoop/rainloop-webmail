@@ -494,10 +494,10 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {string} sIdentityID
 	 * @param {string} sMessageFolder
 	 * @param {string} sMessageUid
 	 * @param {string} sDraftFolder
-	 * @param {string} sFrom
 	 * @param {string} sTo
 	 * @param {string} sCc
 	 * @param {string} sBcc
@@ -510,17 +510,18 @@
 	 * @param {string} sReferences
 	 * @param {boolean} bMarkAsImportant
 	 */
-	RemoteUserStorage.prototype.saveMessage = function (fCallback, sMessageFolder, sMessageUid, sDraftFolder,
-		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bMarkAsImportant)
+	RemoteUserStorage.prototype.saveMessage = function (fCallback, sIdentityID, sMessageFolder, sMessageUid, sDraftFolder,
+		sTo, sCc, sBcc, sReplyTo, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bMarkAsImportant)
 	{
 		this.defaultRequest(fCallback, 'SaveMessage', {
+			'IdentityID': sIdentityID,
 			'MessageFolder': sMessageFolder,
 			'MessageUid': sMessageUid,
 			'DraftFolder': sDraftFolder,
-			'From': sFrom,
 			'To': sTo,
 			'Cc': sCc,
 			'Bcc': sBcc,
+			'ReplyTo': sReplyTo,
 			'Subject': sSubject,
 			'TextIsHtml': bTextIsHtml ? '1' : '0',
 			'Text': sText,
@@ -554,13 +555,14 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {string} sIdentityID
 	 * @param {string} sMessageFolder
 	 * @param {string} sMessageUid
 	 * @param {string} sSentFolder
-	 * @param {string} sFrom
 	 * @param {string} sTo
 	 * @param {string} sCc
 	 * @param {string} sBcc
+	 * @param {string} sReplyTo
 	 * @param {string} sSubject
 	 * @param {boolean} bTextIsHtml
 	 * @param {string} sText
@@ -571,18 +573,19 @@
 	 * @param {boolean} bRequestReadReceipt
 	 * @param {boolean} bMarkAsImportant
 	 */
-	RemoteUserStorage.prototype.sendMessage = function (fCallback, sMessageFolder, sMessageUid, sSentFolder,
-		sFrom, sTo, sCc, sBcc, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences,
+	RemoteUserStorage.prototype.sendMessage = function (fCallback, sIdentityID, sMessageFolder, sMessageUid, sSentFolder,
+		sTo, sCc, sBcc, sReplyTo, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences,
 		bRequestReadReceipt, bMarkAsImportant)
 	{
 		this.defaultRequest(fCallback, 'SendMessage', {
+			'IdentityID': sIdentityID,
 			'MessageFolder': sMessageFolder,
 			'MessageUid': sMessageUid,
 			'SentFolder': sSentFolder,
-			'From': sFrom,
 			'To': sTo,
 			'Cc': sCc,
 			'Bcc': sBcc,
+			'ReplyTo': sReplyTo,
 			'Subject': sSubject,
 			'TextIsHtml': bTextIsHtml ? '1' : '0',
 			'Text': sText,

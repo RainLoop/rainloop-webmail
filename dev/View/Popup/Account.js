@@ -21,9 +21,9 @@
 	 * @constructor
 	 * @extends AbstractView
 	 */
-	function AddAccountPopupView()
+	function AccountPopupView()
 	{
-		AbstractView.call(this, 'Popups', 'PopupsAddAccount');
+		AbstractView.call(this, 'Popups', 'PopupsAccount');
 
 		this.isNew = ko.observable(true);
 
@@ -89,10 +89,10 @@
 		kn.constructorEnd(this);
 	}
 
-	kn.extendAsViewModel(['View/Popup/AddAccount', 'PopupsAddAccountViewModel'], AddAccountPopupView);
-	_.extend(AddAccountPopupView.prototype, AbstractView.prototype);
+	kn.extendAsViewModel(['View/Popup/Account', 'View/Popup/AddAccount', 'PopupsAddAccountViewModel'], AccountPopupView);
+	_.extend(AccountPopupView.prototype, AbstractView.prototype);
 
-	AddAccountPopupView.prototype.clearPopup = function ()
+	AccountPopupView.prototype.clearPopup = function ()
 	{
 		this.isNew(true);
 
@@ -106,7 +106,7 @@
 		this.submitError('');
 	};
 
-	AddAccountPopupView.prototype.onShow = function (oAccount)
+	AccountPopupView.prototype.onShow = function (oAccount)
 	{
 		this.clearPopup();
 		if (oAccount && oAccount.canBeEdit())
@@ -116,11 +116,11 @@
 		}
 	};
 
-	AddAccountPopupView.prototype.onFocus = function ()
+	AccountPopupView.prototype.onFocus = function ()
 	{
 		this.emailFocus(true);
 	};
 
-	module.exports = AddAccountPopupView;
+	module.exports = AccountPopupView;
 
 }());

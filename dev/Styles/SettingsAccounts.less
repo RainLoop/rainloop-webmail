@@ -24,7 +24,7 @@
 			color: #aaa;
 		}
 
-		.account-img {
+		.account-img, .identity-img {
 			font-size: 12px;
 			margin-right: 5px;
 		}
@@ -34,6 +34,14 @@
 			word-break: break-all;
 			box-sizing: border-box;
 			line-height: 22px;
+		}
+
+		.identity-name {
+			display: inline-block;
+			word-break: break-all;
+			box-sizing: border-box;
+			line-height: 22px;
+			cursor: pointer;
 		}
 	}
 
@@ -63,6 +71,33 @@
 		}
 
 		.delete-account {
+			cursor: pointer;
+			opacity: 0.5;
+		}
+	}
+
+	.identity-item {
+
+		.e-action {
+			cursor: pointer;
+		}
+
+		.button-delete {
+			margin-right: 15px;
+			margin-top: 5px;
+			visibility: hidden;
+			opacity: 0;
+		}
+
+		.delete-access {
+			&.button-delete {
+				visibility: visible;
+				margin-right: 0;
+				opacity: 1;
+			}
+		}
+
+		.delete-identity {
 			cursor: pointer;
 			opacity: 0.5;
 		}

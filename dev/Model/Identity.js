@@ -15,41 +15,35 @@
 	/**
 	 * @param {string} sId
 	 * @param {string} sEmail
-	 * @param {boolean=} bCanBeDelete = true
 	 * @constructor
 	 */
-	function IdentityModel(sId, sEmail, bCanBeDelete)
+	function IdentityModel(sId, sEmail)
 	{
 		AbstractModel.call(this, 'IdentityModel');
 
-		this.id = sId;
+		this.id = ko.observable(sId);
 		this.email = ko.observable(sEmail);
 		this.name = ko.observable('');
+
 		this.replyTo = ko.observable('');
 		this.bcc = ko.observable('');
 
 		this.deleteAccess = ko.observable(false);
-		this.canBeDalete = ko.observable(bCanBeDelete);
+		this.canBeDeleted = ko.computed(function () {
+			return '' !== this.id();
+		}, this);
 	}
 
 	_.extend(IdentityModel.prototype, AbstractModel.prototype);
 
 	IdentityModel.prototype.formattedName = function ()
 	{
-		var sName = this.name();
-		return '' === sName ? this.email() : sName + ' <' + this.email() + '>';
-	};
+		var
+			sName = this.name(),
+			sEmail = this.email()
+		;
 
-	IdentityModel.prototype.formattedNameForCompose = function ()
-	{
-		var sName = this.name();
-		return '' === sName ? this.email() : sName + ' (' + this.email() + ')';
-	};
-
-	IdentityModel.prototype.formattedNameForEmail = function ()
-	{
-		var sName = this.name();
-		return '' === sName ? this.email() : '"' + Utils.quoteName(sName) + '" <' + this.email() + '>';
+		return ('' !== sName) ? sName + ' (' + sEmail + ')' : sEmail;
 	};
 
 	module.exports = IdentityModel;

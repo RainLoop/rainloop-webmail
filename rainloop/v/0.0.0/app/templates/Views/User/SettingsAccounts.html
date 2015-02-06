@@ -1,7 +1,7 @@
 <div class="b-settings-accounts g-ui-user-select-none">
 	<div class="form-horizontal">
 		<div class="legend">
-			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
+			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS_AND_IDENTITIES"></span>
 		</div>
 	</div>
 	<a class="btn" data-bind="click: addNewAccount">
@@ -9,12 +9,18 @@
 		&nbsp;&nbsp;
 		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
 	</a>
+	&nbsp;&nbsp;
+	<a class="btn" data-bind="click: addNewIdentity">
+		<i class="icon-user-add"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_IDENTITY"></span>
+	</a>
 	<div class="process-place" data-bind="style: {'visibility': visibility }">
 		<i class="icon-spinner animated"></i>
 		&nbsp;&nbsp;
 		<span data-bind="text: processText"></span>
 	</div>
-	<table class="table table-hover list-table" data-bind="i18nUpdate: accounts">
+	<table class="table table-hover list-table accounts-list" data-bind="i18nUpdate: accounts">
 		<colgroup>
 			<col />
 			<col style="width: 150px" />
@@ -29,13 +35,42 @@
 					<span class="account-name" data-bind="text: email"></span>
 				</td>
 				<td>
-					<span data-bind="visible: !canBeDalete()"></span>
-					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="visible: canBeDalete, css: {'delete-access': deleteAccess}, click: function(oAccount) { $root.deleteAccount(oAccount); }">
+					<span data-bind="visible: !canBeDeleted()"></span>
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="visible: canBeDeleted, css: {'delete-access': deleteAccess}, click: function(oAccount) { $root.deleteAccount(oAccount); }">
 						<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
 					</a>
 				</td>
 				<td>
-					<span class="delete-account" data-bind="visible: !deleteAccess() && canBeDalete(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">
+					<span class="delete-account" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">
+						<i class="icon-trash"></i>
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<br />
+	<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
+		<colgroup>
+			<col />
+			<col style="width: 150px" />
+			<col style="width: 1%" />
+		</colgroup>
+		<tbody data-bind="foreach: identities">
+			<tr class="identity-item">
+				<td class="e-action">
+					<span class="identity-img icon-user"></span>
+					&nbsp;&nbsp;
+					<span class="identity-name" data-bind="text: formattedName()"></span>
+				</td>
+				<td>
+					<span data-bind="visible: !canBeDeleted()"></span>
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="visible: canBeDeleted, css: {'delete-access': deleteAccess}, click: function(oIdentity) { $root.deleteIdentity(oIdentity); }">
+						<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
+					</a>
+				</td>
+				<td>
+					<span class="delete-identity" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oIdentity) { $root.identityForDeletion(oIdentity); }">
 						<i class="icon-trash"></i>
 					</span>
 				</td>

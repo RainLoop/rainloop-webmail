@@ -74,7 +74,7 @@
 	{
 		if (this.capaAdditionalAccounts())
 		{
-			require('Knoin/Knoin').showScreenPopup(require('View/Popup/AddAccount'));
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Account'));
 		}
 	};
 

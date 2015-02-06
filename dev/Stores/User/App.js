@@ -7,7 +7,7 @@
 		ko = require('ko'),
 
 		Settings = require('Storage/Settings'),
-		
+
 		AppStore = require('Stores/App')
 	;
 
@@ -36,7 +36,9 @@
 
 		this.projectHash(Settings.settingsGet('ProjectHash'));
 
+		this.contactsAutosave(!!Settings.settingsGet('ContactsAutosave'));
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
+
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
 
 		this.devEmail = Settings.settingsGet('DevEmail');
