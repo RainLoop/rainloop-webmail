@@ -7,9 +7,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Settings = require('Storage/Settings'),
-
-		Remote = require('Storage/User/Remote')
+		Settings = require('Storage/Settings')
 	;
 
 	/**
@@ -26,24 +24,10 @@
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({'throttle': 100});
 
-		this.accountsEmailNames = ko.observableArray([]).extend({'throttle': 1000});
-		this.accountsEmailNames.skipFirst = true;
-
-		this.accounts.subscribe(function (aList) {
-			this.accountsEmailNames(_.compact(_.map(aList, function (oItem) {
+		this.accountsEmails = ko.computed(function () {
+			return _.compact(_.map(this.accounts(), function (oItem) {
 				return oItem ? oItem.email : null;
-			})));
-		}, this);
-
-		this.accountsEmailNames.subscribe(function (aList) {
-			if (this.accountsEmailNames.skipFirst)
-			{
-				this.accountsEmailNames.skipFirst = false;
-			}
-			else if (aList && 1 < aList.length)
-			{
-				Remote.accountSortOrder(null, aList);
-			}
+			}));
 		}, this);
 
 		this.accountsUnreadCount = ko.computed(function () {
@@ -65,10 +49,6 @@
 	AccountUserStore.prototype.populate = function ()
 	{
 		this.email(Settings.settingsGet('Email'));
-//		this.incLogin(Settings.settingsGet('IncLogin'));
-//		this.outLogin(Settings.settingsGet('OutLogin'));
-
-//		this.signature(Settings.settingsGet('Signature'));
 	};
 
 	module.exports = new AccountUserStore();

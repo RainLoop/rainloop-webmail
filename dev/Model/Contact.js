@@ -112,7 +112,7 @@
 	/**
 	 * @return string
 	 */
-	ContactModel.prototype.lineAsCcc = function ()
+	ContactModel.prototype.lineAsCss = function ()
 	{
 		var aResult = [];
 		if (this.deleted())

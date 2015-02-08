@@ -26,6 +26,7 @@
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
 		IdentityStore = require('Stores/User/Identity'),
+		TemplateStore = require('Stores/User/Template'),
 		FolderStore = require('Stores/User/Folder'),
 		PgpStore = require('Stores/User/Pgp'),
 
@@ -587,10 +588,35 @@
 						oIdentity.name(Utils.pString(oIdentityData['Name']));
 						oIdentity.replyTo(Utils.pString(oIdentityData['ReplyTo']));
 						oIdentity.bcc(Utils.pString(oIdentityData['Bcc']));
+						oIdentity.signature(Utils.pString(oIdentityData['Signature']));
+						oIdentity.signatureInsertBefore(!!oIdentityData['SignatureInsertBefore']);
 
 						return oIdentity;
 					}));
 				}
+			}
+		});
+	};
+
+	AppUser.prototype.templates = function ()
+	{
+		TemplateStore.templates.loading(true);
+
+		Remote.templates(function (sResult, oData) {
+
+			TemplateStore.templates.loading(false);
+
+			if (Enums.StorageResultType.Success === sResult && oData.Result &&
+				Utils.isArray(oData.Result['Templates']))
+			{
+				Utils.delegateRunOnDestroy(TemplateStore.templates());
+
+				IdentityStore.templates(_.map(oData.Result['Templates'], function (oIdentityData) {
+					return {
+						'id': Utils.pString(oIdentityData['Id']),
+						'name': Utils.pString(oIdentityData['Name'])
+					};
+				}));
 			}
 		});
 	};

@@ -53,6 +53,17 @@
 			if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE)
 				return;
 
+			editor.__plainUtils = {
+				plainToHtml: function(data) {
+					return window.rainloop_Utils_plainToHtml ?
+						window.rainloop_Utils_plainToHtml(data, true) : simplePlainToHtml(data);
+				},
+				htmlToPlain: function(data) {
+					return window.rainloop_Utils_htmlToPlain ?
+						window.rainloop_Utils_htmlToPlain(data, true) : simpleHtmlToPlain(data);
+				}
+			};
+
 			var plain = CKEDITOR.plugins.plain;
 			editor.addMode('plain', function(callback) {
 
@@ -124,9 +135,7 @@
 		base: CKEDITOR.editable,
 		proto: {
 			setData: function(data) {
-				this.setValue(window.rainloop_Utils_htmlToPlain ?
-					window.rainloop_Utils_htmlToPlain(data) : simpleHtmlToPlain(data));
-
+				this.setValue(this.editor.__plainUtils.htmlToPlain(data));
 				this.editor.fire('dataReady');
 			},
 			setRawData: function(data) {
@@ -134,8 +143,7 @@
 				this.editor.fire('dataReady');
 			},
 			getData: function() {
-				return window.rainloop_Utils_plainToHtml ?
-					window.rainloop_Utils_plainToHtml(this.getValue(), true) : simplePlainToHtml(this.getValue());
+				return this.editor.__plainUtils.plainToHtml(this.getValue());
 			},
 			getRawData: function() {
 				return this.getValue();

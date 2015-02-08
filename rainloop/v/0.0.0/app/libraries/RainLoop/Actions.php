@@ -2098,13 +2098,14 @@ class Actions
 				{
 					$sOrder = $this->StorageProvider()->Get($oAccount,
 						\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-						'accounts_order'
+						'accounts_identities_order'
 					);
 
 					$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
-					if (\is_array($aAccounts) && \is_array($aOrder) && 0 < \count($aOrder))
+					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) &&
+						1 < \count($aOrder['Accounts']))
 					{
-						$aAccounts = \array_merge(\array_flip($aOrder), $aAccounts);
+						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
 					}
 				}
 
@@ -2173,6 +2174,24 @@ class Actions
 			{
 				\array_unshift($aIdentities,
 					\RainLoop\Model\Identity::NewInstanceFromAccount($oAccount));
+			}
+
+			if (1 < \count($aIdentities))
+			{
+				$sOrder = $this->StorageProvider()->Get($oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'accounts_identities_order'
+				);
+
+				$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+				if (isset($aOrder['Identities']) && \is_array($aOrder['Identities']) &&
+					1 < \count($aOrder['Identities']))
+				{
+					$aList = $aOrder['Identities'];
+					\usort($aIdentities, function ($a, $b) use ($aList) {
+						return \array_search($a->Id(), $aList) < \array_search($b->Id(), $aList) ? -1 : 1;
+					});
+				}
 			}
 		}
 
@@ -2483,19 +2502,24 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountSortOrder()
+	public function DoAccountsAndIdentitiesSortOrder()
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$aList = $this->GetActionParam('Accounts', null);
-		if (!\is_array($aList) || 2 > \count($aList))
+		$aAccounts = $this->GetActionParam('Accounts', null);
+		$aIdentities = $this->GetActionParam('Identities', null);
+
+		if (!\is_array($aAccounts) || !\is_array($aIdentities))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG, 'accounts_order',
-			\json_encode($aList)
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG, 'accounts_identities_order',
+			\json_encode(array(
+				'Accounts' => $aAccounts,
+				'Identities' => $aIdentities
+			))
 		));
 	}
 
@@ -4952,6 +4976,7 @@ class Actions
 						'IsSeen' => in_array('\\seen', $aLowerFlags),
 						'IsFlagged' => in_array('\\flagged', $aLowerFlags),
 						'IsAnswered' => in_array('\\answered', $aLowerFlags),
+						'IsDeleted' => in_array('\\deleted', $aLowerFlags),
 						'IsForwarded' => 0 < strlen($sForwardedFlag) && in_array(strtolower($sForwardedFlag), $aLowerFlags),
 						'IsReadReceipt' => 0 < strlen($sReadReceiptFlag) && in_array(strtolower($sReadReceiptFlag), $aLowerFlags)
 					);
@@ -8503,6 +8528,7 @@ class Actions
 				$mResult['IsSeen'] = \in_array('\\seen', $aFlags);
 				$mResult['IsFlagged'] = \in_array('\\flagged', $aFlags);
 				$mResult['IsAnswered'] = \in_array('\\answered', $aFlags);
+				$mResult['IsDeleted'] = \in_array('\\deleted', $aFlags);
 
 				$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
 				$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');

@@ -30,6 +30,16 @@ class Identity
 	private $sBcc;
 
 	/**
+	 * @var string
+	 */
+	private $sSignature;
+
+	/**
+	 * @var bool
+	 */
+	private $bSignatureInsertBefore;
+
+	/**
 	 * @param string $sId = ''
 	 * @param string $sEmail = ''
 	 *
@@ -42,6 +52,8 @@ class Identity
 		$this->sName = '';
 		$this->sReplyTo = '';
 		$this->sBcc = '';
+		$this->sSignature = '';
+		$this->bSignatureInsertBefore = false;
 	}
 
 	/**
@@ -115,6 +127,22 @@ class Identity
 	}
 
 	/**
+	 * @return string
+	 */
+	public function Signature()
+	{
+		return $this->sSignature;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function SignatureInsertBefore()
+	{
+		return $this->bSignatureInsertBefore;
+	}
+
+	/**
 	 * @param array $aData
 	 * @param bool $bAjax = false
 	 *
@@ -129,6 +157,9 @@ class Identity
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
+			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
+			$this->bSignatureInsertBefore = isset($aData['SignatureInsertBefore']) ?
+				($bAjax ? '1' === $aData['SignatureInsertBefore'] : !!$aData['SignatureInsertBefore']) : true;
 
 			return true;
 		}
@@ -148,7 +179,9 @@ class Identity
 			'Email' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->Email()) : $this->Email(),
 			'Name' => $this->Name(),
 			'ReplyTo' => $this->ReplyTo(),
-			'Bcc' => $this->Bcc()
+			'Bcc' => $this->Bcc(),
+			'Signature' => $this->Signature(),
+			'SignatureInsertBefore' => $this->SignatureInsertBefore()
 		);
 	}
 

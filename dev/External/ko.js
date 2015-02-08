@@ -954,6 +954,25 @@
 		return this;
 	};
 
+	ko.observable.fn.deleteAccessHelper = function ()
+	{
+		this.extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [null,
+			function (oPrev) {
+				if (oPrev && oPrev.deleteAccess)
+				{
+					oPrev.deleteAccess(false);
+				}
+			}, function (oNext) {
+				if (oNext && oNext.deleteAccess)
+				{
+					oNext.deleteAccess(true);
+				}
+			}
+		]});
+
+		return this;
+	};
+
 	ko.observable.fn.validateFunc = function (fFunc)
 	{
 		var Utils = require('Common/Utils');

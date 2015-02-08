@@ -249,6 +249,13 @@ html.rl-no-preview-pane {
 				margin-right:5px
 			}
 
+			&.deleted-mark {
+				opacity: .7;
+				.sender, .subject, .subject-prefix, .subject-suffix {
+					text-decoration: line-through;
+				}
+			}
+
 			&.important .importantMark {
 				display: inline;
 			}

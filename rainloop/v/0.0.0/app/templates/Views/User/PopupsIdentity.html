@@ -18,7 +18,7 @@
 					<div class="control-group" data-bind="visible: !owner(), css: {'error': email.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_EMAIL"></label>
 						<div class="controls">
-							<input type="email" class="inputEmail input-large"
+							<input type="email" class="inputEmail input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: email, onEnter: addOrEditIdentityCommand, hasfocus: email.focused" />
 						</div>
@@ -32,26 +32,54 @@
 					<div class="control-group">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_NAME"></label>
 						<div class="controls">
-							<input type="text" class="inputName input-large"
+							<input type="text" class="inputName input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: name, onEnter: addOrEditIdentityCommand, hasfocus: name.focused" />
 						</div>
 					</div>
-					<div class="control-group" data-bind="css: {'error': replyTo.hasError}">
+					<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyTo.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_REPLY_TO"></label>
 						<div class="controls">
-							<input type="text" class="inputReplyTo input-large"
+							<input type="text" class="inputReplyTo input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyTo.focused" />
 						</div>
 					</div>
-					<div class="control-group" data-bind="css: {'error': bcc.hasError}">
+					<div class="control-group" data-bind="visible: showBcc, css: {'error': bcc.hasError}">
 						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITIES/LABEL_BCC"></label>
 						<div class="controls">
-							<input type="text" class="inputBcc input-large"
+							<input type="text" class="inputBcc input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bcc.focused" />
 						</div>
+					</div>
+					<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
+						<div class="controls">
+							<span data-bind="visible: !showReplyTo()">
+								<span class="i18n g-ui-link" data-i18n-text="POPUPS_IDENTITIES/LABEL_REPLY_TO"
+									data-bind="click: function () { showReplyTo(true); }"></span>
+								&nbsp;&nbsp;
+							</span>
+							<span data-bind="visible: !showBcc()">
+								<span class="i18n g-ui-link" data-i18n-text="POPUPS_IDENTITIES/LABEL_BCC"
+									data-bind="click: function () { showBcc(true); }"></span>
+							</span>
+						</div>
+					</div>
+					<hr />
+					<div class="control-group">
+						<div class="controls">
+							<div data-bind="component: {
+								name: 'Checkbox',
+								params: {
+									label: 'POPUPS_IDENTITIES/LABEL_SIGNATURE_INSERT_BEFORE',
+									value: signatureInsertBefore
+								}
+							}"></div>
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="e-signature-place" data-bind="initDom: signatureDom"></div>
 					</div>
 				</div>
 			</div>

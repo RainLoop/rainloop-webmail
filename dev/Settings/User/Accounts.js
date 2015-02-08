@@ -9,6 +9,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 		Links = require('Common/Links'),
 
@@ -34,33 +35,8 @@
 			return '' === this.processText() ? 'hidden' : 'visible';
 		}, this);
 
-		this.accountForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-				}
-			}
-		]});
-
-		this.identityForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-				}
-			}
-		]});
+		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
+		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
 	AccountsUserSettings.prototype.scrollableOptions = function ()
@@ -156,6 +132,12 @@
 				}, oIdentityToRemove.id);
 			}
 		}
+	};
+
+	AccountsUserSettings.prototype.accountsAndIdentitiesAfterMove = function ()
+	{
+		Remote.accountsAndIdentitiesSortOrder(null,
+			AccountStore.accountsEmails.peek(), IdentityStore.identitiesIDS.peek());
 	};
 
 	AccountsUserSettings.prototype.onBuild = function (oDom)

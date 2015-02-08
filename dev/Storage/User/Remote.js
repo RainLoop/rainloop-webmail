@@ -188,11 +188,13 @@
 	/**
 	 * @param {?Function} fCallback
 	 * @param {Array} aAccounts
+	 * @param {Array} aIdentities
 	 */
-	RemoteUserStorage.prototype.accountSortOrder = function (fCallback, aAccounts)
+	RemoteUserStorage.prototype.accountsAndIdentitiesSortOrder = function (fCallback, aAccounts, aIdentities)
 	{
-		this.defaultRequest(fCallback, 'AccountSortOrder', {
-			'Accounts': aAccounts
+		this.defaultRequest(fCallback, 'AccountsAndIdentitiesSortOrder', {
+			'Accounts': aAccounts,
+			'Identities': aIdentities
 		});
 	};
 
@@ -203,15 +205,20 @@
 	 * @param {string} sName
 	 * @param {string} sReplyTo
 	 * @param {string} sBcc
+	 * @param {string} sSignature
+	 * @param {boolean} bSignatureInsertBefore
 	 */
-	RemoteUserStorage.prototype.identityUpdate = function (fCallback, sId, sEmail, sName, sReplyTo, sBcc)
+	RemoteUserStorage.prototype.identityUpdate = function (fCallback, sId, sEmail, sName, sReplyTo, sBcc,
+		sSignature, bSignatureInsertBefore)
 	{
 		this.defaultRequest(fCallback, 'IdentityUpdate', {
 			'Id': sId,
 			'Email': sEmail,
 			'Name': sName,
 			'ReplyTo': sReplyTo,
-			'Bcc': sBcc
+			'Bcc': sBcc,
+			'Signature': sSignature,
+			'SignatureInsertBefore': bSignatureInsertBefore ? '1' : '0'
 		});
 	};
 
@@ -263,6 +270,36 @@
 	RemoteUserStorage.prototype.filtersGet = function (fCallback)
 	{
 		this.defaultRequest(fCallback, 'Filters', {});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.templates = function (fCallback)
+	{
+		this.defaultRequest(fCallback, 'Templates', {});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.templateGetById = function (fCallback, sID)
+	{
+		this.defaultRequest(fCallback, 'TemplateGetByID', {
+			'ID': sID
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.templateGetById = function (fCallback, sID, sName, sBody)
+	{
+		this.defaultRequest(fCallback, 'TemplateSetup', {
+			'ID': sID,
+			'Name': sName,
+			'Body': sBody
+		});
 	};
 
 	/**

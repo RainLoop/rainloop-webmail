@@ -33,7 +33,6 @@
 		Data = require('Storage/User/Data'),
 		Cache = require('Storage/User/Cache'),
 		Remote = require('Storage/User/Remote'),
-		Local = require('Storage/Client'),
 
 		ComposeAttachmentModel = require('Model/ComposeAttachment'),
 
@@ -74,6 +73,7 @@
 			}
 		;
 
+		this.oLastMessage = null;
 		this.oEditor = null;
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
@@ -198,49 +198,19 @@
 
 		this.composeEditorArea = ko.observable(null);
 
-		this.identities = AccountStore.identities;
+		this.identities = IdentityStore.identities;
 		this.identitiesOptions = ko.computed(function () {
 			return _.map(IdentityStore.identities(), function (oItem) {
 				return {
+					'item': oItem,
 					'optValue': oItem.id(),
 					'optText': oItem.formattedName()
 				};
 			});
 		}, this);
 
-		this.currentIdentityID = ko.observable(
-			Local.get(Enums.ClientSideKeyName.ComposeLastIdentityID, ''));
-
-		this.currentIdentity = ko.computed(function () {
-
-			var
-				oItem = null,
-				sID = this.currentIdentityID(),
-				aList = IdentityStore.identities()
-			;
-
-			if (Utils.isArray(aList))
-			{
-				oItem = _.find(aList, function (oItem) {
-					return oItem && sID === oItem.id();
-				});
-
-				if (!oItem)
-				{
-					oItem = _.find(aList, function (oItem) {
-						return oItem && '' === oItem.id();
-					});
-				}
-
-				if (!oItem)
-				{
-					oItem = aList[0] ? aList[0] : null;
-				}
-			}
-
-			return oItem ? oItem : null;
-
-		}, this);
+		this.currentIdentity = ko.observable(
+			this.identities()[0] ? this.identities()[0] : null);
 
 		this.currentIdentity.extend({'toggleSubscribe': [this,
 			function (oIdentity) {
@@ -361,7 +331,7 @@
 
 					Remote.sendMessage(
 						this.sendMessageResponse,
-						this.currentIdentityID(),
+						this.currentIdentity() ? this.currentIdentity().id() : '',
 						this.draftFolder(),
 						this.draftUid(),
 						sSentFolder,
@@ -371,7 +341,7 @@
 						this.replyTo(),
 						this.subject(),
 						this.oEditor ? this.oEditor.isHtml() : false,
-						this.oEditor ? this.oEditor.getData(true) : '',
+						this.oEditor ? this.oEditor.getData(true, true) : '',
 						this.prepearAttachmentsForSendOrSave(),
 						this.aDraftInfo,
 						this.sInReplyTo,
@@ -400,7 +370,7 @@
 
 				Remote.saveMessage(
 					this.saveMessageResponse,
-					this.currentIdentityID(),
+					this.currentIdentity() ? this.currentIdentity().id() : '',
 					this.draftFolder(),
 					this.draftUid(),
 					FolderStore.draftFolder(),
@@ -597,7 +567,6 @@
 	ComposePopupView.prototype.findIdentityByMessage = function (sComposeType, oMessage)
 	{
 		var
-			sDefaultIdentityID = Local.get(Enums.ClientSideKeyName.ComposeLastIdentityID, ''),
 			aIdentities = IdentityStore.identities(),
 			oResultIdentity = null,
 			oIdentitiesCache = {},
@@ -640,34 +609,15 @@
 			}
 		}
 
-		if (!oResultIdentity)
-		{
-			oResultIdentity = _.find(aIdentities, function (oItem) {
-				return oItem.id() === sDefaultIdentityID;
-			});
-		}
-
-		if (!oResultIdentity && '' !== sDefaultIdentityID)
-		{
-			oResultIdentity = _.find(aIdentities, function (oItem) {
-				return oItem.id() === '';
-			});
-		}
-
-		if (!oResultIdentity)
-		{
-			oResultIdentity = aIdentities[0] || null;
-		}
-
-		return oResultIdentity;
+		return oResultIdentity || aIdentities[0] || null;
 	};
 
 	ComposePopupView.prototype.selectIdentity = function (oIdentity)
 	{
-		if (oIdentity)
+		if (oIdentity && oIdentity.item)
 		{
-			this.currentIdentityID(oIdentity.optValue);
-			Local.set(Enums.ClientSideKeyName.ComposeLastIdentityID, oIdentity.optValue);
+			this.currentIdentity(oIdentity.item);
+			this.setSignatureFromIdentity(oIdentity.item);
 		}
 	};
 
@@ -775,97 +725,6 @@
 		kn.routeOn();
 	};
 
-	/**
-	 * @param {string} sInputText
-	 * @param {string} sSignature
-	 * @param {string=} sFrom
-	 * @param {string=} sComposeType
-	 * @return {string}
-	 */
-	ComposePopupView.prototype.convertSignature = function (sInputText, sSignature, sFrom, sComposeType)
-	{
-		var bHtml = false, bData = false;
-		if ('' !== sSignature)
-		{
-			if (':HTML:' === sSignature.substr(0, 6))
-			{
-				bHtml = true;
-				sSignature = sSignature.substr(6);
-			}
-
-			sSignature = sSignature.replace(/[\r]/g, '');
-
-			sFrom = Utils.pString(sFrom);
-			if ('' !== sFrom)
-			{
-				sSignature = sSignature.replace(/{{FROM-FULL}}/g, sFrom);
-
-				if (-1 === sFrom.indexOf(' ') && 0 < sFrom.indexOf('@'))
-				{
-					sFrom = sFrom.replace(/@(.+)$/, '');
-				}
-
-				sSignature = sSignature.replace(/{{FROM}}/g, sFrom);
-			}
-
-			sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
-			sSignature = sSignature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
-
-			sSignature = sSignature.replace(/{{FROM}}/g, '');
-			sSignature = sSignature.replace(/{{FROM-FULL}}/g, '');
-
-			if (-1 < sSignature.indexOf('{{DATE}}'))
-			{
-				sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
-			}
-
-			// Enums.ComposeType.Empty === sComposeType
-			if (-1 < sSignature.indexOf('{{BODY}}'))
-			{
-				if (sInputText)
-				{
-					bData = true;
-
-					sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
-					sSignature = sSignature.replace('{{BODY}}', sInputText);
-				}
-				else
-				{
-					sSignature = sSignature.replace(/[\n]?{{BODY}}[\n]?/g, '{{BODY}}');
-					sSignature = sSignature.replace(/{{BODY}}/g, '');
-
-					sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
-				}
-			}
-			else
-			{
-				sSignature = bHtml ? sSignature : Utils.plainToHtml(sSignature, true);
-			}
-		}
-
-		if (!bData)
-		{
-			if (sSignature)
-			{
-				switch (sComposeType)
-				{
-					case Enums.ComposeType.Empty:
-						sInputText = sInputText + '<br />' + sSignature;
-						break;
-					default:
-						sInputText = sSignature + '<br />' + sInputText;
-						break;
-				}
-			}
-		}
-		else
-		{
-			sInputText = sSignature;
-		}
-
-		return sInputText;
-	};
-
 	ComposePopupView.prototype.editor = function (fOnInit)
 	{
 		if (fOnInit)
@@ -873,18 +732,111 @@
 			var self = this;
 			if (!this.oEditor && this.composeEditorArea())
 			{
-				_.delay(function () {
-					self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
-						fOnInit(self.oEditor);
-					}, function (bHtml) {
-						self.isHtml(!!bHtml);
-					});
-				}, 300);
+				self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
+					fOnInit(self.oEditor);
+				}, function (bHtml) {
+					self.isHtml(!!bHtml);
+				});
 			}
 			else if (this.oEditor)
 			{
 				fOnInit(this.oEditor);
 			}
+		}
+	};
+
+	ComposePopupView.prototype.converSignature = function (sSignature)
+	{
+		var
+			iLimit = 10,
+			oMatch = null,
+			aMoments = [],
+			oMomentRegx = /{{MOMENT:([^}]+)}}/g,
+			sFrom = ''
+		;
+
+		sSignature = sSignature.replace(/[\r]/g, '');
+
+		sFrom = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+		if ('' !== sFrom)
+		{
+			sSignature = sSignature.replace(/{{FROM-FULL}}/g, sFrom);
+
+			if (-1 === sFrom.indexOf(' ') && 0 < sFrom.indexOf('@'))
+			{
+				sFrom = sFrom.replace(/@[\S]+/, '');
+			}
+
+			sSignature = sSignature.replace(/{{FROM}}/g, sFrom);
+		}
+
+		sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
+		sSignature = sSignature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
+
+		sSignature = sSignature.replace(/{{FROM}}/g, '');
+		sSignature = sSignature.replace(/{{FROM-FULL}}/g, '');
+
+		if (-1 < sSignature.indexOf('{{DATE}}'))
+		{
+			sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
+		}
+
+		if (-1 < sSignature.indexOf('{{TIME}}'))
+		{
+			sSignature = sSignature.replace(/{{TIME}}/g, moment().format('LT'));
+		}
+		if (-1 < sSignature.indexOf('{{MOMENT:'))
+		{
+			try
+			{
+				while ((oMatch = oMomentRegx.exec(sSignature)) !== null)
+				{
+					if (oMatch && oMatch[0] && oMatch[1])
+					{
+						aMoments.push([oMatch[0], oMatch[1]]);
+					}
+
+					iLimit--;
+					if (0 === iLimit)
+					{
+						break;
+					}
+				}
+
+				if (aMoments && 0 < aMoments.length)
+				{
+					_.each(aMoments, function (aData) {
+						sSignature = sSignature.replace(aData[0], moment().format(aData[1]));
+					});
+				}
+
+				sSignature = sSignature.replace(/{{MOMENT:[^}]+}}/g, '');
+			}
+			catch(e) {}
+		}
+
+		return sSignature;
+	};
+
+	ComposePopupView.prototype.setSignatureFromIdentity = function (oIdentity)
+	{
+		if (oIdentity)
+		{
+			var self = this;
+			this.editor(function (oEditor) {
+				var bHtml = false, sSignature = oIdentity.signature();
+				if ('' !== sSignature)
+				{
+					if (':HTML:' === sSignature.substr(0, 6))
+					{
+						bHtml = true;
+						sSignature = sSignature.substr(6);
+					}
+				}
+
+				oEditor.setSignature(self.converSignature(sSignature),
+					bHtml, !!oIdentity.signatureInsertBefore());
+			});
 		}
 	};
 
@@ -957,6 +909,28 @@
 	};
 
 	/**
+	 *
+	 * @param {Array} aList
+	 * @param {boolean} bFriendly
+	 * @returns {string}
+	 */
+	ComposePopupView.prototype.emailArrayToStringLineHelper = function (aList, bFriendly)
+	{
+		var
+			iIndex = 0,
+			iLen = aList.length,
+			aResult = []
+		;
+
+		for (; iIndex < iLen; iIndex++)
+		{
+			aResult.push(aList[iIndex].toLine(!!bFriendly));
+		}
+
+		return aResult.join(', ');
+	};
+
+	/**
 	 * @param {string=} sType = Enums.ComposeType.Empty
 	 * @param {?MessageModel|Array=} oMessageOrArray = null
 	 * @param {Array=} aToEmails = null
@@ -984,26 +958,10 @@
 			oExcludeEmail = {},
 			oIdentity = null,
 			mEmail = AccountStore.email(),
-			sSignature = AccountStore.signature(),
 			aDownloads = [],
 			aDraftInfo = null,
 			oMessage = null,
-			sComposeType = sType || Enums.ComposeType.Empty,
-			fEmailArrayToStringLineHelper = function (aList, bFriendly) {
-
-				var
-					iIndex = 0,
-					iLen = aList.length,
-					aResult = []
-				;
-
-				for (; iIndex < iLen; iIndex++)
-				{
-					aResult.push(aList[iIndex].toLine(!!bFriendly));
-				}
-
-				return aResult.join(', ');
-			}
+			sComposeType = sType || Enums.ComposeType.Empty
 		;
 
 		oMessageOrArray = oMessageOrArray || null;
@@ -1013,39 +971,34 @@
 				(!Utils.isArray(oMessageOrArray) ? oMessageOrArray : null);
 		}
 
+		this.oLastMessage = oMessage;
+
 		if (null !== mEmail)
 		{
 			oExcludeEmail[mEmail] = true;
 		}
 
+		this.reset();
+
 		oIdentity = this.findIdentityByMessage(sComposeType, oMessage);
 		if (oIdentity)
 		{
 			oExcludeEmail[oIdentity.email()] = true;
-			this.currentIdentityID(oIdentity.id());
 		}
-		else
-		{
-			this.currentIdentityID('');
-		}
-
-		this.reset();
-
-		this.currentIdentityID.valueHasMutated(); // Populate BBC from Identity
 
 		if (Utils.isNonEmptyArray(aToEmails))
 		{
-			this.to(fEmailArrayToStringLineHelper(aToEmails));
+			this.to(this.emailArrayToStringLineHelper(aToEmails));
 		}
 
 		if (Utils.isNonEmptyArray(aCcEmails))
 		{
-			this.cc(fEmailArrayToStringLineHelper(aCcEmails));
+			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
 		}
 
 		if (Utils.isNonEmptyArray(aBccEmails))
 		{
-			this.bcc(fEmailArrayToStringLineHelper(aBccEmails));
+			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
 		}
 
 		if ('' !== sComposeType && oMessage)
@@ -1074,7 +1027,7 @@
 					break;
 
 				case Enums.ComposeType.Reply:
-					this.to(fEmailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
+					this.to(this.emailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
 					this.subject(Utils.replySubjectAdd('Re', sSubject));
 					this.prepearMessageAttachments(oMessage, sComposeType);
 					this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
@@ -1084,8 +1037,8 @@
 
 				case Enums.ComposeType.ReplyAll:
 					aResplyAllParts = oMessage.replyAllEmails(oExcludeEmail);
-					this.to(fEmailArrayToStringLineHelper(aResplyAllParts[0]));
-					this.cc(fEmailArrayToStringLineHelper(aResplyAllParts[1]));
+					this.to(this.emailArrayToStringLineHelper(aResplyAllParts[0]));
+					this.cc(this.emailArrayToStringLineHelper(aResplyAllParts[1]));
 					this.subject(Utils.replySubjectAdd('Re', sSubject));
 					this.prepearMessageAttachments(oMessage, sComposeType);
 					this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
@@ -1110,10 +1063,10 @@
 					break;
 
 				case Enums.ComposeType.Draft:
-					this.to(fEmailArrayToStringLineHelper(oMessage.to));
-					this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
-					this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
-					this.replyTo(fEmailArrayToStringLineHelper(oMessage.replyTo));
+					this.to(this.emailArrayToStringLineHelper(oMessage.to));
+					this.cc(this.emailArrayToStringLineHelper(oMessage.cc));
+					this.bcc(this.emailArrayToStringLineHelper(oMessage.bcc));
+					this.replyTo(this.emailArrayToStringLineHelper(oMessage.replyTo));
 
 					this.bFromDraft = true;
 
@@ -1129,10 +1082,10 @@
 					break;
 
 				case Enums.ComposeType.EditAsNew:
-					this.to(fEmailArrayToStringLineHelper(oMessage.to));
-					this.cc(fEmailArrayToStringLineHelper(oMessage.cc));
-					this.bcc(fEmailArrayToStringLineHelper(oMessage.bcc));
-					this.replyTo(fEmailArrayToStringLineHelper(oMessage.replyTo));
+					this.to(this.emailArrayToStringLineHelper(oMessage.to));
+					this.cc(this.emailArrayToStringLineHelper(oMessage.cc));
+					this.bcc(this.emailArrayToStringLineHelper(oMessage.bcc));
+					this.replyTo(this.emailArrayToStringLineHelper(oMessage.replyTo));
 
 					this.subject(sSubject);
 					this.prepearMessageAttachments(oMessage, sComposeType);
@@ -1153,7 +1106,7 @@
 						'EMAIL': sFrom
 					});
 
-					sText = '<br /><br />' + sReplyTitle + ':' +
+					sText = '<br />' + sReplyTitle + ':' +
 						'<blockquote><p>' + sText + '</p></blockquote>';
 
 					break;
@@ -1162,7 +1115,7 @@
 					sFrom = oMessage.fromToLine(false, true);
 					sTo = oMessage.toToLine(false, true);
 					sCc = oMessage.ccToLine(false, true);
-					sText = '<br /><br /><br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
+					sText = '<br /><br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
 							(0 < sCc.length ? '<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
@@ -1175,18 +1128,19 @@
 					break;
 			}
 
-			if ('' !== sSignature &&
-				Enums.ComposeType.EditAsNew !== sComposeType && Enums.ComposeType.Draft !== sComposeType)
-			{
-				sText = this.convertSignature(sText, sSignature, fEmailArrayToStringLineHelper(oMessage.from, true), sComposeType);
-			}
-
 			this.editor(function (oEditor) {
+
 				oEditor.setHtml(sText, false);
+
 				if (Enums.EditorDefaultType.PlainForced === self.editorDefaultType() ||
 					(!oMessage.isHtml() && Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType()))
 				{
 					oEditor.modeToggle(false);
+				}
+
+				if (oIdentity)
+				{
+					self.setSignatureFromIdentity(oIdentity);
 				}
 			});
 		}
@@ -1195,17 +1149,20 @@
 			this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
 
 			sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
-			if ('' !== sSignature)
-			{
-				sText = this.convertSignature(Utils.plainToHtml(sText, true), sSignature, '', sComposeType);
-			}
 
 			this.editor(function (oEditor) {
+
 				oEditor.setHtml(sText, false);
+
 				if (Enums.EditorDefaultType.Html !== self.editorDefaultType() &&
 					Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType())
 				{
 					oEditor.modeToggle(false);
+				}
+
+				if (oIdentity)
+				{
+					self.setSignatureFromIdentity(oIdentity);
 				}
 			});
 		}
@@ -1213,6 +1170,22 @@
 		{
 			_.each(oMessageOrArray, function (oMessage) {
 				self.addMessageAsAttachment(oMessage);
+			});
+
+			this.editor(function (oEditor) {
+
+				oEditor.setHtml('', false);
+
+				if (Enums.EditorDefaultType.Html !== self.editorDefaultType() &&
+					Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType())
+				{
+					oEditor.modeToggle(false);
+				}
+
+				if (oIdentity)
+				{
+					self.setSignatureFromIdentity(oIdentity);
+				}
 			});
 		}
 
@@ -1250,6 +1223,11 @@
 				}
 
 			}, aDownloads);
+		}
+
+		if (oIdentity)
+		{
+			this.currentIdentity(oIdentity);
 		}
 
 		this.triggerForResize();

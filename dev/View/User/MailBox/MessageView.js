@@ -190,7 +190,7 @@
 		this.viewDate = ko.observable('');
 		this.viewSize = ko.observable('');
 		this.viewMoment = ko.observable('');
-		this.viewLineAsCcc = ko.observable('');
+		this.viewLineAsCss = ko.observable('');
 		this.viewViewLink = ko.observable('');
 		this.viewDownloadLink = ko.observable('');
 		this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
@@ -272,7 +272,7 @@
 				this.viewDate(oMessage.fullFormatDateValue());
 				this.viewSize(oMessage.friendlySize());
 				this.viewMoment(oMessage.momentDate());
-				this.viewLineAsCcc(oMessage.lineAsCcc());
+				this.viewLineAsCss(oMessage.lineAsCss());
 				this.viewViewLink(oMessage.viewLink());
 				this.viewDownloadLink(oMessage.downloadLink());
 				this.viewIsImportant(oMessage.isImportant());

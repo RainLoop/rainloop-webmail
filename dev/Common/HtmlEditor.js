@@ -64,12 +64,16 @@
 
 	/**
 	 * @param {string} sSignature
+	 * @param {bool} bHtml
+	 * @param {bool} bInsertBefore
 	 */
-	HtmlEditor.prototype.setSignature = function (sSignature)
+	HtmlEditor.prototype.setSignature = function (sSignature, bHtml, bInsertBefore)
 	{
 		if (this.editor)
 		{
 			this.editor.execCommand('insertSignature', {
+				'isHtml': bHtml,
+				'insertBefore': bInsertBefore,
 				'signature': sSignature
 			});
 		}
@@ -92,24 +96,46 @@
 	};
 
 	/**
-	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {string} sText
 	 * @return {string}
 	 */
-	HtmlEditor.prototype.getData = function (bWrapIsHtml)
+	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
+		return sText
+			.replace("\u0002", '').replace("\u0002", '')
+			.replace("\u0002", '').replace("\u0002", '')
+			.replace("\u0003", '').replace("\u0003", '')
+			.replace("\u0003", '').replace("\u0003", '')
+		;
+	}
+	/**
+	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {boolean=} bClearSignatureSigns = false
+	 * @return {string}
+	 */
+	HtmlEditor.prototype.getData = function (bWrapIsHtml, bClearSignatureSigns)
+	{
+		var sResult = '';
 		if (this.editor)
 		{
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
 			{
-				return this.editor.__plain.getRawData();
+				sResult = this.editor.__plain.getRawData();
+			}
+			else
+			{
+				sResult =  bWrapIsHtml ?
+					'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
+						this.editor.getData() + '</div>' : this.editor.getData();
 			}
 
-			return bWrapIsHtml ?
-				'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
-					this.editor.getData() + '</div>' : this.editor.getData();
+			if (bClearSignatureSigns)
+			{
+				sResult = this.clearSignatureSigns(sResult);
+			}
 		}
 
-		return '';
+		return sResult;
 	};
 
 	HtmlEditor.prototype.modeToggle = function (bPlain)

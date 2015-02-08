@@ -11,12 +11,10 @@
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SAVE"></span>
 			</a>
-			<a class="btn button-close pull-right" data-tooltip-placement="bottom" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">
-				<i class="icon-remove"></i>
-			</a>
-			<a class="btn button-skip pull-right" data-tooltip-placement="bottom" data-bind="command: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'">
-				<i class="icon-down"></i>
-			</a>
+			
+			<a class="close-custom" data-tooltip-placement="bottom" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
+			<a class="minimize-custom" data-tooltip-placement="bottom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
+
 			<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 				<i class="icon-trash icon-white"></i>
 			</a>

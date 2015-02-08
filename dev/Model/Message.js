@@ -63,6 +63,7 @@
 		this.newForAnimation = ko.observable(false);
 
 		this.deleted = ko.observable(false);
+		this.deletedMark = ko.observable(false);
 		this.unseen = ko.observable(false);
 		this.flagged = ko.observable(false);
 		this.answered = ko.observable(false);
@@ -322,6 +323,7 @@
 		this.newForAnimation(false);
 
 		this.deleted(false);
+		this.deletedMark(false);
 		this.unseen(false);
 		this.flagged(false);
 		this.answered(false);
@@ -546,6 +548,7 @@
 			this.answered(!!oJsonMessage.IsAnswered);
 			this.forwarded(!!oJsonMessage.IsForwarded);
 			this.isReadReceipt(!!oJsonMessage.IsReadReceipt);
+			this.deletedMark(!!oJsonMessage.IsDeleted);
 
 			bResult = true;
 		}
@@ -621,12 +624,16 @@
 	/**
 	 * @return string
 	 */
-	MessageModel.prototype.lineAsCcc = function ()
+	MessageModel.prototype.lineAsCss = function ()
 	{
 		var aResult = [];
 		if (this.deleted())
 		{
 			aResult.push('deleted');
+		}
+		if (this.deletedMark())
+		{
+			aResult.push('deleted-mark');
 		}
 		if (this.selected())
 		{
@@ -972,6 +979,7 @@
 		this.answered(oMessage.answered());
 		this.forwarded(oMessage.forwarded());
 		this.isReadReceipt(oMessage.isReadReceipt());
+		this.deletedMark(oMessage.deletedMark());
 
 		this.priority(oMessage.priority());
 
@@ -1339,8 +1347,8 @@
 	 */
 	MessageModel.prototype.flagHash = function ()
 	{
-		return [this.deleted(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
-			this.isReadReceipt()].join('');
+		return [this.deleted(), this.deletedMark(), this.unseen(), this.flagged(), this.answered(), this.forwarded(),
+			this.isReadReceipt()].join(',');
 	};
 
 	module.exports = MessageModel;

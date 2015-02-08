@@ -313,6 +313,7 @@
 				oMessage.answered(!!aFlags[2]);
 				oMessage.forwarded(!!aFlags[3]);
 				oMessage.isReadReceipt(!!aFlags[4]);
+				oMessage.deletedMark(!!aFlags[5]);
 			}
 
 			if (0 < oMessage.threads().length)
@@ -343,7 +344,8 @@
 			this.setMessageFlagsToCache(
 				oMessage.folderFullNameRaw,
 				oMessage.uid,
-				[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(), oMessage.isReadReceipt()]
+				[oMessage.unseen(), oMessage.flagged(), oMessage.answered(), oMessage.forwarded(),
+					oMessage.isReadReceipt(),  oMessage.deletedMark()]
 			);
 		}
 	};

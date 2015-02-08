@@ -7,8 +7,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils'),
-
 		AbstractModel = require('Knoin/AbstractModel')
 	;
 
@@ -27,6 +25,9 @@
 
 		this.replyTo = ko.observable('');
 		this.bcc = ko.observable('');
+
+		this.signature = ko.observable('');
+		this.signatureInsertBefore = ko.observable(false);
 
 		this.deleteAccess = ko.observable(false);
 		this.canBeDeleted = ko.computed(function () {

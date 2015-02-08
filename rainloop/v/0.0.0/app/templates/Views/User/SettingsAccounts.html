@@ -26,7 +26,7 @@
 			<col style="width: 150px" />
 			<col style="width: 1%" />
 		</colgroup>
-		<tbody data-bind="sortable: {data: accounts, options: scrollableOptions()}">
+		<tbody data-bind="sortable: {data: accounts, options: scrollableOptions(), afterMove: accountsAndIdentitiesAfterMove}">
 			<tr class="account-item">
 				<td class="e-action" data-bind="css: {'e-action': canBeEdit}">
 					<span class="account-img icon-user"></span>
@@ -49,17 +49,17 @@
 		</tbody>
 	</table>
 	<br />
-	<br />
 	<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
 		<colgroup>
 			<col />
 			<col style="width: 150px" />
 			<col style="width: 1%" />
 		</colgroup>
-		<tbody data-bind="foreach: identities">
+		<tbody data-bind="sortable: {data: identities, options: scrollableOptions(), afterMove: accountsAndIdentitiesAfterMove}">
 			<tr class="identity-item">
 				<td class="e-action">
 					<span class="identity-img icon-user"></span>
+					<i class="icon-braille drag-handle"></i>
 					&nbsp;&nbsp;
 					<span class="identity-name" data-bind="text: formattedName()"></span>
 				</td>

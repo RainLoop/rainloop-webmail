@@ -26,6 +26,8 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsIdentity');
 
+		var self = this;
+
 		this.id = '';
 		this.edit = ko.observable(false);
 		this.owner = ko.observable(false);
@@ -43,15 +45,31 @@
 		this.bcc.focused = ko.observable(false);
 
 		this.signature = ko.observable('');
+		this.signatureInsertBefore = ko.observable(false);
 
-	//	this.email.subscribe(function () {
-	//		this.email.hasError(false);
-	//	}, this);
+		this.showBcc = ko.observable(false);
+		this.showReplyTo = ko.observable(false);
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
 
+		this.bcc.subscribe(function (aValue) {
+			if (false === self.showBcc() && 0 < aValue.length)
+			{
+				self.showBcc(true);
+			}
+		}, this);
+
+		this.replyTo.subscribe(function (aValue) {
+			if (false === self.showReplyTo() && 0 < aValue.length)
+			{
+				self.showReplyTo(true);
+			}
+		}, this);
+
 		this.addOrEditIdentityCommand = Utils.createCommand(this, function () {
+
+			this.populateSignatureFromEditor();
 
 			if (!this.email.hasError())
 			{
@@ -102,7 +120,8 @@
 					this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 				}
 
-			}, this), this.id, this.email(), this.name(), this.replyTo(), this.bcc());
+			}, this), this.id, this.email(), this.name(), this.replyTo(), this.bcc(),
+				this.signature(), this.signatureInsertBefore());
 
 			return true;
 
@@ -126,17 +145,22 @@
 		this.email('');
 		this.replyTo('');
 		this.bcc('');
+		this.signature('');
+		this.signatureInsertBefore(false);
 
 		this.email.hasError(false);
 		this.replyTo.hasError(false);
 		this.bcc.hasError(false);
+
+		this.showBcc(false);
+		this.showReplyTo(false);
 
 		this.submitRequest(false);
 		this.submitError('');
 
 		if (this.editor)
 		{
-			this.editor.clear(false);
+			this.editor.setPlain('', false);
 		}
 	};
 
@@ -156,6 +180,8 @@
 			this.email(oIdentity.email());
 			this.replyTo(oIdentity.replyTo());
 			this.bcc(oIdentity.bcc());
+			this.signature(oIdentity.signature());
+			this.signatureInsertBefore(oIdentity.signatureInsertBefore());
 
 			this.owner(this.id === '');
 		}
@@ -185,15 +211,23 @@
 		}
 	};
 
+	IdentityPopupView.prototype.populateSignatureFromEditor = function ()
+	{
+		if (this.editor)
+		{
+			this.signature(
+				(this.editor.isHtml() ? ':HTML:' : '') + this.editor.getData()
+			);
+		}
+	};
+
 	IdentityPopupView.prototype.onFocus = function ()
 	{
 		if (!this.editor && this.signatureDom())
 		{
 			var self = this;
 			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				self.signature(
-					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
-				);
+				self.populateSignatureFromEditor();
 			}, function () {
 				self.setSignature(self.signature());
 			});
