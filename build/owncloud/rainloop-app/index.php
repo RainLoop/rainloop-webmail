@@ -4,7 +4,7 @@
  * ownCloud - RainLoop mail plugin
  *
  * @author RainLoop Team
- * @copyright 2014 RainLoop Team
+ * @copyright 2015 RainLoop Team
  *
  * https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud
  */
@@ -13,8 +13,23 @@ OCP\User::checkLoggedIn();
 OCP\App::checkAppEnabled('rainloop');
 OCP\App::setActiveNavigationEntry('rainloop_index');
 
-$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
+
+$sUrl = '';
+$sPath = '';
+
+$bInstalledLocaly = file_exists(__DIR__.'/app/index.php');
+if ($bInstalledLocaly)
+{
+	$sUrl = OC_RainLoop_Helper::getAppUrl();
+	$sPath = __DIR__.'/app/';
+}
+else
+{
+	$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
+	$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+}
+
 $bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 
 if ('' === $sUrl || '' === $sPath)
@@ -23,10 +38,6 @@ if ('' === $sUrl || '' === $sPath)
 }
 else
 {
-	include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
-
-	OC_Config::setValue('xframe_restriction', false);
-
 	$sUser = OCP\User::getUser();
 
 	if ($bAutologin)

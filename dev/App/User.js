@@ -41,6 +41,7 @@
 		MessageModel = require('Model/Message'),
 		AccountModel = require('Model/Account'),
 		IdentityModel = require('Model/Identity'),
+		TemplateModel = require('Model/Template'),
 		OpenPgpKeyModel = require('Model/OpenPgpKey'),
 
 		AbstractApp = require('App/Abstract')
@@ -611,12 +612,10 @@
 			{
 				Utils.delegateRunOnDestroy(TemplateStore.templates());
 
-				IdentityStore.templates(_.map(oData.Result['Templates'], function (oIdentityData) {
-					return {
-						'id': Utils.pString(oIdentityData['Id']),
-						'name': Utils.pString(oIdentityData['Name'])
-					};
-				}));
+				TemplateStore.templates(_.compact(_.map(oData.Result['Templates'], function (oTemplateData) {
+					var oTemplate = new TemplateModel();
+					return oTemplate.parse(oTemplateData) ? oTemplate : null;
+				})));
 			}
 		});
 	};

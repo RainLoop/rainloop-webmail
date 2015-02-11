@@ -110,6 +110,15 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @return bool
 	 */
+	public function CloseAllOpenedFiles()
+	{
+		return $this->oDriver && \method_exists($this->oDriver, 'CloseAllOpenedFiles') ?
+			$this->oDriver->CloseAllOpenedFiles() : false;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IsActive()
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Files\FilesInterface;

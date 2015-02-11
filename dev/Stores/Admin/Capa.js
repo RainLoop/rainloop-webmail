@@ -25,6 +25,7 @@
 		this.userBackground = ko.observable(false);
 		this.openPGP = ko.observable(false);
 		this.twoFactorAuth = ko.observable(false);
+		this.templates = ko.observable(false);
 	}
 
 	CapaAdminStore.prototype.populate = function()
@@ -38,6 +39,7 @@
 		this.userBackground(Settings.capa(Enums.Capa.UserBackground));
 		this.openPGP(Settings.capa(Enums.Capa.OpenPGP));
 		this.twoFactorAuth(Settings.capa(Enums.Capa.TwoFactor));
+		this.templates(Settings.capa(Enums.Capa.Templates));
 	};
 
 	module.exports = new CapaAdminStore();

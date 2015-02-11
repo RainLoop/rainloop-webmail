@@ -151,7 +151,7 @@ class Contact
 	public function RegenerateContactStr()
 	{
 		$this->IdContactStr = \class_exists('Sabre\DAV\Client') ?
-			\Sabre\DAV\UUIDUtil::getUUID() : \md5(\microtime(true).'-'.\rand(10000, 99999));
+			\Sabre\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
 	}
 
 	/**

@@ -5,9 +5,9 @@
 
 	var
 		_ = require('_'),
-		ko = require('ko'),
+		ko = require('ko')
 
-		Remote = require('Storage/User/Remote')
+//		Remote = require('Storage/User/Remote')
 	;
 
 	/**
@@ -27,16 +27,16 @@
 			})));
 		}, this);
 
-		this.templatesNames.subscribe(function (aList) {
-			if (this.templatesNames.skipFirst)
-			{
-				this.templatesNames.skipFirst = false;
-			}
-			else if (aList && 1 < aList.length)
-			{
-				Remote.templatesSortOrder(null, aList);
-			}
-		}, this);
+//		this.templatesNames.subscribe(function (aList) {
+//			if (this.templatesNames.skipFirst)
+//			{
+//				this.templatesNames.skipFirst = false;
+//			}
+//			else if (aList && 1 < aList.length)
+//			{
+//				Remote.templatesSortOrder(null, aList);
+//			}
+//		}, this);
 	}
 
 	module.exports = new TemplateUserStore();

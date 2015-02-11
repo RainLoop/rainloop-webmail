@@ -1511,7 +1511,7 @@ class Actions
 		$aResult['UseLocalProxyForExternalImages'] = (bool) $oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
 
 		// user
-		$aResult['ShowImages'] = (bool) $oConfig->Get('webmail', 'show_images', false);
+		$aResult['ShowImages'] = (bool) $oConfig->Get('defaults', 'show_images', false);
 		$aResult['MPP'] = (int) $oConfig->Get('webmail', 'messages_per_page', 25);
 		$aResult['SoundNotification'] = false;
 		$aResult['DesktopNotifications'] = false;
@@ -1982,7 +1982,7 @@ class Actions
 	 */
 	private function generateSignMeToken($sEmail)
 	{
-		return \md5(\microtime(true).APP_SALT.\rand(10000, 99999).$sEmail);
+		return \MailSo\Base\Utils::Md5Rand(APP_SALT.$sEmail);
 	}
 
 	/**
@@ -2120,6 +2120,85 @@ class Actions
 		}
 
 		return $aAccounts;
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 *
+	 * @return array
+	 */
+	public function GetTemplates($oAccount)
+	{
+		$aTemplates = array();
+		if ($oAccount)
+		{
+			$aData = array();
+
+			$sData = $this->StorageProvider(true)->Get($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'templates'
+			);
+
+			if ('' !== $sData && '[' === \substr($sData, 0, 1))
+			{
+				$aData = @\json_decode($sData, true);
+			}
+
+			if (\is_array($aData) && 0 < \count($aData))
+			{
+				foreach ($aData as $aItem)
+				{
+					$oItem = \RainLoop\Model\Template::NewInstance();
+					$oItem->FromJSON($aItem);
+
+					if ($oItem && $oItem->Validate())
+					{
+						\array_push($aTemplates, $oItem);
+					}
+				}
+			}
+
+			if (1 < \count($aTemplates))
+			{
+				$sOrder = $this->StorageProvider()->Get($oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'templates_order'
+				);
+
+				$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+				if (\is_array($aOrder) && 1 < \count($aOrder))
+				{
+					\usort($aTemplates, function ($a, $b) use ($aOrder) {
+						return \array_search($a->Id(), $aOrder) < \array_search($b->Id(), $aOrder) ? -1 : 1;
+					});
+				}
+			}
+		}
+
+		return $aTemplates;
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sID
+	 *
+	 * @return \RainLoop\Model\Identity
+	 */
+	public function GetTemplateByID($oAccount, $sID)
+	{
+		$aTemplates = $this->GetTemplates($oAccount);
+		if (\is_array($aTemplates))
+		{
+			foreach ($aTemplates as $oIdentity)
+			{
+				if ($oIdentity && $sID === $oIdentity->Id())
+				{
+					return $oIdentity;
+				}
+			}
+		}
+
+		return isset($aTemplates[0]) ? $aTemplates[0] : null;
 	}
 
 	/**
@@ -2275,6 +2354,27 @@ class Actions
 		return $this->StorageProvider(true)->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'identities',
+			@\json_encode($aResult)
+		);
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param array $aTemplates = array()
+	 *
+	 * @return array
+	 */
+	public function SetTemplates($oAccount, $aTemplates = array())
+	{
+		$aResult = array();
+		foreach ($aTemplates as $oItem)
+		{
+			$aResult[] = $oItem->ToSimpleJSON(false);
+		}
+
+		return $this->StorageProvider(true)->Put($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'templates',
 			@\json_encode($aResult)
 		);
 	}
@@ -2502,6 +2602,117 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
+	public function DoTemplateSetup()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oTemplate = \RainLoop\Model\Template::NewInstance();
+		if (!$oTemplate->FromJSON($this->GetActionParams(), true))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
+		}
+
+		if ('' === $oTemplate->Id())
+		{
+			$oTemplate->GenerateID();
+		}
+
+		$aTemplatesForSave = array();
+		$aTemplates = $this->GetTemplates($oAccount);
+
+
+		foreach ($aTemplates as $oItem)
+		{
+			if ($oItem && $oItem->Id() !== $oTemplate->Id())
+			{
+				$aTemplatesForSave[] = $oItem;
+			}
+		}
+
+		$aTemplatesForSave[] = $oTemplate;
+
+		return $this->DefaultResponse(__FUNCTION__, $this->SetTemplates($oAccount, $aTemplatesForSave));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoTemplateDelete()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$sId = \trim($this->GetActionParam('IdToDelete', ''));
+		if (empty($sId))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
+		}
+
+		$aNew = array();
+		$aTemplates = $this->GetTemplates($oAccount);
+		foreach ($aTemplates as $oItem)
+		{
+			if ($oItem && $sId !== $oItem->Id())
+			{
+				$aNew[] = $oItem;
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $this->SetTemplates($oAccount, $aNew));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoTemplateGetByID()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$sId = \trim($this->GetActionParam('ID', ''));
+		if (empty($sId))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
+		}
+
+		$oTemplate = false;
+		$aTemplates = $this->GetTemplates($oAccount);
+
+		foreach ($aTemplates as $oItem)
+		{
+			if ($oItem && $sId === $oItem->Id())
+			{
+				$oTemplate = $oItem;
+				break;
+			}
+		}
+
+		$oTemplate->SetPopulateAlways(true);
+		return $this->DefaultResponse(__FUNCTION__, $oTemplate);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
 	public function DoAccountsAndIdentitiesSortOrder()
 	{
 		$oAccount = $this->getAccountFromToken();
@@ -2547,6 +2758,25 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
 			'Identities' => $this->GetIdentities($oAccount)
+		));
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoTemplates()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, array(
+			'Templates' => $this->GetTemplates($oAccount)
 		));
 	}
 
@@ -2821,6 +3051,9 @@ class Actions
 			case \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS:
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_accounts', 'bool');
 				break;
+			case \RainLoop\Enumerations\Capa::TEMPLATES:
+				$this->setConfigFromParams($oConfig, $sParamName, 'capa', 'templates', 'bool');
+				break;
 			case \RainLoop\Enumerations\Capa::TWO_FACTOR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
 				break;
@@ -2923,6 +3156,7 @@ class Actions
 		});
 
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS);
+		$this->setCapaFromParams($oConfig, 'CapaTemplates', \RainLoop\Enumerations\Capa::TEMPLATES);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
 		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
@@ -5306,6 +5540,27 @@ class Actions
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 *
+	 * @return void
+	 */
+	private function deleteMessageAttachmnets($oAccount)
+	{
+		$aAttachments = $this->GetActionParam('Attachments', null);
+
+		if (\is_array($aAttachments))
+		{
+			foreach (\array_keys($aAttachments) as $sTempName)
+			{
+				if ($this->FilesProvider()->FileExists($oAccount, $sTempName))
+				{
+					$this->FilesProvider()->Clear($oAccount, $sTempName);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 *
 	 * @return \MailSo\Mime\Message
 	 */
 	private function buildReadReceiptMessage($oAccount)
@@ -5599,6 +5854,8 @@ class Actions
 				if (false !== $iMessageStreamSize)
 				{
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize);
+
+					$this->deleteMessageAttachmnets($oAccount);
 
 					if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
 					{
@@ -6967,7 +7224,7 @@ class Actions
 								$oSettings = $this->SettingsProvider()->Load($oAccount);
 								if ($oSettings)
 								{
-									$sHash = \md5($sName.APP_VERSION.APP_SALT.\rand(1000, 9999).\microtime(true));
+									$sHash = \MailSo\Base\Utils::Md5Rand($sName.APP_VERSION.APP_SALT);
 
 									$oSettings->SetConf('UserBackgroundName', $sName);
 									$oSettings->SetConf('UserBackgroundHash', $sHash);
@@ -7225,7 +7482,7 @@ class Actions
 						$sLast = \array_pop($aParams);
 
 						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&s=/'.implode('/', $aParams).'/&ss=/'.$sLast;
-						$sFullUrl = 'http://docs.google.com/viewer?embedded=true&url='.urlencode($sUrl);
+						$sFullUrl = 'https://docs.google.com/viewer?embedded=true&url='.urlencode($sUrl);
 
 						@\header('Content-Type: text/html; charset=utf-8');
 						echo '<html style="height: 100%; width: 100%; margin: 0; padding: 0"><head></head>'.
@@ -7272,6 +7529,8 @@ class Actions
 						$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 
 						$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullNameRaw);
+
+						$this->FilesProvider()->Clear($oAccount, $sSavedName);
 					}
 				}
 			}
@@ -7300,6 +7559,11 @@ class Actions
 				$aResult[] = \RainLoop\Enumerations\Capa::SIEVE;
 			}
 		}
+
+//		if ($oConfig->Get('capa', 'templates', true))
+//		{
+//			$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
+//		}
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
 		{
@@ -7455,7 +7719,7 @@ class Actions
 					{
 						\MailSo\Base\StreamWrappers\TempFile::Reg();
 
-						$sFileName = 'mailsotempfile://'.\md5($sFileNameOut.\rand(1000, 9999));
+						$sFileName = 'mailsotempfile://'.\MailSo\Base\Utils::Md5Rand($sFileNameOut);
 
 						$rTempResource = \fopen($sFileName, 'r+b');
 						if (@\is_resource($rTempResource))
@@ -8254,25 +8518,6 @@ class Actions
 	{
 		$this->Logger()->Write('Location: '.$sUrl);
 		@\header('Location: '.$sUrl);
-	}
-
-	/**
-	 * @param string $sTitle
-	 * @param string $sDesc
-	 *
-	 * @return mixed
-	 */
-	public function ErrorTemplates($sTitle, $sDesc, $bShowBackLink = true)
-	{
-		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
-			'{{BaseWebStaticPath}}' => APP_WEB_STATIC_PATH,
-			'{{ErrorTitle}}' => $sTitle,
-			'{{ErrorHeader}}' => $sTitle,
-			'{{ErrorDesc}}' => $sDesc,
-			'{{BackLinkVisibilityStyle}}' => $bShowBackLink ? 'display:inline-block' : 'display:none',
-			'{{BackLink}}' => $this->StaticI18N('STATIC/BACK_LINK'),
-			'{{BackHref}}' => './'
-		));
 	}
 
 	/**

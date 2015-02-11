@@ -24,6 +24,7 @@
 	Utils.trim = $.trim;
 	Utils.inArray = $.inArray;
 	Utils.isArray = _.isArray;
+	Utils.isObject = _.isObject;
 	Utils.isFunc = _.isFunction;
 	Utils.isUnd = _.isUndefined;
 	Utils.isNull = _.isNull;

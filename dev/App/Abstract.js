@@ -50,6 +50,37 @@
 			}
 		});
 
+		Globals.$win.on('resize', function () {
+			Events.pub('window.resize');
+		});
+
+		Events.sub('window.resize', _.throttle(function () {
+
+			var
+				iH = Globals.$win.height(),
+				iW = Globals.$win.height()
+			;
+
+			if (Globals.$win.__sizes[0] !== iH || Globals.$win.__sizes[1] !== iW)
+			{
+				Globals.$win.__sizes[0] = iH;
+				Globals.$win.__sizes[1] = iW;
+
+				Events.pub('window.resize.real');
+			}
+
+		}, 50));
+
+		 // TODO
+//		Events.sub({
+//			'window.resize': function () {
+//				window.console.log('window.resize');
+//			},
+//			'window.resize.real': function () {
+//				window.console.log('window.resize.real');
+//			}
+//		});
+
 		Globals.$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
@@ -314,6 +345,8 @@
 		});
 
 		ssm.ready();
+
+
 
 		require('Stores/Language').populate();
 		require('Stores/Theme').populate();

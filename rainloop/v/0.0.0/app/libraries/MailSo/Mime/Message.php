@@ -535,8 +535,9 @@ class Message
 			$sHostName = 'localhost';
 		}
 
-		return '<'.\md5(\rand(100000, 999999).\time().$sHostName.
-			(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
+		return '<'.
+			\MailSo\Base\Utils::Md5Rand($sHostName.
+				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
 	}
 
 	/**

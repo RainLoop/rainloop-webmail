@@ -65,7 +65,7 @@ class SubStreams
 			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
 		}
 
-		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
+		$sHashName = \MailSo\Base\Utils::Md5Rand();
 
 		self::$aStreams[$sHashName] = $aSubStreams;
 
@@ -84,7 +84,7 @@ class SubStreams
 		{
 			return $this->aSubStreams[$this->iIndex];
 		}
-		
+
 		return $nNull;
 	}
 

@@ -36,6 +36,7 @@
 		this.name.focus = ko.observable(false);
 
 		this.body = ko.observable('');
+		this.body.loading = ko.observable(false);
 		this.body.error = ko.observable(false);
 
 		this.name.subscribe(function () {
@@ -50,6 +51,8 @@
 		this.submitError = ko.observable('');
 
 		this.addTemplateCommand = Utils.createCommand(this, function () {
+
+			this.populateBodyFromEditor();
 
 			this.name.error('' === Utils.trim(this.name()));
 			this.body.error('' === Utils.trim(this.body()) ||
@@ -109,40 +112,52 @@
 
 		this.submitRequest(false);
 		this.submitError('');
+
+		if (this.editor)
+		{
+			this.setBody('');
+		}
+	};
+
+	TemplatePopupView.prototype.setBody = function (sBody)
+	{
+		if (this.editor)
+		{
+			if (':HTML:' === sBody.substr(0, 6))
+			{
+				this.editor.setHtml(sBody.substr(6), false);
+			}
+			else
+			{
+				this.editor.setPlain(sBody, false);
+			}
+		}
+	};
+
+	TemplatePopupView.prototype.populateBodyFromEditor = function ()
+	{
+		if (this.editor)
+		{
+			this.body(
+				(this.editor.isHtml() ? ':HTML:' : '') + this.editor.getData()
+			);
+		}
 	};
 
 	TemplatePopupView.prototype.editorSetBody = function (sBody)
 	{
-		var
-			self = this,
-			fEditorSetData = function (sBody) {
-				if (self.editor)
-				{
-					if (':HTML:' === sBody.substr(0, 6))
-					{
-						self.editor.setHtml(sBody.substr(6), false);
-					}
-					else
-					{
-						self.editor.setPlain(sBody, false);
-					}
-				}
-			}
-		;
-
 		if (!this.editor && this.signatureDom())
 		{
+			var self = this;
 			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				self.body(
-					(self.editor.isHtml() ? ':HTML:' : '') + self.editor.getData()
-				);
+				self.populateBodyFromEditor();
 			}, function () {
-				fEditorSetData(sBody);
+				self.setBody(sBody);
 			});
 		}
-		else if (this.editor)
+		else
 		{
-			fEditorSetData(sBody);
+			this.setBody(sBody);
 		}
 	};
 
@@ -156,16 +171,44 @@
 		{
 			this.id(oTemplate.id);
 			this.name(oTemplate.name);
+			this.body(oTemplate.body);
 
-			this.body.loading(true);
+			if (oTemplate.populated)
+			{
+				self.editorSetBody(this.body());
+			}
+			else
+			{
+				this.body.loading(true);
+				self.body.error(false);
 
-			Remote.templateGetById(function () {
+				Remote.templateGetById(function (sResult, oData) {
 
-				self.body.loading(false);
+					self.body.loading(false);
 
-				self.editorSetBody('');
+					if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
+						'Object/Template' === oData.Result['@Object'] && Utils.isNormal(oData.Result['Body']))
+					{
+						oTemplate.body = oData.Result['Body'];
+						oTemplate.populated = true;
 
-			}, this.id());
+						self.body(oTemplate.body);
+						self.body.error(false);
+					}
+					else
+					{
+						self.body('');
+						self.body.error(true);
+					}
+
+					self.editorSetBody(self.body());
+
+				}, this.id());
+			}
+		}
+		else
+		{
+			self.editorSetBody('');
 		}
 	};
 

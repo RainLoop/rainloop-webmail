@@ -5,6 +5,11 @@ namespace RainLoop\Providers\Files;
 class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 {
 	/**
+	 * @var array
+	 */
+	private $aResources;
+
+	/**
 	 * @var string
 	 */
 	private $sDataPath;
@@ -16,6 +21,7 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 	 */
 	public function __construct($sStoragePath)
 	{
+		$this->aResources = array();
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
 	}
 
@@ -70,6 +76,11 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		if ($bCreate || \file_exists($sFileName))
 		{
 			$mResult = @\fopen($sFileName, $sOpenMode);
+
+			if (\is_resource($mResult))
+			{
+				$this->aResources[$sFileName] = $mResult;
+			}
 		}
 
 		return $mResult;
@@ -105,6 +116,11 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		$sFileName = $this->generateFileName($oAccount, $sKey);
 		if (\file_exists($sFileName))
 		{
+			if (isset($this->aResources[$sFileName]) && \is_resource($this->aResources[$sFileName]))
+			{
+				@\fclose($this->aResources[$sFileName]);
+			}
+
 			$mResult = @\unlink($sFileName);
 		}
 
@@ -154,6 +170,25 @@ class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function CloseAllOpenedFiles()
+	{
+		if (\is_array($this->aResources) && 0 < \count($this->aResources))
+		{
+			foreach ($this->aResources as $sFileName => $rFile)
+			{
+				if (!empty($sFileName) && \is_resource($rFile))
+				{
+					@\fclose($rFile);
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**

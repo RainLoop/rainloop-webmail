@@ -16,13 +16,15 @@
 					</div>
 					<br />
 					<div class="control-group" data-bind="css: {'error': name.error}">
-						<label class="i18n" data-i18n-text="POPUPS_ADD_TEMPLATE/LABEL_NAME"></label>
-						<input type="text" class="inputName span6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: name, onEnter: addTemplateCommand, hasfocus: name.focus" />
+						<label class="i18n control-label" data-i18n-text="POPUPS_ADD_TEMPLATE/LABEL_NAME"></label>
+						<div class="controls">
+							<input type="text" class="inputName input-xlarge" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-bind="textInput: name, onEnter: addTemplateCommand, hasfocus: name.focus" />
+						</div>
 					</div>
+					<hr />
 					<div class="control-group" data-bind="css: {'error': body.error}">
-						<label class="i18n" data-i18n-text="POPUPS_ADD_TEMPLATE/LABEL_TEXT"></label>
-						<div class="e-body-place" data-bind="initDom: signatureDom"></div>
+						<div class="e-template-place" data-bind="initDom: signatureDom"></div>
 					</div>
 				</div>
 			</div>

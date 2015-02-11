@@ -4,7 +4,7 @@
  * ownCloud - RainLoop mail plugin
  *
  * @author RainLoop Team
- * @copyright 2014 RainLoop Team
+ * @copyright 2015 RainLoop Team
  *
  * https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud
  */
@@ -37,9 +37,11 @@ if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email
 }
 else
 {
+	sleep(1);
 	OC_JSON::error(array('Message' => 'Invalid argument(s)', 'Email' => $sEmail));
 	return false;
 }
 
+sleep(1);
 OCP\JSON::success(array('Message' => 'Saved successfully', 'Email' => $sEmail));
 return true;

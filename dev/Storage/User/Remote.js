@@ -293,7 +293,17 @@
 	/**
 	 * @param {?Function} fCallback
 	 */
-	RemoteUserStorage.prototype.templateGetById = function (fCallback, sID, sName, sBody)
+	RemoteUserStorage.prototype.templateDelete = function (fCallback, sID)
+	{
+		this.defaultRequest(fCallback, 'TemplateDelete', {
+			'IdToDelete': sID
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 */
+	RemoteUserStorage.prototype.templateSetup = function (fCallback, sID, sName, sBody)
 	{
 		this.defaultRequest(fCallback, 'TemplateSetup', {
 			'ID': sID,

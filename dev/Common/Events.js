@@ -28,12 +28,24 @@
 	 */
 	Events.prototype.sub = function (sName, fFunc, oContext)
 	{
-		if (Utils.isUnd(this.oSubs[sName]))
+		if (Utils.isObject(sName))
 		{
-			this.oSubs[sName] = [];
-		}
+			oContext = fFunc || null;
+			fFunc = null;
 
-		this.oSubs[sName].push([fFunc, oContext]);
+			_.each(sName, function (fSubFunc, sSubName) {
+				this.sub(sSubName, fSubFunc, oContext);
+			}, this);
+		}
+		else
+		{
+			if (Utils.isUnd(this.oSubs[sName]))
+			{
+				this.oSubs[sName] = [];
+			}
+
+			this.oSubs[sName].push([fFunc, oContext]);
+		}
 
 		return this;
 	};

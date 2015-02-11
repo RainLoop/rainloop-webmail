@@ -106,8 +106,13 @@
 			.replace("\u0002", '').replace("\u0002", '')
 			.replace("\u0003", '').replace("\u0003", '')
 			.replace("\u0003", '').replace("\u0003", '')
+			.replace("\u0004", '').replace("\u0004", '')
+			.replace("\u0004", '').replace("\u0004", '')
+			.replace("\u0005", '').replace("\u0005", '')
+			.replace("\u0005", '').replace("\u0005", '')
 		;
-	}
+	};
+
 	/**
 	 * @param {boolean=} bWrapIsHtml = false
 	 * @param {boolean=} bClearSignatureSigns = false

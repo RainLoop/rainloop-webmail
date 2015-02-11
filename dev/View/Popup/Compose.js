@@ -80,7 +80,7 @@
 		this.bFromDraft = false;
 		this.sReferences = '';
 
-		this.triggerForResize = _.bind(this.triggerForResize, this);
+		this.resizerTrigger = _.bind(this.resizerTrigger, this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 
@@ -89,8 +89,6 @@
 		this.editorDefaultType = SettingsStore.editorDefaultType;
 
 		this.capaOpenPGP = PgpStore.capaOpenPGP;
-
-		this.resizer = ko.observable(false).extend({'throttle': 50});
 
 		this.identitiesDropdownTrigger = ko.observable(false);
 
@@ -241,11 +239,13 @@
 			}
 		}, this);
 
-		this.editorResizeThrottle = _.throttle(_.bind(this.editorResize, this), 100);
+		this.resizer = ko.observable(false).extend({'throttle': 50});
 
-		this.resizer.subscribe(function () {
-			this.editorResizeThrottle();
-		}, this);
+		this.resizer.subscribe(_.bind(function () {
+			if (this.oEditor){
+				this.oEditor.resize();
+			}
+		}, this));
 
 		this.canBeSendedOrSaved = ko.computed(function () {
 			return !this.sending() && !this.saving();
@@ -429,9 +429,9 @@
 			}
 		}, this);
 
-		this.showCc.subscribe(this.triggerForResize);
-		this.showBcc.subscribe(this.triggerForResize);
-		this.showReplyTo.subscribe(this.triggerForResize);
+		this.showCc.subscribe(this.resizerTrigger);
+		this.showBcc.subscribe(this.resizerTrigger);
+		this.showReplyTo.subscribe(this.resizerTrigger);
 
 		this.dropboxEnabled = SocialStore.dropbox.enabled;
 		this.dropboxApiKey = SocialStore.dropbox.apiKey;
@@ -1230,7 +1230,7 @@
 			this.currentIdentity(oIdentity);
 		}
 
-		this.triggerForResize();
+		this.resizerTrigger();
 	};
 
 	ComposePopupView.prototype.onFocus = function ()
@@ -1244,15 +1244,7 @@
 			this.oEditor.focus();
 		}
 
-		this.triggerForResize();
-	};
-
-	ComposePopupView.prototype.editorResize = function ()
-	{
-		if (this.oEditor)
-		{
-			this.oEditor.resize();
-		}
+		this.resizerTrigger();
 	};
 
 	ComposePopupView.prototype.tryToClosePopup = function ()
@@ -1315,7 +1307,7 @@
 			return false;
 		});
 
-		Globals.$win.on('resize', self.triggerForResize);
+		Events.sub('window.resize.real', this.resizerTrigger);
 
 		if (this.dropboxEnabled())
 		{
@@ -2034,10 +2026,9 @@
 		});
 	};
 
-	ComposePopupView.prototype.triggerForResize = function ()
+	ComposePopupView.prototype.resizerTrigger = function ()
 	{
 		this.resizer(!this.resizer());
-		this.editorResizeThrottle();
 	};
 
 	module.exports = ComposePopupView;

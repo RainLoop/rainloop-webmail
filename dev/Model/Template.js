@@ -7,6 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
+		Utils = require('Common/Utils'),
+
 		AbstractModel = require('Knoin/AbstractModel')
 	;
 
@@ -24,6 +26,7 @@
 		this.id = sID;
 		this.name = sName;
 		this.body = sBody;
+		this.populated = true;
 
 		this.deleteAccess = ko.observable(false);
 	}
@@ -44,6 +47,30 @@
 	 * @type {string}
 	 */
 	TemplateModel.prototype.body = '';
+
+	/**
+	 * @type {boolean}
+	 */
+	TemplateModel.prototype.populated = true;
+
+	/**
+	 * @type {boolean}
+	 */
+	TemplateModel.prototype.parse = function (oItem)
+	{
+		var bResult = false;
+		if (oItem && 'Object/Template' === oItem['@Object'])
+		{
+			this.id = Utils.pString(oItem['ID']);
+			this.name = Utils.pString(oItem['Name']);
+			this.body = Utils.pString(oItem['Body']);
+			this.populated = !!oItem['Populated'];
+
+			bResult = true;
+		}
+
+		return bResult;
+	};
 
 	module.exports = TemplateModel;
 

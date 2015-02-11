@@ -121,7 +121,7 @@ class Logger extends \MailSo\Base\Collection
 		static $sCache = null;
 		if (null === $sCache)
 		{
-			$sCache = \substr(\md5(\microtime(true).\rand(10000, 99999)), -8);
+			$sCache = \substr(\MailSo\Base\Utils::Md5Rand(), -8);
 		}
 
 		return $sCache;

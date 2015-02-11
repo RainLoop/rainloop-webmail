@@ -990,7 +990,7 @@ class MailClient
 			{
 				do
 				{
-					$sKey = \md5(\rand(10000, 90000).\microtime(true));
+					$sKey = \MailSo\Base\Utils::Md5Rand();
 				}
 				while (isset($aCache[$sKey]));
 
@@ -1006,7 +1006,7 @@ class MailClient
 			{
 				do
 				{
-					$sKey = \md5(\rand(10000, 90000).\microtime(true));
+					$sKey = \MailSo\Base\Utils::Md5Rand();
 				}
 				while (isset($aCache[$sKey]));
 

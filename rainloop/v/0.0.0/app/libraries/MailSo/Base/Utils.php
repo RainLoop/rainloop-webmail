@@ -2148,6 +2148,28 @@ class Utils
 	}
 
 	/**
+	 * @param string $sAdditionalSalt = ''
+	 *
+     * @return string
+     */
+    public static function Md5Rand($sAdditionalSalt = '')
+    {
+		return \md5(\microtime(true).\rand(10000, 99999).
+			\md5($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+	}
+
+	/**
+	 * @param string $sAdditionalSalt = ''
+	 *
+     * @return string
+     */
+    public static function Sha1Rand($sAdditionalSalt = '')
+    {
+		return \sha1(\microtime(true).\rand(10000, 99999).
+			\sha1($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+	}
+
+	/**
      * @param string $sData
      * @param string $sKey
 	 *

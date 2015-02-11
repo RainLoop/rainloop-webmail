@@ -9,7 +9,6 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 		Links = require('Common/Links'),
 

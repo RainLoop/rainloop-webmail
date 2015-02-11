@@ -45,6 +45,7 @@
 		'Sieve': 'SIEVE',
 		'Filters': 'FILTERS',
 		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
+		'Templates': 'TEMPLATES',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS'
 	};
 

@@ -20,6 +20,8 @@
 	Globals.$html = $('html');
 	Globals.$div = $('<div></div>');
 
+	Globals.$win.__sizes = [0, 0];
+
 	/**
 	 * @type {?}
 	 */
@@ -255,7 +257,7 @@
 	});
 
 	Globals.keyScopeReal.subscribe(function (sValue) {
-//		window.console.log(sValue);
+//		window.console.log(sValue); //TODO
 		key.setScope(sValue);
 	});
 

@@ -423,11 +423,11 @@
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
 
-		Globals.$win.on('resize', function () {
+		Events.sub('window.resize', _.throttle(function () {
 			_.delay(fCheckHeaderHeight, 1);
 			_.delay(fCheckHeaderHeight, 200);
 			_.delay(fCheckHeaderHeight, 500);
-		});
+		}, 50));
 
 		this.showFullInfo.subscribe(function () {
 			Utils.windowResize();

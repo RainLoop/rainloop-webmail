@@ -4,7 +4,7 @@
  * ownCloud - RainLoop mail plugin
  *
  * @author RainLoop Team
- * @copyright 2014 RainLoop Team
+ * @copyright 2015 RainLoop Team
  *
  * https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud
  */
@@ -14,11 +14,19 @@ OCP\App::checkAppEnabled('rainloop');
 
 OCP\Util::addScript('rainloop', 'personal');
 
-$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+$sUrl = '';
+$sPath = '';
+
 $bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 
-if ($bAutologin || '' === $sUrl || '' === $sPath)
+$bInstalledLocaly = file_exists(__DIR__.'/app/index.php');
+if (!$bInstalledLocaly)
+{
+	$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
+	$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+}
+
+if ($bAutologin || (!$bInstalledLocaly && ('' === $sUrl || '' === $sPath)))
 {
 	$oTemplate = new OCP\Template('rainloop', 'empty');
 }

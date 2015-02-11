@@ -7,6 +7,7 @@ var
 		devVersion: '0.0.0',
 		releasesPath: 'build/dist/releases',
 
+		rainloopBuilded: false,
 		destPath: '',
 		cleanPath: '',
 		zipSrcPath: '',
@@ -459,6 +460,8 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	cfg.zipSrcPath = dist;
 	cfg.zipFile = 'rainloop-' + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
+
+	cfg.rainloopBuilded = true;
 });
 
 gulp.task('rainloop:zip', ['rainloop:copy', 'rainloop:setup'], function() {
@@ -490,7 +493,28 @@ gulp.task('rainloop:owncloud:copy', function() {
 		.pipe(gulp.dest(dist + 'rainloop'));
 });
 
-gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy'], function() {
+gulp.task('rainloop:owncloud:copy-rainloop', ['rainloop:start', 'rainloop:owncloud:copy'], function() {
+
+	var
+		versionFull = pkg.ownCloudPackageVersion,
+		dist = cfg.releasesPath + '/owncloud/' + versionFull + '/src/rainloop/'
+	;
+
+	if (cfg.rainloopBuilded && cfg.destPath)
+	{
+		return gulp.src(cfg.destPath + '/src/**/*', {base: cfg.destPath + '/src/'})
+			.pipe(gulp.dest(dist + 'app/'));
+	}
+
+	return true;
+});
+
+gulp.task('rainloop:owncloud:copy-rainloop:clean', ['rainloop:owncloud:copy-rainloop'], function() {
+	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
+});
+
+gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
+	'rainloop:owncloud:copy-rainloop'], function() {
 
 	var
 		versionFull = pkg.ownCloudPackageVersion,
@@ -529,8 +553,12 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
-gulp.task('rainloop', ['js:lint', 'rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
-gulp.task('owncloud', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
+gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
+gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
+
+gulp.task('owncloud', ['rainloop:owncloud:copy',
+	'rainloop:owncloud:copy-rainloop',
+	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
 
 //WATCH
 gulp.task('watch', ['fast'], function() {

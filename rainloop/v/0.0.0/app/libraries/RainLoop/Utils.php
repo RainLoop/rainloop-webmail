@@ -72,7 +72,7 @@ class Utils
 		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
-			$sToken = \md5(\rand(10000, 99999).\microtime(true).APP_SALT);
+			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
 			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30, '/', null, null, true);
 		}
 
@@ -97,7 +97,7 @@ class Utils
 		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
-			$sToken = \md5(\rand(10000, 99999).\microtime(true).APP_SALT);
+			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
 			\RainLoop\Utils::SetCookie($sKey, $sToken, 0, '/', null, null, true);
 		}
 

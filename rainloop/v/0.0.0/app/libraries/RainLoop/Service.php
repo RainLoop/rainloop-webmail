@@ -125,7 +125,7 @@ class Service
 
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
-			echo $this->oActions->ErrorTemplates('Access Denied.',
+			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
 				'Access to the RainLoop Webmail Admin Panel is not allowed!', true);
 
 			return $this;
@@ -150,6 +150,9 @@ class Service
 
 		if ($bIndex)
 		{
+			@\header('Content-Security-Policy:');
+			@\header_remove('Content-Security-Policy');
+
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
@@ -216,7 +219,7 @@ class Service
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
-		$sStaticPrefix = APP_WEB_STATIC_PATH;
+		$sStaticPrefix = $this->oServiceActions->WebStaticPath();
 
 		$aData = array(
 			'Language' => $sLanguage,
@@ -254,7 +257,7 @@ class Service
 			\implode('~', array(
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				APP_WEB_PATH, APP_VERSION
+				$this->oServiceActions->WebVersionPath(), APP_VERSION
 			)).
 			\implode('~', $aTemplateParameters)
 		);

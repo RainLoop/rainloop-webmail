@@ -136,7 +136,7 @@ class Api
 	 */
 	public static function GetUserSsoHash($sEmail, $sPassword, $bUseTimeout = true)
 	{
-		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.\microtime(true));
+		$sSsoHash = \MailSo\Base\Utils::Sha1Rand($sEmail.$sPassword);
 
 		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,

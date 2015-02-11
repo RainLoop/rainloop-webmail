@@ -26,9 +26,9 @@ Options -Indexes
 			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
 			{
 				include_once APP_INDEX_ROOT_PATH.'include.php';
-				$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : '';
 			}
 
+			$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : '';
 			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
 			unset($sCustomDataPath);
 
@@ -58,8 +58,6 @@ Options -Indexes
 			define('APP_REP_PATH', 'http://repository.rainloop.net/v1/');
 			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
 			define('APP_STATUS_PATH', 'http://status.rainloop.net/');
-			define('APP_WEB_PATH', 'rainloop/v/'.APP_VERSION.'/');
-			define('APP_WEB_STATIC_PATH', APP_WEB_PATH.'static/');
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
 			$sSalt = @file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');

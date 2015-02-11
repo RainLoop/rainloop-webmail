@@ -675,7 +675,7 @@ class ServiceActions
 
 					if (\file_exists($sThemeFile) && \file_exists($sThemeTemplateFile) && \file_exists($sThemeValuesFile))
 					{
-						$aResult[] = '@base: "'.($bCustomTheme ? '' : APP_WEB_PATH).'themes/'.$sRealTheme.'/";';
+						$aResult[] = '@base: "'.($bCustomTheme ? $this->WebPath() : $this->WebVersionPath()).'themes/'.$sRealTheme.'/";';
 						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);
 						$aResult[] = \file_get_contents($sThemeTemplateFile);
@@ -779,7 +779,7 @@ class ServiceActions
 
 		@\header('Content-Type: text/html; charset=utf-8');
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
-			'{{BaseWebStaticPath}}' => APP_WEB_STATIC_PATH,
+			'{{BaseWebStaticPath}}' => $this->WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc
@@ -1049,6 +1049,58 @@ class ServiceActions
 
 		$this->oActions->Location('./');
 		return '';
+	}
+
+	/**
+	 * @param string $sTitle
+	 * @param string $sDesc
+	 *
+	 * @return mixed
+	 */
+	public function ErrorTemplates($sTitle, $sDesc, $bShowBackLink = true)
+	{
+		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
+			'{{BaseWebStaticPath}}' => $this->WebStaticPath(),
+			'{{ErrorTitle}}' => $sTitle,
+			'{{ErrorHeader}}' => $sTitle,
+			'{{ErrorDesc}}' => $sDesc,
+			'{{BackLinkVisibilityStyle}}' => $bShowBackLink ? 'display:inline-block' : 'display:none',
+			'{{BackLink}}' => $this->oActions->StaticI18N('STATIC/BACK_LINK'),
+			'{{BackHref}}' => './'
+		));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function WebPath()
+	{
+		if (isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'])
+		{
+			$sUrl = $this->oHttp->GetUrl();
+			if ($sUrl && \preg_match('/\/index\.php\/apps\/rainloop/', $sUrl))
+			{
+				$sUrl = \preg_replace('/\/index\.php\/apps\/rainloop.+$/', '/', $sUrl);
+				return \rtrim(\trim($sUrl), '\//').'/apps/rainloop/app/';
+			}
+		}
+
+		return '';
+	}
+	/**
+	 * @return string
+	 */
+	public function WebVersionPath()
+	{
+		return $this->WebPath().'rainloop/v/'.APP_VERSION.'/';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function WebStaticPath()
+	{
+		return $this->WebVersionPath().'static/';
 	}
 
 	/**

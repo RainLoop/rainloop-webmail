@@ -85,8 +85,11 @@
 				'SettingsChangePassword', 'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME', 'change-password');
 		}
 
-//		kn.addSettingsViewModel(require('Settings/User/Templates'),
-//			'SettingsTemplates', 'SETTINGS_LABELS/LABEL_TEMPLATES_NAME', 'templates');
+		if (Settings.capa(Enums.Capa.Templates))
+		{
+			kn.addSettingsViewModel(require('Settings/User/Templates'),
+				'SettingsTemplates', 'SETTINGS_LABELS/LABEL_TEMPLATES_NAME', 'templates');
+		}
 
 		kn.addSettingsViewModel(require('Settings/User/Folders'),
 			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');

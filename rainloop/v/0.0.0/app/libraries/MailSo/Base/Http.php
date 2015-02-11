@@ -263,7 +263,6 @@ class Http
 	 */
 	public function GetHeader($sHeader)
 	{
-		$sResultHeader = '';
 		$sServerKey = 'HTTP_'.\strtoupper(\str_replace('-', '_', $sHeader));
 		$sResultHeader = $this->GetServer($sServerKey, '');
 
