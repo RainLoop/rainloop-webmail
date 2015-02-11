@@ -21,7 +21,7 @@ function mergeLangStructure($aFromLang, $aEngLang, &$iCount = 0)
 			}
 			else
 			{
-//				echo $sSectionKey.'/'.$sParamKey.','."\n";
+				echo $sSectionKey.'/'.$sParamKey.','."\n";
 				$iCount++;
 			}
 		}
