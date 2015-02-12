@@ -14,19 +14,7 @@ OCP\App::checkAppEnabled('rainloop');
 
 OCP\Util::addScript('rainloop', 'personal');
 
-$sUrl = '';
-$sPath = '';
-
-$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
-
-$bInstalledLocaly = file_exists(__DIR__.'/app/index.php');
-if (!$bInstalledLocaly)
-{
-	$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-	$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
-}
-
-if ($bAutologin || (!$bInstalledLocaly && ('' === $sUrl || '' === $sPath)))
+if (OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false))
 {
 	$oTemplate = new OCP\Template('rainloop', 'empty');
 }

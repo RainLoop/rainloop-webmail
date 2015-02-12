@@ -7,13 +7,9 @@ class OC_RainLoop_Helper
 	 */
 	public static function getAppUrl()
 	{
-		if (class_exists('\\OC\\URLGenerator') && isset(\OC::$server))
+		if (class_exists('\\OCP\\Util'))
 		{
-			$oUrlGenerator = new \OC\URLGenerator(\OC::$server->getConfig());
-			if ($oUrlGenerator)
-			{
-				return $oUrlGenerator->linkToRoute('rainloop_app');
-			}
+			return OCP\Util::linkToRoute('rainloop_app');
 		}
 
 		$sRequestUri = empty($_SERVER['REQUEST_URI']) ? '': trim($_SERVER['REQUEST_URI']);
@@ -105,14 +101,8 @@ class OC_RainLoop_Helper
 			$sEmail = $sUser;
 			$sPassword = $aParams['password'];
 
-			$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-			$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
-
-			if ('' !== $sUrl && '' !== $sPath)
-			{
-				$sPassword = self::encodePassword($sPassword, md5($sEmail));
-				return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password', $sPassword);
-			}
+			return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+				self::encodePassword($sPassword, md5($sEmail)));
 		}
 
 		return false;
@@ -133,16 +123,15 @@ class OC_RainLoop_Helper
 			$sEmail = $sUser;
 			$sPassword = $aParams['password'];
 
-			$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-			$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+			OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '.$sEmail, OCP\Util::DEBUG);
 
-			if ('' !== $sUrl && '' !== $sPath)
-			{
-				OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '.$sEmail, OCP\Util::DEBUG);
+			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+				self::encodePassword($sPassword, md5($sEmail)));
 
-				$sPassword = self::encodePassword($sPassword, md5($sEmail));
-				return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password', $sPassword);
-			}
+			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
+				self::encodePassword($sPassword, md5($sEmail)));
+
+			return true;
 		}
 
 		return false;

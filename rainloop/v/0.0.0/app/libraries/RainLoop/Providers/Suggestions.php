@@ -22,12 +22,14 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 * @param string $sQuery
+	 * @param int $iLimit = 20
 	 *
 	 * @return array
 	 */
-	public function Process(\RainLoop\Account $oAccount, $sQuery)
+	public function Process(\RainLoop\Account $oAccount, $sQuery, $iLimit = 20)
 	{
-		return $this->oDriver && $this->IsActive() && 0 < \strlen($sQuery) ? $this->oDriver->Process($oAccount, $sQuery) : array();
+		return $this->oDriver && $this->IsActive() && 0 < \strlen($sQuery) ?
+			$this->oDriver->Process($oAccount, $sQuery, $iLimit = 20) : array();
 	}
 
 	/**

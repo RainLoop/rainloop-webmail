@@ -13,7 +13,7 @@ if (@file_exists(__DIR__.'/app/index.php'))
 
 		$sUser = OCP\User::getUser();
 
-		if ($bAutologin)
+		if (OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false))
 		{
 			$sEmail = $sUser;
 			$sEncodedPassword = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-autologin-password', '');

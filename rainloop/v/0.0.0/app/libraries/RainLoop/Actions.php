@@ -278,31 +278,37 @@ class Actions
 					$oResult = new \RainLoop\Providers\Filters\SieveStorage(
 						$this->Plugins(), $this->Config()
 					);
-
-					$oResult->SetLogger($this->Logger());
 					break;
 				case 'address-book':
 					// \RainLoop\Providers\AddressBook\AddressBookInterface
 
-					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
-					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
-					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
-
-					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
-					if ('sqlite' === $sDsnType)
+					if (!\RainLoop\Utils::IsOwnCloud()) // disabled for ownCloud
 					{
-						$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook(
-							'sqlite:'.APP_PRIVATE_DATA.'AddressBook.sqlite', '', '', 'sqlite');
-					}
-					else
-					{
-						$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
-					}
+						$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
+						$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
+						$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
 
-					$oResult->SetLogger($this->Logger());
+						$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+						if ('sqlite' === $sDsnType)
+						{
+							$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook(
+								'sqlite:'.APP_PRIVATE_DATA.'AddressBook.sqlite', '', '', 'sqlite');
+						}
+						else
+						{
+							$oResult = new \RainLoop\Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
+						}
+					}
 					break;
 				case 'suggestions':
 					// \RainLoop\Providers\Suggestions\SuggestionsInterface
+//					$oResult = new \RainLoop\Providers\Suggestions\TestSuggestions();
+
+					if (\RainLoop\Utils::IsOwnCloud())
+					{
+						$oResult = new \RainLoop\Providers\Suggestions\OwnCloudSuggestions();
+					}
+
 					break;
 				case 'change-password':
 					// \RainLoop\Providers\ChangePassword\ChangePasswordInterface
@@ -312,6 +318,11 @@ class Actions
 					$oResult = new \RainLoop\Providers\TwoFactorAuth\GoogleTwoFactorAuth();
 					break;
 			}
+		}
+
+		if ($oResult && \method_exists($oResult, 'SetLogger'))
+		{
+			$oResult->SetLogger($this->Logger());
 		}
 
 		$this->Plugins()->RunHook('filter.fabrica', array($sName, &$oResult, $oAccount), false);
@@ -2085,6 +2096,7 @@ class Actions
 				'accounts'
 			);
 
+			$aAccounts = array();
 			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1))
 			{
 				$aAccounts = @\json_decode($sAccounts, true);
@@ -6586,6 +6598,20 @@ class Actions
 			catch (\Exception $oException)
 			{
 				$this->Logger()->WriteException($oException);
+			}
+		}
+
+		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
+		{
+			$oSuggestionsProvider = $this->SuggestionsProvider();
+			if ($oSuggestionsProvider && $oSuggestionsProvider->IsActive())
+			{
+				$iSuggestionLimit = $iLimit - \count($aResult);
+				$aSuggestionsProviderResult = $oSuggestionsProvider->Process($oAccount, $sQuery, $iSuggestionLimit);
+				if (\is_array($aSuggestionsProviderResult) && 0 < \count($aSuggestionsProviderResult))
+				{
+					$aResult = \array_merge($aResult, $aSuggestionsProviderResult);
+				}
 			}
 		}
 

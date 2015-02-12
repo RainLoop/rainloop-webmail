@@ -557,7 +557,7 @@ gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
 gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
 
 gulp.task('owncloud', ['rainloop:owncloud:copy',
-	'rainloop:owncloud:copy-rainloop',
+	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
 	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
 
 //WATCH
@@ -567,12 +567,13 @@ gulp.task('watch', ['fast'], function() {
 });
 
 // ALIASES
-gulp.task('w', ['watch']);
-gulp.task('f', ['fast']);
-
-gulp.task('rl', ['rainloop']);
 gulp.task('build', ['rainloop']);
-gulp.task('b', ['build']);
+gulp.task('js:hint', ['js:lint']);
 
 gulp.task('own', ['owncloud']);
-gulp.task('js:hint', ['js:lint']);
+gulp.task('rl', ['rainloop']);
+gulp.task('w', ['watch']);
+gulp.task('f', ['fast']);
+gulp.task('o', ['owncloud']);
+gulp.task('b', ['build']);
+gulp.task('h', ['js:lint']);
