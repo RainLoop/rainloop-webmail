@@ -246,23 +246,23 @@ class Actions
 			switch ($sName)
 			{
 				case 'files':
-					// RainLoop\Providers\Files\FilesInterface
-					$oResult = new \RainLoop\Providers\Files\DefaultStorage(APP_PRIVATE_DATA.'storage/files');
+					// RainLoop\Providers\Files\IFiles
+					$oResult = new \RainLoop\Providers\Files\FileStorage(APP_PRIVATE_DATA.'storage/files');
 					break;
 				case 'storage':
-					// RainLoop\Providers\Storage\StorageInterface
-					$oResult = new \RainLoop\Providers\Storage\DefaultStorage(APP_PRIVATE_DATA.'storage');
+					// RainLoop\Providers\Storage\IStorage
+					$oResult = new \RainLoop\Providers\Storage\FileStorage(APP_PRIVATE_DATA.'storage');
 					break;
 				case 'storage-local':
-					// RainLoop\Providers\Storage\StorageInterface
-					$oResult = new \RainLoop\Providers\Storage\DefaultStorage(APP_PRIVATE_DATA.'storage', true);
+					// RainLoop\Providers\Storage\IStorage
+					$oResult = new \RainLoop\Providers\Storage\FileStorage(APP_PRIVATE_DATA.'storage', true);
 					break;
 				case 'settings':
-					// RainLoop\Providers\Settings\SettingsInterface
+					// RainLoop\Providers\Settings\ISettings
 					$oResult = new \RainLoop\Providers\Settings\DefaultSettings($this->StorageProvider());
 					break;
 				case 'settings-local':
-					// RainLoop\Providers\Settings\SettingsInterface
+					// RainLoop\Providers\Settings\ISettings
 					$oResult = new \RainLoop\Providers\Settings\DefaultSettings($this->StorageProvider(true));
 					break;
 				case 'login':
@@ -301,7 +301,7 @@ class Actions
 					}
 					break;
 				case 'suggestions':
-					// \RainLoop\Providers\Suggestions\SuggestionsInterface
+					// \RainLoop\Providers\Suggestions\ISuggestions
 //					$oResult = new \RainLoop\Providers\Suggestions\TestSuggestions();
 
 					if (\RainLoop\Utils::IsOwnCloud())
@@ -7721,7 +7721,7 @@ class Actions
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
 			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail) {
-				if (\is_resource($rResource))
+				if ($oAccount && \is_resource($rResource))
 				{
 					$sContentTypeOut = $sContentTypeIn;
 					if (empty($sContentTypeOut))

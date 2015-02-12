@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Files;
 
-interface FilesInterface
+interface IFiles
 {
 	/**
 	 * @param \RainLoop\Model\Account $oAccount

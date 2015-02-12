@@ -2,12 +2,12 @@
 
 namespace RainLoop\Providers\Suggestions;
 
-class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\SuggestionsInterface
+class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
 {
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
-	private $oLogger;
+	protected $oLogger;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount

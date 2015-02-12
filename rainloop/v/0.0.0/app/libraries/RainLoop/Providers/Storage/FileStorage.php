@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Storage;
 
-class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
+class FileStorage implements \RainLoop\Providers\Storage\IStorage
 {
 	/**
 	 * @var string
@@ -15,6 +15,11 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	private $bLocal;
 
 	/**
+	 * @var \MailSo\Log\Logger
+	 */
+	protected $oLogger;
+
+	/**
 	 * @param string $sStoragePath
 	 * @param bool $bLocal = false
 	 *
@@ -24,6 +29,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
 		$this->bLocal = !!$bLocal;
+		$this->oLogger = null;
 	}
 
 	/**
@@ -122,7 +128,7 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 	 *
 	 * @return string
 	 */
-	private function generateFileName($mAccount, $iStorageType, $sKey, $bMkDir = false, $bForDeleteAction = false)
+	public function generateFileName($mAccount, $iStorageType, $sKey, $bMkDir = false, $bForDeleteAction = false)
 	{
 		if (null === $mAccount)
 		{
@@ -185,5 +191,13 @@ class DefaultStorage implements \RainLoop\Providers\Storage\StorageInterface
 		}
 
 		return $sFilePath;
+	}
+
+	/**
+	 * @param \MailSo\Log\Logger $oLogger
+	 */
+	public function SetLogger($oLogger)
+	{
+		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
 	}
 }

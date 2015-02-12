@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Suggestions;
 
-interface SuggestionsInterface
+interface ISuggestions
 {
 	/**
 	 * @param \RainLoop\Model\Account $oAccount

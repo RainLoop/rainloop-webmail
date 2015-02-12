@@ -5,14 +5,14 @@ namespace RainLoop\Providers;
 class Storage extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Storage\StorageInterface
+	 * @var \RainLoop\Providers\Storage\IStorage
 	 */
 	private $oDriver;
 
 	/**
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Storage\StorageInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Storage\IStorage $oDriver)
 	{
 		$this->oDriver = $oDriver;
 	}
@@ -102,7 +102,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Storage\StorageInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage;
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsLocal()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Storage\StorageInterface &&
+		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage &&
 			$this->oDriver->IsLocal();
 	}
 }

@@ -1,6 +1,6 @@
 <div class="b-admin-licensing" >
 	<div class="row">
-		<div class="alert alert-info span10" style="margin-top: 10px;">
+		<div class="alert alert-info span8" style="margin-top: 10px;">
 			RainLoop Webmail is licensed under <strong>Creative Commons
 			<br />
 			Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</strong> license.
@@ -30,7 +30,7 @@
 				Version
 			</label>
 			<div class="controls">
-				<div class="alert alert-block span8" style="margin-left: 0">
+				<div class="alert alert-block span6" style="margin-left: 0">
 					<h4>
 						Basic
 						<span data-bind="visible: licenseIsUnlim()">&nbsp;(Unlim)</span>
@@ -53,7 +53,7 @@
 					Checking&hellip;
 				</div>
 				<div data-bind="visible: !licensingProcess()">
-					<div class="alert alert-block span8" style="margin-left: 0;  padding-top: 20px" data-bind="visible: !licensing()">
+					<div class="alert alert-block span6" style="margin-left: 0;  padding-top: 20px" data-bind="visible: !licensing()">
 						<h4>
 							Basic
 						</h4>
@@ -63,7 +63,7 @@
 						</p>
 					</div>
 					<div data-bind="visible: licensing()">
-						<div class="alert alert-success span8" style="margin-left: 0; margin-top: 10px; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
+						<div class="alert alert-success span6" style="margin-left: 0; margin-top: 10px; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
 							<h4>
 								Premium
 								<span data-bind="visible: licenseIsUnlim()">(Lifetime)</span>
@@ -74,7 +74,7 @@
 								<span data-bind="text: licenseExpiredMomentValue()"></span>
 							</p>
 						</div>
-						<div class="alert alert-error span8" style="margin-left: 0; margin-top: 10px;" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
+						<div class="alert alert-error span6" style="margin-left: 0; margin-top: 10px;" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
 					</div>
 				</div>
 			</div>

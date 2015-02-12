@@ -627,13 +627,8 @@ class PdoAddressBook
 		if (0 < \strlen($sSearch))
 		{
 			$sCustomSearch = $this->specialConvertSearchValueCustomPhone($sSearch);
-			if ('%%' === $sCustomSearch)
-			{
-				// TODO fix this
-				$sCustomSearch = '';
-			}
 
-			$sSearchTypes = implode(',', array(
+			$sSearchTypes = \implode(',', array(
 				PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME,
 				PropertyType::PHONE, PropertyType::WEB_PAGE
 			));
@@ -1501,7 +1496,8 @@ SQLITEINITIAL;
 	 */
 	private function specialConvertSearchValueCustomPhone($sSearch)
 	{
-		return '%'.\preg_replace('/[^\d]/', '', $sSearch).'%';
+		$sResult = '%'.\preg_replace('/[^\d]/', '', $sSearch).'%';
+		return '%%' === $sResult ? '' : $sResult;
 	}
 
 	/**

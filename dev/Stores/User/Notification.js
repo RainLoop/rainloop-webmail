@@ -28,7 +28,7 @@
 
 		this.allowDesktopNotification = ko.observable(false);
 
-		this.desktopNotificationPermisions = ko.computed(function () {
+		this.desktopNotificationPermissions = ko.computed(function () {
 
 			this.allowDesktopNotification();
 
@@ -65,14 +65,14 @@
 			'owner': this,
 			'read': function () {
 				return this.allowDesktopNotification() &&
-					Enums.DesktopNotification.Allowed === this.desktopNotificationPermisions();
+					Enums.DesktopNotification.Allowed === this.desktopNotificationPermissions();
 			},
 			'write': function (bValue) {
 				if (bValue)
 				{
 					var
 						NotificationClass = this.notificationClass(),
-						iPermission = this.desktopNotificationPermisions()
+						iPermission = this.desktopNotificationPermissions()
 					;
 
 					if (NotificationClass && Enums.DesktopNotification.Allowed === iPermission)
@@ -83,7 +83,7 @@
 					{
 						NotificationClass.requestPermission(function () {
 							self.allowDesktopNotification.valueHasMutated();
-							if (Enums.DesktopNotification.Allowed === self.desktopNotificationPermisions())
+							if (Enums.DesktopNotification.Allowed === self.desktopNotificationPermissions())
 							{
 								if (self.allowDesktopNotification())
 								{
@@ -134,12 +134,12 @@
 	NotificationUserStore.prototype.computedProperies = function ()
 	{
 		this.isDesktopNotificationSupported = ko.computed(function () {
-			return Enums.DesktopNotification.NotSupported !== this.desktopNotificationPermisions();
+			return Enums.DesktopNotification.NotSupported !== this.desktopNotificationPermissions();
 		}, this);
 
 		this.isDesktopNotificationDenied = ko.computed(function () {
-			return Enums.DesktopNotification.NotSupported === this.desktopNotificationPermisions() ||
-				Enums.DesktopNotification.Denied === this.desktopNotificationPermisions();
+			return Enums.DesktopNotification.NotSupported === this.desktopNotificationPermissions() ||
+				Enums.DesktopNotification.Denied === this.desktopNotificationPermissions();
 		}, this);
 	};
 

@@ -5,12 +5,12 @@ namespace RainLoop\Providers;
 class Suggestions extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Suggestions\SuggestionsInterface
+	 * @var \RainLoop\Providers\Suggestions\ISuggestions
 	 */
 	private $oDriver;
 
 	/**
-	 * @param \RainLoop\Providers\Suggestions\SuggestionsInterface|null $oDriver = null
+	 * @param \RainLoop\Providers\Suggestions\ISuggestions|null $oDriver = null
 	 *
 	 * @return void
 	 */
@@ -37,6 +37,6 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Suggestions\SuggestionsInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Suggestions\ISuggestions;
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Storage;
 
-interface StorageInterface
+interface IStorage
 {
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount

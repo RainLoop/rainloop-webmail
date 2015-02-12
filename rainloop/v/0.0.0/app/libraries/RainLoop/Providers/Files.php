@@ -5,14 +5,14 @@ namespace RainLoop\Providers;
 class Files extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Files\FilesInterface
+	 * @var \RainLoop\Providers\Files\IFiles
 	 */
 	private $oDriver;
 
 	/**
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Files\FilesInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Files\IFiles $oDriver)
 	{
 		$this->oDriver = $oDriver;
 	}
@@ -121,6 +121,6 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Files\FilesInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Files\IFiles;
 	}
 }

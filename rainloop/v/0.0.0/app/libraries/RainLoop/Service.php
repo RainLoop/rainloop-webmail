@@ -156,6 +156,16 @@ class Service
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
+			if (!@\is_dir(APP_DATA_FOLDER_PATH) || !@\is_writable(APP_DATA_FOLDER_PATH))
+			{
+				echo $this->oServiceActions->ErrorTemplates(
+					'Permission denied!',
+					'RainLoop Webmail cannot access to the data folder "'.APP_DATA_FOLDER_PATH.'"'
+				);
+
+				return $this;
+			}
+
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
@@ -187,7 +197,7 @@ class Service
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
-			
+
 			if (\RainLoop\Utils::IsOwnCloud())
 			{
 				$sResult .= '][owncloud:true';

@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Settings;
 
-interface SettingsInterface
+interface ISettings
 {
 	/**
 	 * @param \RainLoop\Model\Account $oAccount

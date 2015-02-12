@@ -56,7 +56,8 @@ class File implements \MailSo\Cache\DriverInterface
 	 */
 	public function Set($sKey, $sValue)
 	{
-		return false !== \file_put_contents($sPath = $this->generateCachedFileName($sKey, true), $sValue);
+		$sPath = $this->generateCachedFileName($sKey, true);
+		return '' === $sPath ? false : false !== \file_put_contents($sPath, $sValue);
 	}
 
 	/**
@@ -68,7 +69,7 @@ class File implements \MailSo\Cache\DriverInterface
 	{
 		$sValue = '';
 		$sPath = $this->generateCachedFileName($sKey);
-		if (\file_exists($sPath))
+		if ('' !== $sPath && \file_exists($sPath))
 		{
 			$sValue = \file_get_contents($sPath);
 		}
@@ -84,7 +85,7 @@ class File implements \MailSo\Cache\DriverInterface
 	public function Delete($sKey)
 	{
 		$sPath = $this->generateCachedFileName($sKey);
-		if (\file_exists($sPath))
+		if ('' !== $sPath && \file_exists($sPath))
 		{
 			\unlink($sPath);
 		}
@@ -92,7 +93,7 @@ class File implements \MailSo\Cache\DriverInterface
 
 	/**
 	 * @param int $iTimeToClearInHours = 24
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function GC($iTimeToClearInHours = 24)
@@ -102,7 +103,7 @@ class File implements \MailSo\Cache\DriverInterface
 			\MailSo\Base\Utils::RecTimeDirRemove($this->sCacheFolder, 60 * 60 * $iTimeToClearInHours, \time());
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -120,7 +121,7 @@ class File implements \MailSo\Cache\DriverInterface
 			$sKeyPath = \sha1($sKey);
 			$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
 
-			$sFilePath = $this->sCacheFolder.'/'.$sKeyPath;
+			$sFilePath = $this->sCacheFolder.$sKeyPath;
 			if ($bMkDir && !\is_dir(\dirname($sFilePath)))
 			{
 				if (!\mkdir(\dirname($sFilePath), 0755, true))

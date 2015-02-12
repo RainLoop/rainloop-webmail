@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Settings;
 
-class DefaultSettings implements \RainLoop\Providers\Settings\SettingsInterface
+class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 {
 	const FILE_NAME = 'settings';
 	const FILE_NAME_LOCAL = 'settings_local';

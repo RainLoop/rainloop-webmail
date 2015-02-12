@@ -5,16 +5,16 @@ namespace RainLoop\Providers;
 class Settings extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Settings\SettingsInterface
+	 * @var \RainLoop\Providers\Settings\ISettings
 	 */
 	private $oDriver;
 
 	/**
-	 * @param \RainLoop\Providers\Settings\SettingsInterface $oDriver
+	 * @param \RainLoop\Providers\Settings\ISettings $oDriver
 	 *
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Settings\SettingsInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Settings\ISettings $oDriver)
 	{
 		$this->oDriver = $oDriver;
 	}
@@ -47,6 +47,6 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Settings\SettingsInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Settings\ISettings;
 	}
 }

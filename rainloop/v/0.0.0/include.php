@@ -113,7 +113,7 @@ Options -Indexes
 
 				if (!empty($sTest))
 				{
-					echo '[202] Data folder permisions error ['.$sTest.']';
+					echo '[202] Data folder permissions error ['.$sTest.']';
 					exit(202);
 				}
 

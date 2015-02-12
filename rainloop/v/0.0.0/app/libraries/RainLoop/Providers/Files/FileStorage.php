@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Files;
 
-class DefaultStorage implements \RainLoop\Providers\Files\FilesInterface
+class FileStorage implements \RainLoop\Providers\Files\IFiles
 {
 	/**
 	 * @var array

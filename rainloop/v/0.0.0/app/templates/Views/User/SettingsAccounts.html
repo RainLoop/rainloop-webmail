@@ -1,19 +1,13 @@
 <div class="b-settings-accounts g-ui-user-select-none">
 	<div class="form-horizontal">
 		<div class="legend">
-			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS_AND_IDENTITIES"></span>
+			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
 		</div>
 	</div>
 	<a class="btn" data-bind="click: addNewAccount">
 		<i class="icon-user-add"></i>
 		&nbsp;&nbsp;
 		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
-	</a>
-	&nbsp;&nbsp;
-	<a class="btn" data-bind="click: addNewIdentity">
-		<i class="icon-user-add"></i>
-		&nbsp;&nbsp;
-		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_IDENTITY"></span>
 	</a>
 	<div class="process-place" data-bind="style: {'visibility': visibility }">
 		<i class="icon-spinner animated"></i>
@@ -48,6 +42,19 @@
 			</tr>
 		</tbody>
 	</table>
+	<br />
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_IDENTITIES"></span>
+		</div>
+	</div>
+	<a class="btn" data-bind="click: addNewIdentity">
+		<i class="icon-user-add"></i>
+		&nbsp;&nbsp;
+		<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_IDENTITY"></span>
+	</a>
+	<br />
+	<br />
 	<br />
 	<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
 		<colgroup>

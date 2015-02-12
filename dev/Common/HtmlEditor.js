@@ -101,16 +101,7 @@
 	 */
 	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
-		return sText
-			.replace("\u0002", '').replace("\u0002", '')
-			.replace("\u0002", '').replace("\u0002", '')
-			.replace("\u0003", '').replace("\u0003", '')
-			.replace("\u0003", '').replace("\u0003", '')
-			.replace("\u0004", '').replace("\u0004", '')
-			.replace("\u0004", '').replace("\u0004", '')
-			.replace("\u0005", '').replace("\u0005", '')
-			.replace("\u0005", '').replace("\u0005", '')
-		;
+		return sText.replace(/(\u0002|\u0003|\u0004|\u0005)/g, '');
 	};
 
 	/**
@@ -123,16 +114,20 @@
 		var sResult = '';
 		if (this.editor)
 		{
-			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
+			try
 			{
-				sResult = this.editor.__plain.getRawData();
+				if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
+				{
+					sResult = this.editor.__plain.getRawData();
+				}
+				else
+				{
+					sResult =  bWrapIsHtml ?
+						'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
+							this.editor.getData() + '</div>' : this.editor.getData();
+				}
 			}
-			else
-			{
-				sResult =  bWrapIsHtml ?
-					'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
-						this.editor.getData() + '</div>' : this.editor.getData();
-			}
+			catch (e) {}
 
 			if (bClearSignatureSigns)
 			{
@@ -147,20 +142,22 @@
 	{
 		if (this.editor)
 		{
-			if (bPlain)
-			{
-				if ('plain' === this.editor.mode)
+			try {
+				if (bPlain)
 				{
-					this.editor.setMode('wysiwyg');
+					if ('plain' === this.editor.mode)
+					{
+						this.editor.setMode('wysiwyg');
+					}
 				}
-			}
-			else
-			{
-				if ('wysiwyg' === this.editor.mode)
+				else
 				{
-					this.editor.setMode('plain');
+					if ('wysiwyg' === this.editor.mode)
+					{
+						this.editor.setMode('plain');
+					}
 				}
-			}
+			} catch(e) {}
 
 			this.resize();
 		}
@@ -319,7 +316,9 @@
 	{
 		if (this.editor)
 		{
-			this.editor.focusManager.blur(true);
+			try {
+				this.editor.focusManager.blur(true);
+			} catch (e) {}
 		}
 	};
 
@@ -327,11 +326,9 @@
 	{
 		if (this.editor && this.__resizable)
 		{
-			try
-			{
+			try {
 				this.editor.resize(this.$element.width(), this.$element.innerHeight());
-			}
-			catch (e) {}
+			} catch (e) {}
 		}
 	};
 

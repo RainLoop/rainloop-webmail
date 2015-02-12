@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Suggestions;
 
-class TestSuggestions implements \RainLoop\Providers\Suggestions\SuggestionsInterface
+class TestSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
 {
 	/**
 	 * @param \RainLoop\Model\Account $oAccount

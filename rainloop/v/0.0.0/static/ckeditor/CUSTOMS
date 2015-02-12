@@ -1,0 +1,10 @@
+fix[1] CKEDITOR.editor.prototype.resize
+
+g=CKEDITOR.env.webkit&&this.document&&this.document.getWindow().$.frameElement
+
+->
+
+g=null;
+try{g=CKEDITOR.env.webkit&&this.document&&this.document.getWindow().$.frameElement;}catch(e){}
+
+---
