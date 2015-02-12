@@ -29,6 +29,8 @@
 		AbstractRemoteStorage.call(this);
 
 		this.oRequests = {};
+
+		this.sSubSubQuery = '&ss=/';
 	}
 
 	_.extend(RemoteUserStorage.prototype, AbstractRemoteStorage.prototype);
@@ -337,7 +339,7 @@
 		{
 			return this.defaultRequest(fCallback, 'MessageList', {},
 				'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
-				'MessageList/' + Base64.urlsafe_encode([
+				'MessageList/' + this.sSubSubQuery + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iOffset,
 					iLimit,
@@ -388,7 +390,7 @@
 		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
 		{
 			this.defaultRequest(fCallback, 'Message', {}, null,
-				'Message/' + Base64.urlsafe_encode([
+				'Message/' + this.sSubSubQuery + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iUid,
 					AppStore.projectHash(),
