@@ -11,7 +11,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addHook('filter.action-params', 'FilterActionParams');
 		$this->addHook('ajax.action-pre-call', 'AjaxActionPreCall');
 		$this->addHook('filter.send-message', 'FilterSendMessage');
-		$this->addHook('main.fabrica[2]', 'MainFabrica');
+		$this->addHook('main.fabrica', 'MainFabrica');
 	}
 
 	/**
@@ -76,29 +76,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if ($oMessage && $this->isDemoAccount($this->Manager()->Actions()->GetAccount()))
 		{
-			$bError = true;
-			$oRcpt = $oMessage->GetRcpt();
-			if ($oRcpt && 0 < $oRcpt->Count())
-			{
-				$aRcpt =& $oRcpt->GetAsArray();
-				if (0 < \count($aRcpt))
-				{
-					$bError = false;
-					$sCheck = \strtolower(\trim($this->Config()->Get('plugin', 'email')));
-					foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
-					{
-						if ($sCheck !== \strtolower(\trim($oEmail->GetEmail())))
-						{
-							$bError = true;
-						}
-					}
-				}
-			}
-
-			if ($bError)
-			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
-			}
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoSendMessageError);
 		}
 	}
 
@@ -106,18 +84,21 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 * @param string $sName
 	 * @param mixed $oDriver
 	 */
-	public function MainFabrica($sName, &$oDriver, $oAccount)
+	public function MainFabrica($sName, &$oDriver)
 	{
 		switch ($sName)
 		{
-			case 'settings':
-			case 'settings-local':
-				if ($oAccount && \class_exists('\\RainLoop\\Providers\\Storage\\TemproryApcStorage') &&
-					\function_exists('apc_store') &&
-					$this->isDemoAccount($oAccount))
+			case 'storage':
+			case 'storage-local':
+				if (\class_exists('\\RainLoop\\Providers\\Storage\\TemproryApcStorage') &&
+					\function_exists('apc_store'))
 				{
-					$oDriver = new \RainLoop\Providers\Storage\TemproryApcStorage(APP_PRIVATE_DATA.'storage',
-						$sName === 'settings-local');
+					$oAccount = $this->Manager()->Actions()->GetAccount();
+					if ($this->isDemoAccount($oAccount))
+					{
+						$oDriver = new \RainLoop\Providers\Storage\TemproryApcStorage(APP_PRIVATE_DATA.'storage',
+							$sName === 'storage-local');
+					}
 				}
 				break;
 		}

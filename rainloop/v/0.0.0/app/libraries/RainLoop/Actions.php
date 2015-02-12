@@ -250,20 +250,16 @@ class Actions
 					$oResult = new \RainLoop\Providers\Files\FileStorage(APP_PRIVATE_DATA.'storage/files');
 					break;
 				case 'storage':
-					// RainLoop\Providers\Storage\IStorage
-					$oResult = new \RainLoop\Providers\Storage\FileStorage(APP_PRIVATE_DATA.'storage');
-					break;
 				case 'storage-local':
 					// RainLoop\Providers\Storage\IStorage
-					$oResult = new \RainLoop\Providers\Storage\FileStorage(APP_PRIVATE_DATA.'storage', true);
+					$oResult = new \RainLoop\Providers\Storage\FileStorage(
+						APP_PRIVATE_DATA.'storage', 'storage-local' === $sName);
 					break;
 				case 'settings':
-					// RainLoop\Providers\Settings\ISettings
-					$oResult = new \RainLoop\Providers\Settings\DefaultSettings($this->StorageProvider());
-					break;
 				case 'settings-local':
 					// RainLoop\Providers\Settings\ISettings
-					$oResult = new \RainLoop\Providers\Settings\DefaultSettings($this->StorageProvider(true));
+					$oResult = new \RainLoop\Providers\Settings\DefaultSettings(
+						$this->StorageProvider('settings-local' === $sName));
 					break;
 				case 'login':
 					// \RainLoop\Providers\Login\LoginInterface
