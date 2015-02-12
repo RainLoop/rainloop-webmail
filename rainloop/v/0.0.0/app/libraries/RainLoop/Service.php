@@ -187,6 +187,12 @@ class Service
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+			
+			if (\RainLoop\Utils::IsOwnCloud())
+			{
+				$sResult .= '][owncloud:true';
+			}
+
 			$sResult .= '] -->';
 		}
 
@@ -219,7 +225,7 @@ class Service
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
-		$sStaticPrefix = $this->oServiceActions->WebStaticPath();
+		$sStaticPrefix = \RainLoop\Utils::WebStaticPath();
 
 		$aData = array(
 			'Language' => $sLanguage,
@@ -257,7 +263,7 @@ class Service
 			\implode('~', array(
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				$this->oServiceActions->WebVersionPath(), APP_VERSION
+				\RainLoop\Utils::WebVersionPath(), APP_VERSION
 			)).
 			\implode('~', $aTemplateParameters)
 		);

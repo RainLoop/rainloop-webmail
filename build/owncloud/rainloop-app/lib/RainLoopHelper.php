@@ -7,6 +7,15 @@ class OC_RainLoop_Helper
 	 */
 	public static function getAppUrl()
 	{
+		if (class_exists('\\OC\\URLGenerator') && isset(\OC::$server))
+		{
+			$oUrlGenerator = new \OC\URLGenerator(\OC::$server->getConfig());
+			if ($oUrlGenerator)
+			{
+				return $oUrlGenerator->linkToRoute('rainloop_app');
+			}
+		}
+
 		$sRequestUri = empty($_SERVER['REQUEST_URI']) ? '': trim($_SERVER['REQUEST_URI']);
 		$sRequestUri = preg_replace('/index.php\/.+$/', 'index.php/', $sRequestUri);
 		$sRequestUri = $sRequestUri.'apps/rainloop/app/';

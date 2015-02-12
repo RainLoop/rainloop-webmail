@@ -21,7 +21,9 @@
 		this.sSubSubQuery = '&ss=/';
 		this.sVersion = Settings.settingsGet('Version');
 		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
-		this.sStaticPrefix = Settings.settingsGet('StaticPrefix') || 'rainloop/v/' + this.sVersion + '/static/';
+		this.sWebPrefix = Settings.settingsGet('WebPath') || '';
+		this.sVersionPrefix = Settings.settingsGet('WebVersionPath') || 'rainloop/v/' + this.sVersion + '/';
+		this.sStaticPrefix = this.sVersionPrefix + 'static/';
 	}
 
 	/**
@@ -330,11 +332,11 @@
 	 */
 	Links.prototype.themePreviewLink = function (sTheme)
 	{
-		var sPrefix = 'rainloop/v/' + this.sVersion + '/';
+		var sPrefix = this.sVersionPrefix;
 		if ('@custom' === sTheme.substr(-7))
 		{
 			sTheme = Utils.trim(sTheme.substring(0, sTheme.length - 7));
-			sPrefix  = '';
+			sPrefix = this.sWebPrefix;
 		}
 
 		return sPrefix + 'themes/' + window.encodeURI(sTheme) + '/images/preview.png';

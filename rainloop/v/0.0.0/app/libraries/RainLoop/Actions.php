@@ -512,6 +512,7 @@ class Actions
 	 */
 	public function SetAuthLogoutToken()
 	{
+		@\header('X-RainLoop-Action: Logout');
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0, '/', null, null, true);
 	}
 
@@ -941,6 +942,7 @@ class Actions
 					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
 					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
 					'][PDO:'.$sPdo.
+					(\RainLoop\Utils::IsOwnCloud() ? '][ownCloud:true' : '').
 					'][Streams:'.\implode(',', \stream_get_transports()).
 				']');
 
@@ -1218,7 +1220,8 @@ class Actions
 			'Version' => APP_VERSION,
 			'Auth' => false,
 			'AccountHash' => '',
-			'StaticPrefix' => 'rainloop/v/'.APP_VERSION.'/static/',
+			'WebPath' => \RainLoop\Utils::WebPath(),
+			'WebVersionPath' => \RainLoop\Utils::WebVersionPath(),
 			'AccountSignMe' => false,
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',

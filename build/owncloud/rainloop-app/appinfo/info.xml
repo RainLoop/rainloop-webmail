@@ -2,12 +2,12 @@
 <info>
 	<id>rainloop</id>
 	<name>RainLoop</name>
-	<description>Simple, modern & fast web-based email client.
-
-Modest system requirements, decent performance, simple installation and upgrade, no database required -
-all these make RainLoop Webmail a perfect choice for your email solution.</description>
+	<description>Simple, modern and fast web-based email client.</description>
 	<version>0.0</version>
 	<licence>CC BY-NC-SA 3.0</licence>
 	<author>RainLoop Team</author>
 	<require>6.0</require>
+	<dependencies>
+        <php min-version="5.3"/>
+    </dependencies>
 </info>

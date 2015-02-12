@@ -224,6 +224,45 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
+	public function ServiceOwnCloudAuth()
+	{
+		if (!\RainLoop\Utils::IsOwnCloud() ||
+			empty($_ENV['___rainloop_owncloud_email']) &&
+			!isset($_ENV['___rainloop_owncloud_password'])
+		)
+		{
+			$this->oActions->SetAuthLogoutToken();
+			$this->oActions->Location('./');
+			return '';
+		}
+
+		$sEmail = $_ENV['___rainloop_owncloud_email'];
+		$sPassword = $_ENV['___rainloop_owncloud_password'];
+
+		try
+		{
+			$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
+			$this->oActions->AuthToken($oAccount);
+
+			$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
+		}
+		catch (\Exception $oException)
+		{
+			$this->oActions->Logger()->WriteException($oException);
+		}
+
+		if ($bLogout)
+		{
+			$this->oActions->SetAuthLogoutToken();
+		}
+
+		$this->oActions->Location('./');
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function ServiceAppend()
 	{
 		@\ob_start();
@@ -675,7 +714,10 @@ class ServiceActions
 
 					if (\file_exists($sThemeFile) && \file_exists($sThemeTemplateFile) && \file_exists($sThemeValuesFile))
 					{
-						$aResult[] = '@base: "'.($bCustomTheme ? $this->WebPath() : $this->WebVersionPath()).'themes/'.$sRealTheme.'/";';
+						$aResult[] = '@base: "'.
+							($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath()).
+							'themes/'.$sRealTheme.'/";';
+
 						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);
 						$aResult[] = \file_get_contents($sThemeTemplateFile);
@@ -779,7 +821,7 @@ class ServiceActions
 
 		@\header('Content-Type: text/html; charset=utf-8');
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
-			'{{BaseWebStaticPath}}' => $this->WebStaticPath(),
+			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc
@@ -1060,7 +1102,7 @@ class ServiceActions
 	public function ErrorTemplates($sTitle, $sDesc, $bShowBackLink = true)
 	{
 		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
-			'{{BaseWebStaticPath}}' => $this->WebStaticPath(),
+			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc,
@@ -1068,39 +1110,6 @@ class ServiceActions
 			'{{BackLink}}' => $this->oActions->StaticI18N('STATIC/BACK_LINK'),
 			'{{BackHref}}' => './'
 		));
-	}
-
-	/**
-	 * @return string
-	 */
-	public function WebPath()
-	{
-		if (isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'])
-		{
-			$sUrl = $this->oHttp->GetUrl();
-			if ($sUrl && \preg_match('/\/index\.php\/apps\/rainloop/', $sUrl))
-			{
-				$sUrl = \preg_replace('/\/index\.php\/apps\/rainloop.+$/', '/', $sUrl);
-				return \rtrim(\trim($sUrl), '\//').'/apps/rainloop/app/';
-			}
-		}
-
-		return '';
-	}
-	/**
-	 * @return string
-	 */
-	public function WebVersionPath()
-	{
-		return $this->WebPath().'rainloop/v/'.APP_VERSION.'/';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function WebStaticPath()
-	{
-		return $this->WebVersionPath().'static/';
 	}
 
 	/**

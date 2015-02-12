@@ -308,6 +308,57 @@ class Utils
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function IsOwnCloud()
+	{
+		return isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'] &&
+			\class_exists('\\OC');
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function WebPath()
+	{
+		$sAppPath = '';
+		if (\RainLoop\Utils::IsOwnCloud())
+		{
+			if (\class_exists('\\OC_App'))
+			{
+				$sAppPath = \rtrim(\trim(\OC_App::getAppWebPath('rainloop')), '\\/').'/app/';
+			}
+
+			if (empty($sAppPath))
+			{
+				$sUrl = \MailSo\Base\Http::SingletonInstance()->GetUrl();
+				if ($sUrl && \preg_match('/\/index\.php\/apps\/rainloop/', $sUrl))
+				{
+					$sAppPath = \preg_replace('/\/index\.php\/apps\/rainloop.+$/',
+						'/apps/rainloop/app/', $sUrl);
+				}
+			}
+		}
+
+		return $sAppPath;
+	}
+	/**
+	 * @return string
+	 */
+	public static function WebVersionPath()
+	{
+		return self::WebPath().'rainloop/v/'.APP_VERSION.'/';
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function WebStaticPath()
+	{
+		return self::WebVersionPath().'static/';
+	}
+
+	/**
 	 * @param string $sFileName
 	 * @param bool $bProcessSections = false
 	 *
