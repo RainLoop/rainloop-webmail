@@ -123,7 +123,7 @@
 		this.clearPopup();
 	};
 
-	FolderCreateView.prototype.onFocus = function ()
+	FolderCreateView.prototype.onShowWithDelay = function ()
 	{
 		this.folderName.focused(true);
 	};

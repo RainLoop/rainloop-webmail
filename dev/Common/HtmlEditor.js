@@ -138,7 +138,17 @@
 		return sResult;
 	};
 
-	HtmlEditor.prototype.modeToggle = function (bPlain)
+	/**
+	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {boolean=} bClearSignatureSigns = false
+	 * @return {string}
+	 */
+	HtmlEditor.prototype.getDataWithHtmlMark = function (bWrapIsHtml, bClearSignatureSigns)
+	{
+		return (this.isHtml() ? ':HTML:' : '') + this.getData(bWrapIsHtml, bClearSignatureSigns);
+	};
+
+	HtmlEditor.prototype.modeToggle = function (bPlain, bResize)
 	{
 		if (this.editor)
 		{
@@ -159,7 +169,22 @@
 				}
 			} catch(e) {}
 
-			this.resize();
+			if (bResize)
+			{
+				this.resize();
+			}
+		}
+	};
+
+	HtmlEditor.prototype.setHtmlOrPlain = function (sText, bFocus)
+	{
+		if (':HTML:' === sText.substr(0, 6))
+		{
+			this.setHtml(sText.substr(6), bFocus);
+		}
+		else
+		{
+			this.setPlain(sText, bFocus);
 		}
 	};
 
@@ -205,7 +230,7 @@
 
 	HtmlEditor.prototype.init = function ()
 	{
-		if (this.$element && this.$element[0])
+		if (this.$element && this.$element[0] && !this.editor)
 		{
 			var
 				self = this,
@@ -328,6 +353,16 @@
 		{
 			try {
 				this.editor.resize(this.$element.width(), this.$element.innerHeight());
+			} catch (e) {}
+		}
+	};
+
+	HtmlEditor.prototype.setReadOnly = function (bValue)
+	{
+		if (this.editor)
+		{
+			try {
+				this.editor.setReadOnly(!!bValue);
 			} catch (e) {}
 		}
 	};

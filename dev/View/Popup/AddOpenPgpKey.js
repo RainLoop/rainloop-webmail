@@ -100,7 +100,7 @@
 		this.clearPopup();
 	};
 
-	AddOpenPgpKeyPopupView.prototype.onFocus = function ()
+	AddOpenPgpKeyPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.key.focus(true);
 	};

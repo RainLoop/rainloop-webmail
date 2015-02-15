@@ -3,12 +3,13 @@
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LEGEND_TWO_FACTOR_AUTH"></span>
 		</div>
-		<div class="control-group">
-			<div class="controls">
+		<div class="control-group" data-bind="visible: twoFactorStatus">
+			<div class="controls" style="display: inline-block" data-bind="tooltip: viewTwoFactorEnableTooltip">
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'SETTINGS_SECURITY/LABEL_ENABLE_TWO_FACTOR',
+						enable: twoFactorAllowedEnable,
 						value: viewEnable
 					}
 				}"></div>
@@ -29,8 +30,7 @@
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n-text="SETTINGS_SECURITY/BUTTON_CLEAR"></span>
 				</a>
-				<span data-bind="visible: twoFactorStatus">&nbsp;&nbsp;</span>
-				<a class="btn" data-bind="click: createTwoFactor">
+				<a class="btn" data-bind="click: createTwoFactor, visible: !twoFactorStatus()">
 					<i class="icon-ok" data-bind="css: {'icon-ok': !processing(), 'icon-spinner animated': processing()}" ></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n-text="SETTINGS_SECURITY/BUTTON_CREATE"></span>

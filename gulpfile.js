@@ -420,6 +420,7 @@ gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
 		.pipe(stripbom())
 //		.pipe(replace("\u200B", "\\u200B"))
+		.pipe(replace('console.log("Detecting changes using MutationObservers")', 'true'))
 		.pipe(header("\uFEFF")) // BOM
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });

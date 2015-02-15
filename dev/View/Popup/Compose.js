@@ -80,6 +80,8 @@
 		this.bFromDraft = false;
 		this.sReferences = '';
 
+		this.sLastFocusedField = 'to';
+
 		this.resizerTrigger = _.bind(this.resizerTrigger, this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
@@ -93,10 +95,28 @@
 		this.identitiesDropdownTrigger = ko.observable(false);
 
 		this.to = ko.observable('');
-		this.to.focusTrigger = ko.observable(false);
+		this.to.focused = ko.observable(false);
 		this.cc = ko.observable('');
+		this.cc.focused = ko.observable(false);
 		this.bcc = ko.observable('');
+		this.bcc.focused = ko.observable(false);
 		this.replyTo = ko.observable('');
+		this.replyTo.focused = ko.observable(false);
+
+		ko.computed(function () {
+			switch (true)
+			{
+				case this.to.focused():
+					this.sLastFocusedField = 'to';
+					break;
+				case this.cc.focused():
+					this.sLastFocusedField = 'cc';
+					break;
+				case this.bcc.focused():
+					this.sLastFocusedField = 'bcc';
+					break;
+			}
+		}, this).extend({'notify': 'always'});
 
 		this.subject = ko.observable('');
 		this.isHtml = ko.observable(false);
@@ -411,8 +431,13 @@
 			{
 				this.skipCommand();
 
+				var self = this;
+
+				window.console.log(this.sLastFocusedField);
+
 				_.delay(function () {
-					kn.showScreenPopup(require('View/Popup/Contacts'), [true]);
+					kn.showScreenPopup(require('View/Popup/Contacts'),
+						[true, self.sLastFocusedField]);
 				}, 200);
 			}
 
@@ -1233,11 +1258,11 @@
 		this.resizerTrigger();
 	};
 
-	ComposePopupView.prototype.onFocus = function ()
+	ComposePopupView.prototype.onShowWithDelay = function ()
 	{
 		if ('' === this.to())
 		{
-			this.to.focusTrigger(!this.to.focusTrigger());
+			this.to.focused(true);
 		}
 		else if (this.oEditor)
 		{

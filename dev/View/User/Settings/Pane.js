@@ -5,9 +5,7 @@
 
 	var
 		_ = require('_'),
-		key = require('key'),
 
-		Enums = require('Common/Enums'),
 		Links = require('Common/Links'),
 
 		Data = require('Storage/User/Data'),
@@ -30,14 +28,6 @@
 
 	kn.extendAsViewModel(['View/User/Settings/Pane', 'View/App/Settings/Pane', 'SettingsPaneViewModel'], PaneSettingsUserView);
 	_.extend(PaneSettingsUserView.prototype, AbstractView.prototype);
-
-	PaneSettingsUserView.prototype.onBuild = function ()
-	{
-		var self = this;
-		key('esc', Enums.KeyState.Settings, function () {
-			self.backToMailBoxClick();
-		});
-	};
 
 	PaneSettingsUserView.prototype.onShow = function ()
 	{

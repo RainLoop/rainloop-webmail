@@ -50,6 +50,7 @@
 		;
 
 		this.bBackToCompose = false;
+		this.sLastComposeFocusedField = '';
 
 		this.allowContactsSync = Data.allowContactsSync;
 		this.enableContactsSync = Data.enableContactsSync;
@@ -236,7 +237,15 @@
 		});
 
 		this.newMessageCommand = Utils.createCommand(this, function () {
-			var aC = this.contactsCheckedOrSelected(), aE = [];
+			var
+				aE = [],
+				aC = this.contactsCheckedOrSelected(),
+				aToEmails = null,
+				aCcEmails = null,
+				aBccEmails = null,
+				aReplyToEmails = null
+			;
+
 			if (Utils.isNonEmptyArray(aC))
 			{
 				aE = _.map(aC, function (oItem) {
@@ -265,8 +274,25 @@
 
 				kn.hideScreenPopup(require('View/Popup/Contacts'));
 
+				switch (self.sLastComposeFocusedField)
+				{
+					default:
+					case 'to':
+						aToEmails = aE;
+						break;
+					case 'cc':
+						aCcEmails = aE;
+						break;
+					case 'bcc':
+						aBccEmails = aE;
+						break;
+				}
+
+				self.sLastComposeFocusedField = '';
+
 				_.delay(function () {
-					kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Empty, null, aE]);
+					kn.showScreenPopup(require('View/Popup/Compose'),
+						[Enums.ComposeType.Empty, null, aToEmails, aCcEmails, aBccEmails]);
 				}, 200);
 			}
 
@@ -721,9 +747,10 @@
 		this.initUploader();
 	};
 
-	ContactsPopupView.prototype.onShow = function (bBackToCompose)
+	ContactsPopupView.prototype.onShow = function (bBackToCompose, sLastComposeFocusedField)
 	{
 		this.bBackToCompose = Utils.isUnd(bBackToCompose) ? false : !!bBackToCompose;
+		this.sLastComposeFocusedField = Utils.isUnd(sLastComposeFocusedField) ? '' : sLastComposeFocusedField;
 
 		kn.routeOff();
 		this.reloadContactList(true);
@@ -732,6 +759,7 @@
 	ContactsPopupView.prototype.onHide = function ()
 	{
 		kn.routeOn();
+
 		this.currentContact(null);
 		this.emptySelection(true);
 		this.search('');
@@ -739,6 +767,8 @@
 
 		Utils.delegateRunOnDestroy(this.contacts());
 		this.contacts([]);
+
+		this.sLastComposeFocusedField = '';
 
 		if (this.bBackToCompose)
 		{

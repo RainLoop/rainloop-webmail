@@ -115,22 +115,8 @@
 
 		if (this.editor)
 		{
-			this.setBody('');
-		}
-	};
-
-	TemplatePopupView.prototype.setBody = function (sBody)
-	{
-		if (this.editor)
-		{
-			if (':HTML:' === sBody.substr(0, 6))
-			{
-				this.editor.setHtml(sBody.substr(6), false);
-			}
-			else
-			{
-				this.editor.setPlain(sBody, false);
-			}
+			this.editor.setPlain('', false);
+			this.editor.setReadOnly(true);
 		}
 	};
 
@@ -138,9 +124,7 @@
 	{
 		if (this.editor)
 		{
-			this.body(
-				(this.editor.isHtml() ? ':HTML:' : '') + this.editor.getData()
-			);
+			this.body(this.editor.getDataWithHtmlMark());
 		}
 	};
 
@@ -152,12 +136,12 @@
 			this.editor = new HtmlEditor(self.signatureDom(), function () {
 				self.populateBodyFromEditor();
 			}, function () {
-				self.setBody(sBody);
+				self.editor.setHtmlOrPlain(sBody);
 			});
 		}
 		else
 		{
-			this.setBody(sBody);
+			this.editor.setHtmlOrPlain(sBody);
 		}
 	};
 
@@ -212,7 +196,7 @@
 		}
 	};
 
-	TemplatePopupView.prototype.onFocus = function ()
+	TemplatePopupView.prototype.onShowWithDelay = function ()
 	{
 		this.name.focus(true);
 	};

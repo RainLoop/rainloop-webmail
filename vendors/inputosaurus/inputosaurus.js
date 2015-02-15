@@ -600,6 +600,10 @@
 			this.elements.input.focus();
 		},
 
+		blur : function () {
+			this.elements.input.blur();
+		},
+
 		_focus : function(ev) {
 			var
 				widget = (ev && ev.data.widget) || this,

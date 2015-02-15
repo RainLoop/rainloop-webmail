@@ -124,7 +124,7 @@
 		}
 	};
 
-	ActivatePopupView.prototype.onFocus = function ()
+	ActivatePopupView.prototype.onShowWithDelay = function ()
 	{
 		if (!this.activateProcess())
 		{

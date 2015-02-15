@@ -148,7 +148,7 @@
 		this.clearPopup();
 	};
 
-	AdvancedSearchPopupView.prototype.onFocus = function ()
+	AdvancedSearchPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.fromFocus(true);
 	};

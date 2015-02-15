@@ -23,7 +23,7 @@
 
 		this.buzz = null;
 
-		this.enableSoundNotification = ko.observable(true);
+		this.enableSoundNotification = ko.observable(false);
 		this.soundNotificationIsSupported = ko.observable(false);
 
 		this.allowDesktopNotification = ko.observable(false);

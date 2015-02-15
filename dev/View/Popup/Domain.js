@@ -410,7 +410,7 @@
 		}
 	};
 
-	DomainPopupView.prototype.onFocus = function ()
+	DomainPopupView.prototype.onShowWithDelay = function ()
 	{
 		if ('' === this.name())
 		{

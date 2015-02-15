@@ -198,12 +198,12 @@
 		}, this));
 	};
 
-	ComposeOpenPgpPopupView.prototype.onHide = function ()
+	ComposeOpenPgpPopupView.prototype.onHideWithDelay = function ()
 	{
 		this.clearPopup();
 	};
 
-	ComposeOpenPgpPopupView.prototype.onFocus = function ()
+	ComposeOpenPgpPopupView.prototype.onShowWithDelay = function ()
 	{
 		if (this.sign())
 		{

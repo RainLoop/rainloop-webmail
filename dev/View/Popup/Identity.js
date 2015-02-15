@@ -164,6 +164,31 @@
 		}
 	};
 
+	IdentityPopupView.prototype.populateSignatureFromEditor = function ()
+	{
+		if (this.editor)
+		{
+			this.signature(this.editor.getDataWithHtmlMark());
+		}
+	};
+
+	IdentityPopupView.prototype.editorSetSignature = function (sSignature)
+	{
+		if (!this.editor && this.signatureDom())
+		{
+			var self = this;
+			this.editor = new HtmlEditor(self.signatureDom(), function () {
+				self.populateSignatureFromEditor();
+			}, function () {
+				self.editor.setHtmlOrPlain(sSignature);
+			});
+		}
+		else
+		{
+			this.editor.setHtmlOrPlain(sSignature);
+		}
+	};
+
 	/**
 	 * @param {?IdentityModel} oIdentity
 	 */
@@ -189,58 +214,21 @@
 		{
 			this.id = Utils.fakeMd5();
 		}
+
+		this.editorSetSignature(this.signature());
 	};
 
-	IdentityPopupView.prototype.onHide = function ()
+	IdentityPopupView.prototype.onShowWithDelay = function ()
 	{
-		this.clearPopup();
-	};
-
-	IdentityPopupView.prototype.setSignature = function (sSignature)
-	{
-		if (this.editor)
-		{
-			if (':HTML:' === sSignature.substr(0, 6))
-			{
-				this.editor.setHtml(sSignature.substr(6), false);
-			}
-			else
-			{
-				this.editor.setPlain(sSignature, false);
-			}
-		}
-	};
-
-	IdentityPopupView.prototype.populateSignatureFromEditor = function ()
-	{
-		if (this.editor)
-		{
-			this.signature(
-				(this.editor.isHtml() ? ':HTML:' : '') + this.editor.getData()
-			);
-		}
-	};
-
-	IdentityPopupView.prototype.onFocus = function ()
-	{
-		if (!this.editor && this.signatureDom())
-		{
-			var self = this;
-			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				self.populateSignatureFromEditor();
-			}, function () {
-				self.setSignature(self.signature());
-			});
-		}
-		else
-		{
-			this.setSignature(this.signature());
-		}
-
 		if (!this.owner())
 		{
 			this.email.focused(true);
 		}
+	};
+
+	IdentityPopupView.prototype.onHideWithDelay = function ()
+	{
+		this.clearPopup();
 	};
 
 	module.exports = IdentityPopupView;

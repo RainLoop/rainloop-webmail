@@ -133,7 +133,7 @@
 					{
 						self.oCurrentSubScreen.viewModelDom.show();
 						Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
-						Utils.delegateRun(self.oCurrentSubScreen, 'onFocus', [], 200);
+						Utils.delegateRun(self.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
 						_.each(self.menu(), function (oItem) {
 							oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);

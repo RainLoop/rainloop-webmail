@@ -106,7 +106,7 @@
 		this.bFocusYesOnShow = Utils.isUnd(bFocusYesOnShow) ? true : !!bFocusYesOnShow;
 	};
 
-	AskPopupView.prototype.onFocus = function ()
+	AskPopupView.prototype.onShowWithDelay = function ()
 	{
 		if (this.bFocusYesOnShow)
 		{

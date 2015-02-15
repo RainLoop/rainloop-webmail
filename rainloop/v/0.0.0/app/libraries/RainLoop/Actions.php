@@ -1288,6 +1288,7 @@ class Actions
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
+			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array()
 		);
@@ -6420,10 +6421,10 @@ class Actions
 		$aData = $this->getTwoFactorInfo($oAccount);
 		$sSecret = !empty($aData['Secret']) ? $aData['Secret'] : '';
 
-		$this->Logger()->WriteDump(array(
-			$sCode, $sSecret, $aData,
-			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode)
-		));
+//		$this->Logger()->WriteDump(array(
+//			$sCode, $sSecret, $aData,
+//			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode)
+//		));
 
 		\sleep(1);
 		return $this->DefaultResponse(__FUNCTION__,

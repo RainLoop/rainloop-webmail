@@ -656,9 +656,9 @@
 				fAllBindings = fAllBindingsAccessor(),
 				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
 				fFocusCallback = function (bValue) {
-					if (fValue && fValue.focusTrigger)
+					if (fValue && fValue.focused)
 					{
-						fValue.focusTrigger(bValue);
+						fValue.focused(!!bValue);
 					}
 				}
 			;
@@ -693,14 +693,20 @@
 					fValue(oEvent.target.value);
 				}, this)
 			});
+
+			if (fValue && fValue.focused && fValue.focused.subscribe)
+			{
+				fValue.focused.subscribe(function (bValue) {
+					$oEl.inputosaurus(!!bValue ? 'focus' : 'blur');
+				});
+			}
 		},
-		'update': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+		'update': function (oElement, fValueAccessor) {
 
 			var
 				$oEl = $(oElement),
-				fAllValueFunc = fAllBindingsAccessor(),
-				fEmailsTagsFilter = fAllValueFunc['emailsTagsFilter'] || null,
-				sValue = ko.unwrap(fValueAccessor())
+				fValue = fValueAccessor(),
+				sValue = ko.unwrap(fValue)
 			;
 
 			if ($oEl.data('EmailsTagsValue') !== sValue)
@@ -708,11 +714,6 @@
 				$oEl.val(sValue);
 				$oEl.data('EmailsTagsValue', sValue);
 				$oEl.inputosaurus('refresh');
-			}
-
-			if (fEmailsTagsFilter && ko.unwrap(fEmailsTagsFilter))
-			{
-				$oEl.inputosaurus('focus');
 			}
 		}
 	};

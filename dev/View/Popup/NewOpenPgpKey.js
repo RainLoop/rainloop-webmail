@@ -104,7 +104,7 @@
 		this.clearPopup();
 	};
 
-	NewOpenPgpKeyPopupView.prototype.onFocus = function ()
+	NewOpenPgpKeyPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.email.focus(true);
 	};

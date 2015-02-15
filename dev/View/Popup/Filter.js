@@ -184,7 +184,7 @@
 		}
 	};
 
-	FilterPopupView.prototype.onFocus = function ()
+	FilterPopupView.prototype.onShowWithDelay = function ()
 	{
 		if (this.isNew() &&  this.filter())
 		{

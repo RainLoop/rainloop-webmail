@@ -14,7 +14,12 @@
 			</div>
 			<div class="span6 rl-desc">
 				<h1 style="margin-bottom: 0;">RainLoop</h1>
-				<h4 style="margin-top: 0;"><span data-bind="text: version"></span></h4>
+				<h4 style="margin-top: 0;">
+					<span data-bind="text: version"></span>
+					<span data-bind="visible: 'stable' !== coreType()" style="padding-left: 3px; color: red; font-weight: normal">
+						(<span data-bind="text: coreType"></span> channel)
+					</span>
+				</h4>
 				<h4 style="color: #aaa; font-weight: normal;">Simple, modern & fast web-based email client</h4>
 				<h5 style="font-weight: normal; margin-top: 40px;">
 					<div data-bind="visible: 'error' === statusType()">
@@ -27,9 +32,6 @@
 						&nbsp;&nbsp;
 						New
 						<b data-bind="text: coreRemoteVersion"></b>
-						<span data-bind="visible: 'stable' !== coreType()" style="color:red">
-							(<span data-bind="text: coreType"></span>)
-						</span>
 						version is available.
 						<span data-bind="visible: '' !== coreRemoteRelease()">
 							(<span data-bind="text: coreRemoteRelease"></span>)

@@ -116,7 +116,7 @@
 		}
 	};
 
-	AccountPopupView.prototype.onFocus = function ()
+	AccountPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.emailFocus(true);
 	};

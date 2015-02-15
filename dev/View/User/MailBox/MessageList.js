@@ -252,9 +252,18 @@
 			this.selector.scrollToTop();
 		}, this);
 
+		Data.messageListEndFolder.subscribe(function (sFolder) {
+			var oMessage = Data.message();
+			if (oMessage && sFolder && sFolder !== oMessage.folderFullNameRaw)
+			{
+				Data.message(null);
+			}
+		}, this);
+
 		SettingsStore.layout.subscribe(function (mValue) {
 			this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
 		}, this);
+
 
 		SettingsStore.layout.valueHasMutated();
 
