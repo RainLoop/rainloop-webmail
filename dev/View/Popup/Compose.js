@@ -1138,7 +1138,7 @@
 					oEditor.modeToggle(false);
 				}
 
-				if (oIdentity)
+				if (oIdentity && Enums.ComposeType.Draft !== sComposeType && Enums.ComposeType.EditAsNew !== sComposeType)
 				{
 					self.setSignatureFromIdentity(oIdentity);
 				}
@@ -1182,7 +1182,7 @@
 					oEditor.modeToggle(false);
 				}
 
-				if (oIdentity)
+				if (oIdentity && Enums.ComposeType.Draft !== sComposeType && Enums.ComposeType.EditAsNew !== sComposeType)
 				{
 					self.setSignatureFromIdentity(oIdentity);
 				}
