@@ -831,7 +831,7 @@ class Utils
 	public static function GetFileExtension($sFileName)
 	{
 		$iLast = \strrpos($sFileName, '.');
-		return false === $iLast ? '' : \substr($sFileName, $iLast + 1);
+		return false === $iLast ? '' : \strtolower(\substr($sFileName, $iLast + 1));
 	}
 
 	/**

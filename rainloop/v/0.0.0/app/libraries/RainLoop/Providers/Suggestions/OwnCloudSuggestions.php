@@ -23,46 +23,50 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 		try
 		{
 			if (!$oAccount || !\RainLoop\Utils::IsOwnCloud() ||
-				!\class_exists('\\OCP\\Contacts') || !\OCP\Contacts::isEnabled())
+				!\class_exists('\\OCP\\Contacts') || !\OCP\Contacts::isEnabled() ||
+				!\class_exists('\\OCP\\User') || !\OCP\User::isLoggedIn()
+			)
 			{
 				return $aResult;
 			}
 
 			$aSearchResult = \OCP\Contacts::search($sQuery, array('FN', 'EMAIL'));
-
-			foreach ($aSearchResult as $aContact)
+			if (\is_array($aSearchResult) && 0 < \count($aSearchResult))
 			{
-				if (0 >= $iLimit)
+				foreach ($aSearchResult as $aContact)
 				{
-					break;
-				}
-
-				$sUid = empty($aContact['UID']) ? '' : $aContact['UID'];
-				if (!empty($sUid))
-				{
-					$sFullName = isset($aContact['FN']) ? \trim($aContact['FN']) : '';
-					$mEmails = isset($aContact['EMAIL']) ? $aContact['EMAIL'] : '';
-
-					if (!\is_array($mEmails))
+					if (0 >= $iLimit)
 					{
-						$mEmails = array($mEmails);
+						break;
 					}
 
-					foreach ($mEmails as $sEmail)
+					$sUid = empty($aContact['UID']) ? '' : $aContact['UID'];
+					if (!empty($sUid))
 					{
-						$sEmail = \trim($sEmail);
-						if (!empty($sEmail))
+						$sFullName = isset($aContact['FN']) ? \trim($aContact['FN']) : '';
+						$mEmails = isset($aContact['EMAIL']) ? $aContact['EMAIL'] : '';
+
+						if (!\is_array($mEmails))
 						{
-							$iLimit--;
-							$aResult[$sUid] = array($sEmail, $sFullName);
+							$mEmails = array($mEmails);
+						}
+
+						foreach ($mEmails as $sEmail)
+						{
+							$sEmail = \trim($sEmail);
+							if (!empty($sEmail))
+							{
+								$iLimit--;
+								$aResult[$sUid] = array($sEmail, $sFullName);
+							}
 						}
 					}
 				}
+
+				$aResult = \array_values($aResult);
 			}
 
 			unset($aSearchResult);
-
-			$aResult = \array_values($aResult);
 		}
 		catch (\Exception $oException)
 		{

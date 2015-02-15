@@ -617,6 +617,15 @@ class Actions
 	 */
 	public function ClearAdminAuthToken()
 	{
+		$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
+		if (
+			!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
+			'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1]
+		)
+		{
+			$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]));
+		}
+
 		\RainLoop\Utils::ClearCookie(self::AUTH_ADMIN_TOKEN_KEY);
 	}
 
@@ -997,11 +1006,17 @@ class Actions
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	private function getAdminToken()
 	{
-		return \RainLoop\Utils::EncodeKeyValues(array('token', \md5(APP_SALT)));
+		$sRand = \MailSo\Base\Utils::Md5Rand();
+		if (!$this->Cacher()->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time()))
+		{
+			$sRand = '';
+		}
+
+		return '' === $sRand ? '' : \RainLoop\Utils::EncodeKeyValues(array('token', \md5(APP_SALT), $sRand));
 	}
 
 	/**
@@ -1015,8 +1030,10 @@ class Actions
 		if ($this->Config()->Get('security', 'allow_admin_panel', true))
 		{
 			$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
-			if ((!empty($aAdminHash[0]) && !empty($aAdminHash[1]) &&
-				'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1]))
+			if (!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
+				'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1] &&
+				'' !== $this->Cacher()->Get(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]), '')
+			)
 			{
 				$bResult = true;
 			}
@@ -1119,7 +1136,7 @@ class Actions
 					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
 					{
 						$oAccount->SetProxyAuthUser($aAccountHash[8]);
-						$oAccount->SetProxyAuthUser($aAccountHash[89]);
+						$oAccount->SetProxyAuthPassword($aAccountHash[9]);
 					}
 
 					$this->Logger()->AddSecret($oAccount->Password());
@@ -2895,14 +2912,17 @@ class Actions
 	public function DoLogout()
 	{
 		$oAccount = $this->getAccountFromToken(false);
-		if ($oAccount && $oAccount->SignMe())
+		if ($oAccount)
 		{
-			$this->ClearSignMeData($oAccount);
-		}
+			if ($oAccount->SignMe())
+			{
+				$this->ClearSignMeData($oAccount);
+			}
 
-		if ($oAccount && '' === $oAccount->ParentEmail())
-		{
-			\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SPEC_TOKEN_KEY);
+			if (!$oAccount->IsAdditionalAccount())
+			{
+				\RainLoop\Utils::ClearCookie(\RainLoop\Actions::AUTH_SPEC_TOKEN_KEY);
+			}
 		}
 
 		return $this->TrueResponse(__FUNCTION__);

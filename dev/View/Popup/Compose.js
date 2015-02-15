@@ -1308,6 +1308,7 @@
 		});
 
 		Events.sub('window.resize.real', this.resizerTrigger);
+		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, 50));
 
 		if (this.dropboxEnabled())
 		{
@@ -1328,6 +1329,13 @@
 				}
 			});
 		}
+
+		window.setInterval(function () {
+			if (self.modalVisibility() && self.oEditor)
+			{
+				self.oEditor.resize();
+			}
+		}, 5000);
 	};
 
 	ComposePopupView.prototype.driveCallback = function (sAccessToken, oData)

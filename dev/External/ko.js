@@ -287,7 +287,19 @@
 			});
 		},
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+
+			var Globals = require('Common/Globals');
+
+			$(oElement).modal(!!ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+
+			if (Globals.$html.hasClass('rl-anim'))
+			{
+				Globals.$html.addClass('rl-modal-animation');
+				_.delay(function () {
+					Globals.$html.removeClass('rl-modal-animation');
+				}, 400);
+			}
+
 		}
 	};
 

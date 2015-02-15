@@ -110,8 +110,24 @@ class OC_RainLoop_Helper
 
 	public static function logout()
 	{
-		return OCP\Config::setUserValue(
+		OCP\Config::setUserValue(
 			OCP\User::getUser(), 'rainloop', 'rainloop-autologin-password', '');
+
+		$sApiPath = __DIR__.'/../app/index.php';
+		if (file_exists($sApiPath))
+		{
+			self::regRainLoopDataFunction();
+
+			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+			include $sApiPath;
+
+			if (class_exists('\\RainLoop\\Api'))
+			{
+				\RainLoop\Api::LogoutCurrentLogginedUser();
+			}
+		}
+
+		return true;
 	}
 
 	public static function changePassword($aParams)

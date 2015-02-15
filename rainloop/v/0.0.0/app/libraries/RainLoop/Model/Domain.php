@@ -522,13 +522,13 @@ class Domain
 		if (0 < strlen($sW))
 		{
 			$sEmail = \MailSo\Base\Utils::IdnToUtf8($sEmail, true);
-			$sLogin = \MailSo\Base\Utils::IdnToUtf8($sLogin);
+			$sLogin = \MailSo\Base\Utils::IdnToUtf8($sLogin, true);
 
 			$sW = \preg_replace('/([^\s]+)@[^\s]*/', '$1', $sW);
 			$sW = ' '.\trim(\preg_replace('/[\s;,\r\n\t]+/', ' ', $sW)).' ';
 
 			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail(0 < \strlen($sLogin) ? $sLogin : $sEmail);
-			return false !== \strpos($sW, ' '.$sUserPart.' ');
+			return false !== \stripos($sW, ' '.$sUserPart.' ');
 		}
 
 		return true;

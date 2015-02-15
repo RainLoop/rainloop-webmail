@@ -1121,7 +1121,7 @@ class ServiceActions
 	private function localError($sTitle, $sDesc)
 	{
 		@header('Content-Type: text/html; charset=utf-8');
-		return $this->oActions->ErrorTemplates($sTitle, \nl2br($sDesc));
+		return $this->ErrorTemplates($sTitle, \nl2br($sDesc));
 	}
 
 	/**

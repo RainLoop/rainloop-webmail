@@ -203,6 +203,10 @@
 		return 0 < Globals.popupVisibilityNames().length;
 	}, this);
 
+	Globals.popupVisibility.subscribe(function (bValue) {
+		Globals.$html.toggleClass('rl-modal', bValue);
+	});
+
 	// keys
 	Globals.keyScopeReal = ko.observable(Enums.KeyState.All);
 	Globals.keyScopeFake = ko.observable(Enums.KeyState.All);

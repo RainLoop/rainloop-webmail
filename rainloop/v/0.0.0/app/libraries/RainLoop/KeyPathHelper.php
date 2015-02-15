@@ -130,4 +130,14 @@ class KeyPathHelper
 	{
 		return '/CssCache/'.$sHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}
+
+	/**
+	 * @param string $sRand
+	 *
+	 * @return string
+	 */
+	static public function SessionAdminKey($sRand)
+	{
+		return '/Session/AdminKey/'.\md5($sRand).'/';
+	}
 }

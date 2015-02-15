@@ -17,9 +17,10 @@ OCP\App::registerPersonal('rainloop', 'personal');
 if (OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false))
 {
 	OCP\Util::connectHook('OC_User', 'post_login', 'OC_RainLoop_Helper', 'login');
-	OCP\Util::connectHook('OC_User', 'logout', 'OC_RainLoop_Helper', 'logout');
 	OCP\Util::connectHook('OC_User', 'post_setPassword', 'OC_RainLoop_Helper', 'changePassword');
 }
+
+OCP\Util::connectHook('OC_User', 'logout', 'OC_RainLoop_Helper', 'logout');
 
 OCP\Util::addScript('rainloop', 'rainloop');
 
