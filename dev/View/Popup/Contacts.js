@@ -242,8 +242,7 @@
 				aC = this.contactsCheckedOrSelected(),
 				aToEmails = null,
 				aCcEmails = null,
-				aBccEmails = null,
-				aReplyToEmails = null
+				aBccEmails = null
 			;
 
 			if (Utils.isNonEmptyArray(aC))

@@ -14,6 +14,7 @@
 		AccountStore = require('Stores/User/Account'),
 		IdentityStore = require('Stores/User/Identity'),
 
+		Settings = require('Storage/Settings'),
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -22,6 +23,9 @@
 	 */
 	function AccountsUserSettings()
 	{
+		this.allowAdditionalAccount = Settings.capa(Enums.Capa.AdditionalAccounts);
+		this.allowIdentities = true;
+
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityStore.identities;
 

@@ -6,7 +6,6 @@
 	var
 		_ = require('_'),
 
-		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
 
 		kn = require('Knoin/Knoin'),

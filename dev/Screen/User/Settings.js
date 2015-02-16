@@ -53,11 +53,9 @@
 				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		if (Settings.capa(Enums.Capa.AdditionalAccounts))
-		{
-			kn.addSettingsViewModel(require('Settings/User/Accounts'),
-				'SettingsAccounts', 'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME', 'accounts');
-		}
+		kn.addSettingsViewModel(require('Settings/User/Accounts'), 'SettingsAccounts',
+			Settings.capa(Enums.Capa.AdditionalAccounts) ?
+				'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME' : 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'accounts');
 
 		if (Settings.capa(Enums.Capa.Sieve))
 		{
