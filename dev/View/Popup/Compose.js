@@ -196,8 +196,8 @@
 
 		this.attachmentsPlace = ko.observable(false);
 
-		this.attachments.subscribe(Utils.windowResizeCallback);
-		this.attachmentsPlace.subscribe(Utils.windowResizeCallback);
+		this.attachments.subscribe(this.resizerTrigger);
+		this.attachmentsPlace.subscribe(this.resizerTrigger);
 
 		this.attachmentsInErrorCount.subscribe(function (iN) {
 			if (0 === iN)
@@ -759,6 +759,7 @@
 			{
 				self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
+					self.resizerTrigger();
 				}, function (bHtml) {
 					self.isHtml(!!bHtml);
 				});
@@ -766,6 +767,7 @@
 			else if (this.oEditor)
 			{
 				fOnInit(this.oEditor);
+				this.resizerTrigger();
 			}
 		}
 	};

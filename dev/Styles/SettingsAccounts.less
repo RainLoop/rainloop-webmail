@@ -74,6 +74,19 @@
 			cursor: pointer;
 			opacity: 0.5;
 		}
+
+		&.ui-sortable-helper {
+			background: #F5F5F5;
+			border: 1px solid #DDD;
+
+			.button-delete, .delete-account {
+				display: none;
+			}
+
+			td {
+				border-width: 0px;
+			}
+		}
 	}
 
 	.identity-item {
@@ -100,6 +113,19 @@
 		.delete-identity {
 			cursor: pointer;
 			opacity: 0.5;
+		}
+
+		&.ui-sortable-helper {
+			background: #F5F5F5;
+			border: 1px solid #DDD;
+
+			.button-delete, .delete-identity {
+				display: none;
+			}
+
+			td {
+				border-width: 0px;
+			}
 		}
 	}
 }
