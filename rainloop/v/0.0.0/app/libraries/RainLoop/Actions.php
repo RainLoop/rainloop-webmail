@@ -1566,7 +1566,7 @@ class Actions
 
 			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
 			{
-				$sTheme = $oSettings->GetConf('Theme', $sTheme);
+				$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
 			}
 
 			$aResult['SentFolder'] = $oSettingsLocal->GetConf('SentFolder', '');
@@ -4095,16 +4095,38 @@ class Actions
 		$sVersion = empty($aData['version']) ? '' : $aData['version'];
 		$sType = empty($aData['channel']) ? 'stable' : $aData['channel'];
 
+		$sWarnings = empty($aData['warnings']) ? '' : $aData['warnings'];
+		$aWarnings = $sWarnings ? explode('|', $sWarnings) : array();
+
+		$sCurrentVersion = APP_VERSION;
+
+		$bShowWarning = false;
+		if ($sCurrentVersion !== APP_DEV_VERSION)
+		{
+			foreach ($aWarnings as $sWarningVersion)
+			{
+				$sWarningVersion = \trim($sWarningVersion);
+
+				if (\version_compare($sCurrentVersion, $sWarningVersion, '<') &&
+					\version_compare($sVersion, $sWarningVersion, '>='))
+				{
+					$bShowWarning = true;
+					break;
+				}
+			}
+		}
+
 		return $this->DefaultResponse(__FUNCTION__, array(
 			 'Real' => $bReal,
 			 'Access' => $bRainLoopAccess,
 			 'Updatable' => $bRainLoopUpdatable,
+			 'Warning' => $bShowWarning,
 			 'Channel' => $this->getCoreChannel(),
 			 'Type' => $sType,
-			 'Version' => APP_VERSION,
+			 'Version' => $sCurrentVersion,
 			 'RemoteVersion' => $sVersion,
 			 'RemoteRelease' => empty($aData['release']) ? '' : $aData['release'],
-			 'VersionCompare' => \version_compare(APP_VERSION, $sVersion)
+			 'VersionCompare' => \version_compare($sCurrentVersion, $sVersion)
 		));
 	}
 
@@ -4634,13 +4656,13 @@ class Actions
 
 		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
 		{
-			$this->setSettingsFromParams($oSettings, 'Theme', 'string', function ($sTheme) use ($self) {
+			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
 			});
 		}
 		else
 		{
-			$oSettings->SetConf('Theme', $this->ValidateLanguage($oConfig->Get('webmail', 'theme', 'Default')));
+			$oSettingsLocal->SetConf('Theme', $this->ValidateLanguage($oConfig->Get('webmail', 'theme', 'Default')));
 		}
 
 		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
@@ -8620,11 +8642,19 @@ class Actions
 		$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
-		$oSettings = $oAccount instanceof \RainLoop\Model\Account ? $this->SettingsProvider()->Load($oAccount) : null;
-		if ($oSettings instanceof \RainLoop\Settings)
+		if ($oAccount instanceof \RainLoop\Model\Account)
 		{
-			$sLanguage = $oSettings->GetConf('Language', $sLanguage);
-			$sTheme = $oSettings->GetConf('Theme', $sTheme);
+			$oSettings = $this->SettingsProvider()->Load($oAccount);
+			if ($oSettings instanceof \RainLoop\Settings)
+			{
+				$sLanguage = $oSettings->GetConf('Language', $sLanguage);
+			}
+
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+			if ($oSettingsLocal instanceof \RainLoop\Settings)
+			{
+				$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
+			}
 		}
 
 		$sLanguage = $this->ValidateLanguage($sLanguage);

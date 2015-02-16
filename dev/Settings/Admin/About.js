@@ -26,6 +26,8 @@
 		this.coreAccess = CoreStore.coreAccess;
 		this.coreChecking = CoreStore.coreChecking;
 		this.coreUpdating = CoreStore.coreUpdating;
+		this.coreWarning = CoreStore.coreWarning;
+		this.coreVersion = CoreStore.coreVersion;
 		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
 		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
 		this.coreVersionCompare = CoreStore.coreVersionCompare;

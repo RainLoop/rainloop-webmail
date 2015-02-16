@@ -140,6 +140,7 @@
 		Remote.updateCoreData(function (sResult, oData) {
 
 			CoreStore.coreUpdating(false);
+			CoreStore.coreVersion('');
 			CoreStore.coreRemoteVersion('');
 			CoreStore.coreRemoteRelease('');
 			CoreStore.coreVersionCompare(-2);
@@ -173,6 +174,8 @@
 				CoreStore.coreType(oData.Result.Type || 'stable');
 				CoreStore.coreUpdatable(!!oData.Result.Updatable);
 				CoreStore.coreAccess(!!oData.Result.Access);
+				CoreStore.coreWarning(!!oData.Result.Warning);
+				CoreStore.coreVersion(oData.Result.Version || '');
 				CoreStore.coreRemoteVersion(oData.Result.RemoteVersion || '');
 				CoreStore.coreRemoteRelease(oData.Result.RemoteRelease || '');
 				CoreStore.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
@@ -182,6 +185,8 @@
 				CoreStore.coreReal(false);
 				CoreStore.coreChannel('stable');
 				CoreStore.coreType('stable');
+				CoreStore.coreWarning(false);
+				CoreStore.coreVersion('');
 				CoreStore.coreRemoteVersion('');
 				CoreStore.coreRemoteRelease('');
 				CoreStore.coreVersionCompare(-2);

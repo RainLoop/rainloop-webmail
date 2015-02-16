@@ -12,7 +12,7 @@
 					<a class="g-ui-link" href="http://rainloop.net/" target="_blank">http://rainloop.net/</a>
 				</div>
 			</div>
-			<div class="span6 rl-desc">
+			<div class="span8 rl-desc">
 				<h1 style="margin-bottom: 0;">RainLoop</h1>
 				<h4 style="margin-top: 0;">
 					<span data-bind="text: version"></span>
@@ -37,6 +37,15 @@
 							(<span data-bind="text: coreRemoteRelease"></span>)
 						</span>
 						<br />
+						<span data-bind="if: coreWarning">
+							<br />
+							<i class="icon-warning" style="color: red"></i>
+							&nbsp;&nbsp;
+							<b>Warning!</b>
+							&nbsp;&nbsp;
+							Please read the change log before updating.
+							<br />
+						</span>
 						<br />
 						<span data-bind="visible: coreUpdatable() && coreAccess()">
 							<a class="btn" data-bind="click: updateCoreData">
