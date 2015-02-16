@@ -33,7 +33,8 @@
 .flag.flag-sl, .flag.flag-sl-si, .flag.flag-sl-sl {background-position: -160px -132px}
 .flag.flag-ua, .flag.flag-ua-ua, .flag.flag-uk-ua {background-position: -96px -154px}
 
-.flag.flag-cz .flag.flag-cz-cz .flag.flag-cs-cz {background-position: -64px -33px}
+.flag.flag-cs, .flag.flag-cs-cs, .flag.flag-cs-cz {background-position: -64px -33px}
+.flag.flag-cz, .flag.flag-cz-cz, .flag.flag-cz-cs {background-position: -64px -33px}
 
 .flag.flag-no, .flag.flag-nb, .flag.flag-nb-no {background-position: -96px -110px}
 
