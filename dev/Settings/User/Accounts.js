@@ -9,7 +9,6 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Translator = require('Common/Translator'),
 		Links = require('Common/Links'),
 
 		AccountStore = require('Stores/User/Account'),
@@ -25,14 +24,6 @@
 	{
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityStore.identities;
-
-		this.processText = ko.computed(function () {
-			return AccountStore.accounts.loading() ? Translator.i18n('SETTINGS_ACCOUNTS/LOADING_PROCESS') : '';
-		}, this);
-
-		this.visibility = ko.computed(function () {
-			return '' === this.processText() ? 'hidden' : 'visible';
-		}, this);
 
 		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();

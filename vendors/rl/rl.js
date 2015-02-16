@@ -6,7 +6,7 @@
 	 */
 	function CRLTopDriver() {}
 
-	CRLTopDriver.prototype.s = window['sessionStorage'];
+	CRLTopDriver.prototype.s = window['sessionStorage'] || null;
 
 	CRLTopDriver.prototype.t = window['top'] || window;
 

@@ -1131,8 +1131,8 @@
 						'EMAIL': sFrom
 					});
 
-					sText = '<br />' + sReplyTitle + ':' +
-						'<blockquote><p>' + sText + '</p></blockquote>';
+					sText = '<br /><br />' + sReplyTitle + ':' +
+						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
 
 					break;
 
@@ -1146,7 +1146,7 @@
 							(0 < sCc.length ? '<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
-							'<br /><br />' + sText;
+							'<br /><br />' + Utils.trim(sText) + '<br /><br />';
 					break;
 				case Enums.ComposeType.ForwardAsAttachment:
 					sText = '';

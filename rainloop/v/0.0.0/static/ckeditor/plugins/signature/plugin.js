@@ -2,13 +2,16 @@
 rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefore)
 {
 	var
-		bEmptyText = '' === $.trim(sText),
+		sTextWithoutSignature = sText
+			.replace(/\u0002\u0002[\s\S]*\u0003\u0003/gm, '')
+			.replace(/\u0004\u0004[\s\S]*\u0005\u0005/gm, ''),
+		bEmptyText = '' === $.trim(sTextWithoutSignature),
 		sNewLine = (bHtml ? '<br />' : "\n")
 	;
 
 	if (!bEmptyText && bHtml)
 	{
-		bEmptyText = '' !== $.trim(editor.__plainUtils.htmlToPlain(sText));
+		bEmptyText = '' !== $.trim(editor.__plainUtils.htmlToPlain(sTextWithoutSignature));
 	}
 
 	if (!/\u0002\u0002/gm.test(sText))
