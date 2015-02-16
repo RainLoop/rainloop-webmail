@@ -898,9 +898,40 @@ class ServiceActions
 					$sEmail = \trim($mData['Email']);
 					$sPassword = $mData['Password'];
 
+					$aAdditionalOptions = isset($mData['AdditionalOptions']) && \is_array($mData['AdditionalOptions']) &&
+						0 < \count($mData['AdditionalOptions']) ? $mData['AdditionalOptions'] : null;
+
 					try
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
+
+						if ($oAccount instanceof \RainLoop\Model\Account && $aAdditionalOptions)
+						{
+							$bNeedToSettings = false;
+
+							$oSettings = $this->SettingsProvider()->Load($oAccount);
+							if ($oSettings)
+							{
+								$sLanguage = isset($aAdditionalOptions['Language']) ?
+									$aAdditionalOptions['Language'] : '';
+
+								if ($sLanguage)
+								{
+									$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
+									if ($sLanguage !== $oSettings->GetConf('Language', ''))
+									{
+										$bNeedToSettings = true;
+										$oSettings->SetConf('Language', $sLanguage);
+									}
+								}
+							}
+
+							if ($bNeedToSettings)
+							{
+								$this->SettingsProvider()->Save($oAccount, $oSettings);
+							}
+						}
+
 						$this->oActions->AuthToken($oAccount);
 
 						$bLogout = !($oAccount instanceof \RainLoop\Model\Account);

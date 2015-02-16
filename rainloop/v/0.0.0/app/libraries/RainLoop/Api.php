@@ -130,17 +130,19 @@ class Api
 	/**
 	 * @param string $sEmail
 	 * @param string $sPassword
+	 * @param array $aAdditionalOptions = array()
 	 * @param bool $bUseTimeout = true
 	 *
 	 * @return string
 	 */
-	public static function GetUserSsoHash($sEmail, $sPassword, $bUseTimeout = true)
+	public static function GetUserSsoHash($sEmail, $sPassword, $aAdditionalOptions = array(), $bUseTimeout = true)
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand($sEmail.$sPassword);
 
 		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,
 			'Password' => $sPassword,
+			'AdditionalOptions' => $aAdditionalOptions,
 			'Time' => $bUseTimeout ? \time() : 0
 		))) ? $sSsoHash : '';
 	}
