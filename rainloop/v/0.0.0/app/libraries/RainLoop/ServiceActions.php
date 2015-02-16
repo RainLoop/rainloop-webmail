@@ -227,14 +227,17 @@ class ServiceActions
 	public function ServiceOwnCloudAuth()
 	{
 		if (!\RainLoop\Utils::IsOwnCloud() ||
-			empty($_ENV['___rainloop_owncloud_email']) &&
-			!isset($_ENV['___rainloop_owncloud_password'])
+			!isset($_ENV['___rainloop_owncloud_email']) ||
+			!isset($_ENV['___rainloop_owncloud_password']) ||
+			empty($_ENV['___rainloop_owncloud_email'])
 		)
 		{
 			$this->oActions->SetAuthLogoutToken();
 			$this->oActions->Location('./');
 			return '';
 		}
+
+		$bLogout = true;
 
 		$sEmail = $_ENV['___rainloop_owncloud_email'];
 		$sPassword = $_ENV['___rainloop_owncloud_password'];
