@@ -166,13 +166,15 @@
 		padding-left: @subPadding * 3 + @folderItemPadding;
 	}
 
+/**
 	&.single-root-inbox .i-am-inbox.e-link {
 		display: none;
 	}
 
-	&.single-root-inbox .i-am-inbox-wrapper > .b-sub-folders .e-item .e-link {
+	&.single-root-inbox .i-am-inbox-wrapper + .b-sub-folders .e-item .e-link {
 		padding-left: @folderItemPadding;
 	}
+/**/
 }
 
 html.rl-left-panel-disabled {
