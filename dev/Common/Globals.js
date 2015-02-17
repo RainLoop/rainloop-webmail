@@ -7,6 +7,7 @@
 		Globals = {},
 
 		window = require('window'),
+		is = require('is'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -68,24 +69,14 @@
 	Globals.bUnload = false;
 
 	/**
-	 * @type {string}
+	 * @type {boolean}
 	 */
-	Globals.sUserAgent = (window.navigator.userAgent || '').toLowerCase();
+	Globals.bTabletDevice = is.tablet();
 
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bIsiOSDevice = -1 < Globals.sUserAgent.indexOf('iphone') || -1 < Globals.sUserAgent.indexOf('ipod') || -1 < Globals.sUserAgent.indexOf('ipad');
-
-	/**
-	 * @type {boolean}
-	 */
-	Globals.bIsAndroidDevice = -1 < Globals.sUserAgent.indexOf('android');
-
-	/**
-	 * @type {boolean}
-	 */
-	Globals.bMobileDevice = Globals.bIsiOSDevice || Globals.bIsAndroidDevice;
+	Globals.bMobileDevice = is.mobile() || is.tablet();
 
 	/**
 	 * @type {boolean}

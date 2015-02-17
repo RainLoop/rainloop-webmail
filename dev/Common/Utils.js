@@ -325,61 +325,6 @@
 		};
 	}());
 
-	Utils.audio = (function () {
-
-		var
-			oAudio = false
-		;
-
-		return function (sMp3File, sOggFile) {
-
-			if (false === oAudio)
-			{
-				if (Globals.bIsiOSDevice)
-				{
-					oAudio = null;
-				}
-				else
-				{
-					var
-						bCanPlayMp3	= false,
-						bCanPlayOgg	= false,
-						oAudioLocal = window.Audio ? new window.Audio() : null
-					;
-
-					if (oAudioLocal && oAudioLocal.canPlayType && oAudioLocal.play)
-					{
-						bCanPlayMp3 = '' !== oAudioLocal.canPlayType('audio/mpeg; codecs="mp3"');
-						if (!bCanPlayMp3)
-						{
-							bCanPlayOgg = '' !== oAudioLocal.canPlayType('audio/ogg; codecs="vorbis"');
-						}
-
-						if (bCanPlayMp3 || bCanPlayOgg)
-						{
-							oAudio = oAudioLocal;
-							oAudio.preload = 'none';
-							oAudio.loop = false;
-							oAudio.autoplay = false;
-							oAudio.muted = false;
-							oAudio.src = bCanPlayMp3 ? sMp3File : sOggFile;
-						}
-						else
-						{
-							oAudio = null;
-						}
-					}
-					else
-					{
-						oAudio = null;
-					}
-				}
-			}
-
-			return oAudio;
-		};
-	}());
-
 	/**
 	 * @param {(Object|null|undefined)} oObject
 	 * @param {string} sProp
