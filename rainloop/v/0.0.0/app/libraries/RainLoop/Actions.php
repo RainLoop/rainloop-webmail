@@ -7789,7 +7789,7 @@ class Actions
 
 						$sFileName = 'mailsotempfile://'.\MailSo\Base\Utils::Md5Rand($sFileNameOut);
 
-						$rTempResource = \fopen($sFileName, 'r+b');
+						$rTempResource = @\fopen($sFileName, 'r+b');
 						if (@\is_resource($rTempResource))
 						{
 							\MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource));
@@ -7952,6 +7952,9 @@ class Actions
 			{
 				case 'png':
 					$bResult = \function_exists('imagecreatefrompng');
+					break;
+				case 'gif':
+					$bResult = \function_exists('imagecreatefromgif');
 					break;
 				case 'jpg':
 				case 'jpeg':
