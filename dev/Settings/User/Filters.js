@@ -31,10 +31,7 @@
 		this.serverErrorDesc = ko.observable('');
 		this.haveChanges = ko.observable(false);
 
-		this.processText = ko.observable('');
 		this.saveErrorText = ko.observable('');
-
-		this.visibility = ko.observable(false);
 
 		this.filters.subscribe(Utils.windowResizeCallback);
 
@@ -50,14 +47,6 @@
 		this.filterRaw.active = ko.observable(false);
 		this.filterRaw.allow = ko.observable(false);
 		this.filterRaw.error = ko.observable(false);
-
-		this.processText = ko.computed(function () {
-			return this.filters.loading() ? Translator.i18n('SETTINGS_FILTERS/LOADING_PROCESS') : '';
-		}, this);
-
-		this.visibility = ko.computed(function () {
-			return '' === this.processText() ? 'hidden' : 'visible';
-		}, this);
 
 		this.filterForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend(
 			{'toggleSubscribeProperty': [this, 'deleteAccess']});

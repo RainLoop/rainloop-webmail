@@ -2,6 +2,8 @@
 	<div class="form-horizontal">
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_FILTERS/LEGEND_FILTERS"></span>
+			&nbsp;&nbsp;&nbsp;
+			<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: filters.loading"></i>
 		</div>
 	</div>
 	<div class="row" data-bind="visible: inited() && !serverError()">
@@ -46,13 +48,10 @@
 			</div>
 		</div>
 	</div>
+	<br />
+	<br />
 	<div class="row">
 		<div class="span8">
-			<div class="process-place g-ui-user-select-none" data-bind="style: {'visibility': visibility }">
-				<i class="icon-spinner animated"></i>
-				&nbsp;&nbsp;
-				<span data-bind="text: processText"></span>
-			</div>
 			<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: inited() && filterRaw.allow() && filterRaw.active()">
 				<div class="controls">
 					<pre style="word-break: break-word;" data-bind="visible: '' !== filterRaw.capa()">

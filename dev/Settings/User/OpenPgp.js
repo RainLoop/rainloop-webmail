@@ -23,19 +23,7 @@
 		this.openpgpkeysPublic = PgpStore.openpgpkeysPublic;
 		this.openpgpkeysPrivate = PgpStore.openpgpkeysPrivate;
 
-		this.openPgpKeyForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-				}
-			}
-		]});
+		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
 	OpenPgpUserSettings.prototype.addOpenPgpKey = function ()

@@ -101,7 +101,7 @@
 	 */
 	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
-		return sText.replace(/(\u0002|\u0003|\u0004|\u0005)/g, '');
+		return sText.replace(/(\u0002|\u0003|\u200C|\u200D)/g, '');
 	};
 
 	/**

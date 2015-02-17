@@ -24,7 +24,7 @@
 	{
 		this.folderList = Data.folderList;
 
-		this.processText = ko.computed(function () {
+		this.loading = ko.computed(function () {
 
 			var
 				bLoading = Data.foldersLoading(),
@@ -33,44 +33,11 @@
 				bRenaming = Data.foldersRenaming()
 			;
 
-			if (bCreating)
-			{
-				return Translator.i18n('SETTINGS_FOLDERS/CREATING_PROCESS');
-			}
-			else if (bDeleting)
-			{
-				return Translator.i18n('SETTINGS_FOLDERS/DELETING_PROCESS');
-			}
-			else if (bRenaming)
-			{
-				return Translator.i18n('SETTINGS_FOLDERS/RENAMING_PROCESS');
-			}
-			else if (bLoading)
-			{
-				return Translator.i18n('SETTINGS_FOLDERS/LOADING_PROCESS');
-			}
-
-			return '';
+			return bLoading || bCreating || bDeleting || bRenaming;
 
 		}, this);
 
-		this.visibility = ko.computed(function () {
-			return '' === this.processText() ? 'hidden' : 'visible';
-		}, this);
-
-		this.folderForDeletion = ko.observable(null).extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-				}
-			}
-		]});
+		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.folderForEdit = ko.observable(null).extend({'toggleSubscribe': [this,
 			function (oPrev) {

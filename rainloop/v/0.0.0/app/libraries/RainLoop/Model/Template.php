@@ -81,7 +81,6 @@ class Template
 	public function SetPopulateAlways($bPopulateAlways)
 	{
 		$this->bPopulateAlways = !!$bPopulateAlways;
-
 	}
 
 	/**
@@ -123,12 +122,18 @@ class Template
 			}
 		}
 
-		return array(
+		$aResult = array(
 			'ID' => $this->Id(),
 			'Name' => $this->Name(),
-			'Populated' => $bPopulated,
 			'Body' => $sBody
 		);
+
+		if ($bAjax)
+		{
+			$aResult['Populated'] = $bPopulated;
+		}
+
+		return $aResult;
 	}
 
 	/**

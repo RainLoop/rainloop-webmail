@@ -43,6 +43,8 @@
 		this.folderListSystem = Data.folderListSystem;
 		this.foldersChanging = Data.foldersChanging;
 
+		this.foldersListWithSingleInboxRootFolder = Data.foldersListWithSingleInboxRootFolder;
+
 		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.iDropOverTimer = 0;

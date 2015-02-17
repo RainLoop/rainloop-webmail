@@ -75,6 +75,10 @@
 	{
 		var sInboxFolderName = Cache.getFolderInboxName();
 
+		this.isInbox = ko.computed(function () {
+			return Enums.FolderType.Inbox === this.type();
+		}, this);
+
 		this.hasSubScribedSubfolders = ko.computed(function () {
 			return !!_.find(this.subFolders(), function (oFolder) {
 				return oFolder.subScribed() && !oFolder.isSystemFolder();

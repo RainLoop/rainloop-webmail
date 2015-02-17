@@ -2,6 +2,8 @@
 	<div class="form-horizontal">
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_FOLDERS/LEGEND_FOLDERS"></span>
+			&nbsp;&nbsp;&nbsp;
+			<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: loading"></i>
 		</div>
 	</div>
 	<a class="btn" data-bind="click: createFolder">
@@ -24,11 +26,9 @@
 		<button type="button" class="close" data-bind="click: function () { folderList.error(''); }">&times;</button>
 		<span data-bind="text: folderList.error"></span>
 	</div>
-	<div class="process-place" data-bind="style: {'visibility': visibility }">
-		<i class="icon-spinner animated"></i>
-		&nbsp;&nbsp;
-		<span data-bind="text: processText"></span>
-	</div>
+	<br />
+	<br />
+	<br />
 	<table class="table table-hover list-table" data-bind="i18nUpdate: folderList">
 		<colgroup>
 			<col />

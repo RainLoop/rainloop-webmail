@@ -1009,6 +1009,10 @@
 		;
 
 		sText = sHtml
+			// specials for signature
+			.replace(/\u0002\u0002/g, '\u200C\u200C')
+			.replace(/\u0003\u0003/g, '\u200D\u200D')
+
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
@@ -1154,6 +1158,11 @@
 		sPlain = aText.join("\n");
 
 		sPlain = sPlain
+
+			// specials for signature
+			.replace(/\u200C\u200C/g, '\u0002\u0002')
+			.replace(/\u200D\u200D/g, '\u0003\u0003')
+
 //			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
@@ -1692,6 +1701,20 @@
 			});
 		}
 	};
+
+	Utils.substr = window.String.substr;
+	if ('ab'.substr(-1) !== 'b')
+	{
+		Utils.substr = function(sStr, iStart, iLength)
+		{
+			if (iStart < 0)
+			{
+				iStart = sStr.length + iStart;
+			}
+
+			return sStr.substr(iStart, iLength);
+		};
+	}
 
 	module.exports = Utils;
 

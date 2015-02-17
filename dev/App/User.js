@@ -1151,7 +1151,6 @@
 	AppUser.prototype.setFolders = function (oData)
 	{
 		var
-			aList = [],
 			bUpdate = false,
 			fNormalizeFolder = function (sFolderFullNameRaw) {
 				return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
@@ -1170,8 +1169,7 @@
 			AppStore.threadsAllowed(!!Settings.settingsGet('UseImapThread') &&
 				oData.Result.IsThreadsSupported && true);
 
-			aList = this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']);
-			Data.folderList(aList);
+			Data.folderList(this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']));
 
 			if (oData.Result['SystemFolders'] && '' === '' +
 				Settings.settingsGet('SentFolder') +

@@ -116,7 +116,6 @@
 		if (this.editor)
 		{
 			this.editor.setPlain('', false);
-			this.editor.setReadOnly(true);
 		}
 	};
 

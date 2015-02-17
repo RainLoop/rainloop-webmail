@@ -351,7 +351,6 @@
 			key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', sKeyScope, function (event, handler) {
 				if (event && handler && handler.shortcut)
 				{
-					// TODO
 					var iKey = 0;
 					switch (handler.shortcut)
 					{

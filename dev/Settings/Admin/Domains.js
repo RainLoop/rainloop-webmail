@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
 
@@ -21,36 +20,12 @@
 	{
 		this.domains = DomainStore.domains;
 
-		this.iDomainForDeletionTimeout = 0;
-
 		this.visibility = ko.computed(function () {
 			return this.domains.loading() ? 'visible' : 'hidden';
 		}, this);
 
-		this.domainForDeletion = ko.observable(null).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-					this.startDomainForDeletionTimeout();
-				}
-			}
-		]});
+		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
 	}
-
-	DomainsAdminSettings.prototype.startDomainForDeletionTimeout = function ()
-	{
-		var self = this;
-		window.clearInterval(this.iDomainForDeletionTimeout);
-		this.iDomainForDeletionTimeout = window.setTimeout(function () {
-			self.domainForDeletion(null);
-		}, 1000 * 3);
-	};
 
 	DomainsAdminSettings.prototype.createDomain = function ()
 	{

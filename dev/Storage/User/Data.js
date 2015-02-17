@@ -64,6 +64,13 @@
 		this.foldersDeleting = ko.observable(false);
 		this.foldersRenaming = ko.observable(false);
 
+		this.foldersListWithSingleInboxRootFolder = ko.computed(function () {
+			var aList = this.folderList();
+			return !_.find(aList, function (oFolder) {
+				return oFolder && !oFolder.isSystemFolder() && oFolder.visible();
+			});
+		}, this);
+
 		this.foldersChanging = ko.computed(function () {
 			var
 				bLoading = this.foldersLoading(),
