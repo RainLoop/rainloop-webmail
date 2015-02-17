@@ -826,11 +826,11 @@
 		});
 
 		key('ctrl+left, command+left', Enums.KeyState.MessageView, function () {
-			return false; // TODO
+			return false;
 		});
 
 		key('ctrl+right, command+right', Enums.KeyState.MessageView, function () {
-			return false; // TODO
+			return false;
 		});
 	};
 

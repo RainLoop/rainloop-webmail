@@ -132,7 +132,6 @@
 			{
 				Globals.aBootstrapDropdowns.push($(oElement));
 //				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
-//					// TODO
 //				});
 			}
 		}

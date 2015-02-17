@@ -467,7 +467,7 @@
 
 		_.delay(function () {
 			Globals.$html.removeClass('rl-started-trigger').addClass('rl-started');
-		}, 50);
+		}, 100);
 
 		_.delay(function () {
 			Globals.$html.addClass('rl-started-delay');

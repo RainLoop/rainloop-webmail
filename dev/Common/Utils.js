@@ -548,7 +548,6 @@
 	 */
 	Utils.delegateRun = function (oObject, sMethodName, aParameters, nDelay)
 	{
-//		window.console.log('->' + sMethodName); // TODO
 		if (oObject && oObject[sMethodName])
 		{
 			nDelay = Utils.pInt(nDelay);

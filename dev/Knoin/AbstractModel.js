@@ -41,7 +41,6 @@
 	AbstractModel.prototype.onDestroy = function ()
 	{
 		Utils.disposeObject(this);
-//		window.console.log('onDestroy: ' + this.sModelName); // TODO
 	};
 
 	module.exports = AbstractModel;

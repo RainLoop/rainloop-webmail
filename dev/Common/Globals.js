@@ -261,7 +261,6 @@
 	});
 
 	Globals.keyScopeReal.subscribe(function (sValue) {
-//		window.console.log(sValue); //TODO
 		key.setScope(sValue);
 	});
 
