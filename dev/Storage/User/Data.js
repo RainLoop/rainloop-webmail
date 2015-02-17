@@ -821,15 +821,15 @@
 
 	DataUserStorage.prototype.findPublicKeysByEmail = function (sEmail)
 	{
-		var self = this;
-		return _.compact(_.map(require('Stores/User/Pgp').openpgpkeysPublic(), function (oItem) {
+		var PgpStore = require('Stores/User/Pgp');
+		return _.compact(_.map(PgpStore.openpgpkeysPublic(), function (oItem) {
 
 			var oKey = null;
 			if (oItem && sEmail === oItem.email)
 			{
 				try
 				{
-					oKey = self.openpgp.key.readArmored(oItem.armor);
+					oKey = PgpStore.openpgp.key.readArmored(oItem.armor);
 					if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
 					{
 						return oKey.keys[0];
@@ -851,9 +851,9 @@
 	DataUserStorage.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 	{
 		var
-			self = this,
+			PgpStore = require('Stores/User/Pgp'),
 			oPrivateKey = null,
-			oKey = _.find(require('Stores/User/Pgp').openpgpkeysPrivate(), function (oItem) {
+			oKey = _.find(PgpStore.openpgpkeysPrivate(), function (oItem) {
 				return oItem && sEmail === oItem.email;
 			})
 		;
@@ -862,7 +862,7 @@
 		{
 			try
 			{
-				oPrivateKey = self.openpgp.key.readArmored(oKey.armor);
+				oPrivateKey = PgpStore.openpgp.key.readArmored(oKey.armor);
 				if (oPrivateKey && !oPrivateKey.err && oPrivateKey.keys && oPrivateKey.keys[0])
 				{
 					oPrivateKey = oPrivateKey.keys[0];
