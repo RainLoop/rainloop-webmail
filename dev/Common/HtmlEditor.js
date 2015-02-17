@@ -306,7 +306,6 @@
 							}
 
 							self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
-							self.editor.editable().addClass('cke_enable_context_menu');
 
 							self.fOnReady();
 							self.__resizable = true;

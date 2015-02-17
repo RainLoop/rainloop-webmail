@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
 		Remote = require('Storage/User/Remote'),
@@ -79,7 +80,10 @@
 
 	TwoFactorTestPopupView.prototype.onShowWithDelay = function ()
 	{
-		this.code.focused(true);
+		if (!Globals.bMobile)
+		{
+			this.code.focused(true);
+		}
 	};
 
 	module.exports = TwoFactorTestPopupView;

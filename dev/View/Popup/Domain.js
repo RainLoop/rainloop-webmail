@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
 		CapaAdminStore = require('Stores/Admin/Capa'),
@@ -412,7 +413,7 @@
 
 	DomainPopupView.prototype.onShowWithDelay = function ()
 	{
-		if ('' === this.name())
+		if ('' === this.name() && !Globals.bMobile)
 		{
 			this.name.focused(true);
 		}

@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
@@ -186,7 +187,7 @@
 
 	FilterPopupView.prototype.onShowWithDelay = function ()
 	{
-		if (this.isNew() &&  this.filter())
+		if (this.isNew() && this.filter() && !Globals.bMobile)
 		{
 			this.filter().name.focused(true);
 		}

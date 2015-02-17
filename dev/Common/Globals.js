@@ -133,7 +133,7 @@
 			{name: 'others'}
 		],
 
-		'removePlugins': 'liststyle,table,quicktable,tableresize,tabletools,contextmenu', //blockquote
+		'removePlugins': 'liststyle',
 		'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 

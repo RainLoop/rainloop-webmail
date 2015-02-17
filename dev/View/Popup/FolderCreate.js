@@ -9,6 +9,7 @@
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
@@ -125,7 +126,10 @@
 
 	FolderCreateView.prototype.onShowWithDelay = function ()
 	{
-		this.folderName.focused(true);
+		if (!Globals.bMobile)
+		{
+			this.folderName.focused(true);
+		}
 	};
 
 	module.exports = FolderCreateView;

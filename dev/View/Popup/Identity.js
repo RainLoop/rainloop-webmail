@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 		HtmlEditor = require('Common/HtmlEditor'),
@@ -220,7 +221,7 @@
 
 	IdentityPopupView.prototype.onShowWithDelay = function ()
 	{
-		if (!this.owner())
+		if (!this.owner() && !Globals.bMobile)
 		{
 			this.email.focused(true);
 		}

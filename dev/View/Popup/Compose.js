@@ -1262,13 +1262,16 @@
 
 	ComposePopupView.prototype.onShowWithDelay = function ()
 	{
-		if ('' === this.to())
+		if (!Globals.bMobileDevice)
 		{
-			this.to.focused(true);
-		}
-		else if (this.oEditor)
-		{
-			this.oEditor.focus();
+			if ('' === this.to())
+			{
+				this.to.focused(true);
+			}
+			else if (this.oEditor)
+			{
+				this.oEditor.focus();
+			}
 		}
 
 		this.resizerTrigger();
