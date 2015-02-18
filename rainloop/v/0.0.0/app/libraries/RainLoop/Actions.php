@@ -1315,11 +1315,11 @@ class Actions
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
+		$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
+		$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
+
 		if ($this->PremType())
 		{
-			$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
-			$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
-
 			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
 			$aResult['LoginBackground'] = $oConfig->Get('branding', 'login_background', '');
 			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
@@ -3198,11 +3198,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		if ($this->HasOneOfActionParams(array('Title', 'LoadingDescription', 'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo', 'UserCss')) && $this->PremType())
-		{
-			$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-			$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
+		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
+		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
+		if ($this->HasOneOfActionParams(array('LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo', 'UserCss')) && $this->PremType())
+		{
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');

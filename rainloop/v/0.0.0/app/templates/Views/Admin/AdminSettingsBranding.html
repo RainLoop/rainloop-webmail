@@ -1,10 +1,5 @@
 <div class="b-admin-branding">
-	<div class="row" data-bind="visible: !capa()">
-		<div class="alert span8" style="margin-top: 10px;">
-			This functionality is available for <strong><a href="#/licensing">Premium</a></strong> subscribers.
-		</div>
-	</div>
-	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
+	<div class="form-horizontal">
 		<div class="legend">
 			Branding
 		</div>
@@ -18,8 +13,7 @@
 					params: {
 						value: title,
 						trigger: title.trigger,
-						size: 5,
-						enable: capa
+						size: 5
 					}
 				}"></div>
 			</div>
@@ -34,13 +28,14 @@
 					params: {
 						value: loadingDesc,
 						trigger: loadingDesc.trigger,
-						size: 5,
-						enable: capa
+						size: 5
 					}
 				}"></div>
 			</div>
 		</div>
-		<br />
+	</div>
+	<br />
+	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
 		<div class="legend">
 			Login
 		</div>
@@ -104,7 +99,7 @@
 					params: {
 						value: loginCss,
 						trigger: loginCss.trigger,
-						width: 530,
+						width: 495,
 						enable: capa,
 						rows: 7
 					}
@@ -126,7 +121,8 @@
 		<div class="legend">
 			User
 		</div>
-<!--		<div class="control-group">
+<!--
+		<div class="control-group">
 			<label class="control-label">
 				Logo
 			</label>
@@ -142,7 +138,8 @@
 					}
 				}"></div>
 			</div>
-		</div>-->
+		</div>
+-->
 		<div class="control-group">
 			<label class="control-label">
 				Custom CSS
@@ -153,11 +150,16 @@
 					params: {
 						value: userCss,
 						trigger: userCss.trigger,
-						width: 530,
+						width: 495,
 						enable: capa,
 						rows: 7
 					}
 				}"></div>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: !capa()">
+			<div class="alert span8" style="margin-top: 10px;">
+				This functionality is available for <strong><a href="#/licensing">Premium</a></strong> subscribers.
 			</div>
 		</div>
 	</div>
