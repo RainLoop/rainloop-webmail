@@ -92,6 +92,10 @@
 				Globals.$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
+
+		Globals.$doc.on('mousemove keypress click', _.debounce(function () {
+			Events.pub('rl.auto-logout-refresh');
+		}, 5000));
 	}
 
 	_.extend(AbstractApp.prototype, AbstractBoot.prototype);

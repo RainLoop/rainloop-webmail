@@ -24,6 +24,11 @@
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({'throttle': 100});
 
+		this.computers();
+	}
+
+	AccountUserStore.prototype.computers = function ()
+	{
 		this.accountsEmails = ko.computed(function () {
 			return _.compact(_.map(this.accounts(), function (oItem) {
 				return oItem ? oItem.email : null;
@@ -44,7 +49,7 @@
 			return iResult;
 
 		}, this);
-	}
+	};
 
 	AccountUserStore.prototype.populate = function ()
 	{

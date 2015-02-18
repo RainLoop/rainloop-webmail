@@ -23,18 +23,18 @@
 		this.trashFolder = ko.observable('');
 		this.archiveFolder = ko.observable('');
 
-		this.computed();
-		this.subscribe();
+		this.computers();
+		this.subscribers();
 	}
 
-	FolderUserStore.prototype.computed = function ()
+	FolderUserStore.prototype.computers = function ()
 	{
 		this.draftFolderNotEnabled = ko.computed(function () {
 			return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
 		}, this);
 	};
 
-	FolderUserStore.prototype.subscribe = function ()
+	FolderUserStore.prototype.subscribers = function ()
 	{
 		var
 			fRemoveSystemFolderType = function (observable) {

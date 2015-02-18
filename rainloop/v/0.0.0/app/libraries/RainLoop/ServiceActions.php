@@ -1227,6 +1227,29 @@ class ServiceActions
 
 	/**
 	 * @param string $sLanguage
+	 *
+	 * @return string
+	 */
+	private function convertLanguageNameToMomentLanguageName($sLanguage)
+	{
+		switch ($sLanguage)
+		{
+			case 'pt-pt':
+				$sLanguage = 'pt';
+				break;
+			case 'ja-jp':
+				$sLanguage = 'ja';
+				break;
+			case 'ko-kr':
+				$sLanguage = 'ko';
+				break;
+		}
+
+		return $sLanguage;
+	}
+
+	/**
+	 * @param string $sLanguage
 	 * @param bool $bWrapByScriptTag = true
 	 *
 	 * @return string
@@ -1236,7 +1259,9 @@ class ServiceActions
 		$aResultLang = array();
 
 		$sMoment = 'window.moment && window.moment.lang && window.moment.lang(\'en\');';
-		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/i18n/moment/'.$sLanguage.'.js';
+		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/i18n/moment/'.
+			$this->convertLanguageNameToMomentLanguageName($sLanguage).'.js';
+
 		if (\file_exists($sMomentFileName))
 		{
 			$sMoment = \file_get_contents($sMomentFileName);

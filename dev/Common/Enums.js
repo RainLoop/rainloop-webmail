@@ -263,7 +263,8 @@
 	Enums.Layout = {
 		'NoPreview': 0,
 		'SidePreview': 1,
-		'BottomPreview': 2
+		'BottomPreview': 2,
+		'Mobile': 3
 	};
 
 	/**

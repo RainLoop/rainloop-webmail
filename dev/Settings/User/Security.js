@@ -11,6 +11,10 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
+		SettinsStore = require('Stores/User/Settings'),
+
+		Settings = require('Storage/Settings'),
+
 		Remote = require('Storage/User/Remote')
 	;
 
@@ -19,6 +23,22 @@
 	 */
 	function SecurityUserSettings()
 	{
+		this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
+
+		this.autoLogout = SettinsStore.autoLogout;
+		this.autoLogout.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.autoLogoutOptions = ko.computed(function () {
+			Translator.trigger();
+			return [
+				{'id': 0, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME')},
+				{'id': 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
+				{'id': 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
+				{'id': 30, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
+				{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})}
+			];
+		});
+
 		this.processing = ko.observable(false);
 		this.clearing = ko.observable(false);
 		this.secreting = ko.observable(false);
@@ -186,8 +206,27 @@
 
 	SecurityUserSettings.prototype.onBuild = function ()
 	{
-		this.processing(true);
-		Remote.getTwoFactor(this.onResult);
+		if (this.capaTwoFactor)
+		{
+			this.processing(true);
+			Remote.getTwoFactor(this.onResult);
+		}
+
+		var self = this;
+
+		_.delay(function () {
+
+			var
+				f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self)
+			;
+
+			self.autoLogout.subscribe(function (sValue) {
+				Remote.saveSettings(f0, {
+					'AutoLogout': Utils.pInt(sValue)
+				});
+			});
+
+		});
 	};
 
 	module.exports = SecurityUserSettings;

@@ -72,6 +72,10 @@
 						<i class="icon-braille drag-handle"></i>
 						&nbsp;&nbsp;
 						<span class="identity-name" data-bind="text: formattedName()"></span>
+						&nbsp;&nbsp;
+						<span class="identity-default" data-bind="visible: 0 === $index()">
+							(<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DEFAULT_IDENTITY_LABEL"></span>)
+						</span>
 					</td>
 					<td>
 						<span data-bind="visible: !canBeDeleted()"></span>

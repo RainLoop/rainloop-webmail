@@ -15,7 +15,6 @@
 		AccountStore = require('Stores/User/Account'),
 
 		Settings = require('Storage/Settings'),
-		Remote = require('Storage/User/Remote'),
 
 		AbstractView = require('Knoin/AbstractView')
 	;
@@ -80,10 +79,7 @@
 
 	AbstractSystemDropDownUserView.prototype.logoutClick = function ()
 	{
-		Remote.logout(function () {
-			require('App/User').loginAndLogoutReload(true,
-				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
-		});
+		require('App/User').logout();
 	};
 
 	AbstractSystemDropDownUserView.prototype.onBuild = function ()

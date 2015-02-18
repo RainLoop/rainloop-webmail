@@ -126,12 +126,12 @@
 			};
 		}
 
-		this.computedProperies();
+		this.computers();
 
 		this.initNotificationPlayer();
 	}
 
-	NotificationUserStore.prototype.computedProperies = function ()
+	NotificationUserStore.prototype.computers = function ()
 	{
 		this.isDesktopNotificationSupported = ko.computed(function () {
 			return Enums.DesktopNotification.NotSupported !== this.desktopNotificationPermissions();

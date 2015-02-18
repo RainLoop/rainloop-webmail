@@ -21,6 +21,11 @@
 		this.templatesNames = ko.observableArray([]).extend({'throttle': 1000});
 		this.templatesNames.skipFirst = true;
 
+		this.subscribers();
+	}
+
+	TemplateUserStore.prototype.subscribers = function ()
+	{
 		this.templates.subscribe(function (aList) {
 			this.templatesNames(_.compact(_.map(aList, function (oItem) {
 				return oItem ? oItem.name : null;
@@ -37,7 +42,7 @@
 //				Remote.templatesSortOrder(null, aList);
 //			}
 //		}, this);
-	}
+	};
 
 	module.exports = new TemplateUserStore();
 

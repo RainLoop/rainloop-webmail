@@ -1398,6 +1398,15 @@
 		});
 	};
 
+	AppUser.prototype.logout = function ()
+	{
+		var self = this;
+		Remote.logout(function () {
+			self.loginAndLogoutReload(true,
+				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
+		});
+	};
+
 	AppUser.prototype.bootstartLoginScreen = function ()
 	{
 		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
@@ -1567,6 +1576,10 @@
 					_.delay(function () {
 						Remote.appDelayStart(Utils.emptyFunction);
 					}, 35000);
+
+					Events.sub('rl.auto-logout', function () {
+						self.logout();
+					});
 
 					Plugins.runHook('rl-start-user-screens');
 					Events.pub('rl.bootstart-user-screens');

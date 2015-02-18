@@ -164,6 +164,7 @@ Values:
 				'view_editor_type'		=> array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
 				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 3 - bottom preview'),
 				'view_use_checkboxes'	=> array(true),
+				'autologout'			=> array(30),
 				'show_images'			=> array(false),
 				'contacts_autosave'		=> array(true),
 				'mail_use_threads'		=> array(false),
