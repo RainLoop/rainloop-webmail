@@ -31,6 +31,9 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 			}
 
 			$aSearchResult = \OCP\Contacts::search($sQuery, array('FN', 'EMAIL'));
+			//$this->oLogger->WriteDump($aSearchResult);
+
+			$aPreResult = array();
 			if (\is_array($aSearchResult) && 0 < \count($aSearchResult))
 			{
 				foreach ($aSearchResult as $aContact)
@@ -51,22 +54,35 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 							$mEmails = array($mEmails);
 						}
 
+						if (!isset($aPreResult[$sUid]))
+						{
+							$aPreResult[$sUid] = array();
+						}
+
 						foreach ($mEmails as $sEmail)
 						{
 							$sEmail = \trim($sEmail);
 							if (!empty($sEmail))
 							{
 								$iLimit--;
-								$aResult[$sUid] = array($sEmail, $sFullName);
+								$aPreResult[$sUid][] = array($sEmail, $sFullName);
 							}
 						}
 					}
 				}
 
-				$aResult = \array_values($aResult);
+				$aPreResult = \array_values($aPreResult);
+//				$this->oLogger->WriteDump($aPreResult);
+				foreach ($aPreResult as $aData)
+				{
+					foreach ($aData as $aSubData)
+					{
+						$aResult[] = $aSubData;
+					}
+				}
 			}
 
-			unset($aSearchResult);
+			unset($aSearchResult, $aPreResult);
 		}
 		catch (\Exception $oException)
 		{
