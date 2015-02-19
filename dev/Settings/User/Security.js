@@ -23,6 +23,7 @@
 	 */
 	function SecurityUserSettings()
 	{
+		this.capaAutoLogout = Settings.capa(Enums.Capa.AutoLogout);
 		this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
 
 		this.autoLogout = SettinsStore.autoLogout;
@@ -212,21 +213,24 @@
 			Remote.getTwoFactor(this.onResult);
 		}
 
-		var self = this;
+		if (this.capaAutoLogout)
+		{
+			var self = this;
 
-		_.delay(function () {
+			_.delay(function () {
 
-			var
-				f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self)
-			;
+				var
+					f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self)
+				;
 
-			self.autoLogout.subscribe(function (sValue) {
-				Remote.saveSettings(f0, {
-					'AutoLogout': Utils.pInt(sValue)
+				self.autoLogout.subscribe(function (sValue) {
+					Remote.saveSettings(f0, {
+						'AutoLogout': Utils.pInt(sValue)
+					});
 				});
-			});
 
-		});
+			});
+		}
 	};
 
 	module.exports = SecurityUserSettings;

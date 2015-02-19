@@ -46,6 +46,7 @@
 		'Filters': 'FILTERS',
 		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
 		'Templates': 'TEMPLATES',
+		'AutoLogout': 'AUTOLOGOUT',
 		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS'
 	};
 

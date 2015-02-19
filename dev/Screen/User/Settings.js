@@ -65,8 +65,11 @@
 				'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
-		kn.addSettingsViewModel(require('Settings/User/Security'),
-			'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+		if (Settings.capa(Enums.Capa.AutoLogout) || Settings.capa(Enums.Capa.TwoFactor))
+		{
+			kn.addSettingsViewModel(require('Settings/User/Security'),
+				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+		}
 
 		if ((Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
 			Settings.settingsGet('AllowFacebookSocial') ||

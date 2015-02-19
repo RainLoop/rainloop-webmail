@@ -106,7 +106,7 @@
 	 */
 	Plugins.prototype.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute)
 	{
-		this.aViewModelsHooks.push([SettingsViewModelClass, sTemplate, sLabelName, sRoute]);
+		this.aUserViewModelsHooks.push([SettingsViewModelClass, sTemplate, sLabelName, sRoute]);
 	};
 
 	/**
@@ -122,7 +122,7 @@
 
 	Plugins.prototype.runSettingsViewModelHooks = function (bAdmin)
 	{
-		_.each(bAdmin ? this.aAdminViewModelsHooks : this.aViewModelsHooks, function (aView) {
+		_.each(bAdmin ? this.aAdminViewModelsHooks : this.aUserViewModelsHooks, function (aView) {
 			require('Knoin/Knoin').addSettingsViewModel(aView[0], aView[1], aView[2], aView[3]);
 		});
 	};

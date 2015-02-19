@@ -1,5 +1,5 @@
 <div class="b-settings-security">
-	<div class="form-horizontal">
+	<div class="form-horizontal" data-bind="visible: capaAutoLogout">
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LEGEND_SECURITY"></span>
 		</div>
@@ -21,8 +21,8 @@
 				}"></div>
 			</div>
 		</div>
+		<br />
 	</div>
-	<br />
 	<div class="form-horizontal" data-bind="visible: capaTwoFactor">
 		<div class="legend">
 			<span class="i18n" data-i18n-text="SETTINGS_SECURITY/LEGEND_TWO_FACTOR_AUTH"></span>

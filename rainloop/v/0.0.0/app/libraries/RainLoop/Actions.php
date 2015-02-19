@@ -1589,6 +1589,11 @@ class Actions
 			$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 			$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 
+			if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
+			{
+				$aResult['AutoLogout'] = 0;
+			}
+
 			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
 			{
 				$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
@@ -1644,7 +1649,7 @@ class Actions
 		}
 
 		$sPluginsLink = '';
-		if (0 < $this->Plugins()->Count())
+		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin))
 		{
 			$sPluginsLink = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
 		}
@@ -7670,6 +7675,11 @@ class Actions
 		if ($oConfig->Get('security', 'openpgp', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::OPEN_PGP;
+		}
+
+		if (!\RainLoop\Utils::IsOwnCloud())
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::AUTOLOGOUT;
 		}
 
 		return $aResult;

@@ -66,26 +66,18 @@
 				</div>
 				<div class="controls">
 					<div class="pull-right social-buttons">
-						<span data-bind="visible: facebookLoginEnabled">
-							<a href="#" tabindex="-1" class="social-button" data-bind="command: facebookCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
-								<i class="icon-facebook-alt"></i>
-							</a>
-						</span>
-						<span data-bind="visible: googleLoginEnabled">
-							<a href="#" tabindex="-1" class="social-button" data-bind="command: googleCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_GOOGLE'">
-								<i class="icon-google"></i>
-							</a>
-						</span>
-						<span data-bind="visible: twitterLoginEnabled">
-							<a href="#" tabindex="-1" class="social-button" data-bind="command: twitterCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_TWITTER'">
-								<i class="icon-twitter"></i>
-							</a>
-						</span>
-						<span data-bind="visible: allowLanguagesOnLogin() && !socialLoginEnabled()">
-							<a href="#" tabindex="-1" class="language-button" data-bind="click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES'">
-								<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
-							</a>
-						</span>
+						<a href="#" tabindex="-1" class="social-button" data-bind="visible: facebookLoginEnabled, command: facebookCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
+							<i class="icon-facebook-alt"></i>
+						</a>
+						<a href="#" tabindex="-1" class="social-button" data-bind="visible: googleLoginEnabled, command: googleCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_GOOGLE'">
+							<i class="icon-google"></i>
+						</a>
+						<a href="#" tabindex="-1" class="social-button" data-bind="visible: twitterLoginEnabled, command: twitterCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_TWITTER'">
+							<i class="icon-twitter"></i>
+						</a>
+						<a href="#" tabindex="-1" class="language-button" data-bind="visible: allowLanguagesOnLogin() && !socialLoginEnabled(), click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES'">
+							<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
+						</a>
 					</div>
 					<label class="signMeLabel inline" data-bind="click: function () { signMe(!signMe()); }, visible: signMeVisibility">
 						<i data-bind="css: signMe() ? 'checkboxSignMe icon-checkbox-checked' : 'checkboxSignMe icon-checkbox-unchecked'"></i>

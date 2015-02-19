@@ -225,6 +225,23 @@ class Manager
 	/**
 	 * @param bool $bAdminScope = false
 	 *
+	 * @return bool
+	 */
+	public function HaveJs($bAdminScope = false)
+	{
+		$bResult = false;
+		
+		if ($this->bIsEnabled)
+		{
+			$bResult = $bAdminScope ? 0 < \count($this->aAdminJs) : 0 < \count($this->aJs);
+		}
+
+		return $bResult;
+	}
+
+	/**
+	 * @param bool $bAdminScope = false
+	 *
 	 * @return string
 	 */
 	public function CompileJs($bAdminScope = false)
