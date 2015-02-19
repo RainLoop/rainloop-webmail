@@ -8,6 +8,8 @@
 
 		kn = require('Knoin/Knoin'),
 
+		Plugins = require('Common/Plugins'),
+
 		AbstractSettings = require('Screen/AbstractSettings')
 	;
 
@@ -62,6 +64,8 @@
 
 		kn.addSettingsViewModel(require('Settings/Admin/About'),
 			'AdminSettingsAbout', 'About', 'about');
+
+		Plugins.runSettingsViewModelHooks(true);
 
 		if (fCallback)
 		{

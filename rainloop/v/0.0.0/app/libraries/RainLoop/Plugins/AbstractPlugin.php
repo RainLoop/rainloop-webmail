@@ -176,7 +176,7 @@ abstract class AbstractPlugin
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param string $sName
 	 *
@@ -353,5 +353,68 @@ abstract class AbstractPlugin
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param string $sName
+	 * @param string $sPlace
+	 * @param string $sHtml
+	 * @param bool $bPrepend = false
+	 *
+	 * @return self
+	 */
+	protected function ajaxResponse($sFunctionName, $aData)
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->AjaxResponseHelper(
+				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $aData);
+		}
+
+		return \json_encode($aData);
+	}
+
+	/**
+	 * @param string $sKey
+	 * @param mixed $mDefault = null
+	 *
+	 * @return mixed
+	 */
+	public function ajaxParam($sKey, $mDefault = null)
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->Actions()->GetActionParam($sKey, $mDefault);
+		}
+
+		return '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUserSettings()
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->GetUserPluginSettings($this->Name());
+		}
+
+		return array();
+	}
+
+	/**
+	 * @param array $aSettings
+	 *
+	 * @return bool
+	 */
+	public function saveUserSettings($aSettings)
+	{
+		if ($this->oPluginManager && \is_array($aSettings))
+		{
+			return $this->oPluginManager->SaveUserPluginSettings($this->Name(), $aSettings);
+		}
+
+		return false;
 	}
 }

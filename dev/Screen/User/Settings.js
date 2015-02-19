@@ -10,6 +10,8 @@
 		Globals = require('Common/Globals'),
 		Translator = require('Common/Translator'),
 
+		Plugins = require('Common/Plugins'),
+
 		AppStore = require('Stores/User/App'),
 		Settings = require('Storage/Settings'),
 
@@ -100,6 +102,8 @@
 			kn.addSettingsViewModel(require('Settings/User/OpenPgp'),
 				'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
 		}
+
+		Plugins.runSettingsViewModelHooks(false);
 
 		if (fCallback)
 		{

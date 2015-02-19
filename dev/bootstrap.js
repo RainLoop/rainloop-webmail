@@ -39,11 +39,15 @@
 		// export
 		window['rl'] = window['rl'] || {};
 		window['rl']['i18n'] = _.bind(Translator.i18n, Translator);
+
 		window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
 		window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
-		window['rl']['remoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
-		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 		window['rl']['createCommand'] = Utils.createCommand;
+
+		window['rl']['addSettingsViewModel'] = _.bind(Plugins.addSettingsViewModel, Plugins);
+		
+		window['rl']['pluginRemoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
+		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 
 		window['rl']['EmailModel'] = EmailModel;
 		window['rl']['Enums'] = Enums;
