@@ -5961,16 +5961,42 @@ class Actions
 					{
 						try
 						{
-							if (\is_resource($rMessageStream))
+							if (!$oMessage->GetBcc())
 							{
-								\rewind($rMessageStream);
-							}
+								if (\is_resource($rMessageStream))
+								{
+									\rewind($rMessageStream);
+								}
 
-							$this->MailClient()->MessageAppendStream(
-								$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
-									\MailSo\Imap\Enumerations\MessageFlag::SEEN
-								)
-							);
+								$this->Plugins()->RunHook('filter.sent-message-stream',
+									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
+
+								$this->MailClient()->MessageAppendStream(
+									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(
+										\MailSo\Imap\Enumerations\MessageFlag::SEEN
+									)
+								);
+							}
+							else
+							{
+								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
+
+								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
+									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
+
+								$this->Plugins()->RunHook('filter.sent-message-stream',
+									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
+
+								$this->MailClient()->MessageAppendStream(
+									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(
+										\MailSo\Imap\Enumerations\MessageFlag::SEEN
+									));
+
+								if (\is_resource($rAppendMessageStream))
+								{
+									@fclose($rAppendMessageStream);
+								}
+							}
 						}
 						catch (\Exception $oException)
 						{
