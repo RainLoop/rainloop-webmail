@@ -3322,10 +3322,22 @@ class Actions
 	{
 		$sDomain = \strtolower(\trim($sDomain));
 
-		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomain), 0, 2);
+		$sTempDomain = \preg_replace('/^(webmail|email|mail|www|ssl)\./', '', $sDomain);
+		if (false === \strpos($sTempDomain, '.'))
+		{
+			$sTempDomain = $sDomain;
+		}
+
+		$sDomainPrefix = $sTempDomain;
+		if (false === \strpos($sDomainPrefix, '.'))
+		{
+			$sDomainPrefix = $sTempDomain;
+		}
+
+		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomainPrefix), 0, 2);
 		$sDomainPrefix = \str_pad($sDomainPrefix, 2, '_');
 
-		return 'domains/'.$sDomainPrefix.'/'.\urlencode($sDomain);
+		return 'd/'.\substr($sDomainPrefix, 0, 1).'/'.$sDomainPrefix.'/'.\urlencode($sTempDomain);
 	}
 
 	/**
