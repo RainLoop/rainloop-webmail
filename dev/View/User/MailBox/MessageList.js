@@ -23,10 +23,10 @@
 		QuotaStore = require('Stores/User/Quota'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
+		MessageStore = require('Stores/User/Message'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
-		Data = require('Storage/User/Data'),
 		Remote = require('Storage/User/Remote'),
 
 		kn = require('Knoin/Knoin'),
@@ -49,24 +49,24 @@
 
 		this.popupVisibility = Globals.popupVisibility;
 
-		this.message = Data.message;
-		this.messageList = Data.messageList;
-		this.folderList = Data.folderList;
-		this.currentMessage = Data.currentMessage;
-		this.isMessageSelected = Data.isMessageSelected;
-		this.messageListSearch = Data.messageListSearch;
-		this.messageListError = Data.messageListError;
-		this.folderMenuForMove = Data.folderMenuForMove;
+		this.message = MessageStore.message;
+		this.messageList = MessageStore.messageList;
+		this.folderList = FolderStore.folderList;
+		this.currentMessage = MessageStore.currentMessage;
+		this.isMessageSelected = MessageStore.isMessageSelected;
+		this.messageListSearch = MessageStore.messageListSearch;
+		this.messageListError = MessageStore.messageListError;
+		this.folderMenuForMove = FolderStore.folderMenuForMove;
 
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
-		this.mainMessageListSearch = Data.mainMessageListSearch;
-		this.messageListEndFolder = Data.messageListEndFolder;
+		this.mainMessageListSearch = MessageStore.mainMessageListSearch;
+		this.messageListEndFolder = MessageStore.messageListEndFolder;
 
-		this.messageListChecked = Data.messageListChecked;
-		this.messageListCheckedOrSelected = Data.messageListCheckedOrSelected;
-		this.messageListCheckedOrSelectedUidsWithSubMails = Data.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageListCompleteLoadingThrottle = Data.messageListCompleteLoadingThrottle;
+		this.messageListChecked = MessageStore.messageListChecked;
+		this.messageListCheckedOrSelected = MessageStore.messageListCheckedOrSelected;
+		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
+		this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
 
 		Translator.initOnStartOrLangChange(function () {
 			this.emptySubjectValue = Translator.i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
@@ -91,20 +91,21 @@
 		});
 
 		this.messageListSearchDesc = ko.computed(function () {
-			var sValue = Data.messageListEndSearch();
+			var sValue = MessageStore.messageListEndSearch();
 			return '' === sValue ? '' : Translator.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
 		});
 
-		this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(Data.messageListPage, Data.messageListPageCount));
+		this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(
+			MessageStore.messageListPage, MessageStore.messageListPageCount));
 
 		this.checkAll = ko.computed({
 			'read': function () {
-				return 0 < Data.messageListChecked().length;
+				return 0 < MessageStore.messageListChecked().length;
 			},
 
 			'write': function (bValue) {
 				bValue = !!bValue;
-				_.each(Data.messageList(), function (oMessage) {
+				_.each(MessageStore.messageList(), function (oMessage) {
 					oMessage.checked(bValue);
 				});
 			}
@@ -123,8 +124,8 @@
 
 		this.isIncompleteChecked = ko.computed(function () {
 			var
-				iM = Data.messageList().length,
-				iC = Data.messageListChecked().length
+				iM = MessageStore.messageList().length,
+				iC = MessageStore.messageListChecked().length
 			;
 			return 0 < iM && 0 < iC && iM > iC;
 		}, this);
@@ -173,48 +174,48 @@
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
 		this.clearCommand = Utils.createCommand(this, function () {
-			kn.showScreenPopup(require('View/Popup/FolderClear'), [Data.currentFolder()]);
+			kn.showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
 		});
 
 		this.multyForwardCommand = Utils.createCommand(this, function () {
 			kn.showScreenPopup(require('View/Popup/Compose'), [
-				Enums.ComposeType.ForwardAsAttachment, Data.messageListCheckedOrSelected()]);
+				Enums.ComposeType.ForwardAsAttachment, MessageStore.messageListCheckedOrSelected()]);
 		}, this.canBeMoved);
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), false);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
 		}, this.canBeMoved);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.archiveCommand = Utils.createCommand(this, function () {
 			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.spamCommand = Utils.createCommand(this, function () {
 			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
 			require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), true);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
 		this.reloadCommand = Utils.createCommand(this, function () {
-			if (!Data.messageListCompleteLoadingThrottle())
+			if (!MessageStore.messageListCompleteLoadingThrottle())
 			{
 				require('App/User').reloadMessageList(false, true);
 			}
@@ -229,18 +230,19 @@
 		this.selector.on('onItemSelect', _.bind(function (oMessage) {
 			if (oMessage)
 			{
-				Data.message(Data.staticMessageList.populateByMessageListItem(oMessage));
-				this.populateMessageBody(Data.message());
+				MessageStore.message(MessageStore.staticMessage.populateByMessageListItem(oMessage));
+
+				this.populateMessageBody(MessageStore.message());
 
 				if (Enums.Layout.NoPreview === SettingsStore.layout())
 				{
 					kn.setHash(Links.messagePreview(), true);
-					Data.message.focused(true);
+					MessageStore.message.focused(true);
 				}
 			}
 			else
 			{
-				Data.message(null);
+				MessageStore.message(null);
 			}
 		}, this));
 
@@ -248,22 +250,13 @@
 			return oMessage ? oMessage.generateUid() : '';
 		});
 
-		Data.messageListEndHash.subscribe(function () {
+		MessageStore.messageListEndHash.subscribe(function () {
 			this.selector.scrollToTop();
-		}, this);
-
-		Data.messageListEndFolder.subscribe(function (sFolder) {
-			var oMessage = Data.message();
-			if (oMessage && sFolder && sFolder !== oMessage.folderFullNameRaw)
-			{
-				Data.message(null);
-			}
 		}, this);
 
 		SettingsStore.layout.subscribe(function (mValue) {
 			this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
 		}, this);
-
 
 		SettingsStore.layout.valueHasMutated();
 
@@ -318,8 +311,8 @@
 		if (this.canBeMoved())
 		{
 			require('App/User').moveMessagesToFolder(
-				Data.currentFolderFullNameRaw(),
-				Data.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 		}
 
 		return false;
@@ -334,15 +327,15 @@
 
 		var
 			oEl = Utils.draggablePlace(),
-			aUids = Data.messageListCheckedOrSelectedUidsWithSubMails()
+			aUids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails()
 		;
 
-		oEl.data('rl-folder', Data.currentFolderFullNameRaw());
+		oEl.data('rl-folder', FolderStore.currentFolderFullNameRaw());
 		oEl.data('rl-uids', aUids);
 		oEl.find('.text').text('' + aUids.length);
 
 		_.defer(function () {
-			var aUids = Data.messageListCheckedOrSelectedUidsWithSubMails();
+			var aUids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
 
 			oEl.data('rl-uids', aUids);
 			oEl.find('.text').text('' + aUids.length);
@@ -358,22 +351,22 @@
 	 */
 	MessageListMailBoxUserView.prototype.onMessageResponse = function (sResult, oData, bCached)
 	{
-		Data.hideMessageBodies();
-		Data.messageLoading(false);
+		MessageStore.hideMessageBodies();
+		MessageStore.messageLoading(false);
 
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			Data.setMessage(oData, bCached);
+			MessageStore.setMessage(oData, bCached);
 		}
 		else if (Enums.StorageResultType.Unload === sResult)
 		{
-			Data.message(null);
-			Data.messageError('');
+			MessageStore.message(null);
+			MessageStore.messageError('');
 		}
 		else if (Enums.StorageResultType.Abort !== sResult)
 		{
-			Data.message(null);
-			Data.messageError((oData && oData.ErrorCode ?
+			MessageStore.message(null);
+			MessageStore.messageError((oData && oData.ErrorCode ?
 				Translator.getNotification(oData.ErrorCode) :
 				Translator.getNotification(Enums.Notification.UnknownError)));
 		}
@@ -385,7 +378,7 @@
 		{
 			if (Remote.message(this.onMessageResponse, oMessage.folderFullNameRaw, oMessage.uid))
 			{
-				Data.messageLoading(true);
+				MessageStore.messageLoading(true);
 			}
 			else
 			{
@@ -409,7 +402,7 @@
 
 		if (Utils.isUnd(aMessages))
 		{
-			aMessages = Data.messageListChecked();
+			aMessages = MessageStore.messageListChecked();
 		}
 
 		aUids = _.map(aMessages, function (oMessage) {
@@ -484,7 +477,7 @@
 	{
 		var
 			oFolder = null,
-			aMessages = Data.messageList()
+			aMessages = MessageStore.messageList()
 		;
 
 		if ('' !== sFolderFullNameRaw)
@@ -530,27 +523,31 @@
 
 	MessageListMailBoxUserView.prototype.listSetSeen = function ()
 	{
-		this.setAction(Data.currentFolderFullNameRaw(), Enums.MessageSetAction.SetSeen, Data.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.SetSeen,
+			MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listSetAllSeen = function ()
 	{
-		this.setActionForAll(Data.currentFolderFullNameRaw(), Enums.MessageSetAction.SetSeen);
+		this.setActionForAll(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.SetSeen);
 	};
 
 	MessageListMailBoxUserView.prototype.listUnsetSeen = function ()
 	{
-		this.setAction(Data.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetSeen, Data.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetSeen,
+			MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listSetFlags = function ()
 	{
-		this.setAction(Data.currentFolderFullNameRaw(), Enums.MessageSetAction.SetFlag, Data.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.SetFlag,
+			MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listUnsetFlags = function ()
 	{
-		this.setAction(Data.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetFlag, Data.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetFlag,
+			MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.flagMessages = function (oCurrentMessage)
@@ -649,9 +646,9 @@
 
 			if (oMessage && !oMessage.lastInCollapsedThreadLoading())
 			{
-				Data.messageListThreadFolder(oMessage.folderFullNameRaw);
+				MessageStore.messageListThreadFolder(oMessage.folderFullNameRaw);
 
-				aList = Data.messageListThreadUids();
+				aList = MessageStore.messageListThreadUids();
 
 				if (oMessage.lastInCollapsedThread())
 				{
@@ -662,7 +659,7 @@
 					aList = _.without(aList, 0 < oMessage.parentUid() ? oMessage.parentUid() : oMessage.uid);
 				}
 
-				Data.messageListThreadUids(_.uniq(aList));
+				MessageStore.messageListThreadUids(_.uniq(aList));
 
 				oMessage.lastInCollapsedThreadLoading(true);
 				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
@@ -687,9 +684,9 @@
 				if (oPage)
 				{
 					kn.setHash(Links.mailBox(
-						Data.currentFolderFullNameHash(),
+						FolderStore.currentFolderFullNameHash(),
 						oPage.value,
-						Data.messageListSearch()
+						MessageStore.messageListSearch()
 					));
 				}
 			})
@@ -733,7 +730,7 @@
 		key('delete, shift+delete, shift+3', Enums.KeyState.MessageList, function (event, handler) {
 			if (event)
 			{
-				if (0 < Data.messageListCheckedOrSelected().length)
+				if (0 < MessageStore.messageListCheckedOrSelected().length)
 				{
 					if (handler && 'shift+delete' === handler.shortcut)
 					{
@@ -815,7 +812,7 @@
 		key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
 			if (event && handler && ('shift+tab' === handler.shortcut || 'left' === handler.shortcut))
 			{
-				self.folderList.focused(true);
+				FolderStore.folderList.focused(true);
 			}
 			else if (self.message())
 			{
@@ -904,7 +901,7 @@
 				'disableFolderDragAndDrop': true,
 				'hidden': {
 					'Folder': function () {
-						return Data.currentFolderFullNameRaw();
+						return FolderStore.currentFolderFullNameRaw();
 					}
 				},
 				'dragAndDropElement': this.dragOverArea(),
@@ -933,13 +930,15 @@
 				this.dragOver(false);
 			}, this))
 			.on('onSelect', _.bind(function (sUid, oData) {
+
 				if (sUid && oData && 'message/rfc822' === oData['Type'])
 				{
-					Data.messageListLoading(true);
+					MessageStore.messageListLoading(true);
 					return true;
 				}
 
 				return false;
+
 			}, this))
 			.on('onComplete', _.bind(function () {
 				require('App/User').reloadMessageList(true, true);

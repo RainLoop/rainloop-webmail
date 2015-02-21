@@ -21,6 +21,8 @@
 		this.projectHash = ko.observable('');
 		this.threadsAllowed = ko.observable(false);
 
+		this.composeInEdit = ko.observable(false);
+
 		this.contactsAutosave = ko.observable(false);
 		this.useLocalProxyForExternalImages = ko.observable(false);
 

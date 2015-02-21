@@ -5752,12 +5752,14 @@ class Actions
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \MailSo\Mime\Message $oMessage
 	 * @param resource $rMessageStream
+	 * @param bool $bDsn = true
 	 * @param bool $bAddHiddenRcpt = true
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
-	private function smtpSendMessage($oAccount, $oMessage, &$rMessageStream, &$iMessageStreamSize, $bAddHiddenRcpt = true)
+	private function smtpSendMessage($oAccount, $oMessage,
+		&$rMessageStream, &$iMessageStreamSize, $bDsn = false, $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if ($oRcpt && 0 < $oRcpt->Count())
@@ -5773,9 +5775,9 @@ class Actions
 				$sFrom = $oFrom instanceof \MailSo\Mime\Email ? $oFrom->GetEmail() : '';
 				$sFrom = empty($sFrom) ? $oAccount->Email() : $sFrom;
 
-				$aHiddenRcpt = array();
 				$this->Plugins()->RunHook('filter.smtp-from', array($oAccount, $oMessage, &$sFrom));
 
+				$aHiddenRcpt = array();
 				if ($bAddHiddenRcpt)
 				{
 					$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
@@ -5806,9 +5808,9 @@ class Actions
 								list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
 								unset($sRawBody);
 
-								$this->Logger()->WriteDump(array(
-									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
-								));
+//								$this->Logger()->WriteDump(array(
+//									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+//								));
 
 								if (!\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders/*, '-f'.$oFrom->GetEmail()*/))
 								{
@@ -5824,15 +5826,17 @@ class Actions
 				}
 				else if ($oSmtpClient->IsConnected())
 				{
+					$bDsn = false;
+
 					if (!empty($sFrom))
 					{
-						$oSmtpClient->MailFrom($sFrom);
+						$oSmtpClient->MailFrom($sFrom, '', $bDsn);
 					}
 
 					$aRcpt =& $oRcpt->GetAsArray();
 					foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 					{
-						$oSmtpClient->Rcpt($oEmail->GetEmail());
+						$oSmtpClient->Rcpt($oEmail->GetEmail(), $bDsn);
 					}
 
 					if ($bAddHiddenRcpt && \is_array($aHiddenRcpt) && 0 < \count($aHiddenRcpt))
@@ -5902,6 +5906,7 @@ class Actions
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
 		$sSentFolder = $this->GetActionParam('SentFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
+		$bDsn = '1' === $this->GetActionParam('Dsn', '0');
 
 		$oMessage = $this->buildMessage($oAccount, false);
 
@@ -5922,7 +5927,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
 
 					$this->deleteMessageAttachmnets($oAccount);
 
@@ -6096,7 +6101,7 @@ class Actions
 
 				if (false !== $iMessageStreamSize)
 				{
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, false, false);
 
 					if (\is_resource($rMessageStream))
 					{

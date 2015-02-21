@@ -11,7 +11,8 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
+		MessageStore = require('Stores/User/Message'),
+
 		Cache = require('Storage/User/Cache'),
 		Remote = require('Storage/User/Remote'),
 
@@ -56,8 +57,8 @@
 
 			if (oFolderToClear)
 			{
-				Data.message(null);
-				Data.messageList([]);
+				MessageStore.message(null);
+				MessageStore.messageList([]);
 
 				this.clearingProcess(true);
 

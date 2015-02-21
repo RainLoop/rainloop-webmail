@@ -12,10 +12,10 @@
 
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
+		MessageStore = require('Stores/User/Message'),
 
 		Settings = require('Storage/Settings'),
 		Cache = require('Storage/User/Cache'),
-		Data = require('Storage/User/Data'),
 
 		AbstractRemoteStorage = require('Storage/AbstractRemote')
 	;
@@ -348,7 +348,7 @@
 					sFolderHash,
 					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-					AppStore.threadsAllowed() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
+					AppStore.threadsAllowed() && sFolderFullNameRaw === MessageStore.messageListThreadFolder() ? MessageStore.messageListThreadUids().join(',') : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -360,7 +360,7 @@
 				'Search': sSearch,
 				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-				'ExpandedThreadUid': AppStore.threadsAllowed() && sFolderFullNameRaw === Data.messageListThreadFolder() ? Data.messageListThreadUids().join(',') : ''
+				'ExpandedThreadUid': AppStore.threadsAllowed() && sFolderFullNameRaw === MessageStore.messageListThreadFolder() ? MessageStore.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
 	};

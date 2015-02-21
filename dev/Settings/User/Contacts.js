@@ -7,9 +7,9 @@
 		ko = require('ko'),
 
 		AppStore = require('Stores/User/App'),
+		ContactStore = require('Stores/User/Contact'),
 
-		Remote = require('Storage/User/Remote'),
-		Data = require('Storage/User/Data')
+		Remote = require('Storage/User/Remote')
 	;
 
 	/**
@@ -19,11 +19,11 @@
 	{
 		this.contactsAutosave = AppStore.contactsAutosave;
 
-		this.allowContactsSync = Data.allowContactsSync;
-		this.enableContactsSync = Data.enableContactsSync;
-		this.contactsSyncUrl = Data.contactsSyncUrl;
-		this.contactsSyncUser = Data.contactsSyncUser;
-		this.contactsSyncPass = Data.contactsSyncPass;
+		this.allowContactsSync = ContactStore.allowContactsSync;
+		this.enableContactsSync = ContactStore.enableContactsSync;
+		this.contactsSyncUrl = ContactStore.contactsSyncUrl;
+		this.contactsSyncUser = ContactStore.contactsSyncUser;
+		this.contactsSyncPass = ContactStore.contactsSyncPass;
 
 		this.saveTrigger = ko.computed(function () {
 			return [
