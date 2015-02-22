@@ -21,18 +21,19 @@
 		HtmlEditor = require('Common/HtmlEditor'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		IdentityStore = require('Stores/User/Identity'),
 		AccountStore = require('Stores/User/Account'),
 		FolderStore = require('Stores/User/Folder'),
 		PgpStore = require('Stores/User/Pgp'),
+		MessageStore = require('Stores/User/Message'),
 		SocialStore = require('Stores/Social'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		ComposeAttachmentModel = require('Model/ComposeAttachment'),
 
@@ -87,7 +88,7 @@
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 
 		this.bSkipNextHide = false;
-		this.composeInEdit = Data.composeInEdit;
+		this.composeInEdit = AppStore.composeInEdit;
 		this.editorDefaultType = SettingsStore.editorDefaultType;
 
 		this.capaOpenPGP = PgpStore.capaOpenPGP;
@@ -121,6 +122,7 @@
 		this.subject = ko.observable('');
 		this.isHtml = ko.observable(false);
 
+		this.requestDsn = ko.observable(false);
 		this.requestReadReceipt = ko.observable(false);
 		this.markAsImportant = ko.observable(false);
 
@@ -366,6 +368,7 @@
 						this.aDraftInfo,
 						this.sInReplyTo,
 						this.sReferences,
+						this.requestDsn(),
 						this.requestReadReceipt(),
 						this.markAsImportant()
 					);
@@ -432,8 +435,6 @@
 				this.skipCommand();
 
 				var self = this;
-
-				window.console.log(this.sLastFocusedField);
 
 				_.delay(function () {
 					kn.showScreenPopup(require('View/Popup/Contacts'),
@@ -578,7 +579,7 @@
 		if ('' !== sDraftFolder)
 		{
 			Cache.setFolderHash(sDraftFolder, '');
-			if (Data.currentFolderFullNameRaw() === sDraftFolder)
+			if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)
 			{
 				require('App/User').reloadMessageList(true);
 			}
@@ -701,10 +702,10 @@
 
 				if (this.bFromDraft)
 				{
-					oMessage = Data.message();
+					oMessage = MessageStore.message();
 					if (oMessage && this.draftFolder() === oMessage.folderFullNameRaw && this.draftUid() === oMessage.uid)
 					{
-						Data.message(null);
+						MessageStore.message(null);
 					}
 				}
 
@@ -741,7 +742,7 @@
 
 		if (!this.bSkipNextHide)
 		{
-			this.composeInEdit(false);
+			AppStore.composeInEdit(false);
 			this.reset();
 		}
 
@@ -883,7 +884,7 @@
 
 		this.autosaveStart();
 
-		if (this.composeInEdit())
+		if (AppStore.composeInEdit())
 		{
 			sType = sType || Enums.ComposeType.Empty;
 
@@ -969,7 +970,7 @@
 	ComposePopupView.prototype.initOnShow = function (sType, oMessageOrArray,
 		aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
 	{
-		this.composeInEdit(true);
+		AppStore.composeInEdit(true);
 
 		var
 			self = this,
@@ -2012,6 +2013,7 @@
 		this.replyTo('');
 		this.subject('');
 
+		this.requestDsn(false);
 		this.requestReadReceipt(false);
 		this.markAsImportant(false);
 

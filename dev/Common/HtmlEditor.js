@@ -267,6 +267,19 @@
 						window.CKEDITOR.env.isCompatible = true;
 					}
 
+//					oConfig.allowedContent = {
+//						$1: {
+//							elements: window.CKEDITOR.dtd,
+//							attributes: true,
+//							styles: true,
+//							classes: true
+//						}
+//					};
+//
+//					oConfig.disallowedContent = 'script; style; iframe; frame; *[on*]';
+
+					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
+
 					self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
 					self.editor.on('key', function(oEvent) {

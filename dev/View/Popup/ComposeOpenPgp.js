@@ -12,7 +12,6 @@
 		Enums = require('Common/Enums'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
 		PgpStore = require('Stores/User/Pgp'),
 
 		EmailModel = require('Model/Email'),
@@ -66,7 +65,7 @@
 
 			if (bResult && this.sign())
 			{
-				oPrivateKey = Data.findPrivateKeyByEmail(this.from(), this.password());
+				oPrivateKey = PgpStore.findPrivateKeyByEmail(this.from(), this.password());
 				if (!oPrivateKey)
 				{
 					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
@@ -87,7 +86,7 @@
 			{
 				aPublicKeys = [];
 				_.each(this.to(), function (sEmail) {
-					var aKeys = Data.findPublicKeysByEmail(sEmail);
+					var aKeys = PgpStore.findPublicKeysByEmail(sEmail);
 					if (0 === aKeys.length && bResult)
 					{
 						self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {

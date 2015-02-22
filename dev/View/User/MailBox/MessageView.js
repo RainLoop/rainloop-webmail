@@ -19,14 +19,15 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
 		FolderStore = require('Stores/User/Folder'),
+		MessageStore = require('Stores/User/Message'),
 
 		Local = require('Storage/Client'),
-		Cache = require('Storage/User/Cache'),
-		Data = require('Storage/User/Data'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -56,23 +57,23 @@
 
 		this.pswp = null;
 
-		this.message = Data.message;
-		this.currentMessage = Data.currentMessage;
-		this.messageListChecked = Data.messageListChecked;
-		this.hasCheckedMessages = Data.hasCheckedMessages;
-		this.messageListCheckedOrSelectedUidsWithSubMails = Data.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageLoading = Data.messageLoading;
-		this.messageLoadingThrottle = Data.messageLoadingThrottle;
-		this.messagesBodiesDom = Data.messagesBodiesDom;
+		this.message = MessageStore.message;
+		this.currentMessage = MessageStore.currentMessage;
+		this.messageListChecked = MessageStore.messageListChecked;
+		this.hasCheckedMessages = MessageStore.hasCheckedMessages;
+		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
+		this.messageLoading = MessageStore.messageLoading;
+		this.messageLoadingThrottle = MessageStore.messageLoadingThrottle;
+		this.messagesBodiesDom = MessageStore.messagesBodiesDom;
 		this.useThreads = SettingsStore.useThreads;
 		this.replySameFolder = SettingsStore.replySameFolder;
 		this.layout = SettingsStore.layout;
 		this.usePreviewPane = SettingsStore.usePreviewPane;
-		this.isMessageSelected = Data.isMessageSelected;
-		this.messageActiveDom = Data.messageActiveDom;
-		this.messageError = Data.messageError;
+		this.isMessageSelected = MessageStore.isMessageSelected;
+		this.messageActiveDom = MessageStore.messageActiveDom;
+		this.messageError = MessageStore.messageError;
 
-		this.fullScreenMode = Data.messageFullScreenMode;
+		this.fullScreenMode = MessageStore.messageFullScreenMode;
 
 		this.lastReplyAction_ = ko.observable('');
 		this.lastReplyAction = ko.computed({
@@ -113,7 +114,7 @@
 
 		// commands
 		this.closeMessage = Utils.createCommand(this, function () {
-			Data.message(null);
+			MessageStore.message(null);
 		});
 
 		this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
@@ -141,7 +142,7 @@
 			if (this.message())
 			{
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-					Data.currentFolderFullNameRaw(),
+					FolderStore.currentFolderFullNameRaw(),
 					[this.message().uid], false);
 			}
 		}, this.messageVisibility);
@@ -395,7 +396,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.replyOrforward = function (sType)
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'), [sType, Data.message()]);
+		kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
 	};
 
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
@@ -619,7 +620,7 @@
 
 		// reply
 		key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (Data.message())
+			if (MessageStore.message())
 			{
 				self.replyCommand();
 				return false;
@@ -628,7 +629,7 @@
 
 		// replaAll
 		key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (Data.message())
+			if (MessageStore.message())
 			{
 				self.replyAllCommand();
 				return false;
@@ -637,7 +638,7 @@
 
 		// forward
 		key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (Data.message())
+			if (MessageStore.message())
 			{
 				self.forwardCommand();
 				return false;
@@ -646,7 +647,7 @@
 
 		// message information
 	//	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-	//		if (oData.message())
+	//		if (MessageStore.message())
 	//		{
 	//			self.showFullInfo(!self.showFullInfo());
 	//			return false;
@@ -655,9 +656,9 @@
 
 		// toggle message blockquotes
 		key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (Data.message() && Data.message().body)
+			if (MessageStore.message() && MessageStore.message().body)
 			{
-				Data.message().body.find('.rlBlockquoteSwitcher').click();
+				MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
 				return false;
 			}
 		});
@@ -731,7 +732,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isDraftFolder = function ()
 	{
-		return Data.message() && FolderStore.draftFolder() === Data.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.draftFolder() === MessageStore.message().folderFullNameRaw;
 	};
 
 	/**
@@ -739,7 +740,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSentFolder = function ()
 	{
-		return Data.message() && FolderStore.sentFolder() === Data.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.sentFolder() === MessageStore.message().folderFullNameRaw;
 	};
 
 	/**
@@ -747,7 +748,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSpamFolder = function ()
 	{
-		return Data.message() && FolderStore.spamFolder() === Data.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.spamFolder() === MessageStore.message().folderFullNameRaw;
 	};
 
 	/**
@@ -755,7 +756,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSpamDisabled = function ()
 	{
-		return Data.message() && FolderStore.spamFolder() === Consts.Values.UnuseOptionValue;
+		return MessageStore.message() && FolderStore.spamFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -763,7 +764,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isArchiveFolder = function ()
 	{
-		return Data.message() && FolderStore.archiveFolder() === Data.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.archiveFolder() === MessageStore.message().folderFullNameRaw;
 	};
 
 	/**
@@ -771,7 +772,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isArchiveDisabled = function ()
 	{
-		return Data.message() && FolderStore.archiveFolder() === Consts.Values.UnuseOptionValue;
+		return MessageStore.message() && FolderStore.archiveFolder() === Consts.Values.UnuseOptionValue;
 	};
 
 	/**
@@ -789,9 +790,9 @@
 
 	MessageViewMailBoxUserView.prototype.editMessage = function ()
 	{
-		if (Data.message())
+		if (MessageStore.message())
 		{
-			kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Draft, Data.message()]);
+			kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Draft, MessageStore.message()]);
 		}
 	};
 

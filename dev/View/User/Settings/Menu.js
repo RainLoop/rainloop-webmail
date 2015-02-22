@@ -11,7 +11,7 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
-		Cache = require('Storage/User/Cache'),
+		Cache = require('Common/Cache'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

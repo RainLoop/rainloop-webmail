@@ -56,7 +56,7 @@
 		{
 			var
 				self = this,
-				Remote = require('Storage/Admin/Remote')
+				Remote = require('Remote/Admin/Ajax')
 			;
 
 			_.delay(function () {

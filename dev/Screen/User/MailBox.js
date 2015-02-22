@@ -12,11 +12,12 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		AccountStore = require('Stores/User/Account'),
 		SettingsStore = require('Stores/User/Settings'),
-
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
+		FolderStore = require('Stores/User/Folder'),
+		MessageStore = require('Stores/User/Message'),
 
 		AbstractScreen = require('Knoin/AbstractScreen')
 	;
@@ -48,7 +49,7 @@
 	{
 		var
 			sEmail = AccountStore.email(),
-			nFoldersInboxUnreadCount = Data.foldersInboxUnreadCount()
+			nFoldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount()
 		;
 
 		require('App/User').setTitle(('' === sEmail ? '' :
@@ -72,7 +73,7 @@
 	{
 		if (Utils.isUnd(bPreview) ? false : !!bPreview)
 		{
-			if (Enums.Layout.NoPreview === SettingsStore.layout() && !Data.message())
+			if (Enums.Layout.NoPreview === SettingsStore.layout() && !MessageStore.message())
 			{
 				require('App/User').historyBack();
 			}
@@ -86,15 +87,13 @@
 
 			if (oFolder)
 			{
-				Data
-					.currentFolder(oFolder)
-					.messageListPage(iPage)
-					.messageListSearch(sSearch)
-				;
+				FolderStore.currentFolder(oFolder);
+				MessageStore.messageListPage(iPage);
+				MessageStore.messageListSearch(sSearch);
 
-				if (Enums.Layout.NoPreview === SettingsStore.layout() && Data.message())
+				if (Enums.Layout.NoPreview === SettingsStore.layout() && MessageStore.message())
 				{
-					Data.message(null);
+					MessageStore.message(null);
 				}
 
 				require('App/User').reloadMessageList();
@@ -104,9 +103,10 @@
 
 	MailBoxUserScreen.prototype.onStart = function ()
 	{
-		Data.folderList.subscribe(Utils.windowResizeCallback);
-		Data.messageList.subscribe(Utils.windowResizeCallback);
-		Data.message.subscribe(Utils.windowResizeCallback);
+		FolderStore.folderList.subscribe(Utils.windowResizeCallback);
+
+		MessageStore.messageList.subscribe(Utils.windowResizeCallback);
+		MessageStore.message.subscribe(Utils.windowResizeCallback);
 
 		_.delay(function () {
 			SettingsStore.layout.valueHasMutated();
@@ -114,7 +114,7 @@
 
 		Events.sub('mailbox.inbox-unread-count', function (iCount) {
 
-			Data.foldersInboxUnreadCount(iCount);
+			FolderStore.foldersInboxUnreadCount(iCount);
 
 			var sEmail = AccountStore.email();
 
@@ -126,7 +126,7 @@
 			});
 		});
 
-		Data.foldersInboxUnreadCount.subscribe(function () {
+		FolderStore.foldersInboxUnreadCount.subscribe(function () {
 			this.setNewTitle();
 		}, this);
 

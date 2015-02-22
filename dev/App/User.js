@@ -21,6 +21,8 @@
 
 		kn = require('Knoin/Knoin'),
 
+		Cache = require('Common/Cache'),
+
 		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
@@ -29,16 +31,16 @@
 		TemplateStore = require('Stores/User/Template'),
 		FolderStore = require('Stores/User/Folder'),
 		PgpStore = require('Stores/User/Pgp'),
+		MessageStore = require('Stores/User/Message'),
+		ContactStore = require('Stores/User/Contact'),
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		EmailModel = require('Model/Email'),
 		FolderModel = require('Model/Folder'),
-		MessageModel = require('Model/Message'),
 		AccountModel = require('Model/Account'),
 		IdentityModel = require('Model/Identity'),
 		TemplateModel = require('Model/Template'),
@@ -146,11 +148,11 @@
 
 	AppUser.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
 	{
-		_.each(Data.messageList(), function (oMessage) {
+		_.each(MessageStore.messageList(), function (oMessage) {
 			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
-		Cache.initMessageFlagsFromCache(Data.message());
+		Cache.initMessageFlagsFromCache(MessageStore.message());
 	};
 
 	/**
@@ -160,45 +162,45 @@
 	AppUser.prototype.reloadMessageList = function (bDropPagePosition, bDropCurrenFolderCache)
 	{
 		var
-			self = this,
-			iOffset = (Data.messageListPage() - 1) * SettingsStore.messagesPerPage()
+			iOffset = (MessageStore.messageListPage() - 1) * SettingsStore.messagesPerPage()
 		;
 
 		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
 		{
-			Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
+			Cache.setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
 		}
 
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
-			Data.messageListPage(1);
+			MessageStore.messageListPage(1);
 			iOffset = 0;
 		}
 
-		Data.messageListLoading(true);
+		MessageStore.messageListLoading(true);
 		Remote.messageList(function (sResult, oData, bCached) {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				Data.messageListError('');
-				Data.messageListLoading(false);
-				self.setMessageList(oData, bCached);
+				MessageStore.messageListError('');
+				MessageStore.messageListLoading(false);
+
+				MessageStore.setMessageList(oData, bCached);
 			}
 			else if (Enums.StorageResultType.Unload === sResult)
 			{
-				Data.messageListError('');
-				Data.messageListLoading(false);
+				MessageStore.messageListError('');
+				MessageStore.messageListLoading(false);
 			}
 			else if (Enums.StorageResultType.Abort !== sResult)
 			{
-				Data.messageList([]);
-				Data.messageListLoading(false);
-				Data.messageListError(oData && oData.ErrorCode ?
+				MessageStore.messageList([]);
+				MessageStore.messageListLoading(false);
+				MessageStore.messageListError(oData && oData.ErrorCode ?
 					Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
 				);
 			}
 
-		}, Data.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), Data.messageListSearch());
+		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), MessageStore.messageListSearch());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
@@ -217,8 +219,8 @@
 	 */
 	AppUser.prototype.contactsSync = function (fResultFunc)
 	{
-		var oContacts = Data.contacts;
-		if (oContacts.importing() || oContacts.syncing() || !Data.enableContactsSync() || !Data.allowContactsSync())
+		var oContacts = ContactStore.contacts;
+		if (oContacts.importing() || oContacts.syncing() || !ContactStore.enableContactsSync() || !ContactStore.allowContactsSync())
 		{
 			return false;
 		}
@@ -296,7 +298,7 @@
 
 	AppUser.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
 	{
-		if (Enums.StorageResultType.Success === sResult && Data.currentFolder())
+		if (Enums.StorageResultType.Success === sResult && FolderStore.currentFolder())
 		{
 			if (oData && Utils.isArray(oData.Result) && 2 === oData.Result.length)
 			{
@@ -304,7 +306,7 @@
 			}
 			else
 			{
-				Cache.setFolderHash(Data.currentFolderFullNameRaw(), '');
+				Cache.setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
 
 				if (oData && -1 < Utils.inArray(oData.ErrorCode,
 					[Enums.Notification.CantMoveMessage, Enums.Notification.CantCopyMessage]))
@@ -313,7 +315,7 @@
 				}
 			}
 
-			this.reloadMessageListHelper(0 === Data.messageList().length);
+			this.reloadMessageListHelper(0 === MessageStore.messageList().length);
 			this.quotaDebounce();
 		}
 	};
@@ -325,7 +327,7 @@
 	AppUser.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
 	{
 		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-		Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+		MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 	};
 
 	/**
@@ -382,14 +384,14 @@
 			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
 
 				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
-				Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
+				MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 
 			}]);
 		}
 		else if (oMoveFolder)
 		{
 			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
-			Data.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
+			MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 		}
 	};
 
@@ -419,7 +421,7 @@
 					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				}
 
-				Data.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
+				MessageStore.removeMessagesFromList(oFromFolder.fullNameRaw, aUidForMove, oToFolder.fullNameRaw, bCopy);
 				return true;
 			}
 		}
@@ -432,12 +434,12 @@
 	 */
 	AppUser.prototype.folders = function (fCallback)
 	{
-		Data.foldersLoading(true);
+		FolderStore.foldersLoading(true);
 
 		Remote.folders(_.bind(function (sResult, oData) {
 
 			var bResult = false;
-			Data.foldersLoading(false);
+			FolderStore.foldersLoading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -707,11 +709,11 @@
 								}
 							}
 
-							Data.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+							MessageStore.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
 
 							if (oData.Result.Hash !== sHash || '' === sHash)
 							{
-								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
 									self.reloadMessageList();
 								}
@@ -722,9 +724,9 @@
 							}
 							else if (bUnreadCountChange)
 							{
-								if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
+								if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
-									aList = Data.messageList();
+									aList = MessageStore.messageList();
 									if (Utils.isNonEmptyArray(aList))
 									{
 										self.folderInformation(oFolder.fullNameRaw, aList);
@@ -748,7 +750,7 @@
 		var
 			self = this,
 			iUtc = moment().unix(),
-			aFolders = Data.getNextFolderNames(bBoot)
+			aFolders = FolderStore.getNextFolderNames(bBoot)
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -798,16 +800,16 @@
 
 								if (oItem.Hash !== sHash || '' === sHash)
 								{
-									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
 										self.reloadMessageList();
 									}
 								}
 								else if (bUnreadCountChange)
 								{
-									if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
+									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
-										aList = Data.messageList();
+										aList = MessageStore.messageList();
 										if (Utils.isNonEmptyArray(aList))
 										{
 											self.folderInformation(oFolder.fullNameRaw, aList);
@@ -941,136 +943,6 @@
 		}, sQuery);
 	};
 
-	AppUser.prototype.setMessageList = function (oData, bCached)
-	{
-		if (oData && oData.Result && 'Collection/MessageCollection' === oData.Result['@Object'] &&
-			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
-		{
-			var
-				mLastCollapsedThreadUids = null,
-				iIndex = 0,
-				iLen = 0,
-				iCount = 0,
-				iOffset = 0,
-				aList = [],
-				iUtc = moment().unix(),
-				aStaticList = Data.staticMessageList,
-				oJsonMessage = null,
-				oMessage = null,
-				oFolder = null,
-				iNewCount = 0,
-				bUnreadCountChange = false
-			;
-
-			iCount = Utils.pInt(oData.Result.MessageResultCount);
-			iOffset = Utils.pInt(oData.Result.Offset);
-
-			if (Utils.isNonEmptyArray(oData.Result.LastCollapsedThreadUids))
-			{
-				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
-			}
-
-			oFolder = Cache.getFolderFromCacheList(
-				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-
-			if (oFolder && !bCached)
-			{
-				oFolder.interval = iUtc;
-
-				Cache.setFolderHash(oData.Result.Folder, oData.Result.FolderHash);
-
-				if (Utils.isNormal(oData.Result.MessageCount))
-				{
-					oFolder.messageCountAll(oData.Result.MessageCount);
-				}
-
-				if (Utils.isNormal(oData.Result.MessageUnseenCount))
-				{
-					if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
-					{
-						bUnreadCountChange = true;
-					}
-
-					oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
-				}
-
-				Data.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
-			}
-
-			if (bUnreadCountChange && oFolder)
-			{
-				Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
-			}
-
-			for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
-			{
-				oJsonMessage = oData.Result['@Collection'][iIndex];
-				if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
-				{
-					oMessage = aStaticList[iIndex];
-					if (!oMessage || !oMessage.initByJson(oJsonMessage))
-					{
-						oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
-					}
-
-					if (oMessage)
-					{
-						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
-						{
-							iNewCount++;
-							oMessage.newForAnimation(true);
-						}
-
-						oMessage.deleted(false);
-
-						if (bCached)
-						{
-							Cache.initMessageFlagsFromCache(oMessage);
-						}
-						else
-						{
-							Cache.storeMessageFlagsToCache(oMessage);
-						}
-
-						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
-
-						aList.push(oMessage);
-					}
-				}
-			}
-
-			Data.messageListCount(iCount);
-			Data.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			Data.messageListPage(window.Math.ceil((iOffset / SettingsStore.messagesPerPage()) + 1));
-			Data.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-			Data.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
-			Data.messageListEndPage(Data.messageListPage());
-
-			Data.messageList(aList);
-			Data.messageListIsNotCompleted(false);
-
-			if (aStaticList.length < aList.length)
-			{
-				Data.staticMessageList = aList;
-			}
-
-			Cache.clearNewMessageCache();
-
-			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
-			{
-				this.folderInformation(oFolder.fullNameRaw, aList);
-			}
-		}
-		else
-		{
-			Data.messageListCount(0);
-			Data.messageList([]);
-			Data.messageListError(Translator.getNotification(
-				oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantGetMessageList
-			));
-		}
-	};
-
 	/**
 	 * @param {string} sNamespace
 	 * @param {Array} aFolders
@@ -1163,13 +1035,13 @@
 		{
 			if (!Utils.isUnd(oData.Result.Namespace))
 			{
-				Data.namespace = oData.Result.Namespace;
+				FolderStore.namespace = oData.Result.Namespace;
 			}
 
 			AppStore.threadsAllowed(!!Settings.settingsGet('UseImapThread') &&
 				oData.Result.IsThreadsSupported && true);
 
-			Data.folderList(this.folderResponseParseRec(Data.namespace, oData.Result['@Collection']));
+			FolderStore.folderList(this.folderResponseParseRec(FolderStore.namespace, oData.Result['@Collection']));
 
 			if (oData.Result['SystemFolders'] && '' === '' +
 				Settings.settingsGet('SentFolder') +
@@ -1525,7 +1397,7 @@
 					});
 
 					Events.sub('interval.3m', function () {
-						var sF = Data.currentFolderFullNameRaw();
+						var sF = FolderStore.currentFolderFullNameRaw();
 						if (Cache.getFolderInboxName() !== sF)
 						{
 							self.folderInformation(sF);
@@ -1562,7 +1434,7 @@
 					self.accountsAndIdentities(true);
 
 					_.delay(function () {
-						var sF = Data.currentFolderFullNameRaw();
+						var sF = FolderStore.currentFolderFullNameRaw();
 						if (Cache.getFolderInboxName() !== sF)
 						{
 							self.folderInformation(sF);

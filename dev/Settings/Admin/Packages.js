@@ -12,7 +12,7 @@
 		Translator = require('Common/Translator'),
 
 		PackageStore = require('Stores/Admin/Package'),
-		Remote = require('Storage/Admin/Remote')
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**

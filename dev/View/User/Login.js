@@ -22,7 +22,8 @@
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
-		Remote = require('Storage/User/Remote'),
+		
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -351,7 +352,7 @@
 		{
 			case Enums.LoginSignMeTypeAsString.DefaultOff:
 			case Enums.LoginSignMeTypeAsString.DefaultOn:
-				
+
 				this.signMeType(Enums.LoginSignMeTypeAsString.DefaultOn === sSignMe ?
 					Enums.LoginSignMeType.DefaultOn : Enums.LoginSignMeType.DefaultOff);
 

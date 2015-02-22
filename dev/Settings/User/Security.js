@@ -15,7 +15,7 @@
 
 		Settings = require('Storage/Settings'),
 
-		Remote = require('Storage/User/Remote')
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**

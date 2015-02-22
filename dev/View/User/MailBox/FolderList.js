@@ -15,11 +15,12 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
+		Cache = require('Common/Cache'),
+
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
-
-		Cache = require('Storage/User/Cache'),
-		Data = require('Storage/User/Data'),
+		FolderStore = require('Stores/User/Folder'),
+		MessageStore = require('Stores/User/Message'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -36,14 +37,14 @@
 		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
-		this.composeInEdit = Data.composeInEdit;
+		this.composeInEdit = AppStore.composeInEdit;
 
-		this.messageList = Data.messageList;
-		this.folderList = Data.folderList;
-		this.folderListSystem = Data.folderListSystem;
-		this.foldersChanging = Data.foldersChanging;
+		this.messageList = MessageStore.messageList;
+		this.folderList = FolderStore.folderList;
+		this.folderListSystem = FolderStore.folderListSystem;
+		this.foldersChanging = FolderStore.foldersChanging;
 
-		this.foldersListWithSingleInboxRootFolder = Data.foldersListWithSingleInboxRootFolder;
+		this.foldersListWithSingleInboxRootFolder = FolderStore.foldersListWithSingleInboxRootFolder;
 
 		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
@@ -94,10 +95,10 @@
 				{
 					if (Enums.Layout.NoPreview === SettingsStore.layout())
 					{
-						Data.message(null);
+						MessageStore.message(null);
 					}
 
-					if (oFolder.fullNameRaw === Data.currentFolderFullNameRaw())
+					if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 					{
 						Cache.setFolderHash(oFolder.fullNameRaw, '');
 					}
@@ -143,7 +144,7 @@
 			var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
 			if ($items.length && $items[0])
 			{
-				self.folderList.focused(false);
+				FolderStore.folderList.focused(false);
 				$items.click();
 			}
 
@@ -167,11 +168,11 @@
 		});
 
 		key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
-			self.folderList.focused(false);
+			FolderStore.folderList.focused(false);
 			return false;
 		});
 
-		self.folderList.focused.subscribe(function (bValue) {
+		FolderStore.folderList.focused.subscribe(function (bValue) {
 			$('.b-folders .e-item .e-link.focused', oDom).removeClass('focused');
 			if (bValue)
 			{

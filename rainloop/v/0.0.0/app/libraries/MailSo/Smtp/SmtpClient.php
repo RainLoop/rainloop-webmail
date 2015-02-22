@@ -306,13 +306,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sFrom
 	 * @param string $sSizeIfSupported = ''
+	 * @param bool $bDsn = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function MailFrom($sFrom, $sSizeIfSupported = '')
+	public function MailFrom($sFrom, $sSizeIfSupported = '', $bDsn = false)
 	{
 		$sFrom = \MailSo\Base\Utils::IdnToAscii($sFrom, true);
 		$sCmd = 'FROM:<'.$sFrom.'>';
@@ -321,6 +322,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
 			$sCmd .= ' SIZE='.$sSizeIfSupported;
+		}
+
+		if ($bDsn && $this->IsSupported('DSN'))
+		{
+			$sCmd .= ' RET=HDRS';
 		}
 
 		$this->sendRequestWithCheck('MAIL', 250, $sCmd);
@@ -334,13 +340,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sTo
+	 * @param bool $bDsn = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Rcpt($sTo)
+	public function Rcpt($sTo, $bDsn = false)
 	{
 		if (!$this->bMail)
 		{
@@ -350,7 +357,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		$sTo = \MailSo\Base\Utils::IdnToAscii($sTo, true);
-		$this->sendRequestWithCheck('RCPT', array(250, 251), 'TO:<'.$sTo.'>');
+		$sCmd = 'TO:<'.$sTo.'>';
+
+		if ($bDsn && $this->IsSupported('DSN'))
+		{
+			$sCmd .= ' NOTIFY=SUCCESS,FAILURE';
+		}
+
+		$this->sendRequestWithCheck('RCPT', array(250, 251), $sCmd);
 
 		$this->bRcpt = true;
 
