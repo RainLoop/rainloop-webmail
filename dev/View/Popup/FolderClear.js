@@ -11,9 +11,11 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Cache = require('Common/Cache'),
+
+		MessageStore = require('Stores/User/Message'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -56,8 +58,8 @@
 
 			if (oFolderToClear)
 			{
-				Data.message(null);
-				Data.messageList([]);
+				MessageStore.message(null);
+				MessageStore.messageList([]);
 
 				this.clearingProcess(true);
 

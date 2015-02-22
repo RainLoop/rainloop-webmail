@@ -17,9 +17,9 @@
 		LanguageStore = require('Stores/Language'),
 		SettingsStore = require('Stores/User/Settings'),
 		NotificationStore = require('Stores/User/Notification'),
+		MessageStore = require('Stores/User/Message'),
 
-		Data = require('Storage/User/Data'),
-		Remote = require('Storage/User/Remote')
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**
@@ -163,7 +163,7 @@
 
 			self.useThreads.subscribe(function (bValue) {
 
-				Data.messageList([]);
+				MessageStore.messageList([]);
 
 				Remote.saveSettings(null, {
 					'UseThreads': bValue ? '1' : '0'
@@ -172,7 +172,7 @@
 
 			self.layout.subscribe(function (nValue) {
 
-				Data.messageList([]);
+				MessageStore.messageList([]);
 
 				Remote.saveSettings(f2, {
 					'Layout': nValue

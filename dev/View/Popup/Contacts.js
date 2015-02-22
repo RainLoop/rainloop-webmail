@@ -19,9 +19,9 @@
 		Translator = require('Common/Translator'),
 
 		SettingsStore = require('Stores/User/Settings'),
+		ContactStore = require('Stores/User/Contact'),
 
-		Data = require('Storage/User/Data'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		EmailModel = require('Model/Email'),
 		ContactModel = require('Model/Contact'),
@@ -52,13 +52,13 @@
 		this.bBackToCompose = false;
 		this.sLastComposeFocusedField = '';
 
-		this.allowContactsSync = Data.allowContactsSync;
-		this.enableContactsSync = Data.enableContactsSync;
+		this.allowContactsSync = ContactStore.allowContactsSync;
+		this.enableContactsSync = ContactStore.enableContactsSync;
 		this.allowExport = !Globals.bMobileDevice;
 
 		this.search = ko.observable('');
 		this.contactsCount = ko.observable(0);
-		this.contacts = Data.contacts;
+		this.contacts = ContactStore.contacts;
 
 		this.currentContact = ko.observable(null);
 

@@ -11,7 +11,7 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

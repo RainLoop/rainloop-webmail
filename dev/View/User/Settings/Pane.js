@@ -6,11 +6,6 @@
 	var
 		_ = require('_'),
 
-		Links = require('Common/Links'),
-
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
-
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
 	;
@@ -31,12 +26,13 @@
 
 	PaneSettingsUserView.prototype.onShow = function ()
 	{
-		Data.message(null);
+		require('Stores/User/Message').message(null);
 	};
 
 	PaneSettingsUserView.prototype.backToMailBoxClick = function ()
 	{
-		kn.setHash(Links.inbox(Cache.getFolderInboxName()));
+		kn.setHash(require('Common/Links').inbox(
+			require('Common/Cache').getFolderInboxName()));
 	};
 
 	module.exports = PaneSettingsUserView;

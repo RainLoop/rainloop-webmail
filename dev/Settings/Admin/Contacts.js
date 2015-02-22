@@ -19,7 +19,7 @@
 	function ContactsAdminSettings()
 	{
 		var
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
@@ -178,7 +178,7 @@
 	{
 		var
 			self = this,
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		_.delay(function () {

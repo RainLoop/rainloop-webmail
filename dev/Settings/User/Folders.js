@@ -10,11 +10,14 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
-		Local = require('Storage/Client')
+		Local = require('Storage/Client'),
+
+		FolderStore = require('Stores/User/Folder'),
+
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**
@@ -22,15 +25,15 @@
 	 */
 	function FoldersUserSettings()
 	{
-		this.folderList = Data.folderList;
+		this.folderList = FolderStore.folderList;
 
 		this.loading = ko.computed(function () {
 
 			var
-				bLoading = Data.foldersLoading(),
-				bCreating = Data.foldersCreating(),
-				bDeleting = Data.foldersDeleting(),
-				bRenaming = Data.foldersRenaming()
+				bLoading = FolderStore.foldersLoading(),
+				bCreating = FolderStore.foldersCreating(),
+				bDeleting = FolderStore.foldersDeleting(),
+				bRenaming = FolderStore.foldersRenaming()
 			;
 
 			return bLoading || bCreating || bDeleting || bRenaming;
@@ -66,13 +69,13 @@
 		{
 			Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-			Data.foldersRenaming(true);
+			FolderStore.foldersRenaming(true);
 			Remote.folderRename(function (sResult, oData) {
 
-				Data.foldersRenaming(false);
+				FolderStore.foldersRenaming(false);
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
-					Data.folderList.error(
+					FolderStore.folderList.error(
 						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
 				}
 
@@ -98,7 +101,7 @@
 
 	FoldersUserSettings.prototype.onShow = function ()
 	{
-		Data.folderList.error('');
+		FolderStore.folderList.error('');
 	};
 
 	FoldersUserSettings.prototype.createFolder = function ()
@@ -135,15 +138,15 @@
 			{
 				Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-				Data.folderList.remove(fRemoveFolder);
+				FolderStore.folderList.remove(fRemoveFolder);
 
-				Data.foldersDeleting(true);
+				FolderStore.foldersDeleting(true);
 				Remote.folderDelete(function (sResult, oData) {
 
-					Data.foldersDeleting(false);
+					FolderStore.foldersDeleting(false);
 					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 					{
-						Data.folderList.error(
+						FolderStore.folderList.error(
 							oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
 					}
 
@@ -156,7 +159,7 @@
 		}
 		else if (0 < oFolderToRemove.privateMessageCountAll())
 		{
-			Data.folderList.error(Translator.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
+			FolderStore.folderList.error(Translator.getNotification(Enums.Notification.CantDeleteNonEmptyFolder));
 		}
 	};
 

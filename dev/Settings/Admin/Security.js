@@ -15,7 +15,7 @@
 		CapaAdminStore = require('Stores/Admin/Capa'),
 
 		Settings = require('Storage/Settings'),
-		Remote = require('Storage/Admin/Remote')
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**
@@ -114,10 +114,6 @@
 
 	SecurityAdminSettings.prototype.onBuild = function ()
 	{
-		var
-			Remote = require('Storage/Admin/Remote')
-		;
-
 		this.capaOpenPGP.subscribe(function (bValue) {
 			Remote.saveAdminConfig(Utils.emptyFunction, {
 				'CapaOpenPGP': bValue ? '1' : '0'

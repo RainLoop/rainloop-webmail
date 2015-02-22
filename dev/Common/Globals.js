@@ -129,7 +129,15 @@
 		'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
 		'extraPlugins': 'plain,signature',
+
 		'allowedContent': true,
+		'extraAllowedContent': true,
+
+		'forceEnterMode': true,
+
+		'autoParagraph': false,
+		'fillEmptyBlocks': false,
+		'ignoreEmptyParagraph': true,
 
 		'font_defaultLabel': 'Arial',
 		'fontSize_defaultLabel': '13',

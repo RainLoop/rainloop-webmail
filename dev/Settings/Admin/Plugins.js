@@ -13,7 +13,7 @@
 
 		Settings = require('Storage/Settings'),
 		PluginStore = require('Stores/Admin/Plugin'),
-		Remote = require('Storage/Admin/Remote')
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**

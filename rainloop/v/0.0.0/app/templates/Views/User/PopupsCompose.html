@@ -60,6 +60,13 @@
 												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 											</a>
 										</li>
+										<li class="e-item" data-bind="click: function () { requestDsn(!requestDsn()); }">
+											<a class="e-link">
+												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestDsn(), 'icon-checkbox-unchecked': !requestDsn() }"></i>
+												&nbsp;&nbsp;
+												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_DSN"></span>
+											</a>
+										</li>
 										<li class="e-item" data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 											<a class="e-link">
 												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': markAsImportant(), 'icon-checkbox-unchecked': !markAsImportant() }"></i>
@@ -192,7 +199,7 @@
 					</div>
 				</div>
 
-				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 47]">
+				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 57]">
 					<div class="content g-scrollbox">
 						<div class="content-wrapper">
 							<ul class="attachmentList" data-bind="template: { name: 'ComposeAttachment', foreach: attachments }"></ul>
@@ -204,7 +211,7 @@
 				</div>
 
 				<div class="textAreaParent" style="height: 200px; min-height: 200px"
-					data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 30]"></div>
+					data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 40]"></div>
 			</div>
 		</div>
 	</div>

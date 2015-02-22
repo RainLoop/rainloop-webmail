@@ -14,7 +14,7 @@
 
 		CapaAdminStore = require('Stores/Admin/Capa'),
 
-		Remote = require('Storage/Admin/Remote'),
+		Remote = require('Remote/Admin/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

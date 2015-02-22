@@ -10,7 +10,7 @@
 		Enums = require('Common/Enums'),
 
 		DomainStore = require('Stores/Admin/Domain'),
-		Remote = require('Storage/Admin/Remote')
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**

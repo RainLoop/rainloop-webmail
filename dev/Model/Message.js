@@ -1205,9 +1205,8 @@
 			var
 				aRes = [],
 				mPgpMessage = null,
-				Data = require('Storage/User/Data'),
 				sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-				aPublicKeys = Data.findPublicKeysByEmail(sFrom),
+				aPublicKeys = PgpStore.findPublicKeysByEmail(sFrom),
 				oValidKey = null,
 				oValidSysKey = null,
 				sPlain = ''
@@ -1233,7 +1232,7 @@
 
 						if (oValidKey)
 						{
-							oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
+							oValidSysKey = PgpStore.findPublicKeyByHex(oValidKey.keyid.toHex());
 							if (oValidSysKey)
 							{
 								sPlain = mPgpMessage.getText();
@@ -1269,10 +1268,9 @@
 				aRes = [],
 				mPgpMessage = null,
 				mPgpMessageDecrypted = null,
-				Data = require('Storage/User/Data'),
 				sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-				aPublicKey = Data.findPublicKeysByEmail(sFrom),
-				oPrivateKey = Data.findSelfPrivateKey(sPassword),
+				aPublicKey = PgpStore.findPublicKeysByEmail(sFrom),
+				oPrivateKey = PgpStore.findSelfPrivateKey(sPassword),
 				oValidKey = null,
 				oValidSysKey = null,
 				sPlain = ''
@@ -1305,7 +1303,7 @@
 
 							if (oValidKey)
 							{
-								oValidSysKey = Data.findPublicKeyByHex(oValidKey.keyid.toHex());
+								oValidSysKey = PgpStore.findPublicKeyByHex(oValidKey.keyid.toHex());
 								if (oValidSysKey)
 								{
 									this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);

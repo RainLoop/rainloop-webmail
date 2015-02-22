@@ -21,7 +21,7 @@
 		LicenseStore = require('Stores/Admin/License'),
 		PackageStore = require('Stores/Admin/Package'),
 		CoreStore = require('Stores/Admin/Core'),
-		Remote = require('Storage/Admin/Remote'),
+		Remote = require('Remote/Admin/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractApp = require('App/Abstract')

@@ -15,8 +15,7 @@
 		FolderStore = require('Stores/User/Folder'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/User/Data'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -38,7 +37,7 @@
 		this.notification = ko.observable('');
 
 		this.folderSelectList = ko.computed(function () {
-			return Utils.folderListOptionsBuilder([], Data.folderList(), Data.folderListSystemNames(), [
+			return Utils.folderListOptionsBuilder([], FolderStore.folderList(), FolderStore.folderListSystemNames(), [
 				['', this.sChooseOnText],
 				[Consts.Values.UnuseOptionValue, this.sUnuseText]
 			], null, null, null, null, null, true);

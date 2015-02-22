@@ -12,7 +12,7 @@
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		Remote = require('Storage/Admin/Remote'),
+		Remote = require('Remote/Admin/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

@@ -10,7 +10,7 @@
 
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/User/Data'),
+		MessageStore = require('Stores/User/Message'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -41,7 +41,7 @@
 			var sSearch = this.buildSearchString();
 			if ('' !== sSearch)
 			{
-				Data.mainMessageListSearch(sSearch);
+				MessageStore.mainMessageListSearch(sSearch);
 			}
 
 			this.cancelCommand();

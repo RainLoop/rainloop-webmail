@@ -12,7 +12,7 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
-		Cache = require('Storage/User/Cache'),
+		Cache = require('Common/Cache'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;

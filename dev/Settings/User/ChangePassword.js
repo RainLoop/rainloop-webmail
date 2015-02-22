@@ -11,7 +11,7 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Remote = require('Storage/User/Remote')
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**

@@ -13,8 +13,9 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
-		Remote = require('Storage/User/Remote'),
+		FolderStore = require('Stores/User/Folder'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -43,7 +44,7 @@
 				aTop = [],
 				fDisableCallback = null,
 				fVisibleCallback = null,
-				aList = Data.folderList(),
+				aList = FolderStore.folderList(),
 				fRenameCallback = function (oItem) {
 					return oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
 				}
@@ -51,11 +52,11 @@
 
 			aTop.push(['', this.sNoParentText]);
 
-			if ('' !== Data.namespace)
+			if ('' !== FolderStore.namespace)
 			{
 				fDisableCallback = function (oItem)
 				{
-					return Data.namespace !== oItem.fullNameRaw.substr(0, Data.namespace.length);
+					return FolderStore.namespace !== oItem.fullNameRaw.substr(0, FolderStore.namespace.length);
 				};
 			}
 
@@ -70,22 +71,22 @@
 				sParentFolderName = this.selectedParentValue()
 			;
 
-			if ('' === sParentFolderName && 1 < Data.namespace.length)
+			if ('' === sParentFolderName && 1 < FolderStore.namespace.length)
 			{
-				sParentFolderName = Data.namespace.substr(0, Data.namespace.length - 1);
+				sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 			}
 
-			Data.foldersCreating(true);
+			FolderStore.foldersCreating(true);
 			Remote.folderCreate(function (sResult, oData) {
 
-				Data.foldersCreating(false);
+				FolderStore.foldersCreating(false);
 				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 				{
 					require('App/User').folders();
 				}
 				else
 				{
-					Data.folderList.error(
+					FolderStore.folderList.error(
 						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
 				}
 

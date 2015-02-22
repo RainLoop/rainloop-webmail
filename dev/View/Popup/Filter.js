@@ -12,9 +12,8 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Data = require('Storage/User/Data'),
-
 		FilterStore = require('Stores/User/Filter'),
+		FolderStore = require('Stores/User/Folder'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -38,7 +37,7 @@
 		this.allowMarkAsRead = ko.observable(false);
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-		this.folderSelectList = Data.folderMenuForFilters;
+		this.folderSelectList = FolderStore.folderMenuForFilters;
 		this.selectedFolderValue = ko.observable('');
 
 		this.selectedFolderValue.subscribe(function() {
