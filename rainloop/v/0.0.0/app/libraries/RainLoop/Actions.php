@@ -1013,6 +1013,9 @@ class Actions
 		$sRand = \MailSo\Base\Utils::Md5Rand();
 		if (!$this->Cacher()->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time()))
 		{
+			$this->oLogger->Write('Cannot store an admin token',
+				\MailSo\Log\Enumerations\Type::WARNING);
+
 			$sRand = '';
 		}
 
@@ -1037,12 +1040,9 @@ class Actions
 			{
 				$bResult = true;
 			}
-			else if ($bThrowExceptionOnFalse)
-			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
-			}
 		}
-		else if ($bThrowExceptionOnFalse)
+
+		if (!$bResult && $bThrowExceptionOnFalse)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
@@ -3264,9 +3264,10 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
 
-		$this->setAdminAuthToken($this->getAdminToken());
+		$sToken = $this->getAdminToken();
+		$this->setAdminAuthToken($sToken);
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $sToken ? true : false);
 	}
 
 	/**
@@ -3322,7 +3323,7 @@ class Actions
 	{
 		$sDomain = \strtolower(\trim($sDomain));
 
-		$sTempDomain = \preg_replace('/^(webmail|email|mail|www|ssl)\./', '', $sDomain);
+		$sTempDomain = \preg_replace('/^(webmail|email|mail)\./', '', $sDomain);
 		if (false === \strpos($sTempDomain, '.'))
 		{
 			$sTempDomain = $sDomain;

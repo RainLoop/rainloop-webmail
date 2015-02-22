@@ -33,7 +33,6 @@
 	function MessageUserStore()
 	{
 		this.staticMessage = new MessageModel();
-		this.staticMessageList = [];
 
 		this.messageList = ko.observableArray([]).extend({'rateLimit': 0});
 
@@ -621,7 +620,6 @@
 				iOffset = 0,
 				aList = [],
 				iUtc = moment().unix(),
-				aStaticList = this.staticMessageList,
 				oJsonMessage = null,
 				oMessage = null,
 				oFolder = null,
@@ -674,12 +672,7 @@
 				oJsonMessage = oData.Result['@Collection'][iIndex];
 				if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
 				{
-					oMessage = aStaticList[iIndex];
-					if (!oMessage || !oMessage.initByJson(oJsonMessage))
-					{
-						oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
-					}
-
+					oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
 					if (oMessage)
 					{
 						if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
@@ -699,6 +692,7 @@
 							Cache.storeMessageFlagsToCache(oMessage);
 						}
 
+						oMessage.lastInCollapsedThreadLoading(false);
 						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
 
 						aList.push(oMessage);
@@ -716,11 +710,6 @@
 
 			this.messageList(aList);
 			this.messageListIsNotCompleted(false);
-
-			if (aStaticList.length < aList.length)
-			{
-				this.staticMessageList = aList;
-			}
 
 			Cache.clearNewMessageCache();
 

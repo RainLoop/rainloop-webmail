@@ -97,9 +97,6 @@
 					case 'certificate':
 						sClass = 'icon-file-certificate';
 						break;
-//					case 'pdf':
-//						sClass = 'icon-file-pdf';
-//						break;
 				}
 			}
 			return sClass;
