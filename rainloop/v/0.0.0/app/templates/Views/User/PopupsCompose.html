@@ -60,6 +60,13 @@
 												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 											</a>
 										</li>
+										<li class="e-item" data-bind="click: function () { requestDsn(!requestDsn()); }">
+											<a class="e-link">
+												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestDsn(), 'icon-checkbox-unchecked': !requestDsn() }"></i>
+												&nbsp;&nbsp;
+												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_DSN"></span>
+											</a>
+										</li>
 										<li class="e-item" data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 											<a class="e-link">
 												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': markAsImportant(), 'icon-checkbox-unchecked': !markAsImportant() }"></i>

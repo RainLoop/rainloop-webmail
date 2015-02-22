@@ -5752,7 +5752,7 @@ class Actions
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \MailSo\Mime\Message $oMessage
 	 * @param resource $rMessageStream
-	 * @param bool $bDsn = true
+	 * @param bool $bDsn = false
 	 * @param bool $bAddHiddenRcpt = true
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
@@ -5826,8 +5826,6 @@ class Actions
 				}
 				else if ($oSmtpClient->IsConnected())
 				{
-					$bDsn = false;
-
 					if (!empty($sFrom))
 					{
 						$oSmtpClient->MailFrom($sFrom, '', $bDsn);
@@ -5906,7 +5904,7 @@ class Actions
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
 		$sSentFolder = $this->GetActionParam('SentFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
-		$bDsn = '1' === $this->GetActionParam('Dsn', '0');
+		$bDsn = '1' === (string) $this->GetActionParam('Dsn', '0');
 
 		$oMessage = $this->buildMessage($oAccount, false);
 
