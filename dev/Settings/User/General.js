@@ -19,7 +19,7 @@
 		NotificationStore = require('Stores/User/Notification'),
 		MessageStore = require('Stores/User/Message'),
 
-		Remote = require('Storage/User/Remote')
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**

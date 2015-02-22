@@ -32,7 +32,7 @@
 	PaneSettingsUserView.prototype.backToMailBoxClick = function ()
 	{
 		kn.setHash(require('Common/Links').inbox(
-			require('Storage/User/Cache').getFolderInboxName()));
+			require('Common/Cache').getFolderInboxName()));
 	};
 
 	module.exports = PaneSettingsUserView;

@@ -13,7 +13,7 @@
 		Translator = require('Common/Translator'),
 		HtmlEditor = require('Common/HtmlEditor'),
 
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

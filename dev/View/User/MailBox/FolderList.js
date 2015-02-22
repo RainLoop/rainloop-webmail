@@ -15,12 +15,12 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
+		Cache = require('Common/Cache'),
+
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
-
-		Cache = require('Storage/User/Cache'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

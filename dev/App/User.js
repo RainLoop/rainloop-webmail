@@ -21,6 +21,8 @@
 
 		kn = require('Knoin/Knoin'),
 
+		Cache = require('Common/Cache'),
+
 		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
@@ -34,8 +36,8 @@
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		EmailModel = require('Model/Email'),
 		FolderModel = require('Model/Folder'),

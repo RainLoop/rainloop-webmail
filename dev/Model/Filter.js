@@ -11,7 +11,7 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		Cache = require('Storage/User/Cache'),
+		Cache = require('Common/Cache'),
 
 		FilterConditionModel = require('Model/FilterCondition'),
 

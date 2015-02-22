@@ -12,12 +12,12 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		AccountStore = require('Stores/User/Account'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
-
-		Cache = require('Storage/User/Cache'),
 
 		AbstractScreen = require('Knoin/AbstractScreen')
 	;

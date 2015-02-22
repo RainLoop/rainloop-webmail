@@ -21,6 +21,8 @@
 		HtmlEditor = require('Common/HtmlEditor'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		IdentityStore = require('Stores/User/Identity'),
@@ -31,8 +33,7 @@
 		SocialStore = require('Stores/Social'),
 
 		Settings = require('Storage/Settings'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		ComposeAttachmentModel = require('Model/ComposeAttachment'),
 
@@ -121,6 +122,7 @@
 		this.subject = ko.observable('');
 		this.isHtml = ko.observable(false);
 
+		this.requestDsn = ko.observable(false);
 		this.requestReadReceipt = ko.observable(false);
 		this.markAsImportant = ko.observable(false);
 
@@ -366,6 +368,7 @@
 						this.aDraftInfo,
 						this.sInReplyTo,
 						this.sReferences,
+						this.requestDsn(),
 						this.requestReadReceipt(),
 						this.markAsImportant()
 					);
@@ -2010,6 +2013,7 @@
 		this.replyTo('');
 		this.subject('');
 
+		this.requestDsn(false);
 		this.requestReadReceipt(false);
 		this.markAsImportant(false);
 

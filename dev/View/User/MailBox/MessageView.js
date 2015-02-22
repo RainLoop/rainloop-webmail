@@ -19,14 +19,15 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
 		Local = require('Storage/Client'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

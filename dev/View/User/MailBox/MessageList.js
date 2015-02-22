@@ -20,14 +20,15 @@
 		Selector = require('Common/Selector'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		QuotaStore = require('Stores/User/Quota'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
 		Settings = require('Storage/Settings'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

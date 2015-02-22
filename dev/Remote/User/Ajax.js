@@ -10,14 +10,15 @@
 		Consts = require('Common/Consts'),
 		Base64 = require('Common/Base64'),
 
+		Cache = require('Common/Cache'),
+
+		Settings = require('Storage/Settings'),
+
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		MessageStore = require('Stores/User/Message'),
 
-		Settings = require('Storage/Settings'),
-		Cache = require('Storage/User/Cache'),
-
-		AbstractRemoteStorage = require('Storage/AbstractRemote')
+		AbstractAjaxRemote = require('Remote/AbstractAjax')
 	;
 
 	/**
@@ -26,14 +27,14 @@
 	 */
 	function RemoteUserStorage()
 	{
-		AbstractRemoteStorage.call(this);
+		AbstractAjaxRemote.call(this);
 
 		this.oRequests = {};
 
 		this.sSubSubQuery = '&ss=/';
 	}
 
-	_.extend(RemoteUserStorage.prototype, AbstractRemoteStorage.prototype);
+	_.extend(RemoteUserStorage.prototype, AbstractAjaxRemote.prototype);
 
 	/**
 	 * @param {?Function} fCallback
@@ -619,12 +620,13 @@
 	 * @param {(Array|null)} aDraftInfo
 	 * @param {string} sInReplyTo
 	 * @param {string} sReferences
+	 * @param {boolean} bRequestDsn
 	 * @param {boolean} bRequestReadReceipt
 	 * @param {boolean} bMarkAsImportant
 	 */
 	RemoteUserStorage.prototype.sendMessage = function (fCallback, sIdentityID, sMessageFolder, sMessageUid, sSentFolder,
 		sTo, sCc, sBcc, sReplyTo, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences,
-		bRequestReadReceipt, bMarkAsImportant)
+		bRequestDsn, bRequestReadReceipt, bMarkAsImportant)
 	{
 		this.defaultRequest(fCallback, 'SendMessage', {
 			'IdentityID': sIdentityID,
@@ -641,6 +643,7 @@
 			'DraftInfo': aDraftInfo,
 			'InReplyTo': sInReplyTo,
 			'References': sReferences,
+			'Dsn': bRequestDsn ? '1' : '0',
 			'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
 			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
 			'Attachments': aAttachments

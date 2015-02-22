@@ -13,7 +13,7 @@
 
 		FilterStore = require('Stores/User/Filter'),
 
-		Remote = require('Storage/User/Remote')
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**

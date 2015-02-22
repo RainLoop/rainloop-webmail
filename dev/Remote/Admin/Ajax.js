@@ -6,21 +6,21 @@
 	var
 		_ = require('_'),
 
-		AbstractRemoteStorage = require('Storage/AbstractRemote')
+		AbstractAjaxRemote = require('Remote/AbstractAjax')
 	;
 
 	/**
 	 * @constructor
-	 * @extends AbstractRemoteStorage
+	 * @extends AbstractAjaxRemote
 	 */
 	function RemoteAdminStorage()
 	{
-		AbstractRemoteStorage.call(this);
+		AbstractAjaxRemote.call(this);
 
 		this.oRequests = {};
 	}
 
-	_.extend(RemoteAdminStorage.prototype, AbstractRemoteStorage.prototype);
+	_.extend(RemoteAdminStorage.prototype, AbstractAjaxRemote.prototype);
 
 	/**
 	 * @param {?Function} fCallback

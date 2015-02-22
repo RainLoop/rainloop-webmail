@@ -15,7 +15,7 @@
 		FolderStore = require('Stores/User/Folder'),
 
 		Settings = require('Storage/Settings'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

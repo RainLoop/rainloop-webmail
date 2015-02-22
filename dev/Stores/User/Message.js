@@ -19,12 +19,12 @@
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		FolderStore = require('Stores/User/Folder'),
 		SettingsStore = require('Stores/User/Settings'),
 
-		MessageModel = require('Model/Message'),
-
-		Cache = require('Storage/User/Cache')
+		MessageModel = require('Model/Message')
 	;
 
 	/**

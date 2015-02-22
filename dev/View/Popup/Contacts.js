@@ -21,7 +21,7 @@
 		SettingsStore = require('Stores/User/Settings'),
 		ContactStore = require('Stores/User/Contact'),
 
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		EmailModel = require('Model/Email'),
 		ContactModel = require('Model/Contact'),

@@ -11,10 +11,11 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
+		Cache = require('Common/Cache'),
+
 		MessageStore = require('Stores/User/Message'),
 
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')

@@ -13,7 +13,7 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
-		Cache = require('Storage/User/Cache')
+		Cache = require('Common/Cache')
 	;
 
 	/**

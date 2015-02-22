@@ -10,12 +10,14 @@
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
 
-		FolderStore = require('Stores/User/Folder'),
+		Cache = require('Common/Cache'),
 
 		Settings = require('Storage/Settings'),
-		Cache = require('Storage/User/Cache'),
-		Remote = require('Storage/User/Remote'),
-		Local = require('Storage/Client')
+		Local = require('Storage/Client'),
+
+		FolderStore = require('Stores/User/Folder'),
+
+		Remote = require('Remote/User/Ajax')
 	;
 
 	/**
