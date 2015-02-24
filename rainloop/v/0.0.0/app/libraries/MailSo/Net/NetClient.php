@@ -508,8 +508,9 @@ abstract class NetClient
 			}
 			else
 			{
-//				$this->writeLog('Stream Meta: '.
-//					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
+				$this->writeLog('Stream Meta: '.
+					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
+
 				$this->writeLogException(
 					new Exceptions\SocketReadException(),
 						\MailSo\Log\Enumerations\Type::ERROR, true);

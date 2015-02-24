@@ -19,11 +19,33 @@ namespace MailSo\Cache\Drivers;
 class APC implements \MailSo\Cache\DriverInterface
 {
 	/**
+	 * @var string
+	 */
+	private $sKeyPrefix;
+
+	/**
+	 * @access private
+	 *
+	 * @param string $sKeyPrefix = ''
+	 */
+	private function __construct($sKeyPrefix = '')
+	{
+		$this->sKeyPrefix = $sKeyPrefix;
+		if (!empty($this->sKeyPrefix))
+		{
+			$this->sKeyPrefix =
+				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
+		}
+	}
+
+	/**
+	 * @param string $sKeyPrefix = ''
+	 *
 	 * @return \MailSo\Cache\Drivers\APC
 	 */
-	public static function NewInstance()
+	public static function NewInstance($sKeyPrefix = '')
 	{
-		return new self();
+		return new self($sKeyPrefix);
 	}
 
 	/**
@@ -60,7 +82,7 @@ class APC implements \MailSo\Cache\DriverInterface
 
 	/**
 	 * @param int $iTimeToClearInHours = 24
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function GC($iTimeToClearInHours = 24)
@@ -69,7 +91,7 @@ class APC implements \MailSo\Cache\DriverInterface
 		{
 			return \apc_clear_cache('user');
 		}
-		
+
 		return false;
 	}
 
@@ -80,6 +102,6 @@ class APC implements \MailSo\Cache\DriverInterface
 	 */
 	private function generateCachedKey($sKey)
 	{
-		return \sha1($sKey);
+		return $this->sKeyPrefix.\sha1($sKey);
 	}
 }

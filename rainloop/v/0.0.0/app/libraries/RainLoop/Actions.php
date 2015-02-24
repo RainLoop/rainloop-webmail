@@ -51,9 +51,9 @@ class Actions
 	private $oSocial;
 
 	/**
-	 * @var \MailSo\Cache\CacheClient
+	 * @var array of \MailSo\Cache\CacheClient
 	 */
-	private $oCacher;
+	private $aCachers;
 
 	/**
 	 * @var \RainLoop\Providers\Storage
@@ -133,7 +133,7 @@ class Actions
 		$this->oMailClient = null;
 		$this->oSocial = null;
 		$this->oConfig = null;
-		$this->oCacher = null;
+		$this->aCachers = array();
 
 		$this->oStorageProvider = null;
 		$this->oLocalStorageProvider = null;
@@ -623,7 +623,7 @@ class Actions
 			'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1]
 		)
 		{
-			$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]));
+			$this->Cacher(null, true)->Delete(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]));
 		}
 
 		\RainLoop\Utils::ClearCookie(self::AUTH_ADMIN_TOKEN_KEY);
@@ -845,24 +845,44 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount = null
+	 * @param bool $bForceFile = false
+	 *
 	 * @return \MailSo\Cache\CacheClient
 	 */
-	public function Cacher()
+	public function Cacher($oAccount = null, $bForceFile = false)
 	{
-		if (null === $this->oCacher)
+		$sKey = '';
+		if ($oAccount)
 		{
-			$this->oCacher = \MailSo\Cache\CacheClient::NewInstance();
+			$sKey = $oAccount->ParentEmailHelper();
+		}
+
+		$sIndexKey = empty($sKey) ? '_default_' : $sKey;
+		if ($bForceFile)
+		{
+			$sIndexKey .= '/_files_';
+		}
+
+		if (!isset($this->aCachers[$sIndexKey]))
+		{
+			$this->aCachers[$sIndexKey] = \MailSo\Cache\CacheClient::NewInstance();
 
 			$oDriver = null;
 			$sDriver = \strtoupper(\trim($this->Config()->Get('cache', 'fast_cache_driver', 'files')));
 
 			switch (true)
 			{
+				default:
+				case $bForceFile:
+					$oDriver = \MailSo\Cache\Drivers\File::NewInstance(APP_PRIVATE_DATA.'cache', $sKey);
+					break;
+
 				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
 					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
 						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
 
-					$oDriver = \MailSo\Cache\Drivers\APC::NewInstance();
+					$oDriver = \MailSo\Cache\Drivers\APC::NewInstance($sKey);
 					break;
 
 				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
@@ -870,24 +890,21 @@ class Actions
 
 					$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
 						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211)
+						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
+						43200, $sKey
 					);
-					break;
-
-				default:
-					$oDriver = \MailSo\Cache\Drivers\File::NewInstance(APP_PRIVATE_DATA.'cache');
 					break;
 			}
 
 			if ($oDriver)
 			{
-				$this->oCacher->SetDriver($oDriver);
+				$this->aCachers[$sIndexKey]->SetDriver($oDriver);
 			}
 
-			$this->oCacher->SetCacheIndex($this->Config()->Get('cache', 'fast_cache_index', ''));
+			$this->aCachers[$sIndexKey]->SetCacheIndex($this->Config()->Get('cache', 'fast_cache_index', ''));
 		}
 
-		return $this->oCacher;
+		return $this->aCachers[$sIndexKey];
 	}
 
 	/**
@@ -1011,7 +1028,7 @@ class Actions
 	private function getAdminToken()
 	{
 		$sRand = \MailSo\Base\Utils::Md5Rand();
-		if (!$this->Cacher()->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time()))
+		if (!$this->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time()))
 		{
 			$this->oLogger->Write('Cannot store an admin token',
 				\MailSo\Log\Enumerations\Type::WARNING);
@@ -1035,7 +1052,7 @@ class Actions
 			$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
 			if (!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
 				'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1] &&
-				'' !== $this->Cacher()->Get(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]), '')
+				'' !== $this->Cacher(null, true)->Get(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]), '')
 			)
 			{
 				$bResult = true;
@@ -3348,7 +3365,7 @@ class Actions
 	{
 		$sDomain = \trim(APP_SITE);
 
-		$oCacher = $this->Cacher();
+		$oCacher = $this->Cacher(null, true);
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
 		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher)
@@ -6115,7 +6132,7 @@ class Actions
 						$sFolderFullName = $this->GetActionParam('MessageFolder', '');
 						$sUid = $this->GetActionParam('MessageUid', '');
 
-						$this->Cacher()->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $sUid), '1');
+						$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $sUid), '1');
 
 						if (0 < \strlen($sFolderFullName) && 0 < \strlen($sUid))
 						{
@@ -8749,7 +8766,9 @@ class Actions
 	 */
 	private function cacherForUids()
 	{
-		return ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher() : null;
+		$oAccount = $this->getAccountFromToken(false);
+		return ($this->Config()->Get('cache', 'enable', true) &&
+			$this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher($oAccount) : null;
 	}
 
 	/**
@@ -8757,7 +8776,8 @@ class Actions
 	 */
 	private function cacherForThreads()
 	{
-		return !!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher() : null;
+		$oAccount = $this->getAccountFromToken(false);
+		return !!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher($oAccount) : null;
 	}
 
 	/**
@@ -9005,7 +9025,7 @@ class Actions
 							catch (\Exception $oException) { unset($oException); }
 						}
 
-						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher()->Get(
+						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher($oAccount)->Get(
 							\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $mResult['Folder'], $mResult['Uid']), '0'))
 						{
 							$mResult['ReadReceipt'] = '';

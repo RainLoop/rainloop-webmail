@@ -24,28 +24,42 @@ class File implements \MailSo\Cache\DriverInterface
 	private $sCacheFolder;
 
 	/**
+	 * @var string
+	 */
+	private $sKeyPrefix;
+
+	/**
 	 * @access private
 	 *
 	 * @param string $sCacheFolder
+	 * @param string $sKeyPrefix = ''
 	 */
-	private function __construct($sCacheFolder)
+	private function __construct($sCacheFolder, $sKeyPrefix = '')
 	{
 		$this->sCacheFolder = $sCacheFolder;
 		$this->sCacheFolder = rtrim(trim($this->sCacheFolder), '\\/').'/';
-		if (!\is_dir($this->sCacheFolder))
+
+		$this->sKeyPrefix = $sKeyPrefix;
+		if (!empty($this->sKeyPrefix))
 		{
-			@\mkdir($this->sCacheFolder, 0755);
+			$this->sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
+				rtrim(trim($this->sKeyPrefix), '\\/')), 5, '_');
+
+			$this->sKeyPrefix = '__/'.
+				\substr($this->sKeyPrefix, 0, 2).'/'.\substr($this->sKeyPrefix, 2, 2).'/'.
+				$this->sKeyPrefix.'/';
 		}
 	}
 
 	/**
 	 * @param string $sCacheFolder
+	 * @param string $sKeyPrefix = ''
 	 *
 	 * @return \MailSo\Cache\Drivers\File
 	 */
-	public static function NewInstance($sCacheFolder)
+	public static function NewInstance($sCacheFolder, $sKeyPrefix = '')
 	{
-		return new self($sCacheFolder);
+		return new self($sCacheFolder, $sKeyPrefix);
 	}
 
 	/**
@@ -121,7 +135,7 @@ class File implements \MailSo\Cache\DriverInterface
 			$sKeyPath = \sha1($sKey);
 			$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
 
-			$sFilePath = $this->sCacheFolder.$sKeyPath;
+			$sFilePath = $this->sCacheFolder.$this->sKeyPrefix.$sKeyPath;
 			if ($bMkDir && !\is_dir(\dirname($sFilePath)))
 			{
 				if (!\mkdir(\dirname($sFilePath), 0755, true))

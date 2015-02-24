@@ -122,7 +122,7 @@
 	 */
 	AttachmentModel.prototype.isText = function ()
 	{
-		return -1 < Utils.inArray(this.mimeType, ['application/pgp-signature']) ||
+		return -1 < Utils.inArray(this.mimeType, ['application/pgp-signature', 'message/delivery-status', 'message/rfc822']) ||
 			('text/' === this.mimeType.substr(0, 5) && -1 === Utils.inArray(this.mimeType, ['text/html']));
 	};
 
@@ -315,6 +315,12 @@
 			]))
 			{
 				sClass = 'icon-file-certificate';
+			}
+			else if (-1 < Utils.inArray(sMimeType, [
+				'message/delivery-status', 'message/rfc822'
+			]))
+			{
+				sClass = 'icon-file-text';
 			}
 			else if (-1 < Utils.inArray(aParts[1], [
 				'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',

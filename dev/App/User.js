@@ -1315,6 +1315,7 @@
 		require('Stores/User/Settings').populate();
 		require('Stores/User/Notification').populate();
 		require('Stores/User/Account').populate();
+		require('Stores/User/Contact').populate();
 
 		var
 			self = this,

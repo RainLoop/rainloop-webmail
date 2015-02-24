@@ -39,11 +39,17 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	private $oMem;
 
 	/**
+	 * @var string
+	 */
+	private $sKeyPrefix;
+
+	/**
 	 * @param string $sHost = '127.0.0.1'
 	 * @param int $iPost = 11211
 	 * @param int $iExpire = 43200
+	 * @param string $sKeyPrefix = ''
 	 */
-	private function __construct($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200)
+	private function __construct($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200, $sKeyPrefix = '')
 	{
 		$this->sHost = $sHost;
 		$this->iPost = $iPost;
@@ -54,17 +60,26 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		{
 			$this->oMem = null;
 		}
+
+		$this->sKeyPrefix = $sKeyPrefix;
+		if (!empty($this->sKeyPrefix))
+		{
+			$this->sKeyPrefix =
+				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
+		}
 	}
 
 	/**
 	 * @param string $sHost = '127.0.0.1'
 	 * @param int $iPost = 11211
+	 * @param int $iExpire = 43200
+	 * @param string $sKeyPrefix = ''
 	 *
 	 * @return \MailSo\Cache\Drivers\APC
 	 */
-	public static function NewInstance($sHost = '127.0.0.1', $iPost = 11211)
+	public static function NewInstance($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200, $sKeyPrefix = '')
 	{
-		return new self($sHost, $iPost);
+		return new self($sHost, $iPost, $iExpire, $sKeyPrefix);
 	}
 
 	/**
@@ -104,7 +119,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 
 	/**
 	 * @param int $iTimeToClearInHours = 24
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function GC($iTimeToClearInHours = 24)
@@ -113,7 +128,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		{
 			return $this->oMem->flush();
 		}
-		
+
 		return false;
 	}
 
@@ -124,6 +139,6 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	 */
 	private function generateCachedKey($sKey)
 	{
-		return \sha1($sKey);
+		return $this->sKeyPrefix.\sha1($sKey);
 	}
 }
