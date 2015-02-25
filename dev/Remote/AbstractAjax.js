@@ -63,7 +63,7 @@
 
 					if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
 					{
-						if (Globals.__APP__)
+						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
 						{
 							 Globals.__APP__.loginAndLogoutReload(true);
 						}
@@ -71,11 +71,11 @@
 
 					if (oData.ClearAuth || oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
 					{
-						if (Globals.__APP__)
+						if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
 						{
 							Globals.__APP__.clearClientSideToken();
 
-							if (!oData.ClearAuth)
+							if (!oData.ClearAuth &&  Globals.__APP__.loginAndLogoutReload)
 							{
 								 Globals.__APP__.loginAndLogoutReload(true);
 							}

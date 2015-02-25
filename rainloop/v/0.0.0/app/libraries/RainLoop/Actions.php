@@ -2156,6 +2156,9 @@ class Actions
 						1 < \count($aOrder['Accounts']))
 					{
 						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
+						$aAccounts = \array_filter($aAccounts, function ($sHash) {
+							return 5 < \strlen($sHash);
+						});
 					}
 				}
 

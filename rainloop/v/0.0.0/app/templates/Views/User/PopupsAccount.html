@@ -11,14 +11,18 @@
 			<div class="modal-body">
 				<div class="form-horizontal">
 					<div class="alert" data-bind="visible: '' !== submitError()">
-						<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
+						<button type="button" class="close-custom" data-bind="click: function () { submitError('') }">&times;</button>
 						<span data-bind="text: submitError"></span>
+						<div data-bind="visible: submitErrorAdditional">
+							<br />
+							<span data-bind="text: submitErrorAdditional"></span>
+						</div>
 					</div>
 					<br />
 					<div class="control-group" data-bind="css: {'error': emailError}">
 						<label class="i18n control-label" data-i18n-text="LOGIN/LABEL_EMAIL"></label>
 						<div class="controls">
-							<label style="margin-top: 5px;"><strong data-bind="visible: !isNew(), text: email"></strong></label>
+							<label style="margin-top: 5px;" data-bind="visible: !isNew()"><strong data-bind="text: email"></strong></label>
 							<input type="email" class="inputEmail input-large" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="visible: isNew, textInput: email, onEnter: addAccountCommand, hasfocus: emailFocus" />
 						</div>

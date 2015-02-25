@@ -22,8 +22,8 @@
 		Globals.__APP__ = App;
 
 		Globals.$win
-			.keydown(Utils.killCtrlAandS)
-			.keyup(Utils.killCtrlAandS)
+			.keydown(Utils.kill_CtrlA_CtrlS)
+			.keyup(Utils.kill_CtrlA_CtrlS)
 			.unload(function () {
 				Globals.bUnload = true;
 			})
@@ -45,7 +45,7 @@
 		window['rl']['createCommand'] = Utils.createCommand;
 
 		window['rl']['addSettingsViewModel'] = _.bind(Plugins.addSettingsViewModel, Plugins);
-		
+
 		window['rl']['pluginRemoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
 		window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
 

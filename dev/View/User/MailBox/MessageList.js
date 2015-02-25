@@ -251,15 +251,9 @@
 			return oMessage ? oMessage.generateUid() : '';
 		});
 
-		MessageStore.messageListEndHash.subscribe(function () {
-			this.selector.scrollToTop();
-		}, this);
-
-		SettingsStore.layout.subscribe(function (mValue) {
-			this.selector.autoSelect(Enums.Layout.NoPreview !== mValue);
-		}, this);
-
-		SettingsStore.layout.valueHasMutated();
+		this.selector.on('onAutoSelect', _.bind(function () {
+			return this.useAutoSelect();
+		}, this));
 
 		Events
 			.sub('mailbox.message-list.selector.go-down', function () {
@@ -269,6 +263,10 @@
 				this.selector.goUp(true);
 			}, this)
 		;
+
+		MessageStore.messageListEndHash.subscribe(function () {
+			this.selector.scrollToTop();
+		}, this);
 
 		kn.constructorEnd(this);
 	}
@@ -280,6 +278,16 @@
 	 * @type {string}
 	 */
 	MessageListMailBoxUserView.prototype.emptySubjectValue = '';
+
+	MessageListMailBoxUserView.prototype.useAutoSelect = function ()
+	{
+		if (/is:unseen/.test(this.mainMessageListSearch()))
+		{
+			return false;
+		}
+
+		return Enums.Layout.NoPreview !== SettingsStore.layout();
+	};
 
 	MessageListMailBoxUserView.prototype.searchEnterAction = function ()
 	{
@@ -719,6 +727,14 @@
 		// disable print
 		key('ctrl+p, command+p', Enums.KeyState.MessageList, function () {
 			return false;
+		});
+
+		key('enter', Enums.KeyState.MessageList, function () {
+			if (self.message() && self.useAutoSelect())
+			{
+				Events.pub('mailbox.message-view.toggle-full-screen');
+				return false;
+			}
 		});
 
 		// archive (zip)

@@ -131,9 +131,10 @@
 				<div class="content g-scrollbox">
 					<div class="content-wrapper">
 						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
-							<a class="btn btn-small pull-right searchCancelButton" data-bind="click: cancelSearch">
+							<a class="close-custom" data-bind="click: cancelSearch">&times;</a>
+<!--							<a class="btn btn-small pull-right searchCancelButton" data-bind="click: cancelSearch">
 								<i class="icon-remove"></i>
-							</a>
+							</a>-->
 							<span data-bind="text: messageListSearchDesc"></span>:
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">

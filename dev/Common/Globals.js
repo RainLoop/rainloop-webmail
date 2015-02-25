@@ -7,7 +7,6 @@
 		Globals = {},
 
 		window = require('window'),
-		is = require('is'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -69,14 +68,21 @@
 	Globals.bUnload = false;
 
 	/**
-	 * @type {boolean}
+	 * @type {string}
 	 */
-	Globals.bTabletDevice = is.tablet();
+	Globals.sUserAgent = 'navigator' in window && 'userAgent' in window.navigator &&
+		window.navigator.userAgent.toLowerCase() || '';
 
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bMobileDevice = is.mobile() || is.tablet();
+	Globals.bMobileDevice =
+		/android/i.test(Globals.sUserAgent) ||
+		/iphone/i.test(Globals.sUserAgent) ||
+		/ipod/i.test(Globals.sUserAgent) ||
+		/ipad/i.test(Globals.sUserAgent) ||
+		/blackberry/i.test(Globals.sUserAgent)
+	;
 
 	/**
 	 * @type {boolean}

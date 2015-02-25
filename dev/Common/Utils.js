@@ -244,9 +244,7 @@
 	 */
 	Utils.encodeHtml = function (sText)
 	{
-		return Utils.isNormal(sText) ? sText.toString()
-			.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;').replace(/'/g, '&#039;') : '';
+		return Utils.isNormal(sText) ? _.escape(sText.toString()) : '';
 	};
 
 	/**
@@ -512,7 +510,7 @@
 	/**
 	 * @param {?} oEvent
 	 */
-	Utils.killCtrlAandS = function (oEvent)
+	Utils.kill_CtrlA_CtrlS = function (oEvent)
 	{
 		oEvent = oEvent || window.event;
 		if (oEvent && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
@@ -944,7 +942,7 @@
 
 			fixAttibuteValue = function () {
 				return (arguments && 1 < arguments.length) ?
-					'' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+					'' + arguments[1] + _.escape(arguments[2]) : '';
 			},
 
 			convertLinks = function () {
@@ -1548,6 +1546,36 @@
 
 			ko.utils.objectForEach(oObject, Utils.disposeOne);
 		}
+	};
+
+	/**
+	 * @param {string} sStr
+	 * @return {string}
+	 */
+	Utils.FullHtmlEncode = function (sStr)
+	{
+		var
+			iIndex = 0,
+			sChr = '',
+			iChrCode = 0,
+			sResult = '';
+		;
+
+		for (iIndex = 0; iIndex < sStr.length; iIndex++)
+		{
+			sChr = sStr[iIndex];
+			if (-1 < Utils.inArray(sChr, ['&', '<', '>', '"', '`', '\'']))
+			{
+				sResult += _.escape(sChr);
+			}
+			else
+			{
+				iChrCode = sChr.charCodeAt(0);
+				sResult += (iChrCode > 128) ? '&#' + iChrCode + ';' : sChr;
+			}
+		}
+
+		return sResult;
 	};
 
 	/**

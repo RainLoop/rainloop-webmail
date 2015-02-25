@@ -43,6 +43,7 @@
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
+		this.submitErrorAdditional = ko.observable('');
 
 		this.emailFocus = ko.observable(false);
 
@@ -61,21 +62,28 @@
 			Remote.accountSetup(_.bind(function (sResult, oData) {
 
 				this.submitRequest(false);
-				if (Enums.StorageResultType.Success === sResult && oData && 'AccountSetup' === oData.Action)
+				if (Enums.StorageResultType.Success === sResult && oData)
 				{
 					if (oData.Result)
 					{
 						require('App/User').accountsAndIdentities();
 						this.cancelCommand();
 					}
-					else if (oData.ErrorCode)
+					else
 					{
-						this.submitError(Translator.getNotification(oData.ErrorCode));
+						this.submitError(oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
+							Translator.getNotification(Enums.Notification.UnknownError));
+
+						if (oData.ErrorMessageAdditional)
+						{
+							this.submitErrorAdditional(oData.ErrorMessageAdditional);
+						}
 					}
 				}
 				else
 				{
 					this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
+					this.submitErrorAdditional('');
 				}
 
 			}, this), this.email(), this.password(), this.isNew());
@@ -104,6 +112,7 @@
 
 		this.submitRequest(false);
 		this.submitError('');
+		this.submitErrorAdditional('');
 	};
 
 	AccountPopupView.prototype.onShow = function (oAccount)

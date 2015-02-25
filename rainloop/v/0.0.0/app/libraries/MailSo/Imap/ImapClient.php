@@ -1185,7 +1185,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			foreach ($aResponse as /* @var $oImapResponse \MailSo\Imap\Response */ $oImapResponse)
 			{
 				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
-					&& 'ESEARCH' === $oImapResponse->StatusOrIndex
+					&& ('ESEARCH' === $oImapResponse->StatusOrIndex || 'ESORT' === $oImapResponse->StatusOrIndex)
 					&& \is_array($oImapResponse->ResponseList)
 					&& isset($oImapResponse->ResponseList[2], $oImapResponse->ResponseList[2][0], $oImapResponse->ResponseList[2][1])
 					&& 'TAG' === $oImapResponse->ResponseList[2][0] && $sRequestTag === $oImapResponse->ResponseList[2][1]

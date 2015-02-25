@@ -18,6 +18,22 @@ namespace MailSo\Base;
 class Utils
 {
 	/**
+	 * @var string
+	 */
+	static $sValidUtf8Regexp = <<<'END'
+/
+  (
+    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
+    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
+    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
+    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3
+    ){1,100}                        # ...one or more times
+  )
+| .                                 # anything else
+/x
+END;
+
+	/**
 	 * @var array
 	 */
 	public static $SuppostedCharsets = array(
@@ -1432,15 +1448,7 @@ class Utils
 			return $sUtfString;
 		}
 
-		$sUtfString = \preg_replace(
-			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
-			'|[\x00-\x7F][\x80-\xBF]+'.
-			'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.
-			'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
-			'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
-			$sReplaceOn,
-			$sUtfString
-		);
+		$sUtfString = \preg_replace(\MailSo\Base\Utils::$sValidUtf8Regexp, '$1', $sUtfString);
 
 		$sUtfString = \preg_replace(
 			'/\xE0[\x80-\x9F][\x80-\xBF]'.
@@ -1450,13 +1458,14 @@ class Utils
 		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
 
 		$sNewUtfString = false;
-		if (\MailSo\Base\Utils::IsIconvSupported())
-		{
-			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
-		}
-		else if (\MailSo\Base\Utils::IsMbStringSupported())
+		if (false === $sNewUtfString && \MailSo\Base\Utils::IsMbStringSupported())
 		{
 			$sNewUtfString = \MailSo\Base\Utils::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+		}
+
+		if (false === $sNewUtfString && \MailSo\Base\Utils::IsIconvSupported())
+		{
+			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
 		}
 
 		if (false !== $sNewUtfString)

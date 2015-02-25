@@ -58,7 +58,7 @@
 					this.selectedItem(null);
 				}
 			}
-			else if (this.bAutoSelect && this.focusedItem())
+			else if (this.autoSelect() && this.focusedItem())
 			{
 				this.selectedItem(this.focusedItem());
 			}
@@ -124,10 +124,10 @@
 		this.sItemFocusedSelector = sItemFocusedSelector;
 
 		this.sLastUid = '';
-		this.bAutoSelect = true;
 		this.oCallbacks = {};
 
 		this.emptyFunction = function () {};
+		this.emptyTrueFunction = function () { return true; };
 
 		this.focusedItem.subscribe(function (oItem) {
 			if (oItem)
@@ -221,7 +221,7 @@
 
 				this.selectedItemUseCallback = true;
 
-				if (!bChecked && !bSelected && this.bAutoSelect)
+				if (!bChecked && !bSelected && this.autoSelect())
 				{
 					if (self.focusedItem())
 					{
@@ -392,9 +392,12 @@
 		}
 	};
 
-	Selector.prototype.autoSelect = function (bValue)
+	/**
+	 * @returns {boolean}
+	 */
+	Selector.prototype.autoSelect = function ()
 	{
-		this.bAutoSelect = !!bValue;
+		return !!(this.oCallbacks['onAutoSelect'] || this.emptyTrueFunction)();
 	};
 
 	/**
@@ -540,7 +543,7 @@
 				}
 			}
 
-			if ((this.bAutoSelect || !!bForceSelect) &&
+			if ((this.autoSelect() || !!bForceSelect) &&
 				!this.isListChecked() && Enums.EventKeyCode.Space !== iEventKeyCode)
 			{
 				this.selectedItem(oResult);

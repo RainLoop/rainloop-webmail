@@ -323,6 +323,10 @@
 			Events.pub('mailbox.message-list.selector.go-down');
 		});
 
+		Events.sub('mailbox.message-view.toggle-full-screen', function () {
+			this.toggleFullScreen();
+		}, this);
+
 		kn.constructorEnd(this);
 	}
 
@@ -581,6 +585,11 @@
 			if (this.fullScreenMode())
 			{
 				this.fullScreenMode(false);
+
+				if (Enums.Layout.NoPreview !== this.layout())
+				{
+					this.message.focused(false);
+				}
 			}
 			else if (Enums.Layout.NoPreview === this.layout())
 			{
@@ -608,14 +617,6 @@
 		key('enter', Enums.KeyState.MessageView, function () {
 			self.toggleFullScreen();
 			return false;
-		});
-
-		key('enter', Enums.KeyState.MessageList, function () {
-			if (Enums.Layout.NoPreview !== self.layout() && self.message())
-			{
-				self.toggleFullScreen();
-				return false;
-			}
 		});
 
 		// reply
