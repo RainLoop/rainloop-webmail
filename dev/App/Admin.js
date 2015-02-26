@@ -206,7 +206,9 @@
 		LicenseStore.licenseError('');
 
 		Remote.licensing(function (sResult, oData) {
+
 			LicenseStore.licensingProcess(false);
+			
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isNormal(oData.Result['Expired']))
 			{
 				LicenseStore.licenseValid(true);

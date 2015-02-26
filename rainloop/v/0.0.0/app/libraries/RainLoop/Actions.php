@@ -3339,27 +3339,27 @@ class Actions
 	 *
 	 * @return string
 	 */
-	public function domainPathHelper($sDomain)
-	{
-		$sDomain = \strtolower(\trim($sDomain));
-
-		$sTempDomain = \preg_replace('/^(webmail|email|mail)\./', '', $sDomain);
-		if (false === \strpos($sTempDomain, '.'))
-		{
-			$sTempDomain = $sDomain;
-		}
-
-		$sDomainPrefix = $sTempDomain;
-		if (false === \strpos($sDomainPrefix, '.'))
-		{
-			$sDomainPrefix = $sTempDomain;
-		}
-
-		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomainPrefix), 0, 2);
-		$sDomainPrefix = \str_pad($sDomainPrefix, 2, '_');
-
-		return 'd/'.\substr($sDomainPrefix, 0, 1).'/'.$sDomainPrefix.'/'.\urlencode($sTempDomain);
-	}
+//	public function domainPathHelper($sDomain)
+//	{
+//		$sDomain = \strtolower(\trim($sDomain));
+//
+//		$sTempDomain = \preg_replace('/^(webmail|email|mail)\./', '', $sDomain);
+//		if (false === \strpos($sTempDomain, '.'))
+//		{
+//			$sTempDomain = $sDomain;
+//		}
+//
+//		$sDomainPrefix = $sTempDomain;
+//		if (false === \strpos($sDomainPrefix, '.'))
+//		{
+//			$sDomainPrefix = $sTempDomain;
+//		}
+//
+//		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomainPrefix), 0, 2);
+//		$sDomainPrefix = \str_pad($sDomainPrefix, 2, '_');
+//
+//		return 'd/'.\substr($sDomainPrefix, 0, 1).'/'.$sDomainPrefix.'/'.\urlencode($sTempDomain);
+//	}
 
 	/**
 	 * @return string
@@ -3417,23 +3417,25 @@ class Actions
 			$iCode = 0;
 			$sContentType = '';
 
-			$sValue = $oHttp->GetUrlAsString(APP_STATUS_PATH.$this->domainPathHelper($sDomain),
-				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-				array(), false
-			);
-
-//			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
-//				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
+//			$sValue = $oHttp->GetUrlAsString(APP_STATUS_PATH.$this->domainPathHelper($sDomain),
+//				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 5,
 //				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
 //				array(), false
 //			);
 
-			if (404 === $iCode)
+			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
+				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 5,
+				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
+				array(), false
+			);
+
+			$this->Logger()->Write($sValue);
+
+			/*if (404 === $iCode)
 			{
 				$sValue = 'NO';
 			}
-			else if (200 !== $iCode)
+			else */if (200 !== $iCode)
 			{
 				$sValue = '';
 			}
@@ -3545,7 +3547,7 @@ class Actions
 
 			\sleep(1);
 			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
-				'RainLoop/'.APP_VERSION,	$sContentType, $iCode, $this->Logger(), 10,
+				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
 				array(), false
 			);

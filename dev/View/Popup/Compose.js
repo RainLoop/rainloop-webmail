@@ -1170,6 +1170,8 @@
 				{
 					self.setSignatureFromIdentity(oIdentity);
 				}
+
+				self.setFocusInPopup();
 			});
 		}
 		else if (Enums.ComposeType.Empty === sComposeType)
@@ -1192,6 +1194,8 @@
 				{
 					self.setSignatureFromIdentity(oIdentity);
 				}
+
+				self.setFocusInPopup();
 			});
 		}
 		else if (Utils.isNonEmptyArray(oMessageOrArray))
@@ -1214,6 +1218,8 @@
 				{
 					self.setSignatureFromIdentity(oIdentity);
 				}
+
+				self.setFocusInPopup();
 			});
 		}
 
@@ -1261,12 +1267,13 @@
 		this.resizerTrigger();
 	};
 
-	ComposePopupView.prototype.onShowWithDelay = function ()
+	ComposePopupView.prototype.setFocusInPopup = function ()
 	{
 		if (!Globals.bMobileDevice)
 		{
 			if ('' === this.to())
 			{
+				this.to.focused(false);
 				this.to.focused(true);
 			}
 			else if (this.oEditor)
@@ -1274,7 +1281,11 @@
 				this.oEditor.focus();
 			}
 		}
+	};
 
+	ComposePopupView.prototype.onShowWithDelay = function ()
+	{
+		this.setFocusInPopup();
 		this.resizerTrigger();
 	};
 

@@ -1549,36 +1549,6 @@
 	};
 
 	/**
-	 * @param {string} sStr
-	 * @return {string}
-	 */
-	Utils.FullHtmlEncode = function (sStr)
-	{
-		var
-			iIndex = 0,
-			sChr = '',
-			iChrCode = 0,
-			sResult = '';
-		;
-
-		for (iIndex = 0; iIndex < sStr.length; iIndex++)
-		{
-			sChr = sStr[iIndex];
-			if (-1 < Utils.inArray(sChr, ['&', '<', '>', '"', '`', '\'']))
-			{
-				sResult += _.escape(sChr);
-			}
-			else
-			{
-				iChrCode = sChr.charCodeAt(0);
-				sResult += (iChrCode > 128) ? '&#' + iChrCode + ';' : sChr;
-			}
-		}
-
-		return sResult;
-	};
-
-	/**
 	 * @param {Object|Array} mObjectOrObjects
 	 */
 	Utils.delegateRunOnDestroy = function (mObjectOrObjects)
