@@ -35,7 +35,7 @@
 					<div class="input-append">
 						<input type="password" class="i18n input-block-level inputPassword checkAutocomplete" name="RainLoopPassword" id="RainLoopPassword"
 							autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="textInput: password" data-i18n-placeholder="LOGIN/LABEL_PASSWORD" />
+							data-bind="textInput: password, hasFocus: passwordFocus" data-i18n-placeholder="LOGIN/LABEL_PASSWORD" />
 						<span class="add-on">
 							<i class="icon-key"></i>
 						</span>
@@ -59,7 +59,7 @@
 				</div>
 				{{INCLUDE/BottomControlGroup/PLACE}}
 				<div class="controls">
-					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
+					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand, hasFocus: submitFocus">
 						<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
 						<span class="i18n i18n-animation" data-i18n-text="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
 					</button>

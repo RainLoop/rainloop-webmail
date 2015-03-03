@@ -48,12 +48,12 @@
 
 		this.progressText = ko.computed(function () {
 			var iP = this.progress();
-			return 0 === iP ? '' : '' + (99 === iP ? 100 : iP) + '%';
+			return 0 === iP ? '' : '' + (98 < iP ? 100 : iP) + '%';
 		}, this);
 
 		this.progressStyle = ko.computed(function () {
 			var iP = this.progress();
-			return 0 === iP ? '' : 'width:' + (99 === iP ? 100 : iP) + '%';
+			return 0 === iP ? '' : 'width:' + (98 < iP ? 100 : iP) + '%';
 		}, this);
 
 		this.title = ko.computed(function () {

@@ -105,6 +105,27 @@ class FolderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @return string
+	 */
+	public function FindDelimiter()
+	{
+		$sDelimiter = '/';
+		
+		$oFolder = $this->GetByFullNameRaw('INBOX');
+		if (!$oFolder)
+		{
+			$oFolder = $this->GetByIndex(0);
+		}
+
+		if ($oFolder)
+		{
+			$sDelimiter = $oFolder->Delimiter();
+		}
+
+		return $sDelimiter;
+	}
+
+	/**
 	 * @param string $sNamespace
 	 *
 	 * @return \MailSo\Mail\FolderCollection

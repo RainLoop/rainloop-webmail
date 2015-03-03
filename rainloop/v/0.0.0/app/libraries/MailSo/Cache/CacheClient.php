@@ -191,4 +191,25 @@ class CacheClient
 
 		return $this;
 	}
+
+	/**
+	 * @param bool $bCache = false
+	 *
+	 * @return bool
+	 */
+	public function Verify($bCache = false)
+	{
+		if ($this->oDriver)
+		{
+			$sCacheData = \gmdate('Y-m-d-H');
+			if ($bCache && $sCacheData === $this->Get('__verify_key__'))
+			{
+				return true;
+			}
+
+			return $this->Set('__verify_key__', $sCacheData);
+		}
+
+		return false;
+	}
 }

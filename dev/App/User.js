@@ -1042,6 +1042,7 @@
 				oData.Result.IsThreadsSupported && true);
 
 			FolderStore.folderList(this.folderResponseParseRec(FolderStore.namespace, oData.Result['@Collection']));
+			FolderStore.folderList.optimized(!!oData.Result.Optimized);
 
 			if (oData.Result['SystemFolders'] && '' === '' +
 				Settings.settingsGet('SentFolder') +

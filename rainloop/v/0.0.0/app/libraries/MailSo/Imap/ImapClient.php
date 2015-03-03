@@ -617,6 +617,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$aReturn = array();
 
+		$sDelimiter = '';
+		$bInbox = false;
+
 		$oImapResponse = null;
 		foreach ($aResult as /* @var $oImapResponse \MailSo\Imap\Response */ $oImapResponse)
 		{
@@ -628,6 +631,16 @@ class ImapClient extends \MailSo\Net\NetClient
 					$oFolder = Folder::NewInstance($oImapResponse->ResponseList[4],
 						$oImapResponse->ResponseList[3], $oImapResponse->ResponseList[2]);
 
+					if ($oFolder->IsInbox())
+					{
+						$bInbox = true;
+					}
+
+					if (empty($sDelimiter))
+					{
+						$sDelimiter = $oFolder->Delimiter();
+					}
+
 					$aReturn[] = $oFolder;
 				}
 				catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
@@ -635,6 +648,11 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 				}
 			}
+		}
+
+		if (!$bInbox && !empty($sDelimiter))
+		{
+			$aReturn[] = Folder::NewInstance('INBOX', $sDelimiter);
 		}
 
 		if ($bUseListStatus)

@@ -687,7 +687,7 @@
 
 			if (oEvent)
 			{
-				if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
+				if (oEvent.shiftKey && !(oEvent.ctrlKey || oEvent.metaKey) && !oEvent.altKey)
 				{
 					bClick = false;
 					if ('' === this.sLastUid)
@@ -700,7 +700,7 @@
 
 					this.focusedItem(oItem);
 				}
-				else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
+				else if ((oEvent.ctrlKey || oEvent.metaKey) && !oEvent.shiftKey && !oEvent.altKey)
 				{
 					bClick = false;
 					this.focusedItem(oItem);

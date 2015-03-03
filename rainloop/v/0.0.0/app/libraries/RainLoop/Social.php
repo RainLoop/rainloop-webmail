@@ -261,7 +261,7 @@ class Social
 
 			$oSettings->SetConf('TwitterAccessToken', '');
 			$oSettings->SetConf('TwitterSocialName', '');
-			
+
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 		}
 
@@ -275,6 +275,7 @@ class Social
 	{
 		$sResult = '';
 		$sLoginUrl = '';
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -347,13 +348,7 @@ class Social
 								if ($aUserData && \is_array($aUserData) &&
 									!empty($aUserData['Email']) && isset($aUserData['Password']))
 								{
-									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-									if ($oAccount instanceof \RainLoop\Model\Account)
-									{
-										$this->oActions->AuthToken($oAccount);
-
-										$iErrorCode = 0;
-									}
+									$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 								}
 								else
 								{
@@ -421,6 +416,7 @@ class Social
 		$mData = false;
 		$sUserData = '';
 		$aUserData = false;
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -494,13 +490,7 @@ class Social
 						if ($aUserData && \is_array($aUserData) &&
 							!empty($aUserData['Email']) && isset($aUserData['Password']))
 						{
-							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-							if ($oAccount instanceof \RainLoop\Model\Account)
-							{
-								$this->oActions->AuthToken($oAccount);
-
-								$iErrorCode = 0;
-							}
+							$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 						}
 						else
 						{
@@ -543,6 +533,7 @@ class Social
 		$sLoginUrl = '';
 
 		$sSocialName = '';
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -670,13 +661,7 @@ class Social
 										!empty($aUserData['Email']) &&
 										isset($aUserData['Password']))
 									{
-										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-										if ($oAccount instanceof \RainLoop\Model\Account)
-										{
-											$this->oActions->AuthToken($oAccount);
-
-											$iErrorCode = 0;
-										}
+										$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 									}
 									else
 									{
@@ -875,5 +860,43 @@ class Social
 	public function TwitterUserLoginStorageKey($oTwitter, $sTwitterUserId)
 	{
 		return \implode('_', array('twitter', \md5($oTwitter->config['consumer_secret']), $sTwitterUserId, APP_SALT));
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account|null $oAccount
+	 * @param string $sEmail
+	 * @param string $sPassword
+	 *
+	 * @return int
+	 */
+	private function loginProcess(&$oAccount, $sEmail, $sPassword)
+	{
+		$iErrorCode = \RainLoop\Notifications::UnknownError;
+
+		try
+		{
+			$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
+			if ($oAccount instanceof \RainLoop\Model\Account)
+			{
+				$this->oActions->AuthToken($oAccount);
+				$iErrorCode = 0;
+			}
+			else
+			{
+				$oAccount = null;
+				$iErrorCode = \RainLoop\Notifications::AuthError;
+			}
+		}
+		catch (\RainLoop\Exceptions\ClientException $oException)
+		{
+			$iErrorCode = $oException->getCode();
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
+			$iErrorCode = \RainLoop\Notifications::UnknownError;
+		}
+
+		return $iErrorCode;
 	}
 }

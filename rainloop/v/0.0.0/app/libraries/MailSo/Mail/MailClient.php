@@ -2038,10 +2038,10 @@ class MailClient
 	 *
 	 * @return array
 	 */
-	public function folerListOptimization($aMailFoldersHelper, $iOptimizationLimit = 0)
+	public function folderListOptimization($aMailFoldersHelper, $iOptimizationLimit = 0)
 	{
 		// optimization
-		if (10 < $iOptimizationLimit && $iOptimizationLimit < \count($aMailFoldersHelper))
+		if (10 < $iOptimizationLimit && \is_array($aMailFoldersHelper) && $iOptimizationLimit < \count($aMailFoldersHelper))
 		{
 			if ($this->oLogger)
 			{
@@ -2056,7 +2056,7 @@ class MailClient
 				'drafts',
 				'junk', 'spam',
 				'trash', 'bin',
-				'archive', 'allmail', 'all',
+				'archives', 'archive', 'allmail', 'all',
 				'starred', 'flagged', 'important',
 				'contacts', 'chats'
 			);
@@ -2064,10 +2064,21 @@ class MailClient
 			$aNewMailFoldersHelper = array();
 
 			$iCountLimit = $iForeachLimit;
+
 			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
 			{
-				// normal and subscribed only
-				if ($oFolder && ($oFolder->IsSubscribed() || \in_array(\strtolower($oFolder->NameRaw()), $aFilteredNames)))
+				// mandatory folders
+				if ($oFolder && \in_array(\strtolower($oFolder->NameRaw()), $aFilteredNames))
+				{
+					$aNewMailFoldersHelper[] = $oFolder;
+					$aMailFoldersHelper[$iIndex] = null;
+				}
+			}
+
+			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+			{
+				// subscribed folders
+				if ($oFolder && $oFolder->IsSubscribed())
 				{
 					$aNewMailFoldersHelper[] = $oFolder;
 
@@ -2205,7 +2216,7 @@ class MailClient
 			}
 
 			$iCount = \count($aMailFoldersHelper);
-			$aMailFoldersHelper = $this->folerListOptimization($aMailFoldersHelper, $iOptimizationLimit);
+			$aMailFoldersHelper = $this->folderListOptimization($aMailFoldersHelper, $iOptimizationLimit);
 
 			$bOptimized = $iCount !== \count($aMailFoldersHelper);
 		}

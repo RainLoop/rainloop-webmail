@@ -3371,7 +3371,7 @@ class Actions
 		$oCacher = $this->Cacher(null, true);
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher)
+		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher || !$oCacher->Verify(true))
 		{
 			return 'NO';
 		}
@@ -5028,8 +5028,7 @@ class Actions
 				$sNamespace = $oFolderCollection->GetNamespace();
 				$sParent = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
 
-				$oInboxFolder = $oFolderCollection->GetByFullNameRaw('INBOX');
-				$sDelimiter = $oInboxFolder ? $oInboxFolder->Delimiter() : '/';
+				$sDelimiter = $oFolderCollection->FindDelimiter();
 
 				$aList = array();
 				$aMap = $this->systemFoldersNames($oAccount);
@@ -5108,7 +5107,8 @@ class Actions
 				if ($bDoItAgain)
 				{
 					$oFolderCollection = $this->MailClient()->Folders('', '*',
-						!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+						!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
+						(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 					);
 
 					if ($oFolderCollection)
@@ -5950,9 +5950,7 @@ class Actions
 				{
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
 
-					$this->deleteMessageAttachmnets($oAccount);
-
-					if (is_array($aDraftInfo) && 3 === count($aDraftInfo))
+					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo))
 					{
 						$sDraftInfoType = $aDraftInfo[0];
 						$sDraftInfoUid = $aDraftInfo[1];
@@ -6035,7 +6033,9 @@ class Actions
 						@\fclose($rMessageStream);
 					}
 
-					if (0 < strlen($sDraftFolder) && 0 < strlen($sDraftUid))
+					$this->deleteMessageAttachmnets($oAccount);
+
+					if (0 < \strlen($sDraftFolder) && 0 < \strlen($sDraftUid))
 					{
 						try
 						{

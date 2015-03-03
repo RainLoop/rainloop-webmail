@@ -22,7 +22,7 @@
 
 		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
-		
+
 		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
@@ -58,6 +58,7 @@
 		this.passwordError = ko.observable(false);
 
 		this.emailFocus = ko.observable(false);
+		this.passwordFocus = ko.observable(false);
 		this.submitFocus = ko.observable(false);
 
 		this.email.subscribe(function () {
@@ -297,29 +298,38 @@
 	LoginUserView.prototype.onShow = function ()
 	{
 		kn.routeOff();
+	};
 
-		_.delay(_.bind(function () {
-			if ('' !== this.email() && '' !== this.password())
-			{
-				this.submitFocus(true);
-			}
-			else
-			{
-				this.emailFocus(true);
-			}
+	LoginUserView.prototype.onShowWithDelay = function ()
+	{
+		if ('' !== this.email() && '' !== this.password())
+		{
+			this.submitFocus(true);
+		}
+		else if ('' === this.email())
+		{
+			this.emailFocus(true);
+		}
+		else if ('' === this.password())
+		{
+			this.passwordFocus(true);
+		}
+		else
+		{
+			this.emailFocus(true);
+		}
 
-			if (Settings.settingsGet('UserLanguage'))
-			{
-				$.cookie('rllang', LanguageStore.language(), {'expires': 30});
-			}
-
-		}, this), 100);
+		if (Settings.settingsGet('UserLanguage'))
+		{
+			$.cookie('rllang', LanguageStore.language(), {'expires': 30});
+		}
 	};
 
 	LoginUserView.prototype.onHide = function ()
 	{
 		this.submitFocus(false);
 		this.emailFocus(false);
+		this.passwordFocus(false);
 	};
 
 	LoginUserView.prototype.onBuild = function ()

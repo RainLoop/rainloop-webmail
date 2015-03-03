@@ -279,8 +279,8 @@
 				this.viewIsImportant(oMessage.isImportant());
 
 				sLastEmail = oMessage.fromAsSingleEmail();
-				Cache.getUserPic(sLastEmail, function (sPic, $sEmail) {
-					if (sPic !== self.viewUserPic() && sLastEmail === $sEmail)
+				Cache.getUserPic(sLastEmail, function (sPic, sEmail) {
+					if (sPic !== self.viewUserPic() && sLastEmail === sEmail)
 					{
 						self.viewUserPicVisible(false);
 						self.viewUserPic(Consts.DataImages.UserDotPic);

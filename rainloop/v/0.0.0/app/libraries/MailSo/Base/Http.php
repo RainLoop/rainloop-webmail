@@ -280,20 +280,37 @@ class Http
 	}
 
 	/**
+	 * @param bool $bCheckProxy = true
+	 *
 	 * @return string
 	 */
-	public function GetScheme()
+	public function GetScheme($bCheckProxy = true)
 	{
-		$sHttps = \strtolower($this->GetServer('HTTPS', ''));
-		return ('on' === $sHttps || ('' === $sHttps && '443' === (string) $this->GetServer('SERVER_PORT', ''))) ? 'https' : 'http';
+		return $this->IsSecure($bCheckProxy) ? 'https' : 'http';
 	}
 
 	/**
+	 * @param bool $bCheckProxy = true
+	 *
 	 * @return bool
 	 */
-	public function IsSecure()
+	public function IsSecure($bCheckProxy = true)
 	{
-		return ('https' === $this->GetScheme());
+		$sHttps = \strtolower($this->GetServer('HTTPS', ''));
+		if ('on' === $sHttps || ('' === $sHttps && '443' === (string) $this->GetServer('SERVER_PORT', '')))
+		{
+			return true;
+		}
+
+		if ($bCheckProxy && (
+			('https' === \strtolower($this->GetServer('HTTP_X_FORWARDED_PROTO', ''))) ||
+			('on' === \strtolower($this->GetServer('HTTP_X_FORWARDED_SSL', '')))
+		))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -308,12 +325,10 @@ class Http
 		$sHost = $this->GetServer('HTTP_HOST', '');
 		if (0 === \strlen($sHost))
 		{
-			$sScheme = $this->GetScheme();
 			$sName = $this->GetServer('SERVER_NAME');
-			$iPort = (int) $this->GetServer('SERVER_PORT');
+			$iPort = (int) $this->GetServer('SERVER_PORT', 80);
 
-			$sHost = (('http' === $sScheme && 80 === $iPort) || ('https' === $sScheme && 443 === $iPort))
-				? $sName : $sName.':'.$iPort;
+			$sHost = (\in_array($iPort, array(80, 433))) ? $sName : $sName.':'.$iPort;
 		}
 
 		if ($bWithoutWWW)
