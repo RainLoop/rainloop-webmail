@@ -45,21 +45,21 @@
 	 */
 	MailBoxUserScreen.prototype.oLastRoute = {};
 
-	MailBoxUserScreen.prototype.setNewTitle  = function ()
+	MailBoxUserScreen.prototype.updateWindowTitle  = function ()
 	{
 		var
 			sEmail = AccountStore.email(),
 			nFoldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount()
 		;
 
-		require('App/User').setTitle(('' === sEmail ? '' :
+		require('App/User').setWindowTitle(('' === sEmail ? '' : '' +
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') +
 				sEmail + ' - ') + Translator.i18n('TITLES/MAILBOX'));
 	};
 
 	MailBoxUserScreen.prototype.onShow = function ()
 	{
-		this.setNewTitle();
+		this.updateWindowTitle();
 		Globals.keyScope(Enums.KeyState.MessageList);
 	};
 
@@ -112,7 +112,7 @@
 			SettingsStore.layout.valueHasMutated();
 		}, 50);
 
-		Events.sub('mailbox.inbox-unread-count', function (iCount) {
+		Events.sub('mailbox.inbox-unread-count', _.bind(function (iCount) {
 
 			FolderStore.foldersInboxUnreadCount(iCount);
 
@@ -124,12 +124,10 @@
 					oItem.count(iCount);
 				}
 			});
-		});
 
-		FolderStore.foldersInboxUnreadCount.subscribe(function () {
-			this.setNewTitle();
-		}, this);
+			this.updateWindowTitle();
 
+		}, this));
 	};
 
 	MailBoxUserScreen.prototype.onBuild = function ()

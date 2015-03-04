@@ -157,6 +157,7 @@ cfg.paths.js = {
 			'vendors/queue/queue.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
+			'vendors/tinycon/tinycon.min.js ',
 			'vendors/routes/signals.min.js',
 			'vendors/routes/hasher.min.js',
 			'vendors/routes/crossroads.min.js',

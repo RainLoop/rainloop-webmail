@@ -24,7 +24,7 @@
 
 	LoginAdminScreen.prototype.onShow = function ()
 	{
-		require('App/Admin').setTitle('');
+		require('App/Admin').setWindowTitle('');
 	};
 
 	module.exports = LoginAdminScreen;

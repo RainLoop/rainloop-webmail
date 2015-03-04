@@ -9,6 +9,7 @@
 		$ = require('$'),
 		moment = require('moment'),
 		SimplePace = require('SimplePace'),
+		Tinycon = require('Tinycon'),
 
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
@@ -1342,7 +1343,7 @@
 		{
 			Globals.$html.addClass('rl-user-auth');
 
-			this.setTitle(Translator.i18n('TITLES/LOADING'));
+			this.setWindowTitle(Translator.i18n('TITLES/LOADING'));
 
 //require.ensure([], function() { // require code splitting
 
@@ -1479,6 +1480,17 @@
 						_.defer(function () {
 							self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 						});
+
+						if (Tinycon)
+						{
+							Tinycon.setOptions({
+								fallback: false
+							});
+
+							Events.sub('mailbox.inbox-unread-count', function (iCount) {
+								Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0);
+							});
+						}
 					}
 				}
 				else

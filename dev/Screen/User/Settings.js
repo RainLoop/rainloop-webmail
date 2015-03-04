@@ -122,7 +122,7 @@
 
 	SettingsUserScreen.prototype.setSettingsTitle = function ()
 	{
-		require('App/User').setTitle(this.sSettingsTitle);
+		require('App/User').setWindowTitle(this.sSettingsTitle);
 	};
 
 	module.exports = SettingsUserScreen;

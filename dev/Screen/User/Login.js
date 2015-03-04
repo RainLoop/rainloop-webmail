@@ -24,7 +24,7 @@
 
 	LoginUserScreen.prototype.onShow = function ()
 	{
-		require('App/User').setTitle('');
+		require('App/User').setWindowTitle('');
 	};
 
 	module.exports = LoginUserScreen;

@@ -172,7 +172,7 @@
 	/**
 	 * @param {string} sTitle
 	 */
-	AbstractApp.prototype.setTitle = function (sTitle)
+	AbstractApp.prototype.setWindowTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 			Settings.settingsGet('Title') || '';

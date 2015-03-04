@@ -54,7 +54,7 @@
 
 		window['__APP_BOOT'] = function (fCall) {
 
-			$(function () {
+			$(_.delay(function () {
 
 				if (!$('#rl-content').is(':visible'))
 				{
@@ -82,7 +82,8 @@
 				}
 
 				window['__APP_BOOT'] = null;
-			});
+				
+			}, 10));
 		};
 
 	};
