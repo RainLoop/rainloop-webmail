@@ -186,8 +186,8 @@
 							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadForwardCommand">
 								<i class="icon-left-middle"></i>
 							</a>
-							<a class="btn btn-thin" data-tooltip-placement="bottom">
-								<b data-bind="html: viewThreadsControlDesc"></b>
+							<a class="btn btn-thin" data-tooltip-placement="bottom" style="display: none">
+								<b data-bind="text: viewThreadsControlDesc"></b>
 							</a>
 							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadBackCommand">
 								<i class="icon-right-middle"></i>
@@ -205,7 +205,10 @@
 									<span class="flagParent">
 										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>
 									</span>
-									<b style="color:red;margin-right:5px" data-bind="visible: viewIsImportant">!</b>
+									<span class="thread-counter" data-bind="visible: viewThreadsControlVisibility"
+										style="font-weight: normal; margin-right: 5px">(<span
+											data-bind="text: viewThreadsControlDesc"></span>)</span>
+									<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
 									<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
 								</div>
@@ -276,6 +279,7 @@
 						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
 							<div class="content-wrapper">
 								<div>
+
 									<span class="buttonUp" data-bind="click: scrollMessageToTop">
 										<i class="icon-up"></i>
 									</span>

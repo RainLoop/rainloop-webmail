@@ -252,7 +252,7 @@
 				if (-1 < iIndex)
 				{
 					aResult[0] = true;
-					aResult[1] = (iIndex + 1) + '&nbsp;/&nbsp;' + iLen;
+					aResult[1] = (iIndex + 1) + '/' + iLen;
 					aResult[2] = aThreads[iIndex];
 					aResult[3] = 0 < iIndex && aThreads[iIndex - 1] ? aThreads[iIndex - 1] : '';
 					aResult[4] = aThreads[iIndex + 1] ? aThreads[iIndex + 1] : '';

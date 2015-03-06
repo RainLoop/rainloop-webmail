@@ -483,7 +483,7 @@
 					Cache.initMessageFlagsFromCache(oMessage);
 
 					this.message(this.staticMessage.populateByMessageListItem(oMessage));
-					oMessage = this.message(),
+					oMessage = this.message();
 
 					bNew = true;
 				}

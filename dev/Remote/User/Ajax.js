@@ -359,7 +359,7 @@
 				'Limit': iLimit,
 				'Search': sSearch,
 				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
+				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
 	};

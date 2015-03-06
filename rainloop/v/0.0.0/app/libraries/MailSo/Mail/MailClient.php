@@ -1424,7 +1424,6 @@ class MailClient
 	 * @param string $sFolderHash
 	 * @param array $aIndexOrUids
 	 * @param \MailSo\Cache\CacheClient $oCacher
-	 * @param int $iThreadLimit = 50
 	 * @param bool $bCacheOnly = false
 	 *
 	 * @return array
@@ -1433,9 +1432,9 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListThreadsMap($sFolderName, $sFolderHash, $aIndexOrUids, $oCacher, $iThreadLimit = 50, $bCacheOnly = false)
+	public function MessageListThreadsMap($sFolderName, $sFolderHash, $aIndexOrUids, $oCacher, $bCacheOnly = false)
 	{
-		$iThreadLimit = \is_int($iThreadLimit) && 0 < $iThreadLimit ? $iThreadLimit : 0;
+		$iThreadLimit = \MailSo\Config::$LargeThreadLimit;
 
 		$sSearchHash = '';
 		if (0 < \MailSo\Config::$MessageListDateFilter)
@@ -1829,8 +1828,7 @@ class MailClient
 		$aResult = array();
 		if (0 < \strlen($sFolderName) && 0 < \strlen($sFolderHash)  && 0 < \strlen($sUid) && $oCacher && $oCacher->IsInited())
 		{
-			$mThreads = $this->MessageListThreadsMap($sFolderName, $sFolderHash, array(), $oCacher,
-				\MailSo\Config::$LargeThreadLimit, true);
+			$mThreads = $this->MessageListThreadsMap($sFolderName, $sFolderHash, array(), $oCacher, true);
 
 			if (\is_array($mThreads))
 			{
@@ -1957,7 +1955,7 @@ class MailClient
 
 					$aThreads = $this->MessageListThreadsMap(
 						$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
-						$aIndexOrUids, $oCacher, \MailSo\Config::$LargeThreadLimit);
+						$aIndexOrUids, $oCacher);
 
 					$aNewIndexOrUids = array();
 					foreach ($aIndexOrUids as $iUid)
