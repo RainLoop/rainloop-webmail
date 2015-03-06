@@ -110,7 +110,6 @@ html.rl-no-preview-pane {
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
-				margin-left: 3px;
 			}
 
 			.senderParent {
@@ -121,8 +120,25 @@ html.rl-no-preview-pane {
 				margin-top: 5px;
 			}
 
+			.flagParent {
+
+				cursor: pointer;
+				margin-right: 5px;
+
+				.flagOn {
+					color: orange;
+				}
+
+				.flagOff {
+					opacity: 0.5;
+					&:hover {
+						opacity: 1;
+					}
+				}
+			}
+
 			.informationShort {
-				margin-left: 15px;
+				margin-left: 22px;
 				a {
 					.g-ui-link;
 				}

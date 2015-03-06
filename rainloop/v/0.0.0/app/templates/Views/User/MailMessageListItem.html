@@ -22,13 +22,12 @@
 			<i class="checkboxMessage" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 		</div>
 		<div class="senderParent actionHandle dragHandle">
-			<span class="threadsCountParent fullThreadHandle" data-bind="visible: '' !== threadsLenResult(), css: { 'lastSelected': !lastInCollapsedThread() }">
-				<span lass="threadsCount" data-bind="visible: !lastInCollapsedThreadLoading(), text: threadsLenResult"></span>
-				<span lass="threadsCount" data-bind="visible: lastInCollapsedThreadLoading()">x</span>
-			</span>
 			<span class="replyFlag"><i class="icon-reply"></i>&nbsp;</span>
 			<span class="forwardFlag"><i class="icon-forward"></i>&nbsp;</span>
 			<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
+			<span class="thre" data-bind="visible: 1 < threadsLen()">
+				(<span data-bind="text: threadsLen"></span>)
+			</span>
 			&nbsp;
 		</div>
 		<div class="attachmentParent actionHandle dragHandle">

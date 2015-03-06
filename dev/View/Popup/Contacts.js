@@ -208,7 +208,7 @@
 			});
 		}, this);
 
-		this.selector = new Selector(this.contacts, this.currentContact,
+		this.selector = new Selector(this.contacts, this.currentContact, null,
 			'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
 				'.e-contact-item.focused');
 

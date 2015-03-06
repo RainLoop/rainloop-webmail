@@ -133,18 +133,13 @@
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		this.parentUid = ko.observable(0);
-		this.threads = ko.observableArray([]);
-		this.threadsLen = ko.observable(0);
 		this.hasUnseenSubMessage = ko.observable(false);
 		this.hasFlaggedSubMessage = ko.observable(false);
 
-		this.lastInCollapsedThread = ko.observable(false);
-		this.lastInCollapsedThreadLoading = ko.observable(false);
+		this.threads = ko.observableArray([]);
 
-		this.threadsLenResult = ko.computed(function () {
-			var iCount = this.threadsLen();
-			return 0 === this.parentUid() && 0 < iCount ? iCount + 1 : '';
+		this.threadsLen = ko.computed(function () {
+			return this.threads().length;
 		}, this);
 
 		this.isImportant = ko.computed(function () {
@@ -152,7 +147,7 @@
 		}, this);
 
 		this.regDisposables([this.attachmentIconClass, this.fullFormatDateValue,
-			this.threadsLenResult, this.isImportant]);
+			this.threadsLen, this.isImportant]);
 	}
 
 	_.extend(MessageModel.prototype, AbstractModel.prototype);
@@ -349,14 +344,10 @@
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		this.parentUid(0);
 		this.threads([]);
-		this.threadsLen(0);
+
 		this.hasUnseenSubMessage(false);
 		this.hasFlaggedSubMessage(false);
-
-		this.lastInCollapsedThread(false);
-		this.lastInCollapsedThreadLoading(false);
 	};
 
 	/**
@@ -435,9 +426,7 @@
 			this.toEmailsString(MessageModel.emailsToLine(this.to, true));
 			this.toClearEmailsString(MessageModel.emailsToLineClear(this.to));
 
-			this.parentUid(Utils.pInt(oJsonMessage.ParentThread));
 			this.threads(Utils.isArray(oJsonMessage.Threads) ? oJsonMessage.Threads : []);
-			this.threadsLen(Utils.pInt(oJsonMessage.ThreadsLen));
 
 			this.initFlagsByJson(oJsonMessage);
 			this.computeSenderEmail();
@@ -685,11 +674,7 @@
 		{
 			aResult.push('emptySubject');
 		}
-		if (0 < this.parentUid())
-		{
-			aResult.push('hasParentMessage');
-		}
-		if (0 < this.threadsLen() && 0 === this.parentUid())
+		if (1 < this.threadsLen())
 		{
 			aResult.push('hasChildrenMessage');
 		}
@@ -994,9 +979,7 @@
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		this.parentUid(oMessage.parentUid());
 		this.threads(oMessage.threads());
-		this.threadsLen(oMessage.threadsLen());
 
 		this.computeSenderEmail();
 

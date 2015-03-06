@@ -16,7 +16,6 @@
 
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
-		MessageStore = require('Stores/User/Message'),
 
 		AbstractAjaxRemote = require('Remote/AbstractAjax')
 	;
@@ -349,7 +348,7 @@
 					sFolderHash,
 					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-					AppStore.threadsAllowed() && sFolderFullNameRaw === MessageStore.messageListThreadFolder() ? MessageStore.messageListThreadUids().join(',') : ''
+					''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -361,7 +360,6 @@
 				'Search': sSearch,
 				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
 				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-				'ExpandedThreadUid': AppStore.threadsAllowed() && sFolderFullNameRaw === MessageStore.messageListThreadFolder() ? MessageStore.messageListThreadUids().join(',') : ''
 			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
 		}
 	};
@@ -399,6 +397,35 @@
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
+		}
+
+		return false;
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {number} iUid
+	 * @return {boolean}
+	 */
+	RemoteUserStorage.prototype.messageThreadsFromCache = function (fCallback, sFolderFullNameRaw, iUid)
+	{
+		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
+		iUid = Utils.pInt(iUid);
+
+		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
+		{
+			var sFolderHash = Cache.getFolderHash(sFolderFullNameRaw);
+			if (sFolderHash)
+			{
+				this.defaultRequest(fCallback, 'MessageThreadsFromCache', {
+					'Folder': sFolderFullNameRaw,
+					'FolderHash': sFolderHash,
+					'Uid': iUid
+				});
+
+				return true;
+			}
 		}
 
 		return false;

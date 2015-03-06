@@ -58,11 +58,9 @@
 		this.pswp = null;
 
 		this.message = MessageStore.message;
-		this.currentMessage = MessageStore.currentMessage;
 		this.messageListChecked = MessageStore.messageListChecked;
 		this.hasCheckedMessages = MessageStore.hasCheckedMessages;
 		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageLoading = MessageStore.messageLoading;
 		this.messageLoadingThrottle = MessageStore.messageLoadingThrottle;
 		this.messagesBodiesDom = MessageStore.messagesBodiesDom;
 		this.useThreads = SettingsStore.useThreads;
@@ -103,7 +101,7 @@
 		this.message.subscribe(function (oMessage) {
 			if (!oMessage)
 			{
-				this.currentMessage(null);
+				MessageStore.selectorMessageSelected(null);
 			}
 		}, this);
 
@@ -130,47 +128,52 @@
 		}, this.messageVisibility);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
-			if (this.message())
+			var oMessage = this.message();
+			if (oMessage)
 			{
+				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-					this.message().folderFullNameRaw,
-					[this.message().uid], true);
+					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
-			if (this.message())
+			var oMessage = this.message();
+			if (oMessage)
 			{
+				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-					FolderStore.currentFolderFullNameRaw(),
-					[this.message().uid], false);
+					oMessage.folderFullNameRaw, [oMessage.uid], false);
 			}
 		}, this.messageVisibility);
 
 		this.archiveCommand = Utils.createCommand(this, function () {
-			if (this.message())
+			var oMessage = this.message();
+			if (oMessage)
 			{
+				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
-					this.message().folderFullNameRaw,
-					[this.message().uid], true);
+					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
 
 		this.spamCommand = Utils.createCommand(this, function () {
-			if (this.message())
+			var oMessage = this.message();
+			if (oMessage)
 			{
+				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
-					this.message().folderFullNameRaw,
-					[this.message().uid], true);
+					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
-			if (this.message())
+			var oMessage = this.message();
+			if (oMessage)
 			{
+				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
-					this.message().folderFullNameRaw,
-					[this.message().uid], true);
+					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
 
@@ -178,6 +181,8 @@
 
 		this.viewBodyTopValue = ko.observable(0);
 
+		this.viewFolder = '';
+		this.viewUid = '';
 		this.viewHash = '';
 		this.viewSubject = ko.observable('');
 		this.viewFromShort = ko.observable('');
@@ -197,7 +202,94 @@
 		this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
 		this.viewUserPicVisible = ko.observable(false);
 		this.viewIsImportant = ko.observable(false);
+		this.viewIsFlagged = ko.observable(false);
 
+// THREADS
+		this.viewThreads = ko.observableArray([]);
+		this.viewThreads.trigger = ko.observable(false);
+
+		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
+			if (oData && oData['Uids'])
+			{
+				oData['Uid'] = Utils.pString(oData['Uid']);
+				if (this.viewFolder === oData['Folder'] && this.viewUid === oData['Uid'])
+				{
+					this.viewThreads(oData['Uids']);
+					this.viewThreads.trigger(!this.viewThreads.trigger());
+				}
+
+				var oMessage = MessageStore.message();
+				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
+				{
+					oMessage.threads(oData['Uids']);
+				}
+
+				oMessage = _.find(MessageStore.messageList(), function (oMessage) {
+					return oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'];
+				});
+
+				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
+				{
+					oMessage.threads(oData['Uids']);
+				}
+			}
+		}, this);
+
+		this.viewThreads.status = ko.computed(function () {
+
+			this.viewThreads.trigger();
+
+			var
+				iIndex = 0,
+				aResult = [false, '', '', '', ''],
+				aThreads = this.viewThreads.peek(),
+				iLen = aThreads.length
+			;
+
+			if (1 < iLen)
+			{
+				iIndex = Utils.inArray(this.viewUid, aThreads);
+				if (-1 < iIndex)
+				{
+					aResult[0] = true;
+					aResult[1] = (iIndex + 1) + '&nbsp;/&nbsp;' + iLen;
+					aResult[2] = aThreads[iIndex];
+					aResult[3] = 0 < iIndex && aThreads[iIndex - 1] ? aThreads[iIndex - 1] : '';
+					aResult[4] = aThreads[iIndex + 1] ? aThreads[iIndex + 1] : '';
+				}
+			}
+
+			return aResult;
+
+		}, this).extend({'notify': 'always'});
+
+		this.viewThreadsControlVisibility = ko.computed(function () {
+			return !!this.viewThreads.status()[0];
+		}, this);
+
+		this.viewThreadsControlDesc = ko.computed(function () {
+			return this.viewThreads.status()[1];
+		}, this);
+
+		this.viewThreadsControlBackAllow = ko.computed(function () {
+			return '' !== this.viewThreads.status()[4] && !this.messageLoadingThrottle();
+		}, this);
+
+		this.viewThreadsControlForwardAllow = ko.computed(function () {
+			return '' !== this.viewThreads.status()[3] && !this.messageLoadingThrottle();
+		}, this);
+
+		this.threadBackCommand = Utils.createCommand(this, function () {
+			var aStatus = this.viewThreads.status();
+			this.openThreadMessage(aStatus[4]);
+		}, this.viewThreadsControlBackAllow);
+
+		this.threadForwardCommand = Utils.createCommand(this, function () {
+			var aStatus = this.viewThreads.status();
+			this.openThreadMessage(aStatus[3]);
+		}, this.viewThreadsControlForwardAllow);
+
+// PGP
 		this.viewPgpPassword = ko.observable('');
 		this.viewPgpSignedVerifyStatus = ko.computed(function () {
 			return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
@@ -260,6 +352,8 @@
 					this.scrollMessageToTop();
 				}
 
+				this.viewFolder = oMessage.folderFullNameRaw;
+				this.viewUid = oMessage.uid;
 				this.viewHash = oMessage.hash;
 				this.viewSubject(oMessage.subject());
 				this.viewFromShort(oMessage.fromToLine(true, true));
@@ -277,6 +371,10 @@
 				this.viewViewLink(oMessage.viewLink());
 				this.viewDownloadLink(oMessage.downloadLink());
 				this.viewIsImportant(oMessage.isImportant());
+				this.viewIsFlagged(oMessage.flagged());
+
+				this.viewThreads(oMessage.threads());
+				this.viewThreads.trigger(!this.viewThreads.trigger());
 
 				sLastEmail = oMessage.fromAsSingleEmail();
 				Cache.getUserPic(sLastEmail, function (sPic, sEmail) {
@@ -294,10 +392,27 @@
 			}
 			else
 			{
+				this.viewFolder = '';
+				this.viewUid = '';
 				this.viewHash = '';
+
+				this.viewThreads([]);
+
 				this.scrollMessageToTop();
 			}
 
+		}, this);
+
+		this.message.viewTrigger.subscribe(function () {
+			var oMessage = this.message();
+			if (oMessage)
+			{
+				this.viewIsFlagged(oMessage.flagged());
+			}
+			else
+			{
+				this.viewIsFlagged(false);
+			}
 		}, this);
 
 		this.fullScreenMode.subscribe(function (bValue) {
@@ -332,6 +447,24 @@
 
 	kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
 	_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
+
+	MessageViewMailBoxUserView.prototype.updateViewFlagsFromCache = function ()
+	{
+		var aFlags = this.getMessageFlagsFromCache(this.viewFolder, this.viewUid);
+		if (aFlags)
+		{
+			this.viewIsFlagged(!!aFlags[1]);
+		}
+	};
+
+	MessageViewMailBoxUserView.prototype.openThreadMessage = function (sUid)
+	{
+		var oMessage = this.message();
+		if (oMessage && sUid)
+		{
+			MessageStore.selectThreadMessage(oMessage.folderFullNameRaw, sUid);
+		}
+	};
 
 	MessageViewMailBoxUserView.prototype.isPgpActionVisible = function ()
 	{
@@ -543,6 +676,9 @@
 					require('App/User').download(oAttachment.linkDownload());
 				}
 			})
+			.on('click', '.messageItemHeader .flagParent', function () {
+				self.flagViewMessage();
+			})
 		;
 
 		this.message.focused.subscribe(function (bValue) {
@@ -573,6 +709,19 @@
 		this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
 
 		this.initShortcuts();
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	MessageViewMailBoxUserView.prototype.flagViewMessage = function ()
+	{
+		var oMessage = this.message();
+		if (oMessage)
+		{
+			require('App/User').messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
+				oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
+		}
 	};
 
 	/**
@@ -664,13 +813,23 @@
 			}
 		});
 
-		key('ctrl+left, command+left, ctrl+up, command+up', Enums.KeyState.MessageView, function () {
+		key('ctrl+up, command+up', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goUpCommand();
 			return false;
 		});
 
-		key('ctrl+right, command+right, ctrl+down, command+down', Enums.KeyState.MessageView, function () {
+		key('ctrl+down, command+down', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goDownCommand();
+			return false;
+		});
+
+		key('ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+			self.threadForwardCommand();
+			return false;
+		});
+
+		key('ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+			self.threadBackCommand();
 			return false;
 		});
 

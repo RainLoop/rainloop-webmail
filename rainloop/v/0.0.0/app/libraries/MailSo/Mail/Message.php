@@ -163,16 +163,6 @@ class Message
 	private $aThreads;
 
 	/**
-	 * @var int
-	 */
-	private $iParentThread;
-
-	/**
-	 * @var int
-	 */
-	private $iThreadsLen;
-
-	/**
 	 * @var bool
 	 */
 	private $bTextPartIsTrimmed;
@@ -240,8 +230,6 @@ class Message
 		$this->sReadReceipt = '';
 
 		$this->aThreads = array();
-		$this->iThreadsLen = 0;
-		$this->iParentThread = 0;
 
 		$this->bTextPartIsTrimmed = false;
 
@@ -543,38 +531,6 @@ class Message
 	}
 
 	/**
-	 * @return int
-	 */
-	public function ThreadsLen()
-	{
-		return $this->iThreadsLen;
-	}
-
-	/**
-	 * @param int $iThreadsLen
-	 */
-	public function SetThreadsLen($iThreadsLen)
-	{
-		$this->iThreadsLen = $iThreadsLen;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function ParentThread()
-	{
-		return $this->iParentThread;
-	}
-
-	/**
-	 * @param int $iParentThread
-	 */
-	public function SetParentThread($iParentThread)
-	{
-		$this->iParentThread = $iParentThread;
-	}
-
-	/**
 	 * @return boole
 	 */
 	public function TextPartIsTrimmed()
@@ -664,7 +620,8 @@ class Message
 			$this->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
 
 			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
-			$this->sReferences = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES);
+			$this->sReferences = \trim(\preg_replace('/[\s]+/', ' ',
+				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES)));
 
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
 			$this->sHeaderDate = $sHeaderDate;

@@ -5368,6 +5368,45 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
+	public function DoMessageThreadsFromCache()
+	{
+		$sFolder = $this->GetActionParam('Folder', '');
+		$sFolderHash = $this->GetActionParam('FolderHash', '');
+		$sUid = (string) $this->GetActionParam('Uid', '');
+
+		if (0 === \strlen($sFolder) || 0 === \strlen($sUid))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
+		}
+
+		$aResult = array(
+			'Folder' => $sFolder,
+			'Uid' => $sUid,
+			'FolderHash' => $sFolderHash,
+			'ThreadUids' => null
+		);
+
+		$oCache = $this->cacherForUids();
+		if ($oCache && $this->Config()->Get('labs', 'use_imap_thread', false))
+		{
+			$aThreadUids = $this->MailClient()->MessageThreadUidsFromCache(
+				$sFolder, $sFolderHash, $sUid, $oCache
+			);
+
+			if (\is_array($aThreadUids) && 1 < \count($aThreadUids))
+			{
+				$aResult['ThreadUids'] = $aThreadUids;
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $aResult);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
 	public function DoMessageList()
 	{
 //		\sleep(2);
@@ -5379,7 +5418,6 @@ class Actions
 		$sSearch = '';
 		$sUidNext = '';
 		$bUseThreads = false;
-		$sExpandedThreadUid = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
@@ -5392,7 +5430,6 @@ class Actions
 			$sSearch = (string) $aValues[3];
 			$sUidNext = (string) $aValues[6];
 			$bUseThreads = (bool) $aValues[7];
-			$sExpandedThreadUid = (string) $aValues[8];
 
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -5404,7 +5441,6 @@ class Actions
 			$sSearch = $this->GetActionParam('Search', '');
 			$sUidNext = $this->GetActionParam('UidNext', '');
 			$bUseThreads = '1' === (string) $this->GetActionParam('UseThreads', '0');
-			$sExpandedThreadUid = (string) $this->GetActionParam('ExpandedThreadUid', '');
 		}
 
 		if (0 === strlen($sFolder))
@@ -5419,29 +5455,13 @@ class Actions
 			if (!$this->Config()->Get('labs', 'use_imap_thread', false))
 			{
 				$bUseThreads = false;
-				$sExpandedThreadUid = '';
-			}
-
-			$aExpandedThreadUid = array();
-			if (0 < \strlen($sExpandedThreadUid))
-			{
-				$aExpandedThreadUid = \explode(',', $sExpandedThreadUid);
-
-				$aExpandedThreadUid = \array_map(function ($sValue) {
-					$sValue = \trim($sValue);
-					return \is_numeric($sValue) ? (int) $sValue : 0;
-				}, $aExpandedThreadUid);
-
-				$aExpandedThreadUid = \array_filter($aExpandedThreadUid, function ($iValue) {
-					return 0 < $iValue;
-				});
 			}
 
 			$oMessageList = $this->MailClient()->MessageList(
 				$sFolder, $iOffset, $iLimit, $sSearch, $sUidNext,
 				$this->cacherForUids(),
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
-				$bUseThreads, $aExpandedThreadUid,
+				$bUseThreads,
 				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
 			);
 		}
@@ -8875,8 +8895,6 @@ class Actions
 					'DeliveredTo' => $this->responseObject($mResponse->DeliveredTo(), $sParent, $aParameters),
 					'Priority' => $mResponse->Priority(),
 					'Threads' => $mResponse->Threads(),
-					'ThreadsLen' => $mResponse->ThreadsLen(),
-					'ParentThread' => $mResponse->ParentThread(),
 					'Sensitivity' => $mResponse->Sensitivity(),
 					'ExternalProxy' => false,
 					'ReadReceipt' => ''
@@ -9149,7 +9167,7 @@ class Actions
 						'MessageCount' => (int) $mStatus['MESSAGES'],
 						'MessageUnseenCount' => (int) $mStatus['UNSEEN'],
 						'UidNext' => (string) $mStatus['UIDNEXT'],
-						'Hash' => \MailSo\Mail\MailClient::GenerateHash(
+						'Hash' => $this->MailClient()->GenerateFolderHash(
 							$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT'])
 					);
 				}
@@ -9179,7 +9197,7 @@ class Actions
 					'FolderHash' => $mResponse->FolderHash,
 					'UidNext' => $mResponse->UidNext,
 					'NewMessages' => $this->responseObject($mResponse->NewMessages),
-					'LastCollapsedThreadUids' => $mResponse->LastCollapsedThreadUids,
+//					'LastCollapsedThreadUids' => $mResponse->LastCollapsedThreadUids,
 					'Offset' => $mResponse->Offset,
 					'Limit' => $mResponse->Limit,
 					'Search' => $mResponse->Search

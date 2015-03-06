@@ -301,7 +301,8 @@
 		{
 			var
 				self = this,
-				aFlags = this.getMessageFlagsFromCache(oMessage.folderFullNameRaw, oMessage.uid),
+				sUid = oMessage.uid,
+				aFlags = this.getMessageFlagsFromCache(oMessage.folderFullNameRaw, sUid),
 				mUnseenSubUid = null,
 				mFlaggedSubUid = null
 			;
@@ -318,13 +319,19 @@
 
 			if (0 < oMessage.threads().length)
 			{
-				mUnseenSubUid = _.find(oMessage.threads(), function (iSubUid) {
-					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
+				mUnseenSubUid = _.find(oMessage.threads(), function (sSubUid) {
+					if (sUid === sSubUid){
+						return false;
+					}
+					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, sSubUid);
 					return aFlags && 0 < aFlags.length && !!aFlags[0];
 				});
 
-				mFlaggedSubUid = _.find(oMessage.threads(), function (iSubUid) {
-					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, iSubUid);
+				mFlaggedSubUid = _.find(oMessage.threads(), function (sSubUid) {
+					if (sUid === sSubUid){
+						return false;
+					}
+					var aFlags = self.getMessageFlagsFromCache(oMessage.folderFullNameRaw, sSubUid);
 					return aFlags && 0 < aFlags.length && !!aFlags[1];
 				});
 
@@ -349,6 +356,7 @@
 			);
 		}
 	};
+
 	/**
 	 * @param {string} sFolder
 	 * @param {string} sUid
@@ -360,6 +368,43 @@
 		{
 			this.setMessageFlagsToCache(sFolder, sUid, aFlags);
 		}
+	};
+
+	/**
+	 * @param {string} sFolder
+	 * @param {string} sUid
+	 * @param {number} iSetAction
+	 */
+	CacheUserStorage.prototype.storeMessageFlagsToCacheBySetAction = function (sFolder, sUid, iSetAction)
+	{
+		var iUnread = 0, aFlags = this.getMessageFlagsFromCache(sFolder, sUid);
+		if (Utils.isArray(aFlags) && 0 < aFlags.length)
+		{
+			if (aFlags[0])
+			{
+				iUnread = 1;
+			}
+
+			switch (iSetAction)
+			{
+				case Enums.MessageSetAction.SetSeen:
+					aFlags[0] = false;
+					break;
+				case Enums.MessageSetAction.UnsetSeen:
+					aFlags[0] = true;
+					break;
+				case Enums.MessageSetAction.SetFlag:
+					aFlags[1] = true;
+					break;
+				case Enums.MessageSetAction.UnsetFlag:
+					aFlags[1] = false;
+					break;
+			}
+
+			this.setMessageFlagsToCache(sFolder, sUid, aFlags);
+		}
+
+		return iUnread;
 	};
 
 	module.exports = new CacheUserStorage();

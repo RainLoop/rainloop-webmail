@@ -49,7 +49,7 @@ class Config
 	/**
 	 * @var int
 	 */
-	public static $LargeThreadLimit = 100;
+	public static $LargeThreadLimit = 50;
 
 	/**
 	 * @var bool

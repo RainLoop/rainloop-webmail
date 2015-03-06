@@ -182,14 +182,14 @@
 								<i class="icon-pencil icon-white"></i>
 							</a>
 						</div>
-						<div class="btn-group pull-right" data-bind="visible: false"  style="margin-right: 5px">
-							<a class="btn btn-thin" data-tooltip-placement="bottom">
+						<div class="btn-group pull-right" data-bind="visible: viewThreadsControlVisibility"  style="margin-right: 5px">
+							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadForwardCommand">
 								<i class="icon-left-middle"></i>
 							</a>
 							<a class="btn btn-thin" data-tooltip-placement="bottom">
-								<b>1 / 4</b>
+								<b data-bind="html: viewThreadsControlDesc"></b>
 							</a>
-							<a class="btn btn-thin" data-tooltip-placement="bottom">
+							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadBackCommand">
 								<i class="icon-right-middle"></i>
 							</a>
 						</div>
@@ -202,12 +202,15 @@
 							<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
 							<div style="overflow: hidden;">
 								<div class="subjectParent" data-bind="event: { 'dblclick': toggleFullScreen }">
+									<span class="flagParent">
+										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>
+									</span>
 									<b style="color:red;margin-right:5px" data-bind="visible: viewIsImportant">!</b>
 									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
 									<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
 								</div>
 								<div class="senderParent">
-									<div class="g-ui-user-select-none" style="float: left; cursor: pointer;" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
+									<div class="g-ui-user-select-none" style="float: left; cursor: pointer; margin-left: 1px;" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
 										<i class="icon-right-dir" data-bind="css: showFullInfo() ? 'icon-down-dir' : 'icon-right-dir'"></i>
 									</div>
 									<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">

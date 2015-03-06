@@ -831,24 +831,105 @@
 		}
 	};
 
-	AppUser.prototype.setMessageSeen = function (oMessage)
+	/**
+	 * @param {string} sFolderFullNameRaw
+	 * @param {string|bool} mUid
+	 * @param {number} iSetAction
+	 * @param {Array=} aMessages = null
+	 */
+	AppUser.prototype.messageListAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
-		if (oMessage.unseen())
+		var
+			bRoot = false,
+			aAllUids = [],
+			aRootUids = [],
+			oFolder = null,
+			iAlreadyUnread = 0
+		;
+
+		if (Utils.isUnd(aMessages))
 		{
-			oMessage.unseen(false);
-
-			var oFolder = Cache.getFolderFromCacheList(oMessage.folderFullNameRaw);
-			if (oFolder)
-			{
-				oFolder.messageCountUnread(0 <= oFolder.messageCountUnread() - 1 ?
-					oFolder.messageCountUnread() - 1 : 0);
-			}
-
-			Cache.storeMessageFlagsToCache(oMessage);
-			this.reloadFlagsCurrentMessageListAndMessageFromCache();
+			aMessages = MessageStore.messageListChecked();
 		}
 
-		Remote.messageSetSeen(Utils.emptyFunction, oMessage.folderFullNameRaw, [oMessage.uid], true);
+		if (true === mUid)
+		{
+			bRoot = true;
+		}
+		else if (aMessages && aMessages[0] && mUid &&
+			sFolderFullNameRaw === aMessages[0].uid && mUid === aMessages[0].uid)
+		{
+			bRoot = true;
+		}
+
+		_.each(aMessages, function (oMessage) {
+			aRootUids.push(oMessage.uid);
+			aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
+		});
+
+		aAllUids = _.uniq(aAllUids);
+		aRootUids = _.uniq(aRootUids);
+		aRootUids = aAllUids; // always all
+
+		if ('' !== sFolderFullNameRaw && 0 < aAllUids.length)
+		{
+			switch (iSetAction) {
+				case Enums.MessageSetAction.SetSeen:
+
+					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
+							sFolderFullNameRaw, sSubUid, iSetAction);
+					});
+
+					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+					if (oFolder)
+					{
+						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
+					}
+
+					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, true);
+					break;
+
+				case Enums.MessageSetAction.UnsetSeen:
+
+					_.each(aRootUids, function (sSubUid) {
+						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
+							sFolderFullNameRaw, sSubUid, iSetAction);
+					});
+
+					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+					if (oFolder)
+					{
+						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread + aRootUids.length);
+					}
+
+					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, false);
+					break;
+
+				case Enums.MessageSetAction.SetFlag:
+
+					_.each(aRootUids, function (sSubUid) {
+						Cache.storeMessageFlagsToCacheBySetAction(
+							sFolderFullNameRaw, sSubUid, iSetAction);
+					});
+
+					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, true);
+					break;
+
+				case Enums.MessageSetAction.UnsetFlag:
+
+					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+						Cache.storeMessageFlagsToCacheBySetAction(
+							sFolderFullNameRaw, sSubUid, iSetAction);
+					});
+
+					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
+					break;
+			}
+
+			this.reloadFlagsCurrentMessageListAndMessageFromCache();
+			MessageStore.message.viewTrigger(!MessageStore.message.viewTrigger());
+		}
 	};
 
 	AppUser.prototype.googleConnect = function ()

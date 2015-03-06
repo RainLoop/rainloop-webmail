@@ -17,12 +17,13 @@
 	 * @constructor
 	 * @param {koProperty} oKoList
 	 * @param {koProperty} oKoSelectedItem
+	 * @param {koProperty} oKoFocusedItem
 	 * @param {string} sItemSelector
 	 * @param {string} sItemSelectedSelector
 	 * @param {string} sItemCheckedSelector
 	 * @param {string} sItemFocusedSelector
 	 */
-	function Selector(oKoList, oKoSelectedItem,
+	function Selector(oKoList, oKoSelectedItem, oKoFocusedItem,
 		sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 	{
 		this.list = oKoList;
@@ -37,8 +38,8 @@
 			return 0 < this.listChecked().length;
 		}, this);
 
-		this.focusedItem = ko.observable(null);
-		this.selectedItem = oKoSelectedItem;
+		this.focusedItem = oKoFocusedItem || ko.observable(null);
+		this.selectedItem = oKoSelectedItem || ko.observable(null);
 		this.selectedItemUseCallback = true;
 
 		this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);

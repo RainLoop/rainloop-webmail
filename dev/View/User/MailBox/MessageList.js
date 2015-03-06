@@ -52,8 +52,10 @@
 
 		this.message = MessageStore.message;
 		this.messageList = MessageStore.messageList;
+		this.messageListDisableAutoSelect = MessageStore.messageListDisableAutoSelect;
 		this.folderList = FolderStore.folderList;
-		this.currentMessage = MessageStore.currentMessage;
+		this.selectorMessageSelected = MessageStore.selectorMessageSelected;
+		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
 		this.isMessageSelected = MessageStore.isMessageSelected;
 		this.messageListSearch = MessageStore.messageListSearch;
 		this.messageListError = MessageStore.messageListError;
@@ -224,27 +226,12 @@
 
 		this.quotaTooltip = _.bind(this.quotaTooltip, this);
 
-		this.selector = new Selector(this.messageList, this.currentMessage,
+		this.selector = new Selector(this.messageList, this.selectorMessageSelected, this.selectorMessageFocused,
 			'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 				'.messageListItem.focused');
 
 		this.selector.on('onItemSelect', _.bind(function (oMessage) {
-			if (oMessage)
-			{
-				MessageStore.message(MessageStore.staticMessage.populateByMessageListItem(oMessage));
-
-				this.populateMessageBody(MessageStore.message());
-
-				if (Enums.Layout.NoPreview === SettingsStore.layout())
-				{
-					kn.setHash(Links.messagePreview(), true);
-					MessageStore.message.focused(true);
-				}
-			}
-			else
-			{
-				MessageStore.message(null);
-			}
+			MessageStore.selectMessage(oMessage);
 		}, this));
 
 		this.selector.on('onItemGetUid', function (oMessage) {
@@ -281,6 +268,11 @@
 
 	MessageListMailBoxUserView.prototype.useAutoSelect = function ()
 	{
+		if (this.messageListDisableAutoSelect())
+		{
+			return false;
+		}
+
 		if (/is:unseen/.test(this.mainMessageListSearch()))
 		{
 			return false;
@@ -354,128 +346,14 @@
 	};
 
 	/**
-	 * @param {string} sResult
-	 * @param {AjaxJsonDefaultResponse} oData
-	 * @param {boolean} bCached
-	 */
-	MessageListMailBoxUserView.prototype.onMessageResponse = function (sResult, oData, bCached)
-	{
-		MessageStore.hideMessageBodies();
-		MessageStore.messageLoading(false);
-
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			MessageStore.setMessage(oData, bCached);
-		}
-		else if (Enums.StorageResultType.Unload === sResult)
-		{
-			MessageStore.message(null);
-			MessageStore.messageError('');
-		}
-		else if (Enums.StorageResultType.Abort !== sResult)
-		{
-			MessageStore.message(null);
-			MessageStore.messageError((oData && oData.ErrorCode ?
-				Translator.getNotification(oData.ErrorCode) :
-				Translator.getNotification(Enums.Notification.UnknownError)));
-		}
-	};
-
-	MessageListMailBoxUserView.prototype.populateMessageBody = function (oMessage)
-	{
-		if (oMessage)
-		{
-			if (Remote.message(this.onMessageResponse, oMessage.folderFullNameRaw, oMessage.uid))
-			{
-				MessageStore.messageLoading(true);
-			}
-			else
-			{
-				Utils.log('Error: Unknown message request: ' + oMessage.folderFullNameRaw + ' ~ ' + oMessage.uid + ' [e-101]');
-			}
-		}
-	};
-
-	/**
 	 * @param {string} sFolderFullNameRaw
+	 * @param {string|bool} sUid
 	 * @param {number} iSetAction
 	 * @param {Array=} aMessages = null
 	 */
-	MessageListMailBoxUserView.prototype.setAction = function (sFolderFullNameRaw, iSetAction, aMessages)
+	MessageListMailBoxUserView.prototype.setAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
-		var
-			aUids = [],
-			oFolder = null,
-			iAlreadyUnread = 0
-		;
-
-		if (Utils.isUnd(aMessages))
-		{
-			aMessages = MessageStore.messageListChecked();
-		}
-
-		aUids = _.map(aMessages, function (oMessage) {
-			return oMessage.uid;
-		});
-
-		if ('' !== sFolderFullNameRaw && 0 < aUids.length)
-		{
-			switch (iSetAction) {
-			case Enums.MessageSetAction.SetSeen:
-				_.each(aMessages, function (oMessage) {
-					if (oMessage.unseen())
-					{
-						iAlreadyUnread++;
-					}
-
-					oMessage.unseen(false);
-					Cache.storeMessageFlagsToCache(oMessage);
-				});
-
-				oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
-				if (oFolder)
-				{
-					oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
-				}
-
-				Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aUids, true);
-				break;
-			case Enums.MessageSetAction.UnsetSeen:
-				_.each(aMessages, function (oMessage) {
-					if (oMessage.unseen())
-					{
-						iAlreadyUnread++;
-					}
-
-					oMessage.unseen(true);
-					Cache.storeMessageFlagsToCache(oMessage);
-				});
-
-				oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
-				if (oFolder)
-				{
-					oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread + aUids.length);
-				}
-				Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aUids, false);
-				break;
-			case Enums.MessageSetAction.SetFlag:
-				_.each(aMessages, function (oMessage) {
-					oMessage.flagged(true);
-					Cache.storeMessageFlagsToCache(oMessage);
-				});
-				Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aUids, true);
-				break;
-			case Enums.MessageSetAction.UnsetFlag:
-				_.each(aMessages, function (oMessage) {
-					oMessage.flagged(false);
-					Cache.storeMessageFlagsToCache(oMessage);
-				});
-				Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aUids, false);
-				break;
-			}
-
-			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
-		}
+		require('App/User').messageListAction(sFolderFullNameRaw, mUid, iSetAction, aMessages);
 	};
 
 	/**
@@ -532,8 +410,8 @@
 
 	MessageListMailBoxUserView.prototype.listSetSeen = function ()
 	{
-		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.SetSeen,
-			MessageStore.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), true,
+			Enums.MessageSetAction.SetSeen, MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listSetAllSeen = function ()
@@ -543,20 +421,20 @@
 
 	MessageListMailBoxUserView.prototype.listUnsetSeen = function ()
 	{
-		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetSeen,
-			MessageStore.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), true,
+			Enums.MessageSetAction.UnsetSeen, MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listSetFlags = function ()
 	{
-		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.SetFlag,
-			MessageStore.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), true,
+			Enums.MessageSetAction.SetFlag, MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.listUnsetFlags = function ()
 	{
-		this.setAction(FolderStore.currentFolderFullNameRaw(), Enums.MessageSetAction.UnsetFlag,
-			MessageStore.messageListCheckedOrSelected());
+		this.setAction(FolderStore.currentFolderFullNameRaw(), true,
+			Enums.MessageSetAction.UnsetFlag, MessageStore.messageListCheckedOrSelected());
 	};
 
 	MessageListMailBoxUserView.prototype.flagMessages = function (oCurrentMessage)
@@ -577,12 +455,12 @@
 
 			if (0 < aCheckedUids.length && -1 < Utils.inArray(oCurrentMessage.uid, aCheckedUids))
 			{
-				this.setAction(oCurrentMessage.folderFullNameRaw, oCurrentMessage.flagged() ?
+				this.setAction(oCurrentMessage.folderFullNameRaw, true, oCurrentMessage.flagged() ?
 					Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
 			}
 			else
 			{
-				this.setAction(oCurrentMessage.folderFullNameRaw, oCurrentMessage.flagged() ?
+				this.setAction(oCurrentMessage.folderFullNameRaw, true, oCurrentMessage.flagged() ?
 					Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oCurrentMessage]);
 			}
 		}
@@ -603,12 +481,12 @@
 
 			if (Utils.isUnd(bFlag))
 			{
-				this.setAction(aChecked[0].folderFullNameRaw,
+				this.setAction(aChecked[0].folderFullNameRaw, true,
 					aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
 			}
 			else
 			{
-				this.setAction(aChecked[0].folderFullNameRaw,
+				this.setAction(aChecked[0].folderFullNameRaw, true,
 					!bFlag ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
 			}
 		}
@@ -629,12 +507,12 @@
 
 			if (Utils.isUnd(bSeen))
 			{
-				this.setAction(aChecked[0].folderFullNameRaw,
+				this.setAction(aChecked[0].folderFullNameRaw, true,
 					0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
 			}
 			else
 			{
-				this.setAction(aChecked[0].folderFullNameRaw,
+				this.setAction(aChecked[0].folderFullNameRaw, true,
 					bSeen ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
 			}
 		}
@@ -646,38 +524,6 @@
 
 		this.oContentVisible = $('.b-content', oDom);
 		this.oContentScrollable = $('.content', this.oContentVisible);
-
-		this.oContentVisible.on('click', '.fullThreadHandle', function () {
-			var
-				aList = [],
-				oMessage = ko.dataFor(this)
-			;
-
-			if (oMessage && !oMessage.lastInCollapsedThreadLoading())
-			{
-				MessageStore.messageListThreadFolder(oMessage.folderFullNameRaw);
-
-				aList = MessageStore.messageListThreadUids();
-
-				if (oMessage.lastInCollapsedThread())
-				{
-					aList.push(0 < oMessage.parentUid() ? oMessage.parentUid() : oMessage.uid);
-				}
-				else
-				{
-					aList = _.without(aList, 0 < oMessage.parentUid() ? oMessage.parentUid() : oMessage.uid);
-				}
-
-				MessageStore.messageListThreadUids(_.uniq(aList));
-
-				oMessage.lastInCollapsedThreadLoading(true);
-				oMessage.lastInCollapsedThread(!oMessage.lastInCollapsedThread());
-
-				require('App/User').reloadMessageList();
-			}
-
-			return false;
-		});
 
 		this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.MessageList);
 

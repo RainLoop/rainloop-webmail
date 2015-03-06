@@ -21,8 +21,11 @@
 
 		Cache = require('Common/Cache'),
 
+		AppStore = require('Stores/User/App'),
 		FolderStore = require('Stores/User/Folder'),
 		SettingsStore = require('Stores/User/Settings'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		MessageModel = require('Model/Message')
 	;
@@ -41,9 +44,6 @@
 		this.messageListPage = ko.observable(1);
 		this.messageListError = ko.observable('');
 
-		this.messageListThreadFolder = ko.observable('');
-		this.messageListThreadUids = ko.observableArray([]);
-
 		this.messageListEndFolder = ko.observable('');
 		this.messageListEndSearch = ko.observable('');
 		this.messageListEndPage = ko.observable(1);
@@ -52,14 +52,29 @@
 		this.messageListIsNotCompleted = ko.observable(false);
 		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({'throttle': 200});
 
+		this.messageListDisableAutoSelect = ko.observable(false).extend({'falseTimeout': 500});
+
 		// message viewer
 		this.message = ko.observable(null);
-		this.currentMessage = ko.observable(null);
+
+		this.selectorMessageSelected = ko.observable(null);
+		this.selectorMessageFocused = ko.observable(null);
 
 		this.message.focused = ko.observable(false);
 
+		this.message.viewTrigger = ko.observable(false);
+
+		this.messageLastThreadUidsData = ko.observable(null);
+
 		this.messageError = ko.observable('');
-		this.messageLoading = ko.observable(false);
+
+		this.messageCurrentLoading = ko.observable(false);
+		this.messageThreadLoading = ko.observable(false);
+
+		this.messageLoading = ko.computed(function () {
+			return !!(this.messageCurrentLoading() || this.messageThreadLoading());
+		}, this);
+
 		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
 
 		this.messageFullScreenMode = ko.observable(false);
@@ -67,45 +82,10 @@
 		this.messagesBodiesDom = ko.observable(null);
 		this.messageActiveDom = ko.observable(null);
 
-		this.messageListChecked = ko.computed(function () {
-			return _.filter(this.messageList(), function (oItem) {
-				return oItem.checked();
-			});
-		}, this).extend({'rateLimit': 0});
-
-		this.hasCheckedMessages = ko.computed(function () {
-			return 0 < this.messageListChecked().length;
-		}, this).extend({'rateLimit': 0});
-
-		this.messageListCheckedOrSelected = ko.computed(function () {
-
-			var
-				aChecked = this.messageListChecked(),
-				oSelectedMessage = this.currentMessage()
-			;
-
-			return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
-
-		}, this);
-
-		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
-			var aList = [];
-			_.each(this.messageListCheckedOrSelected(), function (oMessage) {
-				if (oMessage)
-				{
-					aList.push(oMessage.uid);
-					if (0 < oMessage.threadsLen() && 0 === oMessage.parentUid() && oMessage.lastInCollapsedThread())
-					{
-						aList = _.union(aList, oMessage.threads());
-					}
-				}
-			});
-			return aList;
-		}, this);
-
-
 		this.computers();
 		this.subscribers();
+
+		this.onMessageResponse = _.bind(this.onMessageResponse, this);
 
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
 	}
@@ -143,14 +123,46 @@
 		this.isMessageSelected = ko.computed(function () {
 			return null !== this.message();
 		}, this);
+
+		this.messageListChecked = ko.computed(function () {
+			return _.filter(this.messageList(), function (oItem) {
+				return oItem.checked();
+			});
+		}, this).extend({'rateLimit': 0});
+
+		this.hasCheckedMessages = ko.computed(function () {
+			return 0 < this.messageListChecked().length;
+		}, this).extend({'rateLimit': 0});
+
+		this.messageListCheckedOrSelected = ko.computed(function () {
+
+			var
+				aChecked = this.messageListChecked(),
+				oSelectedMessage = this.selectorMessageSelected()
+			;
+
+			return _.union(aChecked, oSelectedMessage ? [oSelectedMessage] : []);
+
+		}, this);
+
+		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(function () {
+			var aList = [];
+			_.each(this.messageListCheckedOrSelected(), function (oMessage) {
+				if (oMessage)
+				{
+					aList.push(oMessage.uid);
+					if (1 < oMessage.threadsLen())
+					{
+						aList = _.union(aList, oMessage.threads());
+					}
+				}
+			});
+			return aList;
+		}, this);
 	};
 
 	MessageUserStore.prototype.subscribers = function ()
 	{
-		this.messageListThreadFolder.subscribe(function () {
-			this.messageListThreadUids([]);
-		}, this);
-
 		this.messageListCompleteLoading.subscribe(function (bValue) {
 			this.messageListCompleteLoadingThrottle(bValue);
 		}, this);
@@ -421,24 +433,19 @@
 
 			if ($oList && 0 < $oList.length)
 			{
-				_.delay(function () {
-					$oList.each(function () {
-						var $self = $(this), iH = $self.height();
-						if (0 === iH || 150 < iH)
-						{
-							$self.addClass('rl-bq-switcher hidden-bq');
-							$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-								.insertBefore($self)
-								.click(function () {
-									$self.toggleClass('hidden-bq');
-									Utils.windowResize();
-								})
-								.after('<br />')
-								.before('<br />')
-							;
-						}
-					});
-				}, 100);
+				$oList.each(function () {
+					var $self = $(this);
+					$self.addClass('rl-bq-switcher hidden-bq');
+					$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
+						.insertBefore($self)
+						.click(function () {
+							$self.toggleClass('hidden-bq');
+							Utils.windowResize();
+						})
+						.after('<br />')
+						.before('<br />')
+					;
+				});
 			}
 		}
 	};
@@ -446,6 +453,7 @@
 	MessageUserStore.prototype.setMessage = function (oData, bCached)
 	{
 		var
+			bNew = false,
 			bIsHtml = false,
 			bHasExternals = false,
 			bHasInternals = false,
@@ -456,143 +464,282 @@
 			bPgpSigned = false,
 			bPgpEncrypted = false,
 			oMessagesBodiesDom = this.messagesBodiesDom(),
-			oMessage = this.message()
+			oSelectedMessage = this.selectorMessageSelected(),
+			oMessage = this.message(),
+			aThreads = []
 		;
 
 		if (oData && oMessage && oData.Result && 'Object/Message' === oData.Result['@Object'] &&
-			oMessage.folderFullNameRaw === oData.Result.Folder && oMessage.uid === oData.Result.Uid)
+			oMessage.folderFullNameRaw === oData.Result.Folder)
 		{
-			this.messageError('');
-
-			oMessage.initUpdateByMessageJson(oData.Result);
-			Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
-
-			if (!bCached)
+			aThreads = oMessage.threads();
+			if (oMessage.uid !== oData.Result.Uid && 1 < aThreads.length &&
+				-1 < Utils.inArray(oData.Result.Uid, aThreads))
 			{
-				oMessage.initFlagsByJson(oData.Result);
+				oMessage = MessageModel.newInstanceFromJson(oData.Result);
+				if (oMessage)
+				{
+					oMessage.threads(aThreads);
+					Cache.initMessageFlagsFromCache(oMessage);
+
+					this.message(this.staticMessage.populateByMessageListItem(oMessage));
+					oMessage = this.message(),
+
+					bNew = true;
+				}
 			}
 
-			oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
-			if (oMessagesBodiesDom)
+			if (oMessage && oMessage.uid === oData.Result.Uid)
 			{
-				sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
-				oTextBody = oMessagesBodiesDom.find('#' + sId);
-				if (!oTextBody || !oTextBody[0])
+				this.messageError('');
+
+				oMessage.initUpdateByMessageJson(oData.Result);
+				Cache.addRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
+
+				if (!bCached)
 				{
-					bHasExternals = !!oData.Result.HasExternals;
-					bHasInternals = !!oData.Result.HasInternals;
+					oMessage.initFlagsByJson(oData.Result);
+				}
 
-					oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
-					oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-
-					if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
+				oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
+				if (oMessagesBodiesDom)
+				{
+					sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
+					oTextBody = oMessagesBodiesDom.find('#' + sId);
+					if (!oTextBody || !oTextBody[0])
 					{
-						bIsHtml = true;
-						sResultHtml = oData.Result.Html.toString();
-					}
-					else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
-					{
-						bIsHtml = false;
-						sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
+						bHasExternals = !!oData.Result.HasExternals;
+						bHasInternals = !!oData.Result.HasInternals;
 
-						if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
+						oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
+						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+
+						if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 						{
-							oMessage.plainRaw = Utils.pString(oData.Result.Plain);
-
-							bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
-							if (!bPgpEncrypted)
-							{
-								bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
-									/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
-							}
-
-							Globals.$div.empty();
-							if (bPgpSigned && oMessage.isPgpSigned())
-							{
-								sResultHtml =
-									Globals.$div.append(
-										$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
-									).html()
-								;
-							}
-							else if (bPgpEncrypted && oMessage.isPgpEncrypted())
-							{
-								sResultHtml =
-									Globals.$div.append(
-										$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
-									).html()
-								;
-							}
-
-							Globals.$div.empty();
-
-							oMessage.isPgpSigned(bPgpSigned);
-							oMessage.isPgpEncrypted(bPgpEncrypted);
+							bIsHtml = true;
+							sResultHtml = oData.Result.Html.toString();
 						}
+						else if (Utils.isNormal(oData.Result.Plain) && '' !== oData.Result.Plain)
+						{
+							bIsHtml = false;
+							sResultHtml = Utils.plainToHtml(oData.Result.Plain.toString(), false);
+
+							if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
+							{
+								oMessage.plainRaw = Utils.pString(oData.Result.Plain);
+
+								bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
+								if (!bPgpEncrypted)
+								{
+									bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
+										/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
+								}
+
+								Globals.$div.empty();
+								if (bPgpSigned && oMessage.isPgpSigned())
+								{
+									sResultHtml =
+										Globals.$div.append(
+											$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+										).html()
+									;
+								}
+								else if (bPgpEncrypted && oMessage.isPgpEncrypted())
+								{
+									sResultHtml =
+										Globals.$div.append(
+											$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+										).html()
+									;
+								}
+
+								Globals.$div.empty();
+
+								oMessage.isPgpSigned(bPgpSigned);
+								oMessage.isPgpEncrypted(bPgpEncrypted);
+							}
+						}
+						else
+						{
+							bIsHtml = false;
+						}
+
+						oBody
+							.html(Utils.findEmailAndLinks(sResultHtml))
+							.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
+						;
+
+						oMessage.isHtml(!!bIsHtml);
+						oMessage.hasImages(!!bHasExternals);
+						oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
+						oMessage.pgpSignedVerifyUser('');
+
+						oMessage.body = oBody;
+						if (oMessage.body)
+						{
+							oMessagesBodiesDom.append(oMessage.body);
+						}
+
+						oMessage.storeDataToDom();
+
+						if (bHasInternals)
+						{
+							oMessage.showInternalImages(true);
+						}
+
+						if (oMessage.hasImages() && SettingsStore.showImages())
+						{
+							oMessage.showExternalImages(true);
+						}
+
+						this.purgeMessageBodyCacheThrottle();
 					}
 					else
 					{
-						bIsHtml = false;
+						oMessage.body = oTextBody;
+						if (oMessage.body)
+						{
+							oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+							oMessage.fetchDataToDom();
+						}
 					}
 
-					oBody
-						.html(Utils.findEmailAndLinks(sResultHtml))
-						.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'))
-					;
+					this.messageActiveDom(oMessage.body);
 
-					oMessage.isHtml(!!bIsHtml);
-					oMessage.hasImages(!!bHasExternals);
-					oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-					oMessage.pgpSignedVerifyUser('');
+					this.hideMessageBodies();
 
-					oMessage.body = oBody;
-					if (oMessage.body)
+					if (oBody)
 					{
-						oMessagesBodiesDom.append(oMessage.body);
+						this.initBlockquoteSwitcher(oBody);
 					}
 
-					oMessage.storeDataToDom();
-
-					if (bHasInternals)
-					{
-						oMessage.showInternalImages(true);
-					}
-
-					if (oMessage.hasImages() && SettingsStore.showImages())
-					{
-						oMessage.showExternalImages(true);
-					}
-
-					this.purgeMessageBodyCacheThrottle();
+					oMessage.body.show();
 				}
-				else
+
+				Cache.initMessageFlagsFromCache(oMessage);
+				if (oMessage.unseen() || oMessage.hasUnseenSubMessage())
 				{
-					oMessage.body = oTextBody;
-					if (oMessage.body)
-					{
-						oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-						oMessage.fetchDataToDom();
-					}
+					require('App/User').messageListAction(oMessage.folderFullNameRaw,
+						oMessage.uid, Enums.MessageSetAction.SetSeen, [oMessage]);
 				}
 
-				this.messageActiveDom(oMessage.body);
-
-				this.hideMessageBodies();
-				oMessage.body.show();
-
-				if (oBody)
+				if (bNew)
 				{
-					this.initBlockquoteSwitcher(oBody);
+					oMessage = this.message();
+
+					if (oSelectedMessage && oMessage && (
+						oMessage.folderFullNameRaw !== oSelectedMessage.folderFullNameRaw ||
+						oMessage.uid !== oSelectedMessage.uid
+					))
+					{
+						this.selectorMessageSelected(null);
+						if (1 === this.messageList().length)
+						{
+							this.selectorMessageFocused(null);
+						}
+					}
+					else if (!oSelectedMessage && oMessage)
+					{
+						oSelectedMessage = _.find(this.messageList(), function (oSubMessage) {
+							return oSubMessage &&
+								oSubMessage.folderFullNameRaw === oMessage.folderFullNameRaw &&
+								oSubMessage.uid === oMessage.uid;
+						});
+
+						if (oSelectedMessage)
+						{
+							this.selectorMessageSelected(oSelectedMessage);
+							this.selectorMessageFocused(oSelectedMessage);
+						}
+					}
+
 				}
+
+				Utils.windowResize();
 			}
+		}
+	};
 
-			Cache.initMessageFlagsFromCache(oMessage);
-			if (oMessage.unseen())
+	MessageUserStore.prototype.selectMessage = function (oMessage)
+	{
+		if (oMessage)
+		{
+			this.message(this.staticMessage.populateByMessageListItem(oMessage));
+
+			this.populateMessageBody(this.message());
+
+			if (Enums.Layout.NoPreview === SettingsStore.layout())
 			{
-				require('App/User').setMessageSeen(oMessage);
+				kn.setHash(Links.messagePreview(), true);
+				this.message.focused(true);
 			}
+		}
+		else
+		{
+			this.message(null);
+		}
+	};
 
-			Utils.windowResize();
+	MessageUserStore.prototype.selectThreadMessage = function (sFolder, sUid)
+	{
+		if (Remote.message(this.onMessageResponse, sFolder, sUid))
+		{
+			this.messageThreadLoading(true);
+		}
+		else
+		{
+			Utils.log('Error: Unknown message request: ' + sFolder + ' ~ ' + sUid + ' [e-102]');
+		}
+
+		if (Enums.Layout.NoPreview === SettingsStore.layout())
+		{
+			kn.setHash(Links.messagePreview(), true);
+			this.message.focused(true);
+		}
+	};
+
+	MessageUserStore.prototype.populateMessageBody = function (oMessage)
+	{
+		if (oMessage)
+		{
+			if (Remote.message(this.onMessageResponse, oMessage.folderFullNameRaw, oMessage.uid))
+			{
+				this.messageCurrentLoading(true);
+			}
+			else
+			{
+				Utils.log('Error: Unknown message request: ' + oMessage.folderFullNameRaw + ' ~ ' + oMessage.uid + ' [e-101]');
+			}
+		}
+	};
+
+	/**
+	 * @param {string} sResult
+	 * @param {AjaxJsonDefaultResponse} oData
+	 * @param {boolean} bCached
+	 */
+	MessageUserStore.prototype.onMessageResponse = function (sResult, oData, bCached)
+	{
+		this.hideMessageBodies();
+
+		this.messageCurrentLoading(false);
+		this.messageThreadLoading(false);
+
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			this.setMessage(oData, bCached);
+		}
+		else if (Enums.StorageResultType.Unload === sResult)
+		{
+			this.message(null);
+			this.messageError('');
+		}
+		else if (Enums.StorageResultType.Abort !== sResult)
+		{
+			this.message(null);
+			this.messageError((oData && oData.ErrorCode ?
+				Translator.getNotification(oData.ErrorCode) :
+				Translator.getNotification(Enums.Notification.UnknownError)));
 		}
 	};
 
@@ -613,7 +760,7 @@
 			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
 		{
 			var
-				mLastCollapsedThreadUids = null,
+				self = this,
 				iIndex = 0,
 				iLen = 0,
 				iCount = 0,
@@ -629,11 +776,6 @@
 
 			iCount = Utils.pInt(oData.Result.MessageResultCount);
 			iOffset = Utils.pInt(oData.Result.Offset);
-
-			if (Utils.isNonEmptyArray(oData.Result.LastCollapsedThreadUids))
-			{
-				mLastCollapsedThreadUids = oData.Result.LastCollapsedThreadUids;
-			}
 
 			oFolder = Cache.getFolderFromCacheList(
 				Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
@@ -692,9 +834,6 @@
 							Cache.storeMessageFlagsToCache(oMessage);
 						}
 
-						oMessage.lastInCollapsedThreadLoading(false);
-						oMessage.lastInCollapsedThread(mLastCollapsedThreadUids && -1 < Utils.inArray(Utils.pInt(oMessage.uid), mLastCollapsedThreadUids) ? true : false);
-
 						aList.push(oMessage);
 					}
 				}
@@ -708,10 +847,32 @@
 			this.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			this.messageListEndPage(this.messageListPage());
 
+			this.messageListDisableAutoSelect(true);
+
 			this.messageList(aList);
 			this.messageListIsNotCompleted(false);
 
 			Cache.clearNewMessageCache();
+
+			if (AppStore.threadsAllowed() && SettingsStore.useThreads())
+			{
+				oMessage = this.message();
+				if (oMessage)
+				{
+					Remote.messageThreadsFromCache(function (sResult, oData) {
+
+						if (Enums.StorageResultType.Success === sResult && oData &&  oData.Result && oData.Result.ThreadUids)
+						{
+							self.messageLastThreadUidsData({
+								'Folder': oData.Result.Folder,
+								'Uid': oData.Result.Uid,
+								'Uids': oData.Result.ThreadUids
+							});
+						}
+
+					}, oMessage.folderFullNameRaw, oMessage.uid);
+				}
+			}
 
 			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
 			{

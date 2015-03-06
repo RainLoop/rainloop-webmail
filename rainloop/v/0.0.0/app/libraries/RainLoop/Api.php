@@ -92,7 +92,7 @@ class Api
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
 			\MailSo\Config::$LargeThreadLimit =
-				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 100);
+				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 
