@@ -302,16 +302,35 @@
 		}
 	};
 
+	ko.bindingHandlers.moment = {
+		'init': function (oElement, fValueAccessor) {
+			require('Common/Momentor').momentToNode(
+				$(oElement).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
+			);
+		},
+		'update': function (oElement, fValueAccessor) {
+			require('Common/Momentor').momentToNode(
+				$(oElement).data('moment-time', ko.unwrap(fValueAccessor()))
+			);
+		}
+	};
+
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
-			require('Common/Translator').i18nToNode(oElement);
+			require('Common/Translator').i18nToNodes(oElement);
+		}
+	};
+
+	ko.bindingHandlers.translatorInit = {
+		'init': function (oElement) {
+			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
 			ko.unwrap(fValueAccessor());
-			require('Common/Translator').i18nToNode(oElement);
+			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 

@@ -5,7 +5,6 @@
 
 	var
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Settings = require('Storage/Settings'),
 		LicenseStore = require('Stores/Admin/License')
@@ -71,12 +70,13 @@
 	LicensingAdminSettings.prototype.licenseExpiredMomentValue = function ()
 	{
 		var
+			moment = require('moment'),
 			iTime = this.licenseExpired(),
-			oDate = moment.unix(iTime)
+			oM = moment.unix(iTime)
 		;
 
 		return this.licenseIsUnlim() ? 'Never' :
-			(iTime && (oDate.format('LL') + ' (' + oDate.from(moment()) + ')'));
+			(iTime && (oM.format('LL') + ' (' + oM.from(moment()) + ')'));
 	};
 
 	module.exports = LicensingAdminSettings;

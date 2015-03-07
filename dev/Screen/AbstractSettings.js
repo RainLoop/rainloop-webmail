@@ -103,7 +103,7 @@
 					RoutedSettingsViewModel.__vm = oSettingsScreen;
 
 					ko.applyBindingAccessorsToNode(oViewModelDom[0], {
-						'i18nInit': true,
+						'translatorInit': true,
 						'template': function () { return {'name': RoutedSettingsViewModel.__rlSettingsData.Template}; }
 					}, oSettingsScreen);
 

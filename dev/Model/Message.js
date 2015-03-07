@@ -8,7 +8,6 @@
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
@@ -76,8 +75,6 @@
 		this.hasAttachments = ko.observable(false);
 		this.attachmentsMainType = ko.observable('');
 
-		this.moment = ko.observable(moment(moment.unix(0)));
-
 		this.attachmentIconClass = ko.computed(function () {
 			var sClass = '';
 			if (this.hasAttachments())
@@ -102,20 +99,9 @@
 			return sClass;
 		}, this);
 
-		this.fullFormatDateValue = ko.computed(function () {
-			return MessageModel.calculateFullFromatDateValue(this.dateTimeStampInUTC());
-		}, this);
-
-		this.momentDate = Utils.createMomentDate(this);
-		this.momentShortDate = Utils.createMomentShortDate(this);
-
-		this.regDisposables(this.dateTimeStampInUTC.subscribe(function (iValue) {
-			var iNow = moment().unix();
-			this.moment(moment.unix(iNow < iValue ? iNow : iValue));
-		}, this));
-
 		this.body = null;
 		this.plainRaw = '';
+
 		this.isHtml = ko.observable(false);
 		this.hasImages = ko.observable(false);
 		this.attachments = ko.observableArray([]);
@@ -146,8 +132,7 @@
 			return Enums.MessagePriority.High === this.priority();
 		}, this);
 
-		this.regDisposables([this.attachmentIconClass, this.fullFormatDateValue,
-			this.threadsLen, this.isImportant]);
+		this.regDisposables([this.attachmentIconClass, this.threadsLen, this.isImportant]);
 	}
 
 	_.extend(MessageModel.prototype, AbstractModel.prototype);
@@ -161,16 +146,6 @@
 	{
 		var oMessageModel = new MessageModel();
 		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
-	};
-
-	/**
-	 * @static
-	 * @param {number} iTimeStampInUTC
-	 * @return {string}
-	 */
-	MessageModel.calculateFullFromatDateValue = function (iTimeStampInUTC)
-	{
-		return 0 < iTimeStampInUTC ? moment.unix(iTimeStampInUTC).format('LLL') : '';
 	};
 
 	/**
@@ -869,7 +844,7 @@
 			'popupReplyTo': this.replyToToLine(false),
 			'popupSubject': this.subject(),
 			'popupIsHtml': this.isHtml(),
-			'popupDate': this.fullFormatDateValue(),
+			'popupDate': require('Common/Momentor').format(this.dateTimeStampInUTC(), 'FULL'),
 			'popupAttachments': this.attachmentsToStringLine(),
 			'popupBody': this.textBodyToString()
 		};
@@ -969,8 +944,6 @@
 		this.checked(oMessage.checked());
 		this.hasAttachments(oMessage.hasAttachments());
 		this.attachmentsMainType(oMessage.attachmentsMainType());
-
-		this.moment(oMessage.moment());
 
 		this.body = null;
 

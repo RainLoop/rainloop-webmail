@@ -7,7 +7,6 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
-		moment = require('moment'),
 		SimplePace = require('SimplePace'),
 		Tinycon = require('Tinycon'),
 
@@ -18,7 +17,9 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
+
 		Translator = require('Common/Translator'),
+		Momentor = require('Common/Momentor'),
 
 		kn = require('Knoin/Knoin'),
 
@@ -651,7 +652,7 @@
 					if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
 					{
 						var
-							iUtc = moment().unix(),
+							iUtc = Momentor.momentNowUnix(),
 							sHash = Cache.getFolderHash(oData.Result.Folder),
 							oFolder = Cache.getFolderFromCacheList(oData.Result.Folder),
 							bCheck = false,
@@ -750,7 +751,7 @@
 
 		var
 			self = this,
-			iUtc = moment().unix(),
+			iUtc = Momentor.momentNowUnix(),
 			aFolders = FolderStore.getNextFolderNames(bBoot)
 		;
 
@@ -1624,7 +1625,7 @@
 		}
 
 		Events.sub('interval.1m', function () {
-			Globals.momentTrigger(!Globals.momentTrigger());
+			Momentor.reload();
 		});
 
 		Plugins.runHook('rl-start-screens');

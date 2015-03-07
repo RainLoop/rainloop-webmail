@@ -317,6 +317,19 @@
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
+	 * @param {Array} aUids
+	 */
+	RemoteUserStorage.prototype.messageListSimple = function (fCallback, sFolderFullNameRaw, aUids)
+	{
+		return this.defaultRequest(fCallback, 'MessageListSimple', {
+			'Folder': Utils.pString(sFolderFullNameRaw),
+			'Uids': aUids
+		}, Consts.Defaults.DefaultAjaxTimeout, '', ['MessageListSimple']);
+	};
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20
 	 * @param {string=} sSearch = ''

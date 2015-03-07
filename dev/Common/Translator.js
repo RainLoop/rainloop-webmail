@@ -58,48 +58,57 @@
 
 	/**
 	 * @param {Object} oElement
+	 */
+	Translator.prototype.i18nToNode = function (oElement)
+	{
+		var
+			sKey = '',
+			$oEl = $(oElement)
+		;
+
+		sKey = $oEl.data('i18n-text');
+		if (sKey)
+		{
+			$oEl.text(this.i18n(sKey));
+		}
+		else
+		{
+			sKey = $oEl.data('i18n-html');
+			if (sKey)
+			{
+				$oEl.html(this.i18n(sKey));
+			}
+
+			sKey = $oEl.data('i18n-placeholder');
+			if (sKey)
+			{
+				$oEl.attr('placeholder', this.i18n(sKey));
+			}
+
+			sKey = $oEl.data('i18n-title');
+			if (sKey)
+			{
+				$oEl.attr('title', this.i18n(sKey));
+			}
+		}
+	};
+
+	/**
+	 * @param {Object} oElements
 	 * @param {boolean=} bAnimate = false
 	 */
-	Translator.prototype.i18nToNode = function (oElement, bAnimate)
+	Translator.prototype.i18nToNodes = function (oElements, bAnimate)
 	{
 		var self = this;
 		_.defer(function () {
-			$('.i18n', oElement).each(function () {
-				var
-					jqThis = $(this),
-					sKey = ''
-				;
 
-				sKey = jqThis.data('i18n-text');
-				if (sKey)
-				{
-					jqThis.text(self.i18n(sKey));
-				}
-				else
-				{
-					sKey = jqThis.data('i18n-html');
-					if (sKey)
-					{
-						jqThis.html(self.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-placeholder');
-					if (sKey)
-					{
-						jqThis.attr('placeholder', self.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-title');
-					if (sKey)
-					{
-						jqThis.attr('title', self.i18n(sKey));
-					}
-				}
+			$('.i18n', oElements).each(function () {
+				self.i18nToNode(this);
 			});
 
 			if (bAnimate && Globals.bAnimationSupported)
 			{
-				$('.i18n-animation.i18n', oElement).letterfx({
+				$('.i18n-animation.i18n', oElements).letterfx({
 					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'
 				});
 			}
@@ -112,7 +121,9 @@
 		{
 			this.data = window['rainloopI18N'] || {};
 
-			this.i18nToNode($(window.document), true);
+			this.i18nToNodes(window.document, true);
+
+			require('Common/Momentor').reload();
 			this.trigger(!this.trigger());
 		}
 

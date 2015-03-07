@@ -8,7 +8,6 @@
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
-		moment = require('moment'),
 		JSON = require('JSON'),
 		Jua = require('Jua'),
 
@@ -19,7 +18,9 @@
 		Events = require('Common/Events'),
 		Links = require('Common/Links'),
 		HtmlEditor = require('Common/HtmlEditor'),
+
 		Translator = require('Common/Translator'),
+		Momentor = require('Common/Momentor'),
 
 		Cache = require('Common/Cache'),
 
@@ -716,7 +717,7 @@
 
 				this.savedOrSendingText(
 					0 < this.savedTime() ? Translator.i18n('COMPOSE/SAVED_TIME', {
-						'TIME': moment.unix(this.savedTime() - 1).format('LT')
+						'TIME': Momentor.format(this.savedTime() - 1, 'LT')
 					}) : ''
 				);
 
@@ -806,12 +807,12 @@
 
 		if (-1 < sSignature.indexOf('{{DATE}}'))
 		{
-			sSignature = sSignature.replace(/{{DATE}}/g, moment().format('llll'));
+			sSignature = sSignature.replace(/{{DATE}}/g, Momentor.format(0, 'llll'));
 		}
 
 		if (-1 < sSignature.indexOf('{{TIME}}'))
 		{
-			sSignature = sSignature.replace(/{{TIME}}/g, moment().format('LT'));
+			sSignature = sSignature.replace(/{{TIME}}/g, Momentor.format(0, 'LT'));
 		}
 		if (-1 < sSignature.indexOf('{{MOMENT:'))
 		{
@@ -834,7 +835,8 @@
 				if (aMoments && 0 < aMoments.length)
 				{
 					_.each(aMoments, function (aData) {
-						sSignature = sSignature.replace(aData[0], moment().format(aData[1]));
+						sSignature = sSignature.replace(
+							aData[0], Momentor.format(0, aData[1]));
 					});
 				}
 
@@ -1031,7 +1033,7 @@
 
 		if ('' !== sComposeType && oMessage)
 		{
-			sDate = oMessage.fullFormatDateValue();
+			sDate = Momentor.format(oMessage.dateTimeStampInUTC(), 'FULL');
 			sSubject = oMessage.subject();
 			aDraftInfo = oMessage.aDraftInfo;
 

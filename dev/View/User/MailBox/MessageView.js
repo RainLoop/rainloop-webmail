@@ -193,9 +193,8 @@
 		this.viewCc = ko.observable('');
 		this.viewBcc = ko.observable('');
 		this.viewReplyTo = ko.observable('');
-		this.viewDate = ko.observable('');
+		this.viewTimeStamp = ko.observable(0);
 		this.viewSize = ko.observable('');
-		this.viewMoment = ko.observable('');
 		this.viewLineAsCss = ko.observable('');
 		this.viewViewLink = ko.observable('');
 		this.viewDownloadLink = ko.observable('');
@@ -206,6 +205,7 @@
 
 // THREADS
 		this.viewThreads = ko.observableArray([]);
+		this.viewThreadMessages = ko.observableArray([]);
 		this.viewThreads.trigger = ko.observable(false);
 
 		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
@@ -252,7 +252,7 @@
 				if (-1 < iIndex)
 				{
 					aResult[0] = true;
-					aResult[1] = (iIndex + 1) + '/' + iLen;
+					aResult[1] = (iIndex + 1) + ' / ' + iLen;
 					aResult[2] = aThreads[iIndex];
 					aResult[3] = 0 < iIndex && aThreads[iIndex - 1] ? aThreads[iIndex - 1] : '';
 					aResult[4] = aThreads[iIndex + 1] ? aThreads[iIndex + 1] : '';
@@ -288,6 +288,17 @@
 			var aStatus = this.viewThreads.status();
 			this.openThreadMessage(aStatus[3]);
 		}, this.viewThreadsControlForwardAllow);
+
+		this.threadListCommand = Utils.createCommand(this, function () {
+			var aList = [], aStatus = this.viewThreads.status();
+			if (aStatus && aStatus[0])
+			{
+				this.viewThreadMessages(aList);
+//				window.console.log(aStatus);
+			}
+		}, function () {
+			return !this.messageLoadingThrottle();
+		});
 
 // PGP
 		this.viewPgpPassword = ko.observable('');
@@ -364,9 +375,8 @@
 				this.viewCc(oMessage.ccToLine(false));
 				this.viewBcc(oMessage.bccToLine(false));
 				this.viewReplyTo(oMessage.replyToToLine(false));
-				this.viewDate(oMessage.fullFormatDateValue());
+				this.viewTimeStamp(oMessage.dateTimeStampInUTC());
 				this.viewSize(oMessage.friendlySize());
-				this.viewMoment(oMessage.momentDate());
 				this.viewLineAsCss(oMessage.lineAsCss());
 				this.viewViewLink(oMessage.viewLink());
 				this.viewDownloadLink(oMessage.downloadLink());

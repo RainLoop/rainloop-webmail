@@ -586,71 +586,6 @@
 	};
 
 	/**
-	 * @param {{moment:Function}} oObject
-	 */
-	Utils.createMomentDate = function (oObject)
-	{
-		if (Utils.isUnd(oObject.moment))
-		{
-			oObject.moment = ko.observable(moment());
-		}
-
-		return ko.computed(function () {
-			Globals.momentTrigger();
-			var oMoment = this.moment();
-			return 1970 === oMoment.year() ? '' : oMoment.fromNow();
-		}, oObject);
-	};
-
-	/**
-	 * @param {{moment:Function, momentDate:Function}} oObject
-	 */
-	Utils.createMomentShortDate = function (oObject)
-	{
-		return ko.computed(function () {
-
-			var
-				sResult = '',
-				oMomentNow = moment(),
-				oMoment = this.moment(),
-				sMomentDate = this.momentDate()
-			;
-
-			if (1970 === oMoment.year())
-			{
-				sResult = '';
-			}
-			else if (4 >= oMomentNow.diff(oMoment, 'hours'))
-			{
-				sResult = sMomentDate;
-			}
-			else if (oMomentNow.format('L') === oMoment.format('L'))
-			{
-				sResult = require('Common/Translator').i18n('MESSAGE_LIST/TODAY_AT', {
-					'TIME': oMoment.format('LT')
-				});
-			}
-			else if (oMomentNow.clone().subtract('days', 1).format('L') === oMoment.format('L'))
-			{
-				sResult = require('Common/Translator').i18n('MESSAGE_LIST/YESTERDAY_AT', {
-					'TIME': oMoment.format('LT')
-				});
-			}
-			else if (oMomentNow.year() === oMoment.year())
-			{
-				sResult = oMoment.format('D MMM.');
-			}
-			else
-			{
-				sResult = oMoment.format('LL');
-			}
-
-			return sResult;
-
-		}, oObject);
-	};
-
-	/**
 	 * @param {string} sTheme
 	 * @return {string}
 	 */
@@ -764,7 +699,7 @@
 				$('#rl-content', oBody).html(oTemplate.html());
 				$('html', oWin.document).addClass('external ' + $('html').attr('class'));
 
-				require('Common/Translator').i18nToNode(oBody);
+				require('Common/Translator').i18nToNodes(oBody);
 
 				if (oViewModel && $('#rl-content', oBody)[0])
 				{

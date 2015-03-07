@@ -7,7 +7,6 @@
 		_ = require('_'),
 		ko = require('ko'),
 		window = require('window'),
-		moment = require('moment'),
 		$ = require('$'),
 
 		kn = require('Knoin/Knoin'),
@@ -766,11 +765,11 @@
 				iCount = 0,
 				iOffset = 0,
 				aList = [],
-				iUtc = moment().unix(),
 				oJsonMessage = null,
 				oMessage = null,
 				oFolder = null,
 				iNewCount = 0,
+				iUtc = require('Common/Momentor').momentNowUnix(),
 				bUnreadCountChange = false
 			;
 

@@ -213,7 +213,7 @@
 				});
 
 				ko.applyBindingAccessorsToNode(oViewModelDom[0], {
-					'i18nInit': true,
+					'translatorInit': true,
 					'template': function () { return {'name': oViewModel.viewModelTemplate()};}
 				}, oViewModel);
 

@@ -6,7 +6,6 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
@@ -205,7 +204,7 @@
 		var
 			aResult = [],
 			iLimit = 5,
-			iUtc = moment().unix(),
+			iUtc = require('Common/Momentor').momentNowUnix(),
 			iTimeout = iUtc - 60 * 5,
 			aTimeouts = [],
 			sInboxFolderName = Cache.getFolderInboxName(),

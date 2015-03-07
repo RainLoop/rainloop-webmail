@@ -6,7 +6,6 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Utils = require('Common/Utils'),
 
@@ -66,6 +65,7 @@
 	AdvancedSearchPopupView.prototype.buildSearchString = function ()
 	{
 		var
+			oM = null,
 			aResult = [],
 			sFrom = Utils.trim(this.from()),
 			sTo = Utils.trim(this.to()),
@@ -117,7 +117,7 @@
 
 		if (-1 < this.selectedDateValue())
 		{
-			aResult.push('date:' + moment().subtract('days', this.selectedDateValue()).format('YYYY.MM.DD') + '/');
+			aResult.push('date:' + require('Common/Momentor').searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
 		}
 
 		if (sText && '' !== sText)

@@ -5,7 +5,7 @@
 	<div class="delimiter"></div>
 	<div class="wrapper">
 		<div class="dateParent actionHandle dragHandle">
-			<span class="date" data-bind="text: momentShortDate, title: fullFormatDateValue"></span>
+			<span class="date" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></span>
 		</div>
 		<div class="checkedParent">
 			<i class="checkboxMessage" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
