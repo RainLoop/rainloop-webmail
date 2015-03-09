@@ -353,7 +353,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
 						}
 
-						$oContact->PopulateByVCard($oVCard->serialize());
+						$oContact->PopulateByVCard($oVCard->UID, $oVCard->serialize());
 
 						if (0 < \count($oContact->Properties))
 						{

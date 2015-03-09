@@ -182,13 +182,18 @@ class Contact
 	/**
 	 * @return string
 	 */
-	public function ToVCard($sPreVCard = '')
+	public function ToVCard($sPreVCard = '', $oLogger = null)
 	{
 		$this->UpdateDependentValues();
 
 		if (!\class_exists('Sabre\DAV\Client'))
 		{
 			return '';
+		}
+
+		if ("\xef\xbb\xbf" === \substr($sPreVCard, 0, 3))
+		{
+			$sPreVCard = \substr($sPreVCard, 3);
 		}
 
 		$oVCard = null;
@@ -198,7 +203,14 @@ class Contact
 			{
 				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
 			}
-			catch (\Exception $oExc) {};
+			catch (\Exception $oExc)
+			{
+				if ($oLogger)
+				{
+					$oLogger->WriteException($oExc);
+					$oLogger->WriteDump($sPreVCard);
+				}
+			}
 		}
 
 		if (!$oVCard)
@@ -484,8 +496,13 @@ class Contact
 		}
 	}
 
-	public function PopulateByVCard($sVCard, $sEtag = '')
+	public function PopulateByVCard($sUid, $sVCard, $sEtag = '', $oLogger = null)
 	{
+		if ("\xef\xbb\xbf" === \substr($sVCard, 0, 3))
+		{
+			$sVCard = \substr($sVCard, 3);
+		}
+
 		$this->Properties = array();
 
 		if (!\class_exists('Sabre\DAV\Client'))
@@ -502,7 +519,16 @@ class Contact
 		{
 			$oVCard = \Sabre\VObject\Reader::read($sVCard);
 		}
-		catch (\Exception $oExc) {};
+		catch (\Exception $oExc)
+		{
+			if ($oLogger)
+			{
+				$oLogger->WriteException($oExc);
+				$oLogger->WriteDump($sVCard);
+			}
+
+			$this->IdContactStr = $sUid;
+		}
 
 		$aProperties = array();
 		if ($oVCard)

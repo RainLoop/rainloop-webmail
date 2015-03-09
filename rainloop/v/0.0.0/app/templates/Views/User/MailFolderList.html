@@ -12,9 +12,9 @@
 	<div class="b-content opacity-on-panel-disabled" data-bind="nano: true">
 		<div class="content g-scrollbox">
 			<div class="content-wrapper">
-				<div data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
+				<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
 				<hr class="b-list-delimiter" />
-				<div data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+				<div class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
 			</div>
 		</div>
 	</div>

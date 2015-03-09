@@ -91,12 +91,17 @@ class PdoAddressBook
 					if ($aItem && isset($aItem['id_contact'], $aItem['id_contact_str'], $aItem['changed'], $aItem['deleted'], $aItem['etag']) &&
 						!empty($aItem['id_contact_str']))
 					{
-						$aResult[$aItem['id_contact_str']] = array(
+						$sKeyID = $aItem['id_contact_str'];
+
+						$aResult[$sKeyID] = array(
+							'deleted' => '1' === (string) $aItem['deleted'],
 							'id_contact' => $aItem['id_contact'],
+							'uid' => $sKeyID,
 							'etag' => $aItem['etag'],
 							'changed' => (int) $aItem['changed'],
-							'deleted' => '1' === (string) $aItem['deleted']
 						);
+
+						$aResult[$sKeyID]['changed_'] = \gmdate('c', $aResult[$sKeyID]['changed']);
 					}
 				}
 			}
@@ -141,12 +146,15 @@ class PdoAddressBook
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
 
 							$mResult[$sKeyID] = array(
+								'deleted' => false,
+								'uid' => $sKeyID,
 								'vcf' => $sVcfFileName,
 								'etag' => \trim(\trim($aItem['{dav:}getetag']), '"\''),
 								'lastmodified' => $aItem['{dav:}getlastmodified'],
-								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified']),
-								'deleted' => false
+								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified'])
 							);
+
+							$mResult[$sKeyID]['changed_'] = \gmdate('c', $mResult[$sKeyID]['changed']);
 						}
 					}
 				}
@@ -310,7 +318,7 @@ class PdoAddressBook
 					}
 
 					$oResponse = $this->davClientRequest($oClient, 'PUT',
-						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody));
+						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
 
 					if ($oResponse && isset($oResponse['headers'], $oResponse['headers']['etag']))
 					{
@@ -358,8 +366,9 @@ class PdoAddressBook
 							$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 						}
 
-						$oContact->PopulateByVCard($sBody,
-							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '');
+						$oContact->PopulateByVCard($aData['uid'], $sBody,
+							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '',
+							$this->oLogger);
 
 						$this->ContactSave($sEmail, $oContact);
 						unset($oContact);

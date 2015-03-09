@@ -189,7 +189,8 @@
 							<a class="btn btn-thin btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
 									href="#" tabindex="-1" data-tooltip-placement="bottom">
 									<!--href="#" tabindex="-1" data-tooltip-placement="bottom" data-bind="command: threadListCommand">-->
-								<b data-bind="text: viewThreadsControlDesc"></b>
+								<i class="icon-list"></i>
+								<!--<b data-bind="text: viewThreadsControlDesc"></b>-->
 							</a>
 							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadBackCommand">
 								<i class="icon-right-middle"></i>
@@ -218,9 +219,9 @@
 									<span class="flagParent">
 										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>
 									</span>
-<!--									<span class="thread-counter" data-bind="visible: viewThreadsControlVisibility"
+									<span class="thread-counter" data-bind="visible: viewThreadsControlVisibility"
 										style="font-weight: normal; margin-right: 5px">(<span
-											data-bind="text: viewThreadsControlDesc"></span>)</span>-->
+											data-bind="text: viewThreadsControlDesc"></span>)</span>
 									<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
 									<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
