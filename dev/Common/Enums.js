@@ -421,6 +421,12 @@
 		'MailServerError': 901,
 		'ClientViewError': 902,
 		'InvalidInputArgument': 903,
+
+		'AjaxFalse': 950,
+		'AjaxAbort': 951,
+		'AjaxParse': 952,
+		'AjaxTimeout': 953,
+
 		'UnknownNotification': 999,
 		'UnknownError': 999
 	};

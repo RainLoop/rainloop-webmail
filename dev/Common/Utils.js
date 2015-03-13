@@ -613,7 +613,7 @@
 	 */
 	Utils.microtime = function ()
 	{
-		return (new Date()).getTime();
+		return (new window.Date()).getTime();
 	};
 
 	/**
@@ -848,7 +848,7 @@
 			},
 
 			convertBlockquote = function (sText) {
-				sText = splitPlainText($.trim(sText));
+				sText = Utils.trim(sText);
 				sText = '> ' + sText.replace(/\n/gm, '\n> ');
 				return sText.replace(/(^|\n)([> ]+)/gm, function () {
 					return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/g, '')) + ' ' : '';
@@ -920,8 +920,10 @@
 			.replace(/&amp;/gi, '&')
 		;
 
+		sText = splitPlainText(Utils.trim(sText));
+
 		iPos = 0;
-		iLimit = 100;
+		iLimit = 800;
 
 		while (0 < iLimit)
 		{

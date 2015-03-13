@@ -186,26 +186,30 @@
 							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadForwardCommand">
 								<i class="icon-left-middle"></i>
 							</a>
-							<a class="btn btn-thin btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
-									href="#" tabindex="-1" data-tooltip-placement="bottom">
-									<!--href="#" tabindex="-1" data-tooltip-placement="bottom" data-bind="command: threadListCommand">-->
-								<i class="icon-list"></i>
-								<!--<b data-bind="text: viewThreadsControlDesc"></b>-->
+							<a class="btn btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
+									href="#" tabindex="-1" data-tooltip-placement="bottom" data-bind="command: threadListCommand">
+								<i class="icon-list"
+									data-bind="css: {'icon-list': !messageListOfThreadsLoading(), 'icon-spinner animated': messageListOfThreadsLoading()}"></i>
 							</a>
 							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadBackCommand">
 								<i class="icon-right-middle"></i>
 							</a>
-<!--							<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="thread-list-view-dropdown-id"
+							<ul class="dropdown-menu g-ui-menu thread-list" role="menu" aria-labelledby="thread-list-view-dropdown-id"
 								style="min-width: 400px; max-width: 400px; width: 400px;">
-								<li class="e-item" role="presentation">
-									<a class="e-link menuitem" href="#" tabindex="-1">
-										<span class="thread-from">test@rainloop.de</span>
-										<span class="thread-date">05/20</span>
-										<br />
-										<span class="thread-subject">Re: thread</span>
-									</a>
-								</li>
-							</ul>-->
+								<div data-bind="visible: messageListOfThreadsLoading" style="text-align: center; padding: 10px">
+									<i class="icon-spinner animated" />
+								</div >
+								<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
+									<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected}">
+										<a class="e-link menuitem" href="#" tabindex="-1">
+											<span class="thread-from" data-bind="text: senderEmailsString"></span>
+											<span class="hread-date pull-right" data-moment-format="SHORT" data-bind="moment: dateTimeStampInUTC"></span>
+											<br />
+											<span class="thread-subject" data-bind="text: subject"></span>
+										</a>
+									</li>
+								</div>
+							</ul>
 						</div>
 					</nobr>
 				</div>

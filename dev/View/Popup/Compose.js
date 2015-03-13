@@ -504,6 +504,8 @@
 
 		this.driveCallback = _.bind(this.driveCallback, this);
 
+		this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
+
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = Enums.KeyState.Compose;
 
@@ -1228,37 +1230,7 @@
 		aDownloads = this.getAttachmentsDownloadsForUpload();
 		if (Utils.isNonEmptyArray(aDownloads))
 		{
-			Remote.messageUploadAttachments(function (sResult, oData) {
-
-				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-				{
-					var
-						oAttachment = null,
-						sTempName = ''
-					;
-
-					if (!self.viewModelVisibility())
-					{
-						for (sTempName in oData.Result)
-						{
-							if (oData.Result.hasOwnProperty(sTempName))
-							{
-								oAttachment = self.getAttachmentById(oData.Result[sTempName]);
-								if (oAttachment)
-								{
-									oAttachment.tempName(sTempName);
-									oAttachment.waiting(false).uploading(false).complete(true);
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					self.setMessageAttachmentFailedDownloadText();
-				}
-
-			}, aDownloads);
+			Remote.messageUploadAttachments(this.onMessageUploadAttachments, aDownloads);
 		}
 
 		if (oIdentity)
@@ -1267,6 +1239,37 @@
 		}
 
 		this.resizerTrigger();
+	};
+
+	ComposePopupView.prototype.onMessageUploadAttachments = function (sResult, oData)
+	{
+		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			var
+				oAttachment = null,
+				sTempName = ''
+			;
+
+			if (!this.viewModelVisibility())
+			{
+				for (sTempName in oData.Result)
+				{
+					if (oData.Result.hasOwnProperty(sTempName))
+					{
+						oAttachment = this.getAttachmentById(oData.Result[sTempName]);
+						if (oAttachment)
+						{
+							oAttachment.tempName(sTempName);
+							oAttachment.waiting(false).uploading(false).complete(true);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			this.setMessageAttachmentFailedDownloadText();
+		}
 	};
 
 	ComposePopupView.prototype.setFocusInPopup = function ()

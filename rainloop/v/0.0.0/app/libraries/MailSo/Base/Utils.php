@@ -2218,6 +2218,16 @@ END;
 	}
 
 	/**
+	 * @param string $sIp
+	 *
+	 * @return bool
+	 */
+	public static function ValidateIP($sIp)
+	{
+		return !empty($sIp) && $sIp === @\filter_var($sIp, FILTER_VALIDATE_IP);
+	}
+
+	/**
 	 * @return \Net_IDNA2
 	 */
 	private static function idn()

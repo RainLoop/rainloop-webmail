@@ -1520,7 +1520,8 @@ class Actions
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
 
-				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
+				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']) ||
+					\MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
 				$aResult['CoreAccess'] = $this->rainLoopCoreAccess();
@@ -5476,6 +5477,40 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoMessageListSimple()
+	{
+//		\sleep(2);
+//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
+
+		$sFolder = $this->GetActionParam('Folder', '');
+		$aUids = $this->GetActionParam('Uids', null);
+
+		if (0 === \strlen($sFolder) || !\is_array($aUids))
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
+		}
+
+		$this->initMailClientConnection();
+
+		$aMessageList = array();
+
+		try
+		{
+			$aMessageList = $this->MailClient()->MessageListSimple($sFolder, $aUids);
+		}
+		catch (\Exception $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $aMessageList);
 	}
 
 	/**

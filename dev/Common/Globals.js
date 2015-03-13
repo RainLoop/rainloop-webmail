@@ -134,9 +134,6 @@
 		'allowedContent': true,
 		'extraAllowedContent': true,
 
-		'forceEnterMode': true,
-
-		'autoParagraph': false,
 		'fillEmptyBlocks': false,
 		'ignoreEmptyParagraph': true,
 

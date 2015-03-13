@@ -29,6 +29,8 @@
 		Local = require('Storage/Client'),
 		Remote = require('Remote/User/Ajax'),
 
+		Promises = require('Promises/User/Ajax'),
+
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
 	;
@@ -72,6 +74,8 @@
 		this.messageError = MessageStore.messageError;
 
 		this.fullScreenMode = MessageStore.messageFullScreenMode;
+
+		this.messageListOfThreadsLoading = Promises.messageListSimple.loading;
 
 		this.lastReplyAction_ = ko.observable('');
 		this.lastReplyAction = ko.computed({
@@ -205,8 +209,10 @@
 
 // THREADS
 		this.viewThreads = ko.observableArray([]);
-		this.viewThreadMessages = ko.observableArray([]);
 		this.viewThreads.trigger = ko.observable(false);
+
+		this.viewThreadMessages = ko.observableArray([]);
+		this.viewThreadMessages.hash = '';
 
 		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
 			if (oData && oData['Uids'])
@@ -290,14 +296,39 @@
 		}, this.viewThreadsControlForwardAllow);
 
 		this.threadListCommand = Utils.createCommand(this, function () {
-			var aList = [], aStatus = this.viewThreads.status();
+
+			var
+				self = this,
+				sFolder = this.viewFolder,
+				sUid = this.viewUid,
+				aUids = this.viewThreads(),
+				aStatus = this.viewThreads.status()
+			;
+
 			if (aStatus && aStatus[0])
 			{
-				this.viewThreadMessages(aList);
-//				window.console.log(aStatus);
+				self.viewThreadMessages([]);
+				Promises.messageListSimple(sFolder, aUids).then(function (aList) {
+
+					_.each(aList, function (oItem) {
+						if (oItem && oItem.uid)
+						{
+							oItem.selected(sUid === oItem.uid);
+						}
+					});
+
+					self.viewThreadMessages(aList);
+
+				}, function (iErrorCode) {
+
+					window.alert(Translator.getNotification(iErrorCode));
+					
+				});
 			}
+
 		}, function () {
-			return !this.messageLoadingThrottle();
+			return !this.messageLoadingThrottle() &&
+				!this.messageListOfThreadsLoading();
 		});
 
 // PGP
@@ -673,6 +704,13 @@
 				if (oEvent && oEvent.stopPropagation)
 				{
 					oEvent.stopPropagation();
+				}
+			})
+			.on('click', '.thread-list .thread-list-message', function () {
+				var oMessage = ko.dataFor(this);
+				if (oMessage && oMessage.folderFullNameRaw && oMessage.uid)
+				{
+					self.openThreadMessage(oMessage.uid);
 				}
 			})
 			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function () {

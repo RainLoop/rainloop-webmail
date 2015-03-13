@@ -157,6 +157,26 @@ class MailClient
 	/**
 	 * @return string
 	 */
+	private function getEnvelopeOrHeadersRequestStringForSimpleList()
+	{
+		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
+			\MailSo\Mime\Enumerations\Header::RECEIVED,
+			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
+			\MailSo\Mime\Enumerations\Header::FROM_,
+			\MailSo\Mime\Enumerations\Header::TO_,
+			\MailSo\Mime\Enumerations\Header::CC,
+			\MailSo\Mime\Enumerations\Header::SENDER,
+			\MailSo\Mime\Enumerations\Header::REPLY_TO,
+			\MailSo\Mime\Enumerations\Header::DATE,
+			\MailSo\Mime\Enumerations\Header::SUBJECT,
+			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE
+		), true);
+	}
+
+	/**
+	 * @return string
+	 */
 	private function getEnvelopeOrHeadersRequestString()
 	{
 		return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
@@ -1622,11 +1642,12 @@ class MailClient
 	 * @param \MailSo\Mail\MessageCollection &$oMessageCollection
 	 * @param array $aRequestIndexOrUids
 	 * @param bool $bIndexAsUid
+	 * @param bool $bSimple = false
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListByRequestIndexOrUids(&$oMessageCollection, $aRequestIndexOrUids, $bIndexAsUid)
+	public function MessageListByRequestIndexOrUids(&$oMessageCollection, $aRequestIndexOrUids, $bIndexAsUid, $bSimple = false)
 	{
 		if (\is_array($aRequestIndexOrUids) && 0 < \count($aRequestIndexOrUids))
 		{
@@ -1637,7 +1658,8 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::INTERNALDATE,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS,
 				\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE,
-				$this->getEnvelopeOrHeadersRequestString()
+				$bSimple ? $this->getEnvelopeOrHeadersRequestStringForSimpleList() :
+					$this->getEnvelopeOrHeadersRequestString()
 			), \MailSo\Base\Utils::PrepearFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 
 			if (\is_array($aFetchResponse) && 0 < \count($aFetchResponse))
@@ -1860,6 +1882,33 @@ class MailClient
 		}
 
 		return \array_map('trim', $aResult);
+	}
+
+	/**
+	 * @param string $sFolderName
+	 * @param array $aUids
+	 *
+	 * @return \MailSo\Mail\MessageCollection
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function MessageListSimple($sFolderName, $aUids)
+	{
+		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
+		{
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+		}
+
+		$this->oImapClient->FolderExamine($sFolderName);
+
+		$oMessageCollection = \MailSo\Mail\MessageCollection::NewInstance();
+		$oMessageCollection->FolderName = $sFolderName;
+
+		$this->MessageListByRequestIndexOrUids($oMessageCollection, $aUids, true, true);
+
+		return $oMessageCollection->GetAsArray();
 	}
 
 	/**

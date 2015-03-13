@@ -168,6 +168,7 @@ cfg.paths.js = {
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
 			'vendors/buzz/buzz.min.js',
+			'vendors/Q/q.js',
 			'vendors/Autolinker/Autolinker.min.js',
 			'vendors/photoswipe/photoswipe.min.js',
 			'vendors/photoswipe/photoswipe-ui-default.min.js',
