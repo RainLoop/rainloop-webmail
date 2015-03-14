@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		_ = require('_'),
 		$ = require('$'),
 		Q = require('Q'),
 

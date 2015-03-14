@@ -65,7 +65,6 @@
 	AdvancedSearchPopupView.prototype.buildSearchString = function ()
 	{
 		var
-			oM = null,
 			aResult = [],
 			sFrom = Utils.trim(this.from()),
 			sTo = Utils.trim(this.to()),
