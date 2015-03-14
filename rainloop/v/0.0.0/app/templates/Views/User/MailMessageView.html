@@ -183,15 +183,18 @@
 							</a>
 						</div>
 						<div class="btn-group pull-right" data-bind="visible: viewThreadsControlVisibility"  style="margin-right: 5px">
-							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadForwardCommand">
+							<a class="btn btn-thin" data-tooltip-placement="bottom"
+								data-bind="command: threadForwardCommand, tooltip: 'MESSAGE/BUTTON_THREAD_NEXT'">
 								<i class="icon-left-middle"></i>
 							</a>
 							<a class="btn btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
-									href="#" tabindex="-1" data-tooltip-placement="bottom" data-bind="command: threadListCommand">
+									href="#" tabindex="-1" data-tooltip-placement="bottom"
+									data-bind="command: threadListCommand, tooltip: 'MESSAGE/BUTTON_THREAD_LIST'">
 								<i class="icon-list"
 									data-bind="css: {'icon-list': !messageListOfThreadsLoading(), 'icon-spinner animated': messageListOfThreadsLoading()}"></i>
 							</a>
-							<a class="btn btn-thin" data-tooltip-placement="bottom" data-bind="command: threadBackCommand">
+							<a class="btn btn-thin" data-tooltip-placement="bottom"
+								data-bind="command: threadBackCommand, tooltip: 'MESSAGE/BUTTON_THREAD_PREV'">
 								<i class="icon-right-middle"></i>
 							</a>
 							<ul class="dropdown-menu g-ui-menu thread-list" role="menu" aria-labelledby="thread-list-view-dropdown-id"
