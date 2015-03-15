@@ -5,11 +5,8 @@
 
 	var
 		_ = require('_'),
-		ko = require('ko'),
 
-		AbstractAjaxPromises = require('Promises/AbstractAjax'),
-
-		MessageModel = require('Model/Message')
+		AbstractAjaxPromises = require('Promises/AbstractAjax')
 	;
 
 	/**
@@ -20,38 +17,40 @@
 	{
 		AbstractAjaxPromises.call(this);
 
-		this.messageListSimple.loading = ko.observable(false).extend({'rateLimit': 1});
-		this.messageListSimple.hash = '';
-		this.messageListSimple.cache = null;
+		this.messageListSimpleHash = '';
+		this.messageListSimpleCache = null;
 	}
 
-	PromisesUserAjax.prototype.messageListSimple = function (sFolder, aUids)
+	_.extend(PromisesUserAjax.prototype, AbstractAjaxPromises.prototype);
+
+	PromisesUserAjax.prototype.messageListSimple = function (sFolder, aUids, fTrigger)
 	{
 		var self = this, sHash = sFolder + '~' + aUids.join('/');
-		if (sHash === this.messageListSimple.hash && this.messageListSimple.cache)
+		if (sHash === this.messageListSimpleHash && this.messageListSimpleCache)
 		{
-			return this.fastPromise(this.messageListSimple.cache);
+			return this.fastResolve(this.messageListSimpleCache);
 		}
 
 		return this.abort('MessageListSimple')
-			.postRequest('MessageListSimple', this.messageListSimple.loading, {
+			.postRequest('MessageListSimple', fTrigger, {
 				'Folder': sFolder,
 				'Uids': aUids
 			}).then(function (aData) {
 
-				var aResult = _.compact(_.map(aData, function (aItem) {
-					return MessageModel.newInstanceFromJson(aItem);
-				}));
+				var
+					MessageSimpleModel = require('Model/MessageSimple'),
+					aResult = _.compact(_.map(aData, function (aItem) {
+						return MessageSimpleModel.newInstanceFromJson(aItem);
+					}))
+				;
 
-				self.messageListSimple.hash = sHash;
-				self.messageListSimple.cache = aResult;
+				self.messageListSimpleHash = sHash;
+				self.messageListSimpleCache = aResult;
 
 				return aResult;
 			})
 		;
 	};
-
-	_.extend(PromisesUserAjax.prototype, AbstractAjaxPromises.prototype);
 
 	module.exports = new PromisesUserAjax();
 

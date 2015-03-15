@@ -49,7 +49,7 @@
 									<!-- /ko -->
 								</div>
 								<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;">
-									<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
+									<a class="btn single dropdown-toggle buttonMore" data-toggle="dropdown">
 										<i class="icon-list"></i>
 									</a>
 									<ul class="dropdown-menu g-ui-menu" role="menu">
@@ -86,7 +86,7 @@
 								</div>
 								<div class="btn-group pull-right">&nbsp;</div>
 								<div class="btn-group pull-right">
-									<a class="btn" data-tooltip-placement="bottom" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
+									<a class="btn single" data-tooltip-placement="bottom" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
 										<i class="icon-address-book"></i>
 									</a>
 								</div>
@@ -160,11 +160,11 @@
 									</div>
 									<div class="pull-left">
 										<div class="btn-group" data-toggle="buttons-radio">
-											<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
+											<button type="button" class="btn first" data-bind="click: function () { attachmentsPlace(false); },
 												css: { 'active': !attachmentsPlace() }">
 												<i class="icon-file-text"></i>
 											</button>
-											<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
+											<button type="button" class="btn last" data-bind="click: function () { attachmentsPlace(true); },
 												css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() }">
 												<span data-bind="visible: 0 < attachmentsCount()">
 													<b data-bind="text: attachmentsCount"></b>
@@ -182,13 +182,16 @@
 									</div>
 									<div class="pull-right" style="margin-right: 4px;">
 										<div class="btn-group pull-right">
-											<a class="btn" data-tooltip-placement="top" data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
+											<a class="btn first" data-tooltip-placement="top"
+												data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<i class="icon-attachment"></i>
 											</a>
-											<a class="btn" data-tooltip-placement="top" data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX'">
+											<a class="btn" data-tooltip-placement="top"
+												data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX', css: {'first': !addAttachmentEnabled(), 'last': !driveEnabled()}">
 												<i class="icon-dropbox"></i>
 											</a>
-											<a class="btn" data-tooltip-placement="top" data-bind="visible: driveEnabled() && driveVisible(), command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
+											<a class="btn last" data-tooltip-placement="top"
+												data-bind="visible: driveEnabled() && driveVisible(), command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
 												<i class="icon-google-drive"></i>
 											</a>
 										</div>

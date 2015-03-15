@@ -105,7 +105,7 @@ select {
 }
 
 .btn {
-	border-radiu: @btnBorderRadius;
+	border-radius: @btnBorderRadius;
 	background-image: none;
 	padding-left: 13px;
 	padding-right: 13px;
@@ -180,26 +180,22 @@ html.rgba.textshadow {
 	}
 }
 
-// Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
-.btn-group > .btn:first-child {
-	border-top-left-radius: @btnBorderRadius;
-	border-bottom-left-radius: @btnBorderRadius;
+.btn-group > .btn {
+	border-radius: 0 !important;
 }
-// Need .dropdown-toggle since :last-child doesn't apply given a .dropdown-menu immediately after it
-.btn-group > .btn:last-child,
-.btn-group > .dropdown-toggle {
-	border-top-right-radius: @btnBorderRadius;
-	border-bottom-right-radius: @btnBorderRadius;
+
+.btn-group > .btn.single {
+	border-radius: @btnBorderRadius !important;
 }
-// Reset corners for large buttons
-.btn-group > .btn.large:first-child {
-	border-top-left-radius: @btnBorderRadius;
-	border-bottom-left-radius: @btnBorderRadius;
+
+.btn-group > .btn.first {
+	border-top-left-radius: @btnBorderRadius !important;
+	border-bottom-left-radius: @btnBorderRadius !important;
 }
-.btn-group > .btn.large:last-child,
-.btn-group > .large.dropdown-toggle {
-	border-top-right-radius: @btnBorderRadius;
-	border-bottom-right-radius: @btnBorderRadius;
+
+.btn-group > .btn.last {
+	border-top-right-radius: @btnBorderRadius !important;
+	border-bottom-right-radius: @btnBorderRadius !important;
 }
 
 .dropdown.colored-toggle.open .btn.dropdown-toggle {

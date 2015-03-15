@@ -75,7 +75,7 @@
 
 		this.fullScreenMode = MessageStore.messageFullScreenMode;
 
-		this.messageListOfThreadsLoading = Promises.messageListSimple.loading;
+		this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
 
 		this.lastReplyAction_ = ko.observable('');
 		this.lastReplyAction = ko.computed({
@@ -308,12 +308,13 @@
 			if (aStatus && aStatus[0])
 			{
 				self.viewThreadMessages([]);
-				Promises.messageListSimple(sFolder, aUids).then(function (aList) {
+
+				Promises.messageListSimple(sFolder, aUids, this.messageListOfThreadsLoading).then(function (aList) {
 
 					_.each(aList, function (oItem) {
 						if (oItem && oItem.uid)
 						{
-							oItem.selected(sUid === oItem.uid);
+							oItem.selected = sUid === oItem.uid;
 						}
 					});
 
@@ -322,7 +323,7 @@
 				}, function (iErrorCode) {
 
 					window.alert(Translator.getNotification(iErrorCode));
-					
+
 				});
 			}
 
@@ -577,18 +578,21 @@
 		kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
 	};
 
+	MessageViewMailBoxUserView.prototype.checkHeaderHeight = function ()
+	{
+		if (this.oHeaderDom)
+		{
+			this.viewBodyTopValue(this.message() ? this.oHeaderDom.height() +
+				20 /* padding-(top/bottom): 20px */ + 1 /* borded-bottom: 1px */ : 0);
+		}
+	};
+
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
 		var
 			self = this,
 			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
-			fCheckHeaderHeight = function () {
-				if (self.oHeaderDom)
-				{
-					self.viewBodyTopValue(self.message() ? self.oHeaderDom.height() +
-						20 /* padding-(top/bottom): 20px */ + 1 /* borded-bottom: 1px */ : 0);
-				}
-			}
+			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this)
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {

@@ -24,10 +24,10 @@
 		<div class="senderParent actionHandle dragHandle">
 			<span class="replyFlag"><i class="icon-reply"></i>&nbsp;</span>
 			<span class="forwardFlag"><i class="icon-forward"></i>&nbsp;</span>
-			<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
-			<span class="thre" data-bind="visible: 1 < threadsLen()">
-				(<span data-bind="text: threadsLen"></span>)
+			<span class="threads-len" data-bind="visible: 1 < threadsLen()">
+				<span class="threads-len-data" data-bind="text: threadsLen"></span>
 			</span>
+			<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
 			&nbsp;
 		</div>
 		<div class="attachmentParent actionHandle dragHandle">

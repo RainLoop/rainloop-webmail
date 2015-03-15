@@ -7,8 +7,10 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
+		key = require('key'),
 
 		Globals = require('Common/Globals'),
+		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
@@ -96,6 +98,10 @@
 		Globals.$doc.on('mousemove keypress click', _.debounce(function () {
 			Events.pub('rl.auto-logout-refresh');
 		}, 5000));
+
+		key('esc, enter', Enums.KeyState.All, _.bind(function () {
+			Utils.detectDropdownVisibility();
+		}, this));
 	}
 
 	_.extend(AbstractApp.prototype, AbstractBoot.prototype);
@@ -349,8 +355,6 @@
 		});
 
 		ssm.ready();
-
-
 
 		require('Stores/Language').populate();
 		require('Stores/Theme').populate();

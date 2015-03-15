@@ -30,7 +30,7 @@
 		return this;
 	};
 
-	AbstractAjaxPromises.prototype.fastPromise = function (mData)
+	AbstractAjaxPromises.prototype.fastResolve = function (mData)
 	{
 		var oDeferred = Q.defer();
 		oDeferred.resolve(mData);

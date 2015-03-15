@@ -131,6 +131,11 @@
 			if (Globals && Globals.aBootstrapDropdowns)
 			{
 				Globals.aBootstrapDropdowns.push($(oElement));
+				
+				$(oElement).click(function () {
+					require('Common/Utils').detectDropdownVisibility();
+				});
+
 //				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 //				});
 			}
@@ -141,17 +146,13 @@
 		'update': function (oElement, fValueAccessor) {
 			if (ko.unwrap(fValueAccessor()))
 			{
-				var
-					$oEl = $(oElement),
-					Utils = require('Common/Utils')
-				;
-
+				var $oEl = $(oElement);
 				if (!$oEl.hasClass('open'))
 				{
 					$oEl.find('.dropdown-toggle').dropdown('toggle');
-					Utils.detectDropdownVisibility();
 				}
 
+				require('Common/Utils').detectDropdownVisibility();
 				fValueAccessor()(false);
 			}
 		}

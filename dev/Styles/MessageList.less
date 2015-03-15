@@ -393,6 +393,16 @@ html.rl-no-preview-pane {
 				text-overflow: ellipsis;
 			}
 
+			.threads-len {
+				.threads-len-data {
+					background-color: #999;
+					color: #fff;
+					border-radius: 6px;
+					padding: 0px 4px;
+					margin-right: 5px;
+				}
+			}
+
 			.subject-prefix {
 				color: #888;
 				/*font-style: italic;*/
@@ -437,6 +447,16 @@ html.rl-no-preview-pane {
 				text-shadow: 0px 1px 0px #eee;
 			}
 
+			&.hasUnseenSubMessage {
+				background-color: #FFFFD9;
+				.sidebarParent {
+					background-color: lighten(orange, 30%);
+				}
+				&.focused .sidebarParent {
+					background-color: darken(orange, 10%) !important;
+				}
+			}
+
 			&.unseen {
 				background-color: #FFFFD9;
 				.sender, .subject, .subject-suffix {
@@ -451,16 +471,7 @@ html.rl-no-preview-pane {
 				}
 			}
 
-			&.hasUnseenSubMessage {
-				background-color: #FFFFD9;
-				.sidebarParent {
-					background-color: lighten(orange, 30%);
-				}
-				&.focused .sidebarParent {
-					background-color: darken(orange, 10%) !important;
-				}
-			}
-
+/*
 			&.hasParentMessage {
 				background-color: #ecf0f1;
 
@@ -484,6 +495,7 @@ html.rl-no-preview-pane {
 					}
 				}
 			}
+*/
 
 			&.checked {
 				.sidebarParent {

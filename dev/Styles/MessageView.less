@@ -17,7 +17,7 @@ html.rl-no-preview-pane {
 		position: absolute;
 		top: 0;
 		right: 0;
-		left: 0;
+		left: -2px;
 		height: 30px;
 		padding: 10px 0;
 		color: #fff;
@@ -365,15 +365,24 @@ html.rl-no-preview-pane {
 		border-color: darken(@rlMainDarkColor, 5%);
 	}
 
+	.thread-controls {
+		.dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		&.open .dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+	}
+
 	.thread-list {
 
 		.e-link {
-			padding: 3px 5px 3px 10px;
-			overflow: hidden;
-			text-overflow: ellipsis;
+			padding: 3px 8px 3px 10px;
 		}
 
-		.hread-date {
+		.thread-date {
 			font-size: 13px;
 			color: #999;
 		}

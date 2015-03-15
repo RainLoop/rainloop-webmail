@@ -23,15 +23,15 @@
         <nobr>
 	        <div class="btn-toolbar">
                 <div class="btn-group hide-on-panel-disabled">
-                    <a class="btn" data-bind="click: createFolder">
+                    <a class="btn first" data-bind="click: createFolder">
                         <i data-bind="css: {'icon-folder-add': !foldersChanging(), 'icon-spinner animated': foldersChanging()}"></i>
                     </a>
-                    <a class="btn" data-bind="click: configureFolders">
+                    <a class="btn last" data-bind="click: configureFolders">
                         <i class="icon-cog"></i>
                     </a>
                 </div>
                 <div class="btn-group">
-                    <a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
+                    <a class="btn single buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
 						<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
                     </a>
                 </div>

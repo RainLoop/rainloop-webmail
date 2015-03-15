@@ -258,6 +258,7 @@
 	});
 
 	Globals.keyScopeReal.subscribe(function (sValue) {
+//		window.console.log(sValue);
 		key.setScope(sValue);
 	});
 

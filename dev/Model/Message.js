@@ -649,10 +649,10 @@
 		{
 			aResult.push('emptySubject');
 		}
-		if (1 < this.threadsLen())
-		{
-			aResult.push('hasChildrenMessage');
-		}
+//		if (1 < this.threadsLen())
+//		{
+//			aResult.push('hasChildrenMessage');
+//		}
 		if (this.hasUnseenSubMessage())
 		{
 			aResult.push('hasUnseenSubMessage');
