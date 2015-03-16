@@ -168,7 +168,7 @@ cfg.paths.js = {
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
 			'vendors/buzz/buzz.min.js',
-			'vendors/Q/q.js',
+			'vendors/Q/q.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
 			'vendors/photoswipe/photoswipe.min.js',
 			'vendors/photoswipe/photoswipe-ui-default.min.js',
@@ -393,6 +393,9 @@ regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-
 
 regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.5.min.js',
 	'/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */\n');
+
+regOtherMinTask('other:q', 'vendors/Q/', 'q.js', 'q.min.js',
+	'/*! (c) 2009-2012 Kris Kowal Licensed under MIT */\n');
 
 gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
