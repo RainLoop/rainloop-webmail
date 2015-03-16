@@ -366,10 +366,10 @@ class Utils
 	 */
 	public static function CustomParseIniFile($sFileName, $bProcessSections = false)
 	{
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
-		{
-			return @\parse_ini_file($sFileName, !!$bProcessSections);
-		}
+//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
+//		{
+//			return @\parse_ini_file($sFileName, !!$bProcessSections);
+//		}
 
 		$sData = @\file_get_contents($sFileName);
 		return \is_string($sData) ? @\parse_ini_string($sData, !!$bProcessSections) : null;

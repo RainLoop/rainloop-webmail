@@ -1550,6 +1550,7 @@ class Actions
 
 		$aResult['Themes'] = $this->GetThemes();
 		$aResult['Languages'] = $this->GetLanguages();
+		$aResult['LanguagesTop'] = $this->GetLanguagesTop();
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
@@ -1693,15 +1694,28 @@ class Actions
 		return $aResult;
 	}
 
-	private function detectUserLanguage()
+	/**
+	 * @return string
+	 */
+	private function getUserLanguageFromHeader()
 	{
 		$sLang = '';
 		$sAcceptLang = $this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en');
 		if (false !== \strpos($sAcceptLang, ','))
 		{
 			$aParts = \explode(',', $sAcceptLang, 2);
-			$sLang = !empty($aParts[0]) ? \strtolower($aParts[0]) : '';
+			$sLang = !empty($aParts[0]) ? \trim(\strtolower($aParts[0])) : '';
 		}
+
+		return $sLang;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function detectUserLanguage()
+	{
+		$sLang = $this->getUserLanguageFromHeader();
 
 		if (!empty($sLang))
 		{
@@ -8384,8 +8398,8 @@ class Actions
 			return $aCache;
 		}
 
-		$bEn = false;
-		$sList = array();
+		$aList = array();
+
 		$sDir = APP_VERSION_ROOT_PATH.'langs/';
 		if (@\is_dir($sDir))
 		{
@@ -8399,14 +8413,7 @@ class Actions
 						$sLang = \strtolower(\substr($sFile, 0, -4));
 						if (0 < \strlen($sLang) && 'always' !== $sLang)
 						{
-							if (\in_array($sLang, array('en')))
-							{
-								$bEn = true;
-							}
-							else
-							{
-								\array_push($sList, $sLang);
-							}
+							\array_push($aList, $sLang);
 						}
 					}
 				}
@@ -8415,14 +8422,41 @@ class Actions
 			}
 		}
 
-		\sort($sList);
-		if ($bEn)
+		\sort($aList);
+
+		$aCache = $aList;
+		return $aCache;
+	}
+
+	public function GetLanguagesTop()
+	{
+		$sUserLang = $this->getUserLanguageFromHeader();
+		if (2 < \strlen($sUserLang))
 		{
-			\array_unshift($sList, 'en');
+			$sUserLang = \substr($sUserLang, 0, 2);
 		}
 
-		$aCache = $sList;
-		return $sList;
+		$self = $this;
+		$aResult = array();
+
+		foreach ($this->GetLanguages() as $sLang)
+		{
+			if ($sUserLang === \substr($sLang, 0, 2))
+			{
+				$aResult[] = $sLang;
+			}
+		}
+
+		$aTopLangs = \array_map('trim', \explode(',', $this->Config()->Get('labs', 'top_langs', 'en')));
+
+		$aResult = \array_merge($aResult, $aTopLangs);
+		$aResult = \array_unique($aResult);
+
+		$aResult = \array_values(\array_filter($aResult, function ($sLang) use ($self) {
+			return $sLang === $self->ValidateLanguage($sLang);
+		}));
+
+		return $aResult;
 	}
 
 	/**

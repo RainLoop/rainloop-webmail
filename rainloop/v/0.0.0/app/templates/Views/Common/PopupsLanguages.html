@@ -7,7 +7,19 @@
 			</h3>
 		</div>
 		<div class="modal-body">
-			<div data-bind="foreach: languages">
+			<div data-bind="foreach: languagesTop, visible: 0 < languagesTop().length">
+				<label class="lang-item" data-tooltip-i18n="off" data-tooltip-placement="left" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected},
+					tooltip: function () { return $root.languageEnName(key); }">
+					<span class="flag-wrapper">
+						<span data-bind="css: 'flag flag-' + key" style=""></span>
+					</span>
+					<span class="lang-name" data-bind="text: fullName"></span>
+					<i class="icon-ok pull-right" style="color: green; margin-top: 3px;"
+						data-bind="visible: selected"></i>
+				</label>
+			</div>
+			<hr data-bind="visible: 0 < languagesTop().length" />
+			<div data-bind="foreach: languagesBottom">
 				<label class="lang-item" data-tooltip-i18n="off" data-tooltip-placement="left" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected},
 					tooltip: function () { return $root.languageEnName(key); }">
 					<span class="flag-wrapper">

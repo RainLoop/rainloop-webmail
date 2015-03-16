@@ -35,6 +35,38 @@
 			});
 		}, this);
 
+		this.languagesTop = ko.computed(function () {
+
+			var
+				aTop = this.LanguageStore.languagesTop(),
+				aLangs = this.languages()
+			;
+
+			return 0 < aTop.length ? _.compact(_.map(aTop, function (sLang) {
+				return _.find(aLangs, function (aItem) {
+					return aItem && sLang === aItem.key;
+				});
+			})) : [];
+		}, this);
+
+		this.languagesBottom = ko.computed(function () {
+
+			var
+				aTop = this.languagesTop(),
+				aLangs = this.languages()
+			;
+
+			if (0 < aTop.length)
+			{
+				return _.filter(aLangs, function (aItem) {
+					return -1 === Utils.inArray(aItem, aTop);
+				});
+			}
+
+			return aLangs;
+
+		}, this);
+
 		this.LanguageStore.language.subscribe(function () {
 			this.resetMainLanguage();
 		}, this);
