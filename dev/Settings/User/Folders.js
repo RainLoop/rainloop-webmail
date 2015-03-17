@@ -17,6 +17,7 @@
 
 		FolderStore = require('Stores/User/Folder'),
 
+		Promises = require('Promises/User/Ajax'),
 		Remote = require('Remote/User/Ajax')
 	;
 
@@ -69,19 +70,9 @@
 		{
 			Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-			FolderStore.foldersRenaming(true);
-			Remote.folderRename(function (sResult, oData) {
-
-				FolderStore.foldersRenaming(false);
-				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
-				{
-					FolderStore.folderList.error(
-						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER'));
-				}
-
-				require('App/User').folders();
-
-			}, oFolder.fullNameRaw, sEditName);
+			require('App/User').foldersPromisesActionHelper(
+				Promises.folderRename(oFolder.fullNameRaw, sEditName, FolderStore.foldersRenaming),
+				Enums.Notification.CantRenameFolder);
 
 			Cache.removeFolderFromCacheList(oFolder.fullNameRaw);
 
@@ -140,19 +131,9 @@
 
 				FolderStore.folderList.remove(fRemoveFolder);
 
-				FolderStore.foldersDeleting(true);
-				Remote.folderDelete(function (sResult, oData) {
-
-					FolderStore.foldersDeleting(false);
-					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
-					{
-						FolderStore.folderList.error(
-							oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER'));
-					}
-
-					require('App/User').folders();
-
-				}, oFolderToRemove.fullNameRaw);
+				require('App/User').foldersPromisesActionHelper(
+					Promises.folderDelete(oFolderToRemove.fullNameRaw, FolderStore.foldersDeleting),
+					Enums.Notification.CantDeleteFolder);
 
 				Cache.removeFolderFromCacheList(oFolderToRemove.fullNameRaw);
 			}

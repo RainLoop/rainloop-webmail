@@ -15,7 +15,7 @@
 
 		FolderStore = require('Stores/User/Folder'),
 
-		Remote = require('Remote/User/Ajax'),
+		Promises = require('Promises/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -76,21 +76,9 @@
 				sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 			}
 
-			FolderStore.foldersCreating(true);
-			Remote.folderCreate(function (sResult, oData) {
-
-				FolderStore.foldersCreating(false);
-				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-				{
-					require('App/User').folders();
-				}
-				else
-				{
-					FolderStore.folderList.error(
-						oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
-				}
-
-			},	this.folderName(), sParentFolderName);
+			require('App/User').foldersPromisesActionHelper(
+				Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
+				Enums.Notification.CantCreateFolder);
 
 			this.cancelCommand();
 

@@ -206,13 +206,16 @@
 								</a>
 								<ul class="dropdown-menu pull-right g-ui-menu thread-list" role="menu" aria-labelledby="thread-list-view-dropdown-id"
 								style="min-width: 400px; max-width: 400px; width: 400px;">
+									<div data-bind="visible: '' !== viewThreadMessages.error()" style="color: red; text-align: center; padding: 10px">
+										<spam data-bind="text: viewThreadMessages.error"></spam>
+									</div >
 									<div data-bind="visible: messageListOfThreadsLoading" style="text-align: center; padding: 10px">
 										<i class="icon-spinner animated" />
 									</div >
 									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
 										<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected}">
 											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
-												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: dateUTC"></span>
+												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: dateInUTC"></span>
 												<div style="text-overflow: ellipsis; overflow: hidden;">
 													<span class="thread-from" data-bind="text: sender"></span>
 													&nbsp;

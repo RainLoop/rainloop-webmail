@@ -685,10 +685,6 @@
 		{
 			this.messageThreadLoading(true);
 		}
-		else
-		{
-			Utils.log('Error: Unknown message request: ' + sFolder + ' ~ ' + sUid + ' [e-102]');
-		}
 
 		if (Enums.Layout.NoPreview === SettingsStore.layout())
 		{
@@ -704,10 +700,6 @@
 			if (Remote.message(this.onMessageResponse, oMessage.folderFullNameRaw, oMessage.uid))
 			{
 				this.messageCurrentLoading(true);
-			}
-			else
-			{
-				Utils.log('Error: Unknown message request: ' + oMessage.folderFullNameRaw + ' ~ ' + oMessage.uid + ' [e-101]');
 			}
 		}
 	};

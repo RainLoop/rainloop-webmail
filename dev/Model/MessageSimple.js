@@ -20,30 +20,18 @@
 	{
 		AbstractModel.call(this, 'MessageSimpleModel');
 
-		this.selected = false;
-
-		this.folderFullNameRaw = '';
-		this.uid = '';
-		this.size = 0;
-
-		this.sender = '';
-		this.subject = '';
-
-		this.dateUTC = 0;
+		this.clear();
 	}
 
 	_.extend(MessageSimpleModel.prototype, AbstractModel.prototype);
 
-	/**
-	 * @static
-	 * @param {AjaxJsonMessage} oJsonMessage
-	 * @return {?MessageSimpleModel}
-	 */
-	MessageSimpleModel.newInstanceFromJson = function (oJsonMessage)
-	{
-		var oMessageModel = new MessageSimpleModel();
-		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
-	};
+	MessageSimpleModel.prototype.selected = false;
+	MessageSimpleModel.prototype.folderFullNameRaw = '';
+	MessageSimpleModel.prototype.uid = '';
+	MessageSimpleModel.prototype.size = 0;
+	MessageSimpleModel.prototype.sender = '';
+	MessageSimpleModel.prototype.subject = '';
+	MessageSimpleModel.prototype.dateInUTC = 0;
 
 	MessageSimpleModel.prototype.clear = function ()
 	{
@@ -56,7 +44,7 @@
 		this.sender = '';
 		this.subject = '';
 
-		this.dateUTC = 0;
+		this.dateInUTC = 0;
 	};
 
 	/**
@@ -77,15 +65,26 @@
 
 			this.sender = MessageModel.emailsToLine(
 				MessageModel.initEmailsFromJson(oJsonMessage.From), true);
-			
+
 			this.subject = oJsonMessage.Subject;
 
-			this.dateUTC = Utils.pInt(oJsonMessage.DateTimeStampInUTC);
+			this.dateInUTC = Utils.pInt(oJsonMessage.DateTimeStampInUTC);
 
 			bResult = true;
 		}
 
 		return bResult;
+	};
+
+	/**
+	 * @static
+	 * @param {AjaxJsonMessage} oJsonMessage
+	 * @return {?MessageSimpleModel}
+	 */
+	MessageSimpleModel.newInstanceFromJson = function (oJsonMessage)
+	{
+		var oMessageModel = new MessageSimpleModel();
+		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
 	};
 
 	module.exports = MessageSimpleModel;

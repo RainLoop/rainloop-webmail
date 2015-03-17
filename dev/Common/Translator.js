@@ -235,9 +235,10 @@
 	/**
 	 * @param {number} iCode
 	 * @param {*=} mMessage = ''
+	 * @param {*=} mDefCode = null
 	 * @return {string}
 	 */
-	Translator.prototype.getNotification = function (iCode, mMessage)
+	Translator.prototype.getNotification = function (iCode, mMessage, mDefCode)
 	{
 		iCode = window.parseInt(iCode, 10) || 0;
 		if (Enums.Notification.ClientViewError === iCode && mMessage)
@@ -245,7 +246,9 @@
 			return mMessage;
 		}
 
-		return _.isUndefined(this.notificationI18N[iCode]) ? '' : this.notificationI18N[iCode];
+		return _.isUndefined(this.notificationI18N[iCode]) ? (
+			mDefCode && _.isUndefined(this.notificationI18N[mDefCode]) ? this.notificationI18N[mDefCode] : ''
+		) : this.notificationI18N[iCode];
 	};
 
 	/**

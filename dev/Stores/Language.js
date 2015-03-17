@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		_ = require('_'),
 		ko = require('ko'),
 
 		Utils = require('Common/Utils'),

@@ -2,7 +2,7 @@
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
 	"version": "1.8.2",
-	"release": "288",
+	"release": "289",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
 	"main": "gulpfile.js",
@@ -67,5 +67,9 @@
 		"gulp-beautify": "*",
 		"gulp-plumber": "*",
 		"gulp-concat-util": "*"
+	},
+	"scripts": {
+		"gulp": "gulp",
+		"w": "gulp w"
 	}
 }

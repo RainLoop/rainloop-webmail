@@ -5009,6 +5009,9 @@ class Actions
 	 */
 	public function DoFolders()
 	{
+//		\sleep(1);
+//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError);
+
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		if (0 < \strlen($sRawKey))
 		{
@@ -5153,6 +5156,9 @@ class Actions
 	 */
 	public function DoFolderCreate()
 	{
+//		\sleep(1);
+//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantCreateFolder);
+
 		$this->initMailClientConnection();
 
 		try
@@ -5232,6 +5238,9 @@ class Actions
 	 */
 	public function DoFolderDelete()
 	{
+//		\sleep(1);
+//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantRenameFolder);
+
 		$this->initMailClientConnection();
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');

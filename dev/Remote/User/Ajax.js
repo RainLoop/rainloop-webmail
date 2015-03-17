@@ -723,43 +723,6 @@
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sNewFolderName
-	 * @param {string} sParentName
-	 */
-	RemoteUserAjax.prototype.folderCreate = function (fCallback, sNewFolderName, sParentName)
-	{
-		this.defaultRequest(fCallback, 'FolderCreate', {
-			'Folder': sNewFolderName,
-			'Parent': sParentName
-		}, null, '', ['Folders']);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
-	 */
-	RemoteUserAjax.prototype.folderDelete = function (fCallback, sFolderFullNameRaw)
-	{
-		this.defaultRequest(fCallback, 'FolderDelete', {
-			'Folder': sFolderFullNameRaw
-		}, null, '', ['Folders']);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sPrevFolderFullNameRaw
-	 * @param {string} sNewFolderName
-	 */
-	RemoteUserAjax.prototype.folderRename = function (fCallback, sPrevFolderFullNameRaw, sNewFolderName)
-	{
-		this.defaultRequest(fCallback, 'FolderRename', {
-			'Folder': sPrevFolderFullNameRaw,
-			'NewFolderName': sNewFolderName
-		}, null, '', ['Folders']);
-	};
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 */
 	RemoteUserAjax.prototype.folderClear = function (fCallback, sFolderFullNameRaw)

@@ -212,7 +212,11 @@
 		this.viewThreads.trigger = ko.observable(false);
 
 		this.viewThreadMessages = ko.observableArray([]);
-		this.viewThreadMessages.hash = '';
+		this.viewThreadMessages.error = ko.observable('');
+
+		this.viewThreadMessages.subscribe(function () {
+			this.viewThreadMessages.error('');
+		}, this);
 
 		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
 			if (oData && oData['Uids'])
@@ -320,11 +324,11 @@
 
 					self.viewThreadMessages(aList);
 
-				}, function (iErrorCode) {
-
-					window.alert(Translator.getNotification(iErrorCode));
-
-				});
+				}).fail(function (iErrorCode) {
+					self.viewThreadMessages([]);
+					self.viewThreadMessages.error(Translator.getNotification(
+						iErrorCode, '', Enums.Notification.CantGetMessageList));
+				}).done();
 			}
 
 		}, function () {

@@ -5,6 +5,7 @@
 
 	var
 		$ = require('$'),
+		_ = require('_'),
 		Q = require('Q'),
 
 		Consts = require('Common/Consts'),
@@ -12,7 +13,9 @@
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
 
-		Settings = require('Storage/Settings')
+		Settings = require('Storage/Settings'),
+
+		AbstractBasicPromises = require('Promises/AbstractBasic')
 	;
 
 	/**
@@ -20,21 +23,18 @@
 	*/
 	function AbstractAjaxPromises()
 	{
-		this.oRequests = {};
+		AbstractBasicPromises.call(this);
+
+		this.clear();
 	}
 
-	AbstractAjaxPromises.prototype.func = function (fFunc)
-	{
-		fFunc();
+	_.extend(AbstractAjaxPromises.prototype, AbstractBasicPromises.prototype);
 
-		return this;
-	};
+	AbstractAjaxPromises.prototype.oRequests = {};
 
-	AbstractAjaxPromises.prototype.fastResolve = function (mData)
+	AbstractAjaxPromises.prototype.clear = function ()
 	{
-		var oDeferred = Q.defer();
-		oDeferred.resolve(mData);
-		return oDeferred.promise;
+		this.oRequests = {};
 	};
 
 	AbstractAjaxPromises.prototype.abort = function (sAction, bClearOnly)
@@ -43,7 +43,7 @@
 		{
 			if (!bClearOnly && this.oRequests[sAction].abort)
 			{
-				this.oRequests[sAction].__aborted = true;
+				this.oRequests[sAction].__aborted__ = true;
 				this.oRequests[sAction].abort();
 			}
 
@@ -71,10 +71,7 @@
 			oParameters['XToken'] = Settings.settingsGet('Token');
 		}
 
-		if (fTrigger)
-		{
-			fTrigger(true);
-		}
+		this.setTrigger(fTrigger, true);
 
 		oH = $.ajax({
 			'type': bPost ? 'POST' : 'GET',
@@ -96,8 +93,8 @@
 			{
 				if (oData && oData.Result && sAction === oData.Action)
 				{
-					oData.Result.__cached__ = bCached;
-					oDeferred.resolve(oData.Result);
+					oData.__cached__ = bCached;
+					oDeferred.resolve(oData);
 				}
 				else if (oData && oData.Action)
 				{
@@ -114,7 +111,7 @@
 			}
 			else if ('abort' === sTextStatus)
 			{
-				if (!oData || !oData.__aborted)
+				if (!oData || !oData.__aborted__)
 				{
 					oDeferred.reject(Enums.Notification.AjaxAbort);
 				}
@@ -130,10 +127,7 @@
 				delete self.oRequests[sAction];
 			}
 
-			if (fTrigger)
-			{
-				fTrigger(false);
-			}
+			self.setTrigger(fTrigger, false);
 		});
 
 		if (oH)
