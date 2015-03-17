@@ -17,14 +17,21 @@
 
 		this.sBase = '#/';
 		this.sServer = './?';
-		this.sSubQuery = '&s=/';
-		this.sSubSubQuery = '&ss=/';
+
 		this.sVersion = Settings.settingsGet('Version');
 		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
 		this.sWebPrefix = Settings.settingsGet('WebPath') || '';
 		this.sVersionPrefix = Settings.settingsGet('WebVersionPath') || 'rainloop/v/' + this.sVersion + '/';
 		this.sStaticPrefix = this.sVersionPrefix + 'static/';
 	}
+
+	/**
+	 * @return {string}
+	 */
+	Links.prototype.subQueryPrefix = function ()
+	{
+		return '&q[]=';
+	};
 
 	/**
 	 * @return {string}
@@ -48,7 +55,7 @@
 	 */
 	Links.prototype.attachmentDownload = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + this.sSubSubQuery + sDownload;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/Download/' + this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -57,7 +64,7 @@
 	 */
 	Links.prototype.attachmentPreview = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/View/' + this.sSubSubQuery + sDownload;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/View/' + this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -66,7 +73,7 @@
 	 */
 	Links.prototype.attachmentThumbnailPreview = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewThumbnail/' + this.sSubSubQuery + sDownload;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewThumbnail/' + this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -75,7 +82,7 @@
 	 */
 	Links.prototype.attachmentPreviewAsPlain = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + this.sSubSubQuery + sDownload;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -84,7 +91,7 @@
 	 */
 	Links.prototype.attachmentFramed = function (sDownload)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/FramedView/' + this.sSubSubQuery + sDownload;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/FramedView/' + this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -92,7 +99,7 @@
 	 */
 	Links.prototype.upload = function ()
 	{
-		return this.sServer + '/Upload/' + this.sSubQuery + this.sSpecSuffix + '/';
+		return this.sServer + '/Upload/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
 	};
 
 	/**
@@ -100,7 +107,7 @@
 	 */
 	Links.prototype.uploadContacts = function ()
 	{
-		return this.sServer + '/UploadContacts/' + this.sSubQuery + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadContacts/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
 	};
 
 	/**
@@ -108,7 +115,7 @@
 	 */
 	Links.prototype.uploadBackground = function ()
 	{
-		return this.sServer + '/UploadBackground/' + this.sSubQuery + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadBackground/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
 	};
 
 	/**
@@ -116,7 +123,7 @@
 	 */
 	Links.prototype.append = function ()
 	{
-		return this.sServer + '/Append/' + this.sSubQuery + this.sSpecSuffix + '/';
+		return this.sServer + '/Append/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
 	};
 
 	/**
@@ -125,7 +132,7 @@
 	 */
 	Links.prototype.change = function (sEmail)
 	{
-		return this.sServer + '/Change/' + this.sSubQuery + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
+		return this.sServer + '/Change/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
 
 	/**
@@ -134,7 +141,7 @@
 	 */
 	Links.prototype.ajax = function (sAdd)
 	{
-		return this.sServer + '/Ajax/' + this.sSubQuery + this.sSpecSuffix + '/' + sAdd;
+		return this.sServer + '/Ajax/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' + sAdd;
 	};
 
 	/**
@@ -143,7 +150,7 @@
 	 */
 	Links.prototype.messageViewLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ViewAsPlain/' + this.sSubSubQuery + sRequestHash;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + sRequestHash;
 	};
 
 	/**
@@ -152,7 +159,7 @@
 	 */
 	Links.prototype.messageDownloadLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/Download/' + this.sSubSubQuery + sRequestHash;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/Download/' + this.subQueryPrefix() + '/' + sRequestHash;
 	};
 
 	/**
@@ -179,8 +186,8 @@
 	 */
 	Links.prototype.userBackground = function (sHash)
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/UserBackground/' +
-			this.sSubSubQuery + sHash;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix +
+			'/UserBackground/' + this.subQueryPrefix() + '/' + sHash;
 	};
 
 	/**
@@ -298,7 +305,7 @@
 	 */
 	Links.prototype.exportContactsVcf = function ()
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ContactsVcf/';
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ContactsVcf/';
 	};
 
 	/**
@@ -306,7 +313,7 @@
 	 */
 	Links.prototype.exportContactsCsv = function ()
 	{
-		return this.sServer + '/Raw/' + this.sSubQuery + this.sSpecSuffix + '/ContactsCsv/';
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ContactsCsv/';
 	};
 
 	/**
@@ -363,7 +370,7 @@
 	 */
 	Links.prototype.socialGoogle = function ()
 	{
-		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
 	};
 
 	/**
@@ -371,7 +378,7 @@
 	 */
 	Links.prototype.socialTwitter = function ()
 	{
-		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
 	};
 
 	/**
@@ -379,7 +386,7 @@
 	 */
 	Links.prototype.socialFacebook = function ()
 	{
-		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.sSubQuery + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
 	};
 
 	module.exports = new Links();

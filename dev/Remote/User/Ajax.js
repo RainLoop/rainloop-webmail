@@ -11,6 +11,7 @@
 		Base64 = require('Common/Base64'),
 
 		Cache = require('Common/Cache'),
+		Links = require('Common/Links'),
 
 		Settings = require('Storage/Settings'),
 
@@ -29,8 +30,6 @@
 		AbstractAjaxRemote.call(this);
 
 		this.oRequests = {};
-
-		this.sSubSubQuery = '&ss=/';
 	}
 
 	_.extend(RemoteUserAjax.prototype, AbstractAjaxRemote.prototype);
@@ -352,7 +351,7 @@
 		{
 			return this.defaultRequest(fCallback, 'MessageList', {},
 				'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
-				'MessageList/' + this.sSubSubQuery + Base64.urlsafe_encode([
+				'MessageList/' + Links.subQueryPrefix() + '/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iOffset,
 					iLimit,
@@ -402,7 +401,7 @@
 		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
 		{
 			this.defaultRequest(fCallback, 'Message', {}, null,
-				'Message/' + this.sSubSubQuery + Base64.urlsafe_encode([
+				'Message/' + Links.subQueryPrefix() + '/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iUid,
 					AppStore.projectHash(),

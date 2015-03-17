@@ -1062,6 +1062,7 @@
 	 */
 	Utils.findEmailAndLinks = function (sHtml)
 	{
+//		return sHtml;
 		sHtml = Autolinker.link(sHtml, {
 			'newWindow': true,
 			'stripPrefix': false,

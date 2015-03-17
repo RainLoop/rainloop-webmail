@@ -70,9 +70,6 @@ var autolinker = new Autolinker( [ options ] );
 var linkedText = autolinker.link( textToAutoLink );
 ```
 
-Note: if using the same options to autolink multiple pieces of html/text, it is slightly more efficient to create a single
-Autolinker instance, and run the `link()` method repeatedly (i.e. use the "class" form above).
-
 	
 #### Example:
 
@@ -108,10 +105,6 @@ These are the options which may be specified for linking. These are specified by
   `true` to have email addresses auto-linked, `false` to skip auto-linking of email addresses. Defaults to `true`.<br /><br />
 - **twitter** : Boolean<br />
   `true` to have Twitter handles auto-linked, `false` to skip auto-linking of Twitter handles. Defaults to `true`.
-- **replaceFn** : Function<br />
-  A function to use to programmatically make replacements of matches in the input string, one at a time. See the section 
-  <a href="#custom-replacement-function">Custom Replacement Function</a> for more details.
-
 
 For example, if you wanted to disable links from opening in new windows, you could do:
 
@@ -153,95 +146,7 @@ autolinker.link( "Go to www.google.com" );
 ```
 
 
-## Custom Replacement Function
-
-A custom replacement function (`replaceFn`) may be provided to replace url/email/twitter matches on an individual basis, based
-on the return from this function.
-
-Full example, for purposes of documenting the API:
-
-```javascript
-var input = "...";  // string with URLs, Email Addresses, and Twitter Handles
-
-var linkedText = Autolinker.link( input, {
-    replaceFn : function( autolinker, match ) {
-    	console.log( "href = ", match.getAnchorHref() );
-    	console.log( "text = ", match.getAnchorText() );
-    
-        switch( match.getType() ) {
-        	case 'url' : 
-        		console.log( "url: ", match.getUrl() );
-        		
-        		if( match.getUrl().indexOf( 'mysite.com' ) === -1 ) {
-        			var tag = autolinker.getTagBuilder().build( match );  // returns an `Autolinker.HtmlTag` instance, which provides mutator methods for easy changes
-        			tag.setAttr( 'rel', 'nofollow' );
-        			tag.addClass( 'external-link' );
-        			
-        			return tag;
-        			
-        		} else {
-        			return true;  // let Autolinker perform its normal anchor tag replacement
-        		}
-        		
-        	case 'email' :
-        		var email = match.getEmail();
-        		console.log( "email: ", email );
-        		
-        		if( email === "my@own.address" ) {
-        			return false;  // don't auto-link this particular email address; leave as-is
-        		} else {
-        			return;  // no return value will have Autolinker perform its normal anchor tag replacement (same as returning `true`)
-        		}
-        	
-        	case 'twitter' :
-        		var twitterHandle = match.getTwitterHandle();
-        		console.log( twitterHandle );
-        		
-        		return '<a href="http://newplace.to.link.twitter.handles.to/">' + twitterHandle + '</a>';
-        }
-    }
-} );
-```
-
-
-The function is provided two arguments:
-
-1. The Autolinker instance that is performing replacements. This can be used to query the options that the Autolinker
-   instance is configured with, or to retrieve its TagBuilder instance (via `autolinker.getTagBuilder()`).
-2. An `Autolinker.match.Match` object which details the match that is to be replaced.
-
-
-A replacement of the match is made based on the return value of the function. The following return values may be provided:
- 
-- No return value (`undefined`), or `true` (Boolean): Delegate back to Autolinker to replace the match as it normally would.
-- `false` (Boolean): Do not replace the current match at all - leave as-is.
-- Any String: If a string is returned from the function, the string will be used directly as the replacement HTML for
-  the match.
-- An `Autolinker.HtmlTag` instance, which can be used to build/modify an HTML tag before writing out its HTML text.
-
-
-## Full API Docs
-
-The full API docs for Autolinker may be referenced at: [http://gregjacobs.github.io/Autolinker.js/docs/](http://gregjacobs.github.io/Autolinker.js/docs/#!/api/Autolinker)
-
-
 ## Changelog:
-
-### 0.12.3
-
-- Add `Autolinker.match.Match#getMatchedText` method
-
-### 0.12.2
-
-- Add documentation generation, and update inline documentation.
-
-### 0.12.1
-
-- Expose the `Autolinker.HtmlTag` class, and allow it to be used in the `replaceFn`
-
-### 0.12.0
-
-- Add `replaceFn` option
 
 ### 0.11.0
 

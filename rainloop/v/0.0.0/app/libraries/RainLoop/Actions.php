@@ -372,11 +372,24 @@ class Actions
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
-		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('s', '')), ' /');
-		$sSubSubQuerty = \trim(\trim($this->Http()->GetQuery('ss', '')), ' /');
+		$aSubQuery = $this->Http()->GetQuery('q', null);
+		if (\is_array($aSubQuery))
+		{
+			$aSubQuery = \array_map(function ($sS) {
+				return \trim(\trim($sS), ' /');
+			}, $aSubQuery);
 
-		$sQuery .= 0 < \strlen($sSubQuerty) ? '/'.$sSubQuerty : '';
-		$sQuery .= 0 < \strlen($sSubSubQuerty) ? '/'.$sSubSubQuerty : '';
+			if (0 < \count($aSubQuery))
+			{
+				$sQuery .= '/'.\implode('/', $aSubQuery);
+			}
+		}
+
+//		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('s', '')), ' /');
+//		$sSubSubQuerty = \trim(\trim($this->Http()->GetQuery('ss', '')), ' /');
+//
+//		$sQuery .= 0 < \strlen($sSubQuerty) ? '/'.$sSubQuerty : '';
+//		$sQuery .= 0 < \strlen($sSubSubQuerty) ? '/'.$sSubSubQuerty : '';
 
 		if ('' === $this->GetSpecAuthToken())
 		{

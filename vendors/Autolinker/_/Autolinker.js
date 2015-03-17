@@ -1,6 +1,6 @@
 /*!
  * Autolinker.js
- * 0.11.2
+ * 0.12.2
  *
  * Copyright(c) 2014 Gregory Jacobs <greg@greg-jacobs.com>
  * MIT Licensed. http://www.opensource.org/licenses/mit-license.php
@@ -48,6 +48,64 @@
 	 *         truncate  : 30
 	 *     } );
 	 *     // produces: 'Joe went to <a href="http://www.yahoo.com">yahoo.com</a>'
+	 * 
+	 * 
+	 * ## Custom Replacements of Links
+	 * 
+	 * If the configuration options do not provide enough flexibility, a {@link #replaceFn} may be provided to fully customize
+	 * the output of Autolinker. This function is called once for each URL/Email/Twitter handle match that is encountered.
+	 * 
+	 * For example:
+	 * 
+	 *     var input = "...";  // string with URLs, Email Addresses, and Twitter Handles
+	 *     
+	 *     var linkedText = Autolinker.link( input, {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             console.log( "href = ", match.getAnchorHref() );
+	 *             console.log( "text = ", match.getAnchorText() );
+	 *         
+	 *             switch( match.getType() ) {
+	 *                 case 'url' : 
+	 *                     console.log( "url: ", match.getUrl() );
+	 *                     
+	 *                     if( match.getUrl().indexOf( 'mysite.com' ) === -1 ) {
+	 *                         var tag = autolinker.getTagBuilder().build( match );  // returns an `Autolinker.HtmlTag` instance, which provides mutator methods for easy changes
+	 *                         tag.setAttr( 'rel', 'nofollow' );
+	 *                         tag.addClass( 'external-link' );
+	 *                         
+	 *                         return tag;
+	 *                         
+	 *                     } else {
+	 *                         return true;  // let Autolinker perform its normal anchor tag replacement
+	 *                     }
+	 *                     
+	 *                 case 'email' :
+	 *                     var email = match.getEmail();
+	 *                     console.log( "email: ", email );
+	 *                     
+	 *                     if( email === "my@own.address" ) {
+	 *                         return false;  // don't auto-link this particular email address; leave as-is
+	 *                     } else {
+	 *                         return;  // no return value will have Autolinker perform its normal anchor tag replacement (same as returning `true`)
+	 *                     }
+	 *                 
+	 *                 case 'twitter' :
+	 *                     var twitterHandle = match.getTwitterHandle();
+	 *                     console.log( twitterHandle );
+	 *                     
+	 *                     return '<a href="http://newplace.to.link.twitter.handles.to/">' + twitterHandle + '</a>';
+	 *             }
+	 *         }
+	 *     } );
+	 * 
+	 * 
+	 * The function may return the following values:
+	 * 
+	 * - `true` (Boolean): Allow Autolinker to replace the match as it normally would.
+	 * - `false` (Boolean): Do not replace the current match at all - leave as-is.
+	 * - Any String: If a string is returned from the function, the string will be used directly as the replacement HTML for
+	 *   the match.
+	 * - An {@link Autolinker.HtmlTag} instance, which can be used to build/modify an HTML tag before writing out its HTML text.
 	 * 
 	 * @constructor
 	 * @param {Object} [config] The configuration options for the Autolinker instance, specified in an Object (map).
@@ -115,51 +173,38 @@
 		 * 
 		 * For example, if this config is provided as "myLink", then:
 		 * 
-		 * 1) URL links will have the CSS classes: "myLink myLink-url"
-		 * 2) Email links will have the CSS classes: "myLink myLink-email", and
-		 * 3) Twitter links will have the CSS classes: "myLink myLink-twitter"
+		 * - URL links will have the CSS classes: "myLink myLink-url"
+		 * - Email links will have the CSS classes: "myLink myLink-email", and
+		 * - Twitter links will have the CSS classes: "myLink myLink-twitter"
 		 */
 		className : "",
+			
+		/**
+		 * @cfg {Function} replaceFn
+		 * 
+		 * A function to individually process each URL/Email/Twitter match found in the input string.
+		 * 
+		 * See the class's description for usage.
+		 * 
+		 * This function is called with the following parameters:
+		 * 
+		 * @cfg {Autolinker} replaceFn.autolinker The Autolinker instance, which may be used to retrieve child objects from (such
+		 *   as the instance's {@link #getTagBuilder tag builder}).
+		 * @cfg {Autolinker.match.Match} replaceFn.match The Match instance which can be used to retrieve information about the
+		 *   {@link Autolinker.match.Url URL}/{@link Autolinker.match.Email email}/{@link Autolinker.match.Twitter Twitter}
+		 *   match that the `replaceFn` is currently processing.
+		 */
 		
 		
 		/**
 		 * @private
-		 * @property {RegExp} htmlRegex
+		 * @property {RegExp} htmlCharacterEntitiesRegex
+		 *
+		 * The regular expression that matches common HTML character entities.
 		 * 
-		 * The regular expression used to pull out HTML tags from a string. Handles namespaced HTML tags and
-		 * attribute names, as specified by http://www.w3.org/TR/html-markup/syntax.html.
-		 * 
-		 * Capturing groups:
-		 * 
-		 * 1. If it is an end tag, this group will have the '/'.
-		 * 2. The tag name.
+		 * Ignoring &amp; as it could be part of a query string -- handling it separately.
 		 */
-		htmlRegex : (function() {
-			var tagNameRegex = /[0-9a-zA-Z:]+/,
-			    attrNameRegex = /[^\s\0"'>\/=\x01-\x1F\x7F]+/,   // the unicode range accounts for excluding control chars, and the delete char
-			    attrValueRegex = /(?:".*?"|'.*?'|[^'"=<>`\s]+)/, // double quoted, single quoted, or unquoted attribute values
-			    nameEqualsValueRegex = attrNameRegex.source + '(?:\\s*=\\s*' + attrValueRegex.source + ')?';  // optional '=[value]'
-			
-			return new RegExp( [
-				'<(?:!|(/))?',  // Beginning of a tag. Either '<' for a start tag, '</' for an end tag, or <! for the <!DOCTYPE ...> tag. The slash or an empty string is Capturing Group 1.
-				
-					// The tag name (Capturing Group 2)
-					'(' + tagNameRegex.source + ')',
-					
-					// Zero or more attributes following the tag name
-					'(?:',
-						'\\s+',  // one or more whitespace chars before an attribute
-						
-						// Either:
-						// A. tag="value", or 
-						// B. "value" alone (for <!DOCTYPE> tag. Ex: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">) 
-						'(?:', nameEqualsValueRegex, '|', attrValueRegex.source + ')',
-					')*',
-					
-					'\\s*/?',  // any trailing spaces and optional '/' before the closing '>'
-				'>'
-			].join( "" ), 'g' );
-		} )(),
+		htmlCharacterEntitiesRegex: /(&nbsp;|&#160;|&lt;|&#60;|&gt;|&#62;)/gi,
 		
 		/**
 		 * @private
@@ -169,10 +214,10 @@
 		 * 
 		 * This regular expression has the following capturing groups:
 		 * 
-		 * 1. Group that is used to determine if there is a Twitter handle match (i.e. @someTwitterUser). Simply check for its 
+		 * 1. Group that is used to determine if there is a Twitter handle match (i.e. \@someTwitterUser). Simply check for its 
 		 *    existence to determine if there is a Twitter handle match. The next couple of capturing groups give information 
 		 *    about the Twitter handle match.
-		 * 2. The whitespace character before the @sign in a Twitter handle. This is needed because there are no lookbehinds in
+		 * 2. The whitespace character before the \@sign in a Twitter handle. This is needed because there are no lookbehinds in
 		 *    JS regular expressions, and can be used to reconstruct the original string in a replace().
 		 * 3. The Twitter handle itself in a Twitter match. If the match is '@someTwitterUser', the handle is 'someTwitterUser'.
 		 * 4. Group that matches an email address. Used to determine if the match is an email address, as well as holding the full 
@@ -273,6 +318,22 @@
 		 */
 		charBeforeProtocolRelMatchRegex : /^(.)?\/\//,
 		
+		/**
+		 * @private
+		 * @property {Autolinker.HtmlParser} htmlParser
+		 * 
+		 * The HtmlParser instance used to skip over HTML tags, while finding text nodes to process. This is lazily instantiated
+		 * in the {@link #getHtmlParser} method.
+		 */
+		
+		/**
+		 * @private
+		 * @property {Autolinker.AnchorTagBuilder} tagBuilder
+		 * 
+		 * The AnchorTagBuilder instance used to build the URL/email/Twitter replacement anchor tags. This is lazily instantiated
+		 * in the {@link #getTagBuilder} method.
+		 */
+		
 		
 		/**
 		 * Automatically links URLs, email addresses, and Twitter handles found in the given chunk of HTML. 
@@ -281,97 +342,107 @@
 		 * For instance, if given the text: `You should go to http://www.yahoo.com`, then the result
 		 * will be `You should go to &lt;a href="http://www.yahoo.com"&gt;http://www.yahoo.com&lt;/a&gt;`
 		 * 
-		 * @method link
+		 * This method finds the text around any HTML elements in the input `textOrHtml`, which will be the text that is processed.
+		 * Any original HTML elements will be left as-is, as well as the text that is already wrapped in anchor (&lt;a&gt;) tags.
+		 * 
 		 * @param {String} textOrHtml The HTML or text to link URLs, email addresses, and Twitter handles within.
-		 * @return {String} The HTML, with URLs/emails/twitter handles automatically linked.
+		 * @return {String} The HTML, with URLs/emails/Twitter handles automatically linked.
 		 */
 		link : function( textOrHtml ) {
-			return this.processHtml( textOrHtml );
+			var me = this,  // for closure
+			    htmlParser = this.getHtmlParser(),
+			    htmlCharacterEntitiesRegex = this.htmlCharacterEntitiesRegex,
+			    anchorTagStackCount = 0,  // used to only process text around anchor tags, and any inner text/html they may have
+			    resultHtml = [];
+			
+			htmlParser.parse( textOrHtml, {
+				// Process HTML nodes in the input `textOrHtml`
+				processHtmlNode : function( tagText, tagName, isClosingTag ) {
+					if( tagName === 'a' ) {
+						if( !isClosingTag ) {  // it's the start <a> tag
+							anchorTagStackCount++;
+						} else {   // it's the end </a> tag
+							anchorTagStackCount = Math.max( anchorTagStackCount - 1, 0 );  // attempt to handle extraneous </a> tags by making sure the stack count never goes below 0
+						}
+					}
+					resultHtml.push( tagText );  // now add the text of the tag itself verbatim
+				},
+				
+				// Process text nodes in the input `textOrHtml`
+				processTextNode : function( text ) {
+					if( anchorTagStackCount === 0 ) {
+						// If we're not within an <a> tag, process the text node
+						var unescapedText = Autolinker.Util.splitAndCapture( text, htmlCharacterEntitiesRegex );  // split at HTML entities, but include the HTML entities in the results array
+						
+						for ( var i = 0, len = unescapedText.length; i < len; i++ ) {
+							var textToProcess = unescapedText[ i ],
+							    processedTextNode = me.processTextNode( textToProcess );
+							
+							resultHtml.push( processedTextNode );
+						}
+						
+					} else {
+						// `text` is within an <a> tag, simply append the text - we do not want to autolink anything 
+						// already within an <a>...</a> tag
+						resultHtml.push( text );
+					}
+				}
+			} );
+			
+			return resultHtml.join( "" );
 		},
 		
 		
 		/**
-		 * Lazily instantiates and returns the {@link #anchorTagBuilder} instance for this Autolinker instance.
+		 * Lazily instantiates and returns the {@link #htmlParser} instance for this Autolinker instance.
+		 * 
+		 * @protected
+		 * @return {Autolinker.HtmlParser}
+		 */
+		getHtmlParser : function() {
+			var htmlParser = this.htmlParser;
+			
+			if( !htmlParser ) {
+				htmlParser = this.htmlParser = new Autolinker.HtmlParser();
+			}
+			
+			return htmlParser;
+		},
+		
+		
+		/**
+		 * Returns the {@link #tagBuilder} instance for this Autolinker instance, lazily instantiating it
+		 * if it does not yet exist.
+		 * 
+		 * This method may be used in a {@link #replaceFn} to generate the {@link Autolinker.HtmlTag HtmlTag} instance that 
+		 * Autolinker would normally generate, and then allow for modifications before returning it. For example:
+		 * 
+		 *     var html = Autolinker.link( "Test google.com", {
+		 *         replaceFn : function( autolinker, match ) {
+		 *             var tag = autolinker.getTagBuilder().build( match );  // returns an {@link Autolinker.HtmlTag} instance
+		 *             tag.setAttr( 'rel', 'nofollow' );
+		 *             
+		 *             return tag;
+		 *         }
+		 *     } );
+		 *     
+		 *     // generated html:
+		 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
 		 * 
 		 * @return {Autolinker.AnchorTagBuilder}
 		 */
-		getAnchorTagBuilder : function() {
-			var anchorTagBuilder = this.anchorTagBuilder;
+		getTagBuilder : function() {
+			var tagBuilder = this.tagBuilder;
 			
-			if( !anchorTagBuilder ) {
-				anchorTagBuilder = this.anchorTagBuilder = new Autolinker.AnchorTagBuilder( {
+			if( !tagBuilder ) {
+				tagBuilder = this.tagBuilder = new Autolinker.AnchorTagBuilder( {
 					newWindow   : this.newWindow,
-					stripPrefix : this.stripPrefix,
 					truncate    : this.truncate,
 					className   : this.className
 				} );
 			}
 			
-			return anchorTagBuilder;
-		},
-		
-		
-		/**
-		 * Processes the given HTML to auto-link URLs/emails/Twitter handles.
-		 * 
-		 * Finds the text around any HTML elements in the input `html`, which will be the text that is processed.
-		 * Any original HTML elements will be left as-is, as well as the text that is already wrapped in anchor tags.
-		 * 
-		 * @private
-		 * @method processHtml
-		 * @param {String} html The input text or HTML to process in order to auto-link.
-		 * @return {String}
-		 */
-		processHtml : function( html ) {
-			// Loop over the HTML string, ignoring HTML tags, and processing the text that lies between them,
-			// wrapping the URLs in anchor tags
-			var htmlRegex = this.htmlRegex,
-			    currentResult,
-			    inBetweenTagsText,
-			    lastIndex = 0,
-			    anchorTagStackCount = 0,
-			    resultHtml = [];
-			
-			while( ( currentResult = htmlRegex.exec( html ) ) !== null ) {
-				var tagText = currentResult[ 0 ],
-				    tagName = currentResult[ 2 ],
-				    isClosingTag = !!currentResult[ 1 ];
-				
-				inBetweenTagsText = html.substring( lastIndex, currentResult.index );
-				lastIndex = currentResult.index + tagText.length;
-				
-				// Process around anchor tags, and any inner text / html they may have
-				if( tagName === 'a' ) {
-					if( !isClosingTag ) {  // it's the start <a> tag
-						anchorTagStackCount++;
-						resultHtml.push( this.processTextNode( inBetweenTagsText ) );
-						
-					} else {   // it's the end </a> tag
-						anchorTagStackCount = Math.max( anchorTagStackCount - 1, 0 );  // attempt to handle extraneous </a> tags by making sure the stack count never goes below 0
-						if( anchorTagStackCount === 0 ) {
-							resultHtml.push( inBetweenTagsText );  // We hit the matching </a> tag, simply add all of the text from the start <a> tag to the end </a> tag without linking it
-						}
-					}
-					
-				} else if( anchorTagStackCount === 0 ) {   // not within an anchor tag, link the "in between" text
-					resultHtml.push( this.processTextNode( inBetweenTagsText ) );
-					
-				} else {
-					// if we have a tag that is in between anchor tags (ex: <a href="..."><b>google.com</b></a>),
-					// just append the inner text
-					resultHtml.push( inBetweenTagsText );  
-				}
-				
-				resultHtml.push( tagText );  // now add the text of the tag itself verbatim
-			}
-			
-			// Process any remaining text after the last HTML element. Will process all of the text if there were no HTML elements.
-			if( lastIndex < html.length ) {
-				var processedTextNode = this.processTextNode( html.substring( lastIndex ) );
-				resultHtml.push( processedTextNode );
-			}
-			
-			return resultHtml.join( "" );
+			return tagBuilder;
 		},
 		
 		
@@ -385,13 +456,11 @@
 		 */
 		processTextNode : function( text ) {
 			var me = this,  // for closure
-			    invalidProtocolRelMatchRegex = this.invalidProtocolRelMatchRegex,
-			    charBeforeProtocolRelMatchRegex = this.charBeforeProtocolRelMatchRegex,
-			    anchorTagBuilder = this.getAnchorTagBuilder();
+			    charBeforeProtocolRelMatchRegex = this.charBeforeProtocolRelMatchRegex;
 			
 			return text.replace( this.matcherRegex, function( matchStr, $1, $2, $3, $4, $5, $6, $7 ) {
 				var twitterMatch = $1,
-				    twitterHandlePrefixWhitespaceChar = $2,  // The whitespace char before the @ sign in a Twitter handle match. This is needed because of no lookbehinds in JS regexes
+				    twitterHandlePrefixWhitespaceChar = $2,  // The whitespace char before the @ sign in a Twitter handle match. This is needed because of no lookbehinds in JS regexes.
 				    twitterHandle = $3,      // The actual twitterUser (i.e the word after the @ sign in a Twitter handle match)
 				    emailAddressMatch = $4,  // For both determining if it is an email address, and stores the actual email address
 				    urlMatch = $5,           // The matched URL string
@@ -400,40 +469,34 @@
 				    prefixStr = "",       // A string to use to prefix the anchor tag that is created. This is needed for the Twitter handle match
 				    suffixStr = "",       // A string to suffix the anchor tag that is created. This is used if there is a trailing parenthesis that should not be auto-linked.
 				    
-				    match;  // Will be an Autolinker.Match object
+				    match;  // Will be an Autolinker.match.Match object
 				
 				
-				// Return out with no changes for match types that are disabled (url, email, twitter), or for matches
-				// that are invalid.
+				// Return out with no changes for match types that are disabled (url, email, twitter), or for matches that are 
+				// invalid (false positives from the matcherRegex, which can't use look-behinds since they are unavailable in JS).
 				if( !me.isValidMatch( twitterMatch, emailAddressMatch, urlMatch, protocolRelativeMatch ) ) {
 					return matchStr;
 				}
 				
-				
 				// Handle a closing parenthesis at the end of the match, and exclude it if there is not a matching open parenthesis
-				// in the match. This handles cases like the string "wikipedia.com/something_(disambiguation)" (which should be auto-
-				// linked, and when it is enclosed in parenthesis itself, such as: "(wikipedia.com/something_(disambiguation))" (in
-				// which the outer parens should *not* be auto-linked.
-				var lastChar = matchStr.charAt( matchStr.length - 1 );
-				if( lastChar === ')' ) {
-					var openParensMatch = matchStr.match( /\(/g ),
-					    closeParensMatch = matchStr.match( /\)/g ),
-					    numOpenParens = ( openParensMatch && openParensMatch.length ) || 0,
-					    numCloseParens = ( closeParensMatch && closeParensMatch.length ) || 0;
-					
-					if( numOpenParens < numCloseParens ) {
-						matchStr = matchStr.substr( 0, matchStr.length - 1 );  // remove the trailing ")"
-						suffixStr = ")";  // this will be added after the <a> tag
-					}
+				// in the match itself. 
+				if( me.matchHasUnbalancedClosingParen( matchStr ) ) {
+					matchStr = matchStr.substr( 0, matchStr.length - 1 );  // remove the trailing ")"
+					suffixStr = ")";  // this will be added after the generated <a> tag
 				}
 				
 				
-				if( twitterMatch ) {
-					prefixStr = twitterHandlePrefixWhitespaceChar;
-					match = new Autolinker.TwitterMatch( { twitterHandle: twitterHandle } );
+				if( emailAddressMatch ) {
+					match = new Autolinker.match.Email( { matchedText: matchStr, email: emailAddressMatch } );
 					
-				} else if( emailAddressMatch ) {
-					match = new Autolinker.EmailMatch( { emailAddress: emailAddressMatch } );
+				} else if( twitterMatch ) {
+					// fix up the `matchStr` if there was a preceding whitespace char, which was needed to determine the match 
+					// itself (since there are no look-behinds in JS regexes)
+					if( twitterHandlePrefixWhitespaceChar ) {
+						prefixStr = twitterHandlePrefixWhitespaceChar;
+						matchStr = matchStr.slice( 1 );  // remove the prefixed whitespace char from the match
+					}
+					match = new Autolinker.match.Twitter( { matchedText: matchStr, twitterHandle: twitterHandle } );
 					
 				} else {  // url match
 					// If it's a protocol-relative '//' match, remove the character before the '//' (which the matcherRegex needed
@@ -441,18 +504,23 @@
 					if( protocolRelativeMatch ) {
 						var charBeforeMatch = protocolRelativeMatch.match( charBeforeProtocolRelMatchRegex )[ 1 ] || "";
 						
-						if( charBeforeMatch ) {
-							prefixStr = charBeforeMatch;  // re-add the character before the '//' to what will be placed before the generated <a> tag
-							matchStr = matchStr.slice( 1 );
+						if( charBeforeMatch ) {  // fix up the `matchStr` if there was a preceding char before a protocol-relative match, which was needed to determine the match itself (since there are no look-behinds in JS regexes)
+							prefixStr = charBeforeMatch;
+							matchStr = matchStr.slice( 1 );  // remove the prefixed char from the match
 						}
 					}
 					
-					match = new Autolinker.UrlMatch( { url: matchStr, protocolRelativeMatch: protocolRelativeMatch } );
+					match = new Autolinker.match.Url( {
+						matchedText : matchStr,
+						url : matchStr,
+						protocolRelativeMatch : protocolRelativeMatch,
+						stripPrefix : me.stripPrefix
+					} );
 				}
 	
-				// wrap the match in an anchor tag
-				var anchorTag = anchorTagBuilder.createAnchorTag( match.getType(), match.getAnchorHref(), match.getAnchorText() );
-				return prefixStr + anchorTag + suffixStr;
+				// Generate the replacement text for the match
+				var matchReturnVal = me.createMatchReturnVal( match, matchStr );
+				return prefixStr + matchReturnVal + suffixStr;
 			} );
 		},
 		
@@ -491,6 +559,77 @@
 			}
 			
 			return true;
+		},
+		
+		
+		/**
+		 * Determines if a match found has an unmatched closing parenthesis. If so, this parenthesis will be removed
+		 * from the match itself, and appended after the generated anchor tag in {@link #processTextNode}.
+		 * 
+		 * A match may have an extra closing parenthesis at the end of the match because the regular expression must include parenthesis
+		 * for URLs such as "wikipedia.com/something_(disambiguation)", which should be auto-linked. 
+		 * 
+		 * However, an extra parenthesis *will* be included when the URL itself is wrapped in parenthesis, such as in the case of
+		 * "(wikipedia.com/something_(disambiguation))". In this case, the last closing parenthesis should *not* be part of the URL 
+		 * itself, and this method will return `true`.
+		 * 
+		 * @private
+		 * @param {String} matchStr The full match string from the {@link #matcherRegex}.
+		 * @return {Boolean} `true` if there is an unbalanced closing parenthesis at the end of the `matchStr`, `false` otherwise.
+		 */
+		matchHasUnbalancedClosingParen : function( matchStr ) {
+			var lastChar = matchStr.charAt( matchStr.length - 1 );
+			
+			if( lastChar === ')' ) {
+				var openParensMatch = matchStr.match( /\(/g ),
+				    closeParensMatch = matchStr.match( /\)/g ),
+				    numOpenParens = ( openParensMatch && openParensMatch.length ) || 0,
+				    numCloseParens = ( closeParensMatch && closeParensMatch.length ) || 0;
+				
+				if( numOpenParens < numCloseParens ) {
+					return true;
+				}
+			}
+			
+			return false;
+		},
+		
+		
+		/**
+		 * Creates the return string value for a given match in the input string, for the {@link #processTextNode} method.
+		 * 
+		 * This method handles the {@link #replaceFn}, if one was provided.
+		 * 
+		 * @private
+		 * @param {Autolinker.match.Match} match The Match object that represents the match.
+		 * @param {String} matchStr The original match string, after having been preprocessed to fix match edge cases (see
+		 *   the `prefixStr` and `suffixStr` vars in {@link #processTextNode}.
+		 * @return {String} The string that the `match` should be replaced with. This is usually the anchor tag string, but
+		 *   may be the `matchStr` itself if the match is not to be replaced.
+		 */
+		createMatchReturnVal : function( match, matchStr ) {
+			// Handle a custom `replaceFn` being provided
+			var replaceFnResult;
+			if( this.replaceFn ) {
+				replaceFnResult = this.replaceFn.call( this, this, match );  // Autolinker instance is the context, and the first arg
+			}
+			
+			if( typeof replaceFnResult === 'string' ) {
+				return replaceFnResult;  // `replaceFn` returned a string, use that
+				
+			} else if( replaceFnResult === false ) {
+				return matchStr;  // no replacement for the match
+				
+			} else if( replaceFnResult instanceof Autolinker.HtmlTag ) {
+				return replaceFnResult.toString();
+			
+			} else {  // replaceFnResult === true, or no/unknown return value from function
+				// Perform Autolinker's default anchor tag generation
+				var tagBuilder = this.getTagBuilder(),
+				    anchorTag = tagBuilder.build( match );  // returns an Autolinker.HtmlTag instance
+				
+				return anchorTag.toString();
+			}
 		}
 	
 	};
@@ -520,6 +659,11 @@
 		return autolinker.link( text );
 	};
 	
+	
+	// Namespace for `match` classes
+	Autolinker.match = {};
+	/*global Autolinker */
+	/*jshint eqnull:true, boss:true */
 	/**
 	 * @class Autolinker.Util
 	 * @singleton
@@ -583,50 +727,587 @@
 			Autolinker.Util.assign( subclassProto, protoProps );
 			
 			return subclass;
+		},
+		
+		
+		/**
+		 * Truncates the `str` at `len - ellipsisChars.length`, and adds the `ellipsisChars` to the
+		 * end of the string (by default, two periods: '..'). If the `str` length does not exceed 
+		 * `len`, the string will be returned unchanged.
+		 * 
+		 * @param {String} str The string to truncate and add an ellipsis to.
+		 * @param {Number} truncateLen The length to truncate the string at.
+		 * @param {String} [ellipsisChars=..] The ellipsis character(s) to add to the end of `str`
+		 *   when truncated. Defaults to '..'
+		 */
+		ellipsis : function( str, truncateLen, ellipsisChars ) {
+			if( str.length > truncateLen ) {
+				ellipsisChars = ( ellipsisChars == null ) ? '..' : ellipsisChars;
+				str = str.substring( 0, truncateLen - ellipsisChars.length ) + ellipsisChars;
+			}
+			return str;
+		},
+		
+		
+		/**
+		 * Supports `Array.prototype.indexOf()` functionality for old IE (IE8 and below).
+		 * 
+		 * @param {Array} arr The array to find an element of.
+		 * @param {*} element The element to find in the array, and return the index of.
+		 * @return {Number} The index of the `element`, or -1 if it was not found.
+		 */
+		indexOf : function( arr, element ) {
+			if( Array.prototype.indexOf ) {
+				return arr.indexOf( element );
+				
+			} else {
+				for( var i = 0, len = arr.length; i < len; i++ ) {
+					if( arr[ i ] === element ) return i;
+				}
+				return -1;
+			}
+		},
+		
+		
+		
+		/**
+		 * Performs the functionality of what modern browsers do when `String.prototype.split()` is called
+		 * with a regular expression that contains capturing parenthesis.
+		 * 
+		 * For example:
+		 * 
+		 *     // Modern browsers: 
+		 *     "a,b,c".split( /(,)/ );  // --> [ 'a', ',', 'b', ',', 'c' ]
+		 *     
+		 *     // Old IE (including IE8):
+		 *     "a,b,c".split( /(,)/ );  // --> [ 'a', 'b', 'c' ]
+		 *     
+		 * This method emulates the functionality of modern browsers for the old IE case.
+		 * 
+		 * @param {String} str The string to split.
+		 * @param {RegExp} splitRegex The regular expression to split the input `str` on. The splitting
+		 *   character(s) will be spliced into the array, as in the "modern browsers" example in the 
+		 *   description of this method. 
+		 *   Note #1: the supplied regular expression **must** have the 'g' flag specified.
+		 *   Note #2: for simplicity's sake, the regular expression does not need 
+		 *   to contain capturing parenthesis - it will be assumed that any match has them.
+		 * @return {String[]} The split array of strings, with the splitting character(s) included.
+		 */
+		splitAndCapture : function( str, splitRegex ) {
+			if( !splitRegex.global ) throw new Error( "`splitRegex` must have the 'g' flag set" );
+			
+			var result = [],
+			    lastIdx = 0,
+			    match;
+			
+			while( match = splitRegex.exec( str ) ) {
+				result.push( str.substring( lastIdx, match.index ) );
+				result.push( match[ 0 ] );  // push the splitting char(s)
+				
+				lastIdx = match.index + match[ 0 ].length;
+			}
+			result.push( str.substring( lastIdx ) );
+			
+			return result;
 		}
 		
 	};
+	/*global Autolinker */
 	/**
 	 * @private
+	 * @class Autolinker.HtmlParser
+	 * @extends Object
+	 * 
+	 * An HTML parser implementation which simply walks an HTML string and calls the provided visitor functions to process 
+	 * HTML and text nodes.
+	 * 
+	 * Autolinker uses this to only link URLs/emails/Twitter handles within text nodes, basically ignoring HTML tags.
+	 */
+	Autolinker.HtmlParser = Autolinker.Util.extend( Object, {
+		
+		/**
+		 * @private
+		 * @property {RegExp} htmlRegex
+		 * 
+		 * The regular expression used to pull out HTML tags from a string. Handles namespaced HTML tags and
+		 * attribute names, as specified by http://www.w3.org/TR/html-markup/syntax.html.
+		 * 
+		 * Capturing groups:
+		 * 
+		 * 1. If it is an end tag, this group will have the '/'.
+		 * 2. The tag name.
+		 */
+		htmlRegex : (function() {
+			var tagNameRegex = /[0-9a-zA-Z:]+/,
+			    attrNameRegex = /[^\s\0"'>\/=\x01-\x1F\x7F]+/,   // the unicode range accounts for excluding control chars, and the delete char
+			    attrValueRegex = /(?:".*?"|'.*?'|[^'"=<>`\s]+)/, // double quoted, single quoted, or unquoted attribute values
+			    nameEqualsValueRegex = attrNameRegex.source + '(?:\\s*=\\s*' + attrValueRegex.source + ')?';  // optional '=[value]'
+			
+			return new RegExp( [
+				'<(?:!|(/))?',  // Beginning of a tag. Either '<' for a start tag, '</' for an end tag, or <! for the <!DOCTYPE ...> tag. The slash or an empty string is Capturing Group 1.
+				
+					// The tag name (Capturing Group 2)
+					'(' + tagNameRegex.source + ')',
+					
+					// Zero or more attributes following the tag name
+					'(?:',
+						'\\s+',  // one or more whitespace chars before an attribute
+						
+						// Either:
+						// A. tag="value", or 
+						// B. "value" alone (for <!DOCTYPE> tag. Ex: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">) 
+						'(?:', nameEqualsValueRegex, '|', attrValueRegex.source + ')',
+					')*',
+					
+					'\\s*/?',  // any trailing spaces and optional '/' before the closing '>'
+				'>'
+			].join( "" ), 'g' );
+		} )(),
+		
+		
+		/**
+		 * Walks an HTML string, calling the `options.processHtmlNode` function for each HTML tag that is encountered, and calling
+		 * the `options.processTextNode` function when each text around HTML tags is encountered.
+		 * 
+		 * @param {String} html The HTML to parse.
+		 * @param {Object} [options] An Object (map) which may contain the following properties:
+		 * 
+		 * @param {Function} [options.processHtmlNode] A visitor function which allows processing of an encountered HTML node.
+		 *   This function is called with the following arguments:
+		 * @param {String} [options.processHtmlNode.tagText] The HTML tag text that was found.
+		 * @param {String} [options.processHtmlNode.tagName] The tag name for the HTML tag that was found. Ex: 'a' for an anchor tag.
+		 * @param {String} [options.processHtmlNode.isClosingTag] `true` if the tag is a closing tag (ex: &lt;/a&gt;), `false` otherwise.
+		 *  
+		 * @param {Function} [options.processTextNode] A visitor function which allows processing of an encountered text node.
+		 *   This function is called with the following arguments:
+		 * @param {String} [options.processTextNode.text] The text node that was matched.
+		 */
+		parse : function( html, options ) {
+			options = options || {};
+			
+			var processHtmlNodeVisitor = options.processHtmlNode || function() {},
+			    processTextNodeVisitor = options.processTextNode || function() {},
+			    htmlRegex = this.htmlRegex,
+			    currentResult,
+			    lastIndex = 0;
+			
+			// Loop over the HTML string, ignoring HTML tags, and processing the text that lies between them,
+			// wrapping the URLs in anchor tags
+			while( ( currentResult = htmlRegex.exec( html ) ) !== null ) {
+				var tagText = currentResult[ 0 ],
+				    tagName = currentResult[ 2 ],
+				    isClosingTag = !!currentResult[ 1 ],
+				    inBetweenTagsText = html.substring( lastIndex, currentResult.index );
+				
+				if( inBetweenTagsText ) {
+					processTextNodeVisitor( inBetweenTagsText );
+				}
+				
+				processHtmlNodeVisitor( tagText, tagName, isClosingTag );
+				
+				lastIndex = currentResult.index + tagText.length;
+			}
+			
+			// Process any remaining text after the last HTML element. Will process all of the text if there were no HTML elements.
+			if( lastIndex < html.length ) {
+				var text = html.substring( lastIndex );
+				
+				if( text ) {
+					processTextNodeVisitor( text );
+				}
+			}
+		}
+		
+	} );
+	/*global Autolinker */
+	/*jshint boss:true */
+	/**
+	 * @class Autolinker.HtmlTag
+	 * @extends Object
+	 * 
+	 * Represents an HTML tag, which can be used to easily build/modify HTML tags programmatically.
+	 * 
+	 * Autolinker uses this abstraction to create HTML tags, and then write them out as strings. You may also use
+	 * this class in your code, especially within a {@link Autolinker#replaceFn replaceFn}.
+	 * 
+	 * ## Examples
+	 * 
+	 * Example instantiation:
+	 * 
+	 *     var tag = new Autolinker.HtmlTag( {
+	 *         tagName : 'a',
+	 *         attrs   : { 'href': 'http://google.com', 'class': 'external-link' },
+	 *         innerHtml : 'Google'
+	 *     } );
+	 *     
+	 *     tag.toString();  // <a href="http://google.com" class="external-link">Google</a>
+	 *     
+	 *     // Individual accessor methods
+	 *     tag.getTagName();                 // 'a'
+	 *     tag.getAttr( 'href' );            // 'http://google.com'
+	 *     tag.hasClass( 'external-link' );  // true
+	 * 
+	 * 
+	 * Using mutator methods (which may be used in combination with instantiation config properties):
+	 * 
+	 *     var tag = new Autolinker.HtmlTag();
+	 *     tag.setTagName( 'a' );
+	 *     tag.setAttr( 'href', 'http://google.com' );
+	 *     tag.addClass( 'external-link' );
+	 *     tag.setInnerHtml( 'Google' );
+	 *     
+	 *     tag.getTagName();                 // 'a'
+	 *     tag.getAttr( 'href' );            // 'http://google.com'
+	 *     tag.hasClass( 'external-link' );  // true
+	 *     
+	 *     tag.toString();  // <a href="http://google.com" class="external-link">Google</a>
+	 *     
+	 * 
+	 * ## Example use within a {@link Autolinker#replaceFn replaceFn}
+	 * 
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = autolinker.getTagBuilder().build( match );  // returns an {@link Autolinker.HtmlTag} instance, configured with the Match's href and anchor text
+	 *             tag.setAttr( 'rel', 'nofollow' );
+	 *             
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *     
+	 *     // generated html:
+	 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
+	 *     
+	 *     
+	 * ## Example use with a new tag for the replacement
+	 * 
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = new Autolinker.HtmlTag( {
+	 *                 tagName : 'button',
+	 *                 attrs   : { 'title': 'Load URL: ' + match.getAnchorHref() },
+	 *                 innerHtml : 'Load URL: ' + match.getAnchorText()
+	 *             } );
+	 *             
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *     
+	 *     // generated html:
+	 *     //   Test <button title="Load URL: http://google.com">Load URL: google.com</button>
+	 */
+	Autolinker.HtmlTag = Autolinker.Util.extend( Object, {
+		
+		/**
+		 * @cfg {String} tagName
+		 * 
+		 * The tag name. Ex: 'a', 'button', etc.
+		 * 
+		 * Not required at instantiation time, but should be set using {@link #setTagName} before {@link #toString}
+		 * is executed.
+		 */
+		
+		/**
+		 * @cfg {Object.<String, String>} attrs
+		 * 
+		 * An key/value Object (map) of attributes to create the tag with. The keys are the attribute names, and the
+		 * values are the attribute values.
+		 */
+		
+		/**
+		 * @cfg {String} innerHtml
+		 * 
+		 * The inner HTML for the tag. 
+		 * 
+		 * Note the camel case name on `innerHtml`. Acronyms are camelCased in this utility (such as not to run into the acronym 
+		 * naming inconsistency that the DOM developers created with `XMLHttpRequest`). You may alternatively use {@link #innerHTML}
+		 * if you prefer, but this one is recommended.
+		 */
+		
+		/**
+		 * @cfg {String} innerHTML
+		 * 
+		 * Alias of {@link #innerHtml}, accepted for consistency with the browser DOM api, but prefer the camelCased version
+		 * for acronym names.
+		 */
+		
+		
+		/**
+		 * @protected
+		 * @property {RegExp} whitespaceRegex
+		 * 
+		 * Regular expression used to match whitespace in a string of CSS classes.
+		 */
+		whitespaceRegex : /\s+/,
+		
+		
+		/**
+		 * @constructor
+		 * @param {Object} [cfg] The configuration properties for this class, in an Object (map)
+		 */
+		constructor : function( cfg ) {
+			Autolinker.Util.assign( this, cfg );
+			
+			this.innerHtml = this.innerHtml || this.innerHTML;  // accept either the camelCased form or the fully capitalized acronym
+		},
+		
+		
+		/**
+		 * Sets the tag name that will be used to generate the tag with.
+		 * 
+		 * @param {String} tagName
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setTagName : function( tagName ) {
+			this.tagName = tagName;
+			return this;
+		},
+		
+		
+		/**
+		 * Retrieves the tag name.
+		 * 
+		 * @return {String}
+		 */
+		getTagName : function() {
+			return this.tagName || "";
+		},
+		
+		
+		/**
+		 * Sets an attribute on the HtmlTag.
+		 * 
+		 * @param {String} attrName The attribute name to set.
+		 * @param {String} attrValue The attribute value to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setAttr : function( attrName, attrValue ) {
+			var tagAttrs = this.getAttrs();
+			tagAttrs[ attrName ] = attrValue;
+			
+			return this;
+		},
+		
+		
+		/**
+		 * Retrieves an attribute from the HtmlTag. If the attribute does not exist, returns `undefined`.
+		 * 
+		 * @param {String} name The attribute name to retrieve.
+		 * @return {String} The attribute's value, or `undefined` if it does not exist on the HtmlTag.
+		 */
+		getAttr : function( attrName ) {
+			return this.getAttrs()[ attrName ];
+		},
+		
+		
+		/**
+		 * Sets one or more attributes on the HtmlTag.
+		 * 
+		 * @param {Object.<String, String>} attrs A key/value Object (map) of the attributes to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setAttrs : function( attrs ) {
+			var tagAttrs = this.getAttrs();
+			Autolinker.Util.assign( tagAttrs, attrs );
+			
+			return this;
+		},
+		
+		
+		/**
+		 * Retrieves the attributes Object (map) for the HtmlTag.
+		 * 
+		 * @return {Object.<String, String>} A key/value object of the attributes for the HtmlTag.
+		 */
+		getAttrs : function() {
+			return this.attrs || ( this.attrs = {} );
+		},
+		
+		
+		/**
+		 * Sets the provided `cssClass`, overwriting any current CSS classes on the HtmlTag.
+		 * 
+		 * @param {String} cssClass One or more space-separated CSS classes to set (overwrite).
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setClass : function( cssClass ) {
+			return this.setAttr( 'class', cssClass );
+		},
+		
+		
+		/**
+		 * Convenience method to add one or more CSS classes to the HtmlTag. Will not add duplicate CSS classes.
+		 * 
+		 * @param {String} cssClass One or more space-separated CSS classes to add.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		addClass : function( cssClass ) {
+			var classAttr = this.getClass(),
+			    whitespaceRegex = this.whitespaceRegex,
+			    indexOf = Autolinker.Util.indexOf,  // to support IE8 and below
+			    classes = ( !classAttr ) ? [] : classAttr.split( whitespaceRegex ),
+			    newClasses = cssClass.split( whitespaceRegex ),
+			    newClass;
+			
+			while( newClass = newClasses.shift() ) {
+				if( indexOf( classes, newClass ) === -1 ) {
+					classes.push( newClass );
+				}
+			}
+			
+			this.getAttrs()[ 'class' ] = classes.join( " " );
+			return this;
+		},
+		
+		
+		/**
+		 * Convenience method to remove one or more CSS classes from the HtmlTag.
+		 * 
+		 * @param {String} cssClass One or more space-separated CSS classes to remove.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		removeClass : function( cssClass ) {
+			var classAttr = this.getClass(),
+			    whitespaceRegex = this.whitespaceRegex,
+			    indexOf = Autolinker.Util.indexOf,  // to support IE8 and below
+			    classes = ( !classAttr ) ? [] : classAttr.split( whitespaceRegex ),
+			    removeClasses = cssClass.split( whitespaceRegex ),
+			    removeClass;
+			
+			while( classes.length && ( removeClass = removeClasses.shift() ) ) {
+				var idx = indexOf( classes, removeClass );
+				if( idx !== -1 ) {
+					classes.splice( idx, 1 );
+				}
+			}
+			
+			this.getAttrs()[ 'class' ] = classes.join( " " );
+			return this;
+		},
+		
+		
+		/**
+		 * Convenience method to retrieve the CSS class(es) for the HtmlTag, which will each be separated by spaces when
+		 * there are multiple.
+		 * 
+		 * @return {String}
+		 */
+		getClass : function() {
+			return this.getAttrs()[ 'class' ] || "";
+		},
+		
+		
+		/**
+		 * Convenience method to check if the tag has a CSS class or not.
+		 * 
+		 * @param {String} cssClass The CSS class to check for.
+		 * @return {Boolean} `true` if the HtmlTag has the CSS class, `false` otherwise.
+		 */
+		hasClass : function( cssClass ) {
+			return ( ' ' + this.getClass() + ' ' ).indexOf( ' ' + cssClass + ' ' ) !== -1;
+		},
+		
+		
+		/**
+		 * Sets the inner HTML for the tag.
+		 * 
+		 * @param {String} html The inner HTML to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setInnerHtml : function( html ) {
+			this.innerHtml = html;
+			
+			return this;
+		},
+		
+		
+		/**
+		 * Retrieves the inner HTML for the tag.
+		 * 
+		 * @return {String}
+		 */
+		getInnerHtml : function() {
+			return this.innerHtml || "";
+		},
+		
+		
+		/**
+		 * Override of superclass method used to generate the HTML string for the tag.
+		 * 
+		 * @return {String}
+		 */
+		toString : function() {
+			var tagName = this.getTagName(),
+			    attrsStr = this.buildAttrsStr();
+			
+			attrsStr = ( attrsStr ) ? ' ' + attrsStr : '';  // prepend a space if there are actually attributes
+			
+			return [ '<', tagName, attrsStr, '>', this.getInnerHtml(), '</', tagName, '>' ].join( "" );
+		},
+		
+		
+		/**
+		 * Support method for {@link #toString}, returns the string space-separated key="value" pairs, used to populate 
+		 * the stringified HtmlTag.
+		 * 
+		 * @protected
+		 * @return {String} Example return: `attr1="value1" attr2="value2"`
+		 */
+		buildAttrsStr : function() {
+			if( !this.attrs ) return "";  // no `attrs` Object (map) has been set, return empty string
+			
+			var attrs = this.getAttrs(),
+			    attrsArr = [];
+			
+			for( var prop in attrs ) {
+				if( attrs.hasOwnProperty( prop ) ) {
+					attrsArr.push( prop + '="' + attrs[ prop ] + '"' );
+				}
+			}
+			return attrsArr.join( " " );
+		}
+		
+	} );
+	/*global Autolinker */
+	/*jshint sub:true */
+	/**
+	 * @protected
 	 * @class Autolinker.AnchorTagBuilder
 	 * @extends Object
 	 * 
-	 * Builds the anchor (&lt;a&gt;) tags for the Autolinker utility when a match is found.
+	 * Builds anchor (&lt;a&gt;) tags for the Autolinker utility when a match is found.
+	 * 
+	 * Normally this class is instantiated, configured, and used internally by an {@link Autolinker} instance, but may 
+	 * actually be retrieved in a {@link Autolinker#replaceFn replaceFn} to create {@link Autolinker.HtmlTag HtmlTag} instances
+	 * which may be modified before returning from the {@link Autolinker#replaceFn replaceFn}. For example:
+	 * 
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = autolinker.getTagBuilder().build( match );  // returns an {@link Autolinker.HtmlTag} instance
+	 *             tag.setAttr( 'rel', 'nofollow' );
+	 *             
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *     
+	 *     // generated html:
+	 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
 	 */
 	Autolinker.AnchorTagBuilder = Autolinker.Util.extend( Object, {
 		
 		/**
 		 * @cfg {Boolean} newWindow
-		 * 
-		 * See {@link Autolinker#newWindow} for details.
-		 */
-		
-		/**
-		 * @cfg {Boolean} stripPrefix
-		 * 
-		 * See {@link Autolinker#stripPrefix} for details.
+		 * @inheritdoc Autolinker#newWindow
 		 */
 		
 		/**
 		 * @cfg {Number} truncate
-		 * 
-		 * See {@link Autolinker#truncate} for details.
+		 * @inheritdoc Autolinker#truncate
 		 */
 		
 		/**
 		 * @cfg {String} className
-		 * 
-		 * See {@link Autolinker#className} for details.
+		 * @inheritdoc Autolinker#className
 		 */
-		
-	
-		/**
-		 * @private
-		 * @property {RegExp} urlPrefixRegex
-		 * 
-		 * A regular expression used to remove the 'http://' or 'https://' and/or the 'www.' from URLs.
-		 */
-		urlPrefixRegex: /^(https?:\/\/)?(www\.)?/i,
 		
 		
 		/**
@@ -639,41 +1320,45 @@
 		
 		
 		/**
-		 * Generates the actual anchor (&lt;a&gt;) tag to use in place of a source url/email/twitter link.
+		 * Generates the actual anchor (&lt;a&gt;) tag to use in place of the matched URL/email/Twitter text,
+		 * via its `match` object.
 		 * 
-		 * @param {"url"/"email"/"twitter"} matchType The type of match that an anchor tag is being generated for.
-		 * @param {String} anchorHref The href for the anchor tag.
-		 * @param {String} anchorText The anchor tag's text (i.e. what will be displayed).
-		 * @return {String} The full HTML for the anchor tag.
+		 * @param {Autolinker.match.Match} match The Match instance to generate an anchor tag from.
+		 * @return {Autolinker.HtmlTag} The HtmlTag instance for the anchor tag.
 		 */
-		createAnchorTag : function( matchType, anchorHref, anchorText ) {
-			var attributesStr = this.createAnchorAttrsStr( matchType, anchorHref );
-			anchorText = this.processAnchorText( anchorText );
+		build : function( match ) {
+			var tag = new Autolinker.HtmlTag( {
+				tagName   : 'a',
+				attrs     : this.createAttrs( match.getType(), match.getAnchorHref() ),
+				innerHtml : this.processAnchorText( match.getAnchorText() )
+			} );
 			
-			return '<a ' + attributesStr + '>' + anchorText + '</a>';
+			return tag;
 		},
 		
 		
 		/**
-		 * Creates the string which will be the HTML attributes for the anchor (&lt;a&gt;) tag being generated.
+		 * Creates the Object (map) of the HTML attributes for the anchor (&lt;a&gt;) tag being generated.
 		 * 
-		 * @private
+		 * @protected
 		 * @param {"url"/"email"/"twitter"} matchType The type of match that an anchor tag is being generated for.
 		 * @param {String} href The href for the anchor tag.
-		 * @return {String} The anchor tag's attribute. Ex: `href="http://google.com" class="myLink myLink-url" target="_blank"` 
+		 * @return {Object} A key/value Object (map) of the anchor tag's attributes. 
 		 */
-		createAnchorAttrsStr : function( matchType, anchorHref ) {
-			var attrs = [ 'href="' + anchorHref + '"' ];  // we'll always have the `href` attribute
+		createAttrs : function( matchType, anchorHref ) {
+			var attrs = {
+				'href' : anchorHref  // we'll always have the `href` attribute
+			};
 			
 			var cssClass = this.createCssClass( matchType );
 			if( cssClass ) {
-				attrs.push( 'class="' + cssClass + '"' );
+				attrs[ 'class' ] = cssClass;
 			}
 			if( this.newWindow ) {
-				attrs.push( 'target="_blank"' );
+				attrs[ 'target' ] = "_blank";
 			}
 			
-			return attrs.join( " " );
+			return attrs;
 		},
 		
 		
@@ -697,49 +1382,15 @@
 		
 		
 		/**
-		 * Processes the `anchorText` by stripping the URL prefix (if {@link #stripPrefix} is `true`), removing
-		 * any trailing slash, and truncating the text according to the {@link #truncate} config.
+		 * Processes the `anchorText` by truncating the text according to the {@link #truncate} config.
 		 * 
 		 * @private
 		 * @param {String} anchorText The anchor tag's text (i.e. what will be displayed).
 		 * @return {String} The processed `anchorText`.
 		 */
 		processAnchorText : function( anchorText ) {
-			if( this.stripPrefix ) {
-				anchorText = this.stripUrlPrefix( anchorText );
-			}
-			anchorText = this.removeTrailingSlash( anchorText );  // remove trailing slash, if there is one
 			anchorText = this.doTruncate( anchorText );
 			
-			return anchorText;
-		},
-		
-		
-		/**
-		 * Strips the URL prefix (such as "http://" or "https://") from the given text.
-		 * 
-		 * @private
-		 * @param {String} text The text of the anchor that is being generated, for which to strip off the
-		 *   url prefix (such as stripping off "http://")
-		 * @return {String} The `anchorText`, with the prefix stripped.
-		 */
-		stripUrlPrefix : function( text ) {
-			return text.replace( this.urlPrefixRegex, '' );
-		},
-		
-		
-		/**
-		 * Removes any trailing slash from the given `anchorText`, in preparation for the text to be displayed.
-		 * 
-		 * @private
-		 * @param {String} anchorText The text of the anchor that is being generated, for which to remove any trailing
-		 *   slash ('/') that may exist.
-		 * @return {String} The `anchorText`, with the trailing slash removed.
-		 */
-		removeTrailingSlash : function( anchorText ) {
-			if( anchorText.charAt( anchorText.length - 1 ) === '/' ) {
-				anchorText = anchorText.slice( 0, -1 );
-			}
 			return anchorText;
 		},
 		
@@ -753,24 +1404,50 @@
 		 * @return {String} The truncated anchor text.
 		 */
 		doTruncate : function( anchorText ) {
-			var truncateLen = this.truncate;
-			
-			// Truncate the anchor text if it is longer than the provided 'truncate' option
-			if( truncateLen && anchorText.length > truncateLen ) {
-				anchorText = anchorText.substring( 0, truncateLen - 2 ) + '..';
-			}
-			return anchorText;
+			return Autolinker.Util.ellipsis( anchorText, this.truncate || Number.POSITIVE_INFINITY );
 		}
 		
 	} );
+	/*global Autolinker */
 	/**
-	 * @private
 	 * @abstract
-	 * @class Autolinker.Match
+	 * @class Autolinker.match.Match
 	 * 
-	 * Represents a match found in an input string which should be Autolinked.
+	 * Represents a match found in an input string which should be Autolinked. A Match object is what is provided in a 
+	 * {@link Autolinker#replaceFn replaceFn}, and may be used to query for details about the match.
+	 * 
+	 * For example:
+	 * 
+	 *     var input = "...";  // string with URLs, Email Addresses, and Twitter Handles
+	 *     
+	 *     var linkedText = Autolinker.link( input, {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             console.log( "href = ", match.getAnchorHref() );
+	 *             console.log( "text = ", match.getAnchorText() );
+	 *         
+	 *             switch( match.getType() ) {
+	 *                 case 'url' : 
+	 *                     console.log( "url: ", match.getUrl() );
+	 *                     
+	 *                 case 'email' :
+	 *                     console.log( "email: ", match.getEmail() );
+	 *                     
+	 *                 case 'twitter' :
+	 *                     console.log( "twitter: ", match.getTwitterHandle() );
+	 *             }
+	 *         }
+	 *     } );
+	 *     
+	 * See the {@link Autolinker} class for more details on using the {@link Autolinker#replaceFn replaceFn}.
 	 */
-	Autolinker.Match = Autolinker.Util.extend( Object, {
+	Autolinker.match.Match = Autolinker.Util.extend( Object, {
+		
+		/**
+		 * @cfg {String} matchedText (required)
+		 * 
+		 * The original text that was matched.
+		 */
+		
 		
 		/**
 		 * @constructor
@@ -788,6 +1465,16 @@
 		 * @return {String}
 		 */
 		getType : Autolinker.Util.abstractMethod,
+		
+		
+		/**
+		 * Returns the original text that was matched.
+		 * 
+		 * @return {String}
+		 */
+		getMatchedText : function() {
+			return this.matchedText;
+		},
 		
 	
 		/**
@@ -808,16 +1495,19 @@
 		getAnchorText : Autolinker.Util.abstractMethod
 	
 	} );
+	/*global Autolinker */
 	/**
-	 * @private
-	 * @class Autolinker.EmailMatch
+	 * @class Autolinker.match.Email
+	 * @extends Autolinker.match.Match
 	 * 
 	 * Represents a Email match found in an input string which should be Autolinked.
+	 * 
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
 	 */
-	Autolinker.EmailMatch = Autolinker.Util.extend( Autolinker.Match, {
+	Autolinker.match.Email = Autolinker.Util.extend( Autolinker.match.Match, {
 		
 		/**
-		 * @cfg {String} emailAddress (required)
+		 * @cfg {String} email (required)
 		 * 
 		 * The email address that was matched.
 		 */
@@ -838,8 +1528,8 @@
 		 * 
 		 * @return {String}
 		 */
-		getEmailAddress : function() {
-			return this.emailAddress;
+		getEmail : function() {
+			return this.email;
 		},
 		
 	
@@ -849,7 +1539,7 @@
 		 * @return {String}
 		 */
 		getAnchorHref : function() {
-			return 'mailto:' + this.emailAddress;
+			return 'mailto:' + this.email;
 		},
 		
 		
@@ -859,17 +1549,20 @@
 		 * @return {String}
 		 */
 		getAnchorText : function() {
-			return this.emailAddress;
+			return this.email;
 		}
 		
 	} );
+	/*global Autolinker */
 	/**
-	 * @private
-	 * @class Autolinker.TwitterMatch
+	 * @class Autolinker.match.Twitter
+	 * @extends Autolinker.match.Match
 	 * 
 	 * Represents a Twitter match found in an input string which should be Autolinked.
+	 * 
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
 	 */
-	Autolinker.TwitterMatch = Autolinker.Util.extend( Autolinker.Match, {
+	Autolinker.match.Twitter = Autolinker.Util.extend( Autolinker.match.Match, {
 		
 		/**
 		 * @cfg {String} twitterHandle (required)
@@ -918,13 +1611,16 @@
 		}
 		
 	} );
+	/*global Autolinker */
 	/**
-	 * @private
-	 * @class Autolinker.TwitterMatch
+	 * @class Autolinker.match.Url
+	 * @extends Autolinker.match.Match
 	 * 
 	 * Represents a Url match found in an input string which should be Autolinked.
+	 * 
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
 	 */
-	Autolinker.UrlMatch = Autolinker.Util.extend( Autolinker.Match, {
+	Autolinker.match.Url = Autolinker.Util.extend( Autolinker.match.Match, {
 		
 		/**
 		 * @cfg {String} url (required)
@@ -939,6 +1635,19 @@
 		 * and will be either http:// or https:// based on the protocol that the site is loaded under.
 		 */
 		
+		/**
+		 * @cfg {Boolean} stripPrefix (required)
+		 * @inheritdoc {@link Autolinker#stripPrefix}
+		 */
+		
+	
+		/**
+		 * @private
+		 * @property {RegExp} urlPrefixRegex
+		 * 
+		 * A regular expression used to remove the 'http://' or 'https://' and/or the 'www.' from URLs.
+		 */
+		urlPrefixRegex: /^(https?:\/\/)?(www\.)?/i,
 		
 		/**
 		 * @private
@@ -993,7 +1702,9 @@
 		 * @return {String}
 		 */
 		getAnchorHref : function() {
-			return this.getUrl();
+			var url = this.getUrl();
+			
+			return url.replace( /&amp;/g, '&' );  // any &amp;'s in the URL should be converted back to '&' if they were displayed as &amp; in the source html 
 		},
 		
 		
@@ -1003,14 +1714,64 @@
 		 * @return {String}
 		 */
 		getAnchorText : function() {
-			var url = this.getUrl();
+			var anchorText = this.getUrl();
 			
 			if( this.protocolRelativeMatch ) {
 				// Strip off any protocol-relative '//' from the anchor text
-				url = url.replace( this.protocolRelativeRegex, '' );
+				anchorText = this.stripProtocolRelativePrefix( anchorText );
 			}
+			if( this.stripPrefix ) {
+				anchorText = this.stripUrlPrefix( anchorText );
+			}
+			anchorText = this.removeTrailingSlash( anchorText );  // remove trailing slash, if there is one
 			
-			return url;
+			return anchorText;
+		},
+		
+		
+		// ---------------------------------------
+		
+		// Utility Functionality
+		
+		/**
+		 * Strips the URL prefix (such as "http://" or "https://") from the given text.
+		 * 
+		 * @private
+		 * @param {String} text The text of the anchor that is being generated, for which to strip off the
+		 *   url prefix (such as stripping off "http://")
+		 * @return {String} The `anchorText`, with the prefix stripped.
+		 */
+		stripUrlPrefix : function( text ) {
+			return text.replace( this.urlPrefixRegex, '' );
+		},
+		
+		
+		/**
+		 * Strips any protocol-relative '//' from the anchor text.
+		 * 
+		 * @private
+		 * @param {String} text The text of the anchor that is being generated, for which to strip off the
+		 *   protocol-relative prefix (such as stripping off "//")
+		 * @return {String} The `anchorText`, with the protocol-relative prefix stripped.
+		 */
+		stripProtocolRelativePrefix : function( text ) {
+			return text.replace( this.protocolRelativeRegex, '' );
+		},
+		
+		
+		/**
+		 * Removes any trailing slash from the given `anchorText`, in preparation for the text to be displayed.
+		 * 
+		 * @private
+		 * @param {String} anchorText The text of the anchor that is being generated, for which to remove any trailing
+		 *   slash ('/') that may exist.
+		 * @return {String} The `anchorText`, with the trailing slash removed.
+		 */
+		removeTrailingSlash : function( anchorText ) {
+			if( anchorText.charAt( anchorText.length - 1 ) === '/' ) {
+				anchorText = anchorText.slice( 0, -1 );
+			}
+			return anchorText;
 		}
 		
 	} );

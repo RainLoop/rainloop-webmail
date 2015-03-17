@@ -11,6 +11,7 @@
 //		Utils = require('Common/Utils'),
 //		Base64 = require('Common/Base64'),
 //		Cache = require('Common/Cache'),
+//		Links = require('Common/Links'),
 //
 //		AppStore = require('Stores/User/App'),
 //		SettingsStore = require('Stores/User/Settings'),
@@ -31,8 +32,6 @@
 
 		this.messageListSimpleHash = '';
 		this.messageListSimpleCache = null;
-
-		this.sSubSubQuery = '&ss=/';
 	}
 
 	_.extend(UserAjaxUserPromises.prototype, AbstractAjaxPromises.prototype);
@@ -123,7 +122,7 @@
 //		{
 //			return this.abort('Message')
 //				.getRequest('Message', fTrigger,
-//					this.sSubSubQuery + Base64.urlsafe_encode([
+//					Links.subQueryPrefix() + '/' + Base64.urlsafe_encode([
 //						sFolderFullNameRaw, iUid,
 //						AppStore.projectHash(),
 //						AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
