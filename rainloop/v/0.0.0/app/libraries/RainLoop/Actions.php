@@ -385,12 +385,6 @@ class Actions
 			}
 		}
 
-//		$sSubQuerty = \trim(\trim($this->Http()->GetQuery('s', '')), ' /');
-//		$sSubSubQuerty = \trim(\trim($this->Http()->GetQuery('ss', '')), ' /');
-//
-//		$sQuery .= 0 < \strlen($sSubQuerty) ? '/'.$sSubQuerty : '';
-//		$sQuery .= 0 < \strlen($sSubSubQuerty) ? '/'.$sSubSubQuerty : '';
-
 		if ('' === $this->GetSpecAuthToken())
 		{
 			$aPaths = \explode('/', $sQuery);
@@ -1632,7 +1626,7 @@ class Actions
 				$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 //				if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
 //				{
-//					$aResult['IncludeBackground'] = './?/Raw/&s=/{{USER}}/UserBackground/&ss=/'.
+//					$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
 //						$aResult['UserBackgroundHash'].'/';
 //				}
 			}
@@ -1834,7 +1828,8 @@ class Actions
 	{
 		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
-		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
+		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii(
+			\MailSo\Base\Utils::Trim($sEmail));
 
 		if (false === \strpos($sEmail, '@'))
 		{
@@ -2069,7 +2064,7 @@ class Actions
 	 */
 	public function DoLogin()
 	{
-		$sEmail = \trim($this->GetActionParam('Email', ''));
+		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === (string) $this->GetActionParam('SignMe', '0');
@@ -7707,8 +7702,8 @@ class Actions
 						\array_shift($aParams);
 						$sLast = \array_pop($aParams);
 
-						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&s=/'.implode('/', $aParams).'/&ss=/'.$sLast;
-						$sFullUrl = 'https://docs.google.com/viewer?embedded=true&url='.urlencode($sUrl);
+						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&q[]=/'.\implode('/', $aParams).'/&q[]=/'.$sLast;
+						$sFullUrl = 'https://docs.google.com/viewer?embedded=true&url='.\urlencode($sUrl);
 
 						@\header('Content-Type: text/html; charset=utf-8');
 						echo '<html style="height: 100%; width: 100%; margin: 0; padding: 0"><head></head>'.
@@ -8725,7 +8720,7 @@ class Actions
 	 */
 	public function GetActionParam($sKey, $mDefault = null)
 	{
-		return is_array($this->aCurrentActionParams) && isset($this->aCurrentActionParams[$sKey]) ?
+		return \is_array($this->aCurrentActionParams) && isset($this->aCurrentActionParams[$sKey]) ?
 			$this->aCurrentActionParams[$sKey] : $mDefault;
 	}
 

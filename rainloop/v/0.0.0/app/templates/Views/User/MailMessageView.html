@@ -215,9 +215,9 @@
 									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
 										<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected}">
 											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
-												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: dateInUTC"></span>
+												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: timestamp"></span>
 												<div style="text-overflow: ellipsis; overflow: hidden;">
-													<span class="thread-from" data-bind="text: sender"></span>
+													<span class="thread-from" data-bind="text: fromAsString"></span>
 													&nbsp;
 												</div>
 												<div style="text-overflow: ellipsis; overflow: hidden;">

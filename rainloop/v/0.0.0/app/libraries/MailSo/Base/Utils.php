@@ -1246,6 +1246,17 @@ END;
 	}
 
 	/**
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function Trim($sValue)
+	{
+		return \trim(\preg_replace('/^[\x00-\x1F]+/u', '',
+			\preg_replace('/[\x00-\x1F]+$/u', '', \trim($sValue))));
+	}
+
+	/**
 	 * @param string $sDir
 	 *
 	 * @return bool

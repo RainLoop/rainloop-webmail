@@ -194,8 +194,8 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sLogin = \trim($sLogin);
-		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+
 		$sPassword = $sPassword;
 
 		$this->sLogginedUser = $sLogin;
@@ -326,7 +326,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			$this->SendRequestWithCheck('AUTHENTICATE', array('XOAUTH2', trim($sXOAuth2Token)));
+			$this->SendRequestWithCheck('AUTHENTICATE', array('XOAUTH2', \trim($sXOAuth2Token)));
 		}
 		catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException)
 		{

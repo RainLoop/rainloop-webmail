@@ -91,6 +91,15 @@
 	};
 
 	/**
+	 * @param {*} mValue
+	 * @return {boolean}
+	 */
+	Utils.pBool = function (mValue)
+	{
+		return !!mValue;
+	};
+
+	/**
 	 * @param {string} sComponent
 	 * @return {string}
 	 */

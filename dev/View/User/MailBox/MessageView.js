@@ -716,7 +716,7 @@
 			})
 			.on('click', '.thread-list .thread-list-message', function () {
 				var oMessage = ko.dataFor(this);
-				if (oMessage && oMessage.folderFullNameRaw && oMessage.uid)
+				if (oMessage && oMessage.folder && oMessage.uid)
 				{
 					self.openThreadMessage(oMessage.uid);
 				}

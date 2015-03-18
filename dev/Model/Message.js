@@ -16,8 +16,9 @@
 
 		PgpStore = require('Stores/User/Pgp'),
 
-		EmailModel = require('Model/Email'),
 		AttachmentModel = require('Model/Attachment'),
+
+		MessageHelper = require('Helper/Message'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
@@ -148,114 +149,6 @@
 		return oMessageModel.initByJson(oJsonMessage) ? oMessageModel : null;
 	};
 
-	/**
-	 * @static
-	 * @param {Array} aEmail
-	 * @param {boolean=} bFriendlyView
-	 * @param {boolean=} bWrapWithLink = false
-	 * @return {string}
-	 */
-	MessageModel.emailsToLine = function (aEmail, bFriendlyView, bWrapWithLink)
-	{
-		var
-			aResult = [],
-			iIndex = 0,
-			iLen = 0
-			;
-
-		if (Utils.isNonEmptyArray(aEmail))
-		{
-			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
-			{
-				aResult.push(aEmail[iIndex].toLine(bFriendlyView, bWrapWithLink));
-			}
-		}
-
-		return aResult.join(', ');
-	};
-
-	/**
-	 * @static
-	 * @param {Array} aEmail
-	 * @return {string}
-	 */
-	MessageModel.emailsToLineClear = function (aEmail)
-	{
-		var
-			aResult = [],
-			iIndex = 0,
-			iLen = 0
-			;
-
-		if (Utils.isNonEmptyArray(aEmail))
-		{
-			for (iIndex = 0, iLen = aEmail.length; iIndex < iLen; iIndex++)
-			{
-				if (aEmail[iIndex] && aEmail[iIndex].email && '' !== aEmail[iIndex].name)
-				{
-					aResult.push(aEmail[iIndex].email);
-				}
-			}
-		}
-
-		return aResult.join(', ');
-	};
-
-	/**
-	 * @static
-	 * @param {?Array} aJsonEmails
-	 * @return {Array.<EmailModel>}
-	 */
-	MessageModel.initEmailsFromJson = function (aJsonEmails)
-	{
-		var
-			iIndex = 0,
-			iLen = 0,
-			oEmailModel = null,
-			aResult = []
-			;
-
-		if (Utils.isNonEmptyArray(aJsonEmails))
-		{
-			for (iIndex = 0, iLen = aJsonEmails.length; iIndex < iLen; iIndex++)
-			{
-				oEmailModel = EmailModel.newInstanceFromJson(aJsonEmails[iIndex]);
-				if (oEmailModel)
-				{
-					aResult.push(oEmailModel);
-				}
-			}
-		}
-
-		return aResult;
-	};
-
-	/**
-	 * @static
-	 * @param {Array.<EmailModel>} aMessageEmails
-	 * @param {Object} oLocalUnic
-	 * @param {Array} aLocalEmails
-	 */
-	MessageModel.replyHelper = function (aMessageEmails, oLocalUnic, aLocalEmails)
-	{
-		if (aMessageEmails && 0 < aMessageEmails.length)
-		{
-			var
-				iIndex = 0,
-				iLen = aMessageEmails.length
-				;
-
-			for (; iIndex < iLen; iIndex++)
-			{
-				if (Utils.isUnd(oLocalUnic[aMessageEmails[iIndex].email]))
-				{
-					oLocalUnic[aMessageEmails[iIndex].email] = true;
-					aLocalEmails.push(aMessageEmails[iIndex]);
-				}
-			}
-		}
-	};
-
 	MessageModel.prototype.clear = function ()
 	{
 		this.folderFullNameRaw = '';
@@ -373,12 +266,12 @@
 
 			this.size(Utils.pInt(oJsonMessage.Size));
 
-			this.from = MessageModel.initEmailsFromJson(oJsonMessage.From);
-			this.to = MessageModel.initEmailsFromJson(oJsonMessage.To);
-			this.cc = MessageModel.initEmailsFromJson(oJsonMessage.Cc);
-			this.bcc = MessageModel.initEmailsFromJson(oJsonMessage.Bcc);
-			this.replyTo = MessageModel.initEmailsFromJson(oJsonMessage.ReplyTo);
-			this.deliveredTo = MessageModel.initEmailsFromJson(oJsonMessage.DeliveredTo);
+			this.from = MessageHelper.emailArrayFromJson(oJsonMessage.From);
+			this.to = MessageHelper.emailArrayFromJson(oJsonMessage.To);
+			this.cc = MessageHelper.emailArrayFromJson(oJsonMessage.Cc);
+			this.bcc = MessageHelper.emailArrayFromJson(oJsonMessage.Bcc);
+			this.replyTo = MessageHelper.emailArrayFromJson(oJsonMessage.ReplyTo);
+			this.deliveredTo = MessageHelper.emailArrayFromJson(oJsonMessage.DeliveredTo);
 
 			this.subject(oJsonMessage.Subject);
 			if (Utils.isArray(oJsonMessage.SubjectParts))
@@ -396,10 +289,10 @@
 			this.hasAttachments(!!oJsonMessage.HasAttachments);
 			this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
 
-			this.fromEmailString(MessageModel.emailsToLine(this.from, true));
-			this.fromClearEmailString(MessageModel.emailsToLineClear(this.from));
-			this.toEmailsString(MessageModel.emailsToLine(this.to, true));
-			this.toClearEmailsString(MessageModel.emailsToLineClear(this.to));
+			this.fromEmailString(MessageHelper.emailArrayToString(this.from, true));
+			this.fromClearEmailString(MessageHelper.emailArrayToStringClear(this.from));
+			this.toEmailsString(MessageHelper.emailArrayToString(this.to, true));
+			this.toClearEmailsString(MessageHelper.emailArrayToStringClear(this.to));
 
 			this.threads(Utils.isArray(oJsonMessage.Threads) ? oJsonMessage.Threads : []);
 
@@ -524,7 +417,7 @@
 	 */
 	MessageModel.prototype.fromToLine = function (bFriendlyView, bWrapWithLink)
 	{
-		return MessageModel.emailsToLine(this.from, bFriendlyView, bWrapWithLink);
+		return MessageHelper.emailArrayToString(this.from, bFriendlyView, bWrapWithLink);
 	};
 
 	/**
@@ -549,7 +442,7 @@
 	 */
 	MessageModel.prototype.toToLine = function (bFriendlyView, bWrapWithLink)
 	{
-		return MessageModel.emailsToLine(this.to, bFriendlyView, bWrapWithLink);
+		return MessageHelper.emailArrayToString(this.to, bFriendlyView, bWrapWithLink);
 	};
 
 	/**
@@ -559,7 +452,7 @@
 	 */
 	MessageModel.prototype.ccToLine = function (bFriendlyView, bWrapWithLink)
 	{
-		return MessageModel.emailsToLine(this.cc, bFriendlyView, bWrapWithLink);
+		return MessageHelper.emailArrayToString(this.cc, bFriendlyView, bWrapWithLink);
 	};
 
 	/**
@@ -569,7 +462,7 @@
 	 */
 	MessageModel.prototype.bccToLine = function (bFriendlyView, bWrapWithLink)
 	{
-		return MessageModel.emailsToLine(this.bcc, bFriendlyView, bWrapWithLink);
+		return MessageHelper.emailArrayToString(this.bcc, bFriendlyView, bWrapWithLink);
 	};
 
 	/**
@@ -579,7 +472,7 @@
 	 */
 	MessageModel.prototype.replyToToLine = function (bFriendlyView, bWrapWithLink)
 	{
-		return MessageModel.emailsToLine(this.replyTo, bFriendlyView, bWrapWithLink);
+		return MessageHelper.emailArrayToString(this.replyTo, bFriendlyView, bWrapWithLink);
 	};
 
 	/**
@@ -778,10 +671,10 @@
 			oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
 		;
 
-		MessageModel.replyHelper(this.replyTo, oUnic, aResult);
+		MessageHelper.replyHelper(this.replyTo, oUnic, aResult);
 		if (0 === aResult.length)
 		{
-			MessageModel.replyHelper(this.from, oUnic, aResult);
+			MessageHelper.replyHelper(this.from, oUnic, aResult);
 		}
 
 		return aResult;
@@ -799,14 +692,14 @@
 			oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
 		;
 
-		MessageModel.replyHelper(this.replyTo, oUnic, aToResult);
+		MessageHelper.replyHelper(this.replyTo, oUnic, aToResult);
 		if (0 === aToResult.length)
 		{
-			MessageModel.replyHelper(this.from, oUnic, aToResult);
+			MessageHelper.replyHelper(this.from, oUnic, aToResult);
 		}
 
-		MessageModel.replyHelper(this.to, oUnic, aToResult);
-		MessageModel.replyHelper(this.cc, oUnic, aCcResult);
+		MessageHelper.replyHelper(this.to, oUnic, aToResult);
+		MessageHelper.replyHelper(this.cc, oUnic, aCcResult);
 
 		return [aToResult, aCcResult];
 	};

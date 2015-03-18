@@ -26,7 +26,8 @@
 
 		Remote = require('Remote/User/Ajax'),
 
-		MessageModel = require('Model/Message')
+		MessageModel = require('Model/Message'),
+		MessageHelper = require('Helper/Message')
 	;
 
 	/**
@@ -299,7 +300,8 @@
 					{
 						NotificationStore.displayDesktopNotification(
 							Links.notificationMailIcon(),
-							MessageModel.emailsToLine(MessageModel.initEmailsFromJson(aNewMessages[iIndex].From), false),
+							MessageHelper.emailArrayToString(
+								MessageHelper.emailArrayFromJson(aNewMessages[iIndex].From), false),
 							aNewMessages[iIndex].Subject
 						);
 					}

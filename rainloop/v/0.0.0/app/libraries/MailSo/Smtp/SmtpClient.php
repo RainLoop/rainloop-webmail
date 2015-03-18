@@ -186,7 +186,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Login($sLogin, $sPassword)
 	{
-		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
 		if ($this->IsAuthSupported('LOGIN'))
 		{
@@ -283,7 +283,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			try
 			{
-				$this->sendRequestWithCheck('AUTH', 235, 'XOAUTH2 '.trim($sXOAuth2Token));
+				$this->sendRequestWithCheck('AUTH', 235, 'XOAUTH2 '.\trim($sXOAuth2Token));
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -315,7 +315,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function MailFrom($sFrom, $sSizeIfSupported = '', $bDsn = false)
 	{
-		$sFrom = \MailSo\Base\Utils::IdnToAscii($sFrom, true);
+		$sFrom = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sFrom), true);
+
 		$sCmd = 'FROM:<'.$sFrom.'>';
 
 		$sSizeIfSupported = (string) $sSizeIfSupported;
@@ -356,7 +358,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sTo = \MailSo\Base\Utils::IdnToAscii($sTo, true);
+		$sTo = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sTo), true);
+
 		$sCmd = 'TO:<'.$sTo.'>';
 
 		if ($bDsn && $this->IsSupported('DSN'))
@@ -495,6 +499,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Vrfy($sUser)
 	{
+		$sUser = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sUser));
+
 		$this->sendRequestWithCheck('VRFY', array(250, 251, 252), $sUser);
 
 		return $this;

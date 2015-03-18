@@ -26,6 +26,7 @@ class EmailCollection extends \MailSo\Base\Collection
 	{
 		parent::__construct();
 
+		$sEmailAddresses = \MailSo\Base\Utils::Trim($sEmailAddresses);
 		if (0 < \strlen($sEmailAddresses))
 		{
 			$this->parseEmailAddresses($sEmailAddresses);
@@ -213,7 +214,7 @@ class EmailCollection extends \MailSo\Base\Collection
 							$this->Add(
 								\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
-							
+
 							$iEmailStartPos = $iCurrentPos + 1;
 						}
 						catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
