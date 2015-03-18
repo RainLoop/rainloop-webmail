@@ -155,9 +155,6 @@
 							<div class="e-cell e-label"></div>
 							<div class="e-cell e-value">
 								<div>
-									<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
-										<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
-									</div>
 									<div class="pull-left">
 										<div class="btn-group" data-toggle="buttons-radio">
 											<button type="button" class="btn first" data-bind="click: function () { attachmentsPlace(false); },
@@ -205,6 +202,9 @@
 				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 57]">
 					<div class="content g-scrollbox">
 						<div class="content-wrapper">
+							<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
+								<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
+							</div>
 							<ul class="attachmentList" data-bind="template: { name: 'ComposeAttachment', foreach: attachments }"></ul>
 							<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length">
 								<span class="i18n" data-i18n-text="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>

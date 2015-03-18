@@ -47,6 +47,9 @@
 		this.attachmentsClass = '';
 	};
 
+	/**
+	 * @return {string}
+	 */
 	MessageFullModel.prototype.getAttachmentsClass = function ()
 	{
 		var sClass = '';
@@ -81,23 +84,25 @@
 	{
 		var bResult = false;
 
-		if (oJson && 'Object/Message' === oJson['@Object'] &&
-			MessageSimpleModel.prototype.initByJson.call(this, oJson))
+		if (oJson && 'Object/Message' === oJson['@Object'])
 		{
-			this.priority = Utils.pInt(oJson.Priority);
-			this.priority =  Utils.inArray(this.priority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
-				this.priority : Enums.MessagePriority.Normal;
+			if (MessageSimpleModel.prototype.initByJson.call(this, oJson))
+			{
+				this.priority = Utils.pInt(oJson.Priority);
+				this.priority =  Utils.inArray(this.priority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
+					this.priority : Enums.MessagePriority.Normal;
 
-			this.hash = Utils.pString(oJson.Hash);
-			this.requestHash = Utils.pString(oJson.RequestHash);
+				this.hash = Utils.pString(oJson.Hash);
+				this.requestHash = Utils.pString(oJson.RequestHash);
 
-			this.proxy = !!oJson.ExternalProxy;
+				this.proxy = !!oJson.ExternalProxy;
 
-			this.hasAttachments = !!oJson.HasAttachments;
-			this.attachmentsMainType = Utils.pString(oJson.AttachmentsMainType);
-			this.attachmentsClass = this.getAttachmentsClass();
+				this.hasAttachments = !!oJson.HasAttachments;
+				this.attachmentsMainType = Utils.pString(oJson.AttachmentsMainType);
+				this.attachmentsClass = this.getAttachmentsClass();
 
-			bResult = true;
+				bResult = true;
+			}
 		}
 
 		return bResult;

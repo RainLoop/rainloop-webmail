@@ -182,19 +182,23 @@
 	.b-attachment-place {
 
 		position: absolute;
-		height: 120px;
+		left: 5px;
+		right: 5px;
+		top: 5px;
+		bottom: 5px;
+
 		border: 2px #777 dashed;
+		z-index: 300;
+
 		line-height: 119px;
 		text-align: center;
-		background-color: #fff;
-		z-index: 300;
-		left: 20px;
-		right: 20px;
+		background-color: #efefef;
 		font-size: 24px;
 
-		&.drag-and-drop-over {
-			background: #777;
-			color: #fff;
+		border-radius: 10px;
+
+		&.dragAndDropOver {
+			background-color: #fff;
 		}
 	}
 }

@@ -1527,8 +1527,8 @@ class Actions
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
 
-				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']) ||
-					\MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
+				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
+//					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
 				$aResult['CoreAccess'] = $this->rainLoopCoreAccess();

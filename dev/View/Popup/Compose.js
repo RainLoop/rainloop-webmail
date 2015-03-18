@@ -1609,6 +1609,7 @@
 						this.dragAndDropOver(false);
 					}, this))
 					.on('onBodyDragEnter', _.bind(function () {
+						this.attachmentsPlace(true);
 						this.dragAndDropVisible(true);
 					}, this))
 					.on('onBodyDragLeave', _.bind(function () {

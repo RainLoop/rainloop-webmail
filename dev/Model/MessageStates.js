@@ -7,20 +7,20 @@
 		_ = require('_'),
 		ko = require('ko'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
+//		Enums = require('Common/Enums'),
+//		Utils = require('Common/Utils'),
+//
+//		MessageHelper = require('Helper/Message'),
 
-		MessageHelper = require('Helper/Message'),
-
-		MessageSimpleModel = require('Model/MessageSimple')
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function MessageDynamicModel()
+	function MessageStatesModel()
 	{
-		MessageSimpleModel.call(this, 'MessageDynamicModel');
+		AbstractModel.call(this, 'MessageStatesModel');
 
 		this.flags = {};
 		this.states = {};
@@ -39,15 +39,18 @@
 		this.states.showReadReceipt = ko.observable(false);
 		this.states.showExternalImages = ko.observable(false);
 
-		this.states.hasUnseenSubMessage = ko.observable(false);
-		this.states.hasFlaggedSubMessage = ko.observable(false);
+		this.states.hasUnseenSubMessages = ko.observable(false);
+		this.states.hasFlaggedSubMessages = ko.observable(false);
 
 		this.threads = ko.observableArray([]);
 	}
 
-	_.extend(MessageDynamicModel.prototype, MessageSimpleModel.prototype);
+	_.extend(MessageStatesModel.prototype, AbstractModel.prototype);
 
-	MessageDynamicModel.prototype.clear = function ()
+	MessageStatesModel.prototype.flags = {};
+	MessageStatesModel.prototype.states = {};
+
+	MessageStatesModel.prototype.clear = function ()
 	{
 		this.flags.unseen(false);
 		this.flags.deleted(false);
@@ -58,6 +61,6 @@
 		this.threads([]);
 	};
 
-	module.exports = MessageDynamicModel;
+	module.exports = MessageStatesModel;
 
 }());
