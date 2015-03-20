@@ -195,7 +195,7 @@
 								data-bind="command: threadBackCommand, tooltip: 'MESSAGE/BUTTON_THREAD_PREV'">
 								<i class="icon-right-middle"></i>
 							</a>
-							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true">
+							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: threadsDropdownTrigger">
 								<a class="btn btn-thin btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
 									href="#" tabindex="-1" data-tooltip-placement="bottom"
 									style="margin-left: -1px; margin-right: -1px;"
@@ -205,7 +205,7 @@
 										data-bind="css: {'icon-list': !messageListOfThreadsLoading(), 'icon-spinner animated': messageListOfThreadsLoading()}"></i>
 								</a>
 								<ul class="dropdown-menu pull-right g-ui-menu thread-list" role="menu" aria-labelledby="thread-list-view-dropdown-id"
-								style="min-width: 400px; max-width: 400px; width: 400px;">
+								style="min-width: 400px; max-width: 400px; width: 400px; padding: 0">
 									<div data-bind="visible: '' !== viewThreadMessages.error()" style="color: red; text-align: center; padding: 10px">
 										<spam data-bind="text: viewThreadMessages.error"></spam>
 									</div >

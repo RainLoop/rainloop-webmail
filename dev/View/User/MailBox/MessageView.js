@@ -299,6 +299,8 @@
 			this.openThreadMessage(aStatus[3]);
 		}, this.viewThreadsControlForwardAllow);
 
+		this.threadsDropdownTrigger = ko.observable(false);
+
 		this.threadListCommand = Utils.createCommand(this, function () {
 
 			var
@@ -335,6 +337,13 @@
 			return !this.messageLoadingThrottle() &&
 				!this.messageListOfThreadsLoading();
 		});
+
+		this.threadsDropdownTrigger.subscribe(function (bValue) {
+			if (bValue && this.message())
+			{
+				this.threadListCommand();
+			}
+		}, this);
 
 // PGP
 		this.viewPgpPassword = ko.observable('');
@@ -865,6 +874,14 @@
 			if (MessageStore.message() && MessageStore.message().body)
 			{
 				MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
+				return false;
+			}
+		});
+
+		key('t', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+			if (MessageStore.message())
+			{
+				self.threadsDropdownTrigger(true);
 				return false;
 			}
 		});
