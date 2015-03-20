@@ -66,29 +66,27 @@
 			$oEl = $(oElement)
 		;
 
-		sKey = $oEl.data('i18n-text');
+		sKey = $oEl.data('i18n');
 		if (sKey)
 		{
-			$oEl.text(this.i18n(sKey));
-		}
-		else
-		{
-			sKey = $oEl.data('i18n-html');
-			if (sKey)
+			if ('[' === sKey.substr(0, 1))
 			{
-				$oEl.html(this.i18n(sKey));
+				switch (sKey.substr(0, 6))
+				{
+					case '[html]':
+						$oEl.html(this.i18n(sKey.substr(6)));
+						break;
+					case '[place':
+						$oEl.attr('placeholder', this.i18n(sKey.substr(13)));
+						break;
+					case '[title':
+						$oEl.attr('title', this.i18n(sKey.substr(7)));
+						break;
+				}
 			}
-
-			sKey = $oEl.data('i18n-placeholder');
-			if (sKey)
+			else
 			{
-				$oEl.attr('placeholder', this.i18n(sKey));
-			}
-
-			sKey = $oEl.data('i18n-title');
-			if (sKey)
-			{
-				$oEl.attr('title', this.i18n(sKey));
+				$oEl.text(this.i18n(sKey));
 			}
 		}
 	};
@@ -102,13 +100,13 @@
 		var self = this;
 		_.defer(function () {
 
-			$('.i18n', oElements).each(function () {
+			$('[data-i18n]', oElements).each(function () {
 				self.i18nToNode(this);
 			});
 
 			if (bAnimate && Globals.bAnimationSupported)
 			{
-				$('.i18n-animation.i18n', oElements).letterfx({
+				$('.i18n-animation[data-i18n]', oElements).letterfx({
 					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'
 				});
 			}

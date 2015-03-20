@@ -53,35 +53,35 @@
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_SEEN"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_FLAG"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-none"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
 							</a>
 						</li>
 						<li class="divider" role="presentation"></li>
@@ -89,7 +89,7 @@
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-reply-all"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
 							</a>
 						</li>
 						<li class="divider" role="presentation" data-bind="visible: !hideDangerousActions"></li>
@@ -97,14 +97,14 @@
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-trash"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="visible: !hideDangerousActions, command: clearCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-fire"></i>
 								&nbsp;&nbsp;
-								<span class="i18n" data-i18n-text="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
+								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
 							</a>
 						</li>
 					</ul>
@@ -117,7 +117,7 @@
 					<div class="input-append pull-right">
 						<input type="search" class="i18n span4 inputSearch" tabindex="-1"
 							placeholder="Search" autocorrect="off" autocapitalize="off"
-							data-i18n-placeholder="SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+							data-i18n="[placeholder]SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
 						<a class="btn buttonMoreSearch" data-bind="click: advancedSearchClick">
 							<span class="caret"></span>
 						</a>
@@ -140,23 +140,23 @@
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
 							<i class="icon-down e-icon"></i>
 							&nbsp;&nbsp;
-							<span class="i18n" data-i18n-text="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
+							<span class="i18n" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 						</div>
 						<div class="listClear" data-bind="visible: '' === messageListSearchDesc() && '' === messageListError() && 0 < messageList().length && (isSpamFolder() || isTrashFolder())">
-							<span class="g-ui-link i18n" data-i18n-text="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
+							<span class="g-ui-link i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
 						</div>
 						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
 							<span class="error" data-bind="text: messageListError"></span>
 						</div>
 						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()">
-							<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_LIST"></span>
+							<span class="i18n" data-i18n="MESSAGE_LIST/EMPTY_LIST"></span>
 						</div>
 						<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
 							messageListCompleteLoadingThrottle() && '' === messageListError()">
-							<span class="i18n" data-i18n-text="MESSAGE_LIST/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+							<span class="i18n" data-i18n="MESSAGE_LIST/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 						</div>
 						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
-							<span class="i18n" data-i18n-text="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
+							<span class="i18n" data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
 						</div>
 						<div data-bind="draggable: dragAndDronHelper, droppableSelector: '.b-folders .content.g-scrollbox'">
 							<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>

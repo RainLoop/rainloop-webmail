@@ -2,7 +2,7 @@
 	<div data-bind="visible: allowAdditionalAccount">
 		<div class="form-horizontal">
 			<div class="legend">
-				<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
+				<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
 				&nbsp;&nbsp;&nbsp;
 				<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: accounts.loading"></i>
 			</div>
@@ -10,7 +10,7 @@
 		<a class="btn" data-bind="click: addNewAccount">
 			<i class="icon-user-add"></i>
 			&nbsp;&nbsp;
-			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
+			<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
 		</a>
 		<br />
 		<br />
@@ -32,7 +32,7 @@
 					<td>
 						<span data-bind="visible: !canBeDeleted()"></span>
 						<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="visible: canBeDeleted, css: {'delete-access': deleteAccess}, click: function(oAccount) { $root.deleteAccount(oAccount); }">
-							<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
+							<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
 						</a>
 					</td>
 					<td>
@@ -48,13 +48,13 @@
 		<br />
 		<div class="form-horizontal">
 			<div class="legend">
-				<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/LEGEND_IDENTITIES"></span>
+				<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/LEGEND_IDENTITIES"></span>
 			</div>
 		</div>
 		<a class="btn" data-bind="click: addNewIdentity">
 			<i class="icon-user-add"></i>
 			&nbsp;&nbsp;
-			<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/BUTTON_ADD_IDENTITY"></span>
+			<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/BUTTON_ADD_IDENTITY"></span>
 		</a>
 		<br />
 		<br />
@@ -74,13 +74,13 @@
 						<span class="identity-name" data-bind="text: formattedName()"></span>
 						&nbsp;&nbsp;
 						<span class="identity-default" data-bind="visible: 0 === $index()">
-							(<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DEFAULT_IDENTITY_LABEL"></span>)
+							(<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/DEFAULT_IDENTITY_LABEL"></span>)
 						</span>
 					</td>
 					<td>
 						<span data-bind="visible: !canBeDeleted()"></span>
 						<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="visible: canBeDeleted, css: {'delete-access': deleteAccess}, click: function(oIdentity) { $root.deleteIdentity(oIdentity); }">
-							<span class="i18n" data-i18n-text="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
+							<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/DELETING_ASK"></span>
 						</a>
 					</td>
 					<td>

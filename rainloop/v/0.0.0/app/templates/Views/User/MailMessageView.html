@@ -50,7 +50,7 @@
 				</div>
 
 				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
-					<span class="i18n" data-i18n-text="MESSAGE/MESSAGE_VIEW_DESC"></span>
+					<span class="i18n" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
 				</div>
 
 				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">
@@ -74,7 +74,7 @@
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
 											<i class="icon-reply"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_REPLY"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation"
@@ -82,7 +82,7 @@
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
 											<i class="icon-reply-all"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_REPLY_ALL"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation"
@@ -90,21 +90,21 @@
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
 											<i class="icon-forward"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
 											<i class="icon-pencil"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder()">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
 											<i class="icon-forward"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
 										</a>
 									</li>
 									<li class="divider" role="presentation" data-bind="visible: !isDraftFolder()"></li>
@@ -112,28 +112,28 @@
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
 											<i class="icon-archive"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_ARCHIVE"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_ARCHIVE"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
 											<i class="icon-angry-smiley"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_SPAM"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_SPAM"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: usePreviewPane() && !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
 											<i class="icon-happy-smiley"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_NOT_SPAM"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_NOT_SPAM"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: usePreviewPane()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
 											<i class="icon-trash"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_DELETE"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_DELETE"></span>
 										</a>
 									</li>
 									<li class="divider" role="presentation" data-bind="visible: usePreviewPane()"></li>
@@ -141,14 +141,14 @@
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
 											<i class="icon-print"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/MENU_PRINT"></span>
+											<span class="i18n" data-i18n="MESSAGE/MENU_PRINT"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
 											<i class="icon-popup"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 										</a>
 									</li>
 									<li class="divider" role="presentation"></li>
@@ -156,14 +156,14 @@
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
 											<i class="icon-file-code"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/MENU_VIEW_ORIGINAL"></span>
+											<span class="i18n" data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
 											<i class="icon-download"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n-text="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
+											<span class="i18n" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
 										</a>
 									</li>
 								</ul>
@@ -252,7 +252,7 @@
 											data-bind="text: viewThreadsControlDesc"></span>)</span>
 									<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
-									<span class="i18n emptySubjectText" data-i18n-text="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
+									<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
 								</div>
 								<div class="senderParent">
 									<div class="g-ui-user-select-none" style="float: left; cursor: pointer; margin-left: 1px;" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
@@ -265,7 +265,7 @@
 											<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
 										</span>
 										<span data-bind="visible: isDraftOrSentFolder()">
-											<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
+											<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
 											<span class="to" data-bind="html: viewToShort, title: viewTo"></span>
 										</span>
 										<span data-bind="visible: 0 < viewTimeStamp()">
@@ -278,7 +278,7 @@
 							<div class="informationFull" data-bind="visible: showFullInfo()">
 								<div>
 									<div class="pull-left" data-bind="visible: '' !== viewFrom()">
-										<span class="i18n uiLabel labelFrom" data-i18n-text="MESSAGE/LABEL_FROM"></span>:
+										<span class="i18n uiLabel labelFrom" data-i18n="MESSAGE/LABEL_FROM"></span>:
 										&nbsp;
 										<span class="from" data-bind="text: viewFrom, title: viewFrom"></span>
 									</div>
@@ -288,27 +288,27 @@
 									<div class="clearfix"></div>
 								</div>
 								<div data-bind="visible: '' !== viewTo()">
-									<span class="i18n uiLabel labelTo" data-i18n-text="MESSAGE/LABEL_TO"></span>:
+									<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
 									&nbsp;
 									<span class="to" data-bind="text: viewTo, title: viewTo"></span>
 								</div>
 								<div data-bind="visible: '' !== viewCc()">
-									<span class="i18n uiLabel labelCc" data-i18n-text="MESSAGE/LABEL_CC"></span>:
+									<span class="i18n uiLabel labelCc" data-i18n="MESSAGE/LABEL_CC"></span>:
 									&nbsp;
 									<span class="cc" data-bind="text: viewCc, title: viewCc"></span>
 								</div>
 								<div data-bind="visible: '' !== viewBcc()">
-									<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_BCC"></span>:
+									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_BCC"></span>:
 									&nbsp;
 									<span class="bcc" data-bind="text: viewBcc, title: viewBcc"></span>
 								</div>
 								<div data-bind="visible: '' !== viewReplyTo()">
-									<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_REPLY_TO"></span>:
+									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_REPLY_TO"></span>:
 									&nbsp;
 									<span class="bcc" data-bind="text: viewReplyTo, title: viewReplyTo"></span>
 								</div>
 								<div data-bind="visible: 0 < viewTimeStamp()">
-									<span class="i18n uiLabel labelBcc" data-i18n-text="MESSAGE/LABEL_DATE"></span>:
+									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_DATE"></span>:
 									&nbsp;
 									<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
 									&nbsp;
@@ -335,7 +335,7 @@
 									<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>
 
 									<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
-										<span class="i18n text" data-i18n-text="MESSAGE/MESSAGE_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+										<span class="i18n text" data-i18n="MESSAGE/MESSAGE_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 									</div>
 								</div>
 
@@ -343,12 +343,12 @@
 									<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { showImages(message()); }">
 										<i class="icon-image"></i>
 										&nbsp;&nbsp;
-										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_SHOW_IMAGES"></span>
+										<span class="i18n text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 									</div>
 									<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
 										<i class="icon-mail"></i>
 										&nbsp;&nbsp;
-										<span class="i18n text" data-i18n-text="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
+										<span class="i18n text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 									</div>
 									<div class="pgpInfo" data-bind="visible: isPgpStatusVerifyVisible(), css: {'success': isPgpStatusVerifySuccess()}">
 										<i class="icon-key"></i>
@@ -358,16 +358,16 @@
 									<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned() && isPgpActionVisible(), click: function() { verifyPgpSignedClearMessage(message()); }">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										<span class="i18n" data-i18n-text="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
+										<span class="i18n" data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
 									</div>
 									<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted() && isPgpActionVisible()">
 										<i class="icon-lock"></i>
 										&nbsp;&nbsp;
-										<span class="i18n" data-i18n-text="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC" data-bind="click: function() { decryptPgpEncryptedMessage(message()); }"></span>
+										<span class="i18n" data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC" data-bind="click: function() { decryptPgpEncryptedMessage(message()); }"></span>
 										&nbsp;&nbsp;
 										<input type="password" class="i18n span3 inputPgpPassword"
 											autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-											style="margin-bottom: 0" data-i18n-placeholder="MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword, onEnter: function() { decryptPgpEncryptedMessage(message()); }" />
+											style="margin-bottom: 0" data-i18n="[placeholder]MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword, onEnter: function() { decryptPgpEncryptedMessage(message()); }" />
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">

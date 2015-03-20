@@ -4,12 +4,12 @@
 			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 				<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
 				&nbsp;&nbsp;
-				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SEND"></span>
+				<span class="i18n" data-i18n="COMPOSE/BUTTON_SEND"></span>
 			</a>
 			<a class="btn button-save" data-bind="command: saveCommand, css: {'btn-danger': savedError }">
 				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
 				&nbsp;&nbsp;
-				<span class="i18n" data-i18n-text="COMPOSE/BUTTON_SAVE"></span>
+				<span class="i18n" data-i18n="COMPOSE/BUTTON_SAVE"></span>
 			</a>
 
 			<a class="close-custom" data-tooltip-placement="bottom" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
@@ -27,7 +27,7 @@
 						<div class="e-row" style="height: 40px;">
 							<div class="e-cell e-label">
 								<label class="control-label">
-									<span class="i18n" data-i18n-text="COMPOSE/TITLE_FROM"></span>
+									<span class="i18n" data-i18n="COMPOSE/TITLE_FROM"></span>
 								</label>
 							</div>
 							<div class="e-cell e-value">
@@ -57,21 +57,21 @@
 											<a class="e-link">
 												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestReadReceipt(), 'icon-checkbox-unchecked': !requestReadReceipt() }"></i>
 												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
+												<span class="i18n" data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 											</a>
 										</li>
 										<li class="e-item" data-bind="click: function () { requestDsn(!requestDsn()); }">
 											<a class="e-link">
 												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestDsn(), 'icon-checkbox-unchecked': !requestDsn() }"></i>
 												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_REQUEST_DSN"></span>
+												<span class="i18n" data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 											</a>
 										</li>
 										<li class="e-item" data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 											<a class="e-link">
 												<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': markAsImportant(), 'icon-checkbox-unchecked': !markAsImportant() }"></i>
 												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
+												<span class="i18n" data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 											</a>
 										</li>
 										<li class="divider" data-bind="visible: capaOpenPGP"></li>
@@ -79,7 +79,7 @@
 											<a class="e-link">
 												<i class="icon-key"></i>
 												&nbsp;&nbsp;
-												<span class="i18n" data-i18n-text="COMPOSE/BUTTON_OPEN_PGP"></span>
+												<span class="i18n" data-i18n="COMPOSE/BUTTON_OPEN_PGP"></span>
 											</a>
 										</li>
 									</ul>
@@ -92,15 +92,15 @@
 								</div>
 								<div class="btn-group pull-right">&nbsp;</div>
 								<span class="pull-right">
-									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_CC"
+									<span class="i18n g-ui-link" data-i18n="COMPOSE/TITLE_CC"
 										data-bind="visible: !showCc(), click: function () { showCc(true); }"></span>
 									&nbsp;&nbsp;
 									<span data-bind="visible: !showBcc()">
-										<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_BCC"
+										<span class="i18n g-ui-link" data-i18n="COMPOSE/TITLE_BCC"
 											data-bind="click: function () { showBcc(true); }"></span>
 										&nbsp;&nbsp;
 									</span>
-									<span class="i18n g-ui-link" data-i18n-text="COMPOSE/TITLE_REPLY_TO"
+									<span class="i18n g-ui-link" data-i18n="COMPOSE/TITLE_REPLY_TO"
 										data-bind="visible: !showReplyTo(), click: function () { showReplyTo(true); }"></span>
 									&nbsp;
 								</span>
@@ -109,19 +109,19 @@
 						<div class="e-row">
 							<div class="e-cell e-label">
 								<label class="control-label">
-									<span class="i18n" data-i18n-text="COMPOSE/TITLE_TO"></span>
+									<span class="i18n" data-i18n="COMPOSE/TITLE_TO"></span>
 								</label>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, emailsTagsFocus: to.focused, autoCompleteSource: emailsSource" />
 								<span class="help-block error-desc" data-bind="visible: emptyToError">
-									<span class="i18n" data-i18n-text="COMPOSE/EMPTY_TO_ERROR_DESC"></span>
+									<span class="i18n" data-i18n="COMPOSE/EMPTY_TO_ERROR_DESC"></span>
 								</span>
 							</div>
 						</div>
 						<div class="e-row cc-row" data-bind="visible: showCc">
 							<div class="e-cell e-label">
-								<span class="i18n" data-i18n-text="COMPOSE/TITLE_CC"></span>
+								<span class="i18n" data-i18n="COMPOSE/TITLE_CC"></span>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource" />
@@ -129,7 +129,7 @@
 						</div>
 						<div class="e-row bcc-row" data-bind="visible: showBcc">
 							<div class="e-cell e-label">
-								<span class="i18n" data-i18n-text="COMPOSE/TITLE_BCC"></span>
+								<span class="i18n" data-i18n="COMPOSE/TITLE_BCC"></span>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource" />
@@ -137,7 +137,7 @@
 						</div>
 						<div class="e-row reply-to-row" data-bind="visible: showReplyTo">
 							<div class="e-cell e-label">
-								<span class="i18n" data-i18n-text="COMPOSE/TITLE_REPLY_TO"></span>
+								<span class="i18n" data-i18n="COMPOSE/TITLE_REPLY_TO"></span>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: replyTo, autoCompleteSource: emailsSource" />
@@ -145,7 +145,7 @@
 						</div>
 						<div class="e-row">
 							<div class="e-cell e-label">
-								<span class="i18n" data-i18n-text="COMPOSE/TITLE_SUBJECT"></span>
+								<span class="i18n" data-i18n="COMPOSE/TITLE_SUBJECT"></span>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" size="70" autocomplete="off" data-bind="textInput: subject" />
@@ -171,10 +171,10 @@
 											</button>
 										</div>
 										<span class="help-block error-desc" data-bind="visible: attachmentsInProcessError">
-											<span class="i18n" data-i18n-text="COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC"></span>
+											<span class="i18n" data-i18n="COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC"></span>
 										</span>
 										<span class="help-block error-desc" data-bind="visible: !attachmentsInProcessError() && attachmentsInErrorError()">
-											<span class="i18n" data-i18n-text="COMPOSE/ATTACHMENTS_ERROR_DESC"></span>
+											<span class="i18n" data-i18n="COMPOSE/ATTACHMENTS_ERROR_DESC"></span>
 										</span>
 									</div>
 									<div class="pull-right" style="margin-right: 4px;">
@@ -203,11 +203,11 @@
 					<div class="content g-scrollbox">
 						<div class="content-wrapper">
 							<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
-								<span class="i18n" data-i18n-text="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
+								<span class="i18n" data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
 							</div>
 							<ul class="attachmentList" data-bind="template: { name: 'ComposeAttachment', foreach: attachments }"></ul>
 							<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length">
-								<span class="i18n" data-i18n-text="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>
+								<span class="i18n" data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>
 							</div>
 						</div>
 					</div>

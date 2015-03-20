@@ -1,12 +1,12 @@
 <!-- ko if: preLabeled -->
-<span class="i18n" data-bind="attr: {'data-i18n-text': preLabel}"></span>
+<span class="i18n" data-bind="attr: {'data-i18n': preLabel}"></span>
 &nbsp;&nbsp;
 <!-- /ko -->
 <select data-bind="options: options, value: value, optionsText: optionsText, optionsValue: optionsValue,
 	css: className, optionsAfterRender: defautOptionsAfterRender"></select>
 <!-- ko if: labeled -->
 &nbsp;
-<span class="i18n" data-bind="attr: {'data-i18n-text': label}"></span>
+<span class="i18n" data-bind="attr: {'data-i18n': label}"></span>
 &nbsp;
 <!-- /ko -->
 <!-- ko if: triggered -->

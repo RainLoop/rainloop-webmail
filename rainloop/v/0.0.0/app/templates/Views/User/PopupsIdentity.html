@@ -4,8 +4,8 @@
 			<div class="modal-header g-ui-user-select-none">
 				<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 				<h3>
-					<span data-bind="visible: !edit()" class="i18n" data-i18n-text="POPUPS_IDENTITY/TITLE_ADD_IDENTITY"></span>
-					<span data-bind="visible: edit" class="i18n" data-i18n-text="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></span>
+					<span data-bind="visible: !edit()" class="i18n" data-i18n="POPUPS_IDENTITY/TITLE_ADD_IDENTITY"></span>
+					<span data-bind="visible: edit" class="i18n" data-i18n="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></span>
 				</h3>
 			</div>
 			<div class="modal-body">
@@ -16,7 +16,7 @@
 					</div>
 					<br />
 					<div class="control-group" data-bind="visible: !owner(), css: {'error': email.hasError}">
-						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITY/LABEL_EMAIL"></label>
+						<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_EMAIL"></label>
 						<div class="controls">
 							<input type="email" class="inputEmail input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -24,13 +24,13 @@
 						</div>
 					</div>
 					<div class="control-group" data-bind="visible: owner">
-						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITY/LABEL_EMAIL"></label>
+						<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_EMAIL"></label>
 						<div class="controls">
 							<div class="textEmail" data-bind="text: email"></div>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITY/LABEL_NAME"></label>
+						<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_NAME"></label>
 						<div class="controls">
 							<input type="text" class="inputName input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -38,7 +38,7 @@
 						</div>
 					</div>
 					<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyTo.hasError}">
-						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITY/LABEL_REPLY_TO"></label>
+						<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_REPLY_TO"></label>
 						<div class="controls">
 							<input type="text" class="inputReplyTo input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 					<div class="control-group" data-bind="visible: showBcc, css: {'error': bcc.hasError}">
-						<label class="i18n control-label" data-i18n-text="POPUPS_IDENTITY/LABEL_BCC"></label>
+						<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_BCC"></label>
 						<div class="controls">
 							<input type="text" class="inputBcc input-xlarge"
 								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -56,12 +56,12 @@
 					<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
 						<div class="controls">
 							<span data-bind="visible: !showReplyTo()">
-								<span class="i18n g-ui-link" data-i18n-text="POPUPS_IDENTITY/LABEL_REPLY_TO"
+								<span class="i18n g-ui-link" data-i18n="POPUPS_IDENTITY/LABEL_REPLY_TO"
 									data-bind="click: function () { showReplyTo(true); }"></span>
 								&nbsp;&nbsp;
 							</span>
 							<span data-bind="visible: !showBcc()">
-								<span class="i18n g-ui-link" data-i18n-text="POPUPS_IDENTITY/LABEL_BCC"
+								<span class="i18n g-ui-link" data-i18n="POPUPS_IDENTITY/LABEL_BCC"
 									data-bind="click: function () { showBcc(true); }"></span>
 							</span>
 						</div>
@@ -90,8 +90,8 @@
 					<i data-bind="visible: !edit(), css: {'icon-user-add': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					<i data-bind="visible: edit, css: {'icon-ok': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
-					<span data-bind="visible: !edit()" class="i18n" data-i18n-text="POPUPS_IDENTITY/BUTTON_ADD_IDENTITY"></span>
-					<span data-bind="visible: edit" class="i18n" data-i18n-text="POPUPS_IDENTITY/BUTTON_UPDATE_IDENTITY"></span>
+					<span data-bind="visible: !edit()" class="i18n" data-i18n="POPUPS_IDENTITY/BUTTON_ADD_IDENTITY"></span>
+					<span data-bind="visible: edit" class="i18n" data-i18n="POPUPS_IDENTITY/BUTTON_UPDATE_IDENTITY"></span>
 				</a>
 			</div>
 		</div>

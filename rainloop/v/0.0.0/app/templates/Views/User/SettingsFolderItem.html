@@ -9,7 +9,7 @@
 			data-bind="value: nameForEdit, visible: edited, hasfocus: edited, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: function () { $root.folderEditOnEsc($data); }" />
 
 		<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function() { $root.deleteFolder($data); }">
-			<span class="i18n" data-i18n-text="SETTINGS_FOLDERS/DELETING_ASK"></span>
+			<span class="i18n" data-i18n="SETTINGS_FOLDERS/DELETING_ASK"></span>
 		</a>
 	</td>
 	<td>

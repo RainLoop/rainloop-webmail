@@ -405,7 +405,7 @@
 	kn.extendAsViewModel(['View/Popup/Contacts', 'PopupsContactsViewModel'], ContactsPopupView);
 	_.extend(ContactsPopupView.prototype, AbstractView.prototype);
 
-	ContactsPopupView.prototype.getPropertyPlceholder = function (sType)
+	ContactsPopupView.prototype.getPropertyPlaceholder = function (sType)
 	{
 		var sResult = '';
 		switch (sType)
@@ -426,7 +426,7 @@
 
 	ContactsPopupView.prototype.addNewProperty = function (sType, sTypeStr)
 	{
-		this.viewProperties.push(new ContactPropertyModel(sType, sTypeStr || '', '', true, this.getPropertyPlceholder(sType)));
+		this.viewProperties.push(new ContactPropertyModel(sType, sTypeStr || '', '', true, this.getPropertyPlaceholder(sType)));
 	};
 
 	ContactsPopupView.prototype.addNewOrFocusProperty = function (sType, sTypeStr)
@@ -649,10 +649,10 @@
 		}
 
 		aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false,
-			this.getPropertyPlceholder(Enums.ContactPropertyType.LastName)));
+			this.getPropertyPlaceholder(Enums.ContactPropertyType.LastName)));
 
 		aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact,
-			this.getPropertyPlceholder(Enums.ContactPropertyType.FirstName)));
+			this.getPropertyPlaceholder(Enums.ContactPropertyType.FirstName)));
 
 		this.viewID(sId);
 
