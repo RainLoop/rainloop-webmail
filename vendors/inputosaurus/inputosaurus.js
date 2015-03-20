@@ -64,6 +64,8 @@
 			// the array of tag names is passed and expected to be returned as an array after manipulation
 			parseHook : null,
 
+			elementHook : null,
+
 			// define a placeholder to display when the input is empty
 			placeholder: null
 		},
@@ -535,6 +537,8 @@
 						}
 					});
 				}
+
+				$.isFunction(this.options.elementHook) && (this.options.elementHook($li, obj));
 
 				return $li;
 			}

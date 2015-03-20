@@ -131,7 +131,7 @@
 			if (Globals && Globals.aBootstrapDropdowns)
 			{
 				Globals.aBootstrapDropdowns.push($(oElement));
-				
+
 				$(oElement).click(function () {
 					require('Common/Utils').detectDropdownVisibility();
 				});
@@ -688,6 +688,13 @@
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
 				'autoCompleteSource': fAutoCompleteSource,
+//				'elementHook': function (oEl, oItem) {
+//					if (oEl && oItem)
+//					{
+//						oEl.addClass('pgp');
+//						window.console.log(arguments);
+//					}
+//				},
 				'parseHook': function (aInput) {
 					return _.map(aInput, function (sInputValue) {
 

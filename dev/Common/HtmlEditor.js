@@ -384,7 +384,6 @@
 		this.setHtml('', bFocus);
 	};
 
-
 	module.exports = HtmlEditor;
 
 }());

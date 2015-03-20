@@ -751,6 +751,8 @@
 
 		this.bSkipNextHide = false;
 
+		this.to.focused(false);
+
 		kn.routeOn();
 	};
 
@@ -761,12 +763,14 @@
 			var self = this;
 			if (!this.oEditor && this.composeEditorArea())
 			{
+//_.delay(function () {
 				self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
 					self.resizerTrigger();
 				}, function (bHtml) {
 					self.isHtml(!!bHtml);
 				});
+//}, 1000);
 			}
 			else if (this.oEditor)
 			{
@@ -1226,6 +1230,10 @@
 				self.setFocusInPopup();
 			});
 		}
+		else
+		{
+			this.setFocusInPopup();
+		}
 
 		aDownloads = this.getAttachmentsDownloadsForUpload();
 		if (Utils.isNonEmptyArray(aDownloads))
@@ -1276,21 +1284,27 @@
 	{
 		if (!Globals.bMobileDevice)
 		{
-			if ('' === this.to())
-			{
-				this.to.focused(false);
-				this.to.focused(true);
-			}
-			else if (this.oEditor)
-			{
-				this.oEditor.focus();
-			}
+			var self = this;
+			_.delay(function () {
+
+				if ('' === self.to())
+				{
+					self.to.focused(true);
+				}
+				else if (self.oEditor)
+				{
+					if (!self.to.focused())
+					{
+						self.oEditor.focus();
+					}
+				}
+
+			}, 100);
 		}
 	};
 
 	ComposePopupView.prototype.onShowWithDelay = function ()
 	{
-		this.setFocusInPopup();
 		this.resizerTrigger();
 	};
 
