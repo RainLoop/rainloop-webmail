@@ -476,7 +476,7 @@
 							self.addDropboxAttachment(aFiles[0]);
 						}
 					},
-					'linkType': "direct",
+					'linkType': 'direct',
 					'multiselect': false
 				});
 			}

@@ -1636,15 +1636,6 @@ class Actions
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 		}
 
-		if (0 < \strlen($aResult['ParentEmail']))
-		{
-			$aResult['AllowGoogleSocial'] = false;
-			$aResult['AllowGoogleSocialAuth'] = false;
-			$aResult['AllowGoogleSocialDrive'] = false;
-			$aResult['AllowFacebookSocial'] = false;
-			$aResult['AllowTwitterSocial'] = false;
-		}
-
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
 		$sTheme = $this->ValidateTheme($sTheme);

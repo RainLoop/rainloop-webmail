@@ -13,6 +13,7 @@
 		Plugins = require('Common/Plugins'),
 
 		AppStore = require('Stores/User/App'),
+		AccountStore = require('Stores/User/Account'),
 		Settings = require('Storage/Settings'),
 
 		kn = require('Knoin/Knoin'),
@@ -71,7 +72,8 @@
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if ((Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
+		if (AccountStore.isRootAccount() &&
+			(Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
 			Settings.settingsGet('AllowFacebookSocial') ||
 			Settings.settingsGet('AllowTwitterSocial'))
 		{

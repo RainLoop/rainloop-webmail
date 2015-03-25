@@ -16,6 +16,7 @@
 	function AccountUserStore()
 	{
 		this.email = ko.observable('');
+		this.parentEmail = ko.observable('');
 //		this.incLogin = ko.observable('');
 //		this.outLogin = ko.observable('');
 
@@ -54,6 +55,15 @@
 	AccountUserStore.prototype.populate = function ()
 	{
 		this.email(Settings.settingsGet('Email'));
+		this.parentEmail(Settings.settingsGet('ParentEmail'));
+	};
+
+	/**
+	 * @returns {boolean}
+	 */
+	AccountUserStore.prototype.isRootAccount = function ()
+	{
+		return '' === this.parentEmail();
 	};
 
 	module.exports = new AccountUserStore();
