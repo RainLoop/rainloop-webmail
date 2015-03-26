@@ -41,8 +41,11 @@
 				oOpenpgpKeyring = PgpStore.openpgpKeyring
 			;
 
-			sKey = sKey.replace(/[\r\n]([a-zA-Z0-9]{2,}:[^\r\n]+)[\r\n]+([a-zA-Z0-9\/\\+=]{10,})/g, '\n$1!-!N!-!$2')
-				.replace(/[\n\r]+/g, '\n').replace(/!-!N!-!/g, '\n\n');
+			if (/[\n]/.test(sKey))
+			{
+				sKey = sKey.replace(/[\r]+/g, '')
+					.replace(/[\n]{2,}/g, '\n\n');
+			}
 
 			this.key.error('' === sKey);
 
