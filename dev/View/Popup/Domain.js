@@ -12,6 +12,8 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
+		Translator = require('Common/Translator'),
+
 		CapaAdminStore = require('Stores/Admin/Capa'),
 
 		Remote = require('Remote/Admin/Ajax'),
@@ -96,8 +98,9 @@
 
 		this.headerText = ko.computed(function () {
 			var sName = this.name();
-			return this.edit() ? 'Edit Domain "' + sName + '"' :
-				'Add Domain' + ('' === sName ? '' : ' "' + sName + '"');
+			return this.edit() ? Translator.i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', {'NAME': sName}) :
+				('' === sName ? Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN') :
+					Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', {'NAME': sName}));
 		}, this);
 
 		this.domainIsComputed = ko.computed(function () {
@@ -348,12 +351,12 @@
 			}
 			else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)
 			{
-				this.savingError('Domain already exists');
+				this.savingError(Translator.i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
 			}
 		}
 		else
 		{
-			this.savingError('Unknown error');
+			this.savingError(Translator.i18n('ERRORS/UNKNOWN_ERROR'));
 		}
 	};
 

@@ -6,7 +6,6 @@
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
@@ -94,6 +93,7 @@
 
 		this.langRequest = ko.observable(false);
 		this.language = LanguageStore.language;
+		this.languages = LanguageStore.languages;
 
 		this.bSendLanguage = false;
 
@@ -176,7 +176,7 @@
 								}
 								else
 								{
-									require('App/User').loginAndLogoutReload();
+									require('App/User').loginAndLogoutReload(false);
 								}
 							}
 							else if (oData.ErrorCode)
@@ -318,11 +318,6 @@
 		{
 			this.emailFocus(true);
 		}
-
-		if (Settings.settingsGet('UserLanguage'))
-		{
-			$.cookie('rllang', LanguageStore.language(), {'expires': 30});
-		}
 	};
 
 	LoginUserView.prototype.onHide = function ()
@@ -344,7 +339,7 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-					require('App/User').loginAndLogoutReload();
+					require('App/User').loginAndLogoutReload(false);
 				}
 				else
 				{
@@ -406,10 +401,9 @@
 
 				self.langRequest(true);
 
-				Translator.reload(sValue, function() {
+				Translator.reload(false, sValue, function() {
 					self.langRequest(false);
 					self.bSendLanguage = true;
-					$.cookie('rllang', sValue, {'expires': 30});
 				}, function() {
 					self.langRequest(false);
 				});
@@ -427,7 +421,9 @@
 
 	LoginUserView.prototype.selectLanguage = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/Languages'));
+		kn.showScreenPopup(require('View/Popup/Languages'), [
+			this.language, this.languages(), LanguageStore.userLanguage()
+		]);
 	};
 
 	module.exports = LoginUserView;

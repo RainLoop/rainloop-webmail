@@ -538,9 +538,10 @@ class ServiceActions
 		$sResult = '';
 		@\header('Content-Type: application/javascript; charset=utf-8');
 
-		if (!empty($this->aPaths[2]))
+		if (!empty($this->aPaths[3]))
 		{
-			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[2]);
+			$bAdmim =  'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
+			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], $bAdmim);
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if (!empty($sLanguage) && $bCacheEnabled)
@@ -551,13 +552,15 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = \RainLoop\KeyPathHelper::LangCache($sLanguage, $this->oActions->Plugins()->Hash());
+				$sCacheFileName = \RainLoop\KeyPathHelper::LangCache(
+					$sLanguage, $bAdmim, $this->oActions->Plugins()->Hash());
+
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
-				$sResult = $this->compileLanguage($sLanguage, false);
+				$sResult = $this->compileLanguage($sLanguage, $bAdmim, false);
 				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 				{
 					$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -1250,11 +1253,12 @@ class ServiceActions
 
 	/**
 	 * @param string $sLanguage
+	 * @param bool $bAdmin = false
 	 * @param bool $bWrapByScriptTag = true
 	 *
 	 * @return string
 	 */
-	private function compileLanguage($sLanguage, $bWrapByScriptTag = true)
+	private function compileLanguage($sLanguage, $bAdmin = false, $bWrapByScriptTag = true)
 	{
 		$aResultLang = array();
 
@@ -1269,7 +1273,8 @@ class ServiceActions
 		}
 
 		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aResultLang);
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLanguage.'.ini', $aResultLang);
+		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.
+			($bAdmin ? 'admin/' : '').$sLanguage.'.ini', $aResultLang);
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 

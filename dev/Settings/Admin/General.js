@@ -10,6 +10,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
 
 		ThemeStore = require('Stores/Theme'),
 		LanguageStore = require('Stores/Language'),
@@ -26,6 +27,9 @@
 	{
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
+		this.languageAdmin = LanguageStore.languageAdmin;
+		this.languagesAdmin = LanguageStore.languagesAdmin;
+
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
@@ -59,8 +63,13 @@
 			return Utils.convertLangName(this.language());
 		}, this);
 
+		this.languageAdminFullName = ko.computed(function () {
+			return Utils.convertLangName(this.languageAdmin());
+		}, this);
+
 		this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.languageAdminTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
 		this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
@@ -76,7 +85,15 @@
 			var
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.attachmentLimitTrigger, self),
 				f2 = Utils.settingsSaveHelperSimpleFunction(self.languageTrigger, self),
-				f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self)
+				f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self),
+				fReloadLanguageHelper = function (iSaveSettingsStep) {
+					return function() {
+						self.languageAdminTrigger(iSaveSettingsStep);
+						_.delay(function () {
+							self.languageAdminTrigger(Enums.SaveSettingsStep.Idle);
+						}, 1000);
+					};
+				}
 			;
 
 			self.mainAttachmentLimit.subscribe(function (sValue) {
@@ -88,6 +105,19 @@
 			self.language.subscribe(function (sValue) {
 				Remote.saveAdminConfig(f2, {
 					'Language': Utils.trim(sValue)
+				});
+			});
+
+			self.languageAdmin.subscribe(function (sValue) {
+
+				self.languageAdminTrigger(Enums.SaveSettingsStep.Animate);
+
+				Translator.reload(true, sValue,
+					fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
+					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult));
+
+				Remote.saveAdminConfig(null, {
+					'LanguageAdmin': Utils.trim(sValue)
 				});
 			});
 
@@ -147,7 +177,16 @@
 
 	GeneralAdminSettings.prototype.selectLanguage = function ()
 	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'));
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'), [
+			this.language, this.languages(), LanguageStore.userLanguage()
+		]);
+	};
+
+	GeneralAdminSettings.prototype.selectLanguageAdmin = function ()
+	{
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'), [
+			this.languageAdmin, this.languagesAdmin(), LanguageStore.userLanguageAdmin()
+		]);
 	};
 
 	/**

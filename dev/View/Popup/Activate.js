@@ -42,6 +42,10 @@
 		this.activateText = ko.observable('');
 		this.activateText.isError = ko.observable(false);
 
+		this.htmlDescription = ko.computed(function () {
+			return Translator.i18n('POPUPS_ACTIVATE/HTML_DESC', {'DOMAIN': this.domain()});
+		}, this);
+
 		this.key.subscribe(function () {
 			this.activateText('');
 			this.activateText.isError(false);
@@ -67,7 +71,7 @@
 						if (true === oData.Result)
 						{
 							self.activationSuccessed(true);
-							self.activateText('Subscription Key Activated Successfully');
+							self.activateText(Translator.i18n('POPUPS_ACTIVATE/SUBS_KEY_ACTIVATED'));
 							self.activateText.isError(false);
 						}
 						else
@@ -95,7 +99,7 @@
 			else
 			{
 				this.activateProcess(false);
-				this.activateText('Invalid Subscription Key');
+				this.activateText(Translator.i18n('POPUPS_ACTIVATE/ERROR_INVALID_SUBS_KEY'));
 				this.activateText.isError(true);
 				this.key.focus(true);
 			}

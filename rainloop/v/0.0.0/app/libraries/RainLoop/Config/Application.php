@@ -66,6 +66,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_user_background'			=> array(false),
 
 				'language'						=> array('en', 'Language used by default'),
+				'language_admin'				=> array('en', 'Admin Panel interface language'),
 				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
 
 				'allow_additional_accounts'		=> array(true, ''),
@@ -299,7 +300,6 @@ Enables caching in the system'),
 				'sieve_utf8_folder_name' => array(true),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
-				'top_langs' => array('en'),
 				'in_iframe' => array(false),
 				'force_https' => array(false),
 				'custom_login_link' => array(''),

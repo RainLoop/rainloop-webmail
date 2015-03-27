@@ -1553,11 +1553,12 @@ class Actions
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'].APP_VERSION.$this->Plugins()->Hash());
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
+		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
 		$aResult['Themes'] = $this->GetThemes();
-		$aResult['Languages'] = $this->GetLanguages();
-		$aResult['LanguagesTop'] = $this->GetLanguagesTop();
+		$aResult['Languages'] = $this->GetLanguages(false);
+		$aResult['LanguagesAdmin'] = $this->GetLanguages(true);
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
@@ -1641,27 +1642,21 @@ class Actions
 		$sTheme = $this->ValidateTheme($sTheme);
 		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/-/';
 
-		$bUserLanguage = false;
-		if (!$bAdmin && !$aResult['Auth'] && !empty($_COOKIE['rllang']) &&
-			$oConfig->Get('login', 'allow_languages_on_login', true))
+		if (!$aResult['Auth'])
 		{
-			$sLanguage = $_COOKIE['rllang'];
-		}
-		else if (!$bAdmin && !$aResult['Auth'])
-		{
-			$sUserLanguage = '';
-			if (!$bAdmin && !$aResult['Auth'] &&
-				$oConfig->Get('login', 'allow_languages_on_login', true) &&
-				$oConfig->Get('login', 'determine_user_language', true))
+			if (!$bAdmin)
 			{
-				$sUserLanguage = $this->detectUserLanguage();
-			}
+				if ($oConfig->Get('login', 'allow_languages_on_login', true) &&
+					$oConfig->Get('login', 'determine_user_language', true))
+				{
+					$sLanguage = $this->ValidateLanguage($sLanguage, false);
 
-			$sLanguage = $this->ValidateLanguage($sLanguage);
-			if (0 < \strlen($sUserLanguage) && $sLanguage !== $sUserLanguage)
-			{
-				$sLanguage = $sUserLanguage;
-				$bUserLanguage = true;
+					$sUserLanguage = $this->detectUserLanguage();
+					if (0 < \strlen($sUserLanguage) && $sLanguage !== $sUserLanguage)
+					{
+						$sLanguage = $sUserLanguage;
+					}
+				}
 			}
 		}
 
@@ -1673,9 +1668,17 @@ class Actions
 
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
-		$aResult['Language'] = $this->ValidateLanguage($sLanguage);
-		$aResult['UserLanguage'] = $bUserLanguage;
-		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'en' : $aResult['Language']).'/'.$sStaticCache.'/';
+
+		$aResult['Language'] = $this->ValidateLanguage($sLanguage, false);
+		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, true);
+
+		$sUserLanguage = $this->detectUserLanguage();
+		$aResult['UserLanguage'] = $sUserLanguage === $this->ValidateLanguage($sUserLanguage, false) ? $sUserLanguage : '';
+		$aResult['UserLanguageAdmin'] = $sUserLanguage === $this->ValidateLanguage($sUserLanguage, true) ? $sUserLanguage : '';
+
+		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
+			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
+
 		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 		$aResult['PluginsLink'] = $sPluginsLink;
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
@@ -3196,7 +3199,11 @@ class Actions
 		$self = $this;
 
 		$this->setConfigFromParams($oConfig, 'Language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
-			return $self->ValidateLanguage($sLanguage);
+			return $self->ValidateLanguage($sLanguage, false);
+		});
+
+		$this->setConfigFromParams($oConfig, 'LanguageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
+			return $self->ValidateLanguage($sLanguage, true);
 		});
 
 		$this->setConfigFromParams($oConfig, 'Theme', 'webmail', 'theme', 'string', function ($sTheme) use ($self) {
@@ -3965,7 +3972,6 @@ class Actions
 							'version' => $oItem->version,
 							'file' => $oItem->file,
 							'release' => $oItem->release,
-							'release_notes' => isset($oItem->{'release_notes'}) ? $oItem->{'release_notes'} : '',
 							'desc' => $oItem->description
 						);
 					}
@@ -4091,7 +4097,6 @@ class Actions
 						'version' => '',
 						'file' => '',
 						'release' => '',
-						'release_notes' => '',
 						'desc' => ''
 					));
 				}
@@ -4715,7 +4720,7 @@ class Actions
 		}
 		else
 		{
-			$oSettingsLocal->SetConf('Theme', $this->ValidateLanguage($oConfig->Get('webmail', 'theme', 'Default')));
+			$oSettingsLocal->SetConf('Theme', $this->ValidateTheme($oConfig->Get('webmail', 'theme', 'Default')));
 		}
 
 		$this->setSettingsFromParams($oSettings, 'MPP', 'int', function ($iValue) {
@@ -8292,13 +8297,14 @@ class Actions
 
 	/**
 	 * @param string $sLanguage
+	 * @param bool $bAdmin = false
 	 *
 	 * @return string
 	 */
-	public function ValidateLanguage($sLanguage)
+	public function ValidateLanguage($sLanguage, $bAdmin = false)
 	{
-		return \in_array($sLanguage, $this->GetLanguages()) ?
-			$sLanguage : $this->Config()->Get('i18n', 'default', 'en');
+		return \in_array($sLanguage, $this->GetLanguages($bAdmin)) ?
+			$sLanguage : $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
 	}
 
 	/**
@@ -8395,23 +8401,33 @@ class Actions
 
 	/**
 	 * @staticvar array $aCache
+	 * @param bool $bAdmin = false
 	 *
 	 * @return array
 	 */
-	public function GetLanguages()
+	public function GetLanguages($bAdmin = false)
 	{
-		static $aCache = null;
-		if (\is_array($aCache))
+		static $aCache = array();
+		$sDir = APP_VERSION_ROOT_PATH.'langs/'.($bAdmin ? 'admin/' : '');
+
+		if (isset($aCache[$sDir]))
 		{
-			return $aCache;
+			return $aCache[$sDir];
 		}
 
+//		$aTopper = array('en');
+//		$sUserLanguage = $this->detectUserLanguage();
+//		if (!empty($sUserLanguage) && 'en' !== $sUserLanguage)
+//		{
+//			$aTopper[] = $sUserLanguage;
+//		}
+
+		$aTop = array();
 		$aList = array();
 
-		$sDir = APP_VERSION_ROOT_PATH.'langs/';
 		if (@\is_dir($sDir))
 		{
-			$rDirH = opendir($sDir);
+			$rDirH = \opendir($sDir);
 			if ($rDirH)
 			{
 				while (($sFile = \readdir($rDirH)) !== false)
@@ -8421,7 +8437,14 @@ class Actions
 						$sLang = \strtolower(\substr($sFile, 0, -4));
 						if (0 < \strlen($sLang) && 'always' !== $sLang)
 						{
-							\array_push($aList, $sLang);
+//							if (\in_array(\substr($sLang, 0, 2), $aTopper))
+//							{
+//								\array_push($aTop, $sLang);
+//							}
+//							else
+//							{
+								\array_push($aList, $sLang);
+//							}
 						}
 					}
 				}
@@ -8430,41 +8453,11 @@ class Actions
 			}
 		}
 
+		\sort($aTop);
 		\sort($aList);
 
-		$aCache = $aList;
-		return $aCache;
-	}
-
-	public function GetLanguagesTop()
-	{
-		$sUserLang = $this->getUserLanguageFromHeader();
-		if (2 < \strlen($sUserLang))
-		{
-			$sUserLang = \substr($sUserLang, 0, 2);
-		}
-
-		$self = $this;
-		$aResult = array();
-
-		foreach ($this->GetLanguages() as $sLang)
-		{
-			if ($sUserLang === \substr($sLang, 0, 2))
-			{
-				$aResult[] = $sLang;
-			}
-		}
-
-		$aTopLangs = \array_map('trim', \explode(',', $this->Config()->Get('labs', 'top_langs', 'en')));
-
-		$aResult = \array_merge($aResult, $aTopLangs);
-		$aResult = \array_unique($aResult);
-
-		$aResult = \array_values(\array_filter($aResult, function ($sLang) use ($self) {
-			return $sLang === $self->ValidateLanguage($sLang);
-		}));
-
-		return $aResult;
+		$aCache[$sDir] = \array_merge($aTop, $aList);
+		return $aCache[$sDir];
 	}
 
 	/**
@@ -8805,31 +8798,41 @@ class Actions
 	}
 
 	/**
+	 * @param bool $bAdmin = false
+	 *
 	 * @return array
 	 */
-	public function GetLanguageAndTheme()
+	public function GetLanguageAndTheme($bAdmin = false)
 	{
-		$oAccount = $this->GetAccount();
-
-		$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
-		if ($oAccount instanceof \RainLoop\Model\Account)
+		if ($bAdmin)
 		{
-			$oSettings = $this->SettingsProvider()->Load($oAccount);
-			if ($oSettings instanceof \RainLoop\Settings)
-			{
-				$sLanguage = $oSettings->GetConf('Language', $sLanguage);
-			}
+			$sLanguage = $this->Config()->Get('webmail', 'language_admin', 'en');
+		}
+		else
+		{
+			$oAccount = $this->GetAccount();
 
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal instanceof \RainLoop\Settings)
+			$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
+
+			if ($oAccount instanceof \RainLoop\Model\Account)
 			{
-				$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
+				$oSettings = $this->SettingsProvider()->Load($oAccount);
+				if ($oSettings instanceof \RainLoop\Settings)
+				{
+					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
+				}
+
+				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+				if ($oSettingsLocal instanceof \RainLoop\Settings)
+				{
+					$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
+				}
 			}
 		}
 
-		$sLanguage = $this->ValidateLanguage($sLanguage);
+		$sLanguage = $this->ValidateLanguage($sLanguage, $bAdmin);
 		$sTheme = $this->ValidateTheme($sTheme);
 
 		return array($sLanguage, $sTheme);

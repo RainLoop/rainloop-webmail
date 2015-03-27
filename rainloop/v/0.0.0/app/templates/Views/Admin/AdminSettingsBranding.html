@@ -1,12 +1,8 @@
 <div class="b-admin-branding">
 	<div class="form-horizontal">
-		<div class="legend">
-			Branding
-		</div>
+		<div class="legend" data-i18n="TAB_BRANDING/LEGEND_BRANDING"></div>
 		<div class="control-group">
-			<label class="control-label">
-				Page Title
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_PAGE_TITLE"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -19,9 +15,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-				Loading Description
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOADING_DESCRIPTION"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -36,13 +30,9 @@
 	</div>
 	<br />
 	<div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
-		<div class="legend">
-			Login
-		</div>
+		<div class="legend" data-i18n="TAB_BRANDING/LEGEND_LOGIN"></div>
 		<div class="control-group">
-			<label class="control-label">
-				Logo
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOGIN_LOGO"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -57,9 +47,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-				Description
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOGIN_DESCRIPTION"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -73,9 +61,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-				Background
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOGIN_BACKGROUND"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -90,9 +76,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-				Custom CSS
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_LOGIN_CUSTOM_CSS"></label>
 			<div class="controls">
 				<div class="custom-css-wrapper" data-bind="component: {
 					name: 'TextArea',
@@ -112,20 +96,16 @@
 					name: 'Checkbox',
 					params: {
 						enable: capa,
-						label: 'Show &quot;Powered by RainLoop&quot; link',
+						label: 'TAB_BRANDING/LABEL_LOGIN_SHOW_POWERED_LINK',
 						value: loginPowered
 					}
 				}"></div>
 			</div>
 		</div>
-		<div class="legend">
-			User
-		</div>
+		<div class="legend" data-i18n="TAB_BRANDING/LEGEND_USER"></div>
 <!--
 		<div class="control-group">
-			<label class="control-label">
-				Logo
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -141,9 +121,7 @@
 		</div>
 -->
 		<div class="control-group">
-			<label class="control-label">
-				Custom CSS
-			</label>
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_CUSTOM_CSS"></label>
 			<div class="controls">
 				<div class="custom-css-wrapper" data-bind="component: {
 					name: 'TextArea',
@@ -158,9 +136,7 @@
 			</div>
 		</div>
 		<div class="row" data-bind="visible: !capa()">
-			<div class="alert span8" style="margin-top: 10px;">
-				This functionality is available for <strong><a href="#/licensing">Premium</a></strong> subscribers.
-			</div>
+			<div class="alert span8" style="margin-top: 10px;" data-i18n="[html]TAB_BRANDING/HTML_ALERT_PREMIUM"></div>
 		</div>
 	</div>
 </div>

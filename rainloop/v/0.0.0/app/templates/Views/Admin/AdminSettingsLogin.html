@@ -1,12 +1,8 @@
 <div class="b-admin-general">
 	<div class="form-horizontal">
-		<div class="legend">
-			Login Screen
-		</div>
+		<div class="legend" data-i18n="TAB_LOGIN/LEGEND_LOGIN_SCREEN"></div>
 		<div class="control-group">
-			 <label class="control-label">
-				Default Domain
-			 </label>
+			<label class="control-label" data-i18n="TAB_LOGIN/LABEL_DEFAULT_DOMAIN"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -22,16 +18,16 @@
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: determineUserDomain, label: 'Try to determine user domain' }
+					params: { value: determineUserDomain, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_DOMAIN' }
 				}"></div>
 				<br />
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: allowLanguagesOnLogin, label: 'Allow language selection on login screen' }
+					params: { value: allowLanguagesOnLogin, label: 'TAB_LOGIN/LABEL_ALLOW_LANGUAGES_ON_LOGIN' }
 				}"></div>
 				<div data-bind="visible: allowLanguagesOnLogin, component: {
 					name: 'Checkbox',
-					params: { enable: allowLanguagesOnLogin, value: determineUserLanguage, label: 'Try to determine user language' }
+					params: { enable: allowLanguagesOnLogin, value: determineUserLanguage, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_LANGUAGE' }
 				}"></div>
 			</div>
 		</div>

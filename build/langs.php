@@ -1,6 +1,7 @@
 <?php
 
-define('LANGS_PATH', __DIR__.'/../rainloop/v/0.0.0/langs');
+\define('IS_ADMIN', isset($_GET['admin']) && '1' === (string) $_GET['admin']);
+\define('LANGS_PATH', __DIR__.'/../rainloop/v/0.0.0/langs'.(IS_ADMIN ? '/admin' : ''));
 
 function getLangStructure($sLangFile)
 {

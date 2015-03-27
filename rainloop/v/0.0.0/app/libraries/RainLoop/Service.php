@@ -215,22 +215,16 @@ class Service
 	}
 
 	/**
-	 * @param bool $bAdmin
+	 * @param bool $bAdmin = false
 	 *
 	 * @return array
 	 */
-	private function indexTemplateParameters($bAdmin)
+	private function indexTemplateParameters($bAdmin = false)
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
 
-		if (!$bAdmin)
-		{
-			list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme();
-		}
-
-		$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
-		$sTheme = $this->oActions->ValidateTheme($sTheme);
+		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
 
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
@@ -271,6 +265,7 @@ class Service
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(
 			\implode('~', array(
+				$bAdmin ? '1' : '0',
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
 				\RainLoop\Utils::WebVersionPath(), APP_VERSION

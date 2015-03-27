@@ -89,13 +89,14 @@ class KeyPathHelper
 
 	/**
 	 * @param string $sLanguage
+	 * @param bool $bAdmim
 	 * @param string $sPluginsHash
 	 *
 	 * @return string
 	 */
-	static public function LangCache($sLanguage, $sPluginsHash)
+	static public function LangCache($sLanguage, $bAdmim, $sPluginsHash)
 	{
-		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.APP_VERSION.'/';
+		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.($bAdmim ? 'Admin' : 'App').'/'.APP_VERSION.'/';
 	}
 
 	/**

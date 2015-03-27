@@ -50,6 +50,14 @@
 	};
 
 	/**
+	 * @return {string}
+	 */
+	Links.prototype.rootUser = function ()
+	{
+		return './';
+	};
+
+	/**
 	 * @param {string} sDownload
 	 * @return {string}
 	 */
@@ -295,9 +303,9 @@
 	 * @param {string} sLang
 	 * @return {string}
 	 */
-	Links.prototype.langLink = function (sLang)
+	Links.prototype.langLink = function (sLang, bAdmin)
 	{
-		return this.sServer + '/Lang/0/' + encodeURI(sLang) + '/' + this.sVersion + '/';
+		return this.sServer + '/Lang/0/' + (bAdmin ? 'Admin' : 'App') + '/' + encodeURI(sLang) + '/' + this.sVersion + '/';
 	};
 
 	/**

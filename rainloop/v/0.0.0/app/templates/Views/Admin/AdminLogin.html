@@ -8,8 +8,8 @@
 			<form class="wrapper loginForm thm-login" action="#/" data-bind="submit: submitForm">
 				<div class="controls" data-bind="css: {'error': loginError}">
 					<div class="input-append">
-						<input type="text" class="input-block-level inputLogin checkAutocomplete" placeholder="Login" name="RainLoopAdminLogin" id="RainLoopAdminLogin"
-							autocorrect="off" autocapitalize="off" spellcheck="false"
+						<input type="text" class="input-block-level inputLogin checkAutocomplete" name="RainLoopAdminLogin" id="RainLoopAdminLogin"
+							autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
 							data-bind="textInput: login, hasFocus: loginFocus" />
 						<span class="add-on">
 							<i class="icon-user"></i>
@@ -19,7 +19,7 @@
 				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
 						<input type="password" class="input-block-level inputPassword checkAutocomplete" placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
-							autocorrect="off" autocapitalize="off" spellcheck="false"
+							autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 							data-bind="textInput: password" />
 						<span class="add-on">
 							<i class="icon-key"></i>
@@ -29,7 +29,7 @@
 				<div class="controls">
 					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 						<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
-						<span data-bind="visible: !submitRequest()">Log into the admin panel</span>
+						<span data-bind="visible: !submitRequest()" data-i18n="LOGIN/BUTTON_LOGIN"></span>
 					</button>
 				</div>
 			</form>

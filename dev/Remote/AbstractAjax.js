@@ -65,7 +65,7 @@
 					{
 						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
 						{
-							 Globals.__APP__.loginAndLogoutReload(true);
+							 Globals.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 
@@ -77,7 +77,7 @@
 
 							if (!oData.ClearAuth &&  Globals.__APP__.loginAndLogoutReload)
 							{
-								 Globals.__APP__.loginAndLogoutReload(true);
+								 Globals.__APP__.loginAndLogoutReload(false, true);
 							}
 						}
 					}

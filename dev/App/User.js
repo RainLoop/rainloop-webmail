@@ -1214,7 +1214,7 @@
 	{
 		var self = this;
 		Remote.logout(function () {
-			self.loginAndLogoutReload(true,
+			self.loginAndLogoutReload(false, true,
 				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
 		});
 	};

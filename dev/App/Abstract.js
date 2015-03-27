@@ -203,10 +203,11 @@
 	};
 
 	/**
+	 * @param {boolean=} bAdmin = false
 	 * @param {boolean=} bLogout = false
 	 * @param {boolean=} bClose = false
 	 */
-	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
+	AbstractApp.prototype.loginAndLogoutReload = function (bAdmin, bLogout, bClose)
 	{
 		var
 			kn = require('Knoin/Knoin'),
@@ -227,7 +228,8 @@
 			window.close();
 		}
 
-		sCustomLogoutLink = sCustomLogoutLink || './';
+		sCustomLogoutLink = sCustomLogoutLink || (bAdmin ? Links.rootAdmin() : Links.rootUser());
+
 		if (bLogout && window.location.href !== sCustomLogoutLink)
 		{
 			_.delay(function () {

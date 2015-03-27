@@ -1,32 +1,21 @@
 <div class="popups">
-	<div class="modal hide b-languages-content g-ui-user-select-none" data-bind="modal: modalVisibility, css: {'exp': exp}">
+	<div class="modal hide b-languages-content g-ui-user-select-none" data-bind="modal: modalVisibility">
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
 			<h3>
 				<span class="i18n" data-i18n="POPUPS_LANGUAGES/TITLE_LANGUAGES"></span>
 			</h3>
 		</div>
-		<div class="modal-body">
-			<div data-bind="foreach: languagesTop, visible: 0 < languagesTop().length">
-				<label class="lang-item" data-tooltip-i18n="off" data-tooltip-placement="left" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected},
-					tooltip: function () { return $root.languageEnName(key); }">
+		<div class="modal-body" style="min-height: 150px;">
+			<div data-bind="foreach: languages">
+				<label class="lang-item" data-tooltip-i18n="off" data-tooltip-placement="left" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected, 'user': user},
+					tooltip: function () { return $root.languageTooltipName(key); }">
 					<span class="flag-wrapper">
 						<span data-bind="css: 'flag flag-' + key" style=""></span>
 					</span>
 					<span class="lang-name" data-bind="text: fullName"></span>
 					<i class="icon-ok pull-right" style="color: green; margin-top: 3px;"
 						data-bind="visible: selected"></i>
-				</label>
-			</div>
-			<hr data-bind="visible: 0 < languagesTop().length" />
-			<div data-bind="foreach: languagesBottom">
-				<label class="lang-item" data-tooltip-i18n="off" data-tooltip-placement="left" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected},
-					tooltip: function () { return $root.languageEnName(key); }">
-					<span class="flag-wrapper">
-						<span data-bind="css: 'flag flag-' + key" style=""></span>
-					</span>
-					<span class="lang-name" data-bind="text: fullName"></span>
-					<i class="icon-ok pull-right" style="color: green; margin-top: 3px;" data-bind="visible: selected"></i>
 				</label>
 			</div>
 		</div>

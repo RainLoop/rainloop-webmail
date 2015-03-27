@@ -1,19 +1,18 @@
 <div class="adminSecurity">
 	<div class="row">
 		<div class="alert alert-info span8" style="margin-top: 10px;">
-			Detailed information on social integration is found at
+			<span data-i18n="TAB_INTEGRATIONS/TOP_ALERT"></span>
+			&nbsp;
 			<a href="http://rainloop.net/docs/social/" target="_blank">http://rainloop.net/docs/social/</a>
 		</div>
 	</div>
 	<div class="form-horizontal g-ui-user-select-none">
-		<div class="legend">
-			Google
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_GOOGLE"></div>
 		<div class="control-group">
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: googleEnable, label: 'Enable Google Integration' }
+					params: { value: googleEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_GOOGLE' }
 				}"></div>
 				<div data-bind="visible: googleEnable">
 					<br />
@@ -22,21 +21,21 @@
 							name: 'Checkbox',
 							params: {
 								value: googleEnableAuth,
-								label: 'Authentication'
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_AUTH'
 							}
 						}"></div>
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
 								value: googleEnableDrive,
-								label: 'Google Drive Integration (Compose view)'
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_DRIVE'
 							}
 						}"></div>
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
 								value: googleEnablePreview,
-								label: 'Google Viewer Integration (Preview for Microsoft Word, Excel and PowerPoint files)'
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_PREVIEW'
 							}
 						}"></div>
 					</blockquote>
@@ -44,14 +43,11 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Client ID
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_CLIENT_ID"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
 					params: {
-						name: 'xx',
 						value: googleClientID,
 						trigger: googleTrigger1,
 						enable: googleEnableRequireClientSettings,
@@ -61,9 +57,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Client Secret
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_CLIENT_SECRET"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -78,9 +72,7 @@
 		</div>
 		<br />
 		<div class="control-group">
-			<label class="control-label">
-				Api Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_API_KEY"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -92,29 +84,25 @@
 					}
 				}"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">
-					<p class="muted">
-						Required for Google Drive File Picker
-					</p>
+					<p class="muted" data-i18n="TAB_INTEGRATIONS/HINT_GOOGLE_API_KEY"></p>
 				</blockquote>
 			</div>
 		</div>
 		<div class="legend">
-			Facebook
-			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(requires PHP 5.4 or greater)</span>
+			<span data-i18n="TAB_INTEGRATIONS/LEGEND_FACEBOOK"></span>
+			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(<span data-i18n="HINTS/REQUIRES_PHP_54"></span>)</span>
 		</div>
 		<div data-bind="if: facebookSupported">
 			<div class="control-group">
 				<div class="controls">
 					<div data-bind="component: {
 						name: 'Checkbox',
-						params: { value: facebookEnable, label: 'Enable Facebook Integration (Authentication)' }
+						params: { value: facebookEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_FACEBOOK' }
 					}"></div>
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label">
-				   App ID
-				</label>
+				<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_FACEBOOK_APP_ID"></label>
 				<div class="controls">
 					<div data-bind="component: {
 						name: 'Input',
@@ -128,9 +116,7 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label">
-				   App Secret
-				</label>
+				<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_FACEBOOK_APP_SECRET"></label>
 				<div class="controls">
 					<div data-bind="component: {
 						name: 'Input',
@@ -144,21 +130,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="legend">
-			Twitter
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_TWITTER"></div>
 		<div class="control-group">
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: twitterEnable, label: 'Enable Twitter Integration (Authentication)' }
+					params: { value: twitterEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_TWITTER' }
 				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Consumer Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_TWITTER_CONSUMER_KEY"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -172,9 +154,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Consumer Secret
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_TWITTER_CONSUMER_SECRET"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',
@@ -187,21 +167,17 @@
 				}"></div>
 			</div>
 		</div>
-		<div class="legend">
-			Dropbox
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_DROPBOX"></div>
 		<div class="control-group">
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: dropboxEnable, label: 'Enable Dropbox Integration (Compose view)' }
+					params: { value: dropboxEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_DROPBOX' }
 				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Api Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_DROPBOX_API_KEY"></label>
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Input',

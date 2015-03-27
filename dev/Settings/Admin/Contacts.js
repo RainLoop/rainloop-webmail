@@ -10,6 +10,8 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
+		Translator = require('Common/Translator'),
+
 		Settings = require('Storage/Settings')
 	;
 
@@ -68,7 +70,7 @@
 			var bDisabled = -1 === Utils.inArray(sValue, aSupportedTypes);
 			return {
 				'id': sValue,
-				'name': getTypeName(sValue) + (bDisabled ? ' (not supported)' : ''),
+				'name': getTypeName(sValue) + (bDisabled ? ' (' + Translator.i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
 				'disabled': bDisabled
 			};
 		});

@@ -1,21 +1,15 @@
 <div class="b-admin-domains g-ui-user-select-none">
-	<div class="legend">
-		Domains
-	</div>
+	<div class="legend" data-i18n="TAB_DOMAINS/LEGEND_DOMAINS"></div>
 	<div>
 		<a class="btn" data-bind="click: createDomain">
 			<i class="icon-plus"></i>
 			&nbsp;&nbsp;
-			Add Domain
+			<span data-i18n="TAB_DOMAINS/BUTTON_ADD_DOMAIN"></span>
 		</a>
 		<br />
 		<br />
 		<blockquote>
-			<p class="muted">
-				List of domains webmail is allowed to access.
-				<br />
-				Click on the name to configure the domain.
-			</p>
+			<p class="muted" data-i18n="[html]TAB_DOMAINS/HTML_DOMAINS_HELPER"></p>
 		</blockquote>
 		<table class="table table-hover b-admin-domains-list-table" data-bind="i18nUpdate: domains">
 			<colgroup>

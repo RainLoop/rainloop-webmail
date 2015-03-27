@@ -7,30 +7,23 @@
 		</div>
 	</div>
 
-	<div class="legend">
-		Plugins
-	</div>
+	<div class="legend" data-i18n="TAB_PLUGINS/LEGEND_PLUGINS"></div>
 
 	<div>
 		<div data-bind="component: {
 			name: 'Checkbox',
-			params: { value: enabledPlugins, label: 'Enable plugins' }
+			params: { value: enabledPlugins, label: 'TAB_PLUGINS/LABEL_ENABLE_PLUGINS' }
 		}"></div>
 	</div>
 	<br />
 	<div class="row">
 		<div class="alert alert-info span8" data-bind="visible: 0 === plugins().length">
-			No plugins have yet been installed.
-			<br />
-			<br />
-			<strong><a href="#/packages">Click here to install new!</a></strong>
+			<span data-i18n="TAB_PLUGINS/ALERT_NO_PLUGINS"></span>
+			<br /><br />
+			<strong><a href="#/packages" data-i18n="TAB_PLUGINS/LINK_INSTALL_NEW"></a></strong>
 		</div>
 		<div class="span8"  data-bind="visible: 0 < plugins().length">
-			<blockquote>
-				<p class="muted">
-					Click on the name to configure the plugin.
-				</p>
-			</blockquote>
+			<blockquote><p class="muted" data-i18n="TAB_PLUGINS/HINT_CLICK_NAME"></p></blockquote>
 		</div>
 	</div>
 	<div class="row">

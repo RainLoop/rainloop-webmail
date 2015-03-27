@@ -6,6 +6,8 @@
 	var
 		ko = require('ko'),
 
+		Translator = require('Common/Translator'),
+
 		Settings = require('Storage/Settings'),
 		CoreStore = require('Stores/Admin/Core')
 	;
@@ -31,6 +33,10 @@
 		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
 		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
 		this.coreVersionCompare = CoreStore.coreVersionCompare;
+
+		this.coreRemoteVersionHtmlDesc = ko.computed(function () {
+			return Translator.i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
+		}, this);
 
 		this.statusType = ko.computed(function () {
 

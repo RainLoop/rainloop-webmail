@@ -48,7 +48,7 @@
 		this.readmePopoverConf = {
 			'placement': 'top',
 			'trigger': 'hover',
-			'title': 'About',
+			'title': Translator.i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
 			'container': 'body',
 			'content': function () {
 				return self.readme();

@@ -284,11 +284,12 @@
 	};
 
 	/**
+	 * @param {boolean} bAdmin
 	 * @param {string} sLanguage
 	 * @param {Function=} fDone
 	 * @param {Function=} fFail
 	 */
-	Translator.prototype.reload = function (sLanguage, fDone, fFail)
+	Translator.prototype.reload = function (bAdmin, sLanguage, fDone, fFail)
 	{
 		var
 			self = this,
@@ -300,7 +301,7 @@
 		$html.addClass('rl-changing-language');
 
 		$.ajax({
-				'url': require('Common/Links').langLink(sLanguage),
+				'url': require('Common/Links').langLink(sLanguage, bAdmin),
 				'dataType': 'script',
 				'cache': true
 			})

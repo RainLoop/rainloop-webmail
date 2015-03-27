@@ -33,37 +33,37 @@
 	SettingsAdminScreen.prototype.setupSettings = function (fCallback)
 	{
 		kn.addSettingsViewModel(require('Settings/Admin/General'),
-			'AdminSettingsGeneral', 'General', 'general', true);
+			'AdminSettingsGeneral', 'TABS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
 		kn.addSettingsViewModel(require('Settings/Admin/Login'),
-			'AdminSettingsLogin', 'Login', 'login');
+			'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Branding'),
-			'AdminSettingsBranding', 'Branding', 'branding');
+			'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Contacts'),
-			'AdminSettingsContacts', 'Contacts', 'contacts');
+			'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Domains'),
-			'AdminSettingsDomains', 'Domains', 'domains');
+			'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Security'),
-			'AdminSettingsSecurity', 'Security', 'security');
+			'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Social'),
-			'AdminSettingsSocial', 'Integrations', 'integrations');
+			'AdminSettingsSocial', 'TABS_LABELS/LABEL_INTEGRATION_NAME', 'integrations');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Plugins'),
-			'AdminSettingsPlugins', 'Plugins', 'plugins');
+			'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Packages'),
-			'AdminSettingsPackages', 'Packages', 'packages');
+			'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
 
 		kn.addSettingsViewModel(require('Settings/Admin/Licensing'),
-			'AdminSettingsLicensing', 'Licensing', 'licensing');
+			'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
 
 		kn.addSettingsViewModel(require('Settings/Admin/About'),
-			'AdminSettingsAbout', 'About', 'about');
+			'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
 
 		Plugins.runSettingsViewModelHooks(true);
 
