@@ -495,7 +495,6 @@
 					'name': 'uploader',
 					'queueSize': 1,
 					'multipleSizeLimit': 1,
-					'disableFolderDragAndDrop': true,
 					'disableDragAndDrop': true,
 					'disableMultiple': true,
 					'disableDocumentDropPrevent': true,

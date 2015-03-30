@@ -1604,7 +1604,6 @@
 					'name': 'uploader',
 					'queueSize': 2,
 					'multipleSizeLimit': 50,
-					'disableFolderDragAndDrop': false,
 					'clickElement': this.composeUploaderButton(),
 					'dragAndDropElement': this.composeUploaderDropPlace()
 				})

@@ -761,7 +761,6 @@
 				'name': 'AppendFile',
 				'queueSize': 1,
 				'multipleSizeLimit': 1,
-				'disableFolderDragAndDrop': true,
 				'hidden': {
 					'Folder': function () {
 						return FolderStore.currentFolderFullNameRaw();
