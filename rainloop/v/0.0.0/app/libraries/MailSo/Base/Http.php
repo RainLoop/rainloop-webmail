@@ -714,7 +714,6 @@ class Http
 			@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 			@\header('Cache-Control: post-check=0, pre-check=0', false);
 			@\header('Pragma: no-cache');
-			@\header('X-RainLoop-Cache: no');
 		}
 	}
 
@@ -734,7 +733,6 @@ class Http
 			@\header('ETag: '.$sEtag, true);
 			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
 			@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
-			@\header('X-RainLoop-Cache: yes');
 		}
 	}
 

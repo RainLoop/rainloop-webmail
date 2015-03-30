@@ -204,16 +204,20 @@
 									<i class="icon-list"
 										data-bind="css: {'icon-list': !messageListOfThreadsLoading(), 'icon-spinner animated': messageListOfThreadsLoading()}"></i>
 								</a>
-								<ul class="dropdown-menu pull-right g-ui-menu thread-list" role="menu" aria-labelledby="thread-list-view-dropdown-id"
-								style="min-width: 400px; max-width: 400px; width: 400px; padding: 0">
+								<ul class="dropdown-menu pull-right g-ui-menu thread-list"
+										role="menu" aria-labelledby="thread-list-view-dropdown-id"
+										style="min-width: 400px; max-width: 400px; width: 400px; padding: 0"
+										data-bind="css: {'hide-more': !viewThreadMessages.showMore() }"
+									>
+
 									<div data-bind="visible: '' !== viewThreadMessages.error()" style="color: red; text-align: center; padding: 10px">
 										<spam data-bind="text: viewThreadMessages.error"></spam>
-									</div >
+									</div>
 									<div data-bind="visible: messageListOfThreadsLoading" style="text-align: center; padding: 10px">
 										<i class="icon-spinner animated" />
-									</div >
+									</div>
 									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
-										<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected}">
+										<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected, 'more-that': $parent.viewThreadMessages.limit < $index() }">
 											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
 												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: timestamp"></span>
 												<div style="text-overflow: ellipsis; overflow: hidden;">
@@ -226,6 +230,9 @@
 												</div>
 											</a>
 										</li>
+									</div>
+									<div data-bind="visible: !viewThreadMessages.showMore() && !messageListOfThreadsLoading()">
+										<a class="more-threads" href="#" tabindex="-1" data-i18n="MESSAGE/BUTTON_THREAD_MORE"></a>
 									</div>
 								</ul>
 							</div>

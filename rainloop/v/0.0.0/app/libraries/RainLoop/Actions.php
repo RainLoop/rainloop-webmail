@@ -1649,13 +1649,8 @@ class Actions
 				if ($oConfig->Get('login', 'allow_languages_on_login', true) &&
 					$oConfig->Get('login', 'determine_user_language', true))
 				{
-					$sLanguage = $this->ValidateLanguage($sLanguage, false);
-
-					$sUserLanguage = $this->detectUserLanguage();
-					if (0 < \strlen($sUserLanguage) && $sLanguage !== $sUserLanguage)
-					{
-						$sLanguage = $sUserLanguage;
-					}
+					$sLanguage = $this->ValidateLanguage(
+						$this->detectUserLanguage(), $sLanguage, false);
 				}
 			}
 		}
@@ -1669,12 +1664,12 @@ class Actions
 		$aResult['Theme'] = $sTheme;
 		$aResult['NewThemeLink'] = $sNewThemeLink;
 
-		$aResult['Language'] = $this->ValidateLanguage($sLanguage, false);
-		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, true);
+		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
+		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
 
-		$sUserLanguage = $this->detectUserLanguage();
-		$aResult['UserLanguage'] = $sUserLanguage === $this->ValidateLanguage($sUserLanguage, false) ? $sUserLanguage : '';
-		$aResult['UserLanguageAdmin'] = $sUserLanguage === $this->ValidateLanguage($sUserLanguage, true) ? $sUserLanguage : '';
+		$aResult['UserLanguageRaw'] = $this->detectUserLanguage();
+		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['Language'], false);
+		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['LanguageAdmin'], true);
 
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
@@ -1716,21 +1711,7 @@ class Actions
 	 */
 	private function detectUserLanguage()
 	{
-		$sLang = $this->getUserLanguageFromHeader();
-
-		if (!empty($sLang))
-		{
-			$sLang = \preg_replace('/[^a-zA-Z0-9]+/', '-', $sLang);
-			if ($sLang !== $this->ValidateLanguage($sLang))
-			{
-				if (2 < strlen($sLang))
-				{
-					$sLang = \substr($sLang, 0, 2);
-				}
-			}
-		}
-
-		return $this->ValidateLanguage($sLang);
+		return \preg_replace('/[^a-zA-Z0-9]+/', '-', $this->getUserLanguageFromHeader());
 	}
 
 	private function loginErrorDelay()
@@ -3199,11 +3180,11 @@ class Actions
 		$self = $this;
 
 		$this->setConfigFromParams($oConfig, 'Language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
-			return $self->ValidateLanguage($sLanguage, false);
+			return $self->ValidateLanguage($sLanguage, '', false);
 		});
 
 		$this->setConfigFromParams($oConfig, 'LanguageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
-			return $self->ValidateLanguage($sLanguage, true);
+			return $self->ValidateLanguage($sLanguage, '', true);
 		});
 
 		$this->setConfigFromParams($oConfig, 'Theme', 'webmail', 'theme', 'string', function ($sTheme) use ($self) {
@@ -8297,14 +8278,46 @@ class Actions
 
 	/**
 	 * @param string $sLanguage
+	 * @param string  $sDefault = ''
 	 * @param bool $bAdmin = false
+	 * @param bool $bSearchShortName = false
 	 *
 	 * @return string
 	 */
-	public function ValidateLanguage($sLanguage, $bAdmin = false)
+	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false)
 	{
-		return \in_array($sLanguage, $this->GetLanguages($bAdmin)) ?
-			$sLanguage : $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
+		$sResult = '';
+		$aLang = $this->GetLanguages($bAdmin);
+
+		if (\is_array($aLang))
+		{
+			if (\in_array($sLanguage, $aLang))
+			{
+				$sResult = $sLanguage;
+			}
+
+			if ($bSearchShortName && empty($sResult) && 2 < \strlen($sLanguage))
+			{
+				$sLanguage = \substr($sLanguage, 0, 2);
+				if (\in_array($sLanguage, $aLang))
+				{
+					$sResult = $sLanguage;
+				}
+			}
+
+			if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang))
+			{
+				$sResult = $sDefault;
+			}
+
+			if (empty($sResult))
+			{
+				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
+				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en';
+			}
+		}
+
+		return $sResult;
 	}
 
 	/**
@@ -8832,7 +8845,7 @@ class Actions
 			}
 		}
 
-		$sLanguage = $this->ValidateLanguage($sLanguage, $bAdmin);
+		$sLanguage = $this->ValidateLanguage($sLanguage, '', $bAdmin);
 		$sTheme = $this->ValidateTheme($sTheme);
 
 		return array($sLanguage, $sTheme);

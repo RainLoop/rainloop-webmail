@@ -213,9 +213,12 @@
 
 		this.viewThreadMessages = ko.observableArray([]);
 		this.viewThreadMessages.error = ko.observable('');
+		this.viewThreadMessages.showMore = ko.observable(false);
+		this.viewThreadMessages.limit = 6;
 
-		this.viewThreadMessages.subscribe(function () {
+		this.viewThreadMessages.subscribe(function (aList) {
 			this.viewThreadMessages.error('');
+			this.viewThreadMessages.showMore(this.viewThreadMessages.limit >= aList.length);
 		}, this);
 
 		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
@@ -722,6 +725,10 @@
 				{
 					oEvent.stopPropagation();
 				}
+			})
+			.on('click', '.thread-list .more-threads', function () {
+				self.viewThreadMessages.showMore(true);
+				return false;
 			})
 			.on('click', '.thread-list .thread-list-message', function () {
 				var oMessage = ko.dataFor(this);

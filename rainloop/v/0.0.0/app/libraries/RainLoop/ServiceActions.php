@@ -541,7 +541,7 @@ class ServiceActions
 		if (!empty($this->aPaths[3]))
 		{
 			$bAdmim =  'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
-			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], $bAdmim);
+			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmim);
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if (!empty($sLanguage) && $bCacheEnabled)
