@@ -50,5 +50,9 @@
 
 .flag.flag-tr, .flag.flag-tr-tr {background-position: -16px -154px}
 
+.flag.flag-hr, .flag.flag-hr-hr {background-position: 0 -66px}
+.flag.flag-sr, .flag.flag-sr-sr, .flag.flag-sr-rs {background-position: -240px -132px}
+.flag.flag-bs, .flag.flag-bs-bs, .flag.flag-bs-bs {background-position: -208px -11px}
+
 .flag.flag-cn, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
 .flag.flag-tw, .flag.flag-zh-tw {background-position: -64px -154px}
