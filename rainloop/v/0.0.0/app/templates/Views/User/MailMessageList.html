@@ -5,7 +5,7 @@
 			<div class="btn-toolbar">
 				<div class="btn-group">
 					<a class="btn single btn-dark-disabled-border buttonReload" data-tooltip-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
-						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottle}"></i>
+						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottleForAnimation}"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
@@ -29,16 +29,23 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
-					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-placement="bottom" data-bind="visible: !isArchiveFolder() && !isArchiveDisabled() && !isDraftFolder(), command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
+					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-placement="bottom"
+						data-bind="visible: isArchiveVisible, command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom" data-bind="visible: !isSpamFolder() && !isSpamDisabled() && !isDraftFolder() && !isSentFolder(), command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom"
+						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM',
+							css: {'first': !isArchiveVisible()}">
 						<i class="icon-angry-smiley"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom" data-bind="visible: isSpamFolder() && !isSpamDisabled() && !isDraftFolder() && !isSentFolder(), command: notSpamCommand, tooltip: 'MESSAGE_LIST/BUTTON_NOT_SPAM'">
+					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom"
+						data-bind="visible: isUnSpamVisible, command: notSpamCommand, tooltip: 'MESSAGE_LIST/BUTTON_NOT_SPAM',
+							css: {'first': !isArchiveVisible()}">
 						<i class="icon-happy-smiley"></i>
 					</a>
-					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE'">
+					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-placement="bottom"
+						data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE',
+							css: {'first': !isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible()}">
 						<i class="icon-trash"></i>
 						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
 					</a>
@@ -46,7 +53,7 @@
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 					<a id="more-list-dropdown-id" class="btn single btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
-						<i class="icon-list"></i>
+						<i class="icon-list animate-this-icon-on-open"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 						<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">

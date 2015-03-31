@@ -938,19 +938,55 @@
 
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
-		var Utils = require('Common/Utils');
-
-		oTarget.iTimeout = 0;
+		oTarget.iFalseTimeoutTimeout = 0;
 		oTarget.subscribe(function (bValue) {
 			if (bValue)
 			{
-				window.clearTimeout(oTarget.iTimeout);
-				oTarget.iTimeout = window.setTimeout(function () {
+				window.clearTimeout(oTarget.iFalseTimeoutTimeout);
+				oTarget.iFalseTimeoutTimeout = window.setTimeout(function () {
 					oTarget(false);
-					oTarget.iTimeout = 0;
-				}, Utils.pInt(iOption));
+					oTarget.iFalseTimeoutTimeout = 0;
+				}, require('Common/Utils').pInt(iOption));
 			}
 		});
+
+		return oTarget;
+	};
+
+	ko.extenders.specialThrottle = function (oTarget, iOption)
+	{
+		oTarget.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(iOption);
+		if (0 < oTarget.iSpecialThrottleTimeoutValue)
+		{
+			oTarget.iSpecialThrottleTimeout = 0;
+			oTarget.valueForRead = ko.observable(!!oTarget()).extend({'throttle': 10});
+
+			return ko.computed({
+				'read': oTarget.valueForRead,
+				'write': function (bValue) {
+
+					if (bValue)
+					{
+						oTarget.valueForRead(bValue);
+					}
+					else
+					{
+						if (oTarget.valueForRead())
+						{
+							window.clearTimeout(oTarget.iSpecialThrottleTimeout);
+							oTarget.iSpecialThrottleTimeout = window.setTimeout(function () {
+								oTarget.valueForRead(false);
+								oTarget.iSpecialThrottleTimeout = 0;
+							}, oTarget.iSpecialThrottleTimeoutValue);
+						}
+						else
+						{
+							oTarget.valueForRead(bValue);
+						}
+					}
+				}
+			});
+		}
 
 		return oTarget;
 	};

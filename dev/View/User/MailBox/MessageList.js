@@ -70,6 +70,7 @@
 		this.messageListCheckedOrSelected = MessageStore.messageListCheckedOrSelected;
 		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
 		this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
+		this.messageListCompleteLoadingThrottleForAnimation = MessageStore.messageListCompleteLoadingThrottleForAnimation;
 
 		Translator.initOnStartOrLangChange(function () {
 			this.emptySubjectValue = Translator.i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
@@ -174,6 +175,18 @@
 			return Consts.Values.UnuseOptionValue === FolderStore.archiveFolder();
 		}, this);
 
+		this.isArchiveVisible = ko.computed(function () {
+			return !this.isArchiveFolder() && !this.isArchiveDisabled() && !this.isDraftFolder();
+		}, this);
+
+		this.isSpamVisible = ko.computed(function () {
+			return !this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder();
+		}, this);
+
+		this.isUnSpamVisible = ko.computed(function () {
+			return this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder();
+		}, this);
+
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
 		this.clearCommand = Utils.createCommand(this, function () {
@@ -218,7 +231,7 @@
 		this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
 		this.reloadCommand = Utils.createCommand(this, function () {
-			if (!MessageStore.messageListCompleteLoadingThrottle())
+			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation())
 			{
 				require('App/User').reloadMessageList(false, true);
 			}

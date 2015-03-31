@@ -51,6 +51,7 @@
 		this.messageListLoading = ko.observable(false);
 		this.messageListIsNotCompleted = ko.observable(false);
 		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({'throttle': 200});
+		this.messageListCompleteLoadingThrottleForAnimation = ko.observable(false).extend({'specialThrottle': 700});
 
 		this.messageListDisableAutoSelect = ko.observable(false).extend({'falseTimeout': 500});
 
@@ -164,7 +165,9 @@
 	MessageUserStore.prototype.subscribers = function ()
 	{
 		this.messageListCompleteLoading.subscribe(function (bValue) {
+			bValue = !!bValue;
 			this.messageListCompleteLoadingThrottle(bValue);
+			this.messageListCompleteLoadingThrottleForAnimation(bValue);
 		}, this);
 
 		this.messageList.subscribe(_.debounce(function (aList) {

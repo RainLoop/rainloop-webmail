@@ -662,9 +662,10 @@
 
 	/**
 	 * @param {Object} oExcludeEmails
+	 * @param {boolean=} bLast = false
 	 * @return {Array}
 	 */
-	MessageModel.prototype.replyEmails = function (oExcludeEmails)
+	MessageModel.prototype.replyEmails = function (oExcludeEmails, bLast)
 	{
 		var
 			aResult = [],
@@ -677,16 +678,23 @@
 			MessageHelper.replyHelper(this.from, oUnic, aResult);
 		}
 
+		if (0 === aResult.length && !bLast)
+		{
+			return this.replyEmails({}, true);
+		}
+
 		return aResult;
 	};
 
 	/**
 	 * @param {Object} oExcludeEmails
+	 * @param {boolean=} bLast = false
 	 * @return {Array.<Array>}
 	 */
-	MessageModel.prototype.replyAllEmails = function (oExcludeEmails)
+	MessageModel.prototype.replyAllEmails = function (oExcludeEmails, bLast)
 	{
 		var
+			aData = [],
 			aToResult = [],
 			aCcResult = [],
 			oUnic = Utils.isUnd(oExcludeEmails) ? {} : oExcludeEmails
@@ -700,6 +708,12 @@
 
 		MessageHelper.replyHelper(this.to, oUnic, aToResult);
 		MessageHelper.replyHelper(this.cc, oUnic, aCcResult);
+
+		if (0 === aToResult.length && !bLast)
+		{
+			aData = this.replyAllEmails({}, true);
+			return [aData[0], aCcResult];
+		}
 
 		return [aToResult, aCcResult];
 	};

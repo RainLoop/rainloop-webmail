@@ -9,6 +9,10 @@
 	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
 }
 
+@keyframes bounce-me {
+	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
+}
+
 @keyframes textLoadingAnimationKeyFrame {
 	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
 }
@@ -55,6 +59,10 @@ html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrap
 /*	&.csstransitions.no-mobile #rl-content {
 		.transition(opacity 0.3s ease-out);
 	}*/
+
+	&.csstransitions.no-mobile .btn-group.dropdown.colored-toggle.open .animate-this-icon-on-open {
+		animation: bounce-me .5s linear;
+	}
 
 	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
 		.transition(all 0.3s ease-out);
