@@ -402,6 +402,14 @@
 	};
 
 	/**
+	 * @param {boolean}
+	 */
+	Selector.prototype.doUpUpOrDownDown = function (bUp)
+	{
+		(this.oCallbacks['onUpUpOrDownDown'] || this.emptyTrueFunction)(!!bUp);
+	};
+
+	/**
 	 * @param {Object} oItem
 	 * @returns {string}
 	 */
@@ -484,6 +492,11 @@
 							}
 						}
 					});
+
+					if (!oResult && bForceSelect && (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode))
+					{
+						this.doUpUpOrDownDown(Enums.EventKeyCode.Up === iEventKeyCode);
+					}
 				}
 				else if (Enums.EventKeyCode.Home === iEventKeyCode || Enums.EventKeyCode.End === iEventKeyCode)
 				{

@@ -255,6 +255,9 @@
 			return this.useAutoSelect();
 		}, this));
 
+//		this.selector.on('onUpUpOrDownDown', _.bind(function (bV) {
+//		}, this));
+
 		Events
 			.sub('mailbox.message-list.selector.go-down', function () {
 				this.selector.goDown(true);

@@ -474,15 +474,7 @@
 		}, this);
 
 		this.fullScreenMode.subscribe(function (bValue) {
-			if (bValue)
-			{
-				Globals.$html.addClass('rl-message-fullscreen');
-			}
-			else
-			{
-				Globals.$html.removeClass('rl-message-fullscreen');
-			}
-
+			Globals.$html.toggleClass('rl-message-fullscreen', bValue);
 			Utils.windowResize();
 		});
 
