@@ -60,6 +60,12 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
 		}
+		catch (\MailSo\Sieve\Exceptions\NegativeResponseException $oException)
+		{
+			throw new \RainLoop\Exceptions\ClientException(
+				\RainLoop\Notifications::ClientViewError, $oException,
+					\implode("\r\n", $oException->GetResponses()));
+		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveFilters, $oException);

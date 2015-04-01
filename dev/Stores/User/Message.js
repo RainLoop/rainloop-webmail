@@ -61,8 +61,6 @@
 		this.selectorMessageSelected = ko.observable(null);
 		this.selectorMessageFocused = ko.observable(null);
 
-		this.message.focused = ko.observable(false);
-
 		this.message.viewTrigger = ko.observable(false);
 
 		this.messageLastThreadUidsData = ko.observable(null);
@@ -180,41 +178,22 @@
 		}, 500));
 
 		this.message.subscribe(function (oMessage) {
-			if (!oMessage)
+
+			if (oMessage)
 			{
-				this.message.focused(false);
+				 if (Enums.Layout.NoPreview === SettingsStore.layout())
+				{
+					AppStore.focusedState(Enums.Focused.MessageView);
+				}
+			}
+			else
+			{
+				AppStore.focusedState(Enums.Focused.MessageList);
+
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
+			}
 
-				if (Enums.Layout.NoPreview === SettingsStore.layout() &&
-					-1 < window.location.hash.indexOf('message-preview'))
-				{
-					require('App/User').historyBack();
-				}
-			}
-			else if (Enums.Layout.NoPreview === SettingsStore.layout())
-			{
-				this.message.focused(true);
-			}
-		}, this);
-
-		this.message.focused.subscribe(function (bValue) {
-			if (bValue)
-			{
-				FolderStore.folderList.focused(false);
-				Globals.keyScope(Enums.KeyState.MessageView);
-			}
-			else if (Enums.KeyState.MessageView === Globals.keyScope())
-			{
-				if (Enums.Layout.NoPreview === SettingsStore.layout() && this.message())
-				{
-					Globals.keyScope(Enums.KeyState.MessageView);
-				}
-				else
-				{
-					Globals.keyScope(Enums.KeyState.MessageList);
-				}
-			}
 		}, this);
 
 		this.messageLoading.subscribe(function (bValue) {
@@ -671,12 +650,6 @@
 			this.message(this.staticMessage.populateByMessageListItem(oMessage));
 
 			this.populateMessageBody(this.message());
-
-			if (Enums.Layout.NoPreview === SettingsStore.layout())
-			{
-				kn.setHash(Links.messagePreview(), true);
-				this.message.focused(true);
-			}
 		}
 		else
 		{
@@ -689,12 +662,6 @@
 		if (Remote.message(this.onMessageResponse, sFolder, sUid))
 		{
 			this.messageThreadLoading(true);
-		}
-
-		if (Enums.Layout.NoPreview === SettingsStore.layout())
-		{
-			kn.setHash(Links.messagePreview(), true);
-			this.message.focused(true);
 		}
 	};
 

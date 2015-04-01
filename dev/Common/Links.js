@@ -209,14 +209,6 @@
 	};
 
 	/**
-	 * @return {string}
-	 */
-	Links.prototype.messagePreview = function ()
-	{
-		return this.sBase + 'mailbox/message-preview';
-	};
-
-	/**
 	 * @param {string=} sScreenName
 	 * @return {string}
 	 */

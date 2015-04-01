@@ -6,6 +6,9 @@
 	var
 		ko = require('ko'),
 
+		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
+
 		Settings = require('Storage/Settings'),
 
 		AppStore = require('Stores/App')
@@ -17,6 +20,25 @@
 	function AppUserStore()
 	{
 		AppStore.call(this);
+
+		this.focusedState = ko.observable(Enums.Focused.None);
+
+		this.focusedState.subscribe(function (mValue) {
+
+			switch (mValue)
+			{
+				case Enums.Focused.MessageList:
+					Globals.keyScope(Enums.KeyState.MessageList);
+					break;
+				case Enums.Focused.MessageView:
+					Globals.keyScope(Enums.KeyState.MessageView);
+					break;
+				case Enums.Focused.FolderList:
+					Globals.keyScope(Enums.KeyState.FolderList);
+					break;
+			}
+
+		}, this);
 
 		this.projectHash = ko.observable('');
 		this.threadsAllowed = ko.observable(false);

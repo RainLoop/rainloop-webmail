@@ -198,8 +198,6 @@
 							Globals.popupVisibilityNames.remove(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 2000);
 
-							Globals.tooltipTrigger(!Globals.tooltipTrigger());
-
 							_.delay(function () {
 								self.viewModelDom.hide();
 							}, 300);
@@ -288,6 +286,7 @@
 		var
 			self = this,
 			oScreen = null,
+			bSameScreen= false,
 			oCross = null
 		;
 
@@ -311,6 +310,8 @@
 
 			if (oScreen && oScreen.__started)
 			{
+				bSameScreen = this.oCurrentScreen && oScreen === this.oCurrentScreen;
+
 				if (!oScreen.__builded)
 				{
 					oScreen.__builded = true;
@@ -328,7 +329,7 @@
 				_.defer(function () {
 
 					// hide screen
-					if (self.oCurrentScreen)
+					if (self.oCurrentScreen && !bSameScreen)
 					{
 						Utils.delegateRun(self.oCurrentScreen, 'onHide');
 						Utils.delegateRun(self.oCurrentScreen, 'onHideWithDelay', [], 500);
@@ -365,7 +366,7 @@
 					self.oCurrentScreen = oScreen;
 
 					// show screen
-					if (self.oCurrentScreen)
+					if (self.oCurrentScreen && !bSameScreen)
 					{
 						Utils.delegateRun(self.oCurrentScreen, 'onShow');
 						if (self.oCurrentScreen.onShowTrigger)

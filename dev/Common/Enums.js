@@ -16,6 +16,16 @@
 	};
 
 	/**
+	 * @enum {string}
+	 */
+	Enums.Focused = {
+		'None': 'none',
+		'MessageList': 'message-list',
+		'MessageView': 'message-view',
+		'FolderList': 'folder-list'
+	};
+
+	/**
 	 * @enum {number}
 	 */
 	Enums.State = {

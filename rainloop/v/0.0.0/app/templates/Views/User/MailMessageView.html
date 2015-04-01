@@ -1,32 +1,32 @@
 <!-- ko template: { name: 'PhotoSwipe' } --><!-- /ko -->
 <div id="rl-sub-right">
-	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused}">
+	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': messageFocused}">
 		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
 			<nobr>
 			<div class="messageButtons btn-toolbar">
-				<div class="btn-group" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
+				<div class="btn-group" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
 					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessage">
 						<i class="icon-remove"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group" data-tooltip-placement="bottom" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
+				<div class="btn-group" data-tooltip-join="top" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
 					<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
 						<i class="icon-pencil icon-white"></i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">
-					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
+					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-angry-smiley"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
+					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
 						<i class="icon-happy-smiley"></i>
 					</a>
-					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-placement="bottom" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
+					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash"></i>
 					</a>
 				</div>
@@ -63,7 +63,7 @@
 							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true">
 								<a class="btn btn-thin last btn-dark-disabled-border dropdown-toggle buttonMore"
 									id="more-view-dropdown-id" href="#" tabindex="-1"
-									data-toggle="dropdown" data-tooltip-placement="bottom"
+									data-toggle="dropdown" data-tooltip-join="bottom"
 									style="margin-left: -1px;"
 									data-bind="command: messageVisibilityCommand, tooltip: 'MESSAGE/BUTTON_MORE'">
 										<span class="caret"></span>
@@ -168,15 +168,15 @@
 									</li>
 								</ul>
 							</div>
-							<a class="btn first btn-dark-disabled-border buttonReply pull-right" data-tooltip-placement="bottom"
+							<a class="btn first btn-dark-disabled-border buttonReply pull-right" data-tooltip-join="bottom"
 								data-bind="visible: 'reply' === lastReplyAction(), command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
 								<i class="icon-reply"></i>
 							</a>
-							<a class="btn first btn-dark-disabled-border buttonReplyAll pull-right" data-tooltip-placement="bottom"
+							<a class="btn first btn-dark-disabled-border buttonReplyAll pull-right" data-tooltip-join="bottom"
 								data-bind="visible: 'replyall' === lastReplyAction(), command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
 								<i class="icon-reply-all"></i>
 							</a>
-							<a class="btn first btn-dark-disabled-border buttonForward pull-right" data-tooltip-placement="bottom"
+							<a class="btn first btn-dark-disabled-border buttonForward pull-right" data-tooltip-join="bottom"
 								data-bind="visible: 'forward' === lastReplyAction(), command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
 								<i class="icon-forward"></i>
 							</a>
@@ -191,13 +191,13 @@
 						<div class="btn-group thread-controls pull-right g-ui-user-select-none" style="margin-right: 5px"
 							data-bind="visible: viewThreadsControlVisibility">
 
-							<a class="btn last btn-thin pull-right" data-tooltip-placement="bottom"
+							<a class="btn last btn-thin pull-right" data-tooltip-join="bottom"
 								data-bind="command: threadBackCommand, tooltip: 'MESSAGE/BUTTON_THREAD_PREV'">
 								<i class="icon-right-middle"></i>
 							</a>
 							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: threadsDropdownTrigger">
 								<a class="btn btn-thin btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
-									href="#" tabindex="-1" data-tooltip-placement="bottom"
+									href="#" tabindex="-1" data-tooltip-join="bottom"
 									style="margin-left: -1px; margin-right: -1px;"
 									data-bind="command: threadListCommand, tooltip: 'MESSAGE/BUTTON_THREAD_LIST'"
 								>
@@ -217,7 +217,7 @@
 										<i class="icon-spinner animated" />
 									</div>
 									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
-										<li class="e-item thread-list-message" role="presentation" data-bind="css: {'selected': selected, 'more-that': $parent.viewThreadMessages.limit < $index() }">
+										<li class="e-item thread-list-message real-msg" role="presentation" data-bind="css: {'selected': selected, 'more-that': $parent.viewThreadMessages.limit < $index() }">
 											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
 												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: timestamp"></span>
 												<div style="text-overflow: ellipsis; overflow: hidden;">
@@ -232,11 +232,15 @@
 										</li>
 									</div>
 									<div data-bind="visible: !viewThreadMessages.showMore() && !messageListOfThreadsLoading()">
-										<a class="more-threads" href="#" tabindex="-1" data-i18n="MESSAGE/BUTTON_THREAD_MORE"></a>
+										<li class="e-item thread-list-message" role="presentation">
+											<a class="e-link menuitem more-threads" href="#" tabindex="-1"
+											   onclick="return false"
+											   data-i18n="MESSAGE/BUTTON_THREAD_MORE"></a>
+										</li>
 									</div>
 								</ul>
 							</div>
-							<a class="btn first btn-thin pull-right" data-tooltip-placement="bottom"
+							<a class="btn first btn-thin pull-right" data-tooltip-join="bottom"
 								data-bind="command: threadForwardCommand, tooltip: 'MESSAGE/BUTTON_THREAD_NEXT'">
 								<i class="icon-left-middle"></i>
 							</a>
@@ -325,7 +329,7 @@
 						</div>
 					</div>
 					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), nano: true, attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
-						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused">
+						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused }">
 							<div class="content-wrapper">
 								<div>
 
@@ -378,7 +382,7 @@
 									</div>
 									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments()">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
-											<li class="attachmentItem clearfix" draggable="true" data-tooltip-placement="bottom"
+											<li class="attachmentItem clearfix" draggable="true" data-tooltip-join="top"
 													data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }">
 												<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview() }">
 													<div class="hidePreview">

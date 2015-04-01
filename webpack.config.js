@@ -20,6 +20,7 @@ module.exports = {
 		modulesDirectories: [__dirname + '/dev/'],
 		extensions: ['', '.js'],
 		alias: {
+			"Opentip": __dirname  + "/dev/External/Opentip.js",
 			"ko": __dirname  + "/dev/External/ko.js"
 		}
 	},

@@ -21,6 +21,7 @@
 
 		Cache = require('Common/Cache'),
 
+		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
 		FolderStore = require('Stores/User/Folder'),
@@ -97,6 +98,12 @@
 		this.showFullInfo = ko.observable(false);
 		this.moreDropdownTrigger = ko.observable(false);
 		this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
+
+		// TODO
+//		ko.computed(function () {
+//			window.console.log('focus:' + AppStore.focusedState() + ', dom:' +
+//				this.messageDomFocused() + ', key:' + Globals.keyScope() + ' ~ ' + Globals.keyScopeReal());
+//		}, this).extend({'throttle': 1});
 
 		this.messageVisibility = ko.computed(function () {
 			return !this.messageLoadingThrottle() && !!this.message();
@@ -341,13 +348,6 @@
 				!this.messageListOfThreadsLoading();
 		});
 
-		this.threadsDropdownTrigger.subscribe(function (bValue) {
-			if (bValue && this.message())
-			{
-				this.threadListCommand();
-			}
-		}, this);
-
 // PGP
 		this.viewPgpPassword = ko.observable('');
 		this.viewPgpSignedVerifyStatus = ko.computed(function () {
@@ -480,12 +480,28 @@
 
 		this.messageLoadingThrottle.subscribe(Utils.windowResizeCallback);
 
+		this.messageFocused = ko.computed(function () {
+			return Enums.Focused.MessageView === AppStore.focusedState();
+		});
+
+		this.messageListAndMessageViewLoading = ko.computed(function () {
+			return MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle();
+		});
+
 		this.goUpCommand = Utils.createCommand(this, function () {
-			Events.pub('mailbox.message-list.selector.go-up');
+			Events.pub('mailbox.message-list.selector.go-up', [
+				Enums.Layout.NoPreview === this.layout() ? !!this.message() : true
+			]);
+		}, function () {
+			return !this.messageListAndMessageViewLoading();
 		});
 
 		this.goDownCommand = Utils.createCommand(this, function () {
-			Events.pub('mailbox.message-list.selector.go-down');
+			Events.pub('mailbox.message-list.selector.go-down', [
+				Enums.Layout.NoPreview === this.layout() ? !!this.message() : true
+			]);
+		}, function () {
+			return !this.messageListAndMessageViewLoading();
 		});
 
 		Events.sub('mailbox.message-view.toggle-full-screen', function () {
@@ -604,9 +620,9 @@
 		;
 
 		this.fullScreenMode.subscribe(function (bValue) {
-			if (bValue)
+			if (bValue && self.message())
 			{
-				self.message.focused(true);
+				AppStore.focusedState(Enums.Focused.MessageView);
 			}
 		}, this);
 
@@ -718,8 +734,23 @@
 					oEvent.stopPropagation();
 				}
 			})
-			.on('click', '.thread-list .more-threads', function () {
+			.on('click', '.thread-list .more-threads', function (e) {
+
+				var oLast = null;
+				if (!e || 0 === e.clientX) // probably enter
+				{
+					// It's a bad bad hack :(
+					oLast = $('.thread-list .e-item.thread-list-message.real-msg.more-that:first a.e-link', oDom);
+				}
+
 				self.viewThreadMessages.showMore(true);
+				self.threadsDropdownTrigger(true);
+
+				if (oLast)
+				{
+					oLast.focus();
+				}
+
 				return false;
 			})
 			.on('click', '.thread-list .thread-list-message', function () {
@@ -745,28 +776,16 @@
 			})
 		;
 
-		this.message.focused.subscribe(function (bValue) {
-			if (bValue && !Utils.inFocus()) {
-				this.messageDomFocused(true);
-			} else {
-				this.messageDomFocused(false);
+		AppStore.focusedState.subscribe(function (sValue) {
+			if (Enums.Focused.MessageView !== sValue)
+			{
 				this.scrollMessageToTop();
 				this.scrollMessageToLeft();
 			}
 		}, this);
 
-		this.messageDomFocused.subscribe(function (bValue) {
-			if (!bValue && Enums.KeyState.MessageView === Globals.keyScope())
-			{
-				this.message.focused(false);
-			}
-		}, this);
-
-		Globals.keyScope.subscribe(function (sValue) {
-			if (Enums.KeyState.MessageView === sValue && this.message.focused())
-			{
-				this.messageDomFocused(true);
-			}
+		Globals.keyScopeReal.subscribe(function (sValue) {
+			this.messageDomFocused(Enums.KeyState.MessageView === sValue && !Utils.inFocus());
 		}, this);
 
 		this.oMessageScrollerDom = oDom.find('.messageItem .content');
@@ -801,7 +820,7 @@
 
 				if (Enums.Layout.NoPreview !== this.layout())
 				{
-					this.message.focused(false);
+					AppStore.focusedState(Enums.Focused.MessageList);
 				}
 			}
 			else if (Enums.Layout.NoPreview === this.layout())
@@ -810,7 +829,7 @@
 			}
 			else
 			{
-				this.message.focused(false);
+				AppStore.focusedState(Enums.Focused.MessageList);
 			}
 
 			return false;
@@ -878,9 +897,10 @@
 		});
 
 		key('t', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (MessageStore.message())
+			if (MessageStore.message() && self.viewThreadsControlVisibility())
 			{
 				self.threadsDropdownTrigger(true);
+				self.threadListCommand();
 				return false;
 			}
 		});
@@ -943,11 +963,11 @@
 						return true;
 					}
 
-					self.message.focused(false);
+					AppStore.focusedState(Enums.Focused.MessageList);
 				}
 				else
 				{
-					self.message.focused(false);
+					AppStore.focusedState(Enums.Focused.MessageList);
 				}
 			}
 			else if (self.message() && Enums.Layout.NoPreview === self.layout() && event && handler && 'left' === handler.shortcut)

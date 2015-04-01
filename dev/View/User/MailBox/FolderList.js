@@ -52,6 +52,10 @@
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 
+		this.folderListFocused = ko.computed(function () {
+			return Enums.Focused.FolderList === AppStore.focusedState();
+		});
+
 		kn.constructorEnd(this);
 	}
 
@@ -144,7 +148,7 @@
 			var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
 			if ($items.length && $items[0])
 			{
-				FolderStore.folderList.focused(false);
+				AppStore.focusedState(Enums.Focused.MessageList);
 				$items.click();
 			}
 
@@ -168,13 +172,13 @@
 		});
 
 		key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function () {
-			FolderStore.folderList.focused(false);
+			AppStore.focusedState(Enums.Focused.MessageList);
 			return false;
 		});
 
-		FolderStore.folderList.focused.subscribe(function (bValue) {
+		AppStore.focusedState.subscribe(function (mValue) {
 			$('.b-folders .e-item .e-link.focused', oDom).removeClass('focused');
-			if (bValue)
+			if (Enums.Focused.FolderList === mValue)
 			{
 				$('.b-folders .e-item .e-link.selected', oDom).addClass('focused');
 			}

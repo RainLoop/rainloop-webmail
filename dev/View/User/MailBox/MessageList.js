@@ -4,6 +4,7 @@
 	'use strict';
 
 	var
+		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -22,6 +23,7 @@
 
 		Cache = require('Common/Cache'),
 
+		AppStore = require('Stores/User/App'),
 		QuotaStore = require('Stores/User/Quota'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
@@ -53,7 +55,9 @@
 		this.message = MessageStore.message;
 		this.messageList = MessageStore.messageList;
 		this.messageListDisableAutoSelect = MessageStore.messageListDisableAutoSelect;
+
 		this.folderList = FolderStore.folderList;
+
 		this.selectorMessageSelected = MessageStore.selectorMessageSelected;
 		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
 		this.isMessageSelected = MessageStore.isMessageSelected;
@@ -187,6 +191,10 @@
 			return this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder();
 		}, this);
 
+		this.messageListFocused = ko.computed(function () {
+			return Enums.Focused.MessageList === AppStore.focusedState();
+		});
+
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
 		this.clearCommand = Utils.createCommand(this, function () {
@@ -255,15 +263,16 @@
 			return this.useAutoSelect();
 		}, this));
 
-//		this.selector.on('onUpUpOrDownDown', _.bind(function (bV) {
-//		}, this));
+		this.selector.on('onUpUpOrDownDown', _.bind(function (bV) {
+			this.goToUpUpOrDownDown(bV);
+		}, this));
 
 		Events
-			.sub('mailbox.message-list.selector.go-down', function () {
-				this.selector.goDown(true);
+			.sub('mailbox.message-list.selector.go-down', function (bSelect) {
+				this.selector.goDown(bSelect);
 			}, this)
-			.sub('mailbox.message-list.selector.go-up', function () {
-				this.selector.goUp(true);
+			.sub('mailbox.message-list.selector.go-up', function (bSelect) {
+				this.selector.goUp(bSelect);
 			}, this)
 		;
 
@@ -281,6 +290,67 @@
 	 * @type {string}
 	 */
 	MessageListMailBoxUserView.prototype.emptySubjectValue = '';
+
+	MessageListMailBoxUserView.prototype.iGoToUpUpOrDownDownTimeout = 0;
+
+	MessageListMailBoxUserView.prototype.goToUpUpOrDownDown = function (bUp)
+	{
+		var self = this;
+
+		window.clearTimeout(this.iGoToUpUpOrDownDownTimeout);
+		this.iGoToUpUpOrDownDownTimeout = window.setTimeout(function () {
+
+			var
+				oPrev = null,
+				oNext = null,
+				oTemp = null,
+				oCurrent = null,
+				aPages = self.messageListPagenator()
+			;
+
+			_.find(aPages, function (oItem) {
+
+				if (oItem)
+				{
+					if (oCurrent)
+					{
+						oNext = oItem;
+					}
+
+					if (oItem.current)
+					{
+						oCurrent = oItem;
+						oPrev = oTemp;
+					}
+
+					if (oNext)
+					{
+						return true;
+					}
+
+					oTemp = oItem;
+				}
+
+				return false;
+			});
+
+			if (Enums.Layout.NoPreview === SettingsStore.layout() && !self.message())
+			{
+				self.selector.iFocusedNextHelper = bUp ? -1 : 1;
+			}
+			else
+			{
+				self.selector.iSelectNextHelper = bUp ? -1 : 1;
+			}
+
+			if (bUp ? oPrev : oNext)
+			{
+				self.selector.unselect();
+				self.gotoPage(bUp ? oPrev : oNext);
+			}
+
+		}, 350);
+	};
 
 	MessageListMailBoxUserView.prototype.useAutoSelect = function ()
 	{
@@ -534,6 +604,18 @@
 		}
 	};
 
+	MessageListMailBoxUserView.prototype.gotoPage = function (oPage)
+	{
+		if (oPage)
+		{
+			kn.setHash(Links.mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				oPage.value,
+				MessageStore.messageListSearch()
+			));
+		}
+	};
+
 	MessageListMailBoxUserView.prototype.onBuild = function (oDom)
 	{
 		var self = this;
@@ -545,21 +627,13 @@
 
 		oDom
 			.on('click', '.messageList .b-message-list-wrapper', function () {
-				if (self.message.focused())
+				if (Enums.Focused.MessageView === AppStore.focusedState())
 				{
-					self.message.focused(false);
+					AppStore.focusedState(Enums.Focused.MessageList);
 				}
 			})
 			.on('click', '.e-pagenator .e-page', function () {
-				var oPage = ko.dataFor(this);
-				if (oPage)
-				{
-					kn.setHash(Links.mailBox(
-						FolderStore.currentFolderFullNameHash(),
-						oPage.value,
-						MessageStore.messageListSearch()
-					));
-				}
+				self.gotoPage(ko.dataFor(this));
 			})
 			.on('click', '.messageList .checkboxCkeckAll', function () {
 				self.checkAll(!self.checkAll());
@@ -691,11 +765,11 @@
 		key('tab, shift+tab, left, right', Enums.KeyState.MessageList, function (event, handler) {
 			if (event && handler && ('shift+tab' === handler.shortcut || 'left' === handler.shortcut))
 			{
-				FolderStore.folderList.focused(true);
+				AppStore.focusedState(Enums.Focused.FolderList);
 			}
 			else if (self.message())
 			{
-				self.message.focused(true);
+				AppStore.focusedState(Enums.Focused.MessageView);
 			}
 
 			return false;

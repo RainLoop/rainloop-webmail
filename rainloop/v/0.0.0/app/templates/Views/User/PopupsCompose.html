@@ -12,8 +12,8 @@
 				<span class="i18n" data-i18n="COMPOSE/BUTTON_SAVE"></span>
 			</a>
 
-			<a class="close-custom" data-tooltip-placement="bottom" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
-			<a class="minimize-custom" data-tooltip-placement="bottom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
+			<a class="close-custom" data-tooltip-join="top" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
+			<a class="minimize-custom" data-tooltip-join="top" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
 
 			<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 				<i class="icon-trash icon-white"></i>
@@ -86,7 +86,7 @@
 								</div>
 								<div class="btn-group pull-right">&nbsp;</div>
 								<div class="btn-group pull-right">
-									<a class="btn single" data-tooltip-placement="bottom" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
+									<a class="btn single" data-tooltip-join="top" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
 										<i class="icon-address-book"></i>
 									</a>
 								</div>
@@ -179,16 +179,16 @@
 									</div>
 									<div class="pull-right" style="margin-right: 4px;">
 										<div class="btn-group pull-right">
-											<a class="btn first" data-tooltip-placement="top"
+											<a class="btn first" data-tooltip-join="bottom"
 												style="padding-left: 10px; padding-right: 10px;"
 												data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 												<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
 											</a>
-											<a class="btn" data-tooltip-placement="top"
+											<a class="btn" data-tooltip-join="bottom"
 												data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX', css: {'first': !addAttachmentEnabled(), 'last': !driveEnabled()}">
 												<i class="icon-dropbox"></i>
 											</a>
-											<a class="btn last" data-tooltip-placement="top"
+											<a class="btn last" data-tooltip-join="bottom"
 												data-bind="visible: driveEnabled() && driveVisible(), command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE'">
 												<i class="icon-google-drive"></i>
 											</a>

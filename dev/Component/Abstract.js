@@ -39,16 +39,17 @@
 	 * @return {Object}
 	 */
 	AbstractComponent.componentExportHelper = function (ClassObject, sTemplateID) {
-		return {
+		var oComponent = {
 			viewModel: {
-				createViewModel: function(oParams, oCmponentInfo) {
+				createViewModel: function(oParams, oComponentInfo) {
 
 					oParams = oParams || {};
 					oParams.element = null;
 
-					if (oCmponentInfo.element)
+					if (oComponentInfo.element)
 					{
-						oParams.element = $(oCmponentInfo.element);
+						oParams.component = oComponentInfo;
+						oParams.element = $(oComponentInfo.element);
 
 						require('Common/Translator').i18nToNodes(oParams.element);
 
@@ -60,11 +61,14 @@
 
 					return new ClassObject(oParams);
 				}
-			},
-			template: {
-				element: sTemplateID
 			}
 		};
+
+		oComponent['template'] = sTemplateID ? {
+			element: sTemplateID
+		} : '<b></b>';
+
+		return oComponent;
 	};
 
 	module.exports = AbstractComponent;

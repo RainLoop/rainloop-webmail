@@ -9,7 +9,6 @@
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
-		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
 		Cache = require('Common/Cache')
@@ -29,7 +28,6 @@
 		this.namespace = '';
 
 		this.folderList = ko.observableArray([]);
-		this.folderList.focused = ko.observable(false);
 		this.folderList.optimized = ko.observable(false);
 		this.folderList.error = ko.observable('');
 
@@ -180,17 +178,6 @@
 		this.spamFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Spam), this);
 		this.trashFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Trash), this);
 		this.archiveFolder.subscribe(fSetSystemFolderType(Enums.FolderType.Archive), this);
-
-		this.folderList.focused.subscribe(function (bValue) {
-			if (bValue)
-			{
-				Globals.keyScope(Enums.KeyState.FolderList);
-			}
-			else if (Enums.KeyState.FolderList === Globals.keyScope())
-			{
-				Globals.keyScope(Enums.KeyState.MessageList);
-			}
-		});
 	};
 
 	/**

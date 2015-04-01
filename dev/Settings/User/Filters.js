@@ -73,10 +73,13 @@
 						self.haveChanges(false);
 						self.updateList();
 					}
+					else if (oData && oData.ErrorCode)
+					{
+						self.saveErrorText(oData.ErrorMessageAdditional || Translator.getNotification(oData.ErrorCode));
+					}
 					else
 					{
-						self.saveErrorText(oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
-							Translator.getNotification(Enums.Notification.CantSaveFilters));
+						self.saveErrorText(Translator.getNotification(Enums.Notification.CantSaveFilters));
 					}
 
 				}, this.filters(), this.filterRaw(), this.filterRaw.active());
@@ -95,6 +98,10 @@
 		this.filterRaw.subscribe(function () {
 			this.haveChanges(true);
 			this.filterRaw.error(false);
+		}, this);
+
+		this.haveChanges.subscribe(function () {
+			this.saveErrorText('');
 		}, this);
 
 		this.filterRaw.active.subscribe(function () {

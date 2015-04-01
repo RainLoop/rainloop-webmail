@@ -14,6 +14,7 @@
 
 		Cache = require('Common/Cache'),
 
+		AppStore = require('Stores/User/App'),
 		AccountStore = require('Stores/User/Account'),
 		SettingsStore = require('Stores/User/Settings'),
 		FolderStore = require('Stores/User/Folder'),
@@ -60,7 +61,9 @@
 	MailBoxUserScreen.prototype.onShow = function ()
 	{
 		this.updateWindowTitle();
-		Globals.keyScope(Enums.KeyState.MessageList);
+
+		AppStore.focusedState(Enums.Focused.None);
+		AppStore.focusedState(Enums.Focused.MessageList);
 	};
 
 	/**
@@ -69,35 +72,25 @@
 	 * @param {string} sSearch
 	 * @param {boolean=} bPreview = false
 	 */
-	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch, bPreview)
+	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 	{
-		if (Utils.isUnd(bPreview) ? false : !!bPreview)
+		var
+			sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
+			oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
+		;
+
+		if (oFolder)
 		{
-			if (Enums.Layout.NoPreview === SettingsStore.layout() && !MessageStore.message())
-			{
-				require('App/User').historyBack();
-			}
-		}
-		else
-		{
-			var
-				sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
-				oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
-			;
+			FolderStore.currentFolder(oFolder);
+			MessageStore.messageListPage(iPage);
+			MessageStore.messageListSearch(sSearch);
 
-			if (oFolder)
-			{
-				FolderStore.currentFolder(oFolder);
-				MessageStore.messageListPage(iPage);
-				MessageStore.messageListSearch(sSearch);
+//			if (Enums.Layout.NoPreview === SettingsStore.layout() && MessageStore.message())
+//			{
+//				MessageStore.message(null);
+//			}
 
-				if (Enums.Layout.NoPreview === SettingsStore.layout() && MessageStore.message())
-				{
-					MessageStore.message(null);
-				}
-
-				require('App/User').reloadMessageList();
-			}
+			require('App/User').reloadMessageList();
 		}
 	};
 
@@ -147,9 +140,6 @@
 	{
 		var
 			sInboxFolderName = Cache.getFolderInboxName(),
-			fNormP = function () {
-				return [sInboxFolderName, 1, '', true];
-			},
 			fNormS = function (oRequest, oVals) {
 				oVals[0] = Utils.pString(oVals[0]);
 				oVals[1] = Utils.pInt(oVals[1]);
@@ -162,7 +152,7 @@
 					oVals[1] = 1;
 				}
 
-				return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2]), false];
+				return [decodeURI(oVals[0]), oVals[1], decodeURI(oVals[2])];
 			},
 			fNormD = function (oRequest, oVals) {
 				oVals[0] = Utils.pString(oVals[0]);
@@ -173,7 +163,7 @@
 					oVals[0] = sInboxFolderName;
 				}
 
-				return [decodeURI(oVals[0]), 1, decodeURI(oVals[1]), false];
+				return [decodeURI(oVals[0]), 1, decodeURI(oVals[1])];
 			}
 		;
 
@@ -181,7 +171,6 @@
 			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 			[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
-			[/^message-preview$/,  {'normalize_': fNormP}],
 			[/^([^\/]*)$/,  {'normalize_': fNormS}]
 		];
 	};

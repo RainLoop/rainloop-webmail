@@ -5418,7 +5418,7 @@ class Actions
 	 */
 	public function DoMessageList()
 	{
-//		\sleep(2);
+//		\sleep(1);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 
 		$sFolder = '';

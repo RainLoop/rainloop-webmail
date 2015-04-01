@@ -88,7 +88,7 @@
 
 		}, this);
 
-		this.selectedItem.extend({'toggleSubscribe': [null,
+		this.selectedItem = this.selectedItem.extend({'toggleSubscribe': [null,
 			function (oPrev) {
 				if (oPrev)
 				{
@@ -102,7 +102,7 @@
 			}
 		]});
 
-		this.focusedItem.extend({'toggleSubscribe': [null,
+		this.focusedItem = this.focusedItem.extend({'toggleSubscribe': [null,
 			function (oPrev) {
 				if (oPrev)
 				{
@@ -116,6 +116,8 @@
 			}
 		]});
 
+		this.iSelectNextHelper = 0;
+		this.iFocusedNextHelper = 0;
 		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
@@ -257,6 +259,39 @@
 						self.focusedItem(self.selectedItem());
 					}
 				}
+
+				if ((0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) && 0 < aItems.length && !self.focusedItem())
+				{
+					oTemp = null;
+					if (0 !== this.iFocusedNextHelper)
+					{
+						oTemp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0] || null;
+					}
+
+					if (!oTemp && 0 !== this.iSelectNextHelper)
+					{
+						oTemp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0] || null;
+					}
+
+					if (oTemp)
+					{
+						if (0 !== this.iSelectNextHelper)
+						{
+							self.selectedItem(oTemp || null);
+						}
+
+						self.focusedItem(oTemp || null);
+
+						self.scrollToFocused();
+
+						_.delay(function () {
+							self.scrollToFocused();
+						}, 100);
+					}
+
+					this.iSelectNextHelper = 0;
+					this.iFocusedNextHelper = 0;
+				}
 			}
 
 			aCache = [];
@@ -293,6 +328,12 @@
 	Selector.prototype.goUp = function (bForceSelect)
 	{
 		this.newSelectPosition(Enums.EventKeyCode.Up, false, bForceSelect);
+	};
+
+	Selector.prototype.unselect = function ()
+	{
+		this.selectedItem(null);
+		this.focusedItem(null);
 	};
 
 	Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeyScope)
@@ -493,7 +534,7 @@
 						}
 					});
 
-					if (!oResult && bForceSelect && (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode))
+					if (!oResult && (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode))
 					{
 						this.doUpUpOrDownDown(Enums.EventKeyCode.Up === iEventKeyCode);
 					}

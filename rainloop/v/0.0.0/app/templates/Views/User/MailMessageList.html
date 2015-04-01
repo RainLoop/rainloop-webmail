@@ -1,16 +1,16 @@
 <div id="rl-sub-left">
 	<div class="messageList g-ui-user-select-none"
-		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': message.focused, 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
+		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
 				<div class="btn-group">
-					<a class="btn single btn-dark-disabled-border buttonReload" data-tooltip-placement="bottom" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
+					<a class="btn single btn-dark-disabled-border buttonReload" data-tooltip-join="top" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
 						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottleForAnimation}"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
-					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
+					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-join="top" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-copy visible-on-ctrl-btn"></i>
 						<i class="icon-folder hidden-on-ctrl-btn"></i>
 						&nbsp;&nbsp;
@@ -29,21 +29,21 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group">
-					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-placement="bottom"
+					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top"
 						data-bind="visible: isArchiveVisible, command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-placement="bottom"
+					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top"
 						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM',
 							css: {'first': !isArchiveVisible()}">
 						<i class="icon-angry-smiley"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-placement="bottom"
+					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-join="top"
 						data-bind="visible: isUnSpamVisible, command: notSpamCommand, tooltip: 'MESSAGE_LIST/BUTTON_NOT_SPAM',
 							css: {'first': !isArchiveVisible()}">
 						<i class="icon-happy-smiley"></i>
 					</a>
-					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-placement="bottom"
+					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top"
 						data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE',
 							css: {'first': !isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible()}">
 						<i class="icon-trash"></i>
@@ -52,7 +52,7 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
-					<a id="more-list-dropdown-id" class="btn single btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-placement="bottom" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
+					<a id="more-list-dropdown-id" class="btn single btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list animate-this-icon-on-open"></i>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">

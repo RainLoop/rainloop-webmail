@@ -13,6 +13,7 @@
 		Links = require('Common/Links'),
 
 		AccountStore = require('Stores/User/Account'),
+		MessageStore = require('Stores/User/Message'),
 
 		Settings = require('Storage/Settings'),
 
@@ -88,6 +89,8 @@
 		key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function () {
 			if (self.viewModelVisibility())
 			{
+				MessageStore.messageFullScreenMode(false);
+
 				self.accountMenuDropdownTrigger(true);
 			}
 		});

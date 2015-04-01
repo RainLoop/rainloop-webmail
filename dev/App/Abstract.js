@@ -47,7 +47,7 @@
 					oEvent.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
 					Globals.$html.attr('class'),
-					Utils.microtime() - Globals.now
+					Utils.microtime() - Globals.startMicrotime
 				);
 			}
 		});
@@ -281,6 +281,8 @@
 		ko.components.register('Select', require('Component/Select'));
 		ko.components.register('TextArea', require('Component/TextArea'));
 		ko.components.register('Radio', require('Component/Radio'));
+
+		ko.components.register('x-script', require('Component/Script'));
 
 		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{

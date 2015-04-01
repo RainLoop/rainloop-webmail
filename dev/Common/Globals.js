@@ -25,17 +25,12 @@
 	/**
 	 * @type {?}
 	 */
-	Globals.now = (new window.Date()).getTime();
+	Globals.startMicrotime = (new window.Date()).getTime();
 
 	/**
 	 * @type {?}
 	 */
 	Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});
-
-	/**
-	 * @type {?}
-	 */
-	Globals.tooltipTrigger = ko.observable(false).extend({'rateLimit': 0});
 
 	/**
 	 * @type {boolean}
@@ -258,14 +253,13 @@
 	});
 
 	Globals.keyScopeReal.subscribe(function (sValue) {
-//		window.console.log(sValue);
+//		window.console.log('keyScope=' + sValue); // TODO
 		key.setScope(sValue);
 	});
 
 	Globals.dropdownVisibility.subscribe(function (bValue) {
 		if (bValue)
 		{
-			Globals.tooltipTrigger(!Globals.tooltipTrigger());
 			Globals.keyScope(Enums.KeyState.Menu);
 		}
 		else if (Enums.KeyState.Menu === key.getScope())
