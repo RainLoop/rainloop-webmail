@@ -30,7 +30,8 @@
 	};
 
 	Opentip.styles.rainloopTestTip = {
-		'extends': 'rainloop'
+		'extends': 'rainloop',
+		'className': 'rainloopTestTip'
 	};
 
 	module.exports = Opentip;

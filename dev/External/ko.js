@@ -20,6 +20,39 @@
 		}
 	;
 
+	ko.bindingHandlers.editor = {
+		'init': function (oElement, fValueAccessor) {
+
+			var
+				fValue = fValueAccessor(),
+				oEditor  = null,
+				fUpdateEditorValue = function () {
+					if (oEditor)
+					{
+						oEditor.setHtmlOrPlain(fValue());
+					}
+				},
+				fUpdateKoValue = function () {
+					if (oEditor)
+					{
+						fValue(oEditor.getDataWithHtmlMark());
+					}
+				},
+				HtmlEditor = require('Common/HtmlEditor')
+			;
+
+			if (fValue)
+			{
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
+				fValue.__editor = oEditor;
+				fValue.__fetchEditorValue = fUpdateKoValue;
+				fValue.__updateEditorValue = fUpdateEditorValue;
+
+				fValue.subscribe(fUpdateEditorValue);
+			}
+		}
+	};
+
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 

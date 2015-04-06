@@ -68,11 +68,6 @@
 	/**
 	 * @type {Object}
 	 */
-	CacheUserStorage.prototype.oBodies = {};
-
-	/**
-	 * @type {Object}
-	 */
 	CacheUserStorage.prototype.oNewMessage = {};
 
 	/**
@@ -88,9 +83,7 @@
 		this.oFolderUidNextCache = {};
 		this.oMessageListHashCache = {};
 		this.oMessageFlagsCache = {};
-		this.oBodies = {};
 	};
-
 
 	/**
 	 * @param {string} sEmail

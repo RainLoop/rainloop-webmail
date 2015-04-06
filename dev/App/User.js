@@ -209,11 +209,6 @@
 		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', true);
 	};
 
-	AppUser.prototype.reloadMessageListHelper = function (bEmptyList)
-	{
-		this.reloadMessageList(bEmptyList);
-	};
-
 	/**
 	 * @param {Function} fResultFunc
 	 * @returns {boolean}
@@ -316,7 +311,7 @@
 				}
 			}
 
-			this.reloadMessageListHelper(0 === MessageStore.messageList().length);
+			this.reloadMessageList(0 === MessageStore.messageList().length);
 			this.quotaDebounce();
 		}
 	};

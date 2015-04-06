@@ -130,3 +130,31 @@
 		}
 	}
 }
+
+.cke_dialog {
+
+	a:hover {
+		text-decoration: none;
+	}
+
+	.cke_dialog_ui_labeled_content {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	.cke_dialog_ui_input_select, .cke_dialog_ui_input_text, .cke_dialog_ui_input_textarea {
+
+		box-shadow: none;
+		border-radius: 2px;
+
+		&:focus {
+			outline: 0;
+			border: 1px solid #999;
+		}
+	}
+
+	.cke_dialog_ui_input_select, .cke_dialog_ui_input_text {
+		height: 25px;
+		line-height: 25px;
+	}
+}

@@ -1,12 +1,12 @@
 <div class="popups">
 	<div class="modal hide b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
-			<a class="btn btn-large button-send" data-bind="command: sendCommand, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+			<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipForTest: sendErrorDesc, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 				<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="COMPOSE/BUTTON_SEND"></span>
 			</a>
-			<a class="btn button-save" data-bind="command: saveCommand, css: {'btn-danger': savedError }">
+			<a class="btn button-save" data-bind="command: saveCommand, tooltipForTest: savedErrorDesc, css: {'btn-danger': savedError }">
 				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="COMPOSE/BUTTON_SAVE"></span>
@@ -18,7 +18,7 @@
 			<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 				<i class="icon-trash icon-white"></i>
 			</a>
-			<span class="saved-text" data-bind="text: savedOrSendingText, css: { 'errorDesc': savedError }"></span>
+			<span class="saved-text" data-bind="text: savedTimeText"></span>
 		</div>
 		<div class="modal-body">
 			<div>
