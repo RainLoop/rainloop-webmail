@@ -25,6 +25,7 @@
 		this.userBackground = ko.observable(false);
 		this.openPGP = ko.observable(false);
 		this.twoFactorAuth = ko.observable(false);
+		this.twoFactorAuthForce = ko.observable(false);
 		this.templates = ko.observable(false);
 	}
 
@@ -39,6 +40,7 @@
 		this.userBackground(Settings.capa(Enums.Capa.UserBackground));
 		this.openPGP(Settings.capa(Enums.Capa.OpenPGP));
 		this.twoFactorAuth(Settings.capa(Enums.Capa.TwoFactor));
+		this.twoFactorAuthForce(Settings.capa(Enums.Capa.TwoFactorForce));
 		this.templates(Settings.capa(Enums.Capa.Templates));
 	};
 

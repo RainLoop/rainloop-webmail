@@ -22,86 +22,12 @@
 			</div>
 		</div>
 		<br />
-	</div>
-	<div class="form-horizontal" data-bind="visible: capaTwoFactor">
-		<div class="legend">
-			<span class="i18n" data-i18n="SETTINGS_SECURITY/LEGEND_TWO_FACTOR_AUTH"></span>
-		</div>
-		<div class="control-group" data-bind="visible: twoFactorStatus">
-			<div class="controls" style="display: inline-block" data-bind="tooltip: viewTwoFactorEnableTooltip">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						label: 'SETTINGS_SECURITY/LABEL_ENABLE_TWO_FACTOR',
-						enable: twoFactorAllowedEnable,
-						value: viewEnable
-					}
-				}"></div>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">
-				<span class="i18n" data-i18n="SETTINGS_SECURITY/LABEL_TWO_FACTOR_USER"></span>
-			</label>
-			<div class="controls" style="padding-top: 5px;">
-				<strong><span data-bind="text: viewUser"></span></strong>
-			</div>
-		</div>
-		<div class="control-group">
+		<div class="control-group" data-bind="visible: capaTwoFactor">
+			<label class="control-label"></label>
 			<div class="controls">
-				<a class="btn" data-bind="click: clearTwoFactor, visible: twoFactorStatus">
-					<i class="icon-remove" data-bind="css: {'icon-remove': !clearing(), 'icon-spinner animated': clearing()}" ></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n="SETTINGS_SECURITY/BUTTON_CLEAR"></span>
-				</a>
-				<a class="btn" data-bind="click: createTwoFactor, visible: !twoFactorStatus()">
-					<i class="icon-ok" data-bind="css: {'icon-ok': !processing(), 'icon-spinner animated': processing()}" ></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n="SETTINGS_SECURITY/BUTTON_CREATE"></span>
-				</a>
-				<span>&nbsp;&nbsp;</span>
-				<a class="btn" data-bind="click: testTwoFactor, visible: twoFactorStatus">
-					<i class="icon-info"></i>
-					&nbsp;&nbsp;
-					<span class="i18n" data-i18n="SETTINGS_SECURITY/BUTTON_TEST"></span>
-				</a>
-			</div>
-		</div>
-		<div class="control-group" data-bind="visible: '' === viewSecret() && twoFactorStatus() && !clearing()">
-			<div class="controls" style="padding-top: 5px;">
-				<strong data-bind="visible: secreting">...</strong>
-				<span class="g-ui-link i18n" data-bind="click: showSecret, visible: !secreting()"
-					data-i18n="SETTINGS_SECURITY/BUTTON_SHOW_SECRET"></span>
-			</div>
-		</div>
-		<div class="control-group" data-bind="visible: '' !== viewSecret()">
-			<label class="control-label">
-				<span class="i18n" data-i18n="SETTINGS_SECURITY/LABEL_TWO_FACTOR_SECRET"></span>
-			</label>
-			<div class="controls" style="padding-top: 5px;">
-				<strong data-bind="text: viewSecret"></strong>
+				<i class="icon-lock" />
 				&nbsp;&nbsp;
-				<span class="g-ui-link i18n" data-bind="click: hideSecret" data-i18n="SETTINGS_SECURITY/BUTTON_HIDE_SECRET"></span>
-				<br />
-				<br />
-				<blockquote>
-					<p class="muted i18n" style="width: 550px" data-i18n="SETTINGS_SECURITY/TWO_FACTOR_SECRET_DESC"></p>
-				</blockquote>
-				<!-- ko if: '' !== viewUrl() -->
-				<img style="margin-left: -7px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2P8DwQACgAD/il4QJ8AAAAASUVORK5CYII=" data-bind="attr: {'src': viewUrl}" />
-				<!-- /ko -->
-			</div>
-		</div>
-		<div class="control-group" data-bind="visible: '' !== viewBackupCodes()">
-			<label class="control-label">
-				<span class="i18n" data-i18n="SETTINGS_SECURITY/LABEL_TWO_FACTOR_BACKUP_CODES"></span>
-			</label>
-			<div class="controls" style="padding-top: 5px;">
-				<pre data-bind="text: viewBackupCodes" style="width: 230px; word-break: break-word;"></pre>
-				<br />
-				<blockquote>
-					<p class="muted i18n" style="width: 550px" data-i18n="SETTINGS_SECURITY/TWO_FACTOR_BACKUP_CODES_DESC"></p>
-				</blockquote>
+				<span class="i18n g-ui-link" data-i18n="SETTINGS_SECURITY/LABEL_CONFIGURATE_TWO_FACTOR" data-bind="click:configureTwoFactor"></span>
 			</div>
 		</div>
 	</div>

@@ -28,10 +28,26 @@
 		this.weakPassword = AppAdminStore.weakPassword;
 
 		this.capaOpenPGP = CapaAdminStore.openPGP;
+
 		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
+		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
+
+		this.capaTwoFactorAuth.subscribe(function (bValue) {
+			if (!bValue)
+			{
+				this.capaTwoFactorAuthForce(false);
+			}
+		}, this);
 
 		this.verifySslCertificate = ko.observable(!!Settings.settingsGet('VerifySslCertificate'));
 		this.allowSelfSigned = ko.observable(!!Settings.settingsGet('AllowSelfSigned'));
+
+		this.verifySslCertificate.subscribe(function (bValue) {
+			if (!bValue)
+			{
+				this.allowSelfSigned(true);
+			}
+		}, this);
 
 		this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
 		this.adminLoginError = ko.observable(false);
@@ -123,6 +139,12 @@
 		this.capaTwoFactorAuth.subscribe(function (bValue) {
 			Remote.saveAdminConfig(Utils.emptyFunction, {
 				'CapaTwoFactorAuth': bValue ? '1' : '0'
+			});
+		});
+
+		this.capaTwoFactorAuthForce.subscribe(function (bValue) {
+			Remote.saveAdminConfig(Utils.emptyFunction, {
+				'CapaTwoFactorAuthForce': bValue ? '1' : '0'
 			});
 		});
 

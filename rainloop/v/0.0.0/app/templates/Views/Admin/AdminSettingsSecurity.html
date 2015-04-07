@@ -5,15 +5,38 @@
 			<div class="controls">
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: capaTwoFactorAuth, label: 'TAB_SECURITY/LABEL_ALLOW_TWO_STEP' }
+					params: {
+						value: capaTwoFactorAuth,
+						label: 'TAB_SECURITY/LABEL_ALLOW_TWO_STEP',
+						inline: true
+					}
+				}"></div>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: capaTwoFactorAuthForce,
+						enable: capaTwoFactorAuth,
+						label: 'TAB_SECURITY/LABEL_FORCE_TWO_STEP',
+						inline: true
+					}
+				}"></div>
+				<br />
+				<br />
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						value: useLocalProxyForExternalImages,
+						label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY'
+					}
 				}"></div>
 				<div data-bind="component: {
 					name: 'Checkbox',
-					params: { value: useLocalProxyForExternalImages, label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY' }
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: { value: capaOpenPGP, label: 'TAB_SECURITY/LABEL_ALLOW_OPEN_PGP', inline: true }
+					params: {
+						value: capaOpenPGP,
+						label: 'TAB_SECURITY/LABEL_ALLOW_OPEN_PGP',
+						inline: true
+					}
 				}"></div>
 				&nbsp;&nbsp;
 				<span style="color:red">(<span data-i18n="HINTS/BETA"></span>)</span>

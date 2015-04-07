@@ -47,6 +47,7 @@
 	 */
 	Enums.Capa = {
 		'TwoFactor': 'TWO_FACTOR',
+		'TwoFactorForce': 'TWO_FACTOR_FORCE',
 		'OpenPGP': 'OPEN_PGP',
 		'Prefetch': 'PREFETCH',
 		'Gravatar': 'GRAVATAR',

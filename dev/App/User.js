@@ -1214,6 +1214,11 @@
 		});
 	};
 
+	AppUser.prototype.bootstartTwoFactorScreen = function ()
+	{
+		kn.showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
+	};
+
 	AppUser.prototype.bootstartLoginScreen = function ()
 	{
 		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
@@ -1221,8 +1226,6 @@
 		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
 		if (!sCustomLoginLink)
 		{
-			kn.hideLoading();
-
 			kn.startScreens([
 				require('Screen/User/Login')
 			]);
@@ -1239,6 +1242,16 @@
 			_.defer(function () {
 				window.location.href = sCustomLoginLink;
 			});
+		}
+	};
+
+	AppUser.prototype.bootend = function ()
+	{
+		kn.hideLoading();
+
+		if (SimplePace)
+		{
+			SimplePace.set(100);
 		}
 	};
 
@@ -1272,183 +1285,186 @@
 			Events.pub('left-panel.' + (bValue ? 'off' : 'on'));
 		});
 
+		this.setWindowTitle('');
 		if (!!Settings.settingsGet('Auth'))
 		{
 			Globals.$html.addClass('rl-user-auth');
 
-			this.setWindowTitle(Translator.i18n('TITLES/LOADING'));
+			if (Settings.capa(Enums.Capa.TwoFactor) &&
+				Settings.capa(Enums.Capa.TwoFactorForce) &&
+				Settings.settingsGet('RequireTwoFactor'))
+			{
+
+				this.bootend();
+				this.bootstartTwoFactorScreen();
+			}
+			else
+			{
+				this.setWindowTitle(Translator.i18n('TITLES/LOADING'));
 
 //require.ensure([], function() { // require code splitting
 
-			self.foldersReload(_.bind(function (bValue) {
+				self.foldersReload(_.bind(function (bValue) {
 
-				kn.hideLoading();
+					this.bootend();
 
-				if (bValue)
-				{
-					if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
+					if (bValue)
 					{
-						var fOpenpgpCallback = function (openpgp) {
-							PgpStore.openpgp = openpgp;
-							PgpStore.openpgpKeyring = new openpgp.Keyring();
-							PgpStore.capaOpenPGP(true);
-
-							Events.pub('openpgp.init');
-
-							self.reloadOpenPgpKeys();
-						};
-
-						if (window.openpgp)
+						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
-							fOpenpgpCallback(window.openpgp);
+							var fOpenpgpCallback = function (openpgp) {
+								PgpStore.openpgp = openpgp;
+								PgpStore.openpgpKeyring = new openpgp.Keyring();
+								PgpStore.capaOpenPGP(true);
+
+								Events.pub('openpgp.init');
+
+								self.reloadOpenPgpKeys();
+							};
+
+							if (window.openpgp)
+							{
+								fOpenpgpCallback(window.openpgp);
+							}
+							else
+							{
+								$LAB.script(Links.openPgpJs()).wait(function () {
+									if (window.openpgp)
+									{
+										fOpenpgpCallback(window.openpgp);
+									}
+								});
+							}
 						}
 						else
 						{
-							$LAB.script(Links.openPgpJs()).wait(function () {
-								if (window.openpgp)
+							PgpStore.capaOpenPGP(false);
+						}
+
+						kn.startScreens([
+							require('Screen/User/MailBox'),
+							require('Screen/User/Settings'),
+							require('Screen/User/About')
+						]);
+
+						if (bGoogle || bFacebook || bTwitter)
+						{
+							self.socialUsers(true);
+						}
+
+						Events.sub('interval.2m', function () {
+							self.folderInformation(Cache.getFolderInboxName());
+						});
+
+						Events.sub('interval.3m', function () {
+							var sF = FolderStore.currentFolderFullNameRaw();
+							if (Cache.getFolderInboxName() !== sF)
+							{
+								self.folderInformation(sF);
+							}
+						});
+
+						Events.sub('interval.5m-after5m', function () {
+							self.folderInformationMultiply();
+						});
+
+						Events.sub('interval.15m', function () {
+							self.quota();
+						});
+
+						Events.sub('interval.20m', function () {
+							self.foldersReload();
+						});
+
+						iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
+						iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
+
+						_.delay(function () {
+							self.contactsSync();
+						}, 10000);
+
+						_.delay(function () {
+							self.folderInformationMultiply(true);
+						}, 2000);
+
+						window.setInterval(function () {
+							self.contactsSync();
+						}, iContactsSyncInterval * 60000 + 5000);
+
+						self.accountsAndIdentities(true);
+
+						_.delay(function () {
+							var sF = FolderStore.currentFolderFullNameRaw();
+							if (Cache.getFolderInboxName() !== sF)
+							{
+								self.folderInformation(sF);
+							}
+						}, 1000);
+
+						_.delay(function () {
+							self.quota();
+						}, 5000);
+
+						_.delay(function () {
+							Remote.appDelayStart(Utils.emptyFunction);
+						}, 35000);
+
+						Events.sub('rl.auto-logout', function () {
+							self.logout();
+						});
+
+						Plugins.runHook('rl-start-user-screens');
+						Events.pub('rl.bootstart-user-screens');
+
+						if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
+						{
+							_.delay(function () {
+								try {
+									window.navigator.registerProtocolHandler('mailto',
+										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+										'' + (Settings.settingsGet('Title') || 'RainLoop'));
+								} catch(e) {}
+
+								if (Settings.settingsGet('MailToEmail'))
 								{
-									fOpenpgpCallback(window.openpgp);
+									Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View/Popup/Compose'));
 								}
+							}, 500);
+						}
+
+						if (!Globals.bMobileDevice)
+						{
+							_.defer(function () {
+								self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 							});
+
+							if (Tinycon)
+							{
+								Tinycon.setOptions({
+									fallback: false
+								});
+
+								Events.sub('mailbox.inbox-unread-count', function (iCount) {
+									Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0);
+								});
+							}
 						}
 					}
 					else
 					{
-						PgpStore.capaOpenPGP(false);
+						this.bootstartLoginScreen();
 					}
 
-					kn.startScreens([
-						require('Screen/User/MailBox'),
-						require('Screen/User/Settings'),
-						require('Screen/User/About')
-					]);
-
-					if (bGoogle || bFacebook || bTwitter)
-					{
-						self.socialUsers(true);
-					}
-
-					Events.sub('interval.2m', function () {
-						self.folderInformation(Cache.getFolderInboxName());
-					});
-
-					Events.sub('interval.3m', function () {
-						var sF = FolderStore.currentFolderFullNameRaw();
-						if (Cache.getFolderInboxName() !== sF)
-						{
-							self.folderInformation(sF);
-						}
-					});
-
-					Events.sub('interval.5m-after5m', function () {
-						self.folderInformationMultiply();
-					});
-
-					Events.sub('interval.15m', function () {
-						self.quota();
-					});
-
-					Events.sub('interval.20m', function () {
-						self.foldersReload();
-					});
-
-					iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
-					iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
-
-					_.delay(function () {
-						self.contactsSync();
-					}, 10000);
-
-					_.delay(function () {
-						self.folderInformationMultiply(true);
-					}, 2000);
-
-					window.setInterval(function () {
-						self.contactsSync();
-					}, iContactsSyncInterval * 60000 + 5000);
-
-					self.accountsAndIdentities(true);
-
-					_.delay(function () {
-						var sF = FolderStore.currentFolderFullNameRaw();
-						if (Cache.getFolderInboxName() !== sF)
-						{
-							self.folderInformation(sF);
-						}
-					}, 1000);
-
-					_.delay(function () {
-						self.quota();
-					}, 5000);
-
-					_.delay(function () {
-						Remote.appDelayStart(Utils.emptyFunction);
-					}, 35000);
-
-					Events.sub('rl.auto-logout', function () {
-						self.logout();
-					});
-
-					Plugins.runHook('rl-start-user-screens');
-					Events.pub('rl.bootstart-user-screens');
-
-					if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
-					{
-						_.delay(function () {
-							try {
-								window.navigator.registerProtocolHandler('mailto',
-									window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
-									'' + (Settings.settingsGet('Title') || 'RainLoop'));
-							} catch(e) {}
-
-							if (Settings.settingsGet('MailToEmail'))
-							{
-								Utils.mailToHelper(Settings.settingsGet('MailToEmail'), require('View/Popup/Compose'));
-							}
-						}, 500);
-					}
-
-					if (!Globals.bMobileDevice)
-					{
-						_.defer(function () {
-							self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
-						});
-
-						if (Tinycon)
-						{
-							Tinycon.setOptions({
-								fallback: false
-							});
-
-							Events.sub('mailbox.inbox-unread-count', function (iCount) {
-								Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0);
-							});
-						}
-					}
-				}
-				else
-				{
-					this.bootstartLoginScreen();
-				}
-
-				if (SimplePace)
-				{
-					SimplePace.set(100);
-				}
-
-			}, self));
+				}, self));
 
 //}); // require code splitting
 
+			}
 		}
 		else
 		{
+			this.bootend();
 			this.bootstartLoginScreen();
-
-			if (SimplePace)
-			{
-				SimplePace.set(100);
-			}
 		}
 
 		if (bGoogle)

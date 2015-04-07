@@ -130,8 +130,14 @@
 
 				if (sValue)
 				{
+					oElement.__opentip.activate();
 					oElement.__opentip.setContent(
 						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
+				}
+				else
+				{
+					oElement.__opentip.setContent('');
+					oElement.__opentip.deactivate();
 				}
 			}
 		}

@@ -28,9 +28,3 @@ disableContextMenu:function(){return false;this.on("contextmenu",
 proto:{addTarget:function(a,e){a.on("contextmenu",function(a){
 -->
 proto:{addTarget:function(a,e){a.on("contextmenu",function(a){return false;
-
----
-
-var a=this.$.nodeName.toLowerCase();
--->
-var a=(this.$?(this.$.nodeName||''):'').toLowerCase();
