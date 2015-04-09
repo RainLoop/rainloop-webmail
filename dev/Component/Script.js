@@ -5,6 +5,7 @@
 
 	var
 		_ = require('_'),
+		$ = require('$'),
 
 		AbstractComponent = require('Component/Abstract')
 	;
@@ -20,13 +21,26 @@
 	{
 		AbstractComponent.call(this);
 
-		if (oParams.component && oParams.component.templateNodes && oParams.element)
+		if (oParams.component && oParams.component.templateNodes && oParams.element &&
+			oParams.element[0] && oParams.element[0].outerHTML)
 		{
-			oParams.element.text('');
-			if (oParams.component.templateNodes[0] && oParams.component.templateNodes[0].nodeValue)
+			var sScript = oParams.element[0].outerHTML;
+			sScript = sScript
+				.replace(/<x-script/i, '<script')
+				.replace(/<b><\/b><\/x-script>/i, '</script>')
+			;
+
+			if (sScript)
 			{
+				oParams.element.text('');
 				oParams.element.replaceWith(
-					$('<script></script>').text(oParams.component.templateNodes[0].nodeValue));
+					$(sScript).text(oParams.component.templateNodes[0] &&
+						oParams.component.templateNodes[0].nodeValue ?
+							oParams.component.templateNodes[0].nodeValue : ''));
+			}
+			else
+			{
+				oParams.element.remove();
 			}
 		}
 	}

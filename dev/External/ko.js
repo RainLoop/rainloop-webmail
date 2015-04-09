@@ -57,16 +57,16 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				$oEl = null,
 				bi18n = true,
 				sValue = '',
 				Translator = null,
+				$oEl = $(oElement),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
 
-			if (!Globals.bMobileDevice)
+			if (!Globals.bMobileDevice || bMobile)
 			{
-				$oEl = $(oElement);
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
 				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
 
@@ -74,6 +74,7 @@
 				{
 					oElement.__opentip = new Opentip(oElement, {
 						'style': 'rainloopTip',
+						'showOn': 'mouseover click',
 						'element': oElement,
 						'tipJoint': $oEl.data('tooltip-join') || 'bottom'
 					});
@@ -120,12 +121,14 @@
 			var
 				bi18n = true,
 				sValue = '',
+				$oEl = $(oElement),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
 
-			if (!Globals.bMobileDevice && oElement.__opentip)
+			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 			{
-				bi18n = 'on' === ($(oElement).data('tooltip-i18n') || 'on');
+				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
 				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
 
 				if (sValue)
@@ -150,6 +153,8 @@
 
 			oElement.__opentip = new Opentip(oElement, {
 				'style': 'rainloopTestTip',
+				'showOn': 'mouseover click',
+				'hideOn': 'mouseout click',
 				'element': oElement,
 				'tipJoint': $oEl.data('tooltip-join') || 'top'
 			});
@@ -183,21 +188,20 @@
 				}
 				else
 				{
-					if ($oEl.is(':visible'))
-					{
-						oOpenTips.activate();
-						oOpenTips.setContent(sValue);
-
-						_.delay(function () {
+					_.delay(function () {
+						if ($oEl.is(':visible'))
+						{
+							oOpenTips.activate();
+							oOpenTips.setContent(sValue);
 							oOpenTips.show();
-						}, 100);
-					}
-					else
-					{
-						oOpenTips.hide();
-						oOpenTips.setContent('');
-						oOpenTips.deactivate();
-					}
+						}
+						else
+						{
+							oOpenTips.hide();
+							oOpenTips.setContent('');
+							oOpenTips.deactivate();
+						}
+					}, 100);
 				}
 			}
 		}

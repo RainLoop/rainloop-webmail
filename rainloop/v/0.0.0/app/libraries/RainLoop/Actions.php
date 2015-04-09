@@ -1286,6 +1286,8 @@ class Actions
 			'LoginCss' => '',
 			'UserLogo' => '',
 			'UserCss' => '',
+			'WelcomePageUrl' => '',
+			'WelcomePageDisplay' => 'none',
 			'IncludeCss' => '',
 			'IncludeBackground' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
@@ -1352,6 +1354,8 @@ class Actions
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
 			$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
+			$aResult['WelcomePageUrl'] = $oConfig->Get('branding', 'welcome_page_url', '');
+			$aResult['WelcomePageDisplay'] = \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none'));
 		}
 
 		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
@@ -1414,6 +1418,24 @@ class Actions
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+				if (!$oAccount->IsAdditionalAccount() && !empty($aResult['WelcomePageUrl']) &&
+					('once' === $aResult['WelcomePageDisplay'] || 'always' === $aResult['WelcomePageDisplay']))
+				{
+					if ('once' === $aResult['WelcomePageDisplay'])
+					{
+						if ($aResult['WelcomePageUrl'] === $oSettings->GetConf('LastWelcomePage', ''))
+						{
+							$aResult['WelcomePageUrl'] = '';
+							$aResult['WelcomePageDisplay'] = '';
+						}
+					}
+				}
+				else
+				{
+					$aResult['WelcomePageUrl'] = '';
+					$aResult['WelcomePageDisplay'] = '';
+				}
 			}
 			else
 			{
@@ -1424,6 +1446,9 @@ class Actions
 
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
+
+				$aResult['WelcomePageUrl'] = '';
+				$aResult['WelcomePageDisplay'] = '';
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
@@ -3247,7 +3272,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
-		if ($this->HasOneOfActionParams(array('LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo', 'UserCss')) && $this->PremType())
+		if ($this->HasOneOfActionParams(array(
+			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered',
+			'UserLogo', 'UserCss',
+			'WelcomePageUrl', 'WelcomePageDisplay'
+		)) && $this->PremType())
 		{
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
@@ -3257,6 +3286,9 @@ class Actions
 
 			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
+
+			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
+			$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
@@ -4808,6 +4840,25 @@ class Actions
 			$bIsError ? \MailSo\Log\Enumerations\Type::ERROR : \MailSo\Log\Enumerations\Type::INFO, 'JS-INFO');
 
 		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoWelcomeClose()
+	{
+		$oAccount = $this->getAccountFromToken();
+		if ($oAccount && !$oAccount->IsAdditionalAccount())
+		{
+			$oSettings = $this->SettingsProvider()->Load($oAccount);
+			$oSettings->SetConf('LastWelcomePage',
+				$this->Config()->Get('branding', 'welcome_page_url', ''));
+
+			return $this->DefaultResponse(__FUNCTION__,
+				$this->SettingsProvider()->Save($oAccount, $oSettings));
+		}
+
+		return $this->FalseResponse(__FUNCTION__);
 	}
 
 	/**
@@ -8508,6 +8559,9 @@ class Actions
 	{
 		$sHtml = $this->Plugins()->ProcessTemplate($sName, $sHtml);
 		$sHtml = \preg_replace('/\{\{INCLUDE\/([a-zA-Z]+)\/PLACE\}\}/', '', $sHtml);
+
+		$sHtml = \preg_replace('/<script/i', '<x-script', $sHtml);
+		$sHtml = \preg_replace('/<\/script>/i', '</x-script>', $sHtml);
 
 		return \RainLoop\Utils::ClearHtmlOutput($sHtml);
 	}

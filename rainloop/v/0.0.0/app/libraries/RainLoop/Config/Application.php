@@ -88,8 +88,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
 				'login_powered'		=> array(true),
-				'user_logo'		=> array(''),
-				'user_css'		=> array('')
+				'user_logo'			=> array(''),
+				'user_css'			=> array(''),
+				'welcome_page_url'		=> array(''),
+				'welcome_page_display'	=> array('none')
 			),
 
 			'contacts' => array(

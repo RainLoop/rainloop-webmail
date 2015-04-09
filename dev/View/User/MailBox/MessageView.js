@@ -843,7 +843,7 @@
 		;
 
 		// exit fullscreen, back
-		key('esc', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
+		key('esc, backspace', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
 
 		// fullscreen
 		key('enter', Enums.KeyState.MessageView, function () {

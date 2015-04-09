@@ -1219,6 +1219,11 @@
 		kn.showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
 	};
 
+	AppUser.prototype.bootstartWelcomePopup = function (sUrl)
+	{
+		kn.showScreenPopup(require('View/Popup/WelcomePage'), [sUrl]);
+	};
+
 	AppUser.prototype.bootstartLoginScreen = function ()
 	{
 		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
@@ -1415,6 +1420,13 @@
 
 						Plugins.runHook('rl-start-user-screens');
 						Events.pub('rl.bootstart-user-screens');
+
+						if (Settings.settingsGet('WelcomePageUrl'))
+						{
+							_.delay(function () {
+								self.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl'));
+							}, 1000);
+						}
 
 						if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
 						{

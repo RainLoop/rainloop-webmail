@@ -162,6 +162,7 @@
 
 			this.testingDone(false);
 			this.testingImapError(false);
+			this.testingSieveError(false);
 			this.testingSmtpError(false);
 			this.testing(true);
 
@@ -295,24 +296,27 @@
 
 			this.testingDone(true);
 			this.testingImapError(true !== oData.Result.Imap);
-			this.testingSmtpError(true !== oData.Result.Smtp);
 			this.testingSieveError(true !== oData.Result.Sieve);
+			this.testingSmtpError(true !== oData.Result.Smtp);
 
 			if (this.testingImapError() && oData.Result.Imap)
 			{
 				bImap = true;
+				this.testingImapErrorDesc('');
 				this.testingImapErrorDesc(oData.Result.Imap);
-			}
-
-			if (this.testingSmtpError() && oData.Result.Smtp)
-			{
-				this.testingSmtpErrorDesc(oData.Result.Smtp);
 			}
 
 			if (this.testingSieveError() && oData.Result.Sieve)
 			{
 				bSieve = true;
+				this.testingSieveErrorDesc('');
 				this.testingSieveErrorDesc(oData.Result.Sieve);
+			}
+
+			if (this.testingSmtpError() && oData.Result.Smtp)
+			{
+				this.testingSmtpErrorDesc('');
+				this.testingSmtpErrorDesc(oData.Result.Smtp);
 			}
 
 			if (this.sieveSettings())
@@ -333,8 +337,8 @@
 		else
 		{
 			this.testingImapError(true);
-			this.testingSmtpError(true);
 			this.testingSieveError(true);
+			this.testingSmtpError(true);
 			this.sieveSettings(false);
 		}
 	};
@@ -365,8 +369,8 @@
 		this.testing(false);
 		this.testingDone(false);
 		this.testingImapError(false);
-		this.testingSmtpError(false);
 		this.testingSieveError(false);
+		this.testingSmtpError(false);
 	};
 
 	DomainPopupView.prototype.onHide = function ()

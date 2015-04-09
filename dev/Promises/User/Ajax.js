@@ -89,7 +89,6 @@
 		}, 500);
 	};
 
-
 	UserAjaxUserPromises.prototype.folderDelete = function (sFolderFullNameRaw, fTrigger)
 	{
 		return this.postRequest('FolderDelete', fTrigger, {
@@ -111,6 +110,11 @@
 			'Folder': sPrevFolderFullNameRaw,
 			'NewFolderName': sNewFolderName
 		});
+	};
+
+	UserAjaxUserPromises.prototype.welcomeClose = function ()
+	{
+		return this.postRequest('WelcomeClose');
 	};
 
 //	UserAjaxUserPromises.prototype.messageList = function (sFolderFullNameRaw, iOffset, iLimit, sSearch, fTrigger)
