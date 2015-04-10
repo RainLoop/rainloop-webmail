@@ -79,6 +79,21 @@
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
 
+		this.allowAttachmnetControls = ko.observable(false);
+		this.showAttachmnetControls = ko.observable(false);
+
+		this.showAttachmnetControls.subscribe(function (bV) {
+			if (this.message())
+			{
+				_.each(this.message().attachments(), function (oItem) {
+					if (oItem)
+					{
+						oItem.checked(!!bV);
+					}
+				});
+			}
+		}, this);
+
 		this.lastReplyAction_ = ko.observable('');
 		this.lastReplyAction = ko.computed({
 			read: this.lastReplyAction_,
@@ -407,6 +422,8 @@
 
 			if (oMessage)
 			{
+				this.showAttachmnetControls(false);
+
 				if (this.viewHash !== oMessage.hash)
 				{
 					this.scrollMessageToTop();

@@ -1,5 +1,7 @@
 .attachmentItem {
 
+	position: relative;
+
 	display: inline-block;
 	margin: 5px;
 	max-width: 200px;
@@ -9,7 +11,8 @@
 	line-height: 24px;
 	border: 0;
 	background-color: #fff;
-	box-shadow: 0 1px 5px #ccc;
+
+	box-shadow: 0 1px 4px #ccc;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
 
@@ -17,6 +20,21 @@
 
 	&.waiting {
 		opacity: 0.6;
+	}
+
+	&.checked {
+		box-shadow: 0 1px 4px #00a;
+		box-shadow: 0 1px 5px rgba(0, 0, 255, 0.3);
+		box-shadow: 0 0 0 1px rgba(0, 0, 255, 0.1), 0 1px 5px rgba(0, 0, 255, 0.2);
+	}
+
+	.checkedParent {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 1px 4px 0px 5px;
+		background: #FAFAFA;
+		border: 0px solid #CCC;
 	}
 
 	.attachmentSize {
@@ -115,6 +133,12 @@
 
 	.attachmentIcon.icon-none {
 		display: none;
+	}
+
+	.attachmentIconParent.hasPreview.isImage {
+		.iconMain {
+			display: none;
+		}
 	}
 
 	.attachmentIconParent.hasPreview:hover {

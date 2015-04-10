@@ -1315,6 +1315,7 @@ class Actions
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
+			'ZipSupported' => !!\class_exists('ZipArchive'),
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array()

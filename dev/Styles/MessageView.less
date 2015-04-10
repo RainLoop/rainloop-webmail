@@ -247,10 +247,35 @@ html.rl-no-preview-pane {
 				padding: 10px 10px 6px 10px;
 				background: #eee;
 				border-bottom: 1px solid #ddd;
+				position: relative;
 
 				.attachmentList {
 					margin: 0;
 				}
+
+				.checkedParent {
+					display: none;
+				}
+
+				&.selection-mode {
+					.checkedParent {
+						display: inline-block;
+					}
+				}
+
+				.controls-handle {
+					position: absolute;
+					bottom: 5px;
+					right: 8px;
+					color: #999;
+					cursor: pointer;
+				}
+			}
+
+			.attachmentsControls {
+				padding: 7px 5px 7px 14px;
+				background: #e8e8e8;
+				border-bottom: 1px solid #ddd;
 			}
 
 			.rlBlockquoteSwitcher {
@@ -337,6 +362,12 @@ html.rl-no-preview-pane {
 							background: #fff;
 							border: none;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+						}
+
+						pre.b-plain-openpgp {
+							display: inline-block;
+							padding: 6px 10px;
+							border: 1px dashed #666;
 						}
 
 						blockquote {

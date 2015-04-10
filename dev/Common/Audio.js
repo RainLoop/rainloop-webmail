@@ -40,7 +40,7 @@
 			this.objForNotification.muted = false;
 			this.objForNotification.src = Links.sound('new-mail.mp3');
 
-			$(this.obj).on('ended', function () {
+			$(this.obj).on('ended error', function () {
 				self.stop();
 			});
 

@@ -6,6 +6,7 @@
 	var
 		window = require('window'),
 		_ = require('_'),
+		ko = require('ko'),
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
@@ -21,6 +22,8 @@
 	function AttachmentModel()
 	{
 		AbstractModel.call(this, 'AttachmentModel');
+
+		this.checked = ko.observable(false);
 
 		this.mimeType = '';
 		this.fileName = '';
