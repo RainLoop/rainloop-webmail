@@ -68,51 +68,42 @@
 			if (!Globals.bMobileDevice || bMobile)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
+				sValue = ko.unwrap(fValueAccessor());
 
-				if (sValue)
+				oElement.__opentip = new Opentip(oElement, {
+					'style': 'rainloopTip',
+					'element': oElement,
+					'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+				});
+
+				Globals.dropdownVisibility.subscribe(function (bV) {
+					if (bV) {
+						oElement.__opentip.deactivate();
+					} else {
+						oElement.__opentip.activate();
+					}
+				});
+
+				if (bi18n)
 				{
-					oElement.__opentip = new Opentip(oElement, {
-						'style': 'rainloopTip',
-						'showOn': 'mouseover click',
-						'element': oElement,
-						'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+					Translator = require('Common/Translator');
+
+					oElement.__opentip.setContent(Translator.i18n(sValue));
+
+					Translator.trigger.subscribe(function () {
+						oElement.__opentip.setContent(Translator.i18n(sValue));
 					});
 
-					oElement.__opentip.setContent(
-						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
-
-					Globals.dropdownVisibility.subscribe(function (bV) {
-						if (bV) {
-							oElement.__opentip.deactivate();
-						} else {
-							oElement.__opentip.activate();
+					Globals.dropdownVisibility.subscribe(function () {
+						if (oElement && oElement.__opentip)
+						{
+							oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
 						}
 					});
-
-					if (bi18n)
-					{
-						Translator = require('Common/Translator');
-
-						oElement.__opentip.setContent(Translator.i18n(sValue));
-
-						Translator.trigger.subscribe(function () {
-							oElement.__opentip.setContent(Translator.i18n(sValue));
-						});
-
-						Globals.dropdownVisibility.subscribe(function () {
-							if (oElement && oElement.__opentip)
-							{
-								oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
-							}
-						});
-					}
-					else
-					{
-						oElement.__opentip.setContent(sValue);
-					}
-
-					fDisposalTooltipHelper(oElement);
+				}
+				else
+				{
+					oElement.__opentip.setContent(sValue);
 				}
 			}
 		},
@@ -129,31 +120,31 @@
 			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
+				sValue = ko.unwrap(fValueAccessor());
 
 				if (sValue)
 				{
-					oElement.__opentip.activate();
 					oElement.__opentip.setContent(
 						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
+					oElement.__opentip.activate();
 				}
 				else
 				{
-					oElement.__opentip.setContent('');
+					oElement.__opentip.hide();
 					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
 				}
 			}
 		}
 	};
 
-	ko.bindingHandlers.tooltipForTest = {
+	ko.bindingHandlers.tooltipErrorTip = {
 		'init': function (oElement) {
 
 			var $oEl = $(oElement);
 
 			oElement.__opentip = new Opentip(oElement, {
-				'style': 'rainloopTestTip',
-				'showOn': 'mouseover click',
+				'style': 'rainloopErrorTip',
 				'hideOn': 'mouseout click',
 				'element': oElement,
 				'tipJoint': $oEl.data('tooltip-join') || 'top'
@@ -183,23 +174,23 @@
 				if ('' === sValue)
 				{
 					oOpenTips.hide();
-					oOpenTips.setContent('');
 					oOpenTips.deactivate();
+					oOpenTips.setContent('');
 				}
 				else
 				{
 					_.delay(function () {
 						if ($oEl.is(':visible'))
 						{
-							oOpenTips.activate();
 							oOpenTips.setContent(sValue);
+							oOpenTips.activate();
 							oOpenTips.show();
 						}
 						else
 						{
 							oOpenTips.hide();
-							oOpenTips.setContent('');
 							oOpenTips.deactivate();
+							oOpenTips.setContent('');
 						}
 					}, 100);
 				}

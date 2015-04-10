@@ -10,6 +10,7 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Audio = require('Common/Audio'),
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
@@ -112,6 +113,14 @@
 	/**
 	 * @return {boolean}
 	 */
+	AttachmentModel.prototype.isMp3 = function ()
+	{
+		return Audio.supported && '.mp3' === this.fileName.toLowerCase().substr(-4);
+	};
+
+	/**
+	 * @return {boolean}
+	 */
 	AttachmentModel.prototype.hasThumbnail = function ()
 	{
 		return this.isThumbnail;
@@ -149,6 +158,14 @@
 	AttachmentModel.prototype.hasPreview = function ()
 	{
 		return this.isImage() || this.isPdf() || this.isText() || this.isFramed();
+	};
+
+	/**
+	 * @return {boolean}
+	 */
+	AttachmentModel.prototype.hasPreplay = function ()
+	{
+		return this.isMp3();
 	};
 
 	/**
@@ -221,14 +238,6 @@
 		}
 
 		return sResult;
-	};
-
-	/**
-	 * @return {boolean}
-	 */
-	AttachmentModel.prototype.hasPreview = function ()
-	{
-		return this.isImage() || this.isPdf() || this.isText() || this.isFramed();
 	};
 
 	/**

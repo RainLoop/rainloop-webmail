@@ -384,7 +384,7 @@
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 											<li class="attachmentItem clearfix" draggable="true" data-tooltip-join="top"
 													data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }">
-												<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview() }">
+												<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay() }">
 													<div class="hidePreview">
 														<div class="iconMain">
 															<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
@@ -402,6 +402,14 @@
 																<i class="attachmentIcon icon-eye show-hover"></i>
 															</div>
 														</a>
+													</div>
+													<div class="showPreplay">
+														<div class="iconMain">
+															<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
+														</div>
+														<div class="iconPreview">
+															<i class="attachmentIcon icon-right-dir show-hover"></i>
+														</div>
 													</div>
 												</div>
 												<div class="attachmentNameParent">

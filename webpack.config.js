@@ -40,7 +40,6 @@ module.exports = {
 		'Jua': 'window.Jua',
 		'Autolinker': 'window.Autolinker',
 		'Tinycon': 'window.Tinycon',
-		'buzz': 'window.buzz',
 		'ssm': 'window.ssm',
 		'key': 'window.key',
 		'_': 'window._',

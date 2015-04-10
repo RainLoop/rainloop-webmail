@@ -126,12 +126,31 @@
 		}
 	}
 
-	.showPreview {
+	.attachmentIconParent.hasPreplay:hover {
+		.iconPreview {
+			display: inline-block;
+		}
+		.iconMain {
+			display: none;
+		}
+	}
+
+	.showPreview, .showPreplay {
 		display: none;
+		cursor: pointer;
 	}
 
 	.attachmentIconParent.hasPreview {
 		.showPreview {
+			display: inline;
+		}
+
+		.hidePreview {
+			display: none;
+		}
+	}
+	.attachmentIconParent.hasPreplay {
+		.showPreplay {
 			display: inline;
 		}
 

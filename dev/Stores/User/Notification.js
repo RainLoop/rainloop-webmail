@@ -6,10 +6,9 @@
 	var
 		window = require('window'),
 		ko = require('ko'),
-		buzz = require('buzz'),
 
 		Enums = require('Common/Enums'),
-		Links = require('Common/Links'),
+		Audio = require('Common/Audio'),
 
 		Settings = require('Storage/Settings')
 	;
@@ -20,8 +19,6 @@
 	function NotificationUserStore()
 	{
 		var self = this;
-
-		this.buzz = null;
 
 		this.enableSoundNotification = ko.observable(false);
 		this.soundNotificationIsSupported = ko.observable(false);
@@ -145,14 +142,9 @@
 
 	NotificationUserStore.prototype.initNotificationPlayer = function ()
 	{
-		if (buzz && buzz.isSupported() && (buzz.isOGGSupported() || buzz.isMP3Supported()))
+		if (Audio && Audio.supported)
 		{
 			this.soundNotificationIsSupported(true);
-
-			this.buzz = new buzz.sound(Links.sound('new-mail'), {
-				'preload': 'none',
-				'formats': ['mp3', 'ogg']
-			});
 		}
 		else
 		{
@@ -163,9 +155,9 @@
 
 	NotificationUserStore.prototype.playSoundNotification = function (bSkipSetting)
 	{
-		if (this.buzz && (bSkipSetting ? true : this.enableSoundNotification()))
+		if (Audio && Audio.supported && (bSkipSetting ? true : this.enableSoundNotification()))
 		{
-			this.buzz.play();
+			Audio.playNotification();
 		}
 	};
 

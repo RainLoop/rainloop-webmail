@@ -11,7 +11,9 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Events = require('Common/Events'),
 
+		AppStore = require('Stores/User/App'),
 		AccountStore = require('Stores/User/Account'),
 		MessageStore = require('Stores/User/Message'),
 
@@ -28,6 +30,8 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
+		this.currentAudio = AppStore.currentAudio;
+
 		this.accountEmail = AccountStore.email;
 
 		this.accounts = AccountStore.accounts;
@@ -37,9 +41,24 @@
 		this.capaAdditionalAccounts = ko.observable(Settings.capa(Enums.Capa.AdditionalAccounts));
 
 		this.accountClick = _.bind(this.accountClick, this);
+
+		this.accountClick = _.bind(this.accountClick, this);
+
+		Events.sub('audio.stop', function () {
+			AppStore.currentAudio('');
+		});
+
+		Events.sub('audio.start', function (sName) {
+			AppStore.currentAudio(sName);
+		});
 	}
 
 	_.extend(AbstractSystemDropDownUserView.prototype, AbstractView.prototype);
+
+	AbstractSystemDropDownUserView.prototype.stopPlay = function ()
+	{
+		Events.pub('audio.api.stop');
+	};
 
 	AbstractSystemDropDownUserView.prototype.accountClick = function (oAccount, oEvent)
 	{

@@ -68,6 +68,10 @@
 				</ul>
 			</div>
 			<div class="accountPlace pull-right" data-bind="text: emailTitle()"></div>
+			<div class="audioPlace pull-right" data-tooltip-i18n="off" data-tooltip-mobile="on" data-tooltip-join="right top"
+					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
+				<i class="playIcon icon-right-dir"></i>
+			</div>
 		</div>
 	</div>
 </div>

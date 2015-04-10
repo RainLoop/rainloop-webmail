@@ -10,10 +10,10 @@
 
 	Opentip.styles.rainloop = {
 		'extends': 'standard',
-		'group': 'rainloopTips',
 		'fixed': true,
 		'target': true,
 
+		'showOn': 'mouseover click',
 		'removeElementsOnHide': true,
 
 		'background': '#fff',
@@ -26,12 +26,14 @@
 
 	Opentip.styles.rainloopTip = {
 		'extends': 'rainloop',
+		'stemLength': 3,
+		'stemBase': 5,
 		'group': 'rainloopTips'
 	};
 
-	Opentip.styles.rainloopTestTip = {
+	Opentip.styles.rainloopErrorTip = {
 		'extends': 'rainloop',
-		'className': 'rainloopTestTip'
+		'className': 'rainloopErrorTip'
 	};
 
 	module.exports = Opentip;

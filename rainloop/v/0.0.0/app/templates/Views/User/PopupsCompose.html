@@ -1,12 +1,12 @@
 <div class="popups">
 	<div class="modal hide b-compose" data-backdrop="static" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
-			<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipForTest: sendErrorDesc, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+			<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 				<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending(), 'icon-white': sendError() || sendSuccessButSaveError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="COMPOSE/BUTTON_SEND"></span>
 			</a>
-			<a class="btn button-save" data-bind="command: saveCommand, tooltipForTest: savedErrorDesc, css: {'btn-danger': savedError }">
+			<a class="btn button-save" data-bind="command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
 				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="COMPOSE/BUTTON_SAVE"></span>
@@ -108,15 +108,13 @@
 						</div>
 						<div class="e-row">
 							<div class="e-cell e-label">
-								<label class="control-label">
-									<span class="i18n" data-i18n="COMPOSE/TITLE_TO"></span>
+								<label class="control-label" data-bind="css: {'error-to': emptyToError}">
+									<span class="i18n" data-i18n="COMPOSE/TITLE_TO" data-tooltip-join="top"
+										data-bind="tooltipErrorTip: emptyToErrorTooltip"></span>
 								</label>
 							</div>
 							<div class="e-cell e-value">
 								<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, emailsTagsFocus: to.focused, autoCompleteSource: emailsSource" />
-								<span class="help-block error-desc" data-bind="visible: emptyToError">
-									<span class="i18n" data-i18n="COMPOSE/EMPTY_TO_ERROR_DESC"></span>
-								</span>
 							</div>
 						</div>
 						<div class="e-row cc-row" data-bind="visible: showCc">
@@ -161,8 +159,9 @@
 												css: { 'active': !attachmentsPlace() }">
 												<i class="icon-file-text"></i>
 											</button>
-											<button type="button" class="btn last" data-bind="click: function () { attachmentsPlace(true); },
-												css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() }">
+											<button type="button" class="btn last" data-tooltip-join="left" data-bind="click: function () { attachmentsPlace(true); },
+												css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
+												tooltipErrorTip: attachmentsErrorTooltip">
 												<span data-bind="visible: 0 < attachmentsCount()">
 													<b data-bind="text: attachmentsCount"></b>
 													&nbsp;&nbsp;
@@ -170,12 +169,6 @@
 												<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner animated': 0 < attachmentsInProcessCount(), 'icon-white': 0 < attachmentsInErrorCount() }"></i>
 											</button>
 										</div>
-										<span class="help-block error-desc" data-bind="visible: attachmentsInProcessError">
-											<span class="i18n" data-i18n="COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC"></span>
-										</span>
-										<span class="help-block error-desc" data-bind="visible: !attachmentsInProcessError() && attachmentsInErrorError()">
-											<span class="i18n" data-i18n="COMPOSE/ATTACHMENTS_ERROR_DESC"></span>
-										</span>
 									</div>
 									<div class="pull-right" style="margin-right: 4px;">
 										<div class="btn-group pull-right">

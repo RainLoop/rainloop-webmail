@@ -18,6 +18,7 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
+		Audio = require('Common/Audio'),
 
 		Cache = require('Common/Cache'),
 
@@ -732,6 +733,18 @@
 				if (oEvent && oEvent.stopPropagation)
 				{
 					oEvent.stopPropagation();
+				}
+			})
+			.on('click', '.attachmentsPlace .showPreplay', function (oEvent) {
+				if (oEvent && oEvent.stopPropagation)
+				{
+					oEvent.stopPropagation();
+				}
+
+				var oAttachment = ko.dataFor(this);
+				if (oAttachment && oAttachment.isMp3() && Audio.supported)
+				{
+					Audio.playMp3(oAttachment.linkDownload(), oAttachment.fileName);
 				}
 			})
 			.on('click', '.thread-list .more-threads', function (e) {

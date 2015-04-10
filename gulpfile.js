@@ -168,7 +168,6 @@ cfg.paths.js = {
 			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
-			'vendors/buzz/buzz.min.js',
 			'vendors/Q/q.min.js',
 			'vendors/opentip/opentip-jquery.min.js',
 			'vendors/Autolinker/Autolinker.min.js',

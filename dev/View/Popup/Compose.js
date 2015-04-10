@@ -170,6 +170,23 @@
 		this.attachmentsInProcessError = ko.observable(false);
 		this.attachmentsInErrorError = ko.observable(false);
 
+		this.attachmentsErrorTooltip = ko.computed(function () {
+
+			var sResult = '';
+			switch (true)
+			{
+				case this.attachmentsInProcessError():
+					sResult = Translator.i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
+					break;
+				case this.attachmentsInErrorError():
+					sResult = Translator.i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
+					break;
+			}
+
+			return sResult;
+
+		}, this);
+
 		this.showCc = ko.observable(false);
 		this.showBcc = ko.observable(false);
 		this.showReplyTo = ko.observable(false);
@@ -326,6 +343,10 @@
 				aFlagsCache = []
 			;
 
+			this.attachmentsInProcessError(false);
+			this.attachmentsInErrorError(false);
+			this.emptyToError(false);
+
 			if (0 < this.attachmentsInProcess().length)
 			{
 				this.attachmentsInProcessError(true);
@@ -336,11 +357,13 @@
 				this.attachmentsInErrorError(true);
 				this.attachmentsPlace(true);
 			}
-			else if (0 === sTo.length)
+
+			if (0 === sTo.length)
 			{
 				this.emptyToError(true);
 			}
-			else
+
+			if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError())
 			{
 				if (SettingsStore.replySameFolder())
 				{
