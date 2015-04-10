@@ -20,24 +20,14 @@
 	{
 		var self = this;
 
-		this.obj = window.Audio ? new window.Audio() : null;
-		this.objForNotification = window.Audio ? new window.Audio() : null;
+		this.obj = this.createNewObject();
+		this.objForNotification = this.createNewObject();
 
-		this.supported = !Globals.bMobileDevice &&
-			this.obj && this.obj.canPlayType && this.obj.play &&
-			'' !== this.obj.canPlayType('audio/mpeg;');
+		this.supported = !Globals.bMobileDevice && !Globals.bSafari &&
+			this.obj && '' !== this.obj.canPlayType('audio/mpeg');
 
 		if (this.obj && this.supported)
 		{
-			this.obj.preload = 'none';
-			this.obj.loop = false;
-			this.obj.autoplay = false;
-			this.obj.muted = false;
-
-			this.objForNotification.preload = 'none';
-			this.objForNotification.loop = false;
-			this.objForNotification.autoplay = false;
-			this.objForNotification.muted = false;
 			this.objForNotification.src = Links.sound('new-mail.mp3');
 
 			$(this.obj).on('ended error', function () {
@@ -57,6 +47,20 @@
 	Audio.prototype.obj = null;
 	Audio.prototype.objForNotification = null;
 	Audio.prototype.supported = false;
+
+	Audio.prototype.createNewObject = function ()
+	{
+		var obj = window.Audio ? new window.Audio() : null;
+		if (obj && obj.canPlayType)
+		{
+			obj.preload = 'none';
+			obj.loop = false;
+			obj.autoplay = false;
+			obj.muted = false;
+		}
+
+		return obj;
+	};
 
 	Audio.prototype.paused = function ()
 	{
