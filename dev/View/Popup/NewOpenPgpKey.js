@@ -61,11 +61,17 @@
 			this.submitRequest(true);
 
 			_.delay(function () {
-				mKeyPair = PgpStore.openpgp.generateKeyPair({
-					'userId': sUserID,
-					'numBits': Utils.pInt(self.keyBitLength()),
-					'passphrase': Utils.trim(self.password())
-				});
+
+				mKeyPair = false;
+				try {
+					mKeyPair = PgpStore.openpgp.generateKeyPair({
+						'userId': sUserID,
+						'numBits': Utils.pInt(self.keyBitLength()),
+						'passphrase': Utils.trim(self.password())
+					});
+				} catch (e) {
+//					window.console.log(e);
+				}
 
 				if (mKeyPair && mKeyPair.privateKeyArmored)
 				{
@@ -78,6 +84,7 @@
 				}
 
 				self.submitRequest(false);
+				
 			}, 100);
 
 			return true;

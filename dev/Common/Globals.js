@@ -66,6 +66,21 @@
 	/**
 	 * @type {boolean}
 	 */
+	Globals.bIE = Globals.sUserAgent.indexOf('msie') > -1;
+
+	/**
+	 * @type {boolean}
+	 */
+	Globals.bChrome = Globals.sUserAgent.indexOf('chrome') > -1;
+
+	/**
+	 * @type {boolean}
+	 */
+	Globals.bSafari = !Globals.bChrome && Globals.sUserAgent.indexOf('safari') > -1;
+
+	/**
+	 * @type {boolean}
+	 */
 	Globals.bMobileDevice =
 		/android/i.test(Globals.sUserAgent) ||
 		/iphone/i.test(Globals.sUserAgent) ||

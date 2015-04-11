@@ -85,11 +85,6 @@
 			MessageStore.messageListPage(iPage);
 			MessageStore.messageListSearch(sSearch);
 
-//			if (Enums.Layout.NoPreview === SettingsStore.layout() && MessageStore.message())
-//			{
-//				MessageStore.message(null);
-//			}
-
 			require('App/User').reloadMessageList();
 		}
 	};

@@ -18,6 +18,7 @@
 		Utils = require('Common/Utils'),
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
+		Audio = require('Common/Audio'),
 
 		Cache = require('Common/Cache'),
 
@@ -77,6 +78,21 @@
 		this.fullScreenMode = MessageStore.messageFullScreenMode;
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
+
+		this.allowAttachmnetControls = ko.observable(false);
+		this.showAttachmnetControls = ko.observable(false);
+
+		this.showAttachmnetControls.subscribe(function (bV) {
+			if (this.message())
+			{
+				_.each(this.message().attachments(), function (oItem) {
+					if (oItem)
+					{
+						oItem.checked(!!bV);
+					}
+				});
+			}
+		}, this);
 
 		this.lastReplyAction_ = ko.observable('');
 		this.lastReplyAction = ko.computed({
@@ -406,6 +422,8 @@
 
 			if (oMessage)
 			{
+				this.showAttachmnetControls(false);
+
 				if (this.viewHash !== oMessage.hash)
 				{
 					this.scrollMessageToTop();
@@ -734,6 +752,18 @@
 					oEvent.stopPropagation();
 				}
 			})
+			.on('click', '.attachmentsPlace .showPreplay', function (oEvent) {
+				if (oEvent && oEvent.stopPropagation)
+				{
+					oEvent.stopPropagation();
+				}
+
+				var oAttachment = ko.dataFor(this);
+				if (oAttachment && oAttachment.isMp3() && Audio.supported)
+				{
+					Audio.playMp3(oAttachment.linkDownload(), oAttachment.fileName);
+				}
+			})
 			.on('click', '.thread-list .more-threads', function (e) {
 
 				var oLast = null;
@@ -843,7 +873,7 @@
 		;
 
 		// exit fullscreen, back
-		key('esc', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
+		key('esc, backspace', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
 
 		// fullscreen
 		key('enter', Enums.KeyState.MessageView, function () {

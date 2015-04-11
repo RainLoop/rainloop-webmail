@@ -16,6 +16,7 @@
 	{
 		this.oSettings = window['rainloopAppData'] || {};
 		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
+//		window.console.log(this.oSettings);
 	}
 
 	SettingsStorage.prototype.oSettings = null;

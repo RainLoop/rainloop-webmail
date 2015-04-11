@@ -89,7 +89,6 @@
 		}, 500);
 	};
 
-
 	UserAjaxUserPromises.prototype.folderDelete = function (sFolderFullNameRaw, fTrigger)
 	{
 		return this.postRequest('FolderDelete', fTrigger, {
@@ -113,6 +112,54 @@
 		});
 	};
 
+	UserAjaxUserPromises.prototype.welcomeClose = function ()
+	{
+		return this.postRequest('WelcomeClose');
+	};
+
+//	UserAjaxUserPromises.prototype.messageList = function (sFolderFullNameRaw, iOffset, iLimit, sSearch, fTrigger)
+//	{
+//		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
+//		sSearch = Utils.pString(sSearch);
+//		iOffset = Utils.pInt(iOffset);
+//		iLimit = Utils.pInt(iLimit);
+//
+//		var sFolderHash = Cache.getFolderHash(sFolderFullNameRaw);
+//
+//		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
+//		{
+//			return this.abort('MessageList')
+//				.getRequest('MessageList', fTrigger,
+//					Links.subQueryPrefix() + '/' + Base64.urlsafe_encode([
+//						sFolderFullNameRaw,
+//						iOffset,
+//						iLimit,
+//						sSearch,
+//						AppStore.projectHash(),
+//						sFolderHash,
+//						Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+//						AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
+//						''
+//					].join(String.fromCharCode(0))))
+//				.then(PromisesPopulator.messageList);
+//		}
+//		else
+//		{
+//			return this.abort('MessageList')
+//				.postRequest('MessageList', fTrigger,{
+//					'Folder': sFolderFullNameRaw,
+//					'Offset': iOffset,
+//					'Limit': iLimit,
+//					'Search': sSearch,
+//					'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
+//					'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
+//				})
+//				.then(PromisesPopulator.messageList);
+//		}
+//
+//		return this.fastReject(Enums.Notification.UnknownError);
+//	};
+//
 //	UserAjaxUserPromises.prototype.message = function (sFolderFullNameRaw, iUid, fTrigger)
 //	{
 //		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);

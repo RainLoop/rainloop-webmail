@@ -11,7 +11,6 @@
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
-		HtmlEditor = require('Common/HtmlEditor'),
 
 		Remote = require('Remote/User/Ajax'),
 
@@ -32,9 +31,6 @@
 		this.id = '';
 		this.edit = ko.observable(false);
 		this.owner = ko.observable(false);
-
-		this.editor = null;
-		this.signatureDom = ko.observable(null);
 
 		this.email = ko.observable('').validateEmail();
 		this.email.focused = ko.observable(false);
@@ -70,7 +66,10 @@
 
 		this.addOrEditIdentityCommand = Utils.createCommand(this, function () {
 
-			this.populateSignatureFromEditor();
+			if (this.signature && this.signature.__fetchEditorValue)
+			{
+				this.signature.__fetchEditorValue();
+			}
 
 			if (!this.email.hasError())
 			{
@@ -158,36 +157,6 @@
 
 		this.submitRequest(false);
 		this.submitError('');
-
-		if (this.editor)
-		{
-			this.editor.setPlain('', false);
-		}
-	};
-
-	IdentityPopupView.prototype.populateSignatureFromEditor = function ()
-	{
-		if (this.editor)
-		{
-			this.signature(this.editor.getDataWithHtmlMark());
-		}
-	};
-
-	IdentityPopupView.prototype.editorSetSignature = function (sSignature)
-	{
-		if (!this.editor && this.signatureDom())
-		{
-			var self = this;
-			this.editor = new HtmlEditor(self.signatureDom(), function () {
-				self.populateSignatureFromEditor();
-			}, function () {
-				self.editor.setHtmlOrPlain(sSignature);
-			});
-		}
-		else
-		{
-			this.editor.setHtmlOrPlain(sSignature);
-		}
 	};
 
 	/**
@@ -215,8 +184,6 @@
 		{
 			this.id = Utils.fakeMd5();
 		}
-
-		this.editorSetSignature(this.signature());
 	};
 
 	IdentityPopupView.prototype.onShowWithDelay = function ()

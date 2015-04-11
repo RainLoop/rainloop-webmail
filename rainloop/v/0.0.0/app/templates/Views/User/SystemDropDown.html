@@ -68,6 +68,16 @@
 				</ul>
 			</div>
 			<div class="accountPlace pull-right" data-bind="text: emailTitle()"></div>
+			<div class="audioPlace pull-right" data-tooltip-i18n="off" data-tooltip-mobile="on" data-tooltip-join="right top"
+					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
+				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
+					<div class="bar first"></div>
+					<div class="bar second"></div>
+					<div class="bar third"></div>
+				</div>
+				<i class="stopIcon icon-pause"></i>
+			</div>
+
 		</div>
 	</div>
 </div>

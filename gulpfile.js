@@ -121,7 +121,7 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.js',
 		src: [
-			'vendors/openpgp/openpgp-0.10.1.min.js'
+			'vendors/openpgp/openpgp-0.7.2.min.js'
 		]
 	},
 	encrypt: {
@@ -168,7 +168,6 @@ cfg.paths.js = {
 			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
-			'vendors/buzz/buzz.min.js',
 			'vendors/Q/q.min.js',
 			'vendors/opentip/opentip-jquery.min.js',
 			'vendors/Autolinker/Autolinker.min.js',

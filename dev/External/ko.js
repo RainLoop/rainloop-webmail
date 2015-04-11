@@ -20,65 +20,90 @@
 		}
 	;
 
+	ko.bindingHandlers.editor = {
+		'init': function (oElement, fValueAccessor) {
+
+			var
+				fValue = fValueAccessor(),
+				oEditor  = null,
+				fUpdateEditorValue = function () {
+					if (oEditor)
+					{
+						oEditor.setHtmlOrPlain(fValue());
+					}
+				},
+				fUpdateKoValue = function () {
+					if (oEditor)
+					{
+						fValue(oEditor.getDataWithHtmlMark());
+					}
+				},
+				HtmlEditor = require('Common/HtmlEditor')
+			;
+
+			if (fValue)
+			{
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
+				fValue.__editor = oEditor;
+				fValue.__fetchEditorValue = fUpdateKoValue;
+				fValue.__updateEditorValue = fUpdateEditorValue;
+
+				fValue.subscribe(fUpdateEditorValue);
+			}
+		}
+	};
+
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				$oEl = null,
 				bi18n = true,
 				sValue = '',
 				Translator = null,
+				$oEl = $(oElement),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
 
-			if (!Globals.bMobileDevice)
+			if (!Globals.bMobileDevice || bMobile)
 			{
-				$oEl = $(oElement);
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
+				sValue = ko.unwrap(fValueAccessor());
 
-				if (sValue)
+				oElement.__opentip = new Opentip(oElement, {
+					'style': 'rainloopTip',
+					'element': oElement,
+					'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+				});
+
+				Globals.dropdownVisibility.subscribe(function (bV) {
+					if (bV) {
+						oElement.__opentip.deactivate();
+					} else {
+						oElement.__opentip.activate();
+					}
+				});
+
+				if (bi18n)
 				{
-					oElement.__opentip = new Opentip(oElement, {
-						'style': 'rainloopTip',
-						'element': oElement,
-						'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+					Translator = require('Common/Translator');
+
+					oElement.__opentip.setContent(Translator.i18n(sValue));
+
+					Translator.trigger.subscribe(function () {
+						oElement.__opentip.setContent(Translator.i18n(sValue));
 					});
 
-					oElement.__opentip.setContent(
-						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
-
-					Globals.dropdownVisibility.subscribe(function (bV) {
-						if (bV) {
-							oElement.__opentip.deactivate();
-						} else {
-							oElement.__opentip.activate();
+					Globals.dropdownVisibility.subscribe(function () {
+						if (oElement && oElement.__opentip)
+						{
+							oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
 						}
 					});
-
-					if (bi18n)
-					{
-						Translator = require('Common/Translator');
-
-						oElement.__opentip.setContent(Translator.i18n(sValue));
-
-						Translator.trigger.subscribe(function () {
-							oElement.__opentip.setContent(Translator.i18n(sValue));
-						});
-
-						Globals.dropdownVisibility.subscribe(function () {
-							if (oElement && oElement.__opentip)
-							{
-								oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
-							}
-						});
-					}
-					else
-					{
-						oElement.__opentip.setContent(sValue);
-					}
-
-					fDisposalTooltipHelper(oElement);
+				}
+				else
+				{
+					oElement.__opentip.setContent(sValue);
 				}
 			}
 		},
@@ -87,30 +112,40 @@
 			var
 				bi18n = true,
 				sValue = '',
+				$oEl = $(oElement),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
 
-			if (!Globals.bMobileDevice && oElement.__opentip)
+			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 			{
-				bi18n = 'on' === ($(oElement).data('tooltip-i18n') || 'on');
-				sValue = bi18n ? ko.unwrap(fValueAccessor()) : fValueAccessor()();
+				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
+				sValue = ko.unwrap(fValueAccessor());
 
 				if (sValue)
 				{
 					oElement.__opentip.setContent(
 						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
+					oElement.__opentip.activate();
+				}
+				else
+				{
+					oElement.__opentip.hide();
+					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
 				}
 			}
 		}
 	};
 
-	ko.bindingHandlers.tooltipForTest = {
+	ko.bindingHandlers.tooltipErrorTip = {
 		'init': function (oElement) {
 
 			var $oEl = $(oElement);
 
 			oElement.__opentip = new Opentip(oElement, {
-				'style': 'rainloopTestTip',
+				'style': 'rainloopErrorTip',
+				'hideOn': 'mouseout click',
 				'element': oElement,
 				'tipJoint': $oEl.data('tooltip-join') || 'top'
 			});
@@ -139,26 +174,25 @@
 				if ('' === sValue)
 				{
 					oOpenTips.hide();
-					oOpenTips.setContent('');
 					oOpenTips.deactivate();
+					oOpenTips.setContent('');
 				}
 				else
 				{
-					if ($oEl.is(':visible'))
-					{
-						oOpenTips.activate();
-						oOpenTips.setContent(sValue);
-
-						_.delay(function () {
+					_.delay(function () {
+						if ($oEl.is(':visible'))
+						{
+							oOpenTips.setContent(sValue);
+							oOpenTips.activate();
 							oOpenTips.show();
-						}, 100);
-					}
-					else
-					{
-						oOpenTips.hide();
-						oOpenTips.setContent('');
-						oOpenTips.deactivate();
-					}
+						}
+						else
+						{
+							oOpenTips.hide();
+							oOpenTips.deactivate();
+							oOpenTips.setContent('');
+						}
+					}, 100);
 				}
 			}
 		}

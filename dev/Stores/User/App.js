@@ -21,6 +21,8 @@
 	{
 		AppStore.call(this);
 
+		this.currentAudio = ko.observable('');
+
 		this.focusedState = ko.observable(Enums.Focused.None);
 
 		this.focusedState.subscribe(function (mValue) {

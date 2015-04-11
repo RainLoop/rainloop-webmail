@@ -88,8 +88,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
 				'login_powered'		=> array(true),
-				'user_logo'		=> array(''),
-				'user_css'		=> array('')
+				'user_logo'			=> array(''),
+				'user_css'			=> array(''),
+				'welcome_page_url'		=> array(''),
+				'welcome_page_display'	=> array('none')
 			),
 
 			'contacts' => array(
@@ -116,6 +118,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'admin_password'			=> array('12345'),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
+				'force_two_factor_auth'		=> array(false),
 				'allow_universal_login'		=> array(false),
 				'admin_panel_host'			=> array(''),
 				'core_install_access_domain' => array('')

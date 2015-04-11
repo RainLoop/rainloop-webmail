@@ -55,11 +55,11 @@
 
 		this.messageListDisableAutoSelect = ko.observable(false).extend({'falseTimeout': 500});
 
-		// message viewer
-		this.message = ko.observable(null);
-
 		this.selectorMessageSelected = ko.observable(null);
 		this.selectorMessageFocused = ko.observable(null);
+
+		// message viewer
+		this.message = ko.observable(null);
 
 		this.message.viewTrigger = ko.observable(false);
 
@@ -403,6 +403,24 @@
 		}
 	};
 
+	MessageUserStore.prototype.addBlockquoteSwitcherCallback = function ()
+	{
+		var $self = $(this);
+		if ('' !== Utils.trim(($self.text())))
+		{
+			$self.addClass('rl-bq-switcher hidden-bq');
+			$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
+				.insertBefore($self)
+				.on('click.rlBlockquoteSwitcher', function () {
+					$self.toggleClass('hidden-bq');
+					Utils.windowResize();
+				})
+				.after('<br />')
+				.before('<br />')
+			;
+		}
+	};
+
 	/**
 	 * @param {Object} oMessageTextBody
 	 */
@@ -416,19 +434,7 @@
 
 			if ($oList && 0 < $oList.length)
 			{
-				$oList.each(function () {
-					var $self = $(this);
-					$self.addClass('rl-bq-switcher hidden-bq');
-					$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-						.insertBefore($self)
-						.click(function () {
-							$self.toggleClass('hidden-bq');
-							Utils.windowResize();
-						})
-						.after('<br />')
-						.before('<br />')
-					;
-				});
+				$oList.each(this.addBlockquoteSwitcherCallback);
 			}
 		}
 	};

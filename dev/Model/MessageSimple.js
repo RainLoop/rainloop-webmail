@@ -71,7 +71,7 @@
 	};
 
 	/**
-	 * @param {AjaxJsonMessage} oJson
+	 * @param {Object} oJson
 	 * @return {boolean}
 	 */
 	MessageSimpleModel.prototype.initByJson = function (oJson)
@@ -85,13 +85,15 @@
 
 			this.subject = Utils.pString(oJson.Subject);
 
-			this.subjectPrefix = '';
-			this.subjectSuffix = this.subject;
-
 			if (Utils.isArray(oJson.SubjectParts))
 			{
 				this.subjectPrefix = Utils.pString(oJson.SubjectParts[0]);
 				this.subjectSuffix = Utils.pString(oJson.SubjectParts[1]);
+			}
+			else
+			{
+				this.subjectPrefix = '';
+				this.subjectSuffix = this.subject;
 			}
 
 			this.from = MessageHelper.emailArrayFromJson(oJson.From);
@@ -132,7 +134,7 @@
 
 	/**
 	 * @static
-	 * @param {AjaxJsonMessage} oJson
+	 * @param {Object} oJson
 	 * @return {?MessageSimpleModel}
 	 */
 	MessageSimpleModel.newInstanceFromJson = function (oJson)

@@ -1286,6 +1286,8 @@ class Actions
 			'LoginCss' => '',
 			'UserLogo' => '',
 			'UserCss' => '',
+			'WelcomePageUrl' => '',
+			'WelcomePageDisplay' => 'none',
 			'IncludeCss' => '',
 			'IncludeBackground' => '',
 			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
@@ -1306,12 +1308,14 @@ class Actions
 			'RegistrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
+			'RequireTwoFactor' => false,
 			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
+			'ZipSupported' => !!\class_exists('ZipArchive'),
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array()
@@ -1351,6 +1355,8 @@ class Actions
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
 			$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
+			$aResult['WelcomePageUrl'] = $oConfig->Get('branding', 'welcome_page_url', '');
+			$aResult['WelcomePageDisplay'] = \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none'));
 		}
 
 		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
@@ -1413,6 +1419,24 @@ class Actions
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+				if (!$oAccount->IsAdditionalAccount() && !empty($aResult['WelcomePageUrl']) &&
+					('once' === $aResult['WelcomePageDisplay'] || 'always' === $aResult['WelcomePageDisplay']))
+				{
+					if ('once' === $aResult['WelcomePageDisplay'])
+					{
+						if ($aResult['WelcomePageUrl'] === $oSettings->GetConf('LastWelcomePage', ''))
+						{
+							$aResult['WelcomePageUrl'] = '';
+							$aResult['WelcomePageDisplay'] = '';
+						}
+					}
+				}
+				else
+				{
+					$aResult['WelcomePageUrl'] = '';
+					$aResult['WelcomePageDisplay'] = '';
+				}
 			}
 			else
 			{
@@ -1423,6 +1447,9 @@ class Actions
 
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
+
+				$aResult['WelcomePageUrl'] = '';
+				$aResult['WelcomePageDisplay'] = '';
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
@@ -1479,6 +1506,20 @@ class Actions
 			}
 
 			$aResult['Capa'] = $this->Capa(false, $oAccount);
+
+			if ($aResult['Auth'] && !$aResult['RequireTwoFactor'])
+			{
+				if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount) &&
+					$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
+					$this->TwoFactorAuthProvider()->IsActive())
+				{
+					$aData = $this->getTwoFactorInfo($oAccount, true);
+
+					$aResult['RequireTwoFactor'] = !$aData ||
+						!isset($aData['User'], $aData['IsSet'], $aData['Enable']) ||
+						!($aData['IsSet'] && $aData['Enable']);
+				}
+			}
 		}
 		else
 		{
@@ -3111,6 +3152,9 @@ class Actions
 			case \RainLoop\Enumerations\Capa::TWO_FACTOR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
 				break;
+			case \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE:
+				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'force_two_factor_auth', 'bool');
+				break;
 			case \RainLoop\Enumerations\Capa::GRAVATAR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'labs', 'allow_gravatar', 'bool');
 				break;
@@ -3216,6 +3260,7 @@ class Actions
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS);
 		$this->setCapaFromParams($oConfig, 'CapaTemplates', \RainLoop\Enumerations\Capa::TEMPLATES);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
+		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuthForce', \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE);
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
 		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
 		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
@@ -3228,7 +3273,11 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
-		if ($this->HasOneOfActionParams(array('LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered', 'UserLogo', 'UserCss')) && $this->PremType())
+		if ($this->HasOneOfActionParams(array(
+			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered',
+			'UserLogo', 'UserCss',
+			'WelcomePageUrl', 'WelcomePageDisplay'
+		)) && $this->PremType())
 		{
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
@@ -3238,6 +3287,9 @@ class Actions
 
 			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
 			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
+
+			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
+			$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 		}
 
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
@@ -4789,6 +4841,25 @@ class Actions
 			$bIsError ? \MailSo\Log\Enumerations\Type::ERROR : \MailSo\Log\Enumerations\Type::INFO, 'JS-INFO');
 
 		return $this->DefaultResponse(__FUNCTION__, true);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoWelcomeClose()
+	{
+		$oAccount = $this->getAccountFromToken();
+		if ($oAccount && !$oAccount->IsAdditionalAccount())
+		{
+			$oSettings = $this->SettingsProvider()->Load($oAccount);
+			$oSettings->SetConf('LastWelcomePage',
+				$this->Config()->Get('branding', 'welcome_page_url', ''));
+
+			return $this->DefaultResponse(__FUNCTION__,
+				$this->SettingsProvider()->Save($oAccount, $oSettings));
+		}
+
+		return $this->FalseResponse(__FUNCTION__);
 	}
 
 	/**
@@ -7772,6 +7843,12 @@ class Actions
 			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR;
+
+			if ($oConfig->Get('security', 'force_two_factor_auth', false) &&
+				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE;
+			}
 		}
 
 		if ($oConfig->Get('labs', 'allow_gravatar', false))
@@ -8483,6 +8560,9 @@ class Actions
 	{
 		$sHtml = $this->Plugins()->ProcessTemplate($sName, $sHtml);
 		$sHtml = \preg_replace('/\{\{INCLUDE\/([a-zA-Z]+)\/PLACE\}\}/', '', $sHtml);
+
+		$sHtml = \preg_replace('/<script/i', '<x-script', $sHtml);
+		$sHtml = \preg_replace('/<\/script>/i', '</x-script>', $sHtml);
 
 		return \RainLoop\Utils::ClearHtmlOutput($sHtml);
 	}
