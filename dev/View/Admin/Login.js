@@ -34,7 +34,16 @@
 		this.loginError = ko.observable(false);
 		this.passwordError = ko.observable(false);
 
+		this.loginErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+		this.passwordErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+
 		this.loginFocus = ko.observable(false);
+
+		this.formHidden = ko.observable(false);
+
+		this.formError = ko.computed(function () {
+			return this.loginErrorAnimation() || this.passwordErrorAnimation();
+		}, this);
 
 		this.login.subscribe(function () {
 			this.loginError(false);
@@ -44,12 +53,23 @@
 			this.passwordError(false);
 		}, this);
 
+		this.loginError.subscribe(function (bV) {
+			this.loginErrorAnimation(!!bV);
+		}, this);
+
+		this.passwordError.subscribe(function (bV) {
+			this.passwordErrorAnimation(!!bV);
+		}, this);
+
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
 
 		this.submitCommand = Utils.createCommand(this, function () {
 
 			Utils.triggerAutocompleteInputChange();
+
+			this.loginError(false);
+			this.passwordError(false);
 
 			this.loginError('' === Utils.trim(this.login()));
 			this.passwordError('' === Utils.trim(this.password()));
@@ -67,6 +87,7 @@
 				{
 					if (oData.Result)
 					{
+						this.formHidden(true);
 						require('App/Admin').loginAndLogoutReload(true);
 					}
 					else if (oData.ErrorCode)

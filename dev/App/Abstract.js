@@ -73,7 +73,7 @@
 
 		}, 50));
 
-		 // TODO
+		 // DEBUG
 //		Events.sub({
 //			'window.resize': function () {
 //				window.console.log('window.resize');

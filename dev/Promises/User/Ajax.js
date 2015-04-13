@@ -112,6 +112,14 @@
 		});
 	};
 
+	UserAjaxUserPromises.prototype.attachmentsActions = function (sAction, aHashes, fTrigger)
+	{
+		return this.postRequest('AttachmentsActions', fTrigger, {
+			'Action': sAction,
+			'Hashes': aHashes
+		});
+	};
+
 	UserAjaxUserPromises.prototype.welcomeClose = function ()
 	{
 		return this.postRequest('WelcomeClose');

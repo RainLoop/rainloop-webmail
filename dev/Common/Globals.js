@@ -18,6 +18,7 @@
 	Globals.$win = $(window);
 	Globals.$doc = $(window.document);
 	Globals.$html = $('html');
+	Globals.$body = $('body');
 	Globals.$div = $('<div></div>');
 
 	Globals.$win.__sizes = [0, 0];
@@ -268,7 +269,7 @@
 	});
 
 	Globals.keyScopeReal.subscribe(function (sValue) {
-//		window.console.log('keyScope=' + sValue); // TODO
+//		window.console.log('keyScope=' + sValue); // DEBUG
 		key.setScope(sValue);
 	});
 

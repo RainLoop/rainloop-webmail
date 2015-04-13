@@ -211,7 +211,7 @@
 
 	/**
 	 * @param {Function} fResultFunc
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	AppUser.prototype.contactsSync = function (fResultFunc)
 	{

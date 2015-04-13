@@ -430,14 +430,31 @@
 										<i class="icon-cog controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true) }"></i>
 									</div>
 									<div class="attachmentsControls"
-										data-bind="visible: showAttachmnetControls() && message() && message().hasVisibleAttachments()">
-										<i class="icon-file-zip"></i>
+											data-bind="visible: showAttachmnetControls() && message() && message().hasVisibleAttachments()">
+
+										<i class="icon-file-zip"
+											data-bind="css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner animated': downloadAsZipLoading()}"></i>
+
 										&nbsp;&nbsp;
-										<span class="g-ui-link">Download as zip</span>
+										<span class="g-ui-link" data-bind="click: downloadAsZip">Download as zip</span>
+
 										&nbsp;&nbsp;&nbsp;&nbsp;
-										<i class="icon-cloud-up"></i>
+
+										<i class="icon-cloud-up"
+											data-bind="css: {'icon-cloud-up': !saveToOwnCloudLoading(), 'icon-spinner animated': saveToOwnCloudLoading()}"></i>
+
 										&nbsp;&nbsp;
-										<span class="g-ui-link">Save to ownCloud</span>
+										<span class="g-ui-link" data-bind="click: saveToOwnCloud">Save to ownCloud</span>
+
+										&nbsp;&nbsp;&nbsp;&nbsp;
+
+										<i class="icon-dropbox"
+											data-bind="css: {'icon-dropbox': !saveToDropboxLoading(), 'icon-spinner animated': saveToDropboxLoading()}"></i>
+
+										&nbsp;&nbsp;
+										<span class="g-ui-link" data-bind="click: saveToDropbox">Save to Dropbox</span>
+
+										<!-- // --->
 										<button type="button" class="close" style="margin-right: 5px;"
 											data-bind="click: function () { showAttachmnetControls(false); }">×</button>
 									</div>

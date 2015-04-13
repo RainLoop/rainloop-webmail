@@ -714,7 +714,7 @@
 
 	/**
 	 * @param {Array} aList
-	 * @returns {string}
+	 * @return {string}
 	 */
 	MessageUserStore.prototype.calculateMessageListHash = function (aList)
 	{

@@ -58,62 +58,17 @@ class AttachmentCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @return int
+	 * @return array
 	 */
-	public function ImageCount()
+	public function SpecData()
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsImage();
+		return $this->MapList(function ($oAttachment) {
+			if ($oAttachment)
+			{
+				return array($oAttachment->FileName(true), $oAttachment->MimeType());
+			}
+
+			return null;
 		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function ArchiveCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsArchive();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function PdfCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsPdf();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function DocCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsDoc();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function CertificateCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsPgpSignature();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
 	}
 }

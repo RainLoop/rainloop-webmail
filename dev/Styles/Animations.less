@@ -21,6 +21,15 @@
 	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
+@keyframes login-form-shake  {
+  0% {transform: translateX(0);}
+  12.5% {transform: translateX(-6px) rotateY(-5deg)}
+  37.5% {transform: translateX(5px) rotateY(4deg)}
+  62.5% {transform: translateX(-3px) rotateY(-2deg)}
+  87.5% {transform: translateX(2px) rotateY(1deg)}
+  100% {transform: translateX(0)}
+}
+
 html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
 	/*transform: scale(1.1);*/
 	transform: translateY(-20px);
@@ -54,6 +63,14 @@ html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrap
 		#rl-sub-right {
 			.transition(left 0.3s ease-out);
 		}
+	}
+
+	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
+		animation: login-form-shake 400ms ease-in-out;
+	}
+
+	&.cssanimations.csstransitions.no-mobile .b-login-content .afterLoginHide {
+		opacity: 0;
 	}
 
 /*	&.csstransitions.no-mobile #rl-content {

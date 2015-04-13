@@ -31,6 +31,9 @@
 
 		this.resize = _.throttle(_.bind(this.resize, this), 100);
 
+		this.__inited = false;
+		this.__initedData = null;
+
 		this.init();
 	}
 
@@ -190,7 +193,7 @@
 
 	HtmlEditor.prototype.setHtml = function (sHtml, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(true);
 
@@ -203,11 +206,15 @@
 				this.focus();
 			}
 		}
+		else
+		{
+			this.__initedData = [true, sHtml, bFocus];
+		}
 	};
 
 	HtmlEditor.prototype.setPlain = function (sPlain, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(false);
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
@@ -225,6 +232,10 @@
 			{
 				this.focus();
 			}
+		}
+		else
+		{
+			this.__initedData = [false, sPlain, bFocus];
 		}
 	};
 
@@ -322,7 +333,20 @@
 
 							self.fOnReady();
 							self.__resizable = true;
+							self.__inited = true;
 							self.resize();
+
+							if (self.__initedData)
+							{
+								if (self.__initedData[0])
+								{
+									self.setHtml(self.__initedData[1], self.__initedData[2]);
+								}
+								else
+								{
+									self.setPlain(self.__initedData[1], self.__initedData[2]);
+								}
+							}
 						});
 					}
 				}

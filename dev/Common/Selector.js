@@ -435,7 +435,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	Selector.prototype.autoSelect = function ()
 	{
@@ -452,7 +452,7 @@
 
 	/**
 	 * @param {Object} oItem
-	 * @returns {string}
+	 * @return {string}
 	 */
 	Selector.prototype.getItemUid = function (oItem)
 	{

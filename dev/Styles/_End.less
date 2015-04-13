@@ -33,6 +33,7 @@
 }
 
 .opentip-container {
+
 	z-index: 2001 !important;
 	.ot-content {
 		font-size: 13px;
@@ -40,5 +41,31 @@
 
 	&.style-rainloopErrorTip .ot-content {
 		color: red;
+	}
+
+	&.ot-show-effect-none, &.ot-hide-effect-none {
+		transition: none !important;
+	}
+
+	&.ot-show-effect-fade {
+
+		transition: none;
+
+		&.ot-hidden {
+			opacity: 0;
+		}
+
+		&.ot-going-to-show {
+			opacity: 0;
+			transition: opacity 0.2s ease-in-out;
+		}
+		&.ot-showing {
+			opacity: 1;
+			transition: opacity 0.2s ease-in-out;
+		}
+		&.ot-visible {
+			opacity: 1;
+			transition: none;
+		}
 	}
 }

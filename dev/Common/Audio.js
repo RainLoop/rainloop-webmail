@@ -20,58 +20,90 @@
 	{
 		var self = this;
 
-		this.obj = this.createNewObject();
-		this.objForNotification = this.createNewObject();
+//		this.userMedia = window.navigator.getUserMedia || window.navigator.webkitGetUserMedia ||
+//			window.navigator.mozGetUserMedia || window.navigator.msGetUserMedia;
+//
+//		this.audioContext = window.AudioContext || window.webkitAudioContext;
+//		if (!this.audioContext || !window.Float32Array)
+//		{
+//			this.audioContext = null;
+//			this.userMedia = null;
+//		}
 
-		this.supported = !Globals.bMobileDevice && !Globals.bSafari &&
-			this.obj && '' !== this.obj.canPlayType('audio/mpeg');
+		this.player = this.createNewObject();
 
-		if (this.obj && this.supported)
+		this.supported = !Globals.bMobileDevice && !Globals.bSafari && !!this.player && !!this.player.play;
+		if (this.supported &&  this.player.canPlayType)
 		{
-			this.objForNotification.src = Links.sound('new-mail.mp3');
+			this.supportedMp3 = '' !== this.player.canPlayType('audio/mpeg;').replace(/no/, '');
+			this.supportedWav = '' !== this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');
+			this.supportedOgg = '' !== this.player.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, '');
+			this.supportedNotification = this.supported && this.supportedMp3;
+		}
 
-			$(this.obj).on('ended error', function () {
+		if (!this.player || (!this.supportedMp3 && !this.supportedOgg && !this.supportedWav))
+		{
+			this.supported = false;
+			this.supportedMp3 = false;
+			this.supportedOgg = false;
+			this.supportedWav = false;
+			this.supportedNotification = false;
+		}
+
+		if (this.supported)
+		{
+			$(this.player).on('ended error', function () {
 				self.stop();
 			});
 
 			Events.sub('audio.api.stop', function () {
 				self.stop();
 			});
-
-			Events.sub('audio.api.play', function (sUrl, sName) {
-				self.playMp3(sUrl, sName);
-			});
 		}
 	}
 
-	Audio.prototype.obj = null;
-	Audio.prototype.objForNotification = null;
+	Audio.prototype.player = null;
+	Audio.prototype.notificator = null;
+
 	Audio.prototype.supported = false;
+	Audio.prototype.supportedMp3 = false;
+	Audio.prototype.supportedOgg = false;
+	Audio.prototype.supportedWav = false;
+	Audio.prototype.supportedNotification = false;
+
+//	Audio.prototype.record = function ()
+//	{
+//		this.getUserMedia({audio:true}, function () {
+//			window.console.log(arguments);
+//		}, function(oError) {
+//			window.console.log(arguments);
+//		});
+//	};
 
 	Audio.prototype.createNewObject = function ()
 	{
-		var obj = window.Audio ? new window.Audio() : null;
-		if (obj && obj.canPlayType)
+		var player = window.Audio ? new window.Audio() : null;
+		if (player && player.canPlayType && player.pause && player.play)
 		{
-			obj.preload = 'none';
-			obj.loop = false;
-			obj.autoplay = false;
-			obj.muted = false;
+			player.preload = 'none';
+			player.loop = false;
+			player.autoplay = false;
+			player.muted = false;
 		}
 
-		return obj;
+		return player;
 	};
 
 	Audio.prototype.paused = function ()
 	{
-		return this.supported ? !!this.obj.paused : true;
+		return this.supported ? !!this.player.paused : true;
 	};
 
 	Audio.prototype.stop = function ()
 	{
-		if (this.supported && this.obj.pause)
+		if (this.supported && this.player.pause)
 		{
-			this.obj.pause();
+			this.player.pause();
 		}
 
 		Events.pub('audio.stop');
@@ -79,33 +111,73 @@
 
 	Audio.prototype.pause = Audio.prototype.stop;
 
+	Audio.prototype.clearName = function (sName, sExt)
+	{
+		sExt = sExt || '';
+		sName = Utils.isUnd(sName) ? '' : Utils.trim(sName);
+		if (sExt && '.' + sExt === sName.toLowerCase().substr((sExt.length + 1) * -1))
+		{
+			sName = Utils.trim(sName.substr(0, sName.length - 4));
+		}
+
+		if ('' === sName)
+		{
+			sName = 'audio';
+		}
+
+		return sName;
+	};
+
 	Audio.prototype.playMp3 = function (sUrl, sName)
 	{
-		if (this.supported && this.obj.play)
+		if (this.supported && this.supportedMp3)
 		{
-			this.obj.src = sUrl;
-			this.obj.play();
+			this.player.src = sUrl;
+			this.player.play();
 
-			sName = Utils.isUnd(sName) ? '' : Utils.trim(sName);
-			if ('.mp3' === sName.toLowerCase().substr(-4))
-			{
-				sName = Utils.trim(sName.substr(0, sName.length - 4));
-			}
+			Events.pub('audio.start', [this.clearName(sName, 'mp3'), 'mp3']);
+		}
+	};
 
-			if ('' === sName)
-			{
-				sName = 'audio';
-			}
+	Audio.prototype.playOgg = function (sUrl, sName)
+	{
+		if (this.supported && this.supportedOgg)
+		{
+			this.player.src = sUrl;
+			this.player.play();
 
-			Events.pub('audio.start', [sName]);
+			sName = this.clearName(sName, 'oga');
+			sName = this.clearName(sName, 'ogg');
+
+			Events.pub('audio.start', [sName, 'ogg']);
+		}
+	};
+
+	Audio.prototype.playWav = function (sUrl, sName)
+	{
+		if (this.supported && this.supportedWav)
+		{
+			this.player.src = sUrl;
+			this.player.play();
+
+			Events.pub('audio.start', [this.clearName(sName, 'wav'), 'wav']);
 		}
 	};
 
 	Audio.prototype.playNotification = function ()
 	{
-		if (this.supported && this.objForNotification.play)
+		if (this.supported && this.supportedMp3)
 		{
-			this.objForNotification.play();
+			if (!this.notificator)
+			{
+				this.notificator = this.createNewObject();
+				this.notificator.src = Links.sound('new-mail.mp3');
+			}
+
+			if (this.notificator && this.notificator.play)
+			{
+				this.notificator.play();
+			}
 		}
 	};
 

@@ -374,7 +374,7 @@
 	};
 
 	/**
-	 * @returns {string}
+	 * @return {string}
 	 */
 	MessageListMailBoxUserView.prototype.printableMessageCountForDeletion = function ()
 	{

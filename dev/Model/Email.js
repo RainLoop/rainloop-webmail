@@ -66,7 +66,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	EmailModel.prototype.validate = function ()
 	{

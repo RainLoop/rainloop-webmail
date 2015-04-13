@@ -82,6 +82,10 @@
 		this.allowAttachmnetControls = ko.observable(false);
 		this.showAttachmnetControls = ko.observable(false);
 
+		this.downloadAsZipLoading = ko.observable(false);
+		this.saveToOwnCloudLoading = ko.observable(false);
+		this.saveToDropboxLoading = ko.observable(false);
+
 		this.showAttachmnetControls.subscribe(function (bV) {
 			if (this.message())
 			{
@@ -114,12 +118,6 @@
 		this.showFullInfo = ko.observable(false);
 		this.moreDropdownTrigger = ko.observable(false);
 		this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
-
-		// TODO
-//		ko.computed(function () {
-//			window.console.log('focus:' + AppStore.focusedState() + ', dom:' +
-//				this.messageDomFocused() + ', key:' + Globals.keyScope() + ' ~ ' + Globals.keyScopeReal());
-//		}, this).extend({'throttle': 1});
 
 		this.messageVisibility = ko.computed(function () {
 			return !this.messageLoadingThrottle() && !!this.message();
@@ -759,9 +757,20 @@
 				}
 
 				var oAttachment = ko.dataFor(this);
-				if (oAttachment && oAttachment.isMp3() && Audio.supported)
+				if (oAttachment && Audio.supported)
 				{
-					Audio.playMp3(oAttachment.linkDownload(), oAttachment.fileName);
+					switch (true)
+					{
+						case Audio.supportedMp3 && oAttachment.isMp3():
+							Audio.playMp3(oAttachment.linkDownload(), oAttachment.fileName);
+							break;
+						case Audio.supportedOgg && oAttachment.isOgg():
+							Audio.playOgg(oAttachment.linkDownload(), oAttachment.fileName);
+							break;
+						case Audio.supportedWav && oAttachment.isWav():
+							Audio.playWav(oAttachment.linkDownload(), oAttachment.fileName);
+							break;
+					}
 				}
 			})
 			.on('click', '.thread-list .more-threads', function (e) {
@@ -1107,6 +1116,40 @@
 		}
 	};
 
+	MessageViewMailBoxUserView.prototype.getAttachmentsHashes = function ()
+	{
+		return _.compact(_.map(this.message() ? this.message().attachments() : [], function (oItem) {
+			return oItem && oItem.checked() ? oItem.download : '';
+		}));
+	};
+
+	MessageViewMailBoxUserView.prototype.downloadAsZip = function ()
+	{
+		var aHashes = this.getAttachmentsHashes();
+		if (0 < aHashes.length)
+		{
+			Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading);
+		}
+	};
+
+	MessageViewMailBoxUserView.prototype.saveToOwnCloud = function ()
+	{
+		var aHashes = this.getAttachmentsHashes();
+		if (0 < aHashes.length)
+		{
+			Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading);
+		}
+	};
+
+	MessageViewMailBoxUserView.prototype.saveToDropbox = function ()
+	{
+		var aHashes = this.getAttachmentsHashes();
+		if (0 < aHashes.length)
+		{
+			Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading);
+		}
+	};
+
 	/**
 	 * @param {MessageModel} oMessage
 	 */
@@ -1119,7 +1162,7 @@
 	};
 
 	/**
-	 * @returns {string}
+	 * @return {string}
 	 */
 	MessageViewMailBoxUserView.prototype.printableCheckedMessageCount = function ()
 	{

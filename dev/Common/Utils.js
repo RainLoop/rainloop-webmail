@@ -144,7 +144,7 @@
 	/**
 	 * @param {string} sMailToUrl
 	 * @param {Function} PopupComposeVoreModel
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	Utils.mailToHelper = function (sMailToUrl, PopupComposeVoreModel)
 	{
@@ -598,7 +598,7 @@
 	 * @param {string} sTheme
 	 * @return {string}
 	 */
-	Utils.convertThemeName = function (sTheme)
+	Utils.convertThemeName = _.memoize(function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
 		{
@@ -606,7 +606,7 @@
 		}
 
 		return Utils.trim(sTheme.replace(/[^a-zA-Z0-9]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
-	};
+	});
 
 	/**
 	 * @param {string} sName
@@ -822,40 +822,6 @@
 
 			sText = '',
 
-			splitPlainText = function (sText)
-			{
-				var
-					iLen = 100,
-					sPrefix = '',
-					sSubText = '',
-					sResult = sText,
-					iSpacePos = 0,
-					iNewLinePos = 0
-				;
-
-				while (sResult.length > iLen)
-				{
-					sSubText = sResult.substring(0, iLen);
-					iSpacePos = sSubText.lastIndexOf(' ');
-					iNewLinePos = sSubText.lastIndexOf('\n');
-
-					if (-1 !== iNewLinePos)
-					{
-						iSpacePos = iNewLinePos;
-					}
-
-					if (-1 === iSpacePos)
-					{
-						iSpacePos = iLen;
-					}
-
-					sPrefix += sSubText.substring(0, iSpacePos) + '\n';
-					sResult = sResult.substring(iSpacePos + 1);
-				}
-
-				return sPrefix + sResult;
-			},
-
 			convertBlockquote = function (sText) {
 				sText = Utils.trim(sText);
 				sText = '> ' + sText.replace(/\n/gm, '\n> ');
@@ -929,7 +895,7 @@
 			.replace(/&amp;/gi, '&')
 		;
 
-		sText = splitPlainText(Utils.trim(sText));
+		sText = Utils.splitPlainText(Utils.trim(sText));
 
 		iPos = 0;
 		iLimit = 800;

@@ -182,7 +182,7 @@
 
 	/**
 	 * @param {boolean=} bBoot = false
-	 * @returns {Array}
+	 * @return {Array}
 	 */
 	FolderUserStore.prototype.getNextFolderNames = function (bBoot)
 	{

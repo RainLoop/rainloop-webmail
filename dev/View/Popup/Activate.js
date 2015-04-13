@@ -137,7 +137,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	ActivatePopupView.prototype.validateSubscriptionKey = function ()
 	{

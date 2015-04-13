@@ -33,7 +33,7 @@
 					}
 				},
 				fUpdateKoValue = function () {
-					if (oEditor)
+					if (oEditor && oEditor.__inited)
 					{
 						fValue(oEditor.getDataWithHtmlMark());
 					}
@@ -49,6 +49,7 @@
 				fValue.__updateEditorValue = fUpdateEditorValue;
 
 				fValue.subscribe(fUpdateEditorValue);
+				fUpdateEditorValue();
 			}
 		}
 	};
@@ -61,6 +62,7 @@
 				sValue = '',
 				Translator = null,
 				$oEl = $(oElement),
+				fValue = fValueAccessor(),
 				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
@@ -68,7 +70,7 @@
 			if (!Globals.bMobileDevice || bMobile)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = ko.unwrap(fValueAccessor());
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 				oElement.__opentip = new Opentip(oElement, {
 					'style': 'rainloopTip',
@@ -78,11 +80,20 @@
 
 				Globals.dropdownVisibility.subscribe(function (bV) {
 					if (bV) {
-						oElement.__opentip.deactivate();
-					} else {
-						oElement.__opentip.activate();
+						oElement.__opentip.hide();
 					}
 				});
+
+				if ('' === sValue)
+				{
+					oElement.__opentip.hide();
+					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
+				}
+				else
+				{
+					oElement.__opentip.activate();
+				}
 
 				if (bi18n)
 				{
@@ -113,6 +124,7 @@
 				bi18n = true,
 				sValue = '',
 				$oEl = $(oElement),
+				fValue = fValueAccessor(),
 				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
@@ -120,7 +132,7 @@
 			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = ko.unwrap(fValueAccessor());
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 				if (sValue)
 				{
@@ -165,7 +177,8 @@
 
 			var
 				$oEl = $(oElement),
-				sValue = ko.unwrap(fValueAccessor()),
+				fValue = fValueAccessor(),
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
 				oOpenTips = oElement.__opentip
 			;
 

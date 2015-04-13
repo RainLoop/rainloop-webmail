@@ -8,6 +8,26 @@
 	/**
 	 * @enum {string}
 	 */
+	Enums.FileType = {
+		'Unknown': 'unknown',
+		'Text': 'text',
+		'Html': 'html',
+		'Code': 'code',
+		'Eml': 'eml',
+		'WordText': 'word-text',
+		'Pdf': 'pdf',
+		'Image': 'image',
+		'Audio': 'audio',
+		'Video': 'video',
+		'Sheet': 'sheet',
+		'Presentation': 'presentation',
+		'Certificate': 'certificate',
+		'Archive': 'archive'
+	};
+
+	/**
+	 * @enum {string}
+	 */
 	Enums.StorageResultType = {
 		'Success': 'success',
 		'Abort': 'abort',

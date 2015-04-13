@@ -74,30 +74,11 @@
 		this.selected = ko.observable(false);
 		this.checked = ko.observable(false);
 		this.hasAttachments = ko.observable(false);
-		this.attachmentsMainType = ko.observable('');
+		this.attachmentsSpecData = ko.observableArray([]);
 
 		this.attachmentIconClass = ko.computed(function () {
-			var sClass = '';
-			if (this.hasAttachments())
-			{
-				sClass = 'icon-attachment';
-				switch (this.attachmentsMainType())
-				{
-					case 'image':
-						sClass = 'icon-image';
-						break;
-					case 'archive':
-						sClass = 'icon-file-zip';
-						break;
-					case 'doc':
-						sClass = 'icon-file-text';
-						break;
-					case 'certificate':
-						sClass = 'icon-file-certificate';
-						break;
-				}
-			}
-			return sClass;
+			return AttachmentModel.staticCombinedIconClass(
+				this.hasAttachments() ? this.attachmentsSpecData() : []);
 		}, this);
 
 		this.body = null;
@@ -193,7 +174,7 @@
 		this.selected(false);
 		this.checked(false);
 		this.hasAttachments(false);
-		this.attachmentsMainType('');
+		this.attachmentsSpecData([]);
 
 		this.body = null;
 		this.isHtml(false);
@@ -287,7 +268,8 @@
 
 			this.dateTimeStampInUTC(Utils.pInt(oJsonMessage.DateTimeStampInUTC));
 			this.hasAttachments(!!oJsonMessage.HasAttachments);
-			this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
+			this.attachmentsSpecData(Utils.isArray(oJsonMessage.AttachmentsSpecData) ?
+				oJsonMessage.AttachmentsSpecData : []);
 
 			this.fromEmailString(MessageHelper.emailArrayToString(this.from, true));
 			this.fromClearEmailString(MessageHelper.emailArrayToStringClear(this.from));
@@ -337,7 +319,8 @@
 			}
 
 			this.hasAttachments(!!oJsonMessage.HasAttachments);
-			this.attachmentsMainType(oJsonMessage.AttachmentsMainType);
+			this.attachmentsSpecData(Utils.isArray(oJsonMessage.AttachmentsSpecData) ?
+				oJsonMessage.AttachmentsSpecData : []);
 
 			this.foundedCIDs = Utils.isArray(oJsonMessage.FoundedCIDs) ? oJsonMessage.FoundedCIDs : [];
 			this.attachments(this.initAttachmentsFromJson(oJsonMessage.Attachments));
@@ -524,15 +507,6 @@
 		if (this.hasAttachments())
 		{
 			aResult.push('withAttachments');
-			switch (this.attachmentsMainType())
-			{
-				case 'image':
-					aResult.push('imageOnlyAttachments');
-					break;
-				case 'archive':
-					aResult.push('archiveOnlyAttachments');
-					break;
-			}
 		}
 		if (this.newForAnimation())
 		{
@@ -797,7 +771,7 @@
 	};
 
 	/**
-	 * @returns {string}
+	 * @return {string}
 	 */
 	MessageModel.prototype.generateUid = function ()
 	{
@@ -850,7 +824,7 @@
 		this.selected(oMessage.selected());
 		this.checked(oMessage.checked());
 		this.hasAttachments(oMessage.hasAttachments());
-		this.attachmentsMainType(oMessage.attachmentsMainType());
+		this.attachmentsSpecData(oMessage.attachmentsSpecData());
 
 		this.body = null;
 

@@ -995,7 +995,7 @@
 	 *
 	 * @param {Array} aList
 	 * @param {boolean} bFriendly
-	 * @returns {string}
+	 * @return {string}
 	 */
 	ComposePopupView.prototype.emailArrayToStringLineHelper = function (aList, bFriendly)
 	{

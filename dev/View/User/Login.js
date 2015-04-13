@@ -42,6 +42,7 @@
 
 		this.additionalCode = ko.observable('');
 		this.additionalCode.error = ko.observable(false);
+		this.additionalCode.errorAnimation = ko.observable(false).extend({'falseTimeout': 500});
 		this.additionalCode.focused = ko.observable(false);
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
@@ -55,6 +56,16 @@
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
+
+		this.emailErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+		this.passwordErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+
+		this.formHidden = ko.observable(false);
+
+		this.formError = ko.computed(function () {
+			return this.emailErrorAnimation() || this.passwordErrorAnimation() ||
+				(this.additionalCode.visibility() && this.additionalCode.errorAnimation());
+		}, this);
 
 		this.emailFocus = ko.observable(false);
 		this.passwordFocus = ko.observable(false);
@@ -76,6 +87,18 @@
 
 		this.additionalCode.visibility.subscribe(function () {
 			this.additionalCode.error(false);
+		}, this);
+
+		this.emailError.subscribe(function (bV) {
+			this.emailErrorAnimation(!!bV);
+		}, this);
+
+		this.passwordError.subscribe(function (bV) {
+			this.passwordErrorAnimation(!!bV);
+		}, this);
+
+		this.additionalCode.error.subscribe(function (bV) {
+			this.additionalCode.errorAnimation(!!bV);
 		}, this);
 
 		this.submitRequest = ko.observable(false);
@@ -115,16 +138,34 @@
 
 			Utils.triggerAutocompleteInputChange();
 
+			this.emailError(false);
+			this.passwordError(false);
+
 			this.emailError('' === Utils.trim(this.email()));
 			this.passwordError('' === Utils.trim(this.password()));
 
 			if (this.additionalCode.visibility())
 			{
+				this.additionalCode.error(false);
 				this.additionalCode.error('' === Utils.trim(this.additionalCode()));
 			}
 
-			if (this.emailError() || this.passwordError() || this.additionalCode.error())
+			if (this.emailError() || this.passwordError() ||
+				(this.additionalCode.visibility() && this.additionalCode.error()))
 			{
+				switch (true)
+				{
+					case this.emailError():
+						this.emailFocus(true);
+						break;
+					case this.passwordError():
+						this.passwordFocus(true);
+						break;
+					case this.additionalCode.visibility() && this.additionalCode.error():
+						this.additionalCode.focused(true);
+						break;
+				}
+
 				return false;
 			}
 
@@ -172,10 +213,12 @@
 								}
 								else if (oData.Admin)
 								{
+									this.formHidden(true);
 									require('App/User').redirectToAdminPanel();
 								}
 								else
 								{
+									this.formHidden(true);
 									require('App/User').loginAndLogoutReload(false);
 								}
 							}
@@ -339,6 +382,8 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
+					self.formHidden(true);
+					
 					require('App/User').loginAndLogoutReload(false);
 				}
 				else

@@ -70,7 +70,11 @@
 			return Utils.mimeContentType(this.fileName());
 		}, this);
 
-		this.regDisposables([this.friendlySize]);
+		this.fileExt = ko.computed(function () {
+			return Utils.getFileExtension(this.fileName());
+		}, this);
+
+		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.mimeType, this.fileExt]);
 	}
 
 	_.extend(ComposeAttachmentModel.prototype, AbstractModel.prototype);
@@ -108,7 +112,8 @@
 	 */
 	ComposeAttachmentModel.prototype.iconClass = function ()
 	{
-		return AttachmentModel.staticIconClassHelper(this.mimeType())[0];
+		return AttachmentModel.staticIconClass(
+			AttachmentModel.staticFileType(this.fileExt(), this.mimeType()))[0];
 	};
 
 	/**
@@ -116,7 +121,8 @@
 	 */
 	ComposeAttachmentModel.prototype.iconText = function ()
 	{
-		return AttachmentModel.staticIconClassHelper(this.mimeType())[1];
+		return AttachmentModel.staticIconClass(
+			AttachmentModel.staticFileType(this.fileExt(), this.mimeType()))[1];
 	};
 
 	module.exports = ComposeAttachmentModel;

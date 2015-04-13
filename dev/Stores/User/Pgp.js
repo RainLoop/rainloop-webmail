@@ -72,7 +72,7 @@
 	/**
 	 * @param {string} sEmail
 	 * @param {string=} sPassword
-	 * @returns {?}
+	 * @return {?}
 	 */
 	PgpUserStore.prototype.findPrivateKeyByEmail = function (sEmail, sPassword)
 	{
@@ -109,7 +109,7 @@
 
 	/**
 	 * @param {string=} sPassword
-	 * @returns {?}
+	 * @return {?}
 	 */
 	PgpUserStore.prototype.findSelfPrivateKey = function (sPassword)
 	{

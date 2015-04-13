@@ -59,7 +59,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	AccountUserStore.prototype.isRootAccount = function ()
 	{

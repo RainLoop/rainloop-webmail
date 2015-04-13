@@ -29,8 +29,6 @@
 	MessageFullModel.prototype.requestHash = '';
 	MessageFullModel.prototype.proxy = false;
 	MessageFullModel.prototype.hasAttachments = false;
-	MessageFullModel.prototype.attachmentsMainType = '';
-	MessageFullModel.prototype.attachmentsClass = '';
 
 	MessageFullModel.prototype.clear = function ()
 	{
@@ -43,37 +41,6 @@
 		this.proxy = false;
 
 		this.hasAttachments = false;
-		this.attachmentsMainType = '';
-		this.attachmentsClass = '';
-	};
-
-	/**
-	 * @return {string}
-	 */
-	MessageFullModel.prototype.getAttachmentsClass = function ()
-	{
-		var sClass = '';
-		if (this.hasAttachments)
-		{
-			sClass = 'icon-attachment';
-			switch (this.attachmentsMainType)
-			{
-				case 'image':
-					sClass = 'icon-image';
-					break;
-				case 'archive':
-					sClass = 'icon-file-zip';
-					break;
-				case 'doc':
-					sClass = 'icon-file-text';
-					break;
-				case 'certificate':
-					sClass = 'icon-file-certificate';
-					break;
-			}
-		}
-
-		return sClass;
 	};
 
 	/**
@@ -98,8 +65,6 @@
 				this.proxy = !!oJson.ExternalProxy;
 
 				this.hasAttachments = !!oJson.HasAttachments;
-				this.attachmentsMainType = Utils.pString(oJson.AttachmentsMainType);
-				this.attachmentsClass = this.getAttachmentsClass();
 
 				bResult = true;
 			}
