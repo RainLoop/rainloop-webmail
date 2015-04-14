@@ -1,6 +1,8 @@
 RainLoop Webmail
 ==================
 
+[![Join the chat at https://gitter.im/RainLoop/rainloop-webmail](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/RainLoop/rainloop-webmail?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Simple, modern &amp; fast web-based email client.
 
 Modest system requirements, decent performance, simple installation and upgrade, no database required - all these make RainLoop Webmail a perfect choice for your email solution.
