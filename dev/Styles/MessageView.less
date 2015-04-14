@@ -76,6 +76,23 @@ html.rl-no-preview-pane {
 			right: 10px;
 		}
 
+		.flagParent {
+
+			cursor: pointer;
+			margin-right: 5px;
+
+			.flagOn {
+				color: orange;
+			}
+
+			.flagOff {
+				opacity: 0.5;
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
+
 		.messageItemHeader {
 
 			position: absolute;
@@ -118,23 +135,6 @@ html.rl-no-preview-pane {
 
 			.messageButtons {
 				margin-top: 5px;
-			}
-
-			.flagParent {
-
-				cursor: pointer;
-				margin-right: 5px;
-
-				.flagOn {
-					color: orange;
-				}
-
-				.flagOff {
-					opacity: 0.5;
-					&:hover {
-						opacity: 1;
-					}
-				}
 			}
 
 			.informationShort {

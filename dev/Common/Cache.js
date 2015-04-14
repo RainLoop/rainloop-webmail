@@ -302,12 +302,16 @@
 
 			if (aFlags && 0 < aFlags.length)
 			{
-				oMessage.unseen(!!aFlags[0]);
 				oMessage.flagged(!!aFlags[1]);
-				oMessage.answered(!!aFlags[2]);
-				oMessage.forwarded(!!aFlags[3]);
-				oMessage.isReadReceipt(!!aFlags[4]);
-				oMessage.deletedMark(!!aFlags[5]);
+
+				if (!oMessage.__simple_message__)
+				{
+					oMessage.unseen(!!aFlags[0]);
+					oMessage.answered(!!aFlags[2]);
+					oMessage.forwarded(!!aFlags[3]);
+					oMessage.isReadReceipt(!!aFlags[4]);
+					oMessage.deletedMark(!!aFlags[5]);
+				}
 			}
 
 			if (0 < oMessage.threads().length)

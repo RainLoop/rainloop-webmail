@@ -5,6 +5,7 @@
 
 	var
 		_ = require('_'),
+		ko = require('ko'),
 
 		Utils = require('Common/Utils'),
 
@@ -20,11 +21,18 @@
 	function MessageSimpleModel(sSuperName)
 	{
 		AbstractModel.call(this, sSuperName || 'MessageSimpleModel');
+
+		this.flagged = ko.observable(false);
+		this.selected = ko.observable(false);
 	}
 
 	_.extend(MessageSimpleModel.prototype, AbstractModel.prototype);
 
+	MessageSimpleModel.prototype.__simple_message__ = true;
+
 	MessageSimpleModel.prototype.folder = '';
+	MessageSimpleModel.prototype.folderFullNameRaw = '';
+
 	MessageSimpleModel.prototype.uid = '';
 	MessageSimpleModel.prototype.subject = '';
 
@@ -48,6 +56,8 @@
 	MessageSimpleModel.prototype.clear = function ()
 	{
 		this.folder = '';
+		this.folderFullNameRaw = '';
+
 		this.uid = '';
 
 		this.subject = '';
@@ -68,6 +78,9 @@
 
 		this.size = 0;
 		this.timestamp = 0;
+
+		this.flagged(false);
+		this.selected(false);
 	};
 
 	/**
@@ -81,6 +94,8 @@
 		if (oJson && 'Object/Message' === oJson['@Object'])
 		{
 			this.folder = Utils.pString(oJson.Folder);
+			this.folderFullNameRaw = this.folder;
+
 			this.uid = Utils.pString(oJson.Uid);
 
 			this.subject = Utils.pString(oJson.Subject);
@@ -112,6 +127,9 @@
 			this.toAsString = MessageHelper.emailArrayToString(this.to, true);
 			this.toAsStringClear = MessageHelper.emailArrayToStringClear(this.to);
 
+			this.flagged(false);
+			this.selected(false);
+
 			this.populateSenderEmail();
 
 			bResult = true;
@@ -130,6 +148,14 @@
 			this.senderAsString = this.toAsString;
 			this.senderAsStringClear = this.toAsStringClear;
 		}
+	};
+
+	/**
+	 * @return {Array}
+	 */
+	MessageSimpleModel.prototype.threads = function ()
+	{
+		return [];
 	};
 
 	/**

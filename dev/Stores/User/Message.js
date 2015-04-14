@@ -63,6 +63,8 @@
 
 		this.message.viewTrigger = ko.observable(false);
 
+		this.messageThreadList = ko.observableArray([]);
+
 		this.messageLastThreadUidsData = ko.observable(null);
 
 		this.messageError = ko.observable('');

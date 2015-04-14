@@ -219,6 +219,9 @@
 									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
 										<li class="e-item thread-list-message real-msg" role="presentation" data-bind="css: {'selected': selected, 'more-that': $parent.viewThreadMessages.limit < $index() }">
 											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
+												<span class="flagParent pull-right" style="margin-left: 5px; margin-right: 0px;">
+													<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': flagged, 'icon-star-empty flagOff': !flagged()}"></i>
+												</span>
 												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: timestamp"></span>
 												<div style="text-overflow: ellipsis; overflow: hidden;">
 													<span class="thread-from" data-bind="text: fromAsString"></span>

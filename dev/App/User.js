@@ -153,7 +153,20 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
+		_.each(MessageStore.messageThreadList(), function (oMessage) {
+			Cache.initMessageFlagsFromCache(oMessage);
+		});
+
 		Cache.initMessageFlagsFromCache(MessageStore.message());
+
+		this.reloadFlagsCurrentMessageThreadListFromCache();
+	};
+
+	AppUser.prototype.reloadFlagsCurrentMessageThreadListFromCache = function ()
+	{
+		_.each(MessageStore.messageThreadList(), function (oMessage) {
+			Cache.initMessageFlagsFromCache(oMessage);
+		});
 	};
 
 	/**
@@ -860,19 +873,21 @@
 			bRoot = true;
 		}
 		else if (aMessages && aMessages[0] && mUid &&
-			sFolderFullNameRaw === aMessages[0].uid && mUid === aMessages[0].uid)
+			sFolderFullNameRaw === aMessages[0].folderFullNameRaw && mUid === aMessages[0].uid)
 		{
 			bRoot = true;
 		}
 
 		_.each(aMessages, function (oMessage) {
-			aRootUids.push(oMessage.uid);
-			aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
+			if (oMessage && oMessage.uid && oMessage.threads)
+			{
+				aRootUids.push(oMessage.uid);
+				aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
+			}
 		});
 
 		aAllUids = _.uniq(aAllUids);
 		aRootUids = _.uniq(aRootUids);
-		aRootUids = aAllUids; // always all
 
 		if ('' !== sFolderFullNameRaw && 0 < aAllUids.length)
 		{
@@ -921,12 +936,14 @@
 
 				case Enums.MessageSetAction.UnsetFlag:
 
-					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+					_.each(aRootUids, function (sSubUid) {
+//					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
+					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, false);
+//					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
 					break;
 			}
 

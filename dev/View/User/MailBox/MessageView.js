@@ -56,6 +56,7 @@
 			}
 		;
 
+		this.oDom = null;
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
@@ -232,14 +233,38 @@
 		this.viewThreads = ko.observableArray([]);
 		this.viewThreads.trigger = ko.observable(false);
 
-		this.viewThreadMessages = ko.observableArray([]);
+		this.viewThreadMessages = MessageStore.messageThreadList;
+
 		this.viewThreadMessages.error = ko.observable('');
 		this.viewThreadMessages.showMore = ko.observable(false);
 		this.viewThreadMessages.limit = 6;
 
 		this.viewThreadMessages.subscribe(function (aList) {
+
+			var iSelectedIndex = -1;
+
 			this.viewThreadMessages.error('');
-			this.viewThreadMessages.showMore(this.viewThreadMessages.limit >= aList.length);
+			if (aList && 0 < aList.length)
+			{
+				_.each(aList, function (oM, iIndex) {
+					if (oM && oM.selected())
+					{
+						iSelectedIndex = iIndex;
+					}
+				});
+
+				this.viewThreadMessages.showMore(this.viewThreadMessages.limit >= aList.length);
+
+				if (-1 < iSelectedIndex && !this.viewThreadMessages.showMore() &&
+					this.viewThreadMessages.limit < iSelectedIndex)
+				{
+					this.viewThreadMessages.showMore(true);
+				}
+
+				this.selectSelectedThreadMessage();
+				require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
+			}
+
 		}, this);
 
 		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
@@ -344,7 +369,7 @@
 					_.each(aList, function (oItem) {
 						if (oItem && oItem.uid)
 						{
-							oItem.selected = sUid === oItem.uid;
+							oItem.selected(sUid === oItem.uid);
 						}
 					});
 
@@ -530,15 +555,6 @@
 	kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
 	_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
 
-	MessageViewMailBoxUserView.prototype.updateViewFlagsFromCache = function ()
-	{
-		var aFlags = this.getMessageFlagsFromCache(this.viewFolder, this.viewUid);
-		if (aFlags)
-		{
-			this.viewIsFlagged(!!aFlags[1]);
-		}
-	};
-
 	MessageViewMailBoxUserView.prototype.openThreadMessage = function (sUid)
 	{
 		var oMessage = this.message();
@@ -634,6 +650,8 @@
 			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this)
 		;
+
+		this.oDom = oDom;
 
 		this.fullScreenMode.subscribe(function (bValue) {
 			if (bValue && self.message())
@@ -785,7 +803,7 @@
 				self.viewThreadMessages.showMore(true);
 				self.threadsDropdownTrigger(true);
 
-				if (oLast)
+				if (oLast && oLast[0])
 				{
 					oLast.focus();
 				}
@@ -810,8 +828,26 @@
 					require('App/User').download(oAttachment.linkDownload());
 				}
 			})
-			.on('click', '.messageItemHeader .flagParent', function () {
-				self.flagViewMessage();
+			.on('click', '.messageItemHeader .subjectParent .flagParent', function () {
+				var oMessage = self.message();
+				if (oMessage)
+				{
+					require('App/User').messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
+						oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
+				}
+			})
+			.on('click', '.thread-list .flagParent', function () {
+				var oMessage = ko.dataFor(this);
+				if (oMessage && oMessage.folder && oMessage.uid)
+				{
+					require('App/User').messageListAction(
+						oMessage.folder, oMessage.uid,
+						oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
+				}
+
+				self.threadsDropdownTrigger(true);
+
+				return false;
 			})
 		;
 
@@ -833,17 +869,16 @@
 		this.initShortcuts();
 	};
 
-	/**
-	 * @return {boolean}
-	 */
-	MessageViewMailBoxUserView.prototype.flagViewMessage = function ()
+	MessageViewMailBoxUserView.prototype.selectSelectedThreadMessage = function ()
 	{
-		var oMessage = this.message();
-		if (oMessage)
-		{
-			require('App/User').messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
-				oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
-		}
+		var self = this;
+		_.delay(function () {
+			var oLast = self.oDom ? $('.thread-list .e-item.thread-list-message.real-msg.selected a.e-link', self.oDom) : null;
+			if (oLast && oLast[0])
+			{
+				oLast.focus();
+			}
+		}, 30);
 	};
 
 	/**
