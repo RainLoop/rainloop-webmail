@@ -22,6 +22,7 @@
 		'Sheet': 'sheet',
 		'Presentation': 'presentation',
 		'Certificate': 'certificate',
+		'CertificateBin': 'certificate-bin',
 		'Archive': 'archive'
 	};
 

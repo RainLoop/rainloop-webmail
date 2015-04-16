@@ -1921,6 +1921,7 @@ class MailClient
 	 * @param bool $bUseSortIfSupported = false
 	 * @param bool $bUseThreadSortIfSupported = false
 	 * @param bool $bUseESearchOrESortRequest = false
+	 * @param string $sThreadUid = ''
 	 *
 	 * @return \MailSo\Mail\MessageCollection
 	 *
@@ -1929,7 +1930,8 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function MessageList($sFolderName, $iOffset = 0, $iLimit = 10, $sSearch = '', $sPrevUidNext = '', $oCacher = null,
-		$bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $bUseESearchOrESortRequest = false)
+		$bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $bUseESearchOrESortRequest = false,
+		$sThreadUid = '')
 	{
 		$sSearch = \trim($sSearch);
 		if (!\MailSo\Base\Validator::RangeInt($iOffset, 0) ||
@@ -1958,6 +1960,11 @@ class MailClient
 		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
 			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
 
+		if (!empty($sThreadUid) && !$bUseThreadSortIfSupported)
+		{
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+		}
+
 		if (!$oCacher || !($oCacher instanceof \MailSo\Cache\CacheClient))
 		{
 			$oCacher = null;
@@ -1985,6 +1992,12 @@ class MailClient
 		{
 			$bIndexAsUid = false;
 			$aIndexOrUids = array();
+
+//			$mThreads = $this->MessageListThreadsMap($sFolderName, $sFolderHash, array(), $oCacher, true);
+//			if (\is_array($mThreads))
+//			{
+//
+//			}
 
 			if (0 < \strlen($sSearch))
 			{
@@ -2263,7 +2276,10 @@ class MailClient
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
 			}
-			catch (\Exception $oException) {}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
 		}
 
 		$aImapSubscribedFoldersHelper = null;

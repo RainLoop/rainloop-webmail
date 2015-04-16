@@ -2640,7 +2640,7 @@ class Actions
 		\sleep(1);
 		return $this->TrueResponse(__FUNCTION__);
 	}
-	
+
 	/**
 	 * @return array
 	 *
@@ -5509,11 +5509,12 @@ class Actions
 		$sSearch = '';
 		$sUidNext = '';
 		$bUseThreads = false;
+		$sThreadUid = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
 
-		if (\is_array($aValues) && 9 === \count($aValues))
+		if (\is_array($aValues) && 7 < \count($aValues))
 		{
 			$sFolder =(string) $aValues[0];
 			$iOffset = (int) $aValues[1];
@@ -5521,6 +5522,11 @@ class Actions
 			$sSearch = (string) $aValues[3];
 			$sUidNext = (string) $aValues[6];
 			$bUseThreads = (bool) $aValues[7];
+
+			if ($bUseThreads)
+			{
+				$sThreadUid = ''; // TODO
+			}
 
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -5532,6 +5538,11 @@ class Actions
 			$sSearch = $this->GetActionParam('Search', '');
 			$sUidNext = $this->GetActionParam('UidNext', '');
 			$bUseThreads = '1' === (string) $this->GetActionParam('UseThreads', '0');
+
+			if ($bUseThreads)
+			{
+				$sThreadUid = (string) $this->GetActionParam('ThreadUid', '');
+			}
 		}
 
 		if (0 === strlen($sFolder))
@@ -5552,8 +5563,8 @@ class Actions
 				$sFolder, $iOffset, $iLimit, $sSearch, $sUidNext,
 				$this->cacherForUids(),
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
-				$bUseThreads,
-				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
+				$bUseThreads, !!$this->Config()->Get('labs', 'use_imap_esearch_esort', false),
+				$sThreadUid
 			);
 		}
 		catch (\Exception $oException)
@@ -7724,10 +7735,10 @@ class Actions
 		$iUid = (int) (isset($aValues['Uid']) ? $aValues['Uid'] : 0);
 		$sMimeIndex = (string) (isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '');
 
-		header('Content-Type: text/plain', true);
+		\header('Content-Type: text/plain', true);
 
 		return $this->MailClient()->MessageMimeStream(function ($rResource) {
-			if (is_resource($rResource))
+			if (\is_resource($rResource))
 			{
 				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
 			}

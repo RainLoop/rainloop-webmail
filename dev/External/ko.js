@@ -24,32 +24,41 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				fValue = fValueAccessor(),
 				oEditor  = null,
+				fValue = fValueAccessor(),
+
 				fUpdateEditorValue = function () {
-					if (oEditor)
+					if (fValue && fValue.__editor)
 					{
-						oEditor.setHtmlOrPlain(fValue());
+						fValue.__editor.setHtmlOrPlain(fValue());
 					}
 				},
+
 				fUpdateKoValue = function () {
-					if (oEditor && oEditor.__inited)
+					if (fValue && fValue.__editor)
 					{
-						fValue(oEditor.getDataWithHtmlMark());
+						fValue(fValue.__editor.getDataWithHtmlMark());
 					}
 				},
+
+				fOnReady = function () {
+					fValue.__editor = oEditor;
+					fUpdateEditorValue();
+				},
+
 				HtmlEditor = require('Common/HtmlEditor')
 			;
 
-			if (fValue)
+			if (ko.isObservable(fValue) && HtmlEditor)
 			{
-				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
-				fValue.__editor = oEditor;
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fOnReady, fUpdateKoValue);
+
 				fValue.__fetchEditorValue = fUpdateKoValue;
-				fValue.__updateEditorValue = fUpdateEditorValue;
 
 				fValue.subscribe(fUpdateEditorValue);
-				fUpdateEditorValue();
+
+//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+//				});
 			}
 		}
 	};

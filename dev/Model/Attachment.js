@@ -189,7 +189,8 @@
 	 */
 	AttachmentModel.prototype.hasPreview = function ()
 	{
-		return this.isImage() || (this.isPdf() && Globals.bAllowPdfPreview) || this.isText() || this.isFramed();
+		return this.isImage() || (this.isPdf() && Globals.bAllowPdfPreview) ||
+			this.isText() || this.isFramed();
 	};
 
 	/**
@@ -370,11 +371,16 @@
 				sResult = Enums.FileType.Pdf;
 				break;
 			case -1 < Utils.inArray(sMimeType, [
-				'application/pgp-signature', 'application/pkcs7-signature', 'application/pgp-keys'
+				'application/pgp-signature', 'application/pgp-keys'
 			]) || -1 < Utils.inArray(sExt, [
 				'asc', 'pem', 'ppk'
 			]):
 				sResult = Enums.FileType.Certificate;
+				break;
+			case -1 < Utils.inArray(sMimeType, ['application/pkcs7-signature']) ||
+				-1 < Utils.inArray(sExt, ['p7s']):
+
+				sResult = Enums.FileType.CertificateBin;
 				break;
 			case -1 < Utils.inArray(aMimeTypeParts[1], [
 				'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -447,6 +453,7 @@
 				sClass = 'icon-file-zip';
 				break;
 			case Enums.FileType.Certificate:
+			case Enums.FileType.CertificateBin:
 				sClass = 'icon-file-certificate';
 				break;
 			case Enums.FileType.Sheet:
@@ -509,6 +516,7 @@
 						sClass = 'icon-file-zip';
 						break;
 					case Enums.FileType.Certificate:
+					case Enums.FileType.CertificateBin:
 						sClass = 'icon-file-certificate';
 						break;
 					case Enums.FileType.Sheet:

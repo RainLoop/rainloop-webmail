@@ -213,12 +213,10 @@
 								}
 								else if (oData.Admin)
 								{
-									this.formHidden(true);
 									require('App/User').redirectToAdminPanel();
 								}
 								else
 								{
-									this.formHidden(true);
 									require('App/User').loginAndLogoutReload(false);
 								}
 							}
@@ -382,8 +380,6 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-					self.formHidden(true);
-					
 					require('App/User').loginAndLogoutReload(false);
 				}
 				else
