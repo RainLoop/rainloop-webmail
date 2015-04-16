@@ -9,6 +9,10 @@
 	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
 }
 
+@keyframes bounce-me {
+	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
+}
+
 @keyframes textLoadingAnimationKeyFrame {
 	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
 }
@@ -17,13 +21,24 @@
 	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
-html.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
-	transform: translateY(-30px);
+@keyframes login-form-shake  {
+  0% {transform: translateX(0);}
+  12.5% {transform: translateX(-6px) rotateY(-5deg)}
+  37.5% {transform: translateX(5px) rotateY(4deg)}
+  62.5% {transform: translateX(-3px) rotateY(-2deg)}
+  87.5% {transform: translateX(2px) rotateY(1deg)}
+  100% {transform: translateX(0)}
 }
 
-html.rl-started-trigger.no-mobile #rl-content {
-	opacity: 0.7;
+html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
+	/*transform: scale(1.1);*/
+	transform: translateY(-20px);
+	opacity: 0.5;
 }
+
+/*html.rl-started-trigger.no-mobile #rl-content {
+	opacity: 0.7;
+}*/
 
 #rl-loading {
 	.transition(opacity 0.5s linear);
@@ -31,7 +46,7 @@ html.rl-started-trigger.no-mobile #rl-content {
 
 .rl-anim {
 
-	&.csstransitions.no-mobile {
+	&.csstransitions.no-mobile.rl-started-delay {
 
 		#rl-left {
 			.transition(width 0.3s ease-out);
@@ -40,20 +55,32 @@ html.rl-started-trigger.no-mobile #rl-content {
 		#rl-right {
 			.transition(left 0.3s ease-out);
 		}
-		
+
 		#rl-sub-left, #rl-sub-left .messageList .inputSearch {
 			.transition(width 0.3s ease-out);
 		}
-		
+
 		#rl-sub-right {
 			.transition(left 0.3s ease-out);
 		}
 	}
 
-	&.csstransitions.no-mobile #rl-content {
-		.transition(opacity 0.3s ease-out);
+	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
+		animation: login-form-shake 400ms ease-in-out;
 	}
-	
+
+	&.cssanimations.csstransitions.no-mobile .b-login-content .afterLoginHide {
+		opacity: 0;
+	}
+
+/*	&.csstransitions.no-mobile #rl-content {
+		.transition(opacity 0.3s ease-out);
+	}*/
+
+	&.csstransitions.no-mobile .btn-group.dropdown.colored-toggle.open .animate-this-icon-on-open {
+		animation: bounce-me .5s linear;
+	}
+
 	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
 		.transition(all 0.3s ease-out);
 	}
@@ -101,9 +128,14 @@ html.rl-started-trigger.no-mobile #rl-content {
 		}
 	}
 
+	&.csstransitions.rl-modal.rl-modal-animation .popups {
+		overflow: hidden;
+	}
+
 	&.csstransitions .modal.fade {
-		
-		.transition(all 0.2s ease-out);
+
+		.transition(all 200ms ease-out);
+		/*transform: scale(0.95);*/
 		transform: translateY(-20px);
 
 		&.in {

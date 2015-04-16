@@ -19,7 +19,7 @@ class ChangePasswordExampleDriver implements \RainLoop\Providers\ChangePassword\
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
@@ -30,7 +30,7 @@ class ChangePasswordExampleDriver implements \RainLoop\Providers\ChangePassword\
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *

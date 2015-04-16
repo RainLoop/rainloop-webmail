@@ -1,7 +1,7 @@
 RainLoop Webmail
 ==================
 
-## About
+[![Join the chat at https://gitter.im/RainLoop/rainloop-webmail](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/RainLoop/rainloop-webmail?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Simple, modern &amp; fast web-based email client.
 
@@ -21,4 +21,4 @@ It's not recommended to use in production environment.
 **Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)**
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 
-Copyright (c) 2014 Rainloop Team
+Copyright (c) 2015 Rainloop Team

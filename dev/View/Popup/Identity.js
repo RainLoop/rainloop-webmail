@@ -8,10 +8,11 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
-		Remote = require('Storage/App/Remote'),
-		Data = require('Storage/App/Data'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -24,6 +25,8 @@
 	function IdentityPopupView()
 	{
 		AbstractView.call(this, 'Popups', 'PopupsIdentity');
+
+		var self = this;
 
 		this.id = '';
 		this.edit = ko.observable(false);
@@ -38,14 +41,35 @@
 		this.bcc = ko.observable('').validateSimpleEmail();
 		this.bcc.focused = ko.observable(false);
 
-	//	this.email.subscribe(function () {
-	//		this.email.hasError(false);
-	//	}, this);
+		this.signature = ko.observable('');
+		this.signatureInsertBefore = ko.observable(false);
+
+		this.showBcc = ko.observable(false);
+		this.showReplyTo = ko.observable(false);
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
 
+		this.bcc.subscribe(function (aValue) {
+			if (false === self.showBcc() && 0 < aValue.length)
+			{
+				self.showBcc(true);
+			}
+		}, this);
+
+		this.replyTo.subscribe(function (aValue) {
+			if (false === self.showReplyTo() && 0 < aValue.length)
+			{
+				self.showReplyTo(true);
+			}
+		}, this);
+
 		this.addOrEditIdentityCommand = Utils.createCommand(this, function () {
+
+			if (this.signature && this.signature.__fetchEditorValue)
+			{
+				this.signature.__fetchEditorValue();
+			}
 
 			if (!this.email.hasError())
 			{
@@ -83,34 +107,27 @@
 				{
 					if (oData.Result)
 					{
-						require('App/App').accountsAndIdentities();
+						require('App/User').accountsAndIdentities();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)
 					{
-						this.submitError(Utils.getNotification(oData.ErrorCode));
+						this.submitError(Translator.getNotification(oData.ErrorCode));
 					}
 				}
 				else
 				{
-					this.submitError(Utils.getNotification(Enums.Notification.UnknownError));
+					this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 				}
 
-			}, this), this.id, this.email(), this.name(), this.replyTo(), this.bcc());
+			}, this), this.id, this.email(), this.name(), this.replyTo(), this.bcc(),
+				this.signature(), this.signatureInsertBefore());
 
 			return true;
 
 		}, function () {
 			return !this.submitRequest();
 		});
-
-		this.label = ko.computed(function () {
-			return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'TITLE_UPDATE_IDENTITY': 'TITLE_ADD_IDENTITY'));
-		}, this);
-
-		this.button = ko.computed(function () {
-			return Utils.i18n('POPUPS_IDENTITIES/' + (this.edit() ? 'BUTTON_UPDATE_IDENTITY': 'BUTTON_ADD_IDENTITY'));
-		}, this);
 
 		kn.constructorEnd(this);
 	}
@@ -128,10 +145,15 @@
 		this.email('');
 		this.replyTo('');
 		this.bcc('');
+		this.signature('');
+		this.signatureInsertBefore(false);
 
 		this.email.hasError(false);
 		this.replyTo.hasError(false);
 		this.bcc.hasError(false);
+
+		this.showBcc(false);
+		this.showReplyTo(false);
 
 		this.submitRequest(false);
 		this.submitError('');
@@ -148,22 +170,33 @@
 		{
 			this.edit(true);
 
-			this.id = oIdentity.id;
+			this.id = oIdentity.id();
 			this.name(oIdentity.name());
 			this.email(oIdentity.email());
 			this.replyTo(oIdentity.replyTo());
 			this.bcc(oIdentity.bcc());
+			this.signature(oIdentity.signature());
+			this.signatureInsertBefore(oIdentity.signatureInsertBefore());
 
-			this.owner(this.id === Data.accountEmail());
+			this.owner(this.id === '');
+		}
+		else
+		{
+			this.id = Utils.fakeMd5();
 		}
 	};
 
-	IdentityPopupView.prototype.onFocus = function ()
+	IdentityPopupView.prototype.onShowWithDelay = function ()
 	{
-		if (!this.owner())
+		if (!this.owner() && !Globals.bMobile)
 		{
 			this.email.focused(true);
 		}
+	};
+
+	IdentityPopupView.prototype.onHideWithDelay = function ()
+	{
+		this.clearPopup();
 	};
 
 	module.exports = IdentityPopupView;

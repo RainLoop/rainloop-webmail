@@ -37,6 +37,39 @@
 		return '#/' + sRoute;
 	};
 
+	MenuSettingsAdminView.prototype.onBuild = function (oDom)
+	{
+		key('up, down', _.throttle(function (event, handler) {
+
+			var
+				sH = '',
+				iIndex = -1,
+				bUp = handler && 'up' === handler.shortcut,
+				$items = $('.b-admin-menu .e-item', oDom)
+			;
+
+			if (event && $items.length)
+			{
+				iIndex = $items.index($items.filter('.selected'));
+				if (bUp && iIndex > 0)
+				{
+					iIndex--;
+				}
+				else if (!bUp && iIndex < $items.length - 1)
+				{
+					iIndex++;
+				}
+
+				sH = $items.eq(iIndex).attr('href');
+				if (sH)
+				{
+					kn.setHash(sH, false, true);
+				}
+			}
+
+		}, 200));
+	};
+
 	module.exports = MenuSettingsAdminView;
 
 }());

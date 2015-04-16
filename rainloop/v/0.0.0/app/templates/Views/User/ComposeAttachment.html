@@ -1,0 +1,19 @@
+<li class="attachmentItem clearfix" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+	<div class="attachmentIconParent pull-left">
+		<div class="iconMain">
+			<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
+			<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText(), visible: !uploading() || 0 === progress()"></i>
+		</div>
+		<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+		<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+	</div>
+	<div class="attachmentNameParent">
+		<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
+		<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+			<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
+		</div>
+		<div>
+			<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
+		</div>
+	</div>
+</li>

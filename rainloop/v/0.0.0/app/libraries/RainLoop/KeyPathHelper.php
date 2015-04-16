@@ -5,23 +5,13 @@ namespace RainLoop;
 class KeyPathHelper
 {
 	/**
-	 * @param string $sEmail
+	 * @param string $sHash
 	 *
 	 * @return string
 	 */
-	static public function TwoFactorAuthUserData($sEmail)
+	static public function PublicFile($sHash)
 	{
-		return 'TwoFactorAuth/User/'.$sEmail.'/Data/';
-	}
-
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	static public function WebmailAccounts($sEmail)
-	{
-		return 'Webmail/Accounts/'.$sEmail.'/Array';
+		return '/Public/Files/'.sha1($sHash).'/Data/';
 	}
 
 	/**
@@ -45,16 +35,6 @@ class KeyPathHelper
 	}
 
 	/**
-	 * @param string $sSignMeToken
-	 *
-	 * @return string
-	 */
-	static public function SignMeUserToken($sSignMeToken)
-	{
-		return '/SignMe/UserToken/'.$sSignMeToken;
-	}
-
-	/**
 	 * @param string $sDomain
 	 *
 	 * @return string
@@ -62,6 +42,16 @@ class KeyPathHelper
 	static public function LicensingDomainKeyValue($sDomain)
 	{
 		return '/Licensing/DomainKey/Value/'.$sDomain;
+	}
+
+	/**
+	 * @param string $sDomain
+	 *
+	 * @return string
+	 */
+	static public function LicensingDomainKeyOtherValue($sDomain)
+	{
+		return '/Licensing/DomainKeyOther/Value/'.$sDomain;
 	}
 
 	/**
@@ -99,13 +89,14 @@ class KeyPathHelper
 
 	/**
 	 * @param string $sLanguage
+	 * @param bool $bAdmim
 	 * @param string $sPluginsHash
 	 *
 	 * @return string
 	 */
-	static public function LangCache($sLanguage, $sPluginsHash)
+	static public function LangCache($sLanguage, $bAdmim, $sPluginsHash)
 	{
-		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.APP_VERSION.'/';
+		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.($bAdmim ? 'Admin' : 'App').'/'.APP_VERSION.'/';
 	}
 
 	/**
@@ -131,12 +122,23 @@ class KeyPathHelper
 
 	/**
 	 * @param string $sTheme
-	 * @param string $sPluginsHash
+	 * @param string $sHash
+	 * @param string $sPublickHash
 	 *
 	 * @return string
 	 */
-	static public function CssCache($sTheme, $sPluginsHash)
+	static public function CssCache($sTheme, $sHash)
 	{
-		return '/CssCache/'.$sPluginsHash.'/'.$sTheme.'/'.APP_VERSION.'/';
+		return '/CssCache/'.$sHash.'/'.$sTheme.'/'.APP_VERSION.'/';
+	}
+
+	/**
+	 * @param string $sRand
+	 *
+	 * @return string
+	 */
+	static public function SessionAdminKey($sRand)
+	{
+		return '/Session/AdminKey/'.\md5($sRand).'/';
 	}
 }

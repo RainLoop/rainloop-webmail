@@ -483,7 +483,7 @@ class Client {
 			if ($mr > 0)
 			{
 				$newurl = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-				
+
 				$rcurl = curl_copy_handle($curl);
 				curl_setopt($rcurl, CURLOPT_HEADER, true);
 				curl_setopt($rcurl, CURLOPT_NOBODY, true);
@@ -512,7 +512,7 @@ class Client {
 						}
 					}
 				} while ($code && --$mr);
-				
+
 				curl_close($rcurl);
 				if ($mr > 0)
 				{

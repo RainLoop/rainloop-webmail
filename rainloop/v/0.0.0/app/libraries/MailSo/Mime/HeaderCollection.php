@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mime;
 
 /**
@@ -138,7 +147,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 	/**
 	 * @param string $sHeaderName
 	 * @param bool $bCharsetAutoDetect = false
-	 * @return string
+	 *
+	 * @return \MailSo\Mime\EmailCollection|null
 	 */
 	public function GetAsEmailCollection($sHeaderName, $bCharsetAutoDetect = false)
 	{
@@ -154,7 +164,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param string $sHeaderName
-	 * @return \MailSo\Mime\ParameterCollection | null
+	 * @return \MailSo\Mime\ParameterCollection|null
 	 */
 	public function ParametersByName($sHeaderName)
 	{
@@ -318,7 +328,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 					{
 						$this->Add($oHeader);
 					}
-					
+
 					$sName = null;
 					$sValue = null;
 				}
@@ -344,6 +354,113 @@ class HeaderCollection extends \MailSo\Base\Collection
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function DkimStatuses()
+	{
+		$aResult = array();
+
+		$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS);
+		if (\is_array($aHeaders) && 0 < \count($aHeaders))
+		{
+			foreach ($aHeaders as $sHeaderValue)
+			{
+				$sStatus = '';
+				$sHeader = '';
+				$sDkimLine = '';
+
+				$aMatch = array();
+
+				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+				if (\preg_match('/dkim=[^;]+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
+				{
+					$sDkimLine = $aMatch[0];
+
+					$aMatch = array();
+					if (\preg_match('/dkim=([a-zA-Z0-9]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[1]))
+					{
+						$sStatus = $aMatch[1];
+					}
+
+					$aMatch = array();
+					if (\preg_match('/header\.(d|i|from)=([^\s;]+)/i', $sDkimLine, $aMatch) && !empty($aMatch[2]))
+					{
+						$sHeader = \trim($aMatch[2]);
+					}
+
+					if (!empty($sStatus) && !empty($sHeader))
+					{
+						$aResult[] = array($sStatus, $sHeader, $sDkimLine);
+					}
+				}
+			}
+		}
+		else
+		{
+			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
+			$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
+			if (\is_array($aHeaders) && 0 < \count($aHeaders))
+			{
+				foreach ($aHeaders as $sHeaderValue)
+				{
+					$sStatus = '';
+					$sHeader = '';
+
+					$aMatch = array();
+
+					$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+					if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+					{
+						$sStatus = $aMatch[1];
+					}
+
+					if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+					{
+						$sHeader = \trim($aMatch[1]);
+					}
+
+					if (!empty($sStatus) && !empty($sHeader))
+					{
+						$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function PopulateEmailColectionByDkim($oEmails)
+	{
+		if ($oEmails && $oEmails instanceof \MailSo\Mime\EmailCollection)
+		{
+			$aDkimStatuses = $this->DkimStatuses();
+			if (\is_array($aDkimStatuses) && 0 < \count($aDkimStatuses))
+			{
+				$oEmails->ForeachList(function (/* @var $oItem \MailSo\Mime\Email */ $oItem) use ($aDkimStatuses) {
+					if ($oItem && $oItem instanceof \MailSo\Mime\Email)
+					{
+						$sEmail = $oItem->GetEmail();
+						foreach ($aDkimStatuses as $aDkimData)
+						{
+							if (isset($aDkimData[0], $aDkimData[1]) &&
+								$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
+							{
+								$oItem->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
+							}
+						}
+					}
+				});
+			}
+		}
 	}
 
 	/**

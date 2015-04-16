@@ -113,9 +113,9 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	 *
 	 * @return bool
 	 */
-	public function DeleteAllContactsAndTags($sEmail)
+	public function DeleteAllContacts($sEmail)
 	{
-		return $this->IsActive() ? $this->oDriver->DeleteAllContactsAndTags($sEmail) : false;
+		return $this->IsActive() ? $this->oDriver->DeleteAllContacts($sEmail) : false;
 	}
 
 	/**
@@ -131,17 +131,6 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($sEmail,
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
-	}
-
-	/**
-	 * @param string $sEmail
-	 * @param bool $bCache = true
-	 *
-	 * @return array
-	 */
-	public function GetContactTags($sEmail, $bCache = true)
-	{
-		return $this->IsActive() ? $this->oDriver->GetContactTags($sEmail, $bCache) : array();
 	}
 
 	/**
@@ -328,7 +317,8 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	public function ImportVcfFile($sEmail, $sVcfData)
 	{
 		$iCount = 0;
-		if ($this->IsActive() && \is_string($sVcfData))
+
+		if (\class_exists('Sabre\DAV\Client') && $this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
 			if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3))
@@ -363,7 +353,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
 						}
 
-						$oContact->PopulateByVCard($oVCard->serialize());
+						$oContact->PopulateByVCard($oVCard->UID, $oVCard->serialize());
 
 						if (0 < \count($oContact->Properties))
 						{

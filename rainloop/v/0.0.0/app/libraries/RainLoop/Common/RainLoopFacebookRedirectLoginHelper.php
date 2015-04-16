@@ -64,7 +64,7 @@ class RainLoopFacebookRedirectLoginHelper extends \Facebook\FacebookRedirectLogi
 			$this->rlUserHash = (string) $config['rlUserHash'];
 		}
 
-		if (!class_exists('\\RainLoop\\Providers\\Storage\\Enumerations\\StorageType') || '' === $this->rlUserHash)
+		if (!class_exists('RainLoop\Providers\Storage\Enumerations\StorageType') || '' === $this->rlUserHash)
 		{
 			$this->rlStorageProvaider = null;
 		}

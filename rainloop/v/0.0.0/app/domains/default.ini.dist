@@ -1,0 +1,7 @@
+imap_host = "IMAP_HOST"
+imap_port = IMAP_PORT
+imap_secure = "SSL"
+smtp_host = "SMTP_HOST"
+smtp_port = SMTP_PORT
+smtp_secure = "SSL"
+smtp_auth = On

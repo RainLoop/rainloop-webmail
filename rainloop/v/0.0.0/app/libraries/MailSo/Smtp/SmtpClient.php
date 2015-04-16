@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Smtp;
 
 /**
@@ -120,7 +129,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$sEhloHost = empty($_SERVER['HTTP_HOST']) ? '' : \trim($_SERVER['HTTP_HOST']);
 		}
-		
+
 		if (empty($sEhloHost))
 		{
 			$sEhloHost = \function_exists('gethostname') ? \gethostname() : 'localhost';
@@ -141,6 +150,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param int $iPort = 25
 	 * @param string $sEhloHost = '[127.0.0.1]'
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
@@ -149,11 +160,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+
 		$this->validateResponse(220);
 
 		$this->preLoginStartTLSAndEhloProcess($sEhloHost);
@@ -173,8 +186,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Login($sLogin, $sPassword)
 	{
-		$sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
-		
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+
 		if ($this->IsAuthSupported('LOGIN'))
 		{
 			try
@@ -270,7 +283,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			try
 			{
-				$this->sendRequestWithCheck('AUTH', 235, 'XOAUTH2 '.trim($sXOAuth2Token));
+				$this->sendRequestWithCheck('AUTH', 235, 'XOAUTH2 '.\trim($sXOAuth2Token));
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -293,21 +306,29 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sFrom
 	 * @param string $sSizeIfSupported = ''
+	 * @param bool $bDsn = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function MailFrom($sFrom, $sSizeIfSupported = '')
+	public function MailFrom($sFrom, $sSizeIfSupported = '', $bDsn = false)
 	{
-		$sFrom = \MailSo\Base\Utils::IdnToAscii($sFrom, true);
+		$sFrom = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sFrom), true);
+
 		$sCmd = 'FROM:<'.$sFrom.'>';
-		
+
 		$sSizeIfSupported = (string) $sSizeIfSupported;
 		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
 			$sCmd .= ' SIZE='.$sSizeIfSupported;
+		}
+
+		if ($bDsn && $this->IsSupported('DSN'))
+		{
+			$sCmd .= ' RET=HDRS';
 		}
 
 		$this->sendRequestWithCheck('MAIL', 250, $sCmd);
@@ -321,13 +342,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sTo
+	 * @param bool $bDsn = false
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Rcpt($sTo)
+	public function Rcpt($sTo, $bDsn = false)
 	{
 		if (!$this->bMail)
 		{
@@ -336,8 +358,17 @@ class SmtpClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$sTo = \MailSo\Base\Utils::IdnToAscii($sTo, true);
-		$this->sendRequestWithCheck('RCPT', array(250, 251), 'TO:<'.$sTo.'>');
+		$sTo = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sTo), true);
+
+		$sCmd = 'TO:<'.$sTo.'>';
+
+		if ($bDsn && $this->IsSupported('DSN'))
+		{
+			$sCmd .= ' NOTIFY=SUCCESS,FAILURE';
+		}
+
+		$this->sendRequestWithCheck('RCPT', array(250, 251), $sCmd);
 
 		$this->bRcpt = true;
 
@@ -468,6 +499,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Vrfy($sUser)
 	{
+		$sUser = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sUser));
+
 		$this->sendRequestWithCheck('VRFY', array(250, 251, 252), $sUser);
 
 		return $this;
@@ -527,12 +561,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->IsSupported('STARTTLS'), $this->iSecurityType, $this->HasSupportedAuth()))
 		{
 			$this->sendRequestWithCheck('STARTTLS', 220);
-			if (!@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::WARNING, true);
-			}
+			$this->EnableCrypto();
 
 			$this->ehloOrHelo($sEhloHost);
 		}

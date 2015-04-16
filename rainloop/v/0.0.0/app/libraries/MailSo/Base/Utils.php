@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Base;
 
 /**
@@ -8,6 +17,22 @@ namespace MailSo\Base;
  */
 class Utils
 {
+	/**
+	 * @var string
+	 */
+	static $sValidUtf8Regexp = <<<'END'
+/
+  (
+    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
+    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
+    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
+    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3
+    ){1,100}                        # ...one or more times
+  )
+| .                                 # anything else
+/x
+END;
+
 	/**
 	 * @var array
 	 */
@@ -123,6 +148,7 @@ class Utils
 	 */
 	public static function ConvertSystemString($sSrt)
 	{
+		$sSrt = \trim($sSrt);
 		if (!empty($sSrt) && !\MailSo\Base\Utils::IsUtf8($sSrt))
 		{
 			$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
@@ -186,6 +212,27 @@ class Utils
 		}
 
 		return $sEncoding;
+	}
+
+	/**
+	 * @param string $sCharset
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function NormalizeCharsetByValue($sCharset, $sValue)
+	{
+		$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
+
+		if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sCharset &&
+			\MailSo\Base\Utils::IsUtf8($sValue) &&
+			false === \strpos($sCharset, \MailSo\Base\Enumerations\Charset::ISO_2022_JP)
+		)
+		{
+			$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
+		}
+
+		return $sCharset;
 	}
 
 	/**
@@ -282,18 +329,17 @@ class Utils
 //		{
 //			$sIconvOptions .= '//TRANSLIT';
 //		}
-		
+
 		$mResult = @\iconv(\strtoupper($sInputFromEncoding), \strtoupper($sInputToEncoding).$sIconvOptions, $sInputString);
 		if (false === $mResult)
 		{
-			if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			if (\MailSo\Log\Logger::IsSystemEnabled())
 			{
-				$sHex = 500 < \strlen($sInputString) ? '' : \bin2hex($sInputString);
-				\MailSo\Config::$SystemLogger->WriteDump(array(
+				\MailSo\Log\Logger::SystemLog(array(
 					'inc' => \strtoupper($sInputFromEncoding),
 					'out' => \strtoupper($sInputToEncoding).$sIconvOptions,
-					'val' => $sInputString,
-					'hex' => $sHex
+					'val' => 500 < \strlen($sInputString) ? \substr($sInputString, 0, 500) : $sInputString,
+					'hex' => 500 < \strlen($sInputString) ? '-- to long --' : \bin2hex($sInputString)
 				), \MailSo\Log\Enumerations\Type::NOTICE);
 			}
 
@@ -430,7 +476,7 @@ class Utils
 		{
 			return true;
 		}
-		
+
 		return !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
@@ -461,7 +507,7 @@ class Utils
 	 */
 	public static function IsUtf8($sValue)
 	{
-		return (bool) (\function_exists('mb_check_encoding') ?
+		return (bool) ( \function_exists('mb_check_encoding') ?
 			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
 	}
 
@@ -517,11 +563,8 @@ class Utils
 		$sValue = $sEncodedValue;
 		if (0 < \strlen($sIncomingCharset))
 		{
-			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sIncomingCharset && \MailSo\Base\Utils::IsUtf8($sValue))
-			{
-				$sIncomingCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
-			}
-			
+			$sIncomingCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sIncomingCharset, $sValue);
+
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sIncomingCharset,
 				\MailSo\Base\Enumerations\Charset::UTF_8);
 		}
@@ -610,11 +653,8 @@ class Utils
 			}
 			else
 			{
-				if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $aParts[$iIndex][2] && \MailSo\Base\Utils::IsUtf8($aParts[$iIndex][1]))
-				{
-					$aParts[$iIndex][2] = \MailSo\Base\Enumerations\Charset::UTF_8;
-				}
-				
+				$aParts[$iIndex][2] = \MailSo\Base\Utils::NormalizeCharsetByValue($aParts[$iIndex][2], $aParts[$iIndex][1]);
+
 				$sValue = \str_replace($aParts[$iIndex][0],
 					\MailSo\Base\Utils::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
 					$sValue);
@@ -623,11 +663,7 @@ class Utils
 
 		if ($bOneCharset && 0 < \strlen($sMainCharset))
 		{
-			if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sMainCharset && \MailSo\Base\Utils::IsUtf8($sValue))
-			{
-				$sMainCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
-			}
-			
+			$sMainCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sMainCharset, $sValue);
 			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
@@ -712,7 +748,7 @@ class Utils
 
 		$iNlen = \strlen($sAttrName);
 		$iVlen = \strlen($sValue);
-		
+
 		if (\strlen($sAttrName) + $iVlen > $iLen - 3)
 		{
 			$sections = array();
@@ -728,7 +764,7 @@ class Utils
 			{
 				$sections[$i] = ' '.$sAttrName.'*'.$i.'*='.$sections[$i];
 			}
-			
+
 			return \implode(";\r\n", $sections);
 		}
 		else
@@ -746,7 +782,7 @@ class Utils
 	{
 		$sAttrName = \trim($sAttrName);
 		$sValue = \trim($sValue);
-		
+
 		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
 		{
 			if (!empty($_SERVER['HTTP_USER_AGENT']) && 0 < \strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
@@ -811,7 +847,7 @@ class Utils
 	public static function GetFileExtension($sFileName)
 	{
 		$iLast = \strrpos($sFileName, '.');
-		return false === $iLast ? '' : \substr($sFileName, $iLast + 1);
+		return false === $iLast ? '' : \strtolower(\substr($sFileName, $iLast + 1));
 	}
 
 	/**
@@ -862,7 +898,6 @@ class Utils
 			'p7c'	=> 'application/pkcs7-mime',
 			'p7m'	=> 'application/pkcs7-mime',
 			'p7s'	=> 'application/pkcs7-signature',
-			'ttf'	=> 'application/x-ttf',
 			'torrent'	=> 'application/x-bittorrent',
 
 			// scripts
@@ -943,7 +978,6 @@ class Utils
 			'flv'	=> 'video/x-flv',
 			'qt'	=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
-			'wmv'	=> 'video/windows-media',
 			'avi'	=> 'video/x-msvideo',
 			'mpg'	=> 'video/mpeg',
 			'mpeg'	=> 'video/mpeg',
@@ -956,6 +990,7 @@ class Utils
 			'h263'	=> 'video/h263',
 			'h264'	=> 'video/h264',
 			'jpgv'	=> 'video/jpgv',
+			'mp4'	=> 'video/mp4',
 			'mp4v'	=> 'video/mp4',
 			'mpg4'	=> 'video/mp4',
 			'ogv'	=> 'video/ogg',
@@ -1153,12 +1188,17 @@ class Utils
 		$sResult = @\json_encode($mInput, $iOpt);
 		if (!\is_string($sResult) || '' === $sResult)
 		{
-			if (!$oLogger && \MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+			if (!$oLogger && \MailSo\Log\Logger::IsSystemEnabled())
 			{
 				$oLogger = \MailSo\Config::$SystemLogger;
 			}
 
-			if ($oLogger instanceof \MailSo\Log\Logger)
+			if (!($oLogger instanceof \MailSo\Log\Logger))
+			{
+				$oLogger = null;
+			}
+
+			if ($oLogger)
 			{
 				$oLogger->Write('json_encode: '.\trim(
 						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
@@ -1169,7 +1209,7 @@ class Utils
 
 			if (\is_array($mInput))
 			{
-				if ($oLogger instanceof \MailSo\Log\Logger)
+				if ($oLogger)
 				{
 					$oLogger->WriteDump($mInput, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
 					$oLogger->Write('Trying to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
@@ -1190,7 +1230,7 @@ class Utils
 	 */
 	public static function ClearFileName($sFileName)
 	{
-		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/', ' ',
+		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/u', ' ',
 			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName)));
 	}
 
@@ -1203,6 +1243,17 @@ class Utils
 	{
 		return \MailSo\Base\Utils::ClearNullBite(
 			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue));
+	}
+
+	/**
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
+	public static function Trim($sValue)
+	{
+		return \trim(\preg_replace('/^[\x00-\x1F]+/u', '',
+			\preg_replace('/[\x00-\x1F]+$/u', '', \trim($sValue))));
 	}
 
 	/**
@@ -1408,15 +1459,7 @@ class Utils
 			return $sUtfString;
 		}
 
-		$sUtfString = \preg_replace(
-			'/[\x00-\x08\x10\x0B\x0C\x0E-\x1F\x7F]'.
-			'|[\x00-\x7F][\x80-\xBF]+'.
-			'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.
-			'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
-			'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
-			$sReplaceOn,
-			$sUtfString
-		);
+		$sUtfString = \preg_replace(\MailSo\Base\Utils::$sValidUtf8Regexp, '$1', $sUtfString);
 
 		$sUtfString = \preg_replace(
 			'/\xE0[\x80-\x9F][\x80-\xBF]'.
@@ -1426,13 +1469,14 @@ class Utils
 		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
 
 		$sNewUtfString = false;
-		if (\MailSo\Base\Utils::IsIconvSupported())
-		{
-			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
-		}
-		else if (\MailSo\Base\Utils::IsMbStringSupported())
+		if (false === $sNewUtfString && \MailSo\Base\Utils::IsMbStringSupported())
 		{
 			$sNewUtfString = \MailSo\Base\Utils::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+		}
+
+		if (false === $sNewUtfString && \MailSo\Base\Utils::IsIconvSupported())
+		{
+			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
 		}
 
 		if (false !== $sNewUtfString)
@@ -1998,14 +2042,28 @@ class Utils
 	}
 
 	/**
-	 * @param string $sFunctionName
+	 * @param string|array $mFunctionNameOrNames
 	 *
 	 * @return bool
 	 */
-	public static function FunctionExistsAndEnabled($sFunctionName)
+	public static function FunctionExistsAndEnabled($mFunctionNameOrNames)
 	{
 		static $aCache = null;
-		if (empty($sFunctionName) || !\function_exists($sFunctionName) || !\is_callable($sFunctionName))
+
+		if (\is_array($mFunctionNameOrNames))
+		{
+			foreach ($mFunctionNameOrNames as $sFunctionName)
+			{
+				if (!\MailSo\Base\Utils::FunctionExistsAndEnabled($sFunctionName))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		if (empty($mFunctionNameOrNames) || !\function_exists($mFunctionNameOrNames) || !\is_callable($mFunctionNameOrNames))
 		{
 			return false;
 		}
@@ -2016,7 +2074,7 @@ class Utils
 			$sDisableFunctions = \is_string($sDisableFunctions) && 0 < \strlen($sDisableFunctions) ? $sDisableFunctions : '';
 
 			$aCache = \explode(',', $sDisableFunctions);
-			$aCache = is_array($aCache) && 0 < count($aCache) ? $aCache : array();
+			$aCache = \is_array($aCache) && 0 < \count($aCache) ? $aCache : array();
 
 			if (\extension_loaded('suhosin'))
 			{
@@ -2024,17 +2082,17 @@ class Utils
 				 $sSuhosin = \is_string($sSuhosin) && 0 < \strlen($sSuhosin) ? $sSuhosin : '';
 
 				 $aSuhosinCache = \explode(',', $sSuhosin);
-				 $aSuhosinCache = is_array($aSuhosinCache) && 0 < count($aSuhosinCache) ? $aSuhosinCache : array();
+				 $aSuhosinCache = \is_array($aSuhosinCache) && 0 < \count($aSuhosinCache) ? $aSuhosinCache : array();
 
 				 if (0 < \count($aSuhosinCache))
 				 {
-					 $aCache = array_merge($aCache, $aSuhosinCache);
-					 $aCache = array_unique($aCache);
+					 $aCache = \array_merge($aCache, $aSuhosinCache);
+					 $aCache = \array_unique($aCache);
 				 }
 			}
 		}
 
-		return !\in_array($sFunctionName, $aCache);
+		return !\in_array($mFunctionNameOrNames, $aCache);
 	}
 
 	/**
@@ -2110,6 +2168,28 @@ class Utils
 	}
 
 	/**
+	 * @param string $sAdditionalSalt = ''
+	 *
+     * @return string
+     */
+    public static function Md5Rand($sAdditionalSalt = '')
+    {
+		return \md5(\microtime(true).\rand(10000, 99999).
+			\md5($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+	}
+
+	/**
+	 * @param string $sAdditionalSalt = ''
+	 *
+     * @return string
+     */
+    public static function Sha1Rand($sAdditionalSalt = '')
+    {
+		return \sha1(\microtime(true).\rand(10000, 99999).
+			\sha1($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
+	}
+
+	/**
      * @param string $sData
      * @param string $sKey
 	 *
@@ -2146,6 +2226,16 @@ class Utils
 		return \preg_match('/.+(\.[a-zA-Z]+)$/', $sDomain, $aMatch) && !empty($aMatch[1]) && \in_array($aMatch[1], \explode(' ',
 			'.aero .asia .biz .cat .com .coop .edu .gov .info .int .jobs .mil .mobi .museum .name .net .org .pro .tel .travel .xxx .ac .ad .ae .af .ag .ai .al .am .an .ao .aq .ar .as .at .au .aw .ax .az .ba .bb .bd .be .bf .bg .bh .bi .bj .bm .bn .bo .br .bs .bt .bv .bw .by .bz .ca .cc .cd .cf .cg .ch .ci .ck .cl .cm .cn .co .cr .cs .cu .cv .cx .cy .cz .dd .de .dj .dk .dm .do .dz .ec .ee .eg .er .es .et .eu .fi .fj .fk .fm .fo .fr .ga .gb .gd .ge .gf .gg .gh .gi .gl .gm .gn .gp .gq .gr .gs .gt .gu .gw .gy .hk .hm .hn .hr .ht .hu .id .ie .il .im .in .io .iq .ir .is .it .je .jm .jo .jp .ke .kg .kh .ki .km .kn .kp .kr .kw .ky .kz .la .lb .lc .li .lk .lr .ls .lt .lu .lv .ly .ma .mc .md .me .mg .mh .mk .ml .mm .mn .mo .mp .mq .mr .ms .mt .mu .mv .mw .mx .my .mz .na .nc .ne .nf .ng .ni .nl .no .np .nr .nu .nz .om .pa .pe .pf .pg .ph .pk .pl .pm .pn .pr .ps .pt .pw .py .qa .re .ro .rs .ru . .rw .sa .sb .sc .sd .se .sg .sh .si .sj .sk .sl .sm .sn .so .sr .st .su .sv .sy .sz .tc .td .tf .tg .th .tj .tk .tl .tm .tn .to .tp .tr .tt .tv .tw .tz .ua .ug .uk .us .uy .uz .va .vc .ve .vg .vi .vn .vu .wf .ws .ye .yt .za .zm .zw'
 		));
+	}
+
+	/**
+	 * @param string $sIp
+	 *
+	 * @return bool
+	 */
+	public static function ValidateIP($sIp)
+	{
+		return !empty($sIp) && $sIp === @\filter_var($sIp, FILTER_VALIDATE_IP);
 	}
 
 	/**
@@ -2211,5 +2301,22 @@ class Utils
 		}
 
 		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
+	}
+
+	/**
+	 * @param string $sPassword
+	 *
+	 * @return bool
+	 */
+	public static function PasswordWeaknessCheck($sPassword)
+	{
+		$sPassword = \trim($sPassword);
+		if (6 > \strlen($sPassword))
+		{
+			return false;
+		}
+
+		$sLine = 'password 123.456 12345678 abc123 qwerty monkey letmein dragon 111.111 baseball iloveyou trustno1 1234567 sunshine master 123.123 welcome shadow ashley football jesus michael ninja mustang password1 123456 123456789 qwerty 111111 1234567 666666 12345678 7777777 123321 654321 1234567890 123123 555555 vkontakte gfhjkm 159753 777777 temppassword qazwsx 1q2w3e 1234 112233 121212 qwertyuiop qq18ww899 987654321 12345 zxcvbn zxcvbnm 999999 samsung ghbdtn 1q2w3e4r 1111111 123654 159357 131313 qazwsxedc 123qwe 222222 asdfgh 333333 9379992 asdfghjkl 4815162342 12344321 88888888 11111111 knopka 789456 qwertyu 1q2w3e4r5t iloveyou vfhbyf marina password qweasdzxc 10203 987654 yfnfif cjkysirj nikita 888888 vfrcbv k.,jdm qwertyuiop[] qwe123 qweasd natasha 123123123 fylhtq q1w2e3 stalker 1111111111 q1w2e3r4 nastya 147258369 147258 fyfcnfcbz 1234554321 1qaz2wsx andrey 111222 147852 genius sergey 7654321 232323 123789 fktrcfylh spartak admin test 123 azerty abc123 lol123 easytocrack1 hello saravn holysh!t test123 tundra_cool2 456 dragon thomas killer root 1111 pass master aaaaaa a monkey daniel asdasd e10adc3949ba59abbe56e057f20f883e changeme computer jessica letmein mirage loulou lol superman shadow admin123 secret administrator sophie kikugalanetroot doudou liverpool hallo sunshine charlie parola 100827092 michael andrew password1 fuckyou matrix cjmasterinf internet hallo123 eminem demo gewinner pokemon abcd1234 guest ngockhoa martin sandra asdf hejsan george qweqwe lollipop lovers q1q1q1 tecktonik naruto 12 password12 password123 password1234 password12345 password123456 password1234567 password12345678 password123456789 000000 maximius 123abc baseball1 football1 soccer princess slipknot 11111 nokia super star 666999 12341234 1234321 135790 159951 212121 zzzzzz 121314 134679 142536 19921992 753951 7007 1111114 124578 19951995 258456 qwaszx zaqwsx 55555 77777 54321 qwert 22222 33333 99999 88888 66666';
+		return false === \strpos($sLine, \strtolower($sPassword));
 	}
 }

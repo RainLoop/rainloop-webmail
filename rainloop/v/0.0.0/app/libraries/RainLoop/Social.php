@@ -196,6 +196,7 @@ class Social
 
 			$oSettings->SetConf('GoogleAccessToken', '');
 			$oSettings->SetConf('GoogleSocialName', '');
+
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 		}
 
@@ -260,6 +261,7 @@ class Social
 
 			$oSettings->SetConf('TwitterAccessToken', '');
 			$oSettings->SetConf('TwitterSocialName', '');
+
 			return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 		}
 
@@ -273,6 +275,7 @@ class Social
 	{
 		$sResult = '';
 		$sLoginUrl = '';
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -345,13 +348,7 @@ class Social
 								if ($aUserData && \is_array($aUserData) &&
 									!empty($aUserData['Email']) && isset($aUserData['Password']))
 								{
-									$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-									if ($oAccount instanceof \RainLoop\Account)
-									{
-										$this->oActions->AuthProcess($oAccount);
-
-										$iErrorCode = 0;
-									}
+									$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 								}
 								else
 								{
@@ -400,7 +397,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_google'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -419,6 +416,7 @@ class Social
 		$mData = false;
 		$sUserData = '';
 		$aUserData = false;
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -492,13 +490,7 @@ class Social
 						if ($aUserData && \is_array($aUserData) &&
 							!empty($aUserData['Email']) && isset($aUserData['Password']))
 						{
-							$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-							if ($oAccount instanceof \RainLoop\Account)
-							{
-								$this->oActions->AuthProcess($oAccount);
-
-								$iErrorCode = 0;
-							}
+							$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 						}
 						else
 						{
@@ -520,11 +512,12 @@ class Social
 		else
 		{
 			$this->oHttp->ServerNoCache();
+
 			@\header('Content-Type: text/html; charset=utf-8');
 
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_facebook'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -540,6 +533,7 @@ class Social
 		$sLoginUrl = '';
 
 		$sSocialName = '';
+		$oAccount = null;
 
 		$bLogin = false;
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
@@ -667,13 +661,7 @@ class Social
 										!empty($aUserData['Email']) &&
 										isset($aUserData['Password']))
 									{
-										$oAccount = $this->oActions->LoginProcess($aUserData['Email'], $aUserData['Password']);
-										if ($oAccount instanceof \RainLoop\Account)
-										{
-											$this->oActions->AuthProcess($oAccount);
-
-											$iErrorCode = 0;
-										}
+										$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 									}
 									else
 									{
@@ -720,7 +708,7 @@ class Social
 			@\header('Content-Type: text/html; charset=utf-8');
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_twitter'.$sCallBackType.'_service';
-			$sResult = '<script type="text/javascript" data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
 				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
 		}
 
@@ -799,7 +787,7 @@ class Social
 	}
 
 	/**
-	 * @param \RainLoop\Account|null $oAccount = null
+	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 *
 	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */
@@ -811,7 +799,9 @@ class Social
 
 		if (\version_compare(PHP_VERSION, '5.4.0', '>=') &&
 			$oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
-			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')))
+			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')) &&
+			\class_exists('Facebook\FacebookSession')
+		)
 		{
 			\Facebook\FacebookSession::setDefaultApplication($sAppID,
 				\trim($oConfig->Get('social', 'fb_app_secret', '')));
@@ -870,5 +860,43 @@ class Social
 	public function TwitterUserLoginStorageKey($oTwitter, $sTwitterUserId)
 	{
 		return \implode('_', array('twitter', \md5($oTwitter->config['consumer_secret']), $sTwitterUserId, APP_SALT));
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account|null $oAccount
+	 * @param string $sEmail
+	 * @param string $sPassword
+	 *
+	 * @return int
+	 */
+	private function loginProcess(&$oAccount, $sEmail, $sPassword)
+	{
+		$iErrorCode = \RainLoop\Notifications::UnknownError;
+
+		try
+		{
+			$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
+			if ($oAccount instanceof \RainLoop\Model\Account)
+			{
+				$this->oActions->AuthToken($oAccount);
+				$iErrorCode = 0;
+			}
+			else
+			{
+				$oAccount = null;
+				$iErrorCode = \RainLoop\Notifications::AuthError;
+			}
+		}
+		catch (\RainLoop\Exceptions\ClientException $oException)
+		{
+			$iErrorCode = $oException->getCode();
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
+			$iErrorCode = \RainLoop\Notifications::UnknownError;
+		}
+
+		return $iErrorCode;
 	}
 }

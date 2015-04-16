@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mail;
 
 /**
@@ -49,50 +58,17 @@ class AttachmentCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @return int
+	 * @return array
 	 */
-	public function ImageCount()
+	public function SpecData()
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsImage();
+		return $this->MapList(function ($oAttachment) {
+			if ($oAttachment)
+			{
+				return array($oAttachment->FileName(true), $oAttachment->MimeType());
+			}
+
+			return null;
 		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function ArchiveCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsArchive();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function PdfCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsPdf();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function DocCount()
-	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsDoc();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
 	}
 }

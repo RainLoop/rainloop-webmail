@@ -16,8 +16,10 @@
 	function Plugins()
 	{
 		this.oSettings = require('Storage/Settings');
-		this.oViewModelsHooks = {};
 		this.oSimpleHooks = {};
+
+		this.aUserViewModelsHooks = [];
+		this.aAdminViewModelsHooks = [];
 	}
 
 	/**
@@ -26,9 +28,14 @@
 	Plugins.prototype.oSettings = {};
 
 	/**
-	 * @type {Object}
+	 * @type {Array}
 	 */
-	Plugins.prototype.oViewModelsHooks = {};
+	Plugins.prototype.aUserViewModelsHooks = [];
+
+	/**
+	 * @type {Array}
+	 */
+	Plugins.prototype.aAdminViewModelsHooks = [];
 
 	/**
 	 * @type {Object}
@@ -82,15 +89,42 @@
 	 * @param {string} sAction
 	 * @param {Object=} oParameters
 	 * @param {?number=} iTimeout
-	 * @param {string=} sGetAdd = ''
-	 * @param {Array=} aAbortActions = []
 	 */
-	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions)
+	Plugins.prototype.remoteRequest = function (fCallback, sAction, oParameters, iTimeout)
 	{
 		if (Globals.__APP__)
 		{
-			Globals.__APP__.remote().defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions);
+			Globals.__APP__.remote().defaultRequest(fCallback, 'Plugin' + sAction, oParameters, iTimeout);
 		}
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 * @param {string} sLabelName
+	 * @param {string} sTemplate
+	 * @param {string} sRoute
+	 */
+	Plugins.prototype.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute)
+	{
+		this.aUserViewModelsHooks.push([SettingsViewModelClass, sTemplate, sLabelName, sRoute]);
+	};
+
+	/**
+	 * @param {Function} SettingsViewModelClass
+	 * @param {string} sLabelName
+	 * @param {string} sTemplate
+	 * @param {string} sRoute
+	 */
+	Plugins.prototype.addSettingsViewModelForAdmin = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute)
+	{
+		this.aAdminViewModelsHooks.push([SettingsViewModelClass, sTemplate, sLabelName, sRoute]);
+	};
+
+	Plugins.prototype.runSettingsViewModelHooks = function (bAdmin)
+	{
+		_.each(bAdmin ? this.aAdminViewModelsHooks : this.aUserViewModelsHooks, function (aView) {
+			require('Knoin/Knoin').addSettingsViewModel(aView[0], aView[1], aView[2], aView[3]);
+		});
 	};
 
 	/**

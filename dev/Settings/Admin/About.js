@@ -4,31 +4,39 @@
 	'use strict';
 
 	var
-		ko = require('ko')
+		ko = require('ko'),
+
+		Translator = require('Common/Translator'),
+
+		Settings = require('Storage/Settings'),
+		CoreStore = require('Stores/Admin/Core')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function AboutAdminSetting()
+	function AboutAdminSettings()
 	{
-		var
-			Settings = require('Storage/Settings'),
-			Data = require('Storage/Admin/Data')
-		;
-
 		this.version = ko.observable(Settings.settingsGet('Version'));
 		this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 
-		this.coreReal = Data.coreReal;
-		this.coreUpdatable = Data.coreUpdatable;
-		this.coreAccess = Data.coreAccess;
-		this.coreChecking = Data.coreChecking;
-		this.coreUpdating = Data.coreUpdating;
-		this.coreRemoteVersion = Data.coreRemoteVersion;
-		this.coreRemoteRelease = Data.coreRemoteRelease;
-		this.coreVersionCompare = Data.coreVersionCompare;
+		this.coreReal = CoreStore.coreReal;
+		this.coreChannel = CoreStore.coreChannel;
+		this.coreType = CoreStore.coreType;
+		this.coreUpdatable = CoreStore.coreUpdatable;
+		this.coreAccess = CoreStore.coreAccess;
+		this.coreChecking = CoreStore.coreChecking;
+		this.coreUpdating = CoreStore.coreUpdating;
+		this.coreWarning = CoreStore.coreWarning;
+		this.coreVersion = CoreStore.coreVersion;
+		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
+		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
+		this.coreVersionCompare = CoreStore.coreVersionCompare;
+
+		this.coreRemoteVersionHtmlDesc = ko.computed(function () {
+			return Translator.i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
+		}, this);
 
 		this.statusType = ko.computed(function () {
 
@@ -67,7 +75,7 @@
 		}, this);
 	}
 
-	AboutAdminSetting.prototype.onBuild = function ()
+	AboutAdminSettings.prototype.onBuild = function ()
 	{
 		if (this.access())
 		{
@@ -75,7 +83,7 @@
 		}
 	};
 
-	AboutAdminSetting.prototype.updateCoreData = function ()
+	AboutAdminSettings.prototype.updateCoreData = function ()
 	{
 		if (!this.coreUpdating())
 		{
@@ -83,6 +91,6 @@
 		}
 	};
 
-	module.exports = AboutAdminSetting;
+	module.exports = AboutAdminSettings;
 
 }());

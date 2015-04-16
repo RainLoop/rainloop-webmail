@@ -28,11 +28,6 @@ class PdoAddressBook
 	 */
 	private $sPassword;
 
-	/**
-	 * @var array
-	 */
-	private $aTagsCache;
-
 	public function __construct($sDsn, $sUser = '', $sPassword = '', $sDsnType = 'mysql')
 	{
 		$this->sDsn = $sDsn;
@@ -41,7 +36,6 @@ class PdoAddressBook
 		$this->sDsnType = $sDsnType;
 
 		$this->bExplain = false; // debug
-		$this->aTagsCache = array(); // debug
 	}
 
 	/**
@@ -97,12 +91,17 @@ class PdoAddressBook
 					if ($aItem && isset($aItem['id_contact'], $aItem['id_contact_str'], $aItem['changed'], $aItem['deleted'], $aItem['etag']) &&
 						!empty($aItem['id_contact_str']))
 					{
-						$aResult[$aItem['id_contact_str']] = array(
+						$sKeyID = $aItem['id_contact_str'];
+
+						$aResult[$sKeyID] = array(
+							'deleted' => '1' === (string) $aItem['deleted'],
 							'id_contact' => $aItem['id_contact'],
+							'uid' => $sKeyID,
 							'etag' => $aItem['etag'],
 							'changed' => (int) $aItem['changed'],
-							'deleted' => '1' === (string) $aItem['deleted']
 						);
+
+						$aResult[$sKeyID]['changed_'] = \gmdate('c', $aResult[$sKeyID]['changed']);
 					}
 				}
 			}
@@ -147,12 +146,15 @@ class PdoAddressBook
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
 
 							$mResult[$sKeyID] = array(
+								'deleted' => false,
+								'uid' => $sKeyID,
 								'vcf' => $sVcfFileName,
 								'etag' => \trim(\trim($aItem['{dav:}getetag']), '"\''),
 								'lastmodified' => $aItem['{dav:}getlastmodified'],
-								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified']),
-								'deleted' => false
+								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified'])
 							);
+
+							$mResult[$sKeyID]['changed_'] = \gmdate('c', $mResult[$sKeyID]['changed']);
 						}
 					}
 				}
@@ -238,6 +240,11 @@ class PdoAddressBook
 
 		$sPath = $aUrl['path'];
 
+		if (!\class_exists('Sabre\DAV\Client'))
+		{
+			return false;
+		}
+
 		$oClient = new \Sabre\DAV\Client($aSettings);
 		$oClient->setVerifyPeer(false);
 
@@ -311,7 +318,7 @@ class PdoAddressBook
 					}
 
 					$oResponse = $this->davClientRequest($oClient, 'PUT',
-						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody));
+						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
 
 					if ($oResponse && isset($oResponse['headers'], $oResponse['headers']['etag']))
 					{
@@ -359,8 +366,9 @@ class PdoAddressBook
 							$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
 						}
 
-						$oContact->PopulateByVCard($sBody,
-							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '');
+						$oContact->PopulateByVCard($aData['uid'], $sBody,
+							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '',
+							$this->oLogger);
 
 						$this->ContactSave($sEmail, $oContact);
 						unset($oContact);
@@ -470,19 +478,12 @@ class PdoAddressBook
 						':id_contact' => array($iIdContact, \PDO::PARAM_INT)
 					)
 				);
-
-				// clear previos tags
-				$this->prepareAndExecute(
-					'DELETE FROM rainloop_ab_tags_contacts WHERE id_contact = :id_contact',
-					array(
-						':id_contact' => array($iIdContact, \PDO::PARAM_INT)
-					)
-				);
 			}
 			else
 			{
 				$sSql = 'INSERT INTO rainloop_ab_contacts '.
-					'( id_user,  id_contact_str,  display,  changed,  etag) VALUES '.
+					'( id_user,  id_contact_str,  display,  changed,  etag)'.
+					' VALUES '.
 					'(:id_user, :id_contact_str, :display, :changed, :etag)';
 
 				$this->prepareAndExecute($sSql,
@@ -528,51 +529,11 @@ class PdoAddressBook
 				if (0 < \count($aParams))
 				{
 					$sSql = 'INSERT INTO rainloop_ab_properties '.
-						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec) VALUES '.
+						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec)'.
+						' VALUES '.
 						'(:id_contact, :id_user, :prop_type, :prop_type_str, :prop_value, :prop_value_custom, :prop_frec)';
 
 					$this->prepareAndExecute($sSql, $aParams, true);
-				}
-
-				$aTags = array();
-				$aContactTags = $this->GetContactTags($sEmail);
-
-				$fFindFunc = function ($sName) use ($aContactTags) {
-
-					$iResult = 0;
-					foreach ($aContactTags as $oItem)
-					{
-						if ($oItem && $oItem->Name === $sName)
-						{
-							$iResult = (int) $oItem->IdContactTag;
-							break;
-						}
-					}
-
-					return $iResult;
-				};
-
-				foreach ($oContact->Tags as $sTagName)
-				{
-					$iTagID = $fFindFunc($sTagName);
-					if (0 >= $iTagID)
-					{
-						$iTagID = $this->CreateTag($sEmail, $sTagName, false);
-					}
-
-					if (\is_int($iTagID) && 0 < $iTagID)
-					{
-						$aTags[] = array(
-							':id_tag' => array($iTagID, \PDO::PARAM_INT),
-							':id_contact' => array($iIdContact, \PDO::PARAM_INT)
-						);
-					}
-				}
-
-				if (0 < \count($aTags))
-				{
-					$sSql = 'INSERT INTO rainloop_ab_tags_contacts (id_tag, id_contact) VALUES (:id_tag, :id_contact)';
-					$this->prepareAndExecute($sSql, $aTags, true);
 				}
 			}
 		}
@@ -582,51 +543,6 @@ class PdoAddressBook
 		}
 
 		return 0 < $iIdContact;
-	}
-
-	/**
-	 * @param string $sEmail
-	 * @param string $sName
-	 * @param bool $bSyncDb = true
-	 *
-	 * @return bool|int
-	 */
-	public function CreateTag($sEmail, $sName, $bSyncDb = true)
-	{
-		if ($bSyncDb)
-		{
-			$this->SyncDatabase();
-		}
-
-		$iUserID = $this->getUserId($sEmail);
-
-		$this->aTagsCache = array();
-
-		$mResult = false;
-		try
-		{
-			$sSql = 'INSERT INTO rainloop_ab_tags '.
-				'(id_user, tag_name) VALUES (:id_user, :tag_name)';
-
-			$this->prepareAndExecute($sSql,
-				array(
-					':id_user' => array($iUserID, \PDO::PARAM_INT),
-					':tag_name' => array($sName, \PDO::PARAM_STR)
-				)
-			);
-
-			$sLast = $this->lastInsertId('rainloop_ab_tags', 'id_tag');
-			if (\is_numeric($sLast) && 0 < (int) $sLast)
-			{
-				$mResult = (int) $sLast;
-			}
-		}
-		catch (\Exception $oException)
-		{
-			throw $oException;
-		}
-
-		return $mResult;
 	}
 
 	/**
@@ -677,7 +593,7 @@ class PdoAddressBook
 	 *
 	 * @return bool
 	 */
-	public function DeleteAllContactsAndTags($sEmail, $bSyncDb = true)
+	public function DeleteAllContacts($sEmail, $bSyncDb = true)
 	{
 		if ($bSyncDb)
 		{
@@ -690,134 +606,8 @@ class PdoAddressBook
 
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_properties WHERE id_user = :id_user', $aParams);
 		$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user', $aParams);
-		$this->prepareAndExecute('DELETE FROM rainloop_ab_tags WHERE id_user = :id_user', $aParams);
 
 		return true;
-	}
-
-	/**
-	 * @param string $sEmail
-	 * @param array $aTagsIds
-	 *
-	 * @return bool
-	 */
-	public function DeleteTags($sEmail, $aTagsIds)
-	{
-		$this->SyncDatabase();
-		$iUserID = $this->getUserId($sEmail);
-
-		$aTagsIds = \array_filter($aTagsIds, function (&$mItem) {
-			$mItem = (int) \trim($mItem);
-			return 0 < $mItem;
-		});
-
-		if (0 === \count($aTagsIds))
-		{
-			return false;
-		}
-
-		$this->aTagsCache = array();
-
-		$sIDs = \implode(',', $aTagsIds);
-		$aParams = array(':id_user' => array($iUserID, \PDO::PARAM_INT));
-
-		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags_contacts WHERE id_tag IN ('.$sIDs.')');
-		$this->prepareAndExecute('DELETE FROM rainloop_pab_tags WHERE id_user = :id_user AND id_tag IN ('.$sIDs.')', $aParams);
-
-		return true;
-	}
-
-	/**
-	 * @param string $sEmail
-	 * @param array|\RainLoop\Providers\AddressBook\Classes\Contact $mContactOrContacts
-	 */
-	private function populateContactsByTags($sEmail, &$mContactOrContacts)
-	{
-		$aContacts = array();
-		if ($mContactOrContacts)
-		{
-			$aContacts = is_array($mContactOrContacts) ? $mContactOrContacts : array(&$mContactOrContacts);
-		}
-
-		if (\is_array($aContacts) && 0 < \count($aContacts))
-		{
-			$aIdContacts = array();
-			$aIdTagsContacts = array();
-
-			$aTags = $this->GetContactTags($sEmail);
-
-			if (\is_array($aTags) && 0 < \count($aTags))
-			{
-				foreach ($aContacts as $oItem)
-				{
-					$aIdContacts[$oItem->IdContact] = true;
-				}
-
-				if (0 < \count($aIdContacts))
-				{
-					$sSql = 'SELECT id_tag, id_contact FROM rainloop_ab_tags_contacts WHERE id_contact IN ('.\implode(',', \array_keys($aIdContacts)).')';
-					$oStmt = $this->prepareAndExecute($sSql);
-
-					if ($oStmt)
-					{
-						$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-						if (\is_array($aFetch) && 0 < \count($aFetch))
-						{
-							foreach ($aFetch as $aItem)
-							{
-								if ($aItem && isset($aItem['id_tag'], $aItem['id_contact']))
-								{
-									$sID = (string) $aItem['id_contact'];
-									if (!isset($aIdTagsContacts[$sID]))
-									{
-										$aIdTagsContacts[$sID] = array();
-									}
-
-									$aIdTagsContacts[$sID][] = (string) $aItem['id_tag'];
-								}
-							}
-						}
-
-						unset($aFetch);
-					}
-
-					if (0 < \count($aIdTagsContacts))
-					{
-						$fFindFunc = function ($sID) use ($aTags) {
-
-							foreach ($aTags as $oItem)
-							{
-								if ($oItem && (string) $oItem->IdContactTag === $sID)
-								{
-									return\trim($oItem->Name);
-								}
-							}
-
-							return '';
-						};
-
-						foreach ($aContacts as &$oItem)
-						{
-							$sID = $oItem ? (string) $oItem->IdContact : '';
-							if (0 < \strlen($sID) && isset($aIdTagsContacts[$sID]) && \is_array($aIdTagsContacts[$sID]))
-							{
-								$aNames = array();
-								foreach ($aIdTagsContacts[$sID] as $sSubID)
-								{
-									$sName = $fFindFunc($sSubID);
-									if (0 < \strlen($sName))
-									{
-										$aNames[] = $sName;
-									}
-								}
-
-								$oItem->Tags = $aNames;
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -846,13 +636,8 @@ class PdoAddressBook
 		if (0 < \strlen($sSearch))
 		{
 			$sCustomSearch = $this->specialConvertSearchValueCustomPhone($sSearch);
-			if ('%%' === $sCustomSearch)
-			{
-				// TODO fix this
-				$sCustomSearch = '';
-			}
 
-			$sSearchTypes = implode(',', array(
+			$sSearchTypes = \implode(',', array(
 				PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME,
 				PropertyType::PHONE, PropertyType::WEB_PAGE
 			));
@@ -1012,62 +797,6 @@ class PdoAddressBook
 			}
 		}
 
-		$this->populateContactsByTags($sEmail, $aResult);
-		return $aResult;
-	}
-
-	/**
-	 * @param string $sEmail
-	 * @param bool $bCache = true
-	 *
-	 * @return array
-	 */
-	public function GetContactTags($sEmail, $bCache = true)
-	{
-		if ($bCache && isset($this->aTagsCache[$sEmail]))
-		{
-			return $this->aTagsCache[$sEmail];
-		}
-
-		$this->SyncDatabase();
-
-		$iUserID = $this->getUserId($sEmail);
-
-		$sSql = 'SELECT id_tag, id_user, tag_name FROM rainloop_ab_tags WHERE id_user = :id_user ORDER BY tag_name ASC';
-
-		$aParams = array(
-			':id_user' => array($iUserID, \PDO::PARAM_INT)
-		);
-
-		$aResult = array();
-		$oStmt = $this->prepareAndExecute($sSql, $aParams);
-		if ($oStmt)
-		{
-			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-			if (\is_array($aFetch) && 0 < \count($aFetch))
-			{
-				foreach ($aFetch as $aItem)
-				{
-					$iIdContactTag = $aItem && isset($aItem['id_tag']) ? (int) $aItem['id_tag'] : 0;
-					if (0 < $iIdContactTag)
-					{
-						$oContactTag = new \RainLoop\Providers\AddressBook\Classes\Tag();
-
-						$oContactTag->IdContactTag = (string) $iIdContactTag;
-						$oContactTag->Name = isset($aItem['tag_name']) ? (string) $aItem['tag_name'] : '';
-						$oContactTag->ReadOnly = $iUserID !== (isset($aItem['id_user']) ? (int) $aItem['id_user'] : 0);
-
-						$aResult[] = $oContactTag;
-					}
-				}
-			}
-		}
-
-		if ($bCache)
-		{
-			$this->aTagsCache[$sEmail] = $aResult;
-		}
-
 		return $aResult;
 	}
 
@@ -1169,11 +898,6 @@ class PdoAddressBook
 					$oContact->UpdateDependentValues();
 				}
 			}
-		}
-
-		if ($oContact)
-		{
-			$this->populateContactsByTags($sEmail, $oContact);
 		}
 
 		return $oContact;
@@ -1609,27 +1333,6 @@ CREATE TABLE IF NOT EXISTS rainloop_ab_properties (
 
 )/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
-CREATE TABLE IF NOT EXISTS rainloop_ab_tags (
-
-	id_tag		int UNSIGNED	NOT NULL AUTO_INCREMENT,
-	id_user		int UNSIGNED	NOT NULL,
-	tag_name	varchar(255)	NOT NULL,
-
-	PRIMARY KEY(id_tag),
-	INDEX id_user_rainloop_ab_tags_index (id_user),
-	INDEX id_user_name_rainloop_ab_tags_index (id_user, tag_name)
-
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
-
-CREATE TABLE IF NOT EXISTS rainloop_ab_tags_contacts (
-
-	id_tag		int UNSIGNED		NOT NULL,
-	id_contact	bigint UNSIGNED		NOT NULL,
-
-	INDEX id_tag_rainloop_ab_tags_contacts_index (id_tag),
-	INDEX id_contact_rainloop_ab_tags_contacts_index (id_contact)
-
-)/*!40000 ENGINE=INNODB */;
 MYSQLINITIAL;
 				break;
 
@@ -1662,23 +1365,6 @@ CREATE TABLE rainloop_ab_properties (
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
 
-CREATE TABLE rainloop_ab_tags (
-	id_tag		serial			PRIMARY KEY,
-	id_user		integer			NOT NULL,
-	tag_name	varchar(255)	NOT NULL
-);
-
-CREATE INDEX id_user_rainloop_ab_tags_index ON rainloop_ab_tags (id_user);
-CREATE INDEX id_user_name_rainloop_ab_tags_index ON rainloop_ab_tags (id_user, tag_name);
-
-CREATE TABLE rainloop_ab_tags_contacts (
-	id_tag		integer		NOT NULL,
-	id_contact	integer		NOT NULL
-);
-
-CREATE INDEX id_tag_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_tag);
-CREATE INDEX id_contact_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_contact);
-
 POSTGRESINITIAL;
 				break;
 
@@ -1710,23 +1396,6 @@ CREATE TABLE rainloop_ab_properties (
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
-
-CREATE TABLE rainloop_ab_tags (
-	id_tag		integer		NOT NULL PRIMARY KEY,
-	id_user		integer		NOT NULL,
-	tag_name	text		NOT NULL
-);
-
-CREATE INDEX id_user_rainloop_ab_tags_index ON rainloop_ab_tags (id_user);
-CREATE INDEX id_user_name_rainloop_ab_tags_index ON rainloop_ab_tags (id_user, tag_name);
-
-CREATE TABLE rainloop_ab_tags_contacts (
-	id_tag		integer		NOT NULL,
-	id_contact	integer		NOT NULL
-);
-
-CREATE INDEX id_tag_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_tag);
-CREATE INDEX id_contact_rainloop_ab_tags_index ON rainloop_ab_tags_contacts (id_contact);
 
 SQLITEINITIAL;
 				break;
@@ -1836,7 +1505,8 @@ SQLITEINITIAL;
 	 */
 	private function specialConvertSearchValueCustomPhone($sSearch)
 	{
-		return '%'.\preg_replace('/[^\d]/', '', $sSearch).'%';
+		$sResult = '%'.\preg_replace('/[^\d]/', '', $sSearch).'%';
+		return '%%' === $sResult ? '' : $sResult;
 	}
 
 	/**

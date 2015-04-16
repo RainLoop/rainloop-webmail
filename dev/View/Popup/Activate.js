@@ -9,10 +9,13 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Consts = require('Common/Consts'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
-		Remote = require('Storage/Admin/Remote'),
+		Remote = require('Remote/Admin/Ajax'),
+
+		LicenseStore = require('Stores/Admin/License'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -33,11 +36,15 @@
 		this.key.focus = ko.observable(false);
 		this.activationSuccessed = ko.observable(false);
 
-		this.licenseTrigger = Data.licenseTrigger;
+		this.licenseTrigger = LicenseStore.licenseTrigger;
 
 		this.activateProcess = ko.observable(false);
 		this.activateText = ko.observable('');
 		this.activateText.isError = ko.observable(false);
+
+		this.htmlDescription = ko.computed(function () {
+			return Translator.i18n('POPUPS_ACTIVATE/HTML_DESC', {'DOMAIN': this.domain()});
+		}, this);
 
 		this.key.subscribe(function () {
 			this.activateText('');
@@ -64,7 +71,7 @@
 						if (true === oData.Result)
 						{
 							self.activationSuccessed(true);
-							self.activateText('Subscription Key Activated Successfully');
+							self.activateText(Translator.i18n('POPUPS_ACTIVATE/SUBS_KEY_ACTIVATED'));
 							self.activateText.isError(false);
 						}
 						else
@@ -76,13 +83,13 @@
 					}
 					else if (oData.ErrorCode)
 					{
-						self.activateText(Utils.getNotification(oData.ErrorCode));
+						self.activateText(Translator.getNotification(oData.ErrorCode));
 						self.activateText.isError(true);
 						self.key.focus(true);
 					}
 					else
 					{
-						self.activateText(Utils.getNotification(Enums.Notification.UnknownError));
+						self.activateText(Translator.getNotification(Enums.Notification.UnknownError));
 						self.activateText.isError(true);
 						self.key.focus(true);
 					}
@@ -92,7 +99,7 @@
 			else
 			{
 				this.activateProcess(false);
-				this.activateText('Invalid Subscription Key');
+				this.activateText(Translator.i18n('POPUPS_ACTIVATE/ERROR_INVALID_SUBS_KEY'));
 				this.activateText.isError(true);
 				this.key.focus(true);
 			}
@@ -107,19 +114,21 @@
 	kn.extendAsViewModel(['View/Popup/Activate', 'PopupsActivateViewModel'], ActivatePopupView);
 	_.extend(ActivatePopupView.prototype, AbstractView.prototype);
 
-	ActivatePopupView.prototype.onShow = function ()
+	ActivatePopupView.prototype.onShow = function (bTrial)
 	{
 		this.domain(Settings.settingsGet('AdminDomain'));
 		if (!this.activateProcess())
 		{
-			this.key('');
+			bTrial = Utils.isUnd(bTrial) ? false : !!bTrial;
+
+			this.key(bTrial ? Consts.Values.RainLoopTrialKey : '');
 			this.activateText('');
 			this.activateText.isError(false);
 			this.activationSuccessed(false);
 		}
 	};
 
-	ActivatePopupView.prototype.onFocus = function ()
+	ActivatePopupView.prototype.onShowWithDelay = function ()
 	{
 		if (!this.activateProcess())
 		{
@@ -128,12 +137,13 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	ActivatePopupView.prototype.validateSubscriptionKey = function ()
 	{
 		var sValue = this.key();
-		return '' === sValue || !!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
+		return '' === sValue || Consts.Values.RainLoopTrialKey === sValue ||
+			!!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 	};
 
 	module.exports = ActivatePopupView;

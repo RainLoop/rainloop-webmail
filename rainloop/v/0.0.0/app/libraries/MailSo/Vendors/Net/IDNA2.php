@@ -28,8 +28,7 @@
 //require_once 'Net/IDNA2/Exception/Nameprep.php';
 
 defined('MAILSO_LIBRARY_ROOT_PATH') || die();
-require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2/Exception.php';
-require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2/Exception/Nameprep.php';
+require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2CustomExceptions.php';
 
 /**
  * Encode/decode Internationalized Domain Names.

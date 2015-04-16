@@ -10,33 +10,40 @@ module.exports = {
 		path: __dirname + '/rainloop/v/0.0.0/static/js/',
 		filename: '[name].js',
 		publicPath: 'rainloop/v/0.0.0/static/js/',
-		chunkFilename: '[chunkhash].chunk.js'
+		chunkFilename: '[chunkhash].subapp.js'
 	},
 	plugins: [
+//		new webpack.optimize.CommonsChunkPlugin('common.js'),
 		new webpack.optimize.OccurenceOrderPlugin()
 	],
 	resolve: {
 		modulesDirectories: [__dirname + '/dev/'],
 		extensions: ['', '.js'],
 		alias: {
+			"Opentip": __dirname  + "/dev/External/Opentip.js",
 			"ko": __dirname  + "/dev/External/ko.js"
 		}
 	},
 	externals: {
 		'window': 'window',
-		'JSON': 'JSON',
+		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
 		'SimplePace': 'window.SimplePace',
-		'moment': 'moment',
-		'ifvisible': 'ifvisible',
-		'crossroads': 'crossroads',
-		'hasher': 'hasher',
-		'Jua': 'Jua',
-		'Autolinker': 'Autolinker',
-		'ssm': 'ssm',
-		'key': 'key',
-		'_': '_',
-		'$': 'jQuery'
+		'PhotoSwipe': 'window.PhotoSwipe',
+		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
+		'queue': 'window.queue',
+		'moment': 'window.moment',
+		'ifvisible': 'window.ifvisible',
+		'crossroads': 'window.crossroads',
+		'hasher': 'window.hasher',
+		'Jua': 'window.Jua',
+		'Autolinker': 'window.Autolinker',
+		'Tinycon': 'window.Tinycon',
+		'ssm': 'window.ssm',
+		'key': 'window.key',
+		'_': 'window._',
+		'Q': 'window.Q',
+		'$': 'window.jQuery'
 	}
 };

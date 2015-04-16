@@ -10,6 +10,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	private $oDriver;
 
 	/**
+	 * @var \RainLoop\Plugins\Manager
+	 */
+	private $oPlugins;
+
+	/**
 	 * @var bool
 	 */
 	private $bAdmin;
@@ -19,9 +24,11 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 *
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver,
+		\RainLoop\Plugins\Manager $oPlugins)
 	{
 		$this->oDriver = $oDriver;
+		$this->oPlugins = $oPlugins;
 		$this->bAdmin = $this->oDriver instanceof \RainLoop\Providers\Domain\DomainAdminInterface;
 	}
 
@@ -38,19 +45,25 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 * @param bool $bFindWithWildCard = false
 	 * @param bool $bCheckDisabled = true
 	 *
-	 * @return \RainLoop\Domain|null
+	 * @return \RainLoop\Model\Domain|null
 	 */
 	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
-		return $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
+		$oDomain = $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled);
+		if ($oDomain instanceof \RainLoop\Model\Domain)
+		{
+			$this->oPlugins->RunHook('filter.domain', array(&$oDomain));
+		}
+
+		return $oDomain;
 	}
 
 	/**
-	 * @param \RainLoop\Domain $oDomain
+	 * @param \RainLoop\Model\Domain $oDomain
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Domain $oDomain)
+	public function Save(\RainLoop\Model\Domain $oDomain)
 	{
 		return $this->bAdmin ? $this->oDriver->Save($oDomain) : false;
 	}
@@ -102,7 +115,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 * @param \RainLoop\Actions $oActions
 	 * @param string $sNameForTest = ''
 	 *
-	 * @return \RainLoop\Domain | null
+	 * @return \RainLoop\Model\Domain | null
 	 */
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, $sNameForTest = '')
 	{
@@ -116,11 +129,17 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			$iIncPort = (int) $oActions->GetActionParam('IncPort', 143);
 			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
+			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
+			$bSieveAllowRaw = '1' === (string) $oActions->GetActionParam('SieveAllowRaw', '0');
+			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
+			$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
+			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$sOutHost = (string) $oActions->GetActionParam('OutHost', '');
 			$iOutPort = (int) $oActions->GetActionParam('OutPort', 25);
 			$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
 			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
+			$bOutUsePhpMail = '1' === (string) $oActions->GetActionParam('OutUsePhpMail', '0');
 			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
 
 			if (0 < \strlen($sName) && 0 < strlen($sNameForTest) && false === \strpos($sName, '*'))
@@ -131,7 +150,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 			if (0 < strlen($sName) || 0 < strlen($sNameForTest))
 			{
 				$oDomain = 0 < strlen($sNameForTest) ? null : $this->Load($sName);
-				if ($oDomain instanceof \RainLoop\Domain)
+				if ($oDomain instanceof \RainLoop\Model\Domain)
 				{
 					if ($bCreate)
 					{
@@ -141,17 +160,24 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 					{
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+							$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 							$sWhiteList);
 					}
 				}
 				else
 				{
-					$oDomain = \RainLoop\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
+					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth,
+						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
+						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 						$sWhiteList);
 				}
+			}
+
+			if ($oDomain)
+			{
+				$oDomain->SetSieveAllowRaw($bSieveAllowRaw);
 			}
 		}
 

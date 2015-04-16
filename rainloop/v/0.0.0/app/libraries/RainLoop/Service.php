@@ -35,12 +35,16 @@ class Service
 			\ini_set('display_errors', 1);
 		}
 
-		\RainLoop\Api::SetupDefaultMailSoConfig();
-
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))
 		{
 			@\header('Server: '.$sServer, true);
+		}
+
+		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', ''));
+		if (0 < \strlen($sXFrameOptionsHeader))
+		{
+			@\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
 		}
 
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
@@ -48,20 +52,43 @@ class Service
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
 			exit();
 		}
+
+		$this->localHandle();
 	}
 
 	/**
-	 * @return \RainLoop\Service
+	 * @return bool
 	 */
-	public static function NewInstance()
+	public function RunResult()
 	{
-		return new self();
+		return true;
+	}
+
+	/**
+	 * @staticvar bool $bOne
+	 * @return bool
+	 */
+	public static function Handle()
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$oService = null;
+			if (\class_exists('MailSo\Version'))
+			{
+				$oService = new self();
+			}
+
+			$bOne = $oService->RunResult();
+		}
+
+		return $bOne;
 	}
 
 	/**
 	 * @return \RainLoop\Service
 	 */
-	public function Handle()
+	private function localHandle()
 	{
 		if (!\class_exists('MailSo\Version'))
 		{
@@ -70,17 +97,10 @@ class Service
 
 		$this->oActions->BootStart();
 
-		$this->oActions->ParseQueryAuthString();
-
-		$bCached = false;
 		$sResult = '';
+		$bCached = false;
 
-		$sQuery = \trim(\trim($this->oHttp->GetServer('QUERY_STRING', '')), ' /');
-		$iPos = \strpos($sQuery, '&');
-		if (0 < $iPos)
-		{
-			$sQuery = \substr($sQuery, 0, $iPos);
-		}
+		$sQuery = $this->oActions->ParseQueryAuthString();
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);
@@ -98,9 +118,14 @@ class Service
 			$bAdmin = true;
 		}
 
+		if ($this->oHttp->IsPost())
+		{
+			$this->oHttp->ServerNoCache();
+		}
+
 		if ($bAdmin && !$this->oActions->Config()->Get('security', 'allow_admin_panel', true))
 		{
-			echo $this->oActions->ErrorTemplates('Access Denied.',
+			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
 				'Access to the RainLoop Webmail Admin Panel is not allowed!', true);
 
 			return $this;
@@ -125,8 +150,21 @@ class Service
 
 		if ($bIndex)
 		{
+			@\header('Content-Security-Policy:');
+			@\header_remove('Content-Security-Policy');
+
 			@header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
+
+			if (!@\is_dir(APP_DATA_FOLDER_PATH) || !@\is_writable(APP_DATA_FOLDER_PATH))
+			{
+				echo $this->oServiceActions->ErrorTemplates(
+					'Permission denied!',
+					'RainLoop Webmail cannot access to the data folder "'.APP_DATA_FOLDER_PATH.'"'
+				);
+
+				return $this;
+			}
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
@@ -139,6 +177,7 @@ class Service
 
 			if (0 === \strlen($sResult))
 			{
+//				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
 				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
@@ -158,6 +197,12 @@ class Service
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+
+			if (\RainLoop\Utils::IsOwnCloud())
+			{
+				$sResult .= '][owncloud:true';
+			}
+
 			$sResult .= '] -->';
 		}
 
@@ -170,40 +215,35 @@ class Service
 	}
 
 	/**
-	 * @param bool $bAdmin
+	 * @param bool $bAdmin = false
 	 *
 	 * @return array
 	 */
-	private function indexTemplateParameters($bAdmin)
+	private function indexTemplateParameters($bAdmin = false)
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
 
-		if (!$bAdmin)
-		{
-			list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme();
-		}
-
-		$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
-		$sTheme = $this->oActions->ValidateTheme($sTheme);
+		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
 
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
-		$sStaticPrefix = APP_WEB_STATIC_PATH;
+		$sStaticPrefix = \RainLoop\Utils::WebStaticPath();
 
 		$aData = array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,
-			'LoadingDescription' => $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop'),
 			'FaviconIcoLink' => $sStaticPrefix.'favicon.ico',
 			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
 			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
 			'BootJsLink' => $sStaticPrefix.'js/min/boot.js',
+			'ComponentsJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'components.js',
 			'LibJsLink' => $sStaticPrefix.'js/min/libs.js',
 			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
 			'OpenPgpJsLink' => $sStaticPrefix.'js/min/openpgp.min.js',
+			'AppJsCommonLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'common.js',
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
 		);
 
@@ -214,19 +254,21 @@ class Service
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
 			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
+			'{{BaseAppComponentsScriptLink}}' => $aData['ComponentsJsLink'],
 			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
+			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseAppLoadingDescription}}' => \htmlspecialchars($aData['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(
 			\implode('~', array(
+				$bAdmin ? '1' : '0',
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				APP_WEB_PATH, APP_VERSION
+				\RainLoop\Utils::WebVersionPath(), APP_VERSION
 			)).
 			\implode('~', $aTemplateParameters)
 		);

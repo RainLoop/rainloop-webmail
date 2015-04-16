@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mime;
 
 /**
@@ -17,6 +26,7 @@ class EmailCollection extends \MailSo\Base\Collection
 	{
 		parent::__construct();
 
+		$sEmailAddresses = \MailSo\Base\Utils::Trim($sEmailAddresses);
 		if (0 < \strlen($sEmailAddresses))
 		{
 			$this->parseEmailAddresses($sEmailAddresses);
@@ -204,7 +214,7 @@ class EmailCollection extends \MailSo\Base\Collection
 							$this->Add(
 								\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
-							
+
 							$iEmailStartPos = $iCurrentPos + 1;
 						}
 						catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)

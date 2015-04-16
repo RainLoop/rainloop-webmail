@@ -1,0 +1,107 @@
+<div class="popups">
+	<div class="modal hide b-advanced-search-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+		<div class="modal-header">
+			<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+			<h3>
+				<span class="i18n" data-i18n="SEARCH/TITLE_ADV"></span>
+			</h3>
+		</div>
+		<div class="modal-body">
+			<br />
+			<form class="form-horizontal" action="#/" autocomplete="off" onsubmit="return false;" data-bind="command: searchCommand">
+				<div class="row">
+					<div class="span4">
+						<div class="control-group">
+							<label class="control-label">
+								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_FROM"></span>
+							</label>
+							<div class="controls">
+								<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: from, onEnter: searchCommand, hasfocus: fromFocus, onEsc: cancelCommand" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">
+								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_TO"></span>
+							</label>
+							<div class="controls">
+								<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: to, onEnter: searchCommand, onEsc: cancelCommand" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">
+								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_SUBJECT"></span>
+							</label>
+							<div class="controls">
+								<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: subject, onEnter: searchCommand, onEsc: cancelCommand" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">
+								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_TEXT"></span>
+							</label>
+							<div class="controls">
+								<input type="text" class="uiInput inputFrom" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									data-bind="value: text, onEnter: searchCommand, onEsc: cancelCommand" />
+							</div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="control-group">
+							<label class="control-label">
+								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE"></span>
+							</label>
+							<div class="controls">
+								<select data-bind="value: selectedDateValue">
+									<option value="-1" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_ALL"></option>
+									<option value="3" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_3_DAYS"></option>
+									<option value="7" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_7_DAYS"></option>
+									<option value="30" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_MONTH"></option>
+									<option value="90" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_3_MONTHS"></option>
+									<option value="180" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_6_MONTHS"></option>
+									<option value="365" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_YEAR"></option>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">
+							</label>
+							<div class="controls">
+								<div data-bind="component: {
+									name: 'Checkbox',
+									params: {
+										label: 'SEARCH/LABEL_ADV_UNSEEN',
+										value: unseen
+									}
+								}"></div>
+								<div data-bind="component: {
+									name: 'Checkbox',
+									params: {
+										label: 'SEARCH/LABEL_ADV_FLAGGED',
+										value: starred
+									}
+								}"></div>
+								<div data-bind="component: {
+									name: 'Checkbox',
+									params: {
+										label: 'SEARCH/LABEL_ADV_HAS_ATTACHMENT',
+										value: hasAttachment
+									}
+								}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn buttonAdvSearch" data-bind="command: searchCommand">
+				<i class="icon-search"></i>
+				&nbsp;&nbsp;
+				<span class="i18n" data-i18n="SEARCH/BUTTON_ADV_SEARCH"></span>
+			</a>
+		</div>
+	</div>
+</div>

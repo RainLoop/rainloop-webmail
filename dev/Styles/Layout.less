@@ -139,7 +139,7 @@ html.ssm-state-tablet, html.ssm-state-mobile {
 	}
 
 	.b-compose.modal {
-		width: 700px;
+		width: 720px;
 	}
 
 	.b-contacts-content.modal {
@@ -156,7 +156,7 @@ html.ssm-state-tablet, html.ssm-state-mobile {
 html.ssm-state-tablet {
 
 	.b-compose.modal {
-		width: 700px;
+		width: 720px;
 	}
 
 	.b-contacts-content.modal {
@@ -205,9 +205,19 @@ html.rl-left-panel-disabled {
 	}
 }
 
-.ui-resizable-helper {
+.ui-resizable-helper-w {
 	border-right: 5px solid #777;
 	border-right-color: rgba(255,255,255,0.7);
+}
+
+.ui-resizable-helper-h {
+	border-bottom: 5px solid #ccc;
+	border-bottom-color: rgba(0,0,0,0.3);
+}
+
+.ui-resizable-handle:hover {
+	background: #aaa;
+	background: rgba(255,255,255,0.5);
 }
 
 html.rl-no-preview-pane {
@@ -227,6 +237,47 @@ html.rl-no-preview-pane {
 
 	#rl-right .ui-resizable-handle {
 		display: none !important;
+	}
+}
+
+html.rl-side-preview-pane #rl-right .ui-resizable-handle {
+	display: none !important;
+}
+
+html.rl-bottom-preview-pane {
+
+	#rl-sub-left {
+		right: @rlBottomMargin !important;
+		width: inherit;
+
+		.b-message-list-wrapper {
+			bottom: inherit;
+			height: 300px;
+
+			box-shadow: none;
+		}
+
+		.messageList .inputSearch {
+			width: 300px !important;
+		}
+	}
+
+	#rl-sub-right {
+
+		left: 0 !important;
+
+		.messageView .top-toolbar {
+			display: none;
+		}
+
+		.b-message-view-wrapper {
+			top: 356px;
+			left: 0;
+			right: 5px;
+
+
+			box-shadow: none;
+		}
 	}
 }
 
@@ -260,6 +311,7 @@ html.rl-ctrl-key-pressed {
 #rl-loading, #rl-loading-error {
 	position: absolute;
 	font-size: 30px;
+	line-height: 100%;
 	top: 50%;
 	width: 100%;
 	height: 65px;
@@ -273,4 +325,9 @@ html.rl-ctrl-key-pressed {
 #rl-loading-error {
 	background-image: none;
 	display: none;
+}
+
+#rl-loading-error-additional {
+	margin-top: 20px;
+	font-size: 20px;
 }

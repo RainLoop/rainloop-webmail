@@ -12,18 +12,19 @@
 				data-bind="value: value, attr: {placeholder: placeholder}" />
 		<!-- /ko -->
 		<!-- ko if: 2 === Type -->
-			<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				data-bind="value: value, attr: {placeholder: placeholder}"></textarea>
+			<div data-bind="component: {
+				name: 'TextArea',
+				params: { value: value, placeholder: placeholder }
+			}"></div>
 		<!-- /ko -->
 		<!-- ko if: 4 === Type -->
 			<select data-bind="options: Default, value: value"></select>
 		<!-- /ko -->
 		<!-- ko if: 5 === Type -->
-			<label data-bind="click: function () { value(!value()); }">
-				<i data-bind="css: value() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-				&nbsp;&nbsp;
-				<span data-bind="text: Label"></span>
-			</label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: value, label: Label }
+			}"></div>
 		<!-- /ko -->
 		<span class="help-block" style="color: #ccc" data-bind="text: Desc, visible: '' !== Desc"></span>
 	</div>

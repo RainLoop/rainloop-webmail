@@ -4,9 +4,14 @@
 	'use strict';
 
 	var
+		_ = require('_'),
 		ko = require('ko'),
 
-		Utils = require('Common/Utils')
+		Utils = require('Common/Utils'),
+
+		AttachmentModel = require('Model/Attachment'),
+
+		AbstractModel = require('Knoin/AbstractModel')
 	;
 
 	/**
@@ -21,6 +26,8 @@
 	 */
 	function ComposeAttachmentModel(sId, sFileName, nSize, bInline, bLinked, sCID, sContentLocation)
 	{
+		AbstractModel.call(this, 'ComposeAttachmentModel');
+
 		this.id = sId;
 		this.isInline = Utils.isUnd(bInline) ? false : !!bInline;
 		this.isLinked = Utils.isUnd(bLinked) ? false : !!bLinked;
@@ -32,17 +39,45 @@
 		this.size = ko.observable(Utils.isUnd(nSize) ? null : nSize);
 		this.tempName = ko.observable('');
 
-		this.progress = ko.observable('');
+		this.progress = ko.observable(0);
 		this.error = ko.observable('');
 		this.waiting = ko.observable(true);
 		this.uploading = ko.observable(false);
 		this.enabled = ko.observable(true);
+		this.complete = ko.observable(false);
+
+		this.progressText = ko.computed(function () {
+			var iP = this.progress();
+			return 0 === iP ? '' : '' + (98 < iP ? 100 : iP) + '%';
+		}, this);
+
+		this.progressStyle = ko.computed(function () {
+			var iP = this.progress();
+			return 0 === iP ? '' : 'width:' + (98 < iP ? 100 : iP) + '%';
+		}, this);
+
+		this.title = ko.computed(function () {
+			var sError = this.error();
+			return '' !== sError ? sError : this.fileName();
+		}, this);
 
 		this.friendlySize = ko.computed(function () {
 			var mSize = this.size();
 			return null === mSize ? '' : Utils.friendlySize(this.size());
 		}, this);
+
+		this.mimeType = ko.computed(function () {
+			return Utils.mimeContentType(this.fileName());
+		}, this);
+
+		this.fileExt = ko.computed(function () {
+			return Utils.getFileExtension(this.fileName());
+		}, this);
+
+		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.mimeType, this.fileExt]);
 	}
+
+	_.extend(ComposeAttachmentModel.prototype, AbstractModel.prototype);
 
 	ComposeAttachmentModel.prototype.id = '';
 	ComposeAttachmentModel.prototype.isInline = false;
@@ -54,6 +89,7 @@
 
 	/**
 	 * @param {AjaxJsonComposeAttachment} oJsonAttachment
+	 * @return {boolean}
 	 */
 	ComposeAttachmentModel.prototype.initByUploadJson = function (oJsonAttachment)
 	{
@@ -69,6 +105,24 @@
 		}
 
 		return bResult;
+	};
+
+	/**
+	 * @return {string}
+	 */
+	ComposeAttachmentModel.prototype.iconClass = function ()
+	{
+		return AttachmentModel.staticIconClass(
+			AttachmentModel.staticFileType(this.fileExt(), this.mimeType()))[0];
+	};
+
+	/**
+	 * @return {string}
+	 */
+	ComposeAttachmentModel.prototype.iconText = function ()
+	{
+		return AttachmentModel.staticIconClass(
+			AttachmentModel.staticFileType(this.fileExt(), this.mimeType()))[1];
 	};
 
 	module.exports = ComposeAttachmentModel;

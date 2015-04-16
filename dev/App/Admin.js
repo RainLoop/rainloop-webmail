@@ -11,11 +11,17 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
-		Remote = require('Storage/Admin/Remote'),
+		AppStore = require('Stores/Admin/App'),
+		DomainStore = require('Stores/Admin/Domain'),
+		PluginStore = require('Stores/Admin/Plugin'),
+		LicenseStore = require('Stores/Admin/License'),
+		PackageStore = require('Stores/Admin/Package'),
+		CoreStore = require('Stores/Admin/Core'),
+		Remote = require('Remote/Admin/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractApp = require('App/Abstract')
@@ -37,17 +43,12 @@
 		return Remote;
 	};
 
-	AdminApp.prototype.data = function ()
-	{
-		return Data;
-	};
-
 	AdminApp.prototype.reloadDomainList = function ()
 	{
-		Data.domainsLoading(true);
+		DomainStore.domains.loading(true);
 
 		Remote.domainList(function (sResult, oData) {
-			Data.domainsLoading(false);
+			DomainStore.domains.loading(false);
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
 				var aList = _.map(oData.Result, function (bEnabled, sName) {
@@ -58,17 +59,18 @@
 					};
 				}, this);
 
-				Data.domains(aList);
+				DomainStore.domains(aList);
 			}
 		});
 	};
 
 	AdminApp.prototype.reloadPluginList = function ()
 	{
-		Data.pluginsLoading(true);
+		PluginStore.plugins.loading(true);
+
 		Remote.pluginList(function (sResult, oData) {
 
-			Data.pluginsLoading(false);
+			PluginStore.plugins.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -80,31 +82,31 @@
 					};
 				}, this);
 
-				Data.plugins(aList);
+				PluginStore.plugins(aList);
 			}
 		});
 	};
 
 	AdminApp.prototype.reloadPackagesList = function ()
 	{
-		Data.packagesLoading(true);
-		Data.packagesReal(true);
+		PackageStore.packages.loading(true);
+		PackageStore.packagesReal(true);
 
 		Remote.packagesList(function (sResult, oData) {
 
-			Data.packagesLoading(false);
+			PackageStore.packages.loading(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				Data.packagesReal(!!oData.Result.Real);
-				Data.packagesMainUpdatable(!!oData.Result.MainUpdatable);
+				PackageStore.packagesReal(!!oData.Result.Real);
+				PackageStore.packagesMainUpdatable(!!oData.Result.MainUpdatable);
 
 				var
 					aList = [],
 					aLoading = {}
 				;
 
-				_.each(Data.packages(), function (oItem) {
+				_.each(PackageStore.packages(), function (oItem) {
 					if (oItem && oItem['loading']())
 					{
 						aLoading[oItem['file']] = oItem;
@@ -123,33 +125,34 @@
 					}));
 				}
 
-				Data.packages(aList);
+				PackageStore.packages(aList);
 			}
 			else
 			{
-				Data.packagesReal(false);
+				PackageStore.packagesReal(false);
 			}
 		});
 	};
 
 	AdminApp.prototype.updateCoreData = function ()
 	{
-		Data.coreUpdating(true);
+		CoreStore.coreUpdating(true);
 		Remote.updateCoreData(function (sResult, oData) {
 
-			Data.coreUpdating(false);
-			Data.coreRemoteVersion('');
-			Data.coreRemoteRelease('');
-			Data.coreVersionCompare(-2);
+			CoreStore.coreUpdating(false);
+			CoreStore.coreVersion('');
+			CoreStore.coreRemoteVersion('');
+			CoreStore.coreRemoteRelease('');
+			CoreStore.coreVersionCompare(-2);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				Data.coreReal(true);
+				CoreStore.coreReal(true);
 				window.location.reload();
 			}
 			else
 			{
-				Data.coreReal(false);
+				CoreStore.coreReal(false);
 			}
 		});
 
@@ -157,28 +160,36 @@
 
 	AdminApp.prototype.reloadCoreData = function ()
 	{
-		Data.coreChecking(true);
-		Data.coreReal(true);
+		CoreStore.coreChecking(true);
+		CoreStore.coreReal(true);
 
 		Remote.coreData(function (sResult, oData) {
 
-			Data.coreChecking(false);
+			CoreStore.coreChecking(false);
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
-				Data.coreReal(!!oData.Result.Real);
-				Data.coreUpdatable(!!oData.Result.Updatable);
-				Data.coreAccess(!!oData.Result.Access);
-				Data.coreRemoteVersion(oData.Result.RemoteVersion || '');
-				Data.coreRemoteRelease(oData.Result.RemoteRelease || '');
-				Data.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
+				CoreStore.coreReal(!!oData.Result.Real);
+				CoreStore.coreChannel(oData.Result.Channel || 'stable');
+				CoreStore.coreType(oData.Result.Type || 'stable');
+				CoreStore.coreUpdatable(!!oData.Result.Updatable);
+				CoreStore.coreAccess(!!oData.Result.Access);
+				CoreStore.coreWarning(!!oData.Result.Warning);
+				CoreStore.coreVersion(oData.Result.Version || '');
+				CoreStore.coreRemoteVersion(oData.Result.RemoteVersion || '');
+				CoreStore.coreRemoteRelease(oData.Result.RemoteRelease || '');
+				CoreStore.coreVersionCompare(Utils.pInt(oData.Result.VersionCompare));
 			}
 			else
 			{
-				Data.coreReal(false);
-				Data.coreRemoteVersion('');
-				Data.coreRemoteRelease('');
-				Data.coreVersionCompare(-2);
+				CoreStore.coreReal(false);
+				CoreStore.coreChannel('stable');
+				CoreStore.coreType('stable');
+				CoreStore.coreWarning(false);
+				CoreStore.coreVersion('');
+				CoreStore.coreRemoteVersion('');
+				CoreStore.coreRemoteRelease('');
+				CoreStore.coreVersionCompare(-2);
 			}
 		});
 	};
@@ -191,18 +202,22 @@
 	{
 		bForce = Utils.isUnd(bForce) ? false : !!bForce;
 
-		Data.licensingProcess(true);
-		Data.licenseError('');
+		LicenseStore.licensingProcess(true);
+		LicenseStore.licenseError('');
 
 		Remote.licensing(function (sResult, oData) {
-			Data.licensingProcess(false);
+
+			LicenseStore.licensingProcess(false);
+			
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isNormal(oData.Result['Expired']))
 			{
-				Data.licenseValid(true);
-				Data.licenseExpired(Utils.pInt(oData.Result['Expired']));
-				Data.licenseError('');
+				LicenseStore.licenseValid(true);
+				LicenseStore.licenseExpired(Utils.pInt(oData.Result['Expired']));
+				LicenseStore.licenseError('');
 
-				Data.licensing(true);
+				LicenseStore.licensing(true);
+
+				AppStore.prem(true);
 			}
 			else
 			{
@@ -211,19 +226,19 @@
 					Enums.Notification.LicensingExpired
 				]))
 				{
-					Data.licenseError(Utils.getNotification(Utils.pInt(oData.ErrorCode)));
-					Data.licensing(true);
+					LicenseStore.licenseError(Translator.getNotification(Utils.pInt(oData.ErrorCode)));
+					LicenseStore.licensing(true);
 				}
 				else
 				{
 					if (Enums.StorageResultType.Abort === sResult)
 					{
-						Data.licenseError(Utils.getNotification(Enums.Notification.LicensingServerIsUnavailable));
-						Data.licensing(true);
+						LicenseStore.licenseError(Translator.getNotification(Enums.Notification.LicensingServerIsUnavailable));
+						LicenseStore.licensing(true);
 					}
 					else
 					{
-						Data.licensing(false);
+						LicenseStore.licensing(false);
 					}
 				}
 			}
@@ -234,14 +249,15 @@
 	{
 		AbstractApp.prototype.bootstart.call(this);
 
-		Data.populateDataOnStart();
+		require('Stores/Admin/App').populate();
+		require('Stores/Admin/Capa').populate();
 
 		kn.hideLoading();
 
 		if (!Settings.settingsGet('AllowAdminPanel'))
 		{
 			kn.routeOff();
-			kn.setHash(LinkBuilder.root(), true);
+			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
 			_.defer(function () {

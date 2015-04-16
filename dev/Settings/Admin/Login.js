@@ -10,29 +10,32 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
-		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data')
+		AppAdminStore = require('Stores/Admin/App'),
+
+		Settings = require('Storage/Settings')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function LoginAdminSetting()
+	function LoginAdminSettings()
 	{
-		this.determineUserLanguage = Data.determineUserLanguage;
-		this.determineUserDomain = Data.determineUserDomain;
+		this.determineUserLanguage = AppAdminStore.determineUserLanguage;
+		this.determineUserDomain = AppAdminStore.determineUserDomain;
 
 		this.defaultDomain = ko.observable(Settings.settingsGet('LoginDefaultDomain'));
 
-		this.allowLanguagesOnLogin = Data.allowLanguagesOnLogin;
+		this.allowLanguagesOnLogin = AppAdminStore.allowLanguagesOnLogin;
 		this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
+		this.dummy = ko.observable(false);
 	}
 
-	LoginAdminSetting.prototype.onBuild = function ()
+	LoginAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		_.delay(function () {
@@ -66,6 +69,6 @@
 		}, 50);
 	};
 
-	module.exports = LoginAdminSetting;
+	module.exports = LoginAdminSettings;
 
 }());

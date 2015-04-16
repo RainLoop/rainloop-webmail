@@ -9,6 +9,7 @@
 		display: inline-block;
 		vertical-align: middle;
 		text-align: center;
+		perspective: 500px;
 
 		.descWrapper {
 
@@ -30,19 +31,20 @@
 			color: #333;
 			margin: 0;
 			float: none;
+			width: 303px;
 		}
 
-		.control-label {
+/*		.control-label {
 			font-size: 16px;
 			line-height: 30px;
-		}
+		}*/
 
-		.control-group {
+		.controls, .control-group {
 			margin-bottom: 25px;
 		}
 
 		.wrapper {
-			padding: 40px 40px 10px 40px;
+			padding: 40px 40px 12px 40px;
 		}
 
 		#recaptcha_image img {
@@ -50,10 +52,12 @@
 			border-radius: 3px;
 		}
 
-		.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
-			font-size: 18px;
-			height: 30px;
-			line-height: 29px;
+		.controls {
+			.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
+				font-size: 18px;
+				height: 40px;
+				line-height: 20px;
+			}
 		}
 
 		.signMeLabel, .languageLabel {
@@ -79,7 +83,7 @@
 			color: #999;
 		}
 
-		.control-group.error .add-on i {
+		.controls.error .add-on i, .control-group.error .add-on i {
 			color: #b94a48;
 		}
 	}
@@ -102,5 +106,14 @@
 
 	.flag-selector {
 		margin-bottom: 0;
+	}
+
+	.social-buttons {
+		margin-top: 5px;
+	}
+
+	.social-button, .language-button {
+		padding: 5px;
+		outline: none;
 	}
 }

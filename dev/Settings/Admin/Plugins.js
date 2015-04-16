@@ -9,44 +9,43 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data'),
-		Remote = require('Storage/Admin/Remote')
+		PluginStore = require('Stores/Admin/Plugin'),
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function PluginsAdminSetting()
+	function PluginsAdminSettings()
 	{
 		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
-		this.pluginsError = ko.observable('');
-
-		this.plugins = Data.plugins;
-		this.pluginsLoading = Data.pluginsLoading;
+		this.plugins = PluginStore.plugins;
+		this.pluginsError = PluginStore.plugins.error;
 
 		this.visibility = ko.computed(function () {
-			return Data.pluginsLoading() ? 'visible' : 'hidden';
+			return PluginStore.plugins.loading() ? 'visible' : 'hidden';
 		}, this);
 
 		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
 		this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
 	}
 
-	PluginsAdminSetting.prototype.disablePlugin = function (oPlugin)
+	PluginsAdminSettings.prototype.disablePlugin = function (oPlugin)
 	{
 		oPlugin.disabled(!oPlugin.disabled());
 		Remote.pluginDisable(this.onPluginDisableRequest, oPlugin.name, oPlugin.disabled());
 	};
 
-	PluginsAdminSetting.prototype.configurePlugin = function (oPlugin)
+	PluginsAdminSettings.prototype.configurePlugin = function (oPlugin)
 	{
 		Remote.plugin(this.onPluginLoadRequest, oPlugin.name);
 	};
 
-	PluginsAdminSetting.prototype.onBuild = function (oDom)
+	PluginsAdminSettings.prototype.onBuild = function (oDom)
 	{
 		var self = this;
 
@@ -74,13 +73,13 @@
 		});
 	};
 
-	PluginsAdminSetting.prototype.onShow = function ()
+	PluginsAdminSettings.prototype.onShow = function ()
 	{
-		this.pluginsError('');
+		PluginStore.plugins.error('');
 		require('App/Admin').reloadPluginList();
 	};
 
-	PluginsAdminSetting.prototype.onPluginLoadRequest = function (sResult, oData)
+	PluginsAdminSettings.prototype.onPluginLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
@@ -88,7 +87,7 @@
 		}
 	};
 
-	PluginsAdminSetting.prototype.onPluginDisableRequest = function (sResult, oData)
+	PluginsAdminSettings.prototype.onPluginDisableRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData)
 		{
@@ -96,11 +95,11 @@
 			{
 				if (Enums.Notification.UnsupportedPluginPackage === oData.ErrorCode && oData.ErrorMessage && '' !== oData.ErrorMessage)
 				{
-					this.pluginsError(oData.ErrorMessage);
+					PluginStore.plugins.error(oData.ErrorMessage);
 				}
 				else
 				{
-					this.pluginsError(Utils.getNotification(oData.ErrorCode));
+					PluginStore.plugins.error(Translator.getNotification(oData.ErrorCode));
 				}
 			}
 		}
@@ -108,6 +107,6 @@
 		require('App/Admin').reloadPluginList();
 	};
 
-	module.exports = PluginsAdminSetting;
+	module.exports = PluginsAdminSettings;
 
 }());

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Net;
 
 /**
@@ -169,9 +178,24 @@ abstract class NetClient
 	}
 
 	/**
+	 * @param int $iErrNo
+	 * @param string $sErrStr
+	 * @param string $sErrFile
+	 * @param int $iErrLine
+	 *
+	 * @return bool
+	 */
+	public function capturePhpErrorWithException($iErrNo, $sErrStr, $sErrFile, $iErrLine)
+	{
+		throw new \MailSo\Base\Exceptions\Exception($sErrStr, $iErrNo);
+	}
+
+	/**
 	 * @param string $sServerName
 	 * @param int $iPort
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return void
 	 *
@@ -180,7 +204,8 @@ abstract class NetClient
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
 	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -201,15 +226,22 @@ abstract class NetClient
 		$sErrorStr = '';
 		$iErrorNo = 0;
 
-		$this->iSecurityType = $iSecurityType;
+		$this->sConnectedHost = $sServerName;
 		$this->iConnectedPort = $iPort;
-		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL($iPort, $iSecurityType);
-		$this->sConnectedHost = $this->bSecure ? 'ssl://'.$sServerName : $sServerName;
+		$this->iSecurityType = $iSecurityType;
+		$this->bSecure = \MailSo\Net\Enumerations\ConnectionSecurityType::UseSSL(
+			$this->iConnectedPort, $this->iSecurityType);
+
+		if (!\preg_match('/^[a-z0-9._]{2,8}:\/\//i', $this->sConnectedHost))
+		{
+			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : 'tcp://').$this->sConnectedHost;
+//			$this->sConnectedHost = ($this->bSecure ? 'ssl://' : '').$this->sConnectedHost;
+		}
 
 		if (!$this->bSecure && \MailSo\Net\Enumerations\ConnectionSecurityType::SSL === $this->iSecurityType)
 		{
 			$this->writeLogException(
-				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported'),
+				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('SSL isn\'t supported: ('.\implode(', ', \stream_get_transports()).')'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -217,8 +249,42 @@ abstract class NetClient
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
 			\MailSo\Log\Enumerations\Type::NOTE);
 
-		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
-			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
+//		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
+//			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
+
+		$bVerifySsl = !!$bVerifySsl;
+		$bAllowSelfSigned = $bVerifySsl ? !!$bAllowSelfSigned : true;
+
+		$aStreamContextSettings = array(
+			'ssl' => array(
+				'verify_host' => $bVerifySsl,
+				'verify_peer' => $bVerifySsl,
+				'verify_peer_name' => $bVerifySsl,
+				'allow_self_signed' => $bAllowSelfSigned
+			)
+		);
+
+		\MailSo\Hooks::Run('Net.NetClient.StreamContextSettings/Filter', array(&$aStreamContextSettings));
+
+		$rStreamContext = \stream_context_create($aStreamContextSettings);
+
+		\set_error_handler(array(&$this, 'capturePhpErrorWithException'));
+
+		try
+		{
+			$this->rConnect = \stream_socket_client($this->sConnectedHost.':'.$this->iConnectedPort,
+				$iErrorNo, $sErrorStr, $this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
+		}
+		catch (\Exception $oExc)
+		{
+			$sErrorStr = $oExc->getMessage();
+			$iErrorNo = $oExc->getCode();
+		}
+
+		\restore_error_handler();
+
+		$this->writeLog('Connected ('.(\is_resource($this->rConnect) ? 'success' : 'unsuccess').')',
+			\MailSo\Log\Enumerations\Type::NOTE);
 
 		if (!\is_resource($this->rConnect))
 		{
@@ -238,6 +304,31 @@ abstract class NetClient
 			{
 				@\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
 			}
+		}
+	}
+
+	public function EnableCrypto()
+	{
+		$bError = true;
+		if (\is_resource($this->rConnect) &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'))
+		{
+			switch (true)
+			{
+				case defined('STREAM_CRYPTO_METHOD_ANY_CLIENT') &&
+					@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
+				case @\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT):
+				case @\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT):
+					$bError = false;
+					break;
+			}
+		}
+
+		if ($bError)
+		{
+			$this->writeLogException(
+				new \MailSo\Net\Exceptions\Exception('Cannot enable STARTTLS.'),
+				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 	}
 
@@ -306,6 +397,15 @@ abstract class NetClient
 	public function IsConnectedWithException()
 	{
 		$this->IsConnected(true);
+	}
+
+	/**
+	 * @return array|bool
+	 */
+	public function StreamContextParams()
+	{
+		return \is_resource($this->rConnect) && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_context_get_options')
+			? \stream_context_get_params($this->rConnect) : false;
 	}
 
 	/**
@@ -408,8 +508,9 @@ abstract class NetClient
 			}
 			else
 			{
-//				$this->writeLog('Stream Meta: '.
-//					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
+				$this->writeLog('Stream Meta: '.
+					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
+
 				$this->writeLogException(
 					new Exceptions\SocketReadException(),
 						\MailSo\Log\Enumerations\Type::ERROR, true);
@@ -420,10 +521,10 @@ abstract class NetClient
 			$iReadedLen = \strlen($this->sResponseBuffer);
 			if (null === $mReadLen || $bForceLogin)
 			{
-				$iLimit = 5000; // 5kb
+				$iLimit = 5000; // 5KB
 				if ($iLimit < $iReadedLen)
 				{
-					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'b] < '.\substr($this->sResponseBuffer.'...', 0, $iLimit),
+					$this->writeLogWithCrlf('[cutted:'.$iReadedLen.'] < '.\substr($this->sResponseBuffer, 0, $iLimit).'...',
 						\MailSo\Log\Enumerations\Type::INFO);
 				}
 				else
@@ -487,6 +588,11 @@ abstract class NetClient
 	{
 		if ($this->oLogger)
 		{
+			if ($oException instanceof Exceptions\SocketCanNotConnectToHostException)
+			{
+				$this->oLogger->Write('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
+			}
+
 			$this->oLogger->WriteException($oException, $iDescType, $this->getLogName());
 		}
 

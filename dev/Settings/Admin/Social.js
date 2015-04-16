@@ -14,42 +14,52 @@
 	/**
 	 * @constructor
 	 */
-	function SocialAdminSetting()
+	function SocialAdminSettings()
 	{
-		var Data = require('Storage/Admin/Data');
+		var SocialStore = require('Stores/Social');
 
-		this.googleEnable = Data.googleEnable;
-		this.googleClientID = Data.googleClientID;
-		this.googleApiKey = Data.googleApiKey;
-		this.googleClientSecret = Data.googleClientSecret;
-		
+		this.googleEnable = SocialStore.google.enabled;
+		this.googleEnableAuth = SocialStore.google.capa.auth;
+		this.googleEnableDrive = SocialStore.google.capa.drive;
+		this.googleEnablePreview = SocialStore.google.capa.preview;
+
+		this.googleEnableRequireClientSettings = SocialStore.google.require.clientSettings;
+		this.googleEnableRequireApiKey = SocialStore.google.require.apiKeySettings;
+
+		this.googleClientID = SocialStore.google.clientID;
+		this.googleClientSecret = SocialStore.google.clientSecret;
+		this.googleApiKey = SocialStore.google.apiKey;
+
 		this.googleTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.googleTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.googleTrigger3 = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.facebookSupported = Data.facebookSupported;
-		this.facebookEnable = Data.facebookEnable;
-		this.facebookAppID = Data.facebookAppID;
-		this.facebookAppSecret = Data.facebookAppSecret;
+		this.facebookSupported = SocialStore.facebook.supported;
+		this.facebookEnable = SocialStore.facebook.enabled;
+		this.facebookAppID = SocialStore.facebook.appID;
+		this.facebookAppSecret = SocialStore.facebook.appSecret;
+
 		this.facebookTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.facebookTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.twitterEnable = Data.twitterEnable;
-		this.twitterConsumerKey = Data.twitterConsumerKey;
-		this.twitterConsumerSecret = Data.twitterConsumerSecret;
+		this.twitterEnable = SocialStore.twitter.enabled;
+		this.twitterConsumerKey = SocialStore.twitter.consumerKey;
+		this.twitterConsumerSecret = SocialStore.twitter.consumerSecret;
+
 		this.twitterTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.twitterTrigger2 = ko.observable(Enums.SaveSettingsStep.Idle);
 
-		this.dropboxEnable = Data.dropboxEnable;
-		this.dropboxApiKey = Data.dropboxApiKey;
+		this.dropboxEnable = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
+
 		this.dropboxTrigger1 = ko.observable(Enums.SaveSettingsStep.Idle);
 	}
 
-	SocialAdminSetting.prototype.onBuild = function ()
+	SocialAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		_.delay(function () {
@@ -116,6 +126,24 @@
 				});
 			});
 
+			self.googleEnableAuth.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnableAuth': bValue ? '1' : '0'
+				});
+			});
+
+			self.googleEnableDrive.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnableDrive': bValue ? '1' : '0'
+				});
+			});
+
+			self.googleEnablePreview.subscribe(function (bValue) {
+				Remote.saveAdminConfig(Utils.emptyFunction, {
+					'GoogleEnablePreview': bValue ? '1' : '0'
+				});
+			});
+
 			self.googleClientID.subscribe(function (sValue) {
 				Remote.saveAdminConfig(f5, {
 					'GoogleClientID': Utils.trim(sValue)
@@ -149,6 +177,6 @@
 		}, 50);
 	};
 
-	module.exports = SocialAdminSetting;
+	module.exports = SocialAdminSettings;
 
 }());

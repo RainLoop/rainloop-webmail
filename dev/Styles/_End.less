@@ -6,3 +6,66 @@
 		z-index: 5;
 	}
 }
+
+.mfp-container .mfp-figure {
+	min-height: 300px;
+	min-width: 300px;
+}
+
+.ui-resizable-e {
+	right: -1px;
+	width: 5px;
+}
+
+.pswp__error-msg {
+	color: #ccc;
+	a, a:hover {
+		color: #fff;
+	}
+}
+
+.pswp__img--placeholder {
+	opacity: 0;
+}
+
+#rl-content {
+	display: block;
+}
+
+.opentip-container {
+
+	z-index: 2001 !important;
+	.ot-content {
+		font-size: 13px;
+	}
+
+	&.style-rainloopErrorTip .ot-content {
+		color: red;
+	}
+
+	&.ot-show-effect-none, &.ot-hide-effect-none {
+		transition: none !important;
+	}
+
+	&.ot-show-effect-fade {
+
+		transition: none;
+
+		&.ot-hidden {
+			opacity: 0;
+		}
+
+		&.ot-going-to-show {
+			opacity: 0;
+			transition: opacity 0.2s ease-in-out;
+		}
+		&.ot-showing {
+			opacity: 1;
+			transition: opacity 0.2s ease-in-out;
+		}
+		&.ot-visible {
+			opacity: 1;
+			transition: none;
+		}
+	}
+}

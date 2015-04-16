@@ -1,118 +1,212 @@
 
-(function (module, ko) {
+(function (ko) {
 
 	'use strict';
 
 	var
 		window = require('window'),
 		_ = require('_'),
-		$ = require('$')
+		$ = require('$'),
+		Opentip = require('Opentip'),
+
+		fDisposalTooltipHelper = function (oElement) {
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+
+				if (oElement && oElement.__opentip)
+				{
+					oElement.__opentip.deactivate();
+				}
+			});
+		}
 	;
+
+	ko.bindingHandlers.editor = {
+		'init': function (oElement, fValueAccessor) {
+
+			var
+				fValue = fValueAccessor(),
+				oEditor  = null,
+				fUpdateEditorValue = function () {
+					if (oEditor)
+					{
+						oEditor.setHtmlOrPlain(fValue());
+					}
+				},
+				fUpdateKoValue = function () {
+					if (oEditor && oEditor.__inited)
+					{
+						fValue(oEditor.getDataWithHtmlMark());
+					}
+				},
+				HtmlEditor = require('Common/HtmlEditor')
+			;
+
+			if (fValue)
+			{
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
+				fValue.__editor = oEditor;
+				fValue.__fetchEditorValue = fUpdateKoValue;
+				fValue.__updateEditorValue = fUpdateEditorValue;
+
+				fValue.subscribe(fUpdateEditorValue);
+				fUpdateEditorValue();
+			}
+		}
+	};
 
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				Globals = require('Common/Globals'),
-				Utils = require('Common/Utils')
-			;
-
-			if (!Globals.bMobileDevice)
-			{
-				var
-					$oEl = $(oElement),
-					sClass = $oEl.data('tooltip-class') || '',
-					sPlacement = $oEl.data('tooltip-placement') || 'top'
-				;
-
-				$oEl.tooltip({
-					'delay': {
-						'show': 500,
-						'hide': 100
-					},
-					'html': true,
-					'container': 'body',
-					'placement': sPlacement,
-					'trigger': 'hover',
-					'title': function () {
-						return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' : '<span class="tooltip-class ' + sClass + '">' +
-							Utils.i18n(ko.utils.unwrapObservable(fValueAccessor())) + '</span>';
-					}
-				}).click(function () {
-					$oEl.tooltip('hide');
-				});
-
-				Globals.tooltipTrigger.subscribe(function () {
-					$oEl.tooltip('hide');
-				});
-			}
-		}
-	};
-
-	ko.bindingHandlers.tooltip2 = {
-		'init': function (oElement, fValueAccessor) {
-			var
-				Globals = require('Common/Globals'),
+				bi18n = true,
+				sValue = '',
+				Translator = null,
 				$oEl = $(oElement),
-				sClass = $oEl.data('tooltip-class') || '',
-				sPlacement = $oEl.data('tooltip-placement') || 'top'
-			;
-
-			$oEl.tooltip({
-				'delay': {
-					'show': 500,
-					'hide': 100
-				},
-				'html': true,
-				'container': 'body',
-				'placement': sPlacement,
-				'title': function () {
-					return $oEl.is('.disabled') || Globals.dropdownVisibility() ? '' :
-						'<span class="tooltip-class ' + sClass + '">' + fValueAccessor()() + '</span>';
-				}
-			}).click(function () {
-				$oEl.tooltip('hide');
-			});
-
-			Globals.tooltipTrigger.subscribe(function () {
-				$oEl.tooltip('hide');
-			});
-		}
-	};
-
-	ko.bindingHandlers.tooltip3 = {
-		'init': function (oElement) {
-
-			var
-				$oEl = $(oElement),
+				fValue = fValueAccessor(),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
 
-			$oEl.tooltip({
-				'container': 'body',
-				'trigger': 'hover manual',
-				'title': function () {
-					return $oEl.data('tooltip3-data') || '';
+			if (!Globals.bMobileDevice || bMobile)
+			{
+				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+
+				oElement.__opentip = new Opentip(oElement, {
+					'style': 'rainloopTip',
+					'element': oElement,
+					'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+				});
+
+				Globals.dropdownVisibility.subscribe(function (bV) {
+					if (bV) {
+						oElement.__opentip.hide();
+					}
+				});
+
+				if ('' === sValue)
+				{
+					oElement.__opentip.hide();
+					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
+				}
+				else
+				{
+					oElement.__opentip.activate();
+				}
+
+				if (bi18n)
+				{
+					Translator = require('Common/Translator');
+
+					oElement.__opentip.setContent(Translator.i18n(sValue));
+
+					Translator.trigger.subscribe(function () {
+						oElement.__opentip.setContent(Translator.i18n(sValue));
+					});
+
+					Globals.dropdownVisibility.subscribe(function () {
+						if (oElement && oElement.__opentip)
+						{
+							oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
+						}
+					});
+				}
+				else
+				{
+					oElement.__opentip.setContent(sValue);
+				}
+			}
+		},
+		'update': function (oElement, fValueAccessor) {
+
+			var
+				bi18n = true,
+				sValue = '',
+				$oEl = $(oElement),
+				fValue = fValueAccessor(),
+				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
+				Globals = require('Common/Globals')
+			;
+
+			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
+			{
+				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+
+				if (sValue)
+				{
+					oElement.__opentip.setContent(
+						bi18n ? require('Common/Translator').i18n(sValue) : sValue);
+					oElement.__opentip.activate();
+				}
+				else
+				{
+					oElement.__opentip.hide();
+					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
+				}
+			}
+		}
+	};
+
+	ko.bindingHandlers.tooltipErrorTip = {
+		'init': function (oElement) {
+
+			var $oEl = $(oElement);
+
+			oElement.__opentip = new Opentip(oElement, {
+				'style': 'rainloopErrorTip',
+				'hideOn': 'mouseout click',
+				'element': oElement,
+				'tipJoint': $oEl.data('tooltip-join') || 'top'
+			});
+
+			oElement.__opentip.deactivate();
+
+			$(window.document).on('click', function () {
+				if (oElement && oElement.__opentip)
+				{
+					oElement.__opentip.hide();
 				}
 			});
 
-			$(window.document).click(function () {
-				$oEl.tooltip('hide');
-			});
-
-			Globals.tooltipTrigger.subscribe(function () {
-				$oEl.tooltip('hide');
-			});
+			fDisposalTooltipHelper(oElement);
 		},
 		'update': function (oElement, fValueAccessor) {
-			var sValue = ko.utils.unwrapObservable(fValueAccessor());
-			if ('' === sValue)
+
+			var
+				$oEl = $(oElement),
+				fValue = fValueAccessor(),
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
+				oOpenTips = oElement.__opentip
+			;
+
+			if (oOpenTips)
 			{
-				$(oElement).data('tooltip3-data', '').tooltip('hide');
-			}
-			else
-			{
-				$(oElement).data('tooltip3-data', sValue).tooltip('show');
+				if ('' === sValue)
+				{
+					oOpenTips.hide();
+					oOpenTips.deactivate();
+					oOpenTips.setContent('');
+				}
+				else
+				{
+					_.delay(function () {
+						if ($oEl.is(':visible'))
+						{
+							oOpenTips.setContent(sValue);
+							oOpenTips.activate();
+							oOpenTips.show();
+						}
+						else
+						{
+							oOpenTips.hide();
+							oOpenTips.deactivate();
+							oOpenTips.setContent('');
+						}
+					}, 100);
+				}
 			}
 		}
 	};
@@ -120,25 +214,33 @@
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
 			var Globals = require('Common/Globals');
-			Globals.aBootstrapDropdowns.push($(oElement));
+			if (Globals && Globals.aBootstrapDropdowns)
+			{
+				Globals.aBootstrapDropdowns.push($(oElement));
+
+				$(oElement).click(function () {
+					require('Common/Utils').detectDropdownVisibility();
+				});
+
+//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+//				});
+			}
 		}
 	};
 
 	ko.bindingHandlers.openDropdownTrigger = {
 		'update': function (oElement, fValueAccessor) {
-			if (ko.utils.unwrapObservable(fValueAccessor()))
+			if (ko.unwrap(fValueAccessor()))
 			{
-				var
-					$el = $(oElement),
-					Utils = require('Common/Utils')
-				;
-
-				if (!$el.hasClass('open'))
+				var $oEl = $(oElement);
+				if (!$oEl.hasClass('open'))
 				{
-					$el.find('.dropdown-toggle').dropdown('toggle');
-					Utils.detectDropdownVisibility();
+					$oEl.find('.dropdown-toggle').dropdown('toggle');
 				}
 
+				$oEl.find('.dropdown-toggle').focus();
+
+				require('Common/Utils').detectDropdownVisibility();
 				fValueAccessor()(false);
 			}
 		}
@@ -154,7 +256,11 @@
 
 	ko.bindingHandlers.popover = {
 		'init': function (oElement, fValueAccessor) {
-			$(oElement).popover(ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).popover(ko.unwrap(fValueAccessor()));
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).popover('destroy');
+			});
 		}
 	};
 
@@ -163,22 +269,22 @@
 			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
-				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
 			else
 			{
-				$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+				$(oElement).text(ko.unwrap(fValueAccessor()));
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
 			var Utils = require('Common/Utils');
 			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
 			{
-				oElement.styleSheet.cssText = ko.utils.unwrapObservable(fValueAccessor());
+				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
 			else
 			{
-				$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+				$(oElement).text(ko.unwrap(fValueAccessor()));
 			}
 		}
 	};
@@ -204,31 +310,39 @@
 
 	ko.bindingHandlers.onEnter = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-			$(oElement).on('keypress',  function (oEvent) {
+			$(oElement).on('keypress.koOnEnter', function (oEvent) {
 				if (oEvent && 13 === window.parseInt(oEvent.keyCode, 10))
 				{
 					$(oElement).trigger('change');
 					fValueAccessor().call(oViewModel);
 				}
 			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koOnEnter');
+			});
 		}
 	};
 
 	ko.bindingHandlers.onEsc = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-			$(oElement).on('keypress', function (oEvent) {
+			$(oElement).on('keypress.koOnEsc', function (oEvent) {
 				if (oEvent && 27 === window.parseInt(oEvent.keyCode, 10))
 				{
 					$(oElement).trigger('change');
 					fValueAccessor().call(oViewModel);
 				}
 			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koOnEsc');
+			});
 		}
 	};
 
 	ko.bindingHandlers.clickOnTrue = {
 		'update': function (oElement, fValueAccessor) {
-			if (ko.utils.unwrapObservable(fValueAccessor()))
+			if (ko.unwrap(fValueAccessor()))
 			{
 				$(oElement).click();
 			}
@@ -245,51 +359,85 @@
 
 			$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
 				'keyboard': false,
-				'show': ko.utils.unwrapObservable(fValueAccessor())
+				'show': ko.unwrap(fValueAccessor())
 			})
-			.on('shown', function () {
-				Utils.windowResize();
-			})
-			.find('.close').click(function () {
+			.on('shown.koModal', Utils.windowResizeCallback)
+			.find('.close').on('click.koModal', function () {
 				fValueAccessor()(false);
 			});
 
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement)
+					.off('shown.koModal')
+					.find('.close')
+					.off('click.koModal')
+				;
+			});
 		},
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).modal(ko.utils.unwrapObservable(fValueAccessor()) ? 'show' : 'hide');
+
+			var Globals = require('Common/Globals');
+
+			$(oElement).modal(!!ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+
+			if (Globals.$html.hasClass('rl-anim'))
+			{
+				Globals.$html.addClass('rl-modal-animation');
+				_.delay(function () {
+					Globals.$html.removeClass('rl-modal-animation');
+				}, 400);
+			}
+
+		}
+	};
+
+	ko.bindingHandlers.moment = {
+		'init': function (oElement, fValueAccessor) {
+			require('Common/Momentor').momentToNode(
+				$(oElement).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
+			);
+		},
+		'update': function (oElement, fValueAccessor) {
+			require('Common/Momentor').momentToNode(
+				$(oElement).data('moment-time', ko.unwrap(fValueAccessor()))
+			);
 		}
 	};
 
 	ko.bindingHandlers.i18nInit = {
 		'init': function (oElement) {
-			var Utils = require('Common/Utils');
-			Utils.i18nToNode(oElement);
+			require('Common/Translator').i18nToNodes(oElement);
+		}
+	};
+
+	ko.bindingHandlers.translatorInit = {
+		'init': function (oElement) {
+			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
-			ko.utils.unwrapObservable(fValueAccessor());
-			Utils.i18nToNode(oElement);
+			ko.unwrap(fValueAccessor());
+			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.link = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).attr('href', ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).attr('href', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.title = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).attr('title', ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).attr('title', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.textF = {
 		'init': function (oElement, fValueAccessor) {
-			$(oElement).text(ko.utils.unwrapObservable(fValueAccessor()));
+			$(oElement).text(ko.unwrap(fValueAccessor()));
 		}
 	};
 
@@ -299,9 +447,36 @@
 		}
 	};
 
+	ko.bindingHandlers.initFixedTrigger = {
+		'init': function (oElement, fValueAccessor) {
+			var
+				aValues = ko.unwrap(fValueAccessor()),
+				$oContainer = null,
+				$oElement = $(oElement),
+				oOffset = null,
+
+				iTop = aValues[1] || 0
+			;
+
+			$oContainer = $(aValues[0] || null);
+			$oContainer = $oContainer[0] ? $oContainer : null;
+
+			if ($oContainer)
+			{
+				$(window).resize(function () {
+					oOffset = $oContainer.offset();
+					if (oOffset && oOffset.top)
+					{
+						$oElement.css('top', oOffset.top + iTop);
+					}
+				});
+			}
+		}
+	};
+
 	ko.bindingHandlers.initResizeTrigger = {
 		'init': function (oElement, fValueAccessor) {
-			var aValues = ko.utils.unwrapObservable(fValueAccessor());
+			var aValues = ko.unwrap(fValueAccessor());
 			$(oElement).css({
 				'height': aValues[1],
 				'min-height': aValues[1]
@@ -312,7 +487,7 @@
 			var
 				Utils = require('Common/Utils'),
 				Globals = require('Common/Globals'),
-				aValues = ko.utils.unwrapObservable(fValueAccessor()),
+				aValues = ko.unwrap(fValueAccessor()),
 				iValue = Utils.pInt(aValues[1]),
 				iSize = 0,
 				iOffset = $(oElement).offset().top
@@ -338,16 +513,18 @@
 
 	ko.bindingHandlers.appendDom = {
 		'update': function (oElement, fValueAccessor) {
-			$(oElement).hide().empty().append(ko.utils.unwrapObservable(fValueAccessor())).show();
+			$(oElement).hide().empty().append(ko.unwrap(fValueAccessor())).show();
 		}
 	};
 
 	ko.bindingHandlers.draggable = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+
 			var
 				Globals = require('Common/Globals'),
 				Utils = require('Common/Utils')
 			;
+
 			if (!Globals.bMobileDevice)
 			{
 				var
@@ -419,8 +596,15 @@
 					return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 				};
 
-				$(oElement).draggable(oConf).on('mousedown', function () {
+				$(oElement).draggable(oConf).on('mousedown.koDraggable', function () {
 					Utils.removeInFocus();
+				});
+
+				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+					$(oElement)
+						.off('mousedown.koDraggable')
+						.draggable('destroy')
+					;
 				});
 			}
 		}
@@ -463,6 +647,10 @@
 					}
 
 					$(oElement).droppable(oConf);
+
+					ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+						$(oElement).droppable('destroy');
+					});
 				}
 			}
 		}
@@ -504,7 +692,7 @@
 		},
 		'update': function (oElement, fValueAccessor) {
 			var
-				mValue = ko.utils.unwrapObservable(fValueAccessor()),
+				mValue = ko.unwrap(fValueAccessor()),
 				$oEl = $(oElement)
 			;
 
@@ -575,9 +763,9 @@
 				fAllBindings = fAllBindingsAccessor(),
 				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
 				fFocusCallback = function (bValue) {
-					if (fValue && fValue.focusTrigger)
+					if (fValue && fValue.focused)
 					{
-						fValue.focusTrigger(bValue);
+						fValue.focused(!!bValue);
 					}
 				}
 			;
@@ -588,6 +776,13 @@
 				'focusCallback': fFocusCallback,
 				'inputDelimiters': [',', ';'],
 				'autoCompleteSource': fAutoCompleteSource,
+//				'elementHook': function (oEl, oItem) {
+//					if (oEl && oItem)
+//					{
+//						oEl.addClass('pgp');
+//						window.console.log(arguments);
+//					}
+//				},
 				'parseHook': function (aInput) {
 					return _.map(aInput, function (sInputValue) {
 
@@ -612,14 +807,20 @@
 					fValue(oEvent.target.value);
 				}, this)
 			});
+
+			if (fValue && fValue.focused && fValue.focused.subscribe)
+			{
+				fValue.focused.subscribe(function (bValue) {
+					$oEl.inputosaurus(!!bValue ? 'focus' : 'blur');
+				});
+			}
 		},
-		'update': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+		'update': function (oElement, fValueAccessor) {
 
 			var
 				$oEl = $(oElement),
-				fAllValueFunc = fAllBindingsAccessor(),
-				fEmailsTagsFilter = fAllValueFunc['emailsTagsFilter'] || null,
-				sValue = ko.utils.unwrapObservable(fValueAccessor())
+				fValue = fValueAccessor(),
+				sValue = ko.unwrap(fValue)
 			;
 
 			if ($oEl.data('EmailsTagsValue') !== sValue)
@@ -627,85 +828,6 @@
 				$oEl.val(sValue);
 				$oEl.data('EmailsTagsValue', sValue);
 				$oEl.inputosaurus('refresh');
-			}
-
-			if (fEmailsTagsFilter && ko.utils.unwrapObservable(fEmailsTagsFilter))
-			{
-				$oEl.inputosaurus('focus');
-			}
-		}
-	};
-
-	ko.bindingHandlers.contactTags = {
-		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
-
-			var
-				Utils = require('Common/Utils'),
-				ContactTagModel = require('Model/ContactTag'),
-
-				$oEl = $(oElement),
-				fValue = fValueAccessor(),
-				fAllBindings = fAllBindingsAccessor(),
-				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
-				fFocusCallback = function (bValue) {
-					if (fValue && fValue.focusTrigger)
-					{
-						fValue.focusTrigger(bValue);
-					}
-				}
-			;
-
-			$oEl.inputosaurus({
-				'parseOnBlur': true,
-				'allowDragAndDrop': false,
-				'focusCallback': fFocusCallback,
-				'inputDelimiters': [',', ';'],
-				'outputDelimiter': ',',
-				'autoCompleteSource': fAutoCompleteSource,
-				'parseHook': function (aInput) {
-					return _.map(aInput, function (sInputValue) {
-
-						var
-							sValue = Utils.trim(sInputValue),
-							oTag = null
-						;
-
-						if ('' !== sValue)
-						{
-							oTag = new ContactTagModel();
-							oTag.name(sValue);
-							return [oTag.toLine(false), oTag];
-						}
-
-						return [sValue, null];
-
-					});
-				},
-				'change': _.bind(function (oEvent) {
-					$oEl.data('ContactTagsValue', oEvent.target.value);
-					fValue(oEvent.target.value);
-				}, this)
-			});
-		},
-		'update': function (oElement, fValueAccessor, fAllBindingsAccessor) {
-
-			var
-				$oEl = $(oElement),
-				fAllValueFunc = fAllBindingsAccessor(),
-				fContactTagsFilter = fAllValueFunc['contactTagsFilter'] || null,
-				sValue = ko.utils.unwrapObservable(fValueAccessor())
-			;
-
-			if ($oEl.data('ContactTagsValue') !== sValue)
-			{
-				$oEl.val(sValue);
-				$oEl.data('ContactTagsValue', sValue);
-				$oEl.inputosaurus('refresh');
-			}
-
-			if (fContactTagsFilter && ko.utils.unwrapObservable(fContactTagsFilter))
-			{
-				$oEl.inputosaurus('focus');
 			}
 		}
 	};
@@ -752,6 +874,8 @@
 		}
 	};
 
+	// extenders
+
 	ko.extenders.trimmer = function (oTarget)
 	{
 		var
@@ -796,6 +920,56 @@
 		return oResult;
 	};
 
+	ko.extenders.limitedList = function (oTarget, mList)
+	{
+		var
+			Utils = require('Common/Utils'),
+			oResult = ko.computed({
+				'read': oTarget,
+				'write': function (sNewValue) {
+
+					var
+						sCurrentValue = ko.unwrap(oTarget),
+						aList = ko.unwrap(mList)
+					;
+
+					if (Utils.isNonEmptyArray(aList))
+					{
+						if (-1 < Utils.inArray(sNewValue, aList))
+						{
+							oTarget(sNewValue);
+						}
+						else if (-1 < Utils.inArray(sCurrentValue, aList))
+						{
+							oTarget(sCurrentValue + ' ');
+							oTarget(sCurrentValue);
+						}
+						else
+						{
+							oTarget(aList[0] + ' ');
+							oTarget(aList[0]);
+						}
+					}
+					else
+					{
+						oTarget('');
+					}
+				}
+			}).extend({'notify': 'always'})
+		;
+
+		oResult(oTarget());
+
+		if (!oResult.valueHasMutated)
+		{
+			oResult.valueHasMutated = function () {
+				oTarget.valueHasMutated();
+			};
+		}
+
+		return oResult;
+	};
+
 	ko.extenders.reversible = function (oTarget)
 	{
 		var mValue = oTarget();
@@ -826,24 +1000,86 @@
 		return oTarget;
 	};
 
+	ko.extenders.toggleSubscribeProperty = function (oTarget, oOptions)
+	{
+		var sProp = oOptions[1];
+
+		if (sProp)
+		{
+			oTarget.subscribe(function (oPrev) {
+				if (oPrev && oPrev[sProp])
+				{
+					oPrev[sProp](false);
+				}
+			}, oOptions[0], 'beforeChange');
+
+			oTarget.subscribe(function (oNext) {
+				if (oNext && oNext[sProp])
+				{
+					oNext[sProp](true);
+				}
+			}, oOptions[0]);
+		}
+
+		return oTarget;
+	};
+
 	ko.extenders.falseTimeout = function (oTarget, iOption)
 	{
-		var Utils = require('Common/Utils');
-
-		oTarget.iTimeout = 0;
+		oTarget.iFalseTimeoutTimeout = 0;
 		oTarget.subscribe(function (bValue) {
 			if (bValue)
 			{
-				window.clearTimeout(oTarget.iTimeout);
-				oTarget.iTimeout = window.setTimeout(function () {
+				window.clearTimeout(oTarget.iFalseTimeoutTimeout);
+				oTarget.iFalseTimeoutTimeout = window.setTimeout(function () {
 					oTarget(false);
-					oTarget.iTimeout = 0;
-				}, Utils.pInt(iOption));
+					oTarget.iFalseTimeoutTimeout = 0;
+				}, require('Common/Utils').pInt(iOption));
 			}
 		});
 
 		return oTarget;
 	};
+
+	ko.extenders.specialThrottle = function (oTarget, iOption)
+	{
+		oTarget.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(iOption);
+		if (0 < oTarget.iSpecialThrottleTimeoutValue)
+		{
+			oTarget.iSpecialThrottleTimeout = 0;
+			oTarget.valueForRead = ko.observable(!!oTarget()).extend({'throttle': 10});
+
+			return ko.computed({
+				'read': oTarget.valueForRead,
+				'write': function (bValue) {
+
+					if (bValue)
+					{
+						oTarget.valueForRead(bValue);
+					}
+					else
+					{
+						if (oTarget.valueForRead())
+						{
+							window.clearTimeout(oTarget.iSpecialThrottleTimeout);
+							oTarget.iSpecialThrottleTimeout = window.setTimeout(function () {
+								oTarget.valueForRead(false);
+								oTarget.iSpecialThrottleTimeout = 0;
+							}, oTarget.iSpecialThrottleTimeoutValue);
+						}
+						else
+						{
+							oTarget.valueForRead(bValue);
+						}
+					}
+				}
+			});
+		}
+
+		return oTarget;
+	};
+
+	// functions
 
 	ko.observable.fn.validateNone = function ()
 	{
@@ -881,6 +1117,25 @@
 		return this;
 	};
 
+	ko.observable.fn.deleteAccessHelper = function ()
+	{
+		this.extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [null,
+			function (oPrev) {
+				if (oPrev && oPrev.deleteAccess)
+				{
+					oPrev.deleteAccess(false);
+				}
+			}, function (oNext) {
+				if (oNext && oNext.deleteAccess)
+				{
+					oNext.deleteAccess(true);
+				}
+			}
+		]});
+
+		return this;
+	};
+
 	ko.observable.fn.validateFunc = function (fFunc)
 	{
 		var Utils = require('Common/Utils');
@@ -901,4 +1156,4 @@
 
 	module.exports = ko;
 
-}(module, ko));
+}(ko));

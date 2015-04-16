@@ -10,8 +10,9 @@
 
 		Utils = require('Common/Utils'),
 		Enums = require('Common/Enums'),
+		Translator = require('Common/Translator'),
 
-		Data = require('Storage/App/Data'),
+		PgpStore = require('Stores/User/Pgp'),
 
 		EmailModel = require('Model/Email'),
 
@@ -58,16 +59,16 @@
 
 			if (bResult && this.sign() && '' === this.from())
 			{
-				this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
+				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
 				bResult = false;
 			}
 
 			if (bResult && this.sign())
 			{
-				oPrivateKey = Data.findPrivateKeyByEmail(this.from(), this.password());
+				oPrivateKey = PgpStore.findPrivateKeyByEmail(this.from(), this.password());
 				if (!oPrivateKey)
 				{
-					this.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
 						'EMAIL': this.from()
 					}));
 
@@ -77,7 +78,7 @@
 
 			if (bResult && this.encrypt() && 0 === this.to().length)
 			{
-				this.notification(Utils.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
+				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
 				bResult = false;
 			}
 
@@ -85,10 +86,10 @@
 			{
 				aPublicKeys = [];
 				_.each(this.to(), function (sEmail) {
-					var aKeys = Data.findPublicKeysByEmail(sEmail);
+					var aKeys = PgpStore.findPublicKeysByEmail(sEmail);
 					if (0 === aKeys.length && bResult)
 					{
-						self.notification(Utils.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+						self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
 							'EMAIL': sEmail
 						}));
 
@@ -113,25 +114,25 @@
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.signClearMessage([oPrivateKey], self.text())
+								PgpStore.openpgp.signClearMessage([oPrivateKey], self.text())
 							);
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
+								PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
 							);
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
 							self.resultCallback(
-								Data.openpgp.encryptMessage(aPublicKeys, self.text())
+								PgpStore.openpgp.encryptMessage(aPublicKeys, self.text())
 							);
 						}
 					}
 					catch (e)
 					{
-						self.notification(Utils.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));
 
@@ -196,12 +197,12 @@
 		}, this));
 	};
 
-	ComposeOpenPgpPopupView.prototype.onHide = function ()
+	ComposeOpenPgpPopupView.prototype.onHideWithDelay = function ()
 	{
 		this.clearPopup();
 	};
 
-	ComposeOpenPgpPopupView.prototype.onFocus = function ()
+	ComposeOpenPgpPopupView.prototype.onShowWithDelay = function ()
 	{
 		if (this.sign())
 		{
@@ -213,24 +214,16 @@
 		}
 	};
 
-	ComposeOpenPgpPopupView.prototype.onShow = function (fCallback, sText, sFromEmail, sTo, sCc, sBcc)
+	ComposeOpenPgpPopupView.prototype.onShow = function (fCallback, sText, oIdentity, sTo, sCc, sBcc)
 	{
 		this.clearPopup();
 
 		var
-			oEmail = new EmailModel(),
-			sResultFromEmail = '',
-			aRec = []
+			aRec = [],
+			oEmail = new EmailModel()
 		;
 
 		this.resultCallback = fCallback;
-
-		oEmail.clear();
-		oEmail.mailsoParse(sFromEmail);
-		if ('' !== oEmail.email)
-		{
-			sResultFromEmail = oEmail.email;
-		}
 
 		if ('' !== sTo)
 		{
@@ -254,7 +247,7 @@
 			return '' === oEmail.email ? false : oEmail.email;
 		}));
 
-		this.from(sResultFromEmail);
+		this.from(oIdentity ? oIdentity.email() : '');
 		this.to(aRec);
 		this.text(sText);
 	};

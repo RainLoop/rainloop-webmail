@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Log;
 
 /**
@@ -35,8 +44,10 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @access protected
+	 *
+	 * @param bool $bRegPhpErrorHandler = false
 	 */
-	protected function __construct()
+	protected function __construct($bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
 
@@ -46,16 +57,22 @@ class Logger extends \MailSo\Base\Collection
 		$this->bShowSecter = false;
 		$this->bHideErrorNotices = false;
 
-		\set_error_handler(array(&$this, '__phpErrorHandler'));
+		if ($bRegPhpErrorHandler)
+		{
+			\set_error_handler(array(&$this, '__phpErrorHandler'));
+		}
+
 		\register_shutdown_function(array(&$this, '__loggerShutDown'));
 	}
 
 	/**
+	 * @param bool $bRegPhpErrorHandler = false
+	 *
 	 * @return \MailSo\Log\Logger
 	 */
-	public static function NewInstance()
+	public static function NewInstance($bRegPhpErrorHandler = false)
 	{
-		return new self();
+		return new self($bRegPhpErrorHandler);
 	}
 
 	/**
@@ -75,6 +92,26 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function IsSystemEnabled()
+	{
+		return !!(\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger);
+	}
+
+	/**
+	 * @param mixed $mData
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
+	 */
+	public static function SystemLog($mData, $iType = \MailSo\Log\Enumerations\Type::INFO)
+	{
+		if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+		{
+			\MailSo\Config::$SystemLogger->WriteMixed($mData, $iType);
+		}
+	}
+
+	/**
 	 * @staticvar string $sCache;
 	 *
 	 * @return string
@@ -84,7 +121,7 @@ class Logger extends \MailSo\Base\Collection
 		static $sCache = null;
 		if (null === $sCache)
 		{
-			$sCache = \substr(\md5(\microtime(true).\rand(10000, 99999)), -8);
+			$sCache = \substr(\MailSo\Base\Utils::Md5Rand(), -8);
 		}
 
 		return $sCache;

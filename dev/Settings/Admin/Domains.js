@@ -4,75 +4,47 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
 
-		PopupsDomainViewModel = require('View/Popup/Domain'),
-
-		Data = require('Storage/Admin/Data'),
-		Remote = require('Storage/Admin/Remote')
+		DomainStore = require('Stores/Admin/Domain'),
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function DomainsAdminSetting()
+	function DomainsAdminSettings()
 	{
-		this.domains = Data.domains;
-		this.domainsLoading = Data.domainsLoading;
-
-		this.iDomainForDeletionTimeout = 0;
+		this.domains = DomainStore.domains;
 
 		this.visibility = ko.computed(function () {
-			return Data.domainsLoading() ? 'visible' : 'hidden';
+			return this.domains.loading() ? 'visible' : 'hidden';
 		}, this);
 
-		this.domainForDeletion = ko.observable(null).extend({'toggleSubscribe': [this,
-			function (oPrev) {
-				if (oPrev)
-				{
-					oPrev.deleteAccess(false);
-				}
-			}, function (oNext) {
-				if (oNext)
-				{
-					oNext.deleteAccess(true);
-					this.startDomainForDeletionTimeout();
-				}
-			}
-		]});
+		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	DomainsAdminSetting.prototype.startDomainForDeletionTimeout = function ()
+	DomainsAdminSettings.prototype.createDomain = function ()
 	{
-		var self = this;
-		window.clearInterval(this.iDomainForDeletionTimeout);
-		this.iDomainForDeletionTimeout = window.setTimeout(function () {
-			self.domainForDeletion(null);
-		}, 1000 * 3);
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Domain'));
 	};
 
-	DomainsAdminSetting.prototype.createDomain = function ()
-	{
-		require('Knoin/Knoin').showScreenPopup(PopupsDomainViewModel);
-	};
-
-	DomainsAdminSetting.prototype.deleteDomain = function (oDomain)
+	DomainsAdminSettings.prototype.deleteDomain = function (oDomain)
 	{
 		this.domains.remove(oDomain);
 		Remote.domainDelete(_.bind(this.onDomainListChangeRequest, this), oDomain.name);
 	};
 
-	DomainsAdminSetting.prototype.disableDomain = function (oDomain)
+	DomainsAdminSettings.prototype.disableDomain = function (oDomain)
 	{
 		oDomain.disabled(!oDomain.disabled());
 		Remote.domainDisable(_.bind(this.onDomainListChangeRequest, this), oDomain.name, oDomain.disabled());
 	};
 
-	DomainsAdminSetting.prototype.onBuild = function (oDom)
+	DomainsAdminSettings.prototype.onBuild = function (oDom)
 	{
 		var self = this;
 		oDom
@@ -88,19 +60,19 @@
 		require('App/Admin').reloadDomainList();
 	};
 
-	DomainsAdminSetting.prototype.onDomainLoadRequest = function (sResult, oData)
+	DomainsAdminSettings.prototype.onDomainLoadRequest = function (sResult, oData)
 	{
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
-			require('Knoin/Knoin').showScreenPopup(PopupsDomainViewModel, [oData.Result]);
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Domain'), [oData.Result]);
 		}
 	};
 
-	DomainsAdminSetting.prototype.onDomainListChangeRequest = function ()
+	DomainsAdminSettings.prototype.onDomainListChangeRequest = function ()
 	{
 		require('App/Admin').reloadDomainList();
 	};
 
-	module.exports = DomainsAdminSetting;
+	module.exports = DomainsAdminSettings;
 
 }());

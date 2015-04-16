@@ -241,7 +241,8 @@ class FacebookRedirectLoginHelper
     }
     $buf = '';
     // http://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
-    if (is_readable('/dev/urandom')) {
+    if (false && is_readable('/dev/urandom')) {
+//    if (is_readable('/dev/urandom')) {
       $fp = fopen('/dev/urandom', 'rb');
       if ($fp !== FALSE) {
         $buf = fread($fp, $bytes);

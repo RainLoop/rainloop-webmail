@@ -7,9 +7,9 @@ if (!defined('APP_VERSION'))
 	define('APP_INDEX_ROOT_PATH', str_replace('\\', '/', rtrim(dirname(__FILE__), '\\/').'/'));
 }
 
-if (file_exists(APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php'))
+if (file_exists(APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/include.php'))
 {
-	return include APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/index.php';
+	include APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/include.php';
 }
 else
 {

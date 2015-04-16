@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mail;
 
 /**
@@ -24,6 +33,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	public $IsThreadsSupported;
 
 	/**
+	 * @var bool
+	 */
+	public $Optimized;
+
+	/**
 	 * @var array
 	 */
 	public $SystemFolders;
@@ -39,6 +53,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->FoldersHash = '';
 		$this->SystemFolders = array();
 		$this->IsThreadsSupported = false;
+		$this->Optimized = false;
 	}
 
 	/**
@@ -54,7 +69,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	 *
 	 * @return \MailSo\Mail\Folder|null
 	 */
-	public function &GetByFullNameRaw($sFullNameRaw)
+	public function GetByFullNameRaw($sFullNameRaw)
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -63,6 +78,18 @@ class FolderCollection extends \MailSo\Base\Collection
 			{
 				$mResult = $oFolder;
 				break;
+			}
+			else if ($oFolder->HasSubFolders())
+			{
+				$mResult = $oFolder->SubFolders(true)->GetByFullNameRaw($sFullNameRaw);
+				if ($mResult)
+				{
+					break;
+				}
+				else
+				{
+					$mResult = null;
+				}
 			}
 		}
 
@@ -78,6 +105,27 @@ class FolderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @return string
+	 */
+	public function FindDelimiter()
+	{
+		$sDelimiter = '/';
+		
+		$oFolder = $this->GetByFullNameRaw('INBOX');
+		if (!$oFolder)
+		{
+			$oFolder = $this->GetByIndex(0);
+		}
+
+		if ($oFolder)
+		{
+			$sDelimiter = $oFolder->Delimiter();
+		}
+
+		return $sDelimiter;
+	}
+
+	/**
 	 * @param string $sNamespace
 	 *
 	 * @return \MailSo\Mail\FolderCollection
@@ -88,7 +136,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param array $aUnsortedMailFolders
 	 *

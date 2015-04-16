@@ -63,7 +63,7 @@ class HmailserverChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 *
 	 * @return bool
 	 */
@@ -74,7 +74,7 @@ class HmailserverChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	}
 
 	/**
-	 * @param \RainLoop\Account $oHmailAccount
+	 * @param \RainLoop\Model\Account $oHmailAccount
 	 * @param string $sPrevPassword
 	 * @param string $sNewPassword
 	 *

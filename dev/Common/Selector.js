@@ -17,12 +17,13 @@
 	 * @constructor
 	 * @param {koProperty} oKoList
 	 * @param {koProperty} oKoSelectedItem
+	 * @param {koProperty} oKoFocusedItem
 	 * @param {string} sItemSelector
 	 * @param {string} sItemSelectedSelector
 	 * @param {string} sItemCheckedSelector
 	 * @param {string} sItemFocusedSelector
 	 */
-	function Selector(oKoList, oKoSelectedItem,
+	function Selector(oKoList, oKoSelectedItem, oKoFocusedItem,
 		sItemSelector, sItemSelectedSelector, sItemCheckedSelector, sItemFocusedSelector)
 	{
 		this.list = oKoList;
@@ -37,8 +38,8 @@
 			return 0 < this.listChecked().length;
 		}, this);
 
-		this.focusedItem = ko.observable(null);
-		this.selectedItem = oKoSelectedItem;
+		this.focusedItem = oKoFocusedItem || ko.observable(null);
+		this.selectedItem = oKoSelectedItem || ko.observable(null);
 		this.selectedItemUseCallback = true;
 
 		this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
@@ -48,14 +49,17 @@
 			{
 				if (null === this.selectedItem())
 				{
-					this.selectedItem.valueHasMutated();
+					if (this.selectedItem.valueHasMutated)
+					{
+						this.selectedItem.valueHasMutated();
+					}
 				}
 				else
 				{
 					this.selectedItem(null);
 				}
 			}
-			else if (this.bAutoSelect && this.focusedItem())
+			else if (this.autoSelect() && this.focusedItem())
 			{
 				this.selectedItem(this.focusedItem());
 			}
@@ -84,7 +88,7 @@
 
 		}, this);
 
-		this.selectedItem.extend({'toggleSubscribe': [null,
+		this.selectedItem = this.selectedItem.extend({'toggleSubscribe': [null,
 			function (oPrev) {
 				if (oPrev)
 				{
@@ -98,7 +102,7 @@
 			}
 		]});
 
-		this.focusedItem.extend({'toggleSubscribe': [null,
+		this.focusedItem = this.focusedItem.extend({'toggleSubscribe': [null,
 			function (oPrev) {
 				if (oPrev)
 				{
@@ -112,6 +116,8 @@
 			}
 		]});
 
+		this.iSelectNextHelper = 0;
+		this.iFocusedNextHelper = 0;
 		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
@@ -121,10 +127,10 @@
 		this.sItemFocusedSelector = sItemFocusedSelector;
 
 		this.sLastUid = '';
-		this.bAutoSelect = true;
 		this.oCallbacks = {};
 
 		this.emptyFunction = function () {};
+		this.emptyTrueFunction = function () { return true; };
 
 		this.focusedItem.subscribe(function (oItem) {
 			if (oItem)
@@ -218,7 +224,7 @@
 
 				this.selectedItemUseCallback = true;
 
-				if (!bChecked && !bSelected && this.bAutoSelect)
+				if (!bChecked && !bSelected && this.autoSelect())
 				{
 					if (self.focusedItem())
 					{
@@ -252,6 +258,39 @@
 						self.selectedItem(oTemp || null);
 						self.focusedItem(self.selectedItem());
 					}
+				}
+
+				if ((0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) && 0 < aItems.length && !self.focusedItem())
+				{
+					oTemp = null;
+					if (0 !== this.iFocusedNextHelper)
+					{
+						oTemp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0] || null;
+					}
+
+					if (!oTemp && 0 !== this.iSelectNextHelper)
+					{
+						oTemp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0] || null;
+					}
+
+					if (oTemp)
+					{
+						if (0 !== this.iSelectNextHelper)
+						{
+							self.selectedItem(oTemp || null);
+						}
+
+						self.focusedItem(oTemp || null);
+
+						self.scrollToFocused();
+
+						_.delay(function () {
+							self.scrollToFocused();
+						}, 100);
+					}
+
+					this.iSelectNextHelper = 0;
+					this.iFocusedNextHelper = 0;
 				}
 			}
 
@@ -289,6 +328,12 @@
 	Selector.prototype.goUp = function (bForceSelect)
 	{
 		this.newSelectPosition(Enums.EventKeyCode.Up, false, bForceSelect);
+	};
+
+	Selector.prototype.unselect = function ()
+	{
+		this.selectedItem(null);
+		this.focusedItem(null);
 	};
 
 	Selector.prototype.init = function (oContentVisible, oContentScrollable, sKeyScope)
@@ -348,7 +393,6 @@
 			key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', sKeyScope, function (event, handler) {
 				if (event && handler && handler.shortcut)
 				{
-					// TODO
 					var iKey = 0;
 					switch (handler.shortcut)
 					{
@@ -390,14 +434,25 @@
 		}
 	};
 
-	Selector.prototype.autoSelect = function (bValue)
+	/**
+	 * @return {boolean}
+	 */
+	Selector.prototype.autoSelect = function ()
 	{
-		this.bAutoSelect = !!bValue;
+		return !!(this.oCallbacks['onAutoSelect'] || this.emptyTrueFunction)();
+	};
+
+	/**
+	 * @param {boolean}
+	 */
+	Selector.prototype.doUpUpOrDownDown = function (bUp)
+	{
+		(this.oCallbacks['onUpUpOrDownDown'] || this.emptyTrueFunction)(!!bUp);
 	};
 
 	/**
 	 * @param {Object} oItem
-	 * @returns {string}
+	 * @return {string}
 	 */
 	Selector.prototype.getItemUid = function (oItem)
 	{
@@ -478,6 +533,11 @@
 							}
 						}
 					});
+
+					if (!oResult && (Enums.EventKeyCode.Down === iEventKeyCode || Enums.EventKeyCode.Up === iEventKeyCode))
+					{
+						this.doUpUpOrDownDown(Enums.EventKeyCode.Up === iEventKeyCode);
+					}
 				}
 				else if (Enums.EventKeyCode.Home === iEventKeyCode || Enums.EventKeyCode.End === iEventKeyCode)
 				{
@@ -538,7 +598,7 @@
 				}
 			}
 
-			if ((this.bAutoSelect || !!bForceSelect) &&
+			if ((this.autoSelect() || !!bForceSelect) &&
 				!this.isListChecked() && Enums.EventKeyCode.Space !== iEventKeyCode)
 			{
 				this.selectedItem(oResult);
@@ -607,7 +667,7 @@
 			return false;
 		}
 
-		if (bFast)
+		if (bFast || 50 > this.oContentScrollable.scrollTop())
 		{
 			this.oContentScrollable.scrollTop(0);
 		}
@@ -682,7 +742,7 @@
 
 			if (oEvent)
 			{
-				if (oEvent.shiftKey && !oEvent.ctrlKey && !oEvent.altKey)
+				if (oEvent.shiftKey && !(oEvent.ctrlKey || oEvent.metaKey) && !oEvent.altKey)
 				{
 					bClick = false;
 					if ('' === this.sLastUid)
@@ -695,7 +755,7 @@
 
 					this.focusedItem(oItem);
 				}
-				else if (oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
+				else if ((oEvent.ctrlKey || oEvent.metaKey) && !oEvent.shiftKey && !oEvent.altKey)
 				{
 					bClick = false;
 					this.focusedItem(oItem);

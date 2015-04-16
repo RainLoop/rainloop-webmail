@@ -17,6 +17,7 @@
 .flag.flag-en-uk {background-position: -176px -44px}
 .flag.flag-en-ca {background-position: -48px -22px}
 
+.flag.flag-bg, .flag.flag-bg-bg {background-position: -80px -11px}
 .flag.flag-nl, .flag.flag-nl-nl {background-position: -80px -110px}
 .flag.flag-pl, .flag.flag-pl-pl {background-position: -32px -121px}
 .flag.flag-ru, .flag.flag-ru-ru {background-position: -224px -121px}
@@ -28,9 +29,12 @@
 .flag.flag-lv, .flag.flag-lv-lv {background-position: -112px -88px}
 .flag.flag-hu, .flag.flag-hu-hu {background-position: -32px -66px}
 .flag.flag-sk, .flag.flag-sk-sk {background-position: -144px -132px}
-.flag.flag-sv, .flag.flag-sv-sv, .flag.flag-sv-se {background-position: -32px -143px}
+.flag.flag-sv, .flag.flag-sv-sv, .flag.flag-sv-se {background-position: -80px -132px}
 .flag.flag-sl, .flag.flag-sl-si, .flag.flag-sl-sl {background-position: -160px -132px}
 .flag.flag-ua, .flag.flag-ua-ua, .flag.flag-uk-ua {background-position: -96px -154px}
+
+.flag.flag-cs, .flag.flag-cs-cs, .flag.flag-cs-cz {background-position: -64px -33px}
+.flag.flag-cz, .flag.flag-cz-cz, .flag.flag-cz-cs {background-position: -64px -33px}
 
 .flag.flag-no, .flag.flag-nb, .flag.flag-nb-no {background-position: -96px -110px}
 
@@ -46,4 +50,9 @@
 
 .flag.flag-tr, .flag.flag-tr-tr {background-position: -16px -154px}
 
-.flag.flag-cn, .flag.flag-zh-tw, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
+.flag.flag-hr, .flag.flag-hr-hr {background-position: 0 -66px}
+.flag.flag-sr, .flag.flag-sr-sr, .flag.flag-sr-rs {background-position: -240px -132px}
+.flag.flag-bs, .flag.flag-bs-bs, .flag.flag-bs-bs {background-position: -208px -11px}
+
+.flag.flag-cn, .flag.flag-zh-cn, .flag.flag-zh-hk {background-position: -208px -22px}
+.flag.flag-tw, .flag.flag-zh-tw {background-position: -64px -154px}

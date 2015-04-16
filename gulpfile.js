@@ -7,6 +7,7 @@ var
 		devVersion: '0.0.0',
 		releasesPath: 'build/dist/releases',
 
+		rainloopBuilded: false,
 		destPath: '',
 		cleanPath: '',
 		zipSrcPath: '',
@@ -29,11 +30,12 @@ var
 	gulp = require('gulp'),
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
-	footer = require('gulp-footer'),
 	eol = require('gulp-eol'),
+	stripbom = require('gulp-stripbom'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
+	plumber = require('gulp-plumber'),
 	gutil = require('gulp-util')
 ;
 
@@ -94,10 +96,12 @@ cfg.paths.css = {
 			'vendors/normalize/normalize.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
-			'vendors/jquery-magnific-popup/magnific-popup.css',
-			'vendors/jquery-magnific-popup/magnific-popup-animations.css',
+			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/simple-pace/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
+			'vendors/opentip/opentip.css',
+			'vendors/photoswipe/photoswipe.css',
+			'vendors/photoswipe/default-skin/default-skin.css',
 			'vendors/flags/flags-fixed.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
@@ -111,7 +115,7 @@ cfg.paths.js = {
 			'vendors/json2.min.js',
 			'vendors/labjs/LAB.min.js',
 			'vendors/simple-pace/simple-pace-1.0.min.js',
-			'vendors/rl/rl-1.2.min.js'
+			'vendors/rl/rl-1.5.min.js'
 		]
 	},
 	openpgp: {
@@ -138,8 +142,10 @@ cfg.paths.js = {
 		src: [
 			'vendors/modernizr.js',
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-1.11.1.min.js',
+			'vendors/is.js/is.min.js',
+			'vendors/jquery/jquery-1.11.2.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
+//			'vendors/jquery-ui.touch-punch/jquery.ui.touch-punch.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
 			'vendors/jquery-finger/jquery.finger.min.js',
 			'vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js',
@@ -147,20 +153,29 @@ cfg.paths.js = {
 			'vendors/jquery-lazyload/jquery.lazyload.min.js',
 			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
+			'vendors/jquery-letterfx/jquery-letterfx.min.js',
+			'vendors/jquery-backstretch/jquery.backstretch.min.js',
+			'vendors/queue/queue.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
+			'vendors/tinycon/tinycon.min.js ',
 			'vendors/routes/signals.min.js',
 			'vendors/routes/hasher.min.js',
 			'vendors/routes/crossroads.min.js',
-			'vendors/knockout/knockout-3.2.0.js',
+			'vendors/knockout/knockout-3.3.0.js',
+//			'vendors/knockout-punches/knockout.punches.min.js',
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
+			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',
 			'vendors/jua/jua.min.js',
+			'vendors/Q/q.min.js',
+			'vendors/opentip/opentip-jquery.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
-			'vendors/jsencrypt/jsencrypt.min.js',
+			'vendors/photoswipe/photoswipe.min.js',
+			'vendors/photoswipe/photoswipe-ui-default.min.js',
+//			'vendors/jsencrypt/jsencrypt.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
-			'vendors/jquery-magnific-popup/jquery.magnific-popup.min.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},
@@ -181,21 +196,23 @@ gulp.task('less:main', function() {
 		}))
 		.pipe(rename(cfg.paths.less.main.name))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticCSS));
+		.pipe(gulp.dest(cfg.paths.staticCSS))
+		.on('error', gutil.log);
 });
 
-gulp.task('css:main', ['less:main'], function() {
+gulp.task('css:main-begin', ['less:main'], function() {
 
 	var
 //		csslint = require('gulp-csslint'),
-		csscomb = require('gulp-csscomb'),
+//		csscomb = require('gulp-csscomb'),
 		autoprefixer = require('gulp-autoprefixer')
 	;
 
 	return gulp.src(cfg.paths.css.main.src)
+		.pipe(plumber())
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
-		.pipe(csscomb())
+//		.pipe(csscomb())
 //		.pipe(csslint())
 //		.pipe(csslint.reporter())
 		.pipe(eol('\n', true))
@@ -203,9 +220,18 @@ gulp.task('css:main', ['less:main'], function() {
 	;
 });
 
+gulp.task('css:clear-less', ['css:main-begin'], function() {
+
+	return gulp.src(cfg.paths.staticCSS + cfg.paths.less.main.name, {read: false})
+		.pipe(require('gulp-rimraf')());
+});
+
+gulp.task('css:main', ['css:clear-less']);
+
 gulp.task('css:main:min', ['css:main'], function() {
 	var minifyCss = require('gulp-minify-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
+		.pipe(plumber())
 		.pipe(minifyCss({
 			'keepSpecialComments': 0
 		}))
@@ -225,8 +251,8 @@ gulp.task('js:boot', function() {
 gulp.task('js:encrypt', function() {
 	return gulp.src(cfg.paths.js.encrypt.src)
 		.pipe(concat(cfg.paths.js.encrypt.name))
-		.pipe(header(cfg.paths.js.encrypt.header || ''))
-		.pipe(footer(cfg.paths.js.encrypt.footer || ''))
+		.pipe(concat.header(cfg.paths.js.encrypt.header || ''))
+		.pipe(concat.footer(cfg.paths.js.encrypt.footer || ''))
 		.pipe(uglify(cfg.uglify))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.js.encrypt.dest))
@@ -259,7 +285,7 @@ gulp.task('js:ckeditor:beautify', function() {
 });
 
 gulp.task('js:webpack:clear', function() {
-	return gulp.src([cfg.paths.staticJS + '*.chunk.js', cfg.paths.staticMinJS + '*.chunk.js'], {read: false})
+	return gulp.src([cfg.paths.staticJS + '*.subapp.js', cfg.paths.staticMinJS + '*.subapp.js'], {read: false})
 		.pipe(require('gulp-rimraf')());
 });
 
@@ -300,7 +326,7 @@ gulp.task('js:admin', ['js:webpack'], function() {
 });
 
 gulp.task('js:chunks', ['js:webpack'], function() {
-	return gulp.src(cfg.paths.staticJS + '*.chunk.js')
+	return gulp.src(cfg.paths.staticJS + '*.subapp.js')
 		.pipe(header('/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticJS))
@@ -366,13 +392,44 @@ regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js'
 regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
 	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
 
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.2.min.js',
-	'/*! RainLoop Index Helper v1.2 (c) 2014 RainLoop Team; Licensed under MIT */\n');
+regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.5.min.js',
+	'/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */\n');
 
-gulp.task('package-inc-release', function() {
-	fs.writeFileSync('package.json',
-		fs.readFileSync('package.json', 'utf8').replace(/"release":\s?"[\d]+",/, '"release": "' +
-			(1 + parseInt(pkg.release, 10)) + '",'));
+regOtherMinTask('other:q', 'vendors/Q/', 'q.js', 'q.min.js',
+	'/*! (c) 2009-2012 Kris Kowal Licensed under MIT */\n');
+
+gulp.task('fontastic-fonts:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
+});
+
+gulp.task('fontastic-fonts:copy', ['fontastic-fonts:clear'], function() {
+	return gulp.src('vendors/fontastic/fonts/rainloop.*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
+});
+
+gulp.task('fontastic', ['fontastic-fonts:copy']);
+
+gulp.task('ckeditor:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/ckeditor');
+});
+
+gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
+	return gulp.src('vendors/ckeditor/**/*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
+});
+
+gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
+	return gulp.src('vendors/ckeditor-plugins/**/*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor/plugins'));
+});
+
+gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
+	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
+		.pipe(stripbom())
+//		.pipe(replace("\u200B", "\\u200B"))
+		.pipe(replace('console.log("Detecting changes using MutationObservers")', 'true'))
+		.pipe(header("\uFEFF")) // BOM
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
 
 // BUILD (RainLoop)
@@ -406,13 +463,13 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
-	fs.unlinkSync(dist + 'rainloop/v/' + versionFull + '/static/css/less.css');
-
 	cfg.destPath = cfg.releasesPath + '/webmail/' + versionFull + '/';
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
 	cfg.zipFile = 'rainloop-' + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
+
+	cfg.rainloopBuilded = true;
 });
 
 gulp.task('rainloop:zip', ['rainloop:copy', 'rainloop:setup'], function() {
@@ -444,7 +501,28 @@ gulp.task('rainloop:owncloud:copy', function() {
 		.pipe(gulp.dest(dist + 'rainloop'));
 });
 
-gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy'], function() {
+gulp.task('rainloop:owncloud:copy-rainloop', ['rainloop:start', 'rainloop:owncloud:copy'], function() {
+
+	var
+		versionFull = pkg.ownCloudPackageVersion,
+		dist = cfg.releasesPath + '/owncloud/' + versionFull + '/src/rainloop/'
+	;
+
+	if (cfg.rainloopBuilded && cfg.destPath)
+	{
+		return gulp.src(cfg.destPath + '/src/**/*', {base: cfg.destPath + '/src/'})
+			.pipe(gulp.dest(dist + 'app/'));
+	}
+
+	return true;
+});
+
+gulp.task('rainloop:owncloud:copy-rainloop:clean', ['rainloop:owncloud:copy-rainloop'], function() {
+	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
+});
+
+gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
+	'rainloop:owncloud:copy-rainloop'], function() {
 
 	var
 		versionFull = pkg.ownCloudPackageVersion,
@@ -480,13 +558,15 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min']);
+gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
-gulp.task('rainloop', ['js:lint', 'rainloop:copy', 'rainloop:setup', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
-gulp.task('rainloop+', ['rainloop', 'package-inc-release']);
+gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
+gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
 
-gulp.task('owncloud', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
+gulp.task('owncloud', ['rainloop:owncloud:copy',
+	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
+	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
@@ -494,15 +574,14 @@ gulp.task('watch', ['fast'], function() {
 	gulp.watch(cfg.paths.less.main.watch, {interval: 500}, ['css:main']);
 });
 
-// aliases
-gulp.task('w', ['watch']);
-gulp.task('f', ['fast']);
-
-gulp.task('rl', ['rainloop']);
-gulp.task('rl+', ['rainloop+']);
+// ALIASES
 gulp.task('build', ['rainloop']);
-gulp.task('build+', ['rainloop+']);
-gulp.task('b', ['rainloop']);
-gulp.task('b+', ['rainloop+']);
+gulp.task('js:hint', ['js:lint']);
 
 gulp.task('own', ['owncloud']);
+gulp.task('rl', ['rainloop']);
+gulp.task('w', ['watch']);
+gulp.task('f', ['fast']);
+gulp.task('o', ['owncloud']);
+gulp.task('b', ['build']);
+gulp.task('h', ['js:lint']);

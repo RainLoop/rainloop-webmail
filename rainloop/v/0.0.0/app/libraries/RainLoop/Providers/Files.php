@@ -5,20 +5,20 @@ namespace RainLoop\Providers;
 class Files extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Files\FilesInterface
+	 * @var \RainLoop\Providers\Files\IFiles
 	 */
 	private $oDriver;
 
 	/**
 	 * @return void
 	 */
-	public function __construct(\RainLoop\Providers\Files\FilesInterface $oDriver)
+	public function __construct(\RainLoop\Providers\Files\IFiles $oDriver)
 	{
 		$this->oDriver = $oDriver;
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param resource $rSource
 	 *
@@ -30,7 +30,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sSource
 	 *
@@ -42,7 +42,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 * @param string $sOpenMode = 'rb'
 	 *
@@ -54,7 +54,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return string | bool
@@ -65,7 +65,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -76,7 +76,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return int|bool
@@ -87,7 +87,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
 	 *
 	 * @return bool
@@ -110,8 +110,17 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @return bool
 	 */
+	public function CloseAllOpenedFiles()
+	{
+		return $this->oDriver && \method_exists($this->oDriver, 'CloseAllOpenedFiles') ?
+			$this->oDriver->CloseAllOpenedFiles() : false;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Files\FilesInterface;
+		return $this->oDriver instanceof \RainLoop\Providers\Files\IFiles;
 	}
 }

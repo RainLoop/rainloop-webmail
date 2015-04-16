@@ -5,23 +5,22 @@
 
 	var
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Settings = require('Storage/Settings'),
-		Data = require('Storage/Admin/Data')
+		LicenseStore = require('Stores/Admin/License')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function LicensingAdminSetting()
+	function LicensingAdminSettings()
 	{
-		this.licensing = Data.licensing;
-		this.licensingProcess = Data.licensingProcess;
-		this.licenseValid = Data.licenseValid;
-		this.licenseExpired = Data.licenseExpired;
-		this.licenseError = Data.licenseError;
-		this.licenseTrigger = Data.licenseTrigger;
+		this.licensing = LicenseStore.licensing;
+		this.licensingProcess = LicenseStore.licensingProcess;
+		this.licenseValid = LicenseStore.licenseValid;
+		this.licenseExpired = LicenseStore.licenseExpired;
+		this.licenseError = LicenseStore.licenseError;
+		this.licenseTrigger = LicenseStore.licenseTrigger;
 
 		this.adminDomain = ko.observable('');
 		this.subscriptionEnabled = ko.observable(!!Settings.settingsGet('SubscriptionEnabled'));
@@ -34,7 +33,7 @@
 		}, this);
 	}
 
-	LicensingAdminSetting.prototype.onBuild = function ()
+	LicensingAdminSettings.prototype.onBuild = function ()
 	{
 		if (this.subscriptionEnabled())
 		{
@@ -42,29 +41,44 @@
 		}
 	};
 
-	LicensingAdminSetting.prototype.onShow = function ()
+	LicensingAdminSettings.prototype.onShow = function ()
 	{
 		this.adminDomain(Settings.settingsGet('AdminDomain'));
 	};
 
-	LicensingAdminSetting.prototype.showActivationForm = function ()
+	LicensingAdminSettings.prototype.showActivationForm = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Activate'));
 	};
 
-	/**
-	 * @returns {string}
-	 */
-	LicensingAdminSetting.prototype.licenseExpiredMomentValue = function ()
+	LicensingAdminSettings.prototype.showTrialForm = function ()
 	{
-		var
-			iTime = this.licenseExpired(),
-			oDate = moment.unix(iTime)
-		;
-
-		return iTime && 1898625600 === iTime ? 'Never' : (oDate.format('LL') + ' (' + oDate.from(moment()) + ')');
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Activate'), [true]);
 	};
 
-	module.exports = LicensingAdminSetting;
+	/**
+	 * @return {boolean}
+	 */
+	LicensingAdminSettings.prototype.licenseIsUnlim = function ()
+	{
+		return 1898625600 === this.licenseExpired() || 1898625700 === this.licenseExpired();
+	};
+
+	/**
+	 * @return {string}
+	 */
+	LicensingAdminSettings.prototype.licenseExpiredMomentValue = function ()
+	{
+		var
+			moment = require('moment'),
+			iTime = this.licenseExpired(),
+			oM = moment.unix(iTime)
+		;
+
+		return this.licenseIsUnlim() ? 'Never' :
+			(iTime && (oM.format('LL') + ' (' + oM.from(moment()) + ')'));
+	};
+
+	module.exports = LicensingAdminSettings;
 
 }());

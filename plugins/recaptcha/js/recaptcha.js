@@ -1,78 +1,89 @@
+(function ($, window) {
 
-$(function () {
+	$(function () {
 
-	var
-		bStarted = false,
-		bShown = false
-	;
+		var
+			nId = null,
+			bStarted = false
+		;
 
-	function ShowRecaptcha()
-	{
-		if (window.Recaptcha)
+		function ShowRecaptcha()
 		{
-			if (bShown)
+			if (window.grecaptcha)
 			{
-				window.Recaptcha.reload();
-			}
-			else
-			{
-				window.Recaptcha.create(window.rl.pluginSettingsGet('recaptcha', 'public_key'), 'recaptcha-place', {
-					'theme': 'custom',
-					'lang': window.rl.settingsGet('Language')
-				});
-			}
-
-			bShown = true;
-		}
-	}
-
-	function StartRecaptcha()
-	{
-		if (!window.Recaptcha)
-		{
-			$.getScript('//www.google.com/recaptcha/api/js/recaptcha_ajax.js', ShowRecaptcha);
-		}
-		else
-		{
-			ShowRecaptcha();
-		}
-	}
-
-	if (window.rl)
-	{
-		window.rl.addHook('view-model-on-show', function (sName, oViewModel) {
-			if (!bStarted && oViewModel &&
-				('View:RainLoop:Login' === sName || 'View/App/Login' === sName || 'LoginViewModel' === sName || 'LoginAppView' === sName) &&
-				window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
-			{
-				bStarted = true;
-				StartRecaptcha();
-			}
-		});
-
-		window.rl.addHook('ajax-default-request', function (sAction, oParameters) {
-			if ('Login' === sAction && oParameters && bShown && window.Recaptcha)
-			{
-				oParameters['RecaptchaChallenge'] = window.Recaptcha.get_challenge();
-				oParameters['RecaptchaResponse'] = window.Recaptcha.get_response();
-			}
-		});
-
-		window.rl.addHook('ajax-default-response', function (sAction, oData, sType) {
-			if ('Login' === sAction)
-			{
-				if (!oData || 'success' !== sType || !oData['Result'])
+				if (null === nId)
 				{
-					if (bShown && window.Recaptcha)
+					var oEl = $('#recaptcha-div');
+					if (oEl && oEl[0])
 					{
-						window.Recaptcha.reload();
-					}
-					else if (oData && oData['Captcha'])
-					{
-						StartRecaptcha();
+						oEl.show();
+						nId = window.grecaptcha.render(oEl[0], {
+							'sitekey': window.rl.pluginSettingsGet('recaptcha', 'public_key'),
+							'theme': window.rl.pluginSettingsGet('recaptcha', 'theme')
+						});
 					}
 				}
 			}
-		});
-	}
-});
+		}
+
+		window.__globalShowRecaptcha = ShowRecaptcha;
+
+		function StartRecaptcha()
+		{
+			if (!window.grecaptcha && window.rl)
+			{
+				$.getScript('https://www.google.com/recaptcha/api.js?onload=__globalShowRecaptcha&render=explicit&hl=' + window.rl.settingsGet('Language'));
+			}
+			else
+			{
+				ShowRecaptcha();
+			}
+		}
+
+		if (window.rl)
+		{
+			window.rl.addHook('user-login-submit', function (fSubmitResult) {
+				if (null !== nId && !window.grecaptcha.getResponse(nId))
+				{
+					fSubmitResult(105);
+				}
+			});
+
+			window.rl.addHook('view-model-on-show', function (sName, oViewModel) {
+				if (!bStarted && oViewModel &&
+					('View:RainLoop:Login' === sName || 'View/App/Login' === sName || 'LoginViewModel' === sName || 'LoginAppView' === sName) &&
+					window.rl.pluginSettingsGet('recaptcha', 'show_captcha_on_login'))
+				{
+					bStarted = true;
+					StartRecaptcha();
+				}
+			});
+
+			window.rl.addHook('ajax-default-request', function (sAction, oParameters) {
+				if ('Login' === sAction && oParameters && null !== nId && window.grecaptcha)
+				{
+					oParameters['RecaptchaResponse'] = window.grecaptcha.getResponse(nId);
+				}
+			});
+
+			window.rl.addHook('ajax-default-response', function (sAction, oData, sType) {
+				if ('Login' === sAction)
+				{
+					if (!oData || 'success' !== sType || !oData['Result'])
+					{
+						if (null !== nId && window.grecaptcha)
+						{
+							window.grecaptcha.reset(nId);
+						}
+						else if (oData && oData['Captcha'])
+						{
+							StartRecaptcha();
+						}
+
+					}
+				}
+			});
+		}
+	});
+
+}($, window));

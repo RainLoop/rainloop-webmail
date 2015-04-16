@@ -1,0 +1,9 @@
+<textarea class="i18n" rows="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+	data-bind="value: value, enable: enable, attr: { 'placeholder': placeholder, 'rows': rows, 'spellcheck': spellcheck ? 'true' : 'false' }, css: className"></textarea>
+<!-- ko if: triggered -->
+	&nbsp;
+	<div data-bind="component: {
+		name: 'SaveTrigger',
+		params: { value: trigger, verticalAlign: 'top' }
+	}"></div>
+<!-- /ko -->

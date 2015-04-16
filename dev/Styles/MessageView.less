@@ -17,7 +17,7 @@ html.rl-no-preview-pane {
 		position: absolute;
 		top: 0;
 		right: 0;
-		left: 0;
+		left: -2px;
 		height: 30px;
 		padding: 10px 0;
 		color: #fff;
@@ -30,12 +30,11 @@ html.rl-no-preview-pane {
 		top: 50px + @rlLowMargin;
 		bottom: @rlLowMargin + @rlBottomMargin;
 		right: @rlLowMargin;
-		left: -1px;
-		overflow: hidden;
+		left: -2px;
+		/*overflow: hidden;*/
 		border: @rlLowBorderSize solid @rlMainDarkColor;
-		
-		.border-top-right-radius(@rlLowBorderRadius);
-		.border-bottom-right-radius(@rlLowBorderRadius);
+
+		.border-radius(@rlLowBorderRadius);
 
 		background-color: #fff;
 
@@ -58,8 +57,8 @@ html.rl-no-preview-pane {
 			text-align: center;
 			font-size: 24px;
 			line-height: 30px;
-			padding-top: 120px;
 			color: #999;
+			padding: 120px 10px 0 10px;
 		}
 
 		.b-message-view-desc.error {
@@ -68,6 +67,100 @@ html.rl-no-preview-pane {
 
 		.content {
 			-webkit-overflow-scrolling: touch;
+		}
+
+		.message-fixed-button-toolbar {
+			z-index: 100;
+			position: absolute;
+			top: 33px;
+			right: 10px;
+		}
+
+		.flagParent {
+
+			cursor: pointer;
+			margin-right: 5px;
+
+			.flagOn {
+				color: orange;
+			}
+
+			.flagOff {
+				opacity: 0.5;
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
+
+		.messageItemHeader {
+
+			position: absolute;
+			padding: 10px;
+			background-color: #f8f8f8;
+			border-top: 0px;
+			border-bottom: 1px solid #ddd;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			right: 0;
+
+			.date {
+			}
+
+			.fromPic {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				float: left;
+				padding: 2px;
+				margin: 0 5px 0 0;
+				background: #fff;
+				border: 1px solid #ccc;
+				border-radius: 6px;
+				box-sizing: border-box;
+			}
+
+			.subjectParent {
+				font-size: 16px;
+				font-weight: bold;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+
+			.senderParent {
+				margin-top: 10px;
+			}
+
+			.messageButtons {
+				margin-top: 5px;
+			}
+
+			.informationShort {
+				margin-left: 22px;
+				a {
+					.g-ui-link;
+				}
+			}
+			.informationFull {
+				margin-top: 10px;
+				border: 1px solid #ddd;
+				background-color: #fff;
+				border-radius: 5px;
+				padding: 10px 15px;
+				overflow: hidden;
+			}
+
+			.emptySubjectText {
+				display: none;
+				font-style: italic;
+				color: #999;
+			}
+
+			&.emptySubject .emptySubjectText {
+				display: inline;
+			}
 		}
 
 		.messageItem {
@@ -81,21 +174,11 @@ html.rl-no-preview-pane {
 			-webkit-overflow-scrolling: touch;
 			border-radius: @rlLowBorderRadius;
 
-			.emptySubjectText {
-				display: none;
-				font-style: italic;
-				color: #999;
-			}
-
-			&.emptySubject .emptySubjectText {
-				display: inline;
-			}
-
 			.buttonUp, .buttonUnFull, .buttonFull {
 				display: inline-block;
 				position: fixed;
-				right: 30px;
-				top: 90px;
+				right: 25px;
+				bottom: 25px;
 				height: 30px;
 				width: 30px;
 				text-align: center;
@@ -119,69 +202,12 @@ html.rl-no-preview-pane {
 			}
 
 			.buttonUp {
-				right: 70px;
+				right: 65px;
 				z-index: 0;
 			}
 
-			.buttonUnFull {
+			.buttonUp, .buttonUnFull {
 				display: none;
-			}
-
-			.messageItemHeader {
-
-				position: relative;
-				padding: 10px;
-				background-color: #f8f8f8;
-				border-top: 0px;
-				border-bottom: 1px solid #ddd;
-				z-index: 1;
-
-				.date {
-				}
-
-				.fromPic {
-					display: inline-block;
-					width: 50px;
-					height: 50px;
-					float: left;
-					padding: 2px;
-					margin: 0 5px 0 0;
-					background: #fff;
-					border: 1px solid #ccc;
-					border-radius: 10px;
-					box-sizing: border-box;
-				}
-
-				.subjectParent {
-					font-size: 16px;
-					font-weight: bold;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-					margin-left: 3px;
-				}
-
-				.senderParent {
-					margin-top: 10px;
-				}
-
-				.messageButtons {
-					margin-top: 5px;
-				}
-
-				.informationShort {
-					margin-left: 15px;
-					a {
-						.g-ui-link;
-					}
-				}
-				.informationFull {
-					margin-top: 10px;
-					border: 1px solid #ddd;
-					background-color: #fff;
-					border-radius: 5px;
-					padding: 10px 15px;
-				}
 			}
 
 			.loading {
@@ -218,45 +244,38 @@ html.rl-no-preview-pane {
 
 			.attachmentsPlace {
 
-				padding: 10px;
+				padding: 10px 10px 6px 10px;
+				background: #eee;
+				border-bottom: 1px solid #ddd;
+				position: relative;
 
 				.attachmentList {
-
 					margin: 0;
+				}
 
-					.attachmentItem {
+				.checkedParent {
+					display: none;
+				}
 
+				&.selection-mode {
+					.checkedParent {
 						display: inline-block;
-						margin: 5px;
-						padding: 5px;
-						max-width: 170px;
-						min-width: 60px;
-						overflow: hidden;
-						cursor: pointer;
-						list-style: none;
-						line-height: 24px;
-						border: 2px solid grey;
-						background-color: #fff;
-						box-shadow: 1px 1px 5px #ccc;
-						box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-
-						border-radius: 6px;
-
-						.attachmentIcon {
-							font-size: 23px;
-							width: 23px;
-							height: 23px;
-						}
-
-						.attachmentPreview {
-							color: #999;
-							margin: 0px 5px;
-						}
-						.attachmentPreview:hover {
-							color: #333;
-						}
 					}
 				}
+
+				.controls-handle {
+					position: absolute;
+					bottom: 5px;
+					right: 8px;
+					color: #999;
+					cursor: pointer;
+				}
+			}
+
+			.attachmentsControls {
+				padding: 7px 5px 7px 14px;
+				background: #e8e8e8;
+				border-bottom: 1px solid #ddd;
 			}
 
 			.rlBlockquoteSwitcher {
@@ -345,6 +364,12 @@ html.rl-no-preview-pane {
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 						}
 
+						pre.b-plain-openpgp {
+							display: inline-block;
+							padding: 6px 10px;
+							border: 1px dashed #666;
+						}
+
 						blockquote {
 							border-left: 2px solid blue;
 							color: blue;
@@ -366,10 +391,46 @@ html.rl-no-preview-pane {
 	}
 
 	&.message-focused .b-content {
-		z-index: 102;
-		box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+		z-index: 101;
+		box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
 		border-radius: @rlLowBorderRadius;
 		border-color: darken(@rlMainDarkColor, 5%);
+	}
+
+	.thread-controls {
+		.dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		&.open .dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+	}
+
+	.thread-list {
+
+		.e-link {
+			padding: 4px 8px 6px 10px;
+		}
+
+		&.hide-more .thread-list-message.more-that {
+			display: none;
+		}
+
+		.thread-date {
+			font-size: 13px;
+			color: #999;
+		}
+
+		.more-threads {
+			text-align: center;
+			padding: 8px;
+			background-color: #F5F5F5;
+			color: #555;
+			text-decoration: underline;
+			border-top: 1px dashed #555;
+		}
 	}
 }
 
@@ -377,6 +438,7 @@ html.rl-no-preview-pane .messageView {
 	.toolbar {
 		padding-left: @rlMainBorderSize;
 	}
+
 	.b-content {
 		top: 50px;
 		bottom: @rlBottomMargin;
@@ -384,10 +446,12 @@ html.rl-no-preview-pane .messageView {
 		border: @rlMainBorderSize solid @rlMainDarkColor;
 		box-shadow: @rlMainShadow;
 		border-radius: @rlMainBorderRadius;
+	}
+}
 
-		.buttonUp, .buttonUnFull, .buttonFull {
-			top: 70px;
-		}
+html.rl-bottom-preview-pane .messageView {
+	.b-content {
+		bottom: @rlBottomMargin;
 	}
 }
 
@@ -408,23 +472,26 @@ html.rl-message-fullscreen {
 	}
 
 	.messageView .b-content {
-		position: fixed;
-		margin: 5px;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 10000;
-		border: @rlLowBorderSize solid @rlMainDarkColor;
-		border-radius: @rlLowBorderRadius;
+		position: fixed !important;
+		margin: 5px !important;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		z-index: 10000 !important;
+		border: @rlLowBorderSize solid @rlMainDarkColor  !important;
+		border-radius: @rlLowBorderRadius  !important;
 
-		.buttonUp, .buttonUnFull {
-			display: inline-block;
-			top: 36px;
+		.buttonUnFull {
+			display: inline-block !important;
 		}
 
 		.buttonFull {
-			display: none;
+			display: none  !important;
 		}
 	}
+}
+
+.nano-scrolllimit-top .buttonUp {
+	display: inline-block !important;
 }

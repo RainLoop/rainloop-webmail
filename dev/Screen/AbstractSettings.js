@@ -10,7 +10,7 @@
 
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractScreen = require('Knoin/AbstractScreen')
@@ -103,7 +103,7 @@
 					RoutedSettingsViewModel.__vm = oSettingsScreen;
 
 					ko.applyBindingAccessorsToNode(oViewModelDom[0], {
-						'i18nInit': true,
+						'translatorInit': true,
 						'template': function () { return {'name': RoutedSettingsViewModel.__rlSettingsData.Template}; }
 					}, oSettingsScreen);
 
@@ -133,7 +133,7 @@
 					{
 						self.oCurrentSubScreen.viewModelDom.show();
 						Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
-						Utils.delegateRun(self.oCurrentSubScreen, 'onFocus', [], 200);
+						Utils.delegateRun(self.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
 						_.each(self.menu(), function (oItem) {
 							oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
@@ -149,7 +149,7 @@
 		}
 		else
 		{
-			kn.setHash(LinkBuilder.settings(), false, true);
+			kn.setHash(Links.settings(), false, true);
 		}
 	};
 

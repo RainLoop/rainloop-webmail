@@ -130,15 +130,15 @@ abstract class AbstractPlugin
 	{
 		return array();
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	public function Hash()
 	{
-		return \md5($this->sVersion);
+		return \md5($this->sName.'@'.$this->sVersion);
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -146,7 +146,7 @@ abstract class AbstractPlugin
 	{
 		return '';
 	}
-	
+
 	/**
 	 * @final
 	 * @return array
@@ -161,22 +161,41 @@ abstract class AbstractPlugin
 				$this->aConfigMap = array();
 			}
 		}
-		
+
 		return $this->aConfigMap;
 	}
 
 	/**
 	 * @param string $sPath
-	 * @param string $sName
-	 * @param string $sVersion = ''
 	 *
 	 * @return self
 	 */
-	public function SetValues($sPath, $sName, $sVersion = '')
+	public function SetPath($sPath)
 	{
-		$this->sName = $sName;
 		$this->sPath = $sPath;
 
+		return $this;
+	}
+
+	/**
+	 * @param string $sName
+	 *
+	 * @return self
+	 */
+	public function SetName($sName)
+	{
+		$this->sName = $sName;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $sVersion
+	 *
+	 * @return self
+	 */
+	public function SetVersion($sVersion)
+	{
 		if (0 < \strlen($sVersion))
 		{
 			$this->sVersion = $sVersion;
@@ -222,14 +241,14 @@ abstract class AbstractPlugin
 	 */
 	public function Init()
 	{
-		
+
 	}
 
 	/**
 	 * @param bool $bAdmin
 	 * @param bool $bAuth
 	 * @param array $aConfig
-	 * 
+	 *
 	 * @return void
 	 */
 	public function FilterAppDataPluginSection($bAdmin, $bAuth, &$aConfig)
@@ -334,5 +353,68 @@ abstract class AbstractPlugin
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param string $sName
+	 * @param string $sPlace
+	 * @param string $sHtml
+	 * @param bool $bPrepend = false
+	 *
+	 * @return self
+	 */
+	protected function ajaxResponse($sFunctionName, $aData)
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->AjaxResponseHelper(
+				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $aData);
+		}
+
+		return \json_encode($aData);
+	}
+
+	/**
+	 * @param string $sKey
+	 * @param mixed $mDefault = null
+	 *
+	 * @return mixed
+	 */
+	public function ajaxParam($sKey, $mDefault = null)
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->Actions()->GetActionParam($sKey, $mDefault);
+		}
+
+		return '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUserSettings()
+	{
+		if ($this->oPluginManager)
+		{
+			return $this->oPluginManager->GetUserPluginSettings($this->Name());
+		}
+
+		return array();
+	}
+
+	/**
+	 * @param array $aSettings
+	 *
+	 * @return bool
+	 */
+	public function saveUserSettings($aSettings)
+	{
+		if ($this->oPluginManager && \is_array($aSettings))
+		{
+			return $this->oPluginManager->SaveUserPluginSettings($this->Name(), $aSettings);
+		}
+
+		return false;
 	}
 }

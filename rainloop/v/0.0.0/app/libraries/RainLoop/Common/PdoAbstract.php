@@ -72,6 +72,11 @@ abstract class PdoAbstract
 			throw new \Exception('Unknown PDO SQL connection type');
 		}
 
+		if (empty($sDsn))
+		{
+			throw new \Exception('Empty PDO DSN configuration');
+		}
+
 		$this->sDbType = $sType;
 
 		$oPdo = false;

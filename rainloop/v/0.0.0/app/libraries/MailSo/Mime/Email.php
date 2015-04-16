@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mime;
 
 /**
@@ -24,6 +33,16 @@ class Email
 	private $sRemark;
 
 	/**
+	 * @var string
+	 */
+	private $sDkimStatus;
+
+	/**
+	 * @var string
+	 */
+	private $sDkimValue;
+
+	/**
 	 * @access private
 	 *
 	 * @param string $sEmail
@@ -39,9 +58,14 @@ class Email
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
-		$this->sDisplayName = \trim($sDisplayName);
-		$this->sRemark = \trim($sRemark);
+		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(
+			\MailSo\Base\Utils::Trim($sEmail), true);
+
+		$this->sDisplayName = \MailSo\Base\Utils::Trim($sDisplayName);
+		$this->sRemark = \MailSo\Base\Utils::Trim($sRemark);
+
+		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::NONE;
+		$this->sDkimValue = '';
 	}
 
 	/**
@@ -66,6 +90,7 @@ class Email
 	 */
 	public static function Parse($sEmailAddress)
 	{
+		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmailAddress, true))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
@@ -217,6 +242,22 @@ class Email
 	/**
 	 * @return string
 	 */
+	public function GetDkimStatus()
+	{
+		return $this->sDkimStatus;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetDkimValue()
+	{
+		return $this->sDkimValue;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function GetAccountName()
 	{
 		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
@@ -233,13 +274,24 @@ class Email
 	}
 
 	/**
+	 * @param string $sDkimStatus
+	 * @param string $sDkimValue = ''
+	 */
+	public function SetDkimStatusAndValue($sDkimStatus, $sDkimValue = '')
+	{
+		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
+		$this->sDkimValue = $sDkimValue;
+	}
+
+	/**
 	 * @param bool $bIdn = false
-	 * 
+	 *
 	 * @return array
 	 */
 	public function ToArray($bIdn = false)
 	{
-		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark);
+		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark,
+			$this->sDkimStatus, $this->sDkimValue);
 	}
 
 	/**

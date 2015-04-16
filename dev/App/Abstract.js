@@ -7,11 +7,14 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
+		key = require('key'),
 
 		Globals = require('Common/Globals'),
+		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
-		LinkBuilder = require('Common/LinkBuilder'),
+		Links = require('Common/Links'),
 		Events = require('Common/Events'),
+		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
 
@@ -44,10 +47,41 @@
 					oEvent.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
 					Globals.$html.attr('class'),
-					Utils.microtime() - Globals.now
+					Utils.microtime() - Globals.startMicrotime
 				);
 			}
 		});
+
+		Globals.$win.on('resize', function () {
+			Events.pub('window.resize');
+		});
+
+		Events.sub('window.resize', _.throttle(function () {
+
+			var
+				iH = Globals.$win.height(),
+				iW = Globals.$win.height()
+			;
+
+			if (Globals.$win.__sizes[0] !== iH || Globals.$win.__sizes[1] !== iW)
+			{
+				Globals.$win.__sizes[0] = iH;
+				Globals.$win.__sizes[1] = iW;
+
+				Events.pub('window.resize.real');
+			}
+
+		}, 50));
+
+		 // DEBUG
+//		Events.sub({
+//			'window.resize': function () {
+//				window.console.log('window.resize');
+//			},
+//			'window.resize.real': function () {
+//				window.console.log('window.resize.real');
+//			}
+//		});
 
 		Globals.$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
@@ -60,6 +94,14 @@
 				Globals.$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
+
+		Globals.$doc.on('mousemove keypress click', _.debounce(function () {
+			Events.pub('rl.auto-logout-refresh');
+		}, 5000));
+
+		key('esc, enter', Enums.KeyState.All, _.bind(function () {
+			Utils.detectDropdownVisibility();
+		}, this));
 	}
 
 	_.extend(AbstractApp.prototype, AbstractBoot.prototype);
@@ -117,23 +159,55 @@
 		return true;
 	};
 
+	AbstractApp.prototype.googlePreviewSupportedCache = null;
+
+	/**
+	 * @return {boolean}
+	 */
+	AbstractApp.prototype.googlePreviewSupported = function ()
+	{
+		if (null === this.googlePreviewSupportedCache)
+		{
+			this.googlePreviewSupportedCache = !!Settings.settingsGet('AllowGoogleSocial') &&
+				!!Settings.settingsGet('AllowGoogleSocialPreview');
+		}
+
+		return this.googlePreviewSupportedCache;
+	};
+
 	/**
 	 * @param {string} sTitle
 	 */
-	AbstractApp.prototype.setTitle = function (sTitle)
+	AbstractApp.prototype.setWindowTitle = function (sTitle)
 	{
 		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
 			Settings.settingsGet('Title') || '';
 
-		window.document.title = '';
+		window.document.title = sTitle + ' ...';
 		window.document.title = sTitle;
 	};
 
+	AbstractApp.prototype.redirectToAdminPanel = function ()
+	{
+		_.delay(function () {
+			window.location.href = Links.rootAdmin();
+		}, 100);
+	};
+
+	AbstractApp.prototype.clearClientSideToken = function ()
+	{
+		if (window.__rlah_clear)
+		{
+			window.__rlah_clear();
+		}
+	};
+
 	/**
+	 * @param {boolean=} bAdmin = false
 	 * @param {boolean=} bLogout = false
 	 * @param {boolean=} bClose = false
 	 */
-	AbstractApp.prototype.loginAndLogoutReload = function (bLogout, bClose)
+	AbstractApp.prototype.loginAndLogoutReload = function (bAdmin, bLogout, bClose)
 	{
 		var
 			kn = require('Knoin/Knoin'),
@@ -144,12 +218,19 @@
 		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
 		bClose = Utils.isUnd(bClose) ? false : !!bClose;
 
+		if (bLogout)
+		{
+			this.clearClientSideToken();
+		}
+
 		if (bLogout && bClose && window.close)
 		{
 			window.close();
 		}
 
-		if (bLogout && '' !== sCustomLogoutLink && window.location.href !== sCustomLogoutLink)
+		sCustomLogoutLink = sCustomLogoutLink || (bAdmin ? Links.rootAdmin() : Links.rootUser());
+
+		if (bLogout && window.location.href !== sCustomLogoutLink)
 		{
 			_.delay(function () {
 				if (bInIframe && window.parent)
@@ -165,7 +246,7 @@
 		else
 		{
 			kn.routeOff();
-			kn.setHash(LinkBuilder.root(), true);
+			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
 			_.delay(function () {
@@ -190,15 +271,32 @@
 	{
 		Events.pub('rl.bootstart');
 
-		var ssm = require('ssm');
+		var
+			ssm = require('ssm'),
+			ko = require('ko')
+		;
 
-		Utils.initOnStartOrLangChange(function () {
-			Utils.initNotificationLanguage();
-		}, null);
+		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
+		ko.components.register('Input', require('Component/Input'));
+		ko.components.register('Select', require('Component/Select'));
+		ko.components.register('TextArea', require('Component/TextArea'));
+		ko.components.register('Radio', require('Component/Radio'));
 
-		_.delay(function () {
-			Utils.windowResize();
-		}, 1000);
+		ko.components.register('x-script', require('Component/Script'));
+
+		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
+		{
+			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
+		}
+		else
+		{
+//			ko.components.register('Checkbox', require('Component/Classic/Checkbox'));
+			ko.components.register('Checkbox', require('Component/Checkbox'));
+		}
+
+		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);
+
+		_.delay(Utils.windowResizeCallback, 1000);
 
 		ssm.addState({
 			'id': 'mobile',
@@ -261,6 +359,10 @@
 		});
 
 		ssm.ready();
+
+		require('Stores/Language').populate();
+		require('Stores/Theme').populate();
+		require('Stores/Social').populate();
 	};
 
 	module.exports = AbstractApp;

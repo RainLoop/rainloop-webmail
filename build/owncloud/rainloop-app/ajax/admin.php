@@ -4,7 +4,7 @@
  * ownCloud - RainLoop mail plugin
  *
  * @author RainLoop Team
- * @copyright 2014 RainLoop Team
+ * @copyright 2015 RainLoop Team
  *
  * https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud
  */
@@ -17,22 +17,20 @@ $sUrl = '';
 $sPath = '';
 $bAutologin = false;
 
-if (isset($_POST['appname'], $_POST['rainloop-url'], $_POST['rainloop-path']) && 'rainloop' === $_POST['appname'])
+if (isset($_POST['appname']) &&	'rainloop' === $_POST['appname'])
 {
-	OCP\Config::setAppValue('rainloop', 'rainloop-url', $_POST['rainloop-url']);
-	OCP\Config::setAppValue('rainloop', 'rainloop-path', $_POST['rainloop-path']);
 	OCP\Config::setAppValue('rainloop', 'rainloop-autologin', isset($_POST['rainloop-autologin']) ?
 		'1' === $_POST['rainloop-autologin'] : false);
 
-	$sUrl = OCP\Config::getAppValue('rainloop', 'rainloop-url', '');
-	$sPath = OCP\Config::getAppValue('rainloop', 'rainloop-path', '');
 	$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
 }
 else
 {
-	OC_JSON::error(array('Message' => 'Invalid Argument(s)', 'Url' => $sUrl, 'Path' => $sPath));
+	sleep(1);
+	OC_JSON::error(array('Message' => 'Invalid Argument(s)'));
 	return false;
 }
 
-OCP\JSON::success(array('Message' => 'Saved successfully', 'Url' => $sUrl, 'Path' => $sPath));
+sleep(1);
+OCP\JSON::success(array('Message' => 'Saved successfully'));
 return true;

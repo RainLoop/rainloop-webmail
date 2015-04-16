@@ -107,13 +107,15 @@ class Manager
 					}
 				}
 			}
+
+			$this->RunHook('api.bootstrap.plugins');
 		}
 	}
 
 	/**
 	 * @param string $sName
 	 *
-	 * @return \RainLoop\Plugins\AbstractPlugin | null
+	 * @return \RainLoop\Plugins\AbstractPlugin|null
 	 */
 	public function CreatePluginByName($sName)
 	{
@@ -134,9 +136,10 @@ class Manager
 				if ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin)
 				{
 					$oPlugin
-						->SetValues(APP_PLUGINS_PATH.$sName, $sName,
-							\file_exists(APP_PLUGINS_PATH.$sName.'/VERSION') ?
-								\file_get_contents(APP_PLUGINS_PATH.$sName.'/VERSION') : '')
+						->SetName($sName)
+						->SetPath(APP_PLUGINS_PATH.$sName)
+						->SetVersion(\file_exists(APP_PLUGINS_PATH.$sName.'/VERSION') ?
+							\file_get_contents(APP_PLUGINS_PATH.$sName.'/VERSION') : '')
 						->SetPluginManager($this)
 						->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
 					;
@@ -167,9 +170,10 @@ class Manager
 				if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
 					\file_exists($sPathName.'/index.php'))
 				{
-					$sVersion = @\file_get_contents($sPathName.'/VERSION');
 					$aList[] = array(
-						$sName, $sVersion
+						$sName,
+						\file_exists($sPathName.'/VERSION') ?
+							\file_get_contents($sPathName.'/VERSION') : '0.0'
 					);
 				}
 			}
@@ -188,7 +192,7 @@ class Manager
 	 *
 	 * @return string
 	 */
-	private function convertPluginFolderNameToClassName($sFolderName)
+	public function convertPluginFolderNameToClassName($sFolderName)
 	{
 		$aParts = \array_map('ucfirst', \array_map('strtolower',
 			\explode(' ', \preg_replace('/[^a-z0-9]+/', ' ', $sFolderName))));
@@ -205,7 +209,7 @@ class Manager
 	}
 
 	/**
-	 * @return \RainLoop\Actions
+	 * @return string
 	 */
 	public function Hash()
 	{
@@ -221,6 +225,23 @@ class Manager
 	/**
 	 * @param bool $bAdminScope = false
 	 *
+	 * @return bool
+	 */
+	public function HaveJs($bAdminScope = false)
+	{
+		$bResult = false;
+		
+		if ($this->bIsEnabled)
+		{
+			$bResult = $bAdminScope ? 0 < \count($this->aAdminJs) : 0 < \count($this->aJs);
+		}
+
+		return $bResult;
+	}
+
+	/**
+	 * @param bool $bAdminScope = false
+	 *
 	 * @return string
 	 */
 	public function CompileJs($bAdminScope = false)
@@ -231,14 +252,14 @@ class Manager
 			$aJs = $bAdminScope ? $this->aAdminJs : $this->aJs;
 			foreach ($aJs as $sFile)
 			{
-				if (file_exists($sFile))
+				if (\file_exists($sFile))
 				{
-					$aResult[] = file_get_contents($sFile);
+					$aResult[] = \file_get_contents($sFile);
 				}
 			}
 		}
 
-		return implode("\n", $aResult);
+		return \implode("\n", $aResult);
 	}
 
 	/**
@@ -279,12 +300,13 @@ class Manager
 	/**
 	 * @param bool $bAdmin
 	 * @param array $aAppData
+	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 *
 	 * @return \RainLoop\Plugins\Manager
 	 */
 	public function InitAppData($bAdmin, &$aAppData, $oAccount = null)
 	{
-		if ($this->bIsEnabled && isset($aAppData['Plugins']) && is_array($aAppData['Plugins']))
+		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins']))
 		{
 			$bAuth = isset($aAppData['Auth']) && !!$aAppData['Auth'];
 			foreach ($this->aPlugins as $oPlugin)
@@ -317,6 +339,12 @@ class Manager
 			}
 
 			$this->RunHook('filter.app-data', array($bAdmin, &$aAppData));
+
+			$this->RunHook('filter.app-data[2]', array(
+				'IsAdmin' => $bAdmin,
+				'AppData' => &$aAppData,
+				'Account' => $oAccount
+			));
 		}
 
 		return $this;
@@ -330,7 +358,7 @@ class Manager
 	 */
 	public function AddHook($sHookName, $mCallbak)
 	{
-		if ($this->bIsEnabled && is_callable($mCallbak))
+		if ($this->bIsEnabled && \is_callable($mCallbak))
 		{
 			if (!isset($this->aHooks[$sHookName]))
 			{
@@ -407,9 +435,9 @@ class Manager
 					$this->WriteLog('Hook: '.$sHookName, \MailSo\Log\Enumerations\Type::NOTE);
 				}
 
-				foreach ($this->aHooks[$sHookName] as $mCallbak)
+				foreach ($this->aHooks[$sHookName] as $mCallback)
 				{
-					call_user_func_array($mCallbak, $aArg);
+					\call_user_func_array($mCallback, $aArg);
 				}
 			}
 		}
@@ -491,11 +519,11 @@ class Manager
 
 			if ($bPrepend)
 			{
-				array_unshift($this->aProcessTemplate[$sName][$sPlace], $sHtml);
+				\array_unshift($this->aProcessTemplate[$sName][$sPlace], $sHtml);
 			}
 			else
 			{
-				array_push($this->aProcessTemplate[$sName][$sPlace], $sHtml);
+				\array_push($this->aProcessTemplate[$sName][$sPlace], $sHtml);
 			}
 		}
 
@@ -504,19 +532,19 @@ class Manager
 
 	/**
 	 * @param string $sActionName
-	 * @param mixed $mCallbak
+	 * @param mixed $mCallback
 	 *
 	 * @return \RainLoop\Plugins\Manager
 	 */
-	public function AddAdditionalAjaxAction($sActionName, $mCallbak)
+	public function AddAdditionalAjaxAction($sActionName, $mCallback)
 	{
-		if ($this->bIsEnabled && is_callable($mCallbak) && 0 < strlen($sActionName))
+		if ($this->bIsEnabled && \is_callable($mCallback) && 0 < \strlen($sActionName))
 		{
-			$sActionName = 'Do'.$sActionName;
+			$sActionName = 'DoPlugin'.$sActionName;
 
 			if (!isset($this->aAdditionalAjax[$sActionName]))
 			{
-				$this->aAdditionalAjax[$sActionName] = $mCallbak;
+				$this->aAdditionalAjax[$sActionName] = $mCallback;
 			}
 		}
 
@@ -544,7 +572,83 @@ class Manager
 		{
 			if (isset($this->aAdditionalAjax[$sActionName]))
 			{
-				return call_user_func($this->aAdditionalAjax[$sActionName]);
+				return \call_user_func($this->aAdditionalAjax[$sActionName]);
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string $sFunctionName
+	 * @param mixed $mData
+	 *
+	 * @return mixed
+	 */
+	public function AjaxResponseHelper($sFunctionName, $mData)
+	{
+		return $this->oActions->DefaultResponse($sFunctionName, $mData);
+	}
+
+	/**
+	 * @param string $sPluginName
+	 *
+	 * @return array
+	 */
+	public function GetUserPluginSettings($sPluginName)
+	{
+		$oAccount = $this->oActions->GetAccount();
+		if ($oAccount)
+		{
+			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
+			if ($oSettings)
+			{
+				$aData = $oSettings->GetConf('Plugins', array());
+				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName]))
+				{
+					return $aData[$sPluginName];
+				}
+			}
+		}
+
+		return array();
+	}
+
+	/**
+	 * @param string $sPluginName
+	 * @param array $aSettings
+	 *
+	 * @return bool
+	 */
+	public function SaveUserPluginSettings($sPluginName, $aSettings)
+	{
+		$oAccount = $this->oActions->GetAccount();
+		if ($oAccount && \is_array($aSettings))
+		{
+			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
+			if ($oSettings)
+			{
+				$aData = $oSettings->GetConf('Plugins', array());
+				if (!\is_array($aData))
+				{
+					$aData = array();
+				}
+
+				$aPluginSettings = array();
+				if (isset($aData[$sPluginName]) && \is_array($aData[$sPluginName]))
+				{
+					$aPluginSettings = $aData[$sPluginName];
+				}
+
+				foreach ($aSettings as $sKey => $mValue)
+				{
+					$aPluginSettings[$sKey] = $mValue;
+				}
+
+				$aData[$sPluginName] = $aPluginSettings;
+				$oSettings->SetConf('Plugins',$aData);
+
+				return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 			}
 		}
 
@@ -641,29 +745,29 @@ class Manager
 
 	/**
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 *
 	 * @return void
 	 */
-	public function WriteLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteLog($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->Write($sDesc, $iDescType, 'PLUGIN');
+			$this->oLogger->Write($sDesc, $iType, 'PLUGIN');
 		}
 	}
 
 	/**
 	 * @param string $sDesc
-	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 *
 	 * @return void
 	 */
-	public function WriteException($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteException($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->WriteException($sDesc, $iDescType, 'PLUGIN');
+			$this->oLogger->WriteException($sDesc, $iType, 'PLUGIN');
 		}
 	}
 }

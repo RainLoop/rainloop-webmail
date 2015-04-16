@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Poppassd;
 
 /**
@@ -41,6 +50,8 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 * @param string $sServerName
 	 * @param int $iPort = 106
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = true
 	 *
 	 * @return \MailSo\Poppassd\PoppassdClient
 	 *
@@ -49,11 +60,13 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Poppassd\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 106,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = true)
 	{
 		$this->iRequestTime = \microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+
 		$this->validateResponse();
 
 		return $this;

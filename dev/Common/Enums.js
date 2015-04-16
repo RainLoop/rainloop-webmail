@@ -8,11 +8,41 @@
 	/**
 	 * @enum {string}
 	 */
+	Enums.FileType = {
+		'Unknown': 'unknown',
+		'Text': 'text',
+		'Html': 'html',
+		'Code': 'code',
+		'Eml': 'eml',
+		'WordText': 'word-text',
+		'Pdf': 'pdf',
+		'Image': 'image',
+		'Audio': 'audio',
+		'Video': 'video',
+		'Sheet': 'sheet',
+		'Presentation': 'presentation',
+		'Certificate': 'certificate',
+		'Archive': 'archive'
+	};
+
+	/**
+	 * @enum {string}
+	 */
 	Enums.StorageResultType = {
 		'Success': 'success',
 		'Abort': 'abort',
 		'Error': 'error',
 		'Unload': 'unload'
+	};
+
+	/**
+	 * @enum {string}
+	 */
+	Enums.Focused = {
+		'None': 'none',
+		'MessageList': 'message-list',
+		'MessageView': 'message-view',
+		'FolderList': 'folder-list'
 	};
 
 	/**
@@ -36,15 +66,19 @@
 	 * @enum {string}
 	 */
 	Enums.Capa = {
-		'Prem': 'PREM',
 		'TwoFactor': 'TWO_FACTOR',
+		'TwoFactorForce': 'TWO_FACTOR_FORCE',
 		'OpenPGP': 'OPEN_PGP',
 		'Prefetch': 'PREFETCH',
 		'Gravatar': 'GRAVATAR',
 		'Themes': 'THEMES',
+		'UserBackground': 'USER_BACKGROUND',
+		'Sieve': 'SIEVE',
 		'Filters': 'FILTERS',
-		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
-		'AdditionalIdentities': 'ADDITIONAL_IDENTITIES'
+		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
+		'Templates': 'TEMPLATES',
+		'AutoLogout': 'AUTOLOGOUT',
+		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS'
 	};
 
 	/**
@@ -144,7 +178,11 @@
 		'MessagesInboxLastHash': 1,
 		'MailBoxListSize': 2,
 		'ExpandedFolders': 3,
-		'FolderListSize': 4
+		'FolderListSize': 4,
+		'MessageListSize': 5,
+		'LastReplyAction': 6,
+		'LastSignMe': 7,
+		'ComposeLastIdentityID': 8
 	};
 
 	/**
@@ -196,7 +234,7 @@
 	/**
 	 * @enum {number}
 	 */
-	Enums.DesktopNotifications = {
+	Enums.DesktopNotification = {
 		'Allowed': 0,
 		'NotAllowed': 1,
 		'Denied': 2,
@@ -217,15 +255,9 @@
 	 */
 	Enums.EditorDefaultType = {
 		'Html': 'Html',
-		'Plain': 'Plain'
-	};
-
-	/**
-	 * @enum {string}
-	 */
-	Enums.CustomThemeType = {
-		'Light': 'Light',
-		'Dark': 'Dark'
+		'Plain': 'Plain',
+		'HtmlForced': 'HtmlForced',
+		'PlainForced': 'PlainForced'
 	};
 
 	/**
@@ -258,21 +290,13 @@
 	};
 
 	/**
-	 * @enum {string}
-	 */
-	Enums.InterfaceAnimation = {
-		'None': 'None',
-		'Normal': 'Normal',
-		'Full': 'Full'
-	};
-
-	/**
 	 * @enum {number}
 	 */
 	Enums.Layout = {
 		'NoPreview': 0,
 		'SidePreview': 1,
-		'BottomPreview': 2
+		'BottomPreview': 2,
+		'Mobile': 3
 	};
 
 	/**
@@ -280,7 +304,6 @@
 	 */
 	Enums.FilterConditionField = {
 		'From': 'From',
-		'To': 'To',
 		'Recipient': 'Recipient',
 		'Subject': 'Subject'
 	};
@@ -300,8 +323,10 @@
 	 */
 	Enums.FiltersAction = {
 		'None': 'None',
-		'Move': 'Move',
+		'MoveTo': 'MoveTo',
 		'Discard': 'Discard',
+		'Vacation': 'Vacation',
+		'Reject': 'Reject',
 		'Forward': 'Forward'
 	};
 
@@ -309,8 +334,8 @@
 	 * @enum {string}
 	 */
 	Enums.FilterRulesType = {
-		'And': 'And',
-		'Or': 'Or'
+		'All': 'All',
+		'Any': 'Any'
 	};
 
 	/**
@@ -393,6 +418,10 @@
 		'CantSendMessage': 302,
 		'InvalidRecipients': 303,
 
+		'CantSaveFilters': 351,
+		'CantGetFilters': 352,
+		'FiltersAreNotCorrect': 355,
+
 		'CantCreateFolder': 400,
 		'CantRenameFolder': 401,
 		'CantDeleteFolder': 402,
@@ -415,12 +444,20 @@
 		'LicensingBanned': 712,
 
 		'DemoSendMessageError': 750,
+		'DemoAccountError': 751,
 
 		'AccountAlreadyExists': 801,
+		'AccountDoesNotExist': 802,
 
 		'MailServerError': 901,
 		'ClientViewError': 902,
 		'InvalidInputArgument': 903,
+
+		'AjaxFalse': 950,
+		'AjaxAbort': 951,
+		'AjaxParse': 952,
+		'AjaxTimeout': 953,
+
 		'UnknownNotification': 999,
 		'UnknownError': 999
 	};

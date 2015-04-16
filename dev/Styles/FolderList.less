@@ -7,6 +7,12 @@
 	&.focused .b-content {
 	}
 
+	.b-folders-user {
+		.e-link.print-count.system .badge {
+			display: none !important;
+		}
+	}
+
 	.b-toolbar {
 		position: absolute;
 		top: 0;
@@ -144,27 +150,42 @@
 	.b-sub-folders .e-item .e-link {
 		padding-left: @subPadding * 1 + @folderItemPadding;
 	}
-	.b-sub-folders.unpaddig-folder .e-item .e-link {
-		padding-left: @folderItemPadding;
-	}
 	.b-sub-folders .b-sub-folders .e-item .e-link {
 		padding-left: @subPadding * 2 + @folderItemPadding;
-	}
-	.b-sub-folders.unpaddig-folder .b-sub-folders .e-item .e-link {
-		padding-left: @subPadding * 1 + @folderItemPadding;
 	}
 	.b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
 		padding-left: @subPadding * 3 + @folderItemPadding;
 	}
-	.b-sub-folders.unpaddig-folder .b-sub-folders .b-sub-folders .e-item .e-link {
-		padding-left: @subPadding * 2 + @folderItemPadding;
-	}
 	.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
 		padding-left: @subPadding * 4 + @folderItemPadding;
 	}
-	.b-sub-folders.unpaddig-folder .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
-		padding-left: @subPadding * 3 + @folderItemPadding;
+
+/**/
+	&.single-root-inbox .i-am-inbox.e-link {
+		display: none !important;
 	}
+
+	&.single-root-inbox .i-am-inbox-wrapper > .b-sub-folders {
+		max-height: none !important;
+		height: inherit !important;
+		display: block !important;
+	}
+
+	&.single-root-inbox .i-am-inbox-wrapper {
+		.b-sub-folders .e-item .e-link {
+			padding-left: @folderItemPadding;
+		}
+		.b-sub-folders .b-sub-folders .e-item .e-link {
+			padding-left: @subPadding * 1 + @folderItemPadding;
+		}
+		.b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+			padding-left: @subPadding * 2 + @folderItemPadding;
+		}
+		.b-sub-folders .b-sub-folders .b-sub-folders .b-sub-folders .e-item .e-link {
+			padding-left: @subPadding * 3 + @folderItemPadding;
+		}
+	}
+/**/
 }
 
 html.rl-left-panel-disabled {

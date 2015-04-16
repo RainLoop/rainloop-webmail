@@ -9,7 +9,7 @@
 
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/App/Data'),
+		PgpStore = require('Stores/User/Pgp'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -38,11 +38,14 @@
 				aMatch = null,
 				sKey = Utils.trim(this.key()),
 				oReg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
-				oOpenpgpKeyring = Data.openpgpKeyring
+				oOpenpgpKeyring = PgpStore.openpgpKeyring
 			;
 
-			sKey = sKey.replace(/[\r\n]([a-zA-Z0-9]{2,}:[^\r\n]+)[\r\n]+([a-zA-Z0-9\/\\+=]{10,})/g, '\n$1!-!N!-!$2')
-				.replace(/[\n\r]+/g, '\n').replace(/!-!N!-!/g, '\n\n');
+			if (/[\n]/.test(sKey))
+			{
+				sKey = sKey.replace(/[\r]+/g, '')
+					.replace(/[\n]{2,}/g, '\n\n');
+			}
 
 			this.key.error('' === sKey);
 
@@ -77,7 +80,7 @@
 
 			oOpenpgpKeyring.store();
 
-			require('App/App').reloadOpenPgpKeys();
+			require('App/User').reloadOpenPgpKeys();
 			Utils.delegateRun(this, 'cancelCommand');
 
 			return true;
@@ -100,7 +103,7 @@
 		this.clearPopup();
 	};
 
-	AddOpenPgpKeyPopupView.prototype.onFocus = function ()
+	AddOpenPgpKeyPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.key.focus(true);
 	};

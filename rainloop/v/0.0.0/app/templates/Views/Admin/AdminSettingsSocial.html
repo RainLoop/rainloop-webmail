@@ -1,142 +1,193 @@
 <div class="adminSecurity">
 	<div class="row">
-		<div class="alert alert-info span10" style="margin-top: 10px;">
-			Detailed information on social integration is found at
+		<div class="alert alert-info span8" style="margin-top: 10px;">
+			<span data-i18n="TAB_INTEGRATIONS/TOP_ALERT"></span>
+			&nbsp;
 			<a href="http://rainloop.net/docs/social/" target="_blank">http://rainloop.net/docs/social/</a>
 		</div>
 	</div>
 	<div class="form-horizontal g-ui-user-select-none">
-		<div class="legend">
-			Google
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_GOOGLE"></div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { googleEnable(!googleEnable()); }">
-					<i data-bind="css: googleEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Google Integration
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: googleEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_GOOGLE' }
+				}"></div>
+				<div data-bind="visible: googleEnable">
+					<br />
+					<blockquote>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								value: googleEnableAuth,
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_AUTH'
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								value: googleEnableDrive,
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_DRIVE'
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
+								value: googleEnablePreview,
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_PREVIEW'
+							}
+						}"></div>
+					</blockquote>
+				</div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Client ID
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_CLIENT_ID"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleClientID, saveTrigger: googleTrigger1" />
-				<div data-bind="saveTrigger: googleTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: googleClientID,
+						trigger: googleTrigger1,
+						enable: googleEnableRequireClientSettings,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Client Secret
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_CLIENT_SECRET"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleClientSecret, saveTrigger: googleTrigger2" />
-				<div data-bind="saveTrigger: googleTrigger2"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: googleClientSecret,
+						trigger: googleTrigger2,
+						enable: googleEnableRequireClientSettings,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<br />
 		<div class="control-group">
-			<label class="control-label">
-				Api Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_GOOGLE_API_KEY"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: googleApiKey, saveTrigger: googleTrigger3" />
-				<div data-bind="saveTrigger: googleTrigger3"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: googleApiKey,
+						trigger: googleTrigger3,
+						size: 5,
+						enable: googleEnableRequireApiKey
+					}
+				}"></div>
 				<blockquote style="margin-top: 10px; margin-bottom: 0">
-					<p class="muted">
-						Required for Google Drive File Picker
-					</p>
+					<p class="muted" data-i18n="TAB_INTEGRATIONS/HINT_GOOGLE_API_KEY"></p>
 				</blockquote>
 			</div>
 		</div>
 		<div class="legend">
-			Facebook
-			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(requires PHP 5.4 or greater)</span>
+			<span data-i18n="TAB_INTEGRATIONS/LEGEND_FACEBOOK"></span>
+			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(<span data-i18n="HINTS/REQUIRES_PHP_54"></span>)</span>
 		</div>
 		<div data-bind="if: facebookSupported">
 			<div class="control-group">
 				<div class="controls">
-					<label data-bind="click: function () { facebookEnable(!facebookEnable()); }">
-						<i data-bind="css: facebookEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-						Enable Facebook Integration
-					</label>
+					<div data-bind="component: {
+						name: 'Checkbox',
+						params: { value: facebookEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_FACEBOOK' }
+					}"></div>
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label">
-				   App ID
-				</label>
+				<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_FACEBOOK_APP_ID"></label>
 				<div class="controls">
-					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: facebookAppID, saveTrigger: facebookTrigger1" />
-					<div data-bind="saveTrigger: facebookTrigger1"></div>
+					<div data-bind="component: {
+						name: 'Input',
+						params: {
+							value: facebookAppID,
+							trigger: facebookTrigger1,
+							enable: facebookEnable,
+							size: 5
+						}
+					}"></div>
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label">
-				   App Secret
-				</label>
+				<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_FACEBOOK_APP_SECRET"></label>
 				<div class="controls">
-					<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="value: facebookAppSecret, saveTrigger: facebookTrigger2" />
-					<div data-bind="saveTrigger: facebookTrigger2"></div>
+					<div data-bind="component: {
+						name: 'Input',
+						params: {
+							value: facebookAppSecret,
+							trigger: facebookTrigger2,
+							enable: facebookEnable,
+							size: 5
+						}
+					}"></div>
 				</div>
 			</div>
 		</div>
-		<div class="legend">
-			Twitter
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_TWITTER"></div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { twitterEnable(!twitterEnable()); }">
-					<i data-bind="css: twitterEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Twitter Integration
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: twitterEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_TWITTER' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Consumer Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_TWITTER_CONSUMER_KEY"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: twitterConsumerKey, saveTrigger: twitterTrigger1" />
-				<div data-bind="saveTrigger: twitterTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: twitterConsumerKey,
+						trigger: twitterTrigger1,
+						enable: twitterEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Consumer Secret
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_TWITTER_CONSUMER_SECRET"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: twitterConsumerSecret, saveTrigger: twitterTrigger2" />
-				<div data-bind="saveTrigger: twitterTrigger2"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: twitterConsumerSecret,
+						trigger: twitterTrigger2,
+						enable: twitterEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
-		<div class="legend">
-			Dropbox
-		</div>
+		<div class="legend" data-i18n="TAB_INTEGRATIONS/LEGEND_DROPBOX"></div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { dropboxEnable(!dropboxEnable()); }">
-					<i data-bind="css: dropboxEnable() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Enable Dropbox Integration
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: dropboxEnable, label: 'TAB_INTEGRATIONS/LABEL_ENABLE_DROPBOX' }
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">
-			   Api Key
-			</label>
+			<label class="control-label" data-i18n="TAB_INTEGRATIONS/LABEL_DROPBOX_API_KEY"></label>
 			<div class="controls">
-				<input type="text" class="span5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: dropboxApiKey, saveTrigger: dropboxTrigger1" />
-				<div data-bind="saveTrigger: dropboxTrigger1"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: dropboxApiKey,
+						trigger: dropboxTrigger1,
+						enable: dropboxEnable,
+						size: 5
+					}
+				}"></div>
 			</div>
 		</div>
 	</div>

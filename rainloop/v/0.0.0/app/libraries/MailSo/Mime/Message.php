@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Mime;
 
 /**
@@ -112,6 +121,15 @@ class Message
 	public function Attachments()
 	{
 		return $this->oAttachmentCollection;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetSubject()
+	{
+		return isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT]) ?
+			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT] : '';
 	}
 
 	/**
@@ -238,7 +256,8 @@ class Message
 	 */
 	public function SetReferences($sReferences)
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::REFERENCES] = $sReferences;
+		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::REFERENCES] =
+			\trim(\preg_replace('/[\s]+/', ' ', $sReferences));
 
 		return $this;
 	}
@@ -517,8 +536,9 @@ class Message
 			$sHostName = 'localhost';
 		}
 
-		return '<'.\md5(\rand(100000, 999999).\time().$sHostName.
-			(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
+		return '<'.
+			\MailSo\Base\Utils::Md5Rand($sHostName.
+				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
 	}
 
 	/**

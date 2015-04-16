@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo;
 
 /**
@@ -10,7 +19,7 @@ final class Version
 	/**
 	 * @var string
 	 */
-	const APP_VERSION = '1.3.3';
+	const APP_VERSION = '2.0.0';
 
 	/**
 	 * @var string
@@ -44,7 +53,7 @@ final class Version
 			$oPhar = new \Phar('mailso.phar');
 			$sSignature = $oPhar->getSignature();
 		}
-		
+
 		return $sSignature;
 	}
 }

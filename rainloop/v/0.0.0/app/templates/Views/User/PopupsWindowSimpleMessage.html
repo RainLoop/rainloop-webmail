@@ -1,0 +1,121 @@
+<style>
+
+html, body {
+	margin: 0;
+	padding: 0;
+	background-color: #fff;
+	font-size: 13px;
+	font-family: arial, sans-serif;
+}
+
+.tbl {width: 100%; font-size: 12px; font-family: arial, sans-serif;}
+.tt {padding: 5px; border:solid #ddd; border-width:0px 0px 1px 0px}
+.tv {padding: 5px; border:solid #ddd; border-width:0px 0px 1px 1px}
+.tb {padding: 15px}
+
+a {color: blue; text-decoration: underline}
+a:visited {color: #609}
+a:active {color: red}
+blockquote {border-left: 2px solid black; margin: 0; padding: 0px 10px}
+
+pre {
+	margin: 0px;
+	padding: 0px;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	background: #fff;
+	border: none;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.text-body {
+	font-size: 13px;
+}
+
+.text-body.html div[data-x-div-type=body] {
+	margin: 15px;
+}
+
+.text-body.html pre {
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.text-body.plain {
+
+	padding: 15px;
+	white-space: pre-wrap;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+}
+
+.text-body.plain pre {
+	margin: 0px;
+	padding: 0px;
+	background: #fff;
+	border: none;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.text-body.plain blockquote {
+	border-left: 2px solid blue;
+	color: blue;
+}
+
+.text-body.plain blockquote blockquote {
+	border-left: 2px solid green;
+	color: green;
+}
+
+.text-body.plain blockquote blockquote blockquote {
+	border-left: 2px solid red;
+	color: red;
+}
+</style>
+
+<table cellpadding="0" cellspacing="0" class="tbl">
+	<tbody>
+		<tr>
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_FROM"></td>
+			<td class="tv" data-bind="text: popupFrom"></td>
+		</tr>
+		<tr>
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_TO"></td>
+			<td class="tv" data-bind="text: popupTo"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupCc">
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_CC"></td>
+			<td class="tv" data-bind="text: popupCc"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupBcc">
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_BCC"></td>
+			<td class="tv" data-bind="text: popupBcc"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupReplyTo">
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_REPLY_TO"></td>
+			<td class="tv" data-bind="text: popupReplyTo"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupDate">
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_DATE"></td>
+			<td class="tv" data-bind="text: popupDate"></td>
+		</tr>
+		<tr>
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_SUBJECT"></td>
+			<td class="tv" data-bind="text: popupSubject"></td>
+		</tr>
+		<tr data-bind="visible: '' !== popupAttachments">
+			<td class="tt i18n" data-i18n="MESSAGE/PRINT_LABEL_ATTACHMENTS"></td>
+			<td class="tv" data-bind="text: popupAttachments"></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="tb">
+				<div class="text-body" data-bind="html: popupBody, css: {'plain': !popupIsHtml, 'html': popupIsHtml}"></div>
+			</td>
+		</tr>
+	</tbody>
+</table>

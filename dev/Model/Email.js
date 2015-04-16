@@ -10,13 +10,17 @@
 	/**
 	 * @param {string=} sEmail
 	 * @param {string=} sName
+	 * @param {string=} sDkimStatus
+	 * @param {string=} sDkimValue
 	 *
 	 * @constructor
 	 */
-	function EmailModel(sEmail, sName)
+	function EmailModel(sEmail, sName, sDkimStatus, sDkimValue)
 	{
 		this.email = sEmail || '';
 		this.name = sName || '';
+		this.dkimStatus = sDkimStatus || 'none';
+		this.dkimValue = sDkimValue || '';
 
 		this.clearDuplicateName();
 	}
@@ -42,14 +46,27 @@
 	 */
 	EmailModel.prototype.email = '';
 
+	/**
+	 * @type {string}
+	 */
+	EmailModel.prototype.dkimStatus = 'none';
+
+	/**
+	 * @type {string}
+	 */
+	EmailModel.prototype.dkimValue = '';
+
 	EmailModel.prototype.clear = function ()
 	{
 		this.email = '';
 		this.name = '';
+
+		this.dkimStatus = 'none';
+		this.dkimValue = '';
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	EmailModel.prototype.validate = function ()
 	{
@@ -92,7 +109,7 @@
 		sString = Utils.trim(sString);
 
 		var
-			mRegex = /(?:"([^"]+)")? ?<?(.*?@[^>,]+)>?,? ?/g,
+			mRegex = /(?:"([^"]+)")? ?[<]?(.*?@[^>,]+)>?,? ?/g,
 			mMatch = mRegex.exec(sString)
 		;
 
@@ -121,6 +138,8 @@
 		{
 			this.name = Utils.trim(oJsonEmail.Name);
 			this.email = Utils.trim(oJsonEmail.Email);
+			this.dkimStatus = Utils.trim(oJsonEmail.DkimStatus || '');
+			this.dkimValue = Utils.trim(oJsonEmail.DkimValue || '');
 
 			bResult = '' !== this.email;
 			this.clearDuplicateName();
@@ -333,14 +352,6 @@
 
 		this.clearDuplicateName();
 		return true;
-	};
-
-	/**
-	 * @return {string}
-	 */
-	EmailModel.prototype.inputoTagLine = function ()
-	{
-		return 0 < this.name.length ? this.name + ' (' + this.email + ')' : this.email;
 	};
 
 	module.exports = EmailModel;

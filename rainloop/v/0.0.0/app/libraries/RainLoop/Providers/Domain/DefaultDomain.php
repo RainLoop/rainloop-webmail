@@ -147,7 +147,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	 * @param bool $bFindWithWildCard = false
 	 * @param bool $bCheckDisabled = true
 	 *
-	 * @return \RainLoop\Domain|null
+	 * @return \RainLoop\Model\Domain|null
 	 */
 	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
 	{
@@ -155,18 +155,18 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 		$sDisabled = '';
 		$sFoundedValue = '';
-		
+
 		$sRealFileName = $this->codeFileName($sName);
 
 		if (\file_exists($this->sDomainPath.'/disabled'))
 		{
 			$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
 		}
-		
+
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
 			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
 		{
-			$aDomain = @\parse_ini_file($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			$aDomain = \RainLoop\Utils::CustomParseIniFile($this->sDomainPath.'/'.$sRealFileName.'.ini');
 			// fix misspellings (#119)
 			if (\is_array($aDomain))
 			{
@@ -192,7 +192,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			}
 			//---
 
-			$mResult = \RainLoop\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
+			$mResult = \RainLoop\Model\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
 		}
 		else if ($bFindWithWildCard)
 		{
@@ -214,11 +214,11 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	}
 
 	/**
-	 * @param \RainLoop\Domain $oDomain
+	 * @param \RainLoop\Model\Domain $oDomain
 	 *
 	 * @return bool
 	 */
-	public function Save(\RainLoop\Domain $oDomain)
+	public function Save(\RainLoop\Model\Domain $oDomain)
 	{
 		$sRealFileName = $this->codeFileName($oDomain->Name());
 

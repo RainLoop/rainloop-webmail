@@ -14,7 +14,7 @@ class Notifications
 	const SocialGoogleLoginAccessDisable = 108;
 	const DomainNotAllowed = 109;
 	const AccountNotAllowed = 110;
-	
+
 	const AccountTwoFactorAuthRequired = 120;
 	const AccountTwoFactorAuthError = 121;
 
@@ -36,6 +36,10 @@ class Notifications
 	const CantSendMessage = 302;
 	const InvalidRecipients = 303;
 
+	const CantSaveFilters = 351;
+	const CantGetFilters = 352;
+	const FiltersAreNotCorrect = 355;
+
 	const CantCreateFolder = 400;
 	const CantRenameFolder = 401;
 	const CantDeleteFolder = 402;
@@ -47,20 +51,22 @@ class Notifications
 	const CantSavePluginSettings = 502;
 
 	const DomainAlreadyExists = 601;
-	
+
 	const CantInstallPackage = 701;
 	const CantDeletePackage = 702;
 	const InvalidPluginPackage = 703;
 	const UnsupportedPluginPackage = 704;
-	
+
 	const LicensingServerIsUnavailable = 710;
 	const LicensingExpired = 711;
 	const LicensingBanned = 712;
 
 	const DemoSendMessageError = 750;
-	
+	const DemoAccountError = 751;
+
 	const AccountAlreadyExists = 801;
-	
+	const AccountDoesNotExist = 802;
+
 	const MailServerError = 901;
 	const ClientViewError = 902;
 	const InvalidInputArgument = 903;
@@ -69,10 +75,10 @@ class Notifications
 
 	/**
 	 * @staticvar array $aMap
-	 * 
+	 *
 	 * @param int $iCode
 	 * @param \Exception|null $oPrevious
-	 * 
+	 *
 	 * @return string
 	 */
 	static public function GetNotificationsMessage($iCode, $oPrevious = null)
@@ -98,7 +104,7 @@ class Notifications
 			self::NewPasswordForbidden => 'NewPasswordForbidden',
 
 			self::ContactsSyncError => 'ContactsSyncError',
-			
+
 			self::CantGetMessageList => 'CantGetMessageList',
 			self::CantGetMessage => 'CantGetMessage',
 			self::CantDeleteMessage => 'CantDeleteMessage',
@@ -106,6 +112,10 @@ class Notifications
 			self::CantSaveMessage => 'CantSaveMessage',
 			self::CantSendMessage => 'CantSendMessage',
 			self::InvalidRecipients => 'InvalidRecipients',
+			self::CantSaveFilters => 'CantSaveFilters',
+			self::CantGetFilters => 'CantGetFilters',
+			self::FiltersAreNotCorrect => 'FiltersAreNotCorrect',
+
 			self::CantCreateFolder => 'CantCreateFolder',
 			self::CantRenameFolder => 'CantRenameFolder',
 			self::CantDeleteFolder => 'CantDeleteFolder',
@@ -123,7 +133,9 @@ class Notifications
 			self::LicensingExpired => 'LicensingExpired',
 			self::LicensingBanned => 'LicensingBanned',
 			self::DemoSendMessageError => 'DemoSendMessageError',
+			self::DemoAccountError => 'DemoAccountError',
 			self::AccountAlreadyExists => 'AccountAlreadyExists',
+			self::AccountDoesNotExist => 'AccountDoesNotExist',
 			self::MailServerError => 'MailServerError',
 			self::ClientViewError => 'ClientViewError',
 			self::InvalidInputArgument => 'InvalidInputArgument',

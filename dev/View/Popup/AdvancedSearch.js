@@ -6,11 +6,10 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
-		moment = require('moment'),
 
 		Utils = require('Common/Utils'),
 
-		Data = require('Storage/App/Data'),
+		MessageStore = require('Stores/User/Message'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -41,7 +40,7 @@
 			var sSearch = this.buildSearchString();
 			if ('' !== sSearch)
 			{
-				Data.mainMessageListSearch(sSearch);
+				MessageStore.mainMessageListSearch(sSearch);
 			}
 
 			this.cancelCommand();
@@ -117,7 +116,7 @@
 
 		if (-1 < this.selectedDateValue())
 		{
-			aResult.push('date:' + moment().subtract('days', this.selectedDateValue()).format('YYYY.MM.DD') + '/');
+			aResult.push('date:' + require('Common/Momentor').searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
 		}
 
 		if (sText && '' !== sText)
@@ -148,7 +147,7 @@
 		this.clearPopup();
 	};
 
-	AdvancedSearchPopupView.prototype.onFocus = function ()
+	AdvancedSearchPopupView.prototype.onShowWithDelay = function ()
 	{
 		this.fromFocus(true);
 	};

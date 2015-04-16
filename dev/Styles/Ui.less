@@ -1,9 +1,9 @@
 
 .g-ui-user-select-none {
-	webkit-touch-callout: none;
-	user-select: none;
-	standard-user-select: none;
-	touch-callout: none;
+//	webkit-touch-callout: none;
+//	user-select: none;
+//	standard-user-select: none;
+//	touch-callout: none;
 }
 
 .g-ui-user-select-allow {
@@ -168,6 +168,28 @@ e-spinner {
 	display: none;
 }
 
+.e-powered {
+	margin-top: 8px;
+	color: #333;
+	a {
+		color: #333;
+		text-decoration: underline;
+		&:hover {
+			color: #333;
+		}
+	}
+}
+
+.e-languages {
+	margin-top: 8px;
+	color: #333;
+	.flag-name {
+		color: #333;
+		/*text-decoration: underline;*/
+		border-bottom: 1px dashed #333;
+	}
+}
+
 html.cssanimations {
 
 	.e-spinner {
@@ -204,4 +226,8 @@ html.cssanimations {
 @keyframes bouncedelay {
   0%, 80%, 100% { transform: scale(0.0); }
   40% { transform: scale(1.0); }
+}
+
+.command.command-disabled.hide-on-disabled-command {
+	display:none;
 }

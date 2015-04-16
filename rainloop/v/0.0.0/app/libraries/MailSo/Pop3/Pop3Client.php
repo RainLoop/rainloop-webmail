@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Pop3;
 
 /**
@@ -53,6 +62,8 @@ class Pop3Client extends \MailSo\Net\NetClient
 	 * @param string $sServerName
 	 * @param int $iPort = 110
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
+	 * @param bool $bVerifySsl = false
+	 * @param bool $bAllowSelfSigned = null
 	 *
 	 * @return \MailSo\Pop3\Pop3Client
 	 *
@@ -61,23 +72,20 @@ class Pop3Client extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Pop3\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 110,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT)
+		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		$bVerifySsl = false, $bAllowSelfSigned = null)
 	{
 		$this->iRequestTime = microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+		
 		$this->validateResponse();
 
 		if (\MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS(
 			in_array('STLS', $this->Capa()), $this->iSecurityType))
 		{
 			$this->sendRequestWithCheck('STLS');
-			if (!@stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
-			{
-				$this->writeLogException(
-					new \MailSo\Pop3\Exceptions\RuntimeException('Cannot enable STARTTLS'),
-					\MailSo\Log\Enumerations\Type::ERROR, true);
-			}
+			$this->EnableCrypto();
 
 			$this->aCapa = null;
 		}

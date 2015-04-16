@@ -12,6 +12,34 @@ class Api
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function RunResult()
+	{
+		return true;
+	}
+
+	/**
+	 * @staticvar bool $bOne
+	 * @return bool
+	 */
+	public static function Handle()
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$bOne = \class_exists('MailSo\Version');
+			if ($bOne)
+			{
+				\RainLoop\Api::SetupDefaultMailSoConfig();
+				$bOne = \RainLoop\Api::RunResult();
+			}
+		}
+
+		return $bOne;
+	}
+
+	/**
 	 * @return \RainLoop\Actions
 	 */
 	public static function Actions()
@@ -42,28 +70,6 @@ class Api
 	}
 
 	/**
-	 * @return bool
-	 */
-	public static function Handle()
-	{
-		static $bOne = null;
-		if ($bOne)
-		{
-			return true;
-		}
-
-		if (!\class_exists('MailSo\Version'))
-		{
-			return false;
-		}
-
-		\RainLoop\Api::SetupDefaultMailSoConfig();
-
-		$bOne = true;
-		return true;
-	}
-
-	/**
 	 * @return string
 	 */
 	public static function SetupDefaultMailSoConfig()
@@ -78,17 +84,38 @@ class Api
 
 			\MailSo\Config::$MessageListFastSimpleSearch =
 				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
-			
+
 			\MailSo\Config::$MessageListCountLimitTrigger =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
 
 			\MailSo\Config::$MessageListDateFilter =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
-			\MailSo\Config::$MessageListUndeletedFilter =
-				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_hide_deleted_messages', false);
+			\MailSo\Config::$LargeThreadLimit =
+				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
+
+			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
+			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
+
+			if (!empty($sSslCafile) || !empty($sSslCapath))
+			{
+				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
+					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
+					{
+						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))
+						{
+							$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
+						}
+
+						if (empty($aStreamContextSettings['ssl']['capath']) && !empty($sSslCapath))
+						{
+							$aStreamContextSettings['ssl']['capath'] = $sSslCapath;
+						}
+					}
+				});
+			}
 		}
 	}
 
@@ -103,17 +130,19 @@ class Api
 	/**
 	 * @param string $sEmail
 	 * @param string $sPassword
+	 * @param array $aAdditionalOptions = array()
 	 * @param bool $bUseTimeout = true
 	 *
 	 * @return string
 	 */
-	public static function GetUserSsoHash($sEmail, $sPassword, $bUseTimeout = true)
+	public static function GetUserSsoHash($sEmail, $sPassword, $aAdditionalOptions = array(), $bUseTimeout = true)
 	{
-		$sSsoHash = \sha1(\rand(10000, 99999).$sEmail.$sPassword.\microtime(true));
+		$sSsoHash = \MailSo\Base\Utils::Sha1Rand($sEmail.$sPassword);
 
 		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
 			'Email' => $sEmail,
 			'Password' => $sPassword,
+			'AdditionalOptions' => $aAdditionalOptions,
 			'Time' => $bUseTimeout ? \time() : 0
 		))) ? $sSsoHash : '';
 	}
@@ -142,36 +171,38 @@ class Api
 			$oStorageProvider = \RainLoop\Api::Actions()->StorageProvider();
 			if ($oStorageProvider && $oStorageProvider->IsActive())
 			{
-				// TwoFactor Auth User Data
-				$oStorageProvider->Clear(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::TwoFactorAuthUserData($sEmail)
-				);
-
-				// Accounts list
-				$oStorageProvider->Clear(null,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-					\RainLoop\KeyPathHelper::WebmailAccounts($sEmail)
-				);
-
-				// Contact sync data
-				$oStorageProvider->Clear($sEmail,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-					'contacts_sync'
-				);
+				$oStorageProvider->DeleteStorage($sEmail);
 			}
-
-			\RainLoop\Api::Actions()->SettingsProvider()->ClearByEmail($sEmail);
 
 			if (\RainLoop\Api::Actions()->AddressBookProvider() &&
 				\RainLoop\Api::Actions()->AddressBookProvider()->IsActive())
 			{
-				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContactsAndTags($sEmail);
+				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContacts($sEmail);
 			}
 
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function LogoutCurrentLogginedUser()
+	{
+		\RainLoop\Utils::ClearCookie('rlsession');
+		return true;
+	}
+
+	/**
+	 * @return void
+	 */
+	public static function ExitOnEnd()
+	{
+		if (!\defined('RAINLOOP_EXIT_ON_END'))
+		{
+			\define('RAINLOOP_EXIT_ON_END', true);
+		}
 	}
 }

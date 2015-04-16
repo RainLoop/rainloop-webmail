@@ -8,9 +8,10 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 
-		Remote = require('Storage/App/Remote'),
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -30,6 +31,8 @@
 		this.code.focused = ko.observable(false);
 		this.code.status = ko.observable(null);
 
+		this.koTestedTrigger = null;
+
 		this.testing = ko.observable(false);
 
 		// commands
@@ -40,6 +43,11 @@
 
 				self.testing(false);
 				self.code.status(Enums.StorageResultType.Success === sResult && oData && oData.Result ? true : false);
+
+				if (self.koTestedTrigger && self.code.status())
+				{
+					self.koTestedTrigger(true);
+				}
 
 			}, this.code());
 
@@ -59,16 +67,23 @@
 		this.code.focused(false);
 		this.code.status(null);
 		this.testing(false);
+
+		this.koTestedTrigger = null;
 	};
 
-	TwoFactorTestPopupView.prototype.onShow = function ()
+	TwoFactorTestPopupView.prototype.onShow = function (koTestedTrigger)
 	{
 		this.clearPopup();
+
+		this.koTestedTrigger = koTestedTrigger;
 	};
 
-	TwoFactorTestPopupView.prototype.onFocus = function ()
+	TwoFactorTestPopupView.prototype.onShowWithDelay = function ()
 	{
-		this.code.focused(true);
+		if (!Globals.bMobile)
+		{
+			this.code.focused(true);
+		}
 	};
 
 	module.exports = TwoFactorTestPopupView;

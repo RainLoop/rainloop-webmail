@@ -1,0 +1,83 @@
+<div class="b-system-drop-down g-ui-user-select-none">
+	<div class="b-toolbar">
+		<div class="btn-toolbar">
+			<div class="btn-group pull-right dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
+				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-ellipsis btn-block dropdown-toggle system-dropdown" data-toggle="dropdown">
+					<i data-bind="css: {'icon-user': !accounts.loading(), 'icon-spinner animated': accounts.loading()}"
+						></i>
+<!--
+					<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
+					<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
+-->
+					&nbsp;
+					&nbsp;
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu g-ui-menu" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
+
+					<!-- ko if: accounts().length -->
+						<!-- ko foreach: accounts -->
+							<li class="e-item" role="presentation">
+								<a class="e-link menuitem account-item" href="#" data-bind="click: $root.accountClick,
+									attr: {'href': changeAccountLink()}, css: {'current': $root.accountEmail() === email}">
+<!--									<b class="pull-right counter" data-bind="visible: 0 < count()">
+										<span data-bind="text: count, visible: 100 > count()"></span>
+										<span data-bind="visible: 99 < count()">99+</span>
+									</b>-->
+									<i class="icon-ok"></i>
+									<i class="icon-user"></i>
+									&nbsp;&nbsp;
+									<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
+								</a>
+							</li>
+						<!-- /ko -->
+						<li class="divider" role="presentation"></li>
+					<!-- /ko -->
+
+					<!-- ko if: capaAdditionalAccounts -->
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">
+							<i class="icon-user-add"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
+						</a>
+					</li>
+					<!-- /ko -->
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsClick">
+							<i class="icon-cog"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></span>
+						</a>
+					</li>
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsHelp">
+							<i class="icon-help"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_HELP"></span>
+						</a>
+					</li>
+					<li class="divider" role="presentation"></li>
+					<li class="e-item" role="presentation">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: logoutClick">
+							<i class="icon-power"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_LOGOUT"></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="accountPlace pull-right" data-bind="text: emailTitle()"></div>
+			<div class="audioPlace pull-right" data-tooltip-i18n="off" data-tooltip-mobile="on" data-tooltip-join="right top"
+					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
+				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
+					<div class="bar first"></div>
+					<div class="bar second"></div>
+					<div class="bar third"></div>
+				</div>
+				<i class="stopIcon icon-pause"></i>
+			</div>
+
+		</div>
+	</div>
+</div>

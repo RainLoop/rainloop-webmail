@@ -10,6 +10,7 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -33,6 +34,7 @@
 		this.fYesAction = null;
 		this.fNoAction = null;
 
+		this.bFocusYesOnShow = true;
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = Enums.KeyState.PopupAsk;
 
@@ -45,8 +47,8 @@
 	AskPopupView.prototype.clearPopup = function ()
 	{
 		this.askDesc('');
-		this.yesButton(Utils.i18n('POPUPS_ASK/BUTTON_YES'));
-		this.noButton(Utils.i18n('POPUPS_ASK/BUTTON_NO'));
+		this.yesButton(Translator.i18n('POPUPS_ASK/BUTTON_YES'));
+		this.noButton(Translator.i18n('POPUPS_ASK/BUTTON_NO'));
 
 		this.yesFocus(false);
 		this.noFocus(false);
@@ -81,8 +83,9 @@
 	 * @param {Function=} fNoFunc
 	 * @param {string=} sYesButton
 	 * @param {string=} sNoButton
+	 * @param {boolean=} bFocusYesOnShow
 	 */
-	AskPopupView.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton)
+	AskPopupView.prototype.onShow = function (sAskDesc, fYesFunc, fNoFunc, sYesButton, sNoButton, bFocusYesOnShow)
 	{
 		this.clearPopup();
 
@@ -99,11 +102,16 @@
 		{
 			this.yesButton(sNoButton);
 		}
+
+		this.bFocusYesOnShow = Utils.isUnd(bFocusYesOnShow) ? true : !!bFocusYesOnShow;
 	};
 
-	AskPopupView.prototype.onFocus = function ()
+	AskPopupView.prototype.onShowWithDelay = function ()
 	{
-		this.yesFocus(true);
+		if (this.bFocusYesOnShow)
+		{
+			this.yesFocus(true);
+		}
 	};
 
 	AskPopupView.prototype.onBuild = function ()

@@ -9,10 +9,13 @@
 
 		Enums = require('Common/Enums'),
 		Consts = require('Common/Consts'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
-		Data = require('Storage/App/Data'),
-		Remote = require('Storage/App/Remote'),
+		FolderStore = require('Stores/User/Folder'),
+
+		Promises = require('Promises/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -26,8 +29,8 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsFolderCreate');
 
-		Utils.initOnStartOrLangChange(function () {
-			this.sNoParentText = Utils.i18n('POPUPS_CREATE_FOLDER/SELECT_NO_PARENT');
+		Translator.initOnStartOrLangChange(function () {
+			this.sNoParentText = Translator.i18n('POPUPS_CREATE_FOLDER/SELECT_NO_PARENT');
 		}, this);
 
 		this.folderName = ko.observable('');
@@ -41,7 +44,7 @@
 				aTop = [],
 				fDisableCallback = null,
 				fVisibleCallback = null,
-				aList = Data.folderList(),
+				aList = FolderStore.folderList(),
 				fRenameCallback = function (oItem) {
 					return oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
 				}
@@ -49,11 +52,11 @@
 
 			aTop.push(['', this.sNoParentText]);
 
-			if ('' !== Data.namespace)
+			if ('' !== FolderStore.namespace)
 			{
 				fDisableCallback = function (oItem)
 				{
-					return Data.namespace !== oItem.fullNameRaw.substr(0, Data.namespace.length);
+					return FolderStore.namespace !== oItem.fullNameRaw.substr(0, FolderStore.namespace.length);
 				};
 			}
 
@@ -68,26 +71,14 @@
 				sParentFolderName = this.selectedParentValue()
 			;
 
-			if ('' === sParentFolderName && 1 < Data.namespace.length)
+			if ('' === sParentFolderName && 1 < FolderStore.namespace.length)
 			{
-				sParentFolderName = Data.namespace.substr(0, Data.namespace.length - 1);
+				sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 			}
 
-			Data.foldersCreating(true);
-			Remote.folderCreate(function (sResult, oData) {
-
-				Data.foldersCreating(false);
-				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-				{
-					require('App/App').folders();
-				}
-				else
-				{
-					Data.foldersListError(
-						oData && oData.ErrorCode ? Utils.getNotification(oData.ErrorCode) : Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER'));
-				}
-
-			},	this.folderName(), sParentFolderName);
+			require('App/User').foldersPromisesActionHelper(
+				Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
+				Enums.Notification.CantCreateFolder);
 
 			this.cancelCommand();
 
@@ -122,9 +113,12 @@
 		this.clearPopup();
 	};
 
-	FolderCreateView.prototype.onFocus = function ()
+	FolderCreateView.prototype.onShowWithDelay = function ()
 	{
-		this.folderName.focused(true);
+		if (!Globals.bMobile)
+		{
+			this.folderName.focused(true);
+		}
 	};
 
 	module.exports = FolderCreateView;

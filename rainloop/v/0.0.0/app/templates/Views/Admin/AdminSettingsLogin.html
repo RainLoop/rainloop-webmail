@@ -1,33 +1,34 @@
 <div class="b-admin-general">
 	<div class="form-horizontal">
-		<div class="legend">
-			Login Screen
-		</div>
+		<div class="legend" data-i18n="TAB_LOGIN/LEGEND_LOGIN_SCREEN"></div>
 		<div class="control-group">
-			 <label class="control-label">
-				Default Domain
-			 </label>
+			<label class="control-label" data-i18n="TAB_LOGIN/LABEL_DEFAULT_DOMAIN"></label>
 			<div class="controls">
-				<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-					data-bind="value: defaultDomain, saveTrigger: defaultDomainTrigger" />
-				<div data-bind="saveTrigger: defaultDomainTrigger"></div>
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: defaultDomain,
+						trigger: defaultDomainTrigger,
+						size: 3
+					}
+				}"></div>
 			</div>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<label data-bind="click: function () { determineUserDomain(!determineUserDomain()); }">
-					<i data-bind="css: determineUserDomain() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Try to determine user domain
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: determineUserDomain, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_DOMAIN' }
+				}"></div>
 				<br />
-				<label data-bind="click: function () { allowLanguagesOnLogin(!allowLanguagesOnLogin()); }">
-					<i data-bind="css: allowLanguagesOnLogin() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Allow language selection on login screen
-				</label>
-				<label data-bind="click: function () { determineUserLanguage(!determineUserLanguage()); }">
-					<i data-bind="css: determineUserLanguage() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
-					Try to determine user language
-				</label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: allowLanguagesOnLogin, label: 'TAB_LOGIN/LABEL_ALLOW_LANGUAGES_ON_LOGIN' }
+				}"></div>
+				<div data-bind="visible: allowLanguagesOnLogin, component: {
+					name: 'Checkbox',
+					params: { enable: allowLanguagesOnLogin, value: determineUserLanguage, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_LANGUAGE' }
+				}"></div>
 			</div>
 		</div>
 	</div>

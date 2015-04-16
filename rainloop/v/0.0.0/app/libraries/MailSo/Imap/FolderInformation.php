@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Imap;
 
 /**
@@ -55,7 +64,7 @@ class FolderInformation
 
 	/**
 	 * @access private
-	 * 
+	 *
 	 * @param string $sFolderName
 	 * @param bool $bIsWritable
 	 */
@@ -90,6 +99,6 @@ class FolderInformation
 	 */
 	public function IsFlagSupported($sFlag)
 	{
-		return in_array('\\*', $this->PermanentFlags) || in_array($sFlag, $this->PermanentFlags);
+		return \in_array('\\*', $this->PermanentFlags) || \in_array($sFlag, $this->PermanentFlags);
 	}
 }

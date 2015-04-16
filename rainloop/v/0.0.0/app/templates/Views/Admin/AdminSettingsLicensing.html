@@ -1,23 +1,21 @@
 <div class="b-admin-licensing" >
 	<div class="row">
-		<div class="alert alert-info span10" style="margin-top: 10px;">
-			RainLoop Webmail is licensed under <strong>Creative Commons
+		<div class="alert alert-info span8" style="margin-top: 10px;">
+			<span data-i18n="[html]TAB_LICENSING/HTML_ALERT_TOP_1"></span>
 			<br />
-			Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</strong> license.
-			<br />
-			<br />
-			You are <strong>free</strong> to use it for your <strong>personal</strong> or <strong>non-profit</strong> projects.
+			<b>Creative Commons Attribution-NonCommercial-ShareAlike 3.0 (CC BY-NC-SA)</b>.
 			<br />
 			<br />
-			Commercial use of <strong>RainLoop Webmail</strong> requires getting a
-			<a href="http://rainloop.net/purchase/" target="_blank">permission</a>.
+			<span data-i18n="[html]TAB_LICENSING/HTML_ALERT_TOP_2"></span>
+			<br />
+			<br />
+			<span data-i18n="[html]TAB_LICENSING/HTML_ALERT_TOP_3"></span>
 		</div>
 	</div>
+	<br />
 	<div class="form-horizontal">
 		<div class="control-group">
-			<label class="control-label">
-				Your Domain
-			</label>
+			<label class="control-label" data-i18n="TAB_LICENSING/LABEL_YOUR_DOMAIN"></label>
 			<div class="controls">
 				<span class="help-inline" style="padding-top: 5px;">
 					 <strong data-bind="text: adminDomain"></strong>
@@ -25,35 +23,45 @@
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: !subscriptionEnabled()">
+			<label class="control-label" style="padding-top: 14px" data-i18n="TAB_LICENSING/LABEL_VERSION"></label>
 			<div class="controls">
-				<div class="alert alert-block span8" style="margin-left: 0">
-					This domain can't be licensed for commercial use.
+				<div class="alert alert-block span6" style="margin-left: 0">
+					<h4 data-i18n="TAB_LICENSING/TYPE_BASIC"></h4>
+					<br />
+					<p data-i18n="TAB_LICENSING/TYPE_BASIC_HINT_2"></p>
 				</div>
 			</div>
 		</div>
 		<div class="control-group" data-bind="visible: subscriptionEnabled">
+			<label class="control-label" style="padding-top: 20px" data-i18n="TAB_LICENSING/LABEL_VERSION"></label>
 			<div class="controls">
-				<div data-bind="visible: licensingProcess()">
+				<div data-bind="visible: licensingProcess()" style="padding-top: 20px">
 					<i class="icon-spinner animated"></i>
 					&nbsp;&nbsp;
-					Checking&hellip;
+					<span data-i18n="TAB_LICENSING/LABEL_CHECKING"></span>&hellip;
 				</div>
 				<div data-bind="visible: !licensingProcess()">
-					<div class="alert alert-block span8" style="margin-left: 0" data-bind="visible: !licensing()">
-						This domain isn't licensed for commercial use.
+					<div class="alert alert-block span6" style="margin-left: 0;  padding-top: 20px" data-bind="visible: !licensing()">
+						<h4 data-i18n="TAB_LICENSING/TYPE_BASIC"></h4>
+						<br />
+						<p data-i18n="TAB_LICENSING/TYPE_BASIC_HINT"></p>
 					</div>
 					<div data-bind="visible: licensing()">
-						<div class="alert alert-success span8" style="margin-left: 0" data-bind="visible: licenseValid() && '' === licenseError()">
-							<p>
-								This domain is licensed for commercial use
-							</p>
-							<p data-bind="visible: 0 < licenseExpired()">
-								<b>Subscription expires:</b>
+						<div class="alert alert-success span6" style="margin-left: 0; margin-top: 10px; padding-top: 20px" data-bind="visible: licenseValid() && '' === licenseError()">
+							<h4>
+								<snan data-i18n="TAB_LICENSING/TYPE_PREMIUM"></snan>
+								<span data-bind="visible: licenseIsUnlim()">
+									&nbsp;
+									(<snan data-i18n="TAB_LICENSING/TYPE_PREMIUM_LIFETIME"></snan>)
+								</span>
+							</h4>
+							<p data-bind="visible: 0 < licenseExpired()" style="padding-top: 10px">
+								<b data-i18n="TAB_LICENSING/LABEL_SUB_EXPIRES"></b>
 								&nbsp;
 								<span data-bind="text: licenseExpiredMomentValue()"></span>
 							</p>
 						</div>
-						<div class="alert alert-error span8" style="margin-left: 0" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
+						<div class="alert alert-error span6" style="margin-left: 0; margin-top: 10px;" data-bind="visible: !licenseValid() && '' !== licenseError(), text: licenseError"></div>
 					</div>
 				</div>
 			</div>
@@ -63,15 +71,22 @@
 				<a class="btn" data-bind="click: showActivationForm">
 					<i class="icon-happy-smiley"></i>
 					&nbsp;&nbsp;
-					Activate Subscription Key
+					<span data-i18n="TAB_LICENSING/BUTTON_ACTIVATE"></span>
 				</a>
-				&nbsp;
-				&nbsp;
+				&nbsp;&nbsp;
 				<a class="btn" href="http://rainloop.net/purchase/" target="_black">
 					<i class="icon-purchase"></i>
 					&nbsp;&nbsp;
-					Purchase
+					<span data-i18n="TAB_LICENSING/BUTTON_PURCHASE"></span>
 				</a>
+<!--
+				&nbsp;&nbsp;
+				<a class="btn" data-bind="click: showTrialForm, visible: !licensing()">
+					<i class="icon-eye"></i>
+					&nbsp;&nbsp;
+					<span data-i18n="TAB_LICENSING/BUTTON_TRIAL"></span>
+				</a>
+-->
 			</div>
 		</div>
 	</div>

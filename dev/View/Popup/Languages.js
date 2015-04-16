@@ -8,7 +8,6 @@
 		ko = require('ko'),
 
 		Utils = require('Common/Utils'),
-		Globals = require('Common/Globals'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -22,22 +21,26 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsLanguages');
 
-		this.Data = Globals.__APP__.data(); // TODO
+		var self = this;
 
-		this.exp = ko.observable(false);
+		this.fLang = null;
+		this.sUserLanguage = '';
+
+		this.langs = ko.observableArray([]);
 
 		this.languages = ko.computed(function () {
-			return _.map(this.Data.languages(), function (sLanguage) {
+			return _.map(self.langs(), function (sLanguage) {
 				return {
 					'key': sLanguage,
+					'user': sLanguage === self.sUserLanguage,
 					'selected': ko.observable(false),
 					'fullName': Utils.convertLangName(sLanguage)
 				};
 			});
-		}, this);
+		});
 
-		this.Data.mainLanguage.subscribe(function () {
-			this.resetMainLanguage();
+		this.langs.subscribe(function () {
+			this.setLanguageSelection();
 		}, this);
 
 		kn.constructorEnd(this);
@@ -46,34 +49,42 @@
 	kn.extendAsViewModel(['View/Popup/Languages', 'PopupsLanguagesViewModel'], LanguagesPopupView);
 	_.extend(LanguagesPopupView.prototype, AbstractView.prototype);
 
-	LanguagesPopupView.prototype.languageEnName = function (sLanguage)
+	LanguagesPopupView.prototype.languageTooltipName = function (sLanguage)
 	{
-		return Utils.convertLangName(sLanguage, true);
+		var sResult = Utils.convertLangName(sLanguage, true);
+		return Utils.convertLangName(sLanguage, false) === sResult ? '' : sResult;
 	};
 
-	LanguagesPopupView.prototype.resetMainLanguage = function ()
+	LanguagesPopupView.prototype.setLanguageSelection = function ()
 	{
-		var sCurrent = this.Data.mainLanguage();
+		var sCurrent = this.fLang ? ko.unwrap(this.fLang) : '';
 		_.each(this.languages(), function (oItem) {
 			oItem['selected'](oItem['key'] === sCurrent);
 		});
 	};
 
-	LanguagesPopupView.prototype.onShow = function ()
+	LanguagesPopupView.prototype.onShow = function (fLanguage, aLangs, sUserLanguage)
 	{
-		this.exp(true);
+		this.fLang = fLanguage;
+		this.sUserLanguage = sUserLanguage || '';
 
-		this.resetMainLanguage();
+		this.langs(aLangs);
 	};
 
 	LanguagesPopupView.prototype.onHide = function ()
 	{
-		this.exp(false);
+		this.fLang = null;
+		this.sUserLanguage = '';
+		this.langs([]);
 	};
 
 	LanguagesPopupView.prototype.changeLanguage = function (sLang)
 	{
-		this.Data.mainLanguage(sLang);
+		if (this.fLang)
+		{
+			this.fLang(sLang);
+		}
+
 		this.cancelCommand();
 	};
 

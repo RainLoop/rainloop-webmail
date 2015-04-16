@@ -40,7 +40,7 @@ class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSystemTypes
 	 */
 	public function FilterFoldersSystemTypes($oAccount, &$aSystemTypes)
@@ -88,7 +88,7 @@ class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSystemFolderNames
 	 */
 	public function FilterSystemFoldersNames($oAccount, &$aSystemFolderNames)
@@ -110,7 +110,7 @@ class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$this->helperFolderType($this->sArchiveFolder, \MailSo\Imap\Enumerations\FolderType::ALL,
 				$aPrepend, $aSystemFolderNames);
-			
+
 			if (0 < \count($aPrepend))
 			{
 				$aSystemFolderNames = \array_merge($aPrepend, $aSystemFolderNames);

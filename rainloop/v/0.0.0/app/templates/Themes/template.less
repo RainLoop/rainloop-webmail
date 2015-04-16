@@ -66,8 +66,26 @@
 	.thm-border-radius(@login-border-radius);
 	.thm-box-shadow(@login-box-shadow);
 
-	.legend, .checkboxSignMe, .checkboxAdditionalCodeSignMe, .g-ui-link {
+	.legend, .checkboxSignMe, .checkboxAdditionalCodeSignMe, .g-ui-link, .social-button, .language-button {
 		color: @login-color !important;
+	}
+}
+
+.thm-powered {
+	color: @powered-color;
+	a {
+		color: @powered-color;
+		&:hover {
+			color: lighten(@powered-color, 20%);
+		}
+	}
+}
+
+.thm-languages {
+	color: @languages-color;
+	.flag-name {
+		color: @languages-color;
+		border-bottom: 1px dashed @languages-color;
 	}
 }
 
@@ -130,7 +148,7 @@
 		.thm-rgba-background-color(@folders-selected-background-color, @folders-selected-rgba-background-color);
 	}
 
-	&.selectable.focused {
+	&.focused {
 		color: @folders-focused-color !important;
 		.thm-rgba-background-color(@folders-focused-background-color, @folders-focused-rgba-background-color);
 	}
@@ -164,4 +182,28 @@
 
 .thm-message-view-background-color {
 	.thm-rgba-background-color(@message-background-color, @message-rgba-background-color);
+}
+
+
+html.no-css {
+
+	.thm-body {
+		color: #333;
+		background-color: #aaa;
+		background-image: none;
+	}
+
+	.thm-loading {
+		color: #333 !important;
+		text-shadow: none !important;
+
+		.e-spinner .e-bounce {
+			display: none !important;
+		}
+	}
+
+	.thm-login-desc .desc {
+		color: #333 !important;
+		text-shadow: none !important;
+	}
 }

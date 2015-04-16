@@ -10,16 +10,18 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
+		Translator = require('Common/Translator'),
+
 		Settings = require('Storage/Settings')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function ContactsAdminSetting()
+	function ContactsAdminSettings()
 	{
 		var
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
@@ -68,7 +70,7 @@
 			var bDisabled = -1 === Utils.inArray(sValue, aSupportedTypes);
 			return {
 				'id': sValue,
-				'name': getTypeName(sValue) + (bDisabled ? ' (not supported)' : ''),
+				'name': getTypeName(sValue) + (bDisabled ? ' (' + Translator.i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
 				'disabled': bDisabled
 			};
 		});
@@ -96,7 +98,7 @@
 					this.contactsType.valueHasMutated();
 				}
 			}
-		});
+		}).extend({'notify': 'always'});
 
 		this.contactsType.subscribe(function () {
 			this.testContactsSuccess(false);
@@ -141,7 +143,7 @@
 		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
 	}
 
-	ContactsAdminSetting.prototype.onTestContactsResponse = function (sResult, oData)
+	ContactsAdminSettings.prototype.onTestContactsResponse = function (sResult, oData)
 	{
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
@@ -167,18 +169,18 @@
 		this.testing(false);
 	};
 
-	ContactsAdminSetting.prototype.onShow = function ()
+	ContactsAdminSettings.prototype.onShow = function ()
 	{
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 	};
 
-	ContactsAdminSetting.prototype.onBuild = function ()
+	ContactsAdminSettings.prototype.onBuild = function ()
 	{
 		var
 			self = this,
-			Remote = require('Storage/Admin/Remote')
+			Remote = require('Remote/Admin/Ajax')
 		;
 
 		_.delay(function () {
@@ -237,6 +239,6 @@
 		}, 50);
 	};
 
-	module.exports = ContactsAdminSetting;
+	module.exports = ContactsAdminSettings;
 
 }());

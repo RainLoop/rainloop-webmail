@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Base;
 
 /**
@@ -223,7 +232,7 @@ class HtmlUtils
 				{
 					if ($oElement)
 					{
-						if (\preg_match('/http[s]?:\/\//i', $sUrl))
+						if (\preg_match('/http[s]?:\/\//i', $sUrl) || '//' === \substr($sUrl, 0, 2))
 						{
 							$bHasExternals = true;
 							if (!$bDoNotReplaceExternalUrl)
@@ -443,7 +452,7 @@ class HtmlUtils
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
 				if (\in_array(\strtolower($oElement->tagName), array('svg', 'head', 'link',
-					'base', 'meta', 'title', 'style', 'script', 'bgsound', 'keygen', 'source',
+					'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
 					'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')) && isset($oElement->parentNode))
 				{
 					@$oElement->parentNode->removeChild($oElement);
@@ -537,8 +546,8 @@ class HtmlUtils
 //				}
 
 				foreach (array(
-					'id', 'class', 'contenteditable', 'designmode', 'formaction', 'data-bind', 'xmlns',
-					'srcset'
+					'id', 'class', 'contenteditable', 'designmode', 'formaction',
+					'data-bind', 'xmlns', 'srcset'
 				) as $sAttr)
 				{
 					@$oElement->removeAttribute($sAttr);
@@ -557,14 +566,15 @@ class HtmlUtils
 				if ($oElement->hasAttribute('href'))
 				{
 					$sHref = \trim($oElement->getAttribute('href'));
-					if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref))
+					if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref) && '//' !== \substr($sHref, 0, 2))
 					{
 						$oElement->setAttribute('data-x-broken-href', $sHref);
 						$oElement->setAttribute('href', 'javascript:false');
 					}
-					else if ('a' === $sTagNameLower)
+
+					if ('a' === $sTagNameLower)
 					{
-						$oElement->setAttribute('rel', 'external');
+						$oElement->setAttribute('rel', 'external nofollow');
 					}
 				}
 
@@ -585,7 +595,7 @@ class HtmlUtils
 					}
 					else
 					{
-						if (\preg_match('/http[s]?:\/\//i', $sSrc))
+						if (\preg_match('/^http[s]?:\/\//i', $sSrc) || '//' === \substr($sSrc, 0, 2))
 						{
 							if ($bDoNotReplaceExternalUrl)
 							{
@@ -606,7 +616,7 @@ class HtmlUtils
 
 							$bHasExternals = true;
 						}
-						else if ('data:image/' === \strtolower(\substr(\trim($sSrc), 0, 11)))
+						else if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
 						{
 							$oElement->setAttribute('src', $sSrc);
 						}
@@ -736,7 +746,7 @@ class HtmlUtils
 			{
 				$oElement->removeAttribute('data-x-additional-src');
 			}
-			
+
 			if ($oElement->hasAttribute('data-x-additional-style-url'))
 			{
 				$oElement->removeAttribute('data-x-additional-style-url');

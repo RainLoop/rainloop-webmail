@@ -11,7 +11,7 @@
 		<!--[if lte IE 8]>
 			<meta http-equiv="refresh" content="0; URL=./?/BadBrowser" />
 		<![endif]-->
-		<script type="text/javascript" data-cfasync="false">
+		<script data-cfasync="false">
 			if (!window.navigator || !window.navigator.cookieEnabled) {
 				window.document.location.replace('./?/NoCookie');
 			}
@@ -20,43 +20,59 @@
 		<meta name="robots" content="noindex, nofollow, noodp" />
 		<meta name="google" content="notranslate" />
 		<title></title>
+		<style>#rl-content{display:none;}</style>
 		<link rel="shortcut icon" href="{{BaseAppFaviconPngFile}}" type="image/png" />
 		<link rel="apple-touch-icon" href="{{BaseAppAppleTouchFile}}" type="image/png" />
 		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
 		<link type="text/css" rel="stylesheet" id="rlThemeLink" />
-		<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
-		<script type="text/javascript" data-cfasync="false">
+		<script data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
+		<script data-cfasync="false">
 			__includeScr('{{BaseAppDataScriptLink}}' + (window.__rlah ? window.__rlah() || '0' : '0') + '/' +  window.Math.random().toString().substr(2) + '/');
 		</script>
-		<script type="text/javascript" data-cfasync="false">
+		<script data-cfasync="false">
 			if (window.rainloopAppData && window.rainloopAppData['NewThemeLink']) {
 				window.document.getElementById('rlThemeLink').href = window.rainloopAppData['NewThemeLink'];
 			}
 		</script>
+		<script data-cfasync="false">
+			if (window.rainloopAppData && window.rainloopAppData['IncludeCss']) {
+				__includeStyle(window.rainloopAppData['IncludeCss']);
+			}
+		</script>
+		<script data-cfasync="false"></script>
 	</head>
 	<body>
 		<div id="rl-bg" class="thm-body"></div>
 		<div id="rl-loading" class="thm-loading">
-			{{BaseAppLoadingDescription}}
+			<div id="rl-loading-desc">Loading</div>
 			<div class="e-spinner">
 				<div class="e-bounce bounce1"></div>
 				<div class="e-bounce bounce2"></div>
 				<div class="e-bounce bounce3"></div>
 			</div>
 		</div>
-		<script type="text/javascript" data-cfasync="false">
-			var oE = window.document.getElementById('rl-loading');
-			if (oE && oE.style) {
-				oE.style.opacity = 0;
-				window.setTimeout(function () {
-					oE.style.opacity = 1;
-				}, 300);
-			}
+		<script data-cfasync="false">
+			(function (window) {
+				var
+					oE = window.document.getElementById('rl-loading'),
+					oElDesc = window.document.getElementById('rl-loading-desc')
+				;
+				if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
+					oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
+				}
+				if (oE && oE.style) {
+					oE.style.opacity = 0;
+					window.setTimeout(function () {
+						oE.style.opacity = 1;
+					}, 300);
+				}
+			}(window));
 		</script>
 		<div id="rl-loading-error" class="thm-loading">
 			An Error occurred,
 			<br />
 			please refresh the page and try again.
+			<div id="rl-loading-error-additional"></div>
 		</div>
 		<div id="rl-content">
 			<div id="rl-popups"></div>
@@ -69,31 +85,54 @@
 		</div>
 		<div id="rl-templates"></div>
 		<div id="rl-hidden"></div>
-		<script type="text/javascript" data-cfasync="false">
+		<script data-cfasync="false">
 
 			if (window.$LAB && window.rainloopAppData && window.rainloopAppData['TemplatesLink'] && window.rainloopAppData['LangLink'])
 			{
 				__simplePace(10);
 
 				window.$LAB
-					.script('{{BaseAppLibsScriptLink}}')
-					.script(window.rainloopAppData['TemplatesLink'])
-					.script(window.rainloopAppData['LangLink'])
-					.wait(function () {
-						__simplePace(30);
+					.script(function () {
+						return [
+							{'src': '{{BaseAppLibsScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'}
+						];
 					})
-					.script('{{BaseAppMainScriptLink}}')
+					.wait(function () {
+						__simplePace(20);
+						if (window.rainloopAppData['IncludeBackground']) {
+							$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(
+								window.rainloopAppData['IncludeBackground'].replace('{{USER}}',
+									(window.__rlah ? window.__rlah() || '0' : '0')), {
+								'fade': 100, 'centeredX': true, 'centeredY': true
+							}).removeAttr('style');
+						}
+					})
+					.script(function () {
+						return [
+							{'src': window.rainloopAppData['TemplatesLink'], 'type': 'text/javascript', 'charset': 'utf-8'},
+							{'src': window.rainloopAppData['LangLink'], 'type': 'text/javascript', 'charset': 'utf-8'}
+						];
+					})
+					.wait(function () {
+						__simplePace(10);
+					})
+					.script(function () {
+						return {'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};
+					})
 					.wait(function () {
 						__simplePace(20);
 					})
 					.script(function () {
-						return window.rainloopAppData['PluginsLink'] || null;
+						return window.rainloopAppData['PluginsLink'] ?
+							{'src': window.rainloopAppData['PluginsLink'], 'type': 'text/javascript', 'charset': 'utf-8'} : null;
 					})
 					.wait(function () {
 						__simplePace(5);
 						__runBoot(false);
 					})
-					.script('{{BaseAppEditorScriptLink}}')
+					.script(function () {
+						return {'src': '{{BaseAppEditorScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};
+					})
 					.wait(function () {
 						if (window.CKEDITOR && window.__initEditor) {
 							window.__initEditor();

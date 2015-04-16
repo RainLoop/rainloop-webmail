@@ -15,14 +15,16 @@
 		Autolinker = require('Autolinker'),
 		JSEncrypt = require('JSEncrypt'),
 
+		Mime = require('Common/Mime'),
+
 		Enums = require('Common/Enums'),
-		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals')
 	;
 
 	Utils.trim = $.trim;
 	Utils.inArray = $.inArray;
 	Utils.isArray = _.isArray;
+	Utils.isObject = _.isObject;
 	Utils.isFunc = _.isFunction;
 	Utils.isUnd = _.isUndefined;
 	Utils.isNull = _.isNull;
@@ -49,6 +51,10 @@
 			}, iTimeout);
 		}
 	}, 50);
+
+	Utils.windowResizeCallback = function () {
+		Utils.windowResize();
+	};
 
 	/**
 	 * @param {(string|number)} mValue
@@ -85,6 +91,15 @@
 	};
 
 	/**
+	 * @param {*} mValue
+	 * @return {boolean}
+	 */
+	Utils.pBool = function (mValue)
+	{
+		return !!mValue;
+	};
+
+	/**
 	 * @param {string} sComponent
 	 * @return {string}
 	 */
@@ -100,14 +115,6 @@
 	Utils.isNonEmptyArray = function (aValue)
 	{
 		return Utils.isArray(aValue) && 0 < aValue.length;
-	};
-
-	/**
-	 * @return {*|null}
-	 */
-	Utils.notificationClass = function ()
-	{
-		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
 	};
 
 	/**
@@ -137,7 +144,7 @@
 	/**
 	 * @param {string} sMailToUrl
 	 * @param {Function} PopupComposeVoreModel
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	Utils.mailToHelper = function (sMailToUrl, PopupComposeVoreModel)
 	{
@@ -146,25 +153,43 @@
 			sMailToUrl = sMailToUrl.toString().substr(7);
 
 			var
+				aTo = [],
+				aCc = null,
+				aBcc = null,
 				oParams = {},
-				oEmailModel = null,
+				EmailModel = require('Model/Email'),
 				sEmail = sMailToUrl.replace(/\?.+$/, ''),
 				sQueryString = sMailToUrl.replace(/^[^\?]*\?/, ''),
-				EmailModel = require('Model/Email')
+				fParseEmailLine = function (sLine) {
+					return sLine ? _.compact(_.map(window.decodeURIComponent(sLine).split(/[,]/), function (sItem) {
+						var oEmailModel = new EmailModel();
+						oEmailModel.mailsoParse(sItem);
+						return '' !== oEmailModel.email ? oEmailModel : null;
+					})) : null;
+				}
 			;
 
-			oEmailModel = new EmailModel();
-			oEmailModel.parse(window.decodeURIComponent(sEmail));
+			aTo = fParseEmailLine(sEmail);
 
-			if (oEmailModel && oEmailModel.email)
+			oParams = Utils.simpleQueryParser(sQueryString);
+
+			if (!Utils.isUnd(oParams.cc))
 			{
-				oParams = Utils.simpleQueryParser(sQueryString);
-
-				require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null, [oEmailModel],
-					Utils.isUnd(oParams.subject) ? null : Utils.pString(oParams.subject),
-					Utils.isUnd(oParams.body) ? null : Utils.plainToHtml(Utils.pString(oParams.body))
-				]);
+				aCc = fParseEmailLine(window.decodeURIComponent(oParams.cc));
 			}
+
+			if (!Utils.isUnd(oParams.bcc))
+			{
+				aBcc = fParseEmailLine(window.decodeURIComponent(oParams.bcc));
+			}
+
+			require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [Enums.ComposeType.Empty, null,
+				aTo, aCc, aBcc,
+				Utils.isUnd(oParams.subject) ? null :
+					Utils.pString(window.decodeURIComponent(oParams.subject)),
+				Utils.isUnd(oParams.body) ? null :
+					Utils.plainToHtml(Utils.pString(window.decodeURIComponent(oParams.body)))
+			]);
 
 			return true;
 		}
@@ -220,7 +245,7 @@
 		return sValue;
 	};
 
-	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && JSEncrypt);
+	Utils.rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && false && JSEncrypt);
 
 	/**
 	 * @param {string} sText
@@ -228,9 +253,7 @@
 	 */
 	Utils.encodeHtml = function (sText)
 	{
-		return Utils.isNormal(sText) ? sText.toString()
-			.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;').replace(/'/g, '&#039;') : '';
+		return Utils.isNormal(sText) ? _.escape(sText.toString()) : '';
 	};
 
 	/**
@@ -309,61 +332,6 @@
 		};
 	}());
 
-	Utils.audio = (function () {
-
-		var
-			oAudio = false
-		;
-
-		return function (sMp3File, sOggFile) {
-
-			if (false === oAudio)
-			{
-				if (Globals.bIsiOSDevice)
-				{
-					oAudio = null;
-				}
-				else
-				{
-					var
-						bCanPlayMp3	= false,
-						bCanPlayOgg	= false,
-						oAudioLocal = window.Audio ? new window.Audio() : null
-					;
-
-					if (oAudioLocal && oAudioLocal.canPlayType && oAudioLocal.play)
-					{
-						bCanPlayMp3 = '' !== oAudioLocal.canPlayType('audio/mpeg; codecs="mp3"');
-						if (!bCanPlayMp3)
-						{
-							bCanPlayOgg = '' !== oAudioLocal.canPlayType('audio/ogg; codecs="vorbis"');
-						}
-
-						if (bCanPlayMp3 || bCanPlayOgg)
-						{
-							oAudio = oAudioLocal;
-							oAudio.preload = 'none';
-							oAudio.loop = false;
-							oAudio.autoplay = false;
-							oAudio.muted = false;
-							oAudio.src = bCanPlayMp3 ? sMp3File : sOggFile;
-						}
-						else
-						{
-							oAudio = null;
-						}
-					}
-					else
-					{
-						oAudio = null;
-					}
-				}
-			}
-
-			return oAudio;
-		};
-	}());
-
 	/**
 	 * @param {(Object|null|undefined)} oObject
 	 * @param {string} sProp
@@ -372,117 +340,6 @@
 	Utils.hos = function (oObject, sProp)
 	{
 		return oObject && window.Object && window.Object.hasOwnProperty ? window.Object.hasOwnProperty.call(oObject, sProp) : false;
-	};
-
-	/**
-	 * @param {string} sKey
-	 * @param {Object=} oValueList
-	 * @param {string=} sDefaulValue
-	 * @return {string}
-	 */
-	Utils.i18n = function (sKey, oValueList, sDefaulValue)
-	{
-		var
-			sValueName = '',
-			sResult = Utils.isUnd(Globals.oI18N[sKey]) ? (Utils.isUnd(sDefaulValue) ? sKey : sDefaulValue) : Globals.oI18N[sKey]
-		;
-
-		if (!Utils.isUnd(oValueList) && !Utils.isNull(oValueList))
-		{
-			for (sValueName in oValueList)
-			{
-				if (Utils.hos(oValueList, sValueName))
-				{
-					sResult = sResult.replace('%' + sValueName + '%', oValueList[sValueName]);
-				}
-			}
-		}
-
-		return sResult;
-	};
-
-	/**
-	 * @param {Object} oElement
-	 */
-	Utils.i18nToNode = function (oElement)
-	{
-		_.defer(function () {
-			$('.i18n', oElement).each(function () {
-				var
-					jqThis = $(this),
-					sKey = ''
-				;
-
-				sKey = jqThis.data('i18n-text');
-				if (sKey)
-				{
-					jqThis.text(Utils.i18n(sKey));
-				}
-				else
-				{
-					sKey = jqThis.data('i18n-html');
-					if (sKey)
-					{
-						jqThis.html(Utils.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-placeholder');
-					if (sKey)
-					{
-						jqThis.attr('placeholder', Utils.i18n(sKey));
-					}
-
-					sKey = jqThis.data('i18n-title');
-					if (sKey)
-					{
-						jqThis.attr('title', Utils.i18n(sKey));
-					}
-				}
-			});
-		});
-	};
-
-	Utils.i18nReload = function ()
-	{
-		if (window['rainloopI18N'])
-		{
-			Globals.oI18N = window['rainloopI18N'] || {};
-
-			Utils.i18nToNode(Globals.$doc);
-
-			Globals.langChangeTrigger(!Globals.langChangeTrigger());
-		}
-
-		window['rainloopI18N'] = null;
-	};
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {Object} oScope
-	 * @param {Function=} fLangCallback
-	 */
-	Utils.initOnStartOrLangChange = function (fCallback, oScope, fLangCallback)
-	{
-		if (fCallback)
-		{
-			fCallback.call(oScope);
-		}
-
-		if (fLangCallback)
-		{
-			Globals.langChangeTrigger.subscribe(function () {
-				if (fCallback)
-				{
-					fCallback.call(oScope);
-				}
-
-				fLangCallback.call(oScope);
-			});
-		}
-		else if (fCallback)
-		{
-			Globals.langChangeTrigger.subscribe(fCallback, oScope);
-		}
 	};
 
 	/**
@@ -636,122 +493,6 @@
 	};
 
 	/**
-	 * @param {number} iCode
-	 * @param {*=} mMessage = ''
-	 * @return {string}
-	 */
-	Utils.getNotification = function (iCode, mMessage)
-	{
-		iCode = Utils.pInt(iCode);
-		if (Enums.Notification.ClientViewError === iCode && mMessage)
-		{
-			return mMessage;
-		}
-
-		return Utils.isUnd(Globals.oNotificationI18N[iCode]) ? '' : Globals.oNotificationI18N[iCode];
-	};
-
-	Utils.initNotificationLanguage = function ()
-	{
-		var oN = Globals.oNotificationI18N || {};
-		oN[Enums.Notification.InvalidToken] = Utils.i18n('NOTIFICATIONS/INVALID_TOKEN');
-		oN[Enums.Notification.AuthError] = Utils.i18n('NOTIFICATIONS/AUTH_ERROR');
-		oN[Enums.Notification.AccessError] = Utils.i18n('NOTIFICATIONS/ACCESS_ERROR');
-		oN[Enums.Notification.ConnectionError] = Utils.i18n('NOTIFICATIONS/CONNECTION_ERROR');
-		oN[Enums.Notification.CaptchaError] = Utils.i18n('NOTIFICATIONS/CAPTCHA_ERROR');
-		oN[Enums.Notification.SocialFacebookLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.SocialTwitterLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.SocialGoogleLoginAccessDisable] = Utils.i18n('NOTIFICATIONS/SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE');
-		oN[Enums.Notification.DomainNotAllowed] = Utils.i18n('NOTIFICATIONS/DOMAIN_NOT_ALLOWED');
-		oN[Enums.Notification.AccountNotAllowed] = Utils.i18n('NOTIFICATIONS/ACCOUNT_NOT_ALLOWED');
-
-		oN[Enums.Notification.AccountTwoFactorAuthRequired] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED');
-		oN[Enums.Notification.AccountTwoFactorAuthError] = Utils.i18n('NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR');
-
-		oN[Enums.Notification.CouldNotSaveNewPassword] = Utils.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD');
-		oN[Enums.Notification.CurrentPasswordIncorrect] = Utils.i18n('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT');
-		oN[Enums.Notification.NewPasswordShort] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_SHORT');
-		oN[Enums.Notification.NewPasswordWeak] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_WEAK');
-		oN[Enums.Notification.NewPasswordForbidden] = Utils.i18n('NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT');
-
-		oN[Enums.Notification.ContactsSyncError] = Utils.i18n('NOTIFICATIONS/CONTACTS_SYNC_ERROR');
-
-		oN[Enums.Notification.CantGetMessageList] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST');
-		oN[Enums.Notification.CantGetMessage] = Utils.i18n('NOTIFICATIONS/CANT_GET_MESSAGE');
-		oN[Enums.Notification.CantDeleteMessage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_MESSAGE');
-		oN[Enums.Notification.CantMoveMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
-		oN[Enums.Notification.CantCopyMessage] = Utils.i18n('NOTIFICATIONS/CANT_MOVE_MESSAGE');
-
-		oN[Enums.Notification.CantSaveMessage] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_MESSAGE');
-		oN[Enums.Notification.CantSendMessage] = Utils.i18n('NOTIFICATIONS/CANT_SEND_MESSAGE');
-		oN[Enums.Notification.InvalidRecipients] = Utils.i18n('NOTIFICATIONS/INVALID_RECIPIENTS');
-
-		oN[Enums.Notification.CantCreateFolder] = Utils.i18n('NOTIFICATIONS/CANT_CREATE_FOLDER');
-		oN[Enums.Notification.CantRenameFolder] = Utils.i18n('NOTIFICATIONS/CANT_RENAME_FOLDER');
-		oN[Enums.Notification.CantDeleteFolder] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_FOLDER');
-		oN[Enums.Notification.CantDeleteNonEmptyFolder] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_NON_EMPTY_FOLDER');
-		oN[Enums.Notification.CantSubscribeFolder] = Utils.i18n('NOTIFICATIONS/CANT_SUBSCRIBE_FOLDER');
-		oN[Enums.Notification.CantUnsubscribeFolder] = Utils.i18n('NOTIFICATIONS/CANT_UNSUBSCRIBE_FOLDER');
-
-		oN[Enums.Notification.CantSaveSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_SETTINGS');
-		oN[Enums.Notification.CantSavePluginSettings] = Utils.i18n('NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS');
-
-		oN[Enums.Notification.DomainAlreadyExists] = Utils.i18n('NOTIFICATIONS/DOMAIN_ALREADY_EXISTS');
-
-		oN[Enums.Notification.CantInstallPackage] = Utils.i18n('NOTIFICATIONS/CANT_INSTALL_PACKAGE');
-		oN[Enums.Notification.CantDeletePackage] = Utils.i18n('NOTIFICATIONS/CANT_DELETE_PACKAGE');
-		oN[Enums.Notification.InvalidPluginPackage] = Utils.i18n('NOTIFICATIONS/INVALID_PLUGIN_PACKAGE');
-		oN[Enums.Notification.UnsupportedPluginPackage] = Utils.i18n('NOTIFICATIONS/UNSUPPORTED_PLUGIN_PACKAGE');
-
-		oN[Enums.Notification.LicensingServerIsUnavailable] = Utils.i18n('NOTIFICATIONS/LICENSING_SERVER_IS_UNAVAILABLE');
-		oN[Enums.Notification.LicensingExpired] = Utils.i18n('NOTIFICATIONS/LICENSING_EXPIRED');
-		oN[Enums.Notification.LicensingBanned] = Utils.i18n('NOTIFICATIONS/LICENSING_BANNED');
-
-		oN[Enums.Notification.DemoSendMessageError] = Utils.i18n('NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR');
-
-		oN[Enums.Notification.AccountAlreadyExists] = Utils.i18n('NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS');
-
-		oN[Enums.Notification.MailServerError] = Utils.i18n('NOTIFICATIONS/MAIL_SERVER_ERROR');
-		oN[Enums.Notification.InvalidInputArgument] = Utils.i18n('NOTIFICATIONS/INVALID_INPUT_ARGUMENT');
-		oN[Enums.Notification.UnknownNotification] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
-		oN[Enums.Notification.UnknownError] = Utils.i18n('NOTIFICATIONS/UNKNOWN_ERROR');
-	};
-
-	/**
-	 * @param {*} mCode
-	 * @return {string}
-	 */
-	Utils.getUploadErrorDescByCode = function (mCode)
-	{
-		var sResult = '';
-		switch (Utils.pInt(mCode)) {
-		case Enums.UploadErrorCode.FileIsTooBig:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG');
-			break;
-		case Enums.UploadErrorCode.FilePartiallyUploaded:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_PARTIALLY_UPLOADED');
-			break;
-		case Enums.UploadErrorCode.FileNoUploaded:
-			sResult = Utils.i18n('UPLOAD/ERROR_NO_FILE_UPLOADED');
-			break;
-		case Enums.UploadErrorCode.MissingTempFolder:
-			sResult = Utils.i18n('UPLOAD/ERROR_MISSING_TEMP_FOLDER');
-			break;
-		case Enums.UploadErrorCode.FileOnSaveingError:
-			sResult = Utils.i18n('UPLOAD/ERROR_ON_SAVING_FILE');
-			break;
-		case Enums.UploadErrorCode.FileType:
-			sResult = Utils.i18n('UPLOAD/ERROR_FILE_TYPE');
-			break;
-		default:
-			sResult = Utils.i18n('UPLOAD/ERROR_UNKNOWN');
-			break;
-		}
-
-		return sResult;
-	};
-
-	/**
 	 * @param {?} oObject
 	 * @param {string} sMethodName
 	 * @param {Array=} aParameters
@@ -778,7 +519,7 @@
 	/**
 	 * @param {?} oEvent
 	 */
-	Utils.killCtrlAandS = function (oEvent)
+	Utils.kill_CtrlA_CtrlS = function (oEvent)
 	{
 		oEvent = oEvent || window.event;
 		if (oEvent && oEvent.ctrlKey && !oEvent.shiftKey && !oEvent.altKey)
@@ -854,312 +595,10 @@
 	};
 
 	/**
-	 * @param {Object} oData
-	 */
-	Utils.initDataConstructorBySettings = function (oData)
-	{
-		oData.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html);
-		oData.showImages = ko.observable(false);
-		oData.interfaceAnimation = ko.observable(Enums.InterfaceAnimation.Full);
-		oData.contactsAutosave = ko.observable(false);
-
-		Globals.sAnimationType = Enums.InterfaceAnimation.Full;
-
-		oData.capaThemes = ko.observable(false);
-		oData.allowLanguagesOnSettings = ko.observable(true);
-		oData.allowLanguagesOnLogin = ko.observable(true);
-
-		oData.useLocalProxyForExternalImages = ko.observable(false);
-
-		oData.desktopNotifications = ko.observable(false);
-		oData.useThreads = ko.observable(true);
-		oData.replySameFolder = ko.observable(true);
-		oData.useCheckboxesInList = ko.observable(true);
-
-		oData.layout = ko.observable(Enums.Layout.SidePreview);
-		oData.usePreviewPane = ko.computed(function () {
-			return Enums.Layout.NoPreview !== oData.layout();
-		});
-
-		oData.interfaceAnimation.subscribe(function (sValue) {
-			if (Globals.bMobileDevice || sValue === Enums.InterfaceAnimation.None)
-			{
-				Globals.$html.removeClass('rl-anim rl-anim-full').addClass('no-rl-anim');
-
-				Globals.sAnimationType = Enums.InterfaceAnimation.None;
-			}
-			else
-			{
-				switch (sValue)
-				{
-					case Enums.InterfaceAnimation.Full:
-						Globals.$html.removeClass('no-rl-anim').addClass('rl-anim rl-anim-full');
-						Globals.sAnimationType = sValue;
-						break;
-					case Enums.InterfaceAnimation.Normal:
-						Globals.$html.removeClass('no-rl-anim rl-anim-full').addClass('rl-anim');
-						Globals.sAnimationType = sValue;
-						break;
-				}
-			}
-		});
-
-		oData.interfaceAnimation.valueHasMutated();
-
-		oData.desktopNotificationsPermisions = ko.computed(function () {
-
-			oData.desktopNotifications();
-
-			var
-				NotificationClass = Utils.notificationClass(),
-				iResult = Enums.DesktopNotifications.NotSupported
-			;
-
-			if (NotificationClass && NotificationClass.permission)
-			{
-				switch (NotificationClass.permission.toLowerCase())
-				{
-					case 'granted':
-						iResult = Enums.DesktopNotifications.Allowed;
-						break;
-					case 'denied':
-						iResult = Enums.DesktopNotifications.Denied;
-						break;
-					case 'default':
-						iResult = Enums.DesktopNotifications.NotAllowed;
-						break;
-				}
-			}
-			else if (window.webkitNotifications && window.webkitNotifications.checkPermission)
-			{
-				iResult = window.webkitNotifications.checkPermission();
-			}
-
-			return iResult;
-		});
-
-		oData.useDesktopNotifications = ko.computed({
-			'read': function () {
-				return oData.desktopNotifications() &&
-					Enums.DesktopNotifications.Allowed === oData.desktopNotificationsPermisions();
-			},
-			'write': function (bValue) {
-				if (bValue)
-				{
-					var
-						NotificationClass = Utils.notificationClass(),
-						iPermission = oData.desktopNotificationsPermisions()
-					;
-
-					if (NotificationClass && Enums.DesktopNotifications.Allowed === iPermission)
-					{
-						oData.desktopNotifications(true);
-					}
-					else if (NotificationClass && Enums.DesktopNotifications.NotAllowed === iPermission)
-					{
-						NotificationClass.requestPermission(function () {
-							oData.desktopNotifications.valueHasMutated();
-							if (Enums.DesktopNotifications.Allowed === oData.desktopNotificationsPermisions())
-							{
-								if (oData.desktopNotifications())
-								{
-									oData.desktopNotifications.valueHasMutated();
-								}
-								else
-								{
-									oData.desktopNotifications(true);
-								}
-							}
-							else
-							{
-								if (oData.desktopNotifications())
-								{
-									oData.desktopNotifications(false);
-								}
-								else
-								{
-									oData.desktopNotifications.valueHasMutated();
-								}
-							}
-						});
-					}
-					else
-					{
-						oData.desktopNotifications(false);
-					}
-				}
-				else
-				{
-					oData.desktopNotifications(false);
-				}
-			}
-		});
-
-		oData.language = ko.observable('');
-		oData.languages = ko.observableArray([]);
-
-		oData.mainLanguage = ko.computed({
-			'read': oData.language,
-			'write': function (sValue) {
-				if (sValue !== oData.language())
-				{
-					if (-1 < Utils.inArray(sValue, oData.languages()))
-					{
-						oData.language(sValue);
-					}
-					else if (0 < oData.languages().length)
-					{
-						oData.language(oData.languages()[0]);
-					}
-				}
-				else
-				{
-					oData.language.valueHasMutated();
-				}
-			}
-		});
-
-		oData.theme = ko.observable('');
-		oData.themes = ko.observableArray([]);
-
-		oData.mainTheme = ko.computed({
-			'read': oData.theme,
-			'write': function (sValue) {
-				if (sValue !== oData.theme())
-				{
-					var aThemes = oData.themes();
-					if (-1 < Utils.inArray(sValue, aThemes))
-					{
-						oData.theme(sValue);
-					}
-					else if (0 < aThemes.length)
-					{
-						oData.theme(aThemes[0]);
-					}
-				}
-				else
-				{
-					oData.theme.valueHasMutated();
-				}
-			}
-		});
-
-		oData.capaAdditionalAccounts = ko.observable(false);
-		oData.capaAdditionalIdentities = ko.observable(false);
-		oData.capaGravatar = ko.observable(false);
-		oData.determineUserLanguage = ko.observable(false);
-		oData.determineUserDomain = ko.observable(false);
-
-		oData.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage);//.extend({'throttle': 200});
-
-		oData.mainMessagesPerPage = oData.messagesPerPage;
-		oData.mainMessagesPerPage = ko.computed({
-			'read': oData.messagesPerPage,
-			'write': function (iValue) {
-				if (-1 < Utils.inArray(Utils.pInt(iValue), Consts.Defaults.MessagesPerPageArray))
-				{
-					if (iValue !== oData.messagesPerPage())
-					{
-						oData.messagesPerPage(iValue);
-					}
-				}
-				else
-				{
-					oData.messagesPerPage.valueHasMutated();
-				}
-			}
-		});
-
-		oData.facebookSupported = ko.observable(false);
-		oData.facebookEnable = ko.observable(false);
-		oData.facebookAppID = ko.observable('');
-		oData.facebookAppSecret = ko.observable('');
-
-		oData.twitterEnable = ko.observable(false);
-		oData.twitterConsumerKey = ko.observable('');
-		oData.twitterConsumerSecret = ko.observable('');
-
-		oData.googleEnable = ko.observable(false);
-		oData.googleClientID = ko.observable('');
-		oData.googleClientSecret = ko.observable('');
-		oData.googleApiKey = ko.observable('');
-
-		oData.dropboxEnable = ko.observable(false);
-		oData.dropboxApiKey = ko.observable('');
-
-		oData.contactsIsAllowed = ko.observable(false);
-	};
-
-	/**
-	 * @param {{moment:Function}} oObject
-	 */
-	Utils.createMomentDate = function (oObject)
-	{
-		if (Utils.isUnd(oObject.moment))
-		{
-			oObject.moment = ko.observable(moment());
-		}
-
-		return ko.computed(function () {
-			Globals.momentTrigger();
-			var oMoment = this.moment();
-			return 1970 === oMoment.year() ? '' : oMoment.fromNow();
-		}, oObject);
-	};
-
-	/**
-	 * @param {{moment:Function, momentDate:Function}} oObject
-	 */
-	Utils.createMomentShortDate = function (oObject)
-	{
-		return ko.computed(function () {
-
-			var
-				sResult = '',
-				oMomentNow = moment(),
-				oMoment = this.moment(),
-				sMomentDate = this.momentDate()
-			;
-
-			if (1970 === oMoment.year())
-			{
-				sResult = '';
-			}
-			else if (4 >= oMomentNow.diff(oMoment, 'hours'))
-			{
-				sResult = sMomentDate;
-			}
-			else if (oMomentNow.format('L') === oMoment.format('L'))
-			{
-				sResult = Utils.i18n('MESSAGE_LIST/TODAY_AT', {
-					'TIME': oMoment.format('LT')
-				});
-			}
-			else if (oMomentNow.clone().subtract('days', 1).format('L') === oMoment.format('L'))
-			{
-				sResult = Utils.i18n('MESSAGE_LIST/YESTERDAY_AT', {
-					'TIME': oMoment.format('LT')
-				});
-			}
-			else if (oMomentNow.year() === oMoment.year())
-			{
-				sResult = oMoment.format('D MMM.');
-			}
-			else
-			{
-				sResult = oMoment.format('LL');
-			}
-
-			return sResult;
-
-		}, oObject);
-	};
-
-	/**
 	 * @param {string} sTheme
 	 * @return {string}
 	 */
-	Utils.convertThemeName = function (sTheme)
+	Utils.convertThemeName = _.memoize(function (sTheme)
 	{
 		if ('@custom' === sTheme.substr(-7))
 		{
@@ -1167,7 +606,7 @@
 		}
 
 		return Utils.trim(sTheme.replace(/[^a-zA-Z0-9]+/g, ' ').replace(/([A-Z])/g, ' $1').replace(/[\s]+/g, ' '));
-	};
+	});
 
 	/**
 	 * @param {string} sName
@@ -1183,7 +622,7 @@
 	 */
 	Utils.microtime = function ()
 	{
-		return (new Date()).getTime();
+		return (new window.Date()).getTime();
 	};
 
 	/**
@@ -1202,7 +641,7 @@
 	 */
 	Utils.convertLangName = function (sLanguage, bEng)
 	{
-		return Utils.i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
+		return require('Common/Translator').i18n('LANGS_NAMES' + (true === bEng ? '_EN' : '') + '/LANG_' +
 			sLanguage.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'), null, sLanguage);
 	};
 
@@ -1227,20 +666,11 @@
 		return sResult;
 	};
 
-	/**
-	 * @param {string} sPlain
-	 * @return {string}
-	 */
-	Utils.convertPlainTextToHtml = function (sPlain)
+	Utils.draggablePlace = function ()
 	{
-		return sPlain.toString()
-			.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
-			.replace(/\r/g, '').replace(/\n/g, '<br />');
-	};
-
-	Utils.draggeblePlace = function ()
-	{
-		return $('<div class="draggablePlace"><span class="text"></span>&nbsp;<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
+		return $('<div class="draggablePlace">' +
+			'<span class="text"></span>&nbsp;' +
+			'<i class="icon-copy icon-white visible-on-ctrl"></i><i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
 	};
 
 	Utils.defautOptionsAfterRender = function (oDomOption, oItem)
@@ -1278,7 +708,7 @@
 				$('#rl-content', oBody).html(oTemplate.html());
 				$('html', oWin.document).addClass('external ' + $('html').attr('class'));
 
-				Utils.i18nToNode(oBody);
+				require('Common/Translator').i18nToNodes(oBody);
 
 				if (oViewModel && $('#rl-content', oBody)[0])
 				{
@@ -1337,6 +767,46 @@
 		return Utils.settingsSaveHelperFunction(null, koTrigger, oContext, 1000);
 	};
 
+	Utils.settingsSaveHelperSubscribeFunction = function (oRemote, sSettingName, sType, fTriggerFunction)
+	{
+		return function (mValue) {
+
+			if (oRemote)
+			{
+				switch (sType)
+				{
+					default:
+						mValue = Utils.pString(mValue);
+						break;
+					case 'bool':
+					case 'boolean':
+						mValue = mValue ? '1' : '0';
+						break;
+					case 'int':
+					case 'integer':
+					case 'number':
+						mValue = Utils.pInt(mValue);
+						break;
+					case 'trim':
+						mValue = Utils.trim(mValue);
+						break;
+				}
+
+				var oData = {};
+				oData[sSettingName] = mValue;
+
+				if (oRemote.saveAdminConfig)
+				{
+					oRemote.saveAdminConfig(fTriggerFunction || null, oData);
+				}
+				else if (oRemote.saveSettings)
+				{
+					oRemote.saveSettings(fTriggerFunction || null, oData);
+				}
+			}
+		};
+	};
+
 	/**
 	 * @param {string} sHtml
 	 * @return {string}
@@ -1352,42 +822,8 @@
 
 			sText = '',
 
-			splitPlainText = function (sText)
-			{
-				var
-					iLen = 100,
-					sPrefix = '',
-					sSubText = '',
-					sResult = sText,
-					iSpacePos = 0,
-					iNewLinePos = 0
-				;
-
-				while (sResult.length > iLen)
-				{
-					sSubText = sResult.substring(0, iLen);
-					iSpacePos = sSubText.lastIndexOf(' ');
-					iNewLinePos = sSubText.lastIndexOf('\n');
-
-					if (-1 !== iNewLinePos)
-					{
-						iSpacePos = iNewLinePos;
-					}
-
-					if (-1 === iSpacePos)
-					{
-						iSpacePos = iLen;
-					}
-
-					sPrefix += sSubText.substring(0, iSpacePos) + '\n';
-					sResult = sResult.substring(iSpacePos + 1);
-				}
-
-				return sPrefix + sResult;
-			},
-
 			convertBlockquote = function (sText) {
-				sText = splitPlainText($.trim(sText));
+				sText = Utils.trim(sText);
 				sText = '> ' + sText.replace(/\n/gm, '\n> ');
 				return sText.replace(/(^|\n)([> ]+)/gm, function () {
 					return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/g, '')) + ' ' : '';
@@ -1416,7 +852,7 @@
 
 			fixAttibuteValue = function () {
 				return (arguments && 1 < arguments.length) ?
-					'' + arguments[1] + arguments[2].replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+					'' + arguments[1] + _.escape(arguments[2]) : '';
 			},
 
 			convertLinks = function () {
@@ -1425,6 +861,10 @@
 		;
 
 		sText = sHtml
+			// specials for signature
+			.replace(/\u0002\u0002/g, '\u200C\u200C')
+			.replace(/\u0003\u0003/g, '\u200D\u200D')
+
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
@@ -1455,8 +895,10 @@
 			.replace(/&amp;/gi, '&')
 		;
 
+		sText = Utils.splitPlainText(Utils.trim(sText));
+
 		iPos = 0;
-		iLimit = 100;
+		iLimit = 800;
 
 		while (0 < iLimit)
 		{
@@ -1506,6 +948,8 @@
 	Utils.plainToHtml = function (sPlain, bFindEmailAndLinks)
 	{
 		sPlain = sPlain.toString().replace(/\r/g, '');
+
+		bFindEmailAndLinks = Utils.isUnd(bFindEmailAndLinks) ? false : !!bFindEmailAndLinks;
 
 		var
 			bIn = false,
@@ -1568,13 +1012,18 @@
 		sPlain = aText.join("\n");
 
 		sPlain = sPlain
+
+			// specials for signature
+			.replace(/\u200C\u200C/g, '\u0002\u0002')
+			.replace(/\u200D\u200D/g, '\u0003\u0003')
+
 //			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-			.replace(/[\-_~]{10,}/g, '<hr />')
-			.replace(/\n/g, '<br />');
+			.replace(/\n/g, '<br />')
+		;
 
 		return bFindEmailAndLinks ? Utils.findEmailAndLinks(sPlain) : sPlain;
 	};
@@ -1588,23 +1037,17 @@
 	 */
 	Utils.findEmailAndLinks = function (sHtml)
 	{
+//		return sHtml;
 		sHtml = Autolinker.link(sHtml, {
 			'newWindow': true,
 			'stripPrefix': false,
 			'urls': true,
 			'email': true,
-			'twitter': false
+			'twitter': false,
+			'replaceFn': function (autolinker, match) {
+				return !(autolinker && match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
+			}
 		});
-
-//		if ($.fn && $.fn.linkify)
-//		{
-//			sHtml = Globals.$div.html(sHtml.replace(/&amp;/ig, 'amp_amp_12345_amp_amp'))
-//				.linkify()
-//				.find('.linkified').removeClass('linkified').end()
-//				.html()
-//				.replace(/amp_amp_12345_amp_amp/g, '&amp;')
-//			;
-//		}
 
 		return sHtml;
 	};
@@ -1736,11 +1179,12 @@
 		for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
 		{
 			oItem = aList[iIndex];
-			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+//			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+			if ((oItem.subScribed() || !oItem.existen || bBuildUnvisible) && (oItem.selectable || oItem.hasSubScribedSubfolders()))
 			{
 				if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
 				{
-					if (Enums.FolderType.User === oItem.type() || !bSystem || 0 < oItem.subFolders().length)
+					if (Enums.FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders())
 					{
 						if (bSep && 0 < aResult.length)
 						{
@@ -1937,29 +1381,6 @@
 	};
 
 	/**
-	 * @param {string} sLanguage
-	 * @param {Function=} fDone
-	 * @param {Function=} fFail
-	 */
-	Utils.reloadLanguage = function (sLanguage, fDone, fFail)
-	{
-		var iStart = Utils.microtime();
-		$.ajax({
-				'url': require('Common/LinkBuilder').langLink(sLanguage),
-				'dataType': 'script',
-				'cache': true
-			})
-			.fail(fFail || Utils.emptyFunction)
-			.done(function () {
-				_.delay(function () {
-					Utils.i18nReload();
-					(fDone || Utils.emptyFunction)();
-				}, 500 < Utils.microtime() - iStart ? 1 : 500);
-			})
-		;
-	};
-
-	/**
 	 * @param {Object} oParams
 	 */
 	Utils.setHeadViewport = function (oParams)
@@ -1971,6 +1392,184 @@
 
 		$('#rl-head-viewport').attr('content', aContent.join(', '));
 	};
+
+	/**
+	 * @param {string} sFileName
+	 * @return {string}
+	 */
+	Utils.getFileExtension = function (sFileName)
+	{
+		sFileName = Utils.trim(sFileName).toLowerCase();
+
+		var sResult = sFileName.split('.').pop();
+		return (sResult === sFileName) ? '' : sResult;
+	};
+
+	/**
+	 * @param {string} sFileName
+	 * @return {string}
+	 */
+	Utils.mimeContentType = function (sFileName)
+	{
+		var
+			sExt = '',
+			sResult = 'application/octet-stream'
+		;
+
+		sFileName = Utils.trim(sFileName).toLowerCase();
+
+		if ('winmail.dat' === sFileName)
+		{
+			return 'application/ms-tnef';
+		}
+
+		sExt = Utils.getFileExtension(sFileName);
+		if (sExt && 0 < sExt.length && !Utils.isUnd(Mime[sExt]))
+		{
+			sResult = Mime[sExt];
+		}
+
+		return sResult;
+	};
+
+	/**
+	 * @param {mixed} mPropOrValue
+	 * @param {mixed} mValue
+	 */
+	Utils.disposeOne = function (mPropOrValue, mValue)
+	{
+		var mDisposable = mValue || mPropOrValue;
+        if (mDisposable && typeof mDisposable.dispose === 'function')
+		{
+            mDisposable.dispose();
+        }
+	};
+
+	/**
+	 * @param {Object} oObject
+	 */
+	Utils.disposeObject = function (oObject)
+	{
+		if (oObject)
+		{
+			if (Utils.isArray(oObject.disposables))
+			{
+				_.each(oObject.disposables, Utils.disposeOne);
+			}
+
+			ko.utils.objectForEach(oObject, Utils.disposeOne);
+		}
+	};
+
+	/**
+	 * @param {Object|Array} mObjectOrObjects
+	 */
+	Utils.delegateRunOnDestroy = function (mObjectOrObjects)
+	{
+		if (mObjectOrObjects)
+		{
+			if (Utils.isArray(mObjectOrObjects))
+			{
+				_.each(mObjectOrObjects, function (oItem) {
+					Utils.delegateRunOnDestroy(oItem);
+				});
+			}
+			else if (mObjectOrObjects && mObjectOrObjects.onDestroy)
+			{
+				mObjectOrObjects.onDestroy();
+			}
+		}
+	};
+
+	Utils.__themeTimer = 0;
+	Utils.__themeAjax = null;
+
+	Utils.changeTheme = function (sValue, themeTrigger)
+	{
+		var
+			oThemeLink = $('#rlThemeLink'),
+			oThemeStyle = $('#rlThemeStyle'),
+			sUrl = oThemeLink.attr('href')
+		;
+
+		if (!sUrl)
+		{
+			sUrl = oThemeStyle.attr('data-href');
+		}
+
+		if (sUrl)
+		{
+			sUrl = sUrl.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + sValue + '/-/');
+			sUrl = sUrl.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
+			sUrl = sUrl.toString().replace(/\/Hash\/[^\/]+\//, '/Hash/-/');
+
+			if ('Json/' !== sUrl.substring(sUrl.length - 5, sUrl.length))
+			{
+				sUrl += 'Json/';
+			}
+
+			window.clearTimeout(Utils.__themeTimer);
+			themeTrigger(Enums.SaveSettingsStep.Animate);
+
+			if (Utils.__themeAjax && Utils.__themeAjax.abort)
+			{
+				Utils.__themeAjax.abort();
+			}
+
+			Utils.__themeAjax = $.ajax({
+				'url': sUrl,
+				'dataType': 'json'
+			}).done(function(aData) {
+
+				if (aData && Utils.isArray(aData) && 2 === aData.length)
+				{
+					if (oThemeLink && oThemeLink[0] && (!oThemeStyle || !oThemeStyle[0]))
+					{
+						oThemeStyle = $('<style id="rlThemeStyle"></style>');
+						oThemeLink.after(oThemeStyle);
+						oThemeLink.remove();
+					}
+
+					if (oThemeStyle && oThemeStyle[0])
+					{
+						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
+						if (oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						{
+							oThemeStyle[0].styleSheet.cssText = aData[1];
+						}
+						else
+						{
+							oThemeStyle.text(aData[1]);
+						}
+					}
+
+					themeTrigger(Enums.SaveSettingsStep.TrueResult);
+				}
+
+			}).always(function() {
+
+				Utils.__themeTimer = window.setTimeout(function () {
+					themeTrigger(Enums.SaveSettingsStep.Idle);
+				}, 1000);
+
+				Utils.__themeAjax = null;
+			});
+		}
+	};
+
+	Utils.substr = window.String.substr;
+	if ('ab'.substr(-1) !== 'b')
+	{
+		Utils.substr = function(sStr, iStart, iLength)
+		{
+			if (iStart < 0)
+			{
+				iStart = sStr.length + iStart;
+			}
+
+			return sStr.substr(iStart, iLength);
+		};
+	}
 
 	module.exports = Utils;
 

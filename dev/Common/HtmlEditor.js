@@ -8,6 +8,7 @@
 		_ = require('_'),
 
 		Globals = require('Common/Globals'),
+
 		Settings = require('Storage/Settings')
 	;
 
@@ -29,6 +30,9 @@
 		this.$element = $(oElement);
 
 		this.resize = _.throttle(_.bind(this.resize, this), 100);
+
+		this.__inited = false;
+		this.__initedData = null;
 
 		this.init();
 	}
@@ -62,6 +66,23 @@
 	};
 
 	/**
+	 * @param {string} sSignature
+	 * @param {bool} bHtml
+	 * @param {bool} bInsertBefore
+	 */
+	HtmlEditor.prototype.setSignature = function (sSignature, bHtml, bInsertBefore)
+	{
+		if (this.editor)
+		{
+			this.editor.execCommand('insertSignature', {
+				'isHtml': bHtml,
+				'insertBefore': bInsertBefore,
+				'signature': sSignature
+			});
+		}
+	};
+
+	/**
 	 * @return {boolean}
 	 */
 	HtmlEditor.prototype.checkDirty = function ()
@@ -78,66 +99,122 @@
 	};
 
 	/**
-	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {string} sText
 	 * @return {string}
 	 */
-	HtmlEditor.prototype.getData = function (bWrapIsHtml)
+	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
-		if (this.editor)
-		{
-			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
-			{
-				return this.editor.__plain.getRawData();
-			}
-
-			return bWrapIsHtml ?
-				'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
-					this.editor.getData() + '</div>' : this.editor.getData();
-		}
-
-		return '';
+		return sText.replace(/(\u0002|\u0003|\u200C|\u200D)/g, '');
 	};
 
-	HtmlEditor.prototype.modeToggle = function (bPlain)
+	/**
+	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {boolean=} bClearSignatureSigns = false
+	 * @return {string}
+	 */
+	HtmlEditor.prototype.getData = function (bWrapIsHtml, bClearSignatureSigns)
+	{
+		var sResult = '';
+		if (this.editor)
+		{
+			try
+			{
+				if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
+				{
+					sResult = this.editor.__plain.getRawData();
+				}
+				else
+				{
+					sResult =  bWrapIsHtml ?
+						'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
+							this.editor.getData() + '</div>' : this.editor.getData();
+				}
+			}
+			catch (e) {}
+
+			if (bClearSignatureSigns)
+			{
+				sResult = this.clearSignatureSigns(sResult);
+			}
+		}
+
+		return sResult;
+	};
+
+	/**
+	 * @param {boolean=} bWrapIsHtml = false
+	 * @param {boolean=} bClearSignatureSigns = false
+	 * @return {string}
+	 */
+	HtmlEditor.prototype.getDataWithHtmlMark = function (bWrapIsHtml, bClearSignatureSigns)
+	{
+		return (this.isHtml() ? ':HTML:' : '') + this.getData(bWrapIsHtml, bClearSignatureSigns);
+	};
+
+	HtmlEditor.prototype.modeToggle = function (bPlain, bResize)
 	{
 		if (this.editor)
 		{
-			if (bPlain)
-			{
-				if ('plain' === this.editor.mode)
+			try {
+				if (bPlain)
 				{
-					this.editor.setMode('wysiwyg');
+					if ('plain' === this.editor.mode)
+					{
+						this.editor.setMode('wysiwyg');
+					}
 				}
-			}
-			else
-			{
-				if ('wysiwyg' === this.editor.mode)
+				else
 				{
-					this.editor.setMode('plain');
+					if ('wysiwyg' === this.editor.mode)
+					{
+						this.editor.setMode('plain');
+					}
 				}
-			}
+			} catch(e) {}
 
-			this.resize();
+			if (bResize)
+			{
+				this.resize();
+			}
+		}
+	};
+
+	HtmlEditor.prototype.setHtmlOrPlain = function (sText, bFocus)
+	{
+		if (':HTML:' === sText.substr(0, 6))
+		{
+			this.setHtml(sText.substr(6), bFocus);
+		}
+		else
+		{
+			this.setPlain(sText, bFocus);
 		}
 	};
 
 	HtmlEditor.prototype.setHtml = function (sHtml, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(true);
-			this.editor.setData(sHtml);
+
+			try {
+				this.editor.setData(sHtml);
+			} catch (e) {}
 
 			if (bFocus)
 			{
 				this.focus();
 			}
 		}
+		else
+		{
+			this.__initedData = [true, sHtml, bFocus];
+		}
 	};
 
 	HtmlEditor.prototype.setPlain = function (sPlain, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(false);
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
@@ -146,7 +223,9 @@
 			}
 			else
 			{
-				this.editor.setData(sPlain);
+				try {
+					this.editor.setData(sPlain);
+				} catch (e) {}
 			}
 
 			if (bFocus)
@@ -154,11 +233,15 @@
 				this.focus();
 			}
 		}
+		else
+		{
+			this.__initedData = [false, sPlain, bFocus];
+		}
 	};
 
 	HtmlEditor.prototype.init = function ()
 	{
-		if (this.$element && this.$element[0])
+		if (this.$element && this.$element[0] && !this.editor)
 		{
 			var
 				self = this,
@@ -167,13 +250,23 @@
 					var
 						oConfig = Globals.oHtmlEditorDefaultConfig,
 						sLanguage = Settings.settingsGet('Language'),
-						bSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton')
+						bSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton'),
+						bBiti = !!Settings.settingsGet('AllowHtmlEditorBitiButtons')
 					;
 
-					if (bSource && oConfig.toolbarGroups && !oConfig.toolbarGroups.__SourceInited)
+					if ((bSource || !bBiti) && !oConfig.toolbarGroups.__cfgInited)
 					{
-						oConfig.toolbarGroups.__SourceInited = true;
-						oConfig.toolbarGroups.push({name: 'document', groups: ['mode', 'document', 'doctools']});
+						oConfig.toolbarGroups.__cfgInited = true;
+
+						if (bSource)
+						{
+							oConfig.removeButtons = oConfig.removeButtons.replace(',Source', '');
+						}
+
+						if (!bBiti)
+						{
+							oConfig.removePlugins += (oConfig.removePlugins ? ',' : '')  + 'bidi';
+						}
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
@@ -184,6 +277,19 @@
 					{
 						window.CKEDITOR.env.isCompatible = true;
 					}
+
+//					oConfig.allowedContent = {
+//						$1: {
+//							elements: window.CKEDITOR.dtd,
+//							attributes: true,
+//							styles: true,
+//							classes: true
+//						}
+//					};
+//
+//					oConfig.disallowedContent = 'script; style; iframe; frame; *[on*]';
+
+					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
 
 					self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
@@ -216,12 +322,31 @@
 					{
 						self.editor.on('instanceReady', function () {
 
+							if (self.editor.removeMenuItem)
+							{
+								self.editor.removeMenuItem('cut');
+								self.editor.removeMenuItem('copy');
+								self.editor.removeMenuItem('paste');
+							}
+
 							self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
-							self.editor.editable().addClass('cke_enable_context_menu');
 
 							self.fOnReady();
 							self.__resizable = true;
+							self.__inited = true;
 							self.resize();
+
+							if (self.__initedData)
+							{
+								if (self.__initedData[0])
+								{
+									self.setHtml(self.__initedData[1], self.__initedData[2]);
+								}
+								else
+								{
+									self.setPlain(self.__initedData[1], self.__initedData[2]);
+								}
+							}
 						});
 					}
 				}
@@ -242,7 +367,9 @@
 	{
 		if (this.editor)
 		{
-			this.editor.focus();
+			try {
+				this.editor.focus();
+			} catch (e) {}
 		}
 	};
 
@@ -250,7 +377,9 @@
 	{
 		if (this.editor)
 		{
-			this.editor.focusManager.blur(true);
+			try {
+				this.editor.focusManager.blur(true);
+			} catch (e) {}
 		}
 	};
 
@@ -258,11 +387,19 @@
 	{
 		if (this.editor && this.__resizable)
 		{
-			try
-			{
+			try {
 				this.editor.resize(this.$element.width(), this.$element.innerHeight());
-			}
-			catch (e) {}
+			} catch (e) {}
+		}
+	};
+
+	HtmlEditor.prototype.setReadOnly = function (bValue)
+	{
+		if (this.editor)
+		{
+			try {
+				this.editor.setReadOnly(!!bValue);
+			} catch (e) {}
 		}
 	};
 
@@ -270,7 +407,6 @@
 	{
 		this.setHtml('', bFocus);
 	};
-
 
 	module.exports = HtmlEditor;
 

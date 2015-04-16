@@ -15,21 +15,29 @@ abstract class AbstractConfig
 	private $aData;
 
 	/**
+	 * @var bool
+	 */
+	private $bUseApcCache;
+
+	/**
 	 * @var string
 	 */
-	protected $sFilePrefix;
+	private $sFileHeader;
 
 	/**
 	 * @param string $sFileName
-	 * @param string $sFilePrefix = ''
+	 * @param string $sFileHeader = ''
 	 *
 	 * @return void
 	 */
-	public function __construct($sFileName, $sFilePrefix = '')
+	public function __construct($sFileName, $sFileHeader = '')
 	{
 		$this->sFile = \APP_PRIVATE_DATA.'configs/'.$sFileName;
-		$this->sFilePrefix = $sFilePrefix;
+		$this->sFileHeader = $sFileHeader;
 		$this->aData = $this->defaultValues();
+
+		$this->bUseApcCache = APP_USE_APC_CACHE &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apc_fetch', 'apc_store'));
 	}
 
 	/**
@@ -42,7 +50,7 @@ abstract class AbstractConfig
 	 */
 	public function IsInited()
 	{
-		return is_array($this->aData) && 0 < count($this->aData);
+		return \is_array($this->aData) && 0 < \count($this->aData);
 	}
 
 	/**
@@ -73,7 +81,7 @@ abstract class AbstractConfig
 	{
 		if (isset($this->aData[$sSectionKey][$sParamKey][0]))
 		{
-			$sType = gettype($this->aData[$sSectionKey][$sParamKey][0]);
+			$sType = \gettype($this->aData[$sSectionKey][$sParamKey][0]);
 			switch ($sType)
 			{
 				default:
@@ -97,13 +105,94 @@ abstract class AbstractConfig
 	}
 
 	/**
+	 * @return string
+	 */
+	private function cacheKey()
+	{
+		return 'config:'.\sha1($this->sFile).':';
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function loadDataFromCache()
+	{
+		if ($this->bUseApcCache)
+		{
+			$iMTime = @\filemtime($this->sFile);
+			if (\is_int($iMTime) && 0 < $iMTime)
+			{
+				$sKey = $this->cacheKey();
+
+				$iTime = \apc_fetch($sKey.'time');
+				if ($iTime && $iMTime === (int) $iTime)
+				{
+					$aFetchData = \apc_fetch($sKey.'data');
+					if (\is_array($aFetchData))
+					{
+						$this->aData = $aFetchData;
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function storeDataToCache()
+	{
+		if ($this->bUseApcCache)
+		{
+			$iMTime = @\filemtime($this->sFile);
+			if (\is_int($iMTime) && 0 < $iMTime)
+			{
+				$sKey = $this->cacheKey();
+
+				\apc_store($sKey.'time', $iMTime);
+				\apc_store($sKey.'data', $this->aData);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function clearCache()
+	{
+		if ($this->bUseApcCache)
+		{
+			$sKey = $this->cacheKey();
+
+			\apc_delete($sKey.'time');
+			\apc_delete($sKey.'data');
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function Load()
 	{
 		if (\file_exists($this->sFile) && \is_readable($this->sFile))
 		{
-			$aData = @\parse_ini_file($this->sFile, true);
+			if ($this->loadDataFromCache())
+			{
+				return true;
+			}
+
+			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
 			if (\is_array($aData) && 0 < count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
@@ -116,6 +205,8 @@ abstract class AbstractConfig
 						}
 					}
 				}
+
+				$this->storeDataToCache();
 
 				return true;
 			}
@@ -191,8 +282,9 @@ abstract class AbstractConfig
 			}
 		}
 
+		$this->clearCache();
 		return false !== \file_put_contents($this->sFile,
-			(0 < \strlen($this->sFilePrefix) ? $this->sFilePrefix : '').
+			(0 < \strlen($this->sFileHeader) ? $this->sFileHeader : '').
 			$sNewLine.\implode($sNewLine, $aResultLines));
 	}
 }

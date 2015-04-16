@@ -368,3 +368,18 @@
 .icon-resize-out:before {
   content: "\e06d";
 }
+.icon-world:before {
+  content: "\e06f";
+}
+.icon-braille:before {
+  content: "\e06e";
+}
+.icon-play:before {
+  content: "\e070";
+}
+.icon-pause:before {
+  content: "\e071";
+}
+.icon-stop:before {
+  content: "\e072";
+}

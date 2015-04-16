@@ -5,26 +5,26 @@
 
 	var
 		window = require('window'),
+		_ = require('_'),
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
-		Data = require('Storage/Admin/Data'),
-		Remote = require('Storage/Admin/Remote')
+		PackageStore = require('Stores/Admin/Package'),
+		Remote = require('Remote/Admin/Ajax')
 	;
 
 	/**
 	 * @constructor
 	 */
-	function PackagesAdminSetting()
+	function PackagesAdminSettings()
 	{
 		this.packagesError = ko.observable('');
 
-		this.packages = Data.packages;
-		this.packagesLoading = Data.packagesLoading;
-		this.packagesReal = Data.packagesReal;
-		this.packagesMainUpdatable = Data.packagesMainUpdatable;
+		this.packages = PackageStore.packages;
+		this.packagesReal = PackageStore.packagesReal;
+		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
 		this.packagesCurrent = this.packages.filter(function (oItem) {
 			return oItem && '' !== oItem['installed'] && !oItem['compare'];
@@ -39,21 +39,21 @@
 		});
 
 		this.visibility = ko.computed(function () {
-			return Data.packagesLoading() ? 'visible' : 'hidden';
+			return PackageStore.packages.loading() ? 'visible' : 'hidden';
 		}, this);
 	}
 
-	PackagesAdminSetting.prototype.onShow = function ()
+	PackagesAdminSettings.prototype.onShow = function ()
 	{
 		this.packagesError('');
 	};
 
-	PackagesAdminSetting.prototype.onBuild = function ()
+	PackagesAdminSettings.prototype.onBuild = function ()
 	{
 		require('App/Admin').reloadPackagesList();
 	};
 
-	PackagesAdminSetting.prototype.requestHelper = function (oPackage, bInstall)
+	PackagesAdminSettings.prototype.requestHelper = function (oPackage, bInstall)
 	{
 		var self = this;
 		return function (sResult, oData) {
@@ -62,16 +62,16 @@
 			{
 				if (oData && oData.ErrorCode)
 				{
-					self.packagesError(Utils.getNotification(oData.ErrorCode));
+					self.packagesError(Translator.getNotification(oData.ErrorCode));
 				}
 				else
 				{
-					self.packagesError(Utils.getNotification(
+					self.packagesError(Translator.getNotification(
 						bInstall ? Enums.Notification.CantInstallPackage : Enums.Notification.CantDeletePackage));
 				}
 			}
 
-			_.each(Data.packages(), function (oItem) {
+			_.each(self.packages(), function (oItem) {
 				if (oItem && oPackage && oItem['loading']() && oPackage['file'] === oItem['file'])
 				{
 					oPackage['loading'](false);
@@ -90,7 +90,7 @@
 		};
 	};
 
-	PackagesAdminSetting.prototype.deletePackage = function (oPackage)
+	PackagesAdminSettings.prototype.deletePackage = function (oPackage)
 	{
 		if (oPackage)
 		{
@@ -99,7 +99,7 @@
 		}
 	};
 
-	PackagesAdminSetting.prototype.installPackage = function (oPackage)
+	PackagesAdminSettings.prototype.installPackage = function (oPackage)
 	{
 		if (oPackage)
 		{
@@ -108,6 +108,6 @@
 		}
 	};
 
-	module.exports = PackagesAdminSetting;
+	module.exports = PackagesAdminSettings;
 
 }());

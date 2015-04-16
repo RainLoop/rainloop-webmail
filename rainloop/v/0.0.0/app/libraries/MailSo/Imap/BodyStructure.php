@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Imap;
 
 /**
@@ -253,7 +262,8 @@ class BodyStructure
 	 */
 	public function IsPgpSignature()
 	{
-		return 'application/pgp-signature' === \strtolower($this->ContentType());
+		return \in_array(\strtolower($this->ContentType()),
+			array('application/pgp-signature', 'application/pkcs7-signature'));
 	}
 
 	/**
@@ -321,7 +331,7 @@ class BodyStructure
 		{
 			$mResult = $this->SearchPlainParts();
 		}
-		
+
 		return $mResult;
 	}
 
@@ -456,7 +466,7 @@ class BodyStructure
 	 * @param array $aParams
 	 * @param string $sParamName
 	 * @param string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8
-	 * 
+	 *
 	 * @return string
 	 */
 	private static function decodeAttrParamenter($aParams, $sParamName, $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8)
@@ -468,7 +478,7 @@ class BodyStructure
 		}
 		else if (isset($aParams[$sParamName.'*']))
 		{
-			$aValueParts = \explode('\'\'', $aParams[$sParamName.'*'], 2);
+			$aValueParts = \explode("''", $aParams[$sParamName.'*'], 2);
 			if (\is_array($aValueParts) && 2 === \count($aValueParts))
 			{
 				$sCharset = isset($aValueParts[0]) ? $aValueParts[0] : \MailSo\Base\Enumerations\Charset::UTF_8;
@@ -481,30 +491,30 @@ class BodyStructure
 				$sResult = \urldecode($aParams[$sParamName.'*']);
 			}
 		}
-		else if (isset($aParams[$sParamName.'*0*']))
+		else
 		{
 			$sCharset = '';
+			$sCharsetIndex = -1;
+
 			$aFileNames = array();
 			foreach ($aParams as $sName => $sValue)
 			{
 				$aMatches = array();
-				if ($sParamName.'*0*' === $sName)
+				if (\preg_match('/^'.\preg_quote($sParamName, '/').'\*([0-9]+)\*$/i', $sName, $aMatches))
 				{
-					if (0 === \strlen($sCharset))
+					$iIndex = (int) $aMatches[1];
+					if ($sCharsetIndex < $iIndex && false !== \strpos($sValue, "''"))
 					{
-						$aValueParts = \explode('\'\'', $sValue, 2);
+						$aValueParts = \explode("''", $sValue, 2);
 						if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
 						{
+							$sCharsetIndex = $iIndex;
 							$sCharset = $aValueParts[0];
 							$sValue = $aValueParts[1];
 						}
 					}
-					
-					$aFileNames[0] = $sValue;
-				}
-				else if ($sParamName.'*0*' !== $sName && \preg_match('/^'.\preg_quote($sParamName, '/').'\*([0-9]+)\*$/i', $sName, $aMatches) && 0 < \strlen($aMatches[1]))
-				{
-					$aFileNames[(int) $aMatches[1]] = $sValue;
+
+					$aFileNames[$iIndex] = $sValue;
 				}
 			}
 
@@ -653,7 +663,7 @@ class BodyStructure
 					{
 						$sCharset = $aBodyParams['charset'];
 					}
-					
+
 					if (\is_array($aBodyParams))
 					{
 						$sName = self::decodeAttrParamenter($aBodyParams, 'name', $sContentType);
@@ -666,7 +676,7 @@ class BodyStructure
 					{
 						return null;
 					}
-					
+
 					$sContentID = $aBodyStructure[3];
 				}
 
@@ -676,7 +686,7 @@ class BodyStructure
 					{
 						return null;
 					}
-					
+
 					$sDescription = $aBodyStructure[4];
 				}
 
@@ -858,7 +868,7 @@ class BodyStructure
 	/**
 	 * @param array $aList
 	 * @param string $sPartID
-	 * 
+	 *
 	 * @return array|null
 	 */
 	private static function findPartByIndexInArray(array $aList, $sPartID)

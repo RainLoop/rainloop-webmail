@@ -1,4 +1,3 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */
 
 (function () {
 
@@ -6,7 +5,7 @@
 
 	var
 		window = require('window'),
-		
+
 		Utils = require('Common/Utils')
 	;
 
@@ -17,6 +16,7 @@
 	{
 		this.oSettings = window['rainloopAppData'] || {};
 		this.oSettings = Utils.isNormal(this.oSettings) ? this.oSettings : {};
+//		window.console.log(this.oSettings);
 	}
 
 	SettingsStorage.prototype.oSettings = null;

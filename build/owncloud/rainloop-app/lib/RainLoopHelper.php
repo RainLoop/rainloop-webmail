@@ -3,6 +3,23 @@
 class OC_RainLoop_Helper
 {
 	/**
+	 * @return string
+	 */
+	public static function getAppUrl()
+	{
+		if (class_exists('\\OCP\\Util'))
+		{
+			return OCP\Util::linkToRoute('rainloop_app');
+		}
+
+		$sRequestUri = empty($_SERVER['REQUEST_URI']) ? '': trim($_SERVER['REQUEST_URI']);
+		$sRequestUri = preg_replace('/index.php\/.+$/', 'index.php/', $sRequestUri);
+		$sRequestUri = $sRequestUri.'apps/rainloop/app/';
+
+		return '/'.ltrim($sRequestUri, '/\\');
+	}
+
+	/**
 	 * @param string $sPath
 	 * @param string $sEmail
 	 * @param string $sPassword
@@ -16,6 +33,8 @@ class OC_RainLoop_Helper
 		$sPath = rtrim(trim($sPath), '\\/').'/index.php';
 		if (file_exists($sPath))
 		{
+			self::regRainLoopDataFunction();
+
 			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
 			include $sPath;
 
@@ -82,14 +101,8 @@ class OC_RainLoop_Helper
 			$sEmail = $sUser;
 			$sPassword = $aParams['password'];
 
-			$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-			$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
-
-			if ('' !== $sUrl && '' !== $sPath)
-			{
-				$sPassword = self::encodePassword($sPassword, md5($sEmail));
-				return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password', $sPassword);
-			}
+			return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+				self::encodePassword($sPassword, md5($sEmail)));
 		}
 
 		return false;
@@ -97,8 +110,24 @@ class OC_RainLoop_Helper
 
 	public static function logout()
 	{
-		return OCP\Config::setUserValue(
+		OCP\Config::setUserValue(
 			OCP\User::getUser(), 'rainloop', 'rainloop-autologin-password', '');
+
+		$sApiPath = __DIR__.'/../app/index.php';
+		if (file_exists($sApiPath))
+		{
+			self::regRainLoopDataFunction();
+
+			$_ENV['RAINLOOP_INCLUDE_AS_API'] = true;
+			include $sApiPath;
+
+			if (class_exists('\\RainLoop\\Api'))
+			{
+				\RainLoop\Api::LogoutCurrentLogginedUser();
+			}
+		}
+
+		return true;
 	}
 
 	public static function changePassword($aParams)
@@ -110,18 +139,115 @@ class OC_RainLoop_Helper
 			$sEmail = $sUser;
 			$sPassword = $aParams['password'];
 
-			$sUrl = trim(OCP\Config::getAppValue('rainloop', 'rainloop-url', ''));
-			$sPath = trim(OCP\Config::getAppValue('rainloop', 'rainloop-path', ''));
+			OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '.$sEmail, OCP\Util::DEBUG);
 
-			if ('' !== $sUrl && '' !== $sPath)
-			{
-				OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '.$sEmail, OCP\Util::DEBUG);
+			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+				self::encodePassword($sPassword, md5($sEmail)));
 
-				$sPassword = self::encodePassword($sPassword, md5($sEmail));
-				return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password', $sPassword);
-			}
+			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
+				self::encodePassword($sPassword, md5($sEmail)));
+
+			return true;
 		}
 
 		return false;
 	}
+
+	public static function regRainLoopDataFunction()
+	{
+		if (!@function_exists('__get_custom_data_full_path'))
+		{
+			$_ENV['RAINLOOP_OWNCLOUD'] = true;
+
+			function __get_custom_data_full_path()
+			{
+				$sData = __DIR__.'/../../data/';
+				if (class_exists('OC_Config'))
+				{
+					$sData = rtrim(trim(OC_Config::getValue('datadirectory', '')), '\\/').'/';
+				}
+
+				return @is_dir($sData) ? $sData.'rainloop-storage' : '';
+			}
+		}
+	}
+
+	public static function mimeContentType($filename) {
+
+        $mime_types = array(
+
+            'woff' => 'application/font-woff',
+
+            'txt' => 'text/plain',
+            'htm' => 'text/html',
+            'html' => 'text/html',
+            'php' => 'text/html',
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+            'xml' => 'application/xml',
+            'swf' => 'application/x-shockwave-flash',
+            'flv' => 'video/x-flv',
+
+            // images
+            'png' => 'image/png',
+            'jpe' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'ico' => 'image/vnd.microsoft.icon',
+            'tiff' => 'image/tiff',
+            'tif' => 'image/tiff',
+            'svg' => 'image/svg+xml',
+            'svgz' => 'image/svg+xml',
+
+            // archives
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            'exe' => 'application/x-msdownload',
+            'msi' => 'application/x-msdownload',
+            'cab' => 'application/vnd.ms-cab-compressed',
+
+            // audio/video
+            'mp3' => 'audio/mpeg',
+            'qt' => 'video/quicktime',
+            'mov' => 'video/quicktime',
+
+            // adobe
+            'pdf' => 'application/pdf',
+            'psd' => 'image/vnd.adobe.photoshop',
+            'ai' => 'application/postscript',
+            'eps' => 'application/postscript',
+            'ps' => 'application/postscript',
+
+            // ms office
+            'doc' => 'application/msword',
+            'rtf' => 'application/rtf',
+            'xls' => 'application/vnd.ms-excel',
+            'ppt' => 'application/vnd.ms-powerpoint',
+
+            // open office
+            'odt' => 'application/vnd.oasis.opendocument.text',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+        );
+
+		if (0 <  strpos($filename, '.'))
+		{
+			$ext = strtolower(array_pop(explode('.',$filename)));
+			if (array_key_exists($ext, $mime_types))
+			{
+				return $mime_types[$ext];
+			}
+			else if (function_exists('finfo_open'))
+			{
+				$finfo = finfo_open(FILEINFO_MIME);
+				$mimetype = finfo_file($finfo, $filename);
+				finfo_close($finfo);
+				return $mimetype;
+			}
+		}
+
+		return 'application/octet-stream';
+    }
 }

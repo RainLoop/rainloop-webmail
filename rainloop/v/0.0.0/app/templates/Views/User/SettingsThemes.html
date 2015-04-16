@@ -1,0 +1,44 @@
+<div class="b-settings-themes g-ui-user-select-none">
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n="SETTINGS_THEMES/LEGEND_THEMES"></span>
+			&nbsp;&nbsp;
+			<div data-bind="component: {
+				name: 'SaveTrigger',
+				params: { value: themeTrigger }
+			}"></div>
+		</div>
+	</div>
+	<div class="b-themes-list" data-bind="foreach: themesObjects">
+		<div class="e-item" data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
+			<div class="e-name" data-bind="text: nameDisplay"></div>
+			<img class="e-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" data-bind="attr: { 'src': themePreviewSrc }" />
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="form-horizontal" data-bind="visible: capaUserBackground">
+		<div class="legend">
+			<span class="i18n" data-i18n="SETTINGS_THEMES/LEGEND_THEMES_CUSTOM"></span>
+		</div>
+		<div class="control-group g-ui-user-select-none">
+			<div class="row" data-bind="visible: '' !== background.error()" style="margin-left: 0; margin-bottom: 10px;">
+				<div class="alert alert-error span6" data-bind="text: background.error" style="margin-left: 0"></div>
+			</div>
+			<div class="row" data-bind="visible: '' !== background.name()" style="margin-left: 0">
+				<a class="btn" data-bind="visible: '' !== background.name(), click: clearBackground">
+					<i class="icon-remove"></i>
+				</a>
+				&nbsp;&nbsp;&nbsp;
+				<b data-bind="text: background.name"></b>
+			</div>
+			<div class="row" data-bind="visible: '' === background.name()" style="margin-left: 0">
+				<a class="btn" data-bind="initDom: background.uploaderButton">
+					<i data-bind="css: {'icon-image': !background.loading(), 'icon-spinner animated': background.loading()}"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n="SETTINGS_THEMES/BUTTON_UPLOAD_BACKGROUND_IMAGE"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

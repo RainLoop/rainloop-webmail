@@ -12,8 +12,34 @@
 		}
 	}
 
-	.textAreaParent {
+	.textAreaParent, .attachmentAreaParent {
 		overflow: hidden;
+		position: relative;
+	}
+
+	.attachmentAreaParent {
+		padding: 10px 10px 6px 10px;
+		background: #ddd;
+		border-top: 1px solid #ccc;
+
+		overflow-y: auto;
+	}
+
+	.attachmentAreaParent {
+
+		.no-attachments-desc {
+			padding: 50px 10px;
+			text-align: center;
+			font-size: 24px;
+			color: #666;
+			text-shadow: 0 1px 0 #fff;
+			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+		}
+
+		.attachmentList {
+			margin: 0;
+			padding: 10px;
+		}
 	}
 
 	.b-header-toolbar {
@@ -26,9 +52,13 @@
 		background-color: #333;
 		background-color: rgba(0,0,0,0.8) !important;
 
-		.close {
-			color: #fff;
+		.close, .close-custom, .minimize-custom {
 			opacity: 1;
+			color: #fff;
+			border-color: #eee;
+
+			font-size: 24px;
+			line-height: 24px;
 		}
 
 		.btn.disabled {
@@ -38,6 +68,10 @@
 		}
 
 		.button-save, .button-delete, .saved-text {
+			margin-left: 8px;
+		}
+
+		.button-close, .button-skip {
 			margin-left: 8px;
 		}
 
@@ -68,7 +102,7 @@
 				border-bottom: 1px dashed #555;
 			}
 		}
-		
+
 		.e-row {
 			line-height: 30px;
 		}
@@ -94,6 +128,11 @@
 
 		.error-desc {
 			color: red;
+		}
+
+		.error-to {
+			color: red;
+			font-weight: bold;
 		}
 
 		.b-appachments {
@@ -127,12 +166,18 @@
 				.error {
 					color: red;
 				}
-				.close {
+				.close, .close-custom {
 					float: left;
 					padding-right: 13px;
 				}
 			}
 		}
+	}
+
+	.cke_chrome {
+		border-left-width: 0 !important;
+		border-right-width: 0 !important;
+		border-bottom-width: 0 !important;
 	}
 
 	.b-attachment-button {
@@ -142,19 +187,23 @@
 	.b-attachment-place {
 
 		position: absolute;
-		height: 120px;
+		left: 5px;
+		right: 5px;
+		top: 5px;
+		bottom: 5px;
+
 		border: 2px #777 dashed;
+		z-index: 300;
+
 		line-height: 119px;
 		text-align: center;
-		background-color: #fff;
-		z-index: 300;
-		left: 20px;
-		right: 20px;
+		background-color: #efefef;
 		font-size: 24px;
 
-		&.drag-and-drop-over {
-			background: #777;
-			color: #fff;
+		border-radius: 10px;
+
+		&.dragAndDropOver {
+			background-color: #fff;
 		}
 	}
 }

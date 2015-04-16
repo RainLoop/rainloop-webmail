@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Base;
 
 /**
@@ -254,7 +263,6 @@ class Http
 	 */
 	public function GetHeader($sHeader)
 	{
-		$sResultHeader = '';
 		$sServerKey = 'HTTP_'.\strtoupper(\str_replace('-', '_', $sHeader));
 		$sResultHeader = $this->GetServer($sServerKey, '');
 
@@ -272,20 +280,37 @@ class Http
 	}
 
 	/**
+	 * @param bool $bCheckProxy = true
+	 *
 	 * @return string
 	 */
-	public function GetScheme()
+	public function GetScheme($bCheckProxy = true)
 	{
-		$sHttps = \strtolower($this->GetServer('HTTPS', ''));
-		return ('on' === $sHttps || ('' === $sHttps && '443' === (string) $this->GetServer('SERVER_PORT', ''))) ? 'https' : 'http';
+		return $this->IsSecure($bCheckProxy) ? 'https' : 'http';
 	}
 
 	/**
+	 * @param bool $bCheckProxy = true
+	 *
 	 * @return bool
 	 */
-	public function IsSecure()
+	public function IsSecure($bCheckProxy = true)
 	{
-		return ('https' === $this->GetScheme());
+		$sHttps = \strtolower($this->GetServer('HTTPS', ''));
+		if ('on' === $sHttps || ('' === $sHttps && '443' === (string) $this->GetServer('SERVER_PORT', '')))
+		{
+			return true;
+		}
+
+		if ($bCheckProxy && (
+			('https' === \strtolower($this->GetServer('HTTP_X_FORWARDED_PROTO', ''))) ||
+			('on' === \strtolower($this->GetServer('HTTP_X_FORWARDED_SSL', '')))
+		))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -300,12 +325,10 @@ class Http
 		$sHost = $this->GetServer('HTTP_HOST', '');
 		if (0 === \strlen($sHost))
 		{
-			$sScheme = $this->GetScheme();
 			$sName = $this->GetServer('SERVER_NAME');
-			$iPort = (int) $this->GetServer('SERVER_PORT');
+			$iPort = (int) $this->GetServer('SERVER_PORT', 80);
 
-			$sHost = (('http' === $sScheme && 80 === $iPort) || ('https' === $sScheme && 443 === $iPort))
-				? $sName : $sName.':'.$iPort;
+			$sHost = (\in_array($iPort, array(80, 433))) ? $sName : $sName.':'.$iPort;
 		}
 
 		if ($bWithoutWWW)
@@ -328,11 +351,11 @@ class Http
 	}
 
 	/**
-	 * @param bool $bCheckProxy = true
+	 * @param bool $bCheckProxy = false
 	 *
 	 * @return string
 	 */
-	public function GetClientIp($bCheckProxy = true)
+	public function GetClientIp($bCheckProxy = false)
 	{
 		$sIp = '';
 		if ($bCheckProxy && null !== $this->GetServer('HTTP_CLIENT_IP', null))
@@ -466,7 +489,7 @@ class Http
 				{
 					$aAddOptions[CURLOPT_HTTPHEADER] = $aOptions[CURLOPT_HTTPHEADER];
 				}
-				
+
 				\curl_setopt_array($oCurl, $aAddOptions);
 
 				do
@@ -510,7 +533,7 @@ class Http
 
 		return null === $sNewUrl ? $sUrl : $sNewUrl;
 	}
-	
+
 	/**
 	 * @param string $sUrl
 	 * @param resource $rFile
@@ -540,7 +563,7 @@ class Http
 			{
 				$oLogger->Write('cURL: input resource invalid.', \MailSo\Log\Enumerations\Type::WARNING);
 			}
-			
+
 			return false;
 		}
 
@@ -578,10 +601,10 @@ class Http
 		if ($oLogger)
 		{
 			$oLogger->Write('cUrl: URL: '.$sUrl);
-			if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
-			{
-				$oLogger->Write('cUrl: Headers: '.\print_r($aOptions[CURLOPT_HTTPHEADER], true));
-			}
+//			if (isset($aOptions[CURLOPT_HTTPHEADER]) && \is_array($aOptions[CURLOPT_HTTPHEADER]) && 0 < \count($aOptions[CURLOPT_HTTPHEADER]))
+//			{
+//				$oLogger->Write('cUrl: Headers: '.\print_r($aOptions[CURLOPT_HTTPHEADER], true));
+//			}
 		}
 
 		\MailSo\Base\Http::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
@@ -590,10 +613,10 @@ class Http
 		\curl_setopt_array($oCurl, $aOptions);
 
 		$bResult = \curl_exec($oCurl);
-		
+
 		$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
 		$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
-		
+
 		if ($oLogger)
 		{
 			$oLogger->Write('cUrl: Request result: '.($bResult ? 'true' : 'false').' (Status: '.$iCode.', ContentType: '.$sContentType.')');
@@ -607,7 +630,7 @@ class Http
 		{
 			\curl_close($oCurl);
 		}
-		
+
 		return $bResult;
 	}
 
@@ -634,7 +657,7 @@ class Http
 			\rewind($rMemFile);
 			return \stream_get_contents($rMemFile);
 		}
-		
+
 		return false;
 	}
 
@@ -677,13 +700,40 @@ class Http
 		return $bResult;
 	}
 
+	/**
+	 * @staticvar bool $bCache
+	 */
 	public function ServerNoCache()
 	{
-		@\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-		@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
-		@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-		@\header('Cache-Control: post-check=0, pre-check=0', false);
-		@\header('Pragma: no-cache');
+		static $bCache = false;
+		if (false === $bCache)
+		{
+			$bCache = true;
+			@\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
+			@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+			@\header('Cache-Control: post-check=0, pre-check=0', false);
+			@\header('Pragma: no-cache');
+		}
+	}
+
+	/**
+	 * @staticvar bool $bCache
+	 * @param string $sEtag
+	 * @param int $iLastModified
+	 * @param int $iExpires
+	 */
+	public function ServerUseCache($sEtag, $iLastModified, $iExpires)
+	{
+		static $bCache = false;
+		if (false === $bCache)
+		{
+			$bCache = true;
+			@\header('Cache-Control: private', true);
+			@\header('ETag: '.$sEtag, true);
+			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
+			@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
+		}
 	}
 
 	/**

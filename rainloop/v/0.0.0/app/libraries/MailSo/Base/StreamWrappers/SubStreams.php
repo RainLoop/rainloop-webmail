@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of MailSo.
+ *
+ * (c) 2014 Usenko Timur
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace MailSo\Base\StreamWrappers;
 
 /**
@@ -56,7 +65,7 @@ class SubStreams
 			\stream_wrapper_register(self::STREAM_NAME, '\MailSo\Base\StreamWrappers\SubStreams');
 		}
 
-		$sHashName = \md5(\microtime(true).\rand(1000, 9999));
+		$sHashName = \MailSo\Base\Utils::Md5Rand();
 
 		self::$aStreams[$sHashName] = $aSubStreams;
 
@@ -75,7 +84,7 @@ class SubStreams
 		{
 			return $this->aSubStreams[$this->iIndex];
 		}
-		
+
 		return $nNull;
 	}
 

@@ -9,10 +9,13 @@
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
-		Data = require('Storage/App/Data'),
-		Cache = require('Storage/App/Cache'),
-		Remote = require('Storage/App/Remote'),
+		Cache = require('Common/Cache'),
+
+		MessageStore = require('Stores/User/Message'),
+
+		Remote = require('Remote/User/Ajax'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -41,7 +44,7 @@
 		}, this);
 
 		this.dangerDescHtml = ko.computed(function () {
-			return Utils.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
+			return Translator.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
 				'FOLDER': this.folderNameForClear()
 			});
 		}, this);
@@ -55,8 +58,8 @@
 
 			if (oFolderToClear)
 			{
-				Data.message(null);
-				Data.messageList([]);
+				MessageStore.message(null);
+				MessageStore.messageList([]);
 
 				this.clearingProcess(true);
 
@@ -70,18 +73,18 @@
 					self.clearingProcess(false);
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 					{
-						require('App/App').reloadMessageList(true);
+						require('App/User').reloadMessageList(true);
 						self.cancelCommand();
 					}
 					else
 					{
 						if (oData && oData.ErrorCode)
 						{
-							self.clearingError(Utils.getNotification(oData.ErrorCode));
+							self.clearingError(Translator.getNotification(oData.ErrorCode));
 						}
 						else
 						{
-							self.clearingError(Utils.getNotification(Enums.Notification.MailServerError));
+							self.clearingError(Translator.getNotification(Enums.Notification.MailServerError));
 						}
 					}
 				}, oFolderToClear.fullNameRaw);

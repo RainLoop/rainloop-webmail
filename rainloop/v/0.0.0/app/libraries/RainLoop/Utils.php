@@ -72,7 +72,7 @@ class Utils
 		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
-			$sToken = \md5(\rand(10000, 99999).\microtime(true).APP_SALT);
+			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
 			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30, '/', null, null, true);
 		}
 
@@ -97,7 +97,7 @@ class Utils
 		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
-			$sToken = \md5(\rand(10000, 99999).\microtime(true).APP_SALT);
+			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
 			\RainLoop\Utils::SetCookie($sKey, $sToken, 0, '/', null, null, true);
 		}
 
@@ -149,16 +149,16 @@ class Utils
 	}
 
 	/**
-	 * @param string $FileName
+	 * @param string $sFileName
 	 * @param array $aResultLang
 	 *
 	 * @return void
 	 */
-	public static function ReadAndAddLang($FileName, &$aResultLang)
+	public static function ReadAndAddLang($sFileName, &$aResultLang)
 	{
-		if (\file_exists($FileName))
+		if (\file_exists($sFileName))
 		{
-			$aLang = @\parse_ini_file($FileName, true);
+			$aLang = \RainLoop\Utils::CustomParseIniFile($sFileName, true);
 			if (\is_array($aLang))
 			{
 				foreach ($aLang as $sKey => $mValue)
@@ -245,10 +245,12 @@ class Utils
 
 	/**
 	 * @param string $sDirName
+	 * @param \RainLoop\Actions $oAction
+	 * @param string $sNameSuffix = ''
 	 *
 	 * @return string
 	 */
-	public static function CompileTemplates($sDirName, $oAction)
+	public static function CompileTemplates($sDirName, $oAction, $sNameSuffix = '')
 	{
 		$sResult = '';
 		if (\file_exists($sDirName))
@@ -257,7 +259,7 @@ class Utils
 
 			foreach ($aList as $sName)
 			{
-				$sTemplateName = \substr($sName, 0, -5);
+				$sTemplateName = \substr($sName, 0, -5).$sNameSuffix;
 				$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
 					$oAction->ProcessTemplate($sTemplateName, \file_get_contents($sDirName.'/'.$sName)).'</script>';
 			}
@@ -303,6 +305,74 @@ class Utils
 
 		unset(self::$Cookies[$sName]);
 		@\setcookie($sName, '', \time() - 3600 * 24 * 30, '/');
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function IsOwnCloud()
+	{
+		return isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'] &&
+			\class_exists('\\OC');
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function WebPath()
+	{
+		$sAppPath = '';
+		if (\RainLoop\Utils::IsOwnCloud())
+		{
+			if (\class_exists('\\OC_App'))
+			{
+				$sAppPath = \rtrim(\trim(\OC_App::getAppWebPath('rainloop')), '\\/').'/app/';
+			}
+
+			if (empty($sAppPath))
+			{
+				$sUrl = \MailSo\Base\Http::SingletonInstance()->GetUrl();
+				if ($sUrl && \preg_match('/\/index\.php\/apps\/rainloop/', $sUrl))
+				{
+					$sAppPath = \preg_replace('/\/index\.php\/apps\/rainloop.+$/',
+						'/apps/rainloop/app/', $sUrl);
+				}
+			}
+		}
+
+		return $sAppPath;
+	}
+	/**
+	 * @return string
+	 */
+	public static function WebVersionPath()
+	{
+		return self::WebPath().'rainloop/v/'.APP_VERSION.'/';
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function WebStaticPath()
+	{
+		return self::WebVersionPath().'static/';
+	}
+
+	/**
+	 * @param string $sFileName
+	 * @param bool $bProcessSections = false
+	 *
+	 * @return array
+	 */
+	public static function CustomParseIniFile($sFileName, $bProcessSections = false)
+	{
+//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
+//		{
+//			return @\parse_ini_file($sFileName, !!$bProcessSections);
+//		}
+
+		$sData = @\file_get_contents($sFileName);
+		return \is_string($sData) ? @\parse_ini_string($sData, !!$bProcessSections) : null;
 	}
 
 	public static function CustomBaseConvert($sNumberInput, $sFromBaseInput = '0123456789', $sToBaseInput = '0123456789')
