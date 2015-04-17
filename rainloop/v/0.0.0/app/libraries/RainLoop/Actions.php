@@ -1709,8 +1709,9 @@ class Actions
 		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
 
 		$aResult['UserLanguageRaw'] = $this->detectUserLanguage();
-		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['Language'], false);
-		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['LanguageAdmin'], true);
+
+		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true, true);
+		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true, true);
 
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
@@ -5525,7 +5526,7 @@ class Actions
 
 			if ($bUseThreads)
 			{
-				$sThreadUid = ''; // TODO
+				$sThreadUid = isset($aValues[8]) ? (string) $aValues[8] : '';
 			}
 
 			$this->verifyCacheByKey($sRawKey);
@@ -8380,10 +8381,11 @@ class Actions
 	 * @param string  $sDefault = ''
 	 * @param bool $bAdmin = false
 	 * @param bool $bSearchShortName = false
+	 * @param bool $bAllowEmptyResult = false
 	 *
 	 * @return string
 	 */
-	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false)
+	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false, $bAllowEmptyResult = false)
 	{
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
@@ -8409,7 +8411,7 @@ class Actions
 				$sResult = $sDefault;
 			}
 
-			if (empty($sResult))
+			if (empty($sResult) && !$bAllowEmptyResult)
 			{
 				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
 				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en';

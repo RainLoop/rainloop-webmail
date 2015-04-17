@@ -144,29 +144,27 @@
 
 			}, 50);
 		}
-		else
-		{
-			_.delay(function () {
 
-				var
-					f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
-					f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self)
-				;
+		_.delay(function () {
 
-				self.title.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f1, {
-						'Title': Utils.trim(sValue)
-					});
+			var
+				f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
+				f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self)
+			;
+
+			self.title.subscribe(function (sValue) {
+				Remote.saveAdminConfig(f1, {
+					'Title': Utils.trim(sValue)
 				});
+			});
 
-				self.loadingDesc.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f2, {
-						'LoadingDescription': Utils.trim(sValue)
-					});
+			self.loadingDesc.subscribe(function (sValue) {
+				Remote.saveAdminConfig(f2, {
+					'LoadingDescription': Utils.trim(sValue)
 				});
+			});
 
-			}, 50);
-		}
+		}, 50);
 	};
 
 	module.exports = BrandingAdminSettings;

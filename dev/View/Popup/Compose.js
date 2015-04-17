@@ -1099,6 +1099,26 @@
 				oText.find('.rlBlockquoteSwitcher').off('.rlBlockquoteSwitcher').remove();
 				oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
 
+				(function () {
+
+					var oTmp = null, iLimit = 0;
+
+					while (true)
+					{
+						iLimit++;
+
+						oTmp = oText.children();
+						if (10 > iLimit && oTmp.is('div') && 1 === oTmp.length)
+						{
+							oTmp.children().unwrap();
+							continue;
+						}
+
+						break;
+					}
+
+				}());
+
 				sText = oText.html();
 			}
 

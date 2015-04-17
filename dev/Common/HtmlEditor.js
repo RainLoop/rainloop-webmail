@@ -261,24 +261,13 @@
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
-					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_BR;
+					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
 					oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 					if (window.CKEDITOR.env)
 					{
 						window.CKEDITOR.env.isCompatible = true;
 					}
-
-//					oConfig.allowedContent = {
-//						$1: {
-//							elements: window.CKEDITOR.dtd,
-//							attributes: true,
-//							styles: true,
-//							classes: true
-//						}
-//					};
-//
-//					oConfig.disallowedContent = 'script; style; iframe; frame; *[on*]';
 
 					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
 
@@ -330,7 +319,7 @@
 						{
 							self.fOnReady();
 						}
-						
+
 					});
 				}
 			;

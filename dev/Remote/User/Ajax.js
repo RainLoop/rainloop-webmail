@@ -333,19 +333,23 @@
 	 * @param {number=} iLimit = 20
 	 * @param {string=} sSearch = ''
 	 * @param {boolean=} bSilent = false
+	 * @param {string=} sThreadUid = ''
 	 */
-	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent)
+	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent, sThreadUid)
 	{
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 
 		var
-			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw)
+			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw),
+			bUseThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
+			sInboxUidNext = Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : ''
 		;
 
 		bSilent = Utils.isUnd(bSilent) ? false : !!bSilent;
 		iOffset = Utils.isUnd(iOffset) ? 0 : Utils.pInt(iOffset);
 		iLimit = Utils.isUnd(iOffset) ? 20 : Utils.pInt(iLimit);
 		sSearch = Utils.pString(sSearch);
+		sThreadUid = Utils.pString(sThreadUid);
 
 		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
 		{
@@ -358,9 +362,9 @@
 					sSearch,
 					AppStore.projectHash(),
 					sFolderHash,
-					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-					''
+					sInboxUidNext,
+					bUseThreads ? '1' : '0',
+					bUseThreads ? sThreadUid : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -370,9 +374,11 @@
 				'Offset': iOffset,
 				'Limit': iLimit,
 				'Search': sSearch,
-				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
-			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
+				'UidNext': sInboxUidNext,
+				'UseThreads': bUseThreads ? '1' : '0',
+				'ThreadUid': bUseThreads ? sThreadUid : ''
+			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
+				'', bSilent ? [] : ['MessageList']);
 		}
 	};
 
