@@ -153,20 +153,7 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
-		_.each(MessageStore.messageThreadList(), function (oMessage) {
-			Cache.initMessageFlagsFromCache(oMessage);
-		});
-
 		Cache.initMessageFlagsFromCache(MessageStore.message());
-
-		this.reloadFlagsCurrentMessageThreadListFromCache();
-	};
-
-	AppUser.prototype.reloadFlagsCurrentMessageThreadListFromCache = function ()
-	{
-		_.each(MessageStore.messageThreadList(), function (oMessage) {
-			Cache.initMessageFlagsFromCache(oMessage);
-		});
 	};
 
 	/**

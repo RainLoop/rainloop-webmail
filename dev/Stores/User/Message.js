@@ -43,10 +43,12 @@
 		this.messageListSearch = ko.observable('');
 		this.messageListThreadUid = ko.observable('');
 		this.messageListPage = ko.observable(1);
+		this.messageListPageBeforeThread = ko.observable(1);
 		this.messageListError = ko.observable('');
 
 		this.messageListEndFolder = ko.observable('');
 		this.messageListEndSearch = ko.observable('');
+		this.messageListEndThreadUid = ko.observable('');
 		this.messageListEndPage = ko.observable(1);
 
 		this.messageListLoading = ko.observable(false);
@@ -64,17 +66,12 @@
 
 		this.message.viewTrigger = ko.observable(false);
 
-		this.messageThreadList = ko.observableArray([]);
-
-		this.messageLastThreadUidsData = ko.observable(null);
-
 		this.messageError = ko.observable('');
 
 		this.messageCurrentLoading = ko.observable(false);
-		this.messageThreadLoading = ko.observable(false);
 
 		this.messageLoading = ko.computed(function () {
-			return !!(this.messageCurrentLoading() || this.messageThreadLoading());
+			return this.messageCurrentLoading();
 		}, this);
 
 		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
@@ -94,8 +91,12 @@
 
 	MessageUserStore.prototype.computers = function ()
 	{
+		var self = this;
+
 		this.messageListEndHash = ko.computed(function () {
-			return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
+			return this.messageListEndFolder() + '|' + this.messageListEndSearch() +
+				'|' + this.messageListEndThreadUid() +
+				'|' + this.messageListEndPage();
 		}, this);
 
 		this.messageListPageCount = ko.computed(function () {
@@ -108,7 +109,8 @@
 			'read': this.messageListSearch,
 			'write': function (sValue) {
 				kn.setHash(Links.mailBox(
-					FolderStore.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
+					FolderStore.currentFolderFullNameHash(), 1,
+					Utils.trim(sValue.toString()), self.messageListThreadUid()
 				));
 			},
 			'owner': this
@@ -666,14 +668,6 @@
 		}
 	};
 
-	MessageUserStore.prototype.selectThreadMessage = function (sFolder, sUid)
-	{
-		if (Remote.message(this.onMessageResponse, sFolder, sUid))
-		{
-			this.messageThreadLoading(true);
-		}
-	};
-
 	MessageUserStore.prototype.populateMessageBody = function (oMessage)
 	{
 		if (oMessage)
@@ -695,7 +689,6 @@
 		this.hideMessageBodies();
 
 		this.messageCurrentLoading(false);
-		this.messageThreadLoading(false);
 
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
@@ -817,7 +810,8 @@
 			this.messageListThreadUid(Utils.isNormal(oData.Result.ThreadUid) ? Utils.pString(oData.Result.ThreadUid) : '');
 
 			this.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-			this.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			this.messageListEndSearch(this.messageListSearch());
+			this.messageListEndThreadUid(this.messageListThreadUid());
 			this.messageListEndPage(this.messageListPage());
 
 			this.messageListDisableAutoSelect(true);
@@ -826,26 +820,6 @@
 			this.messageListIsNotCompleted(false);
 
 			Cache.clearNewMessageCache();
-
-			if (AppStore.threadsAllowed() && SettingsStore.useThreads())
-			{
-				oMessage = this.message();
-				if (oMessage)
-				{
-					Remote.messageThreadsFromCache(function (sResult, oData) {
-
-						if (Enums.StorageResultType.Success === sResult && oData &&  oData.Result && oData.Result.ThreadUids)
-						{
-							self.messageLastThreadUidsData({
-								'Folder': oData.Result.Folder,
-								'Uid': oData.Result.Uid,
-								'Uids': oData.Result.ThreadUids
-							});
-						}
-
-					}, oMessage.folderFullNameRaw, oMessage.uid);
-				}
-			}
 
 			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
 			{

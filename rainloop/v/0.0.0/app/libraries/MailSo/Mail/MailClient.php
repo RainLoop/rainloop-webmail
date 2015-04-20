@@ -1916,6 +1916,7 @@ class MailClient
 	 * @param string $sSearch
 	 * @param string $sFolderName
 	 * @param string $sFolderHash
+	 * @param bool $bUseSortIfSupported = false
 	 *
 	 * @return array
 	 *
@@ -1923,7 +1924,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function GetUids($oCacher, $sSearch, $sFolderName, $sFolderHash)
+	public function GetUids($oCacher, $sSearch, $sFolderName, $sFolderHash, $bUseSortIfSupported = false)
 	{
 		$aResultUids = false;
 		$bUidsFromCacher = false;
@@ -1932,7 +1933,7 @@ class MailClient
 		$sSerializedHash = '';
 		$sSerializedLog = '';
 
-		$bUseSortIfSupported = !!$this->oImapClient->IsSupported('SORT');
+		$bUseSortIfSupported = $bUseSortIfSupported ? !!$this->oImapClient->IsSupported('SORT') : false;
 
 		if (0 < \strlen($sSearch))
 		{
@@ -2078,7 +2079,11 @@ class MailClient
 
 		if (0 < $iMessageRealCount)
 		{
-			$mAllSortedUids = $this->GetUids($oCacher, '', $oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+			$mAllSortedUids = $this->GetUids($oCacher, '', $oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
+
+			$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
+
+//		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
 
 			$mAllThreads = $bUseThreadSortIfSupported ? $this->MessageListThreadsMap(
 				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $mAllSortedUids, $oCacher) : null;

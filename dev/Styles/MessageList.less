@@ -178,6 +178,15 @@ html.rl-no-preview-pane {
 			border-bottom: 1px solid #eee;
 		}
 
+		.listThreadUidDesc {
+			font-size: 16px;
+			padding: 7px 20px 5px 20px;
+			border-bottom: 1px solid #eee;
+			background-color: #FCF8E3;
+			cursor: pointer;
+			text-align: center;
+		}
+
 		.delimiter {
 			display: block;
 			height: 1px;
@@ -313,6 +322,12 @@ html.rl-no-preview-pane {
 			&.e-single-line .dateParent {
 			}
 
+			.threadsParent {
+				display: inline-block;
+				float: right;
+				position: relative;
+			}
+
 			.attachmentParent {
 				display: inline-block;
 				float: right;
@@ -398,8 +413,13 @@ html.rl-no-preview-pane {
 					background-color: #999;
 					color: #fff;
 					border-radius: 6px;
-					padding: 1px 6px 1px 5px;
-					margin-right: 5px;
+					padding: 1px 2px 1px 5px;
+					margin-right: 2px;
+
+					[class^="icon-"],
+					[class*=" icon-"] {
+						font-size: 14px;
+					}
 				}
 			}
 

@@ -188,67 +188,6 @@
 							</a>
 						</div>
 
-						<div class="btn-group thread-controls pull-right g-ui-user-select-none" style="margin-right: 5px"
-							data-bind="visible: viewThreadsControlVisibility">
-
-							<a class="btn last btn-thin pull-right" data-tooltip-join="bottom"
-								data-bind="command: threadBackCommand, tooltip: 'MESSAGE/BUTTON_THREAD_PREV'">
-								<i class="icon-right-middle"></i>
-							</a>
-							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, openDropdownTrigger: threadsDropdownTrigger">
-								<a class="btn btn-thin btn-dark-disabled-border dropdown-toggle" id="thread-list-view-dropdown-id" data-toggle="dropdown"
-									href="#" tabindex="-1" data-tooltip-join="bottom"
-									style="margin-left: -1px; margin-right: -1px;"
-									data-bind="command: threadListCommand, tooltip: 'MESSAGE/BUTTON_THREAD_LIST'"
-								>
-									<i class="icon-list"
-										data-bind="css: {'icon-list': !messageListOfThreadsLoading(), 'icon-spinner animated': messageListOfThreadsLoading()}"></i>
-								</a>
-								<ul class="dropdown-menu pull-right g-ui-menu thread-list"
-										role="menu" aria-labelledby="thread-list-view-dropdown-id"
-										style="min-width: 400px; max-width: 400px; width: 400px; padding: 0"
-										data-bind="css: {'hide-more': !viewThreadMessages.showMore() }"
-									>
-
-									<div data-bind="visible: '' !== viewThreadMessages.error()" style="color: red; text-align: center; padding: 10px">
-										<spam data-bind="text: viewThreadMessages.error"></spam>
-									</div>
-									<div data-bind="visible: messageListOfThreadsLoading" style="text-align: center; padding: 10px">
-										<i class="icon-spinner animated" />
-									</div>
-									<div data-bind="foreach: viewThreadMessages, visible: !messageListOfThreadsLoading()">
-										<li class="e-item thread-list-message real-msg" role="presentation" data-bind="css: {'selected': selected, 'more-that': $parent.viewThreadMessages.limit < $index() }">
-											<a class="e-link menuitem" href="#" tabindex="-1" onclick="return false;">
-												<span class="flagParent pull-right" style="margin-left: 5px; margin-right: 0px;">
-													<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': flagged, 'icon-star-empty flagOff': !flagged()}"></i>
-												</span>
-												<span class="thread-date pull-right" data-moment-format="SHORT" data-bind="moment: timestamp"></span>
-												<div style="text-overflow: ellipsis; overflow: hidden;">
-													<span class="thread-from" data-bind="text: fromAsString"></span>
-													&nbsp;
-												</div>
-												<div style="text-overflow: ellipsis; overflow: hidden;">
-													<span class="thread-subject" data-bind="text: subject"></span>
-													&nbsp;
-												</div>
-											</a>
-										</li>
-									</div>
-									<div data-bind="visible: !viewThreadMessages.showMore() && !messageListOfThreadsLoading()">
-										<li class="e-item thread-list-message" role="presentation">
-											<a class="e-link menuitem more-threads" href="#" tabindex="-1"
-											   onclick="return false"
-											   data-i18n="MESSAGE/BUTTON_THREAD_MORE"></a>
-										</li>
-									</div>
-								</ul>
-							</div>
-							<a class="btn first btn-thin pull-right" data-tooltip-join="bottom"
-								data-bind="command: threadForwardCommand, tooltip: 'MESSAGE/BUTTON_THREAD_NEXT'">
-								<i class="icon-left-middle"></i>
-							</a>
-
-						</div>
 					</nobr>
 				</div>
 
@@ -261,9 +200,6 @@
 									<span class="flagParent">
 										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>
 									</span>
-									<span class="thread-counter" data-bind="visible: viewThreadsControlVisibility"
-										style="font-weight: normal; margin-right: 5px">(<span
-											data-bind="text: viewThreadsControlDesc"></span>)</span>
 									<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
 									<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT"></span>

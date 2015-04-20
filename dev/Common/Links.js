@@ -272,7 +272,7 @@
 
 		if ('' !== sFolder)
 		{
-			sResult += encodeURI(sFolder) + (0 < iThreadUid ? '|' + iThreadUid : '');
+			sResult += encodeURI(sFolder) + (0 < iThreadUid ? '~' + iThreadUid : '');
 		}
 
 		if (1 < iPage)

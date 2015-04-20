@@ -316,19 +316,6 @@
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
-	 * @param {Array} aUids
-	 */
-	RemoteUserAjax.prototype.messageListSimple = function (fCallback, sFolderFullNameRaw, aUids)
-	{
-		return this.defaultRequest(fCallback, 'MessageListSimple', {
-			'Folder': Utils.pString(sFolderFullNameRaw),
-			'Uids': aUids
-		}, Consts.Defaults.DefaultAjaxTimeout, '', ['MessageListSimple']);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20
 	 * @param {string=} sSearch = ''
@@ -415,35 +402,6 @@
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
-		}
-
-		return false;
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
-	 * @param {number} iUid
-	 * @return {boolean}
-	 */
-	RemoteUserAjax.prototype.messageThreadsFromCache = function (fCallback, sFolderFullNameRaw, iUid)
-	{
-		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
-		iUid = Utils.pInt(iUid);
-
-		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
-		{
-			var sFolderHash = Cache.getFolderHash(sFolderFullNameRaw);
-			if (sFolderHash)
-			{
-				this.defaultRequest(fCallback, 'MessageThreadsFromCache', {
-					'Folder': sFolderFullNameRaw,
-					'FolderHash': sFolderHash,
-					'Uid': iUid
-				});
-
-				return true;
-			}
 		}
 
 		return false;

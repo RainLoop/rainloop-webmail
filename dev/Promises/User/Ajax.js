@@ -29,43 +29,9 @@
 	function UserAjaxUserPromises()
 	{
 		AbstractAjaxPromises.call(this);
-
-		this.messageListSimpleHash = '';
-		this.messageListSimpleCache = null;
 	}
 
 	_.extend(UserAjaxUserPromises.prototype, AbstractAjaxPromises.prototype);
-
-	UserAjaxUserPromises.prototype.messageListSimple = function (sFolder, aUids, fTrigger)
-	{
-		var self = this, sHash = sFolder + '~' + aUids.join('/');
-		if (sHash === this.messageListSimpleHash && this.messageListSimpleCache)
-		{
-			return this.fastResolve(this.messageListSimpleCache);
-		}
-
-		return this.abort('MessageListSimple')
-			.postRequest('MessageListSimple', fTrigger, {
-				'Folder': sFolder,
-				'Uids': aUids
-			}).then(function (oData) {
-
-				self.messageListSimpleHash = sHash;
-				self.messageListSimpleCache = _.compact(_.map(oData.Result, function (aItem) {
-					return MessageSimpleModel.newInstanceFromJson(aItem);
-				}));
-
-				return self.messageListSimpleCache;
-
-			}, function (iError) {
-
-				self.messageListSimpleHash = '';
-				self.messageListSimpleCache = null;
-
-				return self.fastReject(iError);
-			})
-		;
-	};
 
 	UserAjaxUserPromises.prototype.foldersReload = function (fTrigger)
 	{

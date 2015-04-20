@@ -229,164 +229,6 @@
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
 
-// THREADS
-		this.viewThreads = ko.observableArray([]);
-		this.viewThreads.trigger = ko.observable(false);
-
-		this.viewThreadMessages = MessageStore.messageThreadList;
-
-		this.viewThreadMessages.error = ko.observable('');
-		this.viewThreadMessages.showMore = ko.observable(false);
-		this.viewThreadMessages.limit = 6;
-
-		this.viewThreadMessages.subscribe(function (aList) {
-
-			var iSelectedIndex = -1;
-
-			this.viewThreadMessages.error('');
-			if (aList && 0 < aList.length)
-			{
-				_.each(aList, function (oM, iIndex) {
-					if (oM && oM.selected())
-					{
-						iSelectedIndex = iIndex;
-					}
-				});
-
-				this.viewThreadMessages.showMore(this.viewThreadMessages.limit >= aList.length);
-
-				if (-1 < iSelectedIndex && !this.viewThreadMessages.showMore() &&
-					this.viewThreadMessages.limit < iSelectedIndex)
-				{
-					this.viewThreadMessages.showMore(true);
-				}
-
-				this.selectSelectedThreadMessage();
-				require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
-			}
-
-		}, this);
-
-		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
-			if (oData && oData['Uids'])
-			{
-				oData['Uid'] = Utils.pString(oData['Uid']);
-				if (this.viewFolder === oData['Folder'] && this.viewUid === oData['Uid'])
-				{
-					this.viewThreads(oData['Uids']);
-					this.viewThreads.trigger(!this.viewThreads.trigger());
-				}
-
-				var oMessage = MessageStore.message();
-				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
-				{
-					oMessage.threads(oData['Uids']);
-				}
-
-				oMessage = _.find(MessageStore.messageList(), function (oMessage) {
-					return oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'];
-				});
-
-				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
-				{
-					oMessage.threads(oData['Uids']);
-				}
-			}
-		}, this);
-
-		this.viewThreads.status = ko.computed(function () {
-
-			this.viewThreads.trigger();
-
-			var
-				iIndex = 0,
-				aResult = [false, '', '', '', ''],
-				aThreads = this.viewThreads.peek(),
-				iLen = aThreads.length
-			;
-
-			if (1 < iLen)
-			{
-				iIndex = Utils.inArray(this.viewUid, aThreads);
-				if (-1 < iIndex)
-				{
-					aResult[0] = true;
-					aResult[1] = (iIndex + 1) + '/' + iLen;
-					aResult[2] = aThreads[iIndex];
-					aResult[3] = 0 < iIndex && aThreads[iIndex - 1] ? aThreads[iIndex - 1] : '';
-					aResult[4] = aThreads[iIndex + 1] ? aThreads[iIndex + 1] : '';
-				}
-			}
-
-			return aResult;
-
-		}, this).extend({'notify': 'always'});
-
-		this.viewThreadsControlVisibility = ko.computed(function () {
-			return !!this.viewThreads.status()[0];
-		}, this);
-
-		this.viewThreadsControlDesc = ko.computed(function () {
-			return this.viewThreads.status()[1];
-		}, this);
-
-		this.viewThreadsControlBackAllow = ko.computed(function () {
-			return '' !== this.viewThreads.status()[4] && !this.messageLoadingThrottle();
-		}, this);
-
-		this.viewThreadsControlForwardAllow = ko.computed(function () {
-			return '' !== this.viewThreads.status()[3] && !this.messageLoadingThrottle();
-		}, this);
-
-		this.threadBackCommand = Utils.createCommand(this, function () {
-			var aStatus = this.viewThreads.status();
-			this.openThreadMessage(aStatus[4]);
-		}, this.viewThreadsControlBackAllow);
-
-		this.threadForwardCommand = Utils.createCommand(this, function () {
-			var aStatus = this.viewThreads.status();
-			this.openThreadMessage(aStatus[3]);
-		}, this.viewThreadsControlForwardAllow);
-
-		this.threadsDropdownTrigger = ko.observable(false);
-
-		this.threadListCommand = Utils.createCommand(this, function () {
-
-			var
-				self = this,
-				sFolder = this.viewFolder,
-				sUid = this.viewUid,
-				aUids = this.viewThreads(),
-				aStatus = this.viewThreads.status()
-			;
-
-			if (aStatus && aStatus[0])
-			{
-				self.viewThreadMessages([]);
-
-				Promises.messageListSimple(sFolder, aUids, this.messageListOfThreadsLoading).then(function (aList) {
-
-					_.each(aList, function (oItem) {
-						if (oItem && oItem.uid)
-						{
-							oItem.selected(sUid === oItem.uid);
-						}
-					});
-
-					self.viewThreadMessages(aList);
-
-				}).fail(function (iErrorCode) {
-					self.viewThreadMessages([]);
-					self.viewThreadMessages.error(Translator.getNotification(
-						iErrorCode, '', Enums.Notification.CantGetMessageList));
-				}).done();
-			}
-
-		}, function () {
-			return !this.messageLoadingThrottle() &&
-				!this.messageListOfThreadsLoading();
-		});
-
 // PGP
 		this.viewPgpPassword = ko.observable('');
 		this.viewPgpSignedVerifyStatus = ko.computed(function () {
@@ -472,9 +314,6 @@
 				this.viewIsImportant(oMessage.isImportant());
 				this.viewIsFlagged(oMessage.flagged());
 
-				this.viewThreads(oMessage.threads());
-				this.viewThreads.trigger(!this.viewThreads.trigger());
-
 				sLastEmail = oMessage.fromAsSingleEmail();
 				Cache.getUserPic(sLastEmail, function (sPic, sEmail) {
 					if (sPic !== self.viewUserPic() && sLastEmail === sEmail)
@@ -494,8 +333,6 @@
 				this.viewFolder = '';
 				this.viewUid = '';
 				this.viewHash = '';
-
-				this.viewThreads([]);
 
 				this.scrollMessageToTop();
 			}
@@ -554,15 +391,6 @@
 
 	kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
 	_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
-
-	MessageViewMailBoxUserView.prototype.openThreadMessage = function (sUid)
-	{
-		var oMessage = this.message();
-		if (oMessage && sUid)
-		{
-			MessageStore.selectThreadMessage(oMessage.folderFullNameRaw, sUid);
-		}
-	};
 
 	MessageViewMailBoxUserView.prototype.isPgpActionVisible = function ()
 	{
@@ -791,32 +619,6 @@
 					}
 				}
 			})
-			.on('click', '.thread-list .more-threads', function (e) {
-
-				var oLast = null;
-				if (!e || 0 === e.clientX) // probably enter
-				{
-					// It's a bad bad hack :(
-					oLast = $('.thread-list .e-item.thread-list-message.real-msg.more-that:first a.e-link', oDom);
-				}
-
-				self.viewThreadMessages.showMore(true);
-				self.threadsDropdownTrigger(true);
-
-				if (oLast && oLast[0])
-				{
-					oLast.focus();
-				}
-
-				return false;
-			})
-			.on('click', '.thread-list .thread-list-message', function () {
-				var oMessage = ko.dataFor(this);
-				if (oMessage && oMessage.folder && oMessage.uid)
-				{
-					self.openThreadMessage(oMessage.uid);
-				}
-			})
 			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function () {
 
 				var
@@ -970,32 +772,13 @@
 			}
 		});
 
-		key('t', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (MessageStore.message() && self.viewThreadsControlVisibility())
-			{
-				self.threadsDropdownTrigger(true);
-				self.threadListCommand();
-				return false;
-			}
-		});
-
-		key('ctrl+up, command+up', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		key('ctrl+up, command+up, ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goUpCommand();
 			return false;
 		});
 
-		key('ctrl+down, command+down', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		key('ctrl+down, command+down, ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goDownCommand();
-			return false;
-		});
-
-		key('ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.threadForwardCommand();
-			return false;
-		});
-
-		key('ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.threadBackCommand();
 			return false;
 		});
 

@@ -5460,48 +5460,9 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageThreadsFromCache()
-	{
-		$sFolder = $this->GetActionParam('Folder', '');
-		$sFolderHash = $this->GetActionParam('FolderHash', '');
-		$sUid = (string) $this->GetActionParam('Uid', '');
-
-		if (0 === \strlen($sFolder) || 0 === \strlen($sUid))
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
-		}
-
-		$aResult = array(
-			'Folder' => $sFolder,
-			'Uid' => $sUid,
-			'FolderHash' => $sFolderHash,
-			'ThreadUids' => null
-		);
-
-		$oCache = $this->cacherForUids();
-		if ($oCache && $this->Config()->Get('labs', 'use_imap_thread', false))
-		{
-			$aThreadUids = $this->MailClient()->MessageThreadUidsFromCache(
-				$sFolder, $sFolderHash, $sUid, $oCache
-			);
-
-			if (\is_array($aThreadUids) && 1 < \count($aThreadUids))
-			{
-				$aResult['ThreadUids'] = $aThreadUids;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
-	}
-
-	/**
-	 * @return array
-	 *
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
 	public function DoMessageList()
 	{
-//		\sleep(1);
+		\sleep(1);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 
 		$sFolder = '';
@@ -5579,40 +5540,6 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
-	}
-
-	/**
-	 * @return array
-	 *
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function DoMessageListSimple()
-	{
-//		\sleep(2);
-//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
-
-		$sFolder = $this->GetActionParam('Folder', '');
-		$aUids = $this->GetActionParam('Uids', null);
-
-		if (0 === \strlen($sFolder) || !\is_array($aUids))
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
-		}
-
-		$this->initMailClientConnection();
-
-		$aMessageList = array();
-
-		try
-		{
-			$aMessageList = $this->MailClient()->MessageListSimple($sFolder, $aUids);
-		}
-		catch (\Exception $oException)
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aMessageList);
 	}
 
 	/**

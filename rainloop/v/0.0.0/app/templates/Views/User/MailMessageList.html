@@ -137,12 +137,14 @@
 			<div class="b-content" data-bind="nano: true, initDom: dragOverBodyArea">
 				<div class="content g-scrollbox">
 					<div class="content-wrapper">
+						<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
+							<i class="icon-left" data-bind="click: cancelThreadUid"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
+						</div>
 						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
 							<a class="close-custom" data-bind="click: cancelSearch">&times;</a>
-<!--							<a class="btn btn-small pull-right searchCancelButton" data-bind="click: cancelSearch">
-								<i class="icon-remove"></i>
-							</a>-->
-							<span data-bind="text: messageListSearchDesc"></span>:
+							<span data-bind="text: messageListSearchDesc"></span>
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
 							<i class="icon-down e-icon"></i>

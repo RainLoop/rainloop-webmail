@@ -75,9 +75,9 @@
 	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 	{
 		var
-			sThreadUid = sFolderHash.replace(/^(.+)\|([\d]+)$/, '$2'),
+			sThreadUid = sFolderHash.replace(/^(.+)~([\d]+)$/, '$2'),
 			oFolder = Cache.getFolderFromCacheList(Cache.getFolderFullNameRaw(
-				sFolderHash.replace(/\|([\d]+)$/, '')))
+				sFolderHash.replace(/~([\d]+)$/, '')))
 		;
 
 		if (oFolder)
@@ -88,7 +88,7 @@
 			}
 
 			FolderStore.currentFolder(oFolder);
-			
+
 			MessageStore.messageListPage(iPage);
 			MessageStore.messageListSearch(sSearch);
 			MessageStore.messageListThreadUid(sThreadUid);
@@ -171,9 +171,9 @@
 		;
 
 		return [
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 			[/^([^\/]*)$/,  {'normalize_': fNormS}]
 		];
 	};
