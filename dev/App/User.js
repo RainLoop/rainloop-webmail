@@ -214,12 +214,13 @@
 				);
 			}
 
-		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), MessageStore.messageListSearch());
+		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(),
+			MessageStore.messageListSearch(), MessageStore.messageListThreadUid());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
 	};
 
 	/**

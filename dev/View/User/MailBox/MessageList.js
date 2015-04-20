@@ -62,6 +62,7 @@
 		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
 		this.isMessageSelected = MessageStore.isMessageSelected;
 		this.messageListSearch = MessageStore.messageListSearch;
+		this.messageListThreadUid = MessageStore.messageListThreadUid;
 		this.messageListError = MessageStore.messageListError;
 		this.folderMenuForMove = FolderStore.folderMenuForMove;
 
@@ -611,7 +612,8 @@
 			kn.setHash(Links.mailBox(
 				FolderStore.currentFolderFullNameHash(),
 				oPage.value,
-				MessageStore.messageListSearch()
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
 			));
 		}
 	};

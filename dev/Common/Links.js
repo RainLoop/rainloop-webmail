@@ -257,23 +257,30 @@
 	 * @param {string} sFolder
 	 * @param {number=} iPage = 1
 	 * @param {string=} sSearch = ''
+	 * @param {string=} sThreadUid = ''
 	 * @return {string}
 	 */
-	Links.prototype.mailBox = function (sFolder, iPage, sSearch)
+	Links.prototype.mailBox = function (sFolder, iPage, sSearch, sThreadUid)
 	{
 		iPage = Utils.isNormal(iPage) ? Utils.pInt(iPage) : 1;
 		sSearch = Utils.pString(sSearch);
 
-		var sResult = this.sBase + 'mailbox/';
+		var
+			sResult = this.sBase + 'mailbox/',
+			iThreadUid = Utils.pInt(sThreadUid)
+		;
+
 		if ('' !== sFolder)
 		{
-			sResult += encodeURI(sFolder);
+			sResult += encodeURI(sFolder) + (0 < iThreadUid ? '|' + iThreadUid : '');
 		}
+
 		if (1 < iPage)
 		{
 			sResult = sResult.replace(/[\/]+$/, '');
 			sResult += '/p' + iPage;
 		}
+
 		if ('' !== sSearch)
 		{
 			sResult = sResult.replace(/[\/]+$/, '');

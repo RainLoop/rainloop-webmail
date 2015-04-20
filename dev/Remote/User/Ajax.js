@@ -332,10 +332,10 @@
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20
 	 * @param {string=} sSearch = ''
-	 * @param {boolean=} bSilent = false
 	 * @param {string=} sThreadUid = ''
+	 * @param {boolean=} bSilent = false
 	 */
-	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent, sThreadUid)
+	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, sThreadUid, bSilent)
 	{
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 

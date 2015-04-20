@@ -41,6 +41,7 @@
 
 		this.messageListCount = ko.observable(0);
 		this.messageListSearch = ko.observable('');
+		this.messageListThreadUid = ko.observable('');
 		this.messageListPage = ko.observable(1);
 		this.messageListError = ko.observable('');
 
@@ -813,6 +814,7 @@
 			this.messageListCount(iCount);
 			this.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			this.messageListPage(window.Math.ceil((iOffset / SettingsStore.messagesPerPage()) + 1));
+			this.messageListThreadUid(Utils.isNormal(oData.Result.ThreadUid) ? Utils.pString(oData.Result.ThreadUid) : '');
 
 			this.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 			this.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
