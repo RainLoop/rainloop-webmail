@@ -2079,11 +2079,8 @@ class MailClient
 
 		if (0 < $iMessageRealCount)
 		{
-			$mAllSortedUids = $this->GetUids($oCacher, '', $oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
-
-			$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
-
-//		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
+			$mAllSortedUids = $this->GetUids($oCacher, '',
+				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
 
 			$mAllThreads = $bUseThreadSortIfSupported ? $this->MessageListThreadsMap(
 				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $mAllSortedUids, $oCacher) : null;
@@ -2091,12 +2088,32 @@ class MailClient
 			if ($bUseThreadSortIfSupported && 0 < $iThreadUid && \is_array($mAllThreads))
 			{
 				$aUids = array();
-				$aUids = \is_array($mAllThreads[$iThreadUid]) ?
-					$mAllThreads[$iThreadUid] : array();
-
-				if (\in_array($iThreadUid, $mAllSortedUids))
+				$iResultRootUid = 0;
+				
+				if (isset($mAllThreads[$iThreadUid]))
 				{
-					\array_unshift($aUids, $iThreadUid);
+					$iResultRootUid = $iThreadUid;
+					if (\is_array($mAllThreads[$iThreadUid]))
+					{
+						$aUids = $mAllThreads[$iThreadUid];
+					}
+				}
+				else
+				{
+					foreach ($mAllThreads as $iRootUid => $mSubUids)
+					{
+						if (\is_array($mSubUids) && \in_array($iThreadUid, $mSubUids))
+						{
+							$iResultRootUid = $iRootUid;
+							$aUids = $mSubUids;
+							continue;
+						}
+					}
+				}
+
+				if (0 < $iResultRootUid && \in_array($iResultRootUid, $mAllSortedUids))
+				{
+					\array_unshift($aUids, $iResultRootUid);
 				}
 			}
 			else if ($bUseThreadSortIfSupported && \is_array($mAllThreads))

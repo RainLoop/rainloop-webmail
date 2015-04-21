@@ -16,8 +16,6 @@
 //		AppStore = require('Stores/User/App'),
 //		SettingsStore = require('Stores/User/Settings'),
 
-		MessageSimpleModel = require('Model/MessageSimple'),
-
 		PromisesPopulator = require('Promises/User/Populator'),
 		AbstractAjaxPromises = require('Promises/AbstractAjax')
 	;

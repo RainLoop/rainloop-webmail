@@ -327,6 +327,7 @@
 		var
 			self = this,
 			iUnseenCount = 0,
+			oMessage = null,
 			aMessageList = this.messageList(),
 			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
 			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
@@ -405,6 +406,56 @@
 		if ('' !== sToFolderFullNameRaw)
 		{
 			Cache.setFolderHash(sToFolderFullNameRaw, '');
+		}
+
+		if ('' !== this.messageListThreadUid())
+		{
+			aMessageList = this.messageList();
+
+			if (aMessageList && 0 < aMessageList.length && !!_.find(aMessageList, function (oMessage) {
+				return !!(oMessage && oMessage.deleted() && oMessage.uid === self.messageListThreadUid());
+			}))
+			{
+				oMessage = _.find(aMessageList, function (oMessage) {
+					return oMessage && !oMessage.deleted();
+				});
+
+				if (oMessage && this.messageListThreadUid() !== Utils.pString(oMessage.uid))
+				{
+					this.messageListThreadUid(Utils.pString(oMessage.uid));
+
+					kn.setHash(Links.mailBox(
+						FolderStore.currentFolderFullNameHash(),
+						this.messageListPage(),
+						this.messageListSearch(),
+						this.messageListThreadUid()
+					), true, true);
+				}
+				else if (!oMessage)
+				{
+					if (1 < this.messageListPage())
+					{
+						this.messageListPage(this.messageListPage() - 1);
+
+						kn.setHash(Links.mailBox(
+							FolderStore.currentFolderFullNameHash(),
+							this.messageListPage(),
+							this.messageListSearch(),
+							this.messageListThreadUid()
+						), true, true);
+					}
+					else
+					{
+						this.messageListThreadUid('');
+
+						kn.setHash(Links.mailBox(
+							FolderStore.currentFolderFullNameHash(),
+							this.messageListPageBeforeThread(),
+							this.messageListSearch()
+						), true, true);
+					}
+				}
+			}
 		}
 	};
 
@@ -574,7 +625,7 @@
 							oMessagesBodiesDom.append(oMessage.body);
 						}
 
-						oMessage.storeDataToDom();
+						oMessage.storeDataInDom();
 
 						if (bHasInternals)
 						{
@@ -594,7 +645,7 @@
 						if (oMessage.body)
 						{
 							oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-							oMessage.fetchDataToDom();
+							oMessage.fetchDataFromDom();
 						}
 					}
 
@@ -725,7 +776,6 @@
 			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
 		{
 			var
-				self = this,
 				iIndex = 0,
 				iLen = 0,
 				iCount = 0,

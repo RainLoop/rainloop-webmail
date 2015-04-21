@@ -978,7 +978,7 @@
 		}
 	};
 
-	MessageModel.prototype.storeDataToDom = function ()
+	MessageModel.prototype.storeDataInDom = function ()
 	{
 		if (this.body)
 		{
@@ -997,7 +997,7 @@
 		}
 	};
 
-	MessageModel.prototype.storePgpVerifyDataToDom = function ()
+	MessageModel.prototype.storePgpVerifyDataInDom = function ()
 	{
 		if (this.body && require('Stores/User/Pgp').capaOpenPGP())
 		{
@@ -1006,7 +1006,7 @@
 		}
 	};
 
-	MessageModel.prototype.fetchDataToDom = function ()
+	MessageModel.prototype.fetchDataFromDom = function ()
 	{
 		if (this.body)
 		{
@@ -1090,7 +1090,7 @@
 			}
 			catch (oExc) {}
 
-			this.storePgpVerifyDataToDom();
+			this.storePgpVerifyDataInDom();
 		}
 	};
 
@@ -1162,7 +1162,7 @@
 			}
 			catch (oExc) {}
 
-			this.storePgpVerifyDataToDom();
+			this.storePgpVerifyDataInDom();
 		}
 	};
 

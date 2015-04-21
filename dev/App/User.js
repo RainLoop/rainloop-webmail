@@ -174,7 +174,15 @@
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
 			MessageStore.messageListPage(1);
+			MessageStore.messageListPageBeforeThread(1);
 			iOffset = 0;
+
+			kn.setHash(Links.mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				MessageStore.messageListPage(),
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
+			), true, true);
 		}
 
 		MessageStore.messageListLoading(true);
@@ -844,10 +852,8 @@
 	AppUser.prototype.messageListAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
 		var
-			bRoot = false,
-			aAllUids = [],
-			aRootUids = [],
 			oFolder = null,
+			aRootUids = [],
 			iAlreadyUnread = 0
 		;
 
@@ -856,33 +862,16 @@
 			aMessages = MessageStore.messageListChecked();
 		}
 
-		if (true === mUid)
-		{
-			bRoot = true;
-		}
-		else if (aMessages && aMessages[0] && mUid &&
-			sFolderFullNameRaw === aMessages[0].folderFullNameRaw && mUid === aMessages[0].uid)
-		{
-			bRoot = true;
-		}
+		aRootUids = _.uniq(_.compact(_.map(aMessages, function (oMessage) {
+			return (oMessage && oMessage.uid) ? oMessage.uid : null;
+		})));
 
-		_.each(aMessages, function (oMessage) {
-			if (oMessage && oMessage.uid && oMessage.threads)
-			{
-				aRootUids.push(oMessage.uid);
-				aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
-			}
-		});
-
-		aAllUids = _.uniq(aAllUids);
-		aRootUids = _.uniq(aRootUids);
-
-		if ('' !== sFolderFullNameRaw && 0 < aAllUids.length)
+		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
 			switch (iSetAction) {
 				case Enums.MessageSetAction.SetSeen:
 
-					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+					_.each(aRootUids, function (sSubUid) {
 						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -893,7 +882,7 @@
 						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
 					}
 
-					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, true);
+					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, true);
 					break;
 
 				case Enums.MessageSetAction.UnsetSeen:
@@ -925,13 +914,11 @@
 				case Enums.MessageSetAction.UnsetFlag:
 
 					_.each(aRootUids, function (sSubUid) {
-//					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
 					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, false);
-//					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
 					break;
 			}
 
