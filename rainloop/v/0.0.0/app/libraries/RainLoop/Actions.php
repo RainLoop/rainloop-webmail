@@ -407,8 +407,9 @@ class Actions
 	{
 		if (false !== \strpos($sLine, '{date:'))
 		{
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) {
-				return \gmdate($aMatch[1]);
+			$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($iTimeOffset) {
+				return \MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset);
 			}, $sLine);
 
 			$sLine = \preg_replace('/\{date:([^}]*)\}/', 'date', $sLine);
@@ -939,6 +940,8 @@ class Actions
 
 			if (!!$this->Config()->Get('logs', 'enable', false))
 			{
+				$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
+
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
 				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
@@ -956,6 +959,7 @@ class Actions
 						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
 						->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
 						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
+						->SetTimeOffset($iTimeOffset)
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
@@ -967,7 +971,10 @@ class Actions
 
 				$oHttp = $this->Http();
 
-				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
+				$this->oLogger->Write('[DATE:'.\MailSo\Log\Logger::DateHelper('d.m.y', $iTimeOffset).
+					(0 !== $iTimeOffset ? '][OFFSET:'.(0 < $iTimeOffset ? '+' : '-').
+						\str_pad((string) \abs($iTimeOffset), 2, '0', STR_PAD_LEFT) : '').
+					'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
 					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)).'][PID:'.
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
 					$oHttp->GetServer('SERVER_SOFTWARE', '~').']['.
@@ -5462,7 +5469,7 @@ class Actions
 	 */
 	public function DoMessageList()
 	{
-		\sleep(1);
+//		\sleep(1);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
 
 		$sFolder = '';

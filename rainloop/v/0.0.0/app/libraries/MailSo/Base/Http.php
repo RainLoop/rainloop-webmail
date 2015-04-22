@@ -679,10 +679,10 @@ class Http
 			{
 				if ($bSetCacheHeader)
 				{
-					\header('Cache-Control: public', true);
-					\header('Pragma: public', true);
-					\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
-					\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
+					@\header('Cache-Control: public', true);
+					@\header('Pragma: public', true);
+					@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
+					@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
 
 					if (0 < strlen($sEtag))
 					{

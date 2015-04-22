@@ -64,19 +64,20 @@
 		});
 	};
 
+	LanguagesPopupView.prototype.onBeforeShow = function ()
+	{
+		this.fLang = null;
+		this.userLanguage('');
+
+		this.langs([]);
+	};
+
 	LanguagesPopupView.prototype.onShow = function (fLanguage, aLangs, sUserLanguage)
 	{
 		this.fLang = fLanguage;
 		this.userLanguage(sUserLanguage || '');
 
 		this.langs(aLangs);
-	};
-
-	LanguagesPopupView.prototype.onHide = function ()
-	{
-		this.fLang = null;
-		this.userLanguage('');
-		this.langs([]);
 	};
 
 	LanguagesPopupView.prototype.changeLanguage = function (sLang)

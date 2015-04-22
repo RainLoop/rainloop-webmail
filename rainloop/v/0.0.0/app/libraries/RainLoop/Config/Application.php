@@ -186,6 +186,8 @@ Values:
 				'hide_passwords' => array(true, 'Required for development purposes only.
 Disabling this option is not recommended.'),
 
+				'time_offset' => array(0),
+
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
 For security reasons, some characters are removed from filename.

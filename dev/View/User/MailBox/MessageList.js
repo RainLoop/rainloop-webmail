@@ -630,7 +630,7 @@
 
 	MessageListMailBoxUserView.prototype.gotoThread = function (oMessage)
 	{
-		if (oMessage)
+		if (oMessage && 0 < oMessage.threadsLen())
 		{
 			MessageStore.messageListPageBeforeThread(MessageStore.messageListPage());
 
@@ -641,6 +641,13 @@
 				oMessage.uid
 			));
 		}
+	};
+
+	MessageListMailBoxUserView.prototype.clearListIsVisible = function ()
+	{
+		return '' === this.messageListSearchDesc() && '' === this.messageListError() &&
+			'' === MessageStore.messageListEndThreadUid() &&
+			0 < this.messageList().length && (this.isSpamFolder() || this.isTrashFolder());
 	};
 
 	MessageListMailBoxUserView.prototype.onBuild = function (oDom)
@@ -669,6 +676,9 @@
 				self.flagMessages(ko.dataFor(this));
 			})
 			.on('click', '.messageList .messageListItem .threads-len', function () {
+				self.gotoThread(ko.dataFor(this));
+			})
+			.on('dblclick', '.messageList .messageListItem .actionHandle', function () {
 				self.gotoThread(ko.dataFor(this));
 			})
 		;

@@ -151,7 +151,7 @@
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 						</div>
-						<div class="listClear" data-bind="visible: '' === messageListSearchDesc() && '' === messageListError() && 0 < messageList().length && (isSpamFolder() || isTrashFolder())">
+						<div class="listClear" data-bind="visible: clearListIsVisible()">
 							<span class="g-ui-link i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
 						</div>
 						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">

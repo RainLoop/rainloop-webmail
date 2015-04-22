@@ -131,6 +131,7 @@
 					// show
 					if (self.oCurrentSubScreen)
 					{
+						Utils.delegateRun(self.oCurrentSubScreen, 'onBeforeShow');
 						self.oCurrentSubScreen.viewModelDom.show();
 						Utils.delegateRun(self.oCurrentSubScreen, 'onShow');
 						Utils.delegateRun(self.oCurrentSubScreen, 'onShowWithDelay', [], 200);
