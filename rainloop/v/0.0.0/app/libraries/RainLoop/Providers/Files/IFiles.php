@@ -7,6 +7,14 @@ interface IFiles
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	public function GenerateLocalFullFileName($oAccount, $sKey);
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sKey
 	 * @param resource $rSource
 	 *
 	 * @return bool

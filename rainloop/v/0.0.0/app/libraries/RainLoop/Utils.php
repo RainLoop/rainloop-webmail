@@ -315,6 +315,13 @@ class Utils
 		return isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'] &&
 			\class_exists('\\OC');
 	}
+	/**
+	 * @return bool
+	 */
+	public static function IsOwnCloudLoggedIn()
+	{
+		return self::IsOwnCloud() && \class_exists('\\OCP\\User') && \OCP\User::isLoggedIn();
+	}
 
 	/**
 	 * @return string

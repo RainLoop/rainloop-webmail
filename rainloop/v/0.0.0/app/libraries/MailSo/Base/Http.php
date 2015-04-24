@@ -567,6 +567,12 @@ class Http
 			return false;
 		}
 
+		$sUrl = \trim($sUrl);
+		if ('//' === substr($sUrl, 0, 2))
+		{
+			$sUrl = 'http:'.$sUrl;
+		}
+
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
 			CURLOPT_HEADER => false,

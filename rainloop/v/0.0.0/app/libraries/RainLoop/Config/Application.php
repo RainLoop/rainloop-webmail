@@ -133,7 +133,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'capa' => array(
 				'filters' => array(true),
-				'templates' => array(true)
+				'templates' => array(true),
+				'attachments_actions' => array(true)
 			),
 
 			'login' => array(
@@ -302,6 +303,7 @@ Enables caching in the system'),
 				'smtp_show_server_errors' => array(false),
 				'sieve_allow_raw_script' => array(false),
 				'sieve_utf8_folder_name' => array(true),
+				'owncloud_save_folder' => array('Attachments'),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),

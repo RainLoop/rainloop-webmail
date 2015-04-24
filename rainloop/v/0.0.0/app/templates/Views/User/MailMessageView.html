@@ -319,7 +319,8 @@
 											autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 											style="margin-bottom: 0" data-i18n="[placeholder]MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword, onEnter: function() { decryptPgpEncryptedMessage(message()); }" />
 									</div>
-									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments(), css: {'selection-mode' : showAttachmnetControls}">
+									<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments(),
+										css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 										<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
 											<li class="attachmentItem clearfix" draggable="true" data-tooltip-join="top"
 													data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
@@ -371,27 +372,33 @@
 									<div class="attachmentsControls"
 											data-bind="visible: showAttachmnetControls() && message() && message().hasVisibleAttachments()">
 
-										<i class="icon-file-zip"
-											data-bind="css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner animated': downloadAsZipLoading()}"></i>
+										<span data-bind="visible: downloadAsZipAllowed">
+											<i class="icon-remove iconcolor-red" data-bind="visible: downloadAsZipError"></i>
+											<i class="icon-file-zip" data-bind="visible: !downloadAsZipError(),
+												css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner animated': downloadAsZipLoading()}"></i>
+											&nbsp;&nbsp;
+											<span class="g-ui-link" data-bind="click: downloadAsZip">Download as zip</span>
+										</span>
 
-										&nbsp;&nbsp;
-										<span class="g-ui-link" data-bind="click: downloadAsZip">Download as zip</span>
+										<span data-bind="visible: saveToOwnCloudAllowed">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<i class="icon-remove iconcolor-red" data-bind="visible: saveToOwnCloudError"></i>
+											<i class="icon-ok iconcolor-green" data-bind="visible: saveToOwnCloudSuccess"></i>
+											<i class="icon-cloud-up" data-bind="visible: !saveToOwnCloudSuccess() && !saveToOwnCloudError(),
+												css: {'icon-cloud-up': !saveToOwnCloudLoading(), 'icon-spinner animated': saveToOwnCloudLoading()}"></i>
+											&nbsp;&nbsp;
+											<span class="g-ui-link" data-bind="click: saveToOwnCloud">Save to ownCloud</span>
+										</span>
 
-										&nbsp;&nbsp;&nbsp;&nbsp;
-
-										<i class="icon-cloud-up"
-											data-bind="css: {'icon-cloud-up': !saveToOwnCloudLoading(), 'icon-spinner animated': saveToOwnCloudLoading()}"></i>
-
-										&nbsp;&nbsp;
-										<span class="g-ui-link" data-bind="click: saveToOwnCloud">Save to ownCloud</span>
-
-										&nbsp;&nbsp;&nbsp;&nbsp;
-
-										<i class="icon-dropbox"
-											data-bind="css: {'icon-dropbox': !saveToDropboxLoading(), 'icon-spinner animated': saveToDropboxLoading()}"></i>
-
-										&nbsp;&nbsp;
-										<span class="g-ui-link" data-bind="click: saveToDropbox">Save to Dropbox</span>
+										<span data-bind="visible: saveToDropboxAllowed">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<i class="icon-remove iconcolor-red" data-bind="visible: saveToDropboxError"></i>
+											<i class="icon-ok iconcolor-green" data-bind="visible: saveToDropboxSuccess"></i>
+											<i class="icon-dropbox" data-bind="visible: !saveToDropboxSuccess() && !saveToDropboxError(),
+												css: {'icon-dropbox': !saveToDropboxLoading(), 'icon-spinner animated': saveToDropboxLoading()}"></i>
+											&nbsp;&nbsp;
+											<span class="g-ui-link" data-bind="click: saveToDropbox">Save to Dropbox</span>
+										</span>
 
 										<!-- // --->
 										<button type="button" class="close" style="margin-right: 5px;"

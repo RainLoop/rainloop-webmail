@@ -79,7 +79,7 @@
 	UserAjaxUserPromises.prototype.attachmentsActions = function (sAction, aHashes, fTrigger)
 	{
 		return this.postRequest('AttachmentsActions', fTrigger, {
-			'Action': sAction,
+			'Do': sAction,
 			'Hashes': aHashes
 		});
 	};

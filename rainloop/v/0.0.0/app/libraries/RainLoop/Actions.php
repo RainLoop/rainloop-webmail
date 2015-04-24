@@ -1322,11 +1322,33 @@ class Actions
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
-			'ZipSupported' => !!\class_exists('ZipArchive'),
 			'Admin' => array(),
 			'Capa' => array(),
+			'AttahcmentsActions' => array(),
 			'Plugins' => array()
 		);
+
+		if ($oConfig->Get('capa', 'attachments_actions', false))
+		{
+			if (!!\class_exists('ZipArchive'))
+			{
+				$aResult['AttahcmentsActions'][] = 'zip';
+			}
+
+			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+			{
+				$aResult['AttahcmentsActions'][] = 'owncloud';
+			}
+
+			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
+			{
+				$aResult['AttahcmentsActions'][] = 'dropbox';
+			}
+		}
+
+		$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
+			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
+
 
 		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
@@ -1763,14 +1785,30 @@ class Actions
 		return \preg_replace('/[^a-zA-Z0-9]+/', '-', $this->getUserLanguageFromHeader());
 	}
 
+	/**
+	 * @param int $iWait = 1
+	 * @param int $iDelay = 1
+	 */
+	private function requestSleep($iWait = 1, $iDelay = 1)
+	{
+		if (0 < $iDelay && 0 < $iWait)
+		{
+			if ($iWait > \time() - APP_START_TIME)
+			{
+				\sleep($iDelay);
+			}
+		}
+	}
+
 	private function loginErrorDelay()
 	{
 		$iDelay = (int) $this->Config()->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay)
 		{
-			\sleep($iDelay);
+			$this->requestSleep(1, $iDelay);
 		}
 	}
+
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 */
@@ -2645,8 +2683,200 @@ class Actions
 	 */
 	public function DoAttachmentsActions()
 	{
-		\sleep(1);
-		return $this->TrueResponse(__FUNCTION__);
+		if (!$this->Config()->Get('capa', 'attachments_actions', false))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->initMailClientConnection();
+
+		$sAction = $this->GetActionParam('Do', '');
+		$aHashes = $this->GetActionParam('Hashes', null);
+
+		$mResult = false;
+		$bError = false;
+		$aData = false;
+
+		if (\is_array($aHashes) && 0 < \count($aHashes))
+		{
+			$aData = array();
+			foreach ($aHashes as $sZipHash)
+			{
+				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
+				if (\is_array($aResult) && !empty($aResult['FileHash']))
+				{
+					$aData[] = $aResult;
+				}
+				else
+				{
+					$bError = true;
+					break;
+				}
+			}
+		}
+
+		$oFilesProvider = $this->FilesProvider();
+		if (!empty($sAction) && !$bError && \is_array($aData) && 0 < \count($aData) &&
+			$oFilesProvider && $oFilesProvider->IsActive())
+		{
+
+			$bError = false;
+			switch (\strtolower($sAction))
+			{
+				case 'zip':
+
+					if (\class_exists('ZipArchive'))
+					{
+						$sZipHash = \MailSo\Base\Utils::Md5Rand();
+						$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
+
+						if (!empty($sZipFileName))
+						{
+							$oZip = new \ZipArchive();
+							$oZip->open($sZipFileName, \ZIPARCHIVE::OVERWRITE);
+							$oZip->setArchiveComment('RainLoop/'.APP_VERSION);
+
+							foreach ($aData as $aItem)
+							{
+								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
+								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+
+								if (!empty($sFileHash))
+								{
+									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
+									if (!$oZip->addFile($sFullFileNameHash, $sFileName))
+									{
+										$bError = true;
+									}
+								}
+							}
+
+							if (!$bError)
+							{
+								$bError = !$oZip->close();
+							}
+							else
+							{
+								$oZip->close();
+							}
+						}
+
+						foreach ($aData as $aItem)
+						{
+							$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+							if (!empty($sFileHash))
+							{
+								$oFilesProvider->Clear($oAccount, $sFileHash);
+							}
+						}
+
+						if (!$bError)
+						{
+							$mResult = array(
+								'Files' => array(array(
+									'FileName' => 'attachments.zip',
+									'Hash' => \RainLoop\Utils::EncodeKeyValues(array(
+										'V' => APP_VERSION,
+										'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+										'FileName' => 'attachments.zip',
+										'MimeType' => 'application/zip',
+										'FileHash' => $sZipHash
+									))
+								))
+							);
+						}
+					}
+					break;
+
+				case 'owncloud':
+
+					$mResult = false;
+
+					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+					{
+						$sSaveFolder = $this->Config()->Get('labs', 'owncloud_save_folder', '');
+						if (!empty($sSaveFolder))
+						{
+							$sSaveFolder = 'Attachments';
+						}
+
+						$oFiles = \OCP\Files::getStorage('files');
+
+						if ($oFilesProvider && $oFiles && $oFilesProvider->IsActive() &&
+							\method_exists($oFiles, 'file_put_contents'))
+						{
+							if (!$oFiles->is_dir($sSaveFolder))
+							{
+								$oFiles->mkdir($sSaveFolder);
+							}
+
+							$mResult = true;
+							foreach ($aData as $aItem)
+							{
+								$sSavedFileName = isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat';
+								$sSavedFileHash = !empty($aItem['FileHash']) ? $aItem['FileHash'] : '';
+
+								if (!empty($sSavedFileHash))
+								{
+									$fFile = $oFilesProvider->GetFile($oAccount, $sSavedFileHash, 'rb');
+									if (\is_resource($fFile))
+									{
+										$sSavedFileNameFull = \MailSo\Base\Utils::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, function ($sPath) use ($oFiles) {
+											return $oFiles->file_exists($sPath);
+										});
+
+										if (!$oFiles->file_put_contents($sSavedFileNameFull, $fFile))
+										{
+											$mResult = false;
+										}
+
+										if (\is_resource($fFile))
+										{
+											@\fclose($fFile);
+										}
+									}
+								}
+							}
+						}
+					}
+
+					foreach ($aData as $aItem)
+					{
+						$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+						if (!empty($sFileHash))
+						{
+							$oFilesProvider->Clear($oAccount, $sFileHash);
+						}
+					}
+
+					break;
+
+				case 'dropbox':
+
+					$mResult = array(
+						'ShortLife' => '_'.$this->GetShortLifeSpecAuthToken(),
+						'Url' => \preg_replace('/\?(.*)$/', '', $this->Http()->GetFullUrl()),
+						'Files' => array()
+					);
+
+					foreach ($aData as $aItem)
+					{
+						$mResult['Files'][] = array(
+							'FileName' => isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat',
+							'Hash' => \RainLoop\Utils::EncodeKeyValues($aItem)
+						);
+					}
+
+					break;
+			}
+		}
+		else
+		{
+			$bError = true;
+		}
+
+		$this->requestSleep();
+		return $this->DefaultResponse(__FUNCTION__, $bError ? false : $mResult);
 	}
 
 	/**
@@ -3550,7 +3780,6 @@ class Actions
 	 */
 	public function DoAdminLicensing()
 	{
-		$iStart = \time();
 		$this->IsAdminLoggined();
 
 		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
@@ -3562,10 +3791,7 @@ class Actions
 		{
 			$sValue = $this->licenseHelper($bForce);
 
-			if ($iStart === \time())
-			{
-				\sleep(1);
-			}
+			$this->requestSleep();
 
 			$iExpired = 0;
 			if ($this->licenseParser($sValue, $iExpired))
@@ -3602,7 +3828,6 @@ class Actions
 	 */
 	public function DoAdminLicensingActivate()
 	{
-		$iStart = \time();
 		$this->IsAdminLoggined();
 
 		$sDomain = (string) $this->GetActionParam('Domain', '');
@@ -3618,7 +3843,6 @@ class Actions
 
 			$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-			\sleep(1);
 			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
 				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
@@ -3630,10 +3854,7 @@ class Actions
 				$sValue = '';
 			}
 
-			if ($iStart + 2 > \time())
-			{
-				\sleep(1);
-			}
+			$this->requestSleep();
 
 			$aMatch = array();
 			if ('OK' === $sValue)
@@ -6522,7 +6743,8 @@ class Actions
 			))
 		);
 
-		\sleep(1);
+		$this->requestSleep();
+
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->getTwoFactorInfo($oAccount));
 	}
@@ -6606,7 +6828,8 @@ class Actions
 //			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode)
 //		));
 
-		\sleep(1);
+		$this->requestSleep();
+
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode));
 	}
@@ -7902,6 +8125,57 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sHash
+	 *
+	 * @return array
+	 */
+	private function getMimeFileByHash($oAccount, $sHash)
+	{
+		$aValues = $this->getDecodedRawKeyValue($sHash);
+
+		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
+		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+
+		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
+		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+
+		$oFileProvider = $this->FilesProvider();
+
+		$sResultHash = '';
+
+		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
+			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
+
+				if ($oAccount && \is_resource($rResource))
+				{
+					$sHash = \MailSo\Base\Utils::Md5Rand($sFileNameIn.'~'.$sContentTypeIn);
+					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
+
+					if (@\is_resource($rTempResource))
+					{
+						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
+						{
+							$sResultHash = $sHash;
+						}
+
+						@\fclose($rTempResource);
+					}
+				}
+
+			}, $sFolder, $iUid, true, $sMimeIndex);
+
+		$aValues['FileHash'] = '';
+		if ($mResult)
+		{
+			$aValues['FileHash'] = $sResultHash;
+		}
+
+		return $aValues;
+	}
+
+	/**
 	 * @param bool $bDownload
 	 * @param bool $bThumbnail = false
 	 *
@@ -7913,15 +8187,50 @@ class Actions
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
 		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
-		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
-		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
+		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
-		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
-		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
+		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
+		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
 
-		if (!empty($sFolder) && 0 < $iUid)
+		if (!empty($sFileHashIn))
 		{
 			$this->verifyCacheByKey($sRawKey);
+
+			$oAccount = $this->getAccountFromToken();
+
+			$sContentTypeOut = empty($sContentTypeIn) ?
+				\MailSo\Base\Utils::MimeContentType($sFileNameIn) : $sContentTypeIn;
+
+			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
+
+			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
+			if (\is_resource($rResource))
+			{
+				$sFileNameOut = \MailSo\Base\Utils::ConvertEncoding(
+					$sFileNameOut, \MailSo\Base\Enumerations\Charset::UTF_8,
+						\MailSo\Base\Enumerations\Charset::CP858);
+
+				\header('Content-Type: '.$sContentTypeOut);
+				\header('Content-Disposition: attachment; '.
+					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+
+				\header('Accept-Ranges: none', true);
+				\header('Content-Transfer-Encoding: binary');
+
+				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+				return true;
+			}
+
+			return false;
+		}
+		else
+		{
+			if (!empty($sFolder) && 0 < $iUid)
+			{
+				$this->verifyCacheByKey($sRawKey);
+			}
 		}
 
 		$oAccount = $this->initMailClientConnection();

@@ -4,6 +4,7 @@
 	'use strict';
 
 	var
+		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -19,9 +20,11 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 		Audio = require('Common/Audio'),
+		Links = require('Common/Links'),
 
 		Cache = require('Common/Cache'),
 
+		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
@@ -62,6 +65,8 @@
 
 		this.pswp = null;
 
+		this.attahcmentsActions = AppStore.attahcmentsActions;
+
 		this.message = MessageStore.message;
 		this.messageListChecked = MessageStore.messageListChecked;
 		this.hasCheckedMessages = MessageStore.hasCheckedMessages;
@@ -80,12 +85,64 @@
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
 
-		this.allowAttachmnetControls = ko.observable(false);
+		this.highlightUnselectedAttachments = ko.observable(false).extend({'falseTimeout': 2000});
+
 		this.showAttachmnetControls = ko.observable(false);
 
+		this.allowAttachmnetControls = ko.computed(function () {
+			return 0 < this.attahcmentsActions().length;
+		}, this);
+
+		this.downloadAsZipAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('zip', this.attahcmentsActions());
+		}, this);
+
 		this.downloadAsZipLoading = ko.observable(false);
+		this.downloadAsZipError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToOwnCloudAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('owncloud', this.attahcmentsActions());
+		}, this);
+
 		this.saveToOwnCloudLoading = ko.observable(false);
+		this.saveToOwnCloudSuccess = ko.observable(false).extend({'falseTimeout': 2000});
+		this.saveToOwnCloudError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToOwnCloudSuccess.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToOwnCloudError(false);
+			}
+		}, this);
+
+		this.saveToOwnCloudError.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToOwnCloudSuccess(false);
+			}
+		}, this);
+
+		this.saveToDropboxAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('dropbox', this.attahcmentsActions());
+		}, this);
+
 		this.saveToDropboxLoading = ko.observable(false);
+		this.saveToDropboxSuccess = ko.observable(false).extend({'falseTimeout': 2000});
+		this.saveToDropboxError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToDropboxSuccess.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToDropboxError(false);
+			}
+		}, this);
+
+		this.saveToDropboxError.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToDropboxSuccess(false);
+			}
+		}, this);
 
 		this.showAttachmnetControls.subscribe(function (bV) {
 			if (this.message())
@@ -202,6 +259,9 @@
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
+
+		this.dropboxEnabled = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
 		// viewer
 
@@ -475,6 +535,7 @@
 	{
 		var
 			self = this,
+			oScript = null,
 			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this)
 		;
@@ -502,6 +563,16 @@
 			Utils.windowResize();
 			Utils.windowResize(250);
 		});
+
+		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
+		{
+			oScript = window.document.createElement('script');
+			oScript.type = 'text/javascript';
+			oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
+			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
+
+			window.document.body.appendChild(oScript);
+		}
 
 		this.oHeaderDom = $('.messageItemHeader', oDom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
@@ -943,28 +1014,109 @@
 
 	MessageViewMailBoxUserView.prototype.downloadAsZip = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading);
+			Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading).then(function (oResult) {
+				if (oResult && oResult.Result && oResult.Result.Files &&
+					oResult.Result.Files[0] && oResult.Result.Files[0].Hash)
+				{
+					require('App/User').download(
+						Links.attachmentDownload(oResult.Result.Files[0].Hash));
+				}
+				else
+				{
+					self.downloadAsZipError(true);
+				}
+			}).fail(function () {
+				self.downloadAsZipError(true);
+			});
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 
 	MessageViewMailBoxUserView.prototype.saveToOwnCloud = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading);
+			Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading).then(function (oResult) {
+				if (oResult && oResult.Result)
+				{
+					self.saveToOwnCloudSuccess(true);
+				}
+				else
+				{
+					self.saveToOwnCloudError(true);
+				}
+			}).fail(function () {
+				self.saveToOwnCloudError(true);
+			});
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 
 	MessageViewMailBoxUserView.prototype.saveToDropbox = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aFiles = [], aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading);
+			if (window.Dropbox)
+			{
+				Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading).then(function (oResult) {
+					if (oResult && oResult.Result && oResult.Result.Url && oResult.Result.ShortLife && oResult.Result.Files)
+					{
+						if (window.Dropbox && Utils.isArray(oResult.Result.Files))
+						{
+							_.each(oResult.Result.Files, function (oItem) {
+								aFiles.push({
+									'url': oResult.Result.Url +
+										Links.attachmentDownload(oItem.Hash, oResult.Result.ShortLife),
+									'filename': oItem.FileName
+								});
+							});
+
+							window.Dropbox.save({
+								'files': aFiles,
+								'progress': function () {
+									self.saveToDropboxLoading(true);
+									self.saveToDropboxError(false);
+									self.saveToDropboxSuccess(false);
+								},
+								'cancel': function () {
+									self.saveToDropboxSuccess(false);
+									self.saveToDropboxError(false);
+									self.saveToDropboxLoading(false);
+								},
+								'success': function () {
+									self.saveToDropboxSuccess(true);
+									self.saveToDropboxLoading(false);
+								},
+								'error': function () {
+									self.saveToDropboxError(true);
+									self.saveToDropboxLoading(false);
+								}
+							});
+						}
+						else
+						{
+							self.saveToDropboxError(true);
+						}
+					}
+				}).fail(function () {
+					self.saveToDropboxError(true);
+				});
+			}
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 

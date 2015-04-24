@@ -28,6 +28,17 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	public function GenerateLocalFullFileName($oAccount, $sKey)
+	{
+		return $this->generateFullFileName($oAccount, $sKey, true);
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sKey
 	 * @param resource $rSource
 	 *
 	 * @return bool
@@ -37,7 +48,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$bResult = false;
 		if ($rSource)
 		{
-			$rOpenOutput = @\fopen($this->generateFileName($oAccount, $sKey, true), 'w+b');
+			$rOpenOutput = @\fopen($this->generateFullFileName($oAccount, $sKey, true), 'w+b');
 			if ($rOpenOutput)
 			{
 				$bResult = (false !== \MailSo\Base\Utils::MultipleStreamWriter($rSource, array($rOpenOutput)));
@@ -57,7 +68,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function MoveUploadedFile($oAccount, $sKey, $sSource)
 	{
 		return @\move_uploaded_file($sSource,
-			$this->generateFileName($oAccount, $sKey, true));
+			$this->generateFullFileName($oAccount, $sKey, true));
 	}
 
 	/**
@@ -72,7 +83,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$mResult = false;
 		$bCreate = !!\preg_match('/[wac]/', $sOpenMode);
 
-		$sFileName = $this->generateFileName($oAccount, $sKey, $bCreate);
+		$sFileName = $this->generateFullFileName($oAccount, $sKey, $bCreate);
 		if ($bCreate || \file_exists($sFileName))
 		{
 			$mResult = @\fopen($sFileName, $sOpenMode);
@@ -95,7 +106,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function GetFileName($oAccount, $sKey)
 	{
 		$mResult = false;
-		$sFileName = $this->generateFileName($oAccount, $sKey);
+		$sFileName = $this->generateFullFileName($oAccount, $sKey);
 		if (\file_exists($sFileName))
 		{
 			$mResult = $sFileName;
@@ -113,7 +124,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function Clear($oAccount, $sKey)
 	{
 		$mResult = true;
-		$sFileName = $this->generateFileName($oAccount, $sKey);
+		$sFileName = $this->generateFullFileName($oAccount, $sKey);
 		if (\file_exists($sFileName))
 		{
 			if (isset($this->aResources[$sFileName]) && \is_resource($this->aResources[$sFileName]))
@@ -136,7 +147,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function FileSize($oAccount, $sKey)
 	{
 		$mResult = false;
-		$sFileName = $this->generateFileName($oAccount, $sKey);
+		$sFileName = $this->generateFullFileName($oAccount, $sKey);
 		if (\file_exists($sFileName))
 		{
 			$mResult = \filesize($sFileName);
@@ -153,7 +164,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	 */
 	public function FileExists($oAccount, $sKey)
 	{
-		return @\file_exists($this->generateFileName($oAccount, $sKey));
+		return @\file_exists($this->generateFullFileName($oAccount, $sKey));
 	}
 
 	/**
@@ -198,7 +209,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	 *
 	 * @return string
 	 */
-	private function generateFileName($oAccount, $sKey, $bMkDir = false)
+	private function generateFullFileName($oAccount, $sKey, $bMkDir = false)
 	{
 		$sEmail = $sSubEmail = '';
 		if ($oAccount instanceof \RainLoop\Model\Account)

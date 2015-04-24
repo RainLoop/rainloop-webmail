@@ -1440,7 +1440,7 @@
 		{
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
-			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
+			oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
 
 			window.document.body.appendChild(oScript);
