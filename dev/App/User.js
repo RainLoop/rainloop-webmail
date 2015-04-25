@@ -99,6 +99,12 @@
 
 		window.setTimeout(function () {
 			window.setInterval(function () {
+				Events.pub('interval.2m-after5m');
+			}, 60000 * 2);
+		}, 60000 * 5);
+
+		window.setTimeout(function () {
+			window.setInterval(function () {
 				Events.pub('interval.5m-after5m');
 			}, 60000 * 5);
 		}, 60000 * 5);
@@ -763,7 +769,7 @@
 		var
 			self = this,
 			iUtc = Momentor.momentNowUnix(),
-			aFolders = FolderStore.getNextFolderNames(bBoot)
+			aFolders = FolderStore.getNextFolderNames()
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -833,7 +839,8 @@
 						});
 
 						if (bBoot)
-						{	_.delay(function () {
+						{
+							_.delay(function () {
 								self.folderInformationMultiply(true);
 							}, 2000);
 						}
@@ -1361,7 +1368,7 @@
 							}
 						});
 
-						Events.sub('interval.5m-after5m', function () {
+						Events.sub('interval.2m-after5m', function () {
 							self.folderInformationMultiply();
 						});
 

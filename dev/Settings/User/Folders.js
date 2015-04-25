@@ -28,6 +28,8 @@
 	{
 		this.folderList = FolderStore.folderList;
 
+		this.folderListHelp = ko.observable('').extend({'throttle': 100});
+
 		this.loading = ko.computed(function () {
 
 			var
@@ -95,6 +97,25 @@
 		FolderStore.folderList.error('');
 	};
 
+	FoldersUserSettings.prototype.onBuild = function (oDom)
+	{
+		var self = this;
+		oDom
+			.on('mouseover', '.delete-folder-parent', function () {
+				self.folderListHelp(Translator.i18n('SETTINGS_FOLDERS/HELP_DELETE_FOLDER'));
+			})
+			.on('mouseover', '.subscribe-folder-parent', function () {
+				self.folderListHelp(Translator.i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER'));
+			})
+			.on('mouseover', '.check-folder-parent', function () {
+				self.folderListHelp(Translator.i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER_COUNT'));
+			})
+			.on('mouseout', '.subscribe-folder-parent, .check-folder-parent, .delete-folder-parent', function () {
+				self.folderListHelp('');
+			})
+		;
+	};
+
 	FoldersUserSettings.prototype.createFolder = function ()
 	{
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/FolderCreate'));
@@ -158,6 +179,20 @@
 		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, false);
 
 		oFolder.subScribed(false);
+	};
+
+	FoldersUserSettings.prototype.checkableTrueFolder = function (oFolder)
+	{
+		Remote.folderSetCheckable(Utils.emptyFunction, oFolder.fullNameRaw, true);
+
+		oFolder.checkable(true);
+	};
+
+	FoldersUserSettings.prototype.checkableFalseFolder = function (oFolder)
+	{
+		Remote.folderSetCheckable(Utils.emptyFunction, oFolder.fullNameRaw, false);
+
+		oFolder.checkable(false);
 	};
 
 	module.exports = FoldersUserSettings;

@@ -710,6 +710,19 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {boolean} bCheckable
+	 */
+	RemoteUserAjax.prototype.folderSetCheckable = function (fCallback, sFolderFullNameRaw, bCheckable)
+	{
+		this.defaultRequest(fCallback, 'FolderCheckable', {
+			'Folder': sFolderFullNameRaw,
+			'Checkable': bCheckable ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
 	 * @param {string} sFolder
 	 * @param {string} sToFolder
 	 * @param {Array} aUids

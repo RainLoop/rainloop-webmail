@@ -5480,12 +5480,12 @@ class Actions
 	{
 		$this->initMailClientConnection();
 
-		$sFolderNameInUtf = $this->GetActionParam('Folder', '');
+		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
 
 		try
 		{
-			$this->MailClient()->FolderSubscribe($sFolderNameInUtf, !!$bSubscribe);
+			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, !!$bSubscribe);
 		}
 		catch (\Exception $oException)
 		{
@@ -5500,6 +5500,51 @@ class Actions
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoFolderCheckable()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
+		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
+
+		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+		$sCheckableFolder = $oSettingsLocal->GetConf('CheckableFolder', '[]');
+		$aCheckableFolder = @\json_decode($sCheckableFolder);
+
+		if (!\is_array($aCheckableFolder))
+		{
+			$aCheckableFolder = array();
+		}
+
+		if ($bCheckable)
+		{
+			$aCheckableFolder[] = $sFolderFullNameRaw;
+		}
+		else
+		{
+			$aCheckableFolderNew = array();
+			foreach ($aCheckableFolder as $sFolder)
+			{
+				if ($sFolder !== $sFolderFullNameRaw)
+				{
+					$aCheckableFolderNew[] = $sFolder;
+				}
+			}
+			$aCheckableFolder = $aCheckableFolderNew;
+		}
+
+		$aCheckableFolder = \array_unique($aCheckableFolder);
+
+		$oSettingsLocal->SetConf('CheckableFolder', @\json_encode($aCheckableFolder));
+
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
 	/**
@@ -9306,9 +9351,41 @@ class Actions
 		if (\is_object($mResponse))
 		{
 			$bHook = true;
+			$self = $this;
 			$sClassName = \get_class($mResponse);
 			$bHasSimpleJsonFunc = \method_exists($mResponse, 'ToSimpleJSON');
 			$bThumb = $this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
+
+			$oAccountCache = null;
+			$fGetAccount = function () use ($self, &$oAccountCache) {
+				if (null === $oAccountCache)
+				{
+					$oAccount = $self->getAccountFromToken(false);
+					$oAccountCache = $oAccount;
+				}
+
+				return $oAccountCache;
+			};
+
+			$aCheckableFoldersCache = null;
+			$fGetCheckableFolder = function () use ($self, &$aCheckableFoldersCache) {
+				if (null === $aCheckableFoldersCache)
+				{
+					$oAccount = $self->getAccountFromToken(false);
+
+					$oSettingsLocal = $self->SettingsProvider(true)->Load($oAccount);
+					$sCheckable = $oSettingsLocal->GetConf('CheckableFolder', '[]');
+					$aCheckable = @\json_decode($sCheckable);
+					if (!\is_array($aCheckable))
+					{
+						$aCheckable = array();
+					}
+
+					$aCheckableFoldersCache = $aCheckable;
+				}
+
+				return $aCheckableFoldersCache;
+			};
 
 			if ($bHasSimpleJsonFunc)
 			{
@@ -9316,7 +9393,7 @@ class Actions
 			}
 			else if ('MailSo\Mail\Message' === $sClassName)
 			{
-				$oAccount = $this->getAccountFromToken(false);
+				$oAccount = call_user_func($fGetAccount);
 
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
@@ -9591,6 +9668,12 @@ class Actions
 					);
 				}
 
+				$aCheckableFolder = \call_user_func($fGetCheckableFolder);
+				if (!\is_array($aCheckableFolder))
+				{
+					$aCheckableFolder = array();
+				}
+
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => $mResponse->Name(),
 					'FullName' => $mResponse->FullName(),
@@ -9602,6 +9685,7 @@ class Actions
 					'IsExists' => $mResponse->IsExists(),
 					'IsSelectable' => $mResponse->IsSelectable(),
 					'Flags' => $mResponse->FlagsLowerCase(),
+					'Checkable' => \in_array($mResponse->FullNameRaw(), $aCheckableFolder),
 					'Extended' => $aExtended,
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				));

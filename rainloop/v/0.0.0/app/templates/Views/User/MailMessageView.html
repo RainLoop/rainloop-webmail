@@ -377,7 +377,9 @@
 											<i class="icon-file-zip" data-bind="visible: !downloadAsZipError(),
 												css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner animated': downloadAsZipLoading()}"></i>
 											&nbsp;&nbsp;
-											<span class="g-ui-link" data-bind="click: downloadAsZip">Download as zip</span>
+											<span class="g-ui-link" data-bind="click: downloadAsZip">
+												<span class="i18n" data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
+											</span>
 										</span>
 
 										<span data-bind="visible: saveToOwnCloudAllowed">
@@ -387,7 +389,9 @@
 											<i class="icon-cloud-up" data-bind="visible: !saveToOwnCloudSuccess() && !saveToOwnCloudError(),
 												css: {'icon-cloud-up': !saveToOwnCloudLoading(), 'icon-spinner animated': saveToOwnCloudLoading()}"></i>
 											&nbsp;&nbsp;
-											<span class="g-ui-link" data-bind="click: saveToOwnCloud">Save to ownCloud</span>
+											<span class="g-ui-link" data-bind="click: saveToOwnCloud">
+												<span class="i18n" data-i18n="MESSAGE/LINK_SAVE_TO_OWNCLOUD"></span>
+											</span>
 										</span>
 
 										<span data-bind="visible: saveToDropboxAllowed">
@@ -397,7 +401,9 @@
 											<i class="icon-dropbox" data-bind="visible: !saveToDropboxSuccess() && !saveToDropboxError(),
 												css: {'icon-dropbox': !saveToDropboxLoading(), 'icon-spinner animated': saveToDropboxLoading()}"></i>
 											&nbsp;&nbsp;
-											<span class="g-ui-link" data-bind="click: saveToDropbox">Save to Dropbox</span>
+											<span class="g-ui-link" data-bind="click: saveToDropbox">
+												<span class="i18n" data-i18n="MESSAGE/LINK_SAVE_TO_DROPBOX"></span>
+											</span>
 										</span>
 
 										<!-- // --->
