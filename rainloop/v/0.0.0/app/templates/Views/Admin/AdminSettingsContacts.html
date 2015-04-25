@@ -26,9 +26,16 @@
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_CONTACTS/LABEL_STORAGE_TYPE"></label>
 			<div class="controls">
-				<select data-bind="options: contactsTypesOptions, value: mainContactsType,
-					optionsText: 'name', optionsValue: 'id', optionsAfterRender: defautOptionsAfterRender, saveTrigger: contactsTypeTrigger"></select>
-				<div data-bind="saveTrigger: contactsTypeTrigger"></div>
+				<div data-bind="component: {
+					name: 'Select',
+					params: {
+						options: contactsTypesOptions,
+						value: mainContactsType,
+						trigger: contactsTypeTrigger,
+						optionsText: 'name',
+						optionsValue: 'id'
+					}
+				}"></div>
 			</div>
 		</div>
 		<br />

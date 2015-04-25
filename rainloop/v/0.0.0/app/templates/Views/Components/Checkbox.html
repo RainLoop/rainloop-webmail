@@ -1,10 +1,10 @@
-<label class="e-component e-checkbox inline" data-bind="click: click, css: { 'disabled': disable() || !enable() }">
-	<i data-bind="css: value() ?
+<span class="e-component e-checkbox inline" tabindex="0" data-bind="click: click, keypress: keypress, css: { 'disabled': disable() || !enable() }">
+	<i role="checkbox" class="e-checkbox-icon" data-bind="css: value() ?
 	   (inverted ? 'icon-checkbox-unchecked' : 'icon-checkbox-checked') :
 	   (inverted ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked')
 	"></i>
 <!-- ko if: labeled -->
 	&nbsp;&nbsp;
-	<span class="sub-label i18n" data-bind="attr: {'data-i18n': label}"></span>
+	<span class="sub-label i18n" data-bind="attr: {'data-i18n': label}, css: {'i18n-animation': labelAnimated}"></span>
 <!-- /ko -->
-</label>
+</span>

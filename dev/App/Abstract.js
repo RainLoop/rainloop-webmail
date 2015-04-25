@@ -284,14 +284,17 @@
 
 		ko.components.register('x-script', require('Component/Script'));
 
-		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
+		if (/**false && /**/Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
+			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
 		}
 		else
 		{
 //			ko.components.register('Checkbox', require('Component/Classic/Checkbox'));
+//			ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox'));
 			ko.components.register('Checkbox', require('Component/Checkbox'));
+			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
 		}
 
 		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);

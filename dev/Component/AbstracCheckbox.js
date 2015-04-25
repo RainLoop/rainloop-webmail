@@ -48,11 +48,19 @@
 		this.inverted = Utils.isUnd(oParams.inverted) ? false : !!oParams.inverted;
 
 		this.labeled = !Utils.isUnd(oParams.label);
+		this.labelAnimated = !!oParams.labelAnimated;
 	}
 
 	_.extend(AbstracCheckbox.prototype, AbstractComponent.prototype);
 
 	AbstracCheckbox.prototype.click = function() {
+		if (!this.readOnly && this.enable() && !this.disable())
+		{
+			this.value(!this.value());
+		}
+	};
+
+	AbstracCheckbox.prototype.keypress = function() {
 		if (!this.readOnly && this.enable() && !this.disable())
 		{
 			this.value(!this.value());

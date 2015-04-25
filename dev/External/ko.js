@@ -317,6 +317,18 @@
 		}
 	};
 
+	ko.bindingHandlers.keypress = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keypress.koKeyPress', function (oEvent) {
+				fValueAccessor().call(oViewModel, oEvent);
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koKeyPress');
+			});
+		}
+	};
+
 	ko.bindingHandlers.onEnter = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keypress.koOnEnter', function (oEvent) {
@@ -329,6 +341,21 @@
 
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 				$(oElement).off('keypress.koOnEnter');
+			});
+		}
+	};
+
+	ko.bindingHandlers.onTab = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keydown.koOnTab', function (oEvent) {
+				if (oEvent && 9 === window.parseInt(oEvent.keyCode, 10))
+				{
+					return fValueAccessor().call(oViewModel, !!oEvent.shiftKey);
+				}
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keydown.koOnTab');
 			});
 		}
 	};

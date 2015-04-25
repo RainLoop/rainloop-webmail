@@ -467,6 +467,21 @@
 		]);
 	};
 
+	LoginUserView.prototype.selectLanguageOnTab = function (bShift)
+	{
+		if (!bShift)
+		{
+			var self = this;
+			_.delay(function () {
+				self.emailFocus(true);
+			}, 5);
+
+			return false;
+		}
+
+		return true;
+	};
+
 	module.exports = LoginUserView;
 
 }());

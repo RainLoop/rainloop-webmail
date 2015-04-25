@@ -37,13 +37,36 @@
 
 .e-component {
 
+	&.e-select {
+
+		select:focus {
+			outline: 1px;
+			outline-style: dotted;
+		}
+	}
+
 	&.e-checkbox {
 
+		margin-bottom: 6px;
+		margin-left: -2px;
+		padding: 2px;
+
 		cursor: pointer;
+
+		&:focus {
+			outline: 1px;
+			outline-style: dotted;
+		}
+
+		.e-checkbox-icon {
+			padding: 1px 0 0 1px;
+		}
 
 		&.disabled {
 			cursor: default;
 			color: #999;
+			outline: 0;
+			outline-style: none;
 		}
 	}
 
@@ -60,10 +83,11 @@
 
 .e-component.material-design {
 
-	margin-top: 2px;
-	margin-bottom: 6px;
 
 	&.e-checkbox {
+
+		margin-top: 2px;
+		padding: 2px 2px 1px 2px;
 
 		.sub-checkbox-container {
 			display: inline-block;

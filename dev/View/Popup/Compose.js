@@ -525,7 +525,6 @@
 			if (window.Dropbox)
 			{
 				window.Dropbox.choose({
-					//'iframe': true,
 					'success': function(aFiles) {
 
 						if (aFiles && aFiles[0] && aFiles[0]['link'])
@@ -1436,7 +1435,7 @@
 		Events.sub('window.resize.real', this.resizerTrigger);
 		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, 50));
 
-		if (this.dropboxEnabled())
+		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 		{
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
