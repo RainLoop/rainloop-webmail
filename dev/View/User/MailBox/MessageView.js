@@ -582,9 +582,10 @@
 		if (this.pswpDom)
 		{
 			oDom
-				.on('click', '.attachmentImagePreview[data-index]', function (oEvent) {
+				.on('click', '.attachmentImagePreview.visible', function (oEvent) {
 
 					var
+						iIndex = 0,
 						oPs = null,
 						oEl = oEvent.currentTarget || null,
 						aItems = []
@@ -601,14 +602,18 @@
 //						}
 					;
 
-					oDom.find('.attachmentImagePreview[data-index]').each(function (index, oSubElement) {
+					oDom.find('.attachmentImagePreview.visible').each(function (index, oSubElement) {
 
 						var
 							$oItem = $(oSubElement)
 						;
 
+						if (oEl === oSubElement)
+						{
+							iIndex = index;
+						}
+
 						aItems.push({
-//							'el': $oItem,
 							'w': 600, 'h': 400,
 							'src': $oItem.attr('href'),
 							'title': $oItem.attr('title') || ''
@@ -620,7 +625,7 @@
 						Globals.useKeyboardShortcuts(false);
 
 						oPs = new PhotoSwipe(self.pswpDom, PhotoSwipeUI_Default, aItems, {
-							'index': Utils.pInt($(oEl).data('index')),
+							'index': iIndex,
 							'bgOpacity': 0.85,
 							'loadingIndicatorDelay': 500,
 							'errorMsg': '<div class="pswp__error-msg">' + sErrorMessage + '</div>',

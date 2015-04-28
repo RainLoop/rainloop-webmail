@@ -332,7 +332,7 @@
 														</div>
 													</div>
 													<div class="showPreview">
-														<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: { 'title': fileName, 'href': linkPreviewMain(), 'data-index': $index }" target="_blank">
+														<a data-bind="css: {'attachmentImagePreview': isImage(), 'visible': !isLinked}, attr: { 'title': fileName, 'href': linkPreviewMain() }" target="_blank">
 															<div class="iconMain">
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
 																<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText()"></i>
