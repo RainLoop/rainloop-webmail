@@ -127,6 +127,35 @@
 
 <div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
 	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogo,
+					trigger: userLogo.trigger,
+					placeholder: 'https://',
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO_TITLE"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogoTitle,
+					trigger: userLogoTitle.trigger,
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_CUSTOM_CSS"></label>
 		<div class="controls">
 			<div class="custom-css-wrapper" data-bind="component: {

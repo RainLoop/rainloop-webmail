@@ -1299,6 +1299,7 @@ class Actions
 			'LoginBackground' => '',
 			'LoginCss' => '',
 			'UserLogo' => '',
+			'UserLogoTitle' => '',
 			'UserCss' => '',
 			'WelcomePageUrl' => '',
 			'WelcomePageDisplay' => 'none',
@@ -1390,6 +1391,7 @@ class Actions
 			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
 			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
 			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
+			$aResult['UserLogoTitle'] = $oConfig->Get('branding', 'user_logo_title', '');
 			$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
 			$aResult['WelcomePageUrl'] = $oConfig->Get('branding', 'welcome_page_url', '');
 			$aResult['WelcomePageDisplay'] = \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none'));
@@ -3531,7 +3533,7 @@ class Actions
 
 		if ($this->HasOneOfActionParams(array(
 			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered',
-			'UserLogo', 'UserCss',
+			'UserLogo', 'UserLogoTitle', 'UserCss',
 			'WelcomePageUrl', 'WelcomePageDisplay'
 		)) && $this->PremType())
 		{
@@ -3542,6 +3544,7 @@ class Actions
 			$this->setConfigFromParams($oConfig, 'LoginPowered', 'branding', 'login_powered', 'bool');
 
 			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'UserLogoTitle', 'branding', 'user_logo_title', 'string');
 			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
 
 			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');

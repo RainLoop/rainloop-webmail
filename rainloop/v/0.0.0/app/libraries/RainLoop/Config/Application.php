@@ -89,6 +89,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_css'			=> array(''),
 				'login_powered'		=> array(true),
 				'user_logo'			=> array(''),
+				'user_logo_title'	=> array(''),
 				'user_css'			=> array(''),
 				'welcome_page_url'		=> array(''),
 				'welcome_page_display'	=> array('none')

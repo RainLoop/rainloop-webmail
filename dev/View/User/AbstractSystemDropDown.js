@@ -30,6 +30,9 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
+		this.logoImg = Utils.trim(Settings.settingsGet('UserLogo'));
+		this.logoTitle = Utils.trim(Settings.settingsGet('UserLogoTitle'));
+
 		this.currentAudio = AppStore.currentAudio;
 
 		this.accountEmail = AccountStore.email;

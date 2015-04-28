@@ -39,6 +39,9 @@
 		this.userLogo = ko.observable(Settings.settingsGet('UserLogo') || '');
 		this.userLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
+		this.userLogoTitle = ko.observable(Settings.settingsGet('UserLogoTitle') || '');
+		this.userLogoTitle.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
 		this.loginDescription = ko.observable(Settings.settingsGet('LoginDescription'));
 		this.loginDescription.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -78,60 +81,67 @@
 			_.delay(function () {
 
 				var
-					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
-					f4 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
-					f5 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self),
-					f6 = Utils.settingsSaveHelperSimpleFunction(self.userLogo.trigger, self),
-					f7 = Utils.settingsSaveHelperSimpleFunction(self.loginBackground.trigger, self),
-					f8 = Utils.settingsSaveHelperSimpleFunction(self.userCss.trigger, self),
-					f9 = Utils.settingsSaveHelperSimpleFunction(self.welcomePageUrl.trigger, self),
-					f10 = Utils.settingsSaveHelperSimpleFunction(self.welcomePageDisplay.trigger, self)
+					f1 = Utils.settingsSaveHelperSimpleFunction(self.loginLogo.trigger, self),
+					f2 = Utils.settingsSaveHelperSimpleFunction(self.loginDescription.trigger, self),
+					f3 = Utils.settingsSaveHelperSimpleFunction(self.loginCss.trigger, self),
+					f4 = Utils.settingsSaveHelperSimpleFunction(self.userLogo.trigger, self),
+					f5 = Utils.settingsSaveHelperSimpleFunction(self.userLogoTitle.trigger, self),
+					f6 = Utils.settingsSaveHelperSimpleFunction(self.loginBackground.trigger, self),
+					f7 = Utils.settingsSaveHelperSimpleFunction(self.userCss.trigger, self),
+					f8 = Utils.settingsSaveHelperSimpleFunction(self.welcomePageUrl.trigger, self),
+					f9 = Utils.settingsSaveHelperSimpleFunction(self.welcomePageDisplay.trigger, self)
 				;
 
 				self.loginLogo.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f3, {
+					Remote.saveAdminConfig(f1, {
 						'LoginLogo': Utils.trim(sValue)
 					});
 				});
 
-				self.loginBackground.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f7, {
-						'LoginBackground': Utils.trim(sValue)
-					});
-				});
-
-				self.userLogo.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f6, {
-						'UserLogo': Utils.trim(sValue)
-					});
-				});
-
 				self.loginDescription.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f4, {
+					Remote.saveAdminConfig(f2, {
 						'LoginDescription': Utils.trim(sValue)
 					});
 				});
 
 				self.loginCss.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f5, {
+					Remote.saveAdminConfig(f3, {
 						'LoginCss': Utils.trim(sValue)
 					});
 				});
 
+				self.userLogo.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f4, {
+						'UserLogo': Utils.trim(sValue)
+					});
+				});
+
+				self.userLogoTitle.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f5, {
+						'UserLogoTitle': Utils.trim(sValue)
+					});
+				});
+
+				self.loginBackground.subscribe(function (sValue) {
+					Remote.saveAdminConfig(f6, {
+						'LoginBackground': Utils.trim(sValue)
+					});
+				});
+
 				self.userCss.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f8, {
+					Remote.saveAdminConfig(f7, {
 						'UserCss': Utils.trim(sValue)
 					});
 				});
 
 				self.welcomePageUrl.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f9, {
+					Remote.saveAdminConfig(f8, {
 						'WelcomePageUrl': Utils.trim(sValue)
 					});
 				});
 
 				self.welcomePageDisplay.subscribe(function (sValue) {
-					Remote.saveAdminConfig(f10, {
+					Remote.saveAdminConfig(f9, {
 						'WelcomePageDisplay': Utils.trim(sValue)
 					});
 				});
