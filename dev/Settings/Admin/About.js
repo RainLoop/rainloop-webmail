@@ -35,6 +35,7 @@
 		this.coreVersionCompare = CoreStore.coreVersionCompare;
 
 		this.coreRemoteVersionHtmlDesc = ko.computed(function () {
+			Translator.trigger();
 			return Translator.i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
 		}, this);
 

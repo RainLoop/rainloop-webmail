@@ -15,7 +15,7 @@ class TestSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
 	{
 		return array(
 			array($oAccount->Email(), ''),
-			array('xxx@xxx', 'xxx')
+			array('email@domain.com', 'name')
 		);
 	}
 }
