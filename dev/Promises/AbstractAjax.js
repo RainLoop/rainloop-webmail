@@ -12,6 +12,7 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Plugins = require('Common/Plugins'),
 
 		Settings = require('Storage/Settings'),
 
@@ -71,6 +72,8 @@
 			oParameters['XToken'] = Settings.settingsGet('Token');
 		}
 
+		Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
+
 		this.setTrigger(fTrigger, true);
 
 		oH = $.ajax({
@@ -83,11 +86,25 @@
 			'global': true
 		}).always(function (oData, sTextStatus) {
 
-			var bCached = false;
+			var bCached = false, sType = Enums.StorageResultType.Error;
 			if (oData && oData['Time'])
 			{
 				bCached = Utils.pInt(oData['Time']) > Utils.microtime() - iStart;
 			}
+
+			// backward capability
+			switch (true)
+			{
+				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
+					sType = Enums.StorageResultType.Success;
+					break;
+				case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
+					sType = Enums.StorageResultType.Abort;
+					break;
+			}
+
+			Plugins.runHook('ajax-default-response', [sAction,
+				Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oParameters]);
 
 			if ('success' === sTextStatus)
 			{

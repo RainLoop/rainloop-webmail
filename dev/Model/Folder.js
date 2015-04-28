@@ -285,8 +285,7 @@
 		});
 
 		this.hasUnreadMessages = ko.computed(function () {
-			return 0 < this.messageCountUnread() &&
-				(this.isSystemFolder() || this.checkable());
+			return 0 < this.messageCountUnread();
 		}, this);
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function () {

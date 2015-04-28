@@ -570,8 +570,8 @@ gulp.task('owncloud', ['rainloop:owncloud:copy',
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
-	gulp.watch(cfg.paths.globjs, {interval: 500}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.less.main.watch, {interval: 500}, ['css:main']);
+	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
 });
 
 // ALIASES
