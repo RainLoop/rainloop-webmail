@@ -133,7 +133,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'capa' => array(
 				'filters' => array(true),
-				'templates' => array(true)
+				'templates' => array(true),
+				'attachments_actions' => array(true)
 			),
 
 			'login' => array(
@@ -185,6 +186,8 @@ Values:
 
 				'hide_passwords' => array(true, 'Required for development purposes only.
 Disabling this option is not recommended.'),
+
+				'time_offset' => array(0),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
@@ -282,7 +285,6 @@ Enables caching in the system'),
 				'use_app_debug_js' => array(false),
 				'use_app_debug_css' => array(false),
 				'use_imap_sort' => array(true),
-				'use_imap_esearch_esort' => array(true),
 				'use_imap_force_selection' => array(false),
 				'use_imap_list_subscribe' => array(true),
 				'use_imap_thread' => array(true),
@@ -301,6 +303,7 @@ Enables caching in the system'),
 				'smtp_show_server_errors' => array(false),
 				'sieve_allow_raw_script' => array(false),
 				'sieve_utf8_folder_name' => array(true),
+				'owncloud_save_folder' => array('Attachments'),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),

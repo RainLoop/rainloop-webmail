@@ -18,15 +18,20 @@
 		<div class="dateParent actionHandle dragHandle">
 			<span class="date" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></span>
 		</div>
+		<div class="threadsParent" data-bind="visible: 1 < threadsLen()">
+			<span class="threads-len">
+				<span class="threads-len-data">
+					<span data-bind="text: threadsLen"></span>
+					<i class="icon-right-mini"></i>
+				</span>
+			</span>
+		</div>
 		<div class="checkedParent">
 			<i class="checkboxMessage" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
 		</div>
 		<div class="senderParent actionHandle dragHandle">
 			<span class="replyFlag"><i class="icon-reply"></i>&nbsp;</span>
 			<span class="forwardFlag"><i class="icon-forward"></i>&nbsp;</span>
-			<span class="threads-len" data-bind="visible: 1 < threadsLen()">
-				<span class="threads-len-data" data-bind="text: threadsLen"></span>
-			</span>
 			<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
 			&nbsp;
 		</div>

@@ -31,6 +31,8 @@
 
 		this.resize = _.throttle(_.bind(this.resize, this), 100);
 
+		this.__inited = false;
+
 		this.init();
 	}
 
@@ -190,7 +192,7 @@
 
 	HtmlEditor.prototype.setHtml = function (sHtml, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(true);
 
@@ -207,7 +209,7 @@
 
 	HtmlEditor.prototype.setPlain = function (sPlain, bFocus)
 	{
-		if (this.editor)
+		if (this.editor && this.__inited)
 		{
 			this.modeToggle(false);
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
@@ -259,24 +261,13 @@
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
-					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_BR;
+					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
 					oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 					if (window.CKEDITOR.env)
 					{
 						window.CKEDITOR.env.isCompatible = true;
 					}
-
-//					oConfig.allowedContent = {
-//						$1: {
-//							elements: window.CKEDITOR.dtd,
-//							attributes: true,
-//							styles: true,
-//							classes: true
-//						}
-//					};
-//
-//					oConfig.disallowedContent = 'script; style; iframe; frame; *[on*]';
 
 					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
 
@@ -307,24 +298,29 @@
 						self.focusTrigger();
 					});
 
-					if (self.fOnReady)
-					{
-						self.editor.on('instanceReady', function () {
+					self.editor.on('instanceReady', function () {
 
-							if (self.editor.removeMenuItem)
-							{
-								self.editor.removeMenuItem('cut');
-								self.editor.removeMenuItem('copy');
-								self.editor.removeMenuItem('paste');
-							}
+						if (self.editor.removeMenuItem)
+						{
+							self.editor.removeMenuItem('cut');
+							self.editor.removeMenuItem('copy');
+							self.editor.removeMenuItem('paste');
+						}
 
-							self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
+						self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
 
+
+						self.__resizable = true;
+						self.__inited = true;
+
+						self.resize();
+
+						if (self.fOnReady)
+						{
 							self.fOnReady();
-							self.__resizable = true;
-							self.resize();
-						});
-					}
+						}
+
+					});
 				}
 			;
 

@@ -142,7 +142,7 @@
 
 	NotificationUserStore.prototype.initNotificationPlayer = function ()
 	{
-		if (Audio && Audio.supported)
+		if (Audio && Audio.supportedNotification)
 		{
 			this.soundNotificationIsSupported(true);
 		}
@@ -155,7 +155,7 @@
 
 	NotificationUserStore.prototype.playSoundNotification = function (bSkipSetting)
 	{
-		if (Audio && Audio.supported && (bSkipSetting ? true : this.enableSoundNotification()))
+		if (Audio && Audio.supportedNotification && (bSkipSetting ? true : this.enableSoundNotification()))
 		{
 			Audio.playNotification();
 		}

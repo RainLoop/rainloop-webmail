@@ -181,13 +181,10 @@
 	};
 
 	/**
-	 * @param {boolean=} bBoot = false
-	 * @returns {Array}
+	 * @return {Array}
 	 */
-	FolderUserStore.prototype.getNextFolderNames = function (bBoot)
+	FolderUserStore.prototype.getNextFolderNames = function ()
 	{
-		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
-
 		var
 			aResult = [],
 			iLimit = 5,
@@ -200,7 +197,8 @@
 					if (oFolder && sInboxFolderName !== oFolder.fullNameRaw &&
 						oFolder.selectable && oFolder.existen &&
 						iTimeout > oFolder.interval &&
-						(!bBoot || oFolder.subScribed()))
+						(oFolder.isSystemFolder() || (oFolder.subScribed() && oFolder.checkable()))
+					)
 					{
 						aTimeouts.push([oFolder.interval, oFolder.fullNameRaw]);
 					}
@@ -236,7 +234,9 @@
 			return iLimit <= aResult.length;
 		});
 
-		return _.uniq(aResult);
+		aResult = _.uniq(aResult);
+
+		return aResult;
 	};
 
 	module.exports = new FolderUserStore();

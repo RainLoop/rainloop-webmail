@@ -9,9 +9,20 @@
 	;
 
 	Opentip.styles.rainloop = {
+
 		'extends': 'standard',
+
 		'fixed': true,
 		'target': true,
+
+		'delay': 0.2,
+		'hideDelay': 0,
+
+		'hideEffect': 'fade',
+		'hideEffectDuration': 0.2,
+
+		'showEffect': 'fade',
+		'showEffectDuration': 0.2,
 
 		'showOn': 'mouseover click',
 		'removeElementsOnHide': true,
@@ -26,8 +37,7 @@
 
 	Opentip.styles.rainloopTip = {
 		'extends': 'rainloop',
-		'stemLength': 3,
-		'stemBase': 5,
+		'delay': 0.4,
 		'group': 'rainloopTips'
 	};
 

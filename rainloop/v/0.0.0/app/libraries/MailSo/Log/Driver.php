@@ -83,6 +83,8 @@ abstract class Driver
 		$this->bTypedPrefix = true;
 		$this->bGuidPrefix = true;
 
+		$this->iTimeOffset = 0;
+
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
 		$this->bWriteOnPhpErrorOnly = false;
@@ -104,6 +106,17 @@ abstract class Driver
 			\MailSo\Log\Enumerations\Type::WARNING_PHP => '[WARNING]',
 			\MailSo\Log\Enumerations\Type::ERROR_PHP => '[ERROR]',
 		);
+	}
+
+	/**
+	 * @param int $iTimeOffset
+	 *
+	 * @return \MailSo\Log\Driver
+	 */
+	public function SetTimeOffset($iTimeOffset)
+	{
+		$this->iTimeOffset = $iTimeOffset;
+		return $this;
 	}
 
 	/**
@@ -217,7 +230,7 @@ abstract class Driver
 	protected function getTimeWithMicroSec()
 	{
 		$aMicroTimeItems = \explode(' ', \microtime());
-		return \gmdate($this->sDatePattern, $aMicroTimeItems[1]).'.'.
+		return \MailSo\Log\Logger::DateHelper($this->sDatePattern, $this->iTimeOffset, $aMicroTimeItems[1]).'.'.
 			\str_pad((int) ($aMicroTimeItems[0] * 1000), 3, '0', STR_PAD_LEFT);
 	}
 
@@ -247,7 +260,7 @@ abstract class Driver
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{
 			$bErrorPhp = false;
-			
+
 			$bError = $this->bWriteOnErrorOnly && \in_array($iType, array(
 				\MailSo\Log\Enumerations\Type::NOTICE,
 				\MailSo\Log\Enumerations\Type::NOTICE_PHP,

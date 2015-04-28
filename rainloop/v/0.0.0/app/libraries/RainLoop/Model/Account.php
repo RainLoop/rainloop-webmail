@@ -362,7 +362,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 			\RainLoop\Utils::GetShortToken(),	// 7
 			$this->sProxyAuthUser,				// 8
 			$this->sProxyAuthPassword,			// 9
-			0									// 10
+			0									// 10 // timelife
 		));
 	}
 

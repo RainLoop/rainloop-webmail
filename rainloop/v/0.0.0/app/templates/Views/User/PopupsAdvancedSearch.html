@@ -54,15 +54,15 @@
 								<span class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE"></span>
 							</label>
 							<div class="controls">
-								<select data-bind="value: selectedDateValue">
-									<option value="-1" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_ALL"></option>
-									<option value="3" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_3_DAYS"></option>
-									<option value="7" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_7_DAYS"></option>
-									<option value="30" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_MONTH"></option>
-									<option value="90" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_3_MONTHS"></option>
-									<option value="180" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_6_MONTHS"></option>
-									<option value="365" class="i18n" data-i18n="SEARCH/LABEL_ADV_DATE_YEAR"></option>
-								</select>
+								<div data-bind="component: {
+									name: 'Select',
+									params: {
+										options: selectedDates,
+										value: selectedDateValue,
+										optionsText: 'name',
+										optionsValue: 'id'
+									}
+								}"></div>
 							</div>
 						</div>
 						<div class="control-group">

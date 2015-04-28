@@ -170,8 +170,6 @@
 							Globals.popupVisibilityNames.push(this.viewModelName);
 							oViewModel.viewModelDom.css('z-index', 3000 + Globals.popupVisibilityNames().length + 10);
 
-//							Utils.delegateRun(this, 'onShow'); // moved to showScreenPopup function (for parameters)
-
 							if (this.onShowTrigger)
 							{
 								this.onShowTrigger(!this.onShowTrigger());
@@ -257,6 +255,8 @@
 
 			if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
 			{
+				Utils.delegateRun(ViewModelClassToShow.__vm, 'onBeforeShow', aParameters || []);
+
 				ViewModelClassToShow.__vm.modalVisibility(true);
 
 				Utils.delegateRun(ViewModelClassToShow.__vm, 'onShow', aParameters || []);
@@ -383,6 +383,8 @@
 								if (ViewModelClass.__vm && ViewModelClass.__dom &&
 									'Popups' !== ViewModelClass.__vm.viewModelPosition())
 								{
+									Utils.delegateRun(ViewModelClass.__vm, 'onBeforeShow');
+
 									ViewModelClass.__dom.show();
 									ViewModelClass.__vm.viewModelVisibility(true);
 

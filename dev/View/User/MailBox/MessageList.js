@@ -62,6 +62,7 @@
 		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
 		this.isMessageSelected = MessageStore.isMessageSelected;
 		this.messageListSearch = MessageStore.messageListSearch;
+		this.messageListThreadUid = MessageStore.messageListThreadUid;
 		this.messageListError = MessageStore.messageListError;
 		this.folderMenuForMove = FolderStore.folderMenuForMove;
 
@@ -69,6 +70,7 @@
 
 		this.mainMessageListSearch = MessageStore.mainMessageListSearch;
 		this.messageListEndFolder = MessageStore.messageListEndFolder;
+		this.messageListEndThreadUid = MessageStore.messageListEndThreadUid;
 
 		this.messageListChecked = MessageStore.messageListChecked;
 		this.messageListCheckedOrSelected = MessageStore.messageListCheckedOrSelected;
@@ -374,7 +376,7 @@
 	};
 
 	/**
-	 * @returns {string}
+	 * @return {string}
 	 */
 	MessageListMailBoxUserView.prototype.printableMessageCountForDeletion = function ()
 	{
@@ -386,6 +388,15 @@
 	{
 		this.mainMessageListSearch('');
 		this.inputMessageListSearchFocus(false);
+	};
+
+	MessageListMailBoxUserView.prototype.cancelThreadUid = function ()
+	{
+		kn.setHash(Links.mailBox(
+			FolderStore.currentFolderFullNameHash(),
+			MessageStore.messageListPageBeforeThread(),
+			MessageStore.messageListSearch()
+		));
 	};
 
 	/**
@@ -611,9 +622,32 @@
 			kn.setHash(Links.mailBox(
 				FolderStore.currentFolderFullNameHash(),
 				oPage.value,
-				MessageStore.messageListSearch()
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
 			));
 		}
+	};
+
+	MessageListMailBoxUserView.prototype.gotoThread = function (oMessage)
+	{
+		if (oMessage && 0 < oMessage.threadsLen())
+		{
+			MessageStore.messageListPageBeforeThread(MessageStore.messageListPage());
+
+			kn.setHash(Links.mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				1,
+				MessageStore.messageListSearch(),
+				oMessage.uid
+			));
+		}
+	};
+
+	MessageListMailBoxUserView.prototype.clearListIsVisible = function ()
+	{
+		return '' === this.messageListSearchDesc() && '' === this.messageListError() &&
+			'' === MessageStore.messageListEndThreadUid() &&
+			0 < this.messageList().length && (this.isSpamFolder() || this.isTrashFolder());
 	};
 
 	MessageListMailBoxUserView.prototype.onBuild = function (oDom)
@@ -640,6 +674,12 @@
 			})
 			.on('click', '.messageList .messageListItem .flagParent', function () {
 				self.flagMessages(ko.dataFor(this));
+			})
+			.on('click', '.messageList .messageListItem .threads-len', function () {
+				self.gotoThread(ko.dataFor(this));
+			})
+			.on('dblclick', '.messageList .messageListItem .actionHandle', function () {
+				self.gotoThread(ko.dataFor(this));
 			})
 		;
 
@@ -723,6 +763,22 @@
 			return false;
 		});
 
+		key('t', [Enums.KeyState.MessageList], function () {
+
+			var oMessage = self.selectorMessageSelected();
+			if (!oMessage)
+			{
+				oMessage = self.selectorMessageFocused();
+			}
+
+			if (oMessage && 0 < oMessage.threadsLen())
+			{
+				self.gotoThread(oMessage);
+			}
+
+			return false;
+		});
+
 		// move
 		key('m', Enums.KeyState.MessageList, function () {
 			self.moveDropdownTrigger(true);
@@ -757,6 +813,11 @@
 			if ('' !== self.messageListSearchDesc())
 			{
 				self.cancelSearch();
+				return false;
+			}
+			else if ('' !== self.messageListEndThreadUid())
+			{
+				self.cancelThreadUid();
 				return false;
 			}
 		});

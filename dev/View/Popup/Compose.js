@@ -1,4 +1,6 @@
 
+/* global require, module */
+
 (function () {
 
 	'use strict';
@@ -523,7 +525,6 @@
 			if (window.Dropbox)
 			{
 				window.Dropbox.choose({
-					//'iframe': true,
 					'success': function(aFiles) {
 
 						if (aFiles && aFiles[0] && aFiles[0]['link'])
@@ -995,7 +996,7 @@
 	 *
 	 * @param {Array} aList
 	 * @param {boolean} bFriendly
-	 * @returns {string}
+	 * @return {string}
 	 */
 	ComposePopupView.prototype.emailArrayToStringLineHelper = function (aList, bFriendly)
 	{
@@ -1096,6 +1097,26 @@
 				oText.find('blockquote.rl-bq-switcher').removeClass('rl-bq-switcher hidden-bq');
 				oText.find('.rlBlockquoteSwitcher').off('.rlBlockquoteSwitcher').remove();
 				oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
+
+				(function () {
+
+					var oTmp = null, iLimit = 0;
+
+					while (true)
+					{
+						iLimit++;
+
+						oTmp = oText.children();
+						if (10 > iLimit && oTmp.is('div') && 1 === oTmp.length)
+						{
+							oTmp.children().unwrap();
+							continue;
+						}
+
+						break;
+					}
+
+				}());
 
 				sText = oText.html();
 			}
@@ -1414,11 +1435,11 @@
 		Events.sub('window.resize.real', this.resizerTrigger);
 		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, 50));
 
-		if (this.dropboxEnabled())
+		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 		{
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
-			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
+			oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
 
 			window.document.body.appendChild(oScript);

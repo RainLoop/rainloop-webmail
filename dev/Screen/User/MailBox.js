@@ -75,15 +75,23 @@
 	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 	{
 		var
-			sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
-			oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
+			sThreadUid = sFolderHash.replace(/^(.+)~([\d]+)$/, '$2'),
+			oFolder = Cache.getFolderFromCacheList(Cache.getFolderFullNameRaw(
+				sFolderHash.replace(/~([\d]+)$/, '')))
 		;
 
 		if (oFolder)
 		{
+			if (sFolderHash === sThreadUid)
+			{
+				sThreadUid = '';
+			}
+
 			FolderStore.currentFolder(oFolder);
+
 			MessageStore.messageListPage(iPage);
 			MessageStore.messageListSearch(sSearch);
+			MessageStore.messageListThreadUid(sThreadUid);
 
 			require('App/User').reloadMessageList();
 		}
@@ -163,9 +171,9 @@
 		;
 
 		return [
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 			[/^([^\/]*)$/,  {'normalize_': fNormS}]
 		];
 	};

@@ -57,7 +57,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	LicensingAdminSettings.prototype.licenseIsUnlim = function ()
 	{
@@ -65,7 +65,7 @@
 	};
 
 	/**
-	 * @returns {string}
+	 * @return {string}
 	 */
 	LicensingAdminSettings.prototype.licenseExpiredMomentValue = function ()
 	{

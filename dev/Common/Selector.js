@@ -435,7 +435,7 @@
 	};
 
 	/**
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	Selector.prototype.autoSelect = function ()
 	{
@@ -452,7 +452,7 @@
 
 	/**
 	 * @param {Object} oItem
-	 * @returns {string}
+	 * @return {string}
 	 */
 	Selector.prototype.getItemUid = function (oItem)
 	{
@@ -633,13 +633,20 @@
 
 		var
 			iOffset = 20,
+			aList = this.list(),
 			oFocused = $(this.sItemFocusedSelector, this.oContentScrollable),
 			oPos = oFocused.position(),
 			iVisibleHeight = this.oContentVisible.height(),
 			iFocusedHeight = oFocused.outerHeight()
 		;
 
-		if (oPos && (oPos.top < 0 || oPos.top + iFocusedHeight > iVisibleHeight))
+		if (aList && aList[0] && aList[0].focused())
+		{
+			this.oContentScrollable.scrollTop(0);
+
+			return true;
+		}
+		else if (oPos && (oPos.top < 0 || oPos.top + iFocusedHeight > iVisibleHeight))
 		{
 			if (oPos.top < 0)
 			{

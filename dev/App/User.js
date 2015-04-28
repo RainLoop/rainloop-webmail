@@ -99,6 +99,12 @@
 
 		window.setTimeout(function () {
 			window.setInterval(function () {
+				Events.pub('interval.2m-after5m');
+			}, 60000 * 2);
+		}, 60000 * 5);
+
+		window.setTimeout(function () {
+			window.setInterval(function () {
 				Events.pub('interval.5m-after5m');
 			}, 60000 * 5);
 		}, 60000 * 5);
@@ -174,7 +180,15 @@
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
 			MessageStore.messageListPage(1);
+			MessageStore.messageListPageBeforeThread(1);
 			iOffset = 0;
+
+			kn.setHash(Links.mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				MessageStore.messageListPage(),
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
+			), true, true);
 		}
 
 		MessageStore.messageListLoading(true);
@@ -201,17 +215,18 @@
 				);
 			}
 
-		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), MessageStore.messageListSearch());
+		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(),
+			MessageStore.messageListSearch(), MessageStore.messageListThreadUid());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
 	};
 
 	/**
 	 * @param {Function} fResultFunc
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	AppUser.prototype.contactsSync = function (fResultFunc)
 	{
@@ -754,7 +769,7 @@
 		var
 			self = this,
 			iUtc = Momentor.momentNowUnix(),
-			aFolders = FolderStore.getNextFolderNames(bBoot)
+			aFolders = FolderStore.getNextFolderNames()
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -824,7 +839,8 @@
 						});
 
 						if (bBoot)
-						{	_.delay(function () {
+						{
+							_.delay(function () {
 								self.folderInformationMultiply(true);
 							}, 2000);
 						}
@@ -843,10 +859,8 @@
 	AppUser.prototype.messageListAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
 		var
-			bRoot = false,
-			aAllUids = [],
-			aRootUids = [],
 			oFolder = null,
+			aRootUids = [],
 			iAlreadyUnread = 0
 		;
 
@@ -855,31 +869,16 @@
 			aMessages = MessageStore.messageListChecked();
 		}
 
-		if (true === mUid)
-		{
-			bRoot = true;
-		}
-		else if (aMessages && aMessages[0] && mUid &&
-			sFolderFullNameRaw === aMessages[0].uid && mUid === aMessages[0].uid)
-		{
-			bRoot = true;
-		}
+		aRootUids = _.uniq(_.compact(_.map(aMessages, function (oMessage) {
+			return (oMessage && oMessage.uid) ? oMessage.uid : null;
+		})));
 
-		_.each(aMessages, function (oMessage) {
-			aRootUids.push(oMessage.uid);
-			aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
-		});
-
-		aAllUids = _.uniq(aAllUids);
-		aRootUids = _.uniq(aRootUids);
-		aRootUids = aAllUids; // always all
-
-		if ('' !== sFolderFullNameRaw && 0 < aAllUids.length)
+		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
 			switch (iSetAction) {
 				case Enums.MessageSetAction.SetSeen:
 
-					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+					_.each(aRootUids, function (sSubUid) {
 						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -890,7 +889,7 @@
 						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
 					}
 
-					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, true);
+					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, true);
 					break;
 
 				case Enums.MessageSetAction.UnsetSeen:
@@ -921,12 +920,12 @@
 
 				case Enums.MessageSetAction.UnsetFlag:
 
-					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+					_.each(aRootUids, function (sSubUid) {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
+					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, false);
 					break;
 			}
 
@@ -1369,7 +1368,7 @@
 							}
 						});
 
-						Events.sub('interval.5m-after5m', function () {
+						Events.sub('interval.2m-after5m', function () {
 							self.folderInformationMultiply();
 						});
 

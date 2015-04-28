@@ -15,7 +15,7 @@
 					<span class="flag-wrapper">
 						<span data-bind="css: 'flag flag-' + language()" style=""></span>
 					</span>
-					<span class="flag-name" data-bind="text: languageFullName, click: selectLanguage"></span>
+					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, keypress: selectLanguage"></span>
 					&nbsp;&nbsp;
 					<div data-bind="component: {
 						name: 'SaveTrigger',
@@ -31,7 +31,7 @@
 					<span class="flag-wrapper">
 						<span data-bind="css: 'flag flag-' + languageAdmin()" style=""></span>
 					</span>
-					<span class="flag-name" data-bind="text: languageAdminFullName, click: selectLanguageAdmin"></span>
+					<span class="flag-name" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, keypress: selectLanguageAdmin"></span>
 					&nbsp;&nbsp;
 					<div data-bind="component: {
 						name: 'SaveTrigger',

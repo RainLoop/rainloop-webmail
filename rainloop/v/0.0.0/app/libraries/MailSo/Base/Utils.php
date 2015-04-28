@@ -236,6 +236,56 @@ END;
 	}
 
 	/**
+	 * @param string $sFilePath
+	 * @param function $fFileExistsCallback = null
+	 *
+	 * @return string
+	 */
+	public static function SmartFileExists($sFilePath, $fFileExistsCallback = null)
+	{
+		$sFilePath = \str_replace('\\', '/', \trim($sFilePath));
+		if (!$fFileExistsCallback)
+		{
+			$fFileExistsCallback = function ($sPath) {
+				return \file_exists($sPath);
+			};
+		}
+
+		if (!\call_user_func($fFileExistsCallback, $sFilePath))
+		{
+			return $sFilePath;
+		}
+
+		$aFileInfo = \pathinfo($sFilePath);
+
+		$iIndex = 0;
+
+		do
+		{
+			$iIndex++;
+
+			$sFilePathNew = $aFileInfo['dirname'].'/'.
+				\preg_replace('/\(\d{1,2}\)$/', '', $aFileInfo['filename']).
+				' ('.$iIndex.')'.
+				(empty($aFileInfo['extension']) ? '' : '.'.$aFileInfo['extension'])
+			;
+
+			if (!\call_user_func($fFileExistsCallback, $sFilePathNew))
+			{
+				$sFilePath = $sFilePathNew;
+				break;
+			}
+			else if (10 < $iIndex)
+			{
+				break;
+			}
+		}
+		while (true);
+
+		return $sFilePath;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public static function IsMbStringSupported()

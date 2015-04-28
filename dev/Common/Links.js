@@ -59,47 +59,62 @@
 
 	/**
 	 * @param {string} sDownload
+	 * @param {string=} sCustomSpecSuffix
 	 * @return {string}
 	 */
-	Links.prototype.attachmentDownload = function (sDownload)
+	Links.prototype.attachmentDownload = function (sDownload, sCustomSpecSuffix)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/Download/' + this.subQueryPrefix() + '/' + sDownload;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/Download/' +
+			this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
 	 * @param {string} sDownload
+	 * @param {string=} sCustomSpecSuffix
 	 * @return {string}
 	 */
-	Links.prototype.attachmentPreview = function (sDownload)
+	Links.prototype.attachmentPreview = function (sDownload, sCustomSpecSuffix)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/View/' + this.subQueryPrefix() + '/' + sDownload;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/View/' +
+			this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
 	 * @param {string} sDownload
+	 * @param {string=} sCustomSpecSuffix
 	 * @return {string}
 	 */
-	Links.prototype.attachmentThumbnailPreview = function (sDownload)
+	Links.prototype.attachmentThumbnailPreview = function (sDownload, sCustomSpecSuffix)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewThumbnail/' + this.subQueryPrefix() + '/' + sDownload;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/ViewThumbnail/' +
+			this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
 	 * @param {string} sDownload
+	 * @param {string=} sCustomSpecSuffix
 	 * @return {string}
 	 */
-	Links.prototype.attachmentPreviewAsPlain = function (sDownload)
+	Links.prototype.attachmentPreviewAsPlain = function (sDownload, sCustomSpecSuffix)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + sDownload;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/ViewAsPlain/' +
+			this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
 	 * @param {string} sDownload
+	 * @param {string=} sCustomSpecSuffix
 	 * @return {string}
 	 */
-	Links.prototype.attachmentFramed = function (sDownload)
+	Links.prototype.attachmentFramed = function (sDownload, sCustomSpecSuffix)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/FramedView/' + this.subQueryPrefix() + '/' + sDownload;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/FramedView/' +
+			this.subQueryPrefix() + '/' + sDownload;
 	};
 
 	/**
@@ -257,23 +272,30 @@
 	 * @param {string} sFolder
 	 * @param {number=} iPage = 1
 	 * @param {string=} sSearch = ''
+	 * @param {string=} sThreadUid = ''
 	 * @return {string}
 	 */
-	Links.prototype.mailBox = function (sFolder, iPage, sSearch)
+	Links.prototype.mailBox = function (sFolder, iPage, sSearch, sThreadUid)
 	{
 		iPage = Utils.isNormal(iPage) ? Utils.pInt(iPage) : 1;
 		sSearch = Utils.pString(sSearch);
 
-		var sResult = this.sBase + 'mailbox/';
+		var
+			sResult = this.sBase + 'mailbox/',
+			iThreadUid = Utils.pInt(sThreadUid)
+		;
+
 		if ('' !== sFolder)
 		{
-			sResult += encodeURI(sFolder);
+			sResult += encodeURI(sFolder) + (0 < iThreadUid ? '~' + iThreadUid : '');
 		}
+
 		if (1 < iPage)
 		{
 			sResult = sResult.replace(/[\/]+$/, '');
 			sResult += '/p' + iPage;
 		}
+
 		if ('' !== sSearch)
 		{
 			sResult = sResult.replace(/[\/]+$/, '');

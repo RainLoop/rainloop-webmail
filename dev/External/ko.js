@@ -24,31 +24,41 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				fValue = fValueAccessor(),
 				oEditor  = null,
+				fValue = fValueAccessor(),
+
 				fUpdateEditorValue = function () {
-					if (oEditor)
+					if (fValue && fValue.__editor)
 					{
-						oEditor.setHtmlOrPlain(fValue());
+						fValue.__editor.setHtmlOrPlain(fValue());
 					}
 				},
+
 				fUpdateKoValue = function () {
-					if (oEditor)
+					if (fValue && fValue.__editor)
 					{
-						fValue(oEditor.getDataWithHtmlMark());
+						fValue(fValue.__editor.getDataWithHtmlMark());
 					}
 				},
+
+				fOnReady = function () {
+					fValue.__editor = oEditor;
+					fUpdateEditorValue();
+				},
+
 				HtmlEditor = require('Common/HtmlEditor')
 			;
 
-			if (fValue)
+			if (ko.isObservable(fValue) && HtmlEditor)
 			{
-				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
-				fValue.__editor = oEditor;
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fOnReady, fUpdateKoValue);
+
 				fValue.__fetchEditorValue = fUpdateKoValue;
-				fValue.__updateEditorValue = fUpdateEditorValue;
 
 				fValue.subscribe(fUpdateEditorValue);
+
+//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+//				});
 			}
 		}
 	};
@@ -61,6 +71,7 @@
 				sValue = '',
 				Translator = null,
 				$oEl = $(oElement),
+				fValue = fValueAccessor(),
 				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
@@ -68,7 +79,7 @@
 			if (!Globals.bMobileDevice || bMobile)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = ko.unwrap(fValueAccessor());
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 				oElement.__opentip = new Opentip(oElement, {
 					'style': 'rainloopTip',
@@ -78,11 +89,20 @@
 
 				Globals.dropdownVisibility.subscribe(function (bV) {
 					if (bV) {
-						oElement.__opentip.deactivate();
-					} else {
-						oElement.__opentip.activate();
+						oElement.__opentip.hide();
 					}
 				});
+
+				if ('' === sValue)
+				{
+					oElement.__opentip.hide();
+					oElement.__opentip.deactivate();
+					oElement.__opentip.setContent('');
+				}
+				else
+				{
+					oElement.__opentip.activate();
+				}
 
 				if (bi18n)
 				{
@@ -113,6 +133,7 @@
 				bi18n = true,
 				sValue = '',
 				$oEl = $(oElement),
+				fValue = fValueAccessor(),
 				bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
 				Globals = require('Common/Globals')
 			;
@@ -120,7 +141,7 @@
 			if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 			{
 				bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-				sValue = ko.unwrap(fValueAccessor());
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 				if (sValue)
 				{
@@ -165,7 +186,8 @@
 
 			var
 				$oEl = $(oElement),
-				sValue = ko.unwrap(fValueAccessor()),
+				fValue = fValueAccessor(),
+				sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
 				oOpenTips = oElement.__opentip
 			;
 
@@ -295,6 +317,18 @@
 		}
 	};
 
+	ko.bindingHandlers.keypress = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keypress.koKeyPress', function (oEvent) {
+				fValueAccessor().call(oViewModel, oEvent);
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keypress.koKeyPress');
+			});
+		}
+	};
+
 	ko.bindingHandlers.onEnter = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keypress.koOnEnter', function (oEvent) {
@@ -307,6 +341,21 @@
 
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 				$(oElement).off('keypress.koOnEnter');
+			});
+		}
+	};
+
+	ko.bindingHandlers.onTab = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keydown.koOnTab', function (oEvent) {
+				if (oEvent && 9 === window.parseInt(oEvent.keyCode, 10))
+				{
+					return fValueAccessor().call(oViewModel, !!oEvent.shiftKey);
+				}
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keydown.koOnTab');
 			});
 		}
 	};

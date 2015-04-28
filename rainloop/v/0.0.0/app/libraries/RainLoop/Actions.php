@@ -407,8 +407,9 @@ class Actions
 	{
 		if (false !== \strpos($sLine, '{date:'))
 		{
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) {
-				return \gmdate($aMatch[1]);
+			$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($iTimeOffset) {
+				return \MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset);
 			}, $sLine);
 
 			$sLine = \preg_replace('/\{date:([^}]*)\}/', 'date', $sLine);
@@ -939,6 +940,8 @@ class Actions
 
 			if (!!$this->Config()->Get('logs', 'enable', false))
 			{
+				$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
+
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
 				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
@@ -956,6 +959,7 @@ class Actions
 						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
 						->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
 						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
+						->SetTimeOffset($iTimeOffset)
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
@@ -967,7 +971,10 @@ class Actions
 
 				$oHttp = $this->Http();
 
-				$this->oLogger->Write('[DATE:'.\gmdate('d.m.y').'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
+				$this->oLogger->Write('[DATE:'.\MailSo\Log\Logger::DateHelper('d.m.y', $iTimeOffset).
+					(0 !== $iTimeOffset ? '][OFFSET:'.(0 < $iTimeOffset ? '+' : '-').
+						\str_pad((string) \abs($iTimeOffset), 2, '0', STR_PAD_LEFT) : '').
+					'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
 					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)).'][PID:'.
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
 					$oHttp->GetServer('SERVER_SOFTWARE', '~').']['.
@@ -1315,11 +1322,33 @@ class Actions
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'PremType' => $this->PremType(),
-			'ZipSupported' => !!\class_exists('ZipArchive'),
 			'Admin' => array(),
 			'Capa' => array(),
+			'AttahcmentsActions' => array(),
 			'Plugins' => array()
 		);
+
+		if ($oConfig->Get('capa', 'attachments_actions', false))
+		{
+			if (!!\class_exists('ZipArchive'))
+			{
+				$aResult['AttahcmentsActions'][] = 'zip';
+			}
+
+			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+			{
+				$aResult['AttahcmentsActions'][] = 'owncloud';
+			}
+
+			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
+			{
+				$aResult['AttahcmentsActions'][] = 'dropbox';
+			}
+		}
+
+		$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
+			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
+
 
 		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
@@ -1709,8 +1738,9 @@ class Actions
 		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
 
 		$aResult['UserLanguageRaw'] = $this->detectUserLanguage();
-		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['Language'], false);
-		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], $aResult['LanguageAdmin'], true);
+
+		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true, true);
+		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true, true);
 
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
@@ -1755,14 +1785,30 @@ class Actions
 		return \preg_replace('/[^a-zA-Z0-9]+/', '-', $this->getUserLanguageFromHeader());
 	}
 
+	/**
+	 * @param int $iWait = 1
+	 * @param int $iDelay = 1
+	 */
+	private function requestSleep($iWait = 1, $iDelay = 1)
+	{
+		if (0 < $iDelay && 0 < $iWait)
+		{
+			if ($iWait > \time() - APP_START_TIME)
+			{
+				\sleep($iDelay);
+			}
+		}
+	}
+
 	private function loginErrorDelay()
 	{
 		$iDelay = (int) $this->Config()->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay)
 		{
-			\sleep($iDelay);
+			$this->requestSleep(1, $iDelay);
 		}
 	}
+
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 */
@@ -2628,6 +2674,209 @@ class Actions
 		}
 
 		return $this->FalseResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
+	public function DoAttachmentsActions()
+	{
+		if (!$this->Config()->Get('capa', 'attachments_actions', false))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
+		$oAccount = $this->initMailClientConnection();
+
+		$sAction = $this->GetActionParam('Do', '');
+		$aHashes = $this->GetActionParam('Hashes', null);
+
+		$mResult = false;
+		$bError = false;
+		$aData = false;
+
+		if (\is_array($aHashes) && 0 < \count($aHashes))
+		{
+			$aData = array();
+			foreach ($aHashes as $sZipHash)
+			{
+				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
+				if (\is_array($aResult) && !empty($aResult['FileHash']))
+				{
+					$aData[] = $aResult;
+				}
+				else
+				{
+					$bError = true;
+					break;
+				}
+			}
+		}
+
+		$oFilesProvider = $this->FilesProvider();
+		if (!empty($sAction) && !$bError && \is_array($aData) && 0 < \count($aData) &&
+			$oFilesProvider && $oFilesProvider->IsActive())
+		{
+
+			$bError = false;
+			switch (\strtolower($sAction))
+			{
+				case 'zip':
+
+					if (\class_exists('ZipArchive'))
+					{
+						$sZipHash = \MailSo\Base\Utils::Md5Rand();
+						$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
+
+						if (!empty($sZipFileName))
+						{
+							$oZip = new \ZipArchive();
+							$oZip->open($sZipFileName, \ZIPARCHIVE::OVERWRITE);
+							$oZip->setArchiveComment('RainLoop/'.APP_VERSION);
+
+							foreach ($aData as $aItem)
+							{
+								$sFileName = (string) (isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat');
+								$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+
+								if (!empty($sFileHash))
+								{
+									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
+									if (!$oZip->addFile($sFullFileNameHash, $sFileName))
+									{
+										$bError = true;
+									}
+								}
+							}
+
+							if (!$bError)
+							{
+								$bError = !$oZip->close();
+							}
+							else
+							{
+								$oZip->close();
+							}
+						}
+
+						foreach ($aData as $aItem)
+						{
+							$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+							if (!empty($sFileHash))
+							{
+								$oFilesProvider->Clear($oAccount, $sFileHash);
+							}
+						}
+
+						if (!$bError)
+						{
+							$mResult = array(
+								'Files' => array(array(
+									'FileName' => 'attachments.zip',
+									'Hash' => \RainLoop\Utils::EncodeKeyValues(array(
+										'V' => APP_VERSION,
+										'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+										'FileName' => 'attachments.zip',
+										'MimeType' => 'application/zip',
+										'FileHash' => $sZipHash
+									))
+								))
+							);
+						}
+					}
+					break;
+
+				case 'owncloud':
+
+					$mResult = false;
+
+					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+					{
+						$sSaveFolder = $this->Config()->Get('labs', 'owncloud_save_folder', '');
+						if (!empty($sSaveFolder))
+						{
+							$sSaveFolder = 'Attachments';
+						}
+
+						$oFiles = \OCP\Files::getStorage('files');
+
+						if ($oFilesProvider && $oFiles && $oFilesProvider->IsActive() &&
+							\method_exists($oFiles, 'file_put_contents'))
+						{
+							if (!$oFiles->is_dir($sSaveFolder))
+							{
+								$oFiles->mkdir($sSaveFolder);
+							}
+
+							$mResult = true;
+							foreach ($aData as $aItem)
+							{
+								$sSavedFileName = isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat';
+								$sSavedFileHash = !empty($aItem['FileHash']) ? $aItem['FileHash'] : '';
+
+								if (!empty($sSavedFileHash))
+								{
+									$fFile = $oFilesProvider->GetFile($oAccount, $sSavedFileHash, 'rb');
+									if (\is_resource($fFile))
+									{
+										$sSavedFileNameFull = \MailSo\Base\Utils::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, function ($sPath) use ($oFiles) {
+											return $oFiles->file_exists($sPath);
+										});
+
+										if (!$oFiles->file_put_contents($sSavedFileNameFull, $fFile))
+										{
+											$mResult = false;
+										}
+
+										if (\is_resource($fFile))
+										{
+											@\fclose($fFile);
+										}
+									}
+								}
+							}
+						}
+					}
+
+					foreach ($aData as $aItem)
+					{
+						$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+						if (!empty($sFileHash))
+						{
+							$oFilesProvider->Clear($oAccount, $sFileHash);
+						}
+					}
+
+					break;
+
+				case 'dropbox':
+
+					$mResult = array(
+						'ShortLife' => '_'.$this->GetShortLifeSpecAuthToken(),
+						'Url' => \preg_replace('/\?(.*)$/', '', $this->Http()->GetFullUrl()),
+						'Files' => array()
+					);
+
+					foreach ($aData as $aItem)
+					{
+						$mResult['Files'][] = array(
+							'FileName' => isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat',
+							'Hash' => \RainLoop\Utils::EncodeKeyValues($aItem)
+						);
+					}
+
+					break;
+			}
+		}
+		else
+		{
+			$bError = true;
+		}
+
+		$this->requestSleep();
+		return $this->DefaultResponse(__FUNCTION__, $bError ? false : $mResult);
 	}
 
 	/**
@@ -3531,7 +3780,6 @@ class Actions
 	 */
 	public function DoAdminLicensing()
 	{
-		$iStart = \time();
 		$this->IsAdminLoggined();
 
 		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
@@ -3543,10 +3791,7 @@ class Actions
 		{
 			$sValue = $this->licenseHelper($bForce);
 
-			if ($iStart === \time())
-			{
-				\sleep(1);
-			}
+			$this->requestSleep();
 
 			$iExpired = 0;
 			if ($this->licenseParser($sValue, $iExpired))
@@ -3583,7 +3828,6 @@ class Actions
 	 */
 	public function DoAdminLicensingActivate()
 	{
-		$iStart = \time();
 		$this->IsAdminLoggined();
 
 		$sDomain = (string) $this->GetActionParam('Domain', '');
@@ -3599,7 +3843,6 @@ class Actions
 
 			$oHttp = \MailSo\Base\Http::SingletonInstance();
 
-			\sleep(1);
 			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
 				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
@@ -3611,10 +3854,7 @@ class Actions
 				$sValue = '';
 			}
 
-			if ($iStart + 2 > \time())
-			{
-				\sleep(1);
-			}
+			$this->requestSleep();
 
 			$aMatch = array();
 			if ('OK' === $sValue)
@@ -5240,12 +5480,12 @@ class Actions
 	{
 		$this->initMailClientConnection();
 
-		$sFolderNameInUtf = $this->GetActionParam('Folder', '');
+		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
 
 		try
 		{
-			$this->MailClient()->FolderSubscribe($sFolderNameInUtf, !!$bSubscribe);
+			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, !!$bSubscribe);
 		}
 		catch (\Exception $oException)
 		{
@@ -5260,6 +5500,51 @@ class Actions
 		}
 
 		return $this->TrueResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoFolderCheckable()
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
+		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
+
+		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+		$sCheckableFolder = $oSettingsLocal->GetConf('CheckableFolder', '[]');
+		$aCheckableFolder = @\json_decode($sCheckableFolder);
+
+		if (!\is_array($aCheckableFolder))
+		{
+			$aCheckableFolder = array();
+		}
+
+		if ($bCheckable)
+		{
+			$aCheckableFolder[] = $sFolderFullNameRaw;
+		}
+		else
+		{
+			$aCheckableFolderNew = array();
+			foreach ($aCheckableFolder as $sFolder)
+			{
+				if ($sFolder !== $sFolderFullNameRaw)
+				{
+					$aCheckableFolderNew[] = $sFolder;
+				}
+			}
+			$aCheckableFolder = $aCheckableFolderNew;
+		}
+
+		$aCheckableFolder = \array_unique($aCheckableFolder);
+
+		$oSettingsLocal->SetConf('CheckableFolder', @\json_encode($aCheckableFolder));
+
+		return $this->DefaultResponse(__FUNCTION__,
+			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
 	/**
@@ -5448,45 +5733,6 @@ class Actions
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageThreadsFromCache()
-	{
-		$sFolder = $this->GetActionParam('Folder', '');
-		$sFolderHash = $this->GetActionParam('FolderHash', '');
-		$sUid = (string) $this->GetActionParam('Uid', '');
-
-		if (0 === \strlen($sFolder) || 0 === \strlen($sUid))
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
-		}
-
-		$aResult = array(
-			'Folder' => $sFolder,
-			'Uid' => $sUid,
-			'FolderHash' => $sFolderHash,
-			'ThreadUids' => null
-		);
-
-		$oCache = $this->cacherForUids();
-		if ($oCache && $this->Config()->Get('labs', 'use_imap_thread', false))
-		{
-			$aThreadUids = $this->MailClient()->MessageThreadUidsFromCache(
-				$sFolder, $sFolderHash, $sUid, $oCache
-			);
-
-			if (\is_array($aThreadUids) && 1 < \count($aThreadUids))
-			{
-				$aResult['ThreadUids'] = $aThreadUids;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
-	}
-
-	/**
-	 * @return array
-	 *
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
 	public function DoMessageList()
 	{
 //		\sleep(1);
@@ -5498,11 +5744,12 @@ class Actions
 		$sSearch = '';
 		$sUidNext = '';
 		$bUseThreads = false;
+		$sThreadUid = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
 
-		if (\is_array($aValues) && 9 === \count($aValues))
+		if (\is_array($aValues) && 7 < \count($aValues))
 		{
 			$sFolder =(string) $aValues[0];
 			$iOffset = (int) $aValues[1];
@@ -5510,6 +5757,11 @@ class Actions
 			$sSearch = (string) $aValues[3];
 			$sUidNext = (string) $aValues[6];
 			$bUseThreads = (bool) $aValues[7];
+
+			if ($bUseThreads)
+			{
+				$sThreadUid = isset($aValues[8]) ? (string) $aValues[8] : '';
+			}
 
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -5521,6 +5773,11 @@ class Actions
 			$sSearch = $this->GetActionParam('Search', '');
 			$sUidNext = $this->GetActionParam('UidNext', '');
 			$bUseThreads = '1' === (string) $this->GetActionParam('UseThreads', '0');
+
+			if ($bUseThreads)
+			{
+				$sThreadUid = (string) $this->GetActionParam('ThreadUid', '');
+			}
 		}
 
 		if (0 === strlen($sFolder))
@@ -5542,7 +5799,7 @@ class Actions
 				$this->cacherForUids(),
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
 				$bUseThreads,
-				!!$this->Config()->Get('labs', 'use_imap_esearch_esort', false)
+				$sThreadUid
 			);
 		}
 		catch (\Exception $oException)
@@ -5556,40 +5813,6 @@ class Actions
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
-	}
-
-	/**
-	 * @return array
-	 *
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function DoMessageListSimple()
-	{
-//		\sleep(2);
-//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
-
-		$sFolder = $this->GetActionParam('Folder', '');
-		$aUids = $this->GetActionParam('Uids', null);
-
-		if (0 === \strlen($sFolder) || !\is_array($aUids))
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
-		}
-
-		$this->initMailClientConnection();
-
-		$aMessageList = array();
-
-		try
-		{
-			$aMessageList = $this->MailClient()->MessageListSimple($sFolder, $aUids);
-		}
-		catch (\Exception $oException)
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aMessageList);
 	}
 
 	/**
@@ -6565,7 +6788,8 @@ class Actions
 			))
 		);
 
-		\sleep(1);
+		$this->requestSleep();
+
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->getTwoFactorInfo($oAccount));
 	}
@@ -6649,7 +6873,8 @@ class Actions
 //			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode)
 //		));
 
-		\sleep(1);
+		$this->requestSleep();
+
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode));
 	}
@@ -7713,10 +7938,10 @@ class Actions
 		$iUid = (int) (isset($aValues['Uid']) ? $aValues['Uid'] : 0);
 		$sMimeIndex = (string) (isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '');
 
-		header('Content-Type: text/plain', true);
+		\header('Content-Type: text/plain', true);
 
 		return $this->MailClient()->MessageMimeStream(function ($rResource) {
-			if (is_resource($rResource))
+			if (\is_resource($rResource))
 			{
 				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
 			}
@@ -7945,6 +8170,57 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sHash
+	 *
+	 * @return array
+	 */
+	private function getMimeFileByHash($oAccount, $sHash)
+	{
+		$aValues = $this->getDecodedRawKeyValue($sHash);
+
+		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
+		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+
+		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
+		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+
+		$oFileProvider = $this->FilesProvider();
+
+		$sResultHash = '';
+
+		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
+			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
+
+				if ($oAccount && \is_resource($rResource))
+				{
+					$sHash = \MailSo\Base\Utils::Md5Rand($sFileNameIn.'~'.$sContentTypeIn);
+					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
+
+					if (@\is_resource($rTempResource))
+					{
+						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
+						{
+							$sResultHash = $sHash;
+						}
+
+						@\fclose($rTempResource);
+					}
+				}
+
+			}, $sFolder, $iUid, true, $sMimeIndex);
+
+		$aValues['FileHash'] = '';
+		if ($mResult)
+		{
+			$aValues['FileHash'] = $sResultHash;
+		}
+
+		return $aValues;
+	}
+
+	/**
 	 * @param bool $bDownload
 	 * @param bool $bThumbnail = false
 	 *
@@ -7956,15 +8232,50 @@ class Actions
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
 		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
-		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
-		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
+		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
 
-		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
-		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
+		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
+		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
 
-		if (!empty($sFolder) && 0 < $iUid)
+		if (!empty($sFileHashIn))
 		{
 			$this->verifyCacheByKey($sRawKey);
+
+			$oAccount = $this->getAccountFromToken();
+
+			$sContentTypeOut = empty($sContentTypeIn) ?
+				\MailSo\Base\Utils::MimeContentType($sFileNameIn) : $sContentTypeIn;
+
+			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
+
+			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
+			if (\is_resource($rResource))
+			{
+				$sFileNameOut = \MailSo\Base\Utils::ConvertEncoding(
+					$sFileNameOut, \MailSo\Base\Enumerations\Charset::UTF_8,
+						\MailSo\Base\Enumerations\Charset::CP858);
+
+				\header('Content-Type: '.$sContentTypeOut);
+				\header('Content-Disposition: attachment; '.
+					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+
+				\header('Accept-Ranges: none', true);
+				\header('Content-Transfer-Encoding: binary');
+
+				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+				return true;
+			}
+
+			return false;
+		}
+		else
+		{
+			if (!empty($sFolder) && 0 < $iUid)
+			{
+				$this->verifyCacheByKey($sRawKey);
+			}
 		}
 
 		$oAccount = $this->initMailClientConnection();
@@ -8358,10 +8669,11 @@ class Actions
 	 * @param string  $sDefault = ''
 	 * @param bool $bAdmin = false
 	 * @param bool $bSearchShortName = false
+	 * @param bool $bAllowEmptyResult = false
 	 *
 	 * @return string
 	 */
-	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false)
+	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false, $bAllowEmptyResult = false)
 	{
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
@@ -8387,7 +8699,7 @@ class Actions
 				$sResult = $sDefault;
 			}
 
-			if (empty($sResult))
+			if (empty($sResult) && !$bAllowEmptyResult)
 			{
 				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
 				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en';
@@ -9039,9 +9351,41 @@ class Actions
 		if (\is_object($mResponse))
 		{
 			$bHook = true;
+			$self = $this;
 			$sClassName = \get_class($mResponse);
 			$bHasSimpleJsonFunc = \method_exists($mResponse, 'ToSimpleJSON');
 			$bThumb = $this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
+
+			$oAccountCache = null;
+			$fGetAccount = function () use ($self, &$oAccountCache) {
+				if (null === $oAccountCache)
+				{
+					$oAccount = $self->getAccountFromToken(false);
+					$oAccountCache = $oAccount;
+				}
+
+				return $oAccountCache;
+			};
+
+			$aCheckableFoldersCache = null;
+			$fGetCheckableFolder = function () use ($self, &$aCheckableFoldersCache) {
+				if (null === $aCheckableFoldersCache)
+				{
+					$oAccount = $self->getAccountFromToken(false);
+
+					$oSettingsLocal = $self->SettingsProvider(true)->Load($oAccount);
+					$sCheckable = $oSettingsLocal->GetConf('CheckableFolder', '[]');
+					$aCheckable = @\json_decode($sCheckable);
+					if (!\is_array($aCheckable))
+					{
+						$aCheckable = array();
+					}
+
+					$aCheckableFoldersCache = $aCheckable;
+				}
+
+				return $aCheckableFoldersCache;
+			};
 
 			if ($bHasSimpleJsonFunc)
 			{
@@ -9049,7 +9393,7 @@ class Actions
 			}
 			else if ('MailSo\Mail\Message' === $sClassName)
 			{
-				$oAccount = $this->getAccountFromToken(false);
+				$oAccount = call_user_func($fGetAccount);
 
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
@@ -9079,28 +9423,7 @@ class Actions
 				$iAttachmentsCount = $oAttachments ? $oAttachments->Count() : 0;
 
 				$mResult['HasAttachments'] = 0 < $iAttachmentsCount;
-				$mResult['AttachmentsMainType'] = '';
-				if (0 < $iAttachmentsCount)
-				{
-					switch (true)
-					{
-						case $iAttachmentsCount === $oAttachments->ImageCount():
-							$mResult['AttachmentsMainType'] = 'image';
-							break;
-						case $iAttachmentsCount === $oAttachments->ArchiveCount():
-							$mResult['AttachmentsMainType'] = 'archive';
-							break;
-						case $iAttachmentsCount === $oAttachments->PdfCount():
-							$mResult['AttachmentsMainType'] = 'pdf';
-							break;
-						case $iAttachmentsCount === $oAttachments->DocCount():
-							$mResult['AttachmentsMainType'] = 'doc';
-							break;
-						case $iAttachmentsCount === $oAttachments->CertificateCount():
-							$mResult['AttachmentsMainType'] = 'certificate';
-							break;
-					}
-				}
+				$mResult['AttachmentsSpecData'] = $mResult['HasAttachments'] ? $oAttachments->SpecData() : array();
 
 				$sSubject = $mResult['Subject'];
 				$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
@@ -9345,6 +9668,12 @@ class Actions
 					);
 				}
 
+				$aCheckableFolder = \call_user_func($fGetCheckableFolder);
+				if (!\is_array($aCheckableFolder))
+				{
+					$aCheckableFolder = array();
+				}
+
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Name' => $mResponse->Name(),
 					'FullName' => $mResponse->FullName(),
@@ -9356,6 +9685,7 @@ class Actions
 					'IsExists' => $mResponse->IsExists(),
 					'IsSelectable' => $mResponse->IsSelectable(),
 					'Flags' => $mResponse->FlagsLowerCase(),
+					'Checkable' => \in_array($mResponse->FullNameRaw(), $aCheckableFolder),
 					'Extended' => $aExtended,
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				));
@@ -9369,8 +9699,8 @@ class Actions
 					'Folder' => $mResponse->FolderName,
 					'FolderHash' => $mResponse->FolderHash,
 					'UidNext' => $mResponse->UidNext,
+					'ThreadUid' => $mResponse->ThreadUid,
 					'NewMessages' => $this->responseObject($mResponse->NewMessages),
-//					'LastCollapsedThreadUids' => $mResponse->LastCollapsedThreadUids,
 					'Offset' => $mResponse->Offset,
 					'Limit' => $mResponse->Limit,
 					'Search' => $mResponse->Search

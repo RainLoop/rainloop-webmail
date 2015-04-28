@@ -92,6 +92,21 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @param string $sFormat
+	 * @param int $iTimeOffset = 0
+	 * @param int $iTimestamp = 0
+	 *
+	 * @return string
+	 */
+	public static function DateHelper($sFormat, $iTimeOffset = 0, $iTimestamp = null)
+	{
+		$iTimestamp = null === $iTimestamp ? \time() : (int) $iTimestamp;
+		$iTimeOffset = (int) $iTimeOffset;
+
+		return \gmdate($sFormat, $iTimestamp + $iTimeOffset * 3600);
+	}
+
+	/**
 	 * @return bool
 	 */
 	public static function IsSystemEnabled()

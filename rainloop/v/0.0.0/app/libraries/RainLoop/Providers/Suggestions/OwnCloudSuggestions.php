@@ -18,13 +18,14 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 	 */
 	public function Process($oAccount, $sQuery, $iLimit = 20)
 	{
+		$iInputLimit = $iLimit;
 		$aResult = array();
+		$sQuery = \trim($sQuery);
 
 		try
 		{
-			if (!$oAccount || !\RainLoop\Utils::IsOwnCloud() ||
-				!\class_exists('\\OCP\\Contacts') || !\OCP\Contacts::isEnabled() ||
-				!\class_exists('\\OCP\\User') || !\OCP\User::isLoggedIn()
+			if ('' === $sQuery || !$oAccount || !\RainLoop\Utils::IsOwnCloudLoggedIn() ||
+				!\class_exists('\\OCP\\Contacts') || !\OCP\Contacts::isEnabled()
 			)
 			{
 				return $aResult;
@@ -33,7 +34,7 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 			$aSearchResult = \OCP\Contacts::search($sQuery, array('FN', 'EMAIL'));
 			//$this->oLogger->WriteDump($aSearchResult);
 
-			$aPreResult = array();
+			$aHashes = array();
 			if (\is_array($aSearchResult) && 0 < \count($aSearchResult))
 			{
 				foreach ($aSearchResult as $aContact)
@@ -54,35 +55,23 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 							$mEmails = array($mEmails);
 						}
 
-						if (!isset($aPreResult[$sUid]))
-						{
-							$aPreResult[$sUid] = array();
-						}
-
 						foreach ($mEmails as $sEmail)
 						{
-							$sEmail = \trim($sEmail);
-							if (!empty($sEmail))
+							$sHash = '"'.$sFullName.'" <'.$sEmail.'>';
+							if (!isset($aHashes[$sHash]))
 							{
+								$aHashes[$sHash] = true;
+								$aResult[] = array($sEmail, $sFullName);
 								$iLimit--;
-								$aPreResult[$sUid][] = array($sEmail, $sFullName);
 							}
 						}
 					}
 				}
 
-				$aPreResult = \array_values($aPreResult);
-//				$this->oLogger->WriteDump($aPreResult);
-				foreach ($aPreResult as $aData)
-				{
-					foreach ($aData as $aSubData)
-					{
-						$aResult[] = $aSubData;
-					}
-				}
+				$aResult = \array_slice($aResult, 0, $iInputLimit);
 			}
 
-			unset($aSearchResult, $aPreResult);
+			unset($aSearchResult, $aHashes);
 		}
 		catch (\Exception $oException)
 		{
