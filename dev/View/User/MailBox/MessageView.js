@@ -1013,7 +1013,7 @@
 	MessageViewMailBoxUserView.prototype.getAttachmentsHashes = function ()
 	{
 		return _.compact(_.map(this.message() ? this.message().attachments() : [], function (oItem) {
-			return oItem && oItem.checked() ? oItem.download : '';
+			return oItem && !oItem.isLinked && oItem.checked() ? oItem.download : '';
 		}));
 	};
 
