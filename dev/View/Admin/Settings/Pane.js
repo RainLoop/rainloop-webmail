@@ -26,6 +26,7 @@
 		this.version = ko.observable(Settings.settingsGet('Version'));
 
 		this.capa = !!Settings.settingsGet('PremType');
+		this.community = RL_COMMUNITY;
 
 		this.adminManLoading = ko.computed(function () {
 			return '000' !== [

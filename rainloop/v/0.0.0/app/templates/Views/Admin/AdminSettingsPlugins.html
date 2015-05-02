@@ -19,8 +19,10 @@
 	<div class="row">
 		<div class="alert alert-info span8" data-bind="visible: 0 === plugins().length">
 			<span data-i18n="TAB_PLUGINS/ALERT_NO_PLUGINS"></span>
-			<br /><br />
-			<strong><a href="#/packages" data-i18n="TAB_PLUGINS/LINK_INSTALL_NEW"></a></strong>
+			<div data-bind="visible: !community">
+				<br />
+				<strong><a href="#/packages" data-i18n="TAB_PLUGINS/LINK_INSTALL_NEW"></a></strong>
+			</div>
 		</div>
 		<div class="span8"  data-bind="visible: 0 < plugins().length">
 			<blockquote><p class="muted" data-i18n="TAB_PLUGINS/HINT_CLICK_NAME"></p></blockquote>

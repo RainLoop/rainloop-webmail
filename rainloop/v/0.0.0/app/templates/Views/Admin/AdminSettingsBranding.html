@@ -29,7 +29,7 @@
 		</div>
 	</div>
 	<br />
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs" data-bind="visible: !community">
 		<li class="active">
 			<a class="i18n" data-i18n="TAB_BRANDING/LEGEND_LOGIN"
 			   href="#branding-login-section-id" data-toggle="tab"></a>
@@ -44,7 +44,7 @@
 		</li>
 	</ul>
 	<br  />
-	<div class="row">
+	<div class="row" data-bind="visible: !community">
 		<div class="tab-content span12">
 			<div class="tab-pane active" id="branding-login-section-id">
 
@@ -214,7 +214,7 @@
 		</div>
 	</div>
 
-	<div class="row" data-bind="visible: !capa()">
+	<div class="row" data-bind="visible: !capa() && !community">
 		<div class="alert span8" style="margin-top: 10px;" data-i18n="[html]TAB_BRANDING/HTML_ALERT_PREMIUM"></div>
 	</div>
 

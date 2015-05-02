@@ -82,7 +82,7 @@
 				}
 
 				window['__APP_BOOT'] = null;
-				
+
 			}, 10));
 		};
 

@@ -51,6 +51,7 @@
 	"jquery"			: true,
 
 	"globals": {
+		"RL_COMMUNITY"	: true,
 		"module"		: true,
 		"require"		: true,
 		"ko"			: true,

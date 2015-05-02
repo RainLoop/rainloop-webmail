@@ -29,6 +29,11 @@
 	Globals.startMicrotime = (new window.Date()).getTime();
 
 	/**
+	 * @type {boolean}
+	 */
+	Globals.community = RL_COMMUNITY;
+
+	/**
 	 * @type {?}
 	 */
 	Globals.dropdownVisibility = ko.observable(false).extend({'rateLimit': 0});

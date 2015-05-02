@@ -6,6 +6,7 @@ var
 	cfg = {
 		devVersion: '0.0.0',
 		releasesPath: 'build/dist/releases',
+		community: true,
 
 		rainloopBuilded: false,
 		destPath: '',
@@ -220,6 +221,16 @@ gulp.task('css:main-begin', ['less:main'], function() {
 	;
 });
 
+gulp.task('package:community-on', function() {
+	cfg.community = true;
+	return true;
+});
+
+gulp.task('package:community-off', function() {
+	cfg.community = false;
+	return true;
+});
+
 gulp.task('css:clear-less', ['css:main-begin'], function() {
 
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.less.main.name, {read: false})
@@ -290,6 +301,7 @@ gulp.task('js:webpack:clear', function() {
 });
 
 gulp.task('js:webpack', ['js:webpack:clear'], function(callback) {
+
 	var
 		webpack = require('webpack'),
 		webpackCfg = require('./webpack.config.js')
@@ -298,6 +310,13 @@ gulp.task('js:webpack', ['js:webpack:clear'], function(callback) {
 	if (webpackCfg && webpackCfg.output)
 	{
 		webpackCfg.output.publicPath = cfg.paths.staticJS;
+	}
+
+	if (webpackCfg && webpackCfg.plugins)
+	{
+		webpackCfg.plugins.push(new webpack.DefinePlugin({
+            'RL_COMMUNITY': !!cfg.community
+        }));
 	}
 
 	webpack(webpackCfg, function(err, stats) {
@@ -466,7 +485,7 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	cfg.destPath = cfg.releasesPath + '/webmail/' + versionFull + '/';
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
-	cfg.zipFile = 'rainloop-' + versionFull + '.zip';
+	cfg.zipFile = 'rainloop-' + (cfg.community ? 'community-' : '') + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
 
 	cfg.rainloopBuilded = true;
@@ -538,7 +557,7 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	cfg.destPath = cfg.releasesPath + '/owncloud/' + versionFull + '/';
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
-	cfg.zipFile = 'rainloop-owncloud-app-' + versionFull + '.zip';
+	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'premium-') + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
 
 });
@@ -562,11 +581,15 @@ gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:mi
 gulp.task('fast', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
-gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
 
-gulp.task('owncloud', ['rainloop:owncloud:copy',
+gulp.task('rainloop', ['package:community-on', 'rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
+gulp.task('rainloop+', ['package:community-off', 'rainloop']);
+
+gulp.task('owncloud', ['package:community-on', 'rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
 	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
+
+gulp.task('owncloud+', ['package:community-off', 'owncloud']);
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
@@ -578,10 +601,10 @@ gulp.task('watch', ['fast'], function() {
 gulp.task('build', ['rainloop']);
 gulp.task('js:hint', ['js:lint']);
 
-gulp.task('own', ['owncloud']);
-gulp.task('rl', ['rainloop']);
 gulp.task('w', ['watch']);
 gulp.task('f', ['fast']);
-gulp.task('o', ['owncloud']);
 gulp.task('b', ['build']);
+gulp.task('b+', ['build+']);
+gulp.task('o', ['owncloud']);
+gulp.task('o+', ['owncloud+']);
 gulp.task('h', ['js:lint']);

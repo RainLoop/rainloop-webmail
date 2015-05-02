@@ -29,6 +29,7 @@
 		this.interfaceAnimation.valueHasMutated();
 
 		this.prem = ko.observable(false);
+		this.community = ko.observable(true);
 	}
 
 	AppStore.prototype.populate = function()
@@ -39,6 +40,7 @@
 		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
 
 		this.prem(!!Settings.settingsGet('PremType'));
+		this.community(!!Settings.settingsGet('Community'));
 	};
 
 	module.exports = AppStore;

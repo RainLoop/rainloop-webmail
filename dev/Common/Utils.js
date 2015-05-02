@@ -861,10 +861,7 @@
 		;
 
 		sText = sHtml
-			// specials for signature
-			.replace(/\u0002\u0002/g, '\u200C\u200C')
-			.replace(/\u0003\u0003/g, '\u200D\u200D')
-
+			.replace(/<x-signature>([\s\S]*)<\/x-signature>/gm, '\u200C$1\u200C')
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
@@ -1012,16 +1009,12 @@
 		sPlain = aText.join("\n");
 
 		sPlain = sPlain
-
-			// specials for signature
-			.replace(/\u200C\u200C/g, '\u0002\u0002')
-			.replace(/\u200D\u200D/g, '\u0003\u0003')
-
 //			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
+			.replace(/\u200C([\s\S]*)\u200C/g, '<x-signature>$1</x-signature>')
 			.replace(/\n/g, '<br />')
 		;
 

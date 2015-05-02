@@ -9,7 +9,8 @@
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
-		CoreStore = require('Stores/Admin/Core')
+		CoreStore = require('Stores/Admin/Core'),
+		AppStore = require('Stores/Admin/App')
 	;
 
 	/**
@@ -33,6 +34,8 @@
 		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
 		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
 		this.coreVersionCompare = CoreStore.coreVersionCompare;
+
+		this.community = RL_COMMUNITY || AppStore.community();
 
 		this.coreRemoteVersionHtmlDesc = ko.computed(function () {
 			Translator.trigger();
@@ -78,7 +81,7 @@
 
 	AboutAdminSettings.prototype.onBuild = function ()
 	{
-		if (this.access())
+		if (this.access() && !this.community)
 		{
 			require('App/Admin').reloadCoreData();
 		}
@@ -86,7 +89,7 @@
 
 	AboutAdminSettings.prototype.updateCoreData = function ()
 	{
-		if (!this.coreUpdating())
+		if (!this.coreUpdating() && !this.community)
 		{
 			require('App/Admin').updateCoreData();
 		}

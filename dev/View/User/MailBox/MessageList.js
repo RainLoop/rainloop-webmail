@@ -299,6 +299,11 @@
 	{
 		var self = this;
 
+		if (0 < this.messageListChecked().length)
+		{
+			return false;
+		}
+
 		window.clearTimeout(this.iGoToUpUpOrDownDownTimeout);
 		this.iGoToUpUpOrDownDownTimeout = window.setTimeout(function () {
 

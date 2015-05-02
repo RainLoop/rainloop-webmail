@@ -12,7 +12,10 @@
 		Translator = require('Common/Translator'),
 
 		Settings = require('Storage/Settings'),
+
+		AppStore = require('Stores/Admin/App'),
 		PluginStore = require('Stores/Admin/Plugin'),
+		
 		Remote = require('Remote/Admin/Ajax')
 	;
 
@@ -25,6 +28,8 @@
 
 		this.plugins = PluginStore.plugins;
 		this.pluginsError = PluginStore.plugins.error;
+
+		this.community = RL_COMMUNITY || AppStore.community();
 
 		this.visibility = ko.computed(function () {
 			return PluginStore.plugins.loading() ? 'visible' : 'hidden';

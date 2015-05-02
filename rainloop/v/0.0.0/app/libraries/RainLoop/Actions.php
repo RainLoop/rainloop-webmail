@@ -111,6 +111,11 @@ class Actions
 	private $oTwoFactorAuthProvider;
 
 	/**
+	 * @var \RainLoop\Providers\Prem
+	 */
+	private $oPremProvider;
+
+	/**
 	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig;
@@ -146,6 +151,7 @@ class Actions
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
+		$this->oPremProvider = null;
 
 		$this->sSpecAuthToken = '';
 
@@ -739,6 +745,28 @@ class Actions
 	}
 
 	/**
+	 * @return \RainLoop\Providers\Prem
+	 */
+	public function PremProvider()
+	{
+		if (null === $this->oPremProvider)
+		{
+			if (\file_exists(APP_VERSION_ROOT_PATH.'app/libraries/RainLoop/Prem/Provider.php'))
+			{
+				$this->oPremProvider = new \RainLoop\Prem\Provider(
+					$this->Config(), $this->Logger(), $this->Cacher(null, true)
+				);
+			}
+			else
+			{
+				$this->oPremProvider = false;
+			}
+		}
+
+		return $this->oPremProvider;
+	}
+
+	/**
 	 * @param bool $bLocal = false
 	 *
 	 * @return \RainLoop\Providers\Storage
@@ -1249,20 +1277,6 @@ class Actions
 	}
 
 	/**
-	 * @return bool
-	 */
-	private function PremType()
-	{
-		static $bResult = null;
-		if (null === $bResult)
-		{
-			$bResult = $this->licenseParser($this->licenseHelper(false, true));
-		}
-
-		return $bResult;
-	}
-
-	/**
 	 * @param bool $bAdmin
 	 * @param string $sAuthAccountHash = ''
 	 *
@@ -1277,6 +1291,8 @@ class Actions
 
 		$oAccount = null;
 		$oConfig = $this->Config();
+
+		$oPremProvider = $this->PremProvider();
 
 		$aResult = array(
 			'Version' => APP_VERSION,
@@ -1329,7 +1345,8 @@ class Actions
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
-			'PremType' => $this->PremType(),
+			'Community' => true,
+			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'AttahcmentsActions' => array(),
@@ -1383,21 +1400,15 @@ class Actions
 		$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
 		$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
 
-		if ($this->PremType())
+		if ($oPremProvider)
 		{
-			$aResult['LoginLogo'] = $oConfig->Get('branding', 'login_logo', '');
-			$aResult['LoginBackground'] = $oConfig->Get('branding', 'login_background', '');
-			$aResult['LoginCss'] = $oConfig->Get('branding', 'login_css', '');
-			$aResult['LoginDescription'] = $oConfig->Get('branding', 'login_desc', '');
-			$aResult['LoginPowered'] = !!$oConfig->Get('branding', 'login_powered', true);
-			$aResult['UserLogo'] = $oConfig->Get('branding', 'user_logo', '');
-			$aResult['UserLogoTitle'] = $oConfig->Get('branding', 'user_logo_title', '');
-			$aResult['UserCss'] = $oConfig->Get('branding', 'user_css', '');
-			$aResult['WelcomePageUrl'] = $oConfig->Get('branding', 'welcome_page_url', '');
-			$aResult['WelcomePageDisplay'] = \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none'));
+			$oPremProvider->PopulateAppData($aResult);
 		}
 
-		$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
+		if ('' !== $aResult['LoadingDescription'] && 'RainLoop' !== $aResult['LoadingDescription'])
+		{
+			$aResult['LoadingDescriptionEsc'] = @\htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
+		}
 
 		$oSettings = null;
 		$oSettingsLocal = null;
@@ -3318,7 +3329,11 @@ class Actions
 		}
 		else if ($bVersionsCache)
 		{
-			$this->removeOldVersion();
+			$oPremProvider = $this->PremProvider();
+			if ($oPremProvider)
+			{
+				$oPremProvider->ClearOldVersion();
+			}
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
@@ -3354,7 +3369,7 @@ class Actions
 	 * @param string $sType = 'string'
 	 * @param callable|null $mStringCallback = null
 	 */
-	private function setConfigFromParams(&$oConfig, $sParamName, $sConfigSector, $sConfigName, $sType = 'string', $mStringCallback = null)
+	public function setConfigFromParams(&$oConfig, $sParamName, $sConfigSector, $sConfigName, $sType = 'string', $mStringCallback = null)
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
 		if ($this->HasActionParam($sParamName))
@@ -3531,26 +3546,6 @@ class Actions
 		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 
-		if ($this->HasOneOfActionParams(array(
-			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss', 'LoginPowered',
-			'UserLogo', 'UserLogoTitle', 'UserCss',
-			'WelcomePageUrl', 'WelcomePageDisplay'
-		)) && $this->PremType())
-		{
-			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginPowered', 'branding', 'login_powered', 'bool');
-
-			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
-			$this->setConfigFromParams($oConfig, 'UserLogoTitle', 'branding', 'user_logo_title', 'string');
-			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
-
-			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
-			$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
-		}
-
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
@@ -3572,6 +3567,12 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'DropboxEnable', 'social', 'dropbox_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'DropboxApiKey', 'social', 'dropbox_api_key', 'string');
+
+		$oPremProvider = $this->PremProvider();
+		if ($oPremProvider)
+		{
+			$oPremProvider->PremSection($this, $oConfig);
+		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
 	}
@@ -3648,144 +3649,6 @@ class Actions
 	}
 
 	/**
-	 * @param string $sDomain
-	 *
-	 * @return string
-	 */
-//	public function domainPathHelper($sDomain)
-//	{
-//		$sDomain = \strtolower(\trim($sDomain));
-//
-//		$sTempDomain = \preg_replace('/^(webmail|email|mail)\./', '', $sDomain);
-//		if (false === \strpos($sTempDomain, '.'))
-//		{
-//			$sTempDomain = $sDomain;
-//		}
-//
-//		$sDomainPrefix = $sTempDomain;
-//		if (false === \strpos($sDomainPrefix, '.'))
-//		{
-//			$sDomainPrefix = $sTempDomain;
-//		}
-//
-//		$sDomainPrefix = \substr(\preg_replace('/[^a-z0-9]+/', '', $sDomainPrefix), 0, 2);
-//		$sDomainPrefix = \str_pad($sDomainPrefix, 2, '_');
-//
-//		return 'd/'.\substr($sDomainPrefix, 0, 1).'/'.$sDomainPrefix.'/'.\urlencode($sTempDomain);
-//	}
-
-	/**
-	 * @return string
-	 */
-	public function licenseHelper($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
-	{
-		$sDomain = \trim(APP_SITE);
-
-		$oCacher = $this->Cacher(null, true);
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-		if (0 === \strlen($sDomain) || $oHttp->CheckLocalhost($sDomain) || !$oCacher || !$oCacher->Verify(true))
-		{
-			return 'NO';
-		}
-
-		$sDomainKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyValue($sDomain);
-		$sDomainLongKeyValue = \RainLoop\KeyPathHelper::LicensingDomainKeyOtherValue($sDomain);
-
-		$sValue = '';
-		if (!$sForce)
-		{
-			if ($bLongCache)
-			{
-				$bLock = $oCacher->GetLock($sDomainLongKeyValue);
-				$iTime = $bLock ? 0 : $oCacher->GetTimer($sDomainLongKeyValue);
-
-				if ($bLock || (0 < $iTime && \time() < $iTime + (60 * 60 * 24) * $iLongCacheTimeInDays))
-				{
-					$sValue = $oCacher->Get($sDomainLongKeyValue);
-				}
-			}
-			else
-			{
-				$iTime = $oCacher->GetTimer($sDomainKeyValue);
-				if (0 < $iTime && \time() < $iTime + 60 * $iFastCacheTimeInMin)
-				{
-					$sValue = $oCacher->Get($sDomainKeyValue);
-				}
-			}
-		}
-
-		if (0 === \strlen($sValue))
-		{
-			if ($bLongCache)
-			{
-				if (!$oCacher->SetTimer($sDomainLongKeyValue))
-				{
-					return 'NO';
-				}
-
-				$oCacher->SetLock($sDomainLongKeyValue);
-			}
-
-			$iCode = 0;
-			$sContentType = '';
-
-//			$sValue = $oHttp->GetUrlAsString(APP_STATUS_PATH.$this->domainPathHelper($sDomain),
-//				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 5,
-//				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-//				array(), false
-//			);
-
-			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'status/'.\urlencode($sDomain),
-				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 5,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-				array(), false
-			);
-
-			$this->Logger()->Write($sValue);
-
-			/*if (404 === $iCode)
-			{
-				$sValue = 'NO';
-			}
-			else */if (200 !== $iCode)
-			{
-				$sValue = '';
-			}
-
-			$oCacher->SetTimer($sDomainKeyValue);
-
-			$oCacher->Set($sDomainKeyValue, $sValue);
-			$oCacher->Set($sDomainLongKeyValue, $sValue);
-
-			if ($bLongCache)
-			{
-				$oCacher->RemoveLock($sDomainLongKeyValue);
-			}
-		}
-
-		return $sValue;
-	}
-
-	/**
-	 * @param string $sInput
-	 * @param int $iExpired = 0
-	 *
-	 * @return bool
-	 */
-	public function licenseParser($sInput, &$iExpired = 0)
-	{
-		$aMatch = array();
-		if (\preg_match('/^EXPIRED:([\d]+)$/', $sInput, $aMatch))
-		{
-			$iExpired = (int) $aMatch[1];
-			return \time() < $iExpired;
-		}
-
-		return false;
-	}
-
-	/**
 	 * @return array
 	 */
 	public function DoAdminLicensing()
@@ -3797,14 +3660,16 @@ class Actions
 		$mResult = false;
 		$iErrorCode = -1;
 
-		if (2 < \strlen(APP_SITE))
+		$oPremProvider = $this->PremProvider();
+
+		if ($oPremProvider && 2 < \strlen(APP_SITE))
 		{
-			$sValue = $this->licenseHelper($bForce);
+			$sValue = $oPremProvider->Fetcher($bForce);
 
 			$this->requestSleep();
 
 			$iExpired = 0;
-			if ($this->licenseParser($sValue, $iExpired))
+			if ($oPremProvider->Parser($sValue, $iExpired))
 			{
 				$mResult = array(
 					'Banned' => false,
@@ -3846,23 +3711,12 @@ class Actions
 		$mResult = false;
 		$iErrorCode = -1;
 
-		if (2 < \strlen($sDomain) && 2 < \strlen($sKey) && $sDomain === APP_SITE)
+		$oPrem = $this->PremProvider();
+
+		if ($oPrem && 2 < \strlen($sDomain) && 2 < \strlen($sKey) && $sDomain === APP_SITE)
 		{
 			$iCode = 0;
-			$sContentType = '';
-
-			$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-			$sValue = $oHttp->GetUrlAsString(APP_API_PATH.'activate/'.\urlencode($sDomain).'/'.\urlencode($sKey),
-				'RainLoop/'.APP_VERSION, $sContentType, $iCode, $this->Logger(), 10,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-				array(), false
-			);
-
-			if (200 !== $iCode)
-			{
-				$sValue = '';
-			}
+			$sValue = $oPrem->Activate($sDomain, $sKey, $iCode);
 
 			$this->requestSleep();
 
@@ -3878,6 +3732,7 @@ class Actions
 			else if (\preg_match('/^ERROR:(.+)$/', $sValue, $aMatch) && !empty($aMatch[1]))
 			{
 				$mResult = trim($aMatch[1]);
+
 				$this->Logger()->Write('Activation error for: '.$sKey.' ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
 				$this->Logger()->Write($mResult, \MailSo\Log\Enumerations\Type::ERROR);
 			}
@@ -4479,10 +4334,10 @@ class Actions
 		$this->IsAdminLoggined();
 
 		$bReal = false;
-		$sNewVersion = '';
 
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 		$bRainLoopAccess = $this->rainLoopCoreAccess();
+		$oPremProvider = $this->PremProvider();
 
 		$aData = array();
 		if ($bRainLoopUpdatable && $bRainLoopAccess)
@@ -4491,130 +4346,12 @@ class Actions
 		}
 
 		$bResult = false;
-		if ($bReal && !empty($aData['file']))
+		if ($bReal && $oPremProvider && !empty($aData['file']))
 		{
-			$sTmp = $this->downloadRemotePackageByUrl($aData['file']);
-			if (!empty($sTmp))
-			{
-				include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
-				$oArchive = new \PclZip($sTmp);
-				$sTmpFolder = APP_PRIVATE_DATA.\md5($sTmp);
-
-				\mkdir($sTmpFolder);
-				if (\is_dir($sTmpFolder))
-				{
-					$bResult = 0 !== $oArchive->extract(PCLZIP_OPT_PATH, $sTmpFolder);
-					if (!$bResult)
-					{
-						$this->Logger()->Write('Cannot extract package files: '.$oArchive->errorInfo(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-					}
-
-					if ($bResult && \file_exists($sTmpFolder.'/index.php') &&
-						\is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
-						\is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-						\is_dir($sTmpFolder.'/rainloop/'))
-					{
-						$aMatch = array();
-						$sIndexFile = \file_get_contents($sTmpFolder.'/index.php');
-						if (\preg_match('/\'APP_VERSION\', \'([^\']+)\'/', $sIndexFile, $aMatch) && !empty($aMatch[1]))
-						{
-							$sNewVersion = \trim($aMatch[1]);
-						}
-
-						if (empty($sNewVersion))
-						{
-							$this->Logger()->Write('Unknown version', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-						}
-						else if (!\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion))
-						{
-							\MailSo\Base\Utils::CopyDir($sTmpFolder.'/rainloop/', APP_INDEX_ROOT_PATH.'rainloop/');
-
-							if (\is_dir(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion) &&
-								\is_file(APP_INDEX_ROOT_PATH.'rainloop/v/'.$sNewVersion.'/index.php'))
-							{
-								$bResult = \copy($sTmpFolder.'/index.php', APP_INDEX_ROOT_PATH.'index.php');
-
-								if ($bResult)
-								{
-									if (\MailSo\Base\Utils::FunctionExistsAndEnabled('opcache_invalidate'))
-									{
-										@\opcache_invalidate(APP_INDEX_ROOT_PATH.'index.php', true);
-									}
-
-									if (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_delete_file'))
-									{
-										@\apc_delete_file(APP_INDEX_ROOT_PATH.'index.php');
-									}
-								}
-							}
-							else
-							{
-								$this->Logger()->Write('Cannot copy new package files', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-								$this->Logger()->Write($sTmpFolder.'/rainloop/ -> '.APP_INDEX_ROOT_PATH.'rainloop/', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-							}
-						}
-						else if (!empty($sNewVersion))
-						{
-							$this->Logger()->Write('"'.$sNewVersion.'" version already installed', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-						}
-					}
-					else if ($bResult)
-					{
-						$this->Logger()->Write('Cannot validate package files', \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-					}
-
-					\MailSo\Base\Utils::RecRmDir($sTmpFolder);
-				}
-				else
-				{
-					$this->Logger()->Write('Cannot create tmp folder: '.$sTmpFolder, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-				}
-
-				@\unlink($sTmp);
-			}
+			$bResult = $oPremProvider->UpdateCore($this, $aData['file']);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
-	}
-
-	public function removeOldVersion()
-	{
-		$sVPath = APP_INDEX_ROOT_PATH.'rainloop/v/';
-
-		$this->Logger()->Write('Versions GC: Begin');
-
-		$aDirs = @\array_map('basename', @\array_filter(@\glob($sVPath.'*'), 'is_dir'));
-
-		$this->Logger()->Write('Versions GC: Count:'.(\is_array($aDirs) ? \count($aDirs) : 0));
-
-		if (\is_array($aDirs) && 5 < \count($aDirs))
-		{
-			\uasort($aDirs, 'version_compare');
-
-			foreach ($aDirs as $sName)
-			{
-				if (APP_DEV_VERSION !== $sName && APP_VERSION !== $sName)
-				{
-					$this->Logger()->Write('Versions GC: Begin to remove  "'.$sVPath.$sName.'" version');
-
-					if (@\unlink($sVPath.$sName.'/index.php'))
-					{
-						@\MailSo\Base\Utils::RecRmDir($sVPath.$sName);
-					}
-					else
-					{
-						$this->Logger()->Write('Versions GC (Error): index file cant be removed from"'.$sVPath.$sName.'"',
-							\MailSo\Log\Enumerations\Type::ERROR);
-					}
-
-					$this->Logger()->Write('Versions GC: End to remove  "'.$sVPath.$sName.'" version');
-					break;
-				}
-			}
-		}
-
-		$this->Logger()->Write('Versions GC: End');
 	}
 
 	/**
@@ -4658,7 +4395,7 @@ class Actions
 	 *
 	 * @return string
 	 */
-	private function downloadRemotePackageByUrl($sUrl)
+	public function downloadRemotePackageByUrl($sUrl)
 	{
 		$bResult = false;
 		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl).'.zip';
