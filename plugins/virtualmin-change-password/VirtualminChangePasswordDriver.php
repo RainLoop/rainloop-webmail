@@ -75,6 +75,93 @@ class VirtualminChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 	}
 
 	/**
+	* @param string $sUrl
+	* @param array $aPost = array()
+	* @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
+	* @param int $iCode = 0
+	* @param \MailSo\Log\Logger $oLogger = null
+	* @param int $iTimeout = 20
+	* @param string $sProxy = ''
+	* @param string $sProxyAuth = ''
+	*
+	* @return string|bool
+	*
+	* Had to costumize use this as the builtin SendPostRequest in \MailSo\Base\Http had no way of setting CURLOPT_USERPWD
+	*/
+	public function PostRequest($sUrl, $aPost = array(), $sAdminUser, $sAdminPassword, $sCustomUserAgent = 'Rainloop Http User Agent (v1)', &$iCode = 0,
+	$oLogger = null, $iTimeout = 20, $sProxy = '', $sProxyAuth = '')
+	{
+		
+		$oLogger->Write('Virtualmin: Inside function: ');
+		$aOptions = array(
+		CURLOPT_URL => $sUrl,
+		CURLOPT_HEADER => false,
+		CURLOPT_FAILONERROR => true,
+		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_POST => true,
+		CURLOPT_POSTFIELDS => \http_build_query($aPost, '', '&'),
+		CURLOPT_TIMEOUT => (int) $iTimeout
+		);
+		
+		if ($oLogger)
+		{
+			$oLogger->Write('Virtualmin: Inside function2: ');
+		}
+
+		if (0 < \strlen($sAdminUser) && 0 < \strlen($sAdminPassword))
+		{
+			$aOptions[CURLOPT_USERPWD] = $sAdminUser.':'.$sAdminPassword;
+		}
+		
+		if (0 < \strlen($sCustomUserAgent))
+		{
+			$aOptions[CURLOPT_USERAGENT] = $sCustomUserAgent;
+		}
+
+		if (0 < \strlen($sProxy))
+		{
+			$aOptions[CURLOPT_PROXY] = $sProxy;
+			if (0 < \strlen($sProxyAuth))
+			{
+				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
+			}
+		}
+		if ($oLogger)
+		{
+			$oLogger->Write('Virtualmin: before init: ');
+		}
+		$oCurl = \curl_init();
+		\curl_setopt_array($oCurl, $aOptions);
+
+		if ($oLogger)
+		{
+			$oLogger->Write('cURL: Send post request: '.$sUrl);
+		}
+
+		$mResult = \curl_exec($oCurl);
+
+		$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
+		$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
+
+		if ($oLogger)
+		{
+			$oLogger->Write('cURL: Post request result: (Status: '.$iCode.', ContentType: '.$sContentType.')');
+			if (false === $mResult || 200 !== $iCode)
+			{
+				$oLogger->Write('cURL: Error: '.\curl_error($oCurl), \MailSo\Log\Enumerations\Type::WARNING);
+			}
+		}
+
+		if (\is_resource($oCurl))
+		{
+			\curl_close($oCurl);
+		}
+
+		return $mResult;
+	}
+	
+	/**
 	* @param \RainLoop\Model\Account $oAccount
 	* @param string $sPrevPassword
 	* @param string $sNewPassword
@@ -93,65 +180,108 @@ class VirtualminChangePasswordDriver implements \RainLoop\Providers\ChangePasswo
 		{
 			if ($this->oLogger)
 			{
-				$this->oLogger->Write('Virtualmin: Required Fields Present');
+				$this->oLogger->Write('Virtualmin:[Check] Required Fields Present');
 			}
 			$sEmail = \trim(\strtolower($oAccount->Email()));
 			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 			$sHost = \trim($this->sHost);
 			$sUrl = $sHost.'/virtual-server/remote.cgi';
+			$sAdminUser = $this->sAdminUser;
+			$sAdminPassword=$this->sAdminPassword;
 
+			$iCode = 0;
+			
+			$aPost = array(
+			'user'         	=> $sEmailUser,
+			'pass'   		=> $sNewPassword,
+			'domain'  	   	=> $sEmailDomain,
+			'program'     	=> 'modify-user'
+			);
+			
+			$aOptions = array(
+			CURLOPT_URL => $sUrl,
+			CURLOPT_HEADER => false,
+			CURLOPT_FAILONERROR => true,
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => http_build_query($aPost, '', '&'),
+			CURLOPT_TIMEOUT => 20,
+			CURLOPT_SSL_VERIFYHOST => false,
+			CURLOPT_USERPWD => $sAdminUser.':'.$sAdminPassword
+			);
+			
+			$oCurl = \curl_init();
+			\curl_setopt_array($oCurl, $aOptions);
+			
 			if ($this->oLogger)
 			{
-				$this->oLogger->Write('Virtualmin[Api Request]: '.$sUrl);
+				$this->oLogger->Write('Virtualmin: Send post request: '.$sUrl);
 			}
-			$sQuery = "wget -O - --quiet --http-user=$this->sAdminUser --http-passwd=$this->sAdminPassword --no-check-certificate '$sUrl?program=modify-user&domain=$sEmailDomain&pass=$sNewPassword&user=$sEmailUser'";
-			//$this->oLogger->Write('Virtualmin[Api Request Call]: '.$sQuery);
-			$sResult = shell_exec($sQuery);
 			
-			$iPos = strpos($sResult, 'Exit status: ');
-			if ($iPos !== false) {
-				$sStatus = explode(' ', $sResult);
-				$sStatus=\trim(array_pop($sStatus));
-				if ($this->oLogger)
+			$mResult = \curl_exec($oCurl);
+			
+			$iCode = (int) \curl_getinfo($oCurl, CURLINFO_HTTP_CODE);
+			$sContentType = (string) \curl_getinfo($oCurl, CURLINFO_CONTENT_TYPE);
+			
+			if ($this->oLogger)
+			{
+				$this->oLogger->Write('Virtualmin: Post request result: (Status: '.$iCode.', ContentType: '.$sContentType.')');
+				if (false === $mResult || 200 !== $iCode)
 				{
-					$this->oLogger->Write('Virtualmin: Status: '.$sStatus);
+					$this->oLogger->Write('Virtualmin: Error: '.\curl_error($oCurl), \MailSo\Log\Enumerations\Type::WARNING);
 				}
-				if($sStatus=='0'){
-					$bResult = true;
-				} 
+			}
+
+			if (\is_resource($oCurl))
+			{
+				\curl_close($oCurl);
+			}
+			
+			if (false !== $mResult && 200 === $iCode)
+			{
+				$aRes = null;
+				@\parse_str($mResult, $aRes);
+				if (is_array($aRes) && (!isset($aRes['error']) || (int) $aRes['error'] !== 1))
+				{
+					$iPos = strpos($mResult, 'Exit status: ');
+					if ($iPos !== false) {
+						$sStatus = explode(' ', $mResult);
+						$sStatus=\trim(array_pop($sStatus));
+						
+						if($sStatus=='0'){
+							if ($this->oLogger)
+							{
+								$this->oLogger->Write('Virtualmin: Password Change Status: Success');
+							}
+							$bResult = true;
+						} 
+						else
+						{
+							if ($this->oLogger)
+							{
+								$this->oLogger->Write('Virtualmin[Error]: Response: '.$mResult);
+							}
+						}
+					}
+				}
 				else
 				{
 					if ($this->oLogger)
 					{
-						$this->oLogger->Write('Virtualmin[Error]: Response: '.$sResult);
+						$this->oLogger->Write('Virtualmin[Error]: Response: '.$mResult);
 					}
 				}
 			}
+			else
+			{
+				if ($this->oLogger)
+				{
+					$this->oLogger->Write('Virtualmin[Error]: Empty Response: Code:'.$iCode);
+				}
+			}
 		}
-		$this->oLogger->Write('Virtualmin: Operation Completed. Check logs for status.');
 		return $bResult;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
