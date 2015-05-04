@@ -285,7 +285,7 @@
 		});
 
 		this.hasUnreadMessages = ko.computed(function () {
-			return 0 < this.messageCountUnread();
+			return 0 < this.messageCountUnread() && '' !== this.printableUnreadCount();
 		}, this);
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function () {

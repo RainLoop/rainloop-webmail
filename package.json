@@ -17,8 +17,8 @@
 	},
 	"licenses": [
 		{
-			"type": "CC BY-NC-SA 3.0",
-			"ulr": "http://creativecommons.org/licenses/by-nc-sa/3.0/"
+			"type": "AGPL 3.0",
+			"ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
 		}
 	],
 	"bugs": {
@@ -43,6 +43,7 @@
 	"devDependencies": {
 
 		"node-fs": "*",
+		"rimraf": "*",
 		"jshint-summary": "*",
 
 		"webpack": "*",
@@ -67,9 +68,5 @@
 		"gulp-beautify": "*",
 		"gulp-plumber": "*",
 		"gulp-concat-util": "*"
-	},
-	"scripts": {
-		"gulp": "gulp",
-		"w": "gulp w"
 	}
 }

@@ -1932,7 +1932,7 @@ class Actions
 				{
 					$sLine = \trim(\implode('.', $aDomainParts), '. ');
 
-					$oDomain = $oDomainProvider->Load($sLine);
+					$oDomain = $oDomainProvider->Load($sLine, false);
 					if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
 					{
 						$bAdded = true;
@@ -1949,6 +1949,24 @@ class Actions
 
 					\array_shift($aDomainParts);
 					$iLimit--;
+				}
+
+				if (!$bAdded)
+				{
+					$sLine = $sUserHost;
+					$oDomain = $oDomainProvider->Load($sLine, true);
+					if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
+					{
+						$bAdded = true;
+						$this->Logger()->Write('Check "'.$sLine.'" with wildcard: OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
+							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+
+						$sEmail = $sEmail.'@'.$sLine;
+					}
+					else
+					{
+						$this->Logger()->Write('Check "'.$sLine.'" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+					}
 				}
 
 				if (!$bAdded)
