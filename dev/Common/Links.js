@@ -19,11 +19,16 @@
 		this.sServer = './?';
 
 		this.sVersion = Settings.settingsGet('Version');
-		this.sSpecSuffix = Settings.settingsGet('AuthAccountHash') || '0';
+		this.sAuthSuffix = Settings.settingsGet('AuthAccountHash') || '0';
 		this.sWebPrefix = Settings.settingsGet('WebPath') || '';
 		this.sVersionPrefix = Settings.settingsGet('WebVersionPath') || 'rainloop/v/' + this.sVersion + '/';
 		this.sStaticPrefix = this.sVersionPrefix + 'static/';
 	}
+
+	Links.prototype.populateAuthSuffix = function ()
+	{
+		this.sAuthSuffix = require('Storage/Settings').settingsGet('AuthAccountHash') || '0';
+	};
 
 	/**
 	 * @return {string}
@@ -64,7 +69,7 @@
 	 */
 	Links.prototype.attachmentDownload = function (sDownload, sCustomSpecSuffix)
 	{
-		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sAuthSuffix : sCustomSpecSuffix;
 		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/Download/' +
 			this.subQueryPrefix() + '/' + sDownload;
 	};
@@ -76,7 +81,7 @@
 	 */
 	Links.prototype.attachmentPreview = function (sDownload, sCustomSpecSuffix)
 	{
-		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sAuthSuffix : sCustomSpecSuffix;
 		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/View/' +
 			this.subQueryPrefix() + '/' + sDownload;
 	};
@@ -88,7 +93,7 @@
 	 */
 	Links.prototype.attachmentThumbnailPreview = function (sDownload, sCustomSpecSuffix)
 	{
-		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sAuthSuffix : sCustomSpecSuffix;
 		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/ViewThumbnail/' +
 			this.subQueryPrefix() + '/' + sDownload;
 	};
@@ -100,7 +105,7 @@
 	 */
 	Links.prototype.attachmentPreviewAsPlain = function (sDownload, sCustomSpecSuffix)
 	{
-		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sAuthSuffix : sCustomSpecSuffix;
 		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/ViewAsPlain/' +
 			this.subQueryPrefix() + '/' + sDownload;
 	};
@@ -112,7 +117,7 @@
 	 */
 	Links.prototype.attachmentFramed = function (sDownload, sCustomSpecSuffix)
 	{
-		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sSpecSuffix : sCustomSpecSuffix;
+		sCustomSpecSuffix = Utils.isUnd(sCustomSpecSuffix) ? this.sAuthSuffix : sCustomSpecSuffix;
 		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + sCustomSpecSuffix + '/FramedView/' +
 			this.subQueryPrefix() + '/' + sDownload;
 	};
@@ -122,7 +127,7 @@
 	 */
 	Links.prototype.upload = function ()
 	{
-		return this.sServer + '/Upload/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
+		return this.sServer + '/Upload/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
 	};
 
 	/**
@@ -130,7 +135,7 @@
 	 */
 	Links.prototype.uploadContacts = function ()
 	{
-		return this.sServer + '/UploadContacts/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadContacts/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
 	};
 
 	/**
@@ -138,7 +143,7 @@
 	 */
 	Links.prototype.uploadBackground = function ()
 	{
-		return this.sServer + '/UploadBackground/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
+		return this.sServer + '/UploadBackground/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
 	};
 
 	/**
@@ -146,7 +151,7 @@
 	 */
 	Links.prototype.append = function ()
 	{
-		return this.sServer + '/Append/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/';
+		return this.sServer + '/Append/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
 	};
 
 	/**
@@ -155,7 +160,7 @@
 	 */
 	Links.prototype.change = function (sEmail)
 	{
-		return this.sServer + '/Change/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
+		return this.sServer + '/Change/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' + Utils.encodeURIComponent(sEmail) + '/';
 	};
 
 	/**
@@ -164,7 +169,7 @@
 	 */
 	Links.prototype.ajax = function (sAdd)
 	{
-		return this.sServer + '/Ajax/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' + sAdd;
+		return this.sServer + '/Ajax/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' + sAdd;
 	};
 
 	/**
@@ -173,7 +178,7 @@
 	 */
 	Links.prototype.messageViewLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + sRequestHash;
 	};
 
 	/**
@@ -182,7 +187,7 @@
 	 */
 	Links.prototype.messageDownloadLink = function (sRequestHash)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/Download/' + this.subQueryPrefix() + '/' + sRequestHash;
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/Download/' + this.subQueryPrefix() + '/' + sRequestHash;
 	};
 
 	/**
@@ -209,7 +214,7 @@
 	 */
 	Links.prototype.userBackground = function (sHash)
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix +
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix +
 			'/UserBackground/' + this.subQueryPrefix() + '/' + sHash;
 	};
 
@@ -327,7 +332,7 @@
 	 */
 	Links.prototype.exportContactsVcf = function ()
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ContactsVcf/';
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ContactsVcf/';
 	};
 
 	/**
@@ -335,7 +340,7 @@
 	 */
 	Links.prototype.exportContactsCsv = function ()
 	{
-		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/ContactsCsv/';
+		return this.sServer + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ContactsCsv/';
 	};
 
 	/**
@@ -392,7 +397,7 @@
 	 */
 	Links.prototype.socialGoogle = function ()
 	{
-		return this.sServer + 'SocialGoogle' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialGoogle' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
 	};
 
 	/**
@@ -400,7 +405,7 @@
 	 */
 	Links.prototype.socialTwitter = function ()
 	{
-		return this.sServer + 'SocialTwitter' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialTwitter' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
 	};
 
 	/**
@@ -408,7 +413,7 @@
 	 */
 	Links.prototype.socialFacebook = function ()
 	{
-		return this.sServer + 'SocialFacebook' + ('' !== this.sSpecSuffix ? '/' + this.subQueryPrefix() + '/' + this.sSpecSuffix + '/' : '');
+		return this.sServer + 'SocialFacebook' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
 	};
 
 	module.exports = new Links();

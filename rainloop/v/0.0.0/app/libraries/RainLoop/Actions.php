@@ -4811,12 +4811,14 @@ class Actions
 	 */
 	public function DoChangePassword()
 	{
+		$mResult = false;
+		
 		$oAccount = $this->getAccountFromToken();
 		if ($oAccount)
 		{
 			try
 			{
-				$this->ChangePasswordProvider()->ChangePassword(
+				$mResult = $this->ChangePasswordProvider()->ChangePassword(
 					$oAccount,
 					$this->GetActionParam('PrevPassword', ''),
 					$this->GetActionParam('NewPassword', '')
@@ -4831,7 +4833,7 @@ class Actions
 			}
 		}
 
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
 	/**

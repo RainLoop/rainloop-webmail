@@ -203,6 +203,20 @@
 	};
 
 	/**
+	 * @param {string} sKey
+	 */
+	AbstractApp.prototype.setClientSideToken = function (sKey)
+	{
+		if (window.__rlah_set)
+		{
+			window.__rlah_set(sKey);
+
+			require('Storage/Settings').settingsSet('AuthAccountHash', sKey);
+			require('Common/Links').populateAuthSuffix();
+		}
+	};
+
+	/**
 	 * @param {boolean=} bAdmin = false
 	 * @param {boolean=} bLogout = false
 	 * @param {boolean=} bClose = false

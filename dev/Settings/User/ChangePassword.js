@@ -103,6 +103,8 @@
 
 			this.passwordUpdateSuccess(true);
 			this.currentPassword.error(false);
+
+			require('App/User').setClientSideToken(oData.Result);
 		}
 		else
 		{

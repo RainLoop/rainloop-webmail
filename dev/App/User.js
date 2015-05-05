@@ -1463,7 +1463,7 @@
 					}
 					else
 					{
-						this.bootstartLoginScreen();
+						this.loginAndLogoutReload(false, true);
 					}
 
 				}, self));
