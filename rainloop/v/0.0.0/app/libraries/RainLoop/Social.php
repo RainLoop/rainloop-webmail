@@ -26,152 +26,6 @@ class Social
 	}
 
 	/**
-	 * @param array $oItem
-	 * @param array $aPics
-	 *
-	 * @return array|null
-	 */
-	private function convertGoogleJsonContactToResponseContact($oItem, &$aPics)
-	{
-		$mResult = null;
-		if (!empty($oItem['gd$email'][0]['address']))
-		{
-			$mEmail = \MailSo\Base\Utils::IdnToAscii($oItem['gd$email'][0]['address'], true);
-			if (\is_array($oItem['gd$email']) && 1 < \count($oItem['gd$email']))
-			{
-				$mEmail = array();
-				foreach ($oItem['gd$email'] as $oEmail)
-				{
-					if (!empty($oEmail['address']))
-					{
-						$mEmail[] = \MailSo\Base\Utils::IdnToAscii($oEmail['address'], true);
-					}
-				}
-			}
-
-			$sImg = '';
-			if (!empty($oItem['link']) && \is_array($oItem['link']))
-			{
-				foreach ($oItem['link'] as $oLink)
-				{
-					if ($oLink && isset($oLink['type'], $oLink['href'], $oLink['rel']) &&
-						'image/*' === $oLink['type'] && '#photo' === \substr($oLink['rel'], -6))
-					{
-						$sImg = $oLink['href'];
-						break;
-					}
-				}
-			}
-
-			$mResult = array(
-				'email' => $mEmail,
-				'name' => !empty($oItem['title']['$t']) ? $oItem['title']['$t'] : ''
-			);
-
-			if (0 < \strlen($sImg))
-			{
-				$sHash = \RainLoop\Utils::EncodeKeyValues(array(
-					'url' => $sImg,
-					'type' => 'google_access_token'
-				));
-
-				$mData = array();
-				if (isset($aPics[$sHash]))
-				{
-					$mData = $aPics[$sHash];
-					if (!\is_array($mData))
-					{
-						$mData = array($mData);
-					}
-				}
-
-				if (\is_array($mEmail))
-				{
-					$mData = \array_merge($mData, $mEmail);
-					$mData = \array_unique($mData);
-				}
-				else if (0 < \strlen($mEmail))
-				{
-					$mData[] = $mEmail;
-				}
-
-				if (\is_array($mData))
-				{
-					if (1 === \count($mData) && !empty($mData[0]))
-					{
-						$aPics[$sHash] = $mData[0];
-					}
-					else if (1 < \count($mData))
-					{
-						$aPics[$sHash] = $mData;
-					}
-				}
-			}
-		}
-
-		return $mResult;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function GoogleUserContacts($oAccount)
-	{
-		$mResult = false;
-		$oGoogle = $this->GoogleConnector();
-		$aPics = array();
-
-		if ($oAccount && $oGoogle)
-		{
-			$sAccessToken = $this->GoogleAccessToken($oAccount, $oGoogle);
-			if (!empty($sAccessToken))
-			{
-				$oGoogle->setAccessToken($sAccessToken);
-
-				$aResponse = $oGoogle->fetch('https://www.google.com/m8/feeds/contacts/default/full', array(
-					'alt' => 'json'
-				));
-
-				if (!empty($aResponse['result']['feed']['entry']) && \is_array($aResponse['result']['feed']['entry']))
-				{
-					$mResult = array();
-					foreach ($aResponse['result']['feed']['entry'] as $oItem)
-					{
-						$aItem = $this->convertGoogleJsonContactToResponseContact($oItem, $aPics);
-						if ($aItem)
-						{
-							if (\is_array($aItem['email']))
-							{
-								$aNewItem = $aItem;
-								unset($aNewItem['email']);
-
-								foreach ($aItem['email'] as $sEmail)
-								{
-									$aNewItem['email'] = $sEmail;
-									$mResult[] = $aNewItem;
-								}
-							}
-							else
-							{
-								$mResult[] = $aItem;
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				$this->oActions->Logger()->Write('Empty Google Access Token', \MailSo\Log\Enumerations\Type::ERROR);
-			}
-		}
-
-		return false !== $mResult ? array(
-			'List' => $mResult,
-			'Pics' => $aPics
-		) : false;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function GoogleDisconnect($oAccount)
@@ -185,7 +39,7 @@ class Social
 			if (!empty($sEncodedeData))
 			{
 				$aData = \RainLoop\Utils::DecodeKeyValues($sEncodedeData);
-				if (\is_array($aData) && isset($aData['access_token'], $aData['id']))
+				if (\is_array($aData) && !empty($aData['id']))
 				{
 					$this->oActions->StorageProvider()->Clear(null,
 						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
@@ -332,15 +186,15 @@ class Social
 					if (!empty($aAuthorizationResponse['result']['access_token']))
 					{
 						$oGoogle->setAccessToken($aAuthorizationResponse['result']['access_token']);
-						$aUserinfoResponse = $oGoogle->fetch('https://www.googleapis.com/oauth2/v2/userinfo');
+						$aUserInfoResponse = $oGoogle->fetch('https://www.googleapis.com/oauth2/v2/userinfo');
 
-						if (!empty($aUserinfoResponse['result']['id']))
+						if (!empty($aUserInfoResponse['result']['id']))
 						{
 							if ($bLogin)
 							{
 								$sUserData = $this->oActions->StorageProvider()->Get(null,
 									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-									$this->GoogleUserLoginStorageKey($oGoogle, $aUserinfoResponse['result']['id'])
+									$this->GoogleUserLoginStorageKey($oGoogle, $aUserInfoResponse['result']['id'])
 								);
 
 								$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
@@ -359,21 +213,28 @@ class Social
 							if ($oAccount)
 							{
 								$aUserData = array(
+									'ID' => $aUserInfoResponse['result']['id'],
 									'Email' => $oAccount->Email(),
 									'Password' => $oAccount->Password()
 								);
 
-								$sSocialName = !empty($aUserinfoResponse['result']['name']) ? $aUserinfoResponse['result']['name'] : '';
-								$sSocialName .= !empty($aUserinfoResponse['result']['email']) ? ' ('.$aUserinfoResponse['result']['email'].')' : '';
+								$sSocialName = !empty($aUserInfoResponse['result']['name']) ? $aUserInfoResponse['result']['name'] : '';
+								$sSocialName .= !empty($aUserInfoResponse['result']['email']) ? ' ('.$aUserInfoResponse['result']['email'].')' : '';
 								$sSocialName = \trim($sSocialName);
 
 								$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
+
+								$oSettings->SetConf('GoogleAccessToken', \RainLoop\Utils::EncodeKeyValues(array(
+									'id' => $aUserInfoResponse['result']['id']
+								)));
+
 								$oSettings->SetConf('GoogleSocialName', $sSocialName);
+
 								$this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 
 								$this->oActions->StorageProvider()->Put(null,
 									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-									$this->GoogleUserLoginStorageKey($oGoogle, $aUserinfoResponse['result']['id']),
+									$this->GoogleUserLoginStorageKey($oGoogle, $aUserInfoResponse['result']['id']),
 									\RainLoop\Utils::EncodeKeyValues($aUserData));
 
 								$iErrorCode = 0;
@@ -577,9 +438,7 @@ class Social
 
 							if (200 === $iCode && isset($oTwitter->response['response']))
 							{
-								$this->oActions->Logger()->WriteDump($oTwitter->response['response']);
 								$aAccessToken = $oTwitter->extract_params($oTwitter->response['response']);
-								$this->oActions->Logger()->WriteDump($aAccessToken);
 								if ($aAccessToken && isset($aAccessToken['oauth_token']) && !empty($aAccessToken['user_id']))
 								{
 									$oTwitter->config['user_token'] = $aAccessToken['oauth_token'];

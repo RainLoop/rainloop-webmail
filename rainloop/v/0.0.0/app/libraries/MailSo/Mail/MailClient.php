@@ -2089,7 +2089,7 @@ class MailClient
 			{
 				$aUids = array();
 				$iResultRootUid = 0;
-				
+
 				if (isset($mAllThreads[$iThreadUid]))
 				{
 					$iResultRootUid = $iThreadUid;
@@ -2456,7 +2456,6 @@ class MailClient
 
 			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		}
-
 
 		return $oFolderCollection;
 	}

@@ -93,7 +93,10 @@ cfg.paths.less = {
 		src: 'dev/Styles/@Main.less',
 		watch: ['dev/Styles/*.less'],
 		options: {
-			paths: [path.join(__dirname, 'dev/Styles/'), path.join(__dirname, 'vendors/bootstrap/less/')]
+			paths: [
+				path.join(__dirname, 'dev', 'Styles'),
+				path.join(__dirname, 'vendors', 'bootstrap', 'less')
+			]
 		}
 	}
 };
@@ -152,10 +155,8 @@ cfg.paths.js = {
 		src: [
 			'vendors/modernizr.js',
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/is.js/is.min.js',
 			'vendors/jquery/jquery-1.11.2.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
-//			'vendors/jquery-ui.touch-punch/jquery.ui.touch-punch.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
 			'vendors/jquery-finger/jquery.finger.min.js',
 			'vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js',
@@ -173,7 +174,6 @@ cfg.paths.js = {
 			'vendors/routes/hasher.min.js',
 			'vendors/routes/crossroads.min.js',
 			'vendors/knockout/knockout-3.3.0.js',
-//			'vendors/knockout-punches/knockout.punches.min.js',
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
 			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',

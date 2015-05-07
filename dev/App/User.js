@@ -1463,7 +1463,7 @@
 					}
 					else
 					{
-						this.loginAndLogoutReload(false, true);
+						this.logout();
 					}
 
 				}, self));

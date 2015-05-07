@@ -4812,7 +4812,7 @@ class Actions
 	public function DoChangePassword()
 	{
 		$mResult = false;
-		
+
 		$oAccount = $this->getAccountFromToken();
 		if ($oAccount)
 		{
@@ -5075,12 +5075,6 @@ class Actions
 //		\sleep(1);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError);
 
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		if (0 < \strlen($sRawKey))
-		{
-			$this->verifyCacheByKey($sRawKey);
-		}
-
 		$oAccount = $this->initMailClientConnection();
 
 		$oFolderCollection = null;
@@ -5098,6 +5092,8 @@ class Actions
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
 			$aSystemFolders = array();
 
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
@@ -5106,6 +5102,7 @@ class Actions
 			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
 			{
 				$bDoItAgain = false;
+
 				$sNamespace = $oFolderCollection->GetNamespace();
 				$sParent = empty($sNamespace) ? '' : \substr($sNamespace, 0, -1);
 
@@ -5113,23 +5110,28 @@ class Actions
 
 				$aList = array();
 				$aMap = $this->systemFoldersNames($oAccount);
-				if ('' === $this->GetActionParam('SentFolder', ''))
+
+				if ('' === $oSettingsLocal->GetConf('SentFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::SENT;
 				}
-				if ('' === $this->GetActionParam('DraftFolder', ''))
+
+				if ('' === $oSettingsLocal->GetConf('DraftFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
 				}
-				if ('' === $this->GetActionParam('SpamFolder', ''))
+
+				if ('' === $oSettingsLocal->GetConf('SpamFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::JUNK;
 				}
-				if ('' === $this->GetActionParam('TrashFolder', ''))
+
+				if ('' === $oSettingsLocal->GetConf('TrashFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::TRASH;
 				}
-				if ('' === $this->GetActionParam('ArchiveFolder', ''))
+
+				if ('' === $oSettingsLocal->GetConf('ArchiveFolder', ''))
 				{
 					$aList[] = \MailSo\Imap\Enumerations\FolderType::ALL;
 				}
@@ -5204,8 +5206,6 @@ class Actions
 			if ($oFolderCollection)
 			{
 				$oFolderCollection->FoldersHash = \md5(\implode("\x0", $this->recFoldersNames($oFolderCollection)));
-
-				$this->cacheByKey($sRawKey);
 			}
 		}
 
