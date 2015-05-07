@@ -286,6 +286,22 @@ class BodyStructure
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsFlowedFormat()
+	{
+		$bResult = !empty($this->aBodyParams['format']) &&
+			'flowed' === \strtolower(\trim($this->aBodyParams['format']));
+
+		if ($bResult && \in_array(\strtolower($this->MailEncodingName()), array('base64', 'quoted-printable')))
+		{
+			$bResult = false;
+		}
+
+		return $bResult;
+	}
+
+	/**
 	 * @return array|null
 	 */
 	public function SearchPlainParts()

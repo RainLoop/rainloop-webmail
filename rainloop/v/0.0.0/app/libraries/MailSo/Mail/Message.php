@@ -751,8 +751,8 @@ class Message
 				$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
 			}
 
-			$sHtmlParts = array();
-			$sPlainParts = array();
+			$aHtmlParts = array();
+			$aPlainParts = array();
 
 			foreach ($aTextParts as $oPart)
 			{
@@ -782,22 +782,27 @@ class Message
 
 					if ('text/html' === $oPart->ContentType())
 					{
-						$sHtmlParts[] = $sText;
+						$aHtmlParts[] = $sText;
 					}
 					else
 					{
-						$sPlainParts[] = $sText;
+						if ($oPart->IsFlowedFormat())
+						{
+							$sText = \MailSo\Base\Utils::DecodeFlowedFormat($sText);
+						}
+
+						$aPlainParts[] = $sText;
 					}
 				}
 			}
 
-			if (0 < \count($sHtmlParts))
+			if (0 < \count($aHtmlParts))
 			{
-				$this->sHtml = \implode('<br />', $sHtmlParts);
+				$this->sHtml = \implode('<br />', $aHtmlParts);
 			}
 			else
 			{
-				$this->sPlain = \trim(\implode("\n", $sPlainParts));
+				$this->sPlain = \trim(\implode("\n", $aPlainParts));
 			}
 
 			$aMatch = array();
@@ -813,7 +818,7 @@ class Message
 				$this->bPgpEncrypted = true;
 			}
 
-			unset($sHtmlParts, $sPlainParts, $aMatch);
+			unset($aHtmlParts, $aPlainParts, $aMatch);
 		}
 
 //		if (empty($this->sPgpSignature) && 'multipart/signed' === \strtolower($this->sContentType) &&

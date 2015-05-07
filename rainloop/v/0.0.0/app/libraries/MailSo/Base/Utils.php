@@ -602,6 +602,16 @@ END;
 	}
 
 	/**
+	 * @param string $sInputValue
+	 *
+	 * @return string
+	 */
+	public static function DecodeFlowedFormat($sInputValue)
+	{
+		return \preg_replace('/ ([\r]?[\n])/m', ' ', $sInputValue);
+	}
+
+	/**
 	 * @param string $sEncodedValue
 	 * @param string $sIncomingCharset = ''
 	 * @param string $sForcedIncomingCharset = ''
