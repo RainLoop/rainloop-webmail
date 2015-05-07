@@ -1271,7 +1271,7 @@ class Actions
 	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	private function getAccountFromToken($bThrowExceptionOnFalse = true)
+	public function getAccountFromToken($bThrowExceptionOnFalse = true)
 	{
 		return $this->GetAccountFromCustomToken($this->getAuthToken(), $bThrowExceptionOnFalse);
 	}
