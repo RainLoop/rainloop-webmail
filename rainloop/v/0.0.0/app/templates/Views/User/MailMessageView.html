@@ -237,32 +237,32 @@
 									</div>
 									<div class="clearfix"></div>
 								</div>
-								<div data-bind="visible: '' !== viewTo()">
+								<div class="uiLine" data-bind="visible: '' !== viewTo()">
 									<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
 									&nbsp;
-									<span class="to" data-bind="text: viewTo, title: viewTo"></span>
+									<span class="to uiLabelValue" data-bind="text: viewTo, title: viewTo"></span>
 								</div>
-								<div data-bind="visible: '' !== viewCc()">
+								<div class="uiLine" data-bind="visible: '' !== viewCc()">
 									<span class="i18n uiLabel labelCc" data-i18n="MESSAGE/LABEL_CC"></span>:
 									&nbsp;
-									<span class="cc" data-bind="text: viewCc, title: viewCc"></span>
+									<span class="cc uiLabelValue" data-bind="text: viewCc, title: viewCc"></span>
 								</div>
-								<div data-bind="visible: '' !== viewBcc()">
+								<div class="uiLine" data-bind="visible: '' !== viewBcc()">
 									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_BCC"></span>:
 									&nbsp;
-									<span class="bcc" data-bind="text: viewBcc, title: viewBcc"></span>
+									<span class="bcc uiLabelValue" data-bind="text: viewBcc, title: viewBcc"></span>
 								</div>
-								<div data-bind="visible: '' !== viewReplyTo()">
+								<div class="uiLine" data-bind="visible: '' !== viewReplyTo()">
 									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_REPLY_TO"></span>:
 									&nbsp;
-									<span class="bcc" data-bind="text: viewReplyTo, title: viewReplyTo"></span>
+									<span class="bcc uiLabelValue" data-bind="text: viewReplyTo, title: viewReplyTo"></span>
 								</div>
-								<div data-bind="visible: 0 < viewTimeStamp()">
+								<div class="uiLine" data-bind="visible: 0 < viewTimeStamp()">
 									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_DATE"></span>:
 									&nbsp;
-									<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
+									<span class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
 									&nbsp;
-									(<span class="date" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></span>)
+									(<span class="date uiLabelValue" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></span>)
 								</div>
 							</div>
 						</div>
