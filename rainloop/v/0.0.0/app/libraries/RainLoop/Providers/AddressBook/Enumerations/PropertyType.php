@@ -6,8 +6,9 @@ class PropertyType
 {
 	const UNKNOWN = 0;
 
+	const UID = 9;
 	const FULLNAME = 10;
-	
+
 	const FIRST_NAME = 15;
 	const LAST_NAME = 16;
 	const MIDDLE_NAME = 17;
@@ -21,7 +22,7 @@ class PropertyType
 //	const MOBILE = 32;
 //	const FAX = 33;
 	const WEB_PAGE = 32;
-	
+
 	const BIRTHDAY = 40;
 
 	const FACEBOOK = 90;

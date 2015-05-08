@@ -117,11 +117,14 @@ class PdoAddressBook
 		try
 		{
 			$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+
 			$aResponse = $oClient->propFind($sPath, array(
 				'{DAV:}getlastmodified',
+				'{DAV:}resourcetype',
 				'{DAV:}getetag'
 			), 1);
 
+//			$this->oLogger->WriteDump($aResponse);
 		}
 		catch (\Exception $oException)
 		{
@@ -137,10 +140,11 @@ class PdoAddressBook
 				if (!empty($sKey) && is_array($aItem))
 				{
 					$aItem = \array_change_key_case($aItem, \CASE_LOWER);
-					if (isset($aItem['{dav:}getetag'], $aItem['{dav:}getlastmodified']))
+					if (isset($aItem['{dav:}getetag']))
 					{
 						$aMatch = array();
-						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]))
+						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]) &&
+							(!$aItem['{dav:}resourcetype'] || !$aItem['{dav:}resourcetype']->is('{DAV:}collection')))
 						{
 							$sVcfFileName = \urldecode(\urldecode($aMatch[1]));
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
@@ -150,9 +154,22 @@ class PdoAddressBook
 								'uid' => $sKeyID,
 								'vcf' => $sVcfFileName,
 								'etag' => \trim(\trim($aItem['{dav:}getetag']), '"\''),
-								'lastmodified' => $aItem['{dav:}getlastmodified'],
-								'changed' => \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($aItem['{dav:}getlastmodified'])
+								'lastmodified' => '',
+								'changed' => 0
 							);
+
+							if (isset($aItem['{dav:}getlastmodified']))
+							{
+								$mResult[$sKeyID]['lastmodified'] = $aItem['{dav:}getlastmodified'];
+								$mResult[$sKeyID]['changed'] = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
+									$aItem['{dav:}getlastmodified']);
+							}
+							else
+							{
+								$mResult[$sKeyID]['changed'] = \MailSo\Base\DateTimeHelper::TryToParseSpecEtagFormat($mResult[$sKeyID]['etag']);
+								$mResult[$sKeyID]['lastmodified'] = 0 < $mResult[$sKeyID]['changed'] ?
+									\gmdate('c', $mResult[$sKeyID]['changed']) : '';
+							}
 
 							$mResult[$sKeyID]['changed_'] = \gmdate('c', $mResult[$sKeyID]['changed']);
 						}
@@ -168,10 +185,10 @@ class PdoAddressBook
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
-		$this->oLogger->Write($sCmd.' '.$sUrl.('PUT' === $sCmd && null !== $mData ? ' ('.\strlen($mData).')' : ''),
+		$this->oLogger->Write($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
 			\MailSo\Log\Enumerations\Type::INFO, 'DAV');
 
-		if ('PUT' === $sCmd)
+		if ('PUT' === $sCmd || 'POST' === $sCmd)
 		{
 			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 		}
@@ -179,13 +196,21 @@ class PdoAddressBook
 		$oResponse = false;
 		try
 		{
-			$oResponse = 'PUT' === $sCmd && null !== $mData ?
-				$oClient->request($sCmd, $sUrl, $mData) : $oClient->request($sCmd, $sUrl);
-
-			if ('GET' === $sCmd && false)
+			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData)
 			{
-				$this->oLogger->WriteDump($oResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+				$oResponse = $oClient->request($sCmd, $sUrl, $mData, array(
+					'Content-Type' => 'text/vcard; charset=utf-8'
+				));
 			}
+			else
+			{
+				$oResponse = $oClient->request($sCmd, $sUrl);
+			}
+
+//			if ('GET' === $sCmd)
+//			{
+//				$this->oLogger->WriteDump($oResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+//			}
 		}
 		catch (\Exception $oException)
 		{
@@ -196,22 +221,295 @@ class PdoAddressBook
 	}
 
 	/**
-	 * @param string $sEmail
-	 * @param string $sUrl
+	 * @param \SabreForRainLoop\DAV\Client $oClient
+	 * @param string $sPath
+	 *
+	 * @return bool
+	 */
+	private function detectionPropFind($oClient, $sPath)
+	{
+		$aResponse = null;
+
+		try
+		{
+			$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+
+			$aResponse = $oClient->propFind($sPath, array(
+				'{DAV:}current-user-principal',
+				'{DAV:}resourcetype',
+				'{DAV:}displayname',
+				'{urn:ietf:params:xml:ns:carddav}addressbook-home-set'
+			), 1);
+
+//			$this->oLogger->WriteDump($aResponse);
+		}
+		catch (\Exception $oException)
+		{
+			$this->oLogger->WriteException($oException);
+		}
+
+		return $aResponse;
+	}
+
+	/**
+	 * @param \SabreForRainLoop\DAV\Client $oClient
 	 * @param string $sUser
 	 * @param string $sPassword
 	 * @param string $sProxy = ''
 	 *
+	 * @return array
+	 */
+	private function getContactsPaths(&$oClient, $sUser, $sPassword, $sProxy = '')
+	{
+		$aContactsPaths = array();
+
+		$sCurrentUserPrincipal = '';
+		$sAddressbookHomeSet = '';
+		
+//		[{DAV:}current-user-principal] => /cloud/remote.php/carddav/principals/admin/
+//		[{urn:ietf:params:xml:ns:carddav}addressbook-home-set] => /cloud/remote.php/carddav/addressbooks/admin/
+
+		if (!$oClient)
+		{
+			return $aContactsPaths;
+		}
+
+		$aResponse = $this->detectionPropFind($oClient, '/.well-known/carddav');
+
+		$sNextPath = '';
+		$sFirstNextPath = '';
+		if (\is_array($aResponse))
+		{
+			foreach ($aResponse as $sKey => $aItem)
+			{
+				if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
+					false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
+				{
+					$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
+					continue;
+				}
+
+				if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']))
+				{
+					$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal'];
+					continue;
+				}
+
+				if (!empty($sKey))
+				{
+					$sFirstNextPath = $sKey;
+
+					$oResourceType = isset($aItem['{DAV:}resourcetype']) ? $aItem['{DAV:}resourcetype'] : null;
+					/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+					if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+					{
+						$sNextPath = $sKey;
+						continue;
+					}
+				}
+			}
+
+			if (empty($sNextPath) && empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet) && !empty($sFirstNextPath))
+			{
+				$sNextPath = $sFirstNextPath;
+			}
+		}
+
+		if (empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet))
+		{
+			if (empty($sNextPath))
+			{
+				return $aContactsPaths;
+			}
+			else
+			{
+				if (\preg_match('/^http[s]?:\/\//i', $sNextPath))
+				{
+					$oClient = $this->getDavClientFromUrl($sNextPath, $sUser, $sPassword, $sProxy);
+					if ($oClient)
+					{
+						$sNextPath = $oClient->__UrlPath__;
+					}
+					else
+					{
+						return $aContactsPaths;
+					}
+				}
+
+				$aResponse = $this->detectionPropFind($oClient, $sNextPath);
+				if (\is_array($aResponse))
+				{
+					foreach ($aResponse as $sKey => $aItem)
+					{
+						if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
+							false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
+						{
+							$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
+							continue;
+						}
+
+						if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']))
+						{
+							$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal'];
+							continue;
+						}
+					}
+				}
+			}
+		}
+
+		if (empty($sAddressbookHomeSet))
+		{
+			if (empty($sCurrentUserPrincipal))
+			{
+				return $aContactsPaths;
+			}
+			else
+			{
+				if (\preg_match('/^http[s]?:\/\//i', $sCurrentUserPrincipal))
+				{
+					$oClient = $this->getDavClientFromUrl($sCurrentUserPrincipal, $sUser, $sPassword, $sProxy);
+					if ($oClient)
+					{
+						$sCurrentUserPrincipal = $oClient->__UrlPath__;
+					}
+					else
+					{
+						return $aContactsPaths;
+					}
+				}
+
+				$aResponse = $this->detectionPropFind($oClient, $sCurrentUserPrincipal);
+				if (\is_array($aResponse))
+				{
+					foreach ($aResponse as $sKey => $aItem)
+					{
+						if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
+							false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
+						{
+							$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
+							continue;
+						}
+					}
+				}
+			}
+		}
+
+		if (empty($sAddressbookHomeSet))
+		{
+			return $aContactsPaths;
+		}
+		else
+		{
+			if (\preg_match('/^http[s]?:\/\//i', $sAddressbookHomeSet))
+			{
+				$oClient = $this->getDavClientFromUrl($sAddressbookHomeSet, $sUser, $sPassword, $sProxy);
+				if ($oClient)
+				{
+					$sAddressbookHomeSet = $oClient->__UrlPath__;
+				}
+				else
+				{
+					return $aContactsPaths;
+				}
+			}
+
+			$aResponse = $this->detectionPropFind($oClient, $sAddressbookHomeSet);
+			if (\is_array($aResponse))
+			{
+				foreach ($aResponse as $sKey => $aItem)
+				{
+					if (!empty($sKey) && $aItem && isset($aItem['{DAV:}resourcetype']))
+					{
+						$oResourceType = $aItem['{DAV:}resourcetype'];
+						/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+
+						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+						{
+							if ($oResourceType->is('{urn:ietf:params:xml:ns:carddav}addressbook'))
+							{
+								$aContactsPaths[$sKey] = isset($aItem['{DAV:}displayname']) ? \trim($aItem['{DAV:}displayname']) : '';
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $aContactsPaths;
+	}
+
+	/**
+	 * @param \SabreForRainLoop\DAV\Client $oClient
+	 * @param string $sPath
+	 *
 	 * @return bool
 	 */
-	public function Sync($sEmail, $sUrl, $sUser, $sPassword, $sProxy = '')
+	private function checkContactsPath(&$oClient, $sPath)
 	{
-		$this->SyncDatabase();
-
-		$iUserID = $this->getUserId($sEmail);
-		if (0 >= $iUserID)
+		if (!$oClient)
 		{
 			return false;
+		}
+
+		$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+
+		try
+		{
+			$aResponse = $oClient->propFind($sPath, array(
+				'{DAV:}resourcetype'
+			), 1);
+
+//			$this->oLogger->WriteDump($aResponse);
+		}
+		catch (\Exception $oException)
+		{
+			$this->oLogger->WriteException($oException);
+		}
+
+		$bGood = false;
+		if (\is_array($aResponse))
+		{
+			foreach ($aResponse as $sKey => $aItem)
+			{
+				if (!empty($sKey) && isset($aItem['{DAV:}resourcetype']))
+				{
+					$oResourceType = $aItem['{DAV:}resourcetype'];
+					/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+
+					if ($oResourceType && $oResourceType->is('{DAV:}collection') &&
+						$oResourceType->is('{urn:ietf:params:xml:ns:carddav}addressbook'))
+					{
+						$bGood = true;
+					}
+				}
+			}
+		}
+
+		if ($bGood)
+		{
+			$oClient->__UrlPath__ = $sPath;
+		}
+
+		return $bGood;
+	}
+
+	public function getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy = '')
+	{
+		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
+		{
+			$sUrl = \preg_replace('/^fruux\.com/i', 'dav.fruux.com', $sUrl);
+			$sUrl = \preg_replace('/^icloud\.com/i', 'contacts.icloud.com', $sUrl);
+			$sUrl = \preg_replace('/^gmail\.com/i', 'google.com', $sUrl);
+
+			if (\preg_match('/^(google\.|dav\.fruux\.com|contacts\.icloud\.com)/i', $sUrl))
+			{
+				$sUrl = 'https://'.$sUrl;
+			}
+			else
+			{
+				$sUrl = 'http://'.$sUrl;
+			}
 		}
 
 		$aUrl = \parse_url($sUrl);
@@ -238,17 +536,117 @@ class PdoAddressBook
 			$aSettings['proxy'] = $sProxy;
 		}
 
-		$sPath = $aUrl['path'];
+		$oClient = new \SabreForRainLoop\DAV\Client($aSettings);
+		$oClient->setVerifyPeer(false);
 
-		if (!\class_exists('Sabre\DAV\Client'))
+		$oClient->__UrlPath__ = $aUrl['path'];
+
+		$this->oLogger->Write('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+
+		return $oClient;
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sUrl
+	 * @param string $sUser
+	 * @param string $sPassword
+	 * @param string $sProxy = ''
+	 *
+	 * @return bool
+	 */
+	public function getDavClient($sUrl, $sUser, $sPassword, $sProxy = '')
+	{
+		if (!\class_exists('SabreForRainLoop\DAV\Client'))
 		{
 			return false;
 		}
 
-		$oClient = new \Sabre\DAV\Client($aSettings);
-		$oClient->setVerifyPeer(false);
+		$oClient = $this->getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy);
+		if (!$oClient)
+		{
+			return false;
+		}
 
-		$this->oLogger->Write('User: '.$aSettings['userName'].', Url: '.$sUrl, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+		$bGood = false;
+		$sPath = $oClient->__UrlPath__;
+
+		$bGood = false;
+		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath))
+		{
+			$sNewPath = '';
+
+			$aPaths = $this->getContactsPaths($oClient, $sUser, $sPassword, $sProxy);
+			$this->oLogger->WriteDump($aPaths);
+
+			if (\is_array($aPaths))
+			{
+				if (1 < \count($aPaths))
+				{
+					foreach ($aPaths as $sKey => $sValue)
+					{
+						if (\in_array(\strtolower($sValue), array('contacts', 'default', 'addressbook', 'address book')))
+						{
+							$sNewPath = $sKey;
+							break;
+						}
+					}
+				}
+
+				if (empty($sNewPath))
+				{
+					foreach ($aPaths as $sKey => $sValue)
+					{
+						$sNewPath = $sKey;
+						break;
+					}
+				}
+			}
+
+
+			$sPath = $sNewPath;
+
+			$bGood = $this->checkContactsPath($oClient, $sPath);
+		}
+		else
+		{
+			$bGood = true;
+		}
+
+		if (!$bGood)
+		{
+			$oClient = false;
+		}
+
+		return $oClient;
+	}
+
+	/**
+	 * @param string $sEmail
+	 * @param string $sUrl
+	 * @param string $sUser
+	 * @param string $sPassword
+	 * @param string $sProxy = ''
+	 *
+	 * @return bool
+	 */
+	public function Sync($sEmail, $sUrl, $sUser, $sPassword, $sProxy = '')
+	{
+		$this->SyncDatabase();
+
+		$iUserID = $this->getUserId($sEmail);
+		if (0 >= $iUserID)
+		{
+			return false;
+		}
+
+		$oClient = $this->getDavClient($sUrl, $sUser, $sPassword, $sProxy);
+		if (!$oClient)
+		{
+			return false;
+		}
+
+		$sPath = $oClient->__UrlPath__;
 
 		$aRemoteSyncData = $this->prepearRemoteSyncData($oClient, $sPath);
 		if (false === $aRemoteSyncData)
@@ -258,8 +656,8 @@ class PdoAddressBook
 
 		$aDatabaseSyncData = $this->prepearDatabaseSyncData($iUserID);
 
-//		$this->oLogger->WriteDump($aDatabaseSyncData);
 //		$this->oLogger->WriteDump($aRemoteSyncData);
+//		$this->oLogger->WriteDump($aDatabaseSyncData);
 
 		//+++del (from carddav)
 		foreach ($aDatabaseSyncData as $sKey => $aData)
@@ -315,10 +713,13 @@ class PdoAddressBook
 						{
 							$sExsistensBody = \trim($oResponse['body']);
 						}
+
+//						$this->oLogger->WriteDump($sExsistensBody);
 					}
 
 					$oResponse = $this->davClientRequest($oClient, 'PUT',
-						$sPath.$oContact->CardDavNameUri(), $oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
+						$sPath.(0 < \strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->CardDavNameUri()),
+						$oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
 
 					if ($oResponse && isset($oResponse['headers'], $oResponse['headers']['etag']))
 					{

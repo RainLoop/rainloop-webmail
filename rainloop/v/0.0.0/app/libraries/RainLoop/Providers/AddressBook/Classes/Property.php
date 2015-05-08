@@ -10,7 +10,7 @@ class Property
 	 * @var int
 	 */
 	public $IdProperty;
-	
+
 	/**
 	 * @var int
 	 */
@@ -49,7 +49,7 @@ class Property
 	public function Clear()
 	{
 		$this->IdProperty = 0;
-		
+
 		$this->Type = PropertyType::UNKNOWN;
 		$this->TypeStr = '';
 
@@ -62,11 +62,20 @@ class Property
 	/**
 	 * @return bool
 	 */
+	public function IsName()
+	{
+		return \in_array($this->Type, array(PropertyType::FULLNAME, PropertyType::FIRST_NAME,
+			PropertyType::LAST_NAME, PropertyType::MIDDLE_NAME, PropertyType::NICK_NAME));
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function IsEmail()
 	{
 		return PropertyType::EMAIl === $this->Type;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -111,13 +120,18 @@ class Property
 		$this->Value = \trim($this->Value);
 		$this->ValueCustom = \trim($this->ValueCustom);
 		$this->TypeStr = \trim($this->TypeStr);
-		
+
 		if (0 < \strlen($this->Value))
 		{
 			// lower
 			if ($this->IsEmail())
 			{
 				$this->Value = \MailSo\Base\Utils::StrToLowerIfAscii($this->Value);
+			}
+
+			if ($this->IsName())
+			{
+				$this->Value = \preg_replace('/[\s]+/u', ' ', $this->Value);
 			}
 
 			// phones clear value for searching

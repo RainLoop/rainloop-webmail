@@ -165,7 +165,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	public function AddSecret($sWord)
 	{
-		if (0 < \strlen(\trim($sWord)))
+		if (\is_string($sWord) && 0 < \strlen(\trim($sWord)))
 		{
 			$this->aSecretWords[] = $sWord;
 			$this->aSecretWords = \array_unique($this->aSecretWords);

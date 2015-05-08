@@ -1277,6 +1277,14 @@ class Actions
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsOpen()
+	{
+		return !$this->PremProvider();
+	}
+
+	/**
 	 * @param bool $bAdmin
 	 * @param string $sAuthAccountHash = ''
 	 *
@@ -1349,7 +1357,7 @@ class Actions
 			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
-			'AttahcmentsActions' => array(),
+			'AttachmentsActions' => array(),
 			'Plugins' => array()
 		);
 
@@ -1357,17 +1365,17 @@ class Actions
 		{
 			if (!!\class_exists('ZipArchive'))
 			{
-				$aResult['AttahcmentsActions'][] = 'zip';
+				$aResult['AttachmentsActions'][] = 'zip';
 			}
 
 			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
 			{
-				$aResult['AttahcmentsActions'][] = 'owncloud';
+				$aResult['AttachmentsActions'][] = 'owncloud';
 			}
 
 			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
 			{
-				$aResult['AttahcmentsActions'][] = 'dropbox';
+				$aResult['AttachmentsActions'][] = 'dropbox';
 			}
 		}
 
@@ -2833,7 +2841,7 @@ class Actions
 					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
 					{
 						$sSaveFolder = $this->Config()->Get('labs', 'owncloud_save_folder', '');
-						if (!empty($sSaveFolder))
+						if (empty($sSaveFolder))
 						{
 							$sSaveFolder = 'Attachments';
 						}
@@ -6775,6 +6783,8 @@ class Actions
 			{
 				$oContact->Etag = \md5($oContact->ToVCard());
 			}
+
+			$oContact->PopulateDisplayAndFullNameValue(true);
 
 			$bResult = $oAddressBookProvider->ContactSave($oAccount->ParentEmailHelper(), $oContact);
 		}

@@ -193,6 +193,7 @@ class Service
 
 			$sResult .= '<!--';
 			$sResult .= ' [version:'.APP_VERSION;
+			$sResult .= '][lic:'.($this->oActions->IsOpen() ? 'agpl' : 'cc');
 			$sResult .= '][time:'.\substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];

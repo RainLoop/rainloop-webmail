@@ -53,7 +53,7 @@
 
 		this.contactsIsAllowed = ko.observable(false);
 
-		this.attahcmentsActions = ko.observableArray([]);
+		this.attachmentsActions = ko.observableArray([]);
 
 		this.devEmail = '';
 		this.devPassword = '';
@@ -70,8 +70,8 @@
 
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
 
-		var mAttahcmentsActions = Settings.settingsGet('AttahcmentsActions');
-		this.attahcmentsActions(Utils.isNonEmptyArray(mAttahcmentsActions) ? mAttahcmentsActions : []);
+		var mAttachmentsActions = Settings.settingsGet('AttachmentsActions');
+		this.attachmentsActions(Utils.isNonEmptyArray(mAttachmentsActions) ? mAttachmentsActions : []);
 
 		this.devEmail = Settings.settingsGet('DevEmail');
 		this.devPassword = Settings.settingsGet('DevPassword');

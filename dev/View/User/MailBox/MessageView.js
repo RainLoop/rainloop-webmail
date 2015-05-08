@@ -65,7 +65,7 @@
 
 		this.pswp = null;
 
-		this.attahcmentsActions = AppStore.attahcmentsActions;
+		this.attachmentsActions = AppStore.attachmentsActions;
 
 		this.message = MessageStore.message;
 		this.messageListChecked = MessageStore.messageListChecked;
@@ -90,18 +90,18 @@
 		this.showAttachmnetControls = ko.observable(false);
 
 		this.allowAttachmnetControls = ko.computed(function () {
-			return 0 < this.attahcmentsActions().length;
+			return 0 < this.attachmentsActions().length;
 		}, this);
 
 		this.downloadAsZipAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('zip', this.attahcmentsActions());
+			return -1 < Utils.inArray('zip', this.attachmentsActions());
 		}, this);
 
 		this.downloadAsZipLoading = ko.observable(false);
 		this.downloadAsZipError = ko.observable(false).extend({'falseTimeout': 7000});
 
 		this.saveToOwnCloudAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('owncloud', this.attahcmentsActions());
+			return -1 < Utils.inArray('owncloud', this.attachmentsActions());
 		}, this);
 
 		this.saveToOwnCloudLoading = ko.observable(false);
@@ -123,7 +123,7 @@
 		}, this);
 
 		this.saveToDropboxAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('dropbox', this.attahcmentsActions());
+			return -1 < Utils.inArray('dropbox', this.attachmentsActions());
 		}, this);
 
 		this.saveToDropboxLoading = ko.observable(false);
