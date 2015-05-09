@@ -563,7 +563,10 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	;
 
 	fs.writeFileSync(dist + 'rainloop/appinfo/info.xml',
-		fs.readFileSync(dist + 'rainloop/appinfo/info.xml', 'utf8').replace('<version>0.0</version>', '<version>' + versionFull + '</version>'));
+		fs.readFileSync(dist + 'rainloop/appinfo/info.xml', 'utf8')
+			.replace('<version>0.0</version>', '<version>' + versionFull + '</version>')
+			.replace('<licence></licence>', '<licence>' + (cfg.community ? 'AGPLv3' : 'CC BY-NC-SA 3.0') + '</licence>')
+		);
 
 	fs.writeFileSync(dist + 'rainloop/appinfo/version', versionFull);
 	fs.writeFileSync(dist + 'rainloop/VERSION', versionFull);
@@ -571,7 +574,7 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	cfg.destPath = cfg.releasesPath + '/owncloud/' + versionFull + '/';
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
-	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'premium-') + versionFull + '.zip';
+	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'cc-') + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
 
 });

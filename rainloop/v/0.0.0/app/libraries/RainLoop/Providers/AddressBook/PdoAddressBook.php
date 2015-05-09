@@ -188,10 +188,10 @@ class PdoAddressBook
 		$this->oLogger->Write($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
 			\MailSo\Log\Enumerations\Type::INFO, 'DAV');
 
-		if ('PUT' === $sCmd || 'POST' === $sCmd)
-		{
-			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
-		}
+//		if ('PUT' === $sCmd || 'POST' === $sCmd)
+//		{
+//			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+//		}
 
 		$oResponse = false;
 		try
@@ -265,7 +265,7 @@ class PdoAddressBook
 
 		$sCurrentUserPrincipal = '';
 		$sAddressbookHomeSet = '';
-		
+
 //		[{DAV:}current-user-principal] => /cloud/remote.php/carddav/principals/admin/
 //		[{urn:ietf:params:xml:ns:carddav}addressbook-home-set] => /cloud/remote.php/carddav/addressbooks/admin/
 
@@ -297,14 +297,20 @@ class PdoAddressBook
 
 				if (!empty($sKey))
 				{
-					$sFirstNextPath = $sKey;
-
-					$oResourceType = isset($aItem['{DAV:}resourcetype']) ? $aItem['{DAV:}resourcetype'] : null;
-					/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
-					if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+					if (empty($sFirstNextPath))
 					{
-						$sNextPath = $sKey;
-						continue;
+						$sFirstNextPath = $sKey;
+					}
+
+					if (empty($sNextPath))
+					{
+						$oResourceType = isset($aItem['{DAV:}resourcetype']) ? $aItem['{DAV:}resourcetype'] : null;
+						/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+						{
+							$sNextPath = $sKey;
+							continue;
+						}
 					}
 				}
 			}
@@ -562,6 +568,17 @@ class PdoAddressBook
 			return false;
 		}
 
+		$aMatch = array();
+		$sUserAddressBookNameName = '';
+
+		if (\preg_match('/\|(.+)$/', $sUrl, $aMatch) && !empty($aMatch[1]))
+		{
+			$sUserAddressBookNameName = \trim($aMatch[1]);
+			$sUserAddressBookNameName = \MailSo\Base\Utils::StrToLowerIfAscii($sUserAddressBookNameName);
+
+			$sUrl = \preg_replace('/\|(.+)$/', '', $sUrl);
+		}
+
 		$oClient = $this->getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy);
 		if (!$oClient)
 		{
@@ -583,12 +600,30 @@ class PdoAddressBook
 			{
 				if (1 < \count($aPaths))
 				{
-					foreach ($aPaths as $sKey => $sValue)
+					if ('' !== $sUserAddressBookNameName)
 					{
-						if (\in_array(\strtolower($sValue), array('contacts', 'default', 'addressbook', 'address book')))
+						foreach ($aPaths as $sKey => $sValue)
 						{
-							$sNewPath = $sKey;
-							break;
+							$sValue = \MailSo\Base\Utils::StrToLowerIfAscii(\trim($sValue));
+							if ($sValue === $sUserAddressBookNameName)
+							{
+								$sNewPath = $sKey;
+								break;
+							}
+						}
+					}
+
+					if (empty($sNewPath))
+					{
+						foreach ($aPaths as $sKey => $sValue)
+						{
+							$sValue = \MailSo\Base\Utils::StrToLowerIfAscii($sValue);
+
+							if (\in_array($sValue, array('contacts', 'default', 'addressbook', 'address book')))
+							{
+								$sNewPath = $sKey;
+								break;
+							}
 						}
 					}
 				}

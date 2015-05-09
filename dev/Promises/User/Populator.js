@@ -162,12 +162,11 @@
 				Settings.settingsGet('ArchiveFolder') +
 				Settings.settingsGet('NullFolder'))
 			{
-				// TODO Magic Numbers
-				Settings.settingsSet('SentFolder', oData['SystemFolders'][2] || null);
-				Settings.settingsSet('DraftFolder', oData['SystemFolders'][3] || null);
-				Settings.settingsSet('SpamFolder', oData['SystemFolders'][4] || null);
-				Settings.settingsSet('TrashFolder', oData['SystemFolders'][5] || null);
-				Settings.settingsSet('ArchiveFolder', oData['SystemFolders'][12] || null);
+				Settings.settingsSet('SentFolder', oData['SystemFolders'][Enums.ServerFolderType.SENT] || null);
+				Settings.settingsSet('DraftFolder', oData['SystemFolders'][Enums.ServerFolderType.DRAFTS] || null);
+				Settings.settingsSet('SpamFolder', oData['SystemFolders'][Enums.ServerFolderType.JUNK] || null);
+				Settings.settingsSet('TrashFolder', oData['SystemFolders'][Enums.ServerFolderType.TRASH] || null);
+				Settings.settingsSet('ArchiveFolder', oData['SystemFolders'][Enums.ServerFolderType.ALL] || null);
 
 				bUpdate = true;
 			}

@@ -115,6 +115,21 @@
 	};
 
 	/**
+	 * @enum {number}
+	 */
+	Enums.ServerFolderType = {
+		'USER': 0,
+		'INBOX': 1,
+		'SENT': 2,
+		'DRAFTS': 3,
+		'JUNK': 4,
+		'TRASH': 5,
+		'IMPORTANT': 10,
+		'FLAGGED': 11,
+		'ALL': 12
+	};
+	
+	/**
 	 * @enum {string}
 	 */
 	Enums.LoginSignMeTypeAsString = {
