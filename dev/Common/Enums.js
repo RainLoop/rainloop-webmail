@@ -128,7 +128,7 @@
 		'FLAGGED': 11,
 		'ALL': 12
 	};
-	
+
 	/**
 	 * @enum {string}
 	 */
@@ -321,7 +321,9 @@
 	Enums.FilterConditionField = {
 		'From': 'From',
 		'Recipient': 'Recipient',
-		'Subject': 'Subject'
+		'Subject': 'Subject',
+		'Header': 'Header',
+		'Size': 'Size'
 	};
 
 	/**
@@ -331,7 +333,9 @@
 		'Contains': 'Contains',
 		'NotContains': 'NotContains',
 		'EqualTo': 'EqualTo',
-		'NotEqualTo': 'NotEqualTo'
+		'NotEqualTo': 'NotEqualTo',
+		'Over': 'Over',
+		'Under': 'Under'
 	};
 
 	/**

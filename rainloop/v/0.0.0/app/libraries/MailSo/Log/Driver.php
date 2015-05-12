@@ -48,6 +48,11 @@ abstract class Driver
 	protected $bTypedPrefix;
 
 	/**
+	 * @var string
+	 */
+	protected $sNewLine;
+
+	/**
 	 * @var int
 	 */
 	private $iWriteOnTimeoutOnly;
@@ -79,6 +84,7 @@ abstract class Driver
 	{
 		$this->sDatePattern = 'H:i:s';
 		$this->sName = 'INFO';
+		$this->sNewLine = "\r\n";
 		$this->bTimePrefix = true;
 		$this->bTypedPrefix = true;
 		$this->bGuidPrefix = true;
@@ -247,14 +253,43 @@ abstract class Driver
 	}
 
 	/**
+	 * @param string|array $mDesc
+	 * @param bool $bDiplayCrLf = false
+	 *
+	 * @return string
+	 */
+	protected function localWriteImplementation($mDesc, $bDiplayCrLf = false)
+	{
+		if ($bDiplayCrLf)
+		{
+			if (\is_array($mDesc))
+			{
+				foreach ($mDesc as &$sLine)
+				{
+					$sLine = \strtr($sLine, array("\r" => '\r', "\n" => '\n'.$this->sNewLine));
+					$sLine = \rtrim($mDesc);
+				}
+			}
+			else
+			{
+				$mDesc = \strtr($mDesc, array("\r" => '\r', "\n" => '\n'.$this->sNewLine));
+				$mDesc = \rtrim($mDesc);
+			}
+		}
+
+		return $this->writeImplementation($mDesc);
+	}
+
+	/**
 	 * @final
 	 * @param string $sDesc
 	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
 	 * @param string $sName = ''
+	 * @param bool $bDiplayCrLf = false
 	 *
 	 * @return bool
 	 */
-	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
+	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bDiplayCrLf = false)
 	{
 		$bResult = true;
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
@@ -285,18 +320,18 @@ abstract class Driver
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
 				{
 					$this->aCache[0] = $sFlush;
-					array_unshift($this->aCache, '');
+					\array_unshift($this->aCache, '');
 				}
 				else
 				{
-					array_unshift($this->aCache, $sFlush);
+					\array_unshift($this->aCache, $sFlush);
 				}
 
 				$this->aCache[] = '--- FlushLogCache: Trigger';
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 
 				$this->bFlushCache = true;
-				$bResult = $this->writeImplementation($this->aCache);
+				$bResult = $this->localWriteImplementation($this->aCache, $bDiplayCrLf);
 				$this->aCache = array();
 			}
 			else if (0 < $this->iWriteOnTimeoutOnly && \time() - APP_START_TIME > $this->iWriteOnTimeoutOnly)
@@ -305,18 +340,18 @@ abstract class Driver
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
 				{
 					$this->aCache[0] = $sFlush;
-					array_unshift($this->aCache, '');
+					\array_unshift($this->aCache, '');
 				}
 				else
 				{
-					array_unshift($this->aCache, $sFlush);
+					\array_unshift($this->aCache, $sFlush);
 				}
 
 				$this->aCache[] = '--- FlushLogCache: Trigger';
 				$this->aCache[] = $this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName);
 
 				$this->bFlushCache = true;
-				$bResult = $this->writeImplementation($this->aCache);
+				$bResult = $this->localWriteImplementation($this->aCache, $bDiplayCrLf);
 				$this->aCache = array();
 			}
 			else
@@ -326,11 +361,19 @@ abstract class Driver
 		}
 		else
 		{
-			$bResult = $this->writeImplementation(
-				$this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName));
+			$bResult = $this->localWriteImplementation(
+				$this->loggerLineImplementation($this->getTimeWithMicroSec(), $sDesc, $iType, $sName), $bDiplayCrLf);
 		}
 
 		return $bResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetNewLine()
+	{
+		return $this->sNewLine;
 	}
 
 	/**

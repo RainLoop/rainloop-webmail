@@ -19,6 +19,11 @@ class FilterCondition
 	 */
 	private $sValue;
 
+	/**
+	 * @var string
+	 */
+	private $sValueSecond;
+
 	public function __construct()
 	{
 		$this->Clear();
@@ -29,6 +34,7 @@ class FilterCondition
 		$this->sField = \RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
 		$this->sType = \RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
 		$this->sValue = '';
+		$this->sValueSecond = '';
 	}
 
 	/**
@@ -56,6 +62,14 @@ class FilterCondition
 	}
 
 	/**
+	 * @return string
+	 */
+	public function ValueSecond()
+	{
+		return $this->sValueSecond;
+	}
+
+	/**
 	 * @param array $aData
 	 *
 	 * @return array
@@ -70,7 +84,8 @@ class FilterCondition
 			$this->sType = isset($aData['Type']) ? $aData['Type'] :
 				\RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
 
-			$this->sValue = isset($aData['Value']) ? $aData['Value'] : '';
+			$this->sValue = isset($aData['Value']) ? (string) $aData['Value'] : '';
+			$this->sValueSecond = isset($aData['ValueSecond']) ? (string) $aData['ValueSecond'] : '';
 
 			return true;
 		}
@@ -88,7 +103,8 @@ class FilterCondition
 		return array(
 			'Field' => $this->Field(),
 			'Type' => $this->Type(),
-			'Value' => $this->Value()
+			'Value' => $this->Value(),
+			'ValueSecond' => $this->ValueSecond()
 		);
 	}
 

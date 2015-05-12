@@ -25,11 +25,20 @@
 		this.value = ko.observable('');
 		this.value.error = ko.observable(false);
 
+		this.valueSecond = ko.observable('');
+		this.valueSecond.error = ko.observable(false);
+
 		this.template = ko.computed(function () {
 
 			var sTemplate = '';
-			switch (this.type())
+			switch (this.field())
 			{
+				case Enums.FilterConditionField.Size:
+					sTemplate = 'SettingsFiltersConditionSize';
+					break;
+				case Enums.FilterConditionField.Header:
+					sTemplate = 'SettingsFiltersConditionMore';
+					break;
 				default:
 					sTemplate = 'SettingsFiltersConditionDefault';
 					break;
@@ -37,6 +46,11 @@
 
 			return sTemplate;
 
+		}, this);
+
+		this.field.subscribe(function () {
+			this.value('');
+			this.valueSecond('');
 		}, this);
 
 		this.regDisposables([this.template]);
@@ -52,6 +66,12 @@
 			return false;
 		}
 
+		if (Enums.FilterConditionField.Header === this.field() && '' === this.valueSecond())
+		{
+			this.valueSecond.error(true);
+			return false;
+		}
+
 		return true;
 	};
 
@@ -62,6 +82,7 @@
 			this.field(Utils.pString(oItem['Field']));
 			this.type(Utils.pString(oItem['Type']));
 			this.value(Utils.pString(oItem['Value']));
+			this.valueSecond(Utils.pString(oItem['ValueSecond']));
 
 			return true;
 		}
@@ -74,7 +95,8 @@
 		return {
 			'Field': this.field(),
 			'Type': this.type(),
-			'Value': this.value()
+			'Value': this.value(),
+			'ValueSecond': this.valueSecond()
 		};
 	};
 
@@ -85,6 +107,7 @@
 		oClone.field(this.field());
 		oClone.type(this.type());
 		oClone.value(this.value());
+		oClone.valueSecond(this.valueSecond());
 
 		return oClone;
 	};

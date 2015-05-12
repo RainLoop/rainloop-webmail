@@ -557,11 +557,11 @@ abstract class NetClient
 	 *
 	 * @return void
 	 */
-	protected function writeLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	protected function writeLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $bDiplayCrLf = false)
 	{
 		if ($this->oLogger)
 		{
-			$this->oLogger->Write($sDesc, $iDescType, $this->getLogName());
+			$this->oLogger->Write($sDesc, $iDescType, $this->getLogName(), true, $bDiplayCrLf);
 		}
 	}
 
@@ -573,7 +573,7 @@ abstract class NetClient
 	 */
 	protected function writeLogWithCrlf($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
 	{
-		$this->writeLog(\strtr($sDesc, array("\r" => '\r', "\n" => '\n')), $iDescType);
+		$this->writeLog($sDesc, $iDescType, true);
 	}
 
 	/**

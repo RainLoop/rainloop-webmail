@@ -163,12 +163,23 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	{
 		$sResult = '';
 		$sTypeWord = '';
+		$bTrue = true;
 
 		$sValue = \trim($oCondition->Value());
-		if (0 < strlen($sValue))
+		$sValueSecond = \trim($oCondition->ValueSecond());
+
+		if (0 < \strlen($sValue) ||
+			(0 < \strlen($sValue) && 0 < \strlen($sValueSecond) &&
+				\RainLoop\Providers\Filters\Enumerations\ConditionField::HEADER === $oCondition->Field()))
 		{
 			switch ($oCondition->Type())
 			{
+				case \RainLoop\Providers\Filters\Enumerations\ConditionType::OVER:
+					$sTypeWord = ':over';
+					break;
+				case \RainLoop\Providers\Filters\Enumerations\ConditionType::UNDER:
+					$sTypeWord = ':under';
+					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::NOT_EQUAL_TO:
 					$sResult .= 'not ';
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO:
@@ -178,6 +189,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$sResult .= 'not ';
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::CONTAINS:
 					$sTypeWord = ':contains';
+					break;
+				default:
+					$bTrue = false;
+					$sResult = '/* @Error: unknown type value */ false';
 					break;
 			}
 
@@ -192,26 +207,43 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SUBJECT:
 					$sResult .= 'header '.$sTypeWord.' ["Subject"]';
 					break;
+				case \RainLoop\Providers\Filters\Enumerations\ConditionField::HEADER:
+					$sResult .= 'header '.$sTypeWord.' ["'.$this->quote($sValueSecond).'"]';
+					break;
+				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE:
+					$sResult .= 'size '.$sTypeWord;
+					break;
+				default:
+					$bTrue = false;
+					$sResult = '/* @Error: unknown field value */ false';
+					break;
 			}
 
-			if (\in_array($oCondition->Field(), array(
-				\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM,
-				\RainLoop\Providers\Filters\Enumerations\ConditionField::RECIPIENT
-			)) && false !== \strpos($sValue, ','))
+			if ($bTrue)
 			{
-				$self = $this;
-				$aValue = \array_map(function ($sValue) use ($self) {
-					return '"'.$self->quote(\trim($sValue)).'"';
-				}, \explode(',', $sValue));
+				if (\in_array($oCondition->Field(), array(
+					\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM,
+					\RainLoop\Providers\Filters\Enumerations\ConditionField::RECIPIENT
+				)) && false !== \strpos($sValue, ','))
+				{
+					$self = $this;
+					$aValue = \array_map(function ($sValue) use ($self) {
+						return '"'.$self->quote(\trim($sValue)).'"';
+					}, \explode(',', $sValue));
 
-				$sResult .= ' ['.\trim(\implode(', ', $aValue)).']';
-			}
-			else
-			{
-				$sResult .= ' "'.$this->quote($sValue).'"';
-			}
+					$sResult .= ' ['.\trim(\implode(', ', $aValue)).']';
+				}
+				else if (\RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE === $oCondition->Field())
+				{
+					$sResult .= ' '.$this->quote($sValue);
+				}
+				else
+				{
+					$sResult .= ' "'.$this->quote($sValue).'"';
+				}
 
-			$sResult = \preg_replace('/[\s]+/u', ' ', $sResult);
+				$sResult = \preg_replace('/[\s]+/u', ' ', $sResult);
+			}
 		}
 		else
 		{
