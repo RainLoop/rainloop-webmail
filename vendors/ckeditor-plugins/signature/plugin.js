@@ -4,12 +4,12 @@ rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefor
 	if (!bHtml)
 	{
 		sText = sText
-			.replace(/\u200C([\s\S]*)\u200C/g, '<x-signature>$1</x-signature>')
+			.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
 			.replace(/\u200C/g, '')
 		;
 	}
 
-	sText = sText.replace(/<x-signature>[\s\S]*<\/x-signature>/gm, '');
+	sText = sText.replace(/\u0002([\s\S]*)\u0002/gm, '');
 
 	var
 		bEmptyText = '' === $.trim(sText),
@@ -23,19 +23,18 @@ rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefor
 
 	if (bInsertBefore)
 	{
-		sText = '<x-signature>' + sSignature + (bEmptyText ? '' : sNewLine) + '</x-signature>' + sText;
+		sText = "\u0002" + sSignature + (bEmptyText ? '' : sNewLine) + "\u0002" + sText;
 	}
 	else
 	{
-		sText = sText + '<x-signature>' + (bEmptyText ? '' : sNewLine) + sSignature + '</x-signature>';
+		sText = sText + "\u0002" + (bEmptyText ? '' : sNewLine) + sSignature + "\u0002";
 	}
 
 	if (!bHtml)
 	{
 		sText = sText
-			.replace(/<x-signature>([\s\S]*)<\/x-signature>/gm, '\u200C$1\u200C')
-			.replace(/<x-signature>/gm, '')
-			.replace(/<\/x-signature>/gm, '')
+			.replace(/\u0002([\s\S]*)\u0002/g, '\u200C$1\u200C')
+			.replace(/\u0002/g, '')
 		;
 	}
 

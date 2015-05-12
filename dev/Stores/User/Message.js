@@ -225,16 +225,16 @@
 	{
 		var
 			iCount = 0,
-			oMessagesBodiesDom = null,
+			oMessagesDom = null,
 			iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
 		;
 
 		if (0 < iEnd)
 		{
-			oMessagesBodiesDom = this.messagesBodiesDom();
-			if (oMessagesBodiesDom)
+			oMessagesDom = this.messagesBodiesDom();
+			if (oMessagesDom)
 			{
-				oMessagesBodiesDom.find('.rl-cache-class').each(function () {
+				oMessagesDom.find('.rl-cache-class').each(function () {
 					var oItem = $(this);
 					if (iEnd > oItem.data('rl-cache-count'))
 					{
@@ -246,7 +246,7 @@
 				if (0 < iCount)
 				{
 					_.delay(function () {
-						oMessagesBodiesDom.find('.rl-cache-purge').remove();
+						oMessagesDom.find('.rl-cache-purge').remove();
 					}, 300);
 				}
 			}
@@ -301,10 +301,10 @@
 
 	MessageUserStore.prototype.hideMessageBodies = function ()
 	{
-		var oMessagesBodiesDom = this.messagesBodiesDom();
-		if (oMessagesBodiesDom)
+		var oMessagesDom = this.messagesBodiesDom();
+		if (oMessagesDom)
 		{
-			oMessagesBodiesDom.find('.b-text-part').hide();
+			oMessagesDom.find('.b-text-part').hide();
 		}
 	};
 
@@ -508,7 +508,7 @@
 			sResultHtml = '',
 			bPgpSigned = false,
 			bPgpEncrypted = false,
-			oMessagesBodiesDom = this.messagesBodiesDom(),
+			oMessagesDom = this.messagesBodiesDom(),
 			oSelectedMessage = this.selectorMessageSelected(),
 			oMessage = this.message(),
 			aThreads = []
@@ -546,11 +546,12 @@
 					oMessage.initFlagsByJson(oData.Result);
 				}
 
-				oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
-				if (oMessagesBodiesDom)
+				oMessagesDom = oMessagesDom && oMessagesDom[0] ? oMessagesDom : null;
+				if (oMessagesDom)
 				{
 					sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
-					oTextBody = oMessagesBodiesDom.find('#' + sId);
+					oTextBody = oMessagesDom.find('#' + sId);
+
 					if (!oTextBody || !oTextBody[0])
 					{
 						bHasExternals = !!oData.Result.HasExternals;
@@ -622,7 +623,7 @@
 						oMessage.body = oBody;
 						if (oMessage.body)
 						{
-							oMessagesBodiesDom.append(oMessage.body);
+							oMessagesDom.append(oMessage.body);
 						}
 
 						oMessage.storeDataInDom();

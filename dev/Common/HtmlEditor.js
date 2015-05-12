@@ -103,7 +103,7 @@
 	 */
 	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
-		return sText.replace(/(\u200C|<x-signature>|<\/x-signature>)/g, '');
+		return sText.replace(/(\u200C|\u0002)/g, '');
 	};
 
 	/**

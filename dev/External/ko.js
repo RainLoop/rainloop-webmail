@@ -275,8 +275,7 @@
 
 	ko.bindingHandlers.csstext = {
 		'init': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
-			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
@@ -286,8 +285,7 @@
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
-			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}

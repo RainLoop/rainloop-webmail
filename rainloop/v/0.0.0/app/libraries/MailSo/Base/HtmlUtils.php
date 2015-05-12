@@ -86,15 +86,22 @@ class HtmlUtils
 
 	/**
 	 * @param string $sHtml
+	 * @param bool $bClearStyleAndHead = true
 	 *
 	 * @return string
 	 */
-	public static function ClearTags($sHtml)
+	public static function ClearTags($sHtml, $bClearStyleAndHead = true)
 	{
 		$aRemoveTags = array(
-			'head', 'link', 'base', 'meta', 'title', 'style', 'script', 'bgsound', 'keygen', 'source',
+			'link', 'base', 'meta', 'title', 'script', 'bgsound', 'keygen', 'source',
 			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio'
 		);
+
+		if ($bClearStyleAndHead)
+		{
+			$aRemoveTags[] = 'head';
+			$aRemoveTags[] = 'style';
+		}
 
 		$aToRemove = array(
 			'/<!doctype[^>]*>/msi',
@@ -149,6 +156,227 @@ class HtmlUtils
 
 		return \preg_replace($aToReplace, 'оn\\1', $sHtml);
 	}
+
+//	public static function ClearStyleUrlValueParserHelper($oUrlValue, $oRule, $oRuleSet,
+//		$oElem = null,
+//		&$bHasExternals = false, &$aFoundCIDs = array(),
+//		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
+//		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null
+//	)
+//	{
+//		if ($oUrlValue instanceof \Sabberworm\CSS\Value\URL)
+//		{
+//			$oNewRule = new \Sabberworm\CSS\Rule\Rule('x-rl-orig-'.$oRule->getRule());
+//			$oNewRule->setValue((string) $oRule->getValue());
+//			$oNewRule->setIsImportant($oRule->getIsImportant());
+//
+//			$oRuleSet->addRule($oNewRule);
+//
+//			$oUrl = $oUrlValue->getURL();
+//			$sUrl = $oUrl ? $oUrl->getString() : '';
+//
+//			if ('cid:' === \strtolower(\substr($sUrl, 0, 4)))
+//			{
+//				$aFoundCIDs[] = \substr($sUrl, 4);
+//
+//				$oRule->setRule('x-rl-mod-'.$oRule->getRule());
+//
+//				if ($oElem)
+//				{
+//					$oElem->setAttribute('data-x-style-mod', '1');
+//				}
+//			}
+//			else
+//			{
+//				if (\preg_match('/http[s]?:\/\//i', $sUrl) || '//' === \substr($sUrl, 0, 2))
+//				{
+//					$oRule->setRule('x-rl-mod-'.$oRule->getRule());
+//
+//					if (\in_array($sUrl, $aContentLocationUrls))
+//					{
+//						$aFoundedContentLocationUrls[] = $sUrl;
+//					}
+//					else
+//					{
+//						$bHasExternals = true;
+//						if (!$bDoNotReplaceExternalUrl)
+//						{
+//							if ($fAdditionalExternalFilter)
+//							{
+//								$sAdditionalResult = \call_user_func($fAdditionalExternalFilter, $sUrl);
+//								if (0 < \strlen($sAdditionalResult) && $oUrl)
+//								{
+//									$oUrl->setString($sAdditionalResult);
+//								}
+//							}
+//						}
+//					}
+//
+//					if ($oElem)
+//					{
+//						$oElem->setAttribute('data-x-style-mod', '1');
+//					}
+//				}
+//				else if ('data:image/' !== \strtolower(\substr(\trim($sUrl), 0, 11)))
+//				{
+//					$oRuleSet->removeRule($oRule);
+//				}
+//			}
+//		}
+//		else if ($oRule instanceof \Sabberworm\CSS\Rule\Rule)
+//		{
+//			if ('x-rl-' !== \substr($oRule->getRule(), 0, 5))
+//			{
+//				$oValue = $oRule->getValue();
+//				if ($oValue instanceof \Sabberworm\CSS\Value\URL)
+//				{
+//					\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
+//						$bHasExternals, $aFoundCIDs,
+//						$aContentLocationUrls, $aFoundedContentLocationUrls,
+//						$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
+//				}
+//				else if ($oValue instanceof \Sabberworm\CSS\Value\RuleValueList)
+//				{
+//					$aComps = $oValue->getListComponents();
+//					foreach ($aComps as $oValue)
+//					{
+//						if ($oValue instanceof \Sabberworm\CSS\Value\URL)
+//						{
+//							\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
+//								$bHasExternals, $aFoundCIDs,
+//								$aContentLocationUrls, $aFoundedContentLocationUrls,
+//								$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	public static function ClearStyleSmart($sStyle, $oElement = null,
+//		&$bHasExternals = false, &$aFoundCIDs = array(),
+//		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
+//		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null,
+//		$sSelectorPrefix = '')
+//	{
+//		$mResult = false;
+//		$oCss = null;
+//
+//		if (!\class_exists('\\Sabberworm\\CSS\\Parser'))
+//		{
+//			return $mResult;
+//		}
+//
+//		$sStyle = \trim($sStyle);
+//		if (empty($sStyle))
+//		{
+//			return '';
+//		}
+//
+//		$sStyle = \trim(\preg_replace('/[\r\n\t\s]+/', ' ', $sStyle));
+//
+//		try
+//		{
+//			$oSettings = \Sabberworm\CSS\Settings::create();
+//			$oSettings->beStrict();
+//			$oSettings->withMultibyteSupport(false);
+//
+//			$oCssParser = new \Sabberworm\CSS\Parser($sStyle, $oSettings);
+//			$oCss = $oCssParser->parse();
+//		}
+//		catch (\Exception $oEception)
+//		{
+//			unset($oEception);
+//			$mResult = false;
+//		}
+//
+//		if ($oCss)
+//		{
+//			foreach ($oCss->getAllDeclarationBlocks() as $oBlock)
+//			{
+//				foreach($oBlock->getSelectors() as $oSelector)
+//				{
+//					$sS = ' '.\trim($oSelector->getSelector()).' ';
+//					$sS = \preg_replace('/ body([\.# ])/i', ' [data-x-div-type="body"]$1', $sS);
+//					$sS = \preg_replace('/ html([\.# ])/i', ' [data-x-div-type="html"]$1', $sS);
+//
+//					if (0 < \strlen($sSelectorPrefix))
+//					{
+//						$sS = \trim($sSelectorPrefix.' '.\trim($sS));
+//					}
+//
+//					$oSelector->setSelector(\trim($sS));
+//				}
+//			}
+//
+//			$aRulesToRemove = array(
+//				'pointer-events', 'content', 'behavior', 'cursor',
+//			);
+//
+//			foreach($oCss->getAllRuleSets() as $oRuleSet)
+//			{
+//				foreach ($aRulesToRemove as $sRuleToRemove)
+//				{
+//					$oRuleSet->removeRule($sRuleToRemove);
+//				}
+//
+//				// position: fixed -> position: fixed -> absolute
+//				$aRules = $oRuleSet->getRules('position');
+//				if (\is_array($aRules))
+//				{
+//					foreach ($aRules as $oRule)
+//					{
+//						$mValue = $oRule->getValue();
+//						if (\is_string($mValue) && 'fixed' === \trim(\strtolower($mValue)))
+//						{
+//							$oRule->setValue('absolute');
+//						}
+//					}
+//				}
+//			}
+//
+//			foreach($oCss->getAllDeclarationBlocks() as $oRuleSet)
+//			{
+//				if ($oRuleSet instanceof \Sabberworm\CSS\RuleSet\RuleSet)
+//				{
+//					if ($oRuleSet instanceof \Sabberworm\CSS\RuleSet\DeclarationBlock)
+//					{
+//						$oRuleSet->expandBackgroundShorthand();
+//						$oRuleSet->expandListStyleShorthand();
+//					}
+//
+//					$aRules = $oRuleSet->getRules();
+//					if (\is_array($aRules) && 0 < \count($aRules))
+//					{
+//						foreach ($aRules as $oRule)
+//						{
+//							if ($oRule instanceof \Sabberworm\CSS\Rule\Rule)
+//							{
+//								\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper(null, $oRule, $oRuleSet,
+//									$oElement,
+//									$bHasExternals, $aFoundCIDs,
+//									$aContentLocationUrls, $aFoundedContentLocationUrls,
+//									$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter
+//								);
+//							}
+//						}
+//					}
+//				}
+//			}
+//
+//			try
+//			{
+//				$mResult = $oCss->render(\Sabberworm\CSS\OutputFormat::createCompact());
+//			}
+//			catch (\Exception $oEception)
+//			{
+//				unset($oEception);
+//				$mResult = false;
+//			}
+//		}
+//
+//		return $mResult;
+//	}
 
 	/**
 	 *
@@ -208,7 +436,7 @@ class HtmlUtils
 			{
 				// skip
 			}
-			else if (\in_array($sName, array('background-image', 'background', 'list-style-image', 'content'))
+			else if (\in_array($sName, array('background-image', 'background', 'list-style', 'list-style-image', 'content'))
 				&& \preg_match('/url[\s]?\(([^)]+)\)/im', $sValue, $aMatch) && !empty($aMatch[1]))
 			{
 				$sFullUrl = \trim($aMatch[0], '"\' ');
@@ -417,6 +645,8 @@ class HtmlUtils
 		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $fAdditionalExternalFilter = null)
 	{
 		$sResult = '';
+//		$aBodyStyles = array();
+
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
 		if (0 === \strlen($sHtml))
@@ -431,7 +661,7 @@ class HtmlUtils
 
 		$bHasExternals = false;
 
-		$sHtml = \MailSo\Base\HtmlUtils::ClearTags($sHtml);
+		$sHtml = \MailSo\Base\HtmlUtils::ClearTags($sHtml, false);
 		$sHtml = \MailSo\Base\HtmlUtils::ClearOn($sHtml);
 
 		$sHtmlAttrs = $sBodyAttrs = '';
@@ -451,11 +681,28 @@ class HtmlUtils
 			$aNodes = $oDom->getElementsByTagName('*');
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
-				if (\in_array(\strtolower($oElement->tagName), array('svg', 'head', 'link',
-					'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
-					'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')) && isset($oElement->parentNode))
+				if ($oElement)
 				{
-					@$oElement->parentNode->removeChild($oElement);
+					$sTagNameLower = \strtolower($oElement->tagName);
+
+					if (\in_array($sTagNameLower, array('svg', 'head', 'link',
+						'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
+						'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')))
+					{
+//						if ('style' === $sTagNameLower)
+//						{
+//							$sV = (string) $oElement->textContent;
+//							if (!empty($sV))
+//							{
+//								$aBodyStyles[] = $sV;
+//							}
+//						}
+
+						if (isset($oElement->parentNode))
+						{
+							@$oElement->parentNode->removeChild($oElement);
+						}
+					}
 				}
 			}
 
@@ -546,7 +793,8 @@ class HtmlUtils
 //				}
 
 				foreach (array(
-					'id', 'class', 'contenteditable', 'designmode', 'formaction',
+					'id', 'class',
+					'contenteditable', 'designmode', 'formaction',
 					'data-bind', 'xmlns', 'srcset'
 				) as $sAttr)
 				{

@@ -1,4 +1,5 @@
 /.idea
+/api.php
 /error.log
 /nbproject
 /npm-debug.log

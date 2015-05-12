@@ -72,7 +72,7 @@
 						<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
 					</button>
 				</div>
-				<div class="controls">
+				<div class="controls clearfix" style="margin-bottom: 20px">
 					<div class="pull-right social-buttons">
 						<a href="#" tabindex="-1" class="social-button" data-bind="visible: facebookLoginEnabled, command: facebookCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
 							<i class="icon-facebook-alt"></i>
@@ -88,7 +88,7 @@
 						</a>
 					</div>
 
-					<div class="signMeLabel" data-bind="component: {
+					<div class="signMeLabel" data-bind="visible: signMeVisibility, component: {
 						name: 'CheckboxSimple',
 						params: {
 							label: 'LOGIN/LABEL_SIGN_ME',
@@ -97,11 +97,6 @@
 						}
 					}"></div>
 
-<!--					<label class="signMeLabel inline" data-bind="click: function () { signMe(!signMe()); }, visible: signMeVisibility">
-						<i data-bind="css: signMe() ? 'checkboxSignMe icon-checkbox-checked' : 'checkboxSignMe icon-checkbox-unchecked'"></i>
-						&nbsp;&nbsp;
-						<span class="i18n i18n-animation" data-i18n="LOGIN/LABEL_SIGN_ME"></span>
-					</label>-->
 				</div>
 				<div class="controls clearfix" data-bind="visible: '' !== forgotPasswordLinkUrl || '' !== registrationLinkUrl">
 					<div class="forgot-link thm-forgot pull-left" data-bind="visible: '' !== forgotPasswordLinkUrl" style="text-align: center">

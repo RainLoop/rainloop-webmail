@@ -1682,7 +1682,8 @@ class Actions
 		$aResult['UserBackgroundHash'] = '';
 
 		if (!$bAdmin && $oSettings instanceof \RainLoop\Settings &&
-			$oSettingsLocal instanceof \RainLoop\Settings)
+			$oSettingsLocal instanceof \RainLoop\Settings &&
+			$oAccount)
 		{
 			if ($oConfig->Get('webmail', 'allow_languages_on_settings', true))
 			{
@@ -9277,7 +9278,8 @@ class Actions
 
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
-						$fAdditionalExternalFilter);
+						$fAdditionalExternalFilter
+					);
 
 					$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
 

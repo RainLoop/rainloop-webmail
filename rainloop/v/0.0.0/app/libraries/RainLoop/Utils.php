@@ -14,6 +14,25 @@ class Utils
 	}
 
 	/**
+	 * @param string $sFileName
+	 * @param string $sSignature
+	 *
+	 * @return bool
+	 */
+	static public function PgpVerifyFile($sFileName, $sSignature)
+	{
+		$sKeyFile = APP_VERSION_ROOT_PATH.'app/resources/RainLoop.asc';
+		if (\file_exists($sKeyFile) && \file_exists($sFileName) && !empty($sSignature))
+		{
+			$sKeyFile = @\file_get_contents($sKeyFile);
+			return !empty($sKeyFile); // TODO
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * @param string $sString
 	 * @param string $sKey
 	 *

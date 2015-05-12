@@ -861,7 +861,7 @@
 		;
 
 		sText = sHtml
-			.replace(/<x-signature>([\s\S]*)<\/x-signature>/gm, '\u200C$1\u200C')
+			.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
@@ -1014,7 +1014,7 @@
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-			.replace(/\u200C([\s\S]*)\u200C/g, '<x-signature>$1</x-signature>')
+			.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
 			.replace(/\n/g, '<br />')
 		;
 

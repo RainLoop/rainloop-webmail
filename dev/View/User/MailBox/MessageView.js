@@ -24,6 +24,8 @@
 
 		Cache = require('Common/Cache'),
 
+		EmailModel = require('Model/Email'),
+
 		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
@@ -531,6 +533,32 @@
 		}
 	};
 
+	/**
+	 * @todo
+	 * @param {string} sEmail
+	 */
+	MessageViewMailBoxUserView.prototype.displayMailToPopup = function (sMailToUrl)
+	{
+		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
+
+		var
+			sResult = '',
+			aTo = [],
+			fParseEmailLine = function (sLine) {
+				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function (sItem) {
+						var oEmailModel = new EmailModel();
+						oEmailModel.mailsoParse(sItem);
+						return '' !== oEmailModel.email ? oEmailModel : null;
+					})) : null;
+			}
+		;
+
+		aTo = fParseEmailLine(sMailToUrl);
+		sResult = aTo && aTo[0] ? aTo[0].email : '';
+
+		window.console.log(sResult);
+	};
+
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
 		var
@@ -666,6 +694,21 @@
 				// setup maito protocol
 				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View/Popup/Compose')));
 			})
+//			.on('mouseover', 'a', _.debounce(function (oEvent) {
+//
+//				if (oEvent)
+//				{
+//					var sMailToUrl = $(this).attr('href');
+//					if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
+//					{
+//						sMailToUrl = sMailToUrl.toString().substr(7);
+//						self.displayMailToPopup(sMailToUrl);
+//					}
+//				}
+//
+//				return true;
+//
+//			}, 1000))
 			.on('click', '.attachmentsPlace .attachmentIconParent', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
 				{
