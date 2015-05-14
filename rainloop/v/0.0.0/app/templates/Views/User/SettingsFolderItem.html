@@ -25,7 +25,7 @@
 			<i class="icon-eye"></i>
 		</span>
 	</td>
-	<td class="check-folder-parent">
+	<td class="check-folder-parent" data-bind="visible: $root.displaySpecSetting">
 		<span class="uncheck-folder" data-bind="visible: canBeChecked() && subScribed() && !checkable(), click: function(oFolder) { $root.checkableTrueFolder(oFolder); }">
 			<i class="icon-check-mark-circle-two"></i>
 		</span>

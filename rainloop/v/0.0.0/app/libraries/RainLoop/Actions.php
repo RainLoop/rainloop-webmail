@@ -1353,6 +1353,7 @@ class Actions
 			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
+			'FolderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'Community' => true,
 			'PremType' => false,
 			'Admin' => array(),
@@ -9496,6 +9497,7 @@ class Actions
 					'FoldersHash' => isset($mResponse->FoldersHash) ? $mResponse->FoldersHash : '',
 					'IsThreadsSupported' => $mResponse->IsThreadsSupported,
 					'Optimized' => $mResponse->Optimized,
+					'CountRec' => $mResponse->CountRec(),
 					'SystemFolders' => isset($mResponse->SystemFolders) && \is_array($mResponse->SystemFolders) ?
 						$mResponse->SystemFolders : array()
 				));

@@ -26,6 +26,7 @@
 	 */
 	function FoldersUserSettings()
 	{
+		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
 
 		this.folderListHelp = ko.observable('').extend({'throttle': 100});

@@ -9,13 +9,26 @@ rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefor
 		;
 	}
 
-	sText = sText.replace(/\u0002([\s\S]*)\u0002/gm, '');
-
 	var
-		bEmptyText = '' === $.trim(sText),
+		sP = '~~~~@~~~~',
+		bEmptyText = false,
 		sNewLine = (bHtml ? '<br />' : "\n")
 	;
 
+	sText = sText.replace(/\u0002([\s\S]*)\u0002/gm, sP + '$1' + sP);
+
+	if (editor.__previos_signature)
+	{
+		sText = sText
+			.replace(sP + editor.__previos_signature + sP, '')
+			.replace(sP + editor.__previos_signature + sP, '')
+			.replace(sP + editor.__previos_signature + sP, '')
+		;
+	}
+
+	sText = sText.replace(sP, '').replace(sP, '').replace(sP, '').replace(sP, '');
+
+	bEmptyText = '' === $.trim(sText);
 	if (!bEmptyText && bHtml)
 	{
 		bEmptyText = '' !== $.trim(editor.__plainUtils.htmlToPlain(sText));
@@ -24,10 +37,12 @@ rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefor
 	if (bInsertBefore)
 	{
 		sText = "\u0002" + sSignature + (bEmptyText ? '' : sNewLine) + "\u0002" + sText;
+		editor.__previos_signature = sSignature + (bEmptyText ? '' : sNewLine);
 	}
 	else
 	{
 		sText = sText + "\u0002" + (bEmptyText ? '' : sNewLine) + sSignature + "\u0002";
+		editor.__previos_signature = (bEmptyText ? '' : sNewLine) + sSignature;
 	}
 
 	if (!bHtml)

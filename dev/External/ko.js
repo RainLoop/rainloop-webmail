@@ -315,18 +315,6 @@
 		}
 	};
 
-	ko.bindingHandlers.keypress = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-			$(oElement).on('keypress.koKeyPress', function (oEvent) {
-				fValueAccessor().call(oViewModel, oEvent);
-			});
-
-			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
-				$(oElement).off('keypress.koKeyPress');
-			});
-		}
-	};
-
 	ko.bindingHandlers.onEnter = {
 		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keypress.koOnEnter', function (oEvent) {
@@ -339,6 +327,21 @@
 
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 				$(oElement).off('keypress.koOnEnter');
+			});
+		}
+	};
+
+	ko.bindingHandlers.onSpace = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keyup.koOnSpace', function (oEvent) {
+				if (oEvent && 32 === window.parseInt(oEvent.keyCode, 10))
+				{
+					fValueAccessor().call(oViewModel, oEvent);
+				}
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keyup.koOnSpace');
 			});
 		}
 	};

@@ -269,8 +269,6 @@
 						window.CKEDITOR.env.isCompatible = true;
 					}
 
-					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
-
 					self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
 					self.editor.on('key', function(oEvent) {
@@ -306,9 +304,6 @@
 							self.editor.removeMenuItem('copy');
 							self.editor.removeMenuItem('paste');
 						}
-
-						self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
-
 
 						self.__resizable = true;
 						self.__inited = true;

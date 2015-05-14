@@ -53,14 +53,8 @@
 
 	_.extend(AbstracCheckbox.prototype, AbstractComponent.prototype);
 
-	AbstracCheckbox.prototype.click = function() {
-		if (!this.readOnly && this.enable() && !this.disable())
-		{
-			this.value(!this.value());
-		}
-	};
-
-	AbstracCheckbox.prototype.keypress = function() {
+	AbstracCheckbox.prototype.click = function()
+	{
 		if (!this.readOnly && this.enable() && !this.disable())
 		{
 			this.value(!this.value());

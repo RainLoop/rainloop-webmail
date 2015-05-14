@@ -1207,7 +1207,8 @@
 					});
 
 					sText = '<br /><br />' + sReplyTitle + ':' +
-						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
+						'<blockquote>' + Utils.trim(sText) + '</blockquote>';
+//						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
 
 					break;
 
@@ -1223,6 +1224,7 @@
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
 							'<br /><br />' + Utils.trim(sText) + '<br /><br />';
 					break;
+
 				case Enums.ComposeType.ForwardAsAttachment:
 					sText = '';
 					break;

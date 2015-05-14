@@ -12,7 +12,7 @@
 					<span class="flag-wrapper">
 						<span data-bind="css: 'flag flag-' + language()" style=""></span>
 					</span>
-					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, keypress: selectLanguage"></span>
+					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
 					&nbsp;&nbsp;
 					<div data-bind="component: {
 						name: 'SaveTrigger',

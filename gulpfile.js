@@ -4,8 +4,8 @@
 var
 	pkg = require('./package.json'),
 	head = {
-		cc: '/* RainLoop Webmail (c) RainLoop Team | Licensed under CC BY-NC-SA 3.0 */',
-		agpl: '/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */'
+		rainloop: '/* RainLoop Webmail (c) RainLoop Team | Licensed under RainLoop Software License */',
+		agpl: '/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL v3 */'
 	},
 	cfg = {
 		devVersion: '0.0.0',
@@ -46,7 +46,7 @@ var
 
 function getHead()
 {
-	return !cfg.community ? head.cc : head.agpl;
+	return !cfg.community ? head.rainloop : head.agpl;
 }
 
 function regOtherMinTask(sName, sPath, sInc, sOut, sHeader)
@@ -454,7 +454,6 @@ gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
 gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
 		.pipe(stripbom())
-//		.pipe(replace("\u200B", "\\u200B"))
 		.pipe(replace('console.log("Detecting changes using MutationObservers")', 'true'))
 		.pipe(header("\uFEFF")) // BOM
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
@@ -565,7 +564,7 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	fs.writeFileSync(dist + 'rainloop/appinfo/info.xml',
 		fs.readFileSync(dist + 'rainloop/appinfo/info.xml', 'utf8')
 			.replace('<version>0.0</version>', '<version>' + versionFull + '</version>')
-			.replace('<licence></licence>', '<licence>' + (cfg.community ? 'AGPLv3' : 'CC BY-NC-SA 3.0') + '</licence>')
+			.replace('<licence></licence>', '<licence>' + (cfg.community ? 'AGPLv3' : 'RainLoop Software License') + '</licence>')
 		);
 
 	fs.writeFileSync(dist + 'rainloop/appinfo/version', versionFull);
@@ -574,7 +573,7 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	cfg.destPath = cfg.releasesPath + '/owncloud/' + versionFull + '/';
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
-	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'cc-') + versionFull + '.zip';
+	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'standard-') + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
 
 });

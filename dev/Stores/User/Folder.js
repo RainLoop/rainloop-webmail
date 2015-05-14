@@ -19,6 +19,8 @@
 	 */
 	function FolderUserStore()
 	{
+		this.displaySpecSetting = ko.observable(true);
+
 		this.sentFolder = ko.observable('');
 		this.draftFolder = ko.observable('');
 		this.spamFolder = ko.observable('');

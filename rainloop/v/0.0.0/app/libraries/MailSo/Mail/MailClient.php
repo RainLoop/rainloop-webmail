@@ -1373,7 +1373,11 @@ class MailClient
 		$sCriteriasResult = \trim($sCriteriasResult);
 		if ('' === $sCriteriasResult)
 		{
-			$sCriteriasResult = 'ALL';
+			$sCriteriasResult = 'NOT DELETED'; // ALL
+		}
+		else
+		{
+			$sCriteriasResult .= ' NOT DELETED';
 		}
 
 		return $sCriteriasResult;

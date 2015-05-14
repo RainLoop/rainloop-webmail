@@ -117,7 +117,7 @@
 				<label class="flag-selector">
 					<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
 					&nbsp;&nbsp;
-					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, keypress: selectLanguage, onTab: selectLanguageOnTab"></span>
+					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage, onTab: selectLanguageOnTab"></span>
 				</label>
 			</div>
 			{{INCLUDE/BottomFooter/PLACE}}

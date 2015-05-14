@@ -201,6 +201,8 @@ class Email
 		}
 
 		$sEmail = \trim(\trim($sEmail), '<>');
+		$sEmail = \rtrim(\trim($sEmail), '.');
+		$sEmail = \trim($sEmail);
 
 		$sName = \trim(\trim($sName), '"');
 		$sName = \trim($sName, '\'');

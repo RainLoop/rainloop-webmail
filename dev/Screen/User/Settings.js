@@ -72,10 +72,10 @@
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if (AccountStore.isRootAccount() &&
+		if (AccountStore.isRootAccount() && (
 			(Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
 			Settings.settingsGet('AllowFacebookSocial') ||
-			Settings.settingsGet('AllowTwitterSocial'))
+			Settings.settingsGet('AllowTwitterSocial')))
 		{
 			kn.addSettingsViewModel(require('Settings/User/Social'),
 				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');

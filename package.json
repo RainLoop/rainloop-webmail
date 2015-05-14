@@ -1,8 +1,8 @@
 {
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
-	"version": "1.9.0",
-	"release": "327",
+	"version": "1.9.1",
+	"release": "329",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
 	"main": "gulpfile.js",
@@ -19,6 +19,10 @@
 		{
 			"type": "AGPL 3.0",
 			"ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
+		},
+		{
+			"type": "RainLoop Software License",
+			"ulr": "http://www.rainloop.net/licensing/"
 		}
 	],
 	"bugs": {
@@ -36,7 +40,7 @@
 		"plugins"
 	],
 	"readmeFilename": "README.md",
-	"ownCloudPackageVersion": "4.0",
+	"ownCloudPackageVersion": "4.1",
 	"engines": {
 		"node": ">= 0.10.0"
 	},

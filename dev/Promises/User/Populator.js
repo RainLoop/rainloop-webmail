@@ -90,6 +90,15 @@
 
 				if (oCacheFolder)
 				{
+					if (!FolderStore.displaySpecSetting())
+					{
+						oCacheFolder.checkable(true);
+					}
+					else
+					{
+						oCacheFolder.checkable(!!oFolder.Checkable);
+					}
+
 					oCacheFolder.collapsed(!self.isFolderExpanded(oCacheFolder.fullNameHash));
 
 					if (oFolder.Extended)
@@ -131,6 +140,14 @@
 		if (oData && 'Collection/FolderCollection' === oData['@Object'] &&
 			oData['@Collection'] && Utils.isArray(oData['@Collection']))
 		{
+			var
+				iLimit = Utils.pInt(Settings.settingsGet('FolderSpecLimit')),
+				iC = Utils.pInt(oData['CountRec'])
+			;
+
+			iLimit = 100 < iLimit ? 100 : (10 > iLimit ? 10 : iLimit);
+
+			FolderStore.displaySpecSetting(0 >= iC || iLimit < iC);
 			FolderStore.folderList(this.folderResponseParseRec(
 				Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection']));
 		}

@@ -534,14 +534,14 @@
 				oEvent.preventDefault();
 				return;
 			}
-
-			if (oSender && oSender.tagName && oSender.tagName.match(/INPUT|TEXTAREA/i))
+			else if (iKey === Enums.EventKeyCode.A)
 			{
-				return;
-			}
+				if (oSender && ('true' === '' + oSender.contentEditable ||
+					(oSender.tagName && oSender.tagName.match(/INPUT|TEXTAREA/i))))
+				{
+					return;
+				}
 
-			if (iKey === Enums.EventKeyCode.A)
-			{
 				if (window.getSelection)
 				{
 					window.getSelection().removeAllRanges();

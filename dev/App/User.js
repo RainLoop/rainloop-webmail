@@ -675,8 +675,8 @@
 							bCheck = false,
 							sUid = '',
 							aList = [],
-							bUnreadCountChange = false,
-							oFlags = null
+							oFlags = null,
+							bUnreadCountChange = false
 						;
 
 						if (oFolder)
