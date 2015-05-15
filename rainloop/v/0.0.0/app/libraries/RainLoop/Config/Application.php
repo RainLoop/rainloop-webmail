@@ -320,6 +320,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
 				'use_local_proxy_for_external_images' => array(false),
+				'startup_url' => array(''),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

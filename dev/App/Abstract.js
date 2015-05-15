@@ -225,6 +225,7 @@
 	{
 		var
 			kn = require('Knoin/Knoin'),
+			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
 			sCustomLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink')),
 			bInIframe = !!Settings.settingsGet('InIframe')
 		;
@@ -234,12 +235,18 @@
 
 		if (bLogout)
 		{
+			sStartupUrl = '';
 			this.clearClientSideToken();
 		}
 
 		if (bLogout && bClose && window.close)
 		{
 			window.close();
+		}
+
+		if (bAdmin)
+		{
+			sStartupUrl = '';
 		}
 
 		sCustomLogoutLink = sCustomLogoutLink || (bAdmin ? Links.rootAdmin() : Links.rootUser());
@@ -260,7 +267,7 @@
 		else
 		{
 			kn.routeOff();
-			kn.setHash(Links.root(), true);
+			kn.setHash(Links.root(sStartupUrl), true);
 			kn.routeOff();
 
 			_.delay(function () {

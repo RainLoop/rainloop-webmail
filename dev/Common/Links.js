@@ -39,11 +39,12 @@
 	};
 
 	/**
+	 * @param {string=} sStartupUrl
 	 * @return {string}
 	 */
-	Links.prototype.root = function ()
+	Links.prototype.root = function (sStartupUrl)
 	{
-		return this.sBase;
+		return this.sBase + Utils.pString(sStartupUrl);
 	};
 
 	/**

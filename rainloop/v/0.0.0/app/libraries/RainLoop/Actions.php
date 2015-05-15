@@ -1354,6 +1354,7 @@ class Actions
 			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'FolderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
+			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'Community' => true,
 			'PremType' => false,
 			'Admin' => array(),
