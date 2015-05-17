@@ -6,6 +6,10 @@ class Utils
 {
 	static $Cookies = null;
 
+	static $RSA = null;
+
+	static $RsaKey = null;
+
 	/**
 	 * @return void
 	 */
@@ -31,6 +35,145 @@ class Utils
 		return false;
 	}
 
+	/**
+	 * @return \Crypt_RSA|null
+	 */
+	static public function CryptRSA()
+	{
+		if (null === \RainLoop\Utils::$RSA)
+		{
+			if (!\defined('_phpseclib_'))
+			{
+				\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
+				define('_phpseclib_', true);
+			}
+
+			if (!\class_exists('Crypt_RSA'))
+			{
+				include_once 'Crypt/RSA.php';
+				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+			}
+
+			if (\class_exists('Crypt_RSA'))
+			{
+				$oRsa = new \Crypt_RSA();
+
+				$oRsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
+				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
+
+				$sPrivateKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
+					\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
+
+				if (!empty($sPrivateKey))
+				{
+					$oRsa->loadKey($sPrivateKey, CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
+					$oRsa->loadKey($oRsa->getPublicKey(), CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
+
+					\RainLoop\Utils::$RSA = $oRsa;
+				}
+			}
+		}
+
+		return \RainLoop\Utils::$RSA;
+	}
+
+	/**
+	 * @return string
+	 */
+	static public function RsaPrivateKey()
+	{
+		if (!empty(\RainLoop\Utils::$RsaKey))
+		{
+			return \RainLoop\Utils::$RsaKey;
+		}
+
+		\RainLoop\Utils::$RsaKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
+			\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
+
+		\RainLoop\Utils::$RsaKey = \is_string(\RainLoop\Utils::$RsaKey) ? \RainLoop\Utils::$RsaKey : '';
+	}
+
+	/**
+	 * @param string $sString
+	 * @param string $sKey = ''
+	 *
+	 * @return string|false
+	 */
+	static public function EncryptStringRSA($sString, $sKey = '')
+	{
+		$sResult = '';
+		$sKey = \md5($sKey);
+
+		$sPrivateKey = \RainLoop\Utils::RsaPrivateKey();
+		if (!empty($sPrivateKey))
+		{
+			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
+			$oKeyDetails = \openssl_pkey_get_details($oPrivKey);
+
+			if (!empty($oKeyDetails['key']) && !empty($oKeyDetails['bits']))
+			{
+				$oPubKey = \openssl_pkey_get_public($oKeyDetails['key']);
+
+				$iC = (($oKeyDetails['bits'] / 8) - 15);
+				$aString = \str_split($sString, $iC);
+
+				foreach ($aString as $iIndex => $sLine)
+				{
+					$sEncrypted = '';
+					\openssl_public_encrypt($sLine, $sEncrypted, $oPubKey);
+					$aString[$iIndex] = $sEncrypted;
+				}
+
+				$aString[] = $sKey;
+				$sResult = @\serialize($aString);
+
+				\openssl_free_key($oPubKey);
+			}
+
+			\openssl_free_key($oPrivKey);
+		}
+
+		return $sResult;
+	}
+
+	/**
+	 * @param string $sString
+	 * @param string $sKey = ''
+	 *
+	 * @return string|false
+	 */
+	static public function DecryptStringRSA($sString, $sKey = '')
+	{
+		$sResult = '';
+		$sKey = \md5($sKey);
+
+		$sPrivateKey = \RainLoop\Utils::RsaPrivateKey();
+		if (!empty($sPrivateKey) && !empty($sString))
+		{
+			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
+
+			$aString = @\unserialize($sString);
+			if (\is_array($aString))
+			{
+				if ($sKey === \array_pop($aString))
+				{
+					foreach ($aString as $iIndex => $sLine)
+					{
+						$sDecrypted = '';
+						\openssl_private_decrypt($sLine, $sDecrypted, $oPrivKey);
+						$aString[$iIndex] = $sDecrypted;
+					}
+
+					$sResult = \implode('', $aString);
+				}
+			}
+
+			\openssl_free_key($oPrivKey);
+		}
+
+		return $sResult;
+	}
 
 	/**
 	 * @param string $sString
@@ -55,6 +198,42 @@ class Utils
 	}
 
 	/**
+	 * @param string $sString
+	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	static public function EncryptStringQ($sString, $sKey)
+	{
+//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
+//		{
+//			return \RainLoop\Utils::EncryptStringRSA($sString,
+//				$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+//		}
+
+		return \MailSo\Base\Crypt::XxteaEncrypt($sString,
+			$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+	}
+
+	/**
+	 * @param string $sEncriptedString
+	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	static public function DecryptStringQ($sEncriptedString, $sKey)
+	{
+//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
+//		{
+//			return \RainLoop\Utils::DecryptStringRSA($sEncriptedString,
+//				$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+//		}
+
+		return \MailSo\Base\Crypt::XxteaDecrypt($sEncriptedString,
+			$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+	}
+
+	/**
 	 * @param array $aValues
 	 * @param string $sCustomKey = ''
 	 *
@@ -63,7 +242,7 @@ class Utils
 	static public function EncodeKeyValues(array $aValues, $sCustomKey = '')
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\RainLoop\Utils::EncryptString(\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+			\RainLoop\Utils::EncryptString(@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	/**
@@ -74,8 +253,36 @@ class Utils
 	 */
 	static public function DecodeKeyValues($sEncodedValues, $sCustomKey = '')
 	{
-		$aResult = \unserialize(
+		$aResult = @\unserialize(
 			\RainLoop\Utils::DecryptString(
+				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
+
+		return \is_array($aResult) ? $aResult : array();
+	}
+
+	/**
+	 * @param array $aValues
+	 * @param string $sCustomKey = ''
+	 *
+	 * @return string
+	 */
+	static public function EncodeKeyValuesQ(array $aValues, $sCustomKey = '')
+	{
+		return \MailSo\Base\Utils::UrlSafeBase64Encode(
+			\RainLoop\Utils::EncryptStringQ(
+				@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+	}
+
+	/**
+	 * @param string $sEncodedValues
+	 * @param string $sCustomKey = ''
+	 *
+	 * @return array
+	 */
+	static public function DecodeKeyValuesQ($sEncodedValues, $sCustomKey = '')
+	{
+		$aResult = @\unserialize(
+			\RainLoop\Utils::DecryptStringQ(
 				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
 
 		return \is_array($aResult) ? $aResult : array();
@@ -296,33 +503,33 @@ class Utils
 	 */
 	public static function GetCookie($sName, $mDefault = null)
 	{
-		if (null === self::$Cookies)
+		if (null === \RainLoop\Utils::$Cookies)
 		{
-			self::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
-		return isset(self::$Cookies[$sName]) ? self::$Cookies[$sName] : $mDefault;
+		return isset(\RainLoop\Utils::$Cookies[$sName]) ? \RainLoop\Utils::$Cookies[$sName] : $mDefault;
 	}
 
 	public static function SetCookie($sName, $sValue = '', $iExpire = 0, $sPath = '/', $sDomain = '', $sSecure = false, $bHttpOnly = false)
 	{
-		if (null === self::$Cookies)
+		if (null === \RainLoop\Utils::$Cookies)
 		{
-			self::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
-		self::$Cookies[$sName] = $sValue;
+		\RainLoop\Utils::$Cookies[$sName] = $sValue;
 		@\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $sSecure, $bHttpOnly);
 	}
 
 	public static function ClearCookie($sName)
 	{
-		if (null === self::$Cookies)
+		if (null === \RainLoop\Utils::$Cookies)
 		{
-			self::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
-		unset(self::$Cookies[$sName]);
+		unset(\RainLoop\Utils::$Cookies[$sName]);
 		@\setcookie($sName, '', \time() - 3600 * 24 * 30, '/');
 	}
 

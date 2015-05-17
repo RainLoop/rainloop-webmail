@@ -194,9 +194,8 @@ class Actions
 	 */
 	public function GetShortLifeSpecAuthToken($iLife = 60)
 	{
-		$sToken = $this->getAuthToken();
-		$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
-		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && is_array($aAccountHash))
+		$aAccountHash = \RainLoop\Utils::DecodeKeyValues($this->getLocalAuthToken());
+		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && \is_array($aAccountHash))
 		{
 			$aAccountHash[10] = \time() + $iLife;
 			return \RainLoop\Utils::EncodeKeyValues($aAccountHash);
@@ -458,6 +457,18 @@ class Actions
 					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $sLine);
 			}
 
+			if (false !== \strpos($sLine, '{request:domain}'))
+			{
+				$sLine = \str_replace('{request:domain}',
+					$this->Http()->GetHost(false, true, true), $sLine);
+			}
+
+			if (false !== \strpos($sLine, '{request:domain-clear}'))
+			{
+				$sLine = \str_replace('{request:domain-clear}',
+					\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $sLine);
+			}
+
 			$sLine = \preg_replace('/\{request:([^}]*)\}/i', 'request', $sLine);
 		}
 
@@ -489,8 +500,12 @@ class Actions
 				{
 					$sEmail = $oAccount->Email();
 					$sLine = \str_replace('{user:email}', $sEmail, $sLine);
-					$sLine = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
-					$sLine = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:login}',
+						\MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain}',
+						\MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain-clear}',
+						\MailSo\Base\Utils::GetClearDomainName(\MailSo\Base\Utils::GetDomainFromEmail($sEmail)), $sLine);
 				}
 			}
 
@@ -552,7 +567,7 @@ class Actions
 	{
 		if ($oAccount)
 		{
-			$sSpecAuthToken = '_'.$oAccount->GetAuthToken();
+			$sSpecAuthToken = '_'.$oAccount->GetAuthTokenQ();
 
 			$this->SetSpecAuthToken($sSpecAuthToken);
 			\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0, '/', null, null, true);
@@ -560,7 +575,7 @@ class Actions
 			if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
 			{
 				\RainLoop\Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
-					\RainLoop\Utils::EncodeKeyValues(array(
+					\RainLoop\Utils::EncodeKeyValuesQ(array(
 						'e' => $oAccount->Email(),
 						't' => $oAccount->SignMeToken()
 					)),
@@ -569,9 +584,9 @@ class Actions
 				$this->StorageProvider()->Put($oAccount,
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 					'sign_me',
-					\RainLoop\Utils::EncodeKeyValues(array(
+					\RainLoop\Utils::EncodeKeyValuesQ(array(
 						'Time' => \time(),
-						'AuthToken' => $oAccount->GetAuthToken(),
+						'AuthToken' => $oAccount->GetAuthTokenQ(),
 						'SignMetToken' => $oAccount->SignMeToken()
 					))
 				);
@@ -618,7 +633,7 @@ class Actions
 	/**
 	 * @return string
 	 */
-	private function getAuthToken()
+	private function getLocalAuthToken()
 	{
 		$sToken = $this->GetSpecAuthToken();
 		return !empty($sToken) && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
@@ -637,7 +652,7 @@ class Actions
 	 */
 	public function ClearAdminAuthToken()
 	{
-		$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
+		$aAdminHash = \RainLoop\Utils::DecodeKeyValuesQ($this->getAdminAuthToken());
 		if (
 			!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
 			'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1]
@@ -1085,7 +1100,7 @@ class Actions
 			$sRand = '';
 		}
 
-		return '' === $sRand ? '' : \RainLoop\Utils::EncodeKeyValues(array('token', \md5(APP_SALT), $sRand));
+		return '' === $sRand ? '' : \RainLoop\Utils::EncodeKeyValuesQ(array('token', \md5(APP_SALT), $sRand));
 	}
 
 	/**
@@ -1098,7 +1113,7 @@ class Actions
 		$bResult = false;
 		if ($this->Config()->Get('security', 'allow_admin_panel', true))
 		{
-			$aAdminHash = \RainLoop\Utils::DecodeKeyValues($this->getAdminAuthToken());
+			$aAdminHash = \RainLoop\Utils::DecodeKeyValuesQ($this->getAdminAuthToken());
 			if (!empty($aAdminHash[0]) && !empty($aAdminHash[1]) && !empty($aAdminHash[2]) &&
 				'token' === $aAdminHash[0] && \md5(APP_SALT) === $aAdminHash[1] &&
 				'' !== $this->Cacher(null, true)->Get(\RainLoop\KeyPathHelper::SessionAdminKey($aAdminHash[2]), '')
@@ -1124,7 +1139,7 @@ class Actions
 		if (!empty($sTo))
 		{
 			\RainLoop\Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
-				\RainLoop\Utils::EncodeKeyValues(array(
+				\RainLoop\Utils::EncodeKeyValuesQ(array(
 					'Time' => \microtime(true),
 					'MailTo' => 'MailTo',
 					'To' => $sTo
@@ -1177,16 +1192,17 @@ class Actions
 	 * @param string $sToken
 	 * @param bool $bThrowExceptionOnFalse = true
 	 * @param bool $bValidateShortToken = true
+	 * @param bool $bQ = false
 	 *
 	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken($sToken, $bThrowExceptionOnFalse = true, $bValidateShortToken = true)
+	public function GetAccountFromCustomToken($sToken, $bThrowExceptionOnFalse = true, $bValidateShortToken = true, $bQ = false)
 	{
 		$oResult = false;
 		if (!empty($sToken))
 		{
-			$aAccountHash = \RainLoop\Utils::DecodeKeyValues($sToken);
+			$aAccountHash = $bQ ? \RainLoop\Utils::DecodeKeyValuesQ($sToken) : \RainLoop\Utils::DecodeKeyValues($sToken);
 			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
 				8 <= \count($aAccountHash) && // length checking
 				!empty($aAccountHash[7]) && // does short token exist
@@ -1236,7 +1252,7 @@ class Actions
 		$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
 		if (!empty($sSignMeToken))
 		{
-			$aTokenData = \RainLoop\Utils::DecodeKeyValues($sSignMeToken);
+			$aTokenData = \RainLoop\Utils::DecodeKeyValuesQ($sSignMeToken);
 			if (\is_array($aTokenData) && !empty($aTokenData['e']) && !empty($aTokenData['t']))
 			{
 				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
@@ -1246,13 +1262,13 @@ class Actions
 
 				if (!empty($sTokenSettings))
 				{
-					$aSignMeData = \RainLoop\Utils::DecodeKeyValues($sTokenSettings);
+					$aSignMeData = \RainLoop\Utils::DecodeKeyValuesQ($sTokenSettings);
 					if (\is_array($aSignMeData) &&
 						!empty($aSignMeData['AuthToken']) &&
 						!empty($aSignMeData['SignMetToken']) &&
 						$aSignMeData['SignMetToken'] === $aTokenData['t'])
 					{
-						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false);
+						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false, true);
 					}
 				}
 			}
@@ -1273,7 +1289,7 @@ class Actions
 	 */
 	public function getAccountFromToken($bThrowExceptionOnFalse = true)
 	{
-		return $this->GetAccountFromCustomToken($this->getAuthToken(), $bThrowExceptionOnFalse);
+		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
 	/**
@@ -1467,9 +1483,10 @@ class Actions
 					if (null !== $sToken)
 					{
 						\RainLoop\Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
-						$mMailToData = \RainLoop\Utils::DecodeKeyValues($sToken);
-						if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] &&
-							!empty($mMailToData['To']))
+
+						$mMailToData = \RainLoop\Utils::DecodeKeyValuesQ($sToken);
+						if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) &&
+							'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To']))
 						{
 							$aResult['MailToEmail'] = $mMailToData['To'];
 						}
@@ -1496,6 +1513,8 @@ class Actions
 					$aResult['WelcomePageUrl'] = '';
 					$aResult['WelcomePageDisplay'] = '';
 				}
+
+				$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount);
 			}
 			else
 			{
@@ -1509,6 +1528,8 @@ class Actions
 
 				$aResult['WelcomePageUrl'] = '';
 				$aResult['WelcomePageDisplay'] = '';
+
+				$aResult['StartupUrl'] = '';
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
@@ -2109,51 +2130,27 @@ class Actions
 	 */
 	private function clientRsaDecryptHelper($sEncryptedData)
 	{
-		$aMatch = array();
-		if ('rsa:xxx:' === substr($sEncryptedData, 0, 8) && $this->Config()->Get('security', 'use_rsa_encryption', false))
-		{
-			$oLogger = $this->Logger();
-			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
-
-			$sPrivateKey = file_exists(APP_PRIVATE_DATA.'rsa/private') ?
-				\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
-
-			if (!empty($sPrivateKey))
-			{
-				$sData = \trim(\substr($sEncryptedData, 8));
-
-				if (!\class_exists('Crypt_RSA'))
-				{
-					\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-					include_once 'Crypt/RSA.php';
-					\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
-				}
-
-				$oLogger->HideErrorNotices(true);
-
-				$oRsa = new \Crypt_RSA();
-				$oRsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
-				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
-				$oRsa->loadKey($sPrivateKey, CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
-
-				$sData = $oRsa->decrypt(\base64_decode($sData));
-				if (\preg_match('/^[a-z0-9]{32}:(.+):[a-z0-9]{32}$/', $sData, $aMatch) && isset($aMatch[1]))
-				{
-					$sEncryptedData = $aMatch[1];
-				}
-				else
-				{
-					$oLogger->Write('Invalid decrypted data', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
-				}
-
-				$oLogger->HideErrorNotices(false);
-			}
-			else
-			{
-				$oLogger->Write('Private key is not found', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
-			}
-		}
+//		$aMatch = array();
+//		if ('rsa:xxx:' === \substr($sEncryptedData, 0, 8) && $this->Config()->Get('security', 'use_rsa_encryption', false))
+//		{
+//			$oLogger = $this->Logger();
+//			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
+//			$oLogger->HideErrorNotices(true);
+//
+//			$sData = \trim(\substr($sEncryptedData, 8));
+//			$sData = \RainLoop\Utils::DecryptStringRSA(\base64_decode($sData));
+//
+//			if (false !== $sData && \preg_match('/^[a-z0-9]{32}:(.+):[a-z0-9]{32}$/', $sData, $aMatch) && isset($aMatch[1]))
+//			{
+//				$sEncryptedData = $aMatch[1];
+//			}
+//			else
+//			{
+//				$oLogger->Write('Invalid decrypted data', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
+//			}
+//
+//			$oLogger->HideErrorNotices(false);
+//		}
 
 		return $sEncryptedData;
 	}
@@ -2290,6 +2287,7 @@ class Actions
 						1 < \count($aOrder['Accounts']))
 					{
 						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
+
 						$aAccounts = \array_filter($aAccounts, function ($sHash) {
 							return 5 < \strlen($sHash);
 						});
@@ -2390,10 +2388,11 @@ class Actions
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
+	 * @param bool $bAllowIdentities = false
 	 *
 	 * @return array
 	 */
-	public function GetIdentities($oAccount)
+	public function GetIdentities($oAccount, $bAllowIdentities = false)
 	{
 		$aIdentities = array();
 		if ($oAccount)
@@ -2421,14 +2420,14 @@ class Actions
 
 					if ($oItem && $oItem->Validate())
 					{
-						if ('' === $oItem->Id())
+						if ($oItem->IsAccountIdentities())
 						{
 							$oItem->SetEmail($oAccount->Email());
 							$bHasAccountIdentity = true;
 
-							\array_unshift($aIdentities, $oItem);
+							\array_push($aIdentities, $oItem);
 						}
-						else
+						else if ($bAllowIdentities)
 						{
 							\array_push($aIdentities, $oItem);
 						}
@@ -2442,7 +2441,7 @@ class Actions
 					\RainLoop\Model\Identity::NewInstanceFromAccount($oAccount));
 			}
 
-			if (1 < \count($aIdentities))
+			if (1 < \count($aIdentities) && $bAllowIdentities)
 			{
 				$sOrder = $this->StorageProvider()->Get($oAccount,
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -2454,8 +2453,16 @@ class Actions
 					1 < \count($aOrder['Identities']))
 				{
 					$aList = $aOrder['Identities'];
+					foreach ($aList as $iIndex => $sItem)
+					{
+						if ('' === $sItem)
+						{
+							$aList[$iIndex] = '---';
+						}
+					}
+
 					\usort($aIdentities, function ($a, $b) use ($aList) {
-						return \array_search($a->Id(), $aList) < \array_search($b->Id(), $aList) ? -1 : 1;
+						return \array_search($a->Id(true), $aList) < \array_search($b->Id(true), $aList) ? -1 : 1;
 					});
 				}
 			}
@@ -2527,14 +2534,20 @@ class Actions
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aIdentities = array()
+	 * @param bool $bAllowIdentities = false
 	 *
 	 * @return array
 	 */
-	public function SetIdentities($oAccount, $aIdentities = array())
+	public function SetIdentities($oAccount, $aIdentities = array(), $bAllowIdentities = false)
 	{
 		$aResult = array();
 		foreach ($aIdentities as $oItem)
 		{
+			if (!$bAllowIdentities && $oItem && !$oItem->IsAccountIdentities())
+			{
+				continue;
+			}
+
 			$aResult[] = $oItem->ToSimpleJSON(false);
 		}
 
@@ -2675,7 +2688,7 @@ class Actions
 		$oNewAccount->SetParentEmail($sParentEmail);
 
 		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
-		if (0 === \strlen($oAccount->ParentEmail()))
+		if (!$oAccount->IsAdditionalAccount())
 		{
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 		}
@@ -2824,7 +2837,7 @@ class Actions
 							$mResult = array(
 								'Files' => array(array(
 									'FileName' => 'attachments.zip',
-									'Hash' => \RainLoop\Utils::EncodeKeyValues(array(
+									'Hash' => \RainLoop\Utils::EncodeKeyValuesQ(array(
 										'V' => APP_VERSION,
 										'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 										'FileName' => 'attachments.zip',
@@ -2912,7 +2925,7 @@ class Actions
 					{
 						$mResult['Files'][] = array(
 							'FileName' => isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat',
-							'Hash' => \RainLoop\Utils::EncodeKeyValues($aItem)
+							'Hash' => \RainLoop\Utils::EncodeKeyValuesQ($aItem)
 						);
 					}
 
@@ -2943,20 +2956,34 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
-		$aIdentitiesForSave = array();
+		$aIdentities = $this->GetIdentities($oAccount,
+			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount));
 
-		$aIdentities = $this->GetIdentities($oAccount);
+		$bAdded = false;
+		$aIdentitiesForSave = array();
 		foreach ($aIdentities as $oItem)
 		{
-			if ($oItem && $oItem->Id() !== $oIdentity->Id())
+			if ($oItem)
 			{
-				$aIdentitiesForSave[] = $oItem;
+				if ($oItem->Id() === $oIdentity->Id())
+				{
+					$aIdentitiesForSave[] = $oIdentity;
+					$bAdded = true;
+				}
+				else
+				{
+					$aIdentitiesForSave[] = $oItem;
+				}
 			}
 		}
 
-		$aIdentitiesForSave[] = $oIdentity;
+		if (!$bAdded)
+		{
+			$aIdentitiesForSave[] = $oIdentity;
+		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave));
+		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave,
+			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount)));
 	}
 
 	/**
@@ -2968,6 +2995,11 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
 		$sId = \trim($this->GetActionParam('IdToDelete', ''));
 		if (empty($sId))
 		{
@@ -2975,7 +3007,7 @@ class Actions
 		}
 
 		$aNew = array();
-		$aIdentities = $this->GetIdentities($oAccount);
+		$aIdentities = $this->GetIdentities($oAccount, $this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount));
 		foreach ($aIdentities as $oItem)
 		{
 			if ($oItem && $sId !== $oItem->Id())
@@ -2984,7 +3016,8 @@ class Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew));
+		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew,
+			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount)));
 	}
 
 	/**
@@ -3110,7 +3143,7 @@ class Actions
 		$aAccounts = $this->GetActionParam('Accounts', null);
 		$aIdentities = $this->GetActionParam('Identities', null);
 
-		if (!\is_array($aAccounts) || !\is_array($aIdentities))
+		if (!\is_array($aAccounts) && !\is_array($aIdentities))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3118,8 +3151,8 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, $this->StorageProvider()->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG, 'accounts_identities_order',
 			\json_encode(array(
-				'Accounts' => $aAccounts,
-				'Identities' => $aIdentities
+				'Accounts' => \is_array($aAccounts) ? $aAccounts : array(),
+				'Identities' => \is_array($aIdentities) ? $aIdentities : array()
 			))
 		));
 	}
@@ -3134,6 +3167,7 @@ class Actions
 		$oAccount = $this->getAccountFromToken();
 
 		$mAccounts = false;
+
 		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$mAccounts = $this->GetAccounts($oAccount);
@@ -3147,7 +3181,8 @@ class Actions
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
-			'Identities' => $this->GetIdentities($oAccount)
+			'Identities' => $this->GetIdentities($oAccount,
+				$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount))
 		));
 	}
 
@@ -3448,6 +3483,9 @@ class Actions
 			case \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS:
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_accounts', 'bool');
 				break;
+			case \RainLoop\Enumerations\Capa::IDENTITIES:
+				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_identities', 'bool');
+				break;
 			case \RainLoop\Enumerations\Capa::TEMPLATES:
 				$this->setConfigFromParams($oConfig, $sParamName, 'capa', 'templates', 'bool');
 				break;
@@ -3560,6 +3598,7 @@ class Actions
 		});
 
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS);
+		$this->setCapaFromParams($oConfig, 'CapaIdentities', \RainLoop\Enumerations\Capa::IDENTITIES);
 		$this->setCapaFromParams($oConfig, 'CapaTemplates', \RainLoop\Enumerations\Capa::TEMPLATES);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuthForce', \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE);
@@ -7128,19 +7167,19 @@ class Actions
 		try
 		{
 			$aAttachments = $this->GetActionParam('Attachments', array());
-			if (is_array($aAttachments) && 0 < count($aAttachments))
+			if (\is_array($aAttachments) && 0 < \count($aAttachments))
 			{
 				$mResult = array();
 				foreach ($aAttachments as $sAttachment)
 				{
-					$aValues = \RainLoop\Utils::DecodeKeyValues($sAttachment);
-					if (is_array($aValues))
+					$aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment);
+					if (\is_array($aValues))
 					{
 						$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
 						$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
 						$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
 
-						$sTempName = md5($sAttachment);
+						$sTempName = \md5($sAttachment);
 						if (!$this->FilesProvider()->FileExists($oAccount, $sTempName))
 						{
 							$this->MailClient()->MessageMimeStream(
@@ -7738,7 +7777,7 @@ class Actions
 			$aParams = $this->GetActionParam('Params', null);
 			$this->Http()->ServerNoCache();
 
-			$aData = \RainLoop\Utils::DecodeKeyValues($sRawKey);
+			$aData = \RainLoop\Utils::DecodeKeyValuesQ($sRawKey);
 			if (isset($aParams[0], $aParams[1], $aParams[2]) &&
 				'Raw' === $aParams[0] && 'FramedView' === $aParams[2] && isset($aData['Framed']) && $aData['Framed'] && $aData['FileName'])
 			{
@@ -7840,6 +7879,11 @@ class Actions
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS;
+		}
+
+		if ($oConfig->Get('webmail', 'allow_additional_identities', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::IDENTITIES;
 		}
 
 		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
@@ -8399,7 +8443,7 @@ class Actions
 		$bResult = false;
 		if (!empty($sRawKey))
 		{
-			$aValues = \RainLoop\Utils::DecodeKeyValues($sRawKey);
+			$aValues = \RainLoop\Utils::DecodeKeyValuesQ($sRawKey);
 			if (is_array($aValues))
 			{
 				$bResult = $aValues;
@@ -9205,7 +9249,7 @@ class Actions
 
 				$sSubject = $mResult['Subject'];
 				$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
-				$mResult['RequestHash'] = \RainLoop\Utils::EncodeKeyValues(array(
+				$mResult['RequestHash'] = \RainLoop\Utils::EncodeKeyValuesQ(array(
 					'V' => APP_VERSION,
 					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],
@@ -9270,7 +9314,7 @@ class Actions
 					if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 					{
 						$fAdditionalExternalFilter = function ($sUrl) {
-							return './?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValues(array(
+							return './?/ProxyExternal/'.\RainLoop\Utils::EncodeKeyValuesQ(array(
 								'Rnd' => \md5(\microtime(true)),
 								'Token' => \RainLoop\Utils::GetConnectionToken(),
 								'Url' => $sUrl
@@ -9421,7 +9465,7 @@ class Actions
 					$mResult['IsThumbnail'] = $this->isFileHasThumbnail($mResult['FileName']);
 				}
 
-				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValues(array(
+				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValuesQ(array(
 					'V' => APP_VERSION,
 					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],

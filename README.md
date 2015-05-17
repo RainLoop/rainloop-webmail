@@ -16,7 +16,7 @@ It's not recommended to use in production environment.
 
 ## License
 
-RainLoop Webmail (**Community edition**) is released under
+**RainLoop Webmail (Community edition)** is released under
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 

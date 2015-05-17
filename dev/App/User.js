@@ -1273,6 +1273,7 @@
 			self = this,
 			$LAB = require('$LAB'),
 			sJsHash = Settings.settingsGet('JsHash'),
+			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
 			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
 			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
 			bFacebook = Settings.settingsGet('AllowFacebookSocial'),
@@ -1314,6 +1315,13 @@
 
 					if (bValue)
 					{
+						if ('' !== sStartupUrl)
+						{
+							kn.routeOff();
+							kn.setHash(Links.root(sStartupUrl), true);
+							kn.routeOn();
+						}
+
 						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							var fOpenpgpCallback = function (openpgp) {

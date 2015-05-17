@@ -75,11 +75,13 @@ class Identity
 	}
 
 	/**
+	 * @param bool $bFillOnEmpty = false
+	 *
 	 * @return string
 	 */
-	public function Id()
+	public function Id($bFillOnEmpty = false)
 	{
-		return $this->sId;
+		return $bFillOnEmpty ? ('' === $this->sId ? '---' : $this->sId) : $this->sId;
 	}
 
 	/**
@@ -191,5 +193,13 @@ class Identity
 	public function Validate()
 	{
 		return !empty($this->sEmail);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsAccountIdentities()
+	{
+		return '' === $this->Id();
 	}
 }

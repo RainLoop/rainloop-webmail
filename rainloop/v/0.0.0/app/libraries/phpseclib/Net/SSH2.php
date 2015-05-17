@@ -61,7 +61,7 @@
  * @category  Net
  * @package   Net_SSH2
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright MMVII Jim Wigginton
+ * @copyright 2007 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://phpseclib.sourceforge.net
  */
@@ -77,7 +77,7 @@ define('NET_SSH2_MASK_CONNECTED',     0x00000002);
 define('NET_SSH2_MASK_LOGIN_REQ',     0x00000004);
 define('NET_SSH2_MASK_LOGIN',         0x00000008);
 define('NET_SSH2_MASK_SHELL',         0x00000010);
-define('NET_SSH2_MASK_WINDOW_ADJUST', 0X00000020);
+define('NET_SSH2_MASK_WINDOW_ADJUST', 0x00000020);
 /**#@-*/
 
 /**#@+
@@ -191,100 +191,100 @@ class Net_SSH2
      * Server Identifier
      *
      * @see Net_SSH2::getServerIdentification()
-     * @var String
+     * @var mixed false or Array
      * @access private
      */
-    var $server_identifier = '';
+    var $server_identifier = false;
 
     /**
      * Key Exchange Algorithms
      *
      * @see Net_SSH2::getKexAlgorithims()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $kex_algorithms;
+    var $kex_algorithms = false;
 
     /**
      * Server Host Key Algorithms
      *
      * @see Net_SSH2::getServerHostKeyAlgorithms()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $server_host_key_algorithms;
+    var $server_host_key_algorithms = false;
 
     /**
      * Encryption Algorithms: Client to Server
      *
      * @see Net_SSH2::getEncryptionAlgorithmsClient2Server()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $encryption_algorithms_client_to_server;
+    var $encryption_algorithms_client_to_server = false;
 
     /**
      * Encryption Algorithms: Server to Client
      *
      * @see Net_SSH2::getEncryptionAlgorithmsServer2Client()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $encryption_algorithms_server_to_client;
+    var $encryption_algorithms_server_to_client = false;
 
     /**
      * MAC Algorithms: Client to Server
      *
      * @see Net_SSH2::getMACAlgorithmsClient2Server()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $mac_algorithms_client_to_server;
+    var $mac_algorithms_client_to_server = false;
 
     /**
      * MAC Algorithms: Server to Client
      *
      * @see Net_SSH2::getMACAlgorithmsServer2Client()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $mac_algorithms_server_to_client;
+    var $mac_algorithms_server_to_client = false;
 
     /**
      * Compression Algorithms: Client to Server
      *
      * @see Net_SSH2::getCompressionAlgorithmsClient2Server()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $compression_algorithms_client_to_server;
+    var $compression_algorithms_client_to_server = false;
 
     /**
      * Compression Algorithms: Server to Client
      *
      * @see Net_SSH2::getCompressionAlgorithmsServer2Client()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $compression_algorithms_server_to_client;
+    var $compression_algorithms_server_to_client = false;
 
     /**
      * Languages: Server to Client
      *
      * @see Net_SSH2::getLanguagesServer2Client()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $languages_server_to_client;
+    var $languages_server_to_client = false;
 
     /**
      * Languages: Client to Server
      *
      * @see Net_SSH2::getLanguagesClient2Server()
-     * @var Array
+     * @var mixed false or Array
      * @access private
      */
-    var $languages_client_to_server;
+    var $languages_client_to_server = false;
 
     /**
      * Block Size for Server to Client Encryption
@@ -820,7 +820,7 @@ class Net_SSH2
 
     /**
      * Number of columns for terminal window size
-     * 
+     *
      * @see Net_SSH2::getWindowColumns()
      * @see Net_SSH2::setWindowColumns()
      * @see Net_SSH2::setWindowSize()
@@ -831,7 +831,7 @@ class Net_SSH2
 
     /**
      * Number of columns for terminal window size
-     * 
+     *
      * @see Net_SSH2::getWindowRows()
      * @see Net_SSH2::setWindowRows()
      * @see Net_SSH2::setWindowSize()
@@ -949,6 +949,12 @@ class Net_SSH2
      */
     function _connect()
     {
+        if ($this->bitmap & NET_SSH2_MASK_CONSTRUCTOR) {
+            return false;
+        }
+
+        $this->bitmap |= NET_SSH2_MASK_CONSTRUCTOR;
+
         $timeout = $this->connectionTimeout;
         $host = $this->host . ':' . $this->port;
 
@@ -965,7 +971,7 @@ class Net_SSH2
         $timeout-= $elapsed;
 
         if ($timeout <= 0) {
-            user_error(rtrim("Cannot connect to $host. Timeout error"));
+            user_error("Cannot connect to $host. Timeout error");
             return false;
         }
 
@@ -978,7 +984,7 @@ class Net_SSH2
         // on windows this returns a "Warning: Invalid CRT parameters detected" error
         // the !count() is done as a workaround for <https://bugs.php.net/42682>
         if (!@stream_select($read, $write, $except, $sec, $usec) && !count($read)) {
-            user_error(rtrim("Cannot connect to $host. Banner timeout"));
+            user_error("Cannot connect to $host. Banner timeout");
             return false;
         }
 
@@ -1038,7 +1044,7 @@ class Net_SSH2
             return false;
         }
 
-        $this->bitmap = NET_SSH2_MASK_CONNECTED;
+        $this->bitmap|= NET_SSH2_MASK_CONNECTED;
 
         return true;
     }
@@ -1098,7 +1104,7 @@ class Net_SSH2
                 'arcfour256',
                 'arcfour128',
 
-                'arcfour',        // OPTIONAL          the ARCFOUR stream cipher with a 128-bit key
+                //'arcfour',        // OPTIONAL          the ARCFOUR stream cipher with a 128-bit key
 
                 // CTR modes from <http://tools.ietf.org/html/rfc4344#section-4>:
                 'aes128-ctr',     // RECOMMENDED       AES (Rijndael) in SDCTR mode, with 128-bit key
@@ -1126,7 +1132,7 @@ class Net_SSH2
                 '3des-ctr',       // RECOMMENDED       Three-key 3DES in SDCTR mode
 
                 '3des-cbc',       // REQUIRED          three-key 3DES in CBC mode
-                'none'            // OPTIONAL          no encryption; NOT RECOMMENDED
+                //'none'            // OPTIONAL          no encryption; NOT RECOMMENDED
             );
 
             if (phpseclib_resolve_include_path('Crypt/RC4.php') === false) {
@@ -1163,11 +1169,14 @@ class Net_SSH2
         }
 
         $mac_algorithms = array(
+            // from <http://www.ietf.org/rfc/rfc6668.txt>:
+            'hmac-sha2-256',// RECOMMENDED     HMAC-SHA256 (digest length = key length = 32)
+
             'hmac-sha1-96', // RECOMMENDED     first 96 bits of HMAC-SHA1 (digest length = 12, key length = 20)
             'hmac-sha1',    // REQUIRED        HMAC-SHA1 (digest length = key length = 20)
             'hmac-md5-96',  // OPTIONAL        first 96 bits of HMAC-MD5 (digest length = 12, key length = 16)
             'hmac-md5',     // OPTIONAL        HMAC-MD5 (digest length = key length = 16)
-            'none'          // OPTIONAL        no MAC; NOT RECOMMENDED
+            //'none'          // OPTIONAL        no MAC; NOT RECOMMENDED
         );
 
         static $compression_algorithms = array(
@@ -1692,6 +1701,10 @@ class Net_SSH2
 
         $createKeyLength = 0; // ie. $mac_algorithms[$i] == 'none'
         switch ($mac_algorithms[$i]) {
+            case 'hmac-sha2-256':
+                $this->hmac_create = new Crypt_Hash('sha256');
+                $createKeyLength = 32;
+                break;
             case 'hmac-sha1':
                 $this->hmac_create = new Crypt_Hash('sha1');
                 $createKeyLength = 20;
@@ -1718,6 +1731,11 @@ class Net_SSH2
         $checkKeyLength = 0;
         $this->hmac_size = 0;
         switch ($mac_algorithms[$i]) {
+            case 'hmac-sha2-256':
+                $this->hmac_check = new Crypt_Hash('sha256');
+                $checkKeyLength = 32;
+                $this->hmac_size = 32;
+                break;
             case 'hmac-sha1':
                 $this->hmac_check = new Crypt_Hash('sha1');
                 $checkKeyLength = 20;
@@ -1799,7 +1817,6 @@ class Net_SSH2
     function _login($username)
     {
         if (!($this->bitmap & NET_SSH2_MASK_CONSTRUCTOR)) {
-            $this->bitmap |= NET_SSH2_MASK_CONSTRUCTOR;
             if (!$this->_connect()) {
                 return false;
             }
@@ -2062,7 +2079,6 @@ class Net_SSH2
 
                 if (!count($responses) && $num_prompts) {
                     $this->last_interactive_response = $orig;
-                    $this->bitmap |= NET_SSH_MASK_LOGIN_INTERACTIVE;
                     return false;
                 }
 
@@ -2245,7 +2261,7 @@ class Net_SSH2
     /**
      * Execute Command
      *
-     * If $block is set to false then Net_SSH2::_get_channel_packet(NET_SSH2_CHANNEL_EXEC) will need to be called manually.
+     * If $callback is set to false then Net_SSH2::_get_channel_packet(NET_SSH2_CHANNEL_EXEC) will need to be called manually.
      * In all likelihood, this is not a feature you want to be taking advantage of.
      *
      * @param String $command
@@ -2654,11 +2670,12 @@ class Net_SSH2
     /**
      * Is the connection still active?
      *
+     * @return boolean
      * @access public
      */
     function isConnected()
     {
-        return $this->bitmap & NET_SSH2_MASK_LOGIN;
+        return (bool) ($this->bitmap & NET_SSH2_MASK_CONNECTED);
     }
 
     /**
@@ -2968,7 +2985,7 @@ class Net_SSH2
 
             extract(unpack('Ctype/Nchannel', $this->_string_shift($response, 5)));
 
-            $this->window_size_server_to_client[$channel]-= strlen($response) + 4;
+            $this->window_size_server_to_client[$channel]-= strlen($response);
 
             // resize the window, if appropriate
             if ($this->window_size_server_to_client[$channel] < 0) {
@@ -3258,26 +3275,22 @@ class Net_SSH2
      */
     function _send_channel_packet($client_channel, $data)
     {
-        /* The maximum amount of data allowed is determined by the maximum
-           packet size for the channel, and the current window size, whichever
-           is smaller.
-
-           -- http://tools.ietf.org/html/rfc4254#section-5.2 */
-        $max_size = min(
-            $this->packet_size_client_to_server[$client_channel],
-            $this->window_size_client_to_server[$client_channel]
-        ) - 4;
-        while (strlen($data) > $max_size) {
+        while (strlen($data)) {
             if (!$this->window_size_client_to_server[$client_channel]) {
                 $this->bitmap^= NET_SSH2_MASK_WINDOW_ADJUST;
                 // using an invalid channel will let the buffers be built up for the valid channels
-                $output = $this->_get_channel_packet(-1);
+                $this->_get_channel_packet(-1);
                 $this->bitmap^= NET_SSH2_MASK_WINDOW_ADJUST;
-                $max_size = min(
-                    $this->packet_size_client_to_server[$client_channel],
-                    $this->window_size_client_to_server[$client_channel]
-                ) - 4;
             }
+
+            /* The maximum amount of data allowed is determined by the maximum
+               packet size for the channel, and the current window size, whichever
+               is smaller.
+                 -- http://tools.ietf.org/html/rfc4254#section-5.2 */
+            $max_size = min(
+                $this->packet_size_client_to_server[$client_channel],
+                $this->window_size_client_to_server[$client_channel]
+            );
 
             $temp = $this->_string_shift($data, $max_size);
             $packet = pack('CN2a*',
@@ -3286,27 +3299,13 @@ class Net_SSH2
                 strlen($temp),
                 $temp
             );
-
-            $this->window_size_client_to_server[$client_channel]-= strlen($temp) + 4;
-
+            $this->window_size_client_to_server[$client_channel]-= strlen($temp);
             if (!$this->_send_binary_packet($packet)) {
                 return false;
             }
         }
 
-        if (strlen($data) >= $this->window_size_client_to_server[$client_channel] - 4) {
-            $this->bitmap^= NET_SSH2_MASK_WINDOW_ADJUST;
-            $this->_get_channel_packet(-1);
-            $this->bitmap^= NET_SSH2_MASK_WINDOW_ADJUST;
-        }
-
-        $this->window_size_client_to_server[$client_channel]-= strlen($data) + 4;
-
-        return $this->_send_binary_packet(pack('CN2a*',
-            NET_SSH2_MSG_CHANNEL_DATA,
-            $this->server_channels[$client_channel],
-            strlen($data),
-            $data));
+        return true;
     }
 
     /**
@@ -3355,7 +3354,7 @@ class Net_SSH2
      */
     function _disconnect($reason)
     {
-        if ($this->bitmap) {
+        if ($this->bitmap & NET_SSH2_MASK_CONNECTED) {
             $data = pack('CNNa*Na*', NET_SSH2_MSG_DISCONNECT, $reason, 0, '', 0, '');
             $this->_send_binary_packet($data);
             $this->bitmap = 0;
@@ -3509,6 +3508,8 @@ class Net_SSH2
      */
     function getServerIdentification()
     {
+        $this->_connect();
+
         return $this->server_identifier;
     }
 
@@ -3520,6 +3521,8 @@ class Net_SSH2
      */
     function getKexAlgorithms()
     {
+        $this->_connect();
+
         return $this->kex_algorithms;
     }
 
@@ -3531,6 +3534,8 @@ class Net_SSH2
      */
     function getServerHostKeyAlgorithms()
     {
+        $this->_connect();
+
         return $this->server_host_key_algorithms;
     }
 
@@ -3542,6 +3547,8 @@ class Net_SSH2
      */
     function getEncryptionAlgorithmsClient2Server()
     {
+        $this->_connect();
+
         return $this->encryption_algorithms_client_to_server;
     }
 
@@ -3553,6 +3560,8 @@ class Net_SSH2
      */
     function getEncryptionAlgorithmsServer2Client()
     {
+        $this->_connect();
+
         return $this->encryption_algorithms_server_to_client;
     }
 
@@ -3564,6 +3573,8 @@ class Net_SSH2
      */
     function getMACAlgorithmsClient2Server()
     {
+        $this->_connect();
+
         return $this->mac_algorithms_client_to_server;
     }
 
@@ -3575,6 +3586,8 @@ class Net_SSH2
      */
     function getMACAlgorithmsServer2Client()
     {
+        $this->_connect();
+
         return $this->mac_algorithms_server_to_client;
     }
 
@@ -3586,6 +3599,8 @@ class Net_SSH2
      */
     function getCompressionAlgorithmsClient2Server()
     {
+        $this->_connect();
+
         return $this->compression_algorithms_client_to_server;
     }
 
@@ -3597,6 +3612,8 @@ class Net_SSH2
      */
     function getCompressionAlgorithmsServer2Client()
     {
+        $this->_connect();
+
         return $this->compression_algorithms_server_to_client;
     }
 
@@ -3608,6 +3625,8 @@ class Net_SSH2
      */
     function getLanguagesServer2Client()
     {
+        $this->_connect();
+
         return $this->languages_server_to_client;
     }
 
@@ -3619,6 +3638,8 @@ class Net_SSH2
      */
     function getLanguagesClient2Server()
     {
+        $this->_connect();
+
         return $this->languages_client_to_server;
     }
 
@@ -3648,7 +3669,6 @@ class Net_SSH2
     function getServerPublicHostKey()
     {
         if (!($this->bitmap & NET_SSH2_MASK_CONSTRUCTOR)) {
-            $this->bitmap |= NET_SSH2_MASK_CONSTRUCTOR;
             if (!$this->_connect()) {
                 return false;
             }
@@ -3731,8 +3751,9 @@ class Net_SSH2
                 $e = new Math_BigInteger($this->_string_shift($server_public_host_key, $temp['length']), -256);
 
                 $temp = unpack('Nlength', $this->_string_shift($server_public_host_key, 4));
-                $n = new Math_BigInteger($this->_string_shift($server_public_host_key, $temp['length']), -256);
-                $nLength = $temp['length'];
+                $rawN = $this->_string_shift($server_public_host_key, $temp['length']);
+                $n = new Math_BigInteger($rawN, -256);
+                $nLength = strlen(ltrim($rawN, "\0"));
 
                 /*
                 $temp = unpack('Nlength', $this->_string_shift($signature, 4));
@@ -3769,7 +3790,7 @@ class Net_SSH2
                 $s = $s->toBytes();
 
                 $h = pack('N4H*', 0x00302130, 0x0906052B, 0x0E03021A, 0x05000414, sha1($this->exchange_hash));
-                $h = chr(0x01) . str_repeat(chr(0xFF), $nLength - 3 - strlen($h)) . $h;
+                $h = chr(0x01) . str_repeat(chr(0xFF), $nLength - 2 - strlen($h)) . $h;
 
                 if ($s != $h) {
                     user_error('Bad server signature');
@@ -3800,7 +3821,7 @@ class Net_SSH2
 
     /**
      * Returns the number of columns for the terminal window size.
-     * 
+     *
      * @return Integer
      * @access public
      */
@@ -3811,7 +3832,7 @@ class Net_SSH2
 
     /**
      * Returns the number of rows for the terminal window size.
-     * 
+     *
      * @return Integer
      * @access public
      */
@@ -3822,7 +3843,7 @@ class Net_SSH2
 
     /**
      * Sets the number of columns for the terminal window size.
-     * 
+     *
      * @param Integer $value
      * @access public
      */
@@ -3833,7 +3854,7 @@ class Net_SSH2
 
     /**
      * Sets the number of rows for the terminal window size.
-     * 
+     *
      * @param Integer $value
      * @access public
      */
@@ -3844,7 +3865,7 @@ class Net_SSH2
 
     /**
      * Sets the number of columns and rows for the terminal window size.
-     * 
+     *
      * @param Integer $columns
      * @param Integer $rows
      * @access public

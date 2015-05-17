@@ -79,7 +79,8 @@
 		'AttachmentThumbnails': 'ATTACHMENT_THUMBNAILS',
 		'Templates': 'TEMPLATES',
 		'AutoLogout': 'AUTOLOGOUT',
-		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS'
+		'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
+		'Identities': 'IDENTITIES'
 	};
 
 	/**

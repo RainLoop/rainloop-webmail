@@ -139,12 +139,13 @@ class Api
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand($sEmail.$sPassword);
 
-		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
-			'Email' => $sEmail,
-			'Password' => $sPassword,
-			'AdditionalOptions' => $aAdditionalOptions,
-			'Time' => $bUseTimeout ? \time() : 0
-		))) ? $sSsoHash : '';
+		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash),
+			\RainLoop\Utils::EncodeKeyValuesQ(array(
+				'Email' => $sEmail,
+				'Password' => $sPassword,
+				'AdditionalOptions' => $aAdditionalOptions,
+				'Time' => $bUseTimeout ? \time() : 0
+			))) ? $sSsoHash : '';
 	}
 
 	/**

@@ -24,7 +24,7 @@
 	function AccountsUserSettings()
 	{
 		this.allowAdditionalAccount = Settings.capa(Enums.Capa.AdditionalAccounts);
-		this.allowIdentities = true;
+		this.allowIdentities = Settings.capa(Enums.Capa.Identities);;
 
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityStore.identities;

@@ -63,7 +63,7 @@
  * @category  Math
  * @package   Math_BigInteger
  * @author    Jim Wigginton <terrafrost@php.net>
- * @copyright MMVI Jim Wigginton
+ * @copyright 2006 Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
  * @link      http://pear.php.net/package/Math_BigInteger
  */
@@ -278,7 +278,14 @@ class Math_BigInteger
             $versions = array();
             if (!empty($matches[1])) {
                 for ($i = 0; $i < count($matches[1]); $i++) {
-                    $versions[$matches[1][$i]] = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
+                    $fullVersion = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
+
+                    // Remove letter part in OpenSSL version
+                    if (!preg_match('/(\d+\.\d+\.\d+)/i', $fullVersion, $m)) {
+                        $versions[$matches[1][$i]] = $fullVersion;
+                    } else {
+                        $versions[$matches[1][$i]] = $m[0];
+                    }
                 }
             }
 
@@ -329,9 +336,12 @@ class Math_BigInteger
 
         switch ( MATH_BIGINTEGER_MODE ) {
             case MATH_BIGINTEGER_MODE_GMP:
-                if (is_resource($x) && get_resource_type($x) == 'GMP integer') {
-                    $this->value = $x;
-                    return;
+                switch (true) {
+                    case is_resource($x) && get_resource_type($x) == 'GMP integer':
+                    // PHP 5.6 switched GMP from using resources to objects
+                    case is_object($x) && get_class($x) == 'GMP':
+                        $this->value = $x;
+                        return;
                 }
                 $this->value = gmp_init(0);
                 break;
@@ -912,7 +922,7 @@ class Math_BigInteger
             $value = $x_value;
         }
 
-        $value[] = 0; // just in case the carry adds an extra digit
+        $value[count($value)] = 0; // just in case the carry adds an extra digit
 
         $carry = 0;
         for ($i = 0, $j = 1; $j < $size; $i+=2, $j+=2) {
@@ -2134,7 +2144,7 @@ class Math_BigInteger
 
         if ($this->_compare($result, false, $temp[MATH_BIGINTEGER_VALUE], $temp[MATH_BIGINTEGER_SIGN]) < 0) {
             $corrector_value = $this->_array_repeat(0, $n_length + 1);
-            $corrector_value[] = 1;
+            $corrector_value[count($corrector_value)] = 1;
             $result = $this->_add($result, false, $corrector_value, false);
             $result = $result[MATH_BIGINTEGER_VALUE];
         }
@@ -2904,7 +2914,7 @@ class Math_BigInteger
         $leading_ones = chr((1 << ($new_bits & 0x7)) - 1) . str_repeat(chr(0xFF), $new_bits >> 3);
         $this->_base256_lshift($leading_ones, $current_bits);
 
-        $temp = str_pad($temp, ceil($this->bits / 8), chr(0), STR_PAD_LEFT);
+        $temp = str_pad($temp, strlen($leading_ones), chr(0), STR_PAD_LEFT);
 
         return $this->_normalize(new Math_BigInteger($leading_ones | $temp, 256));
     }
@@ -3479,7 +3489,7 @@ class Math_BigInteger
         }
 
         if ( $carry ) {
-            $this->value[] = $carry;
+            $this->value[count($this->value)] = $carry;
         }
 
         while ($num_digits--) {

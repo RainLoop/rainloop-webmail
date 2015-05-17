@@ -429,7 +429,7 @@ class ServiceActions
 		{
 			$this->oActions->verifyCacheByKey($sData);
 
-			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+			$aData = \RainLoop\Utils::DecodeKeyValuesQ($sData);
 			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === \RainLoop\Utils::GetConnectionToken())
 			{
 				$iCode = 404;
@@ -892,7 +892,7 @@ class ServiceActions
 			$sSsoSubData = $this->Cacher()->Get(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$mData = \RainLoop\Utils::DecodeKeyValues($sSsoSubData);
+				$mData = \RainLoop\Utils::DecodeKeyValuesQ($sSsoSubData);
 				$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&

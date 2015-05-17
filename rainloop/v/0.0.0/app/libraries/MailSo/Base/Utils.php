@@ -900,6 +900,20 @@ END;
 	}
 
 	/**
+	 * @param string $sDomain
+	 *
+	 * @return string
+	 */
+	public static function GetClearDomainName($sDomain)
+	{
+		$sResultDomain = \preg_replace(
+			'/^(webmail|email|mail|www|imap4|pop3|imap|pop|demo|client|ssl|secure)\./i',
+				'', $sDomain);
+
+		return false === \strpos($sResultDomain, '.') ? $sDomain : $sResultDomain;
+	}
+
+	/**
 	 * @param string $sFileName
 	 *
 	 * @return string

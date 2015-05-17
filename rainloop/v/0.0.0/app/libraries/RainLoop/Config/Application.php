@@ -70,6 +70,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
 
 				'allow_additional_accounts'		=> array(true, ''),
+				'allow_additional_identities'	=> array(true, ''),
 
 				'messages_per_page'		=> array(20, ' Number of messages displayed on page by default'),
 

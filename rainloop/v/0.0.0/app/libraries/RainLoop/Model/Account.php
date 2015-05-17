@@ -367,6 +367,26 @@ class Account extends \RainLoop\Account // for backward compatibility
 	}
 
 	/**
+	 * @return string
+	 */
+	public function GetAuthTokenQ()
+	{
+		return \RainLoop\Utils::EncodeKeyValuesQ(array(
+			'token',							// 0
+			$this->sEmail,						// 1
+			$this->sLogin,						// 2
+			$this->sPassword,					// 3
+			\RainLoop\Utils::Fingerprint(),		// 4
+			$this->sSignMeToken,				// 5
+			$this->sParentEmail,				// 6
+			\RainLoop\Utils::GetShortToken(),	// 7
+			$this->sProxyAuthUser,				// 8
+			$this->sProxyAuthPassword,			// 9
+			0									// 10 // timelife
+		));
+	}
+
+	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Mail\MailClient $oMailClient
 	 * @param \RainLoop\Application $oConfig
