@@ -221,7 +221,7 @@ Examples:
 
 				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
 				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
-				'auth_logging_format' => array('Auth failed: ip={request:ip} user={imap:login} host={imap:host} port={imap:port}')
+				'auth_logging_format' => array('[{date:Y-m-d H:i:s}] Auth failed: ip={request:ip} user={imap:login} host={imap:host} port={imap:port}')
 			),
 
 			'debug' => array(

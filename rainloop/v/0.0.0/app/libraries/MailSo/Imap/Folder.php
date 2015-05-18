@@ -94,6 +94,11 @@ class Folder
 		if (0 < \strlen($this->sDelimiter))
 		{
 			$aNames = \explode($this->sDelimiter, $this->sFullNameRaw);
+			if (false !== \array_search('', $aNames))
+			{
+				throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			}
+
 			$this->sNameRaw = \end($aNames);
 		}
 	}
@@ -102,7 +107,7 @@ class Folder
 	 * @param string $sFullNameRaw
 	 * @param string $sDelimiter = '.'
 	 * @param array $aFlags = array()
-	 * 
+	 *
 	 * @return \MailSo\Imap\Folder
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
@@ -167,7 +172,7 @@ class Folder
 	{
 		return 'INBOX' === \strtoupper($this->sFullNameRaw) || \in_array('\inbox', $this->aFlagsLowerCase);
 	}
-	
+
 	/**
 	 * @param string $sName
 	 * @param mixed $mData
@@ -176,7 +181,7 @@ class Folder
 	{
 		$this->aExtended[$sName] = $mData;
 	}
-	
+
 	/**
 	 * @param string $sName
 	 * @return mixed

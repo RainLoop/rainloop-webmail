@@ -1077,9 +1077,13 @@ class Actions
 				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
 				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
 
-				$this->oLoggerAuth->Add(
-					\MailSo\Log\Drivers\File::NewInstance($sAuthLogFileFullPath)
-				);
+				$oDriver = \MailSo\Log\Drivers\File::NewInstance($sAuthLogFileFullPath);
+				
+				$oDriver->DisableTimePrefix();
+				$oDriver->DisableGuidPrefix();
+				$oDriver->DisableTypedPrefix();
+
+				$this->oLoggerAuth->Add($oDriver);
 			}
 		}
 

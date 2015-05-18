@@ -190,8 +190,15 @@ class FolderCollection extends \MailSo\Base\Collection
 
 					if (!isset($aSortedByLenImapFolders[$sNonExistenFolderFullNameRaw]))
 					{
-						$aAddedFolders[$sNonExistenFolderFullNameRaw] =
-							Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+						try
+						{
+							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
+								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+						}
+						catch (\Exception $oExc)
+						{
+							unset($oExc);
+						}
 					}
 				}
 			}
