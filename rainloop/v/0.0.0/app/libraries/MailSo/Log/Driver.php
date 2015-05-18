@@ -82,14 +82,14 @@ abstract class Driver
 	 */
 	protected function __construct()
 	{
-		$this->sDatePattern = 'H:i:s';
+		$this->sDatePattern = 'Y-m-d H:i:s';
 		$this->sName = 'INFO';
 		$this->sNewLine = "\r\n";
 		$this->bTimePrefix = true;
 		$this->bTypedPrefix = true;
 		$this->bGuidPrefix = true;
 
-		$this->iTimeOffset = 0;
+		$this->iTimeOffset = 2;
 
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
