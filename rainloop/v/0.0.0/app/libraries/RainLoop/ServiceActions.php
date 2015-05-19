@@ -766,7 +766,8 @@ class ServiceActions
 	 */
 	public function ServiceSocialGoogle()
 	{
-		return $this->oActions->Social()->GooglePopupService();
+		$bXAuth = '1' === (string) $this->oHttp->GetQuery('xauth', '0');
+		return $this->oActions->Social()->GooglePopupService($bXAuth);
 	}
 
 	/**

@@ -394,11 +394,13 @@
 	};
 
 	/**
+	 * @param {boolean} bXAuth = false
 	 * @return {string}
 	 */
-	Links.prototype.socialGoogle = function ()
+	Links.prototype.socialGoogle = function (bXAuth)
 	{
-		return this.sServer + 'SocialGoogle' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
+		return this.sServer + 'SocialGoogle' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '') +
+			(bXAuth ? '&xauth=1' : '');
 	};
 
 	/**

@@ -53,6 +53,7 @@ Options -Indexes
 			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
 			define('APP_DUMMY', '********');
+			define('APP_GOOGLE_ACCESS_TOKEN_PREFIX', ':GAT:');
 			define('APP_DEV_VERSION', '0.0.0');
 			define('APP_API_PATH', 'http://api.rainloop.net/');
 			define('APP_REP_PATH', 'http://repository.rainloop.net/v1/');

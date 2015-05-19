@@ -326,7 +326,24 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			$this->SendRequestWithCheck('AUTHENTICATE', array('XOAUTH2', \trim($sXOAuth2Token)));
+			$this->SendRequest('AUTHENTICATE', array('XOAUTH2', \trim($sXOAuth2Token)));
+			$aR = $this->parseResponseWithValidation();
+
+			if (\is_array($aR) && 0 < \count($aR) && isset($aR[\count($aR) - 1]))
+			{
+				$oR = $aR[\count($aR) - 1];
+				if (\MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oR->ResponseType)
+				{
+					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1]))
+					{
+						$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
+							\MailSo\Log\Enumerations\Type::WARNING);
+					}
+
+					$this->sendRaw('');
+					$this->parseResponseWithValidation();
+				}
+			}
 		}
 		catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException)
 		{
@@ -681,6 +698,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					{
 						$sName = null;
 						$aStatus = array();
+
 						foreach ($oImapResponse->ResponseList[3] as $sArrayItem)
 						{
 							if (null === $sName)
@@ -734,17 +752,21 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->EscapeString($sListPattern)
 		);
 
-		if ($bUseListStatus && $this->IsSupported('LIST-STATUS'))
+		if ($bUseListStatus && !$bIsSubscribeList && $this->IsSupported('LIST-STATUS'))
 		{
-			$aParameters[] = 'RETURN';
-			$aParameters[] = array(
-				 'STATUS',
-				 array(
-					\MailSo\Imap\Enumerations\FolderStatus::MESSAGES,
-					\MailSo\Imap\Enumerations\FolderStatus::UNSEEN,
-					\MailSo\Imap\Enumerations\FolderStatus::UIDNEXT
-				 )
+			$aL = array(
+				\MailSo\Imap\Enumerations\FolderStatus::MESSAGES,
+				\MailSo\Imap\Enumerations\FolderStatus::UNSEEN,
+				\MailSo\Imap\Enumerations\FolderStatus::UIDNEXT
 			);
+
+//			if ($this->IsSupported('CONDSTORE'))
+//			{
+//				$aL[] = \MailSo\Imap\Enumerations\FolderStatus::HIGHESTMODSEQ;
+//			}
+
+			$aParameters[] = 'RETURN';
+			$aParameters[] = array('STATUS', $aL);
 		}
 		else
 		{
@@ -845,6 +867,12 @@ class ImapClient extends \MailSo\Net\NetClient
 							isset($oImapResponse->OptionalResponse[1]))
 						{
 							$oResult->Uidnext = $oImapResponse->OptionalResponse[1];
+						}
+						else if ('HIGHESTMODSEQ' === $oImapResponse->OptionalResponse[0] &&
+							isset($oImapResponse->OptionalResponse[1]) &&
+							\is_numeric($oImapResponse->OptionalResponse[1]))
+						{
+							$oResult->HighestModSeq = \trim($oImapResponse->OptionalResponse[1]);
 						}
 					}
 

@@ -893,9 +893,16 @@ class Actions
 	{
 		if (null === $this->oAddressBookProvider)
 		{
-			$this->oAddressBookProvider = new \RainLoop\Providers\AddressBook(
-				$this->Config()->Get('contacts', 'enable', false) || $bForceEnable ? $this->fabrica('address-book', $oAccount) : null);
+			$oDriver = null;
+			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::CONTACTS, $oAccount))
+			{
+				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable)
+				{
+					$oDriver = $this->fabrica('address-book', $oAccount);
+				}
+			}
 
+			$this->oAddressBookProvider = new \RainLoop\Providers\AddressBook($oDriver);
 			$this->oAddressBookProvider->SetLogger($this->Logger());
 		}
 
@@ -1078,7 +1085,7 @@ class Actions
 				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME_DELTA);
 
 				$oDriver = \MailSo\Log\Drivers\File::NewInstance($sAuthLogFileFullPath);
-				
+
 				$oDriver->DisableTimePrefix();
 				$oDriver->DisableGuidPrefix();
 				$oDriver->DisableTypedPrefix();
@@ -1344,6 +1351,7 @@ class Actions
 			'LoginCss' => '',
 			'UserLogo' => '',
 			'UserLogoTitle' => '',
+			'UserLogoMessage' => '',
 			'UserCss' => '',
 			'WelcomePageUrl' => '',
 			'WelcomePageDisplay' => 'none',
@@ -1357,7 +1365,6 @@ class Actions
 			'AllowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
 			'RsaPublicKey' => '',
-			'HideDangerousActions' => $oConfig->Get('labs', 'hide_dangerous_actions', false),
 			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
 			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
@@ -1383,7 +1390,7 @@ class Actions
 			'Plugins' => array()
 		);
 
-		if ($oConfig->Get('capa', 'attachments_actions', false))
+		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
 			if (!!\class_exists('ZipArchive'))
 			{
@@ -1404,7 +1411,6 @@ class Actions
 		$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
 
-
 		if ($aResult['UseRsaEncryption'] &&
 			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
 		{
@@ -1417,7 +1423,7 @@ class Actions
 			}
 		}
 
-		if (0 === strlen($aResult['RsaPublicKey']))
+		if (0 === \strlen($aResult['RsaPublicKey']))
 		{
 			$aResult['UseRsaEncryption'] = false;
 		}
@@ -2749,7 +2755,7 @@ class Actions
 	 */
 	public function DoAttachmentsActions()
 	{
-		if (!$this->Config()->Get('capa', 'attachments_actions', false))
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3491,7 +3497,7 @@ class Actions
 				$this->setConfigFromParams($oConfig, $sParamName, 'webmail', 'allow_additional_identities', 'bool');
 				break;
 			case \RainLoop\Enumerations\Capa::TEMPLATES:
-				$this->setConfigFromParams($oConfig, $sParamName, 'capa', 'templates', 'bool');
+				$this->setConfigFromParams($oConfig, $sParamName, 'capa', 'x-templates', 'bool');
 				break;
 			case \RainLoop\Enumerations\Capa::TWO_FACTOR:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
@@ -5126,9 +5132,6 @@ class Actions
 	 */
 	public function DoFolders()
 	{
-//		\sleep(1);
-//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError);
-
 		$oAccount = $this->initMailClientConnection();
 
 		$oFolderCollection = null;
@@ -5136,7 +5139,8 @@ class Actions
 
 		if (null === $oFolderCollection)
 		{
-			$oFolderCollection = $this->MailClient()->Folders('', '*',
+			$oFolderCollection = $this->MailClient()->Folders('',
+				$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount) ? '*' : 'INBOX',
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
 				(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 			);
@@ -5152,7 +5156,8 @@ class Actions
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
 
-			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
+			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount) &&
+				$this->Config()->Get('labs', 'autocreate_system_folders', true))
 			{
 				$bDoItAgain = false;
 
@@ -5272,10 +5277,12 @@ class Actions
 	 */
 	public function DoFolderCreate()
 	{
-//		\sleep(1);
-//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantCreateFolder);
+		$oAccount = $this->initMailClientConnection();
 
-		$this->initMailClientConnection();
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		try
 		{
@@ -5298,7 +5305,12 @@ class Actions
 	 */
 	public function DoFolderSubscribe()
 	{
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
@@ -5328,6 +5340,11 @@ class Actions
 	public function DoFolderCheckable()
 	{
 		$oAccount = $this->getAccountFromToken();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
@@ -5374,7 +5391,12 @@ class Actions
 	 */
 	public function DoFolderRename()
 	{
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		$sPrevFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$sNewTopFolderNameInUtf = $this->GetActionParam('NewFolderName', '');
@@ -5399,10 +5421,12 @@ class Actions
 	 */
 	public function DoFolderDelete()
 	{
-//		\sleep(1);
-//		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantRenameFolder);
+		$oAccount = $this->initMailClientConnection();
 
-		$this->initMailClientConnection();
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 
@@ -5619,7 +5643,8 @@ class Actions
 				$this->cacherForUids(),
 				!!$this->Config()->Get('labs', 'use_imap_sort', false),
 				$bUseThreads,
-				$sThreadUid
+				$sThreadUid,
+				''
 			);
 		}
 		catch (\Exception $oException)
@@ -5886,6 +5911,11 @@ class Actions
 	{
 		$oAccount = $this->initMailClientConnection();
 
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
 		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 		$sMessageUid = $this->GetActionParam('MessageUid', '');
 
@@ -6098,6 +6128,11 @@ class Actions
 	{
 		$oAccount = $this->initMailClientConnection();
 
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
 		$oConfig = $this->Config();
 
 		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
@@ -6282,6 +6317,11 @@ class Actions
 	public function DoSendReadReceiptMessage()
 	{
 		$oAccount = $this->initMailClientConnection();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
 
 		$oMessage = $this->buildReadReceiptMessage($oAccount);
 
@@ -7875,10 +7915,10 @@ class Actions
 			}
 		}
 
-//		if ($oConfig->Get('capa', 'templates', true))
-//		{
-//			$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
-//		}
+		if ($oConfig->Get('capa', 'x-templates', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
+		}
 
 		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
 		{
@@ -7888,6 +7928,66 @@ class Actions
 		if ($oConfig->Get('webmail', 'allow_additional_identities', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::IDENTITIES;
+		}
+
+		if ($oConfig->Get('capa', 'folders', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::FOLDERS;
+
+			if ($oConfig->Get('capa', 'messagelist_actions', true))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::MESSAGELIST_ACTIONS;
+
+				if ($oConfig->Get('capa', 'dangerous_actions', true))
+				{
+					$aResult[] = \RainLoop\Enumerations\Capa::DANGEROUS_ACTIONS;
+				}
+			}
+		}
+
+		if ($oConfig->Get('capa', 'reload', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::RELOAD;
+		}
+
+		if ($oConfig->Get('capa', 'settings', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::SETTINGS;
+		}
+
+		if ($oConfig->Get('capa', 'help', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::HELP;
+		}
+
+		if ($oConfig->Get('capa', 'attachments_actions', false))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS;
+		}
+
+		if ($oConfig->Get('capa', 'message_actions', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::MESSAGE_ACTIONS;
+		}
+
+		if ($oConfig->Get('capa', 'composer', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::COMPOSER;
+
+			if ($oConfig->Get('capa', 'contacts', true))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::CONTACTS;
+			}
+		}
+
+		if ($oConfig->Get('capa', 'search', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::SEARCH;
+
+			if ($oConfig->Get('capa', 'search_adv', true))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::SEARCH_ADV;
+			}
 		}
 
 		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
@@ -9219,7 +9319,7 @@ class Actions
 			}
 			else if ('MailSo\Mail\Message' === $sClassName)
 			{
-				$oAccount = call_user_func($fGetAccount);
+				$oAccount = \call_user_func($fGetAccount);
 
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
@@ -9274,6 +9374,11 @@ class Actions
 
 				$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 				$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
+
+				if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+				{
+					$mResult['IsReadReceipt'] = true;
+				}
 
 				$mResult['TextPartIsTrimmed'] = false;
 
@@ -9483,17 +9588,19 @@ class Actions
 			else if ('MailSo\Mail\Folder' === $sClassName)
 			{
 				$aExtended = null;
-				$mStatus = $mResponse->Status();
-				if (\is_array($mStatus) && isset($mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT']))
-				{
-					$aExtended = array(
-						'MessageCount' => (int) $mStatus['MESSAGES'],
-						'MessageUnseenCount' => (int) $mStatus['UNSEEN'],
-						'UidNext' => (string) $mStatus['UIDNEXT'],
-						'Hash' => $this->MailClient()->GenerateFolderHash(
-							$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT'])
-					);
-				}
+
+//				$mStatus = $mResponse->Status();
+//				if (\is_array($mStatus) && isset($mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT']))
+//				{
+//					$aExtended = array(
+//						'MessageCount' => (int) $mStatus['MESSAGES'],
+//						'MessageUnseenCount' => (int) $mStatus['UNSEEN'],
+//						'UidNext' => (string) $mStatus['UIDNEXT'],
+//						'Hash' => $this->MailClient()->GenerateFolderHash(
+//							$mResponse->FullNameRaw(), $mStatus['MESSAGES'], $mStatus['UNSEEN'], $mStatus['UIDNEXT'],
+//								empty($mStatus['HIGHESTMODSEQ']) ? '' : $mStatus['HIGHESTMODSEQ'])
+//					);
+//				}
 
 				$aCheckableFolder = \call_user_func($fGetCheckableFolder);
 				if (!\is_array($aCheckableFolder))

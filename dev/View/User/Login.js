@@ -306,6 +306,17 @@
 			return !this.submitRequest() && this.googleLoginEnabled();
 		});
 
+		this.googleXAuthCommand = Utils.createCommand(this, function () {
+
+			window.open(Links.socialGoogle(true), 'Google',
+				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
+
+			return true;
+
+		}, function () {
+			return !this.submitRequest() && this.googleLoginEnabled();
+		});
+
 		this.twitterLoginEnabled = ko.observable(false);
 
 		this.twitterCommand = Utils.createCommand(this, function () {

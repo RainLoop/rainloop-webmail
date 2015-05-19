@@ -22,6 +22,8 @@
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
+		Settings = require('Storage/Settings'),
+
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
 	;
@@ -50,7 +52,9 @@
 
 		this.iDropOverTimer = 0;
 
+		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
 		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
 
 		this.folderListFocused = ko.computed(function () {
 			return Enums.Focused.FolderList === AppStore.focusedState();
@@ -259,7 +263,10 @@
 
 	FolderListMailBoxUserView.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
 	};
 
 	FolderListMailBoxUserView.prototype.createFolder = function ()

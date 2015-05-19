@@ -125,7 +125,7 @@ class Social
 	/**
 	 * @return string
 	 */
-	public function GooglePopupService()
+	public function GooglePopupService($bGmail = false)
 	{
 		$sResult = '';
 		$sLoginUrl = '';
@@ -152,22 +152,35 @@ class Social
 				$sState = $this->oHttp->GetQuery('state');
 				if (!empty($sState))
 				{
-					$aParts = explode('|', $sState, 2);
-					$sCheckToken = !empty($aParts[0]) ? $aParts[0] : '';
-					$sCheckAuth = !empty($aParts[1]) ? $aParts[1] : '';
+					$aParts = explode('|', $sState, 3);
+
+					if (!$bGmail)
+					{
+						$bGmail = !empty($aParts[0]) ? '1' === (string) $aParts[0] : false;
+					}
+
+					$sCheckToken = !empty($aParts[1]) ? $aParts[1] : '';
+					$sCheckAuth = !empty($aParts[2]) ? $aParts[2] : '';
 				}
 
 				$sRedirectUrl = $this->oHttp->GetFullUrl().'?SocialGoogle';
 				if (!$this->oHttp->HasQuery('code'))
 				{
-//					https://www.google.com/m8/feeds/
 					$aParams = array(
-						'scope' => 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-						'state' => \RainLoop\Utils::GetConnectionToken().'|'.$this->oActions->GetSpecAuthToken(),
-//						'access_type' => 'offline',
-//						'approval_prompt' => 'force',
+						'scope' => \trim(\implode(' ', array(
+							'https://www.googleapis.com/auth/userinfo.email',
+							'https://www.googleapis.com/auth/userinfo.profile',
+							$bGmail ? 'https://mail.google.com/' : ''
+						))),
+						'state' => ($bGmail ? '1' : '0').'|'.\RainLoop\Utils::GetConnectionToken().'|'.$this->oActions->GetSpecAuthToken(),
 						'response_type' => 'code'
 					);
+
+//					if ($bGmail)
+//					{
+//						$aParams['access_type'] = 'offline';
+//						$aParams['approval_prompt'] = 'force';
+//					}
 
 					$sLoginUrl = $oGoogle->getAuthenticationUrl('https://accounts.google.com/o/oauth2/auth', $sRedirectUrl, $aParams);
 				}
@@ -192,12 +205,26 @@ class Social
 						{
 							if ($bLogin)
 							{
-								$sUserData = $this->oActions->StorageProvider()->Get(null,
-									\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-									$this->GoogleUserLoginStorageKey($oGoogle, $aUserInfoResponse['result']['id'])
-								);
+								$aUserData = null;
+								if ($bGmail)
+								{
+									if (!empty($aUserInfoResponse['result']['email']))
+									{
+										$aUserData = array(
+											'Email' => $aUserInfoResponse['result']['email'],
+											'Password' => APP_GOOGLE_ACCESS_TOKEN_PREFIX.$aAuthorizationResponse['result']['access_token']
+										);
+									}
+								}
+								else
+								{
+									$sUserData = $this->oActions->StorageProvider()->Get(null,
+										\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
+										$this->GoogleUserLoginStorageKey($oGoogle, $aUserInfoResponse['result']['id'])
+									);
 
-								$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
+									$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
+								}
 
 								if ($aUserData && \is_array($aUserData) &&
 									!empty($aUserData['Email']) && isset($aUserData['Password']))
@@ -210,7 +237,7 @@ class Social
 								}
 							}
 
-							if ($oAccount)
+							if ($oAccount && !$bGmail)
 							{
 								$aUserData = array(
 									'ID' => $aUserInfoResponse['result']['id'],

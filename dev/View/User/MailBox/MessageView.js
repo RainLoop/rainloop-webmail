@@ -34,6 +34,7 @@
 		MessageStore = require('Stores/User/Message'),
 
 		Local = require('Storage/Client'),
+		Settings = require('Storage/Settings'),
 		Remote = require('Remote/User/Ajax'),
 
 		Promises = require('Promises/User/Ajax'),
@@ -67,6 +68,12 @@
 
 		this.pswp = null;
 
+		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
+		this.allowMessageActions = !!Settings.capa(Enums.Capa.MessageActions);
+		this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
+
+		this.logoImg = Utils.trim(Settings.settingsGet('UserLogoMessage'));
+
 		this.attachmentsActions = AppStore.attachmentsActions;
 
 		this.message = MessageStore.message;
@@ -92,18 +99,21 @@
 		this.showAttachmnetControls = ko.observable(false);
 
 		this.allowAttachmnetControls = ko.computed(function () {
-			return 0 < this.attachmentsActions().length;
+			return 0 < this.attachmentsActions().length &&
+				Settings.capa(Enums.Capa.AttachmentsActions);
 		}, this);
 
 		this.downloadAsZipAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('zip', this.attachmentsActions());
+			return -1 < Utils.inArray('zip', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
 		}, this);
 
 		this.downloadAsZipLoading = ko.observable(false);
 		this.downloadAsZipError = ko.observable(false).extend({'falseTimeout': 7000});
 
 		this.saveToOwnCloudAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('owncloud', this.attachmentsActions());
+			return -1 < Utils.inArray('owncloud', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
 		}, this);
 
 		this.saveToOwnCloudLoading = ko.observable(false);
@@ -125,7 +135,8 @@
 		}, this);
 
 		this.saveToDropboxAllowed = ko.computed(function () {
-			return -1 < Utils.inArray('dropbox', this.attachmentsActions());
+			return -1 < Utils.inArray('dropbox', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
 		}, this);
 
 		this.saveToDropboxLoading = ko.observable(false);
@@ -214,7 +225,7 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
@@ -224,7 +235,7 @@
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
@@ -234,7 +245,7 @@
 
 		this.archiveCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
@@ -244,7 +255,7 @@
 
 		this.spamCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
@@ -254,7 +265,7 @@
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
@@ -521,7 +532,10 @@
 	 */
 	MessageViewMailBoxUserView.prototype.replyOrforward = function (sType)
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		}
 	};
 
 	MessageViewMailBoxUserView.prototype.checkHeaderHeight = function ()
@@ -692,7 +706,8 @@
 		oDom
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View/Popup/Compose')));
+				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'),
+					Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null));
 			})
 //			.on('mouseover', 'a', _.debounce(function (oEvent) {
 //
@@ -1013,12 +1028,15 @@
 
 	MessageViewMailBoxUserView.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
 	};
 
 	MessageViewMailBoxUserView.prototype.editMessage = function ()
 	{
-		if (MessageStore.message())
+		if (Settings.capa(Enums.Capa.Composer) && MessageStore.message())
 		{
 			kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Draft, MessageStore.message()]);
 		}

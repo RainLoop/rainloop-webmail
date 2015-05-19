@@ -427,19 +427,22 @@
 
 		_.each(aScreensClasses, function (CScreen) {
 
-				var
-					oScreen = new CScreen(),
-					sScreenName = oScreen ? oScreen.screenName() : ''
-				;
-
-				if (oScreen && '' !== sScreenName)
+				if (CScreen)
 				{
-					if ('' === this.sDefaultScreenName)
-					{
-						this.sDefaultScreenName = sScreenName;
-					}
+					var
+						oScreen = new CScreen(),
+						sScreenName = oScreen ? oScreen.screenName() : ''
+					;
 
-					this.oScreens[sScreenName] = oScreen;
+					if (oScreen && '' !== sScreenName)
+					{
+						if ('' === this.sDefaultScreenName)
+						{
+							this.sDefaultScreenName = sScreenName;
+						}
+
+						this.oScreens[sScreenName] = oScreen;
+					}
 				}
 
 			}, this);

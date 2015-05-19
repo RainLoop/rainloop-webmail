@@ -22,5 +22,6 @@ class FolderResponseStatus
 	const RECENT = 'RECENT';
 	const UNSEEN = 'UNSEEN';
 	const UIDNEXT = 'UIDNEXT';
+	const HIGHESTMODSEQ = 'HIGHESTMODSEQ';
 	const UIDVALIDITY = 'UIDVALIDITY';
 }

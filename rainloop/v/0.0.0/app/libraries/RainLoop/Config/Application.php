@@ -91,6 +91,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_powered'		=> array(true),
 				'user_logo'			=> array(''),
 				'user_logo_title'	=> array(''),
+				'user_logo_message'	=> array(''),
 				'user_css'			=> array(''),
 				'welcome_page_url'		=> array(''),
 				'welcome_page_display'	=> array('none')
@@ -134,8 +135,19 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'capa' => array(
+				'folders' => array(true),
+				'composer' => array(true),
+				'contacts' => array(true),
+				'settings' => array(true),
+				'help' => array(true),
+				'reload' => array(true),
+				'search' => array(true),
+				'search_adv' => array(true),
 				'filters' => array(true),
-				'templates' => array(true),
+				'x-templates' => array(false),
+				'dangerous_actions' => array(true),
+				'message_actions' => array(true),
+				'messagelist_actions' => array(true),
 				'attachments_actions' => array(true)
 			),
 
@@ -299,6 +311,7 @@ Enables caching in the system'),
 				'imap_message_list_fast_simple_search' => array(true),
 				'imap_message_list_count_limit_trigger' => array(0),
 				'imap_message_list_date_filter' => array(0),
+				'imap_message_list_permanent_filter' => array(''),
 				'imap_large_thread_limit' => array(50),
 				'imap_folder_list_limit' => array(200),
 				'imap_show_login_alert' => array(true),

@@ -208,6 +208,7 @@
 	};
 
 	Globals.leftPanelDisabled = ko.observable(false);
+	Globals.leftPanelType = ko.observable('');
 
 	// popups
 	Globals.popupVisibilityNames = ko.observableArray([]);

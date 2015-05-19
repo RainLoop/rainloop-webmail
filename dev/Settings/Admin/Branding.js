@@ -39,6 +39,9 @@
 		this.userLogo = ko.observable(Settings.settingsGet('UserLogo') || '');
 		this.userLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
+		this.userLogoMessage = ko.observable(Settings.settingsGet('UserLogoMessage') || '');
+		this.userLogoMessage.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
 		this.userLogoTitle = ko.observable(Settings.settingsGet('UserLogoTitle') || '');
 		this.userLogoTitle.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 

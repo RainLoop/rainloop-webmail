@@ -47,6 +47,11 @@ class Config
 	public static $MessageListDateFilter = 0;
 
 	/**
+	 * @var string
+	 */
+	public static $MessageListPermanentFilter = '';
+
+	/**
 	 * @var int
 	 */
 	public static $LargeThreadLimit = 50;

@@ -375,6 +375,11 @@
 			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 
+		Globals.leftPanelType.subscribe(function (sValue) {
+			Globals.$html.toggleClass('rl-left-panel-none', 'none' === sValue);
+			Globals.$html.toggleClass('rl-left-panel-short', 'short' === sValue);
+		});
+
 		ssm.ready();
 
 		require('Stores/Language').populate();

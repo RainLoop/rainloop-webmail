@@ -47,6 +47,16 @@
 	 */
 	SettingsUserScreen.prototype.setupSettings = function (fCallback)
 	{
+		if (!Settings.capa(Enums.Capa.Settings))
+		{
+			if (fCallback)
+			{
+				fCallback();
+			}
+
+			return false;
+		}
+
 		kn.addSettingsViewModel(require('Settings/User/General'),
 			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
@@ -96,8 +106,11 @@
 				'SettingsTemplates', 'SETTINGS_LABELS/LABEL_TEMPLATES_NAME', 'templates');
 		}
 
-		kn.addSettingsViewModel(require('Settings/User/Folders'),
-			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+		if (Settings.capa(Enums.Capa.Folders))
+		{
+			kn.addSettingsViewModel(require('Settings/User/Folders'),
+				'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+		}
 
 		if (Settings.capa(Enums.Capa.Themes))
 		{
@@ -117,12 +130,15 @@
 		{
 			fCallback();
 		}
+
+		return true;
 	};
 
 	SettingsUserScreen.prototype.onShow = function ()
 	{
 		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
+		Globals.leftPanelType('');
 	};
 
 	SettingsUserScreen.prototype.setSettingsTitle = function ()

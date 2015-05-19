@@ -1355,8 +1355,8 @@
 
 						kn.startScreens([
 							require('Screen/User/MailBox'),
-							require('Screen/User/Settings'),
-							require('Screen/User/About')
+							Settings.capa(Enums.Capa.Settings) ? require('Screen/User/Settings') : null,
+							false ? require('Screen/User/About') : null
 						]);
 
 						if (bGoogle || bFacebook || bTwitter)
@@ -1435,7 +1435,9 @@
 							}, 1000);
 						}
 
-						if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
+						if (!!Settings.settingsGet('AccountSignMe') &&
+							window.navigator.registerProtocolHandler &&
+							Settings.capa(Enums.Capa.Composer))
 						{
 							_.delay(function () {
 								try {

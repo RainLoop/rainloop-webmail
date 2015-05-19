@@ -91,8 +91,12 @@ class Api
 			\MailSo\Config::$MessageListDateFilter =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
+			\MailSo\Config::$MessageListPermanentFilter =
+				\trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
+
 			\MailSo\Config::$LargeThreadLimit =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
+
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 

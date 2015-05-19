@@ -48,7 +48,12 @@
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';
 
-		this.hideDangerousActions = !!Settings.settingsGet('HideDangerousActions');
+		this.allowReload = !!Settings.capa(Enums.Capa.Reload);
+		this.allowSearch = !!Settings.capa(Enums.Capa.Search);
+		this.allowSearchAdv = !!Settings.capa(Enums.Capa.SearchAdv);
+		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
+		this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
+		this.allowDangerousActions = !!Settings.capa(Enums.Capa.DangerousActions);
 
 		this.popupVisibility = Globals.popupVisibility;
 
@@ -200,18 +205,27 @@
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
 		this.clearCommand = Utils.createCommand(this, function () {
-			kn.showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
+			if (Settings.capa(Enums.Capa.DangerousActions))
+			{
+				kn.showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
+			}
 		});
 
 		this.multyForwardCommand = Utils.createCommand(this, function () {
-			kn.showScreenPopup(require('View/Popup/Compose'), [
-				Enums.ComposeType.ForwardAsAttachment, MessageStore.messageListCheckedOrSelected()]);
+			if (Settings.capa(Enums.Capa.Composer))
+			{
+				kn.showScreenPopup(require('View/Popup/Compose'), [
+					Enums.ComposeType.ForwardAsAttachment, MessageStore.messageListCheckedOrSelected()]);
+			}
 		}, this.canBeMoved);
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
-			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
+			if (Settings.capa(Enums.Capa.DangerousActions))
+			{
+				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
+					FolderStore.currentFolderFullNameRaw(),
+					MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
+			}
 		}, this.canBeMoved);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
@@ -241,7 +255,7 @@
 		this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
 
 		this.reloadCommand = Utils.createCommand(this, function () {
-			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation())
+			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload)
 			{
 				require('App/User').reloadMessageList(false, true);
 			}
@@ -718,37 +732,43 @@
 			}
 		});
 
-		// archive (zip)
-		key('z', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.archiveCommand();
-			return false;
-		});
-
-		// delete
-		key('delete, shift+delete, shift+3', Enums.KeyState.MessageList, function (event, handler) {
-			if (event)
-			{
-				if (0 < MessageStore.messageListCheckedOrSelected().length)
-				{
-					if (handler && 'shift+delete' === handler.shortcut)
-					{
-						self.deleteWithoutMoveCommand();
-					}
-					else
-					{
-						self.deleteCommand();
-					}
-				}
-
+		if (Settings.capa(Enums.Capa.MessageListActions))
+		{
+			// archive (zip)
+			key('z', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.archiveCommand();
 				return false;
-			}
-		});
+			});
 
-		// check mail
-		key('ctrl+r, command+r', [Enums.KeyState.FolderList, Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.reloadCommand();
-			return false;
-		});
+			// delete
+			key('delete, shift+delete, shift+3', Enums.KeyState.MessageList, function (event, handler) {
+				if (event)
+				{
+					if (0 < MessageStore.messageListCheckedOrSelected().length)
+					{
+						if (handler && 'shift+delete' === handler.shortcut)
+						{
+							self.deleteWithoutMoveCommand();
+						}
+						else
+						{
+							self.deleteCommand();
+						}
+					}
+
+					return false;
+				}
+			});
+		}
+
+		if (Settings.capa(Enums.Capa.Reload))
+		{
+			// check mail
+			key('ctrl+r, command+r', [Enums.KeyState.FolderList, Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.reloadCommand();
+				return false;
+			});
+		}
 
 		// check all
 		key('ctrl+a, command+a', Enums.KeyState.MessageList, function () {
@@ -756,17 +776,23 @@
 			return false;
 		});
 
-		// write/compose (open compose popup)
-		key('w,c', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			kn.showScreenPopup(require('View/Popup/Compose'));
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			// write/compose (open compose popup)
+			key('w,c', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				kn.showScreenPopup(require('View/Popup/Compose'));
+				return false;
+			});
+		}
 
-		// important - star/flag messages
-		key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.flagMessagesFast();
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.MessageListActions))
+		{
+			// important - star/flag messages
+			key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.flagMessagesFast();
+				return false;
+			});
+		}
 
 		key('t', [Enums.KeyState.MessageList], function () {
 
@@ -784,34 +810,46 @@
 			return false;
 		});
 
-		// move
-		key('m', Enums.KeyState.MessageList, function () {
-			self.moveDropdownTrigger(true);
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.MessageListActions))
+		{
+			// move
+			key('m', Enums.KeyState.MessageList, function () {
+				self.moveDropdownTrigger(true);
+				return false;
+			});
+		}
 
-		// read
-		key('q', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.seenMessagesFast(true);
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.MessageListActions))
+		{
+			// read
+			key('q', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.seenMessagesFast(true);
+				return false;
+			});
 
-		// unread
-		key('u', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.seenMessagesFast(false);
-			return false;
-		});
+			// unread
+			key('u', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.seenMessagesFast(false);
+				return false;
+			});
+		}
 
-		key('shift+f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.multyForwardCommand();
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			key('shift+f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.multyForwardCommand();
+				return false;
+			});
+		}
 
-		// search input focus
-		key('/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.inputMessageListSearchFocus(true);
-			return false;
-		});
+		if (Settings.capa(Enums.Capa.Search))
+		{
+			// search input focus
+			key('/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+				self.inputMessageListSearchFocus(true);
+				return false;
+			});
+		}
 
 		// cancel search
 		key('esc', Enums.KeyState.MessageList, function () {
@@ -887,12 +925,18 @@
 
 	MessageListMailBoxUserView.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
 	};
 
 	MessageListMailBoxUserView.prototype.advancedSearchClick = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/AdvancedSearch'));
+		if (Settings.capa(Enums.Capa.SearchAdv))
+		{
+			kn.showScreenPopup(require('View/Popup/AdvancedSearch'));
+		}
 	};
 
 	MessageListMailBoxUserView.prototype.quotaTooltip = function ()

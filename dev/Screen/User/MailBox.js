@@ -20,6 +20,8 @@
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
+		Settings = require('Storage/Settings'),
+
 		AbstractScreen = require('Knoin/AbstractScreen')
 	;
 
@@ -64,6 +66,16 @@
 
 		AppStore.focusedState(Enums.Focused.None);
 		AppStore.focusedState(Enums.Focused.MessageList);
+
+		if (!Settings.capa(Enums.Capa.Folders))
+		{
+			Globals.leftPanelType(
+				Settings.capa(Enums.Capa.Composer) || Settings.capa(Enums.Capa.Contacts) ? 'short' : 'none');
+		}
+		else
+		{
+			Globals.leftPanelType('');
+		}
 	};
 
 	/**

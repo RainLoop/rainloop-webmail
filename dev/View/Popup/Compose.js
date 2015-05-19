@@ -89,6 +89,7 @@
 		this.resizerTrigger = _.bind(this.resizerTrigger, this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = AppStore.composeInEdit;
@@ -321,7 +322,7 @@
 			}
 		}, this));
 
-		this.canBeSendedOrSaved = ko.computed(function () {
+		this.canBeSentOrSaved = ko.computed(function () {
 			return !this.sending() && !this.saving();
 		}, this);
 
@@ -373,6 +374,11 @@
 					{
 						sSentFolder = this.aDraftInfo[2];
 					}
+				}
+
+				if (!this.allowFolders)
+				{
+					sSentFolder = Consts.Values.UnuseOptionValue;
 				}
 
 				if ('' === sSentFolder)
@@ -432,9 +438,15 @@
 					);
 				}
 			}
-		}, this.canBeSendedOrSaved);
+
+		}, this.canBeSentOrSaved);
 
 		this.saveCommand = Utils.createCommand(this, function () {
+
+			if (!this.allowFolders)
+			{
+				return false;
+			}
 
 			if (FolderStore.draftFolderNotEnabled())
 			{
@@ -470,7 +482,7 @@
 				);
 			}
 
-		}, this.canBeSendedOrSaved);
+		}, this.canBeSentOrSaved);
 
 		this.skipCommand = Utils.createCommand(this, function () {
 
@@ -484,7 +496,7 @@
 
 			this.tryToClosePopup();
 
-		}, this.canBeSendedOrSaved);
+		}, this.canBeSentOrSaved);
 
 		this.contactsCommand = Utils.createCommand(this, function () {
 
@@ -635,7 +647,7 @@
 			sDraftFolder = FolderStore.draftFolder()
 		;
 
-		if ('' !== sDraftFolder)
+		if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
 		{
 			Cache.setFolderHash(sDraftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)
@@ -1413,10 +1425,13 @@
 			return false;
 		});
 
-		key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
-			self.saveCommand();
-			return false;
-		});
+		if (this.allowFolders)
+		{
+			key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
+				self.saveCommand();
+				return false;
+			});
+		}
 
 		if (!!Settings.settingsGet('AllowCtrlEnterOnCompose'))
 		{

@@ -150,6 +150,11 @@
 	{
 		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
 		{
+			if (!PopupComposeVoreModel)
+			{
+				return true;
+			}
+
 			sMailToUrl = sMailToUrl.toString().substr(7);
 
 			var

@@ -156,6 +156,21 @@
 		</div>
 	</div>
 	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO_MESSAGE"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogoMessage,
+					trigger: userLogoMessage.trigger,
+					placeholder: 'https://',
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_CUSTOM_CSS"></label>
 		<div class="controls">
 			<div class="custom-css-wrapper" data-bind="component: {
