@@ -64,11 +64,11 @@
 		kn.addSettingsViewModel(require('Settings/Admin/Plugins'),
 			'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
 
+		kn.addSettingsViewModel(require('Settings/Admin/Packages'),
+			'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
+
 		if (!RL_COMMUNITY)
 		{
-			kn.addSettingsViewModel(require('Settings/Admin/Prem/Packages'),
-				'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
-
 			kn.addSettingsViewModel(require('Settings/Admin/Prem/Licensing'),
 				'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
 		}
