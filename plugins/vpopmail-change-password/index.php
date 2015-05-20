@@ -39,7 +39,7 @@ class ChangePasswordVpopmailPlugin extends \RainLoop\Plugins\AbstractPlugin
 						->SetmTable($this->Config()->Get('plugin', 'mTable', ''))
 						->SetmColumn($this->Config()->Get('plugin', 'mColumn', ''))
 				;
-				
+
 				break;
 		}
 	}
@@ -53,7 +53,7 @@ class ChangePasswordVpopmailPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('domains')->SetLabel('Allowed Domains')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Allowed domains, space as delimiter')
-				->SetDefaultValue('* gmail.com yahoo.com dusal.net'),
+				->SetDefaultValue('gmail.com yahoo.com'),
 			\RainLoop\Plugins\Property::NewInstance('mHost')->SetLabel('MySQL Host')
 				->SetDefaultValue('localhost'),
 			\RainLoop\Plugins\Property::NewInstance('mUser')->SetLabel('MySQL User')

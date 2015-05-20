@@ -1,4 +1,5 @@
 <?php
+
 class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
 	/**
@@ -121,7 +122,7 @@ class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param array $aDomains
 	 *
@@ -136,7 +137,7 @@ class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 *
@@ -144,8 +145,8 @@ class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword
 	 */
 	public function PasswordChangePossibility($oAccount)
 	{
-		return $oAccount && $oAccount->Domain() &&
-			\in_array(\strtolower($oAccount->Domain()->Name()), $this->aDomains);
+		return 0 === \count($this->aDomains) || ($oAccount && \in_array(\strtolower(
+			\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email)), $this->aDomains));
 	}
 
 	/**
@@ -162,58 +163,56 @@ class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword
 			$this->oLogger->Write('Try to change password for '.$oAccount->Email());
 		}
 
+		if (empty($this->mHost) || empty($this->mDatabase) || empty($this->mColumn) || empty($this->mTable))
+		{
+			return false;
+		}
+
 		$bResult = false;
 
-		$dsn = 'mysql:host='.$this->mHost.';dbname='.$this->mDatabase.';charset=utf8';
-		$options = array(
+		$sDsn = 'mysql:host='.$this->mHost.';dbname='.$this->mDatabase.';charset=utf8';
+		$aOptions = array(
 			PDO::ATTR_EMULATE_PREPARES  => false,
 			PDO::ATTR_PERSISTENT        => true,
 			PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION
 		);
 
+		$sLoginPart = \MailSo\Base\Utils::GetAccountNameFromEmail($oAccount->Email());
+		$sDomainPart = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+
 		try
+		{
+			$oConn = new PDO($sDsn, $this->mUser, $this->mPass, $aOptions);
+
+			$oSelect = $oConn->prepare('SELECT '.$this->mColumn.' FROM '.$this->mTable.' WHERE pw_name=? AND pw_domain=? LIMIT 1');
+			$oSelect->execute(array($sLoginPart, $sDomainPart));
+
+			$aColCrypt = $oSelect->fetchAll(PDO::FETCH_ASSOC);
+
+			$sCryptPass = isset($aColCrypt[0][$this->mColumn]) ? $aColCrypt[0][$this->mColumn] : '';
+			if (0 < \strlen($sCryptPass) && \crypt($sPrevPassword, $sCryptPass) === $sCryptPass)
 			{
-				$conn = new PDO($dsn,$this->mUser,$this->mPass,$options);
-				
-				$select = $conn->prepare("SELECT $this->mColumn FROM $this->mTable WHERE pw_name=? AND pw_domain=? LIMIT 1");
-
-				$email_parts = explode("@", $oAccount->Email());
-
-				$select->execute(array(
-						$email_parts[0],
-						$email_parts[1]
+				$oUpdate = $oConn->prepare('UPDATE '.$this->mTable.' SET '.$this->mColumn.'=ENCRYPT(?,concat("$1$",right(md5(rand()), 8 ),"$")), pw_clear_passwd=\'\' WHERE pw_name=? AND pw_domain=?');
+				$oUpdate->execute(array(
+					$sNewPassword,
+					$sLoginPart,
+					$sDomainPart
 				));
 
-				$colCrypt = $select->fetchAll(PDO::FETCH_ASSOC);
-				$sCryptPass = $colCrypt[0][$this->mColumn];
-
-				if (0 < strlen($sCryptPass) && crypt($sPrevPassword, $sCryptPass) === $sCryptPass /*&& 7 < mb_strlen($sNewPassword) && 20 > mb_strlen($sNewPassword) && !preg_match('/[^A-Za-z0-9]+/', $sNewPassword)*/)
-				{
-
-						$update = $conn->prepare('UPDATE '.$this->mTable.' SET '.$this->mColumn.'=ENCRYPT(?,concat("$1$",right(md5(rand()), 8 ),"$")), pw_clear_passwd=\'\' WHERE pw_name=? AND pw_domain=?');
-						$update->execute(array(
-								$sNewPassword,
-								$email_parts[0],
-								$email_parts[1]
-						));
-
-
-
 				$bResult = true;
- 				if ($this->oLogger)
-                                {
-                                        $this->oLogger->Write('Success! Password changed.');
-                                }
+				if ($this->oLogger)
+				{
+					$this->oLogger->Write('Success! Password changed.');
+				}
 			}
 			else
 			{
 				$bResult = false;
 				if ($this->oLogger)
-                		{
-                        		$this->oLogger->Write('Something went wrong. Either current password is incorrect, or new password does not match criteria.');
-                		}
+				{
+					$this->oLogger->Write('Something went wrong. Either current password is incorrect, or new password does not match criteria.');
+				}
 			}
-
 		}
 		catch (\Exception $oException)
 		{
