@@ -71,6 +71,21 @@
 		</div>
 		<div class="control-group">
 			<label class="control-label">
+				<span class="i18n" data-i18n="CONTACTS/LABEL_DISPLAY_NAME"></span>
+			</label>
+			<div class="controls">
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: displayName,
+						trigger: displayNameTrigger,
+						size: 30
+					}
+				}"></div>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
 			   <span class="i18n" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></span>
 			</label>
 			<div class="controls">
