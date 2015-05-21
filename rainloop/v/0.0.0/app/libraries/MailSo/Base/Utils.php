@@ -872,7 +872,7 @@ END;
 		$sResult = '';
 		if (0 < \strlen($sEmail))
 		{
-			$iPos = \strpos($sEmail, '@');
+			$iPos = \strrpos($sEmail, '@');
 			$sResult = (false === $iPos) ? $sEmail : \substr($sEmail, 0, $iPos);
 		}
 
@@ -889,7 +889,7 @@ END;
 		$sResult = '';
 		if (0 < \strlen($sEmail))
 		{
-			$iPos = \strpos($sEmail, '@');
+			$iPos = \strrpos($sEmail, '@');
 			if (false !== $iPos && 0 < $iPos)
 			{
 				$sResult = \substr($sEmail, $iPos + 1);
