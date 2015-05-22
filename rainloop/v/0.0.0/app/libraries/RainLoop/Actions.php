@@ -1447,7 +1447,6 @@ class Actions
 		}
 
 		$oSettings = null;
-		$oSettingsLocal = null;
 
 		if (!$bAdmin)
 		{
@@ -1504,7 +1503,7 @@ class Actions
 				}
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
-				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
 
 				if (!$oAccount->IsAdditionalAccount() && !empty($aResult['WelcomePageUrl']) &&
 					('once' === $aResult['WelcomePageDisplay'] || 'always' === $aResult['WelcomePageDisplay']))
@@ -1616,15 +1615,15 @@ class Actions
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth'])
 			{
-				$aResult['AdminLogin'] = $oConfig->Get('security', 'admin_login', '');
 				$aResult['AdminDomain'] = APP_SITE;
+				$aResult['AdminLogin'] = (string) $oConfig->Get('security', 'admin_login', '');
 				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
 
-				$aResult['VerifySslCertificate'] = !!$oConfig->Get('ssl', 'verify_certificate', false);
-				$aResult['AllowSelfSigned'] = !!$oConfig->Get('ssl', 'allow_self_signed', true);
+				$aResult['VerifySslCertificate'] = (bool) $oConfig->Get('ssl', 'verify_certificate', false);
+				$aResult['AllowSelfSigned'] = (bool) $oConfig->Get('ssl', 'allow_self_signed', true);
 
-				$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
+				$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : null;
 				$aResult['MySqlIsSupported'] = \is_array($aDrivers) ? \in_array('mysql', $aDrivers) : false;
 				$aResult['SQLiteIsSupported'] = \is_array($aDrivers) ? \in_array('sqlite', $aDrivers) : false;
 				$aResult['PostgreSqlIsSupported'] = \is_array($aDrivers) ? \in_array('pgsql', $aDrivers) : false;
@@ -1632,11 +1631,11 @@ class Actions
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
 				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+				$aResult['ContactsPdoType'] = (string) $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = APP_DUMMY;
+				$aResult['ContactsPdoPassword'] = (string) APP_DUMMY;
 
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
@@ -1658,11 +1657,11 @@ class Actions
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
 
-				$aResult['SubscriptionEnabled'] = \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
+				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
 //					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
-				$aResult['WeakPassword'] = $oConfig->ValidatePassword('12345');
-				$aResult['CoreAccess'] = $this->rainLoopCoreAccess();
+				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
+				$aResult['CoreAccess'] = (bool) $this->rainLoopCoreAccess();
 
 				$aResult['PhpUploadSizes'] = array(
 					'upload_max_filesize' => \ini_get('upload_max_filesize'),
@@ -1690,6 +1689,7 @@ class Actions
 		$aResult['Themes'] = $this->GetThemes();
 		$aResult['Languages'] = $this->GetLanguages(false);
 		$aResult['LanguagesAdmin'] = $this->GetLanguages(true);
+
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
@@ -1714,59 +1714,73 @@ class Actions
 		$aResult['UserBackgroundName'] = '';
 		$aResult['UserBackgroundHash'] = '';
 
-		if (!$bAdmin && $oSettings instanceof \RainLoop\Settings &&
-			$oSettingsLocal instanceof \RainLoop\Settings &&
-			$oAccount)
+		if (!$bAdmin && $oAccount instanceof \RainLoop\Model\Account)
 		{
-			if ($oConfig->Get('webmail', 'allow_languages_on_settings', true))
-			{
-				$sLanguage = $oSettings->GetConf('Language', $sLanguage);
-			}
-
-			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
-			{
-				$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
-			}
-
-			$aResult['SentFolder'] = $oSettingsLocal->GetConf('SentFolder', '');
-			$aResult['DraftFolder'] = $oSettingsLocal->GetConf('DraftFolder', '');
-			$aResult['SpamFolder'] = $oSettingsLocal->GetConf('SpamFolder', '');
-			$aResult['TrashFolder'] = $oSettingsLocal->GetConf('TrashFolder', '');
-			$aResult['ArchiveFolder'] = $oSettingsLocal->GetConf('ArchiveFolder', '');
-			$aResult['NullFolder'] = $oSettingsLocal->GetConf('NullFolder', '');
-
-			$aResult['EditorDefaultType'] = $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
-			$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
-			$aResult['ContactsAutosave'] = (bool) $oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
-			$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
-			$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
-			$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
-			$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
-			$aResult['AutoLogout'] = (int) $oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
-			$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
-
-			$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-			$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-
-			if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
-			{
-				$aResult['AutoLogout'] = 0;
-			}
-
-			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
-			{
-				$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-				$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-//				if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
-//				{
-//					$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
-//						$aResult['UserBackgroundHash'].'/';
-//				}
-			}
-
-			$aResult['EnableTwoFactor'] = !!$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
-
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
+
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+
+			if ($oSettingsLocal instanceof \RainLoop\Settings)
+			{
+				// if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+
+				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
+				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
+				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
+				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
+				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
+				$aResult['NullFolder'] = (string) $oSettingsLocal->GetConf('NullFolder', '');
+			}
+
+			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
+			{
+				if ($oSettings instanceof \RainLoop\Settings)
+				{
+					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true))
+					{
+						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
+					}
+
+					$aResult['EditorDefaultType'] = (string) $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+					$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$aResult['ContactsAutosave'] = (bool) $oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
+					$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
+					$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
+					$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
+					$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+					$aResult['AutoLogout'] = (int) $oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
+					$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
+
+					if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
+					{
+						$aResult['AutoLogout'] = 0;
+					}
+
+					if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
+					{
+						$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+						$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+	//					if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
+	//					{
+	//						$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
+	//							$aResult['UserBackgroundHash'].'/';
+	//					}
+					}
+
+					$aResult['EnableTwoFactor'] = (bool) $oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
+				}
+
+				if ($oSettingsLocal instanceof \RainLoop\Settings)
+				{
+					$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+					$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+
+					if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
+					{
+						$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
+					}
+				}
+			}
 		}
 
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
@@ -1833,7 +1847,7 @@ class Actions
 		if (false !== \strpos($sAcceptLang, ','))
 		{
 			$aParts = \explode(',', $sAcceptLang, 2);
-			$sLang = !empty($aParts[0]) ? \trim(\strtolower($aParts[0])) : '';
+			$sLang = empty($aParts[0]) ? '' : \trim(\strtolower($aParts[0]));
 		}
 
 		return $sLang;
@@ -2398,12 +2412,14 @@ class Actions
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param bool $bAllowIdentities = false
 	 *
 	 * @return array
 	 */
-	public function GetIdentities($oAccount, $bAllowIdentities = false)
+	public function GetIdentities($oAccount)
 	{
+		$bAllowIdentities = $this->GetCapa(false,
+			\RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
+
 		$aIdentities = array();
 		if ($oAccount)
 		{
@@ -2491,6 +2507,7 @@ class Actions
 	public function GetIdentityByID($oAccount, $sID, $bFirstOnEmpty = false)
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
+
 		if (\is_array($aIdentities))
 		{
 			foreach ($aIdentities as $oIdentity)
@@ -2544,12 +2561,13 @@ class Actions
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aIdentities = array()
-	 * @param bool $bAllowIdentities = false
 	 *
 	 * @return array
 	 */
-	public function SetIdentities($oAccount, $aIdentities = array(), $bAllowIdentities = false)
+	public function SetIdentities($oAccount, $aIdentities = array())
 	{
+		$bAllowIdentities = $this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
+
 		$aResult = array();
 		foreach ($aIdentities as $oItem)
 		{
@@ -2966,8 +2984,7 @@ class Actions
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidInputArgument);
 		}
 
-		$aIdentities = $this->GetIdentities($oAccount,
-			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount));
+		$aIdentities = $this->GetIdentities($oAccount);
 
 		$bAdded = false;
 		$aIdentitiesForSave = array();
@@ -2992,8 +3009,7 @@ class Actions
 			$aIdentitiesForSave[] = $oIdentity;
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave,
-			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount)));
+		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave));
 	}
 
 	/**
@@ -3017,7 +3033,8 @@ class Actions
 		}
 
 		$aNew = array();
-		$aIdentities = $this->GetIdentities($oAccount, $this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount));
+		$aIdentities = $this->GetIdentities($oAccount);
+
 		foreach ($aIdentities as $oItem)
 		{
 			if ($oItem && $sId !== $oItem->Id())
@@ -3026,8 +3043,7 @@ class Actions
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew,
-			$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount)));
+		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew));
 	}
 
 	/**
@@ -3191,8 +3207,7 @@ class Actions
 
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Accounts' => $mAccounts,
-			'Identities' => $this->GetIdentities($oAccount,
-				$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount))
+			'Identities' => $this->GetIdentities($oAccount)
 		));
 	}
 
@@ -4791,10 +4806,14 @@ class Actions
 	 */
 	public function DoSettingsUpdate()
 	{
+		$oAccount = $this->getAccountFromToken();
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
+		{
+			return $this->FalseResponse(__FUNCTION__);
+		}
+
 		$self = $this;
 		$oConfig = $this->Config();
-
-		$oAccount = $this->getAccountFromToken();
 
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
@@ -6038,11 +6057,26 @@ class Actions
 								list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
 								unset($sRawBody);
 
-//								$this->Logger()->WriteDump(array(
-//									$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
-//								));
+								if ($this->Config()->Get('labs', 'mail_func_clear_headers', true))
+								{
+									$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
+										\MailSo\Mime\Enumerations\Header::TO_,
+										\MailSo\Mime\Enumerations\Header::SUBJECT
+									));
+								}
 
-								if (!\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders/*, '-f'.$oFrom->GetEmail()*/))
+								if ($this->Config()->Get('debug', 'enable', false))
+								{
+									$this->Logger()->WriteDump(array(
+										$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+									));
+								}
+
+								$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
+									\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :
+									\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
+
+								if (!$bR)
 								{
 									throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage);
 								}
@@ -7906,30 +7940,6 @@ class Actions
 
 		$aResult = array();
 
-		if ($oConfig->Get('capa', 'filters', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::FILTERS;
-			if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve()))
-			{
-				$aResult[] = \RainLoop\Enumerations\Capa::SIEVE;
-			}
-		}
-
-		if ($oConfig->Get('capa', 'x-templates', true))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_additional_identities', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::IDENTITIES;
-		}
-
 		if ($oConfig->Get('capa', 'folders', true))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::FOLDERS;
@@ -7953,6 +7963,57 @@ class Actions
 		if ($oConfig->Get('capa', 'settings', true))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::SETTINGS;
+
+			if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS;
+			}
+
+			if ($oConfig->Get('webmail', 'allow_additional_identities', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::IDENTITIES;
+			}
+
+			if ($oConfig->Get('capa', 'x-templates', true))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
+			}
+
+			if ($oConfig->Get('webmail', 'allow_themes', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::THEMES;
+			}
+
+			if ($oConfig->Get('webmail', 'allow_user_background', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::USER_BACKGROUND;
+			}
+
+			if ($oConfig->Get('security', 'openpgp', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::OPEN_PGP;
+			}
+
+			if ($oConfig->Get('capa', 'filters', false))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::FILTERS;
+				if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve()))
+				{
+					$aResult[] = \RainLoop\Enumerations\Capa::SIEVE;
+				}
+			}
+		}
+
+		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
+			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR;
+
+			if ($oConfig->Get('security', 'force_two_factor_auth', false) &&
+				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
+			{
+				$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE;
+			}
 		}
 
 		if ($oConfig->Get('capa', 'help', true))
@@ -7990,18 +8051,6 @@ class Actions
 			}
 		}
 
-		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
-			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR;
-
-			if ($oConfig->Get('security', 'force_two_factor_auth', false) &&
-				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
-			{
-				$aResult[] = \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE;
-			}
-		}
-
 		if ($oConfig->Get('labs', 'allow_gravatar', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::GRAVATAR;
@@ -8015,21 +8064,6 @@ class Actions
 		if ($oConfig->Get('labs', 'allow_prefetch', false))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::PREFETCH;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_themes', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::THEMES;
-		}
-
-		if ($oConfig->Get('webmail', 'allow_user_background', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::USER_BACKGROUND;
-		}
-
-		if ($oConfig->Get('security', 'openpgp', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::OPEN_PGP;
 		}
 
 		if (!\RainLoop\Utils::IsOwnCloud())

@@ -73,6 +73,7 @@
 		this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
 
 		this.logoImg = Utils.trim(Settings.settingsGet('UserLogoMessage'));
+		this.logoIframe = Utils.trim(Settings.settingsGet('UserIframeMessage'));
 
 		this.attachmentsActions = AppStore.attachmentsActions;
 

@@ -196,6 +196,8 @@
 		{
 			this.modeToggle(true);
 
+			sHtml = sHtml.replace(/<[pP][^>]*><\/[pP]>/g, '');
+
 			try {
 				this.editor.setData(sHtml);
 			} catch (e) {}

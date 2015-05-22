@@ -89,10 +89,13 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
 				'login_powered'		=> array(true),
+
+				'user_css'			=> array(''),
 				'user_logo'			=> array(''),
 				'user_logo_title'	=> array(''),
 				'user_logo_message'	=> array(''),
-				'user_css'			=> array(''),
+				'user_iframe_message'	=> array(''),
+
 				'welcome_page_url'		=> array(''),
 				'welcome_page_display'	=> array('none')
 			),
@@ -318,6 +321,8 @@ Enables caching in the system'),
 				'smtp_show_server_errors' => array(false),
 				'sieve_allow_raw_script' => array(false),
 				'sieve_utf8_folder_name' => array(true),
+				'mail_func_clear_headers ' => array(true),
+				'mail_func_additional_parameters ' => array(false),
 				'folders_spec_limit' => array(50),
 				'owncloud_save_folder' => array('Attachments'),
 				'curl_proxy' => array(''),

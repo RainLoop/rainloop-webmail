@@ -716,7 +716,8 @@ class MailClient
 		$sHighestModSeq = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ])
 			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ] : '';
 
-		if ($this->IsGmail())
+		if ($this->IsGmail() &&
+			('INBOX' === $sFolderName || '[gmail]' === \strtolower(\substr($sFolderName, 0, 7))))
 		{
 			$oFolder = $this->oImapClient->FolderCurrentInformation();
 			if ($oFolder && null !== $oFolder->Exists && $oFolder->FolderName === $sFolderName)
@@ -846,7 +847,8 @@ class MailClient
 		$aFlags = array();
 
 		$bSelect = false;
-		if ($this->IsGmail())
+		if ($this->IsGmail() &&
+			('INBOX' === $sFolderName || '[gmail]' === \strtolower(\substr($sFolderName, 0, 7))))
 		{
 			$this->oImapClient->FolderSelect($sFolderName);
 			$bSelect = true;
@@ -1336,10 +1338,7 @@ class MailClient
 								$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter > $iDateStampFrom ?
 									$iTimeFilter : $iDateStampFrom);
 
-								if (0 < $iTimeFilter && $iTimeFilter > $iDateStampFrom)
-								{
-									$iTimeFilter = 0;
-								}
+								$iTimeFilter = 0;
 							}
 
 							if (0 < $iDateStampTo)

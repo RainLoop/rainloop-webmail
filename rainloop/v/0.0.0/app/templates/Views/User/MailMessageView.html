@@ -43,21 +43,32 @@
 			</nobr>
 		</div>
 		<div class="b-content b-message-view-wrapper thm-message-view-background-color">
-			<div>
+			<div style="height: 100%">
 				<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
 					<span data-bind="text: printableCheckedMessageCount()"></span>
 					<i class="icon-mail"></i>
 				</div>
 
-				<div class="b-message-view-desc" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
-					<span class="i18n" data-bind="visible: !logoImg" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
-					<div class="logoPlace" data-bind="if: logoImg">
-						<img style="height: 99%" data-bind="attr: { 'src': logoImg }" />
-					</div>
+				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages()">
+					<span class="text" data-bind="text: messageError()"></span>
 				</div>
 
-				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError()">
-					<span class="text" data-bind="text: messageError()"></span>
+				<div data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()" style="height: 100%">
+
+					<div class="b-message-view-desc" data-bind="visible: !logoIframe">
+						<span class="i18n" data-bind="visible: !logoImg" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
+						<div class="logoPlace" data-bind="visible: logoImg, if: logoImg">
+							<img style="height: 99%" data-bind="attr: { 'src': logoImg }" />
+						</div>
+					</div>
+
+					<div class="b-message-view-iframe" data-bind="visible: logoIframe, if: logoIframe" style="position: relative; height: 100%">
+						<iframe src="javascript:1;" tabindex="-1" frameborder="0"
+							style="border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;"
+							data-bind="attr: {'src': logoIframe}"></iframe>
+						<div class="b-message-view-iframe-backdrop"></div>
+					</div>
+					
 				</div>
 
 				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
@@ -211,6 +222,7 @@
 						<div>
 							<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
 							<div style="overflow: hidden;">
+								<button class="close" data-bind="command: closeMessage" style="margin-top: -2px;">&times;</button>
 								<div class="subjectParent" data-bind="event: { 'dblclick': toggleFullScreen }">
 									<span class="flagParent">
 										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>

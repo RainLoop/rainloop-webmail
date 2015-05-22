@@ -2,7 +2,7 @@
 	"name": "RainLoop",
 	"title": "RainLoop Webmail",
 	"version": "1.9.1",
-	"release": "330",
+	"release": "333",
 	"description": "Simple, modern & fast web-based email client",
 	"homepage": "http://rainloop.net",
 	"main": "gulpfile.js",
@@ -40,7 +40,7 @@
 		"plugins"
 	],
 	"readmeFilename": "README.md",
-	"ownCloudPackageVersion": "4.2",
+	"ownCloudPackageVersion": "4.3",
 	"engines": {
 		"node": ">= 0.10.0"
 	},

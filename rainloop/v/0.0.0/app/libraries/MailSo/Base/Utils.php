@@ -731,6 +731,64 @@ END;
 	}
 
 	/**
+	 * @param string $sIncHeaders
+	 * @param string $aHeadersToRemove = array()
+	 *
+	 * @return string
+	 */
+	public static function RemoveHeaderFromHeaders($sIncHeaders, $aHeadersToRemove = array())
+	{
+		$sResultHeaders = $sIncHeaders;
+
+		if (\is_array($aHeadersToRemove) && 0 < \count($aHeadersToRemove))
+		{
+			$aHeadersToRemove = \array_map('strtolower', $aHeadersToRemove);
+
+			$sIncHeaders = \preg_replace('/[\r\n]+/', "\n", $sIncHeaders);
+			$aHeaders = \explode("\n", $sIncHeaders);
+
+			$bSkip = false;
+			$aResult = array();
+
+			foreach ($aHeaders as $sLine)
+			{
+				if (0 < \strlen($sLine))
+				{
+					$sFirst = $sLine{1};
+					if (' ' === $sFirst || "\t" === $sFirst)
+					{
+						if (!$bSkip)
+						{
+							$aResult[] = $sLine;
+						}
+					}
+					else
+					{
+						$bSkip = false;
+						$aParts = \explode(':', $sLine, 2);
+
+						if (!empty($aParts) && !empty($aParts[0]))
+						{
+							if (\in_array(\strtolower(\trim($aParts[0])), $aHeadersToRemove))
+							{
+								$bSkip = true;
+							}
+							else
+							{
+								$aResult[] = $sLine;
+							}
+						}
+					}
+				}
+			}
+
+			$sResultHeaders = \implode("\r\n", $aResult);
+		}
+
+		return $sResultHeaders;
+	}
+
+	/**
 	 * @param string $sEncodeType
 	 * @param string $sValue
 	 *

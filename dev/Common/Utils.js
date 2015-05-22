@@ -867,6 +867,7 @@
 
 		sText = sHtml
 			.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
+			.replace(/<[pP][^>]*><\/[pP]>/g, '')
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)

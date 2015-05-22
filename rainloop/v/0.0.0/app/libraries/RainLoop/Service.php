@@ -193,18 +193,23 @@ class Service
 
 			$sResult .= '<!--';
 			$sResult .= ' [version:'.APP_VERSION;
-			$sResult .= '][lic:'.($this->oActions->IsOpen() ? 'agpl' : 'cc');
+
+			if ($this->oActions->IsOpen())
+			{
+				$sResult .= '][AGPLv3';
+			}
+
 			$sResult .= '][time:'.\substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
-			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+//			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
+//			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
 
 			if (\RainLoop\Utils::IsOwnCloud())
 			{
 				$sResult .= '][owncloud:true';
 			}
 
-			$sResult .= '] -->';
+			$sResult .= '] //-->';
 		}
 
 		// Output result

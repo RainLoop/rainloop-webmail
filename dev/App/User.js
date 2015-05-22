@@ -1060,7 +1060,32 @@
 			oTop = null,
 			oBottom = null,
 
-			fResizeFunction = function (oEvent, oObject) {
+			fResizeCreateFunction = function (oEvent) {
+				if (oEvent && oEvent.target)
+				{
+					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
+
+					oResizableHandle
+						.on('mousedown', function () {
+							Globals.$html.addClass('rl-resizer');
+						})
+						.on('mouseup', function () {
+							Globals.$html.removeClass('rl-resizer');
+						})
+					;
+				}
+			},
+
+			fResizeStartFunction = function () {
+				Globals.$html.addClass('rl-resizer');
+			},
+
+			fResizeResizeFunction = _.debounce(function () {
+				Globals.$html.addClass('rl-resizer');
+			}, 500, true),
+
+			fResizeStopFunction = function (oEvent, oObject) {
+				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.height)
 				{
 					Local.set(sClientSideKeyName, oObject.size.height);
@@ -1076,7 +1101,10 @@
 				'minHeight': iMinHeight,
 				'maxHeight': iMaxHeight,
 				'handles': 's',
-				'stop': fResizeFunction
+				'create': fResizeCreateFunction,
+				'resize': fResizeResizeFunction,
+				'start': fResizeStartFunction,
+				'stop': fResizeStopFunction
 			},
 
 			fSetHeight = function (iHeight) {
@@ -1169,8 +1197,29 @@
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
+			fResizeCreateFunction = function (oEvent) {
+				if (oEvent && oEvent.target)
+				{
+					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
 
-			fResizeFunction = function (oEvent, oObject) {
+					oResizableHandle
+						.on('mousedown', function () {
+							Globals.$html.addClass('rl-resizer');
+						})
+						.on('mouseup', function () {
+							Globals.$html.removeClass('rl-resizer');
+						})
+					;
+				}
+			},
+			fResizeResizeFunction = _.debounce(function () {
+				Globals.$html.addClass('rl-resizer');
+			}, 500, true),
+			fResizeStartFunction = function () {
+				Globals.$html.addClass('rl-resizer');
+			},
+			fResizeStopFunction = function (oEvent, oObject) {
+				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.width)
 				{
 					Local.set(sClientSideKeyName, oObject.size.width);
@@ -1192,7 +1241,10 @@
 			'minWidth': iMinWidth,
 			'maxWidth': 350,
 			'handles': 'e',
-			'stop': fResizeFunction
+			'create': fResizeCreateFunction,
+			'resize': fResizeResizeFunction,
+			'start': fResizeStartFunction,
+			'stop': fResizeStopFunction
 		});
 
 		Events.sub('left-panel.off', function () {
