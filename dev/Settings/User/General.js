@@ -34,6 +34,7 @@
 		this.messagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
 
 		this.editorDefaultType = SettingsStore.editorDefaultType;
+		this.displayName = SettingsStore.displayName;
 		this.layout = SettingsStore.layout;
 		this.usePreviewPane = SettingsStore.usePreviewPane;
 
@@ -60,6 +61,7 @@
 		this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.editorDefaultTypeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 		this.layoutTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.displayNameTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
 
@@ -121,6 +123,7 @@
 				f0 = Utils.settingsSaveHelperSimpleFunction(self.editorDefaultTypeTrigger, self),
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.mppTrigger, self),
 				f2 = Utils.settingsSaveHelperSimpleFunction(self.layoutTrigger, self),
+				f3 = Utils.settingsSaveHelperSimpleFunction(self.displayNameTrigger, self),
 				fReloadLanguageHelper = function (iSaveSettingsStep) {
 					return function() {
 						self.languageTrigger(iSaveSettingsStep);
@@ -147,6 +150,12 @@
 			self.editorDefaultType.subscribe(function (sValue) {
 				Remote.saveSettings(f0, {
 					'EditorDefaultType': sValue
+				});
+			});
+
+			self.displayName.subscribe(function (sValue) {
+				Remote.saveSettings(f3, {
+					'DisplayName': sValue
 				});
 			});
 

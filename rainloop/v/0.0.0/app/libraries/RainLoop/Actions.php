@@ -1747,6 +1747,7 @@ class Actions
 
 			$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 			$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+			$aResult['DisplayName'] = $oSettings->GetConf('DisplayName', $aResult['Email']);
 
 			if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
 			{
@@ -4832,6 +4833,7 @@ class Actions
 		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
+		$this->setSettingsFromParams($oSettings, 'DisplayName', 'string');
 		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');

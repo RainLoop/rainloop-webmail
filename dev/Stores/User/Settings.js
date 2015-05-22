@@ -43,7 +43,7 @@
 		this.replySameFolder = ko.observable(false);
 
 		this.autoLogout = ko.observable(30);
-
+		this.displayName = ko.observable('');
 		this.computers();
 		this.subscribers();
 	}
@@ -72,6 +72,7 @@
 	{
 		this.layout(Utils.pInt(Settings.settingsGet('Layout')));
 		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
+		this.displayName(Settings.settingsGet('DisplayName'));
 
 		this.autoLogout(Utils.pInt(Settings.settingsGet('AutoLogout')));
 		this.messagesPerPage(Settings.settingsGet('MPP'));

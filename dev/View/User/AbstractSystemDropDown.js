@@ -16,6 +16,7 @@
 		AppStore = require('Stores/User/App'),
 		AccountStore = require('Stores/User/Account'),
 		MessageStore = require('Stores/User/Message'),
+		SettingsStore = require('Stores/User/Settings'),
 
 		Settings = require('Storage/Settings'),
 
@@ -82,7 +83,7 @@
 
 	AbstractSystemDropDownUserView.prototype.emailTitle = function ()
 	{
-		return AccountStore.email();
+		return SettingsStore.displayName();
 	};
 
 	AbstractSystemDropDownUserView.prototype.settingsClick = function ()
