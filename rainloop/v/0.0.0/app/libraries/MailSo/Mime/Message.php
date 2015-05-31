@@ -511,7 +511,8 @@ class Message
 	 */
 	private function generateNewBoundary()
 	{
-		return '----=_Part_'.rand(100, 999).'_'.rand(100000000, 999999999).'.'.time();
+		return '--='.\MailSo\Config::$BoundaryPrefix.
+			\rand(100, 999).'_'.rand(100000000, 999999999).'.'.\time();
 	}
 
 	/**

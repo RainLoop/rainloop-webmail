@@ -142,6 +142,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'composer' => array(true),
 				'contacts' => array(true),
 				'settings' => array(true),
+				'quota' => array(true),
 				'help' => array(true),
 				'reload' => array(true),
 				'search' => array(true),
@@ -164,6 +165,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'determine_user_language' => array(true, ''),
 				'determine_user_domain' => array(false, ''),
 
+				'welcome_page' => array(false, ''),
+
 				'forgot_password_link_url' => array('', ''),
 				'registration_link_url' => array('', ''),
 
@@ -184,7 +187,7 @@ Values:
 
 			'defaults' => array(
 				'view_editor_type'		=> array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
-				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 3 - bottom preview'),
+				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'	=> array(true),
 				'autologout'			=> array(30),
 				'show_images'			=> array(false),
@@ -205,6 +208,7 @@ Values:
 Disabling this option is not recommended.'),
 
 				'time_offset' => array(0),
+				'session_filter' => array(''),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
@@ -246,6 +250,7 @@ Examples:
 			'social' => array(
 				'google_enable' => array(false, 'Google'),
 				'google_enable_auth' => array(false),
+				'google_enable_auth_fast' => array(false),
 				'google_enable_drive' => array(false),
 				'google_enable_preview' => array(false),
 				'google_client_id' => array(''),
@@ -298,6 +303,7 @@ Enables caching in the system'),
 				'allow_html_editor_source_button' => array(false),
 				'allow_html_editor_biti_buttons' => array(false),
 				'allow_ctrl_enter_on_compose' => array(false),
+				'try_to_detect_hidden_images' => array(false),
 				'hide_dangerous_actions' => array(false),
 				'use_app_debug_js' => array(false),
 				'use_app_debug_css' => array(false),
@@ -340,6 +346,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_expire' => array(43200),
 				'use_local_proxy_for_external_images' => array(false),
 				'startup_url' => array(''),
+				'emogrifier' => array(true),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

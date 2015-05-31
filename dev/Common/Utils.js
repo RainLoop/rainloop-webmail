@@ -867,13 +867,16 @@
 
 		sText = sHtml
 			.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
-			.replace(/<[pP][^>]*><\/[pP]>/g, '')
+			.replace(/<p[^>]*><\/p>/gi, '')
 			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 			.replace(/<br[^>]*>/gmi, '\n')
 			.replace(/<\/h[\d]>/gi, '\n')
 			.replace(/<\/p>/gi, '\n\n')
+			.replace(/<ul[^>]*>/gmi, '\n')
+			.replace(/<\/ul>/gi, '\n')
+			.replace(/<li[^>]*>/gmi, ' * ')
 			.replace(/<\/li>/gi, '\n')
 			.replace(/<\/td>/gi, '\n')
 			.replace(/<\/tr>/gi, '\n')

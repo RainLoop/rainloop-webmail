@@ -55,6 +55,11 @@
 			nFoldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount()
 		;
 
+		if (Settings.settingsGet('Filtered'))
+		{
+			nFoldersInboxUnreadCount = 0;
+		}
+
 		require('App/User').setWindowTitle(('' === sEmail ? '' : '' +
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') +
 				sEmail + ' - ') + Translator.i18n('TITLES/MAILBOX'));
@@ -82,7 +87,6 @@
 	 * @param {string} sFolderHash
 	 * @param {number} iPage
 	 * @param {string} sSearch
-	 * @param {boolean=} bPreview = false
 	 */
 	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 	{

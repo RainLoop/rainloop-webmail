@@ -9,11 +9,8 @@
 			</label>
 			<div class="controls">
 				<div style="display: inline-block; margin-top: 5px">
-					<b data-bind="text: identityMainDesc"></b>
-					&nbsp;&nbsp;&nbsp;
-					<span data-bind="click: editMainIdentity" style="cursor: pointer">
-						<i class="icon-cog"></i>
-					</span>
+					<b data-bind="click: editMainIdentity, text: identityMainDesc"
+						style="border-bottom: 1px dashed #555; cursor: pointer; padding: 2px 0px;"></b>
 				</div>
 			</div>
 		</div>

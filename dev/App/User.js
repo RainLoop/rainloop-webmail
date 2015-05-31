@@ -1511,7 +1511,7 @@
 								self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 							});
 
-							if (Tinycon)
+							if (Tinycon && !Settings.settingsGet('Filtered'))
 							{
 								Tinycon.setOptions({
 									fallback: false

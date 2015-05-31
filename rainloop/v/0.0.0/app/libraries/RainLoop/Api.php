@@ -32,6 +32,7 @@ class Api
 			if ($bOne)
 			{
 				\RainLoop\Api::SetupDefaultMailSoConfig();
+				
 				$bOne = \RainLoop\Api::RunResult();
 			}
 		}
@@ -97,6 +98,7 @@ class Api
 			\MailSo\Config::$LargeThreadLimit =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
 
+			\MailSo\Config::$BoundaryPrefix = '_RainLoop_';
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 

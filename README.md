@@ -5,9 +5,9 @@ Simple, modern &amp; fast web-based email client.
 
 Modest system requirements, decent performance, simple installation and upgrade, no database required - all these make RainLoop Webmail a perfect choice for your email solution.
 
-For more information about the product, check [http://rainloop.net](http://rainloop.net).
+For more information about the product, check [rainloop.net](http://www.rainloop.net/).
 
-Information about installing the product, check the [documentation page](http://rainloop.net/docs/installation/).
+Information about installing the product, check the [documentation page](http://www.rainloop.net/docs/installation/).
 
 ## Attention
 

@@ -67,6 +67,11 @@ class Config
 	public static $PreferStartTlsIfAutoDetect = true;
 
 	/**
+	 * @var string
+	 */
+	public static $BoundaryPrefix = '_Part_';
+
+	/**
 	 * @var \MailSo\Log\Logger|null
 	 */
 	public static $SystemLogger = null;

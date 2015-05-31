@@ -24,6 +24,7 @@ class Capa
 	const SEARCH = 'SEARCH';
 	const SEARCH_ADV = 'SEARCH_ADV';
 	const SETTINGS = 'SETTINGS';
+	const QUOTA = 'QUOTA';
 	const HELP = 'HELP';
 	const TEMPLATES = 'TEMPLATES';
 	const MESSAGE_ACTIONS = 'MESSAGE_ACTIONS';

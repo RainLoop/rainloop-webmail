@@ -73,9 +73,9 @@ class MessageCollection extends \MailSo\Base\Collection
 	public $NewMessages;
 
 	/**
-	 * @var array
+	 * @var bool
 	 */
-	public $LastCollapsedThreadUids;
+	public $Filtered;
 
 	/**
 	 * @access protected
@@ -116,7 +116,7 @@ class MessageCollection extends \MailSo\Base\Collection
 		$this->ThreadUid = '';
 		$this->NewMessages = array();
 
-		$this->LastCollapsedThreadUids = array();
+		$this->Filtered = false;
 
 		return $this;
 	}

@@ -35,22 +35,31 @@ class HtmlUtils
 	 */
 	public static function GetDomFromText($sText, $sHtmlAttrs = '', $sBodyAttrs = '')
 	{
-		static $bOnce = true;
-		if ($bOnce)
+		$bState = true;
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
 		{
-			$bOnce = false;
-			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
-			{
-				@\libxml_use_internal_errors(true);
-			}
+			$bState = \libxml_use_internal_errors(true);
 		}
 
 		$oDom = new \DOMDocument('1.0', 'utf-8');
 		$oDom->encoding = 'UTF-8';
+		$oDom->strictErrorChecking = false;
 		$oDom->formatOutput = false;
 
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
 			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'>'.$sText.'</body></html>');
+
+		@$oDom->normalizeDocument();
+
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		{
+			@\libxml_clear_errors();
+		}
+
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		{
+			\libxml_use_internal_errors($bState);
+		}
 
 		return $oDom;
 	}
@@ -65,13 +74,13 @@ class HtmlUtils
 	public static function ClearBodyAndHtmlTag($sHtml, &$sHtmlAttrs = '', &$sBodyAttrs = '')
 	{
 		$aMatch = array();
-		if (preg_match('/<html([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
+		if (\preg_match('/<html([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
 		{
 			$sHtmlAttrs = $aMatch[1];
 		}
 
 		$aMatch = array();
-		if (preg_match('/<body([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
+		if (\preg_match('/<body([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
 		{
 			$sBodyAttrs = $aMatch[1];
 		}
@@ -80,6 +89,29 @@ class HtmlUtils
 		$sHtml = \preg_replace('/<\/body>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<html([^>]*)>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<\/html>/im', '', $sHtml);
+
+		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/im', '', $sHtmlAttrs);
+		$sHtmlAttrs = \preg_replace('/xmlns="[^"]*"/im', '', $sHtmlAttrs);
+		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/im', '', $sBodyAttrs);
+
+		return $sHtml;
+	}
+
+	/**
+	 * @param string $sHtml
+	 * @param bool $bClearEmpty = true
+	 *
+	 * @return string
+	 */
+	public static function FixSchemas($sHtml, $bClearEmpty = true)
+	{
+		if ($bClearEmpty)
+		{
+			$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
+		}
+
+		$sHtml = \str_replace('<o:p>', '<span data-ms="o:p">', $sHtml);
+		$sHtml = \str_replace('</o:p>', '</span>', $sHtml);
 
 		return $sHtml;
 	}
@@ -104,6 +136,7 @@ class HtmlUtils
 		}
 
 		$aToRemove = array(
+			'/<p[^>]*><\/p>/i',
 			'/<!doctype[^>]*>/msi',
 			'/<\?xml [^>]*\?>/msi'
 		);
@@ -262,7 +295,7 @@ class HtmlUtils
 //		$mResult = false;
 //		$oCss = null;
 //
-//		if (!\class_exists('\\Sabberworm\\CSS\\Parser'))
+//		if (!\class_exists('Sabberworm\CSS\Parser'))
 //		{
 //			return $mResult;
 //		}
@@ -637,15 +670,17 @@ class HtmlUtils
 	 * @param bool $bDoNotReplaceExternalUrl = false
 	 * @param bool $bFindLinksInHtml = false
 	 * @param callback|null $fAdditionalExternalFilter = null
+	 * @param callback|null $fAdditionalDomReader = null
 	 *
 	 * @return string
 	 */
 	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
 		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
-		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $fAdditionalExternalFilter = null)
+		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false,
+		$fAdditionalExternalFilter = null, $fAdditionalDomReader = false,
+		$bTryToDetectHiddenImages = false)
 	{
 		$sResult = '';
-//		$aBodyStyles = array();
 
 		$sHtml = null === $sHtml ? '' : (string) $sHtml;
 		$sHtml = \trim($sHtml);
@@ -659,7 +694,14 @@ class HtmlUtils
 			$fAdditionalExternalFilter = null;
 		}
 
+		if ($fAdditionalDomReader && !\is_callable($fAdditionalDomReader))
+		{
+			$fAdditionalDomReader = null;
+		}
+
 		$bHasExternals = false;
+
+		$sHtml = \MailSo\Base\HtmlUtils::FixSchemas($sHtml);
 
 		$sHtml = \MailSo\Base\HtmlUtils::ClearTags($sHtml, false);
 		$sHtml = \MailSo\Base\HtmlUtils::ClearOn($sHtml);
@@ -673,10 +715,36 @@ class HtmlUtils
 
 		if ($oDom)
 		{
+			if ($fAdditionalDomReader)
+			{
+				$oResDom = \call_user_func($fAdditionalDomReader, $oDom);
+				if ($oResDom)
+				{
+					$oDom = $oResDom;
+				}
+
+				unset($oResDom);
+			}
+
 			if ($bFindLinksInHtml)
 			{
 				\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
 			}
+
+			$oXpath = new \DOMXpath($oDom);
+			$oComments = $oXpath->query('//comment()');
+			if ($oComments)
+			{
+				foreach ($oComments as $oComment)
+				{
+					if (isset($oComment->parentNode))
+					{
+						@$oComment->parentNode->removeChild($oComment);
+					}
+				}
+			}
+
+			unset($oXpath, $oComments);
 
 			$aNodes = $oDom->getElementsByTagName('*');
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
@@ -685,19 +753,10 @@ class HtmlUtils
 				{
 					$sTagNameLower = \strtolower($oElement->tagName);
 
-					if (\in_array($sTagNameLower, array('svg', 'head', 'link',
+					if ('' !== $sTagNameLower && \in_array($sTagNameLower, array('svg', 'head', 'link',
 						'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
 						'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')))
 					{
-//						if ('style' === $sTagNameLower)
-//						{
-//							$sV = (string) $oElement->textContent;
-//							if (!empty($sV))
-//							{
-//								$aBodyStyles[] = $sV;
-//							}
-//						}
-
 						if (isset($oElement->parentNode))
 						{
 							@$oElement->parentNode->removeChild($oElement);
@@ -706,6 +765,7 @@ class HtmlUtils
 				}
 			}
 
+			$sLinkColor = '';
 			$aNodes = $oDom->getElementsByTagName('*');
 			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 			{
@@ -715,6 +775,7 @@ class HtmlUtils
 				if ('body' === $sTagNameLower)
 				{
 					$aAttrs = array(
+						'link' => '',
 						'text' => '',
 						'topmargin' => '',
 						'leftmargin' => '',
@@ -746,6 +807,13 @@ class HtmlUtils
 
 							switch ($sIndex)
 							{
+								case 'link':
+									$sLinkColor = \trim($aItem[1]);
+									if (!\preg_match('/^#[abcdef0-9]{3,6}$/i', $sLinkColor))
+									{
+										$sLinkColor = '';
+									}
+									break;
 								case 'text':
 									$aStyles[] = 'color: '.$aItem[1];
 									break;
@@ -767,7 +835,7 @@ class HtmlUtils
 
 					if (0 < \count($aStyles))
 					{
-						$sStyles = $oElement->hasAttribute('style') ? $oElement->getAttribute('style') : '';
+						$sStyles = $oElement->hasAttribute('style') ? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
 						$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
 					}
 				}
@@ -775,6 +843,15 @@ class HtmlUtils
 				if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
 				{
 					$oElement->setAttribute('src', 'javascript:false');
+				}
+
+				if ('a' === $sTagNameLower && !empty($sLinkColor))
+				{
+					$sStyles = $oElement->hasAttribute('style')
+						?  \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
+
+					$oElement->setAttribute('style',
+						'color: '.$sLinkColor.\trim((empty($sStyles) ? '' : '; '.$sStyles)));
 				}
 
 				if (\in_array($sTagNameLower, array('a', 'form', 'area')))
@@ -787,15 +864,10 @@ class HtmlUtils
 					$oElement->setAttribute('tabindex', '-1');
 				}
 
-//				if ('blockquote' === $sTagNameLower)
-//				{
-//					$oElement->removeAttribute('style');
-//				}
-
 				foreach (array(
 					'id', 'class',
 					'contenteditable', 'designmode', 'formaction',
-					'data-bind', 'xmlns', 'srcset'
+					'data-bind', 'data-reactid', 'xmlns', 'srcset'
 				) as $sAttr)
 				{
 					@$oElement->removeAttribute($sAttr);
@@ -823,6 +895,35 @@ class HtmlUtils
 					if ('a' === $sTagNameLower)
 					{
 						$oElement->setAttribute('rel', 'external nofollow');
+					}
+				}
+
+				if ($bTryToDetectHiddenImages && 'img' === $sTagNameLower)
+				{
+					$sAlt = $oElement->hasAttribute('alt')
+						? \trim($oElement->getAttribute('alt')) : '';
+
+					$sH = $oElement->hasAttribute('height')
+						? \trim($oElement->getAttribute('height')) : '';
+
+					$sW = $oElement->hasAttribute('width')
+						? \trim($oElement->getAttribute('width')) : '';
+
+					$sStyles = $oElement->hasAttribute('style')
+						? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
+
+					if ($oElement->hasAttribute('src'))
+					{
+						$aValues = array('4', '3', '2', '1', '0', '4px', '3px', '2px', '1px', '0px');
+						if (('' === $sAlt && \in_array($sH, $aValues) && \in_array($sW, $aValues)) ||
+							\preg_match('/(display:none|visibility:hidden)/i', \preg_replace('/[\s]+/', '', $sStyles)))
+						{
+							if (isset($oElement->parentNode))
+							{
+								@$oElement->parentNode->removeChild($oElement);
+								continue;
+							}
+						}
 					}
 				}
 
@@ -884,7 +985,7 @@ class HtmlUtils
 				{
 					$aStyles = array();
 					$sStyles = $oElement->hasAttribute('style')
-						? $oElement->getAttribute('style') : '';
+						? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
 
 					if (!empty($sBackground))
 					{
@@ -922,6 +1023,7 @@ class HtmlUtils
 		$sResult = '<div data-x-div-type="html" '.$sHtmlAttrs.'>'.$sResult.'</div>';
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \preg_replace('/[\s]+/u', ' ', $sResult);
 
 		return \trim($sResult);
 	}

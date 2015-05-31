@@ -756,7 +756,8 @@ class MailClient
 	{
 		$iUnseenCount = 0; // unneccessery
 		return \md5('FolderHash/'.$sFolder.'-'.$iCount.'-'.$iUnseenCount.'-'.$sUidNext.'-'.
-			$sHighestModSeq.'-'.$this->GenerateImapClientHash()
+			$sHighestModSeq.'-'.$this->GenerateImapClientHash().'-'.
+			\MailSo\Config::$MessageListPermanentFilter
 		);
 	}
 
@@ -1882,6 +1883,7 @@ class MailClient
 		$oMessageCollection->Limit = $iLimit;
 		$oMessageCollection->Search = $sSearch;
 		$oMessageCollection->ThreadUid = $sThreadUid;
+		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
 
 		$aUids = array();
 		$mAllSortedUids = null;
@@ -1988,7 +1990,9 @@ class MailClient
 
 			if (0 < \strlen($sSearch) && \is_array($aUids))
 			{
-				$aSearchedUids = $this->GetUids($oCacher, $sSearch, $sFilter, $oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+				$aSearchedUids = $this->GetUids($oCacher, $sSearch, $sFilter,
+					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+
 				if (\is_array($aSearchedUids) && 0 < \count($aSearchedUids))
 				{
 					$aFlippedSearchedUids = \array_flip($aSearchedUids);

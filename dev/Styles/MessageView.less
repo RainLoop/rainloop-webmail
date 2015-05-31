@@ -331,6 +331,10 @@ html.rl-no-preview-pane {
 				}
 			}
 
+			.bodySubHeader {
+				z-index: 2;
+			}
+
 			.bodyText {
 
 				color: #000;
@@ -338,9 +342,11 @@ html.rl-no-preview-pane {
 
 				.b-text-part {
 
+					height: 100%;
+
 					div[data-x-div-type=html] {
 						height: 100%;
-						div[data-x-div-type=html] {
+						div[data-x-div-type=body] {
 							height: 100%;
 						}
 					}
@@ -357,14 +363,10 @@ html.rl-no-preview-pane {
 						}
 					}
 
-					table {
-						border-collapse: separate;
-					}
-
 					blockquote {
 						border-left: 2px solid #000;
-						margin: 0;
 						padding: 0px 10px;
+						margin: 0;
 					}
 
 					.rl-bq-switcher.hidden-bq {
@@ -372,8 +374,10 @@ html.rl-no-preview-pane {
 					}
 
 					&.html {
+
 						div[data-x-div-type=body] {
-							margin: 15px;
+							padding: 15px;
+							// margin: 15px;
 						}
 
 						pre {

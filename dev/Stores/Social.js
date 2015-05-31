@@ -33,6 +33,7 @@
 
 		this.google.capa = {};
 		this.google.capa.auth = ko.observable(false);
+		this.google.capa.authFast = ko.observable(false);
 		this.google.capa.drive = ko.observable(false);
 		this.google.capa.preview = ko.observable(false);
 
@@ -88,6 +89,7 @@
 		this.google.apiKey(Settings.settingsGet('GoogleApiKey'));
 
 		this.google.capa.auth(!!Settings.settingsGet('AllowGoogleSocialAuth'));
+		this.google.capa.authFast(!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
 		this.google.capa.drive(!!Settings.settingsGet('AllowGoogleSocialDrive'));
 		this.google.capa.preview(!!Settings.settingsGet('AllowGoogleSocialPreview'));
 

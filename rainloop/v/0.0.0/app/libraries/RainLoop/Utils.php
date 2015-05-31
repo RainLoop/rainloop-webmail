@@ -48,7 +48,7 @@ class Utils
 				define('_phpseclib_', true);
 			}
 
-			if (!\class_exists('Crypt_RSA'))
+			if (!\class_exists('Crypt_RSA', false))
 			{
 				include_once 'Crypt/RSA.php';
 				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
@@ -470,30 +470,22 @@ class Utils
 	}
 
 	/**
+	 * @param array $aList
 	 * @param string $sDirName
-	 * @param \RainLoop\Actions $oAction
 	 * @param string $sNameSuffix = ''
-	 *
-	 * @return string
 	 */
-	public static function CompileTemplates($sDirName, $oAction, $sNameSuffix = '')
+	public static function CompileTemplates(&$aList, $sDirName, $sNameSuffix = '')
 	{
-		$sResult = '';
 		if (\file_exists($sDirName))
 		{
-			$aList = \RainLoop\Utils::FolderFiles($sDirName, '.html');
+			$aFileList = \RainLoop\Utils::FolderFiles($sDirName, '.html');
 
-			foreach ($aList as $sName)
+			foreach ($aFileList as $sName)
 			{
 				$sTemplateName = \substr($sName, 0, -5).$sNameSuffix;
-				$sResult .= '<script id="'.\preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
-					$oAction->ProcessTemplate($sTemplateName, \file_get_contents($sDirName.'/'.$sName)).'</script>';
+				$aList[$sTemplateName] = $sDirName.'/'.$sName;
 			}
-
-			$sResult = \trim($sResult);
 		}
-
-		return $sResult;
 	}
 
 	/**
@@ -539,14 +531,25 @@ class Utils
 	public static function IsOwnCloud()
 	{
 		return isset($_ENV['RAINLOOP_OWNCLOUD']) && $_ENV['RAINLOOP_OWNCLOUD'] &&
-			\class_exists('\\OC');
+			\class_exists('OC');
 	}
 	/**
 	 * @return bool
 	 */
 	public static function IsOwnCloudLoggedIn()
 	{
-		return self::IsOwnCloud() && \class_exists('\\OCP\\User') && \OCP\User::isLoggedIn();
+		return self::IsOwnCloud() && \class_exists('OCP\User') && \OCP\User::isLoggedIn();
+	}
+
+	/**
+	 * @param string $sV
+	 * @param bool $bEncode = false
+	 *
+	 * @return string
+	 */
+	public static function UrlEncode($sV, $bEncode = false)
+	{
+		return $bEncode ? \urlencode($sV) : $sV;
 	}
 
 	/**
@@ -557,7 +560,7 @@ class Utils
 		$sAppPath = '';
 		if (\RainLoop\Utils::IsOwnCloud())
 		{
-			if (\class_exists('\\OC_App'))
+			if (\class_exists('OC_App'))
 			{
 				$sAppPath = \rtrim(\trim(\OC_App::getAppWebPath('rainloop')), '\\/').'/app/';
 			}

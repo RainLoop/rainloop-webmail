@@ -25,7 +25,7 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 		try
 		{
 			if ('' === $sQuery || !$oAccount || !\RainLoop\Utils::IsOwnCloudLoggedIn() ||
-				!\class_exists('\\OCP\\Contacts') || !\OCP\Contacts::isEnabled()
+				!\class_exists('OCP\Contacts') || !\OCP\Contacts::isEnabled()
 			)
 			{
 				return $aResult;

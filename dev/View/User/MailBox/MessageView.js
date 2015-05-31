@@ -24,8 +24,6 @@
 
 		Cache = require('Common/Cache'),
 
-		EmailModel = require('Model/Email'),
-
 		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
@@ -65,6 +63,8 @@
 		this.oDom = null;
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
+
+		this.bodyBackgroundColor = ko.observable('');
 
 		this.pswp = null;
 
@@ -353,6 +353,10 @@
 
 		}, this);
 
+		this.messageActiveDom.subscribe(function (oDom) {
+			this.bodyBackgroundColor(oDom ? this.detectDomBackgroundColor(oDom): '');
+		}, this);
+
 		this.message.subscribe(function (oMessage) {
 
 			this.messageActiveDom(null);
@@ -466,6 +470,59 @@
 	kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
 	_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
 
+	MessageViewMailBoxUserView.prototype.detectDomBackgroundColor = function (oDom)
+	{
+		var
+			iLimit = 5,
+			sResult = '',
+			aC = null,
+			fFindDom = function (oDom) {
+				var aC = oDom ? oDom.children() : null;
+				return (aC && 1 === aC.length && aC.is('table,div,center')) ? aC : null;
+			},
+			fFindColor = function (oDom) {
+				var sResult = '';
+				if (oDom)
+				{
+					sResult = oDom.css('background-color') || '';
+					if (!oDom.is('table'))
+					{
+						sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
+					}
+				}
+
+				return sResult;
+			}
+		;
+
+		if (oDom && 1 === oDom.length)
+		{
+			aC = oDom;
+			while ('' === sResult)
+			{
+				iLimit--;
+				if (0 >= iLimit)
+				{
+					break;
+				}
+
+				aC = fFindDom(aC);
+				if (aC)
+				{
+					sResult = fFindColor(aC);
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
+		}
+
+		return sResult;
+	};
+
 	MessageViewMailBoxUserView.prototype.isPgpActionVisible = function ()
 	{
 		return Enums.SignedVerifyStatus.Success !== this.viewPgpSignedVerifyStatus();
@@ -552,27 +609,28 @@
 	 * @todo
 	 * @param {string} sEmail
 	 */
-	MessageViewMailBoxUserView.prototype.displayMailToPopup = function (sMailToUrl)
-	{
-		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
-
-		var
-			sResult = '',
-			aTo = [],
-			fParseEmailLine = function (sLine) {
-				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function (sItem) {
-						var oEmailModel = new EmailModel();
-						oEmailModel.mailsoParse(sItem);
-						return '' !== oEmailModel.email ? oEmailModel : null;
-					})) : null;
-			}
-		;
-
-		aTo = fParseEmailLine(sMailToUrl);
-		sResult = aTo && aTo[0] ? aTo[0].email : '';
-
-		window.console.log(sResult);
-	};
+//	MessageViewMailBoxUserView.prototype.displayMailToPopup = function (sMailToUrl)
+//	{
+//		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
+//
+//		var
+//			sResult = '',
+//			aTo = [],
+//			EmailModel = require('Model/Email'),
+//			fParseEmailLine = function (sLine) {
+//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function (sItem) {
+//						var oEmailModel = new EmailModel();
+//						oEmailModel.mailsoParse(sItem);
+//						return '' !== oEmailModel.email ? oEmailModel : null;
+//					})) : null;
+//			}
+//		;
+//
+//		aTo = fParseEmailLine(sMailToUrl);
+//		sResult = aTo && aTo[0] ? aTo[0].email : '';
+//
+//		return sResult;
+//	};
 
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
@@ -592,6 +650,7 @@
 			}
 		}, this);
 
+		this.showAttachmnetControls.subscribe(fCheckHeaderHeight);
 		this.fullScreenMode.subscribe(fCheckHeaderHeight);
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
@@ -804,18 +863,6 @@
 		this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
 
 		this.initShortcuts();
-	};
-
-	MessageViewMailBoxUserView.prototype.selectSelectedThreadMessage = function ()
-	{
-		var self = this;
-		_.delay(function () {
-			var oLast = self.oDom ? $('.thread-list .e-item.thread-list-message.real-msg.selected a.e-link', self.oDom) : null;
-			if (oLast && oLast[0])
-			{
-				oLast.focus();
-			}
-		}, 30);
 	};
 
 	/**
@@ -1196,6 +1243,8 @@
 		{
 			oMessage.showExternalImages(true);
 		}
+
+		this.checkHeaderHeight();
 	};
 
 	/**
@@ -1217,6 +1266,8 @@
 		{
 			oMessage.verifyPgpSignedClearMessage();
 		}
+
+		this.checkHeaderHeight();
 	};
 
 	/**
@@ -1248,6 +1299,8 @@
 
 			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
+
+		this.checkHeaderHeight();
 	};
 
 	module.exports = MessageViewMailBoxUserView;

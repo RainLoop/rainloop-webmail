@@ -59,12 +59,15 @@
 }
 
 .thm-login {
-	color: @login-color !important;
 	border: @login-border !important;
 	.thm-rgba-background-color(@login-background-color, @login-rgba-background-color);
 	.thm-linear-gradient-mixin(@login-gradient-start, @login-gradient-end);
 	.thm-border-radius(@login-border-radius);
 	.thm-box-shadow(@login-box-shadow);
+}
+
+.thm-login-text {
+	color: @login-color !important;
 
 	.legend, .e-checkbox-icon, .g-ui-link, .social-button, .language-button {
 		color: @login-color !important;

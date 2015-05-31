@@ -59,7 +59,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
-	if (!\class_exists('MailSo\Version'))
+	if (!\class_exists('MailSo\Version', false))
 	{
 		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
 	}

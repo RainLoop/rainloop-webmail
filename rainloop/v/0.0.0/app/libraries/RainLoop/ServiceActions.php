@@ -1220,11 +1220,23 @@ class ServiceActions
 	 */
 	public function compileTemplates($bAdmin = false, $bJsOutput = true)
 	{
-		$sHtml =
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Components', $this->oActions, 'Component').
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'), $this->oActions).
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
-			$this->oActions->Plugins()->CompileTemplate($bAdmin);
+		$aTemplates = array();
+
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Components', 'Component');
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'));
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Common');
+
+		$this->oActions->Plugins()->CompileTemplate($aTemplates, $bAdmin);
+
+		$sHtml = '';
+		foreach ($aTemplates as $sName => $sFile)
+		{
+			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
+			$sHtml .= '<script id="'.$sName.'" type="text/html" data-cfasync="false">'.
+				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</script>';
+		}
+
+		unset($aTemplates);
 
 		return $bJsOutput ? 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';' : $sHtml;
 	}

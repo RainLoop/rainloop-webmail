@@ -411,16 +411,17 @@ class Actions
 	/**
 	 * @param string $sLine
 	 * @param \RainLoop\Model\Account $oAccount = null
+	 * @param bool $bUrlEncode = false
 	 *
 	 * @return string
 	 */
-	private function compileLogParams($sLine, $oAccount = null)
+	private function compileLogParams($sLine, $oAccount = null, $bUrlEncode = false)
 	{
 		if (false !== \strpos($sLine, '{date:'))
 		{
 			$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($iTimeOffset) {
-				return \MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset);
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($iTimeOffset, $bUrlEncode) {
+				return \RainLoop\Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset), $bUrlEncode);
 			}, $sLine);
 
 			$sLine = \preg_replace('/\{date:([^}]*)\}/', 'date', $sLine);
@@ -436,37 +437,38 @@ class Actions
 
 			if ($oAccount)
 			{
-				$sLine = \str_replace('{imap:login}', $oAccount->IncLogin(), $sLine);
-				$sLine = \str_replace('{imap:host}', $oAccount->DomainIncHost(), $sLine);
-				$sLine = \str_replace('{imap:port}', $oAccount->DomainIncPort(), $sLine);
+				$sLine = \str_replace('{imap:login}', \RainLoop\Utils::UrlEncode($oAccount->IncLogin(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{imap:host}', \RainLoop\Utils::UrlEncode($oAccount->DomainIncHost(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{imap:port}', \RainLoop\Utils::UrlEncode($oAccount->DomainIncPort(), $bUrlEncode), $sLine);
 
-				$sLine = \str_replace('{smtp:login}', $oAccount->OutLogin(), $sLine);
-				$sLine = \str_replace('{smtp:host}', $oAccount->DomainOutHost(), $sLine);
-				$sLine = \str_replace('{smtp:port}', $oAccount->DomainOutPort(), $sLine);
+				$sLine = \str_replace('{smtp:login}', \RainLoop\Utils::UrlEncode($oAccount->OutLogin(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{smtp:host}', \RainLoop\Utils::UrlEncode($oAccount->DomainOutHost(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{smtp:port}', \RainLoop\Utils::UrlEncode($oAccount->DomainOutPort(), $bUrlEncode), $sLine);
 			}
 
 			$sLine = \preg_replace('/\{imap:([^}]*)\}/i', 'imap', $sLine);
-			$sLine = \preg_replace('/\{smtp:([^}]*)\}/i', 'imap', $sLine);
+			$sLine = \preg_replace('/\{smtp:([^}]*)\}/i', 'smtp', $sLine);
 		}
 
 		if (false !== \strpos($sLine, '{request:'))
 		{
 			if (false !== \strpos($sLine, '{request:ip}'))
 			{
-				$sLine = \str_replace('{request:ip}', $this->Http()->GetClientIp(
-					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $sLine);
+				$sLine = \str_replace('{request:ip}', \RainLoop\Utils::UrlEncode($this->Http()->GetClientIp(
+					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain}'))
 			{
 				$sLine = \str_replace('{request:domain}',
-					$this->Http()->GetHost(false, true, true), $sLine);
+					\RainLoop\Utils::UrlEncode($this->Http()->GetHost(false, true, true), $bUrlEncode), $sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain-clear}'))
 			{
 				$sLine = \str_replace('{request:domain-clear}',
-					\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $sLine);
+					\RainLoop\Utils::UrlEncode(
+						\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $bUrlEncode), $sLine);
 			}
 
 			$sLine = \preg_replace('/\{request:([^}]*)\}/i', 'request', $sLine);
@@ -477,15 +479,16 @@ class Actions
 			if (false !== \strpos($sLine, '{user:uid}'))
 			{
 				$sLine = \str_replace('{user:uid}',
-					\base_convert(\sprintf('%u', \crc32(\md5(\RainLoop\Utils::GetConnectionToken()))), 10, 32),
+					\RainLoop\Utils::UrlEncode(\base_convert(\sprintf('%u',
+						\crc32(\md5(\RainLoop\Utils::GetConnectionToken()))), 10, 32), $bUrlEncode),
 					$sLine
 				);
 			}
 
 			if (false !== \strpos($sLine, '{user:ip}'))
 			{
-				$sLine = \str_replace('{user:ip}', $this->Http()->GetClientIp(
-					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $sLine);
+				$sLine = \str_replace('{user:ip}', \RainLoop\Utils::UrlEncode($this->Http()->GetClientIp(
+					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine))
@@ -499,13 +502,15 @@ class Actions
 				if ($oAccount)
 				{
 					$sEmail = $oAccount->Email();
-					$sLine = \str_replace('{user:email}', $sEmail, $sLine);
-					$sLine = \str_replace('{user:login}',
-						\MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
-					$sLine = \str_replace('{user:domain}',
-						\MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
-					$sLine = \str_replace('{user:domain-clear}',
-						\MailSo\Base\Utils::GetClearDomainName(\MailSo\Base\Utils::GetDomainFromEmail($sEmail)), $sLine);
+
+					$sLine = \str_replace('{user:email}', \RainLoop\Utils::UrlEncode($sEmail, $bUrlEncode), $sLine);
+					$sLine = \str_replace('{user:login}', \RainLoop\Utils::UrlEncode(
+						\MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $bUrlEncode), $sLine);
+					$sLine = \str_replace('{user:domain}', \RainLoop\Utils::UrlEncode(
+						\MailSo\Base\Utils::GetDomainFromEmail($sEmail), $bUrlEncode), $sLine);
+					$sLine = \str_replace('{user:domain-clear}', \RainLoop\Utils::UrlEncode(
+						\MailSo\Base\Utils::GetClearDomainName(
+							\MailSo\Base\Utils::GetDomainFromEmail($sEmail)), $bUrlEncode), $sLine);
 				}
 			}
 
@@ -997,6 +1002,18 @@ class Actions
 
 			if (!!$this->Config()->Get('logs', 'enable', false))
 			{
+				$sSessionFilter = (string) $this->Config()->Get('logs', 'session_filter', '');
+				if (!empty($sSessionFilter))
+				{
+					$aSessionParts = \explode(':', $sSessionFilter, 2);
+
+					if (empty($aSessionParts[0]) || empty($aSessionParts[1]) ||
+						(string) $aSessionParts[1] !== (string) \RainLoop\Utils::GetCookie($aSessionParts[0], ''))
+					{
+						return $this->oLogger;
+					}
+				}
+
 				$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
 
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
@@ -1370,6 +1387,7 @@ class Actions
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
+			'UseLoginWelcomePage' => (bool) $oConfig->Get('login', 'welcome_page', false),
 			'ForgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'RegistrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'ContactsIsAllowed' => false,
@@ -1382,6 +1400,7 @@ class Actions
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'FolderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
+			'Filtered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'Community' => true,
 			'PremType' => false,
 			'Admin' => array(),
@@ -1397,7 +1416,7 @@ class Actions
 				$aResult['AttachmentsActions'][] = 'zip';
 			}
 
-			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
 			{
 				$aResult['AttachmentsActions'][] = 'owncloud';
 			}
@@ -1523,7 +1542,15 @@ class Actions
 					$aResult['WelcomePageDisplay'] = '';
 				}
 
-				$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount);
+				if (!empty($aResult['StartupUrl']))
+				{
+					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
+				}
+
+				if (!empty($aResult['UserIframeMessage']))
+				{
+					$aResult['UserIframeMessage'] = $this->compileLogParams($aResult['UserIframeMessage'], $oAccount, true);
+				}
 			}
 			else
 			{
@@ -1543,6 +1570,7 @@ class Actions
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
+			$aResult['AllowGoogleSocialAuthFast'] = (bool) $oConfig->Get('social', 'google_enable_auth_fast', true);
 			$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
 			$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
@@ -1553,6 +1581,7 @@ class Actions
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', '')))))
 			{
 				$aResult['AllowGoogleSocialAuth'] = false;
+				$aResult['AllowGoogleSocialAuthFast'] = false;
 				$aResult['AllowGoogleSocialDrive'] = false;
 				$aResult['GoogleClientID'] = '';
 				$aResult['GoogleApiKey'] = '';
@@ -1563,7 +1592,9 @@ class Actions
 				$aResult['AllowGoogleSocialPreview'] = false;
 			}
 
-			if ($aResult['AllowGoogleSocial'] && !$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialDrive'] && !$aResult['AllowGoogleSocialPreview'])
+			if ($aResult['AllowGoogleSocial'] &&
+				!$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialAuthFast'] &&
+				!$aResult['AllowGoogleSocialDrive'] && !$aResult['AllowGoogleSocialPreview'])
 			{
 				$aResult['AllowGoogleSocial'] = false;
 			}
@@ -1639,6 +1670,7 @@ class Actions
 
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
+				$aResult['AllowGoogleSocialAuthFast'] = (bool) $oConfig->Get('social', 'google_enable_auth_fast', true);
 				$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
 				$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
@@ -2882,7 +2914,7 @@ class Actions
 
 					$mResult = false;
 
-					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('\\OCP\\Files'))
+					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
 					{
 						$sSaveFolder = $this->Config()->Get('labs', 'owncloud_save_folder', '');
 						if (empty($sSaveFolder))
@@ -3644,6 +3676,7 @@ class Actions
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableAuth', 'social', 'google_enable_auth', 'bool');
+		$this->setConfigFromParams($oConfig, 'GoogleEnableAuthFast', 'social', 'google_enable_auth_fast', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableDrive', 'social', 'google_enable_drive', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnablePreview', 'social', 'google_enable_preview', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
@@ -4092,7 +4125,7 @@ class Actions
 	/**
 	 * @return string
 	 */
-	private function rainloopRepo()
+	private function rainLoopRepo()
 	{
 		$sUrl = APP_REP_PATH;
 		if ('' !== $sUrl)
@@ -4281,7 +4314,7 @@ class Actions
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 
-		$aResult = $this->getRepositoryDataByUrl($this->rainloopRepo(), $bReal);
+		$aResult = $this->getRepositoryDataByUrl($this->rainLoopRepo(), $bReal);
 
 		$aSub = array();
 		if (\is_array($aResult))
@@ -4555,7 +4588,7 @@ class Actions
 		$bResult = false;
 		if ('' !== $sRealFile)
 		{
-			$sUrl = $this->rainloopRepo().$sRealFile;
+			$sUrl = $this->rainLoopRepo().$sRealFile;
 			$sTmp = $this->downloadRemotePackageByUrl($sUrl);
 		}
 
@@ -6424,7 +6457,12 @@ class Actions
 	 */
 	public function DoQuota()
 	{
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
+
+		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::QUOTA, $oAccount))
+		{
+			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
+		}
 
 		try
 		{
@@ -7960,6 +7998,11 @@ class Actions
 			$aResult[] = \RainLoop\Enumerations\Capa::RELOAD;
 		}
 
+		if ($oConfig->Get('capa', 'quota', true))
+		{
+			$aResult[] = \RainLoop\Enumerations\Capa::QUOTA;
+		}
+
 		if ($oConfig->Get('capa', 'settings', true))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::SETTINGS;
@@ -9453,6 +9496,24 @@ class Actions
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
 					$mResult['References'] = $mResponse->References();
 
+					$fAdditionalDomReader = null;
+					if (0 < \strlen($sHtml) && $this->Config()->Get('labs', 'emogrifier', false))
+					{
+						if (!\class_exists('Pelago\Emogrifier', false))
+						{
+							include_once APP_VERSION_ROOT_PATH.'app/libraries/emogrifier/Emogrifier.php';
+						}
+
+						if (\class_exists('Pelago\Emogrifier', false))
+						{
+							$fAdditionalDomReader = function ($oDom) {
+								$oEmogrifier = new \Pelago\Emogrifier();
+								$oEmogrifier->preserveEncoding = false;
+								return $oEmogrifier->emogrify($oDom);
+							};
+						}
+					}
+
 					$fAdditionalExternalFilter = null;
 					if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 					{
@@ -9465,9 +9526,13 @@ class Actions
 						};
 					}
 
+//					$this->Logger()->Write('---');
+//					$this->Logger()->Write($sHtml);
+
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
-						$fAdditionalExternalFilter
+						$fAdditionalExternalFilter, $fAdditionalDomReader,
+						!!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
 					);
 
 					$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;
@@ -9669,6 +9734,7 @@ class Actions
 					'UidNext' => $mResponse->UidNext,
 					'ThreadUid' => $mResponse->ThreadUid,
 					'NewMessages' => $this->responseObject($mResponse->NewMessages),
+					'Filtered' => $mResponse->Filtered,
 					'Offset' => $mResponse->Offset,
 					'Limit' => $mResponse->Limit,
 					'Search' => $mResponse->Search
