@@ -267,7 +267,7 @@ abstract class Driver
 				foreach ($mDesc as &$sLine)
 				{
 					$sLine = \strtr($sLine, array("\r" => '\r', "\n" => '\n'.$this->sNewLine));
-					$sLine = \rtrim($mDesc);
+					$sLine = \rtrim($sLine);
 				}
 			}
 			else

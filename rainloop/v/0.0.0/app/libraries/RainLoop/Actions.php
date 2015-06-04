@@ -4127,7 +4127,7 @@ class Actions
 	 */
 	private function rainLoopRepo()
 	{
-		$sUrl = APP_REP_PATH;
+		$sUrl = APP_REPOSITORY_PATH;
 		if ('' !== $sUrl)
 		{
 			$sUrl = rtrim($sUrl, '\\/').'/';
@@ -7190,11 +7190,24 @@ class Actions
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$bMarkAsRead = '1' === (string) $this->GetActionParam('MarkAsRead', '0');
 
 		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
 			$mUid = (int) \trim($mUid);
 			return 0 < $mUid;
 		});
+
+		if ($bMarkAsRead)
+		{
+			try
+			{
+				$this->MailClient()->MessageSetSeen($sFromFolder, $aFilteredUids, true, true);
+			}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
+		}
 
 		try
 		{
@@ -7259,7 +7272,7 @@ class Actions
 	public function MainClearFileName($sFileName, $sContentType, $sMimeIndex, $iMaxLength = 250)
 	{
 		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex.'.').$sContentType) : $sFileName;
-		$sClearedFileName = \preg_replace('/[\s]+/', ' ', \preg_replace('/[\.]+/', '.', $sFileName));
+		$sClearedFileName = \MailSo\Base\Utils::StripSpaces(\preg_replace('/[\.]+/', '.', $sFileName));
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sClearedFileName);
 
 		if (10 < $iMaxLength && $iMaxLength < \strlen($sClearedFileName) - \strlen($sExt))

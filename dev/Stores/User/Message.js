@@ -328,6 +328,8 @@
 			self = this,
 			iUnseenCount = 0,
 			oMessage = null,
+			sTrashFolder = FolderStore.trashFolder(),
+			sSpamFolder = FolderStore.spamFolder(),
 			aMessageList = this.messageList(),
 			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
 			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
@@ -359,6 +361,11 @@
 
 		if (oToFolder)
 		{
+			if (sTrashFolder === oToFolder.fullNameRaw || sSpamFolder === oToFolder.fullNameRaw)
+			{
+				iUnseenCount = 0;
+			}
+
 			oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
 			if (0 < iUnseenCount)
 			{

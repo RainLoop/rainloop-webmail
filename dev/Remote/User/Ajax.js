@@ -727,13 +727,15 @@
 	 * @param {string} sToFolder
 	 * @param {Array} aUids
 	 * @param {string=} sLearning
+	 * @param {boolean=} bMarkAsRead
 	 */
-	RemoteUserAjax.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
+	RemoteUserAjax.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning, bMarkAsRead)
 	{
 		this.defaultRequest(fCallback, 'MessageMove', {
 			'FromFolder': sFolder,
 			'ToFolder': sToFolder,
 			'Uids': aUids.join(','),
+			'MarkAsRead': bMarkAsRead ? '1' : '0',
 			'Learning': sLearning || ''
 		}, null, '', ['MessageList']);
 	};

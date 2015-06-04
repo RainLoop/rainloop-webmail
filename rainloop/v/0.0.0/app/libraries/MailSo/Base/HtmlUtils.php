@@ -126,7 +126,7 @@ class HtmlUtils
 	{
 		$aRemoveTags = array(
 			'link', 'base', 'meta', 'title', 'script', 'bgsound', 'keygen', 'source',
-			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio'
+			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map'
 		);
 
 		if ($bClearStyleAndHead)
@@ -755,7 +755,8 @@ class HtmlUtils
 
 					if ('' !== $sTagNameLower && \in_array($sTagNameLower, array('svg', 'head', 'link',
 						'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
-						'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio')))
+						'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset',
+						'video', 'audio', 'area', 'map')))
 					{
 						if (isset($oElement->parentNode))
 						{
@@ -867,7 +868,8 @@ class HtmlUtils
 				foreach (array(
 					'id', 'class',
 					'contenteditable', 'designmode', 'formaction',
-					'data-bind', 'data-reactid', 'xmlns', 'srcset'
+					'data-bind', 'data-reactid', 'xmlns', 'srcset',
+					'data-x-skip-style'
 				) as $sAttr)
 				{
 					@$oElement->removeAttribute($sAttr);
@@ -903,26 +905,49 @@ class HtmlUtils
 					$sAlt = $oElement->hasAttribute('alt')
 						? \trim($oElement->getAttribute('alt')) : '';
 
-					$sH = $oElement->hasAttribute('height')
-						? \trim($oElement->getAttribute('height')) : '';
-
-					$sW = $oElement->hasAttribute('width')
-						? \trim($oElement->getAttribute('width')) : '';
-
-					$sStyles = $oElement->hasAttribute('style')
-						? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-
-					if ($oElement->hasAttribute('src'))
+					if ($oElement->hasAttribute('src') && '' === $sAlt)
 					{
-						$aValues = array('4', '3', '2', '1', '0', '4px', '3px', '2px', '1px', '0px');
-						if (('' === $sAlt && \in_array($sH, $aValues) && \in_array($sW, $aValues)) ||
-							\preg_match('/(display:none|visibility:hidden)/i', \preg_replace('/[\s]+/', '', $sStyles)))
+						$aH = array(
+							'email.microsoftemail.com/open',
+							'github.com/notifications/beacon/',
+							'mandrillapp.com/track/open',
+							'list-manage.com/track/open'
+						);
+
+						$sH = $oElement->hasAttribute('height')
+							? \trim($oElement->getAttribute('height')) : '';
+
+//						$sW = $oElement->hasAttribute('width')
+//							? \trim($oElement->getAttribute('width')) : '';
+
+						$sStyles = $oElement->hasAttribute('style')
+							? \preg_replace('/[\s]+/', '', \trim(\trim(\trim($oElement->getAttribute('style')), ';'))) : '';
+
+						$sSrc = \trim($oElement->getAttribute('src'));
+
+						$bC = \in_array($sH, array('1', '0', '1px', '0px')) ||
+							\preg_match('/(display:none|visibility:hidden|height:0|height:[01][a-z][a-z])/i', $sStyles);
+
+						if (!$bC)
 						{
-							if (isset($oElement->parentNode))
+							$sSrcLower = \strtolower($sSrc);
+							foreach ($aH as $sLine)
 							{
-								@$oElement->parentNode->removeChild($oElement);
-								continue;
+								if (false !== \strpos($sSrcLower, $sLine))
+								{
+									$bC = true;
+									break;
+								}
 							}
+						}
+
+						if ($bC)
+						{
+							$oElement->setAttribute('style', 'display:none');
+							$oElement->setAttribute('data-x-skip-style', 'true');
+							$oElement->setAttribute('data-x-hidden-src', $sSrc);
+
+							$oElement->removeAttribute('src');
 						}
 					}
 				}
@@ -1002,12 +1027,14 @@ class HtmlUtils
 					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
 				}
 
-				if ($oElement->hasAttribute('style'))
+				if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
 				{
 					$oElement->setAttribute('style',
 						\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
 							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 				}
+
+				$oElement->removeAttribute('data-x-skip-style');
 			}
 
 			$sResult = $oDom->saveHTML();
@@ -1023,7 +1050,7 @@ class HtmlUtils
 		$sResult = '<div data-x-div-type="html" '.$sHtmlAttrs.'>'.$sResult.'</div>';
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
-		$sResult = \preg_replace('/[\s]+/u', ' ', $sResult);
+		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 
 		return \trim($sResult);
 	}
@@ -1275,103 +1302,104 @@ class HtmlUtils
 	 */
 	public static function ConvertHtmlToPlain($sText)
 	{
-		$sText = trim(stripslashes($sText));
-		$sText = preg_replace('/[\s]+/', ' ', $sText);
-		$sText = preg_replace(array(
-				"/\r/",
-				"/[\n\t]+/",
-				'/<script[^>]*>.*?<\/script>/i',
-				'/<style[^>]*>.*?<\/style>/i',
-				'/<title[^>]*>.*?<\/title>/i',
-				'/<h[123][^>]*>(.+?)<\/h[123]>/i',
-				'/<h[456][^>]*>(.+?)<\/h[456]>/i',
-				'/<p[^>]*>/i',
-				'/<br[^>]*>/i',
-				'/<b[^>]*>(.+?)<\/b>/i',
-				'/<i[^>]*>(.+?)<\/i>/i',
-				'/(<ul[^>]*>|<\/ul>)/i',
-				'/(<ol[^>]*>|<\/ol>)/i',
-				'/<li[^>]*>/i',
-				'/<a[^>]*href="([^"]+)"[^>]*>(.+?)<\/a>/i',
-				'/<hr[^>]*>/i',
-				'/(<table[^>]*>|<\/table>)/i',
-				'/(<tr[^>]*>|<\/tr>)/i',
-				'/<td[^>]*>(.+?)<\/td>/i',
-				'/<th[^>]*>(.+?)<\/th>/i',
-				'/&nbsp;/i',
-				'/&quot;/i',
-				'/&gt;/i',
-				'/&lt;/i',
-				'/&amp;/i',
-				'/&copy;/i',
-				'/&trade;/i',
-				'/&#8220;/',
-				'/&#8221;/',
-				'/&#8211;/',
-				'/&#8217;/',
-				'/&#38;/',
-				'/&#169;/',
-				'/&#8482;/',
-				'/&#151;/',
-				'/&#147;/',
-				'/&#148;/',
-				'/&#149;/',
-				'/&reg;/i',
-				'/&bull;/i',
-				'/&[&;]+;/i',
-				'/&#39;/',
-				'/&#160;/'
-			), array(
-				'',
-				' ',
-				'',
-				'',
-				'',
-				"\n\n\\1\n\n",
-				"\n\n\\1\n\n",
-				"\n\n\t",
-				"\n",
-				'\\1',
-				'\\1',
-				"\n\n",
-				"\n\n",
-				"\n\t* ",
-				'\\2 (\\1)',
-				"\n------------------------------------\n",
-				"\n",
-				"\n",
-				"\t\\1\n",
-				"\t\\1\n",
-				' ',
-				'"',
-				'>',
-				'<',
-				'&',
-				'(c)',
-				'(tm)',
-				'"',
-				'"',
-				'-',
-				"'",
-				'&',
-				'(c)',
-				'(tm)',
-				'--',
-				'"',
-				'"',
-				'*',
-				'(R)',
-				'*',
-				'',
-				'\'',
-				''
-			), $sText);
+		$sText = \trim(\stripslashes($sText));
+		$sText = \MailSo\Base\Utils::StripSpaces($sText);
 
-		$sText = str_ireplace('<div>',"\n<div>", $sText);
-		$sText = strip_tags($sText, '');
-		$sText = preg_replace("/\n\\s+\n/", "\n", $sText);
-		$sText = preg_replace("/[\n]{3,}/", "\n\n", $sText);
+		$sText = \preg_replace(array(
+			"/\r/",
+			"/[\n\t]+/",
+			'/<script[^>]*>.*?<\/script>/i',
+			'/<style[^>]*>.*?<\/style>/i',
+			'/<title[^>]*>.*?<\/title>/i',
+			'/<h[123][^>]*>(.+?)<\/h[123]>/i',
+			'/<h[456][^>]*>(.+?)<\/h[456]>/i',
+			'/<p[^>]*>/i',
+			'/<br[^>]*>/i',
+			'/<b[^>]*>(.+?)<\/b>/i',
+			'/<i[^>]*>(.+?)<\/i>/i',
+			'/(<ul[^>]*>|<\/ul>)/i',
+			'/(<ol[^>]*>|<\/ol>)/i',
+			'/<li[^>]*>/i',
+			'/<a[^>]*href="([^"]+)"[^>]*>(.+?)<\/a>/i',
+			'/<hr[^>]*>/i',
+			'/(<table[^>]*>|<\/table>)/i',
+			'/(<tr[^>]*>|<\/tr>)/i',
+			'/<td[^>]*>(.+?)<\/td>/i',
+			'/<th[^>]*>(.+?)<\/th>/i',
+			'/&nbsp;/i',
+			'/&quot;/i',
+			'/&gt;/i',
+			'/&lt;/i',
+			'/&amp;/i',
+			'/&copy;/i',
+			'/&trade;/i',
+			'/&#8220;/',
+			'/&#8221;/',
+			'/&#8211;/',
+			'/&#8217;/',
+			'/&#38;/',
+			'/&#169;/',
+			'/&#8482;/',
+			'/&#151;/',
+			'/&#147;/',
+			'/&#148;/',
+			'/&#149;/',
+			'/&reg;/i',
+			'/&bull;/i',
+			'/&[&;]+;/i',
+			'/&#39;/',
+			'/&#160;/'
+		), array(
+			'',
+			' ',
+			'',
+			'',
+			'',
+			"\n\n\\1\n\n",
+			"\n\n\\1\n\n",
+			"\n\n\t",
+			"\n",
+			'\\1',
+			'\\1',
+			"\n\n",
+			"\n\n",
+			"\n\t* ",
+			'\\2 (\\1)',
+			"\n------------------------------------\n",
+			"\n",
+			"\n",
+			"\t\\1\n",
+			"\t\\1\n",
+			' ',
+			'"',
+			'>',
+			'<',
+			'&',
+			'(c)',
+			'(tm)',
+			'"',
+			'"',
+			'-',
+			"'",
+			'&',
+			'(c)',
+			'(tm)',
+			'--',
+			'"',
+			'"',
+			'*',
+			'(R)',
+			'*',
+			'',
+			'\'',
+			''
+		), $sText);
 
-		return trim($sText);
+		$sText = \str_ireplace('<div>',"\n<div>", $sText);
+		$sText = \strip_tags($sText, '');
+		$sText = \preg_replace("/\n\\s+\n/", "\n", $sText);
+		$sText = \preg_replace("/[\n]{3,}/", "\n\n", $sText);
+
+		return \trim($sText);
 	}
 }

@@ -242,7 +242,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$sResult .= ' "'.$this->quote($sValue).'"';
 				}
 
-				$sResult = \preg_replace('/[\s]+/u', ' ', $sResult);
+				$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 			}
 		}
 		else
@@ -358,8 +358,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$sSubject = '';
 					if (0 < \strlen($sValueSecond))
 					{
-						$sSubject = ':subject "'.$this->quote(
-							\preg_replace('/[\s]+/u', ' ', $sValueSecond)).'" ';
+						$sSubject = ':subject "'.
+							$this->quote(\MailSo\Base\Utils::StripSpaces($sValueSecond)).'" ';
 					}
 
 					if (0 < \strlen($sValueThird) && \is_numeric($sValueThird) && 1 < (int) $sValueThird)

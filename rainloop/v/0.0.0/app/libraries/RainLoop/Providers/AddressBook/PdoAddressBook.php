@@ -957,6 +957,7 @@ class PdoAddressBook
 						':prop_type' => array($oProp->Type, \PDO::PARAM_INT),
 						':prop_type_str' => array($oProp->TypeStr, \PDO::PARAM_STR),
 						':prop_value' => array($oProp->Value, \PDO::PARAM_STR),
+						':prop_value_lower' => array($oProp->ValueLower, \PDO::PARAM_STR),
 						':prop_value_custom' => array($oProp->ValueCustom, \PDO::PARAM_STR),
 						':prop_frec' => array($iFreq, \PDO::PARAM_INT),
 					);
@@ -965,9 +966,9 @@ class PdoAddressBook
 				if (0 < \count($aParams))
 				{
 					$sSql = 'INSERT INTO rainloop_ab_properties '.
-						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_custom,  prop_frec)'.
+						'( id_contact,  id_user,  prop_type,  prop_type_str,  prop_value,  prop_value_lower, prop_value_custom,  prop_frec)'.
 						' VALUES '.
-						'(:id_contact, :id_user, :prop_type, :prop_type_str, :prop_value, :prop_value_custom, :prop_frec)';
+						'(:id_contact, :id_user, :prop_type, :prop_type_str, :prop_value, :prop_value_lower, :prop_value_custom, :prop_frec)';
 
 					$this->prepareAndExecute($sSql, $aParams, true);
 				}
@@ -1072,6 +1073,7 @@ class PdoAddressBook
 		if (0 < \strlen($sSearch))
 		{
 			$sCustomSearch = $this->specialConvertSearchValueCustomPhone($sSearch);
+			$sLowerSearch = $this->specialConvertSearchValueLower($sSearch, '=');
 
 			$sSearchTypes = \implode(',', array(
 				PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME,
@@ -1079,8 +1081,10 @@ class PdoAddressBook
 			));
 
 			$sSql = 'SELECT id_user, id_prop, id_contact FROM rainloop_ab_properties '.
-				'WHERE (id_user = :id_user) AND prop_type IN ('.$sSearchTypes.') AND (prop_value LIKE :search ESCAPE \'=\''.
-					(0 < \strlen($sCustomSearch) ? ' OR (prop_type = '.PropertyType::PHONE.' AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
+				'WHERE (id_user = :id_user) AND prop_type IN ('.$sSearchTypes.') AND ('.
+				'prop_value LIKE :search ESCAPE \'=\''.
+(0 < \strlen($sLowerSearch) ? ' OR (prop_value_lower <> \'\' AND prop_value_lower LIKE :search_lower ESCAPE \'=\')' : '').
+(0 < \strlen($sCustomSearch) ? ' OR (prop_type = '.PropertyType::PHONE.' AND prop_value_custom <> \'\' AND prop_value_custom LIKE :search_custom_phone)' : '').
 				') GROUP BY id_contact, id_prop';
 
 			$aParams = array(
@@ -1088,12 +1092,17 @@ class PdoAddressBook
 				':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 			);
 
+			if (0 < \strlen($sLowerSearch))
+			{
+				$aParams[':search_lower'] = array($sLowerSearch, \PDO::PARAM_STR);
+			}
+
 			if (0 < \strlen($sCustomSearch))
 			{
 				$aParams[':search_custom_phone'] = array($sCustomSearch, \PDO::PARAM_STR);
 			}
 
-			$oStmt = $this->prepareAndExecute($sSql, $aParams);
+			$oStmt = $this->prepareAndExecute($sSql, $aParams, false, true);
 			if ($oStmt)
 			{
 				$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -1211,6 +1220,7 @@ class PdoAddressBook
 										$oProperty->Type = (int) $aItem['prop_type'];
 										$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
 										$oProperty->Value = (string) $aItem['prop_value'];
+										$oProperty->ValueLower = isset($aItem['prop_value_lower']) ? (string) $aItem['prop_value_lower'] : '';
 										$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
 										$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
 
@@ -1320,6 +1330,7 @@ class PdoAddressBook
 									$oProperty->Type = (int) $aItem['prop_type'];
 									$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
 									$oProperty->Value = (string) $aItem['prop_value'];
+									$oProperty->ValueLower = isset($aItem['prop_value_lower']) ? (string) $aItem['prop_value_lower'] : '';
 									$oProperty->ValueCustom = isset($aItem['prop_value_custom']) ? (string) $aItem['prop_value_custom'] : '';
 									$oProperty->Frec = isset($aItem['prop_frec']) ? (int) $aItem['prop_frec'] : 0;
 
@@ -1364,14 +1375,25 @@ class PdoAddressBook
 			PropertyType::EMAIl, PropertyType::FIRST_NAME, PropertyType::LAST_NAME, PropertyType::NICK_NAME
 		));
 
+		$sLowerSearch = $this->specialConvertSearchValueLower($sSearch);
+
 		$sSql = 'SELECT id_contact, id_prop, prop_type, prop_value FROM rainloop_ab_properties '.
-			'WHERE (id_user = :id_user) AND prop_type IN ('.$sTypes.') AND prop_value LIKE :search ESCAPE \'=\'';
+			'WHERE (id_user = :id_user) AND prop_type IN ('.$sTypes.') AND ('.
+			'prop_value LIKE :search ESCAPE \'=\''.
+(0 < \strlen($sLowerSearch) ? ' OR (prop_value_lower <> \'\' AND prop_value_lower LIKE :search_lower ESCAPE \'=\')' : '').
+			')'
+		;
 
 		$aParams = array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT),
 			':limit' => array($iLimit, \PDO::PARAM_INT),
 			':search' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
 		);
+
+		if (0 < \strlen($sLowerSearch))
+		{
+			$aParams[':search_lower'] = array($sLowerSearch, \PDO::PARAM_STR);
+		}
 
 		$sSql .= ' ORDER BY prop_frec DESC';
 		$sSql .= ' LIMIT :limit';
@@ -1547,7 +1569,7 @@ class PdoAddressBook
 			{
 				$oResult = \MailSo\Mime\Email::Parse(\trim($mItem));
 			}
-			catch (\Exception $oException) {}
+			catch (\Exception $oException) { unset($oException); }
 			return $oResult;
 		}, $aEmails);
 
@@ -1837,7 +1859,7 @@ SQLITEINITIAL;
 				break;
 		}
 
-		if (0 < strlen($sInitial))
+		if (0 < \strlen($sInitial))
 		{
 			$aList = \explode(';', \trim($sInitial));
 			foreach ($aList as $sV)
@@ -1869,17 +1891,26 @@ SQLITEINITIAL;
 		{
 			case 'mysql':
 				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_ab_properties ADD prop_value_lower varchar(255) NOT NULL DEFAULT \'\' AFTER prop_value_custom;'
+					)
 				));
 				break;
 			case 'pgsql':
 				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
+					)
 				));
 				break;
 			case 'sqlite':
 				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType)
+					1 => $this->getInitialTablesArray($this->sDsnType),
+					2 => array(
+'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
+					)
 				));
 				break;
 		}
@@ -1932,6 +1963,24 @@ SQLITEINITIAL;
 	{
 		return '%'.\str_replace(array($sEscapeSign, '_', '%'),
 			array($sEscapeSign.$sEscapeSign, $sEscapeSign.'_', $sEscapeSign.'%'), $sSearch).'%';
+	}
+
+	/**
+	 * @param string $sSearch
+	 * @param string $sEscapeSign = '='
+	 *
+	 * @return string
+	 */
+	private function specialConvertSearchValueLower($sSearch, $sEscapeSign = '=')
+	{
+		if (!\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
+		{
+			return '';
+		}
+
+		return '%'.\str_replace(array($sEscapeSign, '_', '%'),
+			array($sEscapeSign.$sEscapeSign, $sEscapeSign.'_', $sEscapeSign.'%'),
+				(string) @\mb_strtolower($sSearch, 'UTF-8')).'%';
 	}
 
 	/**

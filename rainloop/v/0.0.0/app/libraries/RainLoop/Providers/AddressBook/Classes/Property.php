@@ -29,6 +29,11 @@ class Property
 	/**
 	 * @var string
 	 */
+	public $ValueLower;
+
+	/**
+	 * @var string
+	 */
 	public $ValueCustom;
 
 	/**
@@ -54,6 +59,7 @@ class Property
 		$this->TypeStr = '';
 
 		$this->Value = '';
+		$this->ValueLower = '';
 		$this->ValueCustom = '';
 
 		$this->Frec = 0;
@@ -120,6 +126,7 @@ class Property
 		$this->Value = \trim($this->Value);
 		$this->ValueCustom = \trim($this->ValueCustom);
 		$this->TypeStr = \trim($this->TypeStr);
+		$this->ValueLower = '';
 
 		if (0 < \strlen($this->Value))
 		{
@@ -131,16 +138,22 @@ class Property
 
 			if ($this->IsName())
 			{
-				$this->Value = \preg_replace('/[\s]+/u', ' ', $this->Value);
+				$this->Value = \MailSo\Base\Utils::StripSpaces($this->Value);
 			}
 
-			// phones clear value for searching
+			// lower value for searching
+			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
+			{
+				$this->ValueLower = (string) @\mb_strtolower($this->Value, 'UTF-8');
+			}
+
+			// phone value for searching
 			if ($this->IsPhone())
 			{
-				$sPhone = $this->Value;
+				$sPhone = \trim($this->Value);
 				$sPhone = \preg_replace('/^[+]+/', '', $sPhone);
 				$sPhone = \preg_replace('/[^\d]/', '', $sPhone);
-				$this->ValueCustom = $sPhone;
+				$this->ValueCustom = \trim($sPhone);
 			}
 		}
 	}

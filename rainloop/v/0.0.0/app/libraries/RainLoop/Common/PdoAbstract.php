@@ -15,6 +15,11 @@ abstract class PdoAbstract
 	protected $bExplain = false;
 
 	/**
+	 * @var bool
+	 */
+	protected $bSqliteCollate = true;
+
+	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger;
@@ -49,6 +54,18 @@ abstract class PdoAbstract
 	}
 
 	/**
+	 * @param string $sStr1
+	 * @param string $sStr2
+	 *
+	 * @return int
+	 */
+	public function sqliteNoCaseCollationHelper($sStr1, $sStr2)
+	{
+		$this->oLogger->WriteDump(array($sStr1, $sStr2));
+		return \strcmp(\mb_strtoupper($sStr1, 'UTF-8'), \mb_strtoupper($sStr2, 'UTF-8'));
+	}
+
+	/**
 	 * @return \PDO
 	 *
 	 * @throws \Exception
@@ -67,6 +84,7 @@ abstract class PdoAbstract
 
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
+
 		if (!\in_array($sType, array('mysql', 'sqlite', 'pgsql')))
 		{
 			throw new \Exception('Unknown PDO SQL connection type');
@@ -82,15 +100,28 @@ abstract class PdoAbstract
 		$oPdo = false;
 		try
 		{
+//			$bCaseFunc = false;
 			$oPdo = @new \PDO($sDsn, $sDbLogin, $sDbPassword);
 			if ($oPdo)
 			{
+				$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-				if ('mysql' === $sType && 'mysql' === $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME))
+
+				if ('mysql' === $sType && 'mysql' === $sPdoType)
 				{
 					$oPdo->exec('SET NAMES utf8 COLLATE utf8_general_ci');
 //					$oPdo->exec('SET NAMES utf8');
 				}
+//				else if ('sqlite' === $sType && 'sqlite' === $sPdoType && $this->bSqliteCollate)
+//				{
+//					if (\method_exists($oPdo, 'sqliteCreateCollation') && \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtoupper'))
+//					{
+//						$oPdo->sqliteCreateCollation('SQLITE_NOCASE_UTF8', array($this, 'sqliteNoCaseCollationHelper'));
+//						$bCaseFunc = true;
+//					}
+//				}
+//
+//				$this->oLogger->Write('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
 			}
 		}
 		catch (\Exception $oException)
@@ -156,10 +187,11 @@ abstract class PdoAbstract
 	 * @param string $sSql
 	 * @param array $aParams
 	 * @param bool $bMultiplyParams = false
+	 * @param bool $bLogParams = false
 	 *
 	 * @return \PDOStatement|null
 	 */
-	protected function prepareAndExecute($sSql, $aParams = array(), $bMultiplyParams = false)
+	protected function prepareAndExecute($sSql, $aParams = array(), $bMultiplyParams = false, $bLogParams = false)
 	{
 		if ($this->bExplain && !$bMultiplyParams)
 		{
@@ -172,15 +204,26 @@ abstract class PdoAbstract
 		$oStmt = $this->getPDO()->prepare($sSql);
 		if ($oStmt)
 		{
+			$aLogs = array();
 			$aRootParams = $bMultiplyParams ? $aParams : array($aParams);
 			foreach ($aRootParams as $aSubParams)
 			{
 				foreach ($aSubParams as $sName => $aValue)
 				{
+					if ($bLogParams)
+					{
+						$aLogs[$sName] = $aValue[0];
+					}
+
 					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
 				}
 
 				$mResult = $oStmt->execute() && !$bMultiplyParams ? $oStmt : null;
+			}
+
+			if ($bLogParams && $aLogs)
+			{
+				$this->writeLog('Params: '.@\json_encode($aLogs, \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0));
 			}
 		}
 

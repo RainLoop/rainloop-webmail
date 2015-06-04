@@ -22,16 +22,6 @@ Options -Indexes
 
 			define('APP_USE_APC_CACHE', true);
 
-			$sCustomDataPath = '';
-			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
-			{
-				include_once APP_INDEX_ROOT_PATH.'include.php';
-			}
-
-			$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : '';
-			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
-			unset($sCustomDataPath);
-
 			if (function_exists('date_default_timezone_set'))
 			{
 				date_default_timezone_set('UTC');
@@ -53,12 +43,30 @@ Options -Indexes
 			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
 			define('APP_DUMMY', '********');
-			define('APP_GOOGLE_ACCESS_TOKEN_PREFIX', ':GAT:');
 			define('APP_DEV_VERSION', '0.0.0');
+			define('APP_GOOGLE_ACCESS_TOKEN_PREFIX', ':GAT:');
+			define('APP_WEB_SITE', 'http://www.rainloop.net/');
 			define('APP_API_PATH', 'http://api.rainloop.net/');
-			define('APP_REP_PATH', 'http://repository.rainloop.net/v1/');
-			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
 			define('APP_STATUS_PATH', 'http://status.rainloop.net/');
+			define('APP_REPOSITORY_PATH', 'http://repository.rainloop.net/v1/');
+			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
+
+			$sCustomDataPath = '';
+			$sCustomConfiguration = '';
+
+			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
+			{
+				include_once APP_INDEX_ROOT_PATH.'include.php';
+			}
+
+			$sCustomDataPath = function_exists('__get_custom_data_full_path') ? rtrim(trim(__get_custom_data_full_path()), '\\/') : '';
+			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
+			unset($sCustomDataPath);
+
+			$sCustomConfiguration = function_exists('__get_additional_configuration_name') ? trim(__get_additional_configuration_name()) : '';
+			define('APP_ADDITIONAL_CONFIGURATION_NAME', $sCustomConfiguration);
+			unset($sCustomConfiguration);
+
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
 			$sSalt = @file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');

@@ -59,6 +59,11 @@ class Config
 	/**
 	 * @var bool
 	 */
+	public static $MessageAllHeaders = false;
+
+	/**
+	 * @var bool
+	 */
 	public static $LogSimpleLiterals = false;
 
 	/**

@@ -7,7 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
-		SimplePace = require('SimplePace'),
+		progressJs = require('progressJs'),
 		Tinycon = require('Tinycon'),
 
 		Enums = require('Common/Enums'),
@@ -255,6 +255,7 @@
 	{
 		var
 			self = this,
+			sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder()
 		;
 
@@ -262,11 +263,12 @@
 
 			var
 				bSpam = sSpamFolder === oItem['To'],
+				bTrash = sTrashFolder === oItem['To'],
 				bHam = !bSpam && sSpamFolder === oItem['From'] && Cache.getFolderInboxName() === oItem['To']
 			;
 
 			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
-				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
+				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
 		});
 
 		this.oMoveCache = {};
@@ -1305,9 +1307,9 @@
 	{
 		kn.hideLoading();
 
-		if (SimplePace)
+		if (progressJs)
 		{
-			SimplePace.set(100);
+			progressJs().end();
 		}
 	};
 
@@ -1332,10 +1334,9 @@
 			bTwitter = Settings.settingsGet('AllowTwitterSocial')
 		;
 
-		if (SimplePace)
+		if (progressJs)
 		{
-			SimplePace.set(70);
-			SimplePace.sleep();
+			progressJs().set(70);
 		}
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {

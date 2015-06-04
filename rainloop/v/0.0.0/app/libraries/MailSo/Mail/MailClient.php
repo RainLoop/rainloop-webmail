@@ -179,33 +179,41 @@ class MailClient
 	 */
 	private function getEnvelopeOrHeadersRequestString()
 	{
-		return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+		if (\MailSo\Config::$MessageAllHeaders)
+		{
+			return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+		}
 
-//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
+		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
+			\MailSo\Mime\Enumerations\Header::RECEIVED,
+			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
+			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
+			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+			\MailSo\Mime\Enumerations\Header::FROM_,
+			\MailSo\Mime\Enumerations\Header::TO_,
+			\MailSo\Mime\Enumerations\Header::CC,
+			\MailSo\Mime\Enumerations\Header::BCC,
+			\MailSo\Mime\Enumerations\Header::SENDER,
+			\MailSo\Mime\Enumerations\Header::REPLY_TO,
+			\MailSo\Mime\Enumerations\Header::DELIVERED_TO,
+			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
+			\MailSo\Mime\Enumerations\Header::REFERENCES,
+			\MailSo\Mime\Enumerations\Header::DATE,
+			\MailSo\Mime\Enumerations\Header::SUBJECT,
+			\MailSo\Mime\Enumerations\Header::SENSITIVITY,
+			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
+			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
+			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
+			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
+			\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO,
+			\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO,
+			\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO,
+			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
+			\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS,
+		), true);
 //
-//		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
-//			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
-//			\MailSo\Mime\Enumerations\Header::RECEIVED,
-//			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
-//			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
-//			\MailSo\Mime\Enumerations\Header::FROM_,
-//			\MailSo\Mime\Enumerations\Header::TO_,
-//			\MailSo\Mime\Enumerations\Header::CC,
-//			\MailSo\Mime\Enumerations\Header::BCC,
-//			\MailSo\Mime\Enumerations\Header::SENDER,
-//			\MailSo\Mime\Enumerations\Header::REPLY_TO,
-//			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
-//			\MailSo\Mime\Enumerations\Header::DATE,
-//			\MailSo\Mime\Enumerations\Header::SUBJECT,
-//			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
-//			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
-//			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
-//			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-//			\MailSo\Mime\Enumerations\Header::REFERENCES,
-//			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
-//			\MailSo\Mime\Enumerations\Header::RECEIVED_SPF,
-//			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
-//		), true);
+//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
 	}
 
 	/**
@@ -1032,7 +1040,7 @@ class MailClient
 
 		$sReg = 'e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
 
-		$sSearch = \trim(\preg_replace('/[\s]+/', ' ', $sSearch));
+		$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
 		$sSearch = \trim(\preg_replace('/('.$sReg.'): /i', '\\1:', $sSearch));
 
 		$mMatch = array();
@@ -1079,7 +1087,7 @@ class MailClient
 					$sSearch = \str_replace($sToken, '', $sSearch);
 				}
 
-				$sSearch = \trim(\preg_replace('/[\s]+/', ' ', $sSearch));
+				$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
 			}
 
 			foreach ($mMatch[1] as $iIndex => $sName)
@@ -1353,7 +1361,7 @@ class MailClient
 
 				if ('' !== \trim($sMainText))
 				{
-					$sMainText = \trim(\trim(preg_replace('/[\s]+/', ' ', $sMainText)), '"');
+					$sMainText = \trim(\MailSo\Base\Utils::StripSpaces($sMainText), '"');
 					if ($bIsGmail)
 					{
 						$sGmailRawSearch .= ' '.$sMainText;
@@ -1690,7 +1698,8 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::INTERNALDATE,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS,
 				\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE,
-				$bSimple ? $this->getEnvelopeOrHeadersRequestStringForSimpleList() :
+				$bSimple ?
+					$this->getEnvelopeOrHeadersRequestStringForSimpleList() :
 					$this->getEnvelopeOrHeadersRequestString()
 			), \MailSo\Base\Utils::PrepearFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 

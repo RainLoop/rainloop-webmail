@@ -32,7 +32,7 @@ class Api
 			if ($bOne)
 			{
 				\RainLoop\Api::SetupDefaultMailSoConfig();
-				
+
 				$bOne = \RainLoop\Api::RunResult();
 			}
 		}
@@ -94,6 +94,9 @@ class Api
 
 			\MailSo\Config::$MessageListPermanentFilter =
 				\trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
+
+			\MailSo\Config::$MessageAllHeaders =
+				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_all_headers', false);
 
 			\MailSo\Config::$LargeThreadLimit =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);

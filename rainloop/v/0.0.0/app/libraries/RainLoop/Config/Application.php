@@ -11,7 +11,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		parent::__construct('application.ini',
 			'; RainLoop Webmail configuration file
-; Please don\'t add custom parameters here, those will be overwritten');
+; Please don\'t add custom parameters here, those will be overwritten',
+			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
 
 	/**
@@ -321,6 +322,7 @@ Enables caching in the system'),
 				'imap_message_list_count_limit_trigger' => array(0),
 				'imap_message_list_date_filter' => array(0),
 				'imap_message_list_permanent_filter' => array(''),
+				'imap_message_all_headers' => array(false),
 				'imap_large_thread_limit' => array(50),
 				'imap_folder_list_limit' => array(200),
 				'imap_show_login_alert' => array(true),

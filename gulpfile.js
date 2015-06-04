@@ -110,7 +110,8 @@ cfg.paths.css = {
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
-			'vendors/simple-pace/styles.css',
+			'vendors/progress.js/minified/progressjs.min.css',
+			'vendors/progress.js/minified/progressjs.rainloop.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/opentip/opentip.css',
 			'vendors/photoswipe/photoswipe.css',
@@ -127,7 +128,8 @@ cfg.paths.js = {
 		src: [
 			'vendors/json2.min.js',
 			'vendors/labjs/LAB.min.js',
-			'vendors/simple-pace/simple-pace-1.0.min.js',
+			'vendors/modernizr.js',
+			'vendors/progress.js/minified/progress.min.js',
 			'vendors/rl/rl-1.5.min.js'
 		]
 	},
@@ -153,7 +155,6 @@ cfg.paths.js = {
 	libs: {
 		name: 'libs.js',
 		src: [
-			'vendors/modernizr.js',
 			'vendors/underscore/1.6.0/underscore-min.js',
 			'vendors/jquery/jquery-1.11.2.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',

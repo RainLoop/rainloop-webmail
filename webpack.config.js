@@ -29,7 +29,7 @@ module.exports = {
 		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
-		'SimplePace': 'window.SimplePace',
+		'progressJs': 'window.progressJs',
 		'PhotoSwipe': 'window.PhotoSwipe',
 		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',

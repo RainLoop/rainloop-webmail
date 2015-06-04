@@ -553,11 +553,22 @@ END;
 	/**
 	 * @param string $sValue
 	 *
+	 * @return string
+	 */
+	public static function StripSpaces($sValue)
+	{
+		return \MailSo\Base\Utils::Trim(
+			\preg_replace('/[\s]+/u', ' ', $sValue));
+	}
+
+	/**
+	 * @param string $sValue
+	 *
 	 * @return bool
 	 */
 	public static function IsUtf8($sValue)
 	{
-		return (bool) ( \function_exists('mb_check_encoding') ?
+		return (bool) (\function_exists('mb_check_encoding') ?
 			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
 	}
 
@@ -1362,8 +1373,9 @@ END;
 	 */
 	public static function ClearFileName($sFileName)
 	{
-		return \MailSo\Base\Utils::ClearNullBite(\preg_replace('/[\s]+/u', ' ',
-			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName)));
+		return \MailSo\Base\Utils::Trim(\MailSo\Base\Utils::ClearNullBite(
+			\MailSo\Base\Utils::StripSpaces(
+				\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName))));
 	}
 
 	/**
@@ -1373,8 +1385,8 @@ END;
 	 */
 	public static function ClearXss($sValue)
 	{
-		return \MailSo\Base\Utils::ClearNullBite(
-			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue));
+		return \MailSo\Base\Utils::Trim(\MailSo\Base\Utils::ClearNullBite(
+			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue)));
 	}
 
 	/**

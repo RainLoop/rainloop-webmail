@@ -620,9 +620,9 @@ class Message
 			$this->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
 
 			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
-			$this->sReferences = \trim(\preg_replace('/[\s]+/', ' ',
-				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES)));
-
+			$this->sReferences = \MailSo\Base\Utils::StripSpaces(
+				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
+			
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
 			$this->sHeaderDate = $sHeaderDate;
 			$this->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sHeaderDate);

@@ -257,7 +257,7 @@ class Message
 	public function SetReferences($sReferences)
 	{
 		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::REFERENCES] =
-			\trim(\preg_replace('/[\s]+/', ' ', $sReferences));
+			\MailSo\Base\Utils::StripSpaces($sReferences);
 
 		return $this;
 	}
