@@ -11,6 +11,7 @@ var
 		devVersion: '0.0.0',
 		releasesPath: 'build/dist/releases',
 		community: true,
+		watch: false,
 
 		rainloopBuilded: false,
 		destPath: '',
@@ -30,17 +31,22 @@ var
 		}
 	},
 
+	_ = require('lodash'),
 	fs = require('node-fs'),
 	path = require('path'),
+	notifier = require('node-notifier'),
+
 	gulp = require('gulp'),
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
-	eol = require('gulp-eol'),
 	stripbom = require('gulp-stripbom'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
+	notify = require("gulp-notify"),
 	plumber = require('gulp-plumber'),
+	gulpif = require('gulp-if'),
+	eol = require('gulp-eol'),
 	gutil = require('gulp-util')
 ;
 
@@ -136,7 +142,7 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.js',
 		src: [
-			'vendors/openpgp/openpgp-0.7.2.min.js'
+			'vendors/openpgp/openpgp-0.10.1.min.js'
 		]
 	},
 	encrypt: {
@@ -201,14 +207,17 @@ cfg.paths.js = {
 // CSS
 gulp.task('less:main', function() {
 	var less = require('gulp-less');
+
 	return gulp.src(cfg.paths.less.main.src)
+		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
 		.pipe(less({
 			'paths': cfg.paths.less.main.options.paths
 		}))
 		.pipe(rename(cfg.paths.less.main.name))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
-		.on('error', gutil.log);
+		.on('error', gutil.log)
+	;
 });
 
 gulp.task('css:main-begin', ['less:main'], function() {
@@ -220,7 +229,6 @@ gulp.task('css:main-begin', ['less:main'], function() {
 	;
 
 	return gulp.src(cfg.paths.css.main.src)
-		.pipe(plumber())
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
 //		.pipe(csscomb())
@@ -252,7 +260,6 @@ gulp.task('css:main', ['css:clear-less']);
 gulp.task('css:main:min', ['css:main'], function() {
 	var minifyCss = require('gulp-minify-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
-		.pipe(plumber())
 		.pipe(minifyCss({
 			'keepSpecialComments': 0
 		}))
@@ -330,10 +337,51 @@ gulp.task('js:webpack', ['js:webpack:clear'], function(callback) {
 	}
 
 	webpack(webpackCfg, function(err, stats) {
-        if (err) {
-			throw new gutil.PluginError('webpack', err);
+
+		var
+			fN = function (err) {
+				if (err)
+				{
+					gutil.log('[webpack]', '---');
+					gutil.log('[webpack]', err.error ? err.error.toString() : '');
+					gutil.log('[webpack]', err.message || '');
+					gutil.log('[webpack]', '---');
+
+					notifier.notify({
+						'sound': true,
+						'title': 'webpack',
+						'message': err.error ? err.error.toString() : err.message
+					});
+				}
+			}
+		;
+
+        if (err)
+		{
+			if (cfg.watch)
+			{
+				fN(err);
+			}
+			else
+			{
+				throw new gutil.PluginError('webpack', err);
+			}
 		}
-		gutil.log('[webpack]', stats.toString({}));
+		else if (stats && stats.compilation && stats.compilation.errors &&
+			stats.compilation.errors[0])
+		{
+			if (cfg.watch)
+			{
+				_.each(stats.compilation.errors, function (err) {
+					fN(err);
+				});
+			}
+			else
+			{
+				throw new gutil.PluginError('webpack', stats.compilation.errors[0]);
+			}
+		}
+
         callback();
     });
 });
@@ -616,11 +664,13 @@ gulp.task('owncloud+', ['package:community-off', 'owncloud-']);
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
+	cfg.watch = true;
 	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
 });
 
 gulp.task('watch+', ['fast+'], function() {
+	cfg.watch = true;
 	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
 });

@@ -7,6 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
+		JSON = require('JSON'),
 		Opentip = require('Opentip'),
 
 		fDisposalTooltipHelper = function (oElement) {
@@ -60,6 +61,15 @@
 //				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 //				});
 			}
+		}
+	};
+
+	ko.bindingHandlers.json = {
+		'init': function (oElement, fValueAccessor) {
+			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
+		},
+		'update': function (oElement, fValueAccessor) {
+			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 		}
 	};
 

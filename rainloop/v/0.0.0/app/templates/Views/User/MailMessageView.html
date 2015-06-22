@@ -330,25 +330,6 @@
 											&nbsp;&nbsp;
 											<span class="i18n text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 										</div>
-										<div class="pgpInfo" data-bind="visible: isPgpStatusVerifyVisible(), css: {'success': isPgpStatusVerifySuccess()}">
-											<i class="icon-key"></i>
-											&nbsp;&nbsp;
-											<span data-bind="text: pgpStatusVerifyMessage()"></span>
-										</div>
-										<div class="pgpSigned" data-bind="visible: message() && message().isPgpSigned() && isPgpActionVisible(), click: function() { verifyPgpSignedClearMessage(message()); }">
-											<i class="icon-lock"></i>
-											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/PGP_SIGNED_MESSAGE_DESC"></span>
-										</div>
-										<div class="pgpEncrypted" data-bind="visible: message() && message().isPgpEncrypted() && isPgpActionVisible()">
-											<i class="icon-lock"></i>
-											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC" data-bind="click: function() { decryptPgpEncryptedMessage(message()); }"></span>
-											&nbsp;&nbsp;
-											<input type="password" class="i18n span3 inputPgpPassword"
-												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-												style="margin-bottom: 0" data-i18n="[placeholder]MESSAGE/PGP_PASSWORD_INPUT_PLACEHOLDER" data-bind="value: viewPgpPassword, onEnter: function() { decryptPgpEncryptedMessage(message()); }" />
-										</div>
 										<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments(),
 											css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 											<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">

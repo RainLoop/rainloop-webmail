@@ -109,25 +109,20 @@
 
 				if (self.resultCallback && bResult)
 				{
-					try {
-
+					var oPromise = null;
+					try
+					{
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.signClearMessage([oPrivateKey], self.text())
-							);
+							oPromise = PgpStore.openpgp.signClearMessage([oPrivateKey], self.text());
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
-							);
+							oPromise = PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text());
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.encryptMessage(aPublicKeys, self.text())
-							);
+							oPromise = PgpStore.openpgp.encryptMessage(aPublicKeys, self.text());
 						}
 					}
 					catch (e)
@@ -135,14 +130,30 @@
 						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));
-
-						bResult = false;
 					}
-				}
 
-				if (bResult)
-				{
-					self.cancelCommand();
+					if (oPromise)
+					{
+						try
+						{
+							oPromise.then(function (mData) {
+
+								self.resultCallback(mData);
+								self.cancelCommand();
+
+							})['catch'](function (e) {
+								self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+									'ERROR': '' + e
+								}));
+							});
+						}
+						catch (e)
+						{
+							self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+								'ERROR': '' + e
+							}));
+						}
+					}
 				}
 
 				self.submitRequest(false);

@@ -407,6 +407,16 @@ html.rl-no-preview-pane {
 							display: inline-block;
 							padding: 6px 10px;
 							border: 1px dashed #666;
+							background: #fff;
+
+							&.success {
+								border-color: green;
+								background-color: rgba(0, 255, 0, 0.03);
+							}
+							&.error {
+								border-color: red;
+								background-color: rgba(255, 0, 0, 0.03);
+							}
 						}
 
 						blockquote {
@@ -421,6 +431,27 @@ html.rl-no-preview-pane {
 
 						blockquote blockquote blockquote {
 							border-left: 2px solid red;
+							color: red;
+						}
+					}
+
+					.b-openpgp-control {
+
+						display: inline-block;
+						cursor: pointer;
+						color: #777;
+						/*float: left;*/
+
+						&:hover {
+							color: #111;
+						}
+
+						&.success {
+							color: green;
+							cursor: help;
+						}
+
+						&.error {
 							color: red;
 						}
 					}

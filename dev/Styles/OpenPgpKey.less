@@ -1,5 +1,5 @@
 .popups {
-	.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content, .b-open-pgp-key-add-content, .b-compose-open-pgp-content {
+	.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content, .b-open-pgp-key-add-content, .b-compose-open-pgp-content, .b-message-open-pgp-content {
 
 		.modal-header {
 			background-color: #fff;
@@ -16,6 +16,37 @@
 		.key-viewer {
 			max-height: 500px;
 			overflow: auto;
+		}
+	}
+
+	.b-message-open-pgp-content {
+		&.modal {
+			width: 700px;
+		}
+
+		.key-list {
+
+			margin-top: 5px;
+			overflow: hidden;
+
+			&__item {
+
+				color: #555;
+				cursor: pointer;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				&__radio {
+					padding-right: 5px;
+				}
+
+				&__name {
+
+					&:hover {
+						border-bottom: 1px dashed #555;
+					}
+				}
+			}
 		}
 	}
 }

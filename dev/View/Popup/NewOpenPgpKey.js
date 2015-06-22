@@ -62,29 +62,36 @@
 
 			_.delay(function () {
 
-				mKeyPair = false;
+				var mPromise = false;
+
 				try {
-					mKeyPair = PgpStore.openpgp.generateKeyPair({
+
+					mPromise = PgpStore.openpgp.generateKeyPair({
 						'userId': sUserID,
 						'numBits': Utils.pInt(self.keyBitLength()),
 						'passphrase': Utils.trim(self.password())
 					});
-				} catch (e) {
-//					window.console.log(e);
-				}
 
-				if (mKeyPair && mKeyPair.privateKeyArmored)
-				{
-					oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
-					oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
-					oOpenpgpKeyring.store();
+					mPromise.then(function () {
 
-					require('App/User').reloadOpenPgpKeys();
-					Utils.delegateRun(self, 'cancelCommand');
-				}
+						self.submitRequest(false);
 
-				self.submitRequest(false);
-				
+						if (mKeyPair && mKeyPair.privateKeyArmored)
+						{
+							oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
+							oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
+							oOpenpgpKeyring.store();
+
+							require('App/User').reloadOpenPgpKeys();
+							Utils.delegateRun(self, 'cancelCommand');
+						}
+
+					})['catch'](function() {
+						self.submitRequest(false);
+					});
+
+				} catch (e) {}
+
 			}, 100);
 
 			return true;

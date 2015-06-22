@@ -632,7 +632,7 @@
 						oEditor.setPlain(sResult);
 					});
 				},
-				this.oEditor.getData(),
+				this.oEditor.getData(false, true),
 				this.currentIdentity(),
 				this.to(),
 				this.cc(),

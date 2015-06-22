@@ -303,16 +303,6 @@
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
 
-// PGP
-		this.viewPgpPassword = ko.observable('');
-		this.viewPgpSignedVerifyStatus = ko.computed(function () {
-			return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
-		}, this);
-
-		this.viewPgpSignedVerifyUser = ko.computed(function () {
-			return this.message() ? this.message().pgpSignedVerifyUser() : '';
-		}, this);
-
 		this.viewFromDkimStatusIconClass = ko.computed(function () {
 
 			var sResult = 'icon-none iconcolor-display-none';
@@ -360,8 +350,6 @@
 		this.message.subscribe(function (oMessage) {
 
 			this.messageActiveDom(null);
-
-			this.viewPgpPassword('');
 
 			if (oMessage)
 			{
@@ -518,48 +506,6 @@
 			}
 
 			sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
-		}
-
-		return sResult;
-	};
-
-	MessageViewMailBoxUserView.prototype.isPgpActionVisible = function ()
-	{
-		return Enums.SignedVerifyStatus.Success !== this.viewPgpSignedVerifyStatus();
-	};
-
-	MessageViewMailBoxUserView.prototype.isPgpStatusVerifyVisible = function ()
-	{
-		return Enums.SignedVerifyStatus.None !== this.viewPgpSignedVerifyStatus();
-	};
-
-	MessageViewMailBoxUserView.prototype.isPgpStatusVerifySuccess = function ()
-	{
-		return Enums.SignedVerifyStatus.Success === this.viewPgpSignedVerifyStatus();
-	};
-
-	MessageViewMailBoxUserView.prototype.pgpStatusVerifyMessage = function ()
-	{
-		var sResult = '';
-		switch (this.viewPgpSignedVerifyStatus())
-		{
-			case Enums.SignedVerifyStatus.UnknownPublicKeys:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
-				break;
-			case Enums.SignedVerifyStatus.UnknownPrivateKey:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
-				break;
-			case Enums.SignedVerifyStatus.Unverified:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
-				break;
-			case Enums.SignedVerifyStatus.Error:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
-				break;
-			case Enums.SignedVerifyStatus.Success:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-					'USER': this.viewPgpSignedVerifyUser()
-				});
-				break;
 		}
 
 		return sResult;
@@ -1254,31 +1200,6 @@
 	{
 		var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
 		return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : '';
-	};
-
-
-	/**
-	 * @param {MessageModel} oMessage
-	 */
-	MessageViewMailBoxUserView.prototype.verifyPgpSignedClearMessage = function (oMessage)
-	{
-		if (oMessage)
-		{
-			oMessage.verifyPgpSignedClearMessage();
-		}
-
-		this.checkHeaderHeight();
-	};
-
-	/**
-	 * @param {MessageModel} oMessage
-	 */
-	MessageViewMailBoxUserView.prototype.decryptPgpEncryptedMessage = function (oMessage)
-	{
-		if (oMessage)
-		{
-			oMessage.decryptPgpEncryptedMessage(this.viewPgpPassword());
-		}
 	};
 
 	/**

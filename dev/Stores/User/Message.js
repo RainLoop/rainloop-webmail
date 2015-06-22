@@ -22,6 +22,7 @@
 
 		AppStore = require('Stores/User/App'),
 		FolderStore = require('Stores/User/Folder'),
+		PgpStore = require('Stores/User/Pgp'),
 		SettingsStore = require('Stores/User/Settings'),
 
 		Remote = require('Remote/User/Ajax'),
@@ -502,6 +503,19 @@
 		}
 	};
 
+	/**
+	 * @param {Object} oMessageTextBody
+	 */
+	MessageUserStore.prototype.initOpenPgpControls = function (oMessageTextBody)
+	{
+		if (oMessageTextBody && oMessageTextBody.find)
+		{
+			oMessageTextBody.find('.b-plain-openpgp:not(.inited)').each(function () {
+				PgpStore.initMessageBodyControls($(this));
+			});
+		}
+	};
+
 	MessageUserStore.prototype.setMessage = function (oData, bCached)
 	{
 		var
@@ -512,6 +526,7 @@
 			oBody = null,
 			oTextBody = null,
 			sId = '',
+			sPlain = '',
 			sResultHtml = '',
 			bPgpSigned = false,
 			bPgpEncrypted = false,
@@ -579,13 +594,13 @@
 
 							if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
 							{
-								oMessage.plainRaw = Utils.pString(oData.Result.Plain);
+								sPlain = Utils.pString(oData.Result.Plain);
 
-								bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
+								bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(sPlain);
 								if (!bPgpEncrypted)
 								{
-									bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
-										/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
+									bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(sPlain) &&
+										/-----BEGIN PGP SIGNATURE-----/.test(sPlain);
 								}
 
 								Globals.$div.empty();
@@ -593,7 +608,7 @@
 								{
 									sResultHtml =
 										Globals.$div.append(
-											$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+											$('<pre class="b-plain-openpgp signed"></pre>').text(sPlain)
 										).html()
 									;
 								}
@@ -601,10 +616,12 @@
 								{
 									sResultHtml =
 										Globals.$div.append(
-											$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+											$('<pre class="b-plain-openpgp encrypted"></pre>').text(sPlain)
 										).html()
 									;
 								}
+
+								sPlain = '';
 
 								Globals.$div.empty();
 
@@ -624,8 +641,6 @@
 
 						oMessage.isHtml(!!bIsHtml);
 						oMessage.hasImages(!!bHasExternals);
-						oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-						oMessage.pgpSignedVerifyUser('');
 
 						oMessage.body = oBody;
 						if (oMessage.body)
@@ -663,6 +678,8 @@
 
 					if (oBody)
 					{
+						this.initOpenPgpControls(oBody);
+
 						this.initBlockquoteSwitcher(oBody);
 					}
 

@@ -460,6 +460,7 @@ class PdoAddressBook
 
 		$this->oLogger->Write('PROPFIND '.$sPath, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 
+		$aResponse = null;
 		try
 		{
 			$aResponse = $oClient->propFind($sPath, array(

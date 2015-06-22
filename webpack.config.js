@@ -12,6 +12,7 @@ module.exports = {
 		publicPath: 'rainloop/v/0.0.0/static/js/',
 		chunkFilename: '[chunkhash].subapp.js'
 	},
+//	devtool: "#source-map",
 	plugins: [
 //		new webpack.optimize.CommonsChunkPlugin('common.js'),
 		new webpack.optimize.OccurenceOrderPlugin()

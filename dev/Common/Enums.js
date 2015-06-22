@@ -109,6 +109,7 @@
 		'Settings': 'settings',
 		'Menu': 'menu',
 		'PopupComposeOpenPGP': 'compose-open-pgp',
+		'PopupMessageOpenPGP': 'message-open-pgp',
 		'PopupKeyboardShortcutsHelp': 'popup-keyboard-shortcuts-help',
 		'PopupAsk': 'popup-ask'
 	};
