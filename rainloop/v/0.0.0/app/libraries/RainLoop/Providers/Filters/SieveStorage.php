@@ -350,6 +350,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				$sValue = \trim($oFilter->ActionValue());
 				$sValueSecond = \trim($oFilter->ActionValueSecond());
 				$sValueThird = \trim($oFilter->ActionValueThird());
+				$sValueFourth = \trim($oFilter->ActionValueFourth());
 				if (0 < \strlen($sValue))
 				{
 					$aCapa['vacation'] = true;
@@ -367,7 +368,14 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 						$iDays = (int) $sValueThird;
 					}
 
-					$aResult[] = $sTab.'vacation :days '.$iDays.' '.$sSubject.'"'.$this->quote($sValue).'";';
+                    if (0 < \strlen($sValueFourth))
+                    {
+                        $aAddresses = \explode(",", $sValueFourth);
+                        $aAddresses = array_map('trim', $aAddresses);
+                        $sAddresses = ':addresses ["' . \implode('", "', $aAddresses) . '"]';
+                    }
+
+                    $aResult[] = $sTab.'vacation :days '.$iDays.' '.$sAddresses.' '.$sSubject.'"'.$this->quote($sValue).'";';
 
 					if ($oFilter->Stop())
 					{

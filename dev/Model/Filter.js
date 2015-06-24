@@ -10,8 +10,9 @@
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 		Translator = require('Common/Translator'),
-
 		Cache = require('Common/Cache'),
+
+        AccountStore = require('Stores/User/Account'),
 
 		FilterConditionModel = require('Model/FilterCondition'),
 
@@ -42,6 +43,8 @@
 
 		this.actionValueSecond = ko.observable('');
 		this.actionValueThird = ko.observable('');
+		this.actionValueFourth = ko.observable('');
+        this.actionValueFourth.error = ko.observable(false);
 
 		this.actionMarkAsRead = ko.observable(false);
 
@@ -55,6 +58,13 @@
 			this.actionValue.error(false);
 			this.actionValueSecond('');
 			this.actionValueThird('');
+			this.actionValueFourth('');
+            this.actionValueFourth.error(false);
+            if (Enums.FiltersAction.Vacation === this.actionType())
+            {
+                this.actionValueFourth(AccountStore.accountsEmails());
+            }
+
 		}, this);
 
 		var fGetRealFolderName = function (sFolderFullNameRaw) {
@@ -189,6 +199,17 @@
 			return false;
 		}
 
+        if (Enums.FiltersAction.Vacation === this.actionType() &&
+            (
+                "" === this.actionValueFourth() ||
+                -1 === this.actionValueFourth().indexOf('@')
+            )
+        )
+        {
+            this.actionValueFourth.error(true);
+            return false;
+        }
+
 		this.name.error(false);
 		this.actionValue.error(false);
 
@@ -209,6 +230,7 @@
 			'ActionValue': this.actionValue(),
 			'ActionValueSecond': this.actionValueSecond(),
 			'ActionValueThird': this.actionValueThird(),
+			'ActionValueFourth': this.actionValueFourth(),
 			'ActionType': this.actionType(),
 
 			'Stop': this.actionNoStop() ? '0' : '1',
@@ -255,6 +277,7 @@
 			this.actionValue(Utils.pString(oItem['ActionValue']));
 			this.actionValueSecond(Utils.pString(oItem['ActionValueSecond']));
 			this.actionValueThird(Utils.pString(oItem['ActionValueThird']));
+			this.actionValueFourth(Utils.pString(oItem['ActionValueFourth']));
 
 			this.actionNoStop(!oItem['Stop']);
 			this.actionKeep(!!oItem['Keep']);
@@ -288,6 +311,7 @@
 
 		oClone.actionValueSecond(this.actionValueSecond());
 		oClone.actionValueThird(this.actionValueThird());
+		oClone.actionValueFourth(this.actionValueFourth());
 
 		oClone.actionKeep(this.actionKeep());
 		oClone.actionNoStop(this.actionNoStop());
