@@ -9411,14 +9411,23 @@ class Actions
 			{
 				$oAccount = \call_user_func($fGetAccount);
 
+				$iDateTimeStampInUTC = $mResponse->InternalTimeStampInUTC();
+				if (0 === $iDateTimeStampInUTC || !!$this->Config()->Get('labs', 'date_from_headers', false))
+				{
+					$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC();
+					if (0 === $iDateTimeStampInUTC)
+					{
+						$iDateTimeStampInUTC = $mResponse->InternalTimeStampInUTC();
+					}
+				}
+
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
 					'Folder' => $mResponse->Folder(),
 					'Uid' => (string) $mResponse->Uid(),
 					'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($mResponse->Subject())),
 					'MessageId' => $mResponse->MessageId(),
 					'Size' => $mResponse->Size(),
-					'DateTimeStampInUTC' => !!$this->Config()->Get('labs', 'date_from_headers', false)
-						? $mResponse->HeaderTimeStampInUTC() : $mResponse->InternalTimeStampInUTC(),
+					'DateTimeStampInUTC' => $iDateTimeStampInUTC,
 					'ReplyTo' => $this->responseObject($mResponse->ReplyTo(), $sParent, $aParameters),
 					'From' => $this->responseObject($mResponse->From(), $sParent, $aParameters),
 					'To' => $this->responseObject($mResponse->To(), $sParent, $aParameters),

@@ -42,7 +42,6 @@
 			var
 				self = this,
 				sUserID = '',
-				mKeyPair = null,
 				oOpenpgpKeyring = PgpStore.openpgpKeyring
 			;
 
@@ -72,7 +71,7 @@
 						'passphrase': Utils.trim(self.password())
 					});
 
-					mPromise.then(function () {
+					mPromise.then(function (mKeyPair) {
 
 						self.submitRequest(false);
 
@@ -80,6 +79,7 @@
 						{
 							oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
 							oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
+
 							oOpenpgpKeyring.store();
 
 							require('App/User').reloadOpenPgpKeys();
@@ -89,8 +89,11 @@
 					})['catch'](function() {
 						self.submitRequest(false);
 					});
-
-				} catch (e) {}
+				}
+				catch (e)
+				{
+					self.submitRequest(false);
+				}
 
 			}, 100);
 

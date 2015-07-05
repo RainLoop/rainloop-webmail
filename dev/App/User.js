@@ -1378,7 +1378,16 @@
 						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							var fOpenpgpCallback = function (openpgp) {
+
 								PgpStore.openpgp = openpgp;
+
+								if (window.Worker)
+								{
+									PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
+								}
+								
+//								PgpStore.openpgp.config.useWebCrypto = false;
+
 								PgpStore.openpgpKeyring = new openpgp.Keyring();
 								PgpStore.capaOpenPGP(true);
 

@@ -390,7 +390,23 @@
 	 */
 	Links.prototype.openPgpJs = function ()
 	{
-		return this.sStaticPrefix + 'js/min/openpgp.js';
+		return this.sStaticPrefix + 'js/min/openpgp.min.js';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	Links.prototype.openPgpWorkerJs = function ()
+	{
+		return this.sStaticPrefix + 'js/min/openpgp.worker.min.js';
+	};
+
+	/**
+	 * @return {string}
+	 */
+	Links.prototype.openPgpWorkerPath = function ()
+	{
+		return this.sStaticPrefix + 'js/min/';
 	};
 
 	/**

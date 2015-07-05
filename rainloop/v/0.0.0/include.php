@@ -70,7 +70,7 @@ Options -Indexes
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
 			$sSalt = @file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');
-			$sData = @file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php');
+			$sData = file_exists(APP_DATA_FOLDER_PATH.'DATA.php') ? @file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
 			$sInstalled = @file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
 
 			// installation checking data folder
@@ -129,29 +129,20 @@ Options -Indexes
 				unset($sCheckName, $sCheckFilePath, $sCheckFolder, $sTest);
 			}
 
-			if (false === $sSalt || false === $sData)
+			if (false === $sSalt)
 			{
-				if (false === $sSalt)
-				{
-					// random salt
-					$sSalt = '<'.'?php //'
-						.md5(microtime(true).rand(1000, 5000))
-						.md5(microtime(true).rand(5000, 9999))
-						.md5(microtime(true).rand(1000, 5000));
+				// random salt
+				$sSalt = '<'.'?php //'
+					.md5(microtime(true).rand(1000, 5000))
+					.md5(microtime(true).rand(5000, 9999))
+					.md5(microtime(true).rand(1000, 5000));
 
-					@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
-				}
-
-				if (false === $sData)
-				{
-					// random data folder name
-					$sData = '<'.'?php //'.md5(microtime(true).rand(1000, 9999));
-					@file_put_contents(APP_DATA_FOLDER_PATH.'DATA.php', $sData);
-				}
+				@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
 			}
 
 			define('APP_SALT', md5($sSalt.APP_PRIVATE_DATA_NAME.$sSalt));
-			define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.md5($sData).'/'.APP_PRIVATE_DATA_NAME.'/');
+			define('APP_PRIVATE_DATA', APP_DATA_FOLDER_PATH.'_data_'.($sData ? md5($sData) : '').'/'.APP_PRIVATE_DATA_NAME.'/');
+
 			define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
 			if (APP_VERSION !== $sInstalled || (APP_MULTIPLY && !@is_dir(APP_PRIVATE_DATA)))

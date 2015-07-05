@@ -49,7 +49,13 @@ class DateTimeHelper
 	 */
 	public static function ParseRFC2822DateString($sDateTime)
 	{
-		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', \trim($sDateTime)));
+		$sDateTime = \trim($sDateTime);
+		if (empty($sDateTime))
+		{
+			return 0;
+		}
+
+		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', $sDateTime));
 		$oDateTime = \DateTime::createFromFormat('D, d M Y H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
@@ -65,7 +71,12 @@ class DateTimeHelper
 	public static function ParseInternalDateString($sDateTime)
 	{
 		$sDateTime = \trim($sDateTime);
-		if (\preg_match('/^[a-z]{2,4}, /i', $sDateTime)) // RFC2822
+		if (empty($sDateTime))
+		{
+			return 0;
+		}
+
+		if (\preg_match('/^[a-z]{2,4}, /i', $sDateTime)) // RFC2822 ~ "Thu, 10 Jun 2010 08:58:33 -0700 (PDT)"
 		{
 			return \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDateTime);
 		}
@@ -83,7 +94,13 @@ class DateTimeHelper
 	 */
 	public static function ParseDateStringType1($sDateTime)
 	{
-		$oDateTime = \DateTime::createFromFormat('Y-m-d H:i:s O', \trim($sDateTime), \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+		$sDateTime = \trim($sDateTime);
+		if (empty($sDateTime))
+		{
+			return 0;
+		}
+
+		$oDateTime = \DateTime::createFromFormat('Y-m-d H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 

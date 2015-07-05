@@ -821,7 +821,7 @@
 				'parseOnBlur': true,
 				'allowDragAndDrop': true,
 				'focusCallback': fFocusCallback,
-				'inputDelimiters': [',', ';', '\n'],
+				'inputDelimiters': [',', ';', "\n"],
 				'autoCompleteSource': fAutoCompleteSource,
 //				'elementHook': function (oEl, oItem) {
 //					if (oEl && oItem)
@@ -832,52 +832,70 @@
 //				},
 				'parseHook': function (aInput) {
 
-					var aResult = [];
-
-					_.each(aInput, function (sInputValue) {
+					return _.map(aInput, function (sInputValue) {
 
 						var
-							aM = null,
-							aValues = [],
 							sValue = Utils.trim(sInputValue),
 							oEmail = null
 						;
 
 						if ('' !== sValue)
 						{
-							aM = sValue.match(/[@]/g);
-							if (aM && 0 < aM.length)
-							{
-								sValue = sValue.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
-								aValues = EmailModel.splitHelper(sValue, ';');
-
-								_.each(aValues, function (sV) {
-
-									oEmail = new EmailModel();
-									oEmail.mailsoParse(sV);
-
-									if (oEmail.email)
-									{
-										aResult.push([oEmail.toLine(false), oEmail]);
-									}
-									else
-									{
-										aResult.push(['', null]);
-									}
-								});
-							}
-							else
-							{
-								aResult.push([sInputValue, null]);
-							}
+							oEmail = new EmailModel();
+							oEmail.mailsoParse(sValue);
+							return [oEmail.toLine(false), oEmail];
 						}
-						else
-						{
-							aResult.push([sInputValue, null]);
-						}
+
+						return [sValue, null];
+
 					});
 
-					return aResult;
+//					var aResult = [];
+//
+//					_.each(aInput, function (sInputValue) {
+//
+//						var
+//							aM = null,
+//							aValues = [],
+//							sValue = Utils.trim(sInputValue),
+//							oEmail = null
+//						;
+//
+//						if ('' !== sValue)
+//						{
+//							aM = sValue.match(/[@]/g);
+//							if (aM && 0 < aM.length)
+//							{
+//								sValue = sValue.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
+//								aValues = EmailModel.splitHelper(sValue, ';');
+//
+//								_.each(aValues, function (sV) {
+//
+//									oEmail = new EmailModel();
+//									oEmail.mailsoParse(sV);
+//
+//									if (oEmail.email)
+//									{
+//										aResult.push([oEmail.toLine(false), oEmail]);
+//									}
+//									else
+//									{
+//										aResult.push(['', null]);
+//									}
+//								});
+//							}
+//							else
+//							{
+//								aResult.push([sInputValue, null]);
+//							}
+//						}
+//						else
+//						{
+//							aResult.push([sInputValue, null]);
+//						}
+//					});
+//
+//					return aResult;
 				},
 				'change': _.bind(function (oEvent) {
 					$oEl.data('EmailsTagsValue', oEvent.target.value);

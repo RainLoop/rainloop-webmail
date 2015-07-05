@@ -33,10 +33,12 @@
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	AccountsUserSettings.prototype.scrollableOptions = function ()
+	AccountsUserSettings.prototype.scrollableOptions = function (sWrapper)
 	{
 		return {
-			handle: '.drag-handle'
+			handle: '.drag-handle',
+			containment: sWrapper || 'parent',
+			axis: 'y'
 		};
 	};
 

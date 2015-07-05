@@ -140,9 +140,15 @@ cfg.paths.js = {
 		]
 	},
 	openpgp: {
-		name: 'openpgp.js',
+		name: 'openpgp.min.js',
 		src: [
 			'vendors/openpgp/openpgp-0.10.1.min.js'
+		]
+	},
+	openpgpworker: {
+		name: 'openpgp.worker.min.js',
+		src: [
+			'vendors/openpgp/openpgp-0.10.1.worker.min.js'
 		]
 	},
 	encrypt: {
@@ -290,6 +296,13 @@ gulp.task('js:encrypt', function() {
 gulp.task('js:openpgp', function() {
 	return gulp.src(cfg.paths.js.openpgp.src)
 		.pipe(rename(cfg.paths.js.openpgp.name))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(cfg.paths.staticMinJS));
+});
+
+gulp.task('js:openpgpworker', function() {
+	return gulp.src(cfg.paths.js.openpgpworker.src)
+		.pipe(rename(cfg.paths.js.openpgpworker.name))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
@@ -642,7 +655,7 @@ gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:ownclo
 });
 
 // MAIN
-gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
+gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:openpgpworker', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast-', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);

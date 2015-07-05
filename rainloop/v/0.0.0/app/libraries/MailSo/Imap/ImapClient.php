@@ -1889,7 +1889,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
 	private function partialParseResponseBranch(&$oImapResponse, $iStackIndex = -1,
-		$bTreatAsAtom = false, $sParentToken = '')
+		$bTreatAsAtom = false, $sParentToken = '', $sOpenBracket = '')
 	{
 		$mNull = null;
 
@@ -2020,7 +2020,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				if ($bTreatAsAtom)
 				{
 					$sAtomBlock = $this->partialParseResponseBranch($mNull, $iStackIndex, true,
-						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase));
+						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
 
 					$sAtomBuilder .= $sAtomBlock;
 					$iPos = $this->iResponseBufParsedPos;
@@ -2035,7 +2035,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			else if ($bIsGotoNotAtomBracket)
 			{
 				$aSubItems = $this->partialParseResponseBranch($mNull, $iStackIndex, false,
-					null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase));
+					null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
 
 				$aList[] = $aSubItems;
 				$iPos = $this->iResponseBufParsedPos;
@@ -2065,27 +2065,36 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sChar = $this->sResponseBuffer[$iPos];
 			}
 
-			switch ($sChar)
+			switch (true)
 			{
-				case ']':
-				case ')':
+				case ']' === $sChar:
 					$iPos++;
 					$sPreviousAtomUpperCase = null;
 					$bIsEndOfList = true;
 					break;
-				case ' ':
+				case ')' === $sChar:
+					$iPos++;
+					$sPreviousAtomUpperCase = null;
+					$bIsEndOfList = true;
+					break;
+				case ' ' === $sChar:
 					if ($bTreatAsAtom)
 					{
 						$sAtomBuilder .= ' ';
 					}
 					$iPos++;
 					break;
-				case '[':
+				case '[' === $sChar:
 					$bIsClosingBracketSquare = true;
-				case '(':
+				case '(' === $sChar:
+					if ('(' === $sChar)
+					{
+						$bIsClosingBracketSquare = false;
+					}
+
 					if ($bTreatAsAtom)
 					{
-						$sAtomBuilder .= ($bIsClosingBracketSquare) ? '[' : '(';
+						$sAtomBuilder .= $bIsClosingBracketSquare ? '[' : '(';
 					}
 					$iPos++;
 
@@ -2093,13 +2102,15 @@ class ImapClient extends \MailSo\Net\NetClient
 					if ($bTreatAsAtom)
 					{
 						$bIsGotoAtomBracket = true;
+						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
 					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
+						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
 					}
 					break;
-				case '{':
+				case '{' === $sChar:
 					$bIsLiteralParsed = false;
 					$mLiteralEndPos = \strpos($this->sResponseBuffer, '}', $iPos);
 					if (false !== $mLiteralEndPos && $mLiteralEndPos > $iPos)
@@ -2120,7 +2131,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					}
 					$sPreviousAtomUpperCase = null;
 					break;
-				case '"':
+				case '"' === $sChar:
 					$bIsQuotedParsed = false;
 					while (true)
 					{
@@ -2206,7 +2217,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$sPreviousAtomUpperCase = null;
 					break;
 
-				case 'GOTO_DEFAULT':
+				case 'GOTO_DEFAULT' === $sChar:
 				default:
 					$iCharBlockStartPos = $iPos;
 
@@ -2214,7 +2225,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					{
 						$iPos = $iBufferEndIndex;
 
-						while ($iPos > $iCharBlockStartPos && $this->sResponseBuffer[$iCharBlockStartPos] == ' ')
+						while ($iPos > $iCharBlockStartPos && $this->sResponseBuffer[$iCharBlockStartPos] === ' ')
 						{
 							$iCharBlockStartPos++;
 						}
@@ -2224,9 +2235,9 @@ class ImapClient extends \MailSo\Net\NetClient
 					while (!$bIsAtomDone && ($iPos <= $iBufferEndIndex))
 					{
 						$sCharDef = $this->sResponseBuffer[$iPos];
-						switch ($sCharDef)
+						switch (true)
 						{
-							case '[':
+							case '[' === $sCharDef:
 								if (null === $sAtomBuilder)
 								{
 									$sAtomBuilder = '';
@@ -2238,7 +2249,7 @@ class ImapClient extends \MailSo\Net\NetClient
 								$this->iResponseBufParsedPos = $iPos;
 
 								$sListBlock = $this->partialParseResponseBranch($mNull, $iStackIndex, true,
-									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase));
+									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), '[');
 
 								if (null !== $sListBlock)
 								{
@@ -2248,9 +2259,9 @@ class ImapClient extends \MailSo\Net\NetClient
 								$iPos = $this->iResponseBufParsedPos;
 								$iCharBlockStartPos = $iPos;
 								break;
-							case ' ':
-							case ']':
-							case ')':
+							case ' ' === $sCharDef:
+							case ')' === $sCharDef && '(' === $sOpenBracket:
+							case ']' === $sCharDef && '[' === $sOpenBracket:
 								$bIsAtomDone = true;
 								break;
 							default:

@@ -101,6 +101,14 @@ class Property
 	/**
 	 * @return bool
 	 */
+	public function IsValueForLower()
+	{
+		return $this->IsEmail() || $this->IsName() || $this->IsWeb();
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function TypesAsArray()
 	{
 		$aResult = array();
@@ -142,7 +150,7 @@ class Property
 			}
 
 			// lower value for searching
-			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
+			if ($this->IsValueForLower() && \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
 			{
 				$this->ValueLower = (string) @\mb_strtolower($this->Value, 'UTF-8');
 			}
@@ -153,6 +161,7 @@ class Property
 				$sPhone = \trim($this->Value);
 				$sPhone = \preg_replace('/^[+]+/', '', $sPhone);
 				$sPhone = \preg_replace('/[^\d]/', '', $sPhone);
+
 				$this->ValueCustom = \trim($sPhone);
 			}
 		}

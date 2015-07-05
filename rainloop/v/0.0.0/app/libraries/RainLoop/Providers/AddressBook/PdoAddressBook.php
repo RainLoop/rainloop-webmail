@@ -1895,6 +1895,11 @@ SQLITEINITIAL;
 					1 => $this->getInitialTablesArray($this->sDsnType),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower varchar(255) NOT NULL DEFAULT \'\' AFTER prop_value_custom;'
+					),
+					3 => array(
+'ALTER TABLE rainloop_ab_properties CHANGE prop_value prop_value TEXT NOT NULL;',
+'ALTER TABLE rainloop_ab_properties CHANGE prop_value_custom prop_value_custom TEXT NOT NULL;',
+'ALTER TABLE rainloop_ab_properties CHANGE prop_value_lower prop_value_lower TEXT NOT NULL;'
 					)
 				));
 				break;
@@ -1903,7 +1908,8 @@ SQLITEINITIAL;
 					1 => $this->getInitialTablesArray($this->sDsnType),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
-					)
+					),
+					3 => array()
 				));
 				break;
 			case 'sqlite':
@@ -1911,7 +1917,8 @@ SQLITEINITIAL;
 					1 => $this->getInitialTablesArray($this->sDsnType),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
-					)
+					),
+					3 => array()
 				));
 				break;
 		}

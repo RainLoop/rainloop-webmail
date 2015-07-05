@@ -622,7 +622,7 @@ class Message
 			$this->sInReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
 			$this->sReferences = \MailSo\Base\Utils::StripSpaces(
 				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
-			
+
 			$sHeaderDate = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE);
 			$this->sHeaderDate = $sHeaderDate;
 			$this->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sHeaderDate);

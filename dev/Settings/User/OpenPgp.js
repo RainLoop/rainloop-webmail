@@ -6,6 +6,7 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
+		window = require('window'),
 
 		Utils = require('Common/Utils'),
 
@@ -24,6 +25,8 @@
 		this.openpgpkeysPrivate = PgpStore.openpgpkeysPrivate;
 
 		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
+
+		this.isHttps = window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
 	}
 
 	OpenPgpUserSettings.prototype.addOpenPgpKey = function ()
