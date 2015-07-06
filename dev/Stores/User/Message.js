@@ -279,7 +279,8 @@
 						require('Stores/User/Account').email(),
 						Translator.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
-						})
+						}),
+						{'Folder': '', 'Uid': ''}
 					);
 				}
 				else
@@ -290,7 +291,11 @@
 							Links.notificationMailIcon(),
 							MessageHelper.emailArrayToString(
 								MessageHelper.emailArrayFromJson(aNewMessages[iIndex].From), false),
-							aNewMessages[iIndex].Subject
+							aNewMessages[iIndex].Subject,
+							{
+								'Folder': aNewMessages[iIndex].Folder,
+								'Uid': aNewMessages[iIndex].Uid
+							}
 						);
 					}
 				}
@@ -735,6 +740,24 @@
 		if (oMessage)
 		{
 			this.message(this.staticMessage.populateByMessageListItem(oMessage));
+
+			this.populateMessageBody(this.message());
+		}
+		else
+		{
+			this.message(null);
+		}
+	};
+
+	MessageUserStore.prototype.selectMessageByFolderAndUid = function (sFolder, sUid)
+	{
+		if (sFolder && sUid)
+		{
+			window.console.log(sFolder, sUid);
+			
+			this.message(this.staticMessage.populateByMessageListItem(null));
+			this.message().folderFullNameRaw = sFolder;
+			this.message().uid = sUid;
 
 			this.populateMessageBody(this.message());
 		}

@@ -292,6 +292,35 @@
 			}, this)
 		;
 
+		Events
+			.sub('mailbox.message.show', function (sFolder, sUid) {
+
+				var oMessage = _.find(this.messageList(), function (oItem) {
+					return oItem && sFolder === oItem.folderFullNameRaw && sUid === oItem.uid;
+				});
+
+				if ('INBOX' === sFolder)
+				{
+					kn.setHash(Links.mailBox(sFolder, 1));
+				}
+
+				if (oMessage)
+				{
+					this.selector.selectMessageItem(oMessage);
+				}
+				else
+				{
+					if ('INBOX' !== sFolder)
+					{
+						kn.setHash(Links.mailBox(sFolder, 1));
+					}
+
+					MessageStore.selectMessageByFolderAndUid(sFolder, sUid);
+				}
+
+			}, this)
+		;
+
 		MessageStore.messageListEndHash.subscribe(function () {
 			this.selector.scrollToTop();
 		}, this);

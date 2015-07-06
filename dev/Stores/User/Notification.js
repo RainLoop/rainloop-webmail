@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Events = require('Common/Events'),
 		Audio = require('Common/Audio'),
 
 		Settings = require('Storage/Settings')
@@ -161,7 +162,7 @@
 		}
 	};
 
-	NotificationUserStore.prototype.displayDesktopNotification = function (sImageSrc, sTitle, sText)
+	NotificationUserStore.prototype.displayDesktopNotification = function (sImageSrc, sTitle, sText, oMessageData)
 	{
 		if (this.enableDesktopNotification())
 		{
@@ -178,6 +179,19 @@
 				if (oNotification.show)
 				{
 					oNotification.show();
+				}
+
+				if (oMessageData)
+				{
+					oNotification.onclick = function () {
+
+						window.focus();
+
+						if (oMessageData.Folder && oMessageData.Uid)
+						{
+							Events.pub('mailbox.message.show', [oMessageData.Folder, oMessageData.Uid]);
+						}
+					};
 				}
 
 				window.setTimeout((function (oLocalNotifications) {

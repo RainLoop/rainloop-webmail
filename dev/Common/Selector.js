@@ -778,10 +778,7 @@
 
 			if (bClick)
 			{
-				this.focusedItem(oItem);
-				this.selectedItem(oItem);
-
-				this.scrollToFocused();
+				this.selectMessageItem(oItem);
 			}
 		}
 	};
@@ -789,6 +786,14 @@
 	Selector.prototype.on = function (sEventName, fCallback)
 	{
 		this.oCallbacks[sEventName] = fCallback;
+	};
+
+	Selector.prototype.selectMessageItem = function (oMessageItem)
+	{
+		this.focusedItem(oMessageItem);
+		this.selectedItem(oMessageItem);
+
+		this.scrollToFocused();
 	};
 
 	module.exports = Selector;

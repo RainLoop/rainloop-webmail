@@ -781,47 +781,55 @@
 	 */
 	MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	{
-		this.folderFullNameRaw = oMessage.folderFullNameRaw;
-		this.uid = oMessage.uid;
-		this.hash = oMessage.hash;
-		this.requestHash = oMessage.requestHash;
-		this.subject(oMessage.subject());
+		if (oMessage)
+		{
+			this.folderFullNameRaw = oMessage.folderFullNameRaw;
+			this.uid = oMessage.uid;
+			this.hash = oMessage.hash;
+			this.requestHash = oMessage.requestHash;
+			this.subject(oMessage.subject());
+		}
+
 		this.subjectPrefix(this.subjectPrefix());
 		this.subjectSuffix(this.subjectSuffix());
 
-		this.size(oMessage.size());
-		this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
-		this.priority(oMessage.priority());
+		if (oMessage)
+		{
 
-		this.proxy = oMessage.proxy;
+			this.size(oMessage.size());
+			this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
+			this.priority(oMessage.priority());
 
-		this.fromEmailString(oMessage.fromEmailString());
-		this.fromClearEmailString(oMessage.fromClearEmailString());
-		this.toEmailsString(oMessage.toEmailsString());
-		this.toClearEmailsString(oMessage.toClearEmailsString());
+			this.proxy = oMessage.proxy;
 
-		this.emails = oMessage.emails;
+			this.fromEmailString(oMessage.fromEmailString());
+			this.fromClearEmailString(oMessage.fromClearEmailString());
+			this.toEmailsString(oMessage.toEmailsString());
+			this.toClearEmailsString(oMessage.toClearEmailsString());
 
-		this.from = oMessage.from;
-		this.to = oMessage.to;
-		this.cc = oMessage.cc;
-		this.bcc = oMessage.bcc;
-		this.replyTo = oMessage.replyTo;
-		this.deliveredTo = oMessage.deliveredTo;
+			this.emails = oMessage.emails;
 
-		this.unseen(oMessage.unseen());
-		this.flagged(oMessage.flagged());
-		this.answered(oMessage.answered());
-		this.forwarded(oMessage.forwarded());
-		this.isReadReceipt(oMessage.isReadReceipt());
-		this.deletedMark(oMessage.deletedMark());
+			this.from = oMessage.from;
+			this.to = oMessage.to;
+			this.cc = oMessage.cc;
+			this.bcc = oMessage.bcc;
+			this.replyTo = oMessage.replyTo;
+			this.deliveredTo = oMessage.deliveredTo;
 
-		this.priority(oMessage.priority());
+			this.unseen(oMessage.unseen());
+			this.flagged(oMessage.flagged());
+			this.answered(oMessage.answered());
+			this.forwarded(oMessage.forwarded());
+			this.isReadReceipt(oMessage.isReadReceipt());
+			this.deletedMark(oMessage.deletedMark());
 
-		this.selected(oMessage.selected());
-		this.checked(oMessage.checked());
-		this.hasAttachments(oMessage.hasAttachments());
-		this.attachmentsSpecData(oMessage.attachmentsSpecData());
+			this.priority(oMessage.priority());
+
+			this.selected(oMessage.selected());
+			this.checked(oMessage.checked());
+			this.hasAttachments(oMessage.hasAttachments());
+			this.attachmentsSpecData(oMessage.attachmentsSpecData());
+		}
 
 		this.body = null;
 
@@ -830,7 +838,10 @@
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		this.threads(oMessage.threads());
+		if (oMessage)
+		{
+			this.threads(oMessage.threads());
+		}
 
 		this.computeSenderEmail();
 
