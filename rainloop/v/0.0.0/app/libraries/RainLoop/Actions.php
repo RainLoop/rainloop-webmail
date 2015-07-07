@@ -2855,7 +2855,7 @@ class Actions
 						if (!empty($sZipFileName))
 						{
 							$oZip = new \ZipArchive();
-							$oZip->open($sZipFileName, \ZIPARCHIVE::OVERWRITE);
+							$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 							$oZip->setArchiveComment('RainLoop/'.APP_VERSION);
 
 							foreach ($aData as $aItem)
