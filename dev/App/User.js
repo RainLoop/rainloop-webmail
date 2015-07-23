@@ -1385,7 +1385,7 @@
 								{
 									PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
 								}
-								
+
 //								PgpStore.openpgp.config.useWebCrypto = false;
 
 								PgpStore.openpgpKeyring = new openpgp.Keyring();
@@ -1521,7 +1521,7 @@
 								self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 							});
 
-							if (Tinycon && !Settings.settingsGet('Filtered'))
+							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered') )
 							{
 								Tinycon.setOptions({
 									fallback: false

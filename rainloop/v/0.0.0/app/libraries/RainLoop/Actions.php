@@ -560,7 +560,7 @@ class Actions
 	public function SetAuthLogoutToken()
 	{
 		@\header('X-RainLoop-Action: Logout');
-		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0, '/', null, null, true);
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0);
 	}
 
 	/**
@@ -575,7 +575,7 @@ class Actions
 			$sSpecAuthToken = '_'.$oAccount->GetAuthTokenQ();
 
 			$this->SetSpecAuthToken($sSpecAuthToken);
-			\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0, '/', null, null, true);
+			\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0);
 
 			if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
 			{
@@ -584,7 +584,7 @@ class Actions
 						'e' => $oAccount->Email(),
 						't' => $oAccount->SignMeToken()
 					)),
-					\time() + 60 * 60 * 24 * 30, '/', null, null, true);
+					\time() + 60 * 60 * 24 * 30);
 
 				$this->StorageProvider()->Put($oAccount,
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -632,7 +632,7 @@ class Actions
 	 */
 	private function setAdminAuthToken($sToken)
 	{
-		\RainLoop\Utils::SetCookie(self::AUTH_ADMIN_TOKEN_KEY, $sToken, 0, '/', null, null, true);
+		\RainLoop\Utils::SetCookie(self::AUTH_ADMIN_TOKEN_KEY, $sToken, 0);
 	}
 
 	/**
@@ -1171,7 +1171,7 @@ class Actions
 					'Time' => \microtime(true),
 					'MailTo' => 'MailTo',
 					'To' => $sTo
-				)), 0, '/', null, null, true);
+				)), 0);
 		}
 	}
 
@@ -1400,6 +1400,7 @@ class Actions
 			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'FolderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
+			'FaviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
 			'Filtered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'Community' => true,
 			'PremType' => false,
@@ -2151,7 +2152,7 @@ class Actions
 						if ($bAdditionalCodeSignMe)
 						{
 							\RainLoop\Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
-								\time() + 60 * 60 * 24 * 14, '/', null, null, true);
+								\time() + 60 * 60 * 24 * 14);
 						}
 
 						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
@@ -8324,21 +8325,28 @@ class Actions
 					$bDone = false;
 					if ($bThumbnail && !$bDownload)
 					{
-						\MailSo\Base\StreamWrappers\TempFile::Reg();
+						$sFileName = '';
+						$rTempResource = \MailSo\Base\StreamWrappers\TempFile::CreateStream(
+							\MailSo\Base\Utils::Md5Rand($sFileNameOut), $sFileName);
 
-						$sFileName = 'mailsotempfile://'.\MailSo\Base\Utils::Md5Rand($sFileNameOut);
-
-						$rTempResource = @\fopen($sFileName, 'r+b');
 						if (@\is_resource($rTempResource))
 						{
+							$bDone = true;
+
 							\MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource));
 							@\fclose($rTempResource);
 
-							$oThumb =@ new \PHPThumb\GD($sFileName);
-							if ($oThumb)
+							try
 							{
-								$oThumb->adaptiveResize(60, 60)->show();
-								$bDone = true;
+								$oThumb = new \PHPThumb\GD($sFileName);
+								if ($oThumb)
+								{
+									$oThumb->adaptiveResize(60, 60)->show();
+								}
+							}
+							catch (\Exception $oException)
+							{
+								$self->Logger()->WriteExceptionShort($oException);
 							}
 						}
 					}

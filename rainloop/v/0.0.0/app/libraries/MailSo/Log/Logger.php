@@ -372,6 +372,33 @@ class Logger extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @param \Exception $oException
+	 * @param int $iType = \MailSo\Log\Enumerations\Type::NOTICE
+	 * @param string $sName = ''
+	 * @param bool $bSearchSecretWords = true
+	 * @param bool $bDiplayCrLf = false
+	 *
+	 * @return bool
+	 */
+	public function WriteExceptionShort($oException, $iType = \MailSo\Log\Enumerations\Type::NOTICE, $sName = '',
+		$bSearchSecretWords = true, $bDiplayCrLf = false)
+	{
+		if ($oException instanceof \Exception)
+		{
+			if (isset($oException->__LOGINNED__))
+			{
+				return true;
+			}
+
+			$oException->__LOGINNED__ = true;
+
+			return $this->Write($oException->getMessage(), $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
+		}
+
+		return false;
+	}
+
+	/**
 	 * @param mixed $mData
 	 * @param int $iType = \MailSo\Log\Enumerations\Type::NOTICE
 	 * @param string $sName = ''

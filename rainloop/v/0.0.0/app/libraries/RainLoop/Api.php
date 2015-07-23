@@ -108,6 +108,8 @@ class Api
 			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
 			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
 
+			\RainLoop\Utils::$CookieDefaultPath = \RainLoop\Api::Config()->Get('labs', 'cookie_path', '/');
+
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
 				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function (&$aStreamContextSettings) use ($sSslCafile, $sSslCapath) {

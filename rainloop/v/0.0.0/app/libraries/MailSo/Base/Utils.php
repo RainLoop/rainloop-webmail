@@ -2449,6 +2449,38 @@ END;
 	}
 
 	/**
+	 * @param string $sHash
+	 * @param string $sSalt
+	 *
+	 * @return int
+	 */
+	public static function HashToId($sHash, $sSalt = '')
+	{
+		$sData = $sHash ? @\MailSo\Base\Crypt::XxteaDecrypt(\hex2bin($sHash), \md5($sSalt)) : null;
+
+		$aMatch = array();
+		if ($sData && preg_match('/^id:(\d+)$/', $sData, $aMatch) && isset($aMatch[1]))
+		{
+			return is_numeric($aMatch[1]) ? (int) $aMatch[1] : null;
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param int $iID
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
+	public static function IdToHash($iID, $sSalt = '')
+	{
+		return is_int($iID) ?
+			\bin2hex(\MailSo\Base\Crypt::XxteaEncrypt('id:'.$iID, \md5($sSalt))) : null
+		;
+	}
+
+	/**
 	 * @param string $sPassword
 	 *
 	 * @return bool

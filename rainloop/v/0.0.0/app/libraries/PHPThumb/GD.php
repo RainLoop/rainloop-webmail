@@ -1353,13 +1353,13 @@ class GD extends PHPThumb
 
         switch ($this->format) {
             case 'GIF':
-                $isCompatible = $gdInfo['GIF Create Support'];
+                $isCompatible = isset($gdInfo['GIF Create Support']);
                 break;
             case 'JPG':
                 $isCompatible = (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support'])) ? true : false;
                 break;
             case 'PNG':
-                $isCompatible = $gdInfo[$this->format . ' Support'];
+                $isCompatible = isset($gdInfo[$this->format . ' Support']);
                 break;
             default:
                 $isCompatible = false;
@@ -1367,7 +1367,7 @@ class GD extends PHPThumb
 
         if (!$isCompatible) {
             // one last check for "JPEG" instead
-            $isCompatible = $gdInfo['JPEG Support'];
+            $isCompatible = isset($gdInfo['JPEG Support']);
 
             if (!$isCompatible) {
                 throw new \Exception("Your GD installation does not support {$this->format} image types");

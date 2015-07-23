@@ -4,6 +4,11 @@ namespace RainLoop;
 
 class Utils
 {
+	/**
+	 * @var string
+	 */
+	static $CookieDefaultPath = '/';
+
 	static $Cookies = null;
 
 	static $RSA = null;
@@ -299,7 +304,7 @@ class Utils
 		if (null === $sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
-			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30, '/', null, null, true);
+			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 
 		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -324,7 +329,7 @@ class Utils
 		if (null === $sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
-			\RainLoop\Utils::SetCookie($sKey, $sToken, 0, '/', null, null, true);
+			\RainLoop\Utils::SetCookie($sKey, $sToken, 0);
 		}
 
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -340,7 +345,7 @@ class Utils
 		$sToken = \RainLoop\Utils::GetCookie($sKey, '');
 		if (!empty($sToken))
 		{
-			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30, '/', null, null, true);
+			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 	}
 
@@ -503,11 +508,16 @@ class Utils
 		return isset(\RainLoop\Utils::$Cookies[$sName]) ? \RainLoop\Utils::$Cookies[$sName] : $mDefault;
 	}
 
-	public static function SetCookie($sName, $sValue = '', $iExpire = 0, $sPath = '/', $sDomain = '', $sSecure = false, $bHttpOnly = false)
+	public static function SetCookie($sName, $sValue = '', $iExpire = 0, $sPath = null, $sDomain = null, $sSecure = null, $bHttpOnly = true)
 	{
 		if (null === \RainLoop\Utils::$Cookies)
 		{
 			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+		}
+
+		if (null === $sPath)
+		{
+			$sPath = \RainLoop\Utils::$CookieDefaultPath;
 		}
 
 		\RainLoop\Utils::$Cookies[$sName] = $sValue;
@@ -522,7 +532,7 @@ class Utils
 		}
 
 		unset(\RainLoop\Utils::$Cookies[$sName]);
-		@\setcookie($sName, '', \time() - 3600 * 24 * 30, '/');
+		@\setcookie($sName, '', \time() - 3600 * 24 * 30);
 	}
 
 	/**
