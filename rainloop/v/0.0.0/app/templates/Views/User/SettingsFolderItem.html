@@ -14,15 +14,15 @@
 	</td>
 	<td class="delete-folder-parent">
 		<span class="delete-folder" data-bind="visible: canBeDeleted() && !deleteAccess(), click: function (oFolder) { $root.folderForDeletion(oFolder); }">
-			<i class="icon-trash"></i>
+			<svg-icon params="icon: 'trash'"></svg-icon>
 		</span>
 	</td>
 	<td class="subscribe-folder-parent">
 		<span class="unsubscribe-folder" data-bind="visible: canBeSubScribed() && !subScribed(), click: function(oFolder) { $root.subscribeFolder(oFolder); }">
-			<i class="icon-eye"></i>
+			<svg-icon params="icon: 'eye'"></svg-icon>
 		</span>
 		<span class="subscribe-folder" data-bind="visible: canBeSubScribed() && subScribed(), click: function(oFolder) { $root.unSubscribeFolder(oFolder); }">
-			<i class="icon-eye"></i>
+			<svg-icon params="icon: 'eye'"></svg-icon>
 		</span>
 	</td>
 	<td class="check-folder-parent" data-bind="visible: $root.displaySpecSetting">

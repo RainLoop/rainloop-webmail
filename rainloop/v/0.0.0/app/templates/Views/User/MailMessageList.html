@@ -31,7 +31,7 @@
 				<div class="btn-group" data-bind="visible: allowMessageListActions">
 					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top"
 						data-bind="visible: isArchiveVisible, command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
-						<i class="icon-archive"></i>
+						<svg-icon params="icon: 'archive'"></svg-icon>
 					</a>
 					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top"
 						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM',
@@ -46,7 +46,7 @@
 					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top"
 						data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE',
 							css: {'first': !isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible()}">
-						<i class="icon-trash"></i>
+						<svg-icon params="icon: 'trash'"></svg-icon>
 						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
 					</a>
 				</div>

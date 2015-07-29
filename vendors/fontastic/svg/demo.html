@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RainLoop Svg SVG Sprite</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style type="text/css">
+  html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-family:inherit;font-size:100%;vertical-align:baseline}
+  body{line-height:1;color:#000;background:#fff}
+  ol,ul{list-style:none}
+  table{border-collapse:separate;border-spacing:0;vertical-align:middle}
+  caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}
+  a img{border:none}
+  *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+  body{font-family:'Dosis','Tahoma',sans-serif}
+  .container{margin:15px auto;width:80%}
+  h1{margin:40px 0 20px;font-weight:700;font-size:38px;line-height:32px;color:#fb565e}
+  h2{font-size:18px;padding:0 0 21px 5px;margin:45px 0 0 0;text-transform:uppercase;font-weight:500; color: #fb565e;}
+  p {margin: 10px 0 ; line-height:1.3em; color: #454545;}
+  .small{font-size:14px;color:#a5adb4;}
+  .small a{color:#a5adb4;}
+  .small a:hover{color:#fb565e}
+  .glyphs{margin:0 0 60px 0;padding:30px 0 20px 30px;color:rgba(0,0,0,0.8);border:1px solid #d8e0e5;-webkit-border-radius:3px;border-radius:3px;}
+  .glyphs li{margin:0 30px 20px 0;padding:0;display:inline-block;overflow:hidden}
+  .glyphs input{margin:0;margin-top:5px;padding:8px;line-height:16px;font-size:16px;display:block;width:150px;height:40px;border:1px solid #d8e0e5;-webkit-border-radius:5px;border-radius:5px;background:#fff;outline:0;float:right;}
+  .glyphs input:focus{border:1px solid #fbde4a;-webkit-box-shadow:inset 0 0 3px #fbde4a;box-shadow:inset 0 0 3px #fbde4a}
+  .glyphs input:hover{-webkit-box-shadow:inset 0 0 3px #fbde4a;box-shadow:inset 0 0 3px #fbde4a}
+
+  /*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block; padding: 0.5em;
+  color: #333;
+  background: #f8f8f8
+}
+
+.hljs-comment,
+.hljs-template_comment,
+.diff .hljs-header,
+.hljs-javadoc {
+  color: #998;
+  font-style: italic
+}
+
+.hljs-keyword,
+.css .rule .hljs-keyword,
+.hljs-winutils,
+.javascript .hljs-title,
+.nginx .hljs-title,
+.hljs-subst,
+.hljs-request,
+.hljs-status {
+  color: #333;
+  font-weight: bold
+}
+
+.hljs-number,
+.hljs-hexcolor,
+.ruby .hljs-constant {
+  color: #099;
+}
+
+.hljs-string,
+.hljs-tag .hljs-value,
+.hljs-phpdoc,
+.tex .hljs-formula {
+  color: #d14
+}
+
+.hljs-title,
+.hljs-id,
+.coffeescript .hljs-params,
+.scss .hljs-preprocessor {
+  color: #900;
+  font-weight: bold
+}
+
+.javascript .hljs-title,
+.lisp .hljs-title,
+.clojure .hljs-title,
+.hljs-subst {
+  font-weight: normal
+}
+
+.hljs-class .hljs-title,
+.haskell .hljs-type,
+.vhdl .hljs-literal,
+.tex .hljs-command {
+  color: #458;
+  font-weight: bold
+}
+
+.hljs-tag,
+.hljs-tag .hljs-title,
+.hljs-rules .hljs-property,
+.django .hljs-tag .hljs-keyword {
+  color: #000080;
+  font-weight: normal
+}
+
+.hljs-attribute,
+.hljs-variable,
+.lisp .hljs-body {
+  color: #008080
+}
+
+.hljs-regexp {
+  color: #009926
+}
+
+.hljs-symbol,
+.ruby .hljs-symbol .hljs-string,
+.lisp .hljs-keyword,
+.tex .hljs-special,
+.hljs-prompt {
+  color: #990073
+}
+
+.hljs-built_in,
+.lisp .hljs-title,
+.clojure .hljs-built_in {
+  color: #0086b3
+}
+
+.hljs-preprocessor,
+.hljs-pragma,
+.hljs-pi,
+.hljs-doctype,
+.hljs-shebang,
+.hljs-cdata {
+  color: #999;
+  font-weight: bold
+}
+
+.hljs-deletion {
+  background: #fdd
+}
+
+.hljs-addition {
+  background: #dfd
+}
+
+.diff .hljs-change {
+  background: #0086b3
+}
+
+.hljs-chunk {
+  color: #aaa
+}
+
+
+  .tip {
+    font-size: 16px;
+    line-height: 25px;
+    margin-bottom: 30px;
+  }
+  .tip > .number {
+    display: inline-block;
+    font-size: 16px;
+    line-height: 16px;
+    margin-right: 12px;
+    padding: 3px 7px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    background-color: #fb565e;
+    color: #fff;
+    text-align: center;
+  }
+  code {
+    background: #faf9ff;
+    border: 1px solid #bab9c0;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 14px;
+  }
+  pre code {
+    display: block;
+    padding: 4px 6px;
+  }
+
+  [class^="svg-icon-"],
+  [class*=" svg-icon-"] {
+    margin: 10px;
+    height: 32px;
+    width: 32px;
+    float: left;
+    fill: currentColor;
+  }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  
+    <symbol id="svg-icon-plus" viewBox="0 0 512 512">
+      <path d="m288 224l0-128-64 0 0 128-128 0 0 64 128 0 0 128 64 0 0-128 128 0 0-64z"/>
+    </symbol>
+  
+</svg>
+
+
+<div class="container">
+  <p class="small">This SVG sprite was created with <a href="http://fontastic.me/">Fontastic</a></p>
+
+  <h2>icons reference</h2>
+  <ul class="glyphs">
+    
+    <li>
+      <svg class="svg-icon-plus">
+        <use xlink:href="#svg-icon-plus"></use>
+      </svg>
+
+      <input type="text" readonly="readonly" value='<svg class="svg-icon-plus"><use xlink:href="#svg-icon-plus"></use></svg>'>
+    </li>
+    
+  </ul>
+
+  <h2>How to add SVG sprite icons to your project?</h2>
+
+<div class="tip"><p></p><div class="number">1</div>Upload the icons.svg file to your server. In our examples below we assume that the sprite file will be available at: <code>http://yoursite.com/images/icons.svg</code><p></p></div><div class="tip"><p></p><div class="number">2</div>Go to "Icons Reference" and choose an icon that you want to have on your HTML page. Then click and copy its markup to your HTML page. For instance, the markup for a twitter icon could look like this:<p></p><pre><code><span class="hljs-tag">&lt;<span class="hljs-title">svg</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"icon-twitter"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">use</span> <span class="hljs-attribute">xlink:href</span>=<span class="hljs-value">"#icon-twitter"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">use</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">svg</span>&gt;</span>
+</code></pre></div><div class="tip"><p></p><div class="number">3</div>Now it's time to add the sprite file URL to the icon markup. In the example below, the URL is <code>/images/icons.svg</code>. So now the twitter icon markup could look like this:<p></p><pre><code><span class="hljs-tag">&lt;<span class="hljs-title">svg</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"icon-twitter"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">use</span> <span class="hljs-attribute">xlink:href</span>=<span class="hljs-value">"/images/icons.svg#icon-twitter"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">use</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">svg</span>&gt;</span>
+</code></pre></div><div class="tip"><p></p><div class="number">4</div>Add the code below to the CSS file that you use for your html page:<p></p><pre><code><span class="hljs-attr_selector">[class^="icon-"]</span>, <span class="hljs-attr_selector">[class*=" icon-"]</span> <span class="hljs-rules">{
+    <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">32</span>px</span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">32</span>px</span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-block</span></span>;
+    <span class="hljs-rule"><span class="hljs-attribute">fill</span>:<span class="hljs-value"> currentColor</span></span>;
+<span class="hljs-rule">}</span></span>
+</code></pre><p>You can use <code>height</code> and <code>width</code> properties to control icon size. To define icon color use <code>fill</code> property. Note: <code>currentColor</code> keyword inherits the color value of a parent element.</p></div><div class="tip"><p></p><div class="number">5</div>For IE capability you can use a great polyfill: <a href="https://github.com/jonathantneal/svg4everybody" target="blank">svg4everybody</a><p></p></div><div class="tip"><p> <b>Remember: </b>with Icon Cloud you don't have to worry about IE capability, the sprite file and other stuff. We'll take care of all of that for you, just click the "Publish" button and give it a try.</p></div>
+
+</div>
+
+<script type="text/javascript">
+(function() {
+  var glyphs, _i, _len, _ref;
+
+  _ref = document.getElementsByClassName('glyphs');
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    glyphs = _ref[_i];
+    glyphs.addEventListener('click', function(event) {
+      if (event.target.tagName === 'INPUT') {
+        return event.target.select();
+      }
+    });
+  }
+
+}).call(this);
+</script>
+</body>
+</html>

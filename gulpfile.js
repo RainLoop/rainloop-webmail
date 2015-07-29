@@ -494,12 +494,21 @@ gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
 });
 
+gulp.task('fontastic-svg:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/svg/*.svg');
+});
+
 gulp.task('fontastic-fonts:copy', ['fontastic-fonts:clear'], function() {
 	return gulp.src('vendors/fontastic/fonts/rainloop.*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
 });
 
-gulp.task('fontastic', ['fontastic-fonts:copy']);
+gulp.task('fontastic-svg:copy', ['fontastic-svg:clear'], function() {
+	return gulp.src('vendors/fontastic/svg/*.svg')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/svg'));
+});
+
+gulp.task('fontastic', ['fontastic-fonts:copy', 'fontastic-svg:copy']);
 
 gulp.task('ckeditor:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/ckeditor');

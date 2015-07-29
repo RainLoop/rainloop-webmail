@@ -266,6 +266,7 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
+			'{{BaseVersion}}' => APP_VERSION,
 			'{{BaseDir}}' => 'ltr'
 //			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);

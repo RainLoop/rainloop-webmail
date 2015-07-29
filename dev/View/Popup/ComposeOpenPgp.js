@@ -30,7 +30,7 @@
 
 		var self = this;
 
-		this.optionsCaption = Translator.i18n('@i18n/Add a public key');
+		this.optionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
 
 		this.notification = ko.observable('');
 
@@ -207,6 +207,10 @@
 					self.submitRequest(false);
 
 				}, 10);
+			}
+			else
+			{
+				self.submitRequest(false);
 			}
 
 			return bResult;

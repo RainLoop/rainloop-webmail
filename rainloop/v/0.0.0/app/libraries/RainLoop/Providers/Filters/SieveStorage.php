@@ -350,6 +350,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				$sValue = \trim($oFilter->ActionValue());
 				$sValueSecond = \trim($oFilter->ActionValueSecond());
 				$sValueThird = \trim($oFilter->ActionValueThird());
+				$sValueFourth = \trim($oFilter->ActionValueFourth());
 				if (0 < \strlen($sValue))
 				{
 					$aCapa['vacation'] = true;
@@ -367,8 +368,24 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 						$iDays = (int) $sValueThird;
 					}
 
-					$aResult[] = $sTab.'vacation :days '.$iDays.' '.$sSubject.'"'.$this->quote($sValue).'";';
+					$sAddresses = '';
+					if (0 < \strlen($sValueFourth))
+					{
+						$self = $this;
 
+						$aAddresses = \explode(',', $sValueFourth);
+						$aAddresses = \array_filter(\array_map(function ($sEmail) use ($self) {
+							$sEmail = \trim($sEmail);
+							return 0 < \strlen($sEmail) ? '"'.$self->quote($sEmail).'"' : '';
+						}, $aAddresses), 'strlen');
+
+						if (0 < \count($aAddresses))
+						{
+							$sAddresses = ':addresses ['.\implode(', ', $aAddresses).'] ';
+						}
+					}
+
+					$aResult[] = $sTab.'vacation :days '.$iDays.' '.$sAddresses.$sSubject.'"'.$this->quote($sValue).'";';
 					if ($oFilter->Stop())
 					{
 						$aResult[] = $sTab.'stop;';
@@ -523,7 +540,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	 *
 	 * @return string
 	 */
-	private function quote($sValue)
+	public function quote($sValue)
 	{
 		return \str_replace(array('\\', '"'), array('\\\\', '\\"'), \trim($sValue));
 	}

@@ -283,6 +283,11 @@
 
 	AbstractApp.prototype.bootstart = function ()
 	{
+		if (window.console && Utils.isFunc(window.console.log))
+		{
+			window.console.log('Psss, hacker! There is nothing interesting :)');
+		}
+
 		Events.pub('rl.bootstart');
 
 		var
@@ -293,10 +298,11 @@
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
 		ko.components.register('Input', require('Component/Input'));
 		ko.components.register('Select', require('Component/Select'));
-		ko.components.register('TextArea', require('Component/TextArea'));
 		ko.components.register('Radio', require('Component/Radio'));
+		ko.components.register('TextArea', require('Component/TextArea'));
 
 		ko.components.register('x-script', require('Component/Script'));
+		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
 		if (/**false && /**/Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{

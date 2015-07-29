@@ -50,6 +50,11 @@ class Filter
 	private $sActionValueThird;
 
 	/**
+	 * @var string
+	 */
+	private $sActionValueFourth;
+
+	/**
 	 * @var bool
 	 */
 	private $bMarkAsRead;
@@ -89,6 +94,7 @@ class Filter
 		$this->sActionValue = '';
 		$this->sActionValueSecond = '';
 		$this->sActionValueThird = '';
+		$this->sActionValueFourth  = '';
 
 		$this->bMarkAsRead = false;
 		$this->bKeep = true;
@@ -168,6 +174,14 @@ class Filter
 	}
 
 	/**
+	 * @return string
+	 */
+	public function ActionValueFourth()
+	{
+		return $this->sActionValueFourth;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function MarkAsRead()
@@ -236,6 +250,7 @@ class Filter
 			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
 			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
 			$this->sActionValueThird = isset($aFilter['ActionValueThird']) ? $aFilter['ActionValueThird'] : '';
+			$this->sActionValueFourth = isset($aFilter['ActionValueFourth']) ? $aFilter['ActionValueFourth'] : '';
 
 			$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
 			$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
@@ -276,6 +291,7 @@ class Filter
 			'ActionValue' => $this->ActionValue(),
 			'ActionValueSecond' => $this->ActionValueSecond(),
 			'ActionValueThird' => $this->ActionValueThird(),
+			'ActionValueFourth' => $this->ActionValueFourth(),
 			'Keep' => $this->Keep(),
 			'Stop' => $this->Stop(),
 			'MarkAsRead' => $this->MarkAsRead()
