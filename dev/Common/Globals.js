@@ -1,4 +1,6 @@
 
+/* global RL_COMMUNITY */
+
 (function () {
 
 	'use strict';

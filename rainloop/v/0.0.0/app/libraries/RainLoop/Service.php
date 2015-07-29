@@ -266,7 +266,8 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
+			'{{BaseDir}}' => 'ltr'
+//			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(

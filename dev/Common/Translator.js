@@ -10,6 +10,7 @@
 		ko = require('ko'),
 
 		Enums = require('Common/Enums'),
+		Utils = require('Common/Utils'),
 		Globals = require('Common/Globals')
 	;
 
@@ -24,6 +25,8 @@
 		this.trigger = ko.observable(false);
 
 		this.i18n = _.bind(this.i18n, this);
+
+		this.init();
 	}
 
 	Translator.prototype.data = {};
@@ -293,27 +296,39 @@
 	{
 		var
 			self = this,
-			$html = $('html'),
-			fEmptyFunction = function () {},
 			iStart = (new Date()).getTime()
 		;
 
-		$html.addClass('rl-changing-language');
+		Globals.$html.addClass('rl-changing-language');
 
 		$.ajax({
 				'url': require('Common/Links').langLink(sLanguage, bAdmin),
 				'dataType': 'script',
 				'cache': true
 			})
-			.fail(fFail || fEmptyFunction)
+			.fail(fFail || Utils.emptyFunction)
 			.done(function () {
 				_.delay(function () {
+
 					self.reloadData();
-					(fDone || fEmptyFunction)();
-					$html.removeClass('rl-changing-language');
+
+					(fDone || Utils.emptyFunction)();
+
+					Globals.$html
+						.removeClass('rl-changing-language')
+						.removeClass('rl-rtl rl-ltr')
+						.addClass(-1 < Utils.inArray(sLanguage, ['ar', 'he', 'ur']) ? 'rl-rtl' : 'rl-ltr')
+//						.attr('dir', -1 < Utils.inArray(sLanguage, ['ar', 'he', 'ur']) ? 'rtl' : 'ltr')
+					;
+
 				}, 500 < (new Date()).getTime() - iStart ? 1 : 500);
 			})
 		;
+	};
+
+	Translator.prototype.init = function ()
+	{
+		Globals.$html.addClass('rl-' + (Globals.$html.attr('dir') || 'ltr'));
 	};
 
 	module.exports = new Translator();

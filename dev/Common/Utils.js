@@ -852,7 +852,11 @@
 			},
 
 			convertPre = function () {
-				return (arguments && 1 < arguments.length) ? arguments[1].toString().replace(/[\n]/gm, '<br />') : '';
+				return (arguments && 1 < arguments.length) ?
+					arguments[1].toString()
+						.replace(/[\n]/gm, '<br />')
+						.replace(/[\r]/gm, '')
+					: '';
 			},
 
 			fixAttibuteValue = function () {
@@ -868,7 +872,7 @@
 		sText = sHtml
 			.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
 			.replace(/<p[^>]*><\/p>/gi, '')
-			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
+			.replace(/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 			.replace(/<br[^>]*>/gmi, '\n')

@@ -84,6 +84,28 @@
 
 	/**
 	 * @param {string} sEmail
+	 * @return {?}
+	 */
+	PgpUserStore.prototype.findPublicKeyByEmailNotNative = function (sEmail)
+	{
+		return _.find(this.openpgpkeysPublic(), function (oItem) {
+			return oItem && sEmail === oItem.email;
+		}) || null;
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @return {?}
+	 */
+	PgpUserStore.prototype.findPrivateKeyByEmailNotNative = function (sEmail)
+	{
+		return _.find(this.openpgpkeysPrivate(), function (oItem) {
+			return oItem && sEmail === oItem.email;
+		}) || null;
+	};
+
+	/**
+	 * @param {string} sEmail
 	 * @param {string=} sPassword
 	 * @return {?}
 	 */

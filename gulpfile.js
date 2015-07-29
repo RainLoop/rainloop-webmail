@@ -47,6 +47,7 @@ var
 	plumber = require('gulp-plumber'),
 	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
+	livereload = require('gulp-livereload'),
 	gutil = require('gulp-util')
 ;
 
@@ -242,6 +243,7 @@ gulp.task('css:main-begin', ['less:main'], function() {
 //		.pipe(csslint.reporter())
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
+		.pipe(livereload())
 	;
 });
 
@@ -330,7 +332,7 @@ gulp.task('js:webpack:clear', function() {
 		.pipe(require('gulp-rimraf')());
 });
 
-gulp.task('js:webpack', ['js:webpack:clear'], function(callback) {
+gulp.task('js:webpack', [/*'js:webpack:clear'*/], function(callback) {
 
 	var
 		webpack = require('webpack'),
@@ -678,12 +680,14 @@ gulp.task('owncloud+', ['package:community-off', 'owncloud-']);
 //WATCH
 gulp.task('watch', ['fast'], function() {
 	cfg.watch = true;
+	livereload.listen();
 	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
 });
 
 gulp.task('watch+', ['fast+'], function() {
 	cfg.watch = true;
+	livereload.listen();
 	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
 });

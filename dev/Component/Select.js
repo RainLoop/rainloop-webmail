@@ -7,6 +7,7 @@
 		_ = require('_'),
 
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		AbstractInput = require('Component/AbstractInput')
 	;
@@ -26,6 +27,12 @@
 
 		this.optionsText = oParams.optionsText || null;
 		this.optionsValue = oParams.optionsValue || null;
+		this.optionsCaption = oParams.optionsCaption || null;
+
+		if (this.optionsCaption)
+		{
+			this.optionsCaption = Translator.i18n(this.optionsCaption);
+		}
 
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
 	}

@@ -526,6 +526,7 @@
 		var
 			bNew = false,
 			bIsHtml = false,
+			sTag = 'div',
 			bHasExternals = false,
 			bHasInternals = false,
 			oBody = null,
@@ -584,9 +585,6 @@
 						bHasExternals = !!oData.Result.HasExternals;
 						bHasInternals = !!oData.Result.HasInternals;
 
-						oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
-						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-
 						if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 						{
 							bIsHtml = true;
@@ -625,6 +623,10 @@
 										).html()
 									;
 								}
+								else
+								{
+									sResultHtml = '<pre>' + sResultHtml + '</pre>';
+								}
 
 								sPlain = '';
 
@@ -633,11 +635,19 @@
 								oMessage.isPgpSigned(bPgpSigned);
 								oMessage.isPgpEncrypted(bPgpEncrypted);
 							}
+							else
+							{
+								sResultHtml = '<pre>' + sResultHtml + '</pre>';
+							}
 						}
 						else
 						{
 							bIsHtml = false;
+							sResultHtml = '<pre>' + sResultHtml + '</pre>';
 						}
+
+						oBody = $('<div id="' + sId + '" ></div>').hide().addClass('rl-cache-class');
+						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
 
 						oBody
 							.html(Utils.findEmailAndLinks(sResultHtml))
@@ -753,8 +763,6 @@
 	{
 		if (sFolder && sUid)
 		{
-			window.console.log(sFolder, sUid);
-			
 			this.message(this.staticMessage.populateByMessageListItem(null));
 			this.message().folderFullNameRaw = sFolder;
 			this.message().uid = sUid;

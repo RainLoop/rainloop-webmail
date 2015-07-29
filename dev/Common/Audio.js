@@ -74,9 +74,7 @@
 //	Audio.prototype.record = function ()
 //	{
 //		this.getUserMedia({audio:true}, function () {
-//			window.console.log(arguments);
 //		}, function(oError) {
-//			window.console.log(arguments);
 //		});
 //	};
 
