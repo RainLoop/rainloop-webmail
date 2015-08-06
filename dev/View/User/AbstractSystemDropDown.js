@@ -30,6 +30,12 @@
 	{
 		AbstractView.call(this, 'Right', 'SystemDropDown');
 
+		this.logoImg = Utils.trim(Settings.settingsGet('UserLogo'));
+		this.logoTitle = Utils.trim(Settings.settingsGet('UserLogoTitle'));
+
+		this.allowSettings = !!Settings.capa(Enums.Capa.Settings);
+		this.allowHelp = !!Settings.capa(Enums.Capa.Help);
+
 		this.currentAudio = AppStore.currentAudio;
 
 		this.accountEmail = AccountStore.email;
@@ -81,12 +87,18 @@
 
 	AbstractSystemDropDownUserView.prototype.settingsClick = function ()
 	{
-		require('Knoin/Knoin').setHash(Links.settings());
+		if (Settings.capa(Enums.Capa.Settings))
+		{
+			require('Knoin/Knoin').setHash(Links.settings());
+		}
 	};
 
 	AbstractSystemDropDownUserView.prototype.settingsHelp = function ()
 	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+		if (Settings.capa(Enums.Capa.Help))
+		{
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+		}
 	};
 
 	AbstractSystemDropDownUserView.prototype.addAccountClick = function ()

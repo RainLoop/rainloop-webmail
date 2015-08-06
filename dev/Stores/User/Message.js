@@ -22,6 +22,7 @@
 
 		AppStore = require('Stores/User/App'),
 		FolderStore = require('Stores/User/Folder'),
+		PgpStore = require('Stores/User/Pgp'),
 		SettingsStore = require('Stores/User/Settings'),
 
 		Remote = require('Remote/User/Ajax'),
@@ -41,11 +42,14 @@
 
 		this.messageListCount = ko.observable(0);
 		this.messageListSearch = ko.observable('');
+		this.messageListThreadUid = ko.observable('');
 		this.messageListPage = ko.observable(1);
+		this.messageListPageBeforeThread = ko.observable(1);
 		this.messageListError = ko.observable('');
 
 		this.messageListEndFolder = ko.observable('');
 		this.messageListEndSearch = ko.observable('');
+		this.messageListEndThreadUid = ko.observable('');
 		this.messageListEndPage = ko.observable(1);
 
 		this.messageListLoading = ko.observable(false);
@@ -63,17 +67,12 @@
 
 		this.message.viewTrigger = ko.observable(false);
 
-		this.messageThreadList = ko.observableArray([]);
-
-		this.messageLastThreadUidsData = ko.observable(null);
-
 		this.messageError = ko.observable('');
 
 		this.messageCurrentLoading = ko.observable(false);
-		this.messageThreadLoading = ko.observable(false);
 
 		this.messageLoading = ko.computed(function () {
-			return !!(this.messageCurrentLoading() || this.messageThreadLoading());
+			return this.messageCurrentLoading();
 		}, this);
 
 		this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
@@ -93,8 +92,12 @@
 
 	MessageUserStore.prototype.computers = function ()
 	{
+		var self = this;
+
 		this.messageListEndHash = ko.computed(function () {
-			return this.messageListEndFolder() + '|' + this.messageListEndSearch() + '|' + this.messageListEndPage();
+			return this.messageListEndFolder() + '|' + this.messageListEndSearch() +
+				'|' + this.messageListEndThreadUid() +
+				'|' + this.messageListEndPage();
 		}, this);
 
 		this.messageListPageCount = ko.computed(function () {
@@ -107,7 +110,8 @@
 			'read': this.messageListSearch,
 			'write': function (sValue) {
 				kn.setHash(Links.mailBox(
-					FolderStore.currentFolderFullNameHash(), 1, Utils.trim(sValue.toString())
+					FolderStore.currentFolderFullNameHash(), 1,
+					Utils.trim(sValue.toString()), self.messageListThreadUid()
 				));
 			},
 			'owner': this
@@ -222,16 +226,16 @@
 	{
 		var
 			iCount = 0,
-			oMessagesBodiesDom = null,
+			oMessagesDom = null,
 			iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
 		;
 
 		if (0 < iEnd)
 		{
-			oMessagesBodiesDom = this.messagesBodiesDom();
-			if (oMessagesBodiesDom)
+			oMessagesDom = this.messagesBodiesDom();
+			if (oMessagesDom)
 			{
-				oMessagesBodiesDom.find('.rl-cache-class').each(function () {
+				oMessagesDom.find('.rl-cache-class').each(function () {
 					var oItem = $(this);
 					if (iEnd > oItem.data('rl-cache-count'))
 					{
@@ -243,7 +247,7 @@
 				if (0 < iCount)
 				{
 					_.delay(function () {
-						oMessagesBodiesDom.find('.rl-cache-purge').remove();
+						oMessagesDom.find('.rl-cache-purge').remove();
 					}, 300);
 				}
 			}
@@ -275,7 +279,8 @@
 						require('Stores/User/Account').email(),
 						Translator.i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': iLen
-						})
+						}),
+						{'Folder': '', 'Uid': ''}
 					);
 				}
 				else
@@ -286,7 +291,11 @@
 							Links.notificationMailIcon(),
 							MessageHelper.emailArrayToString(
 								MessageHelper.emailArrayFromJson(aNewMessages[iIndex].From), false),
-							aNewMessages[iIndex].Subject
+							aNewMessages[iIndex].Subject,
+							{
+								'Folder': aNewMessages[iIndex].Folder,
+								'Uid': aNewMessages[iIndex].Uid
+							}
 						);
 					}
 				}
@@ -298,10 +307,10 @@
 
 	MessageUserStore.prototype.hideMessageBodies = function ()
 	{
-		var oMessagesBodiesDom = this.messagesBodiesDom();
-		if (oMessagesBodiesDom)
+		var oMessagesDom = this.messagesBodiesDom();
+		if (oMessagesDom)
 		{
-			oMessagesBodiesDom.find('.b-text-part').hide();
+			oMessagesDom.find('.b-text-part').hide();
 		}
 	};
 
@@ -324,6 +333,9 @@
 		var
 			self = this,
 			iUnseenCount = 0,
+			oMessage = null,
+			sTrashFolder = FolderStore.trashFolder(),
+			sSpamFolder = FolderStore.spamFolder(),
 			aMessageList = this.messageList(),
 			oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
 			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
@@ -355,6 +367,11 @@
 
 		if (oToFolder)
 		{
+			if (sTrashFolder === oToFolder.fullNameRaw || sSpamFolder === oToFolder.fullNameRaw)
+			{
+				iUnseenCount = 0;
+			}
+
 			oToFolder.messageCountAll(oToFolder.messageCountAll() + aUidForRemove.length);
 			if (0 < iUnseenCount)
 			{
@@ -403,6 +420,56 @@
 		{
 			Cache.setFolderHash(sToFolderFullNameRaw, '');
 		}
+
+		if ('' !== this.messageListThreadUid())
+		{
+			aMessageList = this.messageList();
+
+			if (aMessageList && 0 < aMessageList.length && !!_.find(aMessageList, function (oMessage) {
+				return !!(oMessage && oMessage.deleted() && oMessage.uid === self.messageListThreadUid());
+			}))
+			{
+				oMessage = _.find(aMessageList, function (oMessage) {
+					return oMessage && !oMessage.deleted();
+				});
+
+				if (oMessage && this.messageListThreadUid() !== Utils.pString(oMessage.uid))
+				{
+					this.messageListThreadUid(Utils.pString(oMessage.uid));
+
+					kn.setHash(Links.mailBox(
+						FolderStore.currentFolderFullNameHash(),
+						this.messageListPage(),
+						this.messageListSearch(),
+						this.messageListThreadUid()
+					), true, true);
+				}
+				else if (!oMessage)
+				{
+					if (1 < this.messageListPage())
+					{
+						this.messageListPage(this.messageListPage() - 1);
+
+						kn.setHash(Links.mailBox(
+							FolderStore.currentFolderFullNameHash(),
+							this.messageListPage(),
+							this.messageListSearch(),
+							this.messageListThreadUid()
+						), true, true);
+					}
+					else
+					{
+						this.messageListThreadUid('');
+
+						kn.setHash(Links.mailBox(
+							FolderStore.currentFolderFullNameHash(),
+							this.messageListPageBeforeThread(),
+							this.messageListSearch()
+						), true, true);
+					}
+				}
+			}
+		}
 	};
 
 	MessageUserStore.prototype.addBlockquoteSwitcherCallback = function ()
@@ -441,20 +508,35 @@
 		}
 	};
 
+	/**
+	 * @param {Object} oMessageTextBody
+	 */
+	MessageUserStore.prototype.initOpenPgpControls = function (oMessageTextBody)
+	{
+		if (oMessageTextBody && oMessageTextBody.find)
+		{
+			oMessageTextBody.find('.b-plain-openpgp:not(.inited)').each(function () {
+				PgpStore.initMessageBodyControls($(this));
+			});
+		}
+	};
+
 	MessageUserStore.prototype.setMessage = function (oData, bCached)
 	{
 		var
 			bNew = false,
 			bIsHtml = false,
+			sTag = 'div',
 			bHasExternals = false,
 			bHasInternals = false,
 			oBody = null,
 			oTextBody = null,
 			sId = '',
+			sPlain = '',
 			sResultHtml = '',
 			bPgpSigned = false,
 			bPgpEncrypted = false,
-			oMessagesBodiesDom = this.messagesBodiesDom(),
+			oMessagesDom = this.messagesBodiesDom(),
 			oSelectedMessage = this.selectorMessageSelected(),
 			oMessage = this.message(),
 			aThreads = []
@@ -492,18 +574,16 @@
 					oMessage.initFlagsByJson(oData.Result);
 				}
 
-				oMessagesBodiesDom = oMessagesBodiesDom && oMessagesBodiesDom[0] ? oMessagesBodiesDom : null;
-				if (oMessagesBodiesDom)
+				oMessagesDom = oMessagesDom && oMessagesDom[0] ? oMessagesDom : null;
+				if (oMessagesDom)
 				{
 					sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
-					oTextBody = oMessagesBodiesDom.find('#' + sId);
+					oTextBody = oMessagesDom.find('#' + sId);
+
 					if (!oTextBody || !oTextBody[0])
 					{
 						bHasExternals = !!oData.Result.HasExternals;
 						bHasInternals = !!oData.Result.HasInternals;
-
-						oBody = $('<div id="' + sId + '" />').hide().addClass('rl-cache-class');
-						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
 
 						if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 						{
@@ -517,13 +597,13 @@
 
 							if ((oMessage.isPgpSigned() || oMessage.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
 							{
-								oMessage.plainRaw = Utils.pString(oData.Result.Plain);
+								sPlain = Utils.pString(oData.Result.Plain);
 
-								bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(oMessage.plainRaw);
+								bPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(sPlain);
 								if (!bPgpEncrypted)
 								{
-									bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(oMessage.plainRaw) &&
-										/-----BEGIN PGP SIGNATURE-----/.test(oMessage.plainRaw);
+									bPgpSigned = /-----BEGIN PGP SIGNED MESSAGE-----/.test(sPlain) &&
+										/-----BEGIN PGP SIGNATURE-----/.test(sPlain);
 								}
 
 								Globals.$div.empty();
@@ -531,7 +611,7 @@
 								{
 									sResultHtml =
 										Globals.$div.append(
-											$('<pre class="b-plain-openpgp signed"></pre>').text(oMessage.plainRaw)
+											$('<pre class="b-plain-openpgp signed"></pre>').text(sPlain)
 										).html()
 									;
 								}
@@ -539,21 +619,35 @@
 								{
 									sResultHtml =
 										Globals.$div.append(
-											$('<pre class="b-plain-openpgp encrypted"></pre>').text(oMessage.plainRaw)
+											$('<pre class="b-plain-openpgp encrypted"></pre>').text(sPlain)
 										).html()
 									;
 								}
+								else
+								{
+									sResultHtml = '<pre>' + sResultHtml + '</pre>';
+								}
+
+								sPlain = '';
 
 								Globals.$div.empty();
 
 								oMessage.isPgpSigned(bPgpSigned);
 								oMessage.isPgpEncrypted(bPgpEncrypted);
 							}
+							else
+							{
+								sResultHtml = '<pre>' + sResultHtml + '</pre>';
+							}
 						}
 						else
 						{
 							bIsHtml = false;
+							sResultHtml = '<pre>' + sResultHtml + '</pre>';
 						}
+
+						oBody = $('<div id="' + sId + '" ></div>').hide().addClass('rl-cache-class');
+						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
 
 						oBody
 							.html(Utils.findEmailAndLinks(sResultHtml))
@@ -562,16 +656,14 @@
 
 						oMessage.isHtml(!!bIsHtml);
 						oMessage.hasImages(!!bHasExternals);
-						oMessage.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-						oMessage.pgpSignedVerifyUser('');
 
 						oMessage.body = oBody;
 						if (oMessage.body)
 						{
-							oMessagesBodiesDom.append(oMessage.body);
+							oMessagesDom.append(oMessage.body);
 						}
 
-						oMessage.storeDataToDom();
+						oMessage.storeDataInDom();
 
 						if (bHasInternals)
 						{
@@ -591,7 +683,7 @@
 						if (oMessage.body)
 						{
 							oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
-							oMessage.fetchDataToDom();
+							oMessage.fetchDataFromDom();
 						}
 					}
 
@@ -601,6 +693,8 @@
 
 					if (oBody)
 					{
+						this.initOpenPgpControls(oBody);
+
 						this.initBlockquoteSwitcher(oBody);
 					}
 
@@ -665,11 +759,19 @@
 		}
 	};
 
-	MessageUserStore.prototype.selectThreadMessage = function (sFolder, sUid)
+	MessageUserStore.prototype.selectMessageByFolderAndUid = function (sFolder, sUid)
 	{
-		if (Remote.message(this.onMessageResponse, sFolder, sUid))
+		if (sFolder && sUid)
 		{
-			this.messageThreadLoading(true);
+			this.message(this.staticMessage.populateByMessageListItem(null));
+			this.message().folderFullNameRaw = sFolder;
+			this.message().uid = sUid;
+
+			this.populateMessageBody(this.message());
+		}
+		else
+		{
+			this.message(null);
 		}
 	};
 
@@ -694,7 +796,6 @@
 		this.hideMessageBodies();
 
 		this.messageCurrentLoading(false);
-		this.messageThreadLoading(false);
 
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
@@ -731,7 +832,6 @@
 			oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
 		{
 			var
-				self = this,
 				iIndex = 0,
 				iLen = 0,
 				iCount = 0,
@@ -813,9 +913,11 @@
 			this.messageListCount(iCount);
 			this.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
 			this.messageListPage(window.Math.ceil((iOffset / SettingsStore.messagesPerPage()) + 1));
+			this.messageListThreadUid(Utils.isNormal(oData.Result.ThreadUid) ? Utils.pString(oData.Result.ThreadUid) : '');
 
 			this.messageListEndFolder(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-			this.messageListEndSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
+			this.messageListEndSearch(this.messageListSearch());
+			this.messageListEndThreadUid(this.messageListThreadUid());
 			this.messageListEndPage(this.messageListPage());
 
 			this.messageListDisableAutoSelect(true);
@@ -824,26 +926,6 @@
 			this.messageListIsNotCompleted(false);
 
 			Cache.clearNewMessageCache();
-
-			if (AppStore.threadsAllowed() && SettingsStore.useThreads())
-			{
-				oMessage = this.message();
-				if (oMessage)
-				{
-					Remote.messageThreadsFromCache(function (sResult, oData) {
-
-						if (Enums.StorageResultType.Success === sResult && oData &&  oData.Result && oData.Result.ThreadUids)
-						{
-							self.messageLastThreadUidsData({
-								'Folder': oData.Result.Folder,
-								'Uid': oData.Result.Uid,
-								'Uids': oData.Result.ThreadUids
-							});
-						}
-
-					}, oMessage.folderFullNameRaw, oMessage.uid);
-				}
-			}
 
 			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
 			{

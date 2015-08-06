@@ -7,7 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
-		SimplePace = require('SimplePace'),
+		progressJs = require('progressJs'),
 		Tinycon = require('Tinycon'),
 
 		Enums = require('Common/Enums'),
@@ -99,6 +99,12 @@
 
 		window.setTimeout(function () {
 			window.setInterval(function () {
+				Events.pub('interval.2m-after5m');
+			}, 60000 * 2);
+		}, 60000 * 5);
+
+		window.setTimeout(function () {
+			window.setInterval(function () {
 				Events.pub('interval.5m-after5m');
 			}, 60000 * 5);
 		}, 60000 * 5);
@@ -153,20 +159,7 @@
 			Cache.initMessageFlagsFromCache(oMessage);
 		});
 
-		_.each(MessageStore.messageThreadList(), function (oMessage) {
-			Cache.initMessageFlagsFromCache(oMessage);
-		});
-
 		Cache.initMessageFlagsFromCache(MessageStore.message());
-
-		this.reloadFlagsCurrentMessageThreadListFromCache();
-	};
-
-	AppUser.prototype.reloadFlagsCurrentMessageThreadListFromCache = function ()
-	{
-		_.each(MessageStore.messageThreadList(), function (oMessage) {
-			Cache.initMessageFlagsFromCache(oMessage);
-		});
 	};
 
 	/**
@@ -187,7 +180,15 @@
 		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
 		{
 			MessageStore.messageListPage(1);
+			MessageStore.messageListPageBeforeThread(1);
 			iOffset = 0;
+
+			kn.setHash(Links.mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				MessageStore.messageListPage(),
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
+			), true, true);
 		}
 
 		MessageStore.messageListLoading(true);
@@ -214,12 +215,13 @@
 				);
 			}
 
-		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(), MessageStore.messageListSearch());
+		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(),
+			MessageStore.messageListSearch(), MessageStore.messageListThreadUid());
 	};
 
 	AppUser.prototype.recacheInboxMessageList = function ()
 	{
-		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', true);
+		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
 	};
 
 	/**
@@ -253,6 +255,7 @@
 	{
 		var
 			self = this,
+			sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder()
 		;
 
@@ -260,11 +263,12 @@
 
 			var
 				bSpam = sSpamFolder === oItem['To'],
+				bTrash = sTrashFolder === oItem['To'],
 				bHam = !bSpam && sSpamFolder === oItem['From'] && Cache.getFolderInboxName() === oItem['To']
 			;
 
 			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
-				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''));
+				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
 		});
 
 		this.oMoveCache = {};
@@ -673,8 +677,8 @@
 							bCheck = false,
 							sUid = '',
 							aList = [],
-							bUnreadCountChange = false,
-							oFlags = null
+							oFlags = null,
+							bUnreadCountChange = false
 						;
 
 						if (oFolder)
@@ -767,7 +771,7 @@
 		var
 			self = this,
 			iUtc = Momentor.momentNowUnix(),
-			aFolders = FolderStore.getNextFolderNames(bBoot)
+			aFolders = FolderStore.getNextFolderNames()
 		;
 
 		if (Utils.isNonEmptyArray(aFolders))
@@ -837,7 +841,8 @@
 						});
 
 						if (bBoot)
-						{	_.delay(function () {
+						{
+							_.delay(function () {
 								self.folderInformationMultiply(true);
 							}, 2000);
 						}
@@ -856,10 +861,8 @@
 	AppUser.prototype.messageListAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
 		var
-			bRoot = false,
-			aAllUids = [],
-			aRootUids = [],
 			oFolder = null,
+			aRootUids = [],
 			iAlreadyUnread = 0
 		;
 
@@ -868,33 +871,16 @@
 			aMessages = MessageStore.messageListChecked();
 		}
 
-		if (true === mUid)
-		{
-			bRoot = true;
-		}
-		else if (aMessages && aMessages[0] && mUid &&
-			sFolderFullNameRaw === aMessages[0].folderFullNameRaw && mUid === aMessages[0].uid)
-		{
-			bRoot = true;
-		}
+		aRootUids = _.uniq(_.compact(_.map(aMessages, function (oMessage) {
+			return (oMessage && oMessage.uid) ? oMessage.uid : null;
+		})));
 
-		_.each(aMessages, function (oMessage) {
-			if (oMessage && oMessage.uid && oMessage.threads)
-			{
-				aRootUids.push(oMessage.uid);
-				aAllUids = _.union(aAllUids, oMessage.threads(), [oMessage.uid]);
-			}
-		});
-
-		aAllUids = _.uniq(aAllUids);
-		aRootUids = _.uniq(aRootUids);
-
-		if ('' !== sFolderFullNameRaw && 0 < aAllUids.length)
+		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
 			switch (iSetAction) {
 				case Enums.MessageSetAction.SetSeen:
 
-					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
+					_.each(aRootUids, function (sSubUid) {
 						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -905,7 +891,7 @@
 						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
 					}
 
-					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, true);
+					Remote.messageSetSeen(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, true);
 					break;
 
 				case Enums.MessageSetAction.UnsetSeen:
@@ -937,13 +923,11 @@
 				case Enums.MessageSetAction.UnsetFlag:
 
 					_.each(aRootUids, function (sSubUid) {
-//					_.each(bRoot ? aAllUids : aRootUids, function (sSubUid) {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
 					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, aRootUids, false);
-//					Remote.messageSetFlagged(Utils.emptyFunction, sFolderFullNameRaw, bRoot ? aAllUids : aRootUids, false);
 					break;
 			}
 
@@ -1078,7 +1062,32 @@
 			oTop = null,
 			oBottom = null,
 
-			fResizeFunction = function (oEvent, oObject) {
+			fResizeCreateFunction = function (oEvent) {
+				if (oEvent && oEvent.target)
+				{
+					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
+
+					oResizableHandle
+						.on('mousedown', function () {
+							Globals.$html.addClass('rl-resizer');
+						})
+						.on('mouseup', function () {
+							Globals.$html.removeClass('rl-resizer');
+						})
+					;
+				}
+			},
+
+			fResizeStartFunction = function () {
+				Globals.$html.addClass('rl-resizer');
+			},
+
+			fResizeResizeFunction = _.debounce(function () {
+				Globals.$html.addClass('rl-resizer');
+			}, 500, true),
+
+			fResizeStopFunction = function (oEvent, oObject) {
+				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.height)
 				{
 					Local.set(sClientSideKeyName, oObject.size.height);
@@ -1094,7 +1103,10 @@
 				'minHeight': iMinHeight,
 				'maxHeight': iMaxHeight,
 				'handles': 's',
-				'stop': fResizeFunction
+				'create': fResizeCreateFunction,
+				'resize': fResizeResizeFunction,
+				'start': fResizeStartFunction,
+				'stop': fResizeStopFunction
 			},
 
 			fSetHeight = function (iHeight) {
@@ -1187,8 +1199,29 @@
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
+			fResizeCreateFunction = function (oEvent) {
+				if (oEvent && oEvent.target)
+				{
+					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
 
-			fResizeFunction = function (oEvent, oObject) {
+					oResizableHandle
+						.on('mousedown', function () {
+							Globals.$html.addClass('rl-resizer');
+						})
+						.on('mouseup', function () {
+							Globals.$html.removeClass('rl-resizer');
+						})
+					;
+				}
+			},
+			fResizeResizeFunction = _.debounce(function () {
+				Globals.$html.addClass('rl-resizer');
+			}, 500, true),
+			fResizeStartFunction = function () {
+				Globals.$html.addClass('rl-resizer');
+			},
+			fResizeStopFunction = function (oEvent, oObject) {
+				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.width)
 				{
 					Local.set(sClientSideKeyName, oObject.size.width);
@@ -1210,7 +1243,10 @@
 			'minWidth': iMinWidth,
 			'maxWidth': 350,
 			'handles': 'e',
-			'stop': fResizeFunction
+			'create': fResizeCreateFunction,
+			'resize': fResizeResizeFunction,
+			'start': fResizeStartFunction,
+			'stop': fResizeStopFunction
 		});
 
 		Events.sub('left-panel.off', function () {
@@ -1271,9 +1307,9 @@
 	{
 		kn.hideLoading();
 
-		if (SimplePace)
+		if (progressJs)
 		{
-			SimplePace.set(100);
+			progressJs().end();
 		}
 	};
 
@@ -1291,16 +1327,16 @@
 			self = this,
 			$LAB = require('$LAB'),
 			sJsHash = Settings.settingsGet('JsHash'),
+			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
 			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
 			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
 			bFacebook = Settings.settingsGet('AllowFacebookSocial'),
 			bTwitter = Settings.settingsGet('AllowTwitterSocial')
 		;
 
-		if (SimplePace)
+		if (progressJs)
 		{
-			SimplePace.set(70);
-			SimplePace.sleep();
+			progressJs().set(70);
 		}
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
@@ -1332,10 +1368,26 @@
 
 					if (bValue)
 					{
+						if ('' !== sStartupUrl)
+						{
+							kn.routeOff();
+							kn.setHash(Links.root(sStartupUrl), true);
+							kn.routeOn();
+						}
+
 						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							var fOpenpgpCallback = function (openpgp) {
+
 								PgpStore.openpgp = openpgp;
+
+								if (window.Worker)
+								{
+									PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
+								}
+
+//								PgpStore.openpgp.config.useWebCrypto = false;
+
 								PgpStore.openpgpKeyring = new openpgp.Keyring();
 								PgpStore.capaOpenPGP(true);
 
@@ -1365,8 +1417,8 @@
 
 						kn.startScreens([
 							require('Screen/User/MailBox'),
-							require('Screen/User/Settings'),
-							require('Screen/User/About')
+							Settings.capa(Enums.Capa.Settings) ? require('Screen/User/Settings') : null,
+							false ? require('Screen/User/About') : null
 						]);
 
 						if (bGoogle || bFacebook || bTwitter)
@@ -1386,7 +1438,7 @@
 							}
 						});
 
-						Events.sub('interval.5m-after5m', function () {
+						Events.sub('interval.2m-after5m', function () {
 							self.folderInformationMultiply();
 						});
 
@@ -1445,7 +1497,9 @@
 							}, 1000);
 						}
 
-						if (!!Settings.settingsGet('AccountSignMe') && window.navigator.registerProtocolHandler)
+						if (!!Settings.settingsGet('AccountSignMe') &&
+							window.navigator.registerProtocolHandler &&
+							Settings.capa(Enums.Capa.Composer))
 						{
 							_.delay(function () {
 								try {
@@ -1467,7 +1521,7 @@
 								self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
 							});
 
-							if (Tinycon)
+							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered') )
 							{
 								Tinycon.setOptions({
 									fallback: false
@@ -1481,7 +1535,7 @@
 					}
 					else
 					{
-						this.bootstartLoginScreen();
+						this.logout();
 					}
 
 				}, self));

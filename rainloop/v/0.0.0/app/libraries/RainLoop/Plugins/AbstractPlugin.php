@@ -305,6 +305,22 @@ abstract class AbstractPlugin
 	}
 
 	/**
+	 * @param string $sFile
+	 * @param bool $bAdminScope = false
+	 *
+	 * @return self
+	 */
+	protected function replaceTemplate($sFile, $bAdminScope = false)
+	{
+		if ($this->oPluginManager)
+		{
+			$this->oPluginManager->AddTemplate($this->sPath.'/'.$sFile, $bAdminScope);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * @param string $sActionName
 	 * @param string $sFunctionName
 	 *

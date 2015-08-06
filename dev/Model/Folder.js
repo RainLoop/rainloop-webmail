@@ -43,6 +43,7 @@
 		this.edited = ko.observable(false);
 		this.collapsed = ko.observable(true);
 		this.subScribed = ko.observable(true);
+		this.checkable = ko.observable(false);
 		this.subFolders = ko.observableArray([]);
 		this.deleteAccess = ko.observable(false);
 		this.actionBlink = ko.observable(false).extend({'falseTimeout': 1000});
@@ -105,6 +106,7 @@
 		}, this);
 
 		this.hidden = ko.computed(function () {
+
 			var
 				bSystem = this.isSystemFolder(),
 				bSubFolders = this.hasSubScribedSubfolders()
@@ -181,6 +183,8 @@
 		this.canBeSubScribed = ko.computed(function () {
 			return !this.isSystemFolder() && this.selectable && sInboxFolderName !== this.fullNameRaw;
 		}, this);
+
+		this.canBeChecked = this.canBeSubScribed;
 
 //		this.visible.subscribe(function () {
 //			Utils.timeOutAction('folder-list-folder-visibility-change', function () {
@@ -281,7 +285,7 @@
 		});
 
 		this.hasUnreadMessages = ko.computed(function () {
-			return 0 < this.messageCountUnread();
+			return 0 < this.messageCountUnread() && '' !== this.printableUnreadCount();
 		}, this);
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function () {
@@ -352,6 +356,8 @@
 			this.existen = !!oJsonFolder.IsExists;
 
 			this.subScribed(!!oJsonFolder.IsSubscribed);
+			this.checkable(!!oJsonFolder.Checkable);
+
 			this.type(sInboxFolderName === this.fullNameRaw ? Enums.FolderType.Inbox : Enums.FolderType.User);
 
 			bResult = true;

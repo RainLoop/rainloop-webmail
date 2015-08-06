@@ -150,6 +150,11 @@
 	{
 		if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
 		{
+			if (!PopupComposeVoreModel)
+			{
+				return true;
+			}
+
 			sMailToUrl = sMailToUrl.toString().substr(7);
 
 			var
@@ -534,14 +539,14 @@
 				oEvent.preventDefault();
 				return;
 			}
-
-			if (oSender && oSender.tagName && oSender.tagName.match(/INPUT|TEXTAREA/i))
+			else if (iKey === Enums.EventKeyCode.A)
 			{
-				return;
-			}
+				if (oSender && ('true' === '' + oSender.contentEditable ||
+					(oSender.tagName && oSender.tagName.match(/INPUT|TEXTAREA/i))))
+				{
+					return;
+				}
 
-			if (iKey === Enums.EventKeyCode.A)
-			{
 				if (window.getSelection)
 				{
 					window.getSelection().removeAllRanges();
@@ -847,7 +852,11 @@
 			},
 
 			convertPre = function () {
-				return (arguments && 1 < arguments.length) ? arguments[1].toString().replace(/[\n]/gm, '<br />') : '';
+				return (arguments && 1 < arguments.length) ?
+					arguments[1].toString()
+						.replace(/[\n]/gm, '<br />')
+						.replace(/[\r]/gm, '')
+					: '';
 			},
 
 			fixAttibuteValue = function () {
@@ -861,16 +870,17 @@
 		;
 
 		sText = sHtml
-			// specials for signature
-			.replace(/\u0002\u0002/g, '\u200C\u200C')
-			.replace(/\u0003\u0003/g, '\u200D\u200D')
-
-			.replace(/<pre[^>]*>([\s\S\r\n]*)<\/pre>/gmi, convertPre)
+			.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
+			.replace(/<p[^>]*><\/p>/gi, '')
+			.replace(/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/gmi, convertPre)
 			.replace(/[\s]+/gm, ' ')
 			.replace(/((?:href|data)\s?=\s?)("[^"]+?"|'[^']+?')/gmi, fixAttibuteValue)
 			.replace(/<br[^>]*>/gmi, '\n')
 			.replace(/<\/h[\d]>/gi, '\n')
 			.replace(/<\/p>/gi, '\n\n')
+			.replace(/<ul[^>]*>/gmi, '\n')
+			.replace(/<\/ul>/gi, '\n')
+			.replace(/<li[^>]*>/gmi, ' * ')
 			.replace(/<\/li>/gi, '\n')
 			.replace(/<\/td>/gi, '\n')
 			.replace(/<\/tr>/gi, '\n')
@@ -1012,16 +1022,12 @@
 		sPlain = aText.join("\n");
 
 		sPlain = sPlain
-
-			// specials for signature
-			.replace(/\u200C\u200C/g, '\u0002\u0002')
-			.replace(/\u200D\u200D/g, '\u0003\u0003')
-
 //			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 			.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 			.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
+			.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
 			.replace(/\n/g, '<br />')
 		;
 

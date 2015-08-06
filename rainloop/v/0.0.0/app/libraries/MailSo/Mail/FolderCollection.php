@@ -20,7 +20,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var string
 	 */
-	private $sNamespace;
+	public $Namespace;
 
 	/**
 	 * @var string
@@ -49,7 +49,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		parent::__construct();
 
-		$this->sNamespace = '';
+		$this->Namespace = '';
 		$this->FoldersHash = '';
 		$this->SystemFolders = array();
 		$this->IsThreadsSupported = false;
@@ -97,11 +97,29 @@ class FolderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
+	 * @return int
+	 */
+	public function CountRec()
+	{
+		$iResult = $this->Count();
+		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
+		{
+			if ($oFolder)
+			{
+				$oSub = $oFolder->SubFolders();
+				$iResult += $oSub ? $oSub->CountRec() : 0;
+			}
+		}
+
+		return $iResult;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function GetNamespace()
 	{
-		return $this->sNamespace;
+		return $this->Namespace;
 	}
 
 	/**
@@ -110,7 +128,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	public function FindDelimiter()
 	{
 		$sDelimiter = '/';
-		
+
 		$oFolder = $this->GetByFullNameRaw('INBOX');
 		if (!$oFolder)
 		{
@@ -132,7 +150,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	 */
 	public function SetNamespace($sNamespace)
 	{
-		$this->sNamespace = $sNamespace;
+		$this->Namespace = $sNamespace;
 
 		return $this;
 	}
@@ -172,8 +190,15 @@ class FolderCollection extends \MailSo\Base\Collection
 
 					if (!isset($aSortedByLenImapFolders[$sNonExistenFolderFullNameRaw]))
 					{
-						$aAddedFolders[$sNonExistenFolderFullNameRaw] =
-							Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+						try
+						{
+							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
+								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+						}
+						catch (\Exception $oExc)
+						{
+							unset($oExc);
+						}
 					}
 				}
 			}

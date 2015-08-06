@@ -1,0 +1,14 @@
+<div class="control-group" data-bind="css: {'error': value.error}" style="margin-bottom: 0">
+	<select class="span2" data-bind="options: $root.fieldOptions, value: field, optionsText: 'name', optionsValue: 'id'"></select>
+	&nbsp;
+	<input class="span2" type="text" data-bind="value: valueSecond" />
+	&nbsp;
+	<select class="span2" data-bind="options: $root.typeOptions, value: type, optionsText: 'name', optionsValue: 'id'"></select>
+	&nbsp;
+	<input class="span3" type="text" data-bind="value: value" />
+	&nbsp;
+	<span class="delete-action button-delete pull-right" style="margin-top: 5px;"
+		data-bind="click: function (oCondition) { $root.removeCondition(oCondition); }">
+		<i class="icon-trash"></i>
+	</span>
+</div>

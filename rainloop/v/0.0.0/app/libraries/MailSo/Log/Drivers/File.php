@@ -24,22 +24,17 @@ class File extends \MailSo\Log\Driver
 	private $sLoggerFileName;
 
 	/**
-	 * @var string
-	 */
-	private $sCrLf;
-	
-	/**
 	 * @access protected
 	 *
 	 * @param string $sLoggerFileName
-	 * @param string $sCrLf = "\r\n"
+	 * @param string $sNewLine = "\r\n"
 	 */
-	protected function __construct($sLoggerFileName, $sCrLf = "\r\n")
+	protected function __construct($sLoggerFileName, $sNewLine = "\r\n")
 	{
 		parent::__construct();
 
 		$this->sLoggerFileName = $sLoggerFileName;
-		$this->sCrLf = $sCrLf;
+		$this->sNewLine = $sNewLine;
 	}
 
 	/**
@@ -52,13 +47,13 @@ class File extends \MailSo\Log\Driver
 
 	/**
 	 * @param string $sLoggerFileName
-	 * @param string $sCrLf = "\r\n"
+	 * @param string $sNewLine = "\r\n"
 	 *
 	 * @return \MailSo\Log\Drivers\File
 	 */
-	public static function NewInstance($sLoggerFileName, $sCrLf = "\r\n")
+	public static function NewInstance($sLoggerFileName, $sNewLine = "\r\n")
 	{
-		return new self($sLoggerFileName, $sCrLf);
+		return new self($sLoggerFileName, $sNewLine);
 	}
 
 	/**
@@ -86,11 +81,11 @@ class File extends \MailSo\Log\Driver
 	 */
 	private function writeToLogFile($mDesc)
 	{
-		if (is_array($mDesc))
+		if (\is_array($mDesc))
 		{
-			$mDesc = \implode($this->sCrLf, $mDesc);
+			$mDesc = \implode($this->sNewLine, $mDesc);
 		}
-		
-		return \error_log($mDesc.$this->sCrLf, 3, $this->sLoggerFileName);
+
+		return \error_log($mDesc.$this->sNewLine, 3, $this->sLoggerFileName);
 	}
 }

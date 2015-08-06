@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js rl-booted-trigger rl-started-trigger">
+<html class="no-js rl-booted-trigger rl-started-trigger" dir="{{BaseDir}}">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -17,8 +17,9 @@
 			}
 		</script>
 		<meta name="Author" content="RainLoop Team" />
-		<meta name="robots" content="noindex, nofollow, noodp" />
+		<meta name="robots" content="noindex,nofollow,noodp" />
 		<meta name="google" content="notranslate" />
+		<meta name="app-version" content="{{BaseVersion}}" id="rlAppVersion" />
 		<title></title>
 		<style>#rl-content{display:none;}</style>
 		<link rel="shortcut icon" href="{{BaseAppFaviconPngFile}}" type="image/png" />
@@ -89,7 +90,10 @@
 
 			if (window.$LAB && window.rainloopAppData && window.rainloopAppData['TemplatesLink'] && window.rainloopAppData['LangLink'])
 			{
-				__simplePace(10);
+				var oProgress = progressJs();
+
+				oProgress.setOptions({'theme': 'rainloop'});
+				oProgress.start().set(5);
 
 				window.$LAB
 					.script(function () {
@@ -98,7 +102,9 @@
 						];
 					})
 					.wait(function () {
-						__simplePace(20);
+
+						oProgress.set(20);
+
 						if (window.rainloopAppData['IncludeBackground']) {
 							$('#rl-bg').attr('style', 'background-image: none !important;').backstretch(
 								window.rainloopAppData['IncludeBackground'].replace('{{USER}}',
@@ -114,20 +120,20 @@
 						];
 					})
 					.wait(function () {
-						__simplePace(10);
+						oProgress.set(30);
 					})
 					.script(function () {
 						return {'src': '{{BaseAppMainScriptLink}}', 'type': 'text/javascript', 'charset': 'utf-8'};
 					})
 					.wait(function () {
-						__simplePace(20);
+						oProgress.set(50);
 					})
 					.script(function () {
 						return window.rainloopAppData['PluginsLink'] ?
 							{'src': window.rainloopAppData['PluginsLink'], 'type': 'text/javascript', 'charset': 'utf-8'} : null;
 					})
 					.wait(function () {
-						__simplePace(5);
+						oProgress.set(55);
 						__runBoot(false);
 					})
 					.script(function () {

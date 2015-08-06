@@ -21,6 +21,8 @@
 		SettingsStore = require('Stores/User/Settings'),
 		ContactStore = require('Stores/User/Contact'),
 
+		Settings = require('Storage/Settings'),
+
 		Remote = require('Remote/User/Ajax'),
 
 		EmailModel = require('Model/Email'),
@@ -237,6 +239,12 @@
 		});
 
 		this.newMessageCommand = Utils.createCommand(this, function () {
+
+			if (!Settings.capa(Enums.Capa.Composer))
+			{
+				return false;
+			}
+
 			var
 				aE = [],
 				aC = this.contactsCheckedOrSelected(),
@@ -772,7 +780,10 @@
 		{
 			this.bBackToCompose = false;
 
-			kn.showScreenPopup(require('View/Popup/Compose'));
+			if (Settings.capa(Enums.Capa.Composer))
+			{
+				kn.showScreenPopup(require('View/Popup/Compose'));
+			}
 		}
 	};
 

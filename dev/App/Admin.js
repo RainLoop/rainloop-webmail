@@ -7,7 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
-		SimplePace = require('SimplePace'),
+		progressJs = require('progressJs'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
@@ -208,7 +208,7 @@
 		Remote.licensing(function (sResult, oData) {
 
 			LicenseStore.licensingProcess(false);
-			
+
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && Utils.isNormal(oData.Result['Expired']))
 			{
 				LicenseStore.licenseValid(true);
@@ -280,9 +280,9 @@
 			}
 		}
 
-		if (SimplePace)
+		if (progressJs)
 		{
-			SimplePace.set(100);
+			progressJs().end();
 		}
 	};
 

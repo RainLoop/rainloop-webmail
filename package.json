@@ -1,75 +1,79 @@
 {
-	"name": "RainLoop",
-	"title": "RainLoop Webmail",
-	"version": "1.8.3",
-	"release": "302",
-	"description": "Simple, modern & fast web-based email client",
-	"homepage": "http://rainloop.net",
-	"main": "gulpfile.js",
-	"author": {
-		"name": "RainLoop Team",
-		"email": "support@rainloop.net",
-		"web": "http://rainloop.net"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/RainLoop/rainloop-webmail.git"
-	},
-	"licenses": [
-		{
-			"type": "CC BY-NC-SA 3.0",
-			"ulr": "http://creativecommons.org/licenses/by-nc-sa/3.0/"
-		}
-	],
-	"bugs": {
-		"url": "https://github.com/RainLoop/rainloop-webmail/issues"
-	},
-	"keywords": [
-		"webmail",
-		"php",
-		"simple",
-		"modern",
-		"mail",
-		"web-based",
-		"email",
-		"client",
-		"plugins"
-	],
-	"readmeFilename": "README.md",
-	"ownCloudPackageVersion": "3.3",
-	"engines": {
-		"node": ">= 0.10.0"
-	},
-	"devDependencies": {
-
-		"node-fs": "*",
-		"jshint-summary": "*",
-
-		"webpack": "*",
-
-		"gulp": "*",
-		"gulp-util": "*",
-		"gulp-uglify": "*",
-		"gulp-rimraf": "*",
-		"gulp-jshint": "*",
-		"gulp-less": "1.3.6",
-		"gulp-zip": "*",
-		"gulp-rename": "*",
-		"gulp-replace": "*",
-		"gulp-header": "*",
-		"gulp-eol": "*",
-		"gulp-stripbom": "*",
-		"gulp-minify-css": "*",
-		"gulp-autoprefixer": "*",
-		"gulp-csscomb": "*",
-		"gulp-closure-compiler": "*",
-		"gulp-csslint": "*",
-		"gulp-beautify": "*",
-		"gulp-plumber": "*",
-		"gulp-concat-util": "*"
-	},
-	"scripts": {
-		"gulp": "gulp",
-		"w": "gulp w"
-	}
+  "name": "RainLoop",
+  "title": "RainLoop Webmail",
+  "version": "1.9.2",
+  "release": "343",
+  "description": "Simple, modern & fast web-based email client",
+  "homepage": "http://rainloop.net",
+  "main": "gulpfile.js",
+  "author": {
+    "name": "RainLoop Team",
+    "email": "support@rainloop.net",
+    "web": "http://rainloop.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RainLoop/rainloop-webmail.git"
+  },
+  "licenses": [
+    {
+      "type": "AGPL 3.0",
+      "ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
+    },
+    {
+      "type": "RainLoop Software License",
+      "ulr": "http://www.rainloop.net/licensing/"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/RainLoop/rainloop-webmail/issues"
+  },
+  "keywords": [
+    "webmail",
+    "php",
+    "simple",
+    "modern",
+    "mail",
+    "web-based",
+    "email",
+    "client",
+    "plugins"
+  ],
+  "readmeFilename": "README.md",
+  "ownCloudPackageVersion": "4.4",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "node-fs": "*",
+    "rimraf": "*",
+    "jshint-summary": "*",
+    "webpack": "*",
+    "gulp": "*",
+    "gulp-util": "*",
+    "gulp-uglify": "*",
+    "gulp-rimraf": "*",
+    "gulp-jshint": "*",
+    "gulp-less": "1.3.6",
+    "gulp-zip": "*",
+    "gulp-rename": "*",
+    "gulp-replace": "*",
+    "gulp-header": "*",
+    "gulp-eol": "*",
+    "gulp-stripbom": "*",
+    "gulp-minify-css": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-csscomb": "*",
+    "gulp-closure-compiler": "*",
+    "gulp-csslint": "*",
+    "gulp-beautify": "*",
+    "gulp-plumber": "*",
+    "gulp-concat-util": "*",
+    "gulp-notify": "~2.2.0",
+    "gulp-through": "~0.3.0",
+    "lodash": "~3.9.3",
+    "gulp-if": "~1.2.5",
+    "node-notifier": "~4.2.3",
+    "gulp-livereload": "~3.8.0"
+  }
 }

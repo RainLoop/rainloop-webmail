@@ -66,8 +66,9 @@ class Contact
 		$this->Etag = '';
 	}
 
-	public function UpdateDependentValues()
+	public function PopulateDisplayAndFullNameValue($bForceFullNameReplace = false)
 	{
+		$sFullName = '';
 		$sLastName = '';
 		$sFirstName = '';
 		$sEmail = '';
@@ -100,8 +101,12 @@ class Contact
 					{
 						$sFirstName = $oProperty->Value;
 					}
-					else if (\in_array($oProperty->Type, array(
-						PropertyType::FULLNAME, PropertyType::PHONE
+					else if ('' === $sFullName && PropertyType::FULLNAME === $oProperty->Type)
+					{
+						$sFullName = $oProperty->Value;
+					}
+					else if ('' === $sOther && \in_array($oProperty->Type, array(
+						PropertyType::PHONE
 					)))
 					{
 						$sOther = $oProperty->Value;
@@ -110,25 +115,26 @@ class Contact
 			}
 		}
 
-		if (empty($this->IdContactStr))
-		{
-			$this->RegenerateContactStr();
-		}
+		$sDisplay = $bForceFullNameReplace ? '' : \trim($sFullName);
 
-		$sDisplay = '';
-		if (0 < \strlen($sLastName) || 0 < \strlen($sFirstName))
+		if ('' === $sDisplay && (0 < \strlen($sLastName) || 0 < \strlen($sFirstName)))
 		{
 			$sDisplay = \trim($sFirstName.' '.$sLastName);
 		}
 
-		if ('' === $sDisplay && 0 < \strlen($sEmail))
+		if ('' === $sDisplay)
+		{
+			$sDisplay = \trim($sFullName);
+		}
+
+		if ('' === $sDisplay)
 		{
 			$sDisplay = \trim($sEmail);
 		}
 
 		if ('' === $sDisplay)
 		{
-			$sDisplay = $sOther;
+			$sDisplay = \trim($sOther);
 		}
 
 		$this->Display = \trim($sDisplay);
@@ -145,13 +151,23 @@ class Contact
 		}
 	}
 
+	public function UpdateDependentValues()
+	{
+		if (empty($this->IdContactStr))
+		{
+			$this->RegenerateContactStr();
+		}
+
+		$this->PopulateDisplayAndFullNameValue();
+	}
+
 	/**
 	 * @return array
 	 */
 	public function RegenerateContactStr()
 	{
-		$this->IdContactStr = \class_exists('Sabre\DAV\Client') ?
-			\Sabre\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
+		$this->IdContactStr = \class_exists('SabreForRainLoop\DAV\Client') ?
+			\SabreForRainLoop\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
 	}
 
 	/**
@@ -186,7 +202,7 @@ class Contact
 	{
 		$this->UpdateDependentValues();
 
-		if (!\class_exists('Sabre\DAV\Client'))
+		if (!\class_exists('SabreForRainLoop\DAV\Client'))
 		{
 			return '';
 		}
@@ -201,7 +217,7 @@ class Contact
 		{
 			try
 			{
-				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
+				$oVCard = \SabreForRainLoop\VObject\Reader::read($sPreVCard);
 			}
 			catch (\Exception $oExc)
 			{
@@ -213,9 +229,14 @@ class Contact
 			}
 		}
 
+//		if ($oLogger)
+//		{
+//			$oLogger->WriteDump($sPreVCard);
+//		}
+
 		if (!$oVCard)
 		{
-			$oVCard = new \Sabre\VObject\Component\VCard();
+			$oVCard = new \SabreForRainLoop\VObject\Component\VCard();
 		}
 
 		$oVCard->VERSION = '3.0';
@@ -223,7 +244,7 @@ class Contact
 
 		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME);
 
-		$sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
+		$sUid = $sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
 		{
 			if ($oProperty)
@@ -239,6 +260,9 @@ class Contact
 						break;
 					case PropertyType::NOTE:
 						$oVCard->NOTE = $oProperty->Value;
+						break;
+					case PropertyType::UID:
+						$sUid = $oProperty->Value;
 						break;
 					case PropertyType::FIRST_NAME:
 						$sFirstName = $oProperty->Value;
@@ -278,7 +302,7 @@ class Contact
 			}
 		}
 
-		$oVCard->UID = $this->IdContactStr;
+		$oVCard->UID = empty($sUid) ? $this->IdContactStr : $sUid;
 		$oVCard->N = array($sLastName, $sFirstName, $sMiddleName, $sPrefix, $sSuffix);
 		$oVCard->REV = \gmdate('Ymd', $this->Changed).'T'.\gmdate('His', $this->Changed).'Z';
 
@@ -505,7 +529,7 @@ class Contact
 
 		$this->Properties = array();
 
-		if (!\class_exists('Sabre\DAV\Client'))
+		if (!\class_exists('SabreForRainLoop\DAV\Client'))
 		{
 			return false;
 		}
@@ -515,9 +539,11 @@ class Contact
 			$this->Etag = $sEtag;
 		}
 
+		$this->IdContactStr = $sUid;
+
 		try
 		{
-			$oVCard = \Sabre\VObject\Reader::read($sVCard);
+			$oVCard = \SabreForRainLoop\VObject\Reader::read($sVCard);
 		}
 		catch (\Exception $oExc)
 		{
@@ -526,17 +552,23 @@ class Contact
 				$oLogger->WriteException($oExc);
 				$oLogger->WriteDump($sVCard);
 			}
-
-			$this->IdContactStr = $sUid;
 		}
 
+//		if ($oLogger)
+//		{
+//			$oLogger->WriteDump($sVCard);
+//		}
+
+		$bOwnCloud = false;
 		$aProperties = array();
+
 		if ($oVCard)
 		{
+			$bOwnCloud = empty($oVCard->PRODID) ? false :
+				false !== \strpos(\strtolower($oVCard->PRODID), 'owncloud');
+
 			$bOldVersion = empty($oVCard->VERSION) ? false :
 				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
-
-			$this->IdContactStr = $oVCard->UID ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
 
 			if (isset($oVCard->FN) && '' !== \trim($oVCard->FN))
 			{
@@ -610,6 +642,14 @@ class Contact
 			if (isset($oVCard->TEL))
 			{
 				$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
+			}
+
+			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \SabreForRainLoop\DAV\UUIDUtil::getUUID();
+			$aProperties[] = new Property(PropertyType::UID, $sUidValue);
+
+			if (empty($this->IdContactStr))
+			{
+				$this->IdContactStr = $sUidValue;
 			}
 
 			$this->Properties = $aProperties;

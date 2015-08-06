@@ -316,36 +316,27 @@
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
-	 * @param {Array} aUids
-	 */
-	RemoteUserAjax.prototype.messageListSimple = function (fCallback, sFolderFullNameRaw, aUids)
-	{
-		return this.defaultRequest(fCallback, 'MessageListSimple', {
-			'Folder': Utils.pString(sFolderFullNameRaw),
-			'Uids': aUids
-		}, Consts.Defaults.DefaultAjaxTimeout, '', ['MessageListSimple']);
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20
 	 * @param {string=} sSearch = ''
+	 * @param {string=} sThreadUid = ''
 	 * @param {boolean=} bSilent = false
 	 */
-	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, bSilent)
+	RemoteUserAjax.prototype.messageList = function (fCallback, sFolderFullNameRaw, iOffset, iLimit, sSearch, sThreadUid, bSilent)
 	{
 		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
 
 		var
-			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw)
+			sFolderHash = Cache.getFolderHash(sFolderFullNameRaw),
+			bUseThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
+			sInboxUidNext = Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : ''
 		;
 
 		bSilent = Utils.isUnd(bSilent) ? false : !!bSilent;
 		iOffset = Utils.isUnd(iOffset) ? 0 : Utils.pInt(iOffset);
 		iLimit = Utils.isUnd(iOffset) ? 20 : Utils.pInt(iLimit);
 		sSearch = Utils.pString(sSearch);
+		sThreadUid = Utils.pString(sThreadUid);
 
 		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
 		{
@@ -358,9 +349,9 @@
 					sSearch,
 					AppStore.projectHash(),
 					sFolderHash,
-					Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0',
-					''
+					sInboxUidNext,
+					bUseThreads ? '1' : '0',
+					bUseThreads ? sThreadUid : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
 		else
@@ -370,9 +361,11 @@
 				'Offset': iOffset,
 				'Limit': iLimit,
 				'Search': sSearch,
-				'UidNext': Cache.getFolderInboxName() === sFolderFullNameRaw ? Cache.getFolderUidNext(sFolderFullNameRaw) : '',
-				'UseThreads': AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
-			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout, '', bSilent ? [] : ['MessageList']);
+				'UidNext': sInboxUidNext,
+				'UseThreads': bUseThreads ? '1' : '0',
+				'ThreadUid': bUseThreads ? sThreadUid : ''
+			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
+				'', bSilent ? [] : ['MessageList']);
 		}
 	};
 
@@ -409,35 +402,6 @@
 				].join(String.fromCharCode(0))), ['Message']);
 
 			return true;
-		}
-
-		return false;
-	};
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sFolderFullNameRaw
-	 * @param {number} iUid
-	 * @return {boolean}
-	 */
-	RemoteUserAjax.prototype.messageThreadsFromCache = function (fCallback, sFolderFullNameRaw, iUid)
-	{
-		sFolderFullNameRaw = Utils.pString(sFolderFullNameRaw);
-		iUid = Utils.pInt(iUid);
-
-		if (Cache.getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
-		{
-			var sFolderHash = Cache.getFolderHash(sFolderFullNameRaw);
-			if (sFolderHash)
-			{
-				this.defaultRequest(fCallback, 'MessageThreadsFromCache', {
-					'Folder': sFolderFullNameRaw,
-					'FolderHash': sFolderHash,
-					'Uid': iUid
-				});
-
-				return true;
-			}
 		}
 
 		return false;
@@ -746,17 +710,32 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {string} sFolderFullNameRaw
+	 * @param {boolean} bCheckable
+	 */
+	RemoteUserAjax.prototype.folderSetCheckable = function (fCallback, sFolderFullNameRaw, bCheckable)
+	{
+		this.defaultRequest(fCallback, 'FolderCheckable', {
+			'Folder': sFolderFullNameRaw,
+			'Checkable': bCheckable ? '1' : '0'
+		});
+	};
+
+	/**
+	 * @param {?Function} fCallback
 	 * @param {string} sFolder
 	 * @param {string} sToFolder
 	 * @param {Array} aUids
 	 * @param {string=} sLearning
+	 * @param {boolean=} bMarkAsRead
 	 */
-	RemoteUserAjax.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning)
+	RemoteUserAjax.prototype.messagesMove = function (fCallback, sFolder, sToFolder, aUids, sLearning, bMarkAsRead)
 	{
 		this.defaultRequest(fCallback, 'MessageMove', {
 			'FromFolder': sFolder,
 			'ToFolder': sToFolder,
 			'Uids': aUids.join(','),
+			'MarkAsRead': bMarkAsRead ? '1' : '0',
 			'Learning': sLearning || ''
 		}, null, '', ['MessageList']);
 	};

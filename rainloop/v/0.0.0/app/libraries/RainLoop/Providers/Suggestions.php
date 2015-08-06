@@ -5,31 +5,72 @@ namespace RainLoop\Providers;
 class Suggestions extends \RainLoop\Providers\AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Suggestions\ISuggestions
+	 * @var \RainLoop\Providers\Suggestions\ISuggestions[]
 	 */
-	private $oDriver;
+	private $aDrivers;
 
 	/**
-	 * @param \RainLoop\Providers\Suggestions\ISuggestions|null $oDriver = null
+	 * @param \RainLoop\Providers\Suggestions\ISuggestions[]|null $aDriver = null
 	 *
 	 * @return void
 	 */
-	public function __construct($oDriver = null)
+	public function __construct($aDriver = null)
 	{
-		$this->oDriver = $oDriver;
+		if (\is_array($aDriver))
+		{
+			$aDriver = \array_filter($aDriver, function ($oDriver) {
+				return $oDriver instanceof \RainLoop\Providers\Suggestions\ISuggestions;
+			});
+		}
+
+		$this->aDrivers = \is_array($aDriver) && 0 < \count($aDriver) ? $aDriver : null;
 	}
 
 	/**
-	 * @param \RainLoop\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount
 	 * @param string $sQuery
 	 * @param int $iLimit = 20
 	 *
 	 * @return array
 	 */
-	public function Process(\RainLoop\Account $oAccount, $sQuery, $iLimit = 20)
+	public function Process($oAccount, $sQuery, $iLimit = 20)
 	{
-		return $this->oDriver && $this->IsActive() && 0 < \strlen($sQuery) ?
-			$this->oDriver->Process($oAccount, $sQuery, $iLimit = 20) : array();
+		$aResult = array();
+		$aSuggestions = array();
+		if ($oAccount instanceof \RainLoop\Model\Account &&
+			$this->IsActive() && \is_array($this->aDrivers) && 0 < \strlen($sQuery))
+		{
+			foreach ($this->aDrivers as $oDriver)
+			{
+				$aSubs = null;
+				if ($oDriver)
+				{
+					$aSubs = $oDriver->Process($oAccount, $sQuery, $iLimit);
+					if (\is_array($aSubs) && 0 < \count($aSubs))
+					{
+						$aSuggestions = \array_merge($aSuggestions, $aSubs);
+					}
+				}
+			}
+		}
+
+		$aCache = array();
+		foreach ($aSuggestions as $aItem) // remove duplicates
+		{
+			$sLine = \implode('~~', $aItem);
+			if (!isset($aCache[$sLine]))
+			{
+				$aCache[$sLine] = true;
+				$aResult[] = $aItem;
+			}
+		}
+
+		if ($iLimit < \count($aResult))
+		{
+			$aResult = \array_slice($aResult, 0, $iLimit);
+		}
+
+		return $aResult;
 	}
 
 	/**
@@ -37,6 +78,6 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function IsActive()
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Suggestions\ISuggestions;
+		return \is_array($this->aDrivers) && 0 < \count($this->aDrivers);
 	}
 }

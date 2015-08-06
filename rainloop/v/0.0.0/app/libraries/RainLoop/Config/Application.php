@@ -11,7 +11,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		parent::__construct('application.ini',
 			'; RainLoop Webmail configuration file
-; Please don\'t add custom parameters here, those will be overwritten');
+; Please don\'t add custom parameters here, those will be overwritten',
+			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
 
 	/**
@@ -70,6 +71,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
 
 				'allow_additional_accounts'		=> array(true, ''),
+				'allow_additional_identities'	=> array(true, ''),
 
 				'messages_per_page'		=> array(20, ' Number of messages displayed on page by default'),
 
@@ -88,8 +90,13 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
 				'login_powered'		=> array(true),
-				'user_logo'			=> array(''),
+
 				'user_css'			=> array(''),
+				'user_logo'			=> array(''),
+				'user_logo_title'	=> array(''),
+				'user_logo_message'	=> array(''),
+				'user_iframe_message'	=> array(''),
+
 				'welcome_page_url'		=> array(''),
 				'welcome_page_display'	=> array('none')
 			),
@@ -132,8 +139,21 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'capa' => array(
+				'folders' => array(true),
+				'composer' => array(true),
+				'contacts' => array(true),
+				'settings' => array(true),
+				'quota' => array(true),
+				'help' => array(true),
+				'reload' => array(true),
+				'search' => array(true),
+				'search_adv' => array(true),
 				'filters' => array(true),
-				'templates' => array(true)
+				'x-templates' => array(false),
+				'dangerous_actions' => array(true),
+				'message_actions' => array(true),
+				'messagelist_actions' => array(true),
+				'attachments_actions' => array(true)
 			),
 
 			'login' => array(
@@ -145,6 +165,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'determine_user_language' => array(true, ''),
 				'determine_user_domain' => array(false, ''),
+
+				'welcome_page' => array(false, ''),
 
 				'forgot_password_link_url' => array('', ''),
 				'registration_link_url' => array('', ''),
@@ -166,7 +188,7 @@ Values:
 
 			'defaults' => array(
 				'view_editor_type'		=> array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
-				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 3 - bottom preview'),
+				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'	=> array(true),
 				'autologout'			=> array(30),
 				'show_images'			=> array(false),
@@ -185,6 +207,9 @@ Values:
 
 				'hide_passwords' => array(true, 'Required for development purposes only.
 Disabling this option is not recommended.'),
+
+				'time_offset' => array(0),
+				'session_filter' => array(''),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
@@ -216,7 +241,7 @@ Examples:
 
 				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
 				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
-				'auth_logging_format' => array('Auth failed: ip={request:ip} user={imap:login} host={imap:host} port={imap:port}')
+				'auth_logging_format' => array('[{date:Y-m-d H:i:s}] Auth failed: ip={request:ip} user={imap:login} host={imap:host} port={imap:port}')
 			),
 
 			'debug' => array(
@@ -226,6 +251,7 @@ Examples:
 			'social' => array(
 				'google_enable' => array(false, 'Google'),
 				'google_enable_auth' => array(false),
+				'google_enable_auth_fast' => array(false),
 				'google_enable_drive' => array(false),
 				'google_enable_preview' => array(false),
 				'google_client_id' => array(''),
@@ -278,11 +304,11 @@ Enables caching in the system'),
 				'allow_html_editor_source_button' => array(false),
 				'allow_html_editor_biti_buttons' => array(false),
 				'allow_ctrl_enter_on_compose' => array(false),
+				'try_to_detect_hidden_images' => array(false),
 				'hide_dangerous_actions' => array(false),
 				'use_app_debug_js' => array(false),
 				'use_app_debug_css' => array(false),
 				'use_imap_sort' => array(true),
-				'use_imap_esearch_esort' => array(true),
 				'use_imap_force_selection' => array(false),
 				'use_imap_list_subscribe' => array(true),
 				'use_imap_thread' => array(true),
@@ -295,12 +321,19 @@ Enables caching in the system'),
 				'imap_message_list_fast_simple_search' => array(true),
 				'imap_message_list_count_limit_trigger' => array(0),
 				'imap_message_list_date_filter' => array(0),
+				'imap_message_list_permanent_filter' => array(''),
+				'imap_message_all_headers' => array(false),
 				'imap_large_thread_limit' => array(50),
 				'imap_folder_list_limit' => array(200),
 				'imap_show_login_alert' => array(true),
 				'smtp_show_server_errors' => array(false),
 				'sieve_allow_raw_script' => array(false),
 				'sieve_utf8_folder_name' => array(true),
+				'mail_func_clear_headers' => array(true),
+				'mail_func_additional_parameters' => array(false),
+				'favicon_status' => array(true),
+				'folders_spec_limit' => array(50),
+				'owncloud_save_folder' => array('Attachments'),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),
@@ -315,6 +348,9 @@ Enables caching in the system'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_memcache_expire' => array(43200),
 				'use_local_proxy_for_external_images' => array(false),
+				'cookie_path' => array('/'),
+				'startup_url' => array(''),
+				'emogrifier' => array(true),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

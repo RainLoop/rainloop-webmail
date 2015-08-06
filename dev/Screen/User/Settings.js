@@ -47,6 +47,16 @@
 	 */
 	SettingsUserScreen.prototype.setupSettings = function (fCallback)
 	{
+		if (!Settings.capa(Enums.Capa.Settings))
+		{
+			if (fCallback)
+			{
+				fCallback();
+			}
+
+			return false;
+		}
+
 		kn.addSettingsViewModel(require('Settings/User/General'),
 			'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
@@ -56,9 +66,12 @@
 				'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
-		kn.addSettingsViewModel(require('Settings/User/Accounts'), 'SettingsAccounts',
-			Settings.capa(Enums.Capa.AdditionalAccounts) ?
-				'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME' : 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'accounts');
+		if (Settings.capa(Enums.Capa.AdditionalAccounts) || Settings.capa(Enums.Capa.Identities))
+		{
+			kn.addSettingsViewModel(require('Settings/User/Accounts'), 'SettingsAccounts',
+				Settings.capa(Enums.Capa.AdditionalAccounts) ?
+					'SETTINGS_LABELS/LABEL_ACCOUNTS_NAME' : 'SETTINGS_LABELS/LABEL_IDENTITIES_NAME', 'accounts');
+		}
 
 		if (Settings.capa(Enums.Capa.Sieve))
 		{
@@ -72,10 +85,10 @@
 				'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
-		if (AccountStore.isRootAccount() &&
+		if (AccountStore.isRootAccount() && (
 			(Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
 			Settings.settingsGet('AllowFacebookSocial') ||
-			Settings.settingsGet('AllowTwitterSocial'))
+			Settings.settingsGet('AllowTwitterSocial')))
 		{
 			kn.addSettingsViewModel(require('Settings/User/Social'),
 				'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
@@ -93,8 +106,11 @@
 				'SettingsTemplates', 'SETTINGS_LABELS/LABEL_TEMPLATES_NAME', 'templates');
 		}
 
-		kn.addSettingsViewModel(require('Settings/User/Folders'),
-			'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+		if (Settings.capa(Enums.Capa.Folders))
+		{
+			kn.addSettingsViewModel(require('Settings/User/Folders'),
+				'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+		}
 
 		if (Settings.capa(Enums.Capa.Themes))
 		{
@@ -114,12 +130,15 @@
 		{
 			fCallback();
 		}
+
+		return true;
 	};
 
 	SettingsUserScreen.prototype.onShow = function ()
 	{
 		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
+		Globals.leftPanelType('');
 	};
 
 	SettingsUserScreen.prototype.setSettingsTitle = function ()

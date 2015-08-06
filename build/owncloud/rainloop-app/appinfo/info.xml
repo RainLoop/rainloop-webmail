@@ -4,7 +4,7 @@
 	<name>RainLoop</name>
 	<description>Simple, modern and fast web-based email client.</description>
 	<version>0.0</version>
-	<licence>CC BY-NC-SA 3.0</licence>
+	<licence></licence>
 	<author>RainLoop Team</author>
 	<require>6.0</require>
 	<dependencies>

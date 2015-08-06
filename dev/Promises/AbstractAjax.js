@@ -10,8 +10,10 @@
 
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
+		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
 		Links = require('Common/Links'),
+		Plugins = require('Common/Plugins'),
 
 		Settings = require('Storage/Settings'),
 
@@ -71,6 +73,8 @@
 			oParameters['XToken'] = Settings.settingsGet('Token');
 		}
 
+		Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
+
 		this.setTrigger(fTrigger, true);
 
 		oH = $.ajax({
@@ -83,11 +87,25 @@
 			'global': true
 		}).always(function (oData, sTextStatus) {
 
-			var bCached = false;
+			var bCached = false, oErrorData = null, sType = Enums.StorageResultType.Error;
 			if (oData && oData['Time'])
 			{
 				bCached = Utils.pInt(oData['Time']) > Utils.microtime() - iStart;
 			}
+
+			// backward capability
+			switch (true)
+			{
+				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
+					sType = Enums.StorageResultType.Success;
+					break;
+				case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
+					sType = Enums.StorageResultType.Abort;
+					break;
+			}
+
+			Plugins.runHook('ajax-default-response', [sAction,
+				Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oParameters]);
 
 			if ('success' === sTextStatus)
 			{
@@ -98,15 +116,18 @@
 				}
 				else if (oData && oData.Action)
 				{
+					oErrorData = oData;
 					oDeferred.reject(oData.ErrorCode ? oData.ErrorCode : Enums.Notification.AjaxFalse);
 				}
 				else
 				{
+					oErrorData = oData;
 					oDeferred.reject(Enums.Notification.AjaxParse);
 				}
 			}
 			else if ('timeout' === sTextStatus)
 			{
+				oErrorData = oData;
 				oDeferred.reject(Enums.Notification.AjaxTimeout);
 			}
 			else if ('abort' === sTextStatus)
@@ -118,6 +139,7 @@
 			}
 			else
 			{
+				oErrorData = oData;
 				oDeferred.reject(Enums.Notification.AjaxParse);
 			}
 
@@ -128,6 +150,45 @@
 			}
 
 			self.setTrigger(fTrigger, false);
+
+			if (oErrorData)
+			{
+				if (-1 < Utils.inArray(oErrorData.ErrorCode, [
+					Enums.Notification.AuthError, Enums.Notification.AccessError,
+					Enums.Notification.ConnectionError, Enums.Notification.DomainNotAllowed, Enums.Notification.AccountNotAllowed,
+					Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
+				]))
+				{
+					Globals.iAjaxErrorCount++;
+				}
+
+				if (Enums.Notification.InvalidToken === oErrorData.ErrorCode)
+				{
+					Globals.iTokenErrorCount++;
+				}
+
+				if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
+				{
+					if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
+					{
+						 Globals.__APP__.loginAndLogoutReload(false, true);
+					}
+				}
+
+				if (oErrorData.ClearAuth || oErrorData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
+				{
+					if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
+					{
+						Globals.__APP__.clearClientSideToken();
+					}
+
+					if (Globals.__APP__ && !oErrorData.ClearAuth && Globals.__APP__.loginAndLogoutReload)
+					{
+						Globals.__APP__.loginAndLogoutReload(false, true);
+					}
+				}
+			}
+
 		});
 
 		if (oH)

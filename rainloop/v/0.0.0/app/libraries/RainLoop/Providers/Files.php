@@ -117,6 +117,17 @@ class Files extends \RainLoop\Providers\AbstractProvider
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	public function GenerateLocalFullFileName($oAccount, $sKey)
+	{
+		return $this->oDriver ? $this->oDriver->GenerateLocalFullFileName($oAccount, $sKey) : '';
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function IsActive()

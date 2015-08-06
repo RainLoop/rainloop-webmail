@@ -28,106 +28,150 @@
 	{
 		AbstractView.call(this, 'Popups', 'PopupsComposeOpenPgp');
 
+		var self = this;
+
+		this.optionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
+
 		this.notification = ko.observable('');
 
-		this.sign = ko.observable(true);
-		this.encrypt = ko.observable(true);
+		this.sign = ko.observable(false);
+		this.encrypt = ko.observable(false);
 
 		this.password = ko.observable('');
 		this.password.focus = ko.observable(false);
 		this.buttonFocus = ko.observable(false);
 
-		this.from = ko.observable('');
-		this.to = ko.observableArray([]);
 		this.text = ko.observable('');
+		this.selectedPublicKey = ko.observable(null);
 
-		this.resultCallback = null;
+		this.signKey = ko.observable(null);
+		this.encryptKeys = ko.observableArray([]);
+
+		this.encryptKeysView = ko.computed(function () {
+			return _.compact(_.map(this.encryptKeys(), function (oKey) {
+				return oKey ? oKey.key : null;
+			}));
+		}, this);
+
+		this.publicKeysOptions = ko.computed(function () {
+			return _.compact(_.map(PgpStore.openpgpkeysPublic(), function (oKey) {
+				return -1 < Utils.inArray(oKey, self.encryptKeysView()) ? null : {
+					'id': oKey.guid,
+					'name': '(' + oKey.id.substr(-6) + ') ' + oKey.user,
+					'key': oKey
+				};
+			}));
+		});
 
 		this.submitRequest = ko.observable(false);
+
+		this.resultCallback = null;
 
 		// commands
 		this.doCommand = Utils.createCommand(this, function () {
 
 			var
-				self = this,
 				bResult = true,
 				oPrivateKey = null,
+				aPrivateKeys = [],
 				aPublicKeys = []
 			;
 
 			this.submitRequest(true);
 
-			if (bResult && this.sign() && '' === this.from())
-			{
-				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
-				bResult = false;
-			}
-
 			if (bResult && this.sign())
 			{
-				oPrivateKey = PgpStore.findPrivateKeyByEmail(this.from(), this.password());
-				if (!oPrivateKey)
+				if (!this.signKey())
+				{
+					this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
+					bResult = false;
+				}
+				else if (!this.signKey().key)
 				{
 					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
-						'EMAIL': this.from()
+						'EMAIL': this.signKey().email
 					}));
 
 					bResult = false;
 				}
-			}
 
-			if (bResult && this.encrypt() && 0 === this.to().length)
-			{
-				this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_AT_LEAST_ONE_RECIPIENT'));
-				bResult = false;
+				if (bResult)
+				{
+					aPrivateKeys = this.signKey().key.getNativeKeys();
+					oPrivateKey = aPrivateKeys[0] || null;
+
+					try
+					{
+						if (oPrivateKey)
+						{
+							oPrivateKey.decrypt(Utils.pString(this.password()));
+						}
+					}
+					catch (e)
+					{
+						oPrivateKey = null;
+					}
+
+					if (!oPrivateKey)
+					{
+						this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+						bResult = false;
+					}
+				}
 			}
 
 			if (bResult && this.encrypt())
 			{
-				aPublicKeys = [];
-				_.each(this.to(), function (sEmail) {
-					var aKeys = PgpStore.findPublicKeysByEmail(sEmail);
-					if (0 === aKeys.length && bResult)
-					{
-						self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
-							'EMAIL': sEmail
-						}));
+				if (0 === this.encryptKeys().length)
+				{
+					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND'));
+					bResult = false;
+				}
+				else if (this.encryptKeys())
+				{
+					aPublicKeys = [];
 
+					_.each(this.encryptKeys(), function (oKey) {
+						if (oKey && oKey.key)
+						{
+							aPublicKeys = aPublicKeys.concat(_.compact(_.flatten(oKey.key.getNativeKeys())));
+						}
+						else if (oKey && oKey.email)
+						{
+							self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+								'EMAIL': oKey.email
+							}));
+
+							bResult = false;
+						}
+					});
+
+					if (bResult && (0 === aPublicKeys.length || this.encryptKeys().length !== aPublicKeys.length))
+					{
 						bResult = false;
 					}
-
-					aPublicKeys = aPublicKeys.concat(aKeys);
-				});
-
-				if (bResult && (0 === aPublicKeys.length || this.to().length !== aPublicKeys.length))
-				{
-					bResult = false;
 				}
 			}
 
-			_.delay(function () {
+			if (bResult && self.resultCallback)
+			{
+				_.delay(function () {
 
-				if (self.resultCallback && bResult)
-				{
-					try {
+					var oPromise = null;
 
+					try
+					{
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.signClearMessage([oPrivateKey], self.text())
-							);
+							oPromise = PgpStore.openpgp.signClearMessage([oPrivateKey], self.text());
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text())
-							);
+							oPromise = PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text());
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
-							self.resultCallback(
-								PgpStore.openpgp.encryptMessage(aPublicKeys, self.text())
-							);
+							oPromise = PgpStore.openpgp.encryptMessage(aPublicKeys, self.text());
 						}
 					}
 					catch (e)
@@ -135,25 +179,84 @@
 						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));
-
-						bResult = false;
 					}
-				}
 
-				if (bResult)
-				{
-					self.cancelCommand();
-				}
+					if (oPromise)
+					{
+						try
+						{
+							oPromise.then(function (mData) {
 
+								self.resultCallback(mData);
+								self.cancelCommand();
+
+							})['catch'](function (e) {
+								self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+									'ERROR': '' + e
+								}));
+							});
+						}
+						catch (e)
+						{
+							self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+								'ERROR': '' + e
+							}));
+						}
+					}
+
+					self.submitRequest(false);
+
+				}, 10);
+			}
+			else
+			{
 				self.submitRequest(false);
+			}
 
-			}, 10);
+			return bResult;
 
 		}, function () {
 			return !this.submitRequest() &&	(this.sign() || this.encrypt());
 		});
 
+		this.addCommand = Utils.createCommand(this, function () {
+
+			var
+				sKeyId = this.selectedPublicKey(),
+				aKeys = this.encryptKeys(),
+				oOption = sKeyId ? _.find(this.publicKeysOptions(), function (oItem) {
+					return oItem && sKeyId === oItem.id;
+				}) : null
+			;
+
+			if (oOption)
+			{
+				aKeys.push({
+					'empty': !oOption.key,
+					'selected': ko.observable(!!oOption.key),
+					'user': oOption.key.user,
+					'hash': oOption.key.id.substr(-6),
+					'key': oOption.key
+				});
+
+				this.encryptKeys(aKeys);
+			}
+
+		}, function () {
+			return !this.submitRequest() &&	this.selectedPublicKey();
+		});
+
+		this.selectedPublicKey.subscribe(function (sValue) {
+			if (sValue)
+			{
+				this.addCommand();
+			}
+		}, this);
+
 		this.sDefaultKeyScope = Enums.KeyState.PopupComposeOpenPGP;
+		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+		this.deletePublickKey = _.bind(this.deletePublickKey, this);
 
 		kn.constructorEnd(this);
 	}
@@ -161,16 +264,24 @@
 	kn.extendAsViewModel(['View/Popup/ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], ComposeOpenPgpPopupView);
 	_.extend(ComposeOpenPgpPopupView.prototype, AbstractView.prototype);
 
+	ComposeOpenPgpPopupView.prototype.deletePublickKey = function (oKey)
+	{
+		this.encryptKeys.remove(oKey);
+	};
+
 	ComposeOpenPgpPopupView.prototype.clearPopup = function ()
 	{
 		this.notification('');
+
+		this.sign(false);
+		this.encrypt(false);
 
 		this.password('');
 		this.password.focus(false);
 		this.buttonFocus(false);
 
-		this.from('');
-		this.to([]);
+		this.signKey(null);
+		this.encryptKeys([]);
 		this.text('');
 
 		this.submitRequest(false);
@@ -220,6 +331,8 @@
 
 		var
 			aRec = [],
+			sEmail = '',
+			oKey = null,
 			oEmail = new EmailModel()
 		;
 
@@ -247,8 +360,44 @@
 			return '' === oEmail.email ? false : oEmail.email;
 		}));
 
-		this.from(oIdentity ? oIdentity.email() : '');
-		this.to(aRec);
+		if (oIdentity && oIdentity.email())
+		{
+			sEmail = oIdentity.email();
+			oKey = PgpStore.findPrivateKeyByEmailNotNative(sEmail);
+			if (oKey)
+			{
+				this.signKey({
+					'user': oKey.user || sEmail,
+					'hash': oKey.id.substr(-6),
+					'key': oKey
+				});
+			}
+		}
+
+		if (this.signKey())
+		{
+			this.sign(true);
+		}
+
+		if (aRec && 0 < aRec.length)
+		{
+			this.encryptKeys(_.compact(_.map(aRec, function (sEmail) {
+				var oKey = PgpStore.findPublicKeyByEmailNotNative(sEmail) || null;
+				return {
+					'empty': !oKey,
+					'selected': ko.observable(!!oKey),
+					'user': oKey ? (oKey.user || sEmail) : sEmail,
+					'hash': oKey ? oKey.id.substr(-6) : '',
+					'key': oKey
+				};
+			})));
+
+			if (0 < this.encryptKeys().length)
+			{
+				this.encrypt(true);
+			}
+		}
+
 		this.text(sText);
 	};
 

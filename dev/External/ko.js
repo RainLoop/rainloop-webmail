@@ -7,6 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
+		JSON = require('JSON'),
 		Opentip = require('Opentip'),
 
 		fDisposalTooltipHelper = function (oElement) {
@@ -24,33 +25,51 @@
 		'init': function (oElement, fValueAccessor) {
 
 			var
-				fValue = fValueAccessor(),
 				oEditor  = null,
+				fValue = fValueAccessor(),
+
 				fUpdateEditorValue = function () {
-					if (oEditor)
+					if (fValue && fValue.__editor)
 					{
-						oEditor.setHtmlOrPlain(fValue());
+						fValue.__editor.setHtmlOrPlain(fValue());
 					}
 				},
+
 				fUpdateKoValue = function () {
-					if (oEditor && oEditor.__inited)
+					if (fValue && fValue.__editor)
 					{
-						fValue(oEditor.getDataWithHtmlMark());
+						fValue(fValue.__editor.getDataWithHtmlMark());
 					}
 				},
+
+				fOnReady = function () {
+					fValue.__editor = oEditor;
+					fUpdateEditorValue();
+				},
+
 				HtmlEditor = require('Common/HtmlEditor')
 			;
 
-			if (fValue)
+			if (ko.isObservable(fValue) && HtmlEditor)
 			{
-				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fUpdateEditorValue, fUpdateKoValue);
-				fValue.__editor = oEditor;
+				oEditor = new HtmlEditor(oElement, fUpdateKoValue, fOnReady, fUpdateKoValue);
+
 				fValue.__fetchEditorValue = fUpdateKoValue;
-				fValue.__updateEditorValue = fUpdateEditorValue;
 
 				fValue.subscribe(fUpdateEditorValue);
-				fUpdateEditorValue();
+
+//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+//				});
 			}
+		}
+	};
+
+	ko.bindingHandlers.json = {
+		'init': function (oElement, fValueAccessor) {
+			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
+		},
+		'update': function (oElement, fValueAccessor) {
+			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 		}
 	};
 
@@ -266,8 +285,7 @@
 
 	ko.bindingHandlers.csstext = {
 		'init': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
-			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
@@ -277,8 +295,7 @@
 			}
 		},
 		'update': function (oElement, fValueAccessor) {
-			var Utils = require('Common/Utils');
-			if (oElement && oElement.styleSheet && !Utils.isUnd(oElement.styleSheet.cssText))
+			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
@@ -320,6 +337,36 @@
 
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
 				$(oElement).off('keypress.koOnEnter');
+			});
+		}
+	};
+
+	ko.bindingHandlers.onSpace = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keyup.koOnSpace', function (oEvent) {
+				if (oEvent && 32 === window.parseInt(oEvent.keyCode, 10))
+				{
+					fValueAccessor().call(oViewModel, oEvent);
+				}
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keyup.koOnSpace');
+			});
+		}
+	};
+
+	ko.bindingHandlers.onTab = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+			$(oElement).on('keydown.koOnTab', function (oEvent) {
+				if (oEvent && 9 === window.parseInt(oEvent.keyCode, 10))
+				{
+					return fValueAccessor().call(oViewModel, !!oEvent.shiftKey);
+				}
+			});
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$(oElement).off('keydown.koOnTab');
 			});
 		}
 	};
@@ -774,7 +821,7 @@
 				'parseOnBlur': true,
 				'allowDragAndDrop': true,
 				'focusCallback': fFocusCallback,
-				'inputDelimiters': [',', ';'],
+				'inputDelimiters': [',', ';', "\n"],
 				'autoCompleteSource': fAutoCompleteSource,
 //				'elementHook': function (oEl, oItem) {
 //					if (oEl && oItem)
@@ -784,6 +831,7 @@
 //					}
 //				},
 				'parseHook': function (aInput) {
+
 					return _.map(aInput, function (sInputValue) {
 
 						var
@@ -801,6 +849,53 @@
 						return [sValue, null];
 
 					});
+
+//					var aResult = [];
+//
+//					_.each(aInput, function (sInputValue) {
+//
+//						var
+//							aM = null,
+//							aValues = [],
+//							sValue = Utils.trim(sInputValue),
+//							oEmail = null
+//						;
+//
+//						if ('' !== sValue)
+//						{
+//							aM = sValue.match(/[@]/g);
+//							if (aM && 0 < aM.length)
+//							{
+//								sValue = sValue.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
+//								aValues = EmailModel.splitHelper(sValue, ';');
+//
+//								_.each(aValues, function (sV) {
+//
+//									oEmail = new EmailModel();
+//									oEmail.mailsoParse(sV);
+//
+//									if (oEmail.email)
+//									{
+//										aResult.push([oEmail.toLine(false), oEmail]);
+//									}
+//									else
+//									{
+//										aResult.push(['', null]);
+//									}
+//								});
+//							}
+//							else
+//							{
+//								aResult.push([sInputValue, null]);
+//							}
+//						}
+//						else
+//						{
+//							aResult.push([sInputValue, null]);
+//						}
+//					});
+//
+//					return aResult;
 				},
 				'change': _.bind(function (oEvent) {
 					$oEl.data('EmailsTagsValue', oEvent.target.value);

@@ -31,10 +31,12 @@
 		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	TemplatesUserSettings.prototype.scrollableOptions = function ()
+	TemplatesUserSettings.prototype.scrollableOptions = function (sWrapper)
 	{
 		return {
-			handle: '.drag-handle'
+			handle: '.drag-handle',
+			containment: sWrapper || 'parent',
+			axis: 'y'
 		};
 	};
 

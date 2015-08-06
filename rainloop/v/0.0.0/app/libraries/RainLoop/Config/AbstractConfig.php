@@ -10,6 +10,11 @@ abstract class AbstractConfig
 	private $sFile;
 
 	/**
+	 * @var string
+	 */
+	private $sAdditionalFile;
+
+	/**
 	 * @var array
 	 */
 	private $aData;
@@ -27,12 +32,19 @@ abstract class AbstractConfig
 	/**
 	 * @param string $sFileName
 	 * @param string $sFileHeader = ''
+	 * @param string $sAdditionalFileName = ''
 	 *
 	 * @return void
 	 */
-	public function __construct($sFileName, $sFileHeader = '')
+	public function __construct($sFileName, $sFileHeader = '', $sAdditionalFileName = '')
 	{
-		$this->sFile = \APP_PRIVATE_DATA.'configs/'.$sFileName;
+		$this->sFile = \APP_PRIVATE_DATA.'configs/'.\trim($sFileName);
+
+		$sAdditionalFileName = \trim($sAdditionalFileName);
+		$this->sAdditionalFile = \APP_PRIVATE_DATA.'configs/'.$sAdditionalFileName;
+		$this->sAdditionalFile = 0 < \strlen($sAdditionalFileName) &&
+			\file_exists($this->sAdditionalFile) ? $this->sAdditionalFile : '';
+
 		$this->sFileHeader = $sFileHeader;
 		$this->aData = $this->defaultValues();
 
@@ -109,7 +121,7 @@ abstract class AbstractConfig
 	 */
 	private function cacheKey()
 	{
-		return 'config:'.\sha1($this->sFile).':';
+		return 'config:'.\sha1($this->sFile).':'.\sha1($this->sAdditionalFile).':';
 	}
 
 	/**
@@ -120,12 +132,17 @@ abstract class AbstractConfig
 		if ($this->bUseApcCache)
 		{
 			$iMTime = @\filemtime($this->sFile);
-			if (\is_int($iMTime) && 0 < $iMTime)
+			$iMTime = \is_int($iMTime) && 0 < $iMTime ? $iMTime : 0;
+
+			$iATime = $this->sAdditionalFile ? @\filemtime($this->sAdditionalFile) : 0;
+			$iATime = \is_int($iATime) && 0 < $iATime ? $iATime : 0;
+
+			if (0 < $iMTime)
 			{
 				$sKey = $this->cacheKey();
 
-				$iTime = \apc_fetch($sKey.'time');
-				if ($iTime && $iMTime === (int) $iTime)
+				$sTimeHash = \apc_fetch($sKey.'time');
+				if ($sTimeHash && $sTimeHash === \md5($iMTime.'/'.$iATime))
 				{
 					$aFetchData = \apc_fetch($sKey.'data');
 					if (\is_array($aFetchData))
@@ -148,11 +165,16 @@ abstract class AbstractConfig
 		if ($this->bUseApcCache)
 		{
 			$iMTime = @\filemtime($this->sFile);
-			if (\is_int($iMTime) && 0 < $iMTime)
+			$iMTime = \is_int($iMTime) && 0 < $iMTime ? $iMTime : 0;
+
+			$iATime = $this->sAdditionalFile ? @\filemtime($this->sAdditionalFile) : 0;
+			$iATime = \is_int($iATime) && 0 < $iATime ? $iATime : 0;
+
+			if (0 < $iMTime)
 			{
 				$sKey = $this->cacheKey();
 
-				\apc_store($sKey.'time', $iMTime);
+				\apc_store($sKey.'time', \md5($iMTime.'/'.$iATime));
 				\apc_store($sKey.'data', $this->aData);
 
 				return true;
@@ -193,7 +215,7 @@ abstract class AbstractConfig
 			}
 
 			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
-			if (\is_array($aData) && 0 < count($aData))
+			if (\is_array($aData) && 0 < \count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
 				{
@@ -204,6 +226,28 @@ abstract class AbstractConfig
 							$this->Set($sSectionKey, $sParamKey, $mParamValue);
 						}
 					}
+				}
+
+				unset($aData);
+
+				if (\file_exists($this->sAdditionalFile) && \is_readable($this->sAdditionalFile))
+				{
+					$aSubData = \RainLoop\Utils::CustomParseIniFile($this->sAdditionalFile, true);
+					if (\is_array($aSubData) && 0 < \count($aSubData))
+					{
+						foreach ($aSubData as $sSectionKey => $aSectionValue)
+						{
+							if (\is_array($aSectionValue))
+							{
+								foreach ($aSectionValue as $sParamKey => $mParamValue)
+								{
+									$this->Set($sSectionKey, $sParamKey, $mParamValue);
+								}
+							}
+						}
+					}
+
+					unset($aSubData);
 				}
 
 				$this->storeDataToCache();

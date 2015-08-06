@@ -17,8 +17,13 @@
 		}
 
 		.open-pgp-key-img {
-			font-size: 12px;
-			margin-right: 5px;
+
+			margin-right: 10px;
+
+			.svg-icon {
+				width: 12px;
+				height: 12px;
+			}
 		}
 
 		.open-pgp-key-id, .open-pgp-key-user {
@@ -49,7 +54,11 @@
 
 		.delete-open-pgp-key, .view-open-pgp-key {
 			cursor: pointer;
-			opacity: 0.5;
+			opacity: 0.7;
+
+			&:hover {
+				opacity: 0.9;
+			}
 		}
 	}
 }

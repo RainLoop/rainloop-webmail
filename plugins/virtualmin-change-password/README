@@ -1,0 +1,1 @@
+This plugin utilizes Virtualmin's remote API to change user passwords. The plugin requires the Admin user name and password to succesfully execute the password change. The host and port where Virtualmin listens on is also needed. See https://www.virtualmin.com/documentation/developer/http for more information.

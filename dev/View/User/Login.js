@@ -36,6 +36,8 @@
 	{
 		AbstractView.call(this, 'Center', 'Login');
 
+		this.welcome = ko.observable(!!Settings.settingsGet('UseLoginWelcomePage'));
+
 		this.email = ko.observable('');
 		this.password = ko.observable('');
 		this.signMe = ko.observable(false);
@@ -213,12 +215,10 @@
 								}
 								else if (oData.Admin)
 								{
-									this.formHidden(true);
 									require('App/User').redirectToAdminPanel();
 								}
 								else
 								{
-									this.formHidden(true);
 									require('App/User').loginAndLogoutReload(false);
 								}
 							}
@@ -296,16 +296,28 @@
 		});
 
 		this.googleLoginEnabled = ko.observable(false);
+		this.googleFastLoginEnabled = ko.observable(false);
 
 		this.googleCommand = Utils.createCommand(this, function () {
 
 			window.open(Links.socialGoogle(), 'Google',
-				'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
+				'left=200,top=100,width=650,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
 
 			return true;
 
 		}, function () {
 			return !this.submitRequest() && this.googleLoginEnabled();
+		});
+
+		this.googleFastCommand = Utils.createCommand(this, function () {
+
+			window.open(Links.socialGoogle(true), 'Google',
+				'left=200,top=100,width=650,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
+
+			return true;
+
+		}, function () {
+			return !this.submitRequest() && this.googleFastLoginEnabled();
 		});
 
 		this.twitterLoginEnabled = ko.observable(false);
@@ -337,6 +349,11 @@
 
 	kn.extendAsViewModel(['View/User/Login', 'View/App/Login', 'LoginViewModel'], LoginUserView);
 	_.extend(LoginUserView.prototype, AbstractView.prototype);
+
+	LoginUserView.prototype.displayMainForm = function ()
+	{
+		this.welcome(false);
+	};
 
 	LoginUserView.prototype.onShow = function ()
 	{
@@ -382,8 +399,6 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-					self.formHidden(true);
-					
 					require('App/User').loginAndLogoutReload(false);
 				}
 				else
@@ -397,6 +412,8 @@
 		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
 		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
 			!!Settings.settingsGet('AllowGoogleSocialAuth'));
+		this.googleFastLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
+			!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
 
 		switch (sSignMe)
 		{
@@ -426,7 +443,7 @@
 		this.email(AppStore.devEmail);
 		this.password(AppStore.devPassword);
 
-		if (this.googleLoginEnabled())
+		if (this.googleLoginEnabled() || this.googleFastLoginEnabled())
 		{
 			window['rl_' + sJsHash + '_google_login_service'] = fSocial;
 		}
@@ -469,6 +486,21 @@
 		kn.showScreenPopup(require('View/Popup/Languages'), [
 			this.language, this.languages(), LanguageStore.userLanguage()
 		]);
+	};
+
+	LoginUserView.prototype.selectLanguageOnTab = function (bShift)
+	{
+		if (!bShift)
+		{
+			var self = this;
+			_.delay(function () {
+				self.emailFocus(true);
+			}, 5);
+
+			return false;
+		}
+
+		return true;
 	};
 
 	module.exports = LoginUserView;

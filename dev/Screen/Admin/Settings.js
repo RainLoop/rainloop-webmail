@@ -38,8 +38,16 @@
 		kn.addSettingsViewModel(require('Settings/Admin/Login'),
 			'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
 
-		kn.addSettingsViewModel(require('Settings/Admin/Branding'),
-			'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
+		if (RL_COMMUNITY)
+		{
+			kn.addSettingsViewModel(require('Settings/Admin/Branding'),
+				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
+		}
+		else
+		{
+			kn.addSettingsViewModel(require('Settings/Admin/Prem/Branding'),
+				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
+		}
 
 		kn.addSettingsViewModel(require('Settings/Admin/Contacts'),
 			'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
@@ -59,8 +67,11 @@
 		kn.addSettingsViewModel(require('Settings/Admin/Packages'),
 			'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
 
-		kn.addSettingsViewModel(require('Settings/Admin/Licensing'),
-			'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
+		if (!RL_COMMUNITY)
+		{
+			kn.addSettingsViewModel(require('Settings/Admin/Prem/Licensing'),
+				'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
+		}
 
 		kn.addSettingsViewModel(require('Settings/Admin/About'),
 			'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');

@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Utils = require('Common/Utils'),
+		Translator = require('Common/Translator'),
 
 		MessageStore = require('Stores/User/Message'),
 
@@ -45,6 +46,19 @@
 
 			this.cancelCommand();
 		});
+
+		this.selectedDates = ko.computed(function () {
+			Translator.trigger();
+			return [
+				{'id': -1, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_ALL')},
+				{'id': 3, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_DAYS')},
+				{'id': 7, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_7_DAYS')},
+				{'id': 30, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_MONTH')},
+				{'id': 90, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS')},
+				{'id': 180, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS')},
+				{'id': 365, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_YEAR')}
+			];
+		}, this);
 
 		kn.constructorEnd(this);
 	}

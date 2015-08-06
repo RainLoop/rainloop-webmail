@@ -1,4 +1,6 @@
 
+/* global RL_COMMUNITY */
+
 (function () {
 
 	'use strict';
@@ -27,6 +29,11 @@
 	 * @type {?}
 	 */
 	Globals.startMicrotime = (new window.Date()).getTime();
+
+	/**
+	 * @type {boolean}
+	 */
+	Globals.community = RL_COMMUNITY;
 
 	/**
 	 * @type {?}
@@ -203,6 +210,7 @@
 	};
 
 	Globals.leftPanelDisabled = ko.observable(false);
+	Globals.leftPanelType = ko.observable('');
 
 	// popups
 	Globals.popupVisibilityNames = ko.observableArray([]);
@@ -249,7 +257,7 @@
 
 							sTagName = sTagName.toUpperCase();
 							return !(sTagName === 'INPUT' || sTagName === 'SELECT' || sTagName === 'TEXTAREA' ||
-								(oElement && sTagName === 'DIV' && 'editorHtmlArea' === oElement.className && oElement.contentEditable)
+								(oElement && sTagName === 'DIV' && ('editorHtmlArea' === oElement.className || 'true' === '' + oElement.contentEditable))
 							);
 						}
 

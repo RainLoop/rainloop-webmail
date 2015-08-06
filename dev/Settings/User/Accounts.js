@@ -24,7 +24,7 @@
 	function AccountsUserSettings()
 	{
 		this.allowAdditionalAccount = Settings.capa(Enums.Capa.AdditionalAccounts);
-		this.allowIdentities = true;
+		this.allowIdentities = Settings.capa(Enums.Capa.Identities);
 
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityStore.identities;
@@ -33,10 +33,12 @@
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	AccountsUserSettings.prototype.scrollableOptions = function ()
+	AccountsUserSettings.prototype.scrollableOptions = function (sWrapper)
 	{
 		return {
-			handle: '.drag-handle'
+			handle: '.drag-handle',
+			containment: sWrapper || 'parent',
+			axis: 'y'
 		};
 	};
 

@@ -21,6 +21,7 @@ class Parameter
 	const CHARSET = 'charset';
 	const NAME = 'name';
 	const FILENAME = 'filename';
+	const FORMAT = 'format';
 	const BOUNDARY = 'boundary';
 	const PROTOCOL = 'protocol';
 }

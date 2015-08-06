@@ -22,14 +22,11 @@
 		this.language = ko.observable('')
 			.extend({'limitedList': this.languages});
 
-		this.userLanguage = ko.observable('')
-			.extend({'limitedList': this.languages});
-
 		this.languageAdmin = ko.observable('')
 			.extend({'limitedList': this.languagesAdmin});
 
-		this.userLanguageAdmin = ko.observable('')
-			.extend({'limitedList': this.languagesAdmin});
+		this.userLanguage = ko.observable('');
+		this.userLanguageAdmin = ko.observable('');
 	}
 
 	LanguageStore.prototype.populate = function ()

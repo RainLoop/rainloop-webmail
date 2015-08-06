@@ -10,7 +10,7 @@ class Property
 	 * @var int
 	 */
 	public $IdProperty;
-	
+
 	/**
 	 * @var int
 	 */
@@ -25,6 +25,11 @@ class Property
 	 * @var string
 	 */
 	public $Value;
+
+	/**
+	 * @var string
+	 */
+	public $ValueLower;
 
 	/**
 	 * @var string
@@ -49,14 +54,24 @@ class Property
 	public function Clear()
 	{
 		$this->IdProperty = 0;
-		
+
 		$this->Type = PropertyType::UNKNOWN;
 		$this->TypeStr = '';
 
 		$this->Value = '';
+		$this->ValueLower = '';
 		$this->ValueCustom = '';
 
 		$this->Frec = 0;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsName()
+	{
+		return \in_array($this->Type, array(PropertyType::FULLNAME, PropertyType::FIRST_NAME,
+			PropertyType::LAST_NAME, PropertyType::MIDDLE_NAME, PropertyType::NICK_NAME));
 	}
 
 	/**
@@ -66,7 +81,7 @@ class Property
 	{
 		return PropertyType::EMAIl === $this->Type;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -81,6 +96,14 @@ class Property
 	public function IsWeb()
 	{
 		return PropertyType::WEB_PAGE === $this->Type;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function IsValueForLower()
+	{
+		return $this->IsEmail() || $this->IsName() || $this->IsWeb();
 	}
 
 	/**
@@ -111,7 +134,8 @@ class Property
 		$this->Value = \trim($this->Value);
 		$this->ValueCustom = \trim($this->ValueCustom);
 		$this->TypeStr = \trim($this->TypeStr);
-		
+		$this->ValueLower = '';
+
 		if (0 < \strlen($this->Value))
 		{
 			// lower
@@ -120,13 +144,25 @@ class Property
 				$this->Value = \MailSo\Base\Utils::StrToLowerIfAscii($this->Value);
 			}
 
-			// phones clear value for searching
+			if ($this->IsName())
+			{
+				$this->Value = \MailSo\Base\Utils::StripSpaces($this->Value);
+			}
+
+			// lower value for searching
+			if ($this->IsValueForLower() && \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
+			{
+				$this->ValueLower = (string) @\mb_strtolower($this->Value, 'UTF-8');
+			}
+
+			// phone value for searching
 			if ($this->IsPhone())
 			{
-				$sPhone = $this->Value;
+				$sPhone = \trim($this->Value);
 				$sPhone = \preg_replace('/^[+]+/', '', $sPhone);
 				$sPhone = \preg_replace('/[^\d]/', '', $sPhone);
-				$this->ValueCustom = $sPhone;
+
+				$this->ValueCustom = \trim($sPhone);
 			}
 		}
 	}

@@ -24,15 +24,16 @@
 		var self = this;
 
 		this.fLang = null;
-		this.sUserLanguage = '';
+		this.userLanguage = ko.observable('');
 
 		this.langs = ko.observableArray([]);
 
 		this.languages = ko.computed(function () {
+			var sUserLanguage = self.userLanguage();
 			return _.map(self.langs(), function (sLanguage) {
 				return {
 					'key': sLanguage,
-					'user': sLanguage === self.sUserLanguage,
+					'user': sLanguage === sUserLanguage,
 					'selected': ko.observable(false),
 					'fullName': Utils.convertLangName(sLanguage)
 				};
@@ -63,19 +64,20 @@
 		});
 	};
 
+	LanguagesPopupView.prototype.onBeforeShow = function ()
+	{
+		this.fLang = null;
+		this.userLanguage('');
+
+		this.langs([]);
+	};
+
 	LanguagesPopupView.prototype.onShow = function (fLanguage, aLangs, sUserLanguage)
 	{
 		this.fLang = fLanguage;
-		this.sUserLanguage = sUserLanguage || '';
+		this.userLanguage(sUserLanguage || '');
 
 		this.langs(aLangs);
-	};
-
-	LanguagesPopupView.prototype.onHide = function ()
-	{
-		this.fLang = null;
-		this.sUserLanguage = '';
-		this.langs([]);
 	};
 
 	LanguagesPopupView.prototype.changeLanguage = function (sLang)

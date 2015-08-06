@@ -203,6 +203,20 @@
 	};
 
 	/**
+	 * @param {string} sKey
+	 */
+	AbstractApp.prototype.setClientSideToken = function (sKey)
+	{
+		if (window.__rlah_set)
+		{
+			window.__rlah_set(sKey);
+
+			require('Storage/Settings').settingsSet('AuthAccountHash', sKey);
+			require('Common/Links').populateAuthSuffix();
+		}
+	};
+
+	/**
 	 * @param {boolean=} bAdmin = false
 	 * @param {boolean=} bLogout = false
 	 * @param {boolean=} bClose = false
@@ -269,6 +283,8 @@
 
 	AbstractApp.prototype.bootstart = function ()
 	{
+		Utils.log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
+
 		Events.pub('rl.bootstart');
 
 		var
@@ -279,19 +295,23 @@
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
 		ko.components.register('Input', require('Component/Input'));
 		ko.components.register('Select', require('Component/Select'));
-		ko.components.register('TextArea', require('Component/TextArea'));
 		ko.components.register('Radio', require('Component/Radio'));
+		ko.components.register('TextArea', require('Component/TextArea'));
 
 		ko.components.register('x-script', require('Component/Script'));
+		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
-		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
+		if (/**false && /**/Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
+			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
 		}
 		else
 		{
 //			ko.components.register('Checkbox', require('Component/Classic/Checkbox'));
+//			ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox'));
 			ko.components.register('Checkbox', require('Component/Checkbox'));
+			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
 		}
 
 		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);
@@ -356,6 +376,11 @@
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
 			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
+		});
+
+		Globals.leftPanelType.subscribe(function (sValue) {
+			Globals.$html.toggleClass('rl-left-panel-none', 'none' === sValue);
+			Globals.$html.toggleClass('rl-left-panel-short', 'short' === sValue);
 		});
 
 		ssm.ready();

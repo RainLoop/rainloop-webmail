@@ -8,6 +8,7 @@
 
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
+		Utils = require('Common/Utils'),
 
 		Settings = require('Storage/Settings'),
 
@@ -52,6 +53,8 @@
 
 		this.contactsIsAllowed = ko.observable(false);
 
+		this.attachmentsActions = ko.observableArray([]);
+
 		this.devEmail = '';
 		this.devPassword = '';
 	}
@@ -66,6 +69,9 @@
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
 
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
+
+		var mAttachmentsActions = Settings.settingsGet('AttachmentsActions');
+		this.attachmentsActions(Utils.isNonEmptyArray(mAttachmentsActions) ? mAttachmentsActions : []);
 
 		this.devEmail = Settings.settingsGet('DevEmail');
 		this.devPassword = Settings.settingsGet('DevPassword');

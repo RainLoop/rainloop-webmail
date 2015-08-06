@@ -32,7 +32,7 @@
 			}
 		}, 500);
 	};
-	
+
 	Bar.prototype.stopAddInterval = function () {
 		window.clearInterval(this.addInterval);
 		this.addInterval = 0;
@@ -78,7 +78,7 @@
 
 		return this.render();
 	};
-	
+
 	Bar.prototype.add = function (iProg) {
 		this.progress += window.parseInt(iProg, 10);
 		this.progress = 100 < this.progress ? 100 : this.progress;
@@ -86,7 +86,7 @@
 
 		return this.render();
 	};
-	
+
 	Bar.prototype.setSpeed = function (iSpeed, iStopProgress) {
 		this.addSpeed = iSpeed;
 		this.stopProgress = iStopProgress || 100;

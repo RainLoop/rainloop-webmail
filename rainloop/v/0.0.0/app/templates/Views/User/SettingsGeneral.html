@@ -3,6 +3,17 @@
 		<div class="legend">
 			<span class="i18n i18n-animation" data-i18n="SETTINGS_GENERAL/LEGEND_GENERAL"></span>
 		</div>
+		<div class="control-group">
+			<label class="control-label">
+				<span class="i18n" data-i18n="SETTINGS_GENERAL/LABEL_IDENTITY"></span>
+			</label>
+			<div class="controls">
+				<div style="display: inline-block; margin-top: 5px">
+					<b data-bind="click: editMainIdentity, text: identityMainDesc"
+						style="border-bottom: 1px dashed #555; cursor: pointer; padding: 2px 0px;"></b>
+				</div>
+			</div>
+		</div>
 		<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
 			<label class="control-label">
 				<span class="i18n" data-i18n="SETTINGS_GENERAL/LABEL_LANGUAGE"></span>
@@ -12,7 +23,7 @@
 					<span class="flag-wrapper">
 						<span data-bind="css: 'flag flag-' + language()" style=""></span>
 					</span>
-					<span class="flag-name" data-bind="text: languageFullName, click: selectLanguage"></span>
+					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
 					&nbsp;&nbsp;
 					<div data-bind="component: {
 						name: 'SaveTrigger',
@@ -55,7 +66,6 @@
 				}"></div>
 			</div>
 		</div>
-		<br />
 		<div class="control-group">
 			<label class="control-label">
 			   <span class="i18n" data-i18n="SETTINGS_GENERAL/LABEL_MESSAGE_PER_PAGE"></span>

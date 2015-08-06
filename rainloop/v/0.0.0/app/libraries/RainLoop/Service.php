@@ -193,17 +193,23 @@ class Service
 
 			$sResult .= '<!--';
 			$sResult .= ' [version:'.APP_VERSION;
+
+			if ($this->oActions->IsOpen())
+			{
+				$sResult .= '][AGPLv3';
+			}
+
 			$sResult .= '][time:'.\substr(\microtime(true) - APP_START, 0, 6);
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
-			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+//			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
+//			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
 
 			if (\RainLoop\Utils::IsOwnCloud())
 			{
 				$sResult .= '][owncloud:true';
 			}
 
-			$sResult .= '] -->';
+			$sResult .= '] //-->';
 		}
 
 		// Output result
@@ -260,7 +266,9 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
+			'{{BaseVersion}}' => APP_VERSION,
+			'{{BaseDir}}' => 'ltr'
+//			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(

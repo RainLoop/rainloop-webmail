@@ -230,7 +230,7 @@ class Manager
 	public function HaveJs($bAdminScope = false)
 	{
 		$bResult = false;
-		
+
 		if ($this->bIsEnabled)
 		{
 			$bResult = $bAdminScope ? 0 < \count($this->aAdminJs) : 0 < \count($this->aJs);
@@ -274,27 +274,24 @@ class Manager
 	}
 
 	/**
+	 * @param array $aList
 	 * @param bool $bAdminScope = false
 	 * @return string
 	 */
-	public function CompileTemplate($bAdminScope = false)
+	public function CompileTemplate(&$aList, $bAdminScope = false)
 	{
-		$sResult = '';
 		if ($this->bIsEnabled)
 		{
 			$aTemplates = $bAdminScope ? $this->aAdminTemplates : $this->aTemplates;
 			foreach ($aTemplates as $sFile)
 			{
-				if (file_exists($sFile))
+				if (\file_exists($sFile))
 				{
-					$sTemplateName = substr(basename($sFile), 0, -5);
-					$sResult .= '<script id="'.preg_replace('/[^a-zA-Z0-9]/', '', $sTemplateName).'" type="text/html" data-cfasync="false">'.
-						$this->Actions()->ProcessTemplate($sTemplateName, file_get_contents($sFile)).'</script>';
+					$sTemplateName = \substr(\basename($sFile), 0, -5);
+					$aList[$sTemplateName] = $sFile;
 				}
 			}
 		}
-
-		return $sResult;
 	}
 
 	/**

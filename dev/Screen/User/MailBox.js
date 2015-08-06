@@ -20,6 +20,8 @@
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
+		Settings = require('Storage/Settings'),
+
 		AbstractScreen = require('Knoin/AbstractScreen')
 	;
 
@@ -53,6 +55,11 @@
 			nFoldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount()
 		;
 
+		if (Settings.settingsGet('Filtered'))
+		{
+			nFoldersInboxUnreadCount = 0;
+		}
+
 		require('App/User').setWindowTitle(('' === sEmail ? '' : '' +
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') +
 				sEmail + ' - ') + Translator.i18n('TITLES/MAILBOX'));
@@ -64,26 +71,43 @@
 
 		AppStore.focusedState(Enums.Focused.None);
 		AppStore.focusedState(Enums.Focused.MessageList);
+
+		if (!Settings.capa(Enums.Capa.Folders))
+		{
+			Globals.leftPanelType(
+				Settings.capa(Enums.Capa.Composer) || Settings.capa(Enums.Capa.Contacts) ? 'short' : 'none');
+		}
+		else
+		{
+			Globals.leftPanelType('');
+		}
 	};
 
 	/**
 	 * @param {string} sFolderHash
 	 * @param {number} iPage
 	 * @param {string} sSearch
-	 * @param {boolean=} bPreview = false
 	 */
 	MailBoxUserScreen.prototype.onRoute = function (sFolderHash, iPage, sSearch)
 	{
 		var
-			sFolderFullNameRaw = Cache.getFolderFullNameRaw(sFolderHash),
-			oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw)
+			sThreadUid = sFolderHash.replace(/^(.+)~([\d]+)$/, '$2'),
+			oFolder = Cache.getFolderFromCacheList(Cache.getFolderFullNameRaw(
+				sFolderHash.replace(/~([\d]+)$/, '')))
 		;
 
 		if (oFolder)
 		{
+			if (sFolderHash === sThreadUid)
+			{
+				sThreadUid = '';
+			}
+
 			FolderStore.currentFolder(oFolder);
+
 			MessageStore.messageListPage(iPage);
 			MessageStore.messageListSearch(sSearch);
+			MessageStore.messageListThreadUid(sThreadUid);
 
 			require('App/User').reloadMessageList();
 		}
@@ -163,9 +187,9 @@
 		;
 
 		return [
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9]+)\/(.+)\/?$/, {'normalize_': fNormD}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
+			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, {'normalize_': fNormD}],
 			[/^([^\/]*)$/,  {'normalize_': fNormS}]
 		];
 	};

@@ -87,7 +87,6 @@
 				{
 					if (oData.Result)
 					{
-						this.formHidden(true);
 						require('App/Admin').loginAndLogoutReload(true);
 					}
 					else if (oData.ErrorCode)

@@ -4,17 +4,19 @@
 			<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/LEGEND_OPEN_PGP"></span>
 		</div>
 	</div>
-	<a class="btn" data-bind="click: addOpenPgpKey">
+	<button class="btn" data-bind="click: addOpenPgpKey">
 		<i class="icon-list-add"></i>
 		&nbsp;&nbsp;
 		<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></span>
-	</a>
+	</button>
 	&nbsp;&nbsp;
-	<a class="btn" data-bind="click: generateOpenPgpKey">
-		<i class="icon-key"></i>
-		&nbsp;&nbsp;
-		<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
-	</a>
+	<div style="display: inline-block" data-tooltip-join="left" data-bind="tooltip: isHttps ? '' : 'SETTINGS_OPEN_PGP/GENERATE_ONLY_HTTPS'">
+		<button class="btn" data-bind="click: generateOpenPgpKey, disable: !isHttps">
+			<i class="icon-key"></i>
+			&nbsp;&nbsp;
+			<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
+		</button>
+	</div>
 	<br />
 	<br />
 	<br />
@@ -28,7 +30,9 @@
 			<!-- ko foreach: openpgpkeysPrivate -->
 			<tr class="open-pgp-key-item">
 				<td>
-					<i class="open-pgp-key-img icon-lock i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE"></i>
+					<span class="open-pgp-key-img i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">
+						<i class="icon-lock"></i>
+					</span>
 					<span class="open-pgp-key-user" data-bind="text: user"></span>
 					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }">
 						<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/DELETING_ASK"></span>
@@ -49,7 +53,9 @@
 			<!-- ko foreach: openpgpkeysPublic -->
 			<tr class="open-pgp-key-item">
 				<td>
-					<span class="open-pgp-key-img icon-key i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC"></span>
+					<span class="open-pgp-key-img i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">
+						<i class="icon-key"></i>
+					</span>
 					<span class="open-pgp-key-user" data-bind="text: user"></span>
 					(<span class="open-pgp-key-id" data-bind="text: id"></span>)
 					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }">

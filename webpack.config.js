@@ -12,6 +12,7 @@ module.exports = {
 		publicPath: 'rainloop/v/0.0.0/static/js/',
 		chunkFilename: '[chunkhash].subapp.js'
 	},
+//	devtool: "#source-map",
 	plugins: [
 //		new webpack.optimize.CommonsChunkPlugin('common.js'),
 		new webpack.optimize.OccurenceOrderPlugin()
@@ -29,7 +30,7 @@ module.exports = {
 		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
-		'SimplePace': 'window.SimplePace',
+		'progressJs': 'window.progressJs',
 		'PhotoSwipe': 'window.PhotoSwipe',
 		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',

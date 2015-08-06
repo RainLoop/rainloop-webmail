@@ -37,6 +37,49 @@
 	};
 
 	/**
+	 * @static
+	 * @param {string} sLine
+	 * @param {string=} sDelimiter = ';'
+	 * @return {Array}
+	 */
+	EmailModel.splitHelper = function (sLine, sDelimiter)
+	{
+		sDelimiter = sDelimiter || ';';
+
+		sLine = sLine.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
+
+		var
+			iIndex = 0,
+			iLen = sLine.length,
+			bAt = false,
+			sChar = '',
+			sResult = ''
+		;
+
+		for (; iIndex < iLen; iIndex++)
+		{
+			sChar = sLine.charAt(iIndex);
+			switch (sChar)
+			{
+				case '@':
+					bAt = true;
+					break;
+				case ' ':
+					if (bAt)
+					{
+						bAt = false;
+						sResult += sDelimiter;
+					}
+					break;
+			}
+
+			sResult += sChar;
+		}
+
+		return sResult.split(sDelimiter);
+	};
+
+	/**
 	 * @type {string}
 	 */
 	EmailModel.prototype.name = '';

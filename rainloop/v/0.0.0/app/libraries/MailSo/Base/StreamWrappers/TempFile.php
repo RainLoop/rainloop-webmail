@@ -43,14 +43,16 @@ class TempFile
 
 	/**
 	 * @param string $sHash
+	 * @param string $sFileName
 	 *
 	 * @return resource|bool
 	 */
-	public static function CreateStream($sHash)
+	public static function CreateStream($sHash, &$sFileName = '')
 	{
 		self::Reg();
 
-		return fopen(self::STREAM_NAME.'://'.$sHash, 'r+b');
+		$sFileName = self::STREAM_NAME.'://'.$sHash;
+		return fopen($sFileName, 'r+b');
 	}
 
 	/**
@@ -72,6 +74,7 @@ class TempFile
 				is_resource(self::$aStreams[$sHashName]))
 			{
 				$this->rSream = self::$aStreams[$sHashName];
+				\fseek($this->rSream, 0);
 				$bResult = true;
 			}
 			else
@@ -93,7 +96,7 @@ class TempFile
 	 */
 	public function stream_close()
 	{
-		return -1 !== fseek($this->rSream, 0);
+		return true;
 	}
 
 	/**

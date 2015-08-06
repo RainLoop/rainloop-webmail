@@ -17,6 +17,7 @@
 	function CapaAdminStore()
 	{
 		this.additionalAccounts = ko.observable(false);
+		this.identities = ko.observable(false);
 		this.gravatar = ko.observable(false);
 		this.attachmentThumbnails = ko.observable(false);
 		this.sieve = ko.observable(false);
@@ -32,6 +33,7 @@
 	CapaAdminStore.prototype.populate = function()
 	{
 		this.additionalAccounts(Settings.capa(Enums.Capa.AdditionalAccounts));
+		this.identities(Settings.capa(Enums.Capa.Identities));
 		this.gravatar(Settings.capa(Enums.Capa.Gravatar));
 		this.attachmentThumbnails(Settings.capa(Enums.Capa.AttachmentThumbnails));
 		this.sieve(Settings.capa(Enums.Capa.Sieve));

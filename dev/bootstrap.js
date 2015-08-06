@@ -23,7 +23,6 @@
 
 		Globals.$win
 			.keydown(Utils.kill_CtrlA_CtrlS)
-			.keyup(Utils.kill_CtrlA_CtrlS)
 			.unload(function () {
 				Globals.bUnload = true;
 			})
@@ -82,7 +81,7 @@
 				}
 
 				window['__APP_BOOT'] = null;
-				
+
 			}, 10));
 		};
 

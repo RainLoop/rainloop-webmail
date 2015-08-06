@@ -22,7 +22,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	function rainLoopSplAutoloadNamespaces()
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop') :
-			array('RainLoop', 'Facebook', 'GuzzleHttp', 'Symfony', 'PHPThumb', 'Sabre');
+			array('RainLoop', 'Facebook', 'GuzzleHttp', 'PHPThumb', 'SabreForRainLoop');
 	}
 
 	/**
@@ -41,7 +41,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		{
 			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
 			{
-				if ('Sabre' === $sNamespaceName && !RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
+				if ('SabreForRainLoop' === $sNamespaceName && !RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
 				{
 					\define('RL_MB_FIXED', true);
 					include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
@@ -59,7 +59,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
-	if (!\class_exists('MailSo\Version'))
+	if (!\class_exists('MailSo\Version', false))
 	{
 		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
 	}

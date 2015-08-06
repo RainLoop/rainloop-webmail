@@ -16,6 +16,7 @@
 		AppStore = require('Stores/User/App'),
 		LanguageStore = require('Stores/Language'),
 		SettingsStore = require('Stores/User/Settings'),
+		IdentityStore = require('Stores/User/Identity'),
 		NotificationStore = require('Stores/User/Notification'),
 		MessageStore = require('Stores/User/Message'),
 
@@ -62,6 +63,20 @@
 
 		this.isAnimationSupported = Globals.bAnimationSupported;
 
+		this.identities = IdentityStore.identities;
+
+		this.identityMain = ko.computed(function () {
+			var aList = this.identities();
+			return Utils.isArray(aList) ? _.find(aList, function (oItem) {
+				return oItem && '' === oItem.id() ? true : false;
+			}) : null;
+		}, this);
+
+		this.identityMainDesc = ko.computed(function () {
+			var oIdentity = this.identityMain();
+			return oIdentity ? oIdentity.formattedName() : '---';
+		}, this);
+
 		this.editorDefaultTypes = ko.computed(function () {
 			Translator.trigger();
 			return [
@@ -81,6 +96,15 @@
 			];
 		}, this);
 	}
+
+	GeneralUserSettings.prototype.editMainIdentity = function ()
+	{
+		var oIdentity = this.identityMain();
+		if (oIdentity)
+		{
+			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Identity'), [oIdentity]);
+		}
+	};
 
 	GeneralUserSettings.prototype.testSoundNotification = function ()
 	{

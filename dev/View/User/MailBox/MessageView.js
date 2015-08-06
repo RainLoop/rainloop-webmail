@@ -4,6 +4,7 @@
 	'use strict';
 
 	var
+		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -19,9 +20,11 @@
 		Events = require('Common/Events'),
 		Translator = require('Common/Translator'),
 		Audio = require('Common/Audio'),
+		Links = require('Common/Links'),
 
 		Cache = require('Common/Cache'),
 
+		SocialStore = require('Stores/Social'),
 		AppStore = require('Stores/User/App'),
 		SettingsStore = require('Stores/User/Settings'),
 		AccountStore = require('Stores/User/Account'),
@@ -29,6 +32,7 @@
 		MessageStore = require('Stores/User/Message'),
 
 		Local = require('Storage/Client'),
+		Settings = require('Storage/Settings'),
 		Remote = require('Remote/User/Ajax'),
 
 		Promises = require('Promises/User/Ajax'),
@@ -60,7 +64,18 @@
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
+		this.bodyBackgroundColor = ko.observable('');
+
 		this.pswp = null;
+
+		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
+		this.allowMessageActions = !!Settings.capa(Enums.Capa.MessageActions);
+		this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
+
+		this.logoImg = Utils.trim(Settings.settingsGet('UserLogoMessage'));
+		this.logoIframe = Utils.trim(Settings.settingsGet('UserIframeMessage'));
+
+		this.attachmentsActions = AppStore.attachmentsActions;
 
 		this.message = MessageStore.message;
 		this.messageListChecked = MessageStore.messageListChecked;
@@ -80,12 +95,68 @@
 
 		this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
 
-		this.allowAttachmnetControls = ko.observable(false);
+		this.highlightUnselectedAttachments = ko.observable(false).extend({'falseTimeout': 2000});
+
 		this.showAttachmnetControls = ko.observable(false);
 
+		this.allowAttachmnetControls = ko.computed(function () {
+			return 0 < this.attachmentsActions().length &&
+				Settings.capa(Enums.Capa.AttachmentsActions);
+		}, this);
+
+		this.downloadAsZipAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('zip', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
+		}, this);
+
 		this.downloadAsZipLoading = ko.observable(false);
+		this.downloadAsZipError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToOwnCloudAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('owncloud', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
+		}, this);
+
 		this.saveToOwnCloudLoading = ko.observable(false);
+		this.saveToOwnCloudSuccess = ko.observable(false).extend({'falseTimeout': 2000});
+		this.saveToOwnCloudError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToOwnCloudSuccess.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToOwnCloudError(false);
+			}
+		}, this);
+
+		this.saveToOwnCloudError.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToOwnCloudSuccess(false);
+			}
+		}, this);
+
+		this.saveToDropboxAllowed = ko.computed(function () {
+			return -1 < Utils.inArray('dropbox', this.attachmentsActions()) &&
+				this.allowAttachmnetControls();
+		}, this);
+
 		this.saveToDropboxLoading = ko.observable(false);
+		this.saveToDropboxSuccess = ko.observable(false).extend({'falseTimeout': 2000});
+		this.saveToDropboxError = ko.observable(false).extend({'falseTimeout': 7000});
+
+		this.saveToDropboxSuccess.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToDropboxError(false);
+			}
+		}, this);
+
+		this.saveToDropboxError.subscribe(function (bV) {
+			if (bV)
+			{
+				this.saveToDropboxSuccess(false);
+			}
+		}, this);
 
 		this.showAttachmnetControls.subscribe(function (bV) {
 			if (this.message())
@@ -155,7 +226,7 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
@@ -165,7 +236,7 @@
 
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
@@ -175,7 +246,7 @@
 
 		this.archiveCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
@@ -185,7 +256,7 @@
 
 		this.spamCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
@@ -195,13 +266,16 @@
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
 			var oMessage = this.message();
-			if (oMessage)
+			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
 				require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
+
+		this.dropboxEnabled = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
 		// viewer
 
@@ -228,174 +302,6 @@
 		this.viewUserPicVisible = ko.observable(false);
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
-
-// THREADS
-		this.viewThreads = ko.observableArray([]);
-		this.viewThreads.trigger = ko.observable(false);
-
-		this.viewThreadMessages = MessageStore.messageThreadList;
-
-		this.viewThreadMessages.error = ko.observable('');
-		this.viewThreadMessages.showMore = ko.observable(false);
-		this.viewThreadMessages.limit = 6;
-
-		this.viewThreadMessages.subscribe(function (aList) {
-
-			var iSelectedIndex = -1;
-
-			this.viewThreadMessages.error('');
-			if (aList && 0 < aList.length)
-			{
-				_.each(aList, function (oM, iIndex) {
-					if (oM && oM.selected())
-					{
-						iSelectedIndex = iIndex;
-					}
-				});
-
-				this.viewThreadMessages.showMore(this.viewThreadMessages.limit >= aList.length);
-
-				if (-1 < iSelectedIndex && !this.viewThreadMessages.showMore() &&
-					this.viewThreadMessages.limit < iSelectedIndex)
-				{
-					this.viewThreadMessages.showMore(true);
-				}
-
-				this.selectSelectedThreadMessage();
-				require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
-			}
-
-		}, this);
-
-		MessageStore.messageLastThreadUidsData.subscribe(function (oData) {
-			if (oData && oData['Uids'])
-			{
-				oData['Uid'] = Utils.pString(oData['Uid']);
-				if (this.viewFolder === oData['Folder'] && this.viewUid === oData['Uid'])
-				{
-					this.viewThreads(oData['Uids']);
-					this.viewThreads.trigger(!this.viewThreads.trigger());
-				}
-
-				var oMessage = MessageStore.message();
-				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
-				{
-					oMessage.threads(oData['Uids']);
-				}
-
-				oMessage = _.find(MessageStore.messageList(), function (oMessage) {
-					return oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'];
-				});
-
-				if (oMessage && oMessage.folderFullNameRaw === oData['Folder'] && oMessage.uid === oData['Uid'])
-				{
-					oMessage.threads(oData['Uids']);
-				}
-			}
-		}, this);
-
-		this.viewThreads.status = ko.computed(function () {
-
-			this.viewThreads.trigger();
-
-			var
-				iIndex = 0,
-				aResult = [false, '', '', '', ''],
-				aThreads = this.viewThreads.peek(),
-				iLen = aThreads.length
-			;
-
-			if (1 < iLen)
-			{
-				iIndex = Utils.inArray(this.viewUid, aThreads);
-				if (-1 < iIndex)
-				{
-					aResult[0] = true;
-					aResult[1] = (iIndex + 1) + '/' + iLen;
-					aResult[2] = aThreads[iIndex];
-					aResult[3] = 0 < iIndex && aThreads[iIndex - 1] ? aThreads[iIndex - 1] : '';
-					aResult[4] = aThreads[iIndex + 1] ? aThreads[iIndex + 1] : '';
-				}
-			}
-
-			return aResult;
-
-		}, this).extend({'notify': 'always'});
-
-		this.viewThreadsControlVisibility = ko.computed(function () {
-			return !!this.viewThreads.status()[0];
-		}, this);
-
-		this.viewThreadsControlDesc = ko.computed(function () {
-			return this.viewThreads.status()[1];
-		}, this);
-
-		this.viewThreadsControlBackAllow = ko.computed(function () {
-			return '' !== this.viewThreads.status()[4] && !this.messageLoadingThrottle();
-		}, this);
-
-		this.viewThreadsControlForwardAllow = ko.computed(function () {
-			return '' !== this.viewThreads.status()[3] && !this.messageLoadingThrottle();
-		}, this);
-
-		this.threadBackCommand = Utils.createCommand(this, function () {
-			var aStatus = this.viewThreads.status();
-			this.openThreadMessage(aStatus[4]);
-		}, this.viewThreadsControlBackAllow);
-
-		this.threadForwardCommand = Utils.createCommand(this, function () {
-			var aStatus = this.viewThreads.status();
-			this.openThreadMessage(aStatus[3]);
-		}, this.viewThreadsControlForwardAllow);
-
-		this.threadsDropdownTrigger = ko.observable(false);
-
-		this.threadListCommand = Utils.createCommand(this, function () {
-
-			var
-				self = this,
-				sFolder = this.viewFolder,
-				sUid = this.viewUid,
-				aUids = this.viewThreads(),
-				aStatus = this.viewThreads.status()
-			;
-
-			if (aStatus && aStatus[0])
-			{
-				self.viewThreadMessages([]);
-
-				Promises.messageListSimple(sFolder, aUids, this.messageListOfThreadsLoading).then(function (aList) {
-
-					_.each(aList, function (oItem) {
-						if (oItem && oItem.uid)
-						{
-							oItem.selected(sUid === oItem.uid);
-						}
-					});
-
-					self.viewThreadMessages(aList);
-
-				}).fail(function (iErrorCode) {
-					self.viewThreadMessages([]);
-					self.viewThreadMessages.error(Translator.getNotification(
-						iErrorCode, '', Enums.Notification.CantGetMessageList));
-				}).done();
-			}
-
-		}, function () {
-			return !this.messageLoadingThrottle() &&
-				!this.messageListOfThreadsLoading();
-		});
-
-// PGP
-		this.viewPgpPassword = ko.observable('');
-		this.viewPgpSignedVerifyStatus = ko.computed(function () {
-			return this.message() ? this.message().pgpSignedVerifyStatus() : Enums.SignedVerifyStatus.None;
-		}, this);
-
-		this.viewPgpSignedVerifyUser = ko.computed(function () {
-			return this.message() ? this.message().pgpSignedVerifyUser() : '';
-		}, this);
 
 		this.viewFromDkimStatusIconClass = ko.computed(function () {
 
@@ -437,11 +343,13 @@
 
 		}, this);
 
+		this.messageActiveDom.subscribe(function (oDom) {
+			this.bodyBackgroundColor(oDom ? this.detectDomBackgroundColor(oDom): '');
+		}, this);
+
 		this.message.subscribe(function (oMessage) {
 
 			this.messageActiveDom(null);
-
-			this.viewPgpPassword('');
 
 			if (oMessage)
 			{
@@ -472,9 +380,6 @@
 				this.viewIsImportant(oMessage.isImportant());
 				this.viewIsFlagged(oMessage.flagged());
 
-				this.viewThreads(oMessage.threads());
-				this.viewThreads.trigger(!this.viewThreads.trigger());
-
 				sLastEmail = oMessage.fromAsSingleEmail();
 				Cache.getUserPic(sLastEmail, function (sPic, sEmail) {
 					if (sPic !== self.viewUserPic() && sLastEmail === sEmail)
@@ -494,8 +399,6 @@
 				this.viewFolder = '';
 				this.viewUid = '';
 				this.viewHash = '';
-
-				this.viewThreads([]);
 
 				this.scrollMessageToTop();
 			}
@@ -555,52 +458,54 @@
 	kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
 	_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
 
-	MessageViewMailBoxUserView.prototype.openThreadMessage = function (sUid)
+	MessageViewMailBoxUserView.prototype.detectDomBackgroundColor = function (oDom)
 	{
-		var oMessage = this.message();
-		if (oMessage && sUid)
+		var
+			iLimit = 5,
+			sResult = '',
+			aC = null,
+			fFindDom = function (oDom) {
+				var aC = oDom ? oDom.children() : null;
+				return (aC && 1 === aC.length && aC.is('table,div,center')) ? aC : null;
+			},
+			fFindColor = function (oDom) {
+				var sResult = '';
+				if (oDom)
+				{
+					sResult = oDom.css('background-color') || '';
+					if (!oDom.is('table'))
+					{
+						sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
+					}
+				}
+
+				return sResult;
+			}
+		;
+
+		if (oDom && 1 === oDom.length)
 		{
-			MessageStore.selectThreadMessage(oMessage.folderFullNameRaw, sUid);
-		}
-	};
+			aC = oDom;
+			while ('' === sResult)
+			{
+				iLimit--;
+				if (0 >= iLimit)
+				{
+					break;
+				}
 
-	MessageViewMailBoxUserView.prototype.isPgpActionVisible = function ()
-	{
-		return Enums.SignedVerifyStatus.Success !== this.viewPgpSignedVerifyStatus();
-	};
+				aC = fFindDom(aC);
+				if (aC)
+				{
+					sResult = fFindColor(aC);
+				}
+				else
+				{
+					break;
+				}
+			}
 
-	MessageViewMailBoxUserView.prototype.isPgpStatusVerifyVisible = function ()
-	{
-		return Enums.SignedVerifyStatus.None !== this.viewPgpSignedVerifyStatus();
-	};
-
-	MessageViewMailBoxUserView.prototype.isPgpStatusVerifySuccess = function ()
-	{
-		return Enums.SignedVerifyStatus.Success === this.viewPgpSignedVerifyStatus();
-	};
-
-	MessageViewMailBoxUserView.prototype.pgpStatusVerifyMessage = function ()
-	{
-		var sResult = '';
-		switch (this.viewPgpSignedVerifyStatus())
-		{
-			case Enums.SignedVerifyStatus.UnknownPublicKeys:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND');
-				break;
-			case Enums.SignedVerifyStatus.UnknownPrivateKey:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND');
-				break;
-			case Enums.SignedVerifyStatus.Unverified:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE');
-				break;
-			case Enums.SignedVerifyStatus.Error:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR');
-				break;
-			case Enums.SignedVerifyStatus.Success:
-				sResult = Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-					'USER': this.viewPgpSignedVerifyUser()
-				});
-				break;
+			sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
 		}
 
 		return sResult;
@@ -631,7 +536,10 @@
 	 */
 	MessageViewMailBoxUserView.prototype.replyOrforward = function (sType)
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		}
 	};
 
 	MessageViewMailBoxUserView.prototype.checkHeaderHeight = function ()
@@ -643,10 +551,38 @@
 		}
 	};
 
+	/**
+	 * @todo
+	 * @param {string} sEmail
+	 */
+//	MessageViewMailBoxUserView.prototype.displayMailToPopup = function (sMailToUrl)
+//	{
+//		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
+//
+//		var
+//			sResult = '',
+//			aTo = [],
+//			EmailModel = require('Model/Email'),
+//			fParseEmailLine = function (sLine) {
+//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function (sItem) {
+//						var oEmailModel = new EmailModel();
+//						oEmailModel.mailsoParse(sItem);
+//						return '' !== oEmailModel.email ? oEmailModel : null;
+//					})) : null;
+//			}
+//		;
+//
+//		aTo = fParseEmailLine(sMailToUrl);
+//		sResult = aTo && aTo[0] ? aTo[0].email : '';
+//
+//		return sResult;
+//	};
+
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
 		var
 			self = this,
+			oScript = null,
 			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this)
 		;
@@ -660,6 +596,7 @@
 			}
 		}, this);
 
+		this.showAttachmnetControls.subscribe(fCheckHeaderHeight);
 		this.fullScreenMode.subscribe(fCheckHeaderHeight);
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
@@ -675,6 +612,16 @@
 			Utils.windowResize(250);
 		});
 
+		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
+		{
+			oScript = window.document.createElement('script');
+			oScript.type = 'text/javascript';
+			oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
+			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
+
+			window.document.body.appendChild(oScript);
+		}
+
 		this.oHeaderDom = $('.messageItemHeader', oDom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
@@ -683,9 +630,10 @@
 		if (this.pswpDom)
 		{
 			oDom
-				.on('click', '.attachmentImagePreview[data-index]', function (oEvent) {
+				.on('click', '.attachmentImagePreview.visible', function (oEvent) {
 
 					var
+						iIndex = 0,
 						oPs = null,
 						oEl = oEvent.currentTarget || null,
 						aItems = []
@@ -702,14 +650,18 @@
 //						}
 					;
 
-					oDom.find('.attachmentImagePreview[data-index]').each(function (index, oSubElement) {
+					oDom.find('.attachmentImagePreview.visible').each(function (index, oSubElement) {
 
 						var
 							$oItem = $(oSubElement)
 						;
 
+						if (oEl === oSubElement)
+						{
+							iIndex = index;
+						}
+
 						aItems.push({
-//							'el': $oItem,
 							'w': 600, 'h': 400,
 							'src': $oItem.attr('href'),
 							'title': $oItem.attr('title') || ''
@@ -721,7 +673,7 @@
 						Globals.useKeyboardShortcuts(false);
 
 						oPs = new PhotoSwipe(self.pswpDom, PhotoSwipeUI_Default, aItems, {
-							'index': Utils.pInt($(oEl).data('index')),
+							'index': iIndex,
 							'bgOpacity': 0.85,
 							'loadingIndicatorDelay': 500,
 							'errorMsg': '<div class="pswp__error-msg">' + sErrorMessage + '</div>',
@@ -760,8 +712,24 @@
 		oDom
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'), require('View/Popup/Compose')));
+				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'),
+					Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null));
 			})
+//			.on('mouseover', 'a', _.debounce(function (oEvent) {
+//
+//				if (oEvent)
+//				{
+//					var sMailToUrl = $(this).attr('href');
+//					if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
+//					{
+//						sMailToUrl = sMailToUrl.toString().substr(7);
+//						self.displayMailToPopup(sMailToUrl);
+//					}
+//				}
+//
+//				return true;
+//
+//			}, 1000))
 			.on('click', '.attachmentsPlace .attachmentIconParent', function (oEvent) {
 				if (oEvent && oEvent.stopPropagation)
 				{
@@ -789,32 +757,6 @@
 							Audio.playWav(oAttachment.linkDownload(), oAttachment.fileName);
 							break;
 					}
-				}
-			})
-			.on('click', '.thread-list .more-threads', function (e) {
-
-				var oLast = null;
-				if (!e || 0 === e.clientX) // probably enter
-				{
-					// It's a bad bad hack :(
-					oLast = $('.thread-list .e-item.thread-list-message.real-msg.more-that:first a.e-link', oDom);
-				}
-
-				self.viewThreadMessages.showMore(true);
-				self.threadsDropdownTrigger(true);
-
-				if (oLast && oLast[0])
-				{
-					oLast.focus();
-				}
-
-				return false;
-			})
-			.on('click', '.thread-list .thread-list-message', function () {
-				var oMessage = ko.dataFor(this);
-				if (oMessage && oMessage.folder && oMessage.uid)
-				{
-					self.openThreadMessage(oMessage.uid);
 				}
 			})
 			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function () {
@@ -867,18 +809,6 @@
 		this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
 
 		this.initShortcuts();
-	};
-
-	MessageViewMailBoxUserView.prototype.selectSelectedThreadMessage = function ()
-	{
-		var self = this;
-		_.delay(function () {
-			var oLast = self.oDom ? $('.thread-list .e-item.thread-list-message.real-msg.selected a.e-link', self.oDom) : null;
-			if (oLast && oLast[0])
-			{
-				oLast.focus();
-			}
-		}, 30);
 	};
 
 	/**
@@ -970,32 +900,13 @@
 			}
 		});
 
-		key('t', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			if (MessageStore.message() && self.viewThreadsControlVisibility())
-			{
-				self.threadsDropdownTrigger(true);
-				self.threadListCommand();
-				return false;
-			}
-		});
-
-		key('ctrl+up, command+up', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		key('ctrl+up, command+up, ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goUpCommand();
 			return false;
 		});
 
-		key('ctrl+down, command+down', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+		key('ctrl+down, command+down, ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
 			self.goDownCommand();
-			return false;
-		});
-
-		key('ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.threadForwardCommand();
-			return false;
-		});
-
-		key('ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-			self.threadBackCommand();
 			return false;
 		});
 
@@ -1111,12 +1022,15 @@
 
 	MessageViewMailBoxUserView.prototype.composeClick = function ()
 	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
 	};
 
 	MessageViewMailBoxUserView.prototype.editMessage = function ()
 	{
-		if (MessageStore.message())
+		if (Settings.capa(Enums.Capa.Composer) && MessageStore.message())
 		{
 			kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Draft, MessageStore.message()]);
 		}
@@ -1154,34 +1068,115 @@
 	MessageViewMailBoxUserView.prototype.getAttachmentsHashes = function ()
 	{
 		return _.compact(_.map(this.message() ? this.message().attachments() : [], function (oItem) {
-			return oItem && oItem.checked() ? oItem.download : '';
+			return oItem && !oItem.isLinked && oItem.checked() ? oItem.download : '';
 		}));
 	};
 
 	MessageViewMailBoxUserView.prototype.downloadAsZip = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading);
+			Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading).then(function (oResult) {
+				if (oResult && oResult.Result && oResult.Result.Files &&
+					oResult.Result.Files[0] && oResult.Result.Files[0].Hash)
+				{
+					require('App/User').download(
+						Links.attachmentDownload(oResult.Result.Files[0].Hash));
+				}
+				else
+				{
+					self.downloadAsZipError(true);
+				}
+			}).fail(function () {
+				self.downloadAsZipError(true);
+			});
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 
 	MessageViewMailBoxUserView.prototype.saveToOwnCloud = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading);
+			Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading).then(function (oResult) {
+				if (oResult && oResult.Result)
+				{
+					self.saveToOwnCloudSuccess(true);
+				}
+				else
+				{
+					self.saveToOwnCloudError(true);
+				}
+			}).fail(function () {
+				self.saveToOwnCloudError(true);
+			});
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 
 	MessageViewMailBoxUserView.prototype.saveToDropbox = function ()
 	{
-		var aHashes = this.getAttachmentsHashes();
+		var self = this, aFiles = [], aHashes = this.getAttachmentsHashes();
 		if (0 < aHashes.length)
 		{
-			Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading);
+			if (window.Dropbox)
+			{
+				Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading).then(function (oResult) {
+					if (oResult && oResult.Result && oResult.Result.Url && oResult.Result.ShortLife && oResult.Result.Files)
+					{
+						if (window.Dropbox && Utils.isArray(oResult.Result.Files))
+						{
+							_.each(oResult.Result.Files, function (oItem) {
+								aFiles.push({
+									'url': oResult.Result.Url +
+										Links.attachmentDownload(oItem.Hash, oResult.Result.ShortLife),
+									'filename': oItem.FileName
+								});
+							});
+
+							window.Dropbox.save({
+								'files': aFiles,
+								'progress': function () {
+									self.saveToDropboxLoading(true);
+									self.saveToDropboxError(false);
+									self.saveToDropboxSuccess(false);
+								},
+								'cancel': function () {
+									self.saveToDropboxSuccess(false);
+									self.saveToDropboxError(false);
+									self.saveToDropboxLoading(false);
+								},
+								'success': function () {
+									self.saveToDropboxSuccess(true);
+									self.saveToDropboxLoading(false);
+								},
+								'error': function () {
+									self.saveToDropboxError(true);
+									self.saveToDropboxLoading(false);
+								}
+							});
+						}
+						else
+						{
+							self.saveToDropboxError(true);
+						}
+					}
+				}).fail(function () {
+					self.saveToDropboxError(true);
+				});
+			}
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
 		}
 	};
 
@@ -1194,6 +1189,8 @@
 		{
 			oMessage.showExternalImages(true);
 		}
+
+		this.checkHeaderHeight();
 	};
 
 	/**
@@ -1203,29 +1200,6 @@
 	{
 		var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
 		return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : '';
-	};
-
-
-	/**
-	 * @param {MessageModel} oMessage
-	 */
-	MessageViewMailBoxUserView.prototype.verifyPgpSignedClearMessage = function (oMessage)
-	{
-		if (oMessage)
-		{
-			oMessage.verifyPgpSignedClearMessage();
-		}
-	};
-
-	/**
-	 * @param {MessageModel} oMessage
-	 */
-	MessageViewMailBoxUserView.prototype.decryptPgpEncryptedMessage = function (oMessage)
-	{
-		if (oMessage)
-		{
-			oMessage.decryptPgpEncryptedMessage(this.viewPgpPassword());
-		}
 	};
 
 	/**
@@ -1246,6 +1220,8 @@
 
 			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
+
+		this.checkHeaderHeight();
 	};
 
 	module.exports = MessageViewMailBoxUserView;

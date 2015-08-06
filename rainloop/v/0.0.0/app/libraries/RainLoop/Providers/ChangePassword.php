@@ -53,6 +53,8 @@ class ChangePassword extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
 	{
+		$mResult = false;
+		
 		if ($this->oDriver instanceof \RainLoop\Providers\ChangePassword\ChangePasswordInterface &&
 			$this->PasswordChangePossibility($oAccount))
 		{
@@ -79,11 +81,15 @@ class ChangePassword extends \RainLoop\Providers\AbstractProvider
 
 			$oAccount->SetPassword($sNewPassword);
 			$this->oActions->SetAuthToken($oAccount);
+
+			$mResult = $this->oActions->GetSpecAuthToken();
 		}
 		else
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CouldNotSaveNewPassword);
 		}
+
+		return $mResult;
 	}
 
 	/**

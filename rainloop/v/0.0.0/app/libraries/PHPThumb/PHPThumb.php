@@ -28,11 +28,6 @@ abstract class PHPThumb
     protected $fileName;
 
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $filesystem;
-
-    /**
      * What the file format is (mime-type)
      *
      * @var string
@@ -59,7 +54,6 @@ abstract class PHPThumb
      */
     public function __construct($fileName, array $options = array(), array $plugins = array())
     {
-        $this->filesystem = new \Symfony\Component\Filesystem\Filesystem();
         $this->fileName    = $fileName;
         $this->remoteImage = false;
 
@@ -89,9 +83,9 @@ abstract class PHPThumb
             return true;
         }
 
-        if($this->filesystem->exists($filename)) {
-            return true;
-        }
+		if (file_exists($filename)) {
+			return true;
+		}
 
         return false;
     }

@@ -1,4 +1,6 @@
 
+/* global require, module */
+
 (function () {
 
 	'use strict';
@@ -87,6 +89,7 @@
 		this.resizerTrigger = _.bind(this.resizerTrigger, this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = AppStore.composeInEdit;
@@ -319,7 +322,7 @@
 			}
 		}, this));
 
-		this.canBeSendedOrSaved = ko.computed(function () {
+		this.canBeSentOrSaved = ko.computed(function () {
 			return !this.sending() && !this.saving();
 		}, this);
 
@@ -371,6 +374,11 @@
 					{
 						sSentFolder = this.aDraftInfo[2];
 					}
+				}
+
+				if (!this.allowFolders)
+				{
+					sSentFolder = Consts.Values.UnuseOptionValue;
 				}
 
 				if ('' === sSentFolder)
@@ -430,9 +438,15 @@
 					);
 				}
 			}
-		}, this.canBeSendedOrSaved);
+
+		}, this.canBeSentOrSaved);
 
 		this.saveCommand = Utils.createCommand(this, function () {
+
+			if (!this.allowFolders)
+			{
+				return false;
+			}
 
 			if (FolderStore.draftFolderNotEnabled())
 			{
@@ -468,7 +482,7 @@
 				);
 			}
 
-		}, this.canBeSendedOrSaved);
+		}, this.canBeSentOrSaved);
 
 		this.skipCommand = Utils.createCommand(this, function () {
 
@@ -482,7 +496,7 @@
 
 			this.tryToClosePopup();
 
-		}, this.canBeSendedOrSaved);
+		}, this.canBeSentOrSaved);
 
 		this.contactsCommand = Utils.createCommand(this, function () {
 
@@ -523,7 +537,6 @@
 			if (window.Dropbox)
 			{
 				window.Dropbox.choose({
-					//'iframe': true,
 					'success': function(aFiles) {
 
 						if (aFiles && aFiles[0] && aFiles[0]['link'])
@@ -619,7 +632,7 @@
 						oEditor.setPlain(sResult);
 					});
 				},
-				this.oEditor.getData(),
+				this.oEditor.getData(false, true),
 				this.currentIdentity(),
 				this.to(),
 				this.cc(),
@@ -634,7 +647,7 @@
 			sDraftFolder = FolderStore.draftFolder()
 		;
 
-		if ('' !== sDraftFolder)
+		if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
 		{
 			Cache.setFolderHash(sDraftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)
@@ -1097,6 +1110,26 @@
 				oText.find('.rlBlockquoteSwitcher').off('.rlBlockquoteSwitcher').remove();
 				oText.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
 
+//				(function () {
+//
+//					var oTmp = null, iLimit = 0;
+//
+//					while (true)
+//					{
+//						iLimit++;
+//
+//						oTmp = oText.children();
+//						if (10 > iLimit && oTmp.is('div') && 1 === oTmp.length)
+//						{
+//							oTmp.children().unwrap();
+//							continue;
+//						}
+//
+//						break;
+//					}
+//
+//				}());
+
 				sText = oText.html();
 			}
 
@@ -1186,7 +1219,8 @@
 					});
 
 					sText = '<br /><br />' + sReplyTitle + ':' +
-						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
+						'<blockquote>' + Utils.trim(sText) + '</blockquote>';
+//						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
 
 					break;
 
@@ -1202,6 +1236,7 @@
 							'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
 							'<br /><br />' + Utils.trim(sText) + '<br /><br />';
 					break;
+
 				case Enums.ComposeType.ForwardAsAttachment:
 					sText = '';
 					break;
@@ -1390,10 +1425,13 @@
 			return false;
 		});
 
-		key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
-			self.saveCommand();
-			return false;
-		});
+		if (this.allowFolders)
+		{
+			key('ctrl+s, command+s', Enums.KeyState.Compose, function () {
+				self.saveCommand();
+				return false;
+			});
+		}
 
 		if (!!Settings.settingsGet('AllowCtrlEnterOnCompose'))
 		{
@@ -1414,11 +1452,11 @@
 		Events.sub('window.resize.real', this.resizerTrigger);
 		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, 50));
 
-		if (this.dropboxEnabled())
+		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 		{
 			oScript = window.document.createElement('script');
 			oScript.type = 'text/javascript';
-			oScript.src = 'https://www.dropbox.com/static/api/1/dropins.js';
+			oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 			$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
 
 			window.document.body.appendChild(oScript);

@@ -32,7 +32,6 @@
 		this.resize = _.throttle(_.bind(this.resize, this), 100);
 
 		this.__inited = false;
-		this.__initedData = null;
 
 		this.init();
 	}
@@ -104,7 +103,7 @@
 	 */
 	HtmlEditor.prototype.clearSignatureSigns = function (sText)
 	{
-		return sText.replace(/(\u0002|\u0003|\u200C|\u200D)/g, '');
+		return sText.replace(/(\u200C|\u0002)/g, '');
 	};
 
 	/**
@@ -197,6 +196,8 @@
 		{
 			this.modeToggle(true);
 
+			sHtml = sHtml.replace(/<p[^>]*><\/p>/ig, '');
+
 			try {
 				this.editor.setData(sHtml);
 			} catch (e) {}
@@ -205,10 +206,6 @@
 			{
 				this.focus();
 			}
-		}
-		else
-		{
-			this.__initedData = [true, sHtml, bFocus];
 		}
 	};
 
@@ -232,10 +229,6 @@
 			{
 				this.focus();
 			}
-		}
-		else
-		{
-			this.__initedData = [false, sPlain, bFocus];
 		}
 	};
 
@@ -270,26 +263,13 @@
 					}
 
 					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
-					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_BR;
+					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
 					oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 					if (window.CKEDITOR.env)
 					{
 						window.CKEDITOR.env.isCompatible = true;
 					}
-
-//					oConfig.allowedContent = {
-//						$1: {
-//							elements: window.CKEDITOR.dtd,
-//							attributes: true,
-//							styles: true,
-//							classes: true
-//						}
-//					};
-//
-//					oConfig.disallowedContent = 'script; style; iframe; frame; *[on*]';
-
-					window.CKEDITOR.dtd.$removeEmpty['p'] = 1;
 
 					self.editor = window.CKEDITOR.appendTo(self.$element[0], oConfig);
 
@@ -318,37 +298,26 @@
 						self.focusTrigger();
 					});
 
-					if (self.fOnReady)
-					{
-						self.editor.on('instanceReady', function () {
+					self.editor.on('instanceReady', function () {
 
-							if (self.editor.removeMenuItem)
-							{
-								self.editor.removeMenuItem('cut');
-								self.editor.removeMenuItem('copy');
-								self.editor.removeMenuItem('paste');
-							}
+						if (self.editor.removeMenuItem)
+						{
+							self.editor.removeMenuItem('cut');
+							self.editor.removeMenuItem('copy');
+							self.editor.removeMenuItem('paste');
+						}
 
-							self.editor.setKeystroke(window.CKEDITOR.CTRL + 65 /* A */, 'selectAll');
+						self.__resizable = true;
+						self.__inited = true;
 
+						self.resize();
+
+						if (self.fOnReady)
+						{
 							self.fOnReady();
-							self.__resizable = true;
-							self.__inited = true;
-							self.resize();
+						}
 
-							if (self.__initedData)
-							{
-								if (self.__initedData[0])
-								{
-									self.setHtml(self.__initedData[1], self.__initedData[2]);
-								}
-								else
-								{
-									self.setPlain(self.__initedData[1], self.__initedData[2]);
-								}
-							}
-						});
-					}
+					});
 				}
 			;
 

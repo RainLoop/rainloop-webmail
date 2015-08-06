@@ -179,33 +179,41 @@ class MailClient
 	 */
 	private function getEnvelopeOrHeadersRequestString()
 	{
-		return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+		if (\MailSo\Config::$MessageAllHeaders)
+		{
+			return \MailSo\Imap\Enumerations\FetchType::BODY_HEADER_PEEK;
+		}
 
-//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
+		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
+			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
+			\MailSo\Mime\Enumerations\Header::RECEIVED,
+			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
+			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
+			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+			\MailSo\Mime\Enumerations\Header::FROM_,
+			\MailSo\Mime\Enumerations\Header::TO_,
+			\MailSo\Mime\Enumerations\Header::CC,
+			\MailSo\Mime\Enumerations\Header::BCC,
+			\MailSo\Mime\Enumerations\Header::SENDER,
+			\MailSo\Mime\Enumerations\Header::REPLY_TO,
+			\MailSo\Mime\Enumerations\Header::DELIVERED_TO,
+			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
+			\MailSo\Mime\Enumerations\Header::REFERENCES,
+			\MailSo\Mime\Enumerations\Header::DATE,
+			\MailSo\Mime\Enumerations\Header::SUBJECT,
+			\MailSo\Mime\Enumerations\Header::SENSITIVITY,
+			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
+			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
+			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
+			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
+			\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO,
+			\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO,
+			\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO,
+			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
+			\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS,
+		), true);
 //
-//		return \MailSo\Imap\Enumerations\FetchType::BuildBodyCustomHeaderRequest(array(
-//			\MailSo\Mime\Enumerations\Header::RETURN_PATH,
-//			\MailSo\Mime\Enumerations\Header::RECEIVED,
-//			\MailSo\Mime\Enumerations\Header::MIME_VERSION,
-//			\MailSo\Mime\Enumerations\Header::MESSAGE_ID,
-//			\MailSo\Mime\Enumerations\Header::FROM_,
-//			\MailSo\Mime\Enumerations\Header::TO_,
-//			\MailSo\Mime\Enumerations\Header::CC,
-//			\MailSo\Mime\Enumerations\Header::BCC,
-//			\MailSo\Mime\Enumerations\Header::SENDER,
-//			\MailSo\Mime\Enumerations\Header::REPLY_TO,
-//			\MailSo\Mime\Enumerations\Header::IN_REPLY_TO,
-//			\MailSo\Mime\Enumerations\Header::DATE,
-//			\MailSo\Mime\Enumerations\Header::SUBJECT,
-//			\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY,
-//			\MailSo\Mime\Enumerations\Header::IMPORTANCE,
-//			\MailSo\Mime\Enumerations\Header::X_PRIORITY,
-//			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-//			\MailSo\Mime\Enumerations\Header::REFERENCES,
-//			\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO,
-//			\MailSo\Mime\Enumerations\Header::RECEIVED_SPF,
-//			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
-//		), true);
+//		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
 	}
 
 	/**
@@ -684,16 +692,25 @@ class MailClient
 	 * @param int $iCount
 	 * @param int $iUnseenCount
 	 * @param string $sUidNext
+	 * @param string $sHighestModSeq
 	 *
 	 * @return void
 	 */
-	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount, &$sUidNext)
+	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount,
+		&$sUidNext, &$sHighestModSeq = '')
 	{
-		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, array(
+		$aTypes = array(
 			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
 			\MailSo\Imap\Enumerations\FolderResponseStatus::UNSEEN,
 			\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT
-		));
+		);
+
+		if ($this->oImapClient->IsSupported('CONDSTORE'))
+		{
+			$aTypes[] = \MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ;
+		}
+
+		$aFolderStatus = $this->oImapClient->FolderStatus($sFolderName, $aTypes);
 
 		$iCount = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES])
 			? (int) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES] : 0;
@@ -704,7 +721,11 @@ class MailClient
 		$sUidNext = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT])
 			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::UIDNEXT] : '0';
 
-		if ($this->IsGmail())
+		$sHighestModSeq = isset($aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ])
+			? (string) $aFolderStatus[\MailSo\Imap\Enumerations\FolderResponseStatus::HIGHESTMODSEQ] : '';
+
+		if ($this->IsGmail() &&
+			('INBOX' === $sFolderName || '[gmail]' === \strtolower(\substr($sFolderName, 0, 7))))
 		{
 			$oFolder = $this->oImapClient->FolderCurrentInformation();
 			if ($oFolder && null !== $oFolder->Exists && $oFolder->FolderName === $sFolderName)
@@ -735,14 +756,16 @@ class MailClient
 	 * @param int $iCount
 	 * @param int $iUnseenCount
 	 * @param string $sUidNext
+	 * @param string $sHighestModSeq = ''
 	 *
 	 * @return string
 	 */
-	public function GenerateFolderHash($sFolder, $iCount, $iUnseenCount, $sUidNext)
+	public function GenerateFolderHash($sFolder, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq = '')
 	{
 		$iUnseenCount = 0; // unneccessery
 		return \md5('FolderHash/'.$sFolder.'-'.$iCount.'-'.$iUnseenCount.'-'.$sUidNext.'-'.
-			$this->GenerateImapClientHash()
+			$sHighestModSeq.'-'.$this->GenerateImapClientHash().'-'.
+			\MailSo\Config::$MessageListPermanentFilter
 		);
 	}
 
@@ -833,7 +856,8 @@ class MailClient
 		$aFlags = array();
 
 		$bSelect = false;
-		if ($this->IsGmail())
+		if ($this->IsGmail() &&
+			('INBOX' === $sFolderName || '[gmail]' === \strtolower(\substr($sFolderName, 0, 7))))
 		{
 			$this->oImapClient->FolderSelect($sFolderName);
 			$bSelect = true;
@@ -866,16 +890,18 @@ class MailClient
 		$iCount = 0;
 		$iUnseenCount = 0;
 		$sUidNext = '0';
+		$sHighestModSeq = '';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq);
 
 		$aResult = array(
 			'Folder' => $sFolderName,
-			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $sUidNext),
+			'Hash' => $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq),
 			'MessageCount' => $iCount,
 			'MessageUnseenCount' => $iUnseenCount,
 			'UidNext' => $sUidNext,
 			'Flags' => $aFlags,
+			'HighestModSeq' => $sHighestModSeq,
 			'NewMessages' => 'INBOX' === $sFolderName ?
 				$this->getFolderNextMessageInformation($sFolderName, $sPrevUidNext, $sUidNext) : array()
 		);
@@ -897,10 +923,11 @@ class MailClient
 		$iCount = 0;
 		$iUnseenCount = 0;
 		$sUidNext = '0';
+		$sHighestModSeq = '';
 
-		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext);
+		$this->initFolderValues($sFolderName, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq);
 
-		return $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $sUidNext);
+		return $this->GenerateFolderHash($sFolderName, $iCount, $iUnseenCount, $sUidNext, $sHighestModSeq);
 	}
 
 	/**
@@ -1013,7 +1040,7 @@ class MailClient
 
 		$sReg = 'e?mail|from|to|subject|has|is|date|text|body|size|larger|bigger|smaller|maxsize|minsize';
 
-		$sSearch = \trim(\preg_replace('/[\s]+/', ' ', $sSearch));
+		$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
 		$sSearch = \trim(\preg_replace('/('.$sReg.'): /i', '\\1:', $sSearch));
 
 		$mMatch = array();
@@ -1060,7 +1087,7 @@ class MailClient
 					$sSearch = \str_replace($sToken, '', $sSearch);
 				}
 
-				$sSearch = \trim(\preg_replace('/[\s]+/', ' ', $sSearch));
+				$sSearch = \MailSo\Base\Utils::StripSpaces($sSearch);
 			}
 
 			foreach ($mMatch[1] as $iIndex => $sName)
@@ -1124,12 +1151,13 @@ class MailClient
 
 	/**
 	 * @param string $sSearch
+	 * @param string $sFilter
 	 * @param int $iTimeZoneOffset = 0
 	 * @param bool $bUseCache = true
 	 *
 	 * @return string
 	 */
-	private function getImapSearchCriterias($sSearch, $iTimeZoneOffset = 0, &$bUseCache = true)
+	private function getImapSearchCriterias($sSearch, $sFilter, $iTimeZoneOffset = 0, &$bUseCache = true)
 	{
 		$bUseCache = true;
 		$iTimeFilter = 0;
@@ -1317,12 +1345,9 @@ class MailClient
 							{
 								$aCriteriasResult[] = 'SINCE';
 								$aCriteriasResult[] = \gmdate('j-M-Y', $iTimeFilter > $iDateStampFrom ?
-									$iDateStampFrom : $iTimeFilter);
+									$iTimeFilter : $iDateStampFrom);
 
-								if (0 < $iTimeFilter && $iTimeFilter > $iDateStampFrom)
-								{
-									$iTimeFilter = 0;
-								}
+								$iTimeFilter = 0;
 							}
 
 							if (0 < $iDateStampTo)
@@ -1336,7 +1361,7 @@ class MailClient
 
 				if ('' !== \trim($sMainText))
 				{
-					$sMainText = \trim(\trim(preg_replace('/[\s]+/', ' ', $sMainText)), '"');
+					$sMainText = \trim(\MailSo\Base\Utils::StripSpaces($sMainText), '"');
 					if ($bIsGmail)
 					{
 						$sGmailRawSearch .= ' '.$sMainText;
@@ -1368,6 +1393,21 @@ class MailClient
 		if (0 < $iTimeFilter)
 		{
 			$sCriteriasResult .= ' SINCE '.\gmdate('j-M-Y', $iTimeFilter);
+		}
+
+		$sCriteriasResult = \trim($sCriteriasResult);
+		$sCriteriasResult .= ' NOT DELETED';
+
+		$sFilter = \trim($sFilter);
+		if ('' !== $sFilter)
+		{
+			$sCriteriasResult .= ' '.$sFilter;
+		}
+
+		$sCriteriasResult = \trim($sCriteriasResult);
+		if ('' !== \MailSo\Config::$MessageListPermanentFilter)
+		{
+			$sCriteriasResult .= ' '.\MailSo\Config::$MessageListPermanentFilter;
 		}
 
 		$sCriteriasResult = \trim($sCriteriasResult);
@@ -1658,7 +1698,8 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::INTERNALDATE,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS,
 				\MailSo\Imap\Enumerations\FetchType::BODYSTRUCTURE,
-				$bSimple ? $this->getEnvelopeOrHeadersRequestStringForSimpleList() :
+				$bSimple ?
+					$this->getEnvelopeOrHeadersRequestStringForSimpleList() :
 					$this->getEnvelopeOrHeadersRequestString()
 			), \MailSo\Base\Utils::PrepearFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 
@@ -1701,31 +1742,66 @@ class MailClient
 	}
 
 	/**
-	 * @param string $sSearch
 	 * @param string $sFolderName
-	 * @param string|bool $sFolderHash
-	 * @param bool $bUseSortIfSupported = true
-	 * @param bool $bUseESearchOrESortRequest = false
-	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
+	 * @param array $aUids
 	 *
-	 * @return Array|bool
+	 * @return \MailSo\Mail\MessageCollection
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	private function getSearchUidsResult($sSearch, $sFolderName, $sFolderHash,
-		$bUseSortIfSupported = true, $bUseESearchOrESortRequest = false, $oCacher = null)
+	public function MessageListSimple($sFolderName, $aUids)
+	{
+		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
+		{
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+		}
+
+		$this->oImapClient->FolderExamine($sFolderName);
+
+		$oMessageCollection = \MailSo\Mail\MessageCollection::NewInstance();
+		$oMessageCollection->FolderName = $sFolderName;
+
+		$this->MessageListByRequestIndexOrUids($oMessageCollection, $aUids, true, true);
+
+		return $oMessageCollection->GetAsArray();
+	}
+
+	/**
+	 * @param \MailSo\Cache\CacheClient|null $oCacher
+	 * @param string $sSearch
+	 * @param string $sFilter
+	 * @param string $sFolderName
+	 * @param string $sFolderHash
+	 * @param bool $bUseSortIfSupported = false
+	 *
+	 * @return array
+	 *
+	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function GetUids($oCacher, $sSearch, $sFilter, $sFolderName, $sFolderHash, $bUseSortIfSupported = false)
 	{
 		$aResultUids = false;
 		$bUidsFromCacher = false;
 		$bUseCacheAfterSearch = true;
+
 		$sSerializedHash = '';
+		$sSerializedLog = '';
 
-		$bESortSupported = $bUseSortIfSupported && $bUseESearchOrESortRequest ? $this->oImapClient->IsSupported('ESORT') : false;
-		$bESearchSupported = $bUseESearchOrESortRequest ? $this->oImapClient->IsSupported('ESEARCH') : false;
-		$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
+		$bUseSortIfSupported = $bUseSortIfSupported ? !!$this->oImapClient->IsSupported('SORT') : false;
 
-		$sSearchCriterias = $this->getImapSearchCriterias($sSearch, 0, $bUseCacheAfterSearch);
+		if (0 < \strlen($sSearch))
+		{
+			$bUseSortIfSupported = false;
+		}
+
+		$sSearchCriterias = $this->getImapSearchCriterias($sSearch, $sFilter, 0, $bUseCacheAfterSearch);
 		if ($bUseCacheAfterSearch && $oCacher && $oCacher->IsInited())
 		{
-			$sSerializedHash = 'SearchSortUids/'.
+			$sSerializedHash = 'GetUids/'.
 				($bUseSortIfSupported ? 'S': 'N').'/'.
 				$this->GenerateImapClientHash().'/'.
 				$sFolderName.'/'.$sSearchCriterias;
@@ -1754,71 +1830,10 @@ class MailClient
 
 		if (!\is_array($aResultUids))
 		{
-			if ($bUseSortIfSupported)
-			{
-				if ($bESortSupported)
-				{
-					$aESorthData = $this->oImapClient->MessageSimpleESort(array('ARRIVAL'), $sSearchCriterias, array('ALL'), true, '');
-					if (isset($aESorthData['ALL']))
-					{
-						$aResultUids = \MailSo\Base\Utils::ParseFetchSequence($aESorthData['ALL']);
-						$aResultUids = \array_reverse($aResultUids);
-					}
-
-					unset($aESorthData);
-				}
-				else
-				{
-					$aResultUids = $this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true);
-				}
-			}
-			else
-			{
-				if (!\MailSo\Base\Utils::IsAscii($sSearch))
-				{
-					try
-					{
-						if ($bESearchSupported)
-						{
-							$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), true, '', 'UTF-8');
-							if (isset($aESearchData['ALL']))
-							{
-								$aResultUids = \MailSo\Base\Utils::ParseFetchSequence($aESearchData['ALL']);
-								$aResultUids = \array_reverse($aResultUids);
-							}
-							unset($aESearchData);
-						}
-						else
-						{
-							$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, 'UTF-8');
-						}
-					}
-					catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException)
-					{
-						$oException = null;
-						$aResultUids = false;
-					}
-				}
-
-				if (false === $aResultUids)
-				{
-					if ($bESearchSupported)
-					{
-						$aESearchData = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, array('ALL'), true);
-						if (isset($aESearchData['ALL']))
-						{
-							$aResultUids = \MailSo\Base\Utils::ParseFetchSequence($aESearchData['ALL']);
-							$aResultUids = \array_reverse($aResultUids);
-						}
-
-						unset($aESearchData);
-					}
-					else
-					{
-						$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias, true);
-					}
-				}
-			}
+			$aResultUids = $bUseSortIfSupported ?
+				$this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true) :
+				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true)
+			;
 
 			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && 0 < \strlen($sSerializedHash))
 			{
@@ -1839,80 +1854,6 @@ class MailClient
 
 	/**
 	 * @param string $sFolderName
-	 * @param string $sFolderHash
-	 * @param string $sUid
-	 * @param \MailSo\Cache\CacheClient|null $oCacher = null
-	 *
-	 * @return array
-	 */
-	public function MessageThreadUidsFromCache($sFolderName, $sFolderHash, $sUid, $oCacher = null)
-	{
-		$aResult = array();
-		if (0 < \strlen($sFolderName) && 0 < \strlen($sFolderHash)  && 0 < \strlen($sUid) && $oCacher && $oCacher->IsInited())
-		{
-			$mThreads = $this->MessageListThreadsMap($sFolderName, $sFolderHash, array(), $oCacher, true);
-
-			if (\is_array($mThreads))
-			{
-				$iUid = (int) $sUid;
-				foreach ($mThreads as $iSubUid => $aSubUids)
-				{
-					if ($iUid === $iSubUid)
-					{
-						$aResult = $aSubUids;
-						if (!\is_array($aResult))
-						{
-							$aResult = array();
-						}
-
-						\array_unshift($aResult, $iSubUid);
-						break;
-					}
-					else if (\is_array($aSubUids))
-					{
-						if (\in_array($iUid, $aSubUids))
-						{
-							$aResult = $aSubUids;
-							\array_unshift($aResult, $iSubUid);
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		return \array_map('trim', $aResult);
-	}
-
-	/**
-	 * @param string $sFolderName
-	 * @param array $aUids
-	 *
-	 * @return \MailSo\Mail\MessageCollection
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageListSimple($sFolderName, $aUids)
-	{
-		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
-		$this->oImapClient->FolderExamine($sFolderName);
-
-		$oMessageCollection = \MailSo\Mail\MessageCollection::NewInstance();
-		$oMessageCollection->FolderName = $sFolderName;
-
-		$this->MessageListByRequestIndexOrUids($oMessageCollection, $aUids, true, true);
-
-		return $oMessageCollection->GetAsArray();
-	}
-
-	/**
-	 * @param string $sFolderName
 	 * @param int $iOffset = 0
 	 * @param int $iLimit = 10
 	 * @param string $sSearch = ''
@@ -1921,6 +1862,8 @@ class MailClient
 	 * @param bool $bUseSortIfSupported = false
 	 * @param bool $bUseThreadSortIfSupported = false
 	 * @param bool $bUseESearchOrESortRequest = false
+	 * @param string $sThreadUid = ''
+	 * @param string $sFilter = ''
 	 *
 	 * @return \MailSo\Mail\MessageCollection
 	 *
@@ -1929,14 +1872,17 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function MessageList($sFolderName, $iOffset = 0, $iLimit = 10, $sSearch = '', $sPrevUidNext = '', $oCacher = null,
-		$bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $bUseESearchOrESortRequest = false)
+		$bUseSortIfSupported = false, $bUseThreadSortIfSupported = false, $sThreadUid = '', $sFilter = '')
 	{
+		$sFilter = \trim($sFilter);
 		$sSearch = \trim($sSearch);
 		if (!\MailSo\Base\Validator::RangeInt($iOffset, 0) ||
 			!\MailSo\Base\Validator::RangeInt($iLimit, 0, 999))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
+
+		$bUseFilter = '' !== $sFilter;
 
 		$this->oImapClient->FolderSelect($sFolderName);
 
@@ -1945,30 +1891,52 @@ class MailClient
 		$oMessageCollection->Offset = $iOffset;
 		$oMessageCollection->Limit = $iLimit;
 		$oMessageCollection->Search = $sSearch;
+		$oMessageCollection->ThreadUid = $sThreadUid;
+		$oMessageCollection->Filtered = '' !== \MailSo\Config::$MessageListPermanentFilter;
 
-		$aThreads = array();
+		$aUids = array();
+		$mAllSortedUids = null;
+		$mAllThreads = null;
 
-		$iMessageCount = 0;
+		$iThreadUid = empty($sThreadUid) ? 0 : (int) $sThreadUid;
+
 		$iMessageRealCount = 0;
 		$iMessageUnseenCount = 0;
 		$sUidNext = '0';
+		$sHighestModSeq = '';
 
 		$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
 
 		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
 			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
 
+		if (!empty($sThreadUid) && !$bUseThreadSortIfSupported)
+		{
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+		}
+
 		if (!$oCacher || !($oCacher instanceof \MailSo\Cache\CacheClient))
 		{
 			$oCacher = null;
 		}
 
-		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);
-		$iMessageCount = $iMessageRealCount;
+		$this->initFolderValues($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext, $sHighestModSeq);
 
-		$oMessageCollection->FolderHash = $this->GenerateFolderHash($sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext);
+		if ($bUseFilter)
+		{
+			$iMessageUnseenCount = 0;
+		}
+
+		$oMessageCollection->FolderHash = $this->GenerateFolderHash(
+			$sFolderName, $iMessageRealCount, $iMessageUnseenCount, $sUidNext, $sHighestModSeq);
+
 		$oMessageCollection->UidNext = $sUidNext;
-		$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation($sFolderName, $sPrevUidNext, $sUidNext);
+
+		if (empty($sThreadUid) && 0 < \strlen($sPrevUidNext) && 'INBOX' === $sFolderName)
+		{
+			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
+				$sFolderName, $sPrevUidNext, $sUidNext);
+		}
 
 		$bSearch = false;
 		$bMessageListOptimization = 0 < \MailSo\Config::$MessageListCountLimitTrigger &&
@@ -1978,98 +1946,121 @@ class MailClient
 		{
 			$bUseSortIfSupported = false;
 			$bUseThreadSortIfSupported = false;
-			$bUseESearchOrESortRequest = false;
 		}
 
 		if (0 < $iMessageRealCount)
 		{
-			$bIndexAsUid = false;
-			$aIndexOrUids = array();
+			$mAllSortedUids = $this->GetUids($oCacher, '', $sFilter,
+				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
 
-			if (0 < \strlen($sSearch))
-			{
-				$aIndexOrUids = $this->getSearchUidsResult($sSearch,
-					$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
-					$bUseSortIfSupported, $bUseESearchOrESortRequest, $oCacher);
+			$mAllThreads = $bUseThreadSortIfSupported ? $this->MessageListThreadsMap(
+				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $mAllSortedUids, $oCacher) : null;
 
-				$bIndexAsUid = true;
-			}
-			else
+			if ($bUseThreadSortIfSupported && 0 < $iThreadUid && \is_array($mAllThreads))
 			{
-				if ($bUseThreadSortIfSupported && 1 < $iMessageCount)
+				$aUids = array();
+				$iResultRootUid = 0;
+
+				if (isset($mAllThreads[$iThreadUid]))
 				{
-					$aIndexOrUids = $this->getSearchUidsResult('',
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
-						$bUseSortIfSupported, $bUseESearchOrESortRequest, $oCacher);
-
-					$aThreads = $this->MessageListThreadsMap(
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
-						$aIndexOrUids, $oCacher);
-
-					$aNewIndexOrUids = array();
-					foreach ($aIndexOrUids as $iUid)
+					$iResultRootUid = $iThreadUid;
+					if (\is_array($mAllThreads[$iThreadUid]))
 					{
-						if (isset($aThreads[$iUid]))
-						{
-							$aNewIndexOrUids[] = $iUid;
-						}
+						$aUids = $mAllThreads[$iThreadUid];
 					}
-
-					$aIndexOrUids = $aNewIndexOrUids;
-					unset($aNewIndexOrUids);
-
-					$iMessageCount = \count($aIndexOrUids);
-					$bIndexAsUid = true;
 				}
 				else
 				{
-					$aIndexOrUids = array(1);
-					$bIndexAsUid = false;
-
-					if (1 < $iMessageCount)
+					foreach ($mAllThreads as $iRootUid => $mSubUids)
 					{
-						if (0 === \MailSo\Config::$MessageListDateFilter &&
-							($bMessageListOptimization || !$bUseSortIfSupported))
+						if (\is_array($mSubUids) && \in_array($iThreadUid, $mSubUids))
 						{
-							$aIndexOrUids = \array_reverse(\range(1, $iMessageCount));
-						}
-						else
-						{
-							$aIndexOrUids = $this->getSearchUidsResult('',
-								$oMessageCollection->FolderName, $oMessageCollection->FolderHash,
-								$bUseSortIfSupported, $bUseESearchOrESortRequest, $oCacher);
-
-							$bIndexAsUid = true;
+							$iResultRootUid = $iRootUid;
+							$aUids = $mSubUids;
+							continue;
 						}
 					}
 				}
+
+				if (0 < $iResultRootUid && \in_array($iResultRootUid, $mAllSortedUids))
+				{
+					\array_unshift($aUids, $iResultRootUid);
+				}
+			}
+			else if ($bUseThreadSortIfSupported && \is_array($mAllThreads))
+			{
+				$aUids = \array_keys($mAllThreads);
+			}
+			else
+			{
+				$bUseThreadSortIfSupported = false;
+				$aUids = $mAllSortedUids;
 			}
 
-			if (\is_array($aIndexOrUids))
+			if (0 < \strlen($sSearch) && \is_array($aUids))
+			{
+				$aSearchedUids = $this->GetUids($oCacher, $sSearch, $sFilter,
+					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+
+				if (\is_array($aSearchedUids) && 0 < \count($aSearchedUids))
+				{
+					$aFlippedSearchedUids = \array_flip($aSearchedUids);
+
+					$bSearch = true;
+					$aNewUids = array();
+
+					foreach ($aUids as $iUid)
+					{
+						if (isset($aFlippedSearchedUids[$iUid]))
+						{
+							$aNewUids[] = $iUid;
+						}
+						else if ($bUseThreadSortIfSupported && 0 === $iThreadUid && isset($mAllThreads[$iUid]) && \is_array($mAllThreads[$iUid]))
+						{
+							foreach ($mAllThreads[$iUid] as $iSubUid)
+							{
+								if (isset($aFlippedSearchedUids[$iSubUid]))
+								{
+									$aNewUids[] = $iUid;
+									continue;
+								}
+							}
+						}
+					}
+
+					$aUids = \array_unique($aNewUids);
+					unset($aNewUids);
+				}
+				else
+				{
+					$aUids = array();
+				}
+			}
+
+			if (\is_array($aUids))
 			{
 				$oMessageCollection->MessageCount = $iMessageRealCount;
 				$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
-				$oMessageCollection->MessageResultCount = 0 === \strlen($sSearch)
-					? $iMessageCount : \count($aIndexOrUids);
+				$oMessageCollection->MessageResultCount = \count($aUids);
 
-				if (0 < \count($aIndexOrUids))
+				if (0 < \count($aUids))
 				{
 					$iOffset = (0 > $iOffset) ? 0 : $iOffset;
-					$aRequestIndexOrUids = \array_slice($aIndexOrUids, $iOffset, $iLimit);
+					$aRequestUids = \array_slice($aUids, $iOffset, $iLimit);
 
-					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestIndexOrUids, $bIndexAsUid);
+					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
 				}
 			}
 		}
 
-		if (!$bSearch && $bUseThreadSortIfSupported && 0 < \count($aThreads))
+		if ($bUseThreadSortIfSupported && 0 === $iThreadUid && \is_array($mAllThreads) && 0 < \count($mAllThreads))
 		{
-			$oMessageCollection->ForeachList(function (/* @var $oMessage \MailSo\Mail\Message */ $oMessage) use ($aThreads) {
+			$oMessageCollection->ForeachList(function (/* @var $oMessage \MailSo\Mail\Message */ $oMessage) use ($mAllThreads) {
 
 				$iUid = $oMessage->Uid();
-				if (isset($aThreads[$iUid]) && \is_array($aThreads[$iUid]) && 0 < \count($aThreads[$iUid]))
+				if (isset($mAllThreads[$iUid]) && \is_array($mAllThreads[$iUid]) && 0 < \count($mAllThreads[$iUid]))
 				{
-					$aSubThreads = $aThreads[$iUid];
+					$aSubThreads = $mAllThreads[$iUid];
 					\array_unshift($aSubThreads, $iUid);
 
 					$oMessage->SetThreads(\array_map('trim', $aSubThreads));
@@ -2263,7 +2254,10 @@ class MailClient
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
 			}
-			catch (\Exception $oException) {}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
 		}
 
 		$aImapSubscribedFoldersHelper = null;
@@ -2335,7 +2329,6 @@ class MailClient
 
 			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
 		}
-
 
 		return $oFolderCollection;
 	}
@@ -2554,7 +2547,7 @@ class MailClient
 		$this->oImapClient->FolderSelect($sFolderFullNameRaw);
 
 		$oFolderInformation = $this->oImapClient->FolderCurrentInformation();
-		if ($oFolderInformation && 0 < $oFolderInformation->Exists) // STATUS?
+		if ($oFolderInformation && $oFolderInformation->Exists && 0 < $oFolderInformation->Exists) // STATUS?
 		{
 			$this->oImapClient->MessageStoreFlag('1:*', false,
 				array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),

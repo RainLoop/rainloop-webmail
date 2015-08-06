@@ -211,6 +211,27 @@ class Part
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function IsFlowedFormat()
+	{
+		$bResult = false;
+		if ($this->Headers)
+		{
+			$bResult = 'flowed' === \trim(\strtolower($this->Headers->ParameterValue(
+				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				\MailSo\Mime\Enumerations\Parameter::FORMAT)));
+
+			if ($bResult && \in_array(\strtolower($this->MailEncodingName()), array('base64', 'quoted-printable')))
+			{
+				$bResult = false;
+			}
+		}
+
+		return $bResult;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function FileName()

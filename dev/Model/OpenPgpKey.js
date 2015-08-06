@@ -7,6 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
+		PgpStore = require('Stores/User/Pgp'),
+
 		AbstractModel = require('Knoin/AbstractModel')
 	;
 
@@ -44,6 +46,22 @@
 	OpenPgpKeyModel.prototype.email = '';
 	OpenPgpKeyModel.prototype.armor = '';
 	OpenPgpKeyModel.prototype.isPrivate = false;
+
+	OpenPgpKeyModel.prototype.getNativeKeys = function ()
+	{
+		var oKey = null;
+		try
+		{
+			oKey = PgpStore.openpgp.key.readArmored(this.armor);
+			if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
+			{
+				return oKey.keys;
+			}
+		}
+		catch (e) {}
+
+		return null;
+	};
 
 	module.exports = OpenPgpKeyModel;
 

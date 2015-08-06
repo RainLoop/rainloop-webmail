@@ -21,10 +21,20 @@
 	color: #336699;
 	text-decoration: underline;
 	cursor: pointer;
+	padding: 2px;
+
+	&:focus {
+		outline: 1px;
+		outline-style: dotted;
+	}
 }
 
 .g-ui-min-height-300 {
 	min-height: 300px;
+}
+
+.g-ui-100-proc-height {
+	height: 100%;
 }
 
 .g-ui-absolute-reset {
@@ -181,12 +191,21 @@ e-spinner {
 }
 
 .e-languages {
+
 	margin-top: 8px;
 	color: #333;
+
 	.flag-name {
+
 		color: #333;
-		/*text-decoration: underline;*/
 		border-bottom: 1px dashed #333;
+		cursor: pointer;
+		padding: 2px 0px;
+
+		&:focus {
+			outline: 1px;
+			outline-style: dotted;
+		}
 	}
 }
 
@@ -220,7 +239,6 @@ html.cssanimations {
 	.e-spinner .bounce2 {
 		animation-delay: -0.16s;
 	}
-
 }
 
 @keyframes bouncedelay {

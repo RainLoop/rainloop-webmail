@@ -8,4 +8,6 @@ class ConditionType
 	const NOT_EQUAL_TO = 'NotEqualTo';
 	const CONTAINS = 'Contains';
 	const NOT_CONTAINS = 'NotContains';
+	const OVER = 'Over';
+	const UNDER = 'Under';
 }

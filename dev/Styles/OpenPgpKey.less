@@ -1,5 +1,5 @@
 .popups {
-	.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content, .b-open-pgp-key-add-content, .b-compose-open-pgp-content {
+	.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content, .b-open-pgp-key-add-content, .b-compose-open-pgp-content, .b-message-open-pgp-content {
 
 		.modal-header {
 			background-color: #fff;
@@ -16,6 +16,103 @@
 		.key-viewer {
 			max-height: 500px;
 			overflow: auto;
+		}
+	}
+
+	.b-compose-open-pgp-content {
+		&.modal {
+			width: 700px;
+		}
+
+		.key-list {
+
+			background-color: #f9f9f9;
+			border-radius: 5px;
+			padding: 10px 15px;
+			margin-top: 10px;
+			min-height: 40px;
+
+			&-wrp {
+				overflow: hidden;
+				text-overflow: ellipsis;
+
+				&.empty {
+					text-align: center;
+					padding-top: 10px;
+					color: #aaa;
+					font-size: 16px;
+				}
+			}
+
+			&__item {
+
+				color: #333;
+				white-space: nowrap;
+
+				&-delete {
+					display: inline;
+					cursor: pointer;
+					margin-right: 5px;
+				}
+
+				&-name {
+					margin-right: 5px;
+					color: #333;
+					display: inline;
+
+					&.empty {
+						color: red;
+					}
+				}
+
+				&-error {
+					margin-right: 5px;
+					color: red;
+					display: inline;
+				}
+
+				&-hash {
+					margin-right: 5px;
+					color: #aaa;
+					display: inline;
+				}
+			}
+		}
+
+		.key-actions {
+			margin-top: 10px;
+			min-height: 40px;
+		}
+	}
+
+	.b-message-open-pgp-content {
+		&.modal {
+			width: 700px;
+		}
+
+		.key-list {
+
+			margin-top: 5px;
+			overflow: hidden;
+
+			&__item {
+
+				color: #555;
+				cursor: pointer;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				&__radio {
+					padding-right: 5px;
+				}
+
+				&__name {
+
+					&:hover {
+						border-bottom: 1px dashed #555;
+					}
+				}
+			}
 		}
 	}
 }

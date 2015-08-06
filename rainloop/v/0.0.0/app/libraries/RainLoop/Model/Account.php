@@ -362,7 +362,27 @@ class Account extends \RainLoop\Account // for backward compatibility
 			\RainLoop\Utils::GetShortToken(),	// 7
 			$this->sProxyAuthUser,				// 8
 			$this->sProxyAuthPassword,			// 9
-			0									// 10
+			0									// 10 // timelife
+		));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetAuthTokenQ()
+	{
+		return \RainLoop\Utils::EncodeKeyValuesQ(array(
+			'token',							// 0
+			$this->sEmail,						// 1
+			$this->sLogin,						// 2
+			$this->sPassword,					// 3
+			\RainLoop\Utils::Fingerprint(),		// 4
+			$this->sSignMeToken,				// 5
+			$this->sParentEmail,				// 6
+			\RainLoop\Utils::GetShortToken(),	// 7
+			$this->sProxyAuthUser,				// 8
+			$this->sProxyAuthPassword,			// 9
+			0									// 10 // timelife
 		));
 	}
 
@@ -417,8 +437,18 @@ class Account extends \RainLoop\Account // for backward compatibility
 			}
 			else
 			{
-				$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
-					$aImapCredentials['UseAuthPlainIfSupported']);
+				$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
+				$sPassword = $aImapCredentials['Password'];
+				if (APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
+				{
+					$oMailClient->LoginWithXOauth2(
+						\base64_encode('user='.$aImapCredentials['Login']."\1".'auth=Bearer '.\substr($sPassword, $iGatLen)."\1\1"));
+				}
+				else
+				{
+					$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
+						$aImapCredentials['UseAuthPlainIfSupported']);
+				}
 			}
 
 			$bLogin = true;
@@ -475,7 +505,17 @@ class Account extends \RainLoop\Account // for backward compatibility
 
 		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
+			$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
+			$sPassword = $aSmtpCredentials['Password'];
+			if (APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
+			{
+				$oSmtpClient->LoginWithXOauth2(
+					\base64_encode('user='.$aSmtpCredentials['Login']."\1".'auth=Bearer '.\substr($sPassword, $iGatLen)."\1\1"));
+			}
+			else
+			{
+				$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password']);
+			}
 
 			$bLogin = true;
 		}

@@ -429,7 +429,7 @@ class ServiceActions
 		{
 			$this->oActions->verifyCacheByKey($sData);
 
-			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+			$aData = \RainLoop\Utils::DecodeKeyValuesQ($sData);
 			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === \RainLoop\Utils::GetConnectionToken())
 			{
 				$iCode = 404;
@@ -766,7 +766,8 @@ class ServiceActions
 	 */
 	public function ServiceSocialGoogle()
 	{
-		return $this->oActions->Social()->GooglePopupService();
+		$bXAuth = '1' === (string) $this->oHttp->GetQuery('xauth', '0');
+		return $this->oActions->Social()->GooglePopupService($bXAuth);
 	}
 
 	/**
@@ -892,7 +893,7 @@ class ServiceActions
 			$sSsoSubData = $this->Cacher()->Get(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$mData = \RainLoop\Utils::DecodeKeyValues($sSsoSubData);
+				$mData = \RainLoop\Utils::DecodeKeyValuesQ($sSsoSubData);
 				$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&
@@ -1219,11 +1220,23 @@ class ServiceActions
 	 */
 	public function compileTemplates($bAdmin = false, $bJsOutput = true)
 	{
-		$sHtml =
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Components', $this->oActions, 'Component').
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'), $this->oActions).
-			\RainLoop\Utils::CompileTemplates(APP_VERSION_ROOT_PATH.'app/templates/Views/Common', $this->oActions).
-			$this->oActions->Plugins()->CompileTemplate($bAdmin);
+		$aTemplates = array();
+
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Components', 'Component');
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'));
+		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Common');
+
+		$this->oActions->Plugins()->CompileTemplate($aTemplates, $bAdmin);
+
+		$sHtml = '';
+		foreach ($aTemplates as $sName => $sFile)
+		{
+			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
+			$sHtml .= '<script id="'.$sName.'" type="text/html" data-cfasync="false">'.
+				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</script>';
+		}
+
+		unset($aTemplates);
 
 		return $bJsOutput ? 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';' : $sHtml;
 	}

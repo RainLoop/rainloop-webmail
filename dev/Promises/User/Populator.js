@@ -90,6 +90,15 @@
 
 				if (oCacheFolder)
 				{
+					if (!FolderStore.displaySpecSetting())
+					{
+						oCacheFolder.checkable(true);
+					}
+					else
+					{
+						oCacheFolder.checkable(!!oFolder.Checkable);
+					}
+
 					oCacheFolder.collapsed(!self.isFolderExpanded(oCacheFolder.fullNameHash));
 
 					if (oFolder.Extended)
@@ -131,6 +140,14 @@
 		if (oData && 'Collection/FolderCollection' === oData['@Object'] &&
 			oData['@Collection'] && Utils.isArray(oData['@Collection']))
 		{
+			var
+				iLimit = Utils.pInt(Settings.settingsGet('FolderSpecLimit')),
+				iC = Utils.pInt(oData['CountRec'])
+			;
+
+			iLimit = 100 < iLimit ? 100 : (10 > iLimit ? 10 : iLimit);
+
+			FolderStore.displaySpecSetting(0 >= iC || iLimit < iC);
 			FolderStore.folderList(this.folderResponseParseRec(
 				Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection']));
 		}
@@ -162,12 +179,11 @@
 				Settings.settingsGet('ArchiveFolder') +
 				Settings.settingsGet('NullFolder'))
 			{
-				// TODO Magic Numbers
-				Settings.settingsSet('SentFolder', oData['SystemFolders'][2] || null);
-				Settings.settingsSet('DraftFolder', oData['SystemFolders'][3] || null);
-				Settings.settingsSet('SpamFolder', oData['SystemFolders'][4] || null);
-				Settings.settingsSet('TrashFolder', oData['SystemFolders'][5] || null);
-				Settings.settingsSet('ArchiveFolder', oData['SystemFolders'][12] || null);
+				Settings.settingsSet('SentFolder', oData['SystemFolders'][Enums.ServerFolderType.SENT] || null);
+				Settings.settingsSet('DraftFolder', oData['SystemFolders'][Enums.ServerFolderType.DRAFTS] || null);
+				Settings.settingsSet('SpamFolder', oData['SystemFolders'][Enums.ServerFolderType.JUNK] || null);
+				Settings.settingsSet('TrashFolder', oData['SystemFolders'][Enums.ServerFolderType.TRASH] || null);
+				Settings.settingsSet('ArchiveFolder', oData['SystemFolders'][Enums.ServerFolderType.ALL] || null);
 
 				bUpdate = true;
 			}

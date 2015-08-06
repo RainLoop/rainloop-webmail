@@ -47,9 +47,19 @@ class Config
 	public static $MessageListDateFilter = 0;
 
 	/**
+	 * @var string
+	 */
+	public static $MessageListPermanentFilter = '';
+
+	/**
 	 * @var int
 	 */
 	public static $LargeThreadLimit = 50;
+
+	/**
+	 * @var bool
+	 */
+	public static $MessageAllHeaders = false;
 
 	/**
 	 * @var bool
@@ -60,6 +70,11 @@ class Config
 	 * @var bool
 	 */
 	public static $PreferStartTlsIfAutoDetect = true;
+
+	/**
+	 * @var string
+	 */
+	public static $BoundaryPrefix = '_Part_';
 
 	/**
 	 * @var \MailSo\Log\Logger|null

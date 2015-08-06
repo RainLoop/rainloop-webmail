@@ -14,8 +14,6 @@
 		Globals = require('Common/Globals'),
 		Links = require('Common/Links'),
 
-		PgpStore = require('Stores/User/Pgp'),
-
 		AttachmentModel = require('Model/Attachment'),
 
 		MessageHelper = require('Helper/Message'),
@@ -82,7 +80,6 @@
 		}, this);
 
 		this.body = null;
-		this.plainRaw = '';
 
 		this.isHtml = ko.observable(false);
 		this.hasImages = ko.observable(false);
@@ -784,47 +781,55 @@
 	 */
 	MessageModel.prototype.populateByMessageListItem = function (oMessage)
 	{
-		this.folderFullNameRaw = oMessage.folderFullNameRaw;
-		this.uid = oMessage.uid;
-		this.hash = oMessage.hash;
-		this.requestHash = oMessage.requestHash;
-		this.subject(oMessage.subject());
+		if (oMessage)
+		{
+			this.folderFullNameRaw = oMessage.folderFullNameRaw;
+			this.uid = oMessage.uid;
+			this.hash = oMessage.hash;
+			this.requestHash = oMessage.requestHash;
+			this.subject(oMessage.subject());
+		}
+
 		this.subjectPrefix(this.subjectPrefix());
 		this.subjectSuffix(this.subjectSuffix());
 
-		this.size(oMessage.size());
-		this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
-		this.priority(oMessage.priority());
+		if (oMessage)
+		{
 
-		this.proxy = oMessage.proxy;
+			this.size(oMessage.size());
+			this.dateTimeStampInUTC(oMessage.dateTimeStampInUTC());
+			this.priority(oMessage.priority());
 
-		this.fromEmailString(oMessage.fromEmailString());
-		this.fromClearEmailString(oMessage.fromClearEmailString());
-		this.toEmailsString(oMessage.toEmailsString());
-		this.toClearEmailsString(oMessage.toClearEmailsString());
+			this.proxy = oMessage.proxy;
 
-		this.emails = oMessage.emails;
+			this.fromEmailString(oMessage.fromEmailString());
+			this.fromClearEmailString(oMessage.fromClearEmailString());
+			this.toEmailsString(oMessage.toEmailsString());
+			this.toClearEmailsString(oMessage.toClearEmailsString());
 
-		this.from = oMessage.from;
-		this.to = oMessage.to;
-		this.cc = oMessage.cc;
-		this.bcc = oMessage.bcc;
-		this.replyTo = oMessage.replyTo;
-		this.deliveredTo = oMessage.deliveredTo;
+			this.emails = oMessage.emails;
 
-		this.unseen(oMessage.unseen());
-		this.flagged(oMessage.flagged());
-		this.answered(oMessage.answered());
-		this.forwarded(oMessage.forwarded());
-		this.isReadReceipt(oMessage.isReadReceipt());
-		this.deletedMark(oMessage.deletedMark());
+			this.from = oMessage.from;
+			this.to = oMessage.to;
+			this.cc = oMessage.cc;
+			this.bcc = oMessage.bcc;
+			this.replyTo = oMessage.replyTo;
+			this.deliveredTo = oMessage.deliveredTo;
 
-		this.priority(oMessage.priority());
+			this.unseen(oMessage.unseen());
+			this.flagged(oMessage.flagged());
+			this.answered(oMessage.answered());
+			this.forwarded(oMessage.forwarded());
+			this.isReadReceipt(oMessage.isReadReceipt());
+			this.deletedMark(oMessage.deletedMark());
 
-		this.selected(oMessage.selected());
-		this.checked(oMessage.checked());
-		this.hasAttachments(oMessage.hasAttachments());
-		this.attachmentsSpecData(oMessage.attachmentsSpecData());
+			this.priority(oMessage.priority());
+
+			this.selected(oMessage.selected());
+			this.checked(oMessage.checked());
+			this.hasAttachments(oMessage.hasAttachments());
+			this.attachmentsSpecData(oMessage.attachmentsSpecData());
+		}
 
 		this.body = null;
 
@@ -833,7 +838,10 @@
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		this.threads(oMessage.threads());
+		if (oMessage)
+		{
+			this.threads(oMessage.threads());
+		}
 
 		this.computeSenderEmail();
 
@@ -978,191 +986,21 @@
 		}
 	};
 
-	MessageModel.prototype.storeDataToDom = function ()
+	MessageModel.prototype.storeDataInDom = function ()
 	{
 		if (this.body)
 		{
 			this.body.data('rl-is-html', !!this.isHtml());
 			this.body.data('rl-has-images', !!this.hasImages());
-
-			this.body.data('rl-plain-raw', this.plainRaw);
-
-			if (require('Stores/User/Pgp').capaOpenPGP())
-			{
-				this.body.data('rl-plain-pgp-signed', !!this.isPgpSigned());
-				this.body.data('rl-plain-pgp-encrypted', !!this.isPgpEncrypted());
-				this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
-				this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
-			}
 		}
 	};
 
-	MessageModel.prototype.storePgpVerifyDataToDom = function ()
-	{
-		if (this.body && require('Stores/User/Pgp').capaOpenPGP())
-		{
-			this.body.data('rl-pgp-verify-status', this.pgpSignedVerifyStatus());
-			this.body.data('rl-pgp-verify-user', this.pgpSignedVerifyUser());
-		}
-	};
-
-	MessageModel.prototype.fetchDataToDom = function ()
+	MessageModel.prototype.fetchDataFromDom = function ()
 	{
 		if (this.body)
 		{
 			this.isHtml(!!this.body.data('rl-is-html'));
 			this.hasImages(!!this.body.data('rl-has-images'));
-
-			this.plainRaw = Utils.pString(this.body.data('rl-plain-raw'));
-
-			if (require('Stores/User/Pgp').capaOpenPGP())
-			{
-				this.isPgpSigned(!!this.body.data('rl-plain-pgp-signed'));
-				this.isPgpEncrypted(!!this.body.data('rl-plain-pgp-encrypted'));
-				this.pgpSignedVerifyStatus(this.body.data('rl-pgp-verify-status'));
-				this.pgpSignedVerifyUser(this.body.data('rl-pgp-verify-user'));
-			}
-			else
-			{
-				this.isPgpSigned(false);
-				this.isPgpEncrypted(false);
-				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.None);
-				this.pgpSignedVerifyUser('');
-			}
-		}
-	};
-
-	MessageModel.prototype.verifyPgpSignedClearMessage = function ()
-	{
-		if (this.isPgpSigned())
-		{
-			var
-				aRes = [],
-				mPgpMessage = null,
-				sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-				aPublicKeys = PgpStore.findPublicKeysByEmail(sFrom),
-				oValidKey = null,
-				oValidSysKey = null,
-				sPlain = ''
-			;
-
-			this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
-			this.pgpSignedVerifyUser('');
-
-			try
-			{
-				mPgpMessage = PgpStore.openpgp.cleartext.readArmored(this.plainRaw);
-				if (mPgpMessage && mPgpMessage.getText)
-				{
-					this.pgpSignedVerifyStatus(
-						aPublicKeys.length ? Enums.SignedVerifyStatus.Unverified : Enums.SignedVerifyStatus.UnknownPublicKeys);
-
-					aRes = mPgpMessage.verify(aPublicKeys);
-					if (aRes && 0 < aRes.length)
-					{
-						oValidKey = _.find(aRes, function (oItem) {
-							return oItem && oItem.keyid && oItem.valid;
-						});
-
-						if (oValidKey)
-						{
-							oValidSysKey = PgpStore.findPublicKeyByHex(oValidKey.keyid.toHex());
-							if (oValidSysKey)
-							{
-								sPlain = mPgpMessage.getText();
-
-								this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
-								this.pgpSignedVerifyUser(oValidSysKey.user);
-
-								sPlain =
-									Globals.$div.empty().append(
-									$('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
-									).html()
-									;
-
-								Globals.$div.empty();
-
-								this.replacePlaneTextBody(sPlain);
-							}
-						}
-					}
-				}
-			}
-			catch (oExc) {}
-
-			this.storePgpVerifyDataToDom();
-		}
-	};
-
-	MessageModel.prototype.decryptPgpEncryptedMessage = function (sPassword)
-	{
-		if (this.isPgpEncrypted())
-		{
-			var
-				aRes = [],
-				mPgpMessage = null,
-				mPgpMessageDecrypted = null,
-				sFrom = this.from && this.from[0] && this.from[0].email ? this.from[0].email : '',
-				aPublicKey = PgpStore.findPublicKeysByEmail(sFrom),
-				oPrivateKey = PgpStore.findSelfPrivateKey(sPassword),
-				oValidKey = null,
-				oValidSysKey = null,
-				sPlain = ''
-			;
-
-			this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Error);
-			this.pgpSignedVerifyUser('');
-
-			if (!oPrivateKey)
-			{
-				this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.UnknownPrivateKey);
-			}
-
-			try
-			{
-				mPgpMessage = PgpStore.openpgp.message.readArmored(this.plainRaw);
-				if (mPgpMessage && oPrivateKey && mPgpMessage.decrypt)
-				{
-					this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Unverified);
-
-					mPgpMessageDecrypted = mPgpMessage.decrypt(oPrivateKey);
-					if (mPgpMessageDecrypted)
-					{
-						aRes = mPgpMessageDecrypted.verify(aPublicKey);
-						if (aRes && 0 < aRes.length)
-						{
-							oValidKey = _.find(aRes, function (oItem) {
-								return oItem && oItem.keyid && oItem.valid;
-							});
-
-							if (oValidKey)
-							{
-								oValidSysKey = PgpStore.findPublicKeyByHex(oValidKey.keyid.toHex());
-								if (oValidSysKey)
-								{
-									this.pgpSignedVerifyStatus(Enums.SignedVerifyStatus.Success);
-									this.pgpSignedVerifyUser(oValidSysKey.user);
-								}
-							}
-						}
-
-						sPlain = mPgpMessageDecrypted.getText();
-
-						sPlain =
-							Globals.$div.empty().append(
-							$('<pre class="b-plain-openpgp signed verified"></pre>').text(sPlain)
-							).html()
-							;
-
-						Globals.$div.empty();
-
-						this.replacePlaneTextBody(sPlain);
-					}
-				}
-			}
-			catch (oExc) {}
-
-			this.storePgpVerifyDataToDom();
 		}
 	};
 

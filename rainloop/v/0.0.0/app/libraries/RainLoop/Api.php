@@ -32,6 +32,7 @@ class Api
 			if ($bOne)
 			{
 				\RainLoop\Api::SetupDefaultMailSoConfig();
+
 				$bOne = \RainLoop\Api::RunResult();
 			}
 		}
@@ -91,13 +92,23 @@ class Api
 			\MailSo\Config::$MessageListDateFilter =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
+			\MailSo\Config::$MessageListPermanentFilter =
+				\trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
+
+			\MailSo\Config::$MessageAllHeaders =
+				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_all_headers', false);
+
 			\MailSo\Config::$LargeThreadLimit =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
+
+			\MailSo\Config::$BoundaryPrefix = '_RainLoop_';
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
 
 			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
 			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
+
+			\RainLoop\Utils::$CookieDefaultPath = \RainLoop\Api::Config()->Get('labs', 'cookie_path', '/');
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{
@@ -139,12 +150,13 @@ class Api
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand($sEmail.$sPassword);
 
-		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash), \RainLoop\Utils::EncodeKeyValues(array(
-			'Email' => $sEmail,
-			'Password' => $sPassword,
-			'AdditionalOptions' => $aAdditionalOptions,
-			'Time' => $bUseTimeout ? \time() : 0
-		))) ? $sSsoHash : '';
+		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash),
+			\RainLoop\Utils::EncodeKeyValuesQ(array(
+				'Email' => $sEmail,
+				'Password' => $sPassword,
+				'AdditionalOptions' => $aAdditionalOptions,
+				'Time' => $bUseTimeout ? \time() : 0
+			))) ? $sSsoHash : '';
 	}
 
 	/**

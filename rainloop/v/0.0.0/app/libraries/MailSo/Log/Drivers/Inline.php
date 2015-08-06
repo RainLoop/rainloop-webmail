@@ -19,11 +19,6 @@ namespace MailSo\Log\Drivers;
 class Inline extends \MailSo\Log\Driver
 {
 	/**
-	 * @var string
-	 */
-	private $sNewLine;
-
-	/**
 	 * @var bool
 	 */
 	private $bHtmlEncodeSpecialChars;

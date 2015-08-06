@@ -204,7 +204,10 @@
 	 */
 	CacheUserStorage.prototype.setFolderHash = function (sFolderFullNameRaw, sFolderHash)
 	{
-		this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
+		if ('' !== sFolderFullNameRaw)
+		{
+			this.oFolderHashCache[sFolderFullNameRaw] = sFolderHash;
+		}
 	};
 
 	/**

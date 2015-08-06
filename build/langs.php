@@ -48,7 +48,7 @@ function saveLangStructure($sLangFile, $aLang)
 		}
 	}
 
-	\file_put_contents(LANGS_PATH.'/'.$sLangFile, implode("\n", $aResultLines));
+	\file_put_contents(LANGS_PATH.'/'.$sLangFile, implode("\n", $aResultLines)."\n");
 }
 
 $sNL = "\n";

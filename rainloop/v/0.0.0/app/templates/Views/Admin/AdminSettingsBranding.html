@@ -29,7 +29,7 @@
 		</div>
 	</div>
 	<br />
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs" data-bind="visible: !community">
 		<li class="active">
 			<a class="i18n" data-i18n="TAB_BRANDING/LEGEND_LOGIN"
 			   href="#branding-login-section-id" data-toggle="tab"></a>
@@ -44,7 +44,7 @@
 		</li>
 	</ul>
 	<br  />
-	<div class="row">
+	<div class="row" data-bind="visible: !community">
 		<div class="tab-content span12">
 			<div class="tab-pane active" id="branding-login-section-id">
 
@@ -127,6 +127,50 @@
 
 <div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
 	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogo,
+					trigger: userLogo.trigger,
+					placeholder: 'https://',
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO_TITLE"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogoTitle,
+					trigger: userLogoTitle.trigger,
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_LOGO_MESSAGE"></label>
+		<div class="controls">
+			<div data-bind="component: {
+				name: 'Input',
+				params: {
+					value: userLogoMessage,
+					trigger: userLogoMessage.trigger,
+					placeholder: 'https://',
+					size: 5,
+					enable: capa
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
 		<label class="control-label" data-i18n="TAB_BRANDING/LABEL_USER_CUSTOM_CSS"></label>
 		<div class="controls">
 			<div class="custom-css-wrapper" data-bind="component: {
@@ -144,7 +188,7 @@
 </div>
 
 			</div>
-			<div class="tab-pane active" id="branding-welcome-page-section-id">
+			<div class="tab-pane" id="branding-welcome-page-section-id">
 
 <div class="form-horizontal" data-bind="css: {'disabled-form': !capa()}">
 	<div class="control-group">
@@ -185,7 +229,7 @@
 		</div>
 	</div>
 
-	<div class="row" data-bind="visible: !capa()">
+	<div class="row" data-bind="visible: !capa() && !community">
 		<div class="alert span8" style="margin-top: 10px;" data-i18n="[html]TAB_BRANDING/HTML_ALERT_PREMIUM"></div>
 	</div>
 

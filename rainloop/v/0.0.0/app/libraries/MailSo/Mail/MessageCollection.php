@@ -63,14 +63,19 @@ class MessageCollection extends \MailSo\Base\Collection
 	public $UidNext;
 
 	/**
+	 * @var string
+	 */
+	public $ThreadUid;
+
+	/**
 	 * @var array
 	 */
 	public $NewMessages;
 
 	/**
-	 * @var array
+	 * @var bool
 	 */
-	public $LastCollapsedThreadUids;
+	public $Filtered;
 
 	/**
 	 * @access protected
@@ -108,9 +113,10 @@ class MessageCollection extends \MailSo\Base\Collection
 		$this->Limit = 0;
 		$this->Search = '';
 		$this->UidNext = '';
+		$this->ThreadUid = '';
 		$this->NewMessages = array();
-		
-		$this->LastCollapsedThreadUids = array();
+
+		$this->Filtered = false;
 
 		return $this;
 	}

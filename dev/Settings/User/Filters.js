@@ -110,10 +110,12 @@
 		}, this);
 	}
 
-	FiltersUserSettings.prototype.scrollableOptions = function ()
+	FiltersUserSettings.prototype.scrollableOptions = function (sWrapper)
 	{
 		return {
-			handle: '.drag-handle'
+			handle: '.drag-handle',
+			containment: sWrapper || 'parent',
+			axis: 'y'
 		};
 	};
 
