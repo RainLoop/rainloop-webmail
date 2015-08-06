@@ -200,6 +200,7 @@ cfg.paths.js = {
 //			'vendors/jsencrypt/jsencrypt.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
+//			'vendors/svg4everybody/svg4everybody.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},

@@ -283,10 +283,7 @@
 
 	AbstractApp.prototype.bootstart = function ()
 	{
-		if (window.console && Utils.isFunc(window.console.log))
-		{
-			window.console.log('Psss, hacker! There is nothing interesting :)');
-		}
+		Utils.log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
 
 		Events.pub('rl.bootstart');
 

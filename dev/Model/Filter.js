@@ -195,7 +195,7 @@
 		}
 
 		if (Enums.FiltersAction.Vacation === this.actionType() &&
-			('' === this.actionValueFourth() || -1 === this.actionValueFourth().indexOf('@'))
+			'' !== this.actionValueFourth() && -1 === this.actionValueFourth().indexOf('@')
 		)
 		{
 			this.actionValueFourth.error(true);
