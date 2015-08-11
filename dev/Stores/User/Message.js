@@ -526,7 +526,6 @@
 		var
 			bNew = false,
 			bIsHtml = false,
-			sTag = 'div',
 			bHasExternals = false,
 			bHasInternals = false,
 			oBody = null,

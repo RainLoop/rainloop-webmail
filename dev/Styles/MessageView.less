@@ -380,19 +380,24 @@ html.rl-no-preview-pane {
 							// margin: 15px;
 						}
 
-						pre {
+						pre, code {
 							margin: 0px;
 							padding: 0px;
 							background: #fff;
 							border: none;
+							border-radius: 0;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+							display: block;
+							max-width: 700px;
+							white-space: pre;
+							word-wrap: break-word;
 						}
 					}
 
 					&.plain {
 
 						padding: 15px;
-						white-space: pre-wrap;
+						/*white-space: pre-wrap;*/
 						font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 
 						pre {
@@ -401,6 +406,8 @@ html.rl-no-preview-pane {
 							background: #fff;
 							border: none;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+							display: block;
+							white-space: pre;
 						}
 
 						pre.b-plain-openpgp {
