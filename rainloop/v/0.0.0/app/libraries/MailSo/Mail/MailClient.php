@@ -967,8 +967,10 @@ class MailClient
 	 */
 	private function escapeSearchString($sSearch, $bDetectGmail = true)
 	{
-		return ($bDetectGmail && !\MailSo\Base\Utils::IsAscii($sSearch) && $this->IsGmail())
-			? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
+		return !\MailSo\Base\Utils::IsAscii($sSearch)
+			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
+//		return ($bDetectGmail && !\MailSo\Base\Utils::IsAscii($sSearch) && $this->IsGmail())
+//			? '{'.\strlen($sSearch).'+}'."\r\n".$sSearch : $this->oImapClient->EscapeString($sSearch);
 	}
 
 	/**
@@ -1396,7 +1398,7 @@ class MailClient
 		}
 
 		$sCriteriasResult = \trim($sCriteriasResult);
-		$sCriteriasResult .= ' NOT DELETED';
+		$sCriteriasResult .= ' UNDELETED';
 
 		$sFilter = \trim($sFilter);
 		if ('' !== $sFilter)
@@ -1832,7 +1834,7 @@ class MailClient
 		{
 			$aResultUids = $bUseSortIfSupported ?
 				$this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true) :
-				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true)
+				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 
 			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && 0 < \strlen($sSerializedHash))

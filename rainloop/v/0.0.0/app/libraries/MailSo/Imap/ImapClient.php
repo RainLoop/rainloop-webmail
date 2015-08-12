@@ -1301,6 +1301,25 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @param array $aResult
+	 * @return \MailSo\Imap\Response
+	 */
+	private function findLastResponse($aResult)
+	{
+		$oResult = null;
+		if (\is_array($aResult) && 0 < \count($aResult))
+		{
+			$oResult = $aResult[\count($aResult) - 1];
+			if (!($oResult instanceof \MailSo\Imap\Response))
+			{
+				$oResult = null;
+			}
+		}
+
+		return $oResult;
+	}
+
+	/**
 	 * @param string $sSearchCriterias
 	 * @param bool $bReturnUid = true
 	 * @param string $sCharset = ''
@@ -1328,8 +1347,32 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$sCmd = 'SEARCH';
 
-		$this->SendRequest($sCommandPrefix.$sCmd, $aRequest);
-		$aResult = $this->parseResponseWithValidation();
+		$sCont = $this->SendRequest($sCommandPrefix.$sCmd, $aRequest, true);
+		if ('' !== $sCont)
+		{
+			$aResult = $this->parseResponseWithValidation();
+			$oItem = $this->findLastResponse($aResult);
+
+			if ($oItem && \MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oItem->ResponseType)
+			{
+				$aParts = explode("\r\n", $sCont);
+				foreach ($aParts as $sLine)
+				{
+					$this->sendRaw($sLine);
+
+					$aResult = $this->parseResponseWithValidation();
+					$oItem = $this->findLastResponse($aResult);
+					if ($oItem && \MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oItem->ResponseType)
+					{
+						continue;
+					}
+				}
+			}
+		}
+		else
+		{
+			$aResult = $this->parseResponseWithValidation();
+		}
 
 		$aReturn = array();
 		$oImapResponse = null;
@@ -1660,13 +1703,14 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sCommand
 	 * @param array $aParams = array()
+	 * @param bool $bBreakOnLiteral = false
 	 *
-	 * @return void
+	 * @return string
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function SendRequest($sCommand, $aParams = array())
+	public function SendRequest($sCommand, $aParams = array(), $bBreakOnLiteral = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true) || !\is_array($aParams))
 		{
@@ -1690,7 +1734,23 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->aTagTimeouts[$sTag] = \microtime(true);
+
+		if ($bBreakOnLiteral && !\preg_match('/\d\+\}\r\n/', $sRealCommand))
+		{
+			$iPos = \strpos($sRealCommand, "}\r\n");
+			if (false !== $iPos)
+			{
+				$iFakePos = \strpos($sFakeCommand, "}\r\n");
+
+				$this->sendRaw(\substr($sRealCommand, 0, $iPos + 1), true,
+					false !== $iFakePos ? \substr($sFakeCommand, 0, $iFakePos + 3) : '');
+
+				return \substr($sRealCommand, $iPos + 3);
+			}
+		}
+
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
+		return '';
 	}
 
 	/**
