@@ -18,6 +18,21 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	private $sDatabase = 'postfixadmin';
 
 	/**
+	* @var string
+	*/
+	private $sTable = 'mailbox';
+
+	/**
+	* @var string
+	*/
+	private $sUsercol = 'usercol';
+
+	/**
+	* @var string
+	*/
+	private $sPasscol = 'passcol';
+
+	/**
 	 * @var string
 	 */
 	private $sUser = 'postfixadmin';
@@ -72,6 +87,39 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	public function SetDatabase($sDatabase)
 	{
 		$this->sDatabase = $sDatabase;
+		return $this;
+	}
+
+	/**
+	* @param string $sTable
+	*
+	* @return \ChangePasswordPostfixAdminDriver
+	*/
+	public function SetTable($sTable)
+	{
+		$this->sTable = $sTable;
+		return $this;
+	}
+
+	/**
+	* @param string $sUsercol
+	*
+	* @return \ChangePasswordPostfixAdminDriver
+	*/
+	public function SetUserColumn($sUsercol)
+	{
+		$this->sUsercol = $sUsercol;
+		return $this;
+	}
+
+	/**
+	* @param string $sPasscol
+	*
+	* @return \ChangePasswordPostfixAdminDriver
+	*/
+	public function SetPasswordColumn($sPasscol)
+	{
+		$this->sPasscol = $sPasscol;
 		return $this;
 	}
 
@@ -173,7 +221,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				$sUpdatePassword = $this->cryptPassword($sNewPassword, $oPdo);
 				if (0 < \strlen($sUpdatePassword))
 				{
-					$oStmt = $oPdo->prepare('UPDATE mailbox SET password = ? WHERE username = ?');
+					$oStmt = $oPdo->prepare("UPDATE  $this->sTable SET $this->sPasscol = ? WHERE $this->sUsercol = ?");
 					$bResult = (bool) $oStmt->execute(array($sUpdatePassword, $oAccount->Email()));
 				}
 				else
