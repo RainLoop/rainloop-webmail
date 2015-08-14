@@ -1524,7 +1524,6 @@ class Actions
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 
-
 				if (!$oAccount->IsAdditionalAccount() && !empty($aResult['WelcomePageUrl']) &&
 					('once' === $aResult['WelcomePageDisplay'] || 'always' === $aResult['WelcomePageDisplay']))
 				{

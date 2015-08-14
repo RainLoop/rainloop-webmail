@@ -12,6 +12,8 @@ var
 		releasesPath: 'build/dist/releases',
 		community: true,
 		watch: false,
+		watchInterval: 1000,
+		googleCompile: false,
 
 		rainloopBuilded: false,
 		destPath: '',
@@ -81,11 +83,18 @@ function cleanDir(sDir)
 		.pipe(require('gulp-rimraf')());
 }
 
-function renameFileWothMd5Hash(sFile)
+function renameFileWithMd5Hash(sFile, callback)
 {
 	var sHash = require('crypto').createHash('md5').update(fs.readFileSync(sFile)).digest('hex');
-	fs.renameSync(sFile, sFile.replace(/\.zip$/, '-' + sHash + '.zip'));
-	return true;
+	cfg.lastMd5File = sFile.replace(/\.zip$/, '-' + sHash + '.zip');
+	fs.renameSync(sFile, cfg.lastMd5File);
+	callback();
+}
+
+function copyFile(sFile, sNewFile, callback)
+{
+	fs.writeFileSync(sNewFile, fs.readFileSync(sFile));
+	callback();
 }
 
 cfg.paths.globjs = 'dev/**/*.js';
@@ -450,13 +459,13 @@ gulp.task('js:lint', function() {
 		.pipe(jshint.reporter('jshint-summary', cfg.summary))
 		.pipe(jshint.reporter('fail'))
 		// google compiler
-		.pipe(closureCompiler({
+		.pipe(gulpif(cfg.googleCompile, closureCompiler({
 			compilerPath: './build/compiler.jar',
 			fileName: 'gc.js',
 			compilerFlags: {
 				output_wrapper: '(function(){%output%}());'
 			}
-		}));
+		})))
 	;
 });
 
@@ -574,6 +583,7 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	cfg.zipSrcPath = dist;
 	cfg.zipFile = 'rainloop-' + (cfg.community ? 'community-' : '') + versionFull + '.zip';
 	cfg.md5File = cfg.zipFile;
+	cfg.lastMd5File = '';
 
 	cfg.rainloopBuilded = true;
 });
@@ -583,13 +593,17 @@ gulp.task('rainloop:zip', ['rainloop:copy', 'rainloop:setup'], function() {
 		zipDir(cfg.zipSrcPath, cfg.destPath, cfg.zipFile) : false;
 });
 
-gulp.task('rainloop:md5', ['rainloop:zip'], function() {
-	return (cfg.destPath && cfg.md5File) ?
-		renameFileWothMd5Hash(cfg.destPath +  cfg.md5File) : false;
+gulp.task('rainloop:md5', ['rainloop:zip'], function(callback) {
+	renameFileWithMd5Hash(cfg.destPath + cfg.md5File, callback);
 });
 
 gulp.task('rainloop:clean', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
+});
+
+gulp.task('rainloop:shortname', ['rainloop:md5'], function(callback) {
+	copyFile(cfg.lastMd5File, cfg.destPath +
+		'rainloop' + (cfg.community ? '-community' : '') + '-latest.zip', callback);
 });
 
 // BUILD (OwnCloud)
@@ -657,13 +671,17 @@ gulp.task('rainloop:owncloud:zip', ['rainloop:owncloud:copy', 'rainloop:owncloud
 		zipDir(cfg.zipSrcPath, cfg.destPath, cfg.zipFile) : false;
 });
 
-gulp.task('rainloop:owncloud:md5', ['rainloop:owncloud:zip'], function() {
-	return (cfg.destPath && cfg.md5File) ?
-		renameFileWothMd5Hash(cfg.destPath +  cfg.md5File) : false;
+gulp.task('rainloop:owncloud:md5', ['rainloop:owncloud:zip'], function(callback) {
+	renameFileWithMd5Hash(cfg.destPath +  cfg.md5File, callback);
 });
 
 gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
+});
+
+gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(callback) {
+	copyFile(cfg.lastMd5File, cfg.destPath +
+		'rainloop' + (cfg.community ? '' : '-standard') + '.zip', callback);
 });
 
 // MAIN
@@ -675,14 +693,14 @@ gulp.task('fast+', ['package:community-off', 'fast-']);
 
 gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
 
-gulp.task('rainloop-', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean']);
+gulp.task('rainloop-', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean', 'rainloop:shortname']);
 
 gulp.task('rainloop', ['package:community-on', 'rainloop-']);
 gulp.task('rainloop+', ['package:community-off', 'rainloop-']);
 
 gulp.task('owncloud-', ['rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
-	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean']);
+	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname']);
 
 gulp.task('owncloud', ['package:community-on', 'owncloud-']);
 gulp.task('owncloud+', ['package:community-off', 'owncloud-']);
@@ -691,15 +709,15 @@ gulp.task('owncloud+', ['package:community-off', 'owncloud-']);
 gulp.task('watch', ['fast'], function() {
 	cfg.watch = true;
 	livereload.listen();
-	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
+	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 
 gulp.task('watch+', ['fast+'], function() {
 	cfg.watch = true;
 	livereload.listen();
-	gulp.watch(cfg.paths.globjs, {interval: 1000}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.less.main.watch, {interval: 1000}, ['css:main']);
+	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 
 // ALIASES

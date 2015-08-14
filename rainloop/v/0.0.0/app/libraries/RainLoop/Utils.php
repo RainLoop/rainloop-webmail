@@ -7,7 +7,7 @@ class Utils
 	/**
 	 * @var string
 	 */
-	static $CookieDefaultPath = '/';
+	static $CookieDefaultPath = '';
 
 	static $Cookies = null;
 
@@ -518,6 +518,7 @@ class Utils
 		if (null === $sPath)
 		{
 			$sPath = \RainLoop\Utils::$CookieDefaultPath;
+			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 		}
 
 		\RainLoop\Utils::$Cookies[$sName] = $sValue;
@@ -531,8 +532,11 @@ class Utils
 			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
+		$sPath = \RainLoop\Utils::$CookieDefaultPath;
+		$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
+
 		unset(\RainLoop\Utils::$Cookies[$sName]);
-		@\setcookie($sName, '', \time() - 3600 * 24 * 30);
+		@\setcookie($sName, '', \time() - 3600 * 24 * 30, $sPath);
 	}
 
 	/**

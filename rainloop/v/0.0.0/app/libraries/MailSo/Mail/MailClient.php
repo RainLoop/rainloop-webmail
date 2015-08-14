@@ -949,10 +949,7 @@ class MailClient
 	}
 
 	/**
-	 * @param string $sSearch
-	 * @param bool $bDetectGmail = true
-	 *
-	 * @return string
+	 * @return bool
 	 */
 	public function IsGmail()
 	{
