@@ -696,7 +696,10 @@
 				case Enums.ComposeType.ReplyAll:
 				case Enums.ComposeType.Forward:
 				case Enums.ComposeType.ForwardAsAttachment:
-					_.each(_.union(oMessage.to, oMessage.cc, oMessage.bcc, oMessage.deliveredTo), fEachHelper);
+					_.each(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fEachHelper);
+					if (!oResultIdentity) {
+						_.each(oMessage.deliveredTo, fEachHelper);
+					}
 					break;
 				case Enums.ComposeType.Draft:
 					_.each(_.union(oMessage.from, oMessage.replyTo), fEachHelper);
