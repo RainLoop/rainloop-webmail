@@ -25,12 +25,12 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	/**
 	* @var string
 	*/
-	private $sUsercol = 'usercol';
+	private $sUsercol = 'username';
 
 	/**
 	* @var string
 	*/
-	private $sPasscol = 'passcol';
+	private $sPasscol = 'password';
 
 	/**
 	 * @var string
@@ -207,6 +207,8 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 			$this->oLogger->Write('Postfix: Try to change password for '.$oAccount->Email());
 		}
 
+		unset($sPrevPassword);
+
 		$bResult = false;
 
 		if (0 < \strlen($sNewPassword))
@@ -221,14 +223,14 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				$sUpdatePassword = $this->cryptPassword($sNewPassword, $oPdo);
 				if (0 < \strlen($sUpdatePassword))
 				{
-					$oStmt = $oPdo->prepare("UPDATE  $this->sTable SET $this->sPasscol = ? WHERE $this->sUsercol = ?");
+					$oStmt = $oPdo->prepare("UPDATE {$this->sTable} SET {$this->sPasscol} = ? WHERE {$this->sUsercol} = ?");
 					$bResult = (bool) $oStmt->execute(array($sUpdatePassword, $oAccount->Email()));
 				}
 				else
 				{
 					if ($this->oLogger)
 					{
-						$this->oLogger->Write('Postfix: Encyted password is ematy',
+						$this->oLogger->Write('Postfix: Encrypted password is empty',
 							\MailSo\Log\Enumerations\Type::ERROR);
 					}
 				}
@@ -259,6 +261,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 		switch ($this->sEncrypt)
 		{
 			default:
+			case 'plain':
 			case 'cleartext':
 				$sResult = $sPassword;
 				break;
