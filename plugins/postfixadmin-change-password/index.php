@@ -44,6 +44,9 @@ class PostfixAdminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 					->SetHost($this->Config()->Get('plugin', 'host', ''))
 					->SetPort((int) $this->Config()->Get('plugin', 'port', 3306))
 					->SetDatabase($this->Config()->Get('plugin', 'database', ''))
+					->SetTable($this->Config()->Get('plugin', 'table', ''))
+					->SetUserColumn($this->Config()->Get('plugin', 'usercol', ''))
+					->SetPasswordColumn($this->Config()->Get('plugin', 'passcol', ''))
 					->SetUser($this->Config()->Get('plugin', 'user', ''))
 					->SetPassword($this->Config()->Get('plugin', 'password', ''))
 					->SetEncrypt($this->Config()->Get('plugin', 'encrypt', ''))
@@ -68,6 +71,12 @@ class PostfixAdminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(3306),
 			\RainLoop\Plugins\Property::NewInstance('database')->SetLabel('MySQL Database')
 				->SetDefaultValue('postfixadmin'),
+			\RainLoop\Plugins\Property::NewInstance('table')->SetLabel('MySQL table')
+				->SetDefaultValue('mailbox'),
+			\RainLoop\Plugins\Property::NewInstance('usercol')->SetLabel('MySQL username column')
+				->SetDefaultValue('username'),
+			\RainLoop\Plugins\Property::NewInstance('passcol')->SetLabel('MySQL password column')
+				->SetDefaultValue('password'),
 			\RainLoop\Plugins\Property::NewInstance('user')->SetLabel('MySQL User')
 				->SetDefaultValue('postfixadmin'),
 			\RainLoop\Plugins\Property::NewInstance('password')->SetLabel('MySQL Password')

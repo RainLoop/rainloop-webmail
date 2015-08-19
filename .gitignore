@@ -16,3 +16,4 @@
 /build/dist
 /build/tmp
 /data
+.DS_Store
