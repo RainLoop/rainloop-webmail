@@ -609,6 +609,32 @@ class Utils
 	}
 
 	/**
+	 * @param array $aSuggestions
+	 *
+	 * @return array
+	 */
+	public static function RemoveSuggestionsdDuplicates($aSuggestions)
+	{
+		$aResult = array();
+
+		if (is_array($aSuggestions))
+		{
+			$aCache = array();
+			foreach ($aSuggestions as $aItem)
+			{
+				$sLine = \implode('~~', $aItem);
+				if (!isset($aCache[$sLine]))
+				{
+					$aCache[$sLine] = true;
+					$aResult[] = $aItem;
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
 	 * @param string $sFileName
 	 * @param bool $bProcessSections = false
 	 *

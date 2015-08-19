@@ -305,11 +305,9 @@ class Actions
 						$mResult = array();
 					}
 
-					// \RainLoop\Providers\Suggestions\ISuggestions
-//					$mResult[] = new \RainLoop\Providers\Suggestions\TestSuggestions();
-
 					if (\is_array($mResult) && \RainLoop\Utils::IsOwnCloud())
 					{
+						// \RainLoop\Providers\Suggestions\ISuggestions
 						$mResult[] = new \RainLoop\Providers\Suggestions\OwnCloudSuggestions();
 					}
 
@@ -7011,8 +7009,10 @@ class Actions
 					$aResult = \array_merge($aResult, $aSuggestionsProviderResult);
 				}
 			}
+
 		}
 
+		$aResult = \RainLoop\Utils::RemoveSuggestionsdDuplicates($aResult);
 		if ($iLimit < \count($aResult))
 		{
 			$aResult = \array_slice($aResult, 0, $iLimit);
@@ -7020,6 +7020,7 @@ class Actions
 
 		$this->Plugins()->RunHook('ajax.suggestions-post', array(&$aResult, $sQuery, $oAccount, $iLimit));
 
+		$aResult = \RainLoop\Utils::RemoveSuggestionsdDuplicates($aResult);
 		if ($iLimit < \count($aResult))
 		{
 			$aResult = \array_slice($aResult, 0, $iLimit);
