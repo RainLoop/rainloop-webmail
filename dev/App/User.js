@@ -1383,7 +1383,14 @@
 
 								if (window.Worker)
 								{
-									PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
+									try
+									{
+										PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
+									}
+									catch (e)
+									{
+										Utils.log(e);
+									};
 								}
 
 //								PgpStore.openpgp.config.useWebCrypto = false;

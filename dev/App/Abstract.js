@@ -124,11 +124,10 @@
 	{
 		var
 			oE = null,
-			oLink = null,
-			sUserAgent = window.navigator.userAgent.toLowerCase()
+			oLink = null
 		;
 
-		if (sUserAgent && (sUserAgent.indexOf('chrome') > -1 || sUserAgent.indexOf('chrome') > -1))
+		if (Globals.sUserAgent && (Globals.sUserAgent.indexOf('chrome') > -1 || Globals.sUserAgent.indexOf('chrome') > -1))
 		{
 			oLink = window.document.createElement('a');
 			oLink['href'] = sLink;

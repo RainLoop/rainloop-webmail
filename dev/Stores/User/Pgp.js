@@ -301,7 +301,16 @@
 							return false;
 						}
 
-						var oMessage = self.openpgp.message.readArmored(sData);
+						var oMessage = null;
+						try
+						{
+							oMessage = self.openpgp.message.readArmored(sData);
+						}
+						catch (e)
+						{
+							Utils.log(e);
+						};
+
 						if (oMessage && oMessage.getText && oMessage.verify && oMessage.decrypt)
 						{
 							self.decryptMessage(oMessage, function (oValidPrivateKey, oDecriptedMessage, oValidPublicKey, aSigningKeyIds) {
@@ -361,7 +370,16 @@
 							return false;
 						}
 
-						var oMessage = self.openpgp.cleartext.readArmored(sData);
+						var oMessage = null;
+						try
+						{
+							oMessage = self.openpgp.cleartext.readArmored(sData);
+						}
+						catch (e)
+						{
+							Utils.log(e);
+						};
+
 						if (oMessage && oMessage.getText && oMessage.verify)
 						{
 							self.verifyMessage(oMessage, function (oValidKey, aSigningKeyIds) {

@@ -92,6 +92,7 @@
 				}
 				catch (e)
 				{
+					Utils.log(e);
 					self.submitRequest(false);
 				}
 

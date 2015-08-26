@@ -555,6 +555,22 @@ END;
 	 *
 	 * @return string
 	 */
+	public static function StrMailDomainToLowerIfAscii($sValue)
+	{
+		$aParts = \explode('@', $sValue, 2);
+		if (!empty($aParts[1]))
+		{
+			$aParts[1] = \MailSo\Base\Utils::IsAscii($aParts[1]) ? \strtolower($aParts[1]) : $aParts[1];
+		}
+
+		return \implode('@', $aParts);
+	}
+
+	/**
+	 * @param string $sValue
+	 *
+	 * @return string
+	 */
 	public static function StripSpaces($sValue)
 	{
 		return \MailSo\Base\Utils::Trim(
@@ -2415,7 +2431,7 @@ END;
 			catch (\Exception $oException) {}
 		}
 
-		return $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
+		return $bLowerIfAscii ? \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 	}
 
 	/**
@@ -2426,7 +2442,7 @@ END;
 	 */
 	public static function IdnToAscii($sStr, $bLowerIfAscii = false)
 	{
-		$sStr = $bLowerIfAscii ? \MailSo\Base\Utils::StrToLowerIfAscii($sStr) : $sStr;
+		$sStr = $bLowerIfAscii ? \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 
 		$sUser = '';
 		$sDomain = $sStr;

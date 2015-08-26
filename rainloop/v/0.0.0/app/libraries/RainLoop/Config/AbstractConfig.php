@@ -205,6 +205,14 @@ abstract class AbstractConfig
 	/**
 	 * @return bool
 	 */
+	public function IsFileExists()
+	{
+		return \file_exists($this->sFile);
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function Load()
 	{
 		if (\file_exists($this->sFile) && \is_readable($this->sFile))

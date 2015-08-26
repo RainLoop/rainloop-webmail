@@ -176,6 +176,8 @@
 					}
 					catch (e)
 					{
+						Utils.log(e);
+
 						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));

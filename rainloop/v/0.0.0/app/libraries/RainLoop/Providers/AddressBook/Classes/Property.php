@@ -141,7 +141,7 @@ class Property
 			// lower
 			if ($this->IsEmail())
 			{
-				$this->Value = \MailSo\Base\Utils::StrToLowerIfAscii($this->Value);
+				$this->Value = \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($this->Value);
 			}
 
 			if ($this->IsName())

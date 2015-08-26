@@ -7,6 +7,8 @@
 		_ = require('_'),
 		ko = require('ko'),
 
+		Utils = require('Common/Utils'),
+
 		PgpStore = require('Stores/User/Pgp'),
 
 		AbstractModel = require('Knoin/AbstractModel')
@@ -58,8 +60,11 @@
 				return oKey.keys;
 			}
 		}
-		catch (e) {}
-
+		catch (e)
+		{
+			Utils.log(e);
+		}
+		
 		return null;
 	};
 
