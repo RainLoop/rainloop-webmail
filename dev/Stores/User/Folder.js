@@ -241,6 +241,26 @@
 		return aResult;
 	};
 
+	FolderUserStore.prototype.reComputeFolderListSubFolders = function ()
+	{
+		return;
+		
+		var
+			func = function (aList) {
+				_.each(aList, function (oFolder) {
+					if (oFolder && oFolder.subFolders)
+					{
+						func(oFolder.subFolders());
+
+						oFolder.subFolders.valueHasMutated();
+					}
+				});
+			}
+		;
+
+		func(this.folderList());
+	};
+
 	module.exports = new FolderUserStore();
 
 }());

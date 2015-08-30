@@ -342,6 +342,18 @@
 		}
 	};
 
+	HtmlEditor.prototype.hasFocus = function ()
+	{
+		if (this.editor)
+		{
+			try {
+				return !!this.editor.focusManager.hasFocus;
+			} catch (e) {}
+		}
+
+		return false;
+	};
+
 	HtmlEditor.prototype.blur = function ()
 	{
 		if (this.editor)

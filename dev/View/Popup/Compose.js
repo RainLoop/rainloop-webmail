@@ -124,6 +124,8 @@
 		}, this).extend({'notify': 'always'});
 
 		this.subject = ko.observable('');
+		this.subject.focused = ko.observable(false);
+
 		this.isHtml = ko.observable(false);
 
 		this.requestDsn = ko.observable(false);
@@ -1423,8 +1425,25 @@
 			oScript = null
 		;
 
-		key('ctrl+q, command+q', Enums.KeyState.Compose, function () {
+		key('ctrl+q, command+q, ctrl+w, command+w', Enums.KeyState.Compose, function () {
+			return false;
+		});
+
+		key('`', Enums.KeyState.Compose, function () {
+			if (self.oEditor && !self.oEditor.hasFocus() && !Utils.inFocus())
+			{
+				self.identitiesDropdownTrigger(true);
+				return false;
+			}
+		});
+
+		key('ctrl+`', Enums.KeyState.Compose, function () {
 			self.identitiesDropdownTrigger(true);
+			return false;
+		});
+
+		key('esc, ctrl+down, command+down', Enums.KeyState.Compose, function () {
+			self.skipCommand();
 			return false;
 		});
 
@@ -1444,7 +1463,7 @@
 			});
 		}
 
-		key('esc', Enums.KeyState.Compose, function () {
+		key('shift+esc', Enums.KeyState.Compose, function () {
 			if (self.modalVisibility())
 			{
 				self.tryToClosePopup();

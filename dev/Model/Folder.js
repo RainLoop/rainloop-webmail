@@ -82,7 +82,7 @@
 
 		this.hasSubScribedSubfolders = ko.computed(function () {
 			return !!_.find(this.subFolders(), function (oFolder) {
-				return oFolder.subScribed() && !oFolder.isSystemFolder();
+				return (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder();
 			});
 		}, this);
 

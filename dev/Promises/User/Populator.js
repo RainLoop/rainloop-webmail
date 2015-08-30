@@ -150,6 +150,8 @@
 			FolderStore.displaySpecSetting(0 >= iC || iLimit < iC);
 			FolderStore.folderList(this.folderResponseParseRec(
 				Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection']));
+
+			FolderStore.reComputeFolderListSubFolders();
 		}
 	};
 
