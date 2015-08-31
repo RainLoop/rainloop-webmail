@@ -309,7 +309,7 @@
 						catch (e)
 						{
 							Utils.log(e);
-						};
+						}
 
 						if (oMessage && oMessage.getText && oMessage.verify && oMessage.decrypt)
 						{
@@ -378,7 +378,7 @@
 						catch (e)
 						{
 							Utils.log(e);
-						};
+						}
 
 						if (oMessage && oMessage.getText && oMessage.verify)
 						{

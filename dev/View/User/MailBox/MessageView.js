@@ -10,8 +10,8 @@
 		ko = require('ko'),
 		key = require('key'),
 
-		PhotoSwipe = require('PhotoSwipe'),
-		PhotoSwipeUI_Default = require('PhotoSwipeUI_Default'),
+//		PhotoSwipe = require('PhotoSwipe'),
+//		PhotoSwipeUI_Default = require('PhotoSwipeUI_Default'),
 
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
@@ -452,6 +452,8 @@
 			this.toggleFullScreen();
 		}, this);
 
+		this.attachmentPreview = _.bind(this.attachmentPreview, this);
+
 		kn.constructorEnd(this);
 	}
 
@@ -578,12 +580,75 @@
 //		return sResult;
 //	};
 
+	/**
+	 * @param {Object} oAttachment
+	 * @returns {boolean}
+	 */
+	MessageViewMailBoxUserView.prototype.attachmentPreview = function (oAttachment)
+	{
+		if (oAttachment && oAttachment.isImage() && !oAttachment.isLinked && this.message() && this.message().attachments())
+		{
+			var
+				oDiv = $('<div>'),
+				iIndex = 0,
+				iListIndex = 0,
+				aDynamicEl = _.compact(_.map(this.message().attachments(), function (oItem) {
+					if (oItem && !oItem.isLinked && oItem.isImage())
+					{
+						if (oItem === oAttachment)
+						{
+							iIndex = iListIndex;
+						}
+
+						iListIndex++;
+
+						return {
+							'src':  oItem.linkPreview(),
+							'thumb':  oItem.linkThumbnail(),
+							'subHtml': oItem.fileName,
+							'downloadUrl':  oItem.linkPreview()
+						};
+					}
+
+					return null;
+				}))
+			;
+
+			if (0 < aDynamicEl.length)
+			{
+				oDiv.on('onBeforeOpen.lg', function () {
+					Globals.useKeyboardShortcuts(false);
+				});
+
+				oDiv.on('onCloseAfter.lg', function () {
+					Globals.useKeyboardShortcuts(true);
+				});
+
+				oDiv.lightGallery({
+					dynamic: true,
+					loadYoutubeThumbnail: false,
+					loadVimeoThumbnail: false,
+					thumbWidth: 80,
+					thumbContHeight: 95,
+					showThumbByDefault: false,
+					mode: 'lg-lollipop', // 'lg-slide',
+					index: iIndex,
+					dynamicEl: aDynamicEl
+				});
+			}
+
+			return false;
+		}
+
+		return true;
+	};
+
 	MessageViewMailBoxUserView.prototype.onBuild = function (oDom)
 	{
 		var
 			self = this,
 			oScript = null,
-			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
+//			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this)
 		;
 
@@ -625,6 +690,7 @@
 		this.oHeaderDom = $('.messageItemHeader', oDom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
+/*
 		this.pswpDom = $('.pswp', oDom)[0];
 
 		if (this.pswpDom)
@@ -708,6 +774,7 @@
 					return false;
 				});
 		}
+*/
 
 		oDom
 			.on('click', 'a', function (oEvent) {

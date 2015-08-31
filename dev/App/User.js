@@ -1390,7 +1390,7 @@
 									catch (e)
 									{
 										Utils.log(e);
-									};
+									}
 								}
 
 //								PgpStore.openpgp.config.useWebCrypto = false;

@@ -172,7 +172,6 @@
 		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, true);
 
 		oFolder.subScribed(true);
-		FolderStore.reComputeFolderListSubFolders();
 	};
 
 	FoldersUserSettings.prototype.unSubscribeFolder = function (oFolder)
@@ -181,7 +180,6 @@
 		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, false);
 
 		oFolder.subScribed(false);
-		FolderStore.reComputeFolderListSubFolders();
 	};
 
 	FoldersUserSettings.prototype.checkableTrueFolder = function (oFolder)

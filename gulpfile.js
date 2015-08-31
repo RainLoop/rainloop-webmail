@@ -130,9 +130,9 @@ cfg.paths.css = {
 			'vendors/progress.js/minified/progressjs.rainloop.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/opentip/opentip.css',
-			'vendors/photoswipe/photoswipe.css',
-			'vendors/photoswipe/default-skin/default-skin.css',
 			'vendors/flags/flags-fixed.css',
+			'vendors/lightGallery/dist/css/lightgallery.min.css',
+			'vendors/lightGallery/dist/css/lg-transitions-lg-lollipop.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
 	}
@@ -204,12 +204,13 @@ cfg.paths.js = {
 			'vendors/Q/q.min.js',
 			'vendors/opentip/opentip-jquery.min.js',
 			'vendors/Autolinker/Autolinker.min.js',
-			'vendors/photoswipe/photoswipe.min.js',
-			'vendors/photoswipe/photoswipe-ui-default.min.js',
-//			'vendors/jsencrypt/jsencrypt.min.js',
+			'vendors/lightGallery/dist/js/lightgallery.min.js',
+			'vendors/lightGallery/dist/js/lg-fullscreen.min.js',
+			'vendors/lightGallery/dist/js/lg-thumbnail.min.js',
+			'vendors/lightGallery/dist/js/lg-zoom.min.js',
+			'vendors/lightGallery/dist/js/lg-autoplay.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
-//			'vendors/svg4everybody/svg4everybody.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},
@@ -248,6 +249,7 @@ gulp.task('css:main-begin', ['less:main'], function() {
 	return gulp.src(cfg.paths.css.main.src)
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 //		.pipe(csscomb())
 //		.pipe(csslint())
 //		.pipe(csslint.reporter())
