@@ -7,6 +7,7 @@
 		_ = require('_'),
 		ko = require('ko'),
 		key = require('key'),
+		$ = require('$'),
 
 		Utils = require('Common/Utils'),
 		Enums = require('Common/Enums'),
@@ -61,18 +62,25 @@ _.delay(_.bind(function() {
 						{
 							if (!oPrivateKey.decrypt(Utils.pString(this.password())))
 							{
+								Utils.log('Error: Private key cannot be decrypted');
 								oPrivateKey = null;
 							}
 						}
 						catch (e)
 						{
+							Utils.log(e);
 							oPrivateKey = null;
 						}
 					}
+					else
+					{
+						Utils.log('Error: Private key cannot be found');
+					}
 				}
 			}
-			catch (oExc)
+			catch (e)
 			{
+				Utils.log(e);
 				oPrivateKey = null;
 			}
 

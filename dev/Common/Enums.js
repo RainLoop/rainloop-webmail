@@ -110,6 +110,7 @@
 		'Menu': 'menu',
 		'PopupComposeOpenPGP': 'compose-open-pgp',
 		'PopupMessageOpenPGP': 'message-open-pgp',
+		'PopupViewOpenPGP': 'view-open-pgp',
 		'PopupKeyboardShortcutsHelp': 'popup-keyboard-shortcuts-help',
 		'PopupAsk': 'popup-ask'
 	};

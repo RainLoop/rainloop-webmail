@@ -57,7 +57,7 @@
 			return _.compact(_.map(PgpStore.openpgpkeysPublic(), function (oKey) {
 				return -1 < Utils.inArray(oKey, self.encryptKeysView()) ? null : {
 					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-6) + ') ' + oKey.user,
+					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + oKey.user,
 					'key': oKey
 				};
 			}));
@@ -83,7 +83,7 @@
 			{
 				if (!this.signKey())
 				{
-					this.notification(Translator.i18n('PGP_NOTIFICATIONS/SPECIFY_FROM_EMAIL'));
+					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
 					bResult = false;
 				}
 				else if (!this.signKey().key)
@@ -237,15 +237,12 @@
 					'empty': !oOption.key,
 					'selected': ko.observable(!!oOption.key),
 					'user': oOption.key.user,
-					'hash': oOption.key.id.substr(-6),
+					'hash': oOption.key.id.substr(-8).toUpperCase(),
 					'key': oOption.key
 				});
 
 				this.encryptKeys(aKeys);
 			}
-
-		}, function () {
-			return !this.submitRequest() &&	this.selectedPublicKey();
 		});
 
 		this.selectedPublicKey.subscribe(function (sValue) {
@@ -285,8 +282,6 @@
 		this.signKey(null);
 		this.encryptKeys([]);
 		this.text('');
-
-		this.submitRequest(false);
 
 		this.resultCallback = null;
 	};
@@ -370,7 +365,7 @@
 			{
 				this.signKey({
 					'user': oKey.user || sEmail,
-					'hash': oKey.id.substr(-6),
+					'hash': oKey.id.substr(-8).toUpperCase(),
 					'key': oKey
 				});
 			}
@@ -389,7 +384,7 @@
 					'empty': !oKey,
 					'selected': ko.observable(!!oKey),
 					'user': oKey ? (oKey.user || sEmail) : sEmail,
-					'hash': oKey ? oKey.id.substr(-6) : '',
+					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
 					'key': oKey
 				};
 			})));

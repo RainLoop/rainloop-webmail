@@ -6,7 +6,9 @@
 	var
 		_ = require('_'),
 		ko = require('ko'),
+		key = require('key'),
 
+		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
 
 		kn = require('Knoin/Knoin'),
@@ -23,6 +25,8 @@
 
 		this.key = ko.observable('');
 		this.keyDom = ko.observable(null);
+
+		this.sDefaultKeyScope = Enums.KeyState.PopupViewOpenPGP;
 
 		kn.constructorEnd(this);
 	}
@@ -52,6 +56,14 @@
 		{
 			this.key(oOpenPgpKey.armor);
 		}
+	};
+
+	ViewOpenPgpKeyPopupView.prototype.onBuild = function ()
+	{
+		key('ctrl+a, command+a', Enums.KeyState.PopupViewOpenPGP, _.bind(function () {
+			this.selectKey();
+			return false;
+		}, this));
 	};
 
 	module.exports = ViewOpenPgpKeyPopupView;
