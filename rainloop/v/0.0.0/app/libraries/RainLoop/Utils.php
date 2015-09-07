@@ -613,7 +613,7 @@ class Utils
 	 *
 	 * @return array
 	 */
-	public static function RemoveSuggestionsdDuplicates($aSuggestions)
+	public static function RemoveSuggestionDuplicates($aSuggestions)
 	{
 		$aResult = array();
 

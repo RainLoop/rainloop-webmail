@@ -8,6 +8,11 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 	private $sHostName = '127.0.0.1';
 
 	/**
+	 * @var int
+	 */
+	private $iHostPort = 389;
+
+	/**
 	 * @var string
 	 */
 	private $sUserDnFormat = '';
@@ -34,15 +39,17 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 
 	/**
 	 * @param string $sHostName
+	 * @param int $iHostPort
 	 * @param string $sUserDnFormat
 	 * @param string $sPasswordField
 	 * @param string $sPasswordEncType
 	 *
 	 * @return \ChangePasswordLdapDriver
 	 */
-	public function SetConfig($sHostName, $sUserDnFormat, $sPasswordField, $sPasswordEncType)
+	public function SetConfig($sHostName, $iHostPort, $sUserDnFormat, $sPasswordField, $sPasswordEncType)
 	{
 		$this->sHostName = $sHostName;
+		$this->iHostPort = $iHostPort;
 		$this->sUserDnFormat = $sUserDnFormat;
 		$this->sPasswordField = $sPasswordField;
 		$this->sPasswordEncType = $sPasswordEncType;
@@ -114,7 +121,7 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 				'{imap:port}' => $oAccount->DomainIncPort()
 			));
 
-			$oCon = @\ldap_connect($this->sHostName);
+			$oCon = @\ldap_connect($this->sHostName, $this->iHostPort);
 			if ($oCon)
 			{
 				@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -133,22 +140,31 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 					return false;
 				}
 			}
+			else
+			{
+				return false;
+			}
 
+			$sSshaSalt = '';
+			$sShaPrefix = '{SHA}';
 			$sEncodedNewPassword = $sNewPassword;
 			switch (\strtolower($this->sPasswordEncType))
 			{
+				case 'ssha':
+					$sSshaSalt = $this->getSalt(4);
+					$sShaPrefix = '{SSHA}';
 				case 'sha':
 					switch (true)
 					{
 						default:
 						case \function_exists('sha1'):
-							$sEncodedNewPassword = '{SHA}'.\base64_encode(\pack('H*', \sha1($sNewPassword)));
+							$sEncodedNewPassword = $sShaPrefix.\base64_encode(\sha1($sNewPassword.$sSshaSalt, true).$sSshaSalt);
 							break;
 						case \function_exists('hash'):
-							$sEncodedNewPassword = '{SHA}'.\base64_encode(\hash('sha1', $sNewPassword, true));
+							$sEncodedNewPassword = $sShaPrefix.\base64_encode(\hash('sha1', $sNewPassword, true).$sSshaSalt);
 							break;
 						case \function_exists('mhash') && defined('MHASH_SHA1'):
-							$sEncodedNewPassword = '{SHA}'.\base64_encode(\mhash(MHASH_SHA1, $sNewPassword));
+							$sEncodedNewPassword = $sShaPrefix.\base64_encode(\mhash(MHASH_SHA1, $sNewPassword).$sSshaSalt);
 							break;
 					}
 					break;

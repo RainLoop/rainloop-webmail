@@ -61,6 +61,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'title'							=> array('RainLoop Webmail', 'Text displayed as page title'),
 				'loading_description'			=> array('RainLoop', 'Text displayed on startup'),
+				'favicon_url'					=> array('', ''),
 
 				'theme'							=> array('Default', 'Theme used by default'),
 				'allow_themes'					=> array(true, 'Allow theme selection on settings screen'),

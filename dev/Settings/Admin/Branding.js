@@ -30,6 +30,9 @@
 		this.loadingDesc = ko.observable(Settings.settingsGet('LoadingDescription'));
 		this.loadingDesc.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
+		this.faviconUrl = ko.observable(Settings.settingsGet('FaviconUrl'));
+		this.faviconUrl.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+
 		this.loginLogo = ko.observable(Settings.settingsGet('LoginLogo') || '');
 		this.loginLogo.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
@@ -88,7 +91,8 @@
 
 			var
 				f1 = Utils.settingsSaveHelperSimpleFunction(self.title.trigger, self),
-				f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self)
+				f2 = Utils.settingsSaveHelperSimpleFunction(self.loadingDesc.trigger, self),
+				f3 = Utils.settingsSaveHelperSimpleFunction(self.faviconUrl.trigger, self)
 			;
 
 			self.title.subscribe(function (sValue) {
@@ -100,6 +104,12 @@
 			self.loadingDesc.subscribe(function (sValue) {
 				Remote.saveAdminConfig(f2, {
 					'LoadingDescription': Utils.trim(sValue)
+				});
+			});
+
+			self.faviconUrl.subscribe(function (sValue) {
+				Remote.saveAdminConfig(f3, {
+					'FaviconUrl': Utils.trim(sValue)
 				});
 			});
 

@@ -31,18 +31,19 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			case 'change-password':
 
 				$sHostName = \trim($this->Config()->Get('plugin', 'hostname', ''));
+				$iHostPort = (int) $this->Config()->Get('plugin', 'port', 389);
 				$sUserDnFormat = \trim($this->Config()->Get('plugin', 'user_dn_format', ''));
 				$sPasswordField = \trim($this->Config()->Get('plugin', 'password_field', ''));
 				$sPasswordEncType = \trim($this->Config()->Get('plugin', 'password_enc_type', ''));
 
-				if (!empty($sHostName) && !empty($sUserDnFormat) && !empty($sPasswordField) && !empty($sPasswordEncType))
+				if (!empty($sHostName) && 0 < $iHostPort && !empty($sUserDnFormat) && !empty($sPasswordField) && !empty($sPasswordEncType))
 				{
 					include_once __DIR__.'/ChangePasswordLdapDriver.php';
 
 					$oProvider = new \ChangePasswordLdapDriver();
 
 					$oProvider
-						->SetConfig($sHostName, $sUserDnFormat, $sPasswordField, $sPasswordEncType)
+						->SetConfig($sHostName, $iHostPort, $sUserDnFormat, $sPasswordField, $sPasswordEncType)
 						->SetAllowedEmails(\strtolower(\trim($this->Config()->Get('plugin', 'allowed_emails', ''))))
 						->SetLogger($this->Manager()->Actions()->Logger())
 					;
@@ -59,6 +60,9 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('hostname')->SetLabel('LDAP hostname')
 				->SetDefaultValue('127.0.0.1'),
+			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('LDAP port')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
+				->SetDefaultValue(389),
 			\RainLoop\Plugins\Property::NewInstance('user_dn_format')->SetLabel('User DN format')
 				->SetDescription('LDAP user dn format. Supported tokens: {email}, {login}, {domain}, {domain:dc}, {imap:login}, {imap:host}, {imap:port}')
 				->SetDefaultValue('uid={imap:login},ou=Users,{domain:dc}'),
@@ -66,7 +70,7 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue('userPassword'),
 			\RainLoop\Plugins\Property::NewInstance('password_enc_type')->SetLabel('Encryption type')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
-				->SetDefaultValue(array('SHA', 'MD5', 'Crypt', 'Clear')),
+				->SetDefaultValue(array('SHA', 'SSHA', 'MD5', 'Crypt', 'Clear')),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')
 				->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@domain1.net user2@domain1.net *@domain2.net')
 				->SetDefaultValue('*')

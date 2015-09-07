@@ -235,14 +235,15 @@ class Service
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
+		$sFaviconUrl = (string) $this->oActions->Config()->Get('webmail', 'favicon_url', '');
+
 		$sStaticPrefix = \RainLoop\Utils::WebStaticPath();
 
 		$aData = array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,
-			'FaviconIcoLink' => $sStaticPrefix.'favicon.ico',
-			'FaviconPngLink' => $sStaticPrefix.'favicon.png',
-			'AppleTouchLink' => $sStaticPrefix.'apple-touch-icon.png',
+			'FaviconPngLink' => $sFaviconUrl ? $sFaviconUrl : $sStaticPrefix.'favicon.png',
+			'AppleTouchLink' => $sFaviconUrl ? '' : $sStaticPrefix.'apple-touch-icon.png',
 			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
 			'BootJsLink' => $sStaticPrefix.'js/min/boot.js',
 			'ComponentsJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'components.js',
@@ -255,8 +256,8 @@ class Service
 
 		$aTemplateParameters =  array(
 			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
-			'{{BaseAppFaviconIcoFile}}' => $aData['FaviconIcoLink'],
-			'{{BaseAppFaviconPngFile}}' => $aData['FaviconPngLink'],
+			'{{BaseAppFaviconPngLinkTag}}' => $aData['FaviconPngLink'] ? '<link rel="shortcut icon" href="'.$aData['FaviconPngLink'].'" type="image/png" />' : '',
+			'{{BaseAppFaviconTouchLinkTag}}' => $aData['AppleTouchLink'] ? '<link rel="apple-touch-icon" href="'.$aData['AppleTouchLink'].'" type="image/png" />' : '',
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
 			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],

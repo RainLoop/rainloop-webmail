@@ -78,6 +78,16 @@
 			<param name="plugin-name" value="hmailserver-change-password"/>
 		</antcall>
 	</target>
+	<target name="ldap-change-password">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="ldap-change-password"/>
+		</antcall>
+	</target>
+	<target name="ldap-contacts-suggestions">
+		<antcall target="_build_plugin_">
+			<param name="plugin-name" value="ldap-contacts-suggestions"/>
+		</antcall>
+	</target>
 	<target name="snowfall-on-login-screen">
 		<antcall target="_build_plugin_">
 			<param name="plugin-name" value="snowfall-on-login-screen"/>

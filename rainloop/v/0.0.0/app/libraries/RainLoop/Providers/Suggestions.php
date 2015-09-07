@@ -35,7 +35,6 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Process($oAccount, $sQuery, $iLimit = 20)
 	{
-
 		$aSuggestions = array();
 		if ($oAccount instanceof \RainLoop\Model\Account &&
 			$this->IsActive() && \is_array($this->aDrivers) && 0 < \strlen($sQuery))
@@ -54,7 +53,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 			}
 		}
 
-		$aResult = \RainLoop\Utils::RemoveSuggestionsdDuplicates($aSuggestions);
+		$aResult = \RainLoop\Utils::RemoveSuggestionDuplicates($aSuggestions);
 
 		if ($iLimit < \count($aResult))
 		{

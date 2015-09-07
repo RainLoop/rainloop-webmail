@@ -27,6 +27,20 @@
 				}"></div>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label" data-i18n="TAB_BRANDING/LABEL_FAVICON_URL"></label>
+			<div class="controls">
+				<div data-bind="component: {
+					name: 'Input',
+					params: {
+						value: faviconUrl,
+						trigger: faviconUrl.trigger,
+						placeholder: 'https://',
+						size: 5
+					}
+				}"></div>
+			</div>
+		</div>
 	</div>
 	<br />
 	<ul class="nav nav-tabs" data-bind="visible: !community">

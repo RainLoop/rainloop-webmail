@@ -175,6 +175,11 @@ END;
 	public static function NormalizeCharset($sEncoding, $bAsciAsUtf8 = false)
 	{
 		$sEncoding = \strtolower($sEncoding);
+
+		$sEncoding = \preg_replace('/^iso8/', 'iso-8', $sEncoding);
+		$sEncoding = \preg_replace('/^cp-([\d])/', 'cp$1', $sEncoding);
+		$sEncoding = \preg_replace('/^windows?12/', 'windows-12', $sEncoding);
+
 		switch ($sEncoding)
 		{
 			case 'asci':
@@ -185,6 +190,8 @@ END;
 					\MailSo\Base\Enumerations\Charset::ISO_8859_1;
 				break;
 			case 'unicode-1-1-utf-7':
+			case 'unicode-1-utf-7':
+			case 'unicode-utf-7':
 				$sEncoding = \MailSo\Base\Enumerations\Charset::UTF_7;
 				break;
 			case 'utf8':
