@@ -73,13 +73,23 @@
 		}), true));
 	};
 
-	PgpUserStore.prototype.findPrivateKeysByEncryptionKeyIds = function (aEncryptionKeyIds, bReturnWrapKeys)
+	PgpUserStore.prototype.findPrivateKeysByEncryptionKeyIds = function (aEncryptionKeyIds, aRecipients, bReturnWrapKeys)
 	{
-		var self = this;
-		return _.compact(_.flatten(_.map(aEncryptionKeyIds, function (oId) {
+		var self = this, aResult = [];
+		aResult = Utils.isArray(aEncryptionKeyIds) ? _.compact(_.flatten(_.map(aEncryptionKeyIds, function (oId) {
 			var oKey = oId && oId.toHex ? self.findPrivateKeyByHex(oId.toHex()) : null;
 			return oKey ? (bReturnWrapKeys ? [oKey] : oKey.getNativeKeys()) : [null];
-		}), true));
+		}), true)) : [];
+
+		if (0 === aResult.length && Utils.isNonEmptyArray(aRecipients))
+		{
+			aResult = _.compact(_.flatten(_.map(aRecipients, function (sEmail) {
+				var oKey = sEmail ? self.findPrivateKeyByEmailNotNative(sEmail) : null;
+				return oKey ? (bReturnWrapKeys ? [oKey] : oKey.getNativeKeys()) : [null];
+			}), true));
+		}
+
+		return aResult;
 	};
 
 	/**
@@ -149,44 +159,36 @@
 		return this.findPrivateKeyByEmail(require('Stores/User/Account').email(), sPassword);
 	};
 
-	PgpUserStore.prototype.decryptMessage = function (oMessage, fCallback)
+	PgpUserStore.prototype.decryptMessage = function (oMessage, aRecipients, fCallback)
 	{
-		var self = this, aPrivateKeys = [], aEncryptionKeyIds = [];
-		if (oMessage && oMessage.getSigningKeyIds)
+		var self = this, aPrivateKeys = [];
+		if (oMessage && oMessage.getEncryptionKeyIds)
 		{
-			aEncryptionKeyIds = oMessage.getEncryptionKeyIds();
-			if (aEncryptionKeyIds)
+			aPrivateKeys = this.findPrivateKeysByEncryptionKeyIds(oMessage.getEncryptionKeyIds(), aRecipients, true);
+			if (aPrivateKeys && 0 < aPrivateKeys.length)
 			{
-				aPrivateKeys = this.findPrivateKeysByEncryptionKeyIds(aEncryptionKeyIds, true);
-				if (aPrivateKeys && 0 < aPrivateKeys.length)
-				{
-					kn.showScreenPopup(require('View/Popup/MessageOpenPgp'), [function (oDecriptedKey) {
+				kn.showScreenPopup(require('View/Popup/MessageOpenPgp'), [function (oDecriptedKey) {
 
-						if (oDecriptedKey)
+					if (oDecriptedKey)
+					{
+						var oPrivateKey = null, oDecryptedMessage = null;
+						try
 						{
-							var oPrivateKey = null, oDecryptedMessage = null;
-							try
-							{
-								oDecryptedMessage = oMessage.decrypt(oDecriptedKey);
-							}
-							catch (e)
-							{
-								oDecryptedMessage = null;
-							}
+							oDecryptedMessage = oMessage.decrypt(oDecriptedKey);
+						}
+						catch (e)
+						{
+							oDecryptedMessage = null;
+						}
 
-							if (oDecryptedMessage)
+						if (oDecryptedMessage)
+						{
+							oPrivateKey = self.findPrivateKeyByHex(oDecriptedKey.primaryKey.keyid.toHex());
+							if (oPrivateKey)
 							{
-								oPrivateKey = self.findPrivateKeyByHex(oDecriptedKey.primaryKey.keyid.toHex());
-								if (oPrivateKey)
-								{
-									self.verifyMessage(oDecryptedMessage, function (oValidKey, aSigningKeyIds) {
-										fCallback(oPrivateKey, oDecryptedMessage, oValidKey || null, aSigningKeyIds || null);
-									});
-								}
-								else
-								{
-									fCallback(oPrivateKey, oDecryptedMessage);
-								}
+								self.verifyMessage(oDecryptedMessage, function (oValidKey, aSigningKeyIds) {
+									fCallback(oPrivateKey, oDecryptedMessage, oValidKey || null, aSigningKeyIds || null);
+								});
 							}
 							else
 							{
@@ -195,13 +197,17 @@
 						}
 						else
 						{
-							fCallback(null, null);
+							fCallback(oPrivateKey, oDecryptedMessage);
 						}
+					}
+					else
+					{
+						fCallback(null, null);
+					}
 
-					}, aPrivateKeys]);
+				}, aPrivateKeys]);
 
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -262,7 +268,7 @@
 			oVerControl.removeClass('success').addClass('error').attr('title', sTitle);
 		}
 
-		if (undefined !== sText)
+		if (!Utils.isUnd(sText))
 		{
 			mDom.text(Utils.trim(sText.replace(/(\u200C|\u0002)/g, '')));
 		}
@@ -270,8 +276,9 @@
 
 	/**
 	 * @param {*} mDom
+	 * @param {MessageModel} oRainLoopMessage
 	 */
-	PgpUserStore.prototype.initMessageBodyControls = function (mDom)
+	PgpUserStore.prototype.initMessageBodyControls = function (mDom, oRainLoopMessage)
 	{
 		if (mDom && !mDom.hasClass('inited'))
 		{
@@ -282,6 +289,7 @@
 				bEncrypted = mDom.hasClass('encrypted'),
 				bSigned = mDom.hasClass('signed'),
 				oVerControl = null,
+				aRecipients = oRainLoopMessage ? oRainLoopMessage.getRecipientsEmails() : [],
 				sData = ''
 			;
 
@@ -313,7 +321,7 @@
 
 						if (oMessage && oMessage.getText && oMessage.verify && oMessage.decrypt)
 						{
-							self.decryptMessage(oMessage, function (oValidPrivateKey, oDecriptedMessage, oValidPublicKey, aSigningKeyIds) {
+							self.decryptMessage(oMessage, aRecipients, function (oValidPrivateKey, oDecriptedMessage, oValidPublicKey, aSigningKeyIds) {
 
 								if (oDecriptedMessage)
 								{

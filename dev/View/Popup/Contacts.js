@@ -739,6 +739,11 @@
 			return false;
 		});
 
+		key('c, w', Enums.KeyState.ContactList, function () {
+			self.newMessageCommand();
+			return false;
+		});
+
 		oDom
 			.on('click', '.e-pagenator .e-page', function () {
 				var oPage = ko.dataFor(this);

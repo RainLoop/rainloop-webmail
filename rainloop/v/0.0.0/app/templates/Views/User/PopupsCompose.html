@@ -196,8 +196,8 @@
 					</div>
 				</div>
 
-				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 57]">
-					<div class="content g-scrollbox">
+				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="nano: true, scrollerShadows: true, visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 57]">
+					<div class="content g-scrollbox" data-scroller-shadows-content>
 						<div class="content-wrapper">
 							<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
 								<span class="i18n" data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></span>

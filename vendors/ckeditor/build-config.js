@@ -13,10 +13,10 @@
  * (1) http://ckeditor.com/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/ee6801ea57e3507b409b864f621ee580
+ * (2) http://ckeditor.com/builder/80e9f1ac69b3fe3c549726a276bf2648
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/ee6801ea57e3507b409b864f621ee580
+ * (3) http://ckeditor.com/builder/download/80e9f1ac69b3fe3c549726a276bf2648
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -42,6 +42,7 @@ var CKBUILDER_CONFIG = {
 		'.jscsrc',
 		'.jshintignore',
 		'.jshintrc',
+		'less',
 		'.mailmap',
 		'node_modules',
 		'package.json',
@@ -49,6 +50,8 @@ var CKBUILDER_CONFIG = {
 		'tests'
 	],
 	plugins : {
+		'about' : 1,
+		'autolink' : 1,
 		'base64image' : 1,
 		'basicstyles' : 1,
 		'bidi' : 1,
@@ -58,27 +61,22 @@ var CKBUILDER_CONFIG = {
 		'divarea' : 1,
 		'enterkey' : 1,
 		'entities' : 1,
-		'fastimage' : 1,
 		'floatingspace' : 1,
 		'font' : 1,
 		'image' : 1,
 		'image2' : 1,
-		'indent' : 1,
-		'indentblock' : 1,
 		'indentlist' : 1,
 		'link' : 1,
 		'list' : 1,
-		'menubutton' : 1,
-		'onchange' : 1,
+		'maximize' : 1,
+		'pastebase64' : 1,
 		'quicktable' : 1,
 		'removeformat' : 1,
-		'selectall' : 1,
-		'sharedspace' : 1,
 		'sourcearea' : 1,
 		'table' : 1,
-		'tableresize' : 1,
 		'toolbar' : 1,
-		'undo' : 1
+		'undo' : 1,
+		'wysiwygarea' : 1
 	},
 	languages : {
 		'af' : 1,

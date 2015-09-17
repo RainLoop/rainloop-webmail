@@ -209,6 +209,17 @@
 		}
 	};
 
+	HtmlEditor.prototype.replaceHtml = function (mFind, sReplaceHtml)
+	{
+		if (this.editor && this.__inited && 'wysiwyg' === this.editor.mode)
+		{
+			try {
+				this.editor.setData(
+					this.editor.getData().replace(mFind, sReplaceHtml));
+			} catch (e) {}
+		}
+	};
+
 	HtmlEditor.prototype.setPlain = function (sPlain, bFocus)
 	{
 		if (this.editor && this.__inited)
@@ -297,6 +308,36 @@
 					self.editor.on('focus', function() {
 						self.focusTrigger();
 					});
+
+					if (window.FileReader)
+					{
+						self.editor.on('drop', function(evt) {
+							if (0 < evt.data.dataTransfer.getFilesCount())
+							{
+								var file = evt.data.dataTransfer.getFile(0);
+								if (file && window.FileReader && evt.data.dataTransfer.id &&
+									file.type && file.type.match(/^image/i))
+								{
+									var
+										id = evt.data.dataTransfer.id,
+										imageId = '[img=' + id +']',
+										reader  = new window.FileReader()
+									;
+
+									reader.onloadend = function () {
+										if (reader.result)
+										{
+											self.replaceHtml(imageId, '<img src="' + reader.result + '" />');
+										}
+									};
+
+									reader.readAsDataURL(file);
+
+									evt.data.dataTransfer.setData('text/html', imageId);
+								}
+							}
+						});
+					}
 
 					self.editor.on('instanceReady', function () {
 

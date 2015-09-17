@@ -802,7 +802,7 @@ class MailClient
 					$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(
 						\MailSo\Imap\Enumerations\FetchType::FLAGS));
 
-					if (\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::RECENT), $aFlags) ||
+					if (\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::RECENT), $aFlags) &&
 						!\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::SEEN), $aFlags))
 					{
 						$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);

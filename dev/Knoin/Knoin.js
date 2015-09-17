@@ -31,7 +31,8 @@
 
 	Knoin.prototype.hideLoading = function ()
 	{
-		$('#rl-loading').hide();
+		$('#rl-content').show();
+		$('#rl-loading').hide().remove();
 	};
 
 	/**

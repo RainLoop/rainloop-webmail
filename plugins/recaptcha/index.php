@@ -13,9 +13,6 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addHook('ajax.action-pre-call', 'AjaxActionPreCall');
 		$this->addHook('filter.ajax-response', 'FilterAjaxResponse');
-
-		$this->addTemplate('templates/PluginLoginReCaptchaGroup.html');
-		$this->addTemplateHook('Login', 'BottomControlGroup', 'PluginLoginReCaptchaGroup');
 	}
 
 	/**
@@ -120,7 +117,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$oCacher = $this->Manager()->Actions()->Cacher();
 			$iConfigLimit = (int) $this->Config()->Get('plugin', 'error_limit', 0);
-			
+
 			$sKey = $this->getCaptchaCacherKey();
 
 			if (0 < $iConfigLimit && $oCacher && $oCacher->IsInited())

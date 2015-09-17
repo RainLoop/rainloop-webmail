@@ -30,7 +30,7 @@ module.exports = {
 		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
-		'progressJs': 'window.progressJs',
+		'progressJs': 'window.rainloopProgressJs',
 		'PhotoSwipe': 'window.PhotoSwipe',
 		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',

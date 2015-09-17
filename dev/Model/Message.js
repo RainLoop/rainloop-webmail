@@ -197,6 +197,16 @@
 	};
 
 	/**
+	 * @return {Array}
+	 */
+	MessageModel.prototype.getRecipientsEmails = function ()
+	{
+		return _.compact(_.uniq(_.map(this.to.concat(this.cc), function (oItem) {
+			return oItem ? oItem.email : '';
+		})));
+	};
+
+	/**
 	 * @return {string}
 	 */
 	MessageModel.prototype.friendlySize = function ()

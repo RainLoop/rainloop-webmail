@@ -388,8 +388,23 @@ html.rl-no-preview-pane {
 							border-radius: 0;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 							display: block;
-							max-width: 700px;
 							word-wrap: break-word;
+							background-color: #f9f9f9;
+						}
+
+						code {
+							display: inline;
+							padding: 2px 5px;
+						}
+
+						pre {
+							padding: 5px 10px;
+							border-radius: 5px;
+							background-color: #f9f9f9;
+						}
+
+						pre > code {
+							padding: 0px;
 						}
 					}
 
@@ -571,6 +586,6 @@ html.rl-message-fullscreen {
 	}
 }
 
-.nano-scrolllimit-top .buttonUp {
+.nano.scroller-shadow-top .buttonUp {
 	display: inline-block !important;
 }

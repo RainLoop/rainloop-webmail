@@ -12,7 +12,7 @@
 							name="RainLoopAdminLogin" id="RainLoopAdminLogin"
 							style="padding-right: 35px;"
 							autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
-							data-bind="textInput: login, hasFocus: loginFocus" />
+							data-bind="textInput: login, hasFocus: loginFocus, disable: submitRequest" />
 						<span class="add-on">
 							<i class="icon-user"></i>
 						</span>
@@ -24,7 +24,7 @@
 							placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
 							style="padding-right: 35px;"
 							autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
-							data-bind="textInput: password" />
+							data-bind="textInput: password, disable: submitRequest" />
 						<span class="add-on">
 							<i class="icon-key"></i>
 						</span>

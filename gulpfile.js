@@ -152,13 +152,13 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
-			'vendors/openpgp/openpgp-0.10.1.min.js'
+			'vendors/openpgp/openpgp-1.2.0.min.js'
 		]
 	},
 	openpgpworker: {
 		name: 'openpgp.worker.min.js',
 		src: [
-			'vendors/openpgp/openpgp-0.10.1.worker.min.js'
+			'vendors/openpgp/openpgp-1.2.0.worker.min.js'
 		]
 	},
 	encrypt: {
@@ -178,7 +178,7 @@ cfg.paths.js = {
 		name: 'libs.js',
 		src: [
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-1.11.2.min.js',
+			'vendors/jquery/jquery-1.11.3.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
 			'vendors/jquery-finger/jquery.finger.min.js',
@@ -539,7 +539,6 @@ gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
 gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
 		.pipe(stripbom())
-		.pipe(replace('console.log("Detecting changes using MutationObservers")', 'true'))
 		.pipe(header("\uFEFF")) // BOM
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
