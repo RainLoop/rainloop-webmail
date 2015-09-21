@@ -1506,19 +1506,20 @@ class PdoAddressBook
 
 								foreach ($aItems as $sEmail)
 								{
-									if ($bName)
+									if ($sEmail)
 									{
-										$aResult[] = array($sEmail, $sNameItem);
-									}
-
-									if ($bNick)
-									{
-										$aResult[] = array($sEmail, $sNickItem);
-									}
-
-									if (!$bName && !$bNick)
-									{
-										$aResult[] = array($sEmail, '');
+										if ($bName)
+										{
+											$aResult[] = array($sEmail, $sNameItem);
+										}
+										else if ($bNick)
+										{
+											$aResult[] = array($sEmail, $sNickItem);
+										}
+										else
+										{
+											$aResult[] = array($sEmail, '');
+										}
 									}
 								}
 							}
