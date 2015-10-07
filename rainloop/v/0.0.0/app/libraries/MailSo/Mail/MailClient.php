@@ -35,7 +35,7 @@ class MailClient
 		$this->oLogger = null;
 
 		$this->oImapClient = \MailSo\Imap\ImapClient::NewInstance();
-		$this->oImapClient->SetTimeOuts(10, 300); // TODO
+		$this->oImapClient->SetTimeOuts(10, \MailSo\Config::$ImapTimeout);
 	}
 
 	/**

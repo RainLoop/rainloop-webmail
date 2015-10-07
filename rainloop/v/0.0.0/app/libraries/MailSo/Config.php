@@ -77,6 +77,11 @@ class Config
 	public static $BoundaryPrefix = '_Part_';
 
 	/**
+	 * @var int
+	 */
+	public static $ImapTimeout = 300;
+
+	/**
 	 * @var \MailSo\Log\Logger|null
 	 */
 	public static $SystemLogger = null;

@@ -6102,6 +6102,7 @@ class Actions
 				$bUsePhpMail = $oAccount->Domain()->OutUsePhpMail();
 
 				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 

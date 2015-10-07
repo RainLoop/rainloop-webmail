@@ -165,8 +165,8 @@ abstract class NetClient
 	 */
 	public function SetTimeOuts($iConnectTimeOut = 10, $iSocketTimeOut = 10)
 	{
-		$this->iConnectTimeOut = $iConnectTimeOut;
-		$this->iSocketTimeOut = $iSocketTimeOut;
+		$this->iConnectTimeOut = 5 < $iConnectTimeOut ? $iConnectTimeOut : 5;
+		$this->iSocketTimeOut = 5 < $iSocketTimeOut ? $iSocketTimeOut : 5;
 	}
 
 	/**
