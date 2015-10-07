@@ -9592,8 +9592,8 @@ class Actions
 						};
 					}
 
-					$sHtml = \preg_replace_callback('/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/mi', function ($aMatches) {
-						return \preg_replace('/[\r\n]+/', '<br />', $aMatches[0]);
+					$sHtml = \preg_replace_callback('/(<pre[^>]*>)([\s\S\r\n\t]*?)(<\/pre>)/mi', function ($aMatches) {
+						return \preg_replace('/[\r\n]+/', '<br />', $aMatches[1].\trim($aMatches[2]).$aMatches[3]);
 					}, $sHtml);
 
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
