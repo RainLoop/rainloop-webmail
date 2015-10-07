@@ -967,6 +967,18 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @return \MailSo\Imap\ImapClient
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderUnSelect()
+	{
+		return $this->IsSelected() && $this->IsSupported('UNSELECT') ?
+			$this->SendRequestWithCheck('UNSELECT') : $this;
+	}
+
+	/**
 	 * @param array $aInputFetchItems
 	 * @param string $sIndexRange
 	 * @param bool $bIndexIsUid

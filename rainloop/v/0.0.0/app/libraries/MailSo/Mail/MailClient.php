@@ -638,6 +638,22 @@ class MailClient
 	}
 
 	/**
+	 * @return \MailSo\Mail\MailClient
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderUnSelect()
+	{
+		if ($this->oImapClient->IsSelected())
+		{
+			$this->oImapClient->FolderUnSelect();
+		}
+
+		return $this;
+	}
+
+	/**
 	 * @param resource $rMessageStream
 	 * @param int $iMessageStreamSize
 	 * @param string $sFolderToSave

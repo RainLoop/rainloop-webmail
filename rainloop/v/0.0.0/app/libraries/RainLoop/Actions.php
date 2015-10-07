@@ -7205,12 +7205,33 @@ class Actions
 		{
 			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true, true,
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
-
-			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantDeleteMessage, $oException);
+		}
+
+		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
+		{
+			try
+			{
+				$this->MailClient()->FolderUnSelect();
+			}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
+		}
+
+		$sHash = '';
+
+		try
+		{
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFolder, $sHash));
@@ -7253,16 +7274,36 @@ class Actions
 				!!$this->Config()->Get('labs', 'use_imap_move', true),
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
 			);
-
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantMoveMessage, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__,
-			'' === $sHash ? false : array($sFromFolder, $sHash));
+		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
+		{
+			try
+			{
+				$this->MailClient()->FolderUnSelect();
+			}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
+		}
+
+		$sHash = '';
+
+		try
+		{
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFromFolder, $sHash));
 	}
 
 	/**
