@@ -2294,6 +2294,13 @@ class Actions
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 		}
+		else if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
+			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false)
+		)
+		{
+			\sleep((int) $sPassword);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
+		}
 
 		try
 		{
@@ -7227,7 +7234,7 @@ class Actions
 
 		try
 		{
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
 		catch (\Exception $oException)
 		{
@@ -8287,6 +8294,8 @@ class Actions
 
 		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
 			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
+
+				unset($sContentType, $sFileName, $sMimeIndex);
 
 				if ($oAccount && \is_resource($rResource))
 				{

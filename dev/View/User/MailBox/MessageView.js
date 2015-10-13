@@ -618,6 +618,7 @@
 			{
 				oDiv.on('onBeforeOpen.lg', function () {
 					Globals.useKeyboardShortcuts(false);
+					Utils.removeInFocus(true);
 				});
 
 				oDiv.on('onCloseAfter.lg', function () {

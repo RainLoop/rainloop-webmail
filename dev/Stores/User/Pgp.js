@@ -240,7 +240,10 @@
 							return true;
 						}
 					}
-					catch (e) {}
+					catch (e)
+					{
+						Utils.log(e);
+					}
 				}
 
 				fCallback(null, aSigningKeyIds);

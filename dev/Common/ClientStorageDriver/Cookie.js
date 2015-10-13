@@ -44,7 +44,7 @@
 		{
 			mResult = null === mStorageValue ? null : JSON.parse(mStorageValue);
 		}
-		catch (oException) {}
+		catch (e) {}
 
 		if (!mResult)
 		{
@@ -61,7 +61,7 @@
 
 			bResult = true;
 		}
-		catch (oException) {}
+		catch (e) {}
 
 		return bResult;
 	};
@@ -89,7 +89,7 @@
 				mResult = null;
 			}
 		}
-		catch (oException) {}
+		catch (e) {}
 
 		return mResult;
 	};
