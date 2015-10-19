@@ -5,6 +5,8 @@
 /npm-debug.log
 /rainloop.sublime-project
 /rainloop.sublime-workspace
+/rainloop/v/0.0.0/static/ckeditor/*
+!/rainloop/v/0.0.0/static/ckeditor/.gitempty
 /rainloop/v/0.0.0/static/svg/*
 !/rainloop/v/0.0.0/static/svg/.gitempty
 /rainloop/v/0.0.0/static/css/*.css

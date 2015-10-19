@@ -527,7 +527,7 @@ gulp.task('ckeditor:clear', function() {
 });
 
 gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
-	return gulp.src(['vendors/ckeditor/**/*', '!vendors/ckeditor/samples{,/**}', '!vendors/ckeditor/adapters{,/**}', '!vendors/ckeditor/*.md'])
+	return gulp.src(['vendors/ckeditor/**/*', 'vendors/ckeditor/.gitempty', '!vendors/ckeditor/samples{,/**}', '!vendors/ckeditor/adapters{,/**}', '!vendors/ckeditor/*.md'])
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
 

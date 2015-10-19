@@ -40,7 +40,7 @@
     "plugins"
   ],
   "readmeFilename": "README.md",
-  "ownCloudPackageVersion": "4.8",
+  "ownCloudPackageVersion": "4.9",
   "engines": {
     "node": ">= 0.10.0"
   },
