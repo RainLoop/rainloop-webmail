@@ -22,7 +22,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	function rainLoopSplAutoloadNamespaces()
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop') :
-			array('RainLoop', 'Facebook', 'GuzzleHttp', 'PHPThumb', 'SabreForRainLoop');
+			array('RainLoop', 'Facebook', 'GuzzleHttp', 'PHPThumb', 'SabreForRainLoop', 'Imagine');
 	}
 
 	/**

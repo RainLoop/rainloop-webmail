@@ -8325,6 +8325,83 @@ class Actions
 	}
 
 	/**
+	 * @param \Imagine\Image\AbstractImage $oImage
+	 * @param int $iOrientation
+	 */
+	private function rotateImageByOrientation(&$oImage, $iOrientation)
+	{
+		if (0 < $iOrientation)
+		{
+			switch ($iOrientation)
+			{
+				default:
+				case 1:
+					break;
+
+				case 2: // horizontal flip
+					$oImage->flipHorizontally();
+					break;
+
+				case 3: // 180 rotate left
+					$oImage->rotate(180);
+					break;
+
+				case 4: // vertical flip
+					$oImage->flipVertically();
+					break;
+
+				case 5: // vertical flip + 90 rotate right
+					$oImage->flipVertically();
+					$oImage->rotate(-90);
+					break;
+
+				case 6: // 90 rotate right
+					$oImage->rotate(-90);
+					break;
+
+				case 7: // horizontal flip + 90 rotate right
+					$oImage->flipHorizontally();
+					$oImage->rotate(-90);
+					break;
+
+				case 8: // 90 rotate left
+					$oImage->rotate(90);
+					break;
+			}
+		}
+	}
+
+	/**
+	 * @param \Imagine\Image\AbstractImage $oImage
+	 */
+	private function correctImageOrientation($oImage, $bDetectImageOrientation = true, $iThumbnailBoxSize = null)
+	{
+		$iOrientation = 1;
+		if ($bDetectImageOrientation && \MailSo\Base\Utils::FunctionExistsAndEnabled('exif_read_data') &&
+			\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
+		{
+			$oMetadata = $oImage->metadata(new \Imagine\Image\Metadata\ExifMetadataReader());
+			$iOrientation = isset($oMetadata['ifd0.Orientation']) &&
+				is_numeric($oMetadata['ifd0.Orientation']) ? (int) $oMetadata['ifd0.Orientation'] : 1;
+		}
+
+		if ($iThumbnailBoxSize && 0 < $iThumbnailBoxSize)
+		{
+			$oImage = $oImage->thumbnail(
+				new \Imagine\Image\Box($iThumbnailBoxSize, $iThumbnailBoxSize),
+				\Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND);
+
+			$this->rotateImageByOrientation($oImage, $iOrientation);
+		}
+		else
+		{
+			$this->rotateImageByOrientation($oImage, $iOrientation);
+		}
+
+		return $oImage;
+	}
+
+	/**
 	 * @param bool $bDownload
 	 * @param bool $bThumbnail = false
 	 *
@@ -8342,6 +8419,8 @@ class Actions
 		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
 		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
 		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
+
+		$bDetectImageOrientation = !!$this->Config()->Get('labs', 'detect_image_exif_orientation', true);
 
 		if (!empty($sFileHashIn))
 		{
@@ -8386,7 +8465,7 @@ class Actions
 
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
-			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail) {
+			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail, $bDetectImageOrientation) {
 				if ($oAccount && \is_resource($rResource))
 				{
 					$sContentTypeOut = $sContentTypeIn;
@@ -8412,29 +8491,47 @@ class Actions
 					$bDone = false;
 					if ($bThumbnail && !$bDownload)
 					{
-						$sFileName = '';
-						$rTempResource = \MailSo\Base\StreamWrappers\TempFile::CreateStream(
-							\MailSo\Base\Utils::Md5Rand($sFileNameOut), $sFileName);
-
-						if (@\is_resource($rTempResource))
+						try
 						{
+							$oImagine = new \Imagine\Gd\Imagine();
+
 							$bDone = true;
+							$oImage = $oImagine->load(\stream_get_contents($rResource));
 
-							\MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource));
-							@\fclose($rTempResource);
+							$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
 
-							try
-							{
-								$oThumb = new \PHPThumb\GD($sFileName);
-								if ($oThumb)
-								{
-									$oThumb->adaptiveResize(60, 60)->show();
-								}
-							}
-							catch (\Exception $oException)
-							{
-								$self->Logger()->WriteExceptionShort($oException);
-							}
+							\header('Content-Disposition: inline; '.
+								\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
+
+							$oImage->show('png');
+						}
+						catch (\Exception $oException)
+						{
+							$self->Logger()->WriteExceptionShort($oException);
+						}
+					}
+
+					if (!$bDone && !$bDownload && $bDetectImageOrientation &&
+						\in_array($sContentTypeOut, array('image/png', 'image/jpeg', 'image/jpg')) &&
+						\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
+					{
+						try
+						{
+							$oImagine = new \Imagine\Gd\Imagine();
+
+							$bDone = true;
+							$oImage = $oImagine->load(\stream_get_contents($rResource));
+
+							$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation);
+
+							\header('Content-Disposition: inline; '.
+								\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+
+							$oImage->show($sContentTypeOut === 'image/png' ? 'png' : 'jpg');
+						}
+						catch (\Exception $oException)
+						{
+							$self->Logger()->WriteExceptionShort($oException);
 						}
 					}
 
