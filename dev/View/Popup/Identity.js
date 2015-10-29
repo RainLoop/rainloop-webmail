@@ -170,7 +170,7 @@
 		{
 			this.edit(true);
 
-			this.id = oIdentity.id();
+			this.id = oIdentity.id() || '';
 			this.name(oIdentity.name());
 			this.email(oIdentity.email());
 			this.replyTo(oIdentity.replyTo());

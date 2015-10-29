@@ -19,7 +19,7 @@
 	{
 		AbstractModel.call(this, 'IdentityModel');
 
-		this.id = ko.observable(sId);
+		this.id = ko.observable(sId || '');
 		this.email = ko.observable(sEmail);
 		this.name = ko.observable('');
 
