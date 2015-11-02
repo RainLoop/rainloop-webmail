@@ -17,5 +17,5 @@
 /build/dist
 /build/tmp
 /data
-/vendors/
+/vendors/*
 .DS_Store

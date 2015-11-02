@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 namespace RainLoop;
+
 /**
  * Server Side Chrome PHP debugger class
  *
