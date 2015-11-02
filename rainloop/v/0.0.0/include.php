@@ -2,6 +2,7 @@
 
 	if (defined('APP_VERSION'))
 	{
+
 		if (!defined('APP_START'))
 		{
 			define('APP_START', microtime(true));
@@ -128,7 +129,6 @@ Options -Indexes
 
 				unset($sCheckName, $sCheckFilePath, $sCheckFolder, $sTest);
 			}
-
 			if (false === $sSalt)
 			{
 				// random salt
@@ -224,7 +224,6 @@ Options -Indexes
 
 			unset($sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
 		}
-
 		include APP_VERSION_ROOT_PATH.'app/handle.php';
 
 		if (defined('RAINLOOP_EXIT_ON_END') && RAINLOOP_EXIT_ON_END)
