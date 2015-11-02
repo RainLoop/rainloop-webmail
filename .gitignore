@@ -16,8 +16,8 @@
 /build/local
 /build/dist
 /build/tmp
-/data/_data_/_default_/cache
-/data/_data_/_default_/storage
-/data/_data_/_default_/log
+/data
+!/data/_data_/_default_/plugins
+!/data/_data_/_default_/config/application.ini
 /vendors/*
 .DS_Store

@@ -391,7 +391,6 @@ class Actions
 	public function ParseQueryAuthString()
 	{
 		$sQuery = \trim($this->Http()->GetQueryString());
-		ChromePhp::log('unparsed:'.$sQuery);
 
 		$iPos = \strpos($sQuery, '&');
 		if (0 < $iPos)
