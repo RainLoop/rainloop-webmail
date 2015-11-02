@@ -17,7 +17,5 @@
 /build/dist
 /build/tmp
 /data
-!/data/_data_/_default_/plugins
-!/data/_data_/_default_/config/application.ini
 /vendors/*
 .DS_Store
