@@ -1,0 +1,4 @@
+Deny from all
+<IfModule mod_autoindex.c>
+Options -Indexes
+</ifModule>
