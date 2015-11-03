@@ -1,0 +1,13 @@
+{
+    "boss": true,
+    "undef": false,
+    "white": false,
+    "eqeqeq": false,
+    "browser": true,
+    "devel": true,
+    "bitwise": false,
+    "quotmark": false,
+    "camelcase": false,
+    "strict": false,
+    "trailing": true
+}

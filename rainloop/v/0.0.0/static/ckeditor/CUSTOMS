@@ -1,0 +1,30 @@
+fix[1] CKEDITOR.editor.prototype.resize
+
+g=CKEDITOR.env.webkit&&this.document&&this.document.getWindow().$.frameElement
+
+->
+
+g=null;
+try{g=CKEDITOR.env.webkit&&this.document&&this.document.getWindow().$.frameElement;}catch(e){}
+
+---
+
+fix[2] .extend
+
+d.collapse(true);c.removeAllRanges();c.addRange(d);c.extend(b[1].node,b[1].offset)
+
+->
+
+d.collapse(true);c.removeAllRanges();c.addRange(d);try{c.extend(b[1].node,b[1].offset)}catch(e){}
+
+---
+disable context menu
+
+disableContextMenu:function(){this.on("contextmenu",
+-->
+disableContextMenu:function(){return false;this.on("contextmenu",
+
+
+proto:{addTarget:function(a,e){a.on("contextmenu",function(a){
+-->
+proto:{addTarget:function(a,e){a.on("contextmenu",function(a){return false;

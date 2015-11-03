@@ -1,0 +1,72 @@
+{
+    "name": "moment",
+    "version": "2.6.0",
+    "description": "Parse, manipulate, and display dates.",
+    "homepage": "http://momentjs.com",
+    "author": "Iskren Ivov Chernev <iskren.chernev@gmail.com> (https://github.com/ichernev)",
+    "contributors": [
+        "Tim Wood <washwithcare@gmail.com> (http://timwoodcreates.com/)",
+        "Rocky Meza (http://rockymeza.com)",
+        "Matt Johnson <mj1856@hotmail.com> (http://codeofmatt.com)",
+        "Isaac Cambron <isaac@isaaccambron.com> (http://isaaccambron.com)"
+    ],
+    "keywords": [
+        "moment",
+        "date",
+        "time",
+        "parse",
+        "format",
+        "validate",
+        "i18n",
+        "l10n",
+        "ender"
+    ],
+    "main": "./moment.js",
+    "engines": {
+        "node": "*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/moment/moment.git"
+    },
+    "bugs": {
+        "url": "https://github.com/moment/moment/issues"
+    },
+    "licenses" : [
+        {
+            "type" : "MIT"
+        }
+    ],
+    "devDependencies": {
+        "uglify-js": "latest",
+        "grunt": "latest",
+        "nodeunit": "latest",
+        "grunt-contrib-jshint": "latest",
+        "grunt-contrib-nodeunit": "latest",
+        "grunt-contrib-concat": "latest",
+        "grunt-contrib-uglify": "latest",
+        "grunt-contrib-watch": "latest",
+        "grunt-env": "latest",
+        "grunt-karma": "latest",
+        "load-grunt-tasks": "latest",
+        "karma": "latest",
+        "karma-chrome-launcher": "latest",
+        "karma-firefox-launcher": "latest",
+        "karma-nodeunit": "latest",
+        "karma-sauce-launcher": "latest"
+  },
+    "scripts": {
+        "test": "grunt test:node"
+    },
+    "ender": "./ender.js",
+    "dojoBuild": "package.js",
+    "jspm": {
+        "files": ["moment.js", "lang"],
+        "map": {
+            "moment": "./moment"
+        },
+        "buildConfig": {
+            "uglify": true
+        }
+    }
+}
