@@ -34,4 +34,8 @@ class AccountManagement extends \RainLoop\Providers\AbstractProvider
         return $this->oDriver instanceof \RainLoop\Providers\AccountManagement\AccountManagementInterface;
     }
 
+    public function GetEmailAndPassword($sLogin)
+    {
+        return $this->IsActive() ? $this->oDriver->GetEmailAndPassword($sLogin) : false;
+    }
 }

@@ -1,8 +1,7 @@
 <?php
+namespace RainLoop\Providers\AccountManagement;
 
-namespace RailLoop\Providers\AccountManagement;
-
-use \RailLoop\Providers\AccountManagement\ProperType;
+use \RainLoop\Providers\AccountManagement\Enumerations\PropertyType;
 
 class PdoAccountManagement
     extends \RainLoop\Common\PdoAbstract
@@ -35,7 +34,7 @@ class PdoAccountManagement
         $this->sPassword = $sPassword;
         $this->sDsnType = $sDsnType;
 
-        $this->bExplain = false; // debug
+        $this->bExplain = false;
     }
 
     /**
@@ -47,24 +46,36 @@ class PdoAccountManagement
         return \is_array($aDrivers) ? \in_array($this->sDsnType, $aDrivers) : false;
     }
 
+    /**
+     * @return array
+     */
+    protected function getPdoAccessData()
+    {
+        return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword);
+    }
+
+    /**
+    * @return array
+    */
     public function GetEmailAndPassword($sLogin = '')
     {
        $aResult = array();
+       
        //TODO add sLogin string check
-       $oStmt = $this->prepareAndExecute('SELECT * FROM rainloop_users WHERE rl_login = :rl_login',
+       $oStmt = $this->prepareAndExecute('SELECT rl_email, email_password FROM rainloop_users WHERE rl_login = :rl_login',
         array(
-            ':rl_login' => array($sLogin, \PDO::PARAM_VAR)
+            ':rl_login' => array($sLogin, \PDO::PARAM_STR)
             ));
 
        if ($oStmt)
        {
-        $aFetch = $oStmt->fetchAll(\PDO::FETECH_ASSOC);
+        $aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
         if (\is_array($aFetch) && 0 < \count($aFetch))
             {
-                $aResult['email'] = $aFetch['rl_email'];
-                $aResult['passwd'] = $aFetch['email_password'];
+                $aResult['email'] = $aFetch[0]['rl_email'];
+                $aResult['passwd'] = $aFetch[0]['email_password'];
 
-                retrun $aResult;
+                return $aResult;
             }
        }
     }
