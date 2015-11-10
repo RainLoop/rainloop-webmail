@@ -78,6 +78,7 @@ class MailClient
 	 * @param string $sPassword
 	 * @param string $sProxyAuthUser = ''
 	 * @param bool $bUseAuthPlainIfSupported = false
+	 * @param bool $bUseAuthCramMd5IfSupported = false
 	 *
 	 * @return \MailSo\Mail\MailClient
 	 *
@@ -85,9 +86,10 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\LoginException
 	 */
-	public function Login($sLogin, $sPassword, $sProxyAuthUser = '', $bUseAuthPlainIfSupported = false)
+	public function Login($sLogin, $sPassword, $sProxyAuthUser = '',
+		$bUseAuthPlainIfSupported = false, $bUseAuthCramMd5IfSupported = false)
 	{
-		$this->oImapClient->Login($sLogin, $sPassword, $sProxyAuthUser, $bUseAuthPlainIfSupported);
+		$this->oImapClient->Login($sLogin, $sPassword, $sProxyAuthUser, $bUseAuthPlainIfSupported, $bUseAuthCramMd5IfSupported);
 		return $this;
 	}
 

@@ -409,7 +409,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
 			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
-			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'use_imap_auth_plain')
+			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'use_imap_auth_plain'),
+			'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'use_imap_auth_cram_md5')
 		);
 
 		$oPlugins->RunHook('filter.imap-credentials', array($this, &$aImapCredentials));
@@ -433,7 +434,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 			{
 				$oMailClient
 					->Login($aImapCredentials['ProxyAuthUser'], $aImapCredentials['ProxyAuthPassword'],
-						$aImapCredentials['Login'], $aImapCredentials['UseAuthPlainIfSupported']);
+						$aImapCredentials['Login'], $aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
 			}
 			else
 			{
@@ -447,7 +448,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 				else
 				{
 					$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
-						$aImapCredentials['UseAuthPlainIfSupported']);
+						$aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
 				}
 			}
 

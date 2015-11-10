@@ -177,6 +177,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param string $sPassword
 	 * @param string $sProxyAuthUser = ''
 	 * @param bool $bUseAuthPlainIfSupported = false
+	 * @param bool $bUseAuthCramMd5IfSupported = false
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
@@ -184,7 +185,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Login($sLogin, $sPassword, $sProxyAuthUser = '', $bUseAuthPlainIfSupported = false)
+	public function Login($sLogin, $sPassword, $sProxyAuthUser = '',
+		$bUseAuthPlainIfSupported = false, $bUseAuthCramMd5IfSupported = false)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
@@ -202,8 +204,8 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			// TODO
-			if (false && $this->IsSupported('AUTH=CRAM-MD5'))
+			$bUseAuthCramMd5IfSupported = false; // TODO
+			if ($bUseAuthCramMd5IfSupported && $this->IsSupported('AUTH=CRAM-MD5'))
 			{
 				$this->SendRequest('AUTHENTICATE', array('CRAM-MD5'));
 
@@ -220,22 +222,16 @@ class ImapClient extends \MailSo\Net\NetClient
 						}
 					}
 
-					if ($oContinuationResponse)
+					if ($oContinuationResponse && false)
 					{
-						$sToken = \base64_encode("\0".$sLogin."\0".$sPassword);
-						if ($this->oLogger)
-						{
-							$this->oLogger->AddSecret($sToken);
-						}
-
+						// TODO
 						$this->Logger()->WriteDump($aResponse);
-
-						$this->sendRaw($sToken, true, '*******');
-						$this->parseResponseWithValidation();
 					}
 					else
 					{
-						// TODO
+						$this->writeLogException(
+							new \MailSo\Imap\Exceptions\LoginException(),
+							\MailSo\Log\Enumerations\Type::NOTICE, true);
 					}
 				}
 			}
