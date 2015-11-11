@@ -73,6 +73,35 @@
 		}
 	};
 
+	ko.bindingHandlers.scrollerShadows = {
+		'init': function (oElement) {
+
+			var
+				iLimit = 8,
+				$oEl = $(oElement),
+				$win = $(window),
+				oCont = $oEl.find('[data-scroller-shadows-content]')[0] || null,
+				fFunc = _.throttle(function () {
+					$oEl
+						.toggleClass('scroller-shadow-top', iLimit < oCont.scrollTop)
+						.toggleClass('scroller-shadow-bottom', oCont.scrollTop + iLimit < oCont.scrollHeight - oCont.clientHeight)
+					;
+				}, 100)
+			;
+
+			if (oCont)
+			{
+				$(oCont).on('scroll resize', fFunc);
+				$win.on('resize', fFunc);
+
+				ko.utils.domNodeDisposal.addDisposeCallback(oCont, function () {
+					$(oCont).off();
+					$win.off('resize', fFunc);
+				});
+			}
+		}
+	};
+
 	ko.bindingHandlers.tooltip = {
 		'init': function (oElement, fValueAccessor) {
 

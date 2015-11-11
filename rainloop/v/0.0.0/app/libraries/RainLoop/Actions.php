@@ -1132,6 +1132,18 @@ class Actions
 	}
 
 	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 */
+	public function LoggerAuthHelper($oAccount = null)
+	{
+		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
+		if (!empty($sLine))
+		{
+			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount));
+		}
+	}
+
+	/**
 	 * @return string
 	 */
 	private function getAdminToken()
@@ -1978,12 +1990,7 @@ class Actions
 		{
 			if ($bAuthLog)
 			{
-				$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
-				if (!empty($sLine))
-				{
-					$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount),
-						\MailSo\Log\Enumerations\Type::WARNING, 'IMAP');
-				}
+				$this->LoggerAuthHelper($oAccount);
 			}
 
 			if ($this->Config()->Get('labs', 'imap_show_login_alert', true))
@@ -2109,6 +2116,8 @@ class Actions
 
 		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
 
+		$oAccount = null;
+
 		try
 		{
 			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, true);
@@ -2129,6 +2138,8 @@ class Actions
 		{
 			$this->loginErrorDelay();
 
+			$this->LoggerAuthHelper($oAccount);
+
 			throw $oException;
 		}
 
@@ -2147,6 +2158,8 @@ class Actions
 					if (empty($sAdditionalCode))
 					{
 						$this->Logger()->Write('TFA: Required Code for '.$oAccount->ParentEmailHelper().' account.');
+
+						$this->LoggerAuthHelper($oAccount);
 
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
 					}
@@ -2175,6 +2188,8 @@ class Actions
 						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
 						{
 							$this->loginErrorDelay();
+
+							$this->LoggerAuthHelper($oAccount);
 
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
 						}
@@ -2278,6 +2293,13 @@ class Actions
 				$this->loginErrorDelay();
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
+		}
+		else if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
+			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false)
+		)
+		{
+			\sleep((int) $sPassword);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
 
 		try
@@ -6087,6 +6109,7 @@ class Actions
 				$bUsePhpMail = $oAccount->Domain()->OutUsePhpMail();
 
 				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 
@@ -7189,12 +7212,33 @@ class Actions
 		{
 			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true, true,
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
-
-			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantDeleteMessage, $oException);
+		}
+
+		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
+		{
+			try
+			{
+				$this->MailClient()->FolderUnSelect();
+			}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
+		}
+
+		$sHash = '';
+
+		try
+		{
+			$sHash = $this->MailClient()->FolderHash($sFolder);
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFolder, $sHash));
@@ -7237,16 +7281,36 @@ class Actions
 				!!$this->Config()->Get('labs', 'use_imap_move', true),
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
 			);
-
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
 		catch (\Exception $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantMoveMessage, $oException);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__,
-			'' === $sHash ? false : array($sFromFolder, $sHash));
+		if ($this->Config()->Get('labs', 'use_imap_unselect', true))
+		{
+			try
+			{
+				$this->MailClient()->FolderUnSelect();
+			}
+			catch (\Exception $oException)
+			{
+				unset($oException);
+			}
+		}
+
+		$sHash = '';
+
+		try
+		{
+			$sHash = $this->MailClient()->FolderHash($sFromFolder);
+		}
+		catch (\Exception $oException)
+		{
+			unset($oException);
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, '' === $sHash ? false : array($sFromFolder, $sHash));
 	}
 
 	/**
@@ -8230,6 +8294,8 @@ class Actions
 
 		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
 			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
+
+				unset($sContentType, $sFileName, $sMimeIndex);
 
 				if ($oAccount && \is_resource($rResource))
 				{
@@ -9577,8 +9643,9 @@ class Actions
 						};
 					}
 
-//					$this->Logger()->Write('---');
-//					$this->Logger()->Write($sHtml);
+					$sHtml = \preg_replace_callback('/(<pre[^>]*>)([\s\S\r\n\t]*?)(<\/pre>)/mi', function ($aMatches) {
+						return \preg_replace('/[\r\n]+/', '<br />', $aMatches[1].\trim($aMatches[2]).$aMatches[3]);
+					}, $sHtml);
 
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,

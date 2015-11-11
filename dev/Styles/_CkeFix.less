@@ -15,6 +15,11 @@
 	-moz-box-shadow: none !important;
 	-webkit-box-shadow: none !important;
 	box-shadow: none !important;
+	border-bottom: 1px solid #b6b6b6 !important;
+}
+
+.cke_button_on {
+	background: #ddd !important;
 }
 
 .cke_button {
@@ -34,6 +39,7 @@
 	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace !important;
 	padding: 10px !important;
 	padding-right: 0 !important;
+	box-shadow: none !important;
 }
 
 .cke_plain {
@@ -93,12 +99,32 @@
 		}
 	}
 
-	pre {
+	pre, code {
 		margin: 0px;
 		padding: 0px;
 		background: #fff;
 		border: none;
+		border-radius: 0;
 		font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+		display: block;
+		word-break: break-word;
+		word-wrap: break-word;
+		background-color: #f9f9f9;
+	}
+
+	code {
+		display: inline;
+		padding: 2px 5px;
+	}
+
+	pre {
+		padding: 5px 10px;
+		border-radius: 5px;
+		background-color: #f9f9f9;
+	}
+
+	pre > code {
+		padding: 0px;
 	}
 
 	blockquote {

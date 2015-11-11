@@ -13,10 +13,17 @@
 			{
 				if (null === nId)
 				{
-					var oEl = $('#recaptcha-div');
-					if (oEl && oEl[0])
+					var
+						oEl = null,
+						oLink = $('.plugin-mark-Login-BottomControlGroup')
+					;
+
+					if (oLink && oLink[0])
 					{
-						oEl.show();
+						oEl = $('<div class="controls"></div>');
+
+						$(oLink[0]).after(oEl);
+
 						nId = window.grecaptcha.render(oEl[0], {
 							'sitekey': window.rl.pluginSettingsGet('recaptcha', 'public_key'),
 							'theme': window.rl.pluginSettingsGet('recaptcha', 'theme')
@@ -79,7 +86,6 @@
 						{
 							StartRecaptcha();
 						}
-
 					}
 				}
 			});

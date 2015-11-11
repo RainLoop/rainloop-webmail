@@ -338,6 +338,26 @@ class BodyStructure
 	}
 
 	/**
+	 * @return \MailSo\Imap\BodyStructure|null
+	 */
+	public function SearchInlineEncryptedPart()
+	{
+		if ('multipart/encrypted' === \strtolower($this->ContentType()))
+		{
+			$aSearchParts = $this->SearchByCallback(function ($oItem) {
+				return $oItem->IsInline();
+			});
+
+			if (is_array($aSearchParts) && 1 === \count($aSearchParts) && isset($aSearchParts[0]))
+			{
+				return $aSearchParts[0];
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * @return array|null
 	 */
 	public function SearchHtmlOrPlainParts()
@@ -346,6 +366,15 @@ class BodyStructure
 		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
 		{
 			$mResult = $this->SearchPlainParts();
+		}
+
+		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
+		{
+			$oPart = $this->SearchInlineEncryptedPart();
+			if ($oPart instanceof \MailSo\Imap\BodyStructure)
+			{
+				$mResult = array($oPart);
+			}
 		}
 
 		return $mResult;

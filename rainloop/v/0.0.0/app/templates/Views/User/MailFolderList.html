@@ -9,8 +9,8 @@
             <i class="icon-address-book"></i>
         </a>
     </div>
-	<div class="b-content opacity-on-panel-disabled" data-bind="visible: allowFolders, nano: true">
-		<div class="content g-scrollbox">
+	<div class="b-content opacity-on-panel-disabled" data-bind="visible: allowFolders, nano: true, scrollerShadows: true">
+		<div class="content g-scrollbox" data-scroller-shadows-content>
 			<div class="content-wrapper">
 				<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
 				<hr class="b-list-delimiter" />

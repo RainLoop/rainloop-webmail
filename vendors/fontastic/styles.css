@@ -1,4 +1,3 @@
-@charset "UTF-8";
 
 @font-face {
   font-family: "rainloop";
@@ -9,7 +8,6 @@
     url("fonts/rainloop.svg#rainloop") format("svg");
   font-weight: normal;
   font-style: normal;
-
 }
 
 [data-icon]:before {

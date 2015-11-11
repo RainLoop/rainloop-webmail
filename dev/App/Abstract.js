@@ -179,8 +179,11 @@
 	 */
 	AbstractApp.prototype.setWindowTitle = function (sTitle)
 	{
-		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? sTitle + ' - ' : '') +
-			Settings.settingsGet('Title') || '';
+		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? '' + sTitle : '');
+		if (Settings.settingsGet('Title'))
+		{
+			sTitle += (sTitle ? ' - ' : '') + Settings.settingsGet('Title');
+		}
 
 		window.document.title = sTitle + ' ...';
 		window.document.title = sTitle;

@@ -511,12 +511,12 @@
 	/**
 	 * @param {Object} oMessageTextBody
 	 */
-	MessageUserStore.prototype.initOpenPgpControls = function (oMessageTextBody)
+	MessageUserStore.prototype.initOpenPgpControls = function (oMessageTextBody, oMessage)
 	{
 		if (oMessageTextBody && oMessageTextBody.find)
 		{
 			oMessageTextBody.find('.b-plain-openpgp:not(.inited)').each(function () {
-				PgpStore.initMessageBodyControls($(this));
+				PgpStore.initMessageBodyControls($(this), oMessage);
 			});
 		}
 	};
@@ -692,7 +692,7 @@
 
 					if (oBody)
 					{
-						this.initOpenPgpControls(oBody);
+						this.initOpenPgpControls(oBody, oMessage);
 
 						this.initBlockquoteSwitcher(oBody);
 					}

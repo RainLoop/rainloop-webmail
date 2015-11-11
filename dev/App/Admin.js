@@ -245,6 +245,19 @@
 		}, bForce);
 	};
 
+	AdminApp.prototype.bootend = function (callback)
+	{
+		if (progressJs)
+		{
+			progressJs.end();
+		}
+
+		if (callback)
+		{
+			callback();
+		}
+	};
+
 	AdminApp.prototype.bootstart = function ()
 	{
 		AbstractApp.prototype.bootstart.call(this);
@@ -280,10 +293,7 @@
 			}
 		}
 
-		if (progressJs)
-		{
-			progressJs().end();
-		}
+		this.bootend();
 	};
 
 	module.exports = new AdminApp();

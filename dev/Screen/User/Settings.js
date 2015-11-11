@@ -143,7 +143,8 @@
 
 	SettingsUserScreen.prototype.setSettingsTitle = function ()
 	{
-		require('App/User').setWindowTitle(this.sSettingsTitle);
+		var sEmail = AccountStore.email();
+		require('App/User').setWindowTitle(('' === sEmail ? '' : sEmail + ' - ') + this.sSettingsTitle);
 	};
 
 	module.exports = SettingsUserScreen;

@@ -55,10 +55,12 @@
 
 			$(_.delay(function () {
 
-				if (!$('#rl-content').is(':visible'))
+				if (!$('#rl-check').is(':visible'))
 				{
 					Globals.$html.addClass('no-css');
 				}
+
+				$('#rl-check').remove();
 
 				if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
 				{

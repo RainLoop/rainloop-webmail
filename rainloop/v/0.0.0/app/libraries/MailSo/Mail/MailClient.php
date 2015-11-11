@@ -35,7 +35,7 @@ class MailClient
 		$this->oLogger = null;
 
 		$this->oImapClient = \MailSo\Imap\ImapClient::NewInstance();
-		$this->oImapClient->SetTimeOuts(10, 300); // TODO
+		$this->oImapClient->SetTimeOuts(10, \MailSo\Config::$ImapTimeout);
 	}
 
 	/**
@@ -638,6 +638,22 @@ class MailClient
 	}
 
 	/**
+	 * @return \MailSo\Mail\MailClient
+	 *
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Imap\Exceptions\Exception
+	 */
+	public function FolderUnSelect()
+	{
+		if ($this->oImapClient->IsSelected())
+		{
+			$this->oImapClient->FolderUnSelect();
+		}
+
+		return $this;
+	}
+
+	/**
 	 * @param resource $rMessageStream
 	 * @param int $iMessageStreamSize
 	 * @param string $sFolderToSave
@@ -802,8 +818,7 @@ class MailClient
 					$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(
 						\MailSo\Imap\Enumerations\FetchType::FLAGS));
 
-					if (\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::RECENT), $aFlags) ||
-						!\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::SEEN), $aFlags))
+					if (!\in_array(\strtolower(\MailSo\Imap\Enumerations\MessageFlag::SEEN), $aFlags))
 					{
 						$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
 						$sHeaders = $oFetchResponse->GetHeaderFieldsValue();

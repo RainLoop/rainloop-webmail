@@ -293,8 +293,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), nano: true, attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
-						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused },
+					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), nano: true, scrollerShadows: true, attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
+						<div class="content g-scrollbox" tabindex="0" data-scroller-shadows-content data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused },
 							style: {'background-color': messageLoadingThrottle() ? '' : bodyBackgroundColor()}">
 
 							<div class="content-wrapper">

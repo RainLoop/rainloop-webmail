@@ -136,8 +136,8 @@
 			</div>
 			<div class="line-loading e-strip-animation" data-bind="visible: messageListCompleteLoadingThrottle"></div>
 			<div class="mainDelimiter toolbarDelimiter"></div>
-			<div class="b-content" data-bind="nano: true, initDom: dragOverBodyArea">
-				<div class="content g-scrollbox">
+			<div class="b-content" data-bind="nano: true, scrollerShadows: true, initDom: dragOverBodyArea">
+				<div class="content g-scrollbox" data-scroller-shadows-content>
 					<div class="content-wrapper">
 						<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
 							<i class="icon-left" data-bind="click: cancelThreadUid"></i>

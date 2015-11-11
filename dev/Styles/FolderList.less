@@ -43,7 +43,6 @@
 		overflow: hidden;
 		overflow-y: auto;
 		min-width: 100px;
-//		padding: 5px;
 
 		.content {
 			-webkit-overflow-scrolling: touch;
@@ -73,6 +72,17 @@
 			cursor: not-allowed;
 			font-size: 14px;
 
+			.focused-poiner {
+				float: left;
+				display: inline-block;
+				background-color: transparent;
+				height: 100%;
+				width: 3px;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
 			padding: 0;
 			padding-left: @folderItemPadding;
 			padding-right: @folderItemPadding;
@@ -97,7 +107,12 @@
 
 			&.focused {
 				background-color: #888;
+
+				.focused-poiner {
+					background-color: #fff;
+				}
 			}
+
 
 			&.system {
 				cursor: default;

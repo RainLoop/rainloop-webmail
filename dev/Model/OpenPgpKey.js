@@ -49,7 +49,7 @@
 	OpenPgpKeyModel.prototype.armor = '';
 	OpenPgpKeyModel.prototype.isPrivate = false;
 
-	OpenPgpKeyModel.prototype.getNativeKeys = function ()
+	OpenPgpKeyModel.prototype.getNativeKey = function ()
 	{
 		var oKey = null;
 		try
@@ -57,15 +57,21 @@
 			oKey = PgpStore.openpgp.key.readArmored(this.armor);
 			if (oKey && !oKey.err && oKey.keys && oKey.keys[0])
 			{
-				return oKey.keys;
+				return oKey;
 			}
 		}
 		catch (e)
 		{
 			Utils.log(e);
 		}
-		
+
 		return null;
+	};
+
+	OpenPgpKeyModel.prototype.getNativeKeys = function ()
+	{
+		var oKey = this.getNativeKey();
+		return oKey && oKey.keys ? oKey.keys : null;
 	};
 
 	module.exports = OpenPgpKeyModel;

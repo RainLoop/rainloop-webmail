@@ -1,26 +1,34 @@
-.nano:before, .nano:after {
-	display: none;
+
+.nano.scroller-shadow-top:before, .nano.scroller-shadow-bottom:after {
 	content: "";
 	position: absolute;
 	left: 0;
 	width: 100%;
 	height: 10px;
 	z-index: 102;
-	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
 }
 
-.fixIndex.nano:before, .fixIndex.nano:after {
-	z-index: 98;
-}
-
-.nano:before {
+.nano.scroller-shadow-top:before {
 	top: -10px;
 }
 
-.nano:after {
+.nano.scroller-shadow-bottom:after {
 	bottom: -10px;
 }
 
-.nano.nano-scrolllimit-top:before, .nano.nano-scrolllimit-bottom:after {
-	display: block;
+.nano.fixIndex.scroller-shadow-top:before, .nano.fixIndex.scroller-shadow-bottom:after {
+	z-index: 98;
+}
+
+.nano .pane .slider {
+	.transition(top 0.1s ease-out);
+}
+
+.nano .pane2 .slider2 {
+	.transition(left 0.1s ease-out);
+}
+
+.nano .pane.active .slider, .nano .pane2.active .slider2 {
+	.transition(none);
 }

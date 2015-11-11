@@ -5,11 +5,12 @@
 /npm-debug.log
 /rainloop.sublime-project
 /rainloop.sublime-workspace
-/rainloop/v/0.0.0/static/fonts/*
-!/rainloop/v/0.0.0/static/fonts/.gitempty
+/rainloop/v/0.0.0/static/ckeditor/*
+!/rainloop/v/0.0.0/static/ckeditor/.gitempty
 /rainloop/v/0.0.0/static/svg/*
 !/rainloop/v/0.0.0/static/svg/.gitempty
 /rainloop/v/0.0.0/static/css/*.css
+/rainloop/v/0.0.0/static/js/*.js
 /rainloop/v/0.0.0/static/js/**/*.js
 /node_modules
 /build/local

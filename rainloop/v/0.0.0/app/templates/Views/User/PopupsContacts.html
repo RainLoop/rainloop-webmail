@@ -23,7 +23,6 @@
 				<div class="btn-group">
 					<a class="btn single button-delete" data-bind="command: deleteCommand">
 						<i class="icon-trash"></i>
-						<span data-bind="text: 1 < contactsCheckedOrSelected().length ? ' (' + contactsCheckedOrSelected().length + ')' : ''"></span>
 					</a>
 				</div>
 
@@ -73,8 +72,8 @@
 				<input type="search" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off"
 					data-i18n="[placeholder]CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
 			</div>
-			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
-				<div class="content g-scrollbox">
+			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, scrollerShadows: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+				<div class="content g-scrollbox" data-scroller-shadows-content>
 					<div class="content-wrapper">
 						<div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
 							<span class="g-ui-link i18n" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
@@ -170,8 +169,8 @@
 					</button>
 				</div>
 			</div>
-			<div class="b-view-content" data-bind="nano: true, css: {'read-only': viewReadOnly}">
-				<div class="content g-scrollbox">
+			<div class="b-view-content" data-bind="nano: true, scrollerShadows: true, css: {'read-only': viewReadOnly}">
+				<div class="content g-scrollbox" data-scroller-shadows-content>
 					<div class="content-wrapper">
 						<div class="b-contact-view-desc" data-bind="visible: emptySelection">
 							<span class="i18n" data-i18n="CONTACTS/CONTACT_VIEW_DESC"></span>

@@ -1305,11 +1305,19 @@
 
 	AppUser.prototype.bootend = function ()
 	{
-		kn.hideLoading();
-
 		if (progressJs)
 		{
-			progressJs().end();
+			kn.hideLoading();
+
+			progressJs.onbeforeend(function () {
+				$('.progressjs-container').hide().remove();
+			});
+
+			progressJs.set(100).end();
+		}
+		else
+		{
+			kn.hideLoading();
 		}
 	};
 
@@ -1336,7 +1344,7 @@
 
 		if (progressJs)
 		{
-			progressJs().set(70);
+			progressJs.set(90);
 		}
 
 		Globals.leftPanelDisabled.subscribe(function (bValue) {
@@ -1352,7 +1360,6 @@
 				Settings.capa(Enums.Capa.TwoFactorForce) &&
 				Settings.settingsGet('RequireTwoFactor'))
 			{
-
 				this.bootend();
 				this.bootstartTwoFactorScreen();
 			}

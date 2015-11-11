@@ -376,8 +376,8 @@ html.rl-no-preview-pane {
 					&.html {
 
 						div[data-x-div-type=body] {
-							padding: 15px;
-							// margin: 15px;
+							/*padding: 15px;*/
+							margin: 15px;
 						}
 
 						pre, code {
@@ -388,8 +388,24 @@ html.rl-no-preview-pane {
 							border-radius: 0;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 							display: block;
-							max-width: 700px;
+							word-break: break-word;
 							word-wrap: break-word;
+							background-color: #f9f9f9;
+						}
+
+						code {
+							display: inline;
+							padding: 2px 5px;
+						}
+
+						pre {
+							padding: 5px 10px;
+							border-radius: 5px;
+							background-color: #f9f9f9;
+						}
+
+						pre > code {
+							padding: 0px;
 						}
 					}
 
@@ -406,6 +422,7 @@ html.rl-no-preview-pane {
 							border: none;
 							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 							display: block;
+							word-break: break-word;
 						}
 
 						pre.b-plain-openpgp {
@@ -413,6 +430,7 @@ html.rl-no-preview-pane {
 							padding: 6px 10px;
 							border: 1px dashed #666;
 							background: #fff;
+							word-break: break-all;
 
 							&.success {
 								border-color: green;
@@ -571,6 +589,6 @@ html.rl-message-fullscreen {
 	}
 }
 
-.nano-scrolllimit-top .buttonUp {
+.nano.scroller-shadow-top .buttonUp {
 	display: inline-block !important;
 }

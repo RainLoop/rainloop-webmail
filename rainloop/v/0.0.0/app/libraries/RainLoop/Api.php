@@ -101,6 +101,9 @@ class Api
 			\MailSo\Config::$LargeThreadLimit =
 				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
 
+			\MailSo\Config::$ImapTimeout =
+				(int) \RainLoop\Api::Config()->Get('labs', 'imap_timeout', 300);
+
 			\MailSo\Config::$BoundaryPrefix = '_RainLoop_';
 
 			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();

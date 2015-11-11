@@ -365,7 +365,7 @@
 		return false;
 	};
 
-	Utils.removeInFocus = function ()
+	Utils.removeInFocus = function (force)
 	{
 		if (window.document && window.document.activeElement && window.document.activeElement.blur)
 		{
@@ -373,6 +373,12 @@
 			if (oA.is('input,textarea'))
 			{
 				window.document.activeElement.blur();
+			}
+			else if (force)
+			{
+				try {
+					window.document.activeElement.blur();
+				} catch (e) {}
 			}
 		}
 	};
