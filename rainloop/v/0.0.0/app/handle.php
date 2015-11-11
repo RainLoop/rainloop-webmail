@@ -14,6 +14,9 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/BackwardCapability/Account.php';
 	}
 
+	//add phpcas class
+	include_once RAINLOOP_APP_LIBRARIES_PATH.'PHPCasClient/CAS.php';
+
 	/**
 	 * @param string $sClassName
 	 *

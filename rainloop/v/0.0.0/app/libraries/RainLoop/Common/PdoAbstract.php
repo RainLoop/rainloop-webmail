@@ -288,7 +288,7 @@ abstract class PdoAbstract
 		{
 			return $aCache[$sEmail];
 		}
-
+		RainLoop\ChromePhp::log('sEmail in getUseID:'.$sEmail);
 		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
 		if (empty($sEmail))
 		{
@@ -330,6 +330,78 @@ abstract class PdoAbstract
 		}
 
 		throw new \Exception('id_user = 0');
+	}
+
+	protected function getEmailPassword($sEmail, $bCache = true)
+	{
+		static $aCache = array();
+		if($bCache && isset($aCache[$sEmail]))
+		{
+			return $aCache[$sEmail];
+		}
+
+		$sEmail = \Mailso\Base\Utils::IdnToAscii(\trim($sEmail), true);
+		if (empty($sEmail))
+		{
+			throw new \InvalidArgumentException('Empty Email arguement');
+		}
+		$oStmt = $this->prepareAndExecute('SELECT email_password from rainloop_users WHERE rl_email = :rl_email',
+			array(
+				':rl_email' => array($sEmail, \PDO::PARAM_STR)
+				)
+			);
+		$mRow = $oStmt->fetch(\PDO::FETECH_ASSOC);
+		if ($mRow && isset($mRow['email_password']))
+		{
+			$iResult = $mRow['email_password'];
+			if(true)
+			{
+				//to do str check
+			}
+			if ($bCache)
+			{
+				$aCache[$sEmail] = $iResult;
+			}
+
+			return $iResult;
+		}
+	}
+
+	protected function getUserEmail($sLogin, $bCache = true)
+	{
+		static $aCache = array();
+		if ($bCache && isset($aCache[$sLogin]))
+		{
+			return $aCache[$sLogin];
+		}
+
+		$sLogin = \Mailso\Base\Utils::IdnToAscii(\trim($sEmail), true);
+		if (empty($sLogin))
+		{
+			throw new \InvalidArgumentException('Empty Login arguement');
+		}
+
+		$oStmt = $this->prepareAndExecute('SELECT rl_email from rainloop_users WHERE rl_login = :rl_login',
+			array(
+				':rl_login' => array($sLogin, \PDO::PARAM_STR)
+				)
+			);
+		$mRow = $oStmt->fetch(\PDO::FETCH_ASSOC);
+		if ($mRow && isset($mRow['rl_login']))
+		{
+			$iResult = $mRow['rl_login'];
+			if(true)
+			{
+				//to do str check;
+			}
+
+			if ($bCache)
+			{
+				$aCache[$sEmail] = $iResult;
+			}
+
+			return $iResult;
+		}
 	}
 
 	/**
@@ -449,7 +521,9 @@ INDEX sys_name_rainloop_system_index (sys_name)
 ) /*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
 id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
+rl_login varchar(128) NOT NULL DEFAULT \'\',
 rl_email varchar(128) NOT NULL DEFAULT \'\',
+email_password varchar(128) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id_user),
 INDEX rl_email_rainloop_users_index (rl_email)
 ) /*!40000 ENGINE=INNODB */;';
@@ -465,7 +539,9 @@ value_str varchar(128) NOT NULL DEFAULT \'\'
 					$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
 					$aQ[] = 'CREATE TABLE rainloop_users (
 id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
-rl_email varchar(128) NOT NULL DEFAULT \'\'
+rl_login varchar(128) NOT NULL DEFAULT \'\',
+rl_email varchar(128) NOT NULL DEFAULT \'\',
+email_password varchar(128) NOT NULL DEFAULT \'\'
 );';
 					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
 					break;
