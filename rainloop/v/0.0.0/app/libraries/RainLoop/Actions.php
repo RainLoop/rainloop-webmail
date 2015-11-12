@@ -1859,7 +1859,7 @@ class Actions
 					$oConfig->Get('login', 'determine_user_language', true))
 				{
 					$sLanguage = $this->ValidateLanguage(
-						$this->detectUserLanguage(), $sLanguage, false);
+						$this->detectUserLanguage($bAdmin), $sLanguage, false);
 				}
 			}
 		}
@@ -1876,10 +1876,10 @@ class Actions
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
 
-		$aResult['UserLanguageRaw'] = $this->detectUserLanguage();
+		$aResult['UserLanguageRaw'] = $this->detectUserLanguage($bAdmin);
 
-		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true, true);
-		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true, true);
+		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true);
+		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true);
 
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
@@ -1901,27 +1901,45 @@ class Actions
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	private function getUserLanguageFromHeader()
+	private function getUserLanguagesFromHeader()
 	{
-		$sLang = '';
-		$sAcceptLang = $this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en');
-		if (false !== \strpos($sAcceptLang, ','))
+		$aResult = $aList = array();
+		$sAcceptLang = \strtolower($this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
+		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList))
 		{
-			$aParts = \explode(',', $sAcceptLang, 2);
-			$sLang = empty($aParts[0]) ? '' : \trim(\strtolower($aParts[0]));
+			$aResult = \array_combine($aList[1], $aList[2]);
+			foreach ($aResult as $n => $v)
+			{
+				$aResult[$n] = $v ? $v : 1;
+			}
+
+			\arsort($aResult, SORT_NUMERIC);
 		}
 
-		return $sLang;
+		return $aResult;
 	}
 
 	/**
 	 * @return string
 	 */
-	private function detectUserLanguage()
+	public function detectUserLanguage($bAdmin = false)
 	{
-		return \preg_replace('/[^a-zA-Z0-9]+/', '-', $this->getUserLanguageFromHeader());
+		$sResult = '';
+		$aLangs = $this->getUserLanguagesFromHeader();
+
+		foreach (\array_keys($aLangs) as $sLang)
+		{
+			$sLang = $this->ValidateLanguage($sLang, '', $bAdmin, true);
+			if (!empty($sLang))
+			{
+				$sResult = $sLang;
+				break;
+			}
+		}
+
+		return $sResult;
 	}
 
 	/**
@@ -8876,30 +8894,38 @@ class Actions
 	 * @param string $sLanguage
 	 * @param string  $sDefault = ''
 	 * @param bool $bAdmin = false
-	 * @param bool $bSearchShortName = false
 	 * @param bool $bAllowEmptyResult = false
 	 *
 	 * @return string
 	 */
-	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bSearchShortName = false, $bAllowEmptyResult = false)
+	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bAllowEmptyResult = false)
 	{
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
 
 		if (\is_array($aLang))
 		{
+			$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
+				'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw');
+
+			$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
+			$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
+
+			$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
+			if (2 === strlen($sLanguage))
+			{
+				$sLanguage = $sLanguage.'_'.$sLanguage;
+			}
+
+			$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
+			if (2 === strlen($sDefault))
+			{
+				$sDefault = $sDefault.'_'.$sDefault;
+			}
+
 			if (\in_array($sLanguage, $aLang))
 			{
 				$sResult = $sLanguage;
-			}
-
-			if ($bSearchShortName && empty($sResult) && 2 < \strlen($sLanguage))
-			{
-				$sLanguage = \substr($sLanguage, 0, 2);
-				if (\in_array($sLanguage, $aLang))
-				{
-					$sResult = $sLanguage;
-				}
 			}
 
 			if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang))
@@ -8909,8 +8935,8 @@ class Actions
 
 			if (empty($sResult) && !$bAllowEmptyResult)
 			{
-				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
-				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en';
+				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_us');
+				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_us';
 			}
 		}
 
@@ -9018,19 +9044,12 @@ class Actions
 	public function GetLanguages($bAdmin = false)
 	{
 		static $aCache = array();
-		$sDir = APP_VERSION_ROOT_PATH.'langs/'.($bAdmin ? 'admin/' : '');
+		$sDir = APP_VERSION_ROOT_PATH.'app/localization/'.($bAdmin ? 'admin' : 'webmail').'/';
 
 		if (isset($aCache[$sDir]))
 		{
 			return $aCache[$sDir];
 		}
-
-//		$aTopper = array('en');
-//		$sUserLanguage = $this->detectUserLanguage();
-//		if (!empty($sUserLanguage) && 'en' !== $sUserLanguage)
-//		{
-//			$aTopper[] = $sUserLanguage;
-//		}
 
 		$aTop = array();
 		$aList = array();
@@ -9042,19 +9061,12 @@ class Actions
 			{
 				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && \is_file($sDir.'/'.$sFile) && '.ini' === \substr($sFile, -4))
+					if ('.' !== $sFile{0} && \is_file($sDir.'/'.$sFile) && '.yml' === \substr($sFile, -4))
 					{
 						$sLang = \strtolower(\substr($sFile, 0, -4));
-						if (0 < \strlen($sLang) && 'always' !== $sLang)
+						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang)
 						{
-//							if (\in_array(\substr($sLang, 0, 2), $aTopper))
-//							{
-//								\array_push($aTop, $sLang);
-//							}
-//							else
-//							{
-								\array_push($aList, $sLang);
-//							}
+							\array_push($aList, $sLang);
 						}
 					}
 				}
@@ -9470,8 +9482,10 @@ class Actions
 		if (null === $aLang)
 		{
 			$aLang = array();
-			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aLang);
-			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLang.'.ini', $aLang);
+//			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aLang);
+//			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLang.'.ini', $aLang);
+			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aLang);
+			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/webmail/'.$sLang.'.ini', $aLang);
 
 			$this->Plugins()->ReadLang($sLang, $aLang);
 		}

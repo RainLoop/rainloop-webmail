@@ -389,7 +389,29 @@ class Utils
 	{
 		if (\file_exists($sFileName))
 		{
-			$aLang = \RainLoop\Utils::CustomParseIniFile($sFileName, true);
+			$isYml = '.yml' === substr($sFileName, -4);
+			if ($isYml)
+			{
+				$aLang = \spyc_load(\str_replace(array(': >-', ': |-'), array(': >', ': |'), \file_get_contents($sFileName)));
+				if (\is_array($aLang))
+				{
+					\reset($aLang);
+					$sLangKey = key($aLang);
+					if (isset($aLang[$sLangKey]) && is_array($aLang[$sLangKey]))
+					{
+						$aLang = $aLang[$sLangKey];
+					}
+					else
+					{
+						$aLang = null;
+					}
+				}
+			}
+			else
+			{
+				$aLang = \RainLoop\Utils::CustomParseIniFile($sFileName, true);
+			}
+
 			if (\is_array($aLang))
 			{
 				foreach ($aLang as $sKey => $mValue)

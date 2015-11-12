@@ -64,6 +64,11 @@ if (\class_exists('RainLoop\Api'))
 		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
 	}
 
+	if (!\function_exists('spyc_load_file'))
+	{
+		include APP_VERSION_ROOT_PATH.'app/libraries/spyc/Spyc.php';
+	}
+
 	if (\class_exists('MailSo\Version'))
 	{
 		if (RAINLOOP_INCLUDE_AS_API_DEF)

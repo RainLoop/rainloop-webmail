@@ -1,0 +1,14 @@
+[main]
+host = https://www.transifex.com
+type = YAML
+minimum_perc = 50
+
+[rainloop-webmail.rainloop-webmail]
+file_filter = rainloop/v/0.0.0/app/localization/webmail/<lang>.yml
+source_file = rainloop/v/0.0.0/app/localization/webmail/_source.en.yml
+source_lang = en
+
+[rainloop-webmail.rainloop-admin]
+file_filter = rainloop/v/0.0.0/app/localization/admin/<lang>.yml
+source_file = rainloop/v/0.0.0/app/localization/admin/_source.en.yml
+source_lang = en

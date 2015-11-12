@@ -831,7 +831,7 @@ class ServiceActions
 			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
-			'{{ErrorDesc}}' => $sDesc
+			'{{ErrorDesc}}' => $sDesc.':'
 		));
 	}
 
@@ -1248,20 +1248,10 @@ class ServiceActions
 	 */
 	private function convertLanguageNameToMomentLanguageName($sLanguage)
 	{
-		switch ($sLanguage)
-		{
-			case 'pt-pt':
-				$sLanguage = 'pt';
-				break;
-			case 'ja-jp':
-				$sLanguage = 'ja';
-				break;
-			case 'ko-kr':
-				$sLanguage = 'ko';
-				break;
-		}
+		$aHelper = array('en_gb' => 'en-gb', 'fr_ca' => 'fr-ca', 'pt_br' => 'pt-br',
+			'uk_ua' => 'ua', 'zh_cn' => 'zh-cn', 'zh_tw' => 'zh-tw');
 
-		return $sLanguage;
+		return isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \substr($sLanguage, 0, 2);
 	}
 
 	/**
@@ -1276,7 +1266,7 @@ class ServiceActions
 		$aResultLang = array();
 
 		$sMoment = 'window.moment && window.moment.lang && window.moment.lang(\'en\');';
-		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/i18n/moment/'.
+		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.
 			$this->convertLanguageNameToMomentLanguageName($sLanguage).'.js';
 
 		if (\file_exists($sMomentFileName))
@@ -1285,9 +1275,15 @@ class ServiceActions
 			$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
 		}
 
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aResultLang);
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.
-			($bAdmin ? 'admin/' : '').$sLanguage.'.ini', $aResultLang);
+		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
+		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
+			($bAdmin ? 'admin' : 'webmail').'/_source.en.yml', $aResultLang);
+
+		if ('en_US' !== $sLanguage)
+		{
+			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
+				($bAdmin ? 'admin' : 'webmail').'/'.$sLanguage.'.yml', $aResultLang);
+		}
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 
