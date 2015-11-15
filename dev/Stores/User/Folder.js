@@ -52,7 +52,7 @@
 	FolderUserStore.prototype.computers = function ()
 	{
 		this.draftFolderNotEnabled = ko.computed(function () {
-			return '' === this.draftFolder() || Consts.Values.UnuseOptionValue === this.draftFolder();
+			return '' === this.draftFolder() || Consts.UNUSED_OPTION_VALUE === this.draftFolder();
 		}, this);
 
 		this.foldersListWithSingleInboxRootFolder = ko.computed(function () {
@@ -97,23 +97,23 @@
 
 			if (Utils.isArray(aFolders) && 0 < aFolders.length)
 			{
-				if ('' !== sSentFolder && Consts.Values.UnuseOptionValue !== sSentFolder)
+				if ('' !== sSentFolder && Consts.UNUSED_OPTION_VALUE !== sSentFolder)
 				{
 					aList.push(sSentFolder);
 				}
-				if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
+				if ('' !== sDraftFolder && Consts.UNUSED_OPTION_VALUE !== sDraftFolder)
 				{
 					aList.push(sDraftFolder);
 				}
-				if ('' !== sSpamFolder && Consts.Values.UnuseOptionValue !== sSpamFolder)
+				if ('' !== sSpamFolder && Consts.UNUSED_OPTION_VALUE !== sSpamFolder)
 				{
 					aList.push(sSpamFolder);
 				}
-				if ('' !== sTrashFolder && Consts.Values.UnuseOptionValue !== sTrashFolder)
+				if ('' !== sTrashFolder && Consts.UNUSED_OPTION_VALUE !== sTrashFolder)
 				{
 					aList.push(sTrashFolder);
 				}
-				if ('' !== sArchiveFolder && Consts.Values.UnuseOptionValue !== sArchiveFolder)
+				if ('' !== sArchiveFolder && Consts.UNUSED_OPTION_VALUE !== sArchiveFolder)
 				{
 					aList.push(sArchiveFolder);
 				}

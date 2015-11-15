@@ -49,7 +49,7 @@
 			aResult = [],
 			iIndex = 0,
 			iLen = 0
-			;
+		;
 
 		if (Utils.isNonEmptyArray(aEmails))
 		{

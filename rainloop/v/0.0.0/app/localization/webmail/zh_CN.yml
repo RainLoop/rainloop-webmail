@@ -235,6 +235,8 @@ zh_CN:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "是"
+    BUTTON_NO: "否"
     DESC_WANT_CLOSE_THIS_WINDOW: "你确定要关闭此窗口吗?"
     DESC_WANT_DELETE_MESSAGES: "你确定你要删除这条消息吗?"
   POPUPS_LANGUAGES:

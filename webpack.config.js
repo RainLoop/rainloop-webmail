@@ -19,11 +19,24 @@ module.exports = {
 	],
 	resolve: {
 		modulesDirectories: [__dirname + '/dev/'],
-		extensions: ['', '.js'],
+		extensions: ['', '.js', '.jsx'],
 		alias: {
-			"Opentip": __dirname  + "/dev/External/Opentip.js",
-			"ko": __dirname  + "/dev/External/ko.js"
+			'Opentip': __dirname  + '/dev/External/Opentip.js',
+			'ko': __dirname  + '/dev/External/ko.js'
 		}
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.jsx$/,
+				loader: 'babel',
+				exclude: /(node_modules|bower_components)/,
+				query: {
+					cacheDirectory: true,
+					presets: ['es2015']
+				}
+			}
+		]
 	},
 	externals: {
 		'window': 'window',
@@ -31,8 +44,6 @@ module.exports = {
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
 		'progressJs': 'window.rainloopProgressJs',
-		'PhotoSwipe': 'window.PhotoSwipe',
-		'PhotoSwipeUI_Default': 'window.PhotoSwipeUI_Default',
 		'queue': 'window.queue',
 		'moment': 'window.moment',
 		'ifvisible': 'window.ifvisible',

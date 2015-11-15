@@ -148,6 +148,11 @@ nb_NO:
     LINK_SAVE_TO_DROPBOX: "Lagre i Dropbox"
   READ_RECEIPT:
     SUBJECT: "Lesebekreftelse (meldinga er lest) - %SUBJECT%"
+    BODY: |
+      Dette er en lesebekreftelse på e-postmeldinga du sendte til %READ-RECEIPT%.
+
+      Merk: Denne bekreftelsen bekrefter bare at meldinga ble åpnet på mottakerens datamaskin,
+      og er ingen garanti for at mottakeren har lest, forstått eller er enig i innholdet.
   SUGGESTIONS:
     SEARCHING_DESC: "Søker …"
   CONTACTS:
@@ -230,6 +235,8 @@ nb_NO:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Lukk"
   POPUPS_ASK:
+    BUTTON_YES: "Ja"
+    BUTTON_NO: "Nei"
     DESC_WANT_CLOSE_THIS_WINDOW: "Er du sikker på at du vil lukke dette vinduet?"
     DESC_WANT_DELETE_MESSAGES: "Er du sikker på at du vil slette meldingen(e)?"
   POPUPS_LANGUAGES:
@@ -328,6 +335,8 @@ nb_NO:
     SELECT_TYPE_NOT_EQUAL_TO: "Er ikke lik"
     SELECT_TYPE_OVER: "Større enn"
     SELECT_TYPE_UNDER: "Mindre enn"
+    SELECT_MATCH_ANY: "Samsvarer med én av følgende regler"
+    SELECT_MATCH_ALL: "Samsvarer med alle følgende regler"
     MARK_AS_READ_LABEL: "Merk som lest"
     REPLY_INTERVAL_LABEL: "Svar-intervall (dager)"
     KEEP_LABEL: "Behold"
@@ -352,12 +361,14 @@ nb_NO:
     NOTIFICATION_SENT: |
       Du har ikke valgt «Sendt» som mappe for sendte meldinger.
       Velg «Ikke bruk» hvis du ikke vil lagre sendte meldinger.
+    NOTIFICATION_DRAFTS: "Du har ikke valgt «Kladd» som mappe hvor meldinger lagres mens du skriver."
     NOTIFICATION_SPAM: |
       Du har ikke valgt «Søppelpost» som mappe for søppelpost.
       Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
     NOTIFICATION_TRASH: |
       Du har ikke valgt «Papirkurv» som mappe for slettede meldinger.
       Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
+    NOTIFICATION_ARCHIVE: "Du har ikke valgt «Arkiv» som mappe for arkiverte meldinger."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "To-stegsbekreftelse"
     LABEL_ENABLE_TWO_FACTOR: "Slå på to-stegsbekreftelse"
@@ -620,6 +631,15 @@ nb_NO:
     ACCESS_ERROR: "Tilgangsfeil"
     CONNECTION_ERROR: "Klarte ikke å koble til tjeneren"
     CAPTCHA_ERROR: "Feil CAPTCHA"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+      og passord, og slå på denne funksjonen i kontoinnstillingene.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+      og passord, og slå på denne funksjonen i kontoinnstillingene.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+      og passord, og slå på denne funksjonen i kontoinnstillingene.
     DOMAIN_NOT_ALLOWED: "Dette domenet tillates ikke"
     ACCOUNT_NOT_ALLOWED: "Denne kontoen tillates ikke"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "To-stegsbekreftelse kreves"

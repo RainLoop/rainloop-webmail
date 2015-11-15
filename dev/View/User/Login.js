@@ -19,7 +19,7 @@
 		LanguageStore = require('Stores/Language'),
 		AppStore = require('Stores/User/App'),
 
-		Local = require('Storage/Client'),
+		Local = require('Storage/Client.jsx'),
 		Settings = require('Storage/Settings'),
 
 		Remote = require('Remote/User/Ajax'),

@@ -232,6 +232,8 @@ ar_SA:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "إغلاق"
   POPUPS_ASK:
+    BUTTON_YES: "نعم"
+    BUTTON_NO: "لا"
     DESC_WANT_CLOSE_THIS_WINDOW: "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟"
     DESC_WANT_DELETE_MESSAGES: "هل أنت متأكد من رغبتك بحذف هذه الرسائل؟"
   POPUPS_LANGUAGES:

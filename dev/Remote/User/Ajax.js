@@ -138,7 +138,7 @@
 	 */
 	RemoteUserAjax.prototype.contactsSync = function (fCallback)
 	{
-		this.defaultRequest(fCallback, 'ContactsSync', null, Consts.Defaults.ContactsSyncAjaxTimeout);
+		this.defaultRequest(fCallback, 'ContactsSync', null, Consts.CONTACTS_SYNC_AJAX_TIMEOUT);
 	};
 
 	/**
@@ -341,7 +341,7 @@
 		if ('' !== sFolderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
 		{
 			return this.defaultRequest(fCallback, 'MessageList', {},
-				'' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
+				'' === sSearch ? Consts.DEFAULT_AJAX_TIMEOUT : Consts.SEARCH_AJAX_TIMEOUT,
 				'MessageList/' + Links.subQueryPrefix() + '/' + Base64.urlsafe_encode([
 					sFolderFullNameRaw,
 					iOffset,
@@ -364,7 +364,7 @@
 				'UidNext': sInboxUidNext,
 				'UseThreads': bUseThreads ? '1' : '0',
 				'ThreadUid': bUseThreads ? sThreadUid : ''
-			}, '' === sSearch ? Consts.Defaults.DefaultAjaxTimeout : Consts.Defaults.SearchAjaxTimeout,
+			}, '' === sSearch ? Consts.DEFAULT_AJAX_TIMEOUT : Consts.SEARCH_AJAX_TIMEOUT,
 				'', bSilent ? [] : ['MessageList']);
 		}
 	};
@@ -583,7 +583,7 @@
 			'References': sReferences,
 			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
 			'Attachments': aAttachments
-		}, Consts.Defaults.SaveMessageAjaxTimeout);
+		}, Consts.SAVE_MESSAGE_AJAX_TIMEOUT);
 	};
 
 
@@ -650,7 +650,7 @@
 			'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
 			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
 			'Attachments': aAttachments
-		}, Consts.Defaults.SendMessageAjaxTimeout);
+		}, Consts.SEND_MESSAGE_AJAX_TIMEOUT);
 	};
 
 	/**

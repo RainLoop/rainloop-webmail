@@ -90,6 +90,10 @@ it_IT:
     LEGEND_DOMAINS: "Domini"
     BUTTON_ADD_DOMAIN: "Aggiungi dominio"
     DELETE_ARE_YOU_SURE: "Ne sei sicuro?"
+    HTML_DOMAINS_HELPER: |
+      Lista di domini a cui la webmail è abilitata ad accedere.
+      <br />
+      Clicca su un nome per configurare quel dominio.
   TAB_SECURITY:
     LEGEND_SECURITY: "Security"
     LABEL_ALLOW_TWO_STEP: "Abilita l'autenticazione a due fattori"
@@ -177,6 +181,12 @@ it_IT:
     LABEL_ACTIVATED: "Attivata"
     ERROR_INVALID_SUBS_KEY: "Chiave di licenza non valida"
     SUBS_KEY_ACTIVATED: "Chiave di licenza attivata correttamente"
+    HTML_DESC: |
+      Dopo l'attivazione, la licenza Premium per <b>%DOMAIN%</b> sarà estesa.
+      <br />
+      Una chiave di licenza può essere attivata su un solo dominio.
+      <br /><br />
+      Una volta iniziato, il processo di attivazione non potrà essere bloccato od annullato.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Aggiungi dominio"
     TITLE_ADD_DOMAIN_WITH_NAME: "Aggiungi il dominio \"%NAME%\""

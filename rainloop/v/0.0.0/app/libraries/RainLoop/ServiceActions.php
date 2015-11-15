@@ -1278,12 +1278,8 @@ class ServiceActions
 		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
 		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
 			($bAdmin ? 'admin' : 'webmail').'/_source.en.yml', $aResultLang);
-
-		if ('en_US' !== $sLanguage)
-		{
-			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
-				($bAdmin ? 'admin' : 'webmail').'/'.$sLanguage.'.yml', $aResultLang);
-		}
+		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
+			($bAdmin ? 'admin' : 'webmail').'/'.$sLanguage.'.yml', $aResultLang);
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 

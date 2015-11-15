@@ -35,7 +35,7 @@
 		MessageStore = require('Stores/User/Message'),
 		ContactStore = require('Stores/User/Contact'),
 
-		Local = require('Storage/Client'),
+		Local = require('Storage/Client.jsx'),
 		Settings = require('Storage/Settings'),
 
 		Remote = require('Remote/User/Ajax'),
@@ -379,9 +379,9 @@
 		bUseFolder = Utils.isUnd(bUseFolder) ? true : !!bUseFolder;
 		if (bUseFolder)
 		{
-			if ((Enums.FolderType.Spam === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.spamFolder()) ||
-				(Enums.FolderType.Trash === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.trashFolder()) ||
-				(Enums.FolderType.Archive === iDeleteType && Consts.Values.UnuseOptionValue === FolderStore.archiveFolder()))
+			if ((Enums.FolderType.Spam === iDeleteType && Consts.UNUSED_OPTION_VALUE === FolderStore.spamFolder()) ||
+				(Enums.FolderType.Trash === iDeleteType && Consts.UNUSED_OPTION_VALUE === FolderStore.trashFolder()) ||
+				(Enums.FolderType.Archive === iDeleteType && Consts.UNUSED_OPTION_VALUE === FolderStore.archiveFolder()))
 			{
 				bUseFolder = false;
 			}

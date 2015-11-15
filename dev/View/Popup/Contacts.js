@@ -68,7 +68,7 @@
 
 		this.contactsPage = ko.observable(1);
 		this.contactsPageCount = ko.computed(function () {
-			var iPage = window.Math.ceil(this.contactsCount() / Consts.Defaults.ContactsPerPage);
+			var iPage = window.Math.ceil(this.contactsCount() / Consts.CONTACTS_PER_PAGE);
 			return 0 >= iPage ? 1 : iPage;
 		}, this);
 
@@ -679,7 +679,7 @@
 	{
 		var
 			self = this,
-			iOffset = (this.contactsPage() - 1) * Consts.Defaults.ContactsPerPage
+			iOffset = (this.contactsPage() - 1) * Consts.CONTACTS_PER_PAGE
 		;
 
 		this.bDropPageAfterDelete = false;
@@ -722,7 +722,7 @@
 			self.contacts.loading(false);
 			self.viewClearSearch('' !== self.search());
 
-		}, iOffset, Consts.Defaults.ContactsPerPage, this.search());
+		}, iOffset, Consts.CONTACTS_PER_PAGE, this.search());
 	};
 
 	ContactsPopupView.prototype.onBuild = function (oDom)

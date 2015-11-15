@@ -159,7 +159,7 @@
 		}, this);
 
 		this.isSpamDisabled = ko.computed(function () {
-			return Consts.Values.UnuseOptionValue === FolderStore.spamFolder();
+			return Consts.UNUSED_OPTION_VALUE === FolderStore.spamFolder();
 		}, this);
 
 		this.isTrashFolder = ko.computed(function () {
@@ -183,7 +183,7 @@
 		}, this);
 
 		this.isArchiveDisabled = ko.computed(function () {
-			return Consts.Values.UnuseOptionValue === FolderStore.archiveFolder();
+			return Consts.UNUSED_OPTION_VALUE === FolderStore.archiveFolder();
 		}, this);
 
 		this.isArchiveVisible = ko.computed(function () {

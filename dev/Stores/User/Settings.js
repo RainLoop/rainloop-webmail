@@ -34,8 +34,8 @@
 				Enums.EditorDefaultType.HtmlForced, Enums.EditorDefaultType.PlainForced
 			]});
 
-		this.messagesPerPage = ko.observable(Consts.Defaults.MessagesPerPage)
-			.extend({'limitedList': Consts.Defaults.MessagesPerPageArray});
+		this.messagesPerPage = ko.observable(Consts.MESSAGES_PER_PAGE)
+			.extend({'limitedList': Consts.MESSAGES_PER_PAGE_VALUES});
 
 		this.showImages = ko.observable(false);
 		this.useCheckboxesInList = ko.observable(true);

@@ -235,6 +235,8 @@ en:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Yes"
+    BUTTON_NO: "No"
     DESC_WANT_CLOSE_THIS_WINDOW: "Are you sure you want to close this window?"
     DESC_WANT_DELETE_MESSAGES: "Are you sure you want to delete the message(s)?"
   POPUPS_LANGUAGES:
@@ -678,6 +680,7 @@ en:
     DEMO_SEND_MESSAGE_ERROR: "For security purposes, this account is not allowed to send messages to external e-mail addresses!"
     DEMO_ACCOUNT_ERROR: "For security purposes, this account is not allowed for this action!"
     ACCOUNT_ALREADY_EXISTS: "Account already exists"
+    ACCOUNT_DOES_NOT_EXIST: "Account doesn't exist"
     MAIL_SERVER_ERROR: "An error has occured while accessing mail server"
     INVALID_INPUT_ARGUMENT: "Invalid input argument"
     UNKNOWN_ERROR: "Unknown error"

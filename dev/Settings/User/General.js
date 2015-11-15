@@ -31,7 +31,7 @@
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 		this.messagesPerPage = SettingsStore.messagesPerPage;
-		this.messagesPerPageArray = Consts.Defaults.MessagesPerPageArray;
+		this.messagesPerPageArray = Consts.MESSAGES_PER_PAGE_VALUES;
 
 		this.editorDefaultType = SettingsStore.editorDefaultType;
 		this.layout = SettingsStore.layout;

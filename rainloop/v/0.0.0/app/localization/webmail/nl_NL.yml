@@ -148,6 +148,11 @@ nl_NL:
     LINK_SAVE_TO_DROPBOX: "Sla op in Dropbox"
   READ_RECEIPT:
     SUBJECT: "Ontvangstbevestiging (weergegeven) - %SUBJECT%"
+    BODY: |
+      Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.
+
+      Let op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.
+      Er is geen enkele garantie dat uw bericht is gelezen of begrepen.
   SUGGESTIONS:
     SEARCHING_DESC: "Zoeken..."
   CONTACTS:
@@ -230,6 +235,8 @@ nl_NL:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Ja"
+    BUTTON_NO: "Nee"
     DESC_WANT_CLOSE_THIS_WINDOW: "Weet u zeker dat u dit venster wilt sluiten?"
     DESC_WANT_DELETE_MESSAGES: "Weet u zeker dat u dit/deze bericht/berichten wilt verwijderen?"
   POPUPS_LANGUAGES:
@@ -328,6 +335,8 @@ nl_NL:
     SELECT_TYPE_NOT_EQUAL_TO: "Niet gelijk aan"
     SELECT_TYPE_OVER: "Meer dan"
     SELECT_TYPE_UNDER: "Minder dan"
+    SELECT_MATCH_ANY: "Komt overeen met een van de volgende voorwaarden"
+    SELECT_MATCH_ALL: "Komt overeen met alle voorwaarden"
     MARK_AS_READ_LABEL: "Markeer als gelezen"
     REPLY_INTERVAL_LABEL: "Antwoord interval (dagen)"
     KEEP_LABEL: "Behoud"
@@ -352,12 +361,14 @@ nl_NL:
     NOTIFICATION_SENT: |
       U heeft nog geen "Verzonden items" folder aangeduid waar de berichten geplaatst worden na het versturen.
       Indien u geen verzonden berichten wilt bewaren, kies de "Niet gebruiken" optie.
+    NOTIFICATION_DRAFTS: "U heeft nog geen \"Concepten\" folder aangeduid waar de berichten bewaard worden tijdens het opstellen."
     NOTIFICATION_SPAM: |
       U heeft nog geen "Ongewenste e-mail" folder aangeduid waar de spam berichten geplaatst worden.
       Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
     NOTIFICATION_TRASH: |
       U heeft nog geen "Verwijderde items" folder aangeduid waar de verwijderde berichten geplaatst worden.
       Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
+    NOTIFICATION_ARCHIVE: "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Stap verificatie"
     LABEL_ENABLE_TWO_FACTOR: "Gebruik 2-Stap verificatie"
@@ -621,6 +632,15 @@ nl_NL:
     ACCESS_ERROR: "Toegangsfout"
     CONNECTION_ERROR: "Kan geen verbinding maken met de Server"
     CAPTCHA_ERROR: "Onjuiste CAPTCHA"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
     DOMAIN_NOT_ALLOWED: "Domein is niet toegestaan"
     ACCOUNT_NOT_ALLOWED: "Account is niet toegestaan"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-Stap verificatie vereist"

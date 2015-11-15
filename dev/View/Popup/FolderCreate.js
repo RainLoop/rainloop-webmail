@@ -36,7 +36,7 @@
 		this.folderName = ko.observable('');
 		this.folderName.focused = ko.observable(false);
 
-		this.selectedParentValue = ko.observable(Consts.Values.UnuseOptionValue);
+		this.selectedParentValue = ko.observable(Consts.UNUSED_OPTION_VALUE);
 
 		this.parentFolderSelectList = ko.computed(function () {
 

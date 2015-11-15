@@ -28,7 +28,7 @@
 	Utils.isFunc = _.isFunction;
 	Utils.isUnd = _.isUndefined;
 	Utils.isNull = _.isNull;
-	Utils.emptyFunction = function () {};
+	Utils.emptyFunction = Utils.noop = function () {};
 
 	/**
 	 * @param {*} oValue

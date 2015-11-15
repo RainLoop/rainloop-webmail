@@ -148,6 +148,11 @@ it_IT:
     LINK_SAVE_TO_DROPBOX: "Salva su DropBox"
   READ_RECEIPT:
     SUBJECT: "Avviso di lettura - %SUBJECT%"
+    BODY: |
+      Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.
+
+      Attenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.
+      Non c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio.
   SUGGESTIONS:
     SEARCHING_DESC: "Cerca..."
   CONTACTS:
@@ -230,6 +235,8 @@ it_IT:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Chiudi"
   POPUPS_ASK:
+    BUTTON_YES: "Si"
+    BUTTON_NO: "No"
     DESC_WANT_CLOSE_THIS_WINDOW: "Sei sicuro di voler chiudere questa finestra?"
     DESC_WANT_DELETE_MESSAGES: "Sei sicuro di voler eliminare il messaggio?"
   POPUPS_LANGUAGES:
@@ -328,6 +335,8 @@ it_IT:
     SELECT_TYPE_NOT_EQUAL_TO: "Non uguale a"
     SELECT_TYPE_OVER: "Maggiore di"
     SELECT_TYPE_UNDER: "Minore di"
+    SELECT_MATCH_ANY: "Corrisponde ad una delle seguenti regole"
+    SELECT_MATCH_ALL: "Corrisponde a tutte le seguenti regole"
     MARK_AS_READ_LABEL: "Marca come letto"
     REPLY_INTERVAL_LABEL: "Intervallo di risposta (giorni)"
     KEEP_LABEL: "Mantieni"
@@ -352,12 +361,14 @@ it_IT:
     NOTIFICATION_SENT: |
       Non hai selezionato una cartella di sistema per la posta inviata.
       Se non vuoi salvare i messaggi inviati seleziona "Non usarla".
+    NOTIFICATION_DRAFTS: "Non hai selezionato una cartella di sistema per le bozze."
     NOTIFICATION_SPAM: |
       Non hai selezionato una cartella di sistema per i messaggi spam.
       Se li vuoi eliminare permanentemente seleziona "Non usarla".
     NOTIFICATION_TRASH: |
       Non hai selezionato una cartella di sistema per il cestino.
       Se non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona "Non usarla".
+    NOTIFICATION_ARCHIVE: "Non hai selezionato una cartella di sistema per i messaggi archiviati."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Autenticazione a due fattori"
     LABEL_ENABLE_TWO_FACTOR: "Abilita autenticazione a due fattori"
@@ -621,6 +632,15 @@ it_IT:
     ACCESS_ERROR: "Errore di accesso"
     CONNECTION_ERROR: "Impossibile connettersi al server"
     CAPTCHA_ERROR: "CAPTCHA."
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
     DOMAIN_NOT_ALLOWED: "Il dominio non è autorizzato"
     ACCOUNT_NOT_ALLOWED: "L'account non è autorizzato"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "La verifica a due fattori è richiesta"

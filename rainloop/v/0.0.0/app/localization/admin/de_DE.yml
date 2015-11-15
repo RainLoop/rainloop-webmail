@@ -89,6 +89,10 @@ de_DE:
     LEGEND_DOMAINS: "Domains"
     BUTTON_ADD_DOMAIN: "Domain hinzufügen"
     DELETE_ARE_YOU_SURE: "Sind Sie sicher?"
+    HTML_DOMAINS_HELPER: |
+      Liste der Domains, die Webmail abrufen darf.
+      <br />
+      Klicken Sie auf den Namen, um die Domain zu konfigurieren.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sicherheit"
     LABEL_ALLOW_TWO_STEP: "Zwei-Faktor-Authentifizierung erlauben"
@@ -176,6 +180,12 @@ de_DE:
     LABEL_ACTIVATED: "Aktiviert"
     ERROR_INVALID_SUBS_KEY: "Ungültiger Subscription-Schlüssel"
     SUBS_KEY_ACTIVATED: "Subscription-Schlüssel erfolgreich aktiviert"
+    HTML_DESC: |
+      Nach der Aktivierung wird <b>%DOMAIN%</b> um die Premium-Subscription erweitert.
+      <br />
+      Beachten Sie, dass ein Subscription-Schlüssel nur für eine einzelne Domain aktiviert werden kann.
+      <br /><br />
+      Nach dem Start kann der Aktivierungsprozess nicht unterbrochen oder abgebrochen werden.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Domain hinzufügen"
     TITLE_ADD_DOMAIN_WITH_NAME: "Domain \"%NAME%\" hinzufügen"

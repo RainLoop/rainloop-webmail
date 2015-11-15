@@ -148,6 +148,11 @@ pl_PL:
     LINK_SAVE_TO_DROPBOX: "Zapisz w Dropbox-ie"
   READ_RECEIPT:
     SUBJECT: "Potwierdzenie wyświetlenia wiadomości o tytule: %SUBJECT%"
+    BODY: |
+      Potwierdzenie wyświetlenia wiadomości wysłanej na adres: %READ-RECEIPT%.
+
+      Uwaga: Otrzymanie tego potwierdzenia jest dowodem na to, że wiadomość została wyświetlona na komputerze odbiorcy.
+      Nie ma jednak żadnej gwarancji, że odbiorca faktycznie zapoznał się z jej treścią.
   SUGGESTIONS:
     SEARCHING_DESC: "Wyszukiwanie..."
   CONTACTS:
@@ -230,6 +235,8 @@ pl_PL:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Zamknij"
   POPUPS_ASK:
+    BUTTON_YES: "Tak"
+    BUTTON_NO: "Nie"
     DESC_WANT_CLOSE_THIS_WINDOW: "Na pewno zamknąć to okno?"
     DESC_WANT_DELETE_MESSAGES: "Na pewno usunąć wiadomość(-i)?"
   POPUPS_LANGUAGES:
@@ -328,6 +335,8 @@ pl_PL:
     SELECT_TYPE_NOT_EQUAL_TO: "Nie zawiera:"
     SELECT_TYPE_OVER: "powyżej"
     SELECT_TYPE_UNDER: "poniżej"
+    SELECT_MATCH_ANY: "Spełnia dowolny z warunków"
+    SELECT_MATCH_ALL: "Spełnia wszystkie warunki"
     MARK_AS_READ_LABEL: "Oznacz jako przeczytane"
     REPLY_INTERVAL_LABEL: "Liczba dni, po których wysłać odp."
     KEEP_LABEL: "Zachowaj"
@@ -352,12 +361,14 @@ pl_PL:
     NOTIFICATION_SENT: |
       Nie wybrano folderu: "Wysłane", do którego przenoszone są wysłane wiadomości.
       Jeżeli wysyłane wiadomości nie mają być przechowywane, proszę zaznaczyć opcję: "Nie używaj".
+    NOTIFICATION_DRAFTS: "Nie wybrano folderu: \"Wersje robocze\", do którego są zapisywane wiadomości w trakcie ich tworzenia."
     NOTIFICATION_SPAM: |
       Nie wybrano folderu: "Niechciane", do którego przenoszone są niepożadane wiadomości.
       Jeżeli niechciane wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
     NOTIFICATION_TRASH: |
       Nie wybrano folderu: "Kosz", do którego przenoszone są wszystkie usunięte wiadomości.
       Jeżeli wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
+    NOTIFICATION_ARCHIVE: "Nie został wybrany folder \"Archiwum\", zostanie użyty systemowy folder archiwizacji wiadomości."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dwuskładnikowa autoryzacja"
     LABEL_ENABLE_TWO_FACTOR: "Włącz dwuskładnikową autoryzację"
@@ -620,6 +631,18 @@ pl_PL:
     ACCESS_ERROR: "Błąd dostępu"
     CONNECTION_ERROR: "Błąd połączenia z serwerem"
     CAPTCHA_ERROR: "Nieprawidłowy kod CAPTCHA"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      To społecznościowe ID (Facebooku), nie jest powiązane z żadnym kontem pocztowym.
+      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
+      > Sieci społecznościowe.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      To społecznościowe ID (Twitter), nie jest powiązane z żadnym kontem pocztowym.
+      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
+      > Sieci społecznościowe.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      To społecznościowe ID (Konto Google), nie jest powiązane z żadnym kontem pocztowym.
+      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
+      > Sieci społecznościowe.
     DOMAIN_NOT_ALLOWED: "Domena niedozwolona"
     ACCOUNT_NOT_ALLOWED: "Konto nie jest dozwolone"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Wymagana dwuskładnikowa autoryzacja"

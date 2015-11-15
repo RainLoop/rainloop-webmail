@@ -234,6 +234,8 @@ cs_CZ:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Ano"
+    BUTTON_NO: "Ne"
     DESC_WANT_CLOSE_THIS_WINDOW: "Opravdu chcete zavřít toto okno?"
     DESC_WANT_DELETE_MESSAGES: "Opravdu chcete odstranit tyto zprávy?"
   POPUPS_LANGUAGES:

@@ -235,6 +235,8 @@ sk_SK:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Áno"
+    BUTTON_NO: "Nie"
     DESC_WANT_CLOSE_THIS_WINDOW: "Ste si istý že chcete zatvoriť toto okno?"
     DESC_WANT_DELETE_MESSAGES: "Ste si istý že chcete odstrániť tieto správy?"
   POPUPS_LANGUAGES:

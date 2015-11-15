@@ -234,6 +234,8 @@ ro_RO:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Da"
+    BUTTON_NO: "Nu"
     DESC_WANT_CLOSE_THIS_WINDOW: "Sigur doriți să închideți această fereastră?"
     DESC_WANT_DELETE_MESSAGES: "Sigur doriți să ștergeți mesajul(e)?"
   POPUPS_LANGUAGES:

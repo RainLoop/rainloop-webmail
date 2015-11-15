@@ -39,7 +39,7 @@
 		this.folderSelectList = ko.computed(function () {
 			return Utils.folderListOptionsBuilder([], FolderStore.folderList(), FolderStore.folderListSystemNames(), [
 				['', this.sChooseOnText],
-				[Consts.Values.UnuseOptionValue, this.sUnuseText]
+				[Consts.UNUSED_OPTION_VALUE, this.sUnuseText]
 			], null, null, null, null, null, true);
 		}, this);
 

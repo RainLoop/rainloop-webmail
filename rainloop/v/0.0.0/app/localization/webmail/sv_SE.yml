@@ -235,6 +235,8 @@ sv_SE:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Ja"
+    BUTTON_NO: "Nej"
     DESC_WANT_CLOSE_THIS_WINDOW: "Vill du stänga detta fönster?"
     DESC_WANT_DELETE_MESSAGES: "Är du säker att du vill ta bort meddelandet?"
   POPUPS_LANGUAGES:

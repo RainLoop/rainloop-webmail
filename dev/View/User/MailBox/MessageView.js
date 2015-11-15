@@ -10,9 +10,6 @@
 		ko = require('ko'),
 		key = require('key'),
 
-//		PhotoSwipe = require('PhotoSwipe'),
-//		PhotoSwipeUI_Default = require('PhotoSwipeUI_Default'),
-
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
@@ -31,7 +28,7 @@
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
-		Local = require('Storage/Client'),
+		Local = require('Storage/Client.jsx'),
 		Settings = require('Storage/Settings'),
 		Remote = require('Remote/User/Ajax'),
 
@@ -298,7 +295,7 @@
 		this.viewLineAsCss = ko.observable('');
 		this.viewViewLink = ko.observable('');
 		this.viewDownloadLink = ko.observable('');
-		this.viewUserPic = ko.observable(Consts.DataImages.UserDotPic);
+		this.viewUserPic = ko.observable(Consts.DATA_IMAGE_USER_DOT_PIC);
 		this.viewUserPicVisible = ko.observable(false);
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
@@ -385,7 +382,7 @@
 					if (sPic !== self.viewUserPic() && sLastEmail === sEmail)
 					{
 						self.viewUserPicVisible(false);
-						self.viewUserPic(Consts.DataImages.UserDotPic);
+						self.viewUserPic(Consts.DATA_IMAGE_USER_DOT_PIC);
 						if ('' !== sPic)
 						{
 							self.viewUserPicVisible(true);
@@ -691,92 +688,6 @@
 		this.oHeaderDom = $('.messageItemHeader', oDom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
-/*
-		this.pswpDom = $('.pswp', oDom)[0];
-
-		if (this.pswpDom)
-		{
-			oDom
-				.on('click', '.attachmentImagePreview.visible', function (oEvent) {
-
-					var
-						iIndex = 0,
-						oPs = null,
-						oEl = oEvent.currentTarget || null,
-						aItems = []
-//						fThumbBoundsFn = function (index) {
-//							var oRes = null, oEl = aItems[index], oPos = null;
-//							if (oEl && oEl.el)
-//							{
-//								oPos = oEl.el.find('.iconBG').offset();
-//								oRes = oPos && oPos.top && oPos.left ?
-//									{x: oPos.left, y: oPos.top, w: 60} : null;
-//							}
-//
-//							return oRes;
-//						}
-					;
-
-					oDom.find('.attachmentImagePreview.visible').each(function (index, oSubElement) {
-
-						var
-							$oItem = $(oSubElement)
-						;
-
-						if (oEl === oSubElement)
-						{
-							iIndex = index;
-						}
-
-						aItems.push({
-							'w': 600, 'h': 400,
-							'src': $oItem.attr('href'),
-							'title': $oItem.attr('title') || ''
-						});
-					});
-
-					if (aItems && 0 < aItems.length)
-					{
-						Globals.useKeyboardShortcuts(false);
-
-						oPs = new PhotoSwipe(self.pswpDom, PhotoSwipeUI_Default, aItems, {
-							'index': iIndex,
-							'bgOpacity': 0.85,
-							'loadingIndicatorDelay': 500,
-							'errorMsg': '<div class="pswp__error-msg">' + sErrorMessage + '</div>',
-							'showHideOpacity': true,
-							'tapToToggleControls': false,
-//							'getThumbBoundsFn': fThumbBoundsFn,
-							'timeToIdle': 0,
-							'timeToIdleOutside': 0,
-							'history': false,
-							'arrowEl': 1 < aItems.length,
-							'counterEl': 1 < aItems.length,
-							'shareEl': false
-						});
-
-						oPs.listen('imageLoadComplete', function(index, item) {
-							if (item && item.img && item.img.width && item.img.height)
-							{
-								item.w = item.img.width;
-								item.h = item.img.height;
-
-								oPs.updateSize(true);
-							}
-						});
-
-						oPs.listen('close', function() {
-							Globals.useKeyboardShortcuts(true);
-						});
-
-						oPs.init();
-					}
-
-					return false;
-				});
-		}
-*/
-
 		oDom
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
@@ -1061,7 +972,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isSpamDisabled = function ()
 	{
-		return MessageStore.message() && FolderStore.spamFolder() === Consts.Values.UnuseOptionValue;
+		return MessageStore.message() && FolderStore.spamFolder() === Consts.UNUSED_OPTION_VALUE;
 	};
 
 	/**
@@ -1077,7 +988,7 @@
 	 */
 	MessageViewMailBoxUserView.prototype.isArchiveDisabled = function ()
 	{
-		return MessageStore.message() && FolderStore.archiveFolder() === Consts.Values.UnuseOptionValue;
+		return MessageStore.message() && FolderStore.archiveFolder() === Consts.UNUSED_OPTION_VALUE;
 	};
 
 	/**

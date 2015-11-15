@@ -235,6 +235,8 @@ ja_JP:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "はい"
+    BUTTON_NO: "いいえ"
     DESC_WANT_CLOSE_THIS_WINDOW: "このウインドウを閉じていいですか？"
     DESC_WANT_DELETE_MESSAGES: "メッセージを削除していいですか？"
   POPUPS_LANGUAGES:

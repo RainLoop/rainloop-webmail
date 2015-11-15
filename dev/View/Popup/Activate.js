@@ -121,7 +121,7 @@
 		{
 			bTrial = Utils.isUnd(bTrial) ? false : !!bTrial;
 
-			this.key(bTrial ? Consts.Values.RainLoopTrialKey : '');
+			this.key(bTrial ? Consts.RAINLOOP_TRIAL_KEY : '');
 			this.activateText('');
 			this.activateText.isError(false);
 			this.activationSuccessed(false);
@@ -142,7 +142,7 @@
 	ActivatePopupView.prototype.validateSubscriptionKey = function ()
 	{
 		var sValue = this.key();
-		return '' === sValue || Consts.Values.RainLoopTrialKey === sValue ||
+		return '' === sValue || Consts.RAINLOOP_TRIAL_KEY === sValue ||
 			!!/^RL[\d]+-[A-Z0-9\-]+Z$/.test(Utils.trim(sValue));
 	};
 

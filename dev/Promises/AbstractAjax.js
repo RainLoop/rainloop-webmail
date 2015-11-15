@@ -65,7 +65,7 @@
 			oDeferred = Q.defer()
 		;
 
-		iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.Defaults.DefaultAjaxTimeout;
+		iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.DEFAULT_AJAX_TIMEOUT;
 		sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
 
 		if (bPost)
@@ -167,7 +167,7 @@
 					Globals.iTokenErrorCount++;
 				}
 
-				if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
+				if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
 				{
 					if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
 					{
@@ -175,7 +175,7 @@
 					}
 				}
 
-				if (oErrorData.ClearAuth || oErrorData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
+				if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
 				{
 					if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
 					{

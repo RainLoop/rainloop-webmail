@@ -61,7 +61,7 @@
 						Globals.iTokenErrorCount++;
 					}
 
-					if (Consts.Values.TokenErrorLimit < Globals.iTokenErrorCount)
+					if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
 					{
 						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
 						{
@@ -69,7 +69,7 @@
 						}
 					}
 
-					if (oData.ClearAuth || oData.Logout || Consts.Values.AjaxErrorLimit < Globals.iAjaxErrorCount)
+					if (oData.ClearAuth || oData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
 					{
 						if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
 						{
@@ -240,7 +240,7 @@
 		Plugins.runHook('ajax-default-request', [sAction, oParameters, sGetAdd]);
 
 		return this.ajaxRequest(fCallback, oParameters,
-			Utils.isUnd(iTimeout) ? Consts.Defaults.DefaultAjaxTimeout : Utils.pInt(iTimeout), sGetAdd, aAbortActions);
+			Utils.isUnd(iTimeout) ? Consts.DEFAULT_AJAX_TIMEOUT : Utils.pInt(iTimeout), sGetAdd, aAbortActions);
 	};
 
 	/**

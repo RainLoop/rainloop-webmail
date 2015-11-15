@@ -15,7 +15,7 @@
 		FolderStore = require('Stores/User/Folder'),
 
 		Settings = require('Storage/Settings'),
-		Local = require('Storage/Client'),
+		Local = require('Storage/Client.jsx'),
 
 		FolderModel = require('Model/Folder'),
 
@@ -48,7 +48,7 @@
 	 */
 	PromisesUserPopulator.prototype.normalizeFolder = function (sFolderFullNameRaw)
 	{
-		return ('' === sFolderFullNameRaw || Consts.Values.UnuseOptionValue === sFolderFullNameRaw ||
+		return ('' === sFolderFullNameRaw || Consts.UNUSED_OPTION_VALUE === sFolderFullNameRaw ||
 			null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';
 	};
 

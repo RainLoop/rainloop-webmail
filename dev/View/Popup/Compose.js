@@ -380,7 +380,7 @@
 
 				if (!this.allowFolders)
 				{
-					sSentFolder = Consts.Values.UnuseOptionValue;
+					sSentFolder = Consts.UNUSED_OPTION_VALUE;
 				}
 
 				if ('' === sSentFolder)
@@ -412,7 +412,7 @@
 						}
 					}
 
-					sSentFolder = Consts.Values.UnuseOptionValue === sSentFolder ? '' : sSentFolder;
+					sSentFolder = Consts.UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
 					Cache.setFolderHash(this.draftFolder(), '');
 					Cache.setFolderHash(sSentFolder, '');
@@ -649,7 +649,7 @@
 			sDraftFolder = FolderStore.draftFolder()
 		;
 
-		if ('' !== sDraftFolder && Consts.Values.UnuseOptionValue !== sDraftFolder)
+		if ('' !== sDraftFolder && Consts.UNUSED_OPTION_VALUE !== sDraftFolder)
 		{
 			Cache.setFolderHash(sDraftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)

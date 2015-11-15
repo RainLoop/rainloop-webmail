@@ -87,6 +87,10 @@ nl_NL:
     LEGEND_DOMAINS: "Domeinen"
     BUTTON_ADD_DOMAIN: "Domein toevoegen"
     DELETE_ARE_YOU_SURE: "Weet u het zeker?"
+    HTML_DOMAINS_HELPER: |
+      Lijst van toegestane domeinen.
+      <br />
+      Klik op de domeinnaam om deze te configureren.
   TAB_SECURITY:
     LEGEND_SECURITY: "Beveiliging"
     LABEL_ALLOW_TWO_STEP: "2-Stap verificatie toestaan"

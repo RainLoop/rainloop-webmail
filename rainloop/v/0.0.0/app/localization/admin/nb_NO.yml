@@ -90,6 +90,10 @@ nb_NO:
     LEGEND_DOMAINS: "Domener"
     BUTTON_ADD_DOMAIN: "Legg til domene"
     DELETE_ARE_YOU_SURE: "Er du sikker?"
+    HTML_DOMAINS_HELPER: |
+      Liste over domener som programmet kan få tilgang til.
+      <br />
+      Trykk på et navn for å sette opp domenet.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sikkerhet"
     LABEL_ALLOW_TWO_STEP: "Tillat tostegsbekreftelse"
@@ -177,6 +181,12 @@ nb_NO:
     LABEL_ACTIVATED: "I bruk"
     ERROR_INVALID_SUBS_KEY: "Ugyldig abonnementsnøkkel"
     SUBS_KEY_ACTIVATED: "Abonnementsnøkkelen er nå i bruk"
+    HTML_DESC: |
+      Premium-abonnement for <b>%DOMAIN%</b> fonyes.
+      <br />
+      Nøkkelen kan bare tas i bruk for ett domene.
+      <br /><br />
+      Du kan ikke angre på å ta en nøkkel i bruk.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Legg til domene"
     TITLE_ADD_DOMAIN_WITH_NAME: "Legg til «%NAME%»"

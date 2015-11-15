@@ -90,6 +90,10 @@ pt_BR:
     LEGEND_DOMAINS: "Domínios"
     BUTTON_ADD_DOMAIN: "Adicionar Domínio"
     DELETE_ARE_YOU_SURE: "Você tem certeza?"
+    HTML_DOMAINS_HELPER: |
+      Lista dos domínios com acesso permitido ao webmail.
+      <br />
+      Clique no domínio para configurá-lo.
   TAB_SECURITY:
     LEGEND_SECURITY: "Segurança"
     LABEL_ALLOW_TWO_STEP: "Permitir verificação em duas etapas (Login 2-Step)"
@@ -177,6 +181,12 @@ pt_BR:
     LABEL_ACTIVATED: "Ativado"
     ERROR_INVALID_SUBS_KEY: "Chave de assinatura inválida"
     SUBS_KEY_ACTIVATED: "Chave de assinatura ativada com sucesso"
+    HTML_DESC: |
+      Após a ativação, a assinatura premium para <b>%DOMAIN%</b> será extendida.
+      <br />
+      Note que chave de assinatura é ativada apenas para um único domínio.
+      <br /><br />
+      Uma vez iniciado, o processo de ativação não poderá ser interrompido ou cancelado.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Adicionar Domínio"
     TITLE_ADD_DOMAIN_WITH_NAME: "Adicionar Domínio \"%NAME%\""

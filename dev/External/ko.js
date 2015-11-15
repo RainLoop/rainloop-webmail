@@ -12,7 +12,6 @@
 
 		fDisposalTooltipHelper = function (oElement) {
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
-
 				if (oElement && oElement.__opentip)
 				{
 					oElement.__opentip.deactivate();

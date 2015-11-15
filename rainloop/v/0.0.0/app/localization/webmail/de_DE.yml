@@ -148,6 +148,11 @@ de_DE:
     LINK_SAVE_TO_DROPBOX: "In Dropbox speichern"
   READ_RECEIPT:
     SUBJECT: "Empfangsbestätigung (angezeigt) - %SUBJECT%"
+    BODY: |
+      Dies ist eine Empfangsbestätigung für die Nachricht, die Sie an %READ-RECEIPT% gesendet haben.
+
+      Hinweis: Diese Empfangsbestätigung bestätigt nur, dass die Nachricht auf dem Computer des Empfängers angezeigt wurde.
+      Es besteht keine Garantie, dass der Empfänger den Inhalt der Nachricht gelesen oder verstanden hat.
   SUGGESTIONS:
     SEARCHING_DESC: "Suche läuft..."
   CONTACTS:
@@ -230,6 +235,8 @@ de_DE:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Schließen"
   POPUPS_ASK:
+    BUTTON_YES: "Ja"
+    BUTTON_NO: "Nein"
     DESC_WANT_CLOSE_THIS_WINDOW: "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?"
     DESC_WANT_DELETE_MESSAGES: "Sind Sie sicher, dass Sie diese Nachricht(en) löschen möchten?"
   POPUPS_LANGUAGES:
@@ -328,6 +335,8 @@ de_DE:
     SELECT_TYPE_NOT_EQUAL_TO: "Ungleich"
     SELECT_TYPE_OVER: "Über"
     SELECT_TYPE_UNDER: "Unter"
+    SELECT_MATCH_ANY: "Eine der folgenden Regeln trifft zu"
+    SELECT_MATCH_ALL: "Alle folgenden Regeln treffen zu"
     MARK_AS_READ_LABEL: "Als Gelesen markieren"
     REPLY_INTERVAL_LABEL: "Antwortintervall (Tage)"
     KEEP_LABEL: "Behalten"
@@ -352,12 +361,14 @@ de_DE:
     NOTIFICATION_SENT: |
       Sie haben keinen "Gesendet"-Systemordner gewählt, in dem Nachrichten nach dem Versenden gespeichert werden.
       Falls Sie versandte Nachrichten nicht speichern möchten, wählen Sie die Option "Nicht anwenden".
+    NOTIFICATION_DRAFTS: "Sie haben keinen \"Entwürfe\"-Systemordner gewählt, in dem Nachrichten beim Erstellen gespeichert werden."
     NOTIFICATION_SPAM: |
       Sie haben keinen "Spam"-Systemordner gewählt, in dem die Spam-Nachrichten abgelegt werden.
       Falls Sie Spam-Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
     NOTIFICATION_TRASH: |
       Sie haben keinen  "Papierkorb"-Systemordner gewählt, in dem die gelöschten Nachrichten abgelegt werden.
       Falls Sie gelöschte Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
+    NOTIFICATION_ARCHIVE: "Sie haben keinen \"Archiv\"-Systemordner gewählt, in dem die archivierten Nachrichten abgelegt werden."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Zwei-Faktor-Authentifizierung"
     LABEL_ENABLE_TWO_FACTOR: "Zwei-Faktor-Authentifizierung aktivieren"
@@ -622,6 +633,18 @@ de_DE:
     ACCESS_ERROR: "Zugriffsfehler"
     CONNECTION_ERROR: "Serververbindung kann nicht hergestellt werden"
     CAPTCHA_ERROR: "Falsche CAPTCHA-Eingabe."
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+      Konteneinstellungen.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+      Konteneinstellungen.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+      Konteneinstellungen.
     DOMAIN_NOT_ALLOWED: "Diese Domain ist nicht zugelassen."
     ACCOUNT_NOT_ALLOWED: "Konto ist nicht zugelassen."
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Zwei-Faktor-Authentifizierung erforderlich"

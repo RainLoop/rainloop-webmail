@@ -97,7 +97,9 @@ function copyFile(sFile, sNewFile, callback)
 	callback();
 }
 
-cfg.paths.globjs = 'dev/**/*.js';
+cfg.paths.globjs = 'dev/**/*.{js,jsx}';
+cfg.paths.globjsonly = 'dev/**/*.js';
+cfg.paths.globjsxonly = 'dev/**/*.jsx';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
@@ -456,7 +458,7 @@ gulp.task('js:lint', function() {
 		jshint = require('gulp-jshint')
 	;
 
-	return gulp.src(cfg.paths.globjs)
+	return gulp.src(cfg.paths.globjsonly)
 		.pipe(jshint('.jshintrc'))
 		.pipe(jshint.reporter('jshint-summary', cfg.summary))
 		.pipe(jshint.reporter('fail'))
@@ -468,6 +470,22 @@ gulp.task('js:lint', function() {
 				output_wrapper: '(function(){%output%}());'
 			}
 		})))
+	;
+});
+
+gulp.task('js:eslint', function() {
+
+	var eslint = require('gulp-eslint');
+
+	return gulp.src(cfg.paths.globjsxonly)
+		.pipe(eslint({
+			parser: 'babel-eslint',
+			rules: {
+				'strict': 0
+			}
+		}))
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError())
 	;
 });
 
@@ -692,7 +710,7 @@ gulp.task('fast-', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 gulp.task('fast', ['package:community-on', 'fast-']);
 gulp.task('fast+', ['package:community-off', 'fast-']);
 
-gulp.task('rainloop:start', ['js:lint', 'rainloop:copy', 'rainloop:setup']);
+gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
 gulp.task('rainloop-', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean', 'rainloop:shortname']);
 
@@ -724,7 +742,6 @@ gulp.task('watch+', ['fast+'], function() {
 // ALIASES
 gulp.task('build', ['rainloop']);
 gulp.task('build+', ['rainloop+']);
-gulp.task('js:hint', ['js:lint']);
 
 gulp.task('w', ['watch']);
 gulp.task('w+', ['watch+']);
@@ -736,6 +753,3 @@ gulp.task('b+', ['build+']);
 
 gulp.task('o', ['owncloud']);
 gulp.task('o+', ['owncloud+']);
-
-gulp.task('h', ['js:lint']);
-gulp.task('l', ['js:lint']);

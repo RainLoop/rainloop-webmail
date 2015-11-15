@@ -110,8 +110,9 @@
 	/**
 	 * @type {boolean}
 	 */
-	Globals.bAnimationSupported = !Globals.bMobileDevice && Globals.$html.hasClass('csstransitions') &&
-		 Globals.$html.hasClass('cssanimations');
+	Globals.bAnimationSupported = !Globals.bMobileDevice &&
+		Globals.$html.hasClass('csstransitions') &&
+		Globals.$html.hasClass('cssanimations');
 
 	/**
 	 * @type {boolean}
@@ -164,34 +165,30 @@
 	 * @type {Object}
 	 */
 	Globals.oHtmlEditorLangsMap = {
-		'bg': 'bg',
-		'de': 'de',
-		'es': 'es',
-		'fr': 'fr',
-		'hu': 'hu',
-		'is': 'is',
-		'it': 'it',
-		'ja': 'ja',
-		'ja-jp': 'ja',
-		'ko': 'ko',
-		'ko-kr': 'ko',
-		'lt': 'lt',
-		'lv': 'lv',
-		'nl': 'nl',
-		'no': 'no',
-		'pl': 'pl',
-		'pt': 'pt',
-		'pt-pt': 'pt',
-		'pt-br': 'pt-br',
-		'ro': 'ro',
-		'ru': 'ru',
-		'sk': 'sk',
-		'sv': 'sv',
-		'tr': 'tr',
-		'ua': 'ru',
-		'zh': 'zh',
-		'zh-tw': 'zh',
-		'zh-cn': 'zh-cn'
+		'bg_bg': 'bg',
+		'de_de': 'de',
+		'es_es': 'es',
+		'fr_fr': 'fr',
+		'hu_hu': 'hu',
+		'is_is': 'is',
+		'it_it': 'it',
+		'ja_jp': 'ja',
+		'ko_kr': 'ko',
+		'lt_lt': 'lt',
+		'lv_lv': 'lv',
+		'nl_nl': 'nl',
+		'bg_no': 'no',
+		'pl_pl': 'pl',
+		'pt_pt': 'pt',
+		'pt_br': 'pt-br',
+		'ro_ro': 'ro',
+		'ru_ru': 'ru',
+		'sk_sk': 'sk',
+		'sv_se': 'sv',
+		'tr_tr': 'tr',
+		'uk_ua': 'ru',
+		'zh_tw': 'zh',
+		'zh_cn': 'zh-cn'
 	};
 
 	if (Globals.bAllowPdfPreview && window.navigator && window.navigator.mimeTypes)

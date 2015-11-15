@@ -90,6 +90,10 @@ pl_PL:
     LEGEND_DOMAINS: "Domeny"
     BUTTON_ADD_DOMAIN: "Dodaj domenę"
     DELETE_ARE_YOU_SURE: "Czy na pewno?"
+    HTML_DOMAINS_HELPER: |
+      Lista domen, do których można uzyskać dostęp poprzez tego klienta.
+      <br />
+      Kliknij na nazwę, aby skonfigurować domenę.
   TAB_SECURITY:
     LEGEND_SECURITY: "Bezpieczeństwo"
     LABEL_ALLOW_TWO_STEP: "Zezwól na dwuskładnikową autoryzację"
@@ -177,6 +181,12 @@ pl_PL:
     LABEL_ACTIVATED: "Aktywowano"
     ERROR_INVALID_SUBS_KEY: "Niepoprawny klucz subskrypcji"
     SUBS_KEY_ACTIVATED: "Aktywowano klucz subskrypcji"
+    HTML_DESC: |
+      Subskrypcja premium dla domeny: <b>%DOMAIN%</b>, zostanie przedłużona po aktywacji.
+      <br />
+      Zwróc uwagę, że klucz subskrypcji może być aktywowany tylko dla jednej domeny.
+      <br /><br />
+      Po uruchomieniu aktywacji, nie można jej przerwac lub anulować.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Dodawanie domeny"
     TITLE_ADD_DOMAIN_WITH_NAME: "Dodawanie domeny: \"%NAME%\""

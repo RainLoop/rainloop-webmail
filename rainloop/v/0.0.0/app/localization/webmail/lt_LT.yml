@@ -235,6 +235,8 @@ lt_LT:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Uždaryti"
   POPUPS_ASK:
+    BUTTON_YES: "Taip"
+    BUTTON_NO: "Ne"
     DESC_WANT_CLOSE_THIS_WINDOW: "Ar tikrai norite uždaryti šį langą??"
     DESC_WANT_DELETE_MESSAGES: "Ar tikrai norite ištrinti pranešimą(us)?"
   POPUPS_LANGUAGES:

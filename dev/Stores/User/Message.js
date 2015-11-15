@@ -227,7 +227,7 @@
 		var
 			iCount = 0,
 			oMessagesDom = null,
-			iEnd = Globals.iMessageBodyCacheCount - Consts.Values.MessageBodyCacheLimit
+			iEnd = Globals.iMessageBodyCacheCount - Consts.MESSAGE_BODY_CACHE_LIMIT
 		;
 
 		if (0 < iEnd)

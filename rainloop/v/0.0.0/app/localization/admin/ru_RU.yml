@@ -89,6 +89,10 @@ ru_RU:
     LEGEND_DOMAINS: "Домены"
     BUTTON_ADD_DOMAIN: "Добавить домен"
     DELETE_ARE_YOU_SURE: "Вы уверены?"
+    HTML_DOMAINS_HELPER: |
+      Список доменов к которым разрешен доступ.
+      <br />
+      Нажмите на имя, чтобы настроить домен.
   TAB_SECURITY:
     LEGEND_SECURITY: "Безопасность"
     LABEL_ALLOW_TWO_STEP: "Разрешить 2-шаговую проверку"
@@ -176,6 +180,12 @@ ru_RU:
     LABEL_ACTIVATED: "Активировано"
     ERROR_INVALID_SUBS_KEY: "Неверный ключ подписки"
     SUBS_KEY_ACTIVATED: "Ключ подписки активирован удачно"
+    HTML_DESC: |
+      После активации премиум подписка для <b>%DOMAIN%</b> будет продлена.
+      <br />
+      Обратите внимание, что ключ может быть активирован только один раз.
+      <br /><br />
+      После запуска процесс активации не может быть прерван или отменен.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Добавить домен"
     TITLE_ADD_DOMAIN_WITH_NAME: "Добавить домен \"%NAME%\""

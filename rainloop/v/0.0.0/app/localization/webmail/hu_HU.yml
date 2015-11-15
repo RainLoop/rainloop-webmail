@@ -235,6 +235,8 @@ hu_HU:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Igen"
+    BUTTON_NO: "Nem"
     DESC_WANT_CLOSE_THIS_WINDOW: "Biztos, hogy bezárjuk ezt az ablakot?"
     DESC_WANT_DELETE_MESSAGES: "Biztos, hogy töröljük ezt a levelet/leveleket?"
   POPUPS_LANGUAGES:

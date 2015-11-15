@@ -74,16 +74,16 @@
 		this.name.focused = ko.observable(false);
 
 		this.imapServer = ko.observable('');
-		this.imapPort = ko.observable('' + Consts.Values.ImapDefaulPort);
+		this.imapPort = ko.observable('' + Consts.IMAP_DEFAULT_PORT);
 		this.imapSecure = ko.observable(Enums.ServerSecure.None);
 		this.imapShortLogin = ko.observable(false);
 		this.useSieve = ko.observable(false);
 		this.sieveAllowRaw = ko.observable(false);
 		this.sieveServer = ko.observable('');
-		this.sievePort = ko.observable('' + Consts.Values.SieveDefaulPort);
+		this.sievePort = ko.observable('' + Consts.SIEVE_DEFAULT_PORT);
 		this.sieveSecure = ko.observable(Enums.ServerSecure.None);
 		this.smtpServer = ko.observable('');
-		this.smtpPort = ko.observable('' + Consts.Values.SmtpDefaulPort);
+		this.smtpPort = ko.observable('' + Consts.SMTP_DEFAULT_PORT);
 		this.smtpSecure = ko.observable(Enums.ServerSecure.None);
 		this.smtpShortLogin = ko.observable(false);
 		this.smtpAuth = ko.observable(true);
@@ -441,18 +441,18 @@
 		this.name.focused(false);
 
 		this.imapServer('');
-		this.imapPort('' + Consts.Values.ImapDefaulPort);
+		this.imapPort('' + Consts.IMAP_DEFAULT_PORT);
 		this.imapSecure(Enums.ServerSecure.None);
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
 		this.sieveAllowRaw(false);
 		this.sieveServer('');
-		this.sievePort('' + Consts.Values.SieveDefaulPort);
+		this.sievePort('' + Consts.SIEVE_DEFAULT_PORT);
 		this.sieveSecure(Enums.ServerSecure.None);
 
 		this.smtpServer('');
-		this.smtpPort('' + Consts.Values.SmtpDefaulPort);
+		this.smtpPort('' + Consts.SMTP_DEFAULT_PORT);
 		this.smtpSecure(Enums.ServerSecure.None);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);

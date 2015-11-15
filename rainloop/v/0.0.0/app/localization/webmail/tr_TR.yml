@@ -235,6 +235,8 @@ tr_TR:
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Close"
   POPUPS_ASK:
+    BUTTON_YES: "Evet"
+    BUTTON_NO: "Hayır"
     DESC_WANT_CLOSE_THIS_WINDOW: "Bu pencereyi kapatmak istediğinizden emin misiniz?"
     DESC_WANT_DELETE_MESSAGES: "Mesaj(ları) silmek istediğinizden emin misiniz?"
   POPUPS_LANGUAGES:
