@@ -112,6 +112,10 @@ class Api
 			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
 
 			\RainLoop\Utils::$CookieDefaultPath = \RainLoop\Api::Config()->Get('labs', 'cookie_default_path', '');
+			if (\RainLoop\Api::Config()->Get('labs', 'cookie_default_secure', false))
+			{
+				\RainLoop\Utils::$CookieDefaultSecure = true;
+			}
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
 			{

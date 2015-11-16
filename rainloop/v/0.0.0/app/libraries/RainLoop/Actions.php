@@ -9182,7 +9182,8 @@ class Actions
 	 */
 	private function mainDefaultResponse($sActionName, $mResult = false, $aAdditionalParams = array())
 	{
-		$sActionName = 'Do' === substr($sActionName, 0, 2) ? substr($sActionName, 2) : $sActionName;
+		$sActionName = 'Do' === \substr($sActionName, 0, 2) ? \substr($sActionName, 2) : $sActionName;
+		$sActionName = \preg_replace('/[^a-zA-Z0-9_]+/', '', $sActionName);
 
 		$aResult = array(
 			'Action' => $sActionName,

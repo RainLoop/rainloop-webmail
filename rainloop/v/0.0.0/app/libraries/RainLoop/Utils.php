@@ -9,6 +9,11 @@ class Utils
 	 */
 	static $CookieDefaultPath = '';
 
+	/**
+	 * @var bool|null
+	 */
+	static $CookieDefaultSecure = null;
+
 	static $Cookies = null;
 
 	static $RSA = null;
@@ -530,7 +535,7 @@ class Utils
 		return isset(\RainLoop\Utils::$Cookies[$sName]) ? \RainLoop\Utils::$Cookies[$sName] : $mDefault;
 	}
 
-	public static function SetCookie($sName, $sValue = '', $iExpire = 0, $sPath = null, $sDomain = null, $sSecure = null, $bHttpOnly = true)
+	public static function SetCookie($sName, $sValue = '', $iExpire = 0, $sPath = null, $sDomain = null, $bSecure = null, $bHttpOnly = true)
 	{
 		if (null === \RainLoop\Utils::$Cookies)
 		{
@@ -543,8 +548,13 @@ class Utils
 			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 		}
 
+		if (null === $bSecure)
+		{
+			$bSecure = \RainLoop\Utils::$CookieDefaultSecure;
+		}
+
 		\RainLoop\Utils::$Cookies[$sName] = $sValue;
-		@\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $sSecure, $bHttpOnly);
+		@\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $bSecure, $bHttpOnly);
 	}
 
 	public static function ClearCookie($sName)

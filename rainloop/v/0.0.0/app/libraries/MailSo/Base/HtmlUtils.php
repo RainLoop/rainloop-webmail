@@ -865,24 +865,23 @@ class HtmlUtils
 					$oElement->setAttribute('tabindex', '-1');
 				}
 
-				foreach (array(
-					'id', 'class',
-					'contenteditable', 'designmode', 'formaction',
-					'data-bind', 'data-reactid', 'xmlns', 'srcset',
-					'data-x-skip-style'
-				) as $sAttr)
+				if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
 				{
-					@$oElement->removeAttribute($sAttr);
-				}
-
-				foreach (array(
-					'load', 'blur', 'error', 'focus', 'formchange', 'change',
-					'click', 'dblclick', 'keydown', 'keypress', 'keyup',
-					'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup',
-					'move', 'resize', 'resizeend', 'resizestart', 'scroll', 'select', 'submit', 'upload'
-				) as $sAttr)
-				{
-					@$oElement->removeAttribute('on'.$sAttr);
+					foreach ($oElement->attributes as $oAttr)
+					{
+						if ($oAttr && !empty($oAttr->nodeName))
+						{
+							$sAttrName = \trim(\strtolower($oAttr->nodeName));
+							if ('on' === \substr($sAttrName, 0, 2) || in_array($sAttrName, array(
+								'id', 'class', 'contenteditable', 'designmode', 'formaction',
+								'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
+								'fscommand', 'seeksegmenttime'
+							)))
+							{
+								@$oElement->removeAttribute($oAttr->nodeName);
+							}
+						}
+					}
 				}
 
 				if ($oElement->hasAttribute('href'))
