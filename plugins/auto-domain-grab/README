@@ -8,7 +8,7 @@ hostname from the inputted email address (for example, it would detect "example.
 How to Use:
 
 1) Activate plugin
-2) Visit Settings, and add a new wildcard domain ' * '
+2) Visit Settings, and add a new wildcard domain "*"
 3) Set your ports/ssl requirements as needed. These will not be changed by the plugin.
 4) In the SMTP and/or IMAP host fields, place the single word "auto". This will be replaced when the plugin is active.
 5) That's it! The plugin should now work!

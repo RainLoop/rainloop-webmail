@@ -46,12 +46,15 @@
 		}, this);
 
 		this.readmePopoverConf = {
-			'placement': 'top',
+			'placement': 'right',
 			'trigger': 'hover',
+//			'trigger': 'click',
 			'title': Translator.i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
 			'container': 'body',
+			'html': true,
 			'content': function () {
-				return self.readme();
+				return '<pre>' + self.readme() + '</pre>';
+//					.replace(/[\r]/g, '').replace(/[\n]/g, '<br />').replace(/[\t]/g, '&nbsp;&nbsp;&nbsp;');
 			}
 		};
 
