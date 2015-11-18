@@ -27,10 +27,7 @@ class AbstracRadio extends AbstractComponent
 		if (params.values)
 		{
 			this.values(_.map(params.values, (label, value) => {
-				return {
-					'label': label,
-					'value': value
-				};
+				return {'label': label, 'value': value};
 			}));
 		}
 

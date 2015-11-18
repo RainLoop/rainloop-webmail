@@ -73,7 +73,7 @@
 		{
 			Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
 
-			require('App/User').foldersPromisesActionHelper(
+			require('App/User').default.foldersPromisesActionHelper(
 				Promises.folderRename(oFolder.fullNameRaw, sEditName, FolderStore.foldersRenaming),
 				Enums.Notification.CantRenameFolder);
 
@@ -153,7 +153,7 @@
 
 				FolderStore.folderList.remove(fRemoveFolder);
 
-				require('App/User').foldersPromisesActionHelper(
+				require('App/User').default.foldersPromisesActionHelper(
 					Promises.folderDelete(oFolderToRemove.fullNameRaw, FolderStore.foldersDeleting),
 					Enums.Notification.CantDeleteFolder);
 

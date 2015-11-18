@@ -1,9 +1,13 @@
-var webpack = require('webpack');
+
+var
+	path = require('path'),
+	webpack = require('webpack')
+;
 
 module.exports = {
 	entry: {
-		'app': __dirname + '/dev/app.js',
-		'admin': __dirname + '/dev/admin.js'
+		'app': __dirname + '/dev/app.jsx',
+		'admin': __dirname + '/dev/admin.jsx'
 	},
 	output: {
 		pathinfo: true,
@@ -18,7 +22,7 @@ module.exports = {
 		new webpack.optimize.OccurenceOrderPlugin()
 	],
 	resolve: {
-		modulesDirectories: [__dirname + '/dev/'],
+		root: path.resolve(__dirname, 'dev'),
 		extensions: ['', '.js', '.jsx'],
 		alias: {
 			'Opentip': __dirname  + '/dev/External/Opentip.js',
@@ -33,7 +37,8 @@ module.exports = {
 				exclude: /(node_modules|bower_components)/,
 				query: {
 					cacheDirectory: true,
-					presets: ['es2015']
+//			        plugins: ['transform-runtime'],
+					presets: ['es2015', 'stage-0']
 				}
 			}
 		]

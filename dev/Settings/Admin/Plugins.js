@@ -15,7 +15,7 @@
 
 		AppStore = require('Stores/Admin/App'),
 		PluginStore = require('Stores/Admin/Plugin'),
-		
+
 		Remote = require('Remote/Admin/Ajax')
 	;
 
@@ -81,7 +81,7 @@
 	PluginsAdminSettings.prototype.onShow = function ()
 	{
 		PluginStore.plugins.error('');
-		require('App/Admin').reloadPluginList();
+		require('App/Admin').default.reloadPluginList();
 	};
 
 	PluginsAdminSettings.prototype.onPluginLoadRequest = function (sResult, oData)
@@ -109,7 +109,7 @@
 			}
 		}
 
-		require('App/Admin').reloadPluginList();
+		require('App/Admin').default.reloadPluginList();
 	};
 
 	module.exports = PluginsAdminSettings;

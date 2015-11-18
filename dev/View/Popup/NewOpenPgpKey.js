@@ -82,7 +82,7 @@
 
 							oOpenpgpKeyring.store();
 
-							require('App/User').reloadOpenPgpKeys();
+							require('App/User').default.reloadOpenPgpKeys();
 							Utils.delegateRun(self, 'cancelCommand');
 						}
 

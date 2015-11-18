@@ -226,7 +226,7 @@
 			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
@@ -236,7 +236,7 @@
 			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
 					oMessage.folderFullNameRaw, [oMessage.uid], false);
 			}
 		}, this.messageVisibility);
@@ -246,7 +246,7 @@
 			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Archive,
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
@@ -256,7 +256,7 @@
 			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Spam,
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
@@ -266,7 +266,7 @@
 			if (oMessage && this.allowMessageListActions)
 			{
 				this.message(null);
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 					oMessage.folderFullNameRaw, [oMessage.uid], true);
 			}
 		}, this.messageVisibility);
@@ -746,14 +746,14 @@
 
 				if (oAttachment && oAttachment.download)
 				{
-					require('App/User').download(oAttachment.linkDownload());
+					require('App/User').default.download(oAttachment.linkDownload());
 				}
 			})
 			.on('click', '.messageItemHeader .subjectParent .flagParent', function () {
 				var oMessage = self.message();
 				if (oMessage)
 				{
-					require('App/User').messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
+					require('App/User').default.messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
 						oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
 				}
 			})
@@ -761,7 +761,7 @@
 				var oMessage = ko.dataFor(this);
 				if (oMessage && oMessage.folder && oMessage.uid)
 				{
-					require('App/User').messageListAction(
+					require('App/User').default.messageListAction(
 						oMessage.folder, oMessage.uid,
 						oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
 				}
@@ -1060,7 +1060,7 @@
 				if (oResult && oResult.Result && oResult.Result.Files &&
 					oResult.Result.Files[0] && oResult.Result.Files[0].Hash)
 				{
-					require('App/User').download(
+					require('App/User').default.download(
 						Links.attachmentDownload(oResult.Result.Files[0].Hash));
 				}
 				else
@@ -1197,7 +1197,7 @@
 
 			Cache.storeMessageFlagsToCache(oMessage);
 
-			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
+			require('App/User').default.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 
 		this.checkHeaderHeight();

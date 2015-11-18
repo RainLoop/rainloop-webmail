@@ -6,7 +6,8 @@ import {LocalStorage} from 'Common/ClientStorageDriver/LocalStorage';
 class ClientStorage
 {
 	constructor() {
-		const SupportedStorageDriver = _.find([LocalStorage, Cookie], (StorageDriver) => StorageDriver && StorageDriver.supported());
+		const SupportedStorageDriver = _.find([LocalStorage, Cookie],
+			(StorageDriver) => StorageDriver && StorageDriver.supported());
 		this.driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
 	}
 

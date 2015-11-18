@@ -73,7 +73,7 @@
 					PgpStore.openpgpKeyring.store();
 				}
 
-				require('App/User').reloadOpenPgpKeys();
+				require('App/User').default.reloadOpenPgpKeys();
 			}
 		}
 	};

@@ -82,7 +82,7 @@
 
 	TemplatesUserSettings.prototype.reloadTemplates = function ()
 	{
-		require('App/User').templates();
+		require('App/User').default.templates();
 	};
 
 	TemplatesUserSettings.prototype.onBuild = function (oDom)

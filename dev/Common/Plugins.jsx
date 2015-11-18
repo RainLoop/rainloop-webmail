@@ -6,11 +6,11 @@ import Settings from 'Storage/Settings';
 
 class Plugins
 {
-	constructor() {
-		this.oSimpleHooks = {};
-		this.aUserViewModelsHooks = [];
-		this.aAdminViewModelsHooks = [];
-	}
+	oSimpleHooks = {};
+	aUserViewModelsHooks = [];
+	aAdminViewModelsHooks = [];
+
+	constructor() {}
 
 	/**
 	 * @param {string} name

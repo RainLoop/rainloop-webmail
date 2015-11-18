@@ -1,20 +1,11 @@
 
-(function () {
+import ko from 'ko';
+import Globals from 'Common/Globals';
+import Settings from 'Storage/Settings';
 
-	'use strict';
-
-	var
-		ko = require('ko'),
-
-		Globals = require('Common/Globals'),
-
-		Settings = require('Storage/Settings')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function AppStore()
+class AbstractAppStore
+{
+	constructor()
 	{
 		this.allowLanguagesOnSettings = ko.observable(true);
 		this.allowLanguagesOnLogin = ko.observable(true);
@@ -22,7 +13,7 @@
 		this.interfaceAnimation = ko.observable(true);
 
 		this.interfaceAnimation.subscribe(function (bValue) {
-			var bAnim = Globals.bMobileDevice || !bValue;
+			const bAnim = Globals.bMobileDevice || !bValue;
 			Globals.$html.toggleClass('rl-anim', !bAnim).toggleClass('no-rl-anim', bAnim);
 		});
 
@@ -32,8 +23,7 @@
 		this.community = ko.observable(true);
 	}
 
-	AppStore.prototype.populate = function()
-	{
+	populate() {
 		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
 		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
 
@@ -41,8 +31,7 @@
 
 		this.prem(!!Settings.settingsGet('PremType'));
 		this.community(!!Settings.settingsGet('Community'));
-	};
+	}
+}
 
-	module.exports = AppStore;
-
-}());
+export {AbstractAppStore, AbstractAppStore as default};

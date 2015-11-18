@@ -1,22 +1,14 @@
 
-(function () {
+import ko from 'ko';
+import Settings from 'Storage/Settings';
 
-	'use strict';
+import {AbstractAppStore} from 'Stores/AbstractApp';
 
-	var
-		ko = require('ko'),
-
-		Settings = require('Storage/Settings'),
-
-		AppStore = require('Stores/App')
-	;
-
-	/**
-	 * @constructor
-	 */
-	function AppAdminStore()
+class AppAdminStore extends AbstractAppStore
+{
+	constructor()
 	{
-		AppStore.call(this);
+		super();
 
 		this.determineUserLanguage = ko.observable(false);
 		this.determineUserDomain = ko.observable(false);
@@ -25,9 +17,9 @@
 		this.useLocalProxyForExternalImages = ko.observable(false);
 	}
 
-	AppAdminStore.prototype.populate = function()
-	{
-		AppStore.prototype.populate.call(this);
+	populate() {
+
+		super.populate();
 
 		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
@@ -35,7 +27,6 @@
 		this.weakPassword(!!Settings.settingsGet('WeakPassword'));
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
 	};
+}
 
-	module.exports = new AppAdminStore();
-
-}());
+module.exports = new AppAdminStore();

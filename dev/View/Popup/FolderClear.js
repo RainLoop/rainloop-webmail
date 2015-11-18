@@ -73,7 +73,7 @@
 					self.clearingProcess(false);
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 					{
-						require('App/User').reloadMessageList(true);
+						require('App/User').default.reloadMessageList(true);
 						self.cancelCommand();
 					}
 					else

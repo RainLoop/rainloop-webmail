@@ -111,7 +111,7 @@
 
 	AbstractSystemDropDownUserView.prototype.logoutClick = function ()
 	{
-		require('App/User').logout();
+		require('App/User').default.logout();
 	};
 
 	AbstractSystemDropDownUserView.prototype.onBuild = function ()

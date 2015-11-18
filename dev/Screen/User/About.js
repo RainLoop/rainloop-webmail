@@ -24,7 +24,7 @@
 
 	AboutUserScreen.prototype.onShow = function ()
 	{
-		require('App/User').setWindowTitle('RainLoop');
+		require('App/User').default.setWindowTitle('RainLoop');
 	};
 
 	module.exports = AboutUserScreen;

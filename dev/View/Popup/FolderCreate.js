@@ -76,7 +76,7 @@
 				sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 			}
 
-			require('App/User').foldersPromisesActionHelper(
+			require('App/User').default.foldersPromisesActionHelper(
 				Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
 				Enums.Notification.CantCreateFolder);
 

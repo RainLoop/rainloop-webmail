@@ -330,7 +330,7 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 
-			require('App/User').deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+			require('App/User').default.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 			kn.hideScreenPopup(ComposePopupView);
 
 		}, function () {
@@ -407,7 +407,7 @@
 							}
 
 							Cache.setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], aFlagsCache);
-							require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
+							require('App/User').default.reloadFlagsCurrentMessageListAndMessageFromCache();
 							Cache.setFolderHash(this.aDraftInfo[2], '');
 						}
 					}
@@ -616,7 +616,7 @@
 
 	ComposePopupView.prototype.emailsSource = function (oData, fResponse)
 	{
-		require('App/User').getAutocomplete(oData.term, function (aData) {
+		require('App/User').default.getAutocomplete(oData.term, function (aData) {
 			fResponse(_.map(aData, function (oEmailItem) {
 				return oEmailItem.toLine(false);
 			}));
@@ -654,11 +654,11 @@
 			Cache.setFolderHash(sDraftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)
 			{
-				require('App/User').reloadMessageList(true);
+				require('App/User').default.reloadMessageList(true);
 			}
 			else
 			{
-				require('App/User').folderInformation(sDraftFolder);
+				require('App/User').default.folderInformation(sDraftFolder);
 			}
 		}
 	};

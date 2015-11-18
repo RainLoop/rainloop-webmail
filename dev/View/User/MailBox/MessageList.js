@@ -222,32 +222,32 @@
 		this.deleteWithoutMoveCommand = Utils.createCommand(this, function () {
 			if (Settings.capa(Enums.Capa.DangerousActions))
 			{
-				require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
+				require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
 					FolderStore.currentFolderFullNameRaw(),
 					MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
 			}
 		}, this.canBeMoved);
 
 		this.deleteCommand = Utils.createCommand(this, function () {
-			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Trash,
+			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.archiveCommand = Utils.createCommand(this, function () {
-			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Archive,
+			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Archive,
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.spamCommand = Utils.createCommand(this, function () {
-			require('App/User').deleteMessagesFromFolder(Enums.FolderType.Spam,
+			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Spam,
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
 		this.notSpamCommand = Utils.createCommand(this, function () {
-			require('App/User').deleteMessagesFromFolder(Enums.FolderType.NotSpam,
+			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
@@ -257,7 +257,7 @@
 		this.reloadCommand = Utils.createCommand(this, function () {
 			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload)
 			{
-				require('App/User').reloadMessageList(false, true);
+				require('App/User').default.reloadMessageList(false, true);
 			}
 		});
 
@@ -456,7 +456,7 @@
 	{
 		if (this.canBeMoved())
 		{
-			require('App/User').moveMessagesToFolder(
+			require('App/User').default.moveMessagesToFolder(
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), sToFolderFullNameRaw, bCopy);
 		}
@@ -498,7 +498,7 @@
 	 */
 	MessageListMailBoxUserView.prototype.setAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
 	{
-		require('App/User').messageListAction(sFolderFullNameRaw, mUid, iSetAction, aMessages);
+		require('App/User').default.messageListAction(sFolderFullNameRaw, mUid, iSetAction, aMessages);
 	};
 
 	/**
@@ -548,7 +548,7 @@
 					break;
 				}
 
-				require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
+				require('App/User').default.reloadFlagsCurrentMessageListAndMessageFromCache();
 			}
 		}
 	};
@@ -1032,7 +1032,7 @@
 
 			}, this))
 			.on('onComplete', _.bind(function () {
-				require('App/User').reloadMessageList(true, true);
+				require('App/User').default.reloadMessageList(true, true);
 			}, this))
 		;
 

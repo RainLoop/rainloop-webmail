@@ -15,7 +15,7 @@ class ScriptComponent extends AbstractComponent
 			params.element[0] && params.element[0].outerHTML)
 		{
 			let script = params.element[0].outerHTML;
-			script = script
+			script = !script ? '' : script
 				.replace(/<x-script/i, '<script')
 				.replace(/<b><\/b><\/x-script>/i, '</script>')
 			;

@@ -57,7 +57,7 @@
 			})
 		;
 
-		require('App/Admin').reloadDomainList();
+		require('App/Admin').default.reloadDomainList();
 	};
 
 	DomainsAdminSettings.prototype.onDomainLoadRequest = function (sResult, oData)
@@ -70,7 +70,7 @@
 
 	DomainsAdminSettings.prototype.onDomainListChangeRequest = function ()
 	{
-		require('App/Admin').reloadDomainList();
+		require('App/Admin').default.reloadDomainList();
 	};
 
 	module.exports = DomainsAdminSettings;

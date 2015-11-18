@@ -7,9 +7,11 @@ import Globals from 'Common/Globals';
 
 class Translator
 {
+	data = {};
+	notificationI18N = {};
+
 	constructor() {
 		this.data = window['rainloopI18N'] || {};
-		this.notificationI18N = {};
 		this.trigger = ko.observable(false);
 		this.i18n = _.bind(this.i18n, this);
 		this.init();
@@ -185,7 +187,7 @@ class Translator
 
 		this.notificationI18N = this.notificationI18N || {};
 
-		_.each(map, (item) => {
+		map.forEach((item) => {
 			this.notificationI18N[item[0]] = this.i18n(item[1]);
 		});
 	}

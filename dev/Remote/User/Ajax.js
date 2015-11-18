@@ -479,7 +479,7 @@
 		}
 		else if (SettingsStore.useThreads())
 		{
-			require('App/User').reloadFlagsCurrentMessageListAndMessageFromCache();
+			require('App/User').default.default.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	};
 

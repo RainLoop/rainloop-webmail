@@ -1,16 +1,16 @@
 
-import {_} from 'common';
+import {$} from 'common';
 import ko from 'ko';
 import Utils from 'Common/Utils';
 
 class AbstractComponent
 {
-	constructor() {
-		this.disposable = [];
-	}
+	disposable = [];
+
+	constructor() {}
 
 	dispose() {
-		_.each(this.disposable, (funcToDispose) => {
+		this.disposable.forEach((funcToDispose) => {
 			if (funcToDispose && funcToDispose.dispose)
 			{
 				funcToDispose.dispose();
@@ -21,10 +21,10 @@ class AbstractComponent
 
 /**
  * @param {*} ClassObject
- * @param {string} templateID
+ * @param {string} templateID = ''
  * @return {Object}
  */
-const componentExportHelper = (ClassObject, templateID) => {
+const componentExportHelper = (ClassObject, templateID = '') => {
 	return {
 		template: templateID ? {element: templateID} : '<b></b>',
 		viewModel: {

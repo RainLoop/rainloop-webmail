@@ -84,7 +84,7 @@
 				if (oFolder && oEvent)
 				{
 					bCollapsed = oFolder.collapsed();
-					require('App/User').setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 
 					oFolder.collapsed(!bCollapsed);
 					oEvent.preventDefault();
@@ -167,7 +167,7 @@
 				if (oFolder)
 				{
 					bCollapsed = oFolder.collapsed();
-					require('App/User').setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+					require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 					oFolder.collapsed(!bCollapsed);
 				}
 			}
@@ -196,7 +196,7 @@
 		{
 			this.iDropOverTimer = window.setTimeout(function () {
 				oFolder.collapsed(false);
-				require('App/User').setExpandedFolder(oFolder.fullNameHash, true);
+				require('App/User').default.setExpandedFolder(oFolder.fullNameHash, true);
 				Utils.windowResize();
 			}, 500);
 		}
@@ -256,7 +256,7 @@
 
 			if (Utils.isNormal(sFromFolderFullNameRaw) && '' !== sFromFolderFullNameRaw && Utils.isArray(aUids))
 			{
-				require('App/User').moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
+				require('App/User').default.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
 			}
 		}
 	};

@@ -8,9 +8,8 @@ const BASE_64_CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 const Base64 = {
 
 	// public method for urlsafe encoding
-	urlsafe_encode: (input) => {
-		return Base64.encode(input).replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, '.');
-	},
+	urlsafe_encode: (input) => Base64.encode(input)
+		.replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, '.'),
 
 	// public method for encoding
 	encode: (input) => {

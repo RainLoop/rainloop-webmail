@@ -215,11 +215,11 @@
 								}
 								else if (oData.Admin)
 								{
-									require('App/User').redirectToAdminPanel();
+									require('App/User').default.redirectToAdminPanel();
 								}
 								else
 								{
-									require('App/User').loginAndLogoutReload(false);
+									require('App/User').default.loginAndLogoutReload(false);
 								}
 							}
 							else if (oData.ErrorCode)
@@ -399,7 +399,7 @@
 				if (0 === iErrorCode)
 				{
 					self.submitRequest(true);
-					require('App/User').loginAndLogoutReload(false);
+					require('App/User').default.loginAndLogoutReload(false);
 				}
 				else
 				{

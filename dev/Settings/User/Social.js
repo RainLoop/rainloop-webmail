@@ -38,40 +38,40 @@
 		this.connectGoogle = Utils.createCommand(this, function () {
 			if (!this.googleLoggined())
 			{
-				require('App/User').googleConnect();
+				require('App/User').default.googleConnect();
 			}
 		}, function () {
 			return !this.googleLoggined() && !this.googleActions();
 		});
 
 		this.disconnectGoogle = Utils.createCommand(this, function () {
-			require('App/User').googleDisconnect();
+			require('App/User').default.googleDisconnect();
 		});
 
 		this.connectFacebook = Utils.createCommand(this, function () {
 			if (!this.facebookLoggined())
 			{
-				require('App/User').facebookConnect();
+				require('App/User').default.facebookConnect();
 			}
 		}, function () {
 			return !this.facebookLoggined() && !this.facebookActions();
 		});
 
 		this.disconnectFacebook = Utils.createCommand(this, function () {
-			require('App/User').facebookDisconnect();
+			require('App/User').default.facebookDisconnect();
 		});
 
 		this.connectTwitter = Utils.createCommand(this, function () {
 			if (!this.twitterLoggined())
 			{
-				require('App/User').twitterConnect();
+				require('App/User').default.twitterConnect();
 			}
 		}, function () {
 			return !this.twitterLoggined() && !this.twitterActions();
 		});
 
 		this.disconnectTwitter = Utils.createCommand(this, function () {
-			require('App/User').twitterDisconnect();
+			require('App/User').default.twitterDisconnect();
 		});
 	}
 

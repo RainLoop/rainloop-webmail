@@ -50,7 +50,7 @@
 
 	PackagesAdminSettings.prototype.onBuild = function ()
 	{
-		require('App/Admin').reloadPackagesList();
+		require('App/Admin').default.reloadPackagesList();
 	};
 
 	PackagesAdminSettings.prototype.requestHelper = function (oPackage, bInstall)
@@ -85,7 +85,7 @@
 			}
 			else
 			{
-				require('App/Admin').reloadPackagesList();
+				require('App/Admin').default.reloadPackagesList();
 			}
 		};
 	};

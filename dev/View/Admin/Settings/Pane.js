@@ -49,7 +49,7 @@
 	PaneSettingsAdminView.prototype.logoutClick = function ()
 	{
 		Remote.adminLogout(function () {
-			require('App/Admin').loginAndLogoutReload(true, true);
+			require('App/Admin').default.loginAndLogoutReload(true, true);
 		});
 	};
 

@@ -703,7 +703,7 @@
 				Cache.initMessageFlagsFromCache(oMessage);
 				if (oMessage.unseen() || oMessage.hasUnseenSubMessage())
 				{
-					require('App/User').messageListAction(oMessage.folderFullNameRaw,
+					require('App/User').default.messageListAction(oMessage.folderFullNameRaw,
 						oMessage.uid, Enums.MessageSetAction.SetSeen, [oMessage]);
 				}
 
@@ -928,7 +928,7 @@
 
 			if (oFolder && (bCached || bUnreadCountChange || SettingsStore.useThreads()))
 			{
-				require('App/User').folderInformation(oFolder.fullNameRaw, aList);
+				require('App/User').default.folderInformation(oFolder.fullNameRaw, aList);
 			}
 		}
 		else

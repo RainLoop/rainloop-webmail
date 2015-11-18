@@ -87,7 +87,7 @@
 				{
 					if (oData.Result)
 					{
-						require('App/Admin').loginAndLogoutReload(true);
+						require('App/Admin').default.loginAndLogoutReload(true);
 					}
 					else if (oData.ErrorCode)
 					{

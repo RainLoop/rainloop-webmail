@@ -7,15 +7,17 @@ import Events from 'Common/Events';
 
 class Audio
 {
+	player = null;
+	notificator = null;
+
+	supported = false;
+	supportedMp3 = false;
+	supportedOgg = false;
+	supportedWav = false;
+	supportedNotification = false;
+
 	constructor()
 	{
-		this.notificator = null;
-
-		this.supportedMp3 = false;
-		this.supportedOgg = false;
-		this.supportedWav = false;
-		this.supportedNotification = false;
-
 		this.player = this.createNewObject();
 
 		this.supported = !Globals.bMobileDevice && !Globals.bSafari && !!this.player && !!this.player.play;
@@ -38,13 +40,9 @@ class Audio
 
 		if (this.supported)
 		{
-			$(this.player).on('ended error', () => {
-				this.stop();
-			});
+			$(this.player).on('ended error', () => this.stop());
 
-			Events.sub('audio.api.stop', () => {
-				this.stop();
-			});
+			Events.sub('audio.api.stop', () => this.stop());
 		}
 	}
 

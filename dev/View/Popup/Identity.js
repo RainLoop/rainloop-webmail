@@ -107,7 +107,7 @@
 				{
 					if (oData.Result)
 					{
-						require('App/User').accountsAndIdentities();
+						require('App/User').default.accountsAndIdentities();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)

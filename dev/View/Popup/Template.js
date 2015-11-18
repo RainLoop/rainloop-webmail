@@ -72,7 +72,7 @@
 				{
 					if (oData.Result)
 					{
-						require('App/User').templates();
+						require('App/User').default.templates();
 						this.cancelCommand();
 					}
 					else if (oData.ErrorCode)

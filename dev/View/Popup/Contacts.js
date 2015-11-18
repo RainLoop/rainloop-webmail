@@ -371,7 +371,7 @@
 		this.syncCommand = Utils.createCommand(this, function () {
 
 			var self = this;
-			require('App/User').contactsSync(function (sResult, oData) {
+			require('App/User').default.contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
 					window.alert(Translator.getNotification(
@@ -485,12 +485,12 @@
 
 	ContactsPopupView.prototype.exportVcf = function ()
 	{
-		require('App/User').download(Links.exportContactsVcf());
+		require('App/User').default.download(Links.exportContactsVcf());
 	};
 
 	ContactsPopupView.prototype.exportCsv = function ()
 	{
-		require('App/User').download(Links.exportContactsCsv());
+		require('App/User').default.download(Links.exportContactsCsv());
 	};
 
 	ContactsPopupView.prototype.initUploader = function ()

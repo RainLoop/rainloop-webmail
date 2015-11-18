@@ -86,7 +86,7 @@
 
 	SettingsAdminScreen.prototype.onShow = function ()
 	{
-		require('App/Admin').setWindowTitle('');
+		require('App/Admin').default.setWindowTitle('');
 	};
 
 	module.exports = SettingsAdminScreen;

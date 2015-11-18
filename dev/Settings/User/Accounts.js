@@ -100,7 +100,7 @@
 					}
 					else
 					{
-						require('App/User').accountsAndIdentities();
+						require('App/User').default.accountsAndIdentities();
 					}
 
 				}, oAccountToRemove.email);
@@ -124,7 +124,7 @@
 				});
 
 				Remote.identityDelete(function () {
-					require('App/User').accountsAndIdentities();
+					require('App/User').default.accountsAndIdentities();
 				}, oIdentityToRemove.id);
 			}
 		}

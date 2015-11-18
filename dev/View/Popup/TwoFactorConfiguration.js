@@ -136,7 +136,7 @@
 
 	TwoFactorConfigurationPopupView.prototype.logout = function ()
 	{
-		require('App/User').logout();
+		require('App/User').default.logout();
 	};
 
 	TwoFactorConfigurationPopupView.prototype.testTwoFactor = function ()

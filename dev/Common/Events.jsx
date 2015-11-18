@@ -5,9 +5,9 @@ import Plugins from 'Common/Plugins';
 
 class Events
 {
-	constructor() {
-		this.subs = {};
-	}
+	subs = {};
+
+	constructor() {}
 
 	/**
 	 * @param {string|Object} name

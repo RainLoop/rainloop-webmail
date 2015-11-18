@@ -1,1 +1,0 @@
-require('bootstrap')(require('App/Admin'));

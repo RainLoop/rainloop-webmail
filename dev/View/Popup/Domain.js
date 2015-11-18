@@ -350,7 +350,7 @@
 		{
 			if (oData.Result)
 			{
-				require('App/Admin').reloadDomainList();
+				require('App/Admin').default.reloadDomainList();
 				this.closeCommand();
 			}
 			else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)

@@ -60,7 +60,7 @@
 			nFoldersInboxUnreadCount = 0;
 		}
 
-		require('App/User').setWindowTitle(('' === sEmail ? '' : '' +
+		require('App/User').default.setWindowTitle(('' === sEmail ? '' : '' +
 			(0 < nFoldersInboxUnreadCount ? '(' + nFoldersInboxUnreadCount + ') ' : ' ') +
 				sEmail + ' - ') + Translator.i18n('TITLES/MAILBOX'));
 	};
@@ -109,7 +109,7 @@
 			MessageStore.messageListSearch(sSearch);
 			MessageStore.messageListThreadUid(sThreadUid);
 
-			require('App/User').reloadMessageList();
+			require('App/User').default.reloadMessageList();
 		}
 	};
 
@@ -147,7 +147,7 @@
 		if (!Globals.bMobileDevice)
 		{
 			_.defer(function () {
-				require('App/User').initHorizontalLayoutResizer(Enums.ClientSideKeyName.MessageListSize);
+				require('App/User').default.initHorizontalLayoutResizer(Enums.ClientSideKeyName.MessageListSize);
 			});
 		}
 	};

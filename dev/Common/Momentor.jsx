@@ -4,11 +4,11 @@ import Translator from 'Common/Translator';
 
 class Momentor
 {
+	_moment = null;
+	_momentNow = 0;
+
 	constructor()
 	{
-		this._moment = null;
-		this._momentNow = 0;
-
 		this.updateMomentNow = _.debounce(() => {
 			this._moment = moment();
 		}, 500, true);

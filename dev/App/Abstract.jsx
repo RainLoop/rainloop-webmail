@@ -1,36 +1,27 @@
 
-(function () {
+import {window, _, $, key} from 'common';
+import Globals from 'Common/Globals';
+import * as  Enums from 'Common/Enums';
+import Utils from 'Common/Utils';
+import Links from 'Common/Links';
+import Events from 'Common/Events';
+import Translator from 'Common/Translator';
+import Settings from 'Storage/Settings';
 
-	'use strict';
+import {AbstractBoot} from 'Knoin/AbstractBoot';
 
-	var
-		window = require('window'),
-		_ = require('_'),
-		$ = require('$'),
-		key = require('key'),
-
-		Globals = require('Common/Globals'),
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Links = require('Common/Links'),
-		Events = require('Common/Events'),
-		Translator = require('Common/Translator'),
-
-		Settings = require('Storage/Settings'),
-
-		AbstractBoot = require('Knoin/AbstractBoot')
-	;
+class AbstractApp extends AbstractBoot
+{
+	googlePreviewSupportedCache = null;
+	isLocalAutocomplete = true;
+	iframe = null;
 
 	/**
-	 * @constructor
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
-	 * @extends AbstractBoot
 	 */
-	function AbstractApp(Remote)
+	constructor(Remote)
 	{
-		AbstractBoot.call(this);
-
-		this.isLocalAutocomplete = true;
+		super();
 
 		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
 
@@ -104,37 +95,28 @@
 		}, this));
 	}
 
-	_.extend(AbstractApp.prototype, AbstractBoot.prototype);
-
-	AbstractApp.prototype.remote = function ()
-	{
+	remote() {
 		return null;
-	};
+	}
 
-	AbstractApp.prototype.data = function ()
-	{
+	data() {
 		return null;
-	};
+	}
 
 	/**
-	 * @param {string} sLink
+	 * @param {string} link
 	 * @return {boolean}
 	 */
-	AbstractApp.prototype.download = function (sLink)
-	{
-		var
-			oE = null,
-			oLink = null
-		;
+	download(link) {
 
 		if (Globals.sUserAgent && (Globals.sUserAgent.indexOf('chrome') > -1 || Globals.sUserAgent.indexOf('chrome') > -1))
 		{
-			oLink = window.document.createElement('a');
-			oLink['href'] = sLink;
+			const oLink = window.document.createElement('a');
+			oLink['href'] = link;
 
 			if (window.document['createEvent'])
 			{
-				oE = window.document['createEvent']('MouseEvents');
+				const oE = window.document['createEvent']('MouseEvents');
 				if (oE && oE['initEvent'] && oLink['dispatchEvent'])
 				{
 					oE['initEvent']('click', true, true);
@@ -146,25 +128,22 @@
 
 		if (Globals.bMobileDevice)
 		{
-			window.open(sLink, '_self');
+			window.open(link, '_self');
 			window.focus();
 		}
 		else
 		{
-			this.iframe.attr('src', sLink);
-	//		window.document.location.href = sLink;
+			this.iframe.attr('src', link);
+	//		window.document.location.href = link;
 		}
 
 		return true;
-	};
-
-	AbstractApp.prototype.googlePreviewSupportedCache = null;
+	}
 
 	/**
 	 * @return {boolean}
 	 */
-	AbstractApp.prototype.googlePreviewSupported = function ()
-	{
+	googlePreviewSupported() {
 		if (null === this.googlePreviewSupportedCache)
 		{
 			this.googlePreviewSupportedCache = !!Settings.settingsGet('AllowGoogleSocial') &&
@@ -172,90 +151,82 @@
 		}
 
 		return this.googlePreviewSupportedCache;
-	};
+	}
 
 	/**
-	 * @param {string} sTitle
+	 * @param {string} title
 	 */
-	AbstractApp.prototype.setWindowTitle = function (sTitle)
-	{
-		sTitle = ((Utils.isNormal(sTitle) && 0 < sTitle.length) ? '' + sTitle : '');
+	setWindowTitle(title) {
+		title = ((Utils.isNormal(title) && 0 < title.length) ? '' + title : '');
 		if (Settings.settingsGet('Title'))
 		{
-			sTitle += (sTitle ? ' - ' : '') + Settings.settingsGet('Title');
+			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
 		}
 
-		window.document.title = sTitle + ' ...';
-		window.document.title = sTitle;
-	};
+		window.document.title = title + ' ...';
+		window.document.title = title;
+	}
 
-	AbstractApp.prototype.redirectToAdminPanel = function ()
-	{
-		_.delay(function () {
-			window.location.href = Links.rootAdmin();
-		}, 100);
-	};
+	redirectToAdminPanel() {
+		_.delay(() => window.location.href = Links.rootAdmin(), 100);
+	}
 
-	AbstractApp.prototype.clearClientSideToken = function ()
-	{
+	clearClientSideToken() {
 		if (window.__rlah_clear)
 		{
 			window.__rlah_clear();
 		}
-	};
+	}
 
 	/**
-	 * @param {string} sKey
+	 * @param {string} key
 	 */
-	AbstractApp.prototype.setClientSideToken = function (sKey)
-	{
+	setClientSideToken(key) {
 		if (window.__rlah_set)
 		{
-			window.__rlah_set(sKey);
+			window.__rlah_set(key);
 
-			require('Storage/Settings').settingsSet('AuthAccountHash', sKey);
+			require('Storage/Settings').settingsSet('AuthAccountHash', key);
 			require('Common/Links').populateAuthSuffix();
 		}
-	};
+	}
 
 	/**
-	 * @param {boolean=} bAdmin = false
-	 * @param {boolean=} bLogout = false
-	 * @param {boolean=} bClose = false
+	 * @param {boolean=} admin = false
+	 * @param {boolean=} logout = false
+	 * @param {boolean=} close = false
 	 */
-	AbstractApp.prototype.loginAndLogoutReload = function (bAdmin, bLogout, bClose)
-	{
-		var
+	loginAndLogoutReload(admin = false, logout = false, close = false) {
+
+		const
 			kn = require('Knoin/Knoin'),
-			sCustomLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink')),
-			bInIframe = !!Settings.settingsGet('InIframe')
+			inIframe = !!Settings.settingsGet('InIframe')
 		;
 
-		bLogout = Utils.isUnd(bLogout) ? false : !!bLogout;
-		bClose = Utils.isUnd(bClose) ? false : !!bClose;
+		let customLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink'))
 
-		if (bLogout)
+		if (logout)
 		{
 			this.clearClientSideToken();
 		}
 
-		if (bLogout && bClose && window.close)
+		if (logout && close && window.close)
 		{
 			window.close();
 		}
 
-		sCustomLogoutLink = sCustomLogoutLink || (bAdmin ? Links.rootAdmin() : Links.rootUser());
+		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin() : Links.rootUser());
 
-		if (bLogout && window.location.href !== sCustomLogoutLink)
+		if (logout && window.location.href !== customLogoutLink)
 		{
-			_.delay(function () {
-				if (bInIframe && window.parent)
+			_.delay(() => {
+				if (inIframe && window.parent)
 				{
-					window.parent.location.href = sCustomLogoutLink;
+					window.parent.location.href = customLogoutLink;
 				}
 				else
 				{
-					window.location.href = sCustomLogoutLink;
+					window.location.href = customLogoutLink;
 				}
 			}, 100);
 		}
@@ -265,8 +236,8 @@
 			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
-			_.delay(function () {
-				if (bInIframe && window.parent)
+			_.delay(() => {
+				if (inIframe && window.parent)
 				{
 					window.parent.location.reload();
 				}
@@ -276,20 +247,19 @@
 				}
 			}, 100);
 		}
-	};
+	}
 
-	AbstractApp.prototype.historyBack = function ()
-	{
+	historyBack() {
 		window.history.back();
-	};
+	}
 
-	AbstractApp.prototype.bootstart = function ()
-	{
-		Utils.log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
+	bootstart() {
+
+		// Utils.log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
 
 		Events.pub('rl.bootstart');
 
-		var
+		const
 			ssm = require('ssm'),
 			ko = require('ko')
 		;
@@ -323,11 +293,11 @@
 		ssm.addState({
 			'id': 'mobile',
 			'maxWidth': 767,
-			'onEnter': function() {
+			'onEnter': () => {
 				Globals.$html.addClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-enter');
 			},
-			'onLeave': function() {
+			'onLeave': () => {
 				Globals.$html.removeClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-leave');
 			}
@@ -349,10 +319,10 @@
 			'id': 'desktop',
 			'minWidth': 1000,
 			'maxWidth': 1400,
-			'onEnter': function() {
+			'onEnter': () => {
 				Globals.$html.addClass('ssm-state-desktop');
 			},
-			'onLeave': function() {
+			'onLeave': () => {
 				Globals.$html.removeClass('ssm-state-desktop');
 			}
 		});
@@ -360,27 +330,27 @@
 		ssm.addState({
 			'id': 'desktop-large',
 			'minWidth': 1400,
-			'onEnter': function() {
+			'onEnter': () => {
 				Globals.$html.addClass('ssm-state-desktop-large');
 			},
-			'onLeave': function() {
+			'onLeave': () => {
 				Globals.$html.removeClass('ssm-state-desktop-large');
 			}
 		});
 
-		Events.sub('ssm.mobile-enter', function () {
+		Events.sub('ssm.mobile-enter', () => {
 			Globals.leftPanelDisabled(true);
 		});
 
-		Events.sub('ssm.mobile-leave', function () {
+		Events.sub('ssm.mobile-leave', () => {
 			Globals.leftPanelDisabled(false);
 		});
 
-		Globals.leftPanelDisabled.subscribe(function (bValue) {
+		Globals.leftPanelDisabled.subscribe((bValue) => {
 			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
 		});
 
-		Globals.leftPanelType.subscribe(function (sValue) {
+		Globals.leftPanelType.subscribe((sValue) => {
 			Globals.$html.toggleClass('rl-left-panel-none', 'none' === sValue);
 			Globals.$html.toggleClass('rl-left-panel-short', 'short' === sValue);
 		});
@@ -391,7 +361,6 @@
 		require('Stores/Theme').populate();
 		require('Stores/Social').populate();
 	};
+}
 
-	module.exports = AbstractApp;
-
-}());
+export {AbstractApp, AbstractApp as default};

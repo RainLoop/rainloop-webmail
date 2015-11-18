@@ -83,7 +83,7 @@
 	{
 		if (this.access() && !this.community)
 		{
-			require('App/Admin').reloadCoreData();
+			require('App/Admin').default.reloadCoreData();
 		}
 	};
 
@@ -91,7 +91,7 @@
 	{
 		if (!this.coreUpdating() && !this.community)
 		{
-			require('App/Admin').updateCoreData();
+			require('App/Admin').default.updateCoreData();
 		}
 	};
 

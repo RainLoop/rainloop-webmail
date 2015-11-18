@@ -1,123 +1,75 @@
 
-(function () {
+import {window, _, $} from 'common';
+import ko from 'ko';
+import progressJs from 'progressJs';
+import Tinycon from 'Tinycon';
 
-	'use strict';
+import * as Enums from 'Common/Enums';
+import * as Consts from 'Common/Consts';
+import Globals from 'Common/Globals';
+import Plugins from 'Common/Plugins';
+import Utils from 'Common/Utils';
+import Links from 'Common/Links';
+import Events from 'Common/Events';
+import Translator from 'Common/Translator';
+import Momentor from 'Common/Momentor';
+import Cache from 'Common/Cache';
 
-	var
-		window = require('window'),
-		_ = require('_'),
-		$ = require('$'),
-		progressJs = require('progressJs'),
-		Tinycon = require('Tinycon'),
 
-		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
-		Consts = require('Common/Consts'),
-		Plugins = require('Common/Plugins'),
-		Utils = require('Common/Utils'),
-		Links = require('Common/Links'),
-		Events = require('Common/Events'),
+import SocialStore from 'Stores/Social';
+import SettingsStore from 'Stores/User/Settings';
+import AccountStore from 'Stores/User/Account';
+import IdentityStore from 'Stores/User/Identity';
+import TemplateStore from 'Stores/User/Template';
+import FolderStore from 'Stores/User/Folder';
+import PgpStore from 'Stores/User/Pgp';
+import MessageStore from 'Stores/User/Message';
+import ContactStore from 'Stores/User/Contact';
 
-		Translator = require('Common/Translator'),
-		Momentor = require('Common/Momentor'),
+import Local from 'Storage/Client.jsx';
+import Settings from 'Storage/Settings';
 
-		kn = require('Knoin/Knoin'),
+import Remote from 'Remote/User/Ajax';
+import Promises from 'Promises/User/Ajax';
 
-		Cache = require('Common/Cache'),
+import EmailModel from 'Model/Email';
+import AccountModel from 'Model/Account';
+import IdentityModel from 'Model/Identity';
+import TemplateModel from 'Model/Template';
+import OpenPgpKeyModel from 'Model/OpenPgpKey';
 
-		SocialStore = require('Stores/Social'),
-		SettingsStore = require('Stores/User/Settings'),
-		AccountStore = require('Stores/User/Account'),
-		IdentityStore = require('Stores/User/Identity'),
-		TemplateStore = require('Stores/User/Template'),
-		FolderStore = require('Stores/User/Folder'),
-		PgpStore = require('Stores/User/Pgp'),
-		MessageStore = require('Stores/User/Message'),
-		ContactStore = require('Stores/User/Contact'),
+import kn from 'Knoin/Knoin';
 
-		Local = require('Storage/Client.jsx'),
-		Settings = require('Storage/Settings'),
+import {AbstractApp} from 'App/Abstract';
 
-		Remote = require('Remote/User/Ajax'),
-		Promises = require('Promises/User/Ajax'),
+class AppUser extends AbstractApp
+{
+	oMoveCache = {};
 
-		EmailModel = require('Model/Email'),
-		AccountModel = require('Model/Account'),
-		IdentityModel = require('Model/Identity'),
-		TemplateModel = require('Model/Template'),
-		OpenPgpKeyModel = require('Model/OpenPgpKey'),
-
-		AbstractApp = require('App/Abstract')
-	;
-
-	/**
-	 * @constructor
-	 * @extends AbstractApp
-	 */
-	function AppUser()
+	constructor()
 	{
-		AbstractApp.call(this, Remote);
-
-		this.oMoveCache = {};
+		super(Remote);
 
 		this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 		this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
 
 		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
-		window.setInterval(function () {
-			Events.pub('interval.30s');
-		}, 30000);
+		window.setInterval(() => Events.pub('interval.30s'), 30000);
+		window.setInterval(() => Events.pub('interval.1m'), 60000);
+		window.setInterval(() => Events.pub('interval.2m'), 60000 * 2);
+		window.setInterval(() => Events.pub('interval.3m'), 60000 * 3);
+		window.setInterval(() => Events.pub('interval.5m'), 60000 * 5);
+		window.setInterval(() => Events.pub('interval.10m'), 60000 * 10);
+		window.setInterval(() => Events.pub('interval.15m'), 60000 * 15);
+		window.setInterval(() => Events.pub('interval.20m'), 60000 * 15);
 
-		window.setInterval(function () {
-			Events.pub('interval.1m');
-		}, 60000);
+		window.setTimeout(() => window.setInterval(() => Events.pub('interval.2m-after5m'), 60000 * 2), 60000 * 5);
+		window.setTimeout(() =>	window.setInterval(() => Events.pub('interval.5m-after5m'), 60000 * 5), 60000 * 5);
+		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), 60000 * 10), 60000 * 5);
 
-		window.setInterval(function () {
-			Events.pub('interval.2m');
-		}, 60000 * 2);
-
-		window.setInterval(function () {
-			Events.pub('interval.3m');
-		}, 60000 * 3);
-
-		window.setInterval(function () {
-			Events.pub('interval.5m');
-		}, 60000 * 5);
-
-		window.setInterval(function () {
-			Events.pub('interval.10m');
-		}, 60000 * 10);
-
-		window.setInterval(function () {
-			Events.pub('interval.15m');
-		}, 60000 * 15);
-
-		window.setInterval(function () {
-			Events.pub('interval.20m');
-		}, 60000 * 15);
-
-		window.setTimeout(function () {
-			window.setInterval(function () {
-				Events.pub('interval.2m-after5m');
-			}, 60000 * 2);
-		}, 60000 * 5);
-
-		window.setTimeout(function () {
-			window.setInterval(function () {
-				Events.pub('interval.5m-after5m');
-			}, 60000 * 5);
-		}, 60000 * 5);
-
-		window.setTimeout(function () {
-			window.setInterval(function () {
-				Events.pub('interval.10m-after5m');
-			}, 60000 * 10);
-		}, 60000 * 5);
-
-		$.wakeUp(function () {
-
-			Remote.jsVersion(function (sResult, oData) {
+		$.wakeUp(() => {
+			Remote.jsVersion((sResult, oData) => {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
 					if (window.parent && !!Settings.settingsGet('InIframe'))
@@ -130,12 +82,11 @@
 					}
 				}
 			}, Settings.settingsGet('Version'));
-
 		}, {}, 60 * 60 * 1000);
 
 		if (Settings.settingsGet('UserBackgroundHash'))
 		{
-			_.delay(function () {
+			_.delay(() => {
 				$('#rl-bg').attr('style', 'background-image: none !important;')
 						.backstretch(Links.userBackground(Settings.settingsGet('UserBackgroundHash')), {
 					'fade': Globals.bAnimationSupported ? 1000 : 0, 'centeredX': true, 'centeredY': true
@@ -146,38 +97,33 @@
 		this.socialUsers = _.bind(this.socialUsers, this);
 	}
 
-	_.extend(AppUser.prototype, AbstractApp.prototype);
-
-	AppUser.prototype.remote = function ()
-	{
+	remote() {
 		return Remote;
-	};
+	}
 
-	AppUser.prototype.reloadFlagsCurrentMessageListAndMessageFromCache = function ()
-	{
-		_.each(MessageStore.messageList(), function (oMessage) {
-			Cache.initMessageFlagsFromCache(oMessage);
+	reloadFlagsCurrentMessageListAndMessageFromCache() {
+		_.each(MessageStore.messageList(), (message) => {
+			Cache.initMessageFlagsFromCache(message);
 		});
-
 		Cache.initMessageFlagsFromCache(MessageStore.message());
-	};
+	}
 
 	/**
 	 * @param {boolean=} bDropPagePosition = false
 	 * @param {boolean=} bDropCurrenFolderCache = false
 	 */
-	AppUser.prototype.reloadMessageList = function (bDropPagePosition, bDropCurrenFolderCache)
-	{
-		var
+	reloadMessageList(bDropPagePosition = false, bDropCurrenFolderCache = false) {
+
+		let
 			iOffset = (MessageStore.messageListPage() - 1) * SettingsStore.messagesPerPage()
 		;
 
-		if (Utils.isUnd(bDropCurrenFolderCache) ? false : !!bDropCurrenFolderCache)
+		if (bDropCurrenFolderCache)
 		{
 			Cache.setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
 		}
 
-		if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
+		if (bDropPagePosition)
 		{
 			MessageStore.messageListPage(1);
 			MessageStore.messageListPageBeforeThread(1);
@@ -192,7 +138,7 @@
 		}
 
 		MessageStore.messageListLoading(true);
-		Remote.messageList(function (sResult, oData, bCached) {
+		Remote.messageList((sResult, oData, bCached) => {
 
 			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 			{
@@ -217,20 +163,19 @@
 
 		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(),
 			MessageStore.messageListSearch(), MessageStore.messageListThreadUid());
-	};
+	}
 
-	AppUser.prototype.recacheInboxMessageList = function ()
-	{
+	recacheInboxMessageList() {
 		Remote.messageList(Utils.emptyFunction, Cache.getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
-	};
+	}
 
 	/**
 	 * @param {Function} fResultFunc
 	 * @return {boolean}
 	 */
-	AppUser.prototype.contactsSync = function (fResultFunc)
-	{
-		var oContacts = ContactStore.contacts;
+	contactsSync(fResultFunc) {
+
+		const oContacts = ContactStore.contacts;
 		if (oContacts.importing() || oContacts.syncing() || !ContactStore.enableContactsSync() || !ContactStore.allowContactsSync())
 		{
 			return false;
@@ -238,7 +183,7 @@
 
 		oContacts.syncing(true);
 
-		Remote.contactsSync(function (sResult, oData) {
+		Remote.contactsSync((sResult, oData) => {
 
 			oContacts.syncing(false);
 
@@ -249,17 +194,16 @@
 		});
 
 		return true;
-	};
+	}
 
-	AppUser.prototype.messagesMoveTrigger = function ()
-	{
-		var
-			self = this,
+	messagesMoveTrigger() {
+
+		const
 			sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder()
 		;
 
-		_.each(this.oMoveCache, function (oItem) {
+		_.each(this.oMoveCache, (oItem) => {
 
 			var
 				bSpam = sSpamFolder === oItem['To'],
@@ -267,15 +211,15 @@
 				bHam = !bSpam && sSpamFolder === oItem['From'] && Cache.getFolderInboxName() === oItem['To']
 			;
 
-			Remote.messagesMove(self.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			Remote.messagesMove(this.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
 		});
 
 		this.oMoveCache = {};
-	};
+	}
 
-	AppUser.prototype.messagesMoveHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove)
-	{
+	messagesMoveHelper(sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove) {
+
 		var sH = '$$' + sFromFolderFullNameRaw + '$$' + sToFolderFullNameRaw + '$$';
 		if (!this.oMoveCache[sH])
 		{
@@ -288,29 +232,27 @@
 
 		this.oMoveCache[sH]['Uid'] = _.union(this.oMoveCache[sH]['Uid'], aUidForMove);
 		this.messagesMoveTrigger();
-	};
+	}
 
-	AppUser.prototype.messagesCopyHelper = function (sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy)
-	{
+	messagesCopyHelper(sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForCopy) {
 		Remote.messagesCopy(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			sToFolderFullNameRaw,
 			aUidForCopy
 		);
-	};
+	}
 
-	AppUser.prototype.messagesDeleteHelper = function (sFromFolderFullNameRaw, aUidForRemove)
-	{
+	messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove) {
 		Remote.messagesDelete(
 			this.moveOrDeleteResponseHelper,
 			sFromFolderFullNameRaw,
 			aUidForRemove
 		);
-	};
+	}
 
-	AppUser.prototype.moveOrDeleteResponseHelper = function (sResult, oData)
-	{
+	moveOrDeleteResponseHelper(sResult, oData) {
+
 		if (Enums.StorageResultType.Success === sResult && FolderStore.currentFolder())
 		{
 			if (oData && Utils.isArray(oData.Result) && 2 === oData.Result.length)
@@ -331,17 +273,16 @@
 			this.reloadMessageList(0 === MessageStore.messageList().length);
 			this.quotaDebounce();
 		}
-	};
+	}
 
 	/**
 	 * @param {string} sFromFolderFullNameRaw
 	 * @param {Array} aUidForRemove
 	 */
-	AppUser.prototype.deleteMessagesFromFolderWithoutCheck = function (sFromFolderFullNameRaw, aUidForRemove)
-	{
+	deleteMessagesFromFolderWithoutCheck(sFromFolderFullNameRaw, aUidForRemove) {
 		this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 		MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
-	};
+	}
 
 	/**
 	 * @param {number} iDeleteType
@@ -349,10 +290,9 @@
 	 * @param {Array} aUidForRemove
 	 * @param {boolean=} bUseFolder = true
 	 */
-	AppUser.prototype.deleteMessagesFromFolder = function (iDeleteType, sFromFolderFullNameRaw, aUidForRemove, bUseFolder)
-	{
-		var
-			self = this,
+	deleteMessagesFromFolder(iDeleteType, sFromFolderFullNameRaw, aUidForRemove, bUseFolder) {
+
+		let
 			oMoveFolder = null,
 			nSetSystemFoldersNotification = null
 		;
@@ -394,11 +334,9 @@
 		else if (!bUseFolder || (Enums.FolderType.Trash === iDeleteType &&
 			(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder())))
 		{
-			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
-
-				self.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
+			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
+				this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 				MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
-
 			}]);
 		}
 		else if (oMoveFolder)
@@ -406,7 +344,7 @@
 			this.messagesMoveHelper(sFromFolderFullNameRaw, oMoveFolder.fullNameRaw, aUidForRemove);
 			MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove, oMoveFolder.fullNameRaw);
 		}
-	};
+	}
 
 	/**
 	 * @param {string} sFromFolderFullNameRaw
@@ -414,11 +352,11 @@
 	 * @param {string} sToFolderFullNameRaw
 	 * @param {boolean=} bCopy = false
 	 */
-	AppUser.prototype.moveMessagesToFolder = function (sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy)
-	{
+	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
+
 		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Utils.isArray(aUidForMove) && 0 < aUidForMove.length)
 		{
-			var
+			const
 				oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = Cache.getFolderFromCacheList(sToFolderFullNameRaw)
 			;
@@ -440,44 +378,42 @@
 		}
 
 		return false;
-	};
+	}
 
 	/**
-	 * @param {Function=} fCallback
+	 * @param {Function=} callback = null
 	 */
-	AppUser.prototype.foldersReload = function (fCallback)
-	{
-		Promises.foldersReload(FolderStore.foldersLoading).then(function (bValue) {
-			if (fCallback)
+	foldersReload(callback = null) {
+
+		Promises.foldersReload(FolderStore.foldersLoading).then((value) => {
+			if (callback)
 			{
-				fCallback(!!bValue);
+				callback(!!value);
 			}
-		}).fail(function () {
-			if (fCallback)
+		}).fail(() => {
+			if (callback)
 			{
-				fCallback(false);
+				callback(false);
 			}
 		});
-	};
+	}
 
-	AppUser.prototype.foldersPromisesActionHelper = function (oPromise, iErrorDefCode)
-	{
+	foldersPromisesActionHelper(promise, errorDefCode) {
+
 		Promises
 			.abort('Folders')
 			.fastResolve(true)
-			.then(function () {
-				return oPromise;
-			})
-			.fail(function (iErrorCode) {
-				FolderStore.folderList.error(Translator.getNotification(iErrorCode, '', iErrorDefCode));
-			}).fin(function () {
+			.then(() => promise)
+			.fail((errorCode) => {
+				FolderStore.folderList.error(Translator.getNotification(errorCode, '', errorDefCode));
+			}).fin(() => {
 				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
 			}).done()
 		;
-	};
+	}
 
-	AppUser.prototype.reloadOpenPgpKeys = function ()
-	{
+	reloadOpenPgpKeys() {
+
 		if (PgpStore.capaOpenPGP())
 		{
 			var
@@ -487,7 +423,7 @@
 				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
 			;
 
-			_.each(oOpenpgpKeys, function (oItem, iIndex) {
+			_.each(oOpenpgpKeys, (oItem, iIndex) => {
 				if (oItem && oItem.primaryKey)
 				{
 					var
@@ -518,14 +454,13 @@
 			Utils.delegateRunOnDestroy(PgpStore.openpgpkeys());
 			PgpStore.openpgpkeys(aKeys);
 		}
-	};
+	}
 
-	AppUser.prototype.accountsCounts = function ()
-	{
+	accountsCounts() {
 		return false;
 //		AccountStore.accounts.loading(true);
 //
-//		Remote.accountsCounts(function (sResult, oData) {
+//		Remote.accountsCounts((sResult, oData) => {
 //
 //			AccountStore.accounts.loading(false);
 //
@@ -536,9 +471,9 @@
 //					aAcounts = AccountStore.accounts()
 //				;
 //
-//				_.each(oData.Result['Counts'], function (oItem) {
+//				_.each(oData.Result['Counts'], (oItem) => {
 //
-//					var oAccount = _.find(aAcounts, function (oAccount) {
+//					var oAccount = _.find(aAcounts, (oAccount) => {
 //						return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
 //					});
 //
@@ -551,14 +486,12 @@
 //		});
 	};
 
-	AppUser.prototype.accountsAndIdentities = function (bBoot)
-	{
-		var self = this;
+	accountsAndIdentities(bBoot) {
 
 		AccountStore.accounts.loading(true);
 		IdentityStore.identities.loading(true);
 
-		Remote.accountsAndIdentities(function (sResult, oData) {
+		Remote.accountsAndIdentities((sResult, oData) => {
 
 			AccountStore.accounts.loading(false);
 			IdentityStore.identities.loading(false);
@@ -575,35 +508,29 @@
 
 				if (Utils.isArray(oData.Result['Accounts']))
 				{
-					_.each(AccountStore.accounts(), function (oAccount) {
+					_.each(AccountStore.accounts(), (oAccount) => {
 						aCounts[oAccount.email] = oAccount.count();
 					});
 
 					Utils.delegateRunOnDestroy(AccountStore.accounts());
 
-					AccountStore.accounts(_.map(oData.Result['Accounts'], function (sValue) {
-						return new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0);
-					}));
+					AccountStore.accounts(_.map(oData.Result['Accounts'], 
+						(sValue) => new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0)));
 				}
 
 				if (Utils.isUnd(bBoot) ? false : !!bBoot)
 				{
-					_.delay(function () {
-						self.accountsCounts();
-					}, 1000 * 5);
-
-					Events.sub('interval.10m-after5m', function () {
-						self.accountsCounts();
-					});
+					_.delay(() => this.accountsCounts(), 1000 * 5);
+					Events.sub('interval.10m-after5m', () => this.accountsCounts());
 				}
 
 				if (Utils.isArray(oData.Result['Identities']))
 				{
 					Utils.delegateRunOnDestroy(IdentityStore.identities());
 
-					IdentityStore.identities(_.map(oData.Result['Identities'], function (oIdentityData) {
+					IdentityStore.identities(_.map(oData.Result['Identities'], (oIdentityData) => {
 
-						var
+						const
 							sId = Utils.pString(oIdentityData['Id']),
 							sEmail = Utils.pString(oIdentityData['Email']),
 							oIdentity = new IdentityModel(sId, sEmail)
@@ -620,171 +547,159 @@
 				}
 			}
 		});
-	};
+	}
 
-	AppUser.prototype.templates = function ()
-	{
+	templates() {
+
 		TemplateStore.templates.loading(true);
 
-		Remote.templates(function (sResult, oData) {
+		Remote.templates((result, data) => {
 
 			TemplateStore.templates.loading(false);
 
-			if (Enums.StorageResultType.Success === sResult && oData.Result &&
-				Utils.isArray(oData.Result['Templates']))
+			if (Enums.StorageResultType.Success === result && data.Result &&
+				Utils.isArray(data.Result['Templates']))
 			{
 				Utils.delegateRunOnDestroy(TemplateStore.templates());
 
-				TemplateStore.templates(_.compact(_.map(oData.Result['Templates'], function (oTemplateData) {
-					var oTemplate = new TemplateModel();
-					return oTemplate.parse(oTemplateData) ? oTemplate : null;
+				TemplateStore.templates(_.compact(_.map(data.Result['Templates'], (templateData) => {
+					const template = new TemplateModel();
+					return template.parse(templateData) ? template : null;
 				})));
 			}
 		});
-	};
+	}
 
-	AppUser.prototype.quota = function ()
-	{
-		Remote.quota(function (sResult, oData) {
-			if (Enums.StorageResultType.Success === sResult &&	oData && oData.Result &&
-				Utils.isArray(oData.Result) && 1 < oData.Result.length &&
-				Utils.isPosNumeric(oData.Result[0], true) && Utils.isPosNumeric(oData.Result[1], true))
+	quota() {
+		Remote.quota((result, data) => {
+			if (Enums.StorageResultType.Success === result &&	data && data.Result &&
+				Utils.isArray(data.Result) && 1 < data.Result.length &&
+				Utils.isPosNumeric(data.Result[0], true) && Utils.isPosNumeric(data.Result[1], true))
 			{
 				require('Stores/User/Quota').populateData(
-					Utils.pInt(oData.Result[1]), Utils.pInt(oData.Result[0]));
+					Utils.pInt(data.Result[1]), Utils.pInt(data.Result[0]));
 			}
 		});
-	};
+	}
 
 	/**
-	 * @param {string} sFolder
-	 * @param {Array=} aList = []
+	 * @param {string} folder
+	 * @param {Array=} list = []
 	 */
-	AppUser.prototype.folderInformation = function (sFolder, aList)
-	{
-		if ('' !== Utils.trim(sFolder))
+	folderInformation(folder, list) {
+		if ('' !== Utils.trim(folder))
 		{
-			var self = this;
-			Remote.folderInformation(function (sResult, oData) {
-				if (Enums.StorageResultType.Success === sResult)
+			Remote.folderInformation((result, data) => {
+				if (Enums.StorageResultType.Success === result)
 				{
-					if (oData && oData.Result && oData.Result.Hash && oData.Result.Folder)
+					if (data && data.Result && data.Result.Hash && data.Result.Folder)
 					{
-						var
-							iUtc = Momentor.momentNowUnix(),
-							sHash = Cache.getFolderHash(oData.Result.Folder),
-							oFolder = Cache.getFolderFromCacheList(oData.Result.Folder),
-							bCheck = false,
-							sUid = '',
-							aList = [],
-							oFlags = null,
-							bUnreadCountChange = false
+						let
+							uid = '',
+							list = [],
+							check = false,
+							unreadCountChange = false
 						;
 
-						if (oFolder)
+						const folder = Cache.getFolderFromCacheList(data.Result.Folder);
+						if (folder)
 						{
-							oFolder.interval = iUtc;
+							folder.interval = Momentor.momentNowUnix();
 
-							if (oData.Result.Hash)
+							if (data.Result.Hash)
 							{
-								Cache.setFolderHash(oData.Result.Folder, oData.Result.Hash);
+								Cache.setFolderHash(data.Result.Folder, data.Result.Hash);
 							}
 
-							if (Utils.isNormal(oData.Result.MessageCount))
+							if (Utils.isNormal(data.Result.MessageCount))
 							{
-								oFolder.messageCountAll(oData.Result.MessageCount);
+								folder.messageCountAll(data.Result.MessageCount);
 							}
 
-							if (Utils.isNormal(oData.Result.MessageUnseenCount))
+							if (Utils.isNormal(data.Result.MessageUnseenCount))
 							{
-								if (Utils.pInt(oFolder.messageCountUnread()) !== Utils.pInt(oData.Result.MessageUnseenCount))
+								if (Utils.pInt(folder.messageCountUnread()) !== Utils.pInt(data.Result.MessageUnseenCount))
 								{
-									bUnreadCountChange = true;
+									unreadCountChange = true;
 								}
 
-								oFolder.messageCountUnread(oData.Result.MessageUnseenCount);
+								folder.messageCountUnread(data.Result.MessageUnseenCount);
 							}
 
-							if (bUnreadCountChange)
+							if (unreadCountChange)
 							{
-								Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+								Cache.clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 							}
 
-							if (oData.Result.Flags)
+							if (data.Result.Flags)
 							{
-								for (sUid in oData.Result.Flags)
+								for (uid in data.Result.Flags)
 								{
-									if (oData.Result.Flags.hasOwnProperty(sUid))
+									if (data.Result.Flags.hasOwnProperty(uid))
 									{
-										bCheck = true;
-										oFlags = oData.Result.Flags[sUid];
-										Cache.storeMessageFlagsToCacheByFolderAndUid(oFolder.fullNameRaw, sUid.toString(), [
-											!oFlags['IsSeen'], !!oFlags['IsFlagged'], !!oFlags['IsAnswered'], !!oFlags['IsForwarded'], !!oFlags['IsReadReceipt']
+										check = true;
+										const flags = data.Result.Flags[uid];
+										Cache.storeMessageFlagsToCacheByFolderAndUid(folder.fullNameRaw, uid.toString(), [
+											!flags['IsSeen'], !!flags['IsFlagged'], !!flags['IsAnswered'], !!flags['IsForwarded'], !!flags['IsReadReceipt']
 										]);
 									}
 								}
 
-								if (bCheck)
+								if (check)
 								{
-									self.reloadFlagsCurrentMessageListAndMessageFromCache();
+									this.reloadFlagsCurrentMessageListAndMessageFromCache();
 								}
 							}
 
-							MessageStore.initUidNextAndNewMessages(oFolder.fullNameRaw, oData.Result.UidNext, oData.Result.NewMessages);
+							MessageStore.initUidNextAndNewMessages(folder.fullNameRaw, data.Result.UidNext, data.Result.NewMessages);
 
-							if (oData.Result.Hash !== sHash || '' === sHash)
+							const hash = Cache.getFolderHash(data.Result.Folder);
+							if (data.Result.Hash !== hash || '' === hash)
 							{
-								if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+								if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
-									self.reloadMessageList();
+									this.reloadMessageList();
 								}
-								else if (Cache.getFolderInboxName() === oFolder.fullNameRaw)
+								else if (Cache.getFolderInboxName() === folder.fullNameRaw)
 								{
-									self.recacheInboxMessageList();
+									this.recacheInboxMessageList();
 								}
 							}
-							else if (bUnreadCountChange)
+							else if (unreadCountChange)
 							{
-								if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+								if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
-									aList = MessageStore.messageList();
-									if (Utils.isNonEmptyArray(aList))
+									list = MessageStore.messageList();
+									if (Utils.isNonEmptyArray(list))
 									{
-										self.folderInformation(oFolder.fullNameRaw, aList);
+										this.folderInformation(folder.fullNameRaw, list);
 									}
 								}
 							}
 						}
 					}
 				}
-			}, sFolder, aList);
+			}, folder, list);
 		}
 	};
 
 	/**
-	 * @param {boolean=} bBoot = false
+	 * @param {boolean=} boot = false
 	 */
-	AppUser.prototype.folderInformationMultiply = function (bBoot)
-	{
-		bBoot = Utils.isUnd(bBoot) ? false : !!bBoot;
+	folderInformationMultiply(boot = false) {
 
-		var
-			self = this,
-			iUtc = Momentor.momentNowUnix(),
-			aFolders = FolderStore.getNextFolderNames()
-		;
-
-		if (Utils.isNonEmptyArray(aFolders))
+		const folders = FolderStore.getNextFolderNames();
+		if (Utils.isNonEmptyArray(folders))
 		{
-			Remote.folderInformationMultiply(function (sResult, oData) {
+			Remote.folderInformationMultiply((sResult, oData) => {
 				if (Enums.StorageResultType.Success === sResult)
 				{
 					if (oData && oData.Result && oData.Result.List && Utils.isNonEmptyArray(oData.Result.List))
 					{
-						_.each(oData.Result.List, function (oItem) {
+						const utc = Momentor.momentNowUnix();
+						_.each(oData.Result.List, (oItem) => {
 
 							var
-								aList = [],
 								sHash = Cache.getFolderHash(oItem.Folder),
 								oFolder = Cache.getFolderFromCacheList(oItem.Folder),
 								bUnreadCountChange = false
@@ -792,7 +707,7 @@
 
 							if (oFolder)
 							{
-								oFolder.interval = iUtc;
+								oFolder.interval = utc;
 
 								if (oItem.Hash)
 								{
@@ -823,32 +738,30 @@
 								{
 									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
-										self.reloadMessageList();
+										this.reloadMessageList();
 									}
 								}
 								else if (bUnreadCountChange)
 								{
 									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
-										aList = MessageStore.messageList();
+										const aList = MessageStore.messageList();
 										if (Utils.isNonEmptyArray(aList))
 										{
-											self.folderInformation(oFolder.fullNameRaw, aList);
+											this.folderInformation(oFolder.fullNameRaw, aList);
 										}
 									}
 								}
 							}
 						});
 
-						if (bBoot)
+						if (boot)
 						{
-							_.delay(function () {
-								self.folderInformationMultiply(true);
-							}, 2000);
+							_.delay(() => this.folderInformationMultiply(true), 2000);
 						}
 					}
 				}
-			}, aFolders);
+			}, folders);
 		}
 	};
 
@@ -858,8 +771,8 @@
 	 * @param {number} iSetAction
 	 * @param {Array=} aMessages = null
 	 */
-	AppUser.prototype.messageListAction = function (sFolderFullNameRaw, mUid, iSetAction, aMessages)
-	{
+	messageListAction(sFolderFullNameRaw, mUid, iSetAction, aMessages) {
+
 		var
 			oFolder = null,
 			aRootUids = [],
@@ -871,16 +784,14 @@
 			aMessages = MessageStore.messageListChecked();
 		}
 
-		aRootUids = _.uniq(_.compact(_.map(aMessages, function (oMessage) {
-			return (oMessage && oMessage.uid) ? oMessage.uid : null;
-		})));
+		aRootUids = _.uniq(_.compact(_.map(aMessages, (oMessage) => (oMessage && oMessage.uid) ? oMessage.uid : null)));
 
 		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
 			switch (iSetAction) {
 				case Enums.MessageSetAction.SetSeen:
 
-					_.each(aRootUids, function (sSubUid) {
+					_.each(aRootUids, (sSubUid) => {
 						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -896,7 +807,7 @@
 
 				case Enums.MessageSetAction.UnsetSeen:
 
-					_.each(aRootUids, function (sSubUid) {
+					_.each(aRootUids, (sSubUid) => {
 						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -912,7 +823,7 @@
 
 				case Enums.MessageSetAction.SetFlag:
 
-					_.each(aRootUids, function (sSubUid) {
+					_.each(aRootUids, (sSubUid) => {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -922,7 +833,7 @@
 
 				case Enums.MessageSetAction.UnsetFlag:
 
-					_.each(aRootUids, function (sSubUid) {
+					_.each(aRootUids, (sSubUid) => {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
@@ -934,42 +845,38 @@
 			this.reloadFlagsCurrentMessageListAndMessageFromCache();
 			MessageStore.message.viewTrigger(!MessageStore.message.viewTrigger());
 		}
-	};
+	}
 
-	AppUser.prototype.googleConnect = function ()
-	{
+	googleConnect() {
 		window.open(Links.socialGoogle(), 'Google', 'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes');
-	};
+	}
 
-	AppUser.prototype.twitterConnect = function ()
-	{
+	twitterConnect() {
 		window.open(Links.socialTwitter(), 'Twitter', 'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes');
-	};
+	}
 
-	AppUser.prototype.facebookConnect = function ()
-	{
+	facebookConnect() {
 		window.open(Links.socialFacebook(), 'Facebook', 'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes');
-	};
+	}
 
 	/**
-	 * @param {boolean=} bFireAllActions
+	 * @param {boolean=} fireAllActions = false
 	 */
-	AppUser.prototype.socialUsers = function (bFireAllActions)
-	{
-		if (true === bFireAllActions)
+	socialUsers(fireAllActions = false) {
+		if (true === fireAllActions)
 		{
 			SocialStore.google.loading(true);
 			SocialStore.facebook.loading(true);
 			SocialStore.twitter.loading(true);
 		}
 
-		Remote.socialUsers(function (sResult, oData) {
+		Remote.socialUsers((result, data) => {
 
-			if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			if (Enums.StorageResultType.Success === result && data && data.Result)
 			{
-				SocialStore.google.userName(oData.Result['Google'] || '');
-				SocialStore.facebook.userName(oData.Result['Facebook'] || '');
-				SocialStore.twitter.userName(oData.Result['Twitter'] || '');
+				SocialStore.google.userName(data.Result['Google'] || '');
+				SocialStore.facebook.userName(data.Result['Facebook'] || '');
+				SocialStore.twitter.userName(data.Result['Twitter'] || '');
 			}
 			else
 			{
@@ -982,60 +889,47 @@
 			SocialStore.facebook.loading(false);
 			SocialStore.twitter.loading(false);
 		});
-	};
+	}
 
-	AppUser.prototype.googleDisconnect = function ()
-	{
+	googleDisconnect() {
 		SocialStore.google.loading(true);
 		Remote.googleDisconnect(this.socialUsers);
-	};
+	}
 
-	AppUser.prototype.facebookDisconnect = function ()
-	{
+	facebookDisconnect() {
 		SocialStore.facebook.loading(true);
 		Remote.facebookDisconnect(this.socialUsers);
-	};
+	}
 
-	AppUser.prototype.twitterDisconnect = function ()
-	{
+	twitterDisconnect() {
 		SocialStore.twitter.loading(true);
 		Remote.twitterDisconnect(this.socialUsers);
-	};
+	}
 
 	/**
-	 * @param {string} sQuery
-	 * @param {Function} fCallback
+	 * @param {string} query
+	 * @param {Function} callback
 	 */
-	AppUser.prototype.getAutocomplete = function (sQuery, fCallback)
-	{
-		var
-			aData = []
-		;
-
-		Remote.suggestions(function (sResult, oData) {
-			if (Enums.StorageResultType.Success === sResult && oData && Utils.isArray(oData.Result))
+	getAutocomplete(query, callback) {
+		Remote.suggestions((result, data) => {
+			if (Enums.StorageResultType.Success === result && data && Utils.isArray(data.Result))
 			{
-				aData = _.map(oData.Result, function (aItem) {
-					return aItem && aItem[0] ? new EmailModel(aItem[0], aItem[1]) : null;
-				});
-
-				fCallback(_.compact(aData));
+				callback(_.compact(_.map(data.Result, 
+					(item) => item && item[0] ? new EmailModel(item[0], item[1]) : null)));
 			}
-			else if (Enums.StorageResultType.Abort !== sResult)
+			else if (Enums.StorageResultType.Abort !== result)
 			{
-				fCallback([]);
+				callback([]);
 			}
-
-		}, sQuery);
-	};
+		}, query);
+	}
 
 	/**
 	 * @param {string} sFullNameHash
 	 * @param {boolean} bExpanded
 	 */
-	AppUser.prototype.setExpandedFolder = function (sFullNameHash, bExpanded)
-	{
-		var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
+	setExpandedFolder(sFullNameHash, bExpanded) {
+		let aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
 		if (!Utils.isArray(aExpandedList))
 		{
 			aExpandedList = [];
@@ -1052,41 +946,41 @@
 		}
 
 		Local.set(Enums.ClientSideKeyName.ExpandedFolders, aExpandedList);
-	};
+	}
 
-	AppUser.prototype.initHorizontalLayoutResizer = function (sClientSideKeyName)
-	{
+	initHorizontalLayoutResizer(sClientSideKeyName) {
+
 		var
 			iMinHeight = 200,
 			iMaxHeight = 500,
 			oTop = null,
 			oBottom = null,
 
-			fResizeCreateFunction = function (oEvent) {
-				if (oEvent && oEvent.target)
+			fResizeCreateFunction = (event) => {
+				if (event && event.target)
 				{
-					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
+					var oResizableHandle = $(event.target).find('.ui-resizable-handle');
 
 					oResizableHandle
-						.on('mousedown', function () {
+						.on('mousedown', () => {
 							Globals.$html.addClass('rl-resizer');
 						})
-						.on('mouseup', function () {
+						.on('mouseup', () => {
 							Globals.$html.removeClass('rl-resizer');
 						})
 					;
 				}
 			},
 
-			fResizeStartFunction = function () {
+			fResizeStartFunction = () => {
 				Globals.$html.addClass('rl-resizer');
 			},
 
-			fResizeResizeFunction = _.debounce(function () {
+			fResizeResizeFunction = _.debounce(() => {
 				Globals.$html.addClass('rl-resizer');
 			}, 500, true),
 
-			fResizeStopFunction = function (oEvent, oObject) {
+			fResizeStopFunction = (oEvent, oObject) => {
 				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.height)
 				{
@@ -1109,22 +1003,22 @@
 				'stop': fResizeStopFunction
 			},
 
-			fSetHeight = function (iHeight) {
-				if (iHeight)
+			fSetHeight = (height) => {
+				if (height)
 				{
 					if (oTop)
 					{
-						oTop.attr('style', 'height:' + iHeight + 'px');
+						oTop.attr('style', 'height:' + height + 'px');
 					}
 
 					if (oBottom)
 					{
-						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + iHeight) + 'px');
+						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
 					}
 				}
 			},
 
-			fDisable = function (bDisable) {
+			fDisable = (bDisable) => {
 				if (bDisable)
 				{
 					if (oTop && oTop.hasClass('ui-resizable'))
@@ -1150,7 +1044,7 @@
 						oTop.resizable(oOptions);
 					}
 
-					var iHeight = Utils.pInt(Local.get(sClientSideKeyName)) || 300;
+					const iHeight = Utils.pInt(Local.get(sClientSideKeyName)) || 300;
 					fSetHeight(iHeight > iMinHeight ? iHeight : iMinHeight);
 				}
 			}
@@ -1158,13 +1052,13 @@
 
 		fDisable(false);
 
-		Events.sub('layout', function (sLayout) {
-			fDisable(Enums.Layout.BottomPreview !== sLayout);
+		Events.sub('layout', (layout) => {
+			fDisable(Enums.Layout.BottomPreview !== layout);
 		});
 	};
 
-	AppUser.prototype.initVerticalLayoutResizer = function (sClientSideKeyName)
-	{
+	initVerticalLayoutResizer(sClientSideKeyName) {
+
 		var
 			iDisabledWidth = 60,
 			iMinWidth = 155,
@@ -1173,7 +1067,7 @@
 
 			mLeftWidth = Local.get(sClientSideKeyName) || null,
 
-			fSetWidth = function (iWidth) {
+			fSetWidth = (iWidth) => {
 				if (iWidth)
 				{
 					oLeft.css({
@@ -1186,7 +1080,7 @@
 				}
 			},
 
-			fDisable = function (bDisable) {
+			fDisable = (bDisable) => {
 				if (bDisable)
 				{
 					oLeft.resizable('disable');
@@ -1199,28 +1093,26 @@
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
-			fResizeCreateFunction = function (oEvent) {
+			fResizeCreateFunction = (oEvent) => {
 				if (oEvent && oEvent.target)
 				{
-					var oResizableHandle = $(oEvent.target).find('.ui-resizable-handle');
-
-					oResizableHandle
-						.on('mousedown', function () {
+					$(oEvent.target).find('.ui-resizable-handle')
+						.on('mousedown', () => {
 							Globals.$html.addClass('rl-resizer');
 						})
-						.on('mouseup', function () {
+						.on('mouseup', () => {
 							Globals.$html.removeClass('rl-resizer');
 						})
 					;
 				}
 			},
-			fResizeResizeFunction = _.debounce(function () {
+			fResizeResizeFunction = _.debounce(() => {
 				Globals.$html.addClass('rl-resizer');
 			}, 500, true),
-			fResizeStartFunction = function () {
+			fResizeStartFunction = () => {
 				Globals.$html.addClass('rl-resizer');
 			},
-			fResizeStopFunction = function (oEvent, oObject) {
+			fResizeStopFunction = (oEvent, oObject) => {
 				Globals.$html.removeClass('rl-resizer');
 				if (oObject && oObject.size && oObject.size.width)
 				{
@@ -1249,40 +1141,36 @@
 			'stop': fResizeStopFunction
 		});
 
-		Events.sub('left-panel.off', function () {
+		Events.sub('left-panel.off', () => {
 			fDisable(true);
 		});
 
-		Events.sub('left-panel.on', function () {
+		Events.sub('left-panel.on', () => {
 			fDisable(false);
 		});
-	};
+	}
 
-	AppUser.prototype.logout = function ()
-	{
-		var self = this;
-		Remote.logout(function () {
-			self.loginAndLogoutReload(false, true,
+	logout() {
+		Remote.logout(() => {
+			this.loginAndLogoutReload(false, true,
 				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
 		});
 	};
 
-	AppUser.prototype.bootstartTwoFactorScreen = function ()
-	{
+	bootstartTwoFactorScreen() {
 		kn.showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
-	};
+	}
 
-	AppUser.prototype.bootstartWelcomePopup = function (sUrl)
-	{
-		kn.showScreenPopup(require('View/Popup/WelcomePage'), [sUrl]);
-	};
+	bootstartWelcomePopup(url) {
+		kn.showScreenPopup(require('View/Popup/WelcomePage'), [url]);
+	}
 
-	AppUser.prototype.bootstartLoginScreen = function ()
-	{
+	bootstartLoginScreen() {
+
 		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
 
-		var sCustomLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
-		if (!sCustomLoginLink)
+		const customLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
+		if (!customLoginLink)
 		{
 			kn.startScreens([
 				require('Screen/User/Login')
@@ -1298,19 +1186,21 @@
 			kn.routeOff();
 
 			_.defer(function () {
-				window.location.href = sCustomLoginLink;
+				window.location.href = customLoginLink;
 			});
 		}
-	};
+	}
 
-	AppUser.prototype.bootend = function ()
-	{
+	bootend() {
 		if (progressJs)
 		{
 			kn.hideLoading();
 
-			progressJs.onbeforeend(function () {
-				$('.progressjs-container').hide().remove();
+			progressJs.onbeforeend(() =>  {
+				$('.progressjs-container').hide();
+				_.delay(() => {
+					$('.progressjs-container').remove();
+				}, 100);
 			});
 
 			progressJs.set(100).end();
@@ -1321,9 +1211,9 @@
 		}
 	};
 
-	AppUser.prototype.bootstart = function ()
-	{
-		AbstractApp.prototype.bootstart.call(this);
+	bootstart() {
+
+		super.bootstart();
 
 		require('Stores/User/App').populate();
 		require('Stores/User/Settings').populate();
@@ -1332,7 +1222,6 @@
 		require('Stores/User/Contact').populate();
 
 		var
-			self = this,
 			$LAB = require('$LAB'),
 			sJsHash = Settings.settingsGet('JsHash'),
 			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
@@ -1347,8 +1236,8 @@
 			progressJs.set(90);
 		}
 
-		Globals.leftPanelDisabled.subscribe(function (bValue) {
-			Events.pub('left-panel.' + (bValue ? 'off' : 'on'));
+		Globals.leftPanelDisabled.subscribe((value) => {
+			Events.pub('left-panel.' + (value ? 'off' : 'on'));
 		});
 
 		this.setWindowTitle('');
@@ -1369,11 +1258,11 @@
 
 //require.ensure([], function() { // require code splitting
 
-				self.foldersReload(_.bind(function (bValue) {
+				this.foldersReload((value) => {
 
 					this.bootend();
 
-					if (bValue)
+					if (value)
 					{
 						if ('' !== sStartupUrl)
 						{
@@ -1384,7 +1273,7 @@
 
 						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
-							var fOpenpgpCallback = function (openpgp) {
+							const openpgpCallback = (openpgp) => {
 
 								PgpStore.openpgp = openpgp;
 
@@ -1407,19 +1296,19 @@
 
 								Events.pub('openpgp.init');
 
-								self.reloadOpenPgpKeys();
+								this.reloadOpenPgpKeys();
 							};
 
 							if (window.openpgp)
 							{
-								fOpenpgpCallback(window.openpgp);
+								openpgpCallback(window.openpgp);
 							}
 							else
 							{
-								$LAB.script(Links.openPgpJs()).wait(function () {
+								$LAB.script(Links.openPgpJs()).wait(() => {
 									if (window.openpgp)
 									{
-										fOpenpgpCallback(window.openpgp);
+										openpgpCallback(window.openpgp);
 									}
 								});
 							}
@@ -1437,85 +1326,58 @@
 
 						if (bGoogle || bFacebook || bTwitter)
 						{
-							self.socialUsers(true);
+							this.socialUsers(true);
 						}
 
-						Events.sub('interval.2m', function () {
-							self.folderInformation(Cache.getFolderInboxName());
-						});
-
-						Events.sub('interval.3m', function () {
-							var sF = FolderStore.currentFolderFullNameRaw();
+						Events.sub('interval.2m', () => this.folderInformation(Cache.getFolderInboxName()));
+						Events.sub('interval.3m', () => {
+							const sF = FolderStore.currentFolderFullNameRaw();
 							if (Cache.getFolderInboxName() !== sF)
 							{
-								self.folderInformation(sF);
+								this.folderInformation(sF);
 							}
 						});
 
-						Events.sub('interval.2m-after5m', function () {
-							self.folderInformationMultiply();
-						});
-
-						Events.sub('interval.15m', function () {
-							self.quota();
-						});
-
-						Events.sub('interval.20m', function () {
-							self.foldersReload();
-						});
+						Events.sub('interval.2m-after5m', () => this.folderInformationMultiply());
+						Events.sub('interval.15m', () => this.quota());
+						Events.sub('interval.20m', () => this.foldersReload());
 
 						iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
 						iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
 
-						_.delay(function () {
-							self.contactsSync();
-						}, 10000);
+						_.delay(() => this.contactsSync(), 10000);
+						_.delay(() => this.folderInformationMultiply(true), 2000);
 
-						_.delay(function () {
-							self.folderInformationMultiply(true);
-						}, 2000);
+						window.setInterval(() => this.contactsSync(), iContactsSyncInterval * 60000 + 5000);
 
-						window.setInterval(function () {
-							self.contactsSync();
-						}, iContactsSyncInterval * 60000 + 5000);
+						this.accountsAndIdentities(true);
 
-						self.accountsAndIdentities(true);
-
-						_.delay(function () {
-							var sF = FolderStore.currentFolderFullNameRaw();
+						_.delay(() => {
+							const sF = FolderStore.currentFolderFullNameRaw();
 							if (Cache.getFolderInboxName() !== sF)
 							{
-								self.folderInformation(sF);
+								this.folderInformation(sF);
 							}
 						}, 1000);
 
-						_.delay(function () {
-							self.quota();
-						}, 5000);
+						_.delay(() => this.quota(), 5000);
+						_.delay(() => Remote.appDelayStart(Utils.emptyFunction), 35000);
 
-						_.delay(function () {
-							Remote.appDelayStart(Utils.emptyFunction);
-						}, 35000);
-
-						Events.sub('rl.auto-logout', function () {
-							self.logout();
-						});
+						Events.sub('rl.auto-logout', () => this.logout());
 
 						Plugins.runHook('rl-start-user-screens');
 						Events.pub('rl.bootstart-user-screens');
 
 						if (Settings.settingsGet('WelcomePageUrl'))
 						{
-							_.delay(function () {
-								self.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl'));
-							}, 1000);
+							_.delay(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
 						}
 
 						if (!!Settings.settingsGet('AccountSignMe') &&
 							window.navigator.registerProtocolHandler &&
 							Settings.capa(Enums.Capa.Composer))
 						{
-							_.delay(function () {
+							_.delay(() => {
 								try {
 									window.navigator.registerProtocolHandler('mailto',
 										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
@@ -1531,9 +1393,7 @@
 
 						if (!Globals.bMobileDevice)
 						{
-							_.defer(function () {
-								self.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize);
-							});
+							_.defer(() => this.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize));
 
 							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered') )
 							{
@@ -1541,9 +1401,8 @@
 									fallback: false
 								});
 
-								Events.sub('mailbox.inbox-unread-count', function (iCount) {
-									Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0);
-								});
+								Events.sub('mailbox.inbox-unread-count', 
+									(iCount) => Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0));
 							}
 						}
 					}
@@ -1552,7 +1411,7 @@
 						this.logout();
 					}
 
-				}, self));
+				});
 
 //}); // require code splitting
 
@@ -1566,36 +1425,33 @@
 
 		if (bGoogle)
 		{
-			window['rl_' + sJsHash + '_google_service'] = function () {
+			window['rl_' + sJsHash + '_google_service'] = () => {
 				SocialStore.google.loading(true);
-				self.socialUsers();
+				this.socialUsers();
 			};
 		}
 
 		if (bFacebook)
 		{
-			window['rl_' + sJsHash + '_facebook_service'] = function () {
+			window['rl_' + sJsHash + '_facebook_service'] = () => {
 				SocialStore.facebook.loading(true);
-				self.socialUsers();
+				this.socialUsers();
 			};
 		}
 
 		if (bTwitter)
 		{
-			window['rl_' + sJsHash + '_twitter_service'] = function () {
+			window['rl_' + sJsHash + '_twitter_service'] = () => {
 				SocialStore.twitter.loading(true);
-				self.socialUsers();
+				this.socialUsers();
 			};
 		}
 
-		Events.sub('interval.1m', function () {
-			Momentor.reload();
-		});
+		Events.sub('interval.1m', () => Momentor.reload());
 
 		Plugins.runHook('rl-start-screens');
 		Events.pub('rl.bootstart-end');
-	};
+	}
+}
 
-	module.exports = new AppUser();
-
-}());
+export default new AppUser();
