@@ -96,6 +96,11 @@ class Actions
 	private $oAddressBookProvider;
 
 	/**
+	 * @var \RainLoop\Providers\Message
+	 */
+	private $oMessageProvider;
+
+	/**
 	 * @var \RainLoop\Providers\Suggestions
 	 */
 	private $oSuggestionsProvider;
@@ -148,6 +153,7 @@ class Actions
 		$this->oFiltersProvider = null;
 		$this->oDomainProvider = null;
 		$this->oAddressBookProvider = null;
+		$this->oMessageProvider = null;
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
@@ -316,6 +322,27 @@ class Actions
 					{
 						$mResult = new \RainLoop\Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					}
+					break;
+				case 'message':
+					// \RainLoop\Providers\Message\MessageInterface
+
+					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
+					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
+					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
+
+					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+					if ('sqlite' === $sDsnType)
+					{
+						$mResult = new \RainLoop\Providers\Message\PdoMessage(
+							'sqlite:'.APP_PRIVATE_DATA.'Message.sqlite', '', '', 'sqlite');
+					}
+					else
+					{
+						Chromephp::log(1, $sDsn, $sUser, $sPassword, $sDsnType);
+						$mResult = new \RainLoop\Providers\Message\PdoMessage($sDsn, $sUser, $sPassword, $sDsnType);
+						Chromephp::log(2);
+					}
+
 					break;
 				case 'suggestions':
 
@@ -929,6 +956,24 @@ class Actions
 		}
 
 		return $this->oAddressBookProvider;
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount = null
+	 * @param bool $bForceEnable = false
+	 *
+	 * @return \RainLoop\Providers\Message
+	 */
+	public function MessageProvider()
+	{
+		if (null === $this->oMessageProvider)
+		{
+			$oDriver = $this->fabrica('message');
+			$this->oMessageProvider = new \RainLoop\Providers\Message($oDriver);
+			$this->oMessageProvider->SetLogger($this->Logger());
+		}
+
+		return $this->oMessageProvider;
 	}
 
 	/**
@@ -5749,6 +5794,10 @@ class Actions
 		{
 			$this->cacheByKey($sRawKey);
 		}
+
+		$this->Plugins()->RunHook('pdo.save-message', &$oMessageList);
+		$oResult = $this->MessageProvider()->Test();
+		Chromephp::log($oResult);
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
 	}

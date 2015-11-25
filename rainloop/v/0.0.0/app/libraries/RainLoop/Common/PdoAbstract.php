@@ -453,6 +453,12 @@ rl_email varchar(128) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id_user),
 INDEX rl_email_rainloop_users_index (rl_email)
 ) /*!40000 ENGINE=INNODB */;';
+					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_ (
+id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
+rl_email varchar(128) NOT NULL DEFAULT \'\',
+PRIMARY KEY(id_user),
+INDEX rl_email_rainloop_users_index (rl_email)
+) /*!40000 ENGINE=INNODB */;';
 					break;
 
 				case 'pgsql':

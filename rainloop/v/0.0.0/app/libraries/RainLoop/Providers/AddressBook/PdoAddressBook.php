@@ -1895,13 +1895,18 @@ SQLITEINITIAL;
 				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
 					1 => $this->getInitialTablesArray($this->sDsnType),
 					2 => array(
-'ALTER TABLE rainloop_ab_properties ADD prop_value_lower varchar(255) NOT NULL DEFAULT \'\' AFTER prop_value_custom;'
+'ALTER TABLE rainloop_ab_properties ADD prop_value_lower varchar(256) NOT NULL DEFAULT \'\' AFTER prop_value_custom;'
 					),
 					3 => array(
 'ALTER TABLE rainloop_ab_properties CHANGE prop_value prop_value TEXT NOT NULL;',
 'ALTER TABLE rainloop_ab_properties CHANGE prop_value_custom prop_value_custom TEXT NOT NULL;',
 'ALTER TABLE rainloop_ab_properties CHANGE prop_value_lower prop_value_lower TEXT NOT NULL;'
-					)
+					),
+					4 => array(
+'ALTER TABLE rainloop_ab_properties CHANGE prop_value_lower prop_value_lower varchar(1024) NOT NULL DEFAULT \'\';',					),
+					6 => array(
+'ALTER TABLE rainloop_ab_properties CHANGE prop_value_custom prop_value_custom varchar(512) NOT NULL;',
+					),
 				));
 				break;
 			case 'pgsql':
