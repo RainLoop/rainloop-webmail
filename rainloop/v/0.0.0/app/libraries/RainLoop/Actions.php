@@ -338,9 +338,7 @@ class Actions
 					}
 					else
 					{
-						Chromephp::log(1, $sDsn, $sUser, $sPassword, $sDsnType);
 						$mResult = new \RainLoop\Providers\Message\PdoMessage($sDsn, $sUser, $sPassword, $sDsnType);
-						Chromephp::log(2);
 					}
 
 					break;
@@ -966,6 +964,7 @@ class Actions
 	 */
 	public function MessageProvider()
 	{
+		Chromephp::log("1. ");
 		if (null === $this->oMessageProvider)
 		{
 			$oDriver = $this->fabrica('message');
@@ -5796,8 +5795,12 @@ class Actions
 		}
 
 		$this->Plugins()->RunHook('pdo.save-message', &$oMessageList);
-		$oResult = $this->MessageProvider()->Test();
-		Chromephp::log($oResult);
+		$oMessageProvider = $this->MessageProvider();
+		var_dump("===");
+		var_dump($oMessageProvider);
+		var_dump("===");
+		$oResult = $oMessageProvider->Test();
+		Chromephp::log("1. ", $oResult);
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
 	}

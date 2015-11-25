@@ -29,7 +29,6 @@ class PdoMessage
 
 	public function __construct($sDsn, $sUser = '', $sPassword = '', $sDsnType = 'mysql')
 	{
-		\Rainloop\ChromePhp::log(1.5, $sDsn, $sUser, $sPassword, $sDsnType);
 		$this->sDsn = $sDsn;
 		$this->sUser = $sUser;
 		$this->sPassword = $sPassword;
@@ -55,12 +54,18 @@ class PdoMessage
 
 	private function syncMessageList($oMessageList)
 	{
-		return False;
+		\Rainloop\ChromePhp::log("pdomessage sync message list!!!");
+		// var_dump($oMessageList);
+		return $this->prepareAndExecute('INSERT FROM :table WHERE uid = :uid AND deleted = 1', array(
+			':table' => MYSQL_TABLE,
+			':uid' => array($oMessage->uid, \PDO::PARAM_INT)
+		));
 	}
 
-	private function createMessage($oMessage)
+	private function createMessage()
 	{
-		return !!$this->prepareAndExecute('INSERT FROM :table WHERE uid = :uid AND deleted = 1', array(
+		\Rainloop\ChromePhp::log("pdomessage create message!!!");
+		return $this->prepareAndExecute('INSERT FROM :table WHERE uid = :uid AND deleted = 1', array(
 			':table' => MYSQL_TABLE,
 			':uid' => array($oMessage->uid, \PDO::PARAM_INT)
 		));
@@ -107,8 +112,30 @@ class PdoMessage
 	 */
 	public function Test()
 	{
-		\Rainloop\ChromePhp::log("pdomessage !!!");
-		return 0;
+		$sResult = '';
+		try
+		{
+			$this->SyncDatabase();
+			if (0 >= $this->getVersion($this->sDsnType.'-ab-version'))
+			{
+				$sResult = 'Unknown database error';
+			}
+		}
+		catch (\Exception $oException)
+		{
+			$sResult = $oException->getMessage();
+			if (!empty($sResult) && !\MailSo\Base\Utils::IsAscii($sResult) && !\MailSo\Base\Utils::IsUtf8($sResult))
+			{
+				$sResult = @\utf8_encode($sResult);
+			}
+
+			if (!\is_string($sResult) || empty($sResult))
+			{
+				$sResult = 'Unknown database error';
+			}
+		}
+
+		return $sResult;
 	}
 
 	private function getInitialTablesArray($sDbType)
@@ -175,7 +202,7 @@ SQLITEINITIAL;
 				}
 			}
 		}
-
+		\Rainloop\ChromePhp::log("getInitialTablesArray", $sDbType, $aResult);
 		return $aResult;
 	}
 
@@ -191,12 +218,15 @@ SQLITEINITIAL;
 		}
 
 		$mCache = false;
+		\Rainloop\ChromePhp::log("SyncDatabase");
 		switch ($this->sDsnType)
 		{
 			case 'mysql':
 				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
 					1 => $this->getInitialTablesArray($this->sDsnType),
-					2 => array()
+					2 => array(
+'ALTER TABLE rainloop_ab_message CHANGE subject subject varchar(255) NOT NULL DEFAULT \'\';'
+					),
 				));
 				break;
 			case 'pgsql':

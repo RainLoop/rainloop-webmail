@@ -40,11 +40,9 @@ class Message extends \RainLoop\Providers\AbstractProvider
 	 */
 	public function Test()
 	{
-		\Rainloop\ChromePhp::log("test");
-		return $this->oDriver instanceof \RainLoop\Providers\Message\MessageInterface;
-		// \sleep(1);
-		// return $this->oDriver instanceof \RainLoop\Providers\Message\MessageInterface ?
-		// 	$this->oDriver->Test() : 'Message driver is not allowed';
+		\sleep(1);
+		return $this->oDriver instanceof \RainLoop\Providers\Message\MessageInterface ?
+			$this->oDriver->Test() : 'Message driver is not allowed';
 	}
 
 	/**
