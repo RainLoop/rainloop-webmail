@@ -38,7 +38,7 @@ lt_LT:
     LABEL_ADV_DATE_YEAR: "Nesenesni kaip 1 metų"
     BUTTON_ADV_SEARCH: "Ieškoti"
   PREVIEW_POPUP:
-    FULLSCREEN: "Per visą ekraną"
+    FULLSCREEN: "Perjungti viso ekrano režimą"
     ZOOM: "Didinti / mažinti"
     CLOSE: "Uždaryti (Esc)"
     LOADING: "Kraunasi..."
@@ -549,7 +549,7 @@ lt_LT:
     DEFAULT_IDENTITY_LABEL: "numatytasis"
   SETTINGS_IDENTITIES:
     LEGEND_IDENTITY: "Tapatybės"
-    LEGEND_IDENTITIES: "papildomos tapatybės"
+    LEGEND_IDENTITIES: "Papildomos tapatybės"
     LABEL_DEFAULT: "Numatytoji"
     LABEL_DISPLAY_NAME: "Vardas"
     LABEL_REPLY_TO: "Atsakyti"
@@ -562,7 +562,7 @@ lt_LT:
   SETTINGS_CHANGE_PASSWORD:
     LEGEND_CHANGE_PASSWORD: "Keisti slaptažodį"
     LABEL_CURRENT_PASSWORD: "Dabartinis slaptažodis"
-    LABEL_NEW_PASSWORD: "naujas slaptažodis"
+    LABEL_NEW_PASSWORD: "Naujas slaptažodis"
     LABEL_REPEAT_PASSWORD: "Patvirtinkite naują slaptažodį"
     BUTTON_UPDATE_PASSWORD: "Nustatyti naują slaptažodį"
     ERROR_PASSWORD_MISMATCH: "Slaptažodžiai nesutampa, bandykite dar kartą"
@@ -622,7 +622,7 @@ lt_LT:
     ADD_A_PUBLICK_KEY: "Add a public key"
     UNVERIFIRED_SIGNATURE: "Nepatikrintas parašas"
     DECRYPTION_ERROR: "OpenPGP dekodavimo klaida"
-    GOOD_SIGNATURE: "Tinkamas parašas %USER%"
+    GOOD_SIGNATURE: "Tinkamas parašas nuo %USER%"
     PGP_ERROR: "OpenPGP klaida: %ERROR%"
     SPECIFY_FROM_EMAIL: "Prašome nurodyti NUO e-pašto adresą"
     SPECIFY_AT_LEAST_ONE_RECIPIENT: "Nurodykite bent vieną gavėją"
@@ -680,6 +680,7 @@ lt_LT:
     DEMO_SEND_MESSAGE_ERROR: "Saugumo sumetimais, ši demo paskyra neleidžia siųsti laiškų išoriniais e-pašto adresais!"
     DEMO_ACCOUNT_ERROR: "Saugumo sumetimais, su šia paskyra negalima atlikti norimo veiksmo!"
     ACCOUNT_ALREADY_EXISTS: "Paskyra jau egzistuoja"
+    ACCOUNT_DOES_NOT_EXIST: "Nėra tokios paskyros"
     MAIL_SERVER_ERROR: "Klaida bandant pasiekti pašto serverį"
     INVALID_INPUT_ARGUMENT: "Neteisingas įvesties argumentas"
     UNKNOWN_ERROR: "Nežinoma klaida"
@@ -694,7 +695,7 @@ lt_LT:
       Įjunkite JavaScript palaikymą naršyklėje ir bandykite vėl.
     NO_COOKIE_TITLE: "Slapukų palaikymas būtinas šiai aplikacijai."
     NO_COOKIE_DESC: |
-      Slapukų paialikymas negalimas jūsų naršyklėje.
+      Slapukų palaikymas negalimas jūsų naršyklėje.
       Įjunkite slapukų palaikymą naršyklėje ir bandykite vėl.
     BAD_BROWSER_TITLE: "Jūsų naršyklė pasenusi."
     BAD_BROWSER_DESC: |

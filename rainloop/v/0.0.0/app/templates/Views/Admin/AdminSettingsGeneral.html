@@ -29,7 +29,7 @@
 			<div class="controls">
 				<div class="flag-selector">
 					<span class="flag-wrapper">
-						<span data-bind="css: 'flag flag-' + languageAdmin()" style=""></span>
+						<span data-bind="css: 'flag flag-' + languageAdmin().toLowerCase()" style=""></span>
 					</span>
 					<span class="flag-name" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
 					&nbsp;&nbsp;

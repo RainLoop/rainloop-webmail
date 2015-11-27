@@ -683,6 +683,7 @@ pt_BR:
     DEMO_SEND_MESSAGE_ERROR: "Por motivos de segurança, esta conta demo não tem permissão para enviar mensagens para endereços de e-mail externo!"
     DEMO_ACCOUNT_ERROR: "For security purposes, this account is not allowed for this action!"
     ACCOUNT_ALREADY_EXISTS: "Esta conta já existe"
+    ACCOUNT_DOES_NOT_EXIST: "Conta não existente"
     MAIL_SERVER_ERROR: "Ocorreu um erro ao acessar o servidor de e-mail"
     INVALID_INPUT_ARGUMENT: "Argumento de entrada inválido"
     UNKNOWN_ERROR: "Erro desconhecido"

@@ -114,9 +114,9 @@ fr_FR:
     BUTTON_THREAD_LIST: "Liste des discussions"
     BUTTON_THREAD_PREV: "Précédent"
     BUTTON_THREAD_NEXT: "Suivant"
-    BUTTON_THREAD_MORE: "More messages"
+    BUTTON_THREAD_MORE: "Plus de messages"
     MENU_HEADERS: "Voir les entêtes du message"
-    MENU_VIEW_ORIGINAL: "Voir le message original"
+    MENU_VIEW_ORIGINAL: "Voir la source"
     MENU_DOWNLOAD_ORIGINAL: "Télécharger comme fichier .eml"
     MENU_FILTER_SIMILAR: "Filtrer les messages similaires"
     MENU_PRINT: "Imprimer"
@@ -128,13 +128,13 @@ fr_FR:
     LABEL_TO: "A"
     LABEL_TO_SHORT: "à"
     LABEL_CC: "CC"
-    LABEL_BCC: "BCC"
-    LABEL_REPLY_TO: "Reply-To"
+    LABEL_BCC: "CCI"
+    LABEL_REPLY_TO: "Répondre à"
     PRINT_LABEL_FROM: "De"
     PRINT_LABEL_TO: "A"
     PRINT_LABEL_CC: "CC"
-    PRINT_LABEL_BCC: "BCC"
-    PRINT_LABEL_REPLY_TO: "Reply-To"
+    PRINT_LABEL_BCC: "CCI"
+    PRINT_LABEL_REPLY_TO: "Répondre à"
     PRINT_LABEL_DATE: "Date"
     PRINT_LABEL_SUBJECT: "Sujet"
     PRINT_LABEL_ATTACHMENTS: "Pièces jointes"
@@ -211,8 +211,8 @@ fr_FR:
     BUTTON_MINIMIZE: "Réduire"
     SAVED_TIME: "Enregistré à %TIME%"
     SAVED_ERROR_ON_SEND: "Le message a été envoyé mais n'a pas été enregistré dans le dossier des messages envoyés"
-    DISCARD_UNSAVED_DATA: "Exclure les données non sauvegardées ?"
-    ATTACH_FILES: "Ajouter des fichiers joints"
+    DISCARD_UNSAVED_DATA: "Exclure les données non enregistrées ?"
+    ATTACH_FILES: "Joindre des fichiers"
     ATTACH_DROP_FILES_DESC: "Glisser les fichiers ici"
     ATTACH_ITEM_CANCEL: "Annuler"
     DROPBOX: "Dropbox"
@@ -224,9 +224,9 @@ fr_FR:
     FORWARD_MESSAGE_TOP_CC: "CC"
     FORWARD_MESSAGE_TOP_SENT: "Envoyé"
     FORWARD_MESSAGE_TOP_SUBJECT: "Sujet"
-    EMPTY_TO_ERROR_DESC: "Merci de spécifier au minimum un destinataire"
+    EMPTY_TO_ERROR_DESC: "Merci de spécifier au moins un destinataire"
     NO_ATTACHMENTS_HERE_DESC: "Aucune pièce jointe."
-    ATTACHMENTS_ERROR_DESC: "Attention! Toutes les pièces jointes n'ont pas été téléchargées."
+    ATTACHMENTS_ERROR_DESC: "Attention ! Toutes les pièces jointes n'ont pas été téléchargées."
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Toutes les pièces jointes n'ont pas encore été téléchargées"
     BUTTON_REQUEST_READ_RECEIPT: "Demander une confirmation de lecture"
     BUTTON_MARK_AS_IMPORTANT: "Marquer comme important"
@@ -267,12 +267,12 @@ fr_FR:
     BUTTON_CLOSE: "Fermer"
     TITLE_CREATING_PROCESS: "Création du dossier"
   POPUPS_CLEAR_FOLDER:
-    TITLE_CLEAR_FOLDER: "Vider tous les messages du dossier ?"
+    TITLE_CLEAR_FOLDER: "Purger tous les messages du dossier ?"
     BUTTON_CLEAR: "Vider"
     BUTTON_CANCEL: "Annuler"
     BUTTON_CLOSE: "Fermer"
     DANGER_DESC_WARNING: "ATTENTION !"
-    DANGER_DESC_HTML_1: "Cette action effacera tous les mails du dossier <strong>%FOLDER%</strong> de manière définitive."
+    DANGER_DESC_HTML_1: "Cette action effacera tous les emails du dossier <strong>%FOLDER%</strong> de manière définitive."
     DANGER_DESC_HTML_2: "Une fois lancé, le processus ne peut pas être interrompu ou annulé."
     TITLE_CLEARING_PROCESS: "Purge du dossier..."
   POPUPS_IMPORT_OPEN_PGP_KEY:
@@ -283,11 +283,11 @@ fr_FR:
     BUTTON_SELECT: "Sélectionner"
     BUTTON_CLOSE: "Fermer"
   POPUPS_GENERATE_OPEN_PGP_KEYS:
-    TITLE_GENERATE_OPEN_PGP_KEYS: "Générer les clefs OpenPGP"
+    TITLE_GENERATE_OPEN_PGP_KEYS: "Générer les clés OpenPGP"
     LABEL_EMAIL: "Email"
     LABEL_NAME: "Nom"
     LABEL_PASSWORD: "Mot de passe"
-    LABEL_KEY_BIT_LENGTH: "Longueur de la clef"
+    LABEL_KEY_BIT_LENGTH: "Longueur de la clé"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Générer"
   POPUPS_COMPOSE_OPEN_PGP:
     TITLE_COMPOSE_OPEN_PGP: "Signer/chiffrer avec OpenPGP"
@@ -327,8 +327,8 @@ fr_FR:
     SELECT_FIELD_SIZE: "Taille"
     SELECT_TYPE_CONTAINS: "Contient"
     SELECT_TYPE_NOT_CONTAINS: "Ne contient pas"
-    SELECT_TYPE_MATCHES: "Substitutions (* et ? supporté)"
-    SELECT_TYPE_NOT_MATCHES: "Pas de substitutions (* et ? supporté)"
+    SELECT_TYPE_MATCHES: "Substitutions (* et ? supportés)"
+    SELECT_TYPE_NOT_MATCHES: "Pas de substitutions (* et ? supportés)"
     SELECT_TYPE_REGEXP: "Expression régulière"
     SELECT_TYPE_NOT_REGEXP: "Pas d'expression régulière"
     SELECT_TYPE_EQUAL_TO: "Egal à"
@@ -344,15 +344,15 @@ fr_FR:
     EMAIL_LABEL: "Email"
     VACATION_SUBJECT_LABEL: "Sujet (optionnel)"
     VACATION_MESSAGE_LABEL: "Message"
-    VACATION_RECIPIENTS_LABEL: "Recipients (comma separated)"
+    VACATION_RECIPIENTS_LABEL: "Destinataires (séparés par des virgules)"
     REJECT_MESSAGE_LABEL: "Message rejeté"
     ALL_INCOMING_MESSAGES_DESC: "Tous les messages entrants"
   POPUPS_SYSTEM_FOLDERS:
-    TITLE_SYSTEM_FOLDERS: "Sélectionner les dossiers système"
+    TITLE_SYSTEM_FOLDERS: "Sélectionner les dossiers systèmes"
     SELECT_CHOOSE_ONE: "Faites un choix"
     SELECT_UNUSE_NAME: "Ne pas utiliser"
     LABEL_SENT: "Envoyés"
-    LABEL_DRAFTS: "Bouillons"
+    LABEL_DRAFTS: "Brouillons"
     LABEL_SPAM: "Indésirables"
     LABEL_TRASH: "Corbeille"
     LABEL_ARCHIVE: "Archiver"
@@ -360,14 +360,14 @@ fr_FR:
     BUTTON_CLOSE: "Fermer"
     NOTIFICATION_SENT: |
       Vous n'avez pas sélectionné de dossier "Envoyés" où copier les messages après envoi.
-      Si vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionner l'option "Ne pas utiliser".
-    NOTIFICATION_DRAFTS: "Vous n'avez pas sélectionné de dossier \"Brouillons\" où enregistrer les message en cours de rédaction.\n"
+      Si vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option "Ne pas utiliser".
+    NOTIFICATION_DRAFTS: "Vous n'avez pas sélectionné de dossier \"Brouillons\" où enregistrer les messages en cours de rédaction."
     NOTIFICATION_SPAM: |
       Vous n'avez pas sélectionné de dossier "Spam" où placer les indésirables.
-      Si vous ne souhaitez supprimer définitivement les messages, sélectionner l'option "Ne pas utiliser".
+      Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
     NOTIFICATION_TRASH: |
       Vous n'avez pas sélectionné de dossier "Corbeille" où placer les messages supprimés.
-      Si vous ne souhaitez supprimer définitivement les messages, sélectionner l'option "Ne pas utiliser".
+      Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
     NOTIFICATION_ARCHIVE: "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Authentification en deux étapes"
@@ -376,17 +376,17 @@ fr_FR:
     LABEL_TWO_FACTOR_STATUS: "Statut"
     LABEL_TWO_FACTOR_SECRET: "Secret"
     LABEL_TWO_FACTOR_BACKUP_CODES: "Code de sauvegarde"
-    BUTTON_CREATE: "Créer une nouvelle clef secrète"
-    BUTTON_ACTIVATE: "Activate"
+    BUTTON_CREATE: "Créer une nouvelle clé secrète"
+    BUTTON_ACTIVATE: "Activer"
     BUTTON_CLEAR: "Effacer"
     BUTTON_LOGOUT: "Déconnexion"
-    BUTTON_DONE: "Done"
+    BUTTON_DONE: "Fait"
     BUTTON_TEST: "Tester"
     LINK_TEST: "test"
-    BUTTON_SHOW_SECRET: "Montrer la clef secrète"
-    BUTTON_HIDE_SECRET: "Masquer la clef secrète"
-    TWO_FACTOR_REQUIRE_DESC: "Votre compte requiert une configuration d'une vérification à deux étapes."
-    TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configurer"
+    BUTTON_SHOW_SECRET: "Montrer la clé secrète"
+    BUTTON_HIDE_SECRET: "Masquer la clé secrète"
+    TWO_FACTOR_REQUIRE_DESC: "Votre compte requiert la configuration d'une vérification à deux étapes."
+    TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configuré"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Non configuré"
     TWO_FACTOR_SECRET_DESC: >-
       Importez ces informations dans votre client Google Authenticator (ou un autre
@@ -412,7 +412,7 @@ fr_FR:
     ERROR_FILE_TYPE: "Type de fichier invalide"
     ERROR_UNKNOWN: "Une erreur inconnue de téléversement de fichier s'est produite"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Texte non-formatté"
+    TEXT_SWITCHER_PLAINT_TEXT: "Texte non-formaté"
     TEXT_SWITCHER_RICH_FORMATTING: "Format riche"
     TEXT_SWITCHER_CONFIRM: "Le formatage du texte et les images seront perdues. Etes-vous sûr de vouloir continuer ?"
   SETTINGS_LABELS:
@@ -422,10 +422,10 @@ fr_FR:
     LABEL_FOLDERS_NAME: "Dossiers"
     LABEL_ACCOUNTS_NAME: "Comptes"
     LABEL_IDENTITY_NAME: "Identité"
-    LABEL_IDENTITIES_NAME: "Identities"
-    LABEL_FILTERS_NAME: "Filters"
+    LABEL_IDENTITIES_NAME: "Identités"
+    LABEL_FILTERS_NAME: "Filtres"
     LABEL_TEMPLATES_NAME: "Modèles"
-    LABEL_SECURITY_NAME: "Securité"
+    LABEL_SECURITY_NAME: "Sécurité"
     LABEL_SOCIAL_NAME: "Social"
     LABEL_THEMES_NAME: "Thèmes"
     LABEL_CHANGE_PASSWORD_NAME: "Mot de passe"
@@ -433,20 +433,20 @@ fr_FR:
     BUTTON_BACK: "Retour"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "Filtres"
-    BUTTON_SAVE: "Sauver"
+    BUTTON_SAVE: "Enregistrer"
     BUTTON_ADD_FILTER: "Ajouter un filtre"
     BUTTON_DELETE: "Effacer"
     BUTTON_RAW_SCRIPT: "Utiliser le script d'un utilisateur"
     SUBNAME_NONE: "Aucun"
     SUBNAME_MOVE_TO: "Déplacer vers \"%FOLDER%\""
     SUBNAME_FORWARD_TO: "Faire suivre à \"%EMAIL%\""
-    SUBNAME_REJECT: "Rejet"
+    SUBNAME_REJECT: "Rejeter"
     SUBNAME_VACATION_MESSAGE: "Message d'absence"
     SUBNAME_DISCARD: "Exclure"
     CAPABILITY_LABEL: "Capacité"
-    LOADING_PROCESS: "Mette à jour la liste du filtre"
-    DELETING_ASK: "Êtes-vous sûr-e ?"
-    CHACHES_NEED_TO_BE_SAVED_DESC: "Ces changements doivent être sauvegardés sur le serveur."
+    LOADING_PROCESS: "Mise à jour de la liste de filtres"
+    DELETING_ASK: "Êtes-vous sûr ?"
+    CHACHES_NEED_TO_BE_SAVED_DESC: "Ces changements doivent être enregistrés sur le serveur."
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "Identité"
     LABEL_DISPLAY_NAME: "Nom"
@@ -455,7 +455,7 @@ fr_FR:
     LABEL_ADD_SIGNATURE_TO_ALL: "Ajouter votre signature à tous les messages sortants"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sécurité"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Configurate 2-Step verification"
+    LABEL_CONFIGURATE_TWO_FACTOR: "Configurer l'authentification en deux étapes"
     LABEL_AUTOLOGOUT: "Déconnexion automatique"
     AUTOLOGIN_NEVER_OPTION_NAME: "Jamais"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
@@ -465,13 +465,13 @@ fr_FR:
     LABEL_IDENTITY: "Identité"
     LABEL_LAYOUT: "Disposition"
     LABEL_LAYOUT_NO_SPLIT: "Pas de séparation"
-    LABEL_LAYOUT_VERTICAL_SPLIT: "Partage vertical"
-    LABEL_LAYOUT_HORIZONTAL_SPLIT: "Partage horizontal"
+    LABEL_LAYOUT_VERTICAL_SPLIT: "Séparation vertical"
+    LABEL_LAYOUT_HORIZONTAL_SPLIT: "Séparation horizontal"
     LABEL_EDITOR: "Éditeur de texte par défaut"
     LABEL_EDITOR_HTML: "HTML"
-    LABEL_EDITOR_PLAIN: "Non-formatté"
+    LABEL_EDITOR_PLAIN: "Non-formaté"
     LABEL_EDITOR_HTML_FORCED: "HTML (forcé)"
-    LABEL_EDITOR_PLAIN_FORCED: "Non-formatté (forcé)"
+    LABEL_EDITOR_PLAIN_FORCED: "Non-formaté (forcé)"
     LABEL_ANIMATION: "Interface animation"
     LABEL_ANIMATION_FULL: "Plein"
     LABEL_ANIMATION_NORMAL: "Normal"
@@ -518,13 +518,13 @@ fr_FR:
     BUTTON_FACEBOOK_DISCONNECT: "Se déconnecter de Facebook"
     MAIN_FACEBOOK_DESC: "Après l'activation de la connexion via Facebook, vous pouvez vous connecter à ce compte en utilisant le bouton Facebook sur l'écran de connexion."
     LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Se connectez à Twitter"
-    BUTTON_TWITTER_DISCONNECT: "Se déconnectez de Twitter"
+    BUTTON_TWITTER_CONNECT: "Se connecter à Twitter"
+    BUTTON_TWITTER_DISCONNECT: "Se déconnecter de Twitter"
     MAIN_TWITTER_DESC: "Après l'activation de la connexion via Twitter, vous pouvez vous connecter à ce compte en utilisant le bouton Twitter sur l'écran de connexion."
   SETTINGS_FOLDERS:
-    LEGEND_FOLDERS: "Listes des dossiers"
-    BUTTON_CREATE: "Créer dossier"
-    BUTTON_SYSTEM: "Sélectionner les dossiers système"
+    LEGEND_FOLDERS: "Liste des dossiers"
+    BUTTON_CREATE: "Créer un dossier"
+    BUTTON_SYSTEM: "Sélectionner les dossiers systèmes"
     BUTTON_DELETE: "Supprimer"
     BUTTON_SUBSCRIBE: "S'abonner"
     BUTTON_UNSUBSCRIBE: "Se désabonner"
@@ -537,7 +537,7 @@ fr_FR:
     TO_MANY_FOLDERS_DESC_2: "Seulement une partie d'entre eux ont été affichés afin de limiter les problèmes de performance."
     HELP_DELETE_FOLDER: "Supprimer le dossier"
     HELP_SHOW_HIDE_FOLDER: "Afficher/masquer le dossier"
-    HELP_CHECK_FOR_NEW_MESSAGES: "Check/don't check for new messages"
+    HELP_CHECK_FOR_NEW_MESSAGES: "Cocher/Décocher pour les nouveaux messages"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Liste des comptes"
     LEGEND_IDENTITIES: "Identités"
@@ -546,7 +546,7 @@ fr_FR:
     BUTTON_ADD_IDENTITY: "Ajouter une identité"
     BUTTON_DELETE: "Supprimer"
     LOADING_PROCESS: "Mise à jour de la liste des comptes"
-    DELETING_ASK: "Êtes-vous sûr-e ?"
+    DELETING_ASK: "Êtes-vous sûr ?"
     DEFAULT_IDENTITY_LABEL: "défaut"
   SETTINGS_IDENTITIES:
     LEGEND_IDENTITY: "Identité"
@@ -559,7 +559,7 @@ fr_FR:
     BUTTON_ADD_IDENTITY: "Ajouter une identitié"
     BUTTON_DELETE: "Supprimer"
     LOADING_PROCESS: "Met à jour la liste d'identités"
-    DELETING_ASK: "Êtes-vous sûr-e ?"
+    DELETING_ASK: "Êtes-vous sûr ?"
   SETTINGS_CHANGE_PASSWORD:
     LEGEND_CHANGE_PASSWORD: "Modifier le mot de passe"
     LABEL_CURRENT_PASSWORD: "Mot de passe actuel"
@@ -569,11 +569,11 @@ fr_FR:
     ERROR_PASSWORD_MISMATCH: "Les mots de passe ne correspondent pas, merci de réessayer"
   SETTINGS_OPEN_PGP:
     LEGEND_OPEN_PGP: "OpenPGP"
-    BUTTON_ADD_OPEN_PGP_KEY: "Importer la clef OpenPGP"
-    BUTTON_GENERATE_OPEN_PGP_KEYS: "Générer les clefs OpenPGP"
-    TITLE_PRIVATE: "Privé"
-    TITLE_PUBLIC: "Public"
-    DELETING_ASK: "Êtes-vous sûr-e ?"
+    BUTTON_ADD_OPEN_PGP_KEY: "Importer la clé OpenPGP"
+    BUTTON_GENERATE_OPEN_PGP_KEYS: "Générer les clés OpenPGP"
+    TITLE_PRIVATE: "Privée"
+    TITLE_PUBLIC: "Publique"
+    DELETING_ASK: "Êtes-vous sûr ?"
     GENERATE_ONLY_HTTPS: "HTTPS seulement"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Aide pour les raccourcis clavier"
@@ -584,24 +584,24 @@ fr_FR:
     LABEL_OPEN_USER_DROPDOWN: "Ouvrir la liste déroulante des utilisateurs"
     LABEL_REPLY: "Répondre"
     LABEL_REPLY_ALL: "Répondre à tous"
-    LABEL_FORWARD: "Réexpédier"
-    LABEL_FORWARD_MULTIPLY: "Réexpédier (multiple)"
+    LABEL_FORWARD: "Transférer"
+    LABEL_FORWARD_MULTIPLY: "Transférer comme pièce(s) jointe(s)"
     LABEL_HELP: "Aide"
-    LABEL_CHECK_ALL: "Marquer tous les messages comme lus"
+    LABEL_CHECK_ALL: "Sélectionner tous les messages"
     LABEL_ARCHIVE: "Archiver"
     LABEL_DELETE: "Supprimer"
     LABEL_OPEN_THREAD: "Ouvrir le message selectionné"
     LABEL_MOVE: "Déplacer"
     LABEL_READ: "Marquer les messages sélectionnés comme lus"
     LABEL_UNREAD: "Marquer les messages sélectionnés comme non-lus"
-    LABEL_IMPORTANT: "Important, etoile/drapeau séléctionnés"
+    LABEL_IMPORTANT: "Important, étoile/drapeau sélectionnés"
     LABEL_SEARCH: "Rechercher"
     LABEL_CANCEL_SEARCH: "Annuler la recherche"
     LABEL_FULLSCREEN_ENTER: "Plein écran (Mise en page avec aperçu)"
     LABEL_VIEW_MESSAGE_ENTER: "Voir le message (Mise en page sans aperçu)"
     LABEL_SWITCH_TO_MESSAGE: "Aller au message sélectionné"
     LABEL_SWITCH_TO_FOLDER_LIST: "Aller à la liste des dossiers"
-    LABEL_FULLSCREEN_TOGGLE: "Basculer le mode plein écran"
+    LABEL_FULLSCREEN_TOGGLE: "Basculer en mode plein écran"
     LABEL_BLOCKQUOTES_TOGGLE: "Basculer les citations en bloc"
     LABEL_THREAD_NEXT: "Message précédent de la liste"
     LABEL_THREAD_PREV: "Message suivant de la liste"
@@ -611,21 +611,21 @@ fr_FR:
     LABEL_SWITCH_TO_LIST: "Retourner à la liste des messages"
     LABEL_OPEN_COMPOSE_POPUP: "Ouvrir la fenêtre d'écriture"
     LABEL_MINIMIZE_COMPOSE_POPUP: "Minimize compose popup"
-    LABEL_OPEN_IDENTITIES_DROPDOWN: "Liste de sélection des identitiés"
+    LABEL_OPEN_IDENTITIES_DROPDOWN: "Liste de sélection des identités"
     LABEL_SAVE_MESSAGE: "Enregistrer le message"
     LABEL_SEND_MESSAGE: "Envoyer le message"
     LABEL_CLOSE_COMPOSE: "Fermer la fenêtre d'écriture"
   PGP_NOTIFICATIONS:
-    NO_PUBLIC_KEYS_FOUND: "Aucune clef publique n'a pu être trouvée"
-    NO_PUBLIC_KEYS_FOUND_FOR: "Aucune clef publique n'a pu être trouvée pour \"%EMAIL%\"\n"
-    NO_PRIVATE_KEY_FOUND: "Aucune clef privée n'a pu être trouvée"
+    NO_PUBLIC_KEYS_FOUND: "Aucune clé publique n'a pu être trouvée"
+    NO_PUBLIC_KEYS_FOUND_FOR: "Aucune clé publique n'a pu être trouvée pour \"%EMAIL%\""
+    NO_PRIVATE_KEY_FOUND: "Aucune clé privée n'a pu être trouvée"
     NO_PRIVATE_KEY_FOUND_FOR: "Aucune clef privée n'a pu être trouvée pour \"%EMAIL%\"\n"
-    ADD_A_PUBLICK_KEY: "Add a public key"
+    ADD_A_PUBLICK_KEY: "Ajouter une clé publique"
     UNVERIFIRED_SIGNATURE: "Signature non-vérifiée"
     DECRYPTION_ERROR: "Erreur lors du déchiffrement OpenPGP"
     GOOD_SIGNATURE: "Signature valide pour %USER%"
     PGP_ERROR: "Erreur OpenPGP: %ERROR%"
-    SPECIFY_FROM_EMAIL: "Merci de spécifier une adresse email pour FROM"
+    SPECIFY_FROM_EMAIL: "Merci de spécifier une adresse email pour DE"
     SPECIFY_AT_LEAST_ONE_RECIPIENT: "Merci de spécifier au moins un destinataire"
   NOTIFICATIONS:
     INVALID_TOKEN: "Jeton invalide"
@@ -633,22 +633,22 @@ fr_FR:
     ACCESS_ERROR: "Erreur d'accès"
     CONNECTION_ERROR: "Serveur injoignable"
     CAPTCHA_ERROR: "CAPTCHA incorrect."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Cet ID sociale n'est pas encore assigné à une adresse email. Connectez-vous
-      en utilisant les informations d'identification du courrier électronique et activer
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
+      utilisant les informations d'identification du courrier électronique et activez
       cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Cet ID sociale n'est pas encore assigné à une adresse email. Connectez-vous
-      en utilisant les informations d'identification du courrier électronique et activer
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
+      utilisant les informations d'identification du courrier électronique et activez
       cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Cet ID sociale n'est pas encore assigné à une adresse email. Connectez-vous
-      en utilisant les informations d'identification du courrier électronique et activer
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
+      utilisant les informations d'identification du courrier électronique et activez
       cette fonctionnalité dans les paramètres de votre compte.
     DOMAIN_NOT_ALLOWED: "Ce domaine n'est pas autorisé"
     ACCOUNT_NOT_ALLOWED: "Ce compte n'est pas autorisé"
-    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double validation requise"
-    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Erreur lors de la double validation"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double authentification requise"
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Erreur lors de la double authentification"
     COULD_NOT_SAVE_NEW_PASSWORD: "Impossible d'enregistrer le nouveau mot de passe"
     CURRENT_PASSWORD_INCORRECT: "Le mot de passe actuel est incorrect"
     NEW_PASSWORD_SHORT: "Le mot de passe est trop court"
@@ -662,15 +662,15 @@ fr_FR:
     CANT_SAVE_MESSAGE: "Impossible d'enregistrer le message"
     CANT_SEND_MESSAGE: "Impossible d'envoyer le message"
     INVALID_RECIPIENTS: "Destinataires invalides"
-    CANT_SAVE_FILTERS: "Impossible de sauver les filtres"
-    CANT_GET_FILTERS: "Impossible de lire les filtres"
-    FILTERS_ARE_NOT_CORRECT: "Les filtres ne sont pas correcte"
+    CANT_SAVE_FILTERS: "Impossible d'enregistrer les filtres"
+    CANT_GET_FILTERS: "Impossible d'obtenir les filtres"
+    FILTERS_ARE_NOT_CORRECT: "Les filtres ne sont pas corrects"
     CANT_CREATE_FOLDER: "Impossible de créer le dossier"
     CANT_RENAME_FOLDER: "Impossible de renommer le dossier"
     CANT_DELETE_FOLDER: "Impossible de supprimer le dossier"
     CANT_DELETE_NON_EMPTY_FOLDER: "Impossible de supprimer un dossier non-vide"
-    CANT_SUBSCRIBE_FOLDER: "Impossible d'abonner le dossier"
-    CANT_UNSUBSCRIBE_FOLDER: "Impossible de désabonner le dossier"
+    CANT_SUBSCRIBE_FOLDER: "Impossible de s'abonner au dossier"
+    CANT_UNSUBSCRIBE_FOLDER: "Impossible de se désabonner du dossier"
     CANT_SAVE_SETTINGS: "Impossible d'enregistrer les paramètres"
     CANT_SAVE_PLUGIN_SETTINGS: "Impossible d'enregistrer les paramètres"
     DOMAIN_ALREADY_EXISTS: "Le domaine existe déjà"
@@ -679,28 +679,29 @@ fr_FR:
     INVALID_PLUGIN_PACKAGE: "Ce plug-in est invalide"
     UNSUPPORTED_PLUGIN_PACKAGE: "Ce plug-in n'est pas supporté"
     LICENSING_SERVER_IS_UNAVAILABLE: "Le serveur d'abonnement est inaccessible"
-    LICENSING_DOMAIN_EXPIRED: "L'abonnement de ce domaine a expiré."
+    LICENSING_DOMAIN_EXPIRED: "L'abonnement pour ce domaine a expiré."
     LICENSING_DOMAIN_BANNED: "L'abonnement pour ce domaine est interdit."
-    DEMO_SEND_MESSAGE_ERROR: "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes!"
+    DEMO_SEND_MESSAGE_ERROR: "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes !"
     DEMO_ACCOUNT_ERROR: "Pour des raisons de sécurité, ce compte n'est pas autorisé à faire cette action !"
     ACCOUNT_ALREADY_EXISTS: "Ce compte existe déjà"
+    ACCOUNT_DOES_NOT_EXIST: "Ce compte n'existe pas"
     MAIL_SERVER_ERROR: "Une erreur est survenue lors de l'accès au serveur mail"
-    INVALID_INPUT_ARGUMENT: "Arguments invalide"
+    INVALID_INPUT_ARGUMENT: "Argument invalide"
     UNKNOWN_ERROR: "Erreur inconnue"
   STATIC:
     BACK_LINK: "Recharger"
-    DOMAIN_LIST_DESC: "Liste des domaines autorisés."
+    DOMAIN_LIST_DESC: "Liste des domaines auxquels le webmail est autorisé à accéder."
     PHP_EXSTENSIONS_ERROR_DESC: "Les extensions PHP nécessaires ne sont pas disponibles dans votre configuration de PHP !"
     PHP_VERSION_ERROR_DESC: "Votre version de PHP (% VERSION%) est inférieure à la minimale requise 5.3.0 !"
     NO_SCRIPT_TITLE: "JavaScript est nécessaire pour cette application."
     NO_SCRIPT_DESC: |
       Le support de JavaScript n'est pas disponible dans votre navigateur.
-      S'il vous plaît activer le support de JavaScript dans les paramètres de votre navigateur et réessayez.
+      S'il vous plaît activez le support de JavaScript dans les paramètres de votre navigateur et réessayez.
     NO_COOKIE_TITLE: "Le support des cookies est nécessaire pour cette application."
     NO_COOKIE_DESC: |
       Le support des cookies n'est pas disponible dans votre navigateur.
-      S'il vous plaît activer le support des cookies dans les paramètres de votre navigateur et réessayez.
-    BAD_BROWSER_TITLE: "Votre navigateur n'est pas à jour."
+      S'il vous plaît activez le support des cookies dans les paramètres de votre navigateur et réessayez.
+    BAD_BROWSER_TITLE: "Votre navigateur est obsolète."
     BAD_BROWSER_DESC: |
       Pour utiliser toutes les fonctionnalités de l'application,
-      télécharger et installer l'un de ces navigateurs :
+      téléchargez et installez l'un de ces navigateurs :

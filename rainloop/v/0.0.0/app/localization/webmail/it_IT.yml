@@ -680,6 +680,7 @@ it_IT:
     DEMO_SEND_MESSAGE_ERROR: "Per ragioni di sicurezza, questa demo non è abilitata ad inviare email ad inidirizzi esterni"
     DEMO_ACCOUNT_ERROR: "Per ragioni di sicurezza, questo account non è autorizzato ad effettuare questa operazione!"
     ACCOUNT_ALREADY_EXISTS: "L'account esiste già"
+    ACCOUNT_DOES_NOT_EXIST: "L'account non esiste"
     MAIL_SERVER_ERROR: "Si è verificato un errore nel server mail"
     INVALID_INPUT_ARGUMENT: "Argomento non valido"
     UNKNOWN_ERROR: "Errore sconosciuto"
