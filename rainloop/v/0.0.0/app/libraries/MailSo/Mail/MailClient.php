@@ -1412,7 +1412,10 @@ class MailClient
 		}
 
 		$sCriteriasResult = \trim($sCriteriasResult);
-		$sCriteriasResult .= ' UNDELETED';
+		if (\MailSo\Config::$MessageListUndeletedOnly)
+		{
+			$sCriteriasResult = \trim($sCriteriasResult.' UNDELETED');
+		}
 
 		$sFilter = \trim($sFilter);
 		if ('' !== $sFilter)
@@ -1423,7 +1426,7 @@ class MailClient
 		$sCriteriasResult = \trim($sCriteriasResult);
 		if ('' !== \MailSo\Config::$MessageListPermanentFilter)
 		{
-			$sCriteriasResult .= ' '.\MailSo\Config::$MessageListPermanentFilter;
+			$sCriteriasResult = \trim($sCriteriasResult.' '.\MailSo\Config::$MessageListPermanentFilter);
 		}
 
 		$sCriteriasResult = \trim($sCriteriasResult);
@@ -1865,7 +1868,7 @@ class MailClient
 			}
 		}
 
-		return $aResultUids;
+		return \is_array($aResultUids) ? $aResultUids : array();
 	}
 
 	/**
@@ -1964,7 +1967,7 @@ class MailClient
 			$bUseThreadSortIfSupported = false;
 		}
 
-		if (0 < $iMessageRealCount)
+		if (0 < $iMessageRealCount && !$bMessageListOptimization)
 		{
 			$mAllSortedUids = $this->GetUids($oCacher, '', $sFilter,
 				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
@@ -2061,11 +2064,53 @@ class MailClient
 
 				if (0 < \count($aUids))
 				{
-					$iOffset = (0 > $iOffset) ? 0 : $iOffset;
 					$aRequestUids = \array_slice($aUids, $iOffset, $iLimit);
-
 					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
 				}
+			}
+		}
+		else if (0 < $iMessageRealCount)
+		{
+			if ($this->oLogger)
+			{
+				$this->oLogger->Write('List optimization (count: '.$iMessageRealCount.
+					', limit:'.\MailSo\Config::$MessageListCountLimitTrigger.')');
+			}
+
+			$oMessageCollection->MessageCount = $iMessageRealCount;
+			$oMessageCollection->MessageUnseenCount = $iMessageUnseenCount;
+
+			if (0 < \strlen($sSearch) || $bUseFilter)
+			{
+				$aUids = $this->GetUids($oCacher, $sSearch, $sFilter,
+					$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+
+				if (0 < \count($aUids))
+				{
+					$oMessageCollection->MessageResultCount = \count($aUids);
+
+					$aRequestUids = \array_slice($aUids, $iOffset, $iLimit);
+					$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestUids, true);
+				}
+				else
+				{
+					$oMessageCollection->MessageResultCount = 0;
+				}
+			}
+			else
+			{
+				$oMessageCollection->MessageResultCount = $iMessageRealCount;
+
+				if (1 < $iMessageRealCount)
+				{
+					$aRequestIndexes = \array_slice(array_reverse(range(1, $iMessageRealCount)), $iOffset, $iLimit);
+				}
+				else
+				{
+					$aRequestIndexes = \array_slice(array(1), $iOffset, $iLimit);
+				}
+
+				$this->MessageListByRequestIndexOrUids($oMessageCollection, $aRequestIndexes, false);
 			}
 		}
 
