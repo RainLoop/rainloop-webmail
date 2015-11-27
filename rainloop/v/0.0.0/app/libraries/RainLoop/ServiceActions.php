@@ -226,6 +226,8 @@ class ServiceActions
 	 */
 	public function ServiceOwnCloudAuth()
 	{
+		$this->oHttp->ServerNoCache();
+
 		if (!\RainLoop\Utils::IsOwnCloud() ||
 			!isset($_ENV['___rainloop_owncloud_email']) ||
 			!isset($_ENV['___rainloop_owncloud_password']) ||
@@ -840,6 +842,8 @@ class ServiceActions
 	 */
 	public function ServiceMailto()
 	{
+		$this->oHttp->ServerNoCache();
+
 		$sTo = \trim($this->oHttp->GetQuery('to', ''));
 		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo))
 		{
@@ -859,6 +863,8 @@ class ServiceActions
 	 */
 	public function ServicePing()
 	{
+		$this->oHttp->ServerNoCache();
+
 		@\header('Content-Type: text/plain; charset=utf-8');
 		$this->oActions->Logger()->Write('Pong', \MailSo\Log\Enumerations\Type::INFO, 'PING');
 		return 'Pong';
@@ -869,6 +875,8 @@ class ServiceActions
 	 */
 	public function ServiceInfo()
 	{
+		$this->oHttp->ServerNoCache();
+
 		if ($this->oActions->IsAdminLoggined(false))
 		{
 			@\header('Content-Type: text/html; charset=utf-8');
@@ -881,6 +889,8 @@ class ServiceActions
 	 */
 	public function ServiceSso()
 	{
+		$this->oHttp->ServerNoCache();
+
 		$oException = null;
 		$oAccount = null;
 		$bLogout = true;
@@ -997,6 +1007,8 @@ class ServiceActions
 	 */
 	public function ServiceExternalLogin()
 	{
+		$this->oHttp->ServerNoCache();
+		
 		$oException = null;
 		$oAccount = null;
 		$bLogout = true;
@@ -1063,6 +1075,8 @@ class ServiceActions
 	 */
 	public function ServiceExternalSso()
 	{
+		$this->oHttp->ServerNoCache();
+
 		$sResult = '';
 		$bLogout = true;
 		$sKey = $this->oActions->Config()->Get('labs', 'external_sso_key', '');
@@ -1104,6 +1118,8 @@ class ServiceActions
 	 */
 	public function ServiceChange()
 	{
+		$this->oHttp->ServerNoCache();
+
 		$oAccount = $this->oActions->GetAccount();
 
 		if ($oAccount && $this->oActions->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))

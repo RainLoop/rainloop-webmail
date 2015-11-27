@@ -13,7 +13,7 @@
 			<div class="controls">
 				<div class="flag-selector">
 					<span class="flag-wrapper">
-						<span data-bind="css: 'flag flag-' + language()" style=""></span>
+						<span data-bind="css: 'flag flag-' + language().toLowerCase()" style=""></span>
 					</span>
 					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
 					&nbsp;&nbsp;

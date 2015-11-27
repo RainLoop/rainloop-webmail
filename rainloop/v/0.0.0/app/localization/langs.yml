@@ -2,7 +2,7 @@
 Common:
     LANGS_NAMES:
         LANG_EN: English
-        LANG_EN_US: English (US)
+        LANG_EN_US: English
         LANG_EN_GB: English (UK)
         LANG_EN_UK: English (UK)
         LANG_EN_CA: English (Canadian)

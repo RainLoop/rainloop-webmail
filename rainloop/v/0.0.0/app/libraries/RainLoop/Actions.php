@@ -8923,6 +8923,14 @@ class Actions
 				$sDefault = $sDefault.'_'.$sDefault;
 			}
 
+			$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
+				return \strtoupper($aData[0]);
+			}, $sLanguage);
+
+			$sDefault = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
+				return \strtoupper($aData[0]);
+			}, $sDefault);
+
 			if (\in_array($sLanguage, $aLang))
 			{
 				$sResult = $sLanguage;
@@ -8935,8 +8943,8 @@ class Actions
 
 			if (empty($sResult) && !$bAllowEmptyResult)
 			{
-				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_us');
-				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_us';
+				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_US');
+				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_US';
 			}
 		}
 
@@ -9063,7 +9071,7 @@ class Actions
 				{
 					if ('.' !== $sFile{0} && \is_file($sDir.'/'.$sFile) && '.yml' === \substr($sFile, -4))
 					{
-						$sLang = \strtolower(\substr($sFile, 0, -4));
+						$sLang = \substr($sFile, 0, -4);
 						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang)
 						{
 							\array_push($aList, $sLang);
@@ -9482,11 +9490,13 @@ class Actions
 
 		if (null === $aLang)
 		{
+			$sLang = $this->ValidateLanguage($sLang, 'en');
+
 			$aLang = array();
 //			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aLang);
 //			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLang.'.ini', $aLang);
 			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aLang);
-			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/webmail/'.$sLang.'.ini', $aLang);
+			\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/webmail/'.$sLang.'.yml', $aLang);
 
 			$this->Plugins()->ReadLang($sLang, $aLang);
 		}
