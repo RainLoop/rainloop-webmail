@@ -28,11 +28,11 @@ class Message extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @return string
 	 */
-	public function syncMessageList($oMessageList)
+	public function syncMessageList($oMessageCollection)
 	{
 		\sleep(1);
 		return $this->oDriver instanceof \RainLoop\Providers\Message\MessageInterface ?
-			$this->oDriver->syncMessageList($oMessageList) : 'Message driver is not allowed';
+			$this->oDriver->syncMessageList($oMessageCollection) : 'Message driver is not allowed';
 	}
 
 	/**

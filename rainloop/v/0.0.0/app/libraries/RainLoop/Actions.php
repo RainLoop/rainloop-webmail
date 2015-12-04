@@ -5796,10 +5796,7 @@ class Actions
 
 		$this->Plugins()->RunHook('pdo.save-message', &$oMessageList);
 		$oMessageProvider = $this->MessageProvider();
-		var_dump("===");
-		var_dump($oMessageProvider);
-		var_dump("===");
-		$oResult = $oMessageProvider->Test();
+		$oResult = $oMessageProvider->syncMessageList($oMessageList);
 		Chromephp::log("1. ", $oResult);
 
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);

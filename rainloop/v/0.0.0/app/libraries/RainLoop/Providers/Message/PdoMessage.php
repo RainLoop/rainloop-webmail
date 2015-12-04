@@ -6,6 +6,9 @@ class PdoMessage
 	extends \RainLoop\Common\PdoAbstract
 	implements \RainLoop\Providers\Message\MessageInterface
 {
+
+	const MYSQL_TABLE = "rainloop_ab_message";
+
 	/**
 	 * @var string
 	 */
@@ -52,21 +55,126 @@ class PdoMessage
 		return $this->IsSupported() && false; // TODO
 	}
 
-	private function syncMessageList($oMessageList)
+	/**
+	 * @return true
+	 */
+	public function syncMessageList($oMessageCollection, $bSyncDb=true)
 	{
-		\Rainloop\ChromePhp::log("pdomessage sync message list!!!");
-		// var_dump($oMessageList);
-		return $this->prepareAndExecute('INSERT FROM :table WHERE uid = :uid AND deleted = 1', array(
-			':table' => MYSQL_TABLE,
-			':uid' => array($oMessage->uid, \PDO::PARAM_INT)
-		));
+		if ($bSyncDb)
+		{
+			$this->SyncDatabase();
+		}
+		var_dump("++++");
+		$oResult = false;
+		$oMessageList =& $oMessageCollection->GetAsArray();
+		foreach ($oMessageList as $key => $oMessage) {
+			// $toprint = $oMessage->Uid();
+			// var_dump("*");
+			// var_dump($toprint, $oMessage->Uid());
+			if ($this->isUidSaved( $oMessage->Uid() ) )
+			{
+				continue;
+			}
+			$mResult = $this->saveMessage($oMessage);
+			var_dump("2");
+			var_dump($mResult);
+			
+		}
+
+		var_dump("++++");
+		return true;
 	}
 
+	/**
+	 * @return \PDOStatement|null
+	 */
+	private function saveMessage(&$oMessage)
+	{
+
+		$aMessageData = $this->prepareMessageData($oMessage);
+
+		$mResult = $this->prepareAndExecute($aMessageData[0], $aMessageData[1]);
+		return $mResult;
+	}
+
+
+	/**
+	 * @param string $sUid
+	 *
+	 * @return bool true
+	 * @return \PDOStatement|null
+	 */
+	public function isUidSaved($iUid)
+	{
+		$aValues = array(
+				':uid' => array($iUid, \PDO::PARAM_INT)
+			);
+		$sSqlMessage = 'SELECT id FROM rainloop_ab_message WHERE uid = :uid';
+		$oStmt = $this->prepareAndExecute($sSqlMessage, $aValues);
+		
+		if ($oStmt) {
+			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+			var_dump($aFetch);
+			return (\is_array($aFetch) && 0 < \count($aFetch));
+		} else {
+			return False;
+		}
+	}
+
+	/**
+	 * @return tuple (string::message sql, array: value)
+	 */
+	private function prepareMessageData($oMessage){
+		// $sBcc =  $oMessage['Bcc'];
+		// $sCc =  $oMessage['Cc'];
+		// $sDateTimeStampInUTC =  $oMessage['DateTimeStampInUTC'];
+		// $sDeliveredTo =  $oMessage['DeliveredTo'];
+		// $sExternalProxy =  $oMessage['ExternalProxy'];
+		// $sFolder =  $oMessage['Folder'];
+		// $aFrom =  $oMessage['From'];
+		// $bHasAttachments =  $oMessage['HasAttachments'];
+		// $sHash =  $oMessage['Hash'];
+		// $bIsAnswered =  $oMessage['IsAnswered'];
+		// $bIsDeleted =  $oMessage['IsDeleted'];
+		// $bIsFlagged =  $oMessage['IsFlagged'];
+		// $bIsForwarded =  $oMessage['IsForwarded'];
+		// $bIsReadReceipt =  $oMessage['IsReadReceipt'];
+		// $bIsSeen =  $oMessage['IsSeen'];
+		$sMessageId =  $oMessage->MessageId();
+		// $iPriority =  $oMessage['Priority'];
+		// $sReadReceipt =  $oMessage['ReadReceipt'];
+		// $oReplyTo =  $oMessage['ReplyTo'];
+		// $sRequestHash =  $oMessage['RequestHash'];
+		// $oSender =  $oMessage['Sender'];
+		// $iSensitivity =  $oMessage['Sensitivity'];
+		$sSubject =  $oMessage->Subject();
+		// $aSubjectParts =  $oMessage['SubjectParts'];
+		// $bTextPartIsTrimmed =  $oMessage['TextPartIsTrimmed'];
+		// $aThreads =  $oMessage['Threads'];
+		// $aTo =  $oMessage['To'];
+		$iUid =  $oMessage->Uid();
+
+		// var_dump($iUid, $sMessageId, $sSubject);
+		$aValues = array(
+				':uid' => array($iUid, \PDO::PARAM_INT),
+				':message_id' => array($sMessageId, \PDO::PARAM_INT),
+				':subject' => array($sSubject, \PDO::PARAM_STR)
+			);
+
+		$sSqlMessage = 'INSERT INTO rainloop_ab_message '.
+						'( subject, uid, message_id)'.
+						'VALUES'.
+						'(:subject, :uid, :message_id)';
+		return array($sSqlMessage, $aValues);
+	}
+
+	/**
+	 * @return bool
+	 */
 	private function createMessage()
 	{
-		\Rainloop\ChromePhp::log("pdomessage create message!!!");
 		return $this->prepareAndExecute('INSERT FROM :table WHERE uid = :uid AND deleted = 1', array(
-			':table' => MYSQL_TABLE,
+			':table' => self::MYSQL_TABLE,
 			':uid' => array($oMessage->uid, \PDO::PARAM_INT)
 		));
 	}
@@ -202,7 +310,6 @@ SQLITEINITIAL;
 				}
 			}
 		}
-		\Rainloop\ChromePhp::log("getInitialTablesArray", $sDbType, $aResult);
 		return $aResult;
 	}
 
@@ -218,7 +325,6 @@ SQLITEINITIAL;
 		}
 
 		$mCache = false;
-		\Rainloop\ChromePhp::log("SyncDatabase");
 		switch ($this->sDsnType)
 		{
 			case 'mysql':
