@@ -114,8 +114,8 @@
 			}
 
 			this.passwordUpdateError(true);
-			this.errorDescription(oData && oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
-				Translator.getNotification(Enums.Notification.CouldNotSaveNewPassword));
+			this.errorDescription(
+				Translator.getNotificationFromResponse(oData, Enums.Notification.CouldNotSaveNewPassword));
 		}
 	};
 

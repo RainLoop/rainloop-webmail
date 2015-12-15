@@ -271,7 +271,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('TextArea', require('Component/TextArea'));
 
 		ko.components.register('x-script', require('Component/Script'));
-		ko.components.register('svg-icon', require('Component/SvgIcon'));
+//		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
 		if (/**false && /**/Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{

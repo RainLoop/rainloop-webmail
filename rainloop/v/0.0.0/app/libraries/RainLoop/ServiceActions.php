@@ -182,9 +182,21 @@ class ServiceActions
 			$aResponseItem = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
 
-			if (\is_array($aResponseItem) && 'Folders' === $sAction && $oException instanceof \RainLoop\Exceptions\ClientException)
+			if (\is_array($aResponseItem) && $oException instanceof \RainLoop\Exceptions\ClientException)
 			{
-				$aResponseItem['ClearAuth'] = true;
+				if ('Folders' === $sAction)
+				{
+					$aResponseItem['ClearAuth'] = true;
+				}
+
+				if ($oException->getLogoutOnException())
+				{
+					$aResponseItem['Logout'] = true;
+					if ($oException->getAdditionalMessage())
+					{
+						$this->oActions->SetSpecLogoutCustomMgsWithDeletion($oException->getAdditionalMessage());
+					}
+				}
 			}
 		}
 
@@ -1008,7 +1020,7 @@ class ServiceActions
 	public function ServiceExternalLogin()
 	{
 		$this->oHttp->ServerNoCache();
-		
+
 		$oException = null;
 		$oAccount = null;
 		$bLogout = true;

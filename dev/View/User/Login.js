@@ -230,7 +230,7 @@
 									oData.ErrorCode = Enums.Notification.AuthError;
 								}
 
-								this.submitError(Translator.getNotification(oData.ErrorCode));
+								this.submitError(Translator.getNotificationFromResponse(oData));
 
 								if ('' === this.submitError())
 								{
@@ -343,6 +343,11 @@
 
 			return bF || bG || bT;
 		}, this);
+
+		if (Settings.settingsGet('AdditionalLoginError') && !this.submitError())
+		{
+			this.submitError(Settings.settingsGet('AdditionalLoginError'));
+		}
 
 		kn.constructorEnd(this);
 	}

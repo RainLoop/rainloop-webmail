@@ -15,7 +15,6 @@ import Translator from 'Common/Translator';
 import Momentor from 'Common/Momentor';
 import Cache from 'Common/Cache';
 
-
 import SocialStore from 'Stores/Social';
 import SettingsStore from 'Stores/User/Settings';
 import AccountStore from 'Stores/User/Account';
@@ -514,7 +513,7 @@ class AppUser extends AbstractApp
 
 					Utils.delegateRunOnDestroy(AccountStore.accounts());
 
-					AccountStore.accounts(_.map(oData.Result['Accounts'], 
+					AccountStore.accounts(_.map(oData.Result['Accounts'],
 						(sValue) => new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0)));
 				}
 
@@ -914,7 +913,7 @@ class AppUser extends AbstractApp
 		Remote.suggestions((result, data) => {
 			if (Enums.StorageResultType.Success === result && data && Utils.isArray(data.Result))
 			{
-				callback(_.compact(_.map(data.Result, 
+				callback(_.compact(_.map(data.Result,
 					(item) => item && item[0] ? new EmailModel(item[0], item[1]) : null)));
 			}
 			else if (Enums.StorageResultType.Abort !== result)
@@ -1401,7 +1400,7 @@ class AppUser extends AbstractApp
 									fallback: false
 								});
 
-								Events.sub('mailbox.inbox-unread-count', 
+								Events.sub('mailbox.inbox-unread-count',
 									(iCount) => Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0));
 							}
 						}

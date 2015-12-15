@@ -233,9 +233,21 @@ class Translator
 			return message;
 		}
 
+		defCode = defCode ? (window.parseInt(defCode, 10)) || 0 : 0;
 		return _.isUndefined(this.notificationI18N[code]) ? (
 			defCode && _.isUndefined(this.notificationI18N[defCode]) ? this.notificationI18N[defCode] : ''
 		) : this.notificationI18N[code];
+	}
+
+	/**
+	 * @param {object} response
+	 * @param {number} defCode = Notification.UnknownNotification
+	 * @return {string}
+	 */
+	getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
+		return response && response.ErrorCode ?
+			this.getNotification(Utils.pInt(response.ErrorCode), response.ErrorMessage || '') :
+			this.getNotification(defCode);
 	}
 
 	/**

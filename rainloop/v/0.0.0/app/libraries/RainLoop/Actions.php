@@ -12,8 +12,8 @@ class Actions
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
+	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'rlspeclogoutcmk';
 	const AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
-	const AUTH_LAST_ERROR = 'rllasterrorcode';
 
 	/**
 	 * @var \MailSo\Base\Http
@@ -642,6 +642,28 @@ class Actions
 		}
 
 		return $sResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetSpecLogoutCustomMgsWithDeletion()
+	{
+		$sResult = \RainLoop\Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, '');
+		if (0 < strlen($sResult))
+		{
+			\RainLoop\Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
+		}
+
+		return $sResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function SetSpecLogoutCustomMgsWithDeletion($sMessage)
+	{
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage, 0);
 	}
 
 	/**
@@ -1597,6 +1619,11 @@ class Actions
 				$aResult['WelcomePageDisplay'] = '';
 
 				$aResult['StartupUrl'] = '';
+
+				if (empty($aResult['AdditionalLoginError']))
+				{
+					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
+				}
 			}
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
