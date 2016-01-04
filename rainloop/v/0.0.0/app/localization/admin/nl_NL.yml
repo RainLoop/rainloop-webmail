@@ -31,6 +31,7 @@ nl_NL:
     LEGEND_MAIN: "Diverse"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Maximale bijlage grootte"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Sta extra accounts toe"
+    LABEL_ALLOW_IDENTITIES: "Meerdere identiteiten toestaan"
     LABEL_ALLOW_TEMPLATES: "Sta templates toe"
     ALERT_WARNING: "Waarschuwing!"
     HTML_ALERT_WEAK_PASSWORD: |
@@ -58,6 +59,7 @@ nl_NL:
     LEGEND_USER: "Gebruiker"
     LABEL_USER_LOGO: "Logo"
     LABEL_USER_LOGO_TITLE: "Logo titel"
+    LABEL_USER_LOGO_MESSAGE: "Logo (Message View)"
     LABEL_USER_CUSTOM_CSS: "Aangepaste CSS"
     LEGEND_WELCOME_PAGE: "Welcom pagina"
     LABEL_WELCOME_PAGE_TITLE: "Titel"
@@ -178,6 +180,12 @@ nl_NL:
     LABEL_ACTIVATED: "Activated"
     ERROR_INVALID_SUBS_KEY: "Invalid Subscription Key"
     SUBS_KEY_ACTIVATED: "Subscription Key Activated Successfully"
+    HTML_DESC: |
+      Na activatie wordt het premium abonnement voor <b>%DOMAIN%</b> verlengd.
+      <br />
+      Let op: een activatie code kan slechts voor één domein worden gebruikt.
+      <br /><br />
+      Het activatieproces kan niet meer worden afgebroken of geannuleerd nadat het is gestart.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Add Domain"
     TITLE_ADD_DOMAIN_WITH_NAME: "Add Domain \"%NAME%\""

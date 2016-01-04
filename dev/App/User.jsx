@@ -653,7 +653,7 @@ class AppUser extends AbstractApp
 							MessageStore.initUidNextAndNewMessages(folder.fullNameRaw, data.Result.UidNext, data.Result.NewMessages);
 
 							const hash = Cache.getFolderHash(data.Result.Folder);
-							if (data.Result.Hash !== hash || '' === hash)
+							if (data.Result.Hash !== hash || '' === hash || unreadCountChange)
 							{
 								if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
@@ -662,17 +662,6 @@ class AppUser extends AbstractApp
 								else if (Cache.getFolderInboxName() === folder.fullNameRaw)
 								{
 									this.recacheInboxMessageList();
-								}
-							}
-							else if (unreadCountChange)
-							{
-								if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
-								{
-									list = MessageStore.messageList();
-									if (Utils.isNonEmptyArray(list))
-									{
-										this.folderInformation(folder.fullNameRaw, list);
-									}
 								}
 							}
 						}

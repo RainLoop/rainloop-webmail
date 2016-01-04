@@ -8763,14 +8763,18 @@ class Actions
 			$iCode = 0;
 			$sContentType = '';
 
-			$sData = $this->Http()->GetUrlAsString('http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404',
-				null, $sContentType, $iCode, $this->Logger(), 5,
+			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404';
+
+			$this->Logger()->Write('gravatar: '.$sGravatarUrl);
+
+			$sData = $this->Http()->GetUrlAsString($sGravatarUrl, null, $sContentType, $iCode, null, 5,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
 
 			$sContentType = \strtolower(\trim($sContentType));
-			if (200 !== $iCode || empty($sData) ||
-				!\in_array($sContentType, array('image/jpeg', 'image/jpg', 'image/png')))
+			if (200 !== $iCode || empty($sData) || !\in_array($sContentType, array('image/jpeg', 'image/jpg', 'image/png')))
 			{
+				$this->Logger()->Write('gravatar: code: '.$iCode.', content-type: '.$sContentType);
+
 				$sData = '';
 
 				$aMatch = array();

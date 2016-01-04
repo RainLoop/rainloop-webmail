@@ -289,13 +289,9 @@
 					{
 						NotificationStore.displayDesktopNotification(
 							Links.notificationMailIcon(),
-							MessageHelper.emailArrayToString(
-								MessageHelper.emailArrayFromJson(aNewMessages[iIndex].From), false),
+							MessageHelper.emailArrayToString(MessageHelper.emailArrayFromJson(aNewMessages[iIndex].From), false),
 							aNewMessages[iIndex].Subject,
-							{
-								'Folder': aNewMessages[iIndex].Folder,
-								'Uid': aNewMessages[iIndex].Uid
-							}
+							{'Folder': aNewMessages[iIndex].Folder, 'Uid': aNewMessages[iIndex].Uid}
 						);
 					}
 				}

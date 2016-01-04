@@ -155,6 +155,7 @@
 
 		'fillEmptyBlocks': false,
 		'ignoreEmptyParagraph': true,
+		'disableNativeSpellChecker': false,
 
 		'font_defaultLabel': 'Arial',
 		'fontSize_defaultLabel': '13',

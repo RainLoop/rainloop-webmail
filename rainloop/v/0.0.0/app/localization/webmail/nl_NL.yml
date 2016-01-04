@@ -680,6 +680,7 @@ nl_NL:
     DEMO_SEND_MESSAGE_ERROR: "Vanwege beveiliging is het niet toegestaan dat deze demo account e-mail naar extern verzend!"
     DEMO_ACCOUNT_ERROR: "Vanwege beveiliging is deze actie niet toegestaan voor deze account!"
     ACCOUNT_ALREADY_EXISTS: "Account bestaat al"
+    ACCOUNT_DOES_NOT_EXIST: "Account bestaat niet."
     MAIL_SERVER_ERROR: "Fout bij toegang tot de mail Server"
     INVALID_INPUT_ARGUMENT: "Ongeldig invoer argument"
     UNKNOWN_ERROR: "Er is een onbekende fout opgetreden"
