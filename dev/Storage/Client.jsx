@@ -1,12 +1,12 @@
 
 import {_} from 'common';
-import {Cookie} from 'Common/ClientStorageDriver/Cookie';
-import {LocalStorage} from 'Common/ClientStorageDriver/LocalStorage';
+import {CookieDriver} from 'Common/ClientStorageDriver/Cookie';
+import {LocalStorageDriver} from 'Common/ClientStorageDriver/LocalStorage';
 
 class ClientStorage
 {
 	constructor() {
-		const SupportedStorageDriver = _.find([LocalStorage, Cookie],
+		const SupportedStorageDriver = _.find([LocalStorageDriver, CookieDriver],
 			(StorageDriver) => StorageDriver && StorageDriver.supported());
 		this.driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
 	}

@@ -28,7 +28,7 @@
 		FolderStore = require('Stores/User/Folder'),
 		MessageStore = require('Stores/User/Message'),
 
-		Local = require('Storage/Client.jsx'),
+		Local = require('Storage/Client'),
 		Settings = require('Storage/Settings'),
 		Remote = require('Remote/User/Ajax'),
 

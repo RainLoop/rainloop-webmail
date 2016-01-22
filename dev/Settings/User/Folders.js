@@ -13,7 +13,7 @@
 		Cache = require('Common/Cache'),
 
 		Settings = require('Storage/Settings'),
-		Local = require('Storage/Client.jsx'),
+		Local = require('Storage/Client'),
 
 		FolderStore = require('Stores/User/Folder'),
 

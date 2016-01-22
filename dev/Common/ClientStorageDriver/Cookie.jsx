@@ -12,7 +12,7 @@ class CookieDriver
 	 */
 	set(key, data) {
 
-		let 
+		let
 			result = false,
 			storageResult = null
 		;
@@ -46,10 +46,10 @@ class CookieDriver
 	get(sKey) {
 
 		let result = null;
-		
+
 		try
 		{
-			const 
+			const
 				storageValue = $.cookie(CLIENT_SIDE_STORAGE_INDEX_NAME),
 				storageResult = null === storageValue ? null : JSON.parse(storageValue)
 			;

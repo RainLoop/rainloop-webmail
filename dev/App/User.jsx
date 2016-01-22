@@ -25,7 +25,7 @@ import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
 import ContactStore from 'Stores/User/Contact';
 
-import Local from 'Storage/Client.jsx';
+import Local from 'Storage/Client';
 import Settings from 'Storage/Settings';
 
 import Remote from 'Remote/User/Ajax';

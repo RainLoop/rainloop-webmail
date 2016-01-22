@@ -15,7 +15,7 @@
 		FolderStore = require('Stores/User/Folder'),
 
 		Settings = require('Storage/Settings'),
-		Local = require('Storage/Client.jsx'),
+		Local = require('Storage/Client'),
 
 		FolderModel = require('Model/Folder'),
 
