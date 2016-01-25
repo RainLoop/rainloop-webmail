@@ -11,7 +11,6 @@
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
 
 		FolderStore = require('Stores/User/Folder'),
 
@@ -28,10 +27,6 @@
 	function FolderCreateView()
 	{
 		AbstractView.call(this, 'Popups', 'PopupsFolderCreate');
-
-		Translator.initOnStartOrLangChange(function () {
-			this.sNoParentText = Translator.i18n('POPUPS_CREATE_FOLDER/SELECT_NO_PARENT');
-		}, this);
 
 		this.folderName = ko.observable('');
 		this.folderName.focused = ko.observable(false);
@@ -50,7 +45,7 @@
 				}
 			;
 
-			aTop.push(['', this.sNoParentText]);
+			aTop.push(['', '']);
 
 			if ('' !== FolderStore.namespace)
 			{
@@ -93,8 +88,6 @@
 
 	kn.extendAsViewModel(['View/Popup/FolderCreate', 'PopupsFolderCreateViewModel'], FolderCreateView);
 	_.extend(FolderCreateView.prototype, AbstractView.prototype);
-
-	FolderCreateView.prototype.sNoParentText = '';
 
 	FolderCreateView.prototype.simpleFolderNameValidation = function (sName)
 	{
