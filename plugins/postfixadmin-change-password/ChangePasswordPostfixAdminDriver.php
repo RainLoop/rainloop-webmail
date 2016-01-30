@@ -258,6 +258,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	private function cryptPassword($sPassword, $oPdo)
 	{
 		$sResult = '';
+		$sSalt = substr(str_shuffle('./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 16);
 		switch ($this->sEncrypt)
 		{
 			default:
@@ -277,6 +278,14 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 
 			case 'system':
 				$sResult = crypt($sPassword);
+				break;
+
+			case 'SHA256-CRYPT':
+				$sResult = '{SHA256-CRYPT}' . crypt($sPassword,'$5$'.$sSalt);
+				break;
+
+			case 'SHA512-CRYPT':
+				$sResult = '{SHA512-CRYPT}' . crypt($sPassword,'$6$'.$sSalt);
 				break;
 
 			case 'mysql_encrypt':
