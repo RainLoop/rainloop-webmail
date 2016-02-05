@@ -103,6 +103,11 @@
 					Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', {'NAME': sName}));
 		}, this);
 
+		this.domainDesc = ko.computed(function () {
+			var sName = this.name();
+			return !this.edit() && sName ? Translator.i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', {'NAME': '*@' + sName}) : '';
+		}, this);
+
 		this.domainIsComputed = ko.computed(function () {
 
 			var

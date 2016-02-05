@@ -273,7 +273,7 @@ ru_RU:
     BUTTON_CLOSE: "Закрыть"
     DANGER_DESC_WARNING: "Внимание!"
     DANGER_DESC_HTML_1: "Данное действие приведет к полному удалению всех писем из папки <strong>%FOLDER%</strong>."
-    DANGER_DESC_HTML_2: "После начала очистки, процесс <strong style=\"color:red\">нельзя</strong> будет останосить или отменить."
+    DANGER_DESC_HTML_2: "После начала очистки, процесс <strong style=\"color:red\">нельзя</strong> будет остановить или отменить."
     TITLE_CLEARING_PROCESS: "Очистка папки..."
   POPUPS_IMPORT_OPEN_PGP_KEY:
     TITLE_IMPORT_OPEN_PGP_KEY: "Импорт OpenPGP ключа"

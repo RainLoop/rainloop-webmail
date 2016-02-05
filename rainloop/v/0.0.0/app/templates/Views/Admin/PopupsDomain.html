@@ -8,15 +8,19 @@
 		<div class="modal-body">
 			<form class="form-horizontal domain-form" action="#/" onsubmit="return false;">
 				<div class="row" data-bind="visible: !edit()" style="margin-bottom: 20px;">
-					<div class="span10">
+					<div class="span5">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_NAME"></span>
 						&nbsp;
 						<span style="color: #aaa">(<span data-i18n="POPUPS_DOMAIN/NAME_HELPER"></span>)</span>
 						<br />
 						<input type="text" class="span4" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: name, hasfocus: name.focused" />
-
-						<span class="error-desc" data-bind="text: savingError"></span>
+						<div data-bind="visible: '' !== savingError()">
+							<span class="error-desc" data-bind="text: savingError"></span>
+						</div>
+					</div>
+					<div class="span5 domain-desc" data-bind="visible: '' !== domainDesc()">
+						<div data-bind="html: domainDesc"></div>
 					</div>
 				</div>
 				<div class="row">

@@ -216,6 +216,7 @@ en:
     BUTTON_CLOSE: "Close"
     BUTTON_ADD: "Add"
     BUTTON_UPDATE: "Update"
+    NEW_DOMAIN_DESC: "This domain configuration will allow you to work <br />with <i>%NAME%</i> email addresses."
     WHITE_LIST_ALERT: |
       List of domain users webmail is allowed to access.
       Use a space as delimiter.
