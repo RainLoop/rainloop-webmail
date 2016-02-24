@@ -38,7 +38,7 @@ module.exports = {
 				query: {
 					cacheDirectory: true,
 //			        plugins: ['transform-runtime'],
-					presets: ['es2015', 'stage-0']
+					presets: ['es2015-loose', 'stage-0']
 				}
 			}
 		]
