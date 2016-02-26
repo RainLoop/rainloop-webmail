@@ -1,7 +1,7 @@
 hu_HU:
   LOGIN:
     LABEL_EMAIL: "Email"
-    LABEL_LOGIN: "Belépés"
+    LABEL_LOGIN: "Bejelentkezés"
     LABEL_PASSWORD: "Jelszó"
     LABEL_SIGN_ME: "Megjegyzés"
     LABEL_VERIFICATION_CODE: "Megerősítő kód"
@@ -50,8 +50,8 @@ hu_HU:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Levélírás"
     BUTTON_CONTACTS: "Névjegyek"
-    INBOX_NAME: "Beérkezett"
-    SENT_NAME: "Elküldött"
+    INBOX_NAME: "Beérkező levelek"
+    SENT_NAME: "Elküldött levelek"
     DRAFTS_NAME: "Piszkozatok"
     SPAM_NAME: "Levélszemét"
     TRASH_NAME: "Lomtár"
@@ -141,7 +141,7 @@ hu_HU:
     MESSAGE_LOADING: "Betöltés"
     MESSAGE_VIEW_DESC: "Válassz egy üzenetet a listából, hogy megjelenjen itt."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Jelszó"
-    PGP_SIGNED_MESSAGE_DESC: "OpenPGP sláírt üzenet (kattints az ellenőrzéshez)"
+    PGP_SIGNED_MESSAGE_DESC: "OpenPGP aláírt üzenet (kattints az ellenőrzéshez)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP kódolt üzenet (kattints a visszafejtéshez)"
     LINK_DOWNLOAD_AS_ZIP: "Letöltés zip fájlként"
     LINK_SAVE_TO_OWNCLOUD: "Mentés ownCloud-ra"
@@ -149,10 +149,10 @@ hu_HU:
   READ_RECEIPT:
     SUBJECT: "Visszaigazolás (megjelenítve) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+      Ez egy ide küldött üzenet olvasási visszaigazolása: %READ-RECEIPT%.
 
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
+      Megjegyzés: Ez az olvasási visszaigazolás csak azt igazolja, hogy az üzenet megjelenítésre került a címzett számítógépén.
+      Nincs rá garancia, hogy a címzett elolvasta volna az üzenetet illetve megértette volna annak tartalmát.
   SUGGESTIONS:
     SEARCHING_DESC: "Keresés..."
   CONTACTS:
@@ -222,7 +222,7 @@ hu_HU:
     FORWARD_MESSAGE_TOP_FROM: "Feladó"
     FORWARD_MESSAGE_TOP_TO: "Címzett"
     FORWARD_MESSAGE_TOP_CC: "Másolat"
-    FORWARD_MESSAGE_TOP_SENT: "Elküldött"
+    FORWARD_MESSAGE_TOP_SENT: "Elküldött levelek"
     FORWARD_MESSAGE_TOP_SUBJECT: "Tárgy"
     EMPTY_TO_ERROR_DESC: "Legalább egy címzettet meg kell adni"
     NO_ATTACHMENTS_HERE_DESC: "Nincsenek mellékletek."
@@ -351,7 +351,7 @@ hu_HU:
     TITLE_SYSTEM_FOLDERS: "Rendszermappák kiválasztása"
     SELECT_CHOOSE_ONE: "Válassz egyet"
     SELECT_UNUSE_NAME: "Ne használd"
-    LABEL_SENT: "Elküldött"
+    LABEL_SENT: "Elküldött levelek"
     LABEL_DRAFTS: "Piszkozatok"
     LABEL_SPAM: "Levélszemét"
     LABEL_TRASH: "Lomtár"
@@ -399,7 +399,7 @@ hu_HU:
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Tesztelés nélkül nem lehet megváltoztatni ezt a beállítást."
   TITLES:
     LOADING: "Betöltés"
-    LOGIN: "Belépés"
+    LOGIN: "Bejelentkezés"
     MAILBOX: "Postaláda"
     SETTINGS: "Beállítások"
     COMPOSE: "Levélírás"

@@ -248,7 +248,7 @@ nb_NO:
     BUTTON_UPDATE_ACCOUNT: "Oppdater"
   POPUPS_IDENTITY:
     TITLE_ADD_IDENTITY: "Vil du legge til en identitet?"
-    TITLE_UPDATE_IDENTITY: "Vil du oppdatereen identitet?"
+    TITLE_UPDATE_IDENTITY: "Vil du oppdatere identitet?"
     BUTTON_ADD_IDENTITY: "Legg til"
     BUTTON_UPDATE_IDENTITY: "Oppdater"
     LABEL_EMAIL: "E-post"

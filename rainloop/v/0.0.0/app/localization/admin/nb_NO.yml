@@ -216,6 +216,7 @@ nb_NO:
     BUTTON_CLOSE: "Lukk"
     BUTTON_ADD: "Legg til"
     BUTTON_UPDATE: "Oppdater"
+    NEW_DOMAIN_DESC: "Dette domeneoppsettet lar deg jobbe <br /> med e-postadresser ved <i>%NAME%</i>."
     WHITE_LIST_ALERT: |
       Liste over domenebrukere som programmet skal ha tilgang til.
       Hold verdier adskilt med mellomrom.
@@ -292,6 +293,7 @@ nb_NO:
     DEMO_SEND_MESSAGE_ERROR: "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å sende meldinger til eksterne e-postadresser."
     DEMO_ACCOUNT_ERROR: "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å utføre denne handlinga"
     ACCOUNT_ALREADY_EXISTS: "Kontoen finnes allerede"
+    ACCOUNT_DOES_NOT_EXIST: "Kontoen finnes ikke"
     MAIL_SERVER_ERROR: "Det oppstod en feil under tilkobling til e-posttjener"
     INVALID_INPUT_ARGUMENT: "Ugyldig inndata-argument"
     UNKNOWN_ERROR: "Ukjent feil"

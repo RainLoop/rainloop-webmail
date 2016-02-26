@@ -215,6 +215,7 @@ de_DE:
     BUTTON_CLOSE: "Schließen"
     BUTTON_ADD: "Hinzufügen"
     BUTTON_UPDATE: "Aktualisieren"
+    NEW_DOMAIN_DESC: "Diese Domain Konfiguration wird es dir möglich machen <br />mit <i>%NAME%</i> Mailadressen zu arbeiten."
     WHITE_LIST_ALERT: |
       Liste der Domains, die Webmail abrufen darf.
       Verwenden Sie Leerzeichen als Trenner.
@@ -294,6 +295,7 @@ de_DE:
     DEMO_SEND_MESSAGE_ERROR: "Dieses Demokonto darf aus Sicherheitsgründen keine Nachrichten an externe E-Mail-Adressen versenden!"
     DEMO_ACCOUNT_ERROR: "Aus Sicherheitsgründen ist dieses Konto nicht zu dieser Aktion berechtigt!"
     ACCOUNT_ALREADY_EXISTS: "Dieses Konto existiert bereits"
+    ACCOUNT_DOES_NOT_EXIST: "Dieser Account existiert nicht."
     MAIL_SERVER_ERROR: "Beim Zugriff auf den E-Mail-Server trat ein Fehler auf."
     INVALID_INPUT_ARGUMENT: "Ungültige Eingabe"
     UNKNOWN_ERROR: "Unbekannter Fehler"

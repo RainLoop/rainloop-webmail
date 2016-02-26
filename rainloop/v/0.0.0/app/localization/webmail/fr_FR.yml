@@ -490,7 +490,7 @@ fr_FR:
     LABEL_CHROME_NOTIFICATION_DESC_DENIED: "(Bloqué par le navigateur)"
   SETTINGS_CONTACTS:
     LEGEND_CONTACTS: "Contacts"
-    LABEL_CONTACTS_AUTOSAVE: "Ajouter automatiquement les destinataires de votre carnet d'adresses"
+    LABEL_CONTACTS_AUTOSAVE: "Ajouter automatiquement les destinataires à votre carnet d'adresses"
     LEGEND_CONTACTS_SYNC: "Synchronisation à distance (CardDAV)"
     LABEL_CONTACTS_SYNC_ENABLE: "Activer la synchronisation à distance"
     LABEL_CONTACTS_SYNC_SERVER: "Serveur"

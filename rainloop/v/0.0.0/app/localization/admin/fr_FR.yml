@@ -295,6 +295,7 @@ fr_FR:
     DEMO_SEND_MESSAGE_ERROR: "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes !"
     DEMO_ACCOUNT_ERROR: "Pour des raisons de sécurité, ce compte n'est pas autorisé à faire cette action !"
     ACCOUNT_ALREADY_EXISTS: "Ce compte existe déjà"
+    ACCOUNT_DOES_NOT_EXIST: "Ce compte n'existe pas"
     MAIL_SERVER_ERROR: "Une erreur est survenue lors de l'accès au serveur email"
     INVALID_INPUT_ARGUMENT: "Arguments invalides"
     UNKNOWN_ERROR: "Erreur inconnue"
