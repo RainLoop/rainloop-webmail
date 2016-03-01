@@ -11,16 +11,12 @@
 			@ini_set('magic_quotes_gpc', 0);
 			@ini_set('magic_quotes_runtime', 0);
 
-			define('APP_DEFAULT_DENY_ALL_HTACCESS', 'Deny from all
-<IfModule mod_autoindex.c>
-Options -Indexes
-</ifModule>');
-
 			define('APP_START_TIME', time());
 			define('APP_REQUEST_RND', md5(APP_START.rand(10000, 99999).APP_START));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
 			define('APP_USE_APC_CACHE', true);
+			define('APP_DEFAULT_DENY_ALL_HTACCESS', "Deny from all\n<IfModule mod_autoindex.c>\nOptions -Indexes\n</ifModule>");
 
 			if (function_exists('date_default_timezone_set'))
 			{

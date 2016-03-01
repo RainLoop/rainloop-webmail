@@ -8533,54 +8533,61 @@ class Actions
 
 					$self->cacheByKey($sRawKey);
 
-					$bDone = false;
-					if ($bThumbnail && !$bDownload)
+					$sLoadedData = null;
+					$bDetectImageOrientation = false;
+					if (!$bDownload)
 					{
-						try
+						if ($bThumbnail)
 						{
-							$oImagine = new \Imagine\Gd\Imagine();
+							try
+							{
+								$oImagine = new \Imagine\Gd\Imagine();
 
-							$bDone = true;
-							$oImage = $oImagine->load(\stream_get_contents($rResource));
+								$oImage = $oImagine->load(\stream_get_contents($rResource));
 
-							$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
+								$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
 
-							\header('Content-Disposition: inline; '.
-								\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
+								\header('Content-Disposition: inline; '.
+									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
 
-							$oImage->show('png');
+								$oImage->show('png');
+							}
+							catch (\Exception $oException)
+							{
+								$self->Logger()->WriteExceptionShort($oException);
+							}
 						}
-						catch (\Exception $oException)
+						else if ($bDetectImageOrientation &&
+							\in_array($sContentTypeOut, array('image/png', 'image/jpeg', 'image/jpg')) &&
+							\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
 						{
-							$self->Logger()->WriteExceptionShort($oException);
+							try
+							{
+								$oImagine = new \Imagine\Gd\Imagine();
+
+								$sLoadedData = \stream_get_contents($rResource);
+
+								$oImage = $oImagine->load($sLoadedData);
+
+								$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation);
+
+								\header('Content-Disposition: inline; '.
+									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
+
+								$oImage->show($sContentTypeOut === 'image/png' ? 'png' : 'jpg');
+							}
+							catch (\Exception $oException)
+							{
+								$self->Logger()->WriteExceptionShort($oException);
+							}
+						}
+						else
+						{
+							$sLoadedData = \stream_get_contents($rResource);
 						}
 					}
 
-					if (!$bDone && !$bDownload && $bDetectImageOrientation &&
-						\in_array($sContentTypeOut, array('image/png', 'image/jpeg', 'image/jpg')) &&
-						\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
-					{
-						try
-						{
-							$oImagine = new \Imagine\Gd\Imagine();
-
-							$bDone = true;
-							$oImage = $oImagine->load(\stream_get_contents($rResource));
-
-							$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation);
-
-							\header('Content-Disposition: inline; '.
-								\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
-
-							$oImage->show($sContentTypeOut === 'image/png' ? 'png' : 'jpg');
-						}
-						catch (\Exception $oException)
-						{
-							$self->Logger()->WriteExceptionShort($oException);
-						}
-					}
-
-					if (!$bDone)
+					if ($bDownload || $sLoadedData)
 					{
 						\header('Content-Type: '.$sContentTypeOut);
 						\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
@@ -8589,7 +8596,15 @@ class Actions
 						\header('Accept-Ranges: none', true);
 						\header('Content-Transfer-Encoding: binary');
 
-						\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+						if (!$bDownload && $sLoadedData)
+						{
+							echo $sLoadedData;
+							unset($sLoadedData);
+						}
+						else
+						{
+							\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+						}
 					}
 				}
 			}, $sFolder, $iUid, true, $sMimeIndex);
