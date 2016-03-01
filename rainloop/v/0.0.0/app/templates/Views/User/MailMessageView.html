@@ -252,44 +252,40 @@
 								</div>
 							</div>
 							<div class="informationFull" data-bind="visible: showFullInfo()">
-								<div>
-									<div class="pull-left" data-bind="visible: '' !== viewFrom()">
-										<span class="i18n uiLabel labelFrom" data-i18n="MESSAGE/LABEL_FROM"></span>:
-										&nbsp;
-										<span class="from" data-bind="text: viewFrom, title: viewFrom"></span>
+								<table>
+									<tr data-bind="visible: '' !== viewFrom()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_FROM"></span></td>
+										<td>
+											<span class="pull-right size" data-bind="text: viewSize"></span>
+											<span class="from uiLabelValue" data-bind="text: viewFrom, title: viewFrom"></span>
 									</div>
-									<div class="pull-right" data-bind="visible: '' !== viewSize()">
-										<span class="size" data-bind="text: viewSize"></span>
-									</div>
-									<div class="clearfix"></div>
-								</div>
-								<div class="uiLine" data-bind="visible: '' !== viewTo()">
-									<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
-									&nbsp;
-									<span class="to uiLabelValue" data-bind="text: viewTo, title: viewTo"></span>
-								</div>
-								<div class="uiLine" data-bind="visible: '' !== viewCc()">
-									<span class="i18n uiLabel labelCc" data-i18n="MESSAGE/LABEL_CC"></span>:
-									&nbsp;
-									<span class="cc uiLabelValue" data-bind="text: viewCc, title: viewCc"></span>
-								</div>
-								<div class="uiLine" data-bind="visible: '' !== viewBcc()">
-									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_BCC"></span>:
-									&nbsp;
-									<span class="bcc uiLabelValue" data-bind="text: viewBcc, title: viewBcc"></span>
-								</div>
-								<div class="uiLine" data-bind="visible: '' !== viewReplyTo()">
-									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_REPLY_TO"></span>:
-									&nbsp;
-									<span class="bcc uiLabelValue" data-bind="text: viewReplyTo, title: viewReplyTo"></span>
-								</div>
-								<div class="uiLine" data-bind="visible: 0 < viewTimeStamp()">
-									<span class="i18n uiLabel labelBcc" data-i18n="MESSAGE/LABEL_DATE"></span>:
-									&nbsp;
-									<span class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
-									&nbsp;
-									(<span class="date uiLabelValue" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></span>)
-								</div>
+										</td>
+									</tr>
+									<tr data-bind="visible: '' !== viewTo()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_TO"></span></td>
+										<td><span class="to uiLabelValue" data-bind="text: viewTo, title: viewTo"></span></td>
+									</tr>
+									<tr data-bind="visible: '' !== viewCc()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_CC"></span></td>
+										<td><span class="cc uiLabelValue" data-bind="text: viewCc, title: viewCc"></span></td>
+									</tr>
+									<tr data-bind="visible: '' !== viewBcc()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_BCC"></span></td>
+										<td><span class="bcc uiLabelValue" data-bind="text: viewBcc, title: viewBcc"></span></td>
+									</tr>
+									<tr data-bind="visible: '' !== viewReplyTo()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_REPLY_TO"></span></td>
+										<td><span class="replyTo uiLabelValue" data-bind="text: viewReplyTo, title: viewReplyTo"></span></td>
+									</tr>
+									<tr data-bind="visible: 0 < viewTimeStamp()">
+										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_DATE"></span></td>
+										<td>
+											<span class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
+											&nbsp;
+											(<span class="date uiLabelValue" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></span>)
+										</td>
+									</tr>
+								</table>
 							</div>
 						</div>
 					</div>

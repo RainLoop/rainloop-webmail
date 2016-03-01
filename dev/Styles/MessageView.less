@@ -168,10 +168,34 @@ html.rl-no-preview-pane {
 				border: 1px solid #ddd;
 				background-color: #fff;
 				border-radius: 5px;
-				padding: 10px 15px;
+				padding: 8px 0;
 				overflow: hidden;
 
+				table {
+				    width: 100%;
+				}
+
+				table, tr, td {
+					border-spacing: 0;
+				}
+
+				td {
+					padding: 0 10px;
+					vertical-align: top;
+					min-width: 43px;
+				}
+
+				td:first-child {
+					border-right: 1px solid #ddd;
+					text-align: right;
+					width: 1%;
+				}
+
 				.uiLine {
+				}
+
+				.uiLabel {
+					white-space: nowrap;
 				}
 
 				.uiLabelValue {
