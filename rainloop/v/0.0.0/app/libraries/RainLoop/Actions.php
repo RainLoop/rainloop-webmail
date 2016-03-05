@@ -8545,7 +8545,7 @@ class Actions
 
 								$oImage = $oImagine->load(\stream_get_contents($rResource));
 
-								$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
+								$oImage = $self->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
 
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
@@ -8569,7 +8569,7 @@ class Actions
 
 								$oImage = $oImagine->load($sLoadedData);
 
-								$oImage = $this->correctImageOrientation($oImage, $bDetectImageOrientation);
+								$oImage = $self->correctImageOrientation($oImage, $bDetectImageOrientation);
 
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
