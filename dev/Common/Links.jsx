@@ -13,6 +13,7 @@ class Links
 		this.sVersion = Settings.settingsGet('Version');
 		this.sAuthSuffix = Settings.settingsGet('AuthAccountHash') || '0';
 		this.sWebPrefix = Settings.settingsGet('WebPath') || '';
+		this.sAdminPath = Settings.settingsGet('AdminPath') || 'admin';
 		this.sVersionPrefix = Settings.settingsGet('WebVersionPath') || 'rainloop/v/' + this.sVersion + '/';
 		this.sStaticPrefix = this.sVersionPrefix + 'static/';
 	}
@@ -40,7 +41,7 @@ class Links
 	 * @return {string}
 	 */
 	rootAdmin() {
-		return this.sServer + '/Admin/';
+		return this.sServer + this.sAdminPath;
 	}
 
 	/**
@@ -249,7 +250,7 @@ class Links
 		search = Utils.pString(search);
 
 		let result = this.sBase + 'mailbox/';
-		
+
 		if ('' !== folder)
 		{
 			const resultThreadUid = Utils.pInt(threadUid);

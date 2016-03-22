@@ -1402,6 +1402,7 @@ class Actions
 			'Auth' => false,
 			'AccountHash' => '',
 			'WebPath' => \RainLoop\Utils::WebPath(),
+			'AdminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
 			'WebVersionPath' => \RainLoop\Utils::WebVersionPath(),
 			'AccountSignMe' => false,
 			'AuthAccountHash' => '',

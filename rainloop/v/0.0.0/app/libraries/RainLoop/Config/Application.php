@@ -129,6 +129,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'force_two_factor_auth'		=> array(false),
 				'allow_universal_login'		=> array(false),
 				'admin_panel_host'			=> array(''),
+				'admin_panel_key'			=> array('admin'),
 				'core_install_access_domain' => array('')
 			),
 

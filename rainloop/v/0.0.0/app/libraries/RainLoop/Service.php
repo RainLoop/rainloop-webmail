@@ -110,7 +110,8 @@ class Service
 		$sAdminPanelHost = $this->oActions->Config()->Get('security', 'admin_panel_host', '');
 		if (empty($sAdminPanelHost))
 		{
-			$bAdmin = !empty($aPaths[0]) && \in_array(\strtolower($aPaths[0]), array('admin', 'cp'));
+			$sAdminPanelKey = \strtolower($this->oActions->Config()->Get('security', 'admin_panel_key', 'admin'));
+			$bAdmin = !empty($aPaths[0]) && $aPaths[0] === $sAdminPanelKey;
 		}
 		else if (empty($aPaths[0]) &&
 			\MailSo\Base\Utils::StrToLowerIfAscii($sAdminPanelHost) === \MailSo\Base\Utils::StrToLowerIfAscii($this->oHttp->GetHost()))
