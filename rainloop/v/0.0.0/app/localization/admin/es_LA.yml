@@ -1,0 +1,316 @@
+en_US:
+  LOGIN:
+    LABEL_LOGIN: "Inicio"
+    LABEL_PASSWORD: "Contrase&ntilde;a"
+    BUTTON_LOGIN: "Entrar al Panel de Administraci&oacute;n"
+  TOP_PANEL:
+    LABEL_PREMIUM: "Premium"
+    LABEL_ADMIN_PANEL: "Panel de Administraci&oacute;n"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "General"
+    LABEL_LOGIN_NAME: "Acceso"
+    LABEL_BRANDING_NAME: "Personalizaci&oacute;n"
+    LABEL_CONTACTS_NAME: "Contactos"
+    LABEL_DOMAINS_NAME: "Dominios"
+    LABEL_SECURITY_NAME: "Seguridad"
+    LABEL_INTEGRATION_NAME: "Integraciones"
+    LABEL_PLUGINS_NAME: "Extensiones"
+    LABEL_PACKAGES_NAME: "Paquetes"
+    LABEL_LICENSING_NAME: "Licencias"
+    LABEL_ABOUT_NAME: "Acerca"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "Interfase"
+    LABEL_LANGUAGE: "Lenguaje"
+    LABEL_LANGUAGE_ADMIN: "Lenguaje (Administrador)"
+    LABEL_THEME: "Tema"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Permitir cambiar el lenguaje desde la configuraci&oacute;n"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "Permitir cambiar el tema desde la configuraci&oacute;n"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permitir cambiar la im&aacute;gen fondo desde la configuraci&oacute;n"
+    LABEL_SHOW_THUMBNAILS: "Mostrar miniaturas (Adjuntos)"
+    LABEL_ALLOW_GRAVATAR: "Permitir Gravatar"
+    LEGEND_MAIN: "Principal"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "Tamaño m&aacute;ximo del ajunto"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Permitir m&aacute;s de una cuenta por usuario"
+    LABEL_ALLOW_IDENTITIES: "Permitir m&uacute;ltiples identidades"
+    LABEL_ALLOW_TEMPLATES: "Permitir temas"
+    ALERT_WARNING: "&iexcl;Cuidado!"
+    HTML_ALERT_WEAK_PASSWORD: |
+      Est&aacute; usando la contrase&ntilde;a por defecto para el administrador.
+      <br />
+      Por su seguridad, por favor
+      <strong><a href="#/security">cambie</a></strong>
+      su contrase&ntilde;a.
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "Pantalla de inicio"
+    LABEL_DEFAULT_DOMAIN: "Dominio por defecto"
+    LABEL_DETERMINE_USER_DOMAIN: "Intentar determinar el dominio del usuario"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Permitir el cambio de idioma en el inicio"
+    LABEL_DETERMINE_USER_LANGUAGE: "Intentar determinar el idioma del usuario"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "Personalizaci&oacute;n"
+    LABEL_PAGE_TITLE: "T&iacute;tulo de la p&aacute;gina"
+    LABEL_LOADING_DESCRIPTION: "Cargando Descripci&oacute;n"
+    LABEL_FAVICON_URL: "Favicon"
+    LEGEND_LOGIN: "Inicio"
+    LABEL_LOGIN_LOGO: "Logo"
+    LABEL_LOGIN_DESCRIPTION: "Descripci&oacute;n"
+    LABEL_LOGIN_BACKGROUND: "Im&aacute;gen de fondo"
+    LABEL_LOGIN_CUSTOM_CSS: "CSS personalizado"
+    LABEL_LOGIN_SHOW_POWERED_LINK: "Mostrar enlace \"Powered by RainLoop\""
+    LEGEND_USER: "Usuario"
+    LABEL_USER_LOGO: "Logo"
+    LABEL_USER_LOGO_TITLE: "T&iacute;tulo del Logo"
+    LABEL_USER_LOGO_MESSAGE: "Logo (Vista del Mensaje)"
+    LABEL_USER_CUSTOM_CSS: "CSS personalizado"
+    LEGEND_WELCOME_PAGE: "P&aacute;gina de Bienvenida"
+    LABEL_WELCOME_PAGE_TITLE: "T&iacute;tulo"
+    LABEL_WELCOME_PAGE_URL: "URL"
+    LABEL_WELCOME_PAGE_DISPLAY: "Mostrar"
+    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nunca"
+    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Una vez"
+    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Siempre"
+    HTML_ALERT_PREMIUM: "Esta es una funcionalidad <strong><a href=\"#/licensing\">Premium</a></strong>."
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "Contactos"
+    LEGEND_STORAGE: "Almacenamiento (PDO)"
+    LABEL_ENABLE_CONTACTS: "Habilitar contactos"
+    LABEL_ALLOW_SYNC: "Permitir la sincronizaci&oacute;n de contactos (mediante un servidor CardDAV externo)"
+    LABEL_STORAGE_TYPE: "Tipo"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "Usuario"
+    LABEL_STORAGE_PASSWORD: "Contrase&ntilde;a"
+    BUTTON_TEST: "Probar"
+    ALERT_NOTICE: "Alerta"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "No use este tipo de base de datos con un n&uacute;mero grande de usuarios activos."
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+      Su sistema no soporta contactos.
+      <br />
+      Necesita instalar o habilitar <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> en su servidor.
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "Dominios"
+    BUTTON_ADD_DOMAIN: "A&ntilde;adir Dominio"
+    DELETE_ARE_YOU_SURE: "&iquest;Est&aacute; seguro?"
+    HTML_DOMAINS_HELPER: |
+      Lista de dominios habilitados para ingresar.
+      <br />
+      Haga clic en el nombre para configurar el dominio.
+  TAB_SECURITY:
+    LEGEND_SECURITY: "Seguridad"
+    LABEL_ALLOW_TWO_STEP: "Permitir la verificaci&oacute;n de 2 pasos"
+    LABEL_FORCE_TWO_STEP: "Requerir la verificaci&oacute;n de 2 pasos"
+    LABEL_USE_IMAGE_PROXY: "Usar un proxy local para las im&aacute;genes externas"
+    LABEL_ALLOW_OPEN_PGP: "Permitir OpenPGP"
+    LABEL_SHOW_PHP_INFO: "Mostrar la informaci&oacute;n de PHP"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "Credenciales del Panel de Administrador"
+    LABEL_CURRENT_PASSWORD: "Contrase&ntilde;a actual"
+    LABEL_NEW_LOGIN: "Nuevo Usuario"
+    LABEL_NEW_PASSWORD: "Nueva Contrase&ntilde;a"
+    LABEL_REPEAT_PASSWORD: "Repita"
+    BUTTON_UPDATE_PASSWORD: "Actualizar Contrase&ntilde;a"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "Requerir verificaci&oacute;n por certificado SSL (IMAP/SMTP)"
+    LABEL_ALLOW_SELF_SIGNED: "Permitir certificados auto-firmados"
+  TAB_INTEGRATIONS:
+    LEGEND_GOOGLE: "Google"
+    LABEL_ENABLE_GOOGLE: "Habilitar Integraci&oacute;n con Google"
+    LABEL_GOOGLE_AUTH: "Autorizaci&oacute;n"
+    LABEL_GOOGLE_DRIVE: "Integraci&oacute;n con Google Drive (Vista de Composici&oacute;n)"
+    LABEL_GOOGLE_PREVIEW: "Integraci&oacute;n con Google Viewer (Vista previa para archivos Microsoft Word, Excel y PowerPoint)"
+    LABEL_GOOGLE_CLIENT_ID: "Identificador de Cliente"
+    LABEL_GOOGLE_CLIENT_SECRET: "Llave secreta de Cliente"
+    LABEL_GOOGLE_API_KEY: "Llave del Api"
+    HINT_GOOGLE_API_KEY: "Requerido para el administrador de archivos de Google Drive"
+    LEGEND_FACEBOOK: "Facebook"
+    LABEL_ENABLE_FACEBOOK: "Habilitar Integraci&oacute;n con Facebook (Autorizaci&oacute;n)"
+    LABEL_FACEBOOK_APP_ID: "Identificador de Aplicaci&oacute;n"
+    LABEL_FACEBOOK_APP_SECRET: "Llave secreta de Aplicaci&oacute;n"
+    LEGEND_TWITTER: "Twitter"
+    LABEL_ENABLE_TWITTER: "Habilitar Integraci&oacute;n con Twitter (Autorizaci&oacute;n)"
+    LABEL_TWITTER_CONSUMER_KEY: "Llave del Cliente"
+    LABEL_TWITTER_CONSUMER_SECRET: "Llave secreta del Cliente"
+    LEGEND_DROPBOX: "Dropbox"
+    LABEL_ENABLE_DROPBOX: "Habilitar Integraci&oacute;n con Dropbox"
+    LABEL_DROPBOX_API_KEY: "Llave del Api"
+    TOP_ALERT: "La Informaci&oacute;n Detallada sobre Integraci&oacute;n Social se encuentra en"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "Extensiones"
+    LABEL_ENABLE_PLUGINS: "Habilitar Extensiones"
+    ALERT_NO_PLUGINS: "No se han instalado extensiones."
+    LINK_INSTALL_NEW: "Haga clic aqui para instalar nuevas extensiones"
+    HINT_CLICK_NAME: "Haga clic en el nombre para configurar la extensi&oacute;n."
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "Disponible para actualizaci&oacute;n"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "Disponible para Instalaci&oacute;n"
+    LEGEND_INSTALLED_PACKAGES: "Paquetes Instalados"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "No se puede acceder al repositorio en este momento."
+  TAB_LICENSING:
+    LABEL_YOUR_DOMAIN: "Su dominio"
+    LABEL_VERSION: "Versi&oacute;n"
+    LABEL_CHECKING: "Verificando"
+    TYPE_BASIC_HINT: "Este dominio no est&aacute; licensiado para uso comercial (con caracter&iacute;sticas adicionales)."
+    TYPE_BASIC_HINT_2: "Este dominio no puede ser licensiado."
+    HTML_ALERT_TOP_1: "RainLoop Webmail est&aacute; licensiado bajo"
+    HTML_ALERT_TOP_2: "Usted es <b>libre</b> de usarlo en proyectos <b>personales</b>."
+    HTML_ALERT_TOP_3: |
+      El uso comercial (con caracter&iacute;sticas adicionales) de <b>RainLoop Webmail</b> requiere obtener una
+      <a href="http://www.rainloop.net/purchase/" target="_blank">suscripci&oacute;n</a>.
+    TYPE_PREMIUM_LIFETIME: "De por vida"
+    TYPE_PREMIUM_HINT: "Este dominio no est&acute; licensiado para su uso comercial (con caracter&iacute;sticas adicionales)."
+    LABEL_SUB_EXPIRES: "Expiraci&oacute;n de su Subscripci&oacute;n"
+    BUTTON_ACTIVATE: "Activar una llave de subscrici&oacute;n para este dominio"
+    BUTTON_PURCHASE: "Comprar"
+    BUTTON_TRIAL: "Probar"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "Acerca"
+    LABEL_TAG_HINT: "Cliente de correo simple, moderno y rápido"
+    LABEL_ALL_RIGHTS_RESERVED: "Todos los Derechos Reservados."
+    HINT_READ_CHANGE_LOG: "Por favor lea la lista de cambios antes de actualizar."
+    HINT_IS_UP_TO_DATE: "RainLoop se encuentra actualizado."
+    HTML_NEW_VERSION: "New <b>%VERSION%</b> version is available."
+    LABEL_UPDATING: "Updating"
+    LABEL_CHECKING: "Checking for updates"
+    BUTTON_UPDATE: "Update"
+    BUTTON_DOWNLOAD: "Download"
+    BUTTON_CHANGELOG: "Changelog"
+  POPUPS_ACTIVATE:
+    TITLE_ACTIVATE: "&iquest;Desea Activar con Llave de Suscripci&oacute;n?"
+    TITLE_ACTIVATION: "Activaci&oacute;n..."
+    LABEL_DOMAIN: "Dominio"
+    LABEL_SUB_KEY: "Llave de Suscripci&oacute;n"
+    BUTTON_ACTIVATE: "Activar"
+    LABEL_ACTIVATED: "Activado"
+    ERROR_INVALID_SUBS_KEY: "Llave de Suscripci&oacute;n Inv&aacute;lida"
+    SUBS_KEY_ACTIVATED: "Llave de Suscripci&oacute;n Activada Correctamente"
+    HTML_DESC: |
+      Despu&ecute;s de la activaci&oacute;n, la suscripci&oacute;n para <b>%DOMAIN%</b> ser&aacute; extendida.
+      <br />
+      Tome nota que esta llave de suscripci&oacute;n podr&aacute; ser activada solo para un dominio.
+      <br /><br />
+      Una vez comenzado, el proceso de activaci&oacute;n no puede ser abortado ni cancelado.
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "A&ntilde;adir Dominio"
+    TITLE_ADD_DOMAIN_WITH_NAME: "A&ntilde;adir Dominio \"%NAME%\""
+    TITLE_EDIT_DOMAIN: "Editar Dominio \"%NAME%\""
+    LABEL_NAME: "Nombre"
+    NAME_HELPER: "Puede utilizar % para rangos de dominios"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "FILTRO"
+    LABEL_SERVER: "Servidor"
+    LABEL_PORT: "Puerto"
+    LABEL_SECURE: "Seguro"
+    LABEL_WHITE_LIST: "Lista segura"
+    SECURE_OPTION_NONE: "Ninguno"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "Permitir scripts de filtro"
+    LABEL_ALLOW_USER_SCRIPT: "Allow custom user script"
+    LABEL_USE_SHORT_LOGIN: "Usar inicio corto"
+    LABEL_USE_AUTH: "Usar autentificaci&oacute;n"
+    LABEL_USE_PHP_MAIL: "Usar funci&oacute;n de php mail()"
+    BUTTON_TEST: "Prueba"
+    BUTTON_WHITE_LIST: "Lista segura"
+    BUTTON_SIEVE_CONFIGURATION: "Configuraciones de Filtro"
+    BUTTON_BACK_TO_IMAP: "Volver a configuraciones IMAP"
+    BUTTON_BACK: "Atr&aacute;s"
+    BUTTON_CLOSE: "Cerrar"
+    BUTTON_ADD: "A&ntilde;adir"
+    BUTTON_UPDATE: "Actualizar"
+    NEW_DOMAIN_DESC: "Esta configuraci&oacute;n de Dominio le permitirá trabajar <br />con direcciones de correo tipo @<i>%NAME%</i>."
+    WHITE_LIST_ALERT: |
+      Lista de dominios con que los usuarios pueden ingresar.
+      Use un espacio como delimitador.
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "Extensi&oacute;n"
+    DESC_NOTHING_TO_CONFIGURE: "Nada que configurar"
+    BUTTON_CLOSE: "Cerrar"
+    BUTTON_SAVE: "Guardar"
+    TOOLTIP_ABOUT_TITLE: "Acerca"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "&iquest;Est&aacute; seguro de querer cerrar esta ventana?"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "Elija su lenguaje"
+  HINTS:
+    BETA: "beta"
+    UNSTABLE: "inestable"
+    WARNING: "&iexcl;Cuidado!"
+    NOT_SUPPORTED: "Sin soporte"
+    REQUIRES_PHP_54: "requiere PHP 5.4 o m&aacute;s actual"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "Este dominio ya existe"
+    UNKNOWN_ERROR: "Error desconocido"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "Token Inv6aacute;lido"
+    AUTH_ERROR: "Fall&oacute; la Autentificaci&oacute;n"
+    ACCESS_ERROR: "Error de Acceso"
+    CONNECTION_ERROR: "No se pudo conectar al servidor"
+    CAPTCHA_ERROR: "CAPTCHA err&oacute;neo."
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Este identificador social no ha sido asignado a ninguna cuenta de correo. Por favor, inicia con
+      tus credenciales de correo y habilita esta funci&oacute;n en las configuraciones.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Este identificador social no ha sido asignado a ninguna cuenta de correo. Por favor, inicia con
+      tus credenciales de correo y habilita esta funci&oacute;n en las configuraciones.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Este identificador social no ha sido asignado a ninguna cuenta de correo. Por favor, inicia con
+      tus credenciales de correo y habilita esta funci&oacute;n en las configuraciones.
+    DOMAIN_NOT_ALLOWED: "Este Dominio no se encuentra permitido"
+    ACCOUNT_NOT_ALLOWED: "Esta cuenta no se encuentra permitida"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Se requiere la verificaci&oacute;n de dos pasos"
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Error en la verificaci&oacute;n de dos pasos"
+    COULD_NOT_SAVE_NEW_PASSWORD: "No se pudo guardar la nueva contrase&ntilde;a"
+    CURRENT_PASSWORD_INCORRECT: "Contrase&ntilde;a actual incorrecta"
+    NEW_PASSWORD_SHORT: "La contrase&ntilde;a es muy corta"
+    NEW_PASSWORD_WEAK: "La contrase&ntilde;a es muy f&aacute;cil"
+    NEW_PASSWORD_FORBIDDENT: "La contrase&ntilde;a contiene s&iacute;mbolos no permitidos"
+    CONTACTS_SYNC_ERROR: "Ocurri&oacute; un error al sincronizar los contactos"
+    CANT_GET_MESSAGE_LIST: "No se pudo obtener la lista de mensajes"
+    CANT_GET_MESSAGE: "No se pudo obtener el mensaje"
+    CANT_DELETE_MESSAGE: "No se pudo eliminar el mensaje"
+    CANT_MOVE_MESSAGE: "No se pudo mover el mensaje"
+    CANT_SAVE_MESSAGE: "No se pudo guardar el mensaje"
+    CANT_SEND_MESSAGE: "No se pudo enviar el mensaje"
+    INVALID_RECIPIENTS: "El destinatario es inv&aacute;lido"
+    CANT_SAVE_FILTERS: "No se pudieron guardar los filtros"
+    CANT_GET_FILTERS: "No se pudieron obtener los filtros"
+    FILTERS_ARE_NOT_CORRECT: "Los filtros no son correctos"
+    CANT_CREATE_FOLDER: "No se pudo crear la carpeta"
+    CANT_RENAME_FOLDER: "No se pudo renombrar la carpeta"
+    CANT_DELETE_FOLDER: "No se pudo eliminar la carpeta"
+    CANT_DELETE_NON_EMPTY_FOLDER: "No se puede eliminar una carpeta con elementos"
+    CANT_SUBSCRIBE_FOLDER: "No se pudo suscribir a la carpeta"
+    CANT_UNSUBSCRIBE_FOLDER: "No se pudo dessuscribir a la carpeta"
+    CANT_SAVE_SETTINGS: "No se pudieron guardar las configuraciones"
+    CANT_SAVE_PLUGIN_SETTINGS: "No se pudieron guardar las configuraciones"
+    DOMAIN_ALREADY_EXISTS: "El dominio ya existe"
+    CANT_INSTALL_PACKAGE: "No se pudo instalar el paquete"
+    CANT_DELETE_PACKAGE: "No se pudo eliminar el paquete"
+    INVALID_PLUGIN_PACKAGE: "Paquete de extensi&oacute;n inv&aacute;lido"
+    UNSUPPORTED_PLUGIN_PACKAGE: "Paquete de extensi&oacute;n no soportado"
+    LICENSING_SERVER_IS_UNAVAILABLE: "El servidor de Suscripci&oacute;n no se encuentra disponible"
+    LICENSING_DOMAIN_EXPIRED: "La suscripci&oacute;n para este dominio ha expirado."
+    LICENSING_DOMAIN_BANNED: "La suscripci&oacute;n para este domain se encuentra baneada."
+    DEMO_SEND_MESSAGE_ERROR: "Por razones de seguridad, a esta cuenta no se le permite enviar mensajes a direcciones de externas"
+    DEMO_ACCOUNT_ERROR: "Por razones de seguridad, a esta cuenta no se le permite realizar esta acci&oacute;n"
+    ACCOUNT_ALREADY_EXISTS: "La cuenta ya existe"
+    ACCOUNT_DOES_NOT_EXIST: "La cuenta no existe"
+    MAIL_SERVER_ERROR: "Ocurri&oacute; un error mientras se acced&iacute;a al servidor de correos"
+    INVALID_INPUT_ARGUMENT: "Los datos ingresados son inv&aacute;lidos"
+    UNKNOWN_ERROR: "Error desconocido"
+  STATIC:
+    BACK_LINK: "Recargar"
+    DOMAIN_LIST_DESC: "Lista de dominios con los que se puede ingresar."
+    PHP_EXSTENSIONS_ERROR_DESC: "Se requiere una extensi&oacute;n PHP que no se encuentra disponible"
+    PHP_VERSION_ERROR_DESC: "Su versi&oacute;n de PHP (%VERSION%) es inferior a la requerida (5.3.0)"
+    NO_SCRIPT_TITLE: "JavaScript debe estar habilitado para usar esta aplicaci&oacute;n."
+    NO_SCRIPT_DESC: |
+      JavaScript no se encuentra habilitado.
+      Por favor, habilite JavaScript en sus configuraciones y vuelva a intentarlo.
+    NO_COOKIE_TITLE: "Las Cookies no se encuentran habilitadas."
+    NO_COOKIE_DESC: |
+      Las Cookies no se encuentran habilitadas.
+      Por favor, habilite las Cookies en sus configuraciones y vuelva a intentarlo.
+    BAD_BROWSER_TITLE: "Su navegador se encuentra desactualizado."
+    BAD_BROWSER_DESC: |
+      Para aprovechar al m&aacute;ximo esta aplicaci&oacute;n
+      descargue e instale uno de los siguientes navegadores
