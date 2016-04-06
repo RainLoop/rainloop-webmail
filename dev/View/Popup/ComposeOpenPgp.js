@@ -31,6 +31,14 @@
 		var self = this;
 
 		this.optionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
+		this.addOptionClass = function (oDomOption, oItem)
+		{
+			self.defautOptionsAfterRender(oDomOption, oItem);
+
+			if (oItem) {
+				oDomOption.classList.add(oItem['class']);
+			}
+		};
 
 		this.notification = ko.observable('');
 
@@ -54,13 +62,17 @@
 		}, this);
 
 		this.publicKeysOptions = ko.computed(function () {
-			return _.compact(_.map(PgpStore.openpgpkeysPublic(), function (oKey) {
-				return -1 < Utils.inArray(oKey, self.encryptKeysView()) ? null : {
-					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + oKey.user,
-					'key': oKey
-				};
-			}));
+			return _.compact(_.flatten(_.map(PgpStore.openpgpkeysPublic(), function (oKey, iIndex) {
+				return -1 < Utils.inArray(oKey, self.encryptKeysView()) ? null :
+					_.map(oKey.users, function (sUser) {
+						return {
+							'id': oKey.guid,
+							'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + sUser,
+							'key': oKey,
+							'class': iIndex % 2 ? 'odd' : 'even'
+						};
+				});
+			}), true));
 		});
 
 		this.submitRequest = ko.observable(false);
@@ -236,7 +248,7 @@
 				aKeys.push({
 					'empty': !oOption.key,
 					'selected': ko.observable(!!oOption.key),
-					'user': oOption.key.user,
+					'users': oOption.key.users,
 					'hash': oOption.key.id.substr(-8).toUpperCase(),
 					'key': oOption.key
 				});
@@ -364,7 +376,7 @@
 			if (oKey)
 			{
 				this.signKey({
-					'user': oKey.user || sEmail,
+					'users': oKey.users || [sEmail],
 					'hash': oKey.id.substr(-8).toUpperCase(),
 					'key': oKey
 				});
@@ -383,7 +395,7 @@
 				return {
 					'empty': !oKey,
 					'selected': ko.observable(!!oKey),
-					'user': oKey ? (oKey.user || sEmail) : sEmail,
+					'users': oKey ? (oKey.users || [sEmail]) : [sEmail],
 					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
 					'key': oKey
 				};

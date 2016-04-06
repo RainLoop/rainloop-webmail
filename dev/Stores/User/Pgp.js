@@ -59,7 +59,7 @@
 	PgpUserStore.prototype.findPublicKeysByEmail = function (sEmail)
 	{
 		return _.compact(_.flatten(_.map(this.openpgpkeysPublic(), function (oItem) {
-			var oKey = oItem && sEmail === oItem.email ? oItem : null;
+			var oKey = oItem && -1 !== oItem.emails.indexOf(sEmail) ? oItem : null;
 			return oKey ? oKey.getNativeKeys() : [null];
 		}), true));
 	};
@@ -99,7 +99,7 @@
 	PgpUserStore.prototype.findPublicKeyByEmailNotNative = function (sEmail)
 	{
 		return _.find(this.openpgpkeysPublic(), function (oItem) {
-			return oItem && sEmail === oItem.email;
+			return oItem && -1 !== oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -110,7 +110,7 @@
 	PgpUserStore.prototype.findPrivateKeyByEmailNotNative = function (sEmail)
 	{
 		return _.find(this.openpgpkeysPrivate(), function (oItem) {
-			return oItem && sEmail === oItem.email;
+			return oItem && -1 !== oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -125,7 +125,7 @@
 			oPrivateKeys = [],
 			oPrivateKey = null,
 			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
-				return oItem && sEmail === oItem.email;
+				return oItem && -1 !== oItem.emails.indexOf(sEmail);
 			})
 		;
 

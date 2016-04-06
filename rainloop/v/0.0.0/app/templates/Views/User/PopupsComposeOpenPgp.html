@@ -27,12 +27,16 @@
 								No private key found
 							</div>
 							<div class="key-list-wrp" data-bind="visible: signKey">
-								<div class="key-list__item">
-									<div class="key-list__item-hash">
+								<div class="key-list__item row-fluid">
+									<div class="key-list__item-hash span4">
 										(<span data-bind="text: signKey() ? signKey().hash : ''"></span>)
 									</div>
-									<div class="key-list__item-name">
-										<span data-bind="text: signKey() ? signKey().user : ''"></span>
+									<div class="key-list__item-names span8">
+										<div data-bind="if: signKey()">
+											<div data-bind="foreach: signKey().users">
+												<div class="key-list__item-name" data-bind="text: $data"></div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -54,18 +58,22 @@
 							</div>
 							<div class="key-list-wrp" data-bind="visible: encryptKeys() && encryptKeys().length > 0">
 								<div data-bind="foreach: encryptKeys">
-									<div class="key-list__item">
-										<div class="key-list__item-delete" data-bind="click: $parent.deletePublickKey">
+									<div class="key-list__item row-fluid">
+										<div class="key-list__item-delete span1" data-bind="click: $parent.deletePublickKey">
 											<i class="icon-trash"></i>
 										</div>
-										<div class="key-list__item-hash" data-bind="visible: !empty">
+										<div class="key-list__item-hash span3" data-bind="visible: !empty">
 											(<span data-bind="text: hash"></span>)
 										</div>
-										<div class="key-list__item-name"  data-bind="css: {'empty': empty}">
-											<span data-bind="text: user"></span>
-										</div>
-										<div class="key-list__item-error" data-bind="visible: empty">
-											(Public key not found)
+										<div class="span8">
+											<span class="key-list__item-names"  data-bind="css: {'empty': empty}">
+												<span data-bind="foreach: users">
+													<div class="key-list__item-name" data-bind="text: $data"></div>
+												</span>
+											</span>
+											<span class="key-list__item-error" data-bind="visible: empty">
+												(Public key not found)
+											</span>
 										</div>
 									</div>
 								</div>
@@ -84,7 +92,7 @@
 						<div class="form-inline">
 							<select class="input-block-level" data-bind="options: publicKeysOptions, value: selectedPublicKey,
 								optionsCaption: optionsCaption,	optionsText: 'name', optionsValue: 'id',
-								optionsAfterRender: defautOptionsAfterRender"></select>
+								optionsAfterRender: addOptionClass"></select>
 						</div>
 					</div>
 				</div>

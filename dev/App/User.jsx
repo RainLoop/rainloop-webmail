@@ -426,25 +426,36 @@ class AppUser extends AbstractApp
 				if (oItem && oItem.primaryKey)
 				{
 					var
-
+						aEmails = [],
+						aUsers = [],
 						oPrimaryUser = oItem.getPrimaryUser(),
 						sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
 							: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 					;
 
-					oEmail.clear();
-					oEmail.mailsoParse(sUser);
+					if (oItem.users) {
+						_.each(oItem.users, (oItem) => {
+							oEmail.clear();
+							oEmail.mailsoParse(oItem.userId.userid);
+							if (oEmail.validate())
+							{
+								aEmails.push(oEmail.email);
+								aUsers.push(oItem.userId.userid);
+							}
+						});
+					}
 
-					if (oEmail.validate())
+					if (aEmails.length)
 					{
 						aKeys.push(new OpenPgpKeyModel(
 							iIndex,
 							oItem.primaryKey.getFingerprint(),
 							oItem.primaryKey.getKeyId().toHex().toLowerCase(),
-							sUser,
-							oEmail.email,
+							aUsers,
+							aEmails,
 							oItem.isPrivate(),
-							oItem.armor())
+							oItem.armor(),
+							sUser)
 						);
 					}
 				}
