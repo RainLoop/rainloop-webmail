@@ -62,6 +62,10 @@
 
 				&-delete {
 					cursor: pointer;
+
+					&.disabled {
+						cursor: not-allowed;
+					}
 				}
 
 				&-names {
@@ -121,14 +125,14 @@
 
 				&__name {
 					border-bottom: 1px solid transparent;
-
-					&:hover {
-						border-bottom: 1px dashed #555;
-					}
 				}
 
 				&__names {
 					display: inline-block;
+
+					&:hover .key-list__item__name {
+						border-bottom: 1px dashed #555;
+					}
 				}
 			}
 		}

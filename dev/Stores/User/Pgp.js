@@ -292,7 +292,7 @@
 				bEncrypted = mDom.hasClass('encrypted'),
 				bSigned = mDom.hasClass('signed'),
 				oVerControl = null,
-				aRecipients = oRainLoopMessage ? oRainLoopMessage.getRecipientsEmails() : [],
+				aRecipients = oRainLoopMessage ? oRainLoopMessage.getEmails(['from', 'to', 'cc']) : [],
 				sData = ''
 			;
 

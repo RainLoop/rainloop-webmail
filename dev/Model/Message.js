@@ -201,7 +201,19 @@
 	 */
 	MessageModel.prototype.getRecipientsEmails = function ()
 	{
-		return _.compact(_.uniq(_.map(this.to.concat(this.cc), function (oItem) {
+		return this.getEmails(['to', 'cc']);
+	};
+
+	/**
+	 * @param {Array} aProperties
+	 * @return {Array}
+	 */
+	MessageModel.prototype.getEmails = function (aProperties)
+	{
+		var self = this;
+		return _.compact(_.uniq(_.map(_.reduce(aProperties, function (aCarry, sProperty) {
+			return aCarry.concat(self[sProperty]);
+		}, []), function (oItem) {
 			return oItem ? oItem.email : '';
 		})));
 	};

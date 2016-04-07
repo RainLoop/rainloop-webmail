@@ -248,6 +248,7 @@
 				aKeys.push({
 					'empty': !oOption.key,
 					'selected': ko.observable(!!oOption.key),
+					'removable': this.signKey().id !== oOption.key.id,
 					'users': oOption.key.users,
 					'hash': oOption.key.id.substr(-8).toUpperCase(),
 					'key': oOption.key
@@ -372,6 +373,7 @@
 		if (oIdentity && oIdentity.email())
 		{
 			sEmail = oIdentity.email();
+			aRec.unshift(sEmail);
 			oKey = PgpStore.findPrivateKeyByEmailNotNative(sEmail);
 			if (oKey)
 			{
@@ -390,16 +392,19 @@
 
 		if (aRec && 0 < aRec.length)
 		{
-			this.encryptKeys(_.compact(_.map(aRec, function (sEmail) {
+			this.encryptKeys(_.uniq(_.compact(_.map(aRec, function (sEmail) {
 				var oKey = PgpStore.findPublicKeyByEmailNotNative(sEmail) || null;
 				return {
 					'empty': !oKey,
 					'selected': ko.observable(!!oKey),
+					'removable': oIdentity && oIdentity.email() && oIdentity.email() !== sEmail, 
 					'users': oKey ? (oKey.users || [sEmail]) : [sEmail],
 					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
 					'key': oKey
 				};
-			})));
+			})), function (oEncryptKey) {
+				return oEncryptKey.hash;
+			}));
 
 			if (0 < this.encryptKeys().length)
 			{
