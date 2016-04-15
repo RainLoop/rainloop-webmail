@@ -79,6 +79,7 @@
     "gulp-uglify": "*",
     "gulp-util": "*",
     "gulp-zip": "*",
+    "jshint": "*",
     "jshint-summary": "*",
     "lodash": "~3.9.3",
     "node-fs": "*",
