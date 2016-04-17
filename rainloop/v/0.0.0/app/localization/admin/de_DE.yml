@@ -154,7 +154,6 @@ de_DE:
       Kommerzielle Nutzung (mit zusätzlichen Funktionen) von <b>RainLoop Webmail</b> erfordert eine
       <a href=http://www.rainloop.net/purchase/ target=_blank>Subscription</a>.
     TYPE_PREMIUM_LIFETIME: "Lebenszeit"
-    TYPE_PREMIUM_HINT: "Diese Domain ist nicht für die kommerzielle Nutzung (mit zusätzlichen Funktionen) lizenziert."
     LABEL_SUB_EXPIRES: "Ablauf der Subscription"
     BUTTON_ACTIVATE: "Subscription-Schlüssel für diese Domain aktivieren"
     BUTTON_PURCHASE: "Erwerben"

@@ -7,6 +7,7 @@ Common:
         LANG_EN_UK: English (UK)
         LANG_EN_CA: English (Canadian)
 
+        LANG_EL_GR: Ελληνικά
         LANG_NL_NL: Nederlands
         LANG_NB_NO: Norsk (bokmål)
         LANG_PL_PL: Polski
@@ -28,6 +29,7 @@ Common:
         LANG_TR_TR: Türkçe
         LANG_SK_SK: Slovenčina
         LANG_SV_SE: Svenska
+        LANG_SL_SI: Slovenščina
         LANG_JA_JP: 日本語
         LANG_ZH_TW: 中文(台灣)
         LANG_ZH_CN: 中文(简体)
@@ -44,6 +46,7 @@ Common:
         LANG_EN_UK: English (UK)
         LANG_EN_CA: English (Canadian)
 
+        LANG_EL_GR: Greek
         LANG_NL_NL: Dutch
         LANG_NB_NO: Norwegian (bokmal)
         LANG_PL_PL: Polish
@@ -64,6 +67,7 @@ Common:
         LANG_HU_HU: Hungarian
         LANG_TR_TR: Turkish
         LANG_SK_SK: Slovak
+        LANG_SL_SI: Slovenian
         LANG_SV_SE: Swedish
         LANG_JA_JP: Japanese
         LANG_ZH_TW: Traditional Chinese (Taiwan)

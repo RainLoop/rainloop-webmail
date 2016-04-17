@@ -155,7 +155,6 @@ it_IT:
       L'uso commerciale (con funzionalità aggiuntive) di <b>RainLoop Webmail</b> richiede di ottenere una
       <a href=http://www.rainloop.net/purchase/ target=_blank>licenza</a>.
     TYPE_PREMIUM_LIFETIME: "A vita"
-    TYPE_PREMIUM_HINT: "Questo dominio non possiede una licenza per uso commerciale (con funzionalità aggiuntive)."
     LABEL_SUB_EXPIRES: "La licenza scade il"
     BUTTON_ACTIVATE: "Attiva una chiave di licenza per questo dominio"
     BUTTON_PURCHASE: "Compra una licenza"

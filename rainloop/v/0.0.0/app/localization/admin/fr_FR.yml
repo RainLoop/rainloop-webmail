@@ -155,7 +155,6 @@ fr_FR:
       L'usage commercial (avec des fonctionnalités supplémentaires) de <b>RainLoop Webmail</b> nécessite une
       <a href="http://www.rainloop.net/purchase/" target="_blank">souscription</a>.
     TYPE_PREMIUM_LIFETIME: "A vie"
-    TYPE_PREMIUM_HINT: "Ce domaine ne possède pas de licence pour un usage commercial (avec des fonctionnalités supplémentaires)."
     LABEL_SUB_EXPIRES: "La souscription expire"
     BUTTON_ACTIVATE: "Activer une clé de souscription pour ce domaine"
     BUTTON_PURCHASE: "Achat"
@@ -216,6 +215,7 @@ fr_FR:
     BUTTON_CLOSE: "Fermer"
     BUTTON_ADD: "Ajouter"
     BUTTON_UPDATE: "Modifier"
+    NEW_DOMAIN_DESC: "Cette configuration de domaine vous permettra de travailler <br> avec <i>%NAME%</i> dans les adresses électroniques."
     WHITE_LIST_ALERT: |
       Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.
       Utilisez un espace comme séparateur.

@@ -155,7 +155,6 @@ pt_BR:
       Uso comercial (com recursos adicionais) do <b>RainLoop Webmail</b>
       requer uma <a href="http://www.rainloop.net/purchase/" target="_blank">assinatura</a>.
     TYPE_PREMIUM_LIFETIME: "Lifetime"
-    TYPE_PREMIUM_HINT: "Esse domínio está licenciado para uso comercial (com recursos adicionais)."
     LABEL_SUB_EXPIRES: "A assinatura expira em"
     BUTTON_ACTIVATE: "Ative a chave de assinatura para este domínio"
     BUTTON_PURCHASE: "Comprar assinatura"

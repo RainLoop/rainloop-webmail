@@ -155,7 +155,6 @@ pl_PL:
       Do komercyjnego użytku (używania dodatkowych opcji) <b>RainLoop Webmail</b>, wymagane jest posiadanie
       <a href=http://www.rainloop.net/purchase/ target=_blank>ważnej subskrypcji</a>.
     TYPE_PREMIUM_LIFETIME: "Dożywotnia"
-    TYPE_PREMIUM_HINT: "Ta domena nie jest licencjonowana dla użytku komercyjnego."
     LABEL_SUB_EXPIRES: "Subskrypcja wygasa:"
     BUTTON_ACTIVATE: "Aktywuj klucz"
     BUTTON_PURCHASE: "Kup klucz"
