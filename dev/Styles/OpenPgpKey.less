@@ -33,8 +33,14 @@
 			min-height: 40px;
 
 			&-wrp {
-				overflow: hidden;
-				text-overflow: ellipsis;
+
+				&:hover {
+					overflow: auto;
+				}
+
+				&:hover .key-list__item-name {
+					overflow: visible;
+				}
 
 				&.empty {
 					text-align: center;
@@ -48,33 +54,39 @@
 
 				color: #333;
 				white-space: nowrap;
+				padding-bottom: 4px;
 
-				&-delete {
-					display: inline;
-					cursor: pointer;
-					margin-right: 5px;
+				&:last-child {
+					padding-bottom: 0;
 				}
 
-				&-name {
-					margin-right: 5px;
+				&-delete {
+					cursor: pointer;
+
+					&.disabled {
+						cursor: not-allowed;
+					}
+				}
+
+				&-names {
 					color: #333;
-					display: inline;
 
 					&.empty {
 						color: red;
 					}
 				}
 
+				&-name {
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+
 				&-error {
-					margin-right: 5px;
 					color: red;
-					display: inline;
 				}
 
 				&-hash {
-					margin-right: 5px;
 					color: #aaa;
-					display: inline;
 				}
 			}
 		}
@@ -82,6 +94,10 @@
 		.key-actions {
 			margin-top: 10px;
 			min-height: 40px;
+
+			select option.even {
+				background-color: #f5f5f5;
+			}
 		}
 	}
 
@@ -103,12 +119,18 @@
 				white-space: nowrap;
 
 				&__radio {
-					padding-right: 5px;
+					padding: 3px 5px 0 0;
+					vertical-align: top;
 				}
 
 				&__name {
+					border-bottom: 1px solid transparent;
+				}
 
-					&:hover {
+				&__names {
+					display: inline-block;
+
+					&:hover .key-list__item__name {
 						border-bottom: 1px dashed #555;
 					}
 				}

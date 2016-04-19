@@ -27,12 +27,16 @@
 								No private key found
 							</div>
 							<div class="key-list-wrp" data-bind="visible: signKey">
-								<div class="key-list__item">
-									<div class="key-list__item-hash">
+								<div class="key-list__item row-fluid">
+									<div class="key-list__item-hash span4">
 										(<span data-bind="text: signKey() ? signKey().hash : ''"></span>)
 									</div>
-									<div class="key-list__item-name">
-										<span data-bind="text: signKey() ? signKey().user : ''"></span>
+									<div class="key-list__item-names span8">
+										<div data-bind="if: signKey()">
+											<div data-bind="foreach: signKey().users">
+												<div class="key-list__item-name" data-bind="text: $data"></div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -54,18 +58,22 @@
 							</div>
 							<div class="key-list-wrp" data-bind="visible: encryptKeys() && encryptKeys().length > 0">
 								<div data-bind="foreach: encryptKeys">
-									<div class="key-list__item">
-										<div class="key-list__item-delete" data-bind="click: $parent.deletePublickKey">
+									<div class="key-list__item row-fluid">
+										<div class="key-list__item-delete span1" data-bind="click: removable ? $parent.deletePublickKey : null, css: {'disabled': !removable}">
 											<i class="icon-trash"></i>
 										</div>
-										<div class="key-list__item-hash" data-bind="visible: !empty">
+										<div class="key-list__item-hash span3" data-bind="visible: !empty">
 											(<span data-bind="text: hash"></span>)
 										</div>
-										<div class="key-list__item-name"  data-bind="css: {'empty': empty}">
-											<span data-bind="text: user"></span>
-										</div>
-										<div class="key-list__item-error" data-bind="visible: empty">
-											(Public key not found)
+										<div class="span8">
+											<span class="key-list__item-names"  data-bind="css: {'empty': empty}">
+												<span data-bind="foreach: users">
+													<div class="key-list__item-name" data-bind="text: $data"></div>
+												</span>
+											</span>
+											<span class="key-list__item-error" data-bind="visible: empty">
+												(Public key not found)
+											</span>
 										</div>
 									</div>
 								</div>
@@ -78,19 +86,20 @@
 						<input type="password" class="inputPassword input-block-level i18n"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-i18n="[placeholder]POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"
-							data-bind="visible: sign, value: password, hasfocus: password.focus, onEnter: doCommand" />
+							data-bind="visible: sign, textInput: password, hasfocus: password.focus, onEnter: doCommand" />
 					</div>
 					<div class="span7" data-bind="visible: encrypt() && 0 < publicKeysOptions().length">
 						<div class="form-inline">
 							<select class="input-block-level" data-bind="options: publicKeysOptions, value: selectedPublicKey,
 								optionsCaption: optionsCaption,	optionsText: 'name', optionsValue: 'id',
-								optionsAfterRender: defautOptionsAfterRender"></select>
+								optionsAfterRender: addOptionClass"></select>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn buttonDo" data-bind="command: doCommand, hasfocus: buttonFocus">
+				<button class="btn buttonDo" data-bind="command: doCommand, hasfocus: buttonFocus,
+					enable: (sign() || encrypt()) && (!sign() || (sign() && password().length)) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
 					<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
