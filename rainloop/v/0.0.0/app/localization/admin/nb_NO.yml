@@ -2,7 +2,7 @@ nb_NO:
   LOGIN:
     LABEL_LOGIN: "Brukernavn"
     LABEL_PASSWORD: "Passord"
-    BUTTON_LOGIN: "Logg inn på admin-panelet"
+    BUTTON_LOGIN: "Logg inn på admin-panel"
   TOP_PANEL:
     LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin-panel"
@@ -115,13 +115,13 @@ nb_NO:
     LABEL_ENABLE_GOOGLE: "Integrer med Google"
     LABEL_GOOGLE_AUTH: "Autentisering"
     LABEL_GOOGLE_DRIVE: "Google Drive-integrasjon (skrivevisning)"
-    LABEL_GOOGLE_PREVIEW: "Google Viewer-integrasjon (Forhåndsvisning for Microsoft Word-, Excel- og PowerPoint-filer)"
+    LABEL_GOOGLE_PREVIEW: "Google Viewer-integrasjon (forhåndsvisning av Microsoft Word-, Excel- og PowerPoint-filer)"
     LABEL_GOOGLE_CLIENT_ID: "Klient-ID"
     LABEL_GOOGLE_CLIENT_SECRET: "Klientnøkkel"
     LABEL_GOOGLE_API_KEY: "API-nøkkel"
     HINT_GOOGLE_API_KEY: "Kreves av Google Drive File Picker"
     LEGEND_FACEBOOK: "Facebook"
-    LABEL_ENABLE_FACEBOOK: "Integrer med Facebook (Autentisering)"
+    LABEL_ENABLE_FACEBOOK: "Integrer med Facebook (autentisering)"
     LABEL_FACEBOOK_APP_ID: "Program-ID"
     LABEL_FACEBOOK_APP_SECRET: "Programnøkkel"
     LEGEND_TWITTER: "Twitter"
@@ -155,7 +155,6 @@ nb_NO:
       Hvis du vil bruke <b>RainLoop Webmail</b> kommersielt (med ekstrafunksjoner), må du kjøpe et
       <a href=http://www.rainloop.net/purchase/ target=_blank>abonnement</a>.
     TYPE_PREMIUM_LIFETIME: "Livstid"
-    TYPE_PREMIUM_HINT: "Dette domenet har ikke lisens for kommersiell bruk (med ekstrafunksjoner)."
     LABEL_SUB_EXPIRES: "Abonnement utgår"
     BUTTON_ACTIVATE: "Ta i bruk abonnementsnøkkel for dette domenet"
     BUTTON_PURCHASE: "Kjøp"

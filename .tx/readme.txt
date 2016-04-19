@@ -1,1 +1,1 @@
-tx pull
+tx pull -a

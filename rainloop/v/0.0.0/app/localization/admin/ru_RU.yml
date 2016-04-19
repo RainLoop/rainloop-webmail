@@ -154,7 +154,6 @@ ru_RU:
       Коммерческое использование (с дополнительными функциями) <b>RainLoop Webmail</b> требует получение
       <a href=http://www.rainloop.net/purchase/ target=_blank>лицензии</a>.
     TYPE_PREMIUM_LIFETIME: "бесконечная"
-    TYPE_PREMIUM_HINT: "Этот домен не имеет лицензию для коммерческого использования (с дополнительными функциями)."
     LABEL_SUB_EXPIRES: "Подписка истекает"
     BUTTON_ACTIVATE: "Активировать ключ для этого домена"
     BUTTON_PURCHASE: "Купить"

@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 type = YAML
-minimum_perc = 50
+minimum_perc = 60
 
 [rainloop-webmail.rainloop-webmail]
 file_filter = rainloop/v/0.0.0/app/localization/webmail/<lang>.yml

@@ -168,6 +168,7 @@
 	Globals.oHtmlEditorLangsMap = {
 		'bg_bg': 'bg',
 		'de_de': 'de',
+		'el_gr': 'el',
 		'es_es': 'es',
 		'fr_fr': 'fr',
 		'hu_hu': 'hu',
@@ -185,6 +186,7 @@
 		'ro_ro': 'ro',
 		'ru_ru': 'ru',
 		'sk_sk': 'sk',
+		'sl_si': 'sl',
 		'sv_se': 'sv',
 		'tr_tr': 'tr',
 		'uk_ua': 'ru',
