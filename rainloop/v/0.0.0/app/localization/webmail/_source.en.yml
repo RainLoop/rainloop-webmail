@@ -620,6 +620,7 @@ en:
     NO_PRIVATE_KEY_FOUND: "No private key found"
     NO_PRIVATE_KEY_FOUND_FOR: "No private key found for \"%EMAIL%\" email"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "Select a private key"
     UNVERIFIRED_SIGNATURE: "Unverified signature"
     DECRYPTION_ERROR: "OpenPGP decryption error"
     GOOD_SIGNATURE: "Good signature from %USER%"
