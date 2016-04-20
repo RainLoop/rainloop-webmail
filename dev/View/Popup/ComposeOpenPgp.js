@@ -456,7 +456,6 @@
 
 		if (aRec && 0 < aRec.length)
 		{
-<<<<<<< HEAD
 			this.encryptKeys(_.uniq(_.compact(_.flatten(_.map(aRec, function (sEmail) {
 				var aKeys = PgpStore.findAllPublicKeysByEmailNotNative(sEmail);
 				return aKeys ? _.map(aKeys, function (oKey) {
@@ -470,19 +469,6 @@
 					};
 				}) : [];
 			}), true)), function (oEncryptKey) {
-=======
-			this.encryptKeys(_.uniq(_.compact(_.map(aRec, function (sEmail) {
-				var oKey = PgpStore.findPublicKeyByEmailNotNative(sEmail) || null;
-				return {
-					'empty': !oKey,
-					'selected': ko.observable(!!oKey),
-					'removable': oIdentity && oIdentity.email() && oIdentity.email() !== sEmail,
-					'users': oKey ? (oKey.users || [sEmail]) : [sEmail],
-					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
-					'key': oKey
-				};
-			})), function (oEncryptKey) {
->>>>>>> master
 				return oEncryptKey.hash;
 			}));
 
