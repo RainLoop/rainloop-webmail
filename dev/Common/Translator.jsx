@@ -11,7 +11,7 @@ class Translator
 	notificationI18N = {};
 
 	constructor() {
-		this.data = window['rainloopI18N'] || {};
+		this.data = window.rainloopI18N || {};
 		this.trigger = ko.observable(false);
 		this.i18n = _.bind(this.i18n, this);
 		this.init();
@@ -27,8 +27,13 @@ class Translator
 
 		let
 			valueName = '',
-			result = _.isUndefined(this.data[key]) ? (_.isUndefined(defaulValue) ? key : defaulValue) : this.data[key]
+			result = this.data[key]
 		;
+
+		if (_.isUndefined(result))
+		{
+			result = _.isUndefined(defaulValue) ? key : defaulValue;
+		}
 
 		if (!_.isUndefined(valueList) && !_.isNull(valueList))
 		{
@@ -92,16 +97,21 @@ class Translator
 			if (animate && Globals.bAnimationSupported)
 			{
 				$('.i18n-animation[data-i18n]', elements).letterfx({
-					'fx': 'fall fade', 'backwards': false, 'timing': 50, 'fx_duration': '50ms', 'letter_end': 'restore', 'element_end': 'restore'
+					fx: 'fall fade',
+					backwards: false,
+					timing: 50,
+					fx_duration: '50ms',
+					letter_end: 'restore',
+					element_end: 'restore'
 				});
 			}
 		});
 	}
 
 	reloadData() {
-		if (window['rainloopI18N'])
+		if (window.rainloopI18N)
 		{
-			this.data = window['rainloopI18N'] || {};
+			this.data = window.rainloopI18N || {};
 
 			this.i18nToNodes(window.document, true);
 
@@ -109,7 +119,7 @@ class Translator
 			this.trigger(!this.trigger());
 		}
 
-		window['rainloopI18N'] = null;
+		window.rainloopI18N = null;
 	}
 
 	initNotificationLanguage() {
@@ -299,9 +309,9 @@ class Translator
 		Globals.$html.addClass('rl-changing-language');
 
 		$.ajax({
-				'url': require('Common/Links').langLink(language, admin),
-				'dataType': 'script',
-				'cache': true
+				url: require('Common/Links').langLink(language, admin),
+				dataType: 'script',
+				cache: true
 			})
 			.fail(fail || Utils.emptyFunction)
 			.done(function () {

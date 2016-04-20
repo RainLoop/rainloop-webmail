@@ -440,7 +440,7 @@ gulp.task('js:chunks', ['js:webpack'], function() {
 });
 
 // - min
-gulp.task('js:min', ['js:app', 'js:admin', 'js:chunks'], function() {
+gulp.task('js:min', ['js:app', 'js:admin', 'js:chunks', 'js:validate'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(uglify(cfg.uglify))
@@ -478,16 +478,13 @@ gulp.task('js:eslint', function() {
 	var eslint = require('gulp-eslint');
 
 	return gulp.src(cfg.paths.globjsxonly)
-		.pipe(eslint({
-			parser: 'babel-eslint',
-			rules: {
-				'strict': 0
-			}
-		}))
+		.pipe(eslint())
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError())
 	;
 });
+
+gulp.task('js:validate', ['js:lint', 'js:eslint']);
 
 // OTHER
 regOtherMinTask('other:cookie', 'vendors/jquery-cookie/', 'jquery.cookie.js', 'jquery.cookie-1.4.0.min.js',
@@ -742,6 +739,8 @@ gulp.task('watch+', ['fast+'], function() {
 // ALIASES
 gulp.task('build', ['rainloop']);
 gulp.task('build+', ['rainloop+']);
+
+gulp.task('js:v', ['js:validate']);
 
 gulp.task('w', ['watch']);
 gulp.task('w+', ['watch+']);

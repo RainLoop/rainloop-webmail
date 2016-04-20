@@ -1,6 +1,5 @@
 
 import {window, _, $} from 'common';
-import ko from 'ko';
 import progressJs from 'progressJs';
 import Tinycon from 'Tinycon';
 
@@ -86,10 +85,15 @@ class AppUser extends AbstractApp
 		if (Settings.settingsGet('UserBackgroundHash'))
 		{
 			_.delay(() => {
-				$('#rl-bg').attr('style', 'background-image: none !important;')
-						.backstretch(Links.userBackground(Settings.settingsGet('UserBackgroundHash')), {
-					'fade': Globals.bAnimationSupported ? 1000 : 0, 'centeredX': true, 'centeredY': true
-				}).removeAttr('style');
+				$('#rl-bg')
+					.attr('style', 'background-image: none !important;')
+					.backstretch(Links.userBackground(Settings.settingsGet('UserBackgroundHash')), {
+						fade: Globals.bAnimationSupported ? 1000 : 0,
+						centeredX: true,
+						centeredY: true
+					})
+					.removeAttr('style')
+				;
 			}, 1000);
 		}
 
@@ -205,12 +209,12 @@ class AppUser extends AbstractApp
 		_.each(this.oMoveCache, (oItem) => {
 
 			var
-				bSpam = sSpamFolder === oItem['To'],
-				bTrash = sTrashFolder === oItem['To'],
-				bHam = !bSpam && sSpamFolder === oItem['From'] && Cache.getFolderInboxName() === oItem['To']
+				bSpam = sSpamFolder === oItem.To,
+				bTrash = sTrashFolder === oItem.To,
+				bHam = !bSpam && sSpamFolder === oItem.From && Cache.getFolderInboxName() === oItem.To
 			;
 
-			Remote.messagesMove(this.moveOrDeleteResponseHelper, oItem['From'], oItem['To'], oItem['Uid'],
+			Remote.messagesMove(this.moveOrDeleteResponseHelper, oItem.From, oItem.To, oItem.Uid,
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
 		});
 
@@ -223,13 +227,13 @@ class AppUser extends AbstractApp
 		if (!this.oMoveCache[sH])
 		{
 			this.oMoveCache[sH] = {
-				'From': sFromFolderFullNameRaw,
-				'To': sToFolderFullNameRaw,
-				'Uid': []
+				From: sFromFolderFullNameRaw,
+				To: sToFolderFullNameRaw,
+				Uid: []
 			};
 		}
 
-		this.oMoveCache[sH]['Uid'] = _.union(this.oMoveCache[sH]['Uid'], aUidForMove);
+		this.oMoveCache[sH].Uid = _.union(this.oMoveCache[sH].Uid, aUidForMove);
 		this.messagesMoveTrigger();
 	}
 
@@ -434,13 +438,13 @@ class AppUser extends AbstractApp
 					;
 
 					if (oItem.users) {
-						_.each(oItem.users, (oItem) => {
+						_.each(oItem.users, (item) => {
 							oEmail.clear();
-							oEmail.mailsoParse(oItem.userId.userid);
+							oEmail.mailsoParse(item.userId.userid);
 							if (oEmail.validate())
 							{
 								aEmails.push(oEmail.email);
-								aUsers.push(oItem.userId.userid);
+								aUsers.push(item.userId.userid);
 							}
 						});
 					}
@@ -494,7 +498,7 @@ class AppUser extends AbstractApp
 //				});
 //			}
 //		});
-	};
+	}
 
 	accountsAndIdentities(bBoot) {
 
@@ -516,7 +520,7 @@ class AppUser extends AbstractApp
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
-				if (Utils.isArray(oData.Result['Accounts']))
+				if (Utils.isArray(oData.Result.Accounts))
 				{
 					_.each(AccountStore.accounts(), (oAccount) => {
 						aCounts[oAccount.email] = oAccount.count();
@@ -524,7 +528,7 @@ class AppUser extends AbstractApp
 
 					Utils.delegateRunOnDestroy(AccountStore.accounts());
 
-					AccountStore.accounts(_.map(oData.Result['Accounts'],
+					AccountStore.accounts(_.map(oData.Result.Accounts,
 						(sValue) => new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0)));
 				}
 
@@ -534,23 +538,23 @@ class AppUser extends AbstractApp
 					Events.sub('interval.10m-after5m', () => this.accountsCounts());
 				}
 
-				if (Utils.isArray(oData.Result['Identities']))
+				if (Utils.isArray(oData.Result.Identities))
 				{
 					Utils.delegateRunOnDestroy(IdentityStore.identities());
 
-					IdentityStore.identities(_.map(oData.Result['Identities'], (oIdentityData) => {
+					IdentityStore.identities(_.map(oData.Result.Identities, (oIdentityData) => {
 
 						const
-							sId = Utils.pString(oIdentityData['Id']),
-							sEmail = Utils.pString(oIdentityData['Email']),
+							sId = Utils.pString(oIdentityData.Id),
+							sEmail = Utils.pString(oIdentityData.Email),
 							oIdentity = new IdentityModel(sId, sEmail)
 						;
 
-						oIdentity.name(Utils.pString(oIdentityData['Name']));
-						oIdentity.replyTo(Utils.pString(oIdentityData['ReplyTo']));
-						oIdentity.bcc(Utils.pString(oIdentityData['Bcc']));
-						oIdentity.signature(Utils.pString(oIdentityData['Signature']));
-						oIdentity.signatureInsertBefore(!!oIdentityData['SignatureInsertBefore']);
+						oIdentity.name(Utils.pString(oIdentityData.Name));
+						oIdentity.replyTo(Utils.pString(oIdentityData.ReplyTo));
+						oIdentity.bcc(Utils.pString(oIdentityData.Bcc));
+						oIdentity.signature(Utils.pString(oIdentityData.Signature));
+						oIdentity.signatureInsertBefore(!!oIdentityData.SignatureInsertBefore);
 
 						return oIdentity;
 					}));
@@ -568,11 +572,11 @@ class AppUser extends AbstractApp
 			TemplateStore.templates.loading(false);
 
 			if (Enums.StorageResultType.Success === result && data.Result &&
-				Utils.isArray(data.Result['Templates']))
+				Utils.isArray(data.Result.Templates))
 			{
 				Utils.delegateRunOnDestroy(TemplateStore.templates());
 
-				TemplateStore.templates(_.compact(_.map(data.Result['Templates'], (templateData) => {
+				TemplateStore.templates(_.compact(_.map(data.Result.Templates, (templateData) => {
 					const template = new TemplateModel();
 					return template.parse(templateData) ? template : null;
 				})));
@@ -606,15 +610,14 @@ class AppUser extends AbstractApp
 					{
 						let
 							uid = '',
-							list = [],
 							check = false,
 							unreadCountChange = false
 						;
 
-						const folder = Cache.getFolderFromCacheList(data.Result.Folder);
-						if (folder)
+						const folderFromCache = Cache.getFolderFromCacheList(data.Result.Folder);
+						if (folderFromCache)
 						{
-							folder.interval = Momentor.momentNowUnix();
+							folderFromCache.interval = Momentor.momentNowUnix();
 
 							if (data.Result.Hash)
 							{
@@ -623,22 +626,22 @@ class AppUser extends AbstractApp
 
 							if (Utils.isNormal(data.Result.MessageCount))
 							{
-								folder.messageCountAll(data.Result.MessageCount);
+								folderFromCache.messageCountAll(data.Result.MessageCount);
 							}
 
 							if (Utils.isNormal(data.Result.MessageUnseenCount))
 							{
-								if (Utils.pInt(folder.messageCountUnread()) !== Utils.pInt(data.Result.MessageUnseenCount))
+								if (Utils.pInt(folderFromCache.messageCountUnread()) !== Utils.pInt(data.Result.MessageUnseenCount))
 								{
 									unreadCountChange = true;
 								}
 
-								folder.messageCountUnread(data.Result.MessageUnseenCount);
+								folderFromCache.messageCountUnread(data.Result.MessageUnseenCount);
 							}
 
 							if (unreadCountChange)
 							{
-								Cache.clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
+								Cache.clearMessageFlagsFromCacheByFolder(folderFromCache.fullNameRaw);
 							}
 
 							if (data.Result.Flags)
@@ -649,8 +652,8 @@ class AppUser extends AbstractApp
 									{
 										check = true;
 										const flags = data.Result.Flags[uid];
-										Cache.storeMessageFlagsToCacheByFolderAndUid(folder.fullNameRaw, uid.toString(), [
-											!flags['IsSeen'], !!flags['IsFlagged'], !!flags['IsAnswered'], !!flags['IsForwarded'], !!flags['IsReadReceipt']
+										Cache.storeMessageFlagsToCacheByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
+											!flags.IsSeen, !!flags.IsFlagged, !!flags.IsAnswered, !!flags.IsForwarded, !!flags.IsReadReceipt
 										]);
 									}
 								}
@@ -661,16 +664,16 @@ class AppUser extends AbstractApp
 								}
 							}
 
-							MessageStore.initUidNextAndNewMessages(folder.fullNameRaw, data.Result.UidNext, data.Result.NewMessages);
+							MessageStore.initUidNextAndNewMessages(folderFromCache.fullNameRaw, data.Result.UidNext, data.Result.NewMessages);
 
 							const hash = Cache.getFolderHash(data.Result.Folder);
 							if (data.Result.Hash !== hash || '' === hash || unreadCountChange)
 							{
-								if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+								if (folderFromCache.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 								{
 									this.reloadMessageList();
 								}
-								else if (Cache.getFolderInboxName() === folder.fullNameRaw)
+								else if (Cache.getFolderInboxName() === folderFromCache.fullNameRaw)
 								{
 									this.recacheInboxMessageList();
 								}
@@ -680,7 +683,7 @@ class AppUser extends AbstractApp
 				}
 			}, folder, list);
 		}
-	};
+	}
 
 	/**
 	 * @param {boolean=} boot = false
@@ -762,7 +765,7 @@ class AppUser extends AbstractApp
 				}
 			}, folders);
 		}
-	};
+	}
 
 	/**
 	 * @param {string} sFolderFullNameRaw
@@ -873,9 +876,9 @@ class AppUser extends AbstractApp
 
 			if (Enums.StorageResultType.Success === result && data && data.Result)
 			{
-				SocialStore.google.userName(data.Result['Google'] || '');
-				SocialStore.facebook.userName(data.Result['Facebook'] || '');
-				SocialStore.twitter.userName(data.Result['Twitter'] || '');
+				SocialStore.google.userName(data.Result.Google || '');
+				SocialStore.facebook.userName(data.Result.Facebook || '');
+				SocialStore.twitter.userName(data.Result.Twitter || '');
 			}
 			else
 			{
@@ -955,6 +958,21 @@ class AppUser extends AbstractApp
 			oTop = null,
 			oBottom = null,
 
+			fSetHeight = (height) => {
+				if (height)
+				{
+					if (oTop)
+					{
+						oTop.attr('style', 'height:' + height + 'px');
+					}
+
+					if (oBottom)
+					{
+						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
+					}
+				}
+			},
+
 			fResizeCreateFunction = (event) => {
 				if (event && event.target)
 				{
@@ -992,29 +1010,14 @@ class AppUser extends AbstractApp
 			},
 
 			oOptions = {
-				'helper': 'ui-resizable-helper-h',
-				'minHeight': iMinHeight,
-				'maxHeight': iMaxHeight,
-				'handles': 's',
-				'create': fResizeCreateFunction,
-				'resize': fResizeResizeFunction,
-				'start': fResizeStartFunction,
-				'stop': fResizeStopFunction
-			},
-
-			fSetHeight = (height) => {
-				if (height)
-				{
-					if (oTop)
-					{
-						oTop.attr('style', 'height:' + height + 'px');
-					}
-
-					if (oBottom)
-					{
-						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
-					}
-				}
+				helper: 'ui-resizable-helper-h',
+				minHeight: iMinHeight,
+				maxHeight: iMaxHeight,
+				handles: 's',
+				create: fResizeCreateFunction,
+				resize: fResizeResizeFunction,
+				start: fResizeStartFunction,
+				stop: fResizeStopFunction
 			},
 
 			fDisable = (bDisable) => {
@@ -1054,7 +1057,7 @@ class AppUser extends AbstractApp
 		Events.sub('layout', (layout) => {
 			fDisable(Enums.Layout.BottomPreview !== layout);
 		});
-	};
+	}
 
 	initVerticalLayoutResizer(sClientSideKeyName) {
 
@@ -1070,11 +1073,11 @@ class AppUser extends AbstractApp
 				if (iWidth)
 				{
 					oLeft.css({
-						'width': '' + iWidth + 'px'
+						width: '' + iWidth + 'px'
 					});
 
 					oRight.css({
-						'left': '' + iWidth + 'px'
+						left: '' + iWidth + 'px'
 					});
 				}
 			},
@@ -1118,7 +1121,7 @@ class AppUser extends AbstractApp
 					Local.set(sClientSideKeyName, oObject.size.width);
 
 					oRight.css({
-						'left': '' + oObject.size.width + 'px'
+						left: '' + oObject.size.width + 'px'
 					});
 				}
 			}
@@ -1130,14 +1133,14 @@ class AppUser extends AbstractApp
 		}
 
 		oLeft.resizable({
-			'helper': 'ui-resizable-helper-w',
-			'minWidth': iMinWidth,
-			'maxWidth': 350,
-			'handles': 'e',
-			'create': fResizeCreateFunction,
-			'resize': fResizeResizeFunction,
-			'start': fResizeStartFunction,
-			'stop': fResizeStopFunction
+			helper: 'ui-resizable-helper-w',
+			minWidth: iMinWidth,
+			maxWidth: 350,
+			handles: 'e',
+			create: fResizeCreateFunction,
+			resize: fResizeResizeFunction,
+			start: fResizeStartFunction,
+			stop: fResizeStopFunction
 		});
 
 		Events.sub('left-panel.off', () => {
@@ -1154,7 +1157,7 @@ class AppUser extends AbstractApp
 			this.loginAndLogoutReload(false, true,
 				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length);
 		});
-	};
+	}
 
 	bootstartTwoFactorScreen() {
 		kn.showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
@@ -1195,7 +1198,7 @@ class AppUser extends AbstractApp
 		{
 			kn.hideLoading();
 
-			progressJs.onbeforeend(() =>  {
+			progressJs.onbeforeend(() => {
 				$('.progressjs-container').hide();
 				_.delay(() => {
 					$('.progressjs-container').remove();
@@ -1208,7 +1211,7 @@ class AppUser extends AbstractApp
 		{
 			kn.hideLoading();
 		}
-	};
+	}
 
 	bootstart() {
 
@@ -1240,7 +1243,7 @@ class AppUser extends AbstractApp
 		});
 
 		this.setWindowTitle('');
-		if (!!Settings.settingsGet('Auth'))
+		if (Settings.settingsGet('Auth'))
 		{
 			Globals.$html.addClass('rl-user-auth');
 
@@ -1255,7 +1258,7 @@ class AppUser extends AbstractApp
 			{
 				this.setWindowTitle(Translator.i18n('TITLES/LOADING'));
 
-//require.ensure([], function() { // require code splitting
+// require.ensure([], function() { // require code splitting
 
 				this.foldersReload((value) => {
 
@@ -1319,8 +1322,8 @@ class AppUser extends AbstractApp
 
 						kn.startScreens([
 							require('Screen/User/MailBox'),
-							Settings.capa(Enums.Capa.Settings) ? require('Screen/User/Settings') : null,
-							false ? require('Screen/User/About') : null
+							Settings.capa(Enums.Capa.Settings) ? require('Screen/User/Settings') : null
+//							false ? require('Screen/User/About') : null
 						]);
 
 						if (bGoogle || bFacebook || bTwitter)
@@ -1381,7 +1384,7 @@ class AppUser extends AbstractApp
 									window.navigator.registerProtocolHandler('mailto',
 										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
 										'' + (Settings.settingsGet('Title') || 'RainLoop'));
-								} catch(e) {}
+								} catch (e) {/* eslint-disable-line no-empty */}
 
 								if (Settings.settingsGet('MailToEmail'))
 								{
@@ -1394,7 +1397,7 @@ class AppUser extends AbstractApp
 						{
 							_.defer(() => this.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize));
 
-							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered') )
+							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered'))
 							{
 								Tinycon.setOptions({
 									fallback: false
@@ -1412,7 +1415,7 @@ class AppUser extends AbstractApp
 
 				});
 
-//}); // require code splitting
+// }); // require code splitting
 
 			}
 		}

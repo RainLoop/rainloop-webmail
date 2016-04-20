@@ -50,6 +50,6 @@ const componentExportHelper = (ClassObject, templateID = '') => {
 			}
 		}
 	};
-}
+};
 
 export {AbstractComponent, componentExportHelper};

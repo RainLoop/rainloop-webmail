@@ -32,14 +32,6 @@
 
 		this.publicKeysOptionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
 		this.privateKeysOptionsCaption = Translator.i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');
-		this.addOptionClass = function (oDomOption, oItem)
-		{
-			self.defautOptionsAfterRender(oDomOption, oItem);
-
-			if (oItem) {
-				oDomOption.classList.add(oItem['class']);
-			}
-		};
 
 		this.notification = ko.observable('');
 
@@ -335,6 +327,16 @@
 	kn.extendAsViewModel(['View/Popup/ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], ComposeOpenPgpPopupView);
 	_.extend(ComposeOpenPgpPopupView.prototype, AbstractView.prototype);
 
+	ComposeOpenPgpPopupView.prototype.addOptionClass = function (oDomOption, oItem)
+	{
+		this.defautOptionsAfterRender(oDomOption, oItem);
+
+		if (oItem)
+		{
+			oDomOption.classList.add(oItem['class']);
+		}
+	};
+
 	ComposeOpenPgpPopupView.prototype.deletePublickKey = function (oKey)
 	{
 		this.encryptKeys.remove(oKey);
@@ -454,6 +456,7 @@
 
 		if (aRec && 0 < aRec.length)
 		{
+<<<<<<< HEAD
 			this.encryptKeys(_.uniq(_.compact(_.flatten(_.map(aRec, function (sEmail) {
 				var aKeys = PgpStore.findAllPublicKeysByEmailNotNative(sEmail);
 				return aKeys ? _.map(aKeys, function (oKey) {
@@ -467,6 +470,19 @@
 					};
 				}) : [];
 			}), true)), function (oEncryptKey) {
+=======
+			this.encryptKeys(_.uniq(_.compact(_.map(aRec, function (sEmail) {
+				var oKey = PgpStore.findPublicKeyByEmailNotNative(sEmail) || null;
+				return {
+					'empty': !oKey,
+					'selected': ko.observable(!!oKey),
+					'removable': oIdentity && oIdentity.email() && oIdentity.email() !== sEmail,
+					'users': oKey ? (oKey.users || [sEmail]) : [sEmail],
+					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
+					'key': oKey
+				};
+			})), function (oEncryptKey) {
+>>>>>>> master
 				return oEncryptKey.hash;
 			}));
 

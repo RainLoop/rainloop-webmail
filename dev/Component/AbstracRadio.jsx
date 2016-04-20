@@ -27,7 +27,7 @@ class AbstracRadio extends AbstractComponent
 		if (params.values)
 		{
 			this.values(_.map(params.values, (label, value) => {
-				return {'label': label, 'value': value};
+				return {label: label, value: value};
 			}));
 		}
 
@@ -39,7 +39,7 @@ class AbstracRadio extends AbstractComponent
 		{
 			this.value(value.value);
 		}
-	};
+	}
 }
 
 export {AbstracRadio, AbstracRadio as default};

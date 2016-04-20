@@ -22,19 +22,25 @@ class CookieDriver
 			const storageValue = $.cookie(CLIENT_SIDE_STORAGE_INDEX_NAME);
 			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
 		(storageResult || (storageResult = {}))[key] = data;
 
 		try
 		{
 			$.cookie(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult), {
-				'expires': 30
+				expires: 30
 			});
 
 			result = true;
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
 		return result;
 	}
@@ -43,7 +49,7 @@ class CookieDriver
 	 * @param {string} key
 	 * @return {*}
 	 */
-	get(sKey) {
+	get(key) {
 
 		let result = null;
 
@@ -56,10 +62,13 @@ class CookieDriver
 
 			result = (storageResult && !Utils.isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
-		return mResult;
-	};
+		return result;
+	}
 
 	/**
 	 * @return {boolean}

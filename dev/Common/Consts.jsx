@@ -1,7 +1,9 @@
 
+/* eslint max-len: 0 */
+
 export const MESSAGES_PER_PAGE = 20;
 
-export const MESSAGES_PER_PAGE_VALUES = [10, 20, 30, 50, 100/*, 150, 200, 300*/];
+export const MESSAGES_PER_PAGE_VALUES = [10, 20, 30, 50, 100];
 
 export const CONTACTS_PER_PAGE = 50;
 

@@ -314,7 +314,7 @@ class Links
 	 * @return {string}
 	 */
 	sound(fileName) {
-		return  this.sStaticPrefix + 'sounds/' + fileName;
+		return this.sStaticPrefix + 'sounds/' + fileName;
 	}
 
 	/**

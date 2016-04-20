@@ -8,9 +8,11 @@
 	font-size: 16px;
 	vertical-align: text-top;
 
-	&.disabled,
-	.disabled & {
+	.btn.disabled &, .btn[disabled] &{
 		color: grey;
+		&.icon-white {
+			color: #fff;
+		}
 	}
 }
 

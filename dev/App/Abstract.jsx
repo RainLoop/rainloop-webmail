@@ -1,7 +1,7 @@
 
 import {window, _, $, key} from 'common';
 import Globals from 'Common/Globals';
-import * as  Enums from 'Common/Enums';
+import * as Enums from 'Common/Enums';
 import Utils from 'Common/Utils';
 import Links from 'Common/Links';
 import Events from 'Common/Events';
@@ -64,7 +64,7 @@ class AbstractApp extends AbstractBoot
 
 		}, 50));
 
-		 // DEBUG
+// DEBUG
 //		Events.sub({
 //			'window.resize': function () {
 //				window.console.log('window.resize');
@@ -112,15 +112,15 @@ class AbstractApp extends AbstractBoot
 		if (Globals.sUserAgent && (Globals.sUserAgent.indexOf('chrome') > -1 || Globals.sUserAgent.indexOf('chrome') > -1))
 		{
 			const oLink = window.document.createElement('a');
-			oLink['href'] = link;
+			oLink.href = link;
 
-			if (window.document['createEvent'])
+			if (window.document && window.document.createEvent)
 			{
-				const oE = window.document['createEvent']('MouseEvents');
-				if (oE && oE['initEvent'] && oLink['dispatchEvent'])
+				const oE = window.document.createEvent.MouseEvents;
+				if (oE && oE.initEvent && oLink.dispatchEvent)
 				{
-					oE['initEvent']('click', true, true);
-					oLink['dispatchEvent'](oE);
+					oE.initEvent('click', true, true);
+					oLink.dispatchEvent(oE);
 					return true;
 				}
 			}
@@ -179,14 +179,14 @@ class AbstractApp extends AbstractBoot
 	}
 
 	/**
-	 * @param {string} key
+	 * @param {string} token
 	 */
-	setClientSideToken(key) {
+	setClientSideToken(token) {
 		if (window.__rlah_set)
 		{
-			window.__rlah_set(key);
+			window.__rlah_set(token);
 
-			require('Storage/Settings').settingsSet('AuthAccountHash', key);
+			require('Storage/Settings').settingsSet('AuthAccountHash', token);
 			require('Common/Links').populateAuthSuffix();
 		}
 	}
@@ -203,7 +203,7 @@ class AbstractApp extends AbstractBoot
 			inIframe = !!Settings.settingsGet('InIframe')
 		;
 
-		let customLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink'))
+		let customLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink'));
 
 		if (logout)
 		{
@@ -273,7 +273,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('x-script', require('Component/Script'));
 //		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
-		if (/**false && /**/Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
+		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
 			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
@@ -291,49 +291,49 @@ class AbstractApp extends AbstractBoot
 		_.delay(Utils.windowResizeCallback, 1000);
 
 		ssm.addState({
-			'id': 'mobile',
-			'maxWidth': 767,
-			'onEnter': () => {
+			id: 'mobile',
+			maxWidth: 767,
+			onEnter: () => {
 				Globals.$html.addClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-enter');
 			},
-			'onLeave': () => {
+			onLeave: () => {
 				Globals.$html.removeClass('ssm-state-mobile');
 				Events.pub('ssm.mobile-leave');
 			}
 		});
 
 		ssm.addState({
-			'id': 'tablet',
-			'minWidth': 768,
-			'maxWidth': 999,
-			'onEnter': function() {
+			id: 'tablet',
+			minWidth: 768,
+			maxWidth: 999,
+			onEnter: function() {
 				Globals.$html.addClass('ssm-state-tablet');
 			},
-			'onLeave': function() {
+			onLeave: function() {
 				Globals.$html.removeClass('ssm-state-tablet');
 			}
 		});
 
 		ssm.addState({
-			'id': 'desktop',
-			'minWidth': 1000,
-			'maxWidth': 1400,
-			'onEnter': () => {
+			id: 'desktop',
+			minWidth: 1000,
+			maxWidth: 1400,
+			onEnter: () => {
 				Globals.$html.addClass('ssm-state-desktop');
 			},
-			'onLeave': () => {
+			onLeave: () => {
 				Globals.$html.removeClass('ssm-state-desktop');
 			}
 		});
 
 		ssm.addState({
-			'id': 'desktop-large',
-			'minWidth': 1400,
-			'onEnter': () => {
+			id: 'desktop-large',
+			minWidth: 1400,
+			onEnter: () => {
 				Globals.$html.addClass('ssm-state-desktop-large');
 			},
-			'onLeave': () => {
+			onLeave: () => {
 				Globals.$html.removeClass('ssm-state-desktop-large');
 			}
 		});
@@ -360,7 +360,7 @@ class AbstractApp extends AbstractBoot
 		require('Stores/Language').populate();
 		require('Stores/Theme').populate();
 		require('Stores/Social').populate();
-	};
+	}
 }
 
 export {AbstractApp, AbstractApp as default};

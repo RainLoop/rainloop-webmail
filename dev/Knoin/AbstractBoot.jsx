@@ -1,7 +1,9 @@
 
 class AbstractBoot
 {
-	bootstart(Remote) {}
+	bootstart() {
+		// eslint-disable-line no-empty
+	}
 }
 
 export {AbstractBoot, AbstractBoot as default};

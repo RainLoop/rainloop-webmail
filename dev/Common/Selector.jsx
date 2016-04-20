@@ -23,7 +23,7 @@ class Selector
 
 		this.listChecked = ko.computed(() => {
 			return _.filter(this.list(), (item) => item.checked());
-		}, this).extend({'rateLimit': 0});
+		}, this).extend({rateLimit: 0});
 
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
@@ -77,7 +77,7 @@ class Selector
 
 		}, this);
 
-		this.selectedItem = this.selectedItem.extend({'toggleSubscribe': [null,
+		this.selectedItem = this.selectedItem.extend({toggleSubscribe: [null,
 			(prev) => {
 				if (prev)
 				{
@@ -91,7 +91,7 @@ class Selector
 			}
 		]});
 
-		this.focusedItem = this.focusedItem.extend({'toggleSubscribe': [null,
+		this.focusedItem = this.focusedItem.extend({toggleSubscribe: [null,
 			(prev) => {
 				if (prev)
 				{
@@ -291,14 +291,14 @@ class Selector
 		{
 			if (!item)
 			{
-				(this.oCallbacks['onItemSelect'] || this.emptyFunction)(item || null);
+				(this.oCallbacks.onItemSelect || this.emptyFunction)(item || null);
 			}
 		}
 		else
 		{
 			if (item)
 			{
-				(this.oCallbacks['onItemSelect'] || this.emptyFunction)(item);
+				(this.oCallbacks.onItemSelect || this.emptyFunction)(item);
 			}
 		}
 	}
@@ -416,14 +416,14 @@ class Selector
 	 * @return {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks['onAutoSelect'] || this.emptyTrueFunction)();
+		return !!(this.oCallbacks.onAutoSelect || this.emptyTrueFunction)();
 	}
 
 	/**
 	 * @param {boolean} up
 	 */
 	doUpUpOrDownDown(up) {
-		(this.oCallbacks['onUpUpOrDownDown'] || this.emptyTrueFunction)(!!up);
+		(this.oCallbacks.onUpUpOrDownDown || this.emptyTrueFunction)(!!up);
 	}
 
 	/**
@@ -434,7 +434,7 @@ class Selector
 
 		let uid = '';
 
-		const getItemUidCallback = this.oCallbacks['onItemGetUid'] || null;
+		const getItemUidCallback = this.oCallbacks.onItemGetUid || null;
 		if (getItemUidCallback && item)
 		{
 			uid = getItemUidCallback(item);
@@ -465,18 +465,22 @@ class Selector
 		{
 			if (!oFocused)
 			{
-				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode || EventKeyCode.Home === iEventKeyCode || EventKeyCode.PageUp === iEventKeyCode)
+				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Insert === iEventKeyCode ||
+					EventKeyCode.Space === iEventKeyCode || EventKeyCode.Home === iEventKeyCode ||
+					EventKeyCode.PageUp === iEventKeyCode)
 				{
 					oResult = aList[0];
 				}
-				else if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.End === iEventKeyCode || EventKeyCode.PageDown === iEventKeyCode)
+				else if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.End === iEventKeyCode ||
+					EventKeyCode.PageDown === iEventKeyCode)
 				{
 					oResult = aList[aList.length - 1];
 				}
 			}
 			else if (oFocused)
 			{
-				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode ||  EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode)
+				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode ||
+					EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode)
 				{
 					_.each(aList, (item) => {
 						if (!bStop)
@@ -649,7 +653,7 @@ class Selector
 		}
 		else
 		{
-			this.oContentScrollable.stop().animate({'scrollTop': 0}, 200);
+			this.oContentScrollable.stop().animate({scrollTop: 0}, 200);
 		}
 
 		return true;

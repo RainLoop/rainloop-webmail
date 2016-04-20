@@ -26,7 +26,7 @@ class AppAdminStore extends AbstractAppStore
 
 		this.weakPassword(!!Settings.settingsGet('WeakPassword'));
 		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
-	};
+	}
 }
 
 module.exports = new AppAdminStore();

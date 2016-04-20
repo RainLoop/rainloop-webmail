@@ -1,6 +1,8 @@
 
-module.exports = {
+/* eslint key-spacing: 0 */
+/* eslint quote-props: 0 */
 
+module.exports = {
 	'eml'	: 'message/rfc822',
 	'mime'	: 'message/rfc822',
 	'txt'	: 'text/plain',
@@ -159,5 +161,4 @@ module.exports = {
 	// open office
 	'odt'	: 'application/vnd.oasis.opendocument.text',
 	'ods'	: 'application/vnd.oasis.opendocument.spreadsheet'
-
 };

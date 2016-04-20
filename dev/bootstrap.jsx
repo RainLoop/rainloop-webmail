@@ -32,6 +32,7 @@ export default (App) => {
 	;
 
 	// export
+	/* eslint dot-notation: 0 */
 	window['rl'] = window['rl'] || {};
 	window['rl']['i18n'] = _.bind(Translator.i18n, Translator);
 
@@ -82,4 +83,4 @@ export default (App) => {
 
 		}, 10));
 	};
-}
+};

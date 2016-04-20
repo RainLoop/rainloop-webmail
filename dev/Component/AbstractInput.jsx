@@ -35,7 +35,7 @@ class AbstractInput extends AbstractComponent
 					' ' + Utils.trim('settings-saved-trigger-input ' + this.classForTrigger()) : ''
 			;
 
-			return (0 < size ? 'span' + size : '') + suffixValue;
+			return (size > 0 ? 'span' + size : '') + suffixValue;
 
 		}, this);
 

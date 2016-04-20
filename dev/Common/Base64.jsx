@@ -4,7 +4,8 @@
 
 const BASE_64_CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-/*jslint bitwise: true*/
+/* jslint bitwise: true */
+/* eslint-disable */
 const Base64 = {
 
 	// public method for urlsafe encoding
@@ -13,7 +14,7 @@ const Base64 = {
 
 	// public method for encoding
 	encode: (input) => {
-		
+
 		let
 			output = '',
 			chr1, chr2, chr3, enc1, enc2, enc3, enc4,
@@ -164,4 +165,5 @@ const Base64 = {
 };
 
 module.exports = Base64;
-/*jslint bitwise: false*/
+/* jslint bitwise: false */
+/* eslint-enable */

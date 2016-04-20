@@ -1,5 +1,5 @@
 
-import {window, _} from 'common';
+import {window, _, $} from 'common';
 import Globals from 'Common/Globals';
 import Settings from 'Storage/Settings';
 
@@ -9,7 +9,7 @@ class HtmlEditor
 	$element = null;
 
 	blurTimer = 0;
-	
+
 	onBlur = null;
 	onReady = null;
 	onModeChange = null;
@@ -70,9 +70,9 @@ class HtmlEditor
 		if (this.editor)
 		{
 			this.editor.execCommand('insertSignature', {
-				'isHtml': html,
-				'insertBefore': insertBefore,
-				'signature': signature
+				isHtml: html,
+				insertBefore: insertBefore,
+				signature: signature
 			});
 		}
 	}
@@ -117,12 +117,11 @@ class HtmlEditor
 				}
 				else
 				{
-					result =  wrapIsHtml ?
+					result = wrapIsHtml ?
 						'<div data-html-editor-font-wrapper="true" style="font-family: arial, sans-serif; font-size: 13px;">' +
 							this.editor.getData() + '</div>' : this.editor.getData();
 				}
-			}
-			catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 
 			if (clearSignatureSigns)
 			{
@@ -160,7 +159,7 @@ class HtmlEditor
 						this.editor.setMode('plain');
 					}
 				}
-			} catch(e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 
 			if (resize)
 			{
@@ -189,7 +188,7 @@ class HtmlEditor
 
 			try {
 				this.editor.setData(html);
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 
 			if (focus)
 			{
@@ -204,7 +203,7 @@ class HtmlEditor
 			try {
 				this.editor.setData(
 					this.editor.getData().replace(find, replaceHtml));
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 	}
 
@@ -214,13 +213,13 @@ class HtmlEditor
 			this.modeToggle(false);
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
 			{
-				return this.editor.__plain.setRawData(plain);
+				this.editor.__plain.setRawData(plain);
 			}
 			else
 			{
 				try {
 					this.editor.setData(plain);
-				} catch (e) {}
+				} catch (e) {/* eslint-disable-line no-empty */}
 			}
 
 			if (focus)
@@ -254,7 +253,7 @@ class HtmlEditor
 
 						if (!biti)
 						{
-							config.removePlugins += (config.removePlugins ? ',' : '')  + 'bidi';
+							config.removePlugins += (config.removePlugins ? ',' : '') + 'bidi';
 						}
 					}
 
@@ -294,7 +293,7 @@ class HtmlEditor
 
 					if (window.FileReader)
 					{
-						this.editor.on('drop', (event) =>  {
+						this.editor.on('drop', (event) => {
 							if (0 < event.data.dataTransfer.getFilesCount())
 							{
 								const file = event.data.dataTransfer.getFile(0);
@@ -304,7 +303,7 @@ class HtmlEditor
 									var
 										id = event.data.dataTransfer.id,
 										imageId = `[img=${id}]`,
-										reader  = new window.FileReader()
+										reader = new window.FileReader()
 									;
 
 									reader.onloadend = () => {
@@ -361,7 +360,7 @@ class HtmlEditor
 		{
 			try {
 				this.editor.focus();
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 	}
 
@@ -370,7 +369,7 @@ class HtmlEditor
 		{
 			try {
 				return !!this.editor.focusManager.hasFocus;
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 
 		return false;
@@ -381,7 +380,7 @@ class HtmlEditor
 		{
 			try {
 				this.editor.focusManager.blur(true);
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 	}
 
@@ -390,7 +389,7 @@ class HtmlEditor
 		{
 			try {
 				this.editor.resize(this.$element.width(), this.$element.innerHeight());
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 	}
 
@@ -399,7 +398,7 @@ class HtmlEditor
 		{
 			try {
 				this.editor.setReadOnly(!!value);
-			} catch (e) {}
+			} catch (e) {/* eslint-disable-line no-empty */}
 		}
 	}
 

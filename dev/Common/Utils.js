@@ -31,6 +31,21 @@
 	Utils.emptyFunction = Utils.noop = function () {};
 
 	/**
+	 * @param {Function} callback
+	 */
+	Utils.silentTryCatch = function (callback)
+	{
+		try
+		{
+			callback();
+		}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
+	};
+
+	/**
 	 * @param {*} oValue
 	 * @return {boolean}
 	 */
@@ -576,16 +591,17 @@
 	Utils.createCommand = function (oContext, fExecute, fCanExecute)
 	{
 		var
+			fResult = Utils.emptyFunction,
 			fNonEmpty = function () {
 				if (fResult && fResult.canExecute && fResult.canExecute())
 				{
 					fExecute.apply(oContext, Array.prototype.slice.call(arguments));
 				}
 				return false;
-			},
-			fResult = fExecute ? fNonEmpty : Utils.emptyFunction
+			}
 		;
 
+		fResult = fExecute ? fNonEmpty : Utils.emptyFunction;
 		fResult.enabled = ko.observable(true);
 
 		fCanExecute = Utils.isUnd(fCanExecute) ? true : fCanExecute;
