@@ -83,10 +83,10 @@
 
 		if (0 === aResult.length && Utils.isNonEmptyArray(aRecipients))
 		{
-			aResult = _.compact(_.flatten(_.map(aRecipients, function (sEmail) {
-				var oKey = sEmail ? self.findPrivateKeyByEmailNotNative(sEmail) : null;
-				return oKey ? (bReturnWrapKeys ? [oKey] : oKey.getNativeKeys()) : [null];
-			}), true));
+			aResult = _.uniq(_.compact(_.flatten(_.map(aRecipients, function (sEmail) {
+				var aKeys = sEmail ? self.findAllPrivateKeysByEmailNotNative(sEmail) : null;
+				return aKeys ? (bReturnWrapKeys ? aKeys : _.flatten(_.map(aKeys, function (oKey) { return oKey.getNativeKeys(); }), true)) : [null];
+			}), true)), function (oKey) { return oKey.id; });
 		}
 
 		return aResult;
@@ -110,6 +110,28 @@
 	PgpUserStore.prototype.findPrivateKeyByEmailNotNative = function (sEmail)
 	{
 		return _.find(this.openpgpkeysPrivate(), function (oItem) {
+			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+		}) || null;
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @return {?}
+	 */
+	PgpUserStore.prototype.findAllPublicKeysByEmailNotNative = function (sEmail)
+	{
+		return _.filter(this.openpgpkeysPublic(), function (oItem) {
+			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+		}) || null;
+	};
+
+	/**
+	 * @param {string} sEmail
+	 * @return {?}
+	 */
+	PgpUserStore.prototype.findAllPrivateKeysByEmailNotNative = function (sEmail)
+	{
+		return _.filter(this.openpgpkeysPrivate(), function (oItem) {
 			return oItem && -1 !== oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
