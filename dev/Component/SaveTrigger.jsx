@@ -73,7 +73,7 @@ class SaveTriggerComponent extends AbstractComponent
 				;
 				break;
 		}
-	};
+	}
 }
 
 module.exports = componentExportHelper(SaveTriggerComponent, 'SaveTriggerComponent');

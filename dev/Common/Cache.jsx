@@ -1,5 +1,4 @@
 
-
 import {_} from 'common';
 import {Capa, MessageSetAction} from 'Common/Enums';
 import Utils from 'Common/Utils';
@@ -239,17 +238,17 @@ class CacheUserStorage
 			if (0 < message.threads().length)
 			{
 				const unseenSubUid = _.find(message.threads(), (sSubUid) => {
-					if (uid !== sSubUid){
-						const flags = this.getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-						return flags && 0 < flags.length && !!flags[0];	
+					if (uid !== sSubUid) {
+						const subFlags = this.getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
+						return subFlags && 0 < subFlags.length && !!subFlags[0];
 					}
 					return false;
 				});
 
 				const flaggedSubUid = _.find(message.threads(), (sSubUid) => {
 					if (uid !== sSubUid) {
-						const flags = this.getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-						return flags && 0 < flags.length && !!flags[1];	
+						const subFlags = this.getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
+						return subFlags && 0 < subFlags.length && !!subFlags[1];
 					}
 					return false;
 				});
@@ -269,7 +268,7 @@ class CacheUserStorage
 			this.setMessageFlagsToCache(
 				message.folderFullNameRaw, message.uid,
 				[message.unseen(), message.flagged(), message.answered(), message.forwarded(),
-					message.isReadReceipt(),  message.deletedMark()]
+					message.isReadReceipt(), message.deletedMark()]
 			);
 		}
 	}
@@ -293,7 +292,7 @@ class CacheUserStorage
 	 */
 	storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
 
-		let unread = 0; 
+		let unread = 0;
 		const flags = this.getMessageFlagsFromCache(folder, uid);
 
 		if (Utils.isArray(flags) && 0 < flags.length)

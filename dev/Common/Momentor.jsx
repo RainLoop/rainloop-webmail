@@ -53,11 +53,11 @@ class Momentor
 					return m.fromNow();
 				case now.format('L') === m.format('L'):
 					return Translator.i18n('MESSAGE_LIST/TODAY_AT', {
-						'TIME': m.format('LT')
+						TIME: m.format('LT')
 					});
 				case now.clone().subtract('days', 1).format('L') === m.format('L'):
 					return Translator.i18n('MESSAGE_LIST/YESTERDAY_AT', {
-						'TIME': m.format('LT')
+						TIME: m.format('LT')
 					});
 				case now.year() === m.year():
 					return m.format('D MMM.');

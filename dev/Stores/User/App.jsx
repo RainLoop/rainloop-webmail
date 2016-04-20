@@ -21,6 +21,8 @@ class AppUserStore extends AbstractAppStore
 
 			switch (value)
 			{
+				default:
+					break;
 				case Focused.MessageList:
 					Globals.keyScope(KeyState.MessageList);
 					break;
@@ -66,7 +68,7 @@ class AppUserStore extends AbstractAppStore
 
 		this.devEmail = Settings.settingsGet('DevEmail');
 		this.devPassword = Settings.settingsGet('DevPassword');
-	};
+	}
 }
 
 module.exports = new AppUserStore();

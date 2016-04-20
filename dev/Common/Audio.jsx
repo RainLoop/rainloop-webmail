@@ -21,7 +21,7 @@ class Audio
 		this.player = this.createNewObject();
 
 		this.supported = !Globals.bMobileDevice && !Globals.bSafari && !!this.player && !!this.player.play;
-		if (this.supported &&  this.player.canPlayType)
+		if (this.supported && this.player.canPlayType)
 		{
 			this.supportedMp3 = '' !== this.player.canPlayType('audio/mpeg;').replace(/no/, '');
 			this.supportedWav = '' !== this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');

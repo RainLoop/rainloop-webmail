@@ -10,11 +10,11 @@ class CheckboxMaterialDesignComponent extends AbstracCheckbox
 	 * @param {Object} params
 	 */
 	constructor(params) {
-		
+
 		super(params);
 
-		this.animationBox = ko.observable(false).extend({'falseTimeout': 200});
-		this.animationCheckmark = ko.observable(false).extend({'falseTimeout': 200});
+		this.animationBox = ko.observable(false).extend({falseTimeout: 200});
+		this.animationCheckmark = ko.observable(false).extend({falseTimeout: 200});
 
 		this.animationBoxSetTrue = _.bind(this.animationBoxSetTrue, this);
 		this.animationCheckmarkSetTrue = _.bind(this.animationCheckmarkSetTrue, this);

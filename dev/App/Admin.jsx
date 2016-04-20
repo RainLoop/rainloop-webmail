@@ -3,7 +3,7 @@ import {window, _} from 'common';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
-import * as  Enums from 'Common/Enums';
+import * as Enums from 'Common/Enums';
 import Utils from 'Common/Utils';
 import Links from 'Common/Links';
 import Translator from 'Common/Translator';
@@ -41,9 +41,9 @@ class AdminApp extends AbstractApp
 			{
 				DomainStore.domains(_.map(data.Result, (enabled, name) => {
 					return {
-						'name': name,
-						'disabled': ko.observable(!enabled),
-						'deleteAccess': ko.observable(false)
+						name: name,
+						disabled: ko.observable(!enabled),
+						deleteAccess: ko.observable(false)
 					};
 				}));
 			}
@@ -58,9 +58,9 @@ class AdminApp extends AbstractApp
 			{
 				PluginStore.plugins(_.map(data.Result, (item) => {
 					return {
-						'name': item['Name'],
-						'disabled': ko.observable(!item['Enabled']),
-						'configured': ko.observable(!!item['Configured'])
+						name: item.Name,
+						disabled: ko.observable(!item.Enabled),
+						configured: ko.observable(!!item.Configured)
 					};
 				}));
 			}
@@ -83,9 +83,9 @@ class AdminApp extends AbstractApp
 				;
 
 				_.each(PackageStore.packages(), (item) => {
-					if (item && item['loading']())
+					if (item && item.loading())
 					{
-						loading[item['file']] = item;
+						loading[item.file] = item;
 					}
 				});
 
@@ -94,8 +94,8 @@ class AdminApp extends AbstractApp
 					list = _.compact(_.map(data.Result.List, (item) => {
 						if (item)
 						{
-							item['loading'] = ko.observable(!Utils.isUnd(loading[item['file']]));
-							return 'core' === item['type'] && !item['canBeInstalled'] ? null : item;
+							item.loading = ko.observable(!Utils.isUnd(loading[item.file]));
+							return 'core' === item.type && !item.canBeInstalled ? null : item;
 						}
 						return null;
 					}));
@@ -170,10 +170,10 @@ class AdminApp extends AbstractApp
 		LicenseStore.licenseError('');
 		Remote.licensing((result, data) => {
 			LicenseStore.licensingProcess(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result && Utils.isNormal(data.Result['Expired']))
+			if (Enums.StorageResultType.Success === result && data && data.Result && Utils.isNormal(data.Result.Expired))
 			{
 				LicenseStore.licenseValid(true);
-				LicenseStore.licenseExpired(Utils.pInt(data.Result['Expired']));
+				LicenseStore.licenseExpired(Utils.pInt(data.Result.Expired));
 				LicenseStore.licenseError('');
 				LicenseStore.licensing(true);
 				AppStore.prem(true);
@@ -237,7 +237,7 @@ class AdminApp extends AbstractApp
 		}
 		else
 		{
-			if (!!Settings.settingsGet('Auth'))
+			if (Settings.settingsGet('Auth'))
 			{
 				kn.startScreens([
 					require('Screen/Admin/Settings')

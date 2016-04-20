@@ -6,7 +6,7 @@ let
 	getUtl = () => {
 		if (!cachedUrl)
 		{
-			const version = $('#rlAppVersion').attr('content') || '0.0.0'; // TODO
+			const version = $('#rlAppVersion').attr('content') || '0.0.0';
 			cachedUrl = `rainloop/v/${version}/static/css/svg/icons.svg`;
 		}
 

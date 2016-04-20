@@ -1,4 +1,6 @@
 
+/* eslint quote-props: 0 */
+
 /**
  * @enum {string}
  */
@@ -18,7 +20,7 @@ export const FileType = {
 	'Certificate': 'certificate',
 	'CertificateBin': 'certificate-bin',
 	'Archive': 'archive'
-}
+};
 
 /**
  * @enum {string}
@@ -28,7 +30,7 @@ export const StorageResultType = {
 	'Abort': 'abort',
 	'Error': 'error',
 	'Unload': 'unload'
-}
+};
 
 /**
  * @enum {string}
@@ -38,7 +40,7 @@ export const Focused = {
 	'MessageList': 'message-list',
 	'MessageView': 'message-view',
 	'FolderList': 'folder-list'
-}
+};
 
 /**
  * @enum {number}
@@ -47,7 +49,7 @@ export const State = {
 	'Empty': 10,
 	'Login': 20,
 	'Auth': 30
-}
+};
 
 /**
  * @enum {number}
@@ -55,7 +57,7 @@ export const State = {
 export const StateType = {
 	'Webmail': 0,
 	'Admin': 1
-}
+};
 
 /**
  * @enum {string}
@@ -87,7 +89,7 @@ export const Capa = {
 	'AutoLogout': 'AUTOLOGOUT',
 	'AdditionalAccounts': 'ADDITIONAL_ACCOUNTS',
 	'Identities': 'IDENTITIES'
-}
+};
 
 /**
  * @enum {string}
@@ -107,7 +109,7 @@ export const KeyState = {
 	'PopupViewOpenPGP': 'view-open-pgp',
 	'PopupKeyboardShortcutsHelp': 'popup-keyboard-shortcuts-help',
 	'PopupAsk': 'popup-ask'
-}
+};
 
 /**
  * @enum {number}
@@ -121,7 +123,7 @@ export const FolderType = {
 	'Archive': 15,
 	'NotSpam': 80,
 	'User': 99
-}
+};
 
 /**
  * @enum {number}
@@ -136,7 +138,7 @@ export const ServerFolderType = {
 	'IMPORTANT': 10,
 	'FLAGGED': 11,
 	'ALL': 12
-}
+};
 
 /**
  * @enum {string}
@@ -145,7 +147,7 @@ export const LoginSignMeTypeAsString = {
 	'DefaultOff': 'defaultoff',
 	'DefaultOn': 'defaulton',
 	'Unused': 'unused'
-}
+};
 
 /**
  * @enum {number}
@@ -154,7 +156,7 @@ export const LoginSignMeType = {
 	'DefaultOff': 0,
 	'DefaultOn': 1,
 	'Unused': 2
-}
+};
 
 /**
  * @enum {string}
@@ -167,7 +169,7 @@ export const ComposeType = {
 	'ForwardAsAttachment': 'forward-as-attachment',
 	'Draft': 'draft',
 	'EditAsNew': 'editasnew'
-}
+};
 
 /**
  * @enum {number}
@@ -181,7 +183,7 @@ export const UploadErrorCode = {
 	'FileOnSaveingError': 5,
 	'FileType': 98,
 	'Unknown': 99
-}
+};
 
 /**
  * @enum {number}
@@ -193,7 +195,7 @@ export const SetSystemFoldersNotification = {
 	'Spam': 3,
 	'Trash': 4,
 	'Archive': 5
-}
+};
 
 /**
  * @enum {number}
@@ -208,7 +210,7 @@ export const ClientSideKeyName = {
 	'LastReplyAction': 6,
 	'LastSignMe': 7,
 	'ComposeLastIdentityID': 8
-}
+};
 
 /**
  * @enum {number}
@@ -231,7 +233,7 @@ export const EventKeyCode = {
 	'Delete': 46,
 	'A': 65,
 	'S': 83
-}
+};
 
 /**
  * @enum {number}
@@ -241,7 +243,7 @@ export const MessageSetAction = {
 	'UnsetSeen': 1,
 	'SetFlag': 2,
 	'UnsetFlag': 3
-}
+};
 
 /**
  * @enum {number}
@@ -254,7 +256,7 @@ export const MessageSelectAction = {
 	'Seen': 4,
 	'Flagged': 5,
 	'Unflagged': 6
-}
+};
 
 /**
  * @enum {number}
@@ -264,7 +266,7 @@ export const DesktopNotification = {
 	'NotAllowed': 1,
 	'Denied': 2,
 	'NotSupported': 9
-}
+};
 
 /**
  * @enum {number}
@@ -273,7 +275,7 @@ export const MessagePriority = {
 	'Low': 5,
 	'Normal': 3,
 	'High': 1
-}
+};
 
 /**
  * @enum {string}
@@ -283,7 +285,7 @@ export const EditorDefaultType = {
 	'Plain': 'Plain',
 	'HtmlForced': 'HtmlForced',
 	'PlainForced': 'PlainForced'
-}
+};
 
 /**
  * @enum {number}
@@ -292,7 +294,7 @@ export const ServerSecure = {
 	'None': 0,
 	'SSL': 1,
 	'TLS': 2
-}
+};
 
 /**
  * @enum {number}
@@ -302,7 +304,7 @@ export const SearchDateType = {
 	'Days3': 3,
 	'Days7': 7,
 	'Month': 30
-}
+};
 
 /**
  * @enum {number}
@@ -312,7 +314,7 @@ export const SaveSettingsStep = {
 	'Idle': -1,
 	'TrueResult': 1,
 	'FalseResult': 0
-}
+};
 
 /**
  * @enum {number}
@@ -322,7 +324,7 @@ export const Layout = {
 	'SidePreview': 1,
 	'BottomPreview': 2,
 	'Mobile': 3
-}
+};
 
 /**
  * @enum {string}
@@ -333,7 +335,7 @@ export const FilterConditionField = {
 	'Subject': 'Subject',
 	'Header': 'Header',
 	'Size': 'Size'
-}
+};
 
 /**
  * @enum {string}
@@ -345,7 +347,7 @@ export const FilterConditionType = {
 	'NotEqualTo': 'NotEqualTo',
 	'Over': 'Over',
 	'Under': 'Under'
-}
+};
 
 /**
  * @enum {string}
@@ -357,7 +359,7 @@ export const FiltersAction = {
 	'Vacation': 'Vacation',
 	'Reject': 'Reject',
 	'Forward': 'Forward'
-}
+};
 
 /**
  * @enum {string}
@@ -365,7 +367,7 @@ export const FiltersAction = {
 export const FilterRulesType = {
 	'All': 'All',
 	'Any': 'Any'
-}
+};
 
 /**
  * @enum {number}
@@ -377,7 +379,7 @@ export const SignedVerifyStatus = {
 	'Error': -1,
 	'None': 0,
 	'Success': 1
-}
+};
 
 /**
  * @enum {number}
@@ -409,7 +411,7 @@ export const ContactPropertyType = {
 	'Note': 110,
 
 	'Custom': 250
-}
+};
 
 /**
  * @enum {number}
@@ -489,4 +491,4 @@ export const Notification = {
 
 	'UnknownNotification': 999,
 	'UnknownError': 999
-}
+};

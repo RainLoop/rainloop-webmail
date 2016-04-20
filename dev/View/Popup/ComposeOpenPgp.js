@@ -31,14 +31,6 @@
 		var self = this;
 
 		this.optionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
-		this.addOptionClass = function (oDomOption, oItem)
-		{
-			self.defautOptionsAfterRender(oDomOption, oItem);
-
-			if (oItem) {
-				oDomOption.classList.add(oItem['class']);
-			}
-		};
 
 		this.notification = ko.observable('');
 
@@ -276,6 +268,16 @@
 	kn.extendAsViewModel(['View/Popup/ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], ComposeOpenPgpPopupView);
 	_.extend(ComposeOpenPgpPopupView.prototype, AbstractView.prototype);
 
+	ComposeOpenPgpPopupView.prototype.addOptionClass = function (oDomOption, oItem)
+	{
+		this.defautOptionsAfterRender(oDomOption, oItem);
+
+		if (oItem)
+		{
+			oDomOption.classList.add(oItem['class']);
+		}
+	};
+
 	ComposeOpenPgpPopupView.prototype.deletePublickKey = function (oKey)
 	{
 		this.encryptKeys.remove(oKey);
@@ -397,7 +399,7 @@
 				return {
 					'empty': !oKey,
 					'selected': ko.observable(!!oKey),
-					'removable': oIdentity && oIdentity.email() && oIdentity.email() !== sEmail, 
+					'removable': oIdentity && oIdentity.email() && oIdentity.email() !== sEmail,
 					'users': oKey ? (oKey.users || [sEmail]) : [sEmail],
 					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
 					'key': oKey

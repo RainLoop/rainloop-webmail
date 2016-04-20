@@ -86,17 +86,17 @@
 			this.user = this.users[index];
 			this.email = this.emails[index];
 		}
-	}
+	};
 
 	OpenPgpKeyModel.prototype.selectUser = function (sUser)
 	{
 		this.select(sUser, 'users');
-	}
+	};
 
 	OpenPgpKeyModel.prototype.selectEmail = function (sEmail)
 	{
 		this.select(sEmail, 'emails');
-	}
+	};
 
 	module.exports = OpenPgpKeyModel;
 

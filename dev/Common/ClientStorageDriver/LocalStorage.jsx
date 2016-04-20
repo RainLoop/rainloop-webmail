@@ -22,7 +22,10 @@ class LocalStorageDriver
 			const storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null;
 			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
 		(storageResult || (storageResult = {}))[key] = data;
 
@@ -31,7 +34,10 @@ class LocalStorageDriver
 			window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] = JSON.stringify(storageResult);
 			result = true;
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
 		return result;
 	}
@@ -41,19 +47,22 @@ class LocalStorageDriver
 	 * @return {*}
 	 */
 	get(key) {
-		
+
 		let result = null;
-		
+
 		try
 		{
-			const 
+			const
 				storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null,
 				storageResult = null === storageValue ? null : JSON.parse(storageValue)
 			;
 
-			result = (storageResult && !Utils.isUnd(storageResult[key])) ? storageResult[key] : null
+			result = (storageResult && !Utils.isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
-		catch (e) {}
+		catch (e)
+		{
+			// eslint-disable-line no-empty
+		}
 
 		return result;
 	}
