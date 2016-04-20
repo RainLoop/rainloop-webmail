@@ -5,6 +5,7 @@
 
 	var
 		_ = require('_'),
+		$ = require('$'),
 		ko = require('ko'),
 		key = require('key'),
 
@@ -246,7 +247,6 @@
 			var
 				sKeyId = this.selectedPrivateKey(),
 				oKey = null,
-				aKeys = this.encryptKeys(),
 				oOption = sKeyId ? _.find(this.privateKeysOptions(), function (oItem) {
 					return oItem && sKeyId === oItem.id;
 				}) : null
@@ -317,7 +317,18 @@
 		}, this);
 
 		this.sDefaultKeyScope = Enums.KeyState.PopupComposeOpenPGP;
+
 		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+		this.addOptionClass = function (oDomOption, oItem) {
+
+			self.defautOptionsAfterRender(oDomOption, oItem);
+
+			if (oItem && !Utils.isUnd(oItem['class']) && oDomOption)
+			{
+				$(oDomOption).addClass(oItem['class']);
+			}
+		};
 
 		this.deletePublickKey = _.bind(this.deletePublickKey, this);
 
@@ -326,16 +337,6 @@
 
 	kn.extendAsViewModel(['View/Popup/ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], ComposeOpenPgpPopupView);
 	_.extend(ComposeOpenPgpPopupView.prototype, AbstractView.prototype);
-
-	ComposeOpenPgpPopupView.prototype.addOptionClass = function (oDomOption, oItem)
-	{
-		this.defautOptionsAfterRender(oDomOption, oItem);
-
-		if (oItem)
-		{
-			oDomOption.classList.add(oItem['class']);
-		}
-	};
 
 	ComposeOpenPgpPopupView.prototype.deletePublickKey = function (oKey)
 	{
@@ -405,7 +406,6 @@
 			aRec = [],
 			sEmail = '',
 			aKeys = [],
-			oKey = null,
 			oEmail = new EmailModel()
 		;
 
@@ -438,13 +438,12 @@
 			sEmail = oIdentity.email();
 			aRec.unshift(sEmail);
 			aKeys = PgpStore.findAllPrivateKeysByEmailNotNative(sEmail);
-			if (aKeys)
+			if (aKeys && aKeys[0])
 			{
-				var oKey = aKeys[0];
 				this.signKey({
-					'users': oKey.users || [sEmail],
-					'hash': oKey.id.substr(-8).toUpperCase(),
-					'key': oKey
+					'users': aKeys[0].users || [sEmail],
+					'hash': aKeys[0].id.substr(-8).toUpperCase(),
+					'key': aKeys[0]
 				});
 			}
 		}

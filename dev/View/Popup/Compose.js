@@ -344,6 +344,8 @@
 
 			var
 				sTo = Utils.trim(this.to()),
+				sCc = Utils.trim(this.cc()),
+				sBcc = Utils.trim(this.bcc()),
 				sSentFolder = FolderStore.sentFolder(),
 				aFlagsCache = []
 			;
@@ -363,7 +365,7 @@
 				this.attachmentsPlace(true);
 			}
 
-			if (0 === sTo.length)
+			if ('' === sTo && '' === sCc && '' === sBcc)
 			{
 				this.emptyToError(true);
 			}

@@ -133,6 +133,8 @@ class Service
 		}
 
 		$bIndex = true;
+		$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === $aPaths[0]);
+
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== $aPaths[0])
 		{
 			$bIndex = false;
@@ -167,7 +169,7 @@ class Service
 				return $this;
 			}
 
-			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
+			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true))
@@ -223,10 +225,11 @@ class Service
 
 	/**
 	 * @param bool $bAdmin = false
+	 * @param bool $bMobile = false
 	 *
 	 * @return array
 	 */
-	private function indexTemplateParameters($bAdmin = false)
+	private function indexTemplateParameters($bAdmin = false, $bMobile = false)
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
@@ -255,7 +258,7 @@ class Service
 			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
 		);
 
-		$aTemplateParameters =  array(
+		$aTemplateParameters = array(
 			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
 			'{{BaseAppFaviconPngLinkTag}}' => $aData['FaviconPngLink'] ? '<link rel="shortcut icon" href="'.$aData['FaviconPngLink'].'" type="image/png" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $aData['AppleTouchLink'] ? '<link rel="apple-touch-icon" href="'.$aData['AppleTouchLink'].'" type="image/png" />' : '',
@@ -269,6 +272,8 @@ class Service
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
 			'{{BaseVersion}}' => APP_VERSION,
+//			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
+			'{{BaseViewport}}' => 'width=950,maximum-scale=2',
 			'{{BaseDir}}' => 'ltr'
 //			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
