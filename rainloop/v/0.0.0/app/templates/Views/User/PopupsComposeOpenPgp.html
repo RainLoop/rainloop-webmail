@@ -12,7 +12,7 @@
 					<span data-bind="text: notification"></span>
 				</div>
 				<div class="row-fluid">
-					<div class="span5">
+					<div class="span6">
 
 						<div data-bind="component: {
 								name: 'Checkbox',
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="span7">
+					<div class="span6">
 
 						<div data-bind="component: {
 								name: 'Checkbox',
@@ -82,19 +82,21 @@
 					</div>
 				</div>
 				<div class="row-fluid key-actions">
-					<div class="span5" data-bind="visible: sign() && 0 < privateKeysOptions().length">
-						<input type="password" class="inputPassword input-block-level i18n"
-							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-i18n="[placeholder]POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"
-							data-bind="textInput: password, hasfocus: password.focus, onEnter: doCommand" />
-						<div class="form-inline">
-							<select class="input-block-level" data-bind="options: privateKeysOptions, value: selectedPrivateKey,
-								optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id',
-								optionsAfterRender: addOptionClass"></select>
+					<div class="span6">
+						<div data-bind="visible: sign()">
+							<input type="password" class="inputPassword input-block-level i18n"
+								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								data-i18n="[placeholder]POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"
+								data-bind="textInput: password, hasfocus: password.focus, onEnter: doCommand" />
+							<div class="form-inline" data-bind="visible: 0 < privateKeysOptions().length">
+								<select class="input-block-level" data-bind="options: privateKeysOptions, value: selectedPrivateKey,
+									optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id',
+									optionsAfterRender: addOptionClass"></select>
+							</div>
 						</div>
 					</div>
-					<div class="span7" data-bind="visible: encrypt() && 0 < publicKeysOptions().length">
-						<div class="form-inline">
+					<div class="span6">
+						<div class="form-inline" data-bind="visible: encrypt() && 0 < publicKeysOptions().length">
 							<select class="input-block-level" data-bind="options: publicKeysOptions, value: selectedPublicKey,
 								optionsCaption: publicKeysOptionsCaption, optionsText: 'name', optionsValue: 'id',
 								optionsAfterRender: addOptionClass"></select>
