@@ -489,6 +489,8 @@ class ServiceActions
 				$sMethodName = 'Raw'.$sAction;
 				if (\method_exists($this->oActions, $sMethodName))
 				{
+					@\header('X-Raw-Action: '.$sMethodName, true);
+
 					$sRawError = '';
 					$this->oActions->SetActionParams(array(
 						'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3],

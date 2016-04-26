@@ -8458,6 +8458,20 @@ class Actions
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
 
+		$sRange = $this->Http()->GetHeader('Range');
+
+		$aMatch = array();
+		$sRangeStart = $sRangeEnd = '';
+		$bIsRangeRequest = false;
+
+		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange) && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
+		{
+			$sRangeStart = $aMatch[1];
+			$sRangeEnd = $aMatch[2];
+
+			$bIsRangeRequest = true;
+		}
+
 		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
 		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
 		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
@@ -8511,9 +8525,14 @@ class Actions
 
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
-			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail, $bDetectImageOrientation) {
+			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use (
+				$self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail, $bDetectImageOrientation,
+				$bIsRangeRequest, $sRangeStart, $sRangeEnd
+			) {
 				if ($oAccount && \is_resource($rResource))
 				{
+					\MailSo\Base\Utils::ResetTimeLimit();
+
 					$sContentTypeOut = $sContentTypeIn;
 					if (empty($sContentTypeOut))
 					{
@@ -8536,6 +8555,7 @@ class Actions
 
 					$sLoadedData = null;
 					$bDetectImageOrientation = false;
+
 					if (!$bDownload)
 					{
 						if ($bThumbnail)
@@ -8594,12 +8614,58 @@ class Actions
 						\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
 							\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
 
-						\header('Accept-Ranges: none', true);
+						\header('Accept-Ranges: bytes');
 						\header('Content-Transfer-Encoding: binary');
 
-						if (!$bDownload && $sLoadedData)
+						if ($bIsRangeRequest && !$sLoadedData)
 						{
-							echo $sLoadedData;
+							$sLoadedData = \stream_get_contents($rResource);
+						}
+
+						\MailSo\Base\Utils::ResetTimeLimit();
+
+						if ($sLoadedData)
+						{
+							if ($bIsRangeRequest && (0 < \strlen($sRangeStart) || 0 < \strlen($sRangeEnd)))
+							{
+								$iFullContentLength = \strlen($sLoadedData);
+
+								$self->Http()->StatusHeader(206);
+
+								$iRangeStart = (int) $sRangeStart;
+								$iRangeEnd = (int) $sRangeEnd;
+
+								if ('' === $sRangeEnd)
+								{
+									$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
+								}
+								else
+								{
+									if ($iRangeStart < $iRangeEnd)
+									{
+										$sLoadedData = \substr($sLoadedData, $iRangeStart, $iRangeEnd - $iRangeStart);
+									}
+									else
+									{
+										$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
+									}
+								}
+
+								$iContentLength = \strlen($sLoadedData);
+
+								if (0 < $iContentLength)
+								{
+									\header('Content-Length: '.$iContentLength, true);
+									\header('Content-Range: bytes '.$sRangeStart.'-'.(0 < $iRangeEnd ? $iRangeEnd : $iFullContentLength - 1).'/'.$iFullContentLength);
+								}
+
+								echo $sLoadedData;
+							}
+							else
+							{
+								echo $sLoadedData;
+							}
+
 							unset($sLoadedData);
 						}
 						else
