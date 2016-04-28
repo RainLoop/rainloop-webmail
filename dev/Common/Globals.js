@@ -211,6 +211,7 @@
 
 	Globals.leftPanelDisabled = ko.observable(false);
 	Globals.leftPanelType = ko.observable('');
+	Globals.leftPanelWidth = ko.observable(0);
 
 	// popups
 	Globals.popupVisibilityNames = ko.observableArray([]);

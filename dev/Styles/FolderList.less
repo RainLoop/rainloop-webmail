@@ -22,16 +22,24 @@
 		padding: 10px 10px 0 @rlLowMargin;
 		color: #fff;
 		z-index: 101;
+
+		html.rl-left-panel-enabled &{
+			overflow: hidden;
+			white-space: nowrap;
+		}
 	}
 
 	.b-footer {
 		position: absolute;
-		bottom: 20px;
+		bottom: 10px;
 		right: 0;
 		left: 0;
-		height: 20px;
+		height: 30px;
 		padding: 0 10px 0 5px;
 		z-index: 101;
+
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	.b-content {
@@ -81,6 +89,22 @@
 				position: absolute;
 				top: 0;
 				left: 0;
+			}
+
+			.inbox-star-icon {
+				display: none;
+				margin-left: 7px;
+
+				.icon-star {
+					display: none;
+				}
+				.icon-star-empty {
+					opacity: .5;
+				}
+			}
+
+			&.is-inbox .inbox-star-icon {
+				display: inline;
 			}
 
 			padding: 0;
@@ -154,6 +178,16 @@
 		.b-sub-folders.collapsed {
 			max-height: 0;
 			height: 0;
+			display: none;
+		}
+	}
+
+	&.inbox-is-starred {
+		.icon-star {
+			color: orange;
+			display: inline-block !important;
+		}
+		.icon-star-empty {
 			display: none;
 		}
 	}

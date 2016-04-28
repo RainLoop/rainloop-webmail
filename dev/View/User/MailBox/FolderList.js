@@ -60,6 +60,21 @@
 			return Enums.Focused.FolderList === AppStore.focusedState();
 		});
 
+		this.isInboxStarred = ko.computed(function () {
+			return FolderStore.currentFolder() &&
+				FolderStore.currentFolder().isInbox() &&
+				'is:flagged' === MessageStore.messageListSearch()
+			;
+		});
+
+		this.displayNewText = ko.observable(false);
+		this.displayNewMessageText = ko.observable(false);
+
+		Globals.leftPanelWidth.subscribe(function(v){
+			this.displayNewText(170 < v && 230 >= v);
+			this.displayNewMessageText(230 < v);
+		}, this);
+
 		kn.constructorEnd(this);
 	}
 
@@ -71,7 +86,44 @@
 		this.oContentVisible = $('.b-content', oDom);
 		this.oContentScrollable = $('.content', this.oContentVisible);
 
-		var self = this;
+		var
+			self = this,
+			fSelectFolder = function (oEvent, bStarred) {
+
+				oEvent.preventDefault();
+
+				if (bStarred)
+				{
+					oEvent.stopPropagation();
+				}
+
+				var
+					oFolder = ko.dataFor(this)
+				;
+
+				if (oFolder)
+				{
+					if (Enums.Layout.NoPreview === SettingsStore.layout())
+					{
+						MessageStore.message(null);
+					}
+
+					if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+					{
+						Cache.setFolderHash(oFolder.fullNameRaw, '');
+					}
+
+					if (bStarred)
+					{
+						kn.setHash(Links.mailBox(oFolder.fullNameHash, 1, 'is:flagged'));
+					}
+					else
+					{
+						kn.setHash(Links.mailBox(oFolder.fullNameHash));
+					}
+				}
+			}
+		;
 
 		oDom
 			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function (oEvent) {
@@ -91,28 +143,11 @@
 					oEvent.stopPropagation();
 				}
 			})
+			.on('click', '.b-folders .e-item .e-link.selectable .inbox-star-icon', function (oEvent) {
+				fSelectFolder.call(this, oEvent, !self.isInboxStarred());
+			})
 			.on('click', '.b-folders .e-item .e-link.selectable', function (oEvent) {
-
-				oEvent.preventDefault();
-
-				var
-					oFolder = ko.dataFor(this)
-				;
-
-				if (oFolder)
-				{
-					if (Enums.Layout.NoPreview === SettingsStore.layout())
-					{
-						MessageStore.message(null);
-					}
-
-					if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
-					{
-						Cache.setFolderHash(oFolder.fullNameRaw, '');
-					}
-
-					kn.setHash(Links.mailBox(oFolder.fullNameHash));
-				}
+				fSelectFolder.call(this, oEvent, false);
 			})
 		;
 
@@ -240,7 +275,6 @@
 	};
 
 	/**
-	 *
 	 * @param {FolderModel} oToFolder
 	 * @param {{helper:jQuery}} oUi
 	 */

@@ -136,6 +136,10 @@
 		this.sendSuccessButSaveError = ko.observable(false);
 		this.savedError = ko.observable(false);
 
+		this.sendButtonSuccess = ko.computed(function () {
+			return !this.sendError() && !this.sendSuccessButSaveError();
+		}, this);
+
 		this.sendErrorDesc = ko.observable('');
 		this.savedErrorDesc = ko.observable('');
 

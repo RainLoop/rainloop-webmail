@@ -348,12 +348,15 @@ class AbstractApp extends AbstractBoot
 
 		Globals.leftPanelDisabled.subscribe((bValue) => {
 			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
+			Globals.$html.toggleClass('rl-left-panel-enabled', !bValue);
 		});
 
 		Globals.leftPanelType.subscribe((sValue) => {
 			Globals.$html.toggleClass('rl-left-panel-none', 'none' === sValue);
 			Globals.$html.toggleClass('rl-left-panel-short', 'short' === sValue);
 		});
+
+		Globals.leftPanelDisabled.valueHasMutated();
 
 		ssm.ready();
 

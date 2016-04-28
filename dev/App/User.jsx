@@ -1072,6 +1072,10 @@ class AppUser extends AbstractApp
 			fSetWidth = (iWidth) => {
 				if (iWidth)
 				{
+					Globals.leftPanelWidth(iWidth);
+
+					Globals.$html.removeClass('rl-resizer');
+
 					oLeft.css({
 						width: '' + iWidth + 'px'
 					});
@@ -1095,6 +1099,7 @@ class AppUser extends AbstractApp
 					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
 				}
 			},
+
 			fResizeCreateFunction = (oEvent) => {
 				if (oEvent && oEvent.target)
 				{
@@ -1120,8 +1125,17 @@ class AppUser extends AbstractApp
 				{
 					Local.set(sClientSideKeyName, oObject.size.width);
 
+					Globals.leftPanelWidth(oObject.size.width);
+
 					oRight.css({
 						left: '' + oObject.size.width + 'px'
+					});
+
+					oLeft.css({
+						position: '',
+						top: '',
+						left: '',
+						height: ''
 					});
 				}
 			}

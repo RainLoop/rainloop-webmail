@@ -20,6 +20,29 @@
 		}
 	;
 
+	ko.bindingHandlers.updateWidth = {
+		'init': function (oElement, fValueAccessor) {
+			var
+				$w = $(window),
+				$oEl = $(oElement),
+				fValue = fValueAccessor(),
+				fInit = function(){
+					fValue($oEl.width());
+					window.setTimeout(function(){
+						fValue($oEl.width());
+					}, 500);
+				};
+			;
+
+			$w.on('resize', fInit);
+			fInit();
+
+			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
+				$w.off('resize', fInit);
+			});
+		}
+	};
+
 	ko.bindingHandlers.editor = {
 		'init': function (oElement, fValueAccessor) {
 

@@ -50,7 +50,10 @@ ru_RU:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Написать"
     BUTTON_CONTACTS: "Контакты"
+    BUTTON_NEW: "Новое"
+    BUTTON_NEW_MESSAGE: "Написать"
     INBOX_NAME: "Входящие"
+    STARRED_NAME: "Отмеченные"
     SENT_NAME: "Отправленные"
     DRAFTS_NAME: "Черновики"
     SPAM_NAME: "Спам"
@@ -620,6 +623,7 @@ ru_RU:
     NO_PRIVATE_KEY_FOUND: "Приватный ключ не найден"
     NO_PRIVATE_KEY_FOUND_FOR: "Приватный ключ для \"%EMAIL%\" не найден"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "Выберите секретный ключ"
     UNVERIFIRED_SIGNATURE: "Неподтвержденная сигнатура"
     DECRYPTION_ERROR: "OpenPGP ошибка расшифровки"
     GOOD_SIGNATURE: "Подтвержденная сигнатура для %USER%"
