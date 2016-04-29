@@ -215,6 +215,7 @@ it_IT:
     BUTTON_CLOSE: "Chiudi"
     BUTTON_ADD: "Aggiungi"
     BUTTON_UPDATE: "Aggiorna"
+    NEW_DOMAIN_DESC: "La configurazione di questo dominio ti permette di lavorare <br />con <i>%NAME%</i> indirizzi email."
     WHITE_LIST_ALERT: |
       Lista di domini a cui gli utenti sono autorizzati ad accedere.
       Utilizzare uno spazio come separatore.
@@ -291,6 +292,7 @@ it_IT:
     DEMO_SEND_MESSAGE_ERROR: "Per ragioni di sicurezza, questo account non è abilitato ad inviare email all'esterno."
     DEMO_ACCOUNT_ERROR: "Per ragioni di sicurezza, questa funzionalità è bloccata."
     ACCOUNT_ALREADY_EXISTS: "Questo account esiste già"
+    ACCOUNT_DOES_NOT_EXIST: "L'account non esiste"
     MAIL_SERVER_ERROR: "Errore durante la connessione con il server mail"
     INVALID_INPUT_ARGUMENT: "Argomento non valido"
     UNKNOWN_ERROR: "Errore sconosciuto"

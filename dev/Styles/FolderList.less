@@ -19,14 +19,9 @@
 		right: 0;
 		left: 0;
 		height: 30px;
-		padding: 10px 10px 0 @rlLowMargin;
+		padding: 10px 0 0 @rlLowMargin;
 		color: #fff;
 		z-index: 101;
-
-		html.rl-left-panel-enabled &{
-			overflow: hidden;
-			white-space: nowrap;
-		}
 	}
 
 	.b-footer {
@@ -137,7 +132,6 @@
 				}
 			}
 
-
 			&.system {
 				cursor: default;
 				color: grey;
@@ -237,7 +231,29 @@
 /**/
 }
 
+.btn {
+	.btn-text-wrp {
+		padding-left: 7px;
+		white-space: normal;
+	}
+
+	&.buttonCompose {
+		width: calc(~'100% - 85px');
+		max-width: fit-content;
+		white-space: nowrap;
+		overflow: hidden;
+		height: 20px;
+		display: inline-block;
+	}
+}
+
 html.rl-left-panel-disabled, html.rl-left-panel-short {
+	.buttonComposeText{
+		display: none;
+	}
+	.btn.buttonCompose {
+		width: auto;
+	}
 	.btn.buttonContacts {
 		margin-top: 10px !important;
 		margin-left: 0 !important;

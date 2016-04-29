@@ -50,7 +50,6 @@ en_US:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Compose"
     BUTTON_CONTACTS: "Contacts"
-    BUTTON_NEW: "New"
     BUTTON_NEW_MESSAGE: "New message"
     INBOX_NAME: "Inbox"
     STARRED_NAME: "Starred"

@@ -91,6 +91,35 @@ select {
 	white-space: nowrap;
 }
 
+.btn.btn-transparent {
+	background: none !important;
+	border-color: transparent !important;
+	text-shadow: none !important;
+	box-shadow: none !important;
+	opacity: .6;
+
+	[class^="icon-"] {
+		width: 19px;
+		height: 19px;
+		line-height: 20px;
+		font-size: 19px;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.btn-group.open .btn.btn-transparent.dropdown-toggle {
+	color: #BD362F;
+	.caret {
+		border-top-color: #BD362F;
+	}
+	[class^="icon-"]:before {
+		color: #BD362F;
+	}
+}
+
 .btn.btn-narrow {
 	padding-left: 12px;
 	padding-right: 12px;

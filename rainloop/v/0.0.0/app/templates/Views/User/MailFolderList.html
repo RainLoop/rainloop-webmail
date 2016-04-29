@@ -1,13 +1,8 @@
 <div class="b-folders g-ui-user-select-none thm-folders" data-bind="css: {'focused': folderListFocused, 'single-root-inbox': foldersListWithSingleInboxRootFolder, 'inbox-is-starred': isInboxStarred}">
 	<div class="b-toolbar btn-toolbar">
-		<a class="btn btn-nowrap buttonCompose pull-left" data-tooltip-join="top" data-bind="visible: allowComposer, click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
+		<a class="btn buttonCompose pull-left" data-tooltip-join="top" data-bind="visible: allowComposer, click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
 			<i class="icon-paper-plane"></i>
-			<span data-bind="visible: displayNewText">
-				&nbsp;&nbsp;
-				<span class="i18n" data-i18n="FOLDER_LIST/BUTTON_NEW"></span>
-			</span>
-			<span data-bind="visible: displayNewMessageText">
-				&nbsp;&nbsp;
+			<span class="btn-text-wrp buttonComposeText">
 				<span class="i18n" data-i18n="FOLDER_LIST/BUTTON_NEW_MESSAGE"></span>
 			</span>
 		</a>

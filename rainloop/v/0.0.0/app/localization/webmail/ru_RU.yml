@@ -50,8 +50,7 @@ ru_RU:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Написать"
     BUTTON_CONTACTS: "Контакты"
-    BUTTON_NEW: "Новое"
-    BUTTON_NEW_MESSAGE: "Написать"
+    BUTTON_NEW_MESSAGE: "Новое сообщение"
     INBOX_NAME: "Входящие"
     STARRED_NAME: "Отмеченные"
     SENT_NAME: "Отправленные"

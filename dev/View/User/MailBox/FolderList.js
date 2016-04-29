@@ -63,17 +63,9 @@
 		this.isInboxStarred = ko.computed(function () {
 			return FolderStore.currentFolder() &&
 				FolderStore.currentFolder().isInbox() &&
-				'is:flagged' === MessageStore.messageListSearch()
+				-1 < Utils.trim(MessageStore.messageListSearch()).indexOf('is:flagged')
 			;
 		});
-
-		this.displayNewText = ko.observable(false);
-		this.displayNewMessageText = ko.observable(false);
-
-		Globals.leftPanelWidth.subscribe(function(v){
-			this.displayNewText(170 < v && 230 >= v);
-			this.displayNewMessageText(230 < v);
-		}, this);
 
 		kn.constructorEnd(this);
 	}

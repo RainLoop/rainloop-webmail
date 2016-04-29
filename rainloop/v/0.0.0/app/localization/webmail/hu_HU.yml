@@ -50,7 +50,9 @@ hu_HU:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Levélírás"
     BUTTON_CONTACTS: "Névjegyek"
+    BUTTON_NEW_MESSAGE: "Új üzenet"
     INBOX_NAME: "Beérkező levelek"
+    STARRED_NAME: "Csillagozott"
     SENT_NAME: "Elküldött levelek"
     DRAFTS_NAME: "Piszkozatok"
     SPAM_NAME: "Levélszemét"
@@ -621,6 +623,7 @@ hu_HU:
     NO_PRIVATE_KEY_FOUND: "Nem találtam privát kulcsot"
     NO_PRIVATE_KEY_FOUND_FOR: "Nem találtam privát kulcsot ehhez az e-mailhez: \"%EMAIL%\""
     ADD_A_PUBLICK_KEY: "Publikus kulcs hozzáadás"
+    SELECT_A_PRIVATE_KEY: "Privát kulcs választás"
     UNVERIFIRED_SIGNATURE: "Nem ellenőrzött aláírás"
     DECRYPTION_ERROR: "OpenPGP visszafejtési hiba"
     GOOD_SIGNATURE: "Jó aláírás tőle: %USER%"
