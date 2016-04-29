@@ -70,7 +70,7 @@
 
 		if (bPost)
 		{
-			oParameters['XToken'] = Settings.settingsGet('Token');
+			oParameters['XToken'] = Settings.appSettingsGet('token');
 		}
 
 		Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);

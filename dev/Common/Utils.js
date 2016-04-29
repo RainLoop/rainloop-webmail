@@ -13,6 +13,7 @@
 		$ = require('$'),
 		ko = require('ko'),
 		Autolinker = require('Autolinker'),
+		JSON = require('JSON'),
 		JSEncrypt = require('JSEncrypt'),
 
 		Mime = require('Common/Mime'),
@@ -1431,6 +1432,28 @@
 
 		var sResult = sFileName.split('.').pop();
 		return (sResult === sFileName) ? '' : sResult;
+	};
+
+	Utils.configurationScriptTagCache = {};
+
+	/**
+	 * @param {string} sConfiguration
+	 * @return {object}
+	 */
+	Utils.getConfigurationFromScriptTag = function (sConfiguration)
+	{
+		var oResult = {};
+
+		if (!Utils.configurationScriptTagCache[sConfiguration])
+		{
+			Utils.configurationScriptTagCache[sConfiguration] = $('script[type="application/json"][data-configuration="' + sConfiguration + '"]');
+		}
+
+		try {
+			oResult = JSON.parse(Utils.configurationScriptTagCache[sConfiguration].text());
+		} catch (e) {/* eslint-disable-line no-empty */}
+
+		return oResult;
 	};
 
 	/**

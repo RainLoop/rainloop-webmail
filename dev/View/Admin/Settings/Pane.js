@@ -23,7 +23,7 @@
 		AbstractView.call(this, 'Right', 'AdminPane');
 
 		this.adminDomain = ko.observable(Settings.settingsGet('AdminDomain'));
-		this.version = ko.observable(Settings.settingsGet('Version'));
+		this.version = ko.observable(Settings.appSettingsGet('version'));
 
 		this.capa = !!Settings.settingsGet('PremType');
 		this.community = RL_COMMUNITY;

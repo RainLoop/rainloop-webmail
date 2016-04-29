@@ -18,7 +18,7 @@
 	 */
 	function AboutAdminSettings()
 	{
-		this.version = ko.observable(Settings.settingsGet('Version'));
+		this.version = ko.observable(Settings.appSettingsGet('version'));
 		this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
 		this.errorDesc = ko.observable('');
 

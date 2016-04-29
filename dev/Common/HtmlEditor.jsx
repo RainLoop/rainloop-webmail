@@ -238,8 +238,8 @@ class HtmlEditor
 					const
 						config = Globals.oHtmlEditorDefaultConfig,
 						language = Settings.settingsGet('Language'),
-						allowSource = !!Settings.settingsGet('AllowHtmlEditorSourceButton'),
-						biti = !!Settings.settingsGet('AllowHtmlEditorBitiButtons')
+						allowSource = !!Settings.appSettingsGet('allowHtmlEditorSourceButton'),
+						biti = !!Settings.appSettingsGet('allowHtmlEditorBitiButtons')
 					;
 
 					if ((allowSource || !biti) && !config.toolbarGroups.__cfgInited)

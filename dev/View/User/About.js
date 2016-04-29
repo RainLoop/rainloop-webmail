@@ -21,7 +21,7 @@
 	{
 		AbstractView.call(this, 'Center', 'About');
 
-		this.version = ko.observable(Settings.settingsGet('Version'));
+		this.version = ko.observable(Settings.appSettingsGet('version'));
 
 		kn.constructorEnd(this);
 	}

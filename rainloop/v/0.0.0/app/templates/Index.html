@@ -51,23 +51,6 @@
 				<div class="e-bounce bounce3"></div>
 			</div>
 		</div>
-		<script type="text/javascript" data-cfasync="false">
-			(function (window) {
-				var
-					oE = window.document.getElementById('rl-loading'),
-					oElDesc = window.document.getElementById('rl-loading-desc')
-				;
-				if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
-					oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
-				}
-				if (oE && oE.style) {
-					oE.style.opacity = 0;
-					window.setTimeout(function () {
-						oE.style.opacity = 1;
-					}, 300);
-				}
-			}(window));
-		</script>
 		<div id="rl-loading-error" class="thm-loading">
 			An Error occurred,
 			<br />
@@ -85,6 +68,24 @@
 		</div>
 		<div id="rl-templates"></div>
 		<div id="rl-hidden"></div>
+		<script type="application/json" data-cfasync="false" data-configuration="application">{{BaseApplicationConfigurationJson}}</script>
+		<script type="text/javascript" data-cfasync="false">
+			(function (window) {
+				var
+					oE = window.document.getElementById('rl-loading'),
+					oElDesc = window.document.getElementById('rl-loading-desc')
+				;
+				if (oElDesc && window.rainloopAppData['LoadingDescriptionEsc']) {
+					oElDesc.innerHTML = window.rainloopAppData['LoadingDescriptionEsc'];
+				}
+				if (oE && oE.style) {
+					oE.style.opacity = 0;
+					window.setTimeout(function () {
+						oE.style.opacity = 1;
+					}, 300);
+				}
+			}(window));
+		</script>
 		<script type="text/javascript" data-cfasync="false">
 
 			if (window.$LAB && window.rainloopAppData && window.rainloopAppData['TemplatesLink'] && window.rainloopAppData['LangLink'])

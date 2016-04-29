@@ -10,11 +10,13 @@ class Links
 		this.sBase = '#/';
 		this.sServer = './?';
 
-		this.sVersion = Settings.settingsGet('Version');
+		this.sVersion = Settings.appSettingsGet('version');
+		this.sWebPrefix = Settings.appSettingsGet('webPath') || '';
+		this.sVersionPrefix = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + this.sVersion + '/';
+		this.sAdminPath = Settings.appSettingsGet('adminPath') || 'admin';
+
 		this.sAuthSuffix = Settings.settingsGet('AuthAccountHash') || '0';
-		this.sWebPrefix = Settings.settingsGet('WebPath') || '';
-		this.sAdminPath = Settings.settingsGet('AdminPath') || 'admin';
-		this.sVersionPrefix = Settings.settingsGet('WebVersionPath') || 'rainloop/v/' + this.sVersion + '/';
+
 		this.sStaticPrefix = this.sVersionPrefix + 'static/';
 	}
 

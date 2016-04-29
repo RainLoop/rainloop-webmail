@@ -55,7 +55,7 @@
 			nFoldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount()
 		;
 
-		if (Settings.settingsGet('Filtered'))
+		if (Settings.appSettingsGet('listPermanentFiltered'))
 		{
 			nFoldersInboxUnreadCount = 0;
 		}

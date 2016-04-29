@@ -169,7 +169,7 @@
 
 		if (bPost)
 		{
-			oParameters['XToken'] = Settings.settingsGet('Token');
+			oParameters['XToken'] = Settings.appSettingsGet('token');
 		}
 
 		oDefAjax = $.ajax({

@@ -63,7 +63,7 @@ class AppUserStore extends AbstractAppStore
 
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
 
-		const attachmentsActions = Settings.settingsGet('AttachmentsActions');
+		const attachmentsActions = Settings.appSettingsGet('attachmentsActions');
 		this.attachmentsActions(Utils.isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
 
 		this.devEmail = Settings.settingsGet('DevEmail');

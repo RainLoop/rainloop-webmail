@@ -70,7 +70,7 @@ class AppUser extends AbstractApp
 			Remote.jsVersion((sResult, oData) => {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
-					if (window.parent && !!Settings.settingsGet('InIframe'))
+					if (window.parent && !!Settings.appSettingsGet('inIframe'))
 					{
 						window.parent.location.reload();
 					}
@@ -79,7 +79,7 @@ class AppUser extends AbstractApp
 						window.location.reload();
 					}
 				}
-			}, Settings.settingsGet('Version'));
+			}, Settings.appSettingsGet('version'));
 		}, {}, 60 * 60 * 1000);
 
 		if (Settings.settingsGet('UserBackgroundHash'))
@@ -1185,7 +1185,7 @@ class AppUser extends AbstractApp
 
 		Globals.$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
 
-		const customLoginLink = Utils.pString(Settings.settingsGet('CustomLoginLink'));
+		const customLoginLink = Utils.pString(Settings.appSettingsGet('customLoginLink'));
 		if (!customLoginLink)
 		{
 			kn.startScreens([
@@ -1239,7 +1239,7 @@ class AppUser extends AbstractApp
 
 		var
 			$LAB = require('$LAB'),
-			sJsHash = Settings.settingsGet('JsHash'),
+			sJsHash = Settings.appSettingsGet('jsHash'),
 			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
 			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
 			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
@@ -1411,7 +1411,7 @@ class AppUser extends AbstractApp
 						{
 							_.defer(() => this.initVerticalLayoutResizer(Enums.ClientSideKeyName.FolderListSize));
 
-							if (Tinycon && Settings.settingsGet('FaviconStatus') && !Settings.settingsGet('Filtered'))
+							if (Tinycon && Settings.appSettingsGet('faviconStatus') && !Settings.appSettingsGet('listPermanentFiltered'))
 							{
 								Tinycon.setOptions({
 									fallback: false

@@ -141,7 +141,7 @@
 			oData['@Collection'] && Utils.isArray(oData['@Collection']))
 		{
 			var
-				iLimit = Utils.pInt(Settings.settingsGet('FolderSpecLimit')),
+				iLimit = Utils.pInt(Settings.appSettingsGet('folderSpecLimit')),
 				iC = Utils.pInt(oData['CountRec'])
 			;
 
@@ -163,9 +163,7 @@
 				FolderStore.namespace = oData.Namespace;
 			}
 
-			AppStore.threadsAllowed(
-				!!Settings.settingsGet('UseImapThread') &&
-				oData.IsThreadsSupported && true);
+			AppStore.threadsAllowed(!!Settings.appSettingsGet('useImapThread') && oData.IsThreadsSupported && true);
 
 			FolderStore.folderList.optimized(!!oData.Optimized);
 

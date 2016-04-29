@@ -53,8 +53,8 @@
 		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
 
-		this.forgotPasswordLinkUrl = Settings.settingsGet('ForgotPasswordLinkUrl');
-		this.registrationLinkUrl = Settings.settingsGet('RegistrationLinkUrl');
+		this.forgotPasswordLinkUrl = Settings.appSettingsGet('forgotPasswordLinkUrl');
+		this.registrationLinkUrl = Settings.appSettingsGet('registrationLinkUrl');
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
@@ -266,10 +266,9 @@
 				}, this)
 			;
 
-			if (!!Settings.settingsGet('UseRsaEncryption') && Utils.rsaEncode.supported &&
-				Settings.settingsGet('RsaPublicKey'))
+			if (Settings.appSettingsGet('rsaPublicKey') && Utils.rsaEncode.supported)
 			{
-				fLoginRequest(Utils.rsaEncode(sPassword, Settings.settingsGet('RsaPublicKey')));
+				fLoginRequest(Utils.rsaEncode(sPassword, Settings.appSettingsGet('rsaPublicKey')));
 			}
 			else
 			{

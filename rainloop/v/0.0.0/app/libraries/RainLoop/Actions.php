@@ -1395,25 +1395,24 @@ class Actions
 		$oAccount = null;
 		$oConfig = $this->Config();
 
-		$oPremProvider = $this->PremProvider();
+/*
+required by Index.html and rl.js:
+NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
+*/
 
 		$aResult = array(
-			'Version' => APP_VERSION,
 			'Auth' => false,
 			'AccountHash' => '',
-			'WebPath' => \RainLoop\Utils::WebPath(),
-			'AdminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
-			'WebVersionPath' => \RainLoop\Utils::WebVersionPath(),
 			'AccountSignMe' => false,
 			'AuthAccountHash' => '',
 			'MailToEmail' => '',
 			'Email' => '',
 			'DevEmail' => '',
 			'DevPassword' => '',
-			'Title' => 'RainLoop Webmail',
-			'LoadingDescription' => 'RainLoop',
+			'Title' => $oConfig->Get('webmail', 'title', 'RainLoop Webmail'),
+			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'RainLoop'),
 			'LoadingDescriptionEsc' => 'RainLoop',
-			'FaviconUrl' => '',
+			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
 			'LoginDescription' => '',
 			'LoginPowered' => true,
 			'LoginLogo' => '',
@@ -1427,89 +1426,27 @@ class Actions
 			'WelcomePageDisplay' => 'none',
 			'IncludeCss' => '',
 			'IncludeBackground' => '',
-			'Token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
-			'InIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
-			'AllowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
-			'AllowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
-			'AllowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
-			'AllowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'UseRsaEncryption' => (bool) $oConfig->Get('security', 'use_rsa_encryption', false),
-			'RsaPublicKey' => '',
-			'CustomLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
-			'CustomLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
 			'UseLoginWelcomePage' => (bool) $oConfig->Get('login', 'welcome_page', false),
-			'ForgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
-			'RegistrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
+			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
-			'JsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
-			'UseImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
-			'UseImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
-			'AllowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
-			'MaterialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
-			'FolderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
-			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
-			'FaviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
-			'Filtered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'Community' => true,
 			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
-			'AttachmentsActions' => array(),
 			'Plugins' => array()
 		);
-
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
-		{
-			if (!!\class_exists('ZipArchive'))
-			{
-				$aResult['AttachmentsActions'][] = 'zip';
-			}
-
-			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
-			{
-				$aResult['AttachmentsActions'][] = 'owncloud';
-			}
-
-			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
-			{
-				$aResult['AttachmentsActions'][] = 'dropbox';
-			}
-		}
-
-		$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
-			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
-
-		if ($aResult['UseRsaEncryption'] &&
-			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
-		{
-			$aResult['RsaPublicKey'] = \file_get_contents(APP_PRIVATE_DATA.'rsa/public');
-			$aResult['RsaPublicKey'] = $aResult['RsaPublicKey'] ? $aResult['RsaPublicKey'] : '';
-
-			if (false === \strpos($aResult['RsaPublicKey'], 'PUBLIC KEY'))
-			{
-				$aResult['RsaPublicKey'] = '';
-			}
-		}
-
-		if (0 === \strlen($aResult['RsaPublicKey']))
-		{
-			$aResult['UseRsaEncryption'] = false;
-		}
 
 		if (0 < \strlen($sAuthAccountHash))
 		{
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
-		$aResult['Title'] = $oConfig->Get('webmail', 'title', '');
-		$aResult['LoadingDescription'] = $oConfig->Get('webmail', 'loading_description', '');
-		$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
-
+		$oPremProvider = $this->PremProvider();
 		if ($oPremProvider)
 		{
 			$oPremProvider->PopulateAppData($aResult);
@@ -1813,7 +1750,7 @@ class Actions
 
 			if ($oSettingsLocal instanceof \RainLoop\Settings)
 			{
-				// if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+//				if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
@@ -1851,11 +1788,11 @@ class Actions
 					{
 						$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-	//					if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
-	//					{
-	//						$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
-	//							$aResult['UserBackgroundHash'].'/';
-	//					}
+//						if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
+//						{
+//							$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
+//								$aResult['UserBackgroundHash'].'/';
+//						}
 					}
 
 					$aResult['EnableTwoFactor'] = (bool) $oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);

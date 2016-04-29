@@ -103,6 +103,10 @@ class AbstractApp extends AbstractBoot
 		return null;
 	}
 
+	getApplicationConfiguration(name, default_) {
+		return this.applicationConfiguration[name] || default_;
+	}
+
 	/**
 	 * @param {string} link
 	 * @return {boolean}
@@ -200,10 +204,10 @@ class AbstractApp extends AbstractBoot
 
 		const
 			kn = require('Knoin/Knoin'),
-			inIframe = !!Settings.settingsGet('InIframe')
+			inIframe = !!Settings.appSettingsGet('inIframe')
 		;
 
-		let customLogoutLink = Utils.pString(Settings.settingsGet('CustomLogoutLink'));
+		let customLogoutLink = Utils.pString(Settings.appSettingsGet('customLogoutLink'));
 
 		if (logout)
 		{
@@ -273,7 +277,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('x-script', require('Component/Script'));
 //		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
-		if (Settings.settingsGet('MaterialDesign') && Globals.bAnimationSupported)
+		if (Settings.appSettingsGet('materialDesign') && Globals.bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
 			ko.components.register('CheckboxSimple', require('Component/Checkbox'));

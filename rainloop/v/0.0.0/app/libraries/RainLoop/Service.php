@@ -183,7 +183,7 @@ class Service
 //				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
-				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
+//				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
 				if (0 < \strlen($sCacheFileName))
 				{
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
@@ -207,6 +207,11 @@ class Service
 //			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 //			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
 
+			if ($bMobile)
+			{
+				$sResult .= '][mobile:true';
+			}
+
 			if (\RainLoop\Utils::IsOwnCloud())
 			{
 				$sResult .= '][owncloud:true';
@@ -221,6 +226,76 @@ class Service
 
 		$this->oActions->BootEnd();
 		return $this;
+	}
+
+	/**
+	 * @param bool $bAdmin = false
+	 * @param bool $bMobile = false
+	 *
+	 * @return array
+	 */
+	private function indexApplicationConfiguration($bAdmin = false, $bMobile = false)
+	{
+		$oConfig = $this->oActions->Config();
+
+		$sRsaPublicKey = '';
+		if ($oConfig->Get('security', 'use_rsa_encryption', false) &&
+			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
+		{
+			$sRsaPublicKey = @\file_get_contents(APP_PRIVATE_DATA.'rsa/public') || '';
+			if (false === \strpos($sRsaPublicKey, 'PUBLIC KEY'))
+			{
+				$sRsaPublicKey = '';
+			}
+		}
+
+		$aAttachmentsActions = array();
+		if ($this->oActions->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
+		{
+			if (!!\class_exists('ZipArchive'))
+			{
+				$aAttachmentsActions[] = 'zip';
+			}
+
+			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
+			{
+				$aAttachmentsActions[] = 'owncloud';
+			}
+
+			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
+			{
+				$aAttachmentsActions[] = 'dropbox';
+			}
+		}
+
+		return \array_merge(array(
+			'version' => APP_VERSION,
+			'mobile' => $bMobile,
+			'webPath' => \RainLoop\Utils::WebPath(),
+			'webVersionPath' => \RainLoop\Utils::WebVersionPath(),
+			'token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
+			'inIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
+			'allowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
+			'allowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
+			'allowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
+			'customLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
+			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
+			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
+			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
+			'jsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
+			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
+			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
+			'allowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
+			'materialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
+			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
+			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
+			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
+			'attachmentsActions' => $aAttachmentsActions,
+			'rsaPublicKey' => $sRsaPublicKey
+		), $bAdmin ? array(
+			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
+			'allowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
+		) : array());
 	}
 
 	/**
@@ -271,6 +346,7 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
+			'{{BaseApplicationConfigurationJson}}' => \json_encode($this->indexApplicationConfiguration($bAdmin, $bMobile)),
 			'{{BaseVersion}}' => APP_VERSION,
 //			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseViewport}}' => 'width=950,maximum-scale=2',

@@ -4,9 +4,17 @@ import Utils from 'Common/Utils';
 
 class SettingsStorage
 {
+	settings = {};
+	appSettings = {};
+
 	constructor() {
 		this.settings = window.rainloopAppData || {};
 		this.settings = Utils.isNormal(this.settings) ? this.settings : {};
+
+		this.appSettings = Utils.getConfigurationFromScriptTag('application');
+		this.appSettings = Utils.isNormal(this.appSettings) ? this.appSettings : {};
+
+		window.console.log(this.appSettings);
 	}
 
 	/**
@@ -23,6 +31,14 @@ class SettingsStorage
 	 */
 	settingsSet(name, value) {
 		this.settings[name] = value;
+	}
+
+	/**
+	 * @param {string} name
+	 * @return {*}
+	 */
+	appSettingsGet(name) {
+		return Utils.isUnd(this.appSettings[name]) ? null : this.appSettings[name];
 	}
 
 	/**

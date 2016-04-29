@@ -1461,7 +1461,7 @@
 			});
 		}
 
-		if (!!Settings.settingsGet('AllowCtrlEnterOnCompose'))
+		if (!!Settings.appSettingsGet('allowCtrlEnterOnCompose'))
 		{
 			key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
 				self.sendCommand();

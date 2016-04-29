@@ -979,7 +979,7 @@
 
 	MessageListMailBoxUserView.prototype.initUploaderForAppend = function ()
 	{
-		if (!Settings.settingsGet('AllowAppendMessage') || !this.dragOverArea())
+		if (!Settings.appSettingsGet('allowAppendMessage') || !this.dragOverArea())
 		{
 			return false;
 		}

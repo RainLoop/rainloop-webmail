@@ -225,7 +225,7 @@ class AdminApp extends AbstractApp
 
 		kn.hideLoading();
 
-		if (!Settings.settingsGet('AllowAdminPanel'))
+		if (!Settings.appSettingsGet('allowAdminPanel'))
 		{
 			kn.routeOff();
 			kn.setHash(Links.root(), true);

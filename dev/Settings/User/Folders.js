@@ -60,7 +60,7 @@
 			}
 		]});
 
-		this.useImapSubscribe = !!Settings.settingsGet('UseImapSubscribe');
+		this.useImapSubscribe = !!Settings.appSettingsGet('useImapSubscribe');
 	}
 
 	FoldersUserSettings.prototype.folderEditOnEnter = function (oFolder)
