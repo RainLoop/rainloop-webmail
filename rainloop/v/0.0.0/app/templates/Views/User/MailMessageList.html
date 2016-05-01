@@ -3,18 +3,18 @@
 		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
-				<div class="btn-group show-on-mobile" data-bind="visible: leftPanelDisabled">
+				<div class="btn-group" data-bind="visible: mobile && leftPanelDisabled()">
 					<a class="btn single" data-bind="click: showLeft">
 						<i class="icon-right-middle"></i>
 					</a>
 				</div>
-				<div class="btn-group show-on-mobile" data-bind="visible: !leftPanelDisabled()" style="margin-left: -1px">
+				<div class="btn-group" data-bind="visible: mobile && !leftPanelDisabled()" style="margin-left: -1px">
 					<a class="btn single" data-bind="click: hideLeft">
 						<i class="icon-left-middle"></i>
 					</a>
 				</div>
 				<div class="btn-group show-on-mobile">&nbsp;</div>
-				<div class="btn-group show-on-mobile" data-bind="visible: allowComposer">
+				<div class="btn-group" data-bind="visible: mobile && allowComposer">
 					<a class="btn single buttonCompose" data-tooltip-join="top" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
 						<i class="icon-paper-plane"></i>
 					</a>

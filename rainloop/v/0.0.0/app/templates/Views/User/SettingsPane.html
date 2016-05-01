@@ -1,12 +1,12 @@
 <div class="b-settings b-settins-right">
 	<div class="b-toolbar" style="padding-left: 0">
 		<div class="btn-toolbar" style="margin-top: 2px;">
-			<div class="btn-group show-on-mobile" data-bind="visible: leftPanelDisabled">
+			<div class="btn-group" data-bind="visible: mobile && leftPanelDisabled()">
 				<a class="btn single" data-bind="click: showLeft">
 					<i class="icon-right-middle"></i>
 				</a>
 			</div>
-			<div class="btn-group show-on-mobile" data-bind="visible: !leftPanelDisabled()" style="margin-left: -1px">
+			<div class="btn-group" data-bind="visible: mobile && !leftPanelDisabled()" style="margin-left: -1px">
 				<a class="btn single" data-bind="click: hideLeft">
 					<i class="icon-left-middle"></i>
 				</a>

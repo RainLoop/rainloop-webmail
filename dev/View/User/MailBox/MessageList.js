@@ -66,8 +66,6 @@
 		this.folderList = FolderStore.folderList;
 
 		this.composeInEdit = AppStore.composeInEdit;
-		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
-
 		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.selectorMessageSelected = MessageStore.selectorMessageSelected;

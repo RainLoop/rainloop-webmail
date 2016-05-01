@@ -37,7 +37,7 @@
 			<tbody data-bind="template: { name: 'SettingsFolderItem', foreach: folderList }"></tbody>
 		</table>
 	</div>
-	<div class="span4 show-on-mobile" style="position: relative" data-bind="visible: '' !== folderListHelp()">
+	<div class="span4 hide-on-mobile" style="position: relative" data-bind="visible: '' !== folderListHelp()">
 		<div class="alert alert-info" style="position: fixed">
 			<span data-bind="text: folderListHelp"></span>
 		</div>
