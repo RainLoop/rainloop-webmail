@@ -118,6 +118,22 @@
 			<div class="e-powered thm-powered" data-bind="visible: logoPowered">
 				Powered by <a href="http://www.rainloop.net" target="_blank">RainLoop</a>
 			</div>
+			<div class="e-mobile-switcher thm-mobile-switcher">
+				<span data-bind="visible: !mobile && mobileDevice">
+					<i class="icon-mobile"></i>
+					&nbsp;
+					<a href="./?/Mobile/" tabindex="-1">
+						<span class="i18n" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
+					</a>
+				</span>
+				<span data-bind="visible: mobile">
+					<i class="icon-laptop"></i>
+					&nbsp;
+					<a href="./?/SkipMobile/" tabindex="-1">
+						<span class="i18n" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
+					</a>
+				</span>
+			</div>
 			<div class="e-languages thm-languages plugin-mark-Login-BottomFooter" data-bind="visible: allowLanguagesOnLogin() && socialLoginEnabled()">
 				<label class="flag-selector">
 					<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>

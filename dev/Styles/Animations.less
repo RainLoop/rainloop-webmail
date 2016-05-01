@@ -44,26 +44,26 @@ html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrap
 	.transition(opacity 0.5s linear);
 }
 
-.rl-anim {
+html.csstransitions.rl-started-delay {
 
-	&.csstransitions.no-mobile.rl-started-delay {
-
-		#rl-left {
-			.transition(width 0.3s ease-out);
-		}
-
-		#rl-right {
-			.transition(left 0.3s ease-out);
-		}
-
-		#rl-sub-left, #rl-sub-left .messageList .inputSearch {
-			.transition(width 0.3s ease-out);
-		}
-
-		#rl-sub-right {
-			.transition(left 0.3s ease-out);
-		}
+	#rl-left {
+		.transition(width 0.3s ease-out);
 	}
+
+	#rl-right {
+		.transition(~'left 0.3s ease-out, right 0.3s ease-out');
+	}
+
+	#rl-sub-left, #rl-sub-left .messageList .inputSearch {
+		.transition(width 0.3s ease-out);
+	}
+
+	#rl-sub-right {
+		.transition(left 0.3s ease-out);
+	}
+}
+
+.rl-anim {
 
 	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
 		animation: login-form-shake 400ms ease-in-out;
@@ -77,10 +77,6 @@ html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrap
 	&.cssanimations.csstransitions.no-mobile .b-login-content .afterLoginHide {
 		opacity: 0;
 	}
-
-/*	&.csstransitions.no-mobile #rl-content {
-		.transition(opacity 0.3s ease-out);
-	}*/
 
 	&.csstransitions.no-mobile .btn-group.dropdown.colored-toggle.open .animate-this-icon-on-open {
 		animation: bounce-me .5s linear;

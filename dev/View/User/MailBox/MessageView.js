@@ -72,6 +72,8 @@
 		this.logoImg = Utils.trim(Settings.settingsGet('UserLogoMessage'));
 		this.logoIframe = Utils.trim(Settings.settingsGet('UserIframeMessage'));
 
+		this.mobile = !!Settings.appSettingsGet('mobile');
+
 		this.attachmentsActions = AppStore.attachmentsActions;
 
 		this.message = MessageStore.message;
@@ -687,6 +689,15 @@
 
 		this.oHeaderDom = $('.messageItemHeader', oDom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
+
+		if (this.mobile)
+		{
+			oDom
+				.on('click', function () {
+					Globals.leftPanelDisabled(true);
+				})
+			;
+		}
 
 		oDom
 			.on('click', 'a', function (oEvent) {

@@ -264,6 +264,7 @@ class AbstractApp extends AbstractBoot
 		Events.pub('rl.bootstart');
 
 		const
+			mobile = Settings.appSettingsGet('mobile'),
 			ssm = require('ssm'),
 			ko = require('ko')
 		;
@@ -294,54 +295,6 @@ class AbstractApp extends AbstractBoot
 
 		_.delay(Utils.windowResizeCallback, 1000);
 
-		ssm.addState({
-			id: 'mobile',
-			maxWidth: 767,
-			onEnter: () => {
-				Globals.$html.addClass('ssm-state-mobile');
-				Events.pub('ssm.mobile-enter');
-			},
-			onLeave: () => {
-				Globals.$html.removeClass('ssm-state-mobile');
-				Events.pub('ssm.mobile-leave');
-			}
-		});
-
-		ssm.addState({
-			id: 'tablet',
-			minWidth: 768,
-			maxWidth: 999,
-			onEnter: function() {
-				Globals.$html.addClass('ssm-state-tablet');
-			},
-			onLeave: function() {
-				Globals.$html.removeClass('ssm-state-tablet');
-			}
-		});
-
-		ssm.addState({
-			id: 'desktop',
-			minWidth: 1000,
-			maxWidth: 1400,
-			onEnter: () => {
-				Globals.$html.addClass('ssm-state-desktop');
-			},
-			onLeave: () => {
-				Globals.$html.removeClass('ssm-state-desktop');
-			}
-		});
-
-		ssm.addState({
-			id: 'desktop-large',
-			minWidth: 1400,
-			onEnter: () => {
-				Globals.$html.addClass('ssm-state-desktop-large');
-			},
-			onLeave: () => {
-				Globals.$html.removeClass('ssm-state-desktop-large');
-			}
-		});
-
 		Events.sub('ssm.mobile-enter', () => {
 			Globals.leftPanelDisabled(true);
 		});
@@ -349,6 +302,62 @@ class AbstractApp extends AbstractBoot
 		Events.sub('ssm.mobile-leave', () => {
 			Globals.leftPanelDisabled(false);
 		});
+
+		if (!mobile)
+		{
+			ssm.addState({
+				id: 'mobile',
+				maxWidth: 767,
+				onEnter: () => {
+					Globals.$html.addClass('ssm-state-mobile');
+					Events.pub('ssm.mobile-enter');
+				},
+				onLeave: () => {
+					Globals.$html.removeClass('ssm-state-mobile');
+					Events.pub('ssm.mobile-leave');
+				}
+			});
+
+			ssm.addState({
+				id: 'tablet',
+				minWidth: 768,
+				maxWidth: 999,
+				onEnter: function() {
+					Globals.$html.addClass('ssm-state-tablet');
+				},
+				onLeave: function() {
+					Globals.$html.removeClass('ssm-state-tablet');
+				}
+			});
+
+			ssm.addState({
+				id: 'desktop',
+				minWidth: 1000,
+				maxWidth: 1400,
+				onEnter: () => {
+					Globals.$html.addClass('ssm-state-desktop');
+				},
+				onLeave: () => {
+					Globals.$html.removeClass('ssm-state-desktop');
+				}
+			});
+
+			ssm.addState({
+				id: 'desktop-large',
+				minWidth: 1400,
+				onEnter: () => {
+					Globals.$html.addClass('ssm-state-desktop-large');
+				},
+				onLeave: () => {
+					Globals.$html.removeClass('ssm-state-desktop-large');
+				}
+			});
+		}
+		else
+		{
+			Globals.$html.addClass('ssm-state-mobile').addClass('rl-mobile');
+			Events.pub('ssm.mobile-enter');
+		}
 
 		Globals.leftPanelDisabled.subscribe((bValue) => {
 			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);

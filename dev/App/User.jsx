@@ -396,7 +396,7 @@ class AppUser extends AbstractApp
 		}).fail(() => {
 			if (callback)
 			{
-				callback(false);
+				_.delay(() => callback(false), 1);
 			}
 		});
 	}

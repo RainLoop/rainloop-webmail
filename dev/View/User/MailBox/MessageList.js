@@ -48,6 +48,8 @@
 		this.bPrefetch = false;
 		this.emptySubjectValue = '';
 
+		this.mobile = !!Settings.appSettingsGet('mobile');
+
 		this.allowReload = !!Settings.capa(Enums.Capa.Reload);
 		this.allowSearch = !!Settings.capa(Enums.Capa.Search);
 		this.allowSearchAdv = !!Settings.capa(Enums.Capa.SearchAdv);
@@ -62,6 +64,11 @@
 		this.messageListDisableAutoSelect = MessageStore.messageListDisableAutoSelect;
 
 		this.folderList = FolderStore.folderList;
+
+		this.composeInEdit = AppStore.composeInEdit;
+		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
+
+		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
 		this.selectorMessageSelected = MessageStore.selectorMessageSelected;
 		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
@@ -101,9 +108,9 @@
 		this.dragOverBodyArea = ko.observable(null);
 
 		this.messageListItemTemplate = ko.computed(function () {
-			return Enums.Layout.SidePreview === SettingsStore.layout() ?
+			return this.mobile || Enums.Layout.SidePreview === SettingsStore.layout() ?
 				'MailMessageListItem' : 'MailMessageListItemNoPreviewPane';
-		});
+		}, this);
 
 		this.messageListSearchDesc = ko.computed(function () {
 			var sValue = MessageStore.messageListEndSearch();
@@ -337,6 +344,30 @@
 	MessageListMailBoxUserView.prototype.emptySubjectValue = '';
 
 	MessageListMailBoxUserView.prototype.iGoToUpUpOrDownDownTimeout = 0;
+
+	MessageListMailBoxUserView.prototype.hideLeft = function (oItem, oEvent)
+	{
+		oEvent.preventDefault();
+		oEvent.stopPropagation();
+
+		Globals.leftPanelDisabled(true);
+	};
+
+	MessageListMailBoxUserView.prototype.showLeft = function (oItem, oEvent)
+	{
+		oEvent.preventDefault();
+		oEvent.stopPropagation();
+
+		Globals.leftPanelDisabled(false);
+	};
+
+	MessageListMailBoxUserView.prototype.composeClick = function ()
+	{
+		if (Settings.capa(Enums.Capa.Composer))
+		{
+			kn.showScreenPopup(require('View/Popup/Compose'));
+		}
+	};
 
 	MessageListMailBoxUserView.prototype.goToUpUpOrDownDown = function (bUp)
 	{
@@ -706,6 +737,15 @@
 		this.oContentScrollable = $('.content', this.oContentVisible);
 
 		this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.MessageList);
+
+		if (this.mobile)
+		{
+			oDom
+				.on('click', function () {
+					Globals.leftPanelDisabled(true);
+				})
+			;
+		}
 
 		oDom
 			.on('click', '.messageList .b-message-list-wrapper', function () {

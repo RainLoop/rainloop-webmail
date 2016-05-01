@@ -31,7 +31,7 @@
 					window.setTimeout(function(){
 						fValue($oEl.width());
 					}, 500);
-				};
+				}
 			;
 
 			$w.on('resize', fInit);

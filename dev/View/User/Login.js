@@ -53,6 +53,9 @@
 		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 		this.loginDescription = Utils.trim(Settings.settingsGet('LoginDescription'));
 
+		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+
 		this.forgotPasswordLinkUrl = Settings.appSettingsGet('forgotPasswordLinkUrl');
 		this.registrationLinkUrl = Settings.appSettingsGet('registrationLinkUrl');
 

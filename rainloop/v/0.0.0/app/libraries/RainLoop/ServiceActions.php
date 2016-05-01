@@ -805,17 +805,37 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
-	public function ServiceAppData()
+	public function ServiceAppData($sAdd = '')
 	{
-		return $this->localAppData(false);
+		return $this->localAppData(false, $sAdd);
 	}
 
 	/**
 	 * @return string
 	 */
-	public function ServiceAdminAppData()
+	public function ServiceAdminAppData($sAdd = '')
 	{
-		return $this->localAppData(true);
+		return $this->localAppData(true, $sAdd);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceSkipMobile()
+	{
+		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY, 1);
+		$this->oActions->Location('./');
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceClearSkipMobile()
+	{
+		\RainLoop\Utils::ClearCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY);
+		$this->oActions->Location('./');
+		return '';
 	}
 
 	/**
@@ -1136,7 +1156,7 @@ class ServiceActions
 
 		$oAccount = $this->oActions->GetAccount();
 
-		if ($oAccount && $this->oActions->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($oAccount && $this->oActions->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$oAccountToLogin = null;
 			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
@@ -1194,10 +1214,11 @@ class ServiceActions
 
 	/**
 	 * @param bool $bAdmin = true
+	 * @param string $sAdd = ''
 	 *
 	 * @return string
 	 */
-	private function localAppData($bAdmin = false)
+	private function localAppData($bAdmin = false, $sAdd = '')
 	{
 		@\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
@@ -1235,7 +1256,7 @@ class ServiceActions
 			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 		}
 
-		$sResult = $this->compileAppData($this->oActions->AppData($bAdmin, $sAuthAccountHash), false);
+		$sResult = $this->compileAppData($this->oActions->AppData($bAdmin, 'mobile' === $sAdd, $sAuthAccountHash), false);
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
 

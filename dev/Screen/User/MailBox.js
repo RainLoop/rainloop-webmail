@@ -72,6 +72,11 @@
 		AppStore.focusedState(Enums.Focused.None);
 		AppStore.focusedState(Enums.Focused.MessageList);
 
+		if (Settings.appSettingsGet('mobile'))
+		{
+			Globals.leftPanelDisabled(true);
+		}
+
 		if (!Settings.capa(Enums.Capa.Folders))
 		{
 			Globals.leftPanelType(
@@ -144,7 +149,7 @@
 
 	MailBoxUserScreen.prototype.onBuild = function ()
 	{
-		if (!Globals.bMobileDevice)
+		if (!Globals.bMobileDevice && !Settings.appSettingsGet('mobile'))
 		{
 			_.defer(function () {
 				require('App/User').default.initHorizontalLayoutResizer(Enums.ClientSideKeyName.MessageListSize);

@@ -12,6 +12,7 @@
 		Links = require('Common/Links'),
 
 		Cache = require('Common/Cache'),
+		Settings = require('Storage/Settings'),
 
 		kn = require('Knoin/Knoin'),
 		AbstractView = require('Knoin/AbstractView')
@@ -29,6 +30,8 @@
 
 		this.leftPanelDisabled = Globals.leftPanelDisabled;
 
+		this.mobile = Settings.appSettingsGet('mobile');
+
 		this.menu = oScreen.menu;
 
 		kn.constructorEnd(this);
@@ -43,6 +46,15 @@
 //		key('esc', Enums.KeyState.Settings, function () {
 //			self.backToMailBoxClick();
 //		});
+
+		if (this.mobile)
+		{
+			oDom
+				.on('click', '.b-settings-menu .e-item.selectable', function () {
+					Globals.leftPanelDisabled(true);
+				})
+			;
+		}
 
 		key('up, down', Enums.KeyState.Settings, _.throttle(function (event, handler) {
 

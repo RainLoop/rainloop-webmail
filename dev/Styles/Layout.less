@@ -19,6 +19,22 @@
 	min-height: 400px;
 }
 
+html.rl-mobile {
+
+	#rl-center {
+		min-width: 250px;
+		min-height: 250px;
+	}
+
+	&.rl-left-panel-enabled #rl-right {
+		right: -150px;
+	}
+
+	&.rl-left-panel-disabled #rl-right {
+		left: 5px !important;
+	}
+}
+
 #rl-top {
 	.g-ui-absolute-reset;
 	bottom: auto;
@@ -352,4 +368,19 @@ html.rl-ctrl-key-pressed {
 #rl-loading-error-additional {
 	margin-top: 20px;
 	font-size: 20px;
+}
+
+html.rl-mobile .hide-on-mobile {
+	display: none;
+}
+
+.show-on-mobile {
+	display: none;
+}
+
+html.rl-mobile .show-on-mobile {
+	display: initial;
+}
+html.rl-mobile .width100-on-mobile {
+	width: 100%;
 }

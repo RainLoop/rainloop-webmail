@@ -13,8 +13,6 @@ class SettingsStorage
 
 		this.appSettings = Utils.getConfigurationFromScriptTag('application');
 		this.appSettings = Utils.isNormal(this.appSettings) ? this.appSettings : {};
-
-		window.console.log(this.appSettings);
 	}
 
 	/**

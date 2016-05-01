@@ -33,6 +33,9 @@
 		this.logoImg = Utils.trim(Settings.settingsGet('UserLogo'));
 		this.logoTitle = Utils.trim(Settings.settingsGet('UserLogoTitle'));
 
+		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+
 		this.allowSettings = !!Settings.capa(Enums.Capa.Settings);
 		this.allowHelp = !!Settings.capa(Enums.Capa.Help);
 

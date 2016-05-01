@@ -111,7 +111,7 @@ class Service
 		if (empty($sAdminPanelHost))
 		{
 			$sAdminPanelKey = \strtolower($this->oActions->Config()->Get('security', 'admin_panel_key', 'admin'));
-			$bAdmin = !empty($aPaths[0]) && $aPaths[0] === $sAdminPanelKey;
+			$bAdmin = !empty($aPaths[0]) && \strtolower($aPaths[0]) === $sAdminPanelKey;
 		}
 		else if (empty($aPaths[0]) &&
 			\MailSo\Base\Utils::StrToLowerIfAscii($sAdminPanelHost) === \MailSo\Base\Utils::StrToLowerIfAscii($this->oHttp->GetHost()))
@@ -133,21 +133,39 @@ class Service
 		}
 
 		$bIndex = true;
-		$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === $aPaths[0]);
-
-		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== $aPaths[0])
+		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
 		{
 			$bIndex = false;
-			$sMethodName = 'Service'.$aPaths[0];
+			$sMethodName = 'Service'.\preg_replace('/@.+$/', '', $aPaths[0]);
+			$sMethodExtra = 0 < \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
+
 			if (\method_exists($this->oServiceActions, $sMethodName) &&
 				\is_callable(array($this->oServiceActions, $sMethodName)))
 			{
 				$this->oServiceActions->SetQuery($sQuery)->SetPaths($aPaths);
-				$sResult = \call_user_func(array($this->oServiceActions, $sMethodName));
+				$sResult = \call_user_func(array($this->oServiceActions, $sMethodName), $sMethodExtra);
 			}
 			else if (!$this->oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths))
 			{
 				$bIndex = true;
+			}
+		}
+
+		$oMobileDetect = new \Detection\MobileDetect();
+		$bMobileDevice = $oMobileDetect->isMobile() && !$oMobileDetect->isTablet();
+
+		$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === \strtolower($aPaths[0]));
+
+		if ($bIndex && !$bMobile)
+		{
+			$iMobileKey = (int) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY, 0);
+			if (1 !== $iMobileKey)
+			{
+				if ($bMobileDevice)
+				{
+					$this->oActions->Location('./?/Mobile/');
+					return $this;
+				}
 			}
 		}
 
@@ -169,7 +187,7 @@ class Service
 				return $this;
 			}
 
-			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile);
+			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile, $bMobileDevice);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true))
@@ -183,7 +201,7 @@ class Service
 //				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
-//				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
+				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
 				if (0 < \strlen($sCacheFileName))
 				{
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
@@ -231,10 +249,11 @@ class Service
 	/**
 	 * @param bool $bAdmin = false
 	 * @param bool $bMobile = false
+	 * @param bool $bMobileDevice = false
 	 *
 	 * @return array
 	 */
-	private function indexApplicationConfiguration($bAdmin = false, $bMobile = false)
+	private function indexApplicationConfiguration($bAdmin = false, $bMobile = false, $bMobileDevice = false)
 	{
 		$oConfig = $this->oActions->Config();
 
@@ -250,7 +269,7 @@ class Service
 		}
 
 		$aAttachmentsActions = array();
-		if ($this->oActions->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
+		if ($this->oActions->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
 			if (!!\class_exists('ZipArchive'))
 			{
@@ -271,6 +290,7 @@ class Service
 		return \array_merge(array(
 			'version' => APP_VERSION,
 			'mobile' => $bMobile,
+			'mobileDevice' => $bMobileDevice,
 			'webPath' => \RainLoop\Utils::WebPath(),
 			'webVersionPath' => \RainLoop\Utils::WebVersionPath(),
 			'token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
@@ -301,15 +321,16 @@ class Service
 	/**
 	 * @param bool $bAdmin = false
 	 * @param bool $bMobile = false
+	 * @param bool $bMobileDevice = false
 	 *
 	 * @return array
 	 */
-	private function indexTemplateParameters($bAdmin = false, $bMobile = false)
+	private function indexTemplateParameters($bAdmin = false, $bMobile = false, $bMobileDevice = false)
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
 
-		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
+		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin, $bMobile);
 
 		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
@@ -334,7 +355,7 @@ class Service
 		);
 
 		$aTemplateParameters = array(
-			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData/' : './?/AppData/'),
+			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData' : './?/AppData').($bMobile ? '@mobile/' : '/'),
 			'{{BaseAppFaviconPngLinkTag}}' => $aData['FaviconPngLink'] ? '<link rel="shortcut icon" href="'.$aData['FaviconPngLink'].'" type="image/png" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $aData['AppleTouchLink'] ? '<link rel="apple-touch-icon" href="'.$aData['AppleTouchLink'].'" type="image/png" />' : '',
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
@@ -346,10 +367,9 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseApplicationConfigurationJson}}' => \json_encode($this->indexApplicationConfiguration($bAdmin, $bMobile)),
+			'{{BaseApplicationConfigurationJson}}' => @\json_encode($this->indexApplicationConfiguration($bAdmin, $bMobile, $bMobileDevice)),
 			'{{BaseVersion}}' => APP_VERSION,
-//			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
-			'{{BaseViewport}}' => 'width=950,maximum-scale=2',
+			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseDir}}' => 'ltr'
 //			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);

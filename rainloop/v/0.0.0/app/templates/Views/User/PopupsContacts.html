@@ -31,7 +31,7 @@
 						<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
 							'icon-spinner animated': contacts.importing() || contacts.syncing()}"></i>
 					</a>
-					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="contacts-more-dropdown-id">
+					<ul class="dropdown-menu g-ui-menu pull-right" role="menu" aria-labelledby="contacts-more-dropdown-id">
 						<li class="e-item" role="presentation">
 							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
 								<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner animated': contacts.importing}"></i>

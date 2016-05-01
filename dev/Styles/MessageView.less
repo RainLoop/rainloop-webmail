@@ -17,7 +17,7 @@ html.rl-no-preview-pane {
 		position: absolute;
 		top: 0;
 		right: 0;
-		left: -2px;
+		left: 0;
 		height: 30px;
 		padding: 10px 0;
 		color: #fff;
@@ -120,6 +120,8 @@ html.rl-no-preview-pane {
 			background-color: #f8f8f8;
 			border-top: 0px;
 			border-bottom: 1px solid #ddd;
+			border-top-right-radius: 5px;
+			border-top-left-radius: 5px;
 			z-index: 1;
 			top: 0;
 			left: 0;
@@ -159,6 +161,7 @@ html.rl-no-preview-pane {
 
 			.informationShort {
 				margin-left: 22px;
+				margin-right: 50px;
 				a {
 					.g-ui-link;
 				}
@@ -563,6 +566,7 @@ html.rl-no-preview-pane .messageView {
 
 	.b-content {
 		top: 50px;
+		left: 0;
 		bottom: @rlBottomMargin;
 		right: @rlBottomMargin;
 		border: @rlMainBorderSize solid @rlMainDarkColor;

@@ -139,6 +139,11 @@
 		this.setSettingsTitle();
 		Globals.keyScope(Enums.KeyState.Settings);
 		Globals.leftPanelType('');
+
+		if (Settings.appSettingsGet('mobile'))
+		{
+			Globals.leftPanelDisabled(true);
+		}
 	};
 
 	SettingsUserScreen.prototype.setSettingsTitle = function ()

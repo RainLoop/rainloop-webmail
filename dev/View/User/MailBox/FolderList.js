@@ -80,7 +80,13 @@
 
 		var
 			self = this,
+			bMobile = Settings.appSettingsGet('mobile'),
 			fSelectFolder = function (oEvent, bStarred) {
+
+				if (bMobile)
+				{
+					Globals.leftPanelDisabled(true);
+				}
 
 				oEvent.preventDefault();
 

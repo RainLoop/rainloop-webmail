@@ -17,6 +17,9 @@ en:
     BUTTON_SETTINGS: "Settings"
     BUTTON_HELP: "Help"
     BUTTON_LOGOUT: "Logout"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobile version"
+    BUTTON_DESKTOP_VERSION: "Desktop version"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Search"
     TITLE_ADV: "Advanced Search"

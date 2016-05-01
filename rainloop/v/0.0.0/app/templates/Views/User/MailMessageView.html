@@ -30,7 +30,7 @@
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group" data-bind="visible: !usePreviewPane()">
+				<div class="btn-group hide-on-mobile" data-bind="visible: !usePreviewPane()">
 					<a class="btn btn-thin first btn-dark-disabled-border buttonUp" data-bind="command: goUpCommand">
 						<i class="icon-left-middle"></i>
 					</a>
@@ -197,7 +197,7 @@
 							</a>
 						</div>
 
-						<div class="btn-group pull-right" data-bind="visible: isDraftFolder()" style="margin-right: 5px">
+						<div class="btn-group pull-right hide-on-mobile" data-bind="visible: isDraftFolder()" style="margin-right: 5px">
 							<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
 								<i class="icon-pencil icon-white"></i>
 							</a>

@@ -14,6 +14,7 @@ class Actions
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'rlspeclogoutcmk';
 	const AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
+	const RL_SKIP_MOBILE_KEY = 'rlmobile';
 
 	/**
 	 * @var \MailSo\Base\Http
@@ -938,7 +939,7 @@ class Actions
 		if (null === $this->oAddressBookProvider)
 		{
 			$oDriver = null;
-			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::CONTACTS, $oAccount))
+			if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::CONTACTS, $oAccount))
 			{
 				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable)
 				{
@@ -1381,11 +1382,12 @@ class Actions
 
 	/**
 	 * @param bool $bAdmin
+	 * @param bool $bMobile = false
 	 * @param string $sAuthAccountHash = ''
 	 *
 	 * @return array
 	 */
-	public function AppData($bAdmin, $sAuthAccountHash = '')
+	public function AppData($bAdmin, $bMobile = false, $sAuthAccountHash = '')
 	{
 		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash))
 		{
@@ -1621,12 +1623,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['AllowDropboxSocial'] = false;
 			}
 
-			$aResult['Capa'] = $this->Capa(false, $oAccount);
+			$aResult['Capa'] = $this->Capa(false, $bMobile, $oAccount);
 
 			if ($aResult['Auth'] && !$aResult['RequireTwoFactor'])
 			{
-				if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount) &&
-					$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
+				if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount) &&
+					$this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
 					$this->TwoFactorAuthProvider()->IsActive())
 				{
 					$aData = $this->getTwoFactorInfo($oAccount, true);
@@ -1697,7 +1699,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				);
 			}
 
-			$aResult['Capa'] = $this->Capa(true);
+			$aResult['Capa'] = $this->Capa(true, $bMobile);
 		}
 
 		$aResult['SupportedFacebookSocial'] = (bool) \version_compare(PHP_VERSION, '5.4.0', '>=');
@@ -1714,7 +1716,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
-		$aResult['Themes'] = $this->GetThemes();
+		$aResult['Themes'] = $this->GetThemes($bMobile);
 		$aResult['Languages'] = $this->GetLanguages(false);
 		$aResult['LanguagesAdmin'] = $this->GetLanguages(true);
 
@@ -1750,7 +1752,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			if ($oSettingsLocal instanceof \RainLoop\Settings)
 			{
-//				if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+//				if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
@@ -1760,7 +1762,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['NullFolder'] = (string) $oSettingsLocal->GetConf('NullFolder', '');
 			}
 
-			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
+			if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
 			{
 				if ($oSettings instanceof \RainLoop\Settings)
 				{
@@ -1779,12 +1781,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$aResult['AutoLogout'] = (int) $oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 
-					if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
+					if (!$this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::AUTOLOGOUT, $oAccount))
 					{
 						$aResult['AutoLogout'] = 0;
 					}
 
-					if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
+					if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
 					{
 						$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
@@ -1803,7 +1805,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 
-					if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
+					if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
 					{
 						$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
 					}
@@ -1813,7 +1815,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
 
-		$sTheme = $this->ValidateTheme($sTheme);
+		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
 		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/-/';
 
 		if (!$aResult['Auth'])
@@ -1859,6 +1861,19 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
+
+		// Mobile override
+		if ($bMobile)
+		{
+			$aResult['Layout'] = \RainLoop\Enumerations\Layout::NO_PREVIW;
+
+			$aResult['SoundNotification'] = false;
+			$aResult['DesktopNotifications'] = false;
+			$aResult['UseCheckboxesInList'] = true;
+
+			$aResult['UserBackgroundName'] = '';
+			$aResult['UserBackgroundHash'] = '';
+		}
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 
@@ -2334,7 +2349,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 */
 	public function GetAccounts($oAccount)
 	{
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -2472,7 +2487,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 */
 	public function GetIdentities($oAccount)
 	{
-		$bAllowIdentities = $this->GetCapa(false,
+		$bAllowIdentities = $this->GetCapa(false, false,
 			\RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
 
 		$aIdentities = array();
@@ -2621,7 +2636,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 */
 	public function SetIdentities($oAccount, $aIdentities = array())
 	{
-		$bAllowIdentities = $this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
+		$bAllowIdentities = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
 
 		$aResult = array();
 		foreach ($aIdentities as $oItem)
@@ -2671,7 +2686,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FILTERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FILTERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -2700,7 +2715,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FILTERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FILTERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -2740,7 +2755,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -2789,7 +2804,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -2828,7 +2843,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 */
 	public function DoAttachmentsActions()
 	{
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3076,7 +3091,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3110,7 +3125,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3152,7 +3167,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3185,7 +3200,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3249,7 +3264,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$mAccounts = false;
 
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$mAccounts = $this->GetAccounts($oAccount);
 			$mAccounts = \array_keys($mAccounts);
@@ -3275,7 +3290,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -3331,7 +3346,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$bComplete = true;
 		$aCounts = array();
 
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$iLimit = 7;
 			$mAccounts = $this->GetAccounts($oAccount);
@@ -4864,7 +4879,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function DoSettingsUpdate()
 	{
 		$oAccount = $this->getAccountFromToken();
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -4886,7 +4901,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 
-		if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
+		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::THEMES, $oAccount))
 		{
 			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
@@ -5213,10 +5228,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oFolderCollection = null;
 		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, &$oFolderCollection));
 
+		$bUseFolders = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount);
+
 		if (null === $oFolderCollection)
 		{
 			$oFolderCollection = $this->MailClient()->Folders('',
-				$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount) ? '*' : 'INBOX',
+				$bUseFolders ? '*' : 'INBOX',
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
 				(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 			);
@@ -5232,8 +5249,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
 
-			if ($this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount) &&
-				$this->Config()->Get('labs', 'autocreate_system_folders', true))
+			if ($bUseFolders && $this->Config()->Get('labs', 'autocreate_system_folders', true))
 			{
 				$bDoItAgain = false;
 
@@ -5355,7 +5371,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -5383,7 +5399,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -5417,7 +5433,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -5469,7 +5485,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -5499,7 +5515,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -5987,7 +6003,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6220,7 +6236,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6410,7 +6426,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6484,7 +6500,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::QUOTA, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::QUOTA, $oAccount))
 		{
 			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
 		}
@@ -6702,7 +6718,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6719,7 +6735,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6759,7 +6775,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6781,7 +6797,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6815,7 +6831,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -6844,7 +6860,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -7657,7 +7673,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -7685,7 +7701,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
+		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::USER_BACKGROUND, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -8050,11 +8066,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @param bool $bAdmin
+	 * @param bool $bMobile = false
 	 * @param \RainLoop\Model\Account $oAccount = null
 	 *
 	 * @return array
 	 */
-	public function Capa($bAdmin, $oAccount = null)
+	public function Capa($bAdmin, $bMobile = false, $oAccount = null)
 	{
 		$oConfig = $this->Config();
 
@@ -8099,22 +8116,22 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult[] = \RainLoop\Enumerations\Capa::IDENTITIES;
 			}
 
-			if ($oConfig->Get('capa', 'x-templates', true))
+			if ($oConfig->Get('capa', 'x-templates', true) && !$bMobile)
 			{
 				$aResult[] = \RainLoop\Enumerations\Capa::TEMPLATES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_themes', false))
+			if ($oConfig->Get('webmail', 'allow_themes', false) && !$bMobile)
 			{
 				$aResult[] = \RainLoop\Enumerations\Capa::THEMES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_user_background', false))
+			if ($oConfig->Get('webmail', 'allow_user_background', false) && !$bMobile)
 			{
 				$aResult[] = \RainLoop\Enumerations\Capa::USER_BACKGROUND;
 			}
 
-			if ($oConfig->Get('security', 'openpgp', false))
+			if ($oConfig->Get('security', 'openpgp', false) && !$bMobile)
 			{
 				$aResult[] = \RainLoop\Enumerations\Capa::OPEN_PGP;
 			}
@@ -8141,7 +8158,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		if ($oConfig->Get('capa', 'help', true))
+		if ($oConfig->Get('capa', 'help', true) && !$bMobile)
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::HELP;
 		}
@@ -8170,7 +8187,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::SEARCH;
 
-			if ($oConfig->Get('capa', 'search_adv', true))
+			if ($oConfig->Get('capa', 'search_adv', true) && !$bMobile)
 			{
 				$aResult[] = \RainLoop\Enumerations\Capa::SEARCH_ADV;
 			}
@@ -8186,7 +8203,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$aResult[] = \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS;
 		}
 
-		if ($oConfig->Get('labs', 'allow_prefetch', false))
+		if ($oConfig->Get('labs', 'allow_prefetch', false) && !$bMobile)
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::PREFETCH;
 		}
@@ -8201,14 +8218,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @param bool $bAdmin
+	 * @param bool $bMobile
 	 * @param string $sName
 	 * @param \RainLoop\Model\Account $oAccount = null
 	 *
 	 * @return bool
 	 */
-	public function GetCapa($bAdmin, $sName, $oAccount = null)
+	public function GetCapa($bAdmin, $bMobile, $sName, $oAccount = null)
 	{
-		return \in_array($sName, $this->Capa($bAdmin, $oAccount));
+		return \in_array($sName, $this->Capa($bAdmin, $bMobile, $oAccount));
 	}
 
 	/**
@@ -8934,9 +8952,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 *
 	 * @return string
 	 */
-	public function ValidateTheme($sTheme)
+	public function ValidateTheme($sTheme, $bMobile = false)
 	{
-		return \in_array($sTheme, $this->GetThemes()) ?
+		if ($bMobile)
+		{
+			return 'Mobile';
+		}
+
+		return \in_array($sTheme, $this->GetThemes($bMobile)) ?
 			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
 	}
 
@@ -9016,8 +9039,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 *
 	 * @return array
 	 */
-	public function GetThemes()
+	public function GetThemes($bMobile = false)
 	{
+		if ($bMobile)
+		{
+			return array('Mobile');
+		}
+
 		static $aCache = null;
 		if (\is_array($aCache))
 		{
@@ -9483,10 +9511,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @param bool $bAdmin = false
+	 * @param bool $bMobile = false
 	 *
 	 * @return array
 	 */
-	public function GetLanguageAndTheme($bAdmin = false)
+	public function GetLanguageAndTheme($bAdmin = false, $bMobile = false)
 	{
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
@@ -9517,7 +9546,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 
 		$sLanguage = $this->ValidateLanguage($sLanguage, '', $bAdmin);
-		$sTheme = $this->ValidateTheme($sTheme);
+		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
 
 		return array($sLanguage, $sTheme);
 	}
@@ -9637,7 +9666,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$self = $this;
 			$sClassName = \get_class($mResponse);
 			$bHasSimpleJsonFunc = \method_exists($mResponse, 'ToSimpleJSON');
-			$bThumb = $this->GetCapa(false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
+			$bThumb = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
 
 			$oAccountCache = null;
 			$fGetAccount = function () use ($self, &$oAccountCache) {
@@ -9741,7 +9770,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 				$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
 
-				if (!$this->GetCapa(false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
+				if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::COMPOSER, $oAccount))
 				{
 					$mResult['IsReadReceipt'] = true;
 				}

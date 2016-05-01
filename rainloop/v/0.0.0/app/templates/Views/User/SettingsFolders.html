@@ -1,5 +1,5 @@
 <div class="b-settings-folders g-ui-user-select-none row" data-bind="css: { 'ignore-folder-subscribe': !useImapSubscribe }">
-	<div class="span8">
+	<div class="span8 width100-on-mobile">
 		<div class="form-horizontal">
 			<div class="legend">
 				<span class="i18n" data-i18n="SETTINGS_FOLDERS/LEGEND_FOLDERS"></span>
@@ -37,7 +37,7 @@
 			<tbody data-bind="template: { name: 'SettingsFolderItem', foreach: folderList }"></tbody>
 		</table>
 	</div>
-	<div class="span4" style="position: relative" data-bind="visible: '' !== folderListHelp()">
+	<div class="span4 show-on-mobile" style="position: relative" data-bind="visible: '' !== folderListHelp()">
 		<div class="alert alert-info" style="position: fixed">
 			<span data-bind="text: folderListHelp"></span>
 		</div>

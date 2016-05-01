@@ -28,6 +28,9 @@
 
 		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 
+		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+
 		this.login = ko.observable('');
 		this.password = ko.observable('');
 

@@ -1,5 +1,5 @@
-html.rl-no-preview-pane {
 
+html.rl-no-preview-pane {
 	.messageList.message-selected {
 		display: none;
 	}
@@ -15,6 +15,7 @@ html.rl-no-preview-pane {
 		height: 30px;
 		padding: 10px @rlMainBorderSize;
 		z-index: 102;
+		white-space: nowrap;
 	}
 
 	.b-footer {
@@ -75,6 +76,7 @@ html.rl-no-preview-pane {
 		height: 29px;
 		padding: 10px 8px 10px 11px;
 		z-index: 101;
+		white-space: nowrap;
 
 		background-color: #eee;
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
@@ -623,4 +625,10 @@ html.cssanimations.rl-anim .messageList .line-loading {
 	height: 20px;
 	cursor: pointer;
 	cursor: move;
+}
+
+html.rl-mobile {
+	#rl-sub-left .messageList .inputSearch {
+		width: 160px !important;
+	}
 }

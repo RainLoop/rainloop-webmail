@@ -32,7 +32,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="control-group">
+		<div class="control-group hide-on-mobile">
 			<label class="control-label">
 			   <span class="i18n" data-i18n="SETTINGS_GENERAL/LABEL_LAYOUT"></span>
 			</label>
@@ -92,7 +92,7 @@
 						value: showImages
 					}
 				}"></div>
-				<div data-bind="component: {
+				<div class="hide-on-mobile" data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST',
@@ -117,7 +117,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-horizontal" data-bind="visible: isDesktopNotificationSupported() || soundNotificationIsSupported()">
+	<div class="form-horizontal hide-on-mobile" data-bind="visible: isDesktopNotificationSupported() || soundNotificationIsSupported()">
 		<div class="legend">
 			<span class="i18n i18n-animation" data-i18n="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></span>
 		</div>

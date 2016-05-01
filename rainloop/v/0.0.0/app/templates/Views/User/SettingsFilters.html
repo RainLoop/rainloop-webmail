@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class="row" data-bind="visible: inited() && !serverError()">
-		<div class="span5">
+		<div class="span5 width100-on-mobile">
 			<a class="btn" data-bind="click: addFilter">
 				<i class="icon-plus"></i>
 				&nbsp;&nbsp;
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<div class="row" data-bind="visible: haveChanges">
-		<div class="span8">
+		<div class="span8 width100-on-mobile">
 			<br />
 			<div class="alert g-ui-user-select-none" style="margin-bottom: 0">
 				<i class="icon-warning"></i>
@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<div class="row" data-bind="visible: serverError">
-		<div class="span8">
+		<div class="span8 width100-on-mobile">
 			<div class="alert alert-error g-ui-user-select-none" style="margin-bottom: 0">
 				<i class="icon-warning"></i>
 				&nbsp;&nbsp;
@@ -49,7 +49,7 @@
 	<br />
 	<br />
 	<div class="row">
-		<div class="span8">
+		<div class="span8 width100-on-mobile">
 			<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: inited() && filterRaw.allow() && filterRaw.active()">
 				<div class="controls">
 					<pre style="word-break: break-word;" data-bind="visible: '' !== filterRaw.capa()">
