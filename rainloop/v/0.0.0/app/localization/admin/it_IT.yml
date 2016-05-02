@@ -2,10 +2,10 @@ it_IT:
   LOGIN:
     LABEL_LOGIN: "Nome utente"
     LABEL_PASSWORD: "Password"
-    BUTTON_LOGIN: "Accedi al pannello di amministrazione"
+    BUTTON_LOGIN: "Accedi all'amministrazione"
   TOP_PANEL:
     LABEL_PREMIUM: "Premium"
-    LABEL_ADMIN_PANEL: "Pannello di amministrazione"
+    LABEL_ADMIN_PANEL: "Amministrazione"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Generali"
     LABEL_LOGIN_NAME: "Accesso"

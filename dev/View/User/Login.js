@@ -198,6 +198,7 @@
 			this.submitRequest(true);
 
 			var
+				self = this,
 				sPassword = this.password(),
 
 				fLoginRequest = _.bind(function (sPassword) {
@@ -212,9 +213,11 @@
 								{
 									this.additionalCode('');
 									this.additionalCode.visibility(true);
-									this.additionalCode.focused(true);
-
 									this.submitRequest(false);
+
+									_.delay(function(){
+										self.additionalCode.focused(true);
+									}, 100);
 								}
 								else if (oData.Admin)
 								{
@@ -400,7 +403,7 @@
 			self = this,
 			sSignMeLocal = Local.get(Enums.ClientSideKeyName.LastSignMe),
 			sSignMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase(),
-			sJsHash = Settings.settingsGet('JsHash'),
+			sJsHash = Settings.appSettingsGet('jsHash'),
 			fSocial = function (iErrorCode) {
 				iErrorCode = Utils.pInt(iErrorCode);
 				if (0 === iErrorCode)

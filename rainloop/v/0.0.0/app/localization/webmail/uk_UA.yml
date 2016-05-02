@@ -17,6 +17,9 @@ uk_UA:
     BUTTON_SETTINGS: "Налаштування"
     BUTTON_HELP: "Допомога"
     BUTTON_LOGOUT: "Вийти"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Мобільна версія"
+    BUTTON_DESKTOP_VERSION: "Повна версія"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Пошук листів"
     TITLE_ADV: "Розширений пошук листів"

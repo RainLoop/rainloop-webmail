@@ -49,8 +49,8 @@ class Links
 	/**
 	 * @return {string}
 	 */
-	rootUser() {
-		return './';
+	rootUser(mobile = false) {
+		return mobile ? './?/Mobile/' : './';
 	}
 
 	/**

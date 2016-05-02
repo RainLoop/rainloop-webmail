@@ -26,7 +26,7 @@
 
 	ThemeStore.prototype.populate = function ()
 	{
-		var aThemes = Settings.settingsGet('Themes');
+		var aThemes = Settings.appSettingsGet('themes');
 
 		this.themes(Utils.isArray(aThemes) ? aThemes : []);
 		this.theme(Settings.settingsGet('Theme'));

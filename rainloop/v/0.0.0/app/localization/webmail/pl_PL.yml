@@ -50,7 +50,9 @@ pl_PL:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Utwórz"
     BUTTON_CONTACTS: "Kontakty"
+    BUTTON_NEW_MESSAGE: "Nowa wiadomość"
     INBOX_NAME: "Odebrane"
+    STARRED_NAME: "Oznaczone gwiazdką"
     SENT_NAME: "Wysłane"
     DRAFTS_NAME: "Wersje robocze"
     SPAM_NAME: "Wiadomości śmieci - SPAM"
@@ -299,7 +301,7 @@ pl_PL:
     BUTTON_SIGN_AND_ENCRYPT: "Podpisz i szyfruj"
   POPUPS_MESSAGE_OPEN_PGP:
     TITLE_MESSAGE_OPEN_PGP: "OpenPGP Decrypt"
-    LABEL_KEY: "Private Key"
+    LABEL_KEY: "Klucz prywatny"
     LABEL_PASSWORD: "Password"
     BUTTON_DECRYPT: "Decrypt"
   POPUPS_TWO_FACTOR_TEST:
@@ -619,6 +621,7 @@ pl_PL:
     NO_PRIVATE_KEY_FOUND: "Nie znaleziono klucza prywatnego"
     NO_PRIVATE_KEY_FOUND_FOR: "Nie znaleziono klucza prywatnego dla adresu: \"%EMAIL%\""
     ADD_A_PUBLICK_KEY: "Dodaj klucz publiczny"
+    SELECT_A_PRIVATE_KEY: "Wybierz klucz prywatny"
     UNVERIFIRED_SIGNATURE: "Niezweryfikowana"
     DECRYPTION_ERROR: "Błąd deszyfrowania OpenPGP"
     GOOD_SIGNATURE: "Podpisana przez: %USER%"

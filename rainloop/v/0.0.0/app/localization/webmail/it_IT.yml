@@ -50,6 +50,7 @@ it_IT:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Scrivi messaggio"
     BUTTON_CONTACTS: "Contatti"
+    BUTTON_NEW_MESSAGE: "Nuovo messaggio"
     INBOX_NAME: "Posta in arrivo"
     STARRED_NAME: "Preferiti"
     SENT_NAME: "Posta inviata"

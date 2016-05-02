@@ -2357,30 +2357,30 @@ END;
 	}
 
 	/**
-     * @param string $sData
-     * @param string $sKey
+	 * @param string $sData
+	 * @param string $sKey
 	 *
-     * @return string
-     */
-    public static function Hmac($sData, $sKey)
-    {
-        if (\function_exists('hash_hmac'))
+	 * @return string
+	 */
+	public static function Hmac($sData, $sKey)
+	{
+		if (\function_exists('hash_hmac'))
 		{
-            return \hash_hmac('md5', $sData, $sKey);
-        }
+			return \hash_hmac('md5', $sData, $sKey);
+		}
 
-        $iLen = 64;
-        if ($iLen < \strlen($sKey))
+		$iLen = 64;
+		if ($iLen < \strlen($sKey))
 		{
-            $sKey = \pack('H*', \md5($sKey));
-        }
+			$sKey = \pack('H*', \md5($sKey));
+		}
 
-        $sKey = \str_pad($sKey, $iLen, \chr(0x00));
-        $sIpad = \str_pad('', $iLen, \chr(0x36));
-        $sOpad = \str_pad('', $iLen, \chr(0x5c));
+		$sKey = \str_pad($sKey, $iLen, \chr(0x00));
+		$sIpad = \str_pad('', $iLen, \chr(0x36));
+		$sOpad = \str_pad('', $iLen, \chr(0x5c));
 
-        return \md5(($sKey ^ $sOpad).\pack('H*', \md5(($sKey ^ $sIpad).$sData)));
-    }
+		return \md5(($sKey ^ $sOpad).\pack('H*', \md5(($sKey ^ $sIpad).$sData)));
+	}
 
 	/**
 	 * @param string $sDomain

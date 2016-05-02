@@ -288,9 +288,10 @@ Enables caching in the system'),
 			),
 
 			'labs' => array(
-				'ignore_folders_subscription' => array(false,
+				'allow_mobile_version' => array(true,
 					'Experimental settings. Handle with care.
 '),
+				'ignore_folders_subscription' => array(false),
 				'check_new_password_strength' => array(true),
 				'update_channel' => array('stable'),
 				'allow_gravatar' => array(true),

@@ -172,6 +172,16 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
+	protected function _xor($string, $string2)
+    {
+        $result = '';
+        $size   = strlen($string);
+        for ($i=0; $i<$size; $i++) {
+            $result .= chr(ord($string[$i]) ^ ord($string2[$i]));
+        }
+        return $result;
+    }
+
 	/**
 	 * @param string $sLogin
 	 * @param string $sPassword
@@ -204,7 +214,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		try
 		{
-			$bUseAuthCramMd5IfSupported = false; // TODO
 			if ($bUseAuthCramMd5IfSupported && $this->IsSupported('AUTH=CRAM-MD5'))
 			{
 				$this->SendRequest('AUTHENTICATE', array('CRAM-MD5'));
@@ -222,10 +231,20 @@ class ImapClient extends \MailSo\Net\NetClient
 						}
 					}
 
-					if ($oContinuationResponse && false)
+					if ($oContinuationResponse && !empty($oContinuationResponse->ResponseList[1]))
 					{
-						// TODO
-						$this->Logger()->WriteDump($aResponse);
+						$sTiken = @\base64_decode($oContinuationResponse->ResponseList[1]);
+						$this->oLogger->Write('tiket: '.$sTiken);
+
+						$sToken = \base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sPassword, $sTiken));
+
+						if ($this->oLogger)
+						{
+							$this->oLogger->AddSecret($sToken);
+						}
+
+						$this->sendRaw($sToken, true, '*******');
+						$this->parseResponseWithValidation();
 					}
 					else
 					{
@@ -233,6 +252,12 @@ class ImapClient extends \MailSo\Net\NetClient
 							new \MailSo\Imap\Exceptions\LoginException(),
 							\MailSo\Log\Enumerations\Type::NOTICE, true);
 					}
+				}
+				else
+				{
+					$this->writeLogException(
+						new \MailSo\Imap\Exceptions\LoginException(),
+						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 			}
 			else if ($bUseAuthPlainIfSupported && $this->IsSupported('AUTH=PLAIN'))

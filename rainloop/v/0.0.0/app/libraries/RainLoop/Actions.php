@@ -1716,10 +1716,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
-		$aResult['Themes'] = $this->GetThemes($bMobile);
-		$aResult['Languages'] = $this->GetLanguages(false);
-		$aResult['LanguagesAdmin'] = $this->GetLanguages(true);
-
 		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
@@ -8960,7 +8956,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 
 		return \in_array($sTheme, $this->GetThemes($bMobile)) ?
-			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
+			$sTheme : $this->Config()->Get('themes', 'default', $bMobile ? 'Mobile' : 'Default');
 	}
 
 	/**
@@ -9039,17 +9035,21 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 *
 	 * @return array
 	 */
-	public function GetThemes($bMobile = false)
+	public function GetThemes($bMobile = false, $bIncludeMobile = true)
 	{
 		if ($bMobile)
 		{
 			return array('Mobile');
 		}
 
-		static $aCache = null;
-		if (\is_array($aCache))
+		static $aCache = array('full' => null, 'mobile' => null);
+		if ($bIncludeMobile && \is_array($aCache['full']))
 		{
-			return $aCache;
+			return $aCache['full'];
+		}
+		else if ($bIncludeMobile && \is_array($aCache['mobile']))
+		{
+			return $aCache['mobile'];
 		}
 
 		$bClear = false;
@@ -9065,20 +9065,17 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				{
 					if ('.' !== $sFile{0} && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
 					{
-						if ('Default' !== $sFile && 'Clear' !== $sFile)
+						if ('Default' === $sFile)
+						{
+							$bDefault = true;
+						}
+						else if ('Clear' === $sFile)
+						{
+							$bClear = true;
+						}
+						else if ($bIncludeMobile || 'Mobile' !== $sFile)
 						{
 							$sList[] = $sFile;
-						}
-						else
-						{
-							if ('Default' === $sFile)
-							{
-								$bDefault = true;
-							}
-							else if ('Clear' === $sFile)
-							{
-								$bClear = true;
-							}
 						}
 					}
 				}
@@ -9117,7 +9114,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			\array_push($sList, 'Clear');
 		}
 
-		$aCache = $sList;
+		$aCache[$bIncludeMobile ? 'full' : 'mobile'] = $sList;
 		return $sList;
 	}
 

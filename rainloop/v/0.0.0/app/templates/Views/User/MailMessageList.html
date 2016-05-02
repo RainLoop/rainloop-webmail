@@ -4,12 +4,12 @@
 		<div class="toolbar">
 			<div class="btn-toolbar">
 				<div class="btn-group" data-bind="visible: mobile && leftPanelDisabled()">
-					<a class="btn single" data-bind="click: showLeft">
+					<a class="btn btn-thin-2 single" data-bind="click: showLeft">
 						<i class="icon-right-middle"></i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: mobile && !leftPanelDisabled()" style="margin-left: -1px">
-					<a class="btn single" data-bind="click: hideLeft">
+					<a class="btn btn-thin-2 single" data-bind="click: hideLeft">
 						<i class="icon-left-middle"></i>
 					</a>
 				</div>
@@ -141,9 +141,12 @@
 			<div class="second-toolbar thm-message-list-top-toolbar">
 				<div class="form-inline">
 					<div class="input-append pull-right" data-bind="visible: allowSearch">
-						<input type="search" class="i18n span4 inputSearch" tabindex="-1"
-							placeholder="Search" autocorrect="off" autocapitalize="off"
-							data-i18n="[placeholder]SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+						<div class="close-input-wrp">
+							<a class="close" data-bind="click: cancelSearch, visible: '' !== messageListSearchDesc()">&times;</a>
+							<input type="search" class="i18n span4 inputSearch" tabindex="-1"
+								placeholder="Search" autocorrect="off" autocapitalize="off"
+								data-i18n="[placeholder]SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+						</div>
 						<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">
 							<span class="caret"></span>
 						</a>
@@ -162,7 +165,6 @@
 							<span class="i18n" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 						</div>
 						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
-							<a class="close-custom" data-bind="click: cancelSearch">&times;</a>
 							<span data-bind="text: messageListSearchDesc"></span>
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">

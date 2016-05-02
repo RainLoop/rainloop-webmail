@@ -32,8 +32,8 @@
 	LanguageStore.prototype.populate = function ()
 	{
 		var
-			aLanguages = Settings.settingsGet('Languages'),
-			aLanguagesAdmin = Settings.settingsGet('LanguagesAdmin')
+			aLanguages = Settings.appSettingsGet('languages'),
+			aLanguagesAdmin = Settings.appSettingsGet('languagesAdmin')
 		;
 
 		this.languages(Utils.isArray(aLanguages) ? aLanguages : []);

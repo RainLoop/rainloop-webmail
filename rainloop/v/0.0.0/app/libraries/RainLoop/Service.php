@@ -151,10 +151,16 @@ class Service
 			}
 		}
 
-		$oMobileDetect = new \Detection\MobileDetect();
-		$bMobileDevice = $oMobileDetect->isMobile() && !$oMobileDetect->isTablet();
+		$bMobile = false;
+		$bMobileDevice = false;
 
-		$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === \strtolower($aPaths[0]));
+		if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false))
+		{
+			$oMobileDetect = new \Detection\MobileDetect();
+			$bMobileDevice = $oMobileDetect->isMobile() && !$oMobileDetect->isTablet();
+
+			$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === \strtolower($aPaths[0]));
+		}
 
 		if ($bIndex && !$bMobile)
 		{
@@ -310,6 +316,9 @@ class Service
 			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
+			'themes' => $this->oActions->GetThemes($bMobile, false),
+			'languages' => $this->oActions->GetLanguages(false),
+			'languagesAdmin' => $this->oActions->GetLanguages(true),
 			'attachmentsActions' => $aAttachmentsActions,
 			'rsaPublicKey' => $sRsaPublicKey
 		), $bAdmin ? array(

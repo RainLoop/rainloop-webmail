@@ -204,6 +204,7 @@ class AbstractApp extends AbstractBoot
 
 		const
 			kn = require('Knoin/Knoin'),
+			mobile = Settings.appSettingsGet('mobile'),
 			inIframe = !!Settings.appSettingsGet('inIframe')
 		;
 
@@ -219,7 +220,7 @@ class AbstractApp extends AbstractBoot
 			window.close();
 		}
 
-		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin() : Links.rootUser());
+		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin(mobile) : Links.rootUser(mobile));
 
 		if (logout && window.location.href !== customLogoutLink)
 		{
