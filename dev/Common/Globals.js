@@ -199,6 +199,11 @@
 		Globals.bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, function (oType) {
 			return oType && 'application/pdf' === oType.type;
 		});
+
+		if (!Globals.bAllowPdfPreview)
+		{
+			Globals.bAllowPdfPreview = (typeof window.navigator.mimeTypes['application/pdf'] !== 'undefined');
+		}
 	}
 
 	Globals.aBootstrapDropdowns = [];
