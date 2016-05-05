@@ -18,6 +18,7 @@
 	 * @param {string} iIndex
 	 * @param {string} sGuID
 	 * @param {string} sID
+	 * @param {array} aIDs
 	 * @param {array} aUserIDs
 	 * @param {array} aEmails
 	 * @param {boolean} bIsPrivate
@@ -25,17 +26,19 @@
 	 * @param {string} sUserID
 	 * @constructor
 	 */
-	function OpenPgpKeyModel(iIndex, sGuID, sID, aUserIDs, aEmails, bIsPrivate, sArmor, sUserID)
+	function OpenPgpKeyModel(iIndex, sGuID, sID, aIDs, aUserIDs, aEmails, bIsPrivate, sArmor, sUserID)
 	{
 		AbstractModel.call(this, 'OpenPgpKeyModel');
 
 		this.index = iIndex;
 		this.id = sID;
+		this.ids = Utils.isNonEmptyArray(aIDs) ? aIDs : [sID];
 		this.guid = sGuID;
 		this.users = aUserIDs;
 		this.emails = aEmails;
 		this.armor = sArmor;
 		this.isPrivate = !!bIsPrivate;
+
 		this.selectUser(sUserID);
 
 		this.deleteAccess = ko.observable(false);
@@ -45,6 +48,7 @@
 
 	OpenPgpKeyModel.prototype.index = 0;
 	OpenPgpKeyModel.prototype.id = '';
+	OpenPgpKeyModel.prototype.ids = [];
 	OpenPgpKeyModel.prototype.guid = '';
 	OpenPgpKeyModel.prototype.user = '';
 	OpenPgpKeyModel.prototype.users = [];
@@ -80,11 +84,14 @@
 
 	OpenPgpKeyModel.prototype.select = function (sPattern, sProperty)
 	{
-		var index = this[sProperty].indexOf(sPattern);
-
-		if (index !== -1) {
-			this.user = this.users[index];
-			this.email = this.emails[index];
+		if (this[sProperty])
+		{
+			var index = this[sProperty].indexOf(sPattern);
+			if (index !== -1)
+			{
+				this.user = this.users[index];
+				this.email = this.emails[index];
+			}
 		}
 	};
 

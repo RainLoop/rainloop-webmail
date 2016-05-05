@@ -154,13 +154,15 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
-			'vendors/openpgp/openpgp-1.2.0.min.js'
+//			'vendors/openpgp/1.2.0/openpgp.min.js'
+			'vendors/openpgp/2.3.0/openpgp.min.js'
 		]
 	},
 	openpgpworker: {
 		name: 'openpgp.worker.min.js',
 		src: [
-			'vendors/openpgp/openpgp-1.2.0.worker.min.js'
+//			'vendors/openpgp/1.2.0/openpgp.worker.min.js'
+			'vendors/openpgp/2.3.0/openpgp.worker.min.js'
 		]
 	},
 	encrypt: {
@@ -701,7 +703,9 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 });
 
 // MAIN
-gulp.task('default', ['js:libs', 'js:boot', 'js:openpgp', 'js:openpgpworker', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
+gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
+
+gulp.task('default', ['js:libs', 'js:boot', 'js:pgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast-', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);

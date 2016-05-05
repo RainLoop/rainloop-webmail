@@ -137,7 +137,7 @@
 			{name: 'styles'},
 			{name: 'basicstyles', groups: ['basicstyles', 'cleanup', 'bidi']},
 			{name: 'colors'},
-			{name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align']},
+			Globals.bMobileDevice ? {} : {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align']},
 			{name: 'links'},
 			{name: 'insert'},
 			{name: 'document', groups: ['mode', 'document', 'doctools']},

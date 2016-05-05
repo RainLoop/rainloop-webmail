@@ -41,7 +41,7 @@
 
 			var
 				self = this,
-				sUserID = '',
+				oUserIds = {},
 				oOpenpgpKeyring = PgpStore.openpgpKeyring
 			;
 
@@ -51,10 +51,10 @@
 				return false;
 			}
 
-			sUserID = this.email();
+			oUserIds['email'] = this.email();
 			if ('' !== this.name())
 			{
-				sUserID = this.name() + ' <' + sUserID + '>';
+				oUserIds['name'] = this.name();
 			}
 
 			this.submitRequest(true);
@@ -66,7 +66,7 @@
 				try {
 
 					mPromise = PgpStore.openpgp.generateKeyPair({
-						'userId': sUserID,
+						'userId': oUserIds,
 						'numBits': Utils.pInt(self.keyBitLength()),
 						'passphrase': Utils.trim(self.password())
 					});

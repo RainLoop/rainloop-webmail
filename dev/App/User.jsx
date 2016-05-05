@@ -455,6 +455,7 @@ class AppUser extends AbstractApp
 							iIndex,
 							oItem.primaryKey.getFingerprint(),
 							oItem.primaryKey.getKeyId().toHex().toLowerCase(),
+							_.uniq(_.compact(_.map(oItem.getKeyIds(), (item) => item && item.toHex ? item.toHex() : null))),
 							aUsers,
 							aEmails,
 							oItem.isPrivate(),
@@ -1297,15 +1298,14 @@ class AppUser extends AbstractApp
 								{
 									try
 									{
-										PgpStore.openpgp.initWorker(Links.openPgpWorkerJs());
+//										PgpStore.openpgp.initWorker(Links.openPgpWorkerJs()); // 1.2.0
+										PgpStore.openpgp.initWorker({path: Links.openPgpWorkerJs()}); // 2.3.0
 									}
 									catch (e)
 									{
 										Utils.log(e);
 									}
 								}
-
-//								PgpStore.openpgp.config.useWebCrypto = false;
 
 								PgpStore.openpgpKeyring = new openpgp.Keyring();
 								PgpStore.capaOpenPGP(true);

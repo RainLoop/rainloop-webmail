@@ -42,24 +42,27 @@
 		return !!this.openpgp;
 	};
 
+	PgpUserStore.prototype.findKeyByHex = function (aKeys,sHash)
+	{
+		return _.find(aKeys, function (oItem) {
+			return sHash && oItem && (sHash === oItem.id || -1 < oItem.ids.indexOf(sHash));
+		});
+	};
+
 	PgpUserStore.prototype.findPublicKeyByHex = function (sHash)
 	{
-		return _.find(this.openpgpkeysPublic(), function (oItem) {
-			return sHash && oItem && sHash === oItem.id;
-		});
+		return this.findKeyByHex(this.openpgpkeysPublic(), sHash);
 	};
 
 	PgpUserStore.prototype.findPrivateKeyByHex = function (sHash)
 	{
-		return _.find(this.openpgpkeysPrivate(), function (oItem) {
-			return sHash && oItem && sHash === oItem.id;
-		});
+		return this.findKeyByHex(this.openpgpkeysPrivate(), sHash);
 	};
 
 	PgpUserStore.prototype.findPublicKeysByEmail = function (sEmail)
 	{
 		return _.compact(_.flatten(_.map(this.openpgpkeysPublic(), function (oItem) {
-			var oKey = oItem && -1 !== oItem.emails.indexOf(sEmail) ? oItem : null;
+			var oKey = oItem && -1 < oItem.emails.indexOf(sEmail) ? oItem : null;
 			return oKey ? oKey.getNativeKeys() : [null];
 		}), true));
 	};
@@ -99,7 +102,7 @@
 	PgpUserStore.prototype.findPublicKeyByEmailNotNative = function (sEmail)
 	{
 		return _.find(this.openpgpkeysPublic(), function (oItem) {
-			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+			return oItem && -1 < oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -110,7 +113,7 @@
 	PgpUserStore.prototype.findPrivateKeyByEmailNotNative = function (sEmail)
 	{
 		return _.find(this.openpgpkeysPrivate(), function (oItem) {
-			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+			return oItem && -1 < oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -121,7 +124,7 @@
 	PgpUserStore.prototype.findAllPublicKeysByEmailNotNative = function (sEmail)
 	{
 		return _.filter(this.openpgpkeysPublic(), function (oItem) {
-			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+			return oItem && -1 < oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -132,7 +135,7 @@
 	PgpUserStore.prototype.findAllPrivateKeysByEmailNotNative = function (sEmail)
 	{
 		return _.filter(this.openpgpkeysPrivate(), function (oItem) {
-			return oItem && -1 !== oItem.emails.indexOf(sEmail);
+			return oItem && -1 < oItem.emails.indexOf(sEmail);
 		}) || null;
 	};
 
@@ -147,7 +150,7 @@
 			oPrivateKeys = [],
 			oPrivateKey = null,
 			oKey = _.find(this.openpgpkeysPrivate(), function (oItem) {
-				return oItem && -1 !== oItem.emails.indexOf(sEmail);
+				return oItem && -1 < oItem.emails.indexOf(sEmail);
 			})
 		;
 
@@ -189,38 +192,34 @@
 			aPrivateKeys = this.findPrivateKeysByEncryptionKeyIds(oMessage.getEncryptionKeyIds(), aRecipients, true);
 			if (aPrivateKeys && 0 < aPrivateKeys.length)
 			{
-				kn.showScreenPopup(require('View/Popup/MessageOpenPgp'), [function (oDecriptedKey) {
+				kn.showScreenPopup(require('View/Popup/MessageOpenPgp'), [function (oDecryptedKey) {
 
-					if (oDecriptedKey)
+					if (oDecryptedKey)
 					{
-						var oPrivateKey = null, oDecryptedMessage = null;
-						try
-						{
-							oDecryptedMessage = oMessage.decrypt(oDecriptedKey);
-						}
-						catch (e)
-						{
-							oDecryptedMessage = null;
-						}
-
-						if (oDecryptedMessage)
-						{
-							oPrivateKey = self.findPrivateKeyByHex(oDecriptedKey.primaryKey.keyid.toHex());
-							if (oPrivateKey)
+						oMessage.decrypt(oDecryptedKey).then(function(oDecryptedMessage){
+							var oPrivateKey = null;
+							if (oDecryptedMessage)
 							{
-								self.verifyMessage(oDecryptedMessage, function (oValidKey, aSigningKeyIds) {
-									fCallback(oPrivateKey, oDecryptedMessage, oValidKey || null, aSigningKeyIds || null);
-								});
+								oPrivateKey = self.findPrivateKeyByHex(oDecryptedKey.primaryKey.keyid.toHex());
+								if (oPrivateKey)
+								{
+									self.verifyMessage(oDecryptedMessage, function (oValidKey, aSigningKeyIds) {
+										fCallback(oPrivateKey, oDecryptedMessage, oValidKey || null, aSigningKeyIds || null);
+									});
+								}
+								else
+								{
+									fCallback(oPrivateKey, oDecryptedMessage);
+								}
 							}
 							else
 							{
 								fCallback(oPrivateKey, oDecryptedMessage);
 							}
-						}
-						else
-						{
-							fCallback(oPrivateKey, oDecryptedMessage);
-						}
+
+						}, function() {
+							fCallback(null, null);
+						});
 					}
 					else
 					{
@@ -300,6 +299,129 @@
 	};
 
 	/**
+	 * @static
+	 */
+	PgpUserStore.domControlEncryptedClickHelper = function (self, mDom, sArmoredMessage, aRecipients)
+	{
+		return function () {
+
+			var oMessage = null, $this = $(this);
+			if ($this.hasClass('success'))
+			{
+				return false;
+			}
+
+			try
+			{
+				oMessage = self.openpgp.message.readArmored(sArmoredMessage);
+			}
+			catch (e)
+			{
+				Utils.log(e);
+			}
+
+			if (oMessage && oMessage.getText && oMessage.verify && oMessage.decrypt)
+			{
+				self.decryptMessage(oMessage, aRecipients, function (oValidPrivateKey, oDecryptedMessage, oValidPublicKey, aSigningKeyIds) {
+
+					if (oDecryptedMessage)
+					{
+						if (oValidPublicKey)
+						{
+							self.controlsHelper(mDom, $this, true, Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+								'USER': oValidPublicKey.user + ' (' + oValidPublicKey.id + ')'
+							}), oDecryptedMessage.getText());
+						}
+						else if (oValidPrivateKey)
+						{
+							var
+								aKeyIds = Utils.isNonEmptyArray(aSigningKeyIds) ? aSigningKeyIds : null,
+								sAdditional = aKeyIds ? _.compact(_.map(aKeyIds, function (oItem) {
+									return oItem && oItem.toHex ? oItem.toHex() : null;
+								})).join(', ') : ''
+							;
+
+							self.controlsHelper(mDom, $this, false,
+								Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') +
+									(sAdditional ? ' (' + sAdditional + ')' : ''),
+									oDecryptedMessage.getText());
+						}
+						else
+						{
+							self.controlsHelper(mDom, $this, false,
+								Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+						}
+					}
+					else
+					{
+						self.controlsHelper(mDom, $this, false,
+							Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+					}
+				});
+
+				return false;
+			}
+
+			self.controlsHelper(mDom, $this, false, Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+			return false;
+		};
+	};
+
+	/**
+	 * @static
+	 */
+	PgpUserStore.domControlSignedClickHelper = function (self, mDom, sArmoredMessage)
+	{
+		return function () {
+
+			var oMessage = null, $this = $(this);
+			if ($this.hasClass('success') || $this.hasClass('error'))
+			{
+				return false;
+			}
+
+			try
+			{
+				oMessage = self.openpgp.cleartext.readArmored(sArmoredMessage);
+			}
+			catch (e)
+			{
+				Utils.log(e);
+			}
+
+			if (oMessage && oMessage.getText && oMessage.verify)
+			{
+				self.verifyMessage(oMessage, function (oValidKey, aSigningKeyIds) {
+					if (oValidKey)
+					{
+						self.controlsHelper(mDom, $this, true, Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+							'USER': oValidKey.user + ' (' + oValidKey.id + ')'
+						}), oMessage.getText());
+					}
+					else
+					{
+						var
+							aKeyIds = Utils.isNonEmptyArray(aSigningKeyIds) ? aSigningKeyIds : null,
+							sAdditional = aKeyIds ? _.compact(_.map(aKeyIds, function (oItem) {
+								return oItem && oItem.toHex ? oItem.toHex() : null;
+							})).join(', ') : ''
+						;
+
+						self.controlsHelper(mDom, $this, false,
+							Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') +
+								(sAdditional ? ' (' + sAdditional + ')' : ''));
+					}
+				});
+
+				return false;
+			}
+
+			self.controlsHelper(mDom, $this, false, Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+			return false;
+		};
+	};
+
+	/**
 	 * @param {*} mDom
 	 * @param {MessageModel} oRainLoopMessage
 	 */
@@ -310,7 +432,6 @@
 			mDom.addClass('inited');
 
 			var
-				self = this,
 				bEncrypted = mDom.hasClass('encrypted'),
 				bSigned = mDom.hasClass('signed'),
 				oVerControl = null,
@@ -326,123 +447,16 @@
 				if (bEncrypted)
 				{
 					oVerControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', Translator.i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'));
-
-					oVerControl.on('click', function () {
-						if ($(this).hasClass('success'))
-						{
-							return false;
-						}
-
-						var oMessage = null;
-						try
-						{
-							oMessage = self.openpgp.message.readArmored(sData);
-						}
-						catch (e)
-						{
-							Utils.log(e);
-						}
-
-						if (oMessage && oMessage.getText && oMessage.verify && oMessage.decrypt)
-						{
-							self.decryptMessage(oMessage, aRecipients, function (oValidPrivateKey, oDecriptedMessage, oValidPublicKey, aSigningKeyIds) {
-
-								if (oDecriptedMessage)
-								{
-									if (oValidPublicKey)
-									{
-										self.controlsHelper(mDom, oVerControl, true, Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-											'USER': oValidPublicKey.user + ' (' + oValidPublicKey.id + ')'
-										}), oDecriptedMessage.getText());
-									}
-									else if (oValidPrivateKey)
-									{
-										var
-											aKeyIds = Utils.isNonEmptyArray(aSigningKeyIds) ? aSigningKeyIds : null,
-											sAdditional = aKeyIds ? _.compact(_.map(aKeyIds, function (oItem) {
-												return oItem && oItem.toHex ? oItem.toHex() : null;
-											})).join(', ') : ''
-										;
-
-										self.controlsHelper(mDom, oVerControl, false,
-											Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') +
-												(sAdditional ? ' (' + sAdditional + ')' : ''),
-												oDecriptedMessage.getText());
-									}
-									else
-									{
-										self.controlsHelper(mDom, oVerControl, false,
-											Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-									}
-								}
-								else
-								{
-									self.controlsHelper(mDom, oVerControl, false,
-										Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-								}
-							});
-
-							return false;
-						}
-
-						self.controlsHelper(mDom, oVerControl, false, Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-						return false;
-
-					});
+						.attr('title', Translator.i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'))
+						.on('click', PgpUserStore.domControlEncryptedClickHelper(this, mDom, sData, aRecipients))
+					;
 				}
 				else if (bSigned)
 				{
 					oVerControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', Translator.i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'));
-
-					oVerControl.on('click', function () {
-
-						if ($(this).hasClass('success') || $(this).hasClass('error'))
-						{
-							return false;
-						}
-
-						var oMessage = null;
-						try
-						{
-							oMessage = self.openpgp.cleartext.readArmored(sData);
-						}
-						catch (e)
-						{
-							Utils.log(e);
-						}
-
-						if (oMessage && oMessage.getText && oMessage.verify)
-						{
-							self.verifyMessage(oMessage, function (oValidKey, aSigningKeyIds) {
-								if (oValidKey)
-								{
-									self.controlsHelper(mDom, oVerControl, true, Translator.i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-										'USER': oValidKey.user + ' (' + oValidKey.id + ')'
-									}), oMessage.getText());
-								}
-								else
-								{
-									var
-										aKeyIds = Utils.isNonEmptyArray(aSigningKeyIds) ? aSigningKeyIds : null,
-										sAdditional = aKeyIds ? _.compact(_.map(aKeyIds, function (oItem) {
-											return oItem && oItem.toHex ? oItem.toHex() : null;
-										})).join(', ') : ''
-									;
-
-									self.controlsHelper(mDom, oVerControl, false,
-										Translator.i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') +
-											(sAdditional ? ' (' + sAdditional + ')' : ''));
-								}
-							});
-
-							return false;
-						}
-
-						self.controlsHelper(mDom, oVerControl, false, Translator.i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-						return false;
-					});
+						.attr('title', Translator.i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'))
+						.on('click', PgpUserStore.domControlSignedClickHelper(this, mDom, sData))
+					;
 				}
 
 				if (oVerControl)
