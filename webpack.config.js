@@ -6,6 +6,7 @@ var
 
 module.exports = {
 	entry: {
+		'boot': __dirname + '/dev/boot.jsx',
 		'app': __dirname + '/dev/app.jsx',
 		'admin': __dirname + '/dev/admin.jsx'
 	},
@@ -22,7 +23,7 @@ module.exports = {
 		new webpack.optimize.OccurenceOrderPlugin()
 	],
 	resolve: {
-		root: path.resolve(__dirname, 'dev'),
+		root: [path.resolve(__dirname, 'dev'), path.resolve(__dirname, 'vendors')],
 		extensions: ['', '.js', '.jsx'],
 		alias: {
 			'Opentip': __dirname  + '/dev/External/Opentip.js',

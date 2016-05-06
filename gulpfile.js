@@ -141,16 +141,6 @@ cfg.paths.css = {
 };
 
 cfg.paths.js = {
-	boot: {
-		name: 'boot.js',
-		src: [
-			'vendors/json2.min.js',
-			'vendors/labjs/LAB.min.js',
-			'vendors/modernizr.js',
-			'vendors/progress.js/minified/progress.min.js',
-			'vendors/rl/rl-1.5.min.js'
-		]
-	},
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
@@ -293,13 +283,6 @@ gulp.task('css:main:min', ['css:main'], function() {
 });
 
 // JS
-gulp.task('js:boot', function() {
-	return gulp.src(cfg.paths.js.boot.src)
-		.pipe(concat(cfg.paths.js.boot.name))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticMinJS));
-});
-
 gulp.task('js:encrypt', function() {
 	return gulp.src(cfg.paths.js.encrypt.src)
 		.pipe(concat(cfg.paths.js.encrypt.name))
@@ -705,7 +688,7 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 // MAIN
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
 
-gulp.task('default', ['js:libs', 'js:boot', 'js:pgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
+gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
 gulp.task('fast-', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);

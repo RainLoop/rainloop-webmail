@@ -1,0 +1,11 @@
+{
+  "minify": false,
+  "options": [
+    "setClasses"
+  ],
+  "feature-detects": [
+    "test/css/animations",
+    "test/css/rgba",
+    "test/css/transitions"
+  ]
+}

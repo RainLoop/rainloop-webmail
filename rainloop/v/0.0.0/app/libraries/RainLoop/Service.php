@@ -194,9 +194,14 @@ class Service
 			}
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile, $bMobileDevice);
+			if (!empty($aTemplateParameters['{{BaseApplicationConfigurationJson}}']))
+			{
+				$this->oActions->Logger()->Write($aTemplateParameters['{{BaseApplicationConfigurationJson}}'],
+					\MailSo\Log\Enumerations\Type::INFO, 'APP');
+			}
 
 			$sCacheFileName = '';
-			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true))
+			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
 			{
 				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
@@ -328,6 +333,18 @@ class Service
 	}
 
 	/**
+	 * @param string $sPath
+	 *
+	 * @return string
+	 */
+	private function staticPath($sPath)
+	{
+		$sStaticSuffix = $this->oActions->IsOpen() ? '?vo' : '?vs';
+
+		return \RainLoop\Utils::WebStaticPath().$sPath.$sStaticSuffix;
+	}
+
+	/**
 	 * @param bool $bAdmin = false
 	 * @param bool $bMobile = false
 	 * @param bool $bMobileDevice = false
@@ -346,21 +363,18 @@ class Service
 
 		$sFaviconUrl = (string) $this->oActions->Config()->Get('webmail', 'favicon_url', '');
 
-		$sStaticPrefix = \RainLoop\Utils::WebStaticPath();
-
 		$aData = array(
 			'Language' => $sLanguage,
 			'Theme' => $sTheme,
-			'FaviconPngLink' => $sFaviconUrl ? $sFaviconUrl : $sStaticPrefix.'favicon.png',
-			'AppleTouchLink' => $sFaviconUrl ? '' : $sStaticPrefix.'apple-touch-icon.png',
-			'AppCssLink' => $sStaticPrefix.'css/app'.($bAppCssDebug ? '' : '.min').'.css',
-			'BootJsLink' => $sStaticPrefix.'js/min/boot.js',
-			'ComponentsJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'components.js',
-			'LibJsLink' => $sStaticPrefix.'js/min/libs.js',
-			'EditorJsLink' => $sStaticPrefix.'ckeditor/ckeditor.js',
-			'OpenPgpJsLink' => $sStaticPrefix.'js/min/openpgp.min.js',
-			'AppJsCommonLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').'common.js',
-			'AppJsLink' => $sStaticPrefix.'js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js'
+			'FaviconPngLink' => $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png'),
+			'AppleTouchLink' => $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png'),
+			'AppCssLink' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
+			'BootJsLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot.js'),
+			'LibJsLink' => $this->staticPath('js/min/libs.js'),
+			'EditorJsLink' => $this->staticPath('ckeditor/ckeditor.js'),
+			'OpenPgpJsLink' => $this->staticPath('js/min/openpgp.min.js'),
+			'AppJsCommonLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'common.js'),
+			'AppJsLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js')
 		);
 
 		$aTemplateParameters = array(
@@ -370,7 +384,6 @@ class Service
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
 			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
 			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
-			'{{BaseAppComponentsScriptLink}}' => $aData['ComponentsJsLink'],
 			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
 			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
@@ -388,7 +401,8 @@ class Service
 				$bAdmin ? '1' : '0',
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				\RainLoop\Utils::WebVersionPath(), APP_VERSION
+				\RainLoop\Utils::WebVersionPath(),
+				APP_VERSION,
 			)).
 			\implode('~', $aTemplateParameters)
 		);
