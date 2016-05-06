@@ -172,7 +172,7 @@ cfg.paths.js = {
 		name: 'libs.js',
 		src: [
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-1.11.3.min.js',
+			'vendors/jquery/jquery-1.12.3.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
 			'vendors/jquery-finger/jquery.finger.min.js',
@@ -190,7 +190,7 @@ cfg.paths.js = {
 			'vendors/routes/signals.min.js',
 			'vendors/routes/hasher.min.js',
 			'vendors/routes/crossroads.min.js',
-			'vendors/knockout/knockout-3.3.0.js',
+			'vendors/knockout/knockout-3.4.0.js',
 			'vendors/knockout-projections/knockout-projections-1.0.0.min.js',
 			'vendors/knockout-sortable/knockout-sortable.min.js',
 			'vendors/ssm/ssm.min.js',
