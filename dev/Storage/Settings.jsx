@@ -11,7 +11,7 @@ class SettingsStorage
 		this.settings = window.rainloopAppData || {};
 		this.settings = Utils.isNormal(this.settings) ? this.settings : {};
 
-		this.appSettings = Utils.getConfigurationFromScriptTag('application');
+		this.appSettings = this.settings.System || null;
 		this.appSettings = Utils.isNormal(this.appSettings) ? this.appSettings : {};
 	}
 

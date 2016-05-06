@@ -1256,7 +1256,9 @@ class ServiceActions
 			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 		}
 
-		$sResult = $this->compileAppData($this->oActions->AppData($bAdmin, 'mobile' === $sAdd, $sAuthAccountHash), false);
+		$sResult = $this->compileAppData($this->oActions->AppData($bAdmin,
+			0 === \strpos($sAdd, 'mobile'), '1' === \substr($sAdd, -1),
+			$sAuthAccountHash), false);
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
 

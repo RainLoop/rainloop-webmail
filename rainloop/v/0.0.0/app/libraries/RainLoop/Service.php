@@ -194,11 +194,6 @@ class Service
 			}
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile, $bMobileDevice);
-			if (!empty($aTemplateParameters['{{BaseApplicationConfigurationJson}}']))
-			{
-				$this->oActions->Logger()->Write($aTemplateParameters['{{BaseApplicationConfigurationJson}}'],
-					\MailSo\Log\Enumerations\Type::INFO, 'APP');
-			}
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
@@ -258,90 +253,15 @@ class Service
 	}
 
 	/**
-	 * @param bool $bAdmin = false
-	 * @param bool $bMobile = false
-	 * @param bool $bMobileDevice = false
-	 *
-	 * @return array
-	 */
-	private function indexApplicationConfiguration($bAdmin = false, $bMobile = false, $bMobileDevice = false)
-	{
-		$oConfig = $this->oActions->Config();
-
-		$sRsaPublicKey = '';
-		if ($oConfig->Get('security', 'use_rsa_encryption', false) &&
-			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
-		{
-			$sRsaPublicKey = @\file_get_contents(APP_PRIVATE_DATA.'rsa/public') || '';
-			if (false === \strpos($sRsaPublicKey, 'PUBLIC KEY'))
-			{
-				$sRsaPublicKey = '';
-			}
-		}
-
-		$aAttachmentsActions = array();
-		if ($this->oActions->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
-		{
-			if (!!\class_exists('ZipArchive'))
-			{
-				$aAttachmentsActions[] = 'zip';
-			}
-
-			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
-			{
-				$aAttachmentsActions[] = 'owncloud';
-			}
-
-			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
-			{
-				$aAttachmentsActions[] = 'dropbox';
-			}
-		}
-
-		return \array_merge(array(
-			'version' => APP_VERSION,
-			'mobile' => $bMobile,
-			'mobileDevice' => $bMobileDevice,
-			'webPath' => \RainLoop\Utils::WebPath(),
-			'webVersionPath' => \RainLoop\Utils::WebVersionPath(),
-			'token' => $oConfig->Get('security', 'csrf_protection', false) ? \RainLoop\Utils::GetCsrfToken() : '',
-			'inIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
-			'allowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
-			'allowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
-			'allowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'customLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
-			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
-			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
-			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
-			'jsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
-			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
-			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
-			'allowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
-			'materialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
-			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
-			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
-			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
-			'themes' => $this->oActions->GetThemes($bMobile, false),
-			'languages' => $this->oActions->GetLanguages(false),
-			'languagesAdmin' => $this->oActions->GetLanguages(true),
-			'attachmentsActions' => $aAttachmentsActions,
-			'rsaPublicKey' => $sRsaPublicKey
-		), $bAdmin ? array(
-			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
-			'allowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
-		) : array());
-	}
-
-	/**
 	 * @param string $sPath
 	 *
 	 * @return string
 	 */
 	private function staticPath($sPath)
 	{
-		$sStaticSuffix = $this->oActions->IsOpen() ? '?vo' : '?vs';
-
-		return \RainLoop\Utils::WebStaticPath().$sPath.$sStaticSuffix;
+		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
+		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').
+			($this->oActions->IsOpen() ? 'v=community' : 'v=standard');
 	}
 
 	/**
@@ -377,8 +297,12 @@ class Service
 			'AppJsLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js')
 		);
 
+		$aAdd = array();
+		$aAdd[] = $bMobile ? 'mobile' : 'no-mobile';
+		$aAdd[] = $bMobileDevice ? '1' : '0';
+
 		$aTemplateParameters = array(
-			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData' : './?/AppData').($bMobile ? '@mobile/' : '/'),
+			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData' : './?/AppData').(0 < \count($aAdd) ? '@'.\implode('-', $aAdd) : '').'/',
 			'{{BaseAppFaviconPngLinkTag}}' => $aData['FaviconPngLink'] ? '<link rel="shortcut icon" href="'.$aData['FaviconPngLink'].'" type="image/png" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $aData['AppleTouchLink'] ? '<link rel="apple-touch-icon" href="'.$aData['AppleTouchLink'].'" type="image/png" />' : '',
 			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
@@ -389,7 +313,6 @@ class Service
 			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
 			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
 			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseApplicationConfigurationJson}}' => @\json_encode($this->indexApplicationConfiguration($bAdmin, $bMobile, $bMobileDevice)),
 			'{{BaseVersion}}' => APP_VERSION,
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseDir}}' => 'ltr'
