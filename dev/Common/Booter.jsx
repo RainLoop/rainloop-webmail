@@ -26,6 +26,10 @@ window.__includeScr = (src) => {
 	window.document.write(unescape('%3Csc' + 'ript data-cfasync="false" type="text/jav' + 'ascr' + 'ipt" sr' + 'c="' + src + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 };
 
+window.__includeAppScr = (src) => {
+	window.__includeScr(src + (window.__rlah ? window.__rlah() || '0' : '0') + '/' + window.Math.random().toString().substr(2) + '/');
+};
+
 window.__includeStyle = (styles) => {
 	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E'));
 };

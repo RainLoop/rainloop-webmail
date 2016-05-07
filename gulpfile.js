@@ -144,14 +144,12 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
-//			'vendors/openpgp/1.2.0/openpgp.min.js'
 			'vendors/openpgp/2.3.0/openpgp.min.js'
 		]
 	},
 	openpgpworker: {
 		name: 'openpgp.worker.min.js',
 		src: [
-//			'vendors/openpgp/1.2.0/openpgp.worker.min.js'
 			'vendors/openpgp/2.3.0/openpgp.worker.min.js'
 		]
 	},
@@ -228,8 +226,7 @@ gulp.task('less:main', function() {
 		.pipe(rename(cfg.paths.less.main.name))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
-		.on('error', gutil.log)
-	;
+		.on('error', gutil.log);
 });
 
 gulp.task('css:main-begin', ['less:main'], function() {
@@ -249,8 +246,7 @@ gulp.task('css:main-begin', ['less:main'], function() {
 //		.pipe(csslint.reporter())
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
-		.pipe(livereload())
-	;
+		.pipe(livereload());
 });
 
 gulp.task('package:community-on', function() {
@@ -272,11 +268,9 @@ gulp.task('css:clear-less', ['css:main-begin'], function() {
 gulp.task('css:main', ['css:clear-less']);
 
 gulp.task('css:main:min', ['css:main'], function() {
-	var minifyCss = require('gulp-minify-css');
+	var cleanCSS  = require('gulp-clean-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
-		.pipe(minifyCss({
-			'keepSpecialComments': 0
-		}))
+		.pipe(cleanCSS())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
@@ -438,23 +432,12 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:chunks', 'js:validate'], function
 // lint
 gulp.task('js:lint', function() {
 
-	var
-		closureCompiler = require('gulp-closure-compiler'),
-		jshint = require('gulp-jshint')
-	;
+	var jshint = require('gulp-jshint');
 
 	return gulp.src(cfg.paths.globjsonly)
 		.pipe(jshint('.jshintrc'))
 		.pipe(jshint.reporter('jshint-summary', cfg.summary))
 		.pipe(jshint.reporter('fail'))
-		// google compiler
-		.pipe(gulpif(cfg.googleCompile, closureCompiler({
-			compilerPath: './build/compiler.jar',
-			fileName: 'gc.js',
-			compilerFlags: {
-				output_wrapper: '(function(){%output%}());'
-			}
-		})))
 	;
 });
 
@@ -465,8 +448,7 @@ gulp.task('js:eslint', function() {
 	return gulp.src(cfg.paths.globjsxonly)
 		.pipe(eslint())
 		.pipe(eslint.format())
-		.pipe(eslint.failAfterError())
-	;
+		.pipe(eslint.failAfterError());
 });
 
 gulp.task('js:validate', ['js:lint', 'js:eslint']);

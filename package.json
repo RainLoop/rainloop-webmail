@@ -15,6 +15,7 @@
     "type": "git",
     "url": "git://github.com/RainLoop/rainloop-webmail.git"
   },
+  "license": "SEE LICENSE IN LICENSE",
   "licenses": [
     {
       "type": "AGPL 3.0",
@@ -49,15 +50,15 @@
     "babel-eslint": "^4.1.5",
     "babel-loader": "^6.1.0",
     "babel-plugin-transform-runtime": "^6.1.18",
-    "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-es2015": "*",
+    "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-stage-0": "^6.1.18",
     "babel-runtime": "^6.1.18",
     "eslint": "^1.9.0",
     "gulp": "~3.9.0",
     "gulp-autoprefixer": "*",
     "gulp-beautify": "*",
-    "gulp-closure-compiler": "*",
+    "gulp-clean-css": "^2.0.7",
     "gulp-concat-util": "*",
     "gulp-csscomb": "*",
     "gulp-csslint": "*",
@@ -68,7 +69,6 @@
     "gulp-jshint": "*",
     "gulp-less": "1.3.6",
     "gulp-livereload": "~3.8.0",
-    "gulp-minify-css": "*",
     "gulp-notify": "~2.2.0",
     "gulp-plumber": "*",
     "gulp-rename": "*",
