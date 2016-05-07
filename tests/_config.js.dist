@@ -1,0 +1,6 @@
+
+module.exports = {
+	url: 'https://mail.rainloop.net/',
+	testLogin: 'demo@rainloop.test',
+	testPassword: '12345'
+};
