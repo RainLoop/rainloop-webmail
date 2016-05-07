@@ -17,6 +17,9 @@ hu_HU:
     BUTTON_SETTINGS: "Beállítások"
     BUTTON_HELP: "Súgó"
     BUTTON_LOGOUT: "Kilépés"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobil verzió"
+    BUTTON_DESKTOP_VERSION: "Asztali verzió"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Keresés"
     TITLE_ADV: "Részletes keresés"

@@ -867,7 +867,7 @@ class ServiceActions
 			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
-			'{{ErrorDesc}}' => $sDesc.':'
+			'{{ErrorDesc}}' => $sDesc
 		));
 	}
 

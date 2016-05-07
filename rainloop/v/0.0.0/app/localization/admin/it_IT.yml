@@ -311,5 +311,5 @@ it_IT:
       Abilita i cookie e ricarica la pagina.
     BAD_BROWSER_TITLE: "Il tuo browser è troppo vecchio"
     BAD_BROWSER_DESC: |
-      Per usare tutte le funzionalità di questa applicazione,
-      scarica uno dei seguenti browser
+      Per usare tutte le funzionalità dell'applicazione,
+      scarica ed installa uno dei seguenti browser:
