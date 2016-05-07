@@ -5,7 +5,10 @@
   ],
   "feature-detects": [
     "test/css/animations",
+    "test/css/backgroundsize",
+    "test/css/boxshadow",
     "test/css/rgba",
+    "test/css/textshadow",
     "test/css/transitions"
   ]
 }

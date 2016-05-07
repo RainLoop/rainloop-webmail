@@ -1,6 +1,6 @@
 /*!
  * modernizr v3.3.1
- * Build http://modernizr.com/download?-cssanimations-csstransitions-rgba-setclasses-dontmin
+ * Build http://modernizr.com/download?-backgroundsize-boxshadow-cssanimations-csstransitions-rgba-textshadow-setclasses-dontmin
  *
  * Copyright (c)
  *  Faruk Ates
@@ -24,10 +24,10 @@
 
 ;(function(window, document, undefined){
   var classes = [];
-  
+
 
   var tests = [];
-  
+
 
   /**
    *
@@ -76,7 +76,7 @@
     }
   };
 
-  
+
 
   // Fake some of Object.create so we can force non test results to be non "own" properties.
   var Modernizr = function() {};
@@ -86,7 +86,7 @@
   // Overwrite name so constructor name is nicer :D
   Modernizr = new Modernizr();
 
-  
+
 
   /**
    * is returns a boolean if the typeof an obj is exactly type.
@@ -182,7 +182,7 @@
    */
 
   var docElement = document.documentElement;
-  
+
 
   /**
    * A convenience helper to check if the document we are running in is an SVG document
@@ -192,7 +192,7 @@
    */
 
   var isSVG = docElement.nodeName.toLowerCase() === 'svg';
-  
+
 
   /**
    * setClasses takes an array of class names and adds them to the root element
@@ -274,51 +274,6 @@
   });
 
 
-  /**
-   * If the browsers follow the spec, then they would expose vendor-specific style as:
-   *   elem.style.WebkitBorderRadius
-   * instead of something like the following, which would be technically incorrect:
-   *   elem.style.webkitBorderRadius
-
-   * Webkit ghosts their properties in lowercase but Opera & Moz do not.
-   * Microsoft uses a lowercase `ms` instead of the correct `Ms` in IE8+
-   *   erik.eae.net/archives/2008/03/10/21.48.10/
-
-   * More here: github.com/Modernizr/Modernizr/issues/issue/21
-   *
-   * @access private
-   * @returns {string} The string representing the vendor-specific style properties
-   */
-
-  var omPrefixes = 'Moz O ms Webkit';
-  
-
-  var cssomPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.split(' ') : []);
-  ModernizrProto._cssomPrefixes = cssomPrefixes;
-  
-
-  /**
-   * List of JavaScript DOM values used for tests
-   *
-   * @memberof Modernizr
-   * @name Modernizr._domPrefixes
-   * @optionName Modernizr._domPrefixes
-   * @optionProp domPrefixes
-   * @access public
-   * @example
-   *
-   * Modernizr._domPrefixes is exactly the same as [_prefixes](#modernizr-_prefixes), but rather
-   * than kebab-case properties, all properties are their Capitalized variant
-   *
-   * ```js
-   * Modernizr._domPrefixes === [ "Moz", "O", "ms", "Webkit" ];
-   * ```
-   */
-
-  var domPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.toLowerCase().split(' ') : []);
-  ModernizrProto._domPrefixes = domPrefixes;
-  
-
 
   /**
    * contains checks to see if a string contains another string
@@ -352,6 +307,51 @@
     }).replace(/^-/, '');
   }
   ;
+
+  /**
+   * If the browsers follow the spec, then they would expose vendor-specific style as:
+   *   elem.style.WebkitBorderRadius
+   * instead of something like the following, which would be technically incorrect:
+   *   elem.style.webkitBorderRadius
+
+   * Webkit ghosts their properties in lowercase but Opera & Moz do not.
+   * Microsoft uses a lowercase `ms` instead of the correct `Ms` in IE8+
+   *   erik.eae.net/archives/2008/03/10/21.48.10/
+
+   * More here: github.com/Modernizr/Modernizr/issues/issue/21
+   *
+   * @access private
+   * @returns {string} The string representing the vendor-specific style properties
+   */
+
+  var omPrefixes = 'Moz O ms Webkit';
+
+
+  var cssomPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.split(' ') : []);
+  ModernizrProto._cssomPrefixes = cssomPrefixes;
+
+
+  /**
+   * List of JavaScript DOM values used for tests
+   *
+   * @memberof Modernizr
+   * @name Modernizr._domPrefixes
+   * @optionName Modernizr._domPrefixes
+   * @optionProp domPrefixes
+   * @access public
+   * @example
+   *
+   * Modernizr._domPrefixes is exactly the same as [_prefixes](#modernizr-_prefixes), but rather
+   * than kebab-case properties, all properties are their Capitalized variant
+   *
+   * ```js
+   * Modernizr._domPrefixes === [ "Moz", "O", "ms", "Webkit" ];
+   * ```
+   */
+
+  var domPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.toLowerCase().split(' ') : []);
+  ModernizrProto._domPrefixes = domPrefixes;
+
 
   /**
    * fnBind is a super small [bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) polyfill.
@@ -424,7 +424,7 @@
     delete modElem.elem;
   });
 
-  
+
 
   var mStyle = {
     style: modElem.elem.style
@@ -436,7 +436,7 @@
     delete mStyle.style;
   });
 
-  
+
 
   /**
    * domToCSS takes a camelCase string and converts it to kebab-case
@@ -689,6 +689,57 @@
   ;
 
   /**
+   * testProp() investigates whether a given style property is recognized
+   * Property names can be provided in either camelCase or kebab-case.
+   *
+   * @memberof Modernizr
+   * @name Modernizr.testProp
+   * @access public
+   * @optionName Modernizr.testProp()
+   * @optionProp testProp
+   * @function testProp
+   * @param {string} prop - Name of the CSS property to check
+   * @param {string} [value] - Name of the CSS value to check
+   * @param {boolean} [useValue] - Whether or not to check the value if @supports isn't supported
+   * @returns {boolean}
+   * @example
+   *
+   * Just like [testAllProps](#modernizr-testallprops), only it does not check any vendor prefixed
+   * version of the string.
+   *
+   * Note that the property name must be provided in camelCase (e.g. boxSizing not box-sizing)
+   *
+   * ```js
+   * Modernizr.testProp('pointerEvents')  // true
+   * ```
+   *
+   * You can also provide a value as an optional second argument to check if a
+   * specific value is supported
+   *
+   * ```js
+   * Modernizr.testProp('pointerEvents', 'none') // true
+   * Modernizr.testProp('pointerEvents', 'penguin') // false
+   * ```
+   */
+
+  var testProp = ModernizrProto.testProp = function(prop, value, useValue) {
+    return testProps([prop], undefined, value, useValue);
+  };
+
+/*!
+{
+  "name": "CSS textshadow",
+  "property": "textshadow",
+  "caniuse": "css-textshadow",
+  "tags": ["css"],
+  "knownBugs": ["FF3.0 will false positive on this test"]
+}
+!*/
+
+  Modernizr.addTest('textshadow', testProp('textShadow', '1px 1px'));
+
+
+  /**
    * testPropsAll tests a list of DOM properties we want to check against.
    * We specify literally ALL possible (known and/or likely) properties on
    * the element including the non-vendor prefixed one, for forward-
@@ -725,7 +776,7 @@
   // Modernizr.testAllProps('boxSizing')
   ModernizrProto.testAllProps = testPropsAll;
 
-  
+
 
   /**
    * testAllProps determines whether a given CSS property is supported in the browser
@@ -768,7 +819,7 @@
     return testPropsAll(prop, undefined, undefined, value, skipValueTest);
   }
   ModernizrProto.testAllProps = testAllProps;
-  
+
 /*!
 {
   "name": "CSS Animations",
@@ -791,6 +842,21 @@ Detects whether or not elements can be animated using CSS
 
 /*!
 {
+  "name": "Background Size",
+  "property": "backgroundsize",
+  "tags": ["css"],
+  "knownBugs": ["This will false positive in Opera Mini - https://github.com/Modernizr/Modernizr/issues/396"],
+  "notes": [{
+    "name": "Related Issue",
+    "href": "https://github.com/Modernizr/Modernizr/issues/396"
+  }]
+}
+!*/
+
+  Modernizr.addTest('backgroundsize', testAllProps('backgroundSize', '100%', true));
+
+/*!
+{
   "name": "CSS Transitions",
   "property": "csstransitions",
   "caniuse": "css-transitions",
@@ -799,6 +865,21 @@ Detects whether or not elements can be animated using CSS
 !*/
 
   Modernizr.addTest('csstransitions', testAllProps('transition', 'all', true));
+
+/*!
+{
+  "name": "Box Shadow",
+  "property": "boxshadow",
+  "caniuse": "css-boxshadow",
+  "tags": ["css"],
+  "knownBugs": [
+    "WebOS false positives on this test.",
+    "The Kindle Silk browser false positives"
+  ]
+}
+!*/
+
+  Modernizr.addTest('boxshadow', testAllProps('boxShadow', '1px 1px', true));
 
 
   // Run each test
