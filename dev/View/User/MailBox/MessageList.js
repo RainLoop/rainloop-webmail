@@ -56,6 +56,7 @@
 		this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
 		this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
 		this.allowDangerousActions = !!Settings.capa(Enums.Capa.DangerousActions);
+		this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
 
 		this.popupVisibility = Globals.popupVisibility;
 
