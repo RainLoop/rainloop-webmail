@@ -590,7 +590,6 @@ is_IS:
     LABEL_MOVE: "Move"
     LABEL_READ: "Read selected messages"
     LABEL_UNREAD: "Unread selected messages"
-    LABEL_IMPORTANT: "Important, star/flag selected messages"
     LABEL_SEARCH: "Search"
     LABEL_CANCEL_SEARCH: "Cancel search"
     LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"

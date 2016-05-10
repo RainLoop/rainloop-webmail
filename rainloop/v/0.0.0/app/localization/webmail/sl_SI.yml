@@ -17,6 +17,9 @@ sl_SI:
     BUTTON_SETTINGS: "Nastavitve"
     BUTTON_HELP: "Pomoč"
     BUTTON_LOGOUT: "Odjavi"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobilna različica"
+    BUTTON_DESKTOP_VERSION: "Namizna različica"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Iskanje"
     TITLE_ADV: "Napredno iskanje"
@@ -50,6 +53,7 @@ sl_SI:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Sestavi"
     BUTTON_CONTACTS: "Stiki"
+    BUTTON_NEW_MESSAGE: "Novo sporočilo"
     INBOX_NAME: "Prejeto"
     SENT_NAME: "Poslano"
     DRAFTS_NAME: "Osnutki"
@@ -619,6 +623,7 @@ sl_SI:
     NO_PRIVATE_KEY_FOUND: "Ni najdenega zasebnega ključa"
     NO_PRIVATE_KEY_FOUND_FOR: "Ni najdenega zasebnega ključa za naslov \"%EMAIL%\""
     ADD_A_PUBLICK_KEY: "Dodaj javni ključ"
+    SELECT_A_PRIVATE_KEY: "Izberite zasebni ključ"
     UNVERIFIRED_SIGNATURE: "Neoverjen podpis"
     DECRYPTION_ERROR: "OpenPGP napaka dešifriranja"
     GOOD_SIGNATURE: "Dober podpis od %USER%"

@@ -590,7 +590,7 @@ tr_TR:
     LABEL_MOVE: "Taşı"
     LABEL_READ: "Seçili mesajları oku"
     LABEL_UNREAD: "Seçili mesajları okuma"
-    LABEL_IMPORTANT: "Seçili işaretli/yıldızlı mesajları içe aktar"
+    LABEL_IMPORTANT: "Seçili işaretli mesajları içe aktar"
     LABEL_SEARCH: "Arama"
     LABEL_CANCEL_SEARCH: "Aramayı durdur"
     LABEL_FULLSCREEN_ENTER: "Tam Ekran (Önizleme bölmesi düzeni)"

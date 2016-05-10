@@ -17,6 +17,9 @@ de_DE:
     BUTTON_SETTINGS: "Einstellungen"
     BUTTON_HELP: "Hilfe"
     BUTTON_LOGOUT: "Abmelden"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "mobile Version"
+    BUTTON_DESKTOP_VERSION: "Desktop Version"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Suche"
     TITLE_ADV: "Erweiterte Suche"
@@ -24,7 +27,7 @@ de_DE:
     LABEL_ADV_TO: "An"
     LABEL_ADV_SUBJECT: "Betreff"
     LABEL_ADV_TEXT: "Text"
-    LABEL_ADV_HAS_ATTACHMENT: "hat Anhang"
+    LABEL_ADV_HAS_ATTACHMENT: "Anhang vorhanden"
     LABEL_ADV_HAS_ATTACHMENTS: "Anhänge vorhanden"
     LABEL_ADV_FLAGGED: "Markiert"
     LABEL_ADV_UNSEEN: "Ungelesen"
@@ -50,6 +53,7 @@ de_DE:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Erstellen"
     BUTTON_CONTACTS: "Kontakte"
+    BUTTON_NEW_MESSAGE: "Neue Nachricht"
     INBOX_NAME: "Posteingang"
     SENT_NAME: "Gesendet"
     DRAFTS_NAME: "Entwürfe"
@@ -290,7 +294,7 @@ de_DE:
     LABEL_KEY_BIT_LENGTH: "Schlüssellänge"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Generieren"
   POPUPS_COMPOSE_OPEN_PGP:
-    TITLE_COMPOSE_OPEN_PGP: "OpenPGP Unterschreiben/Verschlüsseln"
+    TITLE_COMPOSE_OPEN_PGP: "OpenPGP unterschreiben/verschlüsseln"
     LABEL_SIGN: "Unterschrift"
     LABEL_ENCRYPT: "Verschlüsselung"
     LABEL_PASSWORD: "Passwort"
@@ -621,6 +625,7 @@ de_DE:
     NO_PRIVATE_KEY_FOUND: "Keine privaten Schlüssel gefunden"
     NO_PRIVATE_KEY_FOUND_FOR: "Keine privaten Schlüssel für die E-Mail \"%EMAIL%\" gefunden"
     ADD_A_PUBLICK_KEY: "Öffentlicher Schlüssel hinzufügen"
+    SELECT_A_PRIVATE_KEY: "Privaten Schlüssel auswählen"
     UNVERIFIRED_SIGNATURE: "Nich verifizierte Unterschrift"
     DECRYPTION_ERROR: "OpenPGP-Entschlüsselungsfehler"
     GOOD_SIGNATURE: "Gültige Unterschrift von %USER%"

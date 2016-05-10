@@ -55,7 +55,6 @@ pl_PL:
     BUTTON_CONTACTS: "Kontakty"
     BUTTON_NEW_MESSAGE: "Nowa wiadomość"
     INBOX_NAME: "Odebrane"
-    STARRED_NAME: "Oznaczone gwiazdką"
     SENT_NAME: "Wysłane"
     DRAFTS_NAME: "Wersje robocze"
     SPAM_NAME: "Wiadomości śmieci - SPAM"

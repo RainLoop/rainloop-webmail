@@ -594,7 +594,6 @@ es_ES:
     LABEL_MOVE: "Mover"
     LABEL_READ: "Marcar los mensajes seleccionados como leídos"
     LABEL_UNREAD: "Marcar los mensajes seleccionados como no leídos"
-    LABEL_IMPORTANT: "Important, star/flag selected messages"
     LABEL_SEARCH: "Buscar"
     LABEL_CANCEL_SEARCH: "Cancelar la búsqueda"
     LABEL_FULLSCREEN_ENTER: "Pantalla completa (panel de vista previa)"

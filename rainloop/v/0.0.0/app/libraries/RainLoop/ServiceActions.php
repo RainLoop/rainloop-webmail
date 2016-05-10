@@ -1341,6 +1341,10 @@ class ServiceActions
 		foreach ($aLangKeys as $sKey)
 		{
 			$sString = isset($aResultLang[$sKey]) ? $aResultLang[$sKey] : $sKey;
+			if (\is_array($sString))
+			{
+				$sString = \implode("\n", $sString);
+			}
 
 			$sLangJs .= '"'.\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sKey)).'":'
 				.'"'.\str_replace(array("\r", "\n", "\t"), array('\r', '\n', '\t'),

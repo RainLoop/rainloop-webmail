@@ -17,6 +17,9 @@ ja_JP:
     BUTTON_SETTINGS: "設定"
     BUTTON_HELP: "ヘルプ"
     BUTTON_LOGOUT: "ログアウト"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "モバイル版"
+    BUTTON_DESKTOP_VERSION: "デスクトップ版"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "検索"
     TITLE_ADV: "高度な検索"
@@ -50,6 +53,7 @@ ja_JP:
   FOLDER_LIST:
     BUTTON_COMPOSE: "作成"
     BUTTON_CONTACTS: "連絡先"
+    BUTTON_NEW_MESSAGE: "新規作成"
     INBOX_NAME: "受信トレイ"
     SENT_NAME: "送信済み"
     DRAFTS_NAME: "下書き"
@@ -83,7 +87,7 @@ ja_JP:
     MENU_SELECT_UNFLAGGED: "Unflagged"
     EMPTY_LIST: "メッセージはありません"
     EMPTY_SEARCH_LIST: "検索条件に一致するメールは見つかりませんでした。高度な検索を試してみてください。"
-    SEARCH_RESULT_FOR: "Search results for \"%SEARCH%\""
+    SEARCH_RESULT_FOR: "\"%SEARCH%\"の検索結果"
     BACK_TO_MESSAGE_LIST: "back to message list"
     LIST_LOADING: "読み込み中"
     EMPTY_SUBJECT_TEXT: "(件名なし)"
@@ -159,7 +163,7 @@ ja_JP:
     LEGEND_CONTACTS: "Contacts"
     SEARCH_INPUT_PLACEHOLDER: "Search"
     BUTTON_ADD_CONTACT: "Add Contact"
-    BUTTON_CREATE_CONTACT: "Create"
+    BUTTON_CREATE_CONTACT: "作成"
     BUTTON_UPDATE_CONTACT: "Update"
     BUTTON_IMPORT: "Import (csv, vcf, vCard)"
     BUTTON_EXPORT_VCARD: "Export (vcf, vCard)"
@@ -592,7 +596,6 @@ ja_JP:
     LABEL_MOVE: "Move"
     LABEL_READ: "Read selected messages"
     LABEL_UNREAD: "Unread selected messages"
-    LABEL_IMPORTANT: "Important, star/flag selected messages"
     LABEL_SEARCH: "Search"
     LABEL_CANCEL_SEARCH: "Cancel search"
     LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"

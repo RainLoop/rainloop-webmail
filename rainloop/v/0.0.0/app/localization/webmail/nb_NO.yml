@@ -17,6 +17,9 @@ nb_NO:
     BUTTON_SETTINGS: "Innstillinger"
     BUTTON_HELP: "Hjelp"
     BUTTON_LOGOUT: "Logg ut"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobilversjon"
+    BUTTON_DESKTOP_VERSION: "Skrivebordsversjon"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Søk"
     TITLE_ADV: "Avansert søk"
@@ -50,6 +53,7 @@ nb_NO:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Skriv"
     BUTTON_CONTACTS: "Kontakter"
+    BUTTON_NEW_MESSAGE: "Ny melding"
     INBOX_NAME: "Innboks"
     SENT_NAME: "Sendt"
     DRAFTS_NAME: "Kladd"
@@ -619,6 +623,7 @@ nb_NO:
     NO_PRIVATE_KEY_FOUND: "Fant ingen privatnøkler"
     NO_PRIVATE_KEY_FOUND_FOR: "Fant ingen privatnøkler for «%EMAIL%»"
     ADD_A_PUBLICK_KEY: "Legg til en offentlig nøkkel"
+    SELECT_A_PRIVATE_KEY: "Velg privatnøkkel"
     UNVERIFIRED_SIGNATURE: "Ubekreftet signatur"
     DECRYPTION_ERROR: "Feil under OpenPGP-dekryptering"
     GOOD_SIGNATURE: "Gyldig signatur fra %USER%"

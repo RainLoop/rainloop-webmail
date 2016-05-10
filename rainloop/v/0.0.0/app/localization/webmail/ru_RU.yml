@@ -55,7 +55,6 @@ ru_RU:
     BUTTON_CONTACTS: "Контакты"
     BUTTON_NEW_MESSAGE: "Новое сообщение"
     INBOX_NAME: "Входящие"
-    STARRED_NAME: "Отмеченные"
     SENT_NAME: "Отправленные"
     DRAFTS_NAME: "Черновики"
     SPAM_NAME: "Спам"

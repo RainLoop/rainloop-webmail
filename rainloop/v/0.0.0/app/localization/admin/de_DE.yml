@@ -28,7 +28,7 @@ de_DE:
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Hintergrundauswahl in den Einstellungen zulassen"
     LABEL_SHOW_THUMBNAILS: "Vorschaubilder anzeigen (Anhänge)"
     LABEL_ALLOW_GRAVATAR: "Gravatar erlauben"
-    LEGEND_MAIN: "Haupt"
+    LEGEND_MAIN: "Allgemein"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Größenlimit für Anhänge"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Zusätzliche Konten erlauben"
     LABEL_ALLOW_IDENTITIES: "Mehrere Identitäten erlauben"
@@ -41,7 +41,7 @@ de_DE:
       aus Sicherheitsgründen das Passwort jetzt.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Anmeldebildschirm"
-    LABEL_DEFAULT_DOMAIN: "Standard-Domain"
+    LABEL_DEFAULT_DOMAIN: "Standarddomain"
     LABEL_DETERMINE_USER_DOMAIN: "Versuche Domain des Benutzers zu ermitteln"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Sprachauswahl bei der Anmeldung zulassen"
     LABEL_DETERMINE_USER_LANGUAGE: "Versuche Sprache des Benutzers zu ermitteln"
