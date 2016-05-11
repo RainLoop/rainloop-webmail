@@ -1,5 +1,7 @@
 <?php
 
+OCP\User::checkLoggedIn();
+
 if (@file_exists(__DIR__.'/app/index.php'))
 {
 	include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
