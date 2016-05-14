@@ -147,6 +147,7 @@
 				define('APP_INSTALLED_VERSION', $sInstalled);
 
 				@file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
+				@file_put_contents(APP_DATA_FOLDER_PATH.'VERSION', APP_VERSION);
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', APP_DEFAULT_DENY_ALL_HTACCESS);

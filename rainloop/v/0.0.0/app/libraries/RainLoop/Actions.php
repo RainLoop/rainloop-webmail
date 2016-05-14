@@ -8339,7 +8339,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->Http()->StatusHeader(304);
 				$this->cacheByKey($sKey);
-				exit();
+				exit(0);
 			}
 		}
 	}

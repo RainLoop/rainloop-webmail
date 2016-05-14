@@ -50,7 +50,7 @@ class Service
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
-			exit();
+			exit(0);
 		}
 
 		$this->localHandle();
