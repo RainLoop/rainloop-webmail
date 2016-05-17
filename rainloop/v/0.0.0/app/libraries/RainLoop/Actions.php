@@ -2268,8 +2268,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					{
 						$this->Logger()->Write('TFA: Required Code for '.$oAccount->ParentEmailHelper().' account.');
 
-						$this->LoggerAuthHelper($oAccount);
-
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthRequired);
 					}
 					else
