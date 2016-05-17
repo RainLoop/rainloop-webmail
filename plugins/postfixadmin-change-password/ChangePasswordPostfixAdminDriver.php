@@ -259,7 +259,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	{
 		$sResult = '';
 		$sSalt = substr(str_shuffle('./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 16);
-		switch ($this->sEncrypt)
+		switch (strtolower($this->sEncrypt))
 		{
 			default:
 			case 'plain':
@@ -280,11 +280,11 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				$sResult = crypt($sPassword);
 				break;
 
-			case 'SHA256-CRYPT':
+			case 'sha256-crypt':
 				$sResult = '{SHA256-CRYPT}' . crypt($sPassword,'$5$'.$sSalt);
 				break;
 
-			case 'SHA512-CRYPT':
+			case 'sha512-crypt':
 				$sResult = '{SHA512-CRYPT}' . crypt($sPassword,'$6$'.$sSalt);
 				break;
 

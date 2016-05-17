@@ -430,11 +430,14 @@ class Actions
 	 * @param string $sLine
 	 * @param \RainLoop\Model\Account $oAccount = null
 	 * @param bool $bUrlEncode = false
+	 * @param array $aAdditionalParams = array()
 	 *
 	 * @return string
 	 */
-	private function compileLogParams($sLine, $oAccount = null, $bUrlEncode = false)
+	private function compileLogParams($sLine, $oAccount = null, $bUrlEncode = false, $aAdditionalParams = array())
 	{
+		$aClear = array();
+
 		if (false !== \strpos($sLine, '{date:'))
 		{
 			$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
@@ -442,7 +445,7 @@ class Actions
 				return \RainLoop\Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset), $bUrlEncode);
 			}, $sLine);
 
-			$sLine = \preg_replace('/\{date:([^}]*)\}/', 'date', $sLine);
+			$aClear['/\{date:([^}]*)\}/'] = 'date';
 		}
 
 		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:'))
@@ -464,8 +467,8 @@ class Actions
 				$sLine = \str_replace('{smtp:port}', \RainLoop\Utils::UrlEncode($oAccount->DomainOutPort(), $bUrlEncode), $sLine);
 			}
 
-			$sLine = \preg_replace('/\{imap:([^}]*)\}/i', 'imap', $sLine);
-			$sLine = \preg_replace('/\{smtp:([^}]*)\}/i', 'smtp', $sLine);
+			$aClear['/\{imap:([^}]*)\}/i'] = 'imap';
+			$aClear['/\{smtp:([^}]*)\}/i'] = 'smtp';
 		}
 
 		if (false !== \strpos($sLine, '{request:'))
@@ -489,7 +492,7 @@ class Actions
 						\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $bUrlEncode), $sLine);
 			}
 
-			$sLine = \preg_replace('/\{request:([^}]*)\}/i', 'request', $sLine);
+			$aClear['/\{request:([^}]*)\}/i'] = 'request';
 		}
 
 		if (false !== \strpos($sLine, '{user:'))
@@ -532,7 +535,7 @@ class Actions
 				}
 			}
 
-			$sLine = \preg_replace('/\{user:([^}]*)\}/i', 'unknown', $sLine);
+			$aClear['/\{user:([^}]*)\}/i'] = 'unknown';
 		}
 
 		if (false !== \strpos($sLine, '{labs:'))
@@ -541,7 +544,23 @@ class Actions
 				return \rand(\pow(10, $aMatch[1] - 1), \pow(10, $aMatch[1]) - 1);
 			}, $sLine);
 
-			$sLine = \preg_replace('/\{labs:([^}]*)\}/', 'labs', $sLine);
+			$aClear['/\{labs:([^}]*)\}/'] = 'labs';
+		}
+
+		if (\is_array($aAdditionalParams) && 0 < \count($aAdditionalParams))
+		{
+			foreach ($aAdditionalParams as $sKey => $sValue)
+			{
+				$sLine = \str_replace($sKey, $sValue, $sLine);
+			}
+		}
+
+		if (0 < \count($aClear))
+		{
+			foreach ($aClear as $sKey => $sValue)
+			{
+				$sLine = \preg_replace($sKey, $sValue, $sLine);
+			}
 		}
 
 		return $sLine;
@@ -1155,14 +1174,15 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \RainLoop\Model\Account $oAccount = null
+	 * @param array $aAdditionalParams = array()
 	 */
-	public function LoggerAuthHelper($oAccount = null)
+	public function LoggerAuthHelper($oAccount = null, $aAdditionalParams = array())
 	{
 		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine))
 		{
-			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount));
+			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
 	}
 
@@ -2080,6 +2100,25 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
+	 * @param string $sLogin
+	 * @param bool $bAdmin = false
+	 * @return array
+	 */
+	private function getAdditionalLogParamsByUserLogin($sLogin, $bAdmin = false)
+	{
+		$sHost = $bAdmin ? $this->Http()->GetHost(false, true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
+		return array(
+			'{imap:login}' => $sLogin,
+			'{imap:host}' => $sHost,
+			'{smtp:login}' => $sLogin,
+			'{smtp:host}' => $sHost,
+			'{user:email}' => $sLogin,
+			'{user:login}' => \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
+			'{user:domain}' => $sHost,
+		);
+	}
+
+	/**
 	 * @param string $sEmail
 	 * @param string $sPassword
 	 * @param string $sSignMeToken = ''
@@ -2092,6 +2131,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
 		$sAdditionalCode = '', $bAdditionalCodeSignMe = false)
 	{
+		$sInputEmail = $sEmail;
+
 		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
 		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii(\MailSo\Base\Utils::Trim($sEmail));
@@ -2207,9 +2248,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		catch (\Exception $oException)
 		{
 			$this->loginErrorDelay();
-
-			$this->LoggerAuthHelper($oAccount);
-
+			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
 			throw $oException;
 		}
 
@@ -3832,6 +3871,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			!$this->Config()->ValidatePassword($sPassword))
 		{
 			$this->loginErrorDelay();
+			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true));
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
 
