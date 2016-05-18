@@ -28,12 +28,10 @@ class HtmlUtils
 
 	/**
 	 * @param string $sText
-	 * @param string $sHtmlAttrs = ''
-	 * @param string $sBodyAttrs = ''
 	 *
 	 * @return \DOMDocument|bool
 	 */
-	public static function GetDomFromText($sText, $sHtmlAttrs = '', $sBodyAttrs = '')
+	public static function GetDomFromText($sText)
 	{
 		$bState = true;
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
@@ -45,13 +43,20 @@ class HtmlUtils
 		$oDom->encoding = 'UTF-8';
 		$oDom->strictErrorChecking = false;
 		$oDom->formatOutput = false;
+		$oDom->preserveWhiteSpace = false;
+
+		$sHtmlAttrs = $sBodyAttrs = '';
+
+		$sText = \MailSo\Base\HtmlUtils::FixSchemas($sText);
+		$sText = \MailSo\Base\HtmlUtils::ClearFastTags($sText);
+		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
-			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'>'.$sText.'</body></html>');
+			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
 
 		@$oDom->normalizeDocument();
 
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
 		{
 			@\libxml_clear_errors();
 		}
@@ -62,6 +67,91 @@ class HtmlUtils
 		}
 
 		return $oDom;
+	}
+
+	/**
+	 * @param \DOMElement $oElement
+	 *
+	 * @return array
+	 */
+	public static function GetElementAttributesAsArray($oElement)
+	{
+		$aResult = array();
+		if ($oElement)
+		{
+			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
+			{
+				foreach ($oElement->attributes as $oAttr)
+				{
+					if ($oAttr && !empty($oAttr->nodeName))
+					{
+						$sAttrName = \trim(\strtolower($oAttr->nodeName));
+						$aResult[$sAttrName] = $oAttr->nodeValue;
+					}
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	/**
+	 * @param \DOMDocument $oDom
+	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
+	 *
+	 * @return string
+	 */
+	public static function GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
+	{
+		$sResult = '';
+
+		$aHtmlAttrs = $aBodylAttrs = array();
+		if ($bWrapByFakeHtmlAndBodyDiv)
+		{
+			$oHtml = $oDom->getElementsByTagName('html')->item(0);
+			$oBody = $oDom->getElementsByTagName('body')->item(0);
+
+			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
+			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
+		}
+
+		$oDiv = $oDom->getElementsByTagName('div')->item(0);
+		if ($oDiv && $oDiv->hasAttribute('data-wrp') && 'rainloop' === $oDiv->getAttribute('data-wrp'))
+		{
+			$oDiv->removeAttribute('data-wrp');
+			if ($bWrapByFakeHtmlAndBodyDiv)
+			{
+				$oWrap = $oDom->createElement('div');
+
+				$oWrap->setAttribute('data-x-div-type', 'html');
+				foreach ($aHtmlAttrs as $sKey => $sValue)
+				{
+					$oWrap->setAttribute($sKey, $sValue);
+				}
+
+				$oDiv->setAttribute('data-x-div-type', 'body');
+				foreach ($aBodylAttrs as $sKey => $sValue)
+				{
+					$oDiv->setAttribute($sKey, $sValue);
+				}
+
+				$oWrap->appendChild($oDiv);
+				$sResult = \trim($oDom->saveHTML($oWrap));
+			}
+			else
+			{
+				$sResult = \trim($oDom->saveHTML($oDiv));
+			}
+		}
+		else
+		{
+			$sResult = \trim($oDom->saveHTML());
+		}
+
+		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
+
+		return $sResult;
 	}
 
 	/**
@@ -118,14 +208,54 @@ class HtmlUtils
 
 	/**
 	 * @param string $sHtml
-	 * @param bool $bClearStyleAndHead = true
 	 *
 	 * @return string
 	 */
-	public static function ClearTags($sHtml, $bClearStyleAndHead = true)
+	public static function ClearFastTags($sHtml)
+	{
+		return \preg_replace(array(
+			'/<p[^>]*><\/p>/i',
+			'/<!doctype[^>]*>/msi',
+			'/<\?xml [^>]*\?>/msi'
+		), '', $sHtml);
+	}
+
+	/**
+	 * @param mixed $oDom
+	 */
+	public static function ClearComments(&$oDom)
+	{
+		$aRemove = array();
+
+		$oXpath = new \DOMXpath($oDom);
+		$oComments = $oXpath->query('//comment()');
+		if ($oComments)
+		{
+			foreach ($oComments as $oComment)
+			{
+				$aRemove[] = $oComment;
+			}
+		}
+
+		unset($oXpath, $oComments);
+
+		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
+		{
+			if (isset($oElement->parentNode))
+			{
+				@$oElement->parentNode->removeChild($oElement);
+			}
+		}
+	}
+
+	/**
+	 * @param mixed $oDom
+	 * @param bool $bClearStyleAndHead = true
+	 */
+	public static function ClearTags(&$oDom, $bClearStyleAndHead = true)
 	{
 		$aRemoveTags = array(
-			'link', 'base', 'meta', 'title', 'script', 'bgsound', 'keygen', 'source',
+			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
 			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map'
 		);
 
@@ -135,61 +265,30 @@ class HtmlUtils
 			$aRemoveTags[] = 'style';
 		}
 
-		$aToRemove = array(
-			'/<p[^>]*><\/p>/i',
-			'/<!doctype[^>]*>/msi',
-			'/<\?xml [^>]*\?>/msi'
-		);
-
-		foreach ($aRemoveTags as $sTag)
+		$aRemove = array();
+		$aNodes = $oDom->getElementsByTagName('*');
+		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
-			$aToRemove[] = '\'<'.$sTag.'[^>]*>.*?</[\s]*'.$sTag.'>\'msi';
-			$aToRemove[] = '\'<'.$sTag.'[^>]*>\'msi';
-			$aToRemove[] = '\'</[\s]*'.$sTag.'[^>]*>\'msi';
+			if ($oElement)
+			{
+				$sTagNameLower = \strtolower($oElement->tagName);
+				if ('' !== $sTagNameLower && \in_array($sTagNameLower, $aRemoveTags))
+				{
+					$aRemove[] = @$oElement;
+				}
+			}
 		}
 
-		return \preg_replace($aToRemove, '', $sHtml);
+		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
+		{
+			if (isset($oElement->parentNode))
+			{
+				@$oElement->parentNode->removeChild($oElement);
+			}
+		}
 	}
 
-	/**
-	 * @param string $sHtml
-	 *
-	 * @return string
-	 */
-	public static function ClearOn($sHtml)
-	{
-		$aToReplace = array(
-			'/on(Blur)/si',
-			'/on(Change)/si',
-			'/on(Click)/si',
-			'/on(DblClick)/si',
-			'/on(Error)/si',
-			'/on(Focus)/si',
-			'/on(FormChange)/si',
-			'/on(KeyDown)/si',
-			'/on(KeyPress)/si',
-			'/on(KeyUp)/si',
-			'/on(Load)/si',
-			'/on(MouseDown)/si',
-			'/on(MouseEnter)/si',
-			'/on(MouseLeave)/si',
-			'/on(MouseMove)/si',
-			'/on(MouseOut)/si',
-			'/on(MouseOver)/si',
-			'/on(MouseUp)/si',
-			'/on(Move)/si',
-			'/on(Resize)/si',
-			'/on(ResizeEnd)/si',
-			'/on(ResizeStart)/si',
-			'/on(Scroll)/si',
-			'/on(Select)/si',
-			'/on(Submit)/si',
-			'/on(Unload)/si'
-		);
-
-		return \preg_replace($aToReplace, 'оn\\1', $sHtml);
-	}
-
+/*
 //	public static function ClearStyleUrlValueParserHelper($oUrlValue, $oRule, $oRuleSet,
 //		$oElem = null,
 //		&$bHasExternals = false, &$aFoundCIDs = array(),
@@ -410,6 +509,7 @@ class HtmlUtils
 //
 //		return $mResult;
 //	}
+*/
 
 	/**
 	 *
@@ -592,7 +692,7 @@ class HtmlUtils
 							->CompileText()
 						;
 
-						$oSubDom = \MailSo\Base\HtmlUtils::GetDomFromText('<html><body>'.$sText.'</body></html>');
+						$oSubDom = \MailSo\Base\HtmlUtils::GetDomFromText($sText);
 						if ($oSubDom)
 						{
 							$oBodyNodes = $oSubDom->getElementsByTagName('body');
@@ -701,16 +801,8 @@ class HtmlUtils
 
 		$bHasExternals = false;
 
-		$sHtml = \MailSo\Base\HtmlUtils::FixSchemas($sHtml);
-
-		$sHtml = \MailSo\Base\HtmlUtils::ClearTags($sHtml, false);
-		$sHtml = \MailSo\Base\HtmlUtils::ClearOn($sHtml);
-
-		$sHtmlAttrs = $sBodyAttrs = '';
-		$sHtml = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sHtml, $sHtmlAttrs, $sBodyAttrs);
-
 		// Dom Part
-		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml, $sHtmlAttrs, $sBodyAttrs);
+		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 		unset($sHtml);
 
 		if ($oDom)
@@ -731,40 +823,8 @@ class HtmlUtils
 				\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
 			}
 
-			$oXpath = new \DOMXpath($oDom);
-			$oComments = $oXpath->query('//comment()');
-			if ($oComments)
-			{
-				foreach ($oComments as $oComment)
-				{
-					if (isset($oComment->parentNode))
-					{
-						@$oComment->parentNode->removeChild($oComment);
-					}
-				}
-			}
-
-			unset($oXpath, $oComments);
-
-			$aNodes = $oDom->getElementsByTagName('*');
-			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
-			{
-				if ($oElement)
-				{
-					$sTagNameLower = \strtolower($oElement->tagName);
-
-					if ('' !== $sTagNameLower && \in_array($sTagNameLower, array('svg', 'head', 'link',
-						'base', 'meta', 'title', 'style', 'x-script', 'script', 'bgsound', 'keygen', 'source',
-						'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset',
-						'video', 'audio', 'area', 'map')))
-					{
-						if (isset($oElement->parentNode))
-						{
-							@$oElement->parentNode->removeChild($oElement);
-						}
-					}
-				}
-			}
+			\MailSo\Base\HtmlUtils::ClearComments($oDom);
+			\MailSo\Base\HtmlUtils::ClearTags($oDom);
 
 			$sLinkColor = '';
 			$aNodes = $oDom->getElementsByTagName('*');
@@ -873,7 +933,7 @@ class HtmlUtils
 						{
 							$sAttrName = \trim(\strtolower($oAttr->nodeName));
 							if ('on' === \substr($sAttrName, 0, 2) || in_array($sAttrName, array(
-								'id', 'class', 'contenteditable', 'designmode', 'formaction',
+								'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest',
 								'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
 								'fscommand', 'seeksegmenttime'
 							)))
@@ -1036,22 +1096,12 @@ class HtmlUtils
 				$oElement->removeAttribute('data-x-skip-style');
 			}
 
-			$sResult = $oDom->saveHTML();
+			$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom);
 		}
 
 		unset($oDom);
 
-		$sResult = \MailSo\Base\HtmlUtils::ClearTags($sResult);
-
-		$sHtmlAttrs = $sBodyAttrs = '';
-		$sResult = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sResult, $sHtmlAttrs, $sBodyAttrs);
-		$sResult = '<div data-x-div-type="body" '.$sBodyAttrs.'>'.$sResult.'</div>';
-		$sResult = '<div data-x-div-type="html" '.$sHtmlAttrs.'>'.$sResult.'</div>';
-
-		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
-		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
-
-		return \trim($sResult);
+		return $sResult;
 	}
 
 	/**
@@ -1065,6 +1115,8 @@ class HtmlUtils
 	public static function BuildHtml($sHtml, &$aFoundCids = array(), &$mFoundDataURL = null, &$aFoundedContentLocationUrls = array())
 	{
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
+
+		\MailSo\Base\HtmlUtils::ClearTags($oDom);
 		unset($sHtml);
 
 		$aNodes = $oDom->getElementsByTagName('*');
@@ -1197,14 +1249,11 @@ class HtmlUtils
 			}
 		}
 
-		$sResult = $oDom->saveHTML();
+		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, false);
 		unset($oDom);
 
-		$sResult = \MailSo\Base\HtmlUtils::ClearTags($sResult);
-		$sResult = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sResult);
-
 		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.
-			'<body>'.\trim($sResult).'</body></html>';
+			'<body>'.$sResult.'</body></html>';
 	}
 
 	/**
