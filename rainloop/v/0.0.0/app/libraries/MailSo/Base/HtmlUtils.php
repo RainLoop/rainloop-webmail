@@ -52,7 +52,9 @@ class HtmlUtils
 		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
-			'<html '.$sHtmlAttrs.'><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
+			'<html '.$sHtmlAttrs.'><head>'.
+			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
+			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
 
 		@$oDom->normalizeDocument();
 
@@ -141,6 +143,18 @@ class HtmlUtils
 			else
 			{
 				$sResult = \trim($oDom->saveHTML($oDiv));
+
+				if (0 === strpos($sResult, '<div>'))
+				{
+					$sResult = substr($sResult, 5);
+
+					if ('</div>' === substr($sResult, -6))
+					{
+						$sResult = substr($sResult, 0, -6);
+					}
+
+					$sResult = \trim($sResult);
+				}
 			}
 		}
 		else
@@ -175,7 +189,7 @@ class HtmlUtils
 			$sBodyAttrs = $aMatch[1];
 		}
 
-		$sHtml = \preg_replace('/<body([^>]*)>/im', '', $sHtml);
+		$sHtml = \preg_replace('/^.*<body([^>]*)>/sim', '', $sHtml);
 		$sHtml = \preg_replace('/<\/body>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<html([^>]*)>/im', '', $sHtml);
 		$sHtml = \preg_replace('/<\/html>/im', '', $sHtml);
@@ -747,18 +761,24 @@ class HtmlUtils
 	 * @param string $sHtml
 	 * @param bool $bDoNotReplaceExternalUrl = false
 	 * @param bool $bFindLinksInHtml = false
+	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
 	 *
 	 * @return string
 	 */
-	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false)
+	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $bWrapByFakeHtmlAndBodyDiv = true)
 	{
 		$bHasExternals = false;
 		$aFoundCIDs = array();
 		$aContentLocationUrls = array();
 		$aFoundedContentLocationUrls = array();
+		$fAdditionalExternalFilter = null;
+		$fAdditionalDomReader = null;
+		$bTryToDetectHiddenImages = false;
 
 		return \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
-			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml);
+			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml,
+			$fAdditionalExternalFilter, $fAdditionalDomReader, $bTryToDetectHiddenImages,
+			$bWrapByFakeHtmlAndBodyDiv);
 	}
 
 	/**
@@ -771,6 +791,8 @@ class HtmlUtils
 	 * @param bool $bFindLinksInHtml = false
 	 * @param callback|null $fAdditionalExternalFilter = null
 	 * @param callback|null $fAdditionalDomReader = null
+	 * @param bool $bTryToDetectHiddenImages = false
+	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
 	 *
 	 * @return string
 	 */
@@ -778,7 +800,7 @@ class HtmlUtils
 		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
 		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false,
 		$fAdditionalExternalFilter = null, $fAdditionalDomReader = false,
-		$bTryToDetectHiddenImages = false)
+		$bTryToDetectHiddenImages = false, $bWrapByFakeHtmlAndBodyDiv = true)
 	{
 		$sResult = '';
 
@@ -1096,7 +1118,7 @@ class HtmlUtils
 				$oElement->removeAttribute('data-x-skip-style');
 			}
 
-			$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom);
+			$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
 		}
 
 		unset($oDom);
