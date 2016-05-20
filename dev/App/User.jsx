@@ -1280,7 +1280,7 @@ class AppUser extends AbstractApp
 							kn.routeOn();
 						}
 
-						if (window.jsloader && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
+						if (window.jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							const openpgpCallback = (openpgp) => {
 
@@ -1312,7 +1312,7 @@ class AppUser extends AbstractApp
 							}
 							else
 							{
-								window.jsloader(Links.openPgpJs()).then(() => {
+								window.jassl(Links.openPgpJs()).then(() => {
 									if (window.openpgp)
 									{
 										openpgpCallback(window.openpgp);

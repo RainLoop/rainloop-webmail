@@ -1,10 +1,12 @@
 
 import window from 'window';
-import jsloader from 'Common/Loader';
+import {Promise} from 'es6-promise-polyfill/promise.js';
 import {progressJs} from 'progress.js/src/progress.js';
+import jassl from 'jassl';
 
-window.jsloader = jsloader;
+window.Promise = window.Promise || Promise;
 window.progressJs = window.progressJs || progressJs();
+window.jassl = jassl;
 
 window.progressJs.onbeforeend(() => {
 	if (window.$)

@@ -1,6 +1,5 @@
 
 import window from 'window';
-import $ from '$';
 import progressJs from 'progressJs';
 
 import rainLoopStorage from 'Storage/RainLoop';
@@ -152,7 +151,7 @@ function runApp()
 {
 	const appData = window.__rlah_data();
 
-	if (window.jsloader && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
+	if (window.jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
 		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticEditorJsLink)
 	{
 		const p = progressJs;
@@ -161,7 +160,7 @@ function runApp()
 		p.start().set(5);
 
 		const
-			libs = window.jsloader(appData.StaticLibJsLink).then(() => {
+			libs = window.jassl(appData.StaticLibJsLink).then(() => {
 				if (window.$)
 				{
 					if (!window.$('#rl-check').is(':visible'))
@@ -183,18 +182,18 @@ function runApp()
 				}
 			}),
 			common = window.Promise.all([
-				window.jsloader(appData.TemplatesLink),
-				window.jsloader(appData.LangLink)
+				window.jassl(appData.TemplatesLink),
+				window.jassl(appData.LangLink)
 			])
 		;
 
 		window.Promise.all([libs, common])
 			.then(() => {
 				p.set(30);
-				return window.jsloader(appData.StaticAppJsLink);
+				return window.jassl(appData.StaticAppJsLink);
 			}).then(() => {
 				p.set(50);
-				return appData.PluginsLink ? window.jsloader(appData.PluginsLink) : window.Promise.resolve();
+				return appData.PluginsLink ? window.jassl(appData.PluginsLink) : window.Promise.resolve();
 			}).then(() => {
 				p.set(70);
 				runMainBoot(false);
@@ -202,7 +201,7 @@ function runApp()
 				runMainBoot(true);
 				throw e;
 			}).then(() => {
-				return window.jsloader(appData.StaticEditorJsLink);
+				return window.jassl(appData.StaticEditorJsLink);
 			}).then(() => {
 				if (window.CKEDITOR && window.__initEditor) {
 					window.__initEditor();

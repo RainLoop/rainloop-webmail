@@ -37,12 +37,20 @@ module.exports = {
 				loader: 'raw'
 			},
 			{
+				test: /(jassl)/,
+				loader: 'babel',
+				exclude: /(bower_components)/,
+				query: {
+					cacheDirectory: true,
+					presets: ['es2015-loose', 'stage-0']
+				}
+			},
+			{
 				test: /\.jsx$/,
 				loader: 'babel',
 				exclude: /(node_modules|bower_components)/,
 				query: {
 					cacheDirectory: true,
-//			        plugins: ['transform-runtime'],
 					presets: ['es2015-loose', 'stage-0']
 				}
 			}
