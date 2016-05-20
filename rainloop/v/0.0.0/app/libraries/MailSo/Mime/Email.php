@@ -287,13 +287,14 @@ class Email
 
 	/**
 	 * @param bool $bIdn = false
+	 * @param bool $bDkim = true
 	 *
 	 * @return array
 	 */
-	public function ToArray($bIdn = false)
+	public function ToArray($bIdn = false, $bDkim = true)
 	{
-		return array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark,
-			$this->sDkimStatus, $this->sDkimValue);
+		return $bDkim ? array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark, $this->sDkimStatus, $this->sDkimValue) :
+			array($this->sDisplayName, $this->GetEmail($bIdn), $this->sRemark);
 	}
 
 	/**

@@ -1,6 +1,8 @@
 <?php
 
-class HtmlUtilsTest extends PHPUnit_Framework_TestCase
+namespace MailSoTests;
+
+class HtmlUtilsTest extends \PHPUnit_Framework_TestCase
 {
 	public function testCommon()
     {
