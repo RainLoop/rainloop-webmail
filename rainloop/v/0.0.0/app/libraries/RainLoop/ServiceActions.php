@@ -1369,9 +1369,8 @@ class ServiceActions
 	private function compileAppData($aAppData, $bWrapByScriptTag = true)
 	{
 		return
-			($bWrapByScriptTag ? '<script data-cfasync="false">' : '').
-			'window.rainloopAppData='.\json_encode($aAppData).';'.
-			'if(window.__rlah_set){__rlah_set()};'.
+			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
+			'if(window.__initAppData){window.__initAppData('.\json_encode($aAppData).');}'.
 			($bWrapByScriptTag ? '</script>' : '')
 		;
 	}

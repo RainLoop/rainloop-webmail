@@ -32,7 +32,7 @@ class RainLoopStorage
 	setHash() {
 		const
 			key = 'AuthAccountHash',
-			appData = window.rainloopAppData
+			appData = window.__rlah_data()
 		;
 		if (this.s)
 		{

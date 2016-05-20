@@ -1213,13 +1213,6 @@ class AppUser extends AbstractApp
 		{
 			kn.hideLoading();
 
-			progressJs.onbeforeend(() => {
-				$('.progressjs-container').hide();
-				_.delay(() => {
-					$('.progressjs-container').remove();
-				}, 100);
-			});
-
 			progressJs.set(100).end();
 		}
 		else
@@ -1239,7 +1232,6 @@ class AppUser extends AbstractApp
 		require('Stores/User/Contact').populate();
 
 		var
-			$LAB = require('$LAB'),
 			sJsHash = Settings.appSettingsGet('jsHash'),
 			sStartupUrl = Utils.pString(Settings.settingsGet('StartupUrl')),
 			iContactsSyncInterval = Utils.pInt(Settings.settingsGet('ContactsSyncInterval')),
@@ -1288,7 +1280,7 @@ class AppUser extends AbstractApp
 							kn.routeOn();
 						}
 
-						if ($LAB && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
+						if (window.jsloader && window.crypto && window.crypto.getRandomValues && Settings.capa(Enums.Capa.OpenPGP))
 						{
 							const openpgpCallback = (openpgp) => {
 
@@ -1298,8 +1290,7 @@ class AppUser extends AbstractApp
 								{
 									try
 									{
-//										PgpStore.openpgp.initWorker(Links.openPgpWorkerJs()); // 1.2.0
-										PgpStore.openpgp.initWorker({path: Links.openPgpWorkerJs()}); // 2.3.0
+										PgpStore.openpgp.initWorker({path: Links.openPgpWorkerJs()});
 									}
 									catch (e)
 									{
@@ -1321,7 +1312,7 @@ class AppUser extends AbstractApp
 							}
 							else
 							{
-								$LAB.script(Links.openPgpJs()).wait(() => {
+								window.jsloader(Links.openPgpJs()).then(() => {
 									if (window.openpgp)
 									{
 										openpgpCallback(window.openpgp);

@@ -2,7 +2,7 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.0",
-  "release": "108",
+  "release": "112",
   "ownCloudPackageVersion": "4.16",
   "description": "Simple, modern & fast web-based email client",
   "homepage": "http://rainloop.net",
@@ -84,6 +84,7 @@
     "lodash": "~3.9.3",
     "node-fs": "*",
     "node-notifier": "~4.2.3",
+    "raw-loader": "^0.5.1",
     "rimraf": "*",
     "webpack": "*"
   }

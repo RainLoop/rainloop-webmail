@@ -8,7 +8,7 @@ class SettingsStorage
 	appSettings = {};
 
 	constructor() {
-		this.settings = window.rainloopAppData || {};
+		this.settings = window.__rlah_data() || {};
 		this.settings = Utils.isNormal(this.settings) ? this.settings : {};
 
 		this.appSettings = this.settings.System || null;

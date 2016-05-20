@@ -23,7 +23,7 @@ class AbstractApp extends AbstractBoot
 	{
 		super();
 
-		this.iframe = $('<iframe style="display:none" src="javascript:;" />').appendTo('body');
+		this.iframe = $('<iframe style="display:none" />').appendTo('body');
 
 		Globals.$win.on('error', function (oEvent) {
 			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&

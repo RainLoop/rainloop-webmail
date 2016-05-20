@@ -219,7 +219,7 @@ class Service
 			}
 
 			$sResult .= '<!--';
-			$sResult .= ' [time:'.\substr(\microtime(true) - APP_START, 0, 6);
+			$sResult .= '[time:'.\substr(\microtime(true) - APP_START, 0, 6);
 
 //			$sResult .= '][version:'.APP_VERSION;
 			if ($this->oActions->IsOpen())
@@ -241,7 +241,7 @@ class Service
 				$sResult .= '][owncloud:true';
 			}
 
-			$sResult .= '] //-->';
+			$sResult .= ']-->';
 		}
 
 		// Output result
@@ -259,9 +259,7 @@ class Service
 	 */
 	private function staticPath($sPath)
 	{
-		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
-		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').
-			($this->oActions->IsOpen() ? 'v=community' : 'v=standard');
+		return $this->oActions->StaticPath($sPath);
 	}
 
 	/**
@@ -283,41 +281,26 @@ class Service
 
 		$sFaviconUrl = (string) $this->oActions->Config()->Get('webmail', 'favicon_url', '');
 
-		$aData = array(
-			'Language' => $sLanguage,
-			'Theme' => $sTheme,
-			'FaviconPngLink' => $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png'),
-			'AppleTouchLink' => $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png'),
-			'AppCssLink' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
-			'BootJsLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot.js'),
-			'LibJsLink' => $this->staticPath('js/min/libs.js'),
-			'EditorJsLink' => $this->staticPath('ckeditor/ckeditor.js'),
-			'OpenPgpJsLink' => $this->staticPath('js/min/openpgp.min.js'),
-			'AppJsCommonLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'common.js'),
-			'AppJsLink' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js')
-		);
-
-		$aAdd = array();
-		$aAdd[] = $bMobile ? 'mobile' : 'no-mobile';
-		$aAdd[] = $bMobileDevice ? '1' : '0';
+		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
+		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
 		$aTemplateParameters = array(
-			'{{BaseAppDataScriptLink}}' => ($bAdmin ? './?/AdminAppData' : './?/AppData').(0 < \count($aAdd) ? '@'.\implode('-', $aAdd) : '').'/',
-			'{{BaseAppFaviconPngLinkTag}}' => $aData['FaviconPngLink'] ? '<link rel="shortcut icon" href="'.$aData['FaviconPngLink'].'" type="image/png" />' : '',
-			'{{BaseAppFaviconTouchLinkTag}}' => $aData['AppleTouchLink'] ? '<link rel="apple-touch-icon" href="'.$aData['AppleTouchLink'].'" type="image/png" />' : '',
-			'{{BaseAppAppleTouchFile}}' => $aData['AppleTouchLink'],
-			'{{BaseAppMainCssLink}}' => $aData['AppCssLink'],
-			'{{BaseAppBootScriptLink}}' => $aData['BootJsLink'],
-			'{{BaseAppLibsScriptLink}}' => $aData['LibJsLink'],
-			'{{BaseAppEditorScriptLink}}' => $aData['EditorJsLink'],
-			'{{BaseAppOpenPgpScriptLink}}' => $aData['OpenPgpJsLink'],
-			'{{BaseAppMainCommonScriptLink}}' => $aData['AppJsCommonLink'],
-			'{{BaseAppMainScriptLink}}' => $aData['AppJsLink'],
-			'{{BaseVersion}}' => APP_VERSION,
+			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
+			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
+			'{{BaseAppMainCssLink}}' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
+			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
+			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot.js'),
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
-			'{{BaseDir}}' => 'ltr'
-//			'{{BaseDir}}' => \in_array($aData['Language'], array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
+			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
 		);
+
+		$aTemplateParameters['{{RainloopBootData}}'] = \json_encode(array(
+			'admin' => $bAdmin,
+			'language' => $sLanguage,
+			'theme' => $sTheme,
+			'mobile' => $bMobile,
+			'mobileDevice' => $bMobileDevice
+		));
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(
 			\implode('~', array(

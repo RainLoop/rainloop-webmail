@@ -97,7 +97,7 @@ function copyFile(sFile, sNewFile, callback)
 	callback();
 }
 
-cfg.paths.globjs = 'dev/**/*.{js,jsx}';
+cfg.paths.globjs = 'dev/**/*.{js,jsx,html}';
 cfg.paths.globjsonly = 'dev/**/*.js';
 cfg.paths.globjsxonly = 'dev/**/*.jsx';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
@@ -260,7 +260,6 @@ gulp.task('package:community-off', function() {
 });
 
 gulp.task('css:clear-less', ['css:main-begin'], function() {
-
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.less.main.name, {read: false})
 		.pipe(require('gulp-rimraf')());
 });

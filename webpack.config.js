@@ -33,6 +33,10 @@ module.exports = {
 	module: {
 		loaders: [
 			{
+				test: /\.html$/,
+				loader: 'raw'
+			},
+			{
 				test: /\.jsx$/,
 				loader: 'babel',
 				exclude: /(node_modules|bower_components)/,
@@ -49,7 +53,7 @@ module.exports = {
 		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
 		'$LAB': 'window.$LAB',
-		'progressJs': 'window.rainloopProgressJs',
+		'progressJs': 'window.progressJs',
 		'queue': 'window.queue',
 		'moment': 'window.moment',
 		'ifvisible': 'window.ifvisible',

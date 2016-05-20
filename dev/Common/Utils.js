@@ -1419,7 +1419,7 @@
 			aContent.push('' + sKey + '=' + sValue);
 		});
 
-		$('#rl-head-viewport').attr('content', aContent.join(', '));
+		$('#app-head-viewport').attr('content', aContent.join(', '));
 	};
 
 	/**
@@ -1538,8 +1538,8 @@
 	Utils.changeTheme = function (sValue, themeTrigger)
 	{
 		var
-			oThemeLink = $('#rlThemeLink'),
-			oThemeStyle = $('#rlThemeStyle'),
+			oThemeLink = $('#app-theme-link'),
+			oThemeStyle = $('#app-theme-style'),
 			sUrl = oThemeLink.attr('href')
 		;
 
@@ -1576,7 +1576,7 @@
 				{
 					if (oThemeLink && oThemeLink[0] && (!oThemeStyle || !oThemeStyle[0]))
 					{
-						oThemeStyle = $('<style id="rlThemeStyle"></style>');
+						oThemeStyle = $('<style id="app-theme-style"></style>');
 						oThemeLink.after(oThemeStyle);
 						oThemeLink.remove();
 					}

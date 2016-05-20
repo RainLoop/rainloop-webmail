@@ -1905,11 +1905,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$sStaticCache = \md5(APP_VERSION.$this->Plugins()->Hash());
-
-		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
-		$sNewThemeLink =  './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$sStaticCache.'/Hash/-/';
-
 		if (!$aResult['Auth'])
 		{
 			if (!$bAdmin)
@@ -1923,14 +1918,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$sPluginsLink = '';
-		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin))
-		{
-			$sPluginsLink = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
-		}
+		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
+		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $sTheme;
-		$aResult['NewThemeLink'] = $sNewThemeLink;
+		$aResult['NewThemeLink'] = $this->ThemeLink($sTheme, $bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
@@ -1940,11 +1932,23 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['UserLanguage'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', false, true);
 		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true);
 
+		$aResult['PluginsLink'] = '';
+		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin))
+		{
+			$aResult['PluginsLink'] = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+		}
+
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
 
 		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
-		$aResult['PluginsLink'] = $sPluginsLink;
+
+		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
+
+		$aResult['StaticLibJsLink'] = $this->StaticPath('js/min/libs.js');
+		$aResult['StaticAppJsLink'] =  $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js');
+		$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
+
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
 			$aResult['EditorDefaultType'] : 'Plain';
 
@@ -9058,6 +9062,29 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
+	 * @return string
+	 */
+	public function StaticCache()
+	{
+		static $sCache = null;
+		if (!$sCache)
+		{
+			$sCache = \md5(APP_VERSION.$this->Plugins()->Hash());
+		}
+		return $sCache;
+	}
+
+	/**
+	 * @param string $sTheme
+	 *
+	 * @return string
+	 */
+	public function ThemeLink($sTheme, $bAdmin)
+	{
+		return './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$this->StaticCache().'/Hash/-/';
+	}
+
+	/**
 	 * @param string $sTheme
 	 *
 	 * @return string
@@ -9692,6 +9719,18 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 
 		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
+	}
+
+	/**
+	 * @param string $sPath
+	 *
+	 * @return string
+	 */
+	public function StaticPath($sPath)
+	{
+		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
+		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').
+			($this->IsOpen() ? 'community' : 'standard');
 	}
 
 	/**

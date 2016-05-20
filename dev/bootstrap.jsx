@@ -48,16 +48,9 @@ export default (App) => {
 	window['rl']['EmailModel'] = EmailModel;
 	window['rl']['Enums'] = Enums;
 
-	window['__APP_BOOT'] = function (fCall) {
+	window.__APP_BOOT = function (fCall) {
 
 		$(_.delay(function () {
-
-			if (!$('#rl-check').is(':visible'))
-			{
-				Globals.$html.addClass('no-css');
-			}
-
-			$('#rl-check').remove();
 
 			if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
 			{
@@ -79,7 +72,7 @@ export default (App) => {
 				fCall(false);
 			}
 
-			window['__APP_BOOT'] = null;
+			window.__APP_BOOT = null;
 
 		}, 10));
 	};
