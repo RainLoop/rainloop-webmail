@@ -17,6 +17,9 @@ pt_BR:
     BUTTON_SETTINGS: "Configurações"
     BUTTON_HELP: "Ajuda"
     BUTTON_LOGOUT: "Sair"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Versão Mobile"
+    BUTTON_DESKTOP_VERSION: "Versão Desktop"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Pesquisar"
     TITLE_ADV: "Pesquisa Avançada"
@@ -50,6 +53,7 @@ pt_BR:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Compor"
     BUTTON_CONTACTS: "Contatos"
+    BUTTON_NEW_MESSAGE: "Nova mensagem"
     INBOX_NAME: "Caixa de Entrada"
     SENT_NAME: "Enviadas"
     DRAFTS_NAME: "Rascunhos"
@@ -620,6 +624,7 @@ pt_BR:
     NO_PRIVATE_KEY_FOUND: "Nenhuma chave privada encontrada"
     NO_PRIVATE_KEY_FOUND_FOR: "Nenhuma chave privada encontrada para o e-mail \"%EMAIL%\""
     ADD_A_PUBLICK_KEY: "Adicionar uma chave pública"
+    SELECT_A_PRIVATE_KEY: "Selecione a chave privada"
     UNVERIFIRED_SIGNATURE: "Assinatura não verificada"
     DECRYPTION_ERROR: "Erro de decripitação de OpenPGP"
     GOOD_SIGNATURE: "Boa assinatura de %USER%"

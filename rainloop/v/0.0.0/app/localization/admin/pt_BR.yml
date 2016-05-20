@@ -215,6 +215,7 @@ pt_BR:
     BUTTON_CLOSE: "Fechar"
     BUTTON_ADD: "Adicionar"
     BUTTON_UPDATE: "Atualizar"
+    NEW_DOMAIN_DESC: "Esta configuração de domínio lhe permitirá trabalhar <br /> com endereços de e-mail do <i>%NAME%</i>."
     WHITE_LIST_ALERT: |
       Filtrar com lista dos únicos usuários do domínio que terão acesso ao webmail.
       Use um espaço como delimitador.
