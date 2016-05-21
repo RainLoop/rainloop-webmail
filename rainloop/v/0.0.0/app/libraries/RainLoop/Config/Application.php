@@ -4,6 +4,8 @@ namespace RainLoop\Config;
 
 class Application extends \RainLoop\Config\AbstractConfig
 {
+	private $aReplaceEnv = null;
+
 	/**
 	 * @return void
 	 */
@@ -13,6 +15,70 @@ class Application extends \RainLoop\Config\AbstractConfig
 			'; RainLoop Webmail configuration file
 ; Please don\'t add custom parameters here, those will be overwritten',
 			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
+	}
+
+	/**
+	 * @param string $sSection
+	 * @param string $sName
+	 * @param mixed $mDefault = null
+	 * @param bool $bUseEnvReplace = true
+	 *
+	 * @return mixed
+	 */
+	public function Load()
+	{
+		parent::Load();
+
+		$this->aReplaceEnv = null;
+		if ((isset($_ENV) && \is_array($_ENV) && 0 < \count($_ENV)) ||
+			(isset($_SERVER) && \is_array($_SERVER) && 0 < \count($_SERVER)))
+		{
+			$sEnvNames = $this->Get('labs', 'replace_env_in_configuration', '');
+			if (0 < \strlen($sEnvNames))
+			{
+				$this->aReplaceEnv = \explode(',', $sEnvNames);
+				if (\is_array($this->aReplaceEnv))
+				{
+					$this->aReplaceEnv = \array_map('trim', $this->aReplaceEnv);
+					$this->aReplaceEnv = \array_map('strtolower', $this->aReplaceEnv);
+				}
+			}
+		}
+
+		if (!\is_array($this->aReplaceEnv) || 0 === \count($this->aReplaceEnv))
+		{
+			$this->aReplaceEnv = null;
+		}
+	}
+
+	/**
+	 * @param string $sSection
+	 * @param string $sName
+	 * @param mixed $mDefault = null
+	 *
+	 * @return mixed
+	 */
+	public function Get($sSection, $sName, $mDefault = null)
+	{
+		$mResult = parent::Get($sSection, $sName, $mDefault);
+		if ($this->aReplaceEnv && \is_string($mResult))
+		{
+			$sKey = \strtolower($sSection.'.'.$sName);
+			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$'))
+			{
+				foreach ($_ENV as $sKey => $sValue)
+				{
+					$mResult = \str_replace('$'.$sKey, $sValue, $mResult);
+				}
+
+				foreach ($_SERVER as $sKey => $sValue)
+				{
+					$mResult = \str_replace('$'.$sKey, $sValue, $mResult);
+				}
+			}
+		}
+
+		return $mResult;
 	}
 
 	/**
@@ -358,6 +424,7 @@ Enables caching in the system'),
 				'detect_image_exif_orientation' => array(true),
 				'cookie_default_path' => array(''),
 				'cookie_default_secure' => array(false),
+				'replace_env_in_configuration' => array(''),
 				'startup_url' => array(''),
 				'emogrifier' => array(true),
 				'dev_email' => array(''),
