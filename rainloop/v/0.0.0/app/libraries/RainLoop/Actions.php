@@ -1020,7 +1020,17 @@ class Actions
 					$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
 						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
 						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
-						43200, $sKey
+						43200,
+						$sKey
+					);
+					break;
+
+				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
+					$oDriver = \MailSo\Cache\Drivers\Redis::NewInstance(
+						$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
+						(int) $this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
+						43200,
+						$sKey
 					);
 					break;
 			}
