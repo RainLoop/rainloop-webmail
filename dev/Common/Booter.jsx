@@ -2,12 +2,12 @@
 import window from 'window';
 import progressJs from 'progressJs';
 
-import rainLoopStorage from 'Storage/RainLoop';
+import RainLoopStorage from 'Storage/RainLoop';
 
 let rlAppDataStorage = null;
 
 window.__rlah = () => {
-	return rainLoopStorage ? rainLoopStorage.getHash() : null;
+	return RainLoopStorage ? RainLoopStorage.getHash() : null;
 };
 
 window.__rlah_data = () => {
@@ -15,16 +15,16 @@ window.__rlah_data = () => {
 };
 
 window.__rlah_set = () => {
-	if (rainLoopStorage)
+	if (RainLoopStorage)
 	{
-		rainLoopStorage.setHash();
+		RainLoopStorage.setHash();
 	}
 };
 
 window.__rlah_clear = () => {
-	if (rainLoopStorage)
+	if (RainLoopStorage)
 	{
-		rainLoopStorage.clearHash();
+		RainLoopStorage.clearHash();
 	}
 };
 

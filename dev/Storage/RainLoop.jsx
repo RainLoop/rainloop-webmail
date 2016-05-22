@@ -54,21 +54,21 @@ class RainLoopStorage
 		return window.Math.round((new Date()).getTime() / 1000);
 	}
 
-	init() {
+	checkTimestamp() {
 
-		const
-			six = 1000 * 60 * 6, // 6m
-			now = this.timestamp()
-		;
-
-		if (now > this.getTimestamp() + six * 10)
+		if (this.timestamp() > this.getTimestamp() + 1000 * 60 * 60) // 60m
 		{
 			this.clearHash();
+			return true;
 		}
 
+		return false;
+	}
+
+	init() {
 		window.setInterval(() => {
 			this.setTimestamp();
-		}, six);
+		}, 1000 * 60); // 1m
 	}
 
 	getHash() {

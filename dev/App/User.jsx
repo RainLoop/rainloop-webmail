@@ -26,6 +26,7 @@ import ContactStore from 'Stores/User/Contact';
 
 import Local from 'Storage/Client';
 import Settings from 'Storage/Settings';
+import RainLoopStorage from 'Storage/RainLoop';
 
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
@@ -67,20 +68,24 @@ class AppUser extends AbstractApp
 		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), 60000 * 10), 60000 * 5);
 
 		$.wakeUp(() => {
+			if (RainLoopStorage.checkTimestamp())
+			{
+				this.reload();
+			}
+
 			Remote.jsVersion((sResult, oData) => {
 				if (Enums.StorageResultType.Success === sResult && oData && !oData.Result)
 				{
-					if (window.parent && !!Settings.appSettingsGet('inIframe'))
-					{
-						window.parent.location.reload();
-					}
-					else
-					{
-						window.location.reload();
-					}
+					this.reload();
 				}
 			}, Settings.appSettingsGet('version'));
+
 		}, {}, 60 * 60 * 1000);
+
+		if (RainLoopStorage.checkTimestamp())
+		{
+			this.reload();
+		}
 
 		if (Settings.settingsGet('UserBackgroundHash'))
 		{
@@ -102,6 +107,17 @@ class AppUser extends AbstractApp
 
 	remote() {
 		return Remote;
+	}
+
+	reload() {
+		if (window.parent && !!Settings.appSettingsGet('inIframe'))
+		{
+			window.parent.location.reload();
+		}
+		else
+		{
+			window.location.reload();
+		}
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
