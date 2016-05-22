@@ -316,7 +316,7 @@ abstract class AbstractConfig
 						{
 							default:
 							case 'string':
-								$sValue = '"'.$mParamValue[0].'"';
+								$sValue = '"'.\str_replace('"', '\"', $mParamValue[0]).'"';
 								break;
 							case 'int':
 							case 'integer':
