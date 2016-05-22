@@ -1,18 +1,22 @@
 
-$(function () {
+(function(window, $) {
 
-	//selectors
-	var inputs = '.popups .inputosaurus-input input[type="text"]:first, \
-				.popups .cc-row input[type="text"]:first, \
-				.popups .bcc-row input[type="text"]:first';
+	$(function() {
 
-	//bind function
-	$(document).on( 'keyup', inputs, function(){
-		var t = $(this);
-		var v = t.val();
-		if( v != "" && v.match(/@/ig).length >= 2 ){
-			t.val( t.val().replace(/\n| /ig,",") )
-		}
+		$(window.document).on('keyup', '.b-compose .b-header .inputosaurus-input input[type="text"]:first', function() {
+
+			var
+				$this = $(this),
+				value = $this.val()
+			;
+
+			if (value && value.match(/@/ig).length >= 2)
+			{
+				$this.val($this.val().replace(/\n| /ig, ','));
+			}
+
+		});
+
 	});
 
-});
+}(window, $))

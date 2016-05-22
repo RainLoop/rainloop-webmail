@@ -9,5 +9,4 @@ class ParseExcelListPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->addJs('js/parse_excel_list.js'); // add js file
 	}
-
 }
