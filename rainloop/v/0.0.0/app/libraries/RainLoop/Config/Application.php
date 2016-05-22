@@ -66,15 +66,26 @@ class Application extends \RainLoop\Config\AbstractConfig
 			$sKey = \strtolower($sSection.'.'.$sName);
 			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$'))
 			{
-				foreach ($_ENV as $sKey => $sValue)
-				{
-					$mResult = \str_replace('$'.$sKey, $sValue, $mResult);
-				}
+				$mResult = \preg_replace_callback('/\$([^\s]+)/', function($aMatch) {
 
-				foreach ($_SERVER as $sKey => $sValue)
-				{
-					$mResult = \str_replace('$'.$sKey, $sValue, $mResult);
-				}
+					if (!empty($aMatch[0]) && !empty($aMatch[1]))
+					{
+						if (!empty($_ENV[$aMatch[1]]))
+						{
+							return $_SERVER[$aMatch[1]];
+						}
+
+						if (!empty($_SERVER[$aMatch[1]]))
+						{
+							return $_SERVER[$aMatch[1]];
+						}
+
+						return $aMatch[0];
+					}
+
+					return '';
+
+				}, $mResult);
 			}
 		}
 
