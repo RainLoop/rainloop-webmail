@@ -36,7 +36,10 @@
 				{'id': 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
 				{'id': 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
 				{'id': 30, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
-				{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})}
+				{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})},
+				{'id': 60 * 2, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 2})},
+				{'id': 60 * 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 5})},
+				{'id': 60 * 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 10})}
 			];
 		});
 	}
