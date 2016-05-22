@@ -995,8 +995,13 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function FolderUnSelect()
 	{
-		return $this->IsSelected() && $this->IsSupported('UNSELECT') ?
-			$this->SendRequestWithCheck('UNSELECT') : $this;
+		if ($this->IsSelected() && $this->IsSupported('UNSELECT'))
+		{
+			$this->SendRequestWithCheck('UNSELECT');
+			$this->bIsSelected = false;
+		}
+
+		return $this;
 	}
 
 	/**

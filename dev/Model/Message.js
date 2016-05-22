@@ -16,7 +16,7 @@
 
 		AttachmentModel = require('Model/Attachment'),
 
-		MessageHelper = require('Helper/Message'),
+		MessageHelper = require('Helper/Message').default,
 
 		AbstractModel = require('Knoin/AbstractModel')
 	;
