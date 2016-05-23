@@ -5,7 +5,7 @@
 
 	var
 		_ = require('_'),
-		Q = require('Q'),
+		Promise = require('Promise'),
 
 		Utils = require('Common/Utils')
 	;
@@ -26,16 +26,12 @@
 
 	AbstractBasicPromises.prototype.fastResolve = function (mData)
 	{
-		var oDeferred = Q.defer();
-		oDeferred.resolve(mData);
-		return oDeferred.promise;
+		return Promise.resolve(mData);
 	};
 
 	AbstractBasicPromises.prototype.fastReject = function (mData)
 	{
-		var oDeferred = Q.defer();
-		oDeferred.reject(mData);
-		return oDeferred.promise;
+		return Promise.reject(mData);
 	};
 
 	AbstractBasicPromises.prototype.setTrigger = function (mTrigger, bValue)

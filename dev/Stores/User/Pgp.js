@@ -9,6 +9,7 @@
 		kn = require('Knoin/Knoin'),
 
 		Translator = require('Common/Translator'),
+		Settings = require('Storage/Settings'),
 
 		Utils = require('Common/Utils')
 	;
@@ -237,6 +238,23 @@
 		return false;
 	};
 
+	PgpUserStore.prototype.findKeyExternal = function (sEmail, fCallback)
+	{
+		if (this.openpgp.HKP && Settings.appSettingsGet('openpgpPublicKeyServer'))
+		{
+			var oHkp = new this.openpgp.HKP(Settings.appSettingsGet('openpgpPublicKeyServer').replace(/\/$/, ''));
+			oHkp.lookup({query: sEmail}).then(function(sKey) {
+				fCallback(sKey);
+			}, function() {
+				fCallback(null);
+			});
+		}
+		else
+		{
+			fCallback(null);
+		}
+	};
+
 	PgpUserStore.prototype.verifyMessage = function (oMessage, fCallback)
 	{
 		var oValid = null, aResult = [], aPublicKeys = [], aSigningKeyIds = [];
@@ -245,6 +263,10 @@
 			aSigningKeyIds = oMessage.getSigningKeyIds();
 			if (aSigningKeyIds && 0 < aSigningKeyIds.length)
 			{
+//				this.findKeyExternal('support@rainloop.net', function(key) {
+//					console.log(key);
+//				});
+
 				aPublicKeys = this.findPublicKeysBySigningKeyIds(aSigningKeyIds);
 				if (aPublicKeys && 0 < aPublicKeys.length)
 				{

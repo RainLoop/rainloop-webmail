@@ -1478,7 +1478,8 @@ class Actions
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
 			'attachmentsActions' => $aAttachmentsActions,
-			'rsaPublicKey' => $sRsaPublicKey
+			'rsaPublicKey' => $sRsaPublicKey,
+			'openpgpPublicKeyServer' => $oConfig->Get('security', 'openpgp_public_key_server', '')
 		), $bAdmin ? array(
 			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
 			'allowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),

@@ -409,7 +409,7 @@ class AppUser extends AbstractApp
 			{
 				callback(!!value);
 			}
-		}).fail(() => {
+		}).catch(() => {
 			if (callback)
 			{
 				_.delay(() => callback(false), 1);
@@ -423,7 +423,7 @@ class AppUser extends AbstractApp
 			.abort('Folders')
 			.fastResolve(true)
 			.then(() => promise)
-			.fail((errorCode) => {
+			.catch((errorCode) => {
 				FolderStore.folderList.error(Translator.getNotification(errorCode, '', errorDefCode));
 			}).fin(() => {
 				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
@@ -453,14 +453,18 @@ class AppUser extends AbstractApp
 							: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
 					;
 
-					if (oItem.users) {
+					if (oItem.users)
+					{
 						_.each(oItem.users, (item) => {
-							oEmail.clear();
-							oEmail.mailsoParse(item.userId.userid);
-							if (oEmail.validate())
+							if (item.userId)
 							{
-								aEmails.push(oEmail.email);
-								aUsers.push(item.userId.userid);
+								oEmail.clear();
+								oEmail.mailsoParse(item.userId.userid);
+								if (oEmail.validate())
+								{
+									aEmails.push(oEmail.email);
+									aUsers.push(item.userId.userid);
+								}
 							}
 						});
 					}

@@ -197,7 +197,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
+
 				'openpgp'					=> array(false),
+				'openpgp_public_key_server' => array(''),
+
 				'use_rsa_encryption'		=> array(false),
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
 				'admin_password'			=> array('12345'),
@@ -357,7 +360,7 @@ Enables caching in the system'),
 
 				'index' => array('v1', 'Additional caching key. If changed, cache is purged'),
 
-				'fast_cache_driver' => array('files', 'Can be: files, APC, memcache, redis'),
+				'fast_cache_driver' => array('files', 'Can be: files, APC, memcache, redis (beta)'),
 				'fast_cache_index' => array('v1', 'Additional caching key. If changed, fast cache is purged'),
 
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),

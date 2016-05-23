@@ -1078,7 +1078,7 @@
 				{
 					self.downloadAsZipError(true);
 				}
-			}).fail(function () {
+			}).catch(function () {
 				self.downloadAsZipError(true);
 			});
 		}
@@ -1102,7 +1102,7 @@
 				{
 					self.saveToOwnCloudError(true);
 				}
-			}).fail(function () {
+			}).catch(function () {
 				self.saveToOwnCloudError(true);
 			});
 		}
@@ -1159,7 +1159,7 @@
 							self.saveToDropboxError(true);
 						}
 					}
-				}).fail(function () {
+				}).catch(function () {
 					self.saveToDropboxError(true);
 				});
 			}

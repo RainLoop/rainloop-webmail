@@ -73,7 +73,7 @@ module.exports = {
 		'ssm': 'window.ssm',
 		'key': 'window.key',
 		'_': 'window._',
-		'Q': 'window.Q',
+		'Promise': 'window.Promise',
 		'$': 'window.jQuery'
 	}
 };

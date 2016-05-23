@@ -6,7 +6,7 @@
 	var
 		$ = require('$'),
 		_ = require('_'),
-		Q = require('Q'),
+		Promise = require('Promise'),
 
 		Consts = require('Common/Consts'),
 		Enums = require('Common/Enums'),
@@ -58,151 +58,151 @@
 
 	AbstractAjaxPromises.prototype.ajaxRequest = function (sAction, bPost, iTimeOut, oParameters, sAdditionalGetString, fTrigger)
 	{
-		var
-			oH = null,
-			self = this,
-			iStart = Utils.microtime(),
-			oDeferred = Q.defer()
-		;
+		var self = this;
+		return new Promise(function(resolve, reject) {
 
-		iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.DEFAULT_AJAX_TIMEOUT;
-		sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
+			var
+				oH = null,
+				iStart = Utils.microtime()
+			;
 
-		if (bPost)
-		{
-			oParameters['XToken'] = Settings.appSettingsGet('token');
-		}
+			iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.DEFAULT_AJAX_TIMEOUT;
+			sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
 
-		Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
-
-		this.setTrigger(fTrigger, true);
-
-		oH = $.ajax({
-			'type': bPost ? 'POST' : 'GET',
-			'url': Links.ajax(sAdditionalGetString),
-			'async': true,
-			'dataType': 'json',
-			'data': bPost ? (oParameters || {}) : {},
-			'timeout': iTimeOut,
-			'global': true
-		}).always(function (oData, sTextStatus) {
-
-			var bCached = false, oErrorData = null, sType = Enums.StorageResultType.Error;
-			if (oData && oData['Time'])
+			if (bPost)
 			{
-				bCached = Utils.pInt(oData['Time']) > Utils.microtime() - iStart;
+				oParameters['XToken'] = Settings.appSettingsGet('token');
 			}
 
-			// backward capability
-			switch (true)
-			{
-				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
-					sType = Enums.StorageResultType.Success;
-					break;
-				case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
-					sType = Enums.StorageResultType.Abort;
-					break;
-			}
+			Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
 
-			Plugins.runHook('ajax-default-response', [sAction,
-				Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oParameters]);
+			self.setTrigger(fTrigger, true);
 
-			if ('success' === sTextStatus)
-			{
-				if (oData && oData.Result && sAction === oData.Action)
+			oH = $.ajax({
+				'type': bPost ? 'POST' : 'GET',
+				'url': Links.ajax(sAdditionalGetString),
+				'async': true,
+				'dataType': 'json',
+				'data': bPost ? (oParameters || {}) : {},
+				'timeout': iTimeOut,
+				'global': true
+			}).always(function (oData, sTextStatus) {
+
+				var bCached = false, oErrorData = null, sType = Enums.StorageResultType.Error;
+				if (oData && oData['Time'])
 				{
-					oData.__cached__ = bCached;
-					oDeferred.resolve(oData);
+					bCached = Utils.pInt(oData['Time']) > Utils.microtime() - iStart;
 				}
-				else if (oData && oData.Action)
+
+				// backward capability
+				switch (true)
+				{
+					case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
+						sType = Enums.StorageResultType.Success;
+						break;
+					case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
+						sType = Enums.StorageResultType.Abort;
+						break;
+				}
+
+				Plugins.runHook('ajax-default-response', [sAction,
+					Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oParameters]);
+
+				if ('success' === sTextStatus)
+				{
+					if (oData && oData.Result && sAction === oData.Action)
+					{
+						oData.__cached__ = bCached;
+						resolve(oData);
+					}
+					else if (oData && oData.Action)
+					{
+						oErrorData = oData;
+						reject(oData.ErrorCode ? oData.ErrorCode : Enums.Notification.AjaxFalse);
+					}
+					else
+					{
+						oErrorData = oData;
+						reject(Enums.Notification.AjaxParse);
+					}
+				}
+				else if ('timeout' === sTextStatus)
 				{
 					oErrorData = oData;
-					oDeferred.reject(oData.ErrorCode ? oData.ErrorCode : Enums.Notification.AjaxFalse);
+					reject(Enums.Notification.AjaxTimeout);
+				}
+				else if ('abort' === sTextStatus)
+				{
+					if (!oData || !oData.__aborted__)
+					{
+						reject(Enums.Notification.AjaxAbort);
+					}
 				}
 				else
 				{
 					oErrorData = oData;
-					oDeferred.reject(Enums.Notification.AjaxParse);
-				}
-			}
-			else if ('timeout' === sTextStatus)
-			{
-				oErrorData = oData;
-				oDeferred.reject(Enums.Notification.AjaxTimeout);
-			}
-			else if ('abort' === sTextStatus)
-			{
-				if (!oData || !oData.__aborted__)
-				{
-					oDeferred.reject(Enums.Notification.AjaxAbort);
-				}
-			}
-			else
-			{
-				oErrorData = oData;
-				oDeferred.reject(Enums.Notification.AjaxParse);
-			}
-
-			if (self.oRequests[sAction])
-			{
-				self.oRequests[sAction] = null;
-				delete self.oRequests[sAction];
-			}
-
-			self.setTrigger(fTrigger, false);
-
-			if (oErrorData)
-			{
-				if (-1 < Utils.inArray(oErrorData.ErrorCode, [
-					Enums.Notification.AuthError, Enums.Notification.AccessError,
-					Enums.Notification.ConnectionError, Enums.Notification.DomainNotAllowed, Enums.Notification.AccountNotAllowed,
-					Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
-				]))
-				{
-					Globals.iAjaxErrorCount++;
+					reject(Enums.Notification.AjaxParse);
 				}
 
-				if (Enums.Notification.InvalidToken === oErrorData.ErrorCode)
+				if (self.oRequests[sAction])
 				{
-					Globals.iTokenErrorCount++;
+					self.oRequests[sAction] = null;
+					delete self.oRequests[sAction];
 				}
 
-				if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
+				self.setTrigger(fTrigger, false);
+
+				if (oErrorData)
 				{
-					if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
+					if (-1 < Utils.inArray(oErrorData.ErrorCode, [
+						Enums.Notification.AuthError, Enums.Notification.AccessError,
+						Enums.Notification.ConnectionError, Enums.Notification.DomainNotAllowed, Enums.Notification.AccountNotAllowed,
+						Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
+					]))
 					{
-						 Globals.__APP__.loginAndLogoutReload(false, true);
+						Globals.iAjaxErrorCount++;
+					}
+
+					if (Enums.Notification.InvalidToken === oErrorData.ErrorCode)
+					{
+						Globals.iTokenErrorCount++;
+					}
+
+					if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
+					{
+						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
+						{
+							 Globals.__APP__.loginAndLogoutReload(false, true);
+						}
+					}
+
+					if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
+					{
+						if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
+						{
+							Globals.__APP__.clearClientSideToken();
+						}
+
+						if (Globals.__APP__ && !oErrorData.ClearAuth && Globals.__APP__.loginAndLogoutReload)
+						{
+							Globals.__APP__.loginAndLogoutReload(false, true);
+						}
 					}
 				}
 
-				if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
+			});
+
+			if (oH)
+			{
+				if (self.oRequests[sAction])
 				{
-					if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
-					{
-						Globals.__APP__.clearClientSideToken();
-					}
-
-					if (Globals.__APP__ && !oErrorData.ClearAuth && Globals.__APP__.loginAndLogoutReload)
-					{
-						Globals.__APP__.loginAndLogoutReload(false, true);
-					}
+					self.oRequests[sAction] = null;
+					delete self.oRequests[sAction];
 				}
-			}
 
+				self.oRequests[sAction] = oH;
+			}
 		});
-
-		if (oH)
-		{
-			if (this.oRequests[sAction])
-			{
-				this.oRequests[sAction] = null;
-				delete this.oRequests[sAction];
-			}
-
-			this.oRequests[sAction] = oH;
-		}
-
-		return oDeferred.promise;
 	};
 
 	AbstractAjaxPromises.prototype.getRequest = function (sAction, fTrigger, sAdditionalGetString, iTimeOut)
