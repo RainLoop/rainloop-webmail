@@ -79,6 +79,14 @@ class ServiceActions
 	}
 
 	/**
+	 * @return \RainLoop\Providers\Settings
+	 */
+	public function SettingsProvider()
+	{
+		return $this->oActions->SettingsProvider();
+	}
+
+	/**
 	 * @param array $aPaths
 	 *
 	 * @return \RainLoop\ServiceActions
