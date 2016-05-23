@@ -1,0 +1,57 @@
+
+#rl-content{
+	display: none;
+}
+
+.internal-hiddden{
+	display: none !important;
+}
+
+html.no-css, html.no-css body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Verdana, Geneva, sans-serif;
+	background-color: #eee;
+}
+
+html.no-css #rl-content, html.no-css #rl-loading{
+	display: none;
+}
+
+html.no-css #rl-loading-error {
+	position: absolute;
+	font-size: 30px;
+	line-height: 130%;
+	top: 50%;
+	width: 100%;
+	height: 65px;
+	margin: 0;
+	margin-top: -60px;
+	background-color: transparent;
+	text-align: center;
+	color: #333;
+}
+
+html.no-css .progressjs-container {
+	display: none;
+}
+
+html.no-css .thm-body {
+	color: #333;
+	background-color: #aaa;
+	background-image: none;
+}
+
+html.no-css .thm-loading {
+	color: #333 !important;
+	text-shadow: none !important;
+
+	.e-spinner .e-bounce {
+		display: none !important;
+	}
+}
+
+html.no-css .thm-login-desc .desc {
+	color: #333 !important;
+	text-shadow: none !important;
+}

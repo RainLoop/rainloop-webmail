@@ -33,7 +33,7 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test: /\.html$/,
+				test: /\.(html|css)$/,
 				loader: 'raw'
 			},
 			{

@@ -31,7 +31,7 @@
 
 	Knoin.prototype.hideLoading = function ()
 	{
-		$('#rl-content').show();
+		$('#rl-content').addClass('rl-content-show');
 		$('#rl-loading').hide().remove();
 	};
 
@@ -422,9 +422,9 @@
 	 */
 	Knoin.prototype.startScreens = function (aScreensClasses)
 	{
-		$('#rl-content').css({
-			'visibility': 'hidden'
-		});
+//		$('#rl-content').css({
+//			'visibility': 'hidden'
+//		});
 
 		_.each(aScreensClasses, function (CScreen) {
 
@@ -468,9 +468,9 @@
 		hasher.changed.add(oCross.parse, oCross);
 		hasher.init();
 
-		$('#rl-content').css({
-			'visibility': 'visible'
-		});
+//		$('#rl-content').css({
+//			'visibility': 'visible'
+//		});
 
 		_.delay(function () {
 			Globals.$html.removeClass('rl-started-trigger').addClass('rl-started');

@@ -97,7 +97,7 @@ function copyFile(sFile, sNewFile, callback)
 	callback();
 }
 
-cfg.paths.globjs = 'dev/**/*.{js,jsx,html}';
+cfg.paths.globjs = 'dev/**/*.{js,jsx,html,css}';
 cfg.paths.globjsonly = 'dev/**/*.js';
 cfg.paths.globjsxonly = 'dev/**/*.jsx';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';

@@ -2396,27 +2396,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sPassword = $this->clientRsaDecryptHelper($sPassword);
 		$this->Logger()->AddSecret($sPassword);
 
-		if (0 < \strlen($sEmail) && 0 < \strlen($sPassword) &&
-			$this->Config()->Get('security', 'allow_universal_login', true) &&
-			$this->Config()->Get('security', 'allow_admin_panel', true) &&
-			$sEmail === $this->Config()->Get('security', 'admin_login', '')
-		)
-		{
-			if ($this->Config()->ValidatePassword($sPassword))
-			{
-				$this->setAdminAuthToken($this->getAdminToken());
-
-				return $this->DefaultResponse(__FUNCTION__, true, array(
-					'Admin' => true
-				));
-			}
-			else
-			{
-				$this->loginErrorDelay();
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
-			}
-		}
-		else if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
+		if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
 			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false)
 		)
 		{

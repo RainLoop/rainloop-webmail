@@ -1532,6 +1532,25 @@
 		}
 	};
 
+	Utils.appendStyles = function ($styleTag, css)
+	{
+		if ($styleTag && $styleTag[0])
+		{
+			if ($styleTag[0].styleSheet && !Utils.isUnd($styleTag[0].styleSheet.cssText))
+			{
+				$styleTag[0].styleSheet.cssText = css;
+			}
+			else
+			{
+				$styleTag.text(css);
+			}
+
+			return true;
+		}
+
+		return false;
+	};
+
 	Utils.__themeTimer = 0;
 	Utils.__themeAjax = null;
 
@@ -1583,14 +1602,9 @@
 
 					if (oThemeStyle && oThemeStyle[0])
 					{
-						oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
-						if (oThemeStyle[0].styleSheet && !Utils.isUnd(oThemeStyle[0].styleSheet.cssText))
+						if (Utils.appendStyles(oThemeStyle, aData[1]))
 						{
-							oThemeStyle[0].styleSheet.cssText = aData[1];
-						}
-						else
-						{
-							oThemeStyle.text(aData[1]);
+							oThemeStyle.attr('data-href', sUrl).attr('data-theme', aData[0]);
 						}
 					}
 

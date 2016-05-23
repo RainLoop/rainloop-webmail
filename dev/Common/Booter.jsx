@@ -28,6 +28,12 @@ window.__rlah_clear = () => {
 	}
 };
 
+function getComputedStyle(id, name)
+{
+	var element = window.document.getElementById(id);
+	return element.currentStyle ? element.currentStyle[name] : (window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
+}
+
 function includeStyle(styles)
 {
 	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E'));
@@ -41,9 +47,15 @@ function includeScr(src)
 function includeLayout()
 {
 	const
+		css = require('Styles/@Boot.css'),
 		layout = require('Html/Layout.html'),
 		app = window.document.getElementById('rl-app')
 	;
+
+	if (css)
+	{
+		includeStyle(css);
+	}
 
 	if (app && layout)
 	{
@@ -163,12 +175,6 @@ function runApp()
 			libs = window.jassl(appData.StaticLibJsLink).then(() => {
 				if (window.$)
 				{
-					if (!window.$('#rl-check').is(':visible'))
-					{
-						window.$('html').addClass('no-css');
-						throw new Error('no-css');
-					}
-
 					window.$('#rl-check').remove();
 
 					if (appData.IncludeBackground)
@@ -224,7 +230,7 @@ window.__initAppData = function(data) {
 
 	if (rlAppDataStorage.NewThemeLink)
 	{
-		window.document.getElementById('app-theme-link').href = rlAppDataStorage.NewThemeLink;
+		(window.document.getElementById('app-theme-link') || {}).href = rlAppDataStorage.NewThemeLink;
 	}
 
 	if (rlAppDataStorage.IncludeCss)
@@ -242,6 +248,12 @@ window.__runBoot = function() {
 	if (!window.navigator || !window.navigator.cookieEnabled)
 	{
 		window.document.location.replace('./?/NoCookie');
+	}
+
+	if ('none' !== getComputedStyle('rl-check', 'display'))
+	{
+		const root = document.documentElement;
+		root.className += ' no-css';
 	}
 
 	if (includeLayout())
