@@ -85,7 +85,7 @@
 
 		Events.sub('rl.auto-logout-refresh', function () {
 			window.clearTimeout(self.iAutoLogoutTimer);
-			if (0 < self.autoLogout())
+			if (0 < self.autoLogout() && !Settings.settingsGet('AccountSignMe'))
 			{
 				self.iAutoLogoutTimer = window.setTimeout(function () {
 					Events.pub('rl.auto-logout');
