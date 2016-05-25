@@ -1,25 +1,27 @@
 
 import window from 'window';
+
 import {Promise} from 'es6-promise-polyfill/promise.js';
-import {progressJs} from 'progress.js/src/progress.js';
-import jassl from 'jassl';
+import {jassl} from 'jassl';
+import {progressJs} from '../vendors/progress.js/src/progress.js';
 
 window.Promise = window.Promise || Promise;
 window.progressJs = window.progressJs || progressJs();
 window.jassl = jassl;
 
 window.progressJs.onbeforeend(() => {
-	if (window.$)
+	const _$ = window.$;
+	if (_$)
 	{
-		window.$('.progressjs-container').hide();
+		_$('.progressjs-container').hide();
 		window.setTimeout(() => {
-			window.$('.progressjs-container').remove();
-		}, 100);
+			_$('.progressjs-container').remove();
+		}, 200);
 	}
 });
 
-require('json2/json2.js');
-require('modernizr/modernizr-custom.js');
+require('../vendors/json2/json2.js');
+require('../vendors/modernizr/modernizr-custom.js');
 
 require('Common/Booter.jsx');
 

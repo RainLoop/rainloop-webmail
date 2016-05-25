@@ -2,7 +2,8 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.1",
-  "release": "118",
+  "release": "120",
+  "private": true,
   "ownCloudPackageVersion": "4.17",
   "description": "Simple, modern & fast web-based email client",
   "homepage": "http://rainloop.net",
@@ -43,25 +44,25 @@
   ],
   "readmeFilename": "README.md",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 4"
   },
   "devDependencies": {
     "babel-core": "^6.1.4",
     "babel-eslint": "^4.1.5",
     "babel-loader": "^6.1.0",
-    "babel-plugin-transform-runtime": "^6.1.18",
+    "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "*",
-    "babel-preset-es2015-loose": "^7.0.0",
-    "babel-preset-stage-0": "^6.1.18",
+    "babel-preset-es2015-loose": "*",
+    "babel-preset-es2015-loose-native-modules": "^1.0.0",
+    "babel-preset-stage-0": "^6.5.0",
     "babel-runtime": "^6.1.18",
+    "es6-promise-polyfill": "^1.2.0",
     "eslint": "^1.9.0",
     "gulp": "~3.9.0",
     "gulp-autoprefixer": "*",
     "gulp-beautify": "*",
     "gulp-clean-css": "^2.0.7",
     "gulp-concat-util": "*",
-    "gulp-csscomb": "*",
-    "gulp-csslint": "*",
     "gulp-eol": "*",
     "gulp-eslint": "^1.1.0",
     "gulp-header": "*",
@@ -82,11 +83,11 @@
     "jassl": "github:rainloop/jassl",
     "jshint": "*",
     "jshint-summary": "*",
-    "lodash": "~3.9.3",
+    "json-loader": "^0.5.4",
     "node-fs": "*",
     "node-notifier": "~4.2.3",
     "raw-loader": "^0.5.1",
     "rimraf": "*",
-    "webpack": "*"
+    "webpack": "2.1.0-beta.7"
   }
 }

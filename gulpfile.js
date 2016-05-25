@@ -181,7 +181,6 @@ cfg.paths.js = {
 			'vendors/jquery-wakeup/jquery.wakeup.min.js',
 			'vendors/jquery-letterfx/jquery-letterfx.min.js',
 			'vendors/jquery-backstretch/jquery.backstretch.min.js',
-			'vendors/queue/queue.min.js',
 			'vendors/inputosaurus/inputosaurus.min.js',
 			'vendors/moment/min/moment.min.js ',
 			'vendors/tinycon/tinycon.min.js ',
@@ -231,8 +230,6 @@ gulp.task('less:main', function() {
 gulp.task('css:main-begin', ['less:main'], function() {
 
 	var
-//		csslint = require('gulp-csslint'),
-//		csscomb = require('gulp-csscomb'),
 		autoprefixer = require('gulp-autoprefixer')
 	;
 
@@ -240,9 +237,6 @@ gulp.task('css:main-begin', ['less:main'], function() {
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
-//		.pipe(csscomb())
-//		.pipe(csslint())
-//		.pipe(csslint.reporter())
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
 		.pipe(livereload());
@@ -338,7 +332,10 @@ gulp.task('js:webpack', [/*'js:webpack:clear'*/], function(callback) {
 	if (webpackCfg && webpackCfg.plugins)
 	{
 		webpackCfg.plugins.push(new webpack.DefinePlugin({
-            'RL_COMMUNITY': !!cfg.community
+            'RL_COMMUNITY': !!cfg.community,
+			'process.env': {
+				NODE_ENV: '"production"'
+			}
         }));
 	}
 
@@ -478,9 +475,6 @@ regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-
 
 regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.5.min.js',
 	'/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */\n');
-
-regOtherMinTask('other:q', 'vendors/Q/', 'q.js', 'q.min.js',
-	'/*! (c) 2009-2012 Kris Kowal Licensed under MIT */\n');
 
 gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');

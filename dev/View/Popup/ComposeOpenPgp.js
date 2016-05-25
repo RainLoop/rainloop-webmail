@@ -184,7 +184,6 @@
 					{
 						if (oPrivateKey && 0 === aPublicKeys.length)
 						{
-//							oPromise = PgpStore.openpgp.signClearMessage([oPrivateKey], self.text()); // 1.2.0
 							oPromise = PgpStore.openpgp.sign({
 								data: self.text(),
 								privateKeys: [oPrivateKey]
@@ -192,7 +191,6 @@
 						}
 						else if (oPrivateKey && 0 < aPublicKeys.length)
 						{
-//							oPromise = PgpStore.openpgp.signAndEncryptMessage(aPublicKeys, oPrivateKey, self.text()); // 1.2.0
 							oPromise = PgpStore.openpgp.encrypt({
 								data: self.text(),
 								publicKeys: aPublicKeys,
@@ -201,7 +199,6 @@
 						}
 						else if (!oPrivateKey && 0 < aPublicKeys.length)
 						{
-//							oPromise = PgpStore.openpgp.encryptMessage(aPublicKeys, self.text()); // 1.2.0
 							oPromise = PgpStore.openpgp.encrypt({
 								data: self.text(),
 								publicKeys: aPublicKeys

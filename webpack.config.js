@@ -1,7 +1,11 @@
 
 var
 	path = require('path'),
-	webpack = require('webpack')
+	webpack = require('webpack'),
+	jsLoaderQuery = {
+		cacheDirectory: true,
+		presets: ['es2015-loose-native-modules', 'stage-0']
+	}
 ;
 
 module.exports = {
@@ -20,10 +24,10 @@ module.exports = {
 //	devtool: "#source-map",
 	plugins: [
 //		new webpack.optimize.CommonsChunkPlugin('common.js'),
-		new webpack.optimize.OccurenceOrderPlugin()
+		new webpack.optimize.OccurrenceOrderPlugin()
 	],
 	resolve: {
-		root: [path.resolve(__dirname, 'dev'), path.resolve(__dirname, 'vendors')],
+		modules: [path.resolve(__dirname, 'dev'), 'node_modules'],
 		extensions: ['', '.js', '.jsx'],
 		alias: {
 			'Opentip': __dirname  + '/dev/External/Opentip.js',
@@ -37,22 +41,14 @@ module.exports = {
 				loader: 'raw'
 			},
 			{
-				test: /(jassl)/,
-				loader: 'babel',
-				exclude: /(bower_components)/,
-				query: {
-					cacheDirectory: true,
-					presets: ['es2015-loose', 'stage-0']
-				}
+				test: /\.(json)$/,
+				loader: 'json'
 			},
 			{
 				test: /\.jsx$/,
 				loader: 'babel',
 				exclude: /(node_modules|bower_components)/,
-				query: {
-					cacheDirectory: true,
-					presets: ['es2015-loose', 'stage-0']
-				}
+				query: jsLoaderQuery
 			}
 		]
 	},
@@ -60,9 +56,7 @@ module.exports = {
 		'window': 'window',
 		'JSON': 'window.JSON',
 		'JSEncrypt': 'window.JSEncrypt',
-		'$LAB': 'window.$LAB',
 		'progressJs': 'window.progressJs',
-		'queue': 'window.queue',
 		'moment': 'window.moment',
 		'ifvisible': 'window.ifvisible',
 		'crossroads': 'window.crossroads',
