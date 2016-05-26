@@ -17,12 +17,11 @@ export default (App) => {
 
 	Globals.__APP__ = App;
 
-	Globals.$win
-		.keydown(Utils.kill_CtrlA_CtrlS)
-		.unload(function () {
-			Globals.bUnload = true;
-		})
-	;
+	Globals.$win.on('keydown', Utils.kill_CtrlA_CtrlS);
+
+	Globals.$win.on('unload', function () {
+		Globals.bUnload = true;
+	});
 
 	Globals.$html
 		.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile')

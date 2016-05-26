@@ -149,6 +149,11 @@
 			{'id': Enums.FilterConditionType.NotEqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
 		]);
 
+		if (oModules && oModules.regex)
+		{
+			this.typeOptions.push({'id': Enums.FilterConditionType.Regex, 'name': 'Regex'});
+		}
+
 		this.typeOptionsSize([
 			{'id': Enums.FilterConditionType.Over, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_OVER')},
 			{'id': Enums.FilterConditionType.Under, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_UNDER')}

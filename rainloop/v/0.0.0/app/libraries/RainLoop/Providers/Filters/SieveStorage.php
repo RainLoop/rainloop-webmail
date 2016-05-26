@@ -96,6 +96,9 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			'Capa' => $bAllowRaw ? $aModules : array(),
 			'Modules' => array(
 				'redirect' => \in_array('fileinto', $aModules),
+				'regex' => \in_array('regex', $aModules),
+				'relational' => \in_array('relational', $aModules),
+				'date' => \in_array('date', $aModules),
 				'moveto' => \in_array('fileinto', $aModules),
 				'reject' => \in_array('reject', $aModules),
 				'vacation' => \in_array('vacation', $aModules),
@@ -161,7 +164,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	 *
 	 * @return string
 	 */
-	private function conditionToSieveScript($oCondition)
+	private function conditionToSieveScript($oCondition, &$aCapa)
 	{
 		$sResult = '';
 		$sTypeWord = '';
@@ -191,6 +194,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$sResult .= 'not ';
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::CONTAINS:
 					$sTypeWord = ':contains';
+					break;
+				case \RainLoop\Providers\Filters\Enumerations\ConditionType::REGEX:
+					$sTypeWord = ':regex';
+					$aCapa['regex'] = true;
 					break;
 				default:
 					$bTrue = false;
@@ -284,7 +291,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					foreach ($aConditions as $oCond)
 					{
 						$bTrim = true;
-						$sCons = $this->conditionToSieveScript($oCond);
+						$sCons = $this->conditionToSieveScript($oCond, $aCapa);
 						if (!empty($sCons))
 						{
 							$aResult[] = $sTab.$sCons.',';
@@ -302,7 +309,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aResult[] = 'if allof(';
 					foreach ($aConditions as $oCond)
 					{
-						$aResult[] = $sTab.$this->conditionToSieveScript($oCond).',';
+						$aResult[] = $sTab.$this->conditionToSieveScript($oCond, $aCapa).',';
 					}
 
 					$aResult[\count($aResult) - 1] = \rtrim($aResult[\count($aResult) - 1], ',');
@@ -311,7 +318,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			}
 			else if (1 === \count($aConditions))
 			{
-				$aResult[] = 'if '.$this->conditionToSieveScript($aConditions[0]).'';
+				$aResult[] = 'if '.$this->conditionToSieveScript($aConditions[0], $aCapa).'';
 			}
 			else
 			{

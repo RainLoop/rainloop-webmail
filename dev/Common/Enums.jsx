@@ -345,6 +345,7 @@ export const FilterConditionType = {
 	'NotContains': 'NotContains',
 	'EqualTo': 'EqualTo',
 	'NotEqualTo': 'NotEqualTo',
+	'Regex': 'Regex',
 	'Over': 'Over',
 	'Under': 'Under'
 };

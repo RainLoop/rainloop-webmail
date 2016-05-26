@@ -170,7 +170,8 @@ cfg.paths.js = {
 		name: 'libs.js',
 		src: [
 			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-1.12.3.min.js',
+			'vendors/jquery/jquery-2.2.4.min.js',
+//			'vendors/jquery/jquery-3.0.0-rc1.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
 			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
 			'vendors/jquery-finger/jquery.finger.min.js',
@@ -299,6 +300,7 @@ gulp.task('js:libs', function() {
 	return gulp.src(cfg.paths.js.libs.src)
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
 		.pipe(eol('\n', true))
+		.pipe(replace(/sourceMappingURL=[a-z0-9\.\-_]{1,20}\.map/ig, ''))
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
