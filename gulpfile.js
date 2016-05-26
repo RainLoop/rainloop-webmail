@@ -201,6 +201,7 @@ cfg.paths.js = {
 			'vendors/lightGallery/dist/js/lg-autoplay.min.js',
 			'vendors/keymaster/keymaster.min.js',
 			'vendors/ifvisible/ifvisible.min.js',
+			'vendors/qr.js/qr.min.js',
 			'vendors/bootstrap/js/bootstrap.min.js'
 		]
 	},

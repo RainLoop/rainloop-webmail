@@ -7,6 +7,7 @@
 		window = require('window'),
 		_ = require('_'),
 		ko = require('ko'),
+		qr = require('qr'),
 
 		Enums = require('Common/Enums'),
 		Utils = require('Common/Utils'),
@@ -43,6 +44,7 @@
 
 		this.viewSecret = ko.observable('');
 		this.viewBackupCodes = ko.observable('');
+		this.viewUrlTitle = ko.observable('');
 		this.viewUrl = ko.observable('');
 
 		this.viewEnable_ = ko.observable(false);
@@ -125,6 +127,7 @@
 	{
 		this.viewSecret('');
 		this.viewBackupCodes('');
+		this.viewUrlTitle('');
 		this.viewUrl('');
 	};
 
@@ -148,6 +151,7 @@
 	{
 		this.viewSecret('');
 		this.viewBackupCodes('');
+		this.viewUrlTitle('');
 		this.viewUrl('');
 
 		this.twoFactorTested(false);
@@ -162,6 +166,7 @@
 
 		this.viewSecret('');
 		this.viewBackupCodes('');
+		this.viewUrlTitle('');
 		this.viewUrl('');
 	};
 
@@ -171,6 +176,13 @@
 		{
 			window.location.reload();
 		}
+	};
+
+	TwoFactorConfigurationPopupView.prototype.getQr = function ()
+	{
+		return 'otpauth://totp/' + window.encodeURIComponent(this.viewUser()) +
+			'?secret=' + window.encodeURIComponent(this.viewSecret()) +
+			'&issuer=' + window.encodeURIComponent('');
 	};
 
 	TwoFactorConfigurationPopupView.prototype.onResult = function (sResult, oData)
@@ -187,7 +199,9 @@
 
 			this.viewSecret(Utils.pString(oData.Result.Secret));
 			this.viewBackupCodes(Utils.pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
-			this.viewUrl(Utils.pString(oData.Result.Url));
+
+			this.viewUrlTitle(Utils.pString(oData.Result.UrlTitle));
+			this.viewUrl(qr.toDataURL({level: 'M', size: 8, value: this.getQr()}));
 		}
 		else
 		{
@@ -198,6 +212,7 @@
 
 			this.viewSecret('');
 			this.viewBackupCodes('');
+			this.viewUrlTitle('');
 			this.viewUrl('');
 		}
 	};
@@ -209,11 +224,13 @@
 		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 		{
 			this.viewSecret(Utils.pString(oData.Result.Secret));
-			this.viewUrl(Utils.pString(oData.Result.Url));
+			this.viewUrlTitle(Utils.pString(oData.Result.UrlTitle));
+			this.viewUrl(qr.toDataURL({level: 'M', size: 6, value: this.getQr()}));
 		}
 		else
 		{
 			this.viewSecret('');
+			this.viewUrlTitle('');
 			this.viewUrl('');
 		}
 	};

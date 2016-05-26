@@ -6722,7 +6722,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'IsSet' => false,
 			'Enable' => false,
 			'Secret' => '',
-			'Url' => '',
+			'UrlTitle' => '',
 			'BackupCodes' => ''
 		);
 
@@ -6749,9 +6749,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$aResult['Enable'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
 			$aResult['Secret'] = $mData['Secret'];
 			$aResult['BackupCodes'] = $mData['BackupCodes'];
-
-			$aResult['Url'] = $this->TwoFactorAuthProvider()->GetQRCodeGoogleUrl(
-				$aResult['User'], $aResult['Secret'], $this->Config()->Get('webmail', 'title', ''));
+			$aResult['UrlTitle'] = $this->Config()->Get('webmail', 'title', '');
 		}
 
 		if ($bRemoveSecret)
@@ -6761,9 +6759,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				unset($aResult['Secret']);
 			}
 
-			if (isset($aResult['Url']))
+			if (isset($aResult['UrlTitle']))
 			{
-				unset($aResult['Url']);
+				unset($aResult['UrlTitle']);
 			}
 
 			if (isset($aResult['BackupCodes']))
