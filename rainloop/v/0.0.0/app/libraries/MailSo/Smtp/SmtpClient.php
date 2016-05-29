@@ -177,6 +177,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sLogin
 	 * @param string $sPassword
+	 * @param boolean $bUseAuthPlainIfSupported = true
+	 * @param boolean $bUseAuthCramMd5IfSupported = true
 	 *
 	 * @return \MailSo\Smtp\SmtpClient
 	 *
@@ -184,15 +186,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Login($sLogin, $sPassword)
+	public function Login($sLogin, $sPassword, $bUseAuthPlainIfSupported = true, $bUseAuthCramMd5IfSupported = true)
 	{
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
-		if ($this->IsAuthSupported('LOGIN'))
+		if ($bUseAuthCramMd5IfSupported && $this->IsAuthSupported('CRAM-MD5'))
 		{
 			try
 			{
-				$this->sendRequestWithCheck('AUTH', 334, 'LOGIN');
+				$this->sendRequestWithCheck('AUTH', 334, 'CRAM-MD5');
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -202,10 +204,26 @@ class SmtpClient extends \MailSo\Net\NetClient
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 
+			$sTicket = '';
+
+			$sContinuationResponse = !empty($this->aResults[0]) ? \trim($this->aResults[0]) : '';
+			if ($sContinuationResponse && '334 ' === \substr($sContinuationResponse, 0, 4) && 0 < \strlen(\substr($sContinuationResponse, 4)))
+			{
+				$sTicket = @\base64_decode(\substr($sContinuationResponse, 4));
+				$this->writeLogWithCrlf('ticket: '.$sTicket);
+			}
+
+			if (empty($sTicket))
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\NegativeResponseException(),
+					\MailSo\Log\Enumerations\Type::NOTICE, true
+				);
+			}
+
 			try
 			{
-				$this->sendRequestWithCheck(\base64_encode($sLogin), 334, '');
-				$this->sendRequestWithCheck(\base64_encode($sPassword), 235, '', true);
+				$this->sendRequestWithCheck(\base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sTicket, $sPassword)), 235, '', true);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -215,7 +233,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 		}
-		else if ($this->IsAuthSupported('PLAIN'))
+		else if ($bUseAuthPlainIfSupported && $this->IsAuthSupported('PLAIN'))
 		{
 			if ($this->__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND)
 			{
@@ -256,6 +274,33 @@ class SmtpClient extends \MailSo\Net\NetClient
 							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
+			}
+		}
+		else if ($this->IsAuthSupported('LOGIN'))
+		{
+			try
+			{
+				$this->sendRequestWithCheck('AUTH', 334, 'LOGIN');
+			}
+			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\LoginBadMethodException(
+						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
+					\MailSo\Log\Enumerations\Type::NOTICE, true);
+			}
+
+			try
+			{
+				$this->sendRequestWithCheck(\base64_encode($sLogin), 334, '');
+				$this->sendRequestWithCheck(\base64_encode($sPassword), 235, '', true);
+			}
+			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
+						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
+					\MailSo\Log\Enumerations\Type::NOTICE, true);
 			}
 		}
 		else

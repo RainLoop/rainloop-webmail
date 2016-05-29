@@ -186,8 +186,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param string $sLogin
 	 * @param string $sPassword
 	 * @param string $sProxyAuthUser = ''
-	 * @param bool $bUseAuthPlainIfSupported = false
-	 * @param bool $bUseAuthCramMd5IfSupported = false
+	 * @param bool $bUseAuthPlainIfSupported = true
+	 * @param bool $bUseAuthCramMd5IfSupported = true
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
@@ -196,7 +196,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
 	public function Login($sLogin, $sPassword, $sProxyAuthUser = '',
-		$bUseAuthPlainIfSupported = false, $bUseAuthCramMd5IfSupported = false)
+		$bUseAuthPlainIfSupported = true, $bUseAuthCramMd5IfSupported = true)
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
@@ -233,10 +233,10 @@ class ImapClient extends \MailSo\Net\NetClient
 
 					if ($oContinuationResponse && !empty($oContinuationResponse->ResponseList[1]))
 					{
-						$sTiken = @\base64_decode($oContinuationResponse->ResponseList[1]);
-						$this->oLogger->Write('tiket: '.$sTiken);
+						$sTicket = @\base64_decode($oContinuationResponse->ResponseList[1]);
+						$this->oLogger->Write('ticket: '.$sTicket);
 
-						$sToken = \base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sPassword, $sTiken));
+						$sToken = \base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sTicket, $sPassword));
 
 						if ($this->oLogger)
 						{
