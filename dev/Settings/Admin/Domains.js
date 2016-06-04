@@ -25,6 +25,9 @@
 		}, this);
 
 		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
+
+		this.onDomainListChangeRequest = _.bind(this.onDomainListChangeRequest, this);
+		this.onDomainLoadRequest = _.bind(this.onDomainLoadRequest, this);
 	}
 
 	DomainsAdminSettings.prototype.createDomain = function ()
@@ -35,13 +38,13 @@
 	DomainsAdminSettings.prototype.deleteDomain = function (oDomain)
 	{
 		this.domains.remove(oDomain);
-		Remote.domainDelete(_.bind(this.onDomainListChangeRequest, this), oDomain.name);
+		Remote.domainDelete(this.onDomainListChangeRequest, oDomain.name);
 	};
 
 	DomainsAdminSettings.prototype.disableDomain = function (oDomain)
 	{
 		oDomain.disabled(!oDomain.disabled());
-		Remote.domainDisable(_.bind(this.onDomainListChangeRequest, this), oDomain.name, oDomain.disabled());
+		Remote.domainDisable(this.onDomainListChangeRequest, oDomain.name, oDomain.disabled());
 	};
 
 	DomainsAdminSettings.prototype.onBuild = function (oDom)
@@ -52,7 +55,7 @@
 				var oDomainItem = ko.dataFor(this);
 				if (oDomainItem)
 				{
-					Remote.domain(_.bind(self.onDomainLoadRequest, self), oDomainItem.name);
+					Remote.domain(self.onDomainLoadRequest, oDomainItem.name);
 				}
 			})
 		;

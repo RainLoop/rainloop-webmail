@@ -4082,8 +4082,20 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sSearch = (string) $this->GetActionParam('Search', '');
 
 		$iOffset = 0;
-		$iLimit = 99;
 		$sSearch = '';
+		$iLimit = $this->Config()->Get('labs', 'domain_list_limit', 99);
+
+		$sSearch = \trim($sSearch);
+
+		if ($iOffset < 0)
+		{
+			$iOffset = 0;
+		}
+
+		if ($iLimit < 20)
+		{
+			$iLimit = 20;
+		}
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->DomainProvider()->GetList($iOffset, $iLimit, $sSearch));
