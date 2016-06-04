@@ -64,10 +64,10 @@
 			}
 
 		}, 'AjaxGetCustomUserData');
-		
+
 	};
 
-	window.rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTag',
+	window.rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTab',
 		'SETTINGS_CUSTOM_PLUGIN/TAB_NAME', 'custom');
 
 }());

@@ -14,7 +14,7 @@ class CustomSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addAjaxHook('AjaxGetCustomUserData', 'AjaxGetCustomUserData');
 		$this->addAjaxHook('AjaxSaveCustomUserData', 'AjaxSaveCustomUserData');
 
-		$this->addTemplate('templates/PluginCustomSettingsTag.html');
+		$this->addTemplate('templates/PluginCustomSettingsTab.html');
 	}
 
 	/**

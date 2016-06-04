@@ -40,6 +40,7 @@ export default (App) => {
 	window['rl']['createCommand'] = Utils.createCommand;
 
 	window['rl']['addSettingsViewModel'] = _.bind(Plugins.addSettingsViewModel, Plugins);
+	window['rl']['addSettingsViewModelForAdmin'] = _.bind(Plugins.addSettingsViewModelForAdmin, Plugins);
 
 	window['rl']['pluginRemoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
 	window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
