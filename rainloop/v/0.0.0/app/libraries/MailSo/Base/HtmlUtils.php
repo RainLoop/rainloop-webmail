@@ -189,14 +189,14 @@ class HtmlUtils
 			$sBodyAttrs = $aMatch[1];
 		}
 
-		$sHtml = \preg_replace('/^.*<body([^>]*)>/sim', '', $sHtml);
-		$sHtml = \preg_replace('/<\/body>/im', '', $sHtml);
-		$sHtml = \preg_replace('/<html([^>]*)>/im', '', $sHtml);
-		$sHtml = \preg_replace('/<\/html>/im', '', $sHtml);
+		$sHtml = \preg_replace('/^.*<body([^>]*)>/si', '', $sHtml);
+		$sHtml = \preg_replace('/<\/body>/i', '', $sHtml);
+		$sHtml = \preg_replace('/<html([^>]*)>/i', '', $sHtml);
+		$sHtml = \preg_replace('/<\/html>/i', '', $sHtml);
 
-		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/im', '', $sHtmlAttrs);
-		$sHtmlAttrs = \preg_replace('/xmlns="[^"]*"/im', '', $sHtmlAttrs);
-		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/im', '', $sBodyAttrs);
+		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sHtmlAttrs);
+		$sHtmlAttrs = \preg_replace('/xmlns="[^"]*"/i', '', $sHtmlAttrs);
+		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sBodyAttrs);
 
 		return $sHtml;
 	}
@@ -229,8 +229,8 @@ class HtmlUtils
 	{
 		return \preg_replace(array(
 			'/<p[^>]*><\/p>/i',
-			'/<!doctype[^>]*>/msi',
-			'/<\?xml [^>]*\?>/msi'
+			'/<!doctype[^>]*>/i',
+			'/<\?xml [^>]*\?>/i'
 		), '', $sHtml);
 	}
 
@@ -827,300 +827,301 @@ class HtmlUtils
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 		unset($sHtml);
 
-		if ($oDom)
+		if (!$oDom)
 		{
-			if ($fAdditionalDomReader)
+			return '';
+		}
+
+		if ($fAdditionalDomReader)
+		{
+			$oResDom = \call_user_func($fAdditionalDomReader, $oDom);
+			if ($oResDom)
 			{
-				$oResDom = \call_user_func($fAdditionalDomReader, $oDom);
-				if ($oResDom)
+				$oDom = $oResDom;
+			}
+
+			unset($oResDom);
+		}
+
+		if ($bFindLinksInHtml)
+		{
+			\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
+		}
+
+		\MailSo\Base\HtmlUtils::ClearComments($oDom);
+		\MailSo\Base\HtmlUtils::ClearTags($oDom);
+
+		$sLinkColor = '';
+		$aNodes = $oDom->getElementsByTagName('*');
+		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
+		{
+			$sTagNameLower = \strtolower($oElement->tagName);
+
+			// convert body attributes to styles
+			if ('body' === $sTagNameLower)
+			{
+				$aAttrs = array(
+					'link' => '',
+					'text' => '',
+					'topmargin' => '',
+					'leftmargin' => '',
+					'bottommargin' => '',
+					'rightmargin' => ''
+				);
+
+				if (isset($oElement->attributes))
 				{
-					$oDom = $oResDom;
+					foreach ($oElement->attributes as $sAttributeName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
+					{
+						if ($oAttributeNode && isset($oAttributeNode->nodeValue))
+						{
+							$sAttributeNameLower = \strtolower($sAttributeName);
+							if (isset($aAttrs[$sAttributeNameLower]) && '' === $aAttrs[$sAttributeNameLower])
+							{
+								$aAttrs[$sAttributeNameLower] = array($sAttributeName, \trim($oAttributeNode->nodeValue));
+							}
+						}
+					}
 				}
 
-				unset($oResDom);
-			}
-
-			if ($bFindLinksInHtml)
-			{
-				\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
-			}
-
-			\MailSo\Base\HtmlUtils::ClearComments($oDom);
-			\MailSo\Base\HtmlUtils::ClearTags($oDom);
-
-			$sLinkColor = '';
-			$aNodes = $oDom->getElementsByTagName('*');
-			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
-			{
-				$sTagNameLower = \strtolower($oElement->tagName);
-
-				// convert body attributes to styles
-				if ('body' === $sTagNameLower)
+				$aStyles = array();
+				foreach ($aAttrs as $sIndex => $aItem)
 				{
-					$aAttrs = array(
-						'link' => '',
-						'text' => '',
-						'topmargin' => '',
-						'leftmargin' => '',
-						'bottommargin' => '',
-						'rightmargin' => ''
+					if (\is_array($aItem))
+					{
+						$oElement->removeAttribute($aItem[0]);
+
+						switch ($sIndex)
+						{
+							case 'link':
+								$sLinkColor = \trim($aItem[1]);
+								if (!\preg_match('/^#[abcdef0-9]{3,6}$/i', $sLinkColor))
+								{
+									$sLinkColor = '';
+								}
+								break;
+							case 'text':
+								$aStyles[] = 'color: '.$aItem[1];
+								break;
+							case 'topmargin':
+								$aStyles[] = 'margin-top: '.((int) $aItem[1]).'px';
+								break;
+							case 'leftmargin':
+								$aStyles[] = 'margin-left: '.((int) $aItem[1]).'px';
+								break;
+							case 'bottommargin':
+								$aStyles[] = 'margin-bottom: '.((int) $aItem[1]).'px';
+								break;
+							case 'rightmargin':
+								$aStyles[] = 'margin-right: '.((int) $aItem[1]).'px';
+								break;
+						}
+					}
+				}
+
+				if (0 < \count($aStyles))
+				{
+					$sStyles = $oElement->hasAttribute('style') ? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
+					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+				}
+			}
+
+			if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
+			{
+				$oElement->setAttribute('src', 'javascript:false');
+			}
+
+			if ('a' === $sTagNameLower && !empty($sLinkColor))
+			{
+				$sStyles = $oElement->hasAttribute('style')
+					?  \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
+
+				$oElement->setAttribute('style',
+					'color: '.$sLinkColor.\trim((empty($sStyles) ? '' : '; '.$sStyles)));
+			}
+
+			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
+			{
+				$oElement->setAttribute('target', '_blank');
+			}
+
+			if (\in_array($sTagNameLower, array('a', 'form', 'area', 'input', 'button', 'textarea')))
+			{
+				$oElement->setAttribute('tabindex', '-1');
+			}
+
+			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
+			{
+				foreach ($oElement->attributes as $oAttr)
+				{
+					if ($oAttr && !empty($oAttr->nodeName))
+					{
+						$sAttrName = \trim(\strtolower($oAttr->nodeName));
+						if ('on' === \substr($sAttrName, 0, 2) || in_array($sAttrName, array(
+							'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest',
+							'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
+							'fscommand', 'seeksegmenttime'
+						)))
+						{
+							@$oElement->removeAttribute($oAttr->nodeName);
+						}
+					}
+				}
+			}
+
+			if ($oElement->hasAttribute('href'))
+			{
+				$sHref = \trim($oElement->getAttribute('href'));
+				if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref) && '//' !== \substr($sHref, 0, 2))
+				{
+					$oElement->setAttribute('data-x-broken-href', $sHref);
+					$oElement->setAttribute('href', 'javascript:false');
+				}
+
+				if ('a' === $sTagNameLower)
+				{
+					$oElement->setAttribute('rel', 'external nofollow');
+				}
+			}
+
+			if ($bTryToDetectHiddenImages && 'img' === $sTagNameLower)
+			{
+				$sAlt = $oElement->hasAttribute('alt')
+					? \trim($oElement->getAttribute('alt')) : '';
+
+				if ($oElement->hasAttribute('src') && '' === $sAlt)
+				{
+					$aH = array(
+						'email.microsoftemail.com/open',
+						'github.com/notifications/beacon/',
+						'mandrillapp.com/track/open',
+						'list-manage.com/track/open'
 					);
 
-					if (isset($oElement->attributes))
-					{
-						foreach ($oElement->attributes as $sAttributeName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
-						{
-							if ($oAttributeNode && isset($oAttributeNode->nodeValue))
-							{
-								$sAttributeNameLower = \strtolower($sAttributeName);
-								if (isset($aAttrs[$sAttributeNameLower]) && '' === $aAttrs[$sAttributeNameLower])
-								{
-									$aAttrs[$sAttributeNameLower] = array($sAttributeName, \trim($oAttributeNode->nodeValue));
-								}
-							}
-						}
-					}
-
-					$aStyles = array();
-					foreach ($aAttrs as $sIndex => $aItem)
-					{
-						if (\is_array($aItem))
-						{
-							$oElement->removeAttribute($aItem[0]);
-
-							switch ($sIndex)
-							{
-								case 'link':
-									$sLinkColor = \trim($aItem[1]);
-									if (!\preg_match('/^#[abcdef0-9]{3,6}$/i', $sLinkColor))
-									{
-										$sLinkColor = '';
-									}
-									break;
-								case 'text':
-									$aStyles[] = 'color: '.$aItem[1];
-									break;
-								case 'topmargin':
-									$aStyles[] = 'margin-top: '.((int) $aItem[1]).'px';
-									break;
-								case 'leftmargin':
-									$aStyles[] = 'margin-left: '.((int) $aItem[1]).'px';
-									break;
-								case 'bottommargin':
-									$aStyles[] = 'margin-bottom: '.((int) $aItem[1]).'px';
-									break;
-								case 'rightmargin':
-									$aStyles[] = 'margin-right: '.((int) $aItem[1]).'px';
-									break;
-							}
-						}
-					}
-
-					if (0 < \count($aStyles))
-					{
-						$sStyles = $oElement->hasAttribute('style') ? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-						$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
-					}
-				}
-
-				if ('iframe' === $sTagNameLower || 'frame' === $sTagNameLower)
-				{
-					$oElement->setAttribute('src', 'javascript:false');
-				}
-
-				if ('a' === $sTagNameLower && !empty($sLinkColor))
-				{
-					$sStyles = $oElement->hasAttribute('style')
-						?  \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-
-					$oElement->setAttribute('style',
-						'color: '.$sLinkColor.\trim((empty($sStyles) ? '' : '; '.$sStyles)));
-				}
-
-				if (\in_array($sTagNameLower, array('a', 'form', 'area')))
-				{
-					$oElement->setAttribute('target', '_blank');
-				}
-
-				if (\in_array($sTagNameLower, array('a', 'form', 'area', 'input', 'button', 'textarea')))
-				{
-					$oElement->setAttribute('tabindex', '-1');
-				}
-
-				if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
-				{
-					foreach ($oElement->attributes as $oAttr)
-					{
-						if ($oAttr && !empty($oAttr->nodeName))
-						{
-							$sAttrName = \trim(\strtolower($oAttr->nodeName));
-							if ('on' === \substr($sAttrName, 0, 2) || in_array($sAttrName, array(
-								'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest',
-								'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
-								'fscommand', 'seeksegmenttime'
-							)))
-							{
-								@$oElement->removeAttribute($oAttr->nodeName);
-							}
-						}
-					}
-				}
-
-				if ($oElement->hasAttribute('href'))
-				{
-					$sHref = \trim($oElement->getAttribute('href'));
-					if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref) && '//' !== \substr($sHref, 0, 2))
-					{
-						$oElement->setAttribute('data-x-broken-href', $sHref);
-						$oElement->setAttribute('href', 'javascript:false');
-					}
-
-					if ('a' === $sTagNameLower)
-					{
-						$oElement->setAttribute('rel', 'external nofollow');
-					}
-				}
-
-				if ($bTryToDetectHiddenImages && 'img' === $sTagNameLower)
-				{
-					$sAlt = $oElement->hasAttribute('alt')
-						? \trim($oElement->getAttribute('alt')) : '';
-
-					if ($oElement->hasAttribute('src') && '' === $sAlt)
-					{
-						$aH = array(
-							'email.microsoftemail.com/open',
-							'github.com/notifications/beacon/',
-							'mandrillapp.com/track/open',
-							'list-manage.com/track/open'
-						);
-
-						$sH = $oElement->hasAttribute('height')
-							? \trim($oElement->getAttribute('height')) : '';
+					$sH = $oElement->hasAttribute('height')
+						? \trim($oElement->getAttribute('height')) : '';
 
 //						$sW = $oElement->hasAttribute('width')
 //							? \trim($oElement->getAttribute('width')) : '';
 
-						$sStyles = $oElement->hasAttribute('style')
-							? \preg_replace('/[\s]+/', '', \trim(\trim(\trim($oElement->getAttribute('style')), ';'))) : '';
+					$sStyles = $oElement->hasAttribute('style')
+						? \preg_replace('/[\s]+/', '', \trim(\trim(\trim($oElement->getAttribute('style')), ';'))) : '';
 
-						$sSrc = \trim($oElement->getAttribute('src'));
+					$sSrc = \trim($oElement->getAttribute('src'));
 
-						$bC = \in_array($sH, array('1', '0', '1px', '0px')) ||
-							\preg_match('/(display:none|visibility:hidden|height:0|height:[01][a-z][a-z])/i', $sStyles);
+					$bC = \in_array($sH, array('1', '0', '1px', '0px')) ||
+						\preg_match('/(display:none|visibility:hidden|height:0|height:[01][a-z][a-z])/i', $sStyles);
 
-						if (!$bC)
+					if (!$bC)
+					{
+						$sSrcLower = \strtolower($sSrc);
+						foreach ($aH as $sLine)
 						{
-							$sSrcLower = \strtolower($sSrc);
-							foreach ($aH as $sLine)
+							if (false !== \strpos($sSrcLower, $sLine))
 							{
-								if (false !== \strpos($sSrcLower, $sLine))
-								{
-									$bC = true;
-									break;
-								}
+								$bC = true;
+								break;
 							}
 						}
+					}
 
-						if ($bC)
-						{
-							$oElement->setAttribute('style', 'display:none');
-							$oElement->setAttribute('data-x-skip-style', 'true');
-							$oElement->setAttribute('data-x-hidden-src', $sSrc);
+					if ($bC)
+					{
+						$oElement->setAttribute('style', 'display:none');
+						$oElement->setAttribute('data-x-skip-style', 'true');
+						$oElement->setAttribute('data-x-hidden-src', $sSrc);
 
-							$oElement->removeAttribute('src');
-						}
+						$oElement->removeAttribute('src');
 					}
 				}
+			}
 
-				if ($oElement->hasAttribute('src'))
+			if ($oElement->hasAttribute('src'))
+			{
+				$sSrc = \trim($oElement->getAttribute('src'));
+				$oElement->removeAttribute('src');
+
+				if (\in_array($sSrc, $aContentLocationUrls))
 				{
-					$sSrc = \trim($oElement->getAttribute('src'));
-					$oElement->removeAttribute('src');
-
-					if (\in_array($sSrc, $aContentLocationUrls))
+					$oElement->setAttribute('data-x-src-location', $sSrc);
+					$aFoundedContentLocationUrls[] = $sSrc;
+				}
+				else if ('cid:' === \strtolower(\substr($sSrc, 0, 4)))
+				{
+					$oElement->setAttribute('data-x-src-cid', \substr($sSrc, 4));
+					$aFoundCIDs[] = \substr($sSrc, 4);
+				}
+				else
+				{
+					if (\preg_match('/^http[s]?:\/\//i', $sSrc) || '//' === \substr($sSrc, 0, 2))
 					{
-						$oElement->setAttribute('data-x-src-location', $sSrc);
-						$aFoundedContentLocationUrls[] = $sSrc;
-					}
-					else if ('cid:' === \strtolower(\substr($sSrc, 0, 4)))
-					{
-						$oElement->setAttribute('data-x-src-cid', \substr($sSrc, 4));
-						$aFoundCIDs[] = \substr($sSrc, 4);
-					}
-					else
-					{
-						if (\preg_match('/^http[s]?:\/\//i', $sSrc) || '//' === \substr($sSrc, 0, 2))
-						{
-							if ($bDoNotReplaceExternalUrl)
-							{
-								$oElement->setAttribute('src', $sSrc);
-							}
-							else
-							{
-								$oElement->setAttribute('data-x-src', $sSrc);
-								if ($fAdditionalExternalFilter)
-								{
-									$sCallResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
-									if (0 < \strlen($sCallResult))
-									{
-										$oElement->setAttribute('data-x-additional-src', $sCallResult);
-									}
-								}
-							}
-
-							$bHasExternals = true;
-						}
-						else if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
+						if ($bDoNotReplaceExternalUrl)
 						{
 							$oElement->setAttribute('src', $sSrc);
 						}
 						else
 						{
-							$oElement->setAttribute('data-x-broken-src', $sSrc);
+							$oElement->setAttribute('data-x-src', $sSrc);
+							if ($fAdditionalExternalFilter)
+							{
+								$sCallResult = \call_user_func($fAdditionalExternalFilter, $sSrc);
+								if (0 < \strlen($sCallResult))
+								{
+									$oElement->setAttribute('data-x-additional-src', $sCallResult);
+								}
+							}
 						}
+
+						$bHasExternals = true;
 					}
-				}
-
-				$sBackground = $oElement->hasAttribute('background')
-					? \trim($oElement->getAttribute('background')) : '';
-				$sBackgroundColor = $oElement->hasAttribute('bgcolor')
-					? \trim($oElement->getAttribute('bgcolor')) : '';
-
-				if (!empty($sBackground) || !empty($sBackgroundColor))
-				{
-					$aStyles = array();
-					$sStyles = $oElement->hasAttribute('style')
-						? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
-
-					if (!empty($sBackground))
+					else if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
 					{
-						$aStyles[] = 'background-image: url(\''.$sBackground.'\')';
-						$oElement->removeAttribute('background');
+						$oElement->setAttribute('src', $sSrc);
 					}
-
-					if (!empty($sBackgroundColor))
+					else
 					{
-						$aStyles[] = 'background-color: '.$sBackgroundColor;
-						$oElement->removeAttribute('bgcolor');
+						$oElement->setAttribute('data-x-broken-src', $sSrc);
 					}
-
-					$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
 				}
-
-				if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
-				{
-					$oElement->setAttribute('style',
-						\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
-							$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
-				}
-
-				$oElement->removeAttribute('data-x-skip-style');
 			}
 
-			$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
+			$sBackground = $oElement->hasAttribute('background')
+				? \trim($oElement->getAttribute('background')) : '';
+			$sBackgroundColor = $oElement->hasAttribute('bgcolor')
+				? \trim($oElement->getAttribute('bgcolor')) : '';
+
+			if (!empty($sBackground) || !empty($sBackgroundColor))
+			{
+				$aStyles = array();
+				$sStyles = $oElement->hasAttribute('style')
+					? \trim(\trim(\trim($oElement->getAttribute('style')), ';')) : '';
+
+				if (!empty($sBackground))
+				{
+					$aStyles[] = 'background-image: url(\''.$sBackground.'\')';
+					$oElement->removeAttribute('background');
+				}
+
+				if (!empty($sBackgroundColor))
+				{
+					$aStyles[] = 'background-color: '.$sBackgroundColor;
+					$oElement->removeAttribute('bgcolor');
+				}
+
+				$oElement->setAttribute('style', (empty($sStyles) ? '' : $sStyles.'; ').\implode('; ', $aStyles));
+			}
+
+			if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
+			{
+				$oElement->setAttribute('style',
+					\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
+						$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
+			}
+
+			$oElement->removeAttribute('data-x-skip-style');
 		}
 
+		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
 		unset($oDom);
 
 		return $sResult;
