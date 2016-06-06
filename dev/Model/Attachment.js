@@ -180,7 +180,7 @@
 	 */
 	AttachmentModel.prototype.isFramed = function ()
 	{
-		return this.framed && (Globals.__APP__ && Globals.__APP__.googlePreviewSupported()) &&
+		return this.framed && (Globals.data.__APP__ && Globals.data.__APP__.googlePreviewSupported()) &&
 			!(this.isPdf() && Globals.bAllowPdfPreview) && !this.isText() && !this.isImage();
 	};
 

@@ -1481,6 +1481,7 @@ class Actions
 			'rsaPublicKey' => $sRsaPublicKey,
 			'openpgpPublicKeyServer' => $oConfig->Get('security', 'openpgp_public_key_server', '')
 		), $bAdmin ? array(
+			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
 			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
 			'allowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
 		) : array());

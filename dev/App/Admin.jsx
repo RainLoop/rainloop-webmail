@@ -3,10 +3,10 @@ import {window, _} from 'common';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
-import * as Enums from 'Common/Enums';
-import Utils from 'Common/Utils';
 import Links from 'Common/Links';
 import Translator from 'Common/Translator';
+import {StorageResultType, Notification} from 'Common/Enums';
+import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
 
 import Settings from 'Storage/Settings';
 
@@ -37,7 +37,7 @@ class AdminApp extends AbstractApp
 		DomainStore.domains.loading(true);
 		Remote.domainList((result, data) => {
 			DomainStore.domains.loading(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result)
+			if (StorageResultType.Success === result && data && data.Result)
 			{
 				DomainStore.domains(_.map(data.Result, (enabled, name) => {
 					return {
@@ -54,7 +54,7 @@ class AdminApp extends AbstractApp
 		PluginStore.plugins.loading(true);
 		Remote.pluginList((result, data) => {
 			PluginStore.plugins.loading(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result)
+			if (StorageResultType.Success === result && data && data.Result)
 			{
 				PluginStore.plugins(_.map(data.Result, (item) => {
 					return {
@@ -72,7 +72,7 @@ class AdminApp extends AbstractApp
 		PackageStore.packagesReal(true);
 		Remote.packagesList((result, data) => {
 			PackageStore.packages.loading(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result)
+			if (StorageResultType.Success === result && data && data.Result)
 			{
 				PackageStore.packagesReal(!!data.Result.Real);
 				PackageStore.packagesMainUpdatable(!!data.Result.MainUpdatable);
@@ -89,12 +89,12 @@ class AdminApp extends AbstractApp
 					}
 				});
 
-				if (Utils.isArray(data.Result.List))
+				if (isArray(data.Result.List))
 				{
 					list = _.compact(_.map(data.Result.List, (item) => {
 						if (item)
 						{
-							item.loading = ko.observable(!Utils.isUnd(loading[item.file]));
+							item.loading = ko.observable(!isUnd(loading[item.file]));
 							return 'core' === item.type && !item.canBeInstalled ? null : item;
 						}
 						return null;
@@ -118,7 +118,7 @@ class AdminApp extends AbstractApp
 			CoreStore.coreRemoteVersion('');
 			CoreStore.coreRemoteRelease('');
 			CoreStore.coreVersionCompare(-2);
-			if (Enums.StorageResultType.Success === result && data && data.Result)
+			if (StorageResultType.Success === result && data && data.Result)
 			{
 				CoreStore.coreReal(true);
 				window.location.reload();
@@ -135,7 +135,7 @@ class AdminApp extends AbstractApp
 		CoreStore.coreReal(true);
 		Remote.coreData((result, data) => {
 			CoreStore.coreChecking(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result)
+			if (StorageResultType.Success === result && data && data.Result)
 			{
 				CoreStore.coreReal(!!data.Result.Real);
 				CoreStore.coreChannel(data.Result.Channel || 'stable');
@@ -146,7 +146,7 @@ class AdminApp extends AbstractApp
 				CoreStore.coreVersion(data.Result.Version || '');
 				CoreStore.coreRemoteVersion(data.Result.RemoteVersion || '');
 				CoreStore.coreRemoteRelease(data.Result.RemoteRelease || '');
-				CoreStore.coreVersionCompare(Utils.pInt(data.Result.VersionCompare));
+				CoreStore.coreVersionCompare(pInt(data.Result.VersionCompare));
 			}
 			else
 			{
@@ -170,29 +170,29 @@ class AdminApp extends AbstractApp
 		LicenseStore.licenseError('');
 		Remote.licensing((result, data) => {
 			LicenseStore.licensingProcess(false);
-			if (Enums.StorageResultType.Success === result && data && data.Result && Utils.isNormal(data.Result.Expired))
+			if (StorageResultType.Success === result && data && data.Result && isNormal(data.Result.Expired))
 			{
 				LicenseStore.licenseValid(true);
-				LicenseStore.licenseExpired(Utils.pInt(data.Result.Expired));
+				LicenseStore.licenseExpired(pInt(data.Result.Expired));
 				LicenseStore.licenseError('');
 				LicenseStore.licensing(true);
 				AppStore.prem(true);
 			}
 			else
 			{
-				if (data && data.ErrorCode && -1 < Utils.inArray(Utils.pInt(data.ErrorCode), [
-					Enums.Notification.LicensingServerIsUnavailable,
-					Enums.Notification.LicensingExpired
+				if (data && data.ErrorCode && -1 < inArray(pInt(data.ErrorCode), [
+					Notification.LicensingServerIsUnavailable,
+					Notification.LicensingExpired
 				]))
 				{
-					LicenseStore.licenseError(Translator.getNotification(Utils.pInt(data.ErrorCode)));
+					LicenseStore.licenseError(Translator.getNotification(pInt(data.ErrorCode)));
 					LicenseStore.licensing(true);
 				}
 				else
 				{
-					if (Enums.StorageResultType.Abort === result)
+					if (StorageResultType.Abort === result)
 					{
-						LicenseStore.licenseError(Translator.getNotification(Enums.Notification.LicensingServerIsUnavailable));
+						LicenseStore.licenseError(Translator.getNotification(Notification.LicensingServerIsUnavailable));
 						LicenseStore.licensing(true);
 					}
 					else

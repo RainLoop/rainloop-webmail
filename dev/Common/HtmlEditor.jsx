@@ -1,6 +1,6 @@
 
 import {window, _, $} from 'common';
-import Globals from 'Common/Globals';
+import {oHtmlEditorDefaultConfig, oHtmlEditorLangsMap} from 'Common/Globals';
 import Settings from 'Storage/Settings';
 
 class HtmlEditor
@@ -236,7 +236,7 @@ class HtmlEditor
 				initFunc = () => {
 
 					const
-						config = Globals.oHtmlEditorDefaultConfig,
+						config = oHtmlEditorDefaultConfig,
 						language = Settings.settingsGet('Language'),
 						allowSource = !!Settings.appSettingsGet('allowHtmlEditorSourceButton'),
 						biti = !!Settings.appSettingsGet('allowHtmlEditorBitiButtons')
@@ -260,7 +260,7 @@ class HtmlEditor
 					config.enterMode = window.CKEDITOR.ENTER_BR;
 					config.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
-					config.language = Globals.oHtmlEditorLangsMap[language] || 'en';
+					config.language = oHtmlEditorLangsMap[language] || 'en';
 					if (window.CKEDITOR.env)
 					{
 						window.CKEDITOR.env.isCompatible = true;

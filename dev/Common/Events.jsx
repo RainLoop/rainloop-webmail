@@ -1,6 +1,6 @@
 
 import {_} from 'common';
-import Utils from 'Common/Utils';
+import {isObject, isUnd} from 'Common/Utils';
 import Plugins from 'Common/Plugins';
 
 class Events
@@ -17,7 +17,7 @@ class Events
 	 */
 	sub(name, func, context) {
 
-		if (Utils.isObject(name))
+		if (isObject(name))
 		{
 			context = func || null;
 			func = null;
@@ -28,7 +28,7 @@ class Events
 		}
 		else
 		{
-			if (Utils.isUnd(this.subs[name]))
+			if (isUnd(this.subs[name]))
 			{
 				this.subs[name] = [];
 			}
@@ -48,7 +48,7 @@ class Events
 
 		Plugins.runHook('rl-pub', [name, args]);
 
-		if (!Utils.isUnd(this.subs[name]))
+		if (!isUnd(this.subs[name]))
 		{
 			_.each(this.subs[name], (items) => {
 				if (items[0])

@@ -1,9 +1,9 @@
 
 import ko from 'ko';
 import {Focused, KeyState} from 'Common/Enums';
-import Globals from 'Common/Globals';
-import Utils from 'Common/Utils';
+import {keyScope} from 'Common/Globals';
 import Settings from 'Storage/Settings';
+import {isNonEmptyArray} from 'Common/Utils';
 
 import {AbstractAppStore} from 'Stores/AbstractApp';
 
@@ -24,13 +24,13 @@ class AppUserStore extends AbstractAppStore
 				default:
 					break;
 				case Focused.MessageList:
-					Globals.keyScope(KeyState.MessageList);
+					keyScope(KeyState.MessageList);
 					break;
 				case Focused.MessageView:
-					Globals.keyScope(KeyState.MessageView);
+					keyScope(KeyState.MessageView);
 					break;
 				case Focused.FolderList:
-					Globals.keyScope(KeyState.FolderList);
+					keyScope(KeyState.FolderList);
 					break;
 			}
 
@@ -64,7 +64,7 @@ class AppUserStore extends AbstractAppStore
 		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
 
 		const attachmentsActions = Settings.appSettingsGet('attachmentsActions');
-		this.attachmentsActions(Utils.isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
+		this.attachmentsActions(isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
 
 		this.devEmail = Settings.settingsGet('DevEmail');
 		this.devPassword = Settings.settingsGet('DevPassword');

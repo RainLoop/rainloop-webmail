@@ -1,5 +1,5 @@
 
-import Utils from 'Common/Utils';
+import {isUnd} from 'Common/Utils';
 import {componentExportHelper} from 'Component/Abstract';
 import {AbstractInput} from 'Component/AbstractInput';
 
@@ -13,7 +13,7 @@ class TextAreaComponent extends AbstractInput
 		super(params);
 
 		this.rows = params.rows || 5;
-		this.spellcheck = Utils.isUnd(params.spellcheck) ? false : !!params.spellcheck;
+		this.spellcheck = isUnd(params.spellcheck) ? false : !!params.spellcheck;
 	}
 }
 

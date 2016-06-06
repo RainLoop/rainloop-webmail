@@ -1,7 +1,7 @@
 
 import {_} from 'common';
 import ko from 'ko';
-import Utils from 'Common/Utils';
+import {isUnd} from 'Common/Utils';
 import {AbstractComponent} from 'Component/Abstract';
 
 class AbstracRadio extends AbstractComponent
@@ -16,13 +16,13 @@ class AbstracRadio extends AbstractComponent
 		this.values = ko.observableArray([]);
 
 		this.value = params.value;
-		if (Utils.isUnd(this.value) || !this.value.subscribe)
+		if (isUnd(this.value) || !this.value.subscribe)
 		{
 			this.value = ko.observable('');
 		}
 
-		this.inline = Utils.isUnd(params.inline) ? false : params.inline;
-		this.readOnly = Utils.isUnd(params.readOnly) ? false : !!params.readOnly;
+		this.inline = isUnd(params.inline) ? false : params.inline;
+		this.readOnly = isUnd(params.readOnly) ? false : !!params.readOnly;
 
 		if (params.values)
 		{

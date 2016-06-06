@@ -284,9 +284,9 @@
 	ko.bindingHandlers.registrateBootstrapDropdown = {
 		'init': function (oElement) {
 			var Globals = require('Common/Globals');
-			if (Globals && Globals.aBootstrapDropdowns)
+			if (Globals && Globals.data.aBootstrapDropdowns)
 			{
-				Globals.aBootstrapDropdowns.push($(oElement));
+				Globals.data.aBootstrapDropdowns.push($(oElement));
 
 				$(oElement).click(function () {
 					require('Common/Utils').detectDropdownVisibility();

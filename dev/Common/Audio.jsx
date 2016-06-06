@@ -1,9 +1,9 @@
 
 import {window, $} from 'common';
-import Globals from 'Common/Globals';
-import Utils from 'Common/Utils';
+import {bMobileDevice, bSafari} from 'Common/Globals';
 import Links from 'Common/Links';
 import Events from 'Common/Events';
+import {trim} from 'Common/Utils';
 
 class Audio
 {
@@ -20,7 +20,7 @@ class Audio
 	{
 		this.player = this.createNewObject();
 
-		this.supported = !Globals.bMobileDevice && !Globals.bSafari && !!this.player && !!this.player.play;
+		this.supported = !bMobileDevice && !bSafari && !!this.player && !!this.player.play;
 		if (this.supported && this.player.canPlayType)
 		{
 			this.supportedMp3 = '' !== this.player.canPlayType('audio/mpeg;').replace(/no/, '');
@@ -78,10 +78,10 @@ class Audio
 
 	clearName(name = '', ext = '') {
 
-		name = Utils.trim(name);
+		name = trim(name);
 		if (ext && '.' + ext === name.toLowerCase().substr((ext.length + 1) * -1))
 		{
-			name = Utils.trim(name.substr(0, name.length - 4));
+			name = trim(name.substr(0, name.length - 4));
 		}
 
 		return '' === name ? 'audio' : name;

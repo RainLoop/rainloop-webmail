@@ -227,7 +227,7 @@
 		var
 			iCount = 0,
 			oMessagesDom = null,
-			iEnd = Globals.iMessageBodyCacheCount - Consts.MESSAGE_BODY_CACHE_LIMIT
+			iEnd = Globals.data.iMessageBodyCacheCount - Consts.MESSAGE_BODY_CACHE_LIMIT
 		;
 
 		if (0 < iEnd)
@@ -642,7 +642,7 @@
 						}
 
 						oBody = $('<div id="' + sId + '" ></div>').hide().addClass('rl-cache-class');
-						oBody.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+						oBody.data('rl-cache-count', ++Globals.data.iMessageBodyCacheCount);
 
 						oBody
 							.html(Utils.findEmailAndLinks(sResultHtml))
@@ -677,7 +677,7 @@
 						oMessage.body = oTextBody;
 						if (oMessage.body)
 						{
-							oMessage.body.data('rl-cache-count', ++Globals.iMessageBodyCacheCount);
+							oMessage.body.data('rl-cache-count', ++Globals.data.iMessageBodyCacheCount);
 							oMessage.fetchDataFromDom();
 						}
 					}

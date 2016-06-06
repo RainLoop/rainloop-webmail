@@ -40,7 +40,7 @@
 	{
 		var
 			fCall = function () {
-				if (Enums.StorageResultType.Success !== sType && Globals.bUnload)
+				if (Enums.StorageResultType.Success !== sType && Globals.data.bUnload)
 				{
 					sType = Enums.StorageResultType.Unload;
 				}
@@ -53,39 +53,39 @@
 						Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
 					]))
 					{
-						Globals.iAjaxErrorCount++;
+						Globals.data.iAjaxErrorCount++;
 					}
 
 					if (oData && Enums.Notification.InvalidToken === oData.ErrorCode)
 					{
-						Globals.iTokenErrorCount++;
+						Globals.data.iTokenErrorCount++;
 					}
 
-					if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
+					if (Consts.TOKEN_ERROR_LIMIT < Globals.data.iTokenErrorCount)
 					{
-						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
+						if (Globals.data.__APP__ && Globals.data.__APP__.loginAndLogoutReload)
 						{
-							 Globals.__APP__.loginAndLogoutReload(false, true);
+							 Globals.data.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 
-					if (oData.ClearAuth || oData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
+					if (oData.ClearAuth || oData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.data.iAjaxErrorCount)
 					{
-						if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
+						if (Globals.data.__APP__ && Globals.data.__APP__.clearClientSideToken)
 						{
-							Globals.__APP__.clearClientSideToken();
+							Globals.data.__APP__.clearClientSideToken();
 
-							if (!oData.ClearAuth &&  Globals.__APP__.loginAndLogoutReload)
+							if (!oData.ClearAuth &&  Globals.data.__APP__.loginAndLogoutReload)
 							{
-								 Globals.__APP__.loginAndLogoutReload(false, true);
+								 Globals.data.__APP__.loginAndLogoutReload(false, true);
 							}
 						}
 					}
 				}
 				else if (Enums.StorageResultType.Success === sType && oData && oData.Result)
 				{
-					Globals.iAjaxErrorCount = 0;
-					Globals.iTokenErrorCount = 0;
+					Globals.data.iAjaxErrorCount = 0;
+					Globals.data.iTokenErrorCount = 0;
 				}
 
 				if (fCallback)

@@ -2,7 +2,7 @@
 import {$, _, key} from 'common';
 import ko from 'ko';
 import {EventKeyCode} from 'Common/Enums';
-import Utils from 'Common/Utils';
+import {isArray, inArray} from 'Common/Utils';
 
 class Selector
 {
@@ -137,7 +137,7 @@ class Selector
 
 		this.list.subscribe((items) => {
 
-			if (Utils.isArray(items))
+			if (isArray(items))
 			{
 				_.each(items, (item) => {
 					if (item)
@@ -179,7 +179,7 @@ class Selector
 			this.focusedItem(null);
 			this.selectedItem(null);
 
-			if (Utils.isArray(aItems))
+			if (isArray(aItems))
 			{
 				iLen = aCheckedCache.length;
 
@@ -194,7 +194,7 @@ class Selector
 						mFocused = null;
 					}
 
-					if (0 < iLen && -1 < Utils.inArray(sUid, aCheckedCache))
+					if (0 < iLen && -1 < inArray(sUid, aCheckedCache))
 					{
 						bChecked = true;
 						oItem.checked(true);
@@ -223,7 +223,7 @@ class Selector
 						{
 							bGetNext = false;
 							mNextFocused = _.find(aCache, (sUid) => {
-								if (bGetNext && -1 < Utils.inArray(sUid, aUids))
+								if (bGetNext && -1 < inArray(sUid, aUids))
 								{
 									return sUid;
 								}

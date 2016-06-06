@@ -1,6 +1,6 @@
 
 import {window, JSON, $} from 'common';
-import Utils from 'Common/Utils';
+import {isUnd} from 'Common/Utils';
 import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
 
 class CookieDriver
@@ -60,7 +60,7 @@ class CookieDriver
 				storageResult = null === storageValue ? null : JSON.parse(storageValue)
 			;
 
-			result = (storageResult && !Utils.isUnd(storageResult[key])) ? storageResult[key] : null;
+			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
 		catch (e)
 		{

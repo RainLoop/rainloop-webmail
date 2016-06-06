@@ -160,32 +160,32 @@
 						Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
 					]))
 					{
-						Globals.iAjaxErrorCount++;
+						Globals.data.iAjaxErrorCount++;
 					}
 
 					if (Enums.Notification.InvalidToken === oErrorData.ErrorCode)
 					{
-						Globals.iTokenErrorCount++;
+						Globals.data.iTokenErrorCount++;
 					}
 
-					if (Consts.TOKEN_ERROR_LIMIT < Globals.iTokenErrorCount)
+					if (Consts.TOKEN_ERROR_LIMIT < Globals.data.iTokenErrorCount)
 					{
-						if (Globals.__APP__ && Globals.__APP__.loginAndLogoutReload)
+						if (Globals.data.__APP__ && Globals.data.__APP__.loginAndLogoutReload)
 						{
-							 Globals.__APP__.loginAndLogoutReload(false, true);
+							 Globals.data.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 
-					if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.iAjaxErrorCount)
+					if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.data.iAjaxErrorCount)
 					{
-						if (Globals.__APP__ && Globals.__APP__.clearClientSideToken)
+						if (Globals.data.__APP__ && Globals.data.__APP__.clearClientSideToken)
 						{
-							Globals.__APP__.clearClientSideToken();
+							Globals.data.__APP__.clearClientSideToken();
 						}
 
-						if (Globals.__APP__ && !oErrorData.ClearAuth && Globals.__APP__.loginAndLogoutReload)
+						if (Globals.data.__APP__ && !oErrorData.ClearAuth && Globals.data.__APP__.loginAndLogoutReload)
 						{
-							Globals.__APP__.loginAndLogoutReload(false, true);
+							Globals.data.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 				}

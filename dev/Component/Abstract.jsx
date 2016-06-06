@@ -1,7 +1,7 @@
 
 import {$} from 'common';
+import {isUnd} from 'Common/Utils';
 import ko from 'ko';
-import Utils from 'Common/Utils';
 
 class AbstractComponent
 {
@@ -40,7 +40,7 @@ const componentExportHelper = (ClassObject, templateID = '') => {
 
 					require('Common/Translator').i18nToNodes(params.element);
 
-					if (!Utils.isUnd(params.inline) && ko.unwrap(params.inline))
+					if (!isUnd(params.inline) && ko.unwrap(params.inline))
 					{
 						params.element.css('display', 'inline-block');
 					}

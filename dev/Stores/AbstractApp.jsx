@@ -1,6 +1,6 @@
 
 import ko from 'ko';
-import Globals from 'Common/Globals';
+import {$html, bMobileDevice} from 'Common/Globals';
 import Settings from 'Storage/Settings';
 
 class AbstractAppStore
@@ -13,8 +13,8 @@ class AbstractAppStore
 		this.interfaceAnimation = ko.observable(true);
 
 		this.interfaceAnimation.subscribe(function (bValue) {
-			const bAnim = Globals.bMobileDevice || !bValue;
-			Globals.$html.toggleClass('rl-anim', !bAnim).toggleClass('no-rl-anim', bAnim);
+			const bAnim = bMobileDevice || !bValue;
+			$html.toggleClass('rl-anim', !bAnim).toggleClass('no-rl-anim', bAnim);
 		});
 
 		this.interfaceAnimation.valueHasMutated();

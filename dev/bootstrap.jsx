@@ -1,79 +1,81 @@
 
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import {kill_CtrlA_CtrlS, detectDropdownVisibility, createCommand} from 'Common/Utils';
+import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
+import Plugins from 'Common/Plugins';
+import Translator from 'Common/Translator';
+import EmailModel from 'Model/Email';
+import * as Enums from 'Common/Enums';
+
 export default (App) => {
 
-	const
-		window = require('window'),
-		_ = require('_'),
-		$ = require('$'),
+	GlobalsData.__APP__ = App;
 
-		Globals = require('Common/Globals'),
-		Plugins = require('Common/Plugins'),
-		Utils = require('Common/Utils'),
-		Enums = require('Common/Enums'),
-		Translator = require('Common/Translator'),
-
-		EmailModel = require('Model/Email')
-	;
-
-	Globals.__APP__ = App;
-
-	Globals.$win.on('keydown', Utils.kill_CtrlA_CtrlS);
-
-	Globals.$win.on('unload', function () {
-		Globals.bUnload = true;
-	});
-
-	Globals.$html
-		.addClass(Globals.bMobileDevice ? 'mobile' : 'no-mobile')
-		.on('click.dropdown.data-api', function () {
-			Utils.detectDropdownVisibility();
+	$win
+		.on('keydown', kill_CtrlA_CtrlS)
+		.on('unload', () => {
+			GlobalsData.bUnload = true;
 		})
 	;
 
-	// export
-	/* eslint dot-notation: 0 */
-	window['rl'] = window['rl'] || {};
-	window['rl']['i18n'] = _.bind(Translator.i18n, Translator);
+	$html
+		.addClass(bMobileDevice ? 'mobile' : 'no-mobile')
+		.on('click.dropdown.data-api', () => {
+			detectDropdownVisibility();
+		})
+	;
 
-	window['rl']['addHook'] = _.bind(Plugins.addHook, Plugins);
-	window['rl']['settingsGet'] = _.bind(Plugins.mainSettingsGet, Plugins);
-	window['rl']['createCommand'] = Utils.createCommand;
+	const rl = window.rl || {};
 
-	window['rl']['addSettingsViewModel'] = _.bind(Plugins.addSettingsViewModel, Plugins);
-	window['rl']['addSettingsViewModelForAdmin'] = _.bind(Plugins.addSettingsViewModelForAdmin, Plugins);
+	rl.i18n = _.bind(Translator.i18n, Translator);
 
-	window['rl']['pluginRemoteRequest'] = _.bind(Plugins.remoteRequest, Plugins);
-	window['rl']['pluginSettingsGet'] = _.bind(Plugins.settingsGet, Plugins);
+	rl.addHook = _.bind(Plugins.addHook, Plugins);
+	rl.settingsGet = _.bind(Plugins.mainSettingsGet, Plugins);
+	rl.createCommand = createCommand;
 
-	window['rl']['EmailModel'] = EmailModel;
-	window['rl']['Enums'] = Enums;
+	rl.addSettingsViewModel = _.bind(Plugins.addSettingsViewModel, Plugins);
+	rl.addSettingsViewModelForAdmin = _.bind(Plugins.addSettingsViewModelForAdmin, Plugins);
 
-	window.__APP_BOOT = function (fCall) {
+	rl.pluginRemoteRequest = _.bind(Plugins.remoteRequest, Plugins);
+	rl.pluginSettingsGet = _.bind(Plugins.settingsGet, Plugins);
 
-		$(_.delay(function () {
+	rl.EmailModel = EmailModel;
+	rl.Enums = Enums;
 
-			if (window['rainloopTEMPLATES'] && window['rainloopTEMPLATES'][0])
-			{
-				$('#rl-templates').html(window['rainloopTEMPLATES'][0]);
+	window.rl = rl;
 
-				_.delay(function () {
+	window.__APP_BOOT = (fErrorCallback) => {
 
-					App.bootstart();
+		$(() => {
 
-					Globals.$html
-						.removeClass('no-js rl-booted-trigger')
-						.addClass('rl-booted')
-					;
+			_.delay(() => {
 
-				}, 10);
-			}
-			else
-			{
-				fCall(false);
-			}
+				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0])
+				{
+					$('#rl-templates').html(window.rainloopTEMPLATES[0]);
 
-			window.__APP_BOOT = null;
+					_.delay(() => {
 
-		}, 10));
+						App.bootstart();
+
+						$html
+							.removeClass('no-js rl-booted-trigger')
+							.addClass('rl-booted')
+						;
+
+					}, 10);
+				}
+				else
+				{
+					fErrorCallback();
+				}
+
+				window.__APP_BOOT = null;
+
+			}, 10);
+
+		});
 	};
 };

@@ -146,11 +146,8 @@ function runMainBoot(withError, additionalError)
 {
 	if (window.__APP_BOOT && !withError)
 	{
-		window.__APP_BOOT(function (bV) {
-			if (!bV)
-			{
-				showError(additionalError);
-			}
+		window.__APP_BOOT(() => {
+			showError(additionalError);
 		});
 	}
 	else

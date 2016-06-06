@@ -1,6 +1,6 @@
 
 import {window} from 'common';
-import Utils from 'Common/Utils';
+import {isUnd, isNormal, isArray, inArray} from 'Common/Utils';
 
 class SettingsStorage
 {
@@ -9,10 +9,10 @@ class SettingsStorage
 
 	constructor() {
 		this.settings = window.__rlah_data() || {};
-		this.settings = Utils.isNormal(this.settings) ? this.settings : {};
+		this.settings = isNormal(this.settings) ? this.settings : {};
 
 		this.appSettings = this.settings.System || null;
-		this.appSettings = Utils.isNormal(this.appSettings) ? this.appSettings : {};
+		this.appSettings = isNormal(this.appSettings) ? this.appSettings : {};
 	}
 
 	/**
@@ -20,7 +20,7 @@ class SettingsStorage
 	 * @return {*}
 	 */
 	settingsGet(name) {
-		return Utils.isUnd(this.settings[name]) ? null : this.settings[name];
+		return isUnd(this.settings[name]) ? null : this.settings[name];
 	}
 
 	/**
@@ -36,7 +36,7 @@ class SettingsStorage
 	 * @return {*}
 	 */
 	appSettingsGet(name) {
-		return Utils.isUnd(this.appSettings[name]) ? null : this.appSettings[name];
+		return isUnd(this.appSettings[name]) ? null : this.appSettings[name];
 	}
 
 	/**
@@ -45,7 +45,7 @@ class SettingsStorage
 	 */
 	capa(name) {
 		const values = this.settingsGet('Capa');
-		return Utils.isArray(values) && Utils.isNormal(name) && -1 < Utils.inArray(name, values);
+		return isArray(values) && isNormal(name) && -1 < inArray(name, values);
 	}
 }
 

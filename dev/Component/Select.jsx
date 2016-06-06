@@ -1,6 +1,6 @@
 
-import Utils from 'Common/Utils';
 import Translator from 'Common/Translator';
+import {defautOptionsAfterRender} from 'Common/Utils';
 import {componentExportHelper} from 'Component/Abstract';
 import {AbstractInput} from 'Component/AbstractInput';
 
@@ -24,7 +24,7 @@ class SelectComponent extends AbstractInput
 			this.optionsCaption = Translator.i18n(this.optionsCaption);
 		}
 
-		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+		this.defautOptionsAfterRender = defautOptionsAfterRender;
 	}
 }
 

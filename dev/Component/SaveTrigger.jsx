@@ -1,5 +1,5 @@
 
-import Utils from 'Common/Utils';
+import {pInt} from 'Common/Utils';
 import {SaveSettingsStep} from 'Common/Enums';
 import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 
@@ -41,7 +41,7 @@ class SaveTriggerComponent extends AbstractComponent
 
 	setState(value) {
 
-		switch (Utils.pInt(value))
+		switch (pInt(value))
 		{
 			case SaveSettingsStep.TrueResult:
 				this.element

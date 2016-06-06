@@ -1,5 +1,5 @@
 
-import Utils from 'Common/Utils';
+import {isNonEmptyArray, isUnd} from 'Common/Utils';
 import EmailModel from 'Model/Email';
 
 class MessageHelper
@@ -20,7 +20,7 @@ class MessageHelper
 			len = 0
 		;
 
-		if (Utils.isNonEmptyArray(emails))
+		if (isNonEmptyArray(emails))
 		{
 			for (index = 0, len = emails.length; index < len; index++)
 			{
@@ -43,7 +43,7 @@ class MessageHelper
 			len = 0
 		;
 
-		if (Utils.isNonEmptyArray(emails))
+		if (isNonEmptyArray(emails))
 		{
 			for (index = 0, len = emails.length; index < len; index++)
 			{
@@ -70,7 +70,7 @@ class MessageHelper
 			result = []
 		;
 
-		if (Utils.isNonEmptyArray(json))
+		if (isNonEmptyArray(json))
 		{
 			for (index = 0, len = json.length; index < len; index++)
 			{
@@ -99,7 +99,7 @@ class MessageHelper
 
 			for (; index < len; index++)
 			{
-				if (Utils.isUnd(unic[inputEmails[index].email]))
+				if (isUnd(unic[inputEmails[index].email]))
 				{
 					unic[inputEmails[index].email] = true;
 					localEmails.push(inputEmails[index]);

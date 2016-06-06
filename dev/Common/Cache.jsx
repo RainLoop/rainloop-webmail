@@ -1,7 +1,7 @@
 
 import {_} from 'common';
 import {Capa, MessageSetAction} from 'Common/Enums';
-import Utils from 'Common/Utils';
+import {trim, pInt, isArray} from 'Common/Utils';
 import Links from 'Common/Links';
 import Settings from 'Storage/Settings';
 
@@ -38,7 +38,7 @@ class CacheUserStorage
 	 * @return {string}
 	 */
 	getUserPic(email, callback) {
-		email = Utils.trim(email);
+		email = trim(email);
 		callback(this.bCapaGravatar && '' !== email ? Links.avatarLink(email) : '', email);
 	}
 
@@ -253,8 +253,8 @@ class CacheUserStorage
 					return false;
 				});
 
-				message.hasUnseenSubMessage(unseenSubUid && 0 < Utils.pInt(unseenSubUid));
-				message.hasFlaggedSubMessage(flaggedSubUid && 0 < Utils.pInt(flaggedSubUid));
+				message.hasUnseenSubMessage(unseenSubUid && 0 < pInt(unseenSubUid));
+				message.hasFlaggedSubMessage(flaggedSubUid && 0 < pInt(flaggedSubUid));
 			}
 		}
 	}
@@ -279,7 +279,7 @@ class CacheUserStorage
 	 * @param {Array} flags
 	 */
 	storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
-		if (Utils.isArray(flags) && 0 < flags.length)
+		if (isArray(flags) && 0 < flags.length)
 		{
 			this.setMessageFlagsToCache(folder, uid, flags);
 		}
@@ -295,7 +295,7 @@ class CacheUserStorage
 		let unread = 0;
 		const flags = this.getMessageFlagsFromCache(folder, uid);
 
-		if (Utils.isArray(flags) && 0 < flags.length)
+		if (isArray(flags) && 0 < flags.length)
 		{
 			if (flags[0])
 			{

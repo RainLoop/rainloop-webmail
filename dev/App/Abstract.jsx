@@ -1,8 +1,14 @@
 
 import {window, _, $, key} from 'common';
-import Globals from 'Common/Globals';
-import * as Enums from 'Common/Enums';
-import Utils from 'Common/Utils';
+
+import {
+	$win, $html, $doc,
+	startMicrotime, leftPanelDisabled, leftPanelType,
+	sUserAgent, bMobileDevice, bAnimationSupported
+} from 'Common/Globals';
+
+import {KeyState} from 'Common/Enums';
+import {noop, isNormal, pString, inArray, microtime, timestamp, detectDropdownVisibility, windowResizeCallback} from 'Common/Utils';
 import Links from 'Common/Links';
 import Events from 'Common/Events';
 import Translator from 'Common/Translator';
@@ -15,6 +21,7 @@ class AbstractApp extends AbstractBoot
 	googlePreviewSupportedCache = null;
 	isLocalAutocomplete = true;
 	iframe = null;
+	lastErrorTime = 0;
 
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
@@ -25,39 +32,47 @@ class AbstractApp extends AbstractBoot
 
 		this.iframe = $('<iframe class="internal-hiddden" />').appendTo('body');
 
-		Globals.$win.on('error', function (oEvent) {
-			if (oEvent && oEvent.originalEvent && oEvent.originalEvent.message &&
-				-1 === Utils.inArray(oEvent.originalEvent.message, [
+		$win.on('error', (event) => {
+			if (event && event.originalEvent && event.originalEvent.message &&
+				-1 === inArray(event.originalEvent.message, [
 					'Script error.', 'Uncaught Error: Error calling method on NPObject.'
 				]))
 			{
+				const time = timestamp();
+				if (this.lastErrorTime >= time)
+				{
+					return;
+				}
+
+				this.lastErrorTime = time;
+
 				Remote.jsError(
-					Utils.emptyFunction,
-					oEvent.originalEvent.message,
-					oEvent.originalEvent.filename,
-					oEvent.originalEvent.lineno,
+					noop,
+					event.originalEvent.message,
+					event.originalEvent.filename,
+					event.originalEvent.lineno,
 					window.location && window.location.toString ? window.location.toString() : '',
-					Globals.$html.attr('class'),
-					Utils.microtime() - Globals.startMicrotime
+					$html.attr('class'),
+					microtime() - startMicrotime
 				);
 			}
 		});
 
-		Globals.$win.on('resize', function () {
+		$win.on('resize', function () {
 			Events.pub('window.resize');
 		});
 
 		Events.sub('window.resize', _.throttle(function () {
 
 			var
-				iH = Globals.$win.height(),
-				iW = Globals.$win.height()
+				iH = $win.height(),
+				iW = $win.height()
 			;
 
-			if (Globals.$win.__sizes[0] !== iH || Globals.$win.__sizes[1] !== iW)
+			if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW)
 			{
-				Globals.$win.__sizes[0] = iH;
-				Globals.$win.__sizes[1] = iW;
+				$win.__sizes[0] = iH;
+				$win.__sizes[1] = iW;
 
 				Events.pub('window.resize.real');
 			}
@@ -74,24 +89,24 @@ class AbstractApp extends AbstractBoot
 //			}
 //		});
 
-		Globals.$doc.on('keydown', function (oEvent) {
+		$doc.on('keydown', function (oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
-				Globals.$html.addClass('rl-ctrl-key-pressed');
+				$html.addClass('rl-ctrl-key-pressed');
 			}
 		}).on('keyup', function (oEvent) {
 			if (oEvent && !oEvent.ctrlKey)
 			{
-				Globals.$html.removeClass('rl-ctrl-key-pressed');
+				$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 
-		Globals.$doc.on('mousemove keypress click', _.debounce(function () {
+		$doc.on('mousemove keypress click', _.debounce(function () {
 			Events.pub('rl.auto-logout-refresh');
 		}, 5000));
 
-		key('esc, enter', Enums.KeyState.All, _.bind(function () {
-			Utils.detectDropdownVisibility();
+		key('esc, enter', KeyState.All, _.bind(function () {
+			detectDropdownVisibility();
 		}, this));
 	}
 
@@ -113,7 +128,7 @@ class AbstractApp extends AbstractBoot
 	 */
 	download(link) {
 
-		if (Globals.sUserAgent && (Globals.sUserAgent.indexOf('chrome') > -1 || Globals.sUserAgent.indexOf('chrome') > -1))
+		if (sUserAgent && (sUserAgent.indexOf('chrome') > -1 || sUserAgent.indexOf('chrome') > -1))
 		{
 			const oLink = window.document.createElement('a');
 			oLink.href = link;
@@ -130,7 +145,7 @@ class AbstractApp extends AbstractBoot
 			}
 		}
 
-		if (Globals.bMobileDevice)
+		if (bMobileDevice)
 		{
 			window.open(link, '_self');
 			window.focus();
@@ -161,7 +176,7 @@ class AbstractApp extends AbstractBoot
 	 * @param {string} title
 	 */
 	setWindowTitle(title) {
-		title = ((Utils.isNormal(title) && 0 < title.length) ? '' + title : '');
+		title = ((isNormal(title) && 0 < title.length) ? '' + title : '');
 		if (Settings.settingsGet('Title'))
 		{
 			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
@@ -208,7 +223,7 @@ class AbstractApp extends AbstractBoot
 			inIframe = !!Settings.appSettingsGet('inIframe')
 		;
 
-		let customLogoutLink = Utils.pString(Settings.appSettingsGet('customLogoutLink'));
+		let customLogoutLink = pString(Settings.appSettingsGet('customLogoutLink'));
 
 		if (logout)
 		{
@@ -260,7 +275,7 @@ class AbstractApp extends AbstractBoot
 
 	bootstart() {
 
-		// Utils.log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
+		// log('Ps' + 'ss, hac' + 'kers! The' + 're\'s not' + 'hing inte' + 'resting :' + ')');
 
 		Events.pub('rl.bootstart');
 
@@ -279,7 +294,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('x-script', require('Component/Script'));
 //		ko.components.register('svg-icon', require('Component/SvgIcon'));
 
-		if (Settings.appSettingsGet('materialDesign') && Globals.bAnimationSupported)
+		if (Settings.appSettingsGet('materialDesign') && bAnimationSupported)
 		{
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
 			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
@@ -294,14 +309,14 @@ class AbstractApp extends AbstractBoot
 
 		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);
 
-		_.delay(Utils.windowResizeCallback, 1000);
+		_.delay(windowResizeCallback, 1000);
 
 		Events.sub('ssm.mobile-enter', () => {
-			Globals.leftPanelDisabled(true);
+			leftPanelDisabled(true);
 		});
 
 		Events.sub('ssm.mobile-leave', () => {
-			Globals.leftPanelDisabled(false);
+			leftPanelDisabled(false);
 		});
 
 		if (!mobile)
@@ -310,11 +325,11 @@ class AbstractApp extends AbstractBoot
 				id: 'mobile',
 				maxWidth: 767,
 				onEnter: () => {
-					Globals.$html.addClass('ssm-state-mobile');
+					$html.addClass('ssm-state-mobile');
 					Events.pub('ssm.mobile-enter');
 				},
 				onLeave: () => {
-					Globals.$html.removeClass('ssm-state-mobile');
+					$html.removeClass('ssm-state-mobile');
 					Events.pub('ssm.mobile-leave');
 				}
 			});
@@ -324,10 +339,10 @@ class AbstractApp extends AbstractBoot
 				minWidth: 768,
 				maxWidth: 999,
 				onEnter: function() {
-					Globals.$html.addClass('ssm-state-tablet');
+					$html.addClass('ssm-state-tablet');
 				},
 				onLeave: function() {
-					Globals.$html.removeClass('ssm-state-tablet');
+					$html.removeClass('ssm-state-tablet');
 				}
 			});
 
@@ -336,10 +351,10 @@ class AbstractApp extends AbstractBoot
 				minWidth: 1000,
 				maxWidth: 1400,
 				onEnter: () => {
-					Globals.$html.addClass('ssm-state-desktop');
+					$html.addClass('ssm-state-desktop');
 				},
 				onLeave: () => {
-					Globals.$html.removeClass('ssm-state-desktop');
+					$html.removeClass('ssm-state-desktop');
 				}
 			});
 
@@ -347,30 +362,30 @@ class AbstractApp extends AbstractBoot
 				id: 'desktop-large',
 				minWidth: 1400,
 				onEnter: () => {
-					Globals.$html.addClass('ssm-state-desktop-large');
+					$html.addClass('ssm-state-desktop-large');
 				},
 				onLeave: () => {
-					Globals.$html.removeClass('ssm-state-desktop-large');
+					$html.removeClass('ssm-state-desktop-large');
 				}
 			});
 		}
 		else
 		{
-			Globals.$html.addClass('ssm-state-mobile').addClass('rl-mobile');
+			$html.addClass('ssm-state-mobile').addClass('rl-mobile');
 			Events.pub('ssm.mobile-enter');
 		}
 
-		Globals.leftPanelDisabled.subscribe((bValue) => {
-			Globals.$html.toggleClass('rl-left-panel-disabled', bValue);
-			Globals.$html.toggleClass('rl-left-panel-enabled', !bValue);
+		leftPanelDisabled.subscribe((bValue) => {
+			$html.toggleClass('rl-left-panel-disabled', bValue);
+			$html.toggleClass('rl-left-panel-enabled', !bValue);
 		});
 
-		Globals.leftPanelType.subscribe((sValue) => {
-			Globals.$html.toggleClass('rl-left-panel-none', 'none' === sValue);
-			Globals.$html.toggleClass('rl-left-panel-short', 'short' === sValue);
+		leftPanelType.subscribe((sValue) => {
+			$html.toggleClass('rl-left-panel-none', 'none' === sValue);
+			$html.toggleClass('rl-left-panel-short', 'short' === sValue);
 		});
 
-		Globals.leftPanelDisabled.valueHasMutated();
+		leftPanelDisabled.valueHasMutated();
 
 		ssm.ready();
 

@@ -1,7 +1,7 @@
 
 import {_} from 'common';
-import Utils from 'Common/Utils';
-import Globals from 'Common/Globals';
+import {isFunc, isArray, isUnd} from 'Common/Utils';
+import {data as GlobalsData} from 'Common/Globals';
 import Settings from 'Storage/Settings';
 
 class Plugins
@@ -17,9 +17,9 @@ class Plugins
 	 * @param {Function} callback
 	 */
 	addHook(name, callback) {
-		if (Utils.isFunc(callback))
+		if (isFunc(callback))
 		{
-			if (!Utils.isArray(this.oSimpleHooks[name]))
+			if (!isArray(this.oSimpleHooks[name]))
 			{
 				this.oSimpleHooks[name] = [];
 			}
@@ -33,7 +33,7 @@ class Plugins
 	 * @param {Array=} args
 	 */
 	runHook(name, args = []) {
-		if (Utils.isArray(this.oSimpleHooks[name]))
+		if (isArray(this.oSimpleHooks[name]))
 		{
 			_.each(this.oSimpleHooks[name], (callback) => {
 				callback.apply(null, args);
@@ -56,9 +56,9 @@ class Plugins
 	 * @param {?number=} timeout
 	 */
 	remoteRequest(callback, action, parameters, timeout) {
-		if (Globals.__APP__)
+		if (GlobalsData.__APP__)
 		{
-			Globals.__APP__.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
+			GlobalsData.__APP__.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
 		}
 	}
 
@@ -99,8 +99,8 @@ class Plugins
 	 */
 	settingsGet(pluginSection, name) {
 		let plugins = Settings.settingsGet('Plugins');
-		plugins = plugins && !Utils.isUnd(plugins[pluginSection]) ? plugins[pluginSection] : null;
-		return plugins ? (Utils.isUnd(plugins[name]) ? null : plugins[name]) : null;
+		plugins = plugins && !isUnd(plugins[pluginSection]) ? plugins[pluginSection] : null;
+		return plugins ? (isUnd(plugins[name]) ? null : plugins[name]) : null;
 	}
 }
 

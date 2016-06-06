@@ -705,6 +705,7 @@ gulp.task('build', ['rainloop']);
 gulp.task('build+', ['rainloop+']);
 
 gulp.task('js:v', ['js:validate']);
+gulp.task('v', ['js:v']);
 
 gulp.task('w', ['watch']);
 gulp.task('w+', ['watch+']);

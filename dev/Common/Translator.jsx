@@ -2,8 +2,8 @@
 import {window, $, _} from 'common';
 import ko from 'ko';
 import {Notification, UploadErrorCode} from 'Common/Enums';
-import Utils from 'Common/Utils';
-import Globals from 'Common/Globals';
+import {pInt, microtime, noop, inArray} from 'Common/Utils';
+import {$html, bAnimationSupported} from 'Common/Globals';
 
 class Translator
 {
@@ -94,7 +94,7 @@ class Translator
 				this.i18nToNode(item);
 			});
 
-			if (animate && Globals.bAnimationSupported)
+			if (animate && bAnimationSupported)
 			{
 				$('.i18n-animation[data-i18n]', elements).letterfx({
 					fx: 'fall fade',
@@ -256,7 +256,7 @@ class Translator
 	 */
 	getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
 		return response && response.ErrorCode ?
-			this.getNotification(Utils.pInt(response.ErrorCode), response.ErrorMessage || '') :
+			this.getNotification(pInt(response.ErrorCode), response.ErrorMessage || '') :
 			this.getNotification(defCode);
 	}
 
@@ -303,40 +303,40 @@ class Translator
 
 		const
 			self = this,
-			start = Utils.microtime()
+			start = microtime()
 		;
 
-		Globals.$html.addClass('rl-changing-language');
+		$html.addClass('rl-changing-language');
 
 		$.ajax({
 				url: require('Common/Links').langLink(language, admin),
 				dataType: 'script',
 				cache: true
 			})
-			.fail(fail || Utils.emptyFunction)
+			.fail(fail || noop)
 			.done(function () {
 				_.delay(function () {
 
 					self.reloadData();
 
-					(done || Utils.emptyFunction)();
+					(done || noop)();
 
-					const isRtl = -1 < Utils.inArray(language, ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
+					const isRtl = -1 < inArray(language, ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
 
-					Globals.$html
+					$html
 						.removeClass('rl-changing-language')
 						.removeClass('rl-rtl rl-ltr')
 						.addClass(isRtl ? 'rl-rtl' : 'rl-ltr')
 	//						.attr('dir', isRtl ? 'rtl' : 'ltr')
 					;
 
-				}, 500 < Utils.microtime() - start ? 1 : 500);
+				}, 500 < microtime() - start ? 1 : 500);
 			})
 		;
 	}
 
 	init() {
-		Globals.$html.addClass('rl-' + (Globals.$html.attr('dir') || 'ltr'));
+		$html.addClass('rl-' + ($html.attr('dir') || 'ltr'));
 	}
 }
 
