@@ -24,14 +24,31 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 
 		try
 		{
-			if ('' === $sQuery || !$oAccount || !\RainLoop\Utils::IsOwnCloudLoggedIn() ||
-				!\class_exists('OCP\Contacts') || !\OCP\Contacts::isEnabled()
-			)
+			if ('' === $sQuery || !$oAccount || !\RainLoop\Utils::IsOwnCloudLoggedIn())
 			{
 				return $aResult;
 			}
 
-			$aSearchResult = \OCP\Contacts::search($sQuery, array('FN', 'EMAIL'));
+			$aParams = array('FN', 'NICKNAME', 'TITLE', 'EMAIL');
+			if (\class_exists('OC') && isset(\OC::$server) && \method_exists(\OC::$server, 'getContactsManager'))
+			{
+				$cm = \OC::$server->getContactsManager();
+				if (!$cm && !$cm->isEnabled())
+				{
+					return $aResult;
+				}
+
+				$aSearchResult = $cm->search($sQuery, $aParams);
+			}
+			else if (\class_exists('OCP\Contacts') && \OCP\Contacts::isEnabled())
+			{
+				$aSearchResult = \OCP\Contacts::search($sQuery, $aParams);
+			}
+			else
+			{
+				return $aResult;
+			}
+
 			//$this->oLogger->WriteDump($aSearchResult);
 
 			$aHashes = array();
@@ -47,8 +64,13 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 					$sUid = empty($aContact['UID']) ? '' : $aContact['UID'];
 					if (!empty($sUid))
 					{
-						$sFullName = isset($aContact['FN']) ? \trim($aContact['FN']) : '';
 						$mEmails = isset($aContact['EMAIL']) ? $aContact['EMAIL'] : '';
+
+						$sFullName = isset($aContact['FN']) ? \trim($aContact['FN']) : '';
+						if (empty($sFullName))
+						{
+							$sFullName = isset($aContact['NICKNAME']) ? \trim($aContact['NICKNAME']) : '';
+						}
 
 						if (!\is_array($mEmails))
 						{
