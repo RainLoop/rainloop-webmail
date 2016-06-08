@@ -27,51 +27,6 @@ class HtmlUtils
 	}
 
 	/**
-	 * @param string $sText
-	 *
-	 * @return \DOMDocument|bool
-	 */
-	public static function GetDomFromText($sText)
-	{
-		$bState = true;
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
-		{
-			$bState = \libxml_use_internal_errors(true);
-		}
-
-		$oDom = new \DOMDocument('1.0', 'utf-8');
-		$oDom->encoding = 'UTF-8';
-		$oDom->strictErrorChecking = false;
-		$oDom->formatOutput = false;
-		$oDom->preserveWhiteSpace = false;
-
-		$sHtmlAttrs = $sBodyAttrs = '';
-
-		$sText = \MailSo\Base\HtmlUtils::FixSchemas($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearFastTags($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
-
-		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
-			'<html '.$sHtmlAttrs.'><head>'.
-			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
-			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
-
-		@$oDom->normalizeDocument();
-
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
-		{
-			@\libxml_clear_errors();
-		}
-
-		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
-		{
-			\libxml_use_internal_errors($bState);
-		}
-
-		return $oDom;
-	}
-
-	/**
 	 * @param \DOMElement $oElement
 	 *
 	 * @return array
@@ -95,6 +50,104 @@ class HtmlUtils
 		}
 
 		return $aResult;
+	}
+
+	/**
+	 * @param string $sText
+	 *
+	 * @return \DOMDocument|bool
+	 */
+	public static function GetDomFromText($sText)
+	{
+		$bState = true;
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		{
+			$bState = \libxml_use_internal_errors(true);
+		}
+
+		$sHtmlAttrs = $sBodyAttrs = '';
+
+		$sText = \MailSo\Base\HtmlUtils::FixSchemas($sText);
+		$sText = \MailSo\Base\HtmlUtils::ClearFastTags($sText);
+		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
+
+		$oDom = self::createDOMDocument();
+		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
+			'<html '.$sHtmlAttrs.'><head>'.
+			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
+			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
+
+		@$oDom->normalizeDocument();
+
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
+		{
+			@\libxml_clear_errors();
+		}
+
+		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
+		{
+			\libxml_use_internal_errors($bState);
+		}
+
+		return $oDom;
+	}
+
+	/**
+	 * @return \DOMDocument
+	 */
+	private static function createDOMDocument()
+	{
+		$oDoc = new \DOMDocument('1.0', 'UTF-8');
+		$oDoc->encoding = 'UTF-8';
+		$oDoc->strictErrorChecking = false;
+		$oDoc->formatOutput = false;
+		$oDoc->preserveWhiteSpace = false;
+
+		return $oDoc;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	private static function comparedVersion()
+	{
+		return \version_compare(PHP_VERSION, '5.3.6') >= 0;
+	}
+
+	/**
+	 * @param \DOMDocument|\DOMElement $oElem
+	 *
+	 * @return type
+	 */
+	private static function domToString($oElem, $oDom = null)
+	{
+		$sResult = '';
+		if ($oElem instanceof \DOMDocument)
+		{
+			if (isset($oElem->documentElement) && self::comparedVersion())
+			{
+				$sResult = $oElem->saveHTML($oElem->documentElement);
+			}
+			else
+			{
+				$sResult = $oElem->saveHTML();
+			}
+		}
+		else if ($oElem)
+		{
+			if ($oDom && self::comparedVersion())
+			{
+				$sResult = $oDom->saveHTML($oElem);
+			}
+			else
+			{
+				$oTempDoc = self::createDOMDocument();
+				$oTempDoc->appendChild($oTempDoc->importNode($oElem->cloneNode(true), true));
+				$sResult = $oTempDoc->saveHTML();
+			}
+		}
+
+		return \trim($sResult);
 	}
 
 	/**
@@ -138,28 +191,22 @@ class HtmlUtils
 				}
 
 				$oWrap->appendChild($oDiv);
-				$sResult = \trim($oDom->saveHTML($oWrap));
+				$sResult = self::domToString($oWrap, $oDom);
 			}
 			else
 			{
-				$sResult = \trim($oDom->saveHTML($oDiv));
-
-				if (0 === strpos($sResult, '<div>'))
+				$sResult = self::domToString($oDiv, $oDom);
+				if (0 === strpos($sResult, '<div>') && '</div>' === substr($sResult, -6))
 				{
 					$sResult = substr($sResult, 5);
-
-					if ('</div>' === substr($sResult, -6))
-					{
-						$sResult = substr($sResult, 0, -6);
-					}
-
+					$sResult = substr($sResult, 0, -6);
 					$sResult = \trim($sResult);
 				}
 			}
 		}
 		else
 		{
-			$sResult = \trim($oDom->saveHTML());
+			$sResult = self::domToString($oDom);
 		}
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
