@@ -52,7 +52,6 @@ it_IT:
     BUTTON_CONTACTS: "Contatti"
     BUTTON_NEW_MESSAGE: "Nuovo messaggio"
     INBOX_NAME: "Posta in arrivo"
-    STARRED_NAME: "Preferiti"
     SENT_NAME: "Posta inviata"
     DRAFTS_NAME: "Bozze"
     SPAM_NAME: "Spam"

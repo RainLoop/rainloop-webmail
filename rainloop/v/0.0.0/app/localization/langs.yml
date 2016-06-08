@@ -21,6 +21,7 @@ Common:
         LANG_PT_BR: Português (Brasil)
         LANG_ES_ES: Español (España)
         LANG_ES_LA: Español
+        LANG_ET_EE: Eesti
         LANG_IT_IT: Italiano
         LANG_LT_LT: Lietuvių
         LANG_LV_LV: Latviešu
@@ -60,6 +61,7 @@ Common:
         LANG_PT_BR: Portuguese (Brazil)
         LANG_ES_ES: Spanish
         LANG_ES_LA: Spanish
+        LANG_ET_EE: Estonian
         LANG_IT_IT: Italian
         LANG_LT_LT: Lithuanian
         LANG_LV_LV: Latvian

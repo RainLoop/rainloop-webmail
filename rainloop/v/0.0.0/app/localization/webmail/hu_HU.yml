@@ -1,6 +1,6 @@
 hu_HU:
   LOGIN:
-    LABEL_EMAIL: "Email"
+    LABEL_EMAIL: "E-mail"
     LABEL_LOGIN: "Bejelentkezés"
     LABEL_PASSWORD: "Jelszó"
     LABEL_SIGN_ME: "Megjegyzés"
@@ -175,11 +175,11 @@ hu_HU:
     CLEAR_SEARCH: "Keresés törlése"
     CONTACT_VIEW_DESC: "Válassz egy névjegyet a listából, hogy itt megjelenjen."
     LABEL_DISPLAY_NAME: "Megjelenítendő név"
-    LABEL_EMAIL: "Email"
+    LABEL_EMAIL: "E-mail"
     LABEL_PHONE: "Telefonszám"
     LABEL_WEB: "Web"
     LABEL_BIRTHDAY: "Születésnap"
-    LINK_ADD_EMAIL: "Adj meg egy email címet"
+    LINK_ADD_EMAIL: "Adj meg egy e-mail címet"
     LINK_ADD_PHONE: "Adj meg egy telefonszámot"
     LINK_BIRTHDAY: "Születésnap"
     PLACEHOLDER_ENTER_DISPLAY_NAME: "Add meg a megjelenítendő nevet"
@@ -191,7 +191,7 @@ hu_HU:
     ADD_MENU_LABEL: "Hozzáadás"
     ADD_MENU_NICKNAME: "Felhasználónév"
     ADD_MENU_NOTES: "Jegyzetek"
-    ADD_MENU_EMAIL: "Email"
+    ADD_MENU_EMAIL: "E-mail"
     ADD_MENU_PHONE: "Telefonszám"
     ADD_MENU_URL: "URL"
     ADD_MENU_ADDRESS: "Cím"
@@ -255,7 +255,7 @@ hu_HU:
     TITLE_UPDATE_IDENTITY: "Frissítsük az identitást?"
     BUTTON_ADD_IDENTITY: "Hozzáadás"
     BUTTON_UPDATE_IDENTITY: "Frissítés"
-    LABEL_EMAIL: "Email"
+    LABEL_EMAIL: "E-mail"
     LABEL_NAME: "Név"
     LABEL_REPLY_TO: "Válaszcím"
     LABEL_SIGNATURE: "Aláírás"
@@ -277,7 +277,7 @@ hu_HU:
     BUTTON_CLOSE: "Bezárás"
     DANGER_DESC_WARNING: "Figyelem!"
     DANGER_DESC_HTML_1: "Ez a művelet az összes <strong>%FOLDER%</strong> mappában lévő üzenet teljes törlését eredményezi."
-    DANGER_DESC_HTML_2: "Once started, the process cannot be aborted or cancelled."
+    DANGER_DESC_HTML_2: "Ha egyszer elindult, a folyamatot nem lehet megszakítani."
     TITLE_CLEARING_PROCESS: "Mappa ürítés..."
   POPUPS_IMPORT_OPEN_PGP_KEY:
     TITLE_IMPORT_OPEN_PGP_KEY: "OpenPGP kulcs importálás"
@@ -288,7 +288,7 @@ hu_HU:
     BUTTON_CLOSE: "Bezárás"
   POPUPS_GENERATE_OPEN_PGP_KEYS:
     TITLE_GENERATE_OPEN_PGP_KEYS: "OpenPGP kulcs generálás"
-    LABEL_EMAIL: "Email"
+    LABEL_EMAIL: "E-mail"
     LABEL_NAME: "Név"
     LABEL_PASSWORD: "Jelszó"
     LABEL_KEY_BIT_LENGTH: "Kulcs hossz"
@@ -337,15 +337,15 @@ hu_HU:
     SELECT_TYPE_NOT_REGEXP: "Not Regexp"
     SELECT_TYPE_EQUAL_TO: "Egyezik"
     SELECT_TYPE_NOT_EQUAL_TO: "Nem egyezik"
-    SELECT_TYPE_OVER: "Over"
-    SELECT_TYPE_UNDER: "Under"
-    SELECT_MATCH_ANY: "Matching any of the following rules"
-    SELECT_MATCH_ALL: "Matching all of the following rules"
+    SELECT_TYPE_OVER: "Fölött"
+    SELECT_TYPE_UNDER: "Alatt"
+    SELECT_MATCH_ANY: "Egyezzen VALAMELYIK következő szabállyal"
+    SELECT_MATCH_ALL: "Egyezzen MINDEN következő szabállyal"
     MARK_AS_READ_LABEL: "Megjelölés olvasottként"
-    REPLY_INTERVAL_LABEL: "Reply interval (days)"
+    REPLY_INTERVAL_LABEL: "Válasz időköz (nap)"
     KEEP_LABEL: "Megtart"
-    STOP_LABEL: "Don't stop processing rules"
-    EMAIL_LABEL: "Email"
+    STOP_LABEL: "Ne hagyja abba a szabályok feldolgozását"
+    EMAIL_LABEL: "E-mail"
     VACATION_SUBJECT_LABEL: "Tárgy (nem kötelező)"
     VACATION_MESSAGE_LABEL: "Üzenet"
     VACATION_RECIPIENTS_LABEL: "Címzettek (vesszővel elválasztva)"
@@ -463,6 +463,7 @@ hu_HU:
     LABEL_AUTOLOGOUT: "Automatikus kijelentkezés"
     AUTOLOGIN_NEVER_OPTION_NAME: "Soha"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% perc"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% óra"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Általános"
     LABEL_LANGUAGE: "Nyelv"
@@ -472,9 +473,9 @@ hu_HU:
     LABEL_LAYOUT_VERTICAL_SPLIT: "Függőleges felosztás"
     LABEL_LAYOUT_HORIZONTAL_SPLIT: "Vízszintes felosztás"
     LABEL_EDITOR: "Alapértelmezett szövegszerkesztő"
-    LABEL_EDITOR_HTML: "Html"
+    LABEL_EDITOR_HTML: "HTML"
     LABEL_EDITOR_PLAIN: "Egyszerű"
-    LABEL_EDITOR_HTML_FORCED: "Html (kényszerített)"
+    LABEL_EDITOR_HTML_FORCED: "HTML (kényszerített)"
     LABEL_EDITOR_PLAIN_FORCED: "Egyszerű (kényszerített)"
     LABEL_ANIMATION: "Felület animáció"
     LABEL_ANIMATION_FULL: "Teljes"
@@ -531,17 +532,17 @@ hu_HU:
     BUTTON_SYSTEM: "Rendszermappák kiválasztása"
     BUTTON_DELETE: "Törlés"
     BUTTON_SUBSCRIBE: "Feliratkozás"
-    BUTTON_UNSUBSCRIBE: "Unsubscribe"
+    BUTTON_UNSUBSCRIBE: "Leiratkozás"
     LOADING_PROCESS: "Mappa lista frissítése"
     CREATING_PROCESS: "Mappa létrehozás"
     DELETING_PROCESS: "Mappa törlés"
     RENAMING_PROCESS: "Mappa átnevezés"
     DELETING_ASK: "Biztos vagy benne?"
     TO_MANY_FOLDERS_DESC_1: "Túl sok mappád van!"
-    TO_MANY_FOLDERS_DESC_2: "We have shown only a part of them, to avoid performance problems."
+    TO_MANY_FOLDERS_DESC_2: "Teljesítény problémák elkerülése miatt, csak egy részét jelenítjük meg."
     HELP_DELETE_FOLDER: "Mappa törlés"
     HELP_SHOW_HIDE_FOLDER: "Mappa mutatás/elrejtés"
-    HELP_CHECK_FOR_NEW_MESSAGES: "Check/don't check for new messages"
+    HELP_CHECK_FOR_NEW_MESSAGES: "Ellenőrizze/ne ellenőrizze az új üzeneteket"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Fiók lista"
     LEGEND_IDENTITIES: "Identitások"
@@ -601,16 +602,16 @@ hu_HU:
     LABEL_IMPORTANT: "Kijelölt üzenetek megjelölése fontosként zászlóval"
     LABEL_SEARCH: "Keresés"
     LABEL_CANCEL_SEARCH: "Keresés megszakítása"
-    LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"
+    LABEL_FULLSCREEN_ENTER: "Teljes képernyő (előnézeti panales elrendezés)"
     LABEL_VIEW_MESSAGE_ENTER: "Üzenet megtekintése (előnézeti panel nélküli elrendezés)"
     LABEL_SWITCH_TO_MESSAGE: "Fókusz váltás a kijelölt üzenetre"
     LABEL_SWITCH_TO_FOLDER_LIST: "Fókusz váltás a mappa listára"
-    LABEL_FULLSCREEN_TOGGLE: "Toggle fullscreen mode"
+    LABEL_FULLSCREEN_TOGGLE: "Teljes képernyős mód váltása"
     LABEL_BLOCKQUOTES_TOGGLE: "Idézetek váltása az üzenetben"
     LABEL_THREAD_NEXT: "Következő üzenet a szálban"
     LABEL_THREAD_PREV: "Előző üzenet a szálban"
     LABEL_PRINT: "Nyomtatás"
-    LABEL_EXIT_FULLSCREEN: "Exit fullscreen mode"
+    LABEL_EXIT_FULLSCREEN: "Kilépés a teljes képernyős módból"
     LABEL_CLOSE_MESSAGE: "Üzenet bezárás (előnézeti panel nélküli elrendezés)"
     LABEL_SWITCH_TO_LIST: "Fókusz váltása vissza az üzenetlistára"
     LABEL_OPEN_COMPOSE_POPUP: "Levélírás ablak megnyitás"
@@ -620,7 +621,7 @@ hu_HU:
     LABEL_SEND_MESSAGE: "Üzenet küldés"
     LABEL_CLOSE_COMPOSE: "Levélírás bezárása"
   PGP_NOTIFICATIONS:
-    NO_PUBLIC_KEYS_FOUND: "No public keys found"
+    NO_PUBLIC_KEYS_FOUND: "Nem találtam publikus kulcsokat"
     NO_PUBLIC_KEYS_FOUND_FOR: "Nem találtam publikus kulcsokat ehhez az e-mailhez: \"%EMAIL%\""
     NO_PRIVATE_KEY_FOUND: "Nem találtam privát kulcsot"
     NO_PRIVATE_KEY_FOUND_FOR: "Nem találtam privát kulcsot ehhez az e-mailhez: \"%EMAIL%\""
@@ -630,7 +631,7 @@ hu_HU:
     DECRYPTION_ERROR: "OpenPGP visszafejtési hiba"
     GOOD_SIGNATURE: "Jó aláírás tőle: %USER%"
     PGP_ERROR: "OpenPGP hiba: %ERROR%"
-    SPECIFY_FROM_EMAIL: "Kérlek add meg a Feladó email címét"
+    SPECIFY_FROM_EMAIL: "Kérlek add meg a Feladó e-mail címét"
     SPECIFY_AT_LEAST_ONE_RECIPIENT: "Legalább egy címzettet meg kell adni"
   NOTIFICATIONS:
     INVALID_TOKEN: "Érvénytelen kulcs"
@@ -638,15 +639,18 @@ hu_HU:
     ACCESS_ERROR: "Érvénytelen hozzáférés"
     CONNECTION_ERROR: "Nem lehet kapcsolódni a szerverhez"
     CAPTCHA_ERROR: "Érvénytelen CAPTCHA."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
+      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+      a fiók beállításoknál.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
+      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+      a fiók beállításoknál.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
+      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+      a fiók beállításoknál.
     DOMAIN_NOT_ALLOWED: "A domain nem engedélyezett"
     ACCOUNT_NOT_ALLOWED: "A fiók nem engedélyezett"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Kétlépcsős azonosítás kötelező"
@@ -683,7 +687,7 @@ hu_HU:
     LICENSING_SERVER_IS_UNAVAILABLE: "A előfizetési szerver nem érhető el"
     LICENSING_DOMAIN_EXPIRED: "A domain előfizetése lejárt."
     LICENSING_DOMAIN_BANNED: "A domain előfizetése letiltva."
-    DEMO_SEND_MESSAGE_ERROR: "Biztonsági okokból, ebből a demó fiókból nem lehet külső email címekre üzenetet küldeni."
+    DEMO_SEND_MESSAGE_ERROR: "Biztonsági okokból, ebből a demó fiókból nem lehet külső e-mail címekre üzenetet küldeni."
     DEMO_ACCOUNT_ERROR: "Biztonsági okokból, ebből a fiókból nem lehet elvégezni ezt a műveletet!"
     ACCOUNT_ALREADY_EXISTS: "A fiók már létezik"
     ACCOUNT_DOES_NOT_EXIST: "A fiók nem létezik"

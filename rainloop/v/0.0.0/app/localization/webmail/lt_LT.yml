@@ -17,6 +17,9 @@ lt_LT:
     BUTTON_SETTINGS: "Nustatymai"
     BUTTON_HELP: "Pagalba"
     BUTTON_LOGOUT: "Atsijungti"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobili versija"
+    BUTTON_DESKTOP_VERSION: "Standartinė versija"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Paieška"
     TITLE_ADV: "Detali paieška"
@@ -50,6 +53,7 @@ lt_LT:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Sukurti"
     BUTTON_CONTACTS: "Kontaktai"
+    BUTTON_NEW_MESSAGE: "Rašyti naują"
     INBOX_NAME: "Gautieji"
     SENT_NAME: "Išsiųsti"
     DRAFTS_NAME: "Juodraščiai"
@@ -620,6 +624,7 @@ lt_LT:
     NO_PRIVATE_KEY_FOUND: "Privačių raktų nerasta"
     NO_PRIVATE_KEY_FOUND_FOR: "Privačių raktų nerasta \"%EMAIL%\" laiškui"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "Parinkti privatų raktą"
     UNVERIFIRED_SIGNATURE: "Nepatikrintas parašas"
     DECRYPTION_ERROR: "OpenPGP dekodavimo klaida"
     GOOD_SIGNATURE: "Tinkamas parašas nuo %USER%"

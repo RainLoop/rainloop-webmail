@@ -17,6 +17,9 @@ nl_NL:
     BUTTON_SETTINGS: "Instellingen"
     BUTTON_HELP: "Help"
     BUTTON_LOGOUT: "Afmelden"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobiele versie"
+    BUTTON_DESKTOP_VERSION: "Desktop versie"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Zoeken"
     TITLE_ADV: "Geavanceerd zoeken"
@@ -50,6 +53,7 @@ nl_NL:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Nieuw bericht"
     BUTTON_CONTACTS: "Contactpersonen"
+    BUTTON_NEW_MESSAGE: "Nieuw bericht"
     INBOX_NAME: "Postvak IN"
     SENT_NAME: "Verzonden items"
     DRAFTS_NAME: "Concepten"
@@ -299,7 +303,7 @@ nl_NL:
     BUTTON_SIGN_AND_ENCRYPT: "Ondertekenen en versleutelen"
   POPUPS_MESSAGE_OPEN_PGP:
     TITLE_MESSAGE_OPEN_PGP: "OpenPGP Decrypt"
-    LABEL_KEY: "Private Key"
+    LABEL_KEY: "Privé sleutel"
     LABEL_PASSWORD: "Password"
     BUTTON_DECRYPT: "Decrypt"
   POPUPS_TWO_FACTOR_TEST:
@@ -617,9 +621,10 @@ nl_NL:
   PGP_NOTIFICATIONS:
     NO_PUBLIC_KEYS_FOUND: "Geen publieke sleutels gevonden"
     NO_PUBLIC_KEYS_FOUND_FOR: "Geen publieke sleutels gevonden voor e-mail adres \"%EMAIL%\""
-    NO_PRIVATE_KEY_FOUND: "Geen geheime sleutel gevonden"
-    NO_PRIVATE_KEY_FOUND_FOR: "Geen geheime sleutel gevonden voor e-mail adres \"%EMAIL%\""
+    NO_PRIVATE_KEY_FOUND: "Geen privé sleutel gevonden"
+    NO_PRIVATE_KEY_FOUND_FOR: "Geen privé sleutel gevonden voor e-mail adres \"%EMAIL%\""
     ADD_A_PUBLICK_KEY: "Voeg een publieke sleutel toe"
+    SELECT_A_PRIVATE_KEY: "Selecteer een privé sleutel"
     UNVERIFIRED_SIGNATURE: "Ongeverifieerde handtekening"
     DECRYPTION_ERROR: "OpenPGP decryptie fout"
     GOOD_SIGNATURE: "Juiste handtekening van %USER%"

@@ -316,7 +316,7 @@ bg_BG:
     FILTER_NAME: "Име"
     LEGEND_CONDITIONS: "Условия"
     LEGEND_ACTIONS: "Действия"
-    BUTTON_DONE: "Няма"
+    BUTTON_DONE: "Готово"
     BUTTON_ADD_CONDITION: "Добави условие"
     SELECT_ACTION_NONE: "Няма"
     SELECT_ACTION_MOVE_TO: "Премести в"
