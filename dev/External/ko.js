@@ -756,8 +756,13 @@
 
 	ko.bindingHandlers.nano = {
 		'init': function (oElement) {
-			var Globals = require('Common/Globals');
-			if (!Globals.bDisableNanoScroll)
+
+			var
+				Globals = require('Common/Globals'),
+				Settings = require('Storage/Settings')
+			;
+
+			if (!Globals.bDisableNanoScroll && !Settings.appSettingsGet('useNativeScrollbars'))
 			{
 				$(oElement)
 					.addClass('nano')
