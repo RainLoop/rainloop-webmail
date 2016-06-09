@@ -9970,15 +9970,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$fAdditionalDomReader = null;
 					if (0 < \strlen($sHtml) && $this->Config()->Get('labs', 'emogrifier', false))
 					{
-						if (!\class_exists('Pelago\Emogrifier', false))
+						if (!\class_exists('RainLoopVendor\Pelago\Emogrifier', false))
 						{
 							include_once APP_VERSION_ROOT_PATH.'app/libraries/emogrifier/Emogrifier.php';
 						}
 
-						if (\class_exists('Pelago\Emogrifier', false))
+						if (\class_exists('RainLoopVendor\Pelago\Emogrifier', false))
 						{
 							$fAdditionalDomReader = function ($oDom) {
-								$oEmogrifier = new \Pelago\Emogrifier();
+								$oEmogrifier = new \RainLoopVendor\Pelago\Emogrifier();
 								$oEmogrifier->preserveEncoding = false;
 								return $oEmogrifier->emogrify($oDom);
 							};

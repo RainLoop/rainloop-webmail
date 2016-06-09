@@ -1,5 +1,10 @@
 <?php
 
+namespace RainLoopVendor;
+
+class stdClass extends \stdClass {};
+class Exception extends \Exception {};
+
 /**
  * lessphp v0.3.9
  * http://leafo.net/lessphp
@@ -1814,6 +1819,7 @@ class lessc {
 			$className = "lessc_formatter_$this->formatterName";
 		}
 
+		$className = 'RainLoopVendor\\'.$className;
 		return new $className;
 	}
 
@@ -2093,7 +2099,7 @@ class lessc_parser {
 
 		if (!self::$operatorString) {
 			self::$operatorString =
-				'('.implode('|', array_map(array('lessc', 'preg_quote'),
+				'('.implode('|', array_map(array('RainLoopVendor\\lessc', 'preg_quote'),
 					array_keys(self::$precedence))).')';
 
 			$commentSingle = lessc::preg_quote(self::$commentSingle);
@@ -2322,8 +2328,8 @@ class lessc_parser {
 
 	protected function isDirective($dirname, $directives) {
 		// TODO: cache pattern in parser
-		$pattern = implode("|",
-			array_map(array("lessc", "preg_quote"), $directives));
+		$pattern = implode('|',
+			array_map(array('RainLoopVendor\\lessc', 'preg_quote'), $directives));
 		$pattern = '/^(-[a-z-]+-)?(' . $pattern . ')$/i';
 
 		return preg_match($pattern, $dirname);
@@ -2611,7 +2617,7 @@ class lessc_parser {
 		$this->eatWhiteDefault = false;
 
 		$stop = array("'", '"', "@{", $end);
-		$stop = array_map(array("lessc", "preg_quote"), $stop);
+		$stop = array_map(array('RainLoopVendor\\lessc', 'preg_quote'), $stop);
 		// $stop[] = self::$commentMulti;
 
 		if (!is_null($rejectStrs)) {

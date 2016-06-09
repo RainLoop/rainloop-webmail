@@ -1,5 +1,5 @@
 <?php
-namespace Pelago;
+namespace RainLoopVendor\Pelago;
 
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
@@ -320,7 +320,7 @@ class Emogrifier
 		{
 			return $xmlDocument;
 		}
-		
+
         if ($this->preserveEncoding) {
 			 return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
         } else {

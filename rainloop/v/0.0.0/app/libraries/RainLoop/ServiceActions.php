@@ -731,7 +731,7 @@ class ServiceActions
 					include_once APP_VERSION_ROOT_PATH.'app/libraries/lessphp/ctype.php';
 					include_once APP_VERSION_ROOT_PATH.'app/libraries/lessphp/lessc.inc.php';
 
-					$oLess = new \lessc();
+					$oLess = new \RainLoopVendor\lessc();
 					$oLess->setFormatter('compressed');
 
 					$aResult = array();
