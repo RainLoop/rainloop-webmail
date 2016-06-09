@@ -528,10 +528,10 @@ export function createCommand(context, fExecute, fCanExecute = true)
 
 	let
 		fResult = null,
-		fNonEmpty = () => {
+		fNonEmpty = (...args) => {
 			if (fResult && fResult.canExecute && fResult.canExecute())
 			{
-				fExecute.apply(context, Array.prototype.slice.call(arguments));
+				fExecute.apply(context, args);
 			}
 			return false;
 		}
@@ -786,15 +786,15 @@ export function htmlToPlain(html)
 
 		convertBlockquote = (blockquoteText) => {
 			blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
-			return blockquoteText.replace(/(^|\n)([> ]+)/gm, function () {
-				return (arguments && 2 < arguments.length) ? arguments[1] + $.trim(arguments[2].replace(/[\s]/g, '')) + ' ' : '';
+			return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) => {
+				return (args && 2 < args.length) ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : '';
 			});
 		},
 
-		convertDivs = () => {
-			if (arguments && 1 < arguments.length)
+		convertDivs = (...args) => {
+			if (args && 1 < args.length)
 			{
-				let divText = trim(arguments[1]);
+				let divText = trim(args[1]);
 				if (0 < divText.length)
 				{
 					divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs);
@@ -807,20 +807,20 @@ export function htmlToPlain(html)
 			return '';
 		},
 
-		convertPre = () => {
-			return (arguments && 1 < arguments.length) ?
-				arguments[1].toString()
+		convertPre = (...args) => {
+			return (args && 1 < args.length) ?
+				args[1].toString()
 					.replace(/[\n]/gm, '<br />')
 					.replace(/[\r]/gm, '')
 				: '';
 		},
 
-		fixAttibuteValue = () => {
-			return (arguments && 1 < arguments.length) ? '' + arguments[1] + _.escape(arguments[2]) : '';
+		fixAttibuteValue = (...args) => {
+			return (args && 1 < args.length) ? '' + args[1] + _.escape(args[2]) : '';
 		},
 
-		convertLinks = () => {
-			return (arguments && 1 < arguments.length) ? trim(arguments[1]) : '';
+		convertLinks = (...args) => {
+			return (args && 1 < args.length) ? trim(args[1]) : '';
 		}
 	;
 
@@ -1431,7 +1431,7 @@ export function delegateRunOnDestroy(objectOrObjects)
 	{
 		if (isArray(objectOrObjects))
 		{
-			_.each(objectOrObjects, function (item) {
+			_.each(objectOrObjects, (item) => {
 				delegateRunOnDestroy(item);
 			});
 		}
@@ -1611,7 +1611,7 @@ export const windowResize = _.debounce((timeout) => {
 	}
 	else
 	{
-		window.setTimeout(function () {
+		window.setTimeout(() => {
 			$win.resize();
 		}, timeout);
 	}

@@ -996,7 +996,8 @@
 			}
 
 			jqElement.addClass('command');
-			ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click'].init.apply(oViewModel, arguments);
+			ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click']
+				.init.apply(oViewModel, Array.prototype.slice.call(arguments));
 		},
 
 		'update': function (oElement, fValueAccessor) {
