@@ -2,7 +2,7 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.1",
-  "release": "126",
+  "release": "127",
   "private": true,
   "ownCloudPackageVersion": "4.18",
   "description": "Simple, modern & fast web-based email client",
