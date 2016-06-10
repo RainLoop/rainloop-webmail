@@ -636,18 +636,19 @@ export function windowPopupKnockout(viewModel, templateID, title, fCallback = nu
 {
 	const
 		win = window.open(''),
+		doc = win.document,
 		func = '__OpenerApplyBindingsUid' + fakeMd5() + '__',
 		template = $('#' + templateID)
 	;
 
 	window[func] = () => {
 
-		if (win && win.document.body && template && template[0])
+		if (win && doc && doc.body && template && template[0])
 		{
-			const body = $(win.document.body);
+			const body = $(doc.body);
 
 			$('#rl-content', body).html(template.html());
-			$('html', win.document).addClass('external ' + $('html').attr('class'));
+			$('html', doc).addClass('external ' + $('html').attr('class'));
 
 			require('Common/Translator').i18nToNodes(body);
 
@@ -665,22 +666,27 @@ export function windowPopupKnockout(viewModel, templateID, title, fCallback = nu
 		}
 	};
 
-	win.document.open();
-	win.document.write('<html><head>' +
-'<meta charset="utf-8" />' +
-'<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' +
-'<meta name="viewport" content="user-scalable=no" />' +
-'<meta name="apple-mobile-web-app-capable" content="yes" />' +
-'<meta name="robots" content="noindex, nofollow, noodp" />' +
-'<title>' + encodeHtml(title) + '</title>' +
-'</head><body><div id="rl-content"></div></body></html>');
-	win.document.close();
+	doc.open();
+	doc.write(trim(`
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="robots" content="noindex, nofollow, noodp" />
+	<title>${encodeHtml(title)}</title>
+</head>
+<body><div id="rl-content"></div></body>
+</html>
+`));
+	doc.close();
 
-	const script = win.document.createElement('script');
+	const script = doc.createElement('script');
 	script.type = 'text/javascript';
-	script.innerHTML = `if(window&&window.opener&&window.opener['${func}]'){window.opener['${func}']();window.opener['${func}']=null}`;
+	script.innerHTML = `if(window&&window.opener&&window.opener['${func}']){window.opener['${func}']();window.opener['${func}']=null}`;
 
-	win.document.getElementsByTagName('head')[0].appendChild(script);
+	doc.getElementsByTagName('head')[0].appendChild(script);
 }
 
 /**
