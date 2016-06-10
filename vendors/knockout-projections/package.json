@@ -1,8 +1,8 @@
 {
   "name": "knockout-projections",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Knockout.js observable arrays get smarter",
-  "main": "knockout-projections.js",
+  "main": "dist/knockout-projections.js",
   "directories": {
     "test": "test"
   },
@@ -16,7 +16,8 @@
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.4.3",
-    "grunt-jasmine-node": "~0.1.0"
+    "grunt-jasmine-node": "~0.1.0",
+    "grunt-string-replace": "~0.2.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

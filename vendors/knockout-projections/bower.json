@@ -1,0 +1,28 @@
+{
+  "name": "knockout-projections",
+  "version": "1.1.0",
+  "homepage": "https://github.com/SteveSanderson/knockout-projections",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "description": "Observable maps and filters for Knockout observable arrays",
+  "main": "dist/knockout-projections.min.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "Knockout"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "spec"
+  ],
+  "dependencies": {
+    "knockout": "~3.1.0"
+  }
+}

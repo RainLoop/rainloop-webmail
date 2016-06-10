@@ -89,6 +89,7 @@
 		this.smtpAuth = ko.observable(true);
 		this.smtpPhpMail = ko.observable(false);
 		this.whiteList = ko.observable('');
+		this.aliasName = ko.observable('');
 
 		this.enableSmartPorts = ko.observable(false);
 
@@ -97,10 +98,30 @@
 		}, this);
 
 		this.headerText = ko.computed(function () {
-			var sName = this.name();
-			return this.edit() ? Translator.i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', {'NAME': sName}) :
-				('' === sName ? Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN') :
-					Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', {'NAME': sName}));
+
+			var
+				sName = this.name(),
+				sAliasName = this.aliasName(),
+				sResult = ''
+			;
+
+			if (this.edit())
+			{
+				sResult = Translator.i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', {'NAME': sName});
+				if (sAliasName)
+				{
+					sResult += ' ← ' + sAliasName;
+				}
+			}
+			else
+			{
+				sResult = ('' === sName ? Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN') :
+					Translator.i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', {'NAME': sName}))
+				;
+			}
+
+			return sResult;
+
 		}, this);
 
 		this.domainDesc = ko.computed(function () {
@@ -418,6 +439,7 @@
 			this.smtpAuth(!!oDomain.OutAuth);
 			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
 			this.whiteList(Utils.trim(oDomain.WhiteList));
+			this.aliasName(Utils.trim(oDomain.AliasName));
 
 			this.enableSmartPorts(true);
 		}
@@ -464,6 +486,7 @@
 		this.smtpPhpMail(false);
 
 		this.whiteList('');
+		this.aliasName('');
 		this.enableSmartPorts(true);
 	};
 

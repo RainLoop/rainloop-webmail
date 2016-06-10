@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>knockout-projections</id>
+    <version>1.1.0</version>
+    <authors>Microsoft Corporation</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Knockout.js observable arrays get smarter</description>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <dependencies>
+      <dependency id="knockoutjs" version="3.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="dist\*.js" target="content\scripts" />
+  </files>
+</package>

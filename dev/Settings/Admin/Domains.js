@@ -35,6 +35,11 @@
 		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Domain'));
 	};
 
+	DomainsAdminSettings.prototype.createDomainAlias = function ()
+	{
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/DomainAlias'));
+	};
+
 	DomainsAdminSettings.prototype.deleteDomain = function (oDomain)
 	{
 		this.domains.remove(oDomain);

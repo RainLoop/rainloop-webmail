@@ -24,8 +24,17 @@
 			box-sizing: border-box;
 		}
 
-		&.disabled .domain-name {
+		.domain-alias {
+			display: inline-block;
+			box-sizing: border-box;
 			color: #bbb;
+			padding-left: 5px;
+		}
+
+		&.disabled {
+			.domain-name, .domain-alias {
+				color: #bbb;
+			}
 		}
 
 		.button-delete {

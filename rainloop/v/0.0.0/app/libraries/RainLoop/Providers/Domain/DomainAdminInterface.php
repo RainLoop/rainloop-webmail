@@ -37,15 +37,20 @@ interface DomainAdminInterface extends DomainInterface
 	public function Delete($sName);
 
 	/**
-	 * @param int $iOffset
+	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
+	 * @param int $sSearch = ''
+	 * @param bool $bIncludeAliases = true
 	 *
 	 * @return array
 	 */
-	public function GetList($iOffset, $iLimit = 20);
+	public function GetList($iOffset = 0, $iLimit = 20, $sSearch = '', $bIncludeAliases = true);
 
 	/**
+	 * @param string $sSearch = ''
+	 * @param bool $bIncludeAliases = true
+	 *
 	 * @return int
 	 */
-	public function Count();
+	public function Count($sSearch = '', $bIncludeAliases = true);
 }

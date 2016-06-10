@@ -6,6 +6,8 @@
 	var
 		_ = require('_'),
 
+		Utils = require('Common/Utils'),
+
 		AbstractAjaxRemote = require('Remote/AbstractAjax')
 	;
 
@@ -54,10 +56,14 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {boolean=} bIncludeAliases = true
 	 */
-	RemoteAdminStorage.prototype.domainList = function (fCallback)
+	RemoteAdminStorage.prototype.domainList = function (fCallback, bIncludeAliases)
 	{
-		this.defaultRequest(fCallback, 'AdminDomainList');
+		bIncludeAliases = Utils.isUnd(bIncludeAliases) ? true : bIncludeAliases;
+		this.defaultRequest(fCallback, 'AdminDomainList', {
+			'IncludeAliases': bIncludeAliases ? '1' : '0'
+		});
 	};
 
 	/**
@@ -205,6 +211,14 @@
 		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
 			'Name': sName,
 			'Disabled': !!bDisabled ? '1' : '0'
+		});
+	};
+
+	RemoteAdminStorage.prototype.createDomainAlias = function (fCallback, sName, sAlias)
+	{
+		this.defaultRequest(fCallback, 'AdminDomainAliasSave', {
+			'Name': sName,
+			'Alias': sAlias
 		});
 	};
 

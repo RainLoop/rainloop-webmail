@@ -94,6 +94,11 @@ class Domain
 	private $sWhiteList;
 
 	/**
+	 * @var string
+	 */
+	private $sAliasName;
+
+	/**
 	 * @param string $sName
 	 * @param string $sIncHost
 	 * @param int $iIncPort
@@ -138,6 +143,7 @@ class Domain
 		$this->bSieveAllowRaw = false;
 
 		$this->sWhiteList = \trim($sWhiteList);
+		$this->sAliasName = '';
 	}
 
 	/**
@@ -511,6 +517,25 @@ class Domain
 	}
 
 	/**
+	 * @return string
+	 */
+	public function AliasName()
+	{
+		return $this->sAliasName;
+	}
+
+	/**
+	 * @param string $sAliasName
+	 * @return self
+	 */
+	public function SetAliasName($sAliasName)
+	{
+		$this->sAliasName = $sAliasName;
+
+		return $this;
+	}
+
+	/**
 	 * @param string $sEmail
 	 * @param string $sLogin = ''
 	 *
@@ -558,7 +583,8 @@ class Domain
 			'OutShortLogin' => $this->OutShortLogin(),
 			'OutAuth' => $this->OutAuth(),
 			'OutUsePhpMail' => $this->OutUsePhpMail(),
-			'WhiteList' => $this->WhiteList()
+			'WhiteList' => $this->WhiteList(),
+			'AliasName' => $this->AliasName()
 		);
 	}
 }

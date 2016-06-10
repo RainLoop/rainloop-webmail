@@ -4082,25 +4082,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$iOffset = (int) $this->GetActionParam('Offset', 0);
 		$iLimit = (int) $this->GetActionParam('Limit', 20);
 		$sSearch = (string) $this->GetActionParam('Search', '');
+		$bIncludeAliases = '1' === (string) $this->GetActionParam('IncludeAliases', '1');
 
 		$iOffset = 0;
 		$sSearch = '';
 		$iLimit = $this->Config()->Get('labs', 'domain_list_limit', 99);
 
-		$sSearch = \trim($sSearch);
-
-		if ($iOffset < 0)
-		{
-			$iOffset = 0;
-		}
-
-		if ($iLimit < 20)
-		{
-			$iLimit = 20;
-		}
-
 		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->GetList($iOffset, $iLimit, $sSearch));
+			$this->DomainProvider()->GetList($iOffset, $iLimit, $sSearch, $bIncludeAliases));
 	}
 
 	/**
@@ -4138,6 +4127,19 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$oDomain instanceof \RainLoop\Model\Domain ? $this->DomainProvider()->Save($oDomain) : false);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function DoAdminDomainAliasSave()
+	{
+		$this->IsAdminLoggined();
+
+		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->SaveAlias(
+			(string) $this->GetActionParam('Name', ''),
+			(string) $this->GetActionParam('Alias', '')
+		));
 	}
 
 	/**

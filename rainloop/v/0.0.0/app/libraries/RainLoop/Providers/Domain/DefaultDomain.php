@@ -56,44 +56,6 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	}
 
 	/**
-	 * @param string $sName
-	 * @param bool $bDisable
-	 *
-	 * @return bool
-	 */
-	public function Disable($sName, $bDisable)
-	{
-		$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
-
-		$sFile = '';
-		if (\file_exists($this->sDomainPath.'/disabled'))
-		{
-			$sFile = @\file_get_contents($this->sDomainPath.'/disabled');
-		}
-
-		$aResult = array();
-		$aNames = \explode(',', $sFile);
-		if ($bDisable)
-		{
-			\array_push($aNames, $sName);
-			$aResult = $aNames;
-		}
-		else
-		{
-			foreach ($aNames as $sItem)
-			{
-				if ($sName !== $sItem)
-				{
-					$aResult[] = $sItem;
-				}
-			}
-		}
-
-		$aResult = \array_unique($aResult);
-		return false !== \file_put_contents($this->sDomainPath.'/disabled', \trim(\implode(',', $aResult), ', '));
-	}
-
-	/**
 	 * @return string
 	 */
 	private function wildcardDomainsCacheKey()
@@ -146,10 +108,11 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	 * @param string $sName
 	 * @param bool $bFindWithWildCard = false
 	 * @param bool $bCheckDisabled = true
+	 * @param bool $bCheckAliases = true
 	 *
 	 * @return \RainLoop\Model\Domain|null
 	 */
-	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true)
+	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true, $bCheckAliases = true)
 	{
 		$mResult = null;
 
@@ -167,6 +130,17 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
 		{
 			$aDomain = \RainLoop\Utils::CustomParseIniFile($this->sDomainPath.'/'.$sRealFileName.'.ini');
+//			if ($bCheckAliases && !empty($aDomain['alias']))
+//			{
+//				$oDomain = $this->Load($aDomain['alias'], false, false, false);
+//				if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
+//				{
+//					$oDomain->SetAliasName($sName);
+//				}
+//
+//				return $oDomain;
+//			}
+
 			// fix misspellings (#119)
 			if (\is_array($aDomain))
 			{
@@ -193,6 +167,21 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 			//---
 
 			$mResult = \RainLoop\Model\Domain::NewInstanceFromDomainConfigArray($sName, $aDomain);
+		}
+		else if ($bCheckAliases && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias') &&
+			(!$bCheckDisabled || 0 === \strlen($sDisabled) || false === \strpos(','.$sDisabled.',', ','.\MailSo\Base\Utils::IdnToAscii($sName, true).',')))
+		{
+			$sAlias = \trim(\file_get_contents($this->sDomainPath.'/'.$sRealFileName.'.alias'));
+			if (!empty($sAlias))
+			{
+				$oDomain = $this->Load($sAlias, false, false, false);
+				if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
+				{
+					$oDomain->SetAliasName($sName);
+				}
+
+				return $oDomain;
+			}
 		}
 		else if ($bFindWithWildCard)
 		{
@@ -233,6 +222,63 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 	/**
 	 * @param string $sName
+	 * @param string $sAlias
+	 *
+	 * @return bool
+	 */
+	public function SaveAlias($sName, $sAlias)
+	{
+		$sRealFileName = $this->codeFileName($sName);
+
+		if ($this->oCacher)
+		{
+			$this->oCacher->Delete($this->wildcardDomainsCacheKey());
+		}
+
+		$mResult = \file_put_contents($this->sDomainPath.'/'.$sRealFileName.'.alias', $sAlias);
+		return \is_int($mResult) && 0 < $mResult;
+	}
+
+	/**
+	 * @param string $sName
+	 * @param bool $bDisable
+	 *
+	 * @return bool
+	 */
+	public function Disable($sName, $bDisable)
+	{
+		$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
+
+		$sFile = '';
+		if (\file_exists($this->sDomainPath.'/disabled'))
+		{
+			$sFile = @\file_get_contents($this->sDomainPath.'/disabled');
+		}
+
+		$aResult = array();
+		$aNames = \explode(',', $sFile);
+		if ($bDisable)
+		{
+			\array_push($aNames, $sName);
+			$aResult = $aNames;
+		}
+		else
+		{
+			foreach ($aNames as $sItem)
+			{
+				if ($sName !== $sItem)
+				{
+					$aResult[] = $sItem;
+				}
+			}
+		}
+
+		$aResult = \array_unique($aResult);
+		return false !== \file_put_contents($this->sDomainPath.'/disabled', \trim(\implode(',', $aResult), ', '));
+	}
+
+	/**
+	 * @param string $sName
 	 *
 	 * @return bool
 	 */
@@ -241,9 +287,16 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$bResult = true;
 		$sRealFileName = $this->codeFileName($sName);
 
-		if (0 < \strlen($sName) && \file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
+		if (0 < \strlen($sName))
 		{
-			$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini'))
+			{
+				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.ini');
+			}
+			else if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias'))
+			{
+				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.alias');
+			}
 		}
 
 		if ($bResult)
@@ -260,36 +313,51 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	}
 
 	/**
-	 * @param int $iOffset
+	 * @param int $iOffset = 0
 	 * @param int $iLimit = 20
+	 * @param int $sSearch = ''
+	 * @param bool $bIncludeAliases = true
 	 *
 	 * @return array
 	 */
-	public function GetList($iOffset, $iLimit = 20)
+	public function GetList($iOffset = 0, $iLimit = 20, $sSearch = '', $bIncludeAliases = true)
 	{
 		$aResult = array();
 		$aWildCards = array();
-		$aList = \glob($this->sDomainPath.'/*.ini');
+		$aAliases = array();
+
+		$aList = \glob($this->sDomainPath.'/*.{ini,alias}', GLOB_BRACE);
 
 		foreach ($aList as $sFile)
 		{
-			$sName = \substr(\basename($sFile), 0, -4);
+			$sName = \basename($sFile);
+			$bAlias = '.alias' === \substr($sName, -6);
+
+			$sName = \preg_replace('/\.(ini|alias)$/', '', $sName);
 			$sName = $this->codeFileName($sName, true);
 
-			if (false === \strpos($sName, '*'))
+			if ($bAlias)
 			{
-				$aResult[] = $sName;
+				if ($bIncludeAliases)
+				{
+					$aAliases[] = $sName;
+				}
+			}
+			else if (false !== \strpos($sName, '*'))
+			{
+				$aWildCards[] = $sName;
 			}
 			else
 			{
-				$aWildCards[] = $sName;
+				$aResult[] = $sName;
 			}
 		}
 
 		\sort($aResult, SORT_STRING);
+		\sort($aAliases, SORT_STRING);
 		\rsort($aWildCards, SORT_STRING);
 
-		$aResult = \array_merge($aResult, $aWildCards);
+		$aResult = \array_merge($aResult, $aAliases, $aWildCards);
 
 		$iOffset = (0 > $iOffset) ? 0 : $iOffset;
 		$iLimit = (0 > $iLimit) ? 0 : ((999 < $iLimit) ? 999 : $iLimit);
@@ -314,7 +382,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aReturn = array();
 		foreach ($aResult as $sName)
 		{
-			$aReturn[$sName] = !\in_array($sName, $aDisabledNames);
+			$aReturn[$sName] = array(
+				!\in_array($sName, $aDisabledNames),
+				\in_array($sName, $aAliases)
+			);
 		}
 
 		return $aReturn;
@@ -322,11 +393,12 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 	/**
 	 * @param string $sSearch = ''
+	 * @param bool $bIncludeAliases = true
 	 *
 	 * @return int
 	 */
-	public function Count()
+	public function Count($sSearch = '', $bIncludeAliases = true)
 	{
-		return \count($this->GetList(0, 999));
+		return \count($this->GetList(0, 999, $sSearch, $bIncludeAliases));
 	}
 }
