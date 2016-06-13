@@ -457,7 +457,7 @@ uk_UA:
     LABEL_ADD_SIGNATURE_TO_ALL: "Додавати Ваш підпис до всіх вихідних повідомлень"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Безпека"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Налаштувати 2-факторну верифікацію"
+    LABEL_CONFIGURE_TWO_FACTOR: "Налаштувати 2-факторну верифікацію"
     LABEL_AUTOLOGOUT: "Автовихід"
     AUTOLOGIN_NEVER_OPTION_NAME: "Ніколи"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"

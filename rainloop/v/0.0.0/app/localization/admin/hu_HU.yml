@@ -89,6 +89,7 @@ hu_HU:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domainek"
     BUTTON_ADD_DOMAIN: "Domain hozzáadás"
+    BUTTON_ADD_ALIAS: "Álnév hozzáadás"
     DELETE_ARE_YOU_SURE: "Biztos vagy benne?"
     HTML_DOMAINS_HELPER: |
       Hozzáféréshez engedélyezett domainek listája:
@@ -185,6 +186,12 @@ hu_HU:
       Egy előfizetési kulcs csak egy domainhez aktiválható.
       <br /><br />
       Miután elindult, az aktiválási folyamat nem szakítható meg vagy vonható vissza.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Álnév hozzáadás"
+    LABEL_ALIAS: "Álnév"
+    LABEL_DOMAIN: "Domain"
+    BUTTON_CLOSE: "Bezár"
+    BUTTON_ADD: "Hozzáad"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Domain hozzáadás"
     TITLE_ADD_DOMAIN_WITH_NAME: "\"%NAME%\" domain hozzáadása"

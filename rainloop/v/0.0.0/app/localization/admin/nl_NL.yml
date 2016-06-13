@@ -163,7 +163,7 @@ nl_NL:
     LABEL_ALL_RIGHTS_RESERVED: "Alle rechten gereserveerd."
     HINT_READ_CHANGE_LOG: "Lees a.u.b. het veranderingen logboek alvorens te updaten."
     HINT_IS_UP_TO_DATE: "De laatste versie van RainLoop is geïnstalleerd."
-    HTML_NEW_VERSION: "Een nieuwe versie <b>%VERSIE%</b> is beschikbaar."
+    HTML_NEW_VERSION: "Een nieuwe versie <b>%VERSION%</b> is beschikbaar."
     LABEL_UPDATING: "Bezig met updaten"
     LABEL_CHECKING: "Controleren op updates"
     BUTTON_UPDATE: "Bijwerken"

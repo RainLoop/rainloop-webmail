@@ -88,6 +88,7 @@ ru_RU:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Домены"
     BUTTON_ADD_DOMAIN: "Добавить домен"
+    BUTTON_ADD_ALIAS: "Добавить Алиас"
     DELETE_ARE_YOU_SURE: "Вы уверены?"
     HTML_DOMAINS_HELPER: |
       Список доменов к которым разрешен доступ.
@@ -185,6 +186,12 @@ ru_RU:
       Обратите внимание, что ключ может быть активирован только один раз.
       <br /><br />
       После запуска процесс активации не может быть прерван или отменен.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Добавить Алиас"
+    LABEL_ALIAS: "Алиас"
+    LABEL_DOMAIN: "Домен"
+    BUTTON_CLOSE: "Закрыть"
+    BUTTON_ADD: "Добавить"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Добавить домен"
     TITLE_ADD_DOMAIN_WITH_NAME: "Добавить домен \"%NAME%\""

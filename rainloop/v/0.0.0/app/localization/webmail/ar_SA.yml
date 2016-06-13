@@ -450,7 +450,7 @@ ar_SA:
     LABEL_ADD_SIGNATURE_TO_ALL: "قم بإضافة توقيعك على جميع الرسائل الصادرة"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "الأمان"
-    LABEL_CONFIGURATE_TWO_FACTOR: "تكوين عملية التأكد ثنائية المراحل"
+    LABEL_CONFIGURE_TWO_FACTOR: "تكوين عملية التأكد ثنائية المراحل"
     LABEL_AUTOLOGOUT: "تسجيل الخروج التلقائي"
     AUTOLOGIN_NEVER_OPTION_NAME: "أبداَ"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% دقيقة"

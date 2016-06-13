@@ -457,10 +457,11 @@ nb_NO:
     LABEL_ADD_SIGNATURE_TO_ALL: "Vil du legge til signatur i alle utgående meldinger?"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sikkerhet"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Sett opp to-stegsbekreftelse"
+    LABEL_CONFIGURE_TWO_FACTOR: "Sett opp to-stegsbekreftelse"
     LABEL_AUTOLOGOUT: "Logg ut automatisk etter"
     AUTOLOGIN_NEVER_OPTION_NAME: "Aldri"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minutt(er)"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% time(r)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Generelt"
     LABEL_LANGUAGE: "Språk"

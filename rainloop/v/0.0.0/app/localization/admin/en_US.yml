@@ -89,6 +89,7 @@ en_US:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domains"
     BUTTON_ADD_DOMAIN: "Add Domain"
+    BUTTON_ADD_ALIAS: "Add Alias"
     DELETE_ARE_YOU_SURE: "Are you sure?"
     HTML_DOMAINS_HELPER: |
       List of domains webmail is allowed to access.
@@ -186,6 +187,12 @@ en_US:
       Note that subscription key can be activated for a single domain only.
       <br /><br />
       Once started, the process of activation cannot be aborted or cancelled.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Add Alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domain"
+    BUTTON_CLOSE: "Close"
+    BUTTON_ADD: "Add"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Add Domain"
     TITLE_ADD_DOMAIN_WITH_NAME: "Add Domain \"%NAME%\""

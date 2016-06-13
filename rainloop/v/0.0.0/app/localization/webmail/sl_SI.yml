@@ -457,10 +457,11 @@ sl_SI:
     LABEL_ADD_SIGNATURE_TO_ALL: "Dodaj podpis vsem odhodnim sporočilom"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Varnost"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Nastavljanje 2-stopenjskega overjanja"
+    LABEL_CONFIGURE_TWO_FACTOR: "Nastavljanje 2-stopenjskega overjanja"
     LABEL_AUTOLOGOUT: "Samodejna odjava"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nikoli"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% ur"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Splošno"
     LABEL_LANGUAGE: "Jezik"

@@ -458,7 +458,6 @@ nl_NL:
     LABEL_ADD_SIGNATURE_TO_ALL: "Handtekening standaard toevoegen aan bericht"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Beveiliging"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Configurate 2-Step verification"
     LABEL_AUTOLOGOUT: "Automatisch uitloggen"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nooit"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minuten"

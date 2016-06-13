@@ -456,7 +456,7 @@ cs_CZ:
     LABEL_ADD_SIGNATURE_TO_ALL: "Připojit podpis ke všem odchozím zprávám"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Zapezpečení"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Nastavení dvoufázového ověření"
+    LABEL_CONFIGURE_TWO_FACTOR: "Nastavení dvoufázového ověření"
     LABEL_AUTOLOGOUT: "Automatické odhlášení"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nikdy"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut"

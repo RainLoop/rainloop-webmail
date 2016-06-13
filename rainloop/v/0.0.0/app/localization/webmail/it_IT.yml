@@ -455,7 +455,7 @@ it_IT:
     LABEL_ADD_SIGNATURE_TO_ALL: "Aggiungi la firma a tutti i messaggi in uscita"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sicurezza"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Configura autenticazione a due fattori"
+    LABEL_CONFIGURE_TWO_FACTOR: "Configura autenticazione a due fattori"
     LABEL_AUTOLOGOUT: "Disconnessione automatica"
     AUTOLOGIN_NEVER_OPTION_NAME: "Mai"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minuti"

@@ -89,6 +89,7 @@ pl_PL:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domeny"
     BUTTON_ADD_DOMAIN: "Dodaj domenę"
+    BUTTON_ADD_ALIAS: "Dodaj Alias"
     DELETE_ARE_YOU_SURE: "Czy na pewno?"
     HTML_DOMAINS_HELPER: |
       Lista domen, do których można uzyskać dostęp poprzez tego klienta.
@@ -186,6 +187,12 @@ pl_PL:
       Zwróc uwagę, że klucz subskrypcji może być aktywowany tylko dla jednej domeny.
       <br /><br />
       Po uruchomieniu aktywacji, nie można jej przerwac lub anulować.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Dodaj Alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domena"
+    BUTTON_CLOSE: "Zamknij"
+    BUTTON_ADD: "Dodaj"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Dodawanie domeny"
     TITLE_ADD_DOMAIN_WITH_NAME: "Dodawanie domeny: \"%NAME%\""

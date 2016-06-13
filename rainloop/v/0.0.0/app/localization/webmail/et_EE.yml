@@ -458,7 +458,7 @@ et_EE:
     LABEL_ADD_SIGNATURE_TO_ALL: "Lisa oma signatuur kõikidele väljuvatele kirjadele"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Turvalisus"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Seadista 2. faktoriga autentimine"
+    LABEL_CONFIGURE_TWO_FACTOR: "Seadista 2. faktoriga autentimine"
     LABEL_AUTOLOGOUT: "Automaatne välja logimine"
     AUTOLOGIN_NEVER_OPTION_NAME: "Mitte kunagi"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minutit"

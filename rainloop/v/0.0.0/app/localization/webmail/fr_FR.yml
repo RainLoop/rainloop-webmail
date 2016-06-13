@@ -459,7 +459,7 @@ fr_FR:
     LABEL_ADD_SIGNATURE_TO_ALL: "Ajouter votre signature à tous les messages sortants"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sécurité"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Configurer l'authentification en deux étapes"
+    LABEL_CONFIGURE_TWO_FACTOR: "Configurer l'authentification en deux étapes"
     LABEL_AUTOLOGOUT: "Déconnexion automatique"
     AUTOLOGIN_NEVER_OPTION_NAME: "Jamais"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"

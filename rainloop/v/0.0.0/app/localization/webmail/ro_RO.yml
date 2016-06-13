@@ -452,7 +452,6 @@ ro_RO:
     LABEL_ADD_SIGNATURE_TO_ALL: "Adăugă semnătura la toate mesajele trimise"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Security"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Configurate 2-Step verification"
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"

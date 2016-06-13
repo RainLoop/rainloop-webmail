@@ -458,7 +458,7 @@ lt_LT:
     LABEL_ADD_SIGNATURE_TO_ALL: "Pridėti parašą visiems rašomiems laiškams"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sauga"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Konfiguruoti 2-žingsnių patikrinimą"
+    LABEL_CONFIGURE_TWO_FACTOR: "Konfiguruoti 2-žingsnių patikrinimą"
     LABEL_AUTOLOGOUT: "Automatinis atsijungimas"
     AUTOLOGIN_NEVER_OPTION_NAME: "Niekada"
     AUTOLOGIN_MINUTES_OPTION_NAME: "po %MINUTES% minučių"

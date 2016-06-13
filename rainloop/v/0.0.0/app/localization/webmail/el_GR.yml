@@ -455,7 +455,7 @@ el_GR:
     LABEL_ADD_SIGNATURE_TO_ALL: "Προσθήκη της υπογραφής σας σε όλα τα εξερχόμενα μηνύματα"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Ασφάλεια"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Διαμόρφωση της επαλήθευσης 2 επιπέδων"
+    LABEL_CONFIGURE_TWO_FACTOR: "Διαμόρφωση της επαλήθευσης 2 επιπέδων"
     LABEL_AUTOLOGOUT: "Αυτόματη αποσύνδεση"
     AUTOLOGIN_NEVER_OPTION_NAME: "Ποτέ"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% λεπτό(α)"

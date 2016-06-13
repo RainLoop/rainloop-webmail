@@ -89,6 +89,7 @@ sl_SI:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domene"
     BUTTON_ADD_DOMAIN: "Dodaj domeno"
+    BUTTON_ADD_ALIAS: "Dodaj vzdevek"
     DELETE_ARE_YOU_SURE: "Ste prepričani?"
     HTML_DOMAINS_HELPER: |
       Seznam domen, do katerih je omogočen dostop.
@@ -186,6 +187,12 @@ sl_SI:
       Naročniški ključ je lahko uporabljen zgolj za eno domeno.
       <br /><br />
       Po začetku procesa aktivacije ni mogoče prekiniti ali preklicati.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Dodajanje domene"
+    LABEL_ALIAS: "Vzdevek"
+    LABEL_DOMAIN: "Domena"
+    BUTTON_CLOSE: "Zapri"
+    BUTTON_ADD: "Dodaj"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Dodajanje domene"
     TITLE_ADD_DOMAIN_WITH_NAME: "Dodajanje domene \"%NAME%\""

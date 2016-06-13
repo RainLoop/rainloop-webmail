@@ -459,7 +459,7 @@ hu_HU:
     LABEL_ADD_SIGNATURE_TO_ALL: "Az aláírásod hozzáadása a kimenő üzenetekhez"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Biztonság"
-    LABEL_CONFIGURATE_TWO_FACTOR: "2 lépcsős hitelesítés beállítása"
+    LABEL_CONFIGURE_TWO_FACTOR: "2 lépcsős hitelesítés beállítása"
     LABEL_AUTOLOGOUT: "Automatikus kijelentkezés"
     AUTOLOGIN_NEVER_OPTION_NAME: "Soha"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% perc"

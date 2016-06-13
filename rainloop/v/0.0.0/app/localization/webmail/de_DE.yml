@@ -459,7 +459,7 @@ de_DE:
     LABEL_ADD_SIGNATURE_TO_ALL: "Signatur zu allen ausgehenden Nachrichten hinzufügen"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Sicherheit"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Zwei-Faktor-Authentifizierung konfigurieren"
+    LABEL_CONFIGURE_TWO_FACTOR: "Zwei-Faktor-Authentifizierung konfigurieren"
     LABEL_AUTOLOGOUT: "Automatische Abmeldung"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nie"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% Minute(n)"

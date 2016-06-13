@@ -457,10 +457,11 @@ pl_PL:
     LABEL_ADD_SIGNATURE_TO_ALL: "Dadawaj podpis do wszystkich wiadomości"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Bezpieczeństwo"
-    LABEL_CONFIGURATE_TWO_FACTOR: "Konfiguracja dwuskładnikowej autoryzacji"
+    LABEL_CONFIGURE_TWO_FACTOR: "Konfiguracja dwuskładnikowej autoryzacji"
     LABEL_AUTOLOGOUT: "Auto. wylogowanie:"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nidgy"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% godzina(-y)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Ogólne"
     LABEL_LANGUAGE: "Język:"
