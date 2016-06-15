@@ -2,7 +2,7 @@
 import {window, $, _} from 'common';
 import ko from 'ko';
 import {Notification, UploadErrorCode} from 'Common/Enums';
-import {pInt, microtime, noop, inArray} from 'Common/Utils';
+import {pInt, isUnd, isNull, has, bind, microtime, noop, inArray} from 'Common/Utils';
 import {$html, bAnimationSupported} from 'Common/Globals';
 
 class Translator
@@ -13,7 +13,7 @@ class Translator
 	constructor() {
 		this.data = window.rainloopI18N || {};
 		this.trigger = ko.observable(false);
-		this.i18n = _.bind(this.i18n, this);
+		this.i18n = bind(this.i18n, this);
 		this.init();
 	}
 
@@ -30,16 +30,16 @@ class Translator
 			result = this.data[key]
 		;
 
-		if (_.isUndefined(result))
+		if (isUnd(result))
 		{
-			result = _.isUndefined(defaulValue) ? key : defaulValue;
+			result = isUnd(defaulValue) ? key : defaulValue;
 		}
 
-		if (!_.isUndefined(valueList) && !_.isNull(valueList))
+		if (!isUnd(valueList) && !isNull(valueList))
 		{
 			for (valueName in valueList)
 			{
-				if (_.has(valueList, valueName))
+				if (has(valueList, valueName))
 				{
 					result = result.replace('%' + valueName + '%', valueList[valueName]);
 				}
@@ -244,8 +244,8 @@ class Translator
 		}
 
 		defCode = defCode ? (window.parseInt(defCode, 10)) || 0 : 0;
-		return _.isUndefined(this.notificationI18N[code]) ? (
-			defCode && _.isUndefined(this.notificationI18N[defCode]) ? this.notificationI18N[defCode] : ''
+		return isUnd(this.notificationI18N[code]) ? (
+			defCode && isUnd(this.notificationI18N[defCode]) ? this.notificationI18N[defCode] : ''
 		) : this.notificationI18N[code];
 	}
 

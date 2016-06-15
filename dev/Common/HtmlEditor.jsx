@@ -1,7 +1,7 @@
 
 import {window, _, $} from 'common';
 import {oHtmlEditorDefaultConfig, oHtmlEditorLangsMap} from 'Common/Globals';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
 class HtmlEditor
 {

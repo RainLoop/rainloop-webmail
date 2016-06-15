@@ -2,8 +2,8 @@
 import {_} from 'common';
 import {Capa, MessageSetAction} from 'Common/Enums';
 import {trim, pInt, isArray} from 'Common/Utils';
-import Links from 'Common/Links';
-import Settings from 'Storage/Settings';
+import * as Links from 'Common/Links';
+import * as Settings from 'Storage/Settings';
 
 class CacheUserStorage
 {

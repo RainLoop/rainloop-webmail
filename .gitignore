@@ -19,3 +19,5 @@
 /data
 .DS_Store
 /tests/fix.php
+/MULTIPLY
+/include.php

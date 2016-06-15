@@ -3,12 +3,12 @@ import {window, _} from 'common';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
-import Links from 'Common/Links';
+import * as Links from 'Common/Links';
 import Translator from 'Common/Translator';
 import {StorageResultType, Notification} from 'Common/Enums';
 import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
 
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
 import DomainStore from 'Stores/Admin/Domain';

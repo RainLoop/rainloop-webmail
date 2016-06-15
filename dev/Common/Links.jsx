@@ -1,390 +1,444 @@
 
 import {window} from 'common';
 import {pString, pInt, isUnd, isNormal, trim, encodeURIComponent} from 'Common/Utils';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
-class Links
+const ROOT = './';
+const HASH_PREFIX = '#/';
+const SERVER_PREFIX = './?';
+const SUB_QUERY_PREFIX = '&q[]=';
+
+const VERSION = Settings.appSettingsGet('version');
+
+const WEB_PREFIX = Settings.appSettingsGet('webPath') || '';
+const VERSION_PREFIX = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + VERSION + '/';
+const STATIC_PREFIX = VERSION_PREFIX + 'static/';
+
+const ADMIN_HOST_USE = !!Settings.appSettingsGet('adminHostUse');
+const ADMIN_PATH = Settings.appSettingsGet('adminPath') || 'admin';
+
+let AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
+
+export function populateAuthSuffix()
 {
-	constructor() {
-
-		this.sHashPrefix = '#/';
-		this.sServerPrefix = './?';
-
-		this.sVersion = Settings.appSettingsGet('version');
-		this.sWebPrefix = Settings.appSettingsGet('webPath') || '';
-		this.sVersionPrefix = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + this.sVersion + '/';
-		this.bAminHostUse = !!Settings.appSettingsGet('adminHostUse');
-		this.sAdminPath = Settings.appSettingsGet('adminPath') || 'admin';
-
-		this.sAuthSuffix = Settings.settingsGet('AuthAccountHash') || '0';
-
-		this.sStaticPrefix = this.sVersionPrefix + 'static/';
-	}
-
-	populateAuthSuffix() {
-		this.sAuthSuffix = Settings.settingsGet('AuthAccountHash') || '0';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	subQueryPrefix() {
-		return '&q[]=';
-	}
-
-	/**
-	 * @param {string=} startupUrl
-	 * @return {string}
-	 */
-	root(startupUrl = '') {
-		return this.sHashPrefix + pString(startupUrl);
-	}
-
-	/**
-	 * @return {string}
-	 */
-	rootAdmin() {
-		return this.bAminHostUse ? './' : this.sServerPrefix + this.sAdminPath;
-	}
-
-	/**
-	 * @return {string}
-	 */
-	rootUser(mobile = false) {
-		return mobile ? './?/Mobile/' : './';
-	}
-
-	/**
-	 * @param {string} type
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentRaw(type, download, customSpecSuffix) {
-		customSpecSuffix = isUnd(customSpecSuffix) ? this.sAuthSuffix : customSpecSuffix;
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + customSpecSuffix + '/' + type + '/' +
-			this.subQueryPrefix() + '/' + download;
-	}
-
-	/**
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentDownload(download, customSpecSuffix) {
-		return this.attachmentRaw('Download', download, customSpecSuffix);
-	}
-
-	/**
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentPreview(download, customSpecSuffix) {
-		return this.attachmentRaw('View', download, customSpecSuffix);
-	}
-
-	/**
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentThumbnailPreview(download, customSpecSuffix) {
-		return this.attachmentRaw('ViewThumbnail', download, customSpecSuffix);
-	}
-
-	/**
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentPreviewAsPlain(download, customSpecSuffix) {
-		return this.attachmentRaw('ViewAsPlain', download, customSpecSuffix);
-	}
-
-	/**
-	 * @param {string} download
-	 * @param {string=} customSpecSuffix
-	 * @return {string}
-	 */
-	attachmentFramed(download, customSpecSuffix) {
-		return this.attachmentRaw('FramedView', download, customSpecSuffix);
-	}
-
-	/**
-	 * @return {string}
-	 */
-	upload() {
-		return this.sServerPrefix + '/Upload/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	uploadContacts() {
-		return this.sServerPrefix + '/UploadContacts/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	uploadBackground() {
-		return this.sServerPrefix + '/UploadBackground/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	append() {
-		return this.sServerPrefix + '/Append/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/';
-	}
-
-	/**
-	 * @param {string} email
-	 * @return {string}
-	 */
-	change(email) {
-		return this.sServerPrefix + '/Change/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' + encodeURIComponent(email) + '/';
-	}
-
-	/**
-	 * @param {string} add
-	 * @return {string}
-	 */
-	ajax(add) {
-		return this.sServerPrefix + '/Ajax/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' + add;
-	}
-
-	/**
-	 * @param {string} requestHash
-	 * @return {string}
-	 */
-	messageViewLink(requestHash) {
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ViewAsPlain/' + this.subQueryPrefix() + '/' + requestHash;
-	}
-
-	/**
-	 * @param {string} requestHash
-	 * @return {string}
-	 */
-	messageDownloadLink(requestHash) {
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/Download/' + this.subQueryPrefix() + '/' + requestHash;
-	}
-
-	/**
-	 * @param {string} email
-	 * @return {string}
-	 */
-	avatarLink(email) {
-		return this.sServerPrefix + '/Raw/0/Avatar/' + encodeURIComponent(email) + '/';
-	}
-
-	/**
-	 * @param {string} hash
-	 * @return {string}
-	 */
-	publicLink(hash) {
-		return this.sServerPrefix + '/Raw/0/Public/' + hash + '/';
-	}
-
-	/**
-	 * @param {string} hash
-	 * @return {string}
-	 */
-	userBackground(hash) {
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix +
-			'/UserBackground/' + this.subQueryPrefix() + '/' + hash;
-	}
-
-	/**
-	 * @param {string} inboxFolderName = 'INBOX'
-	 * @return {string}
-	 */
-	inbox(inboxFolderName = 'INBOX') {
-		return this.sHashPrefix + 'mailbox/' + inboxFolderName;
-	}
-
-	/**
-	 * @param {string=} screenName
-	 * @return {string}
-	 */
-	settings(screenName = '') {
-		return this.sHashPrefix + 'settings' + (screenName ? '/' + screenName : '');
-	}
-
-	/**
-	 * @return {string}
-	 */
-	about() {
-		return this.sHashPrefix + 'about';
-	}
-
-	/**
-	 * @param {string} screenName
-	 * @return {string}
-	 */
-	admin (screenName) {
-		let result = this.sHashPrefix;
-		switch (screenName) {
-			case 'AdminDomains':
-				result += 'domains';
-				break;
-			case 'AdminSecurity':
-				result += 'security';
-				break;
-			case 'AdminLicensing':
-				result += 'licensing';
-				break;
-		}
-
-		return result;
-	}
-
-	/**
-	 * @param {string} folder
-	 * @param {number=} page = 1
-	 * @param {string=} search = ''
-	 * @param {string=} threadUid = ''
-	 * @return {string}
-	 */
-	mailBox(folder, page = 1, search = '', threadUid = '') {
-
-		page = isNormal(page) ? pInt(page) : 1;
-		search = pString(search);
-
-		let result = this.sHashPrefix + 'mailbox/';
-
-		if ('' !== folder)
-		{
-			const resultThreadUid = pInt(threadUid);
-			result += window.encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
-		}
-
-		if (1 < page)
-		{
-			result = result.replace(/[\/]+$/, '');
-			result += '/p' + page;
-		}
-
-		if ('' !== search)
-		{
-			result = result.replace(/[\/]+$/, '');
-			result += '/' + window.encodeURI(search);
-		}
-
-		return result;
-	}
-
-	/**
-	 * @return {string}
-	 */
-	phpInfo() {
-		return this.sServerPrefix + 'Info';
-	}
-
-	/**
-	 * @param {string} lang
-	 * @param {boolean} admin
-	 * @return {string}
-	 */
-	langLink(lang, admin) {
-		return this.sServerPrefix + '/Lang/0/' + (admin ? 'Admin' : 'App') + '/' + window.encodeURI(lang) + '/' + this.sVersion + '/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	exportContactsVcf() {
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ContactsVcf/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	exportContactsCsv() {
-		return this.sServerPrefix + '/Raw/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/ContactsCsv/';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	emptyContactPic() {
-		return this.sStaticPrefix + 'css/images/empty-contact.png';
-	}
-
-	/**
-	 * @param {string} fileName
-	 * @return {string}
-	 */
-	sound(fileName) {
-		return this.sStaticPrefix + 'sounds/' + fileName;
-	}
-
-	/**
-	 * @param {string} theme
-	 * @return {string}
-	 */
-	themePreviewLink(theme) {
-		let prefix = this.sVersionPrefix;
-		if ('@custom' === theme.substr(-7))
-		{
-			theme = trim(theme.substring(0, theme.length - 7));
-			prefix = this.sWebPrefix;
-		}
-
-		return prefix + 'themes/' + window.encodeURI(theme) + '/images/preview.png';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	notificationMailIcon() {
-		return this.sStaticPrefix + 'css/images/icom-message-notification.png';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	openPgpJs() {
-		return this.sStaticPrefix + 'js/min/openpgp.min.js';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	openPgpWorkerJs() {
-		return this.sStaticPrefix + 'js/min/openpgp.worker.min.js';
-	}
-
-	/**
-	 * @return {string}
-	 */
-	openPgpWorkerPath() {
-		return this.sStaticPrefix + 'js/min/';
-	}
-
-	/**
-	 * @param {boolean} xauth = false
-	 * @return {string}
-	 */
-	socialGoogle(xauth = false) {
-		return this.sServerPrefix + 'SocialGoogle' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '') +
-			(xauth ? '&xauth=1' : '');
-	}
-
-	/**
-	 * @return {string}
-	 */
-	socialTwitter() {
-		return this.sServerPrefix + 'SocialTwitter' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
-	}
-
-	/**
-	 * @return {string}
-	 */
-	socialFacebook() {
-		return this.sServerPrefix + 'SocialFacebook' + ('' !== this.sAuthSuffix ? '/' + this.subQueryPrefix() + '/' + this.sAuthSuffix + '/' : '');
-	}
+	AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
 }
 
-module.exports = new Links();
+/**
+ * @return {string}
+ */
+export function subQueryPrefix()
+{
+	return SUB_QUERY_PREFIX;
+}
+
+/**
+ * @param {string=} startupUrl
+ * @return {string}
+ */
+export function root(startupUrl = '')
+{
+	return HASH_PREFIX + pString(startupUrl);
+}
+
+/**
+ * @return {string}
+ */
+export function rootAdmin()
+{
+	return ADMIN_HOST_USE ? ROOT : SERVER_PREFIX + ADMIN_PATH;
+}
+
+/**
+ * @param {boolean=} mobile = false
+ * @return {string}
+ */
+export function rootUser(mobile = false)
+{
+	return mobile ? SERVER_PREFIX + '/Mobile/' : ROOT;
+}
+
+/**
+ * @param {string} type
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentRaw(type, download, customSpecSuffix)
+{
+	customSpecSuffix = isUnd(customSpecSuffix) ? AUTH_PREFIX : customSpecSuffix;
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + customSpecSuffix + '/' + type + '/' + SUB_QUERY_PREFIX + '/' + download;
+}
+
+/**
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentDownload(download, customSpecSuffix)
+{
+	return attachmentRaw('Download', download, customSpecSuffix);
+}
+
+/**
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentPreview(download, customSpecSuffix)
+{
+	return attachmentRaw('View', download, customSpecSuffix);
+}
+
+/**
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentThumbnailPreview(download, customSpecSuffix)
+{
+	return attachmentRaw('ViewThumbnail', download, customSpecSuffix);
+}
+
+/**
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentPreviewAsPlain(download, customSpecSuffix)
+{
+	return attachmentRaw('ViewAsPlain', download, customSpecSuffix);
+}
+
+/**
+ * @param {string} download
+ * @param {string=} customSpecSuffix
+ * @return {string}
+ */
+export function attachmentFramed(download, customSpecSuffix)
+{
+	return attachmentRaw('FramedView', download, customSpecSuffix);
+}
+
+/**
+ * @param {string} type
+ * @return {string}
+ */
+export function serverRequest(type)
+{
+	return SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/';
+}
+
+/**
+ * @return {string}
+ */
+export function upload()
+{
+	return serverRequest('Upload');
+}
+
+/**
+ * @return {string}
+ */
+export function uploadContacts()
+{
+	return serverRequest('UploadContacts');
+}
+
+/**
+ * @return {string}
+ */
+export function uploadBackground()
+{
+	return serverRequest('UploadBackground');
+}
+
+/**
+ * @return {string}
+ */
+export function append()
+{
+	return serverRequest('Append');
+}
+
+/**
+ * @param {string} email
+ * @return {string}
+ */
+export function change(email)
+{
+	return serverRequest('Change') + encodeURIComponent(email) + '/';
+}
+
+/**
+ * @param {string} add
+ * @return {string}
+ */
+export function ajax(add)
+{
+	return serverRequest('Ajax') + add;
+}
+
+/**
+ * @param {string} requestHash
+ * @return {string}
+ */
+export function messageViewLink(requestHash)
+{
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/ViewAsPlain/' + SUB_QUERY_PREFIX + '/' + requestHash;
+}
+
+/**
+ * @param {string} requestHash
+ * @return {string}
+ */
+export function messageDownloadLink(requestHash)
+{
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/Download/' + SUB_QUERY_PREFIX + '/' + requestHash;
+}
+
+/**
+ * @param {string} email
+ * @return {string}
+ */
+export function avatarLink(email)
+{
+	return SERVER_PREFIX + '/Raw/0/Avatar/' + encodeURIComponent(email) + '/';
+}
+
+/**
+ * @param {string} hash
+ * @return {string}
+ */
+export function publicLink(hash)
+{
+	return SERVER_PREFIX + '/Raw/0/Public/' + hash + '/';
+}
+
+/**
+ * @param {string} hash
+ * @return {string}
+ */
+export function userBackground(hash)
+{
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/UserBackground/' + SUB_QUERY_PREFIX + '/' + hash;
+}
+
+/**
+ * @return {string}
+ */
+export function phpInfo()
+{
+	return SERVER_PREFIX + '/Info';
+}
+
+/**
+ * @param {string} lang
+ * @param {boolean} isAdmin
+ * @return {string}
+ */
+export function langLink(lang, isAdmin)
+{
+	return SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App') + '/' + window.encodeURI(lang) + '/' + VERSION + '/';
+}
+
+/**
+ * @return {string}
+ */
+export function exportContactsVcf()
+{
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/ContactsVcf/';
+}
+
+/**
+ * @return {string}
+ */
+export function exportContactsCsv()
+{
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/ContactsCsv/';
+}
+
+/**
+ * @param {boolean} xauth = false
+ * @return {string}
+ */
+export function socialGoogle(xauth = false)
+{
+	return SERVER_PREFIX + 'SocialGoogle' +
+		('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '') + (xauth ? '&xauth=1' : '');
+}
+
+/**
+ * @return {string}
+ */
+export function socialTwitter()
+{
+	return SERVER_PREFIX + 'SocialTwitter' +
+		('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '');
+}
+
+/**
+ * @return {string}
+ */
+export function socialFacebook()
+{
+	return SERVER_PREFIX + 'SocialFacebook' +
+		('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '');
+}
+
+/**
+ * @param {string} path
+ * @return {string}
+ */
+export function staticPrefix(path)
+{
+	return STATIC_PREFIX + path;
+}
+
+/**
+ * @return {string}
+ */
+export function emptyContactPic()
+{
+	return staticPrefix('css/images/empty-contact.png');
+}
+
+/**
+ * @param {string} fileName
+ * @return {string}
+ */
+export function sound(fileName)
+{
+	return staticPrefix('sounds/' + fileName);
+}
+
+/**
+ * @return {string}
+ */
+export function notificationMailIcon()
+{
+	return staticPrefix('css/images/icom-message-notification.png');
+}
+
+/**
+ * @return {string}
+ */
+export function openPgpJs()
+{
+	return staticPrefix('js/min/openpgp.min.js');
+}
+
+/**
+ * @return {string}
+ */
+export function openPgpWorkerJs()
+{
+	return staticPrefix('js/min/openpgp.worker.min.js');
+}
+
+/**
+ * @return {string}
+ */
+export function openPgpWorkerPath()
+{
+	return staticPrefix('js/min/');
+}
+
+/**
+ * @param {string} theme
+ * @return {string}
+ */
+export function themePreviewLink(theme)
+{
+	let prefix = VERSION_PREFIX;
+	if ('@custom' === theme.substr(-7))
+	{
+		theme = trim(theme.substring(0, theme.length - 7));
+		prefix = WEB_PREFIX;
+	}
+
+	return prefix + 'themes/' + window.encodeURI(theme) + '/images/preview.png';
+}
+
+/**
+ * @param {string} inboxFolderName = 'INBOX'
+ * @return {string}
+ */
+export function inbox(inboxFolderName = 'INBOX')
+{
+	return HASH_PREFIX + 'mailbox/' + inboxFolderName;
+}
+
+/**
+ * @param {string=} screenName = ''
+ * @return {string}
+ */
+export function settings(screenName = '')
+{
+	return HASH_PREFIX + 'settings' + (screenName ? '/' + screenName : '');
+}
+
+/**
+ * @return {string}
+ */
+export function about()
+{
+	return HASH_PREFIX + 'about';
+}
+
+/**
+ * @param {string} screenName
+ * @return {string}
+ */
+export function admin(screenName)
+{
+	let result = HASH_PREFIX;
+	switch (screenName) {
+		case 'AdminDomains':
+			result += 'domains';
+			break;
+		case 'AdminSecurity':
+			result += 'security';
+			break;
+		case 'AdminLicensing':
+			result += 'licensing';
+			break;
+	}
+
+	return result;
+}
+
+/**
+ * @param {string} folder
+ * @param {number=} page = 1
+ * @param {string=} search = ''
+ * @param {string=} threadUid = ''
+ * @return {string}
+ */
+export function mailBox(folder, page = 1, search = '', threadUid = '')
+{
+	page = isNormal(page) ? pInt(page) : 1;
+	search = pString(search);
+
+	let result = HASH_PREFIX + 'mailbox/';
+
+	if ('' !== folder)
+	{
+		const resultThreadUid = pInt(threadUid);
+		result += window.encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
+	}
+
+	if (1 < page)
+	{
+		result = result.replace(/[\/]+$/, '');
+		result += '/p' + page;
+	}
+
+	if ('' !== search)
+	{
+		result = result.replace(/[\/]+$/, '');
+		result += '/' + window.encodeURI(search);
+	}
+
+	return result;
+}

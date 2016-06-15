@@ -5,10 +5,10 @@ import _ from '_';
 import ko from 'ko';
 import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
+import {Mime} from 'Common/Mime';
 
-const JSEncrypt = require('JSEncrypt');
-const Autolinker = require('Autolinker');
-const Mime = require('Common/Mime');
+import JSEncrypt from 'JSEncrypt';
+import Autolinker from 'Autolinker';
 
 const trim = $.trim;
 const inArray = $.inArray;
@@ -17,23 +17,20 @@ const isObject = _.isObject;
 const isFunc = _.isFunction;
 const isUnd = _.isUndefined;
 const isNull = _.isNull;
+const has = _.has;
+const bind = _.bind;
 const noop = () => {};
 
-export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, noop, noop as emptyFunction};
+export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noop as emptyFunction};
 
 /**
  * @param {Function} callback
  */
 export function silentTryCatch(callback)
 {
-	try
-	{
+	try {
 		callback();
-	}
-	catch (e)
-	{
-		// eslint-disable-line no-empty
-	}
+	} catch (e) {/* eslint-disable-line no-empty */}
 }
 
 /**
@@ -285,16 +282,6 @@ const timeOutActionSecond = (function () {
 export {timeOutAction, timeOutActionSecond};
 
 /**
- * @param {(Object|null|undefined)} item
- * @param {string} prop
- * @return {boolean}
- */
-export function hos(item, prop)
-{
-	return item && window.Object && window.Object.hasOwnProperty ? window.Object.hasOwnProperty.call(item, prop) : false;
-}
-
-/**
  * @return {boolean}
  */
 export function inFocus()
@@ -326,9 +313,7 @@ export function removeInFocus(force)
 			{
 					window.document.activeElement.blur();
 			}
-		} catch (e) {
-			// eslint-disable-line no-empty
-		}
+		} catch (e) {/* eslint-disable-line no-empty */}
 	}
 }
 
@@ -347,9 +332,7 @@ export function removeSelection()
 		{
 			window.document.selection.empty();
 		}
-	} catch (e) {
-		// eslint-disable-line no-empty
-	}
+	} catch (e) {/* eslint-disable-line no-empty */}
 }
 
 /**
@@ -627,6 +610,122 @@ export function defautOptionsAfterRender(domOption, item)
 }
 
 /**
+ * @param {string} title
+ * @param {Object} body
+ * @param {boolean} isHtml
+ * @param {boolean} print
+ */
+export function clearBqSwitcher(body)
+{
+	body.find('blockquote.rl-bq-switcher').removeClass('rl-bq-switcher hidden-bq');
+	body.find('.rlBlockquoteSwitcher').off('.rlBlockquoteSwitcher').remove();
+	body.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
+}
+
+/**
+ * @param {string} title
+ * @param {Object} body
+ * @param {boolean} isHtml
+ * @param {boolean} print
+ */
+export function previewMessage(title, body, isHtml, print)
+{
+	const
+		win = window.open(''),
+		doc = win.document,
+		bodyClone = body.clone(),
+		bodyClass = isHtml ? 'html' : 'plain'
+	;
+
+	clearBqSwitcher(bodyClone);
+
+	const html = bodyClone ? bodyClone.html() : '';
+
+	title = encodeHtml(title);
+
+	doc.write(`<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="robots" content="noindex, nofollow, noodp" />
+	<title>${title}</title>
+	<style>
+html, body {
+	background-color: #fff;
+	font-size: 13px;
+	font-family: arial, sans-serif;
+}
+
+a {color: blue; text-decoration: underline}
+a:visited {color: #609}
+a:active {color: red}
+blockquote {border-left: 2px solid black; margin: 0; padding: 0px 10px}
+
+pre {
+	margin: 0px;
+	padding: 0px;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	background: #fff;
+	border: none;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+body.html pre {
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: normal;
+}
+
+body.plain {
+
+	padding: 15px;
+	white-space: pre-wrap;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+}
+
+body.plain pre {
+	margin: 0px;
+	padding: 0px;
+	background: #fff;
+	border: none;
+	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: normal;
+}
+
+body.plain blockquote {
+	border-left: 2px solid blue;
+	color: blue;
+}
+
+body.plain blockquote blockquote {
+	border-left: 2px solid green;
+	color: green;
+}
+
+body.plain blockquote blockquote blockquote {
+	border-left: 2px solid red;
+	color: red;
+}
+	</style>
+</head>
+<body class="${bodyClass}">${html}</body>
+</html>`);
+
+	doc.close();
+
+	if (print)
+	{
+		window.setTimeout(() => win.print(), 100);
+	}
+}
+
+/**
  * @param {Object} viewModel
  * @param {string} templateID
  * @param {string} title
@@ -637,7 +736,7 @@ export function windowPopupKnockout(viewModel, templateID, title, fCallback = nu
 	const
 		win = window.open(''),
 		doc = win.document,
-		func = '__OpenerApplyBindingsUid' + fakeMd5() + '__',
+		func = 'openerApplyBindingsUid' + fakeMd5(),
 		template = $('#' + templateID)
 	;
 
@@ -671,7 +770,6 @@ export function windowPopupKnockout(viewModel, templateID, title, fCallback = nu
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta name="viewport" content="user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="robots" content="noindex, nofollow, noodp" />
@@ -684,7 +782,7 @@ export function windowPopupKnockout(viewModel, templateID, title, fCallback = nu
 
 	const script = doc.createElement('script');
 	script.type = 'text/javascript';
-	script.innerHTML = `if(window&&window.opener&&window.opener['${func}']){window.opener['${func}']();window.opener['${func}']=null}`;
+	script.innerHTML = `if(window&&window.opener&&window.opener['${func}']){window.opener['${func}']();}`;
 
 	doc.getElementsByTagName('head')[0].appendChild(script);
 }
@@ -1323,19 +1421,6 @@ export function triggerAutocompleteInputChange(delay = false) {
 	{
 		fFunc();
 	}
-}
-
-/**
- * @param {Object} params
- */
-export function setHeadViewport(params)
-{
-	let content = [];
-	_.each(params, (key, value) => {
-		content.push('' + key + '=' + value);
-	});
-
-	$('#app-head-viewport').attr('content', content.join(', '));
 }
 
 /**

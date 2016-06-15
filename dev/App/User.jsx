@@ -20,11 +20,11 @@ import {
 } from 'Common/Globals';
 
 import {UNUSED_OPTION_VALUE} from 'Common/Consts';
-import Plugins from 'Common/Plugins';
-import Links from 'Common/Links';
-import Events from 'Common/Events';
+import * as Plugins from 'Common/Plugins';
+import * as Links from 'Common/Links';
+import * as Events from 'Common/Events';
+import * as Momentor from 'Common/Momentor';
 import Translator from 'Common/Translator';
-import Momentor from 'Common/Momentor';
 import Cache from 'Common/Cache';
 
 import SocialStore from 'Stores/Social';
@@ -38,7 +38,7 @@ import MessageStore from 'Stores/User/Message';
 import ContactStore from 'Stores/User/Contact';
 
 import Local from 'Storage/Client';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 import RainLoopStorage from 'Storage/RainLoop';
 
 import Remote from 'Remote/User/Ajax';

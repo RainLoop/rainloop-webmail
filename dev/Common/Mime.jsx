@@ -2,7 +2,7 @@
 /* eslint key-spacing: 0 */
 /* eslint quote-props: 0 */
 
-module.exports = {
+const Mime = {
 	'eml'	: 'message/rfc822',
 	'mime'	: 'message/rfc822',
 	'txt'	: 'text/plain',
@@ -162,3 +162,5 @@ module.exports = {
 	'odt'	: 'application/vnd.oasis.opendocument.text',
 	'ods'	: 'application/vnd.oasis.opendocument.spreadsheet'
 };
+
+export {Mime, Mime as default};

@@ -289,43 +289,40 @@
 			this.goToUpUpOrDownDown(bV);
 		}, this));
 
-		Events
-			.sub('mailbox.message-list.selector.go-down', function (bSelect) {
-				this.selector.goDown(bSelect);
-			}, this)
-			.sub('mailbox.message-list.selector.go-up', function (bSelect) {
-				this.selector.goUp(bSelect);
-			}, this)
-		;
+		Events.sub('mailbox.message-list.selector.go-down', function (bSelect) {
+			this.selector.goDown(bSelect);
+		}, this);
 
-		Events
-			.sub('mailbox.message.show', function (sFolder, sUid) {
+		Events.sub('mailbox.message-list.selector.go-up', function (bSelect) {
+			this.selector.goUp(bSelect);
+		}, this);
 
-				var oMessage = _.find(this.messageList(), function (oItem) {
-					return oItem && sFolder === oItem.folderFullNameRaw && sUid === oItem.uid;
-				});
+		Events.sub('mailbox.message.show', function (sFolder, sUid) {
 
-				if ('INBOX' === sFolder)
+			var oMessage = _.find(this.messageList(), function (oItem) {
+				return oItem && sFolder === oItem.folderFullNameRaw && sUid === oItem.uid;
+			});
+
+			if ('INBOX' === sFolder)
+			{
+				kn.setHash(Links.mailBox(sFolder, 1));
+			}
+
+			if (oMessage)
+			{
+				this.selector.selectMessageItem(oMessage);
+			}
+			else
+			{
+				if ('INBOX' !== sFolder)
 				{
 					kn.setHash(Links.mailBox(sFolder, 1));
 				}
 
-				if (oMessage)
-				{
-					this.selector.selectMessageItem(oMessage);
-				}
-				else
-				{
-					if ('INBOX' !== sFolder)
-					{
-						kn.setHash(Links.mailBox(sFolder, 1));
-					}
+				MessageStore.selectMessageByFolderAndUid(sFolder, sUid);
+			}
 
-					MessageStore.selectMessageByFolderAndUid(sFolder, sUid);
-				}
-
-			}, this)
-		;
+		}, this);
 
 		MessageStore.messageListEndHash.subscribe(function () {
 			this.selector.scrollToTop();

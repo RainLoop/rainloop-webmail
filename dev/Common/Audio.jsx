@@ -1,8 +1,8 @@
 
 import {window, $} from 'common';
 import {bMobileDevice, bSafari} from 'Common/Globals';
-import Links from 'Common/Links';
-import Events from 'Common/Events';
+import * as Links from 'Common/Links';
+import * as Events from 'Common/Events';
 import {trim} from 'Common/Utils';
 
 class Audio

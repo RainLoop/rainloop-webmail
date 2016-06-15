@@ -1,7 +1,7 @@
 
 import ko from 'ko';
 import {$html, bMobileDevice} from 'Common/Globals';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
 class AbstractAppStore
 {

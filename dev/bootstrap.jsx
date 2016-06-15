@@ -1,13 +1,12 @@
 
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import {kill_CtrlA_CtrlS, detectDropdownVisibility, createCommand} from 'Common/Utils';
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
-import Plugins from 'Common/Plugins';
+import * as Enums from 'Common/Enums';
+import * as Plugins from 'Common/Plugins';
 import Translator from 'Common/Translator';
 import EmailModel from 'Model/Email';
-import * as Enums from 'Common/Enums';
 
 export default (App) => {
 
@@ -29,17 +28,16 @@ export default (App) => {
 
 	const rl = window.rl || {};
 
-	rl.i18n = _.bind(Translator.i18n, Translator);
-
-	rl.addHook = _.bind(Plugins.addHook, Plugins);
-	rl.settingsGet = _.bind(Plugins.mainSettingsGet, Plugins);
+	rl.i18n = Translator.i18n;
 	rl.createCommand = createCommand;
 
-	rl.addSettingsViewModel = _.bind(Plugins.addSettingsViewModel, Plugins);
-	rl.addSettingsViewModelForAdmin = _.bind(Plugins.addSettingsViewModelForAdmin, Plugins);
+	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
+	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;
 
-	rl.pluginRemoteRequest = _.bind(Plugins.remoteRequest, Plugins);
-	rl.pluginSettingsGet = _.bind(Plugins.settingsGet, Plugins);
+	rl.addHook = Plugins.addHook;
+	rl.settingsGet = Plugins.mainSettingsGet;
+	rl.pluginSettingsGet = Plugins.settingsGet;
+	rl.pluginRemoteRequest = Plugins.remoteRequest;
 
 	rl.EmailModel = EmailModel;
 	rl.Enums = Enums;
@@ -50,20 +48,20 @@ export default (App) => {
 
 		$(() => {
 
-			_.delay(() => {
+			window.setTimeout(() => {
 
 				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0])
 				{
 					$('#rl-templates').html(window.rainloopTEMPLATES[0]);
 
-					_.delay(() => {
-
-						App.bootstart();
+					window.setTimeout(() => {
 
 						$html
 							.removeClass('no-js rl-booted-trigger')
 							.addClass('rl-booted')
 						;
+
+						App.bootstart();
 
 					}, 10);
 				}

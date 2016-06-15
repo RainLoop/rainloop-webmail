@@ -2,106 +2,107 @@
 import {_} from 'common';
 import {isFunc, isArray, isUnd} from 'Common/Utils';
 import {data as GlobalsData} from 'Common/Globals';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
-class Plugins
+const SIMPLE_HOOKS = {};
+const USER_VIEW_MODELS_HOOKS = [];
+const ADMIN_VIEW_MODELS_HOOKS = [];
+
+/**
+ * @param {string} name
+ * @param {Function} callback
+ */
+export function addHook(name, callback)
 {
-	oSimpleHooks = {};
-	aUserViewModelsHooks = [];
-	aAdminViewModelsHooks = [];
-
-	constructor() {}
-
-	/**
-	 * @param {string} name
-	 * @param {Function} callback
-	 */
-	addHook(name, callback) {
-		if (isFunc(callback))
+	if (isFunc(callback))
+	{
+		if (!isArray(SIMPLE_HOOKS[name]))
 		{
-			if (!isArray(this.oSimpleHooks[name]))
-			{
-				this.oSimpleHooks[name] = [];
-			}
-
-			this.oSimpleHooks[name].push(callback);
+			SIMPLE_HOOKS[name] = [];
 		}
-	}
 
-	/**
-	 * @param {string} name
-	 * @param {Array=} args
-	 */
-	runHook(name, args = []) {
-		if (isArray(this.oSimpleHooks[name]))
-		{
-			_.each(this.oSimpleHooks[name], (callback) => {
-				callback.apply(null, args);
-			});
-		}
-	}
-
-	/**
-	 * @param {string} name
-	 * @return {?}
-	 */
-	mainSettingsGet(name) {
-		return Settings.settingsGet(name);
-	}
-
-	/**
-	 * @param {Function} callback
-	 * @param {string} action
-	 * @param {Object=} parameters
-	 * @param {?number=} timeout
-	 */
-	remoteRequest(callback, action, parameters, timeout) {
-		if (GlobalsData.__APP__)
-		{
-			GlobalsData.__APP__.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
-		}
-	}
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 * @param {string} labelName
-	 * @param {string} template
-	 * @param {string} route
-	 */
-	addSettingsViewModel(SettingsViewModelClass, template, labelName, route) {
-		this.aUserViewModelsHooks.push([SettingsViewModelClass, template, labelName, route]);
-	}
-
-	/**
-	 * @param {Function} SettingsViewModelClass
-	 * @param {string} labelName
-	 * @param {string} template
-	 * @param {string} route
-	 */
-	addSettingsViewModelForAdmin(SettingsViewModelClass, template, labelName, route) {
-		this.aAdminViewModelsHooks.push([SettingsViewModelClass, template, labelName, route]);
-	}
-
-	/**
-	 * @param {boolean} admin
-	 */
-	runSettingsViewModelHooks(admin) {
-		const Knoin = require('Knoin/Knoin');
-		_.each(admin ? this.aAdminViewModelsHooks : this.aUserViewModelsHooks, (view) => {
-			Knoin.addSettingsViewModel(view[0], view[1], view[2], view[3]);
-		});
-	}
-
-	/**
-	 * @param {string} pluginSection
-	 * @param {string} name
-	 * @return {?}
-	 */
-	settingsGet(pluginSection, name) {
-		let plugins = Settings.settingsGet('Plugins');
-		plugins = plugins && !isUnd(plugins[pluginSection]) ? plugins[pluginSection] : null;
-		return plugins ? (isUnd(plugins[name]) ? null : plugins[name]) : null;
+		SIMPLE_HOOKS[name].push(callback);
 	}
 }
 
-module.exports = new Plugins();
+/**
+ * @param {string} name
+ * @param {Array=} args = []
+ */
+export function runHook(name, args = [])
+{
+	if (isArray(SIMPLE_HOOKS[name]))
+	{
+		_.each(SIMPLE_HOOKS[name], (callback) => {
+			callback.apply(null, args);
+		});
+	}
+}
+
+/**
+ * @param {string} name
+ * @return {?}
+ */
+export function mainSettingsGet(name)
+{
+	return Settings.settingsGet(name);
+}
+
+/**
+ * @param {Function} callback
+ * @param {string} action
+ * @param {Object=} parameters
+ * @param {?number=} timeout
+ */
+export function remoteRequest(callback, action, parameters, timeout)
+{
+	if (GlobalsData.__APP__)
+	{
+		GlobalsData.__APP__.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
+	}
+}
+
+/**
+ * @param {Function} SettingsViewModelClass
+ * @param {string} labelName
+ * @param {string} template
+ * @param {string} route
+ */
+export function addSettingsViewModel(SettingsViewModelClass, template, labelName, route)
+{
+	USER_VIEW_MODELS_HOOKS.push([SettingsViewModelClass, template, labelName, route]);
+}
+
+/**
+ * @param {Function} SettingsViewModelClass
+ * @param {string} labelName
+ * @param {string} template
+ * @param {string} route
+ */
+export function addSettingsViewModelForAdmin(SettingsViewModelClass, template, labelName, route)
+{
+	ADMIN_VIEW_MODELS_HOOKS.push([SettingsViewModelClass, template, labelName, route]);
+}
+
+/**
+ * @param {boolean} admin
+ */
+export function runSettingsViewModelHooks(admin)
+{
+	const Knoin = require('Knoin/Knoin');
+	_.each(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS, (view) => {
+		Knoin.addSettingsViewModel(view[0], view[1], view[2], view[3]);
+	});
+}
+
+/**
+ * @param {string} pluginSection
+ * @param {string} name
+ * @return {?}
+ */
+export function settingsGet(pluginSection, name)
+{
+	let plugins = Settings.settingsGet('Plugins');
+	plugins = plugins && !isUnd(plugins[pluginSection]) ? plugins[pluginSection] : null;
+	return plugins ? (isUnd(plugins[name]) ? null : plugins[name]) : null;
+}

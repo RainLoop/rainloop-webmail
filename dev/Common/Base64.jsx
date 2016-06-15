@@ -163,7 +163,9 @@ const Base64 = {
 		return string;
 	}
 };
-
-module.exports = Base64;
 /* jslint bitwise: false */
 /* eslint-enable */
+
+export const decode = Base64.decode;
+export const encode = Base64.encode;
+export const urlsafe_encode = Base64.urlsafe_encode;

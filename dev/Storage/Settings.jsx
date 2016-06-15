@@ -2,51 +2,45 @@
 import {window} from 'common';
 import {isUnd, isNormal, isArray, inArray} from 'Common/Utils';
 
-class SettingsStorage
+let SETTINGS = window.__rlah_data() || null;
+SETTINGS = isNormal(SETTINGS) ? SETTINGS : {};
+
+let APP_SETTINGS = SETTINGS.System || null;
+APP_SETTINGS = isNormal(APP_SETTINGS) ? APP_SETTINGS : {};
+
+/**
+ * @param {string} name
+ * @return {*}
+ */
+export function settingsGet(name)
 {
-	settings = {};
-	appSettings = {};
-
-	constructor() {
-		this.settings = window.__rlah_data() || {};
-		this.settings = isNormal(this.settings) ? this.settings : {};
-
-		this.appSettings = this.settings.System || null;
-		this.appSettings = isNormal(this.appSettings) ? this.appSettings : {};
-	}
-
-	/**
-	 * @param {string} name
-	 * @return {*}
-	 */
-	settingsGet(name) {
-		return isUnd(this.settings[name]) ? null : this.settings[name];
-	}
-
-	/**
-	 * @param {string} name
-	 * @param {*} value
-	 */
-	settingsSet(name, value) {
-		this.settings[name] = value;
-	}
-
-	/**
-	 * @param {string} name
-	 * @return {*}
-	 */
-	appSettingsGet(name) {
-		return isUnd(this.appSettings[name]) ? null : this.appSettings[name];
-	}
-
-	/**
-	 * @param {string} name
-	 * @return {boolean}
-	 */
-	capa(name) {
-		const values = this.settingsGet('Capa');
-		return isArray(values) && isNormal(name) && -1 < inArray(name, values);
-	}
+	return isUnd(SETTINGS[name]) ? null : SETTINGS[name];
 }
 
-module.exports = new SettingsStorage();
+/**
+ * @param {string} name
+ * @param {*} value
+ */
+export function settingsSet(name, value)
+{
+	SETTINGS[name] = value;
+}
+
+/**
+ * @param {string} name
+ * @return {*}
+ */
+export function appSettingsGet(name)
+{
+	return isUnd(APP_SETTINGS[name]) ? null : APP_SETTINGS[name];
+}
+
+/**
+ * @param {string} name
+ * @return {boolean}
+ */
+export function capa(name)
+{
+	const values = settingsGet('Capa');
+	return isArray(values) && isNormal(name) && -1 < inArray(name, values);
+}

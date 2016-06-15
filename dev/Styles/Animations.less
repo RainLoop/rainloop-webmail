@@ -63,6 +63,14 @@ html.csstransitions.rl-started-delay {
 	}
 }
 
+html {
+	&.rgba.cssanimations.backgroundsize .e-strip-animation {
+		background-size: 60px 60px;
+		.rl-strip-animation(0, 0.1);
+		animation: animate-stripes 2s linear infinite;
+	}
+}
+
 html.rl-anim {
 
 	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
@@ -84,12 +92,6 @@ html.rl-anim {
 
 	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
 		.transition(all 0.3s ease-out);
-	}
-
-	&.rgba.cssanimations.backgroundsize .e-strip-animation {
-		background-size: 60px 60px;
-		.rl-strip-animation(0, 0.1);
-		animation: animate-stripes 2s linear infinite;
 	}
 
 	&.csstransitions .button-delete-transitions {

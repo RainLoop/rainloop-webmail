@@ -1,6 +1,6 @@
 
 import ko from 'ko';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 
 import {AbstractAppStore} from 'Stores/AbstractApp';
 

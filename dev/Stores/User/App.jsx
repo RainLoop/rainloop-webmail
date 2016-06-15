@@ -2,7 +2,7 @@
 import ko from 'ko';
 import {Focused, KeyState} from 'Common/Enums';
 import {keyScope} from 'Common/Globals';
-import Settings from 'Storage/Settings';
+import * as Settings from 'Storage/Settings';
 import {isNonEmptyArray} from 'Common/Utils';
 
 import {AbstractAppStore} from 'Stores/AbstractApp';

@@ -4,7 +4,6 @@
 	'use strict';
 
 	var
-		window = require('window'),
 		_ = require('_'),
 		$ = require('$'),
 		ko = require('ko'),
@@ -755,33 +754,8 @@
 	 */
 	MessageModel.prototype.viewPopupMessage = function (bPrint)
 	{
-		Utils.windowPopupKnockout(this.getDataForWindowPopup(), 'PopupsWindowSimpleMessage',
-			this.subject(), function (oPopupWin)
-		{
-			if (oPopupWin && oPopupWin.document && oPopupWin.document.body)
-			{
-				$('img.lazy', oPopupWin.document.body).each(function (iIndex, oImg) {
-
-					var
-						$oImg = $(oImg),
-						sOrig = $oImg.data('original'),
-						sSrc = $oImg.attr('src')
-						;
-
-					if (0 <= iIndex && sOrig && !sSrc)
-					{
-						$oImg.attr('src', sOrig);
-					}
-				});
-
-				if (bPrint)
-				{
-					window.setTimeout(function () {
-						oPopupWin.print();
-					}, 100);
-				}
-			}
-		});
+		this.showLazyExternalImagesInBody();
+		Utils.previewMessage(this.subject(), this.body, this.isHtml(), bPrint);
 	};
 
 	MessageModel.prototype.printMessage = function ()
@@ -870,17 +844,26 @@
 		return this;
 	};
 
+	MessageModel.prototype.showLazyExternalImagesInBody = function ()
+	{
+		if (this.body)
+		{
+			$('.lazy.lazy-inited[data-original]', this.body).each(function () {
+				$(this).attr('src', $(this).attr('data-original')).removeAttr('data-original');
+			});
+		}
+	};
+
 	MessageModel.prototype.showExternalImages = function (bLazy)
 	{
 		if (this.body && this.body.data('rl-has-images'))
 		{
-			var sAttr = '';
 			bLazy = Utils.isUnd(bLazy) ? false : bLazy;
 
 			this.hasImages(false);
 			this.body.data('rl-has-images', false);
 
-			sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+			var sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
 			$('[' + sAttr + ']', this.body).each(function () {
 				if (bLazy && $(this).is('img'))
 				{
@@ -888,7 +871,7 @@
 						.addClass('lazy')
 						.attr('data-original', $(this).attr(sAttr))
 						.removeAttr(sAttr)
-						;
+					;
 				}
 				else
 				{

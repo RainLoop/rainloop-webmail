@@ -1,65 +1,52 @@
 
 import {_} from 'common';
 import {isObject, isUnd} from 'Common/Utils';
-import Plugins from 'Common/Plugins';
+import * as Plugins from 'Common/Plugins';
 
-class Events
+const SUBS = {};
+
+/**
+ * @param {string|Object} name
+ * @param {Function} func
+ * @param {Object=} context
+ */
+export function sub(name, func, context)
 {
-	subs = {};
+	if (isObject(name))
+	{
+		context = func || null;
+		func = null;
 
-	constructor() {}
-
-	/**
-	 * @param {string|Object} name
-	 * @param {Function} func
-	 * @param {Object=} context
-	 * @return {Events}
-	 */
-	sub(name, func, context) {
-
-		if (isObject(name))
-		{
-			context = func || null;
-			func = null;
-
-			_.each(name, (subFunc, subName) => {
-				this.sub(subName, subFunc, context);
-			}, this);
-		}
-		else
-		{
-			if (isUnd(this.subs[name]))
-			{
-				this.subs[name] = [];
-			}
-
-			this.subs[name].push([func, context]);
-		}
-
-		return this;
+		_.each(name, (subFunc, subName) => {
+			sub(subName, subFunc, context);
+		});
 	}
-
-	/**
-	 * @param {string} name
-	 * @param {Array=} args
-	 * @return {Events}
-	 */
-	pub(name, args) {
-
-		Plugins.runHook('rl-pub', [name, args]);
-
-		if (!isUnd(this.subs[name]))
+	else
+	{
+		if (isUnd(SUBS[name]))
 		{
-			_.each(this.subs[name], (items) => {
-				if (items[0])
-				{
-					items[0].apply(items[1] || null, args || []);
-				}
-			});
+			SUBS[name] = [];
 		}
 
-		return this;
+		SUBS[name].push([func, context]);
 	}
 }
 
-module.exports = new Events();
+/**
+ * @param {string} name
+ * @param {Array=} args
+ */
+export function pub(name, args)
+{
+	Plugins.runHook('rl-pub', [name, args]);
+
+	if (!isUnd(SUBS[name]))
+	{
+		_.each(SUBS[name], (items) => {
+			if (items[0])
+			{
+				items[0].apply(items[1] || null, args || []);
+			}
+		});
+	}
+}

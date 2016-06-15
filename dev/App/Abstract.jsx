@@ -9,10 +9,10 @@ import {
 
 import {KeyState} from 'Common/Enums';
 import {noop, isNormal, pString, inArray, microtime, timestamp, detectDropdownVisibility, windowResizeCallback} from 'Common/Utils';
-import Links from 'Common/Links';
-import Events from 'Common/Events';
+import * as Links from 'Common/Links';
+import * as Settings from 'Storage/Settings';
+import * as Events from 'Common/Events';
 import Translator from 'Common/Translator';
-import Settings from 'Storage/Settings';
 
 import {AbstractBoot} from 'Knoin/AbstractBoot';
 
