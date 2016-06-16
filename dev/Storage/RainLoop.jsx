@@ -1,105 +1,90 @@
 
 import window from 'window';
+import JSON from 'JSON';
 
-const
-	STORAGE_KEY = '__rlA',
-	TIME_KEY = '__rlT'
-;
+const STORAGE_KEY = '__rlA';
+const TIME_KEY = '__rlT';
 
-class RainLoopStorage
-{
-	s = null;
-	t = null;
+const SESS_STORAGE = window.sessionStorage || null;
+const WIN_STORAGE = window.top || window || null;
 
-	constructor()
+const __get = (key) => {
+
+	let result = null;
+	if (SESS_STORAGE)
 	{
-		this.s = window.sessionStorage || null;
-		this.t = window.top || window;
-
-		this.init();
+		result = SESS_STORAGE.getItem(key) || null;
+	}
+	else if (WIN_STORAGE && JSON)
+	{
+		const data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? JSON.parse(WIN_STORAGE.name.toString()) : null;
+		result = data ? (data[key] || null) : null;
 	}
 
-	__get(key) {
+	return result;
+};
 
-		let result = null;
-		if (this.s)
-		{
-			result = this.s.getItem(key) || null;
-		}
-		else if (this.t && JSON)
-		{
-			const data = this.t.name && '{' === this.t.name.toString().substr(0, 1) ? JSON.parse(this.t.name.toString()) : null;
-			result = data ? (data[key] || null) : null;
-		}
+const __set = (key, value) => {
 
-		return result;
+	if (SESS_STORAGE)
+	{
+		SESS_STORAGE.setItem(key, value);
 	}
+	else if (WIN_STORAGE && JSON)
+	{
+		let data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? JSON.parse(WIN_STORAGE.name.toString()) : null;
+		data = data || {};
+		data[key] = value;
 
-	__set(key, value) {
-		if (this.s)
-		{
-			this.s.setItem(key, value);
-		}
-		else if (this.t && JSON)
-		{
-			let data = this.t.name && '{' === this.t.name.toString().substr(0, 1) ? JSON.parse(this.t.name.toString()) : null;
-			data = data || {};
-			data[key] = value;
-
-			this.t.name = JSON.stringify(data);
-		}
+		WIN_STORAGE.name = JSON.stringify(data);
 	}
+};
 
-	timestamp() {
-		return window.Math.round((new Date()).getTime() / 1000);
-	}
+const timestamp = () => window.Math.round((new window.Date()).getTime() / 1000);
 
-	checkTimestamp() {
+const setTimestamp = () => __set(TIME_KEY, timestamp());
 
-		if (this.timestamp() > this.getTimestamp() + 1000 * 60 * 60) // 60m
-		{
-			this.clearHash();
-			return true;
-		}
+const getTimestamp = () => {
+	let time = __get(TIME_KEY, 0);
+	return time ? (window.parseInt(time, 10) || 0) : 0;
+};
 
-		return false;
-	}
-
-	init() {
-		window.setInterval(() => {
-			this.setTimestamp();
-		}, 1000 * 60); // 1m
-	}
-
-	getHash() {
-		return this.__get(STORAGE_KEY);
-	}
-
-	setHash() {
-
-		const
-			key = 'AuthAccountHash',
-			appData = window.__rlah_data()
-		;
-
-		this.__set(STORAGE_KEY, appData && appData[key] ? appData[key] : '');
-		this.setTimestamp();
-	}
-
-
-	setTimestamp() {
-		this.__set(TIME_KEY, this.timestamp());
-	}
-
-	getTimestamp() {
-		let time = this.__get(TIME_KEY, 0);
-		return time ? (window.parseInt(time, 10) | 0) : 0;
-	}
-
-	clearHash() {
-		this.__set(STORAGE_KEY, '');
-		this.setTimestamp();
-	}
+/**
+ * @return {string}
+ */
+export function getHash()
+{
+	return __get(STORAGE_KEY);
 }
 
-module.exports = new RainLoopStorage();
+export function setHash()
+{
+	const
+		key = 'AuthAccountHash',
+		appData = window.__rlah_data()
+	;
+
+	__set(STORAGE_KEY, appData && appData[key] ? appData[key] : '');
+	setTimestamp();
+}
+
+export function clearHash()
+{
+	__set(STORAGE_KEY, '');
+	setTimestamp();
+}
+
+export function checkTimestamp()
+{
+	if (timestamp() > getTimestamp() + 1000 * 60 * 60) // 60m
+	{
+		clearHash();
+		return true;
+	}
+	return false;
+}
+
+// init section
+window.setInterval(() => {
+	setTimestamp();
+}, 1000 * 60); // 1m

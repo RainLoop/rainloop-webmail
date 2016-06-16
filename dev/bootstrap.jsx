@@ -5,7 +5,7 @@ import {kill_CtrlA_CtrlS, detectDropdownVisibility, createCommand} from 'Common/
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
-import Translator from 'Common/Translator';
+import {i18n} from 'Common/Translator';
 import EmailModel from 'Model/Email';
 
 export default (App) => {
@@ -28,7 +28,7 @@ export default (App) => {
 
 	const rl = window.rl || {};
 
-	rl.i18n = Translator.i18n;
+	rl.i18n = i18n;
 	rl.createCommand = createCommand;
 
 	rl.addSettingsViewModel = Plugins.addSettingsViewModel;

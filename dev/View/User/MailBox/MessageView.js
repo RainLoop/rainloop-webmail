@@ -186,7 +186,7 @@
 			Local.set(Enums.ClientSideKeyName.LastReplyAction, sValue);
 		});
 
-		this.showFullInfo = ko.observable(false);
+		this.showFullInfo = ko.observable('1' === Local.get(Enums.ClientSideKeyName.MessageHeaderFullInfo));
 		this.moreDropdownTrigger = ko.observable(false);
 		this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
 
@@ -217,7 +217,7 @@
 		this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
 		this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
 
-		this.messageVisibilityCommand = Utils.createCommand(this, Utils.emptyFunction, this.messageVisibility);
+		this.messageVisibilityCommand = Utils.createCommand(this, Utils.noop, this.messageVisibility);
 
 		this.messageEditCommand = Utils.createCommand(this, function () {
 			this.editMessage();
@@ -672,9 +672,10 @@
 			_.delay(fCheckHeaderHeight, 500);
 		}, 50));
 
-		this.showFullInfo.subscribe(function () {
+		this.showFullInfo.subscribe(function (value) {
 			Utils.windowResize();
 			Utils.windowResize(250);
+			Local.set(Enums.ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
 		if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
@@ -873,13 +874,13 @@
 		});
 
 		// message information
-	//	key('i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
-	//		if (MessageStore.message())
-	//		{
-	//			self.showFullInfo(!self.showFullInfo());
-	//			return false;
-	//		}
-	//	});
+		key('ctrl+i, command+i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
+			if (MessageStore.message())
+			{
+				self.showFullInfo(!self.showFullInfo());
+			}
+			return false;
+		});
 
 		// toggle message blockquotes
 		key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function () {
@@ -901,7 +902,7 @@
 		});
 
 		// print
-		key('ctrl+p, command+p', Enums.KeyState.MessageView, function () {
+		key('ctrl+p, command+p', [Enums.KeyState.MessageView, Enums.KeyState.MessageList], function () {
 			if (self.message())
 			{
 				self.message().printMessage();
@@ -1199,7 +1200,7 @@
 	{
 		if (oMessage && '' !== oMessage.readReceipt())
 		{
-			Remote.sendReadReceiptMessage(Utils.emptyFunction, oMessage.folderFullNameRaw, oMessage.uid,
+			Remote.sendReadReceiptMessage(Utils.noop, oMessage.folderFullNameRaw, oMessage.uid,
 				oMessage.readReceipt(),
 				Translator.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
 				Translator.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': AccountStore.email()}));

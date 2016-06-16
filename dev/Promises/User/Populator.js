@@ -194,7 +194,7 @@
 
 			if (bUpdate)
 			{
-				require('Remote/User/Ajax').saveSystemFolders(Utils.emptyFunction, {
+				require('Remote/User/Ajax').saveSystemFolders(Utils.noop, {
 					'SentFolder': FolderStore.sentFolder(),
 					'DraftFolder': FolderStore.draftFolder(),
 					'SpamFolder': FolderStore.spamFolder(),

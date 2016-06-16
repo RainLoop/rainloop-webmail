@@ -1,6 +1,6 @@
 
 import {window, $, _, moment} from 'common';
-import Translator from 'Common/Translator';
+import {i18n} from 'Common/Translator';
 
 let _moment = null;
 let _momentNow = 0;
@@ -48,11 +48,11 @@ function formatCustomShortDate(m)
 			case 4 >= now.diff(m, 'hours'):
 				return m.fromNow();
 			case now.format('L') === m.format('L'):
-				return Translator.i18n('MESSAGE_LIST/TODAY_AT', {
+				return i18n('MESSAGE_LIST/TODAY_AT', {
 					TIME: m.format('LT')
 				});
 			case now.clone().subtract('days', 1).format('L') === m.format('L'):
-				return Translator.i18n('MESSAGE_LIST/YESTERDAY_AT', {
+				return i18n('MESSAGE_LIST/YESTERDAY_AT', {
 					TIME: m.format('LT')
 				});
 			case now.year() === m.year():

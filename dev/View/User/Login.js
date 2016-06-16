@@ -469,11 +469,12 @@
 		}
 
 		_.delay(function () {
+
 			LanguageStore.language.subscribe(function (sValue) {
 
 				self.langRequest(true);
 
-				Translator.reload(false, sValue, function() {
+				Translator.reload(false, sValue).then(function() {
 					self.langRequest(false);
 					self.bSendLanguage = true;
 				}, function() {
@@ -481,6 +482,7 @@
 				});
 
 			});
+
 		}, 50);
 
 		Utils.triggerAutocompleteInputChange(true);

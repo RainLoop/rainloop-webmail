@@ -20,10 +20,14 @@
 		this.languagesAdmin = ko.observableArray([]);
 
 		this.language = ko.observable('')
-			.extend({'limitedList': this.languages});
+			.extend({'limitedList': this.languages})
+			.extend({'reversible': true})
+		;
 
 		this.languageAdmin = ko.observable('')
-			.extend({'limitedList': this.languagesAdmin});
+			.extend({'limitedList': this.languagesAdmin})
+			.extend({'reversible': true})
+		;
 
 		this.userLanguage = ko.observable('');
 		this.userLanguageAdmin = ko.observable('');

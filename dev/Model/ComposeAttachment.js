@@ -85,7 +85,7 @@
 	ComposeAttachmentModel.prototype.CID = '';
 	ComposeAttachmentModel.prototype.contentLocation = '';
 	ComposeAttachmentModel.prototype.fromMessage = false;
-	ComposeAttachmentModel.prototype.cancel = Utils.emptyFunction;
+	ComposeAttachmentModel.prototype.cancel = Utils.noop;
 
 	/**
 	 * @param {AjaxJsonComposeAttachment} oJsonAttachment

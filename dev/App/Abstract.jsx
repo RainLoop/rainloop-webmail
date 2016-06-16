@@ -12,7 +12,7 @@ import {noop, isNormal, pString, inArray, microtime, timestamp, detectDropdownVi
 import * as Links from 'Common/Links';
 import * as Settings from 'Storage/Settings';
 import * as Events from 'Common/Events';
-import Translator from 'Common/Translator';
+import {initOnStartOrLangChange, initNotificationLanguage} from 'Common/Translator';
 
 import {AbstractBoot} from 'Knoin/AbstractBoot';
 
@@ -307,7 +307,7 @@ class AbstractApp extends AbstractBoot
 			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
 		}
 
-		Translator.initOnStartOrLangChange(Translator.initNotificationLanguage, Translator);
+		initOnStartOrLangChange(initNotificationLanguage);
 
 		_.delay(windowResizeCallback, 1000);
 

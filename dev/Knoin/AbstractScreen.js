@@ -75,7 +75,7 @@
 
 		if (Utils.isNonEmptyArray(aRoutes))
 		{
-			fMatcher = _.bind(this.onRoute || Utils.emptyFunction, this);
+			fMatcher = _.bind(this.onRoute || Utils.noop, this);
 			oRoute = crossroads.create();
 
 			_.each(aRoutes, function (aItem) {

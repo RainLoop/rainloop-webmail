@@ -135,13 +135,15 @@
 
 				self.languageTrigger(Enums.SaveSettingsStep.Animate);
 
-				Translator.reload(false, sValue,
+				Translator.reload(false, sValue).then(
 					fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
-					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult));
-
-				Remote.saveSettings(null, {
-					'Language': sValue
+					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult)
+				).then(function() {
+					Remote.saveSettings(null, {
+						'Language': sValue
+					});
 				});
+
 			});
 
 			self.editorDefaultType.subscribe(function (sValue) {

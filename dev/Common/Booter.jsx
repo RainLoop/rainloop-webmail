@@ -2,36 +2,23 @@
 import window from 'window';
 import progressJs from 'progressJs';
 
-import RainLoopStorage from 'Storage/RainLoop';
+import STYLES_CSS from 'Styles/@Boot.css';
+import LAYOUT_HTML from 'Html/Layout.html';
 
-let rlAppDataStorage = null;
+import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
-window.__rlah = () => {
-	return RainLoopStorage ? RainLoopStorage.getHash() : null;
-};
+let RL_APP_DATA_STORAGE = null;
 
-window.__rlah_data = () => {
-	return rlAppDataStorage;
-};
-
-window.__rlah_set = () => {
-	if (RainLoopStorage)
-	{
-		RainLoopStorage.setHash();
-	}
-};
-
-window.__rlah_clear = () => {
-	if (RainLoopStorage)
-	{
-		RainLoopStorage.clearHash();
-	}
-};
+window.__rlah = () => getHash();
+window.__rlah_set = () => setHash();
+window.__rlah_clear = () => clearHash();
+window.__rlah_data = () => RL_APP_DATA_STORAGE;
 
 function getComputedStyle(id, name)
 {
 	var element = window.document.getElementById(id);
-	return element.currentStyle ? element.currentStyle[name] : (window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
+	return element.currentStyle ? element.currentStyle[name] :
+		(window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
 }
 
 function includeStyle(styles)
@@ -46,20 +33,16 @@ function includeScr(src)
 
 function includeLayout()
 {
-	const
-		css = require('Styles/@Boot.css'),
-		layout = require('Html/Layout.html'),
-		app = window.document.getElementById('rl-app')
-	;
+	const app = window.document.getElementById('rl-app');
 
-	if (css)
+	if (STYLES_CSS)
 	{
-		includeStyle(css);
+		includeStyle(STYLES_CSS);
 	}
 
-	if (app && layout)
+	if (app && LAYOUT_HTML)
 	{
-		app.innerHTML = layout.replace(/[\r\n\t]+/g, '');
+		app.innerHTML = LAYOUT_HTML.replace(/[\r\n\t]+/g, '');
 		return true;
 	}
 
@@ -221,21 +204,24 @@ function runApp()
 
 window.__initAppData = function(data) {
 
-	rlAppDataStorage = data;
+	RL_APP_DATA_STORAGE = data;
 
 	window.__rlah_set();
 
-	if (rlAppDataStorage.NewThemeLink)
+	if (RL_APP_DATA_STORAGE)
 	{
-		(window.document.getElementById('app-theme-link') || {}).href = rlAppDataStorage.NewThemeLink;
-	}
+		if (RL_APP_DATA_STORAGE.NewThemeLink)
+		{
+			(window.document.getElementById('app-theme-link') || {}).href = RL_APP_DATA_STORAGE.NewThemeLink;
+		}
 
-	if (rlAppDataStorage.IncludeCss)
-	{
-		includeStyle(rlAppDataStorage.IncludeCss);
-	}
+		if (RL_APP_DATA_STORAGE.IncludeCss)
+		{
+			includeStyle(RL_APP_DATA_STORAGE.IncludeCss);
+		}
 
-	showDescriptionAndLoading(rlAppDataStorage ? (rlAppDataStorage.LoadingDescriptionEsc || '') : '');
+		showDescriptionAndLoading(RL_APP_DATA_STORAGE.LoadingDescriptionEsc || '');
+	}
 
 	runApp();
 };

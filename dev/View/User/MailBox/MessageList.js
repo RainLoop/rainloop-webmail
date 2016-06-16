@@ -258,7 +258,7 @@
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
 		}, this.canBeMoved);
 
-		this.moveCommand = Utils.createCommand(this, Utils.emptyFunction, this.canBeMoved);
+		this.moveCommand = Utils.createCommand(this, Utils.noop, this.canBeMoved);
 
 		this.reloadCommand = Utils.createCommand(this, function () {
 			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload)
@@ -558,7 +558,7 @@
 						Cache.clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
 					}
 
-					Remote.messageSetSeenToAll(Utils.emptyFunction, sFolderFullNameRaw, true);
+					Remote.messageSetSeenToAll(Utils.noop, sFolderFullNameRaw, true);
 					break;
 				case Enums.MessageSetAction.UnsetSeen:
 					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
@@ -571,7 +571,7 @@
 						oFolder.messageCountUnread(oFolder.messageCountAll());
 						Cache.clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
 					}
-					Remote.messageSetSeenToAll(Utils.emptyFunction, sFolderFullNameRaw, false);
+					Remote.messageSetSeenToAll(Utils.noop, sFolderFullNameRaw, false);
 					break;
 				}
 
@@ -783,11 +783,6 @@
 	MessageListMailBoxUserView.prototype.initShortcuts = function ()
 	{
 		var self = this;
-
-		// disable print
-		key('ctrl+p, command+p', Enums.KeyState.MessageList, function () {
-			return false;
-		});
 
 		key('enter', Enums.KeyState.MessageList, function () {
 			if (self.message() && self.useAutoSelect())

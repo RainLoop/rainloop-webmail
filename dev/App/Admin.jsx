@@ -4,7 +4,7 @@ import ko from 'ko';
 import progressJs from 'progressJs';
 
 import * as Links from 'Common/Links';
-import Translator from 'Common/Translator';
+import {getNotification} from 'Common/Translator';
 import {StorageResultType, Notification} from 'Common/Enums';
 import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
 
@@ -186,14 +186,14 @@ class AdminApp extends AbstractApp
 					Notification.LicensingExpired
 				]))
 				{
-					LicenseStore.licenseError(Translator.getNotification(pInt(data.ErrorCode)));
+					LicenseStore.licenseError(getNotification(pInt(data.ErrorCode)));
 					LicenseStore.licensing(true);
 				}
 				else
 				{
 					if (StorageResultType.Abort === result)
 					{
-						LicenseStore.licenseError(Translator.getNotification(Notification.LicensingServerIsUnavailable));
+						LicenseStore.licenseError(getNotification(Notification.LicensingServerIsUnavailable));
 						LicenseStore.licensing(true);
 					}
 					else
@@ -256,5 +256,4 @@ class AdminApp extends AbstractApp
 	}
 }
 
-const App = new AdminApp();
-export default App;
+export default new AdminApp();

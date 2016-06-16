@@ -113,13 +113,15 @@
 
 				self.languageAdminTrigger(Enums.SaveSettingsStep.Animate);
 
-				Translator.reload(true, sValue,
+				Translator.reload(true, sValue).then(
 					fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
-					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult));
-
-				Remote.saveAdminConfig(null, {
-					'LanguageAdmin': Utils.trim(sValue)
+					fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult)
+				).then(function() {
+					Remote.saveAdminConfig(null, {
+						'LanguageAdmin': Utils.trim(sValue)
+					});
 				});
+
 			});
 
 			self.theme.subscribe(function (sValue) {

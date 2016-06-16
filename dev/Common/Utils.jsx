@@ -20,8 +20,10 @@ const isNull = _.isNull;
 const has = _.has;
 const bind = _.bind;
 const noop = () => {};
+const noopTrue = () => true;
+const noopFalse = () => false;
 
-export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noop as emptyFunction};
+export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse};
 
 /**
  * @param {Function} callback

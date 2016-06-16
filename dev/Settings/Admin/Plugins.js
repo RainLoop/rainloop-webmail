@@ -74,7 +74,7 @@
 		;
 
 		this.enabledPlugins.subscribe(function (bValue) {
-			Remote.saveAdminConfig(Utils.emptyFunction, {
+			Remote.saveAdminConfig(Utils.noop, {
 				'EnabledPlugins': bValue ? '1' : '0'
 			});
 		});

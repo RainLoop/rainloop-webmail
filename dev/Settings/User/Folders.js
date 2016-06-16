@@ -169,7 +169,7 @@
 	FoldersUserSettings.prototype.subscribeFolder = function (oFolder)
 	{
 		Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, true);
+		Remote.folderSetSubscribe(Utils.noop, oFolder.fullNameRaw, true);
 
 		oFolder.subScribed(true);
 	};
@@ -177,21 +177,21 @@
 	FoldersUserSettings.prototype.unSubscribeFolder = function (oFolder)
 	{
 		Local.set(Enums.ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(Utils.emptyFunction, oFolder.fullNameRaw, false);
+		Remote.folderSetSubscribe(Utils.noop, oFolder.fullNameRaw, false);
 
 		oFolder.subScribed(false);
 	};
 
 	FoldersUserSettings.prototype.checkableTrueFolder = function (oFolder)
 	{
-		Remote.folderSetCheckable(Utils.emptyFunction, oFolder.fullNameRaw, true);
+		Remote.folderSetCheckable(Utils.noop, oFolder.fullNameRaw, true);
 
 		oFolder.checkable(true);
 	};
 
 	FoldersUserSettings.prototype.checkableFalseFolder = function (oFolder)
 	{
-		Remote.folderSetCheckable(Utils.emptyFunction, oFolder.fullNameRaw, false);
+		Remote.folderSetCheckable(Utils.noop, oFolder.fullNameRaw, false);
 
 		oFolder.checkable(false);
 	};

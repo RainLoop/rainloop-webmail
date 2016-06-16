@@ -3,30 +3,27 @@ import {_} from 'common';
 import {CookieDriver} from 'Common/ClientStorageDriver/Cookie';
 import {LocalStorageDriver} from 'Common/ClientStorageDriver/LocalStorage';
 
-class ClientStorage
+const SupportedStorageDriver = _.find(
+	[LocalStorageDriver, CookieDriver], (StorageDriver) => StorageDriver && StorageDriver.supported()
+);
+
+const driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
+
+/**
+ * @param {number} key
+ * @param {*} data
+ * @return {boolean}
+ */
+export function set(key, data)
 {
-	constructor() {
-		const SupportedStorageDriver = _.find([LocalStorageDriver, CookieDriver],
-			(StorageDriver) => StorageDriver && StorageDriver.supported());
-		this.driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
-	}
-
-	/**
-	 * @param {number} key
-	 * @param {*} data
-	 * @return {boolean}
-	 */
-	set(key, data) {
-		return this.driver ? this.driver.set('p' + key, data) : false;
-	}
-
-	/**
-	 * @param {number} key
-	 * @return {*}
-	 */
-	get(key) {
-		return this.driver ? this.driver.get('p' + key) : null;
-	}
+	return driver ? driver.set('p' + key, data) : false;
 }
 
-module.exports = new ClientStorage();
+/**
+ * @param {number} key
+ * @return {*}
+ */
+export function get(key)
+{
+	return driver ? driver.get('p' + key) : null;
+}

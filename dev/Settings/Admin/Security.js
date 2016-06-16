@@ -131,19 +131,19 @@
 	SecurityAdminSettings.prototype.onBuild = function ()
 	{
 		this.capaOpenPGP.subscribe(function (bValue) {
-			Remote.saveAdminConfig(Utils.emptyFunction, {
+			Remote.saveAdminConfig(Utils.noop, {
 				'CapaOpenPGP': bValue ? '1' : '0'
 			});
 		});
 
 		this.capaTwoFactorAuth.subscribe(function (bValue) {
-			Remote.saveAdminConfig(Utils.emptyFunction, {
+			Remote.saveAdminConfig(Utils.noop, {
 				'CapaTwoFactorAuth': bValue ? '1' : '0'
 			});
 		});
 
 		this.capaTwoFactorAuthForce.subscribe(function (bValue) {
-			Remote.saveAdminConfig(Utils.emptyFunction, {
+			Remote.saveAdminConfig(Utils.noop, {
 				'CapaTwoFactorAuthForce': bValue ? '1' : '0'
 			});
 		});

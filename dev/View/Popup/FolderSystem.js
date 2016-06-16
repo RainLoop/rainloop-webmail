@@ -62,7 +62,7 @@
 			Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
 			Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 
-			Remote.saveSystemFolders(Utils.emptyFunction, {
+			Remote.saveSystemFolders(Utils.noop, {
 				'SentFolder': FolderStore.sentFolder(),
 				'DraftFolder': FolderStore.draftFolder(),
 				'SpamFolder': FolderStore.spamFolder(),

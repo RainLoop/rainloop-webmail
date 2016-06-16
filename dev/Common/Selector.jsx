@@ -2,7 +2,7 @@
 import {$, _, key} from 'common';
 import ko from 'ko';
 import {EventKeyCode} from 'Common/Enums';
-import {isArray, inArray} from 'Common/Utils';
+import {isArray, inArray, noop, noopTrue} from 'Common/Utils';
 
 class Selector
 {
@@ -117,9 +117,6 @@ class Selector
 
 		this.sLastUid = '';
 		this.oCallbacks = {};
-
-		this.emptyFunction = () => {};
-		this.emptyTrueFunction = () => true;
 
 		this.focusedItem.subscribe((item) => {
 			if (item)
@@ -291,14 +288,14 @@ class Selector
 		{
 			if (!item)
 			{
-				(this.oCallbacks.onItemSelect || this.emptyFunction)(item || null);
+				(this.oCallbacks.onItemSelect || noop)(item || null);
 			}
 		}
 		else
 		{
 			if (item)
 			{
-				(this.oCallbacks.onItemSelect || this.emptyFunction)(item);
+				(this.oCallbacks.onItemSelect || noop)(item);
 			}
 		}
 	}
@@ -416,14 +413,14 @@ class Selector
 	 * @return {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.onAutoSelect || this.emptyTrueFunction)();
+		return !!(this.oCallbacks.onAutoSelect || noopTrue)();
 	}
 
 	/**
 	 * @param {boolean} up
 	 */
 	doUpUpOrDownDown(up) {
-		(this.oCallbacks.onUpUpOrDownDown || this.emptyTrueFunction)(!!up);
+		(this.oCallbacks.onUpUpOrDownDown || noopTrue)(!!up);
 	}
 
 	/**

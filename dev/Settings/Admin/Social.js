@@ -79,7 +79,7 @@
 			self.facebookEnable.subscribe(function (bValue) {
 				if (self.facebookSupported())
 				{
-					Remote.saveAdminConfig(Utils.emptyFunction, {
+					Remote.saveAdminConfig(Utils.noop, {
 						'FacebookEnable': bValue ? '1' : '0'
 					});
 				}
@@ -104,7 +104,7 @@
 			});
 
 			self.twitterEnable.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'TwitterEnable': bValue ? '1' : '0'
 				});
 			});
@@ -122,25 +122,25 @@
 			});
 
 			self.googleEnable.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'GoogleEnable': bValue ? '1' : '0'
 				});
 			});
 
 			self.googleEnableAuth.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'GoogleEnableAuth': bValue ? '1' : '0'
 				});
 			});
 
 			self.googleEnableDrive.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'GoogleEnableDrive': bValue ? '1' : '0'
 				});
 			});
 
 			self.googleEnablePreview.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'GoogleEnablePreview': bValue ? '1' : '0'
 				});
 			});
@@ -164,7 +164,7 @@
 			});
 
 			self.dropboxEnable.subscribe(function (bValue) {
-				Remote.saveAdminConfig(Utils.emptyFunction, {
+				Remote.saveAdminConfig(Utils.noop, {
 					'DropboxEnable': bValue ? '1' : '0'
 				});
 			});

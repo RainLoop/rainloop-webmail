@@ -24,8 +24,8 @@ import * as Plugins from 'Common/Plugins';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';
 import * as Momentor from 'Common/Momentor';
-import Translator from 'Common/Translator';
-import Cache from 'Common/Cache';
+import * as Cache from 'Common/Cache';
+import {getNotification, i18n} from 'Common/Translator';
 
 import SocialStore from 'Stores/Social';
 import SettingsStore from 'Stores/User/Settings';
@@ -37,9 +37,9 @@ import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
 import ContactStore from 'Stores/User/Contact';
 
-import Local from 'Storage/Client';
+import * as Local from 'Storage/Client';
 import * as Settings from 'Storage/Settings';
-import RainLoopStorage from 'Storage/RainLoop';
+import {checkTimestamp} from 'Storage/RainLoop';
 
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
@@ -81,7 +81,7 @@ class AppUser extends AbstractApp
 		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), 60000 * 10), 60000 * 5);
 
 		$.wakeUp(() => {
-			if (RainLoopStorage.checkTimestamp())
+			if (checkTimestamp())
 			{
 				this.reload();
 			}
@@ -95,7 +95,7 @@ class AppUser extends AbstractApp
 
 		}, {}, 60 * 60 * 1000);
 
-		if (RainLoopStorage.checkTimestamp())
+		if (checkTimestamp())
 		{
 			this.reload();
 		}
@@ -189,7 +189,7 @@ class AppUser extends AbstractApp
 				MessageStore.messageList([]);
 				MessageStore.messageListLoading(false);
 				MessageStore.messageListError(oData && oData.ErrorCode ?
-					Translator.getNotification(oData.ErrorCode) : Translator.i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
+					getNotification(oData.ErrorCode) : i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
 				);
 			}
 
@@ -298,7 +298,7 @@ class AppUser extends AbstractApp
 				if (oData && -1 < inArray(oData.ErrorCode,
 					[Notification.CantMoveMessage, Notification.CantCopyMessage]))
 				{
-					window.alert(Translator.getNotification(oData.ErrorCode));
+					window.alert(getNotification(oData.ErrorCode));
 				}
 			}
 
@@ -366,7 +366,7 @@ class AppUser extends AbstractApp
 		else if (!bUseFolder || (FolderType.Trash === iDeleteType &&
 			(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder())))
 		{
-			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
+			kn.showScreenPopup(require('View/Popup/Ask'), [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
 				this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 				MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 			}]);
@@ -437,7 +437,7 @@ class AppUser extends AbstractApp
 			.fastResolve(true)
 			.then(() => promise)
 			.catch((errorCode) => {
-				FolderStore.folderList.error(Translator.getNotification(errorCode, '', errorDefCode));
+				FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
 			}).fin(() => {
 				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
 			}).done()
@@ -1296,7 +1296,7 @@ class AppUser extends AbstractApp
 			}
 			else
 			{
-				this.setWindowTitle(Translator.i18n('TITLES/LOADING'));
+				this.setWindowTitle(i18n('TITLES/LOADING'));
 
 // require.ensure([], function() { // require code splitting
 
