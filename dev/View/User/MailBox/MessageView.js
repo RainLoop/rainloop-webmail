@@ -302,6 +302,10 @@
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
 
+		this.viewFromDkimVisibility = ko.computed(function () {
+			return 'none' !== this.viewFromDkimData()[0];
+		}, this);
+
 		this.viewFromDkimStatusIconClass = ko.computed(function () {
 
 			var sResult = 'icon-none iconcolor-display-none';

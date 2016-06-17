@@ -208,38 +208,48 @@
 
 				<div data-bind="visible: message">
 					<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
+						<div class="subjectParent">
+							<button class="close" data-bind="command: closeMessage" style="margin-top: -2px;">&times;</button>
+							<span class="infoParent g-ui-user-select-none" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
+								<i class="icon-info" style="padding-top: 1px;"></i>
+							</span>
+							<span class="flagParent g-ui-user-select-none">
+								<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}" style="padding-top: 2px;"></i>
+							</span>
+							<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
+							<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
+							<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
+						</div>
 						<div>
-							<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
-							<div style="overflow: hidden;">
-								<button class="close" data-bind="command: closeMessage" style="margin-top: -2px;">&times;</button>
-								<div class="subjectParent" data-bind="event: { 'dblclick': toggleFullScreen }">
-									<span class="flagParent">
-										<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}"></i>
-									</span>
-									<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
-									<span class="subject" data-bind="text: viewSubject, title: viewSubject"></span>
-									<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT"></span>
-								</div>
-								<div class="senderParent">
-									<div class="g-ui-user-select-none" style="float: left; cursor: pointer; margin-left: 1px;" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
-										<i class="icon-right-dir" data-bind="css: showFullInfo() ? 'icon-down-dir' : 'icon-right-dir'"></i>
+							<div>
+								<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
+								<div style="overflow: hidden;">
+									<div class="senderParent -top">
+										<div class="informationShort -top" data-bind="event: { 'dblclick': toggleFullScreen }">
+											<span>
+												<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
+												<span data-bind="visible: viewFromDkimVisibility">
+													&nbsp;
+													<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
+												</span>
+											</span>
+											<span data-bind="visible: 0 < viewTimeStamp()">
+												(<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>)
+											</span>
+										</div>
+										<div class="clearfix"></div>
 									</div>
-									<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
-										<span data-bind="visible: !isDraftOrSentFolder()">
-											<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
-											&nbsp;
-											<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
-										</span>
-										<span data-bind="visible: isDraftOrSentFolder()">
-											<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
-											<span class="to" data-bind="html: viewToShort, title: viewTo"></span>
-										</span>
-										<span data-bind="visible: 0 < viewTimeStamp()">
-											(<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>)
-										</span>
+									<div class="senderParent -bottom" data-bind="visible: viewTo">
+										<div class="informationShort -bottom" data-bind="event: { 'dblclick': toggleFullScreen }">
+											<span>
+												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
+												<span class="to" data-bind="text: viewTo"></span>
+											</span>
+										</div>
+										<div class="clearfix"></div>
 									</div>
-									<div class="clearfix"></div>
 								</div>
+								<div class="clearfix"></div>
 							</div>
 							<div class="informationFull" data-bind="visible: showFullInfo()">
 								<table>
