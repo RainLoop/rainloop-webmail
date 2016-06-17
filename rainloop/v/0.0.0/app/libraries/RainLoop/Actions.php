@@ -325,7 +325,7 @@ class Actions
 						$mResult = array();
 					}
 
-					if (\is_array($mResult) && \RainLoop\Utils::IsOwnCloud())
+					if (\is_array($mResult) && \RainLoop\Utils::IsOwnCloud() && $this->Config()->Get('labs', 'owncloud_suggestions', true))
 					{
 						// \RainLoop\Providers\Suggestions\ISuggestions
 						$mResult[] = new \RainLoop\Providers\Suggestions\OwnCloudSuggestions();
