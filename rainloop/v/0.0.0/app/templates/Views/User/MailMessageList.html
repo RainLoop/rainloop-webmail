@@ -16,18 +16,18 @@
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<!-- /ko -->
-				<div class="btn-group" data-bind="visible: mobile && allowComposer">
+				<div class="btn-group" data-bind="visible: mobile && allowComposer && mobileCheckedStateHide()">
 					<a class="btn single buttonCompose" data-tooltip-join="top" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
 						<i class="icon-paper-plane"></i>
 					</a>
 				</div>
-				<div class="btn-group show-on-mobile">&nbsp;</div>
-				<div class="btn-group" data-bind="visible: allowReload">
+				<div class="btn-group" data-bind="visible: mobileCheckedStateHide()">&nbsp;</div>
+				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">
 					<a class="btn single btn-dark-disabled-border buttonReload" data-tooltip-join="top" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
 						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottleForAnimation}"></i>
 					</a>
 				</div>
-				<div class="btn-group" data-bind="visible: allowReload">&nbsp;</div>
+				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-join="top" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-copy visible-on-ctrl-btn"></i>
@@ -46,13 +46,13 @@
 						<!-- /ko -->
 					</ul>
 				</div>
-				<div class="btn-group" data-bind="visible: allowMessageListActions">&nbsp;</div>
-				<div class="btn-group" data-bind="visible: allowMessageListActions">
-					<a class="btn first btn-dark-disabled-border button-archive hide-on-mobile" data-tooltip-join="top"
+				<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateHide()">&nbsp;</div>
+				<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateShow()">
+					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top"
 						data-bind="visible: isArchiveVisible, command: archiveCommand, tooltip: 'MESSAGE_LIST/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam hide-on-mobile" data-tooltip-join="top"
+					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top"
 						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'MESSAGE_LIST/BUTTON_SPAM',
 							css: {'first': !isArchiveVisible()}">
 						<i class="icon-angry-smiley"></i>
@@ -64,12 +64,12 @@
 					</a>
 					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top"
 						data-bind="command: deleteCommand, tooltip: 'MESSAGE_LIST/BUTTON_DELETE',
-							css: {'first': mobile || (!isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible())}">
+							css: {'first': !isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible()}">
 						<i class="icon-trash"></i>
 						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
 					</a>
 				</div>
-				<div class="btn-group" data-bind="visible: allowMessageListActions">&nbsp;</div>
+				<div class="btn-group hide-on-mobile" data-bind="visible: allowMessageListActions">&nbsp;</div>
 				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 					<a id="more-list-dropdown-id" class="btn single btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list animate-this-icon-on-open"></i>

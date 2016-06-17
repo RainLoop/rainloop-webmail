@@ -204,6 +204,16 @@
 			return this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder();
 		}, this);
 
+		this.mobileCheckedStateShow = ko.computed(function () {
+			var checked = 0 < this.messageListChecked().length;
+			return this.mobile ? checked : true;
+		}, this);
+
+		this.mobileCheckedStateHide = ko.computed(function () {
+			var checked = 0 < this.messageListChecked().length;
+			return this.mobile ? !checked : true;
+		}, this);
+
 		this.messageListFocused = ko.computed(function () {
 			return Enums.Focused.MessageList === AppStore.focusedState();
 		});

@@ -323,8 +323,7 @@ export const SaveSettingsStep = {
 export const Layout = {
 	'NoPreview': 0,
 	'SidePreview': 1,
-	'BottomPreview': 2,
-	'Mobile': 3
+	'BottomPreview': 2
 };
 
 /**

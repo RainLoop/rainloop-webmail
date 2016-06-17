@@ -62,7 +62,6 @@
 			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
 			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
 			Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
-			Globals.$html.toggleClass('rl-mobile-layout', Enums.Layout.Mobile === nValue);
 
 			Events.pub('layout', [nValue]);
 		});
