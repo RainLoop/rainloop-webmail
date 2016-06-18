@@ -236,7 +236,18 @@ class HtmlUtils
 			$sBodyAttrs = $aMatch[1];
 		}
 
-		$sHtml = \preg_replace('/^.*<body([^>]*)>/si', '', $sHtml);
+		$iPos = \stripos($sHtml, '<body>');
+		if (0 < $iPos)
+		{
+			$sHtml = \substr($sHtml, $iPos);
+		}
+		else
+		{
+			$iPos = \stripos($sHtml, '<body ');
+			$sHtml = 0 < $iPos ? \substr($sHtml, $iPos) : $sHtml;
+		}
+
+		$sHtml = \preg_replace('/<body([^>]*)>/si', '', $sHtml);
 		$sHtml = \preg_replace('/<\/body>/i', '', $sHtml);
 		$sHtml = \preg_replace('/<html([^>]*)>/i', '', $sHtml);
 		$sHtml = \preg_replace('/<\/html>/i', '', $sHtml);
