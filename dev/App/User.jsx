@@ -436,11 +436,12 @@ class AppUser extends AbstractApp
 			.abort('Folders')
 			.fastResolve(true)
 			.then(() => promise)
-			.catch((errorCode) => {
-				FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
-			}).fin(() => {
+			.then(() => {
 				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
-			}).done()
+			}, (errorCode) => {
+				FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
+				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
+			})
 		;
 	}
 

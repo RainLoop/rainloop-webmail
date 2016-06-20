@@ -73,7 +73,8 @@
 
 			require('App/User').default.foldersPromisesActionHelper(
 				Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
-				Enums.Notification.CantCreateFolder);
+				Enums.Notification.CantCreateFolder
+			);
 
 			this.cancelCommand();
 

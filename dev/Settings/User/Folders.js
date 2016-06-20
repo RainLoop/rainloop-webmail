@@ -75,7 +75,8 @@
 
 			require('App/User').default.foldersPromisesActionHelper(
 				Promises.folderRename(oFolder.fullNameRaw, sEditName, FolderStore.foldersRenaming),
-				Enums.Notification.CantRenameFolder);
+				Enums.Notification.CantRenameFolder
+			);
 
 			Cache.removeFolderFromCacheList(oFolder.fullNameRaw);
 
@@ -155,7 +156,8 @@
 
 				require('App/User').default.foldersPromisesActionHelper(
 					Promises.folderDelete(oFolderToRemove.fullNameRaw, FolderStore.foldersDeleting),
-					Enums.Notification.CantDeleteFolder);
+					Enums.Notification.CantDeleteFolder
+				);
 
 				Cache.removeFolderFromCacheList(oFolderToRemove.fullNameRaw);
 			}

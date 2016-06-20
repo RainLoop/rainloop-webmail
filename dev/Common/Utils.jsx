@@ -1564,7 +1564,11 @@ export function changeTheme(value, themeTrigger)
 	let
 		themeLink = $('#app-theme-link'),
 		themeStyle = $('#app-theme-style'),
-		url = themeLink.attr('href')
+		url = themeLink.attr('href'),
+		clearTimer = () => {
+			__themeTimer = window.setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
+			__themeAjax = null;
+		}
 	;
 
 	if (!url)
@@ -1594,7 +1598,7 @@ export function changeTheme(value, themeTrigger)
 		__themeAjax = $.ajax({
 			url: url,
 			dataType: 'json'
-		}).done((data) => {
+		}).then((data) => {
 
 			if (data && isArray(data) && 2 === data.length)
 			{
@@ -1616,14 +1620,7 @@ export function changeTheme(value, themeTrigger)
 				themeTrigger(SaveSettingsStep.TrueResult);
 			}
 
-		}).always(() => {
-
-			__themeTimer = window.setTimeout(() => {
-				themeTrigger(SaveSettingsStep.Idle);
-			}, 1000);
-
-			__themeAjax = null;
-		});
+		}).then(clearTimer, clearTimer);
 	}
 }
 
