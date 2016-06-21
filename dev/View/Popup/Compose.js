@@ -334,8 +334,21 @@
 
 		this.deleteCommand = Utils.createCommand(this, function () {
 
-			require('App/User').default.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
-			kn.hideScreenPopup(ComposePopupView);
+			var
+				self = this,
+				PopupsAskViewModel = require('View/Popup/Ask')
+			;
+
+			if (!kn.isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
+			{
+				kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function () {
+					if (self.modalVisibility())
+					{
+						require('App/User').default.deleteMessagesFromFolderWithoutCheck(self.draftFolder(), [self.draftUid()]);
+						kn.hideScreenPopup(ComposePopupView);
+					}
+				}]);
+			}
 
 		}, function () {
 			return this.isDraftFolderMessage();
