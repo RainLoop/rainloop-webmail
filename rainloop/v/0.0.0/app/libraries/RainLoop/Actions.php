@@ -214,16 +214,6 @@ class Actions
 		{
 			$this->oConfig = new \RainLoop\Config\Application();
 
-//			$bSave = defined('APP_INSTALLED_START');
-//			if (!$this->oConfig->Load())
-//			{
-//				$bSave = true;
-//			}
-//			else if (!$bSave)
-//			{
-//				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
-//			}
-
 			$bSave = defined('APP_INSTALLED_START');
 
 			$bLoaded = $this->oConfig->Load();
@@ -1087,22 +1077,31 @@ class Actions
 
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
-				$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
-					$this->Config()->Get('logs', 'filename', ''));
+				$sLogFileName = $this->Config()->Get('logs', 'filename', '');
 
-				$sLogFileDir = \dirname($sLogFileFullPath);
-
-				if (!@is_dir($sLogFileDir))
+				$oDriver = null;
+				if ('syslog' === $sLogFileName)
 				{
-					@mkdir($sLogFileDir, 0755, true);
+					$oDriver = \MailSo\Log\Drivers\Syslog::NewInstance();
+				}
+				else
+				{
+					$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName($sLogFileName);
+					$sLogFileDir = \dirname($sLogFileFullPath);
+
+					if (!@is_dir($sLogFileDir))
+					{
+						@mkdir($sLogFileDir, 0755, true);
+					}
+
+					$oDriver = \MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath);
 				}
 
-				$this->oLogger->Add(
-					\MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath)
-						->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
-						->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
-						->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
-						->SetTimeOffset($iTimeOffset)
+				$this->oLogger->Add($oDriver
+					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
+					->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
+					->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
+					->SetTimeOffset($iTimeOffset)
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
