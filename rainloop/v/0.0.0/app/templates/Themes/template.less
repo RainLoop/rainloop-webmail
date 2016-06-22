@@ -64,6 +64,16 @@
 	.thm-linear-gradient-mixin(@login-gradient-start, @login-gradient-end);
 	.thm-border-radius(@login-border-radius);
 	.thm-box-shadow(@login-box-shadow);
+
+	&.submitting-pane.submitting {
+		&:before{
+			background: @spinner-background;
+			.thm-border-radius(@login-border-radius);
+		}
+		&:after{
+			border-top-color: @spinner-color;
+		}
+	}
 }
 
 .thm-login-text {

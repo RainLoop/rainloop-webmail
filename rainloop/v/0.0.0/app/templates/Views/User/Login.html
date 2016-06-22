@@ -23,7 +23,7 @@
 				<div class="wrapper loginWelcomeForm thm-login-text" data-bind="css: {'welcome-on': welcome}">
 					<!-- ko template: { name: 'LoginWelcome' } --><!-- /ko -->
 				</div>
-				<form class="wrapper loginForm thm-login thm-login-text" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'welcome-off': welcome}">
+				<form class="wrapper submitting-pane loginForm thm-login thm-login-text" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'welcome-off': welcome, 'submitting': submitRequest()}">
 					{{INCLUDE/TopControlGroup/PLACE}}
 					<div class="controls plugin-mark-Login-TopControlGroup" data-bind="css: {'error': emailError, 'animated': emailErrorAnimation}">
 						<div class="input-append">
@@ -72,8 +72,7 @@
 					{{INCLUDE/BottomControlGroup/PLACE}}
 					<div class="controls">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand, hasFocus: submitFocus">
-							<i class="icon-spinner animated" data-bind="visible: submitRequest"></i>
-							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN" data-bind="visible: !submitRequest()"></span>
+							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
 						</button>
 					</div>
 					<div class="controls clearfix" style="margin-bottom: 20px">
