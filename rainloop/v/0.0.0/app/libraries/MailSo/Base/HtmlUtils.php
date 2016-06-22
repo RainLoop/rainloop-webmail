@@ -1354,7 +1354,8 @@ class HtmlUtils
 		$sText = \MailSo\Base\LinkFinder::NewInstance()
 			->Text($sText)
 			->UseDefaultWrappers($bLinksWithTargetBlank)
-			->CompileText();
+			->CompileText()
+		;
 
 		$sText = \str_replace("\r", '', $sText);
 

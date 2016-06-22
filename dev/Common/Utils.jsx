@@ -597,7 +597,9 @@ export function draggablePlace()
 	return $('<div class="draggablePlace">' +
 		'<span class="text"></span>&nbsp;' +
 		'<i class="icon-copy icon-white visible-on-ctrl"></i>' +
-		'<i class="icon-mail icon-white hidden-on-ctrl"></i></div>').appendTo('#rl-hidden');
+		'<i class="icon-mail icon-white hidden-on-ctrl"></i>' +
+		'</div>'
+	).appendTo('#rl-hidden');
 }
 
 export function defautOptionsAfterRender(domOption, item)
@@ -728,68 +730,6 @@ body.plain blockquote blockquote blockquote {
 }
 
 /**
- * @param {Object} viewModel
- * @param {string} templateID
- * @param {string} title
- * @param {Function=} fCallback = null
- */
-export function windowPopupKnockout(viewModel, templateID, title, fCallback = null)
-{
-	const
-		win = window.open(''),
-		doc = win.document,
-		func = 'openerApplyBindingsUid' + fakeMd5(),
-		template = $('#' + templateID)
-	;
-
-	window[func] = () => {
-
-		if (win && doc && doc.body && template && template[0])
-		{
-			const body = $(doc.body);
-
-			$('#rl-content', body).html(template.html());
-			$('html', doc).addClass('external ' + $('html').attr('class'));
-
-			require('Common/Translator').i18nToNodes(body);
-
-			if (viewModel && $('#rl-content', body)[0])
-			{
-				ko.applyBindings(viewModel, $('#rl-content', body)[0]);
-			}
-
-			window[func] = null;
-
-			if (fCallback)
-			{
-				fCallback(win);
-			}
-		}
-	};
-
-	doc.open();
-	doc.write(trim(`
-<html>
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="user-scalable=no" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="robots" content="noindex, nofollow, noodp" />
-	<title>${encodeHtml(title)}</title>
-</head>
-<body><div id="rl-content"></div></body>
-</html>
-`));
-	doc.close();
-
-	const script = doc.createElement('script');
-	script.type = 'text/javascript';
-	script.innerHTML = `if(window&&window.opener&&window.opener['${func}']){window.opener['${func}']();}`;
-
-	doc.getElementsByTagName('head')[0].appendChild(script);
-}
-
-/**
  * @param {Function} fCallback
  * @param {?} koTrigger
  * @param {?} context = null
@@ -882,13 +822,16 @@ export function findEmailAndLinks(html)
 export function htmlToPlain(html)
 {
 	let
-		iPos = 0,
+		pos = 0,
+		limit = 0,
 		iP1 = 0,
 		iP2 = 0,
 		iP3 = 0,
-		iLimit = 0,
 
-		text = '',
+		text = ''
+	;
+
+	const
 
 		convertBlockquote = (blockquoteText) => {
 			blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
@@ -915,10 +858,7 @@ export function htmlToPlain(html)
 
 		convertPre = (...args) => {
 			return (args && 1 < args.length) ?
-				args[1].toString()
-					.replace(/[\n]/gm, '<br />')
-					.replace(/[\r]/gm, '')
-				: '';
+				args[1].toString().replace(/[\n]/gm, '<br />').replace(/[\r]/gm, '') : '';
 		},
 
 		fixAttibuteValue = (...args) => {
@@ -968,13 +908,13 @@ export function htmlToPlain(html)
 
 	text = splitPlainText(trim(text));
 
-	iPos = 0;
-	iLimit = 800;
+	pos = 0;
+	limit = 800;
 
-	while (0 < iLimit)
+	while (0 < limit)
 	{
-		iLimit--;
-		iP1 = text.indexOf('__bq__start__', iPos);
+		limit--;
+		iP1 = text.indexOf('__bq__start__', pos);
 		if (-1 < iP1)
 		{
 			iP2 = text.indexOf('__bq__start__', iP1 + 5);
@@ -986,15 +926,15 @@ export function htmlToPlain(html)
 					convertBlockquote(text.substring(iP1 + 13, iP3)) +
 					text.substring(iP3 + 11);
 
-				iPos = 0;
+				pos = 0;
 			}
 			else if (-1 < iP2 && iP2 < iP3)
 			{
-				iPos = iP2 - 1;
+				pos = iP2 - 1;
 			}
 			else
 			{
-				iPos = 0;
+				pos = 0;
 			}
 		}
 		else
@@ -1019,6 +959,10 @@ export function htmlToPlain(html)
 export function plainToHtml(plain, findEmailAndLinksInText = false)
 {
 	plain = plain.toString().replace(/\r/g, '');
+
+	plain = plain.replace(/^>[> ]>+/gm, ([match]) => {
+		return match ? match.replace(/[ ]+/g, '') : match;
+	});
 
 	let
 		bIn = false,
