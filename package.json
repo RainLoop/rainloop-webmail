@@ -2,7 +2,7 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.2",
-  "release": "131",
+  "release": "133",
   "private": true,
   "ownCloudPackageVersion": "4.19",
   "description": "Simple, modern & fast web-based email client",
@@ -88,6 +88,6 @@
     "node-notifier": "~4.2.3",
     "raw-loader": "^0.5.1",
     "rimraf": "*",
-    "webpack": "2.1.0-beta.7"
+    "webpack": "2.1.0-beta.13"
   }
 }
