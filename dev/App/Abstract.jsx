@@ -290,6 +290,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('Select', require('Component/Select'));
 		ko.components.register('Radio', require('Component/Radio'));
 		ko.components.register('TextArea', require('Component/TextArea'));
+		ko.components.register('Date', require('Component/Date'));
 
 		ko.components.register('x-script', require('Component/Script'));
 //		ko.components.register('svg-icon', require('Component/SvgIcon'));

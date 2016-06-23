@@ -135,6 +135,7 @@ cfg.paths.css = {
 			'vendors/flags/flags-fixed.css',
 			'vendors/lightGallery/dist/css/lightgallery.min.css',
 			'vendors/lightGallery/dist/css/lg-transitions-lg-lollipop.css',
+			'node_modules/pikaday/css/pikaday.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
 	}

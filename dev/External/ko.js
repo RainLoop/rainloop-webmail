@@ -9,6 +9,7 @@
 		$ = require('$'),
 		JSON = require('JSON'),
 		Opentip = require('Opentip'),
+		Pikaday = require('pikaday'),
 
 		fDisposalTooltipHelper = function (oElement) {
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
@@ -119,6 +120,20 @@
 				ko.utils.domNodeDisposal.addDisposeCallback(oCont, function () {
 					$(oCont).off();
 					$win.off('resize', fFunc);
+				});
+			}
+		}
+	};
+
+	ko.bindingHandlers.pikaday = {
+		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+
+			ko.bindingHandlers.textInput.init.apply(oViewModel, Array.prototype.slice.call(arguments));
+
+			if (Pikaday)
+			{
+				oElement.__pikaday = new Pikaday({
+					field: oElement
 				});
 			}
 		}
