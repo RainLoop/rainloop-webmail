@@ -66,6 +66,28 @@
 	kn.extendAsViewModel(['View/Popup/AdvancedSearch', 'PopupsAdvancedSearchViewModel'], AdvancedSearchPopupView);
 	_.extend(AdvancedSearchPopupView.prototype, AbstractView.prototype);
 
+	AdvancedSearchPopupView.prototype.parseSearchStringValue = function (search)
+	{
+		var
+			self = this,
+			parts = (search || '').split(/[\s]+/g)
+		;
+
+		_.each(parts, function(part){
+			switch (part)
+			{
+				case 'has:attachment':
+					self.hasAttachment(true);
+					break;
+				case 'is:unseen,flagged':
+					self.starred(true);
+				case 'is:unseen':
+					self.unseen(true);
+					break;
+			}
+		});
+	};
+
 	AdvancedSearchPopupView.prototype.buildSearchStringValue = function (sValue)
 	{
 		if (-1 < sValue.indexOf(' '))
@@ -156,9 +178,10 @@
 		this.fromFocus(true);
 	};
 
-	AdvancedSearchPopupView.prototype.onShow = function ()
+	AdvancedSearchPopupView.prototype.onShow = function (search)
 	{
 		this.clearPopup();
+		this.parseSearchStringValue(search);
 	};
 
 	AdvancedSearchPopupView.prototype.onShowWithDelay = function ()

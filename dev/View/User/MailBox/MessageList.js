@@ -1005,7 +1005,7 @@
 	{
 		if (Settings.capa(Enums.Capa.SearchAdv))
 		{
-			kn.showScreenPopup(require('View/Popup/AdvancedSearch'));
+			kn.showScreenPopup(require('View/Popup/AdvancedSearch'), [this.mainMessageListSearch()]);
 		}
 	};
 

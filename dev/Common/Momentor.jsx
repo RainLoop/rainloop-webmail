@@ -31,7 +31,7 @@ export function momentNowUnix()
  */
 export function searchSubtractFormatDateHelper(date)
 {
-	momentNow().clone().subtract('days', date).format('YYYY.MM.DD');
+	return momentNow().clone().subtract('days', date).format('YYYY.MM.DD');
 }
 
 /**
